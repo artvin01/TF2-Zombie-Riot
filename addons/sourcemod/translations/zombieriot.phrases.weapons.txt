@@ -1037,7 +1037,7 @@
 		"pt"		"Melhorias"
 		"nl"		"Upgrades"
 		"chi"       	"属性升级"
-		"ko"		"업그레이드"
+		"ko"		"개선"
 	}
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
@@ -1049,7 +1049,7 @@
 		"pt"		"Melhorias de Corpo-a-Corpo"
 		"nl"		"Handwapen Upgrades"
 		"chi"       	"近战升级"
-		"ko"		"근접 무기 업그레이드"
+		"ko"		"근접 무기 개선"
 	}
 	"Cannibalism"
 	{
@@ -1148,7 +1148,7 @@
 		"pt"		"Melhorias de Construções"
 		"nl"		"Gebouwen Upgrades"
 		"chi"       	"建筑"
-		"ko"		"구조물 업그레이드"
+		"ko"		"구조물 개선"
 	}
 	"Repair Handling book for dummies"
 	{
@@ -1281,7 +1281,7 @@
 		"pt"		"Melhorias de Armas de fogo"
 		"nl"		"Range-upgrades"
 		"chi"       	"远程升级"
-		"ko"		"원거리 무기 업그레이드"
+		"ko"		"원거리 무기 개선"
 	}
 	"Accurate Marksman"
 	{
@@ -1347,7 +1347,7 @@
 		"pt"		"Melhorias de Mago"
 		"nl"		"Magier's Upgrades"
 		"chi"       	"魔法升级"
-		"ko"		"마법 무기 강화"
+		"ko"		"마법 무기 개선"
 	}
 	"Magical Haste"
 	{
@@ -1424,7 +1424,7 @@
 		"pt"		"Melhorias Passivas"
 		"nl"		"Passieve Upgrades"
 		"chi"       	"被动升级"
-		"ko"		"패시브 업그레이드"
+		"ko"		"패시브 개선"
 	}
 	"Body armor"
 	{
@@ -1512,7 +1512,7 @@
 		"pt"		"Melhorias de Cura"
 		"nl"		"Medigun Upgrades"
 		"chi"       	"医疗升级"
-		"ko"		"메디건 업그레이드"
+		"ko"		"메디건 개선"
 	}
 	"Doctor Certificate"
 	{
@@ -2507,7 +2507,7 @@
 		"fr"       "Tout achat ici est affecté par les Améliorations de Constructeur"
 		"ru"       "Все предметы здесь влияют на улучшение построек."
 		"chi"       "所有有关建筑的物品已被归类到此列表"
-		"ko"	   "이 곳에 있는 아이템은 전부 구조물 업그레이드의 효과를 받습니다."
+		"ko"	   "이 아이템들은 전부 구조물 개선 효과를 받습니다."
 	}
 	"TIP: Only one path can have a tier 3 upgrade" //村庄列表
 	{
@@ -2515,7 +2515,7 @@
 		"fr"       "INDICE: Seulement un trajet peut avoir une amélioration niveau 3"
 		"ru"       "СОВЕТ: Только один путь может иметь улучшение уровня 3"
 		"chi"       "提示:只有一条路径可以拥有三级升级"
-		"ko"	   "팁 : 3티어 업그레이드로 갈 수 있는 유일한 방법입니다."
+		"ko"	   "팁 : 3티어 개선으로 갈 수 있는 유일한 방법입니다."
 	}
 	"Bigger Radius"
 	{
@@ -2633,7 +2633,7 @@
 	{
 		"en"	"Deleting buildings returns spend metal dependant on remaining HP and repair HP"
 		"fr"	"Du métal vous sera retourné pour les construction détruites, dépendant de leur durabilité"
-		"ko"	"제거한 구조물은 남아있는 체력과 수리 내구도에 비례하여 소모된 금속을 돌려줍니다."
+		"ko"	"제거한 구조물은 남아있는 체력과 수리 내구도에 비례하여 소모된 금속을 돌려줍니다"
 	}
 	"Press your action slot (h) to access an extra menu!"
 	{

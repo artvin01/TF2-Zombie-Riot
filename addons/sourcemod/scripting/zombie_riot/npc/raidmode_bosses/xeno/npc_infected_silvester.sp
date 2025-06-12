@@ -477,15 +477,15 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Is... Is this really where we must change your mind?");
+					CPrintToChatAll("{gold}실베스터{default}: 정말로 이렇게까지 해야 우리 경고를 들어먹겠어?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Please just turn away!");
+					CPrintToChatAll("{gold}실베스터{default}: 제발 그냥 돌아가!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: This is already too close, this is too much risk!");
+					CPrintToChatAll("{gold}실베스터{default}: 이건 너무 위험한 일이라고!");
 				}
 			}
 		}
@@ -512,15 +512,15 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Give up and turn yourself in.");
+						CPrintToChatAll("{gold}실베스터{default}: 포기하고 자수해.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Ready to listen?");
+						CPrintToChatAll("{gold}실베스터{default}: 이제 우리 말을 들어줄 준비는 됐어?");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Maybe you just hate us?");
+						CPrintToChatAll("{gold}실베스터{default}: 뭐야, 아니면 우릴 그냥 싫어하는거야?");
 					}
 				}
 			}
@@ -530,15 +530,15 @@ static void Internal_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Death may be your only choice from here on out!");
+						CPrintToChatAll("{gold}실베스터{default}: 널 죽여서라도 여기에서 끌고 나가겠어!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You're probably already infected, should kill you instead!");
+						CPrintToChatAll("{gold}실베스터{default}: 말을 안 듣는걸 보니 이미 감염된 상태인게 분명해! 그럼 안타깝지만 죽어야지!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Listening is too hard for you ******* isnt it?");
+						CPrintToChatAll("{gold}실베스터{default}: 남의 말 좀 듣는게 그렇게나 힘든 일인거야?");
 					}
 				}				
 			}
@@ -1997,32 +1997,32 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				{
 					ReviveAll(true);
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: We tried to help, this will be painful for you.");
+						CPrintToChatAll("{gold}실베스터{default}: 우린 널 도와주려고 했어. 이건 분명히 엄청 힘든 일일거야.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: You never listen. I will not assist you more.");
+						CPrintToChatAll("{gold}실베스터{default}: 전혀 내 말을 듣지 않아. 이젠 널 도와주고 싶지 않네.");
 					i_TalkDelayCheck += 1;
 				}
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy than us, we can't beat him.");
+						CPrintToChatAll("{darkblue}월드치{default}: 우리보다 훨씬 크고 강한 적이 있지만, 우린 그들을 이길 수 없어.");
 					else
-						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
+						CPrintToChatAll("{darkblue}월드치{default}: 너흰 꼭 마치 무엇에 뛰어들 것인지 알고 있는 듯하네.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}Waldch{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
+					CPrintToChatAll("{darkblue}월드치{default}: 솔직히 네가 그 놈을 이길 수 있을지 의심스럽지만, 만약 이긴다면, 큰 혼란을 물리치는 데 큰 도움이 될 거다.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Good luck.");
+						CPrintToChatAll("{gold}실베스터{default}: 행운을 빌게.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: I REFUSE to let this happen again to us two, don't say i didnt warn you!");
+						CPrintToChatAll("{gold}실베스터{default}: 이제 우리 사이에 다시는 이런 일이 일어나지 않을거야. 맹세할게. 그리고 난 분명히 너희한테 경고한거고!");
 
 					i_TalkDelayCheck = 5;
 					for (int client = 1; client <= MaxClients; client++)
@@ -2495,11 +2495,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{gold}Silvester{default}: You're too stubborn.");
+			CPrintToChatAll("{gold}실베스터{default}: 넌 너무 고집불통이야.");
 		}
 		else
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Maybe we should have thought of a better way to warn them.");
+			CPrintToChatAll("{gold}실베스터{default}: 어쩌면 우리는 너에게 더 좋은 경고 방식을 생각해냈어야 했을지도 모르겠어.");
 		}
 		return;
 	}
@@ -2507,11 +2507,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{darkblue}Waldch{default}: Too far.");
+			CPrintToChatAll("{darkblue}월드치{default}: 너무 멀리 오셨군.");
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Waldch{default}: Way better than to die to {green}Him.");
+			CPrintToChatAll("{darkblue}월드치{default}: {green}그 놈{default}에게 죽는 것보단 나을거다.");
 		}
 	}
 }

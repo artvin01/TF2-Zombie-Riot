@@ -797,7 +797,7 @@
 	"Silver Seal Letter Desc"
 	{
 		"en"	"You made a deal with an old man. If the time comes, it's now.\n{green}Recover a random weapon that has no cost to buy or upgrade."
-		"ko"	"당신은 한 노인과 거래했다. 때가 온다면, 지금이다.\n{green}구매나 업그레이드에 비용이 들지 않는 무작위 무기 하나를 회수합니다."
+		"ko"	"당신은 한 노인과 거래했다. 때가 온다면, 지금이다.\n{green}구매나 개선에 비용이 들지 않는 무작위 무기 하나를 회수합니다."
 	}
 	"Ancient Vuntulum Silver Coin"
 	{

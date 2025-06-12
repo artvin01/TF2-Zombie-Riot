@@ -1016,7 +1016,7 @@
 	"Tinkering Curiosity"
 	{
 		"en"	"Tinkering Curiosity"
-		"ko"	"땜장질의 호기심"
+		"ko"	"재련의 호기심"
 	}
 	"Tinkering Curiosity Desc"
 	{

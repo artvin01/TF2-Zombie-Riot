@@ -1552,7 +1552,7 @@
 		"pt"		"Sobrevive contra ondas de zumbis até normalmente 60 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
 		"nl"		"Probeer om tot wel 60 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
 		"chi"       "任务目标：在一波又一波的僵尸潮中生存下来\n通过击杀僵尸获得的现金奖励购买各种强力的武器\n帮助你的队友一起撑到黎明的到来~"
-		"ko" 		"일반적으로 60 웨이브의 좀비 물량에서 살아남아야합니다.\n무기를 구입하고 바리케이드를 세워 생존하세요.\n팀워크를 항상 중시하고 돈을 너무 아끼지 마세요.\n그렇지 않으면 당신이 팀의 민폐 덩어리가 됩니다.\n\n 무엇을 사야 할지 모르겠다면, 원하는 고가 무기를 구매하고 업그레이드 탭에서 해당 무기 유형에 대한 업그레이드를 구매하세요.\n패시브 업그레이드를 구매하면 생존력이 더욱 증가합니다.\n나머지는 자연스럽게 알게 될 것입니다."
+		"ko" 		"일반적으로 60 웨이브의 좀비 물량에서 살아남아야합니다.\n무기를 구입하고 바리케이드를 세워 생존하세요.\n팀워크를 항상 중시하고 돈을 너무 아끼지 마세요.\n\n 무엇을 사야 할지 모르겠다면, 원하는 고가 무기를 구매하고 개선 탭에서 해당 무기 유형에 대한 개선을 구매하세요.\n패시브를 구매하면 생존력이 더욱 증가합니다.\n나머지는 자연스럽게 알게 될 것입니다."
 	}
 	"Debuff/Buff Explain 1"
 	{
@@ -1733,7 +1733,7 @@
 		"pt"		"Carregada" // i could also use "Melhorada" here but i dunno, i think sounds cooler like that
 		"nl"		"Opgepakt"
 		"chi"       "升级"
-		"ko" 		"업그레이드됨"
+		"ko" 		"개선됨"
 	}
 	"Not Enough Money To Pap"
 	{
@@ -1744,7 +1744,7 @@
 		"pt"		"Você não tem dinheiro suficiente para dar um Pack-a-Punch em sua arma."
 		"nl"		"Je hebt geen geld om uw huidige wapen te Pack-A-Punchen."
 		"chi"       "你的现金不足以升级这把武器"
-		"ko" 		"당신의 무기를 업그레이드하는데 필요한 자금이 부족합니다."
+		"ko" 		"당신의 무기를 개선하는데 필요한 자금이 부족합니다."
 	}
 	"Cannot Pap this"
 	{
@@ -1755,7 +1755,7 @@
 		"pt"		"Está arma não pode ser melhorada."
 		"nl"		"Uw huidig wapen kan niet worden gePack-A-Punched."
 		"chi"       "你的武器不能升级"
-		"ko" 		"당신이 들고 있는 무기를 업그레이드가 불가능합니다."
+		"ko" 		"이 무기는 개선이 불가능합니다."
 	}
 	"Revive Teammate tooltip"
 	{
@@ -1830,7 +1830,7 @@
 	"Village Upgrade Tooltip"
 	{
 		"en" 		"Press [T (spray)] to upgrade your village."
-		"ko" 		" [T (스프레이)] 키를 눌러 마을을 업그레이드 하세요."
+		"ko" 		" [T (스프레이)] 키를 눌러 마을을 개선 하세요."
 	}
 	"Pong"
 	{
@@ -1987,7 +1987,7 @@
 		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
 		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
-		"ko" 		"TF2: 좀비 라이엇\n탭(TAB)을 다시 눌러 메뉴를 닫으세요!\n탭과 + (H) 를 누르면 현재 무기가 표시됩니다!"
+		"ko" 		"TF2: 좀비 라이엇\n탭을 다시 눌러 메뉴를 닫으세요!\n탭 + (H) 를 누르면 현재 무기가 표시됩니다!"
 	}
 	"StatusEffectList"
 	{
@@ -2011,7 +2011,7 @@
 		"pt"		"Loja do Senhor Grigori"
 		"nl"		"Vader Grigori's Winkel"
 		"chi"       "神父商店"
-		"ko"		"그리고리 신부의 상점"
+		"ko"		"그리고리 상점"
 	}
 	"The World Machine's Items"
 	{
@@ -2027,7 +2027,7 @@
 		"pt"		"Créditos após vender"
 		"nl"		"Krediet achter het verkopen"
 		"chi"       "出售后的积分"
-		"ko" 		"판매한 후의 자금"
+		"ko" 		"판매 후의 자금"
 	}
 	"MAX BARRICADES OUT CURRENTLY"
 	{
@@ -2038,7 +2038,7 @@
 		"pt"		"MÁXIMO DE BARRICAS POSTAS NO MOMENTO"
 		"nl"		"MAXIMALE TOEGELATEN VERSPERRINGEN BERIJKT!"
 		"chi"       "已达到最大路障数"
-		"ko"		"최대 바리케이드 설치 개수에 도달했습니다."
+		"ko"		"최대 바리케이드 설치 상한선에 도달했습니다."
 	}
 	"All Items are 20％ off here!"
 	{
@@ -2050,7 +2050,7 @@
 		"pt"		"Todos os itens estão com 20％ de desconto aqui! {$}\n1 Item está a 30％ de desconto {$$}"
 		"nl"		"Alle items hier hebben een 20％ korting! {$}\nÉén item heeft een 30％ korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
-		"ko"		"이 곳의 모든 아이템은 가격이 20％ 할인됩니다! {$ 로 표시됨}\n그 중 아이템 하나는 가격이 30％ 할인됩니다! {$$ 로 표시됨}"
+		"ko"		"$ 로 표시된건 가격이 20％ 쌉니다!\n$$ 표시는 가격이 30％ 쌉니다!"
 	}	
 	"All Items are 10％ off here!"
 	{
@@ -2061,7 +2061,7 @@
 		"pt"		"Todos os itens estão com 10％ de desconto aqui! {$}\n1 Item está a 15％ de desconto {$$}"
 		"nl"		"Alle items hier hebben een 10％ korting! {$}\nÉén item heeft een 15％ korting! {$$}"
 		"chi"       "所有商品在这都会打8折 {$}\n一件物品打7折 {$$}"
-		"ko"		"이 곳의 모든 아이템은 가격이 10％ 할인됩니다! {$ 로 표시됨}\n그 중 아이템 하나는 가격이 15％ 할인됩니다! {$$ 로 표시됨}"
+		"ko"		"$ 로 표시된건 가격이 10％ 쌉니다!\n$$ 표시 가격이 15％ 쌉니다!"
 	}	
 	"Can Be Pack-A-Punched"
 	{
@@ -2073,7 +2073,7 @@
 		"pt"		"Compatível com Pack-A-Punch"
 		"nl"		"Kan Worden gePack-A-Punched"
 		"chi"       "可以升级"
-		"ko"		"팩 어 펀치 업그레이드 가능"
+		"ko"		"개선 가능"
 	}
 	"Your loadout has been equipped!"
 	{
@@ -2180,7 +2180,7 @@
 	}
 	"Vote for the difficulty"
 	{
-		"en"		"난이도를 선택하세요"
+		"en"		"Vote for the difficulty"
 		"es"		"Vota por la dificultad"
 		"fr"		"Votez pour la difficulté"
 		"ru"		"Проголосуйте за сложность"
@@ -2188,6 +2188,7 @@
 		"pt"		"Vote na dificuldade"
 		"nl"		"Stem op het moeilijkheidsgraad"
 		"chi"       "为难度投票\n难度越高获得的经验越多"
+		"ko"		"난이도를 선택하세요"
 	}
 	"Want to Pack a punch?"
 	{
@@ -2196,7 +2197,7 @@
 		"ru"		"Хотите ли вы улучшить своё текущее оружие?"
 		"pt"		"Você quer melhorar sua arma atual?"
 		"nl"		"Wil je uw huidige wapen Pack-A-Punchen?"
-		"ko"		"현재 당신이 들고 있는 무기를 팩 어 펀치로 업그레이드 하시겠습니까?"
+		"ko"		"현재 당신이 들고 있는 무기를 팩 어 펀치로 개선 하시겠습니까?"
 	}
 	"Mount Menu Explain"
 	{
@@ -2214,7 +2215,7 @@
 	{
 		"en"		"To build more, buy builder upgrades!\nYou gain money and ammobox supplies when your buildings are used!"
 		"es"		"Para construir mas, compra mejoras de construccion!\nGanas dinero y mas suministros de municion cuando se usan tus construcciones!"
-		"ko"		"이 구조물들을 더 많이 건설하고 싶다면, 건축가 업그레이드를 구매하세요!\n당신의 구조물이 사용될 때마다, 당신은 추가 자금을 얻고 탄약이 보급됩니다!"
+		"ko"		"이 구조물들을 더 많이 건설하고 싶다면, 건축가 개선을 구매하세요!\n당신의 구조물이 사용될 때마다, 추가 자금을 얻고 탄약이 보급됩니다!"
 	}	
 	"Unique Buildings"
 	{
@@ -2226,7 +2227,7 @@
 	{
 		"en"		"You can only have 1 building from this section at once!\nThey are used on [E]"
 		"es"		"Solo puedes tener 1 de estas construcciones a la vez!\nSe usan llamando al MEDICO. [E]"
-		"ko"		"이 구조물은 한 번에 하나만 건설할 수 있습니다!\n이 구조물들은 메딕 호출([E]) 키로 사용합니다."
+		"ko"		"이 구조물은 한 번에 하나만 건설할 수 있습니다!\n이 구조물들은 ([E]) 키로 사용."
 	}	
 	"Construct Buildings"
 	{
@@ -2252,7 +2253,7 @@
 		"pt"		"Reanimando... [{1}]"
 		"nl"		"Aan het opwekken... [{1}]"
 		"chi"       "拉起中... [{1}]"
-		"ko"		"부활 중... [{1}]"
+		"ko"		"부활시키는 중... [{1}]"
 	}
 	"You're Being Revived."
 	{
@@ -2263,7 +2264,7 @@
 		"pt"		"Você foi reanimado. [{1}]"
 		"nl"		"Je word tot leven gebracht. [{1}]"
 		"chi"       "队友正在拉起你 [{1}]"
-		"ko"		"부활했습니다. [{1}]"
+		"ko"		"소생중. [{1}]"
 	}
 	"Medieval_Difficulty"
 	{
@@ -2321,7 +2322,7 @@
 		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade."
 		"nl"		"Je hebt niet genoeg upgrades voor gebouwen om deze kracht te gebruiken."
 		"chi"       "你的建筑等级不够！"
-		"ko"		"건축가 업그레이드가 충분히 되지 않아 이 스킬을 사용할 수 없습니다."
+		"ko"		"건축가 개선이 충분하지 않아 이 스킬을 사용할 수 없습니다."
 	}
 	"tutorial_1"
 	{
@@ -2351,7 +2352,7 @@
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
 		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
 		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
-		"ko"		"처음에는 무기를 한 번에 하나만 가지세요!\n이후의 웨이브를 생존하여 더 나은 무기와 업그레이드를 구매하세요!\n더 많은 정보를 보려면 상점 밑의 ''도움'' 버튼을 확인하세요.\n팀워크가 바로 승리의 지름길입니다!"
+		"ko"		"처음에는 무기를 한 번에 하나만 가지세요!\n이후의 웨이브를 생존하여 더 나은 무기와 개선을 구매하세요!\n더 많은 정보를 보려면 상점 밑의 ''도움'' 버튼을 확인하세요.\n팀워크가 바로 승리의 지름길입니다!"
 	}
 	"tutorial_4"
 	{
@@ -2371,17 +2372,17 @@
 	"Tutorial Show Hint Perk Machine Build One"
 	{
 		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
-		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 구입하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 업그레이드가 필요합니다!"
+		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 구입하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
 	}
 	"Tutorial Show Hint Pack a Punch"
 	{
 		"en"		"Use this machine with your holding weapon to upgrade it with a cost!\nNot all weapons can be upgraded!"
-		"ko"		"이 기계를 사용하여 현재 당신이 들고 있는 무기를 자금을 소모하여 업그레이드하세요!\n모든 무기들이 업그레이드가 가능한건 아닙니다!"
+		"ko"		"이 기계를 사용하여 현재 당신이 들고 있는 무기를 자금을 소모하여 개선하세요!\n모든 무기들이 개선이 가능한건 아닙니다!"
 	}
 	"Tutorial Show Hint Pack a Punch Build One"
 	{
 		"en"		"There's no Pack a Punch!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
-		"ko"		"팩 어 펀치가 없습니다!\n''건축가 장비''로 들어가 렌치를 구입하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 업그레이드가 필요합니다!"
+		"ko"		"팩 어 펀치가 없습니다!\n''건축가 장비''로 들어가 렌치를 구입하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
 	}
 	"Is already at full hp"
 	{
@@ -2493,7 +2494,7 @@
 		"fr"		"{pink}Vous pouvez maintenant acheter toutes les armes et améliorations!"
 		"ru"		"{pink}Всё оружие и улучшения теперь можно купить!"
 		"chi"       "{pink}所有武器和升级都可以解锁购买!"
-		"ko"		"{pink}이제 모든 무기와 업그레이드를 구매할 수 있게 되었습니다!"
+		"ko"		"{pink}이제 모든 무기와 개선을 구매할 수 있게 되었습니다!"
 	}
 	"Starter Mode"
 	{
@@ -3029,7 +3030,7 @@
 	{
 		"en"		"Buff and Debuff Explination"
 		"fr"		"Explication des buffs et des affaiblissements"
-		"ko"		"버프와 디버프 설명"
+		"ko"		"상태이상 설명"
 	}
 	"Crouch To See Info Barracks"
 	{
@@ -3043,7 +3044,7 @@
 		"fr"		"Montrer Menu d'Améliorations"
 		"ru"		"Меню улучшения"
 		"chi"		"切换升级菜单"
-		"ko"		"업그레이드 메뉴 토글"
+		"ko"		"개선 메뉴 토글"
 	}
 	"Barracks Copper Smith"
 	{
@@ -3289,7 +3290,7 @@
 		"fr"		"Fais plus d'améliorations disponibles\nAméliore la durabilité de votre construction, qui va maintenant se défendre"
 		"ru"		"новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
 		"chi"		"为你的建筑解锁更多的升级和更多的生命值\n它会自我防御。"
-		"ko"		"더 많은 업그레이드를 해금하고\n구조물의 체력을 늘릴수 있으며 자체적인 방어 수단이 있는 구조물입니다."
+		"ko"		"더 많은 개선을 해금하고\n구조물의 체력을 늘릴수 있으며 자체적인 방어 수단이 있는 구조물입니다."
 	}
 	"Barracks Guard Tower"
 	{
@@ -3360,7 +3361,7 @@
 		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Échange 1 espace de déploiement pour plus d'améliorations."
 		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
 		"chi"		"增加生命值，伤害和箭数，你失去1个补给槽，解锁更多升级。"
-		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하지만, 인구수를 1 잃습니다. 더 많은 업그레이드를 해금합니다."
+		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하지만, 인구수를 1 잃습니다. 더 많은 개선을 해금합니다."
 	}
 	"Barracks Krepost"
 	{
@@ -3376,7 +3377,7 @@
 		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Fais plus d'améliorations diponibles."
 		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
 		"chi"		"增加生命值，伤害和箭数，解锁更多升级。"
-		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하며 더 많은 업그레이드를 해금합니다."
+		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하며 더 많은 개선을 해금합니다."
 	}
 	"Barracks Castle"
 	{
@@ -3392,7 +3393,7 @@
 		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Fais plus d'améliorations diponibles.\nPermet la formation lente d'un unité spécial."
 		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПозволяет медленно обучать нового особого воина."
 		"chi"		"增加生命值，伤害和箭数，解锁更多升级。允许你慢慢训练一个新的特殊单位。"
-		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하며 더 많은 업그레이드를 해금합니다.\n새로운 특수 유닛을 느린 속도로 생산할 수 있게 됩니다."
+		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하며 더 많은 개선을 해금합니다.\n새로운 특수 유닛을 느린 속도로 생산할 수 있게 됩니다."
 	}
 	"Barracks Manual Fire"
 	{
@@ -3617,7 +3618,7 @@
 	"Barracks Troop Classes Desc"
 	{
 		"en"		"Allows the training of troops, but it will set your support building max to 2, and barricades to 1 (the villager is excluded from this.)"
-		"ko"		"유닛을 생산할 수 있게 되지만, 당신의 지원 구조물 최대 설치 개수가 2개로 감소하고, 바리케이드 최대 설치 개수가 1개로 감소합니다. (주민은 이 효과에서 제외됩니다.)"
+		"ko"		"유닛을 생산할 수 있게 되지만, 당신의 지원 구조물 최대 상한이 2개로 감소하고, 바리케이드 최대 설치 상한이 1개로 감소합니다. (주민은 이 효과에서 제외됩니다.)"
 	}
 	"Spike Masspickup Confirm"
 	{
@@ -3704,7 +3705,7 @@
 		"en"		"Select which skill you wish to upgrade. You have [{1}] Skill points Left"
 		"fr"		"Choisissez une abilité à améliorer. Il vous reste [{1}] points d'abilité"
 		"chi"       "选择要升级的技能。你还剩下[｛1｝]技能点"	
-		"ko"		"업그레이드할 스킬을 선택하세요. 현재 스킬 포인트가 [{1}] 만큼 남았습니다."
+		"ko"		"개선할 스킬을 선택하세요. 현재 스킬 포인트가 [{1}] 만큼 남았습니다."
 	}
 	"Quincy Menu Second"
 	{
@@ -3764,7 +3765,7 @@
 	{
 		"en"		"No Charge Upgrades"
 		"fr"		"Aucune amélioration de charge"
-		"ko"		"충전 업그레이드 없음"
+		"ko"		"충전 개선 안됨"
 	}
 	"Quincy Charge_1"
 	{
@@ -3794,7 +3795,7 @@
 	{
 		"en"		"No Battery Upgrades"
 		"fr"		"Aucune amélioration de capacité"
-		"ko"		"배터리 업그레이드 없음"
+		"ko"		"배터리 개선 안됨"
 	}
 	"Quincy Bat_1"
 	{
@@ -3913,13 +3914,13 @@
 		"#format"	"{1:d}"
 		"en"		"Select what upgrade you wish to apply. You have [{1}] Upgrade points points Left"
 		"fr"		"Choisissez une abilité à améliorer. Il vous reste [{1}] points d'abilité"
-		"ko"		"원하는 업그레이드를 선택하세요. 현재 업그레이드 포인트가 [{1}] 만큼 남았습니다."
+		"ko"		"원하는 개선을 선택하세요. 현재 개선 포인트가 [{1}] 만큼 남았습니다."
 	}
 	"Neuvellete Menu Third"
 	{
 		"en"	"Current Upgrade Path:"
 		"fr"	"Trajet d'améliorations :"
-		"ko"	"현재 업그레이드 경로:"
+		"ko"	"현재 개선 경로:"
 	}
 	"Neuvellete pap0"
 	{
@@ -4314,7 +4315,7 @@
 	"Blacksmith Tooltip"
 	{
 		"en"		"to apply a tinker effect to your active weapon."
-		"ko"		" 키를 눌러 현재 당신이 들고 있는 무기에 땜장질 효과를 부여하세요."
+		"ko"		" 키를 눌러 현재 당신이 들고 있는 무기에 재련 효과를 부여하세요."
 	}
 	"Blacksmith Used"
 	{
@@ -4335,7 +4336,7 @@
 		"en"		"You can not tinker this weapon"
 		"fr"		"Vous ne pouvez pas appliquer un effet de forge sur cet arme."
 		"chi"		"此武器无法被修改。"
-		"ko"		"이 무기에는 땜장질 효과 부여가 불가능합니다."
+		"ko"		"이 무기에는 재련 효과 부여가 불가능합니다."
 	}
 	"The Blacksmith Failed!"
 	{
@@ -4357,14 +4358,14 @@
 		"en"		"You have no tinker stats."
 		"fr"		"Vous n'avez pas d'effet de forge."
 		"chi"		"你没有任何匠工效果。"
-		"ko"		"당신의 무기에 땜장질 효과가 부여되어있지 않습니다."
+		"ko"		"당신의 무기에 재련 효과가 부여되어있지 않습니다."
 	}
 	"Removed Tinker Attributes"
 	{
 		"en"		"Removed Tinker Attributes"
 		"fr"		"Enlevé les effets de forge."
 		"chi"		"已移除匠工效果。"
-		"ko"		"땜장질 효과로 부여된 무기 속성을 전부 삭제"
+		"ko"		"재련 효과로 부여된 무기 속성을 전부 삭제"
 	}
 	"View Modifiers"
 	{
@@ -4377,7 +4378,7 @@
 	"View PAP Upgrades"
 	{
 		"en"	"View PAP Upgrades"
-		"ko"	"팩 어 펀치 업그레이드 효과 보기"
+		"ko"	"팩펀 개선 효과 보기"
 	}
 	"Bring up Class Change Menu"
 	{

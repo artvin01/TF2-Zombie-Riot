@@ -652,7 +652,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 					Music_SetRaidMusic(music, false);
 					i_khamlCutscene[npc.index] = 12;
-					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. Come closer and look me in the face... {crimson} Or are you too scared?");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 너. 와서 나와 정면으로 마주해라... {crimson} 아니면 겁 먹은거냐?");
 				}
 			}
 			case 12:

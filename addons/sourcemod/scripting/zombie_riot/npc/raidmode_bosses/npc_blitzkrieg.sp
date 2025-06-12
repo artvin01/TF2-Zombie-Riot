@@ -521,39 +521,39 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: NAHAHAHAHAHAHAHAHAHAHAHA!!!!!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 으하하하하하!!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: ICH WERD EUCH ALLE UMBRINGEN!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 전부 다 죽여버린다!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DAS IS PURE KRAFT!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이게 바로 순수한 힘이다!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DENKSTE DAS WAR ALLES!!?!?!?!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 넌 그게 끝이라고 생각한거냐!?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DUUUUUUUUUUUUUUU KLEINE RATTE!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이 쥐새끼같은 놈아!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 5:
 					{
-						CPrintToChatAll("{crimson}%s{default}: KOMMT HER IHR KLEINEN VIECHER!!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이리 기어와라, 보잘것 없는 놈들아!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 6:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DIE WAHRE POWER VON RUIANIAN UND EXPIDONSANS!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이것이 루이나와 엑스피돈사의 진정함 힘이다!!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 7:
 					{
-						CPrintToChatAll("{crimson}%s{default}: VERPISS DICH!!!!!!!!!!!!!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 여기서 다 꺼져버려라!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 8:
 					{
-						CPrintToChatAll("{crimson}%s{default}: BLITZKRIEG GEGEN BLITZKRIEG, KOMMT HER!!!!!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 지금부터 너와 나의 진짜 전격전이다!!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -595,11 +595,11 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Hehehe..", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 흐흐흐..", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Shall we begin?", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 준비 되셨나?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -610,11 +610,11 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Hehehe, it seems I get another chance to destroy you", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 흐흐흐, 널 죽일 기회가 또 한 번 생긴것 같군.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You lived last time, but will you live again?", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이전엔 살아나갔었지. 과연 지금도 살아남을 수 있을까?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -625,11 +625,11 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: It appears im going to have to introduce you to someone I know... the Moon...", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 아무래도 내가 뭔갈 좀 알려줘야 할 것 같은데... 저 달을 봐라...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You're quite the tenacious one aren't you", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 넌 정말 끈기 있는 놈이군. 안 그래?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -639,15 +639,15 @@ methodmap Blitzkrieg < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: This ends here, {crimson}now, {default}there is nowhere else for you to go!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 여기서 모든게 {crimson}끝날거다. {default}이제 도망갈 곳도 없지!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You've all become quite the annoying little merc's haven't you", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이전보다 더욱 짜증나는 쥐새끼들이 되었어. 그렇지 않나?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: My limiter's been turned off{crimson} good luck{default}.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이제 내 리미터도 전부 해제되었다.{crimson} 준비 됐나?{default}.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -738,23 +738,23 @@ static void ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: BISTE AUßER PUSTE? VERRECK!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 힘드냐? 힘들면 그냥 죽어!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: NA WIE GEHTS DIE ALEINE {crimson}HMMMMMMMMMM?", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 이제 널 어떻게 요리해야할까? {crimson}흐으으으음?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DU BIST EIN DRECKES FAKE, {crimson}GIB AUF!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 멍청한 인간들아, {crimson}파멸을 맞이해라!!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: DIE WAHRE KRAFT DER ALLIANCE!!!{crimson} IST HIIIIIIIIIIIERRRR!!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 연합의 진정함 힘이{crimson} 드디어 승리했도다!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{crimson}: KOMM HER!!! HAU NICHT AB DU WEICHEI!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{crimson}: 어차피 끝날건데 뭐 이리 도망을 치는거냐!!!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -764,23 +764,23 @@ static void ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You organic's require oxygen to live, we do not. We are not the same", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 너희 유기체들은 살아남으려면 산소가 필요했었지? 우린 필요없다. 너와 우린 차원이 다른 존재지.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: How does it feel to be {crimson}alone?", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 그래, {crimson}혼자 남는 기분이 어떠냐?", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You are out gunned and out matched, {crimson}surrender.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 넌 화력도, 실력도 없다. {crimson}항복해라...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Death{crimson} Aproaches", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: {crimson}네 죽음이 다가오고 있다...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next in line..", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 네 친구들은 이미{crimson} 우리와{default} 함께 한다... {crimson} 너만이 남았지...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -790,23 +790,23 @@ static void ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You alone? How amusing.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 너 혼자 날 상대하겠다고? 어이가 없군.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 1:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Machines win once more... You're the last...", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 우리 기계의 승리가 또 다시 드리우고 있군...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 2:
 					{
-						CPrintToChatAll("{crimson}%s{default}: You are hopeless.", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 희망조차 없는 놈이군.", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: Death is{crimson} Inevitable", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: {crimson}넌 죽음을 피할 수 없다...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 4:
 					{
-						CPrintToChatAll("{crimson}%s{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next..", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 네 친구들은 이미{crimson} 우리와{default} 함께 한다... {crimson} 너만이 남았지...", NpcStats_ReturnNpcName(npc.index, true));
 					}
 				}
 			}
@@ -825,11 +825,11 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Willste NOCHMAL versuchen?  HMMMMM????", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 다시 해볼 생각이냐? 음?", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: GIBSTE SCHON AUF? TRAURIG.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 벌써 포기하겠다고? 쓰레기 같은 것들!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -839,11 +839,11 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Now then, to deal with the rest of the {crimson}planet", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 이제 {crimson}다른 미개한 놈들과{default} 맞설 차례군.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Breathing is optional, {crimson}but not for you", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 왠만해서는 살려두려고 했지만, {crimson}넌 예외다.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -853,19 +853,19 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}Annhilated{default}.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: {crimson}너희들은 전부 제거되었다{default}.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Hopeless scrap", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 이 가망 없는 쓰레기들!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Such lackluster {crimson}weapons{default}.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: {crimson}원시시대만도 못 한 것들!{default}.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Death is{crimson} Inevitable{default}.", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 기계가 다시 한 번 승리했다.", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -911,15 +911,15 @@ static void ClotThink(int iNPC)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{crimson}%s{default}: It is already {crimson}too late,{default} my army has arrived...", NpcStats_ReturnNpcName(npc.index, true));
+				CPrintToChatAll("{crimson}%s{default}: {crimson}너무 느리군.{default} 이제 나의 수하들이 집결했다...", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			case 2:
 			{
-				CPrintToChatAll("{crimson}%s{default}: My army has completely secured the area{crimson} surrender now{default} or perish", NpcStats_ReturnNpcName(npc.index, true));
+				CPrintToChatAll("{crimson}%s{default}: 선택해라, {crimson} 항복,{default} 아니면 죽음.", NpcStats_ReturnNpcName(npc.index, true));
 			}
 			case 3:
 			{
-				CPrintToChatAll("{crimson}%s{default}: You all will make {crimson}excellent{default} additions to my army...", NpcStats_ReturnNpcName(npc.index, true));
+				CPrintToChatAll("{crimson}%s{default}: 너희들은 내 수하로 만들면 {crimson}정말 완벽한{default} 존재들이 될 거야...", NpcStats_ReturnNpcName(npc.index, true));
 			}
 		}
 	}
@@ -1774,11 +1774,11 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: MISST!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 제기랄!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KRIEG DICH NOCH!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 널 반드시 죽여버리겠다!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}
@@ -1788,11 +1788,11 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 안 돼!!!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: error", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 오류 발생...", NpcStats_ReturnNpcName(npc.index, true));
 				}
 			}
 		}

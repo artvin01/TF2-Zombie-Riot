@@ -24,7 +24,7 @@
 	{
 		"en"	"You move in the skilltree with your movement keys.\nUpgrade skills by jumping.\nYou need to invest into enough skillpoints to unlock new paths.\nYou cannot move during this!"
 		"es"	"Te mueves en el arbol con tus teclas de movimiento.\nMejora tus habilidades saltando.\nNecesitas invertir suficientes puntos para desbloquear nuevos caminos.\nNo puedes moverte durante esto!"
-		"ko"	"스킬 트리 창에서, 당신의 이동 키로 커서를 움직일 수 있습니다.\n점프를 하면 해당 스킬에 포인트를 투자합니다.\n스킬 포인트를 일정 수치만큼 투자해야 열리는 길도 있습니다.\n스킬 트리 창이 열려있을때는 이동할 수 없습니다!"
+		"ko"	"스킬 트리 창에서, 당신의 이동 키로 커서를 움직일 수 있습니다.\n점프시 포인트를 투자합니다.\n스킬 포인트를 투자해야 열리는 길도 있습니다.\n이 열려있을때는 이동할 수 없습니다!"
 	}
 	"Browse Skill Tree"
 	{
@@ -36,7 +36,7 @@
 	{
 		"en"	"Reset Skill Tree"
 		"es"	"Reiniciar el Arbol"
-		"ko"	"스킬 트리 초기화"
+		"ko"	"스킬 초기화"
 	}
 	"Reset Skill Tree Confirm"
 	{
@@ -268,7 +268,7 @@
 	"Bob's Healing Hand Desc"
 	{
 		"en" 		"Gain 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
-		"ko" 		"최대 체력이 25 증가합니다.\n행운이 +0.05％ 만큼 증가하고 구조물의 내구도가 1％ 만큼 증가하며 부활 시간을 250분의 5만큼 감소시킵니다."
+		"ko" 		"최대 체력이 25 증가합니다.\n행운이 +0.05％ 만큼 증가하고 구조물의 체력이 1％ 만큼 증가하며 부활 시간을 250분의 5만큼 감소시킵니다."
 	}
 	"Blitzkrieg Buff"
 	{

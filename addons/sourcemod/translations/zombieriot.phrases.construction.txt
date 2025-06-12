@@ -219,7 +219,7 @@
 	"Ambulance Desc"
 	{
 		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
-		"ko"	"최대 8 명의 플레이어를 태울 수 있는 차량입니다. 다운된 플레이어를 태우고 부활시킬 수 있습니다. 패신저들을 전부 치유합니다. 이 효과들은 운전자의 메딕 업그레이드에 따라서 증가합니다."
+		"ko"	"최대 8 명의 플레이어를 태울 수 있는 차량입니다. 다운된 플레이어를 태우고 부활시킬 수 있습니다. 패신저들을 전부 치유합니다. 이 효과들은 운전자의 메딕 개선에 따라서 증가합니다."
 	}
 	"Bus"
 	{
@@ -329,7 +329,7 @@
 	"Base Level I Desc"
 	{
 		"en"	"Unlocks more upgrades and allows building constructs."
-		"ko"	"더 많은 업그레이드와 더 많은 구조물을 해금합니다."
+		"ko"	"더 많은 개선과 더 많은 구조물을 해금합니다."
 	}
 	"Base Level II"
 	{
@@ -339,7 +339,7 @@
 	"Base Level II Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
-		"ko"	"더 많은 업그레이드가 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
+		"ko"	"더 많은 개선이 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
 	}
 	"Base Level III"
 	{
@@ -349,7 +349,7 @@
 	"Base Level III Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
-		"ko"	"더 많은 업그레이드가 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
+		"ko"	"더 많은 개선이 해금되고 구조물 특성 및 구조물 최대 설치량이 증가합니다."
 	}
 	"Enchanced Water Pump"
 	{

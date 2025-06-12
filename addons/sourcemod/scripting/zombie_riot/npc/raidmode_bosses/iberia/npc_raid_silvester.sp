@@ -699,15 +699,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
+					CPrintToChatAll("{gold}실베스터{default}: 날 이기지 못 하면, {purple}공허{default}의 힘에 맞선다는건 생각도 하지마.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Not beating me means no beating the {purple}void{default}.");
+					CPrintToChatAll("{gold}실베스터{default}: 나조차도 못 이기면서 {purple}공허{default}엔 왜 가려는거야?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Use that adrenaline against me, come on!");
+					CPrintToChatAll("{gold}실베스터{default}: 그 아드레날린을 나한테 좀 써봐! 좀!");
 				}
 			}
 		}
@@ -723,15 +723,15 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Gotta go, youll win next time.");
+				CPrintToChatAll("{gold}실베스터{default}: Gotta go, youll win next time.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: Atleast you fought, and didnt run!");
+				CPrintToChatAll("{gold}실베스터{default}: Atleast you fought, and didnt run!");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{gold}Silvester{default}: I can try to go easier next time, but that wont help with training.");
+				CPrintToChatAll("{gold}실베스터{default}: I can try to go easier next time, but that wont help with training.");
 			}
 		}
 		return;

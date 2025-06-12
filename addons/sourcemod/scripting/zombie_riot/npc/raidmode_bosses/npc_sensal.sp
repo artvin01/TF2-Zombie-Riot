@@ -339,7 +339,7 @@ methodmap Sensal < CClotBody
 		if(tripple)
 		{
 			RemoveAllDamageAddition();
-			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+			CPrintToChatAll("{blue}센살{default}: 이제 마지막 도전이다. 우리 셋을 한꺼번에 이겨보아라. {gold}엑스피돈사{default}의 힘을 두려워하라!");
 			GiveOneRevive(true);
 		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -563,49 +563,49 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Stop the fight this instant.");
+				CPrintToChatAll("{blue}센살{default}: 당장 이 싸움을 멈춰라.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: What is happening here?");
+				CPrintToChatAll("{blue}센살{default}: 지금 도대체 무슨 일이 일어나고 있는거지?");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: They attacked us while invading Ziberia, what else is there to add?");
+				CPrintToChatAll("{blue}카스텔란{default}: 우리가 자이베리아를 공격하는 동안, 저들이 우릴 공격했습니다. 무슨 말이 더 필요한겁니까?");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Invading Ziberia? Right after {darkblue}Kahmlstein{default} Perished?");
+				CPrintToChatAll("{blue}센살{default}: 자이베리아를 공격하고 있다고? {darkblue}캄르스타인이{default} 죽은 뒤인데?");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: There are more important matters to attend to.\nZiberia is not like Him.");
+				CPrintToChatAll("{blue}센살{default}: 그것보다 더 중요한 처리 사항이 많을텐데.\n자이베리아는 그와 사상이 다르다.");
 			}
 			case 5:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: Youre meaning to say that he was the cause?");
+				CPrintToChatAll("{blue}카스텔란{default}: 그럼 그가 원인이었다고 말씀하고 싶으신 겁니까?");
 			}
 			case 6:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Correct. The country itself isnt at fault. Now leave, I also believe Victoria has to deal with chaos.");
+				CPrintToChatAll("{blue}센살{default}: 그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 나가라. 빅토리아도 혼돈에 대처해야한다.");
 			}
 			case 7:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: I remember you mentioning chaos before, if you say its in our city walls, then we will immedietly return and assess the situation.");
+				CPrintToChatAll("{blue}카스텔란{default}: 그러고보니 전에도 혼돈에 대한걸 말씀하셨죠. 만약 그것들이 우리의 성벽 안으로 진입하게 된다면, 즉시 돌아와서 상황 정리를 돕겠습니다.");
 			}
 			case 8:
 			{
-				CPrintToChatAll("{blue}Sensal{default}: Good.");
+				CPrintToChatAll("{blue}센살{default}: 좋다.");
 			}
 			case 9:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
+				CPrintToChatAll("{blue}카스텔란{default}: 이제 빅토리아로 돌아가겠습니다.");
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
-						CPrintToChat(client,"{default}As Castellan and his army leave, they drop something: {darkblue}''Avangard's Processing Core-B''{default}!");
+						CPrintToChat(client,"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {darkblue}''Avangard's Processing Core-B''{default}!");
 					}
 				}
 			}
@@ -629,15 +629,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: You are the last one.");
+					CPrintToChatAll("{blue}센살{default}: 네가 마지막이다.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}센살{default}: 너희 범죄자들 중 그 누구도 {gold}엑스피돈사{default} 앞에선 별 것도 아닌 존재지.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+					CPrintToChatAll("{blue}센살{default}: 네 친구들은 전부 사라졌다. {gold}엑스피돈사{default}에 복종하라.");
 				}
 			}
 		}
@@ -649,7 +649,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
+		CPrintToChatAll("{blue}센살{default}: 엑스피돈사와의 협력을 거부하겠다면... 너희는 전부 제거될 것이다.");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
@@ -663,7 +663,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
+		CPrintToChatAll("{blue}센살{default}: 너희를 체포한다. 엑스피돈사의 정예 부대가 너희를 포위하고 있다.");
 		for(int i; i<32; i++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -800,7 +800,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Waldch, what is the meaning of this?");
+			CPrintToChatAll("{blue}센살{default}: 도대체 실베스터와 월드치 얘기는 왜 계속하는거지? 그들이 너와 무슨 관계가 있다고?");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -857,9 +857,9 @@ static void Internal_NPCDeath(int entity)
 	if(i_RaidGrantExtra[npc.index] == 50)
 	{
 		if(XenoExtraLogic())
-			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
+			CPrintToChatAll("{blue}센살{default}: 이 구역은 제한 구역이다.");
 		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are coming with me.");
+			CPrintToChatAll("{blue}센살{default}: 너희 전부 나와 같이 가줘야겠다.");
 
 		return;
 	}
@@ -874,19 +874,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			CPrintToChatAll("{blue}센살{default}: 우리 {gold}엑스피돈사인{default}들에게 행한 네 행동은 절대 잊지 않겠다. 더 많은 지원과 함께 돌아오겠다.");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
+			CPrintToChatAll("{blue}센살{default}: 너희는 {gold}엑스피돈사{default}만의 법칙을 위반한 대가를 치를 때가 올 것이다.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
+			CPrintToChatAll("{blue}센살{default}: {gold}엑스피돈사{default}는 네 이해 수준을 크게 벗어난 곳이다.");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: You do not know what you are getting yourself into.");
+			CPrintToChatAll("{blue}센살{default}: 지금 네가 뭘 하고 있는지조차 모르는건가?");
 		}
 	}
 
@@ -1655,7 +1655,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}센살{default}: 갑작스럽게 공격해서 진심으로 사과드립니다. 저희는 정말로 몰랐습니다. 사과의 의미로 이것을 받아주십시오.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1664,29 +1664,29 @@ bool SensalTalkPostWin(Sensal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Battery Device");
-				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
+				CPrintToChat(client,"{default}센살이 당신에게 고에너지 배터리를 건네주었습니다: {darkblue}''Expidonsan Battery Device''{default}!");
 			}
 		}
 	}
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Nemesis.");
+		CPrintToChatAll("{blue}센살{default}: 하지만 이젠 압니다. 그 행동이 당신들을 보호하기 위해 한 행동이란걸. 여전히, 네메시스를 파괴할만한 힘은 있는것 같군요.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
+		CPrintToChatAll("{blue}센살{default}: 그를 구출하기 위해 파견되었었는데, 당신이 그를 공격하는 것을 봤었기 때문입니다.");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
+		CPrintToChatAll("{blue}센살{default}: 우리는 친한 친구였지만, 그가 도시를 떠난 뒤로 연락이 끊겼었고,");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of yours now aswell.");
+		CPrintToChatAll("{blue}센살{default}: 아... 그러니까 그들은 당신들의 친구였었군.");
 	}
 	return true; //He is trying to help.
 }

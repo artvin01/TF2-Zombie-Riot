@@ -374,7 +374,7 @@
 	{
 		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65％ of the damage.\nDeadringer gives 90％ resistance (resistsance can be silenced)."
 		"ru"		"Спаймейны из альтернативной временной линии.\nУ него есть звон смерти но может атаковать через него.\nСтреляет в вас и когда потеряет половину здоровья пули превращаются в ракеты.\nКаждый 3ий удар наносит дополнительный урон и оталкивает.\nКогда теряет половину здоровья он будет получать только 65% от урона.\nЗвон смерти даёт 90% сопротивлению урону (сопротивление к урону может быть заглушено)."
-		"ko" 		"다른 시간 대에서 찾아온 스파이 메인입니다.\n데드 링어를 보유하고 있으며 능숙하게 사용합니다.\n원거리에서 사격 공격을 하며, 체력이 절반 이하가 되면 탄환 대신 로켓이 발사됩니다.\n이 적의 매 3번째 근접 공격은 대상에게 추가 피해를 주고 멀리 넉백시킵니다.\n또한 체력이 절반 이하가 되면, 받는 모든 피해가 35％ 감소합니다.\n데드 링어 사용시, 받는 모든 피해가 90％ 감소합니다. (피해 저항은 침묵으로 저지할 수 있음)"
+		"ko" 		"다른 시간대에서 찾아온 스파이 메인입니다.\n데드 링어를 보유했습니다.\n총을 쏘며, 체력이 50％ 이하일시 탄환 대신 로켓이 발사됩니다.\n매 3번째 근접 공격이 대상에게 추가 피해를 주고 멀리 넉백시킵니다.\n또한 체력 50％ 이하일시 피해 저항력이 35％ 증가.\n데드 링어 사용시, 받는 모든 피해가 90％ 감소. (침묵으로 저지 가능)"
 	}
 		
 	//XENO
@@ -803,7 +803,7 @@
 	{
 		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport and dash during moonlight (can be silenced).\nDo not fight him in any expidonsan areas..."
 		"ru"		"Высшее существо ракет,способный на вывод экстримально большого урона,Так же у него есть его собственная персональная армия.У него в наличии есть несколько жизней,обычно ближний бой это смертный приговор\nтелепорт и рывок во время MOONLIGHT (можно заглушить).\nНе сражайтесь с ним в никаких зонах экспидонсы..."
-		"ko" 		"로켓 관련학의 최고위 존재로, 매우 높은 피해를 입힐 수 있으며, 자신만의 군대를 보유하고 있다고 합니다. 그는 여러 개의 목숨을 보유하고 있으며, 이 자를 상대로 근접 공격을 시도하는건 바보 같은 행동입니다.\n월광 상태일때는 텔레포트와 대쉬를 사용할 수 있게 됩니다. (침묵으로 효과 저지 가능).\n그리고, 절대로 엑스피돈사 지역에서 이 자와 싸우지 마십시오..."
+		"ko" 		"로켓 관련학의 최고위 존재로, 자신만의 군대를 보유하고 있습니다. 그는 목숨이 여러 개이며, 이 자에게 근접을 시도하는건 나쁜 선택입니다.\n월광 상태일때는 텔레포트와 대쉬를 사용할 수 있게 됩니다.(침묵으로 저지 가능).\n그리고, 절대로 엑스피돈사 지역에서 그와 싸우지 마십시오..."
 	}
 	"Hyper Blitzkrieg Desc"
 	{
@@ -930,7 +930,7 @@
 	{
 		"en"		"Afflicted by chaos to make his reasoning uncontrollable.\nHe hates you for killing expidonsans.\nDont let the fight take too long as he gets faster over time.\n(Silence) makes his melee not glide you around, it also makes his projectiles deal less chaos, also reduces resistances he gets when going below a health threshhold."
 		"ru"		"Страдающий Хаосом что делает его рассуждение безумными.\nОн ненавидит вас за убийство бойцов Экспидонсы.\nНе дайте битве затянутся так как он становится быстрее с каждой секундой.\n(Заглушение)позволяет его ближнему бою не заставлять вас скользить,Снаряды наносят меньше хаоса,так же уменьшает сопротивления когда он теряет половину здоровья."
-		"en"		"혼돈에 영향을 받은 그는 통제 불능 상태가 되고 말았습니다.\n그는 엑스피돈사인들을 죽인 당신을 혐오합니다.\n시간이 지날수록 그의 능력이 강화되므로 전투를 너무 오래 끌지 마십시오.\n(침묵 효과는) 그의 근접 공격을 약화시켜 당신을 날려버리지 않게 되며, 그의 투사체의 혼돈 원소 피해 부여량이 감소하고, 체력이 일정치 이하로 감소할 때 얻는 추가 피해 저항력을 감소시킵니다."
+		"en"		"혼돈에 영향을 받은 그는 통제 불능 상태가 됐습니다.\n그는 엑스피돈사인들을 죽인 당신을 혐오합니다.\n시간이 지날수록 그의 능력이 강화되므로 빠르게 전투를 끝내세요.\n(침묵 부여시) 근접 공격이 대상을 넉백시키지 않고, 투사체의 혼돈 원소 피해량 감소 및, 체력이 일정치 이하로 감소할 때 얻는 피해 저항력이 감소."
 	}
 	"L4D2 Tank Desc"
 	{
@@ -948,7 +948,7 @@
 	{
 		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots (can be silenced)."
 		"ru"		"Снайпер который надоет вам издалека\nТрус,он так же убегает\nстреляет заряженной атакой после нескольких выстрелов(можно заглушить)."
-		"ko"		"멀리서 당신을 괴롭히는 적입니다.\겁쟁이로서, 그에게 다가가면 그는 도주할 것입니다.\n일정 횟수 이상 발사하면, 차지 샷을 발사합니다. (침묵으로 효과 저지 가능)"
+		"ko"		"멀리서 당신을 괴롭히는 적입니다.\n겁쟁이로서, 그에게 다가가면 그는 도주할 것입니다.\n일정 횟수 이상 발사하면, 차지 샷을 발사합니다.\n(침묵으로 효과 저지 가능)"
 	}
 	"Soldier Barrager Desc"
 	{
@@ -1133,7 +1133,7 @@
 	{
 		"en"		"Upgraded Ridden Scout."
 		"ru"		"улучшенный разведчик наездник."
-		"ko"		"업그레이드된 정찰 기병입니다."
+		"ko"		"개선된 정찰 기병입니다."
 	}
 	"Hussar Desc"
 	{
@@ -1390,7 +1390,7 @@
 	{
 		"en"		"Fires multiple projectiles at targets with highest resistance.\nWill cause AOE attacks with more time alive.\n''A member of the Church of the Deep who snuck into disaster-ravaged Iberia.''\n''He changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.''\n''Then again, who could?''"
 		"ru"		"Выпускает несколько снарядов по целям с наибольшим сопротивлением.\nбудет вызывать AOE-атаки с большим количеством времени жизни.''Член Церкви Глубин, который пробрался в разрушенную стихийным бедствием Иберию''. ''Он изменил законы этой страны благодаря своим искренним убеждениям, в погоне за совершенной формой, но он был неспособен понять волю океана''. ''И снова, кто бы мог?''"
-		"ko"		"이 적은 피해 저항력이 가장 높은 대상을 최우선적으로 공격합니다.\n오래 생존해있다면, 일정 시간마다 광역 공격을 사용합니다.\n''참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.''\n''자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.''\n''그런 게 가능한 사람이 있기는 할까?''"
+		"ko"		"피해 저항력이 가장 높은 대상을 최우선으로 공격합니다.\n일정 시간마다 광역 공격을 사용합니다.\n''참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.''\n''자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.''\n''그런 게 가능한 사람이 있기는 할까?''"
 	}
 	"Armorless Union Knight Desc"
 	{
@@ -1528,7 +1528,7 @@
 	{
 		"en"		"Gains increased attack the more it attacks, decays over time when passive.\nGains camo while on Nethersea Brand.\n''An extremely aggressive individual born from the nethersea brand, capable of inflicting tremendous damage to its surrounding environment for its kin to transform.''\n''Lifeforms not considered kin fall under this category.''"
 		"ru"		"Увеличивает силу атаки, чем больше он атакует, и со временем ослабевает при пассивном использовании.\nПолучает камуфляж, находясь под брендом Nethersea.\n''Чрезвычайно агрессивный индивид, порожденный брендом nethersea, способный нанести огромный ущерб окружающей среде, чтобы его сородичи трансформировались.''\n''Формы жизни, которые не считаются сородичами, подпадают под эту категорию.''"
-		"ko"		"공격할 때마다, 공격 속도가 점점 더 증가합니다. 하지만 공격하지 않고 있는 상태라면 이 증가치가 점점 감소합니다.\n명흔 위에 있다면 은폐 상태가 됩니다.\n''명흔에서 태어난 아주 공격적인 개체. 주변 자연환경을 크게 훼손하고, 동족에 의해 개조된다.''\n''종족의 생명체는 아니지만, 이 범주에 속한다.''"
+		"ko"		"공격할 때마다, 공격 속도가 점점 더 증가합니다. 공격하지 않으면 공속이 점점 감소합니다.\n명흔 위에 있다면 은폐 상태가 됩니다.\n''명흔에서 태어난 아주 공격적인 개체. 주변 자연환경을 크게 훼손하고, 동족에 의해 개조된다.''\n''종족의 생명체는 아니지만, 이 범주에 속한다.''"
 	}
 	"Nourished Reefbreaker Desc"
 	{
@@ -1552,7 +1552,7 @@
 	{
 		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (Silence decreases battle cry buff on himself in half)."
 		"ru"		"Призывает свою армию,каждое возвращение даёт ему дополнительную способность.\nСначала уничтожьте его армию,Или он их возродит и призовёт ещё больше.\nМожет усились своих союзников после 30 волны(Если заткнуть его действия усиления на нём будет сокращено наполовину)."
-		"ko"		"그의 군대를 생성하고, 그가 다시 돌아올 때마다 추가적인 능력을 얻습니다.\n이 적보다는 이 적이 생성한 하수인들을 전부 처치하세요. 그렇지 않다면 이 적이 부활하고 더 많은 하수인을 생성합니다.\n30 웨이브 이후, 이 적은 자신과 주변의 아군에게 버프를 부여하는 능력을 얻습니다. (침묵시, 해당 버프의 효율이 절반으로 감소합니다)"
+		"ko"		"그의 군대를 생성하고, 다시 돌아올 때마다 추가적인 능력을 얻습니다.\n이 적이 생성한 하수인들을 먼저 처치하세요. 그렇지 않다면 이 적이 부활하고 더 많은 하수인을 생성합니다.\n30웨이브 이후, 자신과 주변의 아군에게 버프를 부여하는 능력 획득. (침묵시, 버프 효율이 절반으로 감소)"
 	}
 	"Seaborn Scout Desc"
 	{
@@ -1684,7 +1684,7 @@
 	{
 		"en"		"Attacks enemies and allies.\nDealing damage to The Last Knight applies freeze buff for one second (two when below 3/5 HP).\nDeals extra damage to frozen targets. Ignores buildings when below 1/5 HP.\n''The basis of a well-known folk tale in Kazimierz.''\n''The past died on the land, and neither the present nor the future have any meaning.''\n''Only the ocean, kill the ocean.''"
 		"ru"		"Атакует врагов и союзников.\nПри нанесении урона Последнему рыцарю эффект замораживания накладывается на одну секунду (две, если у него меньше 3/5 здоровья).\nНаносит дополнительный урон замороженным целям. Игнорирует здания, если его здоровье ниже 1/5 от максимального\n''Это основа известной казимежской народной сказки.''\n''Прошлое умерло на земле, и ни настоящее, ни будущее не имеют никакого значения.''\n ''Только океан, убей океан.''"
-		"ko"		"이 적은 적 뿐만 아니라 자신의 팀원들까지 공격합니다.\n이 적에게 피해를 주면, 1초간 지속되는 빙결 디버프를 받습니다.(이 적의 체력이 3/5 이하일시, 2초로 증가)\n빙결 디버프가 있는 대상에게 주는 피해가 증가하며, 체력이 1/5 이하라면 구조물과 충돌하지 않고 그냥 지나갑니다.\n''카시미어에서 회자되는 동화의 원형.''\n''그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.''\n''오직 바다만 남았고, 오직 바다만 죽인다.''"
+		"ko"		"적 뿐만 아니라 자기 팀까지 공격합니다.\n피해를 받으면, 공격자에게 1초간 지속되는 빙결을 부여합니다.(체력이 3/5 이하일시 2초)\n빙결이 부여된 대상에게 주는 피해가 증가 및 HP가 1/5 이하일시 구조물을 뚫고 지나감.\n''카시미어에서 회자되는 동화의 원형.''\n''그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.''\n''오직 바다만 남았고, 오직 바다만 죽인다.''"
 	}
 	"Tide-Hunt Knight Desc"
 	{
@@ -1696,7 +1696,7 @@
 	{
 		"en"		"Attacks enemies and allies.\nHits levitate the target and deals extra hit of True damage.\n''The last surviving Saint of Iberia, living well past mortal life expectancy.''\n''His longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.''"
 		"ru"		"Атакует врагов и союзников.\nУдары поднимают цель в воздух и наносят дополнительный чистый урон.\n''Последний выживший святой из Иберии, живущий намного дольше, чем положено смертным.''\n''За его долголетие пришлось заплатить высокую цену, но он помнит о своем долге и своих врагах, несмотря на то, что потерял рассудок.''"
-		"ko"		"이 적은 적 뿐만 아니라 자신의 팀원들까지 공격합니다.\n공격이 적중한 대상에게 공중 부양 디버프를 부여하며, 추가 타격은 트루 대미지를 줍니다.\n''이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.''\n''이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.''"
+		"ko"		"적 뿐만 아니라 자기 팀까지 공격합니다.\n적중시 대상에게 공중 부양 디버프를 부여하며, 그 대상에게 트루 대미지를 줍니다.\n''이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.''\n''이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.''"
 		
 	}
 	"Pathshaper Desc"
@@ -1751,7 +1751,7 @@
 	{
 		"en"		"Heals and buffs nearby seaborn, partially ignores Regrow Blocker.\nGains power over time, boosted by standing on Nethersea Brands.\nWhen at full power, will transform into a Leviathan.\nLeviathan will instead deal AOE damage that ignores resistances.\n''It speaks for we many.''"
 		"ru"		"Исцеляет и усиливает находящихся поблизости морерождённых, частично игнорирует блокиратор отрастания.Со временем обретает силу, усиливаемую, если стоять на Брендах Нижнего Моря.При полной мощности превращается в Левиафана.\nЛевиафан вместо этого будет наносить AOE-урон, игнорирующий сопротивление.\n''Это говорит о многих из нас.''"
-		"ko"		"주변의 시본 에게 버프를 부여하고 체력을 회복시켜줍니다.\n시간이 지날수록 점차 힘을 충전하며, 명흔 위에 있으면 충전 속도가 더 빨라집니다.\n힘이 최대치까지 충전되면, 변신 형태가 됩니다.\n변신 형태일때는 피해 저항력을 무시하는 광역 공격을 사용합니다.\n''더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.''"
+		"ko"		"주변의 시본 에게 버프를 부여하고 체력을 회복시켜줍니다.\n시간이 지날수록 점차 힘을 충전하며, 명흔 위에 있으면 충전 속도가 더 빨라집니다.\n힘이 전부 충전되면, 변신합니다.\n변신하면 피해 저항력을 무시하는 광역 공격을 사용합니다.\n''더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.''"
 	}
 	"Seaborn Guard Desc"
 	{
@@ -1931,7 +1931,7 @@
 	{
 		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
 		"ru"	"Лидер разведёчной группы и друг Силвьестера и Волдча,Он здесь из-за того что вы сделали.\nКаждый раз когда он возвращается он получает новые способности и становится сильнее.\nОн призывает Самонаводящиеся Косы ,призывает порталы которые призывают Косы,Стреляет лазерами во всех противников в радиусе.\nПолучает щиты такого же типа что и у ваус Волшебника  при использовании любой способности.\nСкольжение при удари(можно заглушить)"
-		"ko"	"정찰대의 대장이자 실베스터와 월드치의 친구입니다. 그는 당신이 저지른 행동 때문에 여기에 왔습니다.\n그가 돌아올 때마다, 그가 사용할 수 있는 능력이 새로 추가되고 더욱 강해집니다.\n그는 당신에게 날아가는 낫을 생성하고, 낫을 생성하는 포탈을 소환하며, 범위 내의 모든 적에게 레이저를 발사합니다.\n능력을 사용할 때마다, 바우스 마기카가 사용하는 보호막과 똑같은 보호막을 얻습니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태일시, 이 디버프를 부여하지 않음)"
+		"ko"	"정찰대의 대장이자 실베스터와 월드치의 친구.\n돌아올 때마다, 새로운 능력을 획득.\n적을 어느정도 추적하는 낫 생성 및 낫 생성 포탈을 만들고, 범위 내의 모든 적에게 레이저를 발사.\n능력 사용시, 바우스 마기카의 능력과 동일한 보호막 획득.\n적중시, 대상이 미끄러짐. (침묵 부여시 이 디버프 제거)"
 	}
 	"Dual Rea Desc"
 	{
@@ -2093,7 +2093,7 @@
 	{
 		"en"	"A stronger Helia"
 		"ru"	"Усиленный Хелия"
-		"KO"	"헬리아의 강화 버전."
+		"ko"	"헬리아의 강화 버전."
 	}
 	"Astriana Desc"
 	{
@@ -2291,7 +2291,7 @@
 	{
 		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
 		"ru"	"Когда получают урон,в зависимости от урона вылечат 3 союзинка в радиусе вокруг него.\nЕсли они получат достаточно оверхила,они получат бафф навсегда.\nИногда Даёт себе щиты при атаке,И даёт щиты союзинкам.\nНаносит огромный хаос урон."
-		"ko"	"피해를 받을 때마다, 주변의 아군 3명의 체력을 회복시킵니다. (과치료 가능)\n치료 대상이 충분한 과치료 수치를 지녔다면, 대상에게 영구적으로 지속되는 버프를 부여합니다.\n때때로 피격시 자신 또는 주변 아군에게 보호막을 부여합니다.\n공격 적중시, 대상에게 매우 높은 혼돈 원소 피해를 부여합니다."
+		"ko"	"피해를 받을 때마다, 주변의 아군 3명의 체력을 회복시킵니다. (과치료 가능)\n대상이 충분한 과치료 수치를 지녔다면, 대상에게 영구적으로 지속되는 버프를 부여합니다.\n때때로 피격시 자신 또는 주변 아군에게 보호막을 부여합니다.\n적중시, 대상에게 매우 높은 혼돈 원소 피해를 부여합니다."
 	}
 	"Frost Hunter Desc" 
 	{
@@ -2309,7 +2309,7 @@
 	{
 		"en"	"Each 3rd attack gives a small resistance buff upto 75％.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemeis."
 		"ru"	"Каждая 3-ая атака даёт маленькое сопротивление до 75％\nЧем меньше у него здоровья,тем больше урона он получает но он становится быстрее и наносит больше урона.\nПрыгает на тебя но если постерял слишком много здоровья,вместо этого ударит о землю который наносит урон всем противникам."
-		"ko"	"매 3번째 공격마다, 피해 저항력이 증가합니다. 이 효과로 피해 저항력을 최대 75％까지 증가시킬 수 있습니다.\n체력이 줄어들수록 더 많은 피해를 받지만, 그 대가로 공격력과 이동 속도도 증가합니다.\n공격 대상에게 순식간에 접근할 수 있는 돌진을 사용하며, 체력이 절반 이하라면 돌진 대신 슬램을 사용하여 주변의 모든 적에게 피해를 줍니다."
+		"ko"	"매 3번째 공격마다, 저항력이 증가합니다. 이 효과로 저항력을 최대 75％까지 증가시킬 수 있습니다.\n체력이 줄어들수록 더 많은 피해를 받지만, 공격력과 이동 속도도 증가합니다.\n대상에게 순식간에 접근할 수 있는 돌진을 사용하며, 체력이 절반 이하라면 돌진 대신 슬램으로 주변의 적들에게 피해를 줍니다."
 	}
 	"Ransacker Desc" 
 	{
@@ -2369,13 +2369,13 @@
 	{
 		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\nWave 15: Deals fire and bleed damage.\nWave 30: deals massive chaos damage.\nEach time he does his 4 ball attack he gains permanent power and resistance.\nEach time he shows his hand sign he will teleport.\n(Silence) Reduces chaos damage he deals."
 		"ru"	"Вынужденная правая рука Камлстейна,Он очень хочет его внимания.\nПомимо группы без правительства назвываемая Разрушение.\n15: волна:Наночит урон огнём и кроточением.\n30 Волна:Наночит ОЧЕНЬ МНОГО хаос урона.\nКаждый раз когда он выпускает 4 шара он получает силу и сопротивление навсегда.\nКаждый раз когда он показывает знак рукой он телепортируется.\n(заглушение)Уменьшает его хаос урон."
-		"ko"	"이 자는 캄르스타인에 의해 강제로 그의 오른팔 소속이 되었으며 그는 캄르스타인의 주목을 이끌고 싶어합니다.\n인테리투스라는 비정부 단체 소속원입니다.\n웨이브 15: 출혈과 화상을 부여합니다.\n웨이브 30: 혼돈 원소 피해를 부여합니다.\n추적형 구체 공격을 4회 사용할 때마다, 공격의 피해량과 피해 저항력이 조금씩 성장합니다.\n이 적이 손으로 특수한 핸드 사인을 보이면, 이 적이 곧 그 방향으로 순간이동합니다.\n(침묵 디버프를 부여하면) 이 적이 부여하는 혼돈 원소 피해량을 감소시킬 수 있습니다."
+		"ko"	"이 자는 캄르스타인에 의해 강제로 그의 오른팔 소속이 되었으며, 캄르스타인의 주목을 끌고 싶어한다.\n인테리투스 소속원.\n웨이브 15: 출혈과 화상을 부여.\n웨이브 30: 혼돈 원소 피해 부여.\n추적형 구체 공격을 4회 사용할 때마다, 공격력, 저항력 상승.\n손으로 특수한 핸드 사인을 낸 곳으로 순간이동.\n(침묵 부여시,)혼돈 원소 피해량이 감소함."
 	}
 	"The Purge Desc"
 	{
 		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong.\n(Silence)Decreases his healing abit"
 		"ru"	"Машина что бы помочь силам группы разрушения.\nИмеет большой арсенал оружия.\nЛечится когда здоровье достаточно падает и получает больше силы каждый раз когда в руках нет оружия.\nБыстро Завершите бой перед тем как он станет слишком сильный.\n(Заглушение)Уменьшает его лечение"
-		"ko"	"인테리투스 연합을 돕기 위해 만들어진 기계.\n다양한 무기를 보유하고 있습니다.\n체력이 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 공격의 피해량이 매우 높아집니다.\n이 적의 성장치가 최대까지 도달하기 전에 최대한 빠르게 전투를 끝내야합니다.\n(침묵 디버프를 부여하면) 체력 회복량을 감소시킬 수 있습니다."
+		"ko"	"인테리투스 연합을 돕기 위해 만들어진 기계.\n다양한 무기를 보유하고 있습니다.\n체력이 낮아지면 회복 능력을 사용하고, 주먹을 장착할 때마다 공격의 피해량이 매우 높아집니다.\n이 적의 성장치가 최대까지 도달하기 전에 최대한 빠르게 전투를 끝내야합니다.\n(침묵 부여시,) 체력 회복량이 감소."
 	} 
 	"Rouge Expidonsan Doctor Desc"
 	{
@@ -2387,7 +2387,7 @@
 	{
 		"en"	"An elite Combine knight who was sent to battlement to deal with Chaos. \nHe fought for day and night, but he couldn't beat endless waves of chaos affliceted army. \n He now became one of the troops who spread chaos. \n He gains more speed, strength, and resistance when below half health, He slows down attackspeed when near his aura, stays on death."
 		"ru"	"Элитный рыцарь комбайн которого отправили сражатся с хаосом.\nОн сражался день и ночь,он он не смог победить бесконечную армию охваченных хаосом.\nОн стал одним из тех кто разносит хаос.\nОн получает бонус к скорости,силе и сопротивлению когда здоровье ниже половины,Он уменьшает скорость атаки в радиусе его ауры которая остаётся после смерти."
-		"ko"	"혼돈에 대처하기 위해 전장에 파견되었던 정예 콤바인 기사입니다. \n그는 낮과 밤을 가리지 않고 싸워나갔지만, 끝없는 혼돈 연합의 군대를 상대로 승리할 수는 없었습니다. \n 이제 그는 혼돈의 일원이 되어 혼돈을 흩뿌리고 다닙니다... \n 체력이 절반 이하가 되면 이동 속도와 공격력이 증가하고 피해 저항력이 증가하지만, 자기 자신의 오라 근처에 있다면 공격 속도가 느려지며 이는 죽을 때까지 지속됩니다."
+		"ko"	"혼돈 격리를 위해 전장에 파견되었던 정예 콤바인 기사. \n하지만 밤낮을 가리지 않고 싸워도, 끝없는 혼돈의 군대를 상대로는 역부족이었다. \n 그는 이제 혼돈의 일원이 되어 혼돈을 흩뿌린다... \n 체력 절반 이하일시 이동 속도, 공격력, 저항력이 증가. 대신 자기 자신의 오라 근처에 있다면 공격 속도가 감소하며 이는 죽을 때까지 지속."
 	}
 	"Xeno Acclaimed Swordsman Desc"
 	{
@@ -2441,7 +2441,7 @@
 	{
 		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower and lowers the ''corrosion'' index by 1)"
 		"ru"		"Настоящие имя ''Доннеркрига''\nЕё заклинания намного сильнее и ''чище'' по сравнению с её поробащённой формой\nВместе с этим она владеет наиболее современную Руиновскую моду и защитное снаряжение\nТолько смотри, чтобы она не теребила тебя за уши...\n(Заглушение:Делает скорость и скорость поворота 10％ медленее и снижает индекс ''корозии'' на 1)"
-		"en"		"''도너크리그''의 진명입니다.\n그녀의 주문 상태는 블리츠크리그의 노예 시절보다 훨씬 정제되고 안정적으로 변했습니다.\n한편으로, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n그녀가 당신의 귀를 잡아당기지 않도록 주의하세요...\n(침묵 디버프를 부여하면, 수정구의 비행 속도와 회전 속도가 10％ 감소하고 ''부식'' 수치를 1로 감소시킵니다.)"
+		"en"		"''도너크리그''의 진명입니다.\n주문 상태가 블리츠크리그의 노예 시절보다 훨씬 정제되고 안정적이게 되었습니다.\n한편, 그녀는 루이나인들의 최신 패션과 보호 장비를 착용하고 있습니다.\n(침묵 상태일시, 수정구의 비행 속도와 회전 속도가 10％ 감소 및 ''부식'' 수치가 1로 감소됨.)"
 	}
 	"Karlas Desc"
 	{

@@ -348,7 +348,7 @@ methodmap Huscarls < CClotBody
 			npc.m_flHuscarlsGroundSlamCoolDown = gametime + 99.0;
 			npc.m_flHuscarlsDeployEnergyShieldDuration = 0.0;
 
-			CPrintToChatAll("{lightblue}Huscarls{default}: You are now facing Victoria's Elite forces.");
+			CPrintToChatAll("{lightblue}허스칼{default}: 이제 우리 빅토리아 정예 부대와 맞설 시간이다.");
 		}
 		else
 		{
@@ -426,7 +426,7 @@ methodmap Huscarls < CClotBody
 			
 			npc.m_iChanged_WalkCycle = -1;
 
-			CPrintToChatAll("{lightblue}Huscarls{default}: You will not Pass ''Iron Gate''!");
+			CPrintToChatAll("{lightblue}허스칼{default}: 이 ''강철 게이트를''를 지나갈 생각 마라! ");
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -623,9 +623,9 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0, 2))
 			{
-				case 0:CPrintToChatAll("{lightblue}Huscarls{default}: This is your grave.");
-				case 1:CPrintToChatAll("{lightblue}Huscarls{default}: It's really Easy");
-				case 2:CPrintToChatAll("{lightblue}Huscarls{default}: You'll never see {gold}Victoria{default} again.");
+				case 0:CPrintToChatAll("{lightblue}허스칼{default}: 이 곳이 네 무덤이 될 것이다.");
+				case 1:CPrintToChatAll("{lightblue}허스칼{default}: 너무 쉽군.");
+				case 2:CPrintToChatAll("{lightblue}허스칼{default}: 넌 {gold}빅토리아{default}에 발조차 들이지 못 할 것이다.");
 			}
 		}
 	}
@@ -638,7 +638,7 @@ static void Internal_ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		BlockLoseSay = true;
 		
-		CPrintToChatAll("{lightblue}Huscarls{default}: Mission Accomplished, we will figure out who is behind them");
+		CPrintToChatAll("{lightblue}허스칼{default}: 임무 완료. 이제 저 놈들 뒤에 누가 있는지 확인해보자고.");
 		return;
 	}
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index])
@@ -655,9 +655,9 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(0, 1))
 		{
-			case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Ok. Enough. {crimson}Time to Finish.{default}");
-			case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {blue}Atomizer{default}? I'm done dealing with the intruder you missed. You have to pay for the beer instead.");
-			//case 2:CPrintToChatAll("{lightblue}Huscarls{default}: {blue}Harrison{default}? The situation is over. Let's go back.");
+			case 0:CPrintToChatAll("{lightblue}허스칼{default}: 좋아. 지겹군. {crimson}끝낼 시간이다.{default}");
+			case 1:CPrintToChatAll("{lightblue}허스칼{default}: {blue}인수분해{default}, 네가 놓친 침입자 처리는 이제 끝났다. 자네가 맥주 한 잔 사줘.");
+			//case 2:CPrintToChatAll("{lightblue}허스칼{default}: {blue}해리슨{default}, 상황은 종료됐다. 이제 돌아가자.");
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<8; i++)
@@ -739,7 +739,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Huscarls{default}: Time for Plan B, {gold}Mechanist{default}. teleport the Robots right now!");
+				CPrintToChatAll("{lightblue}허스칼{default}: 플랜 B, {gold}메카니스트{default}. 로봇들을 이 곳으로 전부 불러와라!");
 				npc.AddActivityViaSequence("tauntrussian_rubdown");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.5);
@@ -876,8 +876,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.PlayAngerSound();
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Damn Tin cans, knew they'd break apart so easily.");
-						case 1:CPrintToChatAll("{lightblue}Huscarls{default}: I should have noticed their performance issues beforehand...");
+						case 0:CPrintToChatAll("{lightblue}허스칼{default}: 망할 깡통들 같으니. 저렇게나 쉽게 무너져내린단 말인가.");
+						case 1:CPrintToChatAll("{lightblue}허스칼{default}: 성능 문제를 미리 알아차렸어야 했는데...");
 					}
 					npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
 					npc.m_flAttackHappens = 0.0;
@@ -1197,9 +1197,9 @@ static void Internal_NPCDeath(int entity)
 		return;
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{lightblue}Huscarls{default}: Retreat! This is a tactical retreat by the way.");
-		case 1:CPrintToChatAll("{lightblue}Huscarls{default}: {gold}Victoria{default} is in trouble.");
-		case 2:CPrintToChatAll("{lightblue}Huscarls{default}: Next time I'll {crimson}crush you{default}");
+		case 0:CPrintToChatAll("{lightblue}허스칼{default}: 후퇴! 이건 전략적 후퇴다!.");
+		case 1:CPrintToChatAll("{lightblue}허스칼{default}: {gold}빅토리아{default}에 문제가 발생했다.");
+		case 2:CPrintToChatAll("{lightblue}허스칼{default}: 다음엔 네 놈을 꼭 {crimson}박살내주마{default}");
 	}
 	npc.PlayDeathSound();	
 }
@@ -1274,7 +1274,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}Huscarls{default}: Hit me. I DARE YOU.");
+				CPrintToChatAll("{lightblue}허스칼{default}: 쳐 보라고. 어디 해봐.");
 				NPC_StopPathing(npc.index);
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
@@ -1319,7 +1319,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			{
 				if(npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 				{
-					CPrintToChatAll("{lightblue}Huscarls{default}: Come closer, I will give you this back.");
+					CPrintToChatAll("{lightblue}허스칼{default}: 더 가까이 와봐라. 받은 만큼 돌려줘야하니까.");
 					int maxhealth = ReturnEntityMaxHealth(npc.index);
 					float MAXCharger = (DynamicCharger[npc.index]/(float(maxhealth)*0.05))*0.05;
 					if(MAXCharger > 0.05)MAXCharger = 0.05;

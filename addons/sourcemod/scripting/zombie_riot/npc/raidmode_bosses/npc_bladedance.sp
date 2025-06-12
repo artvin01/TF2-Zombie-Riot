@@ -433,14 +433,14 @@ public void RaidbossBladedance_NPCDeath(int entity)
 	
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		CPrintToChatAll("{crimson}Bladedance{default}: You and Bob the first.. you both missunderstand who the enemy is.. its {white}Whiteflower{default} you fools! He betrayed {crimson}Guln{default} aswell!");
-		CPrintToChatAll("{crimson}Bladedance{default} escapes from you... and gains the ability to copy {crimson}you.");
+		CPrintToChatAll("{crimson}칼춤{default}: 너. 그리고 밥 1세... 너희 둘은 진정한 적이 누군지 모르고 있다... {white}배풍등{default}이라고, 멍청이들아! 그가 {crimson}귄{default}마저도 배신했단 말이다!");
+		CPrintToChatAll("{crimson}칼춤{default} 그 놈은 너의 손아귀에서 빠져나와... {crimson}너{default}를 카피하는 방법을 얻었지.");
 		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Bob's true fear");
-				CPrintToChat(client,"{default}This battle wasnt something that should have happend. You had little to no chance... This is... {red}''Bob's True fear.''{default}!");
+				CPrintToChat(client,"{default}이 싸움은 일어나서는 안 될 일이었습니다. 당신에게는 거의, 아니 전혀 기회가 없었습니다. 이것이... {red}''밥의 진정한 공포입니다.''{default}!");
 			}
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
