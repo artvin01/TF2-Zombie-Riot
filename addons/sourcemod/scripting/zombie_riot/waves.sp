@@ -252,7 +252,7 @@ float MinibossScalingReturn()
 }
 public Action NpcEnemyAliveLimit(int client, int args)
 {
-	PrintToConsoleAll("EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
+	ReplyToCommand(client, "EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
 	return Plugin_Handled;
 }
 
