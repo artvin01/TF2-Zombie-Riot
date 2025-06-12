@@ -158,7 +158,7 @@ static float BloonSpeedMulti()
 
 float Bloon_BaseHealth()
 {
-	float health = 152.0;
+	float health = 200.0;
 
 	// Nerf late-game health
 	if(CurrentCash > 50000)
@@ -167,7 +167,7 @@ float Bloon_BaseHealth()
 	}
 	else if(CurrentCash > 0)
 	{
-		health *= 1.0 - (float(CurrentCash) / 100000.0);
+		health *= 1.0 - (float(CurrentCash) / 133333.333333);
 	}
 
 	return health;
@@ -578,7 +578,7 @@ public void Bloon_ClotThink(int iNPC)
 	if(camo && HasSpecificBuff(npc.index, "Revealed"))
 		camo = false;
 
-	if(!silenced && !HasSpecificBuff(npc.index, "Growth Blocker"))
+	if(!silenced && npc.m_bRegrow && !HasSpecificBuff(npc.index, "Growth Blocker"))
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
