@@ -3571,29 +3571,29 @@
 	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
-		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
-		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-30s工作台"
+		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -20s Tinker Cooldown."
+		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -20s temps de rechargement de l'enclume."
+		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-20s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{

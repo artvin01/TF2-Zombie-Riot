@@ -232,7 +232,7 @@ public void Simon_ClotThink(int iNPC)
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(!npc.m_bRetreating && npc.m_bHasKilled && health < (maxhealth / 2))
 		{
-			if(ZR_Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
+			if(Waves_GetRoundScale() != (npc.m_bLostHalfHealth ? 39 : 34))
 				npc.m_bRetreating = true;
 		}
 		

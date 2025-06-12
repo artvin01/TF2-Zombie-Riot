@@ -463,8 +463,8 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 						if(IsValidEnemy(npc.index, target))
 						{
 							float damageDealt = 20.0;
-							if(ZR_Waves_GetRound()+1 > 12)
-								damageDealt *= float(ZR_Waves_GetRound()+1)*0.1;
+							if(Waves_GetRoundScale()+1 > 8)
+								damageDealt *= float(Waves_GetRoundScale()+1)*0.133333;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 

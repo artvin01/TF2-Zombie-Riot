@@ -56,7 +56,7 @@ void SteamWorks_UpdateGameTitle()
 		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
 		{
 			FormatEx(buffer, sizeof(buffer), "ZR: %s", WhatDifficultySetting_Internal);
-		//	FormatEx(buffer, sizeof(buffer), "ZR: %s (Wave %d/%d)", WhatDifficultySetting_Internal, ZR_Waves_GetRound() + 1, Waves_GetMaxRound());
+		//	FormatEx(buffer, sizeof(buffer), "ZR: %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRoundScale() + 1, Waves_GetMaxRound());
 		}
 		else
 		{

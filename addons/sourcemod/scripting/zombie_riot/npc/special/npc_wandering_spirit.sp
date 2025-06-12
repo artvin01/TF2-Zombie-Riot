@@ -74,8 +74,8 @@ methodmap WanderingSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		

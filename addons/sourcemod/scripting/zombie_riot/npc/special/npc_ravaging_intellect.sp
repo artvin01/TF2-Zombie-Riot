@@ -230,8 +230,8 @@ methodmap RavagingIntellect < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 

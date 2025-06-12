@@ -439,17 +439,17 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(ZR_Waves_GetRound()+1);
-				value = float(ZR_Waves_GetRound()+1);
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
+				value = float(Waves_GetRoundScale()+1);
 			}
 
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 			
 			float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -464,11 +464,11 @@ methodmap ChaosKahmlstein < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(value > 40 && value < 55)
+			if(value > 25 && value < 35)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(value > 55)
+			else if(value > 35)
 			{
 				RaidModeScaling *= 0.7;
 			}

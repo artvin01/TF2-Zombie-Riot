@@ -42,18 +42,19 @@ static char[] GetBuildingHealth()
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
+	float wave = float(Waves_GetRoundScale()+1) / 0.75;
 	
-	if(ZR_Waves_GetRound()+1 < 30)
+	if(wave < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.20));
 	}
-	else if(ZR_Waves_GetRound()+1 < 45)
+	else if(wave < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;

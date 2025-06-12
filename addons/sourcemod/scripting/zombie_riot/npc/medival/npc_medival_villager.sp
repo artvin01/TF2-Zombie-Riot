@@ -189,9 +189,9 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 	
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();

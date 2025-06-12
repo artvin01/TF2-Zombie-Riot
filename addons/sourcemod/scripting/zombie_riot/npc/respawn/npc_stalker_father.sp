@@ -88,7 +88,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup()/* && ZR_Waves_GetRound() > 29*/)
+	if(!Waves_InSetup()/* && Waves_GetRoundScale() > 19*/)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -337,7 +337,7 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 
 	damage *= 15.0 / float(PlayersInGame);
 
-	if(!Waves_InSetup() && ZR_Waves_GetRound() > 29)
+	if(!Waves_InSetup() && Waves_GetRoundScale() > 19)
 		return Plugin_Changed;
 	
 	damage = 0.0;

@@ -106,19 +106,19 @@ methodmap SeabornDefender < CClotBody
 		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		
-		switch(ZR_Waves_GetRound() % 3)
+		switch(Waves_GetRoundScale() % 3)
 		{
 			case 0:
 			{
-				SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
+				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 0, 255);
 			}
 			case 1:
 			{
-				SetEntityRenderColor(npc.m_iWearable1, 255, 0, 255, 255);
+				SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
 			}
 			case 2:
 			{
-				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 0, 255);
+				SetEntityRenderColor(npc.m_iWearable1, 255, 0, 255, 255);
 			}
 		}
 
@@ -261,9 +261,20 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 
-		switch(ZR_Waves_GetRound() % 3)
+		switch(Waves_GetRoundScale() % 3)
 		{
 			case 0:
+			{
+				if(!pierce)
+				{
+					damage *= 0.1;
+					
+					damagePosition[2] += 30.0;
+					npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+					damagePosition[2] -= 30.0;
+				}
+			}
+			case 1:
 			{
 				if(hot)
 				{
@@ -274,7 +285,7 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					damagePosition[2] -= 30.0;
 				}
 			}
-			case 1:
+			case 2:
 			{
 				if(magic)
 				{
@@ -282,17 +293,6 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 					damagePosition[2] += 30.0;
 					npc.DispatchParticleEffect(npc.index, "medic_resist_match_fire_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
-					damagePosition[2] -= 30.0;
-				}
-			}
-			case 2:
-			{
-				if(!pierce)
-				{
-					damage *= 0.1;
-					
-					damagePosition[2] += 30.0;
-					npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
 					damagePosition[2] -= 30.0;
 				}
 			}

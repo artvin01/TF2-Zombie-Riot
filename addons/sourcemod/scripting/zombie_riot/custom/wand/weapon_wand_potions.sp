@@ -562,10 +562,18 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
 	{
-		if(view_as<Bloon>(enemy).m_bFortified)
+		if(view_as<Bloon>(enemy).m_bFortified && (view_as<Bloon>(enemy).m_iType == Bloon_Ceramic || view_as<Bloon>(enemy).m_iType == Bloon_Lead))
 		{
 			view_as<Bloon>(enemy).m_bFortified = false;
-			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", Bloon_Health(view_as<Bloon>(enemy).m_flHealthDifference,false, view_as<Bloon>(enemy).m_iOriginalType));
+			float ratio = Bloon_HPRatio(false, view_as<Bloon>(enemy).m_iOriginalType) / Bloon_HPRatio(true, view_as<Bloon>(enemy).m_iOriginalType);
+
+			int maxhealth = GetEntProp(enemy, Prop_Data, "m_iMaxHealth");
+			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", RoundFloat(maxhealth * ratio));
+
+			int health = GetEntProp(enemy, Prop_Data, "m_iHealth");
+			
+			int bonus = health - RoundFloat(health * ratio);
+			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_TRUEDAMAGE, weapon);
 		}
 	}
 	else

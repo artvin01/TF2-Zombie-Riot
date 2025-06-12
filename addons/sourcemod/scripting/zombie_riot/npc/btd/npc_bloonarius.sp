@@ -54,7 +54,7 @@ static int SpawnMulti(int count, int players, bool elite)
 
 static float MoabSpeed(bool elite)
 {
-	if(CurrentRound < (elite ? 59 : 29))
+	if(CurrentRound < (elite ? 39 : 29))
 		return elite ? 31.25 : 62.5;
 	
 	return elite ? 37.5 : 75.0;
@@ -68,9 +68,9 @@ static int CurrentTier(bool elite)
 	{
 		round = (CurrentRound - 38) / 20;
 	}
-	else	// 14,29,44,59
+	else	// 9,19,29,39
 	{
-		round = (CurrentRound - 13) / 15;
+		round = (CurrentRound - 8) / 10;
 	}
 
 	if(round > 3)
@@ -117,15 +117,15 @@ static void SetBossBloonPower(int players, bool elite)
 	}
 	else
 	{
-		if(CurrentRound > 58)
+		if(CurrentRound > 38)
 		{
 			RaidModeScaling = 80.0 / 3.0;
 		}
-		else if(CurrentRound > 43)
+		else if(CurrentRound > 28)
 		{
 			RaidModeScaling = 20.0 / 3.0;
 		}
-		else if(CurrentRound > 28)
+		else if(CurrentRound > 18)
 		{
 			RaidModeScaling = 1.0;
 		}
@@ -277,7 +277,7 @@ methodmap Bloonarius < CClotBody
 		music.Time = 198;
 		music.Volume = 2.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Primal One : Bloons Tower Defense 6");
+		strcopy(music.Name, sizeof(music.Name), "Primal One");
 		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
 		Music_SetRaidMusic(music);
 		

@@ -161,7 +161,7 @@ methodmap GiantRegeneration < CClotBody
 		}
 		else
 		{	
-			npc.i_WaveType = (ZR_Waves_GetRound()+1);
+			npc.i_WaveType = (Waves_GetRoundScale()+1);
 		}
 		//IDLE
 		npc.m_iState = 0;
@@ -200,7 +200,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 	//Is this even needed, this is only applies if they are close
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.1) && distance < 7500.0)
 	{
-		if(npc.i_WaveType < 30 && npc.i_WaveType >= 15)
+		if(npc.i_WaveType < 20 && npc.i_WaveType >= 10)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -209,7 +209,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.80;
 			npc.f_Cooldown = gameTime + 10.0;//Does not get applied.
 		}
-		else if(npc.i_WaveType < 45 && npc.i_WaveType >= 30)
+		else if(npc.i_WaveType < 30 && npc.i_WaveType >= 20)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -220,7 +220,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.65;
 			npc.f_Cooldown = gameTime + 10.0;
 		}
-		else if(npc.i_WaveType < 60 && npc.i_WaveType >= 45)
+		else if(npc.i_WaveType < 40 && npc.i_WaveType >= 30)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -233,7 +233,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.50;
 			npc.f_Cooldown = gameTime + 10.0;
 		}
-		else if(npc.i_WaveType >= 59)
+		else if(npc.i_WaveType >= 39)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);

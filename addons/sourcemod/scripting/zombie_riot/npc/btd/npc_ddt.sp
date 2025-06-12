@@ -57,7 +57,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value) + (Bloon_Health(1.0, fortified, Bloon_Ceramic) * 3);	// 104x3 RGB
+	return RoundFloat((value + (Bloon_HPRatio(fortified, Bloon_Ceramic) * 3.0) * Bloon_BaseHealth()));	// 104x3 RGB
 }
 
 void DDT_MapStart()
@@ -213,7 +213,7 @@ public void DDT_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	bool camo = !NpcStats_IsEnemySilenced(npc.index);
-	if(HasSpecificBuff(npc.index, "Revealed"))
+	if(camo && HasSpecificBuff(npc.index, "Revealed"))
 		camo = false;
 
 	if(npc.m_bCamo)
@@ -317,7 +317,7 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else if((damagetype & DMG_BLAST))
 	{
-		damage *= 0.15;
+		damage *= 0.15 / MultiGlobalHealthBoss;
 
 		damagePosition[2] += 50.0;
 		npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
@@ -325,7 +325,7 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else
 	{
-		damage *= 0.15;
+		damage *= 0.15 / MultiGlobalHealthBoss;
 		npc.PlayLeadSound();
 
 		damagePosition[2] += 50.0;
