@@ -166,7 +166,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 330.0;
 
-		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
+		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
 		wave *= 0.133333;
 

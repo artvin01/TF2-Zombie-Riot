@@ -72,17 +72,17 @@ char[] MinibossHealthScaling(float healthDo = 110.0, bool ingoreplayers = false)
 	
 	healthDo *= MinibossScalingReturn();
 	
-	if(ZR_Waves_GetRound()+1 < RoundToNearest(20.0 * (1.0 / MinibossScalingReturn())))
+	if(Waves_GetRoundScale()+1 < RoundToNearest(20.0 * (1.0 / MinibossScalingReturn())))
 	{
-		healthDo = Pow(((healthDo + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25);
+		healthDo = Pow(((healthDo + float(Waves_GetRoundScale()+1)) * float(Waves_GetRoundScale()+1)),1.25);
 	}
-	else if(ZR_Waves_GetRound()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
+	else if(Waves_GetRoundScale()+1 < RoundToNearest(30.0 * (1.0 / MinibossScalingReturn())))
 	{
-		healthDo = Pow(((healthDo + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35);
+		healthDo = Pow(((healthDo + float(Waves_GetRoundScale()+1)) * float(Waves_GetRoundScale()+1)),1.35);
 	}
 	else
 	{
-		healthDo = Pow(((healthDo + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.40);
+		healthDo = Pow(((healthDo + float(Waves_GetRoundScale()+1)) * float(Waves_GetRoundScale()+1)),1.40);
 	}
 	
 	healthDo /= 3.0;
@@ -185,7 +185,7 @@ methodmap ThirtySixFifty < CClotBody
 			Variables
 		*/
 
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();

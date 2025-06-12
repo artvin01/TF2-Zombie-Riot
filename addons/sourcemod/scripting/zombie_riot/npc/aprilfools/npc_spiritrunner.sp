@@ -67,7 +67,7 @@ static char[] GetSpiritRunnerHealth()
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
-	float wave = float(ZR_Waves_GetRound()+1) / 0.75;
+	float wave = float(Waves_GetRoundScale()+1) / 0.75;
 	
 	if(wave < 30)
 	{

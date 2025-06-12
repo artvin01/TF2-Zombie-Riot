@@ -161,7 +161,7 @@ methodmap GiantRegeneration < CClotBody
 		}
 		else
 		{	
-			npc.i_WaveType = (ZR_Waves_GetRound()+1);
+			npc.i_WaveType = (Waves_GetRoundScale()+1);
 		}
 		//IDLE
 		npc.m_iState = 0;

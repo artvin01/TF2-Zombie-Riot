@@ -100,7 +100,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
+		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
 		wave *= 0.133333;
 

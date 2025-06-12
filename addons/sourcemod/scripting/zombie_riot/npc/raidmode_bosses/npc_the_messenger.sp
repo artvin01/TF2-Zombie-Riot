@@ -327,8 +327,8 @@ methodmap TheMessenger < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
-			value = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
+			value = float(Waves_GetRoundScale()+1);
 		}
 
 		if(RaidModeScaling < 35)

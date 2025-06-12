@@ -170,7 +170,7 @@ methodmap KevinMery < CClotBody
 			}
 		}
 		
-		RaidModeScaling = float(ZR_Waves_GetRound()+1);
+		RaidModeScaling = float(Waves_GetRoundScale()+1);
 		if(RaidModeScaling < 35)
 		{
 			RaidModeScaling *= 0.25; //abit low, inreacing

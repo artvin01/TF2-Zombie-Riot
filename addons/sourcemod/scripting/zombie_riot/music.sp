@@ -1307,7 +1307,7 @@ public float InterMusic_ByDifficulty(int client)
 	if(LastMann)
 		return 1.0;
 	
-	float volume = ZR_Waves_GetRound() / 50.0;
+	float volume = Waves_GetRoundScale() / 50.0;
 	return fClamp(volume, 0.0, 1.0);
 }
 

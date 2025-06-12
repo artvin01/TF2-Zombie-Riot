@@ -105,7 +105,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 
 		if(GetTeam(victim) == TFTeam_Red)
 		{
-			int scale = ZR_Waves_GetRound();
+			int scale = Waves_GetRoundScale();
 			if(scale < 1)
 			{
 				damage *= 0.50;
@@ -396,7 +396,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 
-		int scale = ZR_Waves_GetRound();
+		int scale = Waves_GetRoundScale();
 		if(scale < 1)
 		{
 			damage *= 1.6667;

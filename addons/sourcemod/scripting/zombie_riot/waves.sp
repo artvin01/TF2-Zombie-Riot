@@ -2789,7 +2789,7 @@ bool Waves_Started()
 	return (CurrentRound || CurrentWave != -1);
 }
 
-int ZR_Waves_GetRound()
+int Waves_GetRoundScale()
 {
 	if(Construction_Mode())
 		return Construction_GetRound();

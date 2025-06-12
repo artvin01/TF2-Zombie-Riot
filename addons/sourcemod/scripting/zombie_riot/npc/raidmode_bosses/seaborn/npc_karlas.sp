@@ -643,7 +643,7 @@ static void Win_Line(int entity)
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
-		wave = ZR_Waves_GetRound()+1;
+		wave = Waves_GetRoundScale()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);

@@ -218,7 +218,7 @@ methodmap MedivalBuilding < CClotBody
 		}
 		i_NpcIsABuilding[npc.index] = true;
 
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
 		wave *= 0.133333;
 	

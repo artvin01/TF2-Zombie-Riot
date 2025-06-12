@@ -1705,7 +1705,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					item.BuyWave[client] = ZR_Waves_GetRound();
+					item.BuyWave[client] = Waves_GetRoundScale();
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
@@ -3221,7 +3221,7 @@ static void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					Repeat_Filler ++;
 					
-					bool fullSell = (item.BuyWave[client] == ZR_Waves_GetRound());
+					bool fullSell = (item.BuyWave[client] == Waves_GetRoundScale());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 					if(item.GregOnlySell == 2)
 					{
@@ -4415,7 +4415,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = 0;
 									item.Sell[client] = 0;
 								}
-								item.BuyWave[client] = ZR_Waves_GetRound();
+								item.BuyWave[client] = Waves_GetRoundScale();
 								item.Equipped[client] = false;
 
 								if(item.GregOnlySell == 2)
@@ -4476,7 +4476,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = ZR_Waves_GetRound();
+								item.BuyWave[client] = Waves_GetRoundScale();
 								if(item.GregOnlySell == 2)
 								{
 									item.Sell[client] = 0;
@@ -4531,7 +4531,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
 							item.Sell[client] = ItemSell(base, info.Cost);
-							item.BuyWave[client] = ZR_Waves_GetRound();
+							item.BuyWave[client] = Waves_GetRoundScale();
 							if(item.GregOnlySell == 2)
 							{
 								item.Sell[client] = 0;
@@ -6575,7 +6575,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * ZR_Waves_GetRound();
+	cost += item.CostPerWave * Waves_GetRoundScale();
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
@@ -7204,7 +7204,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			{
 
 				int sell = item.Sell[client];
-				if(item.BuyWave[client] == ZR_Waves_GetRound())
+				if(item.BuyWave[client] == Waves_GetRoundScale())
 					sell = item.BuyPrice[client];
 				
 				if(sell) //make sure it even can be sold.

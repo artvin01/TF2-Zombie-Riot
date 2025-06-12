@@ -687,7 +687,7 @@ methodmap Stella < CClotBody
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = ZR_Waves_GetRound()+1;
+		int wave = Waves_GetRoundScale()+1;
 
 		if(StrContains(data, "force10") != -1)
 			wave = 10;
@@ -712,7 +712,7 @@ methodmap Stella < CClotBody
 		//idk
 		if(wave == -1)
 		{
-			wave = 40 + ZR_Waves_GetRound();
+			wave = 40 + Waves_GetRoundScale();
 		}
 		i_current_wave[npc.index] = wave;
 		

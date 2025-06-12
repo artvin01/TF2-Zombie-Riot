@@ -260,7 +260,7 @@ methodmap ThePurge < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		RaidModeScaling *= 0.25;
 		

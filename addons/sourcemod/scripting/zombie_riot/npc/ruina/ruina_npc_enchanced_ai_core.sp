@@ -2472,7 +2472,7 @@ stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result
 }
 int iRuinaWave()
 {
-	int wave = ZR_Waves_GetRound()+1;
+	int wave = Waves_GetRoundScale()+1;
 	wave = RoundToCeil(wave * MinibossScalingReturn());
 	return wave;
 }
