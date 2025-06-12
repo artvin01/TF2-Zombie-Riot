@@ -150,7 +150,7 @@ int Construction_GetRound()
 {
 	int round = CurrentRisk * 50 / HighestRisk;
 	if(AttackType > 0 && AttackHardcore > 0)
-		round += AttackHardcore * 3;
+		round += AttackHardcore * 2;
 	
 	return round;
 }
