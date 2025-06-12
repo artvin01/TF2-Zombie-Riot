@@ -402,7 +402,7 @@ methodmap Nemal < CClotBody
 		
 
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.0;
 			i_RaidGrantExtra[npc.index] = 1;
@@ -426,7 +426,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(StrContains(data, "wave_30") != -1)
+		if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			switch(GetRandomInt(0,3))
@@ -449,7 +449,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(StrContains(data, "wave_45") != -1)
+		if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 			switch(GetRandomInt(0,3))
@@ -472,7 +472,7 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
-		if(StrContains(data, "wave_60") != -1)
+		if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 			switch(GetRandomInt(0,3))
