@@ -1204,7 +1204,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	} while(kv.GotoNextKey());
 
 	int waves = Rounds.Length;
-	if(waves > 58)
+	if(waves > 58 || waves < 29)
 	{
 		if(waves > 1)	//incase some wavetype has only 1 waves 
 			waves--;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
