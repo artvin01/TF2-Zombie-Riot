@@ -5,6 +5,7 @@
 		"en" 		"Example Text!"
 		"pt"		"HUEHUEHUE BR!"
 		"ko" 		"=Failed name="
+		"chi"		"棍母"
 	}
 	"Headcrab Zombie"
 	{
@@ -13,15 +14,18 @@
 		"pt"		"Zumbi de Headcrab"
 		"nl"		"Hoofdkrab Zombie"
 		"ko"		"헤드크랩 좀비"
+		"chi" 		"猎头蟹僵尸"
 	}
 	"Z-Main"
 	{
 		"en"		"Z-Main"
+		"chi"		"超尸"
 	}
 	"Fortified Headcrab Zombie"
 	{
 		"en" 		"Fortified Headcrab Zombie"
 		"ru" 		"Крепкий зомби"
+		"chi" 		"强化猎头蟹僵尸"
 		"pt"		"Zumbi de Headcrab Fortificado"
 		"nl"		"Versterkte Hoofdkrab Zombie"
 		"ko"		"강화된 헤드크랩 좀비"
@@ -29,6 +33,7 @@
 	"Fast Zombie"
 	{
 		"en" 		"Fast Zombie"
+		"chi"		"快速僵尸"
 		"ru" 		"Быстрый зомби"
 		"pt"		"Zumbi Rápido"
 		"nl"		"Snelle Zombie"
@@ -37,6 +42,7 @@
 	"Fortified Fast Zombie"
 	{
 		"en" 		"Fortified Fast Zombie"
+		"chi" 		"强化快速僵尸"
 		"ru" 		"Крепкий быстрый зомби"
 		"pt"		"Zumbi Rápido Fortificado"
 		"nl"		"Versterkte Snelle Zombie"
@@ -46,6 +52,7 @@
 	{
 		"en" 		"Torsoless Headcrab Zombie"
 		"ru" 		"Зомби без ног"
+		"chi" 		"无躯干猎头蟹僵尸"
 		"pt"		"Zumbi de Headcrab sem pernas"
 		"nl"		"Romploze Hoofdkrab Zombie"
 		"ko"		"불구 좀비"
@@ -53,6 +60,7 @@
 	"Poison Zombie"
 	{
 		"en" 		"Poison Zombie"
+		"chi" 		"剧毒僵尸"
 		"ru" 		"Ядовитый зомби"
 		"pt"		"Zumbi Venenoso"
 		"nl"		"Giftige Zombie"
@@ -61,6 +69,7 @@
 	"Fortified Poison Zombie"
 	{
 		"en" 		"Fortified Poison Zombie"
+		"chi" 		"强化剧毒僵尸"
 		"ru" 		"Крепкий ядовитый зомби"
 		"pt"		"Zumbi Venenoso Fortifiacdo"
 		"nl"		"Versterkte Giftige Zombie"
@@ -69,6 +78,7 @@
 	"Fortified Giant Poison Zombie"
 	{
 		"en" 		"Fortified Giant Poison Zombie"
+		"chi" 		"强化巨型剧毒僵尸"
 		"ru" 		"Крепкий гигантский ядовитый зомби"
 		"pt"		"Zumbi Venenoso Gigante Fortificado"
 		"nl"		"Versterke Gigantische Giftige Zombie"
@@ -88,6 +98,7 @@
 		"en" 		"Metro Cop"
 		"ru" 		"Метрокоп"
 		"pt"		"Policial"
+		"chi" 		"国民护卫队"
 		"nl"		"Metro Politie"
 		"ko"		"시민 보호 기동대"
 	}
@@ -98,120 +109,144 @@
 		"pt"		"Policial Invasor"
 		"nl"		"Metro Aanvaller"
 		"ko"		"침략자"
+		"chi" 		"护卫队突袭者"
 	}
 	"W.F. Rifler"
 	{
 		"en" 		"W.F. Rifler"
 		"ko"		"W.F. 소총수"
+		"chi" 		"W.F. 步枪兵"
 	}
 	"First Rifler"
 	{
 		"en" 		"First Rifler"
 		"ko"		"첫번째 소총수"
+		"chi" 		"初代步枪兵"
 	}
 	"Last Rifler"
 	{
 		"en" 		"Last Rifler"
 		"ko"		"마지막 소총수"
+		"chi" 		"最后的步枪兵"
 	}
 	"W.F. Shotgunner"
 	{
 		"en" 		"W.F. Shotgunner"
 		"ko"		"W.F. 샷건병"
+		"chi" 		"W.F. 散弹枪兵"
 	}
 	"First Shotgunner"
 	{
 		"en" 		"First Shotgunner"
 		"ko"		"첫번째 샷건병"
+		"chi" 		"初代散弹枪兵"
 	}
 	"Last Shotgunner"
 	{
 		"en" 		"Last Shotgunner"
 		"ko"		"마지막 샷건병"
+		"chi" 		"最后的散弹枪兵"
 	}
 	"W.F. Swordsman"
 	{
 		"en" 		"W.F. Swordsman"
 		"ko"		"W.F. 검사"
+		"chi" 		"W.F. 剑客"
 	}
 	"First Swordsman"
 	{
 		"en" 		"First Swordsman"
 		"ko"		"첫번째 검사"
+		"chi" 		"初代剑客"
 	}
 	"Last Swordsman"
 	{
 		"en" 		"Last Swordsman"
 		"ko"		"마지막 검사"
+		"chi" 		"最后的剑客"
 	}
 	"W.F. Elite"
 	{
 		"en" 		"W.F. Elite"
 		"ko" 		"W.F. 정예병"
+		"chi" 		"W.F. 精英"
 	}
 	"First Elite"
 	{
 		"en" 		"First Elite"
 		"ko" 		"첫번째 정예병"
+		"chi" 		"初代精英"
 	}
 	"Last Elite"
 	{
 		"en" 		"Last Elite"
 		"ko" 		"마지막 정예병"
+		"chi" 		"最后的精英"
 	}
 	"W.F. Giant Swordsman"
 	{
 		"en" 		"W.F. Giant Swordsman"
 		"ko"		"W.F. 거대 검사"
+		"chi" 		"W.F. 巨剑士"
 	}
 	"First Giant Swordsman"
 	{
 		"en" 		"First Giant Swordsman"
 		"ko"		"최초의 거대 검사"
+		"chi" 		"初代巨剑士"
 	}
 	"Last Giant Swordsman"
 	{
 		"en" 		"Last Giant Swordsman"
 		"ko"		"마지막 거대 검사"
+		"chi" 		"最后的巨剑士"
 	}
 	"W.F. DDT"
 	{
 		"en" 		"W.F. DDT"
 		"ko"		"W.F. DDT"
+		"chi"		"W.f. DDT"
 	}
 	"First DDT"
 	{
 		"en" 		"First DDT"
 		"ko"		"최초의 DDT"
+		"chi"		"初代 DDT"
 	}
 	"Last DDT"
 	{
 		"en" 		"Last DDT"
 		"ko"		"마지막 DDT"
+		"chi"		"最后的DDT"
 	}
 	"W.F. Golden Collos"
 	{
 		"en" 		"W.F. Golden Collos"
 		"ko"		"W.F. 황금 거신"
+		"chi"		"W.F. 黄金巨像"
 	}
 	"First Golden Collos"
 	{
 		"en" 		"First Golden Collos"
 		"ko"		"최초의 황금 거신"
+		"chi"		"初代黄金巨像"
 	}
 	"Last Golden Collos"
 	{
 		"en" 		"Last Golden Collos"
 		"ko"		"마지막 황금 거신"
+		"chi"		"最后的黄金巨像"
 	}
 	"W.F. Overlord"
 	{
 		"en" 		"W.F. Overlord"
 		"ko"		"W.F. 군주"
+		"chi"		"W.F. 领主"
 	}
 	"Scout Assulter"
 	{
 		"en" 		"Scout Assaulter"
+		"chi" 		"侦察兵突击手"
 		"ru" 		"Разведчик-нападающий"
 		"pt"		"Scout Atacante"
 		"nl"		"Verkennersaanvaller"
@@ -220,6 +255,7 @@
 	"Engineer Deconstructor"
 	{
 		"en" 		"Engineer Deconstructor"
+		"chi" 		"工程师拆解者"
 		"ru" 		"Инженер-разрушитель"
 		"pt"		"Engineer Desconstrutor"
 		"nl"		"Ingenieur Deconstructor"
@@ -228,6 +264,7 @@
 	"Heavy Brawler"
 	{
 		"en" 		"Heavy Brawler"
+		"chi" 		"重装格斗兵"
 		"ru" 		"Пулемётчик-боец"
 		"pt"		"Heavy Lutador"
 		"nl"		"Heavy Vechter"
@@ -236,6 +273,7 @@
 	"Flying Armor"
 	{
 		"en" 		"Flying Armor"
+		"chi" 		"飞行装甲"
 		"ru" 		"Летающая броня"
 		"pt"		"Armadura Flutuante"
 		"nl"		"Vliegend Harnas"
@@ -244,6 +282,7 @@
 	"Tiny Flying Armor"
 	{
 		"en" 		"Tiny Flying Armor"
+		"chi" 		"微型飞行装甲"
 		"ru" 		"Крошечная летающая броня"
 		"pt"		"Pequena Armadura Flutuante"
 		"nl"		"Klein Vliegend Harnas"
@@ -252,6 +291,7 @@
 	"Kamikaze Demo"
 	{
 		"en" 		"Kamikaze Demo"
+		"chi" 		"神风爆破兵" 
 		"ru" 		"Подрывник-камикадзе"
 		"pt"		"Demoman Suicidá"
 		"nl"		"Kamikazi Demo"
@@ -261,6 +301,7 @@
 	{
 		"en" 		"Medic Supporter"
 		"ru" 		"Медик поддержки"
+		"chi" 		"医疗支援兵"
 		"pt"		"Médico Ajudante"
 		"nl"		"Medicus Supporter"
 		"ko"		"지원 메딕"
@@ -269,6 +310,7 @@
 	{
 		"en" 		"Giant Heavy Brawler"
 		"ru" 		"Гигантский пулемётчик-боец"
+		"chi" 		"巨型重装格斗兵"
 		"pt"		"Heavy Gigante Lutador"
 		"nl"		"Gigantische Heavy Vechter"
 		"ko"		"거대 싸움꾼"
@@ -278,6 +320,7 @@
 		"en" 		"Spy Facestabber"
 		"ru" 		"Шпион-лицезакалыватель"
 		"pt"		"Spy Facestabber"
+		"chi" 		"间谍面刺者" 
 		"nl"		"Spion Gezichtsteker"
 		"ko"		"앞스탭 스파이"
 	}
@@ -285,6 +328,7 @@
 	{
 		"en" 		"Soldier Rocketeer"
 		"ru" 		"Солдат-ракетчик"
+		"chi" 		"士兵火箭兵"
 		"pt"		"Soldado Bombardeiro"
 		"nl"		"Soldaat Raketjager"
 		"ko"		"로켓병 솔저"
@@ -296,6 +340,7 @@
 		"pt"		"Soldado Lacaio"
 		"nl"		"Soldaten Minion"
 		"ko"		"아쎄이 솔저"
+		"chi"		"使魔士兵"
 	}
 	"Soldier Giant Summoner"
 	{
@@ -304,6 +349,7 @@
 		"pt"		"Soldado Gigante Invocador"
 		"nl"		"Gigantisch Soldatenoproeper"
 		"ko"		"거대 소환사 솔저"
+		"chi"		"巨兵召唤师"
 	}
 	"Spy Thief"
 	{
@@ -312,6 +358,7 @@
 		"pt"		"Spy Ladrão"
 		"nl"		"Spion Dief"
 		"ko"		"도둑 스파이"
+		"chi"		"间谍小偷"
 	}
 	"Spy Trickstabber"
 	{
@@ -320,6 +367,7 @@
 		"pt"		"Spy Trickstabber"
 		"nl"		"Spion Trucsteker"
 		"ko"		"트릭스탭 스파이"
+		"chi"		"间谍花刺者"
 	}
 	"Half Cloaked Spy"
 	{
@@ -328,6 +376,7 @@
 		"pt"		"Espião Parcialmente Invisível"
 		"nl"		"Half Bemanteld Spion"
 		"ko"		"은폐 미리깐 스파이"
+		"chi"		"半隐身间谍"
 	}
 	"Sniper Main"
 	{
@@ -360,6 +409,7 @@
 		"pt"		"Pyro Main Gigante"
 		"nl"		"Gigantische Pyro Main"
 		"ko"		"거대 파이로"
+		"chi"		"巨型Pyro Main"
 	}
 	"W.F. Deutsch Ritter"
 	{
@@ -372,7 +422,7 @@
 		"ru" 		"Шпион-классасин сервера X10"
 		"pt"		"Spy Main do X10"
 		"nl"		"X10 Spion Main"
-		"chi"		"nec spy高手"
+		"chi"		"x10 Spy高手"
 		"ko"		"10배 스파이"
 	}
 		
@@ -384,12 +434,14 @@
 		"ru" 		"Ксенозомби"
 		"pt"		"Xeno Zumbi de Headcrab"
 		"nl"		"Xeno Hoofdkrab Zombie"
+		"chi"		"异形猎头蟹僵尸"
 		"ko"		"제노 헤드크랩 좀비"
 	}
 	"Xeno Fortified Headcrab Zombie"
 	{
 		"en" 		"Xeno Fortified Headcrab Zombie"
 		"ru" 		"Крепкий ксенозомби"
+		"chi"		"强化异形猎头蟹僵尸"
 		"pt"		"Xeno Zumbi de Headcrab Fortificado"
 		"nl"		"Xeno Versterkte Hoofdkrab Zombie"
 		"ko"		"강화된 제노헤드크랩 좀비"
@@ -398,6 +450,7 @@
 	{
 		"en" 		"Xeno Fast Zombie"
 		"ru" 		"Быстрый ксенозомби"
+		"chi"		"异形快速僵尸"
 		"pt"		"Xeno Zumbi Rápido"
 		"nl"		"Xeno Snelle Zombie"
 		"ko"		"제노 패스트 좀비"
@@ -407,6 +460,7 @@
 		"en" 		"Xeno Fortified Fast Zombie"
 		"ru" 		"Крепкий быстрый ксенозомби"
 		"pt"		"Xeno Zumbi Rápido Fortificado"
+		"chi"		"强化异形快速僵尸"
 		"nl"		"Xeno Versterkte Snelle Zombie"
 		"ko"		"강화된 제노 패스트 좀비"
 	}
@@ -415,6 +469,7 @@
 		"en" 		"Xeno Torsoless Headcrab Zombie"
 		"pt"		"Xeno Zumbi Headcrab Sem Pernas"
 		"ru" 		"Ксенозомби без ног"
+		"chi"		"异形无躯干猎头蟹僵尸"
 		"nl"		"Xeno Romploze Hoofdkrab Zombie"
 		"ko"		"제노 불구 헤드크랩 좀비"
 	}
@@ -425,6 +480,7 @@
 		"pt"		"Xeno Zumbi Venenoso"
 		"nl"		"Xeno Giftige Zombie"
 		"ko"		"제노 독성 좀비"
+		"chi"		"异形剧毒僵尸"
 	}
 	"Xeno Fortified Poison Zombie"
 	{
@@ -433,6 +489,7 @@
 		"pt"		"Xeno Zumbi Venenoso Fortificado"
 		"nl"		"Xeno Versterkte Giftige Zombie"
 		"ko"		"강화된 제노 독성 좀비"
+		"chi"		"强化异形剧毒僵尸"
 	}
 	"Xeno Fortified Giant Poison Zombie"
 	{
@@ -441,6 +498,7 @@
 		"pt"		"Xeno Zumbi Venenoso Gigante Fortificado"
 		"nl"		"Xeno Versterkte Gigantisch Giftige Zombie"
 		"ko"		"강화된 거대 제노 독성 좀비"
+		"chi"		"强化异形巨型剧毒僵尸"
 	}
 	"Xeno Father Grigori"
 	{
@@ -449,6 +507,7 @@
 		"pt"		"Xeno Senhor Grigori"
 		"nl"		"Xeno Vader Grigori"
 		"ko"		"제노 그레고리 신부"
+		"chi"		"异形格里高利神父"
 	}
 	"Xeno Metro Cop"
 	{
@@ -457,6 +516,7 @@
 		"pt"		"Xeno Policial"
 		"nl"		"Xeno Metro Politie"
 		"ko"		"제노 시민 보호 기동대"
+		"chi"		"异形地铁警察"
 	}
 	"Xeno Metro Raider"
 	{
@@ -465,46 +525,56 @@
 		"pt"		"Xeno Policial Invasor"
 		"nl"		"Xeno Metro Aanvaller"
 		"ko"		"제노 침략자"
+		"chi"		"异形地铁掠夺者"
 	}
 	"Xeno Rifler"
 	{
 		"en" 		"Xeno Rifler"
 		"ko"		"제노 소총수"
+		"chi"		"异形步枪兵"
 	}
 	"Xeno Shotgunner"
 	{
 		"en" 		"Xeno Shotgunner"
 		"ko"		"제노 산탄병"
+		"chi"		"异形霰弹枪手"
 	}
 	"Xeno Swordsman"
 	{
 		"en" 		"Xeno Swordsman"
 		"ko"		"제노 검사"
+		"chi"		"异形剑士"
 	}
 	"Xeno Elite"
 	{
 		"en" 		"Xeno Elite"
 		"ko"		"제노 정예병"
+		"chi"		"异形精英"
 	}
 	"Xeno Giant Swordsman"
 	{
 		"en" 		"Xeno Giant Swordsman"
 		"ko"		"거대 제노 검사"
+		"chi"		"异形巨剑士"
 	}
 	"Xeno DDT"
 	{
 		"en" 		"Xeno DDT"
 		"ko" 		"제노 DDT"
+		"chi"		"异形精英单位"
 	}
 	"Xeno Golden Collos"
 	{
 		"en" 		"Xeno Golden Collos"
 		"ko"		"제노 황금 거신"
+		"chi"		"异形黄金巨像"
 	}
 	"Xeno Overlord"
 	{
 		"en" 		"Xeno Overlord"
+		"chi"		"异形 领主"
 		"ko"		"제노 군주"
+		"chi"		"异形领主"
 	}
 	"Xeno Scout Assulter"
 	{
@@ -513,6 +583,7 @@
 		"pt"		"Xeno Scout Atacante"
 		"nl"		"Xeno Verkennersaanvaller"
 		"ko"		"제노 돌격병"
+		"chi"		"异形侦察突击兵"
 	}
 	"Xeno Engineer Deconstructor"
 	{
@@ -521,6 +592,7 @@
 		"pt"		"Xeno Engineer Desconstrutor"
 		"nl"		"Xeno Ingenieur Deconstructor"
 		"ko"		"제노 엔지니어 철거병"
+		"chi"		"异形工程师-解构者"
 	}
 	"Xeno Heavy Brawler"
 	{
@@ -529,6 +601,7 @@
 		"pt"		"Xeno Heavy Lutador"
 		"nl"		"Xeno Heavy Vechter"
 		"ko"		"제노 싸움꾼"
+		"chi"		"异形重装格斗者"
 	}
 	"Xeno Flying Armor"
 	{
@@ -537,6 +610,7 @@
 		"pt"		"Xeno Armadura Voadora"
 		"nl"		"Xeno Vliegend Harnas"
 		"ko"		"제노 비행 기갑병"
+		"chi"		"异形飞行装甲"
 	}
 	"Xeno Tiny Flying Armor"
 	{
@@ -545,6 +619,7 @@
 		"pt"		"Xeno Armadura Voadora Pequena"
 		"nl"		"Xeno Klein Vliegend Harnas"
 		"ko"		"소형 제노 비행 기갑병"
+		"chi"		"异形飞行小装甲"
 	}
 	"Xeno Kamikaze Demo"
 	{
@@ -553,6 +628,7 @@
 		"pt"		"Xeno Demoman Suicida"
 		"nl"		"Xeno Kamikazi Demo"
 		"ko"		"제노 카미카제 데모맨"
+		"chi"		"异形神风特种尼格"
 	}
 	"Xeno Medic Supporter"
 	{
@@ -561,6 +637,7 @@
 		"pt"		"Xeno Médico Ajudante"
 		"nl"		"Xeno Medicus Supporter"
 		"ko"		"제노 메딕"
+		"chi"		"异形行医"
 	}
 	"Xeno Giant Heavy Brawler"
 	{
@@ -569,6 +646,7 @@
 		"pt"		"Xeno Heavy Gigante Lutador"
 		"nl"		"Xeno Heavy Gigantische Vechter"
 		"ko"		"거대 제노 싸움꾼"
+		"chi"		"异形Heavy斗士"
 	}
 	"Xeno Spy Facestabber"
 	{
@@ -577,6 +655,7 @@
 		"pt"		"Xeno Spy Facestabber"
 		"nl"		"Xeno Spion Gezichtssteker"
 		"ko"		"제노 앞스탭 스파이"
+		"chi"		"异形间谍面刺"
 	}
 	"Xeno Soldier Rocketeer"
 	{
@@ -585,6 +664,7 @@
 		"pt"		"Xeno Soldado Bombardeiro"
 		"nl"		"Xeno Soldaten Raketjager"
 		"ko"		"제노 로켓병 솔저"
+		"chi"		"异形火箭兵"
 	}
 	"Xeno Soldier Minion"
 	{
@@ -593,6 +673,7 @@
 		"pt"		"Xeno Soldado Lacaio"
 		"nl"		"Xeno Soldaten Minion"
 		"ko"		"제노 아쎄이 솔저"
+		"chi"		"异形士兵使魔"
 	}
 	"Xeno Soldier Giant Summoner"
 	{
@@ -601,6 +682,7 @@
 		"pt"		"Xeno Soldado Gigante Invocador"
 		"nl"		"Xeno Gigantische Soldatenoproeper" 
 		"ko"		"거대 제노 소환사 솔저"
+		"chi"		"异形巨兵召唤师"
 	}
 	"Xeno Spy Thief"
 	{
@@ -609,6 +691,7 @@
 		"pt"		"Xeno Spy Ladrão"
 		"nl"		"Xeno Spion Dief"
 		"ko"		"제노 도둑 스파이"
+		"chi"		"异形小偷"
 	}
 	"Xeno Spy Trickstabber"
 	{
@@ -617,6 +700,7 @@
 		"pt"		"Xeno Spy Trickstabber"
 		"nl"		"Xeno Spion Trucsteker"
 		"ko"		"제노 트릭스탭 스파이"
+		"chi"		"异形间谍花刺者"
 	}
 	"Xeno Half Cloaked Spy"
 	{
@@ -625,6 +709,7 @@
 		"pt"		"Xeno Spy Parcialmente Invisivel"
 		"nl"		"Xeno Half Bemanteld Spion"
 		"ko"		"제노 은폐 미리깐 스파이"
+		"chi"		"异形半隐身间谍"
 	}
 	"Xeno Sniper Main"
 	{
@@ -641,6 +726,7 @@
 		"pt"		"Xeno Demoknight Main"
 		"nl"		"Xeno Demoridder Main"
 		"ko"		"제노 데모나이트"
+		"chi"		"异形Demoknight Main"
 	}
 	"Xeno Battle Medic Main"
 	{
@@ -649,6 +735,7 @@
 		"pt"		"Xeno Medic Main de Combate"
 		"nl"		"Xeno Strijd Medicus Main"
 		"ko"		"제노 전투메딕"
+		"chi"		"异形Battle Medic Main"
 	}
 	"Xeno Giant Pyro Main"
 	{
@@ -657,6 +744,7 @@
 		"pt"		"Xeno Pyro Main Gigante"
 		"nl"		"Xeno Gigantische Pyro Main"
 		"ko"		"거대 제노 파이로"
+		"chi"		"异形巨型Pyro Main"
 	}
 	"Xeno Deutsch Ritter"
 	{
@@ -668,7 +756,7 @@
 		"en" 		"Xeno X10 Spy Main"
 		"ru" 		"Ксеношпион-классасин сервера X10"
 		"pt"		"Xeno Spy Main do X10"
-		"chi"		"异性nec spy高手"
+		"chi"		"异型 x10间谍高手"
 		"nl"		"Xeno X10 Spion Main"
 		"ko"		"제노 10배 스파이"
 	}
@@ -676,6 +764,7 @@
 	{
 		"en" 		"Xeno Malfunctioning Robot"
 		"ko"		"제노 오작동 로봇"
+		"chi"		"异形故障机器"
 	}
 	"Nazi Panzer"
 	{
@@ -684,6 +773,7 @@
 		"pt"		"Tanque Nazista"
 		"nl"		"Nazi Tank"
 		"ko"		"나치 탱크"
+		"chi"		"纳粹坦克兵"
 	}
 	"Bob the Overgod of gods and destroyer of multiverses"
 	{
@@ -692,11 +782,13 @@
 		"pt"		"Bob o todo poderoso destruidor de multiversos"
 		"nl"		"Bob the Oppergod van Goden en vernietigaar van Multiversums"
 		"ko"		"신들의 왕이자 멀티버스의 파괴자 밥"
+		"chi"		"最強災厄魔神兇刃暴君暗雲狂鬼凶悪終焉襲撃爆砕莫大破滅殺戮崩壊暗黒鲍勃"
 	}
 	"Revived DDT"
 	{
 		"en" 		"Revived DDT"
 		"ko"		"되살아난 DDT"
+		"chi"		"复活DDT"
 	}
 	"Spookmaster Boner"
 	{
@@ -713,11 +805,13 @@
 		"pt"		"Senhor Grigori Curado"
 		"nl"		"Genezen Vader Grigori"
 		"ko"		"그레고리 신부"
+		"chi"		"治愈后的格里戈高利神父"
 	}
 	"W.F. Mage"
 	{
 		"en" 		"W.F. Mage"
 		"ko"		"W.F. 주술사"
+		"chi"		"W.F. 法师"
 	}
 	"Bloon"
 	{
@@ -726,6 +820,7 @@
 		"pt"		"Balão"
 		"nl"		"Ballon"
 		"ko"		"벌룬"
+		"chi"		"气球"
 	}
 	"Massive Ornery Air Blimp"
 	{
@@ -734,6 +829,7 @@
 		"pt"		"Dirigível Massivamente Grande"
 		"nl"		"Massieve Ordinaire Luchtballon"
 		"ko"		"M.O.A.B."
+		"chi"		"大规模暴躁型空中飞艇"
 	}
 	"Brutal Floating Behemoth"
 	{
@@ -742,6 +838,7 @@
 		"pt"		"Brutamontes Flutuante"
 		"nl"		"Brutale Zwevende Kolos"
 		"ko"		"B.F.B."
+		"chi"		"残酷的漂浮巨兽"
 	}
 	"Zeppelin of Mighty Gargantuaness"
 	{
@@ -750,6 +847,7 @@
 		"pt"		"Corajoso Gigante de Zeppelin"
 		"nl"		"Zeppelin van Machtige Grootsheid"
 		"ko"		"Z.O.M.G"
+		"chi"		"强力型齐柏林飞艇"
 	}
 	"Dark Dirigible Titan"
 	{
@@ -758,6 +856,7 @@
 		"pt"		"Dirigivel Titan Escuro"
 		"nl"		"Duistere Titanisch Luchtship"
 		"ko"		"D.D.T."
+		"chi"		"黑暗泰坦飞船"
 	}
 	"Big Airship of Doom"
 	{
@@ -766,6 +865,7 @@
 		"pt"		"Grande Aeronave do Fim"
 		"nl"		"Grote Luchtballon van Ondergang"
 		"ko"		"B.A.D."
+		"chi"		"末日大飞艇"
 	}
 	"Golden Bloon"
 	{
@@ -773,6 +873,7 @@
 		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 		"ko"		"황금 벌룬"
+		"chi"		"黄金气球"
 	}
 	"Bloonarius"
 	{
@@ -780,6 +881,7 @@
 		"pt"		"Balãorista"
 		"ru" 		"Шариус"
 		"ko"		"블루나리우스"
+		"chi"		"阿里乌 三位一体"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -788,6 +890,7 @@
 		"pt"		"Medico Mago Aprendiz"
 		"nl"		"Leerling Medicus Magier"
 		"ko"		"주술 초보 메딕"
+		"chi"		"见习法师"
 	}
 	"Sawrunner"
 	{
@@ -820,6 +923,7 @@
 		"pt"		"Médico Investidor"
 		"nl"		"Medicus Strijdros"
 		"ko"		"돌격병 메딕"
+		"chi"		"冲锋医生"
 	}
 	"Medic Berserker"
 	{
@@ -828,6 +932,7 @@
 		"pt"		"Médico Insano"
 		"nl"		"Medicus Berserker"
 		"ko"		"버서커 메딕"
+		"chi"		"狂战医生"
 	}
 	"Militia"
 	{
@@ -836,6 +941,7 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 		"ko"		"민병대"
+		"chi"		"民兵"
 	}
 	"Barracks Metro Cop"
 	{
@@ -1004,6 +1110,7 @@
 		"pt"		"Arqueiro"
 		"nl"		"Boogschutter"
 		"ko"		"아처"
+		"chi"		"弓兵"
 	}
 	"Man-At-Arms"
 	{
@@ -1013,6 +1120,7 @@
 		"pt"		"Homem de armas"
 		"nl"		"Krijgsman te paard"
 		"ko"		"맨 앳 암즈"
+		"chi"		"士兵"
 	}
 	"Skirmisher"
 	{
@@ -1022,6 +1130,7 @@
 		"pt"		"Escaramuça"
 		"nl"		"Tirailleur"
 		"ko"		"스커미셔"
+		"chi"		"前卫"
 	}
 	"Long Swordsman"
 	{
@@ -1031,6 +1140,7 @@
 		"pt"		"Espadachim com Espada longa"
 		"nl"		"Lange Zwaardvechter"
 		"ko"		"장검병"
+		"chi"		"长剑兵"
 	}
 	"Twohanded Swordsman"
 	{
@@ -1040,6 +1150,7 @@
 		"pt"		"Espadachim de 2 espadas"
 		"nl"		"Twee Handige Zwaardvechter"
 		"ko"		"양손검 전사"
+		"chi"		"双手剑士"
 	}
 	"Crossbow Man"
 	{
@@ -1049,6 +1160,7 @@
 		"pt"		"Cara da Besta"
 		"nl"		"Kruisboogman"
 		"ko"		"석궁병"
+		"chi"		"弩兵"
 	}
 	"Spearman"
 	{
@@ -1058,6 +1170,7 @@
 		"pt"		"Lanceiro"
 		"nl"		"Speerman"
 		"ko"		"창기병"
+		"chi"		"枪兵"
 	}
 	"Hand Cannoneer"
 	{
@@ -1067,6 +1180,7 @@
 		"pt"		"Canhoneiro de mão"
 		"nl"		"Hand Kanonnier"
 		"ko"		"총통병"
+		"chi"		"手炮兵"
 	}
 	"Elite Skirmisher"
 	{
@@ -1076,6 +1190,7 @@
 		"pt"		"Escaramuça de Elite"
 		"nl"		"Elite Tirailleur"
 		"ko"		"정예 스커미셔"
+		"chi"		"精英前卫"
 	}
 	"Blitzkrieg"
 	{
@@ -1092,11 +1207,13 @@
 	{
 		"en"		"Hyper Blitzkrieg"
 		"fr"		"Hyper-Blitzkrieg"
+		"chi"		"超能 闪电战"
 		"ko"		"하이퍼 블리츠크리그"
 	}
 	"TRUE BLITZKRIEG"
 	{
 		"en"		"TRUE BLITZKRIEG"
+		"chi"		"真 闪电战"
 		"ko"		"진 블리츠크리그"
 	}
 	"Pikeman"
@@ -1114,6 +1231,7 @@
 		"pt"		"Médico Mago Superior"
 		"nl"		"Superieure Medicus Magier"
 		"ko"		"상급 주술사 메딕"
+		"chi"		"高级法师"
 	}
 	"Rebel"
 	{
@@ -1127,6 +1245,7 @@
 	"Chaos Rebel"
 	{
 		"en" 		"Chaos Rebel"
+		"chi" 		"坍缩叛军"
 	}
 	"Barney"
 	{
@@ -1146,11 +1265,13 @@
 		"pt"		"Scout Aguia"
 		"nl"		"Adelaarsverkenner"
 		"ko"		"독수리 정찰병"
+		"chi" 		"鹰轻军"
 	}
 	"Samurai"
 	{
 		"en" 		"Samurai"
 		"ru" 		"Самурай"
+		"chi"		"武士"
 		"pt"		"Samurai"
 		"nl"		"Samurai"
 		"ko"		"사무라이"
@@ -1162,6 +1283,7 @@
 		"pt"		"O Viciado"
 		"nl"		"De Verslaving"
 		"ko"		"탐닉"
+		"chi"		"上瘾"
 	}
 	"Doctor Purnell"
 	{
@@ -1170,6 +1292,7 @@
 		"pt"		"Doutor Purnell"
 		"nl"		"Dokter Purnell"
 		"ko"		"풀넬 박사"
+		"chi"		"Purnell 医生"
 	}
 	"Book Simon"
 	{
@@ -1177,62 +1300,75 @@
 		"ru" 		"Книжный Саймон"
 		"pt"		"Simon do Livro"
 		"nl"		"Boek Simon"
+		"chi"		"西蒙"
 		"ko"		"북 사이먼"
 	}
 	"Crazy Lady"
 	{
 		"en" 		"Crazy Lady"
 		"ko"		"미친년"
+		"chi"		"疯狂宝贝"
 	}
 	"Faster"
 	{
 		"en" 		"Faster"
 		"ko"		"패스터"
+		"chi"		"急行者"
 	}
 	"Psycho"
 	{
 		"en" 		"Psycho"
 		"ko"		"싸이코"
+		"chi"		"心理"
 	}
 	"Sewmo"
 	{
 		"en" 		"Sewmo"
 		"ko"		"소모"
+		"chi"		"缝纫机"
 	}
 	"Suicider"
 	{
 		"en" 		"Suicider"
 		"ko"		"자살자"
+		"chi"		"自杀"
 	}
 	"Cured Purnell"
 	{
 		"en" 		"Cured Purnell"
 		"ko"		"저주받은 풀넬"
+		"chi"		"被治愈的的Purnell"
 	}
 	"Corrupted Barney"
 	{
 		"en" 		"Corrupted Barney"
+		"chi"		"腐烂的变态巴尼"
 		"ko"		"타락한 바니 칼훈"
 	}
 	"Baby"
 	{
 		"en"		"Baby"
+		"chi"		"娃娃"
 	}
 	"Children"
 	{
 		"en"		"Children"
+		"chi"		"小孩"
 	}
 	"Stranger"
 	{
 		"en"		"Stranger"
+		"chi"		"陌生人"
 	}
 	"Taller"
 	{
 		"en"		"Taller"
+		"chi"		"巨怪"
 	}
 	"Voided Vanguard"
 	{
 		"en" 		"Voided Vanguard"
+		"chi"		"虚空先锋"
 		"ko"		"침식 뱅가드"
 	}
 	"Kahmlstein"
@@ -1272,6 +1408,7 @@
 	"Holy Knight"
 	{
 		"en"		"Holy Knight"
+		"chi"		"圣骑士"
 		"ru"		"Священный рыцарь"
 		"pt"		"Cavaleiro Santo"
 		"nl"		"Heilige Ridder"
@@ -1280,6 +1417,7 @@
 	"Sniper Railgunner"
 	{
 		"en"		"Sniper Railgunner"
+		"chi"		"轨道狙手"
 		"ru"		"Снайпер с рельсотроном"
 		"pt"		"Sniper com Rifle Laser"
 		"nl"		"Scherpe Railschutter"
@@ -1293,11 +1431,13 @@
 		"pt"		"Soldado de Barragem"
 		"nl"		"Soldaten spervuurder"
 		"ko"		"폭격 솔저"
+		"chi"		"士兵弹幕员"
 	}
 	"Capped Ram"
 	{
 		"en"		"Capped Ram"
 		"ru"		"Таран"
+		"chi"		"攻城车"
 		"pt"		"Aríete"
 		"nl"		"Afgetopte Ram"
 		"ko"		"공성추"
@@ -1309,6 +1449,7 @@
 		"ru"		"Дерьмошлёп"
 		"nl"		"De Strontontspanner"
 		"ko"		"내다리 내놔"
+		"chi"		"大逼兜子"
 	}
 	"Basic Bones"
 	{
@@ -1367,11 +1508,13 @@
 		"ru"		"Меха-инженер"
 		"nl"		"Mecha Ingenieur"
 		"ko"		"메카 엔지"
+		"chi"		"机械工程师"
 	}
 	"Mecha Heavy"
 	{
 		"en"		"Mecha Heavy"
 		"pt"		"Heavy Mecha"
+		"chi"		"机械机枪手"
 		"ru"		"Меха-пулемётчик"
 		"nl"		"Mecha Heavy"
 		"ko"		"메카 헤비"
@@ -1379,6 +1522,7 @@
 	"Mecha Giant Heavy"
 	{
 		"en"		"Mecha Giant Heavy"
+		"chi"		"机械大机枪手"
 		"pt"		"Heavy Gigante Mecha"
 		"ru"		"Гигантский меха-пулемётчик"
 		"nl"		"Mecha Gigantische Heavy"
@@ -1388,6 +1532,7 @@
 	{
 		"en"		"Mecha Giant Pyro"
 		"pt"		"Pyro Gigante Mecha"
+		"chi"		"机械大喷火兵"
 		"ru"		"Гигантский меха-поджигатель"
 		"nl"		"Mecha Gigantische Pyro"
 		"ko"		"거대 메카 파이로"
@@ -1404,7 +1549,7 @@
 	{
 		"en"		"Donnerkrieg"
 		"pt"		"Donnerkrieg"
-		"chi"		"Donnerkrieg"
+		"chi"		"雷霆大战"
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 		"ko"		"도너크리그"
@@ -1414,7 +1559,7 @@
 		"en"		"Schwertkrieg"
 		"pt"		"Schwertkrieg"
 		"ru"		"Шверткриг"
-		"chi"		"Schwertkrieg"
+		"chi"		"剑战"
 		"nl"		"Schwertkrieg"
 		"ko"		"슈어츠크리그"
 	}
@@ -1422,6 +1567,7 @@
 	{
 		"en"		"Lucian, ''Blood Diamond''"
 		"pt"		"Lucian, ''Diamante de Sangue''"
+		"chi"		"血钻 卢西恩"
 		"ru"		"Люциан, «Кровавый алмаз»"
 		"ko"		"''혈석'' 루시안"
 	}
@@ -1431,6 +1577,7 @@
 		"pt"		"Medic Construtor"
 		"ru"		"Медик-строитель"
 		"ko"		"건설가 메딕"
+		"chi"		"医生建造者"
 	}
 	"Gambler"
 	{
@@ -1439,6 +1586,7 @@
 		"de"	"Gambler" //Not Really needed i just added them just in case others want their lang
 		"ru"	"Азартный игрок"
 		"ko"	"도박사"
+		"chi"	"赌狗"
 	}
 	"Pablo Gonzales"
 	{
@@ -1447,6 +1595,7 @@
 		"de"	"Pablo Gonzales"
 		"ru"	"Пабло Гонсалес"
 		"ko"	"파블로 곤잘레스"
+		"chi"	"pablo"
 	}
 	"Doktor Medick"
 	{
@@ -1541,6 +1690,7 @@
 		"en"		"Gold Bloon"
 		"pt"		"Balão de Ouro"
 		"ru"		"Золотой шар"
+		"chi"		"黄金气球"
 	}
 	"Medieval Scout"
 	{
@@ -1548,11 +1698,13 @@
 		"pt"		"Scout Montado"
 		"ru"		"Ездовой разведчик"
 		"ko"		"중세 스카웃"
+		"chi"		"中世纪侦察兵"
 	}
 	"Medieval Villager"
 	{
 		"en"		"Villager"
 		"pt"		"Aldeão"
+		"chi"		"村民"
 		"ru"		"Житель"
 		"ko"		"중세 주민"
 	}
@@ -1560,6 +1712,7 @@
 	{
 		"en"		"Building"
 		"pt"		"Edifício"
+		"chi"		"建筑物"
 		"ru"		"Постройка"
 		"ko"		"건물"
 	}
@@ -1567,6 +1720,7 @@
 	{
 		"en"		"Construct"
 		"pt"		"Construção"
+		"chi"		"构造体"
 		"ru"		"Строение"
 		"ko"		"중세 컨스트럭트"
 	}
@@ -1576,6 +1730,7 @@
 		"pt"		"Campeão"
 		"ru"		"Чемпион"
 		"ko"		"챔피언"
+		"chi"		"冠军"
 	}
 	"Light Cavalry"
 	{
@@ -1583,17 +1738,20 @@
 		"pt"		"Cavalaria Leve"
 		"ru"		"Лёгкий кавалерист"
 		"ko"		"견습 기병"
+		"chi"		"轻骑兵"
 	}
 	"Hussar"
 	{
 		"en"		"Hussar"
 		"pt"		"Hussardo"
 		"ru"		"Гусар"
+		"chi"		"呼撒尔"
 		"ko"		"후사르"
 	}
 	"Knight"
 	{
 		"en"		"Knight"
+		"chi"		"骑士"
 		"pt"		"Cavaleiro"
 		"ru"		"Рыцарь"
 		"ko"		"기사"
@@ -1601,6 +1759,7 @@
 	"Obuch"
 	{
 		"en"		"Obuch"
+		"chi"		"锤兵"
 		"pt"		"Obuch"
 		"ru"		"Обух"
 		"ko"		"오부흐"
@@ -1608,6 +1767,7 @@
 	"Monk"
 	{
 		"en"		"Monk"
+		"chi"		"僧侣"
 		"pt"		"Monge"
 		"ru"		"Монах"
 		"ko"		"수도자"
@@ -1615,6 +1775,7 @@
 	"Cavalary"
 	{
 		"en"		"Cavalary"
+		"chi"		"骑兵"
 		"pt"		"Cavalaria"
 		"ru"		"Кавалерист"
 		"ko"		"기병"
@@ -1622,6 +1783,7 @@
 	"Paladin"
 	{
 		"en"		"Paladin"
+		"chi"		"圣骑士"
 		"pt"		"Paladino"
 		"ru"		"Паладин"
 		"ko"		"팔라딘"
@@ -1629,6 +1791,7 @@
 	"Crossbow Giant"
 	{
 		"en"		"Crossbow Giant"
+		"chi"		"弩巨兵"
 		"pt"		"Besta Gigante"
 		"ru"		"Гигантский арбалетчик"
 		"ko"		"거대 석궁병"
@@ -1636,6 +1799,7 @@
 	"Swordsman Giant"
 	{
 		"en"		"Swordsman Giant"
+		"chi"		"剑巨兵"
 		"pt"		"Espadachim Gigante"
 		"ru"		"Гигантский мечник"
 		"ko"		"거대 검사"
@@ -1643,6 +1807,7 @@
 	"Mounted Archer"
 	{
 		"en"		"Mounted Archer"
+		"chi"		"弓骑兵"
 		"pt"		"Arqueiro Montado"
 		"ru"		"Конный лучник"
 		"ko"		"궁기병"
@@ -1650,6 +1815,7 @@
 	"Eagle Warrior"
 	{
 		"en"		"Eagle Warrior"
+		"chi"		"鹰战士"
 		"pt"		"Guerreiro da Aguia"
 		"ru"		"Орёл-воин"
 		"ko"		"독수리 전사"
@@ -1657,6 +1823,7 @@
 	"Giant Eagle Warrior"
 	{
 		"en"		"Giant Eagle Warrior"
+		"chi"		"鹰巨兵"
 		"pt"		"Guerreiro da Aguia Gigante"
 		"ru"		"Гигантский орёл-воин"
 		"ko"		"거대 독수리 전사"
@@ -1665,7 +1832,7 @@
 	{
 		"en"		"Son Of Osiris"
 		"pt"		"Filho de Osiris"
-		"chi"		"绿洲之子"
+		"chi"		"冥王之子"
 		"ru"		"Сын Осириса"
 		"ko"		"오시리스의 아들"
 	}
@@ -1673,12 +1840,14 @@
 	{
 		"en"		"Achilles"
 		"pt"		"Aquiles"
+		"chi"		"阿喀琉斯"
 		"ru"		"Ахилл"
 		"ko"		"아킬레우스"
 	}
 	"Medieval Arbalest"
 	{
 		"en"		"Medieval Arbalest"
+		"chi"		"中世纪劲弩"
 		"pt"		"Arbalest Medieval"
 		"ru"		"Арбалетчик средневековья"
 		"ko"		"중세 석궁병"
@@ -1686,6 +1855,7 @@
 	"Medieval Brawler"
 	{
 		"en"		"Medieval Brawler"
+		"chi"		"中世纪斗士"
 		"pt"		"Lutador Medieval"
 		"ru"		"Боец средневековья"
 		"ko"		"중세 싸움꾼"
@@ -1693,6 +1863,7 @@
 	"Medieval Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
+		"chi"		"中世纪长弓手"
 		"pt"		"Arqueiro Medieval"
 		"ru"		"Лучник средневековья"
 		"ko"		"중세 장궁병"
@@ -1700,6 +1871,7 @@
 	"Medieval Halberdier"
 	{
 		"en"		"Medieval Halberdier"
+		"chi"		"中世纪戟兵"
 		"pt"		"Alabardeiro Medieval"
 		"ru"		"Алебардист средневековья"
 		"ko"		"중세 할버드병"
@@ -1707,6 +1879,7 @@
 	"Medieval Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
+		"chi"		"中世纪精英长弓手"
 		"pt"		"Arqueiro Elite Medieval"
 		"ru"		"Элитный лучник средневековья"
 		"ko"		"중세 정예 장궁병"
@@ -1714,6 +1887,7 @@
 	"Trebuchet"
 	{
 		"en"		"Trebuchet"
+		"chi"		"投石机"
 		"pt"		"Catapulta"
 		"ru"		"Требушет"
 		"ko"		"투석기"
@@ -1733,6 +1907,7 @@
 		"de"		"Machine Soldat Spammer"
 		"ru"		"Меха-солдат-бомбардир"
 		"ko"		"메카 폭격 솔저"
+		"chi"		"机械士兵弹幕员"
 	}
 	"Nearl Radiant Sword"
 	{
@@ -1740,21 +1915,25 @@
 		"pt"		"Espada Quase Radiante"
 		"ru"		"Сияющий меч Нерл"
 		"ko"		"니어의 검"
+		"chi"		"NEARL闪亮之刃"
 	}
 	"W.F. Subject"
 	{
 		"en"		"W.F. Subject"
+		"chi"		"W.F 对象"
 	}
 	"Corrupted Father Grigori"
 	{
 		"en"		"Corrupted Father Grigori"
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
+		"chi"		"堕落格里高利神父"
 	}
 	"Machina Waldch"
 	{
 		"en"		"Machina Waldch"
 		"ru" 		"Махина Валдч"
+		"chi"		"瓦德机"
 		"ko"		"마키나 왈츠"
 	}
 	"Silvester"
@@ -1796,7 +1975,7 @@
 	{
 		"en"		"Nemesis"
 		"pt"		"Nemesis"
-		"chi"		"f"
+		"chi"		"复仇女神"
 		"ru"		"Немезид"
 		"ko"		"네메시스"
 	}
@@ -1804,7 +1983,7 @@
 	{
 		"en"		"Enraged Nemesis"
 		"ru" 		"Разъяренный Немезид"
-		"chi"		"兹利乌斯"
+		"chi"		"[激怒] 复仇女神"
 		"pt"		"Nemesis Enfurecido"
 		"ko"		"극대노 네메시스"
 	}
@@ -2121,67 +2300,77 @@
 	"Sea-Infected God Alaxios"
 	{
 		"en"		"Sea-Infected God Alaxios"
-		"chi"		"海嗣阿拉克西奥斯"
+		"chi"		"海嗣感染 阿拉克西奥斯"
 	}
 	"Seaborn Scout"
 	{
 		"en"		"Seaborn Scout"
 		"ru"		"Разведчик Seaborn"
 		"ko"		"해사 스카웃"
+		"chi"		"海嗣侦察兵"
 	}
 	"Seaborn Soldier"
 	{
 		"en"		"Seaborn Soldier"
 		"ru"		"Солдат Seaborn"
 		"ko"		"해사 솔저"
+		"chi"		"海嗣士兵"
 	}
 	"Seaborn Pyro"
 	{
 		"en"		"Seaborn Pyro"
 		"ru"		"Поджигатель Seaborn"
 		"ko"		"해사 파이로"
+		"chi"		"海嗣喷火兵"
 	}
 	"Seaborn Demoman"
 	{
 		"en"		"Seaborn Demoman"
 		"ru"		"Подрывник Seaborn"
 		"ko"		"해사 데모맨"
+		"chi"		"海嗣爆破手"
 	}
 	"Seaborn Heavy"
 	{
 		"en"		"Seaborn Heavy"
 		"ru"		"Пулемётчик Seaborn"
 		"ko"		"해사 헤비"
+		"chi"		"海嗣机枪手"
 	}
 	"Seaborn Engineer"
 	{
 		"en"		"Seaborn Engineer"
 		"ru"		"Инженер Seaborn"
 		"ko"		"해사 엔지니어"
+		"chi"		"海嗣工程师"
 	}
 	"Seaborn Medic"
 	{
 		"en"		"Seaborn Medic"
 		"ru"		"Медик Seaborn"
 		"ko"		"해사 메딕"
+		"chi"		"海嗣医生"
 	}
 	"Seaborn Sniper"
 	{
 		"en"		"Seaborn Sniper"
 		"ru"		"Снайпер Seaborn"
 		"ko"		"해사 스나이퍼"
+		"chi"		"海嗣狙击手"
 	}
 	"Seaborn Spy"
 	{
 		"en"		"Seaborn Spy"
 		"ru"		"Шпион Seaborn"
 		"ko"		"해사 스파이"
+		"chi"		"海嗣间谍"
 	}
 	"Citizen"
 	{
 		"en"		"Citizen"
 		"ru"		"Горожанин"
 		"ko"		"시민"
+		"chi"		"市民"
 	}
 	"Barracks Railgunner"
 	{
@@ -2216,7 +2405,7 @@
 	"Barracks SchwertKrieg"
 	{
 		"en"		"Schwertkrieg"
-		"chi"		"剑战"
+		"chi"		"利刃之战"
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 		"ko"		"배럭스 슈어츠크리그"
@@ -2306,18 +2495,21 @@
 	"Barracks Teutonic Knight"
 	{
 		"en"		"Teutonic Knight"
+		"chi"		"条顿骑士"
 		"ru"		"Тевтонский рыцарь"
 		"ko"		"성기사"
 	}
 	"Barracks Villager"
 	{
 		"en"		"Villager"
+		"chi"		"村民"
 		"ru"		"Житель"
 		"ko"		"배럭스 주민"
 	}
 	"Barracks Building"
 	{
 		"en"		"Tower"
+		"chi"		"塔"
 		"ru"		"Башня"
 		"ko"		"타워"
 	}
@@ -2337,6 +2529,7 @@
 	"Scientific Witchery"
 	{
 		"en"	"Scientific Witchery"
+		"chi"		"科学向导"
 		"ru" 	"Научное Колдовство"
 		"ko"	"과학적인 마법사"
 	}
@@ -2350,6 +2543,7 @@
 	"Seaborn Guard"
 	{
 		"en"		"Seaborn Guard"
+		"chi"		"海嗣近卫"
 		"ru" 		"Морерождённый страж"
 		"ko"		"해사 가드"
 	}
@@ -2357,10 +2551,12 @@
 	{
 		"en"		"Guard"
 		"ru" 		"страж"
+		"chi"		"卫兵"
 	}
 	"Seaborn Defender"
 	{
 		"en"		"Seaborn Defender"
+		"chi"		"海嗣重装"
 		"ru" 		"Морерождённый Защитник"
 		"ko"		"해사 디펜더"
 	}
@@ -2368,10 +2564,12 @@
 	{
 		"en"		"Defender"
 		"ru" 		"Защитник"
+		"chi"		"守护者"
 	}
 	"Seaborn Vanguard"
 	{
 		"en"		"Seaborn Vanguard"
+		"chi"		"海嗣先锋"
 		"ru" 		"Морерождённый Авангард"
 		"ko"		"해사 뱅가드"
 	}
@@ -2379,10 +2577,12 @@
 	{
 		"en"		"Vanguard"
 		"ru" 		"Авангард"
+		"chi"		"先锋队"
 	}
 	"Seaborn Caster"
 	{
 		"en"		"Seaborn Caster"
+		"chi"		"海嗣术士"
 		"ru" 		"Морерождённый Маг"
 		"ko"		"해사 캐스터"
 	}
@@ -2390,10 +2590,12 @@
 	{
 		"en"		"Caster"
 		"ru" 		"Маг"
+		"chi"		"法师"
 	}
 	"Seaborn Specialist"
 	{
 		"en"		"Seaborn Specialist"
+		"chi"		"海嗣特种"
 		"ru" 		"Морерождённый Специалист"
 		"ko"		"해사 스페셜리스트"
 	}
@@ -2401,10 +2603,12 @@
 	{
 		"en"		"Specialist"
 		"ru" 		"Специалист"
+		"chi"		"专家"
 	}
 	"Seaborn Supporter"
 	{
 		"en"		"Seaborn Supporter"
+		"chi"		"海嗣辅助"
 		"ru" 		"Морерождённый Поддерживающий"
 		"ko"		"해사 서포터"
 	}
@@ -2412,11 +2616,13 @@
 	{
 		"en"		"Supporter"
 		"ru" 		"Поддерживающий"
+		"chi"		"辅助兵"
 	}
 	"Theocracy"
 	{
 		"en"		"Theocracy"
 		"ko"		"신탁 통치"
+		"chi"		"神权"
 	}
 	"Benera"
 	{
@@ -2447,15 +2653,18 @@
 	{
 		"en" 		"Pistoleer"
 		"ko"		"피스톨러"
+		"chi"		"手枪兵"
 	}
 	"Diversionistico"
 	{
 		"en" 		"Diversionistico"
+		"chi" 		"干扰特工"
 		"ko"		"다이버전이스티코"
 	}
 	"Diversionistico Elitus"
 	{
 		"en" 		"Diversionistico Elitus"
+		"chi"		"干扰型精英兵"
 	}
 	"Adiantum"
 	{
@@ -2541,6 +2750,7 @@
 	"Captino Agentus"
 	{
 		"en"	"Captino Agentus"
+		"chi"	"诱捕特工"
 		"ko"	"캡틴 아젠투스"
 	}
 	"Sensal"
@@ -2568,16 +2778,19 @@
 	"Minigun Assisa"
 	{
 		"en"	"Minigun Assisa"
+		"chi"	"机枪刺客"
 		"ko"	"미니건 아시사"
 	}
 	"Ignitus"
 	{
 		"en"	"Ignitus"
+		"chi"	"点燃"
 		"ko"	"이그니투스"
 	}
 	"Helena"
 	{
 		"en"	"Helena"
+		"chi"	"海伦娜"
 		"ko"	"헬레나"
 	}
 	"Erasus"
@@ -2588,11 +2801,13 @@
 	"Giant Tankus"
 	{
 		"en"	"Giant Tankus"
+		"chi"	"巨型坦克"
 		"ko"	"자이언트 탱커스"
 	}
 	"Anfuhrer Eisenhard"
 	{
 		"en"	"Anfuhrer Eisenhard"
+		"chi" 		"铁腕统帅"
 		"ko"	"안퓌러 아이젠하드"
 	}
 	"Speedus Adivus"
@@ -2644,31 +2859,37 @@
 	"Heliara"
 	{
 		"en"	"Heliara"
+		"chi" 	"赫利亚拉"
 		"ko"	"헬리아라"
 	}
 	"Helia"
 	{
 		"en"	"Helia"
+		"chi" 	"海利亚"
 		"ko"	"헬리아"
 	}
 	"Astria"
 	{
 		"en"	"Astria"
+		"chi" 	"阿斯特拉"
 		"ko"	"아스트리아"
 	}
 	"Aether"
 	{
 		"en"	"Aether"
+		"chi" 	"以太"
 		"ko"	"아이테르"
 	}
 	"Europa"
 	{
 		"en"	"Europa"
+		"chi" 	"欧罗巴"
 		"ko"	"유로파"
 	}
 	"Ruina Drone"	
 	{
 		"en"	"Drone"
+		"chi" 	"无人机"
 		"ko"	"드론"
 	}
 	"Ruriana"
@@ -2680,6 +2901,7 @@
 	"Valiant"
 	{
 		"en"	"Valiant"
+		"chi" 	"维拉提"
 		"ko"	"발리언트"
 	}
 	"Magia Anchor"
@@ -2691,98 +2913,116 @@
 	"Stellar Weaver"
 	{
 		"en"	"Stellar Weaver"
+		"chi" 	"风暴编织者"
 		"ko"	"스텔라 위버"
 	}
 	"Interstellar Weaver"
 	{
 		"en"	"Interstellar Weaver"
+		"chi" 	"神明吞噬者"
 	}
 	"Daedalus"
 	{
 		"en"	"Daedalus"
 		"ko"	"대딸러스"
+		"chi" 	"大距骨"
 	}
 	"Malius"
 	{
 		"en"	"Malius"
 		"ko"	"말리우스"
+		"chi" 	"马利乌斯"
 	}
 	"Laz"
 	{
 		"en"	"Laz"
 		"ko"	"라즈"
+		"chi" 	"拉兹"
 	}
 	"Laniun"
 	{
 		"en"	"Laniun"
 		"ko"	"라니운"
+		"chi" 	"拉尼恩"
 	}
 	"Magnium"
 	{
 		"en"	"Magnium"
 		"ko"	"마그니움"
+		"chi" 	"镁"
 	}
 	"Stellaria"
 	{
 		"en"	"Stellaria"
 		"ko"	"스텔라리아"
+		"chi" 	"恒星"
 	}
 	"Astriana"
 	{
 		"en"	"Astriana"
 		"ko"	"아스트리아나"
+		"chi" 	"阿斯特里亚娜"
 	}
 	"Europis"
 	{
 		"en"	"Europis"
 		"ko"	"유로피스"
+		"chi" 	"欧罗皮斯"
 	}
 	"Draedon"
 	{
 		"en"	"Draedon"
 		"ko"	"드래돈"
+		"chi" 	"嘉登"
 	}
 	"Aetheria"
 	{
 		"en"	"Aetheria"
 		"ko"	"아이테리아"
+		"chi" 	"以太"
 	}
 	"Maliana"
 	{
 		"en"	"Maliana"
 		"ko"	"말리나"
+		"chi" 	"马利纳"
 	}
 	"Ruianus"
 	{
 		"en"	"Ruianus"
 		"ko"	"뤼아누스"
+		"chi" 	"卢阿努斯"
 	}
 	"Lazius"
 	{
 		"en"	"Lazius"
 		"ko"	"라지우스"
+		"chi" 	"拉兹乌斯"
 	}
 	"Dronian"
 	{
 		"en"	"Dronian"
 		"ko"	"드로니안"
+		"chi" 	"德罗宁"
 	}
 	"Beheaded Kamikaze"
 	{
 		"en"	"Beheaded Kamikaze"
 		"ru" 	"Безголовый Камикадзе"
-		"ko"	"참수된 카미카제"		
+		"ko"	"참수된 카미카제"	
+		"chi" 	"无头神风特攻队"	
 	}
 	"?????????????"
 	{
 		"en"	"?????????????"
 		"ko"	"?????????????"
 		"es"	"???????????????"
+		"chi"	"?????????"
 	}
 	"??????? First"
 	{
 		"en"	"??????? First"
-		"chi" 	"初代???????"
+		"chi" 	"?????????"
 		"es"	"??????? Primero"
 		"ru" 	"?????? Первый"
 		"ko"	"??????? 태초"
@@ -2790,7 +3030,7 @@
 	"??? the First"
 	{
 		"en"	"??? the First"
-		"chi" 	"初代???"
+		"chi" 	"???一世"
 		"es"	"???, el Primero"
 		"ru" 	"??? Первый"
 		"ko"	"??? 태초"
@@ -2798,7 +3038,7 @@
 	"Bob the First"
 	{
 		"en"	"Bob the First"
-		"chi" 	"初代鲍勃"
+		"chi" 	"初代一世"
 		"es"	"Bob, el Primero"
 		"ru" 	"Боб Первый"
 		"ko"	"태초의 밥"
@@ -2807,45 +3047,54 @@
 	{
 		"en"	"Ahim"
 		"ko"	"아힘"
+		"chi" 	"阿希姆"
 	}
 	"Inabdil"
 	{
 		"en"	"Inabdil"
 		"ko"	"이나브딜"
+		"chi" 	"Inabdil"
 	}
 	"Khazaan"
 	{
 		"en"	"Khazaan"
 		"ko"	"카잔"
+		"chi" 	"卡赞"
 	}
 	"Sakratan"
 	{
 		"en"	"Sakratan"
 		"ko"	"사크라탄"
+		"chi" 	"萨克拉坦"
 	}
 	"Yadeam"
 	{
 		"en"	"Yadeam"
 		"ko"	"야딤"
+		"chi" 	"亚迪姆"
 	}
 	"Rajul"
 	{
 		"en"	"Rajul"
 		"ko"	"라쥴"
+		"chi" 	"拉祖尔"
 	}
 	"Qanaas"
 	{
 		"en"	"Qanaas"
 		"ko"	"콰나스"
+		"chi" 	"卡纳特"
 	}
 	"Atilla"
 	{
 		"en"	"Atilla"
 		"ko"	"아틸라"
+		"chi" 	"阿提拉"
 	}
 	"Ancient Demon"
 	{
 		"en"	"Ancient Demon"
+		"chi" 	"远古恶魔"
 		"ko"	"고대 악마"
 	}
 	"Hallam's Great Demon"
@@ -2856,50 +3105,60 @@
 	"Ihanal Demon Whisperer"
 	{
 		"en"	"Ihanal Demon Whisperer"
+		"chi" 	"恶魔低语者"
 	}
 	"Winter Sniper"
 	{
 		"en"	"Winter Sniper"
+		"chi" 	"冬季狙击手"
 		"ko"	"겨울 스나이퍼"
 	}
 	"Ziberian Miner"
 	{
 		"en"	"Ziberian Miner"
+		"chi" 	"西伯利亚矿工"
 		"ko"	"지베리아 광부"
 	}
 	"Snowey Gunner"
 	{
 		"en"	"Snowey Gunner"
+		"chi" 	"雪地枪手"
 		"ko"	"설백의 거너"
 	}
 	"Freezing Cleaner"
 	{
 		"en"	"Freezing Cleaner"
+		"chi" 	"极地清道夫"
 		"ko"	"냉기 청소부"
 	}
 	"Airborn Explorer"
 	{
 		"en"	"Airborn Explorer"
+		"chi" 	"天空探险家"
 		"ko"	"에어본 탐험가"
 	}
 	"Arctic Mage"
 	{
 		"en"	"Arctic Mage"
+		"chi" 	"极地法师"
 		"ko"	"북극 마법사"
 	}
 	"Frost Hunter"
 	{
 		"en"	"Frost Hunter"
+		"chi" 	"丛林猎手"
 		"ko"	"냉기 사냥꾼"
 	}
 	"Skin Hunter"
 	{
 		"en"	"Skin Hunter"
+		"chi" 	"猎皮人"
 		"ko"	"가죽 사냥꾼"
 	}
 	"Irritated Person"
 	{
 		"en"	"Irritated Person"
+		"chi" 	"被激怒的人"
 		"ko"	"짜증나는 사람"
 	}
 	"Archosauria"
@@ -2910,6 +3169,7 @@
 	"Aslan"
 	{
 		"en"	"Aslan"
+		"chi" 	"阿斯兰"
 		"ko"	"아슬란"
 	}
 	"Perro"
@@ -2955,27 +3215,30 @@
 	"Mad Doctor"
 	{
 		"en"	"Mad Doctor"
+		"chi" 	"疯狂医生"
 		"ko"	"미친 의사"
 	}
 	"John The Almighty"
 	{
-		"en"	"JØⱧ₦ ₮ⱧɆ ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
+		"en"	"JØⱧ₦  ₮ⱧɆ  ₳Ⱡ₥ł₲Ⱨ₮Ɏ"
 		"chi" 	"全知全能的约翰"
 	}
 	"Abomination"
 	{
 		"en"	"Abomination"
-		"chi" 	"憎恶"
+		"chi" 	"憎恶物"
 		"ko"	"어보미네이션"
 	}
 	"Anarchist Enforcer"
 	{
 		"en"	"Anarchist Enforcer"
+		"chi" 	"无政府主义执法者"
 		"ko"	"아나키스트 집행자"
 	}
 	"Braindead"
 	{
 		"en"	"Braindead"
+		"chi" 	"脑死亡"
 		"ko"	"뇌사"
 	}
 	"Behemoth"
@@ -2987,6 +3250,7 @@
 	"Absolute Incinirator"
 	{
 		"en"	"Absolute Incinirator"
+		"chi" 	"绝对焚烧炉"
 		"ko"	"완전한 소각로"
 	}
 	"Aegir"
@@ -3038,6 +3302,7 @@
 	{
 		"en"	"Rouge Expidonsan Doctor"
 		"ko"	"엑스피돈산 도둑 박사"
+		"chi"	"Expidonsa逃兵医生"
 	}
 	"Laniun"
 	{
@@ -3056,7 +3321,7 @@
 	"Wildingen Hitman"
 	{
 		"en"	"Wildingen Hitman"
-		"chi" 	"温迪戈打人侠"
+		"chi" 	"温迪戈刺客"
 		"ko"	"와일딘겐 히트맨"
 	}
 	"Mr.X"
@@ -3070,32 +3335,36 @@
 	{
 		"en"	"Xeno Acclaimed Swordsman"
 		"ko"	"제노 환호받는 검사"
+		"chi" 	"异形强化剑客"
 	}
 	"Xeno Early Infected"
 	{
 		"en"	"Xeno Early Infected"
 		"ko"	"제노 조기감염"
+		"chi"	"异形早期感染者"
 	}
 	"Xeno Patient Few"
 	{
 		"en"	"Xeno Patient Few"
 		"ko"	"제노 약간의 인내심"
+		"chi"	"异形埋伏者"
 	}
 	"Ouroboros Ekas"
 	{
 		"en"	"Ouroboros Ekas"
 		"ko"	"우로보로스 에카스"
+		"chi"	"衔尾蛇"
 	}
 	"Wandering Spirit"
 	{
 		"en"	"Wandering Spirit"
-		"chi" 	"流浪之魂"
+		"chi" 	"游魂"
 		"ko"	"떠도는 영혼"
 	}
 	"Vengeful Spirit"
 	{
 		"en"	"Vengefull Spirit"
-		"chi" 	"复仇之魂"
+		"chi" 	"冤魂"
 		"ko"	"복수심에 불타는 영혼"
 	}
 	"Wandering Spitit"
@@ -3119,7 +3388,8 @@
 	}
 	"Ravaging Intellectual"
 	{
-		"en"	"Ravaging Intellectual?"
+		"en"	"Ravaging Intellectual"
+		"chi"	"暴躁Nerd"
 	}
 	"Ravaging Intellectual Desc"
 	{
@@ -3134,72 +3404,85 @@
 	"Iana"
 	{
 		"en"	"Iana"
+		"chi" 	"拉纳"
 		"ko"	"이아나"
 	}
 	"Magianas"
 	{
 		"en"	"Magianas"
+		"chi" 	"马吉亚纳斯"
 		"ko"	"매지아나스"
 	}
 	"Loonaris"
 	{
 		"en"	"Loonaris"
+		"chi" 	"月影"
 		"ko"	"루나리스"
 	}
 	"Heliaris"
 	{
 		"en"	"Heliaris"
+		"chi" 	"海拉里斯"
 		"ko"	"헬라리스"
 	}
 	"Astrianis"
 	{
 		"en"	"Astrianis"
+		"chi" 	"阿斯特里安"
 		"ko"	"아스트리아니스"
 	}
 	"Eurainis"
 	{
 		"en"	"Eurainis"
+		"chi" 	"尤里尼斯"
 		"ko"	"유라이니스"
 	}
 	"Draeonis"
 	{
 		"en"	"Draeonis"
+		"chi" 	"龙"
 		"ko"	"드래오니스"
 	}
 	"Aetherium"
 	{
 		"en"	"Aetherium"
+		"chi" 	"艾瑟里姆"
 		"ko"	"아이테리움"
 	}
 	"Malianium"
 	{
 		"en"	"Malianium"
+		"chi" 	"马利安"
 		"ko"	"말리아니움"
 	}
 	"Rulius"
 	{
 		"en"	"Rulius"
+		"chi" 	"卢里乌斯"
 		"ko"	"루리우스"
 	}
 	"Lazines"
 	{
 		"en"	"Laz Ines"
+		"chi" 	"拉杰·伊内斯"
 		"ko"	"라즈 이네스"
 	}
 	"Dronis"
 	{
 		"en"	"Dronis"
+		"chi" 	"雄蜂"
 		"ko"	"드로니스"
 	}
 	"Ruliana"
 	{
 		"en"	"Ruliana"
-		"chi"	"废墟人"
+		"chi"	"卢丽安娜"
 		"ko"	"루리아나"
 	}
 	"Aetherianus"
 	{
 		"en"	"Aetherianus"
+		"chi" 	"埃特里安"
 		"ko"	"아이테리아누스"
 	}
 	"Aetherianus Desc"
@@ -3210,6 +3493,7 @@
 	"Astrianious"
 	{
 		"en"	"Astrianious"
+		"chi" 	"星穹之裔"
 		"ko"	"아스트리아니우스"
 	}
 	"Astrianious Desc"
@@ -3220,6 +3504,7 @@
 	"Draconia"
 	{
 		"en"	"Draconia"
+		"chi" 	"龙族"
 		"ko"	"드라코니아"
 	}
 	"Draconia Desc"
@@ -3230,6 +3515,7 @@
 	"Dronianis"
 	{
 		"en"	"Dronianis"
+		"chi" 	"群铸之裔"
 		"ko"	"드로니아니스"
 	}
 	"Dronianis Desc"
@@ -3240,6 +3526,7 @@
 	"Euranionis"
 	{
 		"en"	"Euranionis"
+		"chi" 	"永拓者"
 		"ko"	"유라니오니스"
 	}
 	"Euranionis Desc"
@@ -3250,6 +3537,7 @@
 	"Heliarionus"
 	{
 		"en"	"Heliarionus"
+		"chi" 	"太阳之子"
 		"ko"	"헬리아리오누스"
 	}
 	"Heliarionus Desc"
@@ -3260,6 +3548,7 @@
 	"Lazurus"
 	{
 		"en"	"Lazurus"
+		"chi" 	"拉撒路"
 		"ko"	"라즈루스"
 	}
 	"Lazurus Desc"
@@ -3270,6 +3559,7 @@
 	"Loonarionus"
 	{
 		"en"	"Loonarionus"
+		"chi" 	"月亮"
 		"ko"	"루나리오누스"
 	}
 	"Loonarionus Desc"
@@ -3280,6 +3570,7 @@
 	"Magianius"
 	{
 		"en"	"Magianius"
+		"chi" 	"玄律神枢"
 		"ko"	"매지아니우스"
 	}
 	"Magianius Desc"
@@ -3290,11 +3581,13 @@
 	"Malianius"
 	{
 		"en"	"Malianius"
+		"chi" 	"咒殛神律"
 		"ko"	"말리아니우스"
 	}
 	"Malianius Desc"
 	{
 		"en"	"A stronger Variant"
+		"chi" 	"这是一个更强大的变体"
 		"ko"	"더 강한 변종입니다"
 	}
 	"Elite Rulianius"
@@ -3304,6 +3597,7 @@
 	"Rulianius"
 	{
 		"en"	"Rulianius"
+		"chi" 	"终焉神律"
 		"ko"	"루리아니우스"
 	}
 	"Rulianius Desc"
@@ -3314,6 +3608,7 @@
 	"Lancelot"
 	{
 		"en"	"Lancelot"
+		"chi"	"兰斯洛特"
 		"ko"	"랜슬롯"
 	}
 	"Lancelot Desc"
@@ -3340,6 +3635,7 @@
 	"Lelouch Crystal"
 	{
 		"en"	"Lelouch's Crystal"
+		"chi"	"鲁路修的水晶"
 	}
 	"Lelouch"
 	{
@@ -3364,289 +3660,345 @@
 	"Framing Voider"
 	{
 		"en"	"Framing Voider"
+		"chi"	"构装虚空体"
 		"ko"	"프레이밍 보이더"
 	}
 	"Framing Voider Desc"
 	{
 		"en"	"Void Spawn.\nBuffs enemies around itself on death."
+		"chi"	"虚空造物。\n死亡时强化周围敌人。"
 		"ko"	"공허에서 태어난 존재입니다\n죽을 때 주변의 적군을 강화시킵니다"
 	}
 	"Growing Exat"
 	{
 		"en"	"Growing Exat"
+		"chi"	"增殖型艾克萨特"
 		"ko"	"자라나는 익사트"
 	}
 	"Growing Exat Desc"
 	{
 		"en"	"Void Spawn.\nEach singular hit makes it grow in size, the bigger, the stronger."
+		"chi"	"虚空造物。\n每次受击体积增大，体型越大则越强。"
 		"ko"	"공허에서 태어난 존재입니다\n개별 공격은 크기를 커지게 만듭니다, 더 크고, 더 강하게."
 	}
 	"Mutating Blob"
 	{
 		"en"	"Mutating Blob"
+		"chi"	"突变胶质体"
 		"ko"	"돌연변이 블롭"
 	}
 	"Mutating Blob Desc"
 	{
 		"en"	"Void Spawn.\nWhen dead, corpse acts as a spawnpoint for 1 enemy."
+		"chi"	"虚空造物。\n死亡后尸体成为1个敌人的生成点。"
 		"ko"	"공허에서 태어난 존재입니다\n죽었을 때, 시체가 적 1개의 소환 지점으로 사용됩니다"
 	}
 	"Void Spreader"
 	{
 		"en"	"Void Spreader"
+		"chi"	"虚空蔓延者"
 		"ko"	"공허 확장자"
 	}
 	"Void Spreader Desc"
 	{
 		"en"	"Void Spawn.\nDeals immensive void damage."
+		"chi"	"虚空造物。\n造成巨额虚空伤害。"
 		"ko"	"공허에서 태어난 존재입니다\n거대한 공허 피해를 줍니다"
 	}
 	"Void Infestor"
 	{
 		"en"	"Void Infestor"
+		"chi"	"虚空寄生体"
 		"ko"	"공허 감염자"
 	}
 	"Void Infestor Desc"
 	{
 		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted. (Can be silenced)"
+		"chi"	"虚空造物。\n死亡时在地面播撒虚空，虚空会持续扩散且无法阻止。(可被缄默)"
 		"ko"	"공허에서 태어난 존재입니다\n죽었을 때, 멈추지 않고 확장하는 공허를 흩뿌립니다.(제압시킬 수 있습니다)"
 	}
 	"Voided Hard Crust"
 	{
 		"en"	"Voided Hard Crust"
+		"chi"	"虚空蚀变硬甲"
 		"ko"	"감염된 단단한 껍질"
 	}
 	"Voided Hard Crust Desc"
 	{
 		"en"	"Void Spawn.\nHas Hard flat resistance, attack with high damage single target weapons."
+		"chi"	"虚空造物。\n拥有高额固定伤害抗性，需用单体高伤武器攻击。"
 		"ko"	"공허에서 태어난 존재입니다\n단일 대상으로 강력한 피해를 입히며 강한 고정피해 저항을 가집니다"
 	}
 	"Void Carrier"
 	{
 		"en"	"Void Carrier"
+		"chi"	"虚空搬运者"
 		"ko"	"공허 인도자"
 	}
 	"Void Carrier Desc"
 	{
 		"en"	"Void Spawn.\nGoes to 1 ally, picks them up and throws them at a player."
+		"chi"	"虚空造物。\n靠近友方单位，将其抓起并投向玩家。"
 		"ko"	"공허에서 태어난 존재입니다\n동료에게 이동해 그들을 플레이어에게 집어던집니다"
 	}
 	"Void Ixufan"
 	{
 		"en"	"Void Ixufan"
+		"chi"	"虚空伊苏凡"
 		"ko"	"공허 익수파"
 	}
 	"Void Ixufan Desc"
 	{
 		"en"	"Void Mother Spawn.\nIs extra buffed in void terretory, deals immensive void damage."
+		"chi"	"虚空母体造物。\n在虚空领域中获得强化，造成巨额虚空伤害。"
 		"ko"	"공허 어머니 태생입니다.\n공허 지역에서 추가 버프를 얻으며, 막대한 공허 피해를 입힙니다"
 	}
 	"Enframed Voider"
 	{
 		"en"	"Enframed Voider"
+		"chi"	"禁锢虚空者"
 		"ko"	"갇힌 공허 사도"
 	}
 	"Enframed Voider Desc"
 	{
 		"en"	"Their intelligence grows.\nBuffs enemies on death."
+		"chi"	"智慧持续成长。\n死亡时强化敌人。"
 		"ko"	"그들의 지식은 성장합니다\n죽을 때 적군을 강화합니다"
 	}
 	"Blood Pollutor"
 	{
 		"en"	"Blood Pollutor"
+		"chi"	"血源污染者"
 		"ko"	"혈액 파괴자"
 	}
 	"Blood Pollutor Desc"
 	{
 		"en"	"Deals heavy bleed on hit."
+		"chi"	"攻击造成重度流血。"
 		"ko"	"공격에 강한 출혈을 발생시킵니다"
 	}
 	"Voided Expidonsan Fortifier"
 	{
 		"en"	"Voided Expidonsan Fortifier"
+		"chi"	"虚空蚀变型Expidonsan强化者"
 		"ko"	"침식된 엑스피돈산 강화자"
 	}
 	"Voided Expidonsan Fortifier Desc"
 	{
 		"en"	"An expidonsan fell against the void.\nHas flat resistance, and gains a shield on spawn."
+		"chi"	"堕入虚空的Expidonsan单位。\n拥有固定伤害抗性，生成时获得护盾。"
 		"ko"	"공허에 추락한 엑스피돈산입니다.\n강한 고정피해 저항을 가지고 소환될 때 쉴드를 얻습니다"
 	}
 	"Void Particle"
 	{
 		"en"	"Void Particle"
+		"chi"	"虚空粒子"
 		"ko"	"공허 입자"
 	}
 	"Void Particle Desc"
 	{
 		"en"	"Spreads void on death (can be silenced)"
+		"chi"	"死亡时扩散虚空（可被缄默）"
 		"ko"	"죽을 때 공허를 흩뿌립니다 (침묵시킬 수 있습니다)"
 	}
 	"Hosting Blob"
 	{
 		"en"	"Hosting Blob"
+		"chi"	"宿主胶质体"
 		"ko"	"호스팅 블롭"
 	}
 	"Hosting Blob Desc"
 	{
 		"en"	"On death, acts as 2 spawns."
+		"chi"	"死亡时分裂为2个生成单位。"
 		"ko"	"죽을 시, 2개의 스폰이 됩니다"
-	}
+	}	
 	"Blobbing Monster"
 	{
 		"en"	"Blobbing Monster"
+		"chi"	"融噬巨怪"
 		"ko"	"흐려지는 괴물"
 	}
 	"Blobbing Monster Desc"
 	{
 		"en"	"Each hit makes it stronger and have more resistance."
+		"chi"	"每次受击使其更强且获得更高抗性。"
 		"ko"	"개별 공격마다 더욱 강해지고 저항을 얻습니다"
 	}
 	"Void Sprayer"
 	{
 		"en"	"Void Sprayer"
+		"chi"	"虚空喷吐者"
 		"ko"	"공허 분출자"
 	}
 	"Void Sprayer Desc"
 	{
 		"en"	"Jumps at you, and deals immensive void damage."
+		"chi"	"扑向目标并造成巨额虚空伤害。"
 		"ko"	"당신에게 도악하여 막대한 공허 피해를 입힙니다"
 	}
 	"Void Encasualtor"
 	{
 		"en"	"Void Encasualtor"
+		"chi"	"虚空封禁者"
 		"ko"	"공허 비정상화"
 	}
 	"Void Encasualtor Desc"
 	{
 		"en"	"Teleports to a target they try to attack if they are in void terretory.\nif they didnt attack for a while, then their next attack will make them rapdily attack."
+		"chi"	"身处虚空领域时可瞬移至攻击目标。\n若长时间未攻击，下次攻击将进入连击状态。"
 		"ko"	"공허 지역 안에서 공격하려는 적에게 순간이동 할 수 있습니다\n한동안 공격하지 않았다면 다음 공격은 그들의 공격을 빠르게 만들 것입니다"
 	}
 	"Voided Expidonsan Cleaner"
 	{
 		"en"	"Voided Expidonsan Cleaner"
+		"chi"	"虚空蚀变型Expidonsan清除者"
 		"ko"	"침식된 엑스피돈산 청소부"
 	}
 	"Voided Expidonsan Cleaner Desc"
 	{
 		"en"	"Too many expidonsans fell to them.\nJumps at you, and deals immensive void damage."
+		"chi"	"无数Expidonsan殒命其手。\n扑向目标并造成巨额虚空伤害。"
 		"ko"	"너무 많은 엑스피돈산이 그들에게 떨어졌습니다\n당신에게 도약하여 막대한 공허 피해를 입힙니다"
 	}
 	"Voided Expidonsan Container"
 	{
 		"en"	"Voided Expidonsan Container"
+		"chi"	"虚空蚀变型Expidonsan容器"
 		"ko"	"침식된 엑스피돈산 보유자"
 	}
 	"Voided Expidonsan Container Desc"
 	{
 		"en"	"Deals immensive bleed damage on hit."
+		"chi"	"攻击造成巨额流血伤害。"
 		"ko"	"공격이 막대한 출혈 피해를 입힙니다"
 	}
 	"Sacraficer"
 	{
 		"en"	"Sacraficer"
+		"chi"	"献祭者"
 		"ko"	"희생자"
 	}
 	"Sacraficer Desc"
 	{
 		"en"	"On death, buffs allies heavily."
+		"chi"	"死亡时为友方提供强力增益。"
 		"ko"	"죽을 때 동료들에게 막대한 강화효과를 줍니다"
 	}
 	"Voiding Bedrock"
 	{
 		"en"	"Voiding Bedrock"
+		"chi"	"虚空基岩兽"
 		"ko"	"공허 배드록"
 	}
 	"Voiding Bedrock Desc"
 	{
 		"en"	"Has heavy flat resistance."
+		"chi"	"拥有极高固定伤害抗性。"
 		"ko"	"높은 고정피해 저항을 가집니다"
 	}
 	"Heavy Perisher"
 	{
 		"en"	"Heavy Perisher"
+		"chi"	"终焉执行者"
 		"ko"	"심판자"
 	}
 	"Heavy Perisher Desc"
 	{
 		"en"	"Grows with each hit recieved."
+		"chi"	"每次受击都会成长变强。"
 		"ko"	"공격을 받을 때마다 강해집니다"
 	}
 	"Void Mini-Gatekeeper"
 	{
 		"en"	"Void Mini-Gatekeeper"
+		"chi"	"小型虚空守门人"
 		"ko"	"소형 공허 문지기"
 	}
 	"Void Mini-Gatekeeper Desc"
 	{
 		"en"	"Acts as 2 spawnpoints on death."
+		"chi"	"死亡后成为2个生成点。"
 		"ko"	"죽을 때 2개의 스폰포인트가 됩니다"
 	}
 	"Brooding Petra"
 	{
 		"en"	"Brooding Petra"
+		"chi"	"育巢珀特拉"
 		"ko"	"우울한 페트라"
 	}
 	"Brooding Petra Desc"
 	{
 		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
+		"chi"	"行走时扩散虚空。\n行动极缓慢但持续召唤仆从。\n意外地极为轻盈。"
 		"ko"	"걸을때마다 공허를 넓힙니다\n매우 느리며 하수인들을 소환합니다\n이 놀라운 극한의 빛"
 	}
 	"Kunul"
 	{
 		"en"	"Kunul"
+		"chi"	"库努尔"
 		"ko"	"쿠눌"
 	}
 	"Kunul Desc"
 	{
 		"en"	"Deals extreme bleed damage on hit."
+		"chi"	"攻击造成极端流血伤害。"
 		"ko"	"공격이 막대한 출혈 피해를 발생시킵니다"
 	}
 	"Total Growth"
 	{
 		"en"	"Total Growth"
+		"chi"	"完全成长体"
 		"ko"	"최종 성장"
 	}
 	"Total Growth Desc"
 	{
 		"en"	"Grows with each hit it recieves."
+		"chi"	"每次受击都会成长。"
 		"ko"	"공격을 받을 때마다 성장합니다"
 	}
 	"Void's Offspring"
 	{
 		"en"	"Void's Offspring"
+		"chi"	"虚空子嗣"
 		"ko"	"공허의 자손"
 	}
 	"Void's Offspring Desc"
 	{
 		"en"	"Buffs all void entities on death."
+		"chi"	"死亡时强化所有虚空实体。"
 		"ko"	"죽을 때 모든 공허 생명체를 강화합니다"
 	}
 	"Voided Expidonsan Rejuvinator"
 	{
 		"en"	"Voided Expidonsan Rejuvinator"
+		"chi"	"虚空蚀变型Expidonsan复苏者"
 		"ko"	"침식된 원기회복제"
 	}
 	"Voided Expidonsan Rejuvinator Desc"
 	{
 		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
+		"chi"	"顶尖Expidonsan医师堕入虚空而成。\n瞬间治疗并过量治疗几乎所有友方单位，会尝试治疗所有目标（缄默使治疗速度降低5倍）\n拥有极速，落单时会自毁。"
 		"ko"	"가장 좋은 엑스피돈산 의사 중 하나가 공허에 떨어졌습니다\n거의 모든 동료르르 즉시 치유 및 과치료합니다, 모든 타겟을 치유하려고 할 것입니다,(침식은 회복을 5배 더디게 만듭니다)\n엄청난 속도를 가지며,홀로 남을 시 자살합니다"
 	}
 	"Speechless"
 	{
 		"en"	"Voided Expidonsan Explorer"
+		"chi"	"虚空蚀变型Expidonsan勘探者"
 		"ko"	"침식된 엑스피돈산 탐험가"
-		"en"	"Speechless"
+		"en"	"Speechless"  // 此字段名与内容冲突，建议统一为"Voided Expidonsan Explorer"
 	}
 	"Speechless Desc"
 	{
 		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHas extreme speeds even with such power."
+		"chi"	"首批勘探虚空的Expidonsan之一。\n每次攻击获得护盾。\n距离过远时发射激光（同时修复护盾）。\n拥有与实力不符的极速。"
 		"ko"	"공허를 탐험하려 한 첫번째 엑스피돈산인들중 한명입니다\n개별 공격마다 쉴드를 얻습니다\n너무 멀어지면 엑스피돈산 레이저를 발사합니다, 레이저 또한 쉴드를 재생성합니다\그런 힘을 가졌음에도 엄청난 속도를 가집니다"
 		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHe ignores the shield cooldown if hitting a barricade, or anything with his laser.\nGains attackspeed as he attacks, lowers when he doesnt."
 	}
 	"Unspeakable"
 	{
 		"en"	"Unspeakable"
-		"chi" 	"无法形容"
+		"chi" 	"不可名状者"
 		"ru" 	"Невырзимый"
 		"ko"	"형용할 수 없는"
 	}
@@ -3804,7 +4156,7 @@
 	"Chaos Swordsman"
 	{
 		"en"	"Chaos Swordsman"
-		"chi" 	"坍缩近战"
+		"chi" 	"坍缩剑客"
 	}
 	"Chaos Swordsman Desc"
 	{
@@ -3868,6 +4220,7 @@
 	{
 		"en" 		"Nightmare"
 		"ko"		"악몽"
+		"ko"		"梦魇"
 	}
 	"Nightmare Spawned"
 	{
@@ -3981,7 +4334,7 @@
 	"Huirgrajo"
 	{
 		"en"		"Huirgrajo"
-		"chi"		"逃跑新手"
+		"chi"		"渡影暗鸦"
 		"ko"		"휘르그라죠"
 	}
 	"Huirgrajo Desc"
@@ -3992,6 +4345,7 @@
 	"Cambino"
 	{
 		"en"		"Cambino"
+		"chi"		"锋刃新锐"
 		"ko"		"캄비노"
 	}
 	"Cambino Desc"
@@ -4063,6 +4417,7 @@
 	"Inquisitor IIdutas"
 	{
 		"en"		"Inquisitor IIdutas"
+		"chi"		"戒律审判官"
 		"ko"		"조사자 이이두타스"
 	}
 	"Inquisitor IIdutas Desc"
@@ -4134,7 +4489,7 @@
 	"Ranka S"
 	{
 		"en"		"Ranka S"
-		"chi"		"蓝卡S"
+		"chi"		"战环S型"
 		"ko"		"랭크 S"
 	}
 	"Ranka S Desc"
@@ -4176,6 +4531,7 @@
 	{
 		"en"		"Combastia"
 		"ko"		"콤바스티아"
+		"chi"		"神圣之战"
 	}
 	"Combastia Desc"
 	{
@@ -4256,7 +4612,7 @@
 	"W.F. Flowering Darkness"
 	{
 		"en"	"W.F. Flowering Darkness"
-		"chi"		"绽放黑暗"
+		"chi"		"W.F. 绽放黑暗"
 		"ko"	"W.F. 피어나는 어둠"
 	}	
 	"W.F. Acclaimed Swordsman"
@@ -4283,6 +4639,7 @@
 	{
 		"en"	"Whiteflower The Traitor"
 		"ko"	"화이트플라워 배신자"
+		"chi"		"叛徒  W.F"
 	}	
 	"Ouroboros Ekas"
 	{
@@ -4304,298 +4661,358 @@
 	"Batter"
 	{
 		"en"	"Leatherboots Batter"
+		"chi"	"皮靴侦察队 击球手"
 		"ko"	"가죽부츠 정찰대 타자"
 	}
 	"Charger"
 	{
 		"en"	"Leatherboots Charger"
+		"chi"	"皮靴侦察队 冲锋者"
 		"ko"	"가죽부츠 정찰대 돌격병"
 	}
 	"Teslar"
 	{
 		"en"	"Leatherboots Teslar"
+		"chi"	"皮靴侦察队 特斯拉兵"
 		"ko"	"가죽부츠 정찰대 테슬라"
 	}
 	"Victorian Vanguard"
 	{
 		"en"	"Leatherboots Vanguard"
+		"chi"	"皮靴侦察队 先锋"
 		"ko"	"가죽부츠 정찰대 뱅가드"
 	}
 	"Victorian Igniter"
 	{
 		"en"	"Leatherboots Igniter"
+		"chi"	"皮靴侦察队 点火者"
 		"ko"	"가죽부츠 정찰대 점화병"
 	}
 	"Grenadier"
 	{
 		"en"	"Leatherboots Grenadier"
+		"chi"	"皮靴侦察队 掷弹兵"
 		"ko"	"가죽부츠 정찰대 투척병"
 	}
 	"Victorian ScoutSquad Leader"
 	{
 		"en"	"Leatherboots Leader"
+		"chi"	"皮靴侦察队 队长"
 		"ko"	"가죽부츠 정찰대 리더"
-	}
+	}	
 	"Supplier"
 	{
 		"en"	"Leatherboots Supplier"
+		"chi"	"皮靴侦察队 补给员"
 		"ko"	"가죽부츠 정찰대 보급병"
 	}
 	"Ballista"
 	{
 		"en"	"Leatherboots Ballista"
+		"chi"	"皮靴侦察队 弩炮手"
 		"ko"	"가죽부츠 정찰대 발리스타"
 	}
 	"Birdeye"
 	{
 		"en"	"Birdeye"
+		"chi"	"鹰眼"
 		"ko"	"버드아이"
-	}
+	}	
 	"Bigpipe"
 	{
 		"en"	"Big pipe"
+		"chi"	"大管炮"
 		"ko"	"빅 파이프"
 	}
 	"Harbringer"
 	{
 		"en"	"Harbringer"
+		"chi"	"先驱者"
 		"ko"	"하브링거"
 	}
 	"Signaller"
 	{
 		"en"	"Victorian Signaller"
+		"chi"	"维多利亚信号兵"
 		"ko"	"빅토리아 전령병"
 	}
 	"Chaos Affected Signaller"
 	{
 		"en"	"Chaos Affected Signaller"
+		"chi"	"坍缩信号兵"
 	}
 	"Chaos Affected Eradicator"
 	{
 		"en"	"Chaos Affected Eradicator"
+		"chi"	"混沌感染根除者"
 	}
 	"Humbee"
 	{
 		"en"	"Irongate Humbee"
+		"chi"	"铁幕 悍马战车"
 		"ko"	"강철게이트 험비"
 	}
 	"Shotgunner"
 	{
 		"en"	"Irongate Shotgunner"
+		"chi"	"铁幕 霰弹枪手"
 		"ko"	"강철게이트 샷거너"
 	}
 	"Bulldozer"
 	{
 		"en"	"Irongate Bulldozer"
+		"chi"	"铁幕 推土机"
 		"ko"	"강철게이트 불도져"
 	}
 	"Hardender"
 	{
 		"en"	"Irongate Hardender"
+		"chi"	"铁幕 硬化者"
 		"ko"	"강철게이트 경화자"
 	}
 	"Raider"
 	{
 		"en"	"Irongate Raider"
+		"chi"	"铁幕 突袭者"
 		"ko"	"강철게이트 침략자"
 	}
 	"Zapper"
 	{
 		"en"	"Irongate Zapper"
+		"chi"	"铁幕 电击兵"
 		"ko"	"강철게이트 잽퍼"
 	}
 	"Payback"
 	{
 		"en"	"Irongate Payback"
+		"chi"	"铁幕 复仇者"
 		"ko"	"강철게이트 복수자"
 	}
 	"Blocker"
 	{
 		"en"	"Irongate Blocker"
+		"chi"	"铁幕 拦截者"
 		"ko"	"강철게이트 블록커"
 	}
 	"Victoria Destructor"
 	{
 		"en"	"Irongate Destructor"
+		"chi"	"铁幕 毁灭者"
 		"ko"	"강철게이트 페기물 소각자"
 	}
 	"Victoria Tactical Protector"
 	{
 		"en"	"Irongate Tactical Protector"
+		"chi"	"铁幕 战术护卫"
 		"ko"	"강철게이트 전술 프로텍터"
-	}
+	}	
 	"Victoria Aviator"
 	{
 		"en"	"Irongate Aviator"
+		"chi"	"铁幕 飞行员"
 		"ko"	"아이언 실드에 타라 신지"
 	}
 	"IronShield"
 	{
 		"en"	"Irongate IronShield"
+		"chi"	"铁幕 铁盾"
 		"ko"	"강철게이트 아이언실드"
 	}
 	"Basebreaker"
 	{
 		"en"	"Trooper  Basebreaker"
+		"chi"	"骑兵团 破基者"
 		"ko"	"트루퍼 기지파괴자"
 	}
 	"Booster"
 	{
 		"en"	"Trooper  Booster"
+		"chi"	"骑兵团 助推者"
 		"ko"	"트루퍼 부스터"
 	}
 	"Scorcher"
 	{
 		"en"	"Trooper  Scorcher"
+		"chi"	"骑兵团 焦土兵"
 		"ko"	"트루퍼 방화병"
 	}	
 	"Mowdown"
 	{
 		"en"	"Trooper  Mowdown"
+		"chi"	"骑兵团 收割者"
 		"ko"	"트루퍼 벌집피자 제조기"
 	}
 	"Mechafist"
 	{
 		"en"	"Trooper  Mechafist"
+		"chi"	"骑兵团 机甲铁拳"
 		"ko"	"트루퍼 메카피스트"
 	}
 	"Assulter"
 	{
 		"en"	"Trooper  Assulter"
+		"chi"	"骑兵团 突击兵"
 		"ko"	"트루퍼 보병"
 	}
 	"Cyborg Assulter"
 	{
 		"en"	"Cyborg Assulter"
+		"chi"	"改造人突击兵"
 	}
 	"Anti-Armor Infantry"
 	{
 		"en"	"Trooper  Anti-Armor Infantry"
+		"chi"	"骑兵团 反甲步兵"
 		"ko"	"트루퍼 대전차 보병"
 	}
 	"Victorian Mortar"
 	{
 		"en"	"Trooper  Mortar"
+		"chi"	"骑兵团 迫击炮兵"
 		"ko"	"트루퍼 박격포병"
 	}
 	"Bomb Cart"
 	{
 		"en"	"Trooper  Bombcart"
+		"chi"	"骑兵团 炸弹车"
 		"ko"	"트루퍼 폭탄 C.A.R.T"
 	}
 	"Breachcart"
 	{
 		"en"	"Trooper  Breachcart"
+		"chi"	"骑兵团 破城车"
 		"ko"	"트루퍼 브리칭 전차"
 	}
 	"Victoria Tacticalunit"
 	{
 		"en"	"Trooper Tactical Operator"
+		"chi"	"骑兵团 战术操作员"
 		"ko"	"트루퍼 전술 오퍼레이터"
 	}
 	"Caffeinator"
 	{
 		"en"	"Brassbunker Caffeinator"
+		"chi"	"黄铜地堡 咖啡狂"
 		"ko"	"브라스벙커 카'페인'네이터"
 	}
 	"Welder"
 	{
 		"en"	"Brassbunker Welder"
+		"chi"	"黄铜地堡 焊工"
 		"ko"	"브라스벙커 용접 전사"
 	}
 	"Mechanist"
 	{
 		"en"	"Brassbunker Mechanist"
+		"chi"	"黄铜地堡 机械师"
 		"ko"	"브라스벙커 메카니스트"
 	}
 	"Avangard"
 	{
 		"en"	"Brassbunker Avangard"
+		"chi"	"黄铜地堡 先锋卫"
 		"ko"	"브라스벙커 아방가르드"
 	}
 	"Tanker"
 	{
 		"en"	"Brassbunker Tanker"
+		"chi"	"黄铜地堡 坦克手"
 		"ko"	"브라스벙커 탱커"
 	}
 	"Brassbunker Ambusher"
 	{
 		"en"	"Brassbunker Ambusher"
+		"chi"	"黄铜地堡 伏击者"
 		"ko"	"브라스벙커 매복자"
 	}
 	"Pulverizer"
 	{
 		"en"	"Brassbunker Pulverizer"
+		"chi"	"黄铜地堡 粉碎者"
 		"ko"	"브라스벙커 분쇄기"
 	}
 	"Victoria Taser"
 	{
 		"en"	"Brassbunker Taser"
+		"chi"	"黄铜地堡 电击手"
 		"ko"	"브라스벙커 테이저"
 	}
 	"Victoria Tank"
 	{
 		"en"	"Brassbunker Tank"
+		"chi"	"黄铜地堡 坦克"
 		"ko"	"브라스벙커 탱크"
 	}
 	"Victoria Factory"
 	{
 		"en"	"Victorian Factory"
+		"chi"	"维多利亚工厂"
 		"ko"	"빅토리아 군수공장"
 	}
 	"Victoria Radiomast"
 	{
 		"en"	"Victorian Radiomast"
+		"chi"	"维多利亚信号塔"
 		"ko"	"빅토리아 라디오마스트"
 	}
 	"Radio Guard"
 	{
 		"en"	"Radiomast Guard"
+		"chi"	"信号塔守卫"
 		"ko"	"라디오마스트 가드"
 	}
 	"Radio Repair"
 	{
 		"en"	"Radio Repair"
+		"chi"	"电塔维修员"
 		"ko"	"라디오 수리 전문가"
 	}
 	"Victoria Anvil"
 	{
 		"en"	"''Anvil''"
+		"chi"	"''铁砧''"
 		"ko"	"''모루''"
 	}
 	"Victoria Anvil MK2"
 	{
 		"en"	"''Anvil'' Mk2"
+		"chi"	"''铁砧'' Mk2"
 		"ko"	"''모루'' Mk2"
 	}
 	"Victoria Fragments"
 	{
 		"en"	"''Fragments''"
+		"chi"	"''破片''"
 		"ko"	"''파편''"
 	}
 	"Victoria Fragments MK2"
 	{
 		"en"	"''Fragments'' Mk2"
+		"chi"	"''破片'' Mk2"
 		"ko"	"''파편'' Mk2"
 	}
 	"Victoria Atomizer"
 	{
 		"en"	"Atomizer"
 		"ko"	"인수분해"
+		"chi"	"原子能崩坏者"
 	}
 	"Victoria Huscarls"
 	{
 		"en"	"Huscarls"
 		"ko"	"허스칼"
+		"chi"	"哈斯卡尔斯"
 	}
 	"Victoria Harrison"
 	{
 		"en"	"Harrison"
 		"ko"	"해리슨"
+		"chi"	"哈里森"
 	}
 	"Victoria Castellan"
 	{
 		"en"	"Castellan"
+		"chi"	"卡斯特兰"
 		"ko"	"카스텔란"
 	}
 	"Special Trumpet Skeleton"
@@ -4811,6 +5228,7 @@
 	"Twin No."
 	{
 		"en"		"Twin No."
+		"chi"	"双子病毒"
 		"ko"		"트윈 No."
 	}
 	"Agent Smith"
@@ -4895,10 +5313,12 @@
 	"Matrix"
 	{
 		"en"		"Matrix"
+		"chi"		"矩阵"
 	}
 	"Mutations"
 	{
 		"en"		"Mutations"
+		"chi"		"突变"
 	}
 	"Positive"
 	{
@@ -5090,4 +5510,3 @@
 		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
 	}
 }
-
