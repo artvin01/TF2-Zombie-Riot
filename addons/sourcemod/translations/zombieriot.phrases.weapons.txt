@@ -3835,16 +3835,19 @@
 	{
 		"en"	"Orbital HE Barrage Grenade"
 		"ko"	"궤도 고폭 폭격 유도 비콘"
+		"chi"	"120MM 轨道炮定位器"
 	}
 	"Eagle 500kg Bomb Grenade"
 	{
 		"en"	"Eagle 500kg Bomb Grenade"
 		"ko"	"이글 500kg 폭탄 유도 비콘"
+		"chi"	"“飞鹰”500KG核导弹"
 	}
 	"Have's Mysterious Brew"
 	{
 		"en"	"Drink of Twisting Nether"
 		"ko"	"뒤틀린 황천의 음료수"
+		"chi"	"下界特调饮料"
 	}
 	"Morphine"
 	{
@@ -3856,36 +3859,43 @@
 	{
 		"en"	"Stim Packs"
 		"ko"	"전투 자극제"
+		"chi"	"激素"
 	}
 	"Nanomachine Device"
 	{
 		"en"	"Nanomachine Device"
 		"ko"	"나노머신 디바이스"
+		"chi"	"纳米机械"
 	}
 	"See You In Hell"
 	{
 		"en"	"See You In Hell"
 		"ko"	"지옥에서 보자"
+		"chi"	"地狱再见"
 	}
 	"Iron Will"
 	{
 		"en"	"Iron Will"
 		"ko"	"강철의 의지"
+		"chi"	"钢铁意志"
 	}
 	"Reinforce"
 	{
 		"en"	"Reinforce"
 		"ko"	"증원 요청"
+		"chi"	"应急呼叫器"
 	}
 	"Orbital GAS Grenade"
 	{
 		"en"	"Orbital H.A.L GAS Grenade"
 		"ko"	"궤도 H.A.L 가스 타격 유도 비콘"
+		"chi"	"毒气弹"
 	}
 	"Deploying Support Weapon"
 	{
 		"en"	"Deploying Support Weapon"
 		"ko"	"지원 무기 배치"
+		"chi"	"武器包"
 	}
 	"Reconstructive Teleporter"
 	{
