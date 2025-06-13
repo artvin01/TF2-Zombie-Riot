@@ -207,30 +207,37 @@
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 		"ko"	"당신은 우연히 가게에 들어가서 물건을 파는 노인을 만났는데, 그의 제안을 받아들일 것인가요?"
+		"chi"	"偶遇兜售货物的老者，是否交易？"
 	}
 	"Shop Encounter Title Ruina"
 	{
 		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apperantly."
+		"chi"	"发现躲藏的废墟人，对方称可用现金交换物资助其逃离"
 	}
 	"Shop Encounter Title Ruina Evil"
 	{
 		"en"	"''Hey i saw you steal before! get away from here! i dont trust you!''"
+		"chi"	"「嘿！我见过你行窃！离我远点！不可信！」"
 	}
 	"Shop Ruina Sad"
 	{
-		"en"	"{snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
+		"en"	"{s snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
+		"chi"	"{s snow}休尔丹：{default}为何...？特维尔你为何纵容他们..？"
 	}
 	"Shop Ruina Sad 1"
 	{
-		"en"	"{purple}Twirl{snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
+		"en"	"{purple}Twirl{s snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
+		"chi"	"{purple}托维尔{s snow}：...我会亲自送你回家，不知他们为何如此。但此事至关重要，深感抱歉"
 	}
 	"Shop Ruina Happy"
 	{
-		"en"	"{snow}Hiuldan:{default} W-What?? for free?? Youre too generous!!!"
+		"en"	"{s snow}Hiuldan:{default} W-What?? for free?? Youre too generous!!!"
+		"chi"	"{s snow}休尔丹：{default}什-什么？？免费？？您太慷慨了！"
 	}
 	"Shop Ruina Happy 1"
 	{
-		"en"	"{purple}Twirl{snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
+		"en"	"{purple}Twirl{s snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
+		"chi"	"{purple}托维尔{s snow}：...本料你会抢劫那人，如今我为你的改变而骄傲"
 	}
 	"Better save up now"
 	{
@@ -238,7 +245,7 @@
 		"pt"	"É melhor salvar agora"
 		"ru"	"Лучше поднакопить"
 		"ko"	"지금 저축하는 게 낫겠어"
-		"chi"	"还是收手吧"
+		"chi"	"保留资金"
 	}
 	"Boons Encounter Title"
 	{
@@ -246,6 +253,7 @@
 		"pt"	"Alguns itens são apresentados diante a você, mas você so pode escolher um."
 		"ru"	"Перед вами лежат несколько предметов, но вы, кажется, должны выбрать только один."
 		"ko"	"당신 앞에 몇 가지 물건이 있는데, 당신은 그 중 하나만 고르려고 하는 것 같습니다."
+		"chi"	"眼前摆放着数件物品，但仅能择一而取"
 	}
 	"There's nothing here?"
 	{
@@ -253,10 +261,12 @@
 		"pt"	"Não tem nada aqui?"
 		"ru"	"Тут ничего не было?"
 		"ko"	"여기 아무것도 없나요?"
+		"chi"	"空无一物？"
 	}
 	"Lore Title"
 	{
 		"en"	"..."
+		"chi"	"..."
 	}
 	"Sword and Stone Lore"
 	{
@@ -264,6 +274,7 @@
 		"pt"	"Você se depara com um cavaleiro vestindo uma armadura desgastada e olhando sombriamente para a espada em uma pedra.\nEle afirma ser um cavaleiro que viaja em busca da espada sagrada e deve trazer essa espada de volta ao seu reino para se tornar seu governante legítimo.\nNo entanto, ele não tem como retirar a espada da pedra."
 		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне.\nОн утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем.\nОднако у него нет способа вытащить меч из камня."
 		"ko"	"당신은 낡은 갑주를 입은 기사가 커다란 바위에 박힌 보검을 수심에 찬 얼굴로 쳐다보고 있는것을 보았다. 자신을 성검을 찾으러 나선 용사라고 밝힌 그는 이 보검을 자신의 왕국으로 가져가야 자기가 왕이 될 수 있다고 한다. 하지만 지금은 돌에서 검을 뽑아낼 수도 없다."
+		"chi"	"你遇见一位身着破旧盔甲的骑士，正忧郁地凝视着石中剑。\n他自称是追寻圣剑的骑士，必须将此剑带回王国才能成为合法统治者。\n然而他无法将剑从石头中拔出。"
 	}
 	"Sword and Stone Option 1"
 	{
@@ -271,6 +282,7 @@
 		"pt"	"Aproveitar e dividir a espada em duas metades"
 		"ru"	"С таким же успехом можно разбить меч на две половины."
 		"ko"	"검을 쳐서 아예 부러뜨린다"
+		"chi"	"不如把剑砸成两半"
 	}
 	"Sword and Stone Lore 1"
 	{
@@ -278,6 +290,7 @@
 		"pt"	"Você quebra a cabeça para encontrar uma solução. No final, você quebra a espada em duas. Ao ver a metade da espada ainda presa na pedra, o cavaleiro solta um longo suspiro, balança a cabeça e vai embora."
 		"ru"	"Вы ломаете голову, пытаясь найти решение. В конце концов, вы разбиваете меч на две части. Видя, что половина меча по-прежнему застряла в камне, рыцарь испустил долгий вздох, покачал головой и ушёл."
 		"ko"	"당신은 온갖 방법을 동원해서 결국 보검을 두 동강 내버렸다. 기사는 바위에 남아 있는 보검의 반쪽을 보고는 한숨을 내쉬며 고개를 돌렸다."
+		"chi"	"你绞尽脑汁想出了办法：将剑砸成两段。看到半截剑身仍卡在石头中，骑士长叹一声，摇头离去。"
 	}
 	"Sword and Stone Option 2"
 	{
@@ -285,6 +298,7 @@
 		"pt"	"Poderia usar a pedra como martelo"
 		"ru"	"Может использовать камень в качестве молотка"
 		"ko"	"적어도 해머로는 사용할 수 있다"
+		"chi"	"把石头当锤子用"
 	}
 	"Sword and Stone Lore 2"
 	{
@@ -292,6 +306,7 @@
 		"pt"	"Seguindo seu conselho, o cavaleiro tenta levantar a espada com a pedra ainda presa. Sem conseguir manter o equilíbrio, ele tropeça e cai de cabeça no chão, ficando inconsciente."
 		"ru"	"Послушавшись вашего совета, рыцарь пытается поднять меч, камень всё ещё прикреплен к нему. Не удержав равновесия, он спотыкается и падает на землю головой вперёд, теряя сознание."
 		"ko"	"당신의 제안을 들은 기사는 바위와 함께 검을 들어올리려 했으나 불안정한 무게중심 때문에 쓰러져 머리가 땅에 닿는 순간 기절했다."
+		"chi"	"骑士采纳了你的建议，试图举起连着石块的剑。失去平衡后，他头朝下摔倒在地，昏了过去。"
 	}
 	"Sword and Stone Option 3"
 	{
@@ -299,404 +314,514 @@
 		"pt"	"Parece não ser necessário"
 		"ru"	"Не думаю, что оно больше нужно"
 		"ko"	"검과 왕위에 도대체 무슨 관계가 있다는 거야?"
+		"chi"	"看起来毫无必要"
 	}
 	"Sword and Stone Lore 3a"
 	{
 		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government."
 		"pt"	"\"Pedras estranhas em fortalezas distribuindo espadas não são base para um sistema de governo."
 		"ko"	"''요상한 바위에 꽂힌 반쪽짜리 검 따위는 결코 국가와 정부를 구성하는 토대가 될 수 없으며,"
+		"chi"	"「堡垒中分发宝剑的怪石，岂能作为治国根基？"
 	}
 	"Sword and Stone Lore 3b"
 	{
 		"en"	"Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
 		"pt"	"O poder executivo supremo deriva de um mandato das massas, não de alguma cerimônia geológica farsesca\". O cavaleiro acha que você tem razão e sai satisfeito."
 		"ko"	"왕은 민중의 지지로 왕위를 차지해야 합니다. 정체불명의 보검 하나로 왕이 된다는 것도 말이 안 됩니다.''. 기사는 당신의 답변에 만족하며 떠났다."
+		"chi"	"至高权力源于民众的授权，而非荒唐的地质仪式。」骑士觉得言之有理，满意离去。"
 	}
 	"Theatrical Lore"
 	{
 		"en"	"You find a middle-aged man rambling away in front of a dressing table.\nHe notices you and howls in your direction, asking you to deliver the prop on the table to the actress.\nYou look at the dressing table and find a crown entwined with thorns."
 		"ru"	"Вы обнаруживаете мужчину средних лет, бредущего к туалетному столику.\nОн замечает вас и завывает в вашу сторону, прося передать актрисе реквизит, лежащий на столике.\n Вы смотрите на туалетный столик и обнаруживаете корону, увитую шипами."
 		"ko"	"한 중년 남성이 화장대 앞에서 뭐라고 중얼거리고 있는 것을 발견했는데, 그가 당신을 보자마자 화장대의 소품을 배우에게 전해 달라고 소리질렀다. 화장대를 바라보니, 거기엔 가시덤불로 휘감긴 왕관이 있었다."
+		"chi"	"你发现一个中年男子在梳妆台前喃喃自语。\n他注意到你后朝你呼喊，要求将桌上的道具交给女演员。\n你看向梳妆台，发现一顶荆棘缠绕的王冠。"
 	}
 	"Theatrical Option 1"
 	{
 		"en"	"Listen to his demands"
 		"ru"	"Выслушать его требования"
 		"ko"	"요구에따른다"
+		"chi"	"听从要求"
 	}
 	"Theatrical Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 10 боеприпасов"
 		"ko"	"{yellow}알수없는 유물을 얻었습니다 {red}하지만 10의 탄약 보급품을 소모했습니다."
+		"chi"	"{yellow}获得未知藏品{red}但损失10点弹药补给"
 	}
 	"Theatrical Lore 1a"
 	{
 		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden."
 		"ko"	"당신이 왕관을 집으려고 손을 뻗었을 때, 가시덤불에 손가락을 베이는 바람에 깜짝 놀라 손에서 놓쳤더니, 왕관이 땅에 떨어져 반으로 부서졌다."
+		"chi"	"当你伸手取王冠时被荆棘刺伤手指，王冠掉落地面摔成两半。中年男子正要呵斥你，却突然转身。"
 	}
 	"Theatrical Lore 1b"
 	{
 		"en"	"You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
 		"ko"	"중년 남성이 당신에게 화를 내려다가 말고 갑자기 무슨 말을 들은 듯 고개를 돌렸다. 그는 머리를 긁적이면서 사실 그 여배우도 여왕 역할을 맡기 싫어서 도망갔다고 하더니, 잠시 뒤 그 역시 종종걸음으로 사라졌다. 소동이 끝난 후, 당신은 가시덤불에서 빠져나온 반쪽 왕관을 아직 온전한 상태로 주웠다."
+		"chi"	"男子突然挠挠耳朵——原来女演员已拒绝扮演女王并逃走。他随即小跑离开。闹剧结束后，你拾起脱离荆棘的完好半冠。"
 	}
 	"Theatrical Option 2"
 	{
 		"en"	"Ignore him"
 		"ru"	"Не обращать на него внимания"
 		"ko"	"그를 무시한다"
+		"chi"	"无视他"
 	}
 	"Theatrical Lore 2"
 	{
 		"en"	"You ignore the middle-aged man's howlings and leave."
 		"ru"	"Вы не обращаете внимания на вопли мужчины и уходите."
 		"ko"	"쓸데없이 참견하지 말자"
+		"chi"	"你无视中年男子的叫喊直接离开"
 	}
 	"Eccentric Lore"
 	{
 		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Combine, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
 		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
+		"chi"	"「我知道你在找谁，外来者。」一个驼背瘦削的女人怪笑着说。\n「你并不了解那个联合军，对吧？可你似乎信任他。」\n怪女人透过面罩与围巾注视着你。\n「我能告诉你他的全部过往。有兴趣吗？」\n她伸出枯槁的手，似乎在索要什么。"
 	}
 	"Eccentric Option 1"
 	{
 		"en"	"I definitely want to know"
 		"ru"	"Я определённо хочу знать"
+		"chi"	"我确实想知道"
 	}
 	"Eccentric Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 4 слитков австралия"
+		"chi"	"{yellow}获得未知藏品{red}但损失4块澳金锭"
 	}
 	"Eccentric Lore 1a"
 	{
 		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
+		"chi"	"「他是联合军领主血脉的一员，强大且捍卫信仰。其他领主与他理念相左——'暗影'欲将世界沉入黑暗，如荷载般终结一切"
 	}
 	"Eccentric Lore 1b"
 	{
 		"en"	"'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other.''"
+		"chi"	"'刃舞'主张人人相斗各自为战，'白英花'漠视人类唯尊自然。至于'原初'...他们之间的关系错综复杂。」"
 	}
 	"Eccentric Option 2"
 	{
 		"en"	"Guess not, then"
 		"ru"	"Видимо, нет"
+		"chi"	"那就算了"
 	}
 	"Eccentric Lore 2"
 	{
 		"en"	"This is too sketchy. Forget it."
 		"ru"	"Это слишком сложно. Забудь об этом."
+		"chi"	"此事太过蹊跷，作罢"
 	}
 	"Eccentric Option 1-1"
 	{
 		"en"	"Ask about the ''Shadow''"
 		"ru"	"Спросить о «Тени»"
+		"chi"	"询问'暗影'"
 	}
 	"Eccentric Lore 1-1a"
 	{
 		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+		"chi"	"「啊，'暗影'。潜伏暗处伺机而动。若你曾感与世隔绝，便是他在作祟。所幸目前只是些小把戏供他消遣。待他现世之时...我们皆会如烟消散。」"
 	}
 	"Eccentric Lore 1-1b"
 	{
 		"en"	"Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+		"chi"	"所幸目前只是些小把戏供他消遣。待他现世之时...我们皆会如烟消散。」"
 	}
 	"Eccentric Option 1-2"
 	{
 		"en"	"Ask about the ''Bladedance''"
 		"ru"	"Спросить о «Взбешённом клинке»"
+		"chi"	"询问'刃舞'"
 	}
 	"Eccentric Lore 1-2"
 	{
 		"en"	"''Ah, he's locked away. Your Combine friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
 		"ru"	"\"А, под замком. Ваш друг комбайн запер «Взбешённого клинка», как он это сделал, я до сих пор не знаю. Скажем так, он никогда не увидит дневной свет, пока он в клетке.\""
+		"chi"	"「啊，他被囚禁了。你那位联合军朋友囚禁了'刃舞'，手法至今成谜。只要牢笼尚在，他便永不见天日。」"
 	}
 	"Eccentric Option 1-3"
 	{
 		"en"	"Ask about the ''Whiteflower''"
 		"ru"	"Спросить о «Белом цветке»"
+		"chi"	"询问'白英花'"
 	}
 	"Eccentric Lore 1-3"
 	{
 		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
 		"ru"	"\"Ха-ха-ха, «Белый цветок» даже не представляет, как это провернуть. Особенно учитывая, что у других лордов другие планы. Однако в мире есть участок, где есть только природа, но туда легко вторгнуться.\""
+		"chi"	"「哈哈哈，'白英花'根本不知如何实现理想。尤其当其他领主各怀计划时。不过世上确有一方自然净土，只是易遭入侵。」"
 	}
 	"Eccentric Option 1-4"
 	{
 		"en"	"Ask about ''The First''"
 		"ru"	"Спросить о «Первейшем»"
+		"chi"	"询问'原初'"
 	}
 	"Eccentric Desc 1-4"
 	{
 		"en"	"{green}Gain 4 Australium Ingots"
 		"ru"	"{green}Получить 4 слитков австралия"
+		"chi"	"{green}获得4块澳金锭"
 	}
 	"Eccentric Lore 1-4"
 	{
 		"en"	"''How could be so brave as to ask about him? What a reckless lunatic. For your fearlessness, I will give you your money back, but I don't want to die yet. I can't tell you anything.''"
 		"ru"	"«Да как вам только смелости хватило, чтобы спрашивать о нём? Какой безрассудный безумец. За ваше бесстрашие я верну вам деньги, но я пока не хочу умирать. Я не могу вам ничего рассказать.»"
+		"chi"	"「竟敢探听他的事？真是莽夫！念你无畏，钱还给你，但我还不想死。无可奉告。」"
 	}
 	"Forcefield Chest Title"
 	{
 		"en"	"An item rests on the table in front of you, something else is in the distance.\nTake what's on the table and go or try to find out what's over there?"
 		"ru"	"Перед вами на столе лежит предмет, а вдалеке что-то еще.\nВзять то, что лежит на столе и уйти или попытаться узнать, что там?"
+		"chi"	"眼前桌上有一件物品，远方还有某物。\n取走桌上之物离开，还是去探查远方？"
 	}
 	"Unknown Artifact"
 	{
 		"en"	"Unknown Artifact"
 		"ru"	"Неизвестный артефакт"
+		"chi"	"未知藏品"
 	}
 	"Unknown Artifact Desc"
 	{
-		"en"	"{yellow}Receive an unknown artifact{default}"
-		"ru"	"{yellow}Получить неизвестный артефакт{default}"
+   		"en"    "{yellow}Receive an unknown artifact{default}"
+		"ru"    "{yellow}Получить неизвестный артефакт{default}"
+		"chi"   "{yellow}获得未知藏品{default}" // 保留原文的chi翻译，或根据上下文调整
 	}
 	"Crimson Troupe Title"
 	{
-		"en"	"A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
-		"ru"	"Рыцарь появляется вдали из воздуха.\nНа него падает свет прожектора, когда он стоит на сцене, готовясь к выступлению."
+	"en"    "A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
+	"ru"    "Рыцарь появляется вдали из воздуха.\nНа него падает свет прожектора, когда он стоит на сцене, готовясь к выступлению."
+	"chi"   "一位骑士凭空出现在远方。\n当他站在舞台上准备演出时，一道聚光灯打在他身上。"
 	}
 	"Let's check out this show"
 	{
-		"en"	"Let's check out this show"
-		"ru"	"Давайте посмотрим на это шоу"
+	"en"    "Let's check out this show"
+	"ru"    "Давайте посмотрим на это шоу"
+	"chi"   "让我们瞧瞧这场表演"
 	}
 	"Camp Title"
 	{
-		"en"	"You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
-		"ru"	"Вы находите тихий уголок, достаточно безопасный, чтобы укрыть весь ваш отряд от опасности, позволяя вам отдохнуть и реорганизоваться.\nПомогая своим товарищам устроиться, вы начинаете медленно терять сознание."
+   	 "en"    "You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
+  	  "ru"    "Вы находите тихий уголок, достаточно безопасный, чтобы укрыть весь ваш отряд от опасности, позволяя вам отдохнуть и реорганизоваться.\nПомогая своим товарищам устроиться, вы начинаете медленно терять сознание." // 俄文“lose consciousness”略显生硬，英文“loosen up”更接近放松/模糊
+  	  "chi"   "你发现了一个足够安全的僻静角落，可以庇护整个小队免受伤害，让你们得以休息和重整。\n在帮助队友安顿下来后，你的意识开始慢慢模糊放松。"
 	}
 	"Camp Option"
 	{
-		"en"	"Drift into slumber"
-		"ru"	"Погрузиться в сон"
+  	  "en"    "Drift into slumber"
+   	 "ru"    "Погрузиться в сон"
+   	 "chi"   "沉入梦乡"
 	}
 	"Camp Desc"
 	{
-		"en"	"{green}Fully heal allies and gain 30 ammo supplies"
-		"ru"	"{green}Полностью вылечить союзников и получить 30 боеприпасов"
+  	  "en"    "{green}Fully heal allies and gain 30 ammo supplies"
+   	 "ru"    "{green}Полностью вылечить союзников и получить 30 боеприпасов"
+  	  "chi"   "{green}完全治愈盟友并获得30点弹药补给"
 	}
 	"Camp Lore"
 	{
-		"en"	"By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
-		"ru"	"Когда вы снова открываете глаза, беспокойство и усталость уже давно покинули ваше тело. Вы собираете свои вещи и продолжаете исследовать неизвестность вместе со своими товарищами."
+   	 "en"    "By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
+  	  "ru"    "Когда вы снова открываете глаза, беспокойство и усталость уже давно покинули ваше тело. Вы собираете свои вещи и продолжаете исследовать неизвестность вместе со своими товарищами."
+   	 "chi"   "当你再次睁开双眼时，焦虑和疲惫早已离你而去。你收拾好行囊，与队友们继续探索未知。"
 	}
 	"Coffin of Evil Lore"
 	{
-		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
-		"ru"	"Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
+   	 "en"    "You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
+   	 "ru"    "Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
+   	 "chi"   "你发现了一个漆黑的房间。房间里既没有窗户，也没有任何光源。\n房间中央是一具巨大的棺材，上面镶嵌着许多宝石和珠宝。\n就在你准备检查棺材时，你听到里面传来一个声音。\n它似乎在请求你帮忙打开棺材。"
 	}
 	"Coffin of Evil Option 1"
 	{
-		"en"	"We can't stand idly by when someone's asking for help"
-		"ru"	"Мы не можем оставаться в стороне, когда кто-то просит о помощи"
+  	  "en"    "We can't stand idly by when someone's asking for help"
+  	  "ru"    "Мы не можем оставаться в стороне, когда кто-то просит о помощи"
+    	"chi"   "有人求助时，我们不能袖手旁观"
 	}
 	"Coffin of Evil Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
-		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 30 боеприпасов"
+  	  "en"    "{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
+  	  "ru"    "{yellow}Получить неизвестный артефакт{red}, но потерять 30 боеприпасов"
+   	 "chi"   "{yellow}获得一件未知藏品{red}但失去30点弹药补给"
 	}
 	"Coffin of Evil Lore 1"
 	{
-		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
-		"ru"	"Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
+  	  "en"    "The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
+  	  "ru"    "Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
+   	 "chi"   "棺材被钉子封死了。解救里面住客的唯一方法就是撬开它。一个外表迷人的联合军（Combine）从棺材里爬了出来。善行总有回报，他递给你一份礼物以示感谢。" // Combine 是专有名词，保留英文或音译“康拜因”亦可，这里保留英文并加括号注释
 	}
 	"Coffin of Evil Option 2"
 	{
-		"en"	"Looks way too sketchy"
-		"ru"	"Выглядит слишком подозрительно"
+  	  "en"    "Looks way too sketchy"
+  	 "ru"    "Выглядит слишком подозрительно"
+   	 "chi"   "看起来太可疑了"
 	}
 	"Coffin of Evil Desc 2"
 	{
-		"en"	"{green}Gain 8 Australium Ingots"
-		"ru"	"{green}Получить 8 слитков австралия"
+  	  "en"    "{green}Gain 8 Australium Ingots"
+   	 "ru"    "{green}Получить 8 слитков австралия"
+    	"chi"   "{green}获得8块澳金锭" // Australium是TF2中的虚构元素，保留英文或音译“奥斯特瑞利姆”亦可，这里保留英文并加括号注释
 	}
 	"Coffin of Evil Lore 2"
 	{
-		"en"	"In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
-		"ru"	"Во многих историях те, кто предлагает другим помощь, часто сталкиваются с тем, что их доброта была напрасной. Будучи осторожным человеком, вы игнорируете подозрительные просьбы. Вы даже забираете с собой драгоценности, лежащие на гробу, и закрываете дверь, покидая место."
+  	  "en"    "In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
+   	 "ru"    "Во многих историях те, кто предлагает другим помощь, часто сталкиваются с тем, что их доброта была напрасной. Будучи осторожным человеком, вы игнорируете подозрительные просьбы. Вы даже забираете с собой драгоценности, лежащие на гробу, и закрываете дверь, покидая место."
+   	 "chi"   "在许多故事里，那些向他人伸出援手的人常常会发现自己的善心招致恶果。作为谨慎之人，你无视了这可疑的恳求。你甚至带走了棺材上的珠宝，并在离开时关上了门。"
 	}
 	"Eye for an Eye Lore"
 	{
-		"en"	"A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
-		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
+  	  "en"    "A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
+  	  "ru"    "Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
+   	 "chi"   "一位举止优雅、衣着考究的联合军（Combine）站在你面前。\n他礼貌地询问你是否知道一个无辜的人，曾因他的过错而蒙受不白之冤。\n你请他详细说明，了解到由于他犯下的一个错误，所有的中世纪主义者（Medievalists）都误将他的朋友当作女巫，并把他关在了这里。\n此人承诺，如果你向他提供帮助，将给予丰厚的回报。" // Combine/Medievalists 是专有名词，保留英文
 	}
 	"Eye for an Eye Option 1"
 	{
-		"en"	"This story sounds familiar"
-		"ru"	"Эта история кажется знакомой"
+	    "en"    "This story sounds familiar"
+ 	   "ru"    "Эта история кажется знакомой"
+  	  "chi"   "这故事听起来耳熟"
 	}
 	"Eye for an Eye Desc 1"
 	{
-		"en"	"{green}Gain 30 Australium Ingots"
-		"ru"	"{green}Получить 30 слитков австралия"
+  	  "en"    "{green}Gain 30 Australium Ingots"
+  	  "ru"    "{green}Получить 30 слитков австралия"
+   	 "chi"   "{green}获得30块澳金锭"
 	}
 	"Eye for an Eye Lore 1"
 	{
-		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
-		"ru"	"Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
+  	  "en"    "You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
+   	 "ru"    "Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
+  	  "chi"   "你告诉他，他的朋友已经被释放了。这个消息令人振奋，联合军承诺要酬谢你。"
 	}
 	"Eye for an Eye Option 2"
 	{
-		"en"	"Lead the way"
-		"ru"	"Показывай путь"
+	    "en"    "Lead the way"
+  	  "ru"    "Показывай путь"
+  	  "chi"   "带路吧"
 	}
 	"Eye for an Eye Desc 2"
 	{
-		"en"	"{green}Gain 3000 cash {red}but lose 20 ammo supplies"
-		"ru"	"{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
+  	  "en"    "{green}Gain 3000 cash {red}but lose 20 ammo supplies"
+   	 "ru"    "{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
+    	"chi"   "{green}获得3000现金{red}但失去20点弹药补给"
 	}
 	"Eye for an Eye Lore 2"
 	{
-		"en"	"He gives you his thanks and explains the whole story to you on your way there. However, in the end, he implores you not to ask the Medievalists what happened thereafter."
-		"ru"	"Он благодарит вас и по дороге объясняет вам всю историю. Однако в конце он просит вас не спрашивать медиевистов о том, что произошло потом."
+ 	   "en"    "He gives you his thanks and explains the whole story to you on your way there. However, in the end, he implores you not to ask the Medievalists what happened thereafter."
+  	  "ru"    "Он благодарит вас и по дороге объясняет вам всю историю. Однако в конце он просит вас не спрашивать медиевистов о том, что произошло потом."
+   	 "chi"   "他向你道谢，并在前往目的地的路上向你解释了整个故事。然而，最后他恳求你不要去问中世纪主义者之后发生了什么。"
 	}
 	"Eye for an Eye Option 3"
 	{
-		"en"	"Stay alert"
-		"ru"	"Не теряйте бдительность"
+   		"en"    "Stay alert"
+   		"ru"    "Не теряйте бдительность" // 俄文是复数命令式
+  		"chi"   "保持警惕"
 	}
 	"Eye for an Eye Desc 3"
 	{
-		"en"	"{green}Gain 30 ammo supplies"
-		"ru"	"{green}Получить 30 боеприпасов"
+ 	  	"en"    "{green}Gain 30 ammo supplies"
+  		  "ru"    "{green}Получить 30 боеприпасов"
+  		  "chi"   "{green}获得30点弹药补给"
 	}
 	"Eye for an Eye Lore 3"
-	{
-		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
-		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
+	{	
+	    "en"    "You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
+	    "ru"    "В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
+	    "chi"   "在这种地方，你必须时刻保持警惕。注意到你对他的话无动于衷，联合军叹了口气，悲叹他的结局将会是场悲剧。"
 	}
 	"Xeno Shaft Title"
 	{
-		"en"	"You can hear a figure walking about in the mines, perhaps guarding something of value?"
-		"ru"	"Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?"
+	    "en"    "You can hear a figure walking about in the mines, perhaps guarding something of value?"
+	    "ru"    "Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?" // 俄文有笔误 "ценое" -> "ценное" "ходит в шахтах" -> "ходит по шахтам" (或 "в шахте")
+	    "chi"   "你能听到矿井里有个人影在走动，也许在守卫着什么有价值的东西？"
 	}
 	"Investigate the mines"
 	{
-		"en"	"Investigate the mines"
-		"ru"	"Исследовать шахты"
+	    "en"    "Investigate the mines"
+	    "ru"    "Исследовать шахты"
+	    "chi"   "调查矿井"
 	}
 	"Stultifera Title"
 	{
-		"en"	"A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
-		"ru"	"Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
+	    "en"    "A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
+	    "ru"    "Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
+	    "chi"   "矿井的墙壁上覆盖着粘稠的蔓延物（creep），闻起来像海洋，我们要检查一下吗？" // creep 是游戏术语，保留英文或译为“菌毯/蔓延物”
 	}
 	"Broken Crown Lore"
 	{
-		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
-		"ru"	"Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её."
+	    "en"    "You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
+	    "ru"    "Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её." // 俄文语法需调整: "застрявший" -> "застрявший" "весящий" -> "висящей" "Дежавю,Аура" -> "дежавю. Аура"
+	    "chi"   "你发现一把金剑插在地上，旁边挂着一顶破碎的王冠。\n你感到似曾相识（déjà vu），一股愤怒的气场环绕着它们。"
 	}
 	"Broken Crown Option 1"
 	{
-		"en"	"Take the broken crown"
-		"ru"	"Забрать корону"
+	    "en"    "Take the broken crown"
+	    "ru"    "Забрать корону"
+	    "chi"   "拿走破碎的王冠"
 	}
 	"Broken Crown Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
-		"ru"	"{yellow}Получить неизвестный артифакт и {blue}Поменять концовку"
+	    "en"    "{yellow}Receive an unknown artifact {blue}and change the ending"
+	    "ru"    "{yellow}Получить неизвестный артифакт и {blue}Поменять концовку" // 俄文 "артифакт" -> "артефакт"
+	    "chi"   "{yellow}获得一件未知藏品{blue}并改变结局"
 	}
 	"Broken Crown Lore 1"
 	{
-		"en"	"The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
-		"ru"	"Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти."
+		    "en"    "The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
+	    "ru"    "Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти." // 俄文语法需调整: "Пронзает" -> "пронзает" "края блики" -> "края сверкают/блестят" "аура растёт и вы понимаете" -> "аура растёт, и вы понимаете"
+	    "chi"   "当你试图拾起破碎的王冠时，它刺伤了你，其锋利的断口闪着寒光。邪恶的气场不断增强，你感到自己找到了一条新的道路可循。"
 	}
 	"Broken Crown Option 2"
 	{
-		"en"	"Take the golden sword"
+	    "en"    "Take the golden sword"
+	    "ru"    "" // 补充俄文翻译: "Взять золотой меч"
+	    "chi"   "拿走金剑"
 	}
 	"Broken Crown Desc 2"
 	{
-		"en"	"{green}Gain 8 Australium Ingots"
+	    "en"    "{green}Gain 8 Australium Ingots"
+	    "ru"    "" // 补充俄文翻译: "{green}Получить 8 слитков австралия"
+	    "chi"   "{green}获得8块澳金锭"
 	}
 	"Broken Crown Lore 2"
 	{
-		"en"	"You brush aside the crown as you try picking up the sword from the ground. The blade snaps in half. Worthless as a weapon now but we could sell the gold later."
+	    "en"    "You brush aside the crown as you try picking up the sword from the ground. The blade snaps in half. Worthless as a weapon now but we could sell the gold later."
+	    "ru"    "" // 补充俄文翻译: "Вы отодвигаете корону в сторону, пытаясь поднять меч с земли. Клинок ломается пополам. Как оружие он теперь бесполезен, но позже мы сможем продать золото."
+	    "chi"   "你拨开王冠，试图从地上拾起宝剑。剑刃应声断成两截。作为武器它已毫无价值，但以后我们可以把金子卖掉。"
 	}
 	"Bob Research Lore"
 	{
-		"en"	"You find yourself in a blank room.\nIn the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
+	    "en"    "You find yourself in a blank room.\nIn the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
+	    "ru"    "" // 补充俄文翻译: "Вы оказываетесь в пустой комнате.\nВдалеке видна маленькая офисная обстановка: деревянный стол, картотечный шкаф и настольная лампа."
+	    "chi"   "你发现自己身处一个空白的房间。\n远处有一套小小的办公室陈设：一张木桌、一个文件柜和一盏台灯。"
 	}
 	"Bob Research Option 1"
 	{
-		"en"	"Take a look at it"
+	    "en"    "Take a look at it"
+	    "ru"    "" // 补充俄文翻译: "Осмотреть его"
+	    "chi"   "查看一下"
 	}
 	"Bob Research Lore 1"
 	{
-		"en"	"You find it's messy as if someone rushed out. You find papers on the desk, you read it."
+	    "en"    "You find it's messy as if someone rushed out. You find papers on the desk, you read it."
+	    "ru"    "" // 补充俄文翻译: "Вы видите, что там беспорядок, будто кто-то спешно ушёл. Вы находите бумаги на столе и читаете их."
+	    "chi"   "你发现那里很凌乱，仿佛有人匆忙离开。你在桌上发现了一些文件，便读了起来。"
 	}
 	"Bob Research Option 2"
 	{
-		"en"	"We're getting lost"
+	    "en"    "We're getting lost"
+	    "ru"    "" // 补充俄文翻译: "Мы заблудимся" (直译) 或 "Мы собьёмся с пути" (意译)
+	    "chi"   "我们会迷路的"  // 或意译为 "别浪费时间了"
 	}
 	"Bob Research Lore 2"
 	{
-		"en"	"You head out, it's dark and we have other things to take care of."
+	    "en"    "You head out, it's dark and we have other things to take care of."
+	    "ru"    "" // 补充俄文翻译: "Вы уходите. Здесь темно, и у нас есть другие дела."
+	    "chi"   "你离开了，这里很黑，我们还有别的事要处理。"
 	}
 	"Bob Final Lore"
 	{
-		"en"	"You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
+	    "en"    "You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
+	    "ru"    "" // 补充俄文翻译: "Вы оказываетесь в пустой комнате.\nВы видите ту же самую маленькую офисную обстановку, что и раньше, но свет выключен."
+	    "chi"   "你发现自己身处一个空白的房间。\n你发现了之前那套一模一样的小办公室陈设，但灯是关着的。"
 	}
 	"Bob Final Option 1"
 	{
-		"en"	"I don't remember turning it off"
+	    "en"    "I don't remember turning it off"
+	    "ru"    "" // 补充俄文翻译: "Я не помню, чтобы выключал(а) его" (根据玩家性别)
+	    "chi"   "我不记得关过灯" // 或 "灯怎么关了？"
 	}
 	"Bob Final Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	    "en"    "{yellow}Receive an unknown artifact {blue}and change the ending"
+	    "ru"    "" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {blue}и изменить концовку"
+	    "chi"   "{yellow}获得一件未知藏品{blue}并改变结局"
 	}
 	"Bob Final Lore 1"
 	{
-		"en"	"You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
+	    "en"    "You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
+	    "ru"    "" // 补充俄文翻译: "Вы подходите ближе и видите, что всё чисто и пусто, на столе лежит лишь один распечатанный лист бумаги. Вы читаете его."
+	    "chi"   "你走近一些，发现那里干净而空荡，桌上只有一张打印出来的纸。你读了起来。"
 	}
 	"Bob Final Option 2"
 	{
-		"en"	"Nothing changed"
+	    "en"    "Nothing changed"
+	    "ru"    "" // 补充俄文翻译: "Ничего не изменилось"
+	    "chi"   "没什么变化" // 或 "和之前一样"
 	}
 	"Bob Final Lore 2"
 	{
-		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
+	    "en"    "It could just be out of power or prehaps just turned it off earlier. Moving on."
+	    "ru"    "" // 补充俄文翻译: "Возможно, просто села батарейка, или его выключили раньше. Идём дальше."
+	    "chi"   "可能只是没电了，或者之前就关掉了。继续前进吧。"
 	}
 	"Bob Final Option 3"
 	{
-		"en"	"I do remember"
+	    "en"    "I do remember"
+	    "ru"    "" // 补充俄文翻译: "Я помню" (根据语境，可能是对之前事件的回应)
+	    "chi"   "我确实记得" // (回应之前的事件或选项)
 	}
 	"Bob Final Desc 3"
 	{
-		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	    "en"    "{yellow}Receive an unknown artifact {blue}and change the ending"
+	    "ru"    "" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {blue}и изменить концовку"
+	    "chi"   "{yellow}获得一件未知藏品{blue}并改变结局"
 	}
 	"Bob Final Lore 3"
 	{
-		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
+	    "en"    "Those that we lost. Bladedance... Guln... Finish the job."
+	    "ru"    "" // 补充俄文翻译: "Те, кого мы потеряли. Блэйдданс... Гулн... Закончи работу."
+	    "chi"   "那些我们失去的人。刀舞（Bladedance）...古恩（Guln）...完成任务。" // Bladedance/Guln 是专有名词，保留英文或音译
 	}
-	"Mediveal Ally Title"
+	"Mediveal Ally Title" // 注意拼写: Mediveal -> Medieval
 	{
-		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+	    "en"    "A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+	    "ru"    "" // 补充俄文翻译: "Группа медиевистов, кажется, сражается с группой сиборнов (seaborn) и проигрывает."
+	    "chi"   "一群中世纪主义者（Medievalists）似乎正在与一群海嗣（seaborn）战斗，而且他们处于下风。" // Medievalists/seaborn 是专有名词，保留英文
 	}
-	"Mediveal Option 1"
+	"Mediveal Option 1" // 注意拼写: Mediveal -> Medieval
 	{
-		"en"	"Side with the Medievalists"
+	    "en"    "Side with the Medievalists"
+	    "ru"    "" // 补充俄文翻译: "Встать на сторону медиевистов"
+	    "chi"   "站在中世纪主义者一边"
 	}
 	"Broken Bridge Title"
 	{
-		"en"	"In your path, a bridge breaks in front of you."
+	    "en"    "In your path, a bridge breaks in front of you."
+	    "ru"    "" // 补充俄文翻译: "На вашем пути мост ломается прямо перед вами."
+	    "chi"   "在你前方的道路上，一座桥断裂了。"
 	}
 	"Broken Bridge Option 1"
 	{
-		"en"	"We could rebuild this"
+	    "en"    "We could rebuild this"
+	    "ru"    "" // 补充俄文翻译: "Мы могли бы восстановить его"
+	    "chi"   "我们可以重建它"
 	}
 	"Broken Bridge Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+  	  "en"    "{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+ 	   "ru"    "" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {red}но потерять 4 слитка австралия"
+  	  "chi"   "{yellow}获得一件未知藏品{red}但失去4块澳金锭"
 	}
 	"Broken Bridge Lore 1"
-	{
-		"en"	"You rebuilt the bridge using your supplies, one the other side you happen to find a dropped item."
+	{	
+   	 "en"    "You rebuilt the bridge using your supplies, one the other side you happen to find a dropped item." // "one the other side" -> "on the other side"
+  	  "ru"    "" // 补充俄文翻译: "Вы восстановили мост, используя свои припасы. На другой стороне вам случайно попадается выпавший предмет."
+   	 "chi"   "你用物资重建了桥。在另一边，你碰巧发现了一件掉落的物品。"
 	}
 	"Broken Bridge Option 2"
 	{
-		"en"	"Better go around"
+  	  "en"    "Better go around"
+   	 "ru"    "" // 补充俄文翻译: "Лучше обойти"
+  	 "chi"   "最好绕过去"
 	}
 	"Broken Bridge Lore 2"
 	{
-		"en"	"Time is better spent elsewhere, nothing important anyways."
+  	  "en"    "Time is better spent elsewhere, nothing important anyways."
+   	 "ru"    "" // 补充俄文翻译: "Время лучше потратить в другом месте, здесь всё равно ничего важного."
+   	 "chi"   "时间花在别处更好，反正这里也没什么重要的东西。"
 	}
 
 	// Stages
@@ -760,22 +885,22 @@
 	"Uncertain Goals"
 	{
 		"en"	"Uncertain Goals"
-		"chi"	"不期而遇"
+		"chi"	"狭路相逢"
 	}
 	"Uncertain Goals 1"
 	{
 		"en"	"Uncertain Goals 1"
-		"chi"	"不期而遇 1"
+		"chi"	"狭路相逢 1"
 	}
 	"Uncertain Goals 2"
 	{
 		"en"	"Uncertain Goals 2"
-		"chi"	"不期而遇 2"
+		"chi"	"狭路相逢 2"
 	}
 	"Uncertain Goals 3"
 	{
 		"en"	"Uncertain Goals 3"
-		"chi"	"不期而遇 3"
+		"chi"	"狭路相逢 3"
 	}
 	"Water Fountain"
 	{
@@ -1053,17 +1178,17 @@
 	"On Your Guard!"
 	{
 		"en"	"On Your Guard ⚠"
-		"chi"	"警惕"
+		"chi"	"警惕 ⚠"
 	}
 	"Darkest Dungeon"
 	{
 		"en"	"Darkest Dungeon"
-		"chi"	"警惕"
+		"chi"	"暗黑地牢"
 	}
 	"Darkest Dungeon!"
 	{
 		"en"	"Darkest Dungeon ⚠"
-		"chi"	"警惕"
+		"chi"	"暗黑地牢 ⚠"
 	}
 	"The Hitman"
 	{
@@ -1118,12 +1243,12 @@
 	"Teutons"
 	{
 		"en"	"Teutons"
-		"chi"	"条顿人"
+		"chi"	"日耳曼人"
 	}
 	"Teutons!"
 	{
 		"en"	"Teutons ⚠"
-		"chi"	"条顿人⚠"
+		"chi"	"日耳曼人⚠"
 	}
 	"Blitz"
 	{
@@ -1208,50 +1333,57 @@
 	"Simple Yet Deadly"
 	{
 		"en"	"Simple Yet Deadly"
-		"chi"	"简单而致命"
+		"chi"	"简约杀机"
 	}
 	"Simple Yet Deadly!"
 	{
 		"en"	"Simple Yet Deadly ⚠"
-		"chi"	"简单而致命⚠"
+		"chi"	"简约杀机⚠"
 	}
 	"Patient Zero"
 	{
 		"en"	"Patient Zero ☠"
+		"chi"	"零号病患 ☠"
 	}
 	"Highest Rule"
 	{
 		"en"	"Highest Rule ☠"
+		"chi"	"至高法则 ☠"
 	}
 	"Familiar Yet Not!"
 	{
 		"en"	"Familiar Yet Not ⚠"
-		"chi"	"熟悉但不熟悉⚠"
+		"chi"	"似曾相识 ⚠"
 	}
 	"Future Or Not!"
 	{
 		"en"	"Future Or Not ⚠"
-		"chi"	"未来与否⚠"
+		"chi"	"未来幻境 ⚠"
 	}
 	"Bob's Fear"
 	{
 		"en"	"Bob's Fear ☠"
+   		"chi"	"鲍勃的梦魇 ☠"
 	}
 	"Lost Crown and Sword"
 	{
 		"en"	"Lost Crown and Sword"
+   		"chi"	"失落的王冠与剑"
 	}
 	"Bob's Room"
 	{
 		"en"	"Bob's Room"
+   		"chi"	"鲍勃的密室"
 	}
 	"Bob's Dark Room"
 	{
 		"en"	"Bob's Dark Room"
+   		"chi"	"鲍勃的暗室"
 	}
 	"Temporary Alliance"
 	{
 		"en"	"Temporary Alliance"
+   		"chi"	"临时盟约"
 	}
 	"Broken Bridge"
 	{
@@ -1271,133 +1403,138 @@
 	"A Lost War"
 	{
 		"en"	"A Lost War"
-		"chi"	"一场失败的战争"
+		"chi"	"败战余烬"
 	}
 	"A Lost War!"
 	{
 		"en"	"A Lost War ⚠"
-		"chi"	"一场失败的战争⚠"
-	}
-	"Falling Hazard"
-	{
-		"en"	"Falling Hazard"
+		"chi"	"败战余烬⚠"
 	}
 	"Falling Hazard!"
 	{
-		"en"	"Falling Hazard ⚠"
+  		"en"    "Falling Hazard ⚠"
+   		"chi"   "坠落危机 ⚠"  // 补充翻译
 	}
 	"Whiteflower Mercenaries"
 	{
-		"en"	"Whiteflower Mercenaries ☠"
+   		"en"    "Whiteflower Mercenaries ☠"
+    		"chi"   "白英花佣兵 ☠"  
 	}
 	"City Hall"
 	{
-		"en"	"City Hall"
-		"chi"	"市政厅"
+   		"en"    "City Hall"
+  		"chi"   "市政厅"  // 保留原译
 	}
 	"City Hall!"
 	{
-		"en"	"City Hall ⚠"
-		"chi"	"市政厅⚠"
+  		"en"    "City Hall ⚠"
+  		"chi"   "市政厅 ⚠"  // 保留原译
 	}
 	"Prompting Engineer"
 	{
-		"en"	"Prompting Engineer ⚠"
-		"chi"	"提示工程师⚠"
+  		"en"    "Prompting Engineer ⚠"
+  		"chi"   "指令工程师 ⚠"  // 优化（"Prompting"译为"指令"更符合游戏语境）
 	}
 	"At Strength"
 	{
-		"en"	"At Strength ⚠"
-		"chi"	"高强度⚠"
+   		"en"    "At Strength ⚠"
+   		"chi"   "全力运转 ⚠"  // 优化为机械/系统术语
 	}
-
 	// Curses
 	"Bewildered"
 	{
-		"en"	"Bewildered"
-		"chi"	"茫然"
+ 	   "en"    "Bewildered"
+ 	   "chi"   "茫然"
 	}
 	"Bewildered Desc"
 	{
-		"en"	"{green}More stages to pick from {yellow}but the chapter is now longer."
+   	 "en"    "{green}More stages to pick from {yellow}but the chapter is now longer."
+  	  "chi"   "{green}可选关卡数量增加{yellow}但本章节流程延长"  // 优化描述
 	}
 	"Bewildered Lore"
 	{
-		"en"	"The road branches into multiple directions. You feel you are unable to pick the right path."
+  	  "en"    "The road branches into multiple directions. You feel you are unable to pick the right path."
+   	 "chi"   "道路在眼前分岔蔓延，你却找不到该走的方向"  // 增强文学性
 	}
 	"Sensitive"
 	{
-		"en"	"Sensitive"
-		"chi"	"灵敏"
+  	  "en"    "Sensitive"
+  	  "chi"   "感官敏锐"  // 优化术语
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25％ more damage {green}but heal +100％ more."
+ 	   "en"    "{red}Players take +25％ more damage {green}but heal +100％ more."
+  	  "chi"   "{red}承受伤害+25%{green}但治疗效率+100%"  // 统一数值格式
 	}
 	"Sensitive Lore"
 	{
-		"en"	"Whether joy or sorrow, everything you feel is intensified."
+ 	   "en"    "Whether joy or sorrow, everything you feel is intensified."
+ 	   "chi"   "喜悲皆如锋刃，所有感受都被放大到刺痛"  // 增强叙事张力
 	}
 	"Obsessed"
 	{
-		"en"	"Obsessed"
-		"chi"	"中邪"
+	    "en"    "Obsessed"
+  	  "chi"   "执念缠身"  // 优化术语
 	}
 	"Obsessed Desc"
 	{
-		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
+  	  "en"    "{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
+  	  "chi"   "{green}每场战斗后额外获得3块澳金锭{red}但本章节矿锭无法带入下一章"  // 精简描述
 	}
 	"Obsessed Lore"
 	{
-		"en"	"Your extra riches make you ecstatic, but your fear of losing them keeps you just as restless."
+  	  "en"    "Your extra riches make you ecstatic, but your fear of losing them keeps you just as restless."
+  	  "chi"   "暴增的财富令你狂喜，但对失去的恐惧让心跳永无宁息"  // 增强文学性
 	}
 	"Solitary"
 	{
-		"en"	"Solitary"
-		"chi"	"孤独"
+   	 "en"    "Solitary"
+  	  "chi"   "孤狼之道"  // 优化术语
 	}
 	"Solitary Desc"
 	{
-		"en"	"{red}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
+   	 "en"    "{red}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
+    	"chi"   "{red}商店物价上涨10%{green}但武器升级费用降低10%"  // 统一表述
 	}
 	"Solitary Lore"
 	{
-		"en"	"You are afraid of losing all that you hold dear. You will do everything it takes to make sure they do not go anywhere."
+ 	   "en"    "You are afraid of losing all that you hold dear. You will do everything it takes to make sure they do not go anywhere."
+  	  "chi"   "你恐惧珍爱之物消逝，为此不惜代价筑起高墙"  // 增强叙事感
 	}
 	"Blind"
 	{
-		"en"	"Blind"
-		"chi"	"瞎"
+   	 "en"    "Blind"
+   	 "chi"   "盲目抉择"  // 优化术语
 	}
 	"Blind Desc"
 	{
-		"en"	"{green}Gain an extra Australium Ingot each stage but {red}you can not see the name of stages in votes."
+  		"en"    "{green}Gain an extra Australium Ingot each stage but {red}you can not see the name of stages in votes."
+   	 "chi"   "{green}每关卡额外获得1块澳金锭{red}但无法查看投票中的关卡名称"  // 明确机制
 	}
 	"Blind Lore"
 	{
-		"en"	"Even though everything is right before your eyes, you feel it is all a haze."
+  		"en"    "Even though everything is right before your eyes, you feel it is all a haze."
+  		"chi"   "万物明明近在眼前，却如雾里看花般模糊不清"  // 增强意境
 	}
 	"Gravity Upset"
 	{
-		"en"	"Gravity Upset"
-		"chi"	"重力翻转"
-		"ru"	"Нарушение гравитации"
+ 		"en"    "Gravity Upset"
+   		 "chi"   "重力紊乱"  // 优化术语
 	}
 	"Gravity Upset Desc"
 	{
-		"en"	"Gravity is twice as high for you, but you gain an increased change in item drops."
-		"ru"	"Гравитация для вас в два раза выше, но вы получаете повышенное изменение в выпадении предметов."
+ 		"en"    "Gravity is twice as high for you, but you gain an increased change in item drops."
+ 		"chi"   "承受双倍重力{green}但物品掉落率显著提升"  // 补充颜色标记
 	}
 	"Pure Greed"
 	{
-		"en"	"Pure Greed"
-		"chi"	"纯粹的贪婪"
-		"ru"	"Чистая жадность"
+  		  "en"    "Pure Greed"
+  		  "chi"   "纯粹贪婪"  // 优化术语
 	}
 	"Pure Greed Desc"
 	{
-		"en"	"On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
-		"ru"	"На этом этаже вы получите +25％ слитков австралия, но все враги будут наносить на +25％ больше урона."
+ 		"en"    "On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
+  		"chi"   "{green}本层澳金锭获取+25%{red}但敌人伤害+25%"  // 补充颜色标记
 	}
 	
 	// Artifacts
@@ -1478,114 +1615,127 @@
 	"Provoked Anger Desc"
 	{
 		"en"	"Anger is usually provoked, this anger can be useful.\n- Every time you are hurt, gain +5％ extra damage for your holding weapon for 5 seconds."
+		"chi"	"愤怒常需被激发，而此怒意可化利刃。\n- 每次受伤时，手持武器在5秒内获得+5％额外伤害。"
 		"ru"	"Гнев обычно провоцируется, этот гнев может быть полезен.\n- Каждый раз, когда вас ранят, получайте +5％ доп. урона для вашего оружия в руках на 5 сек."
 	}
 	"Grigori's Coin Purse"
 	{
 		"en"	"Grigori's Coin Purse"
-		"chi"	"零钱包"
+		"chi"	"格里高利的零钱包"
 		"ru"	"Монетный кошелёк Григория"
 	}
 	"Grigori's Coin Purse Desc"
 	{
 		"en"	"Alot of money, yet never too much.\n- Gain More attackspeed and healspeed the more australium ingots you own."
+		"chi"	"钱财虽丰，却永不言足。\n- 持有的澳金锭越多，攻击速度与治疗速度加成越高。"
 		"ru"	"Много денег, но никогда не бывает слишком много.\n- Увеличивайте скорость атаки и скорость лечения тем больше, чем больше слитков австралиума вы имеете."
 	}
 	"Malfunctioning Shield"
 	{
 		"en"	"Malfunctioning Shield"
-		"chi"	"故障防护罩"
+		"chi"	"故障力场盾"
 		"ru"	"Неисправный щит"
 	}
 	"Malfunctioning Shield Desc"
 	{
 		"en"	"A broken shield that is still useable.\n- Every 10 seconds gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
+		"chi"	"破损却仍堪一用的护盾。\n- 每10秒获得一次完全格挡单次伤害的护盾。\n- 进入新战斗时自动生成该护盾。"
+		"ru"	""
 	}
 	"Bob's Exchange Money"
 	{
 		"en"	"Bob's Exchange Money"
-		"chi"	"兑换货币"
+		"chi"	"鲍勃的应急资金"
 		"ru"	"Обменные деньги Боба"
 	}
 	"Bob's Exchange Money Desc"
 	{
 		"en"	"Must have left it behind.\n- Gain 12 australium ingots."
+		"chi"	"想必是某人匆忙遗落。\n- 获得12块澳金锭。"
 		"ru"	"Должно быть, забыл их.\n- Получите 12 слитков австралия."
 	}
 	"Music Releasing Radio"
 	{
 		"en"	"Music Releasing Radio"
-		"chi"	"音乐发布电台"
+		"chi"	"音乐播放电台"
 		"ru"	"Радио, выпускающее музыку"
 	}
 	"Music Releasing Radio Desc"
 	{
 		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10％ slower."
+		"chi"	"音乐永不停歇，似无人能阻。\n- 所有敌人移动速度降低10%。"
 		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10％."
 	}
 	"Wrath Of Itallians"
 	{
 		"en"	"Wrath Of Itallians"
-		"chi"	"叙拉古人的愤怒"
+		"chi"	"意大利之怒"
 		"ru"	"Гнев итальянцев"
 	}
 	"Wrath Of Itallians Desc"
 	{
 		"en"	"Its Spaghetti thats covered in chocolate.\n- Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
+		"chi"	"巧克力包裹的意面，愤怒的甜蜜配方。\n- 武器技能触发时，该武器1秒内造成双倍伤害。"
 		"ru"	"Это спагетти, покрытые шоколадом.\n- Каждый раз, когда активируется способность оружия, это оружие будет наносить 2x урона в течение 1 сек."
 	}
 	"Hand Of The Elder Mages"
 	{
 		"en"	"Hand Of The Elder Mages"
-		"chi"	"长老法师之手"
+		"chi"	"大法师之手"
 		"ru"	"Десница старших магов"
 	}
 	"Hand Of The Elder Mages Desc"
 	{
 		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 2 seconds of reduced cooldown."
+		"chi"	"断裂手掌的微型雕像。\n- ''连锁施法''、''多重施法''及''召唤系''武器命中时减少2秒冷却。"
+		"ru"	""
 	}
 	"Bracelets of Agility"
 	{
 		"en"	"Bracelets of Agility"
-		"chi"	"敏捷手镯"
+		"chi"	"灵巧腕镯"
 		"ru"	"Браслеты ловкости"
 	}
 	"Bracelets of Agility Desc"
 	{
 		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10％ dodge chance."
+		"chi"	"来自卡西米尔远疆的轻盈之物。\n- 获得10%闪避几率。"
 		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10％ шанс уклонения."
 	}
 	"Elastic Flying Cape"
 	{
 		"en"	"Elastic Flying Cape"
-		"chi"	"弹性飞披"
+		"chi"	"弹性飞翼披风"
 		"ru"	"Эластичный летучий плащ"
 	}
 	"Elastic Flying Cape Desc"
 	{
 		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10％ dodge chance against ranged attacks."
+		"chi"	"环绕周身的披风赋予超凡感知。\n- 对远程攻击获得10%闪避几率。"
 		"ru"	"Плащ, который окружает вас и даёт дополнительные чувства.\n- Получите 10％ шанс уклонения от атак дальнего боя."
 	}
 	"Healing Salve"
 	{
 		"en"	"Healing Salve"
-		"chi"	"治愈药膏"
+		"chi"	"愈合软膏"
 		"ru"	"Лечебная мазь"
 	}
 	"Healing Salve Desc"
 	{
 		"en"	"Some salve for your wounds.\n- +1hp regen."
+		"chi"	"疗伤药膏，抚平创痕。\n- +1点生命恢复/秒。"
 		"ru"	"Немного мази для ваших ран.\n- +1 к восстановлению здоровья."
 	}
 	"Steel Razor"
 	{
 		"en"	"Steel Razor"
-		"chi"	"钢剃刀"
+		"chi"	"钢刃剃刀"
 		"ru"	"Стальная бритва"
 	}
 	"Steel Razor Desc"
 	{
 		"en"	"Sharp and pointy.\n- +15％ more melee damage."
+		"chi"	"锋锐逼人，寒光凛冽。\n- +15%近战伤害。"
 		"ru"	"Острый, заточенный.\n- +15％ к урону в ближнем бою."
 	}
 	"Healthy Essence"
@@ -1597,83 +1747,91 @@
 	"Healthy Essence Desc"
 	{
 		"en"	"Being near it makes you feel better.\n- +25％ more healing from most sources."
+		"chi"	"靠近便觉身心舒畅。\n- 从大多数来源获得的治疗量+25%。"
 		"ru"	"Находясь рядом с этим, вы чувствуете себя лучше.\n- +25％ к лечению от большинства источников."
 	}
 	"Chicken Nugget Box"
 	{
 		"en"	"Chicken Nugget Box"
-		"chi"	"鸡块盒"
+		"chi"	"鸡块套餐盒"
 		"ru"	"Коробка с куриными наггетсами"
 	}
 	"Chicken Nugget Box Desc"
 	{
 		"en"	"Still good and tasty as ever.\n- +15％ more health."
+		"chi"	"美味如初，饱腹依旧。\n- +15%最大生命值。"
 		"ru"	"Всё так же хорошо и вкусно.\n- +15％ к здоровью."
 	}
 	"Fizzy Drink"
 	{
 		"en"	"Fizzy Drink"
-		"chi"	"汽水"
+		"chi"	"气泡饮料"
 		"ru"	"Газированный напиток"
 	}
 	"Fizzy Drink Desc"
 	{
 		"en"	"Be careful when you open it, its shook.\n- All enemies will gib no matter what."
+		"chi"	"开罐当心，气泡翻涌。\n- 所有敌人死亡时必会爆裂。"
 		"ru"	"Будьте осторожны, когда открываете его, он шипит.\n- Все враги будут разлетаться на кусочки, несмотря ни на что."
 	}
 	"Hover Glider"
 	{
 		"en"	"Hover Glider"
-		"chi"	"悬停滑翔机"
+		"chi"	"悬浮滑翔翼"
 		"ru"	"Парящий планёр"
 	}
 	"Hover Glider Desc"
 	{
 		"en"	"A device from old german technology.\n- You deal 30％ more damage while being in the air or in mid swim."
+		"chi"	"源自德意志古老科技的装置。\n- 空中或游泳时造成+30%伤害。"
 		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30％ больше урона, находясь в воздухе или во время плавания."
 	}
 	"Hand Written Letter"
 	{
 		"en"	"Hand Written Letter"
-		"chi"	"手写信"
+		"chi"	"手写信笺"
 		"ru"	"Рукописное письмо"
 	}
 	"Hand Written Letter Desc"
 	{
 		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Cash, 2％ more damage."
+		"chi"	"遗落的信笺，以法语书写，本非予你之物。\n- +750金钱，+2%伤害。"
 		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2％ больше урона."
 	}
 	"Crude Flute"
 	{
 		"en"	"Crude Flute"
-		"chi"	"粗笛"
+		"chi"	"粗制木笛"
 		"ru"	"Грубая флейта"
-	}
+	}	
 	"Crude Flute Desc"
 	{
 		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3％ MaxHealth."
+		"chi"	"助人放松的乐器，此刻正堪所用。\n- +500金钱，+3%最大生命值。"
 		"ru"	"Музыкальный инструмент, хорошо расслабляет, необходим в подобных ситуациях.\n- +500 кредитов, +3％ макс. запас здоровья."
 	}
 	"Scrapped Wallet"
 	{
 		"en"	"Scrapped Wallet"
-		"chi"	"废弃的钱包"
+		"chi"	"废弃皮夹"
 		"ru"	"Выброшенный кошелёк"
 	}
 	"Scrapped Wallet Desc"
 	{
 		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Cash and 1％ more damage."
+		"chi"	"旧俄式皮夹，内藏照片与零钱。\n- +500金钱，+1%伤害。"
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 	}
 	"Golden Coin"
 	{
 		"en"	"Golden Coin"
-		"chi"	"金币"
+		"chi"	"幸运金币"
 		"ru"	"Золотая монета"
 	}
 	"Golden Coin Desc"
 	{
 		"en"	"A Valueable golden coin from old greek.\n- +2000 Cash and +10 Australium ingots."
+		"chi"	"来自古希腊的贵重金币。\n- +2000资金与+10块澳金锭"
 		"ru"	"Ценная золотая монета из старой Греции.\n- +2000 кредитов и +10 слитков австралия."
 	}
 	"Nickel Injected Pack"
@@ -1685,6 +1843,7 @@
 	"Nickel Injected Pack Desc"
 	{
 		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35％ more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
+		"chi"	"装有强化药剂的高科技注射包。\n- 满血时造成35%额外伤害，生命值越低加成越弱，直至消失"
 	}
 	"Spanish Specialised Gunpowder"
 	{
@@ -1695,6 +1854,7 @@
 	"Spanish Specialised Gunpowder Desc"
 	{
 		"en"	"Gunpower created in spain, and made specifically for spanish troops.\n- +15％ more ranged damage."
+		"chi"	"西班牙专为部队研发的特种火药。\n- 远程伤害+15%"
 		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15％ к урону в дальнем бою."
 	}
 	"Supply Depot"
@@ -1706,16 +1866,18 @@
 	"Supply Depot Desc"
 	{
 		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +2 maximum allies."
+		"chi"	"「需要更多补给仓库」\n{green}兵营补给+1，最大盟友数+2"
 		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +2 к максимуму союзников."
 	}
 	"Al-Hallam's Fortress Blueprints"
 	{
 		"en"	"Al-Hallam's Fortress Blueprints"
-		"chi"	"Al-Hallam 的堡垒蓝图"
+		"chi"	"Al-Hallam的堡垒蓝图"
 	}
 	"Al-Hallam's Fortress Blueprints Desc"
 	{
 		"en"	"''Seems almost mythological...''\n{green}+2 supply for Barracks, +4 maximum allies."
+		"chi"	"「近乎神话般的存在...」\n{green}兵营补给+2，最大盟友数+4"
 	}
 	"Gambesons"
 	{
@@ -1726,17 +1888,19 @@
 	"Gambesons Desc"
 	{
 		"en"	"A medieval armor plate, the balance seems off.\n{green}Barrack Units receive a flat 10 damage reduction."
+		"chi"	"中世纪装甲板，配平有些问题。\n{green}兵营单位获得10点固定减伤"
 		"ru"	"Средневековая броня, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 10 ед."
 	}
-	"Neosteal Plating"
+	"Neosteel Plating"
 	{
 		"en"	"Neosteel Plating"
-		"chi"	"来自 Neosta 的缝线。"
+		"chi"	"新星钢镀层"
 		"ru"	"Обшивка из неостали"
 	}
-	"Neosteal Plating Desc"
+	"Neosteel Plating Desc"
 	{
 		"en"	"A space building armor plate, the balance seems off.\n{green}Barrack Units receive a flat 20 damage reduction."
+		"chi"	"太空建筑用装甲板，配平有些问题。\n{green}兵营单位获得20点固定减伤"
 		"ru"	"Космическая броня строения, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 20 ед."
 	}
 	"Thumb Ring"
@@ -1748,130 +1912,143 @@
 	"Thumb Ring Desc"
 	{
 		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 33％ faster."
+		"chi"	"中世纪技术，奇迹般地实现100%命中率（对静止目标）。\n{green}盟友弓弩系武器射击与装填速度+33%"
 		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 33％ быстрее."
 	}
 	"Blademace"
 	{
 		"en"	"''Blademace''"
-		"chi"	"刃锤"
+		"chi"	"「刃锤」"
 		"ru"	"«Булава с лезвием»"
 	}
 	"Blademace Desc"
 	{
 		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20％ damage bonus, +20％ max health, +2％ damage resistance {red}but -10％ movement speed{yellow}."
+		"chi"	"插在石头中的剑。真有人无聊到这么做？\n{green}全体盟友伤害+20%、最大生命值+20%、减伤+2%{red}但移速-10%{yellow}"
 	}
 	"Brokenblade"
 	{
 		"en"	"''Brokenblade''"
-		"chi"	"断剑"
+		"chi"	"「断剑」"
 		"ru"	"«Сломанный клинок»"
 	}
 	"Brokenblade Desc"
 	{
 		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20％ max health{yellow}."
+		"chi"	"一把断剑。勉强能用...大概...\n{green}玩家与叛军复活速度翻倍{red}但最大生命值-20%{yellow}"
 		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20％ макс. запаса здоровья{yellow}."
 	}
 	"Bladedance"
 	{
 		"en"	"''Bladedance''"
-		"chi"	"《刀舞》"
+		"chi"	"「刃舞」"
 		"ru"	"«Взбешённый клинок»"
 	}
 	"Bladedance Desc"
 	{
 		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus, and +100％ Healing Rate."
+		"chi"	"赌场主人遗留的圣物。\n{green}每场战斗随机一名玩家获得+100%最大生命值、+100%伤害加成与+100%治疗效率"
 	}
 	"Whiteflower"
 	{
 		"en"	"''Whiteflower''"
-		"chi"	"《白英花》"
+		"chi"	"「白英花」"
 		"ru"	"«Белый цветок»"
 	}
 	"Whiteflower Desc"
 	{
 		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped"
+		"chi"	"「猩红剧团」成员遗留的圣物。\n{green}全体盟友最大生命值+25%{yellow}但生命值上限会随机置换"
 	}
 	"Shadow"
 	{
 		"en"	"''Shadow''"
-		"chi"	"《影子》"
+		"chi"	"「暗影」"
 		"ru"	"«Тень»"
 	}
 	"Shadow Desc"
 	{
 		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}Non-player allies will use the same max health from players."
+		"chi"	"「猩红剧团」成员遗留的圣物。\n{yellow}非玩家盟友将继承玩家的最大生命值"
 		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{yellow}Персонажи-союзники будут иметь тот же макс. запас здоровья, что и игроки."
 	}
 	"Right Eye of the Natator"
 	{
 		"en"	"''Right Eye of the Natator''"
-		"chi"	"Natator 的右眼"
+		"chi"	"「Natator的右眼」"
 		"ru"	"«Правый глаз нататора»"
 	}
 	"Right Eye of the Natator Desc"
 	{
 		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {red}but -5％ melee damage{yellow}."
+		"chi"	"高卢女皇皇冠的右半部分，现存于伦蒂尼姆皇家博物馆。\n{green}敌人受到远程伤害+20%{red}但近战伤害-5%{yellow}"
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{red}, но -5％ урона в ближнем бою{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
 		"en"	"''Left Eye of the Natator''"
-		"chi"	"Natator 的左眼"
+		"chi"	"「Natator的左眼」"
 		"ru"	"«Левый глаз нататора»"
 	}
 	"Left Eye of the Natator Desc"
 	{
 		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {red}but -5％ ranged damage{yellow}."
+		"chi"	"高卢女皇皇冠的左半部分，现存于莱塔尼亚女王图书馆。\n{green}敌人受到近战伤害+20%{red}但远程伤害-5%{yellow}"
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{red}, но -5％ урона в дальнем бою{yellow}."
 	}
 	"End of Times"
 	{
 		"en"	"''End of Times''"
-		"chi"	"时光之末"
+		"chi"	"「时光之末」"
 		"ru"	"«Конец времён»"
 	}
 	"End of Times Desc"
 	{
 		"en"	"As long as a new cycle has not been reached, there is still time to fix your mistakes.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"chi"	"只要新轮回尚未开始，就还有修正错误的机会。\n{green}非首领战败后可继续冒险{yellow}(仅限一次)"
 		"ru"	"Пока новый цикл не достигнут, ещё есть время исправить свои ошибки.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
 	}
 	"Proof of Friendship"
 	{
 		"en"	"Proof of Friendship"
-		"chi"	"友谊的证明"
+		"chi"	"友谊证明"
 		"ru"	"Доказательство дружбы"
 	}
 	"Proof of Friendship Desc"
 	{
 		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from battles, doubled on Elite battles."
+		"chi"	"他们不容许崇高的友谊被玷污。\n{green}战斗掉落澳金锭+1，精英战翻倍"
 		"ru"	"Когда они распространяют на других свою дружбу, они не позволяют ей быть запятнанной.\n{green}+1 слиток австралиума выпадает из сражений, удваивается в элитных сражениях."
 	}
 	"Broken Combine Crown"
 	{
 		"en"	"Broken Combine Crown"
-		"chi"	"破损的联合军皇冠"
+		"chi"	"破损的联合军王冠"
 	}
 	"Broken Combine Crown Desc"
 	{
 		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5％ max health {blue}and the ending is changed."
+		"chi"	"锈蚀潮湿的王冠，边缘锋利残破。似曾相识。\n{red}全体盟友最大生命值-5%{blue}并改变结局"
 	}
 	"Bob's Reseach Papers"
 	{
 		"en"	"Bob's Reseach Papers"
-		"chi"	"研究论文"
+		"chi"	"鲍勃的研究论文"
 	}
 	"Bob's Reseach Papers Desc"
 	{
 		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10％ movement speed."
+		"chi"	"写满实验对象姓名的清单，阅读时令人不安，仿佛被监视着。\n{red}玩家移速-10%"
 	}
 	"Bob's Final Draft"
 	{
 		"en"	"Bob's Final Draft"
-		"chi"	"最终草稿"
+		"chi"	"鲍勃的终稿"
 	}
 	"Bob's Final Draft Desc"
 	{
 		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
+		"chi"	"你读到关于名为「刃舞」的联合军成员的未完成报告。\n{green}全体盟友伤害+15%、移速+20%{blue}并改变结局"
 	}
 	"Hand of Sticks"
 	{
@@ -1881,24 +2058,27 @@
 	"Hand of Sticks Desc"
 	{
 		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
+		"chi"	"真正的贴身战。\n{green}「多重弹丸」与「速射」类武器获得+35%近战抗性，命中后获得0.5秒加速"
 	}
 	"Hand of Quake"
 	{
 		"en"	"Hand of Quake"
-		"chi"	"地震之手"
+		"chi"	"震荡之手"
 	}
 	"Hand of Quake Desc"
 	{
 		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150％ jump height and 50％ more damage."
+		"chi"	"火箭跳去哪了？\n{green}「爆破专家」与手榴弹类武器跳跃高度+150%、伤害+50%"
 	}
 	"Hand of Travel"
 	{
 		"en"	"Hand of Travel"
-		"chi"	"旅行之手"
+		"chi"	"漫游之手"
 	}
 	"Hand of Travel Desc"
 	{
 		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knife and ''Abyssal hunter'' weapons weapons grant +10 health regen."
+		"chi"	"整装待发。\n{green}「团队支援」、所有吸血刃与「深渊猎人」类武器生命恢复+10"
 	}
 	"Hand of Flesh"
 	{
@@ -1908,6 +2088,7 @@
 	"Hand of Flesh Desc"
 	{
 		"en"	"Flesh burns and bleeds.\n{yellow}Afterburn is replaced with bleed."
+		"chi"	"血肉会燃烧也会流血。\n{yellow}燃烧效果替换为流血"
 	}
 	"Hand of Trapmaster"
 	{
@@ -1917,6 +2098,7 @@
 	"Hand of Trapmaster Desc"
 	{
 		"en"	"{green}Builder trap weapons can hold shots.\n{green}Stickybomb launchers gain +6 max stickies {yellow}and detonates on your crosshair."
+		"chi"	"{green}建造者陷阱类武器可蓄力\n{green}粘弹发射器最大携带+6{yellow}且准星瞄准时引爆"
 	}
 	"Hand of Geek"
 	{
@@ -1926,8 +2108,9 @@
 	"Hand of Geek Desc"
 	{
 		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
+		"chi"	"想要我的药剂吗？\n{green}「无限火力」「减益」「维多利亚」类武器命中回复+3生命值与35%远程抗性，「维多利亚」类回复效果×5"
 	}
-	"Hand of Incredible Speeds"
+	"Hand of Fisting"
 	{
 		"en"	"Hand of Fisting"
 		"chi"	"拳击之手"
@@ -1935,15 +2118,17 @@
 	"Hand of Incredible Speeds Desc"
 	{
 		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +33％ firing speed and +33％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
+		"chi"	"「我站在这里，乔拉托。」\n{green}「格斗家」「单发弹」「远程」类武器射速+33%、装填速度+33%\n「远程」类武器弹匣容量+50%"
 	}
 	"Hand of Suprise"
 	{
 		"en"	"Hand of Suprise"
-		"chi"	"惊奇之手"
+		"chi"	"突袭之手"
 	}
 	"Hand of Suprise Desc"
 	{
 		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
+		"chi"	"砰！\n{green}「伏击者」与「战斗员」类武器攻击造成5秒流血且攻速+33%"
 	}
 	"Hand of Revenge"
 	{
@@ -1953,6 +2138,7 @@
 	"Hand of Revenge Desc"
 	{
 		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150％ damage bonus while below half health."
+		"chi"	"最好别碰我。\n{green}「决斗家」「畸变体」「粉碎者」类武器在半血以下时伤害+150%"
 	}
 	"Hand of Stock"
 	{
@@ -1962,6 +2148,7 @@
 	"Hand of Stock Desc"
 	{
 		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
+		"chi"	"市场投资之道。\n{green}「基础施法者」类武器法力上限+100%、恢复速度+100%、攻速+100%"
 	}
 	"Hand of the Elite"
 	{
@@ -1971,6 +2158,7 @@
 	"Hand of the Elite Desc"
 	{
 		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75％ damage bonus while over half health"
+		"chi"	"优雅至极。\n{green}「卡西米尔」与「领主」类武器在半血以上时伤害+75%"
 	}
 	"Soul of Boss vs Boss"
 	{
@@ -1980,6 +2168,7 @@
 	"Soul of Boss vs Boss Desc"
 	{
 		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100％ jump height"
+		"chi"	"万物皆有其起源。\n{green}特定主题武器跳跃高度+100%"
 	}
 	"Soul of Arknights"
 	{
@@ -1989,6 +2178,7 @@
 	"Soul of Arknights Desc"
 	{
 		"en"	"Is this your final choice?\n{green}Specific themed weapons remove the down limit"
+		"chi"	"这是你的最终选择吗？\n{green}特定主题武器移除倒地限制"
 	}
 	"Soul of Bloons Tower Defense"
 	{
@@ -1998,6 +2188,7 @@
 	"Soul of Bloons Tower Defense Desc"
 	{
 		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20％ damage to each other, stacking"
+		"chi"	"该建神庙了。\n{green}特定主题武器彼此提供+20%伤害（可叠加）"
 	}
 	"Soul of Yakuza"
 	{
@@ -2007,6 +2198,7 @@
 	"Soul of Yakuza Desc"
 	{
 		"en"	"10 years.\n{green}Specific themed weapons allow their special stance to always gain HEAT"
+		"chi"	"十年之约。\n{green}特定主题武器始终积累热血值"
 	}
 	"Soul of Darkest Dungeon"
 	{
@@ -2016,6 +2208,7 @@
 	"Soul of Darkest Dungeon Desc"
 	{
 		"en"	"Face the light or be consumed.\n{green}Specific themed weapons have a chance to prevent dying and instead remain at one health"
+		"chi"	"直面光明或堕入深渊。\n{green}特定主题武器有概率锁血不死"
 	}
 	"Soul of Terraria"
 	{
@@ -2025,24 +2218,27 @@
 	"Soul of Terraria Desc"
 	{
 		"en"	"And there will be mods.\n{green}Specific themed weapons grant 1000 HP every so often"
+		"chi"	"模组永存。\n{green}特定主题武器定期恢复1000生命值"
 	}
 	"Xeno Anti-Vial"
 	{
 		"en"	"Xeno Anti-Vial"
-		"chi"	"Xeno血清"
+		"chi"	"异种抗毒血清"
 	}
 	"Xeno Anti-Vial Desc"
 	{
 		"en"	"Suppresses the effects of Xeno, for a moment.\n{green}Xeno enemies take +75％ damage"
+		"chi"	"暂时抑制异种毒素。\n{green}对异种敌人伤害+75%"
 	}
 	"Seaborn Anti-Vial"
 	{
 		"en"	"Seaborn Anti-Vial"
-		"chi"	"海嗣血清"
+		"chi"	"海嗣抗毒血清"
 	}
 	"Seaborn Anti-Vial Desc"
 	{
 		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75％ damage"
+		"chi"	"连海嗣都畏惧的提灯。\n{green}对海嗣敌人伤害+75%"
 	}
 	"Revenge Squad"
 	{
@@ -2057,11 +2253,12 @@
 	"Bob's Orders"
 	{
 		"en"	"Bob's Orders"
-		"chi"	"Bob 的订单"
+		"chi"	"鲍勃的命令"
 	}
 	"Bob's Orders Desc"
 	{
 		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
+		"chi"	"消灭白英花。\n{green}全体盟友伤害+15%、移速+20%{blue}并改变结局"
 	}
 	"But Nobody Is Here"
 	{
@@ -2071,50 +2268,62 @@
 	"W.F. Mercenary Iberian"
 	{
 		"en"	"W.F. Mercenary Iberian"
+		"chi"	"W.F.佣兵-伊比利亚"
 	}
 	"W.F. Mercenary Ruinian"
 	{
 		"en"	"W.F. Mercenary Ruinian"
+		"chi"	"W.F.佣兵-废墟人"
 	}
 	"Guln"
 	{
 		"en"	"Guln"
+		"chi"	"古恩"
 	}
 	"Automatic Robot Defense"
 	{
 		"en"	"Automatic Robot Defense"
+		"chi"	"自动机器人防御"
 	}
 	"Cursed Relic"
 	{
 		"en"	"Cursed Relic"
+		"chi"	"诅咒遗物"
 	}
 	"Cursed Relic Desc"
 	{
 		"en"	"From the back of the bin in the shop.\n{green}Players gain +8％ firing speed {red}most of the time"
+		"chi"	"从商店废品堆里翻出来的。\n{green}玩家射速+8%{red}（大多数时候）"
 	}
 	"Australium Printer"
 	{
 		"en"	"Australium Printer"
+		"chi"	"澳洲金打印机"
 	}
 	"Australium Printer Desc"
 	{
 		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 Cash each"
+		"chi"	"把澳洲金变现！\n{yellow}每块澳金锭兑换200资金"
 	}
 	"Elite Voucher"
 	{
 		"en"	"Elite Voucher"
+		"chi"	"精英兑换券"
 	}
 	"Elite Voucher Desc"
 	{
 		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
+		"chi"	"稀有物品，善加利用。\n{green}以商店折扣回收一件高级武器"
 	}
 	"Rotten Bone"
 	{
 		"en"	"Rotten Bone"
+		"chi"	"腐化骨片"
 	}
 	"Rotten Bone Desc"
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
+		"chi"	"无时无刻不在腐朽。\n{green}每个新出现的敌人会受到递增的额外伤害（可叠加）"
 	}
 	"Eyes of the Sea"
 	{
@@ -2124,6 +2333,7 @@
 	"Eyes of the Sea Desc"
 	{
 		"en"	"You saw what they saw.\n{green}Enemies are silenced for 10 seconds on spawn"
+		"chi"	"你见证了它们的见证。\n{green}敌人出生时沉默10秒"
 	}
 	"Copper Ore"
 	{
@@ -2133,6 +2343,7 @@
 	"Copper Ore Desc"
 	{
 		"en"	"Copper.\n{green}Weapons fire +35％ bullets per shot {red}but stops working when Iron Ore is collected"
+		"chi"	"铜。\n{green}武器每次射击+35%子弹数量{red}但获得铁矿后失效"
 	}
 	"Iron Ore"
 	{
@@ -2142,70 +2353,86 @@
 	"Iron Ore Desc"
 	{
 		"en"	"Iron.\n{green}Weapon projectiles gain +35％ projectile speed and range {red}but stops working when Copper Ore is collected"
+		"chi"	"铁。\n{green}武器投射物速度与射程+35%{red}但获得铜矿后失效"
 	}
 	"Empty Plate"
 	{
 		"en"	"Empty Plate"
+		"chi"	"空餐盘"
 	}
 	"Empty Plate Desc"
 	{
 		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
+		"chi"	"服务员！再来点伊祖米克！\n{green}可窃取并吸收掉落的遗骸转化为新圣物（上限5个）"
 	}
 	"Founder Fondue"
 	{
 		"en"	"Founder Fondue"
+		"chi"	"创始者火锅"
 	}
 	"Founder Fondue Desc"
 	{
 		"en"	"{green}Players take 10 less elemental damage"
+		"chi"	"{green}玩家受到的元素伤害-10"
 	}
 	"Predator Pancakes"
 	{
 		"en"	"Predator Pancakes"
+		"chi"	"掠食者松饼"
 	}
 	"Predator Pancakes Desc"
 	{
 		"en"	"{green}Players gain 10％ dodge chance"
+		"chi"	"{green}玩家获得10%闪避率"
 	}
 	"Brandguider Brunch"
 	{
 		"en"	"Brandguider Brunch"
+		"chi"	"烙导者早午餐"
 	}
 	"Brandguider Brunch Desc"
 	{
 		"en"	"{green}Players take 50％ less nethersea brand damage"
+		"chi"	"{green}玩家受到的溟海烙痕伤害-50%"
 	}
 	"Spewer Spewers"
 	{
 		"en"	"Spewer Spewers"
+		"chi"	"喷吐者薄饼"
 	}
 	"Spewer Spewers Desc"
 	{
 		"en"	"{green}Weapon projectiles gain +50％ range"
+		"chi"	"{green}武器射程+50%"
 	}
 	"Swarmcaller Sandwich"
 	{
 		"en"	"Swarmcaller Sandwich"
+		"chi"	"唤群者三明治"
 	}
 	"Swarmcaller Sandwich Desc"
 	{
 		"en"	"{green}Players are immune to slow effects"
+		"chi"	"{green}玩家免疫减速效果"
 	}
 	"Reefbreaker Ravioli"
 	{
 		"en"	"Reefbreaker Ravioli"
+		"chi"	"碎礁者馄饨"
 	}
 	"Reefbreaker Ravioli Desc"
 	{
 		"en"	"{green}Players gain +15％ damage"
+		"chi"	"{green}玩家伤害+15%"
 	}
 	"Whiteflower Final Speech 1"
 	{
 		"en"	"I got rid of Guln, tricked Bob to get rid of Bladedance...\nYou and Bob are the last ones."
+		"chi"	"我解决了古恩，骗鲍勃处理掉刀舞...\n现在只剩你和鲍勃了。"
 	}
 	"Whiteflower Final Speech 2"
 	{
 		"en"	"You think I fight alone?"
+		"chi"	"你以为我在孤军奋战？"
 	}
 }
-

@@ -118,7 +118,7 @@
 	"Compass and Map Desc"
 	{
 		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
-		"chi"	"最简单而正确的道路\n{green}敌人移动速度减慢 20%，受到的伤害增加 35%，造成的伤害减少 35%\n{green}混沌施加减少 75%\n{crimson}阻止获得其他结局"
+		"chi"	"最简单而正确的道路\n{green}敌人移动速度减慢 20%，受到的伤害增加 35%，造成的伤害减少 35%\n{green}坍缩施加减少 75%\n{crimson}阻止获得其他结局"
 	}
 	"Healing Supplies"
 	{
@@ -493,142 +493,169 @@
 	"Dancer's Bracelets"
 	{
 		"en"	"Dancer's Bracelets"
-		"chi"		"舞者手镯"
+		"chi"	"舞者手镯"
 	}
 	"Dancer's Bracelets Desc"
 	{
 		"en"	"The audience breaks to an applause as the well-trained dancers waltz around the traps on stage.\n{green}Allies gain 10％ dodge chance"
+		"chi"	"训练有素的舞者在舞台陷阱间穿梭，观众报以热烈掌声。\n{green}盟友获得10%闪避几率"
 	}
+
 	"Peek into the Eternal Night"
 	{
 		"en"	"''Peek into the Eternal Night''"
-		"chi"		"窥视永恒的黑夜"
+		"chi"	"「窥见永夜」"
 	}
+
 	"Mazeat Lost Technology"
 	{
 		"en"	"''Mazeat Lost Technology''"
-		"chi"		"Mazeat 失落的技术"
+		"chi"	"「梅泽特失落科技」"
 	}
 	"Mazeat Lost Technology Desc"
 	{
 		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33％"
+		"chi"	"似乎只能暂时生效。\n{green}大部分冷却时间缩短33%"
 	}
+
 	"Peek into the Eternal Night Desc"
 	{
 		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ firing speed {red}but -10 HP a second"
+		"chi"	"当她转身北行的瞬间。\n{green}玩家伤害+25%、攻击速度+25%{red}但每秒损失10点生命值"
 	}
+
 	"Dead Tree's Echo"
 	{
 		"en"	"''Dead Tree's Echo''"
-		"chi"		"Dead Tree 的 Echo"
-	}
+		"chi"	"「枯木回响」"
+	}	
 	"Dead Tree's Echo Desc"
 	{
 		"en"	"Drum to call their ancestors' souls.\n{green}Players gain +20 HP a second {red}but -25％ max health"
+		"chi"	"击鼓召唤先祖之魂。\n{green}玩家每秒恢复20点生命值{red}但最大生命值-25%"
 	}
+
 	"Frozen Whetstone"
 	{
 		"en"	"Frozen Whetstone"
-		"chi"		"冰冻磨刀石"
-	}
+		"chi"	"寒冰磨刀石"
+	}	
 	"Frozen Whetstone Desc"
 	{
 		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus"
+		"chi"	"石面如冰般光滑。\n{green}每次随机一名玩家获得+100%最大生命值与+100%伤害加成"
 	}
+
 	"Clairvoyant's Reveal"
 	{
 		"en"	"Clairvoyant's Reveal"
-		"chi"		"望远镜"
+		"chi"	"先知之视"
 	}
 	"Clairvoyant's Reveal Desc"
 	{
 		"en"	"There is no direction you can head to avoid misfortune.\n{green}Allies gain +25% max health {yellow}but max health is randomly swapped"
+		"chi"	"无论转向何方都无法逃避厄运。\n{green}盟友最大生命值+25%{yellow}但生命值上限会随机置换"
 	}
+
 	"Finshell Shield"
 	{
 		"en"	"Finshell Shield"
-		"chi"		"鳍壳盾牌"
+		"chi"	"鳍甲护盾"
 	}
 	"Finshell Shield Desc"
 	{
 		"en"	"The stacks of distant trauma cannot surpass the layers of protection built by the body.\n{green}Allies gain a shield that blocks one instance of damage every 10 seconds"
+		"chi"	"遥远创伤的叠加无法突破肉体构筑的防护。\n{green}盟友每10秒获得一次伤害格挡护盾"
 	}
+
 	"Empty Fowlbeast"
 	{
 		"en"	"Empty Fowlbeast"
-		"chi"		"空鸟兽"
+		"chi"	"空鸟兽"
 	}
 	"Empty Fowlbeast Desc"
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
+		"chi"	"{green}限时召唤物（非公民/兵营单位）最大生命值+30%、伤害+30%，召唤时主人获得10秒+60%伤害加成"
 	}
+
 	"Acahuallan Bowl"
 	{
 		"en"	"Acahuallan Bowl"
-		"chi"		"Acahuallan 碗"
+		"chi"	"阿卡瓦兰圣碗"
 	}
 	"Acahuallan Bowl Desc"
 	{
 		"en"	"Fruit is one of the locals' staples, often eaten fresh right off the tree.\n{green}Allies gain 1500 barrier"
+		"chi"	"鲜果是当地人的主食，常从树上现摘即食。\n{green}盟友获得1500点护盾值"
 	}
+
 	"Defender-2"
 	{
 		"en"	"Defender-2"
-		"chi"		"防御者-2"
+		"chi"	"捍卫者-2型"
 	}
 	"Defender-2 Desc"
 	{
 		"en"	"A mass-produced defensive-type drone.\n{green}Allies gain 2500 barrier"
-		"chi"		"一架量产的防御型无人机.\n{green}盟友获得 2500 屏障"
+		"chi"	"量产的防御型无人机。\n{green}盟友获得2500点护盾值"
 	}
+
 	"Golden Chalice"
 	{
 		"en"	"Golden Chalice"
-		"chi"		"金酒之杯"
+		"chi"	"金酒之杯"
 	}
 	"Golden Chalice Desc"
 	{
 		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases based Australium Ingots amount"
-		"chi"		"圣徒、骑士和虔诚主义者。他们都是疯子.\n{green}盟友攻击速度增加基于澳元素锭的数量"
+		"chi"	"圣徒、骑士与虔信者，皆为狂人。\n{green}盟友攻击速度随澳金锭数量提升"
 	}
+
 	"Queen's Fellowship"
 	{
 		"en"	"Queen's Fellowship"
-		"chi"		"女王奖学金"
+		"chi"	"女王恩典"
 	}
 	"Queen's Fellowship Desc"
 	{
 		"en"	"...preparing for the calamity that would come to be known as the Profound Silence.\n{green}Ally health is converted into barrier with an additional 500"
+		"chi"	"...为那场后世称为「渊默」的灾变做准备。\n{green}将盟友生命值转化为护盾值并额外+500"
 	}
+
 	"Ancient Tree Fruit"
 	{
 		"en"	"Ancient Tree Fruit"
-		"chi"		"古树果实"
+		"chi"	"远古树实"
 	}
 	"Ancient Tree Fruit Desc"
 	{
 		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts"
-		"chi"		"当树结果时，前四个会被拿走.\n{green}获得 3 个随机文物"
+		"chi"	"当神树结果时，最先成熟的四枚必被摘取。\n{green}获得3件随机圣物"
 	}
+
 	"Steam Sale"
 	{
 		"en"	"Steam Sale"
-		"chi"		"打折券"
+		"chi"	"蒸汽促销"
 		"ko"	"스팀 세일"
 	}
 	"Steam Sale Desc"
 	{
 		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50％ off"
+		"chi"	"[小型独立公司]为[用户]推出的促销活动。\n{green}商店商品价格五折"
 	}
-	"Steal Grigori"
+
+	"Take them from Father Grigori"
 	{
 		"en"	"Take them from Father Grigori"
-		"chi"		"从格里高利神父那里拿走它们"
+		"chi"	"向格里高利神父「借取」"
 		"ko"	"그레고리에게 ''할인을 할 것''을 간청한다"
 	}
-	"Steal Grigori Desc"
+	"Take them from Father Grigori Desc"
 	{
 		"en"	"Fight Father Grigori for the chance to take all his items without pay"
+		"chi"	"与格里高利神父战斗，有机会免费获取他所有的物品"
 		"ko"	"그레고리와 싸워서 현재 진열된 모든 아이템을 100％ 할인된 가격으로 가져갈수있습니다."
 	}
 	"Steal Ruinian"
@@ -694,166 +721,199 @@
 	"Underground Scorch"
 	{
 		"en"	"Underground Scorch"
+		"chi"	"地底灼痕"
 	}
 	"Underground Scorch Desc"
 	{
 		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining more then 5 Chaos Infliction"
+		"chi"	"海民从不在意陆上之事...\n{green}若关卡获得≤5点坍缩值，通关后坍缩值-6"
 	}
+
 	"Great Machinations"
 	{
 		"en"	"Great Machinations"
+		"chi"	"宏伟蓝图"
 	}
 	"Great Machinations Desc"
 	{
 		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining more then 5 Chaos Infliction."
+		"chi"	"不必羡慕地表阳光，我们能做得更好。\n{green}若关卡获得≤5点坍缩值，通关后坍缩值-9"
 	}
+
 	"Solidified Lamp Oil"
 	{
 		"en"	"Solidified Lamp Oil"
+		"chi"	"固化灯油"
 	}
 	"Solidified Lamp Oil Desc"
 	{
 		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40％"
+		"chi"	"可使提灯长明的固化油脂。\n{green}关卡获得的坍缩值-40%"
 	}
+
 	"Sanctified Lamp Oil"
 	{
 		"en"	"Sanctified Lamp Oil"
+		"chi"	"圣化灯油"
 	}
 	"Sanctified Lamp Oil Desc"
 	{
 		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60％"
+		"chi"	"审判庭特供的提灯燃料。\n{green}关卡获得的坍缩值-60%"
 	}
+
 	"Mercenary Insurance"
 	{
 		"en"	"Mercenary Insurance"
+		"chi"	"佣兵保险"
 	}
 	"Mercenary Insurance Desc"
 	{
 		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10％ less damage, increased to 35％ if Chaos Infliction is at least 60"
+		"chi"	"为独立佣兵提供的特殊保险。\n玩家受伤-10%，坍缩值≥60时提升至-35%"
 	}
+
 	"Energy Life Vest"
 	{
 		"en"	"Energy Life Vest"
+		"chi"	"充能救生衣"
 	}
 	"Energy Life Vest Desc"
 	{
 		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}1 Australium Ingots are consumed to reduce 1 Chaos Infliction"
+		"chi"	"靠能量运作的救生衣。\n{yellow}每消耗1块澳洲金锭减少1点坍缩值"
 	}
-	"The Scraper"
-	{
-		"en"	"The Scraper"
-		"chi"		"刮板"
-	}
-	"The Scraper Desc"
-	{
-		"en"	"Grind the rest for some useful scrap.\n{yellow}Recovered weapon are instead converted into 2 Australium Ingots"
-		"chi"		"研磨其余的以获得一些有用的废料.\n{yellow}回收的武器会被转化为 2 个澳元素锭"
-	}
+
 	"Suspicious Shrimp Plate"
 	{
 		"en"	"Suspicious Shrimp Plate"
+		"chi"	"可疑虾排"
 	}
 	"Suspicious Shrimp Plate Desc"
 	{
 		"en"	"Apparently it applies to copied personalities.\n{red}Machina Waldch appears until defeated"
+		"chi"	"对复制人格也有效。\n{red}瓦德机将出现直至被击败"
 	}
-	"Pack of Smokes"
-	{
-		"en"	"Pack of Smokes"
-		"chi"		"瑞克五代"
-	}
-	"Pack of Smokes Desc"
-	{
-		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
-		"chi"		"芜湖，我有神的力量.\n{green盟友获得 20% 的开火、装填和治疗速度提升{red}但在每关结束后得到5点坍缩值"
-	}
+
 	"Silver Seal Letter"
 	{
 		"en"	"Silver Seal Letter"
+		"chi"	"银封密函"
 	}
 	"Silver Seal Letter Desc"
 	{
 		"en"	"You made a deal with an old man. If the time comes, it's now.\n{green}Recover a random weapon that has no cost to buy or upgrade."
+		"chi"	"你与老者立下约定。兑现之时已至。\n{green}免费获取一件随机武器（含升级）"
 	}
+
 	"Ancient Vuntulum Silver Coin"
 	{
 		"en"	"Ancient Vuntulum Silver Coin"
+		"chi"	"古温图勒姆银币"
 	}
 	"Ancient Vuntulum Silver Coin Desc"
 	{
 		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 6s when a wave starts"
+		"chi"	"保存完好的收藏级钱币。\n{green}每波开始时武器技能冷却-6秒"
 	}
+
 	"Bank of Vunt Check"
 	{
 		"en"	"Bank of Vunt Check"
+		"chi"	"温特银行支票"
 	}
 	"Bank of Vunt Check Desc"
 	{
 		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 9s when a wave starts"
+		"chi"	"金银镶边的奢华支票簿。\n{green}每波开始时武器技能冷却-9秒"
 	}
+
 	"Second Economic Reform Act"
 	{
 		"en"	"Second Economic Reform Act"
+		"chi"	"第二次经济改革法案"
 	}
 	"Second Economic Reform Act Desc"
 	{
 		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 12s when a wave starts"
+		"chi"	"温图勒姆霸权之路的起点。\n{green}每波开始时武器技能冷却-12秒"
 	}
+
 	"String Puppet"
 	{
 		"en"	"String Puppet"
+		"chi"	"牵线木偶"
 	}
 	"String Puppet Desc"
 	{
 		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
+		"chi"	"挣扎只会让丝线缠得更紧。\n{green}敌人眩晕时每秒受到较低法术伤害"
 	}
+
 	"Children's Puppet"
 	{
 		"en"	"Children's Puppet"
+		"chi"	"儿童玩偶"
 	}
 	"Children's Puppet Desc"
 	{
 		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take Heavy mage damage every second while stunned"
+		"chi"	"伊比利亚孩童用海边饰品制作的玩偶。\n{green}敌人眩晕时每秒受到较高法术伤害"
 	}
+
 	"Garlic Bread"
 	{
 		"en"	"Garlic Bread"
+		"chi"	"蒜香面包"
 	}
 	"Garlic Bread Desc"
 	{
 		"en"	"Yummy.\n{green}Enemies are debuffed for twice as long"
+		"chi"	"美味。\n{green}敌人负面状态持续时间×2"
 	}
+
 	"Flash Camera"
 	{
 		"en"	"Flash Camera"
+		"chi"	"闪光相机"
 	}
 	"Flash Camera Desc"
 	{
 		"en"	"Every photo shot by this camera is washed out in white.\n{green}Enemies are stunned for x1.25 longer"
+		"chi"	"拍出的照片总是过曝。\n{green}敌人眩晕时间×1.25"
 	}
+
 	"Therapy Tape"
 	{
 		"en"	"Therapy Tape"
+		"chi"	"治疗录音带"
 	}
 	"Therapy Tape Desc"
 	{
 		"en"	"He tried to stop you from listening.\n{green}Enemies are stunned for x1.35 longer"
+		"chi"	"他试图阻止你聆听。\n{green}敌人眩晕时间×1.35"
 	}
+
 	"Black Tulip"
 	{
 		"en"	"Black Tulip"
+		"chi"	"黑色郁金香"
 	}
 	"Black Tulip Desc"
 	{
 		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60％, {red}resets after using a weapon ability"
+		"chi"	"沉默压垮了伊比利亚人，因此她渴望发声。\n{green}120秒内盟友伤害与治疗逐渐提升至+60%{red}，使用武器技能后重置"
 	}
+
 	"Castle Offspring"
 	{
 		"en"	"Castle's Offspring"
+		"chi"	"城堡子嗣"
 	}
 	"Castle Offspring Desc"
 	{
 		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60％, {red}resets when knocked down"
+		"chi"	"假以时日，此匣将成全新舞台。\n{green}300秒内盟友最大生命值逐渐提升至+60%{red}，倒地时重置"
 	}
 
 	"Waldch Assistance"
@@ -869,7 +929,7 @@
 	"Kahmlstein Guidance"
 	{
 		"en"	"Kahmlstein's Guidance"
-		"chi"	"Waldch的指导"
+		"chi"	"Kahmlstein的指导"
 	}
 	"Kahmlstein Guidance Desc"
 	{
@@ -884,126 +944,158 @@
 	"Twirl Guidance Desc"
 	{
 		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15％ max mana and mana regen"
-		"chi"	"你加入 Kahmlstein。\n{green}玩家手持武器的冷却时间每 1.5 秒减少 0.5 秒，法师武器也会获得 15% 的最大法力值和法力恢复"
+		"chi"	"你加入 Twirl。\n{green}玩家手持武器的冷却时间每 1.5 秒减少 0.5 秒，法师武器也会获得 15% 的最大法力值和法力恢复"
 	}
 	"Unauthorized Ruina Gem"
 	{
 		"en"	"Unauthorized Ruina Gem"
+		"chi"	"未授权的废墟宝石"
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
 		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 50 Chaos Affliction."
+		"chi"	"你能感受到它正被某种存在牵引。\n{green}每关卡一次：当盟友生命值低于50%时完全恢复\n{green}清除50点混沌侵蚀"
 	}
 
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"
+		"chi"	"迷失群山"
 	}
 	"Missing Mountains Lore"
 	{
 		"en"	"Just as you are about to make a misstep, someone pulls you backward.\nThe mountains' shadows overlap, and a distorted darkness creeps across your eyes.\nIn the face of your trepidation, the fortuneteller-looking woman asks you to draw a card."
+		"chi"	"就在你即将失足跌落时，有人将你向后拽回。\n群山的阴影重叠扭曲，诡异的黑暗爬满你的视野。\n面对你的惊惶，那位占卜师模样的女子示意你抽取一张卡牌。"
 	}
 	"Missing Mountains Option 1"
 	{
 		"en"	"Pick the tarot card on the left"
+		"chi"	"选择左侧的塔罗牌"
 	}
 	"Missing Mountains Lore 1"
 	{
 		"en"	"''Don't be afraid of your own fate... and don't fear turning away from it either.''"
+		"chi"	"''不必畏惧命运...也无需害怕背离它。''"
 	}
 	"Missing Mountains Option 2"
 	{
 		"en"	"Pick the tarot card on the right"
+		"chi"	"选择右侧的塔罗牌"
 	}
 	"Missing Mountains Lore 2"
 	{
 		"en"	"''Be at ease, the object he left behind is untainted.''"
+		"chi"	"''安心吧，他遗留之物未被玷污。''"
 	}
 	"Missing Mountains Option 3"
 	{
 		"en"	"Pick the discarded tarot card by her hand"
+		"chi"	"拾取她手边的废弃塔罗牌"
 	}
 	"Missing Mountains Desc 3"
 	{
 		"en"	"{green}Gain 14 Australium Ingots"
+		"chi"	"{green}获得14块澳元素锭"
 	}
 	"Missing Mountains Lore 3a"
 	{
 		"en"	"You can't clearly see her expression. Is it regret... or relief? She removes the purse on her, claiming that it is ''something useless I've lost to you.''"
+		"chi"	"你无法看清她的表情。那是懊悔...还是解脱？她解下腰间的钱袋，声称这是''我已对你无用的弃物''。"
 	}
 	"Missing Mountains Lore 3b"
 	{
 		"en"	"You can't clearly see her expression. Is it regret... or relief? She only replies, ''Your mind is no longer clear.''"
+		"chi"	"你无法看清她的表情。那是懊悔...还是解脱？她只回应道：''你的心智已不再清明。''"
 	}
+
 	"Clairvoyance"
 	{
 		"en"	"Clairvoyance's Direction"
-	}
+		"chi"	"预视之径"
+	}	
 	"Clairvoyance Lore"
 	{
 		"en"	"The blizzard on the uninhabited icefield makes it impossible to see anything,\nand you and your team fight the extreme cold as you try your best to keep up with the mysterious procession in black.\nWhere are these Wildingens headed to?"
+		"chi"	"无人冰原上的暴风雪遮蔽了一切视野，\n你和队友在酷寒中竭力追赶着那列神秘的黑色队伍。\n这些温迪戈究竟要前往何方？"
 	}
 	"Clairvoyance Option 1"
 	{
 		"en"	"Tell me about the ''Tool''"
+		"chi"	"告诉我关于''工具''的事"
 	}
 	"Clairvoyance Lore 1"
 	{
 		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
+		"chi"	"他们叹息着向北行进，无人回答你的问题，唯有一人在经过时递给你某件物品。"
 	}
 	"Clairvoyance Option 2"
 	{
 		"en"	"Tell me about the ''Path''"
+		"chi"	"告诉我关于''路径''的事"
 	}
 	"Clairvoyance Lore 2"
 	{
 		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
+		"chi"	"他们叹息着向北行进，无人回答你的问题，唯有一人在经过时递给你某件物品。"
 	}
 	"Clairvoyance Option 3"
 	{
 		"en"	"Perhaps we can help each other out"
+		"chi"	"也许我们可以互相帮助"
 	}
 	"Clairvoyance Lore 3a"
 	{
 		"en"	"The bird-like Wildingens gradually walk further and further away. It seems none of them believe that you can be of any help to them. But you find something by the bonfire embers they left behind."
+		"chi"	"鸟形的温迪戈渐行渐远，似乎无人相信你能提供帮助。但在他们遗留的篝火余烬旁，你发现了某物。"
 	}
 	"Clairvoyance Lore 3b"
 	{
 		"en"	"The Wildingens see the chaos in your mind and gradually walk further and further away, leaving nothing behind for you."
+		"chi"	"Wildingen们窥见你心智中的混沌，渐行渐远，未留下任何物品。"
 	}
 	"Clairvoyance Option 4"
 	{
 		"en"	"Tell me about the ''Wildingen''"
+		"chi"	"告诉我关于''Wildingen''的事"
 	}
 	"Clairvoyance Lore 4"
 	{
 		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
+		"chi"	温迪戈们没有回答，唯有一人经过时低语警告"
 	}
+
 	"Printer"
 	{
 		"en"	"The Printer"
+		"chi"	"复制打印机"
 	}
 	"Printer Lore"
 	{
 		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
+		"chi"	"你发现一台怪异的办公打印机，表面贴满危险标签。\n细读说明发现它能复制实体物品。\n机器状态堪忧，要尝试复制我们的物品吗？"
 	}
 	"Printer Lore 1a"
 	{
 		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as you quickly grab what's left. Your original item and a duplicate."
+		"chi"	"放入物品后打印机发出刺耳尖啸。机器突然起火，你迅速抢救残骸——拿到了原始物品和复制品。"
 	}
 	"Printer Lore 1b"
 	{
 		"#format"	"{1:t}"
 		"en"		"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap, {yellow}{1}{default} is gone."
+		"chi"		"放入物品后打印机发出刺耳尖啸。机器燃起大火，某种力量迫使你目睹全程。火势消退后只剩废铁，{yellow}{1}{default}已不复存在。"
 	}
 	"Printer Option 2"
 	{
 		"en"	"Rather not use this"
+		"chi"	"还是别用了"
 	}
 	"Printer Lore 2"
 	{
 		"en"	"You notice there was an artifact left behind by the printer. You take it and leave the printer alone, better not take chances."
+		"chi"	"你注意到打印机旁有件遗留的神器。取走它后你决定远离这台机器，毕竟冒险不值得。"
 	}
+
 	"Wish Fulfilled"
 	{
 		"en"	"Wish Fulfilled"
@@ -1012,302 +1104,403 @@
 	"Wish Fulfilled Lore"
 	{
 		"en"	"You find a pile of boxes, a single guard stands there.\n''Pick one, no more.''"
+		"chi"	"你发现一堆箱子，只有一名守卫站在那里。\n「选一个，只能拿一个」"
 	}
+
 	"Prophecy"
 	{
 		"en"	"Prophecy"
+		"chi"	"预言"
 	}
+
 	"Prophecy Lore 1"
 	{
 		"en"	"Chaos looms over, but you're not alone. Somebody approaches."
+		"chi"	"混沌将至，但你并非孤身一人。有人正在靠近。"
 	}
+
 	"Prophecy Option 1a"
 	{
 		"en"	"Better run"
+		"chi"	"最好逃跑"
 	}
+
 	"Prophecy Desc 1a"
 	{
 		"en"	"{green}Lose 15 Chaos Infliction"
+		"chi"	"{green}坍缩值-15"
 	}
+
 	"Prophecy Lore 1a"
 	{
-		"en"	"Don't take the chance, it can overwhelm."
-	}
+		"en"	 "Don't take the chance, it can overwhelm."
+		"chi"	 "别冒险，它可能会吞噬你。"
+	}	
+
 	"Prophecy Option 1b"
 	{
-		"en"	"It's Waldch"
+		"en"	 "It's Waldch"
+		"chi"	"是瓦德奇"
 	}
+
 	"Prophecy Desc 1b"
 	{
 		"en"	"{yellow}Waldch will acompany you {blue}and the ending is changed."
+		"chi"	"{yellow}瓦德奇将加入队伍{blue}并改变结局"
 	}
+
 	"Prophecy Lore 1b"
 	{
-		"en"	"You seek what he seeks now."
+		"en"	 "You seek what he seeks now."
+		"chi"	"你现在追寻的正是他所追寻的。"
 	}
+
 	"Prophecy Option 1c"
 	{
 		"en"	"It's Twirl"
+		"chi"	"是托维尔"
 	}
+
 	"Prophecy Desc 1c"
 	{
 		"en"	"{green}Twirl will acompany you {blue}and the ending is changed."
+		"chi"	"{green}托维尔将加入队伍{blue}并改变结局"
 	}
+
 	"Prophecy Lore 1c"
 	{
 		"en"	"You seek what she seeks now."
+		"chi"	"你现在追寻的正是她所追寻的。"
 	}
+
 	"Prophecy Lore 2"
 	{
 		"en"	"Chaos still looms over. You feel knowledge in your head."
+		"chi"	"混沌仍在逼近。你感到知识涌入脑海。"
 	}
+
 	"Prophecy Option 2a"
 	{
 		"en"	"Better ignore"
+		"chi"	"最好无视"
 	}
+
 	"Prophecy Desc 2a"
 	{
 		"en"	"{green}Lose 20 Chaos Infliction"
+		"chi"	"{green}混沌值-20"
 	}
+
 	"Prophecy Lore 2a"
 	{
 		"en"	"Ignore the thoughts given, it's insanity."
+		"chi"	"无视这些念头，那都是疯狂。"
 	}
+
 	"Prophecy Option 2b"
 	{
 		"en"	"Knowledge of Weapons"
+		"chi"	"武器知识"
 	}
+
 	"Prophecy Desc 2b"
 	{
 		"en"	"{green}Recover 10 weapons {red}but gain 20 Chaos Infliction"
+		"chi"	"{green}回收10件武器{red}但混沌值+20"
 	}
+
 	"Prophecy Lore 2b"
 	{
-		"en"	"You know what to do. Retrieve what you need. Spread your damage."
+	"en"	"You know what to do. Retrieve what you need. Spread your damage."
+	"chi"	"你知晓该怎么做。取回所需之物，散播你的破坏。"
 	}
+
 	"Prophecy Option 2c"
 	{
 		"en"	"Knowledge of Chaos"
+		"chi"	"混沌知识"
 	}
+
 	"Prophecy Desc 2c"
 	{
-		"en"	"{green}Gain 4000 cash {red}but gain 20 Chaos Infliction"
+		"en"	 "{green}Gain 4000 cash {red}but gain 20 Chaos Infliction"
+		"chi"	 "{green}获得4000资金{red}但混沌值+20"
 	}
+
 	"Prophecy Lore 2c"
 	{
 		"en"	"Know your enemy. If it's even your enemy anymore."
+		"chi"	"了解你的敌人。如果它还算你的敌人的话。"
 	}
+
 	"Prophecy Lore 3"
 	{
 		"en"	"Kahmlstein appears, he asks you to assist him. Not chaos, something worse."
+		"chi"	"卡姆斯坦因出现，他请求你协助他。不是混沌，而是更糟的东西。"
 	}
+
 	"Prophecy Option 3a"
 	{
 		"en"	"Not the time"
+		"chi"	"不是时候"
 	}
+
 	"Prophecy Desc 3a"
 	{
 		"en"	"{green}Lose 20 Chaos Infliction"
+		"chi"	"{green}混沌值-20"
 	}
+
 	"Prophecy Lore 3a"
 	{
 		"en"	"Now is not the time. After we're done here."
+		"chi"	"现在不是时候。等这里的事结束再说。"
 	}
+
 	"Prophecy Option 3b"
 	{
 		"en"	"Assist him"
+		"chi"	"协助他"
 	}
+
 	"Prophecy Desc 3b"
 	{
 		"en"	"{blue}Something happens..."
+		"chi"	"{blue}某些事情发生了..."
 	}
+
 	"Prophecy Lore 4"
 	{
 		"en"	"Twirl offers something..."
+		"chi"	"托维尔提供了某物..."
 	}
+
 	"Prophecy Lore 4a"
 	{
 		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
+		"chi"	"{snow}托维尔递给你一颗她自制的宝石，多精致啊！或许不该转赠他人，毕竟礼物就是礼物。"
 	}
 	"Lost Villager"
 	{
 		"en"	"Lost Villager"
+		"chi"	"迷路的村民"
 	}
 	"Lost Villager Lore"
 	{
 		"en"	"A Medieval villager wonders, seeming lost. He carries a full backpack as he comes up to ask if you have any food."
+		"chi"	"一个中世纪的村民彷徨着，似乎迷路了。他背着一个鼓鼓囊囊的背包，走过来询问你是否有食物。"
 	}
 
 	"Lost Villager Option 1"
 	{
 		"en"	"Sure thing"
+		"chi"	"没问题"
 	}
 	"Lost Villager Desc 1"
 	{
 		"en"	"{yellow}Receive something unknown"
+		"chi"	"{yellow}获得未知物品"
 	}
 	"Lost Villager Lore 1"
 	{
 		"en"	"''Thank you, your very much kind, would you like something of mine?''"
+		"chi"	"“谢谢你，你真是太好了，你想要点我的东西吗？”"
 	}
 
 	"Lost Villager Option 1a"
 	{
 		"en"	"Some wood"
+		"chi"	"一些木头"
 	}
 	"Lost Villager Desc 1a"
 	{
 		"en"	"{green}Recover 10 weapons"
+		"chi"	"{green}修复 10 件武器"
 	}
 	"Lost Villager Lore 1a"
 	{
 		"en"	"You take some wood, useful for some making some weapons."
+		"chi"	"你拿了一些木头，可以用来制作一些武器。"
 	}
 
 	"Lost Villager Option 1b"
 	{
 		"en"	"Some stone"
+		"chi"	"一些石头"
 	}
 	"Lost Villager Desc 1b"
 	{
 		"en"	"{green}Gain 20 Australium Ingots"
+		"chi"	"{green}获得 20 块澳金锭"
 	}
 	"Lost Villager Lore 1b"
 	{
 		"en"	"You take some stone, could be sold to the market."
+		"chi"	"你拿了一些石头，可以卖给市场。"
 	}
 
 	"Lost Villager Option 1c"
 	{
 		"en"	"Nothing else"
+		"chi"	"不要其他东西"
 	}
 	"Lost Villager Desc 1c"
 	{
 		"en"	"{green}Lose 20 Chaos Infliction"
+		"chi"	"{green}减少 20 点混乱侵扰"
 	}
 	"Lost Villager Lore 1c"
 	{
 		"en"	"You ask for nothing. A peace of mind. He wanders off."
+		"chi"	"你什么也没要。内心一片平静。他漫步离开了。"
 	}
-	
+
 	"Lost Villager Option 2"
 	{
 		"en"	"Nothing to spare"
+		"chi"	"没有多余的食物"
 	}
 	"Lost Villager Desc 2"
 	{
 		"en"	"{green}Gain 3000 cash"
+		"chi"	"{green}获得 3000 现金"
 	}
 	"Lost Villager Lore 2"
 	{
 		"en"	"You tell him you don't have any to spare, he understands, hands you a piece of gold, and carries on."
+		"chi"	"你告诉他你没有多余的食物，他表示理解，递给你一块金子，然后继续前行。"
 	}
 
 	"Lost Villager Option 3"
 	{
 		"en"	"Rob him"
+		"chi"	"抢劫他"
 	}
 	"Lost Villager Desc 3"
 	{
 		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
+		"chi"	"{green}获得 2000 现金、15 块澳金锭，并修复 4 件武器 {red}但增加 25 点混乱侵扰"
 	}
 	"Lost Villager Lore 3"
 	{
 		"en"	"You beat him up with your fear of other Villager's buildings. You steal his supplies while at it."
+		"chi"	"你利用对其他村民建筑的恐惧（？）殴打了他，并趁机偷走了他的物资。" // 注：原文 "fear of other Villager's buildings" 含义不明，按字面翻译，可能需要上下文确认。
 	}
 
 	"Downtime Recreation"
 	{
 		"en"	"Downtime Recreation"
+		"chi"	"休闲时光"
 	}
 	"Downtime Recreation Lore"
 	{
 		"en"	"A slot machine out in the middle of the woods.\nUnguarded and covered in moss."
+		"chi"	"一台位于树林中央的老虎机。\n无人看管，覆盖着苔藓。"
 	}
 
 	"Downtime Recreation Option 1"
 	{
 		"en"	"Insert a coin"
+		"chi"	"投入一枚硬币"
 	}
 	"Downtime Recreation Desc 1"
 	{
 		"en"	"{red}Lose 4 Australium Ingots"
+		"chi"	"{red}失去 4 块澳金锭"
 	}
 	"Downtime Recreation Lore 1a"
 	{
 		"en"	"It hits a random assortment of items."
+		"chi"	"它转出了一组随机的图案。"
 	}
 	"Downtime Recreation Lore 1b"
 	{
 		"en"	"It hits 3 Cherries and pays out."
+		"chi"	"它转出了 3 个樱桃并支付了奖励。"
 	}
 	"Downtime Recreation Lore 1c"
 	{
 		"en"	"It hits 3 Bars and spits something out."
+		"chi"	"它转出了 3 个 BAR 并吐出了些东西。"
 	}
 	"Downtime Recreation Lore 1d"
 	{
 		"en"	"It hits 3 7s as you hear something break as it pays out, it refuses to work anymore."
+		"chi"	"它转出了 3 个 7，你在它支付奖励时听到有东西坏了，之后它就拒绝工作了。"
 	}
 	"Downtime Recreation Lore 1e"
 	{
 		"en"	"It hits 3 Lemons as you hear clanging as a weapon spits out."
+		"chi"	"它转出了 3 个柠檬，你听到哐当一声，吐出了一件武器。"
 	}
 
 	"Downtime Recreation Option 2"
 	{
 		"en"	"Leave it alone"
+		"chi"	"不管它"
 	}
 	"Downtime Recreation Option 2b"
 	{
 		"en"	"Stop gambling"
+		"chi"	"停止赌博"
 	}
 	"Downtime Recreation Desc 2"
 	{
 		"en"	"{green}Gain 4000 Cash"
+		"chi"	"{green}获得 4000 现金"
 	}
 	"Downtime Recreation Lore 2"
 	{
 		"en"	"Don't bet on it."
+		"chi"	"别赌了。"
 	}
 
 	"Downtime Recreation Option 3"
 	{
 		"en"	"Break it"
+		"chi"	"砸坏它"
 	}
 	"Downtime Recreation Desc 3"
 	{
 		"en"	"{green}Gain 30 Australium Ingots {red}but gain 15 Chaos Infliction"
+		"chi"	"{green}获得 30 块澳金锭 {red}但增加 15 点混乱侵扰"
 	}
 	"Downtime Recreation Lore 3"
 	{
 		"en"	"You hit as it breaks, you retrieve what you can find."
+		"chi"	"你砸下去，它坏了，你搜刮了能找到的东西。"
 	}
 
-	"Fortituous Opportunity"
+	"Fortituous Opportunity" // 注：原文 "Fortituous" 可能是 "Fortuitous" (偶然的) 的拼写错误
 	{
 		"en"	"Fortituous Opportunity"
+		"chi"	"失与得" // 或 "偶遇商机"
 	}
 	"Fortituous Opportunity Lore"
 	{
 		"en"	"A wandering merchant appears, asking if you wish\nto sell anything in exchange for something else."
+		"chi"	"一个流浪商人出现，询问你是否愿意\n出售任何东西以换取其他物品。"
 	}
 	"Fortituous Opportunity Lore 1"
 	{
 		"#format"	"{1:t}"
 		"en"		"You exchange your {yellow}{1}{default} and in return, he gives you something else."
+		"chi"		"你用你的{yellow}{1}{default}进行了交换，作为回报，他给了你另一样东西。"
 	}
 	"Fortituous Opportunity Option 2"
 	{
 		"en"	"Move along"
+		"chi"	"继续前进"
 	}
 	"Fortituous Opportunity Desc 2"
 	{
 		"en"	"{green}Gain 4 australium ingots"
+		"chi"	"{green}获得 4 块澳金锭"
 	}
 	"Fortituous Opportunity Lore 2"
 	{
 		"en"	"There's nothing to give. He drops some ingots and moves along."
+			"chi"	"没什么可给的。他丢下几块锭，然后继续前行。"
 	}
 
 	"Emergency Dispatch"
@@ -1319,67 +1512,82 @@
 	"Emergency Dispatch Lore"
 	{
 		"en"	"You find a Wildingen, seemingly in worry.\nHe asks you if you can spare someone to help his family.\nTheir village is under attack."
+		"chi"	"你发现一个忧心忡忡的 温迪戈。\n他询问你是否能派些人手去帮助他的家人。\n他们的村庄正遭受攻击。"
 		"ko"	"당신은 걱정스러워 보이는 와일딘겐을 만납니다.\n그는 당신에게 가족을 도울 사람을 보내줄 수 있겠느냐고 묻습니다.\n그들의 마을은 공격을 받고 있습니다."
 	}
 	"Emergency Dispatch Option 1"
 	{
 		"en"	"Send"
+		"chi"	"派遣"
 	}
 	"Emergency Dispatch Option 1a"
 	{
 		"en"	"Send"
-	}
+		"chi"	"派遣"
+	}	
 	"Emergency Dispatch Desc 1a"
 	{
 		"en"	"{red}Send Bob The Second to help."
+		"chi"	"{red}派遣鲍勃二世去帮忙。"
 	}
 	"Emergency Dispatch Option 1b"
 	{
-		"en"	"Send "
+		"en"	"Send " // 注：原文末尾有空格，翻译保留空格或根据UI调整
+		"chi"	"派遣 " // 保留空格
 	}
 	"Emergency Dispatch Desc 1b"
 	{
 		"en"	"{red}Send these players to help. {default}They will be forced away and will return upon reaching the next chapter."
+		"chi"	"{red}派遣这些玩家去帮忙。{default}他们将被强制离开，并在进入下一章时返回。"
 	}
 	"Emergency Dispatch Lore 1a"
 	{
 		"#format"	"{1:N}"
 		"en"		"You send {red}{1} {default}to go with him. They head off into the distance."
+		"chi"		"你派遣{red}{1}{default}跟他一起去。他们消失在远方。"
 	}
 	"Emergency Dispatch Lore 1b"
 	{
 		"#format"	"{1:N},{2:N}"
 		"en"		"You send {red}{1} {default}and {red}{2} {default}to go with him. They head off into the distance."
+		"chi"		"你派遣{red}{1}{default}和{red}{2}{default}跟他一起去。他们消失在远方。"
 	}
 	"Emergency Dispatch Lore 1c"
 	{
 		"en"	"You ask Bob The Second to go with him. They head off into the distance."
+		"chi"	"你让鲍勃二世跟他一起去。他们消失在远方。"
 	}
 	"Emergency Dispatch Option 2"
 	{
 		"en"	"We cannot spare"
+		"chi"	"我们无法抽调人手"
 	}
 	"Emergency Dispatch Desc 2"
 	{
 		"en"	"{yellow}Receive something unknown"
+		"chi"	"{yellow}获得未知物品"
 	}
 	"Emergency Dispatch Lore 2"
 	{
 		"en"	"You say you're going off to deal with chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
+		"chi"	"你说你们要去对付混乱本身。他至少感谢你解决了未来的问题。他递给你一些钱，然后跑开了。"
 	}
 	"Emergency Dispatch Return 1"
 	{
 		"#format"	"{1:N}"
 		"en"		"{red}{1} {default}have returned, and with some money."
+		"chi"		"{red}{1}{default}回来了，还带了些钱。"
 	}
 	"Emergency Dispatch Return 2"
 	{
 		"#format"	"{1:N},{2:N}"
 		"en"		"{red}{1} {default}and {red}{2} {default}have returned, and with some money."
+		"chi"		"{red}{1}{default}和{red}{2}{default}回来了，还带了些钱。"
 	}
 	"Emergency Dispatch Return 3"
 	{
 		"en"	"Bob The Second returns with some money in hand."
+		"chi"	"鲍勃二世回来了，手里拿着些钱。"
 	}
 
 	"Bad Water"
@@ -1475,12 +1683,12 @@
 	"All Hallem"
 	{
 		"en"	"All Hallem"
-		"chi"	"全是邪魔"
+		"chi"	"相见了 所有的极地战士"
 	}
 	"All Hallem!"
 	{
 		"en"	"All Hallem ⚠"
-		"chi"	"全是邪魔 ⚠"
+		"chi"	"相见了 所有的极地战士 ⚠"
 	}
 	"Camel Riders"
 	{
@@ -1789,12 +1997,12 @@
 	"Godly army Under Chaos"
 	{
 		"en"	"Godly army Under Chaos"
-		"chi"	"混沌下的神圣军队"
+		"chi"	"坍缩下的神圣军队"
 	}
 	"Godly army Under Chaos!"
 	{
 		"en"	"Godly army Under Chaos ⚠"
-		"chi"	"混沌下的神圣军队 ⚠"
+		"chi"	"坍缩下的神圣军队 ⚠"
 	}
 	"Forsaken Tribe"
 	{
@@ -1809,12 +2017,12 @@
 	"Roaming Chaos Demons"
 	{
 		"en"	"Roaming Chaos Demons"
-		"chi"	"漫游混沌恶魔"
+		"chi"	"漫游坍缩恶魔"
 	}
 	"Roaming Chaos Demons!"
 	{
 		"en"	"Roaming Chaos Demons ⚠"
-		"chi"	"漫游混沌恶魔 ⚠"
+		"chi"	"漫游坍缩恶魔 ⚠"
 	}
 	"Antagonising Iberians"
 	{
@@ -1854,7 +2062,7 @@
 	"Chaos Ruinian"
 	{
 		"en"	"Chaos Ruinian"
-		"chi"	"混沌废墟"
+		"chi"	"坍缩废墟"
 	}
 	"The Irritated Soldiers"
 	{
@@ -1880,25 +2088,37 @@
 		"en"	"The Great Demons Of Hallam"
 		"chi"	"无垠回荡克雷松"
 	}
+	"Mazeat Lost Tech" // 事件名称补充翻译
+	{
+		"en"	"Mazeat Lost Tech"
+		"chi"	"梅泽亚特失落科技"
+	}	
 	"Mazeat Lost Tech Lore"
 	{
 		"en"	"You stumble upon a great artifact guarded by mechanisms..."
+		"chi"	"你偶然发现一个被机械装置守护的巨型神器..."
 	}
+
 	"Mazeat Lost Tech Option 1a"
 	{
 		"en"	"Take Something else"
+		"chi"	"随便拿点什么" // 保留原译，符合口语化选择
 	}
 	"Mazeat Lost Tech Desc 1a"
 	{
 		"en"	"Take whats inside the closet instead, cant risk it.\n{green}Obtain money and a high value item."
+		"chi"	"改为拿柜子里的东西，不能冒险。\n{green}获得金钱和一件高价值物品。"
 	}
+
 	"Mazeat Lost Tech Option 1b"
 	{
-		"en"	"Take The Price"
+		"en"	"Take The Price" // 疑似"Prize"笔误，按语境翻译
+		"chi"	"我要拿最好的"  // 保留原译，体现决心
 	}
 	"Mazeat Lost Tech Desc 1b"
 	{
 		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
+		"chi"	"{green}获得一件授予物品，{crimson}但可能引起不必要的注意。"
+	// 注：Grant item译为"授予物品"，保持游戏术语神秘感
 	}
 }
-

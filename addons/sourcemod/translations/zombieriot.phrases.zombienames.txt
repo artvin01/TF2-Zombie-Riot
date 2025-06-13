@@ -3100,12 +3100,12 @@
 	"Hallam's Great Demon"
 	{
 		"en"	"Hallam's Great Demon"
-		"chi" 	"无垠回荡克雷松"
+		"chi" 	"哈拉姆上级恶魔"
 	}
 	"Ihanal Demon Whisperer"
 	{
 		"en"	"Ihanal Demon Whisperer"
-		"chi" 	"恶魔低语者"
+		"chi" 	"因哈尔恶魔低语者"
 	}
 	"Winter Sniper"
 	{
@@ -3193,7 +3193,7 @@
 	"Ursus"
 	{
 		"en"	"Ursus"
-		"chi" 	"乌萨斯"
+		"chi" 	"乌瑟斯"
 		"ko"	"우르수스"
 	}
 	"Ransacker"
@@ -3209,7 +3209,7 @@
 	"Hitman"
 	{
 		"en"	"Hitman"
-		"chi" 	"打人侠"
+		"chi" 	"刺客"
 		"ko"	"암살자"
 	}
 	"Mad Doctor"

@@ -9,11 +9,13 @@
 		"de"		"Artvin: NPC und Spielmodus entwickler\nBatfoxkid: Spielmodus Entwickler\nPelipoika: Original NPC basis und hilfe\nAlex: Waffen Plugins und überall plugin hilfe\nSuza: Waffe und etwas Basismaterial geholfen\nMikusch früher spieldatei helfer\nKenzzer: NPC hilfe und bug fix hilfe\nAlex Turtle, Stranger, Syko: Map Hilfe\nCrusty Model/Animationen\njDeivid: Alternative Wellen\nGMOD Zombie überleben Entwickler: Musik und Basis konzept von ihnen"
 		"pt"		"Artvin: Desenvolvimento de NPCs e Gameplay\nBatfoxkid: Desenvolvimento de Gameplay\nPelipoika: Base original de NPCs e assistencia\nAlex: Plugin de armas e assistencia no geral\nSuza: Armas e algumas assistencias com a base de stock\nMikusch: Ajudou com a gamedata inicial\nKenzzer: ajudou com NPCs e correções de bugs\nAlex Turtle & Stranger & Syko: Ajudaram no mapa\nCrusty: Modelagem e Animação\nDeivid: Ondas alternativas\nGMOD Zombie Survival Devs: Música e conceito base"
 		"nl"		"Artvin: NPC en Spelmodus Ontwikkeling\nBatfoxkid: Spelmodus Ontwikkeling\nPelipoika: Originele NPC Base en hulp\nAlex: Algemene Plugin en Wapen Plugin Assistentie\nSuza: Wapens en Basis Stock hulp\nMikusch: Vroege SpelData hulp\nKenzzer: Npc hulp en bug fixing hulp\nAlex Turtle & Stranger & Syko: Map assistentie\nCrusty: Modellen/Animaties\njDeivid: Alternatieve Golven\nGMOD Zombie Survival Devs: Muziek en basis concepten van hun"
-		"chi" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them\n中文汉化:蔡徐坤，Snacks"
+		"chi" 		"Artvin: NPC系统与游戏模式\nBatfoxkid: 模式插件制作\nPelipoika: 制作了原版NPC系统，以及一些帮助\nAlex: 武器插件与插件辅助\nSuza: 武器与引擎代码协助\nMikusch: 早期引擎代码辅助\nKenzzer: NPC协助与DEBUG\nAlex Turtle & Stranger & Syko: 地图帮助\nCrusty: 模型，动画\njDeivid: BLITZKRIEG难度\nGMOD ZR团队: 灵感，音乐\n中文汉化:蔡徐坤？，Snacks , Witherk，鲸鱼娘"
 	}
 	"Press To Open Store"
 	{
 		"en"		"TAB OPEN STORE MENU"
+		"ko"		"TAB키를 눌러 상점 열기"
+		"chi"		"点击TAB来打开商店页面"
 	}
 	"Last Alive"
 	{
@@ -26,7 +28,7 @@
 		"de"		"Du bist der letzte mensch am Leben.\nGewinne Die nächste boss runde um alle wiederzubeleben"
 		"pt"		"Você é o ultimo humano vivo. \nVença o próximo chefe do round para reviver todos."
 		"nl"		"Jij bent de laatste overelevende.\nOverleef de huidige golf om all uw bondgenoten tot leven te brengen" 
-		"chi"		"你是最后一名玩家！\n请坚持住！"
+		"chi"		"你是最后一名玩家！\n坚持住！"
 	}
 	"Level Up"
 	{
@@ -40,7 +42,7 @@
 		"de"		"Du bust ein level Aufgestiegen {1}\nDu hast freigeschalted:"
 		"pt"		"Você subiu de nivel! Level {1} \nVocê desbloqueou:"
 		"nl"		"Uw level is omhoog gegaan {1} \nJij hebt gekregen:"
-		"chi"		"恭喜你升级了！当前等级为 {1} 级\n已获得:"
+		"chi"		"恭喜你升级了！当前等级为 {1} 级\n获得了:"
 	}
 	"None"
 	{
@@ -60,11 +62,13 @@
 		"#format"	"{1:d}"
 		"en"		"---Loadout Store---\nCredit Points: {1}"
 		"es"		"---Tienda de Equipamiento---\nPuntos de Credito: {1}"
+		"chi"		"---商店---\n资金：{1}"
 	}
 	"Preview Mode Pap"
 	{
 		"en"		"Preview Mode"
 		"es"		"Vista Previa"
+		"chi"		"预览模式"
 	}
 	"Credits"
 	{
@@ -98,7 +102,9 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Current Skillpoints: {1}"
+		"ko"		"{green}현재 스킬 포인트: {1}"
 		"es"		"{green}Puntos de Habilidad actuales: {1}"
+		"chi"		"技能点"
 	}
 	"Credits_Menu_New"
 	{
@@ -108,6 +114,7 @@
 		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
+		"chi"		"额外资金：+{1}"
 	}
 	"Armor Counter"
 	{
@@ -135,7 +142,7 @@
 		"de"		"Medi-kit Abkühlung: {1}s"
 		"pt"		"Recarregando Kit Médico: {1}s"
 		"nl"		"EHBO-Kit Afkoeling: {1}s"
-		"chi"       "Medi-Kit 剩余时间：{1}秒"
+		"chi"       "医疗包 剩余时间：{1}秒"
 	}
 	"Ammo Crate Supplies"
 	{
@@ -149,7 +156,7 @@
 		"de"		"Munitionsvorräte : {1}"
 		"pt"		"Suprimento de munições: {1}"
 		"nl"		"Munitievoorraden: {1}"
-		"chi"		"弹药补给箱: {1}"
+		"chi"		"弹药补给: {1}"
 	}
 	"Damage Dealt"
 	{
@@ -179,10 +186,12 @@
 	"Damage Tanked"
 	{
 		"en"		"Damage Tanked: "
+		"chi"		"承受伤害: "
 	}
 	"Total Score"
 	{
 		"en"		"Total Score: "
+		"chi"		"总分："
 	}
 	"XP and Level"
 	{
@@ -191,6 +200,7 @@
 		"fr"		"Niv. {1} ({2} / {3})"
 		"ru"		"Ур. {1} ({2} / {3})"
 		"pt"		"Nv. {1} ({2} / {3})"
+		"chi"		"Lv {1} {2} / {3}"
 	}
 	"XP Loading"
 	{
@@ -273,7 +283,7 @@
 		"pt"		"Comprar com sucata"
 		"ru"		"Купить за металл"
 		"nl"		"Koop met scrap"
-		"chi"       "使用废料购买"
+		"chi"       "使用废金购买"
 	}
 	"Sell"
 	{
@@ -313,23 +323,29 @@
 	{
 		"en"		"Are you sure you want to sell all your items?"
 		"es"		"Estas seguro que quieres vender todos tus objetos?"
+		"chi"       "您确定要出售所有物品吗？"
 	}
 	"Sell Items Confirm Pref"
 	{
 		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your loadout store!"
+		"chi"		"！！确认卖出所有物品？！！"
 	}
 	"Sell All Items"
 	{
 		"en"		"Sell all items"
+		"chi"		"出售所有物品"
 	}
 	"Return to loadout Menu"
 	{
 		"en"		"Return to loadout Menu"
+		"chi"		"返回商店"
 	}
 	"Confirm Loadout"
 	{
 		"en"		"Confirm & Access Store"
+		"ko"		"로드아웃 확인 <필수>"
 		"es"		"Confirmar y acceder a la tienda"
+		"chi"		"确认物品，解锁所有物品"
 	}
 	"N/A"
 	{
@@ -342,6 +358,7 @@
 		"de"		"N/A"
 		"pt"		"N/A"
 		"nl"		"Nvt"
+		"chi"		"无"
 	}
 	"Primary"
 	{
@@ -380,7 +397,7 @@
 		"de"		"Schrott"
 		"pt"		"Metal"
 		"nl"		"Metaal"
-		"chi"       "废金属"
+		"chi"       "废金"
 	}
 	"Ball"
 	{
@@ -424,6 +441,7 @@
 	"Pistol Magazines"
 	{
 		"en"		"Pistol Mag"
+		"chi"		"手枪弹匣"
 	}
 	"Rockets"
 	{
@@ -441,6 +459,7 @@
 	"Flamethrower Tank"
 	{
 		"en"		"Oil"
+		"chi"       "油"
 		"es"		"Aceite"
 	}
 	"Flares"
@@ -467,7 +486,7 @@
 		"de"		"Granate"
 		"pt"		"Granadas"
 		"nl"		"Granaten"
-		"chi"       "手榴弹"
+		"chi"       "榴弹"
 	}
 	"Stickybombs"
 	{
@@ -511,6 +530,7 @@
 	"Medical Syringes"
 	{
 		"en"		"Syringes"
+		"chi"		"针"
 	}
 	"Sniper Rifle Rounds"
 	{
@@ -532,6 +552,7 @@
 	"SMG Magazines"
 	{
 		"en"		"SMG Mag"
+		"chi"		"SMG弹匣"
 	}
 	"Revolver Rounds"
 	{
@@ -793,6 +814,7 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"Gained {1} cash!"
+		"chi"       "你获得了 {1} 的现金奖励!"
 		"fr" 		"Obtenu {1} argent!"
 		"pt"		"Ganhou {1} dinheiro!"
 	}
@@ -897,7 +919,7 @@
 	{
 		"#format"	"{1:d},{2:.0f},{3:.0f}"
 		"en" 		"Mana: [{1}/{2}] (+{3})"
-//		"it"		"Ricevuto {1} in questa ondata!
+//		"it"		"Ricevuto {1} in questa ondata!"
 		"ru"		"Мана: [{1}/{2}] (+{3})"
 //		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 //		"es"		"Encontraste {1} en esta oleada!"
@@ -926,6 +948,7 @@
 		"pt"		"Mana insuficiente! Você precisa de {1} Mana!"
 		"nl"		"Niet genoeg Mana! U hebt maar {1} Mana!"
 		"chi"       "法力不足！需要 {1} 法力发动"
+		"ko"		"마나 부족! {1}만큼의 마나가 필요합니다!"
 	}
 	"Ability has cooldown"
 	{
@@ -940,6 +963,14 @@
 		"pt"		"Está habilidade ainda está em recarga de {1} segundos!"
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
+		"ko"		"능력 재사용 대기중 {1}초 남음!"
+	}
+	"Not Enough Ammo"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Not Enough Ammo! You need {1} Ammo!"
+		"de"		"Nicht Genügend Ammo! Du brauchst {1} Ammo!"
+		"ko"		"탄약 부족! {1}만큼의 탄약이 필요합니다!"
 	}
 	"Not Enough Ammo"
 	{
@@ -951,6 +982,7 @@
 	"Unspeakable Teleport Taunt"
 	{
 		"en"		"Behind you."
+		"chi"       "转身"
 	}
 	"Rusty Ability Blocked"
 	{
@@ -1201,6 +1233,7 @@
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
+		"chi" 		"超级回收"
 	}
 
 	"Quick Revive Recieved"
@@ -1232,6 +1265,7 @@
 	"Speed Cola Recieved"
 	{
 		"en" 		"SPEED COLA! 1.42x Extra reload, switchspeed and Mana regen"
+		"chi" 		"速度可乐:1.42倍速额外装填、切换速度和魔力恢复加成"
 		"fr" 		"SPEED COLA! 1.42x vitesse de recharge de munitions et de Mana, vitesse de changement d'arme."
 	}
 	"Deadshot Daiquiri Recieved"
@@ -1260,6 +1294,7 @@
 	"Freeze Bomb Activated"
 	{
 		"en" 		"Freeze Bomb!"
+		"chi" 		"冰！"
 	}
 	"Max Ammo Activated"
 	{
@@ -1286,11 +1321,13 @@
 		"pt"		"Dinheiro Extra!"
 		"ru" 		"Дополнительные деньги!"
 		"chi"       "额外的现金!"
+		"ko"		"Free Robux!"
 	}
 	"Grigori Shop Extra Activated"
 	{
 		"en" 		"Extra Super Sale!"
 		"fr" 		"Rabais Bonus!"
+		"chi"       "额外的打折!"
 		"pt"		"Super Desconto Extra!"
 	}
 	"Help?"
@@ -1463,7 +1500,7 @@
 	}
 	"Building Explained"
 	{
-		"en" 		"You can use machines by pressing R/T on them.\nYou can mount buildings with a wrench.\nUse them by looking UP and pressing your interact key.\nThis allows you to press R on them for the same effect.\nBuilding display is shown above a building, in this order, its explained as:\nName of owner\nCurrent health\nRepair Left."
+		"en" 		"You can use machines by pressing R/T on them.\nPeople can mount buildings with a wrench.\nThis allows you to press R on them for the same effect."
 	}
 	"Extra Buttons Explained"
 	{
@@ -1740,10 +1777,12 @@
 	"Raidboss"
 	{
 		"en" 		"RAID"
+		"chi" 		"团本首领"
 	}
 	"Superboss"
 	{
 		"en" 		"Super"
+		"chi" 		"超级boss"
 	}
 	"Power"
 	{
@@ -1889,7 +1928,7 @@
 	//	"ru"		"Ваш последний экипированный Навык уровня был восстоновлен"
 	//	"de"		"Ihre letzten level perks wurden wiederhergestellt."
 	//	"pt"		"Sua ultima habilidade de nível foi restaurada"
-	//	"nl"		"Uw laatste gebruike level perks werden herstelt
+	//	"nl"		"Uw laatste gebruike level perks werden herstelt"
 
 		"#format"	"{1:s}"
 		"en"		"Could not buy {1}."
@@ -1902,6 +1941,7 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{green}''{1}'' picked up a gift box! Everyone gains {2} XP!"
+		"ko"		"{green}''{1}'' 님이 선물상자를 흭득했습니다! 모두에게 추가 {2} XP!"
 		"es"		"{green}''{1}'' agarro un regalito! Todos reciben {2} de XP!"
 	}
 	"Press TAB To open the store"
@@ -2227,6 +2267,15 @@
 		"nl"		"Wees zeker dat je naam onder de 32 karakters is en geen speciale tekens bevat"
 		"chi"       "请确保您的名字不超过32个字符，并且不包含特殊字符"
 	}
+	"Loadout Slots"
+	{
+		"#format"	"{1:d}"
+		"en"		"{1} Loadout Slot(s)"
+		"fr"		"{1} Espace(s) de Chargement"
+		"ru"		"Ячеек снаряжения: {1}"
+		"pt"		"Vagas para Loadout: {1}"
+		"nl"		"{1} Loadout Slot(en)"
+	}
 	"All Weapons Unlocked"
 	{
 		"en"		"{pink}All weapons and upgrades are unlocked to buy!"
@@ -2244,14 +2293,17 @@
 	"Skip Starter"
 	{
 		"en"		"I have played Zombie Riot before"
+		"chi"       "我非常了解僵尸暴动"
 	}
 	"Skip Starter Confirm"
 	{
 		"en"		"Are you already familiar with Zombie Riot?\n \nAre you sure?\nlike, very sure that you know what youre doing?"
+		"chi"       "你已经熟悉 Zombie Riot 了吗？\n \n你确定吗？\n非常确定你知道你在做什么吗？"
 	}
 	"Skip Starter Button"
 	{
 		"en"		"Pretty sure."
+		"chi"       "我非常了解僵尸暴动"
 	}
 	"nothing"
 	{
@@ -2494,21 +2546,25 @@
 	"Tower_Message"
 	{
 		"en"		"You see a giant radiotower at the distance."
+		"chi"		"你看到远处有一个巨大的无线电塔。"
 		"ko"		"저멀리 거대한 라디오 타워가 보입니다."
 	}
 	"Victoria_Help_Message"
 	{
 		"en"		"Ziberian Guerillas are here to help."
+		"chi"		"西伯利亚游击队随时为您提供帮助。"
 		"ko"		"지베리안 게릴라의 지원이 도착했습니다."
 	}
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
+		"chi"		"无线电塔来了，准备。"
 		"ko"		"라디오 타워가 여기있습니다, 전투 준비."
 	}
 	"Void_Help_Message"
 	{
 		"en"		"Expidonsan's are trying to send help, but the void interfeers, only guarduses could get here."
+		"chi"		"Expidonsan们正试图派人来帮忙，但因虚空干扰，只有守卫才能到达这里。"
 	}
 	"Silvester Shares His Power"
 	{
@@ -2524,6 +2580,7 @@
 	"Last Down Warning"
 	{
 		"en"		"This is your last down."
+		"chi"		"这是你最后的机会"
 	}
 	"Opened store via command"
 	{
@@ -2865,6 +2922,7 @@
 		"en"		"Chainmail Armor"
 		"fr"		"Armure de Chaîne"
 		"ru"		"Кольчужная броня"
+		"chi"		"锁子甲"
 	}
 	"Barracks Chainmail Armor Desc"
 	{
@@ -2981,6 +3039,7 @@
 	{
 		"en"		"Donjon"
 		"fr"		"Donjon"
+		"chi"		"道观"
 		"ru"		"Донжон"
 	}
 	"Barracks Donjon Desc"
@@ -3701,7 +3760,7 @@
 	{
 		"en"	"Can you withstand the power of magic?"
 		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
-		"chi"	"你能阻挡魔法之力吗》"
+		"chi"	"你能阻挡魔法之力吗"
 	}
 	"CoF Normal Desc"
 	{
@@ -3769,18 +3828,21 @@
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Created by: {community}{1}"
 		"fr"		"{darkgrey}Creé par: {community}{1}"
+		"ko"		"{darkgrey}제작자: {community}{1}"
 	}
 	"NPCs By"
 	{
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}NPCs by: {community}{1}"
 		"fr"		"{darkgrey}NPCs par: {community}{1}"
+		"ko"		"{darkgrey}NPC 제작자: {community}{1}"
 	}
 	"Format By"
 	{
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Format by: {community}{1}"
 		"fr"		"{darkgrey}Format par: {community}{1}"
+		"ko"		"{darkgrey}설정 제작자: {community}{1}"
 	}
 	"Raidboss By"
 	{
@@ -3788,6 +3850,7 @@
 		"en"		"{darkgrey}Raidboss by: {community}{1}"
 		"fr"		"{darkgrey}Raid boss par: {community}{1}"
 		"chi"		"{darkgrey}Raidboss作者：{community}{1}"
+		"ko"		"{darkgrey}레이드보스 제작자: {community}{1}"
 	}
 	"Now Playing Song"
 	{
@@ -3820,15 +3883,7 @@
 	}
 	"The Blacksmith Failed!"
 	{
-		"en"		"The owner no longer owns this kit! Self detonation!!!"
-	}
-	"Weapon No Effect Tinker"
-	{
-		"en"		"This doesn't seem to effect this weapon!"
-	}
-	"No Burger Left"
-	{
-		"en"		"No Burgers Left! Probably."
+		"en"		"The builder is no longer alive or nothing is on this!"
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3858,10 +3913,6 @@
 		"en"	"Bring up Class Change Menu"
 		"fr"	"Montrer le Menu de Changement de Classe"
 		"chi"	"打开兵种切换菜单"
-	}
-	"Display top 5"
-	{
-		"en"	"Display Top 5 Damage and Support"
 	}
 	"Corrode"
 	{
@@ -3961,40 +4012,72 @@
 		"en"	"Custom Models"
 		"fr"	"Modèles personnalisés"
 		"chi"	"自定义模型"
+		"ko"	"커스텀 모델"
 	}
 	"TF2 Class"
 	{
 		"en"	"TF2 Class"
 		"fr"	"Classes TF2"
 		"chi"	"兵种模型"
+		"ko"	"TF2 병과"
 	}
 	"Barney"
 	{
 		"en"	"Barney"
 		"fr"	"Barney"
 		"chi"	"巴尼"
+		"ko"	"바니"
 	}
 	"Niko Oneshot"
 	{
 		"en"	"Niko Oneshot"
 		"fr"	"Niko Oneshot"
 		"chi"	"Niko [Oneshot]"
+		"ko"	"니코 [Oneshot]"
 	}
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
 		"fr"	"M. Squelette"
 		"chi"	"骷髅"
+		"ko"	"''뼈다귀''"
 	}
 	"Kleiner"
 	{
 		"en"	"Kleiner"
 		"fr"	"Kleiner"
-		"chi"	"克莱恩"
+		"chi"	"克莱恩博士"
+		"ko"	"클라이너"
+	}
+	"Neuron Activation"
+	{
+		"en"	"Neuron Activation"
+		"chi"	"神经元激活"
+		"ko"	"멍끼"
+	}
+	"Lumine"
+	{
+		"en"	"Lumine"
+		"chi"	"萤"
+		"ko"	"여행자"
+	}
+	"Meruna Mint"
+	{
+		"en"	"Meruna Mint"
+		"chi"	"Merun [薄荷]"
+		"ko"	"메루나 민트"
 	}
 	"Fat HHH"
 	{
 		"en"	"Fat HHH"
+		"chi"	"肥宅无头骑士"
+		"ko"	"뚱띠 듀라한"
+	}
+	"TRUE BLITZKRIEG"
+	{
+		"en"	"TRUE BLITZKRIEG"
+		"chi"	"闪电战医生"
+		"ko"	"블리츠크리그"
 	}
 	"Iberia & Nemal"
 	{
@@ -4015,176 +4098,390 @@
 	"Disable Ambient Music"
 	{
 		"en"	"Disable Ambient Music"
+		"chi"	"关闭背景声"
 	}
 	"Enable Visible Downs"
 	{
 		"en"	"Enable Visible Downs"
+		"chi"	"启用可视倒地"
 	}
 	"Enable Visual Clutter"
 	{
 		"en"	"Enable Visual Clutter"
+		"chi"	"关闭视觉简化"
 	}
 	"Enable Visual Clutter Desc"
 	{
 		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+		"chi"	"列如NPC头上的箭头。"
 	}
 	"Enable Reload Interact Desc"
 	{
 		"en"	"If this is enabled, then some abilities require you to hold crouch to use them to prevent accidental use."
+		"chi"	"启用后，部分技能将会要求蹲下时按R键；为防止误触。"
 	}
 	"Enable Numeral Armor"
 	{
 		"en"	"Enable Numeral Armor"
+		"chi"	"启用数字护甲显示"
 	}
 	"Enable Ammobox Count Perma"
 	{
 		"en"	"Enable Ammobox Count Perma"
+		"chi"	"屏幕右侧显示弹药补给量"
 	}
 	"Class Vote Citizen Do"
 	{
 		"en"	"The rebel will pick whatever has the most player votes, from the top down."
+		"chi"	"NPC将会选择投票最多的职业。"
 	}
 	"DPS Class"
 	{
 		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
+		"chi"	"DPS\n重视伤害，更快装弹速度。"
 	}
 	"Tank Class"
 	{
 		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
+		"chi"	"坦克\n重视抗伤，获得伤害抗性。"
 	}
 	"Healer Class"
 	{
 		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
+		"chi"	"治疗兵\n获得治疗能力，伤害更低，拉人速度更快"
 	}
 	"Builder Class"
 	{
 		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
+		"chi"	"建筑师\n可以放下并修复建筑，射速更快。"
 	}
 	"Don't Follow Me"
 	{
 		"en"	"Don't Follow Me"
+		"chi"	"不要跟着我"
 	}
 	"Switch Class"
 	{
 		"en"	"Switch Class"
+		"ko"	"병과 변경"
+		"chi"	"切换职业"
 	}
 	"Switch Weapons"
 	{
 		"en"	"Switch Weapons"
+		"ko"	"무기 변경"
+		"chi"	"切换武器"
 	}
 	"Weapon Preference"
 	{
 		"en"	"Your Preference"
+		"ko"	"너가 선호하는건?"
+		"chi"	"个人设置"
 	}
 	"Preference Alyx"
 	{
 		"en"	"I'll just stick with my gun thanks.\nAnd don't worry, I'll patch you up whenever I can."
+		//"ko"	"저는 그냥 제 총을 가지고 있을게요. 고맙습니다.\n그리고 걱정하지 마세요. 시간이 되면 꼭 치료해 드리겠습니다."
+		//"chi"	"我就不换枪了，谢谢。\n别担心，必要时我会给你治疗的。"
 	}
 	"Preference Barney"
 	{
 		"en"	"Well I like anything I can get my hands on.\nDon't need to tell me what to get, I'll use it."
+		//"ko"	"글쎄다~, 난는 손에 넣을 수 있는 건 뭐든 좋아해.\n무엇을 사야 하는지 말할 필요 없어. 내가 사용할 꺼니깐."
+		//"chi"	"不需告诉我用什么武器。\n我有啥就用啥"
 	}
 	"Preference Normal"
 	{
 		"en"	"Just standard weapons, nothing special."
+		"ko"	"평범한게 최고지~"
+		"chi"	"常规武器，没什么特别的。"
 	}
 	"Preference Speed"
 	{
 		"en"	"I like wepaons with a little more fire rate."
+		"ko"	"난 빠르게 연사로 갈길수있는 무기가 무난해."
+		"chi"	"我喜欢射速比较快的东西。"
 	}
 	"Preference Heavy"
 	{
 		"en"	"I like wepaons with a little more damage per shot."
+		"ko"	"난 묵직한 한방이 있는 무기가 손에 맞더라고."
+		"chi"	"我喜欢伤害高些的武器。"
 	}
 	"Preference No Clip"
 	{
 		"en"	"I like ranged weapons without needing to reload."
+		"ko"	"난 재장전이 필요없는 원거리 무가가 좋더라고."
+		"chi"	"我喜欢不需要装弹的武器。"
 	}
 	"Preference Super Speed"
 	{
 		"en"	"I really like weapons with alot of attack speed."
+		"ko"	"공속이 빠르면 뭐든지 해결할수있지!"
+		"chi"	"我喜欢射速特别快的东西。"
 	}
 	"Preference Super Heavy"
 	{
 		"en"	"I really like weapons that can nuke at once."
+		"ko"	"난 일격에 주님곁에 보낼수있는 무기가 좋아!"
+		"chi"	"我喜欢伤害巨高的武器。"
 	}
 	"Build Healing Station At Me"
 	{
 		"en"	"Build Healing Station At Me"
+		"ko"	"냉장고 건설"
+		"chi"	"在此处建造医疗站"
 	}
 	"Build Barricade At Me"
 	{
 		"en"	"Build Barricade At Me"
+		"ko"	"방벽 건설"
+		"chi"	"在此处间建造路障"
 	}
 	"Build Sentry At Me"
 	{
 		"en"	"Build Sentry At Me"
+		"ko"	"센트리 건설"
+		"chi"	"在此处建造步哨"
 	}
 	"Build Ammo Box At Me"
 	{
 		"en"	"Build Ammo Box At Me"
+		"ko"	"탄약상자 설치"
+		"chi"	"在此处建造弹药箱"
 	}
 	"Build Armor Table At Me"
 	{
 		"en"	"Build Armor Table At Me"
+		"ko"	"아머 테이블 설치"
+		"chi"	"在此处建造护甲桌"
 	}
 	"Build Perk Machine At Me"
 	{
 		"en"	"Build Perk Machine At Me"
+		"ko"	"퍼크 머신 건설"
+		"chi"	"在此处建造饮料机"
 	}
 	"Build Pack-a-Punch At Me"
 	{
 		"en"	"Build Pack-a-Punch At Me"
+		"ko"	"팩-어-펀치 건설"
+		"chi"	"在此处建造升级站"
 	}
 	"Name Rebel"
 	{
 		"en"	"Name Rebel"
+		"chi"	"改名"
 	}
 	"Pistol"
 	{
 		"en"	"Pistol"
+		"chi"	"手枪"
 	}
 	"SMG"
 	{
 		"en"	"SMG"
+		"chi"	"SMG"
 	}
 	"AR2"
 	{
 		"en"	"AR2"
+		"chi"	"AR2"
 	}
 	"Shotgun"
 	{
 		"en"	"Shotgun"
+		"chi"	"霰弹枪"
 	}
 	"RPG"
 	{
 		"en"	"RPG"
+		"chi"	"RPG"
 	}
 	"Crowbar"
 	{
 		"en"	"Crowbar"
+		"chi"	"撬棍"
 	}
 	"Victoria Raid Desc"
 	{
 		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
+		"ko" 	"(11) 센살은 당신에게 현재 빅토리아가 공격하고 있는 지베리아를 방문해달라고 부탁합니다."
+		"chi"	"Sensal请求你去一趟正在被维多利亚入侵的西伯利亚。"
+	}
+	"CYBER GRIND Desc"
+	{
+		"en" 	"YES. RaidBoss Rush."
+		"ko" 	"맞아요 평범하기 그지없는 레이드보스 러쉬입니다."
+		"chi"	"所有难度！"
 	}
 	"Ability already Active"
 	{
 		"en"	"Ability already Active"
+		"chi"	"技能已激活！"
+	}
+	"Get_DrinkRND_1"
+	{
+		"en" 		"Armour Point Regenerativen"
+		"ko" 		"아머 포인트 재생"
+		"chi"		"持续恢复护甲"
+	}
+	"Get_DrinkRND_2"
+	{
+		"en" 		"HP Regenerativen"
+		"ko" 		"체력 재생"
+		"chi"		"持续恢复血量"
+	}
+	"Get_DrinkRND_3"
+	{
+		"en" 		"Poison"
+		"ko" 		"독"
+		"chi"		"！！剧毒！！"
+	}
+	"Get_DrinkRND_4"
+	{
+		"en" 		"Energy Drink!"
+		"ko" 		"에너지 드링크!"
+		"chi"		"能量饮料！"
+	}
+	"Get_DrinkRND_5"
+	{
+		"en" 		"No Health?"
+		"ko" 		"체력... 없다?"
+		"chi"		"诶你血怎么没了"
+	}
+	"Get_DrinkRND_6"
+	{
+		"en" 		"Min Crit!"
+		"ko" 		"소형 치명타!"
+		"chi"		"迷你暴击！"
+	}
+	"Get_DrinkRND_7"
+	{
+		"en" 		"Burning"
+		"ko" 		"화상"
+		"chi"		"「炎上」"
+	}
+	"Get_DrinkRND_8"
+	{
+		"en" 		"Slow"
+		"ko" 		"둔화"
+		"chi"		"减速"
+	}
+	"Get_DrinkRND_9"
+	{
+		"en" 		"Uber!"
+		"ko" 		"무적!"
+		"chi"		"UBER！"
+	}
+	"Get_DrinkRND_10"
+	{
+		"en" 		"Smite!"
+		"ko" 		"단죄!"
+		"chi"		"「打雷」"
+	}
+	"Get_DrinkRND_11"
+	{
+		"en" 		"Toxic Gas"
+		"ko" 		"독 가스"
+		"chi"		"毒气！"
+	}
+	"Get_DrinkRND_12"
+	{
+		"en" 		"Teleport!"
+		"ko" 		"순간이동!"
+		"chi"		"传送"
+	}
+	"Get_DrinkRND_13"
+	{
+		"en" 		"Building Super Recharging!"
+		"ko" 		"구조물 슈퍼 재충전!"
+		"chi"		"建筑物超级充能！"
+	}
+	"Orbital Cannon Out of Ammo This Round, Reload"
+	{
+		"en"	"Orbital Cannon Out of Ammo This Round, Reload"
+		"ko"	"궤도 캐논 재장전중! 다음 웨이브에 완료됨"	
+		"chi"	"轨道炮已用完，等下一局"
+	}
+	"Eagle 1 Out of Ammo This Round, Reload"
+	{
+		"en"	"Eagle 1 Out of Ammo This Round, Reload"
+		"ko"	"이글 1 재장전중! 다음 웨이브에 완료됨"	
+		"chi"	"弹药已用完，等下一局！"
+	}
+	"Use Only On Wave"
+	{
+		"en"	"Use Only On Wave"
+		"ko"	"웨이브 진행중에만 사용할수있습니다."
+		"chi"	"只能在战斗时使用。"	
+	}
+	"Use Only Alive"
+	{
+		"en"	"Use Only Alive"
+		"ko"	"살아있을때만 사용할수있습니다."	
+		"chi"	"只能在活着时使用。"
+	}
+	"Use Only Down"
+	{
+		"en"	"Use Only Down"
+		"ko"	"쓰러져있을때만 사용 가능합니다."
+		"chi"	"只能在倒地后使用。"
+	}
+	"1 per wave"
+	{
+		"en"	"1 per wave"
+		"ko"	"웨이브당 한번만 사용할수있습니다."
+		"chi"	"每局一次。"
+	}
+	"Low Health No Use"
+	{
+		"en"	"Cannot be used to Low Health."
+		"ko"	"체력이 낮아 사용 할 수 없습니다."
+		"chi"	"血量过低时无法使用"
+	}
+	"Ability No Use"
+	{
+		"en"	"Cannot be used"
+		"ko"	"사용 할 수 없습니다."
+		"chi"	"无法使用"
 	}
 	"Barrack Unit not detected"
 	{
 		"en"	"Barrack Unit not detected"
-		"ko"	"배럭 유닛를 감지 할 수 없습니다."	
+		"ko"	"배럭 유닛를 감지 할 수 없습니다."
+		"chi"	"未监测到兵营单位。"
+	}
+	"Not enough energy"
+	{
+		"en"	"Not enough energy"
+		"ko"	"에너지가 부족합니다"
+		"chi"	"能量不足"
 	}
 	"Player not detected"
 	{
 		"en"	"Player not detected"
 		"ko"	"플레이어를 감지 할 수 없습니다."
+		"chi"	"未监测到万家。"
+	}
+	"Need Healing Point"
+	{
+		"#format"	"{1:i}"
+		"en"	"Need {1} Healing Point"
+		"ko"	"{1} 치료 포인트가 필요합니다."
+		"chi"	"需要 {1} 治疗"
+	}
+	"Pickup Gift Single"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}You already have everything in this rarity, but where given {1} XP as a compensation!{default}"
+		"ko"		"{green}현 단계의 모든 아이템을 가지고있습니다. 대신 추가 {1} XP 를 보상으로 받았습니다!{default}"
+		"chi"		"{green} 你已经有这个稀有度的所有物品了！补偿{1}XP！{default}"
 	}
 	"Use Only Alive"
 	{
 		"en"	"Can only use while alive."
+		"chi"	"只能活着时使用。"
 	}
 	"freeplay_intro"
 	{

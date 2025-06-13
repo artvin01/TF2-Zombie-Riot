@@ -790,11 +790,6 @@
 		"chi"       	"战旗"
 		"ko"		"사기 증진 깃발"
 	}
-	"Ancient Melodies"
-	{
-		"en"	"Ancient Melodies"
-		"chi"	"征服者战旗"
-	}
 	"PhlogStorms Detonator"
 	{
 		"en"		"PhlogStorms Detonator"
@@ -3268,7 +3263,7 @@
 	"Reiuji Wand"
 	{
 		"en"	"Reiuji Wand"
-		"chi"	"法杖"
+		"chi"	"傻鸟法杖"
 		"ko"	"레이우지 완드"
 	}
 	"Heavy Particle Rifle"
@@ -3570,54 +3565,63 @@
 	{
 		"en"		"Usiz"
 		"ko"		"유시즈"
+		"chi"		"USIZ"
 	}
 	
 	"Wind Burst"
 	{
 		"en"		"Wind Burst"
 		"ko"		"돌풍"
+		"chi"		"风爆"
 	}
 	
 	"Rocket Charger"
 	{
 		"en"		"Rocket Charger"
 		"ko"		"로켓 차져"
+		"chi"		"火箭充能"
 	}
 	
 	"Dreadnought"
 	{
 		"en"		"Dreadnought"
 		"ko"		"드레드노트"
+		"chi"		"无畏"
 	}
 	
 	"Slam"
 	{
 		"en"		"Slam"
 		"ko"		"슬램"
+		"chi"		"砸地"
 	}
 	
 	"Density"
 	{
 		"en"		"Density"
 		"ko"		"육중"
+		"chi"		"密度"
 	}
 	
 	"Sweeping Edge"
 	{
 		"en"		"Sweeping Edge"
 		"ko"		"휩쓸기"
+		"chi"		"横扫之刃"
 	}
 	
 	"Borneo"
 	{
 		"en"		"Borneo"
 		"ko"		"보르네오"
+		"chi"		"Borneo"
 	}
 	
 	"Legend of Market Gardener"
 	{
 		"en"		"Legend of Market Gardener"
 		"ko"		"마켓 가든의 전설"
+		"chi"		"花园铲传说"
 	}
 	
 	"Pixel Gun"
@@ -3729,16 +3733,19 @@
 	{
 		"en"		"Minecraft Sword"
 		"ko"		"나무 검"
+		"chi"		"像素剑"
 	}
 	"Stone Age"
 	{
 		"en"		"Stone Age"
 		"ko"		"석기 시대"
+		"chi"		"石器时代"
 	}
 	"Isn't It Iron Pick"
 	{
 		"en"		"Isn't It Iron Pick"
 		"ko"		"이젠 철 좀 들어라"
+		"chi"		"铁器时代"
 	}
 	"Cover Me With Gold"
 	{
@@ -3759,6 +3766,7 @@
 	{
 		"en"		"Soul Eater"
 		"ko"		"영혼 약탈자"
+		
 	}
 	"Adaptive Medigun"
 	{
@@ -3820,6 +3828,7 @@
 	{
 		"en"		"Still Hunt"
 		"ko"		"사냥법"
+		"chi"		"猎杀者"
 	}
 	
 	"Orbital 120MM HE Barrage Grenade"
@@ -4473,31 +4482,6 @@
 		"en"		"Armor Medigun"
 		"ko"		"아머 메디건"
 	}
-	"The Health Hose"
-	{
-		"en"		"The Health Hose"
-		"chi"		"医疗注射器"
-	}
-	"The Health Hose Mk.II"
-	{
-		"en"		"The Health Hose Mk.II"
-		"chi"		"医疗注射器 MK2"
-	}
-	"The Savior's Sprayer"
-	{
-		"en"		"The Savior's Sprayer"
-		"chi"		"救赎者喷射器"
-	}
-	"Health Blaster"
-	{
-		"en"		"Health Blaster"
-		"chi"		"医疗喷射器"
-	}
-	"The Savior's Shotgun"
-	{
-		"en"		"The Health Hose"
-		"chi"		"救赎者霰弹枪"
-	}w
 	"Overclocking Devices"
 	{
 		"en"		"Overclocking Medigun"
@@ -4622,4 +4606,3 @@
 		"ko" "아스날 주먹"
 	}
 }
-

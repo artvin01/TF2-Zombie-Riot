@@ -4,670 +4,821 @@
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
-		"chi"		"{orange}{(Construct) {green}获取 {1} {2}！"
+		"chi"		"{orange}(Construct) {green}获得 {1} 个{2}！"
 	}
 	"Used Material"
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {red}Used {1} {2}!"
-		"chi"		"{orange}{(Construct) {green}使用了 {1} {2}！"
+		"chi"		"{orange}(Construct) {red}消耗 {1} 个{2}！"
 	}
 	"Battle Finished"
 	{
 		"en"		"{orange}(Construct) The battle is over!"
-		"chi"		"{orange}(Construct) 战斗已结束！"
+		"chi"		"{orange}(Construct) 战斗结束！"
 	}
 	"Cash"
 	{
 		"en"		"Cash"
-		"chi"		"现金"
+		"chi"		"资金"
 	}
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
-		"chi"		"{orange}(Construct) {red}{1} {default}正在收集{orange}{2} {default}，受到了攻击！"
+		"chi"		"{orange}(Construct) {red}{1} {default}正在采集{orange}{2}{default}时遭遇攻击！"
 	}
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
 		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
-		"chi"		"{orange}(Construct) {green}{1} {default}RAID碎片出现了！"
+		"chi"		"{orange}(Construct) {green}{1} {default}个战利品遗迹已出现！"
 	}
 	"No Gifts Spawn"
 	{
 		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
-		"chi"		"{orange}(Construct) {red}没有RAID碎片出现，当前存在过多。"
+		"chi"		"{orange}(Construct) {red}未生成战利品遗迹，当前数量已达上限..."
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
 		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
-		"chi"		"{orange}(Construct) {red}{1} {green}获得了RAID碎片！"
+		"chi"		"{orange}(Construct) {red}{1} {green}发现并获得了战利品遗迹！"
 	}
 	"Found a gift remain No Attacker"
 	{
 		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
-		"chi"		"{orange}(Construct) {green}有人获得了RAID碎片！"
+		"chi"		"{orange}(Construct) {green}有人发现了战利品遗迹！"
 	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
-		"chi"		"{orange}(Construct) {red}{1} {default}使用了{orange}{2} {3}制作"
+		"chi"		"{orange}(Construct) {red}{1} {default}使用{orange}{2}个{3}{default}制作了"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
+		"chi"		"{orange}(Construct) {red}{1} {default}使用{orange}{2}个{3}{default}与{orange}{4}个{5}{default}制作了"
 	}
 	"Player Start Research"
 	{
 		"#format"	"{1:N},{2:s}"
 		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
+		"chi"		"{orange}(Construct) {red}{1} {default}开始研究{orange}{2}"
 	}
 	"Finish Research Desc"
 	{
 		"#format"	"{1:s},{2:t}"
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
+		"chi"		"{orange}(Construct) {default}完成研究 {orange}{1}{default}：{2}"
 	}
 	"Crouch and select to view description"
 	{
 		"en"	"Crouch and select to view description"
+		"chi"	"蹲下并选择查看说明"
 	}
 	"Claim Research"
 	{
 		"en"	"Claim Research"
+		"chi"	"领取研究成果"
 	}
 	"Claim Research Time"
 	{
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
+		"chi"	"领取研究：{1}秒"
 	}
 	"Start Mining"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."
+		"chi"	"开始开采 {1}？\n可能触发附近遭遇战"
 	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"
+		"chi"	"损坏的服务器"
 	}
 	"Left Remains Of Raids"
 	{
 		"en"	"Left Remains Of Raids"
+		"chi"	"战斗残骸"
 	}
 	"Material wood"
 	{
 		"en"	"Wood"
+		"chi"	"木材"
 	}
 	"Material stone"
 	{
 		"en"	"Stone"
+		"chi"	"石材"
 	}
 	"Material iron"
 	{
 		"en"	"Iron Ore"
+		"chi"	"铁矿"
 	}
 	"Material bofazem"
 	{
 		"en"	"Bottled Bofazem"
+		"chi"	"瓶装波法泽姆"
 	}
 	"Material copper"
 	{
 		"en"	"Copper Ore"
+		"chi"	"铜矿"
 	}
 	"Material crystal"
 	{
 		"en"	"Gem Crystal"
+		"chi"	"水晶"
 	}
 	"Material jalan"
 	{
 		"en"	"Jalan Ore"
+		"chi"	"贾兰矿石"
 	}
 	"Material ossunia"
 	{
 		"en"	"Ossunia Ore"
+		"chi"	"奥苏尼亚矿"
 	}
 	"Material water"
 	{
 		"en"	"Fresh Water"
+		"chi"	"纯净水"
 	}
 	"Material wizuh"
 	{
 		"en"	"Wizuh Ore"
+		"chi"	"维祖矿石"
 	}
 	"Material cash"
 	{
 		"en"	"Cash"
+		"chi"	"资金"
 	}
 	"Pickaxes and a Map"
 	{
 		"en"	"Pickaxes and a Map"
+		"chi"	"矿镐与地图"
 	}
 	"Pickaxes and a Map Desc"
 	{
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
+		"chi"	"我们要的是指南，但就只有这玩意。\n{green}敌人与矿脉移动速度降低20%，承受伤害增加35%，造成伤害减少35%\n{crimson}无法抵达其他结局。"
 	}
 	"Loud Firepower"
 	{
 		"en"	"Loud Firepower"
+		"chi"	"轰鸣火力"
 	}
 	"Loud Firepower Desc"
 	{
 		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
+		"chi"	"排放的污染引来了不速之客...\n{green}初始获得50维祖矿石，队友射速+10%\n{red}但会有潜行者敌人出没"
 	}
 	"Heavy Equippment"
 	{
-		"en"	"Heavy Equippment"
+		"en"	"Heavy Equipment"
+		"chi"	"重型装备"
 	}
 	"Heavy Equippment Desc"
 	{
 		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
+		"chi"	"工程师要求遵守「安全准则」。\n{green}初始获得50贾兰矿石，队友最大生命值+125\n{red}但矿脉和敌方建筑生命值+15%"
 	}
 	"Vehicle Production"
 	{
 		"en"	"Vehicle Production"
+		"chi"	"载具生产线"
 	}
 	"Vehicle Production Desc"
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
+		"chi"	"新车已备好，随时可以交付。\n{green}初始获得50奥苏尼亚矿、15铁矿石，解锁1级基地与载具工厂\n{red}但稀有敌人出现更频繁"
 	}
 	"Void Blueprints"
 	{
 		"en"	"Void Blueprints"
+		"chi"	"虚空蓝图"
 	}
 	"Void Blueprints Desc"
 	{
 		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
+		"chi"	"这些蓝图恐怕有问题。\n{red}稀有敌人出现率提升\n敌人伤害+15%，生命值+10%"
 	}
 	"Ambulance"
 	{
 		"en"	"Ambulance"
+		"chi"	"救护车"
 	}
 	"Ambulance Desc"
 	{
 		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
+		"chi"	"可载8人，能救助倒地玩家。治疗效果随驾驶者医疗等级提升"
 	}
 	"Bus"
 	{
 		"en"	"Bus"
+		"chi"	"巴士"
 	}
 	"Bus Desc"
 	{
 		"en"	"A vehicle that can hold up to 24 players."
+		"chi"	"可容纳24名玩家"
 	}
 	"Camper Van"
 	{
 		"en"	"Camper Van"
+		"chi"	"露营车"
 	}
 	"Camper Van Desc"
 	{
 		"en"	"A vehicle that can hold up to 4 players. Able to collect ammo from the an ammo box in the back."
+		"chi"	"可载4人，后部弹药箱可补充弹药"
 	}
 	"Dump Truck"
 	{
 		"en"	"Dump Truck"
+		"chi"	"自卸卡车"
 	}
 	"Dump Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
+		"chi"	"可载6人，拥有更高护甲值"
 	}
 	"Landrover"
 	{
 		"en"	"Landrover"
+		"chi"	"越野车"
 	}
 	"Landrover Desc"
 	{
 		"en"	"A vehicle that can hold up to 3 players. Has increased driving speed."
+		"chi"	"可载3人，驾驶速度更快"
 	}
 	"Pickup Truck"
 	{
 		"en"	"Pickup Truck"
+		"chi"	"皮卡车"
 	}
 	"Pickup Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
+		"chi"	"可载6人，优先外置座位"
 	}
 	"Research Station"
 	{
 		"en"	"Research Station"
+		"chi"	"科研站"
 	}
 	"Research Station Desc"
 	{
 		"en"	"A construct that can spend materials to research equippment and buildings."
+		"chi"	"可消耗材料研发装备与建筑"
 	}
 	"Vehicle Factory"
 	{
 		"en"	"Vehicle Factory"
+		"chi"	"载具工厂"
 	}
 	"Vehicle Factory Desc"
 	{
 		"en"	"A construct that can spend materials to build vehicles."
+		"chi"	"可消耗材料制造载具"
 	}
 	"Cooking Stove"
 	{
 		"en"	"Cooking Stove"
+		"chi"	"烹饪灶台"
 	}
 	"Cooking Stove Desc"
 	{
 		"en"	"A construct that can spend materials to cook various meals to buff allies."
+		"chi"	"可消耗材料烹饪增益食物"
 	}
 	"Giant Lighthouse"
 	{
 		"en" 		"Giant Lighthouse"
+		"chi"	"巨型灯塔"
 	}
 	"Giant Lighthouse Desc"
 	{
 		"en" 		"Allies gain +30％ attack speed in its radius."
+		"chi"	"范围内友方攻击速度+30%"
 	}
 	"Water Pump"
 	{
 		"en"	"Water Pump"
+		"chi"	"抽水机"
 	}
 	"Water Pump Desc"
 	{
 		"en"	"A construct that generates water but needs to be manually collected when finished."
+		"chi"	"生产纯净水但需手动收集"
 	}
 	"Base Level I"
 	{
 		"en"	"Base Level I"
+		"chi"	"一级基地"
 	}
 	"Base Level I Desc"
 	{
 		"en"	"Unlocks more upgrades and allows building constructs."
+		"chi"	"解锁更多升级与建筑权限"
 	}
 	"Base Level II"
 	{
 		"en"	"Base Level II"
+		"chi"	"二级基地"
 	}
 	"Base Level II Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
+		"chi"	"解锁更多升级，提升建筑属性与建造上限"
 	}
 	"Base Level III"
 	{
 		"en"	"Base Level III"
+		"chi"	"三级基地"
 	}
 	"Base Level III Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
+		"chi"	"解锁更多升级，提升建筑属性与建造上限"
 	}
 	"Enchanced Water Pump"
 	{
-		"en"	"Enchanced Water Pump"
+		"en"	"Enhanced Water Pump"
+		"chi"	"高效抽水机"
 	}
 	"Enchanced Water Pump Desc"
 	{
 		"en"	"Increases water gained from Water Pump by x2.0."
+		"chi"	"产水量提升至2倍"
 	}
 	"Minting Station"
 	{
 		"en"	"Minting Station"
+		"chi"	"铸币站"
 	}
 	"Minting Station Desc"
 	{
 		"en"	"A construct that uses crystals to gain cash."
+		"chi"	"消耗水晶生成资金"
 	}
 	"Sawmill Factory"
 	{
 		"en"	"Sawmill Factory"
+		"chi"	"锯木厂"
 	}
 	"Sawmill Factory Desc"
 	{
 		"en"	"A construct that generates wood but needs to be manually collected when finished."
+		"chi"	"生产木材但需手动收集"
 	}
 	"Enchanced Sawmill Factory"
 	{
-		"en"	"Enchanced Sawmill Factory"
+		"en"	"Enhanced Sawmill Factory"
+		"chi"	"高效锯木厂"
 	}
 	"Enchanced Sawmill Factory Desc"
 	{
 		"en"	"Increases wood gained from Sawmill Factory by x2.0."
+		"chi"	"木材产量提升至2倍"
 	}
 	"Stonework Factory"
 	{
 		"en"	"Stonework Factory"
+		"chi"	"石料厂"
 	}
 	"Stonework Factory Desc"
 	{
 		"en"	"A construct that generates stone but needs to be manually collected when finished."
+		"chi"	"生产石材但需手动收集"
 	}
 	"Enchanced Stonework Factory"
 	{
-		"en"	"Enchanced Stonework Factory"
+		"en"	"Enhanced Stonework Factory"
+		"chi"	"高效石料厂"
 	}
 	"Enchanced Stonework Factory Desc"
 	{
 		"en"	"Increases stone gained from Stonework Factory by x2.0."
+		"chi"	"石材产量提升至2倍"
 	}
 	"Small Construct Wall"
 	{
 		"en"	"Small Construct Wall"
+		"chi"	"小型护墙"
 	}
 	"Small Construct Wall Desc"
 	{
 		"en"	"A construct that has a large health pool for tanking."
+		"chi"	"高生命值的防御工事"
 	}
 	"Large Construct Wall"
 	{
 		"en"	"Large Construct Wall"
+		"chi"	"大型护墙"
 	}
 	"Large Construct Wall Desc"
 	{
 		"en"	"A construct that has an even large health pool but consumes 2 slots."
+		"chi"	"超高生命值，占用2个建筑位"
 	}
 	"Extreme Construct Wall"
 	{
 		"en"	"Extreme Construct Wall"
+		"chi"	"终极护墙"
 	}
 	"Extreme Construct Wall Desc"
 	{
 		"en"	"A construct that has an extremely large health pool but consumes 3 slots."
+		"chi"	"极限生命值，占用3个建筑位"
 	}
 	"Atomic Soda"
 	{
 		"en"	"Atomic Soda"
+		"chi"	"原子苏打"
 	}
 	"Atomic Soda Desc"
 	{
 		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1％ movement speed"
+		"chi"	"别问侦察兵这饮料哪来的\n{green}移速+1%"
 	}
 	"Critical Water"
 	{
 		"en"	"Critical Water"
+		"chi"	"临界水"
 	}
 	"Critical Water Desc"
 	{
 		"en"	"With a new flavor.\n{green}Allies gain +5％ damage bonus"
+		"chi"	"新口味限定\n{green}伤害+5%"
 	}
 	"Questionable Milk"
 	{
 		"en"	"Questionable Milk"
+		"chi"	"可疑牛奶"
 	}
 	"Questionable Milk Desc"
 	{
 		"en"	"Now tell me, do think cows exist.\n{green}Allies gain +5％ max health"
+		"chi"	"你相信奶牛真的存在吗？\n{green}最大生命值+5%"
 	}
 	"Festive Atomic Soda"
 	{
 		"en"	"Festive Atomic Soda"
+		"chi"	"节日原子苏打"
 	}
 	"Festive Atomic Soda Desc"
 	{
 		"en"	"Extra spicy.\n{green}Players gain +2％ movement speed {red}but -5％ max health"
+		"chi"	"特别辛辣款\n{green}移速+2% {red}生命值-5%"
 	}
 	"Bread in Milk"
 	{
 		"en"	"Bread in Milk"
+		"chi"	"牛奶泡面包"
 	}
 	"Bread in Milk Desc"
 	{
 		"en"	"I guess it makes it soggy?\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+		"chi"	"这样会泡烂吧？\n{green}生命值+10% {red}移速-1%"
 	}
 	"Steamed Mackerel"
 	{
 		"en"	"Steamed Mackerel"
+		"chi"	"清蒸鲭鱼"
 	}
 	"Steamed Mackerel Desc"
 	{
 		"en"	"Isn't it just cooked then?\n{green}Allies gain +5％ attack speed"
+		"chi"	"这不算蒸熟了吗？\n{green}攻速+5%"
 	}
 	"BBQ Mackerel"
 	{
 		"en"	"BBQ Mackerel"
+		"chi"	"烧烤鲭鱼"
 	}
 	"BBQ Mackerel Desc"
 	{
 		"en"	"Ocean to grill to sauce to my mouth.\n{green}Allies gain +10％ attack speed {red}but -5％ max health"
+		"chi"	"从海洋到烤架再到我嘴里\n{green}攻速+10% {red}生命值-5%"
 	}
 	"Beer Bottle"
 	{
 		"en"	"Beer Bottle"
+		"chi"	"啤酒瓶"
 	}
 	"Beer Bottle Desc"
 	{
 		"en"	"I need beer.\n{green}Allies gain +10％ damage bonus {red}but -1％ movement speed"
+		"chi"	"我需要啤酒\n{green}伤害+10% {red}移速-1%"
 	}
 	"The Sandvich"
 	{
 		"en"	"The Sandvich"
+		"chi"	"三明治"
 	}
 	"The Sandvich Desc"
 	{
 		"en"	"A classic heavy snack.\n{green}Allies gain +5％ max health"
+		"chi"	"经典重装兵零食\n{green}生命值+5%"
 	}
 	"The Dalokohs Bar"
 	{
 		"en"	"The Dalokohs Bar"
+		"chi"	"达洛科斯巧克力"
 	}
 	"The Dalokohs Bar Desc"
 	{
 		"en"	"A classic heavy desert.\n{green}Allies gain +5％ max health"
+		"chi"	"经典重装兵甜点\n{green}生命值+5%"
 	}
 	"The Buffalo Steak Sandvich"
 	{
 		"en"	"The Buffalo Steak Sandvich"
+		"chi"	"野牛牛排三明治"
 	}
 	"The Buffalo Steak Sandvich Desc"
 	{
 		"en"	"A classic heavy, uh...\n{green}Allies gain +5％ damage bonus"
+		"chi"	"经典重装兵...呃...\n{green}伤害+5%"
 	}
 	"The Fishcake"
 	{
 		"en"	"The Fishcake"
+		"chi"	"鱼糕"
 	}
 	"The Fishcake Desc"
 	{
 		"en"	"Kind of like fish paste?\n{green}Allies gain +10％ max health {red}but -5％ attack speed"
+		"chi"	"类似鱼糜制品？\n{green}生命值+10% {red}攻速-5%"
 	}
 	"The Robo-Sandvich"
 	{
 		"en"	"The Robo-Sandvich"
+		"chi"	"机械三明治"
 	}
 	"The Robo-Sandvich Desc"
 	{
 		"en"	"Ok now this is just silly.\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+		"chi"	"这太蠢了\n{green}生命值+10% {red}移速-1%"
 	}
 	"The Festive Sandvich"
 	{
 		"en"	"The Festive Sandvich"
+		"chi"	"节日三明治"
 	}
 	"The Festive Sandvich Desc"
 	{
 		"en"	"Do we unwrap this or?\n{green}Allies gain +10％ max health {red}but -5％ damage bonus"
+		"chi"	"需要拆包装吗？\n{green}生命值+10% {red}伤害-5%"
 	}
 	"The Second Banana"
 	{
 		"en"	"The Second Banana"
+		"chi"	"备用香蕉"
 	}
 	"The Second Banana Desc"
 	{
 		"en"	"Don't think of it.\n{green}Allies gain +1％ movement speed"
+		"chi"	"别多想\n{green}移速+1%"
 	}
 	"Expidonsa Tech Chip"
 	{
 		"en"	"Expidonsa Tech Chip"
+		"chi"	"艾克斯皮顿萨科技芯片"
 	}
 	"Expidonsa Tech Chip Desc"
 	{
 		"en"	"Expidonsa technology, but something seems rather off about it.\n{yellow}Unlocks research Expidonsa Tech Chip Install"
+		"chi"	"艾克斯皮顿萨科技造物，但似乎有些异常\n{yellow}解锁「芯片安装」研究项"
 	}
 	"Rogue Expi Start 1"
 	{
 		"en"	"These Expidonsans don't seem to be on your side..?"
+		"chi"	"这些艾克斯皮顿萨人好像不是盟友？"
 	}
 	"Rogue Expi Start 2"
 	{
 		"en"	"I don't think this is a test anymore..."
+		"chi"	"这恐怕不再是演习了..."
 	}
 	"Expidonsa Tech Chip Install"
 	{
 		"en"	"Expidonsa Tech Chip Install"
+		"chi"	"芯片安装"
 	}
 	"Expidonsa Tech Chip Install Desc"
 	{
 		"en"	"Should we install the Expidonsa Tech Chip into our system?"
+		"chi"	"是否将艾克斯皮顿萨芯片植入系统？"
 	}
 	"System Malfunction"
 	{
 		"en"	"System Malfunction"
+		"chi"	"系统故障"
 	}
 	"System Malfunction Desc"
 	{
 		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
+		"chi"	"糟糕\n{red}建筑特性可能失效{blue}且会遭遇叛变者追击"
 	}
 	"Rebel Calling I"
 	{
 		"en"	"Rebel Calling I"
+		"chi"	"叛军召唤I"
 	}
 	"Rebel Calling I Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"chi"	"地图上额外出现1名叛军"
 	}
 	"Rebel Calling II"
 	{
 		"en"	"Rebel Calling II"
+		"chi"	"叛军召唤II"
 	}
 	"Rebel Calling II Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"chi"	"地图上额外出现1名叛军"
 	}
 	"Rebel Calling III"
 	{
 		"en"	"Rebel Calling III"
+		"chi"	"叛军召唤III"
 	}
 	"Rebel Calling III Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"chi"	"地图上额外出现1名叛军"
 	}
 	"Rebel Calling IV"
 	{
 		"en"	"Rebel Calling IV"
+		"chi"	"叛军召唤IV"
 	}
 	"Rebel Calling IV Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"chi"	"地图上额外出现1名叛军"
 	}
 	"Rebel Calling V"
 	{
 		"en"	"Rebel Calling V"
+		"chi"	"叛军召唤V"
 	}
 	"Rebel Calling V Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"chi"	"地图上额外出现1名叛军"
 	}
 	"Heavy Calliber"
 	{
 		"en"	"Heavy Caliber"
+		"chi"	"重型炮台"
 	}
 	"Heavy Calliber Desc"
 	{
 		"en"	"A construct that attacks using long-range high-damage rounds."
+		"chi"	"发射远距离高伤害炮弹"
 	}
 	"Minigun Turret"
 	{
 		"en"	"Minigun Turret"
+		"chi"	"机枪炮塔"
 	}
 	"Minigun Turret Desc"
 	{
 		"en"	"A construct that attacks using short-range rapid firing rounds."
+		"chi"	"近距离速射型防御设施"
 	}
 	"Teslar's Medusa"
 	{
 		"en"	"Teslar's Medusa"
+		"chi"	"特斯拉美杜莎"
 	}
 	"Teslar's Medusa Desc"
 	{
 		"en"	"A construct that attacks using short-range lightning that chains, slows, and debuffs enemies."
+		"chi"	"释放连锁闪电，减速并削弱敌人"
 	}
 	"Flagship Calling"
 	{
 		"en"	"Flagship Calling"
+		"chi"	"旗舰召唤"
 	}
 	"Flagship Calling Desc"
 	{
 		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
+		"chi"	"移速+10%\n获得「齐柏林旗舰武器」"
 	}
 	"Tranquilizer Turret"
 	{
 		"en"	"Tranquilizer Turret"
+		"chi"	"麻醉炮塔"
 	}
 	"Tranquilizer Turret Desc"
 	{
 		"en"	"A construct that attacks using non-damaging stunning rounds."
+		"chi"	"发射非伤害性眩晕弹"
 	}
 	"The Dispenser"
 	{
 		"en"	"The Dispenser"
+		"chi"	"补给器"
 	}
 	"The Dispenser Desc"
 	{
 		"en"	"A construct that heals nearby allies."
+		"chi"	"治疗附近友军"
 	}
 	"Decorative Furniture"
 	{
 		"en"	"Decorative Furniture"
+		"chi"	"装饰家具套装"
 	}
 	"Decorative Furniture Desc"
 	{
 		"en"	"Unlocks a set of decorative furniture, for morale."
+		"chi"	"解锁整套装饰家具（提升士气）"
 	}
 	"Decorative Lamp"
 	{
 		"en"	"Decorative Lamp"
+		"chi"	"装饰台灯"
 	}
 	"Decorative Lamp Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"chi"	"提升士气与防御欲望"
 	}
 	"Decorative Shelf"
 	{
 		"en"	"Decorative Shelf"
+		"chi"	"装饰架"
 	}
 	"Decorative Shelf Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"chi"	"提升士气与防御欲望"
 	}
 	"Decorative Desk"
 	{
 		"en"	"Decorative Desk"
+		"chi"	"装饰书桌"
 	}
 	"Decorative Desk Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"chi"	"提升士气与防御欲望"
 	}
 	"Decorative Couch"
 	{
 		"en"	"Decorative Couch"
+		"chi"	"装饰沙发"
 	}
 	"Decorative Couch Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"chi"	"提升士气与防御欲望"
 	}
 	"Decorative Chair"
 	{
 		"en"	"Decorative Chair"
+		"chi"	"装饰椅"
 	}
 	"Decorative Chair Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"chi"	"提升士气与防御欲望"
 	}
 	"Command Center"
 	{
 		"en"	"Command Center"
+		"chi"	"指挥中心"
 	}
 	"Command Center Desc"
 	{
 		"en"	"Unlocks constructs used for the Barracks."
+		"chi"	"解锁兵营相关建筑"
 	}
 	"Barracks House"
 	{
 		"en"	"Barracks House"
+		"chi"	"兵营房"
 	}
 	"Barracks House Desc"
 	{
 		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
+		"chi"	"兵营补给+1，最大盟友数+1"
 	}
 }
-
