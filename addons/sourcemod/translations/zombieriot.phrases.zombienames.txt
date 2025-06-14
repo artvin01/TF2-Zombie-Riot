@@ -1549,7 +1549,7 @@
 	{
 		"en"		"Donnerkrieg"
 		"pt"		"Donnerkrieg"
-		"chi"		"雷霆大战"
+		"chi"		"Donnerkrieg"
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 		"ko"		"도너크리그"
@@ -1559,7 +1559,7 @@
 		"en"		"Schwertkrieg"
 		"pt"		"Schwertkrieg"
 		"ru"		"Шверткриг"
-		"chi"		"剑战"
+		"chi"		"Schwertkrieg"
 		"nl"		"Schwertkrieg"
 		"ko"		"슈어츠크리그"
 	}
