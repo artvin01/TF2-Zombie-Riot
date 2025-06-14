@@ -620,7 +620,7 @@ methodmap Twirl < CClotBody
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 
-		//data: sc%% ; test, verikia, force15, force30, force45, force60, triple_enemies, final_item, blockinv
+		//data: sc%% ; test, verkia, force15, force30, force45, force60, triple_enemies, final_item, blockinv
 		
 		npc.m_iChanged_WalkCycle = 1;
 		i_barrage_ammo[npc.index] = 0;
