@@ -864,7 +864,7 @@ public Action TheMessenger_OnTakeDamage(int victim, int &attacker, int &inflicto
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MESSENGER_LAUNCHER)
 			{
 				b_khamlWeaponRage[npc.index] = true;
-				CPrintToChatAll("{lightblue}메신저{default}: 좆까라. 알아들었나? 좆까라고.");
+				CPrintToChatAll("{lightblue}메신저{default}: 그건 내 무기잖아. 이런 미친 놈이...");
 			}
 		}
 	}

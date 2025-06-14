@@ -529,7 +529,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		else if(GetGameTime() + 10.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 3)
 		{
 			i_SaidLineAlready[npc.index] = 3;
-			CPrintToChatAll("{gold}실베스터{default}: 정말 고마워. 하지만 나중에 네 도움이 꼭 필요할 겁니다. 그리고 위험한 게 있으면 경고해줄게.");
+			CPrintToChatAll("{gold}실베스터{default}: 정말 고마워. 하지만 나중에 네 도움이 꼭 필요할 거야. 그리고 위험한 게 있으면 경고해줄게.");
 		}
 		else if(GetGameTime() + 13.0 > npc.m_flTimeSinceHasBeenHurt && i_SaidLineAlready[npc.index] < 2)
 		{

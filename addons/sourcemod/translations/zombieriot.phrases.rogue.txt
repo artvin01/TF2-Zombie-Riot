@@ -1433,7 +1433,7 @@
 	"Solitary Desc"
 	{
 		"en"	"{red}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
-		"ko"	"{red}상점의 모든 아이템의 가격이 10％ 상승합니다. {green}팩 어 펀치 업그레이드의 가격이 10％ 감소합니다."
+		"ko"	"{red}상점의 모든 아이템의 가격이 10％ 상승합니다. {green}팩 어 펀치 개선의 가격이 10％ 감소합니다."
 	}
 	"Solitary Lore"
 	{

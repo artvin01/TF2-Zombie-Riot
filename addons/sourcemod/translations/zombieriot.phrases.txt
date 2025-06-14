@@ -2264,7 +2264,7 @@
 		"pt"		"Você foi reanimado. [{1}]"
 		"nl"		"Je word tot leven gebracht. [{1}]"
 		"chi"       "队友正在拉起你 [{1}]"
-		"ko"		"소생중. [{1}]"
+		"ko"		"다른 사람이 당신을 소생시키고 있습니다. [{1}]"
 	}
 	"Medieval_Difficulty"
 	{
@@ -4429,7 +4429,7 @@
 		"en"	"Building Menu\nHold crouch for more info"
 		"fr"	"Menu de Construction\nAccroupissez-vous pour plus d'informations"
 		"chi"	"建筑菜单\n蹲下查看详细信息"
-		"ko"	"건설 메뉴\n앉아있으면 더 많은 정보를 볼 수 있습니다"
+		"ko"	"건설 메뉴\n앉기 = 더 많은 정보."
 	}
 	"Barracks Gained Resources"
 	{

@@ -825,7 +825,7 @@ static void ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{crimson}%s{default}: 다시 해볼 생각이냐? 음?", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 다시 해볼 생각이냐? 흐으음?", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 1:
 				{
@@ -1214,11 +1214,11 @@ static void ClotThink(int iNPC)
 						{
 							case 1:
 							{
-								CPrintToChatAll("{crimson}%s{default}: I have a little gift for you {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
+								CPrintToChatAll("{crimson}%s{default}: 널 위한 작은 선물이다, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
 							}
 							case 2:
 							{
-								CPrintToChatAll("{crimson}%s{default}: Lookout above {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
+								CPrintToChatAll("{crimson}%s{default}: 네 위를 봐라, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index), Enemy_I_See);
 							}
 						}
 					}
@@ -1390,19 +1390,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 이게 전부가 아니다!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 널 찢어발겨주마!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{crimson}%s{default}: 하하하하하!!!", NpcStats_ReturnNpcName(npc.index));
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", NpcStats_ReturnNpcName(npc.index));
+					CPrintToChatAll("{crimson}%s{default}: 네 역겨운 머리통을 몸과 분리시켜주마!!!", NpcStats_ReturnNpcName(npc.index));
 				}
 			}
 		}
@@ -1412,19 +1412,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: This is only just the beginning {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 이건 그냥 시작일 뿐이라고, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You think this is the end {yellow}%N{default}?", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 이게 정말 끝일거라 생각하나, {yellow}%N{default}?", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You fool {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 넌 너무 어리석군, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: There's plenty more to come {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 아직 끝난게 아니다, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}
@@ -1444,19 +1444,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 이게 전부가 아니다!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 널 찢어발겨주마!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 하하하하하!!!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 네 역겨운 머리통을 몸과 분리시켜주마!!!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}
@@ -1466,19 +1466,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Don't get too cocky {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 아직 자만하면 안 되지, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Thy end is near {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 네 종말이 다가오고 있다, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {yellow}%N {default}are you sure you want to proceed further?", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: {yellow}%N {default}, 정말로 계속 버티려는거냐?", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: This is getting interesting, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 네가 점점 더 흥미로워지는군, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}
@@ -1498,19 +1498,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCH NET!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 이게 전부가 아니다!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", NpcStats_ReturnNpcName(npc.index, true));
+					CPrintToChatAll("{crimson}%s{default}: 널 찢어발겨주마!!!", NpcStats_ReturnNpcName(npc.index, true));
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 하하하하하!!!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 네 역겨운 머리통을 몸과 분리시켜주마!!!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}
@@ -1520,19 +1520,19 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Your own foolishness lead you to this {yellow}%N{default} prepare for complete {red}BLITZKRIEG", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 네 어리석음이 결국 이렇게까지 되게 만드는구나, {yellow}%N{default}. 기대해라, {red}진짜 전격전을.", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Thy end is {red} Now {yellow}%N{default} Thou shall feel true {red}BLITZKRIEG", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 네 종말은 {red}지금이다, {yellow}%N{default}... 진정한 전격전을 {red}기대해라!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You've gone and done it {red} ITS TIME TO DIE {yellow}%N {red}PREPARE FOR FULL BLITZKRIEG", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 슬슬 감이 오나? {red}너의 죽음이 다가온다, {yellow}%N {red}전격전을 느껴라!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: You cannot stop the {crimson}Blitzkrieg{default} with such lackluster weapons {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 너의 그따위 약해빠진 무기로는 이 {crimson}블리츠크리그{default}를 막을 수 없다, {yellow}%N{default}!", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}
@@ -1559,15 +1559,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}FRISS DAS!!!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}이거나 먹어라!!!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}KOMMSTE NOCH KLAR DIGGA???", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}아직도 살아있는거냐???", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}DIE TECHNOLOGIE DER EXPIDONSANS IST DIE BESTE!!!!!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}엑스피돈사의 기술력은 세계 제일!!!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 			}
 		}
@@ -1577,15 +1577,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}Here's a fun fact, the atmosphere drastically lowers the potential of this attack... Guess what space lacks", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}재밌는걸 하나 알려주지, 이건 대기가 없으면 쓸 수 없는 공격이다. 그리고 여긴 대기가 흘러넘치는 곳이지!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}MUHAHAHAHAHAH", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}최후를 맞이해라!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}THE {aqua}TRUE{default} POWER OF THE MOON, IN THE PALMS OF MY HANDS", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}진정한 {aqua}달{default}의 힘이 내 손 안에 있다!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 			}
 		}
@@ -1595,15 +1595,15 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}I AM A GOD", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}나는 신이다...", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}THY PUNISHMENT IS DEATH", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}저 놈들에게 내릴 징벌은 죽음 뿐이다!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: {crimson}THE POWER OF THE MOON, IN THE PALMS OF MY HANDS", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
+					CPrintToChatAll("{crimson}%s{default}: {crimson}달의 힘이 내 손 안에 있다!", NpcStats_ReturnNpcName(npc.index, true));	//Ego boost 9000%
 				}
 			}
 		}
@@ -1676,7 +1676,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	if(i_current_wave[npc.index]==45)
 	{
-		CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", NpcStats_ReturnNpcName(npc.index, true));
+		CPrintToChatAll("{crimson}%s{default}: 하수인들이 이 곳에 도착했군.", NpcStats_ReturnNpcName(npc.index, true));
 	}
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int heck;
@@ -1703,7 +1703,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	}
 	if(i_current_wave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 	{
-		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index, true));
+		CPrintToChatAll("{crimson}%s{default}: 이젠 너희 둘이 나설 차례다.", NpcStats_ReturnNpcName(npc.index, true));
 		maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 
 		spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
@@ -1802,19 +1802,19 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: next time {yellow}%N{default} you wont be this lucky, {red}next time", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: {yellow}%N{default}, 다음엔 쉽진 않을거다. {red}다음에는 말이지...", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Will you be this lucky again {yellow}%N{default}, will{red} you?", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 이번에도 행운이 좋았군, {yellow}%N{default}. {red}그렇지?", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Until next time {yellow}%N{red} until next time...", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 다음에 두고 보자고, {yellow}%N{red}. 다음을...", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: hehe, {yellow}%N{default} I pity you, {crimson}because next time{default} I'll be stronger.", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 흐흐, {yellow}%N{default} 넌 자만하고 있군, {crimson}다음 번에는{default} 내가 더 강력해져서 돌아올텐데 말이지.", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}
@@ -1824,19 +1824,19 @@ static void NPC_Death(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Nooo, this cannot be {yellow}%N{default} you won, {red}this time", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 오, {yellow}%N{default} 네 승리다. {red}지금 당장은...", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}%s{default}: It seems I have failed {yellow}%N{default} you survived {red}this time", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 그래, {yellow}%N{default} 네 목숨줄이 조금 더 연장되었구나. {red}다음에도 그럴까?", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}%s{default}: Until next time {yellow}%N{red} until next time...", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 다음에 두고 보자고, {yellow}%N{red}, 다음을...", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", NpcStats_ReturnNpcName(npc.index, true), closest);
+					CPrintToChatAll("{crimson}%s{default}: 내 수하들이 오기 전에 나를 이기다니, {crimson}여전히{default} 이게 끝이 아닌걸 알아둬라...", NpcStats_ReturnNpcName(npc.index, true), closest);
 				}
 			}
 		}

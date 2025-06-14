@@ -651,23 +651,23 @@ static void Internal_ClotThink(int iNPC)
 					case 1:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: Come here!");
+							CPrintToChatAll("{gold}실베스터{default}: 이리 와!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: Just step away from here!!");
+							CPrintToChatAll("{gold}실베스터{default}: 이 곳에서 당장 나가!");
 					}
 					case 2:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: That's it!");
+							CPrintToChatAll("{gold}실베스터{default}: 덤벼봐!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: I dont want to get infected again..!!");
+							CPrintToChatAll("{gold}Silvester{default}: 우린 또 감염당할 수는 없어!");
 					}
 					case 3:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: Meet your real deal!");
+							CPrintToChatAll("{gold}실베스터{default}: 이제 진짜배기 싸움이다!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: This is one of the most dangerous places, just LEAVE!");
+							CPrintToChatAll("{gold}실베스터{default}: 여긴 최고로 위험한 장소라고! 들어가서는 안 돼!");
 					}
 				}
 			}
@@ -678,23 +678,23 @@ static void Internal_ClotThink(int iNPC)
 					case 1:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: It's over you little..!");
+							CPrintToChatAll("{gold}실베스터{default}: 이제 끝이다!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: No no no.. i cant not again..");
+							CPrintToChatAll("{gold}실베스터{default}: 이 곳의 그 놈들은 그 어떤 상식도 통하지 않아..");
 					}
 					case 2:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: If you won't listen, I'll erase you before you become one of them!");
+							CPrintToChatAll("{gold}실베스터{default}: 내 말을 안 듣겠다면, 그것들처럼 변이되기 전에 내가 처리해주지!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: So many keep falling for this!!");
+							CPrintToChatAll("{gold}실베스터{default}: 너무 많은 자들이 그것들 때문에 죽어나갔어!");
 					}
 					case 3:
 					{
 						if(!XenoExtraLogic())
-							CPrintToChatAll("{gold}Silvester{default}: GO TO HELL YOU MERCS!!!");
+							CPrintToChatAll("{gold}실베스터{default}: 전부 지옥에나 가라!");
 						else
-							CPrintToChatAll("{gold}Silvester{default}: ...");
+							CPrintToChatAll("{gold}실베스터{default}: ...");
 					}
 				}
 			}
@@ -865,23 +865,23 @@ static void Internal_ClotThink(int iNPC)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: N-No!");
+						CPrintToChatAll("{gold}실베스터{default}: 아, 안 돼!!");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}..?");
+						CPrintToChatAll("{gold}실베스터{default}: {darkblue}월드치{default}..?");
 				}
 				case 2:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
+						CPrintToChatAll("{gold}실베스터{default}: 쟤 말고 나를 공격하라고!");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: Dont faint, im here, im here!");
+						CPrintToChatAll("{gold}실베스터{default}: 괜찮아, 나 여깄어, 여깄다고!");
 				}
 				case 3:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Hang on, i got this, rest.");
+						CPrintToChatAll("{gold}실베스터{default}: 좀만 쉬어. 내가 처리할게.");
 					else
-						CPrintToChatAll("{gold}Silvester{default}: ... if you think ill let that slide...");
+						CPrintToChatAll("{gold}실베스터{default}: 내가 이걸 그냥 넘어갈거라고 생각하지마..");
 				}
 			}
 		}
@@ -1369,7 +1369,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{gold}Silvester{default}: You won't listen to our warnings do you!?");
+			CPrintToChatAll("{gold}실베스터{default}: 우리 경고는 죽어도 안 듣는구만!?");
 			return Plugin_Handled;
 		}
 	}
@@ -1402,15 +1402,15 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You think this was all?");
+						CPrintToChatAll("{gold}실베스터{default}: 이게 끝인줄 알아?");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You have no idea...");
+						CPrintToChatAll("{gold}실베스터{default}: 넌 지금 어떤 일이 벌어질지도 모르잖아...");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You think this is it?");
+						CPrintToChatAll("{gold}실베스터{default}: 이걸로 끝이 아니야..");
 					}
 				}
 			}
@@ -1420,15 +1420,15 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 				{
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You're blind to your own arrogance!");
+						CPrintToChatAll("{gold}실베스터{default}: 넌 지금 오만함에 눈이 멀었어!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You think im weak alone?!");
+						CPrintToChatAll("{gold}실베스터{default}: 나 혼자 있다고 얕보고 있는거야?!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: You refuse to listen and thus, pay the price!");
+						CPrintToChatAll("{gold}실베스터{default}: 넌 우리 경고를 무시했으니, 그 대가를 치뤄야지!");
 					}
 				}
 			}
@@ -2030,7 +2030,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Head Equipped Blue Goggles");
-							CPrintToChat(client, "{default}You gained abit of help and obtained: {blue}''Head Equipped Blue Goggles''{default}!");
+							CPrintToChat(client, "{default}그들에게서 약간의 도움을 받았습니다. 당신이 얻은것: {blue}''Head Equipped Blue Goggles''{default}!");
 						}
 					}
 				}

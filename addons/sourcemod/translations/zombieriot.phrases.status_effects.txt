@@ -1106,7 +1106,7 @@
 	"Village Radar Desc"
 	{
 		"en"	"Increases projectile speed and range by 10％"
-		"ko"	"투사체의 비행 속도과 날아가는 거리가 10％ 증가합니다."
+		"ko"	"투사체의 비행 속도와 날아가는 거리가 10％ 증가합니다."
 	}
 	"Jungle Drums"
 	{
