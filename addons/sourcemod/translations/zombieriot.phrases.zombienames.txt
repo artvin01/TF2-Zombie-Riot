@@ -5383,7 +5383,7 @@
 	"kevinmery2009"
 	{
 		"en"	"kevinmery2009"
-		"chi"		"区"
+		"chi"		"kevinmary2009"
 	}
 	"Red Heavy"
 	{
