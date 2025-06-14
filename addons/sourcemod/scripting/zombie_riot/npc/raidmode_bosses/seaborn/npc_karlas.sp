@@ -963,6 +963,7 @@ static void GetTarget(Karlas npc)
 	if(npc.m_flGetClosestTargetTime > GameTime)
 		return;
 
+	//stella has NC on karlas, use special targeting logic!
 	if(npc.m_flNC_LockedOn > GameTime)
 	{
 		//stella is dead, but the "lockon" is still valid, kill the lockon
@@ -1006,9 +1007,6 @@ static void GetTarget(Karlas npc)
 
 		return;
 	}
-
-	if(npc.m_bRetreat)
-		return;
 
 	//Karlas will always prefer attacking enemies who are near Stella.
 	if(IsValidAlly(npc.index, npc.Ally))	

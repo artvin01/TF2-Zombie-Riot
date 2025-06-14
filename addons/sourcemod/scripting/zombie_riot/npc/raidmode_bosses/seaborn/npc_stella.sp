@@ -796,6 +796,7 @@ methodmap Stella < CClotBody
 
 		if(!b_tripple_raid[npc.index] && (StrContains(data, "twirl") != -1))
 		{
+			PrecacheTwirlMusic();
 			default_theme = false;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
@@ -2330,7 +2331,7 @@ static bool BlockTurn(Stella npc)
 }
 static float fl_Normal_Laser_Range(Stella npc)
 {
-	return (npc.Anger ? 3000.0 : 750.0);
+	return (npc.Anger ? 1250.0 : 750.0);
 }
 static void Self_Defense(Stella npc, float flDistanceToTarget)
 {
@@ -2461,7 +2462,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	if(IsValidEnemy(npc.index, target))
 	{
 		f_NpcTurnPenalty[npc.index] = 0.0;	//:)
-		//times these value has been altered: 45.
+		//times these value has been altered: 47.
 		//:(
 		//warp_turn_speed
 		float Bonus_Speed_Range = 500.0*500.0;
@@ -2470,7 +2471,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
 		//HEVILY buff turnrate when angry
-		float Turn_Speed = (npc.Anger ? 50.0 : 12.0);
+		float Turn_Speed = (npc.Anger ? 40.0 : 24.0);
 		
 		if(Dist <= 0.0)
 			Dist = 1.0;
@@ -2491,11 +2492,13 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
 		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
 		//CPrintToChatAll("Turn Extra before: %f", Turn_Extra);
-		if(Turn_Extra > 3.25)
-			Turn_Extra = 3.25;
+		//if(Turn_Extra > 3.25)
+		//	Turn_Extra = 3.25;
 		//CPrintToChatAll("Turn Extra after: %f", Turn_Extra);
 
 		Turn_Speed *= Turn_Extra;
+
+		//CPrintToChatAll("turn speed: %f", Turn_Speed);
 
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
@@ -2520,8 +2523,8 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, /*duration*/ 0.11, 3.0, 3.0, 1);	
-
-			Explode_Logic_Custom(Dmg, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
+			//6.6 is due to this being only done 10 times a second, instead of every tick.
+			Explode_Logic_Custom(Dmg*6.6, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
 		}
 		//CPrintToChatAll("Damage: %f", Dmg);
 	}
