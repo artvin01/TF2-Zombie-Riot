@@ -221,23 +221,23 @@
 	}
 	"Shop Ruina Sad"
 	{
-		"en"	"{s snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
-		"chi"	"{s snow}休尔丹：{default}为何...？特维尔你为何纵容他们..？"
+		"en"	"{snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
+		"chi"	"{snow}休尔丹：{default}为何...？特维尔你为何纵容他们..？"
 	}
 	"Shop Ruina Sad 1"
 	{
-		"en"	"{purple}Twirl{s snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
-		"chi"	"{purple}托维尔{s snow}：...我会亲自送你回家，不知他们为何如此。但此事至关重要，深感抱歉"
+		"en"	"{purple}Twirl{snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
+		"chi"	"{purple}托维尔{snow}：...我会亲自送你回家，不知他们为何如此。但此事至关重要，深感抱歉"
 	}
 	"Shop Ruina Happy"
 	{
-		"en"	"{s snow}Hiuldan:{default} W-What?? for free?? Youre too generous!!!"
-		"chi"	"{s snow}休尔丹：{default}什-什么？？免费？？您太慷慨了！"
+		"en"	"{snow}Hiuldan:{default} W-What?? for free?? Youre too generous!!!"
+		"chi"	"{snow}休尔丹：{default}什-什么？？免费？？您太慷慨了！"
 	}
 	"Shop Ruina Happy 1"
 	{
-		"en"	"{purple}Twirl{s snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
-		"chi"	"{purple}托维尔{s snow}：...本料你会抢劫那人，如今我为你的改变而骄傲"
+		"en"	"{purple}Twirl{snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
+		"chi"	"{purple}托维尔{snow}：...本料你会抢劫那人，如今我为你的改变而骄傲"
 	}
 	"Better save up now"
 	{
@@ -489,339 +489,339 @@
 	}
 	"Unknown Artifact Desc"
 	{
-   		"en"    "{yellow}Receive an unknown artifact{default}"
-		"ru"    "{yellow}Получить неизвестный артефакт{default}"
-		"chi"   "{yellow}获得未知藏品{default}" // 保留原文的chi翻译，或根据上下文调整
+   		"en"	"{yellow}Receive an unknown artifact{default}"
+		"ru"	"{yellow}Получить неизвестный артефакт{default}"
+		"chi"	"{yellow}获得未知藏品{default}" // 保留原文的chi翻译，或根据上下文调整
 	}
 	"Crimson Troupe Title"
 	{
-	"en"    "A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
-	"ru"    "Рыцарь появляется вдали из воздуха.\nНа него падает свет прожектора, когда он стоит на сцене, готовясь к выступлению."
-	"chi"   "一位骑士凭空出现在远方。\n当他站在舞台上准备演出时，一道聚光灯打在他身上。"
+		"en"	"A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
+		"ru"	"Рыцарь появляется вдали из воздуха.\nНа него падает свет прожектора, когда он стоит на сцене, готовясь к выступлению."
+		"chi"	"一位骑士凭空出现在远方。\n当他站在舞台上准备演出时，一道聚光灯打在他身上。"
 	}
 	"Let's check out this show"
 	{
-	"en"    "Let's check out this show"
-	"ru"    "Давайте посмотрим на это шоу"
-	"chi"   "让我们瞧瞧这场表演"
+		"en"	"Let's check out this show"
+		"ru"	"Давайте посмотрим на это шоу"
+		"chi"	"让我们瞧瞧这场表演"
 	}
 	"Camp Title"
 	{
-   	 "en"    "You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
-  	  "ru"    "Вы находите тихий уголок, достаточно безопасный, чтобы укрыть весь ваш отряд от опасности, позволяя вам отдохнуть и реорганизоваться.\nПомогая своим товарищам устроиться, вы начинаете медленно терять сознание." // 俄文“lose consciousness”略显生硬，英文“loosen up”更接近放松/模糊
-  	  "chi"   "你发现了一个足够安全的僻静角落，可以庇护整个小队免受伤害，让你们得以休息和重整。\n在帮助队友安顿下来后，你的意识开始慢慢模糊放松。"
+		"en"	"You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
+		"ru"	"Вы находите тихий уголок, достаточно безопасный, чтобы укрыть весь ваш отряд от опасности, позволяя вам отдохнуть и реорганизоваться.\nПомогая своим товарищам устроиться, вы начинаете медленно терять сознание."
+		"chi"	"你发现了一个足够安全的僻静角落，可以庇护整个小队免受伤害，让你们得以休息和重整。\n在帮助队友安顿下来后，你的意识开始慢慢模糊放松。"
 	}
 	"Camp Option"
 	{
-  	  "en"    "Drift into slumber"
-   	 "ru"    "Погрузиться в сон"
-   	 "chi"   "沉入梦乡"
+		"en"	"Drift into slumber"
+		"ru"	"Погрузиться в сон"
+		"chi"	"沉入梦乡"
 	}
 	"Camp Desc"
 	{
-  	  "en"    "{green}Fully heal allies and gain 30 ammo supplies"
-   	 "ru"    "{green}Полностью вылечить союзников и получить 30 боеприпасов"
-  	  "chi"   "{green}完全治愈盟友并获得30点弹药补给"
+		"en"	"{green}Fully heal allies and gain 30 ammo supplies"
+		"ru"	"{green}Полностью вылечить союзников и получить 30 боеприпасов"
+		"chi"	"{green}完全治愈盟友并获得30点弹药补给"
 	}
 	"Camp Lore"
 	{
-   	 "en"    "By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
-  	  "ru"    "Когда вы снова открываете глаза, беспокойство и усталость уже давно покинули ваше тело. Вы собираете свои вещи и продолжаете исследовать неизвестность вместе со своими товарищами."
-   	 "chi"   "当你再次睁开双眼时，焦虑和疲惫早已离你而去。你收拾好行囊，与队友们继续探索未知。"
+		"en"	"By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
+		"ru"	"Когда вы снова открываете глаза, беспокойство и усталость уже давно покинули ваше тело. Вы собираете свои вещи и продолжаете исследовать неизвестность вместе со своими товарищами."
+		"chi"	"当你再次睁开双眼时，焦虑和疲惫早已离你而去。你收拾好行囊，与队友们继续探索未知。"
 	}
 	"Coffin of Evil Lore"
 	{
-   	 "en"    "You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
-   	 "ru"    "Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
-   	 "chi"   "你发现了一个漆黑的房间。房间里既没有窗户，也没有任何光源。\n房间中央是一具巨大的棺材，上面镶嵌着许多宝石和珠宝。\n就在你准备检查棺材时，你听到里面传来一个声音。\n它似乎在请求你帮忙打开棺材。"
+		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
+		"ru"	"Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
+		"chi"	"你发现了一个漆黑的房间。房间里既没有窗户，也没有任何光源。\n房间中央是一具巨大的棺材，上面镶嵌着许多宝石和珠宝。\n就在你准备检查棺材时，你听到里面传来一个声音。\n它似乎在请求你帮忙打开棺材。"
 	}
 	"Coffin of Evil Option 1"
 	{
-  	  "en"    "We can't stand idly by when someone's asking for help"
-  	  "ru"    "Мы не можем оставаться в стороне, когда кто-то просит о помощи"
-    	"chi"   "有人求助时，我们不能袖手旁观"
+		"en"	"We can't stand idly by when someone's asking for help"
+		"ru"	"Мы не можем оставаться в стороне, когда кто-то просит о помощи"
+		"chi"	"有人求助时，我们不能袖手旁观"
 	}
 	"Coffin of Evil Desc 1"
 	{
-  	  "en"    "{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
-  	  "ru"    "{yellow}Получить неизвестный артефакт{red}, но потерять 30 боеприпасов"
-   	 "chi"   "{yellow}获得一件未知藏品{red}但失去30点弹药补给"
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
+		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 30 боеприпасов"
+		"chi"	"{yellow}获得一件未知藏品{red}但失去30点弹药补给"
 	}
 	"Coffin of Evil Lore 1"
 	{
-  	  "en"    "The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
-  	  "ru"    "Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
-   	 "chi"   "棺材被钉子封死了。解救里面住客的唯一方法就是撬开它。一个外表迷人的联合军（Combine）从棺材里爬了出来。善行总有回报，他递给你一份礼物以示感谢。" // Combine 是专有名词，保留英文或音译“康拜因”亦可，这里保留英文并加括号注释
+		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
+		"ru"	"Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
+		"chi"	"棺材被钉子封死了。解救里面住客的唯一方法就是撬开它。一个外表迷人的联合军（Combine）从棺材里爬了出来。善行总有回报，他递给你一份礼物以示感谢。" // Combine 是专有名词，保留英文或音译“康拜因”亦可，这里保留英文并加括号注释
 	}
 	"Coffin of Evil Option 2"
 	{
-  	  "en"    "Looks way too sketchy"
-  	 "ru"    "Выглядит слишком подозрительно"
-   	 "chi"   "看起来太可疑了"
+  		"en"	"Looks way too sketchy"
+		"ru"	"Выглядит слишком подозрительно"
+		"chi"	"看起来太可疑了"
 	}
 	"Coffin of Evil Desc 2"
 	{
-  	  "en"    "{green}Gain 8 Australium Ingots"
-   	 "ru"    "{green}Получить 8 слитков австралия"
-    	"chi"   "{green}获得8块澳金锭" // Australium是TF2中的虚构元素，保留英文或音译“奥斯特瑞利姆”亦可，这里保留英文并加括号注释
+		"en"	"{green}Gain 8 Australium Ingots"
+		"ru"	"{green}Получить 8 слитков австралия"
+		"chi"	"{green}获得8块澳金锭" // Australium是TF2中的虚构元素，保留英文或音译“奥斯特瑞利姆”亦可，这里保留英文并加括号注释
 	}
 	"Coffin of Evil Lore 2"
 	{
-  	  "en"    "In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
-   	 "ru"    "Во многих историях те, кто предлагает другим помощь, часто сталкиваются с тем, что их доброта была напрасной. Будучи осторожным человеком, вы игнорируете подозрительные просьбы. Вы даже забираете с собой драгоценности, лежащие на гробу, и закрываете дверь, покидая место."
-   	 "chi"   "在许多故事里，那些向他人伸出援手的人常常会发现自己的善心招致恶果。作为谨慎之人，你无视了这可疑的恳求。你甚至带走了棺材上的珠宝，并在离开时关上了门。"
+		"en"	"In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
+		"ru"	"Во многих историях те, кто предлагает другим помощь, часто сталкиваются с тем, что их доброта была напрасной. Будучи осторожным человеком, вы игнорируете подозрительные просьбы. Вы даже забираете с собой драгоценности, лежащие на гробу, и закрываете дверь, покидая место."
+		"chi"	"在许多故事里，那些向他人伸出援手的人常常会发现自己的善心招致恶果。作为谨慎之人，你无视了这可疑的恳求。你甚至带走了棺材上的珠宝，并在离开时关上了门。"
 	}
 	"Eye for an Eye Lore"
 	{
-  	  "en"    "A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
-  	  "ru"    "Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
-   	 "chi"   "一位举止优雅、衣着考究的联合军（Combine）站在你面前。\n他礼貌地询问你是否知道一个无辜的人，曾因他的过错而蒙受不白之冤。\n你请他详细说明，了解到由于他犯下的一个错误，所有的中世纪主义者（Medievalists）都误将他的朋友当作女巫，并把他关在了这里。\n此人承诺，如果你向他提供帮助，将给予丰厚的回报。" // Combine/Medievalists 是专有名词，保留英文
+		"en"	"A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
+		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
+		"chi"	"一位举止优雅、衣着考究的联合军（Combine）站在你面前。\n他礼貌地询问你是否知道一个无辜的人，曾因他的过错而蒙受不白之冤。\n你请他详细说明，了解到由于他犯下的一个错误，所有的中世纪主义者（Medievalists）都误将他的朋友当作女巫，并把他关在了这里。\n此人承诺，如果你向他提供帮助，将给予丰厚的回报。" // Combine/Medievalists 是专有名词，保留英文
 	}
 	"Eye for an Eye Option 1"
 	{
-	    "en"    "This story sounds familiar"
- 	   "ru"    "Эта история кажется знакомой"
-  	  "chi"   "这故事听起来耳熟"
+		"en"	"This story sounds familiar"
+		"ru"	"Эта история кажется знакомой"
+		"chi"	"这故事听起来耳熟"
 	}
 	"Eye for an Eye Desc 1"
 	{
-  	  "en"    "{green}Gain 30 Australium Ingots"
-  	  "ru"    "{green}Получить 30 слитков австралия"
-   	 "chi"   "{green}获得30块澳金锭"
+		"en"	"{green}Gain 30 Australium Ingots"
+		"ru"	"{green}Получить 30 слитков австралия"
+		"chi"	"{green}获得30块澳金锭"
 	}
 	"Eye for an Eye Lore 1"
 	{
-  	  "en"    "You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
-   	 "ru"    "Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
-  	  "chi"   "你告诉他，他的朋友已经被释放了。这个消息令人振奋，联合军承诺要酬谢你。"
+		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
+		"ru"	"Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
+		"chi"	"你告诉他，他的朋友已经被释放了。这个消息令人振奋，联合军承诺要酬谢你。"
 	}
 	"Eye for an Eye Option 2"
 	{
-	    "en"    "Lead the way"
-  	  "ru"    "Показывай путь"
-  	  "chi"   "带路吧"
+		"en"	"Lead the way"
+		"ru"	"Показывай путь"
+		"chi"	"带路吧"
 	}
 	"Eye for an Eye Desc 2"
 	{
-  	  "en"    "{green}Gain 3000 cash {red}but lose 20 ammo supplies"
-   	 "ru"    "{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
-    	"chi"   "{green}获得3000现金{red}但失去20点弹药补给"
+		"en"	"{green}Gain 3000 cash {red}but lose 20 ammo supplies"
+		"ru"	"{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
+		"chi"	"{green}获得3000现金{red}但失去20点弹药补给"
 	}
 	"Eye for an Eye Lore 2"
 	{
- 	   "en"    "He gives you his thanks and explains the whole story to you on your way there. However, in the end, he implores you not to ask the Medievalists what happened thereafter."
-  	  "ru"    "Он благодарит вас и по дороге объясняет вам всю историю. Однако в конце он просит вас не спрашивать медиевистов о том, что произошло потом."
-   	 "chi"   "他向你道谢，并在前往目的地的路上向你解释了整个故事。然而，最后他恳求你不要去问中世纪主义者之后发生了什么。"
+		"en"	"He gives you his thanks and explains the whole story to you on your way there. However, in the end, he implores you not to ask the Medievalists what happened thereafter."
+		"ru"	"Он благодарит вас и по дороге объясняет вам всю историю. Однако в конце он просит вас не спрашивать медиевистов о том, что произошло потом."
+		"chi"	"他向你道谢，并在前往目的地的路上向你解释了整个故事。然而，最后他恳求你不要去问中世纪主义者之后发生了什么。"
 	}
 	"Eye for an Eye Option 3"
 	{
-   		"en"    "Stay alert"
-   		"ru"    "Не теряйте бдительность" // 俄文是复数命令式
-  		"chi"   "保持警惕"
+   		"en"	"Stay alert"
+   		"ru"	"Не теряйте бдительность" // 俄文是复数命令式
+  		"chi"	"保持警惕"
 	}
 	"Eye for an Eye Desc 3"
 	{
- 	  	"en"    "{green}Gain 30 ammo supplies"
-  		  "ru"    "{green}Получить 30 боеприпасов"
-  		  "chi"   "{green}获得30点弹药补给"
+		"en"	"{green}Gain 30 ammo supplies"
+		"ru"	"{green}Получить 30 боеприпасов"
+		"chi"	"{green}获得30点弹药补给"
 	}
 	"Eye for an Eye Lore 3"
 	{	
-	    "en"    "You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
-	    "ru"    "В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
-	    "chi"   "在这种地方，你必须时刻保持警惕。注意到你对他的话无动于衷，联合军叹了口气，悲叹他的结局将会是场悲剧。"
+		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
+		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
+		"chi"	"在这种地方，你必须时刻保持警惕。注意到你对他的话无动于衷，联合军叹了口气，悲叹他的结局将会是场悲剧。"
 	}
 	"Xeno Shaft Title"
 	{
-	    "en"    "You can hear a figure walking about in the mines, perhaps guarding something of value?"
-	    "ru"    "Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?" // 俄文有笔误 "ценое" -> "ценное" "ходит в шахтах" -> "ходит по шахтам" (或 "в шахте")
-	    "chi"   "你能听到矿井里有个人影在走动，也许在守卫着什么有价值的东西？"
+		"en"	"You can hear a figure walking about in the mines, perhaps guarding something of value?"
+		"ru"	"Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?" // 俄文有笔误 "ценое" -> "ценное" "ходит в шахтах" -> "ходит по шахтам" (或 "в шахте")
+		"chi"	"你能听到矿井里有个人影在走动，也许在守卫着什么有价值的东西？"
 	}
 	"Investigate the mines"
 	{
-	    "en"    "Investigate the mines"
-	    "ru"    "Исследовать шахты"
-	    "chi"   "调查矿井"
+		"en"	"Investigate the mines"
+		"ru"	"Исследовать шахты"
+		"chi"	"调查矿井"
 	}
 	"Stultifera Title"
 	{
-	    "en"    "A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
-	    "ru"    "Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
-	    "chi"   "矿井的墙壁上覆盖着粘稠的蔓延物（creep），闻起来像海洋，我们要检查一下吗？" // creep 是游戏术语，保留英文或译为“菌毯/蔓延物”
+		"en"	"A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
+		"ru"	"Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
+		"chi"	"矿井的墙壁上覆盖着粘稠的蔓延物（creep），闻起来像海洋，我们要检查一下吗？" // creep 是游戏术语，保留英文或译为“菌毯/蔓延物”
 	}
 	"Broken Crown Lore"
 	{
-	    "en"    "You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
-	    "ru"    "Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её." // 俄文语法需调整: "застрявший" -> "застрявший" "весящий" -> "висящей" "Дежавю,Аура" -> "дежавю. Аура"
-	    "chi"   "你发现一把金剑插在地上，旁边挂着一顶破碎的王冠。\n你感到似曾相识（déjà vu），一股愤怒的气场环绕着它们。"
+		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
+		"ru"	"Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её." // 俄文语法需调整: "застрявший" -> "застрявший" "весящий" -> "висящей" "Дежавю,Аура" -> "дежавю. Аура"
+		"chi"	"你发现一把金剑插在地上，旁边挂着一顶破碎的王冠。\n你感到似曾相识（déjà vu），一股愤怒的气场环绕着它们。"
 	}
 	"Broken Crown Option 1"
 	{
-	    "en"    "Take the broken crown"
-	    "ru"    "Забрать корону"
-	    "chi"   "拿走破碎的王冠"
+		"en"	"Take the broken crown"
+		"ru"	"Забрать корону"
+		"chi"	"拿走破碎的王冠"
 	}
 	"Broken Crown Desc 1"
 	{
-	    "en"    "{yellow}Receive an unknown artifact {blue}and change the ending"
-	    "ru"    "{yellow}Получить неизвестный артифакт и {blue}Поменять концовку" // 俄文 "артифакт" -> "артефакт"
-	    "chi"   "{yellow}获得一件未知藏品{blue}并改变结局"
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ru"	"{yellow}Получить неизвестный артифакт и {blue}Поменять концовку" // 俄文 "артифакт" -> "артефакт"
+		"chi"	"{yellow}获得一件未知藏品{blue}并改变结局"
 	}
 	"Broken Crown Lore 1"
 	{
-		    "en"    "The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
-	    "ru"    "Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти." // 俄文语法需调整: "Пронзает" -> "пронзает" "края блики" -> "края сверкают/блестят" "аура растёт и вы понимаете" -> "аура растёт, и вы понимаете"
-	    "chi"   "当你试图拾起破碎的王冠时，它刺伤了你，其锋利的断口闪着寒光。邪恶的气场不断增强，你感到自己找到了一条新的道路可循。"
+		"en"	"The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
+		"ru"	"Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти." // 俄文语法需调整: "Пронзает" -> "пронзает" "края блики" -> "края сверкают/блестят" "аура растёт и вы понимаете" -> "аура растёт, и вы понимаете"
+		"chi"	"当你试图拾起破碎的王冠时，它刺伤了你，其锋利的断口闪着寒光。邪恶的气场不断增强，你感到自己找到了一条新的道路可循。"
 	}
 	"Broken Crown Option 2"
 	{
-	    "en"    "Take the golden sword"
-	    "ru"    "" // 补充俄文翻译: "Взять золотой меч"
-	    "chi"   "拿走金剑"
+		"en"	"Take the golden sword"
+		"ru"	"" // 补充俄文翻译: "Взять золотой меч"
+		"chi"	"拿走金剑"
 	}
 	"Broken Crown Desc 2"
 	{
-	    "en"    "{green}Gain 8 Australium Ingots"
-	    "ru"    "" // 补充俄文翻译: "{green}Получить 8 слитков австралия"
-	    "chi"   "{green}获得8块澳金锭"
+		"en"	"{green}Gain 8 Australium Ingots"
+		"ru"	"" // 补充俄文翻译: "{green}Получить 8 слитков австралия"
+		"chi"	"{green}获得8块澳金锭"
 	}
 	"Broken Crown Lore 2"
 	{
-	    "en"    "You brush aside the crown as you try picking up the sword from the ground. The blade snaps in half. Worthless as a weapon now but we could sell the gold later."
-	    "ru"    "" // 补充俄文翻译: "Вы отодвигаете корону в сторону, пытаясь поднять меч с земли. Клинок ломается пополам. Как оружие он теперь бесполезен, но позже мы сможем продать золото."
-	    "chi"   "你拨开王冠，试图从地上拾起宝剑。剑刃应声断成两截。作为武器它已毫无价值，但以后我们可以把金子卖掉。"
+		"en"	"You brush aside the crown as you try picking up the sword from the ground. The blade snaps in half. Worthless as a weapon now but we could sell the gold later."
+		"ru"	"" // 补充俄文翻译: "Вы отодвигаете корону в сторону, пытаясь поднять меч с земли. Клинок ломается пополам. Как оружие он теперь бесполезен, но позже мы сможем продать золото."
+		"chi"	"你拨开王冠，试图从地上拾起宝剑。剑刃应声断成两截。作为武器它已毫无价值，但以后我们可以把金子卖掉。"
 	}
 	"Bob Research Lore"
 	{
-	    "en"    "You find yourself in a blank room.\nIn the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
-	    "ru"    "" // 补充俄文翻译: "Вы оказываетесь в пустой комнате.\nВдалеке видна маленькая офисная обстановка: деревянный стол, картотечный шкаф и настольная лампа."
-	    "chi"   "你发现自己身处一个空白的房间。\n远处有一套小小的办公室陈设：一张木桌、一个文件柜和一盏台灯。"
+		"en"	"You find yourself in a blank room.\nIn the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
+		"ru"	"" // 补充俄文翻译: "Вы оказываетесь в пустой комнате.\nВдалеке видна маленькая офисная обстановка: деревянный стол, картотечный шкаф и настольная лампа."
+		"chi"	"你发现自己身处一个空白的房间。\n远处有一套小小的办公室陈设：一张木桌、一个文件柜和一盏台灯。"
 	}
 	"Bob Research Option 1"
 	{
-	    "en"    "Take a look at it"
-	    "ru"    "" // 补充俄文翻译: "Осмотреть его"
-	    "chi"   "查看一下"
+		"en"	"Take a look at it"
+		"ru"	"" // 补充俄文翻译: "Осмотреть его"
+		"chi"	"查看一下"
 	}
 	"Bob Research Lore 1"
 	{
-	    "en"    "You find it's messy as if someone rushed out. You find papers on the desk, you read it."
-	    "ru"    "" // 补充俄文翻译: "Вы видите, что там беспорядок, будто кто-то спешно ушёл. Вы находите бумаги на столе и читаете их."
-	    "chi"   "你发现那里很凌乱，仿佛有人匆忙离开。你在桌上发现了一些文件，便读了起来。"
+		"en"	"You find it's messy as if someone rushed out. You find papers on the desk, you read it."
+		"ru"	"" // 补充俄文翻译: "Вы видите, что там беспорядок, будто кто-то спешно ушёл. Вы находите бумаги на столе и читаете их."
+		"chi"	"你发现那里很凌乱，仿佛有人匆忙离开。你在桌上发现了一些文件，便读了起来。"
 	}
 	"Bob Research Option 2"
 	{
-	    "en"    "We're getting lost"
-	    "ru"    "" // 补充俄文翻译: "Мы заблудимся" (直译) 或 "Мы собьёмся с пути" (意译)
-	    "chi"   "我们会迷路的"  // 或意译为 "别浪费时间了"
+		"en"	"We're getting lost"
+		"ru"	"" // 补充俄文翻译: "Мы заблудимся" (直译) 或 "Мы собьёмся с пути" (意译)
+		"chi"	"我们会迷路的"  // 或意译为 "别浪费时间了"
 	}
 	"Bob Research Lore 2"
 	{
-	    "en"    "You head out, it's dark and we have other things to take care of."
-	    "ru"    "" // 补充俄文翻译: "Вы уходите. Здесь темно, и у нас есть другие дела."
-	    "chi"   "你离开了，这里很黑，我们还有别的事要处理。"
+		"en"	"You head out, it's dark and we have other things to take care of."
+		"ru"	"" // 补充俄文翻译: "Вы уходите. Здесь темно, и у нас есть другие дела."
+		"chi"	"你离开了，这里很黑，我们还有别的事要处理。"
 	}
 	"Bob Final Lore"
 	{
-	    "en"    "You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
-	    "ru"    "" // 补充俄文翻译: "Вы оказываетесь в пустой комнате.\nВы видите ту же самую маленькую офисную обстановку, что и раньше, но свет выключен."
-	    "chi"   "你发现自己身处一个空白的房间。\n你发现了之前那套一模一样的小办公室陈设，但灯是关着的。"
+		"en"	"You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
+		"ru"	"" // 补充俄文翻译: "Вы оказываетесь в пустой комнате.\nВы видите ту же самую маленькую офисную обстановку, что и раньше, но свет выключен."
+		"chi"	"你发现自己身处一个空白的房间。\n你发现了之前那套一模一样的小办公室陈设，但灯是关着的。"
 	}
 	"Bob Final Option 1"
 	{
-	    "en"    "I don't remember turning it off"
-	    "ru"    "" // 补充俄文翻译: "Я не помню, чтобы выключал(а) его" (根据玩家性别)
-	    "chi"   "我不记得关过灯" // 或 "灯怎么关了？"
+		"en"	"I don't remember turning it off"
+		"ru"	"" // 补充俄文翻译: "Я не помню, чтобы выключал(а) его" (根据玩家性别)
+		"chi"	"我不记得关过灯" // 或 "灯怎么关了？"
 	}
 	"Bob Final Desc 1"
 	{
-	    "en"    "{yellow}Receive an unknown artifact {blue}and change the ending"
-	    "ru"    "" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {blue}и изменить концовку"
-	    "chi"   "{yellow}获得一件未知藏品{blue}并改变结局"
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ru"	"" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {blue}и изменить концовку"
+		"chi"	"{yellow}获得一件未知藏品{blue}并改变结局"
 	}
 	"Bob Final Lore 1"
 	{
-	    "en"    "You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
-	    "ru"    "" // 补充俄文翻译: "Вы подходите ближе и видите, что всё чисто и пусто, на столе лежит лишь один распечатанный лист бумаги. Вы читаете его."
-	    "chi"   "你走近一些，发现那里干净而空荡，桌上只有一张打印出来的纸。你读了起来。"
+		"en"	"You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
+		"ru"	"" // 补充俄文翻译: "Вы подходите ближе и видите, что всё чисто и пусто, на столе лежит лишь один распечатанный лист бумаги. Вы читаете его."
+		"chi"	"你走近一些，发现那里干净而空荡，桌上只有一张打印出来的纸。你读了起来。"
 	}
 	"Bob Final Option 2"
 	{
-	    "en"    "Nothing changed"
-	    "ru"    "" // 补充俄文翻译: "Ничего не изменилось"
-	    "chi"   "没什么变化" // 或 "和之前一样"
+		"en"	"Nothing changed"
+		"ru"	"" // 补充俄文翻译: "Ничего не изменилось"
+		"chi"	"没什么变化" // 或 "和之前一样"
 	}
 	"Bob Final Lore 2"
 	{
-	    "en"    "It could just be out of power or prehaps just turned it off earlier. Moving on."
-	    "ru"    "" // 补充俄文翻译: "Возможно, просто села батарейка, или его выключили раньше. Идём дальше."
-	    "chi"   "可能只是没电了，或者之前就关掉了。继续前进吧。"
+		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
+		"ru"	"" // 补充俄文翻译: "Возможно, просто села батарейка, или его выключили раньше. Идём дальше."
+		"chi"	"可能只是没电了，或者之前就关掉了。继续前进吧。"
 	}
 	"Bob Final Option 3"
 	{
-	    "en"    "I do remember"
-	    "ru"    "" // 补充俄文翻译: "Я помню" (根据语境，可能是对之前事件的回应)
-	    "chi"   "我确实记得" // (回应之前的事件或选项)
+		"en"	"I do remember"
+		"ru"	"" // 补充俄文翻译: "Я помню" (根据语境，可能是对之前事件的回应)
+		"chi"	"我确实记得" // (回应之前的事件或选项)
 	}
 	"Bob Final Desc 3"
 	{
-	    "en"    "{yellow}Receive an unknown artifact {blue}and change the ending"
-	    "ru"    "" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {blue}и изменить концовку"
-	    "chi"   "{yellow}获得一件未知藏品{blue}并改变结局"
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ru"	"" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {blue}и изменить концовку"
+		"chi"	"{yellow}获得一件未知藏品{blue}并改变结局"
 	}
 	"Bob Final Lore 3"
 	{
-	    "en"    "Those that we lost. Bladedance... Guln... Finish the job."
-	    "ru"    "" // 补充俄文翻译: "Те, кого мы потеряли. Блэйдданс... Гулн... Закончи работу."
-	    "chi"   "那些我们失去的人。刀舞（Bladedance）...古恩（Guln）...完成任务。" // Bladedance/Guln 是专有名词，保留英文或音译
+		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
+		"ru"	"" // 补充俄文翻译: "Те, кого мы потеряли. Блэйдданс... Гулн... Закончи работу."
+		"chi"	"那些我们失去的人。刀舞（Bladedance）...古恩（Guln）...完成任务。" // Bladedance/Guln 是专有名词，保留英文或音译
 	}
 	"Mediveal Ally Title" // 注意拼写: Mediveal -> Medieval
 	{
-	    "en"    "A group of Medievalists seem to be fighting a group of seaborn and they're losing."
-	    "ru"    "" // 补充俄文翻译: "Группа медиевистов, кажется, сражается с группой сиборнов (seaborn) и проигрывает."
-	    "chi"   "一群中世纪主义者（Medievalists）似乎正在与一群海嗣（seaborn）战斗，而且他们处于下风。" // Medievalists/seaborn 是专有名词，保留英文
+		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+		"ru"	"" // 补充俄文翻译: "Группа медиевистов, кажется, сражается с группой сиборнов (seaborn) и проигрывает."
+		"chi"	"一群中世纪主义者（Medievalists）似乎正在与一群海嗣（seaborn）战斗，而且他们处于下风。" // Medievalists/seaborn 是专有名词，保留英文
 	}
 	"Mediveal Option 1" // 注意拼写: Mediveal -> Medieval
 	{
-	    "en"    "Side with the Medievalists"
-	    "ru"    "" // 补充俄文翻译: "Встать на сторону медиевистов"
-	    "chi"   "站在中世纪主义者一边"
+		"en"	"Side with the Medievalists"
+		"ru"	"" // 补充俄文翻译: "Встать на сторону медиевистов"
+		"chi"	"站在中世纪主义者一边"
 	}
 	"Broken Bridge Title"
 	{
-	    "en"    "In your path, a bridge breaks in front of you."
-	    "ru"    "" // 补充俄文翻译: "На вашем пути мост ломается прямо перед вами."
-	    "chi"   "在你前方的道路上，一座桥断裂了。"
+		"en"	"In your path, a bridge breaks in front of you."
+		"ru"	"" // 补充俄文翻译: "На вашем пути мост ломается прямо перед вами."
+		"chi"	"在你前方的道路上，一座桥断裂了。"
 	}
 	"Broken Bridge Option 1"
 	{
-	    "en"    "We could rebuild this"
-	    "ru"    "" // 补充俄文翻译: "Мы могли бы восстановить его"
-	    "chi"   "我们可以重建它"
+		"en"	"We could rebuild this"
+		"ru"	"" // 补充俄文翻译: "Мы могли бы восстановить его"
+		"chi"	"我们可以重建它"
 	}
 	"Broken Bridge Desc 1"
 	{
-  	  "en"    "{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
- 	   "ru"    "" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {red}но потерять 4 слитка австралия"
-  	  "chi"   "{yellow}获得一件未知藏品{red}但失去4块澳金锭"
+		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+		"ru"	"" // 补充俄文翻译: "{yellow}Получить неизвестный артефакт {red}но потерять 4 слитка австралия"
+		"chi"	"{yellow}获得一件未知藏品{red}但失去4块澳金锭"
 	}
 	"Broken Bridge Lore 1"
 	{	
-   	 "en"    "You rebuilt the bridge using your supplies, one the other side you happen to find a dropped item." // "one the other side" -> "on the other side"
-  	  "ru"    "" // 补充俄文翻译: "Вы восстановили мост, используя свои припасы. На другой стороне вам случайно попадается выпавший предмет."
-   	 "chi"   "你用物资重建了桥。在另一边，你碰巧发现了一件掉落的物品。"
+		"en"	"You rebuilt the bridge using your supplies, one the other side you happen to find a dropped item." // "one the other side" -> "on the other side"
+		"ru"	"" // 补充俄文翻译: "Вы восстановили мост, используя свои припасы. На другой стороне вам случайно попадается выпавший предмет."
+		"chi"	"你用物资重建了桥。在另一边，你碰巧发现了一件掉落的物品。"
 	}
 	"Broken Bridge Option 2"
 	{
-  	  "en"    "Better go around"
-   	 "ru"    "" // 补充俄文翻译: "Лучше обойти"
-  	 "chi"   "最好绕过去"
+		"en"	"Better go around"
+		"ru"	"" // 补充俄文翻译: "Лучше обойти"
+		"chi"	"最好绕过去"
 	}
 	"Broken Bridge Lore 2"
 	{
-  	  "en"    "Time is better spent elsewhere, nothing important anyways."
-   	 "ru"    "" // 补充俄文翻译: "Время лучше потратить в другом месте, здесь всё равно ничего важного."
-   	 "chi"   "时间花在别处更好，反正这里也没什么重要的东西。"
+		"en"	"Time is better spent elsewhere, nothing important anyways."
+		"ru"	"" // 补充俄文翻译: "Время лучше потратить в другом месте, здесь всё равно ничего важного."
+		"chi"	"时间花在别处更好，反正这里也没什么重要的东西。"
 	}
 
 	// Stages
@@ -1410,6 +1410,11 @@
 		"en"	"A Lost War ⚠"
 		"chi"	"败战余烬⚠"
 	}
+	"Falling Hazard"
+	{
+		"en"	"Falling Hazard"
+   		"chi"	"坠落危机"  // 补充翻译
+	}
 	"Falling Hazard!"
 	{
   		"en"    "Falling Hazard ⚠"
@@ -1519,22 +1524,26 @@
 	"Gravity Upset"
 	{
  		"en"    "Gravity Upset"
-   		 "chi"   "重力紊乱"  // 优化术语
+   		"chi"   "重力紊乱"  // 优化术语
+		"ru"	"Нарушение гравитации"
 	}
 	"Gravity Upset Desc"
 	{
  		"en"    "Gravity is twice as high for you, but you gain an increased change in item drops."
  		"chi"   "承受双倍重力{green}但物品掉落率显著提升"  // 补充颜色标记
+		"ru"	"Гравитация для вас в два раза выше, но вы получаете повышенное изменение в выпадении предметов."
 	}
 	"Pure Greed"
 	{
-  		  "en"    "Pure Greed"
-  		  "chi"   "纯粹贪婪"  // 优化术语
+  		"en"	"Pure Greed"
+  		"chi"	"纯粹贪婪"  // 优化术语
+		"ru"	"Чистая жадность"
 	}
 	"Pure Greed Desc"
 	{
- 		"en"    "On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
-  		"chi"   "{green}本层澳金锭获取+25%{red}但敌人伤害+25%"  // 补充颜色标记
+ 		"en"	"On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
+  		"chi"	"{green}本层澳金锭获取+25%{red}但敌人伤害+25%"  // 补充颜色标记
+		"ru"	"На этом этаже вы получите +25％ слитков австралия, но все враги будут наносить на +25％ больше урона."
 	}
 	
 	// Artifacts
@@ -1558,7 +1567,7 @@
 	"Gathering Squad Desc"
 	{
 		"en"	"{green}Extra Ammo powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
-		"chi"	"{green}在阶段开始时生成额外弹药增益.\n{green}}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
+		"chi"	"{green}在阶段开始时生成额外弹药增益.\n{green}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
 	}
 	"Support Squad"
 	{
@@ -1569,7 +1578,7 @@
 	"Support Squad Desc"
 	{
 		"en"	"{green}Start with +20 Australium Ignots and +250 Cash.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
-		"chi"	"{green}开始时有 20 个澳金锭 和 250 块.\n{green}}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
+		"chi"	"{green}开始时有 20 个澳金锭 和 250 块.\n{green}当非 Boss 战失败时，继续冒险{yellow}(仅限一次)"
 		"ru"	"{green}Начните с +20 слитками австралия и +250 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
 	}
 	"Spearhead Squad"
@@ -1801,9 +1810,9 @@
 	"Crude Flute"
 	{
 		"en"	"Crude Flute"
-		"chi"	"粗制木笛"
 		"ru"	"Грубая флейта"
-	}	
+		"chi"	"粗制木笛"
+	}
 	"Crude Flute Desc"
 	{
 		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3％ MaxHealth."
@@ -1891,13 +1900,13 @@
 		"chi"	"中世纪装甲板，配平有些问题。\n{green}兵营单位获得10点固定减伤"
 		"ru"	"Средневековая броня, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 10 ед."
 	}
-	"Neosteel Plating"
+	"Neosteal Plating"
 	{
 		"en"	"Neosteel Plating"
 		"chi"	"新星钢镀层"
 		"ru"	"Обшивка из неостали"
 	}
-	"Neosteel Plating Desc"
+	"Neosteal Plating Desc"
 	{
 		"en"	"A space building armor plate, the balance seems off.\n{green}Barrack Units receive a flat 20 damage reduction."
 		"chi"	"太空建筑用装甲板，配平有些问题。\n{green}兵营单位获得20点固定减伤"
@@ -2110,7 +2119,7 @@
 		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
 		"chi"	"想要我的药剂吗？\n{green}「无限火力」「减益」「维多利亚」类武器命中回复+3生命值与35%远程抗性，「维多利亚」类回复效果×5"
 	}
-	"Hand of Fisting"
+	"Hand of Incredible Speeds"
 	{
 		"en"	"Hand of Fisting"
 		"chi"	"拳击之手"

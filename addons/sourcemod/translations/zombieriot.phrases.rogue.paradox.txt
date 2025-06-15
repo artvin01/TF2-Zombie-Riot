@@ -238,7 +238,7 @@
 	"Proof of Longevity Desc"
 	{
 		"en"	"A tree branch that has withered and flourished.\n{green}Allies gain +750 max health"
-		"chi"		"一根枯萎而茂盛的树枝.\n{green}}盟友获得 750 最大生命值"
+		"chi"		"一根枯萎而茂盛的树枝.\n{green}盟友获得 750 最大生命值"
 	}
 	"Banshee's Kiss"
 	{
@@ -288,7 +288,7 @@
 	"Godmother's Token Desc"
 	{
 		"en"	"A laurel of bones.\n{green}Enemies gain -17％ damage"
-		"chi"		"一棵骸骨桂冠.\n{green}}敌人的伤害 -17%"
+		"chi"		"一棵骸骨桂冠.\n{green}敌人的伤害 -17%"
 	}
 	"The Whisperer in Darknight"
 	{
@@ -2119,6 +2119,6 @@
 	{
 		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
 		"chi"	"{green}获得一件授予物品，{crimson}但可能引起不必要的注意。"
-	// 注：Grant item译为"授予物品"，保持游戏术语神秘感
+		// 注：Grant item译为"授予物品"，保持游戏术语神秘感
 	}
 }
