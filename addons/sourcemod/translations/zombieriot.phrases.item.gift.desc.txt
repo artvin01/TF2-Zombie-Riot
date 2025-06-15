@@ -2177,6 +2177,46 @@
 	{
 		"en"	"You killed them all, and now, you will pay the price.\nEvery enemy is a spirit, and they deal 5％ extra damage."
 	}
+	"Normal"
+	{
+		"en"	"Normal"
+		"ko"	"보통"
+	}
+	"Normal Desc"
+	{
+		"en"	"Normal difficulty. Raid Boss only.\nStarting Cash:5706\nStarting Supplies: 100"
+		"ko"	"통상 난이도 입니다. 레이드 보스만 등장합니다.\n시작 자금:5706\n시작 보급품: 100"
+	}
+	"Hard"
+	{
+		"en"	"Hard"
+		"ko"	"하드"
+	}
+	"Hard Desc"
+	{
+		"en"	"Added Wave Boss!\nStarting Cash:4700\nStarting Supplies: 50"
+		"ko"	"웨이브 보스가 추가됩니다!\n시작 자금:4700\n시작 보급품: 50"
+	}
+	"Expert"
+	{
+		"en"	"Expert"
+		"ko"	"ㅈ문가"
+	}
+	"Expert Desc"
+	{
+		"en"	"Added Mini Boss!\nStarting Cash:4500\nStarting Supplies: 25"
+		"ko"	"미니 보스가 추가됩니다!\n시작 자금:4500\n시작 보급품: 25"
+	}
+	"EX-Hard"
+	{
+		"en"	"Ex Hard"
+		"ko"	"Ex 하드"
+	}
+	"EX-Hard Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
+		"ko"	"우린 ㅈ되고말거에요\n시작 자금:4100\n시작 보급품: 25"
+	}
 	"BUSTING"
 	{
 		"en"	"BUSTING"
@@ -2555,3 +2595,4 @@
 		"en" 	"A being made out of chaos and void combined..."
 	}
 }
+
