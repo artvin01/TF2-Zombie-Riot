@@ -1158,7 +1158,7 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 			damage = 0.0;
 			RaidModeTime += 120.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			CPrintToChatAll("{lightblue}갓 알락시오스{crimson}: 그만!!!!!!!!");
+			CPrintToChatAll("{lightblue}갓 알락시오스{crimson}: 이제 그만!!!!!!!!");
 			return Plugin_Handled;
 		}
 	}

@@ -2663,9 +2663,9 @@ static void Internal_NPCDeath(int entity)
 			{
 				switch(GetRandomInt(1,3))
 				{
-					case 1: Stella_Lines(stella,"Hmph, Guess I'll handle this alone");
-					case 2: Stella_Lines(stella,"This ain't over yet..");
-					case 3: Stella_Lines(stella,"How dare you hurt {crimson}Karlas{snow}!");
+					case 1: Stella_Lines(stella,"흠, 어쩔 수 없이 나 혼자 처리해야하나.");
+					case 2: Stella_Lines(stella,"아직 끝나지 않았어..");
+					case 3: Stella_Lines(stella,"감히 {crimson}카를라스{snow}에게 손을 대다니!");
 				}
 			}
 		}

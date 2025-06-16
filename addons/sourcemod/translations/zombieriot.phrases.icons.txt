@@ -325,7 +325,7 @@
 		"fr"	"Stella et Karlas sont de retour."
 		"pt"	"Stella e Karlas retornaram."
 		"chi"	"Stella和Karlas回来了。"
-		"ko"	"스텔라와 칼라스가 돌아왔습니다!"
+		"ko"	"스텔라와 카를라스가 돌아왔습니다!"
 	}
 	"Diversionistico Spawn"
 	{

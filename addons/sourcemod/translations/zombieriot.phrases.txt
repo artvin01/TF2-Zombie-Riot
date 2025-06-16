@@ -2982,12 +2982,12 @@
 	{
 		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
 		"fr"		"S'il vous plaît, fixez la valeur de «g_ragdoll_fadespeed» à une valeur autre que 0, dans la console! N'importe quelle valeur plus grand que 0 fonctionne. ( 1 est le minimum, 600 par défaut. ) Votre jeu va crash si vous ne faites pas ceci!"
-		"ko"		"절대로 콘솔창에서 ''g_ragdoll_fadespeed'' 수치를 0으로 설정하지 마십시오! 반드시 0보다 높은 숫자여야합니다! (1도 충분하며, 600이 기본입니다.) 만약 이렇게 하지 않으면, 오류로 인해 게임이 강제로 종료됩니다!"
+		"ko"		"절대 콘솔창에서 ''g_ragdoll_fadespeed''를 0으로 설정하지 마세요! 반드시 0보다 높은 숫자여야합니다!(600이 기본, 1도 충분) 수치가 0이라면, 오류때문에 게임이 강제로 종료됩니다!"
 	}
 	"Show Ragdoll Teeth Message"
 	{
 		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
-		"ko"		"콘솔창에 ''r_teeth'' 를 반드시 0으로 설정해주세요! 64x 비트 업데이트 때문에, 일부 오래된 모델들은 이 설정이 0이 아닐시 오류가 발생하게 됩니다!"
+		"ko"		"콘솔창에 ''r_teeth'' 를 반드시 0으로 설정하세요! 64비트 업데이트 때문에, 오래된 모델들은 이게 0이 아닐시 오류가 발생합니다!"
 	}
 	"Buildable Village"
 	{

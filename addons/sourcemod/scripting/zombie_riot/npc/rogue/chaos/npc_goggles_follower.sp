@@ -95,10 +95,10 @@ methodmap GogglesFollower < CClotBody
 				switch(GetURandomInt() % 2)
 				{
 					case 0:
-						this.Speech("Just steal it.");
+						this.Speech("훔치는게 낫지 않나.");
 					
 					case 1:
-						this.Speech("Let's just leave.");
+						this.Speech("그냥 나가자고.");
 				}
 			}
 			else
@@ -106,13 +106,13 @@ methodmap GogglesFollower < CClotBody
 				switch(GetURandomInt() % 3)
 				{
 					case 0:
-						this.Speech("You still have to pay?");
+						this.Speech("아직도 살 게 남았어?");
 					
 					case 1:
-						this.Speech("We're going to be here forever", "...");
+						this.Speech("언제까지 여기에 있을건데", "...");
 					
 					case 2:
-						this.Speech("How would these items help?");
+						this.Speech("이 물품들이 정말 도움이 될까?");
 				}
 			}
 		}
@@ -135,51 +135,51 @@ methodmap GogglesFollower < CClotBody
 				{
 					case 0:
 					{
-						this.Speech("Haha", "...");
+						this.Speech("하하", "...");
 					}
 					case 1:
 					{
-						this.Speech("Hehe", "...");
+						this.Speech("흐흐", "...");
 					}
 					case 2:
 					{
-						this.Speech("I really like spiders.");
+						this.Speech("거미가 정말 좋아.");
 					}
 					case 3:
 					{
-						this.Speech("God my head hurts.");
+						this.Speech("머리가 너무 아프네.");
 					}
 					case 4:
 					{
-						this.Speech("What are we doing again?");
+						this.Speech("우리가 뭘 하고 있었지?");
 					}
 					case 5:
 					{
-						this.Speech("Wildingen ", "is fine.");
+						this.Speech("와일딩겐 ", "좋지.");
 					}
 					case 6:
 					{
-						this.Speech("What's making my headache flare up?");
+						this.Speech("두통이 왜 자꾸 심해지고 있지?");
 					}
 					case 7:
 					{
-						this.Speech("I hope you aren't doing something stupid.");
+						this.Speech("이상한 행동은 하지마.");
 					}
 					case 8:
 					{
-						this.Speech("Gahh", "...");
+						this.Speech("아", "...");
 					}
 					case 9:
 					{
-						this.Speech("Feels like something is stabbing me.");
+						this.Speech("꼭 마치 누가 날 찌르는것 같군.");
 					}
 					case 10:
 					{
-						this.Speech("I really can't focus right now.");
+						this.Speech("도저히 집중할 수가 없어.");
 					}
 					case 11:
 					{
-						this.Speech("Shut up.");
+						this.Speech("좀 닥쳐봐.");
 					}
 					case 12:
 					{
@@ -191,82 +191,82 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 14:
 					{
-						this.Speech("Good grief.");
+						this.Speech("맙소사.");
 					}
 					case 15:
 					{
-						this.Speech("Let's take a break.");
+						this.Speech("좀만 쉬고 가자.");
 					}
 					case 16:
 					{
-						this.Speech("Something isn't right.");
+						this.Speech("뭔가 이상해.");
 					}
 					case 17:
 					{
-						this.Speech("S", "ilvester");
+						this.Speech("실", "베스터");
 					}
 					case 18:
 					{
-						this.Speech("I feel like I'm going insane.");
+						this.Speech("내가 미쳐가는 것 같아.");
 					}
 					case 19:
 					{
-						this.Speech("These fights are healthy.");
+						this.Speech("이 싸움은 좋지 않아.");
 					}
 					case 20:
 					{
 						if(Rogue_CurseActive())
-							this.Speech("You look hot.");
+							this.Speech("넌 더워보이는데.");
 					}
 					case 21:
 					{
 						if(Rogue_CurseActive())
-							this.Speech("I don't need this weather right now.");
+							this.Speech("날씨가 이따위라니.");
 					}
 					case 22:
 					{
-						this.Speech("You aren't helping.");
+						this.Speech("넌 도움 안 돼.");
 					}
 					case 23:
 					{
-						this.Speech("Why am I sticking with you again?");
+						this.Speech("왜 내가 또 너랑 붙어다녀야되지?");
 					}
 					case 24:
 					{
 						if(Rogue_GetIngots() > 49)
-							this.Speech("Stop greeding!");
+							this.Speech("돈이 뭐 이리 많은거냐?");
 					}
 					case 25:
 					{
-						this.Speech("Nuh-uh.");
+						this.Speech("으흠.");
 					}
 					case 26:
 					{
-						this.Speech("Buy something else.");
+						this.Speech("다른걸 좀 사자고.");
 					}
 					case 27:
 					{
-						this.Speech("You tried that before.");
+						this.Speech("전에도 그랬잖아.");
 					}
 					case 28:
 					{
-						this.Speech("Do you even know where you're going?");
+						this.Speech("네가 어디로 가고 있는지 알기나 하는거냐?");
 					}
 					case 29:
 					{
-						this.Speech("I hate this.");
+						this.Speech("정말 귀찮다.");
 					}
 					case 30:
 					{
-						this.Speech("Sigh", "...");
+						this.Speech("후", "...");
 					}
 					case 31:
 					{
-						this.Speech("Hahahaha", "hahaha");
+						this.Speech("하하하", "하하하");
 					}
 					case 32:
 					{
-						this.Speech("I need help, Silvester.");
+						this.Speech("실베스터, 도움이 필요해...");
 					}
 					case 33:
 					{
@@ -285,232 +285,232 @@ methodmap GogglesFollower < CClotBody
 				{
 					case 0:
 					{
-						this.Speech("How did you even find me anyways?");
+						this.Speech("도대체 난 어떻게 찾아낸거야?");
 					}
 					case 1:
 					{
-						this.Speech("Chaos right?");
-						this.SpeechDelay(5.0, "I wish I knew before I left Wildingen.");
+						this.Speech("혼돈, 흠?");
+						this.SpeechDelay(5.0, "와일딩겐에서 빠져나오기 전에 미리 알아뒀어야했는데.");
 					}
 					case 2:
 					{
-						this.Speech("Silvester is fine right now.");
+						this.Speech("실베스터는 괜찮을거야.");
 					}
 					case 3:
 					{
-						this.Speech("I'm sorry about beating up you guys before", "...");
-						this.SpeechDelay(5.0, "...you know, Xeno.");
+						this.Speech("이전에 너희를 공격해서 정말 미안해", "...");
+						this.SpeechDelay(5.0, "...알잖아, 제노 감염 사건때.");
 					}
 					case 4:
 					{
-						this.Speech("Heh, you guys taking out Xeno and Seaborn.");
-						this.SpeechDelay(5.0, "Chaos shouldn't be hard for you.");
+						this.Speech("허, 너희들이 제노 감염이랑 시본 감염을 전부 처리했다니.");
+						this.SpeechDelay(5.0, "그럼 혼돈도 너희한텐 별 거 아니겠네.");
 					}
 					case 5:
 					{
-						this.Speech("All this traveling makes me tired.");
+						this.Speech("이 여행이 힘들긴 하네.");
 					}
 					case 6:
 					{
-						this.Speech("You know I'm a fox?");
-						this.SpeechDelay(5.0, "Don't call me a furry you got cats with you.");
+						this.Speech("혹시 내가 여우란거 알고 있어?");
+						this.SpeechDelay(5.0, "퍼리라고 하지 마라... 넌 고양이 친구도 있잖아.");
 					}
 					case 7:
 					{
-						this.Speech("I thought for sure Seaborn would get you back there.");
+						this.Speech("소식을 들었을땐 너희가 시본에 감염당할 줄 알았어. 근데 아니었지.");
 					}
 					case 8:
 					{
-						this.Speech("Why you like spray painting everywhere?");
+						this.Speech("너 뭔가 여기저기에 스프레이를 막 뿌리고 다니는것 같지 않아?");
 					}
 					case 9:
 					{
 						if(Rogue_CurseActive())
-							this.Speech("Just your normal weather out here.");
+							this.Speech("뭐... 참 평범한 날씨네.");
 					}
 					case 10:
 					{
 						if(Rogue_CurseActive())
-							this.Speech("Red moons seems to piss everyone off, except me", "...");
+							this.Speech("붉은 달만 보면 모두 화가 많아지더라. 난 괜찮던데", "...");
 					}
 					case 11:
 					{
 						if(Rogue_GetIngots() > 49)
-							this.Speech("I hope you aren't doing this for the money", "...");
+							this.Speech("설마 이 일을 돈 때문에 하는건 아니겠지", "...");
 					}
 					case 12:
 					{
 						if(Rogue_GetIngots() > 99)
-							this.Speech("Why are you hoarding all that australium?");
+							this.Speech("오스트레일륨을 너무 많이 가지고 다니는거 아니야?");
 					}
 					case 13:
 					{
-						this.Speech("How do you even get your weapons like that?");
+						this.Speech("넌 어떻게 그런 방식으로 무기를 꺼내는거야?");
 					}
 					case 14:
 					{
-						this.Speech("How heavy are those buildings you carry?");
+						this.Speech("네가 옮기는 이 구조물들은 얼마나 무거운거야?");
 					}
 					case 15:
 					{
-						this.Speech("Does... my gun work on your", "...");
-						this.SpeechDelay(5.0, "Nevermind.");
+						this.Speech("혹시... 내 총이 너한테...", "...");
+						this.SpeechDelay(5.0, "아냐, 됐어.");
 					}
 					case 16:
 					{
-						this.Speech("You mean you can just see what enemies are out?");
+						this.Speech("뭐? 넌 어떤 적이 나오는지 미리 알 수 있다고?");
 					}
 					case 17:
 					{
-						this.Speech("No I won't make Bob the Second my god.");
+						this.Speech("밥 2세, 어휴, 난 그런걸 신으로 모시기 싫어.");
 					}
 					case 18:
 					{
-						this.Speech("You people are crazy", "...");
+						this.Speech("너흰 정말 이상해", "...");
 					}
 					case 19:
 					{
-						this.Speech("So how does one just, make units out of that tower?");
+						this.Speech("근데, 저런 탑이 어떻게 유닛이란걸 만드는거야?");
 					}
 					case 20:
 					{
-						this.Speech("Funny enough, I have a phobia of water.");
-						this.SpeechDelay(5.0, "and Seaborn", "...");
+						this.Speech("사실 난 물 공포증이 있어.");
+						this.SpeechDelay(5.0, "그리고 시본도", "...");
 					}
 					case 21:
 					{
-						this.Speech("I like seafood but can't have that anymore.");
+						this.Speech("해산물이 정말 좋은데, 더 이상 그런건 못 구하겠어.");
 					}
 					case 22:
 					{
-						this.Speech("What is this 'chat' your refering to?");
+						this.Speech("네가 말하는 '채팅'이란건 도대체 뭐야?");
 					}
 					case 23:
 					{
-						this.Speech("Discord? Is this what you call chaos?");
+						this.Speech("디스코드? 네가 혼돈을 부르는 방식이야?");
 					}
 					case 24:
 					{
-						this.Speech("Don't start a cult, not now.");
+						this.Speech("뭔가 좀 이상한데...");
 					}
 					case 25:
 					{
-						this.Speech("I used to be an engineer for Wildingen.");
-						this.SpeechDelay(5.0, "Those were the days", "...");
+						this.Speech("난 와일딩겐에서 엔지니어였었지.");
+						this.SpeechDelay(5.0, "그때는 그랬어", "...");
 					}
 					case 26:
 					{
-						this.Speech("Have you ever noticed there's just gold on the ground?");
+						this.Speech("바닥에 그냥 금이 막 깔려있는거 눈치챘어?");
 					}
 					case 27:
 					{
-						this.Speech("You really think the solution is to beat people up?");
+						this.Speech("넌 정말 해결책이 사람을 때려패는거라고 생각해?");
 					}
 					case 28:
 					{
-						this.Speech("Mmm", "...");
+						this.Speech("흐으음", "...");
 					}
 					case 29:
 					{
-						this.Speech("Hmm", "...");
+						this.Speech("흐으으음", "...");
 					}
 					case 30:
 					{
-						this.Speech("I'm cold.");
+						this.Speech("춥네.");
 					}
 					case 31:
 					{
-						this.Speech("I get nightmares about Wildingen", "...");
-						this.SpeechDelay(5.0, "It wants me there, for the wrong reason", "...");
+						this.Speech("가끔 와일딩겐과 관련된 악몽을 꿔", "...");
+						this.SpeechDelay(5.0, "그들이 날 이상한 이유로 끌고 가려 해", "...");
 					}
 					case 32:
 					{
-						this.Speech("I'm tired of fighting", "...");
+						this.Speech("전투가 갈수록 지치네", "...");
 					}
 					case 33:
 					{
-						this.Speech("All this chaos stuff makes my head hurt.");
+						this.Speech("이 혼돈과 관련된 것만 생각하면 머리가 아파.");
 					}
 					case 34:
 					{
-						this.Speech("I miss Silvester.");
+						this.Speech("실베스터가 그리워.");
 					}
 					case 35:
 					{
-						this.Speech("Silvester was actually the one who gave me this halo.");
+						this.Speech("이 헤일로는 실베스터가 준거야.");
 					}
 					case 36:
 					{
-						this.Speech("I worry about the Wildingen and Expidonsa alliance.");
+						this.Speech("엑스피돈사랑 와일딩겐이 연합을 한다던데, 난 그게 걱정이야.");
 					}
 					case 37:
 					{
-						this.Speech("I hate those Medieval guys.");
+						this.Speech("이 중세 놈들 정말 싫지 않아?");
 					}
 					case 38:
 					{
-						this.Speech("I still wonder how did Chaos get into Wildingen.");
+						this.Speech("도대체 어떻게 혼돈이 와일딩겐을 잠식했는지 모르겠어.");
 					}
 					case 39:
 					{
-						this.Speech("You wouldn't have happen to", "...");
-						this.SpeechDelay(5.0, "Nevermind.");
+						this.Speech("우리 혹시 뭔가 이상한 일이", "...");
+						this.SpeechDelay(5.0, "아니, 됐어.");
 					}
 					case 40:
 					{
-						this.Speech("I remember Seaborn crawling through the water supply.");
-						this.SpeechDelay(5.0, "Wildingen had to trap down all the rivers, heh.");
+						this.Speech("시본이 물을 달라며 기어다니는 꼴을 본 적이 있어.");
+						this.SpeechDelay(5.0, "그래서 와일딩겐은 모든 강을 뒤덮어야했지. 하하.");
 					}
 					case 41:
 					{
-						this.Speech("Wildingen really likes to set up traps everywhere by the way.");
-						this.SpeechDelay(5.0, "You started coming here without me you know.");
+						this.Speech("그나저나 와일딩겐은 여기저기에 함정을 깔아놓는걸 정말 좋아해.");
+						this.SpeechDelay(5.0, "나 없이 여기에 왔으면 큰일났을걸.");
 					}
 					case 42:
 					{
-						this.Speech("You started coming here without me you know.");
+						this.Speech("나 없이 여기에 왔으면 큰일났을걸.");
 					}
 					case 43:
 					{
-						this.Speech("Luckily Xeno wasn't a problem at the time for Wildingen.");
+						this.Speech("다행스럽게도 제노 감염이 와일딩겐을 덮치진 않았어.");
 					}
 					case 44:
 					{
-						this.Speech("Funny that Xeno and Seaborn hated each other so much.");
+						this.Speech("진짜 웃긴게, 제노 감염이랑 시본이랑 서로를 극도로 혐오하더라.");
 					}
 					case 45:
 					{
-						this.Speech("Funny that my grief was Seaborn and Xeno was Silvester's");
-						this.SpeechDelay(5.0, "Sorry shouldn't joke like that.");
+						this.Speech("내 트라우마는 시본이고, 실베스터는 제노 감염이란게 재밌네.");
+						this.SpeechDelay(5.0, "미안, 아무리 그래도 이건 아니었다.");
 					}
 					case 46:
 					{
-						this.Speech("I heard that chaos just stops us from leaving the planet.");
+						this.Speech("혼돈이 우리가 행성을 떠나는걸 막으려고 한다는 말을 들은적이 있어.");
 					}
 					case 47:
 					{
-						this.Speech("How did you even wind up here in the first place?");
+						this.Speech("애초에 여길 처음에 어떻게 오게 된 거야?");
 					}
 					case 48:
 					{
-						this.Speech("Yeah I heard Boss vs Boss, a video game right?");
+						this.Speech("아, Boss vs Boss? 비디오 게임 이름이잖아. 그렇지?");
 					}
 					case 49:
 					{
-						this.Speech("You have fun fighting people?");
-						this.SpeechDelay(5.0, "You guys really are insane.");
+						this.Speech("다른 사람이랑 싸우는걸 좋아한다고?");
+						this.SpeechDelay(5.0, "역시 너흰 좀 이상하네.");
 					}
 					case 50:
 					{
-						this.Speech("I wonder what Silvester is doing now", "...");
+						this.Speech("실베스터는 지금 뭐하고 있으려나", "...");
 					}
 					case 51:
 					{
-						this.Speech("I already know the zombies are rioting.");
+						this.Speech("좀비들이 계속 모여들고 있다는 소식이 항상 들려와.");
 					}
 					case 52:
 					{
-						this.Speech("I can read some ancient texts, probably in the desert.");
+						this.Speech("난 고대 문자를 좀 읽을줄 알아. 사막에서 좀 배운거야.");
 					}
 				}
 			}
@@ -528,19 +528,19 @@ methodmap GogglesFollower < CClotBody
 			switch(GetURandomInt() % 5)
 			{
 				case 0:
-					this.Speech("Die later.");
+					this.Speech("나중에 죽으라고.");
 				
 				case 1:
-					this.Speech("Enough slacking around.");
+					this.Speech("그만 기어다녀라.");
 				
 				case 2:
-					this.Speech("I don't have time for this.");
+					this.Speech("이딴걸 내가 해줘야하나.");
 				
 				case 3:
-					this.Speech("Go on, keep shooting.");
+					this.Speech("빨리, 계속 쏴재끼라고.");
 				
 				case 4:
-					this.Speech("You ain't living forever.");
+					this.Speech("어차피 계속 살진 못 할텐데.");
 			}
 		}
 		else
@@ -548,22 +548,22 @@ methodmap GogglesFollower < CClotBody
 			switch(GetURandomInt() % 6)
 			{
 				case 0:
-					this.Speech("Don't die on me", "...");
+					this.Speech("내가 보는 앞에서 죽지 마", "...");
 				
 				case 1:
-					this.Speech("I got more people to save.");
+					this.Speech("더 많은 사람을 구하고 싶어.");
 				
 				case 2:
-					this.Speech("Enough dead people around.");
+					this.Speech("사람이 죽는건 그만 보고 싶어.");
 				
 				case 3:
-					this.Speech("Come on, get up.");
+					this.Speech("어서 일어나.");
 				
 				case 4:
-					this.Speech("You're going to be ok.");
+					this.Speech("넌 괜찮아질거야.");
 				
 				case 5:
-					this.Speech("It's gonna be alright.");
+					this.Speech("이제 괜찮을거야.");
 			}
 		}
 		

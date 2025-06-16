@@ -94,70 +94,70 @@ methodmap TwirlFollower < CClotBody
 		{
 			case 0:
 			{
-				this.Speech("Here's something that might of interest", "...");
-				this.SpeechDelay(7.0, "The Ruina night sky is filled with numerous stars");
-				this.SpeechDelay(14.0, "Real stars, and ones created by mana that sit on the barrier that surround our islands");
+				this.Speech("좀 재밌는 이야기를 들려줄까?", "...");
+				this.SpeechDelay(7.0, "루이나의 밤하늘은 수많은 별로 가득해");
+				this.SpeechDelay(14.0, "진짜 별들과, 우리 섬들을 둘러싼 결계 위의 마나들이 만든 별들로 말이야");
 			}
 			case 1:
 			{
-				this.Speech("Ruinian candy is the most delicous candy in the world!");
-				this.SpeechDelay(5.0, ".. If you can survive the extreme sweetness of it", "...");
+				this.Speech("루이나인들이 만든 사탕은 세상에서 제일 맛있어!");
+				this.SpeechDelay(5.0, ".. 네가 그 극도의 단맛을 이겨낼 수 있다면 말야.", "...");
 			}
 			case 2:
 			{
 				//you see mr rogers, I LOVE GOOOOOOOOOOOOOOOOOOLLLDDD
-				this.Speech("I LOVE GOLD");
+				this.Speech("돈은 언제나 좋더라.");
 			}
 			case 3:
 			{
-				this.Speech("So, have you ever spent several days and nights straight trying to perfect a spell?");
-				this.SpeechDelay(10.0, ".. No? Guess thats just me", "...");
+				this.Speech("혹시 마법을 완벽히 만들기 위해 며칠 밤낮을 쉬지 않고 연습해본 적 있어?");
+				this.SpeechDelay(10.0, ".. 없어? 그럼 나만 그런가", "...");
 			}
 			case 4:
 			{
-				this.Speech("MASTER SPARK", "...");
-				this.SpeechDelay(5.0,"Nah, on second thought, not gonna use that yet");
+				this.Speech("마스터 스파크?", "...");
+				this.SpeechDelay(5.0,"아니, 난 그런거 모르는데. 마법 이름이야?");
 			}
 			case 5:
 			{
-				this.Speech("Don't you dare call me an old hag", "...");
-				this.SpeechDelay(5.0,"I'll have you know I always rank number one in all beaty competitions, hah");
+				this.Speech("날 늙다리 마녀라고 부르지마", "...");
+				this.SpeechDelay(5.0,"이래보여도 미인대회에서 항상 1등하는 몸이라구. 하하.");
 				//yeah right <...>
 			}
 			case 6:
 			{
-				this.Speech("You want to cast spells like mine?");
-				this.SpeechDelay(5.0,"HAH, not in a million years");
+				this.Speech("나처럼 마법을 잘 쓰고 싶다고?");
+				this.SpeechDelay(5.0,"흠, 백만년은 이른데");
 			}
 			case 7:
 			{
-				this.Speech("Wanna hear a joke?");
+				this.Speech("말장난 함 해볼까?");
 				switch(GetURandomInt() % 2)
 				{
 					case 0:
 					{
-						this.SpeechDelay(5.0,"How do you think holy water is made", "...");
-						this.SpeechDelay(10.0,"By boiling the HELL out of it ", "hahahaha");
+						this.SpeechDelay(5.0,"신은 놀랄때 oh my god이라고 안 해", "...");
+						this.SpeechDelay(10.0,"oh my me 라고 하지. ", "하하하");
 					}
 					case 1:
 					{
-						this.SpeechDelay(10.0,"So, to the Optimist the glass is half full, to the Pesimist its half empty", "...");
-						this.SpeechDelay(17.0,"But to the engineer the glass is twice as big as it needs to be.");
+						this.SpeechDelay(10.0,"누가 그러던데, 내 마법을 계이름으로 치면 레라고 하네", "...");
+						this.SpeechDelay(17.0,"마법의 아름다움이 도를 지나치고, 미치기 직전이라서.");
 					}
 				}
 			}
 			case 8:
 			{
-				this.Speech("Sometimes I wonder, what would life be if I wasn't a mage", "...");
-				this.SpeechDelay(7.0,"Probably hell");
+				this.Speech("가끔씩 내가 마법사가 아니었다면 어디로 떨어졌을지 궁금해", "...");
+				this.SpeechDelay(7.0,"지옥으로 갈려나");
 			}
 			case 9:
 			{
-				this.Speech("So, did you know that most \"Complex\" Magic Weapons/Wands you might have seen or even used were created by us?");
+				this.Speech("네가 쓰는 \"복잡한\" 마법 무기와 완드는 우리가 만들었다는거 혹시 알고 있니?");
 			}
 			case 10:
 			{
-				this.Speech("I can use every single Spell/Wand/Staff that exists in this world, there are no exceptions. Heh~");
+				this.Speech("난 이 세상에 존재하는 모든 마법, 완드, 스태프를 사용할 수 있어. 예외는 없지~ 헤.");
 			}
 		}
 		

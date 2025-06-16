@@ -4540,7 +4540,7 @@
 	"Radio Repair"
 	{
 		"en"	"Radio Repair"
-		"ko"	"라디오 수리병"
+		"ko"	"방송탑 수리병"
 	}
 	"Victoria Anvil"
 	{

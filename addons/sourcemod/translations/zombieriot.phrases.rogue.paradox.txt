@@ -648,7 +648,7 @@
 	"Steal Ruinian Desc"
 	{
 		"en"	"Steal all their precious items!\n{crimson}But twirl might not like that."
-		"ko"	"그가 판매하는 모든 물품을 전부 획득합니다!\n{crimson}하지만 트월이 당신의 행동을 혐오할 것입니다."
+		"ko"	"그가 판매하는 모든 물품을 전부 획득합니다!\n{crimson}하지만 트윌이 당신의 행동을 혐오할 것입니다."
 	}
 	"Mark of a Thief"
 	{
@@ -678,7 +678,7 @@
 	"Great Within from Ruina's Great Crystal Desc"
 	{
 		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15％ Less HP and 10％ less damage."
-		"ko"	"루이나인들이 매우 기쁘게 떠나가고, 트월이 당신의 행동을 자랑스럽게 여기고 있다!\n{green}모든 적의 최대 체력이 15％ 감소하고 공격력이 10％ 감소합니다."
+		"ko"	"루이나인들이 매우 기쁘게 떠나가고, 트윌이 당신의 행동을 자랑스럽게 여기고 있다!\n{green}모든 적의 최대 체력이 15％ 감소하고 공격력이 10％ 감소합니다."
 	}
 	"Ruinian Shop Help Out"
 	{
@@ -688,7 +688,7 @@
 	"Ruinian Shop Help Out Desc"
 	{
 		"en"	"Give the Ruinian a certain amount of cash {green} and obtain Twirls Favor."
-		"ko"	"루이나인에게 일정량의 자금을 줍니다. {green} 트월의 호감을 얻습니다."
+		"ko"	"루이나인에게 일정량의 자금을 줍니다. {green} 트윌의 호감을 얻습니다."
 	}
 	"Bob's Duck"
 	{
@@ -923,12 +923,12 @@
 	"Twirl Guidance"
 	{
 		"en"	"Twirl's Guidance"
-		"ko"	"트월의 안내"
+		"ko"	"트윌의 안내"
 	}
 	"Twirl Guidance Desc"
 	{
 		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15％ max mana and mana regen"
-		"ko"	"트월의 휘하로 들어간다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 0.5초 감소하고, 마법 무기들의 최대 마나와 마나 재생량이 +15％ 증가합니다."
+		"ko"	"트윌의 휘하로 들어간다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 0.5초 감소하고, 마법 무기들의 최대 마나와 마나 재생량이 +15％ 증가합니다."
 	}
 	"Unauthorized Ruina Gem"
 	{
@@ -1129,12 +1129,12 @@
 	"Prophecy Option 1c"
 	{
 		"en"	"It's Twirl"
-		"ko"	"저건 트월이야"
+		"ko"	"저건 트윌이야"
 	}
 	"Prophecy Desc 1c"
 	{
 		"en"	"{green}Twirl will acompany you {blue}and the ending is changed."
-		"ko"	"{green}트월이 당신과 함께 하며 {blue}게임 엔딩이 변경됩니다."
+		"ko"	"{green}트윌이 당신과 함께 하며 {blue}게임 엔딩이 변경됩니다."
 	}
 	"Prophecy Lore 1c"
 	{
@@ -1224,12 +1224,12 @@
 	"Prophecy Lore 4"
 	{
 		"en"	"Twirl offers something..."
-		"ko"	"트월이 무언가를 건네준다..."
+		"ko"	"트윌이 무언가를 건네준다..."
 	}
 	"Prophecy Lore 4a"
 	{
 		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
-		"ko"	"{snow}트월이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 이 보석은 정말 멋지다! 다시 돌려주면 안 될것 같다. 선물은 선물이니까."
+		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 이 보석은 정말 멋지다! 다시 돌려주면 안 될것 같다. 선물은 선물이니까."
 	}
 	"Lost Villager"
 	{
@@ -1457,7 +1457,7 @@
 	"Emergency Dispatch"
 	{
 		"en"	"Emergency Dispatch"
-		"ko"	"미즈키 긴급 파견"
+		"ko"	"긴급 파견"
 	}
 	"Emergency Dispatch Lore"
 	{

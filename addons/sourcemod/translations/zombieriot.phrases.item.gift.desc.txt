@@ -290,7 +290,7 @@
 	{
 		"en" 		"This medic will heal (can be silenced) any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
 		"ru"		"Этот медик будет лечить (может быть заткнуто) Любого зомби рядом с ним,Убийство цель лечения разозлит медика.\nБудет лучше убить медика первым,Разозленные медики очень сильные."
-		"ko" 		"이 좀비는 주변 좀비들을 회복시켜줍니다. (침묵으로 치유 저지 가능) 이 개체의 치유 대상을 먼저 처치하면, 이 좀비가 분노합니다.\n상황에 따라서는 분노한 메딕 서포터가 훨씬 더 강하므로, 이들을 먼저 처치하는 것이 좋을 수도 있습니다."
+		"ko" 		"이 좀비는 주변 좀비들을 회복시켜줍니다. (침묵으로 치유 저지 가능) 이 개체의 치유 대상을 먼저 처치하면, 이 좀비가 분노합니다.\n상황에 따라서는 분노한 지원병 메딕이 훨씬 더 강하므로, 이들을 먼저 처치하는 것이 좋을 수도 있습니다."
 	}
 	"Giant Heavy Brawler Desc"
 	{
@@ -924,13 +924,13 @@
 	{
 		"en"		"A far distant battler, he doesnt care about chaos, he just wants to fight, you cant kill him, hell fake his death and just go away as he is bored."
 		"ru"		"Далекий воин,его не волнует хаос,он просто хочет сразится с тобой,вы не можете убить его,он симитурет его смерть и уйдёт так как ему скучно."
-		"ko"		"아주 먼 곳에서 찾아온 싸움꾼입니다. 그는 혼돈을 신경 쓰지 않습니다. 그저 전투를 원할 뿐이죠. 당신은 그를 처치할 수 없습니다. 그를 처치해도 그는 죽은 척을 하고 지루해서 다른 곳으로 떠날 것입니다."
+		"ko"		"아주 먼 곳에서 찾아온 싸움꾼입니다. 그는 혼돈을 신경 쓰지 않습니다. 그저 전투를 원할 뿐이죠. 그는 죽어도 죽은게 아니라, 죽은척을 한 뒤 지루해져서 다른 곳으로 이동할 것입니다."
 	}
 	"Chaos Kahmlstein Desc"
 	{
 		"en"		"Afflicted by chaos to make his reasoning uncontrollable.\nHe hates you for killing expidonsans.\nDont let the fight take too long as he gets faster over time.\n(Silence) makes his melee not glide you around, it also makes his projectiles deal less chaos, also reduces resistances he gets when going below a health threshhold."
 		"ru"		"Страдающий Хаосом что делает его рассуждение безумными.\nОн ненавидит вас за убийство бойцов Экспидонсы.\nНе дайте битве затянутся так как он становится быстрее с каждой секундой.\n(Заглушение)позволяет его ближнему бою не заставлять вас скользить,Снаряды наносят меньше хаоса,так же уменьшает сопротивления когда он теряет половину здоровья."
-		"en"		"혼돈에 영향을 받은 그는 통제 불능 상태가 됐습니다.\n그는 엑스피돈사인들을 죽인 당신을 혐오합니다.\n시간이 지날수록 그의 능력이 강화되므로 빠르게 전투를 끝내세요.\n(침묵 부여시) 근접 공격이 대상을 넉백시키지 않고, 투사체의 혼돈 원소 피해량 감소 및, 체력이 일정치 이하로 감소할 때 얻는 피해 저항력이 감소."
+		"en"		"혼돈에 영향을 받은 그는 통제 불능 상태가 됐다...\n그는 엑스피돈사인들을 죽인 당신을 혐오한다.\n시간이 지날수록 강해지므로 빠르게 전투를 끝내세요.\n(침묵 부여시) 근접 공격이 대상을 넉백시키지 않고, 투사체의 혼돈 원소 피해량 감소 및 체력이 일정치 이하로 감소할 때 얻는 저항력이 감소."
 	}
 	"L4D2 Tank Desc"
 	{
@@ -1282,7 +1282,7 @@
 	{
 		"en"		"Switches between going a charger melee with limited seeing range.\nAnd a standing still infinite range sniper.\nPrehaps stopping him before he wanders away might yield diffrent result?"
 		"ru"		"Меняется между ближним боем с лимитированным радиусом.\nИ станционарным бескончным радиусом снайпером.\nВозможно если остановить его перед тем как он уйдет даст другой результат?"
-		"ko"		"시야 범위가 매우 좁은 근접 공격수와\n이동할 수 없지만 사거리가 무한인 고정형 저격수. 행동 패턴을 바꾸는 적입니다.\n그가 자연적으로 떠나기 전에 그를 처치하면 다른 결과가 나올지도 모릅니다?"
+		"ko"		"시야 범위가 매우 좁은 근접 공격수와\n이동할 수 없지만 사거리가 무한인 고정형 저격수. 행동 패턴을 바꾸는 적입니다.\n그는 자신의 팀원들도 공격합니다.\n그가 자연적으로 떠나기 전에 그를 처치하면 다른 결과가 나올지도 모릅니다?"
 	}
 	"Silvester Desc"
 	{
@@ -2387,7 +2387,7 @@
 	{
 		"en"	"An elite Combine knight who was sent to battlement to deal with Chaos. \nHe fought for day and night, but he couldn't beat endless waves of chaos affliceted army. \n He now became one of the troops who spread chaos. \n He gains more speed, strength, and resistance when below half health, He slows down attackspeed when near his aura, stays on death."
 		"ru"	"Элитный рыцарь комбайн которого отправили сражатся с хаосом.\nОн сражался день и ночь,он он не смог победить бесконечную армию охваченных хаосом.\nОн стал одним из тех кто разносит хаос.\nОн получает бонус к скорости,силе и сопротивлению когда здоровье ниже половины,Он уменьшает скорость атаки в радиусе его ауры которая остаётся после смерти."
-		"ko"	"혼돈 격리를 위해 전장에 파견되었던 정예 콤바인 기사. \n하지만 밤낮을 가리지 않고 싸워도, 끝없는 혼돈의 군대를 상대로는 역부족이었다. \n 그는 이제 혼돈의 일원이 되어 혼돈을 흩뿌린다... \n 체력 절반 이하일시 이동 속도, 공격력, 저항력이 증가. 대신 자기 자신의 오라 근처에 있다면 공격 속도가 감소하며 이는 죽을 때까지 지속."
+		"ko"	"혼돈 격리를 위해 전장에 파견되었던 정예 콤바인 기사.\n하지만 밤낮을 가리지 않고 싸워도, 혼돈의 군대를 상대로는 역부족이었다... \n 체력 절반 이하일시 이동 속도, 공격력, 저항력이 증가. 대신 자기 자신의 오라 근처에 있다면 공격 속도가 감소, 이는 죽을 때까지 지속."
 	}
 	"Xeno Acclaimed Swordsman Desc"
 	{

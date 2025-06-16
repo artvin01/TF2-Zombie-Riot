@@ -2086,7 +2086,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			}
 			case 13:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: 지금은 해야할 일이 있지, {crimson}끝내지 못한 그 일.{default}");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 지금은 해야할 일이 있지, {crimson}끝내지 못한 그 일.{default}");
 				i_TalkDelayCheck += 1;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_cyoa_PDA_intro");

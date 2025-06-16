@@ -353,7 +353,7 @@
 	"Twirl Hairpin 1"
 	{
 		"en" 		"Twirls Magical Hairpin"
-		"ko" 		"트월의 마법 헤어핀"
+		"ko" 		"트윌의 마법 헤어핀"
 	}
 	"Twirl Hairpin 1 Desc"
 	{

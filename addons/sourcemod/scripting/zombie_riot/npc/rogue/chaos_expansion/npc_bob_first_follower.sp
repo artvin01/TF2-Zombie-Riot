@@ -88,108 +88,108 @@ methodmap BobTheFirstFollower < CClotBody
 		{
 			case 0:
 			{
-				this.Speech("I have been studying many places across irln ever since whiteflower was killed.");
-				this.SpeechDelay(5.0, "I found many things i liked.");
-				this.SpeechDelay(10.0, "And many i did not.");
+				this.Speech("해풍등이 죽은 이후로, 난 전세계의 많은 장소를 연구해봤어.");
+				this.SpeechDelay(5.0, "좋아하게 된 곳도 있었고.");
+				this.SpeechDelay(10.0, "싫어하게 된 곳도 있었지.");
 			}
 			case 1:
 			{
-				this.Speech("I wonder if Bladedance will ever forgive me", "...");
+				this.Speech("칼춤이 날 용서해주긴 할까", "...");
 			}
 			case 2:
 			{
-				this.Speech("I know what you did to guln.");
-				this.SpeechDelay(5.0,"I know it was in his wish.");
-				this.SpeechDelay(10.0,"That doesnt mean ill be any less forgiving for it.");
+				this.Speech("네가 귄에게 한 짓을 기억한다.");
+				this.SpeechDelay(5.0,"나도 알아. 그게 바로 그가 원하던 것이란걸");
+				this.SpeechDelay(10.0,"그렇다고 내가 널 완전히 용서할거란 생각은 하지 마라.");
 			}
 			case 3:
 			{
-				this.Speech("People view me as a hero, i view myself as being curious.");
+				this.Speech("사람들은 날 영웅으로 여기지만, 왜인지 모르겠어.");
 			}
 			case 4:
 			{
-				this.Speech("I have no idea why Whiteflower did what he did.");
-				this.SpeechDelay(5.0,"Regardless, it is unforgiveable.");
+				this.Speech("해풍등 그 년이 도대체 왜 그랬는지 알 수가 없다.");
+				this.SpeechDelay(5.0,"어쨌든간에, 절대 용서할 수 없지.");
 			}
 			case 5:
 			{
-				this.Speech("How my friendgroup met? Mazeat.");
+				this.Speech("나의 친구와는 어떻게 만나냐고? 마제트를 통해서.");
 			}
 			case 6:
 			{
-				this.Speech("You want my sword? No chance.");
+				this.Speech("내 검을 원하나? 꿈 깨라.");
 			}
 			case 7:
 			{
-				this.Speech("Ever since the seaborn stuff happend, you all have been alot more reasonable.");
-				this.SpeechDelay(5.0,"Could be PTSD.");
+				this.Speech("시본 사건 이후, 너희를 인정하지 않을 수 없다.");
+				this.SpeechDelay(5.0,"아니면 PTSD거나.");
 			}
 			case 8:
 			{
-				this.Speech("Even if everything is going to hell, This is the right path.");
+				this.Speech("이게 올바른 길이겠지. 비록 모든게 위험해지더라도.");
 			}
 			case 9:
 			{
-				this.Speech("Overtime i can feel everything relaxing abit, The only common big enemy is the void.");
-				this.SpeechDelay(5.0, "... or whatever that is..");
+				this.Speech("그나마 모든 것이 조금씩 나아지고 있군. 우리의 유일한 공동의 적은 공허다.");
+				this.SpeechDelay(5.0, "... 아니면 다른 세력도 적으로 삼거나..");
 			}
 			case 10:
 			{
-				this.Speech("Chaos, i still dont know if its made by someone, or a force of nature.");
-				this.SpeechDelay(5.0, "Time will tell what it is..");
+				this.Speech("혼돈, 그것이 누군가에 의해 만들어진건지, 아니면 자연 발생의 결과물인지 알 수가 없어.");
+				this.SpeechDelay(5.0, "시간이 지나면 모든게 밝혀지겠지..");
 			}
 			case 11:
 			{
-				this.Speech("What freaks me out?");
-				this.SpeechDelay(5.0, "Ever lost your best friend to another friend?");
-				this.SpeechDelay(10.0, "That.");
+				this.Speech("내가 두려워하는게 뭐냐고?");
+				this.SpeechDelay(5.0, "네 절친이 다른 절친에게 잔혹하게 살해당한걸 본 적 있나?");
+				this.SpeechDelay(10.0, "바로 그거야.");
 			}
 			case 12:
 			{
-				this.Speech("Im not emotionless.");
-				this.SpeechDelay(5.0, "I just dont show it to everyone i meet.");
+				this.Speech("난 감정이 없는게 아니다.");
+				this.SpeechDelay(5.0, "그냥 만나는 자들마다 그렇게 느낄 뿐이지.");
 			}
 			case 13:
 			{
-				this.Speech("Twirl, the only one to think alike me.");
-				this.SpeechDelay(5.0, "If it were opposite day.");
+				this.Speech("트월, 나와 생각이 동등한 자.");
+				this.SpeechDelay(5.0, "라고 할 줄 알았나.");
 			}
 			case 14:
 			{
-				this.Speech("How i made clones in our battle?");
-				this.SpeechDelay(5.0, "I didnt, i just moved around.");
+				this.Speech("너와 내 싸움에서 내가 어떻게 클론을 만들었냐고?");
+				this.SpeechDelay(5.0, "난 클론을 만드는 기술이 없다. 그냥 움직였을 뿐이지.");
 			}
 			case 15:
 			{
-				this.Speech("Think you'd stand a chance against me and bladedance?");
+				this.Speech("네가 칼춤과 날 동시에 상대할 수 있을거라 생각하나?");
 			}
 			case 16:
 			{
-				this.Speech("My favorite drink?");
-				this.SpeechDelay(5.0, "Banana Juice.");
+				this.Speech("내가 좋아하는 음료가 뭐냐고?");
+				this.SpeechDelay(5.0, "바나나 주스.");
 			}
 			case 17:
 			{
-				this.Speech("Omega? Well, after that stunt he pulled in Nova Prospekt, I trust him.");
+				this.Speech("오메가? 아. 그는 믿을만한 인물이지. 특히 노바 프로스펙트 사건때부터는.");
 			}
 			case 18:
 			{
-				this.Speech("You think i'd be sorry for attacking you?");
-				this.SpeechDelay(5.0, "You should be sorry for being so god damn careless with the seaborn.");
+				this.Speech("내가 널 공격한걸 사과해야한다고?");
+				this.SpeechDelay(5.0, "미쳤군. 내가 아니라 네가 사과해야지. 누가 시본을 그딴식으로 다룰 생각을 해?");
 			}
 			case 19:
 			{
-				this.Speech("If you ever think i'll trust that second bob faker, ill laugh.");
-				this.SpeechDelay(9.0, "He acts like an expidonsan.");
+				this.Speech("만약 그 밥 2세 짝퉁을 믿고 있는거라면, 전부 다 믿지는 마.");
+				this.SpeechDelay(9.0, "그 놈은 꼭 마치 엑스피돈사인처럼 행동하니까.");
 			}
 			case 20:
 			{
-				this.Speech("I wonder what Guln would think of whiteflowers death","...");
-				this.SpeechDelay(8.0, "He'd be probably very upset.");
+				this.Speech("귄이 해풍등의 죽음을 어떻게 생각하는지 보고 싶군","...");
+				this.SpeechDelay(8.0, "분명 그는 극도로 분노하겠지.");
 			}
 			case 21:
 			{
-				this.Speech("Cherrish your friends as much as you can, while they are still here.");
+				this.Speech("네 친구들을 소중히 여겨. 특히 그들이 살아있는 동안에는.");
 			}
 		}
 		

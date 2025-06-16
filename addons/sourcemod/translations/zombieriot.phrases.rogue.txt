@@ -197,12 +197,12 @@
 	"Shop Ruina Sad"
 	{
 		"en"	"{snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
-		"ko"	"{snow}힐단:{default} 트월... 왜 저들을 들여보낸거야...?"
+		"ko"	"{snow}힐단:{default} 트윌... 왜 저들을 들여보낸거야...?"
 	}
 	"Shop Ruina Sad 1"
 	{
 		"en"	"{purple}Twirl{snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
-		"ko"	"{purple}트월{snow}: ... 이따가 집에 데려다줄게. 저들이 왜 이런걸 즐기는 지를 모르겠어. 그렇지만 이건 정말 중요한 일이야. 미안."
+		"ko"	"{purple}트윌{snow}: ... 이따가 집에 데려다줄게. 저들이 왜 이런걸 즐기는 지를 모르겠어. 그렇지만 이건 정말 중요한 일이야. 미안."
 	}
 	"Shop Ruina Happy"
 	{
@@ -212,7 +212,7 @@
 	"Shop Ruina Happy 1"
 	{
 		"en"	"{purple}Twirl{snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
-		"ko"	"{purple}트월{snow}: ... 솔직히 너희의 행동 기록을 보았을때, 네가 그 불쌍한 자의 물건을 강탈할 거라고 생각했었지만, 넌 그러지 않았어. 정말 잘 했어."
+		"ko"	"{purple}트윌{snow}: ... 솔직히 너희의 행동 기록을 보았을때, 네가 그 불쌍한 자의 물건을 강탈할 거라고 생각했었지만, 넌 그러지 않았어. 정말 잘 했어."
 	}
 	"Better save up now"
 	{
@@ -1606,7 +1606,7 @@
 	{
 		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10％ slower."
 		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10％."
-		"ko"	"오직 음악만을 재생할 수 있는 라디오. 그런데 라디오를 멈출 수가 없는 것 같다.\n- All enemies will be 10％ slower."
+		"ko"	"오직 음악만을 재생할 수 있는 라디오. 그런데 라디오를 멈출 수가 없는 것 같다.\n- 모든 적의 이동 속도가 10％ 감소합니다."
 	}
 	"Wrath Of Itallians"
 	{

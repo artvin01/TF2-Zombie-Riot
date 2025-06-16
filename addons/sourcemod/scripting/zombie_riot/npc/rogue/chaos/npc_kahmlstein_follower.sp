@@ -106,67 +106,67 @@ methodmap KahmlsteinFollower < CClotBody
 		{
 			case 0:
 			{
-				this.Speech("I crushed countless cities, evaporated entire armies, set whole seas ablaze.");
-				this.SpeechDelay(5.0, "But I couldn't defeat a couple of mercs, crazy.");
-				this.SpeechDelay(10.0, "Atleast that got me freed from the influence of this thing somehow, thanks.");
+				this.Speech("난 수많은 도시를 파괴하고, 수많은 군대를 증발시키고, 바다 전체를 불태웠다.");
+				this.SpeechDelay(5.0, "그런 내가 용병 몇 명을 상대로 패배하다니. 어이 없군.");
+				this.SpeechDelay(10.0, "그래도 덕분에 이 혼돈의 영향에서 벗어날 수는 있었다. 정말 고맙군.");
 			}
 			case 1:
 			{
-				this.Speech("I always dreamt about being a leader, just not in a way like this", "...");
+				this.Speech("난 항상 리더가 되는걸 꿈꿔왔었지. 이런 방식의 리더가 아니라", "...");
 			}
 			case 2:
 			{
-				this.Speech("Have you ever heard of Hitman? It's pretty rad series, you should play it.");
-				this.SpeechDelay(5.0, "OR ELSE", "...");
+				this.Speech("히트맨이라는 게임 이름을 들어본 적 있나? 꽤 멋지더군. 너도 나중에 해봐라.");
+				this.SpeechDelay(5.0, "아니면 말고", "...");
 			}
 			case 3:
 			{
-				this.Speech("Some time ago I had a dream about being this powerful galactic being.");
-				this.SpeechDelay(5.0, "And I fought very powerful people in it too, me versus all of them at once.");
-				this.SpeechDelay(10.0, "In the end everyone lost because of the time limit ", "-_-");
-				this.SpeechDelay(15.0, "Woke up soon after, what a weird dream that was.");
+				this.Speech("가끔씩 내가 전우주를 지배하고 있는 꿈을 꿔.");
+				this.SpeechDelay(5.0, "그리고 날 상대로 매우 강력한 자들 다수와 싸웠지. 일 대 다수로 말이다.");
+				this.SpeechDelay(10.0, "그리고, 갑자기 시간 제한이 다 되었다면서 전부 패배하더군 ", "-_-");
+				this.SpeechDelay(15.0, "깨어나보니 개꿈도 그런 개꿈이 없어.");
 			}
 			case 4:
 			{
-				this.Speech("Chaos makes you crazy, but the Void takes you in and traps you forever.");
-				this.SpeechDelay(5.0, "You find yourself in nothing but total darkness, unable to escape.");
-				this.SpeechDelay(10.0, "I need to put a stop to it and fix my mistakes.");
+				this.Speech("혼돈은 널 미치게 만들 뿐이지만, 공허는 널 아무것도 없는 곳에 영원히 가둬버린다.");
+				this.SpeechDelay(5.0, "아무것도 없는 어둠. 탈출할 수 없는 곳. 안 미칠 수가 없지.");
+				this.SpeechDelay(10.0, "내 실수를 바로잡기 위해서라도 그것을 막아야한다.");
 			}
 			case 5:
 			{
-				this.Speech("I do really hate goverments, they use up people for their own comfort and gains.");
-				this.SpeechDelay(5.0, "I might be sane now, but if I could I would still love to crush them all.");
-				this.SpeechDelay(10.0, "This time without the unnecessary casualties.");
-				this.SpeechDelay(15.0, "But there are more important matters at hand now.");
+				this.Speech("나는 정부를 정말 싫어한다. 정부는 자기들의 편안함과 이익을 위해 사람들을 이용해.");
+				this.SpeechDelay(5.0, "제정신을 차린 지금도 마찬가지다. 가능하다면 그들을 모두 짓밟아버리고 싶군.");
+				this.SpeechDelay(10.0, "물론 이번엔 불필요한 사상자는 없을거다.");
+				this.SpeechDelay(15.0, "그러나 지금은 그것보다 더 중요한 일이 있다.");
 			}
 			case 6:
 			{
-				this.Speech("After my fuck ups Ziberia ain't the same anymore...");
-				this.SpeechDelay(5.0, "I wish I could go back in time... To the old days", "...");
+				this.Speech("자이베리아는 내가 망친 나라고, 나 때문에 망해가고 있다...");
+				this.SpeechDelay(5.0, "과거로 되돌아갈 수만 있다면... 참 좋겠군", "...");
 			}
 			case 7:
 			{
-				this.Speech("After I regained my sanity, I keep having these awful nightmares at night.");
-				this.SpeechDelay(5.0, "I see thousands of people being burned alive to crisps.");
-				this.SpeechDelay(10.0, "Their screams of pain are awful, they are literally crying for it to stop.");
-				this.SpeechDelay(15.0, "And the one that set them on fire... is me.");
-				this.SpeechDelay(20.0, "I completely stopped sleeping like a week ago now.");
+				this.Speech("제정신을 차린 뒤에는, 항상 같은 악몽을 꾸곤 한다.");
+				this.SpeechDelay(5.0, "수천 명의 사람들이 불에 휩싸이는 장면을.");
+				this.SpeechDelay(10.0, "그들은 끝없이 비명을 지르며 제발 살려달라고 애원한다.");
+				this.SpeechDelay(15.0, "그리고 그 사람들을 전부 불태워 죽인건... 나였다.");
+				this.SpeechDelay(20.0, "그래서 일주일 전부터는 잠을 한 번도 자지 않았어.");
 				this.SpeechDelay(25.0, "...");
 			}
 			case 8:
 			{
-				this.Speech("That furry friend of yours who left, he was from Wildingen right?");
-				this.SpeechDelay(5.0, "I bet he hates me huh? Yeah, in his place I would do the same.");
+				this.Speech("널 떠난 퍼리 친구 말인데, 와일딩겐 소속원이었지?");
+				this.SpeechDelay(5.0, "그는 날 싫어할거다. 내가 그였어도 똑같았을거고.");
 			}
 			case 9:
 			{
-				this.Speech("If you feel uneasy, I can give you a hug. This atmosphere is kinda tense.");
-				this.SpeechDelay(5.0, "Just keep it a secret from my people, they'd think I got soft.");
+				this.Speech("불안하면 내가 안아주마. 여기 분위기가 원래 좀 이래.");
+				this.SpeechDelay(5.0, "대신 내 사람들에게는 비밀이다. 그들은 내가 약해졌다고 생각하겠지.");
 			}
 			case 10:
 			{
-				this.Speech("Why im wearing red? oh that", "...");
-				this.SpeechDelay(5.0, "You all wear red, don't want you to confuse me with the enemy.");
+				this.Speech("왜 빨간 옷을 입고 있냐고? 그건", "...");
+				this.SpeechDelay(5.0, "너희가 날 적으로 착각할까봐 나도 너희처럼 빨간 옷을 입었다.");
 			}
 		}
 		
@@ -524,7 +524,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그렇겐 못 한다!");
 				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
@@ -574,14 +574,14 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			case 4:
 			{
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ..I think I've finally met a match..");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: ..마침내 싸울만한 상대를 만나게 되었군..");
 			}
 			case 5:
 			{
 				float flPos[3];
 				float flAng[3];
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: *기침*");
 				npc.PlayCoughSound();
 				npc.GetAttachment("head", flPos, flAng);
 				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
@@ -591,55 +591,55 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			case 6:
 			{
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Oh.. that's blood.. lots of it.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 오... 피가 정말 많이 나오는군.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 7:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: But we did it, the Void's influence is fading away.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 하지만 우리가 해냈다. 공허의 영향력은 사라지고 있다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 8:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: And as long as another idiot doesn't try to mess with it, it won't come back");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 다른 얼간이가 공허를 건드리지 않는 한, 다시는 돌아오지 않을 거다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 9:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: But that means.. my immortality is fading as well. Maybe it's for the better.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그리고 저 놈들이 사라지면... 내 불멸 능력도 이제 사라지게 되겠지. 그리고 어쩌면 이게 더 나을 수도 있다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 10:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Now you should actually go back to that Chaos thing I took you away from.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 이제 난 돌아갈래야 돌아갈 수가 없기 때문이지.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 11:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ...if it's not too late that is.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: ...너무 많이 죽였거든.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 12:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: As for me, my time's almost up. Honestly I deserve it.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 너무 많이 죽이면 뭐가 뭔지 알 수 없게 된다는 말이 있었지. 솔직히 맞는 말이었다.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 13:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm nothing but a scumbag, even before Chaos fiddled with me I was one.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그리고 난 혼돈에 물들기 전에도 한낮 쓰레기에 불과했고.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 14:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I did many vile acts that cannot be forgiven..");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 내가 한 짓들을 도저히 잊을 수 없다..");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
@@ -648,7 +648,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				float flPos[3];
 				float flAng[3];
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: *기침*");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 				npc.GetAttachment("head", flPos, flAng);
@@ -657,20 +657,20 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			}
 			case 16:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그래.. 자이베이라가 날 데리러 오고 있다.. 저 빛줄기와 함께.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 17:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: And you all, thanks again. For sticking with me till the end.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 너희들. 나와 끝까지 함께 해줘서, 정말 고맙다...");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 18,19,20,21,22:
 			{
 		//		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ... Make sure the void doesnt come back...");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: ... 공허가 다시는 돌아오지 않도록...");
 				if(IsValidEntity(npc.index))
 				{
 					HideAllNpcCosmetics(npc.index);
@@ -681,7 +681,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahmlsteins Last Will");
-						CPrintToChat(client,"{default}You get: {red}''Kahmlsteins Last Will''{default}.");
+						CPrintToChat(client,"{default}당신이 얻은 것은...: {red}''Kahmlsteins Last Will''{default}.");
 					}
 				}
 			}

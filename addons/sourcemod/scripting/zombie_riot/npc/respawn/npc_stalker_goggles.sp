@@ -244,35 +244,35 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			{
 				case 1:	// 0.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: ...");
+					CPrintToChatAll("{darkblue}월드치{default}: ...");
 				}
 				case 3:	// 5.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: They tried to re-create my consiousness.");
+					CPrintToChatAll("{darkblue}월드치{default}: 그 놈들이 또 내 의식을 다시 만들어낼 거고, 난 또 이렇게 되고 말거야.");
 				}
 				case 5:	// 10.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Please halt the chaos.");
+					CPrintToChatAll("{darkblue}월드치{default}: 부탁한다. 혼돈을 막아줘.");
 				}
 				case 7:	// 15.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: It makes them.. create unholy beings.");
+					CPrintToChatAll("{darkblue}월드치{default}: 그 놈들은.. 끔찍한 것들을 만들어내고 있어.");
 				}
 				case 9:	// 20.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Such as me.");
+					CPrintToChatAll("{darkblue}월드치{default}: 나처럼.");
 				}
 				case 10:	// 22.5
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Promise me something.");
+					CPrintToChatAll("{darkblue}월드치{default}: 하나만 약속해줘.");
 				}
 				case 11:	// 25.0
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: Take care of {gold}Silvester{default}.");
+					CPrintToChatAll("{darkblue}월드치{default}: {gold}실베스터{default}... 걔 좀 잘 돌봐줘...");
 				}
 				case 12:	// 27.5
 				{
-					CPrintToChatAll("{darkblue}Waldch{default}: {crimson}FAILURE, CANNOT COPY PERSONALTIY.");
+					CPrintToChatAll("{darkblue}월드치{default}: {crimson}오류. 의식을 찾을수 없음.");
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
@@ -281,7 +281,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
 							Items_GiveNamedItem(client, "Chaos Machina Waldch Chip");
-							CPrintToChat(client, "{default}This machine is fell, and gave...: {blue}''Chaos Machina Waldch Chip''{default}!");
+							CPrintToChat(client, "{default}이 기계가 천천히 스러져가며, 거기서 떨어져나온 것은...: {blue}''Chaos Machina Waldch Chip''{default}!");
 						}
 					}
 				}
