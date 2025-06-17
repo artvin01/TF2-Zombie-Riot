@@ -3424,7 +3424,7 @@
 	"Zealot"
 	{
 		"en"	"Zealot."
-		"ko"	"우리는 하나로 뭉쳤다!"
+		"ko"	"지그마 헬든해머를 위해!"
 	}
 	"Zealot Desc"
 	{
@@ -3454,7 +3454,7 @@
 	"Zealot Pap 5 Desc"
 	{
 		"en"	"Boost stats.\nIncreases cooldown reductions."
-		"ko"	"능력치 증가.\n쿨타임 감소량이 증가합니다."
+		"ko"	"능력치 증가.\n쿨타임 감소량이 증가."
 	}
 	"Zealot Pap 6 Desc"
 	{
