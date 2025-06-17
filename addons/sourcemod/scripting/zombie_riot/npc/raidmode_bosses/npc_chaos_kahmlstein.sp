@@ -2080,7 +2080,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahml's Contained Chaos");
-						CPrintToChat(client,"{default}당신이 얻은 것은... : {red}''Kahml's Contained Chaos''{default}!");
+						CPrintToChat(client,"{default}당신이 얻은 것은... : {red}''격리된 캄르스타인의 혼돈''{default}!");
 					}
 				}
 			}

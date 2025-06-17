@@ -1848,9 +1848,9 @@ static void GivePlayerItems(int coolwin = 0)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}밥이 당신에게 깃든 심해의 감염원을 전부 제거해주었습니다. 당신이 얻은 것은... : {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}밥이 당신에게 깃든 심해의 감염원을 전부 제거해주었습니다. 당신이 얻은 것은... : {yellow}''밥의 치유의 손길''{default}!");
 			else
-				CPrintToChat(client, "{default}당신은 밥을 공격하지 않았고, 그런 밥이 당신에게 준 것은... : {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}당신은 밥을 공격하지 않았고, 그런 밥이 당신에게 준 것은... : {yellow}''밥의 치유의 손길''{default}!");
 		}
 	}
 

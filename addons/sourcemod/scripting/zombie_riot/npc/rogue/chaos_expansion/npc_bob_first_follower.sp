@@ -151,7 +151,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 13:
 			{
-				this.Speech("트월, 나와 생각이 동등한 자.");
+				this.Speech("트윌, 나와 생각이 동등한 자.");
 				this.SpeechDelay(5.0, "라고 할 줄 알았나.");
 			}
 			case 14:
@@ -262,8 +262,8 @@ methodmap BobTheFirstFollower < CClotBody
 		if(Rogue_Mode())
 		{
 			// Cutscene Here
-			npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
-			npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
+			npc.Speech("혼돈을 기억하나? 이건 정말 진중해야한다. 어서 따라와라.");
+			npc.SpeechDelay(5.0, "''밥 2세''도 우리와 함께 할 수 있긴 하겠지. 하지만 믿음직스럽진 않아.");
 			Rogue_SetProgressTime(10.0, false);
 		}
 

@@ -1187,7 +1187,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 				if(!XenoExtraLogic())
 				{
 					Items_GiveNamedItem(client_repat, "Calmaticus' Heart Piece");
-					CPrintToChat(client_repat, "{default}당신은 그를 확실히 죽이기 위해 심장을 떼어냈고, 당신이 얻은 것은... : {green}''Calmaticus' Heart Piece''{default}!");
+					CPrintToChat(client_repat, "{default}당신은 그를 확실히 죽이기 위해 심장을 떼어냈고, 당신이 얻은 것은... : {green}''칼마티커스'의 심장 조각''{default}!");
 				}
 			}
 		}

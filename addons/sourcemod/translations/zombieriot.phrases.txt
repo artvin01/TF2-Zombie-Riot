@@ -2794,7 +2794,7 @@
 	"Tower_Message"
 	{
 		"en"		"You see a giant radiotower at the distance."
-		"ko"		"저 멀리 거대한 라디오 타워가 보입니다."
+		"ko"		"저 멀리 거대한 방송탑이 보입니다."
 	}
 	"Victoria_Help_Message"
 	{
@@ -2804,7 +2804,7 @@
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
-		"ko"		"라디오 타워가 여기에 왔습니다. 준비하세요."
+		"ko"		"방송탑이 여기에 왔습니다. 준비하세요."
 	}
 	"Void_Help_Message"
 	{
@@ -3016,7 +3016,7 @@
 		"fr"		"Attendre pour le prochain niveau"
 		"ru"		"Ждать следующей карты"
 		"chi"		"等待下一张地图"
-		"ko"		"다음 맵을 기다리는 중"
+		"ko"		"다음 맵을 기다리기"
 	}
 	"Wait for an open slot"
 	{
@@ -3024,7 +3024,7 @@
 		"fr"		"Attendre pour une place vacante"
 		"ru"		"Ждать, пока освободится место"
 		"chi"		"等待空位"
-		"ko"		"빈 자리를 기다리는 중"
+		"ko"		"빈 자리를 기다리기"
 	}
 	"Buff/Debuff List"
 	{

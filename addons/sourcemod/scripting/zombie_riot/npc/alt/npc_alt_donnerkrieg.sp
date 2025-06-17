@@ -333,7 +333,7 @@ static void Internal_ClotThink(int iNPC)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Blitzkrieg's Army");
-						CPrintToChat(client,"{default}이제 당신은 새로운 세력을 배럭으로 호출할 수 있게 되었습니다...: {crimson}''Blitzkrieg's Army''{default}!");
+						CPrintToChat(client,"{default}이제 당신은 새로운 세력을 배럭으로 호출할 수 있게 되었습니다...: {crimson}''블리츠크리그의 군대''{default}!");
 					}
 				}
 			}

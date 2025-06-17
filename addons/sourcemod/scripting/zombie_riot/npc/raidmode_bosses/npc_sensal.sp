@@ -605,7 +605,7 @@ static void Internal_ClotThink(int iNPC)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Avangard's Processing Core-B");
-						CPrintToChat(client,"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {darkblue}''Avangard's Processing Core-B''{default}!");
+						CPrintToChat(client,"{default}카스텔란이 돌아간 후, 그의 군대가 무언가를 남겼습니다: {darkblue}''아방가르드의 프로세싱 코어-B''{default}!");
 					}
 				}
 			}
@@ -1664,7 +1664,7 @@ bool SensalTalkPostWin(Sensal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Battery Device");
-				CPrintToChat(client,"{default}센살이 당신에게 고에너지 배터리를 건네주었습니다: {darkblue}''Expidonsan Battery Device''{default}!");
+				CPrintToChat(client,"{default}센살이 당신에게 고에너지 배터리를 건네주었습니다: {darkblue}''엑스피돈사인의 배터리 장비''{default}!");
 			}
 		}
 	}

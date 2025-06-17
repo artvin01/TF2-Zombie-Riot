@@ -911,7 +911,7 @@ methodmap Stella < CClotBody
 		{
 			switch(GetRandomInt(0, 6))
 			{
-				case 0: Stella_Lines(npc, "다행히도 {purple}트월{snow}님보다 먼저 널 찾아내서 다행이군. 너한텐 좋은 일이 아니겠지만.");
+				case 0: Stella_Lines(npc, "다행히도 {purple}트윌{snow}님보다 먼저 널 찾아내서 다행이군. 너한텐 좋은 일이 아니겠지만.");
 				case 1: Stella_Lines(npc, "이 장소는 정말 끔찍하군. 빨리 일을 끝내고 싶은데.");
 				case 2: Stella_Lines(npc, "{crimson}카를라스{snow}, 쓸데없는 잡담은 그만. 일할 시간이야.");
 				case 3: Stella_Lines(npc, "심판을 내리기 위해 여기에 왔다.");
@@ -985,7 +985,7 @@ static void Win_Line(int entity)
 		switch(GetRandomInt(0, 1))
 		{
 			case 0: Stella_Lines(npc, "{crimson}카를라스{snow}를 짓밟은 대가다.");
-			case 1: Stella_Lines(npc, "여전히 {purple}트월{snow}님이 남아있어서 다행이군...");
+			case 1: Stella_Lines(npc, "여전히 {purple}트윌{snow}님이 남아있어서 다행이군...");
 		}
 	}
 }
@@ -2182,7 +2182,7 @@ static void Stella_Weapon_Lines(Stella npc, int client)
 		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "날 복제하려하는 건가, {gold}%N{snow}?", client); 																			case 1: Format(Text_Lines, sizeof(Text_Lines), "이런 것도 가져오다니, 참으로 놀라운데.", client);}
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "그런 뾰족한 막대기로 적을 찌르려는거냐, {gold}%N{snow}?", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 넌 카를라스처럼 창을 잘 다루지 못 할 거다.", client);}	
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "레이저 기반 마법들은 루이나의 전문 분야다. {gold}%N{snow} 넌 그것도 모르고 있겠지.",client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 그것도 네가 훔쳤다고 생각할 수 밖에 없군.", client);}	
-		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "지금 {purple}트월{snow}님의 레이저를 사용하는거냐? 네가 지금 무슨 짓을 벌이고 있는지도 모르는군. {gold}%N", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "{purple}트월{snow}님이 이걸 보시면 어떻게 반응하실지 참으로 기대된다, {gold}%N{snow}. 솔직히 재밌겠는데.", client);}	
+		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "지금 {purple}트윌{snow}님의 레이저를 사용하는거냐? 네가 지금 무슨 짓을 벌이고 있는지도 모르는군. {gold}%N", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "{purple}트윌{snow}님이 이걸 보시면 어떻게 반응하실지 참으로 기대된다, {gold}%N{snow}. 솔직히 재밌겠는데.", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "중력 마법,  {gold} %N{snow} 네가 그걸 사용할 줄 알다니.", client); 													case 1: Format(Text_Lines, sizeof(Text_Lines), "그 중력 마법의 진짜배기를 {gold}%N{snow} 너에게 보여주고 싶군.", client);}
 		case WEAPON_ION_BEAM_FEED: 	Format(Text_Lines, sizeof(Text_Lines), "프리즘 피드백 루프? {gold}%N{snow}, 그건 몇 년 동안 사용되지 않은 물건이다.", client);
 		case WEAPON_BOBS_GUN:  		Format(Text_Lines, sizeof(Text_Lines), "밥의 총이라니, 그냥 포기해야겠군.", client); 

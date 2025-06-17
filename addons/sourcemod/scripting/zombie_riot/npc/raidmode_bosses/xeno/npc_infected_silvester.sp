@@ -2030,7 +2030,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Head Equipped Blue Goggles");
-							CPrintToChat(client, "{default}그들에게서 약간의 도움을 받았습니다. 당신이 얻은것: {blue}''Head Equipped Blue Goggles''{default}!");
+							CPrintToChat(client, "{default}그들에게서 약간의 도움을 받았습니다. 당신이 얻은것: {blue}''머리에 장착하는 파란 고글''{default}!");
 						}
 					}
 				}

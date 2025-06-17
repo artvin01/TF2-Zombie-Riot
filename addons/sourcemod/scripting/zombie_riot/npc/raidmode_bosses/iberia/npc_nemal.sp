@@ -1777,7 +1777,7 @@ bool NemalTalkPostWin(Nemal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Iberian and Expidonsan Training");
-				CPrintToChat(client,"{default}이 훈련에서 더욱 많은 경험을 얻은것 같습니다. 당신이 얻은 것은...: {gold}''Iberian and Expidonsan Training''{default}!");
+				CPrintToChat(client,"{default}이 훈련에서 더욱 많은 경험을 얻은것 같습니다. 당신이 얻은 것은...: {gold}''엑스피돈사-이베리아 연합 훈련''{default}!");
 			}
 		}
 	}

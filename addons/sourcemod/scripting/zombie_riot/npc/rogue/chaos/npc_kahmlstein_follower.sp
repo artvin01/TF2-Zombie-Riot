@@ -681,7 +681,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Kahmlsteins Last Will");
-						CPrintToChat(client,"{default}당신이 얻은 것은...: {red}''Kahmlsteins Last Will''{default}.");
+						CPrintToChat(client,"{default}당신이 얻은 것은...: {red}''캄르스타인의 유언장''{default}.");
 					}
 				}
 			}

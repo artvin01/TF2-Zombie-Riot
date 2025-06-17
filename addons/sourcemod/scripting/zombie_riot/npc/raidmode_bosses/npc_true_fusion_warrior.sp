@@ -517,7 +517,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 				{
 					Items_GiveNamedItem(client, "Cured Silvester");
-					CPrintToChat(client,"{default}당신은 그의 호의를 얻었습니다. 그에게서 이것을 받았습니다 : {yellow}''감염이 치료된 실베스터''{default}!");
+					CPrintToChat(client,"{default}당신은 그의 호의를 얻었습니다. 그에게서 이것을 받았습니다 : {yellow}''감염이 치유된 실베스터''{default}!");
 				}
 			}
 		}

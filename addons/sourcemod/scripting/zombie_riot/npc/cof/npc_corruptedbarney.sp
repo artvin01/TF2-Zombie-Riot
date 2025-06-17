@@ -371,7 +371,7 @@ public void CorruptedBarney_NPCDeath(int entity)
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat] > 500)
 			{
 				Items_GiveNamedItem(client_repat, "Corrupted Barney's Chainsaw");
-				CPrintToChat(client_repat, "{default}타락한 바니 칼훈이 소멸되었다... 당신이 얻은 것: {crimson}''Corrupted Barney's Chainsaw''{default}!");
+				CPrintToChat(client_repat, "{default}타락한 바니 칼훈이 소멸되었다... 당신이 얻은 것: {crimson}''타락한 바니 칼훈의 전기톱''{default}!");
 			}
 		}
 	}

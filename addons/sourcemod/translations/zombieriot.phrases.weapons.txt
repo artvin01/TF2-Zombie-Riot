@@ -3285,7 +3285,7 @@
 	"Twirl Magic"
 	{
 		"en" "A Fraction of Twirl's Magic"
-		"ko" "트월의 마법 일부"
+		"ko" "트윌의 마법 일부"
 	}
 	"Magical Fontina Aura"
 	{

@@ -4098,12 +4098,14 @@
 		"en" "You feel the power of the Chaos that once consumed the Messenger in your hands\n You lose the ability to deal aoe. Press M2 to change fire mode \n Fire Blaster: Ignites \n Chaos Blaster: short cryo debuff \n Chaos deals more damage on hit.\n Archetype changed into rapid fire"
 		"fr" "Appuyez M2 pour changer votre mode.\nMode Feu : Enflamme les ennemis\nMode Glace : Gèle les ennemis.\nArchetype devient «Tirs Rapides»\nVous sentez le Chaos qui a enrobé le Messager dans vos mains."
 		"chi"	"你能感受到混沌之力正在吞噬你。\n你无法造成aoe。\nM2切换模式\n地狱火：点燃敌人\n混沌发射器：短暂冰冻效果\n混沌造成更多伤害。\n类更为''连发''"
+		"ko" "광역 타격 능력을 잃음. M2로 발사체의 능력 변경 \n 화염 증진: 화상 부여 \n 혼돈 증진: 냉동 부여 \n 더 많은 혼돈 피해를 부여\n 무기의 유형이 ''풀 오토''로 변경됨"
 	}
 	"Messenger Launcher PAP Desc"
 	{
 		"en" "You feel more confident in controlling chaos in this launcher\n Or is it consuming you? \n \n Increased clip, damage, and faster firerate. \n more cryo applied on Chaos mode and more afterburn damage."
 		"fr" "Dégats, capacité chargeur et cadence de tir améliorés.\nEffets des modes améliorés\nVous contrôlez le chaos de cet arme, ou vous vous faites consommé par lui?"
 		"chi"	"你对控制混沌之力更有自信了。或者这只不过是是幻觉？\n增加弹夹容量，伤害，和攻速。\n增加冰冻市场和燃烧伤害。"
+		"ko" "피해량, 공격 속도, 장탄수 증가. \n 혼돈 증진 상태일때 부여하는 냉동 수치 및 화상 피해량이 증가."
 	}
 	"The Tinker Desc"
 	{
@@ -4807,7 +4809,7 @@
 	"Magia Fractal Desc"
 	{
 		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals\nTwirl's Hairpints give 25 extra crystals"
-		"ko"	"주 무기:\nM1:애니메이션 이후 거대한 레이저를 발사.\nM2 꾹 누름: 회전 속도+사거리 증가. 수정을 초당 10 소모. \n보조 무기:\nM1: 적중한 만큼 마나 획득.\nM2: 적중시 여러 대상에게 튕기는 이온 발사.\n근접 무기:\nM1: 에너지 파동 발사. 수정을 소모하지만, 적중시 수정 획득.\n트월의 헤어핀 장착시 수정 25 획득."
+		"ko"	"주 무기:\nM1:애니메이션 이후 거대한 레이저를 발사.\nM2 꾹 누름: 회전 속도+사거리 증가. 수정을 초당 10 소모. \n보조 무기:\nM1: 적중한 만큼 마나 획득.\nM2: 적중시 여러 대상에게 튕기는 이온 발사.\n근접 무기:\nM1: 에너지 파동 발사. 수정을 소모하지만, 적중시 수정 획득.\n트윌의 헤어핀 장착시 수정 25 획득."
 	}
 	"Fractal Kit Desc 1"
 	{

@@ -3304,7 +3304,7 @@
 	{
 		"en"	"Twirl"
 		"ru" 	"Твёрл"
-		"ko"	"트월"
+		"ko"	"트윌"
 	}
 	"Twirl Desc"
 	{

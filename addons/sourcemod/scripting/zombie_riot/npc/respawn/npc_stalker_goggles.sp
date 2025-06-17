@@ -281,7 +281,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
 							Items_GiveNamedItem(client, "Chaos Machina Waldch Chip");
-							CPrintToChat(client, "{default}이 기계가 천천히 스러져가며, 거기서 떨어져나온 것은...: {blue}''Chaos Machina Waldch Chip''{default}!");
+							CPrintToChat(client, "{default}이 기계가 천천히 스러져가며, 거기서 떨어져나온 것은...: {blue}''혼돈 마키나 월드치 칩''{default}!");
 						}
 					}
 				}
@@ -296,7 +296,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		{
 			if(AppearedBefore_Suicide)
 			{
-				CPrintToChatAll("{darkblue}The machine wanders off, it isnt interrested in this place anymore, someone else takes its place instead...");
+				CPrintToChatAll("{darkblue}그 기계는 이 곳을 잠시 방황하고는 흔적도 사라졌습니다. 그에게 이 장소는 더 이상 흥미로운 장소가 아닙니다. 다른 누군가가 그 자리를 차지할 것입니다...");
 				b_NpcForcepowerupspawn[npc.index] = 0;
 			}
 			i_RaidGrantExtra[npc.index] = 0;

@@ -440,7 +440,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Bob's true fear");
-				CPrintToChat(client,"{default}이 싸움은 일어나서는 안 될 일이었습니다. 당신에게는 거의, 아니 전혀 기회가 없었습니다. 이것이... {red}''밥의 진정한 공포입니다.''{default}!");
+				CPrintToChat(client,"{default}이 싸움은 일어나서는 안 될 일이었습니다. 당신에게는 거의, 아니 전혀 기회가 없었습니다. 당신이 얻은 것은...: {red}''밥의 진정한 공포''{default}!");
 			}
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
