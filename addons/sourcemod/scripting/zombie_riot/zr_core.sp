@@ -222,7 +222,8 @@ enum
 	WEAPON_REIUJI_WAND = 145,
 	//WEAPON_CHEESY_MELEE = 146,
 	//WEAPON_CHEESY_PRIMARY = 147,
-	WEAPON_CHEMICAL_THROWER = 148
+	WEAPON_CHEMICAL_THROWER = 148,
+	WEAPON_RITUALIST = 149
 }
 
 enum
@@ -610,6 +611,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/kit_blacksmith_grill.sp"
 //#include "custom/kit_cheese.sp"
 #include "custom/weapon_flamethrower_chemical.sp"
+#include "custom/wand/weapon_ritualist.sp"
 
 void ZR_PluginLoad()
 {

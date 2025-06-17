@@ -1497,7 +1497,7 @@
 	"Food Fridge Desc"
 	{
 		"en"	"Heals for 60 Health, scales with medic upgrades."
-		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas.
+		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
@@ -1592,11 +1592,11 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1607,7 +1607,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
+		"en"	"3x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
@@ -4397,5 +4397,25 @@
 	"Chemical Spewer Pap 1"
 	{
 		"en"	"Base damage is increased, consumes less ammo."
+	}
+	"The Ritualist"
+	{
+		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
+	}
+	"Necrosis Ritualist Desc"
+	{
+		"en"	"Up to 4 enemies within range take Necrosis elemental damage every second and take increased Necrosis elemental damage.\nBeing in a taunt increases Necrosis elemental damage dealt through this."
+	}
+	"Necrosis Ritualist Pap Desc"
+	{
+		"en"	"Damage increased, passive effect can now hit up to 6 enemies within range.\nAbility increases damage heavily and buffs 3 allies within range for a long duration."
+	}
+	"Impairment Ritualist Desc"
+	{
+		"en"	"Attacks now inflict Nervous Impairment elemental damage in a splash radius, hitting up to 4 enemies."
+	}
+	"Impairment Ritualist Pap Desc"
+	{
+		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment element damage."
 	}
 }

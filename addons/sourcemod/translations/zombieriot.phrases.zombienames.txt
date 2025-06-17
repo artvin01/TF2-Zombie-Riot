@@ -4287,4 +4287,8 @@
 	{
 		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
 	}
+	"Instinct's Summon"
+	{
+		"en"	"Instinct's Summon"
+	}
 }

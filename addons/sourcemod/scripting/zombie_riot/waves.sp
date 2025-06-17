@@ -1897,11 +1897,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				int ScalingDoWavesDone = CurrentRound;
 				if(OverrideScalingManually != 0.0)
 				{
-					ScalingDoWavesDone = RoundToNearest(float(CurrentRound) * OverrideScalingManually);
+					ScalingDoWavesDone = RoundToFloor(float(CurrentRound) * OverrideScalingManually);
 				}
 				else if(length < 59)
 				{
-					ScalingDoWavesDone = RoundToNearest(float(CurrentRound) * (60.0 / float(length - 1)));
+					ScalingDoWavesDone = RoundToFloor(float(CurrentRound) * (60.001 / float(length - 1)));
 				}
 				
 				for(; RelayCurrentRound < ScalingDoWavesDone ; RelayCurrentRound++)

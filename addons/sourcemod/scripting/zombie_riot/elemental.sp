@@ -195,6 +195,16 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	return true;
 }
 
+static void ApplyElementalEvent(int victim, int attacker, int damage)
+{
+	Event event = CreateEvent("player_bonuspoints", true);
+	event.SetInt("source_entindex", victim);
+	event.SetInt("player_entindex", attacker);
+	event.SetInt("points", -damage);
+	event.FireToClient(attacker);
+	event.Cancel();
+}
+
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	if(i_IsVehicle[victim])
@@ -266,19 +276,22 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			if(ElementDamage[victim][Element_Nervous] > trigger)
 			{
 				ElementDamage[victim][Element_Nervous] = 0;
-				f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
+				f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 10.0;
 
 				if(GetTeam(victim) == TFTeam_Red)
 				{
 					FreezeNpcInTime(victim, 3.0);
-					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 				else
 				{
 					FreezeNpcInTime(victim, b_thisNpcIsARaid[victim] ? 2.0 : (b_thisNpcIsABoss[victim] ? 3.0 : 5.0));
-					SDKHooks_TakeDamage(victim, attacker, attacker, 5000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 6000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 	else if(i_IsABuilding[victim])	// Buildings
@@ -391,6 +404,9 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				if(BurnDamage[victim] < burn)
 					BurnDamage[victim] = burn;
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 	else if(i_IsABuilding[victim])	// Buildings
@@ -488,6 +504,9 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				//do not spread.
 				FramingInfestorSpread(victim);
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 	else if(i_IsABuilding[victim])	// Buildings
@@ -558,6 +577,9 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 
 				Cryo_FreezeZombie(attacker, victim, type);
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 	else if(i_IsABuilding[victim])	// Buildings
@@ -608,6 +630,9 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				
 				ApplyStatusEffect(attacker, victim, "Enfeeble", time);
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 }
@@ -649,6 +674,9 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 				f_ArmorCurrosionImmunity[victim][Element_Osmosis] = GetGameTime() + 15.0;
 				OsmosisElementalEffectEnable(victim, 7.5);
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 }
@@ -769,6 +797,9 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 				int count = RoundToCeil(3.0 * MultiGlobalEnemy);
 				Matrix_Spawning(attacker, count);
 			}
+			
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 	else if(i_IsABuilding[victim])	// Buildings
@@ -906,6 +937,9 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 					SDKHooks_TakeDamage(victim, attacker, attacker, ReturnEntityMaxHealth(victim) * 5.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_GIB_REGARDLESS);
 				}
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 }
@@ -1021,6 +1055,9 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				Cheese_PlaySplat(victim);
 			}
+
+			if(attacker && attacker <= MaxClients)
+				ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 	else if(i_IsABuilding[victim]) // In the rare occasion you inflict plasmic elemental damage to buildings (4/5/2024 mini incident)

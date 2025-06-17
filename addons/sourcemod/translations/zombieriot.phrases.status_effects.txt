@@ -1449,5 +1449,12 @@
 	{
 		"en" "Primal Fear Hide"
 	}
-
+	"Liberal Tango"
+	{
+		"en"	"''Liberal Tango''"
+	}
+	"Liberal Tango Desc"
+	{
+		"en"	"+30％ damage dealt, healing done, and damage reduction"
+	}
 }

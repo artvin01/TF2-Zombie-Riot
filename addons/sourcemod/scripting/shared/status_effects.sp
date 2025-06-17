@@ -169,6 +169,10 @@ void InitStatusEffects()
 	StatusEffects_Modifiers();
 	StatusEffects_Explainelemental();
 	StatusEffects_Purge();
+
+#if defined ZR
+	StatusEffects_Ritualist();
+#endif
 }
 
 static int CategoryPage[MAXTF2PLAYERS];
