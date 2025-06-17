@@ -2185,14 +2185,14 @@ void StatusEffects_Silence()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Silenced");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "X");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "X"); //dont display above head, so empty
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.AttackspeedBuff			= 1.05;
+	data.AttackspeedBuff			= 1.1;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 0; //0 means ignored
@@ -2427,6 +2427,11 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 }
 stock bool NpcStats_IsEnemySilenced(int victim)
 {
+#if defined ZR
+	if(!b_thisNpcIsARaid[victim])
+		return false;
+#endif
+
 	if(!E_AL_StatusEffects[victim])
 		return false;
 

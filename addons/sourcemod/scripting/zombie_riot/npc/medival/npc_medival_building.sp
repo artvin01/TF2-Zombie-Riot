@@ -183,7 +183,7 @@ methodmap MedivalBuilding < CClotBody
 	
 	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(200.0), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
+		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(1000.0, true), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
