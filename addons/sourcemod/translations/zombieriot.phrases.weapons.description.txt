@@ -5122,6 +5122,216 @@
 		"en" 	"Increases overall stats."
 		"ko" 	"능력치 증가."
 	}
+    "Magia Wings [???]"
+    {
+        "en"        "Oh how the Stars shine upon those who rule Ruina..."
+        "ko"        "루이나를 다스리는 자들에겐 수많은 별이 찬란히 빛나리라..."
+    }
+    "Silvester Wings [???]"
+    {
+        "en"        "Howd you get this? this is admin only."
+        "ko"        "어드민 전용 아이템인데 님은 이걸 어떻게 얻었죠?"
+    }
+    "ZR Content Creator"
+    {
+        "en"        "You created enough content to be worthy!\nYou start with an extra 50 credits."
+        "ko"        "당신은 충분히 가치 있는 콘텐츠를 제작하셨습니다!\n추가 자금을 50 얻고 시작합니다."
+    }
+    "ZR Contest 2024 Artist"
+    {
+        "en"        "You joined the art contest. Start with extra 50 extra credits."
+        "ko"        "당신은 아트 콘테스트에 참여하셨습니다. 추가 자금을 50 얻고 시작합니다."
+    }
+    "ZR Contest 2024 Top 10"
+    {
+        "en"        "You won a contest. Start with extra 100 extra credits."
+        "ko"        "당신은 콘테스트에서 승리하셨습니다. 추가 자금을 100 얻고 시작합니다."
+    }
+    "ZR Contest 2024 Top 20"
+    {
+        "en"        "You won a contest. Start with extra 75 extra credits."
+        "ko"        "당신은 콘테스트에서 승리하셨습니다. 추가 자금을 75 얻고 시작합니다."
+    }
+    "ZR Contest 2024 Top 30"
+    {
+        "en"        "You won a contest. Start with extra 50 extra credits."
+        "ko"        "당신은 콘테스트에서 승리하셨습니다. 추가 자금을 50 얻고 시작합니다."
+    }
+    "ZR Contest Nominator 2023"
+    {
+        "en"        "You won a contest way back then. Does nothing now."
+        "ko"        "이전에 콘테스트에서 승리하신 적이 있습니다. 아직 아무것도 안 합니다."
+    }
+    "Expidonsan Battery Device"
+    {
+        "en"        "Sensal's scythe becomes red!\nActivating this will make it blue again."
+        "ko"        "센살의 낫이 빨간색이 됩니다!\n발동시 다시 파란색이 됩니다."
+    }
+    "Waldch's Expidonsan Sword"
+    {
+        "en"        "Wildingen is finally free, The hitman is taken out, sadly theres more, but he was the main one...\nEquip to disable its cosmetic effects."
+        "ko"        "와일딩겐들은 마침내 자유가 되었고, 암살자들은 사라졌다. 아직 암살자가 더 있지만, 그 암살자가 핵심 인물이었다.\n장비시 특수한 시각 이펙트를 제거."
+    }
+    "Scythe Color Option 1"
+    {
+        "en"        "After doing Iberian and Expidonsan Training...\nTurns your sensal scythe White!"
+        "ko"        "엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 하얀색으로 변경합니다!"
+    }
+    "Scythe Color Option 2"
+    {
+        "en"        "After doing Iberian and Expidonsan Training...\nTurns your sensal scythe Yellow!"
+        "ko"        "엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 노란색으로 변경합니다!"
+    }
+    "Scythe Color Option 3"
+    {
+        "en"        "After doing Iberian and Expidonsan Training...\nTurns your sensal scythe Purple!"
+        "ko"        "엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 보라색으로 변경합니다!"
+    }
+    "Overlords Final Wish"
+    {
+        "en"        "Restore and protect bob the first, that is his final wish..."
+        "ko"        "최후의 대군주를 '퇴치'한 증거... 그는 타락한 밥 1세였습니다."
+    }
+    "Bob's true fear"
+    {
+        "en"        "It is the loss of family and friends, of which has happend..."
+        "ko"        "이것은 '누군가'의 기억. 가족과 친구를 잃은 끔찍한 기억..."
+    }
+    "Medieval Crown"
+    {
+        "en"        "You beat alaxios...?"
+        "ko"        "알락시오스와의 싸움에서 이겼...습니다...?"
+    }
+    "Cured Silvester"
+    {
+        "en"        "Silvester must be glad to have lunatics like you!\nActivating The final pap of the default expidonsan blade gives you a halo!"
+        "ko"        "실베스터는 당신 같은 미친 사람이 있어서 정말 기쁩니다!\n퓨전 블레이드 무기의 팩펀 개선을 전부 완료시, 헤일로가 생깁니다!"
+    }
+    "Head Equipped Blue Goggles"
+    {
+        "en"        "Seems like you beat waldch and silvester... are you ready?"
+        "ko"        "실베스터와 월드치를 때려눕혔습니다... 준비 되셨죠?"
+    }
+    "Calmaticus' Heart Piece"
+    {
+        "en"        "Nemesis's true name was classified as Calmaticus., You beat the heart of the infection,however, the other is left..."
+        "ko"        "네메시스의 진짜 이름은 칼마티커스였습니다. 감염원의 심장부도 제거되었지만, 다른 하나가 더 남았습니다..."
+    }
+    "Mr. X's Files"
+    {
+        "en"        "Legacy Item, has no use, you just beat nemesis before the new update on abanoned lab.\nBut now you can obtain it in bossrush... Wow!!! Youre so epic!!!"
+        "ko"        "구버전 아이템. 구버전 버려진 연구소 맵에서 획득 가능.\n근데 이젠 보스러시 맵에서 획득 가능... 대 단 하 다!!!"
+    }
+    "Bob's Curing Hand"
+    {
+        "en"        "The Sea infection has been beaten, but so have you."
+        "ko"        "시본 감염원이 완전히 격퇴되었습니다. 당신의 몸 속에 있는 감염원까지도."
+    }
+    "Kahml's Contained Chaos"
+    {
+        "en"        "You helped Kahml get rid of his chaos affliction.\nHe doesnt like to say thanks directly though.\nBuffs up the secondary ability duration by 2 seconds."
+        "ko"        "당신은 캄르스타인에게 깃든 혼돈을 격리시키는데 성공했습니다.\n그러나 그는 직접적으로 감사를 표하진 않는군요.\n보조 능력들의 지속 시간이 2 초 증가합니다."
+    }
+    "Xeno Virus Vial"
+    {
+        "en"        "Its over, you defeated it, go find Mr.X, this was a facade, real name was Virothorn and kill him, he cant restart the entirety of xeno anymore."
+        "ko"        "이제 끝났습니다. 당신이 Mr.X를 찾아서 죽였습니다. 그의 진짜 이름은 바이로쏜즈였고, 그는 더 이상 이 제노 감염을 부활시키지 못 할 것입니다."
+    }
+    "Chaos Machina Waldch Chip"
+    {
+        "en"        "You managed to kill off the machine, the impostor.."
+        "ko"        "당신은 정신나간 따라쟁이 기계를 처치하는데에 성공했습니다.."
+    }
+    "Corrupted Barney's Chainsaw"
+    {
+        "en"        "I wonder what happend to barney here..."
+        "ko"        "도대체 이 곳에서 바니에게 무슨 일이 일어난걸까요..."
+    }
+    "Alaxios's Godly assistance"
+    {
+        "en"        "You beat alaxios... Or did he just let you live?\nYour banners will be much louder!"
+        "ko"        "알락시오스를 이겼...을까? 아니면 그가 그저 당신을 살려준 것 같습니다?\n깃발 종류가 훨씬 시끄러워집니다!"
+    }
+    "Major Steam's Rocket"
+    {
+        "en"        "You beat rogue2's default ending!"
+        "ko"        "rogue2 의 기본 엔딩을 본 증거입니다!"
+    }
+    "Opened Void Portal"
+    {
+        "en"        "You released the void, you fool..!"
+        "ko"        "당신은 공허를 풀려나게 만들었습니다..!"
+    }
+    "Gem from the Courtain"
+    {
+        "en"        "This seems bad, this doesnt feel good to hold.\nTrophy!."
+        "ko"        "외관상으로 좋지도 않고, 집고 있어도 기분만 나빠집니다.\n트로피!."
+    }
+    "Foreign Expidonsan Chip"
+    {
+        "en"        "You proved that you are actually usefull to these expidonsans, and have setup a base for the curtain attack.\nTrophy!."
+        "ko"        "당신은 이 엑스피돈사인들에게 당신의 실력을 증명했습니다.\n트로피!."
+    }
+    "Kahmlsteins Last Will"
+    {
+        "en"        "Keep the void away.. at all costs, he begs of you..."
+        "ko"        "그가 죽어가면서 당신에게 남긴 유언장... '공허를 최대한 몰아내라'..."
+    }
+    "Twirl's Hairpins"
+    {
+        "en"        "Strange that she gave you these."
+        "ko"        "그녀가 이걸 그냥 주다니, 희한하군요."
+    }
+    "Iberian and Expidonsan Training"
+    {
+        "en"        "TheAngelica Shotgonnus, its halo and arm halo become more energetic.\nit also unlocks scythe recolour options!"
+        "ko"        "안젤리카 샷거누스의 헤일로가 더욱 활기차집니다.\n또한 센살의 낫의 색상 변경 옵션을 제공합니다!"
+    }
+    "Whiteflower's Elite Grenade"
+    {
+        "en"        "Throwable grenades last 20％ longer"
+        "ko"        "수류탄 계열 무기의 지속 시간이 20％ 증가합니다."
+    }
+    "Avangard's Processing Core-B"
+    {
+        "en"        "Gotten from the Victorians, you fended them off!"
+        "ko"        "빅토리아인들이 떨어뜨리고 간 코어입니다. 살아남은 기념품으로 치죠!"
+    }
+    "Matrix's Curse"
+    {
+        "en"        "You beat Agent Smith! However, i think that somehow, that was his goal..."
+        "ko"        "스미스 요원을 격퇴했습니다! 하지만, 어쩐지 이것이 그의 계획이었다는 생각이 듭니다..."
+    }
+    "Omega's Medallion"
+    {
+        "en"        "You got spared by Omega! He gave you one of his medallions as a treat. \nYou can wear it with pride, congratulations."
+        "ko"        "당신은 오메가와 친구가 되었습니다. 그가 친구가 된 기념으로 당신에게 준 것입니다. \n장비하면 좀 더 간지나게 될 겁니다. 축하합니다."
+    }
+    "A Block of Cheese"
+    {
+        "en"        "WIP."
+        "ko"        "제작중이라고 함"
+    }
+    "Iberia's Last Hope..."
+    {
+        "en"        "You beat the seaborn infection."
+        "ko"        "시본 감염원을 격퇴한 증거입니다."
+    }
+    "Blitzkrieg's destroyed Core"
+    {
+        "en"        "With Blitzkrieg being defeated, his army is at your disposal..."
+        "ko"        "블리츠크리그가 파괴된 후, 그의 하수인들은 당신의 명령을 기다립니다.."
+    }
+    "Guln's Dying Wish"
+    {
+        "en"        "... Are you sure that... this was the right thing to do..?"
+        "ko"        "... 정말로... 이게 맞는 일일까요..?"
+    }
+    "There Can Be Only One"
+    {
+        "en"        "Buy greg some ammo, he'll need it."
+        "ko"        "Buy greg some ammo, he'll need it."
+    }
 	"Plasminator Desc"
 	{
 		"en"	"An Expidonsan clockwork assault rifle, that shoots rapid Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."

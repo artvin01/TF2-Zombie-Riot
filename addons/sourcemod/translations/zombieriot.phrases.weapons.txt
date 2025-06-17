@@ -2293,6 +2293,246 @@
 		"chi"		"提前准备[传说]"
 		"ko"		"사전 준비 [전설]"
 	}
+    "Magia Wings [???]"
+    {
+        "en"        "Magia Wings [???]"
+        "ko"        "마기아 날개 [???]"
+    }
+    "Silvester Wings [???]"
+    {
+        "en"        "Silvester Wings [???]"
+        "ko"        "실베스터의 날개 [???]"
+    }
+    "ZR Content Creator"
+    {
+        "en"        "ZR Content Creator [???]"
+        "ko"        "좀비 라이엇 콘텐츠 제작자 [???]"
+    }
+    "ZR Contest 2024 Artist"
+    {
+        "en"        "ZR Contest 2024 Artist"
+        "ko"        "좀비 라이엇 콘테스트 2024 아티스트"
+    }
+    "ZR Contest 2024 Top 10"
+    {
+        "en"        "ZR Contest 2024 Top 10"
+        "ko"        "좀비 라이엇 콘테스트 2024 Top 10"
+    }
+    "ZR Contest 2024 Top 20"
+    {
+        "en"        "ZR Contest 2024 Top 20"
+        "ko"        "좀비 라이엇 콘테스트 2024 Top 20"
+    }
+    "ZR Contest 2024 Top 30"
+    {
+        "en"        "ZR Contest 2024 Top 30"
+        "ko"        "좀비 라이엇 콘테스트 2024 Top 30"
+    }
+    "ZR Contest Nominator 2023"
+    {
+        "en"        "ZR Contest Nominator [???]"
+        "ko"        "좀비 라이엇 콘테스트 지명자 [???]"
+    }
+    "Expidonsan Battery Device"
+    {
+        "en"        "Expidonsan Battery Device"
+        "ko"        "엑스피돈사인의 배터리 장비"
+    }
+    "Waldch's Expidonsan Sword"
+    {
+        "en"        "Waldch's Expidonsan Sword"
+        "ko"        "월드치의 엑스피돈사 검"
+    }
+    "Scythe Color Option 1"
+    {
+        "en"        "Iberian and Expidonsan Training"
+        "ko"        "엑스피돈사-이베리아 연합 훈련"
+    }
+    "Scythe Color Option 2"
+    {
+        "en"        "Iberian and Expidonsan Training"
+        "ko"        "엑스피돈사-이베리아 연합 훈련"
+    }
+    "Scythe Color Option 3"
+    {
+        "en"        "Iberian and Expidonsan Training"
+        "ko"        "엑스피돈사-이베리아 연합 훈련"
+    }
+    "Overlords Final Wish"
+    {
+        "en"        "Overlords Final Wish"
+        "ko"        "대군주의 마지막 소원"
+    }
+    "Bob's true fear"
+    {
+        "en"        "Bob's true fear"
+        "ko"        "밥의 진정한 공포"
+    }
+    "Medieval Crown"
+    {
+        "en"        "Medieval Crown"
+        "ko"        "중세의 왕관"
+    }
+    "Cured Silvester"
+    {
+        "en"        "Cured Silvester"
+        "ko"        "감염이 치유된 실베스터"
+    }
+    "Head Equipped Blue Goggles"
+    {
+        "en"        "Head Equipped Blue Goggles"
+        "ko"        "머리에 장착하는 파란 고글"
+    }
+    "Calmaticus' Heart Piece"
+    {
+        "en"        "Calmaticus' Heart Piece"
+        "ko"        "칼마티커스의 심장 조각"
+    }
+    "Mr. X's Files"
+    {
+        "en"        "Mr. X's Files"
+        "ko"        "Mr. X의 파일"
+    }
+    "Bob's Curing Hand"
+    {
+        "en"        "Bob's Curing Hand"
+        "ko"        "밥의 치유의 손길"
+    }
+    "Kahml's Contained Chaos"
+    {
+        "en"        "Kahml's Contained Chaos"
+        "ko"        "격리된 캄르스타인의 혼돈"
+    }
+    "Xeno Virus Vial"
+    {
+        "en"        "Xeno Virus Vial"
+        "ko"        "제노 바이러스 항생제"
+    }
+    "Chaos Machina Waldch Chip"
+    {
+        "en"        "Chaos Machina Waldch Chip"
+        "ko"        "혼돈의 마키나 월드치 칩"
+    }
+    "Corrupted Barney's Chainsaw"
+    {
+        "en"        "Corrupted Barney's Chainsaw"
+        "ko"        "타락한 바니 칼훈의 전기톱"
+    }
+    "Alaxios's Godly assistance"
+    {
+        "en"        "Alaxios's Godly assistance"
+        "ko"        "알락시오스의 신성한 축복"
+    }
+    "Major Steam's Rocket"
+    {
+        "en"        "Major Steam's Rocket"
+        "ko"        "증기 소령의 로켓"
+    }
+    "Opened Void Portal"
+    {
+        "en"        "Opened Void Portal"
+        "ko"        "개방된 공허 포탈"
+    }
+    "Gem from the Courtain"
+    {
+        "en"        "Gem from the Courtain"
+        "ko"        "장막 속의 보석"
+    }
+    "Foreign Expidonsan Chip"
+    {
+        "en"        "Foreign Expidonsan Chip"
+        "ko"        "외국산 엑스피돈사 칩"
+    }
+    "Kahmlsteins Last Will"
+    {
+        "en"        "Kahmlsteins Last Will"
+        "ko"        "캄르스타인의 유언장"
+    }
+    "Twirl's Hairpins"
+    {
+        "en"        "Twirl's Hairpins"
+        "ko"        "트윌의 헤어핀"
+    }
+    "Iberian and Expidonsan Training"
+    {
+        "en"        "Iberian and Expidonsan Training"
+        "ko"        "엑스피돈사-이베리아 연합 훈련"
+    }
+    "Whiteflower's Elite Grenade"
+    {
+        "en"        "Whiteflower's Elite Grenade"
+        "ko"        "해풍등의 첨단 수류탄"
+    }
+    "Avangard's Processing Core-B"
+    {
+        "en"        "Avangard's Processing Core-B"
+        "ko"        "아방가르드의 프로세싱 코어-B"
+    }
+    "Matrix's Curse"
+    {
+        "en"        "Matrix's Curse"
+        "ko"        "매트릭스의 저주"
+    }
+    "Omega's Medallion"
+    {
+        "en"        "Omega's Medallion"
+        "ko"        "오메가의 메달리온"
+    }
+    "A Block of Cheese"
+    {
+        "en"        "A Block of Cheese"
+        "ko"        "치즈 블록"
+    }
+    "Iberia's Last Hope..."
+    {
+        "en"        "Iberia's Last Hope"
+        "ko"        "이베리아의 마지막 희망"
+    }
+    "Blitzkrieg's destroyed Core"
+    {
+        "en"        "Blitzkrieg's Army"
+        "ko"        "블리츠크리그의 군대"
+    }
+    "Guln's Dying Wish"
+    {
+        "en"        "Guln's Companions"
+        "ko"        "귄의 부대원들"
+    }
+    "There Can Be Only One"
+    {
+        "en"        "There Can Be Only One [Mythic]"
+        "ko"        "오직 한 놈만 남는다 [전설]"
+    }
+	"Vampire Knives"
+	{
+		"en"		"Vampire Knives"
+		"ko"		"뱀파이어 나이프"
+	}
+	"Wrathful Blade"
+	{
+		"en"		"Wrathful Blade"
+		"ko"		"분노의 검"
+	}
+	"Fantasy Blade"
+	{
+		"en"		"Fantasy Blade"
+		"ko"		"판타지 블레이드"
+	}
+	"Mlynar's Newspaper"
+	{
+		"en"		"Mlynar's Newspaper"
+		"ko"		"무에나의 신문지"
+	}
+	"Chainsaw"
+	{
+		"en"		"Chainsaw"
+		"ko"		"전기톱"
+	}
+	"Abyssal Greatsword"
+	{
+		"en"		"Abyssal Greatsword"
+		"ko"		"심연의 대검"
+	}
 	"Builder Gear"
 	{
 		"en"       "Builder Gear"
