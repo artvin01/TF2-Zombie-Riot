@@ -646,13 +646,13 @@
 		"chi"	"[小型独立公司]为[用户]推出的促销活动。\n{green}商店商品价格五折"
 	}
 
-	"Take them from Father Grigori"
+	"Steal Grigori"
 	{
 		"en"	"Take them from Father Grigori"
 		"chi"	"向格里高利神父「借取」"
 		"ko"	"그레고리에게 ''할인을 할 것''을 간청한다"
 	}
-	"Take them from Father Grigori Desc"
+	"Steal Grigori Desc"
 	{
 		"en"	"Fight Father Grigori for the chance to take all his items without pay"
 		"chi"	"与格里高利神父战斗，有机会免费获取他所有的物品"
@@ -783,7 +783,19 @@
 		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}1 Australium Ingots are consumed to reduce 1 Chaos Infliction"
 		"chi"	"靠能量运作的救生衣。\n{yellow}每消耗1块澳洲金锭减少1点坍缩值"
 	}
+	"The Scraper"
 
+	{
+		"en"	"The Scraper"
+		"chi"	"刮板"
+	}
+
+	"The Scraper Desc"
+
+	{
+		"en"	"Grind the rest for some useful scrap.\n{yellow}Recovered weapon are instead converted into 2 Australium Ingots"
+		"chi"	"研磨其余的以获得一些有用的废料.\n{yellow}武器会被转化为 2 个澳金锭"
+	}
 	"Suspicious Shrimp Plate"
 	{
 		"en"	"Suspicious Shrimp Plate"
@@ -794,7 +806,16 @@
 		"en"	"Apparently it applies to copied personalities.\n{red}Machina Waldch appears until defeated"
 		"chi"	"对复制人格也有效。\n{red}瓦德机将出现直至被击败"
 	}
-
+	"Pack of Smokes"
+	{
+		"en"	"Pack of Smokes"
+		"chi"	"瑞克五代"
+	}
+	"Pack of Smokes Desc"
+	{
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
+		"chi"	"芜湖，爽飞.\n{green}盟友获得 20% 开火、装填和治疗速度提升 {red}但在每关后后获得 5 点坍缩值"
+	}
 	"Silver Seal Letter"
 	{
 		"en"	"Silver Seal Letter"
@@ -2119,6 +2140,7 @@
 	{
 		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
 		"chi"	"{green}获得一件授予物品，{crimson}但可能引起不必要的注意。"
-		// 注：Grant item译为"授予物品"，保持游戏术语神秘感
+	// 注：Grant item译为"授予物品"，保持游戏术语神秘感
 	}
 }
+
