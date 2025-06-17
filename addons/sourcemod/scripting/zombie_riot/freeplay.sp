@@ -2,6 +2,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool EscapeModeForNpc;
 static float HealthMulti;
 static int HealthBonus;
 static int EnemyChance;

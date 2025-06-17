@@ -213,16 +213,6 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 	//	npc.m_iOverlordComboAttack = 0;
 		
-		if(EscapeModeForNpc)
-		{
-			int amount_of_people = CountPlayersOnRed();
-			int health = 20000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");

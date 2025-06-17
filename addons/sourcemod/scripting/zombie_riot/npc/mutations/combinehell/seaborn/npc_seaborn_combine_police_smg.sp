@@ -197,13 +197,6 @@ methodmap SeabornCombinePoliceSmg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = SeabornCombinePoliceSmg_OnTakeDamage;
 		func_NPCThink[npc.index] = SeabornCombinePoliceSmg_ClotThink;
 
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
-
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
@@ -384,15 +377,9 @@ public void SeabornCombinePoliceSmg_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-						Elemental_AddNervousDamage(target, npc.index, 2);
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					Elemental_AddNervousDamage(target, npc.index, 2);
+					
 					npc.PlayRangedSound();
 				}
 			}

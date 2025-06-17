@@ -188,11 +188,6 @@ methodmap CombineGaint < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 200.0;		
-		}
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");

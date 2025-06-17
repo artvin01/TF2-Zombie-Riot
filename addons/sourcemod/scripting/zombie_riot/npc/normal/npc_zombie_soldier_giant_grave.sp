@@ -179,18 +179,6 @@ methodmap SoldierGiant < CClotBody
 		npc.m_flSpeed = 200.0;
 		npc.g_TimesSummoned = 0;
 		
-		if(EscapeModeForNpc)
-		{
-			int amount_of_people = CountPlayersOnRed();
-			int health = 45000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		
-		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
