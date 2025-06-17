@@ -3064,4 +3064,8 @@
 	{
 		"en" "Koshi's Plasm-inator"
 	}
+	"Chemical Spewer"
+	{
+		"en"	"Chemical Spewer"
+	}
 }

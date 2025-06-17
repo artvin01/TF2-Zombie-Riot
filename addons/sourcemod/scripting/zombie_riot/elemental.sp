@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// TODO: enum list of elements instead of each one being it's own variable
-
 enum
 {
 	Element_Nervous,
@@ -20,7 +18,7 @@ enum
 
 static const char ElementName[][] =
 {
-	"AC",
+	"NR",
 	"CH",
 	"CY",
 	"NE",
@@ -67,7 +65,7 @@ stock bool Elemental_GoingCritical(int entity)
 	
 	for(int i; i < Element_MAX; i++)
 	{
-		if((ElementDamage[entity][i] * 5 / 4) > TriggerDamage(entity, i))
+		if((ElementDamage[entity][i] * 5 / 4) > Elemental_TriggerDamage(entity, i))
 			return true;
 	}
 	
@@ -87,7 +85,7 @@ stock void Elemental_RemoveDamage(int entity, int amount)
 	}
 }
 
-static int TriggerDamage(int entity, int type)
+int Elemental_TriggerDamage(int entity, int type)
 {
 	if(entity <= MaxClients)
 		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
@@ -179,7 +177,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	{
 		if(ElementDamage[entity][i] > 0)
 		{
-			int health = TriggerDamage(entity, i) - ElementDamage[entity][i];
+			int health = Elemental_TriggerDamage(entity, i) - ElementDamage[entity][i];
 			if(health < lowHealth)
 			{
 				low = i;
@@ -193,7 +191,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 		return false;
 	
 	// <CY 50%>
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 /Elemental_TriggerDamage(entity, low));
 	return true;
 }
 
@@ -260,7 +258,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 
 			}
 			
-			trigger = TriggerDamage(victim, Element_Nervous);
+			trigger = Elemental_TriggerDamage(victim, Element_Nervous);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Nervous;
@@ -268,17 +266,17 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			if(ElementDamage[victim][Element_Nervous] > trigger)
 			{
 				ElementDamage[victim][Element_Nervous] = 0;
-				f_ArmorCurrosionImmunity[victim][Element_Nervous]  = GetGameTime() + 5.0;
+				f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 
 				if(GetTeam(victim) == TFTeam_Red)
 				{
 					FreezeNpcInTime(victim, 3.0);
-					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				}
 				else
 				{
-					FreezeNpcInTime(victim, b_thisNpcIsARaid[victim] ? 3.0 : 5.0);
-					SDKHooks_TakeDamage(victim, attacker, attacker, 1000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+					FreezeNpcInTime(victim, b_thisNpcIsARaid[victim] ? 2.0 : (b_thisNpcIsABoss[victim] ? 3.0 : 5.0));
+					SDKHooks_TakeDamage(victim, attacker, attacker, 5000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				}
 			}
 		}
@@ -376,7 +374,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				}
 			}
 			
-			trigger = TriggerDamage(victim, Element_Chaos);
+			trigger = Elemental_TriggerDamage(victim, Element_Chaos);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Chaos;
@@ -473,7 +471,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 
 			}
 			
-			trigger = TriggerDamage(victim, Element_Void);
+			trigger = Elemental_TriggerDamage(victim, Element_Void);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Void;
@@ -548,7 +546,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	{
 		if(f_ArmorCurrosionImmunity[victim][Element_Cyro] < GetGameTime())
 		{
-			int trigger = TriggerDamage(victim, Element_Cyro);
+			int trigger = Elemental_TriggerDamage(victim, Element_Cyro);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Cyro;
@@ -592,7 +590,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	{
 		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
-			int trigger = TriggerDamage(victim, Element_Necrosis);
+			int trigger = Elemental_TriggerDamage(victim, Element_Necrosis);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Necrosis;
@@ -640,7 +638,7 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 	{
 		if(f_ArmorCurrosionImmunity[victim][Element_Osmosis] < GetGameTime())
 		{
-			int trigger = TriggerDamage(victim, Element_Osmosis);
+			int trigger = Elemental_TriggerDamage(victim, Element_Osmosis);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Osmosis;
@@ -758,7 +756,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 				}
 			}
 			
-			trigger = TriggerDamage(victim, Element_Corruption);
+			trigger = Elemental_TriggerDamage(victim, Element_Corruption);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Corruption;
@@ -893,7 +891,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	{
 		if(f_ArmorCurrosionImmunity[victim][Element_Burger] < GetGameTime())
 		{
-			int trigger = TriggerDamage(victim, Element_Burger);
+			int trigger = Elemental_TriggerDamage(victim, Element_Burger);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Burger;
@@ -975,7 +973,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
-			int trigger = TriggerDamage(victim, Element_Plasma);
+			int trigger = Elemental_TriggerDamage(victim, Element_Plasma);
 
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Plasma;

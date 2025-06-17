@@ -1432,7 +1432,7 @@
 	"Builders Axe Desc"
 	{
 		"en"	"A melee axe that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
-		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200%% de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
+		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200％ de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
@@ -4380,7 +4380,7 @@
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35%% of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35％ of its damage as Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
@@ -4389,5 +4389,13 @@
 	"Plasminator Pap 4 Desc"
 	{
 		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range, plasmic elemental damage and reduces its cooldown."
+	}
+	"Chemical Spewer Desc"
+	{
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of direct damage.\nApplies afterburn that deals 2％ of Nervous Impairment elemental damage per second."
+	}
+	"Chemical Spewer Pap 1"
+	{
+		"en"	"Base damage is increased, consumes less ammo."
 	}
 }

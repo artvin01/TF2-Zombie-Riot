@@ -117,7 +117,7 @@
 	}
 	"Enfeeble Desc"
 	{
-		"en"	"Lowers Damage Delt by 10％, which lowers over time up untill 0％"
+		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 	}
 	"Iberia's Anti Raid"
 	{

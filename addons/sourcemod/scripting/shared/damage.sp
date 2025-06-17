@@ -1234,6 +1234,11 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 				Cheese_OnTakeDamage_Primary(attacker, victim, damage, weapon);
 		}
 		*/
+		case WEAPON_CHEMICAL_THROWER:
+		{
+			if(!CheckInHud())
+				ChemicalThrower_NPCTakeDamage(attacker, victim, damage);
+		}
 	}
 #endif
 

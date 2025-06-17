@@ -1779,9 +1779,9 @@ void StatusEffects_Enfeeble()
 float Enfeeble_Internal_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	// Enfeeble fades out with time
-	float resist = (Apply_StatusEffect.TimeUntillOver - GetGameTime()) / 15.0;
-	if(resist < 0.9)
-		resist = 0.9;
+	float resist = (Apply_StatusEffect.TimeUntillOver - GetGameTime()) / 30.0;
+	if(resist < 0.75)
+		resist = 0.75;
 	
 	return resist;
 }
