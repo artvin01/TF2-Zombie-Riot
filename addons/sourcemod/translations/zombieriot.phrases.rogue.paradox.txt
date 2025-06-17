@@ -1061,7 +1061,7 @@
 	"Clairvoyance Lore 4"
 	{
 		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
-		"chi"	温迪戈们没有回答，唯有一人经过时低语警告"
+		"chi"	"温迪戈们没有回答，唯有一人经过时低语警告"
 	}
 
 	"Printer"
