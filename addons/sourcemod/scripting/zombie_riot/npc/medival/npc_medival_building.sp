@@ -228,6 +228,8 @@ methodmap MedivalBuilding < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
+		if(f_PlayerScalingBuilding > 10.0)
+			f_PlayerScalingBuilding = 10.0;
 
 		i_currentwave[npc.index] = RoundToNearest(npc.m_flWaveScale * 10.0);
 
