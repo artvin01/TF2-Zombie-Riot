@@ -288,16 +288,16 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			if(ElementDamage[victim][Element_Nervous] > trigger)
 			{
 				ElementDamage[victim][Element_Nervous] = 0;
-				f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 10.0;
+				f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 
 				if(GetTeam(victim) == TFTeam_Red)
 				{
-					FreezeNpcInTime(victim, 3.0);
+					ApplyStatusEffect(attacker, victim, "Paralysis", 3.0);
 					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 				else
 				{
-					FreezeNpcInTime(victim, b_thisNpcIsARaid[victim] ? 2.0 : (b_thisNpcIsABoss[victim] ? 3.0 : 5.0));
+					ApplyStatusEffect(attacker, victim, "Paralysis", b_thisNpcIsARaid[victim] ? 1.0 : (b_thisNpcIsABoss[victim] ? 1.5 : 3.0));
 					SDKHooks_TakeDamage(victim, attacker, attacker, 6000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 			}

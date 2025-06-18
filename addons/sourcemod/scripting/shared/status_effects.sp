@@ -1778,6 +1778,21 @@ void StatusEffects_Enfeeble()
 	data.ElementalLogic				= true;
 	data.OnTakeDamage_DealFunc 		= Enfeeble_Internal_DamageDealFunc;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Paralysis");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⚡︎");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.5;	// -50% speed
+	data.AttackspeedBuff			= 1.5;	// -50% attack speed
+	data.Positive				= false;
+	data.ShouldScaleWithPlayerCount		= true;
+	data.Slot				= 0;
+	data.SlotPriority			= 0;
+	data.ElementalLogic			= true;
+	data.OnTakeDamage_DealFunc		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 float Enfeeble_Internal_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)

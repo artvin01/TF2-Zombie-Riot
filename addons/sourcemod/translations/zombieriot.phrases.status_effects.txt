@@ -1457,4 +1457,12 @@
 	{
 		"en"	"+30％ damage dealt, healing done, and damage reduction"
 	}
+	"Paralysis"
+	{
+		"en"	"Paralysis"
+	}
+	"Paralysis Desc"
+	{
+		"en"	"-50％ attack speed and movement speed"
+	}
 }

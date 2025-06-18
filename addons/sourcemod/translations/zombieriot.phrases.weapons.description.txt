@@ -4412,10 +4412,10 @@
 	}
 	"Impairment Ritualist Desc"
 	{
-		"en"	"Attacks now inflict Nervous Impairment elemental damage in a splash radius, hitting up to 4 enemies."
+		"en"	"Attacks now inflict Nervous Impairment in a splash radius, hitting up to 4 enemies."
 	}
 	"Impairment Ritualist Pap Desc"
 	{
-		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment element damage."
+		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment."
 	}
 }
