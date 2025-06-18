@@ -49,9 +49,9 @@ void SteamWorks_UpdateGameTitle()
 		//	FormatEx(buffer, sizeof(buffer), "ZR: Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);
 			strcopy(buffer, sizeof(buffer), "ZR: Rogue");
 		}
-		else if(Waves_InFreeplay() && WhatDifficultySetting_Internal[0])
+		else if(Waves_InFreeplay())
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR: %s (Freeplay)", WhatDifficultySetting_Internal);
+			FormatEx(buffer, sizeof(buffer), "ZR: Freeplay");
 		}
 		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
 		{
