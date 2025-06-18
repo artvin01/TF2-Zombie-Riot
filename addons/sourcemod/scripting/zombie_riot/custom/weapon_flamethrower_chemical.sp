@@ -41,7 +41,11 @@ static Action TimerChemicalDebuff(Handle timer, DataPack pack)
 	if(entity == -1 || !IgniteFor[entity])
 		return Plugin_Stop;
 	
-	Elemental_AddNervousDamage(entity, EntRefToEntIndex(pack.ReadCell()), RoundToCeil(Elemental_TriggerDamage(entity, Element_Nervous) / 100.0));
+	int attacker = EntRefToEntIndex(pack.ReadCell());
+	if(attacker == -1)
+		return Plugin_Stop;
+	
+	Elemental_AddNervousDamage(entity, attacker, RoundToCeil(LastDamageCalc[attacker] * 2.0));
 	return Plugin_Continue;
 }
 
