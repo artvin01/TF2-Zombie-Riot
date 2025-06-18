@@ -4392,7 +4392,7 @@
 	}
 	"Chemical Spewer Desc"
 	{
-		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of direct damage.\nApplies afterburn that deals 2％ of Nervous Impairment elemental damage per second."
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals True damage."
 	}
 	"Chemical Spewer Pap 1"
 	{
