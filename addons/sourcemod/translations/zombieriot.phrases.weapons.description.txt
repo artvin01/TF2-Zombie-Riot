@@ -226,7 +226,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度"
+		"chi"	    "增加伤害和攻击速度"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	"Common Pap Damage Attack Speed Not Firearm Desc"
@@ -234,7 +234,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence des attaques améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度"
+		"chi"	    "增加伤害和攻击速度"
 		"ko"		"피해량, 공격 속도 증가"
 	}
 
@@ -248,7 +248,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度"
+		"chi"	    "增加伤害和攻击速度"
 		"ko"		"피해량, 공격 속도 증가"
 	}
 	"Syringe Gun Pap 2 Desc"
@@ -262,7 +262,7 @@
 		"en"		"Increased damage and attackspeed, consumes 2 bullets per shot."
 		"fr"		"Dégats et cadence de tir améliorés, 2 balles utilisées par tir"
 		"ru"		"Увеличенный урон и скорость атаки, расходует 2 пули за выстрел."
-		"chi"       "增加伤害和攻击速度，每次射击消耗2发子弹。"
+		"chi"	    "增加伤害和攻击速度，每次射击消耗2发子弹。"
 		"ko"		"피해량, 공격 속도 증가. 발사당 2발의 탄약을 소모."
 	}
 	"Sniper Rifle Pap 2"
@@ -270,7 +270,7 @@
 		"en"		"Increased damage and attackspeed, Scoping isn't needed anymore but attacks are delayed."
 		"fr"		"Dégats et cadence de tir améliorés, le zoom n'est plus requis, mais les tirs seront retardés"
 		"ru"		"Увеличенный урон и скорость атаки, прицеливание больше не нужно, но атаки имеют задержку."
-		"chi"       "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
+		"chi"	    "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
 		"ko"		"피해량, 공격 속도 증가. 줌이 필요 없어지지만 공격에 딜레이가 발생."
 	}
 	"Sniper Rifle Pap 3"
@@ -283,7 +283,7 @@
 		"en"		"Heavily increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Сильно Увеличенный урон и скорость атаки."
-		"chi"       "大幅增加伤害和攻击速度"
+		"chi"	    "大幅增加伤害和攻击速度"
 		"ko"		"피해량, 공격 속도가 크게 증가"
 	}
 	"Sniper Rifle Pap 5"
@@ -291,7 +291,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度"
+		"chi"	    "增加伤害和攻击速度"
 		"ko"		"피해량, 공격 속도 증가"
 	}
 	
@@ -300,7 +300,7 @@
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
 		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
-		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"chi"	    "增加伤害和攻击速度和额外的弹药。"
 		"ko"		"피해량, 공격 속도, 장탄수 증가."
 	}
 	"Annabelle Pap 2"
@@ -308,7 +308,7 @@
 		"en"		"Increased damage and attackspeed."
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度"
+		"chi"	    "增加伤害和攻击速度"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	"Annabelle Pap 3"
@@ -316,7 +316,7 @@
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
 		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
-		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"chi"	    "增加伤害和攻击速度和额外的弹药。"
 		"ko"		"피해량, 공격 속도, 장탄수 증가."
 	}
 	"Annabelle Pap 4"
@@ -324,7 +324,7 @@
 		"en"		"Increased damage and attackspeed and extra ammo."
 		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
 		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
-		"chi"       "增加伤害和攻击速度和额外的弹药。"
+		"chi"	    "增加伤害和攻击速度和额外的弹药。"
 		"ko"		"피해량, 공격 속도, 장탄수 증가."
 	}
 	
@@ -333,7 +333,7 @@
 		"en"		"Can headshot. Press M2 To fire a barrage"
 		"fr"		"Les Tirs en Pleine Tête sont possibles. Appuyez sur M2 pour un barrage de flèches"
 		"ru"		"Может стрелять в голову. Нажмите M2, чтобы открыть шквальный огонь."
-		"chi"       "可以造成爆头伤害！按下M2键发射多个弓箭"
+		"chi"	    "可以造成爆头伤害！按下M2键发射多个弓箭"
 		"ko"		"헤드샷이 가능합니다. 우클릭으로 화살 세례 능력을 사용 가능."
 	}
 	"Huntsman Pap 1"
@@ -341,7 +341,7 @@
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré"
 		"ru"		"Увеличенный урон и скорость атаки, усилена способность М2."
-		"chi"       "增加伤害和攻击速度，加强右键技能。"
+		"chi"	    "增加伤害和攻击速度，加强右键技能。"
 		"ko"		"피해량, 공격 속도 증가. 우클릭 능력 강화."
 	}
 	"Huntsman Pap 2"
@@ -349,7 +349,7 @@
 		"en"		"Increased damage and attackspeed, m2 ability buffed.\nBase attack now shoots 3 arrows."
 		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré\nLes attaques réguliers tirent 3 flèches"
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
-		"chi"       "增加伤害和攻击速度，加强右键技能。普通攻击现可发射3支箭。"
+		"chi"	    "增加伤害和攻击速度，加强右键技能。普通攻击现可发射3支箭。"
 		"ko"		"피해량, 공격 속도 증가. 우클릭 능력 강화.\n기본 공격이 이제 한 번에 3발을 발사."
 	}
 	
@@ -403,7 +403,7 @@
 		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerful but harder to use since its single fire nature and poor accuracy"
 		"fr"		"Fusil à pompe semi-automatique, vous ne pouvez pas maintenir la détente pour tirer.\nDégats sont améliorés en échange d'une déviation plus grande."
 		"ru"		"Полуавт. дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, стреляет одиночными выстрелами и имеет низкую точность."
-		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
+		"chi"	    "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
 		"ko"		"반자동 산탄총. 이 무기는 꾹 눌러서 사격할 수 없음.\n강력하지만 명중률이 낮아 다루기 어렵습니다."
 	}
 	"Leone 12 Gauge Super Pap 1"
@@ -411,7 +411,7 @@
 		"en"		"Increased damage and attackspeed, much tighter spread."
 		"fr"		"Dégats et cadence de tir améliorés, déviation réduite."
 		"ru"		"Увеличенный урон и скорость атаки, гораздо более плотный разброс."
-		"chi"       "增加伤害和攻击速度，子弹扩散减少。"
+		"chi"	    "增加伤害和攻击速度，子弹扩散减少。"
 		"ko"		"피해량, 공격 속도, 집탄도 증가."
 	}
 	
@@ -420,7 +420,7 @@
 		"en"		"Increased damage and attackspeed."
 		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	"Grenade Launcher Pap 2"
@@ -444,7 +444,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	"Tommygun Pap 2"
@@ -452,7 +452,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	"Tommygun Pap 3"
@@ -460,7 +460,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	   "增加伤害和攻击速度。"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	
@@ -469,7 +469,7 @@
 		"en"		"A slow shotgun that fires explosive pellets. Can be Pack-a-Punched twice to increase damage, clip size, and number of pellets."
 		"fr"		"Fusil à pompe lente qui tire des plombs explosifs. Les améliorations Pack-a-Punch augmuntent les dégats, la capacité chargeur, et le nombre de plombs."
 		"ru"		"Медл. дробовик, стреляющий взрывными дробинками. Может быть дважды улучшен, чтобы увеличить урон, размер обоймы и количество дробинок."
-		"chi"       "一种发射爆炸子弹的慢速霰弹枪。可以使用武器工作台升级两次，以增加伤害，增加弹药。"
+		"chi"	    "一种发射爆炸子弹的慢速霰弹枪。可以使用武器工作台升级两次，以增加伤害，增加弹药。"
 		"ko"		"폭발탄을 발사하는 느린 산탄총. 개선시 피해량, 장탄수, 발사되는 탄환 수가 증가."
 	}
 	"Shrapnel Shredder Pap 1"
@@ -477,7 +477,7 @@
 		"en"		"Increased damage and attackspeed, extra bullet per shot."
 		"fr"		"Dégats et cadence de tir améliorés, plomb additionel par tir."
 		"ru"		"Увеличенный урон и скорость атаки, дополнительная пуля за выстрел."
-		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
+		"chi"	    "增加伤害和攻击速度，每次射击增加额外子弹。"
 		"ko"		"피해량 공격 속도, 발사되는 탄환 수가 증가."
 	}
 	"Shrapnel Shredder Pap 2"
@@ -485,7 +485,7 @@
 		"en"		"Increased damage and attackspeed, extra bullet per shot."
 		"fr"		"Dégats et cadence de tir améliorés, plomb additionel par tir."
 		"ru"		"Увеличенный урон и скорость атаки, дополнительная пуля за выстрел."
-		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
+		"chi"	    "增加伤害和攻击速度，每次射击增加额外子弹。"
 		"ko"		"피해량 공격 속도, 발사되는 탄환 수가 증가."
 	}
 	
@@ -494,7 +494,7 @@
 		"en"		"Increased damage and slightly faster attackspeed and reload speed"
 		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés"
 		"ru"		"Увеличенный урон и немного более высокая скорости атаки и скорость перезарядки."
-		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
+		"chi"	    "增加伤害和攻击速度，每次射击增加额外子弹。"
 		"ko"		"피해량, 공격 속도, 재장전 속도가 조금 증가."
 	}
 	"Double Barrel Shotgun Pap 2"
@@ -508,7 +508,7 @@
 		"en"		"Increased damage and reload speed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорости перезарядки."
-		"chi"       "增加伤害和装填速度"
+		"chi"	    "增加伤害和装填速度"
 		"ko"		"피해량, 재장전 속도 증가."
 	}
 	"RPG Pap 2"
@@ -534,7 +534,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	
@@ -543,7 +543,7 @@
 		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage."
 		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
 		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
-		"chi"       "工程师说不要碰他的东西，但你不在乎"
+		"chi"	    "工程师说不要碰他的东西，但你不在乎"
 		"ko"		"발사시 느린 투사체가 나아가며 투사체 주변의 적들에게 피해를 줍니다.\n완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴"
 	}
 	"IEM Launcher Pap 1"
@@ -551,7 +551,7 @@
 		"en"		"Increased damage and range and less falloff"
 		"fr"		"Dégats et cadence de tir améliorés, baisse de puissance avec distance réduite"
 		"ru"		"Увеличенный урон и дальность, а также меньшее падение урона на расстоянии."
-		"chi"       "增加伤害和射程，伤害衰减程度减少"
+		"chi"	    "增加伤害和射程，伤害衰减程度减少"
 		"ko"		"피해량과 사거리가 증가하고 거리 비례 피해량 감소 수치가 줄어듭니다."
 	}
 	
@@ -559,7 +559,7 @@
 	{
 		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.\nArchetype changes to ''Explosive Mind''"
 		"fr"		"Dégats et cadence de tir améliorés, balles deviennent explosives.\nArchetype devient «Maître des Explosions»"
-	    "ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные.\nАрхетип меняется на «Взрывной разум»"
+		"ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные.\nАрхетип меняется на «Взрывной разум»"
 		"ko"		"피해량, 공격 속도 증가 및 이제 적중시 폭발하는 히트스캔형 폭발탄을 사격.\n무기의 유형이 ''폭발형''으로 변경됩니다."
 	}
 	
@@ -568,7 +568,7 @@
 		"en"		"4 shots into 1 spam.." 
 		"fr"		"4 tirs par spam..." 
 		"ru"		"4 выстрела за один выстрел."
-		"chi"       "4次射击后将发射垃圾...."
+		"chi"	    "4次射击后将发射垃圾...."
 		"ko"		"한 번에 4발을 발사합니다."
 	}
 	"Quad Launcher Pap 1"
@@ -576,7 +576,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량과 공격 속도가 증가합니다."
 	}
 	
@@ -585,7 +585,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량과 공격 속도가 증가합니다."
 	}
 	
@@ -601,7 +601,7 @@
 		"en"		"Increased damage and attackspeed, loads up to 6 shells."
 		"fr"		"Dégats et cadence de tir améliorés, charge 6 munitions à la fois"
 		"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
-		"chi"       "增加伤害和攻击速度，子弹装载量增加到6发。"
+		"chi"	    "增加伤害和攻击速度，子弹装载量增加到6发。"
 		"ko"		"피해량, 공격 속도 증가 및 최대 6발의 장탄을 장전할 수 있습니다."
 	}
 	"Boomstick Pap 3"
@@ -659,7 +659,7 @@
 		"en"		"Increased damage and attackspeed"
 		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度。"
+		"chi"	    "增加伤害和攻击速度。"
 		"ko"		"피해량, 공격 속도 증가."
 	}
 	
@@ -682,7 +682,7 @@
 		"en"		"Calls in supply drops that gives extra ammo to\nall players and weapon consumes much less ammo."
 		"fr"		"Arme utilise moins de munitions.\nAbilité appèle pour des approvisionnements qui donne des munitions à tous les joueurs."
 		"ru"		"Вызывает сброс припасов с воздуха, которые дают доп. патроны\nвсем игрокам, а оружие потребляет гораздо меньше патронов."
-		"chi"       "升级补给，给所有玩家额外的弹药和武器消耗更少的弹药。"
+		"chi"	    "升级补给，给所有玩家额外的弹药和武器消耗更少的弹药。"
 		"ko"		"탄약을 보급할 수 있는 보급 상자를 호출할 수 있게 됩니다.\n무기의 탄약 소모량이 감소."
 	}
 	"Elite Sniper Pap 3"
@@ -690,7 +690,7 @@
 		"en"		"Removes charging but deals twice the damage."
 		"fr"		"Dégats sont doublés, mais enlève la charge."
 		"ru"		"Убирает заряд, но наносит вдвое больше урона."
-		"chi"       "删除你的超能，从而造成两倍的伤害！"
+		"chi"	    "删除你的超能，从而造成两倍的伤害！"
 		"ko"		"이제 충전이 불가능하지만, 피해량이 2배로 증가."
 	}
 	"Elite Sniper Pap 4"
@@ -698,7 +698,7 @@
 		"en"		"Cripples targets heavily, making them slower and take 40％ more damage."
 		"fr"		"Infirme les ennemis, les ralentissant et les font prendre 40％ plus de dégats."
 		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 40％ больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到40％的伤害。"
+		"chi"	    "严重致残目标，使他们变慢并受到40％的伤害。"
 		"ko"		"적중한 대상의 이동 속도를 둔화시키고 받는 피해를 40％ 증가시킴."
 	}
 	"Elite Sniper Pap 5"
@@ -706,7 +706,7 @@
 		"en"		"Decreased cooldown on supply drops, increased attack speed, and bouncing\nbullets for all players is now smart and will target high health targets."
 		"fr"		"Cadence de tir amélioré, temps de rechargement de l'abilité réduite.\nBalles rebondissantes priorisent les cibles plus durables."
 		"ru"		"Уменьшено время восст. сброса припасов, увеличена скорость атаки, а отскакивающие\nпули для всех игроков теперь умные и нацелены на цели с высоким уровнем здоровья."
-		"chi"       "加大补给掉落的频率，增加攻击速度\n所有玩家弹子弹现在是智能的，将瞄准高血量的目标"
+		"chi"	    "加大补给掉落的频率，增加攻击速度\n所有玩家弹子弹现在是智能的，将瞄准高血量的目标"
 		"ko"		"보급 상자 호출의 쿨타임 감소 및 공격 속도 증가.\n이제 튕기는 탄환은 현재 체력이 많은 적을 최우선으로 추적."
 	}
 	"Elite Sniper Pap 6"
@@ -714,7 +714,7 @@
 		"en"		"Attack speed increases depending on how dire things become."
 		"fr"		"Cadence de tir s'accélère en fonction de l'urgence de la situation."
 		"ru"		"Скорость атаки увеличивается в зависимости от степени тяжести ситуации."
-		"chi"       "攻击速度的增加取决于情况有多糟糕。"
+		"chi"	    "攻击速度的增加取决于情况有多糟糕。"
 		"ko"		"체력이 줄어들수록 공격 속도가 최대 80％까지 증가."
 	}
 	
@@ -857,7 +857,7 @@
 	{
 		"en"	"+DMG, infinite clip.\nArchetype changes to ''Infinite Fire''"
 		"fr"	"Dégats améliorés. Rechargeur infini.\nArchetype devient «Tir Infini»"
-	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы.\nАрхетип меняется на «Бесконечный огонь»"
+		"ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы.\nАрхетип меняется на «Бесконечный огонь»"
 		"ko"	"피해량 증가 및 장탄수가 무한이 됩니다.\n무기의 유형이 ''풀 오토''로 변경."
 	}
 	"SMG Pap 5"
@@ -883,7 +883,7 @@
 		"en"	"Increased damage and attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
 		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"    "增加伤害和攻击速度。"
+		"chi"	"增加伤害和攻击速度。"
 		"ko"	"피해량, 공격 속도 증가."
 	}
 	"People Popper Pap 2"
@@ -3363,7 +3363,7 @@
 	{
 		"en"	"Incrases damage.\nScience And Witches\nHow could something so contradictory to one another be so intertwined with a spell"
 		"fr"	""
-		"chi"	"''科学''    ''巫术''\n明明是两个相对的东西，在这个法术中却缺一不可。"
+		"chi"	"''科学''	''巫术''\n明明是两个相对的东西，在这个法术中却缺一不可。"
 		"ko"	"피해량이 증가합니다.\n과학과 마녀, 어떻게 이 둘이 서로 협력을 할 수 있던 걸까요?"
 	}
 	"Neuv pap3"
@@ -5122,216 +5122,216 @@
 		"en" 	"Increases overall stats."
 		"ko" 	"능력치 증가."
 	}
-    "Magia Wings [???]"
-    {
-        "en"        "Oh how the Stars shine upon those who rule Ruina..."
-        "ko"        "루이나를 다스리는 자들에겐 수많은 별이 찬란히 빛나리라..."
-    }
-    "Silvester Wings [???]"
-    {
-        "en"        "Howd you get this? this is admin only."
-        "ko"        "어드민 전용 아이템인데 님은 이걸 어떻게 얻었죠?"
-    }
-    "ZR Content Creator"
-    {
-        "en"        "You created enough content to be worthy!\nYou start with an extra 50 credits."
-        "ko"        "당신은 충분히 가치 있는 콘텐츠를 제작하셨습니다!\n추가 자금을 50 얻고 시작합니다."
-    }
-    "ZR Contest 2024 Artist"
-    {
-        "en"        "You joined the art contest. Start with extra 50 extra credits."
-        "ko"        "당신은 아트 콘테스트에 참여하셨습니다. 추가 자금을 50 얻고 시작합니다."
-    }
-    "ZR Contest 2024 Top 10"
-    {
-        "en"        "You won a contest. Start with extra 100 extra credits."
-        "ko"        "당신은 콘테스트에서 승리하셨습니다. 추가 자금을 100 얻고 시작합니다."
-    }
-    "ZR Contest 2024 Top 20"
-    {
-        "en"        "You won a contest. Start with extra 75 extra credits."
-        "ko"        "당신은 콘테스트에서 승리하셨습니다. 추가 자금을 75 얻고 시작합니다."
-    }
-    "ZR Contest 2024 Top 30"
-    {
-        "en"        "You won a contest. Start with extra 50 extra credits."
-        "ko"        "당신은 콘테스트에서 승리하셨습니다. 추가 자금을 50 얻고 시작합니다."
-    }
-    "ZR Contest Nominator 2023"
-    {
-        "en"        "You won a contest way back then. Does nothing now."
-        "ko"        "이전에 콘테스트에서 승리하신 적이 있습니다. 아직 아무것도 안 합니다."
-    }
-    "Expidonsan Battery Device"
-    {
-        "en"        "Sensal's scythe becomes red!\nActivating this will make it blue again."
-        "ko"        "센살의 낫이 빨간색이 됩니다!\n발동시 다시 파란색이 됩니다."
-    }
-    "Waldch's Expidonsan Sword"
-    {
-        "en"        "Wildingen is finally free, The hitman is taken out, sadly theres more, but he was the main one...\nEquip to disable its cosmetic effects."
-        "ko"        "와일딩겐들은 마침내 자유가 되었고, 암살자들은 사라졌다. 아직 암살자가 더 있지만, 그 암살자가 핵심 인물이었다.\n장비시 특수한 시각 이펙트를 제거."
-    }
-    "Scythe Color Option 1"
-    {
-        "en"        "After doing Iberian and Expidonsan Training...\nTurns your sensal scythe White!"
-        "ko"        "엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 하얀색으로 변경합니다!"
-    }
-    "Scythe Color Option 2"
-    {
-        "en"        "After doing Iberian and Expidonsan Training...\nTurns your sensal scythe Yellow!"
-        "ko"        "엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 노란색으로 변경합니다!"
-    }
-    "Scythe Color Option 3"
-    {
-        "en"        "After doing Iberian and Expidonsan Training...\nTurns your sensal scythe Purple!"
-        "ko"        "엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 보라색으로 변경합니다!"
-    }
-    "Overlords Final Wish"
-    {
-        "en"        "Restore and protect bob the first, that is his final wish..."
-        "ko"        "최후의 대군주를 '퇴치'한 증거... 그는 타락한 밥 1세였습니다."
-    }
-    "Bob's true fear"
-    {
-        "en"        "It is the loss of family and friends, of which has happend..."
-        "ko"        "이것은 '누군가'의 기억. 가족과 친구를 잃은 끔찍한 기억..."
-    }
-    "Medieval Crown"
-    {
-        "en"        "You beat alaxios...?"
-        "ko"        "알락시오스와의 싸움에서 이겼...습니다...?"
-    }
-    "Cured Silvester"
-    {
-        "en"        "Silvester must be glad to have lunatics like you!\nActivating The final pap of the default expidonsan blade gives you a halo!"
-        "ko"        "실베스터는 당신 같은 미친 사람이 있어서 정말 기쁩니다!\n퓨전 블레이드 무기의 팩펀 개선을 전부 완료시, 헤일로가 생깁니다!"
-    }
-    "Head Equipped Blue Goggles"
-    {
-        "en"        "Seems like you beat waldch and silvester... are you ready?"
-        "ko"        "실베스터와 월드치를 때려눕혔습니다... 준비 되셨죠?"
-    }
-    "Calmaticus' Heart Piece"
-    {
-        "en"        "Nemesis's true name was classified as Calmaticus., You beat the heart of the infection,however, the other is left..."
-        "ko"        "네메시스의 진짜 이름은 칼마티커스였습니다. 감염원의 심장부도 제거되었지만, 다른 하나가 더 남았습니다..."
-    }
-    "Mr. X's Files"
-    {
-        "en"        "Legacy Item, has no use, you just beat nemesis before the new update on abanoned lab.\nBut now you can obtain it in bossrush... Wow!!! Youre so epic!!!"
-        "ko"        "구버전 아이템. 구버전 버려진 연구소 맵에서 획득 가능.\n근데 이젠 보스러시 맵에서 획득 가능... 대 단 하 다!!!"
-    }
-    "Bob's Curing Hand"
-    {
-        "en"        "The Sea infection has been beaten, but so have you."
-        "ko"        "시본 감염원이 완전히 격퇴되었습니다. 당신의 몸 속에 있는 감염원까지도."
-    }
-    "Kahml's Contained Chaos"
-    {
-        "en"        "You helped Kahml get rid of his chaos affliction.\nHe doesnt like to say thanks directly though.\nBuffs up the secondary ability duration by 2 seconds."
-        "ko"        "당신은 캄르스타인에게 깃든 혼돈을 격리시키는데 성공했습니다.\n그러나 그는 직접적으로 감사를 표하진 않는군요.\n보조 능력들의 지속 시간이 2 초 증가합니다."
-    }
-    "Xeno Virus Vial"
-    {
-        "en"        "Its over, you defeated it, go find Mr.X, this was a facade, real name was Virothorn and kill him, he cant restart the entirety of xeno anymore."
-        "ko"        "이제 끝났습니다. 당신이 Mr.X를 찾아서 죽였습니다. 그의 진짜 이름은 바이로쏜즈였고, 그는 더 이상 이 제노 감염을 부활시키지 못 할 것입니다."
-    }
-    "Chaos Machina Waldch Chip"
-    {
-        "en"        "You managed to kill off the machine, the impostor.."
-        "ko"        "당신은 정신나간 따라쟁이 기계를 처치하는데에 성공했습니다.."
-    }
-    "Corrupted Barney's Chainsaw"
-    {
-        "en"        "I wonder what happend to barney here..."
-        "ko"        "도대체 이 곳에서 바니에게 무슨 일이 일어난걸까요..."
-    }
-    "Alaxios's Godly assistance"
-    {
-        "en"        "You beat alaxios... Or did he just let you live?\nYour banners will be much louder!"
-        "ko"        "알락시오스를 이겼...을까? 아니면 그가 그저 당신을 살려준 것 같습니다?\n깃발 종류가 훨씬 시끄러워집니다!"
-    }
-    "Major Steam's Rocket"
-    {
-        "en"        "You beat rogue2's default ending!"
-        "ko"        "rogue2 의 기본 엔딩을 본 증거입니다!"
-    }
-    "Opened Void Portal"
-    {
-        "en"        "You released the void, you fool..!"
-        "ko"        "당신은 공허를 풀려나게 만들었습니다..!"
-    }
-    "Gem from the Courtain"
-    {
-        "en"        "This seems bad, this doesnt feel good to hold.\nTrophy!."
-        "ko"        "외관상으로 좋지도 않고, 집고 있어도 기분만 나빠집니다.\n트로피!."
-    }
-    "Foreign Expidonsan Chip"
-    {
-        "en"        "You proved that you are actually usefull to these expidonsans, and have setup a base for the curtain attack.\nTrophy!."
-        "ko"        "당신은 이 엑스피돈사인들에게 당신의 실력을 증명했습니다.\n트로피!."
-    }
-    "Kahmlsteins Last Will"
-    {
-        "en"        "Keep the void away.. at all costs, he begs of you..."
-        "ko"        "그가 죽어가면서 당신에게 남긴 유언장... '공허를 최대한 몰아내라'..."
-    }
-    "Twirl's Hairpins"
-    {
-        "en"        "Strange that she gave you these."
-        "ko"        "그녀가 이걸 그냥 주다니, 희한하군요."
-    }
-    "Iberian and Expidonsan Training"
-    {
-        "en"        "TheAngelica Shotgonnus, its halo and arm halo become more energetic.\nit also unlocks scythe recolour options!"
-        "ko"        "안젤리카 샷거누스의 헤일로가 더욱 활기차집니다.\n또한 센살의 낫의 색상 변경 옵션을 제공합니다!"
-    }
-    "Whiteflower's Elite Grenade"
-    {
-        "en"        "Throwable grenades last 20％ longer"
-        "ko"        "수류탄 계열 무기의 지속 시간이 20％ 증가합니다."
-    }
-    "Avangard's Processing Core-B"
-    {
-        "en"        "Gotten from the Victorians, you fended them off!"
-        "ko"        "빅토리아인들이 떨어뜨리고 간 코어입니다. 살아남은 기념품으로 치죠!"
-    }
-    "Matrix's Curse"
-    {
-        "en"        "You beat Agent Smith! However, i think that somehow, that was his goal..."
-        "ko"        "스미스 요원을 격퇴했습니다! 하지만, 어쩐지 이것이 그의 계획이었다는 생각이 듭니다..."
-    }
-    "Omega's Medallion"
-    {
-        "en"        "You got spared by Omega! He gave you one of his medallions as a treat. \nYou can wear it with pride, congratulations."
-        "ko"        "당신은 오메가와 친구가 되었습니다. 그가 친구가 된 기념으로 당신에게 준 것입니다. \n장비하면 좀 더 간지나게 될 겁니다. 축하합니다."
-    }
-    "A Block of Cheese"
-    {
-        "en"        "WIP."
-        "ko"        "제작중이라고 함"
-    }
-    "Iberia's Last Hope..."
-    {
-        "en"        "You beat the seaborn infection."
-        "ko"        "시본 감염원을 격퇴한 증거입니다."
-    }
-    "Blitzkrieg's destroyed Core"
-    {
-        "en"        "With Blitzkrieg being defeated, his army is at your disposal..."
-        "ko"        "블리츠크리그가 파괴된 후, 그의 하수인들은 당신의 명령을 기다립니다.."
-    }
-    "Guln's Dying Wish"
-    {
-        "en"        "... Are you sure that... this was the right thing to do..?"
-        "ko"        "... 정말로... 이게 맞는 일일까요..?"
-    }
-    "There Can Be Only One"
-    {
-        "en"        "Buy greg some ammo, he'll need it."
-        "ko"        "Buy greg some ammo, he'll need it."
-    }
+	"Magia Wings [???]"
+	{
+		"en"		"Oh how the Stars shine upon those who rule Ruina..."
+		"ko"		"루이나를 다스리는 자들에겐 수많은 별이 찬란히 빛나리라..."
+	}
+	"Silvester Wings [???]"
+	{
+		"en"		"Howd you get this? this is admin only."
+		"ko"		"어드민 전용 아이템인데 님은 이걸 어떻게 얻었죠?"
+	}
+	"ZR Content Creator"
+	{
+		"en"		"You created enough content to be worthy!\nYou start with an extra 50 credits."
+		"ko"		"당신은 충분히 가치 있는 콘텐츠를 제작하셨습니다!\n추가 자금을 50 얻고 시작합니다."
+	}
+	"ZR Contest 2024 Artist"
+	{
+		"en"		"You joined the art contest. Start with extra 50 extra credits."
+		"ko"		"당신은 아트 콘테스트에 참여하셨습니다. 추가 자금을 50 얻고 시작합니다."
+	}
+	"ZR Contest 2024 Top 10"
+	{
+		"en"		"You won a contest. Start with extra 100 extra credits."
+		"ko"		"당신은 콘테스트에서 승리하셨습니다. 추가 자금을 100 얻고 시작합니다."
+	}
+	"ZR Contest 2024 Top 20"
+	{
+		"en"		"You won a contest. Start with extra 75 extra credits."
+		"ko"		"당신은 콘테스트에서 승리하셨습니다. 추가 자금을 75 얻고 시작합니다."
+	}
+	"ZR Contest 2024 Top 30"
+	{
+		"en"		"You won a contest. Start with extra 50 extra credits."
+		"ko"		"당신은 콘테스트에서 승리하셨습니다. 추가 자금을 50 얻고 시작합니다."
+	}
+	"ZR Contest Nominator 2023"
+	{
+		"en"		"You won a contest way back then. Does nothing now."
+		"ko"		"이전에 콘테스트에서 승리하신 적이 있습니다. 아직 아무것도 안 합니다."
+	}
+	"Expidonsan Battery Device"
+	{
+		"en"		"Sensal's scythe becomes red!\nActivating this will make it blue again."
+		"ko"		"센살의 낫이 빨간색이 됩니다!\n발동시 다시 파란색이 됩니다."
+	}
+	"Waldch's Expidonsan Sword"
+	{
+		"en"		"Wildingen is finally free, The hitman is taken out, sadly theres more, but he was the main one...\nEquip to disable its cosmetic effects."
+		"ko"		"와일딩겐들은 마침내 자유가 되었고, 암살자들은 사라졌다. 아직 암살자가 더 있지만, 그 암살자가 핵심 인물이었다.\n장비시 특수한 시각 이펙트를 제거."
+	}
+	"Scythe Color Option 1"
+	{
+		"en"		"After doing Iberian and Expidonsan Training...\nTurns your sensal scythe White!"
+		"ko"		"엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 하얀색으로 변경합니다!"
+	}
+	"Scythe Color Option 2"
+	{
+		"en"		"After doing Iberian and Expidonsan Training...\nTurns your sensal scythe Yellow!"
+		"ko"		"엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 노란색으로 변경합니다!"
+	}
+	"Scythe Color Option 3"
+	{
+		"en"		"After doing Iberian and Expidonsan Training...\nTurns your sensal scythe Purple!"
+		"ko"		"엑스피돈사-이베리아 연합의 훈련을 마친 후...\n센살의 낫의 색상을 보라색으로 변경합니다!"
+	}
+	"Overlords Final Wish"
+	{
+		"en"		"Restore and protect bob the first, that is his final wish..."
+		"ko"		"최후의 대군주를 '퇴치'한 증거... 그는 타락한 밥 1세였습니다."
+	}
+	"Bob's true fear"
+	{
+		"en"		"It is the loss of family and friends, of which has happend..."
+		"ko"		"이것은 '누군가'의 기억. 가족과 친구를 잃은 끔찍한 기억..."
+	}
+	"Medieval Crown"
+	{
+		"en"		"You beat alaxios...?"
+		"ko"		"알락시오스와의 싸움에서 이겼...습니다...?"
+	}
+	"Cured Silvester"
+	{
+		"en"		"Silvester must be glad to have lunatics like you!\nActivating The final pap of the default expidonsan blade gives you a halo!"
+		"ko"		"실베스터는 당신 같은 미친 사람이 있어서 정말 기쁩니다!\n퓨전 블레이드 무기의 팩펀 개선을 전부 완료시, 헤일로가 생깁니다!"
+	}
+	"Head Equipped Blue Goggles"
+	{
+		"en"		"Seems like you beat waldch and silvester... are you ready?"
+		"ko"		"실베스터와 월드치를 때려눕혔습니다... 준비 되셨죠?"
+	}
+	"Calmaticus' Heart Piece"
+	{
+		"en"		"Nemesis's true name was classified as Calmaticus., You beat the heart of the infection,however, the other is left..."
+		"ko"		"네메시스의 진짜 이름은 칼마티커스였습니다. 감염원의 심장부도 제거되었지만, 다른 하나가 더 남았습니다..."
+	}
+	"Mr. X's Files"
+	{
+		"en"		"Legacy Item, has no use, you just beat nemesis before the new update on abanoned lab.\nBut now you can obtain it in bossrush... Wow!!! Youre so epic!!!"
+		"ko"		"구버전 아이템. 구버전 버려진 연구소 맵에서 획득 가능.\n근데 이젠 보스러시 맵에서 획득 가능... 대 단 하 다!!!"
+	}
+	"Bob's Curing Hand"
+	{
+		"en"		"The Sea infection has been beaten, but so have you."
+		"ko"		"시본 감염원이 완전히 격퇴되었습니다. 당신의 몸 속에 있는 감염원까지도."
+	}
+	"Kahml's Contained Chaos"
+	{
+		"en"		"You helped Kahml get rid of his chaos affliction.\nHe doesnt like to say thanks directly though.\nBuffs up the secondary ability duration by 2 seconds."
+		"ko"		"당신은 캄르스타인에게 깃든 혼돈을 격리시키는데 성공했습니다.\n그러나 그는 직접적으로 감사를 표하진 않는군요.\n보조 능력들의 지속 시간이 2 초 증가합니다."
+	}
+	"Xeno Virus Vial"
+	{
+		"en"		"Its over, you defeated it, go find Mr.X, this was a facade, real name was Virothorn and kill him, he cant restart the entirety of xeno anymore."
+		"ko"		"이제 끝났습니다. 당신이 Mr.X를 찾아서 죽였습니다. 그의 진짜 이름은 바이로쏜즈였고, 그는 더 이상 이 제노 감염을 부활시키지 못 할 것입니다."
+	}
+	"Chaos Machina Waldch Chip"
+	{
+		"en"		"You managed to kill off the machine, the impostor.."
+		"ko"		"당신은 정신나간 따라쟁이 기계를 처치하는데에 성공했습니다.."
+	}
+	"Corrupted Barney's Chainsaw"
+	{
+		"en"		"I wonder what happend to barney here..."
+		"ko"		"도대체 이 곳에서 바니에게 무슨 일이 일어난걸까요..."
+	}
+	"Alaxios's Godly assistance"
+	{
+		"en"		"You beat alaxios... Or did he just let you live?\nYour banners will be much louder!"
+		"ko"		"알락시오스를 이겼...을까? 아니면 그가 그저 당신을 살려준 것 같습니다?\n깃발 종류가 훨씬 시끄러워집니다!"
+	}
+	"Major Steam's Rocket"
+	{
+		"en"		"You beat rogue2's default ending!"
+		"ko"		"rogue2 의 기본 엔딩을 본 증거입니다!"
+	}
+	"Opened Void Portal"
+	{
+		"en"		"You released the void, you fool..!"
+		"ko"		"당신은 공허를 풀려나게 만들었습니다..!"
+	}
+	"Gem from the Courtain"
+	{
+		"en"		"This seems bad, this doesnt feel good to hold.\nTrophy!."
+		"ko"		"외관상으로 좋지도 않고, 집고 있어도 기분만 나빠집니다.\n트로피!."
+	}
+	"Foreign Expidonsan Chip"
+	{
+		"en"		"You proved that you are actually usefull to these expidonsans, and have setup a base for the curtain attack.\nTrophy!."
+		"ko"		"당신은 이 엑스피돈사인들에게 당신의 실력을 증명했습니다.\n트로피!."
+	}
+	"Kahmlsteins Last Will"
+	{
+		"en"		"Keep the void away.. at all costs, he begs of you..."
+		"ko"		"그가 죽어가면서 당신에게 남긴 유언장... '공허를 최대한 몰아내라'..."
+	}
+	"Twirl's Hairpins"
+	{
+		"en"		"Strange that she gave you these."
+		"ko"		"그녀가 이걸 그냥 주다니, 희한하군요."
+	}
+	"Iberian and Expidonsan Training"
+	{
+		"en"		"TheAngelica Shotgonnus, its halo and arm halo become more energetic.\nit also unlocks scythe recolour options!"
+		"ko"		"안젤리카 샷거누스의 헤일로가 더욱 활기차집니다.\n또한 센살의 낫의 색상 변경 옵션을 제공합니다!"
+	}
+	"Whiteflower's Elite Grenade"
+	{
+		"en"		"Throwable grenades last 20％ longer"
+		"ko"		"수류탄 계열 무기의 지속 시간이 20％ 증가합니다."
+	}
+	"Avangard's Processing Core-B"
+	{
+		"en"		"Gotten from the Victorians, you fended them off!"
+		"ko"		"빅토리아인들이 떨어뜨리고 간 코어입니다. 살아남은 기념품으로 치죠!"
+	}
+	"Matrix's Curse"
+	{
+		"en"		"You beat Agent Smith! However, i think that somehow, that was his goal..."
+		"ko"		"스미스 요원을 격퇴했습니다! 하지만, 어쩐지 이것이 그의 계획이었다는 생각이 듭니다..."
+	}
+	"Omega's Medallion"
+	{
+		"en"		"You got spared by Omega! He gave you one of his medallions as a treat. \nYou can wear it with pride, congratulations."
+		"ko"		"당신은 오메가와 친구가 되었습니다. 그가 친구가 된 기념으로 당신에게 준 것입니다. \n장비하면 좀 더 간지나게 될 겁니다. 축하합니다."
+	}
+	"A Block of Cheese"
+	{
+		"en"		"WIP."
+		"ko"		"제작중이라고 함"
+	}
+	"Iberia's Last Hope..."
+	{
+		"en"		"You beat the seaborn infection."
+		"ko"		"시본 감염원을 격퇴한 증거입니다."
+	}
+	"Blitzkrieg's destroyed Core"
+	{
+		"en"		"With Blitzkrieg being defeated, his army is at your disposal..."
+		"ko"		"블리츠크리그가 파괴된 후, 그의 하수인들은 당신의 명령을 기다립니다.."
+	}
+	"Guln's Dying Wish"
+	{
+		"en"		"... Are you sure that... this was the right thing to do..?"
+		"ko"		"... 정말로... 이게 맞는 일일까요..?"
+	}
+	"There Can Be Only One"
+	{
+		"en"		"Buy greg some ammo, he'll need it."
+		"ko"		"Buy greg some ammo, he'll need it."
+	}
 	"Plasminator Desc"
 	{
 		"en"	"An Expidonsan clockwork assault rifle, that shoots rapid Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
