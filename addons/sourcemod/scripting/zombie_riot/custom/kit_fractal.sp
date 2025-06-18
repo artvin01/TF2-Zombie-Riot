@@ -364,7 +364,7 @@ static void Fire_Beam(int client, int weapon, bool update)
 	{
 		Player_Laser_Logic Laser;
 		Laser.client = client;
-		float dps = 100.0;
+		float dps = 130.0;
 		float range = fl_main_laser_distance[client];
 		
 		if(b_overdrive_active[client])
@@ -383,7 +383,7 @@ static void Fire_Beam(int client, int weapon, bool update)
 		Laser.Damage = dps;
 		Laser.Radius = Radius;
 		Laser.damagetype = DMG_PLASMA;
-		Laser.Deal_Damage();
+		PlayerLaserDoDamageCombined(Laser, dps, dps*0.3);
 		fl_fractal_laser_dist[client] = GetVectorDistance(Laser.End_Point, flPos);
 		EndLoc = Laser.End_Point;
 		
