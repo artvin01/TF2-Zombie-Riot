@@ -331,6 +331,17 @@ public void Weapon_RitualistNervous_M2(int client, int weapon, bool &result, int
 
 		Ability_Apply_Cooldown(client, slot, 70.0);
 		ClientCommand(client, "playgamesound ambient/halloween/male_scream_06.wav");
+		
+		float pos1[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
+
+		int entity = NPC_CreateByName("npc_ritualist", client, pos1, {0.0, 0.0, 0.0}, TFTeam_Red);
+		if(entity > MaxClients)
+		{
+			CreateTimer(65.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = false;
+		}
 	}
 }
 

@@ -4398,7 +4398,7 @@
 	{
 		"en"	"Base damage is increased, consumes less ammo."
 	}
-	"The Ritualist"
+	"The Ritualist Desc"
 	{
 		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
 	}

@@ -10426,7 +10426,7 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 			Timer_Ingition_ReApply[target] = null;
 		}		
 		DataPack pack;
-		Timer_Ingition_ReApply[target] = CreateDataTimer(5.0, IgniteTimerVisual_Reignite, pack);
+		Timer_Ingition_ReApply[target] = CreateDataTimer(type ? 1.5 : 5.0, IgniteTimerVisual_Reignite, pack);
 		pack.WriteCell(target);
 		pack.WriteCell(EntIndexToEntRef(target));
 		pack.WriteCell(type);

@@ -68,11 +68,11 @@ char[] MinibossHealthScaling(float healthDo = 110.0, bool ingoreplayers = false)
 {
 	if(!ingoreplayers)
 		healthDo *= ZRStocks_PlayerScalingDynamic(); //yeah its high. will need to scale with waves exponentially.
-		
 	
 	healthDo *= MinibossScalingReturn();
+	healthDo *= float(Waves_GetRoundScale()+1);
 	
-	if(Waves_GetRoundScale()+1 < RoundToNearest(20.0 * (1.0 / MinibossScalingReturn())))
+	/*if(Waves_GetRoundScale()+1 < RoundToNearest(20.0 * (1.0 / MinibossScalingReturn())))
 	{
 		healthDo = Pow(((healthDo + float(Waves_GetRoundScale()+1)) * float(Waves_GetRoundScale()+1)),1.25);
 	}
@@ -83,7 +83,7 @@ char[] MinibossHealthScaling(float healthDo = 110.0, bool ingoreplayers = false)
 	else
 	{
 		healthDo = Pow(((healthDo + float(Waves_GetRoundScale()+1)) * float(Waves_GetRoundScale()+1)),1.40);
-	}
+	}*/
 	
 	healthDo /= 3.0;
 	
