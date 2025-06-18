@@ -1213,6 +1213,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		if(MinibossScalingHandle <= 1.0)
 			MinibossScalingHandle = 1.0;
 	}
+	else
+	{
+		MinibossScalingHandle = 1.0;
+	}
 
 	if(OverrideScalingManually != 0.0)
 		MinibossScalingHandle = OverrideScalingManually;
