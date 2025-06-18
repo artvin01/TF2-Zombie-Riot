@@ -95,7 +95,7 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	switch(type)
 	{
-		case Element_Necrosis:
+		case Element_Necrosis, Element_Nervous:
 		{
 			if(GetTeam(entity) == TFTeam_Red)
 				return 1000;
@@ -148,7 +148,19 @@ int Elemental_TriggerDamage(int entity, int type)
 		}
 	}
 
-	return RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
+	int amount = RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
+	
+	switch(type)
+	{
+		case Element_Necrosis, Element_Nervous:
+		{
+			int minAmount = RoundFloat(10000.0 * divide);
+			if(amount < minAmount)
+				amount = minAmount;
+		}
+	}
+
+	return amount;
 }
 
 bool Elemental_HurtHud(int entity, char Debuff_Adder[128])

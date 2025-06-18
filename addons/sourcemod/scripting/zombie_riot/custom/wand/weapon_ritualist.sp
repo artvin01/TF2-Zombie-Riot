@@ -59,7 +59,7 @@ public void Weapon_Ritualist_M1(int client, int weapon, bool &result, int slot)
 		{
 			case Ritualist_Necrosis:
 			{
-				EmitGameSoundToAll("Player.HitSoundNotes", client);
+				EmitGameSoundToClient(client, "Player.HitSoundNotes", client);
 			}
 			case Ritualist_Nervous:
 			{
