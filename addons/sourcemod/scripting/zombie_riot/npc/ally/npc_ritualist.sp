@@ -21,7 +21,7 @@ void RitualistInstinct_MapStart()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return RitualistInstinct(client, vecPos, vecAng, team, data);
+	return RitualistInstinct(client, vecPos, vecAng, team);
 }
 
 methodmap RitualistInstinct < CClotBody
@@ -31,7 +31,7 @@ methodmap RitualistInstinct < CClotBody
 		EmitSoundToAll(g_DeathSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public RitualistInstinct(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public RitualistInstinct(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		char buffer[16];
 
