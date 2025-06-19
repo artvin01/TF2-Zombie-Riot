@@ -105,12 +105,12 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 				case Ritualist_Nervous:
 				{
 					ApplyStatusEffect(owner, target, "Elemental Amplification", 0.5);
-					Explode_Logic_Custom(f_WandDamage[entity] * 0.2, owner, owner, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
+					Explode_Logic_Custom(f_WandDamage[entity] * 0.2, owner, entity, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
 					EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 
-					float pos[3];
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-					ParticleEffectAt(pos, "halloween_ghost_smoke", 3.0);
+					//float pos[3];
+					//GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+					//ParticleEffectAt(pos, "halloween_ghost_smoke", 3.0);
 				}
 				default:
 				{
@@ -147,9 +147,9 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 					Explode_Logic_Custom(f_WandDamage[entity] * 0.2, owner, owner, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
 					EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 
-					float pos[3];
-					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-					ParticleEffectAt(pos, "halloween_ghost_smoke", 3.0);
+					//float pos[3];
+					//GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+					//ParticleEffectAt(pos, "halloween_ghost_smoke", 3.0);
 				}
 				default:
 				{
@@ -173,7 +173,7 @@ static Action RitualistTimer(Handle timer, int client)
 			{
 				if(WeaponType[client] == Ritualist_Necrosis)
 				{
-					float damage = Attributes_Get(weapon, 410, 1.0) * 0.65;
+					float damage = Attributes_Get(weapon, 410, 1.0) * 0.325;
 					if(TF2_IsPlayerInCondition(client, TFCond_Taunting))
 						damage *= 2.1538;
 					

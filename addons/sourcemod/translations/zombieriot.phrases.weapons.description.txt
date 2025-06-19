@@ -323,6 +323,18 @@
 	{
 		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\nYou will now always gib."
 	}
+	"Sherrif Pap 1"
+	{
+		"en"		"Slgihtly Increased Damage, Weapon changes.\nM2 now marks upto 5 enemies near you, hitting them deals 3x damage once.\nYour revolver turns into a burst 6 shot weapon."
+	}
+	"Sherrif Pap 2"
+	{
+		"en"		"Increased Damage\nM2 has a shorter cooldown."
+	}
+	"Sherrif Pap 3"
+	{
+		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage."
+	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."

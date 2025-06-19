@@ -2271,7 +2271,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
-		StatusEffectReset(entity);
+		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
 		NPCStats_SetFuncsToZero(entity);

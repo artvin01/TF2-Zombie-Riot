@@ -119,48 +119,48 @@ public void PurgKnockback(int victim, int weapon, int client)
 	FinishLagCompensation_Base_boss();
 	
 	for(int ammount; ammount < 6; ammount++)
-		{
-			int weight = i_NpcWeight[EnemiesHit[ammount]];
-			if(weight > 5)
-				continue;
-			
-			if(weight < 0)
-				weight = 1;
-			
-			if(HasSpecificBuff(EnemiesHit[ammount], "Solid Stance"))
-				continue;
+	{
+		int weight = i_NpcWeight[EnemiesHit[ammount]];
+		if(weight > 5)
+			continue;
+		
+		if(weight < 0)
+			weight = 1;
+		
+		if(HasSpecificBuff(EnemiesHit[ammount], "Solid Stance"))
+			continue;
 
-			float knockback = 500.0;
-			switch(weight)
+		float knockback = 500.0;
+		switch(weight)
+		{
+			case 0:
 			{
-				case 0:
-				{
-					knockback *= 1.25;
-				}
-				case 1:
-				{
-					knockback *= 1.1;
-				}
-				case 2:
-				{
-					knockback *= 0.75;
-				}
-				case 3:
-				{
-					knockback *= 0.35;
-				}
-				default:
-				{
-					knockback *= 0.0;
-				}
+				knockback *= 1.25;
 			}
-			if(b_thisNpcIsABoss[EnemiesHit[ammount]])
+			case 1:
 			{
-				knockback *= 0.65; //They take half knockback
+				knockback *= 1.1;
 			}
-			FreezeNpcInTime(EnemiesHit[ammount], 0.25);	
-			Custom_Knockback(client, EnemiesHit[ammount], knockback, true, true, true);
+			case 2:
+			{
+				knockback *= 0.75;
+			}
+			case 3:
+			{
+				knockback *= 0.35;
+			}
+			default:
+			{
+				knockback *= 0.0;
+			}
 		}
+		if(b_thisNpcIsABoss[EnemiesHit[ammount]])
+		{
+			knockback *= 0.65; //They take half knockback
+		}
+		FreezeNpcInTime(EnemiesHit[ammount], 0.25);	
+		Custom_Knockback(client, EnemiesHit[ammount], knockback, true, true, true);
+	}
 }
 
 public void Punish(int victim, int weapon, int bool) //AOE parry damage that scales with melee upgrades, im a coding maestro SUPREME

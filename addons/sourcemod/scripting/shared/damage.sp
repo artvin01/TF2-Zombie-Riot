@@ -1239,6 +1239,11 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				ChemicalThrower_NPCTakeDamage(attacker, victim, damage);
 		}
+		case WEAPON_SHERRIF:
+		{
+			if(!CheckInHud())
+				SherrifRevolver_NPCTakeDamage(attacker, victim, damage);
+		}
 	}
 #endif
 

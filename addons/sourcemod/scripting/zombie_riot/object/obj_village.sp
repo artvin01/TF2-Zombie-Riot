@@ -219,10 +219,10 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 			}
 		}
 		if(effectsDoNow & VILLAGE_020)
-			ApplyStatusEffect(entity, victim, "Revealed", 1.0);
+			ApplyStatusEffect(entity, victim, "Revealed", 1.5);
 		
 		if(effectsDoNow & VILLAGE_010)
-			ApplyStatusEffect(entity, victim, "Growth Blocker", 1.0);
+			ApplyStatusEffect(entity, victim, "Growth Blocker", 1.5);
 	}
 	else
 	{
@@ -232,24 +232,24 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 			effectsDoNow &= ~VILLAGE_040;
 		}
 
-		ApplyStatusEffect(entity, victim, "Village Radar", 1.0);
+		ApplyStatusEffect(entity, victim, "Village Radar", 1.5);
 		if(effectsDoNow & VILLAGE_200)
-			ApplyStatusEffect(entity, victim, "Jungle Drums", 1.0);
+			ApplyStatusEffect(entity, victim, "Jungle Drums", 1.5);
 
 		if(effectsDoNow & VILLAGE_030)
-			ApplyStatusEffect(entity, victim, "Intelligence", 1.0);
+			ApplyStatusEffect(entity, victim, "Intelligence", 1.5);
 
 		if(effectsDoNow & VILLAGE_040)
-			ApplyStatusEffect(entity, victim, "Call To Arms", 1.0);
+			ApplyStatusEffect(entity, victim, "Call To Arms", 1.5);
 
 		if(effectsDoNow & VILLAGE_050)
-			ApplyStatusEffect(entity, victim, "Homeland Defense", 1.0);
+			ApplyStatusEffect(entity, victim, "Homeland Defense", 1.5);
 
 		if(effectsDoNow & VILLAGE_003)
-			ApplyStatusEffect(entity, victim, "Nethersea Antidote", 1.0);
+			ApplyStatusEffect(entity, victim, "Nethersea Antidote", 1.5);
 
 		if(effectsDoNow & VILLAGE_005)
-			ApplyStatusEffect(entity, victim, "Iberia Light", 1.0);
+			ApplyStatusEffect(entity, victim, "Iberia Light", 1.5);
 			
 		if(victim <= MaxClients)
 		{
@@ -257,7 +257,7 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 			{
 				if(effectsDoNow & VILLAGE_002)
 				{
-					ApplyStatusEffect(entity, victim, "Armor Curing", 1.0);
+					ApplyStatusEffect(entity, victim, "Armor Curing", 1.5);
 					int maxarmor = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
 					if(Armor_Charge[victim] < maxarmor)
 					{
@@ -270,7 +270,7 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 				}
 				else if(effectsDoNow & VILLAGE_001)
 				{
-					ApplyStatusEffect(entity, victim, "Elemental Curing", 1.0);
+					ApplyStatusEffect(entity, victim, "Elemental Curing", 1.5);
 					if(Armor_Charge[victim] < 0)
 					{
 						f_ClientArmorRegen[victim] = GetGameTime() + 0.7;

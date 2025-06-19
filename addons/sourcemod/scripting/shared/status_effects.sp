@@ -46,6 +46,7 @@ enum struct StatusEffect
 	Function TimerRepeatCall_Func; //for things such as regen. calls at a fixed 0.4.
 	Function OnTakeDamage_PostVictim;
 	Function OnTakeDamage_PostAttacker;
+	Function OnBuffEndOrDeleted;
 
 	void Blank()
 	{
@@ -82,11 +83,15 @@ enum struct E_StatusEffect
 
 	//This is used for function things
 	float DataForUse;
+	int WearableUse;
+	int VictimSave;
 
 	void ApplyStatusEffect_Internal(int owner, int victim, bool HadBuff, int ArrayPosition)
 	{
 		if(!E_AL_StatusEffects[victim])
 			E_AL_StatusEffects[victim] = new ArrayList(sizeof(E_StatusEffect));
+		
+		this.VictimSave = victim;
 
 		if(owner > 0)
 			this.TotalOwners[owner] = true;
@@ -95,6 +100,26 @@ enum struct E_StatusEffect
 			E_AL_StatusEffects[victim].PushArray(this);
 		else
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, this);
+	}
+
+	void RemoveStatus(bool OnlyCastLogic = false)
+	{
+		static StatusEffect Apply_MasterStatusEffect;
+		AL_StatusEffects.GetArray(this.BuffIndex, Apply_MasterStatusEffect);
+	//	PrintToChatAll("RemoveStatus %s", Apply_MasterStatusEffect.BuffName);
+		if(Apply_MasterStatusEffect.OnBuffEndOrDeleted != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffEndOrDeleted)
+		{
+			Call_StartFunction(null, Apply_MasterStatusEffect.OnBuffEndOrDeleted);
+			Call_PushCell(this.VictimSave);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(this, sizeof(this));
+			Call_Finish();
+		}
+		if(!OnlyCastLogic)
+		{
+			int ArrayPosition = E_AL_StatusEffects[this.VictimSave].FindValue(this.BuffIndex, E_StatusEffect::BuffIndex);
+			E_AL_StatusEffects[this.VictimSave].Erase(ArrayPosition);
+		}
 	}
 }
 
@@ -353,11 +378,11 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 	int ArrayPosition;
 	if(E_AL_StatusEffects[victim])
 	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		ArrayPosition = E_AL_StatusEffects[victim].FindValue(index, E_StatusEffect::BuffIndex);
 		if(ArrayPosition != -1)
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		
 		if(E_AL_StatusEffects[victim].Length < 1)
@@ -395,7 +420,7 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
 			//dont delete it here, it will break other for loops.
-		//	E_AL_StatusEffects[victim].Erase(ArrayPosition);
+		//	Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -428,7 +453,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			continue;
 		}
@@ -440,14 +465,14 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		if(!Apply_MasterStatusEffect.Positive && !RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			continue;
 		}
 		else if(Apply_MasterStatusEffect.Positive && RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			continue;
 		}
@@ -502,7 +527,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 				AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 				if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 				{
-					E_AL_StatusEffects[victim].Erase(i);
+					Apply_StatusEffect.RemoveStatus();
 					i--;
 					length--;
 					continue;
@@ -513,7 +538,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 					{
 						// New buff is high priority, remove this one, stop the loop
 						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
-						E_AL_StatusEffects[victim].Erase(i);
+						Apply_StatusEffect.RemoveStatus();
 						break;
 					}
 					else if(CurrentPriority < Apply_MasterStatusEffect.SlotPriority)
@@ -594,7 +619,7 @@ stock void StatusEffect_Expired(int victim)
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 		}
@@ -603,12 +628,26 @@ stock void StatusEffect_Expired(int victim)
 	if(length < 1)
 		delete E_AL_StatusEffects[victim];
 }
-void StatusEffectReset(int victim)
+void StatusEffectReset(int victim, bool force)
 {
 	if(!E_AL_StatusEffects[victim])
 		return;
+	
+	static E_StatusEffect Apply_StatusEffect;
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		Apply_StatusEffect.RemoveStatus(true);
+		//only remove effects.
+	}
 
-	delete E_AL_StatusEffects[victim];
+	if(force)
+	{
+		delete E_AL_StatusEffects[victim];
+		return;
+	}
+
 }
 
 /*
@@ -645,7 +684,7 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -720,7 +759,7 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[attacker].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -802,7 +841,7 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, float &b
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -886,7 +925,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[attacker].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -1041,7 +1080,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		//Right are buffs
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			continue;
 		}
 		/*
@@ -1159,7 +1198,7 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
 		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			link_Apply_StatusEffect.RemoveStatus();
 			//Ran out, remove buffs?
 		}
 		else
@@ -1405,7 +1444,7 @@ void StatusEffects_HudAbove(int victim, char[] HudAbove, int SizeOfChar)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -1448,7 +1487,7 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -1569,7 +1608,7 @@ stock bool NpcStats_IsEnemyTeslar(int victim, bool High)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 			return true;
@@ -1694,7 +1733,7 @@ stock bool NpcStats_IsEnemyFrozen(int victim, int TierDo)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 			return true;
@@ -1738,25 +1777,7 @@ void StatusEffects_PotionWand()
 
 stock bool NpcStats_IsEnemyShank(int victim)
 {
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(ShrinkingStatusEffectIndex, E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, ShrinkingStatusEffectIndex);
 }
 
 void StatusEffects_Enfeeble()
@@ -2404,7 +2425,7 @@ stock void ApplyRapidSuturing(int victim)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -2427,7 +2448,7 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -2451,25 +2472,7 @@ stock bool NpcStats_IsEnemySilenced(int victim)
 		return false;
 #endif
 
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(SilenceIndex, E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, SilenceIndex);
 }
 
 int DebuffMarkedIndex;
@@ -2492,29 +2495,7 @@ void StatusEffects_DebuffMarked()
 
 stock bool NpcStats_IberiaIsEnemyMarked(int victim)
 {
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(DebuffMarkedIndex, E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-		
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, DebuffMarkedIndex);
 }
 
 int VoidStrengthIndex1;
@@ -2637,45 +2618,29 @@ float Void_Internal_2_DamageTakenFunc(int attacker, int victim, StatusEffect App
 
 stock bool NpcStats_WeakVoidBuff(int victim)
 {
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(VoidStrengthIndex1, E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, VoidStrengthIndex1);
 }
 stock bool NpcStats_StrongVoidBuff(int victim)
+{
+	return CheckBuffIndex(victim, VoidStrengthIndex2);
+}
+
+static bool CheckBuffIndex(int victim, int buffIndex)
 {
 	if(!IsValidEntity(victim))
 		return true; //they dont exist, pretend as if they are silenced.
 	
 	if(!E_AL_StatusEffects[victim])
 		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(VoidStrengthIndex2, E_StatusEffect::BuffIndex);
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(buffIndex, E_StatusEffect::BuffIndex);
 	if(ArrayPosition != -1)
 	{
 		E_StatusEffect Apply_StatusEffect;
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 			return true;
@@ -2763,28 +2728,7 @@ void StatusEffects_Victoria()
 
 stock bool NpcStats_VictorianCallToArms(int victim)
 {
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(VictoriaCallToArmsIndex, E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, VictoriaCallToArmsIndex);
 }
 
 void StatusEffects_Pernell()
@@ -3362,28 +3306,7 @@ void StatusEffects_ElementalWand()
 
 stock bool NpcStats_ElementalAmp(int victim)
 {
-	if(!IsValidEntity(victim))
-		return true; //they dont exist, pretend as if they are silenced.
-	
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(ElementalWandIndex , E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, ElementalWandIndex);
 }
 
 
@@ -3477,7 +3400,7 @@ stock void NpcStats_CasinoDebuffStengthen(int victim, float NewBuffValue)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -3611,7 +3534,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -3646,7 +3569,7 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -3683,7 +3606,7 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -3701,7 +3624,6 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 float Ruinas_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
 	return (basedamage * (Apply_StatusEffect.DataForUse * DamageBuffExtraScaling));
-
 }
 #endif	// ZR
 
@@ -3948,47 +3870,11 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 
 stock bool NpcStats_KazimierzDodge(int victim)
 {
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(KazimierzDodgeIndex , E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, KazimierzDodgeIndex);
 }
 stock bool NpcStats_InOsmosis(int victim)
 {
-	if(!E_AL_StatusEffects[victim])
-		return false;
-
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(OsmosisDebuffIndex , E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_StatusEffect Apply_StatusEffect;
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
-		}
-		else
-			return true;
-	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
-
-	return false;
+	return CheckBuffIndex(victim, OsmosisDebuffIndex);
 }
 void PotionHudDisplay_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
@@ -4174,7 +4060,7 @@ void StatusEffect_TimerCallDo(int victim)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -4208,7 +4094,7 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -4245,7 +4131,7 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[attacker].Erase(i);
+			Apply_StatusEffect.RemoveStatus();
 			i--;
 			length--;
 			continue;
@@ -4748,6 +4634,13 @@ void StatusEffects_BubbleWand1()
 	StatusEffect_AddGlobal(data);
 }
 
+int StatusIdDepthPerceptionOwner;
+
+int StatusIdDepthPerceptionOwnerFunc()
+{
+	return StatusIdDepthPerceptionOwner;
+}
+int StatusIdDepthPerception;
 void StatusEffects_BubbleWand2()
 {
 	StatusEffect data;
@@ -4796,8 +4689,138 @@ void StatusEffects_BubbleWand2()
 	data.SlotPriority				= 0;
 	data.ElementalLogic				= true;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Depth Percieve");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.ElementalLogic				= true; //shouldnt be removed.
+	StatusIdDepthPerceptionOwner = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Depth Percepted");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.ElementalLogic				= true; //shouldnt be removed.
+	data.OnBuffEndOrDeleted			= DepthPerceptionOnRemove;
+	StatusIdDepthPerception = StatusEffect_AddGlobal(data);
+	
 }
 
+
+stock void StatusEffects_AddDepthPerception_Glow(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(StatusIdDepthPerception , E_StatusEffect::BuffIndex);
+	if(ArrayPosition == -1) //we dont have this buff.
+		return;
+
+	E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+	AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+	if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+	{
+		Apply_StatusEffect.RemoveStatus();
+		
+		if(E_AL_StatusEffects[victim].Length < 1)
+			delete E_AL_StatusEffects[victim];
+		return;
+	}
+	//Add a new glow if we dont have one.
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	int GlowEffectAm;
+//	GlowEffectAm = TF2_CreateGlow(victim, true);
+	int ModelIndex = GetEntProp(victim, Prop_Send, "m_nModelIndex");
+	char model[PLATFORM_MAX_PATH];
+	ModelIndexToString(ModelIndex, model, PLATFORM_MAX_PATH);
+	GlowEffectAm = TF2_CreateGlow_White(model, victim, GetEntPropFloat(victim, Prop_Send, "m_flModelScale"));
+	SetVariantColor(view_as<int>({255, 255, 255, 200}));
+	AcceptEntityInput(GlowEffectAm, "SetGlowColor");
+	i_OwnerEntityEnvLaser[GlowEffectAm] = EntIndexToEntRef(victim); //needed as we cannot get owner.
+	SDKHook(GlowEffectAm, SDKHook_SetTransmit, DepthPerceptionGlowDo_Transmit);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(GlowEffectAm);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+stock bool StatusEffects_AddDepthPerception_Glow_IsaOwner(int victim, int owner)
+{
+	if(!E_AL_StatusEffects[victim])
+		return false;
+
+//	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(StatusIdDepthPerception , E_StatusEffect::BuffIndex);
+	if(ArrayPosition == -1) //we dont have this buff.
+		return false;
+
+	E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+	return Apply_StatusEffect.TotalOwners[owner];
+}
+stock void StatusEffects_AddDepthPerception_UseUpMark(int victim, int owner)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+//	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(StatusIdDepthPerception , E_StatusEffect::BuffIndex);
+	if(ArrayPosition == -1) //we dont have this buff.
+		return;
+
+	E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+	Apply_StatusEffect.TotalOwners[owner] = false;
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	//gone.
+}
+public Action DepthPerceptionGlowDo_Transmit(int entity, int client)
+{
+	if(client <= 0 || client > MaxClients)
+		return Plugin_Continue; //dont do anything.
+
+	if(!HasSpecificBuff(client, "", StatusIdDepthPerceptionOwner))
+		return Plugin_Stop;
+	//the owner itself does not have this buff, do not render.
+	int OwnerAm = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+	if(OwnerAm < 0)
+	{
+		RemoveEntity(entity);
+		//bye bye, our owner does not exist no more.
+		return Plugin_Stop;
+	}
+	if(!StatusEffects_AddDepthPerception_Glow_IsaOwner(OwnerAm, client))
+		return Plugin_Stop;
+	//we are not the owner.
+
+	return Plugin_Continue;
+	//Render for client if possible.
+}
+
+void DepthPerceptionOnRemove(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
 /*
 void StatusEffects_Plasm()
 {
@@ -4936,7 +4959,7 @@ stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Inde
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -4964,7 +4987,7 @@ stock float Status_Effects_GetCustomValue(int victim, int Index)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
@@ -5168,7 +5191,7 @@ stock void NpcStats_PrimalFearChange(int victim, float AddBuff)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			E_AL_StatusEffects[victim].Erase(ArrayPosition);
+			Apply_StatusEffect.RemoveStatus();
 		}
 		else
 		{
