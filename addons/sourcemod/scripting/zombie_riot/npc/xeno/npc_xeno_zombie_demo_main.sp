@@ -191,9 +191,13 @@ public void XenoDemoMain_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	if(npc.m_flCharge_Duration < GetGameTime(npc.index))
+	if(npc.m_flCharge_Duration > GetGameTime(npc.index))
 	{
 		fl_TotalArmor[npc.index] = 0.25;
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
