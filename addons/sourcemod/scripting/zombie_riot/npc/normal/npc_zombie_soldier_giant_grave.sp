@@ -302,9 +302,9 @@ public void SoldierGiant_ClotThink(int iNPC)
 								{
 									
 									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 135.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 150.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0, DMG_CLUB, -1, _, vecHit);
 									
 									
 									Custom_Knockback(npc.index, target, 750.0);
@@ -333,7 +333,7 @@ public void SoldierGiant_ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_THROW");
 				npc.m_flAttackHappens_2 = GetGameTime(npc.index) + 3.0;
 				npc.PlayRangedSound();
-				npc.FireRocket(vecTarget, 20.0, 600.0);
+				npc.FireRocket(vecTarget, 30.0, 600.0);
 			}
 	}
 	else
