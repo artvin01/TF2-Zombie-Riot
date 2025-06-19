@@ -28,8 +28,7 @@ static float MoabSpeed()
 
 static int MoabHealth(bool fortified)
 {
-	float value = 790000.0;	// 200x3x3 + 700x3 + 4000 RGB
-	value *= 0.5;
+	float value = 7900.0;	// 200x3x3 + 700x3 + 4000 RGB
 	
 	if(fortified)
 		value *= 2.0;
@@ -47,7 +46,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value) + (Bloon_Health(1.0,fortified, Bloon_Ceramic) * 27);	// 104x3x3x3 RGB
+	return RoundFloat((value + (Bloon_HPRatio(fortified, Bloon_Ceramic) * 27.0) * Bloon_BaseHealth()));	// 104x3x3x3 RGB
 }
 
 void Zomg_MapStart()

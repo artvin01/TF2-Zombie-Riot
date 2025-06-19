@@ -700,6 +700,7 @@ void NPC_ConfigSetup()
 	BarrackArcherOnMapStart();
 	BarrackArbelastOnMapStart();
 	AlliedKahmlAbilityOnMapStart();
+	RitualistInstinct_MapStart();
 
 	//Combine Barracks
 	Barracks_Combine_Pistol_Precache();
@@ -1695,8 +1696,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/iberia_barracks/npc_barrack_inquisitor.sp"
 #include "npc/ally/iberia_barracks/npc_barrack_lighthouse_guardian.sp"
 
-
 #include "npc/ally/npc_nearl_sword.sp"
+#include "npc/ally/npc_ritualist.sp"
 
 #include "npc/respawn/npc_stalker_combine.sp"
 #include "npc/respawn/npc_stalker_father.sp"

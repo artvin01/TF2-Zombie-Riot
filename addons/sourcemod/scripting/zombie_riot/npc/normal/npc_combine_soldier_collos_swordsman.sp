@@ -176,12 +176,6 @@ methodmap CombineCollos < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 260.0;
-		}
-		
-		
 		func_NPCDeath[npc.index] = CombineCollos_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = CombineCollos_OnTakeDamage;
 		func_NPCThink[npc.index] = CombineCollos_ClotThink;
@@ -336,14 +330,8 @@ public void CombineCollos_ClotThink(int iNPC)
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
+					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 100.0, 250.0, DMG_CLUB, "bullet_tracer02_blue");
+					
 				}
 			}
 			
@@ -381,15 +369,6 @@ public void CombineCollos_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										if(!ShouldNpcDealBonusDamage(target))
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 1000.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										if(!ShouldNpcDealBonusDamage(target))
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);

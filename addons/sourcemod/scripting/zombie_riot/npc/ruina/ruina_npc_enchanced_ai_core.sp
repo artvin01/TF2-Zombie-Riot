@@ -1532,15 +1532,15 @@ void Ruina_Color(int color[4], int wave = -1)
 	if(wave == -1)
 		wave = iRuinaWave();
 		
-	if(wave<=15)
+	if(wave<=10)
 	{
 		color 	= {255, 0, 0, 255};
 	}
-	else if(wave<=30)
+	else if(wave<=20)
 	{
 		color 	= {255, 150, 150, 255};
 	}
-	else if(wave<=45)
+	else if(wave<=30)
 	{	
 		color 	= {255, 200, 200, 255};
 	}
@@ -2472,7 +2472,7 @@ stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result
 }
 int iRuinaWave()
 {
-	int wave = ZR_Waves_GetRound()+1;
+	int wave = Waves_GetRoundScale()+1;
 	wave = RoundToCeil(wave * MinibossScalingReturn());
 	return wave;
 }

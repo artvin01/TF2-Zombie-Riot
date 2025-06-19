@@ -198,11 +198,6 @@ methodmap XenoCombinePoliceSmg < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 280.0;
-		}
-		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -369,14 +364,7 @@ public void XenoCombinePoliceSmg_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 6.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 6.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 					npc.PlayRangedSound();
 				}

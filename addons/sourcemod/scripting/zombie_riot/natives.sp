@@ -139,7 +139,7 @@ bool Native_OnGivenCash(int client, int &cash)
 void Native_OnWaveEnd()
 {
 	Call_StartForward(OnWaveEnd);
-	Call_PushCell(ZR_Waves_GetRound());
+	Call_PushCell(Waves_GetRoundScale());
 	Call_PushCell(Waves_GetMaxRound(false));
 	Call_PushCell(Waves_GetMaxRound(true));
 	Call_Finish();

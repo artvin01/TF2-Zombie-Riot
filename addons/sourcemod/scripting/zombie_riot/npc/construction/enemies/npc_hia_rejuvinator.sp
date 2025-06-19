@@ -285,7 +285,10 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 				SetEntityRenderColor(npc.m_iWearable4, 125, 125, 125, 255);
 			}
 			int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
-			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 50), 1.5);
+			if(b_thisNpcIsABoss[PrimaryThreatIndex])
+				MaxHealth *= 0.25;
+
+			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 25), 1.5);
 
 			ApplyStatusEffect(PrimaryThreatIndex, PrimaryThreatIndex, "Rejuvinator's Medizine", 5.0);
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);

@@ -151,8 +151,8 @@ methodmap SpecialDoctor < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
 
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		

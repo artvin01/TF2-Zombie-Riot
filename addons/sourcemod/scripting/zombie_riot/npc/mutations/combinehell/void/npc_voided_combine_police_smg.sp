@@ -193,13 +193,6 @@ methodmap VoidCombinePoliceSmg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = VoidCombinePoliceSmg_OnTakeDamage;
 		func_NPCThink[npc.index] = VoidCombinePoliceSmg_ClotThink;
 
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
-
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 200);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
@@ -366,15 +359,9 @@ public void VoidCombinePoliceSmg_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-						Elemental_AddVoidDamage(target, npc.index, 5, true, true);
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					Elemental_AddVoidDamage(target, npc.index, 5, true, true);
+					
 					npc.PlayRangedSound();
 				}
 			}

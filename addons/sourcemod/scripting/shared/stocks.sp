@@ -1628,6 +1628,7 @@ public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
 			event.SetInt("healer", clientOriginalIndex);
 			event.SetInt("amount", data.HealAmount);
 			event.FireToClient(clientOriginalIndex);
+			event.Cancel();
 		}
 		if(data.ArmorAmount)
 		{
@@ -1637,6 +1638,7 @@ public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
 			event.SetInt("player_entindex", clientOriginalIndex);
 			event.SetInt("points", data.ArmorAmount * 10);
 			event.FireToClient(clientOriginalIndex);
+			event.Cancel();
 		}
 	}
 	delete h_Arraylist_HealEventAlly[clientOriginalIndex];

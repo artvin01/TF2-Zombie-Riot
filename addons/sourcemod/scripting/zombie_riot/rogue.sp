@@ -2619,9 +2619,9 @@ bool Rogue_Started()	// Waves_Started()
 	return GameState != State_Setup;
 }
 
-int Rogue_GetRound()	// ZR_Waves_GetRound()
+int Rogue_GetRound()	// Waves_GetRoundScale()
 {
-	return (CurrentFloor * 15) + (CurrentCount * 2);
+	return (CurrentFloor * 10) + CurrentCount;
 }
 
 int Rogue_GetFloor()

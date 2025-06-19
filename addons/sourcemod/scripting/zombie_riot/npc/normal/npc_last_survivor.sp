@@ -255,10 +255,6 @@ methodmap FatherGrigori < CClotBody
 		npc.Anger = false;
 		npc.StartPathing();
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 250.0;
-		}
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -477,15 +473,6 @@ public void FatherGrigori_ClotThink(int iNPC)
 						
 						if(target > 0) 
 						{
-							
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
@@ -775,11 +762,6 @@ public void FatherGrigori_OnTakeDamagePost(int victim, int attacker, int inflict
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		else
 		{
 			npc.m_flSpeed = 200.0;
 		}

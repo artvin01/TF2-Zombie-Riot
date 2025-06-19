@@ -149,10 +149,6 @@ methodmap PoisonZombie < CClotBody
 		//IDLE
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flSpeed = 100.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 180.0;
-		}
 		npc.StartPathing();
 		
 		return npc;
@@ -258,11 +254,6 @@ public void PoisonZombie_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
 									}

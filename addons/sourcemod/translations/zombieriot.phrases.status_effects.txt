@@ -117,7 +117,7 @@
 	}
 	"Enfeeble Desc"
 	{
-		"en"	"Lowers Damage Delt by 10％, which lowers over time up untill 0％"
+		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 	}
 	"Iberia's Anti Raid"
 	{
@@ -302,8 +302,8 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attack/reload speed & healrate by 5％."
-		"es"	"Deshabilita algunas habilidades enemigas, mira la Enciclopedia para mas info.\nReduce la velocidad de ataque/recarga y curacion medica en un 5%%."
+		"en"	"Slows attack/reload speed & healrate by 10％."
+		"es"	"Reduce la velocidad de ataque/recarga y curacion medica en un 10％."
 	}
 	"Hardened Aura"
 	{
@@ -548,7 +548,7 @@
 	"Oceanic Singing Desc"
 	{
 		"en"	"Increases damage dealt by 10％"
-		"es"	"Aumenta el daño hecho en un 10%%."
+		"es"	"Aumenta el daño hecho en un 10％."
 	}
 	"Oceanic Scream"
 	{
@@ -558,7 +558,7 @@
 	"Oceanic Scream Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
-		"es"	"Aumenta el daño hecho en un 25%%."
+		"es"	"Aumenta el daño hecho en un 25％."
 	}
 	"War Cry"
 	{
@@ -568,7 +568,7 @@
 	"War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
-		"es"	"Aumenta el daño hecho en un 25%%."
+		"es"	"Aumenta el daño hecho en un 25％."
 	}
 	"Expidonsan War Cry"
 	{
@@ -586,7 +586,7 @@
 	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15％"
-		"es"	"Reduce el daño recibido en un 15%%."
+		"es"	"Reduce el daño recibido en un 15％."
 	}
 	"Very Defensive Backup"
 	{
@@ -604,7 +604,7 @@
 	"UBERCHARGED Desc"
 	{
 		"en"	"Decreases damage taken by 90％.\n{yellow}During raids, you take 50％ reduced damage instead."
-		"es"	"Reduce el daño recibido en un 90%%.\n{yellow}Durante un raid, recibes 50%% en lugar de 90%%."
+		"es"	"Reduce el daño recibido en un 90％.\n{yellow}Durante un raid, recibes 50％ en lugar de 90％."
 	}
 	"Unstoppable Force"
 	{
@@ -630,7 +630,7 @@
 	"Healing Resolve Desc"
 	{
 		"en"	"Decreases damage taken by 5％, Increases damage dealt by 25％"
-		"es"	"Reduce el daño recibido en un 5%%.\nAumenta el daño hecho en un 25%%."
+		"es"	"Reduce el daño recibido en un 5％.\nAumenta el daño hecho en un 25％."
 	}
 	"Healing Adaptiveness All"
 	{
@@ -640,7 +640,7 @@
 	"Healing Adaptiveness All Desc"
 	{
 		"en"	"Decreases damage taken by 5％"
-		"es"	"Reduce el daño recibido en un 5%%."
+		"es"	"Reduce el daño recibido en un 5％."
 	}
 	"Healing Adaptiveness Melee"
 	{
@@ -650,7 +650,7 @@
 	"Healing Adaptiveness Melee Desc"
 	{
 		"en"	"Decreases damage taken from melee sources by 15％"
-		"es"	"Reduce el daño cuerpo a cuerpo recibido en un 15%%."
+		"es"	"Reduce el daño cuerpo a cuerpo recibido en un 15％."
 	}
 	"Healing Adaptiveness Ranged"
 	{
@@ -660,7 +660,7 @@
 	"Healing Adaptiveness Ranged Desc"
 	{
 		"en"	"Decreases damage taken from ranged sources by 15％"
-		"es"	"Reduce el daño a distancia recibido en un 15%%."
+		"es"	"Reduce el daño a distancia recibido en un 15％."
 	}
 	"Self Empowerment"
 	{
@@ -686,7 +686,7 @@
 	"Ancient Melodies Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by a 20％."
-		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 20%%."
+		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 20％."
 	}
 	"Bobs Duck Dubby"
 	{
@@ -1036,7 +1036,7 @@
 	"Burn Desc"
 	{
 		"en"	"Deals True DMG.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
-		"es"	"Hace daño verdadero.\nLa curacion es un -25%% eficiente al quemarse. Si un NPC te aplica fuego de nuevo, recibes un 50%% de daño de quemadura extra.\n{green}Matar un enemigo en fuego dara +10%% de HP extra."
+		"es"	"Hace daño verdadero.\nLa curacion es un -25％ eficiente al quemarse. Si un NPC te aplica fuego de nuevo, recibes un 50％ de daño de quemadura extra.\n{green}Matar un enemigo en fuego dara +10％ de HP extra."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -1315,7 +1315,7 @@
 	"Weapon Overclock Desc"
 	{
 		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
-		"es"	"Aumenta el daño hecho en un 40%%.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33%%.\nOtorga regeneracion continua de mana."
+		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 	}
 	"Weapon Clocking"
 	{
@@ -1326,7 +1326,7 @@
 	"Weapon Clocking Desc"
 	{
 		"en"	"Boosts attack/reload speed & healrate by 5％"
-		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5%%."
+		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5％."
 	}
 	"7 Heavy Souls"
 	{
@@ -1449,5 +1449,20 @@
 	{
 		"en" "Primal Fear Hide"
 	}
-
+	"Liberal Tango"
+	{
+		"en"	"''Liberal Tango''"
+	}
+	"Liberal Tango Desc"
+	{
+		"en"	"+30％ damage dealt, healing done, and damage reduction"
+	}
+	"Paralysis"
+	{
+		"en"	"Paralysis"
+	}
+	"Paralysis Desc"
+	{
+		"en"	"-50％ attack speed and movement speed"
+	}
 }

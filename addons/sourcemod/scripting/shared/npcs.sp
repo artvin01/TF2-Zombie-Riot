@@ -553,7 +553,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 #endif
 
 
-void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0)
+void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0, bool colored = false)
 {
 	if(HasSpecificBuff(entity, "Hardened Aura"))
 		return;
@@ -631,7 +631,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	}
 	else
 	{
-		IgniteTargetEffect(entity);
+		IgniteTargetEffect(entity, .type = colored);
 
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);

@@ -197,7 +197,9 @@ methodmap XenoCombineDeutsch < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
-		npc.m_flSpeed = 270.0;
+		npc.m_flSpeed = 190.0;
+		fl_MeleeArmor[npc.index] = 0.5;
+		fl_RangedArmor[npc.index] = 0.75;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -342,9 +344,9 @@ public void XenoCombineDeutsch_ClotThink(int iNPC)
 								{
 									
 									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
 									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 700.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 1500.0, DMG_CLUB, -1, _, vecHit);
 									
 									Custom_Knockback(npc.index, target, 350.0);
 									
