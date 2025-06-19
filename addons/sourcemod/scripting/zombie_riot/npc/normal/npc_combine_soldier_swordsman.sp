@@ -336,7 +336,7 @@ public void CombineSwordsman_ClotThink(int iNPC)
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				
 				{
-					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 60.0, 100.0, DMG_CLUB, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 				}
 			}
 		}

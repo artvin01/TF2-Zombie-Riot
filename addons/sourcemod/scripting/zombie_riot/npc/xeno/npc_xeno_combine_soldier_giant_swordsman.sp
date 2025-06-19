@@ -350,7 +350,7 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					FireBullet(npc.index, npc.index, npc_vec, vecDir, 20.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
+					FireBullet(npc.index, npc.index, npc_vec, vecDir, 90.0, 150.0, DMG_CLUB, "bullet_tracer02_blue");
 				}
 			}
 			
