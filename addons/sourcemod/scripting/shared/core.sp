@@ -2586,6 +2586,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "func_respawnroomvisualizer"))
 		{
 			b_IsARespawnroomVisualiser[entity] = true;
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{

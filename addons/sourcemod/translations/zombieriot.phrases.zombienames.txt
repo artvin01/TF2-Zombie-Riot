@@ -3979,7 +3979,7 @@
 	}
 	"Cambino Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback (silenceable)"
+		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback"
 		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
 	}
 	"Irani"
@@ -3989,7 +3989,7 @@
 	}
 	"Irani Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"		"Marks an enemy on hit. Deals no melee knockback"
 		"ko"		"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
 	}
 	"Kinat"
@@ -4059,7 +4059,7 @@
 	}
 	"Vivintu Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"		"Marks an enemy on hit. Deals no melee knockback"
 		"ko"		"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
 	}
 	"Cenula"
@@ -4079,7 +4079,7 @@
 	}
 	"Kumbai Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback (silenceable)"
+		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback"
 		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
 	}
 	"Speedus Instantus"
@@ -4229,12 +4229,12 @@
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"	"Marks an enemy on hit. Deals no melee knockback"
 		"ko"	"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"	"Marks an enemy on hit. Deals no melee knockback"
 		"ko"	"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
 	}
 	"W.F. Flowering Darkness"
@@ -5107,5 +5107,9 @@
 	{
 		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10％"
 		"ko"	"바우스 테키커스와 비슷합니다.\n보호막을 부여할 대상을 따라다니며, 이 상태일때는 보호막을 부여하려는 대상의 이동 속도보다 10％ 더 빨라집니다."
+	}
+	"Instinct's Summon"
+	{
+		"en"	"Instinct's Summon"
 	}
 }

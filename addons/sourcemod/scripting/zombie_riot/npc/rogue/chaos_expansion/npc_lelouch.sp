@@ -732,7 +732,7 @@ methodmap Lelouch < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -2082,8 +2082,8 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	char Data[64]; Data = red ? "lelouch;nospawns;noweaver;full" : "nospawns;noweaver;full";
-	if(ZR_Waves_GetRound()+1 < 60)
-		Format(Data, sizeof(Data), "%sforce60", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
+	if(Waves_GetRoundScale()+1 < 40)
+		Format(Data, sizeof(Data), "%sforce40", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{

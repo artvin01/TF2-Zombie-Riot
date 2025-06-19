@@ -260,9 +260,9 @@ methodmap ThePurge < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
-		RaidModeScaling *= 0.19;
+		RaidModeScaling *= 0.25;
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)

@@ -202,11 +202,6 @@ methodmap MedivalChampion < CClotBody
 		npc.m_flMeleeArmor = 0.75;
 		npc.m_flRangedArmor = 1.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");

@@ -343,14 +343,8 @@ public void VoidCombineSoldierShotgun_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+					
 				}
 				npc.PlayRangedSound();				
 			}

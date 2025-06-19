@@ -480,14 +480,14 @@ methodmap Karlas < CClotBody
 		i_NpcWeight[npc.index] = 3;
 		b_bobwave[npc.index] = false;
 		
-		if(StrContains(data, "force15") != -1)
-			i_current_wave[npc.index] = 15;
+		if(StrContains(data, "force10") != -1)
+			i_current_wave[npc.index] = 10;
+		else if(StrContains(data, "force20") != -1)
+			i_current_wave[npc.index] = 20;
 		else if(StrContains(data, "force30") != -1)
 			i_current_wave[npc.index] = 30;
-		else if(StrContains(data, "force45") != -1)
-			i_current_wave[npc.index] = 45;
-		else if(StrContains(data, "force60") != -1)
-			i_current_wave[npc.index] = 60;
+		else if(StrContains(data, "force40") != -1)
+			i_current_wave[npc.index] = 40;
 		
 		if(StrContains(data, "bob") != -1)
 			b_bobwave[npc.index] = true;
@@ -643,7 +643,7 @@ static void Win_Line(int entity)
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
-		wave = ZR_Waves_GetRound()+1;
+		wave = Waves_GetRoundScale()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
@@ -740,7 +740,7 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNC_LockedOn > GameTime)
 		abort_teleport = true;
 	//slicer is about to be ready, don't teleport.
-	if(npc.m_flSlicerBarrageCD < GameTime + 2.0 && i_current_wave[npc.index] >=30)
+	if(npc.m_flSlicerBarrageCD < GameTime + 2.0 && i_current_wave[npc.index] >=20)
 		abort_teleport = true;
 	
 	if(abort_teleport && Karlas_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
@@ -756,7 +756,7 @@ static void Internal_ClotThink(int iNPC)
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0; 
 	}
 	GetTarget(npc);	
-	if(i_current_wave[npc.index] >= 30)
+	if(i_current_wave[npc.index] >= 20)
 		Fire_Wave_Barrage(npc);
 
 	if(npc.m_flNC_LockedOn > GameTime)
@@ -963,6 +963,7 @@ static void GetTarget(Karlas npc)
 	if(npc.m_flGetClosestTargetTime > GameTime)
 		return;
 
+	//stella has NC on karlas, use special targeting logic!
 	if(npc.m_flNC_LockedOn > GameTime)
 	{
 		//stella is dead, but the "lockon" is still valid, kill the lockon
@@ -1006,9 +1007,6 @@ static void GetTarget(Karlas npc)
 
 		return;
 	}
-
-	if(npc.m_bRetreat)
-		return;
 
 	//Karlas will always prefer attacking enemies who are near Stella.
 	if(IsValidAlly(npc.index, npc.Ally))	
@@ -2259,7 +2257,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
 
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);

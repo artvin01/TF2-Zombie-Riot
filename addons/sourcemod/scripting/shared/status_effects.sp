@@ -169,6 +169,10 @@ void InitStatusEffects()
 	StatusEffects_Modifiers();
 	StatusEffects_Explainelemental();
 	StatusEffects_Purge();
+
+#if defined ZR
+	StatusEffects_Ritualist();
+#endif
 }
 
 static int CategoryPage[MAXTF2PLAYERS];
@@ -1774,14 +1778,29 @@ void StatusEffects_Enfeeble()
 	data.ElementalLogic				= true;
 	data.OnTakeDamage_DealFunc 		= Enfeeble_Internal_DamageDealFunc;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Paralysis");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⚡︎");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.5;	// -50% speed
+	data.AttackspeedBuff			= 1.5;	// -50% attack speed
+	data.Positive				= false;
+	data.ShouldScaleWithPlayerCount		= true;
+	data.Slot				= 0;
+	data.SlotPriority			= 0;
+	data.ElementalLogic			= true;
+	data.OnTakeDamage_DealFunc		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 float Enfeeble_Internal_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	// Enfeeble fades out with time
-	float resist = (Apply_StatusEffect.TimeUntillOver - GetGameTime()) / 15.0;
-	if(resist < 0.9)
-		resist = 0.9;
+	float resist = (Apply_StatusEffect.TimeUntillOver - GetGameTime()) / 30.0;
+	if(resist < 0.75)
+		resist = 0.75;
 	
 	return resist;
 }
@@ -2185,14 +2204,14 @@ void StatusEffects_Silence()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Silenced");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "X");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "X"); //dont display above head, so empty
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.AttackspeedBuff			= 1.05;
+	data.AttackspeedBuff			= 1.1;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 0; //0 means ignored
@@ -2427,6 +2446,11 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 }
 stock bool NpcStats_IsEnemySilenced(int victim)
 {
+#if defined ZR
+	if(!b_thisNpcIsARaid[victim])
+		return false;
+#endif
+
 	if(!E_AL_StatusEffects[victim])
 		return false;
 

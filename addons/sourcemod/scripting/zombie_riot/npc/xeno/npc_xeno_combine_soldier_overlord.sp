@@ -213,16 +213,6 @@ methodmap XenoCombineOverlord < CClotBody
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 	//	npc.m_iOverlordComboAttack = 0;
 		
-		if(EscapeModeForNpc)
-		{
-			int amount_of_people = CountPlayersOnRed();
-			int health = 20000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -428,7 +418,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					int player_hurt = FireBullet(npc.index, npc.index, npc_vec, vecDir, 75.0, 150.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+					int player_hurt = FireBullet(npc.index, npc.index, npc_vec, vecDir, 150.0, 150.0, DMG_CLUB, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 					
 					if(IsValidClient(player_hurt))
 					{
@@ -538,7 +528,7 @@ public Action XenoCombineOverlord_Timer_Combo_Attack(Handle Debuff_lightning_hud
 		XenoCombineOverlord npc = view_as<XenoCombineOverlord>(npczombie);
 		if(npc.m_iOverlordComboAttack <= 5)
 		{
-			SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB);
+			SDKHooks_TakeDamage(target, npc.index, npc.index, 30.0, DMG_CLUB);
 			Custom_Knockback(npc.index, target, 250.0);
 			float startPosition[3];
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", startPosition);

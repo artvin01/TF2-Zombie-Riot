@@ -1050,7 +1050,6 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		npc.StartPathing();
 	}
 }
-int i_ruina_Projectile_Particle[MAXENTITIES];
 float fl_ruina_Projectile_dmg[MAXENTITIES];
 float fl_ruina_Projectile_radius[MAXENTITIES];
 float fl_ruina_Projectile_bonus_dmg[MAXENTITIES];
@@ -1161,7 +1160,7 @@ enum struct Ruina_Projectiles
 		if(!IsValidEntity(particle))
 			return -1;
 
-		i_ruina_Projectile_Particle[this.Projectile_Index]= EntIndexToEntRef(particle);
+		i_rocket_particle[this.Projectile_Index]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
 		SetParent(this.Projectile_Index, particle);	
 		SetEntityRenderMode(this.Projectile_Index, RENDER_TRANSCOLOR); //Make it entirely invis.
@@ -1245,7 +1244,7 @@ static Action Remove_Projectile_Timer(Handle Timer, int Ref)
 }
 void Ruina_Remove_Projectile(int entity)
 {
-	int particle = EntRefToEntIndex(i_ruina_Projectile_Particle[entity]);
+	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);
@@ -1532,15 +1531,15 @@ void Ruina_Color(int color[4], int wave = -1)
 	if(wave == -1)
 		wave = iRuinaWave();
 		
-	if(wave<=15)
+	if(wave<=10)
 	{
 		color 	= {255, 0, 0, 255};
 	}
-	else if(wave<=30)
+	else if(wave<=20)
 	{
 		color 	= {255, 150, 150, 255};
 	}
-	else if(wave<=45)
+	else if(wave<=30)
 	{	
 		color 	= {255, 200, 200, 255};
 	}
@@ -2472,7 +2471,7 @@ stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result
 }
 int iRuinaWave()
 {
-	int wave = ZR_Waves_GetRound()+1;
+	int wave = Waves_GetRoundScale()+1;
 	wave = RoundToCeil(wave * MinibossScalingReturn());
 	return wave;
 }

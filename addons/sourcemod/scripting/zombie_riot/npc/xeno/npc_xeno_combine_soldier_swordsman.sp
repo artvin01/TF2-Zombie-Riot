@@ -205,10 +205,6 @@ methodmap XenoCombineSwordsman < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
@@ -361,14 +357,8 @@ public void XenoCombineSwordsman_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.index, npc_vec, vecDir, 20.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.index, npc_vec, vecDir, 10.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
+					FireBullet(npc.index, npc.index, npc_vec, vecDir, 60.0, 150.0, DMG_CLUB, "bullet_tracer02_blue");
+					
 				}
 			}
 			
@@ -403,12 +393,6 @@ public void XenoCombineSwordsman_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 									}

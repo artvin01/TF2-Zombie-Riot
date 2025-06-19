@@ -2726,7 +2726,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			reloadStatus = 2;	// I need to reload now
 		}
-		else if(npc.m_iAttacksTillReload != npc.m_iGunClip)
+		else if(npc.m_iAttacksTillReload < (npc.m_iGunClip * 3 / 4))
 		{
 			reloadStatus = 1;	// Reload when free
 		}

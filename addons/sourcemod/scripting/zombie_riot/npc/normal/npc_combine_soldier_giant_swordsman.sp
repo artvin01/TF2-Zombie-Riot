@@ -188,11 +188,6 @@ methodmap CombineGaint < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 200.0;		
-		}
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -335,7 +330,7 @@ public void CombineGaint_ClotThink(int iNPC)
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
-					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 15.0, 150.0, DMG_BULLET, "bullet_tracer02_blue");
+					FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 80.0, 150.0, DMG_CLUB, "bullet_tracer02_blue");
 				}
 			}
 			

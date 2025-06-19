@@ -316,19 +316,19 @@ methodmap GodAlaxios < CClotBody
 		}
 
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -415,7 +415,7 @@ methodmap GodAlaxios < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
 		npc.Anger = false;
@@ -427,13 +427,13 @@ methodmap GodAlaxios < CClotBody
 		npc.g_TimesSummoned = 0;
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -1402,8 +1402,6 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1200000.0 * MultiGlobalHighHealthBoss), 1, true);		
-			//	GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);
-			// remove villager, he is too unbalanced on bigger maps.	
 			}			
 		}
 	}

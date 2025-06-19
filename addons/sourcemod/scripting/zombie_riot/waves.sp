@@ -144,6 +144,9 @@ static float Freeplay_CashTimeLeft;
 static float Freeplay_TimeExp;
 static float Freeplay_ExpTimeLeft;
 
+static int RelayCurrentRound = -1;
+static float OverrideScalingManually;
+
 public Action Waves_ProgressTimer(Handle timer)
 {
 	if(Classic_Mode() && ProgressTimerType)
@@ -249,7 +252,7 @@ float MinibossScalingReturn()
 }
 public Action NpcEnemyAliveLimit(int client, int args)
 {
-	PrintToConsoleAll("EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
+	ReplyToCommand(client, "EnemyNpcAlive %i | EnemyNpcAliveStatic %i",EnemyNpcAlive, EnemyNpcAliveStatic);
 	return Plugin_Handled;
 }
 
@@ -1007,7 +1010,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
-	float OverrideScalingManually = kv.GetFloat("miniboss_scaling", 0.0);
+	OverrideScalingManually = kv.GetFloat("miniboss_scaling", 0.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1201,12 +1204,19 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	} while(kv.GotoNextKey());
 
 	int waves = Rounds.Length;
-	if(waves > 1)	//incase some wavetype has only 1 waves 
-		waves-=1;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
-	//if we are above 60 waves, we dont change it from 1.0, i.e. it cant go lower!
-	MinibossScalingHandle = (60.0 / float(waves));
-	if(MinibossScalingHandle <= 1.0)
+	if(waves > 58 || waves < 29)
+	{
+		if(waves > 1)	//incase some wavetype has only 1 waves 
+			waves--;	//this makes it scale cleanly on fastmode. since Rounds.Length gets the wave amount PLUS 1. so 40 waves is 41, 60 is 61, etc.
+		//if we are above 40 waves, we dont change it from 1.0, i.e. it cant go lower!
+		MinibossScalingHandle = (40.0 / float(waves));
+		if(MinibossScalingHandle <= 1.0)
+			MinibossScalingHandle = 1.0;
+	}
+	else
+	{
 		MinibossScalingHandle = 1.0;
+	}
 
 	if(OverrideScalingManually != 0.0)
 		MinibossScalingHandle = OverrideScalingManually;
@@ -1414,6 +1424,7 @@ void Waves_RoundEnd()
 	RelayCurrentRound = 0;
 	CurrentWave = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
+	Medival_Difficulty_Level_NotMath = 0;
 
 	if(Rogue_Mode() || Construction_Mode())
 		delete Rounds;
@@ -1885,26 +1896,28 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Spawners_Timer();
 			if(CurrentRound != length)
 			{
-				int ScalingDoWavesDone = RoundToNearest((float(CurrentRound) * (MinibossScalingReturn())));
-				char ExecuteRelayThings[255];
-				for(; RelayCurrentRound <= ScalingDoWavesDone ; RelayCurrentRound++)
+				char ExecuteRelayThings[64];
+
+				// 60 Wave Scaling
+				int ScalingDoWavesDone = CurrentRound;
+				if(OverrideScalingManually != 0.0)
 				{
-					//do not during freeplay.
-					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",ScalingDoWavesDone);
-					ExcuteRelay(ExecuteRelayThings);
-					if(MinibossScalingReturn() != 1.0) //only do this if were doing special logic
-					{
-						switch(RelayCurrentRound)
-						{
-							case 58:
-							{
-								ExcuteRelay("zr_wavefinish_wave_59");
-								RelayCurrentRound++;
-								//some maps need this called!
-							}
-						}
-					}
+					ScalingDoWavesDone = RoundToFloor(float(CurrentRound) * OverrideScalingManually);
 				}
+				else if(length < 59)
+				{
+					ScalingDoWavesDone = RoundToFloor(float(CurrentRound) * (60.001 / float(length - 1)));
+				}
+				
+				for(; RelayCurrentRound < ScalingDoWavesDone ; RelayCurrentRound++)
+				{
+					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%d", RelayCurrentRound + 1);
+					ExcuteRelay(ExecuteRelayThings);
+				}
+
+				// No Scaling
+				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_waveend_%d", CurrentRound);
+				ExcuteRelay(ExecuteRelayThings);
 			}
 
 			bool wasEmptyWave = !round.Waves.Length;
@@ -2102,13 +2115,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				Citizen_SpawnAtPoint();
 				CPrintToChatAll("{gray}Barney: {default}Hey! We came late to assist! Got a friend too!");
 			}
-			else if(CurrentRound == (RoundToNearest(11.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
+			else if(CurrentRound == (RoundToNearest(8.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if((CurrentRound > RoundToNearest(11.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
+			else if((CurrentRound > RoundToNearest(8.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				if(panzer_chance != 10)
@@ -2674,7 +2687,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
 	CPrintToChatAll("{darkred}%t", "Medieval_Difficulty", difficulty);
 	
-	float difficulty_math = Pow(0.9, float(difficulty));
+	float difficulty_math = Pow(0.95, float(difficulty));
 	
 	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
 	{
@@ -2683,6 +2696,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 	//invert the number and then just set the difficulty medival level to the % amount of damage resistance.
 	//This means that you can go upto 100% dmg res but if youre retarded enough to do this then you might aswell have an unplayable experience.
 	
+	Medival_Difficulty_Level_NotMath = difficulty;
 	Medival_Difficulty_Level = difficulty_math; //More armor and damage taken.
 }
 
@@ -2781,7 +2795,7 @@ bool Waves_Started()
 	return (CurrentRound || CurrentWave != -1);
 }
 
-int ZR_Waves_GetRound()
+int Waves_GetRoundScale()
 {
 	if(Construction_Mode())
 		return Construction_GetRound();
@@ -2792,9 +2806,9 @@ int ZR_Waves_GetRound()
 	if(Waves_InFreeplay())
 	{
 		int RoundGive = CurrentRound;
-		if(RoundGive < 60)
+		if(RoundGive < 40)
 		{
-			RoundGive = 60; //should atleast always be treated as round 60.
+			RoundGive = 40; //should atleast always be treated as round 40.
 		}
 		return RoundGive;
 	}

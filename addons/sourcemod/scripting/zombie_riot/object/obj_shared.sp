@@ -994,7 +994,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
-		int scale = ZR_Waves_GetRound();
+		int scale = Waves_GetRoundScale();
 		if(scale < 2)
 		{
 			//damage *= 1.0;

@@ -145,7 +145,7 @@
 	}
 	"Enfeeble Desc"
 	{
-		"en"	"Lowers Damage Delt by 10％, which lowers over time up untill 0％"
+		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 주는 피해량 감소량이 0％까지 떨어집니다."
 	}
 	"Iberia's Anti Raid"
@@ -376,8 +376,8 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attack/reload speed & healrate by 5％."
-		"es"	"Deshabilita algunas habilidades enemigas, mira la Enciclopedia para mas info.\nReduce la velocidad de ataque/recarga y curacion medica en un 5%%."
+		"en"	"Slows attack/reload speed & healrate by 10％."
+		"es"	"Reduce la velocidad de ataque/recarga y curacion medica en un 10％."
 		"ko"	"이 디버프가 부여된 일부 적들의 특수 능력을 비활성화합니다. 백과사전에서 이 디버프와 상호작용하는 대상을 찾아보세요.\n공격 속도, 재장전 속도, 치유 속도가 5％ 감소합니다."
 	}
 	"Hardened Aura"
@@ -682,7 +682,7 @@
 	"Oceanic Singing Desc"
 	{
 		"en"	"Increases damage dealt by 10％"
-		"es"	"Aumenta el daño hecho en un 10%%."
+		"es"	"Aumenta el daño hecho en un 10％."
 		"ko"	"공격 피해량이 10％ 증가합니다."
 	}
 	"Oceanic Scream"
@@ -694,7 +694,7 @@
 	"Oceanic Scream Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
-		"es"	"Aumenta el daño hecho en un 25%%."
+		"es"	"Aumenta el daño hecho en un 25％."
 		"ko"	"공격 피해량이 25％ 증가합니다."
 	}
 	"War Cry"
@@ -706,7 +706,7 @@
 	"War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
-		"es"	"Aumenta el daño hecho en un 25%%."
+		"es"	"Aumenta el daño hecho en un 25%."
 		"ko"	"공격 피해량이 25％ 증가합니다."
 	}
 	"Expidonsan War Cry"
@@ -728,7 +728,7 @@
 	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15％"
-		"es"	"Reduce el daño recibido en un 15%%."
+		"es"	"Reduce el daño recibido en un 15％."
 		"ko"	"받는 피해량이 15％ 감소합니다."
 	}
 	"Very Defensive Backup"
@@ -750,7 +750,7 @@
 	"UBERCHARGED Desc"
 	{
 		"en"	"Decreases damage taken by 90％.\n{yellow}During raids, you take 50％ reduced damage instead."
-		"es"	"Reduce el daño recibido en un 90%%.\n{yellow}Durante un raid, recibes 50%% en lugar de 90%%."
+		"es"	"Reduce el daño recibido en un 90％.\n{yellow}Durante un raid, recibes 50％ en lugar de 90％."
 		"ko"	"받는 피해량이 90％ 감소합니다.\n{yellow}레이드 상태라면, 이 효과가 50％로 감소합니다."
 	}
 	"Unstoppable Force"
@@ -782,7 +782,7 @@
 	"Healing Resolve Desc"
 	{
 		"en"	"Decreases damage taken by 5％, Increases damage dealt by 25％"
-		"es"	"Reduce el daño recibido en un 5%%.\nAumenta el daño hecho en un 25%%."
+		"es"	"Reduce el daño recibido en un 5％.\nAumenta el daño hecho en un 25％."
 		"ko"	"받는 피해량이 5％ 감소합니다.\n공격 피해량이 25％ 증가합니다."
 	}
 	"Healing Adaptiveness All"
@@ -794,7 +794,7 @@
 	"Healing Adaptiveness All Desc"
 	{
 		"en"	"Decreases damage taken by 5％"
-		"es"	"Reduce el daño recibido en un 5%%."
+		"es"	"Reduce el daño recibido en un 5％."
 		"ko"	"받는 피해량이 5％ 감소합니다."
 	}
 	"Healing Adaptiveness Melee"
@@ -806,7 +806,7 @@
 	"Healing Adaptiveness Melee Desc"
 	{
 		"en"	"Decreases damage taken from melee sources by 15％"
-		"es"	"Reduce el daño cuerpo a cuerpo recibido en un 15%%."
+		"es"	"Reduce el daño cuerpo a cuerpo recibido en un 15％."
 		"ko"	"받는 근접 피해량이 15％ 감소합니다."
 	}
 	"Healing Adaptiveness Ranged"
@@ -818,7 +818,7 @@
 	"Healing Adaptiveness Ranged Desc"
 	{
 		"en"	"Decreases damage taken from ranged sources by 15％"
-		"es"	"Reduce el daño a distancia recibido en un 15%%."
+		"es"	"Reduce el daño a distancia recibido en un 15％."
 		"ko"	"받는 피해량이 15％ 감소합니다."
 	}
 	"Self Empowerment"
@@ -850,7 +850,7 @@
 	"Ancient Melodies Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by a 20％."
-		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 20%%."
+		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 20％."
 		"ko"	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다."
 	}
 	"Bobs Duck Dubby"
@@ -1287,7 +1287,7 @@
 	"Burn Desc"
 	{
 		"en"	"Deals True DMG.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
-		"es"	"Hace daño verdadero.\nLa curacion es un -25%% eficiente al quemarse. Si un NPC te aplica fuego de nuevo, recibes un 50%% de daño de quemadura extra.\n{green}Matar un enemigo en fuego dara +10%% de HP extra."
+		"es"	"Hace daño verdadero.\nLa curacion es un -25％ eficiente al quemarse. Si un NPC te aplica fuego de nuevo, recibes un 50％ de daño de quemadura extra.\n{green}Matar un enemigo en fuego dara +10％ de HP extra."
 		"ko"	"트루 대미지를 입힙니다.\n불이 붙은 상태일때는 체력 회복량이 25％ 감소합니다. (NPC 한정 효과)대상에게 불을 다시 붙이면 50％ 의 추가 화상 피해를 줍니다.\n{green}불타고 있는 적을 처치하면 처치시 체력 회복량이 10％ 증가하고 대상의 시체가 조각납니다."
 	}
 	"Zealot's Random Drinks"
@@ -1634,7 +1634,7 @@
 	"Weapon Overclock Desc"
 	{
 		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
-		"es"	"Aumenta el daño hecho en un 40%%.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33%%.\nOtorga regeneracion continua de mana."
+		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 		"ko"	"공격 피해량이 40％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 33％ 증가하고 마나가 빠르게 회복됩니다."
 	}
 	"Weapon Clocking"
@@ -1646,7 +1646,7 @@
 	"Weapon Clocking Desc"
 	{
 		"en"	"Boosts attack/reload speed & healrate by 5％"
-		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5%%."
+		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5％."
 		"ko"	"공격 속도, 재장전 속도, 치유 속도가 5％ 증가합니다."
 	}
 	"7 Heavy Souls"
@@ -1800,5 +1800,20 @@
 		"en" "Primal Fear Hide"
 		"ko" "원초적 두려움 숨겨짐"
 	}
-
+	"Liberal Tango"
+	{
+		"en"	"''Liberal Tango''"
+	}
+	"Liberal Tango Desc"
+	{
+		"en"	"+30％ damage dealt, healing done, and damage reduction"
+	}
+	"Paralysis"
+	{
+		"en"	"Paralysis"
+	}
+	"Paralysis Desc"
+	{
+		"en"	"-50％ attack speed and movement speed"
+	}
 }

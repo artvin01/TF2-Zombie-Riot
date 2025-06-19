@@ -183,7 +183,7 @@ methodmap MedivalBuilding < CClotBody
 	
 	public MedivalBuilding(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(200.0), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
+		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(1000.0, true), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -218,9 +218,9 @@ methodmap MedivalBuilding < CClotBody
 		}
 		i_NpcIsABuilding[npc.index] = true;
 
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 	
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -228,6 +228,8 @@ methodmap MedivalBuilding < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
+		if(f_PlayerScalingBuilding > 10.0)
+			f_PlayerScalingBuilding = 10.0;
 
 		i_currentwave[npc.index] = RoundToNearest(npc.m_flWaveScale * 10.0);
 

@@ -331,14 +331,8 @@ public void SeabornCombineSoldierShotgun_ClotThink(int iNPC)
 					vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+					
 				}
 				npc.PlayRangedSound();				
 			}
@@ -379,15 +373,8 @@ public void SeabornCombineSoldierShotgun_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
-										Elemental_AddNervousDamage(target, npc.index, 10);
-									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
+									Elemental_AddNervousDamage(target, npc.index, 10);
 									
 									Custom_Knockback(npc.index, target, 250.0);
 									

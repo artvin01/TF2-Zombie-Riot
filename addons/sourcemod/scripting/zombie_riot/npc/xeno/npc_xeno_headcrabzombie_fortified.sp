@@ -157,10 +157,6 @@ methodmap XenoFortifiedHeadcrabZombie < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 150.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 220.0;
-		}
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
@@ -272,14 +268,6 @@ public void XenoFortifiedHeadcrabZombie_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
@@ -331,14 +319,7 @@ public Action XenoFortifiedHeadcrabZombie_OnTakeDamage(int victim, int &attacker
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			if(EscapeModeForNpc)
-			{
-				npc.m_flSpeed = 310.0;
-			}
-			else
-			{
-				npc.m_flSpeed = 260.0;
-			}
+			npc.m_flSpeed = 260.0;
 			npc.bXenoInfectedSpecialHurt = true;
 		}
 	}

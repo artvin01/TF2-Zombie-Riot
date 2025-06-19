@@ -3667,4 +3667,20 @@
 		"en" "Koshi's Plasm-inator"
 		"ko" "코쉬의 플라즈마 활성화장치"
 	}
+	"Chemical Spewer"
+	{
+		"en"	"Chemical Spewer"
+	}
+	"The Ritualist"
+	{
+		"en"	"The Ritualist"
+	}
+	"Necrosis Ritualist"
+	{
+		"en"	"The Decrescendo"
+	}
+	"Impairment Ritualist"
+	{
+		"en"	"The Crimson"
+	}
 }

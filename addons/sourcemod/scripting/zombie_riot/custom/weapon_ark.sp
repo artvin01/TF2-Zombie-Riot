@@ -593,20 +593,21 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			float flAng[3]; // original
 			
 			GetAttachment(victim, "effect_hand_r", flPos, flAng);
-			
-			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
-
 
 		//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
-			
-			DataPack pack = new DataPack();
-			pack.WriteCell(EntIndexToEntRef(particler));
-			pack.WriteFloat(Entity_Position[0]);
-			pack.WriteFloat(Entity_Position[1]);
-			pack.WriteFloat(Entity_Position[2]);
-			
-			RequestFrame(TeleportParticleArk, pack);
+			float diameter = float(4 * 2);
+			int r = 200;
+			int g = 125;
+			int b = 125;
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, r, g, b, 60);
+			TE_SetupBeamPoints(flPos, Entity_Position, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(flPos, Entity_Position, g_Ruina_BEAM_Combine_Black, 0, 0, 66, 0.22, ClampBeamWidth(diameter * 0.4 * 1.28), ClampBeamWidth(diameter * 0.4 * 1.28), 0, 1.0,  {255,255,255,125}, 3);
+			TE_SendToAll(0.0);
 
+			TE_SetupBeamPoints(flPos, Entity_Position, Shared_BEAM_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, colorLayer4, 1);
+			TE_SendToAll(0.0);
 			float ReflectPosVec[3];
 			CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
 
@@ -698,24 +699,6 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 }
 
 
-
-
-
-void TeleportParticleArk(DataPack pack)
-{
-	pack.Reset();
-	int particleEntity = EntRefToEntIndex(pack.ReadCell());
-	float Vec_Pos[3];
-	Vec_Pos[0] = pack.ReadFloat();
-	Vec_Pos[1] = pack.ReadFloat();
-	Vec_Pos[2] = pack.ReadFloat();
-	
-	if(IsValidEntity(particleEntity))
-	{
-		TeleportEntity(particleEntity, Vec_Pos);
-	}
-	delete pack;
-}
 
 
 public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int slot)

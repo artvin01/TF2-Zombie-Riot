@@ -187,11 +187,6 @@ methodmap MedivalCrossbowMan < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-
 	/*	
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
 		SetVariantString("1.0");
@@ -345,7 +340,7 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 			npc.PlayMeleeSound();
 			
 			float damage = 20.0;
-			if(Medival_Difficulty_Level < 0.93)
+			if(Medival_Difficulty_Level_NotMath >= 2)
 			{
 				damage = 30.0;
 			}
