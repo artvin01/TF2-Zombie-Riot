@@ -25,20 +25,34 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 #define FRACTAL_KIT_SHIELDSOUND2 "weapons/rescue_ranger_charge_02.wav"
 
 #define FRACTAL_KIT_PASSIVE_OVERDRIVE_COST 1.0
-#define FRACTAL_KIT_FANTASIA_COST 5.0
-#define FRACTAL_KIT_FANTASIA_GAIN 5.0		//how many crystals the player gains when fantasia does dmg
+#define FRACTAL_KIT_FANTASIA_COST 7.0
+#define FRACTAL_KIT_FANTASIA_GAIN 3.0		//how many crystals the player gains when fantasia does dmg
 #define FRACTAL_KIT_STARFALL_COST 75.0
 #define FRACTAL_KIT_FANTASIA_ONHIT_LOSS 0.8	//how much dmg is reduced every time fantasia does damage
 #define FRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
 #define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.15
-#define FRACTAL_KIT_STARFALL_FALLOFF 0.75	//how much to reduce dmg per bounce/jump
+#define FRACTAL_KIT_STARFALL_FALLOFF 0.7	//how much to reduce dmg per bounce/jump
 static float fl_max_crystal_amt[MAXTF2PLAYERS];
 static float fl_current_crystal_amt[MAXTF2PLAYERS];
-
+static float fl_starfall_CD[MAXTF2PLAYERS];
 /*
-
 	//the anim npc has the medic backpack, this annoys me greatly
 */
+static float f_HarvesterM2CD[] = {
+	30.0,	//case -1:
+	27.0,	//case 0:
+	24.0,	//case 1:
+	21.0,	//case 2:
+	18.0,	//case 3:
+	15.0,	//case 4:
+	12.0,	//case 5:
+	9.0,	//case 6:
+	6.0,	//case 7:
+};
+static float f_GetHarvesterM2_CD(int pap)
+{
+	return f_HarvesterM2CD[pap+1];
+}
 
 static void Adjust_Crystal_Stats(int client, int weapon)
 {
@@ -350,12 +364,13 @@ static void Fire_Beam(int client, int weapon, bool update)
 	{
 		Player_Laser_Logic Laser;
 		Laser.client = client;
-		float dps = 100.0;
+		float dps = 130.0;
 		float range = fl_main_laser_distance[client];
 		
 		if(b_overdrive_active[client])
 		{
-			range *=1.25;
+			dps *= 1.1;
+			range *=1.15;
 			fl_current_crystal_amt[client] -=FRACTAL_KIT_PASSIVE_OVERDRIVE_COST;
 		}
 		range *= Attributes_Get(weapon, 103, 1.0);
@@ -368,7 +383,7 @@ static void Fire_Beam(int client, int weapon, bool update)
 		Laser.Damage = dps;
 		Laser.Radius = Radius;
 		Laser.damagetype = DMG_PLASMA;
-		Laser.Deal_Damage();
+		PlayerLaserDoDamageCombined(Laser, dps, dps*0.3);
 		fl_fractal_laser_dist[client] = GetVectorDistance(Laser.End_Point, flPos);
 		EndLoc = Laser.End_Point;
 		
@@ -944,6 +959,7 @@ public void Kit_Fractal_OverDrive(int client, int weapon, bool &result, int slot
 static int i_targeted_ID[MAXTF2PLAYERS][FRACTAL_KIT_STARFALL_JUMP_AMT];
 public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 {
+	float GameTime = GetGameTime();
 	if(b_cannon_animation_active[client])
 	{
 		return;
@@ -954,6 +970,13 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		return;
+	}
+	if(fl_starfall_CD[client] > GameTime)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "StarFall is Recharging [%.1fs]", fl_starfall_CD[client]-GetGameTime());
 		return;
 	}
 	int mana_cost;
@@ -967,6 +990,8 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 		return;
 	}
+
+	fl_starfall_CD[client] = GameTime + f_GetHarvesterM2_CD(Pap(weapon));
 
 	Current_Mana[client] -=mana_cost;
 	SDKhooks_SetManaRegenDelayTime(client, 2.5);
@@ -1047,7 +1072,10 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 			for(int i= 0 ; i < FRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
 			{
 				if(i_entity_targeted[entitys] == EntRefToEntIndex(i_targeted_ID[client][i]))
+				{
 					the_same =true;
+					break;
+				}
 			}
 			if(the_same)
 				continue;
@@ -1107,7 +1135,7 @@ static Action Timer_StarfallIon(Handle Timer, DataPack pack)
 
 	return Plugin_Stop;
 }
-public Action SetTransmitHarvester(int entity, int client)
+Action SetTransmitHarvester(int entity, int client)
 {
 	int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
 	if(owner == client)
@@ -1137,7 +1165,6 @@ public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "The Harvester is Recharging [%.1fs]", struct_Harvester_Data[client].Lockout-GetGameTime());
 		return;
 	}
@@ -1569,12 +1596,15 @@ static void Hud(int client, int weapon)
 					else
 						Format(HUDText, sizeof(HUDText), "Hold [M1] To Cast ĄMana HarvesterČ");
 				}
-				
 
-				if(fl_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
+				if(fl_starfall_CD[client] > GameTime)
+					Format(HUDText, sizeof(HUDText), "%s\nĄStarFallČ Recharging [%.1f] | [Cost:%.0f]",HUDText, fl_starfall_CD[client] - GameTime, FRACTAL_KIT_STARFALL_COST);
+				else if(fl_current_crystal_amt[client] >= FRACTAL_KIT_STARFALL_COST)
 					Format(HUDText, sizeof(HUDText), "%s\nPress [M2] To Cast ĄStarFallČ [Cost:%.0f]",HUDText, FRACTAL_KIT_STARFALL_COST);
 				else
 					Format(HUDText, sizeof(HUDText), "%s\nNot Enough Crystals To Cast ĄStarFallČ [%.0f/%.0f]",HUDText, fl_current_crystal_amt[client], FRACTAL_KIT_STARFALL_COST);
+
+				
 				//m1: mana harvester.
 				//m2: Mana Ion.
 			}
@@ -1598,12 +1628,10 @@ static void Hud(int client, int weapon)
 	}
 
 	Format(HUDText, sizeof(HUDText), "%s\nĄCrystals:Ę%.0f/%.0fĖČ",HUDText, fl_current_crystal_amt[client], fl_max_crystal_amt[client]);
-		
 
 	Format_Fancy_Hud(HUDText);
 
 	PrintHintText(client, HUDText);
-	
 }
 static void Fractal_Weapon_LastMannHandle(int weapon, int attribute, float value)
 {
@@ -1703,6 +1731,7 @@ float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePositio
 }
 void Fractal_Kit_MapStart()
 {
+	Zero(fl_starfall_CD);
 	Zero(fl_max_crystal_amt);
 	Zero(fl_fractal_laser_trace_throttle);
 	Zero(fl_hud_timer);
