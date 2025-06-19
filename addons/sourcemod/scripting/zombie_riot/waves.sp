@@ -1424,6 +1424,7 @@ void Waves_RoundEnd()
 	RelayCurrentRound = 0;
 	CurrentWave = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
+	Medival_Difficulty_Level_NotMath = 0;
 
 	if(Rogue_Mode() || Construction_Mode())
 		delete Rounds;
@@ -2686,7 +2687,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
 	CPrintToChatAll("{darkred}%t", "Medieval_Difficulty", difficulty);
 	
-	float difficulty_math = Pow(0.9, float(difficulty));
+	float difficulty_math = Pow(0.95, float(difficulty));
 	
 	if(difficulty_math < 0.1) //Just make sure that it doesnt go below.
 	{
@@ -2695,6 +2696,7 @@ public void Medival_Wave_Difficulty_Riser(int difficulty)
 	//invert the number and then just set the difficulty medival level to the % amount of damage resistance.
 	//This means that you can go upto 100% dmg res but if youre retarded enough to do this then you might aswell have an unplayable experience.
 	
+	Medival_Difficulty_Level_NotMath = difficulty;
 	Medival_Difficulty_Level = difficulty_math; //More armor and damage taken.
 }
 

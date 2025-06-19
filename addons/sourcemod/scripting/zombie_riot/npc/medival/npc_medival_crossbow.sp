@@ -340,7 +340,7 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 			npc.PlayMeleeSound();
 			
 			float damage = 20.0;
-			if(Medival_Difficulty_Level < 0.93)
+			if(Medival_Difficulty_Level_NotMath >= 2)
 			{
 				damage = 30.0;
 			}

@@ -1363,12 +1363,9 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		{
 			float TotalMeleeRes = 1.0;
 #if defined ZR
-			if(!NpcStats_IsEnemySilenced(victim))
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
-				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-				{
-					TotalMeleeRes *= Medival_Difficulty_Level;
-				}
+				TotalMeleeRes *= Medival_Difficulty_Level;
 			}
 
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
@@ -1404,12 +1401,9 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			{
 				TotalMeleeRes *= 1.25;
 			}
-			if(!NpcStats_IsEnemySilenced(victim))
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
-				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-				{
-					TotalMeleeRes *= Medival_Difficulty_Level;
-				}
+				TotalMeleeRes *= Medival_Difficulty_Level;
 			}
 #endif
 			TotalMeleeRes *= fl_RangedArmor[victim];

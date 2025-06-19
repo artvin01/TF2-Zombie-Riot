@@ -337,7 +337,7 @@ public void HandleAnimEventMedival_Arbalest(int entity, int event)
 			npc.PlayMeleeSound();
 			
 			float damage = 40.0;
-			if(Medival_Difficulty_Level < 0.93)
+			if(Medival_Difficulty_Level_NotMath >= 2)
 			{
 				damage = 55.0;
 			}
