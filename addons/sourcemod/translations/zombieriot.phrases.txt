@@ -2472,6 +2472,10 @@
 		"fr"		"Menu Extra"
 		"chi"		"建筑管理菜单"
 	}
+	"Destroy Building Select"
+	{
+		"en"		"Sell viewed building\n(Extra Menu [F])"
+	}
 	"Destroy all your non-Mounted Buildings"
 	{
 		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
@@ -2601,7 +2605,7 @@
 	}
 	"Xeno_Lore_1"
 	{
-		"en"		"The infection grow and expands per second...\nSilvester can be seein the distance running to you."
+		"en"		"The infection grows and expands per second...\nSilvester can be seen in the distance running to you."
 	}
 	"Xeno_Lore_2"
 	{
@@ -3635,7 +3639,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"(3) You trying to find out what xeno is... Silverster and waldch are here to stop you from getting infected."
+		"en"	"(3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
 	}
 	"Xeno Hard Desc"
 	{
