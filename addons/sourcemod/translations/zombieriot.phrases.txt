@@ -2599,6 +2599,18 @@
 	{
 		"en"		"You have an uneasy feeling, as if you entered the wrong path... this is BAD."
 	}
+	"Xeno_Lore_1"
+	{
+		"en"		"The infection grow and expands per second...\nSilvester can be seein the distance running to you."
+	}
+	"Xeno_Lore_2"
+	{
+		"en"		"Each passing lifetime of a cell, this xeno virus mutates."
+	}
+	"Xeno_Lore_3"
+	{
+		"en"		"This virus has just started a few hours ago, and already is mutating them to no end."
+	}
 	"Xeno_Wave_2"
 	{
 		"en"		"Silvester and Waldch didnt attack you for no reason."

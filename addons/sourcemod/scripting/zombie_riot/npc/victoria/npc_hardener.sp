@@ -291,29 +291,17 @@ public void VictorianHardener_ClotThink(int iNPC)
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth *= 0.25;
 
-				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 45.0, 1.0);
-					
-					float Armortogive = 75.0;
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						Armortogive *= 2.0;
-					}
-
-					GrantEntityArmor(PrimaryThreatIndex, false, 1.5, 0.75, 0, Armortogive);
-				}
-				else
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				}
+				if(NpcStats_VictorianCallToArms(npc.index))
+					MaxHealth *= 2.0;
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 35), 1.0);
+				if(NpcStats_VictorianCallToArms(npc.index))
+					MaxHealth *= 2.0;
+				GrantEntityArmor(PrimaryThreatIndex, false, 1.5, 0.75, 0, float(MaxHealth / 200));
+				
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
 				npc.FaceTowards(WorldSpaceVec, 2000.0);

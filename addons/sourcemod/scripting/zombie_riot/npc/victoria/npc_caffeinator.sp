@@ -309,26 +309,18 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 					npc.m_bnew_target = true;
 				}
 
-				if(!NpcStats_IsEnemySilenced(npc.index))
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth *= 0.25;
+
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 35), 1.0);
+				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated", 1.1);
+				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated Drain", 1.1);
+				if(NpcStats_VictorianCallToArms(npc.index))
 				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 750.0, 1.0);
-					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated", 1.1);
-					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated Drain", 1.1);
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Hussar's Warscream", 1.1);
-					}
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Hussar's Warscream", 1.1);
 				}
-				else
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				}
+
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
 				npc.FaceTowards(WorldSpaceVec, 2000.0);
