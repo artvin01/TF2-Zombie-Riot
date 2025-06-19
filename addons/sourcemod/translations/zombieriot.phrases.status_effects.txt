@@ -146,7 +146,7 @@
 	"Enfeeble Desc"
 	{
 		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
-		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 주는 피해량 감소량이 0％까지 떨어집니다."
+		"ko"	"적에게 입히는 공격 피해량이 25％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 주는 피해량 감소량이 0％까지 떨어집니다."
 	}
 	"Iberia's Anti Raid"
 	{
@@ -378,7 +378,7 @@
 	{
 		"en"	"Slows attack/reload speed & healrate by 10％."
 		"es"	"Reduce la velocidad de ataque/recarga y curacion medica en un 10％."
-		"ko"	"이 디버프가 부여된 일부 적들의 특수 능력을 비활성화합니다. 백과사전에서 이 디버프와 상호작용하는 대상을 찾아보세요.\n공격 속도, 재장전 속도, 치유 속도가 5％ 감소합니다."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 10％ 감소합니다."
 	}
 	"Hardened Aura"
 	{
@@ -1803,17 +1803,21 @@
 	"Liberal Tango"
 	{
 		"en"	"''Liberal Tango''"
+		"ko"	"''리버럴 탱고''"
 	}
 	"Liberal Tango Desc"
 	{
 		"en"	"+30％ damage dealt, healing done, and damage reduction"
+		"ko"	"공격 피해량, 치유 속도 및 피해 저항력 +30％ 증가."
 	}
 	"Paralysis"
 	{
 		"en"	"Paralysis"
+		"ko"	"마비"
 	}
 	"Paralysis Desc"
 	{
 		"en"	"-50％ attack speed and movement speed"
+		"ko"	"이동 속도, 공격 속도가 -50％ 감소합니다."
 	}
 }

@@ -1393,7 +1393,7 @@
 		"chi"	   	"异界药水"
 		"ko"		"2차원 포션"
 	}
-	"Master Scorcerer"
+	"Master Sorcerer"
 	{
 		"en"		"Master Sorcerer"
 		"fr"		"Maître Magicien"
@@ -1503,6 +1503,11 @@
 		"chi"	   	"鲍勃的苹果"
 		"ko"		"밥의 건강한 사과"
 	}
+	"Spookmaster's Strong Bone Amplifier"
+	{
+		"en"		"Spookmaster's Strong Bone Amplifier"
+		"ko"		"Spookmaster의 ''골''때리게 강한 증폭기"
+	}
 	"Medigun Upgrades"//Medigun Upgrades HERE!!!
 	{
 		"en"		"Medigun Upgrades"
@@ -1536,6 +1541,16 @@
 		"chi"	   	"教授证书"
 		"ko"		"의료교수 자격증"
 	}
+	"Death Certificate"
+	{
+		"en"		"Death Certificate"
+		"ko"		"사망 증명서"
+	}
+	"Reaper's Certificate"
+	{
+		"en"		"Reaper's Certificate"
+		"ko"		"사신의 자격증"
+	}
 	"Hell's Certificate"
 	{
 		"en"		"Hell's Certificate"
@@ -1557,6 +1572,11 @@
 		"nl"		"Medicus's verloren Medische Licentie"
 		"chi"	   	"Medic的行医执照"
 		"ko"		"메딕의 잃어버린 의사 자격증"
+	}
+	"Helena's Elite Medicine"
+	{
+		"en"		"Helena's Elite Medicine"
+		"ko"		"헬레나의 전문 의약품"
 	}
 	"Level Perks"//Lvl Perks here
 	{
@@ -2531,7 +2551,207 @@
 	"Abyssal Greatsword"
 	{
 		"en"		"Abyssal Greatsword"
-		"ko"		"심연의 대검"
+		"ko"		"심해의 대검"
+	}
+	"Sensal's Scythe"
+	{
+		"en"		"Sensal's Scythe"
+		"ko"		"센살의 낫"
+	}
+	"Steel Dagger"
+	{
+		"en"		"Steel Dagger"
+		"ko"		"강철 단검"
+	}
+	"Expidonsan Energy Blade"
+	{
+		"en"		"Expidonsan Energy Blade"
+		"ko"		"엑스피돈사 에너지 블레이드"
+	}
+	"Old Wooden Board"
+	{
+		"en"		"Old Wooden Board"
+		"ko"		"오래된 나무 방패"
+	}
+	"Broken Rapier"
+	{
+		"en"		"Broken Rapier"
+		"ko"		"망가진 레이피어"
+	}
+	"Angelica Shotgonnus"
+	{
+		"en"		"Angelica Shotgonnus"
+		"ko"		"안젤리카 샷거누스"
+	}
+	"Basic Wand"
+	{
+		"en"		"Basic Wand"
+		"ko"		"기본 완드"
+	}
+	"Staff of the Skull Servants"
+	{
+		"en"		"Staff of the Skull Servants"
+		"ko"		"저주받은 하인 스태프"
+	}
+	"Junker Staff"
+	{
+		"en"		"Junker Staff"
+		"ko"		"정커 스태프"
+	}
+	"Wand of Osmosis"
+	{
+		"en"		"Wand of Osmosis"
+		"ko"		"삼투성 완드"
+	}
+	"Prismatic Wand"
+	{
+		"en"		"Prismatic Wand"
+		"ko"		"무지개 완드"
+	}
+	"Psychokinesis"
+	{
+		"en"		"Psychokinesis"
+		"ko"		"염동력"
+	}
+	"Impact Lance"
+	{
+		"en"		"lmpact Lance"
+		"ko"		"임팩트 랜스"
+	}
+	"Ranged Weapons"
+	{
+		"en"		"Ranged Weapons"
+		"ko"		"원거리 무기"
+	}
+	"Casino"
+	{
+		"en"		"Casino"
+		"ko"		"카지노"
+	}
+	"Rusty Rifle"
+	{
+		"en"		"Rusty Rifle"
+		"ko"		"녹슨 저격소총"
+	}
+	"The Trash Cannon"
+	{
+		"en"		"The Trash Cannon"
+		"ko"		"폐기물 포"
+	}
+	"Outlaw's Railcannon"
+	{
+		"en"		"Outlaw's Railcannon"
+		"ko"		"무법자의 레일 캐논"
+	}
+	"Compacted Rounds"
+	{
+		"en"		"Compacted Rounds"
+		"ko"		"압축된 탄약"
+	}
+	"Expidonsan's Black hole Storage Unit"
+	{
+		"en"		"Expidonsan's Black hole Storage Unit"
+		"ko"		"엑스피돈산의 블랙홀 저장장치"
+	}
+	"Void's Glimpse"
+	{
+		"en"		"Void's Glimpse"
+		"ko"		"공허의 눈길"
+	}
+	"Magical Book"
+	{
+		"en"		"Magical Book"
+		"ko"		"마법의 책"
+	}
+	"The Lost Pages of Mazeat"
+	{
+		"en"		"The Lost Pages of Mazeat"
+		"ko"		"마제트의 잃어버린 페이지"
+	}
+	"Ruina's Sacret Magic Ways"
+	{
+		"en"		"Ruina's Sacret Magic Ways"
+		"ko"		"루이나의 신성한 마법술식"
+	}
+	"Support Weapons"
+	{
+		"en"		"Support Weapons"
+		"ko"		"지원 무기"
+	}
+	"Support Upgrades"
+	{
+		"en"		"Support Upgrades"
+		"ko"		"지원 무기 개선"
+	}
+	"Super-Uber-Saw"
+	{
+		"en"		"Super-Uber-Saw"
+		"ko"		"슈퍼 우버톱"
+	}
+	"The Health Hose"
+	{
+		"en"		"The Health Hose"
+		"ko"		"치유의 호스"
+	}
+	"Ancient Banner"
+	{
+		"en"		"Ancient Banner"
+		"ko"		"고대의 깃발"
+	}
+	"Weapon Kits"
+	{
+		"en"		"Weapon Kits"
+		"ko"		"무기 키트"
+	}
+	"Morphine"
+	{
+		"en"		"Morphine"
+		"ko"		"모르핀"
+	}
+	"Misc Items"
+	{
+		"en"		"Misc Items"
+		"ko"		"기타 아이템"
+	}
+	"Builder Weapons"
+	{
+		"en"		"Builder Weapons"
+		"ko"		"건축가 무기"
+	}
+	"Builders Axe"
+	{
+		"en"		"Builders Axe"
+		"ko"		"건축가의 도끼"
+	}
+	"Worn Expidonsan Repair Device"
+	{
+		"en"		"Worn Expidonsan Repair Device"
+		"ko"		"마모된 엑스피돈사 수리 장치"
+	}
+	"The Zealot"
+	{
+		"en"		"The Zealot"
+		"ko"		"광전사"
+	}
+	"King's Broken Blade"
+	{
+		"en"		"King's Broken Blade"
+		"ko"		"왕의 부러진 검"
+	}
+	"Therapy"
+	{
+		"en"		"Therapy"
+		"ko"		"치료사"
+	}
+	"Expidonsa's Prototype"
+	{
+		"en"		"Expidonsa's Prototype"
+		"ko"		"엑스피돈사인의 프로토타입"
+	}
+	"The Blitzkrieg"
+	{
+		"en"		"The Blitzkrieg"
+		"ko"		"블리츠크리그"
 	}
 	"Builder Gear"
 	{
@@ -3670,17 +3890,21 @@
 	"Chemical Spewer"
 	{
 		"en"	"Chemical Spewer"
+		"ko"	"화학물질 분사기"
 	}
 	"The Ritualist"
 	{
 		"en"	"The Ritualist"
+		"ko"	"의식술사"
 	}
 	"Necrosis Ritualist"
 	{
 		"en"	"The Decrescendo"
+		"ko"	"셈여림표"
 	}
 	"Impairment Ritualist"
 	{
 		"en"	"The Crimson"
+		"ko"	"그림자처럼"
 	}
 }

@@ -1552,7 +1552,7 @@
 		"pt"		"Sobrevive contra ondas de zumbis até normalmente 40 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
 		"nl"		"Probeer om tot wel 40 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
 		"chi"       "任务目标：在一波又一波的僵尸潮中生存下来\n通过击杀僵尸获得的现金奖励购买各种强力的武器\n帮助你的队友一起撑到黎明的到来~"
-		"ko" 		"일반적으로 60 웨이브의 좀비 물량에서 살아남아야합니다.\n무기를 구입하고 바리케이드를 세워 생존하세요.\n팀워크를 항상 중시하고 돈을 너무 아끼지 마세요.\n\n 무엇을 사야 할지 모르겠다면, 원하는 고가 무기를 구매하고 개선 탭에서 해당 무기 유형에 대한 개선을 구매하세요.\n패시브를 구매하면 생존력이 더욱 증가합니다.\n나머지는 자연스럽게 알게 될 것입니다."
+		"ko" 		"일반적으로 40 웨이브의 좀비 물량에서 살아남아야합니다.\n무기를 구입하고 바리케이드를 세워 생존하세요.\n팀워크를 항상 중시하고 돈을 너무 아끼지 마세요.\n\n 무엇을 사야 할지 모르겠다면, 원하는 고가 무기를 구매하고 개선 탭에서 해당 무기 유형에 대한 개선을 구매하세요.\n패시브를 구매하면 생존력이 더욱 증가합니다.\n나머지는 자연스럽게 알게 될 것입니다."
 	}
 	"Debuff/Buff Explain 1"
 	{
@@ -2772,6 +2772,7 @@
 	"Destroy Building Select"
 	{
 		"en"		"Sell viewed building\n(Extra Menu [F])"
+		"ko"		"시야 내에 보이는 구조물 판매\n(추가 메뉴 [F])"
 	}
 	"Destroy all your non-Mounted Buildings"
 	{
@@ -2921,14 +2922,17 @@
 	"Xeno_Lore_1"
 	{
 		"en"		"The infection grows and expands per second...\nSilvester can be seen in the distance running to you."
+		"ko"		"이 감염은 1초 단위로 계속해서 성장하고 퍼져나가고 있습니다...\n실베스터가 멀리서 당신을 보고는 달려오는게 보입니다."
 	}
 	"Xeno_Lore_2"
 	{
 		"en"		"Each passing lifetime of a cell, this xeno virus mutates."
+		"ko"		"세포가 새로 태어날때마다, 이 제노 바이러스가 그것을 변이시키고 있습니다."
 	}
 	"Xeno_Lore_3"
 	{
 		"en"		"This virus has just started a few hours ago, and already is mutating them to no end."
+		"ko"		"이 바이러스는 불과 몇 시간 전에 시작되었습니다만, 벌써부터 끝없는 변이를 통해 겉잡을 수 없게 되었습니다."
 	}
 	"Xeno_Wave_2"
 	{

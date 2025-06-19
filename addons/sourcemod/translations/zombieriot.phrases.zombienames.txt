@@ -3980,7 +3980,7 @@
 	"Cambino Desc"
 	{
 		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback"
-		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
+		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 합니다. 이 적의 근접 공격은 넉백력이 0입니다."
 	}
 	"Irani"
 	{
@@ -3990,7 +3990,7 @@
 	"Irani Desc"
 	{
 		"en"		"Marks an enemy on hit. Deals no melee knockback"
-		"ko"		"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
+		"ko"		"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다."
 	}
 	"Kinat"
 	{
@@ -4060,7 +4060,7 @@
 	"Vivintu Desc"
 	{
 		"en"		"Marks an enemy on hit. Deals no melee knockback"
-		"ko"		"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
+		"ko"		"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다."
 	}
 	"Cenula"
 	{
@@ -4080,7 +4080,7 @@
 	"Kumbai Desc"
 	{
 		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback"
-		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
+		"ko"		"대상이 근접 무기를 들고 있다면, 사격 공격을 3번 합니다. 이 적의 근접 공격은 넉백력이 0입니다."
 	}
 	"Speedus Instantus"
 	{
@@ -4230,12 +4230,12 @@
 	"Death Marker Desc"
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback"
-		"ko"	"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
+		"ko"	"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다."
 	}
 	"Death Marker Desc"
 	{
 		"en"	"Marks an enemy on hit. Deals no melee knockback"
-		"ko"	"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다.(침묵 디버프 부여시, 넉백 수치가 증가)"
+		"ko"	"적중시, 대상에게 표적을 부여합니다. 이 적의 근접 공격은 넉백력이 0입니다."
 	}
 	"W.F. Flowering Darkness"
 	{
@@ -5111,5 +5111,6 @@
 	"Instinct's Summon"
 	{
 		"en"	"Instinct's Summon"
+		"ko"	"본능적인 소환물"
 	}
 }

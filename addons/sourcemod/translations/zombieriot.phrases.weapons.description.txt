@@ -1838,12 +1838,12 @@
 	"Alien Repair Handling book Desc"
 	{
 		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
-		"ko"	"수리 효율 +2배\n구조물의 피해량 +1.15배 증가 (배럭 제외)\n금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"수리 효율 +2배\n구조물의 피해량 +1.15 배 증가 (배럭 제외)\n금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
 		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
-		"ko"	"수리 효율 +2배\n구조물의 피해량 +1.15배 증가 (배럭 제외)\n금속 소모량 25％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"수리 효율 +2배\n구조물의 피해량 +1.15 배 증가 (배럭 제외)\n금속 소모량 25％ 감소 (1 이하로 감소하지 않음)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1856,7 +1856,7 @@
 	"Cosmic Repair Handling book Desc"
 	{
 		"en"	"3x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
-		"ko"	"수리 효율 +3배\n구조물의 피해량 +1.15배 증가 (배럭 제외)\n금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"수리 효율 +3배\n구조물의 피해량 +1.15 배 증가 (배럭 제외)\n금속 소모량 20％ 감소 (1 이하로 감소하지 않음)"
 	}
 	
 	"Construction Expert Desc"
@@ -4154,32 +4154,32 @@
 		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -20s Tinker Cooldown."
 		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -20s temps de rechargement de l'enclume."
 		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-20s工作台"
-		"ko"	"구조물 체력 +65％ 증가, 무기 피해량 +202％, 수리 효율 +100％, 5초마다 금속 +6 획득, 지원 구조물 최대 상한 +3개, 재련 쿨타임 -20초 감소."
+		"ko"	"구조물 체력 +65％ 증가, 무기 피해량 +202％, 수리 효율 +100％, 5초마다 금속 +6 획득, 지원 구조물 최대 상한 +3개, 재련 쿨타임 -20 초 감소."
 	}
 	"Tinker Pap 2 Desc"
 	{
 		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
-		"ko"	"구조물 체력 +65％ 증가, 무기 피해량 +75％, 5초마다 금속 +6 획득, 지원 구조물 최대 상한 +4개, 재련 쿨타임 -20초 감소.\n재련이 이제 확률로 2티어 효과를 부여함.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
+		"ko"	"구조물 체력 +65％ 증가, 무기 피해량 +75％, 5초마다 금속 +6 획득, 지원 구조물 최대 상한 +4개, 재련 쿨타임 -20 초 감소.\n재련이 이제 확률로 2티어 효과를 부여함.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
 	}
 	"Tinker Pap 3 Desc"
 	{
 		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
-		"ko"	"구조물 체력 +70％ 증가, 무기 피해량 +181.25％, 5초마다 금속 +8 획득, 지원 구조물 최대 상한 +5개, 재련 쿨타임 -20초 감소.\n재련이 이제 확률로 3티어 효과를 부여함.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
+		"ko"	"구조물 체력 +70％ 증가, 무기 피해량 +181.25％, 5초마다 금속 +8 획득, 지원 구조물 최대 상한 +5개, 재련 쿨타임 -20 초 감소.\n재련이 이제 확률로 3티어 효과를 부여함.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
 	}
 	"Tinker Pap 4 Desc"
 	{
 		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
-		"ko"	"구조물 체력 +40％ 증가, 무기 피해량 +181.25％, 5초마다 금속 +10 획득, 재련 쿨타임 -20초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
+		"ko"	"구조물 체력 +40％ 증가, 무기 피해량 +181.25％, 5초마다 금속 +10 획득, 재련 쿨타임 -20 초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
 	}
 	"Tinker Pap 5 Desc"
 	{
 		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
-		"ko"	"무기 피해량 +160％, 5초마다 금속 +15 획득, 재련 쿨타임 -20초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
+		"ko"	"무기 피해량 +160％, 5초마다 금속 +15 획득, 재련 쿨타임 -20 초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
 	}
 	"Tinker Pap 6 Desc"
 	{
 		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
-		"ko"	"구조물 체력 +70％ 증가, 무기 피해량 +250％, 지원 구조물 최대 상한 +1개, 재련 쿨타임 -20초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
+		"ko"	"구조물 체력 +70％ 증가, 무기 피해량 +250％, 지원 구조물 최대 상한 +1개, 재련 쿨타임 -20 초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
 	}
 	"West Pap 1 Desc"
 	{
@@ -4809,12 +4809,12 @@
 	"Magia Fractal Desc"
 	{
 		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
-		"ko"	"주 무기:\nM1:애니메이션 이후 거대한 레이저를 발사.\nM2 꾹 누름: 회전 속도+사거리 증가. 수정을 초당 10 소모. \n보조 무기:\nM1: 적중한 만큼 마나 획득.\nM2: 적중시 여러 대상에게 튕기는 이온 발사.\n근접 무기:\nM1: 에너지 파동 발사. 수정을 소모하지만, 적중시 수정 획득.\n트윌의 헤어핀 장착시 수정 25 획득."
+		"ko"	"주 무기:\nM1:애니메이션 이후 거대한 레이저를 발사.\nM2 꾹 누름: 회전 속도+사거리 증가. 수정을 초당 10 소모+피해량 10%% \n보조 무기:\nM1: 적중한 만큼 마나 획득.\nM2: 여러 대상에게 튕기는 이온 발사.\n근접 무기:\nM1: 파동 발사. 수정을 소모하지만, 적중시 수정 획득."
 	}
 	"Fractal Kit Desc 1"
 	{
 		"en"	"More Damage! And crystal capacity. Lower StarFall Cooldown."
-		"ko"	"피해량과 수정 저장량 증가."
+		"ko"	"피해량과 수정 저장량 증가 및 별똥별 쿨타임 감소."
 	}
 	"WPrototype Kit Desc"
 	{
@@ -5130,7 +5130,7 @@
 	"Plasminator Pap 2 Desc"
 	{
 		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35％ of its damage as Plasmic Elemental damage."
-		"ko" 	"새 능력 : 플라즈마 버스트. 사용시 짧은 사거리의 플라즈마 레이저를 발사.\n플라즈마 버스트는 광역 피해를 주고 피해량의 35％만큼 플라즈마 원소 피해를 부여."
+		"ko" 	"새 능력 : 플라즈마 버스트. 사용시 짧은 사거리의 플라즈마 레이저를 발사.\n플라즈마 버스트는 광역 피해를 주고 피해량의 35 ％만큼 플라즈마 원소 피해를 부여."
 	}
 	"Plasminator Pap 3 Desc"
 	{
@@ -5145,29 +5145,36 @@
 	"Chemical Spewer Desc"
 	{
 		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals True damage."
+		"ko"	"구조물 개선의 영향을 받는 화염방사기.\n가한 피해량의 50％ 만큼 대상에게 신경 손상 피해를 부여.\n트루 대미지를 입히는 화상을 부여."
 	}
 	"Chemical Spewer Pap 1"
 	{
 		"en"	"Base damage is increased, consumes less ammo."
+		"ko"	"피해량 증가 및 탄약 소모량 감소."
 	}
 	"The Ritualist Desc"
 	{
 		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
+		"ko"	"원소 피해를 입힐수 있게끔 개선이 가능한 간단한 마법 무기.\n충분한 원소 피해가 대상에게 부여되면, 효과가 발생하며 이후 쿨타임이 적용됨."
 	}
 	"Necrosis Ritualist Desc"
 	{
 		"en"	"Up to 4 enemies within range take Necrosis elemental damage every second and take increased Necrosis elemental damage.\nBeing in a taunt increases Necrosis elemental damage dealt through this."
+		"ko"	"범위 내 최대 4명의 적에게 매 초마다 신경 손상 원소 피해를 주고, 신경 손상 부여량이 증가.\n도발을 사용하고 있는 상태라면 이 효과의 신경 손상 부여량 증가."
 	}
 	"Necrosis Ritualist Pap Desc"
 	{
 		"en"	"Damage increased, passive effect can now hit up to 6 enemies within range.\nAbility increases damage heavily and buffs 3 allies within range for a long duration."
+		"ko"	"피해량 증가 및 패시브 효과가 이제 최대 6 명의 적을 타격함.\n능력의 피해량이 증가하고 주변 3명의 아군에게 긴 지속시간의 버프를 부여."
 	}
 	"Impairment Ritualist Desc"
 	{
 		"en"	"Attacks now inflict Nervous Impairment in a splash radius, hitting up to 4 enemies."
+		"ko"	"이제 공격이 광역 범위 내의 최대 4명의 적에게 신경 손상 원소 피해를 부여함."
 	}
 	"Impairment Ritualist Pap Desc"
 	{
 		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment."
+		"ko"	"피해량, 공격 속도 증가 및 , 광역 피해가 최대 6 명의 적을 타격함.\n새 능력: 사망시 자폭하여 출혈과 신경 손상 원소 피해를 부여하는 소환물 생성."
 	}
 }
