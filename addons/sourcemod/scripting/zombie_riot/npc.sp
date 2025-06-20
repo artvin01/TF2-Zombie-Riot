@@ -1240,6 +1240,7 @@ void NPCDeath(int entity)
 			}
 		}
 	}
+	StatusEffectReset(entity, false);
 	Function func = func_NPCDeath[entity];
 	if(func && func != INVALID_FUNCTION)
 	{

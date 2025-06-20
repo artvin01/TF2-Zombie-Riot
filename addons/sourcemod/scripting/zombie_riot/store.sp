@@ -16,6 +16,7 @@ enum struct ItemInfo
 	char ExtraDesc_1[256];
 	
 	bool HasNoClip;
+	bool NoSafeClip;
 	bool SemiAuto;
 	
 	bool SemiAuto_SingularReload;
@@ -225,6 +226,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sno_clip", prefix);
 		this.HasNoClip				= view_as<bool>(kv.GetNum(buffer));
+		
+		Format(buffer, sizeof(buffer), "%sno_safeclip", prefix);
+		this.NoSafeClip				= view_as<bool>(kv.GetNum(buffer));
 		
 		Format(buffer, sizeof(buffer), "%ssemi_auto", prefix);
 		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
@@ -6820,6 +6824,10 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 		{
 			return;
 		}
+		if(info.NoSafeClip)
+		{
+			return;
+		}
 	}
 	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
 	
@@ -7254,4 +7262,13 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			}
 		}
 	}
+}
+
+void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
+{
+	static Item item;
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	item.CurrentClipSaved[client] = clipsizeSet; //Reset clip to 8
+	StoreItems.SetArray(StoreWeapon[weapon], item);
+
 }

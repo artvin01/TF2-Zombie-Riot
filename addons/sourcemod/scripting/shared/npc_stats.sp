@@ -8328,7 +8328,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
-	StatusEffectReset(entity);
+	StatusEffectReset(entity, true);
 #if defined ZR
 	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
 	i_SpawnProtectionEntity[entity] = -1; 

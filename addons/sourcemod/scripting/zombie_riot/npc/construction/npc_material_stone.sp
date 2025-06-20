@@ -43,6 +43,7 @@ methodmap MaterialStone < CClotBody
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;

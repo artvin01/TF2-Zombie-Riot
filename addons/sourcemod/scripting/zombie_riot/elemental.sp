@@ -95,7 +95,7 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	switch(type)
 	{
-		case Element_Necrosis, Element_Nervous:
+		case Element_Necrosis:
 		{
 			if(GetTeam(entity) == TFTeam_Red)
 				return 1000;
@@ -152,7 +152,7 @@ int Elemental_TriggerDamage(int entity, int type)
 	
 	switch(type)
 	{
-		case Element_Necrosis, Element_Nervous:
+		case Element_Necrosis:
 		{
 			int minAmount = RoundFloat(10000.0 * divide);
 			if(amount < minAmount)
@@ -298,7 +298,12 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				else
 				{
 					ApplyStatusEffect(attacker, victim, "Paralysis", b_thisNpcIsARaid[victim] ? 1.0 : (b_thisNpcIsABoss[victim] ? 1.5 : 3.0));
-					SDKHooks_TakeDamage(victim, attacker, attacker, 6000.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					
+					float damageDeal = ReturnEntityMaxHealth(victim) / 6.0;
+					if(damageDeal > 6000.0)
+						damageDeal = 6000.0;
+					
+					SDKHooks_TakeDamage(victim, attacker, attacker, damageDeal, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 			}
 
