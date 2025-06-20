@@ -1662,10 +1662,12 @@
 	"Nightmare Terror"
 	{
 		"en"	"Nightmare Terror"
+		"ko"	"악몽 속 공포"
 	}
 	"Nightmare Terror Desc"
 	{
 		"en"	"You cannot get downed."
+		"ko"	"다운 상태가 되지 않습니다."
 	}
 	"Plasm I"
 	{

@@ -3796,6 +3796,7 @@
 	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 	{
 		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+		"ko" "제노 시본 W.F. 혼돈 공허 갈채의 검객 1세"
 	}
 	"Chaos Mercenaries"
 	{

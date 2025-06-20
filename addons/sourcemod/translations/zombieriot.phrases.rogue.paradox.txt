@@ -943,6 +943,7 @@
 	"Terrible Nightmare"
 	{
 		"en"	"Terrible Nightmare"
+		"ko"	"끔찍한 악몽"
 	}
 	"Missing Mountains"
 	{
