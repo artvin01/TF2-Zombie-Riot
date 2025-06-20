@@ -1271,6 +1271,11 @@
 		"chi"	   	"建筑杀手"
 		"ko"		"건축 살해범"
 	}
+	"Wildingen's Elite Building Components"
+	{
+		"en"		"Wildingen's Elite Building Components"
+		"ko"		"와일딩겐의 고급화 건축 양식"
+	}
 	"Ranged Upgrades"//Ranged Upgrades HERE!!!
 	{
 		"en"		"Ranged Upgrades"
@@ -1688,6 +1693,11 @@
 		"chi"	   	"玻璃大炮蓝图"
 		"ko"		"유리 대포 청사진"
 	}
+	"Expert Trapper"
+	{
+		"en"		"Expert Trapper"
+		"ko"		"함정 전문가"
+	}
 	"Ranged Perks"//Lvl Ranged perks HERE!!!
 	{
 		"en"		"Ranged Perk"
@@ -1732,6 +1742,11 @@
 		"chi"	   	"爆头精准性"
 		"ko"		"헤드샷 애호가"
 	}
+	"Proximity Ammunition"
+	{
+		"en"		"Proximity Ammunition"
+		"ko"		"근접 탄약"
+	}
 	"Mage Perks"//Lvl Mage perks HERE!!!
 	{
 		"en"		"Mage Perks"
@@ -1753,6 +1768,16 @@
 		"nl"		"Magische breekbaarheid"
 		"chi"	   	"纯粹法师"
 		"ko"		"마법사의 취약성"
+	}
+	"Mystical Overcharge"
+	{
+		"en"		"Mystical Overcharge"
+		"ko"		"신비 과충전"
+	}
+	"Concentrated Agelitus"
+	{
+		"en"		"Concentrated Agelitus"
+		"ko"		"농축된 어질리투스"
 	}
 	"Passive Perks"
 	{
@@ -1797,6 +1822,31 @@
 		"nl"		"Zachte Schoenen"
 		"chi"	   	"软鞋底"
 		"ko"		"부드러운 신발"
+	}
+	"Hardened Stance"
+	{
+		"en"		"Hardened Stance"
+		"ko"		"단단한 골격"
+	}
+	"Sticky Support Grenades"
+	{
+		"en"		"Sticky Support Grenades"
+		"ko"		"수류탄 접착 키트"
+	}
+	"Armor Visualiser"
+	{
+		"en"		"Armor Visualiser"
+		"ko"		"아머 시각화기"
+	}
+	"Building Health Forcer"
+	{
+		"en"		"Building Health Forcer"
+		"ko"		"구조물 체력 시각화기"
+	}
+	"Rapturing Zombies"
+	{
+		"en"		"Rapturing Zombies"
+		"ko"		"황홀의 좀비"
 	}
 	"Level Items"
 	{
@@ -1851,6 +1901,11 @@
 		"nl"		"ZandBlokken"
 		"chi"	   	"砂块"
 		"ko"		"모래 블록"
+	}
+	"Medikit from the Hood"
+	{
+		"en"		"Medikit from the Hood"
+		"ko"		"낙후된 의료 키트"
 	}
 	"Inventory"//Inventory here
 	{

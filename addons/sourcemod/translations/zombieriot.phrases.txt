@@ -4849,41 +4849,51 @@
 	"Explain Construction 0"
 	{
 		"en" 		"How to play, Quick Guide:"
+		"ko" 		"게임 방법:"
 	}
 	"Explain Construction 1"
 	{
 		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
+		"ko"		"자원을 모아 기지를 건설. ''연구소''를 통해 업글을 하고, 건축가 메뉴에서 추가 구조물을 건설 가능."
 	}
 	"Explain Construction 2"
 	{
 		"en"		"Interact with ores on the map with your interact button (R Or T)!"
+		"ko"		"맵에 있는 광석에 상호작용(R 또는 T)을 눌러 자원을 모아야함!"
 	}
 	"Explain Construction 3"
 	{
 		"en"		"If you main building falls, or you all die, you lose."
+		"ko"		"메인 구조물이 파괴되거나, 전멸시 패배."
 	}
 	"Explain Construction 4"
 	{
 		"en"		"During peace phases you see the current risk/power (skull) and your resoruces at the top!"
+		"ko"		"준비 상태라면 현재 위험도/힘(해골)과 자원량이 맨 위에 표시됨!"
 	}
 	"Explain Rogue1 1"
 	{
 		"en"		"Select a stage, battles or encounters!"
+		"ko"		"전투나 이벤트를 볼 수 있는 스테이지를 선택하세요!"
 	}
 	"Explain Rogue1 2"
 	{
 		"en"		"In peace phases you see your ingots on the top menu, And health on the top aswell."
+		"ko"		"준비 상태일땐 주괴와 체력량을 확인 가능합니다."
 	}
 	"Explain Rogue1 3"
 	{
 		"en"		"You sometimes collect artifacts after battles or stages (harder battles have a higher chance) these buff you up!"
+		"ko"		"전투나 이벤트에서 아군의 능력치를 증가시키는 소장품을 확률로 얻을수 있습니다!"
 	}
 	"Explain Rogue2 1"
 	{
 		"en"		"In rogue2 You also get chaos for getting downed too much (see top during peace phases)"
+		"ko"		"rogue2 에서는 너무 많이 다운되면 혼돈의 고통을 얻습니다. (준비 상태에서 확인 가능)"
 	}
 	"Explain Rogue2 2"
 	{
 		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
+		"ko"		"회수되지 않은 무기는, 가격이 1.2배로 증가합니다."
 	}
 }

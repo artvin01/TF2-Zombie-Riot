@@ -374,14 +374,17 @@
 	"Sherrif Pap 1"
 	{
 		"en"		"Slgihtly Increased Damage, Weapon changes.\nM2 now marks upto 5 enemies near you, hitting them deals 3x damage once.\nYour revolver turns into a burst 6 shot weapon."
+		"ko"		"무기 변경:\nM2: 이제 주변의 최대 5명의 적에게 표적을 부여. 이 무기로 표적이 부여된 적에게 주는 피해량 3배 증가.\n리볼버가 6연발 연사로 변경."
 	}
 	"Sherrif Pap 2"
 	{
 		"en"		"Increased Damage\nM2 has a shorter cooldown."
+		"ko"		"피해량 증가\nM2 쿨타임 감소."
 	}
 	"Sherrif Pap 3"
 	{
 		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage.\nHitting marked targets with your revolver reduces R Cooldown."
+		"ko"		"R: 레버 액션으로 전환.\n탄약은 한정되어있으며, M2 능력과 조합 가능.\n반자동 사격이 M1보다 더 빠름.\n폭발 피해를 가함.\n리볼버로 표적이 부여된 적 타격시 R 쿨타임 감소."
 	}
 	"Deagle Pap 2"
 	{
