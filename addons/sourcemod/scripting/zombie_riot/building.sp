@@ -328,7 +328,7 @@ static void BuildingMenu(int client)
 
 	if(MenuSection[client] == -1)
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Extra Menu");
+		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Destroy Building Select");
 		menu.AddItem(buffer1, buffer1);
 
 		for(int i; i < sizeof(SectionName); i++)
@@ -524,7 +524,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						case 2:
 						{
-							BuilderMenu(client);
+						//	BuilderMenu(client);
+							if(IsValidClient(client))
+							{
+								DeleteBuildingLookedAt(client);
+							}
 							return 0;
 						}
 						default:

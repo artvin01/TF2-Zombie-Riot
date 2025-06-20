@@ -202,11 +202,6 @@ methodmap XenoCombineElite < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_bmovedelay = false;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
@@ -273,10 +268,6 @@ public void XenoCombineElite_ClotThink(int iNPC)
 	else
 	{
 		npc.m_flSpeed = 260.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -398,14 +389,8 @@ public void XenoCombineElite_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					
 					npc.PlayRangedSound();
 				}
 			}
@@ -445,11 +430,6 @@ public void XenoCombineElite_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
 									}

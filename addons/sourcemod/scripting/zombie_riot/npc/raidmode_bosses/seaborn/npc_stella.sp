@@ -687,16 +687,16 @@ methodmap Stella < CClotBody
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = ZR_Waves_GetRound()+1;
+		int wave = Waves_GetRoundScale()+1;
 
-		if(StrContains(data, "force15") != -1)
-			wave = 15;
+		if(StrContains(data, "force10") != -1)
+			wave = 10;
+		else if(StrContains(data, "force20") != -1)
+			wave = 20;
 		else if(StrContains(data, "force30") != -1)
 			wave = 30;
-		else if(StrContains(data, "force45") != -1)
-			wave = 45;
-		else if(StrContains(data, "force60") != -1)
-			wave = 60;
+		else if(StrContains(data, "force40") != -1)
+			wave = 40;
 		else if(StrContains(data, "hell") != -1)
 			wave = -1;
 
@@ -712,7 +712,7 @@ methodmap Stella < CClotBody
 		//idk
 		if(wave == -1)
 		{
-			wave = 60 + ZR_Waves_GetRound();
+			wave = 40 + Waves_GetRoundScale();
 		}
 		i_current_wave[npc.index] = wave;
 		
@@ -756,10 +756,14 @@ methodmap Stella < CClotBody
 			RaidModeScaling = float(wave);
 		}
 
-		if(RaidModeScaling < 55)
-			RaidModeScaling *= 0.19;
+		if(RaidModeScaling < 35)
+		{
+			RaidModeScaling *= 0.25; //abit low, inreacing
+		}
 		else
-			RaidModeScaling *= 0.38;
+		{
+			RaidModeScaling *= 0.5;
+		}
 
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
@@ -1143,7 +1147,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 
-	if(wave > 30)	//beyond wave 30.
+	if(wave > 20)	//beyond wave 30.
 		if(Lunar_Grace(npc))
 			return;
 
@@ -1539,7 +1543,7 @@ static bool b_MoveTowardsKarlas(Stella npc)
 		return false;
 
 	//if its less then wave 30, no reflect.
-	if(i_current_wave[npc.index] < 30)
+	if(i_current_wave[npc.index] < 20)
 		return false;
 
 	int Near_Stella = Nearby_Players(npc, 9000.0);
@@ -1714,7 +1718,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
 		npc.m_bKarlasRetreat = true;
-		int max_dialogue = i_current_wave[npc.index] >= 30 ? 11 : 9;
+		int max_dialogue = i_current_wave[npc.index] >= 20 ? 11 : 9;
 		int chose = GetRandomInt(1, max_dialogue);
 		switch(chose)
 		{
@@ -2092,7 +2096,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
 		
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
@@ -2538,7 +2542,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	int color[4];
 	Ruina_Color(color, i_current_wave[npc.index]);
 
-	if(i_current_wave[npc.index] >=45)
+	if(i_current_wave[npc.index] >=30)
 	{
 		color[0] = 0;
 		color[1] = 250;

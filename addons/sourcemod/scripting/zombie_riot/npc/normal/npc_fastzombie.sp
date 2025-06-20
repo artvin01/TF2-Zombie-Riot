@@ -297,23 +297,11 @@ public void FastZombie_FastZombieThink(int iNPC)
 					
 					if(target > 0) 
 					{
-							
-						if(EscapeModeForNpc)
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_CLUB, -1, _, vecHit);
-						}
+						if(!ShouldNpcDealBonusDamage(target))
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
 						else
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 3.0, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
-						}
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_CLUB, -1, _, vecHit);
 						
-					
 						// Hit particle
 						
 						

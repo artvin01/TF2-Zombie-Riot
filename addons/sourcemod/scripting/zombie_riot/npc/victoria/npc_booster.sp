@@ -298,26 +298,17 @@ public void VictorianBooster_ClotThink(int iNPC)
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth *= 0.25;
 
-				if(!NpcStats_IsEnemySilenced(npc.index))
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 35), 1.0);
+				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Oceanic Scream", 1.1);
+				if(NpcStats_VictorianCallToArms(npc.index))
 				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 0, 205, 255, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 150.0, 1.0);
-					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Oceanic Scream", 1.1);
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "War Cry", 1.1);
-					}
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "War Cry", 1.1);
 				}
-				else
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				}
+				
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
 				npc.FaceTowards(WorldSpaceVec, 2000.0);

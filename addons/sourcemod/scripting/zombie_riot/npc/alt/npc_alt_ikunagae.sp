@@ -1063,12 +1063,6 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	npc.m_iState = RoundToCeil(spin_min + (spin_max - spin_min) * (1.0-Ratio));
 	npc.m_iBarrageSeverity= RoundToCeil(barrage_min + (barrage_max - barrage_min) * (1.0-Ratio));
 	npc.m_flScaraSeverity = scara_min + (scara_max - scara_min) * Ratio;
-	/*
-	if((ZR_Waves_GetRound()+1)==59)	//Makes it so the spam on wave 59 doesn't absoluetly annihialate the server.
-	{
-		npc.m_iBarrageSeverity= 4;
-	}
-	*/
 }
 
 ///Primary Long attack core

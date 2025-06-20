@@ -250,17 +250,6 @@ methodmap XenoFatherGrigori < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
-		if(EscapeModeForNpc)
-		{
-			int amount_of_people = CountPlayersOnRed();
-			int health = 10000;
-			
-			health *= amount_of_people;
-			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-			
 		//IDLE
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_flSpeed = 170.0;
@@ -275,10 +264,6 @@ methodmap XenoFatherGrigori < CClotBody
 		npc.Anger = false;
 		npc.StartPathing();
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 250.0;
-		}
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -511,15 +496,6 @@ public void XenoFatherGrigori_ClotThink(int iNPC)
 						
 						if(target > 0) 
 						{
-							
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
@@ -807,11 +783,6 @@ public void XenoFatherGrigori_ClotDamagedPost(int victim, int attacker, int infl
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		else
 		{
 			npc.m_flSpeed = 200.0;
 		}

@@ -242,23 +242,12 @@ public void MedicHealer_ClotThink(int iNPC)
 					npc.m_bnew_target = true;
 				}
 
-				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 50.0, 1.0);
-				}
-				else
-				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-					}
-				}
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth *= 0.25;
+
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 45), 1.0);
+
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.FaceTowards(WorldSpaceVec, 2000.0);
 			}

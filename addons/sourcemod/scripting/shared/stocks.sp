@@ -987,7 +987,7 @@ public void RequestFramesCallback(DataPack pack)
 }
 
 
-stock int TF2_CreateGlow(int iEnt)
+stock int TF2_CreateGlow(int iEnt, bool RenderModeAllow = false)
 {
 	char oldEntName[64];
 	GetEntPropString(iEnt, Prop_Data, "m_iName", oldEntName, sizeof(oldEntName));
@@ -1000,10 +1000,16 @@ stock int TF2_CreateGlow(int iEnt)
 	int ent = CreateEntityByName("tf_glow");
 	DispatchKeyValue(ent, "targetname", "RainbowGlow");
 	DispatchKeyValue(ent, "target", strName);
-	DispatchKeyValue(ent, "Mode", "2");
+	DispatchKeyValue(ent, "Mode", "0");
+
 	DispatchSpawn(ent);
-	
 	AcceptEntityInput(ent, "Enable");
+	
+	if(RenderModeAllow)
+		SetEdictFlags(ent, (GetEdictFlags(ent) & ~FL_EDICT_ALWAYS));	
+
+	if(RenderModeAllow)
+		Hook_DHook_UpdateTransmitState(ent);
 	
 	//Change name back to old name because we don't need it anymore.
 	SetEntPropString(iEnt, Prop_Data, "m_iName", oldEntName);
@@ -1011,32 +1017,37 @@ stock int TF2_CreateGlow(int iEnt)
 	return ent;
 }
 
-stock int TF2_CreateGlow_White(const char[] model, int parentTo, float modelsize)
+int TF2_CreateGlow_White(const char[] model, int victim, float modelsize)
 {
 	int entity = CreateEntityByName("tf_taunt_prop");
 	if(IsValidEntity(entity))
 	{
+	//	SetEntProp(entity, Prop_Data, "m_iInitialTeamNum", 2);
+	//	SetEntProp(entity, Prop_Send, "m_iTeamNum", 2);
+
 		DispatchSpawn(entity);
+
 		SetEntityModel(entity, model);
-
-		ActivateEntity(entity);
-
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(parentTo, Prop_Send, "m_iTeamNum"));
-
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", modelsize);
-		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", parentTo);
-		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", parentTo);
+		SetEntPropEnt(entity, Prop_Data, "m_hEffectEntity", victim);
+		SetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity", victim);
 		SetEntProp(entity, Prop_Send, "m_bGlowEnabled", true);
-		int iFlags = GetEntProp(entity, Prop_Send, "m_fEffects");
-			
-		SetEntProp(entity, Prop_Send, "m_fEffects",
-				iFlags |EF_BONEMERGE|EF_NOSHADOW|EF_NORECEIVESHADOW);
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(victim, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
 
-		SetVariantString("!activator");
-		AcceptEntityInput(entity, "SetParent", parentTo);
+	//	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 990.0);
+	//	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1000.0);	
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", modelsize);
+		//we gotta copy several things.......
+		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(victim, Prop_Send, "m_nSkin"));
+		SetEntProp(entity, Prop_Send, "m_nBody", GetEntProp(victim, Prop_Send, "m_nBody"));
+		
+		SetParent(victim, entity);
 
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(entity, 255, 255, 255, 255);
+		SetEntityRenderMode(entity, i_EntityRenderMode[victim]);
+		SetEntityRenderColor(entity,
+							i_EntityRenderColour1[victim],
+							i_EntityRenderColour2[victim],
+							i_EntityRenderColour3[victim],
+							i_EntityRenderColour4[victim]);
 	}
 	return entity;
 }
@@ -1628,6 +1639,7 @@ public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
 			event.SetInt("healer", clientOriginalIndex);
 			event.SetInt("amount", data.HealAmount);
 			event.FireToClient(clientOriginalIndex);
+			event.Cancel();
 		}
 		if(data.ArmorAmount)
 		{
@@ -1637,6 +1649,7 @@ public Action Timer_HealEventApply_Ally(Handle timer, DataPack pack)
 			event.SetInt("player_entindex", clientOriginalIndex);
 			event.SetInt("points", data.ArmorAmount * 10);
 			event.FireToClient(clientOriginalIndex);
+			event.Cancel();
 		}
 	}
 	delete h_Arraylist_HealEventAlly[clientOriginalIndex];

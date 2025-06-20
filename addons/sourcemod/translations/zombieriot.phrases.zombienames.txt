@@ -3176,6 +3176,10 @@
 	{
 		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
 	}
+	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	{
+		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"
@@ -3326,7 +3330,7 @@
 	}
 	"Cambino Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback (silenceable)"
+		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback"
 	}
 	"Irani"
 	{
@@ -3334,7 +3338,7 @@
 	}
 	"Irani Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"		"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"Kinat"
 	{
@@ -3390,7 +3394,7 @@
 	}
 	"Vivintu Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"		"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"Cenula"
 	{
@@ -3406,7 +3410,7 @@
 	}
 	"Kumbai Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback (silenceable)"
+		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback"
 	}
 	"Speedus Instantus"
 	{
@@ -3526,11 +3530,11 @@
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"	"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"	"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"W.F. Flowering Darkness"
 	{
@@ -4286,5 +4290,9 @@
 	"Vaus Shaldus Desc"
 	{
 		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
+	}
+	"Instinct's Summon"
+	{
+		"en"	"Instinct's Summon"
 	}
 }

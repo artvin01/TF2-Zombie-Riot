@@ -28,8 +28,7 @@ static float MoabSpeed()
 
 static int MoabHealth(bool fortified)
 {
-	float value = 2000000.0;	// 20000 RGB
-	value *= 0.5;
+	float value = 20000.0;	// 20000 RGB
 	
 	if(fortified)
 		value *= 2.0;
@@ -47,7 +46,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value);
+	return RoundFloat(value * Bloon_BaseHealth());
 }
 
 void Bad_MapStart()

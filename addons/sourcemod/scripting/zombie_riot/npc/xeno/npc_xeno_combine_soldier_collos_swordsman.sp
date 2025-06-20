@@ -347,14 +347,8 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.index, npc_vec, vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.index, npc_vec, vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
+					FireBullet(npc.index, npc.index, npc_vec, vecDir, 100.0, 250.0, DMG_CLUB, "bullet_tracer02_blue");
+					
 				}
 			}
 			
@@ -392,15 +386,6 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										if(!ShouldNpcDealBonusDamage(target))
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 600.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										if(!ShouldNpcDealBonusDamage(target))
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);

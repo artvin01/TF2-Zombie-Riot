@@ -148,9 +148,9 @@ bool Construction_InSetup()
 
 int Construction_GetRound()
 {
-	int round = CurrentRisk * 70 / HighestRisk;
+	int round = CurrentRisk * 50 / HighestRisk;
 	if(AttackType > 0 && AttackHardcore > 0)
-		round += AttackHardcore * 3;
+		round += AttackHardcore * 2;
 	
 	return round;
 }
@@ -1255,7 +1255,8 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
-					damage -= float(info.Defense);
+					if(!(damagetype & DMG_TRUEDAMAGE))
+						damage -= float(info.Defense);
 					if(damage < minDamage)
 						damage = minDamage;
 
@@ -1329,7 +1330,7 @@ static int ConstructionProvokeH(Menu menu, MenuAction action, int client, int ch
 				if(entity != -1)
 				{
 					view_as<CClotBody>(entity).m_bCamo = false;
-					SDKHooks_TakeDamage(entity, client, client, 65.0, DMG_CLUB);
+					Construction_Material_Interact(client, entity);
 				}
 			}
 		}

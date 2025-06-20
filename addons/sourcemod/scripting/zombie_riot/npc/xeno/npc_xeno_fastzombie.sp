@@ -199,6 +199,7 @@ methodmap XenoFastZombie < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 400.0;
+		fl_RangedArmor[npc.index] = 0.75;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 		npc.m_flInJump = 0.0;
@@ -314,20 +315,11 @@ public void XenoFastZombie_ClotThink(int iNPC)
 					
 					if(target > 0) 
 					{
-						
-						if(EscapeModeForNpc)
 						{
 							if(!ShouldNpcDealBonusDamage(target))
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
 							else
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 15.0, DMG_CLUB, -1, _, vecHit);
-						}
-						else
-						{
-							if(!ShouldNpcDealBonusDamage(target))
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 3.0, DMG_CLUB, -1, _, vecHit);
-							else
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 10.0, DMG_CLUB, -1, _, vecHit);
 						}
 								
 						

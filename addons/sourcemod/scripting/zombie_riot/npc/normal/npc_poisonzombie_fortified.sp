@@ -148,10 +148,6 @@ methodmap FortifiedPoisonZombie < CClotBody
 		//IDLE
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flSpeed = 120.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 190.0;
-		}
 		npc.StartPathing();
 		
 		return npc;
@@ -260,16 +256,6 @@ public void FortifiedPoisonZombie_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										if(!ShouldNpcDealBonusDamage(target))
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-									
-										else
-											SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										if(!ShouldNpcDealBonusDamage(target))
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);

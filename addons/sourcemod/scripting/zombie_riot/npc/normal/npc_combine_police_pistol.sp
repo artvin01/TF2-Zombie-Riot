@@ -173,11 +173,6 @@ methodmap Combine_Police_Pistol < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 160.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-
 		func_NPCDeath[npc.index] = CombinePolicePistol_NPCDeath;
 		func_NPCThink[npc.index] = Combine_Police_Pistol_ClotThink;
 
@@ -359,14 +354,7 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 2.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					
 					npc.PlayRangedSound();
 				}
@@ -404,15 +392,8 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-									}
 									// Hit particle
 									
 									

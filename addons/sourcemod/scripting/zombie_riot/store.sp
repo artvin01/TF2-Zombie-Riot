@@ -16,6 +16,7 @@ enum struct ItemInfo
 	char ExtraDesc_1[256];
 	
 	bool HasNoClip;
+	bool NoSafeClip;
 	bool SemiAuto;
 	
 	bool SemiAuto_SingularReload;
@@ -225,6 +226,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sno_clip", prefix);
 		this.HasNoClip				= view_as<bool>(kv.GetNum(buffer));
+		
+		Format(buffer, sizeof(buffer), "%sno_safeclip", prefix);
+		this.NoSafeClip				= view_as<bool>(kv.GetNum(buffer));
 		
 		Format(buffer, sizeof(buffer), "%ssemi_auto", prefix);
 		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
@@ -1705,7 +1709,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					item.BuyWave[client] = ZR_Waves_GetRound();
+					item.BuyWave[client] = Waves_GetRoundScale();
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
@@ -3221,7 +3225,7 @@ static void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					Repeat_Filler ++;
 					
-					bool fullSell = (item.BuyWave[client] == ZR_Waves_GetRound());
+					bool fullSell = (item.BuyWave[client] == Waves_GetRoundScale());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 					if(item.GregOnlySell == 2)
 					{
@@ -4415,7 +4419,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = 0;
 									item.Sell[client] = 0;
 								}
-								item.BuyWave[client] = ZR_Waves_GetRound();
+								item.BuyWave[client] = Waves_GetRoundScale();
 								item.Equipped[client] = false;
 
 								if(item.GregOnlySell == 2)
@@ -4476,7 +4480,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = ZR_Waves_GetRound();
+								item.BuyWave[client] = Waves_GetRoundScale();
 								if(item.GregOnlySell == 2)
 								{
 									item.Sell[client] = 0;
@@ -4531,7 +4535,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
 							item.Sell[client] = ItemSell(base, info.Cost);
-							item.BuyWave[client] = ZR_Waves_GetRound();
+							item.BuyWave[client] = Waves_GetRoundScale();
 							if(item.GregOnlySell == 2)
 							{
 								item.Sell[client] = 0;
@@ -5056,7 +5060,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("8", 1.5);	//give 50% more healing at the start.
 
 	float KnockbackResistance;
-	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
+	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 40, this will equal to 60* dmg
 
 	if(KnockbackResistance > 1.0)
 	{
@@ -6284,6 +6288,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Purnell_Enable(client, entity);
 		Medigun_SetModeDo(client, entity);
 		//Cheese_Enable(client, entity);
+		Ritualist_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
@@ -6575,7 +6580,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * ZR_Waves_GetRound();
+	cost += item.CostPerWave * Waves_GetRoundScale();
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
@@ -6816,6 +6821,10 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{
 		if(info.HasNoClip)
+		{
+			return;
+		}
+		if(info.NoSafeClip)
 		{
 			return;
 		}
@@ -7204,7 +7213,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			{
 
 				int sell = item.Sell[client];
-				if(item.BuyWave[client] == ZR_Waves_GetRound())
+				if(item.BuyWave[client] == Waves_GetRoundScale())
 					sell = item.BuyPrice[client];
 				
 				if(sell) //make sure it even can be sold.
@@ -7253,4 +7262,13 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			}
 		}
 	}
+}
+
+void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
+{
+	static Item item;
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	item.CurrentClipSaved[client] = clipsizeSet; //Reset clip to 8
+	StoreItems.SetArray(StoreWeapon[weapon], item);
+
 }

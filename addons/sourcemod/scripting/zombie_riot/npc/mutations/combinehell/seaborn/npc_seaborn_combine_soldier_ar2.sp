@@ -209,12 +209,6 @@ methodmap SeabornCombineSoldierAr2 < CClotBody
 		func_NPCOnTakeDamage[npc.index] = SeabornCombineSoldierAr2_OnTakeDamage;
 		func_NPCThink[npc.index] = SeabornCombineSoldierAr2_ClotThink;
 		
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
@@ -323,10 +317,6 @@ public void SeabornCombineSoldierAr2_ClotThink(int iNPC)
 	else
 	{
 		npc.m_flSpeed = 200.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
@@ -455,14 +445,8 @@ public void SeabornCombineSoldierAr2_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					
 					npc.PlayRangedSound();
 				}
 			}
@@ -504,16 +488,8 @@ public void SeabornCombineSoldierAr2_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-										Elemental_AddNervousDamage(target, npc.index, 10);
-									}
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
+									Elemental_AddNervousDamage(target, npc.index, 10);
 									
 									Custom_Knockback(npc.index, target, 250.0);
 									

@@ -318,7 +318,7 @@ public void MedivalHalb_ClotThink(int iNPC)
 								{
 									float damage = 35.0;
 
-									if(Medival_Difficulty_Level < 0.85)
+									if(Medival_Difficulty_Level_NotMath >= 3)
 									{
 										damage = 50.0;
 									}

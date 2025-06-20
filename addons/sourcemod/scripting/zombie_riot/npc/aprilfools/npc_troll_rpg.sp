@@ -174,11 +174,6 @@ methodmap TrollRPG < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-
 		func_NPCDeath[npc.index] = TrollRPG_NPCDeath;
 		func_NPCThink[npc.index] = TrollRPG_ClotThink;
 
@@ -399,15 +394,8 @@ public void TrollRPG_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-									}
 									// Hit particle
 									
 									

@@ -269,7 +269,7 @@ public void Soldier_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 						
 						npc.PlayMeleeSound();
-						npc.FireRocket(vecTarget, 26.0, 600.0);
+						npc.FireRocket(vecTarget, 35.0, 600.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 						npc.m_flReloadIn = GetGameTime(npc.index) + 1.0;
 					}

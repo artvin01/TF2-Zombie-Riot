@@ -633,7 +633,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
 
-		int tier = (ZR_Waves_GetRound() / 15);
+		int tier = (Waves_GetRoundScale() / 10);
 		if(alone)
 			tier++;
 

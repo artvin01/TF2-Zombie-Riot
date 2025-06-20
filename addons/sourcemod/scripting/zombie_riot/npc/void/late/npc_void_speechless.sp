@@ -382,10 +382,10 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 300.0;
+					float damageDealt = 400.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 5.0;
+						damageDealt *= 10.0;
 					}
 					damageDealt *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 
@@ -555,7 +555,7 @@ void VoidSpeechlessInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, VoidSpeechless_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 350.0;
+	float CloseDamage = 450.0;
 	float FarDamage = 300.0;
 	float MaxDistance = 2000.0;
 	float playerPos[3];
