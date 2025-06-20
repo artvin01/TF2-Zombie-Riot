@@ -1145,14 +1145,12 @@ void Rogue_NextProgress()
 			{
 				case BobChaos:
 				{
-					CPrintToChatAll("{crimson}%t", "Explain Construction 0");
 					CPrintToChatAll("{green}%t", "Explain Rogue1 1");
 					CPrintToChatAll("{green}%t", "Explain Rogue1 2");
 					CPrintToChatAll("{green}%t", "Explain Rogue1 3");
 				}
 				case BlueParadox:
 				{
-					CPrintToChatAll("{crimson}%t", "Explain Construction 0");
 					CPrintToChatAll("{green}%t", "Explain Rogue1 1");
 					CPrintToChatAll("{green}%t", "Explain Rogue1 2");
 					CPrintToChatAll("{green}%t", "Explain Rogue1 3");

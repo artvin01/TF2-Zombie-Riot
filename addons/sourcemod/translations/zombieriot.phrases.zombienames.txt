@@ -3793,6 +3793,10 @@
 		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
 		"ko"	"이 자의 정신은 타락했습니다.\n매우 빠른 펄스 폭발 공격을 사용합니다. 적중시, 적중한 대상의 뒤쪽으로 순간이동 합니다."
 	}
+	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	{
+		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"

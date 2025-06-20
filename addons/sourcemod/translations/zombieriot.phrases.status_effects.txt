@@ -1659,6 +1659,14 @@
 		"en"	"Increases damage by 50％\nIncreases resistance by 50％\nIncreases attack speed by 100％"
 		"ko"	"공격 피해량이 50％ 증가합니다.\n피해 저항력이 50％ 증가합니다.\n공격 속도가 100％ 증가합니다."
 	}
+	"Nightmare Terror"
+	{
+		"en"	"Nightmare Terror"
+	}
+	"Nightmare Terror Desc"
+	{
+		"en"	"You cannot get downed."
+	}
 	"Plasm I"
 	{
 		"en" 	"Plasm I"

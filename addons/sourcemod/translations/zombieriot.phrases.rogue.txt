@@ -149,12 +149,24 @@
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
 		"ko"	"무언가 이상하다. 싸워야 할까, 아니면 여기서 나가야할까?"
 	}
+	"Nightmare Battle Title"
+	{
+		"en"	"You are having a terrible nightmare..."
+	}
 	"We can handle this"
 	{
 		"en"	"We can handle this"
 		"pt"	"Podemos cuidar disso"
 		"ru"	"Мы справимся"
 		"ko"	"우린 해낼 수 있어"
+	}
+	"Stay and find out who is causing it"
+	{
+		"en"	"Stay and find out who is causing it"
+	}
+	"Pinch yourself awake"
+	{
+		"en"	"Pinch yourself awake"
 	}
 	"Better leave now"
 	{

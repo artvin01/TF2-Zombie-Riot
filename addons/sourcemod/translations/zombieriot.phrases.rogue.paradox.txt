@@ -940,7 +940,10 @@
 		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 50 Chaos Affliction."
 		"ko"	"뭔가에 끌리는게 느껴진다.\n{green}스테이지당 한 번, 아군의 체력이 절반 이하가 되면, 그 아군의 체력이 전부 회복됩니다.\n{green}혼돈의 고통이 50 감소합니다."
 	}
-
+	"Terrible Nightmare"
+	{
+		"en"	"Terrible Nightmare"
+	}
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"
