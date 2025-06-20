@@ -68,6 +68,7 @@ methodmap VictoriaTank < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
+		f_NpcTurnPenalty[npc.index] = 0.5;
 		npc.m_flSpeed = 90.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;

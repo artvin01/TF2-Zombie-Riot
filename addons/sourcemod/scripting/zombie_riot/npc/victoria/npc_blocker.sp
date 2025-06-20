@@ -273,7 +273,8 @@ public void Blocker_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	
+	if(npc.m_flReloadDelay < GetGameTime(npc.index))
+		npc.StartPathing();
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -403,13 +404,21 @@ public Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				RemoveEntity(npc.m_iWearable5);
 
 		float Cooltime = 7.5;
-		if(NpcStats_VictorianCallToArms(npc.index))
-		{
-			Cooltime -= 4.0;
-		}
+		if(NpcStats_IsEnemySilenced(npc.index))
+			Cooltime += 4.0;
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + Cooltime;
 		damage = 0.0;
 		npc.PlayDeflectSound();
+		npc.AddGesture("ACT_PUSH_PLAYER");
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.0;
+		npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
+		npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
+		npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
+		IncreaseEntityDamageTakenBy(npc.index, 0.2, 1.0);
+		npc.DispatchParticleEffect(npc.index, "manmelter_impact_electro", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		return Plugin_Changed;
 	}
 
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

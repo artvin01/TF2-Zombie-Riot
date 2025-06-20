@@ -3727,9 +3727,9 @@
 		"en"	"Trooper  Mechafist"
 		"ko"	"트루퍼 메카피스트"
 	}
-	"Assulter"
+	"Trooper Assaulter"
 	{
-		"en"	"Trooper  Assulter"
+		"en"	"Trooper  Assaulter"
 		"ko"	"트루퍼 보병"
 	}
 	"Cyborg Assulter"

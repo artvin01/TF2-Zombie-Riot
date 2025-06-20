@@ -75,7 +75,7 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void VictoriaAssulter_OnMapStart_NPC()
+void VictoriaAssaulter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -83,7 +83,7 @@ void VictoriaAssulter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Assulter");
+	strcopy(data.Name, sizeof(data.Name), "Trooper Assaulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_assaulter");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_assaulter");
 	data.IconCustom = true;
@@ -95,10 +95,10 @@ void VictoriaAssulter_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictoriaAssulter(vecPos, vecAng, ally);
+	return VictoriaAssaulter(vecPos, vecAng, ally);
 }
 
-methodmap VictoriaAssulter < CClotBody
+methodmap VictoriaAssaulter < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -131,9 +131,9 @@ methodmap VictoriaAssulter < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public VictoriaAssulter(float vecPos[3], float vecAng[3], int ally)
+	public VictoriaAssaulter(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaAssulter npc = view_as<VictoriaAssulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
+		VictoriaAssaulter npc = view_as<VictoriaAssaulter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -152,9 +152,9 @@ methodmap VictoriaAssulter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		func_NPCDeath[npc.index] = VictoriaAssulter_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = VictoriaAssulter_OnTakeDamage;
-		func_NPCThink[npc.index] = VictoriaAssulter_ClotThink;
+		func_NPCDeath[npc.index] = VictoriaAssaulter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = VictoriaAssaulter_OnTakeDamage;
+		func_NPCThink[npc.index] = VictoriaAssaulter_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -201,9 +201,9 @@ methodmap VictoriaAssulter < CClotBody
 	}
 }
 
-public void VictoriaAssulter_ClotThink(int iNPC)
+public void VictoriaAssaulter_ClotThink(int iNPC)
 {
-	VictoriaAssulter npc = view_as<VictoriaAssulter>(iNPC);
+	VictoriaAssaulter npc = view_as<VictoriaAssaulter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -246,7 +246,7 @@ public void VictoriaAssulter_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		VictoriaAssulterSelfDefense(npc,GetGameTime(npc.index)); 
+		VictoriaAssaulterSelfDefense(npc,GetGameTime(npc.index)); 
 	}
 	else
 	{
@@ -256,9 +256,9 @@ public void VictoriaAssulter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VictoriaAssaulter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictoriaAssulter npc = view_as<VictoriaAssulter>(victim);
+	VictoriaAssaulter npc = view_as<VictoriaAssaulter>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -272,9 +272,9 @@ public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 	}
 
-	public void VictoriaAssulter_NPCDeath(int entity)
+	public void VictoriaAssaulter_NPCDeath(int entity)
 	{
-	VictoriaAssulter npc = view_as<VictoriaAssulter>(entity);
+	VictoriaAssaulter npc = view_as<VictoriaAssaulter>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -297,7 +297,7 @@ public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &infl
 
 }
 
-void VictoriaAssulterSelfDefense(VictoriaAssulter npc, float gameTime)
+void VictoriaAssaulterSelfDefense(VictoriaAssaulter npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.

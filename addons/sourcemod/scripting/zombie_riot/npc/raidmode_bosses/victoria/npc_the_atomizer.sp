@@ -1463,33 +1463,22 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 									damage*=1.25;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
-									
-								
-								// Hit particle
-								
-							
 								
 								bool Knocked = false;
 											
 								if(IsValidClient(targetTrace))
 								{
-									if(IsInvuln(targetTrace))
+									if(IsInvuln(targetTrace) || DrinkPOWERUP[npc.index])
 									{
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 300.0, true);
-										if(!NpcStats_IsEnemySilenced(npc.index))
-										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-										}
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 									}
 									else
 									{
-										if(!NpcStats_IsEnemySilenced(npc.index))
-										{
-											TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
-											TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
-										}
+										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.25);
+										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.25);
 									}
 								}
 											

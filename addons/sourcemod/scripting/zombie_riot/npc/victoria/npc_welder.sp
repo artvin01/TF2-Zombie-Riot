@@ -300,11 +300,9 @@ void VictorianWelderSelfDefense(VictorianWelder npc, float gameTime, int target,
 					if(ShouldNpcDealBonusDamage(target))
 					{
 						damageDealt *= 5.0;
-						float fixedArmorgain = 500.0;
+						float fixedArmorgain = float(ReturnEntityMaxHealth(npc.index))*0.25;
 						if(NpcStats_VictorianCallToArms(npc.index))
-						{
 							fixedArmorgain *= 2.0;
-						}
 						GrantEntityArmor(npc.index, false, 1.5, 0.5, 0, fixedArmorgain);
 					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

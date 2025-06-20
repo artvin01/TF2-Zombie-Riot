@@ -145,14 +145,18 @@ methodmap VictorianPayback < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
-		SetVariantString("1.25");
+		
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_heavy_harness/fall17_heavy_harness.mdl");
-		SetVariantString("0.9");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_heavy_harness/fall17_heavy_harness.mdl");
+		SetVariantString("0.9");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 		SetVariantString("1.25");
@@ -167,8 +171,11 @@ methodmap VictorianPayback < CClotBody
 
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 255, 255, 255);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1.0);
+		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1.0);
+		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
 
 		return npc;
 	}
@@ -215,20 +222,18 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_flSpeed = 350.0;
 			}
 			npc.m_fbRangedSpecialOn = true;
-
-			IgniteTargetEffect(npc.m_iWearable1);
-			if(IsValidEntity(npc.m_iWearable4))
-				RemoveEntity(npc.m_iWearable4);
 			
-			float flPos[3];
-			float flAng[3];
-			npc.GetAttachment("special_weapon_effect", flPos, flAng);
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				ExtinguishTarget(npc.m_iWearable2);
+				IgniteTargetEffect(npc.m_iWearable2);
+			}
+			
 			float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 			flMaxhealth *= 0.20;
 			HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.15, 0.0, HEAL_SELFHEAL);
 			GrantEntityArmor(npc.index, false, 1.5, 0.01, 0);
 
-			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "special_weapon_effect", {0.0,0.0,0.0});
 			b_NpcIsInvulnerable[npc.index] = false;
 			b_NpcUnableToDie[npc.index]=false;
 		}
