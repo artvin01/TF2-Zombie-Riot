@@ -1343,7 +1343,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_medic",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_guard",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_seaborn_kazimersch_beserker",200000, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_pathshaper", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1, true);
 			}
 			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 			{
@@ -1389,7 +1389,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1, true);	
 			}
 			else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 			{
@@ -1400,7 +1400,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1, true);	
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1200000.0 * MultiGlobalHighHealthBoss), 1, true);		
 			}			
 		}
