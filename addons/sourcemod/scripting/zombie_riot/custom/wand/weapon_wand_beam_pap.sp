@@ -272,12 +272,10 @@ public void Weapon_Wand_Beam_Alt_Pap_R(int client, int weapon, bool crit)
 	Kill_Sound(client);
 	if(bl_particle_type[client])
 	{
-		f_attack_timer[client] = GetGameTime() + 1.0;
 		bl_particle_type[client] = false;
 	}
 	else
 	{
-		f_attack_timer[client] = GetGameTime() + 1.0;
 		bl_particle_type[client] = true;
 	}
 }
