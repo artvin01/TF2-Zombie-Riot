@@ -2867,6 +2867,19 @@ void StatusEffects_MERLT0N_BUFF()
 void StatusEffects_SevenHeavySouls()
 {
 	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nightmare Terror");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "...");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "7 Heavy Souls");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♥");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty

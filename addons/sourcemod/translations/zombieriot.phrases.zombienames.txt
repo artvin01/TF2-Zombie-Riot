@@ -3176,6 +3176,10 @@
 	{
 		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
 	}
+	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	{
+		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"
