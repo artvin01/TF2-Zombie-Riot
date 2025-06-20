@@ -43,6 +43,7 @@ methodmap MaterialWizuh < CClotBody
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 		npc.m_flMeleeArmor = 0.5;
 		npc.m_flRangedArmor = 2.0;

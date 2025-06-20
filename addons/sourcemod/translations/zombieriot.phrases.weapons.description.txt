@@ -333,7 +333,7 @@
 	}
 	"Sherrif Pap 3"
 	{
-		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage."
+		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage.\nHitting marked targets with your revolver reduces R Cooldown."
 	}
 	"Deagle Pap 2"
 	{

@@ -445,7 +445,7 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 					Add_OneClip_Purnell(Reolver, client);
 
 				float CurrentCD = Ability_Check_Cooldown(client, 3, Reolver);
-				Ability_Apply_Cooldown(client, 3, CurrentCD - 1.5, Reolver);
+				Ability_Apply_Cooldown(client, 3, CurrentCD - 1.5, Reolver, true);
 			}
 			EmitCustomToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 2.0, 100);
 		}

@@ -346,11 +346,14 @@ public void DepthPerception_RevolverM2_PAP(int client, int weapon, bool crit, in
 	Ability_Apply_Cooldown(client, slot, 12.0);
 	if(CvarInfiniteCash.BoolValue)
 		Ability_Apply_Cooldown(client, slot, 0.0);
+
 	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 			
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
-	Explode_Logic_Custom(0.0, client, client, weapon, _, 9999.9,_,_,true,4,_,_,SherrifRevolverHit);
+	float flPos[3];
+	GetClientEyePosition(client, flPos);
+	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 3000.9,_,_,true,4,_,_,SherrifRevolverHit);
 	//add LOS check.
 	FinishLagCompensation_Base_boss();
 	ApplyStatusEffect(client, client, "Depth Percieve", 3.0);
@@ -363,7 +366,7 @@ void SherrifRevolverHit(int entity, int victim, float damage, int weapon)
 }
 
 
-void SherrifRevolver_NPCTakeDamage(int attacker, int victim, float &damage)
+void SherrifRevolver_NPCTakeDamage(int attacker, int victim, float &damage, int weapon, int whichtype)
 {
 	if(!HasSpecificBuff(attacker, "", StatusIdDepthPerceptionOwnerFunc()))
 		return;
@@ -381,6 +384,11 @@ void SherrifRevolver_NPCTakeDamage(int attacker, int victim, float &damage)
 	}
 	
 	DisplayCritAboveNpc(victim, attacker, PlaySound); //Display crit above head
+	if(whichtype == WEAPON_SHERRIF)
+	{
+		float CurrentCD = Ability_Check_Cooldown(attacker, 3, weapon);
+		Ability_Apply_Cooldown(attacker, 3, CurrentCD - 1.5, weapon, true);
+	}
 }
 
 
@@ -424,7 +432,7 @@ public void Weapon_ShootOnRemoveSelf_LeverAction(int client, int weapon, bool cr
 	if(CurrentAmmoHave <= 1 && CurrentClip <= 1)
 	{
 		Store_RemoveSpecificItem(client, "Wanted's Lever Action");
-		CreateTimer(0.2, LazyCoding_RemoveWeapon, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.5, LazyCoding_RemoveWeapon, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 		FakeClientCommand(client, "use tf_weapon_revolver");
 	}
 }
@@ -436,7 +444,14 @@ public Action LazyCoding_RemoveWeapon(Handle Calcium_Remove_SpellHandle, int ref
 	{
 		int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
 		if(IsValidClient(owner))
+		{
+			int weapon_holding = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+			{
+				FakeClientCommand(owner, "use tf_weapon_revolver");
+			}
 			TF2_RemoveItem(owner, weapon);
+		}
 	}	
 	return Plugin_Handled;
 }
