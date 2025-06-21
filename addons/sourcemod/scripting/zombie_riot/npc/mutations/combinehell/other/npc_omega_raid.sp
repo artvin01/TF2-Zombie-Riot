@@ -290,7 +290,7 @@ methodmap OmegaRaid < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		npc.m_bWasSadAlready = false;
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 8.0;
+		npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 7.5;
 
 		AlreadySaidWin = false;
 		
