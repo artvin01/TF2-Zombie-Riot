@@ -297,7 +297,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
-float PreventSameFrameGivearmor[MAXTF2PLAYERS];
+float PreventSameFrameGivearmor[MAXPLAYERS];
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{

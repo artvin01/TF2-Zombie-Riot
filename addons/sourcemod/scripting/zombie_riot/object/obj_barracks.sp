@@ -2,29 +2,29 @@
 #pragma newdecls required
 
 /*
-float WoodAmount[MAXTF2PLAYERS];
-float FoodAmount[MAXTF2PLAYERS];
-float GoldAmount[MAXTF2PLAYERS];
-int SupplyRate[MAXTF2PLAYERS];
+float WoodAmount[MAXPLAYERS];
+float FoodAmount[MAXPLAYERS];
+float GoldAmount[MAXPLAYERS];
+int SupplyRate[MAXPLAYERS];
 See ZR core.
 */
 
 static float f_VillageSavingResources[MAXENTITIES];
 
-static int InMenu[MAXTF2PLAYERS];
-static float TrainingStartedIn[MAXTF2PLAYERS];
-static float TrainingIn[MAXTF2PLAYERS];
-static int TrainingIndex[MAXTF2PLAYERS];
-static int TrainingQueue[MAXTF2PLAYERS];
-static float ResearchStartedIn[MAXTF2PLAYERS];
-static float ResearchIn[MAXTF2PLAYERS];
-static int ResearchIndex[MAXTF2PLAYERS];
-static int CommandMode[MAXTF2PLAYERS];
+static int InMenu[MAXPLAYERS];
+static float TrainingStartedIn[MAXPLAYERS];
+static float TrainingIn[MAXPLAYERS];
+static int TrainingIndex[MAXPLAYERS];
+static int TrainingQueue[MAXPLAYERS];
+static float ResearchStartedIn[MAXPLAYERS];
+static float ResearchIn[MAXPLAYERS];
+static int ResearchIndex[MAXPLAYERS];
+static int CommandMode[MAXPLAYERS];
 //bool FinalBuilder[MAXENTITIES];
-static bool MedievalUnlock[MAXTF2PLAYERS];
+static bool MedievalUnlock[MAXPLAYERS];
 //bool GlassBuilder[MAXENTITIES];
-static int CivType[MAXTF2PLAYERS];
-static bool b_InUpgradeMenu[MAXTF2PLAYERS];
+static int CivType[MAXPLAYERS];
+static bool b_InUpgradeMenu[MAXPLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
 

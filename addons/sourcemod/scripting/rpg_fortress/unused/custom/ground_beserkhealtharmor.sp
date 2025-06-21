@@ -1,9 +1,9 @@
-static float f_DamageToAbsorb[MAXTF2PLAYERS];
-static float f_DamageToAbsorbMax[MAXTF2PLAYERS];
-static bool b_BeserkActive[MAXTF2PLAYERS];
-static float f_DamageResistance[MAXTF2PLAYERS];
-static float f_HealthToRegain[MAXTF2PLAYERS];
-static int i_ParticleEffect[MAXTF2PLAYERS];
+static float f_DamageToAbsorb[MAXPLAYERS];
+static float f_DamageToAbsorbMax[MAXPLAYERS];
+static bool b_BeserkActive[MAXPLAYERS];
+static float f_DamageResistance[MAXPLAYERS];
+static float f_HealthToRegain[MAXPLAYERS];
+static int i_ParticleEffect[MAXPLAYERS];
 
 void BeserkerRageGain_Map_Precache()
 {

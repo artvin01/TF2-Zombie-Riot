@@ -2,9 +2,9 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
-bool PapPreviewMode[MAXTF2PLAYERS];
-float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
-float CDDisplayHint_LoadoutConfirmAuto[MAXTF2PLAYERS];
+bool PapPreviewMode[MAXPLAYERS];
+float CDDisplayHint_LoadoutStore[MAXPLAYERS];
+float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
 enum struct ItemInfo
 {
@@ -473,18 +473,18 @@ enum struct Item
 	
 	ArrayList ItemInfos;
 	
-	int Owned[MAXTF2PLAYERS];
-	int Scaled[MAXTF2PLAYERS];
-	bool Equipped[MAXTF2PLAYERS];
-	int Sell[MAXTF2PLAYERS];
-	int BuyWave[MAXTF2PLAYERS];
-	int BuyPrice[MAXTF2PLAYERS];
-	float Cooldown1[MAXTF2PLAYERS];
-	float Cooldown2[MAXTF2PLAYERS];
-	float Cooldown3[MAXTF2PLAYERS];
-	int CurrentClipSaved[MAXTF2PLAYERS];
-	bool BoughtBefore[MAXTF2PLAYERS];
-	int RogueBoughtRecently[MAXTF2PLAYERS];
+	int Owned[MAXPLAYERS];
+	int Scaled[MAXPLAYERS];
+	bool Equipped[MAXPLAYERS];
+	int Sell[MAXPLAYERS];
+	int BuyWave[MAXPLAYERS];
+	int BuyPrice[MAXPLAYERS];
+	float Cooldown1[MAXPLAYERS];
+	float Cooldown2[MAXPLAYERS];
+	float Cooldown3[MAXPLAYERS];
+	int CurrentClipSaved[MAXPLAYERS];
+	bool BoughtBefore[MAXPLAYERS];
+	int RogueBoughtRecently[MAXPLAYERS];
 	
 	bool NPCSeller;
 	float NPCSeller_Discount;
@@ -544,20 +544,20 @@ static const char AmmoNames[][] =
 };
 
 static ArrayList StoreItems;
-static int NPCOnly[MAXTF2PLAYERS];
-static int NPCCash[MAXTF2PLAYERS];
-//static int NPCTarget[MAXTF2PLAYERS];
-static bool InLoadoutMenu[MAXTF2PLAYERS];
+static int NPCOnly[MAXPLAYERS];
+static int NPCCash[MAXPLAYERS];
+//static int NPCTarget[MAXPLAYERS];
+static bool InLoadoutMenu[MAXPLAYERS];
 //static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
-static ArrayList ChoosenTags[MAXTF2PLAYERS];
-static bool UsingChoosenTags[MAXTF2PLAYERS];
-static int LastMenuPage[MAXTF2PLAYERS];
-static int CurrentMenuPage[MAXTF2PLAYERS];
-static int CurrentMenuItem[MAXTF2PLAYERS];
+static ArrayList ChoosenTags[MAXPLAYERS];
+static bool UsingChoosenTags[MAXPLAYERS];
+static int LastMenuPage[MAXPLAYERS];
+static int CurrentMenuPage[MAXPLAYERS];
+static int CurrentMenuItem[MAXPLAYERS];
 
-static bool HasMultiInSlot[MAXTF2PLAYERS][6];
-static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static bool HasMultiInSlot[MAXPLAYERS][6];
+static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
@@ -1491,7 +1491,7 @@ void Store_RogueEndFightReset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		for(int c; c<MAXTF2PLAYERS; c++)
+		for(int c; c<MAXPLAYERS; c++)
 		{
 			item.RogueBoughtRecently[c] = 0;
 		}
@@ -1502,7 +1502,7 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	for(int c; c<MAXTF2PLAYERS; c++)
+	for(int c; c<MAXPLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
@@ -1517,7 +1517,7 @@ void Store_Reset()
 		item.NPCSeller = false;
 		item.NPCSeller_WaveStart = 0;
 		item.NPCSeller_Discount = 1.0;
-		for(int c; c<MAXTF2PLAYERS; c++)
+		for(int c; c<MAXPLAYERS; c++)
 		{
 			item.Owned[c] = 0;
 			item.Scaled[c] = 0;
@@ -1531,7 +1531,7 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-	for(int c; c<MAXTF2PLAYERS; c++)
+	for(int c; c<MAXPLAYERS; c++)
 	{
 		CashSpentGivePostSetup[c] = 0;
 		CashSpentGivePostSetupWarning[c] = false;
@@ -7072,7 +7072,7 @@ void SetStoreMenuLogicDelay(int client)
 }
 
 
-static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+static ArrayList List_TempApplyWeaponPer[MAXPLAYERS];
 
 /*
 	Example:
@@ -7113,7 +7113,7 @@ enum struct TempAttribStore
 //on map restart
 void ClearAllTempAttributes()
 {
-	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	for(int c = 0; c < MAXPLAYERS; c++)
 	{
 		delete List_TempApplyWeaponPer[c];
 	}

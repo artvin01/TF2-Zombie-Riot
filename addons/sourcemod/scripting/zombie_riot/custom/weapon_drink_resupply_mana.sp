@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle Give_bomb_back[MAXTF2PLAYERS+1];
-static bool Handle_on[MAXTF2PLAYERS+1]={false, ...};
+static Handle Give_bomb_back[MAXPLAYERS+1];
+static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
 
 public void Weapon_Magic_Restore(int client, int weapon, const char[] classname, bool &result)

@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_Reiuji_WeaponHudTimer[MAXTF2PLAYERS] = {null, ...};
-static float fl_hud_timer[MAXTF2PLAYERS];
-static float fl_ammo_timer[MAXTF2PLAYERS];
-static int i_ammo[MAXTF2PLAYERS];
+static Handle h_Reiuji_WeaponHudTimer[MAXPLAYERS] = {null, ...};
+static float fl_hud_timer[MAXPLAYERS];
+static float fl_ammo_timer[MAXPLAYERS];
+static int i_ammo[MAXPLAYERS];
 static int 		i_max_ammo				[6] = {10, 15, 20, 25, 30, 40};
 static float 	fl_ammogain_timerbase	[6] = {1.5, 1.5, 1.3, 1.2, 1.1, 0.9};
 static float 	fl_firerate_multi		[6] = {0.5, 0.45, 0.4, 0.3, 0.2, 0.2};
@@ -15,7 +15,7 @@ static float 	fl_barrage_maxrange		[6] = {1250.0, 1250.0, 1250.0, 1250.0, 1250.0
 static float 	fl_barrage_maxcharge	[6] = {600.0, 750.0, 1000.0, 1250.0, 1500.0, 1500.0};
 
 //charge gained will depend on mana consumed.
-static float fl_barrage_charge[MAXTF2PLAYERS];
+static float fl_barrage_charge[MAXPLAYERS];
 
 
 #define REIUJI_WAND_TOUCH_SOUND "friends/friend_online.wav"

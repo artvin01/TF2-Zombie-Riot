@@ -30,16 +30,16 @@ No buffs.
 
 static int LaserIndex;
 static bool Precached;
-static int i_Pap_Level[MAXTF2PLAYERS];
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static int i_Current_Pap[MAXTF2PLAYERS] = {0, ...};
-Handle Timer_Purnell_Management[MAXTF2PLAYERS] = {null, ...};
+static int i_Pap_Level[MAXPLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static int i_Current_Pap[MAXPLAYERS] = {0, ...};
+Handle Timer_Purnell_Management[MAXPLAYERS] = {null, ...};
 static int EnemiesHit[PURNELL_MAX_TARGETS];
-static bool b_PushSound[MAXTF2PLAYERS];
-static bool b_ShoveSound[MAXTF2PLAYERS];
-static float fl_Push_Knockback[MAXTF2PLAYERS];
+static bool b_PushSound[MAXPLAYERS];
+static bool b_ShoveSound[MAXPLAYERS];
+static float fl_Push_Knockback[MAXPLAYERS];
 static bool b_PurnellLastMann;
-static int i_SaveWeapon_Revolv[MAXTF2PLAYERS] = {-1, ...};
+static int i_SaveWeapon_Revolv[MAXPLAYERS] = {-1, ...};
 
 int Purnell_ReturnRevolver(int client)
 {

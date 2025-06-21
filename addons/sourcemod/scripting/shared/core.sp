@@ -542,7 +542,7 @@ int b_OnDeathExtraLogicNpc[MAXENTITIES];
 #define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
 #define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
 
-float f_MutePlayerTalkShutUp[MAXTF2PLAYERS];
+float f_MutePlayerTalkShutUp[MAXPLAYERS];
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];
@@ -603,11 +603,11 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
-int Armor_Wearable[MAXTF2PLAYERS];
-int Cosmetic_WearableExtra[MAXTF2PLAYERS];
+int Armor_Wearable[MAXPLAYERS];
+int Cosmetic_WearableExtra[MAXPLAYERS];
 #endif
 
-bool b_DamageNumbers[MAXTF2PLAYERS];
+bool b_DamageNumbers[MAXPLAYERS];
 
 int OriginalWeapon_AmmoType[MAXENTITIES];
 
@@ -1216,7 +1216,7 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXTF2PLAYERS], matches;
+	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1256,7 +1256,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXTF2PLAYERS], matches;
+	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1595,8 +1595,8 @@ public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float 
 #endif
 
 #if defined ZR
-static bool was_reviving[MAXTF2PLAYERS];
-static int was_reviving_this[MAXTF2PLAYERS];
+static bool was_reviving[MAXPLAYERS];
+static int was_reviving_this[MAXPLAYERS];
 #endif
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -1699,7 +1699,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	static int holding[MAXTF2PLAYERS];
+	static int holding[MAXPLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{
 		if(!(buttons & IN_ATTACK))
@@ -3665,7 +3665,7 @@ int CalcMaxPlayers()
 {
 	int playercount = CvarMaxPlayerAlive.IntValue;
 	if(playercount < 1)
-		playercount = MAXTF2PLAYERS - 1;
+		playercount = MAXPLAYERS - 1;
 	/*
 	if(OperationSystem == OS_Linux)
 	{

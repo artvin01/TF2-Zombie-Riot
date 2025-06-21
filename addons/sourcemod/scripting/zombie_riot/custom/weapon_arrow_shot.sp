@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int Arrows_Ability_Shot[MAXTF2PLAYERS+1]={0, ...};
+static int Arrows_Ability_Shot[MAXPLAYERS+1]={0, ...};
 
 #define SPLIT_ANGLE_OFFSET 2.0
 
@@ -98,9 +98,9 @@ public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
 	}
 }
 
-static float Arrows_Damage[MAXTF2PLAYERS+1]={0.0, ...};
-static int Client_To_Weapon[MAXTF2PLAYERS+1]={0, ...};
-static int Max_Arrows[MAXTF2PLAYERS+1]={0, ...};
+static float Arrows_Damage[MAXPLAYERS+1]={0.0, ...};
+static int Client_To_Weapon[MAXPLAYERS+1]={0, ...};
+static int Max_Arrows[MAXPLAYERS+1]={0, ...};
 
 public void Arrow_Spell_ClearAll()
 {

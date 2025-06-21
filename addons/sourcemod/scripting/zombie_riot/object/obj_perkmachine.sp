@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float Perk_Machine_Sickness[MAXTF2PLAYERS];
+float Perk_Machine_Sickness[MAXPLAYERS];
 void ObjectPerkMachine_MapStart()
 {
 	PrecacheModel("models/props_farm/welding_machine01.mdl");

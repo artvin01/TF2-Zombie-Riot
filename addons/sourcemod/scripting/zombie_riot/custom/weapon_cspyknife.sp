@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
-static float fl_IncreaseAttackSpeed[MAXTF2PLAYERS+1]={0.0, ...};
-static float fl_IncreaseDamage[MAXTF2PLAYERS+1]={1.0, ...};
-//static float fl_IncreaseDamageTaken[MAXTF2PLAYERS+1]={1.0, ...};
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float fl_IncreaseAttackSpeed[MAXPLAYERS+1]={0.0, ...};
+static float fl_IncreaseDamage[MAXPLAYERS+1]={1.0, ...};
+//static float fl_IncreaseDamageTaken[MAXPLAYERS+1]={1.0, ...};
 
 #define TheTimerForCoolDown 1.0
 #define SlowStunTimer 0.88

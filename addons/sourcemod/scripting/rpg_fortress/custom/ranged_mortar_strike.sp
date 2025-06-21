@@ -76,8 +76,8 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 	Ability_MortarRanged(client, 1, weapon, damageDelt);
 	return (GetGameTime() + 15.0);
 }
-static float f_MarkerPosition[MAXTF2PLAYERS][3];
-static float f_Damage[MAXTF2PLAYERS];
+static float f_MarkerPosition[MAXPLAYERS][3];
+static float f_Damage[MAXPLAYERS];
 
 
 

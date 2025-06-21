@@ -6,11 +6,11 @@
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
 #define MAX_DIMENSION_CHARGE 30
 #define MAX_DIMENSION_CHARGE_SUPER 50
-static bool Change[MAXTF2PLAYERS];
-static Handle h_TimerDimensionWeaponManagement[MAXTF2PLAYERS+1]={null, ...};
-static int how_many_times_swinged[MAXTF2PLAYERS];
-static float f_DIMAbilityActive[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_DIMhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+static bool Change[MAXPLAYERS];
+static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
+static int how_many_times_swinged[MAXPLAYERS];
+static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
+static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 
 void ResetMapStartDimWeapon()

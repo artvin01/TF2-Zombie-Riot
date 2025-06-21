@@ -7,8 +7,8 @@
 
 static const float gf_gordon_propthrowforce	= 900.0;
 static const float gf_gordon_propthrowoffset = 90.0;
-static int Coin_flip[MAXTF2PLAYERS];
-static int particle_1[MAXTF2PLAYERS];
+static int Coin_flip[MAXPLAYERS];
+static int particle_1[MAXPLAYERS];
 static bool mb_coin[MAXENTITIES];
 static bool already_ricocated[MAXENTITIES];
 static int Beam_Laser;
@@ -16,7 +16,7 @@ static int Entity_Owner[MAXENTITIES];
 static float damage_multiplier[MAXENTITIES];
 static float f_Thrownrecently[MAXENTITIES];
 static float mf_extra_damage[MAXENTITIES];
-static int coins_flipped[MAXTF2PLAYERS];
+static int coins_flipped[MAXPLAYERS];
 
 //	if (Ability_Check_Cooldown(client, slot) < 0.0)
 //	{

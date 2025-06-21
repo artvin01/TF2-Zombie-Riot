@@ -250,7 +250,7 @@ static bool InRogueMode;
 static Handle VoteTimer;
 static ArrayList Voting;
 static float VoteEndTime;
-static int VotedFor[MAXTF2PLAYERS];
+static int VotedFor[MAXPLAYERS];
 static Function VoteFunc;
 static char VoteTitle[256];
 static char StartingItem[64];

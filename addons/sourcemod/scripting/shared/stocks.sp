@@ -169,7 +169,7 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		else
 			DispatchKeyValue(particle, "effect_name", "3rd_trail");
 			
-		if(iParent > MAXTF2PLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
+		if(iParent > MAXPLAYERS) //Exclude base_bosses from this, or any entity, then it has to always be rendered.
 		{
 			b_IsEntityAlwaysTranmitted[particle] = true;
 		}
@@ -1497,9 +1497,9 @@ public Action Timer_Healing(Handle timer, DataPack pack)
 }
 
 //doing this litterally every heal spams it, so we make a 0.5 second delay, and thus, will stack it, and then show it all at once.
-Handle h_Timer_HealEventApply[MAXTF2PLAYERS+1] = {null, ...};
-Handle h_Timer_HealEventApply_Ally[MAXTF2PLAYERS+1] = {null, ...};
-ArrayList h_Arraylist_HealEventAlly[MAXTF2PLAYERS+1];
+Handle h_Timer_HealEventApply[MAXPLAYERS+1] = {null, ...};
+Handle h_Timer_HealEventApply_Ally[MAXPLAYERS+1] = {null, ...};
+ArrayList h_Arraylist_HealEventAlly[MAXPLAYERS+1];
 
 enum struct HealEventSaveInfo
 {
@@ -2019,7 +2019,7 @@ stock void DoOverlay(int client, const char[] overlay, int Methods = 0)
 
 public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 {
-	if(entity > MAXTF2PLAYERS)
+	if(entity > MAXPLAYERS)
 	{
 		return false;
 	}
@@ -3790,7 +3790,7 @@ stock void ShowAnnotationToPlayer(int client, float pos[3], const char[] Text, f
 	SetEventFloat(event, "worldPosY", pos[1]);
 	SetEventFloat(event, "worldPosZ", pos[2]);
 	SetEventFloat(event, "lifetime", lifetime);
-//	SetEventInt(event, "id", annotation_id*MAXTF2PLAYERS + client + ANNOTATION_OFFSET);
+//	SetEventInt(event, "id", annotation_id*MAXPLAYERS + client + ANNOTATION_OFFSET);
 	SetEventString(event, "text", Text);
 	SetEventString(event, "play_sound", "vo/null.wav");
 	SetEventInt(event, "visibilityBitfield", (1 << client));
@@ -3942,7 +3942,7 @@ stock int SpawnSeperateCollisionBox(int entity, float Mins[3] = {-24.0,-24.0,0.0
 }
 
 
-//static int b_TextEntityToOwner[MAXTF2PLAYERS];
+//static int b_TextEntityToOwner[MAXPLAYERS];
 #if defined RPG
 
 int BrushToEntity(int brush)
@@ -5134,7 +5134,7 @@ enum g_Collision_Group
 	
 };
 
-float f_HitmarkerSameFrame[MAXTF2PLAYERS];
+float f_HitmarkerSameFrame[MAXPLAYERS];
 
 stock void DoClientHitmarker(int client)
 {

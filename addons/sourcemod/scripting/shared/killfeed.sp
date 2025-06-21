@@ -25,7 +25,7 @@ enum struct KillFeed
 }
 
 static int Bots[2];
-static int ForceTeam[MAXTF2PLAYERS];
+static int ForceTeam[MAXPLAYERS];
 static char KillIcon[MAXENTITIES][32];
 static ArrayList LowList;
 static ArrayList HighList;

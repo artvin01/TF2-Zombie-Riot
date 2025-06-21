@@ -271,7 +271,7 @@ enum struct ItemInfo
 }
 
 static ArrayList EquippedItems;
-static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
 void RpgPluginStart_Store()
 {
@@ -2095,7 +2095,7 @@ int GetAmmoType_WeaponPrimary(int weapon)
 
 
 
-static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+static ArrayList List_TempApplyWeaponPer[MAXPLAYERS];
 
 /*
 	Example:
@@ -2136,7 +2136,7 @@ enum struct TempAttribStore
 //on map restart
 void ClearAllTempAttributes()
 {
-	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	for(int c = 0; c < MAXPLAYERS; c++)
 	{
 		delete List_TempApplyWeaponPer[c];
 	}

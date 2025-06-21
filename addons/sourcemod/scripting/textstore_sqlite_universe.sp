@@ -19,8 +19,8 @@ enum struct LastItem
 Database DataBase;
 bool IgnoreLoad;
 bool InQuery;
-int CurrentUniverse[MAXTF2PLAYERS];
-ArrayList LastItems[MAXTF2PLAYERS];
+int CurrentUniverse[MAXPLAYERS];
+ArrayList LastItems[MAXPLAYERS];
 GlobalForward UniverseForward;
 
 public Plugin myinfo =

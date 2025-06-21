@@ -46,8 +46,8 @@ static char g_RangedReloadSound[][] = {
 };
 
 static int i_Victim_Infection[MAXENTITIES];
-static float fl_Cure_Meter[MAXTF2PLAYERS];
-static float fl_Infection_Meter[MAXTF2PLAYERS];
+static float fl_Cure_Meter[MAXPLAYERS];
+static float fl_Infection_Meter[MAXPLAYERS];
 static float fl_Default_Speed = 300.0;
 static int smith_id = -1;
 static int i_RedAmount;

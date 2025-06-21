@@ -4,7 +4,7 @@
 #define MARKET_TAX	10
 #define MARKET_CAP	10
 
-float MenuDelayDo[MAXTF2PLAYERS];
+float MenuDelayDo[MAXPLAYERS];
 
 static const char RarityName[][] = 
 {
@@ -250,22 +250,22 @@ static KeyValues MarketKv;
 static ArrayList Backpack;
 static ArrayList SpellList;
 static StringMap StoreList;
-static char InStore[MAXTF2PLAYERS][32];
-static char InStoreTag[MAXTF2PLAYERS][16];
-static char InStoreExtra[MAXTF2PLAYERS][32];
+static char InStore[MAXPLAYERS][32];
+static char InStoreTag[MAXPLAYERS][16];
+static char InStoreExtra[MAXPLAYERS][32];
 static int ItemIndex[MAXENTITIES];
 static int ItemCount[MAXENTITIES];
 static int ItemOwner[MAXENTITIES];
 static float ItemLifetime[MAXENTITIES];
-static bool InMenu[MAXTF2PLAYERS];
-static int MenuType[MAXTF2PLAYERS];
-static float RefreshAt[MAXTF2PLAYERS];
-static bool ChatListen[MAXTF2PLAYERS];
-static int MarketItem[MAXTF2PLAYERS];
-static int MarketCount[MAXTF2PLAYERS];
-static int MarketSell[MAXTF2PLAYERS];
-static int SkillRand[MAXTF2PLAYERS];
-static bool SkillType[MAXTF2PLAYERS];
+static bool InMenu[MAXPLAYERS];
+static int MenuType[MAXPLAYERS];
+static float RefreshAt[MAXPLAYERS];
+static bool ChatListen[MAXPLAYERS];
+static int MarketItem[MAXPLAYERS];
+static int MarketCount[MAXPLAYERS];
+static int MarketSell[MAXPLAYERS];
+static int SkillRand[MAXPLAYERS];
+static bool SkillType[MAXPLAYERS];
 
 static void SaveMarket(int client)
 {
@@ -2854,8 +2854,8 @@ void De_TransformClient(int client)
 }
 
 
-static Handle XpTimerHandle[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
-static int XPGainedOverTime[MAXTF2PLAYERS+1] = {0, ...};
+static Handle XpTimerHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static int XPGainedOverTime[MAXPLAYERS+1] = {0, ...};
 
 void RPGTextstore_XpToChat(int client, int XPAdd)
 {

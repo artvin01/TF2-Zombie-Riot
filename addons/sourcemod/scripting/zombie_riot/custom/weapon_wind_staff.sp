@@ -12,7 +12,7 @@ static int Projectile_To_Client[MAXENTITIES]={0, ...};
 static int Projectile_To_Particle[MAXENTITIES]={0, ...};
 static int Projectile_To_Weapon[MAXENTITIES]={0, ...};
 
-static float TORNADO_Radius[MAXTF2PLAYERS];
+static float TORNADO_Radius[MAXPLAYERS];
 
 static int Beam_Laser;
 static int Beam_Glow;

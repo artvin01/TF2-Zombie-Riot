@@ -123,7 +123,7 @@ static char SkyNameRestore[64];
 static StringMap g_AllocPooledStringCache;
 
 static int Gave_Ammo_Supply;
-static int VotedFor[MAXTF2PLAYERS];
+static int VotedFor[MAXPLAYERS];
 static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;

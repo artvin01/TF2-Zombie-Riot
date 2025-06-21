@@ -16,7 +16,7 @@ static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
 static float g_vecDomeCP[3];
-static float g_flDomePlayerTime[MAXTF2PLAYERS] ={0.0, ...};
+static float g_flDomePlayerTime[MAXPLAYERS] ={0.0, ...};
 static bool g_bDomePlayerOutside[MAXENTITIES] = {false, ...};
 static Handle g_hDomeTimerBleed = null;
 

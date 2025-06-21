@@ -1,9 +1,9 @@
 #define SUPERUBERSAW_DAMAGE_1	"ambient/sawblade_impact1.wav"
 
-Handle h_TimerSuperubersawAlterManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_SuperubersawAlterhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_PercentageHealTillUbersaw[MAXTF2PLAYERS+1]={0.0, ...};
-static int UbersawSaveDo[MAXTF2PLAYERS+1]={0, ...};
+Handle h_TimerSuperubersawAlterManagement[MAXPLAYERS+1] = {null, ...};
+static float f_SuperubersawAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
+static float f_PercentageHealTillUbersaw[MAXPLAYERS+1]={0.0, ...};
+static int UbersawSaveDo[MAXPLAYERS+1]={0, ...};
 
 #define SUPERUBERSAW_MAXHEALTILLFULL 400.0
 

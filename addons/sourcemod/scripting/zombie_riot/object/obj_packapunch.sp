@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float f_CheckWeaponDelay[MAXTF2PLAYERS];
-bool b_LastWeaponCheckBias[MAXTF2PLAYERS];
+float f_CheckWeaponDelay[MAXPLAYERS];
+bool b_LastWeaponCheckBias[MAXPLAYERS];
 
 void ObjectPackAPunch_MapStart()
 {

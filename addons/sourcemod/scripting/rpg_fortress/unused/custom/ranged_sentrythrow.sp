@@ -2,9 +2,9 @@
 #define MORTAR_BOOM	"beams/beamstart5.wav"
 #define MORTAR_SHOT_INCOMMING	"weapons/mortar/mortar_shell_incomming1.wav"
 
-static int HasSentry[MAXTF2PLAYERS];
-static float SentryDamage[MAXTF2PLAYERS];
-static int DrainRate[MAXTF2PLAYERS];
+static int HasSentry[MAXPLAYERS];
+static float SentryDamage[MAXPLAYERS];
+static int DrainRate[MAXPLAYERS];
 
 float SentryDamageRpg(int client)
 {

@@ -4,7 +4,7 @@
 #define BUBBLE_INIT_SOUND "player/invuln_on_vaccinator.wav"
 #define RANGE_BUBBLE_PROC 220.0
 
-static float f_HealAmount[MAXTF2PLAYERS];
+static float f_HealAmount[MAXPLAYERS];
 
 
 void Wand_BubbleProctection_Map_Precache()

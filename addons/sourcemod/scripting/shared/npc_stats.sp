@@ -22,8 +22,8 @@ enum
 	NAV_MESH_WALK : Walk, do not avoid obstacles
 */
 
-int dieingstate[MAXTF2PLAYERS];
-int TeutonType[MAXTF2PLAYERS];
+int dieingstate[MAXPLAYERS];
+int TeutonType[MAXPLAYERS];
 bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
@@ -34,9 +34,9 @@ int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 
 #endif
-int i_KillsMade[MAXTF2PLAYERS];
-int i_Backstabs[MAXTF2PLAYERS];
-int i_Headshots[MAXTF2PLAYERS];	
+int i_KillsMade[MAXPLAYERS];
+int i_Backstabs[MAXPLAYERS];
+int i_Headshots[MAXPLAYERS];	
 
 #if !defined RTS
 int TeamFreeForAll = 50;
@@ -10708,7 +10708,7 @@ void MakeObjectIntangeable(int entity)
 }
 
 
-static int BadSpotPoints[MAXTF2PLAYERS];
+static int BadSpotPoints[MAXPLAYERS];
 stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 {
 #if defined ZR

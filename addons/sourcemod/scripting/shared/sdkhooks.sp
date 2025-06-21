@@ -1,30 +1,30 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInMarkedForDeathSilent[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
-static float f_EntityOutOfNav[MAXTF2PLAYERS];
-static float f_LatestDamageRes[MAXTF2PLAYERS];
-static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
-static bool b_GaveMarkForDeath[MAXTF2PLAYERS];
-static float f_RecievedTruedamageHit[MAXTF2PLAYERS];
+//static float i_WasInUber[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInMarkedForDeathSilent[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInMarkedForDeath[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInDefenseBuff[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInJarate[MAXPLAYERS] = {0.0,0.0,0.0};
+static float f_EntityHazardCheckDelay[MAXPLAYERS];
+static float f_EntityOutOfNav[MAXPLAYERS];
+static float f_LatestDamageRes[MAXPLAYERS];
+static float f_TimeSinceLastRegenStop[MAXPLAYERS];
+static bool b_GaveMarkForDeath[MAXPLAYERS];
+static float f_RecievedTruedamageHit[MAXPLAYERS];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
 //This will be used as a timer to fix this issue
-static float f_CheckWeaponDouble[MAXTF2PLAYERS];
+static float f_CheckWeaponDouble[MAXPLAYERS];
 
-bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
+bool Client_Had_ArmorDebuff[MAXPLAYERS];
 
 #if defined ZR
 int Armor_WearableModelIndex;
 int Wing_WearlbeIndex;
 #endif
 
-bool ClientPassAliveCheck[MAXTF2PLAYERS];
+bool ClientPassAliveCheck[MAXPLAYERS];
 
 void SDKHooks_ClearAll()
 {
@@ -1352,7 +1352,7 @@ public void OnPostThink(int client)
 		static char buffer[20]; //armor
 		static char buffer2[20];	//perks and stuff
 		bool Armor_Regenerating = false;
-		static int ArmorRegenCounter[MAXTF2PLAYERS];
+		static int ArmorRegenCounter[MAXPLAYERS];
 		if(armorEnt == client && f_ClientArmorRegen[client] > GetGameTime())
 		{
 			Armor_Regenerating = true;
@@ -2529,7 +2529,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	return Plugin_Continue;
 }
 
-static int i_PreviousWeapon[MAXTF2PLAYERS];
+static int i_PreviousWeapon[MAXPLAYERS];
 
 public void OnWeaponSwitchPost(int client, int weapon)
 {
@@ -2656,7 +2656,7 @@ void ApplyLastmanOrDyingOverlay(int client)
 	}
 }
 
-char SetRenderDo[MAXTF2PLAYERS][8];
+char SetRenderDo[MAXPLAYERS][8];
 void CauseFadeInAndFadeOut(int client = 0, float duration_in, float duration_hold, float duration_out, const char[] RenderAmtDo)
 {
 	int SpawnFlags = 0;

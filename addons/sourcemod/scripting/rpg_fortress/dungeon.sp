@@ -607,8 +607,8 @@ enum struct DungeonEnum
 static Handle SyncHud;
 static Handle DungeonTimer;
 static StringMap DungeonList;
-static char DungeonMenu[MAXTF2PLAYERS][64];
-static int AltMenu[MAXTF2PLAYERS];
+static char DungeonMenu[MAXPLAYERS][64];
+static int AltMenu[MAXPLAYERS];
 char InDungeon[MAXENTITIES][64];
 static int LastResult[MAXENTITIES];
 
@@ -2039,7 +2039,7 @@ public void Dungeon_Spawn_Hurigrajao(ArrayList list)
 }
 public void ClearDungeonStats(int entity)
 {
-	if(entity < MAXTF2PLAYERS)
+	if(entity < MAXPLAYERS)
 	{
 		b_DungeonContracts_LongerCooldown[entity] = false;
 		b_DungeonContracts_SlowerAttackspeed[entity] = false;

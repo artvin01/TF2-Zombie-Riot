@@ -1,7 +1,7 @@
-static float f_GoldenAgilityThrottle[MAXTF2PLAYERS+1];
-static float f3_GoldenAgilitySpotStepOn[MAXTF2PLAYERS+1][3];
-static float f_GoldenAgilityCooldown[MAXTF2PLAYERS+1];
-static float f_GoldenAgilityActiveFor[MAXTF2PLAYERS+1];
+static float f_GoldenAgilityThrottle[MAXPLAYERS+1];
+static float f3_GoldenAgilitySpotStepOn[MAXPLAYERS+1][3];
+static float f_GoldenAgilityCooldown[MAXPLAYERS+1];
+static float f_GoldenAgilityActiveFor[MAXPLAYERS+1];
 static char gLaser1;
 
 #define NEW_SPOT_GOLDEN_SOUND "ui/chime_rd_2base_neg.wav"
