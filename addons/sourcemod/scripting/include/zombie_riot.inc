@@ -78,10 +78,6 @@ native int ZR_GetAliveStatus(int client);
 /**
  * Returns the alive status of a player
  * 
- * @param client	Client index
- * 
- * @error		Invalid client index or client is not in game
- * 
  * @return		0 for normal, 1 rogue, 2 construction
  */
 native int ZR_GetSpecialMode();
