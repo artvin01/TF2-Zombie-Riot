@@ -242,7 +242,8 @@ enum
 enum
 {
 	BobChaos = 0,
-	BlueParadox = 1
+	BlueParadox = 1,
+	ReilaRift = 2
 }
 
 static bool InRogueMode;
@@ -279,6 +280,7 @@ static int CurrentChaos;
 
 static int CurseOne = -1;
 static int CurseTwo = -1;
+static int CurseTime;
 static int ExtraStageCount;
 
 // Rogue Items
@@ -293,8 +295,9 @@ void Rogue_PluginStart()
 	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
 	RegAdminCmd("zr_setstage", Rogue_DebugSet, ADMFLAG_ROOT);
 	
-	LoadTranslations("zombieriot.phrases.rogue"); 
-	LoadTranslations("zombieriot.phrases.rogue.paradox"); 
+	LoadTranslations("zombieriot.phrases.rogue");
+	LoadTranslations("zombieriot.phrases.rogue.paradox");
+	LoadTranslations("zombieriot.phrases.rogue.rift");
 }
 
 public Action Rogue_DebugGive(int client, int args)
@@ -818,6 +821,7 @@ void Rogue_RoundEnd()
 	}
 	
 	//StartingItem[0] = 0;
+	CurseTime = 0;
 	
 	if(CurseOne != -1)
 	{
@@ -1008,6 +1012,15 @@ void Rogue_BattleVictory()
 						Rogue_GiveNamedArtifact(artifact.Name);
 				}
 			}
+			case ReilaRift:
+			{
+				if((GetURandomInt() % 8) < BattleIngots)
+				{
+					Artifact artifact;
+					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
+				}
+			}
 		}
 
 		if(Rogue_HasFriendship())
@@ -1157,8 +1170,13 @@ void Rogue_NextProgress()
 					CPrintToChatAll("{green}%t", "Explain Rogue2 1");
 					CPrintToChatAll("{green}%t", "Explain Rogue2 2");
 				}
+				case ReilaRift:
+				{
+					CPrintToChatAll("{green}%t", "Explain Rogue1 1");
+					CPrintToChatAll("{green}%t", "Explain Rogue1 2");
+					CPrintToChatAll("{green}%t", "Explain Rogue1 3");
+				}
 			}
-			//Currentfunc_stagestart = 0;
 			
 			CurrentFloor = 0;
 			CurrentCount = -1;
@@ -1229,10 +1247,19 @@ void Rogue_NextProgress()
 			}
 
 			int maxRooms = floor.RoomCount + ExtraStageCount;
-			
-			if(CurrentCount > maxRooms)
+
+			bool removeCurse;
+			switch(RogueTheme)
 			{
-				// Go to next floor
+				case ReilaRift:
+					removeCurse = (--CurseTime) < 1;
+
+				default:
+					removeCurse = CurrentCount > maxRooms;
+			}
+			
+			if(removeCurse)
+			{
 				if(CurseOne != -1)
 				{
 					Curse curse;
@@ -1245,6 +1272,9 @@ void Rogue_NextProgress()
 					}
 
 					CurseOne = -1;
+					
+					if(RogueTheme == ReilaRift)
+						CPrintToChatAll("%t", "Curse Rift Closed", curse.Name);
 				}
 				
 				if(CurseTwo != -1)
@@ -1260,7 +1290,40 @@ void Rogue_NextProgress()
 
 					CurseTwo = -1;
 				}
+			}
 
+			if(RogueTheme == ReilaRift && CurseTime < -1 && CurseOne == -1)	// Reila Rogue starts curses anytime
+			{
+				if((GetURandomInt() % 9) < (-CurseTime))
+				{
+					int length = Curses.Length;
+					if(length)
+					{
+						CurseTime = 4;
+						CurseOne = GetURandomInt() % length;
+						
+						Curse curse;
+						Curses.GetArray(CurseOne, curse);
+						if(curse.Func != INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, curse.Func);
+							Call_PushCell(true);
+							Call_PushCellRef(CurseTime);
+							Call_Finish();
+						}
+
+						char buffer[64];
+						FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
+						CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
+						CPrintToChatAll("%t", buffer);
+					}
+				}
+			}
+			
+			if(CurrentCount > maxRooms)	// Go to next floor
+			{
 				CurrentFloor++;
 				CurrentStage = -1;
 				CurrentCount = -1;
@@ -1304,48 +1367,33 @@ void Rogue_NextProgress()
 					WavesUpdateDifficultyName();
 
 					bool cursed;
-					if(!(GetURandomInt() % 5) || Rogue_Paradox_SpecialForceCurse(CurrentFloor))
+					if(RogueTheme != ReilaRift)	// Reila Rogue, see above
 					{
-						int length = Curses.Length;
-						if(length)
+						if(!(GetURandomInt() % 5) || Rogue_Paradox_SpecialForceCurse(CurrentFloor))
 						{
-							cursed = true;
+							int length = Curses.Length;
+							if(length)
+							{
+								cursed = true;
 
-							if(Rogue_Paradox_SpecialForceCurse(CurrentFloor))
-							{
-								CurseOne = length - 1;
-							}
-							else
-							{
-								CurseOne = GetURandomInt() % length;
-							}
-							
-							if(length > 1 && !(GetURandomInt() % 4))
-							{
-								CurseTwo = GetURandomInt() % (length - 1);
-								if(CurseTwo >= CurseOne)
-									CurseTwo++;
-							}
-							
-							Curse curse;
-							Curses.GetArray(CurseOne, curse);
-							if(curse.Func != INVALID_FUNCTION)
-							{
-								Call_StartFunction(null, curse.Func);
-								Call_PushCell(true);
-								Call_Finish();
-							}
-
-							char buffer[64];
-							FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
-							CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
-
-							FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
-							CPrintToChatAll("%t", buffer);
-
-							if(CurseTwo != -1)
-							{
-								Curses.GetArray(CurseTwo, curse);
+								if(Rogue_Paradox_SpecialForceCurse(CurrentFloor))
+								{
+									CurseOne = length - 1;
+								}
+								else
+								{
+									CurseOne = GetURandomInt() % length;
+								}
+								
+								if(length > 1 && !(GetURandomInt() % 4))
+								{
+									CurseTwo = GetURandomInt() % (length - 1);
+									if(CurseTwo >= CurseOne)
+										CurseTwo++;
+								}
+								
+								Curse curse;
+								Curses.GetArray(CurseOne, curse);
 								if(curse.Func != INVALID_FUNCTION)
 								{
 									Call_StartFunction(null, curse.Func);
@@ -1353,14 +1401,33 @@ void Rogue_NextProgress()
 									Call_Finish();
 								}
 
+								char buffer[64];
 								FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
 								CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
 
 								FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
 								CPrintToChatAll("%t", buffer);
+
+								if(CurseTwo != -1)
+								{
+									Curses.GetArray(CurseTwo, curse);
+									if(curse.Func != INVALID_FUNCTION)
+									{
+										Call_StartFunction(null, curse.Func);
+										Call_PushCell(true);
+										Call_Finish();
+									}
+
+									FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
+									CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
+
+									FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
+									CPrintToChatAll("%t", buffer);
+								}
 							}
 						}
 					}
+
 					if(RogueTheme == BlueParadox)
 						Rogue_Paradox_OnNewFloor(CurrentFloor);
 
@@ -2749,25 +2816,41 @@ bool Rogue_UpdateMvMStats()
 				}
 				case 2:
 				{
-					if(RogueTheme == BlueParadox)
+					switch(RogueTheme)
 					{
-						switch(Rogue_GetChaosLevel())
+						case BlueParadox:
 						{
-							case 1, 2:
+							switch(Rogue_GetChaosLevel())
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								case 1, 2:
+								{
+									Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								}
+								case 3, 4:
+								{
+									Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								}
+								default:
+								{
+									Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
+								}
 							}
-							case 3, 4:
-							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
-							}
-							default:
-							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
-							}
-						}
 
-						continue;
+							continue;
+						}
+						case ReilaRift:
+						{
+							if(CurseOne != -1)
+							{
+								Waves_SetWaveClass(objective, i, CurseTime, "void_gate", MVM_CLASS_FLAG_MINIBOSS, true);
+							}
+							else
+							{
+								Waves_SetWaveClass(objective, i, 0, "void_gate", MVM_CLASS_FLAG_MINIBOSS, false);
+							}
+							
+							continue;
+						}
 					}
 				}
 			}
