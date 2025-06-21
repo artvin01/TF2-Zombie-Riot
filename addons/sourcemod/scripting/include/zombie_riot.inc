@@ -5,6 +5,23 @@
 
 #include <tf2>
 
+enum ZRSpecialMode
+{
+	Mode_Standard = 0,
+	Mode_Rogue1,
+	Mode_Rogue2,
+	Mode_Construction,
+}
+
+enum ZRLifeState
+{
+	LifeState_Alive = 0,
+	LifeState_Downed,
+	LifeState_Teuton,
+	LifeState_Dead,
+	LifeState_Spectator,
+}
+
 /**
  * Applies effects as if an NPC died
  * Old native from early zombie riot subplugins
@@ -64,7 +81,6 @@ native bool ZR_HasNamedItem(int client, const char[] item);
  */
 native bool ZR_GiveNamedItem(int client, const char[] item);
 
-
 /**
  * Returns the alive status of a player
  * 
@@ -72,23 +88,36 @@ native bool ZR_GiveNamedItem(int client, const char[] item);
  * 
  * @error		Invalid client index or client is not in game
  * 
- * @return		0 for alive, 1 for downed, 2 for teuton, 3 for dead, 4 for spec
+ * @return		The life state
  */
-native int ZR_GetAliveStatus(int client);
+native ZRLifeState ZR_GetAliveStatus(int client);
 
-enum ZRMode
-{
-	Standard,
-	Rogue1,
-	Rogue2,
-	Construction,
-}
 /**
- * Returns the alive status of a player
+ * Returns the current special mode
  * 
- * @return		see enum
+ * @return		The current special mode
  */
-native ZRMode ZR_GetSpecialMode();
+native ZRSpecialMode ZR_GetSpecialMode();
+
+/**
+ * Set Client XP Yourself
+ * 
+ * @param client	Client index
+ * @param XP		XP obtained or lost, level is set silently automatically with this
+ * 
+ * @return
+ */
+native void ZR_SetXpAndLevel(int client, int Xp);
+
+/**
+ * Get The XP of the client Now, usefull on disconnect
+ * 
+ * @param client	Client index
+ *  To calculate levels and all, please use this formular.
+ * 
+ * @return
+ */
+native int ZR_GetXp(int client);
 
 /**
  * Called when a difficulty is selected
@@ -225,36 +254,16 @@ forward void ZR_OnWaveEnd(int waves, int maxwaves, int realmaxwaves);
  */
 forward void ZR_OnSpecialModeProgress(int CurrentFloor, int MaxFloor);
 
-/**
- * Set Client XP Yourself
- * 
- * @param client	Client index
- * @param XP		XP obtained or lost, level is set silently automatically with this
- * 
- * @return
- */
-native void ZR_SetXpAndLevel(int client, int Xp);
-
-/**
- * Get The XP of the client Now, usefull on disconnect
- * 
- * @param client	Client index
- *  To calculate levels and all, please use this formular.
- * 
- * @return
- */
-native int ZR_GetXp(int client);
-
-//Basic natives to share.
-public int XpToLevel(int xp)
+stock int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp / 200.0, 0.5));
 }
 
-public int LevelToXp(int lv)
+stock int LevelToXp(int lv)
 {
 	return lv * lv * 200;
 }
+
 public SharedPlugin __pl_zombie_riot =
 {
 	name = "zombie_riot",
@@ -276,6 +285,7 @@ public void __pl_zombie_riot_SetNTVOptional()
 	MarkNativeAsOptional("ZR_GiveNamedItem");
 	MarkNativeAsOptional("ZR_GetAliveStatus");
 	MarkNativeAsOptional("ZR_OnWinTeam");
+	MarkNativeAsOptional("ZR_GetSpecialMode");
 	MarkNativeAsOptional("ZR_OnGetXP");
 	MarkNativeAsOptional("ZR_SetXpAndLevel");
 	MarkNativeAsOptional("ZR_GetXp");
