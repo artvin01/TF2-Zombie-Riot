@@ -378,7 +378,7 @@
 	{
 		"en"	"Slows attack/reload speed & healrate by 10％.\nRaidbosses that are affected lose/weaken some ability, check Encyclopedia."
 		"es"	"Reduce la velocidad de ataque/recarga y curacion medica en un 10％."
-		"ko"	"공격 속도, 재장전 속도, 치유 속도가 10％ 감소합니다."
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 10％ 감소합니다.\n레이드 보스의 능력 일부가 약해지거나 봉인됩니다. 백과사전을 참고하세요."
 	}
 	"Hardened Aura"
 	{

@@ -384,7 +384,7 @@
 	"Sherrif Pap 3"
 	{
 		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage.\nHitting marked targets with your revolver reduces R Cooldown."
-		"ko"		"R: 레버 액션으로 전환.\n탄약은 한정되어있으며, M2 능력과 조합 가능.\n반자동 사격이 M1보다 더 빠름.\n폭발 피해를 가함.\n리볼버로 표적이 부여된 적 타격시 R 쿨타임 감소."
+		"ko"		"R: 레버 액션으로 전환.\n탄약은 한정되어있으며, M2 능력과 조합 가능.\n반자동시 M1를 연타하는게 더 빠름.\n폭발 피해를 가함.\n리볼버로 표적이 부여된 적 타격시 R 쿨타임 감소."
 	}
 	"Deagle Pap 2"
 	{

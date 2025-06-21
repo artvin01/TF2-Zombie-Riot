@@ -3685,7 +3685,7 @@
 	{
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.}nHits only upto 3 additional allies."
 		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
-		"ko"	"원소 피해 게이지가 꽉 차면, 당신은 고통을 버티지 못 해 끔찍한 소리를 지르며 분노를 터트립니다.\n당신 주변의 팀원들에게 250의 트루 대미지를 줍니다.\n또한 피해를 받은 팀원들이 10초간 받는 피해가 30％ 증가합니다."
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신은 고통을 버티지 못 해 끔찍한 소리를 지르며 분노를 터트립니다.\n당신 주변의 최대 3명의 팀원들에게 350의 트루 대미지.\n또한 피해를 받은 팀원들이 10초간 받는 피해가 40％ 증가."
 	}
 	"Nervous Impairment Elemental Damage"
 	{
