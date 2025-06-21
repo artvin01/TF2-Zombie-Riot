@@ -220,21 +220,21 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 public any Native_GetSpecialMode(Handle plugin, int numParams)
 {
 	if(Construction_Mode())
-		return Construction;
+		return Mode_Construction;
 
 	if(Rogue_Mode())
 	{
 		if(Rogue_Theme() == 0)
 		{
-			return Rogue1;
+			return Mode_Rogue1;
 		}
 		else if(Rogue_Theme() == 1)
 		{
-			return Rogue2;
+			return Mode_Rogue2;
 		}
 	}
 	
-	return Standard;	
+	return Mode_Standard;	
 }
 public any Native_ZR_GetXp(Handle plugin, int numParams)
 {
