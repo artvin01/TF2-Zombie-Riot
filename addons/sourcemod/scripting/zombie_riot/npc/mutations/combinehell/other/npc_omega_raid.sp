@@ -419,7 +419,7 @@ static void RocketBarrage_Ability(OmegaRaid npc, int target)
 			//float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 			npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 30.0;
 			if(npc.Anger)
-				ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", 3.0);
+				ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.0);
 
 			if(!IsValidEntity(npc.m_iWearable8))
 			{
