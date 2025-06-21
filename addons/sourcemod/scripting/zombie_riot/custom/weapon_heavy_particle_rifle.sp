@@ -39,7 +39,7 @@ public void Heavy_Particle_Rifle_Mapstart()
 }
 
 
-#define BASE_HEAVYRIFLE_CLIPSIZE_NEED (40.0 * 2.0)
+#define BASE_HEAVYRIFLE_CLIPSIZE_NEED (40.0/* * 2.0*/)
 public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classname, bool &result)
 {
 	float speed = 1500.0;

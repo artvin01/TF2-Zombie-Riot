@@ -205,15 +205,23 @@ methodmap NightmareSwordsman < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 		
+		float TimeUntillOver = 3.0;
+		TimeUntillOver *= float(CountPlayersOnRed());
 		npc.m_flNextMeleeAttack = 0.0;
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/incomming_boss_wait_scary.mp3");
-		music.Time = 100;
+		music.Time = 30;
 		music.Volume = 1.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Howilng Emptiness");
 		strcopy(music.Artist, sizeof(music.Artist), "....");
 		Music_SetRaidMusic(music);
+
+		if(TimeUntillOver <= 10.0)
+			TimeUntillOver = 10.0;
+
+		if(TimeUntillOver >= 60.0)
+			TimeUntillOver = 60.0;
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -241,13 +249,13 @@ methodmap NightmareSwordsman < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 30.0;
+			RaidModeTime = GetGameTime(npc.index) + TimeUntillOver;
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 		b_thisNpcIsABoss[npc.index] = true;
-		npc.m_flBackupDespawnEmergency = GetGameTime() + 30.0;
+		npc.m_flBackupDespawnEmergency = GetGameTime() + TimeUntillOver;
 
 		if(FogEntity != INVALID_ENT_REFERENCE)
 		{
@@ -288,7 +296,7 @@ methodmap NightmareSwordsman < CClotBody
 		{
 			if(IsClientInGame(client1))
 			{
-				ApplyStatusEffect(npc.index, client1, "Nightmare Terror", 30.0);
+				ApplyStatusEffect(npc.index, client1, "Nightmare Terror", TimeUntillOver);
 			}
 		}
 		
@@ -599,7 +607,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
-					npc.m_flSpeed = 320.0;
+					npc.m_flSpeed = 500.0;
 					NPC_StartPathing(iNPC);
 				}
 			}

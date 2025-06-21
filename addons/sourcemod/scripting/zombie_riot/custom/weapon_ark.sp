@@ -1415,10 +1415,11 @@ void ChangeAttackspeedQuibai(int client, int weapon)
 	if(f_LappLandAbilityActive[client] > GetGameTime())
 	{
 		i_QuibaiAttacksMade[client]++;
-		if(i_QuibaiAttacksMade[client] > 20)
+		if(i_QuibaiAttacksMade[client] > 15)
 		{
-			i_QuibaiAttacksMade[client] = 20;
+			i_QuibaiAttacksMade[client] = 15;
 		}
+		//too much attackspeed....
 		Attributes_Set(weapon, 396, QuibaiAttackSpeed(i_QuibaiAttacksMade[client]));
 		Attributes_Set(weapon, 1, QuibaiAttackSpeed(i_QuibaiAttacksMade[client] / 2));
 	}
