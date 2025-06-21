@@ -64,6 +64,7 @@ native bool ZR_HasNamedItem(int client, const char[] item);
  */
 native bool ZR_GiveNamedItem(int client, const char[] item);
 
+
 /**
  * Returns the alive status of a player
  * 
@@ -75,10 +76,17 @@ native bool ZR_GiveNamedItem(int client, const char[] item);
  */
 native int ZR_GetAliveStatus(int client);
 
+enum
+{
+	Standard = 0,
+	Rogue1 = 1,
+	Rogue2 = 2,
+	Construction = 3,
+}
 /**
  * Returns the alive status of a player
  * 
- * @return		0 for normal, 1 rogue, 2 construction
+ * @return		see enum
  */
 native int ZR_GetSpecialMode();
 
@@ -149,6 +157,16 @@ forward Action ZR_OnGivenItem(int client, char item[64], int id);
  * @noreturn
  */
 forward void ZR_OnKilledNPC(int client, const char[] name);
+
+/**
+ * Called when a player revives another player (downed to not downed)
+ * 
+ * @param reviver	reviver index
+ * @param revived	revived plyer
+ * 
+ * @noreturn
+ */
+forward void ZR_OnRevivingPlayer(int reviver, int revived);
 
 /**
  * Called when cash is earned, either global or one player

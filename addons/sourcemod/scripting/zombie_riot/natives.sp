@@ -6,6 +6,7 @@ static GlobalForward OnClientLoaded;
 static GlobalForward OnClientWorldmodel;
 static GlobalForward OnGivenItem;
 static GlobalForward OnKilledNPC;
+static GlobalForward OnRevivingPlayer;
 static GlobalForward OnGivenCash;
 static GlobalForward OnTeamWin;
 static GlobalForward OnXpChanged;
@@ -30,6 +31,7 @@ void Natives_PluginLoad()
 	OnClientWorldmodel = new GlobalForward("ZR_OnClientWorldmodel", ET_Event, Param_Cell, Param_Cell, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
 	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String, Param_Cell);
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
+	OnRevivingPlayer = new GlobalForward("ZR_OnRevivingPlayer", ET_Ignore, Param_Cell, Param_Cell);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
@@ -120,7 +122,13 @@ void Native_OnKilledNPC(int client, const char[] name)
 	Call_PushString(name);
 	Call_Finish();
 }
-
+void Native_OnRevivingPlayer(int reviver, int revived)
+{
+	Call_StartForward(OnRevivingPlayer);
+	Call_PushCell(reviver);
+	Call_PushString(revived);
+	Call_Finish();
+}
 bool Native_OnGivenCash(int client, int &cash)
 {
 	Action action;
@@ -212,10 +220,19 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 public any Native_GetSpecialMode(Handle plugin, int numParams)
 {
 	if(Construction_Mode())
-		return 2;
+		return 3;
 
 	if(Rogue_Mode())
-		return 1;
+	{
+		if(Rogue_Theme == 0)
+		{
+			return 1;
+		}
+		else if(Rogue_Theme == 1)
+		{
+			return 2;
+		}
+	}
 	
 	return 0;	
 }
