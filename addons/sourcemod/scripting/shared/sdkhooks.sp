@@ -2544,9 +2544,9 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		{
 			char buffer[36];
 			GetEntityClassname(PreviousWeapon, buffer, sizeof(buffer));
-			int PreviousSlot = TF2_GetClassnameSlot(buffer);
+			int PreviousSlot = TF2_GetClassnameSlot(buffer, PreviousWeapon);
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			int CurrentSlot = TF2_GetClassnameSlot(buffer);
+			int CurrentSlot = TF2_GetClassnameSlot(buffer, weapon);
 
 			if(PreviousSlot != CurrentSlot) //Set back the previous active slot to what it was before.
 			{
@@ -3474,7 +3474,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			
 			char buffer[36];
 			GetEntityClassname(weaponAm, buffer, sizeof(buffer));
-			int CurrentSlot = TF2_GetClassnameSlot(buffer);
+			int CurrentSlot = TF2_GetClassnameSlot(buffer, weaponAm);
 
 			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
 

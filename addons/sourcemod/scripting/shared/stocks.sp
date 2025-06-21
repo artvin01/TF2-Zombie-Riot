@@ -616,8 +616,23 @@ stock bool TF2_GetWearable(int client, int &entity)
 	}
 	return false;
 }
+stock int TF2_GetClassnameSlot(const char[] classname, int entity = -1)
+{
+	//if we already got the slot, dont bother.
+	if(entity != -1 && i_SavedActualWeaponSlot[entity] != -1)
+	{
+		return i_SavedActualWeaponSlot[entity];
+	}
+	//This is a bandaid fix.
+	int Index = TF2_GetClassnameSlotInternal(classname, false);
+	if(entity != -1)
+	{
+		i_SavedActualWeaponSlot[entity] = Index;
+	}
+	return Index;
+}
 
-stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
+stock int TF2_GetClassnameSlotInternal(const char[] classname, bool econ=false)
 {
 	if(StrEqual(classname, "tf_weapon_scattergun") ||
 	   StrEqual(classname, "tf_weapon_handgun_scout_primary") ||
@@ -685,7 +700,6 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 	}
 	return TFWeaponSlot_Melee;
 }
-
 stock int GetAmmo(int client, int type)
 {
 	/*

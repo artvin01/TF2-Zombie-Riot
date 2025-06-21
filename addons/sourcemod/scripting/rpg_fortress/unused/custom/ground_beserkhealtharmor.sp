@@ -22,7 +22,7 @@ public float BeserkerRageGain(int client, int index, char name[48])
 		{
 			static char classname[36];
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
+			if (TF2_GetClassnameSlot(classname, weapon) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
 			{
 				if(Stats_Strength(client) >= 20)
 				{

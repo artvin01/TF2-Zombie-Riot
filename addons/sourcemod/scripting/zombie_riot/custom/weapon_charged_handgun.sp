@@ -880,7 +880,7 @@ public Action Reset_weapon_charged_handgun(Handle cut_timer, DataPack pack)
 		{
 			char buffer[36];
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == TFWeaponSlot_Secondary)
+			if(TF2_GetClassnameSlot(buffer, weapon) == TFWeaponSlot_Secondary)
 			{
 				Attributes_Set(weapon, 670, base_chargetime[client]);
 				ClientCommand(client, "playgamesound items/medshotno1.wav");

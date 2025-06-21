@@ -373,7 +373,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 
 		char classname[64];
 		GetEntityClassname(weapon, classname, sizeof(classname));
-		int slot = TF2_GetClassnameSlot(classname);
+		int slot = TF2_GetClassnameSlot(classname, weapon);
 
 		if(i_OverrideWeaponSlot[weapon] != -1)
 		{

@@ -562,6 +562,7 @@ int WeaponRef_viewmodel[MAXPLAYERS] = {-1, ...};
 int HandRef[MAXPLAYERS] = {-1, ...};
 int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
 int i_Worldmodel_WeaponModel[MAXPLAYERS] = {-1, ...};
+int i_SavedActualWeaponSlot[MAXENTITIES]={-1, ...};
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
 bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};

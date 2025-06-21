@@ -653,7 +653,7 @@ stock bool Store_ActiveCanMulti(int client)
 	{
 		char buffer[36];
 		GetEntityClassname(weapon, buffer, sizeof(buffer));
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, weapon);
 		if(slot >= 0 && slot < sizeof(HasMultiInSlot[]))
 			return HasMultiInSlot[client][slot];
 	}
@@ -781,7 +781,7 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));
 
-	int slot = TF2_GetClassnameSlot(classname);
+	int slot = TF2_GetClassnameSlot(classname, swap);
 	
 	int length = GetMaxWeapons(client);
 	for(int i; i < length; i++)
@@ -794,7 +794,7 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 				if(weapon > MaxClients)
 				{
 					GetEntityClassname(weapon, buffer, sizeof(buffer));
-					if(TF2_GetClassnameSlot(buffer) == slot)
+					if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 					{
 						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", swap, a);
 						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
@@ -833,7 +833,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 		char buffer[36];
 		GetEntityClassname(active, buffer, sizeof(buffer));
 		
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, active);
 		
 		int length = GetMaxWeapons(client);
 		for(int i; i < length; i++)
@@ -854,7 +854,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 						if(weapon > MaxClients)
 						{
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
-							if(TF2_GetClassnameSlot(buffer) == slot)
+							if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 							{
 								if(a < switchI)
 								{
@@ -914,7 +914,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 			else if(weapon != -1)	// Another weapon is highest up in our slot
 			{
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
-				if(TF2_GetClassnameSlot(buffer) == slot)
+				if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 				{
 					if(SwitchDo)
 						SetPlayerActiveWeapon(client, weapon);
@@ -944,7 +944,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 		if(weapon != -1)
 		{
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == slot)
+			if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 			{
 				if(firstWeapon == -1)
 					firstWeapon = weapon;
@@ -5555,7 +5555,7 @@ static void CheckMultiSlots(int client)
 	while(TF2_GetItem(client, entity, i))
 	{
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, entity);
 		if(slot >= 0 && slot < sizeof(exists))
 		{
 			if(exists[slot])
@@ -5630,7 +5630,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(info.Classname[0])
 			{
-				slot = TF2_GetClassnameSlot(info.Classname);
+				int saveslot = TF2_GetClassnameSlot(info.Classname);
+				slot = saveslot;
 				if(info.Weapon_Override_Slot != -1)
 				{
 					slot = info.Weapon_Override_Slot;
@@ -5661,6 +5662,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						Yakuz_SpawnWeaponPre(client, GiveWeaponIndex, view_as<TFClassType>(class));
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
+					
+					i_SavedActualWeaponSlot[entity] = saveslot;
 					
 					if(!StrContains(info.Classname, "tf_weapon_crossbow"))
 					{
@@ -7186,7 +7189,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
 				Store_Unequip(client, index);
 				
@@ -7209,7 +7212,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
 
 				int sell = item.Sell[client];

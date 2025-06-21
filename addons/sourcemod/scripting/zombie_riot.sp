@@ -3,7 +3,6 @@
 #define ZR
 #define EXPIDONSA_BASE
 #define RUINA_BASE
-#define MAXTF2PLAYERS	MAXPLAYERS
 #define MAXENTITIES	2048
 
 #define STORE_PREFIX	"{crimson}[ZR]{snow} "  

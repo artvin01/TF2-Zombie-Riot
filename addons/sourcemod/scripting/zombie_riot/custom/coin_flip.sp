@@ -188,7 +188,7 @@ public Action flip_extra(Handle timer, int client)
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
-	if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee)
+	if (TF2_GetClassnameSlot(classname, weapon) != TFWeaponSlot_Melee)
 	{
 		
 		float fPlayerPos[3];

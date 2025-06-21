@@ -2101,7 +2101,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	RequestFrame(CheckWeaponAmmoLogicExternal, pack_WeaponAmmo);
 	
 	float GameTime = GetGameTime();
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, weapon);
 
 	if(i_OverrideWeaponSlot[weapon] != -1)
 	{
@@ -2281,6 +2281,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = 0.0;
 		b_ThisEntityIgnoredBeingCarried[entity] = false;
 		f_ClientInvul[entity] = 0.0;
+		i_SavedActualWeaponSlot[entity] = -1;
 #if !defined RTS
 		f_BackstabDmgMulti[entity] = 0.0;
 #endif
@@ -3058,7 +3059,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 					{
 						static char classname[64];
 						GetEntityClassname(weapon_holding, classname, sizeof(classname));
-						if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+						if(TF2_GetClassnameSlot(classname, weapon_holding) == TFWeaponSlot_Melee)
 						{
 							float attack_speed;
 						

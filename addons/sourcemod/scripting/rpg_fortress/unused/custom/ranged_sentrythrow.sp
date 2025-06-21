@@ -41,7 +41,7 @@ public float AbilitySentryThrow(int client, int index, char name[48])
 		{
 			static char classname[36];
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
+			if (TF2_GetClassnameSlot(classname, weapon) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
 			{
 				if(Stats_Dexterity(client) >= 25)
 				{
