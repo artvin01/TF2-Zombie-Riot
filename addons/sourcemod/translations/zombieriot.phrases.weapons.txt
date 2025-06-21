@@ -3030,7 +3030,7 @@
 		"fr"	   "INDICE: Seulement un trajet peut avoir une amélioration niveau 3"
 		"ru"	   "СОВЕТ: Только один путь может иметь улучшение уровня 3"
 		"chi"	   "提示:只有一条路径可以拥有三级升级"
-		"ko"	   "팁 : 3티어 개선으로 갈 수 있는 유일한 방법입니다."
+		"ko"	   "팁 : 단 하나의 경로만이 3티어 개선이 가능합니다."
 	}
 	"Bigger Radius"
 	{
