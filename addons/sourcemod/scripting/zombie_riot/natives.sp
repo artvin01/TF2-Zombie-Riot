@@ -20,6 +20,7 @@ void Natives_PluginLoad()
 	CreateNative("ZR_HasNamedItem", Native_HasNamedItem);
 	CreateNative("ZR_GiveNamedItem", Native_GiveNamedItem);
 	CreateNative("ZR_GetAliveStatus", Native_GetAliveStatus);
+	CreateNative("ZR_GetSpecialMode", Native_GetSpecialMode);
 	CreateNative("ZR_SetXpAndLevel", Native_ZR_SetXpAndLevel);
 	CreateNative("ZR_GetXp", Native_ZR_GetXp);
 
@@ -198,6 +199,16 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 		return 1;	// *DOWNED*
 	
 	return 0;	// :)
+}
+public any Native_GetSpecialMode(Handle plugin, int numParams)
+{
+	if(Construction_Mode())
+		return 2;
+
+	if(Rogue_Mode())
+		return 1;
+	
+	return 0;	
 }
 public any Native_ZR_GetXp(Handle plugin, int numParams)
 {
