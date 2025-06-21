@@ -1073,6 +1073,7 @@ void ZR_ClientPutInServer(int client)
 
 void ZR_ClientDisconnect(int client)
 {
+	Citizen_PlayerReplacement(client);
 	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
@@ -1080,7 +1081,6 @@ void ZR_ClientDisconnect(int client)
 	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Vehicle_Exit(client, true, false);
-	Citizen_PlayerReplacement(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);

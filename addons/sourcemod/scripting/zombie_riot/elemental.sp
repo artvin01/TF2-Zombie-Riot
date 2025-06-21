@@ -374,14 +374,13 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					_,
 					_,
 					true,
-					99,
+					3,
 					false,
 					_,
 					SakratanGroupDebuff);
 					b_NpcIsTeamkiller[victim] = false;
 					f_ArmorCurrosionImmunity[victim][Element_Chaos]  = GetGameTime() + 10.0;
 					Force_ExplainBuffToClient(victim, "Chaos Elemental Damage");
-				//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 				}
 			}
 			
@@ -552,9 +551,9 @@ static void SakratanGroupDebuffInternal(int victim)
 {
 	if(victim <= MaxClients)
 	{
-		DealTruedamageToEnemy(0, victim, 250.0);
+		DealTruedamageToEnemy(0, victim, 350.0);
 	}
-	IncreaseEntityDamageTakenBy(victim, 1.30, 10.0);
+	IncreaseEntityDamageTakenBy(victim, 1.40, 10.0);
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
@@ -901,6 +900,13 @@ static void Matrix_Spawning(int entity, int count)
 	if(b_thisNpcIsARaid[entity])
 	{
 		health = (ReturnEntityMaxHealth(entity)/100);
+	}
+	if(!b_thisNpcIsARaid[entity] && !b_thisNpcIsABoss[entity] && MultiGlobalHealth != 1.0)
+	{
+		//account for max hp sacling, or else we just keep multiplying forever...
+		//because it does the scaling on spawn, but doesnt revert it here when it adds a new npc....
+		//it was the same bug alaxios had, in this case, it has to be reversed.
+		health = RoundToNearest(float(health) / MultiGlobalHealth);
 	}
 	
 	Enemy enemy;

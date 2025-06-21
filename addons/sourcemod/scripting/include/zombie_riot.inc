@@ -76,6 +76,13 @@ native bool ZR_GiveNamedItem(int client, const char[] item);
 native int ZR_GetAliveStatus(int client);
 
 /**
+ * Returns the alive status of a player
+ * 
+ * @return		0 for normal, 1 rogue, 2 construction
+ */
+native int ZR_GetSpecialMode();
+
+/**
  * Called when a difficulty is selected
  * Will be called after all votes are done
  * 
