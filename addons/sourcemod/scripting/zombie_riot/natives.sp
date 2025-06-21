@@ -202,10 +202,9 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 }
 public any Native_GetSpecialMode(Handle plugin, int numParams)
 {
-	
 	if(Construction_Mode())
 		return 2;
-		
+
 	if(Rogue_Mode())
 		return 1;
 	
