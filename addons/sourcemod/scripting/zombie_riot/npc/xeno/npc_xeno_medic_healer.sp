@@ -280,7 +280,7 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 				
 				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
 				if(b_thisNpcIsABoss[PrimaryThreatIndex])
-					MaxHealth *= 0.01;
+					MaxHealth = RoundToCeil(float(MaxHealth) * 0.01);
 
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 50), 1.1);
 

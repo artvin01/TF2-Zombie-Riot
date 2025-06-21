@@ -495,7 +495,7 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 		return XenoMapExtra;
 	else
 	{
-		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Goggles")))
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Waldch")))
 		{
 			return true;
 		}
