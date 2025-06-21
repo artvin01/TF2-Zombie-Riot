@@ -3086,8 +3086,8 @@
 	}
 	"Chaos Elemental Damage Desc"
 	{
-		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 250 truedamage to all allies.\nAlso gives 30％ Vulnerability for 10 seconds."
-		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 250 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +30%% de daño."
+		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.}nHits only upto 3 additional allies."
+		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
 	}
 	"Nervous Impairment Elemental Damage"
 	{
