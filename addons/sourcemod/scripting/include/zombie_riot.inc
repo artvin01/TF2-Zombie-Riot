@@ -76,19 +76,19 @@ native bool ZR_GiveNamedItem(int client, const char[] item);
  */
 native int ZR_GetAliveStatus(int client);
 
-enum
+enum ZRMode
 {
-	Standard = 0,
-	Rogue1 = 1,
-	Rogue2 = 2,
-	Construction = 3,
+	Standard,
+	Rogue1,
+	Rogue2,
+	Construction,
 }
 /**
  * Returns the alive status of a player
  * 
  * @return		see enum
  */
-native int ZR_GetSpecialMode();
+native ZRMode ZR_GetSpecialMode();
 
 /**
  * Called when a difficulty is selected

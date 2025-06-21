@@ -126,7 +126,7 @@ void Native_OnRevivingPlayer(int reviver, int revived)
 {
 	Call_StartForward(OnRevivingPlayer);
 	Call_PushCell(reviver);
-	Call_PushString(revived);
+	Call_PushCell(revived);
 	Call_Finish();
 }
 bool Native_OnGivenCash(int client, int &cash)
@@ -220,21 +220,21 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 public any Native_GetSpecialMode(Handle plugin, int numParams)
 {
 	if(Construction_Mode())
-		return 3;
+		return Construction;
 
 	if(Rogue_Mode())
 	{
-		if(Rogue_Theme == 0)
+		if(Rogue_Theme() == 0)
 		{
-			return 1;
+			return Rogue1;
 		}
-		else if(Rogue_Theme == 1)
+		else if(Rogue_Theme() == 1)
 		{
-			return 2;
+			return Rogue2;
 		}
 	}
 	
-	return 0;	
+	return Standard;	
 }
 public any Native_ZR_GetXp(Handle plugin, int numParams)
 {
