@@ -194,6 +194,19 @@ forward void ZR_OnGetXP(int client, int Xp, int Mode);
  */
 forward void ZR_OnWaveEnd(int waves, int maxwaves, int realmaxwaves);
 
+
+/**
+ * Called when a floor ends
+ * 
+ * Rogue/Construction: When a floor/Wave Ends
+ * 
+ * @param CurrentFloor	What the new floor is (can never be 1 due to this)
+ * @param MaxFloor	What max floor amount is (This can change midgame due to items)
+ * 
+ * @return	
+ */
+forward void ZR_OnSpecialModeProgress(int CurrentFloor, int MaxFloor);
+
 /**
  * Set Client XP Yourself
  * 
@@ -213,7 +226,6 @@ native void ZR_SetXpAndLevel(int client, int Xp);
  * @return
  */
 native int ZR_GetXp(int client);
-
 
 //Basic natives to share.
 public int XpToLevel(int xp)

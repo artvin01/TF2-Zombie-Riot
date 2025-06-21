@@ -1269,6 +1269,7 @@ void Rogue_NextProgress()
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
 				{
+					Native_OnSpecialModeProgress(CurrentFloor, Floors.Length);
 					Floors.GetArray(CurrentFloor, floor);
 					if(floor.ArtifactKey[0] && !Rogue_HasNamedArtifact(floor.ArtifactKey))
 					{

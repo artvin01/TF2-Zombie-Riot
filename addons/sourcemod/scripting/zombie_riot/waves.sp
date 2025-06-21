@@ -1911,6 +1911,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				
 				for(; RelayCurrentRound < ScalingDoWavesDone ; RelayCurrentRound++)
 				{
+					//old logic
 					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%d", RelayCurrentRound + 1);
 					ExcuteRelay(ExecuteRelayThings);
 				}

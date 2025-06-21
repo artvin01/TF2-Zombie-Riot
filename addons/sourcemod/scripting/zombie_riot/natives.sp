@@ -11,6 +11,7 @@ static GlobalForward OnTeamWin;
 static GlobalForward OnXpChanged;
 static GlobalForward CanRenameNpc;
 static GlobalForward OnWaveEnd;
+static GlobalForward OnSpecialModeProgress;
 
 void Natives_PluginLoad()
 {
@@ -34,6 +35,7 @@ void Natives_PluginLoad()
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	CanRenameNpc = new GlobalForward("ZR_CanRenameNPCs", ET_Single, Param_Cell);
 	OnWaveEnd = new GlobalForward("ZR_OnWaveEnd", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
+	OnSpecialModeProgress = new GlobalForward("ZR_OnSpecialModeProgress", ET_Ignore, Param_Cell, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -143,6 +145,13 @@ void Native_OnWaveEnd()
 	Call_PushCell(Waves_GetRoundScale());
 	Call_PushCell(Waves_GetMaxRound(false));
 	Call_PushCell(Waves_GetMaxRound(true));
+	Call_Finish();
+}
+void Native_OnSpecialModeProgress(int NewFloor, int MaxFloors)
+{
+	Call_StartForward(OnSpecialModeProgress);
+	Call_PushCell(NewFloor);
+	Call_PushCell(MaxFloors);
 	Call_Finish();
 }
 
