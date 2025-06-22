@@ -19,20 +19,20 @@ Sepsis - M2 on Enemy with big damage, self heal, requires <50% HP, 1 use per wav
 
 static int LaserIndex;
 
-static int DeathDoors[MAXTF2PLAYERS];
-static int LastDeathDoor[MAXTF2PLAYERS];
-static bool LastDeathDoorRaid[MAXTF2PLAYERS];
+static int DeathDoors[MAXPLAYERS];
+static int LastDeathDoor[MAXPLAYERS];
+static bool LastDeathDoorRaid[MAXPLAYERS];
 
-static int HealLevel[MAXTF2PLAYERS];
-static int MeleeLevel[MAXTF2PLAYERS];
+static int HealLevel[MAXPLAYERS];
+static int MeleeLevel[MAXPLAYERS];
 
-static float MoreMoreFor[MAXTF2PLAYERS];
-static int MoreMoreHits[MAXTF2PLAYERS];
-static int MoreMoreHealing[MAXTF2PLAYERS];
-static int MoreMoreCap[MAXTF2PLAYERS];
+static float MoreMoreFor[MAXPLAYERS];
+static int MoreMoreHits[MAXPLAYERS];
+static int MoreMoreHealing[MAXPLAYERS];
+static int MoreMoreCap[MAXPLAYERS];
 
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static Handle EffectTimer[MAXTF2PLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXPLAYERS];
 static bool Precached = false;
 void Flagellant_MapStart()
 {
@@ -534,7 +534,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				
 				ClientCommand(client, "playgamesound player/invuln_off_vaccinator.wav");
 
-				if(target < MaxClients)
+				if(target <= MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 				
 				float cooldown = (healing / multi) / 15.0;
@@ -916,7 +916,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
 
-		int round = ZR_Waves_GetRound();
+		int round = Waves_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)

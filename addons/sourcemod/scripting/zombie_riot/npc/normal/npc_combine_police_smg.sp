@@ -193,12 +193,6 @@ methodmap CombinePoliceSmg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = CombinePoliceSmg_OnTakeDamage;
 		func_NPCThink[npc.index] = CombinePoliceSmg_ClotThink;
 
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -362,14 +356,8 @@ public void CombinePoliceSmg_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					
 					npc.PlayRangedSound();
 				}
 			}

@@ -1,7 +1,7 @@
-static bool AllowDoublejump[MAXTF2PLAYERS+1]={false, ...};
-static int g_fLastButtons[MAXTF2PLAYERS+1]={0, ...};
-static int g_fLastFlags[MAXTF2PLAYERS+1]={0, ...};
-static int g_iJumps[MAXTF2PLAYERS+1]={0, ...};
+static bool AllowDoublejump[MAXPLAYERS+1]={false, ...};
+static int g_fLastButtons[MAXPLAYERS+1]={0, ...};
+static int g_fLastFlags[MAXPLAYERS+1]={0, ...};
+static int g_iJumps[MAXPLAYERS+1]={0, ...};
 int g_iJumpMax = 1;
 
 // ported and adjusted from https://forums.alliedmods.net/showthread.php?p=895212

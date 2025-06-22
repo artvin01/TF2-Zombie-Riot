@@ -439,17 +439,17 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(ZR_Waves_GetRound()+1);
-				value = float(ZR_Waves_GetRound()+1);
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
+				value = float(Waves_GetRoundScale()+1);
 			}
 
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 			
 			float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -464,11 +464,11 @@ methodmap ChaosKahmlstein < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(value > 40 && value < 55)
+			if(value > 25 && value < 35)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(value > 55)
+			else if(value > 35)
 			{
 				RaidModeScaling *= 0.7;
 			}
@@ -1030,7 +1030,8 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		if(Target > 0)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+			//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -1150,7 +1151,8 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		if(Target > 0)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+			//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -2073,7 +2075,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Here, take this. It's going to be safe in your hands.");
 				i_TalkDelayCheck += 1;
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

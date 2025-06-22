@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int i_FireBallsToThrow[MAXTF2PLAYERS+1]={0, ...};
-static float f_FireBallDamage[MAXTF2PLAYERS+1]={0.0, ...};
+static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
+static float f_FireBallDamage[MAXPLAYERS+1]={0.0, ...};
 
 #define WAND_FIREBALL_SOUND "misc/halloween/spell_fireball_cast.wav"
 

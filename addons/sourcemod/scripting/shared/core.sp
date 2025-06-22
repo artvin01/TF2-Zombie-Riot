@@ -60,6 +60,7 @@
 
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
 #define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
+#define RAIDBOSS_GLOBAL_ATTACKLIMIT 16
 
 //#pragma dynamic	131072
 //Allah This plugin has so much we need to do this.
@@ -541,7 +542,7 @@ int b_OnDeathExtraLogicNpc[MAXENTITIES];
 #define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
 #define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
 
-float f_MutePlayerTalkShutUp[MAXTF2PLAYERS];
+float f_MutePlayerTalkShutUp[MAXPLAYERS];
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];
@@ -602,11 +603,11 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
-int Armor_Wearable[MAXTF2PLAYERS];
-int Cosmetic_WearableExtra[MAXTF2PLAYERS];
+int Armor_Wearable[MAXPLAYERS];
+int Cosmetic_WearableExtra[MAXPLAYERS];
 #endif
 
-bool b_DamageNumbers[MAXTF2PLAYERS];
+bool b_DamageNumbers[MAXPLAYERS];
 
 int OriginalWeapon_AmmoType[MAXENTITIES];
 
@@ -902,6 +903,11 @@ public void OnPluginEnd()
 //	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
 	RemoveMVMLogicSafety();
 #endif
+	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
+	if(WaitingForPlayersTime <= 0.0)
+		return;
+	//Fixes ZR breaking waiting for players.
+	GameRules_SetProp("m_bInWaitingForPlayers", false);
 }
 
 #if defined ZR
@@ -928,6 +934,7 @@ void RemoveMVMLogicSafety()
 	}
 }
 #endif
+
 void Core_PrecacheGlobalCustom()
 {
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
@@ -1209,7 +1216,7 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXTF2PLAYERS], matches;
+	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1249,7 +1256,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXTF2PLAYERS], matches;
+	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1588,8 +1595,8 @@ public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float 
 #endif
 
 #if defined ZR
-static bool was_reviving[MAXTF2PLAYERS];
-static int was_reviving_this[MAXTF2PLAYERS];
+static bool was_reviving[MAXPLAYERS];
+static int was_reviving_this[MAXPLAYERS];
 #endif
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -1692,7 +1699,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	static int holding[MAXTF2PLAYERS];
+	static int holding[MAXPLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{
 		if(!(buttons & IN_ATTACK))
@@ -2094,7 +2101,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	RequestFrame(CheckWeaponAmmoLogicExternal, pack_WeaponAmmo);
 	
 	float GameTime = GetGameTime();
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, weapon);
 
 	if(i_OverrideWeaponSlot[weapon] != -1)
 	{
@@ -2264,7 +2271,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
-		StatusEffectReset(entity);
+		StatusEffectReset(entity, true);
 		f_InBattleDelay[entity] = 0.0;
 		b_AllowCollideWithSelfTeam[entity] = false;
 		NPCStats_SetFuncsToZero(entity);
@@ -2274,6 +2281,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = 0.0;
 		b_ThisEntityIgnoredBeingCarried[entity] = false;
 		f_ClientInvul[entity] = 0.0;
+		i_SavedActualWeaponSlot[entity] = -1;
 #if !defined RTS
 		f_BackstabDmgMulti[entity] = 0.0;
 #endif
@@ -2331,6 +2339,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
+		b_CanSeeBuildingValues[entity] = false;
 		i_IsSupportWeapon[entity] = false;
 		LastHitRef[entity] = -1;
 		f_MultiDamageTaken[entity] = 1.0;
@@ -2401,6 +2410,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NpcInternalId[entity] = 0;
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
+		b_IsAFlameThrower[entity] = false;
 		b_HasBombImplanted[entity] = false;
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
@@ -2578,6 +2588,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "func_respawnroomvisualizer"))
 		{
 			b_IsARespawnroomVisualiser[entity] = true;
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_physics_multiplayer"))
 		{
@@ -2685,6 +2696,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 #if defined ZR || defined RPG
 			Medigun_OnEntityCreated(entity);
 #endif
+		}
+		else if(!StrContains(classname, "tf_weapon_flamethrower")) 
+		{
+			b_IsAFlameThrower[entity] = true;
 		}
 #if defined ZR
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
@@ -2846,6 +2861,7 @@ public void OnEntityDestroyed(int entity)
 		{
 			LeanteanWandCheckDeletion(entity);
 			MedigunCheckAntiCrash(entity);
+			FlamethrowerAntiCrash(entity);
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
@@ -2893,6 +2909,33 @@ void MedigunCheckAntiCrash(int entity)
 		if(IsValidClient(MedigunOwner))
 		{
 			f_PreventMedigunCrashMaybe[MedigunOwner] = GetGameTime() + 0.1;
+		}
+	}
+}
+
+void FlamethrowerAntiCrash(int entity)
+{
+	//This is needed beacuse:
+	/*
+		If a client holds m1 while the flamethrower is deleted, 
+		this can cause the effect of the flamemanager not being deleted
+		correctly, and causes a clientside flame particle that stays forever.
+	*/
+
+	if(!b_IsAFlameThrower[entity])
+		return;
+
+	int EntityLoop;
+	while((EntityLoop=FindEntityByClassname(EntityLoop, "tf_flame_manager")) != -1)
+	{
+		if(IsValidEntity(EntityLoop))
+		{
+			int Owner = GetEntPropEnt(EntityLoop, Prop_Send, "m_hOwnerEntity");
+			if(Owner == entity)
+			{
+				RemoveEntity(EntityLoop);
+				return;
+			}
 		}
 	}
 }
@@ -3049,7 +3092,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 					{
 						static char classname[64];
 						GetEntityClassname(weapon_holding, classname, sizeof(classname));
-						if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+						if(TF2_GetClassnameSlot(classname, weapon_holding) == TFWeaponSlot_Melee)
 						{
 							float attack_speed;
 						
@@ -3080,7 +3123,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 		int entity = GetClientPointVisible(client, 100.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
-
 #if defined RPG
 			if(b_is_a_brush[entity]) //THIS is for brushes that act as collision boxes for NPCS inside quests.sp
 			{
@@ -3100,7 +3142,12 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
 				if (GetTeam(entity) != TFTeam_Red)
+				{
+					if(Construction_Material_Interact(client, entity))
+						return false;
+
 					return false;
+				}
 				
 				if(Object_Interact(client, weapon, entity))
 					return true;
@@ -3114,7 +3161,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 
 				if(Escape_Interact(client, entity))
 					return true;
-
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
 				if(Is_Reload_Button && !PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
@@ -3422,6 +3468,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			HealPointToReinforce(client, 1, 0.065);
 			i_Reviving_This_Client[client] = 0;
 			f_Reviving_This_Client[client] = 0.0;
+			Native_OnRevivingPlayer(client, target);
 		}
 		if(extralogic)
 		{
@@ -3652,7 +3699,7 @@ int CalcMaxPlayers()
 {
 	int playercount = CvarMaxPlayerAlive.IntValue;
 	if(playercount < 1)
-		playercount = MAXTF2PLAYERS - 1;
+		playercount = MAXPLAYERS - 1;
 	/*
 	if(OperationSystem == OS_Linux)
 	{

@@ -2,6 +2,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool EscapeModeForNpc;
 static float HealthMulti;
 static int HealthBonus;
 static int EnemyChance;
@@ -480,20 +481,20 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 		}
 
-		if(ZR_Waves_GetRound() > 124)
+		if(Waves_GetRoundScale() > 124)
 			enemy.ExtraDamage *= 1.25;
 
-		if(ZR_Waves_GetRound() > 174)
+		if(Waves_GetRoundScale() > 174)
 			enemy.ExtraDamage *= 2.0;
 
 		// Raid health is lower before w101.
-		if(ZR_Waves_GetRound() < 101)
+		if(Waves_GetRoundScale() < 101)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.75);
 
-		if(ZR_Waves_GetRound() > 149)
+		if(Waves_GetRoundScale() > 149)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
 
-		if(ZR_Waves_GetRound() > 174)
+		if(Waves_GetRoundScale() > 174)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
 		enemy.Health = RoundToCeil(float(enemy.Health) * HealthMulti);
@@ -586,7 +587,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	else if(Schizophrenia)
 	{
 		enemy.Index = NPC_GetByPlugin("npc_annoying_spirit");
-		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(ZR_Waves_GetRound()));
+		enemy.Health = RoundToFloor(1000000.0 / 70.0 * float(Waves_GetRoundScale()));
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Outlined = 0;
 		enemy.Credits += 100.0;
@@ -1020,11 +1021,11 @@ void Freeplay_SpawnEnemy(int entity)
 
 		if(!b_thisNpcIsARaid[entity])
 		{
-			fl_Extra_Damage[entity] *= 1.0 + ((float(ZR_Waves_GetRound() - 59)) * 0.02);
+			fl_Extra_Damage[entity] *= 1.0 + ((float(Waves_GetRoundScale() - 59)) * 0.02);
 		}
 		else
 		{
-			fl_Extra_Damage[entity] *= 1.0 + ((float(ZR_Waves_GetRound() - 59)) * 0.01);
+			fl_Extra_Damage[entity] *= 1.0 + ((float(Waves_GetRoundScale() - 59)) * 0.01);
 		}
 
 		fl_Extra_Damage[entity] *= FM_Damage;
@@ -1201,7 +1202,7 @@ static Action Freeplay_BuffTimer(Handle Freeplay_BuffTimer)
 		return Plugin_Stop;
 	}
 
-	for (int client = 0; client < MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
@@ -1384,7 +1385,7 @@ void Freeplay_OnEndWave(int &cash)
 
 	if(Freeplay_GetRemainingExp() > 0.0)
 	{
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && TeutonType[client] != TEUTON_WAITING && GetClientTeam(client) == 2)
 			{
@@ -1969,7 +1970,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 		}
 
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && !b_IsPlayerABot[client])
 			{

@@ -13,19 +13,19 @@
 #define LEPER_NORMAL_SWING 0
 #define LEPER_AOE_HEW 1
 
-int LeperSwingType[MAXTF2PLAYERS+1];
-bool LeperSwingEffect[MAXTF2PLAYERS+1];
-Handle Timer_Leper_Management[MAXTF2PLAYERS+1] = {null, ...};
-float Leper_HudDelay[MAXTF2PLAYERS+1];
-int Leper_SolemnyUses[MAXTF2PLAYERS+1];
-int Leper_SolemnyCharge[MAXTF2PLAYERS+1];
-float Leper_SolemnyChargeCD[MAXTF2PLAYERS+1];
-float Leper_InAnimation[MAXTF2PLAYERS+1];
-float Leper_InWrathState[MAXTF2PLAYERS+1];
-int Leper_OverlayDownload[MAXTF2PLAYERS+1];	// 1/2 = Downloading/Checking, 3 = Ready
-float Wrath_TinyCooldown[MAXTF2PLAYERS+1];
-int CurrentPapLeper[MAXTF2PLAYERS+1];
-int MaxStacksWrath[MAXTF2PLAYERS+1];
+int LeperSwingType[MAXPLAYERS+1];
+bool LeperSwingEffect[MAXPLAYERS+1];
+Handle Timer_Leper_Management[MAXPLAYERS+1] = {null, ...};
+float Leper_HudDelay[MAXPLAYERS+1];
+int Leper_SolemnyUses[MAXPLAYERS+1];
+int Leper_SolemnyCharge[MAXPLAYERS+1];
+float Leper_SolemnyChargeCD[MAXPLAYERS+1];
+float Leper_InAnimation[MAXPLAYERS+1];
+float Leper_InWrathState[MAXPLAYERS+1];
+int Leper_OverlayDownload[MAXPLAYERS+1];	// 1/2 = Downloading/Checking, 3 = Ready
+float Wrath_TinyCooldown[MAXPLAYERS+1];
+int CurrentPapLeper[MAXPLAYERS+1];
+int MaxStacksWrath[MAXPLAYERS+1];
 
 void OnMapStartLeper()
 {

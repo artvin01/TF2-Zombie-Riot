@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int MusicTypeActive[MAXTF2PLAYERS];
+static int MusicTypeActive[MAXPLAYERS];
 
 enum struct InterMusicEnum
 {
@@ -256,14 +256,14 @@ enum struct MusicEnum
 	}
 }
 
-static int Music_Timer[MAXTF2PLAYERS];
-static int Music_Timer_Update[MAXTF2PLAYERS];
-static float Give_Cond_Timer[MAXTF2PLAYERS];
+static int Music_Timer[MAXPLAYERS];
+static int Music_Timer_Update[MAXPLAYERS];
+static float Give_Cond_Timer[MAXPLAYERS];
 static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
-static int MusicMapRemove[MAXTF2PLAYERS];
-static float DelayStopSoundAll[MAXTF2PLAYERS];
+static int MusicMapRemove[MAXPLAYERS];
+static float DelayStopSoundAll[MAXPLAYERS];
 
 #define RANGE_FIRST_MUSIC 2250000.0
 #define RANGE_SECOND_MUSIC 422500.0
@@ -495,7 +495,7 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 		return XenoMapExtra;
 	else
 	{
-		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Goggles")))
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Waldch")))
 		{
 			return true;
 		}
@@ -900,7 +900,7 @@ void Music_Update(int client)
 		if((XenoExtraLogic() && !LastMann) || (XenoExtraLogic() && BlockLastmanMusicRaidboss(client) && LastMann))
 		{
 			//This is special code for a map.
-			if(CurrentRound +1 <= 30)
+			if(CurrentRound +1 <= 20)
 			{
 				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				SetMusicTimer(client, GetTime() + 138);	
@@ -1307,7 +1307,7 @@ public float InterMusic_ByDifficulty(int client)
 	if(LastMann)
 		return 1.0;
 	
-	float volume = ZR_Waves_GetRound() / 75.0;
+	float volume = Waves_GetRoundScale() / 50.0;
 	return fClamp(volume, 0.0, 1.0);
 }
 

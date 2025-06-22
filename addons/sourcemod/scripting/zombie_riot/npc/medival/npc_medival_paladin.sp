@@ -267,7 +267,7 @@ public void MedivalPaladin_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 100.0;
 
-					if(Medival_Difficulty_Level < 0.85)
+					if(Medival_Difficulty_Level_NotMath >= 3)
 					{
 						damage = 120.0;
 					}

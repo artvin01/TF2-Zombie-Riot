@@ -235,7 +235,7 @@ methodmap TwirlFollower < CClotBody
 	}
 	public int i_weapon_type()
 	{
-		int wave = ZR_Waves_GetRound()+1;
+		int wave = Waves_GetRoundScale()+1;
 
 		if(this.m_fbGunout)	//ranged
 		{
@@ -658,7 +658,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 						float Kb = 450.0;
 
 						Custom_Knockback(npc.index, target, Kb, true);
-						if(target < MaxClients)
+						if(target <= MaxClients)
 						{
 							TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);

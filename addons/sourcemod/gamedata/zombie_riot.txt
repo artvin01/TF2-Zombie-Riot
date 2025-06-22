@@ -85,6 +85,12 @@
 				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x24\xA1\x2A\x2A\x2A\x2A\x56\x8B\xF1\x89\x75\xF0"
 			}
+			"CTFPlayer::Taunt"
+			{
+				"library"	"server"
+				"linux"		"@_ZN9CTFPlayer5TauntE8taunts_ti"
+				"windows"	"\x55\x8B\xEC\x81\xEC\xD0\x00\x00\x00\x53\x56\x57\x8B\xF9\xE8"
+			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
 				//inlined in windows 64, but it doesnt matter we dont directly need it.
@@ -111,6 +117,12 @@
 				
 				"linux"		"@_ZNK9CTFPlayer10CanAirDashEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xBC\x1B\x00\x00"
+			}
+			"CBaseAnimating::GetBoneCache"
+			{
+				"library"	"server"
+				
+				"linux"		"@_ZN14CBaseAnimating12GetBoneCacheEv"
 			}
 			"CTFPlayer::GetChargeEffectBeingProvided"
 			{
@@ -555,6 +567,24 @@
 				"return"	"void"
 				"this"		"entity"
 			}
+			"CTFPlayer::Taunt"
+			{
+				"signature"	"CTFPlayer::Taunt"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"taunts_t"
+					{
+						"type"	"int"
+					}
+					"int"
+					{
+						"type"	"int"
+					}
+				}
+			}
 			"CTFPlayer::CanAirDash"
 			{
 				"signature"	"CTFPlayer::CanAirDash"
@@ -562,6 +592,14 @@
 				"return"	"bool"
 				"this"		"entity"
 			}
+			"CBaseAnimating::GetBoneCache"
+			{
+				"signature"	"CBaseAnimating::GetBoneCache"
+				"callconv"	"thiscall"
+				"return"	"int"
+				"this"		"entity"
+			}
+			
 			"CTFProjectile_HealingBolt::ImpactTeamPlayer()"
 			{
 				"signature"		"CTFProjectile_HealingBolt::ImpactTeamPlayer()"

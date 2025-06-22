@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool Change[MAXTF2PLAYERS];
-static Handle h_TimerMessengerWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_Messengerhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+static bool Change[MAXPLAYERS];
+static Handle h_TimerMessengerWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static float f_Messengerhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_MES_IMPACT "weapons/cow_mangler_explode.wav"
 #define SOUND_MES_SHOT_FIRE 	"misc/halloween/spell_fireball_cast.wav"

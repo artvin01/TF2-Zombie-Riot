@@ -19,9 +19,9 @@ static const char RouletteName[][] =
 	"Single Number"
 };
 
-static int LastNumber[MAXTF2PLAYERS];
-static int Option[MAXTF2PLAYERS];
-static int MenuType[MAXTF2PLAYERS];
+static int LastNumber[MAXPLAYERS];
+static int Option[MAXPLAYERS];
+static int MenuType[MAXPLAYERS];
 
 void Games_Roulette(int client)
 {

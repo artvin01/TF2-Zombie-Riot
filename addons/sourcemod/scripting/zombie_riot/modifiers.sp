@@ -250,6 +250,11 @@ float ZRModifs_SpawnSpeedModif()
 {
 	float value = Classic_Mode() ? 3.0 : 1.0;
 
+	if(VIPBuilding_Active())
+	{
+		value *= float(EnemyNpcAlive) / float(MaxEnemiesAllowedSpawnNext());
+	}
+
 	switch(CurrentModifActive)
 	{
 		case CHAOS_INTRUSION:

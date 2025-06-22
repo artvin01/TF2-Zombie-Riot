@@ -251,7 +251,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(flDistanceToTarget < 250000)
+		if(flDistanceToTarget < 250000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 		{
 			if(flDistanceToTarget < 62500)
 			{

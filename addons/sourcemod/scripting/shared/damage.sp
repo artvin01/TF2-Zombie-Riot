@@ -7,7 +7,7 @@
 #define DMG_MEDIGUN_LOW 1.25
 #define DMG_WIDOWS_WINE 1.35
 
-float BarbariansMindNotif[MAXTF2PLAYERS];
+float BarbariansMindNotif[MAXPLAYERS];
 void DamageModifMapStart()
 {
 	Zero(BarbariansMindNotif);
@@ -105,12 +105,12 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 
 		if(GetTeam(victim) == TFTeam_Red)
 		{
-			int scale = ZR_Waves_GetRound();
-			if(scale < 2)
+			int scale = Waves_GetRoundScale();
+			if(scale < 1)
 			{
 				damage *= 0.50;
 			}
-			else if(scale < 4)
+			else if(scale < 2)
 			{
 				damage *= 0.75;
 			}
@@ -396,8 +396,8 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 
-		int scale = ZR_Waves_GetRound();
-		if(scale < 2)
+		int scale = Waves_GetRoundScale();
+		if(scale < 1)
 		{
 			damage *= 1.6667;
 		}
@@ -1234,6 +1234,16 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 				Cheese_OnTakeDamage_Primary(attacker, victim, damage, weapon);
 		}
 		*/
+		case WEAPON_CHEMICAL_THROWER:
+		{
+			if(!CheckInHud())
+				ChemicalThrower_NPCTakeDamage(attacker, victim, damage);
+		}
+		case WEAPON_SHERRIF, WEAPON_SHERRIF_LEVERACTION:
+		{
+			if(!CheckInHud())
+				SherrifRevolver_NPCTakeDamage(attacker, victim, damage,weapon, i_CustomWeaponEquipLogic[weapon]);
+		}
 	}
 #endif
 
@@ -1358,12 +1368,9 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		{
 			float TotalMeleeRes = 1.0;
 #if defined ZR
-			if(!NpcStats_IsEnemySilenced(victim))
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
-				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-				{
-					TotalMeleeRes *= Medival_Difficulty_Level;
-				}
+				TotalMeleeRes *= Medival_Difficulty_Level;
 			}
 
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
@@ -1399,12 +1406,9 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			{
 				TotalMeleeRes *= 1.25;
 			}
-			if(!NpcStats_IsEnemySilenced(victim))
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 			{
-				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-				{
-					TotalMeleeRes *= Medival_Difficulty_Level;
-				}
+				TotalMeleeRes *= Medival_Difficulty_Level;
 			}
 #endif
 			TotalMeleeRes *= fl_RangedArmor[victim];
@@ -1933,7 +1937,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		Format(Debuff_Adder_left, SizeOfChar, "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
 	}
 #if defined RPG
-	if(victim < MaxClients)
+	if(victim <= MaxClients)
 	{
 		if(TrueStength_ClientBuff(victim))
 		{
@@ -2010,37 +2014,6 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		//Display morale!
 		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
-	}
-	if(victim <= MaxClients)
-	{
-
-		static int VillageBuffs;
-		VillageBuffs = Building_GetClientVillageFlags(victim);
-
-		if(VillageBuffs & VILLAGE_000)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌒%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_200)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌭%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_030)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⌬%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_050) //This has priority.
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⍣%s", Debuff_Adder_right);
-		}
-		else if(VillageBuffs & VILLAGE_040)
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "⍤%s", Debuff_Adder_right);
-		}
-		if(VillageBuffs & VILLAGE_005) //This has priority.
-		{
-			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
-		}
 	}
 	
 	//Display Modifiers here.

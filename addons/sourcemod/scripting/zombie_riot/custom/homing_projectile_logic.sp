@@ -16,6 +16,11 @@ void GetRocketAngles(int entity, float angles[3])
 }
 #endif
 
+stock void HomingProjectile_SetProjectileSpeed(int projectile, float speed)
+{
+	RWI_RocketSpeed[projectile] = speed;
+}
+
 stock bool HomingProjectile_IsActive(int projectile)
 {
 	return RMR_CurrentHomingTarget[projectile] != -1;

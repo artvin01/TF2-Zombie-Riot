@@ -279,7 +279,7 @@ public void XenoSoldier_ClotThink(int iNPC)
 						
 						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 						
-						npc.FireRocket(vecTarget, 26.0, projectile_speed);
+						npc.FireRocket(vecTarget, 40.0, projectile_speed);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 						npc.m_flReloadIn = GetGameTime(npc.index) + 1.0;
 					}

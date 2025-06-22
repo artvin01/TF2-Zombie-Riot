@@ -195,13 +195,6 @@ methodmap XenoCombinePolicePistol < CClotBody
 		
 		npc.m_flSpeed = 170.0;
 		
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
-		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 
@@ -382,14 +375,8 @@ public void XenoCombinePolicePistol_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 2.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					
 					
 					npc.PlayRangedSound();
 				}
@@ -427,12 +414,6 @@ public void XenoCombinePolicePistol_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 									}
@@ -511,10 +492,6 @@ public Action XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance(Handle tim
 	{
 		XenoCombinePolicePistol npc = view_as<XenoCombinePolicePistol>(zombie);
 		npc.m_flSpeed = 170.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 	}

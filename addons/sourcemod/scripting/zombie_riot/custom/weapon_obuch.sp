@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle Revert_Weapon_Back_Timer[MAXTF2PLAYERS+1];
-static int attacks_made[MAXTF2PLAYERS+1]={8, ...};
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
-static bool Handle_on[MAXTF2PLAYERS+1]={false, ...};
+static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
+static int attacks_made[MAXPLAYERS+1]={8, ...};
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
 public void Obuch_Mapstart()
 {

@@ -291,7 +291,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget < 250000)
+			if(flDistanceToTarget < 250000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 			{
 				if(flDistanceToTarget < 62500)
 				{
@@ -309,26 +309,18 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 					npc.m_bnew_target = true;
 				}
 
-				if(!NpcStats_IsEnemySilenced(npc.index))
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
+
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 80), 1.0);
+				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated", 1.1);
+				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated Drain", 1.1);
+				if(NpcStats_VictorianCallToArms(npc.index))
 				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 750.0, 1.0);
-					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated", 1.1);
-					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Caffinated Drain", 1.1);
-					if(NpcStats_VictorianCallToArms(npc.index))
-					{
-						ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Hussar's Warscream", 1.1);
-					}
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Hussar's Warscream", 1.1);
 				}
-				else
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				}
+
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
 				npc.FaceTowards(WorldSpaceVec, 2000.0);

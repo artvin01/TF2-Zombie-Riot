@@ -1,12 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int MeleeLevel[MAXTF2PLAYERS];
+static int MeleeLevel[MAXPLAYERS];
 
-static float SpecialEffectFor[MAXTF2PLAYERS];
-static bool SpecialEffect[MAXTF2PLAYERS];
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static Handle EffectTimer[MAXTF2PLAYERS];
+static float SpecialEffectFor[MAXPLAYERS];
+static bool SpecialEffect[MAXPLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXPLAYERS];
 
 static bool b_musicprecached;
 

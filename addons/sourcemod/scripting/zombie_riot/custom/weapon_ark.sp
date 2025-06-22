@@ -9,14 +9,14 @@ static int RMR_RocketOwner[MAXENTITIES];
 static float RWI_HomeAngle[MAXENTITIES];
 static float RWI_LockOnAngle[MAXENTITIES];
 static float RMR_RocketVelocity[MAXENTITIES];
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
-static int Ark_Hits[MAXTF2PLAYERS+1]={0, ...};
-static int Ark_AlreadyParried[MAXTF2PLAYERS+1]={0, ...};
-static float Ark_ParryTiming[MAXTF2PLAYERS+1];
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static int Ark_Hits[MAXPLAYERS+1]={0, ...};
+static int Ark_AlreadyParried[MAXPLAYERS+1]={0, ...};
+static float Ark_ParryTiming[MAXPLAYERS+1];
 
-static int Ark_Level[MAXTF2PLAYERS+1]={0, ...};
+static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
-static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 
 
 #define SOUND_QUIBAI_SHOT 	"weapons/stunstick/alyx_stunner2.wav"
@@ -28,8 +28,8 @@ static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
 #define QUIBAI_SILENCE_DUR_NORMAL 4.0
 #define QUIBAI_SILENCE_DUR_ABILITY 8.0
 
-Handle h_TimerWeaponArkManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_WeaponArkhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+Handle h_TimerWeaponArkManagement[MAXPLAYERS+1] = {null, ...};
+static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 
 //This shitshow of a weapon is basicly the combination of bad wand/homing wand along with some abilities and a sword
@@ -37,14 +37,14 @@ static float f_WeaponArkhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
 #define LAPPLAND_MAX_HITS_NEEDED 84 //Double the amount because we do double hits.
 #define LAPPLAND_AOE_SILENCE_RANGE 200.0
 #define LAPPLAND_AOE_SILENCE_RANGE_SQUARED 40000.0
-Handle h_TimerLappLandManagement[MAXTF2PLAYERS+1] = {null, ...};
-static int i_LappLandHitsDone[MAXTF2PLAYERS+1]={0, ...};
-static float f_LappLandAbilityActive[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_LappLandhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
-static int i_QuibaiAttacksMade[MAXTF2PLAYERS+1]={0, ...};
+Handle h_TimerLappLandManagement[MAXPLAYERS+1] = {null, ...};
+static int i_LappLandHitsDone[MAXPLAYERS+1]={0, ...};
+static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
+static float f_LappLandhuddelay[MAXPLAYERS+1]={0.0, ...};
+static int i_QuibaiAttacksMade[MAXPLAYERS+1]={0, ...};
 
 //final pap new ability thingies
-static float Duration[MAXTF2PLAYERS];
+static float Duration[MAXPLAYERS];
 
 void Ark_autoaim_Map_Precache()
 {
@@ -593,20 +593,21 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			float flAng[3]; // original
 			
 			GetAttachment(victim, "effect_hand_r", flPos, flAng);
-			
-			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
-
 
 		//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
-			
-			DataPack pack = new DataPack();
-			pack.WriteCell(EntIndexToEntRef(particler));
-			pack.WriteFloat(Entity_Position[0]);
-			pack.WriteFloat(Entity_Position[1]);
-			pack.WriteFloat(Entity_Position[2]);
-			
-			RequestFrame(TeleportParticleArk, pack);
+			float diameter = float(4 * 2);
+			int r = 200;
+			int g = 125;
+			int b = 125;
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, r, g, b, 60);
+			TE_SetupBeamPoints(flPos, Entity_Position, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(flPos, Entity_Position, g_Ruina_BEAM_Combine_Black, 0, 0, 66, 0.22, ClampBeamWidth(diameter * 0.4 * 1.28), ClampBeamWidth(diameter * 0.4 * 1.28), 0, 1.0,  {255,255,255,125}, 3);
+			TE_SendToAll(0.0);
 
+			TE_SetupBeamPoints(flPos, Entity_Position, Shared_BEAM_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, colorLayer4, 1);
+			TE_SendToAll(0.0);
 			float ReflectPosVec[3];
 			CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
 
@@ -698,24 +699,6 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 }
 
 
-
-
-
-void TeleportParticleArk(DataPack pack)
-{
-	pack.Reset();
-	int particleEntity = EntRefToEntIndex(pack.ReadCell());
-	float Vec_Pos[3];
-	Vec_Pos[0] = pack.ReadFloat();
-	Vec_Pos[1] = pack.ReadFloat();
-	Vec_Pos[2] = pack.ReadFloat();
-	
-	if(IsValidEntity(particleEntity))
-	{
-		TeleportEntity(particleEntity, Vec_Pos);
-	}
-	delete pack;
-}
 
 
 public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int slot)
@@ -1432,10 +1415,11 @@ void ChangeAttackspeedQuibai(int client, int weapon)
 	if(f_LappLandAbilityActive[client] > GetGameTime())
 	{
 		i_QuibaiAttacksMade[client]++;
-		if(i_QuibaiAttacksMade[client] > 20)
+		if(i_QuibaiAttacksMade[client] > 15)
 		{
-			i_QuibaiAttacksMade[client] = 20;
+			i_QuibaiAttacksMade[client] = 15;
 		}
+		//too much attackspeed....
 		Attributes_Set(weapon, 396, QuibaiAttackSpeed(i_QuibaiAttacksMade[client]));
 		Attributes_Set(weapon, 1, QuibaiAttackSpeed(i_QuibaiAttacksMade[client] / 2));
 	}

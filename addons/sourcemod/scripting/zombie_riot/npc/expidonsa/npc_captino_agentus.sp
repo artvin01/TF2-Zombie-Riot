@@ -168,6 +168,7 @@ methodmap CaptinoAgentus < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.i_GunMode = 1;
+		npc.g_TimesSummoned = 0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -323,19 +324,24 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 						if(Succeed)
 						{
-							int maxhealth = ReturnEntityMaxHealth(npc.index);
-							maxhealth /= 20;
-							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							
-							int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
-							if(spawn_index > MaxClients)
+							if(npc.g_TimesSummoned <= 5)
 							{
-								NpcAddedToZombiesLeftCurrently(spawn_index, true);
-								TeleportEntity(spawn_index, pos, ang);
-								SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-								fl_Extra_Damage[spawn_index] = 1.5; //2x dmg so they are scary
+								//only spawn 5
+								int maxhealth = ReturnEntityMaxHealth(npc.index);
+								maxhealth /= 20;
+								float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+								float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+								
+								int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
+								if(spawn_index > MaxClients)
+								{
+									npc.g_TimesSummoned++;
+									NpcAddedToZombiesLeftCurrently(spawn_index, true);
+									TeleportEntity(spawn_index, pos, ang);
+									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+									fl_Extra_Damage[spawn_index] *= 1.5; //1.5x dmg so they are scary
+								}
 							}
 							npc.PlayTeleportSound();
 							ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...

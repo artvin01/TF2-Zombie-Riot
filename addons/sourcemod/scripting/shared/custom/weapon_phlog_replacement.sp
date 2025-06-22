@@ -5,11 +5,11 @@
 
 #define PHLOG_ABILITY "misc/halloween/spell_overheal.wav"
 
-Handle h_TimerPHLOGManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_PHLOGhuddelay[MAXTF2PLAYERS];
-static float f_PHLOGabilitydelay[MAXTF2PLAYERS];
-static int i_PHLOGHitsDone[MAXTF2PLAYERS];
-static float f_FlameerDelay[MAXTF2PLAYERS];
+Handle h_TimerPHLOGManagement[MAXPLAYERS+1] = {null, ...};
+static float f_PHLOGhuddelay[MAXPLAYERS];
+static float f_PHLOGabilitydelay[MAXPLAYERS];
+static int i_PHLOGHitsDone[MAXPLAYERS];
+static float f_FlameerDelay[MAXPLAYERS];
 
 void Npc_OnTakeDamage_Phlog(int attacker)
 {
@@ -50,7 +50,7 @@ void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 #define MAX_TARGETS_FLAME 5
 
 static int BEAM_BuildingHit[MAX_TARGETS_FLAME];
-static float BEAM_Targets_Hit[MAXTF2PLAYERS];
+static float BEAM_Targets_Hit[MAXPLAYERS];
 
 public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 {
@@ -89,7 +89,15 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	BEAM_Targets_Hit[client] = 1.0;
 	float damage = 25.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
-	damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+//	damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+	float AttackspeedValue = Attributes_Get(weapon, 6, 1.0);
+	if(AttackspeedValue < 1.0)
+	{
+		damage *= ((AttackspeedValue * -1.0) + 2.0);
+	}
+	else
+		damage *= (1.0 / AttackspeedValue); //nerf normally.
+
 	float playerPos[3];
 
 	for (int building = 0; building < MAX_TARGETS_FLAME; building++)

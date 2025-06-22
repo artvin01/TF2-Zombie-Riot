@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
-static Handle h_TimerRedBladeWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_RedBladehuddelay[MAXTF2PLAYERS+1]={0.0, ...};
-static bool HALFORNO[MAXTF2PLAYERS];
-static int i_RedBladeFireParticle[MAXTF2PLAYERS+1];
-static int i_RedBladeNpcToCharge[MAXTF2PLAYERS+1];
-static float f_RedBladeChargeDuration[MAXTF2PLAYERS+1];
+static Handle h_TimerRedBladeWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static float f_RedBladehuddelay[MAXPLAYERS+1]={0.0, ...};
+static bool HALFORNO[MAXPLAYERS];
+static int i_RedBladeFireParticle[MAXPLAYERS+1];
+static int i_RedBladeNpcToCharge[MAXPLAYERS+1];
+static float f_RedBladeChargeDuration[MAXPLAYERS+1];
 
 void ResetMapStartRedBladeWeapon()
 {

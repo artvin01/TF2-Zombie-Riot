@@ -1,21 +1,21 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
-static float ability_cooldown_2[MAXTF2PLAYERS+1]={0.0, ...};
-static int Attack3AbilitySlotArray[MAXTF2PLAYERS+1]={0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float ability_cooldown_2[MAXPLAYERS+1]={0.0, ...};
+static int Attack3AbilitySlotArray[MAXPLAYERS+1]={0, ...};
 static float f_HealDelay[MAXENTITIES];
 static float f_Duration[MAXENTITIES];
-static bool b_ActivatedDuringLastMann[MAXTF2PLAYERS+1];
+static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
-static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
-static int i_MaxMorhpinesThisRound [MAXTF2PLAYERS];
-static float f_ReinforceTillMax[MAXTF2PLAYERS];
-static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
+static int i_BurstpackUsedThisRound [MAXPLAYERS];
+static int i_MaxMorhpinesThisRound [MAXPLAYERS];
+static float f_ReinforceTillMax[MAXPLAYERS];
+static bool b_ReinforceReady_soundonly[MAXPLAYERS];
 static int i_MaxRevivesAWave;
-static float MorphineCharge[MAXTF2PLAYERS+1]={0.0, ...};
+static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
 
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -1055,6 +1055,10 @@ public void BuilderMenu(int client)
 									
 		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
 		menu.AddItem("-4", buffer);
+
+	//	FormatEx(buffer, sizeof(buffer), "%t", "Display top 5");
+	//	menu.AddItem("-5", buffer);
+		
 									
 		menu.ExitButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -1105,6 +1109,13 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 						ShowVGUIPanel(client, GetTeam(client) == TFTeam_Red ? "class_red" : "class_blue");
 					}
 				}
+				//case -5:
+				//{
+				//	if(IsValidClient(client))
+				//	{
+				//		DisplayCurrentTopScorers(client);
+				//	}
+				//}
 				default:
 				{
 					delete menu;
@@ -1118,10 +1129,14 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-
-
-int i_BuildingSelectedToBeDeleted[MAXTF2PLAYERS + 1];
-int i_BuildingSelectedToBeUnClaimed[MAXTF2PLAYERS + 1];
+/*
+void DisplayCurrentTopScorers(int client)
+{
+	nv
+}
+*/
+int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
+int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
 
 
 public void Un_ClaimBuildingLookedAt(int client)

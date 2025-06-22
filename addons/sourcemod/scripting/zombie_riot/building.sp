@@ -3,7 +3,10 @@
 
 #define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
 #define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
+#define MODEL_HEALINGBOLT "models/weapons/w_models/w_repair_claw.mdl"        // throww
+#define SOUND_HOSE_HEALED		"weapons/rescue_ranger_charge_01.wav"
 
+#define CLAW_TRAIL_RED "effects/repair_claw_trail_red.vmt"
 static const char SectionName[][] =
 {
 	"Support Buildings",
@@ -20,20 +23,20 @@ enum struct BuildingInfo
 	bool HealthScaleCost;
 	float Cooldown;
 	Function Func;
-	float Cooldowns[MAXTF2PLAYERS];
+	float Cooldowns[MAXPLAYERS];
 }
 
 static ArrayList BuildingList;
 static Function BuildingFuncSave[MAXENTITIES];
 static float GrabThrottle[MAXENTITIES];
-static int MenuSection[MAXTF2PLAYERS] = {-1, ...};
-static int MenuPage[MAXTF2PLAYERS];
-static Handle MenuTimer[MAXTF2PLAYERS];
-static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
+static int MenuSection[MAXPLAYERS] = {-1, ...};
+static int MenuPage[MAXPLAYERS];
+static Handle MenuTimer[MAXPLAYERS];
+static int Player_BuildingBeingCarried[MAXPLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
-static float PlayerWasHoldingProp[MAXTF2PLAYERS];
-float PreventSameFrameActivation[2][MAXTF2PLAYERS];
-int RandomIntSameRequestFrame[MAXTF2PLAYERS];
+static float PlayerWasHoldingProp[MAXPLAYERS];
+float PreventSameFrameActivation[2][MAXPLAYERS];
+int RandomIntSameRequestFrame[MAXPLAYERS];
 
 bool BuildingIsSupport(int entity)
 {
@@ -82,9 +85,9 @@ bool BuildingIsBeingCarried(int buildingindx)
 }
 #define MAX_CASH_VIA_BUILDINGS 5000
 #define MAX_SUPPLIES_EACH_WAVE 10
-static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
-static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
-static int i_GiveCashBuilding[MAXTF2PLAYERS];
+static float f_GiveAmmoSupplyFacture[MAXPLAYERS];
+static int i_GiveAmmoSupplyLimit[MAXPLAYERS];
+static int i_GiveCashBuilding[MAXPLAYERS];
 
 //dont do this on disconnect!
 void Building_ResetRewardValues(int client)
@@ -175,7 +178,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 
 }
 
-float f_ExpidonsanRepairDelay[MAXTF2PLAYERS];
+float f_ExpidonsanRepairDelay[MAXPLAYERS];
 void Building_MapStart()
 {
 	PrecacheSound(SOUND_GRAB_TF, true);
@@ -188,6 +191,10 @@ void Building_MapStart()
 	PrecacheSound("npc/manhack/bat_away.wav");
 	Zero(f_ExpidonsanRepairDelay);
 	Zero(i_IDependOnThisBuilding);
+	PrecacheModel(MODEL_HEALINGBOLT);
+	PrecacheModel(CLAW_TRAIL_RED);
+	PrecacheDecal(CLAW_TRAIL_RED, true);
+	PrecacheSound(SOUND_HOSE_HEALED);
 }
 
 void Building_ClientDisconnect(int client)
@@ -321,7 +328,7 @@ static void BuildingMenu(int client)
 
 	if(MenuSection[client] == -1)
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Extra Menu");
+		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Destroy Building Select");
 		menu.AddItem(buffer1, buffer1);
 
 		for(int i; i < sizeof(SectionName); i++)
@@ -517,7 +524,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						case 2:
 						{
-							BuilderMenu(client);
+						//	BuilderMenu(client);
+							if(IsValidClient(client))
+							{
+								DeleteBuildingLookedAt(client);
+							}
 							return 0;
 						}
 						default:
@@ -836,7 +847,37 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		return;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
-	if(entity < MaxClients)	
+	if(entity <= MaxClients)	
+		return;
+
+	if (!IsValidEntity(entity))
+		return;
+
+	if (!i_IsABuilding[entity])
+		return;
+
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") <= MaxClients)
+	{
+		if(!objstats.m_bConstructBuilding)
+			return; //anyone can pick up construct buildings!
+	}
+	if(IsValidEntity(objstats.m_iMasterBuilding))
+	{
+		entity = objstats.m_iMasterBuilding;
+	}
+	Building_PlayerWieldsBuilding(client, entity);
+}
+public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
+{
+	if(IsValidEntity(Player_BuildingBeingCarried[client]))
+	{
+		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
+		Building_AttemptPlace(buildingindx, client);
+		return;
+	}
+	int entity = GetClientPointVisible(client, 9999.0 , false, false,_,1);
+	if(entity <= MaxClients)	
 		return;
 
 	if (!IsValidEntity(entity))
@@ -1607,7 +1648,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 	Building_RepairObject(client, target, weapon,vecHit, 2, 0.2);
 }		
 
-void Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
+bool Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
 {
 	int iHealth, max_health;
 	if(i_IsVehicle[target])
@@ -1634,13 +1675,13 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
 			}
 		}
-		return;
+		return false;
 	}
 	
 	int new_ammo = GetAmmo(client, 3);
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
-	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
+	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true, 1.0);
 
 	RepairRate *= 10.0;
 	RepairRate *= repairspeedModif;
@@ -1672,7 +1713,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
 			}
 		}
-		return;
+		return false;
 	}
 	int Healing_Value = i_HealingAmount;
 	
@@ -1700,7 +1741,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				}
 
 			}
-			return;
+			return false;
 		}
 		if(!i_IsVehicle[target])
 		{
@@ -1762,6 +1803,7 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 	new_ammo -= HealDo;
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
+	return true;
 }
 
 
@@ -2091,7 +2133,7 @@ public bool BuildingCustomCommand(int client)
 	return false;
 }
 
-int i2_MountedInfoAndBuilding[2][MAXTF2PLAYERS + 1];
+int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
@@ -2114,7 +2156,7 @@ bool MountBuildingToBackInternal(int client, bool AllowAnyBuilding)
 		return false;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
-	if(entity < MaxClients)
+	if(entity <= MaxClients)
 	{
 		return false;
 	}
@@ -2242,7 +2284,7 @@ void ParentDelayFrameForReasons(DataPack pack)
 	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
 }
 
-static Handle Timer_TransferOwnerShip[MAXTF2PLAYERS];
+static Handle Timer_TransferOwnerShip[MAXPLAYERS];
 
 static Action Timer_KillMountedStuff(Handle timer, int client)
 {
@@ -2485,4 +2527,180 @@ void Building_Check_ValidSupportcount(int client)
 			}
 		}
 	}
+}
+
+//Acts like a tf2 wrench with repairing
+public void Tinker_ShootProjectile(int client, int weapon, bool &result, int slot)
+{
+	float damage = 50.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+		
+	float speed = 2200.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+	//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
+	int Projectile = Wand_Projectile_Spawn(client, speed, -1.0, damage, 0, weapon, "",.hideprojectile = true);
+	WandProjectile_ApplyFunctionToEntity(Projectile, Tinker_TouchAnything);
+	SetEntityModel(Projectile, MODEL_HEALINGBOLT);
+	ApplyCustomModelToWandProjectile(Projectile, MODEL_HEALINGBOLT, 1.0, "");
+	b_NpcIsTeamkiller[Projectile] = true;
+	b_AllowCollideWithSelfTeam[Projectile] = true;
+
+	SetEntityMoveType(Projectile, MOVETYPE_FLYGRAVITY);
+	SetEntityGravity(Projectile, 0.15);
+	i_WandParticle[Projectile] = EntIndexToEntRef(Trail_Attach(Projectile, CLAW_TRAIL_RED, 255, 0.3, 3.0, 3.0, 5));
+}
+
+static void Tinker_TouchAnything(int entity, int target)
+{
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	if (target < 0)	
+		return;
+
+	if(target == 0)
+	{
+		int attacker = EntRefToEntIndex(i_WandOwner[entity]);
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(attacker == client)
+				{
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal.wav", attacker, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 2:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal2.wav", attacker, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 3:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal4.wav", attacker, SNDCHAN_STATIC, 70, _, 0.80);
+					}	
+				}
+				else
+				{
+
+					switch(GetRandomInt(1,3))
+					{
+						case 1:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal.wav", entity, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 2:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal2.wav", entity, SNDCHAN_STATIC, 70, _, 0.8);
+						
+						case 3:
+							EmitSoundToClient(client, "weapons/fx/rics/arrow_impact_metal4.wav", entity, SNDCHAN_STATIC, 70, _, 0.8);
+					}	
+				}
+			}
+		}
+		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+		if(IsValidEntity(particle))
+		{
+			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		SetEntityRenderMode(entity, RENDER_NONE);
+		SetEntityMoveType(entity, MOVETYPE_NONE);
+		int FakeThing = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+		if(IsValidEntity(FakeThing))
+		{
+			SetEntityRenderMode(FakeThing, RENDER_NONE);
+		}
+		return;
+	}
+	if(GetTeam(entity) != GetTeam(target))
+	{
+		//Code to do damage position and ragdolls
+		static float angles[3];
+		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position);
+
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		int attacker = EntRefToEntIndex(i_WandOwner[entity]);
+
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+		SDKHooks_TakeDamage(target, attacker, attacker, f_WandDamage[entity], DMG_PLASMA, weapon, PushforceDamage, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(attacker == client)
+				{
+					EmitSoundToClient(client, g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], attacker, SNDCHAN_STATIC, 70, _, 1.0);
+				}
+				else
+				{
+					EmitSoundToClient(client, g_ArrowHitSoundSuccess[GetRandomInt(0, sizeof(g_ArrowHitSoundSuccess) - 1)], attacker, SNDCHAN_STATIC, 70, _, 1.0);
+				}
+			}
+		}
+		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+		if(IsValidEntity(particle))
+		{
+			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+		}
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		SetEntityRenderMode(entity, RENDER_NONE);
+		SetEntityMoveType(entity, MOVETYPE_NONE);
+		int FakeThing = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+		if(IsValidEntity(FakeThing))
+		{
+			SetEntityRenderMode(FakeThing, RENDER_NONE);
+		}
+		return;
+	}
+	else
+	{
+		if(i_NpcIsABuilding[target])
+		{
+			//heal building?
+			bool RepairDone = false;
+			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+			int attacker = EntRefToEntIndex(i_WandOwner[entity]);
+			if(IsValidEntity(weapon) && IsValidClient(attacker))
+				RepairDone = Building_RepairObject(attacker, target, weapon,{0.0,0.0,0.0}, -1, 0.5);
+			
+			if(!RepairDone)
+				return;
+
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(attacker == client)
+					{
+						EmitSoundToClient(client, SOUND_HOSE_HEALED, attacker, SNDCHAN_STATIC, 70, _, 0.8);
+					}
+					else
+					{
+						EmitSoundToClient(client, SOUND_HOSE_HEALED, entity, SNDCHAN_STATIC, 70, _, 0.8);
+					}
+				}
+			}
+			
+			WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+			if(IsValidEntity(particle))
+			{
+				CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+			}
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			SetEntityRenderMode(entity, RENDER_NONE);
+			SetEntityMoveType(entity, MOVETYPE_NONE);
+			int FakeThing = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+			if(IsValidEntity(FakeThing))
+			{
+				SetEntityRenderMode(FakeThing, RENDER_NONE);
+			}
+		}
+	}
+	
 }

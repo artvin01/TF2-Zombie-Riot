@@ -553,7 +553,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 #endif
 
 
-void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0)
+void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0, bool colored = false)
 {
 	if(HasSpecificBuff(entity, "Hardened Aura"))
 		return;
@@ -631,7 +631,7 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	}
 	else
 	{
-		IgniteTargetEffect(entity);
+		IgniteTargetEffect(entity, .type = colored);
 
 		BurnDamage[entity] = value;
 		IgniteId[entity] = EntIndexToEntRef(attacker);
@@ -1200,7 +1200,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if(CheckInHud())
 		return Plugin_Handled;
 #if defined ZR
-	if(inflictor > 0 && inflictor < MaxClients)
+	if(inflictor > 0 && inflictor <= MaxClients)
 	{	
 		/*
 		if(f_Data_InBattleHudDisableDelay[inflictor] + 2.0 != 0.0)
@@ -1521,7 +1521,7 @@ stock void RemoveHudCooldown(int client)
 #define ZR_DEFAULT_HUD_OFFSET 0.15
 
 #if defined ZR
-float RaidHudOffsetSave[MAXTF2PLAYERS];
+float RaidHudOffsetSave[MAXPLAYERS];
 #endif
 
 /*
@@ -2028,7 +2028,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		
 		CClotBody npcstats = view_as<CClotBody>(victim);
 		if(b_ThisWasAnNpc[victim] && npcstats.m_iHealthBar > 0)
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar);
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s x%i",ExtraHudHurt, npcstats.m_iHealthBar + 1);
 
 		//add debuff
 		if(Debuff_Adder[0])

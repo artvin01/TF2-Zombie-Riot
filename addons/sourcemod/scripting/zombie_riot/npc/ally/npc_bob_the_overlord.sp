@@ -2,8 +2,8 @@
 #pragma newdecls required
 
 //static Handle syncdashhud;
-static int Has_a_bob[MAXTF2PLAYERS+1]={0, ...};
-static int bob_owner_id[MAXTF2PLAYERS+1]={0, ...};
+static int Has_a_bob[MAXPLAYERS+1]={0, ...};
+static int bob_owner_id[MAXPLAYERS+1]={0, ...};
 static int who_owns_this_bob[2048]={0, ...};
 
 static char g_DeathSounds[][] = {

@@ -293,19 +293,19 @@ methodmap RaidbossSilvester < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -339,19 +339,19 @@ methodmap RaidbossSilvester < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 
 		f_TalkDelayCheck = 0.0;
 		i_TalkDelayCheck = 0;
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -2025,7 +2025,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 						CPrintToChatAll("{gold}Silvester{default}: I REFUSE to let this happen again to us two, don't say i didnt warn you!");
 
 					i_TalkDelayCheck = 5;
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{

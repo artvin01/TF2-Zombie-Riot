@@ -174,9 +174,9 @@ static char PlatformModel[PLATFORM_MAX_PATH];
 static float PlatformScale;
 
 static int InPlot[MAXENTITIES+1];
-static int InMenu[MAXTF2PLAYERS];
-static char CurrentItem[MAXTF2PLAYERS][32];
-static int PartyMode[MAXTF2PLAYERS];
+static int InMenu[MAXPLAYERS];
+static char CurrentItem[MAXPLAYERS][32];
+static int PartyMode[MAXPLAYERS];
 
 void Plots_ConfigSetup()
 {
@@ -527,7 +527,7 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 	
 	float gameTime = GetGameTime();
 
-	static float attackFor[MAXTF2PLAYERS];
+	static float attackFor[MAXPLAYERS];
 	if(fabs(attackFor[client] - gameTime) < 0.5)
 	{
 		if(!(buttons & IN_ATTACK))
@@ -552,7 +552,7 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 	
 	if(CurrentItem[client][0])
 	{
-		static float altfireFor[MAXTF2PLAYERS];
+		static float altfireFor[MAXPLAYERS];
 		if(fabs(altfireFor[client] - gameTime) < 0.5)
 		{
 			if(!(buttons & IN_ATTACK2))

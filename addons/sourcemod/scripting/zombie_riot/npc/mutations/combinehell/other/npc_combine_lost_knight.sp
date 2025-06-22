@@ -243,7 +243,7 @@ methodmap LostKnight < CClotBody
 			DispatchKeyValue(entity, "fogcolor2", "10 10 10 255");
 			DispatchKeyValueFloat(entity, "fogstart", 10.0);
 			DispatchKeyValueFloat(entity, "fogend", 125.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.900);
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.825);
 
 			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 			DispatchKeyValue(entity, "fogenable", "1");

@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static int weapon_id[MAXPLAYERS+1]={0, ...};
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 

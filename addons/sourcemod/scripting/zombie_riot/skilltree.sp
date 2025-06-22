@@ -23,7 +23,7 @@ static int ReverseDir(int dir)
 }
 
 static Handle SyncHudSkilltree;
-float MenuHudCooldown_SK[MAXTF2PLAYERS];
+float MenuHudCooldown_SK[MAXPLAYERS];
 enum struct Skill
 {
 	char Name[32];
@@ -66,12 +66,12 @@ enum struct Skill
 static MusicEnum CustomMusic;
 static StringMap SkillList;
 static StringMapSnapshot SkillListSnap;
-static StringMap SkillCount[MAXTF2PLAYERS];
-static StringMapSnapshot SkillCountSnap[MAXTF2PLAYERS];
-static char Selected[MAXTF2PLAYERS][32];
-static bool InMenu[MAXTF2PLAYERS];
-static bool CanAccess[MAXTF2PLAYERS][DIR_MAX+1];
-static int PointsSpent[MAXTF2PLAYERS];
+static StringMap SkillCount[MAXPLAYERS];
+static StringMapSnapshot SkillCountSnap[MAXPLAYERS];
+static char Selected[MAXPLAYERS][32];
+static bool InMenu[MAXPLAYERS];
+static bool CanAccess[MAXPLAYERS][DIR_MAX+1];
+static int PointsSpent[MAXPLAYERS];
 
 void SkillTree_PluginStart()
 {
@@ -251,7 +251,6 @@ void SkillTree_GiveItem(int client, int weapon)
 		}
 
 		StringMapSnapshot snap = map.Snapshot();
-		
 		float value;
 		length = snap.Length;
 		for(int i; i < length; i++)
@@ -261,7 +260,17 @@ void SkillTree_GiveItem(int client, int weapon)
 			snap.GetKey(i, name, size);
 			
 			map.GetValue(name, value);
-			Attributes_SetMulti(weapon, StringToInt(name), 1.0 + value);
+			int AttributeWhich = StringToInt(name);
+			switch(AttributeWhich)
+			{
+				case 6,97:
+				{
+					Attributes_SetMulti(weapon, AttributeWhich, (value * -1.0) + 1.0);
+					//if its these attributes, then actually reduce!
+				}
+				default:
+					Attributes_SetMulti(weapon, AttributeWhich, 1.0 + value);
+			}
 		}
 
 		delete snap;
@@ -337,7 +346,7 @@ bool SkillTree_PlayerRunCmd(int client, int &buttons, float vel[3])
 	if(!InMenu[client])
 		return false;
 	
-	static bool holding[MAXTF2PLAYERS][DIR_MAX+1];
+	static bool holding[MAXPLAYERS][DIR_MAX+1];
 	if(holding[client][UP])
 	{
 		if(vel[0] < 250.0)
@@ -440,6 +449,7 @@ static int MainMenuH(Menu menu, MenuAction action, int client, int choice)
 				case 0:
 				{
 					TreeMenu(client, true);
+					UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
 
 					if(InMenu[client] && CustomMusic.Path[0])
 					{
@@ -785,6 +795,7 @@ void TreeMenu(int client, bool force = false, bool displayMenu = true)
 	ReplaceString(BufferSyncHud,sizeof(BufferSyncHud), "	", "");
 	Format(BufferSyncHud, sizeof(BufferSyncHud),"%s\n-------------\n%T", BufferSyncHud, buffers[0], client);
 	ShowSyncHudText(client, SyncHudSkilltree, BufferSyncHud);
+	UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
 
 
 	bool upgrade;
@@ -840,6 +851,11 @@ static int TreeMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Cancel:
 		{
 			InMenu[client] = false;
+			if(IsValidClient(client))
+			{
+				UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
+				UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
+			}
 			
 			if(CustomMusic.Path[0])
 				StopCustomSound(client, SNDCHAN_STATIC, CustomMusic.Path);

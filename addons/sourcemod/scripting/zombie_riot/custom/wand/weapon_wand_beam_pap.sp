@@ -13,19 +13,18 @@
 	Particle Cannon
 */
 
-static int i_cannon_charge[MAXTF2PLAYERS];
-static int i_original_weapon_ID[MAXTF2PLAYERS];
-static int i_tick_attack_delay[MAXTF2PLAYERS];
-static int i_tick_current_delay[MAXTF2PLAYERS];
-static int i_weapon_pap_tier[MAXTF2PLAYERS];
-static int i_mana_cost_base[MAXTF2PLAYERS];
+static int i_cannon_charge[MAXPLAYERS];
+static int i_original_weapon_ID[MAXPLAYERS];
+static float f_attack_timer[MAXPLAYERS];
+static int i_weapon_pap_tier[MAXPLAYERS];
+static int i_mana_cost_base[MAXPLAYERS];
 
 
-static bool bl_particle_type[MAXTF2PLAYERS];
-static bool bl_alternate[MAXTF2PLAYERS];
-static bool bl_overdrive_beam[MAXTF2PLAYERS];
-static bool bl_orbtial_cannon[MAXTF2PLAYERS];
-static bool bl_sound_active[MAXTF2PLAYERS];
+static bool bl_particle_type[MAXPLAYERS];
+static bool bl_alternate[MAXPLAYERS];
+static bool bl_overdrive_beam[MAXPLAYERS];
+static bool bl_orbtial_cannon[MAXPLAYERS];
+static bool bl_sound_active[MAXPLAYERS];
 
 #define BEAM_WAND_BEAM_SOUND "npc/combine_gunship/dropship_engine_distant_loop1.wav"	//"weapons/physcannon/energy_sing_loop4.wav"
 #define BEAM_WAND_OVERDRIVE_CHARGEUP_SOUND	"npc/attack_helicopter/aheli_charge_up.wav"
@@ -49,15 +48,15 @@ static bool bl_sound_active[MAXTF2PLAYERS];
 #define BEAM_WAND_BEAM_OVERDRIVE_COUNT 6		//this is *mostly* visual, however it does affect the delay by making it slightly less
 #define BEAM_WAND_BEAM_OVERDRIVE_CHARGEUP 1.15	//relative to sound
 
-static int i_beam_delay[3] = { 0, 10, 6 };							//delay in ticks per each singular shot
+static float f_beam_delay[3] = { 0.0, 0.25, 0.1 };						//delay in seconds per each singular shot
 static float fl_beam_overdrive_dmg_multi[3] = { 0.0, 1.2, 1.3};		//by how much the damage is multiplied during overdrive. beware this thing if given the chance CAN and WILL do more damage in its duration than the orbital strike
 static float fl_beam_overdrive_cost[3] = { 0.0, 4000.0, 3000.0};	//how much mana has to be consumed WHILE dealing damage to activate the ability. this can be triggered by multiple npc's at the same time. aka shooting 1 npc slow gain, shooting 10 npc, fast gain
-static float fl_beam_range[3] = { 0.0, 1250.0, 1500.0 };			//range of the beam wand
-static float fl_beam_overdrive_damage[MAXTF2PLAYERS];
+static float fl_beam_range[3] = { 0.0, 1500.0, 1800.0 };			//range of the beam wand
+static float fl_beam_overdrive_damage[MAXPLAYERS];
 
 //cannon.
 
-#define BEAM_WAND_CANNON_DELAY	44				//delay in ticks per each singular shot
+#define BEAM_WAND_CANNON_DELAY	0.75			//delay in seconds per each singular shot
 #define BEAM_WAND_CANNON_RANGE	2000.0			//range of primary cannon fire	//cannon has 5k range
 #define BEAM_WAND_CANNON_DMG_MULTI	1.0
 
@@ -67,17 +66,18 @@ static float fl_beam_overdrive_damage[MAXTF2PLAYERS];
 #define BEAM_WAND_CANNON_ABILITY_RANGE	125.0	//Range of the explosion.
 
 
-static float fl_hud_delay[MAXTF2PLAYERS];
-static float fl_laser_edge_vec[MAXTF2PLAYERS][BEAM_WAND_BEAM_OVERDRIVE_COUNT+3][3];
-static float fl_last_known_vec[MAXTF2PLAYERS][3];
-static float fl_trace_delay[MAXTF2PLAYERS];
-static float fl_chargup_duration[MAXTF2PLAYERS];
-static float fl_mana_consumed_recent[MAXTF2PLAYERS];
-static float fl_beam_overdrive_charge[MAXTF2PLAYERS];
-static float fl_ability_duration[MAXTF2PLAYERS];
-static float fl_angle[MAXTF2PLAYERS];
-static float fl_oribtal_cannon_vec[MAXTF2PLAYERS][3][3];
-static float fl_mana_timeout[MAXTF2PLAYERS];
+static float fl_hud_delay[MAXPLAYERS];
+static float fl_effect_throttle[MAXPLAYERS];
+static float fl_laser_edge_vec[MAXPLAYERS][BEAM_WAND_BEAM_OVERDRIVE_COUNT+3][3];
+static float fl_last_known_vec[MAXPLAYERS][3];
+static float fl_trace_delay[MAXPLAYERS];
+static float fl_chargup_duration[MAXPLAYERS];
+static float fl_mana_consumed_recent[MAXPLAYERS];
+static float fl_beam_overdrive_charge[MAXPLAYERS];
+static float fl_ability_duration[MAXPLAYERS];
+static float fl_angle[MAXPLAYERS];
+static float fl_oribtal_cannon_vec[MAXPLAYERS][3][3];
+static float fl_mana_timeout[MAXPLAYERS];
 
 
 static int BeamWand_Laser;
@@ -93,9 +93,9 @@ void Beam_Wand_Pap_OnMapStart()
 {
 	Zero(i_original_weapon_ID);
 	Zero(bl_particle_type);
-	Zero(i_tick_attack_delay);
-	Zero(i_tick_current_delay);
+	Zero(f_attack_timer);
 	Zero(fl_hud_delay);
+	Zero(fl_effect_throttle);
 	Zero(i_weapon_pap_tier);
 	Zero2(fl_last_known_vec);
 	Zero(fl_trace_delay);
@@ -163,8 +163,12 @@ public void Activate_Beam_Wand_Pap(int client, int weapon)
 
 		pap = RoundFloat(Attributes_Get(weapon, 122, 1.0));
 
+		fl_effect_throttle[client] = 0.0;
+		f_attack_timer[client] = 0.0;
+
 		int mana_cost;
 		mana_cost = RoundFloat(Attributes_Get(weapon, 733, 1.0));
+		mana_cost = RoundToNearest(float(mana_cost) * LaserWeapons_ReturnManaCost(weapon));
 			
 		i_mana_cost_base[client] = mana_cost;	//as far as I am aware there are no effects currently that can affect a weapons mana cost realtime, so rather than getting the attribute every time the weapon fires, we only need to get it if a refresh happens
 		i_weapon_pap_tier[client] = pap;
@@ -319,11 +323,11 @@ public Action Beam_Wand_pap_Tick(int client)
 				int manacost;
 				if(bl_particle_type[client])
 				{
-						colour[0]=150;
-						colour[1]=150;
-						colour[2]=255;
-						colour[3]=150;
-						manacost = i_mana_cost_base[client];
+					colour[0]=150;
+					colour[1]=150;
+					colour[2]=255;
+					colour[3]=150;
+					manacost = i_mana_cost_base[client];
 				}
 				else	//default false.
 				{
@@ -350,7 +354,13 @@ public Action Beam_Wand_pap_Tick(int client)
 					
 				float target_vec[3];
 				Beam_Wand_Client_Target_Vec(client, target_vec, gametime);
-				Beam_Wand_Spawn_Effect(client, target_vec, colour);
+
+				bool update = false;
+				if(fl_effect_throttle[client] < gametime)
+				{
+					update = true;
+					Beam_Wand_Spawn_Effect(client, target_vec, colour);
+				}
 				
 				if(FIRE)
 				{
@@ -367,19 +377,9 @@ public Action Beam_Wand_pap_Tick(int client)
 						Beam_Wand_pap_Hud(client, false, RoundToFloor(ability_duration_remain));
 						fl_hud_delay[client] = gametime + 0.5;
 					}		
-					if(i_tick_attack_delay[client]<=i_tick_current_delay[client])
+					if(f_attack_timer[client]<gametime)
 					{
-						
-						i_tick_current_delay[client]=0;
-						
-						if(bl_alternate[client])
-						{
-							bl_alternate[client] = false;
-						}
-						else
-						{
-							bl_alternate[client] = true;
-						}
+						bl_alternate[client] = !bl_alternate[client];
 						if(fl_chargup_duration[client]>=gametime && bl_overdrive_beam[client])
 						{
 							Particle_Beam(client, pap, target_vec, colour, fl_beam_overdrive_damage[client], true);
@@ -395,8 +395,7 @@ public Action Beam_Wand_pap_Tick(int client)
 									
 									float delay = 1.0;
 									delay = Attributes_Get(weapon, 6, 1.0);
-										
-									i_tick_attack_delay[client] = RoundToFloor((6.0/(BEAM_WAND_BEAM_OVERDRIVE_COUNT/2))*delay);
+									f_attack_timer[client] = gametime + 0.07*delay;
 									if(!bl_sound_active[client])
 									{
 										EmitSoundToClient(client,BEAM_WAND_OVERDRIVE_CHARGEUP_END_SOUND,_, SNDCHAN_STATIC, 100, _, 1.0, 125);
@@ -409,7 +408,7 @@ public Action Beam_Wand_pap_Tick(int client)
 								{
 									Beam_Wand_Orbital_Cannon_Charging(client, target_vec, colour, ability_duration_remain);
 									
-									i_tick_attack_delay[client] = 3; 
+									f_attack_timer[client] = gametime + 0.1; 
 								}
 							}
 							else if(M1Down)
@@ -419,7 +418,7 @@ public Action Beam_Wand_pap_Tick(int client)
 								damage *= Attributes_Get(weapon, 410, 1.0);
 								
 								delay = Attributes_Get(weapon, 6, 1.0);
-														
+								
 								fl_beam_overdrive_damage[client] = damage;
 								
 								SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -432,13 +431,13 @@ public Action Beam_Wand_pap_Tick(int client)
 								{
 									Particle_Cannon(client, target_vec, colour, damage);
 									EmitSoundToClient(client, BEAN_WAND_PARTICLE_CANNON_SOUND, _, SNDCHAN_STATIC, 100, _, 0.35);
-									i_tick_attack_delay[client] = RoundToFloor(BEAM_WAND_CANNON_DELAY*delay);
+									f_attack_timer[client] = gametime + (BEAM_WAND_CANNON_DELAY*delay);
 								}
 								else	//default false.
 								{
 									Particle_Beam(client, pap, target_vec, colour, damage, false);
 									fl_mana_consumed_recent[client] = float(manacost);
-									i_tick_attack_delay[client] = RoundToFloor(i_beam_delay[pap]*delay);
+									f_attack_timer[client] = gametime + (f_beam_delay[pap]*delay);
 									if(!bl_sound_active[client])
 									{
 										EmitSoundToClient(client,BEAM_WAND_BEAM_SOUND,_, SNDCHAN_STATIC, 100, _, 0.35, GetRandomInt(90, 100));
@@ -467,8 +466,11 @@ public Action Beam_Wand_pap_Tick(int client)
 					}
 					Kill_Sound(client);
 				}
-				i_tick_current_delay[client]++;
 				
+				if(update)
+				{
+					fl_effect_throttle[client] = gametime + 0.1;
+				}
 			}
 		}
 		else
@@ -526,7 +528,6 @@ static void Particle_Cannon(int client, float target_vec[3], int colour[4], floa
 
 static void Particle_Beam(int client, int pap, float target_vec[3], int colour[4], float dmg, bool sfx)
 {
-	
 	dmg *= BEAM_WAND_BEAM_DAMAGE_MULTI;
 	if(!bl_overdrive_beam[client])
 	{
@@ -673,8 +674,6 @@ static void Beam_Wand_Spawn_Effect(int client,float target_vec[3], int colour[4]
 		count = 2;
 	}
 	
-	
-	
 	float distance = 120.0;
 	
 	float tempAngles[3], endLoc[3], Direction[3];
@@ -716,6 +715,8 @@ static void Create_Energy_Pylon(int client, float SpawnVec[3], int num, float Ta
 	float endLoc[3], vecAngles[3];
 	
 	float alt_vec[3];
+
+	float Te_Duration = 0.1;
 	
 	float Direction[3];
 	if(bl_orbtial_cannon[client])
@@ -728,11 +729,11 @@ static void Create_Energy_Pylon(int client, float SpawnVec[3], int num, float Ta
 		ScaleVector(Direction, Range);
 		AddVectors(SpawnVec, Direction, endLoc);
 		
-		TE_SetupBeamPoints(alt_vec, endLoc, gLaser2, 0, 0, 0, 0.051, 0.25, 0.5, 0, 0.75, colour, 0);
+		TE_SetupBeamPoints(alt_vec, endLoc, gLaser2, 0, 0, 0, Te_Duration, 0.25, 0.5, 0, 0.75, colour, 0);
 		TE_SendToClient(client);
 		float sky_loc[3]; sky_loc = alt_vec; sky_loc[2] += 5000.0;
 		
-		TE_SetupBeamPoints(sky_loc, alt_vec, gLaser2, 0, 0, 0, 0.051, 0.25, 0.5, 0, 0.25, colour, 0);
+		TE_SetupBeamPoints(sky_loc, alt_vec, gLaser2, 0, 0, 0, Te_Duration, 0.25, 0.5, 0, 0.25, colour, 0);
 		TE_SendToAll();
 	}
 	else
@@ -746,7 +747,7 @@ static void Create_Energy_Pylon(int client, float SpawnVec[3], int num, float Ta
 	}
 	
 	fl_laser_edge_vec[client][num] = endLoc;
-	TE_SetupBeamPoints(endLoc, SpawnVec, gLaser2, 0, 0, 0, 0.051, 0.75, 5.0, 0, 0.1, colour, 1);
+	TE_SetupBeamPoints(endLoc, SpawnVec, gLaser2, 0, 0, 0, Te_Duration, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll();
 }
 
@@ -798,9 +799,7 @@ static void Beam_Wand_Client_Target_Vec(int client, float vec[3], float gametime
 	if(fl_trace_delay[client]<=gametime)
 	{
 		fl_trace_delay[client] = gametime + BEAM_WAND_PAP_ALT_TRACE_DELAY;
-		
-		Handle swingTrace;
-		float vecSwingForward[3];
+
 		float range;
 		if(bl_particle_type[client])
 		{
@@ -818,24 +817,12 @@ static void Beam_Wand_Client_Target_Vec(int client, float vec[3], float gametime
 		{
 			range = fl_beam_range[i_weapon_pap_tier[client]];
 		}
-				
-		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client);
-		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, range, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
-		FinishLagCompensation_Base_boss();
-	
-		int target = TR_GetEntityIndex(swingTrace);	
-		if(IsValidEnemy(client, target))
-		{
-			WorldSpaceCenter(target, vec);
-		}
-		else
-		{
-			TR_GetEndPosition(vec, swingTrace);
-		}
-				
-		fl_last_known_vec[client] = vec;
-		delete swingTrace;
+
+		Player_Laser_Logic Laser;
+		Laser.client = client;
+		Laser.DoForwardTrace_Basic(range);
+		fl_last_known_vec[client] = Laser.End_Point;
+		vec = Laser.End_Point;
 
 	}
 	else

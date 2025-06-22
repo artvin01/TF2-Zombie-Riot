@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float Uranium_TimeTillBigHit[MAXTF2PLAYERS][MAXENTITIES];
+float Uranium_TimeTillBigHit[MAXPLAYERS][MAXENTITIES];
 void Uranium_MapStart()
 {
 	Zero2(Uranium_TimeTillBigHit);

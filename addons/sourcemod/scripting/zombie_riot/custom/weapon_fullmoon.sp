@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
-static float f_FullMoonHudCD[MAXTF2PLAYERS];
-static Handle h_TimerFullMoon[MAXTF2PLAYERS+1] = {null, ...};
-static int i_Current_Pap[MAXTF2PLAYERS+1] = {0, ...};
-static float f_FullMoonAbility[MAXTF2PLAYERS+1] = {0.0, ...};
+static float f_FullMoonHudCD[MAXPLAYERS];
+static Handle h_TimerFullMoon[MAXPLAYERS+1] = {null, ...};
+static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
+static float f_FullMoonAbility[MAXPLAYERS+1] = {0.0, ...};
 static bool Precached;
 
 #define FullMoon_ABILTIY_SOUND_1	"npc/scanner/scanner_electric1.wav"

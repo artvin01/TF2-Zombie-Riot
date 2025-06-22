@@ -23,8 +23,6 @@ Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allo
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
 
-if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
-
 
 ### Where can I see this gamemode in action?
 

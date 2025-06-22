@@ -6,15 +6,15 @@ enum struct GardenEnum
 	char Zone[32];
 	float Pos[3];
 	
-	int Store[MAXTF2PLAYERS];
-	float StartAt[MAXTF2PLAYERS];
-	float ReadyIn[MAXTF2PLAYERS];
+	int Store[MAXPLAYERS];
+	float StartAt[MAXPLAYERS];
+	float ReadyIn[MAXPLAYERS];
 }
 
 static ArrayList GardenList;
-static char InGarden[MAXTF2PLAYERS][32];
-static float UpdateTrace[MAXTF2PLAYERS];
-static int InMenu[MAXTF2PLAYERS] = {-1, ...};
+static char InGarden[MAXPLAYERS][32];
+static float UpdateTrace[MAXPLAYERS];
+static int InMenu[MAXPLAYERS] = {-1, ...};
 
 void Garden_ResetAll()
 {
@@ -488,8 +488,8 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 	return 0;
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+static Handle TimerZoneEditing[MAXPLAYERS];
+static char CurrentZoneEditing[MAXPLAYERS][64];
 
 static void OpenEditorFrom(int client)
 {

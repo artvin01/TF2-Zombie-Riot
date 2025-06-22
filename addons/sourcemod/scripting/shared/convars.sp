@@ -24,9 +24,9 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");//Bot logic to not break it
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0"); //Bot logic to not break it
 #if defined ZR
-	ConVar_Add("mp_humans_must_join_team", "any"); //Only read
+	ConVar_Add("mp_humans_must_join_team", "any");
 #else 
-	ConVar_Add("mp_humans_must_join_team", "red"); //Only read
+	ConVar_Add("mp_humans_must_join_team", "red"); //Only red
 #endif
 	ConVar_Add("mp_allowspectators", "1");
 	
@@ -41,8 +41,6 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_boost_drain_time", "99999.0"); //Overheal Logic, make it perma
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
 
-	ConVar_Add("tf_scout_air_dash_count", "-1"); //Remove doublejumps
-	//todo: update this everyone someone switches to scout, or put the no doublejump flag on all scout weapons
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
 	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
 
@@ -53,9 +51,11 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 #endif
-#if defined ZR || defined RPG
+
+#if defined RPG
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
+
 //	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
 #if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0");
@@ -66,7 +66,7 @@ void ConVar_PluginStart()
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	Cvar_VshMapFix = CreateConVar("zr_stripmaplogic", "0", "Strip maps of logic for ZR", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike");
-	zr_voteconfig = CreateConVar("zr_voteconfig", "raidmode", "Vote config zr/ .cfg already included");
+	zr_voteconfig = CreateConVar("zr_voteconfig", "fastmode", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "", "Tags to blacklist from weapons config");
 	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config");
 	zr_tagwhitehard = CreateConVar("zr_tagwhitehard", "1", "If whitelist requires a tag instead of allowing");
@@ -89,7 +89,6 @@ void ConVar_PluginStart()
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
 	CvarAutoSelectWave = CreateConVar("zr_autoselectwave", "0", "If to automatically set a wave on map start instead of running a vote");
-	//CvarDebugOffset = CreateConVar("zr_debugOffsetSet", "0", "Do not use");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);

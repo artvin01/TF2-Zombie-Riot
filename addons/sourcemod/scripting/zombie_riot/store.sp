@@ -2,9 +2,9 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
-bool PapPreviewMode[MAXTF2PLAYERS];
-float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
-float CDDisplayHint_LoadoutConfirmAuto[MAXTF2PLAYERS];
+bool PapPreviewMode[MAXPLAYERS];
+float CDDisplayHint_LoadoutStore[MAXPLAYERS];
+float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
 enum struct ItemInfo
 {
@@ -16,6 +16,7 @@ enum struct ItemInfo
 	char ExtraDesc_1[256];
 	
 	bool HasNoClip;
+	bool NoSafeClip;
 	bool SemiAuto;
 	
 	bool SemiAuto_SingularReload;
@@ -36,6 +37,7 @@ enum struct ItemInfo
 
 	int IsWand;
 	bool IsWrench;
+	bool Visible_BuildingStats;
 	bool IsSupport;
 	bool IsAlone;
 	bool InternalMeleeTrace;
@@ -225,6 +227,9 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sno_clip", prefix);
 		this.HasNoClip				= view_as<bool>(kv.GetNum(buffer));
 		
+		Format(buffer, sizeof(buffer), "%sno_safeclip", prefix);
+		this.NoSafeClip				= view_as<bool>(kv.GetNum(buffer));
+		
 		Format(buffer, sizeof(buffer), "%ssemi_auto", prefix);
 		this.SemiAuto				= view_as<bool>(kv.GetNum(buffer));
 		
@@ -236,6 +241,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%svisible_building_stats", prefix);
+		this.Visible_BuildingStats	= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%sis_a_support", prefix);
 		this.IsSupport	= view_as<bool>(kv.GetNum(buffer));
@@ -465,18 +473,18 @@ enum struct Item
 	
 	ArrayList ItemInfos;
 	
-	int Owned[MAXTF2PLAYERS];
-	int Scaled[MAXTF2PLAYERS];
-	bool Equipped[MAXTF2PLAYERS];
-	int Sell[MAXTF2PLAYERS];
-	int BuyWave[MAXTF2PLAYERS];
-	int BuyPrice[MAXTF2PLAYERS];
-	float Cooldown1[MAXTF2PLAYERS];
-	float Cooldown2[MAXTF2PLAYERS];
-	float Cooldown3[MAXTF2PLAYERS];
-	int CurrentClipSaved[MAXTF2PLAYERS];
-	bool BoughtBefore[MAXTF2PLAYERS];
-	int RogueBoughtRecently[MAXTF2PLAYERS];
+	int Owned[MAXPLAYERS];
+	int Scaled[MAXPLAYERS];
+	bool Equipped[MAXPLAYERS];
+	int Sell[MAXPLAYERS];
+	int BuyWave[MAXPLAYERS];
+	int BuyPrice[MAXPLAYERS];
+	float Cooldown1[MAXPLAYERS];
+	float Cooldown2[MAXPLAYERS];
+	float Cooldown3[MAXPLAYERS];
+	int CurrentClipSaved[MAXPLAYERS];
+	bool BoughtBefore[MAXPLAYERS];
+	int RogueBoughtRecently[MAXPLAYERS];
 	
 	bool NPCSeller;
 	float NPCSeller_Discount;
@@ -536,20 +544,20 @@ static const char AmmoNames[][] =
 };
 
 static ArrayList StoreItems;
-static int NPCOnly[MAXTF2PLAYERS];
-static int NPCCash[MAXTF2PLAYERS];
-//static int NPCTarget[MAXTF2PLAYERS];
-static bool InLoadoutMenu[MAXTF2PLAYERS];
+static int NPCOnly[MAXPLAYERS];
+static int NPCCash[MAXPLAYERS];
+//static int NPCTarget[MAXPLAYERS];
+static bool InLoadoutMenu[MAXPLAYERS];
 //static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
-static ArrayList ChoosenTags[MAXTF2PLAYERS];
-static bool UsingChoosenTags[MAXTF2PLAYERS];
-static int LastMenuPage[MAXTF2PLAYERS];
-static int CurrentMenuPage[MAXTF2PLAYERS];
-static int CurrentMenuItem[MAXTF2PLAYERS];
+static ArrayList ChoosenTags[MAXPLAYERS];
+static bool UsingChoosenTags[MAXPLAYERS];
+static int LastMenuPage[MAXPLAYERS];
+static int CurrentMenuPage[MAXPLAYERS];
+static int CurrentMenuItem[MAXPLAYERS];
 
-static bool HasMultiInSlot[MAXTF2PLAYERS][6];
-static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static bool HasMultiInSlot[MAXPLAYERS][6];
+static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
@@ -645,7 +653,7 @@ stock bool Store_ActiveCanMulti(int client)
 	{
 		char buffer[36];
 		GetEntityClassname(weapon, buffer, sizeof(buffer));
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, weapon);
 		if(slot >= 0 && slot < sizeof(HasMultiInSlot[]))
 			return HasMultiInSlot[client][slot];
 	}
@@ -773,7 +781,7 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));
 
-	int slot = TF2_GetClassnameSlot(classname);
+	int slot = TF2_GetClassnameSlot(classname, swap);
 	
 	int length = GetMaxWeapons(client);
 	for(int i; i < length; i++)
@@ -786,7 +794,7 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 				if(weapon > MaxClients)
 				{
 					GetEntityClassname(weapon, buffer, sizeof(buffer));
-					if(TF2_GetClassnameSlot(buffer) == slot)
+					if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 					{
 						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", swap, a);
 						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
@@ -825,7 +833,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 		char buffer[36];
 		GetEntityClassname(active, buffer, sizeof(buffer));
 		
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, active);
 		
 		int length = GetMaxWeapons(client);
 		for(int i; i < length; i++)
@@ -846,7 +854,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 						if(weapon > MaxClients)
 						{
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
-							if(TF2_GetClassnameSlot(buffer) == slot)
+							if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 							{
 								if(a < switchI)
 								{
@@ -906,7 +914,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 			else if(weapon != -1)	// Another weapon is highest up in our slot
 			{
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
-				if(TF2_GetClassnameSlot(buffer) == slot)
+				if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 				{
 					if(SwitchDo)
 						SetPlayerActiveWeapon(client, weapon);
@@ -936,7 +944,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 		if(weapon != -1)
 		{
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == slot)
+			if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 			{
 				if(firstWeapon == -1)
 					firstWeapon = weapon;
@@ -1483,7 +1491,7 @@ void Store_RogueEndFightReset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		for(int c; c<MAXTF2PLAYERS; c++)
+		for(int c; c<MAXPLAYERS; c++)
 		{
 			item.RogueBoughtRecently[c] = 0;
 		}
@@ -1494,7 +1502,7 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	for(int c; c<MAXTF2PLAYERS; c++)
+	for(int c; c<MAXPLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
@@ -1509,7 +1517,7 @@ void Store_Reset()
 		item.NPCSeller = false;
 		item.NPCSeller_WaveStart = 0;
 		item.NPCSeller_Discount = 1.0;
-		for(int c; c<MAXTF2PLAYERS; c++)
+		for(int c; c<MAXPLAYERS; c++)
 		{
 			item.Owned[c] = 0;
 			item.Scaled[c] = 0;
@@ -1523,7 +1531,7 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-	for(int c; c<MAXTF2PLAYERS; c++)
+	for(int c; c<MAXPLAYERS; c++)
 	{
 		CashSpentGivePostSetup[c] = 0;
 		CashSpentGivePostSetupWarning[c] = false;
@@ -1701,7 +1709,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						item.Sell[client] = 0;
 					}
 					item.RogueBoughtRecently[client] += 1;
-					item.BuyWave[client] = ZR_Waves_GetRound();
+					item.BuyWave[client] = Waves_GetRoundScale();
 					if(info.NoRefundWanted)
 					{
 						item.BuyWave[client] = -1;
@@ -2863,6 +2871,8 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 
 					if(ParentItem.NPCSeller_WaveStart < item.NPCSeller_WaveStart)
 						ParentItem.NPCSeller_WaveStart = item.NPCSeller_WaveStart;
+
+					ParentItem.NPCSeller = true;
 						
 					StoreItems.SetArray(item.Section, ParentItem);
 					if(ParentItem.Section != -1)
@@ -3007,11 +3017,12 @@ static void MenuPage(int client, int section)
 	
 	if(Waves_Started())
 	{
-		if(CashSpentTotal[client] <= 0)
-		{
-			CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-		}
-		else if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
+	//	if(CashSpentTotal[client] <= 0)
+	//	{
+	//		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
+	//	}
+	//	else 
+		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
 		{
 			StarterCashMode[client] = false; //confirm automatically.
 		}
@@ -3214,7 +3225,7 @@ static void MenuPage(int client, int section)
 					menu.AddItem(buffer2, buffer, style);	// 0
 					Repeat_Filler ++;
 					
-					bool fullSell = (item.BuyWave[client] == ZR_Waves_GetRound());
+					bool fullSell = (item.BuyWave[client] == Waves_GetRoundScale());
 					bool canSell = (!item.ChildKit && item.Owned[client] && ((info.Cost && fullSell) || item.Sell[client] > 0));
 					if(item.GregOnlySell == 2)
 					{
@@ -4408,7 +4419,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 									item.BuyPrice[client] = 0;
 									item.Sell[client] = 0;
 								}
-								item.BuyWave[client] = ZR_Waves_GetRound();
+								item.BuyWave[client] = Waves_GetRoundScale();
 								item.Equipped[client] = false;
 
 								if(item.GregOnlySell == 2)
@@ -4469,7 +4480,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
 								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = ZR_Waves_GetRound();
+								item.BuyWave[client] = Waves_GetRoundScale();
 								if(item.GregOnlySell == 2)
 								{
 									item.Sell[client] = 0;
@@ -4524,7 +4535,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
 							item.Sell[client] = ItemSell(base, info.Cost);
-							item.BuyWave[client] = ZR_Waves_GetRound();
+							item.BuyWave[client] = Waves_GetRoundScale();
 							if(item.GregOnlySell == 2)
 							{
 								item.Sell[client] = 0;
@@ -5040,20 +5051,16 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
-	/*
-	if(LastMann)
-		map.SetValue("442", 0.7674418604651163);		// Move Speed
-	else
-	*/
 
 	map.SetValue("442", 1.0);	// Move Speed
+	map.SetValue("49", 1);	// no doublejumps
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 	map.SetValue("8", 1.5);	//give 50% more healing at the start.
 
 	float KnockbackResistance;
-	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
+	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 40, this will equal to 60* dmg
 
 	if(KnockbackResistance > 1.0)
 	{
@@ -5100,6 +5107,7 @@ void Store_ApplyAttribs(int client)
 	{
 		map.SetValue("287", 0.5);
 	}
+	map.SetValue("95", 1.0);
 
 	float value;
 	char buffer1[12];
@@ -5386,6 +5394,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	b_ExpertTrapper[client] = false;
 	b_RaptureZombie[client] = false;
 	b_ArmorVisualiser[client] = false;
+	b_CanSeeBuildingValues_Force[client] = false;
 	b_Reinforce[client] = false;
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
@@ -5546,7 +5555,7 @@ static void CheckMultiSlots(int client)
 	while(TF2_GetItem(client, entity, i))
 	{
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, entity);
 		if(slot >= 0 && slot < sizeof(exists))
 		{
 			if(exists[slot])
@@ -5621,7 +5630,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(info.Classname[0])
 			{
-				slot = TF2_GetClassnameSlot(info.Classname);
+				int saveslot = TF2_GetClassnameSlot(info.Classname);
+				slot = saveslot;
 				if(info.Weapon_Override_Slot != -1)
 				{
 					slot = info.Weapon_Override_Slot;
@@ -5652,6 +5662,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						Yakuz_SpawnWeaponPre(client, GiveWeaponIndex, view_as<TFClassType>(class));
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
+					
+					i_SavedActualWeaponSlot[entity] = saveslot;
 					
 					if(!StrContains(info.Classname, "tf_weapon_crossbow"))
 					{
@@ -5706,6 +5718,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsAloneWeapon[entity] = false;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
+				b_CanSeeBuildingValues[entity] = false;
 				i_IsSupportWeapon[entity] = false;
 				i_IsKitWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
@@ -5798,6 +5811,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWrench)
 					{
 						i_IsWrench[entity] = true;
+					}
+					if(info.Visible_BuildingStats)
+					{
+						b_CanSeeBuildingValues[entity] = true;
 					}
 					if(info.IsSupport)
 					{
@@ -6040,6 +6057,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					{
 						b_Reinforce[client] = true;
 					}
+					if(info.SpecialAdditionViaNonAttribute == 15)
+					{
+						b_CanSeeBuildingValues_Force[client] = true;
+					}
 
 					int CostDo;
 
@@ -6161,12 +6182,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//double note: doesnt matter, it wont multiply, i coded specifically for that reason with mediguns!
 		}
 
-		int itemdefindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-		if(itemdefindex == 772 || itemdefindex == 349 || itemdefindex == 30667 || itemdefindex == 200 || itemdefindex == 45 || itemdefindex == 449 || itemdefindex == 773 || itemdefindex == 973 || itemdefindex == 1103 || itemdefindex == 669 || i_IsWandWeapon[entity])
-		{
-			Attributes_Set(entity, 49, 1.0);
-		}
-
 		SkillTree_GiveItem(client, entity);
 		Rogue_GiveItem(client, entity);
 		Waves_GiveItem(entity);
@@ -6276,6 +6291,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Purnell_Enable(client, entity);
 		Medigun_SetModeDo(client, entity);
 		//Cheese_Enable(client, entity);
+		Ritualist_Enable(client, entity);
 
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
@@ -6567,7 +6583,7 @@ static void ItemCost(int client, Item item, int &cost)
 		scaled = item.MaxScaled;
 	
 	cost += item.Scale * scaled; 
-	cost += item.CostPerWave * ZR_Waves_GetRound();
+	cost += item.CostPerWave * Waves_GetRoundScale();
 
 	if(Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 	{
@@ -6808,6 +6824,10 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{
 		if(info.HasNoClip)
+		{
+			return;
+		}
+		if(info.NoSafeClip)
 		{
 			return;
 		}
@@ -7055,7 +7075,7 @@ void SetStoreMenuLogicDelay(int client)
 }
 
 
-static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+static ArrayList List_TempApplyWeaponPer[MAXPLAYERS];
 
 /*
 	Example:
@@ -7096,7 +7116,7 @@ enum struct TempAttribStore
 //on map restart
 void ClearAllTempAttributes()
 {
-	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	for(int c = 0; c < MAXPLAYERS; c++)
 	{
 		delete List_TempApplyWeaponPer[c];
 	}
@@ -7169,7 +7189,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
 				Store_Unequip(client, index);
 				
@@ -7192,11 +7212,11 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
 
 				int sell = item.Sell[client];
-				if(item.BuyWave[client] == ZR_Waves_GetRound())
+				if(item.BuyWave[client] == Waves_GetRoundScale())
 					sell = item.BuyPrice[client];
 				
 				if(sell) //make sure it even can be sold.
@@ -7245,4 +7265,13 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			}
 		}
 	}
+}
+
+void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
+{
+	static Item item;
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	item.CurrentClipSaved[client] = clipsizeSet; //Reset clip to 8
+	StoreItems.SetArray(StoreWeapon[weapon], item);
+
 }

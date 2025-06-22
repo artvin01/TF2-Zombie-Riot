@@ -1,30 +1,30 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//static float i_WasInUber[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInMarkedForDeathSilent[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
-static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
-static float f_EntityOutOfNav[MAXTF2PLAYERS];
-static float f_LatestDamageRes[MAXTF2PLAYERS];
-static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
-static bool b_GaveMarkForDeath[MAXTF2PLAYERS];
-static float f_RecievedTruedamageHit[MAXTF2PLAYERS];
+//static float i_WasInUber[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInMarkedForDeathSilent[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInMarkedForDeath[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInDefenseBuff[MAXPLAYERS] = {0.0,0.0,0.0};
+static float i_WasInJarate[MAXPLAYERS] = {0.0,0.0,0.0};
+static float f_EntityHazardCheckDelay[MAXPLAYERS];
+static float f_EntityOutOfNav[MAXPLAYERS];
+static float f_LatestDamageRes[MAXPLAYERS];
+static float f_TimeSinceLastRegenStop[MAXPLAYERS];
+static bool b_GaveMarkForDeath[MAXPLAYERS];
+static float f_RecievedTruedamageHit[MAXPLAYERS];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
 //This will be used as a timer to fix this issue
-static float f_CheckWeaponDouble[MAXTF2PLAYERS];
+static float f_CheckWeaponDouble[MAXPLAYERS];
 
-bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
+bool Client_Had_ArmorDebuff[MAXPLAYERS];
 
 #if defined ZR
 int Armor_WearableModelIndex;
 int Wing_WearlbeIndex;
 #endif
 
-bool ClientPassAliveCheck[MAXTF2PLAYERS];
+bool ClientPassAliveCheck[MAXPLAYERS];
 
 void SDKHooks_ClearAll()
 {
@@ -1352,7 +1352,7 @@ public void OnPostThink(int client)
 		static char buffer[20]; //armor
 		static char buffer2[20];	//perks and stuff
 		bool Armor_Regenerating = false;
-		static int ArmorRegenCounter[MAXTF2PLAYERS];
+		static int ArmorRegenCounter[MAXPLAYERS];
 		if(armorEnt == client && f_ClientArmorRegen[client] > GetGameTime())
 		{
 			Armor_Regenerating = true;
@@ -2100,7 +2100,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2))
+			if((SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2)) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -2529,7 +2529,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	return Plugin_Continue;
 }
 
-static int i_PreviousWeapon[MAXTF2PLAYERS];
+static int i_PreviousWeapon[MAXPLAYERS];
 
 public void OnWeaponSwitchPost(int client, int weapon)
 {
@@ -2544,9 +2544,9 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		{
 			char buffer[36];
 			GetEntityClassname(PreviousWeapon, buffer, sizeof(buffer));
-			int PreviousSlot = TF2_GetClassnameSlot(buffer);
+			int PreviousSlot = TF2_GetClassnameSlot(buffer, PreviousWeapon);
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			int CurrentSlot = TF2_GetClassnameSlot(buffer);
+			int CurrentSlot = TF2_GetClassnameSlot(buffer, weapon);
 
 			if(PreviousSlot != CurrentSlot) //Set back the previous active slot to what it was before.
 			{
@@ -2590,6 +2590,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 				}
 			}
 		}
+		b_CanSeeBuildingValues[client] = b_CanSeeBuildingValues[weapon];
 #endif
 	}
 
@@ -2655,7 +2656,7 @@ void ApplyLastmanOrDyingOverlay(int client)
 	}
 }
 
-char SetRenderDo[MAXTF2PLAYERS][8];
+char SetRenderDo[MAXPLAYERS][8];
 void CauseFadeInAndFadeOut(int client = 0, float duration_in, float duration_hold, float duration_out, const char[] RenderAmtDo)
 {
 	int SpawnFlags = 0;
@@ -2706,26 +2707,14 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 	int downsleft;
 	downsleft = 2;
 	downsleft -= i_AmountDowned[client];
+	if(HasSpecificBuff(client, "Nightmare Terror"))
+		downsleft = 0;
 	if(!force_Clear && downsleft <= 0 && !SpecterCheckIfAutoRevive(client))
 	{
 		if(!b_GaveMarkForDeath[client])
 		{
 			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 9999999.9);
-		//	StopSound(client, SNDCHAN_WEAPON, "weapons/samurai/tf_marked_for_death_indicator.wav");
 			b_GaveMarkForDeath[client] = true;
-			/*
-			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
-			//this means i dont exist, spawn a new one!!
-			if(entity < MaxClients)
-			{
-				float flPos[3];
-				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-				flPos[2] += 95.0;
-				i_DyingParticleIndication[client][2] = EntIndexToEntRef(SDKHooks_SpawnParticleDeath(flPos, "mark_for_death", client)); //ze healing station
-			}
-				edit: This SUCKS!!!!!!
-
-			*/
 		}
 	}
 	else
@@ -2734,14 +2723,6 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 		{
 			TF2_RemoveCondition(client, TFCond_MarkedForDeathSilent);
 			b_GaveMarkForDeath[client] = false;
-			//delete me!
-			/*
-			int entity = EntRefToEntIndex(i_DyingParticleIndication[client][2]);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-
-				edit: This SUCKS!!!!!!
-			*/
 		}
 	}
 }
@@ -3493,7 +3474,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			
 			char buffer[36];
 			GetEntityClassname(weaponAm, buffer, sizeof(buffer));
-			int CurrentSlot = TF2_GetClassnameSlot(buffer);
+			int CurrentSlot = TF2_GetClassnameSlot(buffer, weaponAm);
 
 			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
 

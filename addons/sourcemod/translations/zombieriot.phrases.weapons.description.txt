@@ -323,6 +323,18 @@
 	{
 		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\nYou will now always gib."
 	}
+	"Sherrif Pap 1"
+	{
+		"en"		"Slgihtly Increased Damage, Weapon changes.\nM2 now marks upto 5 enemies near you, hitting them deals 3x damage once.\nYour revolver turns into a burst 6 shot weapon."
+	}
+	"Sherrif Pap 2"
+	{
+		"en"		"Increased Damage\nM2 has a shorter cooldown."
+	}
+	"Sherrif Pap 3"
+	{
+		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage.\nHitting marked targets with your revolver reduces R Cooldown."
+	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
@@ -1264,15 +1276,13 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nArchetype changes to ''Chain Caster''"
+		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nProjectile speed/Range affect manacost.\nArchetype changes to ''Chain Caster''"
 	}
 	
 	"Beam Wand Desc"
 	{
-		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
-		"fr"	"Laser constant qui épuise le Mana. M2 pompe plus de Mana dans l'attaque pour améliorer les dégats."
-		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
-		"chi"   "按住M1发出一个恒定的光束来清除你的敌人。M2:魔法超速。更多的法力值=更强更快的CD"
+		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD.\nProjectile speed/Range affect manacost."
+
 	}
 	"Beam Wand Pap 1"
 	{
@@ -1434,7 +1444,7 @@
 	"Builders Axe Desc"
 	{
 		"en"	"A melee axe that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
-		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200%% de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
+		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200％ de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
@@ -1499,7 +1509,7 @@
 	"Food Fridge Desc"
 	{
 		"en"	"Heals for 60 Health, scales with medic upgrades."
-		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas.
+		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
@@ -1594,11 +1604,11 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1609,7 +1619,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
+		"en"	"3x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
@@ -3131,9 +3141,7 @@
 	}
 	"Impact Lance Desc 1"
 	{
-		"en"	"Increased damage\nA Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
-		"fr"	"Une lance magique qui est manié comme une arme corps-à-corps.\nUtilise du Mana pour attaquer, cause aucun dégat si votre Mana est épuisé.\nPortée longue,\ngrandeur et cadence des attaques réduites."
-		"chi"	"魔法所造的长矛。和近战无区别。\攻击消耗蓝，稍慢的攻击速度。\n蓝耗尽时，不会造成任何伤害。\n更长的距离，更细的判定。"
+		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width\nProjectile speed/Range affect manacost."
 	}
 	"Impact Lance Desc 2"
 	{
@@ -3469,6 +3477,10 @@
 		"fr"	"Vous permet de voir l'armure de vos alliés."
 		"chi"	"看队友的护甲！"
 	}
+	"Building Health Forcer Desc"
+	{
+		"en"	"This makes you always see building HP, No matter what weapon you have."
+	}
 	"Siccerino Pap 2"
 	{
 		"en"	"Your attacks will debuff the enemy so you deal 5％ more damage with each hit you do upto a cap.\nM2 ability changes into a rapidly fast attacking melee."
@@ -3536,9 +3548,7 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes.\nGenerates metal and able to tank more damage."
-		"fr"	"Bonne résistance et regénére du métal.\nPeut construire une enclume qui permet aux coéquiper de modifier leurs armes.\nLes modifications donne des attributs aléatoires.\nVient avec des améliorations pour Constructeur."
-		"chi"	"匠工建筑师，自带建筑升级和装备。\n多一个建筑：匠工台。\n会对武器附加随机属性。\n自动回复金属，更肉。"
+		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\nAnvil can upgrade weapons.\nPrimary: Heals buildings, hurts enemeis, infinite range building pickup.\nSecondary: Generates metal."
 	}
 	"Tinker Wrench Desc"
 	{
@@ -3573,29 +3583,29 @@
 	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
-		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
-		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-30s工作台"
+		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -20s Tinker Cooldown."
+		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -20s temps de rechargement de l'enclume."
+		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-20s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"West Pap 1 Desc"
 	{
@@ -3665,7 +3675,7 @@
 	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand."
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand.\nYour secondary gets an ability selection upon its first pap."
 	}
 	"Merchant Pap -1 Desc"
 	{
@@ -4121,11 +4131,11 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals\nTwirl's Hairpints give 25 extra crystals"
+		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
 	}
 	"Fractal Kit Desc 1"
 	{
-		"en"	"More Damage! And crystal capacity."
+		"en"	"More Damage! And crystal capacity. Lower StarFall Cooldown."
 	}
 	"WPrototype Kit Desc"
 	{
@@ -4382,7 +4392,7 @@
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35%% of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35％ of its damage as Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
@@ -4391,5 +4401,33 @@
 	"Plasminator Pap 4 Desc"
 	{
 		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range, plasmic elemental damage and reduces its cooldown."
+	}
+	"Chemical Spewer Desc"
+	{
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals True damage."
+	}
+	"Chemical Spewer Pap 1"
+	{
+		"en"	"Base damage is increased, consumes less ammo."
+	}
+	"The Ritualist Desc"
+	{
+		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
+	}
+	"Necrosis Ritualist Desc"
+	{
+		"en"	"Up to 4 enemies within range take Necrosis elemental damage every second and take increased Necrosis elemental damage.\nBeing in a taunt increases Necrosis elemental damage dealt through this."
+	}
+	"Necrosis Ritualist Pap Desc"
+	{
+		"en"	"Damage increased, passive effect can now hit up to 6 enemies within range.\nAbility increases damage heavily and buffs 3 allies within range for a long duration."
+	}
+	"Impairment Ritualist Desc"
+	{
+		"en"	"Attacks now inflict Nervous Impairment in a splash radius, hitting up to 4 enemies."
+	}
+	"Impairment Ritualist Pap Desc"
+	{
+		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment."
 	}
 }

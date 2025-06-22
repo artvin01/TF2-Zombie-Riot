@@ -67,9 +67,9 @@ static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.4, 0.45, 0.5 }; //Amount to 
 int i_VampThrowType[MAXENTITIES] = { 0, ... };
 int i_VampThrowProp[MAXENTITIES] = { 0, ... };
 static float f_CleaverMultOnKill[MAXENTITIES] = { 0.0, ... };
-static int i_VampKnivesMelee[MAXTF2PLAYERS + 1] = { 0, ... };
+static int i_VampKnivesMelee[MAXPLAYERS + 1] = { 0, ... };
 
-static float f_VampNextHitSound[MAXTF2PLAYERS + 1] = { 0.0, ... };
+static float f_VampNextHitSound[MAXPLAYERS + 1] = { 0.0, ... };
 
 /*
 	WEAPON_VAMPKNIVES_1 = 29,

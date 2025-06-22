@@ -1,14 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_laz_dmg_throttle[MAXTF2PLAYERS];
-static float fl_laz_distance[MAXTF2PLAYERS];
-static int i_weapon_onuse[MAXTF2PLAYERS];
-static float fl_heat[MAXTF2PLAYERS];
-static float fl_overheat_timer[MAXTF2PLAYERS];
-static float fl_hud_timer[MAXTF2PLAYERS];
-static float fl_laser_last_fired[MAXTF2PLAYERS];
-//static float fl_deviation_cycle[MAXTF2PLAYERS];
+static float fl_laz_dmg_throttle[MAXPLAYERS];
+static float fl_laz_distance[MAXPLAYERS];
+static int i_weapon_onuse[MAXPLAYERS];
+static float fl_heat[MAXPLAYERS];
+static float fl_overheat_timer[MAXPLAYERS];
+static float fl_hud_timer[MAXPLAYERS];
+static float fl_laser_last_fired[MAXPLAYERS];
+//static float fl_deviation_cycle[MAXPLAYERS];
 
 #define LAZ_LASER_CANNON_HEATGAIN 1.0	//heat gained every time it deals damage
 #define LAZ_LASER_CANNON_OVERHEAT 75.0	//how much heat to have for it to overheat.

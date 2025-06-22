@@ -401,7 +401,7 @@ void PackaPunch_NPCDeath(int entity)
 				if(other > MaxClients)
 				{
 					if(team != TFTeam_Red)
-					Zombies_Currently_Still_Ongoing++;
+						Zombies_Currently_Still_Ongoing++;
 			
 					SetEntProp(other, Prop_Data, "m_iHealth", 5000);
 					SetEntProp(other, Prop_Data, "m_iMaxHealth", 5000);

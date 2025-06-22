@@ -80,13 +80,13 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 	}
 	int SpreadTicksMax = 24;
 
-	if(CurrentRound == 59)
+	if(CurrentRound >= 39)
 		SpreadTicksMax = 24 * 3;
 
 	if(RaidbossIgnoreBuildingsLogic(0))
 		SpreadTicksMax = 6;
 
-	//wave 60 nerf
+	//wave 40 nerf
 
 	if(++SpreadTicks > SpreadTicksMax)
 	{

@@ -496,11 +496,11 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 75.0;
 
-					if(Medival_Difficulty_Level < 0.93) //Damage is high as its more of a support
+					if(Medival_Difficulty_Level_NotMath >= 2)
 					{
 						damage = 100.0;
 					}
-					if(Medival_Difficulty_Level < 0.85) //Damage is high as its more of a support
+					if(Medival_Difficulty_Level_NotMath >= 3)
 					{
 						damage = 150.0;
 					}

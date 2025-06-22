@@ -159,8 +159,9 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	if(CvarAutoSelectWave.BoolValue)
+	if(CvarAutoSelectWave.BoolValue && !Waves_Started())
 	{
+		//Do this only once!
 		char mapname[64];
 		GetMapName(mapname, sizeof(mapname));
 		
@@ -435,7 +436,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			else
 			{
-				Store_GiveAll(client, ZR_Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
+				Store_GiveAll(client, Waves_GetRoundScale()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
 			SetAmmo(client, 1, 9999);

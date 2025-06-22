@@ -189,9 +189,9 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 	
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -346,9 +346,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			//Go repair!
 			if(!b_AlreadyReparing[npc.index])
 			{
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					b_AlreadyReparing[npc.index] = true;
 					Behavior = 2;
@@ -650,9 +648,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 				}
 
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
 					int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");

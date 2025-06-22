@@ -42,8 +42,8 @@
 #define SOUND_SKULL_IMPACT	"weapons/flare_detonator_explode_world.wav"
 #define SKULL_PARTICLE_IMPACT	"spell_skeleton_goop_green"
 
-ArrayList Skulls_ArrayStack[MAXTF2PLAYERS+1] = {null, ...};
-float Skulls_OrbitAngle[MAXTF2PLAYERS + 1] = { 0.0, ... };
+ArrayList Skulls_ArrayStack[MAXPLAYERS+1] = {null, ...};
+float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
@@ -78,7 +78,7 @@ int Skull_Weapon[MAXENTITIES + 1] = { -1, ... };
 float Skull_LaunchDMG[MAXENTITIES + 1] = { 0.0, ... };
 float SkullFloatDelay[MAXENTITIES + 1] = { 0.0, ... };
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 void Wand_Skulls_Precache()
 {
@@ -706,7 +706,7 @@ void GetAngleToPoint(int ent, float TargetLoc[3], float DummyAngles[3], const fl
 
 public int Skull_GetClosestTarget(int ent, float range)
 {
-	if (ent < MaxClients + 1 || ent > 2048)
+	if (ent <= MaxClients || ent > 2048)
 		return -1;
 		
 	int Closest = -1;
@@ -753,11 +753,11 @@ public int Skull_GetClosestTarget(int ent, float range)
 
 public void Skull_MoveToTargetPosition(int ent, int client)
 {
-	if (ent < MaxClients + 1 || ent > 2048)
-	return;
+	if (ent <= MaxClients || ent > 2048)
+		return;
 	
 	if (!IsValidEntity(ent))
-	return;
+		return;
 	
 	float DroneLoc[3], Velocity[3], Angles[3];
 	GetEntPropVector(ent, Prop_Send, "m_vecOrigin", DroneLoc);
@@ -800,8 +800,8 @@ public void Skull_MoveToTargetPosition(int ent, int client)
 
 public void Skull_ChangeSpeed(int ent, float mod, float maximum)
 {
-	if (ent < MaxClients + 1 || ent > 2048)
-	return;
+	if (ent <= MaxClients || ent > 2048)
+		return;
 	
 	if (!IsValidEntity(ent))
 	return;

@@ -85,7 +85,7 @@ static bool BulletArmor[MAXENTITIES];
 
 static float DynamicCharger[MAXENTITIES];
 static float ExtraMovement[MAXENTITIES];
-static bool Frozen_Player[MAXTF2PLAYERS];
+static bool Frozen_Player[MAXPLAYERS];
 
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];
@@ -440,16 +440,16 @@ methodmap Huscarls < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
 			}
 			
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 			
 			float amount_of_people = float(CountPlayersOnRed());

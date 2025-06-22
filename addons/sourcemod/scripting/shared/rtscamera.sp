@@ -211,38 +211,38 @@ static Cookie MouseCookie;
 static Cookie BindCookie;
 static Handle SyncHud;
 
-static bool RTSEnabled[MAXTF2PLAYERS];
-static ArrayList Selected[MAXTF2PLAYERS];
-static int FocusRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-static int CameraRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-static int FlagRef[MAXTF2PLAYERS][6];
-static int LastFOV[MAXTF2PLAYERS];
-static int LastDefaultFOV[MAXTF2PLAYERS];
-static float MinZoom[MAXTF2PLAYERS];
-static float LastMousePos[MAXTF2PLAYERS][2];
-static float RotateMousePos[MAXTF2PLAYERS][2];
-static float StartDragMousePos[MAXTF2PLAYERS][2];
-static float CameraVector[MAXTF2PLAYERS][3];
-static float RotateVector[MAXTF2PLAYERS][3];
-static float CameraDistance[MAXTF2PLAYERS];
-static float RotateDistance[MAXTF2PLAYERS];
-static float CameraMoveDrag[MAXTF2PLAYERS][3];
-static float SelectionVerticies[MAXTF2PLAYERS][4][3];
-static bool InSelectDrag[MAXTF2PLAYERS];
-static bool InMoveDrag[MAXTF2PLAYERS];
+static bool RTSEnabled[MAXPLAYERS];
+static ArrayList Selected[MAXPLAYERS];
+static int FocusRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int CameraRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int FlagRef[MAXPLAYERS][6];
+static int LastFOV[MAXPLAYERS];
+static int LastDefaultFOV[MAXPLAYERS];
+static float MinZoom[MAXPLAYERS];
+static float LastMousePos[MAXPLAYERS][2];
+static float RotateMousePos[MAXPLAYERS][2];
+static float StartDragMousePos[MAXPLAYERS][2];
+static float CameraVector[MAXPLAYERS][3];
+static float RotateVector[MAXPLAYERS][3];
+static float CameraDistance[MAXPLAYERS];
+static float RotateDistance[MAXPLAYERS];
+static float CameraMoveDrag[MAXPLAYERS][3];
+static float SelectionVerticies[MAXPLAYERS][4][3];
+static bool InSelectDrag[MAXPLAYERS];
+static bool InMoveDrag[MAXPLAYERS];
 static int BeamRef[MAXENTITIES+1][4];
-static bool NewPress[MAXTF2PLAYERS][Key_MAX];	// Input next frame
-static bool LastPress[MAXTF2PLAYERS][Key_MAX];	// Input last frame
-static bool HoldPress[MAXTF2PLAYERS][Key_MAX];	// Input being held
-static int NextMoveType[MAXTF2PLAYERS];
-static int BindingKey[MAXTF2PLAYERS] = {-1, ...};
-static int HoveringOver[MAXTF2PLAYERS];
+static bool NewPress[MAXPLAYERS][Key_MAX];	// Input next frame
+static bool LastPress[MAXPLAYERS][Key_MAX];	// Input last frame
+static bool HoldPress[MAXPLAYERS][Key_MAX];	// Input being held
+static int NextMoveType[MAXPLAYERS];
+static int BindingKey[MAXPLAYERS] = {-1, ...};
+static int HoveringOver[MAXPLAYERS];
 
-static char KeyBinds[MAXTF2PLAYERS][Key_MAX][32];
-static float AspectRatio[MAXTF2PLAYERS];
-static float MouseSensitivity[MAXTF2PLAYERS];
-static float ScrollSpeed[MAXTF2PLAYERS];
-static float ZoomSpeed[MAXTF2PLAYERS];
+static char KeyBinds[MAXPLAYERS][Key_MAX][32];
+static float AspectRatio[MAXPLAYERS];
+static float MouseSensitivity[MAXPLAYERS];
+static float ScrollSpeed[MAXPLAYERS];
+static float ZoomSpeed[MAXPLAYERS];
 
 void RTSCamera_PluginStart()
 {
@@ -262,7 +262,7 @@ void RTSCamera_PluginStart()
 
 	for(int i; i <= MAXENTITIES; i++)
 	{
-		if(i < MAXTF2PLAYERS)
+		if(i < MAXPLAYERS)
 		{
 			SetDefaultValues(i);
 			

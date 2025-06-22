@@ -1,7 +1,7 @@
-static float f_GoldenAgilityThrottle[MAXTF2PLAYERS+1];
-static float f3_GoldenAgilitySpotStepOn[MAXTF2PLAYERS+1][3];
-static float f_GoldenAgilityCooldown[MAXTF2PLAYERS+1];
-static float f_GoldenAgilityActiveFor[MAXTF2PLAYERS+1];
+static float f_GoldenAgilityThrottle[MAXPLAYERS+1];
+static float f3_GoldenAgilitySpotStepOn[MAXPLAYERS+1][3];
+static float f_GoldenAgilityCooldown[MAXPLAYERS+1];
+static float f_GoldenAgilityActiveFor[MAXPLAYERS+1];
 static char gLaser1;
 
 #define NEW_SPOT_GOLDEN_SOUND "ui/chime_rd_2base_neg.wav"
@@ -75,7 +75,7 @@ void PostThink_GoldenAgility(int client)
 
 			static char classname[36];
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+			if (TF2_GetClassnameSlot(classname, weapon) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
 			{
 				return;
 			}
@@ -124,7 +124,7 @@ void PostThink_GoldenAgility(int client)
 
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
-	if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	if (TF2_GetClassnameSlot(classname, weapon) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
 	{
 		return;
 	}

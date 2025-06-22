@@ -303,19 +303,19 @@ methodmap Sensal < CClotBody
 		bool final = StrContains(data, "final_item") != -1;
 		
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -366,13 +366,13 @@ methodmap Sensal < CClotBody
 			float value = StringToFloat(buffers[0]);
 			RaidModeScaling = value;
 
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 
 			if(value > 40.0 && value < 55.0)
@@ -387,21 +387,21 @@ methodmap Sensal < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
-			if(RaidModeScaling < 55)
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 				
-			if(ZR_Waves_GetRound()+1 > 40 && ZR_Waves_GetRound()+1 < 55)
+			if(Waves_GetRoundScale()+1 > 25 && Waves_GetRoundScale()+1 < 35)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(ZR_Waves_GetRound()+1 > 55)
+			else if(Waves_GetRoundScale()+1 > 35)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.65;
@@ -600,7 +600,7 @@ static void Internal_ClotThink(int iNPC)
 			case 9:
 			{
 				CPrintToChatAll("{blue}Castellan{default}: We will return to Victoria now.");
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
@@ -1659,7 +1659,7 @@ bool SensalTalkPostWin(Sensal npc)
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
@@ -1776,7 +1776,8 @@ bool SensalMassLaserAttack(Sensal npc)
 	if(npc.m_flAttackHappens_2)
 	{
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[MAXENTITIES];
+		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+		//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 		bool ClientTargeted[MAXENTITIES];
 		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
 		for(int i; i < sizeof(enemy_2); i++)
@@ -1841,7 +1842,7 @@ bool SensalMassLaserAttack(Sensal npc)
 				}				
 			}
 
-			int enemy[128];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			bool foundEnemy = false;
 			for(int i; i < sizeof(enemy); i++)

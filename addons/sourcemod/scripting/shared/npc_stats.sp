@@ -22,21 +22,21 @@ enum
 	NAV_MESH_WALK : Walk, do not avoid obstacles
 */
 
-int dieingstate[MAXTF2PLAYERS];
-int TeutonType[MAXTF2PLAYERS];
-bool EscapeModeForNpc;
+int dieingstate[MAXPLAYERS];
+int TeutonType[MAXPLAYERS];
 bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
+int Medival_Difficulty_Level_NotMath = 0;
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 
 #endif
-int i_KillsMade[MAXTF2PLAYERS];
-int i_Backstabs[MAXTF2PLAYERS];
-int i_Headshots[MAXTF2PLAYERS];	
+int i_KillsMade[MAXPLAYERS];
+int i_Backstabs[MAXPLAYERS];
+int i_Headshots[MAXPLAYERS];	
 
 #if !defined RTS
 int TeamFreeForAll = 50;
@@ -2371,7 +2371,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 	}
-	public void FaceTowards(float vecGoal[3], float turnrate = 250.0)
+	public void FaceTowards(float vecGoal[3], float turnrate = 250.0, bool TurnOnWalk = false)
 	{
 		//Sad!
 		//Dont use face towards, why?
@@ -2409,7 +2409,13 @@ methodmap CClotBody < CBaseCombatCharacter
 				angles.y += angleDiff;
 			}
 		*/
-		float deltaT = GetTickInterval();
+		float deltaT = 0.015;
+		//I am dumb, we accidentally made it scale with tickrate....
+		//facepalm.
+		if(TurnOnWalk)
+		{
+			deltaT = GetTickInterval();
+		}
 
 		float angles[3];
 		GetEntPropVector(this.index, Prop_Data, "m_angRotation", angles);
@@ -3343,6 +3349,7 @@ public void NPC_Base_InitGamedata()
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+//	DHook_CreateDetour(gamedata, "CBaseAnimating::GetBoneCache", Dhook_BoneAnimPrintDo, _);
 	//this isnt directly the same function, but it should act the same.
 	
 	//SDKCalls
@@ -4217,7 +4224,7 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 		float pos2[3];
 		pos2 = pos;
 		if(!npc.m_bAllowBackWalking)
-			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]));
+			npc.FaceTowards(pos2, (500.0 * npc.GetDebuffPercentage() * f_NpcTurnPenalty[npc.index]), true);
 	}
 	else
 	{
@@ -5451,6 +5458,51 @@ stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], co
 	return ref;
 }
 
+bool NpcGotStuck = false;
+stock void IsSpaceOccupiedOnlyPlayers_Cleave(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	NpcGotStuck = false;
+	TR_TraceHullFilter(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly_Cleave, entity);
+	//they got stuck, try to unstuck ONCE.
+	static float PosFiller[3];
+	static float MinsSave[3];
+	static float MaxsSave[3];
+	MinsSave = mins;
+	MaxsSave = maxs;
+	PosFiller = pos;
+//	TE_DrawBox(1, PosFiller, MinsSave, MaxsSave, 0.1, view_as<int>({255, 0, 0, 255}));
+	if(NpcGotStuck) 
+	{
+		Npc_Teleport_Safe(entity, PosFiller, MinsSave, MaxsSave);
+	}
+}
+//Should only try to collide with players.
+public bool TraceRayHitPlayersOnly_Cleave(int entity,int mask,any iExclude)
+{
+	if(!TraceRayHitPlayersOnly(entity,mask,iExclude))
+	{
+		return false;
+	}
+	NpcGotStuck = true;
+	if(entity)
+	{
+		//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
+		if(f_AntiStuckPhaseThroughFirstCheck[entity] < GetGameTime() + 1.0)
+		{
+			//if still stuck after 1 second...
+			f_AntiStuckPhaseThrough[entity] = GetGameTime() + 1.0;
+			ApplyStatusEffect(entity, entity, "Intangible", 1.0);
+			//give them 2 seconds to unstuck themselves
+		}
+		if(f_AntiStuckPhaseThroughFirstCheck[entity] < GetGameTime())
+		{
+			f_AntiStuckPhaseThroughFirstCheck[entity] = GetGameTime() + 2.0;
+		}
+	}
+
+	return false;
+}
+
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
@@ -5925,26 +5977,17 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 			}
-		
-			int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
-			if (Hit_player) //The boss will start to merge with player, STOP!
-			{
-				Npc_Teleport_Safe(iNPC, flMyPos, hullcheckmins_Player, hullcheckmaxs_Player);
+			hullcheckmins_Player[0] += 2.0;
+			hullcheckmins_Player[1] += 2.0;
 
-				//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
-				if(f_AntiStuckPhaseThroughFirstCheck[Hit_player] < GetGameTime())
-				{
-					f_AntiStuckPhaseThroughFirstCheck[Hit_player] = GetGameTime() + 2.0;
-				}
-				else if(f_AntiStuckPhaseThroughFirstCheck[Hit_player] < GetGameTime() + 1.0)
-				{
-					//if still stuck after 1 second...
-					f_AntiStuckPhaseThrough[Hit_player] = GetGameTime() + 1.0;
-					ApplyStatusEffect(Hit_player, Hit_player, "Intangible", 1.0);
-					//give them 2 seconds to unstuck themselves
-				}
-			}
-			//This is a temporary fix. find a better one for players getting stuck.
+			hullcheckmaxs_Player[0] -= 2.0;
+			hullcheckmaxs_Player[1] -= 2.0;
+			hullcheckmaxs_Player[2] -= 2.0;
+			//only if they are outright stuck inside them !!
+
+			//this unstucks all players that are inside npcs, instead of just one!
+			IsSpaceOccupiedOnlyPlayers_Cleave(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+
 		}
 	}
 #if defined ZR
@@ -8321,7 +8364,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
-	StatusEffectReset(entity);
+	StatusEffectReset(entity, true);
 #if defined ZR
 	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
 	i_SpawnProtectionEntity[entity] = -1; 
@@ -8682,8 +8725,20 @@ public MRESReturn Rocket_Particle_DHook_RocketExplodePre(int entity)
 {
 	return MRES_Supercede;	//Don't even think about it mate
 }
-
-
+/*
+public MRESReturn Dhook_BoneAnimPrintDo(int entity, DHookReturn ret)
+{
+	if(b_IsInUpdateGroundConstraintLogic)
+	{
+		static char buffer[64];
+		GetEntityClassname(entity, buffer, sizeof(buffer));
+		char model[256];
+		CBaseEntity(entity).GetModelName(model, sizeof(model));
+		PrintToServer("[RPG DEBUG] Dhook_BoneAnimPrintDo Entity: %i| Classname %s | Model Mame %s",entity, buffer, model);
+	}
+	return MRES_Ignored;
+}
+*/
 public MRESReturn Dhook_UpdateGroundConstraint_Pre(DHookParam param)
 {
 	b_IsInUpdateGroundConstraintLogic = true;
@@ -9082,7 +9137,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 		}
 		if(HasSpecificBuff(npc, "Dimensional Turbulence"))
 			Duration_Stun *= 0.25;
-		TF2_AddCondition(npc, TFCond_FreezeInput, Duration_Stun);
+		
+		TF2_StunPlayer(npc, Duration_Stun, 1.0, TF_STUNFLAGS_NORMALBONK);
 		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
 		return;
 	}
@@ -10377,7 +10433,7 @@ Handle Timer_Ingition_Settings[MAXENTITIES] = {INVALID_HANDLE, ...};
 Handle Timer_Ingition_ReApply[MAXENTITIES] = {INVALID_HANDLE, ...};
 float Reapply_BurningCorpse[MAXENTITIES];
 
-void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0)
+void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0, bool type = false)
 {
 	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
@@ -10394,11 +10450,11 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 		pack.WriteCell(EntIndexToEntRef(target));
 		pack.WriteCell(ViewmodelSetting);
 		pack.WriteCell(viewmodelClient);
-
+		pack.WriteCell(type);
 	}
 	else
 	{
-		TE_SetupParticleEffect("burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_SetupParticleEffect(type ? "halloween_burningplayer_flyingbits" : "burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToAll();
 		if(Timer_Ingition_ReApply[target] != null)
@@ -10407,9 +10463,10 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 			Timer_Ingition_ReApply[target] = null;
 		}		
 		DataPack pack;
-		Timer_Ingition_ReApply[target] = CreateDataTimer(5.0, IgniteTimerVisual_Reignite, pack);
+		Timer_Ingition_ReApply[target] = CreateDataTimer(type ? 1.5 : 5.0, IgniteTimerVisual_Reignite, pack);
 		pack.WriteCell(target);
 		pack.WriteCell(EntIndexToEntRef(target));
+		pack.WriteCell(type);
 	}
 }
 
@@ -10422,10 +10479,11 @@ public Action IgniteTimerVisual_Reignite(Handle timer, DataPack pack)
 	{
 		Timer_Ingition_ReApply[targetoriginal] = null;
 		return Plugin_Continue;
-	}	
+	}
+	bool type = pack.ReadCell();
 	ExtinguishTarget(target, true);
 	Timer_Ingition_ReApply[targetoriginal] = null;
-	IgniteTargetEffect(target);
+	IgniteTargetEffect(target, _, _, type);
 	return Plugin_Continue;
 }
 public Action IgniteTimerVisual(Handle timer, DataPack pack)
@@ -10440,6 +10498,7 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 	}	
 	int InvisMode = pack.ReadCell();
 	int ownerclient = pack.ReadCell();
+	bool type = pack.ReadCell();
 	for( int client = 1; client <= MaxClients; client++ ) 
 	{
 		if (IsValidClient(client))
@@ -10448,18 +10507,18 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 			if(Reapply_BurningCorpse[target] < GetGameTime())
 			{
 				Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
-				IngiteTargetClientside(target, client, false);
+				IngiteTargetClientside(target, client, false, type);
 			}
 			if(b_FirstPersonUsesWorldModel[client])
 			{
 				//always ignited.
 				if(InvisMode == THIRDPERSON)
 				{
-					IngiteTargetClientside(target, client, true);
+					IngiteTargetClientside(target, client, true, type);
 				}
 				else
 				{
-					IngiteTargetClientside(target, client, false);
+					IngiteTargetClientside(target, client, false, type);
 				}
 				continue;		
 			}
@@ -10471,11 +10530,11 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 					//its invis in third person
 					if(InvisMode == THIRDPERSON)
 					{
-						IngiteTargetClientside(target, client, false);
+						IngiteTargetClientside(target, client, false, type);
 					}
 					else
 					{
-						IngiteTargetClientside(target, client, true);
+						IngiteTargetClientside(target, client, true, type);
 					}
 					continue;		
 				}
@@ -10483,11 +10542,11 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 				{
 					if(InvisMode == THIRDPERSON)
 					{
-						IngiteTargetClientside(target, client, true);
+						IngiteTargetClientside(target, client, true, type);
 					}
 					else
 					{
-						IngiteTargetClientside(target, client, false);
+						IngiteTargetClientside(target, client, false, type);
 					}
 					continue;	
 				}
@@ -10499,21 +10558,21 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 				*/
 				if(InvisMode == THIRDPERSON)
 				{
-					IngiteTargetClientside(target, client, false);
+					IngiteTargetClientside(target, client, false, type);
 				}
 				else
 				{
-					IngiteTargetClientside(target, client, true);
+					IngiteTargetClientside(target, client, true, type);
 				}
 				continue;	
 			}
 			if(InvisMode == THIRDPERSON)
 			{
-				IngiteTargetClientside(target, client, true);
+				IngiteTargetClientside(target, client, true, type);
 			}
 			else
 			{
-				IngiteTargetClientside(target, client, false);
+				IngiteTargetClientside(target, client, false, type);
 			}
 		}
 	}
@@ -10522,12 +10581,12 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 
 
 
-void IngiteTargetClientside(int target, int client, bool ingite)
+void IngiteTargetClientside(int target, int client, bool ingite, bool type)
 {
 	if(ingite && !IsIn_HitDetectionCooldown(target,client, IgniteClientside))
 	{
 		Set_HitDetectionCooldown(target,client, FAR_FUTURE, IgniteClientside);
-		TE_SetupParticleEffect("burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_SetupParticleEffect(type ? "halloween_burningplayer_flyingbits" : "burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToClient(client);
 	}
@@ -10539,7 +10598,7 @@ void IngiteTargetClientside(int target, int client, bool ingite)
 		if(target > 0)
 			TE_WriteNum("entindex", target);
 		
-		TE_WriteNum("m_nHitBox", GetParticleEffectIndex("burningplayer_corpse"));
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(type ? "halloween_burningplayer_flyingbits" : "burningplayer_corpse"));
 		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 		TE_SendToClient(client);	
 	}
@@ -10685,7 +10744,7 @@ void MakeObjectIntangeable(int entity)
 }
 
 
-static int BadSpotPoints[MAXTF2PLAYERS];
+static int BadSpotPoints[MAXPLAYERS];
 stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 {
 #if defined ZR

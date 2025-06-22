@@ -1,26 +1,26 @@
 #pragma semicolon 1
 #pragma newdecls required
-static float f_AngelicShotgunHudCD[MAXTF2PLAYERS];
+static float f_AngelicShotgunHudCD[MAXPLAYERS];
 #define ANGELIC_STACKS_UNTILL_DOUBLE 2
 #define ANGELIC_ABILITY_CHARGE_0 10
 #define ANGELIC_ABILITY_CHARGE_1 32
 #define ANGELIC_ABILITY_CHARGE_2 40
 #define ANGELIC_SHOTGUN_ABILTIY_SOUND_1 "items/powerup_pickup_vampire.wav"
 #define ANGELIC_SHOTGUN_SHOOT_ABILITY "weapons/shotgun/shotgun_dbl_fire7.wav"
-static Handle h_TimerAngelicShotgun[MAXTF2PLAYERS+1] = {null, ...};
-static int i_Current_Pap[MAXTF2PLAYERS+1] = {0, ...};
-static int i_AbilityChargeAngelic[MAXTF2PLAYERS+1] = {0, ...};
-static int i_AngelicShotgunHalo[MAXTF2PLAYERS+1][24];
-static bool i_AbilityActiveAngelic[MAXTF2PLAYERS+1] = {false, ...};
+static Handle h_TimerAngelicShotgun[MAXPLAYERS+1] = {null, ...};
+static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
+static int i_AbilityChargeAngelic[MAXPLAYERS+1] = {0, ...};
+static int i_AngelicShotgunHalo[MAXPLAYERS+1][24];
+static bool i_AbilityActiveAngelic[MAXPLAYERS+1] = {false, ...};
 static float f_DoubleHitGameTime[MAXENTITIES];
 static float f_DoubleHitGameTimeTimeSince[MAXENTITIES];
 static int f_DoubleHitStack[MAXENTITIES];
-static bool b_PossesItemTraining[MAXTF2PLAYERS+1] = {false, ...};
+static bool b_PossesItemTraining[MAXPLAYERS+1] = {false, ...};
 
 #define ANGELIC_HIT_1	"npc/scanner/scanner_electric1.wav"
 
 static int b_HasHitAlreadyAngelic[MAXENTITIES];
-static bool FireCritOntoEnemy[MAXTF2PLAYERS+1];
+static bool FireCritOntoEnemy[MAXPLAYERS+1];
 
 public void AngelicShotgun_MapStart()
 {

@@ -2,13 +2,13 @@
 #pragma newdecls required
 
 #define LASERBEAM_PANZER "cable/rope.vmt"
-static Handle HealingTimer[MAXTF2PLAYERS] = {null, ...};
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
+static Handle HealingTimer[MAXPLAYERS] = {null, ...};
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
 
-static Handle WeaponTimer[MAXTF2PLAYERS] = {null, ...};
-static int WeaponRef[MAXTF2PLAYERS];
-static int WeaponCharge[MAXTF2PLAYERS];
-static int EliteLevel[MAXTF2PLAYERS];
+static Handle WeaponTimer[MAXPLAYERS] = {null, ...};
+static int WeaponRef[MAXPLAYERS];
+static int WeaponCharge[MAXPLAYERS];
+static int EliteLevel[MAXPLAYERS];
 
 void Gladiia_MapStart()
 {

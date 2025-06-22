@@ -75,23 +75,23 @@ static float Newtonian_M2_AttackDelay[3] = { 0.66, 0.66, 0.66 };				//Duration t
 static int Newtonian_M2_MaxTargets[3] = { 4, 6, 8 };							//Max zombies hit by M2 shockwave.
 
 //Client/entity-specific global variables below, don't touch these:
-static float ability_cooldown[MAXTF2PLAYERS + 1] = {0.0, ...};
+static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 static int Magnesis_ProjectileTier[2049] = { 0, ... };
-static int Magnesis_StartParticle[MAXTF2PLAYERS + 1] = { -1, ... };
-static int Magnesis_EndParticle[MAXTF2PLAYERS + 1] = { -1, ... };
+static int Magnesis_StartParticle[MAXPLAYERS + 1] = { -1, ... };
+static int Magnesis_EndParticle[MAXPLAYERS + 1] = { -1, ... };
 static int Magnesis_Tier[2049] = { 0, ... };
-static int Magnesis_GrabTarget[MAXTF2PLAYERS + 1] = { false, ... };
+static int Magnesis_GrabTarget[MAXPLAYERS + 1] = { false, ... };
 static bool Magnesis_ProjectileIsNewtonian[2049] = { false, ... };
 static bool Magnesis_Grabbed[2049] = { false, ... };
 static bool Newtonian_Airborne[2049] = { false, ... };
-static float Magnesis_CooldownToApply[MAXTF2PLAYERS + 1] = { 0.0, ... };
+static float Magnesis_CooldownToApply[MAXPLAYERS + 1] = { 0.0, ... };
 static float Magnesis_DamageTakenWhileGrabbed[2049] = { 0.0, ... };
 static float Magnesis_DroppedAt[2049] = { 0.0, ... };
 static float Magnesis_GrabbedAt[2049] = { 0.0, ... };
-static float Magnesis_NextDrainTick[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static float Magnesis_GrabCost_Bucket[MAXTF2PLAYERS + 1] = { 0.0, ... };
+static float Magnesis_NextDrainTick[MAXPLAYERS + 1] = { 0.0, ... };
+static float Magnesis_GrabCost_Bucket[MAXPLAYERS + 1] = { 0.0, ... };
 
-static int Magnesis_GrabWeapon[MAXTF2PLAYERS + 1] = { -1, ... };
+static int Magnesis_GrabWeapon[MAXPLAYERS + 1] = { -1, ... };
 
 public void Magnesis_ResetAll()
 {
@@ -200,8 +200,8 @@ public void Magnesis_OnNPCDamaged(int victim, float damage)
 	Magnesis_DamageTakenWhileGrabbed[victim] += damage;
 }
 
-Handle Timer_Magnesis[MAXTF2PLAYERS + 1] = { INVALID_HANDLE, ... };
-static float f_NextMagnesisHUD[MAXTF2PLAYERS + 1] = { 0.0, ... };
+Handle Timer_Magnesis[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
+static float f_NextMagnesisHUD[MAXPLAYERS + 1] = { 0.0, ... };
 
 public void Enable_Magnesis(int client, int weapon)
 {
