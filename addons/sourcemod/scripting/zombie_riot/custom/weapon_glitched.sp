@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float glitchBaseDMG[MAXTF2PLAYERS] = {1.0, ...};
-static float glitchBaseFireRate[MAXTF2PLAYERS] = {1.0, ...};
-static float glitchBaseClip[MAXTF2PLAYERS] = {1.0, ...};
-static float glitchBaseSpread[MAXTF2PLAYERS] = {1.0, ...};
-static float glitchBaseReloadRate[MAXTF2PLAYERS] = {1.0, ...};
+static float glitchBaseDMG[MAXPLAYERS] = {1.0, ...};
+static float glitchBaseFireRate[MAXPLAYERS] = {1.0, ...};
+static float glitchBaseClip[MAXPLAYERS] = {1.0, ...};
+static float glitchBaseSpread[MAXPLAYERS] = {1.0, ...};
+static float glitchBaseReloadRate[MAXPLAYERS] = {1.0, ...};
 
 public void OnPluginStart_Glitched_Weapon() 
 {

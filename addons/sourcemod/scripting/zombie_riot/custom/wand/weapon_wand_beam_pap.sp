@@ -13,18 +13,18 @@
 	Particle Cannon
 */
 
-static int i_cannon_charge[MAXTF2PLAYERS];
-static int i_original_weapon_ID[MAXTF2PLAYERS];
-static float f_attack_timer[MAXTF2PLAYERS];
-static int i_weapon_pap_tier[MAXTF2PLAYERS];
-static int i_mana_cost_base[MAXTF2PLAYERS];
+static int i_cannon_charge[MAXPLAYERS];
+static int i_original_weapon_ID[MAXPLAYERS];
+static float f_attack_timer[MAXPLAYERS];
+static int i_weapon_pap_tier[MAXPLAYERS];
+static int i_mana_cost_base[MAXPLAYERS];
 
 
-static bool bl_particle_type[MAXTF2PLAYERS];
-static bool bl_alternate[MAXTF2PLAYERS];
-static bool bl_overdrive_beam[MAXTF2PLAYERS];
-static bool bl_orbtial_cannon[MAXTF2PLAYERS];
-static bool bl_sound_active[MAXTF2PLAYERS];
+static bool bl_particle_type[MAXPLAYERS];
+static bool bl_alternate[MAXPLAYERS];
+static bool bl_overdrive_beam[MAXPLAYERS];
+static bool bl_orbtial_cannon[MAXPLAYERS];
+static bool bl_sound_active[MAXPLAYERS];
 
 #define BEAM_WAND_BEAM_SOUND "npc/combine_gunship/dropship_engine_distant_loop1.wav"	//"weapons/physcannon/energy_sing_loop4.wav"
 #define BEAM_WAND_OVERDRIVE_CHARGEUP_SOUND	"npc/attack_helicopter/aheli_charge_up.wav"
@@ -52,7 +52,7 @@ static float f_beam_delay[3] = { 0.0, 0.25, 0.1 };						//delay in seconds per e
 static float fl_beam_overdrive_dmg_multi[3] = { 0.0, 1.2, 1.3};		//by how much the damage is multiplied during overdrive. beware this thing if given the chance CAN and WILL do more damage in its duration than the orbital strike
 static float fl_beam_overdrive_cost[3] = { 0.0, 4000.0, 3000.0};	//how much mana has to be consumed WHILE dealing damage to activate the ability. this can be triggered by multiple npc's at the same time. aka shooting 1 npc slow gain, shooting 10 npc, fast gain
 static float fl_beam_range[3] = { 0.0, 1500.0, 1800.0 };			//range of the beam wand
-static float fl_beam_overdrive_damage[MAXTF2PLAYERS];
+static float fl_beam_overdrive_damage[MAXPLAYERS];
 
 //cannon.
 
@@ -66,18 +66,18 @@ static float fl_beam_overdrive_damage[MAXTF2PLAYERS];
 #define BEAM_WAND_CANNON_ABILITY_RANGE	125.0	//Range of the explosion.
 
 
-static float fl_hud_delay[MAXTF2PLAYERS];
-static float fl_effect_throttle[MAXTF2PLAYERS];
-static float fl_laser_edge_vec[MAXTF2PLAYERS][BEAM_WAND_BEAM_OVERDRIVE_COUNT+3][3];
-static float fl_last_known_vec[MAXTF2PLAYERS][3];
-static float fl_trace_delay[MAXTF2PLAYERS];
-static float fl_chargup_duration[MAXTF2PLAYERS];
-static float fl_mana_consumed_recent[MAXTF2PLAYERS];
-static float fl_beam_overdrive_charge[MAXTF2PLAYERS];
-static float fl_ability_duration[MAXTF2PLAYERS];
-static float fl_angle[MAXTF2PLAYERS];
-static float fl_oribtal_cannon_vec[MAXTF2PLAYERS][3][3];
-static float fl_mana_timeout[MAXTF2PLAYERS];
+static float fl_hud_delay[MAXPLAYERS];
+static float fl_effect_throttle[MAXPLAYERS];
+static float fl_laser_edge_vec[MAXPLAYERS][BEAM_WAND_BEAM_OVERDRIVE_COUNT+3][3];
+static float fl_last_known_vec[MAXPLAYERS][3];
+static float fl_trace_delay[MAXPLAYERS];
+static float fl_chargup_duration[MAXPLAYERS];
+static float fl_mana_consumed_recent[MAXPLAYERS];
+static float fl_beam_overdrive_charge[MAXPLAYERS];
+static float fl_ability_duration[MAXPLAYERS];
+static float fl_angle[MAXPLAYERS];
+static float fl_oribtal_cannon_vec[MAXPLAYERS][3][3];
+static float fl_mana_timeout[MAXPLAYERS];
 
 
 static int BeamWand_Laser;

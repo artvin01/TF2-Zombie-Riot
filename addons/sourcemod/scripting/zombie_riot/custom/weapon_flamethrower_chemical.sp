@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float f_FlameerDelay[MAXTF2PLAYERS];
-static float LastDamageCalc[MAXTF2PLAYERS];
+static float f_FlameerDelay[MAXPLAYERS];
+static float LastDamageCalc[MAXPLAYERS];
 
 void ChemicalThrower_NPCTakeDamage(int attacker, int victim, float damage)
 {

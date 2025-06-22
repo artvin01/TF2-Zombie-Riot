@@ -1,11 +1,11 @@
 #define FLAMETAIL_ABILITY	"ui/killsound_electro.wav"
 
-static Handle WeaponTimer[MAXTF2PLAYERS];
-static int WeaponRef[MAXTF2PLAYERS] = {-1, ...};
-static int WeaponLevel[MAXTF2PLAYERS];
-static bool DodgeNext[MAXTF2PLAYERS];
-static float DodgeFor[MAXTF2PLAYERS];
-static bool DoubleHit[MAXTF2PLAYERS];
+static Handle WeaponTimer[MAXPLAYERS];
+static int WeaponRef[MAXPLAYERS] = {-1, ...};
+static int WeaponLevel[MAXPLAYERS];
+static bool DodgeNext[MAXPLAYERS];
+static float DodgeFor[MAXPLAYERS];
+static bool DoubleHit[MAXPLAYERS];
 static bool KaziBuffed;
 
 void Flametail_RoundStart()

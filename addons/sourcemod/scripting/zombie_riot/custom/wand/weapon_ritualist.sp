@@ -8,9 +8,9 @@ enum
 	Ritualist_Nervous
 }
 
-static int WeaponType[MAXTF2PLAYERS];
-static int WeaponRef[MAXTF2PLAYERS] = {-1, ...};
-static Handle WeaponTimer[MAXTF2PLAYERS];
+static int WeaponType[MAXPLAYERS];
+static int WeaponRef[MAXPLAYERS] = {-1, ...};
+static Handle WeaponTimer[MAXPLAYERS];
 
 void Ritualist_Enable(int client, int weapon)
 {

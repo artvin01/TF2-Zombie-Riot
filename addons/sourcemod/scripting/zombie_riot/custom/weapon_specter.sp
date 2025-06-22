@@ -15,14 +15,14 @@
 #define SPECTER_THREE	(1 << 0)
 #define SPECTER_REVIVE	(1 << 1)
 
-static float SpecterExpireIn[MAXTF2PLAYERS];
-static int SpecterCharge[MAXTF2PLAYERS];
-static float SpecterSurviveFor[MAXTF2PLAYERS];
-Handle h_TimerSpecterAlterManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_SpecterAlterhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_SpecterDeadDamage[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_SpecterDyingTime[MAXTF2PLAYERS+1]={0.0, ...};
-static int i_SpecterExtraHitsNeeded[MAXTF2PLAYERS+1]={0, ...};
+static float SpecterExpireIn[MAXPLAYERS];
+static int SpecterCharge[MAXPLAYERS];
+static float SpecterSurviveFor[MAXPLAYERS];
+Handle h_TimerSpecterAlterManagement[MAXPLAYERS+1] = {null, ...};
+static float f_SpecterAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
+static float f_SpecterDeadDamage[MAXPLAYERS+1]={0.0, ...};
+static float f_SpecterDyingTime[MAXPLAYERS+1]={0.0, ...};
+static int i_SpecterExtraHitsNeeded[MAXPLAYERS+1]={0, ...};
 
 
 int SpecterMaxCharge(int client)

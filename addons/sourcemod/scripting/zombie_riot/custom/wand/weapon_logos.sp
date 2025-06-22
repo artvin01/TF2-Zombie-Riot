@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle PerishTimer[MAXTF2PLAYERS];
-static bool PerishReady[MAXTF2PLAYERS];
+static Handle PerishTimer[MAXPLAYERS];
+static bool PerishReady[MAXPLAYERS];
 
 void Logos_MapStart()
 {

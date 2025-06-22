@@ -2,25 +2,25 @@
 #pragma newdecls required
 
 
-static Handle h_TimerManagement[MAXTF2PLAYERS] = {null, ...};
-static float fl_hud_timer[MAXTF2PLAYERS];
-static bool b_cannon_animation_active[MAXTF2PLAYERS];
-static float fl_animation_cooldown[MAXTF2PLAYERS];
+static Handle h_TimerManagement[MAXPLAYERS] = {null, ...};
+static float fl_hud_timer[MAXPLAYERS];
+static bool b_cannon_animation_active[MAXPLAYERS];
+static float fl_animation_cooldown[MAXPLAYERS];
 
-static bool b_Thirdperson_Before[MAXTF2PLAYERS];
-static int i_NPC_ID[MAXTF2PLAYERS];
-static float fl_magia_angle[MAXTF2PLAYERS];
-static float fl_fractal_laser_dist[MAXTF2PLAYERS];
-static float fl_fractal_laser_trace_throttle[MAXTF2PLAYERS];
-static float fl_fractal_turn_throttle[MAXTF2PLAYERS];
-static float fl_fractal_dmg_throttle[MAXTF2PLAYERS];
-static bool b_overdrive_active[MAXTF2PLAYERS];
-static float fl_main_laser_distance[MAXTF2PLAYERS];
-static int i_cosmetic_effect[MAXTF2PLAYERS];
+static bool b_Thirdperson_Before[MAXPLAYERS];
+static int i_NPC_ID[MAXPLAYERS];
+static float fl_magia_angle[MAXPLAYERS];
+static float fl_fractal_laser_dist[MAXPLAYERS];
+static float fl_fractal_laser_trace_throttle[MAXPLAYERS];
+static float fl_fractal_turn_throttle[MAXPLAYERS];
+static float fl_fractal_dmg_throttle[MAXPLAYERS];
+static bool b_overdrive_active[MAXPLAYERS];
+static float fl_main_laser_distance[MAXPLAYERS];
+static int i_cosmetic_effect[MAXPLAYERS];
 
 static int i_WeaponGotLastmanBuff[MAXENTITIES];
 
-static float f_AniSoundSpam[MAXTF2PLAYERS];
+static float f_AniSoundSpam[MAXPLAYERS];
 #define FRACTAL_KIT_SHIELDSOUND1 "weapons/rescue_ranger_charge_01.wav"
 #define FRACTAL_KIT_SHIELDSOUND2 "weapons/rescue_ranger_charge_02.wav"
 
@@ -32,9 +32,9 @@ static float f_AniSoundSpam[MAXTF2PLAYERS];
 #define FRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
 #define FRACTAL_KIT_HARVESTER_CRYSTALGAIN 0.15
 #define FRACTAL_KIT_STARFALL_FALLOFF 0.7	//how much to reduce dmg per bounce/jump
-static float fl_max_crystal_amt[MAXTF2PLAYERS];
-static float fl_current_crystal_amt[MAXTF2PLAYERS];
-static float fl_starfall_CD[MAXTF2PLAYERS];
+static float fl_max_crystal_amt[MAXPLAYERS];
+static float fl_current_crystal_amt[MAXPLAYERS];
+static float fl_starfall_CD[MAXPLAYERS];
 /*
 	//the anim npc has the medic backpack, this annoys me greatly
 */
@@ -621,14 +621,14 @@ static int Slot(int weapon)
 
 #define FRACTAL_FANTASIA_AMT 4
 
-static int i_fantasia_laser_ref[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT];
-static int i_fantasia_particle[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT];
+static int i_fantasia_laser_ref[MAXPLAYERS][FRACTAL_FANTASIA_AMT];
+static int i_fantasia_particle[MAXPLAYERS][FRACTAL_FANTASIA_AMT];
 
-static float fl_fantasia_angles[MAXTF2PLAYERS][FRACTAL_FANTASIA_AMT][3];
+static float fl_fantasia_angles[MAXPLAYERS][FRACTAL_FANTASIA_AMT][3];
 
-static float fl_fantasia_origin[MAXTF2PLAYERS][3];
-static float fl_fantasia_throttle[MAXTF2PLAYERS];
-static float fl_fantasia_duration[MAXTF2PLAYERS];
+static float fl_fantasia_origin[MAXPLAYERS][3];
+static float fl_fantasia_throttle[MAXPLAYERS];
+static float fl_fantasia_duration[MAXPLAYERS];
 static float fl_fantasia_distance = 750.0;
 static float fl_fantasia_lens = 3.0;	//the small the number, the wider, the larger the number, the narrower.
 static float fl_fantasia_duration_base = 1.7;	
@@ -654,10 +654,10 @@ static void Delete_Fantasia(int client)
 		i_fantasia_laser_ref[client][i] = INVALID_ENT_REFERENCE;
 	}
 }
-static int i_fantasia_hitcount[MAXTF2PLAYERS];
-static float fl_fantasia_targetshit[MAXTF2PLAYERS];
-static float fl_fantasia_damage[MAXTF2PLAYERS];
-static float fl_fantasia_true_duration[MAXTF2PLAYERS];
+static int i_fantasia_hitcount[MAXPLAYERS];
+static float fl_fantasia_targetshit[MAXPLAYERS];
+static float fl_fantasia_damage[MAXPLAYERS];
+static float fl_fantasia_true_duration[MAXPLAYERS];
 
 public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 {
@@ -956,7 +956,7 @@ public void Kit_Fractal_OverDrive(int client, int weapon, bool &result, int slot
 	b_overdrive_active[client] = true;
 }
 
-static int i_targeted_ID[MAXTF2PLAYERS][FRACTAL_KIT_STARFALL_JUMP_AMT];
+static int i_targeted_ID[MAXPLAYERS][FRACTAL_KIT_STARFALL_JUMP_AMT];
 public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 {
 	float GameTime = GetGameTime();
@@ -1155,7 +1155,7 @@ enum struct Harvester_Enum
 
 	float Lockout;
 }
-static Harvester_Enum struct_Harvester_Data[MAXTF2PLAYERS];
+static Harvester_Enum struct_Harvester_Data[MAXPLAYERS];
 public void Kit_Fractal_Mana_Harvester(int client, int weapon, bool &result, int slot)	//warp_harvester
 {
 	if(struct_Harvester_Data[client].Lockout > GetGameTime() + 30.0)
@@ -1741,7 +1741,7 @@ void Fractal_Kit_MapStart()
 	Zero(fl_current_crystal_amt);
 	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
 	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
-	for(int i=0 ; i < MAXTF2PLAYERS ; i++)
+	for(int i=0 ; i < MAXPLAYERS ; i++)
 	{
 		struct_Harvester_Data[i].Lockout = 0.0;
 	}
@@ -1755,7 +1755,7 @@ void Kit_Fractal_ResetRound()
 	Zero(fl_animation_cooldown);
 	Zero(fl_current_crystal_amt);
 
-	for(int i=0 ; i < MAXTF2PLAYERS ; i++)
+	for(int i=0 ; i < MAXPLAYERS ; i++)
 	{
 		struct_Harvester_Data[i].Lockout = 0.0;
 	}

@@ -123,7 +123,7 @@ static char SkyNameRestore[64];
 static StringMap g_AllocPooledStringCache;
 
 static int Gave_Ammo_Supply;
-static int VotedFor[MAXTF2PLAYERS];
+static int VotedFor[MAXPLAYERS];
 static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
@@ -1911,6 +1911,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				
 				for(; RelayCurrentRound < ScalingDoWavesDone ; RelayCurrentRound++)
 				{
+					//old logic
 					FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%d", RelayCurrentRound + 1);
 					ExcuteRelay(ExecuteRelayThings);
 				}

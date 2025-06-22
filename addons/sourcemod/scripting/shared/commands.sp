@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #if defined ZR
-static bool BlockNext[MAXTF2PLAYERS];
+static bool BlockNext[MAXPLAYERS];
 #endif
 
 void Commands_PluginStart()

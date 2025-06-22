@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
-static Handle h_TimerChainSawWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_ChainSawhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_ChainsawLoopSound[MAXTF2PLAYERS+1]={0.0, ...};
-static bool f_ChainsawPlaySound[MAXTF2PLAYERS+1];
-float f_AttackDelayChainsaw[MAXTF2PLAYERS];	
+static Handle h_TimerChainSawWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static float f_ChainSawhuddelay[MAXPLAYERS+1]={0.0, ...};
+static float f_ChainsawLoopSound[MAXPLAYERS+1]={0.0, ...};
+static bool f_ChainsawPlaySound[MAXPLAYERS+1];
+float f_AttackDelayChainsaw[MAXPLAYERS];	
 
 static const char g_MeleeAttack[][] = {
 	"npc/roller/blade_out.wav",

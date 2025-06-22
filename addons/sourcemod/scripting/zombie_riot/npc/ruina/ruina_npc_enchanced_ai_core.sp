@@ -38,7 +38,7 @@ static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 
 
-static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
+static float fl_mana_sickness_timeout[MAXPLAYERS];
 
 float fl_ruina_in_combat_timer[MAXENTITIES];
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];

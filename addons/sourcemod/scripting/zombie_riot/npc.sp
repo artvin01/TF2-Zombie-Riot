@@ -12,7 +12,7 @@
 #define RAIDITEM_INDEX_WIN_COND 9999
 
 static float f_FactionCreditGain;
-static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
+static float f_FactionCreditGainReduction[MAXPLAYERS];
 
 static ArrayList NPCList;
 

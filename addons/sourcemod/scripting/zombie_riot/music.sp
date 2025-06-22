@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int MusicTypeActive[MAXTF2PLAYERS];
+static int MusicTypeActive[MAXPLAYERS];
 
 enum struct InterMusicEnum
 {
@@ -256,14 +256,14 @@ enum struct MusicEnum
 	}
 }
 
-static int Music_Timer[MAXTF2PLAYERS];
-static int Music_Timer_Update[MAXTF2PLAYERS];
-static float Give_Cond_Timer[MAXTF2PLAYERS];
+static int Music_Timer[MAXPLAYERS];
+static int Music_Timer_Update[MAXPLAYERS];
+static float Give_Cond_Timer[MAXPLAYERS];
 static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
-static int MusicMapRemove[MAXTF2PLAYERS];
-static float DelayStopSoundAll[MAXTF2PLAYERS];
+static int MusicMapRemove[MAXPLAYERS];
+static float DelayStopSoundAll[MAXPLAYERS];
 
 #define RANGE_FIRST_MUSIC 2250000.0
 #define RANGE_SECOND_MUSIC 422500.0
@@ -495,7 +495,7 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 		return XenoMapExtra;
 	else
 	{
-		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Goggles")))
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Waldch")))
 		{
 			return true;
 		}

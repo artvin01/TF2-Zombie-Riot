@@ -2,11 +2,11 @@
 #pragma newdecls required
 
 static int SSS_overheat[MAXENTITIES]={0, ...};
-static float starshooter_hud_delay[MAXTF2PLAYERS];
-static float StarShooterCoolDelay[MAXTF2PLAYERS];
-static int IsAbilityActive[MAXTF2PLAYERS];
+static float starshooter_hud_delay[MAXPLAYERS];
+static float StarShooterCoolDelay[MAXPLAYERS];
+static int IsAbilityActive[MAXPLAYERS];
 
-Handle Timer_Starshooter_Management[MAXTF2PLAYERS+1] = {null, ...};
+Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {null, ...};
 
 #define COLLISION_DETECTION_MODEL	"models/props_lab/monitor01a.mdl"
 #define SOUND_WAND_SHOT_STAR 	"weapons/gauss/fire1.wav"

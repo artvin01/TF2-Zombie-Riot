@@ -1,18 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
-static Handle h_TimerCastleBreakerWeaponManagement[MAXTF2PLAYERS] = {null, ...};
-static bool b_AbilityActivated[MAXTF2PLAYERS];
-static bool b_AbilityDone[MAXTF2PLAYERS];
-static bool Change[MAXTF2PLAYERS];
-static int i_VictoriaParticle[MAXTF2PLAYERS];
-static int CastleBreaker_WeaponPap[MAXTF2PLAYERS];
-static float CastleBreaker_HUDDelay[MAXTF2PLAYERS];
+static Handle h_TimerCastleBreakerWeaponManagement[MAXPLAYERS] = {null, ...};
+static bool b_AbilityActivated[MAXPLAYERS];
+static bool b_AbilityDone[MAXPLAYERS];
+static bool Change[MAXPLAYERS];
+static int i_VictoriaParticle[MAXPLAYERS];
+static int CastleBreaker_WeaponPap[MAXPLAYERS];
+static float CastleBreaker_HUDDelay[MAXPLAYERS];
 
-static int CastleBreaker_Cylinder[MAXTF2PLAYERS];
-static float CastleBreaker_SoundsDelay[MAXTF2PLAYERS];
-static int CashGainLimitWavePer_CastleBreaker[MAXTF2PLAYERS];
-static float CastleBreaker_DoubleTapR[MAXTF2PLAYERS];
-static bool CastleBreaker_ModeLock[MAXTF2PLAYERS];
+static int CastleBreaker_Cylinder[MAXPLAYERS];
+static float CastleBreaker_SoundsDelay[MAXPLAYERS];
+static int CashGainLimitWavePer_CastleBreaker[MAXPLAYERS];
+static float CastleBreaker_DoubleTapR[MAXPLAYERS];
+static bool CastleBreaker_ModeLock[MAXPLAYERS];
 
 #define MAX_CASH_PER_WAVE_CASTLEBREAKER 500
 

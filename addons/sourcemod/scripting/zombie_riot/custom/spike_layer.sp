@@ -57,14 +57,14 @@ public bool Spike_ShouldCollide(int client, int collisiongroup, int contentsmask
 #define MAXSPIKESALLOWED 60
 
 static int Spike_Health[MAXENTITIES]={0, ...};
-static int Spikes_Alive[MAXTF2PLAYERS+1]={0, ...};
-static int Spikes_AliveCap[MAXTF2PLAYERS+1]={30, ...};
+static int Spikes_Alive[MAXPLAYERS+1]={0, ...};
+static int Spikes_AliveCap[MAXPLAYERS+1]={30, ...};
 static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static int Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
-Handle h_TimerSpikeLayerManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
-static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
+Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {null, ...};
+static float f_SpikeLayerHudDelay[MAXPLAYERS];
+static float f_DeleteAllSpikesDelay[MAXPLAYERS];
 
 
 bool IsEntitySpike(int entity)

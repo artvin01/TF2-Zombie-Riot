@@ -3,10 +3,10 @@
 
 // this should vary from npc to npc as some are in a really small area.
 
-static float DamageDealt[MAXTF2PLAYERS];
-static float DamageTime[MAXTF2PLAYERS];
-static float DamageExpire[MAXTF2PLAYERS];
-static bool DamageUpdate[MAXTF2PLAYERS];
+static float DamageDealt[MAXPLAYERS];
+static float DamageTime[MAXPLAYERS];
+static float DamageExpire[MAXPLAYERS];
+static bool DamageUpdate[MAXPLAYERS];
 
 static const char g_IdleSound[][] = {
 	"npc/combine_soldier/vo/alert1.wav",

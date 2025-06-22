@@ -54,7 +54,7 @@ enum struct OwnedItem
 
 static ArrayList GiftItems;
 static ArrayList OwnedItems;
-static int CategoryPage[MAXTF2PLAYERS];
+static int CategoryPage[MAXPLAYERS];
 
 static int g_BeamIndex = -1;
 static int i_RarityType[MAXENTITIES];
@@ -167,7 +167,7 @@ public Action Items_GiveCmd(int client, int args)
 		GetCmdArg(1, pattern, sizeof(pattern));
 
 		int length;
-		int targets[MAXTF2PLAYERS];
+		int targets[MAXPLAYERS];
 		bool targetNounIsMultiLanguage;
 		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
 		{
@@ -206,7 +206,7 @@ public Action Items_GiveAllCmd(int client, int args)
 		GetCmdArg(1, pattern, sizeof(pattern));
 
 		int length;
-		int targets[MAXTF2PLAYERS];
+		int targets[MAXPLAYERS];
 		bool targetNounIsMultiLanguage;
 		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
 		{
@@ -259,7 +259,7 @@ public Action Items_RemoveAllCmd(int client, int args)
 		GetCmdArg(1, pattern, sizeof(pattern));
 
 		int length;
-		int targets[MAXTF2PLAYERS];
+		int targets[MAXPLAYERS];
 		bool targetNounIsMultiLanguage;
 		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
 		{

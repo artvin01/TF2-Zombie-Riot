@@ -64,8 +64,8 @@ static const char Categories[][] =
 };
 #define MAXBUFFSEXPLAIN 500
 //thres never gonna be more then 500 lol
-bool DisplayBuffHintToClient[MAXTF2PLAYERS][MAXBUFFSEXPLAIN];
-float DisplayChatBuffCD[MAXTF2PLAYERS];
+bool DisplayBuffHintToClient[MAXPLAYERS][MAXBUFFSEXPLAIN];
+float DisplayChatBuffCD[MAXPLAYERS];
 
 static ArrayList E_AL_StatusEffects[MAXENTITIES];
 
@@ -200,7 +200,7 @@ void InitStatusEffects()
 #endif
 }
 
-static int CategoryPage[MAXTF2PLAYERS];
+static int CategoryPage[MAXPLAYERS];
 void Items_StatusEffectListMenu(int client, int page = -1, bool inPage = false)
 {
 	Menu menu = new Menu(Items_StatusEffectListMenuH);

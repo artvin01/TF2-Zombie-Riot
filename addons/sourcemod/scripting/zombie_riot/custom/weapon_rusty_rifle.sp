@@ -22,10 +22,10 @@ static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active 
 static float Rusty_RaidMult = 1.4;
 
 //Client/entity-specific global variables below, don't touch these:
-static bool BigShot_Active[MAXTF2PLAYERS + 1] = { false, ... };
+static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };
 static bool BigShot_Hit[2049] = { false, ... };
-static int BigShot_Tier[MAXTF2PLAYERS + 1] = { false, ... };
-static float ability_cooldown[MAXTF2PLAYERS + 1] = {0.0, ...};
+static int BigShot_Tier[MAXPLAYERS + 1] = { false, ... };
+static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 
 public void Rusty_Rifle_ResetAll()
 {
@@ -53,8 +53,8 @@ void Rusty_Rifle_Precache()
 	PrecacheSound(SND_RUSTY_BRAINBLAST);
 }
 
-Handle Timer_Rusty[MAXTF2PLAYERS + 1] = { INVALID_HANDLE, ... };
-static float f_NextRustyHUD[MAXTF2PLAYERS + 1] = { 0.0, ... };
+Handle Timer_Rusty[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
+static float f_NextRustyHUD[MAXPLAYERS + 1] = { 0.0, ... };
 
 public float Rusty_OnNPCDamaged(int victim, int attacker, float damage)
 {

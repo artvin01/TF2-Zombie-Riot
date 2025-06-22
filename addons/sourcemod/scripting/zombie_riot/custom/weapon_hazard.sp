@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float f_WeaponDelayGiveRandom[MAXTF2PLAYERS+1]={0.0, ...};
+static float f_WeaponDelayGiveRandom[MAXPLAYERS+1]={0.0, ...};
 static int LessRandomDamage = 1;
 static int Luck = 0;
 

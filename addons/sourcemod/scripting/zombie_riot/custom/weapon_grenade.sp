@@ -1,14 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int weapon_id[MAXTF2PLAYERS+1]={8, ...};
+static int weapon_id[MAXPLAYERS+1]={8, ...};
 static const float nullVec[] = {0.0,0.0,0.0};
-static Handle Give_bomb_back[MAXTF2PLAYERS+1];
-static bool Handle_on[MAXTF2PLAYERS+1]={false, ...};
+static Handle Give_bomb_back[MAXPLAYERS+1];
+static bool Handle_on[MAXPLAYERS+1]={false, ...};
 static int g_ProjectileModel;
 static int g_ProjectileModelPipe;
-Handle TimerHudGrenade[MAXTF2PLAYERS+1] = {null, ...};
-static float f_GrenadeHudCD[MAXTF2PLAYERS+1];
+Handle TimerHudGrenade[MAXPLAYERS+1] = {null, ...};
+static float f_GrenadeHudCD[MAXPLAYERS+1];
 static float OriginalSize[MAXENTITIES];
 
 

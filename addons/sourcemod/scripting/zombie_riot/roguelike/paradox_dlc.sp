@@ -10,9 +10,9 @@ static bool LongDebuff;
 static bool ShortStun;
 static bool LongStun;
 static Handle TulipTimer;
-static float CurrentTulipDamage[MAXTF2PLAYERS];
+static float CurrentTulipDamage[MAXPLAYERS];
 static Handle CastleTimer;
-static float CurrentCastleHealth[MAXTF2PLAYERS];
+static float CurrentCastleHealth[MAXPLAYERS];
 
 void Rogue_ParadoxDLC_Flawless(int chaos)
 {

@@ -286,7 +286,7 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 			}
 			int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
 			if(b_thisNpcIsABoss[PrimaryThreatIndex])
-				MaxHealth *= 0.01;
+				MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
 
 			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 40), 1.5);
 

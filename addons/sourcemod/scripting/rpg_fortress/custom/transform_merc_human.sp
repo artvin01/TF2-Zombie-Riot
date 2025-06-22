@@ -1,8 +1,8 @@
-static Handle Timer_Expidonsan_Transform[MAXTF2PLAYERS+1] = {null, ...};
-static int i_TransformInitLevel[MAXTF2PLAYERS+1];
-static int iref_Halo[MAXTF2PLAYERS+1][2];
-static bool Expidonsa_InRageMode[MAXTF2PLAYERS+1];
-static float f_HumanRevivalLogic[MAXTF2PLAYERS+1];
+static Handle Timer_Expidonsan_Transform[MAXPLAYERS+1] = {null, ...};
+static int i_TransformInitLevel[MAXPLAYERS+1];
+static int iref_Halo[MAXPLAYERS+1][2];
+static bool Expidonsa_InRageMode[MAXPLAYERS+1];
+static float f_HumanRevivalLogic[MAXPLAYERS+1];
 
 void Transform_MercHuman_MapStart()
 {

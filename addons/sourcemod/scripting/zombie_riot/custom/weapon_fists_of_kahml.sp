@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int how_many_times_fisted[MAXTF2PLAYERS];
-static float f_DurationOfProjectileAttack[MAXTF2PLAYERS];
+static int how_many_times_fisted[MAXPLAYERS];
+static float f_DurationOfProjectileAttack[MAXPLAYERS];
 
 #define SOUND_AUTOAIM_IMPACT_FLESH_1 		"physics/flesh/flesh_impact_bullet1.wav"
 #define SOUND_AUTOAIM_IMPACT_FLESH_2 		"physics/flesh/flesh_impact_bullet2.wav"

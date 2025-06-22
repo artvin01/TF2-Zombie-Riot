@@ -542,7 +542,7 @@ int b_OnDeathExtraLogicNpc[MAXENTITIES];
 #define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
 #define	ZRNPC_DEATH_NOGIB		( 1<<1 )	// Do not give health on kill!
 
-float f_MutePlayerTalkShutUp[MAXTF2PLAYERS];
+float f_MutePlayerTalkShutUp[MAXPLAYERS];
 bool b_PlayHurtAnimation[MAXENTITIES];
 bool b_follow[MAXENTITIES];
 bool b_movedelay_walk[MAXENTITIES];
@@ -603,11 +603,11 @@ char c_HeadPlaceAttachmentGibName[MAXENTITIES][64];
 float f_ExplodeDamageVulnerabilityNpc[MAXENTITIES];
 #if defined ZR
 float f_DelayNextWaveStartAdvancingDeathNpc;
-int Armor_Wearable[MAXTF2PLAYERS];
-int Cosmetic_WearableExtra[MAXTF2PLAYERS];
+int Armor_Wearable[MAXPLAYERS];
+int Cosmetic_WearableExtra[MAXPLAYERS];
 #endif
 
-bool b_DamageNumbers[MAXTF2PLAYERS];
+bool b_DamageNumbers[MAXPLAYERS];
 
 int OriginalWeapon_AmmoType[MAXENTITIES];
 
@@ -1216,7 +1216,7 @@ public Action Command_PlayViewmodelAnim(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXTF2PLAYERS], matches;
+	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1256,7 +1256,7 @@ public Action Command_FakeDeathCount(int client, int args)
 	GetCmdArg(2, buf, sizeof(buf));
 	int anim_index = StringToInt(buf); 
 
-	int targets[MAXTF2PLAYERS], matches;
+	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
 	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
 	{
@@ -1595,8 +1595,8 @@ public void OnPlayerRunCmdPre(int client, int buttons, int impulse, const float 
 #endif
 
 #if defined ZR
-static bool was_reviving[MAXTF2PLAYERS];
-static int was_reviving_this[MAXTF2PLAYERS];
+static bool was_reviving[MAXPLAYERS];
+static int was_reviving_this[MAXPLAYERS];
 #endif
 
 public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3], float angles[3], int &weapon, int &subtype, int &cmdnum, int &tickcount, int &seed, int mouse[2])
@@ -1699,7 +1699,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		}
 	}
 	
-	static int holding[MAXTF2PLAYERS];
+	static int holding[MAXPLAYERS];
 	if(holding[client] & IN_ATTACK)
 	{
 		if(!(buttons & IN_ATTACK))
@@ -2101,7 +2101,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	RequestFrame(CheckWeaponAmmoLogicExternal, pack_WeaponAmmo);
 	
 	float GameTime = GetGameTime();
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, weapon);
 
 	if(i_OverrideWeaponSlot[weapon] != -1)
 	{
@@ -2281,6 +2281,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = 0.0;
 		b_ThisEntityIgnoredBeingCarried[entity] = false;
 		f_ClientInvul[entity] = 0.0;
+		i_SavedActualWeaponSlot[entity] = -1;
 #if !defined RTS
 		f_BackstabDmgMulti[entity] = 0.0;
 #endif
@@ -2409,6 +2410,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NpcInternalId[entity] = 0;
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
+		b_IsAFlameThrower[entity] = false;
 		b_HasBombImplanted[entity] = false;
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
@@ -2695,6 +2697,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 			Medigun_OnEntityCreated(entity);
 #endif
 		}
+		else if(!StrContains(classname, "tf_weapon_flamethrower")) 
+		{
+			b_IsAFlameThrower[entity] = true;
+		}
 #if defined ZR
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{
@@ -2855,6 +2861,7 @@ public void OnEntityDestroyed(int entity)
 		{
 			LeanteanWandCheckDeletion(entity);
 			MedigunCheckAntiCrash(entity);
+			FlamethrowerAntiCrash(entity);
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
@@ -2902,6 +2909,33 @@ void MedigunCheckAntiCrash(int entity)
 		if(IsValidClient(MedigunOwner))
 		{
 			f_PreventMedigunCrashMaybe[MedigunOwner] = GetGameTime() + 0.1;
+		}
+	}
+}
+
+void FlamethrowerAntiCrash(int entity)
+{
+	//This is needed beacuse:
+	/*
+		If a client holds m1 while the flamethrower is deleted, 
+		this can cause the effect of the flamemanager not being deleted
+		correctly, and causes a clientside flame particle that stays forever.
+	*/
+
+	if(!b_IsAFlameThrower[entity])
+		return;
+
+	int EntityLoop;
+	while((EntityLoop=FindEntityByClassname(EntityLoop, "tf_flame_manager")) != -1)
+	{
+		if(IsValidEntity(EntityLoop))
+		{
+			int Owner = GetEntPropEnt(EntityLoop, Prop_Send, "m_hOwnerEntity");
+			if(Owner == entity)
+			{
+				RemoveEntity(EntityLoop);
+				return;
+			}
 		}
 	}
 }
@@ -3058,7 +3092,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 					{
 						static char classname[64];
 						GetEntityClassname(weapon_holding, classname, sizeof(classname));
-						if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+						if(TF2_GetClassnameSlot(classname, weapon_holding) == TFWeaponSlot_Melee)
 						{
 							float attack_speed;
 						
@@ -3434,6 +3468,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			HealPointToReinforce(client, 1, 0.065);
 			i_Reviving_This_Client[client] = 0;
 			f_Reviving_This_Client[client] = 0.0;
+			Native_OnRevivingPlayer(client, target);
 		}
 		if(extralogic)
 		{
@@ -3664,7 +3699,7 @@ int CalcMaxPlayers()
 {
 	int playercount = CvarMaxPlayerAlive.IntValue;
 	if(playercount < 1)
-		playercount = MAXTF2PLAYERS - 1;
+		playercount = MAXPLAYERS - 1;
 	/*
 	if(OperationSystem == OS_Linux)
 	{

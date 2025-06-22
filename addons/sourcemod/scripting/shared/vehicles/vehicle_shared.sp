@@ -277,7 +277,7 @@ bool Vehicle_Interact(int client, int weapon, int entity)
 	int vehicle = Vehicle_Driver(client);
 	if(vehicle != -1)
 	{
-		static float forceOutTime[MAXTF2PLAYERS];
+		static float forceOutTime[MAXPLAYERS];
 
 		if(view_as<VehicleGeneric>(vehicle).m_hDriver == -1)
 		{

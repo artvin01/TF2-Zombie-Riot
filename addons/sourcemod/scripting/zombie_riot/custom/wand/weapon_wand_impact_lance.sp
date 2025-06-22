@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int i_Current_Pap[MAXTF2PLAYERS+1];
-static float fl_thorwn_lance[MAXTF2PLAYERS+1];
+static int i_Current_Pap[MAXPLAYERS+1];
+static float fl_thorwn_lance[MAXPLAYERS+1];
 static float f_projectile_dmg[MAXENTITIES];
 static int i_Impact_Lance_index[MAXENTITIES+1];
 static int i_Impact_Lance_wep[MAXENTITIES+1];
@@ -472,7 +472,7 @@ public Action Timer_RemoveEntity_Impact_Lance_Projectile(Handle timer, DataPack 
 #define IMPACT_LANCE_EFFECTS 25
 static int i_Impact_Lance_CosmeticEffect[MAXENTITIES][IMPACT_LANCE_EFFECTS];
 
-static Handle h_Impact_Lance_CosmeticEffectManagement[MAXTF2PLAYERS+1] = {null, ...};
+static Handle h_Impact_Lance_CosmeticEffectManagement[MAXPLAYERS+1] = {null, ...};
 
 void Impact_Lance_CosmeticRemoveEffects(int iNpc)
 {

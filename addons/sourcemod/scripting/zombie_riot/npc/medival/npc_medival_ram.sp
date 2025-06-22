@@ -300,6 +300,15 @@ void MedivalRam_NPCDeath(int entity)
 
 public Action Medival_Ram_Spawner_Delay(Handle timer, DataPack pack)
 {
+	if(!Construction_Mode() && Waves_InSetup())
+	{
+		pack.Reset();
+		int ParticleEffect = EntRefToEntIndex(pack.ReadCell());
+		if(IsValidEntity(ParticleEffect))
+			RemoveEntity(ParticleEffect);
+		//if we are in setup, dont spawn anything from this
+		return Plugin_Stop;
+	}
 	GiveProgressDelay(1.0);
 	//Keep waiting.
 	if(MaxEnemiesAllowedSpawnNext(1) < (EnemyNpcAlive - EnemyNpcAliveStatic))

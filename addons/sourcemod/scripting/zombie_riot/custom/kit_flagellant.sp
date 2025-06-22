@@ -19,20 +19,20 @@ Sepsis - M2 on Enemy with big damage, self heal, requires <50% HP, 1 use per wav
 
 static int LaserIndex;
 
-static int DeathDoors[MAXTF2PLAYERS];
-static int LastDeathDoor[MAXTF2PLAYERS];
-static bool LastDeathDoorRaid[MAXTF2PLAYERS];
+static int DeathDoors[MAXPLAYERS];
+static int LastDeathDoor[MAXPLAYERS];
+static bool LastDeathDoorRaid[MAXPLAYERS];
 
-static int HealLevel[MAXTF2PLAYERS];
-static int MeleeLevel[MAXTF2PLAYERS];
+static int HealLevel[MAXPLAYERS];
+static int MeleeLevel[MAXPLAYERS];
 
-static float MoreMoreFor[MAXTF2PLAYERS];
-static int MoreMoreHits[MAXTF2PLAYERS];
-static int MoreMoreHealing[MAXTF2PLAYERS];
-static int MoreMoreCap[MAXTF2PLAYERS];
+static float MoreMoreFor[MAXPLAYERS];
+static int MoreMoreHits[MAXPLAYERS];
+static int MoreMoreHealing[MAXPLAYERS];
+static int MoreMoreCap[MAXPLAYERS];
 
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static Handle EffectTimer[MAXTF2PLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXPLAYERS];
 static bool Precached = false;
 void Flagellant_MapStart()
 {

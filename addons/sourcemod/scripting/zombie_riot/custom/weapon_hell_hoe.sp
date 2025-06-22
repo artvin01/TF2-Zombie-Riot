@@ -1,17 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// static int Weapon_Id[MAXTF2PLAYERS]; // Why did I do taht?
+// static int Weapon_Id[MAXPLAYERS]; // Why did I do taht?
 
-Handle g_hHell_Hoe_Management[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
-static bool isStrikeHorizontal[MAXTF2PLAYERS+1] = {false, ...};
-static bool isCorruptedNightmare[MAXTF2PLAYERS+1] = {false, ...};
-static float flCorruptedLastDmg[MAXTF2PLAYERS+1] = {0.0, ...};
-static float flCorruptedLastHealthTook[MAXTF2PLAYERS+1] = {0.0, ...};
-static float flCorruptedLastHealthGain[MAXTF2PLAYERS+1] = {0.0, ...};
-bool g_isPlayerInDeathMarch_HellHoe[MAXTF2PLAYERS+1] = {false, ...};
-static float nextDeathMarch[MAXTF2PLAYERS+1] = {0.0, ...};
-static int iCurrentAngelHit[MAXTF2PLAYERS+1] = {1, ...};
+Handle g_hHell_Hoe_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static bool isStrikeHorizontal[MAXPLAYERS+1] = {false, ...};
+static bool isCorruptedNightmare[MAXPLAYERS+1] = {false, ...};
+static float flCorruptedLastDmg[MAXPLAYERS+1] = {0.0, ...};
+static float flCorruptedLastHealthTook[MAXPLAYERS+1] = {0.0, ...};
+static float flCorruptedLastHealthGain[MAXPLAYERS+1] = {0.0, ...};
+bool g_isPlayerInDeathMarch_HellHoe[MAXPLAYERS+1] = {false, ...};
+static float nextDeathMarch[MAXPLAYERS+1] = {0.0, ...};
+static int iCurrentAngelHit[MAXPLAYERS+1] = {1, ...};
 
 static float Healing_Projectile[MAXENTITIES]={0.0, ...};
 
