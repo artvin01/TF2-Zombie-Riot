@@ -1842,7 +1842,7 @@ bool SensalMassLaserAttack(Sensal npc)
 				}				
 			}
 
-			int enemy[128];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false);
 			bool foundEnemy = false;
 			for(int i; i < sizeof(enemy); i++)

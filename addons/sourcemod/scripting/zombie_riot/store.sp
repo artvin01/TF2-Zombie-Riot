@@ -2,9 +2,9 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
-bool PapPreviewMode[MAXTF2PLAYERS];
-float CDDisplayHint_LoadoutStore[MAXTF2PLAYERS];
-float CDDisplayHint_LoadoutConfirmAuto[MAXTF2PLAYERS];
+bool PapPreviewMode[MAXPLAYERS];
+float CDDisplayHint_LoadoutStore[MAXPLAYERS];
+float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
 enum struct ItemInfo
 {
@@ -473,18 +473,18 @@ enum struct Item
 	
 	ArrayList ItemInfos;
 	
-	int Owned[MAXTF2PLAYERS];
-	int Scaled[MAXTF2PLAYERS];
-	bool Equipped[MAXTF2PLAYERS];
-	int Sell[MAXTF2PLAYERS];
-	int BuyWave[MAXTF2PLAYERS];
-	int BuyPrice[MAXTF2PLAYERS];
-	float Cooldown1[MAXTF2PLAYERS];
-	float Cooldown2[MAXTF2PLAYERS];
-	float Cooldown3[MAXTF2PLAYERS];
-	int CurrentClipSaved[MAXTF2PLAYERS];
-	bool BoughtBefore[MAXTF2PLAYERS];
-	int RogueBoughtRecently[MAXTF2PLAYERS];
+	int Owned[MAXPLAYERS];
+	int Scaled[MAXPLAYERS];
+	bool Equipped[MAXPLAYERS];
+	int Sell[MAXPLAYERS];
+	int BuyWave[MAXPLAYERS];
+	int BuyPrice[MAXPLAYERS];
+	float Cooldown1[MAXPLAYERS];
+	float Cooldown2[MAXPLAYERS];
+	float Cooldown3[MAXPLAYERS];
+	int CurrentClipSaved[MAXPLAYERS];
+	bool BoughtBefore[MAXPLAYERS];
+	int RogueBoughtRecently[MAXPLAYERS];
 	
 	bool NPCSeller;
 	float NPCSeller_Discount;
@@ -544,20 +544,20 @@ static const char AmmoNames[][] =
 };
 
 static ArrayList StoreItems;
-static int NPCOnly[MAXTF2PLAYERS];
-static int NPCCash[MAXTF2PLAYERS];
-//static int NPCTarget[MAXTF2PLAYERS];
-static bool InLoadoutMenu[MAXTF2PLAYERS];
+static int NPCOnly[MAXPLAYERS];
+static int NPCCash[MAXPLAYERS];
+//static int NPCTarget[MAXPLAYERS];
+static bool InLoadoutMenu[MAXPLAYERS];
 //static KeyValues StoreBalanceLog;
 static ArrayList StoreTags;
-static ArrayList ChoosenTags[MAXTF2PLAYERS];
-static bool UsingChoosenTags[MAXTF2PLAYERS];
-static int LastMenuPage[MAXTF2PLAYERS];
-static int CurrentMenuPage[MAXTF2PLAYERS];
-static int CurrentMenuItem[MAXTF2PLAYERS];
+static ArrayList ChoosenTags[MAXPLAYERS];
+static bool UsingChoosenTags[MAXPLAYERS];
+static int LastMenuPage[MAXPLAYERS];
+static int CurrentMenuPage[MAXPLAYERS];
+static int CurrentMenuItem[MAXPLAYERS];
 
-static bool HasMultiInSlot[MAXTF2PLAYERS][6];
-static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static bool HasMultiInSlot[MAXPLAYERS][6];
+static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
 void Store_OnCached(int client)
 {
@@ -653,7 +653,7 @@ stock bool Store_ActiveCanMulti(int client)
 	{
 		char buffer[36];
 		GetEntityClassname(weapon, buffer, sizeof(buffer));
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, weapon);
 		if(slot >= 0 && slot < sizeof(HasMultiInSlot[]))
 			return HasMultiInSlot[client][slot];
 	}
@@ -781,7 +781,7 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 	char classname[36], buffer[36];
 	GetEntityClassname(swap, classname, sizeof(classname));
 
-	int slot = TF2_GetClassnameSlot(classname);
+	int slot = TF2_GetClassnameSlot(classname, swap);
 	
 	int length = GetMaxWeapons(client);
 	for(int i; i < length; i++)
@@ -794,7 +794,7 @@ void Store_SwapToItem(int client, int swap, bool SwitchDo = true)
 				if(weapon > MaxClients)
 				{
 					GetEntityClassname(weapon, buffer, sizeof(buffer));
-					if(TF2_GetClassnameSlot(buffer) == slot)
+					if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 					{
 						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", swap, a);
 						SetEntPropEnt(client, Prop_Send, "m_hMyWeapons", weapon, i);
@@ -833,7 +833,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 		char buffer[36];
 		GetEntityClassname(active, buffer, sizeof(buffer));
 		
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, active);
 		
 		int length = GetMaxWeapons(client);
 		for(int i; i < length; i++)
@@ -854,7 +854,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 						if(weapon > MaxClients)
 						{
 							GetEntityClassname(weapon, buffer, sizeof(buffer));
-							if(TF2_GetClassnameSlot(buffer) == slot)
+							if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 							{
 								if(a < switchI)
 								{
@@ -914,7 +914,7 @@ void Store_SwapItems(int client, bool SwitchDo = true, int activeweaponoverride 
 			else if(weapon != -1)	// Another weapon is highest up in our slot
 			{
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
-				if(TF2_GetClassnameSlot(buffer) == slot)
+				if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 				{
 					if(SwitchDo)
 						SetPlayerActiveWeapon(client, weapon);
@@ -944,7 +944,7 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 		if(weapon != -1)
 		{
 			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == slot)
+			if(TF2_GetClassnameSlot(buffer, weapon) == slot)
 			{
 				if(firstWeapon == -1)
 					firstWeapon = weapon;
@@ -1491,7 +1491,7 @@ void Store_RogueEndFightReset()
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		for(int c; c<MAXTF2PLAYERS; c++)
+		for(int c; c<MAXPLAYERS; c++)
 		{
 			item.RogueBoughtRecently[c] = 0;
 		}
@@ -1502,7 +1502,7 @@ void Store_RogueEndFightReset()
 
 void Store_Reset()
 {
-	for(int c; c<MAXTF2PLAYERS; c++)
+	for(int c; c<MAXPLAYERS; c++)
 	{
 		StarterCashMode[c] = true;
 		CashSpent[c] = 0;
@@ -1517,7 +1517,7 @@ void Store_Reset()
 		item.NPCSeller = false;
 		item.NPCSeller_WaveStart = 0;
 		item.NPCSeller_Discount = 1.0;
-		for(int c; c<MAXTF2PLAYERS; c++)
+		for(int c; c<MAXPLAYERS; c++)
 		{
 			item.Owned[c] = 0;
 			item.Scaled[c] = 0;
@@ -1531,7 +1531,7 @@ void Store_Reset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-	for(int c; c<MAXTF2PLAYERS; c++)
+	for(int c; c<MAXPLAYERS; c++)
 	{
 		CashSpentGivePostSetup[c] = 0;
 		CashSpentGivePostSetupWarning[c] = false;
@@ -5555,7 +5555,7 @@ static void CheckMultiSlots(int client)
 	while(TF2_GetItem(client, entity, i))
 	{
 		GetEntityClassname(entity, buffer, sizeof(buffer));
-		int slot = TF2_GetClassnameSlot(buffer);
+		int slot = TF2_GetClassnameSlot(buffer, entity);
 		if(slot >= 0 && slot < sizeof(exists))
 		{
 			if(exists[slot])
@@ -5630,7 +5630,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(info.Classname[0])
 			{
-				slot = TF2_GetClassnameSlot(info.Classname);
+				int saveslot = TF2_GetClassnameSlot(info.Classname);
+				slot = saveslot;
 				if(info.Weapon_Override_Slot != -1)
 				{
 					slot = info.Weapon_Override_Slot;
@@ -5661,6 +5662,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						Yakuz_SpawnWeaponPre(client, GiveWeaponIndex, view_as<TFClassType>(class));
 					
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, class);	
+					
+					i_SavedActualWeaponSlot[entity] = saveslot;
 					
 					if(!StrContains(info.Classname, "tf_weapon_crossbow"))
 					{
@@ -7072,7 +7075,7 @@ void SetStoreMenuLogicDelay(int client)
 }
 
 
-static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+static ArrayList List_TempApplyWeaponPer[MAXPLAYERS];
 
 /*
 	Example:
@@ -7113,7 +7116,7 @@ enum struct TempAttribStore
 //on map restart
 void ClearAllTempAttributes()
 {
-	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	for(int c = 0; c < MAXPLAYERS; c++)
 	{
 		delete List_TempApplyWeaponPer[c];
 	}
@@ -7186,7 +7189,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
 				Store_Unequip(client, index);
 				
@@ -7209,7 +7212,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 		{
 			char buffer[64];
 			GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+			if(IgnoreRestriction || (GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer, active_weapon) != TFWeaponSlot_PDA)
 			{
 
 				int sell = item.Sell[client];

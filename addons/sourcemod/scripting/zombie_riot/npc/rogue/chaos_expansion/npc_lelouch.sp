@@ -2655,8 +2655,12 @@ static float Modify_Damage(int Target, float damage)
 	char classname[32];
 	GetEntityClassname(weapon, classname, 32);
 
-	int weapon_slot = TF2_GetClassnameSlot(classname);
-
+	int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
+										
+	if(i_OverrideWeaponSlot[weapon] != -1)
+	{
+		weapon_slot = i_OverrideWeaponSlot[weapon];
+	}
 	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 		damage *= 1.7;
 

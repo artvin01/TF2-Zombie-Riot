@@ -12,20 +12,20 @@
 #define SOUND_AUTOAIM_IMPACT_CONCRETE_3 		"physics/concrete/concrete_impact_bullet3.wav"
 #define SOUND_AUTOAIM_IMPACT_CONCRETE_4 		"physics/concrete/concrete_impact_bullet4.wav"
 
-static int lantean_Wand_Drone_Count[MAXTF2PLAYERS+1]={0, ...};
-static float fl_hud_timer[MAXTF2PLAYERS+1]={0.0, ...};
-static float fl_AimbotTimer[MAXTF2PLAYERS+1]={0.0, ...};
+static int lantean_Wand_Drone_Count[MAXPLAYERS+1]={0, ...};
+static float fl_hud_timer[MAXPLAYERS+1]={0.0, ...};
+static float fl_AimbotTimer[MAXPLAYERS+1]={0.0, ...};
 
 static float fl_lantean_Wand_Drone_Life[MAXENTITIES] = { 0.0, ... };
 
 static int i_drone_targets_penetrated[MAXENTITIES] = { 0, ... };
 
-static char particle_type[MAXTF2PLAYERS + 1][200];
+static char particle_type[MAXPLAYERS + 1][200];
 
-static float f3_Vector_To_Aimbot_To[MAXTF2PLAYERS + 1][3];
+static float f3_Vector_To_Aimbot_To[MAXPLAYERS + 1][3];
 
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 static int i_lantean_max_penetration[MAXENTITIES];	//how many npc's the drone will penetrate before commiting die
 static float fl_lantean_penetration_dmg_penatly[MAXENTITIES];	

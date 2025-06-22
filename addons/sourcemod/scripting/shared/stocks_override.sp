@@ -281,7 +281,7 @@ stock void RemoveSlotWeapons(int client, int slot)
 		while(TF2_GetItem(client, entity, i))
 		{
 			GetEntityClassname(entity, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == slot)
+			if(TF2_GetClassnameSlot(buffer, entity) == slot)
 			{
 				TF2_RemoveItem(client, entity);
 				found = true;

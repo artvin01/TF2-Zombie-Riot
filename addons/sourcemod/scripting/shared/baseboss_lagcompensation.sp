@@ -32,8 +32,8 @@ enum struct LagRecord
 
 static ConVar sv_maxunlag;
 
-static int TickCount[MAXTF2PLAYERS];
-static float ViewAngles[MAXTF2PLAYERS][3];
+static int TickCount[MAXPLAYERS];
+static float ViewAngles[MAXPLAYERS][3];
 // EntityTrack should only confine the max ticks on the server, alter this value for your server's
 static LagRecord EntityTrack[ZR_MAX_LAG_COMP][67];
 static int EntityTrackCount[ZR_MAX_LAG_COMP];

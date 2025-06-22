@@ -845,12 +845,12 @@ static float TalkCooldown[MAXENTITIES];
 static float TalkTurnPos[MAXENTITIES][3];
 static float TalkTurningFor[MAXENTITIES];
 static float HealingCooldown[MAXENTITIES];
-static bool IgnorePlayer[MAXTF2PLAYERS];
+static bool IgnorePlayer[MAXPLAYERS];
 static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
 static float CommandCooldown[MAXENTITIES];
 static bool TempRebel[MAXENTITIES];
-static int PlayerRenameWho[MAXTF2PLAYERS];
+static int PlayerRenameWho[MAXPLAYERS];
 
 void Citizen_OnMapStart()
 {
@@ -1702,7 +1702,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	return 0;
 }
 
-static int MenuEntRef[MAXTF2PLAYERS];
+static int MenuEntRef[MAXPLAYERS];
 
 bool Citizen_Interact(int client, int entity)
 {

@@ -23,9 +23,9 @@
 #define VILLAGE_004	(1 << 14)
 #define VILLAGE_005	(1 << 15)
 
-static float Village_ReloadBuffFor[MAXTF2PLAYERS];
-static int Village_Flags[MAXTF2PLAYERS];
-static bool Village_ForceUpdate[MAXTF2PLAYERS];
+static float Village_ReloadBuffFor[MAXPLAYERS];
+static int Village_Flags[MAXPLAYERS];
+static bool Village_ForceUpdate[MAXPLAYERS];
 static int Village_TierExists[3];
 static int i_VillageModelAppliance[MAXENTITIES];
 static int i_VillageModelApplianceCollisionBox[MAXENTITIES];

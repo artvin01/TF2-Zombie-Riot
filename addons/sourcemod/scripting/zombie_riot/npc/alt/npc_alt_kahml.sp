@@ -805,8 +805,12 @@ static void Internal_ClotThink(int iNPC)
 										char classname[32];
 										GetEntityClassname(weapon, classname, 32);
 										
-										int weapon_slot = TF2_GetClassnameSlot(classname);
+										int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
 										
+										if(i_OverrideWeaponSlot[weapon] != -1)
+										{
+											weapon_slot = i_OverrideWeaponSlot[weapon];
+										}
 										if(weapon_slot != 2)
 										{
 											Bonus_damage = 1.5;

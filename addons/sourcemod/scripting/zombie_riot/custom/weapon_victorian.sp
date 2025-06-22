@@ -10,24 +10,24 @@
 #define SOUND_OVERHEAT "player/medic_charged_death.wav"
 
 #define MAX_VICTORIAN_SUPERCHARGE 10
-static Handle h_TimerVictorianLauncherManagement[MAXTF2PLAYERS+1] = {null, ...};
-static bool HasRocketSteam[MAXTF2PLAYERS];
-static int i_VictoriaParticle[MAXTF2PLAYERS];
-static int LineofDefenseParticle_I[MAXTF2PLAYERS];
-static int LineofDefenseParticle_II[MAXTF2PLAYERS];
-static float VictoriaLauncher_HUDDelay[MAXTF2PLAYERS];
+static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
+static bool HasRocketSteam[MAXPLAYERS];
+static int i_VictoriaParticle[MAXPLAYERS];
+static int LineofDefenseParticle_I[MAXPLAYERS];
+static int LineofDefenseParticle_II[MAXPLAYERS];
+static float VictoriaLauncher_HUDDelay[MAXPLAYERS];
 
 static float f_ProjectileSinceSpawn[MAXENTITIES];
 static float f_ProjectileDMG[MAXENTITIES];
 static float f_ProjectileRadius[MAXENTITIES];
 
-static int how_many_supercharge_left[MAXTF2PLAYERS];
-static int how_many_shots_reserved[MAXTF2PLAYERS];
-static bool Mega_Burst[MAXTF2PLAYERS];
+static int how_many_supercharge_left[MAXPLAYERS];
+static int how_many_shots_reserved[MAXPLAYERS];
+static bool Mega_Burst[MAXPLAYERS];
 
-static bool During_Ability[MAXTF2PLAYERS];
-static bool Super_Hot[MAXTF2PLAYERS];
-static float Victoria_Rapid[MAXTF2PLAYERS];
+static bool During_Ability[MAXPLAYERS];
+static bool Super_Hot[MAXPLAYERS];
+static float Victoria_Rapid[MAXPLAYERS];
 
 void ResetMapStartVictoria()
 {

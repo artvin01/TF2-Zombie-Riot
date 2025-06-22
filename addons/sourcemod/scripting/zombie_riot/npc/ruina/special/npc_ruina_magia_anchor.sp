@@ -125,7 +125,7 @@ static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
 static int i_special_tower_logic[MAXENTITIES];
 static int i_current_cycle[MAXENTITIES];
-static int i_strikes[MAXTF2PLAYERS];
+static int i_strikes[MAXPLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"

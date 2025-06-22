@@ -2,12 +2,12 @@
 #pragma newdecls required
 
 static KeyValues ActorKv;
-//static bool ForcedMenu[MAXTF2PLAYERS];
-//static float DelayTalkFor[MAXTF2PLAYERS];
-static char CurrentChat[MAXTF2PLAYERS][128];
-static char CurrentNPC[MAXTF2PLAYERS][128];
-static int CurrentRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
+//static bool ForcedMenu[MAXPLAYERS];
+//static float DelayTalkFor[MAXPLAYERS];
+static char CurrentChat[MAXPLAYERS][128];
+static char CurrentNPC[MAXPLAYERS][128];
+static int CurrentRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXPLAYERS];
 //static int b_ParticleToOwner[MAXENTITIES];
 //static int b_OwnerToParticle[MAXENTITIES];
 
@@ -829,15 +829,15 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
-static char CurrentTrueBottomEditing[MAXTF2PLAYERS][64];
-static char CurrentSubKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentSubSectionEditing[MAXTF2PLAYERS][64];
-static char CurrentSectionEditing[MAXTF2PLAYERS][64];
-static char CurrentChatEditing[MAXTF2PLAYERS][64];
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentNPCEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+static Handle TimerZoneEditing[MAXPLAYERS];
+static char CurrentTrueBottomEditing[MAXPLAYERS][64];
+static char CurrentSubKeyEditing[MAXPLAYERS][64];
+static char CurrentSubSectionEditing[MAXPLAYERS][64];
+static char CurrentSectionEditing[MAXPLAYERS][64];
+static char CurrentChatEditing[MAXPLAYERS][64];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentNPCEditing[MAXPLAYERS][64];
+static char CurrentZoneEditing[MAXPLAYERS][64];
 
 static void OpenEditorFrom(int client)
 {

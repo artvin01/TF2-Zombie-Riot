@@ -143,7 +143,7 @@ public void Rogue_SteelRazor_Weapon(int entity)
 	// +15% damage bonus for melee's
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, entity);
 	if(i_OverrideWeaponSlot[entity] != -1)
 	{
 		WeaponSlot = i_OverrideWeaponSlot[entity];
@@ -452,7 +452,7 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Weapon(int entity)
 	// +15% damage bonus for ranged
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, entity);
 	if(i_OverrideWeaponSlot[entity] != -1)
 	{
 		WeaponSlot = i_OverrideWeaponSlot[entity];

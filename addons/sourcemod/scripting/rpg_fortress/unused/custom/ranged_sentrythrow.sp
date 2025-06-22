@@ -2,9 +2,9 @@
 #define MORTAR_BOOM	"beams/beamstart5.wav"
 #define MORTAR_SHOT_INCOMMING	"weapons/mortar/mortar_shell_incomming1.wav"
 
-static int HasSentry[MAXTF2PLAYERS];
-static float SentryDamage[MAXTF2PLAYERS];
-static int DrainRate[MAXTF2PLAYERS];
+static int HasSentry[MAXPLAYERS];
+static float SentryDamage[MAXPLAYERS];
+static int DrainRate[MAXPLAYERS];
 
 float SentryDamageRpg(int client)
 {
@@ -41,7 +41,7 @@ public float AbilitySentryThrow(int client, int index, char name[48])
 		{
 			static char classname[36];
 			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
+			if (TF2_GetClassnameSlot(classname, weapon) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
 			{
 				if(Stats_Dexterity(client) >= 25)
 				{

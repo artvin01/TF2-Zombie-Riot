@@ -111,7 +111,7 @@ public void Weapon_ManglerLol(int client, int weapon, const char[] classname, bo
 	DoPlayerLaserEffectsBigger(Laser, color);
 }
 
-float AttackDelayBobGun[MAXTF2PLAYERS];
+float AttackDelayBobGun[MAXPLAYERS];
 public void Weapon_BobsGunBullshit(int client, int weapon, const char[] classname, bool &result)
 {
 	AttackDelayBobGun[client] = 0.0;

@@ -72,7 +72,7 @@ static void ClotDeath(int entity)
 	Construction_NPCDeath("wood", 45, npc);
 }
 
-Handle h_TimerMineDo[MAXTF2PLAYERS];
+Handle h_TimerMineDo[MAXPLAYERS];
 
 bool Construction_Material_Interact(int client, int entity)
 {

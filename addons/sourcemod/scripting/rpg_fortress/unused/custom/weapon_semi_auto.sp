@@ -4,7 +4,7 @@
 #include <sourcemod>
 #include <tf2_stocks>
 
-static bool InFrame[MAXTF2PLAYERS];
+static bool InFrame[MAXPLAYERS];
 
 public void Weapon_USPMatch_M1(int client, int weapon, bool crit, int slot)
 {

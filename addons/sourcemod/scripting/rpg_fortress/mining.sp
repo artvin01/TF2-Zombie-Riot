@@ -2,15 +2,15 @@
 #pragma newdecls required
 
 
-static float f_clientFoundRareRockSpot[MAXTF2PLAYERS];
-static float f_clientFoundRareRockSpotPos[MAXTF2PLAYERS][3];
+static float f_clientFoundRareRockSpot[MAXPLAYERS];
+static float f_clientFoundRareRockSpotPos[MAXPLAYERS][3];
 
-static float f_ClientStartedTouch[MAXTF2PLAYERS];
-static float f_ClientStartedTouchDelay[MAXTF2PLAYERS];
-static float f_TouchedThisManyTimes[MAXTF2PLAYERS];
+static float f_ClientStartedTouch[MAXPLAYERS];
+static float f_ClientStartedTouchDelay[MAXPLAYERS];
+static float f_TouchedThisManyTimes[MAXPLAYERS];
 
-static float f_clientMinedThisSpot[MAXTF2PLAYERS];
-static float f_clientMinedThisSpotPos[MAXTF2PLAYERS][3];
+static float f_clientMinedThisSpot[MAXPLAYERS];
+static float f_clientMinedThisSpotPos[MAXPLAYERS][3];
 
 enum struct MineEnum
 {
@@ -185,7 +185,7 @@ public void AntiTouchStuckMine(int entity, int other)
 }
 
 static ArrayList MineList;
-static int MineDamage[MAXTF2PLAYERS];
+static int MineDamage[MAXPLAYERS];
 
 void Mining_ConfigSetup()
 {
@@ -367,8 +367,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					float f_positionhit[3];	
 					TR_GetEndPosition(f_positionhit, tr);
 						
-			//		static float f_clientMinedThisSpot[MAXTF2PLAYERS];
-			//		static float f_clientMinedThisSpotPos[MAXTF2PLAYERS][3];
+			//		static float f_clientMinedThisSpot[MAXPLAYERS];
+			//		static float f_clientMinedThisSpotPos[MAXPLAYERS][3];
 					if(f_clientMinedThisSpotPos[client][1] == f_positionhit[1] && f_clientMinedThisSpotPos[client][0] == f_positionhit[0]) //It should theoretically be absolutely impossible to hit the same spot when moving around.
 					{
 						//We do not care about height. Because the numbers will be very off in this case.
@@ -581,10 +581,10 @@ public Action ApplyRareMiningChanceRepeat(Handle timer, DataPack pack)
 	
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentMineEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+static Handle TimerZoneEditing[MAXPLAYERS];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentMineEditing[MAXPLAYERS][64];
+static char CurrentZoneEditing[MAXPLAYERS][64];
 
 void Mining_EditorMenu(int client)
 {

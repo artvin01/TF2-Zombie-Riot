@@ -4,16 +4,16 @@
 #tryinclude <filenetwork>
 
 #if defined _filenetwork_included
-static bool StartedQueue[MAXTF2PLAYERS];
-static bool Downloading[MAXTF2PLAYERS];
+static bool StartedQueue[MAXPLAYERS];
+static bool Downloading[MAXPLAYERS];
 
 static ArrayList SoundList;
 static StringMap SoundAlts;
-static int SoundLevel[MAXTF2PLAYERS];
+static int SoundLevel[MAXPLAYERS];
 
 static ArrayList ExtraList;
-static int ExtraLevel[MAXTF2PLAYERS];
-static bool DoingSoundFix[MAXTF2PLAYERS];
+static int ExtraLevel[MAXPLAYERS];
+static bool DoingSoundFix[MAXPLAYERS];
 
 static bool FileNetworkLib;
 #endif

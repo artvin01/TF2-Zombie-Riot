@@ -1638,7 +1638,7 @@ public Action Zilius_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		static float flMyPos[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
-		int enemy[MAXENTITIES];
+		int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, Particle, (2800.0 * 2800.0));
 		bool Foundenemies = false;
 

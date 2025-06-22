@@ -368,7 +368,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 							damage *= 4.0;
 						else
 						{
-							if(target > MAXTF2PLAYERS)
+							if(target > MAXPLAYERS)
 								damage *= 10.0;
 						}
 						
@@ -772,7 +772,7 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 
 				float damageDealt = 150.0;
 				damageDealt *= npc.m_flWaveScale;
-				if(target > MAXTF2PLAYERS)
+				if(target > MAXPLAYERS)
 					damageDealt *= 10.0;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);

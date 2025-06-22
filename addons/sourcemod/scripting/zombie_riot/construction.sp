@@ -129,7 +129,7 @@ static StringMap CurrentMaterials;
 static ArrayList CurrentResearch;
 static int InResearch = -1;
 static float InResearchAt;
-static Handle InResearchMenu[MAXTF2PLAYERS];
+static Handle InResearchMenu[MAXPLAYERS];
 
 bool Construction_Mode()
 {

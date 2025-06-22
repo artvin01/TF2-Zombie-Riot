@@ -1051,7 +1051,7 @@ static float Target_Angle_Value(Karlas npc, int Target)
 static int i_Get_Laser_Target(Karlas npc, float Range = -1.0)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXTF2PLAYERS];
+	int enemy_2[MAXPLAYERS];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of karlas that are players. + wall check obv
 	int Tmp_Target = -1;

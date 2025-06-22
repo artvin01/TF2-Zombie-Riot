@@ -1,16 +1,16 @@
-static Handle TrueStrengthHandle[MAXTF2PLAYERS+1][MAXENTITIES];
+static Handle TrueStrengthHandle[MAXPLAYERS+1][MAXENTITIES];
 //a timer on each entity, private to each player
 
 #define BLEED_TIMEOUT_DURATION 5.0
 #define HITS_UNTILL_ENRAGE_NORM 6
 
-static bool TrueStrength[MAXTF2PLAYERS+1] = {false, ...};
+static bool TrueStrength[MAXPLAYERS+1] = {false, ...};
 //does the player have this item
-static bool TrueStrength_Rage[MAXTF2PLAYERS+1] = {false, ...};
+static bool TrueStrength_Rage[MAXPLAYERS+1] = {false, ...};
 //is the player enraged
-static int i_BleedStackLogic[MAXTF2PLAYERS+1][MAXENTITIES];
+static int i_BleedStackLogic[MAXPLAYERS+1][MAXENTITIES];
 //How many bleedstacks does this entity have
-static int i_BleedStackLogicMax[MAXTF2PLAYERS+1];
+static int i_BleedStackLogicMax[MAXPLAYERS+1];
 //What is the max requires bleed stack needed to enrage
 static float f_TimerBleedRemove[MAXENTITIES];
 //Time untill the bleed or enrage timer removes itself

@@ -29,8 +29,8 @@ static Function FuncCanBuild[MAXENTITIES];
 //static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
-static bool CanUseBuilding[MAXENTITIES][MAXTF2PLAYERS];
-int i_MachineJustClickedOn[MAXTF2PLAYERS];
+static bool CanUseBuilding[MAXENTITIES][MAXPLAYERS];
+int i_MachineJustClickedOn[MAXPLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
@@ -38,8 +38,8 @@ int OwnerOfText[MAXENTITIES];
 
 //Performance improvement, no need to check this littearlly every fucking frame
 //other things DO need it, but not this.
-float f_TransmitDelayCheck[MAXENTITIES][MAXTF2PLAYERS];
-Action b_TransmitBiasDo[MAXENTITIES][MAXTF2PLAYERS];
+float f_TransmitDelayCheck[MAXENTITIES][MAXPLAYERS];
+Action b_TransmitBiasDo[MAXENTITIES][MAXPLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 

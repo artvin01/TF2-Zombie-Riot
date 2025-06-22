@@ -66,7 +66,7 @@ static const char g_FractalSound[][] = {
 #define TWIRL_TE_DURATION 0.1
 //#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3", now used for wave 15, deivid cant decide 
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/twirl_theme_new.mp3"
-static float fl_player_weapon_score[MAXTF2PLAYERS];
+static float fl_player_weapon_score[MAXPLAYERS];
 
 static int i_melee_combo[MAXENTITIES];
 static float fl_retreat_timer[MAXENTITIES];
@@ -1365,7 +1365,7 @@ static float Target_Angle_Value(Twirl npc, int Target)
 static int i_Get_Laser_Target(Twirl npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXTF2PLAYERS];
+	int enemy_2[MAXPLAYERS];
 	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of twirl that are players. + wall check obv

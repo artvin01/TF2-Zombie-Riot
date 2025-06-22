@@ -1,22 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 //no idea how those work but they are needed from what i see
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
-static int Board_Hits[MAXTF2PLAYERS+1]={0, ...};
-static int Board_Level[MAXTF2PLAYERS+1]={0, ...};
-static float f_ParryDuration[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
-static int Board_OutlineModel[MAXTF2PLAYERS+1]={INVALID_ENT_REFERENCE, ...};
-static bool Board_Ability_1[MAXTF2PLAYERS+1]; //please forgive me for I have sinned
-static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static int Board_Hits[MAXPLAYERS+1]={0, ...};
+static int Board_Level[MAXPLAYERS+1]={0, ...};
+static float f_ParryDuration[MAXPLAYERS+1]={0.0, ...};
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
+static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
+static float f_BoardReflectCooldown[MAXPLAYERS][MAXENTITIES];
 static int ParryCounter = 0;
 static int EnemiesHit[6];
 
-Handle h_TimerWeaponBoardManagement[MAXTF2PLAYERS+1] = {null, ...};
-static Handle HealPurgatory_timer[MAXTF2PLAYERS+1];
-static float f_WeaponBoardhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
+static Handle HealPurgatory_timer[MAXPLAYERS+1];
+static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
-static bool BlockHealEasy[MAXTF2PLAYERS+1];
+static bool BlockHealEasy[MAXPLAYERS+1];
 
 //this code makes me sad
 

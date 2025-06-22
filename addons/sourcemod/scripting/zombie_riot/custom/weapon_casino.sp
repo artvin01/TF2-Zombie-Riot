@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle Timer_Casino_Management[MAXTF2PLAYERS+1] = {INVALID_HANDLE, ...};
-static Handle DamageFalloff_timer[MAXTF2PLAYERS+1];
-static Handle AmmoRefill_timer[MAXTF2PLAYERS+1];
-static Handle Frenzy_timer[MAXTF2PLAYERS+1];
-static Handle Payday_timer[MAXTF2PLAYERS+1];
+Handle Timer_Casino_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static Handle DamageFalloff_timer[MAXPLAYERS+1];
+static Handle AmmoRefill_timer[MAXPLAYERS+1];
+static Handle Frenzy_timer[MAXPLAYERS+1];
+static Handle Payday_timer[MAXPLAYERS+1];
 
 char g_RandomColoursDo[][] = {
 	"aliceblue", 
@@ -157,35 +157,35 @@ char g_RandomColoursDo[][] = {
 	"yellowgreen",
 };
 
-static float Casino_hud_delay[MAXTF2PLAYERS];
-public float CasinoDebuffDamage[MAXTF2PLAYERS+1];
+static float Casino_hud_delay[MAXPLAYERS];
+public float CasinoDebuffDamage[MAXPLAYERS+1];
 
 //cooldowns lol//
-static float fl_minor_damage_cooldown[MAXTF2PLAYERS+1];
-static float fl_minor_speed_cooldown[MAXTF2PLAYERS+1];
-static float fl_minor_reload_cooldown[MAXTF2PLAYERS+1];
-static float fl_minor_accuracy_cooldown[MAXTF2PLAYERS+1];
+static float fl_minor_damage_cooldown[MAXPLAYERS+1];
+static float fl_minor_speed_cooldown[MAXPLAYERS+1];
+static float fl_minor_reload_cooldown[MAXPLAYERS+1];
+static float fl_minor_accuracy_cooldown[MAXPLAYERS+1];
 
-static float fl_major_damage_cooldown[MAXTF2PLAYERS+1];
-static float fl_major_speed_cooldown[MAXTF2PLAYERS+1];
-static float fl_ammo_cooldown[MAXTF2PLAYERS+1];
-static float fl_payday_cooldown[MAXTF2PLAYERS+1];
-static float fl_frenzy_cooldown[MAXTF2PLAYERS+1];
-//static float fl_jackpot_cooldown[MAXTF2PLAYERS+1];
+static float fl_major_damage_cooldown[MAXPLAYERS+1];
+static float fl_major_speed_cooldown[MAXPLAYERS+1];
+static float fl_ammo_cooldown[MAXPLAYERS+1];
+static float fl_payday_cooldown[MAXPLAYERS+1];
+static float fl_frenzy_cooldown[MAXPLAYERS+1];
+//static float fl_jackpot_cooldown[MAXPLAYERS+1];
 ////////////////
 
-static int i_CryoShot[MAXTF2PLAYERS+1];
-static int i_MegaShot[MAXTF2PLAYERS+1];
-static int i_Ricochet[MAXTF2PLAYERS+1];
-static int i_Dollars_Ammount[MAXTF2PLAYERS+1];
-static int i_slot1[MAXTF2PLAYERS+1];
-static int i_slot2[MAXTF2PLAYERS+1];
-static int i_slot3[MAXTF2PLAYERS+1];
-static int i_Current_Pap[MAXTF2PLAYERS+1];
+static int i_CryoShot[MAXPLAYERS+1];
+static int i_MegaShot[MAXPLAYERS+1];
+static int i_Ricochet[MAXPLAYERS+1];
+static int i_Dollars_Ammount[MAXPLAYERS+1];
+static int i_slot1[MAXPLAYERS+1];
+static int i_slot2[MAXPLAYERS+1];
+static int i_slot3[MAXPLAYERS+1];
+static int i_Current_Pap[MAXPLAYERS+1];
 static int LastHitTarget;
 static int Payday = 1;
 
-static bool CryoEasy[MAXTF2PLAYERS+1];
+static bool CryoEasy[MAXPLAYERS+1];
 static bool MegaShot[2049] = { false, ... };
 
 #define CASINO_MAX_DOLLARS 100

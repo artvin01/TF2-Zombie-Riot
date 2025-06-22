@@ -85,7 +85,7 @@ static bool BulletArmor[MAXENTITIES];
 
 static float DynamicCharger[MAXENTITIES];
 static float ExtraMovement[MAXENTITIES];
-static bool Frozen_Player[MAXTF2PLAYERS];
+static bool Frozen_Player[MAXPLAYERS];
 
 static int MechanizedProtector[MAXENTITIES][3];
 static int LifeSupportDevice[MAXENTITIES][3];

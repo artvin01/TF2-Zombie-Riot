@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
-static Handle h_TimerSkadiWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
-static bool b_AbilityActivated[MAXTF2PLAYERS];
-static float i_Swings[MAXTF2PLAYERS+1]={0.0, ...};
+static Handle h_TimerSkadiWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static bool b_AbilityActivated[MAXPLAYERS];
+static float i_Swings[MAXPLAYERS+1]={0.0, ...};
 
 void ResetMapStartSkadiWeapon()
 {

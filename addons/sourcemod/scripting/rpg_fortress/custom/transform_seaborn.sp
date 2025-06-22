@@ -1,9 +1,9 @@
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static float CreepPos[MAXTF2PLAYERS][3];
-static float CreepSize[MAXTF2PLAYERS];
-static float MeleeRes[MAXTF2PLAYERS] = {1.0, ...};
-static float RangedRes[MAXTF2PLAYERS] = {1.0, ...};
-static int WeaponRes[MAXTF2PLAYERS] = {-1, ...};
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static float CreepPos[MAXPLAYERS][3];
+static float CreepSize[MAXPLAYERS];
+static float MeleeRes[MAXPLAYERS] = {1.0, ...};
+static float RangedRes[MAXPLAYERS] = {1.0, ...};
+static int WeaponRes[MAXPLAYERS] = {-1, ...};
 static Handle CreepTimer;
 static int Sprite;
 

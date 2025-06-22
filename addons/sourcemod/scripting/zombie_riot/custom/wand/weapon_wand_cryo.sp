@@ -23,7 +23,7 @@ static float Cryo_M2_Radius = 400.0;
 static float Cryo_M2_Radius_Pap = 500.0;
 static float Cryo_M2_Radius_Pap2 = 600.0;
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 15.0;	//M2 Cooldown
 
 //static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze

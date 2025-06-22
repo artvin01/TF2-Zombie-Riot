@@ -26,7 +26,7 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
-	if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	if (TF2_GetClassnameSlot(classname, weapon) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
@@ -76,8 +76,8 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 	Ability_MortarRanged(client, 1, weapon, damageDelt);
 	return (GetGameTime() + 15.0);
 }
-static float f_MarkerPosition[MAXTF2PLAYERS][3];
-static float f_Damage[MAXTF2PLAYERS];
+static float f_MarkerPosition[MAXPLAYERS][3];
+static float f_Damage[MAXPLAYERS];
 
 
 
