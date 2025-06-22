@@ -279,10 +279,18 @@ methodmap OmegaRaid < CClotBody
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 100);	
 
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		if(item)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 240.0;
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 200.0;
+		}
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		npc.m_bWasSadAlready = false;
+		npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 7.5;
 
 		AlreadySaidWin = false;
 		
@@ -410,6 +418,9 @@ static void RocketBarrage_Ability(OmegaRaid npc, int target)
 			//pos[2] += 5.0;
 			//float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 			npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 30.0;
+			if(npc.Anger)
+				ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.0);
+
 			if(!IsValidEntity(npc.m_iWearable8))
 			{
 				float flAng[3];
@@ -457,7 +468,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 
 					npc.AddGesture("ACT_RANGE_ATTACK_RPG",_,_,_, 2.0);
 					int PrimaryThreatIndex = npc.m_iTarget;
-					float DamageCalc = 40.0 * RaidModeScaling;
+					float DamageCalc = 30.0 * RaidModeScaling;
 					float VecEnemy[3]; WorldSpaceCenter(TargetEnemy, VecEnemy);
 					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					npc.FaceTowards(VecEnemy, 150.0);
@@ -841,6 +852,7 @@ static Action OmegaRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			CPrintToChatAll("{gold}Omega{default}: God damn it! Just die already!");
 		}
 		npc.Anger = true;
+		ApplyStatusEffect(npc.index, npc.index, "Combine Command", 10.0);
 		ParticleEffectAt(vecTarget, "hammer_bell_ring_shockwave", 1.0);
 	}
 	OmegaRaid_Weapon_Lines(npc, attacker);
