@@ -244,7 +244,7 @@ public void MedicHealer_ClotThink(int iNPC)
 
 				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
 				if(b_thisNpcIsABoss[PrimaryThreatIndex])
-					MaxHealth = RoundToCeil(float(MaxHealth) * 0.01);
+					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
 
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 90), 1.0);
 
