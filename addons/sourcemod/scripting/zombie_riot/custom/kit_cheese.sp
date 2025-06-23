@@ -298,6 +298,37 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			cheesedmg *= Cheese_Lethal_ElementalBoost[Cheese_PapLevel[attacker]];
 			damage; *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
 
+			if(Cheese_PapLevel[client] > 2)
+			{
+				bool IsNotNormal = (b_thisNpcIsARaid[Cheese_BuildingHit[building]] || b_thisNpcIsABoss[Cheese_BuildingHit[building]]);
+				if(Cheese_PapLevel[client] > 4)
+				{
+					if(HasSpecificBuff(client, "Plasm II"))
+					{
+						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", (IsNotNormal ? 2.0 : 4.0));
+					}
+					else
+					{
+						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", (IsNotNormal ? 2.0 : 4.0));
+					}
+				}
+				else
+				{
+					if(HasSpecificBuff(client, "Plasm II"))
+					{
+						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", (IsNotNormal ? 2.0 : 4.0));
+					}
+					else if(HasSpecificBuff(client, "Plasm I"))
+					{
+						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", (IsNotNormal ? 2.0 : 4.0));
+					}
+					else
+					{
+						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", (IsNotNormal ? 2.0 : 4.0));
+					}
+				}
+			}
+
 			float position[3];
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 			position[2] += 25.0;
@@ -559,7 +590,19 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 						{
 							duration *= 0.5;
 						}
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", duration);
+						
+						if(HasSpecificBuff(client, "Plasm II"))
+						{
+							ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", duration);
+						}
+						else if(HasSpecificBuff(client, "Plasm I"))
+						{
+							ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", duration);
+						}
+						else
+						{
+							ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", duration);
+						}
 					}
 
 					if(IsValidEntity(weapon))
