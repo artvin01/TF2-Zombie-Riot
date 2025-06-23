@@ -2157,10 +2157,16 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			bool GiveBreakForPlayers = false;
 			int PlayersOnServerLeft = CountPlayersOnRed(0);
 			int PlayersaliveLeft = CountPlayersOnRed(1);
+			if(PlayersOnServerLeft > 20)
+			{
+				PlayersOnServerLeft = 20;
+				//its capped at a certain amount, cus if like 15 people are left alive in a 40 player server, 
+				//its still fine, 20 is the cap imo.
+			}
 			if(CountPlayersOnRed(0) > 4)
 			{
 				//only do this above 4 players.
-				if(float(PlayersOnServerLeft) * 0.35 > (float(PlayersaliveLeft)))
+				if(float(PlayersOnServerLeft) * 0.38 >= (float(PlayersaliveLeft)))
 				{
 					//make it so if too many players died, itll assume the base is entirely dead, 
 					//nothing is left, and only a few remain
