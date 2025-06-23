@@ -2790,7 +2790,7 @@
 	}
 	"The Standchen Desc AltPap"
 	{
-		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
+		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage (true damage)."
 		"fr"	"Attaques ont un effet élémental Necrôse"
 	}
 	"The Standchen Desc AltPap 2"
@@ -4404,7 +4404,7 @@
 	}
 	"Chemical Spewer Desc"
 	{
-		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals True damage."
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals Magic damage."
 	}
 	"Chemical Spewer Pap 1"
 	{
@@ -4412,7 +4412,7 @@
 	}
 	"The Ritualist Desc"
 	{
-		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
+		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown.\nIts necrosis damage is Magic damage."
 	}
 	"Necrosis Ritualist Desc"
 	{

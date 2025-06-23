@@ -95,6 +95,7 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	switch(type)
 	{
+		/*
 		case Element_Necrosis:
 		{
 			if(GetTeam(entity) == TFTeam_Red)
@@ -105,6 +106,7 @@ int Elemental_TriggerDamage(int entity, int type)
 			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
 		}
+		*/
 		case Element_Cyro:
 		{
 			divide = 4.0;
@@ -149,7 +151,7 @@ int Elemental_TriggerDamage(int entity, int type)
 	}
 
 	int amount = RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
-	
+	/*
 	switch(type)
 	{
 		case Element_Necrosis:
@@ -159,6 +161,7 @@ int Elemental_TriggerDamage(int entity, int type)
 				amount = minAmount;
 		}
 	}
+	*/
 
 	return amount;
 }
@@ -212,12 +215,12 @@ static void ApplyElementalEvent(int victim, int attacker, int damage)
 	Event event = CreateEvent("player_bonuspoints", true);
 	event.SetInt("source_entindex", victim);
 	event.SetInt("player_entindex", attacker);
-	event.SetInt("points", -damage);
+	event.SetInt("points", -(damage * 10));
 	event.FireToClient(attacker);
 	event.Cancel();
 }
 
-void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool AppliedByPlayer = false)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -302,8 +305,15 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					float damageDeal = ReturnEntityMaxHealth(victim) / 6.0;
 					if(damageDeal > 6000.0)
 						damageDeal = 6000.0;
-					
-					SDKHooks_TakeDamage(victim, attacker, attacker, damageDeal, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+
+					int DamageTags = DMG_PREVENT_PHYSICS_FORCE;
+
+					if(AppliedByPlayer)
+						DamageTags |= DMG_PLASMA;
+					else
+						DamageTags |= DMG_TRUEDAMAGE;
+
+					SDKHooks_TakeDamage(victim, attacker, attacker, damageDeal, DamageTags, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 			}
 
@@ -604,7 +614,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 }
 
-void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
+void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1, bool AppliedByPlayer = false)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -615,6 +625,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	
 	if(b_NpcIsInvulnerable[victim])
 		return;
+
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -638,7 +649,18 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				ElementDamage[victim][Element_Necrosis] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
 
-				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				int DamageTags = DMG_PREVENT_PHYSICS_FORCE;
+					
+				if(AppliedByPlayer)
+					DamageTags |= DMG_PLASMA;
+				else
+					DamageTags |= DMG_TRUEDAMAGE;
+
+				float damageDeal = ReturnEntityMaxHealth(victim) / 45.0;
+				if(damageDeal > 800.0)
+					damageDeal = 800.0;
+
+				StartBleedingTimer(victim, attacker, damageDeal, 15, weapon, DamageTags, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				
 				float time = 7.5;
 				if(b_thisNpcIsARaid[victim])

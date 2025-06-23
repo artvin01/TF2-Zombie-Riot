@@ -153,7 +153,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			return;
 		}
-		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);

@@ -977,6 +977,7 @@ public void OnMapStart()
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
 	PrecacheSound("weapons/samurai/tf_marked_for_death_indicator.wav");
+	Zero(f_PreventMovementClient);
 	Zero(f_PreventMedigunCrashMaybe);
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
@@ -1608,6 +1609,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(f_PreventMedigunCrashMaybe[client] > GetGameTime())
 	{
 		buttons &= ~IN_ATTACK;
+	}
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+		buttons = 0;
+		return Plugin_Changed;
 	}
 	/*
 	Instant community feedback that T is very bad.

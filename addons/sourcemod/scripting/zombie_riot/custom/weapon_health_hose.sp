@@ -337,7 +337,7 @@ public void Weapon_Syringe_Gun_Fire_M2(int client, int weapon, bool crit, int sl
 		return;
 	}
 	
-	if(!(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(!(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);

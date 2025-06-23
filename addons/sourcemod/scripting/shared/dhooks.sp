@@ -1725,7 +1725,7 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 static TFClassType LastClass;
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {
-	if(TF2_IsPlayerInCondition(client, TFCond_Disguising) || TF2_IsPlayerInCondition(client, TFCond_Disguised) || TF2_IsPlayerInCondition(client, TFCond_Cloaked))
+	if(f_PreventMovementClient[client] > GetGameTime() || TF2_IsPlayerInCondition(client, TFCond_Disguising) || TF2_IsPlayerInCondition(client, TFCond_Disguised) || TF2_IsPlayerInCondition(client, TFCond_Cloaked))
 		return MRES_Supercede;
 	
 	LastClass = TF2_GetPlayerClass(client);
