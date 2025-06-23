@@ -1009,7 +1009,6 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.25), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
 					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
-					Cheese_SetPenaltyDuration(victim, 10.0);
 					
 					float position[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
@@ -1031,17 +1030,15 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Plasma);
-
+			damage *= Cheese_GetPenalty(victim);
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Plasma;
 			ElementDamage[victim][Element_Plasma] += damage;
 			if(ElementDamage[victim][Element_Plasma] > trigger)
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
-				float immunitycd = melee ? 10.0 : 15.0;
-				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.5); // at max pap (8), its 9 seconds if melee, or 6.5 seconds if ranged
-				float vuln_duration = (melee ? 4.0 : 2.0) + (paplvl * 0.25); // at max pap (8), its 6 seconds if melee, or 4 seconds if ranged
-				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
+				float duration = (melee ? 4.0 : 2.0) + (paplvl * 0.25); // at max pap (8), its 6 seconds if melee, or 4 seconds if ranged
+				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
 
 				if(HasSpecificBuff(victim, "Plasm I"))
 				{
@@ -1059,14 +1056,14 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				else if(b_thisNpcIsABoss[victim])
 				{
-					duration *= 0.8;
+					duration *= 0.75;
 					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				}
 				else
 				{
 					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				}
-				IncreaseEntityDamageTakenBy(victim, 1.08 + (0.03*paplvl), vuln_duration); // up to +40% dmg taken at max pap (8)
+				IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
 
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
