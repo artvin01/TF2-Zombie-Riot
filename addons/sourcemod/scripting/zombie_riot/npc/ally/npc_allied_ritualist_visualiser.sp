@@ -60,7 +60,7 @@ methodmap AlliedRitualistAbility < CClotBody
 	
 	public AlliedRitualistAbility(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 	{
-		AlliedRitualistAbility npc = view_as<AlliedRitualistAbility>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "100", TFTeam_Red, true));
+		AlliedRitualistAbility npc = view_as<AlliedRitualistAbility>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "100", team, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);

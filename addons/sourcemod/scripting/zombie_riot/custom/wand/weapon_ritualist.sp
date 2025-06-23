@@ -444,11 +444,11 @@ static void DoSpecialActionRitualist(int client, int DanceMode)
 	{
 		case 0:
 		{
-			spawn_index = NPC_CreateByName("npc_allied_ritualist_afterimage", client, vabsOrigin, vabsAngles, 2, "");
+			spawn_index = NPC_CreateByName("npc_allied_ritualist_afterimage", client, vabsOrigin, vabsAngles, GetTeam(client), "");
 		}
 		case 1:
 		{
-			spawn_index = NPC_CreateByName("npc_allied_ritualist_afterimage", client, vabsOrigin, vabsAngles, 2, "longdance");
+			spawn_index = NPC_CreateByName("npc_allied_ritualist_afterimage", client, vabsOrigin, vabsAngles, GetTeam(client), "longdance");
 		}
 	} 
 	NpcRef[client] = EntIndexToEntRef(spawn_index);
