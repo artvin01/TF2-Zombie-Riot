@@ -881,6 +881,7 @@ void ZR_MapStart()
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
+	Ritualist_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
 	Rusty_Rifle_Precache();

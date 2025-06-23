@@ -2115,6 +2115,14 @@ float BuildingWeaponDamageModif(int Type)
 
 public bool BuildingCustomCommand(int client)
 {
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1)
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RITUALIST)
+		{
+			RitualistCancelTauntDo(client);
+		}
+	}
 	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 	if(IsValidEntity(obj) && obj>MaxClients)
 	{
