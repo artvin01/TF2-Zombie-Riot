@@ -277,6 +277,7 @@ static int BattleIngots;
 static bool RequiredBattle;
 static float BattleChaos;
 static int CurrentChaos;
+static int CurrentUmbral;
 
 static int CurseOne = -1;
 static int CurseTwo = -1;
@@ -394,6 +395,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 	{
 		PrecacheSound("misc/halloween/gotohell.wav");
 		PrecacheSound("music/stingers/hl1_stinger_song28.mp3");
+		PrecacheSound("ui/halloween_boss_player_becomes_it.wav");
 
 		InRogueMode = true;
 	}
@@ -796,6 +798,7 @@ void Rogue_RoundEnd()
 	delete CurrentMissed;
 	CurrentIngots = 0;
 	CurrentChaos = 0;
+	CurrentUmbral = 50;
 	BonusLives = 0;
 	BattleChaos = 0.0;
 	Rogue_BlueParadox_Reset();
@@ -1294,7 +1297,8 @@ void Rogue_NextProgress()
 
 			if(RogueTheme == ReilaRift && CurseTime < -1 && CurseOne == -1)	// Reila Rogue starts curses anytime
 			{
-				if((GetURandomInt() % 9) < (-CurseTime))
+				int rank = Rogue_GetUmbralLevel();
+				if(rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
 				{
 					int length = Curses.Length;
 					if(length)
@@ -1318,6 +1322,8 @@ void Rogue_NextProgress()
 
 						FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
 						CPrintToChatAll("%t", buffer);
+
+						EmitSoundToAll("ui/halloween_boss_player_becomes_it.wav");
 					}
 				}
 			}
@@ -2629,6 +2635,29 @@ stock int Rogue_GetChaosLevel()
 	return 0;
 }
 
+// 0 = Allys, 1 = Friendly, 2 = Netural, 3 = Enemy, 4 = Targeted
+stock int Rogue_GetUmbralLevel()
+{
+	if(CurrentUmbral < 21)
+	{
+		return 4;
+	}
+	else if(CurrentUmbral < 41)
+	{
+		return 3;
+	}
+	else if(CurrentUmbral < 61)
+	{
+		return 2;
+	}
+	else if(CurrentUmbral < 81)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
 stock void Rogue_AddChaos(int amount, bool silent = false)
 {
 	int change = amount;
@@ -2838,6 +2867,34 @@ bool Rogue_UpdateMvMStats()
 
 							continue;
 						}
+						case ReilaRift:
+						{
+							// TODO: Icon
+							switch(Rogue_GetUmbralLevel())
+							{
+								case 0:	// Most Friendly
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								
+								case 1:
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
+								
+								case 2:
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
+								
+								case 3:
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS, true);
+								
+								default:	// Most Hated
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+							}
+							continue;
+						}
+					}
+				}
+				case 3:
+				{
+					switch(RogueTheme)
+					{
 						case ReilaRift:
 						{
 							if(CurseOne != -1)
