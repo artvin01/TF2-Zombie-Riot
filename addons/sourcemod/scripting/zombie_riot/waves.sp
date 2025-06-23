@@ -2154,6 +2154,20 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
+			bool GiveBreakForPlayers = false;
+			int PlayersOnServerLeft = CountPlayersOnRed(0);
+			int PlayersaliveLeft = CountPlayersOnRed(1);
+			if(CountPlayersOnRed(0) > 4)
+			{
+				//only do this above 4 players.
+				if(float(PlayersOnServerLeft) * 0.35 > (float(PlayersaliveLeft)))
+				{
+					//make it so if too many players died, itll assume the base is entirely dead, 
+					//nothing is left, and only a few remain
+					//This we give them a small break to rebuild, so this doesnt repeat.
+					GiveBreakForPlayers = true;
+				}
+			}
 			//if(!wasEmptyWave)
 			{
 				for(int client=1; client<=MaxClients; client++)
@@ -2463,12 +2477,21 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else if(wasLastMann && !Rogue_Mode() && round.Waves.Length)
 			{
+				Cooldown = GetGameTime() + 45.0;
+
+				SpawnTimer(45.0);
+				CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				
+				PrintToChatAll("You were given extra 45 seconds to prepare...");
+			}
+			else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
+			{
 				Cooldown = GetGameTime() + 30.0;
 
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
-				PrintToChatAll("You were given extra 30 seconds to prepare...");
+				PrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
 			}
 			else
 			{
