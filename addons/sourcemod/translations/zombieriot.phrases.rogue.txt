@@ -685,6 +685,21 @@
 		"en"	"You head out, it's dark and we have other things to take care of."
 		"ko"	"당신은 자리를 떴다. 날이 점점 어두워지고, 처리해야 할 다른 일도 있기 때문이다."
 	}
+	"Bob Final Option 3 No"
+	{
+		"en"	"You cant seem to remember..."
+		"ko"	"당신은 이걸 기억하지 못 하는것 같다..."
+	}
+	"Bob Final Option 3 No desc"
+	{
+		"en"	"Unaccessable area."
+		"ko"	"접촉 불가한 구역."
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ko"	"{yellow}정체불명의 소장품을 얻고 {blue}게임 엔딩이 변경됩니다."
+	}
 	"Bob Final Lore"
 	{
 		"en"	"You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
@@ -724,18 +739,6 @@
 	{
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
 		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {blue}게임 엔딩이 변경됩니다."
-	}
-	"Bob Final Option 3 No"
-	{
-		"en"	"You cant seem to remember..."
-	}
-	"Bob Final Option 3 No desc"
-	{
-		"en"	"Unaccessable area."
-	}
-	"Bob Final Desc 3"
-	{
-		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
 	}
 	"Bob Final Lore 3"
 	{
@@ -1811,7 +1814,7 @@
 	"Nickel Injected Pack Desc"
 	{
 		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35％ more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
-		"ko"	"힘과 장비를 강화하는 다양한 약물이 포함된 고위 기술력이 첨가된 보따리다.\n- 체력이 꽉 찬 상태일때, 공격 피해량이 35％ 증가합니다. 이 피해량 증가는 체력이 감소할수록 점차 감소합니다."
+		"ko"	"힘과 장비를 강화하는 다양한 약물이 포함된 고위 기술력이 첨가된 보따리다.\n- 체력이 꽉 찬 상태일때, 공격 피해량이 35％ 증가. 이 피해량 증가는 체력이 감소할수록 점차 감소함."
 	}
 	"Spanish Specialised Gunpowder"
 	{
@@ -1880,7 +1883,7 @@
 	{
 		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 33％ faster."
 		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 33％ быстрее."
-		"ko"	"어떻게 가능한건지는 모르겠지만, 이 중세 시대의 물건은 화살 명중률이 100％ 증가하게 만들어주는 효과가 있는 것 같다.\n{green}모든 궁사와 석궁병 계열 아군 유닛들의 공격 속도와 재장전 속도가 33％ 더 빨라집니다."
+		"ko"	"이 중세 시대의 물건은 화살 명중률이 100％ 증가하게 만들어주는 효과가 있는 것 같다.\n{green}모든 궁사와 석궁병 계열 아군 유닛들의 공격 속도와 재장전 속도 +33％ ."
 	}
 	"Blademace"
 	{
@@ -1891,7 +1894,7 @@
 	"Blademace Desc"
 	{
 		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20％ damage bonus, +20％ max health, +2％ damage resistance {red}but -10％ movement speed{yellow}."
-		"ko"	"커다란 바위에 꽂혀 있는 검. 대체 누가 이딴 장난을 치는 건지.\n{green}모든 아군의 공격 피해량이 +20％ 증가하고, 최대 체력이 +20％ 증가하며, 피해 저항력이 +2％ 증가합니다. {red}대신 이동 속도가 -10％ 감소합니다{yellow}."
+		"ko"	"커다란 바위에 꽂혀 있는 검. 대체 누가 이딴 장난을 치는 건지.\n{green}모든 아군의 최대 체력 및 공격력 +20％, 저항력 +2％. {red}대신 이동 속도 -10％ 감소yellow}."
 	}
 	"Brokenblade"
 	{
@@ -1903,7 +1906,7 @@
 	{
 		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20％ max health{yellow}."
 		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20％ макс. запаса здоровья{yellow}."
-		"ko"	"부러진 검 한 자루. 아마…… 쓸 수 있겠지……\n{green}플레이어와 반시민군의 회생 속도가 2배로 증가하지만, {red}최대 체력이 -20％ 감소합니다{yellow}."
+		"ko"	"부러진 검 한 자루. 아마…… 쓸 수 있겠지……\n{green}플레이어와 반시민군의 회생 속도가 2배로 증가하지만, {red}최대 체력이 -20％ 감소{yellow}."
 	}
 	"Bladedance"
 	{
@@ -1949,7 +1952,7 @@
 	{
 		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {red}but -5％ melee damage{yellow}."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{red}, но -5％ урона в ближнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}적들에게 입히는 원거리 공격의 피해량이 +20％ 증가합니다. {red}근접 공격의 피해량이 -5％ 감소합니다{yellow}."
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}원거리 공격의 피해량 +20％. {red}근접 공격의 피해량이 -5％ 감소합니다{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
@@ -1961,7 +1964,7 @@
 	{
 		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {red}but -5％ ranged damage{yellow}."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{red}, но -5％ урона в дальнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}적들에게 입히는 근접 공격의 피해량이 +20％ 증가합니다. {red}원거리 공격의 피해량이 -5％ 감소합니다{yellow}."
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}근접 공격의 피해량 +20％. {red}원거리 공격의 피해량이 -5％ 감소합니다{yellow}."
 	}
 	"End of Times"
 	{
@@ -1985,7 +1988,7 @@
 	{
 		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from battles, doubled on Elite battles."
 		"ru"	"Когда они распространяют на других свою дружбу, они не позволяют ей быть запятнанной.\n{green}+1 слиток австралиума выпадает из сражений, удваивается в элитных сражениях."
-		"ko"	"그들은 깊은 우정을 대가로 함부로 무례를 범하는 걸 용납하지 않는다.\n{green}전투 종료시, 오스트레일륨 주괴 획득량이 +1 개 증가합니다. 정예 전투에서는 이 효과가 2배로 증가합니다."
+		"ko"	"그들은 깊은 우정을 대가로 함부로 무례를 범하는 걸 용납하지 않는다.\n{green}전투 종료시, 오스트레일륨 주괴 획득량이 +1 개 증가합니다. 정예 전투일시 효과가 2배로 증가."
 	}
 	"Broken Combine Crown"
 	{
@@ -1995,7 +1998,7 @@
 	"Broken Combine Crown Desc"
 	{
 		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5％ max health {blue}and the ending is changed."
-		"ko"	"녹슬고, 젖고, 날카로운 모서리가 돋보이는 부서진 왕관. 이걸 전에도 본 적이 있는 듯한 기분이 든다.\n{red}모든 아군의 최대 체력이 -5％ 감소합니다. {blue}게임 엔딩이 변경됩니다."
+		"ko"	"녹슬고, 젖고, 날카로운 모서리가 돋보이는 부서진 왕관. 이걸 전에도 본 적이 있는 듯한 기분이 든다.\n{red}모든 아군의 최대 체력 -5％. {blue}게임 엔딩 변경."
 	}
 	"Bob's Reseach Papers"
 	{
@@ -2005,7 +2008,7 @@
 	"Bob's Reseach Papers Desc"
 	{
 		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10％ movement speed."
-		"ko"	"마치 실험 대상들인 것마냥 이름들이 적혀있다. 그리고 이걸 읽는 동안, 무언가가 당신을 지켜보고 있는 듯한 불안한 기운이 든다.\n{red}모든 플레이어의 이동 속도가 -10％ 감소합니다."
+		"ko"	"마치 실험 대상들인 것마냥 이름들이 적혀있다. 그리고 이걸 읽는 동안, 무언가가 당신을 지켜보고 있는 듯한 불안한 기운이 든다.\n{red}모든 플레이어의 이동 속도 -10％."
 	}
 	"Bob's Final Draft"
 	{
@@ -2015,7 +2018,7 @@
 	"Bob's Final Draft Desc"
 	{
 		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
-		"ko"	"칼춤이라는 이름을 가진 콤바인에 대한 보고서. 미완성이고, 굉장히 급하게 작성되었다. 작성 도중 뭔가 좋지 않은 일이 발생한 것 같다.\n{green}모든 아군의 공격 피해량이 +15％ 증가하고 이동 속도가 +20％ 증가합니다. {blue}게임 엔딩이 변경됩니다."
+		"ko"	"칼춤이라는 이름을 가진 콤바인에 대한 보고서. 미완성이고, 굉장히 급하게 작성되었다. 작성 도중 뭔가 좋지 않은 일이 발생한 것 같다.\n{green}모든 아군의 공격력 +15％, 이동 속도 +20％. {blue}게임 엔딩 변경."
 	}
 	"Hand of Sticks"
 	{
@@ -2025,7 +2028,7 @@
 	"Hand of Sticks Desc"
 	{
 		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
-		"ko"	"정말 위험하고 개인적인 이야기다.\n{green}''산탄'', ''연발'' 태그 무기들을 들고 있으면 받는 근접 피해량이 +35％ 감소하며, 적중시 0.5 초간 이동 속도 증진을 얻습니다."
+		"ko"	"{green}''산탄'', ''연발'' 태그 무기들을 들고 있으면 받는 근접 피해량이 +35％ 감소하며, 적중시 0.5 초간 이동 속도 증진을 얻습니다."
 	}
 	"Hand of Quake"
 	{
@@ -2065,7 +2068,7 @@
 	"Hand of Trapmaster Desc"
 	{
 		"en"	"{green}Builder trap weapons can hold shots.\n{green}Stickybomb launchers gain +6 max stickies {yellow}and detonates on your crosshair."
-		"ko"	"{green}건축가의 함정 무기들이 더욱 좋은 성능을 내게 되었다.\n{green}함정 무기 계열의 장탄수와 공격 속도가 증가합니다. {yellow}점착 폭탄 발사기는 그 대신 최대 점착 폭탄 설치 개수 증가 및 조준선 근처의 점착 폭탄만 폭파시킬 수 있게 됩니다."
+		"ko"	"{green}함정 무기 계열의 장탄수와 공격 속도 증가. {yellow}점착 폭탄 발사기는 최대 점착 폭탄 설치 개수 증가 및 조준선 근처의 점착 폭탄만 폭파 가능."
 	}
 	"Hand of Geek"
 	{
@@ -2075,7 +2078,7 @@
 	"Hand of Geek Desc"
 	{
 		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
-		"ko"	"내 마약을 원하나?\n{green}''풀 오토'', ''디버퍼'', ''빅토리아'' 태그 무기들이 적중시 체력을 +3 회복하며 원거리 피해 저항력이 35％ 증가합니다. ''빅토리아'' 태그 무기들은 적중시 체력 회복량이 15로 증가합니다."
+		"ko"	"{green}''풀 오토'', ''디버퍼'', ''빅토리아'' 무기들이 적중시 체력을 +3 회복하고 원거리 저항력 35％ 증가. ''빅토리아'' 태그 무기는 적중시 체력 회복량이 15로 증가."
 	}
 	"Hand of Incredible Speeds"
 	{
@@ -2085,7 +2088,7 @@
 	"Hand of Incredible Speeds Desc"
 	{
 		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +33％ firing speed and +33％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
-		"ko"	"Standing here, I realize...\n{green}''싸움꾼'', ''단발'', ''장거리'' 태그 무기들의 공격 속도와 재장전 속도가 +33％ 더 빨라집니다. \n''장거리'' 태그 무기들은 추가로 장탄수가 50％ 증가합니다."
+		"ko"	"{green}''싸움꾼'', ''단발'', ''장거리'' 태그 무기들의 공격 속도와 재장전 속도 +33％. \n추가로 ''장거리'' 태그 무기들의 장탄수 +50％."
 	}
 	"Hand of Suprise"
 	{
@@ -2095,7 +2098,7 @@
 	"Hand of Suprise Desc"
 	{
 		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
-		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''투사'' 태그 무기들의 공격 속도가 33％ 빨라지고 적중시 5초간 지속되는 출혈을 부여합니다."
+		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''투사'' 태그 무기들의 공격 속도 +33％ 및 적중시 5초간 지속되는 출혈을 부여."
 	}
 	"Hand of Revenge"
 	{
@@ -2105,7 +2108,7 @@
 	"Hand of Revenge Desc"
 	{
 		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150％ damage bonus while below half health."
-		"ko"	"건드리지 말았어야 했다.\n{green}''결전자'', ''변이'', ''대검사'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +150％ 증가합니다."
+		"ko"	"건드리지 말았어야 했다.\n{green}''결전자'', ''변이'', ''대검사'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +150％ 증가."
 	}
 	"Hand of Stock"
 	{
@@ -2115,7 +2118,7 @@
 	"Hand of Stock Desc"
 	{
 		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
-		"ko"	"지극히 평범한 것부터가 정상이 아니라던데.\n{green}''기본 캐스터'' 태그 무기들의 최대 마나 및 마나 재생 속도가 +100％ 증가하고 공격 속도가 +100％ 더 빨라집니다."
+		"ko"	"{green}''기본 캐스터'' 태그 무기들의 최대 마나 및 마나 재생 속도, 공격 속도가 +100％ 향상됩니다."
 	}
 	"Hand of the Elite"
 	{
@@ -2125,7 +2128,7 @@
 	"Hand of the Elite Desc"
 	{
 		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75％ damage bonus while over half health"
-		"ko"	"엘레강스한 물건.\n{green}''카시미어'', ''로드'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +75％ 증가합니다."
+		"ko"	"엘레강스한 물건.\n{green}''카시미어'', ''로드'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +75％ 증가."
 	}
 	"Soul of Boss vs Boss"
 	{
@@ -2135,7 +2138,7 @@
 	"Soul of Boss vs Boss Desc"
 	{
 		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100％ jump height"
-		"ko"	"모든 창조물은 어디선가부터 나타나기 마련이다.\n{green}특정 무기들은 이제 들고 있으면 점프 높이가 +100％ 증가합니다."
+		"ko"	"모든 창조물은 어디선가부터 나타나기 마련이다.\n{green}특정 무기들은 이제 들고 있으면 점프 높이가 +100％ 증가."
 	}
 	"Soul of Arknights"
 	{
@@ -2155,7 +2158,7 @@
 	"Soul of Bloons Tower Defense Desc"
 	{
 		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20％ damage to each other, stacking"
-		"ko"	"빨리 사원을 건설해야겠군.\n{green}연금술사의 포션, 정예 저격수 무기가 서로에게 공격 피해량 +20％ 증가 효과를 부여하며, 이 효과는 중첩됩니다."
+		"ko"	"빨리 사원을 건설해야겠군.\n{green}특정 무기가 서로에게 공격 피해량 +20％ 증가 효과를 부여하며, 이 효과는 중첩됨."
 	}
 	"Soul of Yakuza"
 	{
@@ -2165,7 +2168,7 @@
 	"Soul of Yakuza Desc"
 	{
 		"en"	"10 years.\n{green}Specific themed weapons allow their special stance to always gain HEAT"
-		"ko"	"10년의 세월.\n{green}''일반 주먹'' 무기는 이제 히트 게이지가 상시로 증가하는 특수한 스타일을 사용할 수 있습니다."
+		"ko"	"10년의 세월.\n{green}''일반 주먹'' 무기는 이제 히트 게이지가 상시로 증가하는 특수한 스타일이 해금."
 	}
 	"Soul of Darkest Dungeon"
 	{
@@ -2175,7 +2178,7 @@
 	"Soul of Darkest Dungeon Desc"
 	{
 		"en"	"Face the light or be consumed.\n{green}Specific themed weapons have a chance to prevent dying and instead remain at one health"
-		"ko"	"빛을 마주하라. 그렇지 않으면 삼켜지리라.\n{green}특정 무기들은 이제 체력이 0이 되면, 사망하는 대신 일정 시간 동안 체력이 1로 고정되어 죽지 않게 되는 버프를 받습니다."
+		"ko"	"{green}특정 무기들은 이제 체력이 0이 되면, 사망하는 대신 일정 시간 동안 체력이 1로 고정되어 죽지 않게 되는 버프 획득."
 	}
 	"Soul of Terraria"
 	{
@@ -2225,7 +2228,7 @@
 	"Bob's Orders Desc"
 	{
 		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
-		"ko"	"배풍등을 처단하라.\n{green}모든 아군의 공격 피해량이 +15％ 증가하고 이동 속도가 +20％ 증가합니다. {blue}게임 엔딩이 변경됩니다."
+		"ko"	"배풍등을 처단하라.\n{green}모든 아군의 피해량 +15％ 및 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
 	}
 	"But Nobody Is Here"
 	{
@@ -2260,7 +2263,7 @@
 	"Cursed Relic Desc"
 	{
 		"en"	"From the back of the bin in the shop.\n{green}Players gain +8％ firing speed {red}most of the time"
-		"ko"	"상점 뒷편의 쓰레기통에서 발견한 물건이다.\n{green}모든 플레이어의 공격 속도가 +8％ 증가합니다. {red}낮은 확률로 공격 속도가 10% 감소합니다."
+		"ko"	"상점 뒷편의 쓰레기통에서 발견한 물건이다.\n{green}모든 플레이어의 공격 속도 +8％. {red}낮은 확률로 공격 속도가 10% 감소."
 	}
 	"Australium Printer"
 	{
@@ -2290,7 +2293,7 @@
 	"Rotten Bone Desc"
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
-		"ko"	"딱 봐도 점점 부식되어가는게 보인다.\n{green}새로 생성된 적들은 피해 저항력이 감소된 채로 등장하며, 이 효과는 중첩됩니다."
+		"ko"	"딱 봐도 점점 부식되어가는게 보인다.\n{green}새로 생성된 적들은 저항력이 감소된 채로 등장하며, 이 효과는 중첩됩니다."
 	}
 	"Eyes of the Sea"
 	{
@@ -2300,7 +2303,7 @@
 	"Eyes of the Sea Desc"
 	{
 		"en"	"You saw what they saw.\n{green}Enemies are silenced for 10 seconds on spawn"
-		"ko"	"저들이 보는걸 당신도 볼 수 있다.\n{green}새로 생성된 적들은 10초간 침묵 디버프가 부여된 상태로 생성됩니다."
+		"ko"	"저들이 보는걸 당신도 볼 수 있다.\n{green}새로 생성된 적들은 10초간 침묵이 부여된 채로 생성됩니다."
 	}
 	"Copper Ore"
 	{
@@ -2310,7 +2313,7 @@
 	"Copper Ore Desc"
 	{
 		"en"	"Copper.\n{green}Weapons fire +35％ bullets per shot {red}but stops working when Iron Ore is collected"
-		"ko"	"구리 광석.\n{green}무기가 발사될때 발사되는 탄환 수가 +35％ 증가합니다. {red}철 광석이 있으면 이 효과는 더 이상 작동하지 않습니다."
+		"ko"	"구리 광석.\n{green}무기가 발사될때 발사되는 탄환 수 +35％. {red}철 광석이 있으면 이 소장품이 더 이상 작동하지 않음."
 	}
 	"Iron Ore"
 	{
@@ -2320,7 +2323,7 @@
 	"Iron Ore Desc"
 	{
 		"en"	"Iron.\n{green}Weapon projectiles gain +35％ projectile speed and range {red}but stops working when Copper Ore is collected"
-		"ko"	"철 광석.\n{green}투사체들의 비행 속도와 날아가는 거리가 +35％ 만큼 증가합니다. {red}구리 광석이 있으면 이 효과는 더 이상 작동하지 않습니다."
+		"ko"	"철 광석.\n{green}투사체들의 비행 속도와 날아가는 거리 +35％. {red}구리 광석이 있으면 이 소장품이 더 이상 작동하지 않음."
 	}
 	"Empty Plate"
 	{
@@ -2330,7 +2333,7 @@
 	"Empty Plate Desc"
 	{
 		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
-		"ko"	"웨이터! 웨이터! 신탁 도살자 좀 더 줘봐!\n{green}전장에 배치된 남겨진 유해들을 흡수하고 새로운 소장품으로 만듭니다. 최대 5개까지 흡수할 수 있습니다."
+		"ko"	"웨이터! 신탁 도살자 좀 더 줘봐!\n{green}전장에 배치된 남겨진 유해들을 흡수하고 새로운 소장품으로 만듭니다. 최대 5개까지 가능."
 	}
 	"Founder Fondue"
 	{

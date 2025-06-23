@@ -168,7 +168,7 @@
 	"Bob's Assistance Desc"
 	{
 		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1％ health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
-		"ko"	"밥이 당신과 함께하며 이 문제를 해결할 수 있는 길을 당신에게 안내합니다.\n{red}챕터를 클리어하거나 쌓인 혼돈의 고통 수치 5 마다, 모든 적의 체력과 공격력이 +1％ 증가합니다. {blue}무언가가 해금됩니다..."
+		"ko"	"{red}챕터를 클리어하거나 쌓인 혼돈의 고통 수치 5 마다, 모든 적의 체력과 공격력이 +1％ 증가합니다. {blue}무언가가 해금됩니다..."
 	}
 	"Small Comic Book"
 	{
@@ -518,7 +518,7 @@
 	"Peek into the Eternal Night Desc"
 	{
 		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ firing speed {red}but -10 HP a second"
-		"ko"	"그녀가 북지를 향해 출발한 순간.\n{green}모든 플레이어의 공격 피해량이 +25％ 증가하고 공격 속도가 +25％ 증가합니다. {red}초당 체력이 -10 감소합니다."
+		"ko"	"그녀가 북지를 향해 출발한 순간.\n{green}모든 플레이어의 피해량, 공격 속도 +25％. {red}초당 체력이 -10 감소합니다."
 	}
 	"Dead Tree's Echo"
 	{
@@ -708,7 +708,7 @@
 	"Underground Scorch Desc"
 	{
 		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining more then 5 Chaos Infliction"
-		"ko"	"육지에 전혀 관심이 없는 해민들은 자연히 햇볕을 쬘 때 마음속 깊이 스며드는 따스함을 느낄 수 없을 것이다.\n{green}스테이지 클리어시, 전투에서 획득한 혼돈의 고통이 6 이하라면, 혼돈의 고통이 5 감소합니다."
+		"ko"	"{green}스테이지 클리어시, 전투에서 획득한 혼돈의 고통이 6 이하라면, 혼돈의 고통이 5 감소합니다."
 	}
 	"Great Machinations"
 	{
@@ -718,7 +718,7 @@
 	"Great Machinations Desc"
 	{
 		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining more then 5 Chaos Infliction."
-		"ko"	"더는 육지의 빛을 탐하지 마라. 우리가 더 나은 것을 만들 수 있으니.\n{green}스테이지 클리어시, 전투에서 획득한 혼돈의 고통이 9 이하라면, 혼돈의 고통이 5 감소합니다."
+		"ko"	"{green}스테이지 클리어시, 전투에서 획득한 혼돈의 고통이 9 이하라면, 혼돈의 고통이 5 감소합니다."
 	}
 	"Solidified Lamp Oil"
 	{
@@ -748,7 +748,7 @@
 	"Mercenary Insurance Desc"
 	{
 		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10％ less damage, increased to 35％ if Chaos Infliction is at least 60"
-		"ko"	"독립 용병에게 제공되는 특별 보험.\n모든 플레이어는 받는 모든 피해가 10％ 감소합니다. 혼돈의 고통이 60 이상일시, 이 효과가 35％ 로 증가합니다."
+		"ko"	"독립 용병에게 제공되는 특별 보험.\n모든 플레이어는 받는 피해가 10％ 감소. 혼돈의 고통이 60 이상일시, 35％ 로 증가."
 	}
 	"Energy Life Vest"
 	{
@@ -787,7 +787,7 @@
 	"Pack of Smokes Desc"
 	{
 		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
-		"ko"	"아주 좋아, 나에겐 힘의 신이 있다.\n{green}모든 아군의 공격 속도, 재장전 속도가 +20％ 빨라지고 받는 모든 체력 회복량이 그만큼 증가합니다. {red}스테이지를 클리어할 때마다, 혼돈의 고통이 5 증가합니다."
+		"ko"	"{green}모든 아군의 공격 속도, 재장전 속도, 받는 치유량 +20％. {red}스테이지를 클리어할 때마다, 혼돈의 고통이 5 증가."
 	}
 	"Silver Seal Letter"
 	{
@@ -1069,7 +1069,7 @@
 	{
 		"#format"	"{1:t}"
 		"en"		"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap, {yellow}{1}{default} is gone."
-		"ko"		"프린터에 넣으니 시끄러운 끽끽거리는 소리가 나기 시작한다. 기계를 계속 지켜보는 도중, 갑자기 기게에 불이 붙는다. 불이 연소된 이후, 쓸모없는 폐기 조각들만 남아있었다. {yellow}{1}{default} 은(는) 소멸되었다..."
+		"ko"		"프린터에 넣으니 시끄러운 끽끽거리는 소리가 나기 시작한다. 기계를 계속 지켜보는 도중, 갑자기 기계에 불이 붙는다. 불이 연소된 이후, 쓸모없는 폐기 조각들만 남아있었다. {yellow}{1}{default} 은(는) 소멸되었다..."
 	}
 	"Printer Option 2"
 	{
@@ -1093,7 +1093,8 @@
 	}
 	"Prophecy"
 	{
-		"en"	"예언"
+		"en"	"Prophecy"
+		"ko"	"예언"
 	}
 	"Prophecy Lore 1"
 	{
@@ -1143,7 +1144,7 @@
 	"Prophecy Lore 1c"
 	{
 		"en"	"You seek what she seeks now."
-		"ko"	"현재 당신과 그는 찾고 있는 목표가 같다."
+		"ko"	"현재 당신과 그녀는 찾고 있는 목표가 같다."
 	}
 	"Prophecy Lore 2"
 	{
@@ -1329,7 +1330,7 @@
 	"Lost Villager Option 3"
 	{
 		"en"	"Rob him"
-		"ko"	"Rob him"
+		"ko"	"훔친다"
 	}
 	"Lost Villager Desc 3"
 	{

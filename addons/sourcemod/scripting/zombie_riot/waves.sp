@@ -1736,7 +1736,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			float WaitingTimeGive = wave.EnemyData.WaitingTimeGive;
 			if(!LastMann && WaitingTimeGive > 0.0)
 			{
-				SPrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
+				SPrintToChatAll("준비 시간 %.1f 초 드립니다.",WaitingTimeGive);
 				GiveProgressDelay(WaitingTimeGive);
 				f_DelaySpawnsForVariousReasons = GetGameTime() + WaitingTimeGive;
 				SpawnTimer(WaitingTimeGive);
@@ -1748,14 +1748,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(LastMann)
 					{
-						SPrintToChatAll("You were given extra 45 seconds to prepare for the raidboss... Get ready.");
+						SPrintToChatAll("레이드 보스 등장 전까지 45 초 남았습니다... 준비하십시오");
 						GiveProgressDelay(45.0);
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 45.0;
 						SpawnTimer(45.0);
 					}
 					else if(WaitingTimeGive <= 0.0)
 					{
-						SPrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+						SPrintToChatAll("레이드 보스 등장 전까지 30 초 남았습니다... 준비하십시오.");
 						GiveProgressDelay(30.0);
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
 						SpawnTimer(30.0);
@@ -2488,7 +2488,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				SpawnTimer(45.0);
 				CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
-				SPrintToChatAll("You were given extra 45 seconds to prepare...");
+				SPrintToChatAll("준비 시간 45 초 드립니다...");
 			}
 			else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
 			{
@@ -2497,7 +2497,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
-				SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
+				SPrintToChatAll("많은 팀원이 사망했으므로, 준비 시간 30 초 드립니다...");
 			}
 			else
 			{
@@ -2533,7 +2533,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 //		else if(i_WaveHasFreeplay == 1)
 //			//EarlyReturn = Waves_NextSpecialWave();
 		else
-			SPrintToChatAll("wave somehow failed, report this.");
+			SPrintToChatAll("웨이브가 알 수 없는 이유로 고장남. 빨리 리포트할 것.");
 
 		if(EarlyReturn)
 		{

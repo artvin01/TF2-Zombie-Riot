@@ -3532,7 +3532,7 @@
 		"fr"		"Villageois Assistant"
 		"ru"		"Житель-помощник"
 		"chi"       "助理村民"
-		"ko"		"주민의 협력"
+		"ko"		"보조 협력자 주민"
 	}
 	"Barracks Assistant Villager Desc"
 	{

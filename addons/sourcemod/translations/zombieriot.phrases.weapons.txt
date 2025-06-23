@@ -2796,7 +2796,7 @@
 	"Therapy"
 	{
 		"en"		"Therapy"
-		"ko"		"치료사"
+		"ko"		"심리치료사"
 	}
 	"Expidonsa's Prototype"
 	{
