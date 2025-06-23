@@ -2,19 +2,21 @@
 #pragma newdecls required
 
 /*
-TODO: make everything later
-
-this is STILL plasma, not cheese... smh....
+TODO: make everything :
+(augh)
 
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
 - victim recieves vulnerability for a certain duration, both things based on attacker's pap level, 
-maxing out at +40% vulnerability for 6 (melee) / 4 (ranged) seconds.
-- victim recieves the Plasm I debuff with a duration based on attacker's pap level, 
-maximg out at 9 (melee) / 6 (ranged) seconds. duration is reduced by 20% on bosses and by 35% on raids
-- if the victim already has a Plasm debuff, its strength is increased, up to Plasm III.
+maxing out at +30% vulnerability for 6 (melee) / 4 (ranged) seconds. duration is reduced by half against raids/bosses.
+- victim recieves the Plasm debuff with a duration based on attacker's pap level, 
+maximg out at 6 (melee) / 4 (ranged) seconds. duration is reduced by 25% on bosses and by 35% on raids
+- has NO elemental immunity cooldown, however the more times its triggered, the lower the elemental buildup will be
+on the target until it dies. (buildup is multiplied by x0.5 [ranged] / x0.75 [melee] each time)
+
+PASSIVE - Plasma Levelling
+If the victim already has a level of the Plasm debuff, and is inflicted with the Plasm debuff again, its strength is increased, up to Plasm III.
 (say, if the victim has Plasm I, it gets upgraded to Plasm II, and if it has Plasm II, it gets upgraded to Plasm III.)
-- elemental immunity cooldown is reduced from 15 to 10 seconds.
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
 Inflicts 100% of its damage as Plasmic Elemental damage.
@@ -24,83 +26,69 @@ Lethal Injection (M2 Melee Ability), upon activation:
 PaP Upgrades (all of them increase overall stats):
 1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets.
 2 - Unlocks Lethal Injection.
-3 - Reduces Lethal Injection's cooldown, allows it to inflict Plasm I for 3 seconds.
-4 - Ditto, grants it an extra charge.
-5 - Ditto, allows it to inflict Plasm II for 4 seconds instead of I for 3.
+3 - Allows Lethal Injection to inflict Plasm I for 4 seconds. (2s against bosses/raids)
+4 - Reduces Lethal Injection's cooldown.
+5 - Ditto, allows it to inflict Plasm II for 4 seconds. (2s against bosses/raids)
 
-Plas-Matter Siphoner (secondary) - A 'vacuum' that sucks the plasmatic matter off nearby enemies,
-and transforms it into energy that powers the Plasma Injector and the Plasminator.
-Grants a bonus +10% melee resistance and +5% ranged resistance while held.
-Deals a very small amount of damage in an area (like the mana succ thing from the twink kit), but
-as it damages, it grants very small general bonuses, and increases stats for the melee and primary.
-The rate at which the bonuses are granted is doubled if the enemy has more than 25% Plasmic Elemental damage,
-but also drains said damage by 2% each time.
-Upon reaching +50% charge, the Siphoner will begin to overheat, and either reaching 100% charge or
-disabling it after this point causes it to go into a 18 second cooldown before it can be reused again.
-These bonuses slowly decay overtime down to 0% after 3 seconds of not draining anything.
-Maximum base bonuses:
-- +25% Overall resistance
-- +20% Melee damage
-- +10% Primary damage
-- +35% Plasmic Elemental damage
-- +20% Attack speed
-- 9HP Regen per second
-PaP Upgrades (also increases resists while held and how many enemies the Siphoner can feed off by 1 each):
-1 - Increases maximum melee+primary damage and attackspeed bonuses.
-2 - Ditto, now also increases maximum Plasmic Elemental damage bonus.
-3 - Ditto, now also increases maximum overall resistance and HP regen bonuses.
-5 - Increases all maximum stats.
-5 - Increases all maximum stats.
+Plasm-ubblinator (secondary) - A secondary unlocked after papping it once.
+Doesn't fire normally, instead it only fires after charging its ability.
+You can charge it dealing hits to enemies. Melee hits charge the ability as twice as fast.
+Plasmatized Bubble (M1/M2 Ability), upon activation:
+- Shoots a gravity-affected projectile that, upon landing, creates an AoE zone that grows,
+enemies inside this AoE zone recieve Plasm I (which lingers for 1s after they're out of it)
+and a above-average amount of Plasmic Elemental Damage. This bubble checks for targets every 0.5s.
+- The bubble lasts for a base duration of 6 seconds.
+- This weapon is NOT affected by Plasma Levelling, and thus will always inflict Plasm I regardless.
+PaP Upgrades (all of them increase its Plasmic Elemental Damage):
+1 - Unlocks the Plasm-ubblinator.
+2 - Reduces the hits required to charge the Plasmatized Bubble.
+Increases the bubble's duration by 1.5 seconds.
+3 - Increases the lingering duration of the Plasm I debuff inside it by 1s.
+4 - Reduces the hits required to charge the Plasmatized Bubble.
+Increases the bubble's duration by 1.5 seconds.
+5 - Increases the lingering duration of its Plasm I debuff inside it by 1s,
+and reduces the hits required to charge the Plasmatized Bubble.
+Increases the bubble's duration by 1 second.
 
 Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
-These projectiles deal 25% of their damage as Plasmic Elemental damage.
+These projectiles deal 33% of their damage as Plasmic Elemental damage.
 Plasmic Burst (M2 Primary Ability), upon activation:
 - Shoots a short-ranged laser that causes a bit of shake.
-- This laser inflicts AoE damage in front, and deals 35% of its damage as Plasmic Elemental damage.
+- This laser inflicts AoE damage in front, and deals 50% of its damage as Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
 1 - Nothing special.
 2 - Unlocks Plasmic Burst.
-3 - Slightly increases Plasmic Burst's range and increases its Plasmic Elemental damage by an additional 5%.
-4 - Ditto, also reduces its cooldown.
+3 - Now allows Plasmic Burst to inflict Plasm I for 4s to the enemies it hits. (2s on raids/bosses),
+4 - Slightly increases its range and increases its Plasmic Elemental damage by an additional 7.5%, 
+also reduces its cooldown by 5 seconds.
 5 - Ditto.
-
 6th, 7th and 8th paps increase ALL stats and almost all ability stats overall.
 */
 
 #define SOUND_LETHAL_ABILITY "items/powerup_pickup_reflect.wav"
-#define SOUND_SIPHONER_HALFCHARGE "misc/halloween/duck_pickup_pos_01.wav"
 #define SOUND_CHEESEBALL_SQUASH "ui/hitsound_squasher.wav"
 #define SOUND_ELEMENTALAPPLY    "ui/killsound_vortex.wav"
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
 
 static int LaserIndex;
 static int Cheese_PapLevel[MAXPLAYERS];
-static float Cheese_Siphoner_CurrentDecayRate[MAXPLAYERS];
-static float Cheese_Siphoner_Timeout[MAXPLAYERS];
-static float Cheese_Siphoner_DecayDelay[MAXPLAYERS];
-static bool Cheese_Siphoner_HalfCharge[MAXPLAYERS];
 
 static int Cheese_Glow;
+static int Cheese_Bubble_Hits[MAXPLAYERS];
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXPLAYERS];
 static float hudtimer[MAXPLAYERS];
-static int iref_WeaponConnect[MAXPLAYERS+1][2];
+static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
-static int Cheese_Siphoner_TargetMaximum[9] = {2, 2, 3, 3, 4, 4, 5, 6, 6}; // Maximum amount of enemies that the Siphoner can hit.
-static float Cheese_Siphoner_Range[9] = {250.0, 262.5, 275.0, 287.5, 300.0, 300.0, 300.0, 300.0, 300.0}; // Range of the Siphoner
-static float Cheese_Siphoner_MaxResistance[9] = {0.75, 0.75, 0.725, 0.7, 0.675, 0.65, 0.6, 0.5, 0.4}; // Maximum resistance boost from the Siphoner
-static float Cheese_Siphoner_MaxMeleeDamage[9] = {1.2, 1.25, 1.3, 1.35, 1.4, 1.5, 1.6, 1.75, 2.0}; // Maximum melee damage boost from the Siphoner
-static float Cheese_Siphoner_MaxPrimaryDamage[9] = {1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.5, 1.75}; // Maximum primary damage boost from the Siphoner
-static float Cheese_Siphoner_MaxPlasmicDamage[9] = {1.35, 1.4, 1.45, 1.5, 1.55, 1.6, 1.7, 1.85, 2.0}; // Maximum plasmic elemental damage boost from the Siphoner
-static float Cheese_Siphoner_MaxAttackspeed[9] = {0.8, 0.75, 0.7, 0.65, 0.6, 0.55, 0.5, 0.45, 0.4}; // Maximum attackspeed boost from the Siphoner
-static int Cheese_Siphoner_MaxRegen[9] = {9, 9, 9, 12, 15, 18, 21, 24, 30}; // Maximum HP regen boost from the Siphoner
+static float Cheese_Buildup_Penalty[MAXENTITIES];
 
-static float Cheese_Siphoner_MaxCharge[9] = {2500.0, 3000.0, 4000.0, 6000.0, 9000.0, 15000.0, 20000.0, 25000.0, 32500.0}; // Maximum Siphoner charge. BASE CHARGE RATE WILL ALWAYS BE 75.0!
-static float Cheese_Siphoner_MaxDecayRate[9] = {300.0, 400.0, 500.0, 600.0, 750.0, 900.0, 1150.0, 1300.0, 1500.0}; // Maximum Siphoner decay rate every 0.5s. Decay rate increases exponentially as it goes.
-static float Cheese_Siphoner_BaseDecayRate = 20.0; // Formula is (baserate * (pap level * 0.5)), this only takes effect after pap 2
-
-static int Cheese_Lethal_MaxCharges[9] = {1, 1, 1, 2, 3, 3, 4, 4, 5}; // How many charges Lethal Injection has
-static float Cheese_Burst_ElementalDmg[9]  = {0.35, 0.35, 0.35, 0.4, 0.45, 0.5, 0.6, 0.75, 1.0}; // Elemental damage multiplier for Plasmic Burst
+static int Cheese_Bubble_MaxHits[9]  = {100, 100, 100, 100, 85, 70, 65, 60, 60}; // Plasmatized Bubble's max charge
+static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 20.0, 17.5, 15.0, 12.5}; // Lethal Injection's cooldown
+static float Cheese_Lethal_DmgBoost[9] = {1.75, 1.75, 1.75, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0}; // Lethal Injection's damage bonus
+static float Cheese_Lethal_ElementalBoost[9] = {3.0, 3.0, 3.0, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25}; // Lethal Injection's elemental damage bonus
+static float Cheese_Burst_ElementalDmg[9]  = {0.50, 0.50, 0.575, 0.65, 0.725, 0.8, 0.875, 0.95, 1.0}; // Elemental damage multiplier for Plasmic Burst
+static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Elemental damage multiplier for Plasmic Burst
 static float Cheese_Burst_Cooldown[9]  = {22.5, 22.5, 22.5, 22.5, 17.5, 15.0, 12.5, 10.0, 7.5}; // Plasmic Burst's cooldown
 
 static Handle EffectTimer[MAXPLAYERS];
@@ -108,16 +96,13 @@ static bool Precached = false;
 void Cheese_MapStart()
 {
 	PrecacheSound(SOUND_LETHAL_ABILITY, true);
-	PrecacheSound(SOUND_SIPHONER_HALFCHARGE, true);
 	PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
 	PrecacheSound(SOUND_ELEMENTALAPPLY, true);
 	PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
 	PrecacheSound(")weapons/tf2_backshot_shotty.wav");
 	Zero(Cheese_PapLevel);
-	Zero(Cheese_Siphoner_CurrentDecayRate);
-	Zero(Cheese_Siphoner_Timeout);
-	Zero(Cheese_Siphoner_DecayDelay);
-	Zero(Cheese_Siphoner_HalfCharge);
+	Zero(Cheese_Bubble_Hits);
+	Zero(Cheese_TargetsHit);
 	Zero(hudtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -154,12 +139,26 @@ void Cheese_PlaySplat(int entity)
 	//EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
+void Cheese_SetPenalty(int entity, float mult)
+{
+	Cheese_Buildup_Penalty[entity] *= mult;
+}
+
+float Cheese_GetPenalty(int entity)
+{
+	return Cheese_Buildup_Penalty[entity];
+}
+
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
 	{
-		iref_WeaponConnect[client][1] = EntIndexToEntRef(weapon);
+		iref_WeaponConnect[client][2] = EntIndexToEntRef(weapon);
 	}
+	//if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_SECONDARY)
+	//{
+	//	iref_WeaponConnect[client][1] = EntIndexToEntRef(weapon);
+	//}
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		iref_WeaponConnect[client][0] = EntIndexToEntRef(weapon);
@@ -203,7 +202,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	if(LastMann)
 	{
 	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.5);
-		HealEntityGlobal(client, client, 12.0, 0.25, 0.0, HEAL_SELFHEAL);
+		HealEntityGlobal(client, client, 15.0, 0.25, 0.0, HEAL_SELFHEAL);
 	}
 
 	Cheese_Hud(client, false);		
@@ -230,12 +229,11 @@ static void Cheese_Hud(int client, bool ignorecd)
 	}
 
 	float LethalCooldown = 0.0;
-	float MochaCD = 0.0;
+	float BurstCooldown = 0.0;
 	int WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][0]);
 	if(IsValidEntity(WeaponEntity))
 	{
 		//3 is R
-		MochaCD = Ability_Check_Cooldown(client, 3, WeaponEntity);
 		//2 is M2
 		LethalCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
 	}
@@ -244,14 +242,19 @@ static void Cheese_Hud(int client, bool ignorecd)
 //	{
 //
 //	}
+	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][2]);
+	if(IsValidEntity(WeaponEntity))
+	{
+		BurstCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
+	}
 
 	char CheeseHud[255];
 	if(Cheese_PapLevel[client] > 1)
 	{
-		if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
+		if(HasSpecificBuff(client, "Plasmatized Lethalization"))
 		{
-			Cheese_BeamEffect(pos, 1.0, 100.0, 0.25, 8.0);
 			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE!", CheeseHud);
+			Cheese_BeamEffect(pos, 1.0, 100.0, 0.075, 7.5, true, client);
 		}
 		else
 		{
@@ -259,23 +262,17 @@ static void Cheese_Hud(int client, bool ignorecd)
 				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
 			else
 				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, LethalCooldown);
-		}			
-	}
-			
-	if(Cheese_PapLevel[client] > 2)
-	{
-		if(HasSpecificBuff(client, "Plasmatized Inoculation"))
-		{
-			Cheese_BeamEffect(pos, 125.0, 1.0, 0.25, 8.0);
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: ACTIVE!!", CheeseHud);
-		}
+		}		
+
+		if(BurstCooldown <= 0.0)
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmic Burst: Ready!", CheeseHud);
 		else
-		{
-			if(MochaCD <= 0.0)
-				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: Ready!", CheeseHud);
-			else
-				Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatic Inoculation: [%.1f]", CheeseHud, MochaCD);
-		}
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmic Burst: [%.1f]", CheeseHud, BurstCooldown);
+
+		if(Cheese_Bubble_Hits[client] >= Cheese_Bubble_MaxHits[Cheese_PapLevel[client]])
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatized Bubble: Ready!", CheeseHud);
+		else
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatized Bubble: [%d | %d]", CheeseHud, Cheese_Bubble_Hits[client], Cheese_Bubble_MaxHits[Cheese_PapLevel[client]]);
 	}
 
 	hudtimer[client] = GameTime + 0.5;
@@ -291,13 +288,27 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	{   
 		float cheesedmg = damage;
 
-		if(HasSpecificBuff(attacker, "Plasm-Allocator"))
+		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(attacker, "Plasm I") || HasSpecificBuff(attacker, "Plasm II") || HasSpecificBuff(attacker, "Plasm III")))
 		{
-			cheesedmg *= 1.5;
+			damage; *= 1.5;
 		}
+
 		if(HasSpecificBuff(attacker, "Plasmatized Lethalitation"))
 		{
-			cheesedmg *= 2.0;
+			cheesedmg *= Cheese_Lethal_ElementalBoost[Cheese_PapLevel[attacker]];
+			damage; *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
+
+			float position[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+			position[2] += 25.0;
+			Cheese_BeamEffect(position, 10.0, 200.0, 0.2, 7.5);
+			position[2] -= 12.5;
+			Cheese_BeamEffect(position, 1.0, 150.0, 0.1, 5.0);
+
+			Rogue_OnAbilityUse(attacker, weapon);
+			RemoveSpecificBuff(attacker, "Plasmatized Lethalitation");
+			Ability_Apply_Cooldown(attacker, 2, Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]]);
+			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
 		//Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
@@ -317,10 +328,11 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
 			Rogue_OnAbilityUse(client, weapon);
-			if(Cheese_PapLevel[client] >= 4)
-				Ability_Apply_Cooldown(client, slot, LastMann ? 12.0 : 18.0);
-			else
-				Ability_Apply_Cooldown(client, slot, LastMann ? 15.0 : 22.0);
+			float Cooldown = Cheese_Burst_Cooldown[Cheese_PapLevel[client]];
+			if(HasSpecificBuff(client, "Plasmatic Rampage"))
+				Cooldown *= 0.65;
+
+			Ability_Apply_Cooldown(client, slot, Cooldown);
 			EmitSoundToClient(client, SOUND_CHEDDAR_ABILITY);
 			Cheese_PlaySplat(client);
 
@@ -330,29 +342,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			basedmg *= Attributes_Get(weapon, 1, 1.0);
 			Client_Shake(client, 0, 35.0, 90.0, 0.6);
 
-			switch(Cheese_PapLevel[client])
-			{
-				case 3:
-				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
-				}
-				case 4:
-				{
-					Cheese_Burst(client, basedmg, basedmg, 235.0, 12.0, weapon);
-				}
-				case 5:
-				{
-					Cheese_Burst(client, basedmg*1.25, basedmg, 255.0, 12.0, weapon);
-				}
-				case 6, 7, 8:
-				{
-					Cheese_Burst(client, basedmg*1.35, basedmg*1.15, 270.0, 12.0, weapon);
-				}
-				default:
-				{
-					Cheese_Burst(client, basedmg, basedmg, 215.0, 12.0, weapon);
-				}
-			}
+			Cheese_Burst(client, basedmg, basedmg, Cheese_Burst_Range[Cheese_PapLevel[client]], 12.5, weapon);
 		}
 		else
 		{
@@ -375,119 +365,7 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
-			Rogue_OnAbilityUse(client, weapon);
-			float cd = 40.0;
-			if(LastMann)
-				cd = 25.0;
-
-			Ability_Apply_Cooldown(client, slot, cd);
-			EmitSoundToClient(client, SOUND_LETHAL_ABILITY);
-
-			switch(Cheese_PapLevel[client])
-			{
-				case 2, 3:
-				{
-					ApplyTempAttrib(weapon, 6, 0.7, 7.0);
-					ApplyTempAttrib(weapon, 206, 0.93, 7.0);
-					ApplyTempAttrib(weapon, 205, 0.93, 7.0);
-					ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 7.0);
-				}
-				case 4, 5:
-				{
-					ApplyTempAttrib(weapon, 6, 0.6, 8.5);
-					ApplyTempAttrib(weapon, 206, 0.87, 8.5);
-					ApplyTempAttrib(weapon, 205, 0.87, 8.5);
-					ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 8.5);
-				}
-				case 6, 7, 8:
-				{
-					ApplyTempAttrib(weapon, 6, 0.5, 10.0);
-					ApplyTempAttrib(weapon, 206, 0.82, 10.0);
-					ApplyTempAttrib(weapon, 205, 0.82, 10.0);
-					ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 10.0);
-				}
-			}
-			float position[3];
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", position);
-			position[2] += 25.0;
-			Cheese_BeamEffect(position, 10.0, 200.0, 0.2, 7.5);
-			position[2] -= 12.5;
-			Cheese_BeamEffect(position, 1.0, 150.0, 0.1, 5.0);
-		}
-		else
-		{
-			float Ability_CD = Ability_Check_Cooldown(client, slot);
-			if(Ability_CD <= 0.0)
-				Ability_CD = 0.0;
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-			return;
-		}
-	}
-}
-
-public void Weapon_Kit_CheeseInject_R(int client, int weapon, bool &result, int slot)
-{
-	if(weapon >= MaxClients)
-	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 3)
-		{
-			Rogue_OnAbilityUse(client, weapon);
-			float cd = 70.0;
-			if(LastMann)
-				cd = 45.0;
-
-			Ability_Apply_Cooldown(client, slot, cd);
-
-			float dmgbuff = 1.95;
-			float resbuff = 0.65;
-			float atkspdbuff = 0.7;
-			float buffdurations = 10.0;
-			float MaxHealth = float(SDKCall_GetMaxHealth(client));
-
-			switch(Cheese_PapLevel[client])
-			{
-				case 4:
-				{
-					dmgbuff = 2.15;
-					resbuff = 0.55;
-					atkspdbuff = 0.65;
-					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.6, buffdurations, HEAL_SELFHEAL);
-				}
-				case 5, 6:		
-				{
-					dmgbuff = 2.35;
-					resbuff = 0.5;
-					atkspdbuff = 0.55;
-					buffdurations = 15.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.20, 0.75, buffdurations, HEAL_SELFHEAL);
-				}
-				case 7, 8:
-				{
-					dmgbuff = 2.5;
-					resbuff = 0.4;
-					atkspdbuff = 0.45;
-					buffdurations = 20.0;
-					HealEntityGlobal(client, client, MaxHealth * 0.25, 1.0, buffdurations, HEAL_SELFHEAL);
-				}
-				default:
-				{
-					HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, buffdurations, HEAL_SELFHEAL);
-				}
-			}
-
-			ApplyStatusEffect(client, client, "Plasmatized Inoculation", buffdurations);
-			
-			float position[3];
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", position);
-			position[2] += 10.0;
-			Cheese_BeamEffect(position, 135.0, 1.0, 0.3, 15.0);
-			position[2] += 30.0;
-			Cheese_BeamEffect(position, 135.0, 1.0, 0.3, 15.0);
-			position[2] += 30.0;
-			Cheese_BeamEffect(position, 135.0, 1.0, 0.3, 15.0);
+			ApplyStatusEffect(client, client, "Plasmatized Lethalization", 999.0);
 		}
 		else
 		{
@@ -674,29 +552,18 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 					if (damage < 0)
 						damage *= -1.0;
 
-					float duration = 5.0;
-					if(Cheese_PapLevel[client] >= 3)
-						duration += 1.75;
-			
-					if(Cheese_PapLevel[client] >= 5)
-						duration += 1.25;
-
-					if(b_thisNpcIsARaid[Cheese_BuildingHit[building]])
+					if(Cheese_PapLevel[client] > 2)
 					{
-						duration *= 0.5;
-					}
-					else if(b_thisNpcIsABoss[Cheese_BuildingHit[building]])
-					{
-						duration *= 0.75;
-					}
-						
-					if(Cheese_PapLevel[client] >= 5)
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", duration);
-					else
+						float duration = 4.0;
+						if(b_thisNpcIsARaid[Cheese_BuildingHit[building]] || b_thisNpcIsABoss[Cheese_BuildingHit[building]])
+						{
+							duration *= 0.5;
+						}
 						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", duration);
+					}
 
 					if(IsValidEntity(weapon))
-						Elemental_AddPlasmicDamage(Cheese_BuildingHit[building], client, RoundToNearest(damage * 0.25), weapon);
+						Elemental_AddPlasmicDamage(Cheese_BuildingHit[building], client, RoundToNearest(damage * Cheese_Burst_ElementalDmg[Cheese_PapLevel[client]]), weapon);
 					
 					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
