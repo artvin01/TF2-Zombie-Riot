@@ -8,7 +8,7 @@ TODO: make everything :
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
 - victim recieves vulnerability for a certain duration, both things based on attacker's pap level, 
-maxing out at +30% vulnerability for 6 (melee) / 4 (ranged) seconds. duration is reduced by half against raids/bosses.
+maxing out at +34% vulnerability for 6 (melee) / 4 (ranged) seconds. duration is reduced by half against raids/bosses.
 - victim recieves the Plasm debuff with a duration based on attacker's pap level, 
 maximg out at 6 (melee) / 4 (ranged) seconds. duration is reduced by 25% on bosses and by 35% on raids
 - has NO elemental immunity cooldown, however the more times its triggered, the lower the elemental buildup will be
