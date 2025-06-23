@@ -1519,7 +1519,7 @@ public Action Waves_EndVote(Handle timer, float time)
 					VoteEndTime = GetGameTime() + 30.0;
 					CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 					PrintHintTextToAll("Vote for the top %d options!", list.Length);
-					PrintToChatAll("Vote for the top %d options!", list.Length);
+					SPrintToChatAll("Vote for the top %d options!", list.Length);
 					Waves_SetReadyStatus(2);
 					return Plugin_Continue;
 				}
@@ -1600,7 +1600,7 @@ public Action Waves_EndVote(Handle timer, float time)
 					CreateTimer(duration, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 					PrintHintTextToAll("Vote for the wave modifier!");
-					PrintToChatAll("Vote for the wave modifier!");
+					SPrintToChatAll("Vote for the wave modifier!");
 				}
 				else
 				{
@@ -1736,7 +1736,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			float WaitingTimeGive = wave.EnemyData.WaitingTimeGive;
 			if(!LastMann && WaitingTimeGive > 0.0)
 			{
-				PrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
+				SPrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
 				GiveProgressDelay(WaitingTimeGive);
 				f_DelaySpawnsForVariousReasons = GetGameTime() + WaitingTimeGive;
 				SpawnTimer(WaitingTimeGive);
@@ -1748,14 +1748,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(LastMann)
 					{
-						PrintToChatAll("You were given extra 45 seconds to prepare for the raidboss... Get ready.");
+						SPrintToChatAll("You were given extra 45 seconds to prepare for the raidboss... Get ready.");
 						GiveProgressDelay(45.0);
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 45.0;
 						SpawnTimer(45.0);
 					}
 					else if(WaitingTimeGive <= 0.0)
 					{
-						PrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+						SPrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
 						GiveProgressDelay(30.0);
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
 						SpawnTimer(30.0);
@@ -2154,6 +2154,26 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
+			bool GiveBreakForPlayers = false;
+			int PlayersOnServerLeft = CountPlayersOnRed(0);
+			int PlayersaliveLeft = CountPlayersOnRed(1);
+			if(PlayersOnServerLeft > 20)
+			{
+				PlayersOnServerLeft = 20;
+				//its capped at a certain amount, cus if like 15 people are left alive in a 40 player server, 
+				//its still fine, 20 is the cap imo.
+			}
+			if(CountPlayersOnRed(0) > 4)
+			{
+				//only do this above 4 players.
+				if(float(PlayersOnServerLeft) * 0.38 >= (float(PlayersaliveLeft)))
+				{
+					//make it so if too many players died, itll assume the base is entirely dead, 
+					//nothing is left, and only a few remain
+					//This we give them a small break to rebuild, so this doesnt repeat.
+					GiveBreakForPlayers = true;
+				}
+			}
 			//if(!wasEmptyWave)
 			{
 				for(int client=1; client<=MaxClients; client++)
@@ -2463,12 +2483,21 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else if(wasLastMann && !Rogue_Mode() && round.Waves.Length)
 			{
+				Cooldown = GetGameTime() + 45.0;
+
+				SpawnTimer(45.0);
+				CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+				
+				SPrintToChatAll("You were given extra 45 seconds to prepare...");
+			}
+			else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
+			{
 				Cooldown = GetGameTime() + 30.0;
 
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
-				PrintToChatAll("You were given extra 30 seconds to prepare...");
+				SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
 			}
 			else
 			{
@@ -2490,7 +2519,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	}
 	else if(subgame)
 	{
-		PrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
+		SPrintToChatAll("FREEPLAY OCCURED, BAD CFG, REPORT BUG");
 		CurrentRound = 0;
 		RelayCurrentRound = 0;
 		CurrentWave = -1;
@@ -2504,7 +2533,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 //		else if(i_WaveHasFreeplay == 1)
 //			//EarlyReturn = Waves_NextSpecialWave();
 		else
-			PrintToChatAll("epic fail");
+			SPrintToChatAll("wave somehow failed, report this.");
 
 		if(EarlyReturn)
 		{
