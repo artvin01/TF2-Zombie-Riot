@@ -2410,6 +2410,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_NpcInternalId[entity] = 0;
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;
+		b_IsAFlameThrower[entity] = false;
 		b_HasBombImplanted[entity] = false;
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
@@ -2696,6 +2697,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 			Medigun_OnEntityCreated(entity);
 #endif
 		}
+		else if(!StrContains(classname, "tf_weapon_flamethrower")) 
+		{
+			b_IsAFlameThrower[entity] = true;
+		}
 #if defined ZR
 		else if (!StrContains(classname, "tf_weapon_particle_cannon")) 
 		{
@@ -2856,6 +2861,7 @@ public void OnEntityDestroyed(int entity)
 		{
 			LeanteanWandCheckDeletion(entity);
 			MedigunCheckAntiCrash(entity);
+			FlamethrowerAntiCrash(entity);
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
@@ -2903,6 +2909,33 @@ void MedigunCheckAntiCrash(int entity)
 		if(IsValidClient(MedigunOwner))
 		{
 			f_PreventMedigunCrashMaybe[MedigunOwner] = GetGameTime() + 0.1;
+		}
+	}
+}
+
+void FlamethrowerAntiCrash(int entity)
+{
+	//This is needed beacuse:
+	/*
+		If a client holds m1 while the flamethrower is deleted, 
+		this can cause the effect of the flamemanager not being deleted
+		correctly, and causes a clientside flame particle that stays forever.
+	*/
+
+	if(!b_IsAFlameThrower[entity])
+		return;
+
+	int EntityLoop;
+	while((EntityLoop=FindEntityByClassname(EntityLoop, "tf_flame_manager")) != -1)
+	{
+		if(IsValidEntity(EntityLoop))
+		{
+			int Owner = GetEntPropEnt(EntityLoop, Prop_Send, "m_hOwnerEntity");
+			if(Owner == entity)
+			{
+				RemoveEntity(EntityLoop);
+				return;
+			}
 		}
 	}
 }

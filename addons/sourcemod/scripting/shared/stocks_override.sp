@@ -426,9 +426,7 @@ stock void Edited_TF2_RespawnPlayer(int client)
 	PreMedigunCheckAntiCrash(client);
 	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
-#endif
 
-#if defined ZR
 	KillDyingGlowEffect(client);
 #endif
 	ForcePlayerCrouch(client, false);

@@ -280,7 +280,6 @@ static void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 	if(!BarrackBody_ThinkStart(npc.index, GameTime))
 		return;
 
-	BarrackBody_ThinkTarget(npc.index, true, GameTime);
 	int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 	int PrimaryThreatIndex = npc.m_iTarget;
 
