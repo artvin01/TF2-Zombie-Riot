@@ -9,7 +9,7 @@ enum struct RawHooks
 }
 
 static DynamicHook ForceRespawn;
-static int ForceRespawnHook[MAXTF2PLAYERS];
+static int ForceRespawnHook[MAXPLAYERS];
 Handle g_DhookWantsLagCompensationOnEntity;
 
 #if !defined RENDER_TRANSCOLOR
@@ -69,6 +69,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 
 	//Borrowed from Mikusch, thanks!
 	//https://github.com/Mikusch/MannVsMann/blob/db821cd173a53aad4cc499babbcbd118f4cea234/addons/sourcemod/scripting/mannvsmann/dhooks.sp#L315
@@ -1668,7 +1669,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 	return MRES_Ignored;
 }
 
-bool WasMedicPreRegen[MAXTF2PLAYERS];
+bool WasMedicPreRegen[MAXPLAYERS];
 
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
 {
@@ -1721,40 +1722,22 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 */
 
 #if !defined RTS
-/*
+static TFClassType LastClass;
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {
-	//Dont allow taunting if disguised or cloaked
 	if(TF2_IsPlayerInCondition(client, TFCond_Disguising) || TF2_IsPlayerInCondition(client, TFCond_Disguised) || TF2_IsPlayerInCondition(client, TFCond_Cloaked))
 		return MRES_Supercede;
-
-	//Player wants to taunt, set class to whoever can actually taunt with active weapon
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon <= MaxClients)
-		return MRES_Ignored;
-
-	if(!b_TauntSpeedIncrease[client])
-	{
-		Attributes_Set(client, 201, 1.0);
-		f_DelayAttackspeedPreivous[client] = 1.0;
-	}
 	
-	//static char buffer[36];
-	//GetEntityClassname(weapon, buffer, sizeof(buffer));
-	//TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
-	//if(class != TFClass_Unknown)
-	{
-		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-	}
-
-	return MRES_Ignored;
-}
-public MRESReturn DHook_TauntPost(int client, DHookParam param)
-{
-	//Set class back to what it was
+	LastClass = TF2_GetPlayerClass(client);
 	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
-}*/
+}
+
+public MRESReturn DHook_TauntPost(int client, DHookParam param)
+{
+	TF2_SetPlayerClass_ZR(client, LastClass, false, false);
+	return MRES_Ignored;
+}
 #endif
 
 #if defined ZR
@@ -1901,7 +1884,7 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 
 
 #if defined ZR
-int BannerWearable[MAXTF2PLAYERS];
+int BannerWearable[MAXPLAYERS];
 int BannerWearableModelIndex[3];
 #endif
 bool DidEventHandleChange = false;
@@ -1948,7 +1931,7 @@ void OverrideNpcHurtShortToLong()
 	}
 }
 #if defined ZR
-bool PersonInitiatedHornBlow[MAXTF2PLAYERS];
+bool PersonInitiatedHornBlow[MAXPLAYERS];
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch

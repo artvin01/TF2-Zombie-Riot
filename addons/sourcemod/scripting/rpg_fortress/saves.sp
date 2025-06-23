@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static KeyValues SaveKv;
-static char CharacterId[MAXTF2PLAYERS][32];
+static char CharacterId[MAXPLAYERS][32];
 #define MAX_CHARACTER_SLOTS 5 
 
 void Saves_PluginStart()

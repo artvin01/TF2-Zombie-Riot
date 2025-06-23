@@ -15,10 +15,10 @@ static float Hose_HealLoss[MAXENTITIES] = { 0.0, ... };
 static float Hose_HealMin[MAXENTITIES] = { 0.0, ... };
 static int Hose_Owner[MAXENTITIES] = { -1, ... };
 static bool Hose_GiveUber[MAXENTITIES] = { false, ... };
-static float Hose_Uber[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static float Hose_NextHealSound[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static bool Hose_Charged[MAXTF2PLAYERS + 1] = { false, ... };
-static bool Hose_ShotgunCharge[MAXTF2PLAYERS + 1] = { false, ... };
+static float Hose_Uber[MAXPLAYERS + 1] = { 0.0, ... };
+static float Hose_NextHealSound[MAXPLAYERS + 1] = { 0.0, ... };
+static bool Hose_Charged[MAXPLAYERS + 1] = { false, ... };
+static bool Hose_ShotgunCharge[MAXPLAYERS + 1] = { false, ... };
 
 #define SOUND_HOSE_UBER_END		"player/invuln_off_vaccinator.wav"
 #define SOUND_HOSE_UBER_ACTIVATE	"player/invuln_on_vaccinator.wav"

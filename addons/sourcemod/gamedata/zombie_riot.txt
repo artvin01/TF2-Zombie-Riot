@@ -85,6 +85,12 @@
 				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x24\xA1\x2A\x2A\x2A\x2A\x56\x8B\xF1\x89\x75\xF0"
 			}
+			"CTFPlayer::Taunt"
+			{
+				"library"	"server"
+				"linux"		"@_ZN9CTFPlayer5TauntE8taunts_ti"
+				"windows"	"\x55\x8B\xEC\x81\xEC\xD0\x00\x00\x00\x53\x56\x57\x8B\xF9\xE8"
+			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
 				//inlined in windows 64, but it doesnt matter we dont directly need it.
@@ -560,6 +566,24 @@
 				"hooktype"	"entity"
 				"return"	"void"
 				"this"		"entity"
+			}
+			"CTFPlayer::Taunt"
+			{
+				"signature"	"CTFPlayer::Taunt"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"taunts_t"
+					{
+						"type"	"int"
+					}
+					"int"
+					{
+						"type"	"int"
+					}
+				}
 			}
 			"CTFPlayer::CanAirDash"
 			{

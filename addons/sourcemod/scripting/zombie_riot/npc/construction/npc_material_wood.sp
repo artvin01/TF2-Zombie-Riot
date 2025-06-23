@@ -43,6 +43,7 @@ methodmap MaterialWood < CClotBody
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
@@ -69,4 +70,58 @@ static void ClotDeath(int entity)
 {
 	MaterialWood npc = view_as<MaterialWood>(entity);
 	Construction_NPCDeath("wood", 45, npc);
+}
+
+Handle h_TimerMineDo[MAXPLAYERS];
+
+bool Construction_Material_Interact(int client, int entity)
+{
+	if(!IsValidClient(client))
+		return false;
+		
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(!StrContains(npc_classname, "npc_material_"))
+	{
+		if(b_IsCamoNPC[entity])
+		{
+			SDKHooks_TakeDamage(entity, client, client, 500.0, DMG_CLUB);
+		}
+		else
+		{
+			delete h_TimerMineDo[client]; //if handle existed, delito
+			Handle pack;
+			h_TimerMineDo[client] = CreateDataTimer(0.5, MineMaterial_Passively, pack, TIMER_REPEAT);
+			WritePackCell(pack, client);
+			WritePackCell(pack, EntIndexToEntRef(client));
+			WritePackCell(pack, EntIndexToEntRef(entity));
+		}
+		return true;
+	}
+	return false;
+}
+
+public Action MineMaterial_Passively(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int clientidx = pack.ReadCell();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int EntityRock = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidClient(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && IsEntityAlive(EntityRock))
+	{
+		float vecOrigin[3];
+		GetClientEyePosition(client, vecOrigin);
+		float vecOreOrigin[3];
+		GetEntPropVector(EntityRock, Prop_Data, "m_vecAbsOrigin", vecOreOrigin);
+		vecOreOrigin[2] += 45.0;
+		if(GetVectorDistance(vecOrigin, vecOreOrigin, true) < (250.0 * 250.0))
+		{
+			//close enough...
+			SDKHooks_TakeDamage(EntityRock, client, client, 500.0, DMG_TRUEDAMAGE);
+			//deal true damage overtime.
+			return Plugin_Continue;
+		}
+	}
+	h_TimerMineDo[clientidx] = null;
+	return Plugin_Stop;
 }

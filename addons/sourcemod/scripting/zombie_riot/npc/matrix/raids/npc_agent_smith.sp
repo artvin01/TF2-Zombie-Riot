@@ -46,8 +46,8 @@ static char g_RangedReloadSound[][] = {
 };
 
 static int i_Victim_Infection[MAXENTITIES];
-static float fl_Cure_Meter[MAXTF2PLAYERS];
-static float fl_Infection_Meter[MAXTF2PLAYERS];
+static float fl_Cure_Meter[MAXPLAYERS];
+static float fl_Infection_Meter[MAXPLAYERS];
 static float fl_Default_Speed = 300.0;
 static int smith_id = -1;
 static int i_RedAmount;
@@ -207,16 +207,16 @@ methodmap AgentSmith < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
 			}
 			
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 			float amount_of_people = float(CountPlayersOnRed());
 			

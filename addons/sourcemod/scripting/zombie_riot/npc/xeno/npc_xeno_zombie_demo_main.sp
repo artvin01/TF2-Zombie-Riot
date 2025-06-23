@@ -191,6 +191,14 @@ public void XenoDemoMain_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+	if(npc.m_flCharge_Duration > GetGameTime(npc.index))
+	{
+		fl_TotalArmor[npc.index] = 0.25;
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
+	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
@@ -268,9 +276,9 @@ public void XenoDemoMain_ClotThink(int iNPC)
 							{
 								
 								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 95.0, DMG_CLUB, -1, _, vecHit);
 								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
 								
 								
 								

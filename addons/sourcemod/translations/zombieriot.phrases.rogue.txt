@@ -129,11 +129,23 @@
 		"ru"	"Что-то здесь не так, стоит ли нам драться или уйти прямо здесь?"
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
 	}
+	"Nightmare Battle Title"
+	{
+		"en"	"You are having a terrible nightmare..."
+	}
 	"We can handle this"
 	{
 		"en"	"We can handle this"
 		"pt"	"Podemos cuidar disso"
 		"ru"	"Мы справимся"
+	}
+	"Stay and find out who is causing it"
+	{
+		"en"	"Stay and find out who is causing it"
+	}
+	"Pinch yourself awake"
+	{
+		"en"	"Pinch yourself awake"
 	}
 	"Better leave now"
 	{
@@ -589,6 +601,18 @@
 	"Bob Final Option 3"
 	{
 		"en"	"I do remember"
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
+	"Bob Final Option 3 No"
+	{
+		"en"	"You cant seem to remember..."
+	}
+	"Bob Final Option 3 No desc"
+	{
+		"en"	"Unaccessable area."
 	}
 	"Bob Final Desc 3"
 	{

@@ -148,10 +148,6 @@ methodmap FortifiedGiantPoisonZombie < CClotBody
 		//IDLE
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flSpeed = 110.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 180.0;
-		}
 		npc.StartPathing();
 		
 		return npc;

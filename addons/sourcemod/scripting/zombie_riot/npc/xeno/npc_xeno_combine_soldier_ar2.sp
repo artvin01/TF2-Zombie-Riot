@@ -196,11 +196,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoCombineSoldierAr2_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoCombineSoldierAr2_ClotThink;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -258,10 +253,6 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	else
 	{
 		npc.m_flSpeed = 190.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 	}
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
@@ -385,14 +376,8 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					
 					npc.PlayRangedSound();
 				}
 			}
@@ -434,12 +419,6 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 									}

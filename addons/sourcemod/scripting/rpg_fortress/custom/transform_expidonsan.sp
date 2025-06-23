@@ -1,9 +1,9 @@
-static Handle Timer_Expidonsan_Transform[MAXTF2PLAYERS+1] = {null, ...};
-static int i_TransformInitLevel[MAXTF2PLAYERS+1];
-static int iref_Halo[MAXTF2PLAYERS+1][3];
-static bool Expidonsa_MegaForm[MAXTF2PLAYERS+1];
-static float Ability4thFormCooldown[MAXTF2PLAYERS+1];
-static bool Expidonsa_InRageMode[MAXTF2PLAYERS+1];
+static Handle Timer_Expidonsan_Transform[MAXPLAYERS+1] = {null, ...};
+static int i_TransformInitLevel[MAXPLAYERS+1];
+static int iref_Halo[MAXPLAYERS+1][3];
+static bool Expidonsa_MegaForm[MAXPLAYERS+1];
+static float Ability4thFormCooldown[MAXPLAYERS+1];
+static bool Expidonsa_InRageMode[MAXPLAYERS+1];
 
 #define COOLDOWN_OF_OVERSTRESS 120.0
 void Transform_Expidonsa_MapStart()

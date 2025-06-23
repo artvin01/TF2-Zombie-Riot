@@ -10,9 +10,9 @@ static int g_ProjectileModel;
 static int i_RocketsSaved[MAXENTITIES+1];
 static int i_RocketsSavedMax[MAXENTITIES+1];
 
-static bool bl_tornado_barrage_mode[MAXTF2PLAYERS+1]={false,...};
-static int i_tornado_pap[MAXTF2PLAYERS+1]={0, ...};
-static float HudCooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static bool bl_tornado_barrage_mode[MAXPLAYERS+1]={false,...};
+static int i_tornado_pap[MAXPLAYERS+1]={0, ...};
+static float HudCooldown[MAXPLAYERS+1]={0.0, ...};
 
 
 #define SOUND_IMPACT_1 					"physics/flesh/flesh_impact_bullet1.wav"	//We hit flesh, we are also kinetic, yes.
@@ -49,7 +49,7 @@ public void Weapon_Tornado_Blitz_Precache()
 	model = "models/weapons/w_bullet.mdl";
 	g_ProjectileModel = PrecacheModel(model);
 }
-float Tornado_WeaponSavedAttribute[MAXTF2PLAYERS+1];
+float Tornado_WeaponSavedAttribute[MAXPLAYERS+1];
 public void Enable_TornadoBlitz(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_TORNADO_BLITZ)

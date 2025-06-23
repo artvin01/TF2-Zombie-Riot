@@ -33,13 +33,13 @@ enum
 	Sauce_MAX
 }
 
-static const float Cooldowns[] = { 100.0, 90.0, 80.0, 70.0, 60.0, 50.0, 40.0 };
+static const float Cooldowns[] = { 70.0, 65.0, 60.0, 55.0, 50.0, 45.0, 40.0 };
 
-static float Meats[MAXTF2PLAYERS];
-static float Sauces[MAXTF2PLAYERS][Sauce_MAX];
-static int SauceSelected[MAXTF2PLAYERS];
-static ArrayList Selling[MAXTF2PLAYERS];
-static bool InMenu[MAXTF2PLAYERS];
+static float Meats[MAXPLAYERS];
+static float Sauces[MAXPLAYERS][Sauce_MAX];
+static int SauceSelected[MAXPLAYERS];
+static ArrayList Selling[MAXPLAYERS];
+static bool InMenu[MAXPLAYERS];
 static int RandomSeed;
 
 void BlacksmithGrill_RoundStart()

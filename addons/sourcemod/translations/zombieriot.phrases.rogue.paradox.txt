@@ -755,7 +755,10 @@
 	{
 		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 50 Chaos Affliction."
 	}
-
+	"Terrible Nightmare"
+	{
+		"en"	"Terrible Nightmare"
+	}
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"

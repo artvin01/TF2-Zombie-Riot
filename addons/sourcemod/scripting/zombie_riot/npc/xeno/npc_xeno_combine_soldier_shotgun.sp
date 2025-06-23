@@ -334,14 +334,8 @@ public void XenoCombineSoldierShotgun_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 15.0, 100.0, DMG_BULLET, "bullet_tracer02_blue");
+					
 				}
 				npc.PlayRangedSound();				
 			}

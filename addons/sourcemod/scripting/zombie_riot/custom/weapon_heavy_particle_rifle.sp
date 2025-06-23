@@ -1,11 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float f_AniSoundSpam[MAXTF2PLAYERS];
-static int i_shotsfired[MAXTF2PLAYERS];
-static float f_rest_time[MAXTF2PLAYERS];
-static float f_hud_timer[MAXTF2PLAYERS];
-static bool b_fullcharge_sound[MAXTF2PLAYERS];
+static float f_AniSoundSpam[MAXPLAYERS];
+static int i_shotsfired[MAXPLAYERS];
+static float f_rest_time[MAXPLAYERS];
+static float f_hud_timer[MAXPLAYERS];
+static bool b_fullcharge_sound[MAXPLAYERS];
 
 #define HEAVY_PARTICLE_RIFLE_SHIELD_SOUND1 "weapons/rescue_ranger_charge_01.wav"
 #define HEAVY_PARTICLE_RIFLE_SHIELD_SOUND2 "weapons/rescue_ranger_charge_02.wav"
@@ -39,7 +39,7 @@ public void Heavy_Particle_Rifle_Mapstart()
 }
 
 
-#define BASE_HEAVYRIFLE_CLIPSIZE_NEED (40.0 * 2.0)
+#define BASE_HEAVYRIFLE_CLIPSIZE_NEED (40.0/* * 2.0*/)
 public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classname, bool &result)
 {
 	float speed = 1500.0;

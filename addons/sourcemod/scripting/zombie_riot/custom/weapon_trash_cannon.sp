@@ -115,9 +115,9 @@ static int i_TrashNumEffects = 8;
 static int i_TrashWeapon[2049] = { -1, ... };
 static int i_TrashTier[2049] = { 0, ... };
 
-static int i_NextShot[MAXTF2PLAYERS + 1] = { 0, ... };
-static float f_TrashNextHUD[MAXTF2PLAYERS + 1] = { 0.0, ... };
-Handle Timer_Trash[MAXTF2PLAYERS + 1] = { INVALID_HANDLE, ... };
+static int i_NextShot[MAXPLAYERS + 1] = { 0, ... };
+static float f_TrashNextHUD[MAXPLAYERS + 1] = { 0.0, ... };
+Handle Timer_Trash[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 
 #define MODEL_ROCKET				"models/weapons/w_models/w_rocket.mdl"
 #define MODEL_DRG					"models/weapons/w_models/w_drg_ball.mdl"
@@ -1081,7 +1081,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	if (!b_MondoEnabled[tier])
 		return false;
 		
-	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier] || (ZR_Waves_GetRound() == i_LastMondoWave && !allowMultipleMondos))
+	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier] || (Waves_GetRoundScale() == i_LastMondoWave && !allowMultipleMondos))
 		return false;
 		
 	int M_O_N_D_O = Trash_LaunchPhysProp(client, MODEL_MONDO, 5.0, f_MondoVelocity[tier], weapon, tier, Mondo_Explode, true, true);
@@ -1091,7 +1091,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 		EmitSoundToAll(SOUND_MONDO_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0, 80);
 	}
 		
-	i_LastMondoWave = ZR_Waves_GetRound();
+	i_LastMondoWave = Waves_GetRoundScale();
 	return true;
 }
 

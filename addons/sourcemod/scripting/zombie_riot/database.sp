@@ -15,7 +15,7 @@
 
 static Database Local;
 static Database Global;
-static bool Cached[MAXTF2PLAYERS];
+static bool Cached[MAXPLAYERS];
 
 void Database_PluginStart()
 {

@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool has_consumed_ammo_before[MAXTF2PLAYERS+1]={false, ...};
+static bool has_consumed_ammo_before[MAXPLAYERS+1]={false, ...};
 
 public void Weapon_Auto_Shotgun(int client, int weapon, const char[] classname, bool &result)
 {

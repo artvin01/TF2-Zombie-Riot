@@ -43,15 +43,15 @@ enum struct BrewEnum
 	float EntMulti[TINKER_LIMIT];
 }
 
-static const float Cooldowns[] = { 270.0, 240.0, 210.0, 180.0, 150.0, 120.0, 90.0 };
+static const float Cooldowns[] = { 210.0, 190.0, 170.0, 150.0, 130.0, 110.0, 90.0 };
 
-static float Aspects[MAXTF2PLAYERS][Aspect_MAX];
-static int AspectMenu[MAXTF2PLAYERS][3];
-static int SellingType[MAXTF2PLAYERS];
-static int SellingAmount[MAXTF2PLAYERS];
-static float SellingPower[MAXTF2PLAYERS];
-static float SellingTime[MAXTF2PLAYERS];
-static bool InMenu[MAXTF2PLAYERS];
+static float Aspects[MAXPLAYERS][Aspect_MAX];
+static int AspectMenu[MAXPLAYERS][3];
+static int SellingType[MAXPLAYERS];
+static int SellingAmount[MAXPLAYERS];
+static float SellingPower[MAXPLAYERS];
+static float SellingTime[MAXPLAYERS];
+static bool InMenu[MAXPLAYERS];
 static int RandomSeed;
 static ArrayList Brews;
 static ArrayList Crafts;
@@ -406,8 +406,8 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 	return Plugin_Continue;
 }
 
-static int AnvilClickedOn[MAXTF2PLAYERS];
-static int ClickedWithWeapon[MAXTF2PLAYERS];
+static int AnvilClickedOn[MAXPLAYERS];
+static int ClickedWithWeapon[MAXPLAYERS];
 void BlacksmithBrew_BuildingUsed(int entity, int client)
 {
 	AnvilClickedOn[client] = EntIndexToEntRef(entity);

@@ -1,8 +1,8 @@
 #define CHRONO_SHIFT_COOLDOWN 20.0
 
-static bool ChronoShiftEnable[MAXTF2PLAYERS+1] = {false, ...};
+static bool ChronoShiftEnable[MAXPLAYERS+1] = {false, ...};
 static float f_ChronoShiftCooldown[MAXENTITIES];
-static float f_MagicFocus[MAXTF2PLAYERS+1] = {0.0, ...};
+static float f_MagicFocus[MAXPLAYERS+1] = {0.0, ...};
 
 public void ChronoShiftUnequipOrDisconnect(int client)
 {

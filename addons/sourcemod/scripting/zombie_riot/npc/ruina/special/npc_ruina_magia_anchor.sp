@@ -93,18 +93,19 @@ static char[] GetBuildingHealth()
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
+	float wave = float(Waves_GetRoundScale()+1) / 0.75;
 	
-	if(ZR_Waves_GetRound()+1 < 30)
+	if(wave < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.20));
 	}
-	else if(ZR_Waves_GetRound()+1 < 45)
+	else if(wave < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;
@@ -124,7 +125,7 @@ static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
 static int i_special_tower_logic[MAXENTITIES];
 static int i_current_cycle[MAXENTITIES];
-static int i_strikes[MAXTF2PLAYERS];
+static int i_strikes[MAXPLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
@@ -232,16 +233,16 @@ methodmap Magia_Anchor < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
-		int wave = ZR_Waves_GetRound()+1;
+		int wave = Waves_GetRoundScale()+1;
 
-		if(StrContains(data, "force15") != -1)
-			wave = 15;
+		if(StrContains(data, "force10") != -1)
+			wave = 10;
+		if(StrContains(data, "force20") != -1)
+			wave = 20;
 		if(StrContains(data, "force30") != -1)
 			wave = 30;
-		if(StrContains(data, "force45") != -1)
-			wave = 45;
-		if(StrContains(data, "force60") != -1)
-			wave = 60;
+		if(StrContains(data, "force40") != -1)
+			wave = 40;
 
 		i_wave[npc.index] = wave;
 		f_PlayerScalingBuilding = ZRStocks_PlayerScalingDynamic();
@@ -270,17 +271,17 @@ methodmap Magia_Anchor < CClotBody
 		i_current_cycle[npc.index] = 0;
 		
 		//whats a "switch" statement??
-		if(wave<=15)	
+		if(wave<=10)	
 		{
 			SetVariantInt(RUINA_MAGIA_TOWER_1);
 			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		}
-		else if(wave <=30)	
+		else if(wave <=20)	
 		{
 			SetVariantInt(RUINA_MAGIA_TOWER_2);
 			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		}
-		else if(wave <= 45)	
+		else if(wave <= 30)	
 		{
 			SetVariantInt(RUINA_MAGIA_TOWER_3);
 			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");

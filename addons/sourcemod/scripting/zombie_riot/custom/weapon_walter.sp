@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static float BombCooldown;
-static Handle NukeTimer[MAXTF2PLAYERS];
+static Handle NukeTimer[MAXPLAYERS];
 
 void Walter_Enable(int client, int weapon)
 {

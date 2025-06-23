@@ -171,9 +171,9 @@ methodmap PhantomKnight < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
+		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= 2.0;
@@ -578,7 +578,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					}
 					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
-					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_Waves_GetRound() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
+					if(i_PhantomsSpawned[npc.index] <= 5 || (Waves_GetRoundScale() > 40 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
 						//If its wave 60 or above, he can spawn
 						int fake_spawned = NPC_CreateByName("npc_phantom_knight", -1, vecPos_Npc, vecAng_Npc,GetTeam(npc.index), "");

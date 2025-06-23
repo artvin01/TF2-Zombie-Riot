@@ -8,8 +8,8 @@
  */
 
 
-static float medigun_heal_delay[MAXTF2PLAYERS];
-static float medigun_hud_delay[MAXTF2PLAYERS];
+static float medigun_heal_delay[MAXPLAYERS];
+static float medigun_hud_delay[MAXPLAYERS];
 Handle g_DHookWeaponPostFrame;
 
 float f_MedigunDelayAttackThink[MAXENTITIES];
@@ -36,7 +36,7 @@ void Medigun_PluginStart() {
 	delete hGameConf_med;
 }
 
-int MedigunModeSet[MAXTF2PLAYERS];
+int MedigunModeSet[MAXPLAYERS];
 static bool b_MediunDamageModeSet[MAXENTITIES]={false, ...};
 
 void MedigunPutInServerclient(int client)
@@ -64,7 +64,7 @@ public MRESReturn DHook_MedigunPrimaryAttack(int entity)
 }
 
 //static bool s_ForceGibRagdoll;
-static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
+static bool gb_medigun_on_reload[MAXPLAYERS]={false, ...};
 
 /*
 	Battle medigun

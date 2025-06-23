@@ -318,7 +318,7 @@ public void AgentBen_ClotThink(int iNPC)
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				
 
-				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, EscapeModeForNpc ? 10.0 : 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 				
 				npc.PlayRangedSound();
 			}

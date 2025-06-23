@@ -188,11 +188,6 @@ methodmap MedivalArbalest < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-
 		npc.StartPathing();
 		
 		
@@ -342,7 +337,7 @@ public void HandleAnimEventMedival_Arbalest(int entity, int event)
 			npc.PlayMeleeSound();
 			
 			float damage = 40.0;
-			if(Medival_Difficulty_Level < 0.93)
+			if(Medival_Difficulty_Level_NotMath >= 2)
 			{
 				damage = 55.0;
 			}

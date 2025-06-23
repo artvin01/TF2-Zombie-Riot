@@ -732,7 +732,7 @@ methodmap Lelouch < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -2082,8 +2082,8 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	char Data[64]; Data = red ? "lelouch;nospawns;noweaver;full" : "nospawns;noweaver;full";
-	if(ZR_Waves_GetRound()+1 < 60)
-		Format(Data, sizeof(Data), "%sforce60", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
+	if(Waves_GetRoundScale()+1 < 40)
+		Format(Data, sizeof(Data), "%sforce40", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
@@ -2655,8 +2655,12 @@ static float Modify_Damage(int Target, float damage)
 	char classname[32];
 	GetEntityClassname(weapon, classname, 32);
 
-	int weapon_slot = TF2_GetClassnameSlot(classname);
-
+	int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
+										
+	if(i_OverrideWeaponSlot[weapon] != -1)
+	{
+		weapon_slot = i_OverrideWeaponSlot[weapon];
+	}
 	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 		damage *= 1.7;
 
@@ -2763,10 +2767,6 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	if(health != 0)
 	{
 		enemy.Health = health;
-		if(!is_a_boss)
-		{
-			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
-		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;

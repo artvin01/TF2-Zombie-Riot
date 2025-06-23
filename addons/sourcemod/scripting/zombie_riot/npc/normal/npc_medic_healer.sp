@@ -224,7 +224,7 @@ public void MedicHealer_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget < 250000)
+			if(flDistanceToTarget < 250000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 			{
 				if(flDistanceToTarget < 62500)
 				{
@@ -242,23 +242,12 @@ public void MedicHealer_ClotThink(int iNPC)
 					npc.m_bnew_target = true;
 				}
 
-				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 50.0, 1.0);
-				}
-				else
-				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-					}
-				}
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
+
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 90), 1.0);
+
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.FaceTowards(WorldSpaceVec, 2000.0);
 			}

@@ -6,7 +6,7 @@ static bool Projectile_Is_Silent[MAXENTITIES]={false, ...};
 static int RMR_CurrentHomingTarget[MAXENTITIES];
 static int RMR_RocketOwner[MAXENTITIES];
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 public void Wand_autoaim_ClearAll()
 {

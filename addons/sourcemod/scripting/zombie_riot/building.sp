@@ -23,20 +23,20 @@ enum struct BuildingInfo
 	bool HealthScaleCost;
 	float Cooldown;
 	Function Func;
-	float Cooldowns[MAXTF2PLAYERS];
+	float Cooldowns[MAXPLAYERS];
 }
 
 static ArrayList BuildingList;
 static Function BuildingFuncSave[MAXENTITIES];
 static float GrabThrottle[MAXENTITIES];
-static int MenuSection[MAXTF2PLAYERS] = {-1, ...};
-static int MenuPage[MAXTF2PLAYERS];
-static Handle MenuTimer[MAXTF2PLAYERS];
-static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
+static int MenuSection[MAXPLAYERS] = {-1, ...};
+static int MenuPage[MAXPLAYERS];
+static Handle MenuTimer[MAXPLAYERS];
+static int Player_BuildingBeingCarried[MAXPLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
-static float PlayerWasHoldingProp[MAXTF2PLAYERS];
-float PreventSameFrameActivation[2][MAXTF2PLAYERS];
-int RandomIntSameRequestFrame[MAXTF2PLAYERS];
+static float PlayerWasHoldingProp[MAXPLAYERS];
+float PreventSameFrameActivation[2][MAXPLAYERS];
+int RandomIntSameRequestFrame[MAXPLAYERS];
 
 bool BuildingIsSupport(int entity)
 {
@@ -85,9 +85,9 @@ bool BuildingIsBeingCarried(int buildingindx)
 }
 #define MAX_CASH_VIA_BUILDINGS 5000
 #define MAX_SUPPLIES_EACH_WAVE 10
-static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
-static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
-static int i_GiveCashBuilding[MAXTF2PLAYERS];
+static float f_GiveAmmoSupplyFacture[MAXPLAYERS];
+static int i_GiveAmmoSupplyLimit[MAXPLAYERS];
+static int i_GiveCashBuilding[MAXPLAYERS];
 
 //dont do this on disconnect!
 void Building_ResetRewardValues(int client)
@@ -178,7 +178,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 
 }
 
-float f_ExpidonsanRepairDelay[MAXTF2PLAYERS];
+float f_ExpidonsanRepairDelay[MAXPLAYERS];
 void Building_MapStart()
 {
 	PrecacheSound(SOUND_GRAB_TF, true);
@@ -328,7 +328,7 @@ static void BuildingMenu(int client)
 
 	if(MenuSection[client] == -1)
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Extra Menu");
+		FormatEx(buffer1, sizeof(buffer1), "%t\n ", "Destroy Building Select");
 		menu.AddItem(buffer1, buffer1);
 
 		for(int i; i < sizeof(SectionName); i++)
@@ -524,7 +524,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						case 2:
 						{
-							BuilderMenu(client);
+						//	BuilderMenu(client);
+							if(IsValidClient(client))
+							{
+								DeleteBuildingLookedAt(client);
+							}
 							return 0;
 						}
 						default:
@@ -2129,7 +2133,7 @@ public bool BuildingCustomCommand(int client)
 	return false;
 }
 
-int i2_MountedInfoAndBuilding[2][MAXTF2PLAYERS + 1];
+int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
 {
@@ -2280,7 +2284,7 @@ void ParentDelayFrameForReasons(DataPack pack)
 	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
 }
 
-static Handle Timer_TransferOwnerShip[MAXTF2PLAYERS];
+static Handle Timer_TransferOwnerShip[MAXPLAYERS];
 
 static Action Timer_KillMountedStuff(Handle timer, int client)
 {

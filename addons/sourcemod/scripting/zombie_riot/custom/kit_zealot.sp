@@ -14,32 +14,32 @@ public const char PotionNames[][] =
 	"Potion of Focus",
 };
 
-Handle Timer_Zealot_Management[MAXTF2PLAYERS+1] = {null, ...};
-float Zealot_HudDelay[MAXTF2PLAYERS+1];
-static int ParticleRef[MAXTF2PLAYERS+1];
-static int WeaponCheckExist[MAXTF2PLAYERS+1];
-static int WeaponCheckExistBlock[MAXTF2PLAYERS+1];
-static int WeaponCheckExistRapidFire[MAXTF2PLAYERS+1];
-static float f_ResetMoveSpeedPenalty[MAXTF2PLAYERS+1];
-static float f_DashCooldownZealot[MAXTF2PLAYERS+1];
-static float f_StaminaLeftZealot[MAXTF2PLAYERS+1];
-static float f_BlockCheckDelay[MAXTF2PLAYERS+1];
-static int MaxDodgeCount[MAXTF2PLAYERS+1] = {10, ...};
-static float f_BlockRegenDelay[MAXTF2PLAYERS+1];
-static int i_PaPLevel[MAXTF2PLAYERS+1] = {0, ...};
-static int i_RandomCurrentPotion[MAXTF2PLAYERS+1] = {0, ...};
-static float f_PotionCooldownDo[MAXTF2PLAYERS+1];
-static float f_ChargeDuration[MAXTF2PLAYERS+1];
-static float f_ZealotDamageSave[MAXTF2PLAYERS+1];
-static int f_PistolGet[MAXTF2PLAYERS+1];
+Handle Timer_Zealot_Management[MAXPLAYERS+1] = {null, ...};
+float Zealot_HudDelay[MAXPLAYERS+1];
+static int ParticleRef[MAXPLAYERS+1];
+static int WeaponCheckExist[MAXPLAYERS+1];
+static int WeaponCheckExistBlock[MAXPLAYERS+1];
+static int WeaponCheckExistRapidFire[MAXPLAYERS+1];
+static float f_ResetMoveSpeedPenalty[MAXPLAYERS+1];
+static float f_DashCooldownZealot[MAXPLAYERS+1];
+static float f_StaminaLeftZealot[MAXPLAYERS+1];
+static float f_BlockCheckDelay[MAXPLAYERS+1];
+static int MaxDodgeCount[MAXPLAYERS+1] = {10, ...};
+static float f_BlockRegenDelay[MAXPLAYERS+1];
+static int i_PaPLevel[MAXPLAYERS+1] = {0, ...};
+static int i_RandomCurrentPotion[MAXPLAYERS+1] = {0, ...};
+static float f_PotionCooldownDo[MAXPLAYERS+1];
+static float f_ChargeDuration[MAXPLAYERS+1];
+static float f_ZealotDamageSave[MAXPLAYERS+1];
+static int f_PistolGet[MAXPLAYERS+1];
 static int i_WeaponGotLastmanBuff[MAXENTITIES];
 static bool Precached;
-static int i_WhatPotionDrink[MAXTF2PLAYERS+1];
-static float Zealot_OneshotProtection[MAXTF2PLAYERS+1];
-static float Zealot_BonusMeleeDamage[MAXTF2PLAYERS+1];
-static float Zealot_BonusMeleeDamageDuration[MAXTF2PLAYERS+1];
-static float Zealot_BonusMeleeDamageWearoff[MAXTF2PLAYERS+1];
-static float AmmoGiveWeapon[MAXTF2PLAYERS+1];
+static int i_WhatPotionDrink[MAXPLAYERS+1];
+static float Zealot_OneshotProtection[MAXPLAYERS+1];
+static float Zealot_BonusMeleeDamage[MAXPLAYERS+1];
+static float Zealot_BonusMeleeDamageDuration[MAXPLAYERS+1];
+static float Zealot_BonusMeleeDamageWearoff[MAXPLAYERS+1];
+static float AmmoGiveWeapon[MAXPLAYERS+1];
 
 void Zealot_RoundStart()
 {
@@ -574,7 +574,7 @@ public void Client_ZealotThink(int client)
 	/*
 	Find a better solution before continuning
 	*/
-	static int holding[MAXTF2PLAYERS];
+	static int holding[MAXPLAYERS];
 	int buttons = GetClientButtons(client);
 	if(holding[client] & IN_RELOAD)
 	{

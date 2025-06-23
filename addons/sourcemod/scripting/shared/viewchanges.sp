@@ -89,7 +89,7 @@ static int RobotIndex[10];
 static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
 
-static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS];
+static bool b_AntiSameFrameUpdate[MAXPLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;

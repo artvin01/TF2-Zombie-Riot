@@ -154,10 +154,6 @@ methodmap FortifiedHeadcrabZombie < CClotBody
 
 		//IDLE
 		npc.m_flSpeed = 140.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 210.0;
-		}
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
 		npc.m_flAttackHappenswillhappen = false;
 		npc.StartPathing();
@@ -261,14 +257,6 @@ public void FortifiedHeadcrabZombie_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 70.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 55.0, DMG_CLUB, -1, _, vecHit);

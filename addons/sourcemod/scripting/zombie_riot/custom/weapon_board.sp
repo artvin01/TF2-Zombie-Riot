@@ -1,22 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 //no idea how those work but they are needed from what i see
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
-static int Board_Hits[MAXTF2PLAYERS+1]={0, ...};
-static int Board_Level[MAXTF2PLAYERS+1]={0, ...};
-static float f_ParryDuration[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
-static int Board_OutlineModel[MAXTF2PLAYERS+1]={INVALID_ENT_REFERENCE, ...};
-static bool Board_Ability_1[MAXTF2PLAYERS+1]; //please forgive me for I have sinned
-static float f_BoardReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static int Board_Hits[MAXPLAYERS+1]={0, ...};
+static int Board_Level[MAXPLAYERS+1]={0, ...};
+static float f_ParryDuration[MAXPLAYERS+1]={0.0, ...};
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
+static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
+static float f_BoardReflectCooldown[MAXPLAYERS][MAXENTITIES];
 static int ParryCounter = 0;
 static int EnemiesHit[6];
 
-Handle h_TimerWeaponBoardManagement[MAXTF2PLAYERS+1] = {null, ...};
-static Handle HealPurgatory_timer[MAXTF2PLAYERS+1];
-static float f_WeaponBoardhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
+static Handle HealPurgatory_timer[MAXPLAYERS+1];
+static float f_WeaponBoardhuddelay[MAXPLAYERS+1]={0.0, ...};
 
-static bool BlockHealEasy[MAXTF2PLAYERS+1];
+static bool BlockHealEasy[MAXPLAYERS+1];
 
 //this code makes me sad
 
@@ -119,48 +119,48 @@ public void PurgKnockback(int victim, int weapon, int client)
 	FinishLagCompensation_Base_boss();
 	
 	for(int ammount; ammount < 6; ammount++)
-		{
-			int weight = i_NpcWeight[EnemiesHit[ammount]];
-			if(weight > 5)
-				continue;
-			
-			if(weight < 0)
-				weight = 1;
-			
-			if(HasSpecificBuff(EnemiesHit[ammount], "Solid Stance"))
-				continue;
+	{
+		int weight = i_NpcWeight[EnemiesHit[ammount]];
+		if(weight > 5)
+			continue;
+		
+		if(weight < 0)
+			weight = 1;
+		
+		if(HasSpecificBuff(EnemiesHit[ammount], "Solid Stance"))
+			continue;
 
-			float knockback = 500.0;
-			switch(weight)
+		float knockback = 500.0;
+		switch(weight)
+		{
+			case 0:
 			{
-				case 0:
-				{
-					knockback *= 1.25;
-				}
-				case 1:
-				{
-					knockback *= 1.1;
-				}
-				case 2:
-				{
-					knockback *= 0.75;
-				}
-				case 3:
-				{
-					knockback *= 0.35;
-				}
-				default:
-				{
-					knockback *= 0.0;
-				}
+				knockback *= 1.25;
 			}
-			if(b_thisNpcIsABoss[EnemiesHit[ammount]])
+			case 1:
 			{
-				knockback *= 0.65; //They take half knockback
+				knockback *= 1.1;
 			}
-			FreezeNpcInTime(EnemiesHit[ammount], 0.25);	
-			Custom_Knockback(client, EnemiesHit[ammount], knockback, true, true, true);
+			case 2:
+			{
+				knockback *= 0.75;
+			}
+			case 3:
+			{
+				knockback *= 0.35;
+			}
+			default:
+			{
+				knockback *= 0.0;
+			}
 		}
+		if(b_thisNpcIsABoss[EnemiesHit[ammount]])
+		{
+			knockback *= 0.65; //They take half knockback
+		}
+		FreezeNpcInTime(EnemiesHit[ammount], 0.25);	
+		Custom_Knockback(client, EnemiesHit[ammount], knockback, true, true, true);
+	}
 }
 
 public void Punish(int victim, int weapon, int bool) //AOE parry damage that scales with melee upgrades, im a coding maestro SUPREME

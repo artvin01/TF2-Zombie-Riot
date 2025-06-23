@@ -309,9 +309,6 @@ public void XenoSpyThief_ClotThink(int iNPC)
 								else
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 450.0, DMG_CLUB, -1, _, vecHit);
 								
-								
-								
-								
 								// Hit sound
 								npc.PlayMeleeHitSound();
 								

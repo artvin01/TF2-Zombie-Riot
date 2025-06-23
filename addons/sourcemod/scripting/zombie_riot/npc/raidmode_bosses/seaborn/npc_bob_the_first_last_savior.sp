@@ -1319,7 +1319,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						{
 							Zero(ClientTargeted);
 							TotalEnemeisInSight = 0;
-							int enemy_2[MAXENTITIES];
+							int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 							GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
 							for(int i; i < sizeof(enemy_2); i++)
 							{
@@ -1336,7 +1336,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 
 
-						int enemy_2[MAXENTITIES];
+						int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 						int EnemyToPull = 0;
 						GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
 						for(int i; i < sizeof(enemy_2); i++)
@@ -1718,10 +1718,6 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	if(health != 0)
 	{
 		enemy.Health = health;
-		if(!boss)
-		{
-			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
-		}
 	}
 	enemy.Team = GetTeam(bobindx);
 	strcopy(enemy.CustomName, sizeof(enemy.CustomName), name);

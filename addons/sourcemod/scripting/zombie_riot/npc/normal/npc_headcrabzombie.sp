@@ -201,10 +201,6 @@ methodmap HeadcrabZombie < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 120.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 200.0;
-		}
 		func_NPCDeath[npc.index] = HeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = HeadcrabZombie_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -311,14 +307,6 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 65.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);

@@ -38,11 +38,11 @@ enum
 	Anim_MAX
 }
 
-static int PetRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-static int PetEquipped[MAXTF2PLAYERS];
-static bool PlayingAnim[MAXTF2PLAYERS];
-static int TickAnim[MAXTF2PLAYERS];
-static int LastAnim[MAXTF2PLAYERS];
+static int PetRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int PetEquipped[MAXPLAYERS];
+static bool PlayingAnim[MAXPLAYERS];
+static int TickAnim[MAXPLAYERS];
+static int LastAnim[MAXPLAYERS];
 
 void Pets_PlayerResupply(int client)
 {
@@ -136,7 +136,7 @@ void Pets_PlayerRunCmdPost(int client, int buttons, const float angles[3])
 		}
 		
 		bool jumping;
-		static bool holdJump[MAXTF2PLAYERS];
+		static bool holdJump[MAXPLAYERS];
 		if(holdJump[client])
 		{
 			if(!(buttons & IN_JUMP))
@@ -149,7 +149,7 @@ void Pets_PlayerRunCmdPost(int client, int buttons, const float angles[3])
 		}
 		
 		bool attacking;
-		static bool holdAttack[MAXTF2PLAYERS];
+		static bool holdAttack[MAXPLAYERS];
 		if(holdAttack[client])
 		{
 			if(!(buttons & IN_ATTACK))

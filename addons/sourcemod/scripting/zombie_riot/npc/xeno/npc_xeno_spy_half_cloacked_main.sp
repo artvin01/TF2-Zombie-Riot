@@ -401,7 +401,7 @@ public void XenoSpyCloaked_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 30.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 					npc.PlayRangedSound();
 				}
 			}
