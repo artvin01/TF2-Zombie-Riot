@@ -95,7 +95,7 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	switch(type)
 	{
-		case Element_Necrosis:
+		/*case Element_Necrosis:
 		{
 			if(GetTeam(entity) == TFTeam_Red)
 				return 1000;
@@ -104,7 +104,7 @@ int Elemental_TriggerDamage(int entity, int type)
 				return 50000;
 			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
-		}
+		}*/
 		case Element_Cyro:
 		{
 			divide = 4.0;
@@ -639,7 +639,11 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				ElementDamage[victim][Element_Necrosis] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
 
-				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				float damageDeal = ReturnEntityMaxHealth(victim) / 45.0;
+				if(damageDeal > 800.0)
+					damageDeal = 800.0;
+				
+				StartBleedingTimer(victim, attacker, damageDeal, 15, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				
 				float time = 7.5;
 				if(b_thisNpcIsARaid[victim])
