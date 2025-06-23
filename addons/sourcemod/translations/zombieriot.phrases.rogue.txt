@@ -725,6 +725,18 @@
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
 		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {blue}게임 엔딩이 변경됩니다."
 	}
+	"Bob Final Option 3 No"
+	{
+		"en"	"You cant seem to remember..."
+	}
+	"Bob Final Option 3 No desc"
+	{
+		"en"	"Unaccessable area."
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
 	"Bob Final Lore 3"
 	{
 		"en"	"Those that we lost. Bladedance... Guln... Finish the job."

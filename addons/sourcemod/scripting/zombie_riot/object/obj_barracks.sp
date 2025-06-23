@@ -928,7 +928,7 @@ void Barracks_TryRegenIfBuilding(int client, float ammount = 1.0)
 		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
 			//regen barracks resoruces
-			SummonerRenerateResources(client, 25.0 * ammount, 0.0, true);
+			SummonerRenerateResources(client, 12.5 * ammount, 0.0, true);
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);

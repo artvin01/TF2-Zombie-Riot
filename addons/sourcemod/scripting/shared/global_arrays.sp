@@ -357,6 +357,7 @@ bool b_HideHealth[MAXENTITIES];
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
+bool b_IsAFlameThrower[MAXENTITIES];
 int PrevOwnerMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 int i_IsNpcType[MAXENTITIES];
