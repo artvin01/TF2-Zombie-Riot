@@ -302,7 +302,7 @@ float f_DisplayDamageHudCooldown[MAXPLAYERS];
 bool b_HudHitMarker[MAXPLAYERS] = {true, ...};
 float fl_ruina_battery[MAXENTITIES];
 float fl_ruina_battery_max[MAXENTITIES];
-bool b_DisplayDamageHudSetting[MAXPLAYERS] = {false, ...};
+bool b_DisplayDamageHudSettingInvert[MAXPLAYERS] = {false, ...};
 
 bool b_HudScreenShake[MAXPLAYERS] = {true, ...};
 bool b_HudLowHealthShake_UNSUED[MAXPLAYERS] = {true, ...};
@@ -369,6 +369,7 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
+float f_PreventMovementClient[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_DuelStatus[MAXENTITIES];

@@ -8,10 +8,21 @@ enum
 	Ritualist_Nervous
 }
 
+static const char g_GongSound[][] = {
+	")items/japan_fundraiser/TF_zen_prayer_bowl_01.wav",
+	")items/japan_fundraiser/TF_zen_prayer_bowl_02.wav",
+	")items/japan_fundraiser/TF_zen_prayer_bowl_03.wav",
+};
 static int WeaponType[MAXPLAYERS];
 static int WeaponRef[MAXPLAYERS] = {-1, ...};
 static Handle WeaponTimer[MAXPLAYERS];
+static int NpcRef[MAXPLAYERS] = {-1, ...};
+static float GiveBuffDurationFor[MAXPLAYERS] = {-1.0, ...};
 
+void Ritualist_MapStart()
+{
+	for (int i = 0; i < (sizeof(g_GongSound));	   i++) { PrecacheSound(g_GongSound[i]);	   }
+}
 void Ritualist_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RITUALIST)
@@ -23,7 +34,13 @@ void Ritualist_Enable(int client, int weapon)
 			WeaponTimer[client] = CreateTimer(0.5, RitualistTimer, client, TIMER_REPEAT);
 	}
 }
-
+public void RitualistCancelTauntDo(int client)
+{
+	int NpcTry = EntRefToEntIndex(NpcRef[client]);
+	if(!IsValidEntity(NpcTry))
+		return;
+	RitualistInternalCancel(NpcTry);
+}
 public void Weapon_Ritualist_M1(int client, int weapon, bool &result, int slot)
 {
 	int cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -144,7 +161,7 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 				}
 				case Ritualist_Nervous:
 				{
-					Explode_Logic_Custom(f_WandDamage[entity] * 0.2, owner, owner, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
+					Explode_Logic_Custom(f_WandDamage[entity] * 2.5, owner, owner, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
 					EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 
 					//float pos[3];
@@ -173,8 +190,8 @@ static Action RitualistTimer(Handle timer, int client)
 			{
 				if(WeaponType[client] == Ritualist_Necrosis)
 				{
-					float damage = Attributes_Get(weapon, 410, 1.0) * 0.325;
-					if(TF2_IsPlayerInCondition(client, TFCond_Taunting))
+					float damage = Attributes_Get(weapon, 410, 1.0) * 1.25;
+					if(IsValidEntity(NpcRef[client]))
 						damage *= 2.1538;
 					
 					Explode_Logic_Custom(damage, client, client, weapon, _, 600.0, .FunctionToCallBeforeHit = NecrosisExplodeBefore);
@@ -198,14 +215,30 @@ void Ritualist_MinionExplode(int client, int entity)
 	int weapon = EntRefToEntIndex(WeaponRef[client]);
 	if(weapon != -1)
 	{
-		float damage = 130.0 * Attributes_Get(weapon, 410, 1.0);
+		float damage = 97.5 * Attributes_Get(weapon, 410, 1.0);
 		Explode_Logic_Custom(damage, client, entity, weapon, _, 300.0, .FunctionToCallBeforeHit = NecrosisBleedExplodeBefore);
+	}
+}
+void RitualistApplyBuff(int attacker, int victim, float &damage, int weapon)
+{
+	if(GetTeam(attacker) == GetTeam(victim))
+	{
+		i_ExtraPlayerPoints[attacker] += 1;
+
+		float DurationGive = GiveBuffDurationFor[attacker] - GetGameTime();
+		if(!HasSpecificBuff(victim, "Liberal Tango"))
+		{
+			int BeamIndex = ConnectWithBeam(attacker, victim, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+			SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		ApplyStatusEffect(attacker, victim, "Liberal Tango", DurationGive);
 	}
 }
 
 static float NervousExplodeBefore(int attacker, int victim, float &damage, int weapon)
 {
-	Elemental_AddNervousDamage(victim, attacker, RoundFloat(damage * 10.0));
+	Elemental_AddNervousDamage(victim, attacker, RoundFloat(damage * 10.0), .weapon = weapon);
 	damage = 0.0;
 	return 0.0;
 }
@@ -252,14 +285,14 @@ static Action Timer_NecrosisBleed(Handle timer, DataPack pack)
 			{
 				float damage = pack.ReadFloat();
 				SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_PLASMA, weapon);
-				Elemental_AddNecrosisDamage(victim, attacker, RoundFloat(damage * 0.166667), weapon);
+				Elemental_AddNecrosisDamage(victim, attacker, RoundFloat(damage * 2.083333), weapon);
 			}
 		}
 	}
 	return Plugin_Continue;
 }
 
-public void Weapon_RitualistNecrosis_M2(int client, int weapon, bool &result, int slot)
+public void Weapon_RitualistNecrosis_Dance(int client, int weapon, bool &result, int slot)
 {
 	float cooldown = Ability_Check_Cooldown(client, slot);
 	if(cooldown > 0.0)
@@ -268,51 +301,53 @@ public void Weapon_RitualistNecrosis_M2(int client, int weapon, bool &result, in
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
+		return;
 	}
-	else if(dieingstate[client] != 0 || (GetEntityFlags(client) & FL_ONGROUND) == 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+	if(dieingstate[client] != 0 || (GetEntityFlags(client) & FL_ONGROUND) == 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
 	}
-	else
+	DoSpecialActionRitualist(client, 0);
+	Ability_Apply_Cooldown(client, slot, 10.0);
+	Rogue_OnAbilityUse(client, weapon);
+}
+public void Weapon_RitualistNecrosis_R(int client, int weapon, bool &result, int slot)
+{
+	
+	float cooldown = Ability_Check_Cooldown(client, slot);
+	if(cooldown > 0.0)
 	{
-		Rogue_OnAbilityUse(client, weapon);
-
-		Attributes_Set(client, 201, 0.2);
-		FakeClientCommand(client, "taunt");
-
-		Ability_Apply_Cooldown(client, slot, 140.0);
-		EmitGameSoundToClient(client, "Fundraiser.PrayerBowl");
-
-		ApplyTempAttrib(weapon, 410, 2.5, 20.0);
-		ApplyTempAttrib(weapon, 6, 0.4, 20.0);
-		ApplyStatusEffect(client, client, "Liberal Tango", 20.0);
-
-		float pos1[3], pos2[3];
-		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-		
-		int count;
-		for(int target = 1; target <= MaxClients; target++)
-		{
-			if(client != target && IsClientInGame(target) && IsPlayerAlive(target))
-			{
-				GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos2);
-				if(GetVectorDistance(pos1, pos2, true) < 40000.0)
-				{
-					i_ExtraPlayerPoints[client] += 10;
-
-					int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-					if(entity != -1)
-					{
-						EmitGameSoundToClient(target, "Fundraiser.PrayerBowl", client);
-						ApplyStatusEffect(client, target, "Liberal Tango", 20.0);
-						
-						if(++count > 2)
-							break;
-					}
-				}
-			}
-		}
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
+		return;
 	}
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+		return;
+	}
+	if(dieingstate[client] != 0 || (GetEntityFlags(client) & FL_ONGROUND) == 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	Rogue_OnAbilityUse(client, weapon);
+
+	Ability_Apply_Cooldown(client, slot, 100.0);
+	EmitSoundToAll(g_GongSound[GetRandomInt(0, sizeof(g_GongSound) - 1)], client, _, 75, _, 0.65);
+
+	ApplyTempAttrib(weapon, 410, 2.5, 25.0);
+	ApplyTempAttrib(weapon, 6, 0.4, 25.0);
+	ApplyStatusEffect(client, client, "Liberal Tango", 25.0);
+	GiveBuffDurationFor[client] = GetGameTime() + 25.0;
+	DoSpecialActionRitualist(client, 1);
+
 }
 
 public void Weapon_RitualistNervous_M2(int client, int weapon, bool &result, int slot)
@@ -355,11 +390,57 @@ void StatusEffects_Ritualist()
 	data.DamageDealMulti			= 0.3;	// +30% dmg
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
+	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= -1.0;
 	StatusEffect_AddGlobal(data);
+}
+
+
+
+static void DoSpecialActionRitualist(int client, int DanceMode)
+{
+	float vabsAngles[3];
+	float vabsOrigin[3];
+	GetClientAbsOrigin(client, vabsOrigin);
+	GetClientEyeAngles(client, vabsAngles);
+	vabsAngles[0] = 0.0;
+
+	int spawn_index;
+	switch(DanceMode)
+	{
+		case 0:
+		{
+			spawn_index = NPC_CreateByName("npc_allied_ritualist_afterimage", client, vabsOrigin, vabsAngles, GetTeam(client), "");
+		}
+		case 1:
+		{
+			spawn_index = NPC_CreateByName("npc_allied_ritualist_afterimage", client, vabsOrigin, vabsAngles, GetTeam(client), "longdance");
+		}
+	} 
+	NpcRef[client] = EntIndexToEntRef(spawn_index);
+	SetVariantInt(1);
+	AcceptEntityInput(client, "SetForcedTauntCam");
+
+	/*
+		Todo: Prevent movement gain from moving, i.e. speed 0.
+		no jumping either
+
+	*/
+//	TF2_AddCondition(client, TFCond_FreezeInput, -1.0);
+
+//	SetEntityMoveType(client, MOVETYPE_NONE);
+//	SetEntProp(client, Prop_Send, "m_bIsPlayerSimulated", 0);
+//	SetEntProp(client, Prop_Send, "m_bSimulatedEveryTick", 0);
+//	SetEntProp(client, Prop_Send, "m_bAnimatedEveryTick", 0);
+//	SetEntProp(client, Prop_Send, "m_bClientSideAnimation", 0);
+//	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 1);
+//	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 1);
+
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	}
 }

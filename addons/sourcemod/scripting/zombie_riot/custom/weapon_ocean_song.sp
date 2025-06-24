@@ -388,7 +388,8 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					}
 					else 
 					{
-						ApplyStatusEffect(client, ally, "Oceanic Singing", 0.21);
+						if(!HasSpecificBuff(ally, "Oceanic Scream")) // dont extend
+							ApplyStatusEffect(client, ally, "Oceanic Singing", 0.21);
 					}
 				}
 			}

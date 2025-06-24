@@ -3905,28 +3905,6 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
-#if defined ZR || defined RPG
-stock void NPC_StartPathing(int entity)
-{
-	view_as<CClotBody>(entity).StartPathing();
-}
-
-stock void NPC_StopPathing(int entity)
-{
-	view_as<CClotBody>(entity).StopPathing();
-}
-
-stock void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
-{
-	view_as<CClotBody>(entity).SetGoalVector(vec, ignore_time);
-}
-
-stock void NPC_SetGoalEntity(int entity, int target)
-{
-	view_as<CClotBody>(entity).SetGoalEntity(target);
-}
-#endif
-
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
 	return (SquareRoot(GetVectorLength(vector, false)) > length * length);
@@ -5458,6 +5436,51 @@ stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], co
 	return ref;
 }
 
+bool NpcGotStuck = false;
+stock void IsSpaceOccupiedOnlyPlayers_Cleave(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	NpcGotStuck = false;
+	TR_TraceHullFilter(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly_Cleave, entity);
+	//they got stuck, try to unstuck ONCE.
+	static float PosFiller[3];
+	static float MinsSave[3];
+	static float MaxsSave[3];
+	MinsSave = mins;
+	MaxsSave = maxs;
+	PosFiller = pos;
+//	TE_DrawBox(1, PosFiller, MinsSave, MaxsSave, 0.1, view_as<int>({255, 0, 0, 255}));
+	if(NpcGotStuck) 
+	{
+		Npc_Teleport_Safe(entity, PosFiller, MinsSave, MaxsSave);
+	}
+}
+//Should only try to collide with players.
+public bool TraceRayHitPlayersOnly_Cleave(int entity,int mask,any iExclude)
+{
+	if(!TraceRayHitPlayersOnly(entity,mask,iExclude))
+	{
+		return false;
+	}
+	NpcGotStuck = true;
+	if(entity)
+	{
+		//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
+		if(f_AntiStuckPhaseThroughFirstCheck[entity] < GetGameTime() + 1.0)
+		{
+			//if still stuck after 1 second...
+			f_AntiStuckPhaseThrough[entity] = GetGameTime() + 1.0;
+			ApplyStatusEffect(entity, entity, "Intangible", 1.0);
+			//give them 2 seconds to unstuck themselves
+		}
+		if(f_AntiStuckPhaseThroughFirstCheck[entity] < GetGameTime())
+		{
+			f_AntiStuckPhaseThroughFirstCheck[entity] = GetGameTime() + 2.0;
+		}
+	}
+
+	return false;
+}
+
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
@@ -5932,26 +5955,17 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 			}
-		
-			int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
-			if (Hit_player) //The boss will start to merge with player, STOP!
-			{
-				Npc_Teleport_Safe(iNPC, flMyPos, hullcheckmins_Player, hullcheckmaxs_Player);
+			hullcheckmins_Player[0] += 2.0;
+			hullcheckmins_Player[1] += 2.0;
 
-				//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
-				if(f_AntiStuckPhaseThroughFirstCheck[Hit_player] < GetGameTime())
-				{
-					f_AntiStuckPhaseThroughFirstCheck[Hit_player] = GetGameTime() + 2.0;
-				}
-				else if(f_AntiStuckPhaseThroughFirstCheck[Hit_player] < GetGameTime() + 1.0)
-				{
-					//if still stuck after 1 second...
-					f_AntiStuckPhaseThrough[Hit_player] = GetGameTime() + 1.0;
-					ApplyStatusEffect(Hit_player, Hit_player, "Intangible", 1.0);
-					//give them 2 seconds to unstuck themselves
-				}
-			}
-			//This is a temporary fix. find a better one for players getting stuck.
+			hullcheckmaxs_Player[0] -= 2.0;
+			hullcheckmaxs_Player[1] -= 2.0;
+			hullcheckmaxs_Player[2] -= 2.0;
+			//only if they are outright stuck inside them !!
+
+			//this unstucks all players that are inside npcs, instead of just one!
+			IsSpaceOccupiedOnlyPlayers_Cleave(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+
 		}
 	}
 #if defined ZR

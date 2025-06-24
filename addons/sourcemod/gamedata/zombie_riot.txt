@@ -268,6 +268,12 @@
 				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 
 			}
+			"CTFPlayerShared::RecalculateChargeEffects"
+			{
+				"library"	"server"
+				"linux"		"@_ZN15CTFPlayerShared24RecalculateChargeEffectsEb"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x38\x53\x56\x57\x8B\xF9\xC7\x45\xCC\x00\x00\x00\x00"
+			}
 			"CTFWeaponBaseMelee::GetShootSound"
 			{
 				// "Weapon_Slap.OpenHand", last function in the end
@@ -277,7 +283,6 @@
 
 				"linux"			"@_ZNK18CTFWeaponBaseMelee13GetShootSoundEi"
 				"windows"			"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
-
 			}
 			"CBaseAnimating::ResetSequenceInfo" //( )
 			{
@@ -351,6 +356,21 @@
 		}
 		"Functions"
 		{
+			"CTFPlayerShared::RecalculateChargeEffects"
+			{
+				"signature"		"CTFPlayerShared::RecalculateChargeEffects"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"address"
+				
+				"arguments"
+				{
+					"bInstantRemove"
+					{
+						"type"	"bool"
+					}
+				}
+			}
 			"CGameEventManager::CreateEvent"
 			{
 				"signature" "CGameEventManager::CreateEvent"

@@ -2060,7 +2060,7 @@ public void ReShowSettingsHud(int client)
 
 	menu2.AddItem("-96", buffer);
 	Format(buffer, sizeof(buffer), "%T", "DamageHud Setting", client);
-	if(b_DisplayDamageHudSetting[client])
+	if(b_DisplayDamageHudSettingInvert[client])
 	{
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -2574,13 +2574,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -97:
 				{
-					if(b_DisplayDamageHudSetting[client])
+					if(b_DisplayDamageHudSettingInvert[client])
 					{
-						b_DisplayDamageHudSetting[client] = false;
+						b_DisplayDamageHudSettingInvert[client] = false;
 					}
 					else
 					{
-						b_DisplayDamageHudSetting[client] = true;
+						b_DisplayDamageHudSettingInvert[client] = true;
 					}
 					PrintToChat(client,"%t", "DamageHud Setting Explain");
 					ReShowSettingsHud(client);
@@ -5040,15 +5040,7 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("125", RemoveExtraHealth(ClassForStats, 1.0));		// Health
 	}
 
-	float MovementSpeed = 330.0;
-	
-	if(VIPBuilding_Active())
-	{
-		MovementSpeed = 419.0;
-		map.SetValue("443", 1.25);
-	}
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
 
@@ -5058,6 +5050,26 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 	map.SetValue("8", 1.5);	//give 50% more healing at the start.
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+		map.SetValue("819", 1.0);
+		map.SetValue("820", 1.0);
+		map.SetValue("821", 1.0);
+		map.SetValue("107", 0.001);
+		//try prevent.
+	}
+	else
+	{
+		
+		float MovementSpeed = 330.0;
+		
+		if(VIPBuilding_Active())
+		{
+			MovementSpeed = 419.0;
+			map.SetValue("443", 1.25);
+		}
+		map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
+	}
 
 	float KnockbackResistance;
 	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 40, this will equal to 60* dmg

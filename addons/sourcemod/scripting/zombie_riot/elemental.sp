@@ -90,20 +90,19 @@ int Elemental_TriggerDamage(int entity, int type)
 	if(entity <= MaxClients)
 		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
 	
-
 	float divide = 3.0;
 
 	switch(type)
 	{
-		case Element_Necrosis:
+		case Element_Necrosis, Element_Nervous:
 		{
+		/*
 			if(GetTeam(entity) == TFTeam_Red)
 				return 1000;
 			
-			if(b_thisNpcIsARaid[entity])
-				return 50000;
-			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
+		*/
+			divide = 1.0;
 		}
 		case Element_Cyro:
 		{
@@ -131,35 +130,38 @@ int Elemental_TriggerDamage(int entity, int type)
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
 	
-	if(type != Element_Burger)
-	{
-		//also works against superbosses.
-		if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
-		{
-			divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
-		}
-		else if(b_thisNpcIsABoss[entity])
-		{
-			divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
-		}
-		else if (b_IsGiant[entity])
-		{
-			divide *= 2.0;
-		}
-	}
-
-	int amount = RoundToCeil((float(ReturnEntityMaxHealth(entity)) / fl_GibVulnerablity[entity]) / divide);
-	
 	switch(type)
 	{
-		case Element_Necrosis:
+		case Element_Burger:
 		{
-			int minAmount = RoundFloat(10000.0 * divide);
-			if(amount < minAmount)
-				amount = minAmount;
+			// Don't scale more with bosses
+		}
+		/*case Element_Necrosis, Element_Nervous:
+		{
+			// Don't scale more with bosses
+		}*/
+		default:
+		{
+			//also works against superbosses.
+			if(b_thisNpcIsARaid[entity] || EntRefToEntIndex(RaidBossActive) == entity)
+			{
+				divide *= (5.2 * MultiGlobalHighHealthBoss); //Reduce way further so its good against raids.
+			}
+			else if(b_thisNpcIsABoss[entity])
+			{
+				divide *= (3.0 * MultiGlobalHealthBoss); //Reduce way further so its good against bosses.
+			}
+			else if (b_IsGiant[entity])
+			{
+				divide *= 2.0;
+			}
+
+			divide *= fl_GibVulnerablity[entity];
 		}
 	}
 
+	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
+	
 	return amount;
 }
 
@@ -177,7 +179,6 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 		}
 	}
 	
-
 	// Don't display anything after 5 seconds of nothing
 	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
 		return false;
@@ -203,21 +204,24 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 		return false;
 	
 	// <CY 50%>
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 /Elemental_TriggerDamage(entity, low));
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], ElementDamage[entity][low] * 100 / Elemental_TriggerDamage(entity, low));
 	return true;
 }
 
 static void ApplyElementalEvent(int victim, int attacker, int damage)
 {
+		// x0.08 the actual damage for readability
+	int display = RoundFloat(damage * 0.8);
+
 	Event event = CreateEvent("player_bonuspoints", true);
 	event.SetInt("source_entindex", victim);
 	event.SetInt("player_entindex", attacker);
-	event.SetInt("points", -damage);
+	event.SetInt("points", -display);
 	event.FireToClient(attacker);
 	event.Cancel();
 }
 
-void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, int weapon = -1)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -277,7 +281,6 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (ReturnEntityMaxHealth(victim) * 3 / 4))
 						return;
 				}
-
 			}
 			
 			trigger = Elemental_TriggerDamage(victim, Element_Nervous);
@@ -299,11 +302,34 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				{
 					ApplyStatusEffect(attacker, victim, "Paralysis", b_thisNpcIsARaid[victim] ? 1.0 : (b_thisNpcIsABoss[victim] ? 1.5 : 3.0));
 					
-					float damageDeal = ReturnEntityMaxHealth(victim) / 6.0;
-					if(damageDeal > 6000.0)
-						damageDeal = 6000.0;
-					
-					SDKHooks_TakeDamage(victim, attacker, attacker, damageDeal, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					int DamageTags = DMG_PREVENT_PHYSICS_FORCE;
+
+					if(weapon != -1)
+						DamageTags |= DMG_PLASMA;
+					else
+						DamageTags |= DMG_TRUEDAMAGE;
+
+					float bleedDamage = 60.0;
+					if(weapon != -1)
+					{
+						float multi = Attributes_Get(weapon, 2, 1.0);
+						if(multi > 0.0)
+							bleedDamage *= multi;
+						
+						multi = Attributes_Get(weapon, 6, 1.0);
+						if(multi > 0.0)
+							bleedDamage /= multi;
+						
+						multi = Attributes_Get(weapon, 410, 1.0);
+						if(multi > 0.0)
+							bleedDamage *= multi;
+					}
+					else
+					{
+						bleedDamage *= 100.0;
+					}
+
+					SDKHooks_TakeDamage(victim, attacker, attacker, bleedDamage, DamageTags, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				}
 			}
 
@@ -500,7 +526,6 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (ReturnEntityMaxHealth(victim) * 3 / 4))
 						return;
 				}
-
 			}
 			
 			trigger = Elemental_TriggerDamage(victim, Element_Void);
@@ -567,6 +592,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	
 	if(b_NpcIsInvulnerable[victim])
 		return;
+	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -615,14 +641,48 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	
 	if(b_NpcIsInvulnerable[victim])
 		return;
+
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+
 	if(victim <= MaxClients)
 	{
-		// No effect currently for Necrosis vs Players
+		Armor_DebuffType[victim] = 4;
+		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime() && Armor_Charge[victim] < 1)
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				if(damage < 1)
+					damage = 1;
+				
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
+					
+					StartBleedingTimer(victim, attacker, 100.0, 15, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					Force_ExplainBuffToClient(victim, "Necrosis Elemental Damage");
+
+					int other, i;
+					while(TF2_GetItem(victim, other, i))
+					{
+						Saga_ChargeReduction(victim, other, -15.0);
+					}
+				}
+			}
+			
+			if(!Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound weapons/drg_pomson_drain_01.wav");
+		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
@@ -638,7 +698,34 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				ElementDamage[victim][Element_Necrosis] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
 
-				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				int DamageTags = DMG_PREVENT_PHYSICS_FORCE;
+				
+				if(weapon != -1)
+					DamageTags |= DMG_PLASMA;
+				else
+					DamageTags |= DMG_TRUEDAMAGE;
+
+				float bleedDamage = 8.0;
+				if(weapon != -1)
+				{
+					float multi = Attributes_Get(weapon, 2, 1.0);
+					if(multi > 0.0)
+						bleedDamage *= multi;
+					
+					multi = Attributes_Get(weapon, 6, 1.0);
+					if(multi > 0.0)
+						bleedDamage /= multi;
+					
+					multi = Attributes_Get(weapon, 410, 1.0);
+					if(multi > 0.0)
+						bleedDamage *= multi;
+				}
+				else
+				{
+					bleedDamage *= 100.0;
+				}
+
+				StartBleedingTimer(victim, attacker, bleedDamage, 15, weapon, DamageTags, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				
 				float time = 7.5;
 				if(b_thisNpcIsARaid[victim])

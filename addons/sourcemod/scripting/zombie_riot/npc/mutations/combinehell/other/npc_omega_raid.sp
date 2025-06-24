@@ -448,7 +448,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(npc.m_flAttackHappens < GetGameTime(npc.index))
 			{
 				int TargetEnemy = false;
@@ -637,11 +637,11 @@ public void OmegaRaid_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
@@ -1376,7 +1376,7 @@ void OmegaRaid_DefeatAnimation(OmegaRaid npc)
 	int iActivity = npc.LookupActivity("ACT_IDLE_IMPATIENT");
 	if(iActivity > 0) npc.StartActivity(iActivity);
 	npc.SetActivity("ACT_IDLE_IMPATIENT");
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	npc.m_flSpeed = 0.0;
 	//npc.SetCycle(0.50);//why

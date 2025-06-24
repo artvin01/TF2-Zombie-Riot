@@ -411,7 +411,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 		}
@@ -421,7 +421,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			npc.m_flSpeed = 200.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -431,7 +431,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			npc.m_flSpeed = 250.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -443,7 +443,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
 			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos);
+			npc.SetGoalVector(vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -458,7 +458,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			

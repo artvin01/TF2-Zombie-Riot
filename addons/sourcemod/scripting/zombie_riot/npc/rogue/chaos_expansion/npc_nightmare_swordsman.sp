@@ -477,7 +477,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 						case 3:
 							Elemental_AddOsmosisDamage(HitEnemy, npc.index, 500);
 						case 4:
-							Elemental_AddNecrosisDamage(HitEnemy, npc.index, 500, false);
+							Elemental_AddNecrosisDamage(HitEnemy, npc.index, 500);
 						case 5:
 							Elemental_AddCyroDamage(HitEnemy, npc.index, 500, false);
 					}
@@ -539,7 +539,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 							case 3:
 								Elemental_AddOsmosisDamage(target, npc.index, 500);
 							case 4:
-								Elemental_AddNecrosisDamage(target, npc.index, 500, false);
+								Elemental_AddNecrosisDamage(target, npc.index, 500);
 							case 5:
 								Elemental_AddCyroDamage(target, npc.index, 500, false);
 						}
@@ -565,11 +565,11 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -608,7 +608,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 500.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -638,7 +638,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				//how long do they do their pulse attack barrage?

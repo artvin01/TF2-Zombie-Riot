@@ -396,7 +396,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.AddGesture("ACT_BLOONARIUS_RAGE");
 		npc.m_flNextThinkTime = gameTime + 1.8;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		
 		//if(npc.m_bElite)
@@ -458,7 +458,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);		
 		float distance = GetVectorDistance(vecTarget, WorldSpaceVec, true);
 
-		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		npc.SetGoalEntity(npc.m_iTarget);
 		npc.StartPathing();
 
 		if(npc.m_flAttackHappens)
@@ -512,7 +512,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 	}
 }

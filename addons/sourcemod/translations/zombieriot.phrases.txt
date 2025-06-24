@@ -3546,11 +3546,11 @@
 	}
 	"DamageHud Setting"
 	{
-		"en" 	"Always Display Damage Hud"
+		"en" 	"Dont Always Display Damage Hud"
 	}
 	"DamageHud Setting Explain"
 	{
-		"en" 	"Enabling this setting will force ZR damage numbers, even if you enabled the TF2 damage number setting."
+		"en" 	"Enabling this setting will hide ZR damage numbers if you enabled the TF2 damage number setting."
 	}
 	"Fix First Sound Play Manually"
 	{
@@ -4274,5 +4274,9 @@
 	"Explain Rogue2 2"
 	{
 		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
+	}
+	"Call for medic to cancel!"
+	{
+		"en"		"Call for medic to cancel your dance!"
 	}
 }

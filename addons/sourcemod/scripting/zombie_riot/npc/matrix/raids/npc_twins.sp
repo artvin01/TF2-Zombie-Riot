@@ -405,11 +405,11 @@ public void Matrix_Twins_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		int value = Matrix_Twins_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);

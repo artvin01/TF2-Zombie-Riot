@@ -269,7 +269,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		npc.m_iTarget = enemyattach;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -403,11 +403,13 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
 	{	
+		
 		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
 			f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
-
+		/*
 		if(f_DoNotUnstuckDuration[npc.m_iTarget] < GetGameTime() + 0.5)
 			f_DoNotUnstuckDuration[npc.m_iTarget] = GetGameTime() + 0.5;
+		*/
 
 		if(f_TankGrabbedStandStill[npc.m_iTarget] < GetGameTime() + 0.1)
 			f_TankGrabbedStandStill[npc.m_iTarget] = GetGameTime() + 0.1;

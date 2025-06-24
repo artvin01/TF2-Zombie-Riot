@@ -291,7 +291,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_DisableSetupMusic[client] = view_as<bool>(music & (1 << 7));
 			b_DisableStatusEffectHints[client] = view_as<bool>(music & (1 << 8));
 			b_LastManDisable[client] = view_as<bool>(music & (1 << 9));
-			b_DisplayDamageHudSetting[client] = view_as<bool>(music & (1 << 10));
+			b_DisplayDamageHudSettingInvert[client] = view_as<bool>(music & (1 << 10));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -423,7 +423,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncrease[client],
 				f_Data_InBattleHudDisableDelay[client],
-				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0) + (b_LastManDisable[client] ? 512 : 0) + (b_DisplayDamageHudSetting[client] ? 1024 : 0)),
+				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0) + (b_LastManDisable[client] ? 512 : 0) + (b_DisplayDamageHudSettingInvert[client] ? 1024 : 0)),
 				id);
 			}
 			else

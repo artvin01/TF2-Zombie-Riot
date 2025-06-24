@@ -411,11 +411,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius()) 
 		{
 			PredictSubjectPosition(npc, target,_,_,vecTarget);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			npc.SetGoalVector(vecTarget);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		if(npc.m_flSwitchCooldown < gameTime)
