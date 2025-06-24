@@ -9,7 +9,7 @@ void ChemicalThrower_NPCTakeDamage(int attacker, int victim, float damage)
 	bool wasBurning = view_as<bool>(IgniteFor[victim]);
 
 	NPC_Ignite(victim, attacker, 1.0, -1, LastDamageCalc[attacker] * 4.0, true);
-	Elemental_AddNervousDamage(victim, attacker, RoundFloat(damage * 0.5));
+	Elemental_AddNervousDamage(victim, attacker, RoundFloat(damage * 0.5),_,_,true);
 
 	if(!wasBurning && IgniteFor[victim])
 	{
@@ -45,7 +45,7 @@ static Action TimerChemicalDebuff(Handle timer, DataPack pack)
 	if(attacker == -1)
 		return Plugin_Stop;
 	
-	Elemental_AddNervousDamage(entity, attacker, RoundToCeil(LastDamageCalc[attacker] * 2.0));
+	Elemental_AddNervousDamage(entity, attacker, RoundToCeil(LastDamageCalc[attacker] * 2.0),_,_,true);
 	return Plugin_Continue;
 }
 
@@ -91,7 +91,14 @@ public void Weapon_ChemicalThrower_M1(int client, int weapon, bool crit, int slo
 
 	LastDamageCalc[client] = Attributes_Get(weapon, 868, 1.0);	// Base Damage
 	LastDamageCalc[client] *= Attributes_GetOnPlayer(client, 287, true, true);	// Sentry damage bonus
-	LastDamageCalc[client] *= 1.0 / Attributes_GetOnPlayer(client, 343, true, true);	// Sentry attack speed bonus
+	float AttackspeedValue = Attributes_GetOnPlayer(client, 343, true, true);	// Sentry attack speed bonus
+	if(AttackspeedValue < 1.0)
+	{
+		LastDamageCalc[client] *= ((AttackspeedValue * -1.0) + 2.0);
+	}
+	else
+		LastDamageCalc[client] *= (1.0 / AttackspeedValue); //nerf normally.
+	
 	LastDamageCalc[client] *= BuildingWeaponDamageModif(1);
 
 	float damage = 25.0 * LastDamageCalc[client];

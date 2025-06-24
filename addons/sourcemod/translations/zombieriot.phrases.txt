@@ -4896,4 +4896,8 @@
 		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
 		"ko"		"회수되지 않은 무기는, 가격이 1.2배로 증가합니다."
 	}
+	"Call for medic to cancel!"
+	{
+		"en"		"Call for medic to cancel your dance!"
+	}
 }

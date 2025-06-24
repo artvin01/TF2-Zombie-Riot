@@ -77,7 +77,7 @@ static bool gb_medigun_on_reload[MAXPLAYERS]={false, ...};
 
 */
 
-public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
+bool NeedCrouchAbility(int client)
 {
 	bool NeedCrouch = zr_interactforcereload.BoolValue;
 
@@ -89,7 +89,12 @@ public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
 	{
 		NeedCrouch = b_InteractWithReload[client];
 	}
-	MedigunChangeModeRInternal(client, weapon, crit, slot, NeedCrouch);
+	return NeedCrouch;
+}
+public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
+{
+
+	MedigunChangeModeRInternal(client, weapon, crit, slot, NeedCrouchAbility(client));
 }
 public void MedigunChangeModeRInternal(int client, int weapon, bool crit, int slot, bool checkCrouch)
 {

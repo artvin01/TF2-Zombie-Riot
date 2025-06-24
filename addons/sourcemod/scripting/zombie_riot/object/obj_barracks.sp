@@ -961,8 +961,9 @@ void Barracks_BuildingThink(int entity)
 	if(Barracks_InstaResearchEverything)
 	{
 		//adds all flags except ZR_BARRACKS_TROOP_CLASSES
-		i_NormalBarracks_HexBarracksUpgrades[client] |= ((1 << 31));
-		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 31) - (ZR_BARRACKS_TROOP_CLASSES));
+		i_NormalBarracks_HexBarracksUpgrades[client] = (0xFFFFFFFF);
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 1));
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 2));
 	}
 		
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);

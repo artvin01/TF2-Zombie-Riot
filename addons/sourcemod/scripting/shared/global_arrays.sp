@@ -369,6 +369,7 @@ float f_TankGrabbedStandStill[MAXENTITIES];
 float f_TimeFrozenStill[MAXENTITIES];
 float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
+float f_PreventMovementClient[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_DuelStatus[MAXENTITIES];
