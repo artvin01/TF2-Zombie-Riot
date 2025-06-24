@@ -1,0 +1,8 @@
+"Phrases"
+{
+	"Curse Rift Closed"
+	{
+		"#format"	"{1:t}"
+		"en"		"{green}{1} {default}has closed!"
+	}
+}

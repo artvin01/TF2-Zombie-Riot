@@ -837,11 +837,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -853,7 +853,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1331,7 +1331,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 				npc.m_flNemalPlaceAirMinesCD = gameTime + 25.0;
 
 			npc.m_flAttackHappens = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_cheers_medic");
@@ -1371,7 +1371,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.m_flNemalSniperShotsHappening = gameTime + 1.0;
 			npc.m_flNemalSniperShotsHappeningCD = gameTime + 30.0;
 			npc.m_flAttackHappens = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
@@ -1399,7 +1399,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			}
 			npc.i_GunMode = 1;
 			npc.m_flNemalSlicerCD = gameTime + 22.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.5;
 			npc.m_flNemalSlicerHappening = gameTime + 4.5;
@@ -1737,7 +1737,7 @@ bool NemalTalkPostWin(Nemal npc)
 		npc.m_iChanged_WalkCycle = 6;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 	}
 	
 	if(!IsPartnerGivingUpNemalSilv(npc.index))
@@ -1811,7 +1811,7 @@ bool NemalTransformation(Nemal npc)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
@@ -1851,7 +1851,7 @@ bool NemalTransformation(Nemal npc)
 			RemoveSpecificBuff(npc.index, "Solid Stance");
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
+			npc.StartPathing();
 			npc.m_bPathing = true;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;
@@ -2154,7 +2154,7 @@ bool NemalSwordSlicer(Nemal npc)
 		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(npc.m_flAttackHappens < GetGameTime(npc.index))
 			{
 				int TargetEnemy = false;

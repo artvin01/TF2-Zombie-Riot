@@ -188,7 +188,7 @@ methodmap AlliedRitualistAbility < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		npc.m_flAttackHappens = 1.0;
@@ -286,6 +286,18 @@ public void AlliedRitualistAbility_ClotThink(int iNPC)
 		}
 		case 1:
 		{
+			if(npc.m_flAttackHappens && npc.m_flAttackHappens < GetGameTime())
+			{
+				npc.m_flAttackHappens = GetGameTime() + 0.5;
+				spawnRing_Vectors(origin_owner, 600.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/50, /*B*/50, /*alpha*/50, 1, /*duration*/ 0.5, 10.0, 3.0, 1);
+				spawnRing_Vectors(origin_owner, 1.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/50, /*B*/50, /*alpha*/50, 1, /*duration*/ 0.5, 10.0, 3.0, 1, 600.0 * 2.0);
+				b_NpcIsTeamkiller[Owner] = true;
+				b_AllowSelfTarget[Owner] = true;
+				Explode_Logic_Custom(0.0, Owner, Owner, -1, origin_owner, 600.0, _, _, false, 99, _, _, RitualistApplyBuff);
+				b_NpcIsTeamkiller[Owner] = false;
+				b_AllowSelfTarget[Owner] = false;
+			}
+
 			if(npc.m_flAttackHappens_2 && npc.m_flAttackHappens_2 < GetGameTime())
 			{
 				npc.PlayDanceSoundMusic();

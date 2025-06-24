@@ -1330,7 +1330,7 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -1523,7 +1523,7 @@ static void lunar_Radiance(Twirl npc)
 	EmitSoundToAll("npc/attack_helicopter/aheli_charge_up.wav");
 	EmitSoundToAll("npc/attack_helicopter/aheli_charge_up.wav");
 	
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 
 	fl_lunar_loop[npc.index] = 0.0;
 
@@ -1775,7 +1775,7 @@ static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bAllowBackWalking=false;
 			}
@@ -1954,7 +1954,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			{
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			}
@@ -2174,7 +2174,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	float VecTarget[3]; WorldSpaceCenter(Target, VecTarget);
 	npc.FaceTowards(VecTarget, 10000.0);
 
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 
 	npc.m_flSpeed = 0.0;
@@ -2944,7 +2944,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 
 	if(!npc.Anger)
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 	}
 
@@ -3185,7 +3185,7 @@ static bool Magia_Overflow(Twirl npc)
 
 	b_animation_set[npc.index] = false;
 
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	npc.m_flSpeed = 0.0;
 

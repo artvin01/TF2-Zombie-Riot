@@ -149,7 +149,7 @@ methodmap MadChicken < CClotBody
 
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		func_NPCDeath[npc.index] = MadChicken_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MadChicken_OnTakeDamage;
@@ -258,11 +258,11 @@ public void MadChicken_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

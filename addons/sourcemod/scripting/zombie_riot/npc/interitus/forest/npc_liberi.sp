@@ -164,7 +164,7 @@ static void ClotThink(int iNPC)
 		else
 		{
 			npc.StartPathing();
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 	}
 	else

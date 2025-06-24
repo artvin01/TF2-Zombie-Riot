@@ -1571,7 +1571,7 @@ public void OnClientDisconnect(int client)
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake_UNSUED[client] = true;
 	b_HudHitMarker[client] = true;
-	b_DisplayDamageHudSetting[client] = false;
+	b_DisplayDamageHudSettingInvert[client] = false;
 	f_ZombieVolumeSetting[client] = 0.0;
 }
 
@@ -3051,13 +3051,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
-	else if(condition == TFCond_UberBulletResist)
-	{
-		//This counts as uber in ZR!
-		TF2_AddCondition(client, TFCond_UberBlastResist, 99.0);
-		TF2_AddCondition(client, TFCond_UberFireResist, 99.0);
-		ApplyStatusEffect(client, client, "UBERCHARGED", 15.0);
-	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
@@ -3066,12 +3059,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		switch(condition)
 		{
-			case TFCond_UberBulletResist:
-			{
-				RemoveSpecificBuff(client, "UBERCHARGED");
-				TF2_RemoveCondition(client, TFCond_UberBlastResist);
-				TF2_RemoveCondition(client, TFCond_UberFireResist);
-			}
 			case TFCond_Zoomed:
 			{
 				ViewChange_Update(client);

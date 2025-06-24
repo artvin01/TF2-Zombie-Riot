@@ -259,7 +259,7 @@ methodmap Storm_Weaver < CClotBody
 		fl_teleport_time[npc.index]=0.0;
 		fl_recently_teleported[npc.index]=0.0;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 
 		bool solo = StrContains(data, "solo") != -1;
@@ -906,7 +906,7 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target)
 	//}
 	b_NoGravity[npc.index] = true;	//Found ya!
 
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 
 	float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);

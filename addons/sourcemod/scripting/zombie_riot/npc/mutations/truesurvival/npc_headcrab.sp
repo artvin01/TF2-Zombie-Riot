@@ -149,11 +149,11 @@ public void Headcrab_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();
@@ -203,7 +203,7 @@ public void Headcrab_ClotThink(int iNPC)
 					float vBackoffPos[3];
 					npc.m_flSpeed = 500.0;
 					BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex, 300.0, vBackoffPos);
-					NPC_SetGoalVector(npc.index, vBackoffPos, true);
+					npc.SetGoalVector(vBackoffPos, true);
 				}
 			}
 			else

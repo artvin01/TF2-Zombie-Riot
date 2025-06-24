@@ -237,7 +237,7 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 6;
 						npc.AddActivityViaSequence("dieviolent");
 						npc.StartPathing();
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_flSpeed = 0.0;
 						npc.PlayAngerSound();
 					}
@@ -273,11 +273,11 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		Iberia_SeabornAnnihilatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
