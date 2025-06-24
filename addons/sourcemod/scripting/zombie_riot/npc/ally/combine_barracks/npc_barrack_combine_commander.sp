@@ -193,7 +193,6 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
-		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 
 		if(PrimaryThreatIndex > 0)

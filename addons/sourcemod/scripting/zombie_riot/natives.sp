@@ -6,11 +6,13 @@ static GlobalForward OnClientLoaded;
 static GlobalForward OnClientWorldmodel;
 static GlobalForward OnGivenItem;
 static GlobalForward OnKilledNPC;
+static GlobalForward OnRevivingPlayer;
 static GlobalForward OnGivenCash;
 static GlobalForward OnTeamWin;
 static GlobalForward OnXpChanged;
 static GlobalForward CanRenameNpc;
 static GlobalForward OnWaveEnd;
+static GlobalForward OnSpecialModeProgress;
 
 void Natives_PluginLoad()
 {
@@ -20,6 +22,7 @@ void Natives_PluginLoad()
 	CreateNative("ZR_HasNamedItem", Native_HasNamedItem);
 	CreateNative("ZR_GiveNamedItem", Native_GiveNamedItem);
 	CreateNative("ZR_GetAliveStatus", Native_GetAliveStatus);
+	CreateNative("ZR_GetSpecialMode", Native_GetSpecialMode);
 	CreateNative("ZR_SetXpAndLevel", Native_ZR_SetXpAndLevel);
 	CreateNative("ZR_GetXp", Native_ZR_GetXp);
 
@@ -28,11 +31,13 @@ void Natives_PluginLoad()
 	OnClientWorldmodel = new GlobalForward("ZR_OnClientWorldmodel", ET_Event, Param_Cell, Param_Cell, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef, Param_CellByRef);
 	OnGivenItem = new GlobalForward("ZR_OnGivenItem", ET_Event, Param_Cell, Param_String, Param_Cell);
 	OnKilledNPC = new GlobalForward("ZR_OnKilledNPC", ET_Ignore, Param_Cell, Param_String);
+	OnRevivingPlayer = new GlobalForward("ZR_OnRevivingPlayer", ET_Ignore, Param_Cell, Param_Cell);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	CanRenameNpc = new GlobalForward("ZR_CanRenameNPCs", ET_Single, Param_Cell);
 	OnWaveEnd = new GlobalForward("ZR_OnWaveEnd", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
+	OnSpecialModeProgress = new GlobalForward("ZR_OnSpecialModeProgress", ET_Ignore, Param_Cell, Param_Cell);
 
 	RegPluginLibrary("zombie_riot");
 }
@@ -117,7 +122,13 @@ void Native_OnKilledNPC(int client, const char[] name)
 	Call_PushString(name);
 	Call_Finish();
 }
-
+void Native_OnRevivingPlayer(int reviver, int revived)
+{
+	Call_StartForward(OnRevivingPlayer);
+	Call_PushCell(reviver);
+	Call_PushCell(revived);
+	Call_Finish();
+}
 bool Native_OnGivenCash(int client, int &cash)
 {
 	Action action;
@@ -142,6 +153,13 @@ void Native_OnWaveEnd()
 	Call_PushCell(Waves_GetRoundScale());
 	Call_PushCell(Waves_GetMaxRound(false));
 	Call_PushCell(Waves_GetMaxRound(true));
+	Call_Finish();
+}
+void Native_OnSpecialModeProgress(int NewFloor, int MaxFloors)
+{
+	Call_StartForward(OnSpecialModeProgress);
+	Call_PushCell(NewFloor);
+	Call_PushCell(MaxFloors);
 	Call_Finish();
 }
 
@@ -198,6 +216,25 @@ public any Native_GetAliveStatus(Handle plugin, int numParams)
 		return 1;	// *DOWNED*
 	
 	return 0;	// :)
+}
+public any Native_GetSpecialMode(Handle plugin, int numParams)
+{
+	if(Construction_Mode())
+		return Mode_Construction;
+
+	if(Rogue_Mode())
+	{
+		if(Rogue_Theme() == 0)
+		{
+			return Mode_Rogue1;
+		}
+		else if(Rogue_Theme() == 1)
+		{
+			return Mode_Rogue2;
+		}
+	}
+	
+	return Mode_Standard;	
 }
 public any Native_ZR_GetXp(Handle plugin, int numParams)
 {

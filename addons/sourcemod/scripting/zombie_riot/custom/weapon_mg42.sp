@@ -4,10 +4,10 @@
 //If i see any of you using this on any bvb hale i will kill you and turn you into a kebab.
 //This shit is so fucking unfair for the targeted.
 
-Handle h_TimerMg42Mangement[MAXTF2PLAYERS+1] = {null, ...};
+Handle h_TimerMg42Mangement[MAXPLAYERS+1] = {null, ...};
 bool b_WeaponAccuracyModified[MAXENTITIES];
 bool b_WeaponAttackspeedModified[MAXENTITIES];
-float f_MG42huddelay[MAXTF2PLAYERS+1];
+float f_MG42huddelay[MAXPLAYERS+1];
 
 void MG42_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {

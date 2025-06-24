@@ -302,8 +302,7 @@
 	}
 	"Silenced Desc"
 	{
-		"en"	"Slows attack/reload speed & healrate by 10％."
-		"es"	"Reduce la velocidad de ataque/recarga y curacion medica en un 10％."
+		"en"	"Slows attack/reload speed & healrate by 10％.\nRaidbosses that are affected lose/weaken some ability, check Encyclopedia."
 	}
 	"Hardened Aura"
 	{

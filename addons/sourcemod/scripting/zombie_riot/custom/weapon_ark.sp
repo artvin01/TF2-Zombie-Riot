@@ -9,14 +9,14 @@ static int RMR_RocketOwner[MAXENTITIES];
 static float RWI_HomeAngle[MAXENTITIES];
 static float RWI_LockOnAngle[MAXENTITIES];
 static float RMR_RocketVelocity[MAXENTITIES];
-static int weapon_id[MAXTF2PLAYERS+1]={0, ...};
-static int Ark_Hits[MAXTF2PLAYERS+1]={0, ...};
-static int Ark_AlreadyParried[MAXTF2PLAYERS+1]={0, ...};
-static float Ark_ParryTiming[MAXTF2PLAYERS+1];
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static int Ark_Hits[MAXPLAYERS+1]={0, ...};
+static int Ark_AlreadyParried[MAXPLAYERS+1]={0, ...};
+static float Ark_ParryTiming[MAXPLAYERS+1];
 
-static int Ark_Level[MAXTF2PLAYERS+1]={0, ...};
+static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
-static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
+static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 
 
 #define SOUND_QUIBAI_SHOT 	"weapons/stunstick/alyx_stunner2.wav"
@@ -28,8 +28,8 @@ static float f_AniSoundSpam[MAXTF2PLAYERS+1]={0.0, ...};
 #define QUIBAI_SILENCE_DUR_NORMAL 4.0
 #define QUIBAI_SILENCE_DUR_ABILITY 8.0
 
-Handle h_TimerWeaponArkManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_WeaponArkhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
+Handle h_TimerWeaponArkManagement[MAXPLAYERS+1] = {null, ...};
+static float f_WeaponArkhuddelay[MAXPLAYERS+1]={0.0, ...};
 
 
 //This shitshow of a weapon is basicly the combination of bad wand/homing wand along with some abilities and a sword
@@ -37,14 +37,14 @@ static float f_WeaponArkhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
 #define LAPPLAND_MAX_HITS_NEEDED 84 //Double the amount because we do double hits.
 #define LAPPLAND_AOE_SILENCE_RANGE 200.0
 #define LAPPLAND_AOE_SILENCE_RANGE_SQUARED 40000.0
-Handle h_TimerLappLandManagement[MAXTF2PLAYERS+1] = {null, ...};
-static int i_LappLandHitsDone[MAXTF2PLAYERS+1]={0, ...};
-static float f_LappLandAbilityActive[MAXTF2PLAYERS+1]={0.0, ...};
-static float f_LappLandhuddelay[MAXTF2PLAYERS+1]={0.0, ...};
-static int i_QuibaiAttacksMade[MAXTF2PLAYERS+1]={0, ...};
+Handle h_TimerLappLandManagement[MAXPLAYERS+1] = {null, ...};
+static int i_LappLandHitsDone[MAXPLAYERS+1]={0, ...};
+static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
+static float f_LappLandhuddelay[MAXPLAYERS+1]={0.0, ...};
+static int i_QuibaiAttacksMade[MAXPLAYERS+1]={0, ...};
 
 //final pap new ability thingies
-static float Duration[MAXTF2PLAYERS];
+static float Duration[MAXPLAYERS];
 
 void Ark_autoaim_Map_Precache()
 {

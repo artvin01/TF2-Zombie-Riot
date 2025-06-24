@@ -1521,7 +1521,7 @@ stock void RemoveHudCooldown(int client)
 #define ZR_DEFAULT_HUD_OFFSET 0.15
 
 #if defined ZR
-float RaidHudOffsetSave[MAXTF2PLAYERS];
+float RaidHudOffsetSave[MAXPLAYERS];
 #endif
 
 /*

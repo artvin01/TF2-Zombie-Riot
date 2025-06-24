@@ -845,12 +845,12 @@ static float TalkCooldown[MAXENTITIES];
 static float TalkTurnPos[MAXENTITIES][3];
 static float TalkTurningFor[MAXENTITIES];
 static float HealingCooldown[MAXENTITIES];
-static bool IgnorePlayer[MAXTF2PLAYERS];
+static bool IgnorePlayer[MAXPLAYERS];
 static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
 static float CommandCooldown[MAXENTITIES];
 static bool TempRebel[MAXENTITIES];
-static int PlayerRenameWho[MAXTF2PLAYERS];
+static int PlayerRenameWho[MAXPLAYERS];
 
 void Citizen_OnMapStart()
 {
@@ -1555,11 +1555,32 @@ methodmap Citizen < CClotBody
 stock void Citizen_PlayerReplacement(int client)
 {
 	PlayerRenameWho[client] = -1;
-	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+	if(b_IsPlayerABot[client])
+		return;
+	
+	if(!Waves_Started())
+		return;
+	if(Waves_InSetup())
+		return;
+	//were they alive?
+	if(TeutonType[client] != TEUTON_NONE)
+		return;
+	//were they here since the start of the wave?
+	if(!b_HasBeenHereSinceStartOfWave[client])
+		return;
+	
+
+	if(IsClientInGame(client))
+	{
+		//easy, just spawn where they disconnected!
 		Citizen_SpawnAtPoint("temp", client);
+		return;
+	}
+	//hmm, they crashed and this somehow doesnt work out...
+	Citizen_SpawnAtPoint("temp", 0, f3_VecTeleportBackSave_OutOfBounds[client]);
 }
 
-int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
+int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3] = {0.0,0.0,0.0})
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
@@ -1592,11 +1613,18 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 	
 	if(count)
 	{
-		int entity = list[GetURandomInt() % count];
-		
 		float pos[3], ang[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		int entity;
+		if(VecPos[0] == 0.0)
+		{
+			entity = list[GetURandomInt() % count];
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		}
+		else
+		{
+			pos = VecPos;
+		}
 		
 		entity = NPC_CreateByName("npc_citizen", client, pos, ang, TFTeam_Red, data);
 		if(IsValidEntity(entity))
@@ -1605,13 +1633,20 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 			if(npc.m_nDowned)
 			{
 				npc.m_iWearable3 = TF2_CreateGlow(npc.index);
-					
+
 				SetVariantColor(view_as<int>({0, 255, 0, 255}));
 				AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
 					
 				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 			}
+			if(client != 0)
+			{
+				GetClientName(client, c_NpcName[entity], sizeof(c_NpcName[]));
+				b_NameNoTranslation[entity] = true;
+				Format(c_NpcName[entity], sizeof(c_NpcName[]), "%s's Replacement",c_NpcName[entity]);
+			}
+			ApplyStatusEffect(entity, entity, "UBERCHARGED", 2.0);
 
 			return entity;
 		}
@@ -1667,7 +1702,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	return 0;
 }
 
-static int MenuEntRef[MAXTF2PLAYERS];
+static int MenuEntRef[MAXPLAYERS];
 
 bool Citizen_Interact(int client, int entity)
 {

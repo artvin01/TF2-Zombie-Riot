@@ -9,13 +9,13 @@
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
 #define SOUND_SHRINK		"items/powerup_pickup_plague_infected.wav"
 
-static float TonicBuff[MAXTF2PLAYERS];
-static float TonicBuff_CD[MAXTF2PLAYERS];
+static float TonicBuff[MAXPLAYERS];
+static float TonicBuff_CD[MAXPLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
 static float f_RaidShrinkImmunity[MAXENTITIES];
 
 
-static Handle h_PotionBuff[MAXTF2PLAYERS+1] = {null, ...};
+static Handle h_PotionBuff[MAXPLAYERS+1] = {null, ...};
 
 public void Enable_BuffPotion(int client, int weapon) 
 {

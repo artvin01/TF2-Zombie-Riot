@@ -42,8 +42,8 @@
 #define SOUND_SKULL_IMPACT	"weapons/flare_detonator_explode_world.wav"
 #define SKULL_PARTICLE_IMPACT	"spell_skeleton_goop_green"
 
-ArrayList Skulls_ArrayStack[MAXTF2PLAYERS+1] = {null, ...};
-float Skulls_OrbitAngle[MAXTF2PLAYERS + 1] = { 0.0, ... };
+ArrayList Skulls_ArrayStack[MAXPLAYERS+1] = {null, ...};
+float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
@@ -78,7 +78,7 @@ int Skull_Weapon[MAXENTITIES + 1] = { -1, ... };
 float Skull_LaunchDMG[MAXENTITIES + 1] = { 0.0, ... };
 float SkullFloatDelay[MAXENTITIES + 1] = { 0.0, ... };
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
 void Wand_Skulls_Precache()
 {

@@ -224,7 +224,7 @@ public void MedicHealer_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget < 250000)
+			if(flDistanceToTarget < 250000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 			{
 				if(flDistanceToTarget < 62500)
 				{
@@ -244,9 +244,9 @@ public void MedicHealer_ClotThink(int iNPC)
 
 				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
 				if(b_thisNpcIsABoss[PrimaryThreatIndex])
-					MaxHealth *= 0.25;
+					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
 
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 45), 1.0);
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 90), 1.0);
 
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.FaceTowards(WorldSpaceVec, 2000.0);

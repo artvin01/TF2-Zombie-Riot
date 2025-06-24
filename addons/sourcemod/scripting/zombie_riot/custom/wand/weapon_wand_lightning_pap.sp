@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
-static float Smite_Damage[MAXTF2PLAYERS+1]={0.0, ...};
-static float Damage_Reduction[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float Smite_Damage[MAXPLAYERS+1]={0.0, ...};
+static float Damage_Reduction[MAXPLAYERS+1]={0.0, ...};
 static int Smite_Cost = 250;
 static float Smite_BaseDMG = 200.0;
 static float Smite_DMGMult = 7.5;

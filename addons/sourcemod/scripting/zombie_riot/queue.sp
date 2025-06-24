@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool AddedPoint[MAXTF2PLAYERS];
+static bool AddedPoint[MAXPLAYERS];
 
 void Queue_PutInServer(int client)
 {

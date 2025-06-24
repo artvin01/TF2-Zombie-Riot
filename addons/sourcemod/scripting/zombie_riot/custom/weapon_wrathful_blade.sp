@@ -44,19 +44,19 @@ static int Wrath_MaxTargets[3] = { 4, 4, 8 };					//Max targets hit at once by W
 static float Fury_BurningTargetsMultiplier[3] = { 1.35, 1.35, 1.35 };	//Amount to multiply melee damage dealt to burning targets (Wrath Strike does NOT benefit from this).
 
 //Client/entity-specific global variables below, don't touch these:
-static bool Wrath_Active[MAXTF2PLAYERS + 1] = { false, ... };
-static bool Fury_Active[MAXTF2PLAYERS + 1] = { false, ... };
-static bool Fury_WasHitByAOE[2049][MAXTF2PLAYERS + 1];
-static bool WrathStrike_WasHit[2049][MAXTF2PLAYERS + 1];
-static float Wrath_Multiplier[MAXTF2PLAYERS + 1] = { 1.0, ... };
-static float Fury_StoredHealth[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static float Fury_CurrentHealthDrain[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static float Fury_StartTime[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static float Fury_DamagedAt[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static float Fury_NextRing[MAXTF2PLAYERS + 1] = { 0.0, ... };
-static int Fury_Tier[MAXTF2PLAYERS + 1] = { 0, ... };
-static int Fury_Weapon[MAXTF2PLAYERS + 1] = { -1, ... };
-static float ability_cooldown[MAXTF2PLAYERS + 1] = {0.0, ...};
+static bool Wrath_Active[MAXPLAYERS + 1] = { false, ... };
+static bool Fury_Active[MAXPLAYERS + 1] = { false, ... };
+static bool Fury_WasHitByAOE[2049][MAXPLAYERS + 1];
+static bool WrathStrike_WasHit[2049][MAXPLAYERS + 1];
+static float Wrath_Multiplier[MAXPLAYERS + 1] = { 1.0, ... };
+static float Fury_StoredHealth[MAXPLAYERS + 1] = { 0.0, ... };
+static float Fury_CurrentHealthDrain[MAXPLAYERS + 1] = { 0.0, ... };
+static float Fury_StartTime[MAXPLAYERS + 1] = { 0.0, ... };
+static float Fury_DamagedAt[MAXPLAYERS + 1] = { 0.0, ... };
+static float Fury_NextRing[MAXPLAYERS + 1] = { 0.0, ... };
+static int Fury_Tier[MAXPLAYERS + 1] = { 0, ... };
+static int Fury_Weapon[MAXPLAYERS + 1] = { -1, ... };
+static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 
 static int Beam_Laser;
 static int Beam_Glow;
@@ -180,8 +180,8 @@ public float WrathfulBlade_OnNPCDamaged(int victim, int attacker, int weapon, fl
 	return damage;
 }
 
-Handle Timer_Wrath[MAXTF2PLAYERS + 1] = { INVALID_HANDLE, ... };
-static float f_NextWrathHUD[MAXTF2PLAYERS + 1] = { 0.0, ... };
+Handle Timer_Wrath[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
+static float f_NextWrathHUD[MAXPLAYERS + 1] = { 0.0, ... };
 
 public void Enable_WrathfulBlade(int client, int weapon)
 {

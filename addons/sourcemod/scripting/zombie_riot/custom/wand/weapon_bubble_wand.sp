@@ -7,7 +7,7 @@
 #define SOUND_BUBBLE_ABILITY "misc/halloween/spell_lightning_ball_cast.wav"
 
 // don't ask why please i NEED THESE IT TOOK ME LIKE 6 HOURS
-static float sf_Bubble_M2Duration[MAXTF2PLAYERS];
+static float sf_Bubble_M2Duration[MAXPLAYERS];
 static float sf_BubbleTime[MAXENTITIES];
 static float sf_BubbleSpeed[MAXENTITIES];
 static float sf_BubbleDamage[MAXENTITIES];

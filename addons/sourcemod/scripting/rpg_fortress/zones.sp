@@ -421,9 +421,9 @@ public Action Zones_TeleportTouch(int entity, int target)
 	return Plugin_Continue;
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+static Handle TimerZoneEditing[MAXPLAYERS];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentZoneEditing[MAXPLAYERS][64];
 
 void Zones_EditorMenu(int client)
 {

@@ -22,8 +22,8 @@ enum
 	NAV_MESH_WALK : Walk, do not avoid obstacles
 */
 
-int dieingstate[MAXTF2PLAYERS];
-int TeutonType[MAXTF2PLAYERS];
+int dieingstate[MAXPLAYERS];
+int TeutonType[MAXPLAYERS];
 bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
@@ -34,9 +34,9 @@ int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 
 #endif
-int i_KillsMade[MAXTF2PLAYERS];
-int i_Backstabs[MAXTF2PLAYERS];
-int i_Headshots[MAXTF2PLAYERS];	
+int i_KillsMade[MAXPLAYERS];
+int i_Backstabs[MAXPLAYERS];
+int i_Headshots[MAXPLAYERS];	
 
 #if !defined RTS
 int TeamFreeForAll = 50;
@@ -5458,6 +5458,51 @@ stock int IsSpaceOccupiedOnlyPlayers(const float pos[3], const float mins[3], co
 	return ref;
 }
 
+bool NpcGotStuck = false;
+stock void IsSpaceOccupiedOnlyPlayers_Cleave(const float pos[3], const float mins[3], const float maxs[3],int entity=-1,int &ref=-1)
+{
+	NpcGotStuck = false;
+	TR_TraceHullFilter(pos, pos, mins, maxs, MASK_NPCSOLID, TraceRayHitPlayersOnly_Cleave, entity);
+	//they got stuck, try to unstuck ONCE.
+	static float PosFiller[3];
+	static float MinsSave[3];
+	static float MaxsSave[3];
+	MinsSave = mins;
+	MaxsSave = maxs;
+	PosFiller = pos;
+//	TE_DrawBox(1, PosFiller, MinsSave, MaxsSave, 0.1, view_as<int>({255, 0, 0, 255}));
+	if(NpcGotStuck) 
+	{
+		Npc_Teleport_Safe(entity, PosFiller, MinsSave, MaxsSave);
+	}
+}
+//Should only try to collide with players.
+public bool TraceRayHitPlayersOnly_Cleave(int entity,int mask,any iExclude)
+{
+	if(!TraceRayHitPlayersOnly(entity,mask,iExclude))
+	{
+		return false;
+	}
+	NpcGotStuck = true;
+	if(entity)
+	{
+		//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
+		if(f_AntiStuckPhaseThroughFirstCheck[entity] < GetGameTime() + 1.0)
+		{
+			//if still stuck after 1 second...
+			f_AntiStuckPhaseThrough[entity] = GetGameTime() + 1.0;
+			ApplyStatusEffect(entity, entity, "Intangible", 1.0);
+			//give them 2 seconds to unstuck themselves
+		}
+		if(f_AntiStuckPhaseThroughFirstCheck[entity] < GetGameTime())
+		{
+			f_AntiStuckPhaseThroughFirstCheck[entity] = GetGameTime() + 2.0;
+		}
+	}
+
+	return false;
+}
+
 public bool TraceRayHitPlayers(int entity,int mask,any data)
 {
 	if (entity == 0) return true;
@@ -5932,26 +5977,17 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 			}
-		
-			int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
-			if (Hit_player) //The boss will start to merge with player, STOP!
-			{
-				Npc_Teleport_Safe(iNPC, flMyPos, hullcheckmins_Player, hullcheckmaxs_Player);
+			hullcheckmins_Player[0] += 2.0;
+			hullcheckmins_Player[1] += 2.0;
 
-				//first recorded instance of getting stuck after 2 seconds of nnot being stuck.
-				if(f_AntiStuckPhaseThroughFirstCheck[Hit_player] < GetGameTime())
-				{
-					f_AntiStuckPhaseThroughFirstCheck[Hit_player] = GetGameTime() + 2.0;
-				}
-				else if(f_AntiStuckPhaseThroughFirstCheck[Hit_player] < GetGameTime() + 1.0)
-				{
-					//if still stuck after 1 second...
-					f_AntiStuckPhaseThrough[Hit_player] = GetGameTime() + 1.0;
-					ApplyStatusEffect(Hit_player, Hit_player, "Intangible", 1.0);
-					//give them 2 seconds to unstuck themselves
-				}
-			}
-			//This is a temporary fix. find a better one for players getting stuck.
+			hullcheckmaxs_Player[0] -= 2.0;
+			hullcheckmaxs_Player[1] -= 2.0;
+			hullcheckmaxs_Player[2] -= 2.0;
+			//only if they are outright stuck inside them !!
+
+			//this unstucks all players that are inside npcs, instead of just one!
+			IsSpaceOccupiedOnlyPlayers_Cleave(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
+
 		}
 	}
 #if defined ZR
@@ -10708,7 +10744,7 @@ void MakeObjectIntangeable(int entity)
 }
 
 
-static int BadSpotPoints[MAXTF2PLAYERS];
+static int BadSpotPoints[MAXPLAYERS];
 stock void Spawns_CheckBadClient(int client/*, int checkextralogic = 0*/)
 {
 #if defined ZR

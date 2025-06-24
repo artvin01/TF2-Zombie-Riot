@@ -74,17 +74,17 @@ PaP Upgrades (all of them increase overall stats):
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
 
 static int LaserIndex;
-static int Cheese_PapLevel[MAXTF2PLAYERS];
-static float Cheese_Siphoner_CurrentDecayRate[MAXTF2PLAYERS];
-static float Cheese_Siphoner_Timeout[MAXTF2PLAYERS];
-static float Cheese_Siphoner_DecayDelay[MAXTF2PLAYERS];
-static bool Cheese_Siphoner_HalfCharge[MAXTF2PLAYERS];
+static int Cheese_PapLevel[MAXPLAYERS];
+static float Cheese_Siphoner_CurrentDecayRate[MAXPLAYERS];
+static float Cheese_Siphoner_Timeout[MAXPLAYERS];
+static float Cheese_Siphoner_DecayDelay[MAXPLAYERS];
+static bool Cheese_Siphoner_HalfCharge[MAXPLAYERS];
 
 static int Cheese_Glow;
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
-static float Cheese_TargetsHit[MAXTF2PLAYERS];
-static float hudtimer[MAXTF2PLAYERS];
-static int iref_WeaponConnect[MAXTF2PLAYERS+1][2];
+static float Cheese_TargetsHit[MAXPLAYERS];
+static float hudtimer[MAXPLAYERS];
+static int iref_WeaponConnect[MAXPLAYERS+1][2];
 
 static int Cheese_Siphoner_TargetMaximum[9] = {2, 2, 3, 3, 4, 4, 5, 6, 6}; // Maximum amount of enemies that the Siphoner can hit.
 static float Cheese_Siphoner_Range[9] = {250.0, 262.5, 275.0, 287.5, 300.0, 300.0, 300.0, 300.0, 300.0}; // Range of the Siphoner
@@ -103,7 +103,7 @@ static int Cheese_Lethal_MaxCharges[9] = {1, 1, 1, 2, 3, 3, 4, 4, 5}; // How man
 static float Cheese_Burst_ElementalDmg[9]  = {0.35, 0.35, 0.35, 0.4, 0.45, 0.5, 0.6, 0.75, 1.0}; // Elemental damage multiplier for Plasmic Burst
 static float Cheese_Burst_Cooldown[9]  = {22.5, 22.5, 22.5, 22.5, 17.5, 15.0, 12.5, 10.0, 7.5}; // Plasmic Burst's cooldown
 
-static Handle EffectTimer[MAXTF2PLAYERS];
+static Handle EffectTimer[MAXPLAYERS];
 static bool Precached = false;
 void Cheese_MapStart()
 {

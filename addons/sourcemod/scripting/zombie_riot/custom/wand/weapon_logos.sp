@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle PerishTimer[MAXTF2PLAYERS];
-static bool PerishReady[MAXTF2PLAYERS];
+static Handle PerishTimer[MAXPLAYERS];
+static bool PerishReady[MAXPLAYERS];
 
 void Logos_MapStart()
 {
@@ -85,7 +85,7 @@ void Weapon_Logos_ProjectileTouch(int entity, int target)
 
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
 		
-		Elemental_AddNecrosisDamage(target, owner, RoundFloat(f_WandDamage[entity]), weapon);
+		Elemental_AddNecrosisDamage(target, owner, RoundFloat(f_WandDamage[entity]), weapon, true);
 
 		if(secondary && Nymph_AllowBonusDamage(target))
 			StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.15, 4, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);

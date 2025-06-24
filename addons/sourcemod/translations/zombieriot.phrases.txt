@@ -4275,4 +4275,8 @@
 	{
 		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
 	}
+	"Call for medic to cancel!"
+	{
+		"en"		"Call for medic to cancel your dance!"
+	}
 }

@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerWestWeaponManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_West_Aim_Duration[MAXTF2PLAYERS+1];
-static int i_West_Target[MAXTF2PLAYERS+1];
+static Handle h_TimerWestWeaponManagement[MAXPLAYERS+1] = {null, ...};
+static float f_West_Aim_Duration[MAXPLAYERS+1];
+static int i_West_Target[MAXPLAYERS+1];
 
 #define SOUND_REVOLVER_FANG 	"items/powerup_pickup_agility.wav"
 #define SOUND_REVOLVER_NOON 	"ambient/medieval_falcon.wav"
@@ -153,7 +153,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			return;
 		}
-		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);

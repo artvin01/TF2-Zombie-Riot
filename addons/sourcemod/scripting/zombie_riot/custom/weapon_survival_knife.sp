@@ -1,15 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float CD_Knife[MAXTF2PLAYERS+1]={0.0, ...};
-static float CD_KnifeSet[MAXTF2PLAYERS+1]={0.0, ...};
-static float CD_Throw[MAXTF2PLAYERS+1]={0.0, ...};
-static float CD_Mode[MAXTF2PLAYERS+1]={0.0, ...};
-static int Knife_Count[MAXTF2PLAYERS+1]={0, ...};
-static int Knife_Max[MAXTF2PLAYERS+1]={0, ...};
-static bool Knife_Triple_Mode[MAXTF2PLAYERS+1]={false, ...};
-static bool InMadness[MAXTF2PLAYERS+1]={false, ...};
-Handle Timer_Knife_Management[MAXTF2PLAYERS+1] = {null, ...};
+static float CD_Knife[MAXPLAYERS+1]={0.0, ...};
+static float CD_KnifeSet[MAXPLAYERS+1]={0.0, ...};
+static float CD_Throw[MAXPLAYERS+1]={0.0, ...};
+static float CD_Mode[MAXPLAYERS+1]={0.0, ...};
+static int Knife_Count[MAXPLAYERS+1]={0, ...};
+static int Knife_Max[MAXPLAYERS+1]={0, ...};
+static bool Knife_Triple_Mode[MAXPLAYERS+1]={false, ...};
+static bool InMadness[MAXPLAYERS+1]={false, ...};
+Handle Timer_Knife_Management[MAXPLAYERS+1] = {null, ...};
 static float f_KnifeHudDelay[MAXENTITIES]={0.0, ...};
 
 #define KNIFE_SPEED_1 2500.0
@@ -325,7 +325,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	if (InMadness[client])
 		return;
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -515,7 +515,7 @@ public void Event_Knife_Touch(int entity, int target)
 	}
 }
 
-float f_AttackDelayKnife[MAXTF2PLAYERS];
+float f_AttackDelayKnife[MAXPLAYERS];
 
 public void Survival_Knife_ThrowBlade(int client, int weapon, const char[] classname, bool &result)
 {

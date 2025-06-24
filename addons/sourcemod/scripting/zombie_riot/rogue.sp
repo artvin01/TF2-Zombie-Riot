@@ -251,7 +251,7 @@ static bool InRogueMode;
 static Handle VoteTimer;
 static ArrayList Voting;
 static float VoteEndTime;
-static int VotedFor[MAXTF2PLAYERS];
+static int VotedFor[MAXPLAYERS];
 static Function VoteFunc;
 static char VoteTitle[256];
 static char StartingItem[64];
@@ -1338,6 +1338,7 @@ void Rogue_NextProgress()
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
 				{
+					Native_OnSpecialModeProgress(CurrentFloor, Floors.Length);
 					Floors.GetArray(CurrentFloor, floor);
 					if(floor.ArtifactKey[0] && !Rogue_HasNamedArtifact(floor.ArtifactKey))
 					{

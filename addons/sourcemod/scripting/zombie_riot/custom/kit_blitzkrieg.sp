@@ -1,19 +1,19 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerKitBlitzkriegManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float fl_hud_timer[MAXTF2PLAYERS+1];
-static float fl_primary_reloading[MAXTF2PLAYERS+1];
-static bool b_primary_lock[MAXTF2PLAYERS+1];
-static float fl_ion_charge[MAXTF2PLAYERS+1];
-static float fl_ion_gain_multi[MAXTF2PLAYERS+1];
-static int i_patten_type[MAXTF2PLAYERS+1];
-static float fl_ammo_efficiency[MAXTF2PLAYERS+1];
-static int i_ion_effects[MAXTF2PLAYERS+1];
-static float fl_ion_timer_recharge[MAXTF2PLAYERS+1];
+static Handle h_TimerKitBlitzkriegManagement[MAXPLAYERS+1] = {null, ...};
+static float fl_hud_timer[MAXPLAYERS+1];
+static float fl_primary_reloading[MAXPLAYERS+1];
+static bool b_primary_lock[MAXPLAYERS+1];
+static float fl_ion_charge[MAXPLAYERS+1];
+static float fl_ion_gain_multi[MAXPLAYERS+1];
+static int i_patten_type[MAXPLAYERS+1];
+static float fl_ammo_efficiency[MAXPLAYERS+1];
+static int i_ion_effects[MAXPLAYERS+1];
+static float fl_ion_timer_recharge[MAXPLAYERS+1];
 static int i_WeaponGotLastmanBuff[MAXENTITIES];
 
-static bool b_was_lastman[MAXTF2PLAYERS+1];
+static bool b_was_lastman[MAXPLAYERS+1];
 
 static int g_particleImpactTornado;
 
@@ -715,11 +715,11 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 	FinishLagCompensation_Base_boss();
 }
 
-static int i_colour[MAXTF2PLAYERS+1][4];
-static float fl_ion_chargeup[MAXTF2PLAYERS+1];
-static float fl_ion_loc[MAXTF2PLAYERS+1][3];
-static float fl_ion_throttle[MAXTF2PLAYERS+1];
-static float fl_ion_damage[MAXTF2PLAYERS+1];
+static int i_colour[MAXPLAYERS+1][4];
+static float fl_ion_chargeup[MAXPLAYERS+1];
+static float fl_ion_loc[MAXPLAYERS+1][3];
+static float fl_ion_throttle[MAXPLAYERS+1];
+static float fl_ion_damage[MAXPLAYERS+1];
 
 public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_damage)	//Ion cannon from above
 {

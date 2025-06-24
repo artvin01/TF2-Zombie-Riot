@@ -982,7 +982,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 	if(i_HexCustomDamageTypes[npc.index] & ZR_DAMAGE_NPC_REFLECT)	//do not.
 		return;
 	
-	if(attacker<MAXTF2PLAYERS)
+	if(attacker<MAXPLAYERS)
 	{
 		//CPrintToChatAll("Dmg Instance Amt: %i", i_storm_weaver_damage_instance[attacker]);
 		if(i_storm_weaver_damage_instance[attacker]>=RUINA_DAMAGE_INSTANCES_PER_FRAME)
@@ -1018,7 +1018,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 	if(total<=0)
 	{
 		//CPrintToChatAll("somehow 0 dmg on share all weaver!");
-		if(attacker<MAXTF2PLAYERS)
+		if(attacker<MAXPLAYERS)
 			RequestFrame(Nulify_Instance, attacker);
 		return;
 	}
@@ -1030,7 +1030,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 			SDKHooks_TakeDamage(other_npc, attacker, inflictor, damage/total, damagetype, weapon, damageForce, damagePosition, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 		}	
 	}
-	if(attacker<MAXTF2PLAYERS)
+	if(attacker<MAXPLAYERS)
 		RequestFrame(Nulify_Instance, attacker);
 }
 

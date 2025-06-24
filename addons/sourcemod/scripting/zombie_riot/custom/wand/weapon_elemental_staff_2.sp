@@ -1,15 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
-static int client_slammed_how_many_times[MAXTF2PLAYERS];
-static int client_slammed_how_many_times_limit[MAXTF2PLAYERS];
-static float client_slammed_pos[MAXTF2PLAYERS][3];
-static float client_slammed_forward[MAXTF2PLAYERS][3];
-static float client_slammed_right[MAXTF2PLAYERS][3];
-static float f_OriginalDamage[MAXTF2PLAYERS];
-static bool HitAlreadyWithSame[MAXTF2PLAYERS][MAXENTITIES];
+static int client_slammed_how_many_times[MAXPLAYERS];
+static int client_slammed_how_many_times_limit[MAXPLAYERS];
+static float client_slammed_pos[MAXPLAYERS][3];
+static float client_slammed_forward[MAXPLAYERS][3];
+static float client_slammed_right[MAXPLAYERS][3];
+static float f_OriginalDamage[MAXPLAYERS];
+static bool HitAlreadyWithSame[MAXPLAYERS][MAXENTITIES];
 
 public void Wand_Elemental_2_ClearAll()
 {
@@ -173,10 +173,10 @@ public Action shockwave_explosions(Handle timer, int client)
 
 //Passanger Ability stuff.
 
-Handle h_TimerPassangerManagement[MAXTF2PLAYERS+1] = {null, ...};
-static float f_PassangerHudDelay[MAXTF2PLAYERS];
-static int i_PassangerAbilityCount[MAXTF2PLAYERS+1]={0, ...};
-static float f_PassangerAbilityCooldownRegen[MAXTF2PLAYERS+1]={0.0, ...};
+Handle h_TimerPassangerManagement[MAXPLAYERS+1] = {null, ...};
+static float f_PassangerHudDelay[MAXPLAYERS];
+static int i_PassangerAbilityCount[MAXPLAYERS+1]={0, ...};
+static float f_PassangerAbilityCooldownRegen[MAXPLAYERS+1]={0.0, ...};
 
 static int BeamWand_Laser;
 static int BeamWand_Glow;
@@ -431,7 +431,7 @@ void Passanger_ChargeReduced(int client, float time)
 	if(h_TimerPassangerManagement[client] != null)
 		f_PassangerAbilityCooldownRegen[client] -= time;
 }
-bool b_PassangerExtraCharge[MAXTF2PLAYERS];
+bool b_PassangerExtraCharge[MAXPLAYERS];
 public void Passanger_Cooldown_Logic(int client, int weapon)
 {
 	if(f_PassangerHudDelay[client] < GetGameTime())

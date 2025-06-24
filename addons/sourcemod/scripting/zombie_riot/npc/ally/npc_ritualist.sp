@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSound[] = "ambient/halloween/bombinomicon_loop.wav";
+static const char g_DeathSound[] = "weapons/bombinomicon_explode1.wav";
 static const char g_LoopSound[] = "ambient/halloween/bombinomicon_loop.wav";
 
 void RitualistInstinct_MapStart()

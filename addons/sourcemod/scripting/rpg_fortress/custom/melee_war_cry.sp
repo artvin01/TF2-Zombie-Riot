@@ -4,18 +4,18 @@
 #define WARCRY_RESISTANCE_MIN 0.95
 #define WARCRY_RESISTANCE_MAX 0.9
 
-static float WarCry_Duration[MAXTF2PLAYERS+1] = {0.0, ...};
-static float WarCry_DamageTaken[MAXTF2PLAYERS+1] = {0.0, ...};
+static float WarCry_Duration[MAXPLAYERS+1] = {0.0, ...};
+static float WarCry_DamageTaken[MAXPLAYERS+1] = {0.0, ...};
 
-static float WarCryBuff_Duration[MAXTF2PLAYERS+1] = {0.0, ...};
+static float WarCryBuff_Duration[MAXPLAYERS+1] = {0.0, ...};
 static float WarCryBuff_Amount[MAXENTITIES] = {1.0, ...};
-static float WarCryBuff_Resistance[MAXTF2PLAYERS+1] = {1.0, ...};
+static float WarCryBuff_Resistance[MAXPLAYERS+1] = {1.0, ...};
 static Handle h_WarcryTimerBuff[MAXENTITIES];
 
 //prevent switching weapons
-static int i_MeleeWeaponRef[MAXTF2PLAYERS+1] = {0, ...};
+static int i_MeleeWeaponRef[MAXPLAYERS+1] = {0, ...};
 
-static Handle h_WarcryTimer[MAXTF2PLAYERS+1];
+static Handle h_WarcryTimer[MAXPLAYERS+1];
 
 void WarCryOnMapStart()
 {
@@ -47,7 +47,7 @@ public float AbilityMeleeWarcry(int client, int index, char name[48])
 
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
-	if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	if (TF2_GetClassnameSlot(classname, weapon) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");

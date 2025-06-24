@@ -281,7 +281,7 @@ stock void RemoveSlotWeapons(int client, int slot)
 		while(TF2_GetItem(client, entity, i))
 		{
 			GetEntityClassname(entity, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == slot)
+			if(TF2_GetClassnameSlot(buffer, entity) == slot)
 			{
 				TF2_RemoveItem(client, entity);
 				found = true;
@@ -426,9 +426,7 @@ stock void Edited_TF2_RespawnPlayer(int client)
 	PreMedigunCheckAntiCrash(client);
 	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
-#endif
 
-#if defined ZR
 	KillDyingGlowEffect(client);
 #endif
 	ForcePlayerCrouch(client, false);

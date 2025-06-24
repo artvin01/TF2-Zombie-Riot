@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float ability_cooldown[MAXTF2PLAYERS+1]={0.0, ...};
-static float Fireball_Damage[MAXTF2PLAYERS+1]={0.0, ...};
-static float Damage_Reduction[MAXTF2PLAYERS+1]={0.0, ...};
+static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
+static float Fireball_Damage[MAXPLAYERS+1]={0.0, ...};
+static float Damage_Reduction[MAXPLAYERS+1]={0.0, ...};
 static int gLaser1;
 #define SOUND_WAND_LIGHTNING_ABILITY "ambient/explosions/explode_9.wav"
 
