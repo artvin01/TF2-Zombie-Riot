@@ -501,7 +501,7 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(f_TimeSinceHasBeenHurt)
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		BlockLoseSay = true;
@@ -781,7 +781,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
@@ -828,11 +828,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -840,7 +840,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 			case 2:
 			{
@@ -1087,7 +1087,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		{
 			case 0:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt05");
@@ -1129,7 +1129,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						view_as<CClotBody>(summon1).m_iBleedType = BLEEDTYPE_METAL;
 					}
 
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					npc.m_flDoingAnimation = gameTime + 0.5;	
@@ -1156,7 +1156,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		{
 			case 0:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_cheers_soldier");
@@ -1202,7 +1202,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 						view_as<CClotBody>(summon).m_iBleedType = BLEEDTYPE_METAL;
 					}
 
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					npc.m_flDoingAnimation = gameTime + 0.5;	
@@ -1415,7 +1415,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			case 0:
 			{
 				CPrintToChatAll("{blue}Castellan{default}: These rockets won't miss you");
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_neck_snap_soldier");

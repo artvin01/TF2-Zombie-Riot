@@ -370,11 +370,11 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+					npc.SetGoalEntity(npc.m_iTargetWalkTo);
 				}
 			}
 			case 3:
@@ -390,7 +390,7 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 			case 4:
 			{
@@ -412,7 +412,7 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 			}
 		}
 		
@@ -422,11 +422,11 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			}
 		}
 	}
@@ -516,7 +516,7 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 	else
 	{
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
-		NPC_SetGoalVector(npc.index, Vec, true);
+		npc.SetGoalVector(Vec, true);
 		float SoClose = GetVectorDistance(Vec, VecOld);
 		if(SoClose < 500.0)
 		{

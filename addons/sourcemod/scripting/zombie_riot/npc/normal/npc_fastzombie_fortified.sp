@@ -272,7 +272,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 		}
 		if(npc.m_flInJump > GetGameTime(npc.index))
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.FaceTowards(vecTarget, 1000.0);
 			
@@ -284,11 +284,11 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		//Target close enough to hit
 		if(flDistanceToTarget < 10000)
@@ -330,7 +330,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 				delete swingTrace;
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 			}
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 		}
 		else
@@ -341,7 +341,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

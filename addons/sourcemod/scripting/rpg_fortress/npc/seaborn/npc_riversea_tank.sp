@@ -179,7 +179,7 @@ static void ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 5;
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_flDoingAnimation = gameTime + 2.6;
 						npc.m_flNextRangedAttackHappening = gameTime + 1.25;
 
@@ -265,11 +265,11 @@ static void ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, target, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.StartPathing();

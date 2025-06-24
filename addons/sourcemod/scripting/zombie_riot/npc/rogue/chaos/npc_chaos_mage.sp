@@ -174,7 +174,7 @@ public void ChaosMage_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 2;
 			npc.SetActivity("ACT_ROGUE2_CHAOS_MAGE_REVIVE");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		if(npc.m_flChaosRevive < GetGameTime(npc.index))
@@ -209,11 +209,11 @@ public void ChaosMage_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		ChaosMageSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -322,7 +322,7 @@ void ChaosMageSelfDefense(ChaosMage npc, float gameTime, int target, float dista
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_ROGUE2_CHAOS_MAGE_WALK");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 	}

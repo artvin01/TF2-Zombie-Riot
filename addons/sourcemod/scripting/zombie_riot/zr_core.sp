@@ -1299,7 +1299,7 @@ public Action CommandDebugHudTest(int client, int args)
 	//What are you.
 	if(args < 1)
     {
-        ReplyToCommand(client, "[SM] Usage: wat <cash>");
+        ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
         return Plugin_Handled;
     }
 
@@ -1308,6 +1308,12 @@ public Action CommandDebugHudTest(int client, int args)
 	DoGlobalMultiScaling();
 	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
 	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 2);
+		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
+	}	
 	return Plugin_Handled;
 }
 

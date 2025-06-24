@@ -295,11 +295,11 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -346,7 +346,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_PRINCE_IDLE");
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_flSpeed = 0.0;
 					}
 					npc.m_iTarget = Enemy_I_See;

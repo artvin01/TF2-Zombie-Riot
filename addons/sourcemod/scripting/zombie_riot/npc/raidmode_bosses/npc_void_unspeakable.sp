@@ -698,11 +698,11 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VoidUnspeakableSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -1020,7 +1020,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			npc.AddActivityViaSequence("taunt_bubbles");
 			npc.SetCycle(0.62);
 			npc.SetPlaybackRate(0.2);	
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
@@ -1304,7 +1304,7 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		npc.AddActivityViaSequence("taunt_bubbles");
 		npc.SetCycle(0.62);
 		npc.SetPlaybackRate(0.0);	
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
 		if(IsValidEntity(npc.m_iWearable4))

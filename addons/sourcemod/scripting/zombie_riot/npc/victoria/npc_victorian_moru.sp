@@ -143,7 +143,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		}
 		Vec[2]+=45.0;
 		TeleportEntity(npc.index, Vec, NULL_VECTOR, NULL_VECTOR);
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		return npc;
 	}
 }

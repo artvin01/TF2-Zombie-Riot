@@ -212,7 +212,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 	}
 
@@ -277,7 +277,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = gameTime + 0.9;
 			npc.m_flNextRangedAttackHappening = 0.0;
 			npc.m_bisWalking = false;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 
 			float pos[3];
@@ -329,11 +329,11 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -386,7 +386,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + 1.0;
 
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 				}
 			}

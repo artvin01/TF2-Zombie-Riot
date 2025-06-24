@@ -222,11 +222,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.StartPathing();
@@ -303,7 +303,7 @@ static void ClotThink(int iNPC)
 
 			if(distance > 5000.0)
 			{
-				NPC_SetGoalVector(npc.index, vecTarget);
+				npc.SetGoalVector(vecTarget);
 				npc.StartPathing();
 				return;
 			}
@@ -330,7 +330,7 @@ static void ClotThink(int iNPC)
 			npc.PickRandomPos(LastKnownPos);
 
 		npc.StartPathing();
-		NPC_SetGoalVector(npc.index, LastKnownPos);
+		npc.SetGoalVector(LastKnownPos);
 	}
 }
 
