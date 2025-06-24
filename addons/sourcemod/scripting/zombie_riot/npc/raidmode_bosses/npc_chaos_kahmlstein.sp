@@ -601,7 +601,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",true);
 				TeleportEntity(npc.index, Pos);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				i_khamlCutscene[npc.index] = 13;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
@@ -1000,7 +1000,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		{
 			npc.PlayIdleAlertSound();
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump");
@@ -1071,7 +1071,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 
 		}
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
@@ -1119,7 +1119,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 	if(!npc.m_flInJump && npc.m_flRangedSpecialDelay < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_yetipunch");
@@ -1914,7 +1914,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flJumpCooldown < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown");

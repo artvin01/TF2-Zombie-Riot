@@ -291,7 +291,7 @@ public void MedivalArbalest_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					}
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 				}
 				else
@@ -308,7 +308,7 @@ public void MedivalArbalest_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

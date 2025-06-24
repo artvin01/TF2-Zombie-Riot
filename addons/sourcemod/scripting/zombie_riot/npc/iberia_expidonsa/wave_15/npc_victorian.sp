@@ -228,7 +228,7 @@ public void IberiaVictorian_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 				//Stand still.
 			}

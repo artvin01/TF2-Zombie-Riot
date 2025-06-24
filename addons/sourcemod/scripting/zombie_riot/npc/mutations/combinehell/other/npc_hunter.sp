@@ -243,7 +243,7 @@ public void Hunter_ClotThink(int iNPC)
 				case 1:
 				{
 					npc.PlayChargeSound();
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.AddGesture("ACT_HUNTER_CHARGE_START");
 					npc.m_flAbilityOrAttack1 = gameTime + 20.0;
 					Hunter_Charge_Enable(npc, gameTime);
@@ -252,7 +252,7 @@ public void Hunter_ClotThink(int iNPC)
 				}
 				case 2:
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					Hunter_Shooty_Enable(npc, gameTime);
 				}
 			}
@@ -472,7 +472,7 @@ void HunterSelfDefense(Hunter npc, float gameTime, int target, int usage)
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayRangedSound();
 				npc.SetActivity("ACT_HUNTER_RANGE_ATTACK2_UNPLANTED");//ACT_MP_ATTACK_STAND_ITEM1 | ACT_MP_ATTACK_STAND_MELEE_ALLCLASS
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				float reloadattack = 0.5, shoot = 0.15;
 				
 				if(usage == 2)

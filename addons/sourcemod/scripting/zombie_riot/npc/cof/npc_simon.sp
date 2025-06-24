@@ -392,7 +392,7 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 		}
@@ -443,7 +443,7 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -546,7 +546,7 @@ public void Simon_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	
 	if(!npc.m_bRanAway)

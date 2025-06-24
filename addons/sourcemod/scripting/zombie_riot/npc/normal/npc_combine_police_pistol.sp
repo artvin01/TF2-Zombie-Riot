@@ -259,7 +259,7 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 				AcceptEntityInput(npc.m_iWearable2, "Disable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -415,7 +415,7 @@ public void Combine_Police_Pistol_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

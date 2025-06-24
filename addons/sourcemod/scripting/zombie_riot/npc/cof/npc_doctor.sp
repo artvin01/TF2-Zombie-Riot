@@ -358,7 +358,7 @@ public void Doctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 		}
@@ -406,7 +406,7 @@ public void Doctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -432,7 +432,7 @@ public void Doctor_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
 	
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	
 	npc.PlayDeathSound();

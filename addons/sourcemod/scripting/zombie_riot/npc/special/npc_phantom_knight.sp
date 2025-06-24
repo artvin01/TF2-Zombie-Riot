@@ -300,7 +300,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	if(!npc.m_bisWalking) //Dont move, or path. so that he doesnt rotate randomly.
 	{
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bisWalking = false;
 		npc.m_bPathing = false;	
 	}

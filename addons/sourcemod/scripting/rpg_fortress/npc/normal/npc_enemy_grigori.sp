@@ -266,7 +266,7 @@ methodmap EnemyFatherGrigori < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

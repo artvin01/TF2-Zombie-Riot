@@ -411,7 +411,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 		}
@@ -458,7 +458,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			

@@ -1310,7 +1310,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				NPC_StopPathing(this.index);
+				this.StopPathing();
 				this.m_bPathing = false;
 			}
 			
@@ -1335,7 +1335,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				NPC_StopPathing(this.index);
+				this.StopPathing();
 				this.m_bPathing = false;
 			}
 			

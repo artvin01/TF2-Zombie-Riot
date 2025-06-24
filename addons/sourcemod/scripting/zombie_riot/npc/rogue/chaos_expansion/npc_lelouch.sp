@@ -981,7 +981,7 @@ static void ClotThink(int iNPC)
 	}*/
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -2532,7 +2532,7 @@ static void Initiate_Anim(Lelouch npc, float time, char[] Anim = "", float Rate 
 {
 	npc.m_flDoingAnimation = GetGameTime(npc.index) + time;
 
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	npc.m_flGetClosestTargetTime = 0.0;
 	npc.m_flSpeed = 0.0;

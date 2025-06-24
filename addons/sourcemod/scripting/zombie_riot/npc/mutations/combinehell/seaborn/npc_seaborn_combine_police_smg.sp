@@ -269,7 +269,7 @@ public void SeabornCombinePoliceSmg_ClotThink(int iNPC)
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				npc.m_bmovedelay = false;
 				//npc.FaceTowards(vecTarget, 1000.0);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -395,7 +395,7 @@ public void SeabornCombinePoliceSmg_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

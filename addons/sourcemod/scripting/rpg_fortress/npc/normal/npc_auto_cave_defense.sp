@@ -153,7 +153,7 @@ methodmap AutomaticCaveDefense < CClotBody
 
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

@@ -1376,7 +1376,7 @@ void OmegaRaid_DefeatAnimation(OmegaRaid npc)
 	int iActivity = npc.LookupActivity("ACT_IDLE_IMPATIENT");
 	if(iActivity > 0) npc.StartActivity(iActivity);
 	npc.SetActivity("ACT_IDLE_IMPATIENT");
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	npc.m_flSpeed = 0.0;
 	//npc.SetCycle(0.50);//why

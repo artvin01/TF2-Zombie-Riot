@@ -237,7 +237,7 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 6;
 						npc.AddActivityViaSequence("dieviolent");
 						npc.StartPathing();
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_flSpeed = 0.0;
 						npc.PlayAngerSound();
 					}

@@ -190,7 +190,7 @@ methodmap Interstellar_Weaver < CClotBody
 
 		npc.m_flMeleeArmor = 2.0;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 
 		bool solo = StrContains(data, "solo") != -1;
@@ -719,7 +719,7 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 	//}
 	b_NoGravity[npc.index] = true;	//Found ya!
 
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 
 	float target_vec[3];

@@ -276,7 +276,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 6)
 					{
 						npc.m_iChanged_WalkCycle = 6;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 					}	
@@ -323,7 +323,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						if(npc.m_iChanged_WalkCycle != 7)
 						{
 							npc.m_iChanged_WalkCycle = 7;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 							npc.m_bisWalking = false;
 							npc.SetActivity("ACT_VILLAGER_MINING"); //mining animation?
 						}	
@@ -371,7 +371,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 									if(npc.m_iChanged_WalkCycle != 4)
 									{
 										npc.m_iChanged_WalkCycle = 4;
-										NPC_StopPathing(npc.index);
+										npc.StopPathing();
 										npc.m_bisWalking = false;
 										npc.SetActivity("ACT_VILLAGER_IDLE");
 									}	
@@ -435,7 +435,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 								if(npc.m_iChanged_WalkCycle != 4)
 								{
 									npc.m_iChanged_WalkCycle = 4;
-									NPC_StopPathing(npc.index);
+									npc.StopPathing();
 									npc.m_bisWalking = false;
 									npc.SetActivity("ACT_VILLAGER_IDLE");
 								}	
@@ -501,7 +501,7 @@ bool BarracksVillager_RepairSelfTower(int entity, int tower)
 		if(npc.m_iChanged_WalkCycle != 6)
 		{
 			npc.m_iChanged_WalkCycle = 6;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 		}	
@@ -549,7 +549,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 		if(npc.m_iChanged_WalkCycle != 6)
 		{
 			npc.m_iChanged_WalkCycle = 6;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 		}	

@@ -191,7 +191,7 @@ methodmap Whiteflower_ExtremeKnightGiant < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -367,7 +367,7 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -397,7 +397,7 @@ public void Whiteflower_ExtremeKnightGiant_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				//how long do they do their pulse attack barrage?

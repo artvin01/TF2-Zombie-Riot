@@ -207,7 +207,7 @@ public void Sphynx_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget > (0.0*0.0))
 			{
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
@@ -220,7 +220,7 @@ public void Sphynx_ClotThink(int iNPC)
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.5;

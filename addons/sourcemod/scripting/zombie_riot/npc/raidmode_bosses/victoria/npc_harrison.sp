@@ -546,7 +546,7 @@ static void Clone_ClotThink(int iNPC)
 	{
 		case 0:
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
@@ -742,7 +742,7 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
@@ -766,7 +766,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 0;
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
@@ -1091,7 +1091,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 					case 3:CPrintToChatAll("{skyblue}Harrison{default}: They won't miss you. Probably.");
 					case 4:CPrintToChatAll("{skyblue}Harrison{default}: Auto Rockets are fully charged");
 				}
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");

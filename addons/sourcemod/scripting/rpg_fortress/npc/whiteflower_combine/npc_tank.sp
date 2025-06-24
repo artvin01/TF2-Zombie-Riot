@@ -120,7 +120,7 @@ methodmap WhiteflowerTank < CClotBody
 		func_NPCThink[npc.index] = WhiteflowerTank_ClotThink;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 50.0;
 	
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

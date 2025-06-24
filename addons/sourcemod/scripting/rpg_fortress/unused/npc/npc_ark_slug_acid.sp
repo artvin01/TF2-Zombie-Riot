@@ -107,7 +107,7 @@ methodmap ArkSlugAcid < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlugAcid_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlugAcid_ClotThink);
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 
 		i_NoEntityFoundCount[npc.index] = 6;
@@ -289,7 +289,7 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 					npc.m_flNextMeleeAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.0 : 1.5);
 					
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 				}
 			}

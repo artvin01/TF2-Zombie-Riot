@@ -168,7 +168,7 @@ methodmap HeadcrabZombieElectro < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

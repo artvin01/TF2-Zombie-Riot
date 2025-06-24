@@ -142,7 +142,7 @@ methodmap ScoutHyper < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		npc.m_flRangedArmor = 1.15;
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		int skin = 5;

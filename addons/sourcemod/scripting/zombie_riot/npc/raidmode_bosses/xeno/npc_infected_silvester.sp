@@ -600,7 +600,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 			npc.m_bisWalking = false;
@@ -626,7 +626,7 @@ static void Internal_ClotThink(int iNPC)
 			RemoveSpecificBuff(npc.index, "Solid Stance");
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
+			npc.StartPathing();
 			npc.m_bPathing = true;
 			npc.m_flSpeed = 330.0;
 			npc.m_iInKame = 0;
@@ -736,7 +736,7 @@ static void Internal_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 			npc.FaceTowards(vecTarget, 80.0);
 		}
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
 		npc.m_flDoingAnimation = GetGameTime() + 0.1;
@@ -745,7 +745,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		NPC_StartPathing(npc.index);
+		npc.StartPathing();
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
@@ -779,7 +779,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(npc.m_flReloadDelay && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		NPC_StartPathing(npc.index);
+		npc.StartPathing();
 		npc.m_bPathing = true;
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
@@ -1166,7 +1166,7 @@ static void Internal_ClotThink(int iNPC)
 			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
 			{
 		//		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
-		//		NPC_StopPathing(npc.index);
+		//		npc.StopPathing();
 		//		npc.m_bPathing = false;
 		//		npc.m_flSpeed = 0.0;
 				npc.FaceTowards(vecTarget, 99999.9);
@@ -1233,7 +1233,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
 				npc.m_flReloadDelay = GetGameTime(npc.index) + 3.0;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
 				float pos[3];

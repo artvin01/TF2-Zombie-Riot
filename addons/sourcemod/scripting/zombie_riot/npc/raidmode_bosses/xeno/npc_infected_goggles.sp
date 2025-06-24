@@ -346,7 +346,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable3);
 		
 		// Play funny animation intro
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 

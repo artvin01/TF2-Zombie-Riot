@@ -326,14 +326,14 @@ static void ClotThink(int iNPC)
 					npc.m_flDeathAnimation = GetGameTime() + 45.0;
 					npc.m_iTarget = other;
 					i_RaidGrantExtra[npc.index] = 2;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					stop_thinking = true;
 					break;
 				}
 				else if(i_RaidGrantExtra[other] >= 2 && i_RaidGrantExtra[other] < 6)
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					stop_thinking = true;
 					break;

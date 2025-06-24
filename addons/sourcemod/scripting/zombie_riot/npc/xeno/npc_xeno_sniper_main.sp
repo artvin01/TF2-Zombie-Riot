@@ -392,7 +392,7 @@ public void XenoSniperMain_ClotThink(int iNPC)
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					npc.FaceTowards(vecTarget, 10000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.2;
@@ -449,7 +449,7 @@ public void XenoSniperMain_ClotThink(int iNPC)
 	else
 	{
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

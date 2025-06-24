@@ -189,7 +189,7 @@ methodmap Whiteflower_RagingBlader < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -332,7 +332,7 @@ public void Whiteflower_RagingBlader_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 360.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:

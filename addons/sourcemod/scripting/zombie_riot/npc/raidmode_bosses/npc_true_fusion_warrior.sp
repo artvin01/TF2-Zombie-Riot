@@ -490,7 +490,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 			
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.m_bInKame = false;
@@ -673,7 +673,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			if(npc.m_bInKame)
 			{
 				npc.FaceTowards(vecTarget, 650.0);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
 			}

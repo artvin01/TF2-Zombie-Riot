@@ -179,7 +179,7 @@ static void ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 5;
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_flDoingAnimation = gameTime + 2.6;
 						npc.m_flNextRangedAttackHappening = gameTime + 1.25;
 

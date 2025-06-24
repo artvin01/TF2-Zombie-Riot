@@ -142,7 +142,7 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, ExplosiveHeadcrabZombie_OnTakeDamagePost);
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

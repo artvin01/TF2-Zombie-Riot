@@ -245,7 +245,7 @@ public void TrollAr2_ClotThink(int iNPC)
 	if(npc.m_flReloadDelay > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;		
 	}
 	else
@@ -472,7 +472,7 @@ public void TrollAr2_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

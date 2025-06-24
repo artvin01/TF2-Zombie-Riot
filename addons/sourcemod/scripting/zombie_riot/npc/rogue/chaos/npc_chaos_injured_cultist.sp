@@ -451,7 +451,7 @@ void ChaosInjuredCultistSelfDefense(ChaosInjuredCultist npc, float gameTime, int
 				{
 					npc.m_iChanged_WalkCycle = 2;
 				//	npc.SetActivity("ACT_ROGUE2_CHAOS_INJURED_CULTIST_WALK");
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_flSpeed = 0.0;
 				}
 			}

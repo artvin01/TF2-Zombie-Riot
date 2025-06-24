@@ -300,7 +300,7 @@ static void Internal_ClotThink(int iNPC)
 	if(g_b_donner_died && g_b_item_allowed && i_RaidGrantExtra[npc.index] == 1)
 	{
 		npc.m_flNextThinkTime = 0.0;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
@@ -571,7 +571,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -774,7 +774,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			npc.FaceTowards(WorldSpaceVec, 5.0);
 		}
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
 		npc.m_flGetClosestTargetTime = 0.0;

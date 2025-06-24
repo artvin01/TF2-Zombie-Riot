@@ -116,7 +116,7 @@ methodmap ArkSlug < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlug_ClotThink);
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 
 		i_NoEntityFoundCount[npc.index] = 6;

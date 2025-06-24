@@ -389,7 +389,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			if(npc.m_iChanged_WalkCycle != 20) 	
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bisWalking = false;
 				npc.m_bPathing = false;
 				npc.m_flSpeed = 0.0;
@@ -493,7 +493,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_bAllowBackWalking = true;
 			npc.m_flSpeed = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			fl_StopDodge[npc.index] = 0.0;
 
 			i_GunMode[npc.index] = 1;
@@ -531,7 +531,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_bAllowBackWalking = false;
 			npc.m_flSpeed = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			i_GunMode[npc.index] = 0;
 			fl_RegainWalkAnim[npc.index] = gameTime + 1.5;
 			npc.m_flDoingAnimation = gameTime + 1.55;
@@ -706,7 +706,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							npc.m_iChanged_WalkCycle = 5;
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 							npc.m_flDoingAnimation = gameTime + 5.0;
 							npc.m_flNextRangedAttackHappening = gameTime + 3.1;
 							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
@@ -763,7 +763,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 7;
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 					}
 				}
 				if(npc.m_flNextRangedAttackHappening < gameTime)
@@ -993,7 +993,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					f_NpcTurnPenalty[npc.index] = 1.0;
 				}
 			}

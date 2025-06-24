@@ -237,7 +237,7 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				//divide by 24 to get the accurate time!
 				npc.m_iChanged_WalkCycle = 1;
 				npc.SetActivity("ACT_ROGUE2_CHAOS_INSANE_WALK");
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 			}
 		}
@@ -275,7 +275,7 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				//divide by 24 to get the accurate time!
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_ROGUE2_CHAOS_INSANE_ATTACK");
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				float ProjectileLoc[3];
 				GetEntPropVector(Enemy_I_See, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 				npc.m_flSpeed = 0.0;

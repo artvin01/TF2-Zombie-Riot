@@ -732,7 +732,7 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(npc.m_bFUCKYOU)
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		switch(I_cant_do_this_all_day[npc.index])
@@ -898,7 +898,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 				}
 			}
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 0;
@@ -1275,7 +1275,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			case 0:
 			{
 				CPrintToChatAll("{lightblue}Huscarls{default}: Hit me. I DARE YOU.");
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_unleashed_rage_heavy");
@@ -1462,7 +1462,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				
 					if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
 					{
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;
 						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");

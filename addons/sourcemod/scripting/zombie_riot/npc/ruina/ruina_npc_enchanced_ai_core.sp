@@ -816,7 +816,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index);
@@ -849,7 +849,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 						{
 							if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
 							{
-								NPC_StopPathing(npc.index);
+								npc.StopPathing();
 								npc.m_bPathing = false;
 							}
 							else	//but if master's target is too close we attack them
@@ -907,7 +907,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 					}
 					else
 					{
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;
 					}	
 				}
@@ -938,7 +938,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 	{
 		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
@@ -1027,7 +1027,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		}
 		else
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 		}	
 	}
@@ -1765,7 +1765,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	{
 		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_bAllowBackWalking=false;
 		}
@@ -1776,7 +1776,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 	else	//no?
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bAllowBackWalking=false;
 	}
@@ -1911,7 +1911,7 @@ bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, flo
 				npc.m_flDoingAnimation = GameTime + 1.0;
 				npc.SetPlaybackRate(1.0);	
 				npc.SetCycle(0.1);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");

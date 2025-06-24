@@ -228,7 +228,7 @@ public void VictorianSupplier_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget > (100.0*100.0))
 			{
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
@@ -241,7 +241,7 @@ public void VictorianSupplier_ClotThink(int iNPC)
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;

@@ -315,7 +315,7 @@ static void Internal_ClotThink(int iNPC)
 							npc.m_flJumpStartTime = GameTime + 0.9;
 							npc.PlayRangedReloadSound();
 						}
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;
 					}
 					else
@@ -355,7 +355,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

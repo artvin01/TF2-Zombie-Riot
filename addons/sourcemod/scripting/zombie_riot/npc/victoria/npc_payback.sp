@@ -198,7 +198,7 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 5;
 			npc.SetActivity("ACT_MUDROCK_RAGE");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		if(npc.m_PaybackAnimation < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)

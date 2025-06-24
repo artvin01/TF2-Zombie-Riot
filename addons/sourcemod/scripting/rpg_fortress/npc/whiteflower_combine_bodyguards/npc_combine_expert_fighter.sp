@@ -187,7 +187,7 @@ methodmap Whiteflower_ExpertFighter < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -320,7 +320,7 @@ public void Whiteflower_ExpertFighter_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_BRAWLER_RUN");
 					npc.m_flSpeed = 320.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:

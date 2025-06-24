@@ -650,7 +650,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 			
 			// Play funny animation intro
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flNextThinkTime = FAR_FUTURE;
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
@@ -680,7 +680,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(i_RaidGrantExtra[npc.index] > 1)
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_IDLE_SHIELDZOBIE");

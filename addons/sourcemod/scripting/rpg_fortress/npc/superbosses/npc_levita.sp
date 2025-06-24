@@ -183,7 +183,7 @@ methodmap Levita < CClotBody
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 	
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

@@ -328,7 +328,7 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 9;
 				npc.SetActivity("ACT_MP_CROUCH_MELEE");
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 			}	
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, _, 90, _, 0.85);
@@ -670,7 +670,7 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 11;
 					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_flSpeed = 0.0;
 				}	
 			}

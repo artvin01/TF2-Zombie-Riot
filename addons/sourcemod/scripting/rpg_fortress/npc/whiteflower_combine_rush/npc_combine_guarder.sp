@@ -182,7 +182,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 9;
 				npc.AddActivityViaSequence("Crouch_to_stand");
 				npc.SetPlaybackRate(0.0);	
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			//Do kaboom
@@ -288,7 +288,7 @@ public void Combine_Guarder_ClotThink(int iNPC)
 						npc.AddActivityViaSequence("Stand_to_crouch");
 					//	npc.SetCycle(0.62);
 						npc.SetPlaybackRate(0.0);	
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;
 					}
 				}

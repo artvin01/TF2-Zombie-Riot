@@ -357,7 +357,7 @@ methodmap Levita < CClotBody
 #endif
 	
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -496,7 +496,7 @@ static bool KeepDistance(Levita npc, float flDistanceToTarget, int PrimaryThreat
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bAllowBackWalking=false;
 			}

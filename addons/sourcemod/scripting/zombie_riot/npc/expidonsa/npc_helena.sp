@@ -229,7 +229,7 @@ public void Helena_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < 62500)
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				else
 				{
@@ -286,7 +286,7 @@ public void Helena_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);
 				
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.StopHealing();
 			npc.Healing = false;
@@ -406,7 +406,7 @@ public void Helena_ClotThink(int iNPC)
 		}
 		else
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);

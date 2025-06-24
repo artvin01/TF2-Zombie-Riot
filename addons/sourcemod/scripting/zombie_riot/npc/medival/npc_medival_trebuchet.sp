@@ -146,7 +146,7 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 							npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+2.54;
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 10.0;
 							npc.m_flAttackHappenswillhappen = true;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 							npc.m_bPathing = false;
 						}
 					}
@@ -195,7 +195,7 @@ public void MedivalTrebuchet_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);

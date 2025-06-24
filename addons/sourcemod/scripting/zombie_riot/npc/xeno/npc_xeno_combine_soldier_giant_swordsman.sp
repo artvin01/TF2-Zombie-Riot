@@ -306,7 +306,7 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.4;
 					npc.m_fbRangedSpecialOn = true;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 				}
 				if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
@@ -422,7 +422,7 @@ public void XenoCombineGaint_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

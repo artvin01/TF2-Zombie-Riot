@@ -373,7 +373,7 @@ methodmap Whiteflower_Boss < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		NPC_StartPathing(npc.index);
+		npc.StartPathing();
 		AlreadySaidWin = false;
 		
 		return npc;
@@ -423,7 +423,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
 		CPrintToChatAll("{crimson}Whiteflower{default}: Out of time, youre entirely surrounded.\nYou now belong to me.\nSubmit.\nHelp me kill Bob, and we will rule it all.");	
@@ -603,7 +603,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_JUMP");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 			}
 		}
@@ -700,7 +700,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -715,7 +715,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
@@ -745,7 +745,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
@@ -768,7 +768,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						SetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 
 						npc.m_iChanged_WalkCycle = 8;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;
 						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("kickdoorbaton");
@@ -792,7 +792,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RANGE_ATTACK_THROW");
 						npc.SetPlaybackRate(1.5);
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;	
 					}
 					npc.m_flAttackHappens = 0.0;
@@ -873,7 +873,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 							npc.AddActivityViaSequence("citizen4_preaction");
 							npc.SetPlaybackRate(0.0);
 							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 						}
 					}
 				}
@@ -885,7 +885,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_RUN");
 						npc.m_flSpeed = 350.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 			}

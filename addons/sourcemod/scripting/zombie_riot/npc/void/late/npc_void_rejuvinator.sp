@@ -255,7 +255,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 		{
 			if(flDistanceToTarget < 62500)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 			else
 			{

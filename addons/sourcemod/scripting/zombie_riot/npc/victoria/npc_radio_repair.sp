@@ -297,7 +297,7 @@ public void VictoriaRepair_ClotThink(int iNPC)
 		{
 			if(flDistanceToTarget < 100000)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 			else
 			{

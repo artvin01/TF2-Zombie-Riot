@@ -482,7 +482,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 14;
 				npc.m_bisWalking = false;
 				npc.m_flSpeed = 0.0;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				f_NpcTurnPenalty[npc.index] = 0.0;
 			}
 			npc.m_flRushAttack = 0.0;
@@ -588,7 +588,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
 
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						f_NpcTurnPenalty[npc.index] = 0.0;
 					}
 
@@ -841,7 +841,7 @@ void Mr_xWalkingAnimInit(int entity)
 				npc.m_iChanged_WalkCycle = 10;
 				npc.m_bisWalking = false;
 				npc.m_flSpeed = 0.0;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				f_NpcTurnPenalty[npc.index] = 1.0;
 			}
 		}

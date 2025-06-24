@@ -325,7 +325,7 @@ methodmap RavagingIntellect < CClotBody
 				SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 90);
 				SetEntityRenderColor(npc.m_iWearable3, 175, 175, 175, 90);
 				SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 90);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_neck_snap_scout");
@@ -465,7 +465,7 @@ public void RavagingIntellect_ClotThink(int iNPC)
 	{
 		npc.Anger = true;
 		npc.m_flAttackHappens = 0.0;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_commending_clap_scout");
@@ -575,7 +575,7 @@ public void RavagingIntellect_ClotThink(int iNPC)
 								npc.m_flTeleportCooldown = GetGameTime(npc.index) + 40.0;
 								ExpidonsaGroupHeal(npc.index, RAVAGING_INTELLECT_RANGE, 10, 0.0, 1.0, false,RavagingIntellectStun);
 								npc.m_flAttackHappens = 0.0;
-								NPC_StopPathing(npc.index);
+								npc.StopPathing();
 								npc.m_bPathing = false;
 								npc.m_bisWalking = false;
 								npc.AddActivityViaSequence("taunt_yeti");

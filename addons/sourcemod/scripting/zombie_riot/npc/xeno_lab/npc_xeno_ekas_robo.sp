@@ -306,7 +306,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_WALK");
 						npc.m_flSpeed = 125.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 				else
@@ -317,7 +317,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RUN");
 						npc.m_flSpeed = 420.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 

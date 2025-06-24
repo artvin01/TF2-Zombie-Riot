@@ -138,7 +138,7 @@ methodmap GiantHeadcrabZombie < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;

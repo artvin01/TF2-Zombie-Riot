@@ -437,7 +437,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		{
 			//Stop chasing dead target.
 			npc.m_iTarget = 0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.PlayIdleSound();
 		}
@@ -471,7 +471,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 				npc.FaceTowards(vecTarget, 1000.0);
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -594,7 +594,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 2000.0);
 					if(!npc.m_fbRangedSpecialOn)
 					{
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bPathing = false;
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
@@ -648,7 +648,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				}
 				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0) && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					npc.m_fbGunout = false;
 					//Look at target so we hit.
@@ -740,7 +740,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	{
 		if (npc.m_flDoingSpecial < GetGameTime(npc.index) && npc.m_iState == 1)
 		{
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_iState = 0;
 			int iActivity = npc.LookupActivity("ACT_RUN");
@@ -803,7 +803,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bmovedelay_walk = false;
 				npc.m_bmovedelay = false;
 				npc.m_bmovedelay_run = false;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -812,7 +812,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bmovedelay_walk = false;
 				npc.m_bmovedelay = false;
 				npc.m_bmovedelay_run = false;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_iState = 2;
 				int iActivity_melee = npc.LookupActivity("ACT_IDLE");

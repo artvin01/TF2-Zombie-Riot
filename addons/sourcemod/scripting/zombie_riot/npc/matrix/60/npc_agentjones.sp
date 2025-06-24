@@ -268,7 +268,7 @@ public void AgentJones_ClotThink(int iNPC)
 			npc.m_bmovedelay = false;
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 		//	npc.FaceTowards(vecTarget, 1000.0);
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 		}
 		

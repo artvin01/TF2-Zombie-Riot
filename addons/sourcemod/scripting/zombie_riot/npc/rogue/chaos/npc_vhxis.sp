@@ -420,7 +420,7 @@ public void Vhxis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 10;
 			npc.SetActivity("ACT_ROGUE2_VOID_DRAMATIC_DEATH");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		if(npc.m_flDeathAnimation < GetGameTime(npc.index))
@@ -787,7 +787,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			npc.m_iChanged_WalkCycle = 3;
 			npc.SetActivity("ACT_ROGUE2_VOID_GROUND_VAPORISER");
 			npc.SetPlaybackRate(0.5);
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 		}
@@ -921,7 +921,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 5;
 			npc.SetActivity("ACT_ROGUE2_VOID_GENERATOR");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 		}
@@ -1014,7 +1014,7 @@ bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.SetActivity("ACT_ROGUE2_VOID_STAND_PULSEATTACK");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 		}
@@ -1249,7 +1249,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 6;
 			npc.SetActivity("ACT_ROGUE2_VOID_MAGIC");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
 		}

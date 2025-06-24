@@ -396,7 +396,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.AddGesture("ACT_BLOONARIUS_RAGE");
 		npc.m_flNextThinkTime = gameTime + 1.8;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		
 		//if(npc.m_bElite)
@@ -512,7 +512,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 	}
 }

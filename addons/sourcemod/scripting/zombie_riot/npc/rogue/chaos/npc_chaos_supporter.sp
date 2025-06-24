@@ -315,7 +315,7 @@ void ChaosSupporterSelfDefense(ChaosSupporter npc, float gameTime, int target, f
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_ROGUE2_CHAOS_MAGE_SUPPORT_WALK");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 	}

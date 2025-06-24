@@ -185,7 +185,7 @@ methodmap MutatedDrowedZombieHuman < CClotBody
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;	
 		
 		return npc;
@@ -480,7 +480,7 @@ public void MutatedDrowedZombieHuman_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 				}
 				else
@@ -505,7 +505,7 @@ public void MutatedDrowedZombieHuman_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + 7.5;
 
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 					float flPos[3]; // original
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);

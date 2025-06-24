@@ -428,15 +428,15 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_MP_STAND_MELEE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+					view_as<CClotBody>(iNPC).StartPathing();
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;
@@ -453,7 +453,7 @@ static void Internal_ClotThink(int iNPC)
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				
 				npc.SetGoalEntity(buildingentity);
-				NPC_StartPathing(iNPC);
+				view_as<CClotBody>(iNPC).StartPathing();
 				//Walk to building.
 				if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, buildingentity))
 				{
@@ -473,7 +473,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_MP_STAND_MELEE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 			}
@@ -485,7 +485,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
-					NPC_StopPathing(iNPC);
+					view_as<CClotBody>(iNPC).StopPathing();
 				}
 			}
 		}
@@ -509,7 +509,7 @@ static void Internal_ClotThink(int iNPC)
 						{
 							npc.m_iChanged_WalkCycle = 3;
 							npc.SetActivity("ACT_MP_RUN_MELEE");
-							NPC_StopPathing(iNPC);
+							view_as<CClotBody>(iNPC).StopPathing();
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
 						}
@@ -546,8 +546,8 @@ static void Internal_ClotThink(int iNPC)
 					{
 						float AproxRandomSpaceToWalkTo[3];
 						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-						NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+						view_as<CClotBody>(iNPC).StartPathing();
 						//Walk to building.
 						if(npc.m_iChanged_WalkCycle != 4) 	
 						{
@@ -573,7 +573,7 @@ static void Internal_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index,npc.m_iTarget))
 				{
 					npc.SetGoalEntity(npc.m_iTarget);
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;
@@ -590,7 +590,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_MP_STAND_MELEE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 
@@ -699,7 +699,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-					NPC_StopPathing(iNPC);
+					view_as<CClotBody>(iNPC).StopPathing();
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
 				}
@@ -737,8 +737,8 @@ static void Internal_ClotThink(int iNPC)
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-				NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-				NPC_StartPathing(iNPC);
+				view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+				view_as<CClotBody>(iNPC).StartPathing();
 				//Walk to building.
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -774,7 +774,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					npc.SetGoalEntity(npc.m_iTarget);
 				}
-				NPC_StartPathing(iNPC);
+				view_as<CClotBody>(iNPC).StartPathing();
 				//Walk to building.
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -792,7 +792,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
-					NPC_StopPathing(iNPC);
+					view_as<CClotBody>(iNPC).StopPathing();
 				}
 			}
 		}

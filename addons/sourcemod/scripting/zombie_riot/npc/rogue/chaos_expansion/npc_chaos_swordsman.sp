@@ -478,7 +478,7 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 320.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -508,7 +508,7 @@ public void ChaosSwordsman_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				//how long do they do their pulse attack barrage?

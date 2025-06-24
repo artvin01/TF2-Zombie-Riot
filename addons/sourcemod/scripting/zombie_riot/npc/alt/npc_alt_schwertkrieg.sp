@@ -268,7 +268,7 @@ static void Internal_ClotThink(int iNPC)
 	if(g_b_schwert_died && g_b_item_allowed  && i_RaidGrantExtra[npc.index] == 1)	//Schwertkrieg is mute,
 	{
 		npc.m_flNextThinkTime = 0.0;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
@@ -414,7 +414,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

@@ -273,7 +273,7 @@ public void ChaosSickKnight_ClotThink(int iNPC)
 			npc.m_iChanged_WalkCycle = 6;
 			npc.SetActivity("ACT_ROGUE2_CHAOS_KNIGHT_COUGHING");
 			npc.SetPlaybackRate(0.75);
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		npc.PlayCoughSound();
@@ -533,7 +533,7 @@ void ChaosSickKnightSelfDefense(ChaosSickKnight npc, float gameTime, int target,
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_ROGUE2_CHAOS_KNIGHT_WALK");
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_flSpeed = 0.0;
 				}
 			}

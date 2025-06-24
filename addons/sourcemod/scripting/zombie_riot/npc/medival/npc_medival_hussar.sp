@@ -321,11 +321,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
 				}
-				NPC_StartPathing(npc.index); //Charge at them!
+				npc.StartPathing(); //Charge at them!
 			}
 			else
 			{
-				NPC_StopPathing(iNPC);
+				view_as<CClotBody>(iNPC).StopPathing();
 				npc.m_iTarget = GetClosestTarget(npc.index); //Find new target instantly.
 			}
 		}
@@ -360,7 +360,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
 				}
-				NPC_StartPathing(npc.index); //Charge at them!
+				npc.StartPathing(); //Charge at them!
 			}
 			else
 			{
@@ -374,15 +374,15 @@ public void MedivalHussar_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RIDER_IDLE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+					view_as<CClotBody>(iNPC).StartPathing();
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_flSpeed = 350.0;

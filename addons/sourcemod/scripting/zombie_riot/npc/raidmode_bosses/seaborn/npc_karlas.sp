@@ -823,7 +823,7 @@ static void Internal_ClotThink(int iNPC)
 		}
 		if(Karlas_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_npc_basespeed;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		GetTarget(npc);
