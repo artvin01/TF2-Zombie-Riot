@@ -190,6 +190,9 @@ static Action RitualistTimer(Handle timer, int client)
 				if(WeaponType[client] == Ritualist_Necrosis)
 				{
 					float damage = Attributes_Get(weapon, 410, 1.0) * 1.25;
+					if(IsValidEntity(NpcRef[client]))
+						damage *= 2.1538;
+					
 					Explode_Logic_Custom(damage, client, client, weapon, _, 600.0, .FunctionToCallBeforeHit = NecrosisExplodeBefore);
 				}
 			}
@@ -320,10 +323,10 @@ public void Weapon_RitualistNecrosis_R(int client, int weapon, bool &result, int
 	Rogue_OnAbilityUse(client, weapon);
 
 	Ability_Apply_Cooldown(client, slot, 100.0);
-	EmitSoundToClient(client, g_GongSound[GetRandomInt(0, sizeof(g_GongSound) - 1)], client, _, 75, _, 0.65);
+	EmitSoundToAll(g_GongSound[GetRandomInt(0, sizeof(g_GongSound) - 1)], client, _, 75, _, 0.65);
 
-	ApplyTempAttrib(weapon, 410, 5.3845, 25.0);
-	ApplyTempAttrib(weapon, 6, 0.1857, 25.0);
+	ApplyTempAttrib(weapon, 410, 2.5, 25.0);
+	ApplyTempAttrib(weapon, 6, 0.4, 25.0);
 	ApplyStatusEffect(client, client, "Liberal Tango", 25.0);
 	DoSpecialActionRitualist(client, 1);
 
@@ -342,7 +345,6 @@ public void Weapon_RitualistNecrosis_R(int client, int weapon, bool &result, int
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					EmitSoundToClient(target, g_GongSound[GetRandomInt(0, sizeof(g_GongSound) - 1)], client, _, 75, _, 0.65);
 					ApplyStatusEffect(client, target, "Liberal Tango", 25.0);
 					int BeamIndex = ConnectWithBeam(client, target, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 					SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
