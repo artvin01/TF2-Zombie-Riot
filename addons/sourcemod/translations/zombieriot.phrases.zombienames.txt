@@ -3723,6 +3723,14 @@
 		"es" "Se mostrara en tu HUD como el icono superior.\nSi la barra entera se llena, recibes maleficios fuertes y diferentes.\nRecibe armadura para curar este daño."
 		"ko" "원소 피해는 당신의 허드 위의 아이콘으로 표시됩니다.\n이것이 아머 게이지를 꽉 채워버리면, 각 원소 피해마다 색다른 나쁜 이점을 발생시키게 됩니다.\n아머를 획득하면 이 피해를 치유할 수 있습니다."
 	}
+	"Necrosis Elemental Damage"
+	{
+		"en"	"Necrosis Elemental Damage"
+	}
+	"Necrosis Elemental Damage Desc"
+	{
+		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+	}
 
 	"Overmana Overload"
 	{

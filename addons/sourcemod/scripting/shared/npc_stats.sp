@@ -3905,28 +3905,6 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
-#if defined ZR || defined RPG
-stock void NPC_StartPathing(int entity)
-{
-	view_as<CClotBody>(entity).StartPathing();
-}
-
-stock void NPC_StopPathing(int entity)
-{
-	view_as<CClotBody>(entity).StopPathing();
-}
-
-stock void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
-{
-	view_as<CClotBody>(entity).SetGoalVector(vec, ignore_time);
-}
-
-stock void NPC_SetGoalEntity(int entity, int target)
-{
-	view_as<CClotBody>(entity).SetGoalEntity(target);
-}
-#endif
-
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
 	return (SquareRoot(GetVectorLength(vector, false)) > length * length);

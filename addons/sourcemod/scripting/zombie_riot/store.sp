@@ -2060,7 +2060,7 @@ public void ReShowSettingsHud(int client)
 
 	menu2.AddItem("-96", buffer);
 	Format(buffer, sizeof(buffer), "%T", "DamageHud Setting", client);
-	if(b_DisplayDamageHudSetting[client])
+	if(b_DisplayDamageHudSettingInvert[client])
 	{
 		Format(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
 	}
@@ -2574,13 +2574,13 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				}
 				case -97:
 				{
-					if(b_DisplayDamageHudSetting[client])
+					if(b_DisplayDamageHudSettingInvert[client])
 					{
-						b_DisplayDamageHudSetting[client] = false;
+						b_DisplayDamageHudSettingInvert[client] = false;
 					}
 					else
 					{
-						b_DisplayDamageHudSetting[client] = true;
+						b_DisplayDamageHudSettingInvert[client] = true;
 					}
 					PrintToChat(client,"%t", "DamageHud Setting Explain");
 					ReShowSettingsHud(client);

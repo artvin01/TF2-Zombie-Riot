@@ -179,7 +179,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_VILLAGER_RUN");
 				}	
-				NPC_SetGoalVector(npc.index, VillagerDesiredBuildLocation[npc.index]);
+				npc.SetGoalVector(VillagerDesiredBuildLocation[npc.index]);
 				float MePos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", MePos);
 
@@ -276,7 +276,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 6)
 					{
 						npc.m_iChanged_WalkCycle = 6;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 					}	
@@ -290,7 +290,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.SetActivity("ACT_VILLAGER_RUN");
 					}	
-					NPC_SetGoalVector(npc.index, BuildingPos);
+					npc.SetGoalVector(BuildingPos);
 				}
 			}
 			else if(i_AttacksTillMegahit[BuildingAlive] != 300) //300 indicates its finished building.
@@ -323,7 +323,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						if(npc.m_iChanged_WalkCycle != 7)
 						{
 							npc.m_iChanged_WalkCycle = 7;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 							npc.m_bisWalking = false;
 							npc.SetActivity("ACT_VILLAGER_MINING"); //mining animation?
 						}	
@@ -337,7 +337,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 							npc.m_bisWalking = true;
 							npc.SetActivity("ACT_VILLAGER_RUN");
 						}	
-						NPC_SetGoalVector(npc.index, VillagerRepairFocusLoc[npc.index]);
+						npc.SetGoalVector(VillagerRepairFocusLoc[npc.index]);
 					}
 				}
 				case Villager_Command_StandNearTower:
@@ -371,7 +371,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 									if(npc.m_iChanged_WalkCycle != 4)
 									{
 										npc.m_iChanged_WalkCycle = 4;
-										NPC_StopPathing(npc.index);
+										npc.StopPathing();
 										npc.m_bisWalking = false;
 										npc.SetActivity("ACT_VILLAGER_IDLE");
 									}	
@@ -385,7 +385,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 										npc.m_bisWalking = true;
 										npc.SetActivity("ACT_VILLAGER_RUN");
 									}	
-									NPC_SetGoalVector(npc.index, BuildingPos);
+									npc.SetGoalVector(BuildingPos);
 								}
 							}
 						}
@@ -435,7 +435,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 								if(npc.m_iChanged_WalkCycle != 4)
 								{
 									npc.m_iChanged_WalkCycle = 4;
-									NPC_StopPathing(npc.index);
+									npc.StopPathing();
 									npc.m_bisWalking = false;
 									npc.SetActivity("ACT_VILLAGER_IDLE");
 								}	
@@ -449,7 +449,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 									npc.m_bisWalking = true;
 									npc.SetActivity("ACT_VILLAGER_RUN");
 								}	
-								NPC_SetGoalVector(npc.index, VillagerRepairFocusLoc[npc.index]);
+								npc.SetGoalVector(VillagerRepairFocusLoc[npc.index]);
 							}
 						}
 						else
@@ -501,7 +501,7 @@ bool BarracksVillager_RepairSelfTower(int entity, int tower)
 		if(npc.m_iChanged_WalkCycle != 6)
 		{
 			npc.m_iChanged_WalkCycle = 6;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 		}	
@@ -515,7 +515,7 @@ bool BarracksVillager_RepairSelfTower(int entity, int tower)
 			npc.m_bisWalking = true;
 			npc.SetActivity("ACT_VILLAGER_RUN");
 		}	
-		NPC_SetGoalVector(npc.index, BuildingPos);
+		npc.SetGoalVector(BuildingPos);
 	}
 	if(BuldingCanBeRepaired)
 	{
@@ -549,7 +549,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 		if(npc.m_iChanged_WalkCycle != 6)
 		{
 			npc.m_iChanged_WalkCycle = 6;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
 		}	
@@ -563,7 +563,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 			npc.m_bisWalking = true;
 			npc.SetActivity("ACT_VILLAGER_RUN");
 		}	
-		NPC_SetGoalVector(npc.index, BuildingPos);
+		npc.SetGoalVector(BuildingPos);
 	}
 	if(BuldingCanBeRepaired)
 	{

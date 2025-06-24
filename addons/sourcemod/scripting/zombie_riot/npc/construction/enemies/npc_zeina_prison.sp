@@ -235,7 +235,7 @@ public void ZeinaPrisoner_ClotThink(int iNPC)
 		{
 			npc.m_iWearable5 = ConnectWithBeam(npc.m_iWearable6, PrimaryThreatIndex, 125, 125, 125, 3.0, 3.0, 1.35, LASERBEAM);
 		}
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -245,7 +245,7 @@ public void ZeinaPrisoner_ClotThink(int iNPC)
 		{
 			if(flDistanceToTarget < 62500)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 			else
 			{

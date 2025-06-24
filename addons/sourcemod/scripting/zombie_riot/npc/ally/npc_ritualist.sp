@@ -94,7 +94,7 @@ public void RitualistInstinct_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		npc.SetGoalEntity(npc.m_iTarget);
 		npc.StartPathing();
 	}
 	else

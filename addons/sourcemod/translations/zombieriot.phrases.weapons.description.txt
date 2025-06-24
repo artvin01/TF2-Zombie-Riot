@@ -5159,7 +5159,7 @@
 	}
 	"Chemical Spewer Desc"
 	{
-		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals Magic damage."
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage alongside damage dealt.\nApplies afterburn that deals Magic damage."
 		"ko"	"구조물 개선의 영향을 받는 화염방사기.\n가한 피해량의 50％ 만큼 대상에게 신경 손상 피해를 부여.\n트루 대미지를 입히는 화상을 부여."
 	}
 	"Chemical Spewer Pap 1"
@@ -5169,7 +5169,7 @@
 	}
 	"The Ritualist Desc"
 	{
-		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown.\nIts necrosis damage is Magic damage."
+		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
 		"ko"	"원소 피해를 입힐수 있게끔 개선이 가능한 간단한 마법 무기.\n충분한 원소 피해가 대상에게 부여되면, 효과가 발생하며 이후 쿨타임이 적용됨."
 	}
 	"Necrosis Ritualist Desc"

@@ -274,23 +274,23 @@ public void VoidedDiversionistico_ClotThink(int iNPC)
 			if(AntiCheeseReply == 0)
 			{
 				if(!npc.m_bPathing)
-					NPC_StartPathing(npc.index);
+					npc.StartPathing();
 
-				NPC_SetGoalVector(npc.index, vPredictedPos, true);
+				npc.SetGoalVector(vPredictedPos, true);
 			}
 			else if(AntiCheeseReply == 1)
 			{
 				if(npc.m_bPathing)
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 			}
 		}
 		else 
 		{
 			DiversionCalmDownCheese(npc.index);
 			if(!npc.m_bPathing)
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		switch(AntiCheeseReply)
 		{

@@ -6,6 +6,7 @@
 public void Kritzkrieg_OnMapStart()
 {
 	HookEvent("player_chargedeployed", OnKritzkriegDeployed);
+	PrecacheSound("player/invuln_on_vaccinator.wav");
 }
 
 static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadcast)
@@ -26,11 +27,17 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 			Continune = true;
 		}
 	}
+	int target = GetHealingTarget(client);
 	if(!Continune)
+	{
+		if(IsValidEntity(target))
+			EmitSoundToAll("player/invuln_on_vaccinator.wav", target, SNDCHAN_STATIC, 65, _, 0.75);
+
+		EmitSoundToAll("player/invuln_on_vaccinator.wav", client, SNDCHAN_STATIC, 65, _, 0.75);
 		return;
+	}
 
 	CreateTimer(0.1, Timer_Kritzkrieg, EntIndexToEntRef(medigun), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	int target = GetHealingTarget(client);
 	if(IsValidClient(target) && IsPlayerAlive(target)) 
 	{
 		GiveArmorViaPercentage(target, 0.5, 1.0,_,_,client);
@@ -54,17 +61,17 @@ static Action Timer_Kritzkrieg(Handle timer, any medigunid)
 
 	if(IsValidClient(target) && IsPlayerAlive(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
+		ApplyStatusEffect(client, target, "Weapon Overclock", 1.5);
 		Kritzkrieg_Magical(target, 0.05, true);
 	}
 	else if(target != INVALID_ENT_REFERENCE && IsEntityAlive(target) && GetTeam(client) == GetTeam(target))
 	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
+		ApplyStatusEffect(client, target, "Weapon Overclock", 1.5);
 	}
 	
 	if(IsValidClient(client) && IsPlayerAlive(client))
 	{
-		ApplyStatusEffect(client, client, "Weapon Overclock", 1.0);
+		ApplyStatusEffect(client, client, "Weapon Overclock", 1.5);
 		Kritzkrieg_Magical(client, 0.05, true);
 	}
 	return Plugin_Continue;

@@ -358,7 +358,7 @@ public void Doctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 		}
@@ -368,7 +368,7 @@ public void Doctor_ClotThink(int iNPC)
 			npc.m_flSpeed = 100.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -378,7 +378,7 @@ public void Doctor_ClotThink(int iNPC)
 			npc.m_flSpeed = 150.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -391,7 +391,7 @@ public void Doctor_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
 			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos);
+			npc.SetGoalVector(vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -406,7 +406,7 @@ public void Doctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 			}
 			
@@ -432,7 +432,7 @@ public void Doctor_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Doctor_ClotDamagedPost);
 	
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 	npc.m_bPathing = false;
 	
 	npc.PlayDeathSound();

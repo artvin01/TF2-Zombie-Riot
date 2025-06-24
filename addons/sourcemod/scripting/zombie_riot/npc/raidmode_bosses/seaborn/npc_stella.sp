@@ -1160,7 +1160,7 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -1515,7 +1515,7 @@ static bool KeepDistance(Stella npc, float flDistanceToTarget, int PrimaryThreat
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bPathing = false;
 				npc.m_bAllowBackWalking=false;
 			}
@@ -1704,7 +1704,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 	if(npc.m_bInKame)
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
 		return false;
@@ -1800,7 +1800,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.m_flSpeed = 0.0;
 		npc.NC_StartupSound();
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
 
@@ -1989,7 +1989,7 @@ static void FindKarlas(int client, int entity, int damagetype, float damage)
 		npc.m_iKarlasNCState = 1;	
 		if(npc.m_flNC_LockedOn > GetGameTime(karl.index))
 			return;
-		NPC_StopPathing(karl.index);
+		karl.StopPathing();
 		karl.m_bPathing = false;
 		karl.m_flGetClosestTargetTime = 0.0;
 		karl.m_flSpeed = 0.0;
