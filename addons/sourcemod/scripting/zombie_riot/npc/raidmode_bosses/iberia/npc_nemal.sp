@@ -837,11 +837,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -853,7 +853,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -2154,7 +2154,7 @@ bool NemalSwordSlicer(Nemal npc)
 		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(npc.m_flAttackHappens < GetGameTime(npc.index))
 			{
 				int TargetEnemy = false;

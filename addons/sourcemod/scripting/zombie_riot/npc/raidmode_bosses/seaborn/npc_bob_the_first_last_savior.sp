@@ -1133,7 +1133,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			case 9:
 			{
 				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget);
+				npc.SetGoalVector(vecTarget);
 
 				npc.FaceTowards(vecTarget, 20000.0);
 				
@@ -1250,11 +1250,11 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				if(distance < npc.GetLeadRadius()) 
 				{
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
-					NPC_SetGoalVector(npc.index, vecTarget);
+					npc.SetGoalVector(vecTarget);
 				}
 				else
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 
 				npc.StartPathing();
@@ -1523,11 +1523,11 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						if(distance < npc.GetLeadRadius()) 
 						{
 							PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
-							NPC_SetGoalVector(npc.index, vecTarget);
+							npc.SetGoalVector(vecTarget);
 						}
 						else
 						{
-							NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+							npc.SetGoalEntity(npc.m_iTarget);
 						}
 
 						npc.StartPathing();

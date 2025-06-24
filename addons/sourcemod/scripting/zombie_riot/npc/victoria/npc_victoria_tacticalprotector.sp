@@ -299,11 +299,11 @@ static void VictoriaProtector_ClotThink(int iNPC)
 	{
 		float vPredictedPos[3];
 		PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	}
 	else 
 	{
-		NPC_SetGoalEntity(npc.index, target);
+		npc.SetGoalEntity(target);
 	}
 }
 

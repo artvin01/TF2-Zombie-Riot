@@ -279,7 +279,7 @@ public void Diversionistico_Elitus_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					NPC_StartPathing(npc.index);
 
-				NPC_SetGoalVector(npc.index, vPredictedPos, true);
+				npc.SetGoalVector(vPredictedPos, true);
 			}
 			else if(AntiCheeseReply == 1)
 			{
@@ -293,7 +293,7 @@ public void Diversionistico_Elitus_ClotThink(int iNPC)
 			if(!npc.m_bPathing)
 				NPC_StartPathing(npc.index);
 
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		switch(AntiCheeseReply)
 		{

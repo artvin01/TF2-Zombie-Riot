@@ -530,7 +530,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 			float vBackoffPos[3];
 			retreat = true;
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.SetGoalVector(vBackoffPos, true);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 		}

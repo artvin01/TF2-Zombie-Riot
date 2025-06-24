@@ -251,11 +251,11 @@ public void DDT_ClotThink(int iNPC)
 			
 			
 			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
-			NPC_SetGoalVector(npc.index, VecPredictPos);
+			npc.SetGoalVector(VecPredictPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit

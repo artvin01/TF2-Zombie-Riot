@@ -4387,7 +4387,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget, _, vecTarget);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			npc.SetGoalVector(vecTarget);
 			
 			npc.StartPathing();
 		}
@@ -4421,7 +4421,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			if(ally > 0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 			}
 		}
@@ -4462,7 +4462,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			if(ally > 0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 			}
 		}
@@ -4483,7 +4483,7 @@ public void Citizen_ClotThink(int iNPC)
 					WorldSpaceCenter(ally, vecMe);
 					if(GetVectorDistance(vecMe, vecTarget, true) > 300000.0)
 					{
-						NPC_SetGoalEntity(npc.index, ally);
+						npc.SetGoalEntity(ally);
 						found = true;
 					}
 				}
@@ -4492,7 +4492,7 @@ public void Citizen_ClotThink(int iNPC)
 			if(!found)
 			{
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, _, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget, true);
+				npc.SetGoalVector(vecTarget, true);
 			}
 			
 			npc.StartPathing();
@@ -4505,12 +4505,12 @@ public void Citizen_ClotThink(int iNPC)
 			WorldSpaceCenter(target, vecTarget);
 			if(GetVectorDistance(vecMe, vecTarget, true) > 29000.0)
 			{
-				NPC_SetGoalEntity(npc.index, target);
+				npc.SetGoalEntity(target);
 			}
 			else
 			{
 				PredictSubjectPosition(npc, target, _, _, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget);
+				npc.SetGoalVector(vecTarget);
 			}
 			
 			npc.StartPathing();

@@ -266,7 +266,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 						
 						BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 						
-						NPC_SetGoalVector(npc.index, vBackoffPos, true);
+						npc.SetGoalVector(vBackoffPos, true);
 					}
 				}
 				else
@@ -323,9 +323,9 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 	}
 	else

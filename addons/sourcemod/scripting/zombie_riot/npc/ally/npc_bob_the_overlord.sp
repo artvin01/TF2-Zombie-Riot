@@ -478,12 +478,12 @@ public void BobTheGod_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			else
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			
 			if((!npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0) && npc.m_flReloadDelay < GetGameTime(npc.index)) || (npc.m_b_stand_still && npc.m_flNextRangedAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0)))
@@ -761,7 +761,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				NPC_SetGoalEntity(npc.index, client);
+				npc.SetGoalEntity(client);
 				if (!npc.m_bmovedelay_run)
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_RUN");
@@ -781,7 +781,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				
-				NPC_SetGoalEntity(npc.index, client);
+				npc.SetGoalEntity(client);
 				if (!npc.m_bmovedelay_walk)
 				{
 					int iActivity_melee = npc.LookupActivity("ACT_WALK");
@@ -997,7 +997,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 		npc.StartPathing();
 		npc.m_fbGunout = false;
 		
-		NPC_SetGoalVector(npc.index, vecPos);
+		npc.SetGoalVector(vecPos);
 		
 		
 		
@@ -1281,7 +1281,7 @@ public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCh
 			npc.m_bmovedelay_walk = false;
 			npc.m_bmovedelay = false;
 					
-			NPC_SetGoalEntity(npc.index, client);
+			npc.SetGoalEntity(client);
 			
 			SetGlobalTransTarget(client);
 			//PrintHintText(client, "%t %t","Bob The Second:", "I am coming !");

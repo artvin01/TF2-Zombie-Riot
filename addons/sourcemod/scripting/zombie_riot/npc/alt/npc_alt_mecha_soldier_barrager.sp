@@ -281,7 +281,7 @@ static void Internal_ClotThink(int iNPC)
 			
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			
-			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.SetGoalVector(vBackoffPos, true);
 		}
 	}
 	else if(flDistanceToTarget < 120000 && npc.m_iAmmo>0)
@@ -337,11 +337,11 @@ static void Internal_ClotThink(int iNPC)
 		TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 		*/
 		
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	}
 	else
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 	}
 }
 

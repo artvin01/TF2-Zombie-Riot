@@ -458,7 +458,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);		
 		float distance = GetVectorDistance(vecTarget, WorldSpaceVec, true);
 
-		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		npc.SetGoalEntity(npc.m_iTarget);
 		npc.StartPathing();
 
 		if(npc.m_flAttackHappens)

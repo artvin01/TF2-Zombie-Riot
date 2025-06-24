@@ -253,11 +253,11 @@ void ZMainHeadcrab_AnnoyingZmainwalkLogic(ZMainHeadcrab npc, float gameTime, flo
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Just walk.
 		return;
@@ -283,7 +283,7 @@ void ZMainHeadcrab_AnnoyingZmainwalkLogic(ZMainHeadcrab npc, float gameTime, flo
 		npc.m_bAllowBackWalking = true;
 		float vBackoffPos[3];
 		BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 1);
-		NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+		npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 		return;
 	}
 
@@ -303,7 +303,7 @@ void ZMainHeadcrab_AnnoyingZmainwalkLogic(ZMainHeadcrab npc, float gameTime, flo
 	}
 	float vBackoffPos[3];
 	BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 2);
-	NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+	npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 	npc.m_bAllowBackWalking = true;
 }
 

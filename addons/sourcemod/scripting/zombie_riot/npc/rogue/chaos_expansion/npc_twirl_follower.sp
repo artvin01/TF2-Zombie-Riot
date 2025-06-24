@@ -493,11 +493,11 @@ static void ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 			
 		npc.m_iTargetWalkTo = -1;
@@ -545,7 +545,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.m_bAllowBackWalking = false;
 				}
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				return;
 			}
 			npc.m_bAllowBackWalking = false;
@@ -676,7 +676,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 			{
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			}

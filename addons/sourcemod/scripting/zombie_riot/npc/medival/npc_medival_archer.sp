@@ -268,9 +268,9 @@ public void MedivalArcher_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < 160000)

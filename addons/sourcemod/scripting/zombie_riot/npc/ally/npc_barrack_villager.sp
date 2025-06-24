@@ -179,7 +179,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_VILLAGER_RUN");
 				}	
-				NPC_SetGoalVector(npc.index, VillagerDesiredBuildLocation[npc.index]);
+				npc.SetGoalVector(VillagerDesiredBuildLocation[npc.index]);
 				float MePos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", MePos);
 
@@ -290,7 +290,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 						npc.m_bisWalking = true;
 						npc.SetActivity("ACT_VILLAGER_RUN");
 					}	
-					NPC_SetGoalVector(npc.index, BuildingPos);
+					npc.SetGoalVector(BuildingPos);
 				}
 			}
 			else if(i_AttacksTillMegahit[BuildingAlive] != 300) //300 indicates its finished building.
@@ -337,7 +337,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 							npc.m_bisWalking = true;
 							npc.SetActivity("ACT_VILLAGER_RUN");
 						}	
-						NPC_SetGoalVector(npc.index, VillagerRepairFocusLoc[npc.index]);
+						npc.SetGoalVector(VillagerRepairFocusLoc[npc.index]);
 					}
 				}
 				case Villager_Command_StandNearTower:
@@ -385,7 +385,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 										npc.m_bisWalking = true;
 										npc.SetActivity("ACT_VILLAGER_RUN");
 									}	
-									NPC_SetGoalVector(npc.index, BuildingPos);
+									npc.SetGoalVector(BuildingPos);
 								}
 							}
 						}
@@ -449,7 +449,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 									npc.m_bisWalking = true;
 									npc.SetActivity("ACT_VILLAGER_RUN");
 								}	
-								NPC_SetGoalVector(npc.index, VillagerRepairFocusLoc[npc.index]);
+								npc.SetGoalVector(VillagerRepairFocusLoc[npc.index]);
 							}
 						}
 						else
@@ -515,7 +515,7 @@ bool BarracksVillager_RepairSelfTower(int entity, int tower)
 			npc.m_bisWalking = true;
 			npc.SetActivity("ACT_VILLAGER_RUN");
 		}	
-		NPC_SetGoalVector(npc.index, BuildingPos);
+		npc.SetGoalVector(BuildingPos);
 	}
 	if(BuldingCanBeRepaired)
 	{
@@ -563,7 +563,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 			npc.m_bisWalking = true;
 			npc.SetActivity("ACT_VILLAGER_RUN");
 		}	
-		NPC_SetGoalVector(npc.index, BuildingPos);
+		npc.SetGoalVector(BuildingPos);
 	}
 	if(BuldingCanBeRepaired)
 	{

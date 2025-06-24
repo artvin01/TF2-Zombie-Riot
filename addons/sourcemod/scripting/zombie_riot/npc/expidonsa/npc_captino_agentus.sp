@@ -309,7 +309,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 					if(!npc.m_bPathing)
 						NPC_StartPathing(npc.index);
 
-					NPC_SetGoalVector(npc.index, vPredictedPos, true);
+					npc.SetGoalVector(vPredictedPos, true);
 					if(GetGameTime(npc.index) > npc.f_CaptinoAgentusTeleport)
 					{
 						
@@ -368,11 +368,11 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						npc.m_bAllowBackWalking = true;
 						float vBackoffPos[3];
 						BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-						NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+						npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 					}
 					else
 					{
-						NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+						npc.SetGoalEntity(npc.m_iTarget);
 					}
 				}
 			}
@@ -384,7 +384,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 		}
 		else 
@@ -393,7 +393,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 			if(!npc.m_bPathing)
 				NPC_StartPathing(npc.index);
 
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		if(AntiCheeseReply == 0)
 		{

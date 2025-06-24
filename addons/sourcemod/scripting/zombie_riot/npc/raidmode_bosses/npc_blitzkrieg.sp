@@ -1073,9 +1073,9 @@ static void ClotThink(int iNPC)
 	
 	//Predict their pos.
 	if(flDistanceToTarget < npc.GetLeadRadius()) {
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	} else {
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 	}
 	npc.StartPathing();
 	

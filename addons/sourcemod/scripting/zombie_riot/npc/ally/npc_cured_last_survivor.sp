@@ -981,7 +981,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					//forgot to add walk.
 				}
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				npc.SetGoalEntity(npc.m_iTargetWalkTo);
 				npc.StartPathing();
 			}
 		}
@@ -1006,9 +1006,9 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		} else {
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 15000 && flDistanceToTarget < 1000000 && npc.m_flReloadDelay < GetGameTime(npc.index))
@@ -1335,7 +1335,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				}
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
+				npc.SetGoalEntity(npc.m_iTargetAlly);	
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);		
 				
@@ -1370,7 +1370,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.StartPathing();
 					
 				}
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);	
+				npc.SetGoalEntity(npc.m_iTargetAlly);	
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);		
 				

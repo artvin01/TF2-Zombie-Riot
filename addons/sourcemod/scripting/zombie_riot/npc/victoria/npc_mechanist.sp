@@ -452,7 +452,7 @@ static void Internal_ClotThink(int iNPC)
 				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				
-				NPC_SetGoalEntity(npc.index, buildingentity);
+				npc.SetGoalEntity(buildingentity);
 				NPC_StartPathing(iNPC);
 				//Walk to building.
 				if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, buildingentity))
@@ -572,7 +572,7 @@ static void Internal_ClotThink(int iNPC)
 				
 				if(IsValidEnemy(npc.index,npc.m_iTarget))
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 					NPC_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
@@ -768,11 +768,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 				NPC_StartPathing(iNPC);
 				//Walk to building.
@@ -869,9 +869,9 @@ void Mechanist_AS_SelfDefense(VictorianMechanist_as npc, float gameTime)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		} else {
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{

@@ -376,7 +376,7 @@ public void Isharmla_ClotThink(int iNPC)
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			npc.StartPathing();
 			npc.SetActivity("ACT_SKADI_WALK");
 			npc.m_bisWalking = true;

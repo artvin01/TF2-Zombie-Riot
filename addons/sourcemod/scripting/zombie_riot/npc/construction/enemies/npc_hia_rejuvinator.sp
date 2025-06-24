@@ -253,7 +253,7 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTargetAlly;
 	if(IsValidAlly(npc.index, PrimaryThreatIndex))
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

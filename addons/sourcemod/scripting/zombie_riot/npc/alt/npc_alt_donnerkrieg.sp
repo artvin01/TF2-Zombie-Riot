@@ -460,9 +460,9 @@ static void Internal_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 				
 			if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
@@ -659,7 +659,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				npc.StartPathing();
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 				
 				if(fl_BEAM_ChargeUpTime[npc.index]<GameTime)
 				{
@@ -733,7 +733,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			{
 				npc.StartPathing();
 				
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 		}
 		
@@ -762,7 +762,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				
 		npc.StartPathing();
 		
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 		
 		float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 		if(g_b_angered)

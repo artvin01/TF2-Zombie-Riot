@@ -211,11 +211,11 @@ public void VoidEncasulator_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && VoidArea_TouchingNethersea(npc.m_iTarget))
