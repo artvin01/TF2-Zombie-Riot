@@ -244,7 +244,10 @@ public void GiveMedigunBuffUber(int medigun, int owner, int reciever)
 		{
 			if(IsValidClient(reciever))
 			{
+				
+#if defined ZR
 				Kritzkrieg_Magical(reciever, 0.05, true);
+#endif
 				TF2_AddCondition(reciever, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
 			}
 			ApplyStatusEffect(owner, reciever, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
