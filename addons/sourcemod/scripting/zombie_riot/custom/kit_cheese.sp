@@ -78,7 +78,7 @@ static int Cheese_Bubble_Hits[MAXPLAYERS];
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXPLAYERS];
 static float hudtimer[MAXPLAYERS];
-static int iref_WeaponConnect[MAXPLAYERS+1][3];
+static int iref_WeaponConnect[MAXPLAYERS+1][2];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES];
 
@@ -153,12 +153,8 @@ void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
 	{
-		iref_WeaponConnect[client][2] = EntIndexToEntRef(weapon);
+		iref_WeaponConnect[client][1] = EntIndexToEntRef(weapon);
 	}
-	//if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_SECONDARY)
-	//{
-	//	iref_WeaponConnect[client][1] = EntIndexToEntRef(weapon);
-	//}
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE)
 	{
 		iref_WeaponConnect[client][0] = EntIndexToEntRef(weapon);
@@ -237,12 +233,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 		//2 is M2
 		LethalCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
 	}
-//	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][1]);
-//	if(IsValidEntity(WeaponEntity))
-//	{
-//
-//	}
-	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][2]);
+	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][1]);
 	if(IsValidEntity(WeaponEntity))
 	{
 		BurstCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
@@ -290,13 +281,13 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(attacker, "Plasm I") || HasSpecificBuff(attacker, "Plasm II") || HasSpecificBuff(attacker, "Plasm III")))
 		{
-			damage; *= 1.5;
+			damage *= 1.5;
 		}
 
 		if(HasSpecificBuff(attacker, "Plasmatized Lethalitation"))
 		{
 			cheesedmg *= Cheese_Lethal_ElementalBoost[Cheese_PapLevel[attacker]];
-			damage; *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
+			damage *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
 
 			if(Cheese_PapLevel[client] > 2)
 			{
