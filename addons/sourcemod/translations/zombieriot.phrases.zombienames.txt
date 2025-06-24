@@ -3119,6 +3119,14 @@
 		"en" "It will display in your hud as the above icon.\nIf it fills up your armor bar, you take heavy drawbacks, unqiue to each.\nRegain armor to cure yourself."
 		"es" "Se mostrara en tu HUD como el icono superior.\nSi la barra entera se llena, recibes maleficios fuertes y diferentes.\nRecibe armadura para curar este daño."
 	}
+	"Necrosis Elemental Damage"
+	{
+		"en"	"Necrosis Elemental Damage"
+	}
+	"Necrosis Elemental Damage Desc"
+	{
+		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+	}
 
 	"Overmana Overload"
 	{

@@ -477,7 +477,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 						case 3:
 							Elemental_AddOsmosisDamage(HitEnemy, npc.index, 500);
 						case 4:
-							Elemental_AddNecrosisDamage(HitEnemy, npc.index, 500, false);
+							Elemental_AddNecrosisDamage(HitEnemy, npc.index, 500);
 						case 5:
 							Elemental_AddCyroDamage(HitEnemy, npc.index, 500, false);
 					}
@@ -539,7 +539,7 @@ public void NightmareSwordsman_ClotThink(int iNPC)
 							case 3:
 								Elemental_AddOsmosisDamage(target, npc.index, 500);
 							case 4:
-								Elemental_AddNecrosisDamage(target, npc.index, 500, false);
+								Elemental_AddNecrosisDamage(target, npc.index, 500);
 							case 5:
 								Elemental_AddCyroDamage(target, npc.index, 500, false);
 						}
