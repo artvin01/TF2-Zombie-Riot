@@ -94,6 +94,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
+	DHook_CreateDetour(gamedata, "CTFPlayerShared::RecalculateChargeEffects", DHookCallback_RecalculateChargeEffects_Pre);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -2309,4 +2310,11 @@ public MRESReturn Detour_CreateEvent(Address eventManager, DHookReturn returnVal
 	
 	RequestFrame(OverrideNpcHurtShortToLong);
 	return MRES_Ignored;
+}
+
+
+static MRESReturn DHookCallback_RecalculateChargeEffects_Pre(Address pShared, DHookParam params)
+{
+//	DHookSetParam(params, 1, true);
+	return MRES_Supercede;
 }

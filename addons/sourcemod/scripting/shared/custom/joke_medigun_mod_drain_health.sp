@@ -233,21 +233,41 @@ public void Medigun_ClearAll()
 		target_sucked_long[entity] = 0.85;
 	}
 }
+#define UBERCHARGE_BUFFDURATION 1.0
 
+public void GiveMedigunBuffUber(int medigun, int owner, int reciever)
+{
+	NPCStats_RemoveAllDebuffs(reciever, UBERCHARGE_BUFFDURATION);
+	switch(i_CustomWeaponEquipLogic[medigun])
+	{
+		case WEAPON_KRITZKRIEG:
+		{
+			if(IsValidClient(reciever))
+			{
+				Kritzkrieg_Magical(reciever, 0.05, true);
+				TF2_AddCondition(reciever, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
+			}
+			ApplyStatusEffect(owner, reciever, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
+		}
+		default:
+		{
+			if(IsValidClient(reciever))
+			{
+				TF2_AddCondition(reciever, TFCond_UberBulletResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(reciever, TFCond_UberBlastResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(reciever, TFCond_UberFireResist, UBERCHARGE_BUFFDURATION);
+			}
+			ApplyStatusEffect(owner, reciever, "UBERCHARGED", UBERCHARGE_BUFFDURATION);
+		}
+	}
+}
 public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
 		if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
 		{
-			NPCStats_RemoveAllDebuffs(owner, 1.5);
-			if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG)
-			{
-				TF2_AddCondition(owner, TFCond_UberBulletResist, 1.5);
-				TF2_AddCondition(owner, TFCond_UberBlastResist, 1.5);
-				TF2_AddCondition(owner, TFCond_UberFireResist, 1.5);
-				ApplyStatusEffect(owner, owner, "UBERCHARGED", 1.5);
-			}
+			GiveMedigunBuffUber(medigun, owner, owner);
 		}
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
@@ -442,25 +462,18 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 						}
 						
-						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
-						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
+						ApplyStatusEffect(owner, healTarget, "Healing Resolve", UBERCHARGE_BUFFDURATION);
+						ApplyStatusEffect(owner, owner, "Healing Resolve", UBERCHARGE_BUFFDURATION);
 
 						if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
 						{
-							NPCStats_RemoveAllDebuffs(healTarget, 1.5);
-							if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG)
-							{
-								TF2_AddCondition(healTarget, TFCond_UberBulletResist, 1.5);
-								TF2_AddCondition(healTarget, TFCond_UberBlastResist, 1.5);
-								TF2_AddCondition(healTarget, TFCond_UberFireResist, 1.5);
-								ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 1.5);
-							}
+							GiveMedigunBuffUber(medigun, owner, healTarget);
 						}
 
 						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
 						{
-							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.5);
-							ApplyStatusEffect(owner, owner, "Weapon Clocking", 1.5);
+							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", UBERCHARGE_BUFFDURATION);
+							ApplyStatusEffect(owner, owner, "Weapon Clocking", UBERCHARGE_BUFFDURATION);
 						}
 					}
 				}
