@@ -4870,7 +4870,7 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 1.05;
+	data.AttackspeedBuff			= 1.08;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -4883,14 +4883,14 @@ void StatusEffects_Plasm()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.11;
+	data.MovementspeedModif			= 0.12;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 15; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 1.08;
+	data.AttackspeedBuff			= 1.12;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -4903,14 +4903,14 @@ void StatusEffects_Plasm()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.14;
+	data.MovementspeedModif			= 0.16;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 15; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 1.11;
+	data.AttackspeedBuff			= 1.16;
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
