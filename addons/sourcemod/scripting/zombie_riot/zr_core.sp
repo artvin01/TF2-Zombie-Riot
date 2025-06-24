@@ -220,12 +220,13 @@ enum
 	WEAPON_TORNADO_BLITZ = 143,
 	WEAPON_BUFFPOTION = 144,
 	WEAPON_REIUJI_WAND = 145,
-	//WEAPON_CHEESY_MELEE = 146,
-	//WEAPON_CHEESY_PRIMARY = 147,
+	WEAPON_CHEESY_MELEE = 146,
+	WEAPON_CHEESY_PRIMARY = 147,
 	WEAPON_CHEMICAL_THROWER = 148,
 	WEAPON_RITUALIST = 149,
 	WEAPON_SHERRIF = 150,
-	WEAPON_SHERRIF_LEVERACTION = 151
+	WEAPON_SHERRIF_LEVERACTION = 151,
+	WEAPON_CHEESY_SECONDARY = 152
 }
 
 enum
@@ -2100,7 +2101,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						/*
 						if(Is_Cheesed_Up(client))
 						{
-							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
+							CPrintToChatAll("{darkviolet}%N decides to inject himself with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
 						*/
