@@ -1402,6 +1402,8 @@ void Waves_RoundStart(bool event = false)
 				TF2_RegeneratePlayer(client);
 		}
 	}
+	if(CvarInfiniteCash.BoolValue)
+		CurrentCash = 999999;
 
 	if(Construction_Mode())
 	{

@@ -302,7 +302,7 @@ float f_DisplayDamageHudCooldown[MAXPLAYERS];
 bool b_HudHitMarker[MAXPLAYERS] = {true, ...};
 float fl_ruina_battery[MAXENTITIES];
 float fl_ruina_battery_max[MAXENTITIES];
-bool b_DisplayDamageHudSetting[MAXPLAYERS] = {false, ...};
+bool b_DisplayDamageHudSettingInvert[MAXPLAYERS] = {false, ...};
 
 bool b_HudScreenShake[MAXPLAYERS] = {true, ...};
 bool b_HudLowHealthShake_UNSUED[MAXPLAYERS] = {true, ...};

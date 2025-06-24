@@ -240,7 +240,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 	{
 		if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
 		{
-			NPCStats_RemoveAllDebuffs(owner, 0.6);
+			NPCStats_RemoveAllDebuffs(owner, 1.5);
+			if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG)
+			{
+				TF2_AddCondition(owner, TFCond_UberBulletResist, 1.5);
+				TF2_AddCondition(owner, TFCond_UberBlastResist, 1.5);
+				TF2_AddCondition(owner, TFCond_UberFireResist, 1.5);
+				ApplyStatusEffect(owner, owner, "UBERCHARGED", 1.5);
+			}
 		}
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
@@ -440,15 +447,20 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 						if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
 						{
-							NPCStats_RemoveAllDebuffs(healTarget, 0.6);
-							if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG && healTarget > MaxClients)
-								ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 0.25);
+							NPCStats_RemoveAllDebuffs(healTarget, 1.5);
+							if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG)
+							{
+								TF2_AddCondition(healTarget, TFCond_UberBulletResist, 1.5);
+								TF2_AddCondition(healTarget, TFCond_UberBlastResist, 1.5);
+								TF2_AddCondition(healTarget, TFCond_UberFireResist, 1.5);
+								ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 1.5);
+							}
 						}
 
 						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
 						{
-							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.0);
-							ApplyStatusEffect(owner, owner, "Weapon Clocking", 1.0);
+							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.5);
+							ApplyStatusEffect(owner, owner, "Weapon Clocking", 1.5);
 						}
 					}
 				}

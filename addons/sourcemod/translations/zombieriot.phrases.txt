@@ -3546,11 +3546,11 @@
 	}
 	"DamageHud Setting"
 	{
-		"en" 	"Always Display Damage Hud"
+		"en" 	"Dont Always Display Damage Hud"
 	}
 	"DamageHud Setting Explain"
 	{
-		"en" 	"Enabling this setting will force ZR damage numbers, even if you enabled the TF2 damage number setting."
+		"en" 	"Enabling this setting will hide ZR damage numbers if you enabled the TF2 damage number setting."
 	}
 	"Fix First Sound Play Manually"
 	{

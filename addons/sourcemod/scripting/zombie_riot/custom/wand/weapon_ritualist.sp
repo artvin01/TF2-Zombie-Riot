@@ -17,6 +17,7 @@ static int WeaponType[MAXPLAYERS];
 static int WeaponRef[MAXPLAYERS] = {-1, ...};
 static Handle WeaponTimer[MAXPLAYERS];
 static int NpcRef[MAXPLAYERS] = {-1, ...};
+static float GiveBuffDurationFor[MAXPLAYERS] = {-1.0, ...};
 
 void Ritualist_MapStart()
 {
@@ -218,6 +219,22 @@ void Ritualist_MinionExplode(int client, int entity)
 		Explode_Logic_Custom(damage, client, entity, weapon, _, 300.0, .FunctionToCallBeforeHit = NecrosisBleedExplodeBefore);
 	}
 }
+void RitualistApplyBuff(int attacker, int victim, float &damage, int weapon)
+{
+	if(GetTeam(attacker) == GetTeam(victim))
+	{
+		i_ExtraPlayerPoints[attacker] += 1;
+
+		float DurationGive = GiveBuffDurationFor[attacker] - GetGameTime();
+		if(!HasSpecificBuff(victim, "Liberal Tango"))
+		{
+			int BeamIndex = ConnectWithBeam(attacker, victim, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+			SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		ApplyStatusEffect(attacker, victim, "Liberal Tango", DurationGive);
+	}
+}
 
 static float NervousExplodeBefore(int attacker, int victim, float &damage, int weapon)
 {
@@ -328,49 +345,9 @@ public void Weapon_RitualistNecrosis_R(int client, int weapon, bool &result, int
 	ApplyTempAttrib(weapon, 410, 2.5, 25.0);
 	ApplyTempAttrib(weapon, 6, 0.4, 25.0);
 	ApplyStatusEffect(client, client, "Liberal Tango", 25.0);
+	GiveBuffDurationFor[client] = GetGameTime() + 25.0;
 	DoSpecialActionRitualist(client, 1);
 
-	float pos1[3], pos2[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos1);
-	
-	for(int target = 1; target <= MaxClients; target++)
-	{
-		if(client != target && IsClientInGame(target) && IsPlayerAlive(target) && GetTeam(client) == GetTeam(target))
-		{
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < 350000.0)
-			{
-				i_ExtraPlayerPoints[client] += 10;
-
-				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-				if(entity != -1)
-				{
-					ApplyStatusEffect(client, target, "Liberal Tango", 25.0);
-					int BeamIndex = ConnectWithBeam(client, target, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
-					SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
-
-					CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
-				}
-			}
-		}
-	}
-	
-	int a, entity1;
-	while((entity1 = FindEntityByNPC(a)) != -1)
-	{
-		if(client != entity1 && GetTeam(client) == GetTeam(entity1))
-		{
-			GetEntPropVector(entity1, Prop_Data, "m_vecAbsOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) < 350000.0)
-			{
-				i_ExtraPlayerPoints[client] += 10;
-				ApplyStatusEffect(client, entity1, "Liberal Tango", 25.0);
-				int BeamIndex = ConnectWithBeam(client, entity1, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
-				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
-				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
-			}
-		}
-	}
 }
 
 public void Weapon_RitualistNervous_M2(int client, int weapon, bool &result, int slot)
