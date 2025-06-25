@@ -1455,6 +1455,13 @@ public Action Waves_RoundStartTimer(Handle timer)
 	return Plugin_Continue;
 }
 
+public Action Waves_AllowVoting(Handle timer)
+{
+	Waves_SetReadyStatus(1);
+	SPrintToChatAll("You may now ready up.");
+	return Plugin_Continue;
+}
+
 public Action Waves_EndVote(Handle timer, float time)
 {
 	ArrayList list = Voting ? Voting : VotingMods;
@@ -2470,7 +2477,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						AlreadyWaitingSet(true);
 					}
-					Waves_SetReadyStatus(1);
+					if(EnableSilentMode)
+					{
+						Waves_SetReadyStatus(2);
+						//wait a minimum of 30 seconds when theres too many players.
+						SPrintToChatAll("You cannot ready up for 30 seconds.");
+						CreateTimer(30.0, Waves_AllowVoting, _, TIMER_FLAG_NO_MAPCHANGE);
+					}
+					else
+						Waves_SetReadyStatus(1);
 				}
 				else
 				{
@@ -3081,7 +3096,7 @@ void DoGlobalMultiScaling()
 		EnableSilentMode = true;
 	else
 		EnableSilentMode = false;
-
+	
 	playercount *= 0.88;
 	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 

@@ -114,6 +114,7 @@ void Blacksmith_Enable(int client, int weapon)
 		EffectTimer[client] = CreateTimer(0.5, Blacksmith_TimerEffect, client, TIMER_REPEAT);
 
 		i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
+		Weapon_OnBuyUpdateBuilding(client);
 	}
 
 	if(Tinkers)

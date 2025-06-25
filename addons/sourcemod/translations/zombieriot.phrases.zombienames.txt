@@ -3746,6 +3746,22 @@
 		"es" "Tu mana se sobrecarga, no puedes contenerlo.\nEres ralentizado temporalmente, y un Cañon Ruiniaco es marcado en tu posicion.\nEl daño depende de tu mana maximo."
 		"ko" "당신의 현재 마나가 최대 마나의 2배 이상이 될 경우,\n당신의 이동 속도가 감소하며 그 위치에 이온 캐논이 발사됩니다.\n이 효과로 발사된 이온 캐논은 트루 대미지를 주며, 캐논의 피해량은 당신의 최대 마나량에 해당됩니다."
 	}
+	"Wrench Building"
+	{
+		"en" "Wrench Usage"
+	}
+	"Wrench Building Desc"
+	{
+		"en" "Press {yellow}(R) {green}to access your building menu.\nWith {yellow}(F) {green}You have access to an extra menu for buildings.\nPlace buildings by buying them with scrap in this menu."
+	}
+	"Barracks Building Explain"
+	{
+		"en" "Barracks Building"
+	}
+	"Barracks Building Explain Desc"
+	{
+		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
+	}
 	"Vhxis"
 	{
 		"en"	"Vhxis"
