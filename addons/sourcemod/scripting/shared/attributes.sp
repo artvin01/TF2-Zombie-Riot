@@ -23,7 +23,8 @@ enum
 	Attrib_ArmorOnHitMax = 4041,
 	Attrib_Melee_UseBuilderDamage = 4042,
 	Attrib_HeadshotBonus = 4043,
-	Attrib_ReviveSpeedBonus = 4044
+	Attrib_ReviveSpeedBonus = 4044,
+	Attrib_BuildingOnly_PreventUpgrade = 4045 //used for anti abuse.
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
