@@ -1895,7 +1895,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(CurrentMulti != multi)
 		{
 			float MultiChange = multi / CurrentMulti;
-			Attributes_Set(entity, 286, multi);
 			if(MultiChange < 1.0)
 			{
 				SetBuildingMaxHealth(entity, MultiChange, false, true);
