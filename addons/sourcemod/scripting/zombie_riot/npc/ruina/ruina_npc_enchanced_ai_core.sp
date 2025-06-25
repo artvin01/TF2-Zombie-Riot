@@ -586,18 +586,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		return;
 
 	int wave = iRuinaWave();
-	//whats a "switch" statement??
-	/*if(wave<=15)	
-	{
-
-	}
-	else if(wave <=30)	
-	{
-		
-	}
-	//npc's during "stage 3" get energy from taking dmg. going into its whole "sacrifice" theme.
-	else*/ 
-	if(wave <= 45)	
+	if(wave <= 20)	
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
@@ -606,11 +595,11 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
 	}
-	else if(wave <=60)
+	else if(wave <=40)
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1350.0*(Ratio-Difference);
+		float Give = 1450.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -619,7 +608,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1500.0*(Ratio-Difference);
+		float Give = 1700.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -1349,14 +1338,14 @@ enum struct Ruina_Self_Defense
 	}
 }
 
-static float fl_mana_sickness_multi[MAXENTITIES];
-static int i_mana_sickness_flat[MAXENTITIES];
-static bool b_override_Sickness[MAXENTITIES];
+static float fl_mana_sickness_multi;
+static int i_mana_sickness_flat;
+static bool b_override_Sickness;
 void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0, bool override = false)
 {
-	fl_mana_sickness_multi[iNPC] = Multi;
-	i_mana_sickness_flat[iNPC] = flat_amt;
-	b_override_Sickness[iNPC] = override;
+	fl_mana_sickness_multi = Multi;
+	i_mana_sickness_flat= flat_amt;
+	b_override_Sickness= override;
 	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
 }
 void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
@@ -1369,13 +1358,13 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
-	bool override = b_override_Sickness[entity];
+	bool override = b_override_Sickness;
 	
 	if(fl_mana_sickness_timeout[victim] > GameTime && !override)
 		return;
 		
-	float Multi = fl_mana_sickness_multi[entity];
-	int flat_amt = i_mana_sickness_flat[entity];
+	float Multi = fl_mana_sickness_multi;
+	int flat_amt = i_mana_sickness_flat;
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
 	int wep_hold = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
@@ -1387,7 +1376,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 		}
 	}
 
-	b_override_Sickness[entity] = false;
+	b_override_Sickness = false;
 
 	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
 
@@ -1446,7 +1435,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(mana <=400.0)	//a base mana asumption
 		mana=400.0;
 
-	if(wave<=15)
+	if(wave<=10)
 	{
 		Radius		= 100.0;
 		dmg 		= mana+100.0;	//evil.
@@ -1454,7 +1443,7 @@ static void Apply_Sickness(int iNPC, int Target)
 		Timeout 	= 6.0;
 		Slow_Time 	= 5.0;
 	}
-	else if(wave<=30)
+	else if(wave<=20)
 	{
 		Radius		= 125.0;
 		dmg 		= mana*1.25+200.0;
@@ -1462,7 +1451,7 @@ static void Apply_Sickness(int iNPC, int Target)
 		Timeout 	= 5.5;
 		Slow_Time 	= 5.0;
 	}
-	else if(wave<=45)
+	else if(wave<=30)
 	{
 		Radius		= 175.0;
 		dmg 		= mana*1.5+300.0;
