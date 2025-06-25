@@ -4017,12 +4017,12 @@
 	"DamageHud Setting"
 	{
 		"en" 	"Dont Always Display Damage Hud"
-		"ko" 	"항상 피해량 표기"
+		"ko" 	"피해량 표기 끄기"
 	}
 	"DamageHud Setting Explain"
 	{
 		"en" 	"Enabling this setting will hide ZR damage numbers if you enabled the TF2 damage number setting."
-		"ko" 	"이 옵션을 켜면 팀포2의 자체적인 피해량 수치 설정이 켜져있더라도 좀비 라이엇 전용의 수치로 표기합니다."
+		"ko" 	"이 옵션을 켜면 좀비 라이엇 전용 피해량 수치를 끕니다 ."
 	}
 	"Fix First Sound Play Manually"
 	{

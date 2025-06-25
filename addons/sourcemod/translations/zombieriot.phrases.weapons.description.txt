@@ -5170,7 +5170,7 @@
 	"The Ritualist Desc"
 	{
 		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
-		"ko"	"원소 피해를 입힐수 있게끔 개선이 가능한 간단한 마법 무기.\n충분한 원소 피해가 대상에게 부여되면, 효과가 발생하며 이후 쿨타임이 적용됨."
+		"ko"	"원소 피해를 입힐수 있게끔 개선이 가능한 간단한 마법 무기.\n충분한 원소 피해가 대상에게 부여되면, 효과가 발생하며 이후 쿨타임이 적용됨 ."
 	}
 	"Necrosis Ritualist Desc"
 	{

@@ -3726,10 +3726,12 @@
 	"Necrosis Elemental Damage"
 	{
 		"en"	"Necrosis Elemental Damage"
+		"ko"	"쇠약 원소 피해"
 	}
 	"Necrosis Elemental Damage Desc"
 	{
 		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+		"ko"	"원소 피해 게이지가 꽉 차면, 몸이 썩어들어갑니다.\n출혈을 받고 능력의 쿨타임이 증가합니다. 7.5 초 지속."
 	}
 
 	"Overmana Overload"
