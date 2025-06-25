@@ -24,7 +24,13 @@ enum
 	Attrib_Melee_UseBuilderDamage = 4042,
 	Attrib_HeadshotBonus = 4043,
 	Attrib_ReviveSpeedBonus = 4044,
-	Attrib_BuildingOnly_PreventUpgrade = 4045 //used for anti abuse.
+	Attrib_BuildingOnly_PreventUpgrade = 4045, 
+	//used for anti abuse.
+	//specifically so you cant repair buildings for low cost and re-upgrade them.
+
+	Attrib_BuildingStatus_PreventAbuse = 4046, 
+	//used for anti abuse.
+	//specifally so you cant make ranged units lategame and sell all other units and just keep those alive forever.
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
