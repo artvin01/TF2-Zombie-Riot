@@ -2057,36 +2057,36 @@
 	"Doctor Certificate Desc"
 	{
 		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 2배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％\n메디건 수액 소모량 30％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"메디건 치유 속도 2배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％"
 	}
 	"Professor Certificate Desc"
 	{
 		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％\n메디건 수액 소모량 15％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％"
 	}
 
 	"Death Certificate Desc"
 	{
 		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 1.4배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +2초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가\n메디건 수액 소모량 15％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"메디건 치유 속도 1.4배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +2초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
 		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 1.45배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +1초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가\n메디건 수액 소모량 15％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"메디건 치유 속도 1.45배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +1초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
 	
 	"Hell's Certificate Desc"
 	{
 		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 1.45배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +1초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가\n메디건 수액 소모량 15％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"메디건 치유 속도 1.45배, 지원 무기의 피해량 +20％\n우버차지 지속 시간 +1초 및 치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
 		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가\n메디건 수액 소모량 15％ 감소 (1 이하로 감소하지 않음)"
+		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％ 증가"
 	}
 	
 	"Panic Attack Desc"
@@ -4105,8 +4105,8 @@
 	}
 	"Helena's Elite Medicine Desc"
 	{
-		"en"	"1.6x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 40％ (cant go below 1)"
-		"ko"	"메디건 치유 속도 및 피해량 +1.6배, 치유 무기를 들고 있으면 근접 피해 저항력 +5％.\n메디건 수액 소모량 40％ 감소 (1 이하로 감소하지 않음)"
+		"en"	"1.6x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out"
+		"ko"	"메디건 치유 속도 및 피해량 +1.6배, 치유 무기를 들고 있으면 근접 피해 저항력 +5％."
 	}
 	"Messenger Launcher Desc"
 	{

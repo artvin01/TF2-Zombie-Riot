@@ -3749,18 +3749,22 @@
 	"Wrench Building"
 	{
 		"en" "Wrench Usage"
+		"ko" "렌치 사용법"
 	}
 	"Wrench Building Desc"
 	{
 		"en" "Press {yellow}(R) {green}to access your building menu.\nWith {yellow}(F) {green}You have access to an extra menu for buildings.\nPlace buildings by buying them with scrap in this menu."
+		"ko" "{yellow}(R) {green}키로 구조물 메뉴를 여세요.\n{yellow}(F) {green}키로 구조물 추가 관리 메뉴를 여세요.\n이 메뉴에서 금속 또는 주어진 금속으로 구조물을 아무데나 설치해보세요."
 	}
 	"Barracks Building Explain"
 	{
 		"en" "Barracks Building"
+		"ko" "배럭 구조물"
 	}
 	"Barracks Building Explain Desc"
 	{
 		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
+		"ko" "군대를 만드세요!\n상황에 맞는 전투 유닛을 생산하세요.\n구조물 개선은 더 좋은 유닛을 생산 가능.\n배럭 개선도 마찬가지로 유닛에 영향을 줌.\n유닛에게 {yellow}(R 또는 T) {green}키로 개별 명령이 가능.\n스크롤을 올려 더 많은 정보를 얻으세요."
 	}
 	"Vhxis"
 	{

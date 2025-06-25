@@ -4904,5 +4904,6 @@
 	"Barracks Invalid suicide"
 	{
 		"en"		"You tried to sell/unequip upgrades your barracks units needed, a rift in time opens and consumes them and kills them in a nanosecond.\n{crimson}Tried to bug abuse huh?"
+		"ko"		"당신은 요구 사항이 필요한 병영 유닛을 업그레이드하거나 장착 해제하려고 했고, 시간의 균열이 열렸을때 유닛을 소모하여 소숫점 단위로 유닛을 죽였습니다.\n{crimson}이거 버그 악용인거 알지?"
 	}
 }

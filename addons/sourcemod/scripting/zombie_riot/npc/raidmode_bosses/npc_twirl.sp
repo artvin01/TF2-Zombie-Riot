@@ -4321,31 +4321,31 @@ static bool HandleRaidTimer(Twirl npc)
 		b_wonviatimer = true;
 		if(b_force_transformation)
 		{
-			Twirl_Lines(npc, "Begone. Times Up.");
+			Twirl_Lines(npc, "이제 끝.");
 		}
 		else if(wave <=40)
 		{
 			switch(GetRandomInt(0, 9))
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
-				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
-				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
-				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
-				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
-				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
-				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
-				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
-				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+				case 0: Twirl_Lines(npc, "아, 좋은 운동이었어.");
+				case 1: Twirl_Lines(npc, "헤, 좀 재미있었는데.");
+				case 2: Twirl_Lines(npc, "어쩌면 {aqua}스텔라{snow}가 좀 과장해서 얘기해준 것 같은데..");
+				case 3: Twirl_Lines(npc, "너희 전부 하나씩 쓰러지는게 아름답구나.");
+				case 4: Twirl_Lines(npc, "잠깐, 지금 내가 해야 할 일이 많이 생겼으니까, 대신 나중에 다시 해보자!");
+				case 5: Twirl_Lines(npc, "아무래도 여기까지 버틸만큼 투지가 부족한 것 같은데, {crimson}그럼 나와 싸울 자격은 없지.");
+				case 6: Twirl_Lines(npc, "어머나, 이렇게 많은 시간을 보냈음에도 불구하고 여전히 나를 못 이겼다는건, 좀 한심하네.");
+				case 7: Twirl_Lines(npc, "이것 봐, 난 {gold}엑스피돈사{default} 친구들이 쓰는 보호막도 없었단 말야.");
+				case 8: Twirl_Lines(npc, "왜 이리 질질 끄는지 말해주겠어?");
+				case 9: Twirl_Lines(npc, "지루하네. {crimson}그냥 다 끝내버리자.");
 			}
 		}
 		else	//freeplay
 		{
 			switch(GetRandomInt(0, 2))
 			{
-				case 0: Twirl_Lines(npc, "Well considering you all were just some randoms this was to be expected");
-				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
-				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 0: Twirl_Lines(npc, "흠, 너희가 전부 아무데서나 끌려온 자들이라는 점을 고려하면 예상된 일이었어.");
+				case 1: Twirl_Lines(npc, "생각했던 것보다 실망이야. 요즘 내 마법 감각이 좀 이상해져서 그런가.");
+				case 2: Twirl_Lines(npc, "{crimson}정말 귀엽군{snow}.");
 			}
 		}
 		
@@ -4385,9 +4385,9 @@ void Twirl_OnStellaKarlasDeath()
 	{
 		switch(GetRandomInt(0, 2))
 		{
-			case 0: Twirl_Lines(npc, "Hey, just because hes the only man here doesn't mean he should have died first.");
-			case 1: Twirl_Lines(npc, "Oh, neat, now {aqua}Stella{snow}'s all mine.");
-			case 2: Twirl_Lines(npc, "Huh, there goes my rival.");
+			case 0: Twirl_Lines(npc, "그가 우리쪽의 유일한 남성이었는데... 허망하게 쓰러져버렸네.");
+			case 1: Twirl_Lines(npc, "흠, 이제 {aqua}스텔라{snow}는 내 거란 소리인가?");
+			case 2: Twirl_Lines(npc, "허, 이제 쟤들이 내 라이벌이겠네.");
 		}
 		
 	}
