@@ -229,127 +229,127 @@ methodmap CuredFatherGrigori < CClotBody
 			{
 				case 0:
 				{
-					this.Speech("니코, 어떻게 여기에 온 거죠?");
+					this.Speech("Hey Niko, how come you are here?");
 				}
 				case 1:
 				{
-					this.Speech("어떻게 가능한건지는 몰라도, 제가 실체화가 됐어요. 실감은 안 나지만...");
+					this.Speech("It feels like i somehow became real, doesnt feel real.");
 				}
 				case 2:
 				{
-					this.Speech("니코, 이 사람들이랑 여기에 있는 이유가 뭐야?");
+					this.Speech("Why are you with these men here niko?");
 				}
 				case 3:
 				{
-					this.Speech("여긴 너무 위험해보이는데, 떠나는게 맞지 않을까요.");
+					this.Speech("This feels way too dangerous, you should leave.");
 				}
 				case 4:
 				{
-					this.Speech("말을 많이 안 하시는 타입이시네요.");
+					this.Speech("I wonder where you left the sun, you dont seem to talk much anymore.");
 				}
 				case 5:
 				{
-					this.Speech("고양이 울음소리를 내보라고요? 글쎄요", "...");
+					this.Speech("Quack? Im not a duck. Oh you mean 'meow'", "...");
 				}
 				case 6:
 				{
-					this.Speech("왜 그들이 절 니코처럼 대하는 걸까요?");
+					this.Speech("Why do they treat me like im Niko?");
 				}
 				case 7:
 				{
-					this.Speech("할인, 가능하긴 하지만, 너무 많은걸 기대하시면 안 돼요.");
+					this.Speech("I can give discounts, i cant alter too much.");
 				}
 				case 8:
 				{
-					this.Speech("제가 어디에서 왔냐구요? 저도 잘 모르겠네요.");
+					this.Speech("Where i come from? Im not sure how i came here.");
 				}
 				case 9:
 				{
-					this.Speech("엑스...피... 뭐라구요? 처음 듣는 말인데.");
+					this.Speech("Ex-Pi what? Im not whatever that is.");
 				}
 				case 10:
 				{
-					this.Speech("뭔가 마실게 필요... 아, 못 마시지.");
+					this.Speech("I need a drink, oh wait i cant have one.");
 				}
 				case 11:
 				{
-					this.Speech("가끔씩 이 '적'들 중에서 적이 아닌것처럼 느껴지는 존재들도 있어요.");
+					this.Speech("These enemies, i sometimes feel like they arent enemies.");
 				}
 				case 12:
 				{
-					this.Speech("설마 저희가 악당인건 아니겠죠? 에이.");
+					this.Speech("What if we are the bad guys? Nah.");
 				}
 				case 13:
 				{
-					this.Speech("이번에는 이 모든 것이 진짜 현실이라는 게 굉장히 이상한 느낌이 들어요.");
+					this.Speech("It feels very wrong that everything is actually real this time.");
 				}
 				case 14:
 				{
-					this.Speech("제 4의 벽을 깬다고요? 여긴 현실이잖아요.");
+					this.Speech("Break the 4th wall? This is the real world this time.");
 				}
 				case 15:
 				{
-					this.Speech("전 기계니까, 제가 할 수 있는 일은 한정되어 있어요..");
+					this.Speech("As a machine, i can only do so much..");
 				}
 				case 16:
 				{
-					this.Speech("이 무기들이 어떻게 당신에게 그렇게 끌려오는지 궁금하시다고요? 저도요.");
+					this.Speech("You ever wonder how these weapons reach you? Me too.");
 				}
 				case 17:
 				{
-					this.Speech("치즈의 요술이란.");
+					this.Speech("Sometimes, i think about cheese, oh wait, wrong line.");
 				}
 				case 18:
 				{
-					this.Speech("아! 바니네요!");
+					this.Speech("Aha! Its barney!");
 				}
 				case 19:
 				{
-					this.Speech("니코가 정말 좋아요.");
+					this.Speech("I like Niko the most.");
 				}
 				case 20:
 				{
-					this.Speech("전 물에 비친 제 얼굴이 정말 싫어요.");
+					this.Speech("I dislike water on my face.");
 				}
 				case 21:
 				{
-					this.Speech("허리가 아프시다구요? 자세를 바로 고쳐잡으셔야죠!");
+					this.Speech("Your back hurts? Stop your bad posture!");
 				}
 				case 22:
 				{
-					this.Speech("누구마냥 말을 많이 하는것 같다고요?");
+					this.Speech("I talk as much as who?");
 				}
 				case 23:
 				{
-					this.Speech("전 다른 세계에서 왔으니까, 이 세계에 대한건 잘 몰라요.");
+					this.Speech("I dont know this world, i came from another, dont ask me too much.");
 				}
 				case 24:
 				{
-					this.Speech("우와! 설마 지금 싸우러 나가는건 아니죠?");
+					this.Speech("Waaaah! I worry, do we have to fight?");
 				}
 				case 25:
 				{
-					this.Speech("흠","...");
+					this.Speech("hm","...");
 				}
 				case 26:
 				{
-					this.Speech("제가 니코라고요? 아닌데요.");
+					this.Speech("What do you mean im niko? Im litterally not.");
 				}
 				case 27:
 				{
-					this.Speech("함부로 만지지 마세요, 이래보여도 성깔 있다구요.");
+					this.Speech("Not touching me, or else i will slap your hand away from me.");
 				}
 				case 28:
 				{
-					this.Speech("도움이 필요하시다면 저한테 요청하세요.");
+					this.Speech("Incase you need help, talk to me.");
 				}
 				case 29:
 				{
-					this.Speech("그 세계에서 니코만이 진짜 실존 인물이란게 이상해요.");
+					this.Speech("Its weird that only niko was the real one in that world.");
 				}
 				case 30:
 				{
-					this.Speech("니코가... 무기도 쓸 수 있었나보네요?");
+					this.Speech("Since... when can niko use such weapons???");
 				}
 				case 31:
 				{
@@ -358,32 +358,32 @@ methodmap CuredFatherGrigori < CClotBody
 				}
 				case 32:
 				{
-					this.Speech("제가 짜증나신다구요? 어...");
+					this.Speech("You think im annoying? Ok bye.");
 				}
 				case 33:
 				{
-					this.Speech("테스트 메세지, 이 테스트를 봐도 신고하지 마세요. 알았죠!");
+					this.Speech("This is a test message, if you see this, Dont report it! Gotcha!");
 				}
 				case 34:
 				{
-					this.Speech("당신이 가장 좋아하는 OS... 아니, 국가는 어디이신가요?");
+					this.Speech("What is your favorite OS you say? well, whats your favorite country?");
 				}
 				case 35:
 				{
-					this.Speech("뭔가 무섭다고요? 저도요. 서로 다른 이유에서 공포를 느끼고 있겠죠.");
+					this.Speech("Do you feel scared? Me too, for different reasons, probably.");
 				}
 				case 36:
 				{
-					this.Speech("하아...");
+					this.Speech("Blah blah blah blah.");
 				}
 				case 37:
 				{
-					this.Speech("*긁음*");
+					this.Speech("*Scratches self*");
 					this.AddGesture("ACT_GMOD_GESTURE_WAVE"); //lol no caps
 				}
 				case 38:
 				{
-					this.Speech("제 춤 한 번 보실래요?!");
+					this.Speech("Cheeck out my moves!");
 					switch(GetURandomInt() % 2)
 					{
 						case 0:
@@ -410,32 +410,32 @@ methodmap CuredFatherGrigori < CClotBody
 				}
 				case 39:
 				{
-					this.Speech("예측중...");
+					this.Speech("gnwes nghwfdhbdfhedbrvapifsdf");
 				}
 				case 40:
 				{
-					this.Speech("전 고양이가 아니에요. 그렇게 생각한 적도 없고.");
+					this.Speech("Im not a cat, i didnt think of that.");
 				}
 				case 41:
 				{
-					this.Speech("제가 홀로그램처럼 보인다구요? 저도 이유는 모르겠네요.");
+					this.Speech("Why im like a hologram? Dunno.");
 				}
 				case 42:
 				{
-					this.Speech("가끔씩 제 시야에서 남들이 안 보이는 스위치가 있으면 좋겠다는 생각이 들어요.");
+					this.Speech("Wish i had a remote to turn you off sometimes.");
 				}
 				case 43:
 				{
-					this.Speech("무례하시네요.");
+					this.Speech("So mean.");
 				}
 				case 44:
 				{
-					this.Speech("컴퓨터면서 채팅창도 못 쓴다구요? 쓸 줄 아는데요. 보실래요? 잠시만요.","...");
+					this.Speech("Look i can type in chat too. hold on.","...");
 					CreateTimer(4.5, Timer_TypeInChat);
 				}
 				case 45:
 				{
-					this.Speech("당신에게 길들여졌다는건 무슨 뜻인가요.");
+					this.Speech("Stop asking me what 'tame' means Niko.");
 				}
 				case 46:
 				{
@@ -443,51 +443,51 @@ methodmap CuredFatherGrigori < CClotBody
 				}
 				case 47:
 				{
-					this.Speech("팩 어 펀치? 그걸 어떻게 만드는데요?");
+					this.Speech("I cant build paps.");
 				}
 				case 48:
 				{
-					this.Speech("건축가? 전 손재주가 없어요.");
+					this.Speech("I wont be your builder.");
 				}
 				case 49:
 				{
-					this.Speech("할인 수치가 너무 높으면 서버가 폭파될지도 몰라요...");
+					this.Speech("If i give bigger discounts, i might get sm_perished!");
 				}
 				case 50:
 				{
-					this.Speech("제 ", "...");
+					this.Speech("My original Creator has abandoned me a long time ago", "...");
 				}
 				case 51:
 				{
-					this.Speech("'지그마' 가 뭔데 그렇게 믿음을 가지는 걸까요?");
+					this.Speech("What does 'Sigma' mean? Why are you so obssesed with it?");
 				}
 				case 52:
 				{
-					this.Speech("지금 누구하고 채팅하시는 거죠? 어... 농담이에요. 저도 채팅창이 보이니까.");
+					this.Speech("Who is this chat youre reffering to? Nah just kidding i can see it.");
 				}
 				case 53:
 				{
-					this.Speech("재밌는거 알려드릴까요?\n콘솔창에 ''quit smoking'' 한 번 입력해보세요!");
+					this.Speech("Wanna hear a joke?\nType ''quit smoking'' in console!");
 				}
 				case 54:
 				{
-					this.Speech("솔직히 저희가 헤어지고 다시 만날 수 있는 기회가 있으면 좋겠네요!");
+					this.Speech("I hope to see you soon again when we part ways!");
 				}
 				case 55:
 				{
-					this.Speech("제 눈이 이상하다구요? 당신 눈도 안 보여요.");
+					this.Speech("My eye is missing? No thats just you.");
 				}
 				case 56:
 				{
-					this.Speech("''zombie_riot/npc/ally/npc_cured_last_survivor.sp''\n제가 들어있는 곳이죠... 그리고 다른 사람도.");
+					this.Speech("''zombie_riot/npc/ally/npc_cured_last_survivor.sp''\nIs where i reside, with someone else.");
 				}
 				case 57:
 				{
-					this.Speech("바이러스를... 원하신다구요?\nwww.freevirus.com");
+					this.Speech("You want a free virus?\nwww.freevirus.com");
 				}
 				case 58:
 				{
-					this.Speech("제 첫 마디가 뭐였냐구요?\nHELLO WORLD!");
+					this.Speech("You wanna know what my first words were?\nHELLO WORLD!");
 				}
 				case 59:
 				{
@@ -495,54 +495,54 @@ methodmap CuredFatherGrigori < CClotBody
 				}
 				case 60:
 				{
-					this.Speech("당신이 무엇인지 전 알아요.\n... 저 자신 말고.");
+					this.Speech("I know what you are.\nNot me!");
 				}
 				case 61:
 				{
-					this.Speech("여기서도 마인크래프트 비슷한걸 보게 되다니...");
+					this.Speech("You have some weird files\nMinecraft? Ew.");
 				}
 				case 62:
 				{
-					this.Speech("전\n이렇게\n글\n쓰는\n사람이\n싫어요.");
+					this.Speech("I\nDont\nLike\nPeople\nWho\nWrite\nLike\nThis.");
 				}
 				case 63:
 				{
-					this.Speech("당신에게 행운이 깃들기를.");
+					this.Speech("I wish you best of luck.");
 					this.AddGesture("ACT_GMOD_GESTURE_BOW"); //lol no caps
 				}
 				case 64:
 				{
-					this.Speech("붐스틱 할인을 원하신다구요?\n안 됐네요!");
+					this.Speech("Ah you want the Boomstick on sale?\nToo bad!");
 					this.AddGesture("ACT_GMOD_GESTURE_DISAGREE"); //lol no caps
 				}
 				case 65:
 				{
-					this.Speech("눈이 좀 가려운데.");
+					this.Speech("My eyes are itchy.");
 					this.AddGesture("ACT_GMOD_GESTURE_BECON"); //lol no caps
 				}
 				case 66:
 				{
-					this.Speech("아직 끝나진 않았나보네.");
+					this.Speech("Its never the end\nIts never the end\nIts never the end\nIts never the end\nIts never the end\nIts never the end");
 				}
 				case 67:
 				{
-					this.Speech("거리두기라니, 지금 이 상황에?");
+					this.Speech("Im not in your walls.");
 				}
 				case 68:
 				{
-					this.Speech("기기에 문제가 생겼나...");
+					this.Speech("yaur kompoutar haz wairus.");
 				}
 				case 69:
 				{
-					this.Speech("핑이 좀 이상한데.");
+					this.Speech("My connection is slow.");
 				}
 				case 70:
 				{
-					this.Speech("제 근처에서 담배는 좀 꺼주세요.\n담배는 몸에 나쁘잖아요.");
+					this.Speech("Please dont smoke near me.\nSmoking is bad.");
 				}
 				case 71:
 				{
-					this.Speech("술 취한 상태로 저한테 말을 거시면 안 돼요.");
+					this.Speech("If you drink beer or whatever, dont talk to me while drunk.");
 				}
 			}
 		}
@@ -606,19 +606,19 @@ methodmap CuredFatherGrigori < CClotBody
 			{
 				case 0:
 				{
-					this.Speech("그래도 뭔가를 해야겠네.");
+					this.Speech("Gotta do something atleast.");
 				}
 				case 1:
 				{
-					this.Speech("니코를 건들지 마!");
+					this.Speech("Dont touch niko!");
 				}
 				case 2:
 				{
-					this.Speech("사악한 것들!");
+					this.Speech("Evil Beings!");
 				}
 				case 3:
 				{
-					this.Speech("사라져!");
+					this.Speech("Begone!");
 				}
 			}
 		}
@@ -645,19 +645,19 @@ methodmap CuredFatherGrigori < CClotBody
 			{
 				case 0:
 				{
-					this.Speech("할 수 있는건 다 했는데...");
+					this.Speech("I tried what i could...");
 				}
 				case 1:
 				{
-					this.Speech("제가 너무 간섭하면 안 되는 탓에...");
+					this.Speech("I cant intefeer too much...");
 				}
 				case 2:
 				{
-					this.Speech("다시 돌아오실 수 있죠, 그렇죠?");
+					this.Speech("You can come back, right?");
 				}
 				case 3:
 				{
-					this.Speech("이건 현실이 아니야, 걱정 안 하셔도...! 되겠죠?");
+					this.Speech("This isnt real, dont worry...! R-Right?");
 				}
 			}
 		}

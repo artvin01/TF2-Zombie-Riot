@@ -4,5 +4,6 @@
 	{
 		"#format"	"{1:t}"
 		"en"		"{green}{1} {default}has closed!"
+		"ko"		"{green}{1} {default}가 종료됨!"
 	}
 }

@@ -3216,19 +3216,19 @@
 		"en"	"Increased Damage\nSaves up to 4 attacks."
 		"fr"	"Accumule jusqu'a 4 attaques."
 		"chi"	"存储上限加到4."
-		"ko"	"피해량이 증가합니다.\n이제 공격을 최대 4개까지 저장할 수 있습니다."
+		"ko"	"피해량 증가.\n이제 공격을 최대 4개까지 저장할 수 있습니다."
 	}
 	"The Standchen Desc AltPap"
 	{
 		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage (true damage)."
 		"fr"	"Attaques ont un effet élémental Necrôse"
-		"ko"	"피해량이 증가합니다.\n공격 적중시, 대상에게 죽음의 저주 원소 피해를 부여합니다."
+		"ko"	"피해량 증가.\n적중시, 대상에게 쇠약 원소 피해를 부여. (트루 대미지)"
 	}
 	"The Standchen Desc AltPap 2"
 	{
 		"en"	"Increased Damage\nDeals an additional 30％ pure damage if an enemy is under an elemental effect."
 		"fr"	"+30％ dégats sur les ennemis sous un effet élémental."
-		"ko"	"피해량이 증가합니다.\n공격 적중시, 대상에게 죽음의 저주 원소 피해가 있다면, 공격 피해량이 +30％ 증가."
+		"ko"	"피해량 증가.\n적중시, 대상에게 쇠약 원소 피해가 있다면, 공격 피해량이 +30％ 증가."
 	}
 	"Sensal Scythe Wep Desc"
 	{
@@ -5160,7 +5160,7 @@
 	"Chemical Spewer Desc"
 	{
 		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage alongside damage dealt.\nApplies afterburn that deals Magic damage."
-		"ko"	"구조물 개선의 영향을 받는 화염방사기.\n가한 피해량의 50％ 만큼 대상에게 신경 손상 피해를 부여.\n트루 대미지를 입히는 화상을 부여."
+		"ko"	"구조물 개선의 영향을 받는 화염방사기.\n가한 피해량만큼 대상에게 신경 손상 피해를 부여.\n마법 피해를 입히는 화상을 부여."
 	}
 	"Chemical Spewer Pap 1"
 	{

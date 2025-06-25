@@ -4899,5 +4899,6 @@
 	"Call for medic to cancel!"
 	{
 		"en"		"Call for medic to cancel your dance!"
+		"ko"		"메딕 호출 키를 눌러 춤을 취소하세요!"
 	}
 }
