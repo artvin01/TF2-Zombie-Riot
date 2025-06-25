@@ -289,7 +289,7 @@ static void Internal_ClotThink(int iNPC)
 								{
 									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
-								if(iRuinaWave()<40)
+								if(iRuinaWave()<20)
 								{
 									damage=20.0;
 								}
@@ -303,7 +303,7 @@ static void Internal_ClotThink(int iNPC)
 								{
 									PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 								}
-								if(iRuinaWave()<40)
+								if(iRuinaWave()<20)
 								{
 									damage=25.0;
 								}

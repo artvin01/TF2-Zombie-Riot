@@ -120,17 +120,6 @@ native void ZR_SetXpAndLevel(int client, int Xp);
 native int ZR_GetXp(int client);
 
 /**
- * Returns the alive status of a player
- * 
- * @param client	Client index
- * 
- * @error		Invalid client index or client is not in game
- * 
- * @return		0 for normal, 1 rogue, 2 construction
- */
-native int ZR_GetSpecialMode();
-
-/**
  * Called when a difficulty is selected
  * Will be called after all votes are done
  * 
