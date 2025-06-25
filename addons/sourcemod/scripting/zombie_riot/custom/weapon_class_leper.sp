@@ -310,6 +310,11 @@ void LeperReturnToNormal(int client, int propdelete, int ExtraLogic = 0)
 			SetVariantInt(1);
 			AcceptEntityInput(client, "SetForcedTauntCam");
 		}
+		else
+		{
+			SetVariantInt(0);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
 			
 		if(ExtraLogic == 1)
 		{

@@ -289,8 +289,8 @@ public void AlliedRitualistAbility_ClotThink(int iNPC)
 			if(npc.m_flAttackHappens && npc.m_flAttackHappens < GetGameTime())
 			{
 				npc.m_flAttackHappens = GetGameTime() + 0.5;
-				spawnRing_Vectors(origin_owner, 600.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/50, /*B*/50, /*alpha*/50, 1, /*duration*/ 0.5, 10.0, 3.0, 1);
-				spawnRing_Vectors(origin_owner, 1.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/50, /*B*/50, /*alpha*/50, 1, /*duration*/ 0.5, 10.0, 3.0, 1, 600.0 * 2.0);
+		//		spawnRing_Vectors(origin_owner, 600.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/50, /*B*/50, /*alpha*/50, 1, /*duration*/ 0.5, 10.0, 3.0, 1);
+		//		spawnRing_Vectors(origin_owner, 1.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/50, /*B*/50, /*alpha*/50, 1, /*duration*/ 0.5, 10.0, 3.0, 1, 600.0 * 2.0);
 				b_NpcIsTeamkiller[Owner] = true;
 				b_AllowSelfTarget[Owner] = true;
 				Explode_Logic_Custom(0.0, Owner, Owner, -1, origin_owner, 600.0, _, _, false, 99, _, _, RitualistApplyBuff);
