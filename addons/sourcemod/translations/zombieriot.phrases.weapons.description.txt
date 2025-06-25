@@ -1781,31 +1781,31 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30％ (cant go below 1)"
+		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Panic Attack Desc"

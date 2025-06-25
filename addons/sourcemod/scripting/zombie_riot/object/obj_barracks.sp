@@ -886,8 +886,9 @@ public void Building_Summoner(int client, int entity)
 	}
 	SetGlobalTransTarget(client);
 
-	PrintToChat(client, "%t", "Barracks Desc Extra");
-	PrintToChat(client, "%t", "Barracks Desc Extra 2");
+	CPrintToChat(client, "{yellow}%t", "Barracks Desc Extra");
+	CPrintToChat(client, "{yellow}%t", "Barracks Desc Extra 2");
+	ExplainBuildingInChat(client, 2);
 	TrainingIn[client] = 0.0;
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
