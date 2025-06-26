@@ -490,6 +490,7 @@ methodmap Stella < CClotBody
 		int spawn_index = NPC_CreateByName("npc_karlas", this.index, pos, ang, GetTeam(this.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(this.index, spawn_index);
 			this.Ally = spawn_index;
 			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index], b_tripple_raid[this.index]);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1155,13 +1156,13 @@ static void Internal_ClotThink(int iNPC)
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	npc.AdjustWalkCycle();
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 	npc.PlayIdleAlertSound();
 	
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		return;
@@ -1516,21 +1517,21 @@ static bool KeepDistance(Stella npc, float flDistanceToTarget, int PrimaryThreat
 			else
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 
@@ -1705,7 +1706,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 	if(npc.m_bInKame)
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flSpeed = 0.0;
 		return false;
 	}
@@ -1801,7 +1802,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.NC_StartupSound();
 
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flSpeed = 0.0;
 
 		return true;

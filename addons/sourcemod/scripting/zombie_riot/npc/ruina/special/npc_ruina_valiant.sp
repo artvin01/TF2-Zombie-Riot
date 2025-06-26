@@ -365,7 +365,7 @@ static void ClotThink(int iNPC)
 				{
 					Ruina_Add_Battery(Anchor, 0.2);
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.FaceTowards(Anchor_Loc, 15000.0);
 					if(npc.m_iChanged_WalkCycle != 1) 	
 					{
@@ -384,7 +384,7 @@ static void ClotThink(int iNPC)
 					view_as<CClotBody>(iNPC).SetGoalVector(Anchor_Loc);	//we are too far away from the anchor to charge it, go near it.
 					view_as<CClotBody>(iNPC).StartPathing();
 					npc.StartPathing();
-					npc.m_bPathing = true;
+					
 				}
 				
 			}
@@ -403,7 +403,7 @@ static void ClotThink(int iNPC)
 			view_as<CClotBody>(iNPC).SetGoalVector(Anchor_Loc);
 			view_as<CClotBody>(iNPC).StartPathing();
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			if(npc.m_iChanged_WalkCycle != 0) 	
 			{
 				npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -444,19 +444,19 @@ static void ClotThink(int iNPC)
 				else
 				{
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 		}
 	}
 
@@ -587,6 +587,7 @@ static void Venium_Build_Anchor(Valiant npc)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		i_anchor_id[npc.index] = EntIndexToEntRef(spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
@@ -643,7 +644,7 @@ static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float Ga
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

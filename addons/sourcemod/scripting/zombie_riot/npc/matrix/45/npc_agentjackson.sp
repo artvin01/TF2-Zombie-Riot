@@ -183,14 +183,16 @@ public void AgentJackson_ClotThink(int iNPC)
 	{
 		return;
 	}
-
-	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	if(!VIPBuilding_Active())
 	{
-		if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
 		{
-			Spawns_AddToArray(npc.index, true);
-			i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-			break;
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+				break;
+			}
 		}
 	}
 	
@@ -245,7 +247,7 @@ public void AgentJackson_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			
 		

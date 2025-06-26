@@ -108,7 +108,7 @@ methodmap ArkSlugAcid < CClotBody
 		SDKHook(npc.index, SDKHook_Think, ArkSlugAcid_ClotThink);
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 
 		i_NoEntityFoundCount[npc.index] = 6;
 		
@@ -290,7 +290,7 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 					
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}

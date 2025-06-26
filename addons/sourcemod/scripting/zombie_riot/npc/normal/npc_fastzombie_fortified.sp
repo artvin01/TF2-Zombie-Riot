@@ -273,7 +273,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 		if(npc.m_flInJump > GetGameTime(npc.index))
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.FaceTowards(vecTarget, 1000.0);
 			
 			return;
@@ -331,7 +331,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.6;
 			}
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 		}
 		else
 		{
@@ -342,7 +342,7 @@ public void FortifiedFastZombie_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

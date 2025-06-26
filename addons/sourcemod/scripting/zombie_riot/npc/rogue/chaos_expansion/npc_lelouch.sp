@@ -982,7 +982,7 @@ static void ClotThink(int iNPC)
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_bAllowBackWalking = false;
@@ -2087,6 +2087,7 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(spawn_index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -2533,7 +2534,7 @@ static void Initiate_Anim(Lelouch npc, float time, char[] Anim = "", float Rate 
 	npc.m_flDoingAnimation = GetGameTime(npc.index) + time;
 
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 	npc.m_flGetClosestTargetTime = 0.0;
 	npc.m_flSpeed = 0.0;
 	npc.m_iChanged_WalkCycle  = -1;
@@ -2591,6 +2592,7 @@ static int i_CreateManipulation(Lelouch npc, float Spawn_Loc[3], float Spawn_Ang
 	int spawn_index = NPC_CreateByName("npc_ruina_manipulation", npc.index, Spawn_Loc, Spawn_Ang, GetTeam(npc.index), Model);
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -2885,6 +2887,7 @@ static int i_summon_weaver(Lelouch npc)
 	int spawn_index = NPC_CreateByName("npc_interstellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);

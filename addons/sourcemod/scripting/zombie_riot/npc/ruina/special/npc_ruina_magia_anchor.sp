@@ -893,6 +893,7 @@ static int i_summon_weaver(Magia_Anchor npc)
 	int spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index), "anchor");
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -930,13 +931,16 @@ static bool Charging(Magia_Anchor npc)
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
-			for(int i; i < ZR_MAX_SPAWNERS; i++)
+			if(!VIPBuilding_Active())
 			{
-				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+				for(int i; i < ZR_MAX_SPAWNERS; i++)
 				{
-					Spawns_AddToArray(npc.index, true);
-					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-					break;
+					if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+					{
+						Spawns_AddToArray(npc.index, true);
+						i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+						break;
+					}
 				}
 			}
 		}

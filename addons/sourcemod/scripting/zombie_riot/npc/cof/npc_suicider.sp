@@ -247,7 +247,7 @@ public void Suicider_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -345,7 +345,7 @@ static void Suicider_SelfDefense(Suicider npc, float gameTime, int target, float
 				if(npc.m_bPathing)
 				{
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}

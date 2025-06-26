@@ -445,7 +445,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 7) 	
 					{
 						npc.StopPathing();
-						npc.m_bPathing = false;
+						
 						npc.m_flSpeed = 0.0;
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 7;
@@ -492,7 +492,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 						if(npc.m_iChanged_WalkCycle != 7) 	
 						{
 							npc.StopPathing();
-							npc.m_bPathing = false;
+							
 							npc.m_flSpeed = 0.0;
 							npc.m_bisWalking = false;
 							//Hide sword
@@ -509,7 +509,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

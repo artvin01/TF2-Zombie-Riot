@@ -248,7 +248,7 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		
 	
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}
@@ -503,7 +503,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					npc.AddActivityViaSequence("Stand_to_crouch");
 					npc.SetPlaybackRate(0.75);	
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				npc.m_flCloneRageInit = gameTime + 1.35;
 				npc.m_flCloneRageCD = gameTime + 15.0;

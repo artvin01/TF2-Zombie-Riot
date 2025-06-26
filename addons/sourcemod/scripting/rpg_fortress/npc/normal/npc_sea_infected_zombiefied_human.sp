@@ -184,7 +184,7 @@ methodmap SeaInfectedZombieHuman < CClotBody
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 255, 255);
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}
@@ -495,7 +495,7 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				else
 				{
@@ -520,7 +520,7 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					float flPos[3]; // original
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "flaregun_energyfield_red", npc.index, "anim_attachment_LH", {0.0,0.0,0.0});

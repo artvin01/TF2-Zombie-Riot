@@ -278,7 +278,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			npc.m_flNextRangedAttackHappening = 0.0;
 			npc.m_bisWalking = false;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -387,7 +387,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}
