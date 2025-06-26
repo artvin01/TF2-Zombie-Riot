@@ -446,17 +446,21 @@ static void Brew_Menu(int client, int entity)
 		if(owner == -1)
 			owner = 0;
 		
+		char NameOfPotion[64];
+		char NameOfPotion2[64];
 		if(SellingAmount[owner] > 0)
 		{
-			LookupById(SellingType[owner], buffer);
+			LookupById(SellingType[owner], NameOfPotion);
 		}
 		else
 		{
-			strcopy(buffer, sizeof(buffer), "N/A");
+			strcopy(NameOfPotion, sizeof(NameOfPotion), "N/A");
 		}
 
-		Format(buffer, sizeof(buffer), "Drink: %s (x%d)", buffer, SellingAmount[owner]);
-		menu.AddItem("-1", buffer, SellingAmount[owner] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(NameOfPotion2, sizeof(NameOfPotion2), "%s Desc", NameOfPotion);
+		char buffer2[128];
+		Format(buffer2, sizeof(buffer2), "Drink: %T (x%d)\n%T\n ", NameOfPotion,client, SellingAmount[owner], NameOfPotion2, client);
+		menu.AddItem("-1", buffer2, SellingAmount[owner] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
 		{
@@ -578,11 +582,17 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 	strcopy(buffer, sizeof(buffer), "N/A");
 	if(LookupByAspect(AspectMenu[client][0], AspectMenu[client][1], AspectMenu[client][2], _, buffer) == -1)
 		failed = true;
+
+	char NameOfPotion[128];
+	char NameOfPotion2[128];
+	strcopy(NameOfPotion, sizeof(NameOfPotion), buffer);
 	
 	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_SPACER);
 
-	Format(buffer, sizeof(buffer), "New Brew: %s\n ", buffer);
-	menu.AddItem(NULL_STRING, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(NameOfPotion2, sizeof(NameOfPotion2), "%s Desc", NameOfPotion);
+	char buffer2[128];
+	Format(buffer2, sizeof(buffer2), "New Brew: %T\n%T\n ", NameOfPotion, client, NameOfPotion2, client);
+	menu.AddItem(NULL_STRING, buffer2, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	
 	if(SellingAmount[client] > 0)
 	{
@@ -593,7 +603,7 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 		strcopy(buffer, sizeof(buffer), "N/A");
 	}
 
-	Format(buffer, sizeof(buffer), "Selling: %s (x%d)", buffer, SellingAmount[client]);
+	Format(buffer, sizeof(buffer), "Selling: %T (x%d)", buffer, client, SellingAmount[client]);
 	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 	InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
@@ -895,12 +905,10 @@ static float Brew_Default(char name[64], int attrib[TINKER_LIMIT], float value[T
 static float Brew_012(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Flexibility");
-	attrib[0] = 54;
-	value[0] = 1.05;
+	attrib[0] = 6;
+	value[0] = 0.95;
 	attrib[1] = 97;
 	value[1] = 0.85;
-	attrib[2] = 326;
-	value[2] = 1.25;
 	return 180.0;
 }
 
