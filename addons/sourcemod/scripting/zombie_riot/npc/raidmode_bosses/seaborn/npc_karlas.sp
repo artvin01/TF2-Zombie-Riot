@@ -2313,8 +2313,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	int wave = i_current_wave[npc.index];
 
-	//stella is dead, its wave 30 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
-	if(!b_angered_twice[npc.index] && wave >=30 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	//stella is dead, its wave 20 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
+	if(!b_angered_twice[npc.index] && wave >=20 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		b_allow_karlas_transform[npc.index] = false;
 		b_angered_twice[npc.index]=true;

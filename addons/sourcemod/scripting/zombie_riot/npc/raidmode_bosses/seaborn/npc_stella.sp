@@ -1147,7 +1147,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 
-	if(wave > 20)	//beyond wave 30.
+	if(wave > 20)	//beyond wave 20.
 		if(Lunar_Grace(npc))
 			return;
 
@@ -1542,7 +1542,7 @@ static bool b_MoveTowardsKarlas(Stella npc)
 	if(!IsValidAlly(npc.index, npc.Ally))
 		return false;
 
-	//if its less then wave 30, no reflect.
+	//if its less then wave 20, no reflect.
 	if(i_current_wave[npc.index] < 20)
 		return false;
 
