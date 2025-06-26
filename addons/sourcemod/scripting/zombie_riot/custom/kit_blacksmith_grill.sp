@@ -21,6 +21,15 @@ static const char SauceName[][] =
 	"The Special"
 };
 
+static const char EffectsSauce[][] =
+{
+	"and removeds elemental damage",
+	"and +33％ armor gained",
+	"and passive healing for 20s",
+	"and buffed for 15s",
+	"and gain 1 revive"
+};
+
 enum
 {
 	// Global
@@ -144,37 +153,32 @@ static void GrillingUse(int client, int entity)
 				if(Armor_Charge[client] < 0)
 				{
 					Armor_Charge[client] = 0;
-					Format(buffer, sizeof(buffer), "%s and removed elemental damage", buffer);
 				}
 			}
 			case S_Ketchup:
 			{
 				Armor_Charge[client] += MaxArmorCalculation(Armor_Level[client], client, 0.333);
-				Format(buffer, sizeof(buffer), "%s and 33％ armor", buffer);
 			}
 			case S_Mustard:
 			{
 				HealEntityGlobal(owner, client, healing / 10.0, _, 20.0);
-				Format(buffer, sizeof(buffer), "%s and passive healing for 20s", buffer);
 			}
 			case S_Barbecue:
 			{
 				ApplyStatusEffect(owner, client, "Healing Resolve", 15.0);
-				Format(buffer, sizeof(buffer), "%s and buffed for 15s", buffer);
 			}
 			case S_Special:
 			{
 				if(i_AmountDowned[client] > 0)
 				{
 					i_AmountDowned[client]--;
-					Format(buffer, sizeof(buffer), "%s and gained 1 revive", buffer);
 				}
 			}
 		}
 
 		if(sauce >= 0 && sauce < Sauce_MAX)
 		{
-			CPrintToChat(client, "You ate a {yellow}%s Burger{default}\n{green}%s", SauceName[sauce], buffer);
+			CPrintToChat(client, "You ate a {yellow}%s Burger{default}\n{green}%s", SauceName[sauce], EffectsSauce[sauce]);
 		}
 		else
 		{
@@ -242,14 +246,14 @@ static void GrillingMenu(int client, const char[] msg = "")
 		if(precent < 0.0)
 			precent = 0.0;
 		
-		FormatEx(buffer, sizeof(buffer), "%s (%d％)", SauceName[SauceSelected[client]], RoundToFloor(precent));
+		FormatEx(buffer, sizeof(buffer), "%s (%d％)\n%T Heals %s", SauceName[SauceSelected[client]], RoundToFloor(precent), "Effect:", client, EffectsSauce[SauceSelected[client]]);
 
 		if(precent < 100.0)
 			failed = true;
 	}
 	else
 	{
-		strcopy(buffer, sizeof(buffer), "No Sauce");
+		FormatEx(buffer, sizeof(buffer), "No Sauce\n%T Heals","Effect:", client);
 	}
 	
 	menu.AddItem(NULL_STRING, buffer);

@@ -343,6 +343,18 @@
 		"pt"		"N/A"
 		"nl"		"Nvt"
 	}
+	"N/A Desc"
+	{
+		"en"		"N/A"
+		"it"		"N/A"
+		"ru"		"Нет"
+		"pl"		"N/A"
+		"es"		"N/A"
+		"fr"		"N/D"
+		"de"		"N/A"
+		"pt"		"N/A"
+		"nl"		"Nvt"
+	}
 	"Primary"
 	{
 		"en"		"Primary"
