@@ -649,6 +649,7 @@ public void Bloon_ClotThink(int iNPC)
 						if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 							damageDealDo *= 25.0;
 							
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);		
 						//delete swingTrace;
 					}
 				}				
@@ -661,7 +662,7 @@ public void Bloon_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

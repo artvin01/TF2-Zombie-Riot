@@ -159,7 +159,7 @@ static void ClotThink(int iNPC)
 					npc.m_iTarget = other;
 					i_RaidGrantExtra[npc.index] = 2;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					stop_thinking = true;
 					break;
 			}

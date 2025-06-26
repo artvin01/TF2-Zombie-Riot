@@ -243,7 +243,7 @@ public void CombineElite_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 0.0;
 		npc.StopPathing();
-		npc.m_bPathing = false;		
+				
 	}
 	else
 	{
@@ -273,7 +273,7 @@ public void CombineElite_ClotThink(int iNPC)
 				npc.m_bmovedelay = false;
 		//		npc.FaceTowards(vecTarget, 1000.0);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			
 		
@@ -438,7 +438,7 @@ public void CombineElite_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

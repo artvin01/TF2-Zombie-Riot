@@ -228,7 +228,7 @@ public void Bad_ClotThink(int iNPC)
 				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					damageDealDo *= 25.0;
 					
-				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);				
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);				
 			}
 		}
 		npc.StartPathing();
@@ -237,7 +237,7 @@ public void Bad_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -278,6 +278,7 @@ public void Bad_NPCDeath(int entity)
 		int spawn_index = NPC_CreateByName("npc_ddt", -1, pos, angles, team, npc.m_bFortified ? "f" : "");
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
+		NpcStats_CopyStats(npc.index, spawn_index);
 	}
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
@@ -319,6 +320,7 @@ public void Bad_PostDeath(const char[] output, int caller, int activator, float 
 		int spawn_index = NPC_CreateByName("npc_zomg", -1, pos, angles, GetTeam(caller));
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
+		NpcStats_CopyStats(caller, spawn_index);
 	}
 }
 
@@ -336,5 +338,6 @@ public void Bad_PostFortifiedDeath(const char[] output, int caller, int activato
 		int spawn_index = NPC_CreateByName("npc_zomg", -1, pos, angles, GetTeam(caller), "f");
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
+		NpcStats_CopyStats(caller, spawn_index);
 	}
 }

@@ -171,7 +171,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}
@@ -435,7 +435,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				else
 				{
@@ -460,7 +460,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}

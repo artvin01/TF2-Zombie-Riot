@@ -386,6 +386,7 @@ public void WFOuroborosEkas_NPCDeath(int entity)
 		int spawn_index = NPC_CreateByName("npc_whiteflower_ekas_piloteer", -1, pos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

@@ -1002,7 +1002,7 @@ public void ToddHoward_ClotThink(int iNPC)
 				if(npc.m_bPathing)
 				{
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				if(npc.m_iChanged_WalkCycle != 8) 	
 				{

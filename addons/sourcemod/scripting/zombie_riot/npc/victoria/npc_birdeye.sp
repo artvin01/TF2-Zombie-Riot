@@ -798,6 +798,7 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		int spawn_index2 = NPC_CreateByName("npc_bigpipe", entity, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(entity, spawn_index);
 			//i_ally_index = EntIndexToEntRef(spawn_index);
 			//VictoriaHarbringer_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);

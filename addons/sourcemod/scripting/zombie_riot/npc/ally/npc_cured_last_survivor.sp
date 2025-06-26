@@ -393,7 +393,6 @@ methodmap CuredFatherGrigori < CClotBody
 							this.m_bisWalking = false;
 							this.m_iChanged_WalkCycle = 999;
 							this.StopPathing();
-							this.m_bPathing = false;
 							this.m_flCustomAnimDo = GetGameTime(this.index) + 6.0;
 						}
 						case 1:
@@ -403,7 +402,6 @@ methodmap CuredFatherGrigori < CClotBody
 							this.m_bisWalking = false;
 							this.m_iChanged_WalkCycle = 999;
 							this.StopPathing();
-							this.m_bPathing = false;
 							this.m_flCustomAnimDo = GetGameTime(this.index) + 6.0;
 						}
 					}
@@ -843,7 +841,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 999;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_flCustomAnimDo = GetGameTime(npc.index) + 10.0;
 			npc.m_flNextIdleSound = GetGameTime(npc.index) + GetRandomFloat(50.0, 50.0);
 			npc.Speech("N-No...");
@@ -943,7 +941,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 11) 	
 				{
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.AddActivityViaSequence("Open_door_towards_right");
 					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 0.7;
 					npc.m_iChanged_WalkCycle = 11;
@@ -1092,7 +1090,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				}
 				
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				
 				npc.FaceTowards(vecTarget, 10000.0);
 				
@@ -1404,7 +1402,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				if (npc.m_iAttacksTillReload != 2)
 				{
@@ -1431,7 +1429,7 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 			}
 			npc.m_bGetClosestTargetTimeAlly = false;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index, _ , 1000.0);	
 		}

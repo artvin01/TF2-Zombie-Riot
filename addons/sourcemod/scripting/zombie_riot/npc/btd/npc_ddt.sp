@@ -272,7 +272,7 @@ public void DDT_ClotThink(int iNPC)
 				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					damageDealDo *= 25.0;
 					
-				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);					
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);					
 			}
 		}
 		
@@ -282,7 +282,7 @@ public void DDT_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -374,7 +374,10 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
+	{
+		NpcStats_CopyStats(caller, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }
 
 public void DDT_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
@@ -388,5 +391,8 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
+	{
+		NpcStats_CopyStats(caller, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }

@@ -230,7 +230,7 @@ public void Bfb_ClotThink(int iNPC)
 				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					damageDealDo *= 25.0;
 					
-				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);						
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);						
 			}
 		}
 		
@@ -240,7 +240,7 @@ public void Bfb_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -277,4 +277,5 @@ public void Bfb_NPCDeath(int entity)
 	int spawn_index = NPC_CreateByName("npc_moab", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
 	if(spawn_index > MaxClients)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	NpcStats_CopyStats(npc.index, spawn_index);
 }

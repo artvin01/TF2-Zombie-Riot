@@ -438,7 +438,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			//Stop chasing dead target.
 			npc.m_iTarget = 0;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.PlayIdleSound();
 		}
 		else
@@ -472,7 +472,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 				npc.FaceTowards(vecTarget, 1000.0);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			
 			
@@ -595,7 +595,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					if(!npc.m_fbRangedSpecialOn)
 					{
 						npc.StopPathing();
-						npc.m_bPathing = false;
+						
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
 						npc.m_fbRangedSpecialOn = true;
@@ -649,7 +649,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index) && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0) && !npc.m_fbRangedSpecialOn || (npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn))
 				{
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.m_fbGunout = false;
 					//Look at target so we hit.
 					npc.FaceTowards(vecTarget, 1500.0);
@@ -741,7 +741,7 @@ public void BobTheGod_ClotThink(int iNPC)
 		if (npc.m_flDoingSpecial < GetGameTime(npc.index) && npc.m_iState == 1)
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_iState = 0;
 			int iActivity = npc.LookupActivity("ACT_RUN");
 			if(iActivity > 0) npc.StartActivity(iActivity);
@@ -804,7 +804,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bmovedelay = false;
 				npc.m_bmovedelay_run = false;
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			
 			else if (npc.m_iState != 2)
@@ -813,7 +813,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.m_bmovedelay = false;
 				npc.m_bmovedelay_run = false;
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_iState = 2;
 				int iActivity_melee = npc.LookupActivity("ACT_IDLE");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -841,7 +841,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				npc.PlayRangedReloadSound();
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
-				npc.m_bPathing = false;
+				
 				npc.m_fbGunout = true;
 				npc.m_bReloaded = false;
 				SetGlobalTransTarget(client);
@@ -856,7 +856,7 @@ public void BobTheGod_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable1, "Enable");
 				}
 				npc.m_bReloaded = true;
-				npc.m_bPathing = false;
+				
 				npc.m_fbGunout = false;
 				if (npc.m_flidle_talk < GetGameTime(npc.index)/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") >= 500*/)
 				{

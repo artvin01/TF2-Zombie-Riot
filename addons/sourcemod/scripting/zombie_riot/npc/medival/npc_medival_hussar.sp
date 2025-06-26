@@ -554,7 +554,7 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 		}
 		else
 		{
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}	

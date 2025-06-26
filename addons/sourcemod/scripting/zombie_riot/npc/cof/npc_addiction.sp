@@ -261,7 +261,7 @@ public void Addicition_ClotThink(int iNPC)
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 3;
 						npc.StopPathing();
-						npc.m_bPathing = false;
+						
 					}
 					npc.PlayLightningSound();
 					
@@ -336,7 +336,7 @@ public void Addicition_ClotThink(int iNPC)
 	else
 	{
 //		npc.StopPathing();
-//		npc.m_bPathing = false;
+//		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
 	}
@@ -358,7 +358,7 @@ public void Addicition_NPCDeath(int entity)
 	
 	
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 	
 	npc.PlayDeathSound();
 	

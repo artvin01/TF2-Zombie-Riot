@@ -190,7 +190,7 @@ methodmap Whiteflower_RagingBlader < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

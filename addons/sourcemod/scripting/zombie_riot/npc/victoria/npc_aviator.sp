@@ -238,7 +238,7 @@ public void Aviator_ClotThink(int iNPC)
 			case 0:
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_drg_melee");
 				npc.m_flAttackHappens = 0.0;

@@ -89,7 +89,7 @@ methodmap BobTheTargetDummy < CClotBody
 		SetEntityRenderColor(npc.m_iWearable3, 200, 255, 200, 255);
 
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		b_NoKnockbackFromSources[npc.index] = true;
 		
 		return npc;

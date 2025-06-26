@@ -149,7 +149,7 @@ methodmap ArkSinger < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 255, 200, 200, 255);
 
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		return npc;
 	}
 	
@@ -213,7 +213,7 @@ public void ArkSinger_ClotThink(int iNPC)
 			npc.m_flNextRangedAttackHappening = 0.0;
 			npc.m_bisWalking = false;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 
 			f_SingerBuffedFor[npc.index] = gameTime + (npc.m_iOverlordComboAttack * 0.25);
 
@@ -329,7 +329,7 @@ public void ArkSinger_ClotThink(int iNPC)
 
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}

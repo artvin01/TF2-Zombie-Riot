@@ -132,7 +132,7 @@ methodmap SniperAccuracy < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

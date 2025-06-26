@@ -351,7 +351,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 				RemoveEntity(npc.m_iWearable4);
 				
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.StopHealing();
 			npc.Healing = false;
 			npc.m_bnew_target = false;
@@ -479,7 +479,7 @@ public void VictorianCaffeinator_ClotThink(int iNPC)
 		else
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}

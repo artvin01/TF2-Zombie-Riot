@@ -227,7 +227,7 @@ methodmap Whiteflower_selected_few < CClotBody
 		
 	
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

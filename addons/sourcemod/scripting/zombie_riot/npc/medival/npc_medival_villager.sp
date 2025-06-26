@@ -612,6 +612,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_medival_building", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
 					if(b_StaticNPC[spawn_index])
 						AddNpcToAliveList(spawn_index, 1);
@@ -825,7 +826,7 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 		}
 		else
 		{
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}	

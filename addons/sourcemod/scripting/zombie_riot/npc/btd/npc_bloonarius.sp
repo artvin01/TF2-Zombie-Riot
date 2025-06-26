@@ -287,14 +287,18 @@ methodmap Bloonarius < CClotBody
 		ToggleMapMusic(false);
 		npc.m_flMeleeArmor = 1.15;
 		
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		if(!VIPBuilding_Active())
 		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			for(int i; i < ZR_MAX_SPAWNERS; i++)
 			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-				break;
+				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+				{
+					Spawns_AddToArray(npc.index, true);
+					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+					break;
+				}
 			}
+
 		}
 		
 		//ExcuteRelay("zr_btdraid", "FireUser1");
@@ -397,7 +401,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = gameTime + 1.8;
 
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		
 		//if(npc.m_bElite)
 		{
@@ -414,7 +418,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		{
 			npc.m_iMiniLivesLost++;
 			
-			int players = CountPlayersOnRed();
+		//	int players = CountPlayersOnRed();
 			int tier = npc.m_iTier;
 			
 			int count = SpawnMulti(BloonLowCount[tier], 4, npc.m_bStaticNPC);
@@ -427,6 +431,7 @@ public void Bloonarius_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, ang, GetTeam(npc.index), BloonLowData[tier]);
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 					AddNpcToAliveList(spawn_index, 1);
@@ -508,7 +513,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 	}
 }
 
