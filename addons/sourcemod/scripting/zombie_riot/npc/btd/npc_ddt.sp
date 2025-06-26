@@ -265,29 +265,14 @@ public void DDT_ClotThink(int iNPC)
 			{
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				float damageDealDo = 60.0;
 				
 				if(npc.m_bFortified)
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}
-				else
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}					
+					damageDealDo *= 1.4;
+				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					damageDealDo *= 25.0;
+					
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);					
 			}
 		}
 		

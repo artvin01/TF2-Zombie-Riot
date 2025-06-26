@@ -220,28 +220,14 @@ public void Zomg_ClotThink(int iNPC)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+				float damageDealDo = 40.0;
+				
 				if(npc.m_bFortified)
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 40.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 300.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}
-				else
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 25.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}					
+					damageDealDo *= 1.4;
+				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					damageDealDo *= 25.0;
+					
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);							
 			}
 		}
 		npc.StartPathing();

@@ -3,33 +3,33 @@
 
 static const char BloonLowData[][] =
 {
-	"3",
-	"4",
 	"5",
-	"7"
+	"6",
+	"7",
+	"9"
 };
 
 // Halved on Elite
 static const int BloonLowCount[] =
 {
-	2,
-	2,
-	3,
-	3
+	4,
+	4,
+	6,
+	6
 };
 
 static const char BloonHigh[][] =
 {
-	"npc_bloon",
-	"npc_bloon",
 	"npc_moab",
-	"npc_zomg"
+	"npc_bfb",
+	"npc_zomg",
+	"npc_bad"
 };
 
 static const char BloonHighData[][] =
 {
-	"8",
-	"9",
+	"",
+	"",
 	"",
 	""
 };
@@ -37,10 +37,10 @@ static const char BloonHighData[][] =
 // Halved on Elite
 static const int BloonHighCount[] =
 {
-	3,//30,
-	8,//60,
-	3,//6,
-	2//10
+	2,//30,
+	2,//60,
+	2,//6,
+	1//10
 };
 
 static int SpawnMulti(int count, int players, bool elite)
@@ -407,7 +407,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.m_iMiniLivesLost < 99 && !NpcStats_IsEnemySilenced(npc.index))
+	if(npc.m_iMiniLivesLost < 99 && !NpcStats_IsEnemySilenced(npc.index) && MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 	{
 		nextLoss = ReturnEntityMaxHealth(npc.index) * (99 - npc.m_iMiniLivesLost) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
@@ -417,26 +417,21 @@ public void Bloonarius_ClotThink(int iNPC)
 			int players = CountPlayersOnRed();
 			int tier = npc.m_iTier;
 			
-			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
-			
-			Enemy enemy;
-			enemy.Index = NPC_GetByPlugin("npc_bloon");
-			enemy.Is_Static = npc.m_bStaticNPC;
+			int count = SpawnMulti(BloonLowCount[tier], 4, npc.m_bStaticNPC);
+			//assume always 4 players.
 
-			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
-			
-			enemy.ExtraMeleeRes = 1.0;
-			enemy.ExtraRangedRes = 1.0;
-			enemy.ExtraSpeed = 1.0;
-			enemy.ExtraDamage = 1.0;	
-			enemy.ExtraSize = 1.0;	
-			enemy.Team = GetTeam(npc.index);
-			for(int i; i<count; i++)
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			for(;count >= 1; count--)
 			{
-				Waves_AddNextEnemy(enemy);
+				int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, ang, GetTeam(npc.index), BloonLowData[tier]);
+				if(spawn_index > MaxClients)
+				{
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					ScalingMultiplyEnemyHpGlobalScale(spawn_index);
+					AddNpcToAliveList(spawn_index, 1);
+				}
 			}
-			
-			Zombies_Currently_Still_Ongoing += count;
 
 			if(npc.m_flHeadshotCooldown < gameTime)
 				npc.AddGesture((GetURandomInt() % 2) ? "ACT_BLOONARIUS_HURT_LEFT" : "ACT_BLOONARIUS_HURT_RIGHT", false);

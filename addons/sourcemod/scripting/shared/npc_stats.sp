@@ -1709,6 +1709,23 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.SetProp(Prop_Data, "m_iHealthBar", iInt); 
 		}
 	}
+	property int m_iTowerdefense_Checkpoint
+	{
+		public get()		 
+		{ 
+			if(!b_ThisWasAnNpc[this.index])
+				return 0;
+				
+			return this.GetProp(Prop_Data, "m_iTowerdefense_CheckpointAt");
+		}
+		public set(int iInt) 
+		{
+			if(!b_ThisWasAnNpc[this.index])
+				return;
+
+			this.SetProp(Prop_Data, "m_iTowerdefense_CheckpointAt", iInt); 
+		}
+	}
 	/*
 	property float m_floatHitEnemyDetect
 	{
@@ -3417,6 +3434,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
 		.DefineIntField("m_iHealthBar")
+		.DefineIntField("m_iTowerdefense_CheckpointAt")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 

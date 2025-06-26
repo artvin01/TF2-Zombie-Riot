@@ -93,7 +93,7 @@ public void VIPBuilding_ClotThink(int iNPC)
 
 			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-			health -= maxhealth / 50;
+			health -= maxhealth / 25;
 
 			if(health > 0)
 			{
