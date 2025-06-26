@@ -3488,6 +3488,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
 		.DefineIntField("m_iHealthBar")
+		.DefineFloatField("f_RegenDoLogic")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -5930,7 +5931,7 @@ public void NpcBaseThink(int iNPC)
 		StatusEffect_TimerCallDo(iNPC);
 		npc.f_RegenLogicDo = GetGameTime() + 0.4;
 #if defined ZR
-		if(IsEntityTowerDefense(iNPC))
+		if(IsEntityTowerDefense(iNPC) && i_IsNpcType[iNPC] == 0)
 		{
 			if(IsValidEntity(npc.m_iCheckpointTarget))
 			{
