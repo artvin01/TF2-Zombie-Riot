@@ -72,7 +72,7 @@ methodmap BossSummonRandom < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(BossSummonRandom_ClotThink);
 
 		i_RaidGrantExtra[npc.index] = StringToInt(data);
-		if(i_RaidGrantExtra[npc.index] <= 60)
+		if(i_RaidGrantExtra[npc.index] <= 40)
 		{
 			Zero(SameBossDisallow);
 			//Reset

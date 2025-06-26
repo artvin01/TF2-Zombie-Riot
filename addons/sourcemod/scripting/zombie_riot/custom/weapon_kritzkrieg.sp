@@ -5,9 +5,12 @@
 
 public void Kritzkrieg_OnMapStart()
 {
-	HookEvent("player_chargedeployed", OnKritzkriegDeployed);
 	PrecacheSound("player/invuln_on_vaccinator.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
+}
+public void Kritzkrieg_PluginStart()
+{
+	HookEvent("player_chargedeployed", OnKritzkriegDeployed);
 }
 
 static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadcast)
@@ -36,15 +39,16 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 	}
 	if(!Continune)
 	{
-		if(IsValidEntity(target))
-			EmitSoundToAll("player/invuln_on_vaccinator.wav", target, SNDCHAN_STATIC, 65, _, 0.75);
+		if(IsValidEntity(target) && IsValidClient(target))
+			EmitSoundToClient(target, "player/invuln_on_vaccinator.wav", target, SNDCHAN_AUTO, 65, _, 0.6);
 
-		EmitSoundToAll("player/invuln_on_vaccinator.wav", client, SNDCHAN_STATIC, 65, _, 0.75);
+		EmitSoundToAll("player/invuln_on_vaccinator.wav", client, SNDCHAN_AUTO, 65, _, 0.6);
 		return;
 	}
-	if(IsValidEntity(target))
-		EmitSoundToAll("player/mannpower_invulnerable.wav", target, SNDCHAN_STATIC, 65, _, 0.75);
-	EmitSoundToAll("player/mannpower_invulnerable.wav", client, SNDCHAN_STATIC, 65, _, 0.75);
+	if(IsValidEntity(target) && IsValidClient(target))
+		EmitSoundToClient(target, "player/mannpower_invulnerable.wav", target, SNDCHAN_AUTO, 65, _, 0.6);
+
+	EmitSoundToAll("player/mannpower_invulnerable.wav", client, SNDCHAN_AUTO, 65, _, 0.6);
 
 	if(IsValidClient(target) && IsPlayerAlive(target)) 
 	{

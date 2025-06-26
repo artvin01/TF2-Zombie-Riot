@@ -1858,6 +1858,11 @@ void UpdateDoublebuilding(int entity)
 
 void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
 {
+	if(client <= 0)
+	{
+		//no valid client.
+		return;
+	}
 	if(i_IsABuilding[entity] && b_NpcHasDied[entity])
 	{
 		if(firstbuild)
