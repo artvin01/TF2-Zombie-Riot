@@ -389,6 +389,7 @@
 		"de"		"N/A"
 		"pt"		"N/A"
 		"nl"		"Nvt"
+		"ko"		"N/A"
 	}
 	"Primary"
 	{

@@ -616,7 +616,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
 		
-		CPrintToChatAll("{darkblue}Waldch{default}: Looks like my programming is going wrong.");
+		CPrintToChatAll("{darkblue}월드치{default}: 프로그래밍에 이상현상 발생중.");
 
 		for(int i; i < 9; i++)
 		{

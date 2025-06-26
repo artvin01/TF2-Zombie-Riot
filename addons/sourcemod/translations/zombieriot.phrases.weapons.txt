@@ -3965,141 +3965,176 @@
 	"Effect:"
 	{
 		"en"	"Effect:"
+		"ko"	"효과:"
 	}
 	"Default Stew"
 	{
 		"en"	"Default Stew"
+		"ko"	"기본 스튜"
 	}
 	"Default Stew Desc"
 	{
 		"en"	"Default Stew Desc"
+		"ko"	"기본 스튜 설명"
 	}
 	"Potion of Flexibility"
 	{
 		"en"	"Potion of Flexibility"
+		"ko"	"몸풀기 포션"
 	}
 	"Potion of Flexibility Desc"
 	{
 		"en"	"Attackspeed speed, Reload speed"
+		"ko"	"공격 속도, 재장전 속도"
 	}
 	"Potion of Barrier"
 	{
 		"en"	"Potion of Barrier"
+		"ko"	"보호막 포션"
 	}
 	"Potion of Barrier Desc"
 	{
 		"en"	"Mage damage, Melee Res, Ranged Res"
+		"ko"	"마법 피해, 피해 저항력"
 	}
 	"Potion of Strength"
 	{
 		"en"	"Potion of Strength"
+		"ko"	"힘 포션"
 	}
 	"Potion of Strength Desc"
 	{
 		"en"	"Damage Up (Not mage), Melee Res, Ranged Res"
+		"ko"	"피해량(마법 피해 아님), 피해 저항력)"
 	}
 	"Potion of Casting"
 	{
 		"en"	"Potion of Casting"
+		"ko"	"집중 포션"
 	}
 	"Potion of Casting Desc"
 	{
 		"en"	"Attackspeed, Manacost reduction"
+		"ko"	"공격 속도, 마나 소모량 감소"
 	}
 	"Potion of Beef"
 	{
 		"en"	"Potion of Beef"
+		"ko"	"소고기 포션"
 	}
 	"Potion of Beef Desc"
 	{
 		"en"	"Health UP"
+		"ko"	"최대 체력 증가"
 	}
 	"Potion of Engineering"
 	{
 		"en"	"Potion of Engineering"
+		"ko"	"공학 포션"
 	}
 	"Potion of Engineering Desc"
 	{
 		"en"	"Heal rate, Uber rate, Repair rate"
+		"ko"	"치유 속도, 우버 충전율, 수리 효율"
 	}
 	"Potion of Stock"
 	{
 		"en"	"Potion of Stock"
+		"ko"	"저장 포션"
 	}
 	"Potion of Stock Desc"
 	{
 		"en"	"Max mana Increase"
+		"ko"	"최대 마나 증가"
 	}
 	"Potion of Boulder"
 	{
 		"en"	"Potion of Boulder"
+		"ko"	"바위 포션"
 	}
 	"Potion of Boulder Desc"
 	{
 		"en"	"Knockback Resistance"
+		"ko"	"넉백 저항"
 	}
 	"Potion of Ripening"
 	{
 		"en"	"Potion of Ripening"
+		"ko"	"숙성 포션"
 	}
 	"Potion of Ripening Desc"
 	{
 		"en"	"Health Regen"
+		"ko"	"체력 재생"
 	}
 	"Potion of Velocity"
 	{
 		"en"	"Potion of Velocity"
+		"ko"	"속도 포션"
 	}
 	"Potion of Velocity Desc"
 	{
 		"en"	"Projectile Speed/Range, Knockback Vulnerability"
+		"ko"	"투사체 속도 및 날아가는 거리, 넉백 취약"
 	}
 	"Flask of Assimilation"
 	{
 		"en"	"Flask of Assimilation"
+		"ko"	"동화의 플라스크"
 	}
 	"Flask of Assimilation Desc"
 	{
 		"en"	"Take less damage from Seaborn floor creep"
+		"ko"	"명흔으로 받는 피해 감소"
 	}
 	"Flask of Freedom"
 	{
 		"en"	"Flask of Freedom"
+		"ko"	"자유의 플라스크"
 	}
 	"Flask of Freedom Desc"
 	{
 		"en"	"Stun immunity"
+		"ko"	"기절 면역"
 	}
 	"Flask of Armor"
 	{
 		"en"	"Flask of Armor"
+		"ko"	"갑주의 플라스크"
 	}
 	"Flask of Armor Desc"
 	{
 		"en"	"Elemental Resistance"
+		"ko"	"원소 피해 저항"
 	}
 	"Flask of Sanitizing"
 	{
 		"en"	"Flask of Sanitizing"
+		"ko"	"소독의 플라스크"
 	}
 	"Flask of Sanitizing Desc"
 	{
 		"en"	"Buildings Remove Creep"
+		"ko"	"구조물이 명흔, 점막을 제거"
 	}
 	"Flask of Abyssal Hunter"
 	{
 		"en"	"Flask of Abyssal Hunter"
+		"ko"	"어비설 헌터스의 플라스크"
 	}
 	"Flask of Abyssal Hunter Desc"
 	{
 		"en"	"Weapon becomes Abyssal hunter archetype"
+		"ko"	"무기의 유형이 어비설 헌터로 변경됨"
 	}
 	"Flask of Kazimierz"
 	{
 		"en"	"Flask of Kazimierz"
+		"ko"	"카시미어의 플라스크"
 	}
 	"Flask of Kazimierz Desc"
 	{
 		"en"	"Weapon becomes Kazimierz archetype"
+		"ko"	"무기의 유형이 카시미어로 변경됨"
 	}
 }
