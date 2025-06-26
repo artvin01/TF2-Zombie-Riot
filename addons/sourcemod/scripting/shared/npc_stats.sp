@@ -4386,6 +4386,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	multiplier += (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0;
 	*/
 	float cost;
+#if defined ZR
 	if(!VIPBuilding_Active())
 	{
 		cost = dist * ((1.0 + (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0);
@@ -4394,6 +4395,9 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	{
 		cost = dist * 25.0;
 	}
+#else
+		cost = dist * ((1.0 + (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0);
+#endif
 	
 	return from_area.GetCostSoFar() + cost;
 }
