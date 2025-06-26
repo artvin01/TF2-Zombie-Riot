@@ -459,7 +459,7 @@ static void Brew_Menu(int client, int entity)
 
 		Format(NameOfPotion2, sizeof(NameOfPotion2), "%s Desc", NameOfPotion);
 		char buffer2[128];
-		Format(buffer2, sizeof(buffer2), "Drink: %T (x%d)\n%T\n ", NameOfPotion,client, SellingAmount[owner], NameOfPotion2, client);
+		Format(buffer2, sizeof(buffer2), "Drink: %T (x%d)\n%T %T\n ", NameOfPotion,client, SellingAmount[owner], "Effect:",client,NameOfPotion2, client);
 		menu.AddItem("-1", buffer2, SellingAmount[owner] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
@@ -535,6 +535,7 @@ static int Brew_MenuH(Menu menu, MenuAction action, int client, int choice)
 
 static void PotionMakingMenu(int client, const char[] msg = "")
 {
+	CacheBrewer();
 	if(AspectMenu[client][0] == AspectMenu[client][1])
 	{
 		AspectMenu[client][1]++;
@@ -591,7 +592,7 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 
 	Format(NameOfPotion2, sizeof(NameOfPotion2), "%s Desc", NameOfPotion);
 	char buffer2[128];
-	Format(buffer2, sizeof(buffer2), "New Brew: %T\n%T\n ", NameOfPotion, client, NameOfPotion2, client);
+	Format(buffer2, sizeof(buffer2), "New Brew: %T\n%T %T\n ", NameOfPotion, client, "Effect:",client, NameOfPotion2, client);
 	menu.AddItem(NULL_STRING, buffer2, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	
 	if(SellingAmount[client] > 0)

@@ -3080,6 +3080,10 @@
 	{
 		"en"	"The Crimson"
 	}
+	"Effect:"
+	{
+		"en"	"Effect:"
+	}
 	"Default Stew"
 	{
 		"en"	"Default Stew"
