@@ -1991,7 +1991,6 @@ static void FindKarlas(int client, int entity, int damagetype, float damage)
 		if(npc.m_flNC_LockedOn > GetGameTime(karl.index))
 			return;
 		karl.StopPathing();
-		karl.m_bPathing = false;
 		karl.m_flGetClosestTargetTime = 0.0;
 		karl.m_flSpeed = 0.0;
 	}
