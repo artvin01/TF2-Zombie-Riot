@@ -418,9 +418,8 @@ public void Bloonarius_ClotThink(int iNPC)
 		{
 			npc.m_iMiniLivesLost++;
 			
-			int players = CountPlayersOnRed();
+		//	int players = CountPlayersOnRed();
 			int tier = npc.m_iTier;
-			
 			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

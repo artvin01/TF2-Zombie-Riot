@@ -158,7 +158,7 @@ static float BloonSpeedMulti()
 
 float Bloon_BaseHealth()
 {
-	float health = 200.0;
+	float health = 400.0;
 
 	// Nerf late-game health
 	if(CurrentCash > 50000)

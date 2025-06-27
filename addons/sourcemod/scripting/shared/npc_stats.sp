@@ -2415,13 +2415,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public void SetGoalTowerDefense(const float vec[3])
 	{	
-		/*
-		if(!this.GetPathFollower().IsValid())
-		{
-			PrintToChatAll("SetGoalTowerDefense invalid");
-		}
-		PrintToChatAll("SetGoalTowerDefense compute try");
-		*/
 		this.GetPathFollower().ComputeToPos(this.GetBot(), vec);
 	}
 	public void FaceTowards(float vecGoal[3], float turnrate = 250.0, bool TurnOnWalk = false)
@@ -4396,7 +4389,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 		cost = dist * 25.0;
 	}
 #else
-		cost = dist * ((1.0 + (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0);
+	cost = dist * ((1.0 + (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0);
 #endif
 	
 	return from_area.GetCostSoFar() + cost;
@@ -5944,6 +5937,18 @@ public void NpcBaseThink(int iNPC)
 			}
 		}
 #endif
+#if defined ZR
+		if(IsEntityTowerDefense(iNPC))
+		{
+			if(IsValidEntity(npc.m_iCheckpointTarget))
+			{
+				npc.StartPathing();
+				static float flNextPos[3];
+				GetEntPropVector(npc.m_iCheckpointTarget, Prop_Data, "m_vecAbsOrigin", flNextPos);
+				npc.SetGoalTowerDefense(flNextPos);
+			}
+		}
+#endif
 	}
 
 	if(CvarDisableThink.BoolValue)
@@ -5966,6 +5971,36 @@ public void NpcBaseThink(int iNPC)
 		Call_PushCell(iNPC);
 		Call_Finish();
 	}
+	/*
+	if(IsEntityTowerDefense(iNPC))
+	{
+		TowerdefenseLocationGet(iNPC);
+		if(npc.m_iTowerdefense_Checkpoint == -1)
+		{
+			//walk towards the VIP building, currently no support for 2 tracks (i guess)
+			npc.m_iTarget = VIPBuilding_Get();
+			if(IsValidEntity(npc.m_iTarget))
+			{
+				static float flNextPos[3];
+				GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", flNextPos);
+				npc.SetGoalTowerDefense(flNextPos);
+			}
+			return;
+		}
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		static float flNextPos[3];
+		GetEntPropVector(npc.m_iCheckpointTarget, Prop_Data, "m_vecAbsOrigin", flNextPos);
+		float flDistanceToTarget = GetVectorDistance(flMyPos, flNextPos, true);
+		if(flDistanceToTarget <= (25.0 * 25.0))
+		{
+			npc.m_iTowerdefense_Checkpoint++;
+			return;
+		}
+		npc.StartPathing();
+		npc.SetGoalTowerDefense(flNextPos);
+	}
+	*/
 }
 stock float NpcDoHealthRegenScaling()
 {
