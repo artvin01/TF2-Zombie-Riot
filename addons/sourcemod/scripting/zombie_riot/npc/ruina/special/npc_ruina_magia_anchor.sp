@@ -187,7 +187,7 @@ methodmap Magia_Anchor < CClotBody
 	
 	public Magia_Anchor(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, MinibossHealthScaling(180), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
+		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, MinibossHealthScaling(180.0), ally, false,true,_,_,{30.0,30.0,350.0}, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		

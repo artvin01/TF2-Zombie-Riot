@@ -301,7 +301,7 @@ methodmap Valiant < CClotBody
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
-		SetVariantColor(view_as<int>(color));
+		SetVariantColor(color);
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		return npc;
