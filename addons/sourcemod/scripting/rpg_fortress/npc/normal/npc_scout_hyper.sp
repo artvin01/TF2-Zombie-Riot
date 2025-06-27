@@ -143,7 +143,7 @@ methodmap ScoutHyper < CClotBody
 		npc.m_flRangedArmor = 1.15;
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		int skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

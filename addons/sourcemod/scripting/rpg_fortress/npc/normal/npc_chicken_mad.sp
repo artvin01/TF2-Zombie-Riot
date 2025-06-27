@@ -150,7 +150,7 @@ methodmap MadChicken < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		func_NPCDeath[npc.index] = MadChicken_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MadChicken_OnTakeDamage;
 		func_NPCThink[npc.index] = MadChicken_ClotThink;

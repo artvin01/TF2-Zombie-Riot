@@ -193,7 +193,7 @@ methodmap ChaosAfflictedMiner < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_arcane_purple_sparkle", npc.index, "", {0.0,0.0,0.0});
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

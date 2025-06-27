@@ -89,7 +89,7 @@ methodmap Interstellar_Weaver_Mid < CClotBody
 		fl_TotalArmor[npc.index] = 0.5;
 
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 
 		b_NoGravity[npc.index] = true;	//Found ya!
 

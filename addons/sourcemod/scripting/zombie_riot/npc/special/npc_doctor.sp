@@ -412,7 +412,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			if(npc.m_bPathing)
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 		}
 		case 1:	// Move After the Player
@@ -459,7 +459,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			if(npc.m_bPathing)
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			
 			npc.PlayReloadSound();

@@ -327,6 +327,7 @@ static void ClotThink(int iNPC)
 					int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
 					if(spawn_index > MaxClients)
 					{
+						NpcStats_CopyStats(npc.index, spawn_index);
 						int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.25);
 						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);

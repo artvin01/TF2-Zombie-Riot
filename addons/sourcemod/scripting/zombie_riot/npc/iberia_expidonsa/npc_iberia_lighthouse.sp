@@ -247,6 +247,7 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		int spawn_index = NPC_CreateByName("npc_huirgrajo", -1, pos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			CClotBody npc1 = view_as<CClotBody>(spawn_index);
 			npc1.m_iTargetAlly = npc.index;
 			b_thisNpcIsABoss[spawn_index] = true;

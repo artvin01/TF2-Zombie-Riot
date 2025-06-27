@@ -184,7 +184,7 @@ methodmap Whiteflower_AcclaimedSwordsman < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

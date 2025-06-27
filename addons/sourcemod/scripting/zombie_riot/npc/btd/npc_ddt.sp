@@ -40,6 +40,7 @@ static int MoabHealth(bool fortified)
 {
 	float value = 40000.0;	// 400 RGB
 	value *= 0.5;
+	value *= 1.5;
 	
 	if(fortified)
 		value *= 2.0;
@@ -265,29 +266,14 @@ public void DDT_ClotThink(int iNPC)
 			{
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				float damageDealDo = 60.0;
 				
 				if(npc.m_bFortified)
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}
-				else
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}					
+					damageDealDo *= 1.4;
+				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					damageDealDo *= 25.0;
+					
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);					
 			}
 		}
 		
@@ -297,7 +283,7 @@ public void DDT_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -389,7 +375,11 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
+	{
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
+		NpcStats_CopyStats(caller, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }
 
 public void DDT_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
@@ -403,5 +393,9 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
+	{
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
+		NpcStats_CopyStats(caller, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }

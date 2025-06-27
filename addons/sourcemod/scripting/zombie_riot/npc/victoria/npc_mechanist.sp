@@ -670,6 +670,7 @@ static void Internal_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_avangard", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					int health = ReturnEntityMaxHealth(npc.index) * 5;
 					fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 					fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];

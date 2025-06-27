@@ -140,7 +140,7 @@ methodmap HeadcrabZombie < CClotBody
 		npc.m_flRangedArmor = 0.75;
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

@@ -229,7 +229,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		
 	
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		bool CloneDo = StrContains(data, "clone_ability") != -1;
 		if(CloneDo)
 		{

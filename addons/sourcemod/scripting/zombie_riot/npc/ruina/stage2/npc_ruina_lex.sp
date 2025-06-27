@@ -276,6 +276,7 @@ methodmap Lex < CClotBody
 		int spawn_index = NPC_CreateByName("npc_ruina_iana", this.index, pos, ang, GetTeam(this.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(this.index, spawn_index);
 			this.m_ially = EntIndexToEntRef(spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
@@ -512,7 +513,7 @@ static void ClotThink(int iNPC)
 	if(npc.m_flDoingAnimation > GameTime)
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flSpeed = 0.0;
 
 		if(fl_ruina_battery_timer[npc.index] > GameTime)
@@ -583,21 +584,21 @@ static void ClotThink(int iNPC)
 				else
 				{
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}		
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}
 
@@ -773,7 +774,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

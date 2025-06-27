@@ -299,7 +299,7 @@ methodmap Whiteflower_Boss < CClotBody
 		
 	
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}
@@ -620,7 +620,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 8;
 						npc.m_flSpeed = 0.0;
 						npc.StopPathing();
-						npc.m_bPathing = false;
+						
 						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("kickdoorbaton");
 						npc.SetCycle(0.30);
@@ -646,7 +646,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						npc.SetActivity("ACT_RANGE_ATTACK_THROW");
 						npc.SetPlaybackRate(1.5);
 						npc.StopPathing();
-						npc.m_bPathing = false;	
+							
 					}
 					npc.m_flAttackHappens = 0.0;
 					npc.m_flDoingAnimation = gameTime + 1.0;

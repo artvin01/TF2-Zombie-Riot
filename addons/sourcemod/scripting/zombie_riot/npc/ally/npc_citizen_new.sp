@@ -1311,7 +1311,6 @@ methodmap Citizen < CClotBody
 			if(this.m_bPathing)
 			{
 				this.StopPathing();
-				this.m_bPathing = false;
 			}
 			
 			int glow = this.m_iTeamGlow;
@@ -1336,7 +1335,6 @@ methodmap Citizen < CClotBody
 			if(this.m_bPathing)
 			{
 				this.StopPathing();
-				this.m_bPathing = false;
 			}
 			
 			int glow = this.m_iTeamGlow;

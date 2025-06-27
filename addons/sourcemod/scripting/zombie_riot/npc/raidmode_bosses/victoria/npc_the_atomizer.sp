@@ -471,7 +471,7 @@ static void Clone_ClotThink(int iNPC)
 		}
 		Delay_Attribute[npc.index] = gameTime + 0.5;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		I_cant_do_this_all_day[npc.index]++;
 	}
@@ -542,7 +542,7 @@ static void Clone_ClotThink(int iNPC)
 		npc.m_flDoingAnimation = gameTime + 1.1;
 		Delay_Attribute[npc.index] = gameTime + 0.5;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		npc.m_iChanged_WalkCycle = 0;
 		I_cant_do_this_all_day[npc.index]++;
@@ -805,7 +805,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
@@ -824,7 +824,7 @@ static void Internal_ClotThink(int iNPC)
 					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.m_bisWalking = false;
 					npc.m_flDoingAnimation = gameTime + 1.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.6;
@@ -883,7 +883,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			I_cant_do_this_all_day[npc.index]++;
 		}
@@ -957,7 +957,7 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = gameTime + 1.1;
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 0;
 			I_cant_do_this_all_day[npc.index]++;
@@ -1257,7 +1257,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.m_flDoingAnimation = gameTime + 1.0;
 					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("layer_taunt04");

@@ -289,6 +289,7 @@ methodmap Levita < CClotBody
 			Level[spawn_index] = Level[this.index];
 			i_OwnerToGoTo[spawn_index] = EntIndexToEntRef(this.index);
 #endif
+			NpcStats_CopyStats(this.index, spawn_index);
 			i_crstal_ID[this.index][ID] = EntIndexToEntRef(spawn_index);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Health));
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Health));
@@ -358,7 +359,7 @@ methodmap Levita < CClotBody
 	
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}
@@ -497,21 +498,21 @@ static bool KeepDistance(Levita npc, float flDistanceToTarget, int PrimaryThreat
 			else
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 

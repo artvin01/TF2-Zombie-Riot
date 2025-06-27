@@ -335,6 +335,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 								int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
 								if(spawn_index > MaxClients)
 								{
+									NpcStats_CopyStats(npc.index, spawn_index);
 									npc.g_TimesSummoned++;
 									NpcAddedToZombiesLeftCurrently(spawn_index, true);
 									TeleportEntity(spawn_index, pos, ang);

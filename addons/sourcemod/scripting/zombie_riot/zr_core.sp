@@ -712,6 +712,7 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
+	VIPBuilding_PluginStart();
 }
 
 void ZR_MapStart()

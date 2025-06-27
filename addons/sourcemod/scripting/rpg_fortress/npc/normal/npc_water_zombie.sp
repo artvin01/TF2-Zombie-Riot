@@ -142,7 +142,7 @@ methodmap WaterZombie < CClotBody
 		SetEntityRenderColor(npc.index, 0, 0, 255, 255);
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

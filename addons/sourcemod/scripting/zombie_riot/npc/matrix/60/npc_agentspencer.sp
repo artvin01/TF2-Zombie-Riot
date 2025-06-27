@@ -231,7 +231,7 @@ public void AgentSpencer_ClotThink(int iNPC)
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 		//	npc.FaceTowards(vecTarget, 1000.0);
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 		}
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

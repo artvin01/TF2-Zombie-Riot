@@ -338,7 +338,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		if(Allies_Alive != 0)
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (Allies_Alive * 3));
 			GiveNpcOutLineLastOrBoss(npc.index, false);
 			if(!npc.m_flHalf_Life_Regen)
@@ -690,7 +690,7 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -794,6 +794,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 				int spawn_index = NPC_CreateByName("npc_xeno_spy_trickstabber", -1, pos, ang, team);
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					XenoSpyMainBoss npc_minion = view_as<XenoSpyMainBoss>(spawn_index);
 					TeleportEntity(spawn_index, NULL_VECTOR, ang, NULL_VECTOR);

@@ -184,7 +184,7 @@ methodmap Levita < CClotBody
 	
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}
