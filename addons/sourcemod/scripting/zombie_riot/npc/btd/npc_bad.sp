@@ -29,6 +29,7 @@ static float MoabSpeed()
 static int MoabHealth(bool fortified)
 {
 	float value = 20000.0;	// 20000 RGB
+	value *= 1.5;
 	
 	if(fortified)
 		value *= 2.0;
@@ -276,6 +277,7 @@ public void Bad_NPCDeath(int entity)
 	for(int i; i<3; i++)
 	{
 		int spawn_index = NPC_CreateByName("npc_ddt", -1, pos, angles, team, npc.m_bFortified ? "f" : "");
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 		NpcStats_CopyStats(npc.index, spawn_index);
@@ -318,6 +320,7 @@ public void Bad_PostDeath(const char[] output, int caller, int activator, float 
 	for(int i; i<2; i++)
 	{
 		int spawn_index = NPC_CreateByName("npc_zomg", -1, pos, angles, GetTeam(caller));
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 		NpcStats_CopyStats(caller, spawn_index);
@@ -336,6 +339,7 @@ public void Bad_PostFortifiedDeath(const char[] output, int caller, int activato
 	for(int i; i<2; i++)
 	{
 		int spawn_index = NPC_CreateByName("npc_zomg", -1, pos, angles, GetTeam(caller), "f");
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
 		NpcStats_CopyStats(caller, spawn_index);

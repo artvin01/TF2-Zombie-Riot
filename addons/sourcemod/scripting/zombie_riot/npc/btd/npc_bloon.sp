@@ -169,6 +169,7 @@ float Bloon_BaseHealth()
 	{
 		health *= 1.0 - (float(CurrentCash) / 133333.333333);
 	}
+	health *= 1.5;
 
 	return health;
 }

@@ -420,9 +420,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			
 		//	int players = CountPlayersOnRed();
 			int tier = npc.m_iTier;
-			
-			int count = SpawnMulti(BloonLowCount[tier], 4, npc.m_bStaticNPC);
-			//assume always 4 players.
+			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
@@ -529,6 +527,8 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 		int spawn_index = NPC_CreateByName(BloonHigh[tier], -1, pos, ang, TFTeam_Blue, BloonHighData[tier]);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(EntRefToEntIndex(RaidBossActive), spawn_index);
+			ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 			Zombies_Currently_Still_Ongoing++;
 			view_as<CClotBody>(spawn_index).m_bStaticNPC = elite;
 			if(elite)

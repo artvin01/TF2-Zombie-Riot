@@ -31,6 +31,7 @@ static float MoabSpeed()
 static int MoabHealth(bool fortified)
 {
 	float value = 1300.0;	// 200x3 + 700 RGB
+	value *= 1.5;
 	
 	if(fortified)
 		value *= 2.0;
@@ -275,6 +276,7 @@ public void Bfb_NPCDeath(int entity)
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
 	int spawn_index = NPC_CreateByName("npc_moab", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
+	ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 	if(spawn_index > MaxClients)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 	NpcStats_CopyStats(npc.index, spawn_index);

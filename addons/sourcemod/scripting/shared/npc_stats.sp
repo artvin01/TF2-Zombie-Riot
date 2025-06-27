@@ -654,23 +654,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			CBaseCombatCharacter(npc).SetNextThink(GetGameTime());
 		//	NpcBaseThink(npc);
 		}
-		/*
-		if(VIPBuilding_Active())
-		{
-			if(NpcTypeLogic != STATIONARY_NPC && Ally != TFTeam_Red)
-			{
-				int EntityCheckpoint = FindInfoTargetInt("zr_checkpoint_2");
-				if(IsValidEntity(EntityCheckpoint))
-				{
-					static float flNextPos[3];
-					GetEntPropVector(EntityCheckpoint, Prop_Data, "m_vecAbsOrigin", flNextPos);
-					npcstats.StartPathing();
-					npcstats.SetGoalTowerDefense(flNextPos);
-					PrintToChatAll("tryShit");
-				}
-			}
-		}
-		*/
+		npcstats.f_RegenLogicDo = GetGameTime() + 0.05;
 
 		return view_as<CClotBody>(npc);
 	}
@@ -1118,11 +1102,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(bool TempValueForProperty) 	{ b_ThisEntityIgnored[this.index] = TempValueForProperty; }
 	}
 	
-	property bool m_bJumping
-	{
-		public get()							{ return b_Pathing[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Pathing[this.index] = TempValueForProperty; }
-	}
 	property float m_flDoingAnimation
 	{
 		public get()							{ return fl_DoingAnimation[this.index]; }
@@ -1363,6 +1342,17 @@ methodmap CClotBody < CBaseCombatCharacter
 				return;
 
 			this.SetProp(Prop_Data, "m_iTowerdefense_Target", iInt); 
+		}
+	}
+	property float f_RegenLogicDo
+	{
+		public get()		 
+		{ 
+			return this.GetPropFloat(Prop_Data, "f_RegenDoLogic");
+		}
+		public set(float iFloat) 
+		{
+			this.SetPropFloat(Prop_Data, "f_RegenDoLogic", iFloat); 
 		}
 	}
 	property int m_iBleedType
@@ -2260,7 +2250,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(!this.m_bPathing)
 			{
 				this.GetPathFollower().SetMinLookAheadDistance(100.0);
-				//lol
 				this.m_bPathing = true;
 			}
 			return;
@@ -3362,7 +3351,9 @@ methodmap CClotBody < CBaseCombatCharacter
 	#endif
 
 			if(this.m_bPathing)
+			{
 				this.GetPathFollower().Update(this.GetBot());	
+			}
 
 			this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
 			this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
@@ -3476,6 +3467,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iHealthBar")
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
+		.DefineFloatField("f_RegenDoLogic")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3489,6 +3481,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
 		.DefineIntField("m_iHealthBar")
+		.DefineFloatField("f_RegenDoLogic")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -4386,6 +4379,7 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	multiplier += (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0;
 	*/
 	float cost;
+#if defined ZR
 	if(!VIPBuilding_Active())
 	{
 		cost = dist * ((1.0 + (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0);
@@ -4394,6 +4388,9 @@ public float PathCost(INextBot bot, CNavArea area, CNavArea from_area, CNavLadde
 	{
 		cost = dist * 25.0;
 	}
+#else
+	cost = dist * ((1.0 + (GetRandomFloat(0.0, 1.0)) + 1.0) * 25.0);
+#endif
 	
 	return from_area.GetCostSoFar() + cost;
 }
@@ -5915,12 +5912,30 @@ public void NpcBaseThink(int iNPC)
 		RPGNpc_UpdateHpHud(iNPC);
 	}
 #endif
+#if defined RPG
 	if(f_InBattleDelay[iNPC] < GetGameTime())
 	{
-		StatusEffect_TimerCallDo(iNPC);
 		f_InBattleDelay[iNPC] = GetGameTime() + 0.4;
-#if defined RPG
 		HealOutOfBattleNpc(iNPC);
+	}
+#endif
+	if(npc.f_RegenLogicDo < GetGameTime())
+	{
+		StatusEffect_TimerCallDo(iNPC);
+		npc.f_RegenLogicDo = GetGameTime() + 0.4;
+#if defined ZR
+		if(IsEntityTowerDefense(iNPC) && i_IsNpcType[iNPC] == 0)
+		{
+			if(IsValidEntity(npc.m_iCheckpointTarget))
+			{
+				npc.StartPathing();
+				static float flNextPos[3];
+				GetEntPropVector(npc.m_iCheckpointTarget, Prop_Data, "m_vecAbsOrigin", flNextPos);
+				npc.SetGoalTowerDefense(flNextPos);
+				npc.f_RegenLogicDo = GetGameTime() + 1.0;
+				//not that important.
+			}
+		}
 #endif
 #if defined ZR
 		if(IsEntityTowerDefense(iNPC))
@@ -11068,5 +11083,5 @@ void NpcStats_CopyStats(int Owner, int Child)
 	CClotBody childnpc = view_as<CClotBody>(Child);
 
 	childnpc.m_iTowerdefense_Checkpoint = ownernpc.m_iTowerdefense_Checkpoint;
-	childnpc.m_iCheckpointTarget = ownernpc.m_iCheckpointTarget;
+	childnpc.m_iCheckpointTarget		= ownernpc.m_iCheckpointTarget;
 }

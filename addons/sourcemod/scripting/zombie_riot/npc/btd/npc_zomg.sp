@@ -30,6 +30,8 @@ static int MoabHealth(bool fortified)
 {
 	float value = 7900.0;	// 200x3x3 + 700x3 + 4000 RGB
 	
+	value *= 1.5;
+	
 	if(fortified)
 		value *= 2.0;
 	
