@@ -298,7 +298,11 @@ methodmap Valiant < CClotBody
 		int color[4]; Ruina_Color(color);
 		TE_SetupBeamPoints(npc_vec, sky_loc, g_Ruina_BEAM_lightning, 0, 0, 0, timeout_duration, diameter, diameter*0.25, 0, 0.25, color, 24);
 		TE_SendToAll();
-		GiveNpcOutLineLastOrBoss(npc.index, true);
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+		SetVariantColor(view_as<int>(color));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
 		return npc;
 	}
