@@ -564,7 +564,7 @@ public float Rogue_Encounter_BobFinal()
 
 	if(altfinal)
 	{
-		if(!LockOut)
+		if(LockOut)
 		{
 			//Incase the top ones are locked
 			strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 3");
@@ -577,6 +577,7 @@ public float Rogue_Encounter_BobFinal()
 			strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 3 No");
 			strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Option 3 No desc");
 			strcopy(vote.Append, sizeof(vote.Append), " (Win against Bladedance)");
+			vote.Locked = true;
 			list.PushArray(vote);
 		}
 	}

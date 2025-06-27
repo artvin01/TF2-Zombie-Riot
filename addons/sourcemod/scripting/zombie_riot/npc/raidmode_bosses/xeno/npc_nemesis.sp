@@ -391,7 +391,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				npc.StopPathing();
 				npc.m_bisWalking = false;
-				npc.m_bPathing = false;
+				
 				npc.m_flSpeed = 0.0;
 				int iActivity = npc.LookupActivity("ACT_FT_FLINCH");
 				if(iActivity > 0) npc.StartActivity(iActivity);

@@ -284,6 +284,7 @@ void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float dista
 			int spawn_index = NPC_CreateByName("npc_iberia_beacon", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
 				npc1.m_flNextThinkTime = GetGameTime() + 2.0;
 				fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];

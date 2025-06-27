@@ -121,7 +121,7 @@ methodmap WhiteflowerTank < CClotBody
 		f_ExtraOffsetNpcHudAbove[npc.index] = 50.0;
 	
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

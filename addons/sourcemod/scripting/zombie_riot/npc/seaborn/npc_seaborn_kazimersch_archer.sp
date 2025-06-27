@@ -306,7 +306,7 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}
@@ -314,7 +314,7 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

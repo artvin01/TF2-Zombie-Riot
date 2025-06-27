@@ -1036,6 +1036,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 		{
 			Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(spawn_index);
 			npc.m_iTargetAlly = entity;
+			NpcStats_CopyStats(entity, spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

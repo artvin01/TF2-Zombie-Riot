@@ -269,7 +269,7 @@ static void Internal_ClotThink(int iNPC)
 	{
 		npc.m_flNextThinkTime = 0.0;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
 		if(g_b_donner_died && !IsValidEntity(RaidBossActive))
@@ -415,7 +415,7 @@ static void Internal_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

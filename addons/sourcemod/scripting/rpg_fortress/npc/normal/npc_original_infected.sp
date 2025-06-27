@@ -223,7 +223,7 @@ methodmap OriginalInfected < CClotBody
 		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		npc.Anger = false;
 		
 		return npc;
@@ -441,7 +441,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				else
 				{
@@ -474,7 +474,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 
 					npc.m_bisWalking = false;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 			}
 		}

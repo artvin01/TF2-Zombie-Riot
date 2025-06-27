@@ -510,7 +510,7 @@ static void Internal_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			else 
 			{
@@ -541,7 +541,7 @@ static void Internal_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			else 
 			{
@@ -672,6 +672,7 @@ static void Internal_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
@@ -1003,7 +1004,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.SetCycle(0.01);
 			npc.m_flReloadIn = gameTime + 3.0;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
 
 			SensalThrowScythes(npc);
@@ -1061,7 +1062,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
@@ -1698,7 +1699,7 @@ bool SensalTransformation(Sensal npc)
 		if(!b_RageAnimated[npc.index])
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
 			npc.m_flAttackHappens = 0.0;
@@ -1739,7 +1740,7 @@ bool SensalTransformation(Sensal npc)
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_flSpeed = 330.0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;

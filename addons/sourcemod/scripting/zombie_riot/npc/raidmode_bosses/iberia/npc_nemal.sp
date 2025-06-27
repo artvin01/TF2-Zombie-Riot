@@ -1332,7 +1332,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 
 			npc.m_flAttackHappens = 0.0;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_cheers_medic");
 			if(i_RaidGrantExtra[npc.index] >= 4)
@@ -1372,7 +1372,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.m_flNemalSniperShotsHappeningCD = gameTime + 30.0;
 			npc.m_flAttackHappens = 0.0;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
@@ -1400,7 +1400,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.i_GunMode = 1;
 			npc.m_flNemalSlicerCD = gameTime + 22.0;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_flAttackHappens = GetGameTime(npc.index) + 1.5;
 			npc.m_flNemalSlicerHappening = gameTime + 4.5;
 			EmitSoundToAll("ambient/energy/whiteflash.wav", npc.index, SNDCHAN_STATIC, 120, _, 1.0, 100);
@@ -1812,7 +1812,7 @@ bool NemalTransformation(Nemal npc)
 		if(!b_RageAnimated[npc.index])
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
 			npc.m_flAttackHappens = 0.0;
@@ -1852,7 +1852,7 @@ bool NemalTransformation(Nemal npc)
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets

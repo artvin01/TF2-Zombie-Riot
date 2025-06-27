@@ -152,7 +152,7 @@ public void StartChicken_ClotThink(int iNPC)
 		if(npc.m_bPathing)
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;	
+				
 		}
 	}
 	else

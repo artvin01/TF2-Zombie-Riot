@@ -191,7 +191,7 @@ methodmap Interstellar_Weaver < CClotBody
 		npc.m_flMeleeArmor = 2.0;
 
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 
 		bool solo = StrContains(data, "solo") != -1;
 
@@ -443,6 +443,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Interstellar_Weaver npc)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "full;lelouch;noweaver");
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -720,7 +721,7 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 	b_NoGravity[npc.index] = true;	//Found ya!
 
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 
 	float target_vec[3];
 	GetAbsOrigin(New_Target, target_vec);

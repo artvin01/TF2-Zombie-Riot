@@ -2637,7 +2637,7 @@ static void Tinker_TouchAnything(int entity, int target)
 		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
 		if(IsValidEntity(particle))
 		{
-			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		SetEntityRenderMode(entity, RENDER_NONE);
@@ -2682,7 +2682,7 @@ static void Tinker_TouchAnything(int entity, int target)
 		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
 		if(IsValidEntity(particle))
 		{
-			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		SetEntityRenderMode(entity, RENDER_NONE);
@@ -2726,7 +2726,7 @@ static void Tinker_TouchAnything(int entity, int target)
 			WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
 			if(IsValidEntity(particle))
 			{
-				CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			}
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			SetEntityRenderMode(entity, RENDER_NONE);

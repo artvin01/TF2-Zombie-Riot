@@ -1443,7 +1443,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -1531,6 +1531,7 @@ static void Final_Invocation(Twirl npc)
 		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force60;raid;noweaver;full");
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			if(GetTeam(npc.index) != TFTeam_Red)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1881,21 +1882,21 @@ static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			else
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 
@@ -2274,7 +2275,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	npc.FaceTowards(VecTarget, 10000.0);
 
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 
 	npc.m_flSpeed = 0.0;
 
@@ -3038,7 +3039,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	if(!npc.Anger)
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 	}
 
 	npc.m_bAnimationSet = false;
@@ -3300,7 +3301,7 @@ static bool IonicFracture(Twirl npc)
 	SDKHook(npc.index, SDKHook_Think, IonicFracture_Think);
 
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 	npc.m_flSpeed = 0.0;
 	npc.m_bisWalking = false;
 
@@ -3680,7 +3681,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_bAnimationSet = false;
 
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 	npc.m_flSpeed = 0.0;
 
 	npc.m_flMagiaAngle = GetRandomFloat(0.0, 360.0);

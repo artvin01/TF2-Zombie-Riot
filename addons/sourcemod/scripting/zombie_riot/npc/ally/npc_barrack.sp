@@ -780,7 +780,7 @@ void BarrackBody_ThinkMove(int iNPC, float speed, const char[] idleAnim = "", co
 				npc.SetActivity(idleAnim);
 			
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			b_WalkToPosition[npc.index] = false;
 		}
 	}

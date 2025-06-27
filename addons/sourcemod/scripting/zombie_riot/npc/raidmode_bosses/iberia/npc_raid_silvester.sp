@@ -1497,7 +1497,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 		if(!b_RageAnimated[npc.index])
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
 			npc.m_flAttackHappens = 0.0;
@@ -1529,7 +1529,7 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets

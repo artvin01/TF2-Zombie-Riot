@@ -169,6 +169,7 @@ float Bloon_BaseHealth()
 	{
 		health *= 1.0 - (float(CurrentCash) / 133333.333333);
 	}
+	health *= 1.5;
 
 	return health;
 }
@@ -643,28 +644,13 @@ public void Bloon_ClotThink(int iNPC)
 				{
 					if(npc.RegrowsInto(i) == npc.m_iType)
 					{
-						if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-						{
-							if(npc.m_bFortified)
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-						}
-						else
-						{
-							if(npc.m_bFortified)
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-						}
+						float damageDealDo = 1.0 + float(i);
+						if(npc.m_bFortified)
+							damageDealDo *= 1.4;
+						if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+							damageDealDo *= 25.0;
+							
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);		
 						//delete swingTrace;
 					}
 				}				
@@ -677,7 +663,7 @@ public void Bloon_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

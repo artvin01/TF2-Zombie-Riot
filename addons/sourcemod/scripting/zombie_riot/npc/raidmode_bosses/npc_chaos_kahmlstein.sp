@@ -602,7 +602,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",true);
 				TeleportEntity(npc.index, Pos);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				i_khamlCutscene[npc.index] = 13;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: 너희룰 충분히 지켜보고 있었다. 그리고 그건 큰 실수였던것 같다. {crimson} 처음부터 이 상황에 개입을 했어야했는데.");
 				MusicEnum music;
@@ -1001,7 +1001,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 			npc.PlayIdleAlertSound();
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump");
 			npc.m_flAttackHappens = 0.0;
@@ -1072,7 +1072,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		}
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
 		npc.m_flAttackHappens = 0.0;
@@ -1120,7 +1120,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 	{
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_yetipunch");
 		npc.m_flAttackHappens = 0.0;
@@ -1915,7 +1915,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 	{
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown");
 		npc.m_flAttackHappens = 0.0;

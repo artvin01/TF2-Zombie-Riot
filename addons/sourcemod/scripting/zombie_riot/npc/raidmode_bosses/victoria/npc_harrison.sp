@@ -547,7 +547,7 @@ static void Clone_ClotThink(int iNPC)
 		case 0:
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
 			npc.PlayRocketshotready();
@@ -743,7 +743,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddActivityViaSequence("layer_taunt_most_wanted");
@@ -767,7 +767,7 @@ static void Internal_ClotThink(int iNPC)
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
 					npc.m_flDoingAnimation = gameTime + 15.0;	
@@ -1092,7 +1092,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 					case 4:CPrintToChatAll("{skyblue}해리슨{default}: 자동 로켓 충전 완료.");
 				}
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
 				npc.PlayRocketshotready();

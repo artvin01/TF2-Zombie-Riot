@@ -180,7 +180,7 @@ methodmap Whiteflower_Mage_Blaster < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

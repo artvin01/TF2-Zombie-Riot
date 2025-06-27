@@ -702,7 +702,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 				{
 					npc.SetGoalEntity(Healer);
 					npc.StartPathing();
-					npc.m_bPathing = true;
+					
 					
 				}
 				return;
@@ -799,14 +799,14 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 					npc.SetGoalEntity(PrimaryThreatIndex);
 				}
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 
 				Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 			}
 			else
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -829,7 +829,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 						{
 							npc.SetGoalEntity(Master_Id_Main);
 							npc.StartPathing();
-							npc.m_bPathing = true;
+							
 
 							Ruina_Special_Logic(npc.index, Master_Id_Main);
 								
@@ -839,7 +839,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 							if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
 							{
 								npc.StopPathing();
-								npc.m_bPathing = false;
+								
 							}
 							else	//but if master's target is too close we attack them
 							{
@@ -889,7 +889,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 					{
 						npc.SetGoalEntity(Master_Id_Main);
 						npc.StartPathing();
-						npc.m_bPathing = true;
+						
 
 						Ruina_Special_Logic(npc.index, Master_Id_Main);
 						
@@ -897,7 +897,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 					else
 					{
 						npc.StopPathing();
-						npc.m_bPathing = false;
+						
 					}	
 				}
 				//for the double type just gonna use melee npc logic
@@ -928,7 +928,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			return;
@@ -1009,7 +1009,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		{
 			npc.SetGoalEntity(Anchor_Id);
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 
 			Ruina_Special_Logic(npc.index, Anchor_Id);
 					
@@ -1017,7 +1017,7 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		else
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 		}	
 	}
 	else
@@ -1755,7 +1755,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 		{
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bAllowBackWalking=false;
 		}
 		else
@@ -1766,7 +1766,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	else	//no?
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 }
@@ -1901,7 +1901,7 @@ bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, flo
 				npc.SetPlaybackRate(1.0);	
 				npc.SetCycle(0.1);
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");
 				return false;
