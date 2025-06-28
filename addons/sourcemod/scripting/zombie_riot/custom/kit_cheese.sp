@@ -150,6 +150,11 @@ float Cheese_GetPenalty(int entity)
 	return Cheese_Buildup_Penalty[entity];
 }
 
+void Cheese_OnNPCDeath(int i)
+{
+	Cheese_Buildup_Penalty[entity] = 1.0;
+}
+
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
