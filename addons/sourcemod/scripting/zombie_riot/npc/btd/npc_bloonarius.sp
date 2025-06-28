@@ -3,19 +3,19 @@
 
 static const char BloonLowData[][] =
 {
+	"4",
 	"5",
 	"6",
-	"7",
 	"9"
 };
 
 // Halved on Elite
 static const int BloonLowCount[] =
 {
+	2,
+	2,
 	4,
-	4,
-	6,
-	6
+	4
 };
 
 static const char BloonHigh[][] =
