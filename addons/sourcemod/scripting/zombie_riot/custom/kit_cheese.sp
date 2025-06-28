@@ -22,7 +22,7 @@ Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick
 Inflicts 100% of its damage as Plasmic Elemental damage.
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x1.75 damage
-- Next melee attack will deal x3.5 Plasmic Elemental damage.
+- Next melee attack will deal x3.0 Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
 1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets.
 2 - Unlocks Lethal Injection.
