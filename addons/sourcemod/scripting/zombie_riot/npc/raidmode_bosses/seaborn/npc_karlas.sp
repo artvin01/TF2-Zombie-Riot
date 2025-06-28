@@ -824,7 +824,7 @@ static void Internal_ClotThink(int iNPC)
 		if(Karlas_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_npc_basespeed;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		GetTarget(npc);
 		return;
@@ -1393,7 +1393,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 	}
 
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 
 	
 	Karlas_Teleport_Strike(npc, flDistanceToTarget, GameTime, PrimaryThreatIndex);
@@ -2084,7 +2084,7 @@ static bool Karlas_Teleport(int iNPC, float vecTarget[3], float Min_Range)
 static void Karlas_Movement(Karlas npc, float flDistanceToTarget, int target)
 {	
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 	if(flDistanceToTarget < npc.GetLeadRadius())
 	{
 		float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
@@ -2102,7 +2102,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 		npc.m_bAllowBackWalking=false;
 		
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 	
 	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Karlas, WorldSpaceVec2);
 	
@@ -2313,8 +2313,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	int wave = i_current_wave[npc.index];
 
-	//stella is dead, its wave 30 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
-	if(!b_angered_twice[npc.index] && wave >=30 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	//stella is dead, its wave 20 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
+	if(!b_angered_twice[npc.index] && wave >=20 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		b_allow_karlas_transform[npc.index] = false;
 		b_angered_twice[npc.index]=true;

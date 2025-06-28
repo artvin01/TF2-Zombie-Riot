@@ -188,7 +188,7 @@ methodmap Whiteflower_ExpertFighter < CClotBody
 
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

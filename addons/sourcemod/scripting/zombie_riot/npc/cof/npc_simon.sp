@@ -393,7 +393,7 @@ public void Simon_ClotThink(int iNPC)
 			if(npc.m_bPathing)
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 		}
 		case 1:	// Move After the Player
@@ -444,7 +444,7 @@ public void Simon_ClotThink(int iNPC)
 			if(npc.m_bPathing)
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 			}
 			
 			npc.PlayReloadSound();
@@ -547,7 +547,7 @@ public void Simon_NPCDeath(int entity)
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 	
 	if(!npc.m_bRanAway)
 	{

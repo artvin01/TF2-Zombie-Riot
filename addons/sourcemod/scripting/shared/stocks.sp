@@ -226,6 +226,18 @@ stock bool FindInfoTarget(const char[] name)
 	}
 	return false;
 }
+stock int FindInfoTargetInt(const char[] name)
+{
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
+	{
+		static char buffer[32];
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(StrEqual(buffer, name, false))
+			return entity;
+	}
+	return 0;
+}
 
 stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 {

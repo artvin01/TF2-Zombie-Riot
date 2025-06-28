@@ -698,6 +698,7 @@ void ZR_PluginStart()
 	Object_PluginStart();
 	SteamWorks_PluginStart();
 	Vehicle_PluginStart();
+	Kritzkrieg_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -712,6 +713,7 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
+	VIPBuilding_PluginStart();
 }
 
 void ZR_MapStart()

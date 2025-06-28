@@ -389,6 +389,9 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 //This places a spawnpoint somewhere on the map.
 void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax, char[] ParticleToSpawn, int ParticleOffset = 0, bool SpreadVoid = false, int MaxWaves = 2)
 {
+	if(VIPBuilding_Active())
+		return;
+	
 	// info_player_teamspawn
 	int ref = CreateEntityByName("info_player_teamspawn");
 	if(ref != -1)

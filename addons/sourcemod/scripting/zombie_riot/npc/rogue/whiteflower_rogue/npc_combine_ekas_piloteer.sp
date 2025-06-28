@@ -469,7 +469,7 @@ public void Whiteflower_Ekas_Piloteer_ClotThink(int iNPC)
 							npc.m_iChanged_WalkCycle = 8;
 							npc.m_flSpeed = 0.0;
 							npc.StopPathing();
-							npc.m_bPathing = false;
+							
 							npc.m_bisWalking = false;
 							npc.AddActivityViaSequence("kickdoorbaton");
 							npc.SetCycle(0.30);

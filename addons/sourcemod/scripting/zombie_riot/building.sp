@@ -658,7 +658,8 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 		obj.BaseHealth = info.Health;
 		int health = GetEntProp(obj.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
-		int expected = RoundFloat(obj.BaseHealth * Object_GetMaxHealthMulti(client));
+		float Multi = Object_GetMaxHealthMulti(client);
+		int expected = RoundFloat(obj.BaseHealth * Multi);
 
 		if(obj.m_bConstructBuilding && !info.HealthScaleCost)
 		{
@@ -668,6 +669,7 @@ static int BuildByInfo(BuildingInfo info, int client, float vecPos[3], float vec
 		if(maxhealth && expected && maxhealth != expected)
 		{
 			float change = float(expected) / float(maxhealth);
+			Attributes_Set(obj.index, 286, Multi);
 
 			maxhealth = expected;
 			health = RoundFloat(float(health) * change);
@@ -1856,8 +1858,19 @@ void UpdateDoublebuilding(int entity)
 
 void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
 {
+	if(client <= 0)
+	{
+		//no valid client.
+		return;
+	}
 	if(i_IsABuilding[entity] && b_NpcHasDied[entity])
 	{
+		if(firstbuild)
+		{
+			//rid of warning.
+			firstbuild = false;
+		}
+		/*
 		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
@@ -1878,11 +1891,32 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			HasMechanic[entity] = false;
 			SetBuildingMaxHealth(entity, 1.15, true, false);
 		}
+		*/
+		//When we buy upgrades, we want to update this.
+		//the above code due to that isnt needed anymore.
+		float multi = Object_GetMaxHealthMulti(client);
+		float CurrentMulti = Attributes_Get(entity, 286, 1.0);
+		float IsAlreadyDowngraded = Attributes_Get(entity, Attrib_BuildingOnly_PreventUpgrade, 0.0);
+		if(CurrentMulti != multi)
+		{
+			float MultiChange = multi / CurrentMulti;
+			if(MultiChange < 1.0)
+			{
+				SetBuildingMaxHealth(entity, MultiChange, false, true);
+				Attributes_Set(entity, Attrib_BuildingOnly_PreventUpgrade, 1.0);
+				Attributes_Set(entity, 286, multi);
+			}
+			else if(IsAlreadyDowngraded == 0.0)
+			{
+				SetBuildingMaxHealth(entity, MultiChange, false, true);
+				Attributes_Set(entity, 286, multi);
+			}
+
+		}
 		static char plugin[64];
 		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
 		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
-			
 			float healthMult = 1.0;
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER) && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_TOWER))
 			{
@@ -1938,7 +1972,17 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 	
 	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
 	{
-		
+		int CurrentPlayerValue = RoundToNearest(Attributes_GetOnPlayer(client, Attrib_BuildingStatus_PreventAbuse));
+		int CurrentBarracksValue = RoundToNearest(Attributes_Get(entity, Attrib_BuildingStatus_PreventAbuse, 1.0));
+		if(CurrentBarracksValue > CurrentPlayerValue)
+		{
+			SmiteNpcToDeath(entity);
+			SPrintToChat(client, "%t", "Barracks Invalid suicide");
+			//SUICIDE! THEY WANNA BE ILLIGAL WITH ME!!!!!
+			return;
+		}
+		//update value for the future
+		Attributes_Set(entity, Attrib_BuildingStatus_PreventAbuse, float(CurrentPlayerValue));
 		float Attribute;
 		Attribute = Attributes_GetOnPlayer(client, Attrib_BarracksHealth, true, true);
 		if(f_FreeplayAlteredHealthOld_Barracks[entity] != Attribute)
@@ -2012,22 +2056,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
-
-		//	
-		//	//FOR PERK MACHINE!
-		//	public const char PerkNames[][] =
-		//	{
-		//		"No Perk", //unused
-		//		"Quick Revive", //get extra healing, see heal code?
-		//		"Juggernog",	
-		//		"Double Tap",
-		//		"Speed Cola",
-		//		"Replicate_Damage_Medicationsdshot Daiquiri",
-		//		"Widows Wine",
-		//		"Recycle Poire"
-		//	};
-		//	
-		//double tap
 		if(i_CurrentEquippedPerk[entity] != 3 && i_CurrentEquippedPerk[client] == 3)
 		{
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
@@ -2064,20 +2092,20 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 {
 	if(reduce)
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", 		RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) 		/ Multi));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 	RoundToCeil(float(ReturnEntityMaxHealth(entity))	/ Multi));
-		SetEntProp(entity, Prop_Data, "m_iRepair",		RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepair")) 		/ Multi));
-		SetEntProp(entity, Prop_Data, "m_iRepairMax", 	RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) 	/ Multi));
+		SetEntProp(entity, Prop_Data, "m_iHealth", 		RoundToFloor(float(GetEntProp(entity, Prop_Data, "m_iHealth")) 		/ Multi));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 	RoundToFloor(float(ReturnEntityMaxHealth(entity))	/ Multi));
+		SetEntProp(entity, Prop_Data, "m_iRepair",		RoundToFloor(float(GetEntProp(entity, Prop_Data, "m_iRepair")) 		/ Multi));
+		SetEntProp(entity, Prop_Data, "m_iRepairMax", 	RoundToFloor(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) 	/ Multi));
 	}
 	else
 	{
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * Multi));
-		SetEntProp(entity, Prop_Data, "m_iRepairMax", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) * Multi));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToFloor(float(ReturnEntityMaxHealth(entity)) * Multi));
+		SetEntProp(entity, Prop_Data, "m_iRepairMax", RoundToFloor(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) * Multi));
 		
 		if(initial)
 		{
-			int HealthToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * Multi);
-			int RepairToSet = RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepair")) * Multi);
+			int HealthToSet = RoundToFloor(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * Multi);
+			int RepairToSet = RoundToFloor(float(GetEntProp(entity, Prop_Data, "m_iRepair")) * Multi);
 
 			if(inversehealth)
 			{
@@ -2609,7 +2637,7 @@ static void Tinker_TouchAnything(int entity, int target)
 		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
 		if(IsValidEntity(particle))
 		{
-			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		SetEntityRenderMode(entity, RENDER_NONE);
@@ -2654,7 +2682,7 @@ static void Tinker_TouchAnything(int entity, int target)
 		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
 		if(IsValidEntity(particle))
 		{
-			CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		SetEntityRenderMode(entity, RENDER_NONE);
@@ -2698,7 +2726,7 @@ static void Tinker_TouchAnything(int entity, int target)
 			WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
 			if(IsValidEntity(particle))
 			{
-				CreateTimer(0.5, Timer_RemoveEntity, particle, TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			}
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			SetEntityRenderMode(entity, RENDER_NONE);
@@ -2710,5 +2738,44 @@ static void Tinker_TouchAnything(int entity, int target)
 			}
 		}
 	}
-	
+}
+public void Weapon_OnBuyUpdateBuilding(int client)
+{
+	//a little delay!
+	CreateTimer(0.1, Timer_Weapon_OnBuyUpdateBuilding, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+
+
+public Action Timer_Weapon_OnBuyUpdateBuilding(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		if(IsPlayerAlive(entity) && TeutonType[entity] == TEUTON_NONE)
+			Barracks_UpdateAllEntityUpgrades(entity);
+	}
+	return Plugin_Stop;
+}
+
+
+public void ExplainBuildingInChat_Buy(int client)
+{
+	ExplainBuildingInChat(client, 1);
+}
+
+
+void ExplainBuildingInChat(int client, int ExplainWhat)
+{
+	switch(ExplainWhat)
+	{
+		case 1:
+		{
+			Force_ExplainBuffToClient(client, "Wrench Building", true);
+		}
+		case 2:
+		{
+			Force_ExplainBuffToClient(client, "Barracks Building Explain", true);
+		}
+	}
 }

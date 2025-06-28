@@ -302,7 +302,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 		npc.m_flSpeed = 0.0;
 		npc.StopPathing();
 		npc.m_bisWalking = false;
-		npc.m_bPathing = false;	
+			
 	}
 	//No else, We will set the speed and pathing ourselves down below.
 	

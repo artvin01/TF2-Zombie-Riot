@@ -342,8 +342,8 @@ public void Weapon_RitualistNecrosis_R(int client, int weapon, bool &result, int
 	Ability_Apply_Cooldown(client, slot, 100.0);
 	EmitSoundToAll(g_GongSound[GetRandomInt(0, sizeof(g_GongSound) - 1)], client, _, 75, _, 0.65);
 
-	ApplyTempAttrib(weapon, 410, 2.5, 25.0);
-	ApplyTempAttrib(weapon, 6, 0.4, 25.0);
+//	ApplyTempAttrib(weapon, 410, 1.75, 25.0);
+	ApplyTempAttrib(weapon, 6, 0.5, 25.0);
 	ApplyStatusEffect(client, client, "Liberal Tango", 25.0);
 	GiveBuffDurationFor[client] = GetGameTime() + 25.0;
 	DoSpecialActionRitualist(client, 1);

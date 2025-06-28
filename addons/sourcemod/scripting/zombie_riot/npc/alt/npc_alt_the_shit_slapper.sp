@@ -254,7 +254,7 @@ static void Internal_ClotThink(int iNPC)
 						{
 							
 							float damage = 30.0;
-							if(iRuinaWave()>30)	//the shit slapper will become the most feard thing on the planet
+							if(iRuinaWave()>20)	//the shit slapper will become the most feard thing on the planet
 							{
 								damage=175.0;
 							}
@@ -298,7 +298,7 @@ static void Internal_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

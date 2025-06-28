@@ -288,7 +288,7 @@ public void CombineGaint_ClotThink(int iNPC)
 					npc.m_fbRangedSpecialOn = true;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 					npc.StopPathing();
-					npc.m_bPathing = false;
+					
 				}
 				if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 				{
@@ -403,7 +403,7 @@ public void CombineGaint_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

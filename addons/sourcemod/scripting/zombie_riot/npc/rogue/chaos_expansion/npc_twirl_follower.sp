@@ -719,21 +719,21 @@ static bool KeepDistance(TwirlFollower npc, float flDistanceToTarget, int Primar
 			else
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 
@@ -795,7 +795,7 @@ static bool Laser_Initiate(TwirlFollower npc)
 	npc.m_flLaserAngle = GetRandomFloat(0.0, 360.0);
 
 	npc.StopPathing();
-	npc.m_bPathing = false;
+	
 	npc.m_flSpeed = 0.0;
 
 	npc.m_bisWalking = false;

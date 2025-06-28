@@ -194,7 +194,7 @@ methodmap Whiteflower_PrototypeDDT < CClotBody
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;	
+			
 		
 		return npc;
 	}

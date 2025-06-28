@@ -327,7 +327,7 @@ static void Internal_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							float damage = 45.0 * (1.0+(1-(Health/MaxHealth))*2);
-							if(iRuinaWave()<=45)
+							if(iRuinaWave()<=30)
 							{
 								damage=damage/1.75;
 							}
@@ -379,7 +379,7 @@ static void Internal_ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

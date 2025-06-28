@@ -3138,6 +3138,22 @@
 		"en" "Your mana overloads, you cannot contain it.\nYou are slowed for some time heavily, a ruinan cannon strikes onto your location after sometime.\nDamage depends on your Max mana."
 		"es" "Tu mana se sobrecarga, no puedes contenerlo.\nEres ralentizado temporalmente, y un Cañon Ruiniaco es marcado en tu posicion.\nEl daño depende de tu mana maximo."
 	}
+	"Wrench Building"
+	{
+		"en" "Wrench Usage"
+	}
+	"Wrench Building Desc"
+	{
+		"en" "Press {yellow}(R) {green}to access your building menu.\nWith {yellow}(F) {green}You have access to an extra menu for buildings.\nPlace buildings by buying them with scrap in this menu."
+	}
+	"Barracks Building Explain"
+	{
+		"en" "Barracks Building"
+	}
+	"Barracks Building Explain Desc"
+	{
+		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
+	}
 	"Vhxis"
 	{
 		"en"	"Vhxis"

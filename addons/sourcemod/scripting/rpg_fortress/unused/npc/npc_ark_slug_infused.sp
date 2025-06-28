@@ -108,7 +108,7 @@ methodmap ArkSlugInfused < CClotBody
 		SDKHook(npc.index, SDKHook_Think, ArkSlugInfused_ClotThink);
 		
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		
 		return npc;
 	}

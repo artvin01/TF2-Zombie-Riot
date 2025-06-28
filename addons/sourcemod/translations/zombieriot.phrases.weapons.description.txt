@@ -1781,31 +1781,31 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30％ (cant go below 1)"
+		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Panic Attack Desc"
@@ -3081,8 +3081,8 @@
 	}
 	"The Flagellant Extra Desc"
 	{
-		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract more mini-bosses. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
-		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de KO. Cet ensemble pourrait attirer plus de Mini-boss. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
+		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
+		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de Knockback. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
 		"chi"	"在倒地时使用自疗，复活，另有几率无视复活次数。这个套装更容易拉精英怪的仇恨。检查武器+tab可以读取更多武器信息。"
 	}
 	"The Flagellant Generic Pap"

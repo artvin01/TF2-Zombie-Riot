@@ -265,6 +265,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
 						if(spawn_index > MaxClients)
 						{
+							NpcStats_CopyStats(npc.index, spawn_index);
 							if(StrEqual(c_NpcName[npc.index], "Wandering Spitit"))
 								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengeful Spitit");
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);

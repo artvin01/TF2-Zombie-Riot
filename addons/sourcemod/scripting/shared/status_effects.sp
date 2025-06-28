@@ -982,7 +982,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 
 //strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 
-void Force_ExplainBuffToClient(int client, const char[] name)
+void Force_ExplainBuffToClient(int client, const char[] name, bool IgnoreCooldown = false)
 {
 	int index;
 	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
@@ -994,9 +994,9 @@ void Force_ExplainBuffToClient(int client, const char[] name)
 	}
 	StatusEffect Apply_MasterStatusEffect;
 	AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
-	ExplainBuffToClient(client, Apply_MasterStatusEffect, false, index);
+	ExplainBuffToClient(client, Apply_MasterStatusEffect, false, index, IgnoreCooldown);
 }
-void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, bool AppliedOntoOthers = false, int index = -1)
+void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, bool AppliedOntoOthers = false, int index = -1, bool IgnoreCooldown = false)
 {
 	//Bad client
 	if(client <= 0 && client > MaxClients)
@@ -1017,7 +1017,7 @@ void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, bool
 	if(b_DisableStatusEffectHints[client])
 		return;
 		
-	if(DisplayChatBuffCD[client] > GetGameTime())
+	if(DisplayChatBuffCD[client] > GetGameTime() && !IgnoreCooldown)
 		return;
 
 	DisplayChatBuffCD[client] = GetGameTime() + 5.0;
@@ -5090,6 +5090,32 @@ void StatusEffects_Explainelemental()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Wrench Building");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Barracks Building Explain");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
