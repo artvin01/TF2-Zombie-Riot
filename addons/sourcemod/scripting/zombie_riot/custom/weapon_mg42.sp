@@ -120,15 +120,15 @@ public void MG42_Cooldown_Logic(int client, int weapon)
 
 			if(StandingStill == 2)
 			{
-				PrintHintText(client,"Mounted Gun Mode!");
+				PrintHintText(client,"마운트 견착 기관총 모드!");
 			}
 			else if(StandingStill == 1)
 			{
-				PrintHintText(client,"MG42 Accuracy maxed.");
+				PrintHintText(client,"MG42 명중률 최대 상태.");
 			}
 			else
 			{
-				PrintHintText(client,"MG42 Inaccurate!!");
+				PrintHintText(client,"MG42 명중률 감소 상태!!");
 			}
 
 			Weapon_MG42_DoubleStrike(client, weapon, StandingStill);

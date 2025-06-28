@@ -3935,7 +3935,7 @@
 	{
 		"en"		"Each 4th hit gives you a teslar debuff.\nLays mines:\nRed: damages, marks you, if marked, more damage.\nGreen: Cures of teslar debuff, launches up, cant be sniped for 4 seconds and no fall damage\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
 		"ru" 		"Каждая 4-ая атака накладывает Теслар Дебафф.\nУстанавливает мины:\nКрасные:Наносят урон,Помечают вас,Если вы помечены,получаете больше урона.\nЗелёные:Лечит вас от Дебаффа Теслар,Запускает вверх,Не может быть Застрелен в течении 4 секунд и не получает урон от падения\nКаждые 10 секунд помечает вас если ударила вас.\nАттаки Лазерами предугадывают вас,противодействуйте наведению.\nПохожие способности у Сильвестера.\nЕё Ближний бой заставляет скользить вас(Можно Заглушить)"
-		"ko"		"매 4번째 공격이 테슬라 버프 부여.\n지뢰 매설:\n빨강: 피해를 주고 표적을 부여. 표적이 있는 대상에겐 피해량 증가.\n초록: 밟은 자의 테슬라 디버프 제거 및, 공중으로 날아가며, 4초간 낙하 피해 면역.\n10초마다, 근접 공격이 대상에게 표적을 부여.\n레이저 공격은 대상의 경로를 예측.\n표적이 있는 대상에겐 파동 공격이 대상의 경로를 예측.\n근접 공격 적중시, 대상이 미끄러짐 (침묵 가능)"
+		"ko"		"매 4번째 공격이 테슬라 버프 부여.\n지뢰 매설:\n빨강: 피해를 주고 표적을 부여. 표적이 있는 대상에겐 피해량 증가.\n초록: 테슬라 디버프 제거 및 공중으로 날아가며 4초간 낙하 피해 면역.\n10초마다, 근접 공격이 대상에게 표적을 부여.\n레이저 공격은 대상의 경로를 예측.\n표적이 있는 대상에겐 파동 공격이 대상의 경로를 예측.\n근접 공격 적중시, 대상이 미끄러짐 (침묵 가능)"
 	}
 	"Sentinel"
 	{
@@ -3945,7 +3945,7 @@
 	"Sentinel Desc"
 	{
 		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
-		"ko"		"순간적으로 너무 많이 공격 받으면, 맵 전체의 모든 적에게 버프를 부여합니다."
+		"ko"		"순간적으로 너무 많이 공격 받으면(순간적으로 12회 이상의 공격 피해를 받을시), 맵 전체의 모든 적에게 버프를 부여합니다."
 	}
 	"Ironborus"
 	{
@@ -4445,7 +4445,7 @@
 	"Victoria Aviator"
 	{
 		"en"	"Irongate Aviator"
-		"ko"	"강철게이트 비행사"
+		"ko"	"강철게이트 조종사"
 	}
 	"IronShield"
 	{
@@ -5146,6 +5146,6 @@
 	"Instinct's Summon"
 	{
 		"en"	"Instinct's Summon"
-		"ko"	"본능적인 소환물"
+		"ko"	"본능 해방의 소환물"
 	}
 }

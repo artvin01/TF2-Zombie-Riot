@@ -291,27 +291,27 @@ public void Trash_HUD(int client, int weapon, bool forced)
 			switch(i_NextShot[client])
 			{
 				case 1:
-					PrintHintText(client, "NEXT: Shock Stock");
+					PrintHintText(client, "NEXT: 충격 볼트");
 				case 2:
-					PrintHintText(client, "NEXT: Mortar Marker");
+					PrintHintText(client, "NEXT: 박격 표식탄");
 				case 3:
-					PrintHintText(client, "NEXT: Bundle of Arrows");
+					PrintHintText(client, "NEXT: 화살 묶음");
 				case 4:
-					PrintHintText(client, "NEXT: Fireball");
+					PrintHintText(client, "NEXT: 파이어볼");
 				case 5:
-					PrintHintText(client, "NEXT: An Entire Human Skeleton");
+					PrintHintText(client, "NEXT: 인간 뼈대");
 				case 6:
-					PrintHintText(client, "NEXT: Nice Ice");
+					PrintHintText(client, "NEXT: 시원한 얼음");
 				case 7:
-					PrintHintText(client, "NEXT: Literal Trash");
+					PrintHintText(client, "NEXT: 쓰레기더미");
 				case 8:
-					PrintHintText(client, "NEXT: Micro-Missile Barrage");
+					PrintHintText(client, "NEXT: 마이크로 미사일 폭격");
 				default:
 				{
 					if (i_TrashTier[weapon] > 1)
-						PrintHintText(client, "NEXT: Fireball");
+						PrintHintText(client, "NEXT: 파이어볼");
 					else
-						PrintHintText(client, "NEXT: Flimsy Rocket");
+						PrintHintText(client, "NEXT: 연약한 로켓");
 				}
 			}
 		}

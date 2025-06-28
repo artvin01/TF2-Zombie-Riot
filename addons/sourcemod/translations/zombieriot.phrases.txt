@@ -1397,7 +1397,7 @@
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
 		"chi" 		"恶魔领域:当激活时，格挡75%的僵尸伤害并减速，对减速的僵尸额外造成35%的伤害"
-		"ko" 		"미망인 와인! 활성화시 공격한 대상의 피해량을 75％를 감소시키고 디버프를 부여하는 재생형 보호 버프를 얻습니다.\n디버프가 부여된 적은 이동 속도가 크게 느려지고 35％의 추가 피해를 받습니다."
+		"ko" 		"미망인 와인! 활성화시 적중한 대상의 피해량을 75％ 감소시키고 디버프를 부여하는 재생형 보호 버프 획득.\n부여된 대상은 이속 감소 및 35％의 추가 피해를 받음."
 	}
 	"Recycle Poire Recieved"
 	{

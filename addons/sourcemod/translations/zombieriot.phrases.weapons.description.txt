@@ -3571,7 +3571,7 @@
 		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
 		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de Knockback. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
 		"chi"	"在倒地时使用自疗，复活，另有几率无视复活次数。这个套装更容易拉精英怪的仇恨。检查武器+tab可以读取更多武器信息。"
-		"ko"	"다운 상태일떄 자가 회복 능력 사용시, 다운 횟수를 무시하고 일정 확률로 부활함. 하지만 이 키트를 사용하면 미니 보스 등장 확률 소폭 증가. 무기 조사 키(F)''+Tab을 누르면 무기별 능력을 확인 가능."
+		"ko"	"다운 상태일때 자가 회복 능력 사용시, 다운 횟수를 무시하고 일정 확률로 부활함. 무기 조사 키(F)+Tab을 누르면 무기별 능력을 확인 가능."
 	}
 	"The Flagellant Generic Pap"
 	{
@@ -4021,7 +4021,7 @@
 	"Riot Gun Desc"
 	{
 		"en"	"With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\nAbility stuns enemies in front of you and increases attack speed.\nSpeed-Cola reduces ability cooldown.\nBe slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
-		"ko"	"아머가 있다면, 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n능력 사용시, 정면의 적을 기절시키고 공격 속도 증가.\n스피드 콜라 퍽은 능력의 쿨타임을 감소시킴.\n방패를 전개한 상태일때는 이동 속도가 감소하고, 방패가 파괴되면 이동 속도가 증가. (쿨타임 존재)"
+		"ko"	"아머가 있다면 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n능력 : 정면의 적 기절 및 공속+\n콜라: 능력 쿨타임 감소\n방패 전개시 이속 감소. 대신 파괴되면 이속+. (쿨타임 존재)"
 	}
 	"Riot Gun Pap 1"
 	{
@@ -4227,7 +4227,7 @@
 		"en"	"Fires a strong laser, weakened when mounted."
 		"fr"	"Tire un rayon laser puissant. Plus faible quand monté."
 		"chi"	"发射威力强大的激光，扛起时伤害降低。"
-		"ko"	"강력한 레이저를 발사합니다. 들고 있는 상태라면 위력이 약해집니다."
+		"ko"	"강력한 레이저를 발사. 들고 있는 상태라면 위력 감소."
 	}
 	"Barracks"
 	{
@@ -4272,7 +4272,7 @@
 	"The Merchant Desc"
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand.\nYour secondary gets an ability selection upon its first pap."
-		"ko"	"센트리 건과 바리케이드를 건설할 수 없는 건축가의 렌치를 얻습니다.\n양조기를 건설할 수 있게 됩니다.\n당신의 보조 무기는 첫번째 팩펀 개선에서 능력 선택이 가능해집니다."
+		"ko"	"센트리 건과 바리케이드를 건설할 수 없는 건축가의 렌치 획득.\n양조기를 건설 가능.\n당신의 보조 무기는 첫번째 팩펀 개선에서 능력 선택이 가능."
 	}
 	"Merchant Pap -1 Desc"
 	{
@@ -4289,7 +4289,7 @@
 		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20％ HP, giving health and speed"
 		"fr"	"Améliorations générales.\nAbilité karatéka donne des soins et un bonus vitesse quand vous êtes sous 20％ santé."
 		"chi"	"基础属性提升。\n解锁[武士]，生命值低于20%时撤退，增加移速以及血量。"
-		"ko"	"기본 능력치 증가.\n무술가 능력 해금. 체력이 20％ 이하가 되면 후퇴하고 체력을 회복하여 이동 속도가 증가합니다."
+		"ko"	"기본 능력치 증가.\n무술가 능력 해금. 체력이 20％ 이하가 되면 후퇴하고 체력을 회복하여 이동 속도가 증가."
 	}
 	"Merchant Pap 2 Desc"
 	{
@@ -4303,7 +4303,7 @@
 		"en"	"Fish Market drains less metal\nThe Investigator pushes other enemies back when attacking and can repel stuns back to the attacker\nWine Merchant is unlocked, provides 3 ranged weapons with ammo over time, self-revives at the cost of metal"
 		"fr"	"Poissonnerie utilise moins de métal.\nInvestigateur pousse les ennemis quand vous les attaquez, et peut réfléchir l'étonnement aux ennemis.\nAbilité vinier donne 3 armes des munitions et peut vous revivre du KO en échange de métal."
 		"chi"	"减少海鲜市场所消耗的金属。\n[侦探]攻击时会推走其他敌人并且弹反敌人的眩晕。\n解锁[酒商]:提供三把可恢复弹药的远程武器。可消耗金属复活自己。"
-		"ko"	"생선 가게의 금속 소모량이 감소.\n수사관 : 공격 적중시, 대상을 넉백시키고 공격자에게 기절 효과를 반사시킴.\n와인 상인 능력이 해금됩니다. 시간이 지나면 자동으로 탄약이 수급되는 3종류의 주 무기를 얻습니다. 다운 상태일시, 금속을 소모하여 자가 부활이 가능합니다."
+		"ko"	"생선 가게의 금속 소모량이 감소.\n수사관 : 공격 적중시, 대상을 넉백시키고 공격자에게 기절 효과를 반사시킴.\n와인 상인 능력 해금: 시간이 지나면 자동으로 탄약이 수급되는 3종류의 주 무기 획득. 다운 상태일시, 금속을 소모하여 자가 부활 가능."
 	}
 	"Merchant Pap 4 Desc"
 	{

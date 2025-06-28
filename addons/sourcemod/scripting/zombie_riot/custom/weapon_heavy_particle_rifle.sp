@@ -89,7 +89,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 			if(f_hud_timer[client]<GameTime)
 			{
 				f_hud_timer[client] = GameTime+0.5;
-				PrintHintText(client, "Particle Reactor: [FULL POWER]");
+				PrintHintText(client, "입자 반응로: [가동중]");
 				
 			}
 			if(!b_fullcharge_sound[client])
@@ -106,7 +106,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 			if(f_hud_timer[client]<GameTime)
 			{
 				f_hud_timer[client] = GameTime+0.5;
-				PrintHintText(client, "Particle Reactor: [%.1f/%.1f]",ratio,HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
+				PrintHintText(client, "입자 반응로: [%.1f/%.1f]",ratio,HEAVY_PARTICLE_RIFLE_MAX_DMG_BONUS);
 				
 			}
 		}

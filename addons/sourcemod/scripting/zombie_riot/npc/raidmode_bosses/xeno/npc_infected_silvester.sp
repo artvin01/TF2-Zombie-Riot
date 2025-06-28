@@ -2538,7 +2538,7 @@ void SharedTimeLossSilvesterDuo(int entity)
 		}
 		SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
 		SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
-		CPrintToChatAll("{blue}Sensal{default}: Stop fighting, now. What is going on here?");
+		CPrintToChatAll("{blue}센살{default}: 당장 멈춰. 지금 이게 무슨 상황이지?");
 	}
 }
 
@@ -2569,13 +2569,13 @@ static void Internal_Weapon_Lines(RaidbossSilvester npc, int client)
 	{
 		
 		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You have his weapon yet none of his strength.");
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} gave you this {gold}%N{default}? cant be.", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You little stealers arent you?");
-		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon!");}
-		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "Oh you beat him up? Thats good.");
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "that gun aint got ANYTHING ON ME!!!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}Her{default} gun...? uh...");
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "그 무기, 분명 센살의 것이지만 걔보단 못 다루네.");
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "{blue}센살{default}이 너한테 그 무기를 줬다고, {gold}%N{default}? 세상에.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "그건 내 무기인데... 어떻게 얻은거야?");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "그건 내 무기잖아!");}
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "어, 그 미친 기계를 잡았어? 대단한데!");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "그 총은 나한텐 아무것도 아니야!!!");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}네말{default}의 총...? 어...");
 
 		default:
 		{
