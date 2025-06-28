@@ -478,6 +478,9 @@ public void FallenWarrior_NPCDeath(int entity)
 		i_fallen_bodyparticle[npc.index]=INVALID_ENT_REFERENCE;
 	}
 
+	if(GetTeam(entity) == TFTeam_Red)
+		return;
+		
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 //	int entity3 = MakeSmokestack(VecSelfNpcabs);
 

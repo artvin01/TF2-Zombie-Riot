@@ -1689,6 +1689,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1697,6 +1698,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 		if(spawn_index > MaxClients)
 		{
 		
+			NpcStats_CopyStats(npc.index, spawn_index);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1710,6 +1712,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			b_thisNpcIsABoss[spawn_index] = true;
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1719,6 +1722,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			b_thisNpcIsABoss[spawn_index] = true;
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

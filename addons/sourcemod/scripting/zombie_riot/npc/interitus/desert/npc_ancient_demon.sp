@@ -470,6 +470,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{
+		NpcStats_CopyStats(npc.index, NpcSpawnDemon);
 		flMaxHealth /= 40;
 		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 		{
