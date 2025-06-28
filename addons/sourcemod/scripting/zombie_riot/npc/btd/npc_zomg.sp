@@ -30,7 +30,9 @@ static int MoabHealth(bool fortified)
 {
 	float value = 7900.0;	// 200x3x3 + 700x3 + 4000 RGB
 	
-	value *= 1.5;
+	value *= BLOON_HP_MULTI_GLOBAL;
+	if(IsValidEntity(RaidBossActive))
+		value *= 0.8;
 	
 	if(fortified)
 		value *= 2.0;
