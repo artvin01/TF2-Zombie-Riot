@@ -4354,21 +4354,17 @@
 	{
 		"en"	"A special gift made by Koshi for the mercs, as a reward for all the training in the Expidonsan Simulator."
 	}
-	"Plasma Elemental Desc"
-	{
-		"en"	"{darkviolet}Upon filled, Plasmic Elemental debuff inflicts vulnerability and the Plasm debuff on the enemy.\n{green}Plasm strength increases if the victim is already Plasm-ed.\n{yellow}Plasm debuff duration and vulnerability strength/duration scale with the attacker's PaP level.\n{green}If fully filled via melee, immunity cooldown is reduced, and debuff/vuln durations are increased."
-	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage and has extra effects when triggering its elemental effect with this."
+		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Increases overall stats, grants a bunch of health.\nNow deals extra damage against Plasm-ed targets!"
+		"en" 	"Increases overall stats.\nNow deals extra damage against Plasm-ed targets!\nDamage bonus increases with paps."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict extra damage and MASSIVE Plasmic Elemental damage."
+		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict greatly increased damage and Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
@@ -4376,11 +4372,11 @@
 	}
 	"Plasma Inject Pap 4 Desc"
 	{
-		"en" 	"Increases overall stats.\nReduces Lethal Injection's cooldown, and grants it an extra ability charge!"
+		"en" 	"Increases overall stats.\nReduces Lethal Injection's cooldown."
 	}
 	"Plasma Inject Pap 5 Desc"
 	{
-		"en" 	"Increases overall stats.\nGrants Lethal Injection another extra charge, and allows it to inflict Plasm II instead of I."
+		"en" 	"Increases overall stats.\nAllows Lethal Injection to inflict Plasm II instead of I."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
@@ -4392,15 +4388,15 @@
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35％ of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts some of its damage as Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage."
+		"en"	"Increases overall stats.\nAllows Plasmic Burst to inflict Plasm I on the targets it hits."
 	}
 	"Plasminator Pap 4 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range, plasmic elemental damage and reduces its cooldown."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage, and reduces its cooldown."
 	}
 	"Chemical Spewer Desc"
 	{
