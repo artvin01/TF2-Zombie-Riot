@@ -1124,32 +1124,31 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			if(ElementDamage[victim][Element_Plasma] > trigger)
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
-				float duration = (melee ? 4.0 : 2.0) + (paplvl * 0.25); // at max pap (8), its 6 seconds if melee, or 4 seconds if ranged
+				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.25); // at max pap (8), its 7 seconds if melee, or 4.5 seconds if ranged
 				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
-
-				if(HasSpecificBuff(victim, "Plasm I"))
+				if(b_thisNpcIsARaid[victim])
 				{
-					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+					duration *= 0.65;
+				}
+				else if(b_thisNpcIsABoss[victim])
+				{
+					duration *= 0.75;
+				}
+
+				if(HasSpecificBuff(victim, "Plasm III"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
 				}
 				else if(HasSpecificBuff(victim, "Plasm II"))
 				{
 					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
 				}
+				else if(HasSpecificBuff(victim, "Plasm I"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+				}
 
-				if(b_thisNpcIsARaid[victim])
-				{
-					duration *= 0.65;
-					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				}
-				else if(b_thisNpcIsABoss[victim])
-				{
-					duration *= 0.75;
-					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				}
-				else
-				{
-					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				}
+				ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
 
 				float position[3];
