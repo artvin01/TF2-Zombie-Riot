@@ -26,9 +26,9 @@ Lethal Injection (M2 Melee Ability), upon activation:
 PaP Upgrades (all of them increase overall stats):
 1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets.
 2 - Unlocks Lethal Injection.
-3 - Allows Lethal Injection to inflict Plasm I for 4 seconds. (2s against bosses/raids)
+3 - Allows Lethal Injection to inflict Plasm I for 5 seconds. (x0.5 against bosses/raids)
 4 - Reduces Lethal Injection's cooldown.
-5 - Ditto, allows it to inflict Plasm II for 4 seconds. (2s against bosses/raids)
+5 - Ditto, allows it to inflict Plasm II for 5 seconds. (x0.5 against bosses/raids)
 
 Plasm-ubblinator (secondary) - A secondary unlocked after papping it once.
 Doesn't fire normally, instead it only fires after charging its ability.
@@ -58,10 +58,11 @@ Plasmic Burst (M2 Primary Ability), upon activation:
 PaP Upgrades (all of them increase overall stats):
 1 - Nothing special.
 2 - Unlocks Plasmic Burst.
-3 - Now allows Plasmic Burst to inflict Plasm I for 4s to the enemies it hits. (2s on raids/bosses),
+3 - Now allows Plasmic Burst to inflict Plasm I for 5s to the enemies it hits. (x0.5 on raids/bosses),
 4 - Slightly increases its range and increases its Plasmic Elemental damage by an additional 7.5%, 
 also reduces its cooldown by 5 seconds.
 5 - Ditto.
+
 6th, 7th and 8th paps increase ALL stats and almost all ability stats overall.
 */
 
@@ -78,7 +79,7 @@ static int Cheese_Bubble_Hits[MAXPLAYERS];
 static int Cheese_BuildingHit[MAX_TARGETS_HIT];
 static float Cheese_TargetsHit[MAXPLAYERS];
 static float hudtimer[MAXPLAYERS];
-static int iref_WeaponConnect[MAXPLAYERS+1][2];
+static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES];
 
@@ -152,6 +153,10 @@ float Cheese_GetPenalty(int entity)
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
+	{
+		iref_WeaponConnect[client][2] = EntIndexToEntRef(weapon);
+	}
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_SECONDARY)
 	{
 		iref_WeaponConnect[client][1] = EntIndexToEntRef(weapon);
 	}
@@ -233,7 +238,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 		//2 is M2
 		LethalCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
 	}
-	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][1]);
+	WeaponEntity = EntRefToEntIndex(iref_WeaponConnect[client][2]);
 	if(IsValidEntity(WeaponEntity))
 	{
 		BurstCooldown = Ability_Check_Cooldown(client, 2, WeaponEntity);
@@ -279,7 +284,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	{   
 		float cheesedmg = damage;
 
-		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(attacker, "Plasm I") || HasSpecificBuff(attacker, "Plasm II") || HasSpecificBuff(attacker, "Plasm III")))
+		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(victim, "Plasm I") || HasSpecificBuff(victim, "Plasm II") || HasSpecificBuff(victim, "Plasm III")))
 		{
 			damage *= 1.5;
 		}
@@ -289,33 +294,41 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			cheesedmg *= Cheese_Lethal_ElementalBoost[Cheese_PapLevel[attacker]];
 			damage *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
 
-			if(Cheese_PapLevel[client] > 2)
+			if(Cheese_PapLevel[attacker] > 2)
 			{
-				bool IsNotNormal = (b_thisNpcIsARaid[Cheese_BuildingHit[building]] || b_thisNpcIsABoss[Cheese_BuildingHit[building]]);
-				if(Cheese_PapLevel[client] > 4)
+				bool IsNotNormal = (b_thisNpcIsARaid[victim]] || b_thisNpcIsABoss[victim]);
+				if(Cheese_PapLevel[attacker] > 4)
 				{
-					if(HasSpecificBuff(client, "Plasm II"))
+					if(HasSpecificBuff(victim, "Plasm III"))
 					{
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", (IsNotNormal ? 2.0 : 4.0));
+						ApplyStatusEffect(attacker, victim, "Plasm III", (IsNotNormal ? 2.5 : 5.0));
+					}
+					else if(HasSpecificBuff(victim, "Plasm II"))
+					{
+						ApplyStatusEffect(attacker, victim, "Plasm III", (IsNotNormal ? 2.5 : 5.0));
 					}
 					else
 					{
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", (IsNotNormal ? 2.0 : 4.0));
+						ApplyStatusEffect(attacker, victim, "Plasm II", (IsNotNormal ? 2.5 : 5.0));
 					}
 				}
 				else
 				{
-					if(HasSpecificBuff(client, "Plasm II"))
+					if(HasSpecificBuff(victim, "Plasm III"))
 					{
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", (IsNotNormal ? 2.0 : 4.0));
+						ApplyStatusEffect(attacker, victim, "Plasm III", (IsNotNormal ? 2.5 : 5.0));
 					}
-					else if(HasSpecificBuff(client, "Plasm I"))
+					else if(HasSpecificBuff(victim, "Plasm II"))
 					{
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", (IsNotNormal ? 2.0 : 4.0));
+						ApplyStatusEffect(attacker, victim, "Plasm III", (IsNotNormal ? 2.5 : 5.0));
+					}
+					else if(HasSpecificBuff(victim, "Plasm I"))
+					{
+						ApplyStatusEffect(attacker, victim, "Plasm II", (IsNotNormal ? 2.5 : 5.0));
 					}
 					else
 					{
-						ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm I", (IsNotNormal ? 2.0 : 4.0));
+						ApplyStatusEffect(attacker, victim, "Plasm I", (IsNotNormal ? 2.5 : 5.0));
 					}
 				}
 			}
@@ -546,7 +559,6 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 			Cheese_BuildingHit[building] = false;
 		}
 		
-		
 		hullMin[0] = -beamradius;
 		hullMin[1] = hullMin[0];
 		hullMin[2] = hullMin[0];
@@ -568,7 +580,7 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 			{
 				if(IsValidEntity(Cheese_BuildingHit[building]))
 				{
-					WorldSpaceCenter(Cheese_BuildingHit[building],playerPos);
+					WorldSpaceCenter(Cheese_BuildingHit[building], playerPos);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = dmgclose + (dmgfar-dmgclose) * (distance/maxdist);
 					if (damage < 0)
@@ -576,17 +588,21 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 
 					if(Cheese_PapLevel[client] > 2)
 					{
-						float duration = 4.0;
+						float duration = 5.0;
 						if(b_thisNpcIsARaid[Cheese_BuildingHit[building]] || b_thisNpcIsABoss[Cheese_BuildingHit[building]])
 						{
 							duration *= 0.5;
 						}
 						
-						if(HasSpecificBuff(client, "Plasm II"))
+						if(HasSpecificBuff(Cheese_BuildingHit[building], "Plasm III"))
 						{
 							ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", duration);
 						}
-						else if(HasSpecificBuff(client, "Plasm I"))
+						else if(HasSpecificBuff(Cheese_BuildingHit[building], "Plasm II"))
+						{
+							ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm III", duration);
+						}
+						else if(HasSpecificBuff(Cheese_BuildingHit[building], "Plasm I"))
 						{
 							ApplyStatusEffect(client, Cheese_BuildingHit[building], "Plasm II", duration);
 						}
