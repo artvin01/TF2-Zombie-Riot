@@ -84,7 +84,7 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 static float Cheese_Buildup_Penalty[MAXENTITIES];
 
 static int Cheese_Bubble_MaxHits[9]  = {115, 115, 100, 100, 85, 70, 65, 60, 60}; // Plasmatized Bubble's max charge
-static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+//static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {2.5, 2.5, 2.5, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75}; // Lethal Injection's elemental damage bonus
