@@ -410,7 +410,7 @@ public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
-			ApplyStatusEffect(client, client, "Plasmatized Lethalization", 999.0);
+			ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 999.0);
 		}
 		else
 		{
