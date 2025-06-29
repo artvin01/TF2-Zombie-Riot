@@ -2289,7 +2289,7 @@
 		"pt"		"So Pode Existir Um [Mítico]"
 		"nl"		"Er Is Er Maar Één [Mythisch]"
 		"chi"		"There Can be Only One[神话]"
-		"ko"		"하나만 돼요 [신화]"
+		"ko"		"오직 한 놈만 남는다 [신화]"
 	}
 	"Tiny Tornadoes [Rare]"
 	{
@@ -3502,7 +3502,7 @@
 		"ru"	"Винтовка тяжёлых частиц"
 		"fr"	"Fusil de Particules Lourdes"
 		"chi"	"重型粒子步枪"
-		"ko"	"고입자 소총"
+		"ko"	"중입자 소총"
 	}
 	"Flash Grenade"
 	{
@@ -3716,6 +3716,36 @@
 	{
 		"en"	"Whistle Stop"
 		"ko"	"Whistle Stop"
+	}
+	"Trophies"
+	{
+		"en"		"Trophies"
+		"ko"		"트로피"
+	}
+	"Barracks Civilization"
+	{
+		"en"		"Barracks Civilization"
+		"ko"		"배럭 유닛 설정"
+	}
+	"Iberia and Expidonsan's Help"
+	{
+		"en"		"Iberia and Expidonsan's Help"
+		"ko"		"이베리아와 엑스피돈사인들의 도움"
+	}
+	"Iberia's Last Hope"
+	{
+		"en"		"Iberia's Last Hope"
+		"ko"		"이베리아의 마지막 희망"
+	}
+	"Blitzkrieg's Army"
+	{
+		"en"		"Blitzkrieg's Army"
+		"ko"		"블리츠크리그의 군대"
+	}
+	"Guln's Companions"
+	{
+		"en"		"Guln's Companions"
+		"ko"		"귄의 부대원들"
 	}
 	"Ancestor Launcher"
 	{

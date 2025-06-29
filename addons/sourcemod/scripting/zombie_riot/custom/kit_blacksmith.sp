@@ -763,112 +763,112 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 	switch(attrib)
 	{
 		case 1:
-			Format(buffer, sizeof(buffer), "%sPhysical Damage", buffer);
+			Format(buffer, sizeof(buffer), "%s 물리 피해량", buffer);
 		
 		case 2:
-			Format(buffer, sizeof(buffer), "%sBase Damage", buffer);
+			Format(buffer, sizeof(buffer), "%s 기본 피해량", buffer);
 		
 		case 3, 4:
-			Format(buffer, sizeof(buffer), "%sClip Size", buffer);
+			Format(buffer, sizeof(buffer), "%s 장탄수", buffer);
 		
 		case 5, 6:
-			Format(buffer, sizeof(buffer), "%sFiring Speed", buffer);
+			Format(buffer, sizeof(buffer), "%s 공격 속도", buffer);
 		
 		case 8:
-			Format(buffer, sizeof(buffer), "%sHealing Rate", buffer);
+			Format(buffer, sizeof(buffer), "%s 치유 속도", buffer);
 		
 		case 10:
-			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
+			Format(buffer, sizeof(buffer), "%s 우버 충전 속도", buffer);
 		
 		case 16:
-			Format(buffer, sizeof(buffer), "%sHealth On Hit", buffer);
+			Format(buffer, sizeof(buffer), "%s 적중시 회복", buffer);
 		
 		case 26:
-			Format(buffer, sizeof(buffer), "%sMax Health", buffer);
+			Format(buffer, sizeof(buffer), "%s 최대 체력", buffer);
 		
 		case 45:
-			Format(buffer, sizeof(buffer), "%sBullets Per Shot", buffer);
+			Format(buffer, sizeof(buffer), "%s 발사되는 탄환 수", buffer);
 		
 		case 54, 107:
-			Format(buffer, sizeof(buffer), "%sMovement Speed", buffer);
+			Format(buffer, sizeof(buffer), "%s 이동 속도", buffer);
 		
 		case 57:
-			Format(buffer, sizeof(buffer), "%sHealth Regen", buffer);
+			Format(buffer, sizeof(buffer), "%s 초당 체력 재생", buffer);
 		
 		case 95:
-			Format(buffer, sizeof(buffer), "%sRepair Rate", buffer);
+			Format(buffer, sizeof(buffer), "%s 수리 효율", buffer);
 		
 		case 96, 97:
-			Format(buffer, sizeof(buffer), "%sReload Speed", buffer);
+			Format(buffer, sizeof(buffer), "%s 재장전 속도", buffer);
 		
 		case 99, 100:
-			Format(buffer, sizeof(buffer), "%sBlast Radius", buffer);
+			Format(buffer, sizeof(buffer), "%s 폭발 반경", buffer);
 		
 		case 101, 102:
-			Format(buffer, sizeof(buffer), "%sProjectile Range", buffer);
+			Format(buffer, sizeof(buffer), "%s 투사체 날아가는 거리", buffer);
 		
 		case 103, 104:
-			Format(buffer, sizeof(buffer), "%sProjectile Speed", buffer);
+			Format(buffer, sizeof(buffer), "%s 투사체 속도", buffer);
 
 		case 106:
-			Format(buffer, sizeof(buffer), "%sBullet Spread", buffer);
+			Format(buffer, sizeof(buffer), "%s 탄환 집탄도", buffer);
 		
 		case 149:
-			Format(buffer, sizeof(buffer), "%sBleed Duration", buffer);
+			Format(buffer, sizeof(buffer), "%s 출혈 지속시간", buffer);
 		
 		case 205:
-			Format(buffer, sizeof(buffer), "%sRanged Damage Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 원거리 저항력", buffer);
 		
 		case 206:
-			Format(buffer, sizeof(buffer), "%sMelee Damage Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 근접 저항력", buffer);
 		
 		case 252:
-			Format(buffer, sizeof(buffer), "%sKnockback Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 넉백 저항력", buffer);
 		
 		case 287:
-			Format(buffer, sizeof(buffer), "%sSentry Damage", buffer);
+			Format(buffer, sizeof(buffer), "%s 센트리 피해량", buffer);
 		
 		case 319:
-			Format(buffer, sizeof(buffer), "%sBuff Duration", buffer);
+			Format(buffer, sizeof(buffer), "%s 버프 지속 시간", buffer);
 		
 		case 326:
-			Format(buffer, sizeof(buffer), "%sJump Height", buffer);
+			Format(buffer, sizeof(buffer), "%s 점프 높이", buffer);
 		
 		case 343:
-			Format(buffer, sizeof(buffer), "%sSentry Firing Speed", buffer);
+			Format(buffer, sizeof(buffer), "%s 센트리 공격 속도", buffer);
 		
 		case 410:
-			Format(buffer, sizeof(buffer), "%sBase Damage", buffer);
+			Format(buffer, sizeof(buffer), "%s 기본 피해량", buffer);
 		
 		case 412:
-			Format(buffer, sizeof(buffer), "%sDamage Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 모든 피해 저항력", buffer);
 
 		case 733:
-			Format(buffer, sizeof(buffer), "%sMagic Shot Cost", buffer);
+			Format(buffer, sizeof(buffer), "%s 마나 소모량", buffer);
 
 		case 4001:
-			Format(buffer, sizeof(buffer), "%sExtra Melee Range", buffer);
+			Format(buffer, sizeof(buffer), "%s 근접 무기 사거리", buffer);
 
 		case 4002:
-			Format(buffer, sizeof(buffer), "%sMore Medigun Overheal", buffer);
+			Format(buffer, sizeof(buffer), "%s 메디건 추가 과치료율", buffer);
 
 		case Attrib_TerrianRes:
-			Format(buffer, sizeof(buffer), "%sTerrian Damage Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 장판 피해 저항력", buffer);
 
 		case Attrib_ElementalDef:
-			Format(buffer, sizeof(buffer), "%sElemental Damage Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 원소 피해 저항력", buffer);
 
 		case Attrib_SlowImmune:
-			Format(buffer, sizeof(buffer), "%sSlow Resistance", buffer);
+			Format(buffer, sizeof(buffer), "%s 둔화 저항력", buffer);
 
 		case Attrib_ObjTerrianAbsorb:
-			Format(buffer, sizeof(buffer), "%sBuilding Terrian Absorb Chance", buffer);
+			Format(buffer, sizeof(buffer), "%s 구조물의 장판 흡수 확률", buffer);
 
 		case Attrib_SetArchetype:
-			Format(buffer, sizeof(buffer), "%sWeapon Archetype", buffer);
+			Format(buffer, sizeof(buffer), "%s 무기 유형", buffer);
 		
 		case 4019:
-			Format(buffer, sizeof(buffer), "%sMax Mana", buffer);
+			Format(buffer, sizeof(buffer), "%s 최대 마나", buffer);
 
 	}
 	
@@ -877,7 +877,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 
 static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Glassy");
+	strcopy(tinker.Name, sizeof(tinker.Name), "유리 대포");
 	tinker.Attrib[0] = 2;
 	tinker.Attrib[1] = 205;
 	tinker.Attrib[2] = 206;
@@ -911,7 +911,7 @@ static void TinkerMeleeGlassy(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Rapid Haste");
+	strcopy(tinker.Name, sizeof(tinker.Name), "성급함");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	//less damage
@@ -942,7 +942,7 @@ static void TinkerMeleeRapidSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Swings");
+	strcopy(tinker.Name, sizeof(tinker.Name), "묵직한 강타");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	//less damage
@@ -973,7 +973,7 @@ static void TinkerMeleeHeavySwing(int rarity, TinkerEnum tinker)
 
 static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Extended Hands");
+	strcopy(tinker.Name, sizeof(tinker.Name), "늘~어나는 팔");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 6; //attackspeed
 	tinker.Attrib[2] = 4001; //ExtraMeleeRange
@@ -1007,7 +1007,7 @@ static void TinkerMeleeLongSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Hasty Mage");
+	strcopy(tinker.Name, sizeof(tinker.Name), "성급한 마법사");
 	tinker.Attrib[0] = 6;
 	tinker.Attrib[1] = 733;
 	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
@@ -1034,7 +1034,7 @@ static void TinkerHastyMage(int rarity, TinkerEnum tinker)
 }
 static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Mage");
+	strcopy(tinker.Name, sizeof(tinker.Name), "강격의 마법사");
 	tinker.Attrib[0] = 6;
 	tinker.Attrib[1] = 733;
 	tinker.Attrib[2] = 410;
@@ -1067,7 +1067,7 @@ static void TinkerHeavyMage(int rarity, TinkerEnum tinker)
 
 static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Concentrated Magic");
+	strcopy(tinker.Name, sizeof(tinker.Name), "집중형 마법");
 	tinker.Attrib[0] = 103;
 	tinker.Attrib[1] = 410;
 	float ProjectileSpeed = (0.1 * (tinker.Luck[0]));
@@ -1096,7 +1096,7 @@ static void TinkerConcentrationMage(int rarity, TinkerEnum tinker)
 
 static void TinkerTankMage(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Resistive Mage");
+	strcopy(tinker.Name, sizeof(tinker.Name), "튼튼한 마법사");
 	tinker.Attrib[0] = 733;
 	tinker.Attrib[1] = 410;
 	tinker.Attrib[2] = 205;
@@ -1135,7 +1135,7 @@ static void TinkerTankMage(int rarity, TinkerEnum tinker)
 
 static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Healing Overdrive");
+	strcopy(tinker.Name, sizeof(tinker.Name), "치유 과충전");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 10; //Less uber rate
 	tinker.Attrib[2] = 4002; //Less Overheal
@@ -1167,7 +1167,7 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 }
 static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Omega Overheal");
+	strcopy(tinker.Name, sizeof(tinker.Name), "오메가 과치료");
 	tinker.Attrib[0] = 8;
 	tinker.Attrib[1] = 4002; 
 	float LessHealRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
@@ -1196,7 +1196,7 @@ static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 
 static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Pure Uberer");
+	strcopy(tinker.Name, sizeof(tinker.Name), "순수한 우버맨");
 	tinker.Attrib[0] = 8;
 	tinker.Attrib[1] = 10;
 	float LessHealRate = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
@@ -1225,7 +1225,7 @@ static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 
 static void TinkerMedicWeapon_GlassyMedic(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Glassy");
+	strcopy(tinker.Name, sizeof(tinker.Name), "유리 대포");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 6; 
 	tinker.Attrib[2] = 205;
@@ -1264,7 +1264,7 @@ static void TinkerMedicWeapon_GlassyMedic(int rarity, TinkerEnum tinker)
 
 static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Burst Heal");
+	strcopy(tinker.Name, sizeof(tinker.Name), "폭발 치유");
 	tinker.Attrib[0] = 8; //more heal rate
 	tinker.Attrib[1] = 6; 
 	tinker.Attrib[2] = 97; 
@@ -1298,7 +1298,7 @@ static void TinkerMedicWeapon_BurstHealMedic(int rarity, TinkerEnum tinker)
 
 static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Building Extention");
+	strcopy(tinker.Name, sizeof(tinker.Name), "구조물 개조자");
 	tinker.Attrib[0] = 6; //attackspeed
 	tinker.Attrib[1] = 264; //ExtraMeleeRange
 	tinker.Attrib[2] = 4001; //ExtraMeleeRange
@@ -1334,7 +1334,7 @@ static void TinkerBuilderLongSwing(int rarity, TinkerEnum tinker)
 
 static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Repair Master");
+	strcopy(tinker.Name, sizeof(tinker.Name), "수리의 달인");
 	tinker.Attrib[0] = 95; //RepairRate
 	tinker.Attrib[1] = 107; //movementspeed
 	
@@ -1365,7 +1365,7 @@ static void TinkerBuilderRepairMaster(int rarity, TinkerEnum tinker)
 
 static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Slow Heavy Energy");
+	strcopy(tinker.Name, sizeof(tinker.Name), "느리고 강한 에너지");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 103; //ProjectileSpeed
 	tinker.Attrib[2] = 6; //attackspeed
@@ -1399,7 +1399,7 @@ static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 
 static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Speeding Bullets");
+	strcopy(tinker.Name, sizeof(tinker.Name), "급가속 탄환");
 	tinker.Attrib[0] = 2; //damage
 	tinker.Attrib[1] = 103; //ProjectileSpeed
 	tinker.Attrib[2] = 6; //attackspeed
@@ -1434,7 +1434,7 @@ static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 
 static void TinkerIntensiveClip(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Intensive Clip");
+	strcopy(tinker.Name, sizeof(tinker.Name), "묵직한 탄환");
 	tinker.Attrib[0] = 6; //attackspeed
 	tinker.Attrib[1] = 4; //Clipsize
 	tinker.Attrib[2] = 97; //ReloadSpeed
@@ -1468,7 +1468,7 @@ static void TinkerIntensiveClip(int rarity, TinkerEnum tinker)
 
 static void TinkerConcentratedClip(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Concentrated Clip");
+	strcopy(tinker.Name, sizeof(tinker.Name), "집중형 탄환");
 	tinker.Attrib[0] = 2; //Damage
 	tinker.Attrib[1] = 97; //ReloadSpeed
 	
@@ -1498,7 +1498,7 @@ static void TinkerConcentratedClip(int rarity, TinkerEnum tinker)
 
 static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Trigger");
+	strcopy(tinker.Name, sizeof(tinker.Name), "중량 방아쇠");
 	tinker.Attrib[0] = 2; //Damage
 	tinker.Attrib[1] = 6; //attackspeed
 	tinker.Attrib[2] = 97; //Reload speed
@@ -1532,7 +1532,7 @@ static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 
 static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Spray and Pray");
+	strcopy(tinker.Name, sizeof(tinker.Name), "난사");
 	tinker.Attrib[0] = 45; //BulletsPetShot
 	tinker.Attrib[1] = 2; //damage
 	
@@ -1561,7 +1561,7 @@ static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 
 static void TinkerSmallerSmarterBullets(int rarity, TinkerEnum tinker)
 {
-	strcopy(tinker.Name, sizeof(tinker.Name), "Smaller Smarter Bullets");
+	strcopy(tinker.Name, sizeof(tinker.Name), "소형화 스마트 탄환");
 	tinker.Attrib[0] = 2; //Less Damage
 	tinker.Attrib[1] = 6; //Faster Shooting
 	tinker.Attrib[2] = 97; //faster Reload

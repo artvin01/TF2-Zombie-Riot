@@ -1605,7 +1605,7 @@ static void Silvester_Weapon_Lines(Silvester npc, int client)
 		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "야! 그건 내 무기잖아!");}
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "어? 설마 그 미친 기계를 부순거야? 대단한데!");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "그 총은 나한테는 아무것도 아니지!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "그거... {lightblue}그녀{default}의 총인데...? 음...");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "그거... {lightblue}네말{default}의 총인데...? 음...");
 
 		default:
 		{

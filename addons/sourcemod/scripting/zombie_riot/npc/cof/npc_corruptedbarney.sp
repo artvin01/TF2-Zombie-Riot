@@ -251,7 +251,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
-		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
+		CPrintToChatAll("{midnightblue}바니 칼훈{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 	}
 	else
 	{

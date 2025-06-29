@@ -726,7 +726,7 @@
 		"pt"		"Alguém usou sua caixa de munição, você ganhou +20 Créditos"
 		"nl"		"Iemand gebruikte net uw munitiekist, je krijgt hiervoor +20 krediet!"
 		"chi"       "队友使用了你的弹药箱，你获得 20 的现金奖励"
-		"ko"		"누군가가 당신의 탄약 상자를 사용했습니다. 당신은 자금을 +20 얻습니다!"
+		"ko"		"누군가가 당신의 탄약 상자를 사용했습니다. 자금 +20"
 	}
 	"Armor Table Used"
 	{
@@ -740,7 +740,7 @@
 		"pt"		"Alguém usou sua mesa de armadura, você ganhou +20 Créditos!"
 		"nl"		"Iemand gebruikte net uw SchildTafel, je krijgt hiervoor +20 krediet!"
 		"chi"       "队友使用了你的护甲柜，你获得 20 的现金奖励"
-		"ko"		"누군가가 당신의 아머 테이블을 사용했습니다. 당신은 자금을 +20 얻습니다!"
+		"ko"		"누군가가 당신의 아머 테이블을 사용했습니다. 자금 +20"
 	}
 	"Perk Machine Used"
 	{
@@ -751,7 +751,7 @@
 		"pt"		"Alguém usou sua maquina de habilidade, você ganhou +40 Créditos!"
 		"nl"		"Iemand gebruikte net uw perk machine, je krijgt hiervoor +40 krediet"
 		"chi"       "队友使用了你的buff盒，你获得 40 的现金奖励"
-		"ko"		"누군가가 당신의 퍽 기계를 사용했습니다. 당신은 자금을 +40 얻습니다!"
+		"ko"		"누군가가 당신의 퍽 기계를 사용했습니다. 자금 +40"
 	}
 	"Pap Machine Used"
 	{
@@ -762,7 +762,7 @@
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, Você ganhou +400 Créditos!"
 		"nl"		"Iemand gebruikte net uw Pack-A-Punch, je krijgt hiervoor +400 krediet!" 
 		"chi"       "队友使用了你的武器工作台，你获得 400 的现金奖励"
-		"ko"		"누군가가 당신의 팩 어 펀치를 사용했습니다. 당신은 자금을 +400 얻습니다!"
+		"ko"		"누군가가 당신의 팩 어 펀치를 사용했습니다. 자금 +400"
 	}
 	"Pap Machine Used But Another"
 	{
@@ -770,7 +770,7 @@
 		"fr"		"Quelqu'un a utilisé votre machine Pack-A-Punch, vous obtenez +100 Argent!\nUn autre constructeur a de la technologie plus avancée, donc vous obtenez le reste."
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, você ganhou +100 Créditos!\nOutro construtor tem tecnologia mais avançada que você, e recebeu o resto"
         "ru"		"Кто-то воспользовался вашим улучшайзером, получено +100 кредитов!\nДругой строитель имеет более продвинутые технологии, чем ваши, и получил остальное."
-		"ko"		"누군가가 당신의 팩 어 펀치를 사용했습으므로, 당신은 자금을 +100 얻습니다!\n당신의 것을 사용한 건축가의 기술력이 당신보다 뛰어나므로, 나머지 자금은 해당 인원에게 지급됩니다."
+		"ko"		"누가 당신의 팩펀을 사용함. 자금 +100\n당신의 팩펀을 사용한 자의 기술력이 당신보다 뛰어나므로, 나머지 자금은 해당 인원에게 지급."
 	}
 	"Pap Machine Used Me"
 	{
@@ -778,7 +778,7 @@
 		"fr"		"Quelqu'un a utilisé une machine Pack-A-Punch appartenant à un autre constructeur, mais votre technologie est plus avancée!\nVous obtenez +300 Argent!"
 		"pt"		"Uma maquina de Pack-A-Punch foi usada que não era sua, mas sua tecnologia é mais avançada! você ganha +300 Créditos."
 		"ru"		"Был использован улучшайзер, который не принадлежал вам, но ваша техника более совершенна! Получено 300+ кредитов."
-		"ko"		"당신의 것이 아닌 팩 어 펀치를 사용했습니다만, 당신의 기술력이 훨씬 더 진보되었습니다! 당신은 자금을 +300 얻습니다!"
+		"ko"		"당신의 것이 아닌 팩펀을 사용했지만, 당신의 기술력이 훨씬 더 높으므로, 자금 +300!"
 	}
 	"Equip Melee To Use"
 	{
@@ -1827,7 +1827,7 @@
 		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +20 créditos!"
 		"nl"		"Iemand gebruikte net uw Genezingsstation, u krijgt +20 krediet!"
 		"chi"       "有人使用了你的医疗站，你获得了20现金"
-		"ko" 		"누군가가 당신의 회복 시설을 사용했습니다. 당신은 자금을 +20 얻습니다!"
+		"ko" 		"누가 당신의 회복 시설을 사용했습니다. 자금 +20"
 	}
 	"Cant Mount This"
 	{
@@ -4355,7 +4355,7 @@
 		"en"		"Someone used your Tinker Station, you gain +20 Cash!"
 		"fr"		"Quelqu'un a utilisé votre Station de Forgerie, vous obtenez +20 Argent!"
 		"chi"		"有人用了你的铁砧，+20现金！"
-		"ko"		"누군가가 당신의 땜장이의 작업대를 사용했습니다. 당신은 자금을 +20 얻습니다!"
+		"ko"		"누군가가 당신의 모루를 사용했습니다. 자금 +20"
 	}
 	"Blacksmith Maxed"
 	{
