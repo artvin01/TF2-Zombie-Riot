@@ -662,11 +662,13 @@
 		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 	}
-	"Bloonarius"
+	"Bloonarius the Inflator"
 	{
-		"en" 		"Bloonarius"
-		"pt"		"Balãorista"
-		"ru" 		"Шариус"
+		"en" 		"Bloonarius the Inflator"
+	}
+	"Reality Warper Phayze"
+	{
+		"en" 		"Reality Warper Phayze"
 	}
 	"Medic Apprentice Mage"
 	{
