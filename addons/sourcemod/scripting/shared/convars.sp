@@ -308,7 +308,7 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 		}
 	}
 
-	int index = CvarMapList.FindValue(cvar, CvarInfo::cvar);
+	index = CvarMapList.FindValue(cvar, CvarInfo::cvar);
 	if(index != -1)
 	{
 		CvarMapList.GetArray(index, info);
