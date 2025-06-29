@@ -21,10 +21,10 @@ If the victim already has a level of the Plasm debuff, and is inflicted with the
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
 Inflicts 100% of its damage as Plasmic Elemental damage.
 Lethal Injection (M2 Melee Ability), upon activation:
-- Next melee attack will deal x1.75 damage
-- Next melee attack will deal x3.0 Plasmic Elemental damage.
+- Next melee attack will deal x2.0 damage
+- Next melee attack will deal x2.5 Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
-1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets.
+1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets, damage increases with paps.
 2 - Unlocks Lethal Injection.
 3 - Allows Lethal Injection to inflict Plasm I for 5 seconds. (x0.5 against bosses/raids)
 4 - Reduces Lethal Injection's cooldown.
@@ -83,13 +83,13 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES];
 
-static int Cheese_Bubble_MaxHits[9]  = {100, 100, 100, 100, 85, 70, 65, 60, 60}; // Plasmatized Bubble's max charge
+static int Cheese_Bubble_MaxHits[9]  = {115, 115, 100, 100, 85, 70, 65, 60, 60}; // Plasmatized Bubble's max charge
 static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
-static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 20.0, 17.5, 15.0, 12.5}; // Lethal Injection's cooldown
-static float Cheese_Lethal_DmgBoost[9] = {1.75, 1.75, 1.75, 1.75, 1.8, 1.85, 1.9, 1.95, 2.0}; // Lethal Injection's damage bonus
-static float Cheese_Lethal_ElementalBoost[9] = {3.0, 3.0, 3.0, 3.0, 3.25, 3.5, 3.75, 4.0, 4.25}; // Lethal Injection's elemental damage bonus
+static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
+static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5}; // Lethal Injection's damage bonus
+static float Cheese_Lethal_ElementalBoost[9] = {2.5, 2.5, 2.5, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75}; // Lethal Injection's elemental damage bonus
 static float Cheese_Burst_ElementalDmg[9]  = {0.50, 0.50, 0.575, 0.65, 0.725, 0.8, 0.875, 0.95, 1.0}; // Elemental damage multiplier for Plasmic Burst
-static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Elemental damage multiplier for Plasmic Burst
+static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Range for Plasmic Burst
 static float Cheese_Burst_Cooldown[9]  = {22.5, 22.5, 22.5, 22.5, 17.5, 15.0, 12.5, 10.0, 7.5}; // Plasmic Burst's cooldown
 
 static Handle EffectTimer[MAXPLAYERS];
@@ -289,9 +289,13 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	{   
 		float cheesedmg = damage;
 
+		float totalmult = 1.5;
+		if(Cheese_PapLevel[attacker] > 1)
+			totalmult += (Cheese_PapLevel[attacker] * 0.125);
+
 		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(victim, "Plasm I") || HasSpecificBuff(victim, "Plasm II") || HasSpecificBuff(victim, "Plasm III")))
 		{
-			damage *= 1.5;
+			damage *= totalmult;
 		}
 
 		if(HasSpecificBuff(attacker, "Plasmatized Lethalitation"))
