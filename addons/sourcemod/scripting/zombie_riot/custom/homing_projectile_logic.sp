@@ -63,6 +63,7 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	RWI_HandleHome[projectile] = CreateDataTimer(0.1, Projectile_NonPerfectHoming, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(projectile));
 	pack.WriteCell(projectile);
+	TriggerTimer(RWI_HandleHome[projectile]);
 	/*
 		dont bother using EntRef for RMR_CurrentHomingTarget, it has a 0.1 timer
 		and the same entity cannot be repeated/id cant be replaced in under 1 second
