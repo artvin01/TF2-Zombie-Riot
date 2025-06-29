@@ -3055,14 +3055,22 @@
 	"Plasmic Surprise"
 	{
 		"en" "Plasmic Surprise"
+		"es" "Sorpresa Plasmica"
 	}
 	"Plasmic Dosage"
 	{
 		"en" "Plasmic Dosage"
+		"es" "Dosis Plasmica"
+	}
+	"Plasm-ubblinator"
+	{
+		"en" "Plasm-ubblinator"
+		"es" "Plasm-urbujinador"
 	}
 	"Koshi's Plasm-inator"
 	{
 		"en" "Koshi's Plasm-inator"
+		"es" "El Plasm-inador de Koshi"
 	}
 	"Chemical Spewer"
 	{
