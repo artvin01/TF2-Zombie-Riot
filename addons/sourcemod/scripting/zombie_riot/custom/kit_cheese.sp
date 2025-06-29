@@ -19,7 +19,7 @@ If the victim already has a level of the Plasm debuff, and is inflicted with the
 (say, if the victim has Plasm I, it gets upgraded to Plasm II, and if it has Plasm II, it gets upgraded to Plasm III.)
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
-Inflicts 100% of its damage as Plasmic Elemental damage.
+Inflicts 150% of its damage as Plasmic Elemental damage.
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.0 damage
 - Next melee attack will deal x2.5 Plasmic Elemental damage.
@@ -51,7 +51,7 @@ and reduces the hits required to charge the Plasmatized Bubble.
 Increases the bubble's duration by 1 second.
 
 Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
-These projectiles deal 35% of their damage as Plasmic Elemental damage.
+These projectiles deal 40% of their damage as Plasmic Elemental damage.
 Plasmic Burst (M2 Primary Ability), upon activation:
 - Shoots a short-ranged laser that causes a bit of shake.
 - This laser inflicts AoE damage in front, and deals 50% of its damage as Plasmic Elemental damage.
@@ -354,7 +354,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]]);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.15), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
 	}
 
 	return damage;
@@ -362,7 +362,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.35), weapon);
+	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.4), weapon);
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
