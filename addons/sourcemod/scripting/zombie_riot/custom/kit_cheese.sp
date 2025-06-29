@@ -19,6 +19,7 @@ If the victim already has a level of the Plasm debuff, and is inflicted with the
 (say, if the victim has Plasm I, it gets upgraded to Plasm II, and if it has Plasm II, it gets upgraded to Plasm III.)
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
+Health on kill is still very great, and its better to combo and time it with the Plasminator.
 Inflicts 150% of its damage as Plasmic Elemental damage.
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.0 damage
