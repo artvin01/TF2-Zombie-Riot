@@ -5674,7 +5674,7 @@ enum
 	IgniteClientside = 2,
 	Osmosisdebuff = 3,
 	TankThrowLogic = 4,
-	
+	Boomerang = 5,
 }
 
 enum struct HitDetectionEnum
