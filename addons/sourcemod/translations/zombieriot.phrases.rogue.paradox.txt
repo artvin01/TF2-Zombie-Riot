@@ -806,7 +806,7 @@
 	}
 	"Ancient Vuntulum Silver Coin Desc"
 	{
-		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 6s when a wave starts"
+		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 15s when a wave starts"
 		"ko"	"잘 보관되어 소장 가치가 높다.\n{green}매 웨이브가 시작될 때마다, 무기의 능력 쿨타임이 6초 감소한 채로 시작합니다."
 	}
 	"Bank of Vunt Check"
@@ -816,7 +816,7 @@
 	}
 	"Bank of Vunt Check Desc"
 	{
-		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 9s when a wave starts"
+		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 25s when a wave starts"
 		"ko"	"금과 은이 박힌 엄청 고급스러운 수표장.\n{green}매 웨이브가 시작될 때마다, 무기의 능력 쿨타임이 9초 감소한 채로 시작합니다."
 	}
 	"Second Economic Reform Act"
@@ -826,7 +826,7 @@
 	}
 	"Second Economic Reform Act Desc"
 	{
-		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 12s when a wave starts"
+		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 500s when a wave starts"
 		"ko"	"이 법안을 시작으로 분툴룸은 본격적으로 패권 제국의 길을 걷게 되었다.\n{green}매 웨이브가 시작될 때마다, 무기의 능력 쿨타임이 12초 감소한 채로 시작합니다."
 	}
 	"String Puppet"
@@ -937,7 +937,7 @@
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
-		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 50 Chaos Affliction."
+		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 10 Chaos Affliction."
 		"ko"	"뭔가에 끌리는게 느껴진다.\n{green}스테이지당 한 번, 아군의 체력이 절반 이하가 되면, 그 아군의 체력이 전부 회복됩니다.\n{green}혼돈의 고통이 50 감소합니다."
 	}
 	"Terrible Nightmare"

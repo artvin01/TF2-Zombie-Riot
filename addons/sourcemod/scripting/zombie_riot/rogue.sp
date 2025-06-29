@@ -1036,12 +1036,12 @@ void Rogue_BattleVictory()
 	{
 		//tiny compensation
 		int chaos = RoundToFloor(BattleChaos);
-		chaos -= 2;
+		chaos -= 1;
 		if(chaos < 0)
 			chaos = 0;
 
-		if(chaos > 15)
-			chaos = 15;
+		if(chaos > 25)
+			chaos = 25;
 			
 		if(chaos > 0)
 		{

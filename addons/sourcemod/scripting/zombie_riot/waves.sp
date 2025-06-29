@@ -3181,10 +3181,11 @@ float GetScaledPlayerCountMulti(int players)
     return multiplier;
 }
 
-void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
+void ScalingMultiplyEnemyHpGlobalScale(int iNpc, float modif_hp = 1.0)
 {
 	float Maxhealth = float(ReturnEntityMaxHealth(iNpc));
 	Maxhealth *= MultiGlobalHealth;
+	Maxhealth *= modif_hp;
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToNearest(Maxhealth));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(Maxhealth));
 }

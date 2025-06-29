@@ -29,7 +29,9 @@ static float MoabSpeed()
 static int MoabHealth(bool fortified)
 {
 	float value = 20000.0;	// 20000 RGB
-	value *= 1.5;
+	value *= BLOON_HP_MULTI_GLOBAL;
+	if(IsValidEntity(RaidBossActive))
+		value *= 0.8;
 	
 	if(fortified)
 		value *= 2.0;
