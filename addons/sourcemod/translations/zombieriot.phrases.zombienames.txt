@@ -3870,6 +3870,10 @@
 		"en"	"Castellan"
 		"ko"	"카스텔란"
 	}
+	"0h No it's Not Fair"
+	{
+		"en"	"0h No it's Not Fair"
+	}
 	"Agent John"
 	{
 		"en"		"Agent John"

@@ -1468,7 +1468,7 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 											
 								if(IsValidClient(targetTrace))
 								{
-									if(IsInvuln(targetTrace) || DrinkPOWERUP[npc.index])
+									if(IsInvuln(targetTrace))
 									{
 										Knocked = true;
 										Custom_Knockback(npc.index, targetTrace, 300.0, true);
