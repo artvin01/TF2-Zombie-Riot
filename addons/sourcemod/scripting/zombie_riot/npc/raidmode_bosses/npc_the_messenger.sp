@@ -1162,7 +1162,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							{
 								int ChaosDamage = 150;
 								if(NpcStats_IsEnemySilenced(npc.index))
-									ChaosDamage = 100;
+									ChaosDamage = 140;
 
 								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
@@ -1255,13 +1255,15 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			int ChaosDamage = 75;
 			if(NpcStats_IsEnemySilenced(owner))
-				ChaosDamage = 40;
+				ChaosDamage = 65;
+			//above is kahmlstein
 
 			if(i_NpcInternalId[owner] == NPCId)
 			{
-				ChaosDamage = 40;
+				//This is messenger
+				ChaosDamage = 60;
 				if(NpcStats_IsEnemySilenced(owner))
-					ChaosDamage = 30;
+					ChaosDamage = 50;
 			}
 
 			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);
