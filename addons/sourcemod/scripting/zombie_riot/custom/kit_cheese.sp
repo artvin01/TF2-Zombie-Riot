@@ -306,7 +306,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 			if(Cheese_PapLevel[attacker] > 2)
 			{
-				bool IsNotNormal = (b_thisNpcIsARaid[victim]] || b_thisNpcIsABoss[victim]);
+				bool IsNotNormal = (b_thisNpcIsARaid[victim] || b_thisNpcIsABoss[victim]);
 				if(Cheese_PapLevel[attacker] > 4)
 				{
 					if(HasSpecificBuff(victim, "Plasm III"))
