@@ -153,7 +153,7 @@ float Cheese_GetPenalty(int entity)
 
 void Cheese_OnNPCDeath(int i)
 {
-	Cheese_Buildup_Penalty[entity] = 1.0;
+	Cheese_Buildup_Penalty[i] = 1.0;
 }
 
 void Cheese_Enable(int client, int weapon)
