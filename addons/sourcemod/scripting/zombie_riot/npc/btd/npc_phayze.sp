@@ -1,49 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char BloonLowData[][] =
-{
-	"4",
-	"5",
-	"6",
-	"9"
-};
-
-// Halved on Elite
-static const int BloonLowCount[] =
-{
-	2,
-	2,
-	4,
-	4
-};
-
-static const char BloonHigh[][] =
-{
-	"npc_moab",
-	"npc_bfb",
-	"npc_zomg",
-	"npc_bad"
-};
-
-static const char BloonHighData[][] =
-{
-	"",
-	"",
-	"",
-	""
-};
-
-// Halved on Elite
-static const int BloonHighCount[] =
-{
-	1,//30,
-	2,//60,
-	2,//6,
-	1//10
-};
-
-static int SpawnMulti(int count, int players, bool elite)
+static int SpawnMulti(int count, int players)
 {
 	float multi = float(players) * 0.25;
 	if(elite)
@@ -52,27 +10,35 @@ static int SpawnMulti(int count, int players, bool elite)
 	return RoundToCeil(float(count) * multi);
 }
 
-static float MoabSpeed(bool elite)
+static float MoabSpeed()
 {
-	if(CurrentRound < (elite ? 39 : 29))
-		return elite ? 31.25 : 62.5;
-	
-	return elite ? 37.5 : 75.0;
+	float multi = 3.6;
+	if(npc.m_flArmorCount > 0.0)
+	{
+		switch(CurrentTier())
+		{
+			case 0:
+				multi = 5.22;
+			
+			case 1:
+				multi = 5.4;
+			
+			case 2:
+				multi = 5.58;
+			
+			default:
+				multi = 5.94;
+		}
+	}
+
+	return 250.0 * multi;
 }
 
-static int CurrentTier(bool elite)
+static int CurrentTier()
 {
-	int round;
-
-	if(elite)	// 39,59,79,99
-	{
-		round = (CurrentRound - 38) / 20;
-	}
-	else	// 9,19,29,39
-	{
-		round = (CurrentRound - 8) / 10;
-	}
-
+	// 39,59,79,99
+	int round = (CurrentRound - 38) / 20;
+	
 	if(round > 3)
 	{
 		round = 3;
@@ -84,55 +50,33 @@ static int CurrentTier(bool elite)
 	return round;
 }
 
-static void SetBossBloonPower(int players, bool elite)
+static void SetBossBloonPower(int players)
 {
-	if(elite)
+	if(CurrentRound > 98)
 	{
-		if(CurrentRound > 98)
-		{
-			RaidModeScaling = 10.0;
-		}
-		else if(CurrentRound > 78)
-		{
-			RaidModeScaling = 14.0 / 3.0;
-		}
-		else if(CurrentRound > 58)
-		{
-			RaidModeScaling = 1.0;
-		}
-		else
-		{
-			RaidModeScaling = 4.0 / 15.0;
-		}
-		
-		// Reference to late game scaling
-		if(CurrentRound > 99)
-		{
-			RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
-		}
-		else if(CurrentRound > 79)
-		{
-			RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
-		}
+		RaidModeScaling = 10.0;
+	}
+	else if(CurrentRound > 78)
+	{
+		RaidModeScaling = 14.0 / 3.0;
+	}
+	else if(CurrentRound > 58)
+	{
+		RaidModeScaling = 1.0;
 	}
 	else
 	{
-		if(CurrentRound > 38)
-		{
-			RaidModeScaling = 80.0 / 3.0;
-		}
-		else if(CurrentRound > 28)
-		{
-			RaidModeScaling = 20.0 / 3.0;
-		}
-		else if(CurrentRound > 18)
-		{
-			RaidModeScaling = 1.0;
-		}
-		else
-		{
-			RaidModeScaling = 1.0 / 6.0;
-		}
+		RaidModeScaling = 4.0 / 15.0;
+	}
+	
+	// Reference to late game scaling
+	if(CurrentRound > 99)
+	{
+		RaidModeScaling *= 1.0 + (CurrentRound - 71) * 0.05;
+	}
+	else if(CurrentRound > 79)
+	{
+		RaidModeScaling *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
 	// Reference to +20% increase in BTD6 co-op
@@ -142,8 +86,8 @@ static void SetBossBloonPower(int players, bool elite)
 void Bloonarius_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bloonarius the Inflator");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloonarius");
+	strcopy(data.Name, sizeof(data.Name), "Reality Warper Phayze");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_phayze");
 	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -155,9 +99,6 @@ void Bloonarius_MapStart()
 
 static void ClotPrecache()
 {
-	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusdeath.wav");
-	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusspawn.wav");
-	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusvomit.wav");
 	PrecacheSoundCustom("#zombie_riot/btd/musicbossbloonarius.mp3");
 	PrecacheModel("models/zombie_riot/btd/bloonarius.mdl");
 }
@@ -195,7 +136,7 @@ methodmap Bloonarius < CClotBody
 	{
 		public get()
 		{
-			return CurrentTier(this.m_bStaticNPC);
+			return CurrentTier();
 		}
 	}
 	property int m_iMiniLivesLost
@@ -223,16 +164,14 @@ methodmap Bloonarius < CClotBody
 			return view_as<Bloonarius>(-1);
 		}
 
-		bool elite = StrContains(data, "classic") != -1;
-
-		bool final = StrContains(data, "classic_final") != -1;
+		bool final = StrContains(data, "final") != -1;
 		
-		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "3.0", "1000000", ally, false, true, true, true));
+		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "3.0", "1000000", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 5;
-		KillFeed_SetKillIcon(npc.index, "bread_bite");
+		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
-		int activity = npc.LookupActivity("ACT_BLOONARIUS_FLOAT");
+		int activity = npc.LookupActivity("ACT_FLOAT");
 		if(activity > 0)
 			npc.StartActivity(activity);
 		
@@ -242,15 +181,14 @@ methodmap Bloonarius < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
 		b_thisNpcIsARaid[npc.index] = true;
-		npc.m_bStaticNPC = elite;
-		
-		if(elite)
-			AddNpcToAliveList(npc.index, 1);
+
+		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 
 		npc.m_bisWalking = false;
 		npc.m_bnew_target = final;
 		
-		npc.m_flSpeed = MoabSpeed(elite);
+		npc.m_flSpeed = MoabSpeed();
 		npc.m_iLivesLost = 0;
 		
 		npc.m_iStepNoiseType = 0;	

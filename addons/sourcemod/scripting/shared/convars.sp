@@ -146,14 +146,17 @@ static ConVar ConVar_Add(const char[] name, const char[] value, bool enforce=tru
 	info.enforce = enforce;
 
 	if(CvarEnabled)
-	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		if(value[0])
-			info.cvar.SetString(info.value);
-		info.cvar.AddChangeHook(ConVar_OnChanged);
-	}
 
 	CvarList.PushArray(info);
+	
+	if(CvarEnabled)
+	{
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+		if(value[0])
+			info.cvar.SetString(info.value);
+	}
+	
 	return (info.cvar);
 }
 
@@ -179,17 +182,19 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 	info.enforce = enforce;
 
 	if(CvarEnabled)
-	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		if(value[0])
-			info.cvar.SetString(info.value);
-		info.cvar.AddChangeHook(ConVar_OnChanged);
-	}
 
 	if(!CvarMapList)
 		CvarMapList = new ArrayList(sizeof(CvarInfo));
 
 	CvarMapList.PushArray(info);
+	
+	if(CvarEnabled)
+	{
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+		if(value[0])
+			info.cvar.SetString(info.value);
+	}
 }
 
 stock void ConVar_RemoveTemp(const char[] name)
@@ -286,10 +291,10 @@ void ConVar_Disable()
 
 public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] newValue)
 {
+	CvarInfo info;
 	int index = CvarList.FindValue(cvar, CvarInfo::cvar);
 	if(index != -1)
 	{
-		CvarInfo info;
 		CvarList.GetArray(index, info);
 
 		if(!StrEqual(newValue, info.value))
@@ -298,6 +303,22 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 			{
 				strcopy(info.defaul, sizeof(info.defaul), newValue);
 				CvarList.SetArray(index, info);
+				info.cvar.SetString(info.value);
+			}
+		}
+	}
+
+	index = CvarMapList.FindValue(cvar, CvarInfo::cvar);
+	if(index != -1)
+	{
+		CvarMapList.GetArray(index, info);
+
+		if(!StrEqual(newValue, info.value))
+		{
+			if(info.enforce)
+			{
+				strcopy(info.defaul, sizeof(info.defaul), newValue);
+				CvarMapList.SetArray(index, info);
 				info.cvar.SetString(info.value);
 			}
 		}
