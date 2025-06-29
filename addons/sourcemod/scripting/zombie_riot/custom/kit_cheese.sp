@@ -104,6 +104,7 @@ void Cheese_MapStart()
 	Zero(Cheese_PapLevel);
 	Zero(Cheese_Bubble_Hits);
 	Zero(Cheese_TargetsHit);
+	Zero(Cheese_Buildup_Penalty);
 	Zero(hudtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
