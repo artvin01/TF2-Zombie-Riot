@@ -225,7 +225,8 @@ enum
 	WEAPON_CHEMICAL_THROWER = 148,
 	WEAPON_RITUALIST = 149,
 	WEAPON_SHERRIF = 150,
-	WEAPON_SHERRIF_LEVERACTION = 151
+	WEAPON_SHERRIF_LEVERACTION = 151,
+	WEAPON_BOOMERANG = 152
 }
 
 enum
@@ -614,6 +615,7 @@ float fl_MatrixReflect[MAXENTITIES];
 //#include "custom/kit_cheese.sp"
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
+#include "custom/weapon_boomerang.sp"
 
 void ZR_PluginLoad()
 {
