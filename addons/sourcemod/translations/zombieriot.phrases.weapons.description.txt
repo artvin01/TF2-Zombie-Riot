@@ -4352,11 +4352,15 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A special gift made by Koshi for the mercs, as a reward for all the training in the Expidonsan Simulator."
+		"en"	"A special gift made by Koshi for the mercs, as a reward for all the training in the Expidonsan Simulator.\n[PLASMIC ELEMENTAL DEBUFF]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas no elemental cooldown, however buildup becomes longer and longer on the same enemy."
+	}
+	"Plasma Extra Desc"
+	{
+		"en"	"{green}When inflicting the Plasm debuff, its strength increases if the victim already has the Plasm debuff.\n{white}Say, if the victim has Plasm I, and you inflict Plasm I again, it gets upgraded to Plasm II, and inflicting Plasm again upgrades it to Plasm III.\n{orange}This, however, doesn't work for the Plasm-ubblinator."
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations when triggering its elemental effect."
+		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations and\nreduces buildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
