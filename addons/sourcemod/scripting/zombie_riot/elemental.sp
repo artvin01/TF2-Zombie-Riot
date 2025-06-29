@@ -1117,7 +1117,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Plasma);
-			damage *= Cheese_GetPenalty(victim);
+			float newdmg = RoundToNearest(damage * Cheese_GetPenalty(victim));
+			damage = newdmg;
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Plasma;
 			ElementDamage[victim][Element_Plasma] += damage;
