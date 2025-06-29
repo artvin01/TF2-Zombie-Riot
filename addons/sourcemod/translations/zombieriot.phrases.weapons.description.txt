@@ -4352,7 +4352,7 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A special gift made by Koshi for the mercs, as a reward for all the training in the Expidonsan Simulator.\n[PLASMIC ELEMENTAL DEBUFF]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas no elemental cooldown, however buildup becomes longer and longer on the same enemy."
+		"en"	"A special gift made by Koshi, as a reward for all the training in the Expidonsan Simulator.\n[PLASMIC ELEMENTAL]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas no elemental cooldown, but buildup slows down on the same victim."
 	}
 	"Plasma Extra Desc"
 	{
