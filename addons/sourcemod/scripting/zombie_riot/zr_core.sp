@@ -825,6 +825,7 @@ void ZR_MapStart()
 	Wand_Fire_Map_Precache();
 	Wand_FireBall_Map_Precache();
 	Wand_Lightning_Map_Precache();
+	WeaponBoomerang_MapStart();
 	Wand_LightningAbility_Map_Precache();
 	Wand_Necro_Map_Precache();
 	Wand_NerosSpell_Map_Precache();
