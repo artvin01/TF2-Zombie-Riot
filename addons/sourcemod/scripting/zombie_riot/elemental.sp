@@ -11,7 +11,7 @@ enum
 	Element_Osmosis,
 	Element_Corruption,
 	Element_Burger,
-	//Element_Plasma,
+	Element_Plasma,
 
 	Element_MAX
 }
@@ -26,7 +26,7 @@ static const char ElementName[][] =
 	"OS",
 	"CO",
 	"FOOD",
-	//"PL"
+	"PL"
 };
 
 static float LastTime[MAXENTITIES];
@@ -108,7 +108,7 @@ int Elemental_TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void: // add Element_Plasma here later
+		case Element_Void, Element_Plasma:
 		{
 			divide = 2.0;
 		}
@@ -1054,7 +1054,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	}
 }
 
-/*
+
 void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon, bool ignoreArmor = false)
 {
 	if(i_IsVehicle[victim])
@@ -1192,4 +1192,3 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
-*/
