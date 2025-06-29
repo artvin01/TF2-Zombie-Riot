@@ -288,7 +288,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "전부 재장전하기 위한 탄약 없음!");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Ammo to Fully reload weapon!");
 		return;
 	}
 
@@ -297,7 +297,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "장탄이 꽉 찬 상태입니다!");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Clip is already full!");
 		return;
 	}
 
@@ -665,7 +665,7 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "아직 완전히 충전되지 않음.\n[%i/%i]", RoundToFloor(fl_ion_charge[client]), RoundToFloor(BLITZKREIG_KIT_ION_COST_CHARGE));
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", RoundToFloor(fl_ion_charge[client]), RoundToFloor(BLITZKREIG_KIT_ION_COST_CHARGE));
 		return;
 	}
 	float GameTime = GetGameTime();
@@ -679,7 +679,7 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "능력 쿨타임 대기", Ability_CD);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
 

@@ -187,7 +187,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "이번 웨이브에서 더 이상 물품 드롭을 사용할 수 없음");
+		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
 	}
 	else if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -236,7 +236,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "능력의 쿨타임이 돌아오지 않음", Ability_CD);	
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
 }
 
@@ -277,6 +277,6 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "능력의 쿨타임이 돌아오지 않음", Ability_CD);	
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
 	}
 }

@@ -180,7 +180,7 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "R로 상호작용");
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Reload to Interact");
 		return;
 	}
 
@@ -194,7 +194,7 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "능력 쿨타임 대기중", Ability_Check_Cooldown(client, slot));
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
 
