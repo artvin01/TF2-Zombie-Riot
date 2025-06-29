@@ -308,17 +308,17 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 		}
 	}
 
-	index = CvarMapList.FindValue(cvar, CvarInfo::cvar);
-	if(index != -1)
+	int index2 = CvarMapList.FindValue(cvar, CvarInfo::cvar);
+	if(index2 != -1)
 	{
-		CvarMapList.GetArray(index, info);
+		CvarMapList.GetArray(index2, info);
 
 		if(!StrEqual(newValue, info.value))
 		{
 			if(info.enforce)
 			{
 				strcopy(info.defaul, sizeof(info.defaul), newValue);
-				CvarMapList.SetArray(index, info);
+				CvarMapList.SetArray(index2, info);
 				info.cvar.SetString(info.value);
 			}
 		}
