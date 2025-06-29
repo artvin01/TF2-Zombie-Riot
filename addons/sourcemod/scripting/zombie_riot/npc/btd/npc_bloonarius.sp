@@ -37,7 +37,7 @@ static const char BloonHighData[][] =
 // Halved on Elite
 static const int BloonHighCount[] =
 {
-	2,//30,
+	1,//30,
 	2,//60,
 	2,//6,
 	1//10
