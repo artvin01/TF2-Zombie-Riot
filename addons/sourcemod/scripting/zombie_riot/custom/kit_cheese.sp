@@ -81,7 +81,7 @@ static float Cheese_TargetsHit[MAXPLAYERS];
 static float hudtimer[MAXPLAYERS];
 static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
-static float Cheese_Buildup_Penalty[MAXENTITIES];
+static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
 static int Cheese_Bubble_MaxHits[9]  = {115, 115, 100, 100, 85, 70, 65, 60, 60}; // Plasmatized Bubble's max charge
 //static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
@@ -104,7 +104,6 @@ void Cheese_MapStart()
 	Zero(Cheese_PapLevel);
 	Zero(Cheese_Bubble_Hits);
 	Zero(Cheese_TargetsHit);
-	Zero(Cheese_Buildup_Penalty);
 	Zero(hudtimer);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -253,7 +252,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 	char CheeseHud[255];
 	if(Cheese_PapLevel[client] > 1)
 	{
-		if(HasSpecificBuff(client, "Plasmatized Lethalization"))
+		if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
 		{
 			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE!", CheeseHud);
 			Cheese_BeamEffect(pos, 1.0, 100.0, 0.075, 7.5, true, client);
