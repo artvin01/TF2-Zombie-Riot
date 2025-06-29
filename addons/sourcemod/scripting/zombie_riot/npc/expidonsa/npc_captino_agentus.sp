@@ -246,7 +246,7 @@ methodmap CaptinoAgentus < CClotBody
 		SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		TeleportDiversioToRandLocation(npc.index);
+	//	TeleportDiversioToRandLocation(npc.index);
 		return npc;
 	}
 }
@@ -324,7 +324,7 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 						if(Succeed)
 						{
-							if(npc.g_TimesSummoned <= 5)
+							if(npc.g_TimesSummoned < 1)
 							{
 								//only spawn 5
 								int maxhealth = ReturnEntityMaxHealth(npc.index);
@@ -514,7 +514,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 500.0;
+					float damageDealt = 400.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -577,7 +577,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 150.0;
+					float damageDealt = 100.0;
 
 					if(BackstabDone)
 					{
@@ -669,8 +669,8 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-					fl_RangedArmor[npc.index] = 0.5;
-					fl_MeleeArmor[npc.index] = 0.5;
+					fl_RangedArmor[npc.index] = 0.65;
+					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
@@ -682,8 +682,8 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-					fl_RangedArmor[npc.index] = 0.5;
-					fl_MeleeArmor[npc.index] = 0.5;
+					fl_RangedArmor[npc.index] = 0.65;
+					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
