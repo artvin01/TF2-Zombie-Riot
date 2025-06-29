@@ -556,6 +556,10 @@
 		"pt"		"Xeno Medic Main de Combate"
 		"nl"		"Xeno Strijd Medicus Main"
 	}
+	"Xeno Infected Lab Doctor"
+	{
+		"en" 	"Xeno Infected Lab Doctor"
+	}
 	"Xeno Giant Pyro Main"
 	{
 		"en" 		"Xeno Giant Pyro Main"
@@ -856,6 +860,10 @@
 	"Barracks Militia Desc"
 	{
 		"en"		"Basic unit of basic melee needs."
+	}
+	"Xeno Infected Lab Doctor Desc"
+	{
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
 	}
 	"Archer"
 	{
