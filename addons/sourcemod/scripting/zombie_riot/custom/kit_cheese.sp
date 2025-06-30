@@ -254,24 +254,24 @@ static void Cheese_Hud(int client, bool ignorecd)
 	if(Cheese_PapLevel[client] > 0)
 	{
 		if(Cheese_Bubble_Hits[client] >= Cheese_Bubble_MaxHits[Cheese_PapLevel[client]])
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatized Bubble: Ready!", CheeseHud);
+			Format(CheeseHud, sizeof(CheeseHud), "%sPlasmatized Bubble: Ready!", CheeseHud);
 		else
-			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmatized Bubble: [%d | %d]", CheeseHud, Cheese_Bubble_Hits[client], Cheese_Bubble_MaxHits[Cheese_PapLevel[client]]);
+			Format(CheeseHud, sizeof(CheeseHud), "%sPlasmatized Bubble: [%d | %d]", CheeseHud, Cheese_Bubble_Hits[client], Cheese_Bubble_MaxHits[Cheese_PapLevel[client]]);
 	}
 
 	if(Cheese_PapLevel[client] > 1)
 	{
 		if(HasSpecificBuff(client, "Plasmatized Lethalitation"))
 		{
-			Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: ACTIVE!", CheeseHud);
+			Format(CheeseHud, sizeof(CheeseHud), "%s\nLethal Injection: ACTIVE!", CheeseHud);
 			Cheese_BeamEffect(pos, 1.0, 100.0, 0.075, 7.5, true, client);
 		}
 		else
 		{
 			if(LethalCooldown <= 0.0)
-				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: Ready!", CheeseHud);
+				Format(CheeseHud, sizeof(CheeseHud), "%s\nLethal Injection: Ready!", CheeseHud);
 			else
-				Format(CheeseHud, sizeof(CheeseHud), "%sLethal Injection: [%.1f]", CheeseHud, LethalCooldown);
+				Format(CheeseHud, sizeof(CheeseHud), "%s\nLethal Injection: [%.1f]", CheeseHud, LethalCooldown);
 		}		
 
 		if(BurstCooldown <= 0.0)
