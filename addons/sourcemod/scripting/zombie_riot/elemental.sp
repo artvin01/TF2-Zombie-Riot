@@ -1076,7 +1076,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients) // VS Players, in the rare occasion ZR pvp is turned on
+	if(victim <= MaxClients) // VS Players
 	{
 		Armor_DebuffType[victim] = 5;
 		if((f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
@@ -1087,6 +1087,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			}
 			else
 			{
+				int newdmg = RoundToNearest(float(damage) * Cheese_GetPenalty(victim));
+				damage = newdmg;
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
 				if(damage < 1)
 					damage = 1;
@@ -1094,8 +1096,53 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
-					SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.25), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
-					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
+					if(Is_Cheesed_Up(victim)) // lastman for plasmic surprise
+					{
+						if(HasSpecificBuff(victim, "Plasm III"))
+						{
+							SDKHooks_TakeDamage(victim, 0, 0, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+							IncreaseEntityDamageTakenBy(victim, 1.25, 10.0);
+							TF2_StunPlayer(victim, 1.0, 0.5, TF_STUNFLAG_SLOWDOWN);
+							Cheese_SetPenalty(victim, 1.2);
+						}
+						else if(HasSpecificBuff(victim, "Plasm II"))
+						{
+							ApplyStatusEffect(victim, victim, "Plasm III", 999.0);
+							float HudY = -1.0;
+							float HudX = -1.0;
+							SetHudTextParams(HudX, HudY, 2.0, 235, 75, 215, 255);
+							SetGlobalTransTarget(victim);
+							ShowSyncHudText(victim, SyncHud_Notifaction, "%t", "Plasma Kit Plasm III Warning");
+						}
+						else if(HasSpecificBuff(victim, "Plasm I"))
+						{
+							ApplyStatusEffect(victim, victim, "Plasm II", 999.0);
+						}
+						else
+						{
+							ApplyStatusEffect(victim, victim, "Plasm I", 999.0);
+						}
+					}
+					else
+					{
+						if(HasSpecificBuff(victim, "Plasm III"))
+						{
+							SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
+							IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
+						}
+						else if(HasSpecificBuff(victim, "Plasm II"))
+						{
+							ApplyStatusEffect(attacker, victim, "Plasm III", 10.0);
+						}
+						else if(HasSpecificBuff(victim, "Plasm I"))
+						{
+							ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
+						}
+						else
+						{
+							ApplyStatusEffect(attacker, victim, "Plasm I", 10.0);
+						}
+					}
 					
 					float position[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
@@ -1107,7 +1154,6 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					}
 					Cheese_PlaySplat(victim);
 					Armor_Charge[victim] = 0;
-					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 5.0;
 				}
 			}
 		}
@@ -1126,7 +1172,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
 				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.25); // at max pap (8), its 7 seconds if melee, or 4.5 seconds if ranged
-				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
+				Cheese_SetPenalty(victim, (melee ? 0.8 : 0.75));
 				if(b_thisNpcIsARaid[victim])
 				{
 					duration *= 0.65;
