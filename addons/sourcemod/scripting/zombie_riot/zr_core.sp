@@ -1301,10 +1301,10 @@ public Action CommandDebugHudTest(int client, int args)
 {
 	//What are you.
 	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
-        return Plugin_Handled;
-    }
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
+	        return Plugin_Handled;
+	}
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
@@ -1316,7 +1316,8 @@ public Action CommandDebugHudTest(int client, int args)
 	{
 		SetTeam(entity, 2);
 		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
-	}	
+	}
+	CheckAlivePlayers(_, _, true);
 	return Plugin_Handled;
 }
 
