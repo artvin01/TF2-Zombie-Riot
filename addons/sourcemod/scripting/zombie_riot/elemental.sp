@@ -1156,7 +1156,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					}
 					Cheese_PlaySplat(victim);
 					Armor_Charge[victim] = 0;
-					Force_ExplainBuffToClient(client, "Plasmic Elemental Damage");
+					Force_ExplainBuffToClient(victim, "Plasmic Elemental Damage");
 				}
 			}
 		}
