@@ -4360,11 +4360,11 @@
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations and\nreduces buildup penalty when triggering its elemental effect."
+		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations and\nreduces buildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Increases overall stats.\nNow deals extra damage against Plasm-ed targets!\nDamage bonus increases with paps."
+		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon.\nNow deals extra damage against Plasm-ed targets!\nDamage bonus increases with pap level."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
@@ -4386,9 +4386,29 @@
 	{
 		"en" 	"Increases overall stats."
 	}
+	"Plasma Bubble Desc"
+	{
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule,\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve the Plasm I debuff and constant Plasmic Elemental damage."
+	}
+	"Plasma Bubble Pap 2 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+	}
+	"Plasma Bubble Pap 3 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage.\nSlightly increases the lingering Plasm I debuff duration."
+	}
+	"Plasma Bubble Pap 5 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage.\nSlightly increases the lingering Plasm I debuff duration.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+	}
 	"Plasminator Desc"
 	{
 		"en"	"An Expidonsan clockwork assault rifle, that shoots rapid Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
+	}
+	"Plasminator Pap 1 Desc"
+	{
+		"en"	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
 	}
 	"Plasminator Pap 2 Desc"
 	{
