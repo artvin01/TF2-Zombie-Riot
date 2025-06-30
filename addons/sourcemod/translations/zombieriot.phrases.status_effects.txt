@@ -1373,7 +1373,7 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Boost damage dealt and resist +15％.\nBoosts attackspeed by +25％\n{darkviolet}Ability cooldowns are reduced, gain extra static regen below 25％ HP."
+		"en" 	"{green}Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are reduced, gain extra static regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
