@@ -70,7 +70,7 @@ void PlayCustomSoundSpecter(int client)
 
 static int Specter_GetSpecterFlags(int weapon)
 {
-	int flags = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	int flags = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	
 	return flags;
 }
