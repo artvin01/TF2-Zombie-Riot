@@ -4368,7 +4368,7 @@
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict greatly increased damage and Plasmic Elemental damage."
+		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
@@ -4412,7 +4412,7 @@
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts some of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts its damage as additional Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
