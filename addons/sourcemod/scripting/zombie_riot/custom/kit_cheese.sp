@@ -215,7 +215,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		if(!HasSpecificBuff(client, "Plasm III"))
 			HealEntityGlobal(client, client, 30.0, 0.25, 0.0, HEAL_SELFHEAL);
 
-		Elemental_AddPlasmicDamage(client, client, 20, EntRefToEntIndex(iref_WeaponConnect[client][0]));
+		Elemental_AddPlasmicDamage(client, client, 20, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
 	}
 	else
 	{
