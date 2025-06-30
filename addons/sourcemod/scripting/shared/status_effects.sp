@@ -4854,8 +4854,8 @@ void StatusEffects_Plasm()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϙ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.85;
-	data.DamageDealMulti			= 0.15;
+	data.DamageTakenMulti 			= 0.70;
+	data.DamageDealMulti			= 0.30;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -4863,7 +4863,7 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= (1.0 / 0.75);
+	data.AttackspeedBuff			= (1.0 / 0.70);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
