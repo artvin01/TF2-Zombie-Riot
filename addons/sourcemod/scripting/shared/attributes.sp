@@ -432,7 +432,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		if(value)
 			view_as<CClotBody>(victim).m_bGib = true;
 		
-		value = Attributes_Get(weapon, 4016, 1.0);	// bonus damage to raids
+		value = Attributes_Get(weapon, Attrib_BonusRaidDamage, 1.0);	// bonus damage to raids
 		if(value != 1.0)
 		{
 			if(b_thisNpcIsARaid[victim])
@@ -440,7 +440,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				damage *= value;
 			}
 		}
-		value = Attributes_Get(weapon, 4017, 0.0);	// Attackspeed converts into damage
+		value = Attributes_Get(weapon, Attrib_AttackspeedConvertIntoDmg, 0.0);	// Attackspeed converts into damage
 		if(value)
 		{
 			value = Attributes_Get(weapon, 6, 0.0);
