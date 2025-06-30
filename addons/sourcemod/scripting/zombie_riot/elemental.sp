@@ -1103,17 +1103,17 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 							SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 							IncreaseEntityDamageTakenBy(victim, 1.25, 10.0);
 							TF2_StunPlayer(victim, 1.25, 0.5, TF_STUNFLAG_SLOWDOWN);
-							Cheese_SetPenalty(victim, 1.35);
+							Cheese_SetPenalty(victim, 1.125);
 						}
 						else if(HasSpecificBuff(victim, "Plasm II"))
 						{
 							ApplyStatusEffect(victim, victim, "Plasm III", 999.0);
 							float HudY = -1.0;
 							float HudX = -1.0;
-							SetHudTextParams(HudX, HudY, 2.0, 235, 75, 215, 255);
+							SetHudTextParams(HudX, HudY, 3.0, 235, 75, 215, 255);
 							SetGlobalTransTarget(victim);
 							ShowSyncHudText(victim, SyncHud_Notifaction, "%t", "Plasma Kit Plasm III Warning");
-							Cheese_SetPenalty(victim, 1.2);
+							Cheese_SetPenalty(victim, 1.1);
 						}
 						else if(HasSpecificBuff(victim, "Plasm I"))
 						{
