@@ -447,7 +447,7 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 				SetEntityGravity(entity, 1.5);
 				SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 
-				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.35, "", -15.0);
+				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.35, "", -10.0);
 				int team = 0;
 				if(GetTeam(client) != 2)
 					team = 1;
