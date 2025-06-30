@@ -211,14 +211,22 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	if(LastMann)
 	{
-	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
+	 	if(!HasSpecificBuff(client, "Plasmatic Rampage"))
+			ApplyStatusEffect(client, client, "Plasmatic Rampage", 999.0);
+
 		if(!HasSpecificBuff(client, "Plasm III"))
 			HealEntityGlobal(client, client, 30.0, 0.25, 0.0, HEAL_SELFHEAL);
 
-		Elemental_AddPlasmicDamage(client, client, 15, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
+		Elemental_AddPlasmicDamage(client, client, 20, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
 	}
 	else
 	{
+		if(HasSpecificBuff(client, "Plasmatic Rampage"))
+		{
+			CPrintToChatAll("{darkviolet}%N's internal plasma stabilizes.", client);
+			RemoveSpecificBuff(client, "Plasmatic Rampage");
+		}
+
 		Cheese_OnNPCDeath(client);
 	}
 
