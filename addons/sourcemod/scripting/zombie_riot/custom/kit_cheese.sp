@@ -223,9 +223,16 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	{
 		if(HasSpecificBuff(client, "Plasmatic Rampage"))
 		{
-			CPrintToChatAll("{darkviolet}%N's internal plasma stabilizes.", client);
+			CPrintToChatAll("{darkviolet}%N's internal plasma stabilizes... for now.", client);
 			RemoveSpecificBuff(client, "Plasmatic Rampage");
 		}
+
+		if(HasSpecificBuff(client, "Plasm I"))
+			RemoveSpecificBuff(client, "Plasm I");
+		if(HasSpecificBuff(client, "Plasm II"))
+			RemoveSpecificBuff(client, "Plasm II");
+		if(HasSpecificBuff(client, "Plasm III"))
+			RemoveSpecificBuff(client, "Plasm III");
 
 		Cheese_OnNPCDeath(client);
 	}
