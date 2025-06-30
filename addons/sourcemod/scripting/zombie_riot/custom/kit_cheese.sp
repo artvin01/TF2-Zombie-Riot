@@ -528,6 +528,8 @@ static Action CheeseBubble_CheckTargets(Handle timer, int ref)
 		position[2] += 10.0;
 		Cheese_BeamEffect(position, _, 600.0, _, 10.0);
 	}
+
+	return Plugin_Continue;
 }
 
 public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int weapon)
