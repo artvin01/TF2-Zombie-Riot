@@ -4863,7 +4863,7 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= (1.0 / 0.70);
+	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
