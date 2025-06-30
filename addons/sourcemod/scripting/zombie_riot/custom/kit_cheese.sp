@@ -30,11 +30,12 @@ PaP Upgrades (all of them increase overall stats):
 
 Plasm-ubblinator (secondary) - A secondary unlocked after papping it once.
 Doesn't fire normally, instead it only fires after charging its ability.
-You can charge it dealing hits to enemies. Melee hits charge the ability as twice as fast.
+You can charge it dealing hits to enemies. Melee hits charge the ability x3 as fast.
 Plasmatized Bubble (M1/M2 Ability), upon activation:
 - Shoots a gravity-affected projectile that, upon landing, creates an AoE zone that grows,
 enemies inside this AoE zone recieve Plasm I (which lingers for 1s after they're out of it)
-and a above-average amount of Plasmic Elemental Damage. This bubble checks for targets every 0.5s.
+and a above-average amount of Plasmic Elemental Damage, which scales based off the weapon's damage attribs.
+This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
 - The bubble lasts for a base duration of 6 seconds.
 - This weapon is NOT affected by Plasma Levelling, and thus will always inflict Plasm I regardless.
 PaP Upgrades (all of them increase its Plasmic Elemental Damage):
