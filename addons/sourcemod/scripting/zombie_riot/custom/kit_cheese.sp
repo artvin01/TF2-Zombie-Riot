@@ -146,9 +146,12 @@ void Cheese_PlaySplat(int entity)
 	//EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
-void Cheese_SetPenalty(int entity, float mult)
+void Cheese_SetPenalty(int entity, float mult, bool static = false)
 {
-	Cheese_Buildup_Penalty[entity] *= mult;
+	if(!static)
+		Cheese_Buildup_Penalty[entity] *= mult;
+	else
+		Cheese_Buildup_Penalty[entity] = mult;
 }
 
 float Cheese_GetPenalty(int entity)
@@ -214,7 +217,14 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	if(LastMann)
 	{
 	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
-		HealEntityGlobal(client, client, 30.0, 0.25, 0.0, HEAL_SELFHEAL);
+		if(!HasSpecificBuff(client, "Plasm III"))
+			HealEntityGlobal(client, client, 30.0, 0.25, 0.0, HEAL_SELFHEAL);
+
+		Elemental_AddPlasmicDamage(client, client, 20, iref_WeaponConnect[client][0]);
+	}
+	else
+	{
+		Cheese_SetPenalty(client, 1.0, true);
 	}
 
 	Cheese_Hud(client, false);		
