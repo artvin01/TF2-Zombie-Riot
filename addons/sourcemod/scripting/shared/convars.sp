@@ -323,17 +323,21 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 		}
 	}
 
-	int index2 = CvarMapList.FindValue(cvar, CvarInfo::cvar);
-	if(index2 != -1)
+	if(CvarMapList)
 	{
-		CvarMapList.GetArray(index2, info);
-		if(!StrEqual(newValue, info.value))
+		int index2 = CvarMapList.FindValue(cvar, CvarInfo::cvar);
+		if(index2 != -1)
 		{
-			if(info.enforce)
+			CvarMapList.GetArray(index2, info);
+
+			if(!StrEqual(newValue, info.value))
 			{
-				strcopy(info.defaul, sizeof(info.defaul), newValue);
-				CvarMapList.SetArray(index2, info);
-				info.cvar.SetString(info.value);
+				if(info.enforce)
+				{
+					strcopy(info.defaul, sizeof(info.defaul), newValue);
+					CvarMapList.SetArray(index2, info);
+					info.cvar.SetString(info.value);
+				}
 			}
 		}
 	}
