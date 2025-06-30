@@ -492,44 +492,12 @@ public void Cheese_BubbleTouch(int entity, int target)
 	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
-	int model = ApplyCustomModelToWandProjectile(bubble1, "models/buildables/sentry_shield.mdl", 0.5, "", -15.0);
-	SetEntProp(model, Prop_Send, "m_nSkin", 1); // 0 = red, 1 = blue (for m_nSkin)
-	SetEntityRenderMode(model, RENDER_TRANSCOLOR);
-	Stock_SetEntityRenderColor(model, 100, 35, 150, 255);
 
 	Cheese_Bubble_DelayBeforeCheck[bubble1] = GetGameTime() + 1.0;
-	CreateTimer(0.1, CheeseBubble_ModelResize, EntIndexToEntRef(model), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.1, CheeseBubble_VisualArmTime, EntIndexToEntRef(model), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(tickrate, CheeseBubble_CheckTargets, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	RemoveEntity(entity);
-}
-
-static Action CheeseBubble_ModelResize(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(!IsValidEntity(entity))
-	{
-		return Plugin_Stop;
-	}
-
-	float currentsize = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-	if(currentsize < 2.15)
-	{
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", currentsize + 0.15);
-		if(currentsize > 2.15)
-		{
-			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.15);
-			return Plugin_Stop;
-		}
-
-		float position[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		position[2] -= 8.0;
-		TeleportEntity(entity, position, NULL_VECTOR, NULL_VECTOR, true);
-	}
-
-	
-	return Plugin_Continue;
 }
 
 static Action CheeseBubble_CheckTargets(Handle timer, int ref)
