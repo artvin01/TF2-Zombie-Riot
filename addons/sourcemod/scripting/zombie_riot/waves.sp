@@ -2481,7 +2481,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						Waves_SetReadyStatus(2);
 						//wait a minimum of 30 seconds when theres too many players.
-						SPrintToChatAll("You cannot ready up for 30 seconds.");
+						SPrintToChatAll("30 초간은 준비할 수 없습니다.");
 						CreateTimer(30.0, Waves_AllowVoting, _, TIMER_FLAG_NO_MAPCHANGE);
 					}
 					else

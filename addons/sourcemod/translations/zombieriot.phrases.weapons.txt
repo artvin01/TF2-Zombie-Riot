@@ -2803,6 +2803,16 @@
 		"en"		"Expidonsa's Prototype"
 		"ko"		"엑스피돈사인의 프로토타입"
 	}
+	"The Hyper Shovel"
+	{
+		"en"	"The Hyper Shovel"
+		"ko"	"하이퍼 삽"
+	}
+	"The Soldine Launcher"
+	{
+		"en"	"The Soldine Launcher"
+		"ko"	"솔딘의 로켓 발사기"
+	}
 	"The Blitzkrieg"
 	{
 		"en"		"The Blitzkrieg"
@@ -3946,6 +3956,16 @@
 	{
 		"en"	"Reconstructive Teleporter"
 		"ko"	"재구성 텔레포터"
+	}
+	"Braced Pistol"
+	{
+		"en"	"Braced Pistol"
+		"ko"	"보호형 권총"
+	}
+	"Confess Your Fears"
+	{
+		"en"	"Confess Your Fears"
+		"ko"	"네 두려움에 굴복하라"
 	}
 	"Koshi's Goods"
 	{

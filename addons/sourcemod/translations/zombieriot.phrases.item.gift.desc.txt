@@ -2381,7 +2381,7 @@
 	{
 		"en"	"An Rouge Expidonsan Doctor who refused to stay with his people, he hates them, he hates everyone.\nSimular to doctor pernell, he buffs allies."
 		"ru"	"Бродячий доктор Экспидонсы который отказался оставатся с его людьми,он ненавидит их,он ненавидит всех.\nУсиливает союзников как доктор Пурнелл."
-		"ko"	"이 붉은 엑스피돈사인 의사는 자신과 같은 엑스피돈사인들과 동행하고 싶지 않아합니다. 그는 엑스피돈사인들과 모두를 싫어하기 때문이죠.\n퍼넬 의사와 비슷하게, 이 적은 자신의 아군들에게 버프를 부여합니다."
+		"ko"	"이 도적 엑스피돈사인 의사는 자신과 같은 엑스피돈사인들과 동행하고 싶지 않아합니다. 그는 엑스피돈사인들과 모두를 싫어하기 때문이죠.\n퍼넬 의사와 비슷하게, 이 적은 자신의 아군들에게 버프를 부여합니다."
 	}
 	"Fallen Warrior Desc"
 	{
@@ -2613,12 +2613,12 @@
 	"BUSTING"
 	{
 		"en"	"BUSTING"
-		"ko"	"폭파전"
+		"ko"	"유령 잡이"
 	}
 	"BUSTING Desc"
 	{
 		"en"	"Bustin' makes me feel good"
-		"ko"	"폭발은 예술이라는 말이 있잖아요."
+		"ko"	"누구에게 전화할 건가요? 고스트 버스터즈!"
 	}
 	"Sphynx Desc"
 	{

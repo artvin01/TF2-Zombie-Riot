@@ -47,7 +47,7 @@
 	"Sea Alaxios Arrived"
 	{
 		"en" 		"The Infected Atlantean is screaming for help free him before it can make use of his power."
-		"ko" 		"이 감염된 아틀란티스인이 자신의 힘을 활용하기 전에 비명을 질러 도움을 요청하고 있습니다."
+		"ko" 		"이 감염된 아틀란티스인이 비명을 질러 도움을 요청하고 있습니다."
 	}
 	"Run while you can."
 	{
@@ -347,7 +347,7 @@
 		"ru" 	"Voided Diversionistico Появились"
 		"fr"	"Diversionistico du Void Apparaît"
 		"chi"	"Voided DIversionistico Spawn."
-		"ko"	"침식된 다이버저니스티코"
+		"ko"	"침식된 다이버저니스티코가 생성되었습니다."
 	}
 	"A Void Gate Apeared..."
 	{
@@ -562,6 +562,21 @@
 	{
 		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
 		"ko"	"빅토리안 방송탑이 등장했습니다! 저것을 파괴하고 끝없는 공세를 멈춰야합니다!"
+	}
+	"The Goons 1"
+	{
+		"en"		"Prepare for a coordinated attack."
+		"ko"		"정예 부대원들의 협동 공격에 대비하세요."
+	}
+	"The Goons 2"
+	{
+		"en"		"Your position has been revealed to a sniper."
+		"ko"		"저격수에게 위치가 발각당했습니다."
+	}
+	"The Goons 3"
+	{
+		"en"		"Base is under attack."
+		"ko"		"기지가 공격받고 있습니다."
 	}
 	"Atomizer Arrived"
 	{

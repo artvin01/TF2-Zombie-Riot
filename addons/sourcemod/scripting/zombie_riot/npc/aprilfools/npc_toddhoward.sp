@@ -2306,7 +2306,7 @@ bool ToddHowardForceTalk()
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
 						Items_GiveNamedItem(client, "Alaxios's Godly assistance");
-						CPrintToChat(client, "{default}무언가 알 수 없는 찬란한 기운이 감돕니다... 당신이 얻은 것: {lightblue}''Alaxios's Godly assistance''{default}!");
+						CPrintToChat(client, "{default}무언가 알 수 없는 찬란한 기운이 감돕니다... 당신이 얻은 것: {lightblue}''알락시오스의 신성한 축복''{default}!");
 					}
 				}
 			}

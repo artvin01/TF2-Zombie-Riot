@@ -844,7 +844,7 @@ public void Reinforce(int client, bool NoCD)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "생존한 상태에서 사용해야함");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Use Only Alive");
 		return;
 	}
 	else
@@ -861,7 +861,7 @@ public void Reinforce(int client, bool NoCD)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "능력 쿨타임 대기중", Ability_CD);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 				return;
 			}
 			if(f_ReinforceTillMax[client] < 1.0)
@@ -869,7 +869,7 @@ public void Reinforce(int client, bool NoCD)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "더 많은 치유량 필요");
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Need Healing Point");
 				return;
 			}
 			if(i_MaxRevivesAWave >= 3)
@@ -877,7 +877,7 @@ public void Reinforce(int client, bool NoCD)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "너무 많은 용병이 징집되었습니다....");
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Too Many Mercs Recruited....");
 				return;
 			}
 		}
@@ -919,7 +919,7 @@ public void Reinforce(int client, bool NoCD)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "사망한 인원을 감지할 수 없음");
+			ShowSyncHudText(client,  SyncHud_Notifaction, "Player not detected");
 			return;
 		}
 
@@ -1023,7 +1023,7 @@ public Action M3_Ability_Is_Back(Handle cut_timer, int ref)
 		ClientCommand(client, "playgamesound items/gunpickup2.wav");
 		SetHudTextParams(-1.0, 0.45, 3.01, 34, 139, 34, 255);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "M3 능력이 다시 사용 가능해짐");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability Is Back");
 	}
 	return Plugin_Handled;
 }

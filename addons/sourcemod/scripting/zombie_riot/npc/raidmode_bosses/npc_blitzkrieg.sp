@@ -750,7 +750,7 @@ static void ClotThink(int iNPC)
 					}
 					case 3:
 					{
-						CPrintToChatAll("{crimson}%s{default}: 연합의 진정함 힘이{crimson} 드디어 승리했도다!!", NpcStats_ReturnNpcName(npc.index, true));
+						CPrintToChatAll("{crimson}%s{default}: 연합의 진정한 힘이{crimson} 드디어 승리했도다!!", NpcStats_ReturnNpcName(npc.index, true));
 					}
 					case 4:
 					{

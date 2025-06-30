@@ -4199,7 +4199,7 @@
 	"Schwert Donner Alt Desc"
 	{
 		"en"	"If the sea creatues ever attacked here.... then.. something went MAJORILY wrong. Why are they so.. strong?!"
-		"ko"	"만약 바다 생명체들이 이 곳을 공격한 거면... 뭔가.. 매우 엄청나게 잘못된 것 같습니다. 그들은 왜... 그렇게 강한겁니까?!"
+		"ko"	"이 바다의 생명체들이 이 곳을 공격했다는 건... 뭔가.. 매우 엄청나게 잘못된 것 같습니다. 이들의 능력이... 왜 전보다 이렇게 강해졌을까요?!"
 	}
 	"Khaml Desc"
 	{
@@ -4793,6 +4793,16 @@
 		"en"	"Crowbar"
 		"ko"	"쇠지렛대"
 	}
+	"Infected Silvester"
+	{
+		"en"	"Infected Silvester"
+		"ko"	"감염된 실베스터"
+	}
+	"Blitzkrieg"
+	{
+		"en"	"Blitzkrieg"
+		"ko"	"블리츠크리그"
+	}
 	"Victoria Raid Desc"
 	{
 		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
@@ -4821,7 +4831,7 @@
 	"freeplay_intro"
 	{
 		"en"		"Alright guys...\nProve you're worthy."
-		"ko"		"좋아, 친구들...\n네 값어치를 증명해라."
+		"ko"		"좋아, 친구들...\n네 가치를 증명해봐."
 	}
 	"Need Healing Point"
 	{

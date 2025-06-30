@@ -245,7 +245,7 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 		}
 		case 69:
 		{
-			menu.AddItem("4", "그릴 마스터 (Tasty)");
+			menu.AddItem("4", "그릴 마스터 (마시쩡)");
 		}
 		default:
 		{

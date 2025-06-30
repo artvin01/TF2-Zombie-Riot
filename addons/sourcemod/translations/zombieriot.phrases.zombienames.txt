@@ -651,6 +651,7 @@
 	"Xeno Infected Lab Doctor"
 	{
 		"en" 	"Xeno Infected Lab Doctor"
+		"ko" 	"제노 감염된 연구소 의료진"
 	}
 	"Xeno Giant Pyro Main"
 	{
@@ -780,11 +781,12 @@
 		"en" 		"Bloonarius the Inflator"
 		"pt"		"Balãorista"
 		"ru" 		"Шариус"
-		"ko" 		"블루나리우스"
+		"ko" 		"팽창의 블루나리우스"
 	}
 	"Reality Warper Phayze"
 	{
 		"en" 		"Reality Warper Phayze"
+		"ko" 		"현실 왜곡자 페이즈"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -1012,6 +1014,7 @@
 	"Xeno Infected Lab Doctor Desc"
 	{
 		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
+		"ko" 	"제노 연구실에 소속된 의료진이었습니다. 이들은 제노 감염을 치료하려다 실패했습니다.\n체력이 낮을 경우, 행동을 전환할때 피해 저항력이 증가합니다.\n기절 또는 즉사시키면 이 효과가 발생하지 않음."
 	}
 	"Archer"
 	{
@@ -3036,7 +3039,7 @@
 	"Rouge Expidonsan Doctor"
 	{
 		"en"	"Rouge Expidonsan Doctor"
-		"ko"	"붉은 엑스피돈사인 의사"
+		"ko"	"도적 엑스피돈사인 의사"
 	}
 	"Laniun"
 	{
