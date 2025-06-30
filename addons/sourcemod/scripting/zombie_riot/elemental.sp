@@ -1172,7 +1172,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
 				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.25); // at max pap (8), its 7 seconds if melee, or 4.5 seconds if ranged
-				Cheese_SetPenalty(victim, (melee ? 0.8 : 0.75));
+				Cheese_SetPenalty(victim, (melee ? 0.85 : 0.6));
 				if(b_thisNpcIsARaid[victim])
 				{
 					duration *= 0.65;
