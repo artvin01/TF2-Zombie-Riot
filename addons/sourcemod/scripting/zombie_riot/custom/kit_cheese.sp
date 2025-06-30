@@ -5,7 +5,7 @@
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
 - victim recieves vulnerability for a certain duration, both things based on attacker's pap level, 
-maxing out at +34% vulnerability for 6 (melee) / 4 (ranged) seconds. duration is reduced by half against raids/bosses.
+maxing out at +34% vulnerability for 6 (melee) / 4 (ranged) seconds. duration is reduced by 25% on bosses and by 35% on raids
 - victim recieves the Plasm debuff with a duration based on attacker's pap level, 
 maximg out at 7 (melee) / 4.5 (ranged) seconds. duration is reduced by 25% on bosses and by 35% on raids
 - has NO elemental immunity cooldown, however the more times its triggered, the lower the elemental buildup will be
@@ -17,10 +17,10 @@ If the victim already has a level of the Plasm debuff, and is inflicted with the
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
 Health on kill is still very great, and its better to combo and time it with the Plasminator.
-Inflicts a LOT of its damage as Plasmic Elemental damage due to its average damage.
+Inflicts a LOT of its damage as Plasmic Elemental damage due to its kinda-average melee damage.
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.0 damage
-- Next melee attack will deal x2.5 Plasmic Elemental damage.
+- Next melee attack will deal x3.75 Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
 1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets, damage increases slightly with paps.
 2 - Unlocks Lethal Injection.
@@ -53,7 +53,7 @@ Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like
 These projectiles deal 100% of their damage as Plasmic Elemental damage.
 Plasmic Burst (M2 Primary Ability), upon activation:
 - Shoots a short-ranged laser that causes a bit of shake.
-- This laser inflicts AoE damage in front, and deals 100% of its damage as additional Plasmic Elemental damage.
+- This laser inflicts AoE damage in front, and deals 125% of its damage as additional Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
 1 - Nothing special.
 2 - Unlocks Plasmic Burst.
@@ -90,7 +90,7 @@ static int Cheese_Bubble_MaxHits[9]  = {125, 125, 110, 110, 95, 80, 70, 65, 60};
 static float Cheese_Bubble_ElementalDmg = 300.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25}; // Lethal Injection's damage bonus
-static float Cheese_Lethal_ElementalBoost[9] = {2.5, 2.5, 2.5, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75}; // Lethal Injection's elemental damage bonus
+static float Cheese_Lethal_ElementalBoost[9] = {3.75, 3.75, 3.75, 3.75, 4.0, 4.25, 4.5, 4.75, 5.0}; // Lethal Injection's elemental damage bonus
 static float Cheese_Burst_ElementalDmg[9]  = {1.25, 1.25, 1.4, 1.55, 1.7, 1.85, 2.0, 2.15, 2.25}; // Elemental damage multiplier for Plasmic Burst
 static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Range for Plasmic Burst
 static float Cheese_Burst_Cooldown[9]  = {22.5, 22.5, 22.5, 22.5, 17.5, 15.0, 12.5, 10.0, 7.5}; // Plasmic Burst's cooldown
@@ -213,8 +213,8 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	if(LastMann)
 	{
-	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.5);
-		HealEntityGlobal(client, client, 15.0, 0.25, 0.0, HEAL_SELFHEAL);
+	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 1.0);
+		HealEntityGlobal(client, client, 30.0, 0.25, 0.0, HEAL_SELFHEAL);
 	}
 
 	Cheese_Hud(client, false);		
@@ -493,16 +493,43 @@ public void Cheese_BubbleTouch(int entity, int target)
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 	int model = ApplyCustomModelToWandProjectile(bubble1, "models/buildables/sentry_shield.mdl", 0.5, "", -15.0);
-	int team = 0;
-	if(GetTeam(owner) != 2)
-		team = 1;
-	SetEntProp(model, Prop_Send, "m_nSkin", team); // 0 = red, 1 = blue (for m_nSkin)
+	SetEntProp(model, Prop_Send, "m_nSkin", 1); // 0 = red, 1 = blue (for m_nSkin)
+	SetEntityRenderMode(model, RENDER_TRANSCOLOR);
+	Stock_SetEntityRenderColor(model, 100, 35, 150, 255);
 
 	Cheese_Bubble_DelayBeforeCheck[bubble1] = GetGameTime() + 1.0;
-	//CreateTimer(0.1, CheeseBubble_ModelResize, EntIndexToEntRef(model), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.1, CheeseBubble_ModelResize, EntIndexToEntRef(model), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	CreateTimer(tickrate, CheeseBubble_CheckTargets, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	RemoveEntity(entity);
+}
+
+static Action CheeseBubble_ModelResize(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+
+	float currentsize = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+	if(currentsize < 2.15)
+	{
+		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", currentsize + 0.15);
+		if(currentsize > 2.15)
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 2.15);
+			return Plugin_Stop;
+		}
+
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+		position[2] -= 8.0;
+		TeleportEntity(entity, position, NULL_VECTOR, NULL_VECTOR, true);
+	}
+
+	
+	return Plugin_Continue;
 }
 
 static Action CheeseBubble_CheckTargets(Handle timer, int ref)
