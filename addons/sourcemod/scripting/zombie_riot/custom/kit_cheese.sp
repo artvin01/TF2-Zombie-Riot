@@ -125,16 +125,16 @@ void Cheese_PrecacheMusic()
 	}
 }
 
-void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 125.0, float lifetime = 0.25, float width = 6.5, bool elemental = false, int client = -1)
+void Cheese_BeamEffect(float position[3], float startrad = 1.0, float endrad = 125.0, float lifetime = 0.25, float width = 6.5, bool elemental = false, int client = -1, float amplitude = 0.0)
 {
 	if(elemental)
 	{
-		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, 0.0, { 235, 75, 210, 60 }, 1, 0);
+		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, amplitude, { 235, 75, 210, 50 }, 1, 0);
 		TE_SendToClient(client);
 	}
 	else
 	{
-		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, 0.0, { 235, 75, 210, 200 }, 1, 0);
+		TE_SetupBeamRingPoint(position, startrad, endrad, LaserIndex, LaserIndex, 0, 1, lifetime, width, amplitude, { 235, 75, 210, 175 }, 1, 0);
 		TE_SendToAll();
 	}
 }
@@ -233,11 +233,11 @@ static void Cheese_Hud(int client, bool ignorecd)
 	pos[2] += 5.0;
 	if(LastMann)
 	{
-		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0);
+		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0, _, _, 2.5);
 	}
 	else
 	{
-		Cheese_BeamEffect(pos, 1.0, 75.0, 0.075, 5.0, true, client);
+		Cheese_BeamEffect(pos, 1.0, 75.0, 0.075, 6.0, true, client);
 	}
 
 	float LethalCooldown = 0.0;
@@ -366,7 +366,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]]);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 4.0), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 3.5), weapon);
 	}
 
 	return damage;
@@ -432,13 +432,15 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 			GetClientEyeAngles(client, ang);
 			ang[0] -= 10.0;
 			
-			int entity = Wand_Projectile_Spawn(client, speed, 20.0, 0.0, 0, weapon, NULL_STRING, ang, false);
+			char particle[32];
+			Format(particle, sizeof(particle), "%s", "eyeboss_projectile");
+			int entity = Wand_Projectile_Spawn(client, speed, 20.0, 0.0, 0, weapon, particle, ang, false);
 			if(entity > MaxClients)
 			{
 				SetEntityGravity(entity, 1.5);
 				SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 
-				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.25, "", -15.0);
+				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.35, "", -15.0);
 				int team = 0;
 				if(GetTeam(client) != 2)
 					team = 1;
@@ -469,6 +471,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 {
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 
 	if(target)
 	{
@@ -493,16 +496,26 @@ public void Cheese_BubbleTouch(int entity, int target)
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 
-	Cheese_Bubble_DelayBeforeCheck[bubble1] = GetGameTime() + 1.0;
-	CreateTimer(0.1, CheeseBubble_VisualArmTime, EntIndexToEntRef(model), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	CreateTimer(tickrate, CheeseBubble_CheckTargets, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	DataPack pack;
+	CreateDataTimer(tickrate, CheeseBubble_CheckTargets, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(bubble1));
+	pack.WriteFloat(tickrate);
+
+	// man...
+	pos1[2] += 10.0;
+	Cheese_BeamEffect(pos1, _, 500.0, 1.0, 7.5);
 	
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+	}
 	RemoveEntity(entity);
 }
 
-static Action CheeseBubble_CheckTargets(Handle timer, int ref)
+static Action CheeseBubble_CheckTargets(Handle timer, DataPack pack)
 {
-	int entity = EntRefToEntIndex(ref);
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(entity))
 	{
 		return Plugin_Stop;
@@ -510,14 +523,34 @@ static Action CheeseBubble_CheckTargets(Handle timer, int ref)
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	float tickrate = pack.ReadFloat();
 
 	if(Cheese_Bubble_DelayBeforeCheck[entity] < GetGameTime())
 	{
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 250.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
-		position[2] += 5.0;
-		Cheese_BeamEffect(position, _, 500.0, _, 10.0);
+		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+		position[2] += 10.0;
+		Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
+		Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
+
+		// MAN
+		position[2] -= 50.0;
+		Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+		position[2] -= 50.0;
+		Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+		position[2] -= 50.0;
+		Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
+		position[2] -= 50.0;
+		Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
+		position[2] += 250.0;
+		Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+		position[2] += 50.0;
+		Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+		position[2] += 50.0;
+		Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
+		position[2] += 50.0;
+		Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
 	}
 
 	return Plugin_Continue;
@@ -537,10 +570,37 @@ public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int 
 			return;
 	}
 
-	float duration = 1.0;
-	
-	if(!HasSpecificBuff(enemy, "Hardened Aura"))
+	float duration;
+	switch(Cheese_PapLevel[entity])
 	{
+		case 1, 2:
+		{
+			duration = 1.0;
+		}
+		case 3, 4:
+		{
+			duration = 2.0;
+		}
+		case 5:
+		{
+			duration = 3.0;
+		}
+		case 6, 7:
+		{
+			duration = 3.5;
+		}
+		case 8:
+		{
+			duration = 4.0;
+		}
+	}
+	
+	if(!HasSpecificBuff(enemy, "Hardened Aura") && (!HasSpecificBuff(enemy, "Plasm II") || !HasSpecificBuff(enemy, "Plasm III")))
+	{
+		bool IsNotNormal = (b_thisNpcIsARaid[enemy] || b_thisNpcIsABoss[enemy]);
+		if(IsNotNormal)
+			duration *= 0.65;
+
 		ApplyStatusEffect(entity, enemy, "Plasm I", duration);
 	}
 
