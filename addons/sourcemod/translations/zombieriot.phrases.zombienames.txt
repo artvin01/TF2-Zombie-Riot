@@ -648,6 +648,10 @@
 		"nl"		"Xeno Strijd Medicus Main"
 		"ko" 		"제노 전투 메딕 메인"
 	}
+	"Xeno Infected Lab Doctor"
+	{
+		"en" 	"Xeno Infected Lab Doctor"
+	}
 	"Xeno Giant Pyro Main"
 	{
 		"en" 		"Xeno Giant Pyro Main"
@@ -771,12 +775,16 @@
 		"ru" 		"Золотой шар"
 		"ko" 		"황금 풍선"
 	}
-	"Bloonarius"
+	"Bloonarius the Inflator"
 	{
-		"en" 		"Bloonarius"
+		"en" 		"Bloonarius the Inflator"
 		"pt"		"Balãorista"
 		"ru" 		"Шариус"
 		"ko" 		"블루나리우스"
+	}
+	"Reality Warper Phayze"
+	{
+		"en" 		"Reality Warper Phayze"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -1000,6 +1008,10 @@
 	{
 		"en"		"Basic unit of basic melee needs."
 		"ko"		"가장 기본적인 유닛이자 근접 유닛입니다."
+	}
+	"Xeno Infected Lab Doctor Desc"
+	{
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
 	}
 	"Archer"
 	{
