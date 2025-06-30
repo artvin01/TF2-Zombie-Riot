@@ -1559,14 +1559,14 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 
 static void Smith_Timeslow(float amount = 1.0, float revert = 0.1)
 {
-    for(int i = 1; i <= MaxClients; i++)
-    {
-        if(IsClientInGame(i) && !IsFakeClient(i))
-        {
-            SendConVarValue(i, sv_cheats, "1");
+	for(int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i) && !IsFakeClient(i))
+		{
+			SendConVarValue(i, sv_cheats, "1");
 			Convars_FixClientsideIssues(i);
-        }
-    }
-    cvarTimeScale.SetFloat(amount);
-    CreateTimer(revert, SetTimeBack);
+		}
+	}
+	cvarTimeScale.SetFloat(amount);
+	CreateTimer(revert, SetTimeBack);
 }
