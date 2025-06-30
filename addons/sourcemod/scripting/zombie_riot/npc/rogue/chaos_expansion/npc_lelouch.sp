@@ -2714,7 +2714,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me!");
 		}
 		
-		RaidModeScaling *= 1.2;
+		RaidModeScaling *= 1.5;
 
 		RaidModeTime += 200.0;
 

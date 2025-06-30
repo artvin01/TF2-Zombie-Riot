@@ -1109,6 +1109,7 @@ public void OnMapStart()
 			PrecacheScriptSound(soundname);
 		}
 	}
+	ConVar_ToggleDo();
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -1284,6 +1285,7 @@ public Action Command_ToggleCheats(int client, int args)
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				SendConVarValue(i, sv_cheats, "0");
+				Convars_FixClientsideIssues(i);
 			}
 		}	
 	}
@@ -1296,6 +1298,7 @@ public Action Command_ToggleCheats(int client, int args)
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				SendConVarValue(i, sv_cheats, "1");
+				Convars_FixClientsideIssues(i);
 			}
 		}
 	}

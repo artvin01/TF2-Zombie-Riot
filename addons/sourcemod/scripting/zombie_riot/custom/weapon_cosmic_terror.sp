@@ -918,7 +918,7 @@ static bool IsCosmic(int weapon, int client)
 {
 	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_PILLAR)
 	{
-		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		if(pap==1)
 		{
 			Cosmic_Heat_Max[client] = 500.0;
@@ -933,7 +933,7 @@ static bool IsCosmic(int weapon, int client)
 	else if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_RAILCANNON)
 	{
 		Kill_Railgun(client);
-		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		if(pap==1)
 		{
 			Cosmic_Heat_Max[client] = 100.0;

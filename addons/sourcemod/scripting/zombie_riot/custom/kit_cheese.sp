@@ -210,7 +210,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		return Plugin_Stop;
 	}	
 
-	Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	Cheese_PapLevel[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	if(LastMann)
 	{
 	 	ApplyStatusEffect(client, client, "Plasmatic Rampage", 0.5);

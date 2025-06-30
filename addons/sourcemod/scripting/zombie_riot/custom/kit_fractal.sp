@@ -612,7 +612,7 @@ void Activate_Fractal_Kit(int client, int weapon)
 }
 static int Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
 static int Slot(int weapon)
 {
