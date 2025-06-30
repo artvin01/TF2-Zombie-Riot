@@ -4837,6 +4837,19 @@ void DepthPerceptionOnRemove(int victim, StatusEffect Apply_MasterStatusEffect, 
 void StatusEffects_Plasm()
 {
 	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatized Lethalitation");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ի");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatic Rampage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϙ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4850,7 +4863,7 @@ void StatusEffects_Plasm()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.AttackspeedBuff			= 0.75;
+	data.AttackspeedBuff			= (1.0 / 0.75);
 	StatusEffect_AddGlobal(data);
 
 	data.LinkedStatusEffect = 0;
@@ -4916,19 +4929,6 @@ void StatusEffects_Plasm()
 	data.LinkedStatusEffect = 0;
 	data.LinkedStatusEffectNPC = 0;
 	data.AttackspeedBuff = 0.0;
-	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmatized Lethalitation");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ի");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
-	data.Slot						= 0; //0 means ignored
-	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	StatusEffect_AddGlobal(data);
 }
 stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Index)
 {
