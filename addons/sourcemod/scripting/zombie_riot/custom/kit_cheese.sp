@@ -20,12 +20,12 @@ If the victim already has a level of the Plasm debuff, and is inflicted with the
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
 Health on kill is still very great, and its better to combo and time it with the Plasminator.
-Inflicts 150% of its damage as Plasmic Elemental damage.
+Inflicts 200% of its damage as Plasmic Elemental damage.
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.0 damage
 - Next melee attack will deal x2.5 Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
-1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets, damage increases with paps.
+1 - Allows the Plasmic Injector to deal x1.5 damage against Plasm-ed targets, damage increases slightly with paps.
 2 - Unlocks Lethal Injection.
 3 - Allows Lethal Injection to inflict Plasm I for 5 seconds. (x0.5 against bosses/raids)
 4 - Reduces Lethal Injection's cooldown.
@@ -52,7 +52,7 @@ and reduces the hits required to charge the Plasmatized Bubble.
 Increases the bubble's duration by 1 second.
 
 Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
-These projectiles deal 40% of their damage as Plasmic Elemental damage.
+These projectiles deal 50% of their damage as Plasmic Elemental damage.
 Plasmic Burst (M2 Primary Ability), upon activation:
 - Shoots a short-ranged laser that causes a bit of shake.
 - This laser inflicts AoE damage in front, and deals 50% of its damage as Plasmic Elemental damage.
@@ -298,7 +298,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 		float totalmult = 1.5;
 		if(Cheese_PapLevel[attacker] > 1)
-			totalmult += (Cheese_PapLevel[attacker] * 0.125);
+			totalmult += (Cheese_PapLevel[attacker] * 0.075); // don't go overkill
 
 		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(victim, "Plasm I") || HasSpecificBuff(victim, "Plasm II") || HasSpecificBuff(victim, "Plasm III")))
 		{
@@ -361,7 +361,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]]);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.5), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 2.0), weapon);
 	}
 
 	return damage;
@@ -369,7 +369,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.4), weapon);
+	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.5), weapon);
 	if(Cheese_PapLevel[attacker] > 0)
 		Cheese_Bubble_Hits[attacker]++;
 }
