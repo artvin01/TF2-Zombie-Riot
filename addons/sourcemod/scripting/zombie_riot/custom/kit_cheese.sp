@@ -146,9 +146,9 @@ void Cheese_PlaySplat(int entity)
 	//EmitSoundToAll(SOUND_ELEMENTALAPPLY, entity, _, _, _, _, pitch);
 }
 
-void Cheese_SetPenalty(int entity, float mult, bool static = false)
+void Cheese_SetPenalty(int entity, float mult, int static = 0)
 {
-	if(!static)
+	if(static == 0)
 		Cheese_Buildup_Penalty[entity] *= mult;
 	else
 		Cheese_Buildup_Penalty[entity] = mult;
@@ -224,7 +224,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	}
 	else
 	{
-		Cheese_SetPenalty(client, 1.0, true);
+		Cheese_SetPenalty(client, 1.0, 1);
 	}
 
 	Cheese_Hud(client, false);		
