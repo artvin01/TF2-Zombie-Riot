@@ -909,7 +909,7 @@ public void Ion_Beam_On_Buy_Reset(int client)
 
 static int Get_Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
 static void Give_Skill_Points(int client, int pap)
 {

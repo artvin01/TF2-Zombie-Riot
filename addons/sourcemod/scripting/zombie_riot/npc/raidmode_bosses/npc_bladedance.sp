@@ -116,6 +116,11 @@ methodmap RaidbossBladedance < CClotBody
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[rand], this.index, SNDCHAN_AUTO, 130, _, BOSS_ZOMBIE_VOLUME);
 	}
 
+	property float m_flBladedanceAngerResistance
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public RaidbossBladedance(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
@@ -176,6 +181,7 @@ methodmap RaidbossBladedance < CClotBody
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		npc.m_flBladedanceAngerResistance = 0.0;
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -189,6 +195,7 @@ methodmap RaidbossBladedance < CClotBody
 		RaidModeScaling = 0.0;
 		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
+		CPrintToChatAll("{crimson}Bladedance{default}: How did you get here? Why are you attacking me?? More void creatures?");
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = true;
@@ -262,7 +269,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 		if(--npc.m_iOverlordComboAttack < 1)
 			npc.Anger = false;
 	}
-	else if(npc.m_iOverlordComboAttack > 99)
+	else if(npc.m_iOverlordComboAttack > 50)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
@@ -273,6 +280,16 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			
 			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
 			npc.AddGesture("ACT_METROPOLICE_POINT");
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+					CPrintToChatAll("{crimson}Bladedance{default}: My copies, go!");
+				case 2:
+					CPrintToChatAll("{crimson}Bladedance{default}: I god damn hate fighting, get out!");
+				case 3:
+					CPrintToChatAll("{crimson}Bladedance{default}: Wish you could lose at the casino i once owned!");
+
+			}
 			
 			npc.m_flDoingAnimation = gameTime + 0.9;
 			npc.m_flNextRangedAttackHappening = 0.0;
@@ -410,6 +427,17 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 		npc.m_blPlayHurtAnimation = true;
 		if(!npc.Anger)
 			npc.m_iOverlordComboAttack++;
+	}
+	if(!npc.m_flBladedanceAngerResistance)
+	{
+		if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp/400 hp
+		{
+			npc.m_flBladedanceAngerResistance = 1.0;
+			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 25.0);
+			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", 40.0);
+			CPrintToChatAll("{crimson}Bladedance{default}: You have seen nothing i say! Im the least of your worries!");
+			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+		}
 	}
 
 	return Plugin_Changed;

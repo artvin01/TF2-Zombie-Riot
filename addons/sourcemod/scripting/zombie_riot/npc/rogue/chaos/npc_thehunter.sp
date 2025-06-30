@@ -231,7 +231,7 @@ public void TheHunter_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	SpawnMoney(entity);
+	SpawnMoney(entity, true);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

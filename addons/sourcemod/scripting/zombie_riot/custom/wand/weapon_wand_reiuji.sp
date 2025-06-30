@@ -83,7 +83,7 @@ void Enable_Reiuji_Wand(int client, int weapon)
 	pack.WriteCell(client);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 }
-static int i_pap(int weapon) {return RoundFloat(Attributes_Get(weapon, 122, 0.0));}
+static int i_pap(int weapon) {return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));}
 
 static Action Timer_Reiuji_Wand(Handle timer, DataPack pack)
 {

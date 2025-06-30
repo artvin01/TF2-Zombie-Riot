@@ -2987,6 +2987,7 @@ void ForcePlayerWin(bool fakeout = false)
 			Music_Stop_All(client);
 			SetMusicTimer(client, GetTime() + 33);
 			SendConVarValue(client, sv_cheats, "1");
+			Convars_FixClientsideIssues(client);
 		}
 	}
 	if(!fakeout)

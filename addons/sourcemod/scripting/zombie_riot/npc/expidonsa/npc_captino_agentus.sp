@@ -669,8 +669,8 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-					fl_RangedArmor[npc.index] = 0.5;
-					fl_MeleeArmor[npc.index] = 0.5;
+					fl_RangedArmor[npc.index] = 0.65;
+					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
@@ -682,8 +682,8 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-					fl_RangedArmor[npc.index] = 0.5;
-					fl_MeleeArmor[npc.index] = 0.5;
+					fl_RangedArmor[npc.index] = 0.65;
+					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;

@@ -1364,7 +1364,7 @@ public void Enable_VoidBlade(int client, int weapon) // Enable management, handl
 			h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		}
 		return;
 	}
@@ -1376,7 +1376,7 @@ public void Enable_VoidBlade(int client, int weapon) // Enable management, handl
 		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		return;
 	}
 }
