@@ -1149,7 +1149,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					position[2] += 10.0;
 					for(int i = 0; i < 3; i++)
 					{
-						Cheese_BeamEffect(position);
+						Cheese_BeamEffect(position, 200.0, 1.0);
 						position[2] += 32.5;
 					}
 					Cheese_PlaySplat(victim);
