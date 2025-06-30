@@ -215,7 +215,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		if(!HasSpecificBuff(client, "Plasm III"))
 			HealEntityGlobal(client, client, 30.0, 0.25, 0.0, HEAL_SELFHEAL);
 
-		Elemental_AddPlasmicDamage(client, client, 20, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
+		Elemental_AddPlasmicDamage(client, client, 15, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
 	}
 	else
 	{
@@ -236,7 +236,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 
 	float pos[3]; GetClientAbsOrigin(client, pos);
 	pos[2] += 5.0;
-	if(LastMann)
+	if(HasSpecificBuff(client, "Plasmatic Rampage"))
 	{
 		Cheese_BeamEffect(pos, 200.0, 1.0, 0.075, 10.0, _, _, 2.5);
 	}
@@ -649,6 +649,9 @@ public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int 
 	float cheesedmg = Cheese_Bubble_ElementalDmg;
 	cheesedmg *= Attributes_Get(weapon, 2, 1.0);
 	cheesedmg *= Attributes_Get(weapon, 1, 1.0);
+
+	if(HasSpecificBuff(entity, "Plasmatic Rampage"))
+		cheesedmg *= 2.0;
 
 	Elemental_AddPlasmicDamage(enemy, entity, RoundToNearest(cheesedmg), weapon);
 }
