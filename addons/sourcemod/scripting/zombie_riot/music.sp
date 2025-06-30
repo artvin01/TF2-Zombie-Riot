@@ -631,6 +631,7 @@ void Music_RoundEnd(int victim, bool music = true)
 		if(IsClientInGame(i) && !IsFakeClient(i))
 		{
 			SendConVarValue(i, sv_cheats, "1");
+			Convars_FixClientsideIssues(i);
 		}
 	}
 	ResetReplications();
@@ -646,6 +647,7 @@ public Action SetTimeBack(Handle timer)
 		if(IsClientInGame(i) && !IsFakeClient(i))
 		{
 			SendConVarValue(i, sv_cheats, "0");
+			Convars_FixClientsideIssues(i);
 		}
 	}
 	ResetReplications();

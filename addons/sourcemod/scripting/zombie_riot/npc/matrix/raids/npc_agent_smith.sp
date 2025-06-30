@@ -1564,6 +1564,7 @@ static void Smith_Timeslow(float amount = 1.0, float revert = 0.1)
         if(IsClientInGame(i) && !IsFakeClient(i))
         {
             SendConVarValue(i, sv_cheats, "1");
+			Convars_FixClientsideIssues(i);
         }
     }
     cvarTimeScale.SetFloat(amount);
