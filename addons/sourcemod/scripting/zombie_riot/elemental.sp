@@ -1201,7 +1201,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 				position[2] += 10.0;
-				for(int i = 0; i < 2; i++)
+				for(int i = 0; i < 3; i++)
 				{
 					Cheese_BeamEffect(position);
 					position[2] += 32.5;
