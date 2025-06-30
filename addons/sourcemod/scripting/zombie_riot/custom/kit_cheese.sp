@@ -424,10 +424,6 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 		if (Cheese_Bubble_Hits[client] >= Cheese_Bubble_MaxHits[Cheese_PapLevel[client]])
 		{
 			Cheese_Bubble_Hits[client] = 0;
-
-			float cheesedmg = Cheese_Bubble_ElementalDmg;
-			cheesedmg *= Attributes_Get(weapon, 2, 1.0);
-			cheesedmg *= Attributes_Get(weapon, 1, 1.0);
 	
 			float speed = 1000.0;
 			speed *= Attributes_Get(weapon, 103, 1.0);
@@ -436,7 +432,7 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 			GetClientEyeAngles(client, ang);
 			ang[0] -= 10.0;
 			
-			int entity = Wand_Projectile_Spawn(client, speed, 20.0, cheesedmg, 0, weapon, NULL_STRING, ang, false);
+			int entity = Wand_Projectile_Spawn(client, speed, 20.0, 0.0, 0, weapon, NULL_STRING, ang, false);
 			if(entity > MaxClients)
 			{
 				SetEntityGravity(entity, 1.5);
@@ -494,7 +490,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 	// fine, i'll spawn another projectile to manipulate to my desires
 	float duration = Attributes_Get(weapon, 868, 1.0) + 1.0; // +1 extra second for arm time
 	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
-	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, f_WandDamage[entity], 0, weapon, "", _, _, pos1);
+	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 	int model = ApplyCustomModelToWandProjectile(bubble1, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
 	int team = 0;
@@ -524,9 +520,9 @@ static Action CheeseBubble_CheckTargets(Handle timer, int ref)
 	{
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 300.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 250.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
 		position[2] += 10.0;
-		Cheese_BeamEffect(position, _, 600.0, _, 10.0);
+		Cheese_BeamEffect(position, _, 500.0, _, 10.0);
 	}
 
 	return Plugin_Continue;
@@ -547,12 +543,17 @@ public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int 
 	}
 
 	float duration = 1.0;
-	//int pap = 0;
-	//pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	
 	if(!HasSpecificBuff(enemy, "Hardened Aura"))
 	{
 		ApplyStatusEffect(entity, enemy, "Plasm I", duration);
 	}
+
+	float cheesedmg = Cheese_Bubble_ElementalDmg;
+	cheesedmg *= Attributes_Get(weapon, 2, 1.0);
+	cheesedmg *= Attributes_Get(weapon, 1, 1.0);
+
+	Elemental_AddPlasmicDamage(enemy, entity, RoundToNearest(cheesedmg), weapon);
 }
 
 public void Cheese_Bubble_OverrideTouch(int entity, int target)
