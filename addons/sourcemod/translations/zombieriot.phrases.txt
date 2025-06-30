@@ -4299,4 +4299,8 @@
 	{
 		"en"		"Insufficient charge!!"
 	}
+	"Plasma Kit Plasm III Warning"
+	{
+		"en"		"Your body slowly starts to break down...."
+	}
 }
