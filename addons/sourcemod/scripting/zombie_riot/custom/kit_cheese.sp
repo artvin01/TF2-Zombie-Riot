@@ -84,7 +84,6 @@ static float hudtimer[MAXPLAYERS];
 static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
-static float Cheese_Bubble_DelayBeforeCheck[MAXENTITIES];
 
 static int Cheese_Bubble_MaxHits[9]  = {125, 125, 110, 110, 95, 80, 70, 65, 60}; // Plasmatized Bubble's max charge
 static float Cheese_Bubble_ElementalDmg = 300.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
@@ -110,7 +109,6 @@ void Cheese_MapStart()
 	Zero(Cheese_Bubble_Hits);
 	Zero(Cheese_TargetsHit);
 	Zero(hudtimer);
-	Zero(Cheese_Bubble_DelayBeforeCheck);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	Precached = false;
@@ -499,15 +497,9 @@ public void Cheese_BubbleTouch(int entity, int target)
 	// no stocks for spawning a model on a position without parenting it to anything?
 	// fine, i'll spawn another projectile to manipulate to my desires
 	float duration = Attributes_Get(weapon, 868, 1.0) + 1.0; // +1 extra second for arm time
-	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
-
-	Cheese_Bubble_DelayBeforeCheck[bubble1] = GetGameTime() + 1.0;
-	DataPack pack;
-	CreateDataTimer(tickrate, CheeseBubble_CheckTargets, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(bubble1));
-	pack.WriteFloat(tickrate);
+	CreateTimer(1.0, CheeseBubble_FirstCheck, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE);
 
 	// man...
 	pos1[2] += 10.0;
@@ -520,7 +512,52 @@ public void Cheese_BubbleTouch(int entity, int target)
 	RemoveEntity(entity);
 }
 
-static Action CheeseBubble_CheckTargets(Handle timer, DataPack pack)
+static Action CheeseBubble_FirstCheck(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
+
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	position[2] += 10.0;
+	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
+	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
+
+	// MAN
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
+	position[2] += 250.0;
+	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	position[2] += 50.0;
+	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	position[2] += 50.0;
+	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
+	position[2] += 50.0;
+	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
+
+	DataPack pack;
+	CreateDataTimer(tickrate, CheeseBubble_CheckLoop, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(tickrate);
+
+	return Plugin_Continue;
+}
+
+static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -533,33 +570,30 @@ static Action CheeseBubble_CheckTargets(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	float tickrate = pack.ReadFloat();
 
-	if(Cheese_Bubble_DelayBeforeCheck[entity] < GetGameTime())
-	{
-		float position[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
-		position[2] += 10.0;
-		Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
-		Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	position[2] += 10.0;
+	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
+	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
 
-		// MAN
-		position[2] -= 50.0;
-		Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
-		position[2] -= 50.0;
-		Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
-		position[2] -= 50.0;
-		Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
-		position[2] -= 50.0;
-		Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
-		position[2] += 250.0;
-		Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
-		position[2] += 50.0;
-		Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
-		position[2] += 50.0;
-		Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
-		position[2] += 50.0;
-		Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
-	}
+	// MAN
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
+	position[2] -= 50.0;
+	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
+	position[2] += 250.0;
+	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	position[2] += 50.0;
+	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	position[2] += 50.0;
+	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
+	position[2] += 50.0;
+	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
 
 	return Plugin_Continue;
 }
