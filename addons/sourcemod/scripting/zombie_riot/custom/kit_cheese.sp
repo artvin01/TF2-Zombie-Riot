@@ -65,10 +65,13 @@ also reduces its cooldown by 5 seconds.
 6th, 7th and 8th paps increase ALL stats and almost all ability stats overall.
 */
 
-#define SOUND_LETHAL_ABILITY "items/powerup_pickup_reflect.wav"
+#define SOUND_LETHAL_ABILITY 	"items/powerup_pickup_reflect.wav"
 #define SOUND_CHEESEBALL_SQUASH "ui/hitsound_squasher.wav"
-#define SOUND_ELEMENTALAPPLY    "ui/killsound_vortex.wav"
+#define SOUND_ELEMENTALAPPLY   "ui/killsound_vortex.wav"
 #define SOUND_CHEDDAR_ABILITY  "weapons/tf2_back_scatter.wav"
+#define SOUND_CAPSULE_EXPLODE  "weapons/medigun_charged.wav"
+#define SOUND_LETHAL_ACTIVATE	"weapons/buffed_on.wav"
+#define PARTICLE_BUBBLE	       "halloween_ghost_smoke"
 
 static int LaserIndex;
 static int Cheese_PapLevel[MAXPLAYERS];
@@ -83,7 +86,7 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
 static int Cheese_Bubble_MaxHits[9]  = {125, 125, 110, 110, 95, 80, 70, 65, 60}; // Plasmatized Bubble's max charge
-//static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static float Cheese_Bubble_ElementalDmg = 40.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {2.5, 2.5, 2.5, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75}; // Lethal Injection's elemental damage bonus
@@ -99,6 +102,8 @@ void Cheese_MapStart()
 	PrecacheSound(SOUND_CHEESEBALL_SQUASH, true);
 	PrecacheSound(SOUND_ELEMENTALAPPLY, true);
 	PrecacheSound(SOUND_CHEDDAR_ABILITY, true);
+	PrecacheSound(SOUND_CAPSULE_EXPLODE, true);
+	PrecacheSound(SOUND_LETHAL_ACTIVATE, true);
 	PrecacheSound(")weapons/tf2_backshot_shotty.wav");
 	Zero(Cheese_PapLevel);
 	Zero(Cheese_Bubble_Hits);
@@ -417,7 +422,39 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 		if (Cheese_Bubble_Hits[client] >= Cheese_Bubble_MaxHits[Cheese_PapLevel[client]])
 		{
 			Cheese_Bubble_Hits[client] = 0;
-			// todo: make projectile thing
+
+			float cheesedmg = Cheese_Bubble_ElementalDmg;
+			cheesedmg *= Attributes_Get(weapon, 2, 1.0);
+			cheesedmg *= Attributes_Get(weapon, 1, 1.0);
+	
+			float speed = 1000.0;
+			speed *= Attributes_Get(weapon, 103, 1.0);
+			
+			float ang[3];
+			GetClientEyeAngles(client, ang);
+			ang[0] -= 10.0;
+			
+			int entity = Wand_Projectile_Spawn(client, speed, 20.0, cheesedmg, 0, weapon, NULL_STRING, ang, false);
+			if(entity > MaxClients)
+			{
+				SetEntityGravity(entity, 1.5);
+				SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
+
+				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.25, "", -15.0);
+				int team = 0;
+				if(GetTeam(client) != 2)
+					team = 1;
+				SetEntProp(model, Prop_Send, "m_nSkin", team); // 0 = red, 1 = blue (for m_nSkin)
+
+				model = i_WeaponModelIndexOverride[weapon];
+				SetEntProp(entity, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
+				for(int i; i < 4; i++)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
+				}
+		
+				SDKHook(entity, SDKHook_StartTouchPost, Cheese_BubbleTouch);
+			}
 		}
 		else
 		{
@@ -430,12 +467,56 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 	}
 }
 
+public void Cheese_BubbleTouch(int entity, int target)
+{
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+	if(target)
+	{
+		if(target <= MaxClients)
+			return;
+		
+		if(GetTeam(target) == GetTeam(owner))
+			return;
+	}
+
+	SDKUnhook(entity, SDKHook_StartTouchPost, Cheese_BubbleTouch);
+
+	float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	ParticleEffectAt(pos1, PARTICLE_BUBBLE, 2.0);
+	EmitSoundToAll(SOUND_CAPSULE_EXPLODE, entity, _, _, _, _, _, _, pos1);
+
+	// no stocks for spawning a model on a position without parenting it to anything?
+	// fine, i'll spawn another projectile to manipulate to my desires
+	float duration = Attributes_Get(weapon, 868, 1.0) + 1.0; // +1 extra second for arm time
+	//float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
+	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, f_WandDamage[entity], 0, weapon, "");
+	WandProjectile_ApplyFunctionToEntity(projectile, Cheese_Bubble_OverrideTouch);
+	int model = ApplyCustomModelToWandProjectile(entity, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
+	int team = 0;
+	if(GetTeam(owner) != 2)
+		team = 1;
+	SetEntProp(model, Prop_Send, "m_nSkin", team); // 0 = red, 1 = blue (for m_nSkin)
+	
+	RemoveEntity(entity);
+}
+
+public void Cheese_Bubble_OverrideTouch(int entity, int target)
+{
+	// overriding the starttouch so the projectile that sustains the bubble doesn't get deleted by anything, yeah
+}
+
 public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0 && Cheese_PapLevel[client] >= 2)
 		{
+			if(!HasSpecificBuff(client, "Plasmatized Lethalitation"))
+				EmitSoundToClient(client, SOUND_LETHAL_ACTIVATE);
+
 			ApplyStatusEffect(client, client, "Plasmatized Lethalitation", 999.0);
 		}
 		else
