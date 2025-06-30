@@ -2,9 +2,6 @@
 #pragma newdecls required
 
 /*
-TODO: make everything :
-(augh)
-
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
 - victim recieves vulnerability for a certain duration, both things based on attacker's pap level, 
@@ -87,7 +84,7 @@ static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 static int Cheese_Bubble_MaxHits[9]  = {125, 125, 110, 110, 95, 80, 70, 65, 60}; // Plasmatized Bubble's max charge
 //static float Cheese_Bubble_ElementalDmg = 50.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
-static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5}; // Lethal Injection's damage bonus
+static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {2.5, 2.5, 2.5, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75}; // Lethal Injection's elemental damage bonus
 static float Cheese_Burst_ElementalDmg[9]  = {0.50, 0.50, 0.575, 0.65, 0.725, 0.8, 0.875, 0.95, 1.0}; // Elemental damage multiplier for Plasmic Burst
 static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Range for Plasmic Burst
@@ -407,6 +404,26 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			return;
+		}
+	}
+}
+
+public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int slot)
+{
+	if(weapon >= MaxClients)
+	{
+		if (Cheese_Bubble_Hits[client] >= Cheese_Bubble_MaxHits[Cheese_PapLevel[client]])
+		{
+			Cheese_Bubble_Hits[client] = 0;
+			// todo: make projectile thing
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Plasma Kit Insufficient Charge");
 			return;
 		}
 	}
