@@ -84,6 +84,7 @@ static float hudtimer[MAXPLAYERS];
 static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
+static float Cheese_Bubble_DelayBeforeCheck[MAXENTITIES];
 
 static int Cheese_Bubble_MaxHits[9]  = {125, 125, 110, 110, 95, 80, 70, 65, 60}; // Plasmatized Bubble's max charge
 static float Cheese_Bubble_ElementalDmg = 40.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
@@ -109,6 +110,7 @@ void Cheese_MapStart()
 	Zero(Cheese_Bubble_Hits);
 	Zero(Cheese_TargetsHit);
 	Zero(hudtimer);
+	Zero(Cheese_Bubble_DelayBeforeCheck);
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Cheese_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	Precached = false;
@@ -491,7 +493,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 	// no stocks for spawning a model on a position without parenting it to anything?
 	// fine, i'll spawn another projectile to manipulate to my desires
 	float duration = Attributes_Get(weapon, 868, 1.0) + 1.0; // +1 extra second for arm time
-	//float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
+	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, f_WandDamage[entity], 0, weapon, "");
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 	int model = ApplyCustomModelToWandProjectile(bubble1, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
@@ -499,8 +501,54 @@ public void Cheese_BubbleTouch(int entity, int target)
 	if(GetTeam(owner) != 2)
 		team = 1;
 	SetEntProp(model, Prop_Send, "m_nSkin", team); // 0 = red, 1 = blue (for m_nSkin)
+
+	Cheese_Bubble_DelayBeforeCheck[bubble1] = GetGameTime() + 1.0;
+	//CreateTimer(0.1, CheeseBubble_ModelResize, EntIndexToEntRef(model), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(tickrate, CheeseBubble_CheckTargets, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	RemoveEntity(entity);
+}
+
+static Action CheeseBubble_CheckTargets(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+	if(Cheese_Bubble_DelayBeforeCheck[entity] < GetGameTime())
+	{
+		float startPosition[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition);
+		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 300.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	}
+}
+
+public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int weapon)
+{
+	if (!IsValidEntity(enemy) || !IsValidEntity(entity))
+		return;
+
+	if(enemy)
+	{
+		if(enemy <= MaxClients)
+			return;
+		
+		if(GetTeam(enemy) == TFTeam_Red)
+			return;
+	}
+
+	float duration = 1.0;
+	//int pap = 0;
+	//pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	if(!HasSpecificBuff(enemy, "Hardened Aura"))
+	{
+		ApplyStatusEffect(entity, enemy, "Plasm I", duration);
+	}
 }
 
 public void Cheese_Bubble_OverrideTouch(int entity, int target)
