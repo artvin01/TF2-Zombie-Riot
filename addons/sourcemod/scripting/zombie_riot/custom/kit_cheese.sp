@@ -494,7 +494,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 	// fine, i'll spawn another projectile to manipulate to my desires
 	float duration = Attributes_Get(weapon, 868, 1.0) + 1.0; // +1 extra second for arm time
 	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
-	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, f_WandDamage[entity], 0, weapon, "");
+	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, f_WandDamage[entity], 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 	int model = ApplyCustomModelToWandProjectile(bubble1, "models/buildables/sentry_shield.mdl", 0.65, "", -15.0);
 	int team = 0;
