@@ -522,9 +522,11 @@ static Action CheeseBubble_CheckTargets(Handle timer, int ref)
 
 	if(Cheese_Bubble_DelayBeforeCheck[entity] < GetGameTime())
 	{
-		float startPosition[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", startPosition);
+		float position[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 		Explode_Logic_Custom(0.0, owner, owner, weapon, position, 300.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+		position[2] += 10.0;
+		Cheese_BeamEffect(position, _, 600.0, _, 10.0);
 	}
 }
 
