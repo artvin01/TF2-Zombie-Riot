@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define BLOON_HP_MULTI_GLOBAL 1.1
 enum
 {
 	Bloon_Red = 0,
@@ -158,7 +159,7 @@ static float BloonSpeedMulti()
 
 float Bloon_BaseHealth()
 {
-	float health = 400.0;
+	float health = 200.0;
 
 	// Nerf late-game health
 	if(CurrentCash > 50000)
@@ -169,7 +170,7 @@ float Bloon_BaseHealth()
 	{
 		health *= 1.0 - (float(CurrentCash) / 133333.333333);
 	}
-	health *= 1.5;
+	health *= BLOON_HP_MULTI_GLOBAL;
 
 	return health;
 }
