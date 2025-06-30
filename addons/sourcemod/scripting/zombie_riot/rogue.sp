@@ -2687,7 +2687,10 @@ static Action Rogue_ChaosChaos(Handle timer)
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
+		{
 			SendConVarValue(client, sv_cheats, "1");
+			Convars_FixClientsideIssues(client);
+		}
 	}
 
 	ResetReplications();

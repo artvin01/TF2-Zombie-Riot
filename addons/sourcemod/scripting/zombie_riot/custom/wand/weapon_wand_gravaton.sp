@@ -81,7 +81,7 @@ public void Enable_Gravaton_Wand(int client, int weapon)
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRAVATON_WAND)
 		{
-			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 			//Is the weapon it again?
 			//Yes?
 			delete h_Gravaton_Wand_Hud_Management[client];
@@ -97,7 +97,7 @@ public void Enable_Gravaton_Wand(int client, int weapon)
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRAVATON_WAND)
 	{
-		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		DataPack pack;
 		h_Gravaton_Wand_Hud_Management[client] = CreateDataTimer(0.1, Timer_Gravaton_Wand, pack, TIMER_REPEAT);
 		pack.WriteCell(client);

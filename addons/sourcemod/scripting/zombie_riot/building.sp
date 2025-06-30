@@ -1580,7 +1580,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 {
 	EmitSoundToAll("npc/manhack/bat_away.wav", client, SNDCHAN_AUTO, 70,_,0.15, GetRandomInt(130, 145));
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 	float MaxRange = 200.0;
 

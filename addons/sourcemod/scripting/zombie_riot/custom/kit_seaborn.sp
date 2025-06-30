@@ -395,7 +395,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 
 			healing = RoundToNearest(float(healing) * Attributes_GetOnWeapon(client, weapon, 8, true));
 
-			int Pap = RoundToNearest(Attributes_Get(weapon, 122, 0.0));
+			int Pap = RoundToNearest(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 			if(Pap != 0.0)
 			{
 				if(Pap == 1)
@@ -484,7 +484,7 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 
 	healing = RoundToNearest(float(healing) * Attributes_GetOnWeapon(client, weapon, 8, true));
 
-	int Pap = RoundToNearest(Attributes_Get(weapon, 122, 0.0));
+	int Pap = RoundToNearest(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	if(Pap != 0.0)
 	{
 		if(Pap == 1)

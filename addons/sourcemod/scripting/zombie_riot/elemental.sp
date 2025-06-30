@@ -1069,7 +1069,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 
 	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE);
 	// i am pap
-	float paplvl = Attributes_Get(weapon, 122, 0.0);
+	float paplvl = Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))

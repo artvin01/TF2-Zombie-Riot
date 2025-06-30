@@ -788,7 +788,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 			}
 			case WEAPON_PURNELL_PRIMARY:
 			{
-				Healing_Amount=Attributes_Get(weapon, 122, 0.0);
+				Healing_Amount=Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 				//it starts at -1.0, so it should go upto 1.0.
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
