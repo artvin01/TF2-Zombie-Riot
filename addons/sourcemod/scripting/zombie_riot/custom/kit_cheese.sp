@@ -17,7 +17,7 @@ If the victim already has a level of the Plasm debuff, and is inflicted with the
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
 Health on kill is still very great, and its better to combo and time it with the Plasminator.
-Inflicts 200% of its damage as Plasmic Elemental damage.
+Inflicts a LOT of its damage as Plasmic Elemental damage due to its average damage.
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.0 damage
 - Next melee attack will deal x2.5 Plasmic Elemental damage.
@@ -50,15 +50,15 @@ and reduces the hits required to charge the Plasmatized Bubble.
 Increases the bubble's duration by 1 second.
 
 Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
-These projectiles deal 50% of their damage as Plasmic Elemental damage.
+These projectiles deal 100% of their damage as Plasmic Elemental damage.
 Plasmic Burst (M2 Primary Ability), upon activation:
 - Shoots a short-ranged laser that causes a bit of shake.
-- This laser inflicts AoE damage in front, and deals 50% of its damage as Plasmic Elemental damage.
+- This laser inflicts AoE damage in front, and deals 100% of its damage as additional Plasmic Elemental damage.
 PaP Upgrades (all of them increase overall stats):
 1 - Nothing special.
 2 - Unlocks Plasmic Burst.
 3 - Now allows Plasmic Burst to inflict Plasm I for 5s to the enemies it hits. (x0.5 on raids/bosses),
-4 - Slightly increases its range and increases its Plasmic Elemental damage by an additional 7.5%, 
+4 - Slightly increases its range and increases its Plasmic Elemental damage by an additional 15%, 
 also reduces its cooldown by 5 seconds.
 5 - Ditto.
 
@@ -91,7 +91,7 @@ static float Cheese_Bubble_ElementalDmg = 40.0; // Plasmatized Bubble's base pla
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {2.5, 2.5, 2.5, 2.5, 2.75, 3.0, 3.25, 3.5, 3.75}; // Lethal Injection's elemental damage bonus
-static float Cheese_Burst_ElementalDmg[9]  = {0.50, 0.50, 0.575, 0.65, 0.725, 0.8, 0.875, 0.95, 1.0}; // Elemental damage multiplier for Plasmic Burst
+static float Cheese_Burst_ElementalDmg[9]  = {1.25, 1.25, 1.4, 1.55, 1.7, 1.85, 2.0, 2.15, 2.25}; // Elemental damage multiplier for Plasmic Burst
 static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Range for Plasmic Burst
 static float Cheese_Burst_Cooldown[9]  = {22.5, 22.5, 22.5, 22.5, 17.5, 15.0, 12.5, 10.0, 7.5}; // Plasmic Burst's cooldown
 
@@ -366,7 +366,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]]);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 2.0), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 4.0), weapon);
 	}
 
 	return damage;
@@ -374,7 +374,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.5), weapon);
+	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage), weapon);
 	if(Cheese_PapLevel[attacker] > 0)
 		Cheese_Bubble_Hits[attacker]++;
 }
