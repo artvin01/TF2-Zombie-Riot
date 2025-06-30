@@ -447,7 +447,7 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 				SetEntityGravity(entity, 1.5);
 				SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 
-				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.35, "", -10.0);
+				int model = ApplyCustomModelToWandProjectile(entity, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl", 1.35, "");
 				int team = 0;
 				if(GetTeam(client) != 2)
 					team = 1;
@@ -503,6 +503,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 
+	Cheese_Bubble_DelayBeforeCheck[bubble1] = GetGameTime() + 1.0;
 	DataPack pack;
 	CreateDataTimer(tickrate, CheeseBubble_CheckTargets, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	pack.WriteCell(EntIndexToEntRef(bubble1));
