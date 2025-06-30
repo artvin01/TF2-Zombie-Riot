@@ -280,7 +280,7 @@ static void Cheese_Hud(int client, bool ignorecd)
 			Format(CheeseHud, sizeof(CheeseHud), "%s\nPlasmic Burst: [%.1f]", CheeseHud, BurstCooldown);
 	}
 
-	hudtimer[client] = GameTime + 0.5;
+	hudtimer[client] = GameTime + 0.4;
 	PrintHintText(client, "%s", CheeseHud);
 }
 
