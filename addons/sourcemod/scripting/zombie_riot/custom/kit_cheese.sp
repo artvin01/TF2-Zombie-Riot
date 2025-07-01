@@ -515,6 +515,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 	int bubble1 = Wand_Projectile_Spawn(owner, 0.0, duration, 0.0, 0, weapon, "", _, _, pos1);
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 	CreateTimer(1.0, CheeseBubble_FirstCheck, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE);
+	b_NoKnockbackFromSources[bubble1] = true;
 
 	// man...
 	pos1[2] += 10.0;
@@ -532,6 +533,7 @@ static Action CheeseBubble_FirstCheck(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(!IsValidEntity(entity))
 	{
+		b_NoKnockbackFromSources[entity] = false;
 		return Plugin_Stop;
 	}
 
@@ -578,6 +580,7 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(entity))
 	{
+		b_NoKnockbackFromSources[entity] = false;
 		return Plugin_Stop;
 	}
 
