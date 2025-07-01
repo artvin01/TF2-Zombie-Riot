@@ -536,7 +536,6 @@ static Action CheeseBubble_FirstCheck(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(!IsValidEntity(entity))
 	{
-		b_NoKnockbackFromSources[entity] = false;
 		return Plugin_Stop;
 	}
 
@@ -583,7 +582,6 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(entity))
 	{
-		b_NoKnockbackFromSources[entity] = false;
 		return Plugin_Stop;
 	}
 
