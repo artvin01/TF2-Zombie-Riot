@@ -3980,16 +3980,24 @@
 	"Plasmic Surprise"
 	{
 		"en" "Plasmic Surprise"
+		"es" "Sorpresa Plasmica"
 		"ko" "플라즈마 서프라이즈"
 	}
 	"Plasmic Dosage"
 	{
 		"en" "Plasmic Dosage"
+		"es" "Dosis Plasmica"
 		"ko" "투약용 플라즈마"
+	}
+	"Plasm-ubblinator"
+	{
+		"en" "Plasm-ubblinator"
+		"es" "Plasm-urbujinador"
 	}
 	"Koshi's Plasm-inator"
 	{
 		"en" "Koshi's Plasm-inator"
+		"es" "El Plasm-inador de Koshi"
 		"ko" "코쉬의 플라즈마 활성화장치"
 	}
 	"Chemical Spewer"

@@ -781,7 +781,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	enemy.Health = RoundToCeil(float(enemy.Health) * FM_Health);
 
 	// 2 billion limit, it is necessary to prevent them from going bananas
-	if(enemy.Health < 0 || enemy.Health > 2000000000) // nvm it was a float-int error lmao
+	if(enemy.Health > 2000000000)
 		enemy.Health = 2000000000;
 
 	if(enemy.Team != TFTeam_Red)

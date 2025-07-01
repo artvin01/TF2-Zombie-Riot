@@ -812,7 +812,12 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
-
+	Core_DoTickrateChanges();
+}
+void Core_DoTickrateChanges()
+{
+	//needs to get called a few times just incase.
+	//it isnt expensive so it really doesnt matter.
 	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
 
@@ -987,7 +992,7 @@ public void OnMapStart()
 	FileNetwork_MapStart();
 	Core_PrecacheGlobalCustom();
 #endif
-
+	Core_DoTickrateChanges();
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");
@@ -1408,6 +1413,7 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
+	Core_DoTickrateChanges();
 #if defined ZR || defined RPG
 	KillFeed_ClientPutInServer(client);
 #endif
