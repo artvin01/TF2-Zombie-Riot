@@ -11,7 +11,7 @@ enum
 	Element_Osmosis,
 	Element_Corruption,
 	Element_Burger,
-	//Element_Plasma,
+	Element_Plasma,
 
 	Element_MAX
 }
@@ -26,7 +26,7 @@ static const char ElementName[][] =
 	"OS",
 	"CO",
 	"FOOD",
-	//"PL"
+	"PL"
 };
 
 static float LastTime[MAXENTITIES];
@@ -108,7 +108,7 @@ int Elemental_TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void: // add Element_Plasma here later
+		case Element_Void, Element_Plasma:
 		{
 			divide = 2.0;
 		}
@@ -1054,7 +1054,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	}
 }
 
-/*
+
 void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int weapon, bool ignoreArmor = false)
 {
 	if(i_IsVehicle[victim])
@@ -1076,7 +1076,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients) // VS Players, in the rare occasion ZR pvp is turned on
+	if(victim <= MaxClients) // VS Players
 	{
 		Armor_DebuffType[victim] = 5;
 		if((f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
@@ -1087,6 +1087,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			}
 			else
 			{
+				int newdmg = RoundToNearest(float(damage) * Cheese_GetPenalty(victim));
+				damage = newdmg;
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
 				if(damage < 1)
 					damage = 1;
@@ -1094,21 +1096,67 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
-					SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.25), DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE, weapon);
-					ApplyStatusEffect(attacker, victim, "Plasm II", 5.0);
-					Cheese_SetPenaltyDuration(victim, 10.0);
+					if(Is_Cheesed_Up(victim)) // lastman for plasmic surprise
+					{
+						if(HasSpecificBuff(victim, "Plasm III"))
+						{
+							SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+							IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
+							TF2_StunPlayer(victim, 1.25, 0.5, TF_STUNFLAG_SLOWDOWN);
+							Cheese_SetPenalty(victim, 1.175);
+						}
+						else if(HasSpecificBuff(victim, "Plasm II"))
+						{
+							ApplyStatusEffect(victim, victim, "Plasm III", 999.0);
+							float HudY = -1.0;
+							float HudX = -1.0;
+							SetHudTextParams(HudX, HudY, 3.0, 235, 75, 215, 255);
+							SetGlobalTransTarget(victim);
+							ShowSyncHudText(victim, SyncHud_Notifaction, "%t", "Plasma Kit Plasm III Warning");
+							Cheese_SetPenalty(victim, 1.15);
+						}
+						else if(HasSpecificBuff(victim, "Plasm I"))
+						{
+							ApplyStatusEffect(victim, victim, "Plasm II", 999.0);
+							Cheese_SetPenalty(victim, 1.125);
+						}
+						else
+						{
+							ApplyStatusEffect(victim, victim, "Plasm I", 999.0);
+						}
+					}
+					else
+					{
+						if(HasSpecificBuff(victim, "Plasm III"))
+						{
+							SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, weapon);
+							IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
+						}
+						else if(HasSpecificBuff(victim, "Plasm II"))
+						{
+							ApplyStatusEffect(attacker, victim, "Plasm III", 10.0);
+						}
+						else if(HasSpecificBuff(victim, "Plasm I"))
+						{
+							ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
+						}
+						else
+						{
+							ApplyStatusEffect(attacker, victim, "Plasm I", 10.0);
+						}
+					}
 					
 					float position[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 					position[2] += 10.0;
 					for(int i = 0; i < 3; i++)
 					{
-						Cheese_BeamEffect(position);
+						Cheese_BeamEffect(position, 200.0, 1.0);
 						position[2] += 32.5;
 					}
 					Cheese_PlaySplat(victim);
 					Armor_Charge[victim] = 0;
-					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 5.0;
+					Force_ExplainBuffToClient(victim, "Plasmic Elemental Damage");
 				}
 			}
 		}
@@ -1118,47 +1166,46 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Plasma);
-
+			int newdmg = RoundToNearest(float(damage) * Cheese_GetPenalty(victim));
+			damage = newdmg;
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Plasma;
 			ElementDamage[victim][Element_Plasma] += damage;
 			if(ElementDamage[victim][Element_Plasma] > trigger)
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
-				float immunitycd = melee ? 10.0 : 15.0;
-				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.5); // at max pap (8), its 9 seconds if melee, or 6.5 seconds if ranged
-				float vuln_duration = (melee ? 4.0 : 2.0) + (paplvl * 0.25); // at max pap (8), its 6 seconds if melee, or 4 seconds if ranged
-				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + immunitycd;
-
-				if(HasSpecificBuff(victim, "Plasm I"))
+				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.25); // at max pap (8), its 7 seconds if melee, or 4.5 seconds if ranged
+				Cheese_SetPenalty(victim, (melee ? 0.85 : 0.6));
+				if(b_thisNpcIsARaid[victim])
 				{
-					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+					duration *= 0.65;
+				}
+				else if(b_thisNpcIsABoss[victim])
+				{
+					duration *= 0.75;
+				}
+
+				if(HasSpecificBuff(victim, "Plasm III"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
 				}
 				else if(HasSpecificBuff(victim, "Plasm II"))
 				{
 					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
 				}
+				else if(HasSpecificBuff(victim, "Plasm I"))
+				{
+					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
+				}
 
-				if(b_thisNpcIsARaid[victim])
-				{
-					duration *= 0.65;
-					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				}
-				else if(b_thisNpcIsABoss[victim])
-				{
-					duration *= 0.8;
-					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				}
-				else
-				{
-					ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				}
-				IncreaseEntityDamageTakenBy(victim, 1.08 + (0.03*paplvl), vuln_duration); // up to +40% dmg taken at max pap (8)
+				ApplyStatusEffect(attacker, victim, "Plasm I", duration);
+				IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 1.0;
 
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 				position[2] += 10.0;
-				for(int i = 0; i < 2; i++)
+				for(int i = 0; i < 3; i++)
 				{
 					Cheese_BeamEffect(position);
 					position[2] += 32.5;
@@ -1196,4 +1243,3 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
-*/

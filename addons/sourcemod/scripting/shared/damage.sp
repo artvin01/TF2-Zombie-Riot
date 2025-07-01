@@ -1222,7 +1222,6 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Wkit_Soldin_NPCTakeDamage_Ranged(attacker, victim, damage, weapon, damagetype);
 		}
-		/*
 		case WEAPON_CHEESY_MELEE:
 		{
 			if(!CheckInHud())
@@ -1233,7 +1232,6 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				Cheese_OnTakeDamage_Primary(attacker, victim, damage, weapon);
 		}
-		*/
 		case WEAPON_CHEMICAL_THROWER:
 		{
 			if(!CheckInHud())

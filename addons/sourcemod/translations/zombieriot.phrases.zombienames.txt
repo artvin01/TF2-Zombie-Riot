@@ -4329,4 +4329,14 @@
 	{
 		"en"	"Instinct's Summon"
 	}
+	"Plasmic Elemental Damage"
+	{
+		"en"	"Plasmic Elemental Damage"
+		"es"	"Daño Elemental Plasmico"
+	}
+	"Plasmic Elemental Damage Desc"
+	{
+		"en"	"Once full, your body's plasma will break down, weakening your body.\nYou receive a level of Plasm until you reach III.\nIf you have Plasm III, you will be debuffed and recieve 10％ of your maximum health as true damage.\nCan be healed with armor."
+		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\nRecibes un nivel de Plasm hasta que llegas a III.\nSi tienes Plasm III, eres debilitado y ralentizado, y recibes el 10％ de tu vida maxima como daño verdadero.\nPuede curarse con armadura."
+	}
 }
