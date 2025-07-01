@@ -1148,12 +1148,12 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
 				float duration = (melee ? 2.5 : 7.5);
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				Explode_Logic_Custom(0.0, attacker, attacker, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
+				Explode_Logic_Custom(0.0, attacker, attacker, weapon, position, 150.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
 
 				position[2] += 10.0;
 				for(int i = 0; i < 3; i++)
 				{
-					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 5.0);
+					Cheese_BeamEffect(position, 10.0, 225.0, 0.2, 3.0);
 					position[2] += 32.5;
 				}
 				Cheese_PlaySplat(victim);
@@ -1199,7 +1199,10 @@ public void Elemental_Plasma_HealLogic(int entity, int other, float damage, int 
 	if(other)
 	{	
 		if(GetTeam(other) != GetTeam(entity))
+		{
+			PrintToChatAll("Other entity is invalid, returning");
 			return;
+		}
 	}
 
 	if(IsValidClient(entity))
@@ -1207,10 +1210,14 @@ public void Elemental_Plasma_HealLogic(int entity, int other, float damage, int 
 		healing = 5.0;
 		if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 			healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+		PrintToChatAll("Entity is a client! Heal multiplied by pap level.");
 	}
 	else
 	{
 		healing = float(ReturnEntityMaxHealth(entity)) * 0.1;
+		PrintToChatAll("Entity isn't a client! Heal is set to 10% of the entity's max HP.");
 	}
-	HealEntityGlobal(entity, other, healing, 1.0, 1.0, HEAL_SELFHEAL);
+	int healing2 = HealEntityGlobal(entity, other, healing, 1.0, 1.0, HEAL_SELFHEAL);
+	if(healing2 > 0)
+		PrintToChatAll("Healing done: %d", healing2);
 }
