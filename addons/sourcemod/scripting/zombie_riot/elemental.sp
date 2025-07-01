@@ -1204,11 +1204,13 @@ public void Elemental_Plasma_HealLogic(int entity, int other, float damage, int 
 
 	if(IsValidClient(entity))
 	{
-		healing = (5 * Attributes_Get(weapon, Attrib_PapNumber, 0.0));
+		healing = 5.0;
+		if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
+			healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 	}
 	else
 	{
 		healing = float(ReturnEntityMaxHealth(entity)) * 0.1;
 	}
-	HealEntityGlobal(other, other, healing, 1.0, 1.0, HEAL_SELFHEAL);
+	HealEntityGlobal(entity, other, healing, 1.0, 1.0, HEAL_SELFHEAL);
 }
