@@ -1101,7 +1101,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						if(HasSpecificBuff(victim, "Plasm III"))
 						{
 							SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-							IncreaseEntityDamageTakenBy(victim, 1.25, 20.0);
+							IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
 							TF2_StunPlayer(victim, 1.25, 0.5, TF_STUNFLAG_SLOWDOWN);
 							Cheese_SetPenalty(victim, 1.175);
 						}
