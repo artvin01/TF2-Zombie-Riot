@@ -4352,7 +4352,7 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas no elemental cooldown, but buildup slows down on the same victim."
+		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas 1sec elemental cooldown, but buildup slows down on the same victim."
 	}
 	"Plasma Extra Desc"
 	{
