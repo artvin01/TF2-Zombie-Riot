@@ -474,8 +474,8 @@ public void Weapon_Kit_CheeseBubble(int client, int weapon, bool &result, int sl
 				{
 					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
 				}
+				WandProjectile_ApplyFunctionToEntity(entity,Cheese_BubbleTouch);
 		
-				SDKHook(entity, SDKHook_StartTouchPost, Cheese_BubbleTouch);
 			}
 		}
 		else
@@ -503,8 +503,9 @@ public void Cheese_BubbleTouch(int entity, int target)
 		if(GetTeam(target) == GetTeam(owner))
 			return;
 	}
+	WandProjectile_ApplyFunctionToEntity(entity,INVALID_FUNCTION);
 
-	SDKUnhook(entity, SDKHook_StartTouchPost, Cheese_BubbleTouch);
+	//stand still.
 
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -518,6 +519,7 @@ public void Cheese_BubbleTouch(int entity, int target)
 	WandProjectile_ApplyFunctionToEntity(bubble1, Cheese_Bubble_OverrideTouch);
 	CreateTimer(1.0, CheeseBubble_FirstCheck, EntIndexToEntRef(bubble1), TIMER_FLAG_NO_MAPCHANGE);
 	b_NoKnockbackFromSources[bubble1] = true;
+	SetEntityMoveType(bubble1, MOVETYPE_NONE);
 
 	// man...
 	pos1[2] += 10.0;
