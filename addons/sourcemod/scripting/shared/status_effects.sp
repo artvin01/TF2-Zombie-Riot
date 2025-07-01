@@ -4874,7 +4874,7 @@ void StatusEffects_Plasm()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϧ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
+	data.DamageTakenMulti 			= 0.08;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.08;
 	data.Positive 					= false;
@@ -4894,7 +4894,7 @@ void StatusEffects_Plasm()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϥ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
+	data.DamageTakenMulti 			= 0.12;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.12;
 	data.Positive 					= false;
@@ -4914,7 +4914,7 @@ void StatusEffects_Plasm()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ϥ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
+	data.DamageTakenMulti 			= 0.16;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.16;
 	data.Positive 					= false;
