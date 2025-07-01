@@ -1200,6 +1200,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 
 				ApplyStatusEffect(attacker, victim, "Plasm I", duration);
 				IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 1.0;
 
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
