@@ -85,10 +85,10 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
-static int Cheese_Bubble_MaxHits[9]  = {125, 125, 110, 110, 95, 80, 70, 65, 60}; // Plasmatized Bubble's max charge
-static float Cheese_Bubble_ElementalDmg = 195.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static int Cheese_Bubble_MaxHits[9]  = {150, 150, 135, 135, 120, 105, 90, 75, 60}; // Plasmatized Bubble's max charge
+static float Cheese_Bubble_ElementalDmg = 200.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 30.0, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
-static float Cheese_Lethal_DmgBoost[9] = {2.0, 2.0, 2.0, 2.0, 2.05, 2.1, 2.15, 2.2, 2.25}; // Lethal Injection's damage bonus
+static float Cheese_Lethal_DmgBoost[9] = {2.25, 2.25, 2.25, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {3.5, 3.5, 3.5, 3.5, 3.75, 4.0, 4.25, 4.5, 4.75}; // Lethal Injection's elemental damage bonus
 static float Cheese_Burst_ElementalDmg[9]  = {1.0, 1.0, 1.15, 1.30, 1.45, 1.60, 1.75, 1.9, 2.15}; // Elemental damage multiplier for Plasmic Burst
 static float Cheese_Burst_Range[9]  = {225.0, 225.0, 225.0, 225.0, 240.0, 255.0, 270.0, 285.0, 300.0}; // Range for Plasmic Burst
@@ -316,13 +316,13 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	if((damagetype & DMG_CLUB))
 	{   
 		if(Cheese_PapLevel[attacker] > 0)
-			Cheese_Bubble_Hits[attacker] += 3;
+			Cheese_Bubble_Hits[attacker] += 4;
 
 		float cheesedmg = damage;
 
 		float totalmult = 1.5;
 		if(Cheese_PapLevel[attacker] > 1)
-			totalmult += (Cheese_PapLevel[attacker] * 0.075); // don't go overkill
+			totalmult += (Cheese_PapLevel[attacker] * 0.1);
 
 		if(Cheese_PapLevel[attacker] > 0 && (HasSpecificBuff(victim, "Plasm I") || HasSpecificBuff(victim, "Plasm II") || HasSpecificBuff(victim, "Plasm III")))
 		{
@@ -418,7 +418,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 
 			Cheese_TargetsHit[client] = 0.0;
 
-			float basedmg = (375.0 * Attributes_Get(weapon, 2, 1.0));
+			float basedmg = (505.0 * Attributes_Get(weapon, 2, 1.0));
 			basedmg *= Attributes_Get(weapon, 1, 1.0);
 			Client_Shake(client, 0, 35.0, 90.0, 0.6);
 
