@@ -1199,7 +1199,10 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 
 				ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-				IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
+			//	IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
+			//  the above i a terrible idea, this elemental stacks forever, and can be reapplied infinitly
+			// 	as such you can stack infinite damage penalties.
+			//i have replaced it with just making plasm itself giving more damage instead.
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 1.0;
 
 				float position[3];
