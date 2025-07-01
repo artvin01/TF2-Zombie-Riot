@@ -4299,7 +4299,7 @@
 	{
 		"en"		"Insufficient charge!!"
 	}
-	"Plasma Kit Plasm III Warning"
+	"Plasma Kit Warning"
 	{
 		"en"		"Your body slowly starts to break down...."
 	}
