@@ -1201,7 +1201,7 @@ static void Elemental_Plasma_HealLogic(int healer, int patient, float damage, in
 
 	if (!i_IsABuilding[patient])
 	{
-		float healing = 5.0;
+		float healing = 7.0;
 		if(IsValidEntity(weapon))
 			if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 				healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
