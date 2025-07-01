@@ -2714,7 +2714,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			case 2: Lelouch_Lines(npc, "아직 끝났다고 생각하지 마라! 아직 싸울 힘은 더 많이 남아있다!");
 		}
 		
-		RaidModeScaling *= 1.2;
+		RaidModeScaling *= 1.5;
 
 		RaidModeTime += 200.0;
 

@@ -828,6 +828,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							{
 								ApplyLastmanOrDyingOverlay(client);
 								SendConVarValue(client, sv_cheats, "1");
+								Convars_FixClientsideIssues(client);
 							}
 						}
 						ResetReplications();

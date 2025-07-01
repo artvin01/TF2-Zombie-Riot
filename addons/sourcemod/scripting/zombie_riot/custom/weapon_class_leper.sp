@@ -931,5 +931,5 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 
 static int Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
