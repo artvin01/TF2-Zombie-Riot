@@ -816,7 +816,8 @@ public void OnPluginStart()
 }
 void Core_DoTickrateChanges()
 {
-
+	//needs to get called a few times just incase.
+	//it isnt expensive so it really doesnt matter.
 	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
 
@@ -1412,6 +1413,7 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
+	Core_DoTickrateChanges();
 #if defined ZR || defined RPG
 	KillFeed_ClientPutInServer(client);
 #endif
