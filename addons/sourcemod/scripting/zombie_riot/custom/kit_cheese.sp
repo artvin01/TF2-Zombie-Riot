@@ -6,7 +6,7 @@ This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
 - an AoE healing effect is triggered, healing allies around the affected.
 
-Passive
+Passive - The kit revives allies 30% faster.
 
 Plasma Injector (melee) - Grants NO resistance, is meant to be more like a quick-use weapon now.
 Health on kill is still very great, and its better to combo and time it with the Plasminator.
