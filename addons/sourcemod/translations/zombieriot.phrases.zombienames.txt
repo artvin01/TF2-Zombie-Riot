@@ -4336,7 +4336,7 @@
 	}
 	"Plasmic Elemental Damage Desc"
 	{
-		"en"	"Once full, your body's plasma will break down, weakening your body.\nYou receive a level of Plasm until you reach III.\nIf you have Plasm III, you will be debuffed and recieve 10％ of your maximum health as true damage.\nCan be healed with armor."
-		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\nRecibes un nivel de Plasm hasta que llegas a III.\nSi tienes Plasm III, eres debilitado y ralentizado, y recibes el 10％ de tu vida maxima como daño verdadero.\nPuede curarse con armadura."
+		"en"	"Once full, your body's plasma will break down, weakening your body.\nYou take 10％ of your max health as true damage, and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\nRecibes un 10％ de tu vida maxima como daño verdadero, y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
 }
