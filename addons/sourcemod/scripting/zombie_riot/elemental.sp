@@ -1150,7 +1150,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
-				float duration = (melee ? 2.5 ; 7.5);
+				float duration = (melee ? 2.5 : 7.5);
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
 				Explode_Logic_Custom(0.0, victim, victim, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
 
