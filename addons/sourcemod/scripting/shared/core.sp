@@ -812,6 +812,10 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
+	Core_DoTickrateChanges();
+}
+void Core_DoTickrateChanges()
+{
 
 	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
@@ -987,7 +991,7 @@ public void OnMapStart()
 	FileNetwork_MapStart();
 	Core_PrecacheGlobalCustom();
 #endif
-
+	Core_DoTickrateChanges();
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");
