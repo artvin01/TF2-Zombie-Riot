@@ -4352,19 +4352,15 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas 1sec elemental cooldown, but buildup slows down on the same victim."
-	}
-	"Plasma Extra Desc"
-	{
-		"en"	"{green}When inflicting the Plasm debuff, its strength increases if the victim already has the Plasm debuff.\n{white}Say, if the victim has Plasm I, and you inflict Plasm I again, it gets upgraded to Plasm II, and inflicting Plasm again upgrades it to Plasm III.\n{orange}This, however, doesn't work for the Plasm-ubblinator."
+		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, heals nearby allies around the affected.\nHas low elemental cooldown, but buildup slows down on the same victim."
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations and\nreduces buildup penalty when triggering its elemental effect."
+		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect healing and\nreduces buildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon.\nNow deals extra damage against Plasm-ed targets!\nDamage bonus increases with pap level."
+		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
@@ -4372,15 +4368,7 @@
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
-		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown, and allows it to inflict Plasm I on the victim."
-	}
-	"Plasma Inject Pap 4 Desc"
-	{
-		"en" 	"Increases overall stats.\nReduces Lethal Injection's cooldown."
-	}
-	"Plasma Inject Pap 5 Desc"
-	{
-		"en" 	"Increases overall stats.\nAllows Lethal Injection to inflict Plasm II instead of I."
+		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
@@ -4388,19 +4376,11 @@
 	}
 	"Plasma Bubble Desc"
 	{
-		"en"	"A techno-cannon that, when fully charged, shoots out a capsule,\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve the Plasm I debuff and constant Plasmic Elemental damage."
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule,\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage."
 	}
-	"Plasma Bubble Pap 2 Desc"
+	"Plasma Bubble Pap Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
-	}
-	"Plasma Bubble Pap 3 Desc"
-	{
-		"en"	"Increases its Plasmic Elemental damage.\nSlightly increases the lingering Plasm I debuff duration."
-	}
-	"Plasma Bubble Pap 5 Desc"
-	{
-		"en"	"Increases its Plasmic Elemental damage.\nSlightly increases the lingering Plasm I debuff duration.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
 	}
 	"Plasminator Desc"
 	{
@@ -4416,7 +4396,7 @@
 	}
 	"Plasminator Pap 3 Desc"
 	{
-		"en"	"Increases overall stats.\nAllows Plasmic Burst to inflict Plasm I on the targets it hits."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage."
 	}
 	"Plasminator Pap 4 Desc"
 	{
