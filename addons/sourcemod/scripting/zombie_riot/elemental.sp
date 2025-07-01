@@ -1112,7 +1112,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					else
 					{
 						SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, weapon);
-						IncreaseEntityDamageTakenBy(victim, 1.25, (melee ? 5.0 : 2.5);
+						IncreaseEntityDamageTakenBy(victim, 1.25, (melee ? 5.0 : 2.5));
 						Explode_Logic_Custom(0.0, attacker, attacker, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
 					}
 					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 2.5;
