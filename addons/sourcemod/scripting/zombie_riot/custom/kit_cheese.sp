@@ -383,7 +383,10 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 
 			Rogue_OnAbilityUse(attacker, weapon);
 			RemoveSpecificBuff(attacker, "Plasmatized Lethalitation");
-			Ability_Apply_Cooldown(attacker, 2, Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]]);
+			float thecooldown = Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]];
+			if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
+				thecooldown *= 0.5;
+			Ability_Apply_Cooldown(attacker, 2, thecooldown);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
 		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 2.35), weapon);
@@ -408,7 +411,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 			Rogue_OnAbilityUse(client, weapon);
 			float Cooldown = Cheese_Burst_Cooldown[Cheese_PapLevel[client]];
 			if(HasSpecificBuff(client, "Plasmatic Rampage"))
-				Cooldown *= 0.65;
+				Cooldown *= 0.5;
 
 			Ability_Apply_Cooldown(client, slot, Cooldown);
 			EmitSoundToClient(client, SOUND_CHEDDAR_ABILITY);
