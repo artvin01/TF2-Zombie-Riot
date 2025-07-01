@@ -1677,7 +1677,7 @@
 	"Plasm I Desc"
 	{
 		"en"	"Slows NPCs by 8％.\nReduces attackspeed by 8％\nIncreases damage taken by 8％.\n{yellow}TIP: Stacking this debuff makes it stronger!"
-		"ko"	"NPC의 이동 속도를 8％ 감소시킵니다.\n공격 속도가 5％ 감소합니다."
+		"ko"	"NPC의 이동 속도를 8％ 감소시킵니다.\n공격 속도가 8％ 감소합니다.\n받는 피해가 8％ 증가합니다.\n{yellow}팁: 이 디버프가 쌓이면 디버프가 더욱 강력해집니다!"
 	}
 	"Plasm II"
 	{
@@ -1687,7 +1687,7 @@
 	"Plasm II Desc"
 	{
 		"en" 	"Slows NPCs by 12％.\nReduces attackspeed by 12％.\nIncreases damage taken by 12％."
-		"ko"	"NPC의 이동 속도를 11％ 감소시킵니다.\n공격 속도가 8％ 감소합니다."
+		"ko"	"NPC의 이동 속도를 12％ 감소시킵니다.\n공격 속도가 12％ 감소합니다.\n받는 피해가 12％ 증가합니다."
 	}
 	"Plasm III"
 	{
@@ -1697,7 +1697,7 @@
 	"Plasm III Desc"
 	{
 		"en" 	"Slows NPCs by 16％.\nReduces attackspeed by 16％.\nIncreases damage taken by 16％."
-		"ko"	"NPC의 이동 속도를 14％ 감소시킵니다.\n공격 속도가 11％ 감소합니다."
+		"ko"	"NPC의 이동 속도를 16％ 감소시킵니다.\n공격 속도가 16％ 감소합니다.\n받는 피해가 16％ 증가합니다."
 	}
 	"Plasmatic Rampage"
 	{
@@ -1707,7 +1707,7 @@
 	"Plasmatic Rampage Desc"
 	{
 		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra static regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
-		"ko" 	"{darkviolet}당신은 플라즈마로 휩싸였습니다...\n{green}공격 피해량과 피해 저항력이 +15％ 증가합니다.\n공격 속도가 +25％ 증가합니다.\n{yellow}(이 이하는 플라즈마 서프라이즈 무기에만 적용됩니다)\n{darkviolet}능력의 쿨타임이 감소하며, 체력이 25％ 이하라면 초당 체력을 회복합니다."
+		"ko" 	"공격 피해량과 피해 저항력, 공격 속도가 +30％ 증가합니다.\n능력 쿨타임이 절반 감소하고 체력이 25％ 이하일시 추가 재생력을 얻습니다.\n{darkviolet}하지만, 시간이 지날수록 플라즈마가 당신의 몸을 천천히 삼킬 것입니다..."
 	}
 	"Plasmatized Lethalitation"
 	{
@@ -1717,7 +1717,7 @@
 	"Plasmatized Lethalitation Desc"
 	{
 		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
-		"ko"	"공격 속도가 증가하고 적에게 부여하는 플라즈마 원소 피해량이 2배 증가합니다."
+		"ko"	"다음 공격의 피해량이 증가하고 극도로 높은 플라즈마 원소 피해를 부여합니다.\n사용 능력이 더욱 강화됩니다. (팩펀 개선 레벨에 따라 더 증가)\n적중시 버프가 제거되고 해당 사용 능력의 쿨타임을 다시 기다려야합니다."
 	}
 	"Ziberian Flagship Weaponry"
 	{

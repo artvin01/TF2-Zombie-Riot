@@ -3948,7 +3948,7 @@
 		"en"	"Rarely do zombies feel the tendency to ascend to heaven."
 		"fr"	"Rarement, les zombies ont la tendance de monter au paradis."
 		"chi"	"很少会有僵尸会升天的欲望。"
-		"ko"	"천국에 올라가고 싶어하는 좀비는 거의 없을 겁니다."
+		"ko"	"낮은 확률로 처치한 적의 시체가 하늘로 승천합니다. 천국에 올라가고 싶어하는 좀비는 거의 없을 겁니다."
 	}
 	"Crossbow Pap 1"
 	{
@@ -4859,12 +4859,12 @@
 	"Soldine Kit Pap 3"
 	{
 		"en"	"Everything charges faster, Your super melee hit now gives 50％ of your armor back!"
-		"ko"	"모든게 더 빨리 충전되며, 근접 공격 적중시 이제 아머를 50％만큼 회복."
+		"ko"	"모든게 더 빨리 충전되며, 폭발 주먹 적중시 이제 아머를 50％만큼 회복."
 	}
 	"Soldine Kit Pap 4"
 	{
 		"en"	"Everything charges faster, super hit now gives upto 25％ Over armor!"
-		"ko"	"모든게 더 빨리 충전되며, 근접 공격이 이제 최대 아머의 25％에 해당하는 아머를 회복할 수 있게 됨. (과치료 개념)"
+		"ko"	"모든게 더 빨리 충전되며, 폭발 주먹 적중시 이제 최대 아머의 25％에 해당하는 아머를 회복할 수 있게 됨. (과치료 개념)"
 	}
 	"Soldine Kit Pap rest"
 	{
@@ -5095,22 +5095,22 @@
 	"Plasma Kit Desc"
 	{
 		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, inflicts the Plasm debuff, and increases the victim's vulnerability.\nHas 1sec elemental cooldown, but buildup slows down on the same victim."
-		"ko"	"코쉬가 엑스피돈사 시뮬레이터를 해낸 용병들을 위해 특별히 제작한 선물입니다."
+		"ko"	"[플라즈마 원소 피해]: 발동시, 플라즈마 디버프 부여 및 대상의 피해 저항력 감소\n원소 피해 효과 발동 후의 쿨타임은 1초이지만, 동일한 대상에겐 축적 속도가 느려짐."
 	}
 	"Plasma Extra Desc"
 	{
 		"en"	"{green}When inflicting the Plasm debuff, its strength increases if the victim already has the Plasm debuff.\n{white}Say, if the victim has Plasm I, and you inflict Plasm I again, it gets upgraded to Plasm II, and inflicting Plasm again upgrades it to Plasm III.\n{orange}This, however, doesn't work for the Plasm-ubblinator."
-		"ko"	"{darkviolet}전부 충전되면, 공격이 플라즈마 원소 피해와 플라즈마 취약 디버프를 부여.\n{green}대상이 이미 플라즈마 효과를 받고 있다면 디버프가 강화됨.\n{yellow}디버프의 지속 시간은 무기 개선 수준에 따라 증가.\n{green}근접 무기로 충전했다면, 면역 쿨타임 감소 및 디버프와 취약의 지속 시간이 증가."
+		"ko"	"{green}플라즈마 디버프를 부여할때, 대상이 이미 플라즈마 디버프가 있다면 능력이 강화됨.\n{green}대상이 이미 플라즈마 효과를 받고 있다면 디버프가 강화됨.\n{white}대상이 플라즈마 I 보유시, 플라즈마 II로 증가시키는 방식.\n{orange}끓는 플라즈마 분사기엔 해당되지 않음."
 	}
 	"Plasma Inject Desc"
 	{
 		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect durations and\nreduces buildup penalty when triggering its elemental effect."
-		"ko" 	"플라즈마로 가득차있는 거대한 주사기입니다.\n플라즈마 원소 피해를 입히고, 원소 피해 효과를 발동할 때 추가 효과를 발생시킴."
+		"ko" 	"플라즈마 원소 피해를 입히고, 지속 시간 및 원소 피해 발동후 원소 피해 축적량 감소 패널티를 감소시킴."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
 		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon.\nNow deals extra damage against Plasm-ed targets!\nDamage bonus increases with pap level."
-		"ko" 	"최대 체력과 능력치 증가.\n이제 플라즈마가 부여된 대상에게 추가 피해를 입힘."
+		"ko" 	"최대 체력과 능력치 증가.\n끓는 플라즈마 분사기 보조 무기 획득\n플라즈마 디버프가 있는 대상에게 추가 피해를 주며 팩펀시 더욱 증가."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
@@ -5125,7 +5125,7 @@
 	"Plasma Inject Pap 4 Desc"
 	{
 		"en" 	"Increases overall stats.\nReduces Lethal Injection's cooldown."
-		"ko" 	"능력치 증가. \n치사 주사의 쿨타임이 감소하고 사용 스택을 최대 2개까지 저장 가능."
+		"ko" 	"능력치 증가. \n치사 주사의 쿨타임이 감소."
 	}
 	"Plasma Inject Pap 5 Desc"
 	{
@@ -5140,18 +5140,22 @@
 	"Plasma Bubble Desc"
 	{
 		"en"	"A techno-cannon that, when fully charged, shoots out a capsule,\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve the Plasm I debuff and constant Plasmic Elemental damage."
+		"ko"	"완전히 충전되면 캡슐을 발사함.\n이 캡슐이 무언가에 접촉하면 거대한 플라즈마 거품으로 팽창.\n이 거품 안의 모든 적들은 플라즈마 I 디버프를 받고 지속적인 플라즈마 원소 피해를 받음."
 	}
 	"Plasma Bubble Pap 2 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+		"ko"	"플라즈마 원소 피해 부여량 증가.\n거품의 지속 시간 및 충전 요구량 감소."
 	}
 	"Plasma Bubble Pap 3 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage.\nSlightly increases the lingering Plasm I debuff duration."
+		"ko"	"플라즈마 원소 피해 부여량 증가.\n플라즈마 I 디버프 지속 시간이 조금 증가."
 	}
 	"Plasma Bubble Pap 5 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage.\nSlightly increases the lingering Plasm I debuff duration.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+		"ko"	"플라즈마 원소 피해 부여량 증가.\n플라즈마 I 디버프 지속 시간이 조금 증가.\n거품의 지속 시간 및 충전 요구량 감소."
 	}
 	"Plasminator Desc"
 	{
@@ -5165,12 +5169,12 @@
 	"Plasminator Pap 2 Desc"
 	{
 		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts its damage as additional Plasmic Elemental damage."
-		"ko" 	"새 능력 : 플라즈마 버스트. 사용시 짧은 사거리의 플라즈마 레이저를 발사.\n플라즈마 버스트는 광역 피해를 주고 피해량의 35 ％만큼 플라즈마 원소 피해를 부여."
+		"ko" 	"새 능력 : 플라즈마 버스트. 사용시 짧은 사거리의 플라즈마 레이저를 발사.\n플라즈마 버스트는 광역 피해를 주고 그 피해량만큼 플라즈마 원소 피해를 부여."
 	}
 	"Plasminator Pap 3 Desc"
 	{
 		"en"	"Increases overall stats.\nAllows Plasmic Burst to inflict Plasm I on the targets it hits."
-		"ko" 	"능력치 증가 \n플라즈마 버스트의 사거리와 플라즈마 원소 피해 부여량이 증가."
+		"ko" 	"능력치 증가 \n플라즈마 버스트가 적중한 대상에게 플라즈마 I 디버프 부여."
 	}
 	"Plasminator Pap 4 Desc"
 	{

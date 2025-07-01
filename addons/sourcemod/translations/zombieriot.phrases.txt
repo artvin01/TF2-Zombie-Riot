@@ -2953,7 +2953,7 @@
 		"fr"		"Silvester et Goggles n'ont pas attaqué pour aucune raison."
 		"ru"		"Сильвестр и Валдч не нападали на вас без причины."
 		"chi"		"西尔维斯特和瓦德奇不是无缘无故攻击你的。"
-		"ko"		"실베스터가 월드치가 당신을 아무런 이유도 없이 공격한게 아닙니다."
+		"ko"		"실베스터와 월드치가 당신을 아무런 이유도 없이 공격한게 아닙니다."
 	}
 	"Xeno_Wave_3"
 	{
@@ -4932,9 +4932,11 @@
 	"Plasma Kit Insufficient Charge"
 	{
 		"en"		"Insufficient charge!!"
+		"ko"		"충전 부족함!!"
 	}
 	"Plasma Kit Plasm III Warning"
 	{
 		"en"		"Your body slowly starts to break down...."
+		"ko"		"당신의 몸이 천천히 망가져가기 시작합니다..."
 	}
 }

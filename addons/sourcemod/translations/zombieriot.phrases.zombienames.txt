@@ -5167,10 +5167,12 @@
 	{
 		"en"	"Plasmic Elemental Damage"
 		"es"	"Daño Elemental Plasmico"
+		"ko"	"플라즈마 원소 피해"
 	}
 	"Plasmic Elemental Damage Desc"
 	{
 		"en"	"Once full, your body's plasma will break down, weakening your body.\nYou receive a level of Plasm until you reach III.\nIf you have Plasm III, you will be debuffed and recieve 10％ of your maximum health as true damage.\nCan be healed with armor."
 		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\nRecibes un nivel de Plasm hasta que llegas a III.\nSi tienes Plasm III, eres debilitado y ralentizado, y recibes el 10％ de tu vida maxima como daño verdadero.\nPuede curarse con armadura."
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 몸 속의 플라즈마가 녹아내리며 신체를 약화시킵니다.\n플라즈마 III가 될 때까지 플라즈마 효과를 받습니다.\n플라즈마 III 효과를 보유했다면, 추가 디버프를 받고 최대 체력의 10％ 에 해당하는 트루 대미지를 받습니다.\n아머 획득으로 치유할 수 있습니다."
 	}
 }

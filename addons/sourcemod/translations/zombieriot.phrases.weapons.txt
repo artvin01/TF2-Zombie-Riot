@@ -3993,6 +3993,7 @@
 	{
 		"en" "Plasm-ubblinator"
 		"es" "Plasm-urbujinador"
+		"ko" "끓는 플라즈마 분사기"
 	}
 	"Koshi's Plasm-inator"
 	{
