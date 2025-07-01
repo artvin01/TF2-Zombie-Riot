@@ -1067,11 +1067,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
-	float paplvl = 1.0;
-	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE && IsValidClient(attacker));
-	if(melee)
-		paplvl = Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 
+	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE && IsValidClient(attacker));
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -1104,7 +1101,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 						IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
 						TF2_StunPlayer(victim, 1.0, 0.75, TF_STUNFLAG_SLOWDOWN);
-						Explode_Logic_Custom(0.0, victim, victim, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
+						Explode_Logic_Custom(0.0, attacker, attacker, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
 						float HudY = -1.0;
 						float HudX = -1.0;
 						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
@@ -1115,9 +1112,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 					else
 					{
 						SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, weapon);
-						IncreaseEntityDamageTakenBy(victim, 1.25, 2.5);
-						Explode_Logic_Custom(0.0, victim, victim, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
-						
+						IncreaseEntityDamageTakenBy(victim, 1.25, (melee ? 5.0 : 2.5);
+						Explode_Logic_Custom(0.0, attacker, attacker, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
 					}
 					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 2.5;
 
@@ -1152,7 +1148,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
 				float duration = (melee ? 2.5 : 7.5);
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				Explode_Logic_Custom(0.0, victim, victim, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
+				Explode_Logic_Custom(0.0, attacker, attacker, weapon, position, 125.0, _, _, _, _, false, _, Elemental_Plasma_HealLogic);
 
 				position[2] += 10.0;
 				for(int i = 0; i < 3; i++)
@@ -1199,28 +1195,20 @@ public void Elemental_Plasma_HealLogic(int entity, int other, float damage, int 
 	if (!IsValidEntity(other) || !IsValidEntity(entity))
 		return;
 
+	float healing;
 	if(other)
 	{	
-		float pap = 1.0;
 		if(GetTeam(other) != GetTeam(entity))
-		{
-			if(IsValidClient(other))
-			{
-				pap = Attributes_Get(weapon, Attrib_PapNumber, 0.0);
-				HealEntityGlobal(other, other, (float(ReturnEntityMaxHealth(other)) * 0.025) * pap, 1.0, 2.0, HEAL_ABSOLUTE);
-			}
-			else
-			{
-				HealEntityGlobal(other, other, (float(ReturnEntityMaxHealth(other)) * 0.1), 1.0, 4.0, HEAL_ABSOLUTE);
-			}
-		}
-		else
-		{
-			if(IsValidClient(entity))
-			{
-				pap = Attributes_Get(weapon, Attrib_PapNumber, 0.0);
-			}
-			HealEntityGlobal(other, other, (5.0 * pap), 1.0, 10.0, HEAL_ABSOLUTE);
-		}
+			return;
 	}
+
+	if(IsValidClient(entity))
+	{
+		healing = (5 * Attributes_Get(weapon, Attrib_PapNumber, 0.0));
+	}
+	else
+	{
+		healing = float(ReturnEntityMaxHealth(entity)) * 0.1;
+	}
+	HealEntityGlobal(other, other, healing, 1.0, 1.0, HEAL_SELFHEAL);
 }
