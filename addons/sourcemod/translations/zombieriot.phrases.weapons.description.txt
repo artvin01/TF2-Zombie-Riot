@@ -4352,11 +4352,11 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, heals nearby allies around the affected.\nHas low elemental cooldown, but buildup slows down on the same victim."
+		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, heals nearby allies around the affected, buildup slows down on the victim.\nYou revive allies 30％ faster!"
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, increases effect healing and\nreduces buildup penalty when triggering its elemental effect."
+		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, reduces elemental cooldown and\n buildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
