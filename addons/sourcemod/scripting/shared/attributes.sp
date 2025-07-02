@@ -25,6 +25,8 @@ enum
 	Attrib_FormRes = 4028,
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
+	// 4031
+	// 4032
 	Attrib_ReviveTimeCut = 4033,
 	Attrib_ExtendExtraCashGain = 4034,
 	Attrib_ReduceMedifluidCost = 4035,
