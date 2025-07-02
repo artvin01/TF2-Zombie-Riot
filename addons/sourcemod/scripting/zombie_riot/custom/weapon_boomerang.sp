@@ -7,16 +7,20 @@
 #define LARGE_METAL_BOOMERANG_MODEL "models/props_forest/saw_blade_large.mdl"
 #define BOOMERANG_HIT_SOUND_WOOD "player/footsteps/woodpanel4.wav"
 #define BOOMERANG_HIT_SOUND_METAL "weapons/metal_hit_hand3.wav"
+#define BOOMERANG_FIRE_SOUND "passtime/projectile_swoosh2.wav"
 
 static int HitsLeft[MAXENTITIES]={0, ...};
 static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
 static int Glaives_Currently_Shot[MAXPLAYERS+1] = {0, ...};
+static int ability_timer_times_repeated[MAXPLAYERS+1] = {0, ...};
 static int Times_Damage_Got_Reduced[MAXENTITIES]={0, ...};
 
 void WeaponBoomerang_MapStart()
 {
 PrecacheSound(BOOMERANG_HIT_SOUND_WOOD);
 PrecacheSound(BOOMERANG_HIT_SOUND_METAL);
+PrecacheSound(BOOMERANG_FIRE_SOUND);
+PrecacheSound("player/taunt_jackhammer_down_swoosh.wav");
 }
 
 public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
@@ -251,7 +255,7 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 
 				HitsLeft[projectile] = 8; //8 hits allowed
 
-				ApplyCustomModelToWandProjectile(projectile, LARGE_METAL_BOOMERANG_MODEL, 0.6, "");
+				ApplyCustomModelToWandProjectile(projectile, LARGE_METAL_BOOMERANG_MODEL, 0.5, "");
 				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
 				Glaives_Currently_Shot[client] += 1;
 				Times_Damage_Got_Reduced[projectile] = 0;
@@ -273,11 +277,10 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 				speed *= Attributes_Get(weapon, 103, 1.0);
 				speed *= Attributes_Get(weapon, 104, 1.0);
 
-				float time = 2500.0 / speed;
+				float time = 1700.0 / speed;
 				time *= Attributes_Get(weapon, 101, 1.0);
 				time *= Attributes_Get(weapon, 102, 1.0);
 
-				time *= 5.0;
 				float fAng[3];
 				GetClientEyeAngles(client, fAng);
 
@@ -313,6 +316,72 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 			}
 		}
 	}
+	EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
+}
+public void Weapon_Boomerang_Ability(int client, int weapon, bool crit)
+{
+	i_Current_Pap[client] = Boomerang_Get_Pap(weapon);
+	switch (i_Current_Pap[client])
+	{
+		case 4: //Glaive Lord
+		{
+			//artvin pls help with spinning glaives
+		}
+		case 5: //Nightmare
+		{
+			//idk yet
+		}
+		case 6: //Sunswallower
+		{
+			CreateTimer(0.1, Timer_Multiple_Boomerangs, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			ability_timer_times_repeated[client] = 0;
+		}
+	}
+}
+
+public Action Timer_Multiple_Boomerangs(Handle timer, int client)
+{
+	if (ability_timer_times_repeated[client] >= 5)
+	{
+		return Plugin_Stop;
+	}
+	else
+	{
+		ability_timer_times_repeated[client] += 1;
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		float damage = 65.0;
+		damage *= Attributes_Get(weapon, 2, 1.0);
+		delay_hud[client] = 0.0;
+
+		float speed = 1100.0;
+		speed *= Attributes_Get(weapon, 103, 1.0);
+		speed *= Attributes_Get(weapon, 104, 1.0);
+
+		float time = 800.0 / speed;
+		time *= Attributes_Get(weapon, 101, 1.0);
+		time *= Attributes_Get(weapon, 102, 1.0);
+
+		float fAng[3];
+		GetClientEyeAngles(client, fAng);
+
+		float fPos[3];
+		GetClientEyePosition(client, fPos);
+		for (int i = 1; i <= 3; i++)//each call fires 3 projectiles
+			{
+				GetClientEyeAngles(client, fAng);
+				fAng[0] += GetRandomFloat(-9.0, 9.0); //vertical spread
+				fAng[1] += GetRandomFloat(-9.0, 9.0);
+				fAng[2] += GetRandomFloat(-45.0, 45.0); //projectile spin
+				//fAng[2] += GetRandomFloat(-7.0, 7.0);//changes horizontal, can use this to fix the sawblade model from tf2
+				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
+				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
+				ApplyCustomModelToWandProjectile(projectile, WOODEN_BOOMERANG_MODEL, 1.0, "");
+				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
+				HitsLeft[projectile] = 1; //only 1 hit allowed
+			}
+		EmitSoundToClient(client, "player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 110);
+	}
+	return Plugin_Continue;
 }
 
 public void Weapon_Boomerang_Touch(int entity, int target)
