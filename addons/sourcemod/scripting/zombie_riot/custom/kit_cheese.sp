@@ -584,7 +584,7 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 	// overriding the starttouch so the projectile that sustains the bubble doesn't get deleted by anything, yeah
 }
 
-public void PlasmicElemental_HealNearby(int healer = -1, float amount, float position[3], float distance = 150.0, float healtime = 1.0, int type = 0, int correct_team = 2)
+public void PlasmicElemental_HealNearby(int healer, float amount, float position[3], float distance, float healtime, int type, int correct_team)
 {
 	bool multhp = false;
 	if(amount < 0) // If amount is negative, its treated as a maxhp multiplier
