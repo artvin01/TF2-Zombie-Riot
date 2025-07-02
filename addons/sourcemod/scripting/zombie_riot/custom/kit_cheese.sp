@@ -584,6 +584,78 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 	// overriding the starttouch so the projectile that sustains the bubble doesn't get deleted by anything, yeah
 }
 
+public void PlasmicElemental_HealNearby(int healer = -1, float amount, float position[3], float distance = 150.0, float healtime = 1.0, int type = 0, int correct_team = 2)
+{
+	bool multhp = false;
+	if(amount < 0 && amount > -1.0) // If amount is negative, its treated as a maxhp multiplier
+	{
+		amount += (amount * 2.0);
+		multhp = true;
+	}
+	else
+		PrintToChatAll("PlasmicElemental_HealNearby Negative amount is more than -1.0!!! Amount: %.2f", amount);
+
+	float trueamount;
+	if(type == 0 || type == 2)
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc))
+			{
+				float npcpos[3];
+				GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", npcpos);
+				if(GetVectorDistance(npcpos, position, false) <= distance)
+				{
+					if(multhp)
+						trueamount = float(ReturnEntityMaxHealth(npc)) * amount;
+					else
+						trueamount = amount;
+					if(healer != -1)
+					{
+						if(GetTeam(npc) == GetTeam(healer))
+							HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+					}
+					else
+					{
+						if(GetTeam(npc) == correct_team))
+							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+					}
+				}
+			}
+		}
+	}
+
+	if(type == 1 || type == 2)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsValidClient(client) && IsPlayerAlive(client))
+			{
+				float clientpos[3];
+				GetClientAbsOrigin(client, clientpos);
+				if(GetVectorDistance(clientpos, position, false) <= distance)
+				{
+					if(multhp)
+						trueamount = float(ReturnEntityMaxHealth(client)) * amount;
+					else
+						trueamount = amount;
+					if(healer != -1)
+					{
+						if(GetTeam(client) == GetTeam(healer))
+							HealEntityGlobal(healer, client, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+					}
+					else
+					{
+						if(GetTeam(client) == correct_team))
+							HealEntityGlobal(client, client, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+					}
+				}
+			}
+		}
+	}
+}
+
 public void Weapon_Kit_CheeseInject_M2(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
