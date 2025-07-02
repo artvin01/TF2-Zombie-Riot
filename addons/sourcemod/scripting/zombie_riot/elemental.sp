@@ -1153,7 +1153,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
 				float duration = (melee ? 2.5 : 7.5);
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				float healing = 5.0; // lets try with 5, if that isn't enough then 7 is the way
+				float healing = 7.0; // actually nvm lets try with 7
 				if(!b_NpcHasDied[attacker])
 				{
 					healing = float(ReturnEntityMaxHealth(attacker)) * 0.1;
