@@ -1153,7 +1153,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
 				float duration = (melee ? 2.5 : 7.5);
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				float healing = 8.0; // bleh
+				float healing = 10.0; // bleh
 				if(!b_NpcHasDied[attacker])
 				{
 					healing = float(ReturnEntityMaxHealth(attacker)) * 0.1;
@@ -1164,7 +1164,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 				}
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, 2);
+				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 3; i++)
 				{
@@ -1182,25 +1182,39 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		//removes repair of buildings.
 		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
-		if(!melee)
-			damage = RoundToNearest(float(damage) * 0.5);
-		Repair -= damage;
-		if(Repair <= 0)
+		if(Repair > 0)
 		{
-			NPC_Ignite(victim, attacker, 10.0, weapon, 100.0);
-				
-			Repair = 0;
-			float position[3];
-			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-			position[2] += 10.0;
-			for(int i = 0; i < 2; i++)
+			Repair -= damage;
+			if(Repair <= 0)
 			{
-				Cheese_BeamEffect(position);
-				position[2] += 20.5;
+				float position[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				float healing = 5.0; // bleh
+				if(!b_NpcHasDied[attacker])
+				{
+					healing = float(ReturnEntityMaxHealth(attacker)) * 0.05;
+				}
+				else if(IsValidClient(attacker))
+				{
+					if(IsValidEntity(weapon))	
+						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
+							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+				}
+				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
+					
+				Repair = 0;
+				float position[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				position[2] += 10.0;
+				for(int i = 0; i < 2; i++)
+				{
+					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
+					position[2] += 20.5;
+				}
+				Cheese_PlaySplat(victim);
 			}
-			Cheese_PlaySplat(victim);
+				
+			SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 		}
-			
-		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
