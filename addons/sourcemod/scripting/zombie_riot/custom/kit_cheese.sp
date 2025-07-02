@@ -611,12 +611,12 @@ public void PlasmicElemental_HealNearby(int healer = -1, float amount, float pos
 						trueamount = amount;
 					if(healer != -1)
 					{
-						if(GetTeam(npc) == GetTeam(healer))
+						if(GetTeam(npc) == GetTeam(healer)
 							HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_SELFHEAL);
 					}
 					else
 					{
-						if(GetTeam(npc) == correct_team))
+						if(GetTeam(npc) == correct_team)
 							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_SELFHEAL);
 					}
 				}
