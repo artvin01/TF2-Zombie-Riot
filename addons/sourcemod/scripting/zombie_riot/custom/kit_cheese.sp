@@ -5,6 +5,8 @@
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
 - an AoE healing effect is triggered, healing allies around the affected.
+- inflicting the effect on the target multiple times will cause buildup to slow down overtime until the target dies.
+- if triggered via melee, elemental cooldown is reduced from 7.5s to 2.5s, and buildup penalty is lowered.
 
 Passive - The kit revives allies 30% faster.
 
