@@ -587,13 +587,11 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 public void PlasmicElemental_HealNearby(int healer = -1, float amount, float position[3], float distance = 150.0, float healtime = 1.0, int type = 0, int correct_team = 2)
 {
 	bool multhp = false;
-	if(amount < 0 && amount > -1.0) // If amount is negative, its treated as a maxhp multiplier
+	if(amount < 0) // If amount is negative, its treated as a maxhp multiplier
 	{
 		amount += (amount * 2.0);
 		multhp = true;
 	}
-	else
-		PrintToChatAll("PlasmicElemental_HealNearby Negative amount is more than -1.0!!! Amount: %.2f", amount);
 
 	float trueamount;
 	if(type == 0 || type == 2)
