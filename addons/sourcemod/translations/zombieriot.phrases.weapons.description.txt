@@ -4376,11 +4376,11 @@
 	}
 	"Plasma Bubble Desc"
 	{
-		"en"	"A techno-cannon that, when fully charged, shoots out a capsule,\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage."
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
 	}
 	"Plasma Bubble Pap Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
 	}
 	"Plasminator Desc"
 	{
