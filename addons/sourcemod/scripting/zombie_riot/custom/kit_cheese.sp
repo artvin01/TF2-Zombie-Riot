@@ -529,7 +529,7 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
@@ -562,11 +562,14 @@ public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int 
 
 	if(enemy)
 	{
-		if(enemy <= MaxClients)
+		if(GetTeam(enemy) == GetTeam(entity))
+		{
+			if(IsValidClient(enemy)) // wanted to do one for NPCs too but it seemed too complicated
+			{
+				Elemental_RemoveDamage(enemy, RoundToNearest(float(MaxArmorCalculation(Armor_Level[enemy], enemy, 1.0)) * (0.015 * Cheese_PapLevel[entity])));
+			}
 			return;
-		
-		if(GetTeam(enemy) == TFTeam_Red)
-			return;
+		}
 	}
 
 	float cheesedmg = Cheese_Bubble_ElementalDmg;
