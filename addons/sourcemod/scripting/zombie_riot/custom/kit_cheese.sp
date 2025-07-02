@@ -589,6 +589,15 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	if(!IsValidEntity(weapon))
+	{
+		return Plugin_Stop;
+	}
+	if(!IsValidEntity(owner))
+	{
+		return Plugin_Stop;
+	}
+
 	float tickrate = pack.ReadFloat();
 
 	float position[3];
