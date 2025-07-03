@@ -532,6 +532,7 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
+	PlasmicBubble_HealElementalAllies(owner, (0.015 * Cheese_PapLevel[owner]), 1.0, position, 225.0, GetTeam(owner));
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
@@ -559,16 +560,16 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int weapon)
 {
-	if(GetTeam(enemy) == GetTeam(entity))
-	{
-		if(enemy <= MaxClients) // wanted to do one for NPCs too but it seemed too complicated
-		{
-			if(Armor_Charge[enemy] < 0)
-			{
-				GiveArmorViaPercentage(enemy, (0.015 * Cheese_PapLevel[entity]), 1.0);
-			}
-		}
+	if(!IsValidEntity(enemy) || !IsValidEntity(entity))
 		return;
+
+	if(enemy)
+	{
+		if(enemy <= MaxClients)
+			return;
+		
+		if(GetTeam(enemy) == GetTeam(entity))
+			return;
 	}
 
 	float cheesedmg = Cheese_Bubble_ElementalDmg;
@@ -584,6 +585,35 @@ public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int 
 public void Cheese_Bubble_OverrideTouch(int entity, int target)
 {
 	// overriding the starttouch so the projectile that sustains the bubble doesn't get deleted by anything, yeah
+}
+
+// im KILLING myself i already tried doing logic with Explode_Logic_Custom and i spent like 5 hours failing over and over i HATE IT
+public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance, int correct_team)
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client) && IsPlayerAlive(client))
+		{
+			if(Armor_Charge[client] < 0)
+			{
+				float clientpos[3];
+				GetClientAbsOrigin(client, clientpos);
+				if(GetVectorDistance(clientpos, position, false) <= distance)
+				{
+					if(healer != -1)
+					{
+						if(GetTeam(client) == GetTeam(healer))
+							GiveArmorViaPercentage(client, percent, maxmulti, _, _, healer);
+					}
+					else
+					{
+						if(GetTeam(client) == correct_team)
+							GiveArmorViaPercentage(client, percent, maxmulti);
+					}
+				}
+			}
+		}
+	}
 }
 
 public void PlasmicElemental_HealNearby(int healer, float amount, float position[3], float distance, float healtime, int type, int correct_team)
