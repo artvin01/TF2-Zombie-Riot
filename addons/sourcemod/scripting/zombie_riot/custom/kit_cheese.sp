@@ -559,19 +559,13 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int weapon)
 {
-	if (!IsValidEntity(enemy) || !IsValidEntity(entity))
-		return;
-
-	if(enemy)
+	if(GetTeam(enemy) == GetTeam(entity))
 	{
-		if(GetTeam(enemy) == GetTeam(entity))
+		if(IsValidClient(enemy)) // wanted to do one for NPCs too but it seemed too complicated
 		{
-			if(IsValidClient(enemy)) // wanted to do one for NPCs too but it seemed too complicated
-			{
-				Elemental_RemoveDamage(enemy, RoundToNearest(float(MaxArmorCalculation(Armor_Level[enemy], enemy, 1.0)) * (0.015 * Cheese_PapLevel[entity])));
-			}
-			return;
+			Elemental_RemoveDamage(enemy, RoundToNearest(float(MaxArmorCalculation(Armor_Level[enemy], enemy, 1.0)) * (0.015 * Cheese_PapLevel[entity])));
 		}
+		return;
 	}
 
 	float cheesedmg = Cheese_Bubble_ElementalDmg;
