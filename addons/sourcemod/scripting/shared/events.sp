@@ -347,6 +347,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			Attributes_Set(client, 68, -1.0);
 			SetVariantString(COMBINE_CUSTOM_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+			
+			SDKUnhook(client, SDKHook_SetTransmit, TeutonViewOnly);
+			SDKHook(client, SDKHook_SetTransmit, TeutonViewOnly);
 	   		
 	   		b_ThisEntityIgnored[client] = true;
 			
@@ -711,4 +714,19 @@ void CheckAndValidifyTeam()
 		if(IsValidClient(client) && TeamNumber[client] <= 4) //If their team is customly set, dont do this
 			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
 	}
+}
+
+
+public Action TeutonViewOnly(int teuton, int client)
+{
+	if(TeutonType[teuton] == TEUTON_NONE)
+	{
+		SDKUnhook(teuton, SDKHook_SetTransmit, TeutonViewOnly);
+		return Plugin_Continue;
+	}
+	if(TeutonType[client] == TEUTON_NONE)
+		return Plugin_Handled;
+
+	return Plugin_Continue;
+	
 }
