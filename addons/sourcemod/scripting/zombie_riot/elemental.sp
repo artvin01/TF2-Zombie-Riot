@@ -1067,10 +1067,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
-	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE);
-	// i am pap
-	float paplvl = Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 
+	bool melee = (i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_MELEE && IsValidClient(attacker));
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -1096,62 +1094,38 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
 				{
-					if(Is_Cheesed_Up(victim)) // lastman for plasmic surprise
+					float position[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+					if(Yakuza_Lastman(-1) == 11) // lastman for plasmic surprise
 					{
-						if(HasSpecificBuff(victim, "Plasm III"))
-						{
-							SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
-							IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
-							TF2_StunPlayer(victim, 1.25, 0.5, TF_STUNFLAG_SLOWDOWN);
-							Cheese_SetPenalty(victim, 1.175);
-						}
-						else if(HasSpecificBuff(victim, "Plasm II"))
-						{
-							ApplyStatusEffect(victim, victim, "Plasm III", 999.0);
-							float HudY = -1.0;
-							float HudX = -1.0;
-							SetHudTextParams(HudX, HudY, 3.0, 235, 75, 215, 255);
-							SetGlobalTransTarget(victim);
-							ShowSyncHudText(victim, SyncHud_Notifaction, "%t", "Plasma Kit Plasm III Warning");
-							Cheese_SetPenalty(victim, 1.15);
-						}
-						else if(HasSpecificBuff(victim, "Plasm I"))
-						{
-							ApplyStatusEffect(victim, victim, "Plasm II", 999.0);
-							Cheese_SetPenalty(victim, 1.125);
-						}
-						else
-						{
-							ApplyStatusEffect(victim, victim, "Plasm I", 999.0);
-						}
+						SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+						IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
+						TF2_StunPlayer(victim, 1.0, 0.75, TF_STUNFLAG_SLOWDOWN);
+						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 150.0, 2.0, 0, 3);
+						float HudY = -1.0;
+						float HudX = -1.0;
+						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
+						SetGlobalTransTarget(victim);
+						ShowSyncHudText(victim, SyncHud_Notifaction, "%t", "Plasma Kit Warning");
+						Cheese_SetPenalty(victim, 1.25);
 					}
 					else
 					{
-						if(HasSpecificBuff(victim, "Plasm III"))
-						{
-							SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, weapon);
-							IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
-						}
-						else if(HasSpecificBuff(victim, "Plasm II"))
-						{
-							ApplyStatusEffect(attacker, victim, "Plasm III", 10.0);
-						}
-						else if(HasSpecificBuff(victim, "Plasm I"))
-						{
-							ApplyStatusEffect(attacker, victim, "Plasm II", 10.0);
-						}
-						else
-						{
-							ApplyStatusEffect(attacker, victim, "Plasm I", 10.0);
-						}
+						SDKHooks_TakeDamage(victim, attacker, attacker, (float(ReturnEntityMaxHealth(victim)) * 0.1), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, weapon);
+						IncreaseEntityDamageTakenBy(victim, 1.25, (melee ? 5.0 : 2.5));
+						int theteam = GetTeam(victim);
+						if(theteam == 2)
+							theteam = 3;
+						else if(theteam == 3)
+							theteam = 2;
+						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 150.0, 2.0, 2, theteam);
 					}
-					
-					float position[3];
-					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 2.5;
+
 					position[2] += 10.0;
 					for(int i = 0; i < 3; i++)
 					{
-						Cheese_BeamEffect(position, 200.0, 1.0);
+						Cheese_BeamEffect(position, 10.0, 300.0);
 						position[2] += 32.5;
 					}
 					Cheese_PlaySplat(victim);
@@ -1174,43 +1148,27 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 			if(ElementDamage[victim][Element_Plasma] > trigger)
 			{
 				ElementDamage[victim][Element_Plasma] = 0;
-				float duration = (melee ? 5.0 : 2.5) + (paplvl * 0.25); // at max pap (8), its 7 seconds if melee, or 4.5 seconds if ranged
-				Cheese_SetPenalty(victim, (melee ? 0.85 : 0.6));
-				if(b_thisNpcIsARaid[victim])
-				{
-					duration *= 0.65;
-				}
-				else if(b_thisNpcIsABoss[victim])
-				{
-					duration *= 0.75;
-				}
-
-				if(HasSpecificBuff(victim, "Plasm III"))
-				{
-					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
-				}
-				else if(HasSpecificBuff(victim, "Plasm II"))
-				{
-					ApplyStatusEffect(attacker, victim, "Plasm III", duration);
-				}
-				else if(HasSpecificBuff(victim, "Plasm I"))
-				{
-					ApplyStatusEffect(attacker, victim, "Plasm II", duration);
-				}
-
-				ApplyStatusEffect(attacker, victim, "Plasm I", duration);
-			//	IncreaseEntityDamageTakenBy(victim, 1.1 + (0.03*paplvl), duration); // up to +30% dmg taken at max pap (8)
-			//  the above i a terrible idea, this elemental stacks forever, and can be reapplied infinitly
-			// 	as such you can stack infinite damage penalties.
-			//i have replaced it with just making plasm itself giving more damage instead.
-				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 1.0;
-
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				Cheese_SetPenalty(victim, (melee ? 0.7 : 0.45));
+				float duration = (melee ? 2.0 : 8.0);
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
+				float healing = 20.0; // bleh
+				if(!b_NpcHasDied[attacker])
+				{
+					healing = float(ReturnEntityMaxHealth(victim)) * 0.1;
+				}
+				else if(IsValidClient(attacker))
+				{
+					if(IsValidEntity(weapon))	
+						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
+							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+				}
+				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 3; i++)
 				{
-					Cheese_BeamEffect(position);
+					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
 					position[2] += 32.5;
 				}
 				Cheese_PlaySplat(victim);
@@ -1224,25 +1182,37 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		//removes repair of buildings.
 		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
-		if(!melee)
-			damage = RoundToNearest(float(damage) * 0.5);
-		Repair -= damage;
-		if(Repair <= 0)
+		if(Repair > 0)
 		{
-			NPC_Ignite(victim, attacker, 10.0, weapon, 100.0);
-				
-			Repair = 0;
-			float position[3];
-			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-			position[2] += 10.0;
-			for(int i = 0; i < 2; i++)
+			Repair -= damage;
+			if(Repair <= 0)
 			{
-				Cheese_BeamEffect(position);
-				position[2] += 20.5;
+				float position[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
+				float healing = 20.0; // bleh
+				if(!b_NpcHasDied[attacker])
+				{
+					healing = float(ReturnEntityMaxHealth(attacker)) * 0.05;
+				}
+				else if(IsValidClient(attacker))
+				{
+					if(IsValidEntity(weapon))	
+						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
+							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+				}
+				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
+					
+				Repair = 0;
+				position[2] += 10.0;
+				for(int i = 0; i < 2; i++)
+				{
+					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
+					position[2] += 20.5;
+				}
+				Cheese_PlaySplat(victim);
 			}
-			Cheese_PlaySplat(victim);
+				
+			SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 		}
-			
-		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }

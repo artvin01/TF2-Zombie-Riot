@@ -1343,37 +1343,13 @@
 	{
 		"en"	"You cannot get downed."
 	}
-	"Plasm I"
-	{
-		"en" 	"Plasm I"
-	}
-	"Plasm I Desc"
-	{
-		"en"	"Slows NPCs by 8％.\nReduces attackspeed by 8％\nIncreases damage taken by 8％.\n{yellow}TIP: Stacking this debuff makes it stronger!"
-	}
-	"Plasm II"
-	{
-		"en"	"Plasm II"
-	}
-	"Plasm II Desc"
-	{
-		"en" 	"Slows NPCs by 12％.\nReduces attackspeed by 12％.\nIncreases damage taken by 12％."
-	}
-	"Plasm III"
-	{
-		"en"	"Plasm III"
-	}
-	"Plasm III Desc"
-	{
-		"en" 	"Slows NPCs by 16％.\nReduces attackspeed by 16％.\nIncreases damage taken by 16％."
-	}
 	"Plasmatic Rampage"
 	{
 		"en"	"Plasmatic Rampage"
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra static regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
+		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
