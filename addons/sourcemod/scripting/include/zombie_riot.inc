@@ -191,7 +191,7 @@ forward void ZR_OnKilledNPC(int client, const char[] name);
  * Called when a player revives another player (downed to not downed)
  * 
  * @param reviver	reviver index
- * @param revived	revived plyer
+ * @param revived	revived player
  * 
  * @noreturn
  */

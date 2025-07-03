@@ -217,11 +217,11 @@ public void Addicition_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		
 		if(npc.m_bLostHalfHealth)
@@ -260,8 +260,8 @@ public void Addicition_ClotThink(int iNPC)
 						npc.SetActivity("ACT_LIGHTNING");
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 3;
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
+						npc.StopPathing();
+						
 					}
 					npc.PlayLightningSound();
 					
@@ -335,8 +335,8 @@ public void Addicition_ClotThink(int iNPC)
 	}
 	else
 	{
-//		NPC_StopPathing(npc.index);
-//		npc.m_bPathing = false;
+//		npc.StopPathing();
+//		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
 	}
@@ -357,8 +357,8 @@ public void Addicition_NPCDeath(int entity)
 	Addicition npc = view_as<Addicition>(entity);
 	
 	
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 	
 	npc.PlayDeathSound();
 	

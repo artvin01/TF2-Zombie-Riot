@@ -209,7 +209,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, int slot)
 {
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -1149,7 +1149,7 @@ float f_SuperSliceTimeUntillAttack_CD[MAXPLAYERS];
 public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 {
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -1364,7 +1364,7 @@ public void Enable_VoidBlade(int client, int weapon) // Enable management, handl
 			h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		}
 		return;
 	}
@@ -1376,7 +1376,7 @@ public void Enable_VoidBlade(int client, int weapon) // Enable management, handl
 		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		return;
 	}
 }

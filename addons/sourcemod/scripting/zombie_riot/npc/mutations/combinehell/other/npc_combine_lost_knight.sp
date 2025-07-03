@@ -309,7 +309,7 @@ public void LostKnight_ClotThink(int iNPC)
 	float distance = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.1) && distance < 8000.0)
 	{
-		NPC_StartPathing(npc.index);
+		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -385,9 +385,9 @@ public void LostKnight_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -454,8 +454,8 @@ public void LostKnight_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

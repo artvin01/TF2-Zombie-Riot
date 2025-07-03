@@ -185,8 +185,8 @@ methodmap Whiteflower_Rocketeer < CClotBody
 		SetVariantString("1.35");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -242,11 +242,11 @@ public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -286,7 +286,7 @@ public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN_RPG");
 					npc.m_flSpeed = 320.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -322,7 +322,7 @@ public void Whiteflower_Rocketeer_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_WALK_AIM_RIFLE");
 						npc.m_flSpeed = 150.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 			}

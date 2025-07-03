@@ -262,11 +262,11 @@ public void WFOuroborosEkas_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -303,7 +303,7 @@ public void WFOuroborosEkas_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_WALK");
 						npc.m_flSpeed = 125.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 				else
@@ -314,7 +314,7 @@ public void WFOuroborosEkas_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RUN");
 						npc.m_flSpeed = 420.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 
@@ -386,6 +386,7 @@ public void WFOuroborosEkas_NPCDeath(int entity)
 		int spawn_index = NPC_CreateByName("npc_whiteflower_ekas_piloteer", -1, pos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

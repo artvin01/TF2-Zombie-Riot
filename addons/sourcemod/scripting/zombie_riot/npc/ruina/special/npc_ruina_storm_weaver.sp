@@ -259,8 +259,8 @@ methodmap Storm_Weaver < CClotBody
 		fl_teleport_time[npc.index]=0.0;
 		fl_recently_teleported[npc.index]=0.0;
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 
 		bool solo = StrContains(data, "solo") != -1;
 
@@ -508,6 +508,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "full");
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -906,8 +907,8 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target)
 	//}
 	b_NoGravity[npc.index] = true;	//Found ya!
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 
 	float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);
 

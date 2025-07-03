@@ -392,7 +392,7 @@ methodmap BaseSquad < CClotBody
 		npc.m_hCCFlags = 0;
 		//npc.m_flSpeed = 600.0;
 
-		//NPC_SetGoalEntity(npc.index, vecPos);
+		//npc.SetGoalEntity(vecPos);
 		//npc.StartPathing();
 		return npc;
 	}
@@ -700,16 +700,16 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 				if(GetVectorDistance(vecTarget, vecMe, true) < npc.GetLeadRadius())
 				{
 					vecTarget = PredictSubjectPositionOld(npc, npc.m_iTargetWalk);
-					NPC_SetGoalVector(npc.index, vecTarget);
+					npc.SetGoalVector(vecTarget);
 				}
 				else
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTargetWalk);
+					npc.SetGoalEntity(npc.m_iTargetWalk);
 				}
 			}
 			else
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalk);
+				npc.SetGoalEntity(npc.m_iTargetWalk);
 			}
 
 			npc.StartPathing();
@@ -727,7 +727,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 		}
 		else if(GetVectorDistance(vecMe, f3_SpawnPosition[npc.index], true) > 8000.0)	// 90 HU
 		{
-			NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+			npc.SetGoalVector(f3_SpawnPosition[npc.index]);
 			npc.StartPathing();
 		}
 		else

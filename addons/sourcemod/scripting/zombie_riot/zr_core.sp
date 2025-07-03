@@ -220,12 +220,13 @@ enum
 	WEAPON_TORNADO_BLITZ = 143,
 	WEAPON_BUFFPOTION = 144,
 	WEAPON_REIUJI_WAND = 145,
-	//WEAPON_CHEESY_MELEE = 146,
-	//WEAPON_CHEESY_PRIMARY = 147,
+	WEAPON_CHEESY_MELEE = 146,
+	WEAPON_CHEESY_PRIMARY = 147,
 	WEAPON_CHEMICAL_THROWER = 148,
 	WEAPON_RITUALIST = 149,
 	WEAPON_SHERRIF = 150,
-	WEAPON_SHERRIF_LEVERACTION = 151
+	WEAPON_SHERRIF_LEVERACTION = 151,
+	WEAPON_CHEESY_SECONDARY = 152
 }
 
 enum
@@ -611,7 +612,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
 #include "custom/kit_blacksmith_grill.sp"
-//#include "custom/kit_cheese.sp"
+#include "custom/kit_cheese.sp"
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
 
@@ -697,6 +698,7 @@ void ZR_PluginStart()
 	Object_PluginStart();
 	SteamWorks_PluginStart();
 	Vehicle_PluginStart();
+	Kritzkrieg_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -711,6 +713,7 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
+	VIPBuilding_PluginStart();
 }
 
 void ZR_MapStart()
@@ -881,6 +884,7 @@ void ZR_MapStart()
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
+	Ritualist_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
 	Rusty_Rifle_Precache();
@@ -910,7 +914,7 @@ void ZR_MapStart()
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
-	//Cheese_MapStart();
+	Cheese_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1297,16 +1301,23 @@ public Action CommandDebugHudTest(int client, int args)
 {
 	//What are you.
 	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: wat <cash>");
-        return Plugin_Handled;
-    }
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
+	        return Plugin_Handled;
+	}
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
 	DoGlobalMultiScaling();
 	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
 	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 2);
+		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
+	}
+	CheckAlivePlayers(_, _, true);
 	return Plugin_Handled;
 }
 
@@ -2090,13 +2101,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
 							Yakuza_Lastman(10);
 						}
-						/*
 						if(Is_Cheesed_Up(client))
 						{
-							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
+							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
-						*/
+						
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
@@ -2975,6 +2985,7 @@ void ForcePlayerWin(bool fakeout = false)
 			Music_Stop_All(client);
 			SetMusicTimer(client, GetTime() + 33);
 			SendConVarValue(client, sv_cheats, "1");
+			Convars_FixClientsideIssues(client);
 		}
 	}
 	if(!fakeout)
@@ -3051,7 +3062,7 @@ void ZR_FastDownloadForce()
 	ZealotMusicDownload();
 	YakuzaMusicDownload();
 	FullmoonDownload();
-	//Cheese_PrecacheMusic();
+	Cheese_PrecacheMusic();
 	Core_PrecacheGlobalCustom();
 	PrecacheMusicZr();
 }

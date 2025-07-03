@@ -1656,8 +1656,7 @@
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
-		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health, takes 50％ more dmg from the back, once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 2x as much damage to the armor."
-		"ru"	"Под лидер Разведочной группы.\nИмеет высокий уровень здоровья и большой урон,получает 50％ урона со спины,когда теряет половину здоровья получает огромный бонус к скорости и броне,сломайте броню что бы убрать эффекты.\nБлижний бой наноси двойной урон броне."
+		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health,once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 1.4x as much damage to the armor."
 	}
 	"Speedus Adivus Desc"
 	{

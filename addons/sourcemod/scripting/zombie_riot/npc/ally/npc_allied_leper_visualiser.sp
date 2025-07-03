@@ -193,7 +193,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;

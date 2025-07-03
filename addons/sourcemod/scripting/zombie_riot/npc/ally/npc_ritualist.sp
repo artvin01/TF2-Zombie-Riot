@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSound[] = "ambient/halloween/bombinomicon_loop.wav";
+static const char g_DeathSound[] = "weapons/bombinomicon_explode1.wav";
 static const char g_LoopSound[] = "ambient/halloween/bombinomicon_loop.wav";
 
 void RitualistInstinct_MapStart()
@@ -94,7 +94,7 @@ public void RitualistInstinct_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		npc.SetGoalEntity(npc.m_iTarget);
 		npc.StartPathing();
 	}
 	else

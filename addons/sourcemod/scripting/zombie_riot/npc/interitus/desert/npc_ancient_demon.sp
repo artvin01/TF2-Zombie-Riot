@@ -225,11 +225,11 @@ public void DesertAncientDemon_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		DesertAncientDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -470,6 +470,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	i_RaidGrantExtra[ally] = 999;
 	if(IsValidEntity(NpcSpawnDemon))
 	{
+		NpcStats_CopyStats(npc.index, NpcSpawnDemon);
 		flMaxHealth /= 40;
 		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
 		{

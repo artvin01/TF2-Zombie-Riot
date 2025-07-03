@@ -381,7 +381,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 					if(target > 0) 
 					{
 						ThornsAbilityAttackTimes[npc.index] += 1;
-						float damage = 5000.0;
+						float damage = 3500.0;
 						if(ThornsLevelAt[npc.index] == 2)
 						{
 							damage *= 2.0;
@@ -392,7 +392,7 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 						}
 						if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
 						{
-							damage *= 0.5;
+							damage *= 0.6;
 						}
 						SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);						
 
@@ -460,7 +460,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 				{
 					ThornsAbilityAttackTimes[npc.index] += 1;
 
-					float damage = 750.0;
+					float damage = 525.0;
 					if(ThornsLevelAt[npc.index] == 2)
 					{
 						damage *= 2.0;
@@ -549,7 +549,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 				{
 					npc.PlayRangedSoundAbility();
 
-					float damage = 1540.0;
+					float damage = 1078.0;
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{

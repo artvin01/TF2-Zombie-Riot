@@ -204,6 +204,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		int spawn_index = NPC_CreateByName("npc_ihanal_demon_whisperer", npc.index, SelfPos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			flMaxHealthally /= 2;
 			npc.m_iTargetAlly = spawn_index;
 			HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
@@ -306,11 +307,11 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		HallamGreatDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, DemonScaling); 
 	}

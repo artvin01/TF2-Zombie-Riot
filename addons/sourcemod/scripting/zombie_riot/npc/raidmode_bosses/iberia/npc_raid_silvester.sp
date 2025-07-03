@@ -549,7 +549,7 @@ static void Internal_ClotThink(int iNPC)
 		if(npc.m_iChanged_WalkCycle != 15)
 		{
 			npc.m_bisWalking = false;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_iChanged_WalkCycle = 15;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("selectionMenu_Idle");
@@ -645,7 +645,7 @@ static void Internal_ClotThink(int iNPC)
 			if(npc.m_iChanged_WalkCycle != 21)
 			{
 				npc.m_bisWalking = false;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_iChanged_WalkCycle = 21;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_peace_medic");
@@ -657,7 +657,7 @@ static void Internal_ClotThink(int iNPC)
 			if(npc.m_iChanged_WalkCycle != 20)
 			{
 				npc.m_bisWalking = false;
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_iChanged_WalkCycle = 20;
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_borrowed_bones");
@@ -899,7 +899,7 @@ static void Internal_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 99)
 				{
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_iChanged_WalkCycle = 99;
 					npc.SetActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 					npc.m_flSpeed = 320.0;
@@ -913,7 +913,7 @@ static void Internal_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 88)
 				{
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_iChanged_WalkCycle = 88;
 					npc.SetActivity("ACT_MP_STAND_MELEE");
 					npc.m_flSpeed = 320.0;
@@ -1002,11 +1002,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+					npc.SetGoalEntity(npc.m_iTargetWalkTo);
 				}
 			}
 			case 1:
@@ -1014,7 +1014,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1496,8 +1496,8 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
 			npc.m_flAttackHappens = 0.0;
@@ -1528,8 +1528,8 @@ bool SilvesterTransformation(Silvester npc, bool NemalAssistance)
 			RemoveSpecificBuff(npc.index, "Solid Stance");
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
@@ -1819,7 +1819,7 @@ bool SilvesterSwordSlicer(Silvester npc, bool NemalAssistance)
 		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(npc.m_flAttackHappens < GetGameTime(npc.index))
 			{
 				int TargetEnemy = false;

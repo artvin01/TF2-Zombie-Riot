@@ -275,7 +275,7 @@ public void VictorianBooster_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -285,7 +285,7 @@ public void VictorianBooster_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < 62500)
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				else
 				{
@@ -338,8 +338,8 @@ public void VictorianBooster_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);
 				
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.StopHealing();
 			npc.Healing = false;
 			npc.m_bnew_target = false;
@@ -388,9 +388,9 @@ public void VictorianBooster_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -458,8 +458,8 @@ public void VictorianBooster_ClotThink(int iNPC)
 		}
 		else
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}

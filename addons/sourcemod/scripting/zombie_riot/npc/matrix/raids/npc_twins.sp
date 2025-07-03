@@ -405,11 +405,11 @@ public void Matrix_Twins_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		int value = Matrix_Twins_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
@@ -446,7 +446,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			npc.m_bmovedelay = false;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.m_bisWalking = true;
-			npc.m_bPathing = true;
+			
 			npc.m_flSpeed = 310.0;
 			int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -551,7 +551,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 				{
 					npc.m_iChanged_WalkCycle = 3;
 					npc.m_bisWalking = false;
-					npc.m_bPathing = false;
+					
 					npc.m_flSpeed = 0.0;
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -650,7 +650,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			{
 				npc.m_iChanged_WalkCycle = 6;
 				npc.m_bisWalking = true;
-				npc.m_bPathing = true;
+				
 				npc.m_flSpeed = 310.0;
 			}
 		}

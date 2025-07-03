@@ -302,7 +302,7 @@ methodmap Atomizer < CClotBody
 			func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			//IDLE
-			NPC_StartPathing(npc.index);
+			npc.StartPathing();
 			npc.m_iState = 0;
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_flSpeed = 300.0;
@@ -471,7 +471,7 @@ static void Clone_ClotThink(int iNPC)
 		}
 		Delay_Attribute[npc.index] = gameTime + 0.5;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		I_cant_do_this_all_day[npc.index]++;
 	}
@@ -542,7 +542,7 @@ static void Clone_ClotThink(int iNPC)
 		npc.m_flDoingAnimation = gameTime + 1.1;
 		Delay_Attribute[npc.index] = gameTime + 0.5;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 		npc.m_bisWalking = false;
 		npc.m_iChanged_WalkCycle = 0;
 		I_cant_do_this_all_day[npc.index]++;
@@ -804,8 +804,8 @@ static void Internal_ClotThink(int iNPC)
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_cheers_scout");
 				npc.m_flAttackHappens = 0.0;
@@ -823,8 +823,8 @@ static void Internal_ClotThink(int iNPC)
 				{
 					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
 					EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.9);
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bisWalking = false;
 					npc.m_flDoingAnimation = gameTime + 1.5;	
 					Delay_Attribute[npc.index] = gameTime + 0.6;
@@ -883,7 +883,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			I_cant_do_this_all_day[npc.index]++;
 		}
@@ -957,7 +957,7 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = gameTime + 1.1;
 			Delay_Attribute[npc.index] = gameTime + 0.5;
 			npc.StopPathing();
-			npc.m_bPathing = false;
+			
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 0;
 			I_cant_do_this_all_day[npc.index]++;
@@ -1004,11 +1004,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -1016,7 +1016,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1256,8 +1256,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 					npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_energy_drink/c_energy_drink.mdl");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_flDoingAnimation = gameTime + 1.0;
 					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("layer_taunt04");

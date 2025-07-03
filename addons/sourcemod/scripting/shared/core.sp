@@ -812,7 +812,12 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
-
+	Core_DoTickrateChanges();
+}
+void Core_DoTickrateChanges()
+{
+	//needs to get called a few times just incase.
+	//it isnt expensive so it really doesnt matter.
 	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
 
@@ -977,6 +982,7 @@ public void OnMapStart()
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
 	PrecacheSound("weapons/samurai/tf_marked_for_death_indicator.wav");
+	Zero(f_PreventMovementClient);
 	Zero(f_PreventMedigunCrashMaybe);
 	Zero(f_ClientReviveDelayReviveTime);
 	Zero(f_MutePlayerTalkShutUp);
@@ -986,7 +992,7 @@ public void OnMapStart()
 	FileNetwork_MapStart();
 	Core_PrecacheGlobalCustom();
 #endif
-
+	Core_DoTickrateChanges();
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");
@@ -1108,6 +1114,7 @@ public void OnMapStart()
 			PrecacheScriptSound(soundname);
 		}
 	}
+	ConVar_ToggleDo();
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -1283,6 +1290,7 @@ public Action Command_ToggleCheats(int client, int args)
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				SendConVarValue(i, sv_cheats, "0");
+				Convars_FixClientsideIssues(i);
 			}
 		}	
 	}
@@ -1295,6 +1303,7 @@ public Action Command_ToggleCheats(int client, int args)
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				SendConVarValue(i, sv_cheats, "1");
+				Convars_FixClientsideIssues(i);
 			}
 		}
 	}
@@ -1404,6 +1413,7 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
+	Core_DoTickrateChanges();
 #if defined ZR || defined RPG
 	KillFeed_ClientPutInServer(client);
 #endif
@@ -1570,7 +1580,7 @@ public void OnClientDisconnect(int client)
 	b_HudScreenShake[client] = true;
 	b_HudLowHealthShake_UNSUED[client] = true;
 	b_HudHitMarker[client] = true;
-	b_DisplayDamageHudSetting[client] = false;
+	b_DisplayDamageHudSettingInvert[client] = false;
 	f_ZombieVolumeSetting[client] = 0.0;
 }
 
@@ -1608,6 +1618,11 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	if(f_PreventMedigunCrashMaybe[client] > GetGameTime())
 	{
 		buttons &= ~IN_ATTACK;
+	}
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+		buttons = 0;
+		return Plugin_Changed;
 	}
 	/*
 	Instant community feedback that T is very bad.
@@ -3045,13 +3060,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
-	else if(condition == TFCond_UberBulletResist)
-	{
-		//This counts as uber in ZR!
-		TF2_AddCondition(client, TFCond_UberBlastResist, 99.0);
-		TF2_AddCondition(client, TFCond_UberFireResist, 99.0);
-		ApplyStatusEffect(client, client, "UBERCHARGED", 15.0);
-	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
@@ -3060,12 +3068,6 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	{
 		switch(condition)
 		{
-			case TFCond_UberBulletResist:
-			{
-				RemoveSpecificBuff(client, "UBERCHARGED");
-				TF2_RemoveCondition(client, TFCond_UberBlastResist);
-				TF2_RemoveCondition(client, TFCond_UberFireResist);
-			}
 			case TFCond_Zoomed:
 			{
 				ViewChange_Update(client);

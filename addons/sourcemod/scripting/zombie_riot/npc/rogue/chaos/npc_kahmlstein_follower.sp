@@ -326,15 +326,15 @@ static void ClotThink(int iNPC)
 					npc.m_flDeathAnimation = GetGameTime() + 45.0;
 					npc.m_iTarget = other;
 					i_RaidGrantExtra[npc.index] = 2;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					stop_thinking = true;
 					break;
 				}
 				else if(i_RaidGrantExtra[other] >= 2 && i_RaidGrantExtra[other] < 6)
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					stop_thinking = true;
 					break;
 				}
@@ -368,11 +368,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.StartPathing();
@@ -434,7 +434,7 @@ static void ClotThink(int iNPC)
 
 			if(flDistanceToTarget > 25000.0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				return;

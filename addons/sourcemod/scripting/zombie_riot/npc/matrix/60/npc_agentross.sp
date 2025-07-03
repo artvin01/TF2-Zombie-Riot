@@ -232,8 +232,8 @@ public void AgentRoss_ClotThink(int iNPC)
 			npc.m_bmovedelay = false;
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 		//	npc.FaceTowards(vecTarget, 1000.0);
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 		}
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -244,11 +244,11 @@ public void AgentRoss_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{

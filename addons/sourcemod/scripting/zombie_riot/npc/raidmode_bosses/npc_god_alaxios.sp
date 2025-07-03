@@ -731,6 +731,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_seaslider", -1, pos, ang, TFTeam_Blue);
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
@@ -749,6 +750,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
@@ -773,6 +775,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_xeno_acclaimed_swordsman", -1, pos, ang, TFTeam_Red);
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
@@ -792,6 +795,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_xeno_raidboss_nemesis", -1, pos, ang, TFTeam_Red);
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
@@ -969,11 +973,11 @@ public void GodAlaxios_ClotThink(int iNPC)
 		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 
 		if(npc.m_flNextRangedAttackHappening > GetGameTime(npc.index))
@@ -1027,8 +1031,8 @@ public void GodAlaxios_ClotThink(int iNPC)
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 				if(npc.m_iChanged_WalkCycle != 8) 	
 				{

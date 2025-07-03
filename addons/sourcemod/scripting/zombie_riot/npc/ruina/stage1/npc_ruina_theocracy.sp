@@ -312,8 +312,8 @@ static void ClotThink(int iNPC)
 		if(npc.m_flNextRangedBarrage_Spam < GameTime)
 		{	
 			
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 			
 			i_NpcWeight[npc.index] = 999;
@@ -397,8 +397,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -423,7 +423,7 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 		i_NpcWeight[npc.index] = 1;
 		
 		npc.m_flSpeed = 300.0;
-		npc.m_bPathing = true;
+		
 
 		RemoveSpecificBuff(npc.index, "Solid Stance");
 		

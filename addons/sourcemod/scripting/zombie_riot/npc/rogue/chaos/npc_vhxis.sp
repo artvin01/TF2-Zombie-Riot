@@ -420,7 +420,7 @@ public void Vhxis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 10;
 			npc.SetActivity("ACT_ROGUE2_VOID_DRAMATIC_DEATH");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		if(npc.m_flDeathAnimation < GetGameTime(npc.index))
@@ -511,11 +511,11 @@ public void Vhxis_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VhxisSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -787,8 +787,8 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			npc.m_iChanged_WalkCycle = 3;
 			npc.SetActivity("ACT_ROGUE2_VOID_GROUND_VAPORISER");
 			npc.SetPlaybackRate(0.5);
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 
@@ -893,6 +893,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 				int spawn_index = NPC_CreateByName("npc_void_ixufan", -1, ProjectileLoc, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
@@ -921,8 +922,8 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 5;
 			npc.SetActivity("ACT_ROGUE2_VOID_GENERATOR");
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 		float ProjectileLoc[3];
@@ -1014,8 +1015,8 @@ bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.SetActivity("ACT_ROGUE2_VOID_STAND_PULSEATTACK");
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 		if(IsValidEntity(npc.m_iWearable7))
@@ -1212,6 +1213,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					CClotBody npc1 = view_as<CClotBody>(spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
@@ -1249,8 +1251,8 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 6;
 			npc.SetActivity("ACT_ROGUE2_VOID_MAGIC");
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 		

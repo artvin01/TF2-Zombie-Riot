@@ -270,7 +270,7 @@ public Action DuelState(Handle cut_timer, int client)
 static int Rapier_Get_Pap(int weapon)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 

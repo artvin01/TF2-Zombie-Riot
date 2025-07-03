@@ -509,12 +509,12 @@ static void Internal_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 				npc.StartPathing();
 			}
 		}
@@ -540,12 +540,12 @@ static void Internal_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 				npc.StartPathing();
 			}
 		}
@@ -672,6 +672,7 @@ static void Internal_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
@@ -741,11 +742,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -753,7 +754,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1002,8 +1003,8 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
 			npc.m_flReloadIn = gameTime + 3.0;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
 
 			SensalThrowScythes(npc);
@@ -1060,8 +1061,8 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				RemoveEntity(npc.m_iWearable7);
 			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
@@ -1639,7 +1640,7 @@ bool SensalTalkPostWin(Sensal npc)
 		npc.m_iChanged_WalkCycle = 6;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 	}
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -1697,8 +1698,8 @@ bool SensalTransformation(Sensal npc)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
 			npc.m_flAttackHappens = 0.0;
@@ -1738,8 +1739,8 @@ bool SensalTransformation(Sensal npc)
 			RemoveSpecificBuff(npc.index, "Solid Stance");
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			npc.m_flSpeed = 330.0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
 			npc.m_bisWalking = true;

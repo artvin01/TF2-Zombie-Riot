@@ -750,11 +750,11 @@ static void Internal_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		npc.StartPathing();
 		//Target close enough to hit
@@ -898,8 +898,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

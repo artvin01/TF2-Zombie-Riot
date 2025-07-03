@@ -389,9 +389,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			if(npc.m_iChanged_WalkCycle != 20) 	
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bisWalking = false;
-				npc.m_bPathing = false;
+				
 				npc.m_flSpeed = 0.0;
 				int iActivity = npc.LookupActivity("ACT_FT_FLINCH");
 				if(iActivity > 0) npc.StartActivity(iActivity);
@@ -493,7 +493,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_bAllowBackWalking = true;
 			npc.m_flSpeed = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			fl_StopDodge[npc.index] = 0.0;
 
 			i_GunMode[npc.index] = 1;
@@ -531,7 +531,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_bAllowBackWalking = false;
 			npc.m_flSpeed = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			i_GunMode[npc.index] = 0;
 			fl_RegainWalkAnim[npc.index] = gameTime + 1.5;
 			npc.m_flDoingAnimation = gameTime + 1.55;
@@ -706,7 +706,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							npc.m_iChanged_WalkCycle = 5;
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 							npc.m_flDoingAnimation = gameTime + 5.0;
 							npc.m_flNextRangedAttackHappening = gameTime + 3.1;
 							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
@@ -763,7 +763,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 7;
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 					}
 				}
 				if(npc.m_flNextRangedAttackHappening < gameTime)
@@ -876,11 +876,11 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} 
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}	
 		}
 
@@ -993,7 +993,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					f_NpcTurnPenalty[npc.index] = 1.0;
 				}
 			}
@@ -1289,7 +1289,7 @@ void Nemesis_TryDodgeAttack(int entity)
 					float vecTarget[3]; WorldSpaceCenter(ref, vecTarget);
 					npc.FaceTowards(vecTarget);
 				}
-				NPC_SetGoalVector(npc.index, PosToDodgeTo);
+				npc.SetGoalVector(PosToDodgeTo);
 				npc.StartPathing();
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.55;
 				fl_StopDodge[npc.index] = GetGameTime(npc.index) + 0.5;

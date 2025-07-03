@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define BLOON_HP_MULTI_GLOBAL 1.1
 enum
 {
 	Bloon_Red = 0,
@@ -169,6 +170,7 @@ float Bloon_BaseHealth()
 	{
 		health *= 1.0 - (float(CurrentCash) / 133333.333333);
 	}
+	health *= BLOON_HP_MULTI_GLOBAL;
 
 	return health;
 }
@@ -625,11 +627,11 @@ public void Bloon_ClotThink(int iNPC)
 			
 			
 			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
-			NPC_SetGoalVector(npc.index, VecPredictPos);
+			npc.SetGoalVector(VecPredictPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
@@ -643,28 +645,13 @@ public void Bloon_ClotThink(int iNPC)
 				{
 					if(npc.RegrowsInto(i) == npc.m_iType)
 					{
-						if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-						{
-							if(npc.m_bFortified)
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i) * 1.4, DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 1.0 + float(i), DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-						}
-						else
-						{
-							if(npc.m_bFortified)
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 4.2) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-							else
-							{
-								SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, (2.0 + float(i) * 3.0) * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-							}
-						}
+						float damageDealDo = 1.0 + float(i);
+						if(npc.m_bFortified)
+							damageDealDo *= 1.4;
+						if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+							damageDealDo *= 25.0;
+							
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);		
 						//delete swingTrace;
 					}
 				}				
@@ -676,8 +663,8 @@ public void Bloon_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

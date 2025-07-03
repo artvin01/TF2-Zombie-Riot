@@ -389,7 +389,7 @@ void CasinoSalaryPerKill(int client, int weapon) //cash gain on KILL MURDER OBLI
 static int Casino_Get_Pap(int weapon) //deivid inspired pap detection system (as in literally a copy-paste from fantasy blade)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 

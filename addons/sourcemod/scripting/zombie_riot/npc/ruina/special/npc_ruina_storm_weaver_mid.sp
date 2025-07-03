@@ -87,8 +87,8 @@ methodmap Storm_Weaver_Mid < CClotBody
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 
 		b_NoGravity[npc.index] = true;	//Found ya!
 

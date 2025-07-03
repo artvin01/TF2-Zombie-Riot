@@ -343,6 +343,18 @@
 		"pt"		"N/A"
 		"nl"		"Nvt"
 	}
+	"N/A Desc"
+	{
+		"en"		"N/A"
+		"it"		"N/A"
+		"ru"		"Нет"
+		"pl"		"N/A"
+		"es"		"N/A"
+		"fr"		"N/D"
+		"de"		"N/A"
+		"pt"		"N/A"
+		"nl"		"Nvt"
+	}
 	"Primary"
 	{
 		"en"		"Primary"
@@ -3546,11 +3558,11 @@
 	}
 	"DamageHud Setting"
 	{
-		"en" 	"Always Display Damage Hud"
+		"en" 	"Dont Always Display Damage Hud"
 	}
 	"DamageHud Setting Explain"
 	{
-		"en" 	"Enabling this setting will force ZR damage numbers, even if you enabled the TF2 damage number setting."
+		"en" 	"Enabling this setting will hide ZR damage numbers if you enabled the TF2 damage number setting."
 	}
 	"Fix First Sound Play Manually"
 	{
@@ -4274,5 +4286,21 @@
 	"Explain Rogue2 2"
 	{
 		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
+	}
+	"Call for medic to cancel!"
+	{
+		"en"		"Call for medic to cancel your dance!"
+	}
+	"Barracks Invalid suicide"
+	{
+		"en"		"You tried to sell/unequip upgrades your barracks units needed, a rift in time opens and consumes them and kills them in a nanosecond.\n{crimson}Tried to bug abuse huh?"
+	}
+	"Plasma Kit Insufficient Charge"
+	{
+		"en"		"Insufficient charge!!"
+	}
+	"Plasma Kit Warning"
+	{
+		"en"		"Your body slowly starts to break down...."
 	}
 }

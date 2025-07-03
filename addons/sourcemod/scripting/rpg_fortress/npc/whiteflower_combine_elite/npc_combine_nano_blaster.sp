@@ -185,8 +185,8 @@ methodmap Whiteflower_Nano_Blaster < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -262,7 +262,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			float vBackoffPos[3];
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+			npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 		}
 		else
 		{
@@ -273,11 +273,11 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 				float vPredictedPos[3]; 
 				PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}
 		}
 		
@@ -299,7 +299,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN_PISTOL");
 					npc.m_flSpeed = 300.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -313,7 +313,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 7;
 						npc.SetActivity("ACT_WALK_AIM_PISTOL");
 						npc.m_flSpeed = 125.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 
@@ -363,7 +363,7 @@ public void Whiteflower_Nano_Blaster_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_RUN_PISTOL");
 						npc.m_flSpeed = 300.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 			}
