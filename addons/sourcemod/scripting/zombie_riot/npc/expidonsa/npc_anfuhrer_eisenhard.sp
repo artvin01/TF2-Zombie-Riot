@@ -220,7 +220,7 @@ public void AnfuhrerEisenhard_ClotThink(int iNPC)
 	float TrueArmor = 1.0;
 	if(npc.Anger)
 	{
-		TrueArmor *= 0.65;
+		TrueArmor *= 0.75;
 	}
 	fl_TotalArmor[npc.index] = TrueArmor;
 
@@ -269,7 +269,7 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-
+	/*
 	//if youre behind him and attack him ,you deal 2x the damage.
 	if(IsBehindAndFacingTarget(attacker, victim))
 	{
@@ -286,6 +286,7 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 		}
 		damage *= 1.35;
 	}
+	*/
 	
 	if(npc.m_flArmorCount > 0.0)
 	{

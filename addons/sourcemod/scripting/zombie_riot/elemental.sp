@@ -210,7 +210,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 
 static void ApplyElementalEvent(int victim, int attacker, int damage)
 {
-		// x0.08 the actual damage for readability
+	// x0.08 the actual damage for readability
 	int display = RoundFloat(damage * 0.8);
 
 	Event event = CreateEvent("player_bonuspoints", true);
@@ -1156,7 +1156,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float healing = 20.0; // bleh
 				if(!b_NpcHasDied[attacker])
 				{
-					healing = float(ReturnEntityMaxHealth(victim)) * 0.1;
+					healing = float(ReturnEntityMaxHealth(victim)) * 0.01;
 				}
 				else if(IsValidClient(attacker))
 				{
@@ -1166,7 +1166,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 				position[2] += 10.0;
-				for(int i = 0; i < 3; i++)
+				for(int i = 0; i < 2; i++)
 				{
 					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
 					position[2] += 32.5;
@@ -1192,7 +1192,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float healing = 20.0; // bleh
 				if(!b_NpcHasDied[attacker])
 				{
-					healing = float(ReturnEntityMaxHealth(attacker)) * 0.05;
+					healing = float(ReturnEntityMaxHealth(attacker)) * 0.005;
 				}
 				else if(IsValidClient(attacker))
 				{

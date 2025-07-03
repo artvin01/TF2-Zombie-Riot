@@ -628,6 +628,21 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 		multhp = true;
 	}
 
+	/*
+		//Due how exponential crazy HP values get, we should put a limit on this!
+		//i.e. see grigori's blessing, it only scales upto 3k HP.
+		in this case you can spam weaker enemies for INSANE heals!
+		The same should go for a minimum, however, if an enemy has stupid low HP the heals should still MEAN something.
+	*/
+	if(amount > 500.0)
+	{
+		amount = 500.0;
+	}
+	if(amount < 10.0)
+	{
+		amount = 10.0;
+	}
+
 	float trueamount;
 	if(type == 0 || type == 2)
 	{

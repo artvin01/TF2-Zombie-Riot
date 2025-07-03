@@ -3308,7 +3308,7 @@
 	}
 	"Sentinel Desc"
 	{
-		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+		"en"		"If it loses its armor, it buffs everyone around it massively for a short time."
 	}
 	"Ironborus"
 	{
