@@ -4934,7 +4934,7 @@
 		"en"		"Insufficient charge!!"
 		"ko"		"충전 부족함!!"
 	}
-	"Plasma Kit Plasm III Warning"
+	"Plasma Kit Warning"
 	{
 		"en"		"Your body slowly starts to break down...."
 		"ko"		"당신의 몸이 천천히 망가져가기 시작합니다..."

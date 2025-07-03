@@ -3959,7 +3959,7 @@
 	}
 	"Sentinel Desc"
 	{
-		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+		"en"		"If it loses its armor, it buffs everyone around it massively for a short time."
 		"ko"		"순간적으로 너무 많이 공격 받으면(순간적으로 12회 이상의 공격 피해를 받을시), 맵 전체의 모든 적에게 버프를 부여합니다."
 	}
 	"Ironborus"
@@ -5171,8 +5171,8 @@
 	}
 	"Plasmic Elemental Damage Desc"
 	{
-		"en"	"Once full, your body's plasma will break down, weakening your body.\nYou receive a level of Plasm until you reach III.\nIf you have Plasm III, you will be debuffed and recieve 10％ of your maximum health as true damage.\nCan be healed with armor."
-		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\nRecibes un nivel de Plasm hasta que llegas a III.\nSi tienes Plasm III, eres debilitado y ralentizado, y recibes el 10％ de tu vida maxima como daño verdadero.\nPuede curarse con armadura."
+		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 몸 속의 플라즈마가 녹아내리며 신체를 약화시킵니다.\n플라즈마 III가 될 때까지 플라즈마 효과를 받습니다.\n플라즈마 III 효과를 보유했다면, 추가 디버프를 받고 최대 체력의 10％ 에 해당하는 트루 대미지를 받습니다.\n아머 획득으로 치유할 수 있습니다."
 	}
 }
