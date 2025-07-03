@@ -348,9 +348,10 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			SetVariantString(COMBINE_CUSTOM_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 			
+#if defined ZR
 			SDKUnhook(client, SDKHook_SetTransmit, TeutonViewOnly);
 			SDKHook(client, SDKHook_SetTransmit, TeutonViewOnly);
-	   		
+#endif
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
@@ -716,7 +717,7 @@ void CheckAndValidifyTeam()
 	}
 }
 
-
+#if defined ZR
 public Action TeutonViewOnly(int teuton, int client)
 {
 	if(TeutonType[teuton] == TEUTON_NONE)
@@ -730,3 +731,4 @@ public Action TeutonViewOnly(int teuton, int client)
 	return Plugin_Continue;
 	
 }
+#endif
