@@ -725,9 +725,14 @@ public Action TeutonViewOnly(int teuton, int client)
 		SDKUnhook(teuton, SDKHook_SetTransmit, TeutonViewOnly);
 		return Plugin_Continue;
 	}
+
+	//incase they love it.
+	if(b_EnableClutterSetting[client])
+		return Plugin_Continue;
+
 	if(TeutonType[client] == TEUTON_NONE)
 		return Plugin_Handled;
-
+	
 	return Plugin_Continue;
 	
 }

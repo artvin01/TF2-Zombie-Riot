@@ -4054,7 +4054,7 @@
 	}
 	"Enable Visual Clutter Desc"
 	{
-		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nThis will also enable you seeing dead players (teutons)\nIf you love it, enable it again."
 	}
 	"Enable Reload Interact Desc"
 	{

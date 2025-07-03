@@ -210,7 +210,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 
 static void ApplyElementalEvent(int victim, int attacker, int damage)
 {
-		// x0.08 the actual damage for readability
+	// x0.08 the actual damage for readability
 	int display = RoundFloat(damage * 0.8);
 
 	Event event = CreateEvent("player_bonuspoints", true);
