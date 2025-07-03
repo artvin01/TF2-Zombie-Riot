@@ -268,6 +268,12 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
 	
 	return Plugin_Changed;
 }
