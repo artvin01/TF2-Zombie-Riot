@@ -532,7 +532,7 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
-	PlasmicBubble_HealElementalAllies(owner, (0.015 * Cheese_PapLevel[owner]), 1.0, position, 225.0, GetTeam(owner));
+	PlasmicBubble_HealElementalAllies(owner, (0.02 * Cheese_PapLevel[owner]), 1.0, position, 225.0, GetTeam(owner));
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
@@ -596,6 +596,9 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 		{
 			if(Armor_Charge[client] < 0)
 			{
+				if(f_TimeUntillNormalHeal[client] > GetGameTime())
+					percent *= 0.5;
+
 				float clientpos[3];
 				GetClientAbsOrigin(client, clientpos);
 				if(GetVectorDistance(clientpos, position, false) <= distance)
