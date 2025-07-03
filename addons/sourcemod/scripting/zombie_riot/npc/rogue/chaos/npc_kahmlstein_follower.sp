@@ -657,7 +657,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			}
 			case 16:
 			{
-				CPrintToChatAll("{darkblue}캄르스타인{default}: 그래.. 자이베이라가 날 데리러 오고 있다.. 저 빛줄기와 함께.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그래.. 자이베리아가 날 데리러 오고 있다.. 저 빛줄기와 함께.");
 				npc.PlayCoughSound();
 				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}

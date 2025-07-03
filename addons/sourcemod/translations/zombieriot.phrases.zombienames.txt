@@ -2935,7 +2935,7 @@
 	"Caprinae"
 	{
 		"en"	"Caprinae"
-		"ko"	"카프리내"
+		"ko"	"카프리니"
 	}
 	"Liberi"
 	{
@@ -3494,7 +3494,7 @@
 	"Blobbing Monster Desc"
 	{
 		"en"	"Each hit makes it stronger and have more resistance."
-		"ko"	"공격이 적중할 때마다, 능력치가 점차 강해지고 피해 저항력도 증가합니다."
+		"ko"	"피해를 받을 때마다, 능력치가 점차 강해지고 피해 저항력도 증가합니다."
 	}
 	"Void Sprayer"
 	{
@@ -3564,7 +3564,7 @@
 	"Heavy Perisher Desc"
 	{
 		"en"	"Grows with each hit recieved."
-		"ko"	"공격이 적중할 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
+		"ko"	"피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
 	}
 	"Void Mini-Gatekeeper"
 	{
@@ -3604,7 +3604,7 @@
 	"Total Growth Desc"
 	{
 		"en"	"Grows with each hit it recieves."
-		"ko"	"공격이 적중할 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
+		"ko"	"피해를 받을 때마다, 크기가 점점 증가하고 능력치와 피해 저항력도 증가합니다."
 	}
 	"Void's Offspring"
 	{
@@ -3614,7 +3614,7 @@
 	"Void's Offspring Desc"
 	{
 		"en"	"Buffs all void entities on death."
-		"ko"	"사망시, 모든 공허 생물에게 버프를 부여합니다.."
+		"ko"	"사망시, 모든 공허 생물에게 버프를 부여합니다."
 	}
 	"Voided Expidonsan Rejuvinator"
 	{
@@ -3901,12 +3901,12 @@
 	"Nightmare"
 	{
 		"en" 		"Nightmare"
-		"ko" 		"악몽"
+		"ko" 		"나이트메어"
 	}
 	"Nightmare Spawned"
 	{
 		"en" 		"Nightmares will haunt you."
-		"ko" 		"악몽이 너희를 삼키러 왔다."
+		"ko" 		"나이트메어가 너희를 삼키리라."
 	}
 	"Zombine"
 	{
@@ -3960,7 +3960,7 @@
 	"Sentinel Desc"
 	{
 		"en"		"If it loses its armor, it buffs everyone around it massively for a short time."
-		"ko"		"순간적으로 너무 많이 공격 받으면(순간적으로 12회 이상의 공격 피해를 받을시), 맵 전체의 모든 적에게 버프를 부여합니다."
+		"ko"		"자신의 아머가 모두 소진되면, 주변의 모든 아군에게 짧은 시간 동안 지속되는 버프를 부여합니다."
 	}
 	"Ironborus"
 	{
@@ -5173,6 +5173,6 @@
 	{
 		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
 		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
-		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 몸 속의 플라즈마가 녹아내리며 신체를 약화시킵니다.\n플라즈마 III가 될 때까지 플라즈마 효과를 받습니다.\n플라즈마 III 효과를 보유했다면, 추가 디버프를 받고 최대 체력의 10％ 에 해당하는 트루 대미지를 받습니다.\n아머 획득으로 치유할 수 있습니다."
+		"ko"	"원소 피해 게이지가 꽉 차면, 당신의 몸 속의 플라즈마가 녹아내리며 신체를 약화시킵니다.\n(플레이어 한정)최대 체력의 10％ 에 해당하는 트루 대미지를 받고 받는 피해가 증가합니다.\n자신 주변 적군 다수의 체력을 회복시키는 광역 효과가 발동됩니다."
 	}
 }

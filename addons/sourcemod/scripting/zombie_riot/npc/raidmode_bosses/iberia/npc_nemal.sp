@@ -682,7 +682,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}네말{default}: !");
+					CPrintToChatAll("{lightblue}네말{default}: 왜 이래! 아마추어 같이! 힘 좀 써봐!");
 				}
 			}
 		}

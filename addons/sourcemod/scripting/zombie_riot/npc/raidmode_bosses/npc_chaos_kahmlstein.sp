@@ -604,7 +604,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				npc.StopPathing();
 				
 				i_khamlCutscene[npc.index] = 13;
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: 너희룰 충분히 지켜보고 있었다. 그리고 그건 큰 실수였던것 같다. {crimson} 처음부터 이 상황에 개입을 했어야했는데.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 너희를 충분히 지켜보고 있었다. 그리고 그건 큰 실수였던것 같다. {crimson} 처음부터 이 상황에 개입을 했어야했는데.");
 				MusicEnum music;
 				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_intro.mp3");
 				music.Time = 42;
@@ -660,7 +660,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				if(TimeLeft < 37.0)
 				{
 					i_khamlCutscene[npc.index] = 11;
-					CPrintToChatAll("{darkblue}캄르스타인{default}: 싸구려 클론과는 잘만 싸우면서, 진짜 본체에게는 손 하나 못 대겠다고?");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 그 깡통 새끼가 만든 내 싸구려 클론과는 잘만 싸우면서, 진짜 본체에게는 손 하나 못 대겠다고?");
 				}
 			}
 			case 11:
@@ -759,7 +759,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}캄르스타인{default}: 네 몸 안의 뼈 하나 하나를 으깨주마.");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 네 몸 안의 뼈 하나 하나를 으깨주지.");
 				}
 				case 1:
 				{
@@ -771,7 +771,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkblue}캄르스타인{default}: 블리츠크리그는 약해서 패배한 거야. {crimson}너처럼 말이다.");
+					CPrintToChatAll("{darkblue}캄르스타인{default}: 블리츠크리그는 약해서 패배한 거다. {crimson}너처럼 말이지.");
 				}
 			}
 		}
@@ -1639,7 +1639,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}캄르스타인{default}: 그것보다 더 세게 나갔어야지.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 저따위 약골이 내 상대였다니.");
 			}
 			case 1:
 			{
