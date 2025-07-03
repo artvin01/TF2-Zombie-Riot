@@ -1150,11 +1150,11 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				ElementDamage[victim][Element_Plasma] = 0;
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-				Cheese_SetPenalty(victim, (melee ? 0.75 : 0.5));
-				float duration = (melee ? 0.0 : 5.0);
+				Cheese_SetPenalty(victim, (melee ? 0.7 : 0.45));
+				float duration = (melee ? 0.0 : 8.0);
 				if(duration > 0.0)
 					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				float healing = 20.0; // bleh
+				float healing = 18.0; // bleh
 				if(!b_NpcHasDied[attacker])
 				{
 					healing = float(ReturnEntityMaxHealth(victim)) * 0.1;
