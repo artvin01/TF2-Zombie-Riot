@@ -806,7 +806,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
-			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), false);
 			for(int i; i < sizeof(enemy); i++)
 			{
 				if(enemy[i])

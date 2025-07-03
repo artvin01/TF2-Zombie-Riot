@@ -180,7 +180,7 @@ methodmap Blocker < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MUDROCK_WALK");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SAMURAI");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		SetVariantInt(16);

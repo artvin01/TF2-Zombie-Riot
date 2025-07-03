@@ -607,7 +607,7 @@ void NPC_ConfigSetup()
 	Iberia_inqusitor_irene_OnMapStart_NPC();
 
 //Victorian Raid
-//wave 1~15
+//wave 1~10
 	Victoria_Batter_OnMapStart_NPC();
 	Victorian_Charger_OnMapStart_NPC();
 	Victorian_Teslar_OnMapStart_NPC();
@@ -619,7 +619,7 @@ void NPC_ConfigSetup()
 	VictorianSquadleader_OnMapStart_NPC();
 	VictorianSignaller_OnMapStart_NPC();
 	
-//wave 16~30
+//wave 11~20
 	VictorianHumbee_MapStart();
 	VictorianShotgunner_OnMapStart_NPC();
 	Bulldozer_OnMapStart_NPC();
@@ -632,7 +632,7 @@ void NPC_ConfigSetup()
 	VictorianIronShield_OnMapStart_NPC();
 	Aviator_OnMapStart_NPC();
 	
-//wave 31~45
+//wave 21~30
 	Victoria_BaseBreaker_OnMapStart_NPC();
 	VictoriaAntiarmorInfantry_OnMapStart_NPC();
 	VictoriaAssaulter_OnMapStart_NPC();
@@ -647,7 +647,7 @@ void NPC_ConfigSetup()
 	VictoriaHarbringer_OnMapStart_NPC();
 	VictoriaBirdeye_OnMapStart_NPC();
 
-//wave 46~60
+//wave 31~40
 	VictorianCaffeinator_OnMapStart_NPC();
 	VictorianMechanist_as_OnMapStart_NPC();
 	VictorianOfflineAvangard_MapStart();
@@ -666,6 +666,9 @@ void NPC_ConfigSetup()
 	Huscarls_OnMapStart_NPC();
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
+
+//special - It is currently used as a trigger for the Victoria Factory.
+	Invisible_TRIGGER_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1976,7 +1979,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 
 //Victoria
-//Wave 1~15
+//Wave 1~10
 #include "npc/victoria/npc_batter.sp"
 #include "npc/victoria/npc_charger.sp"
 #include "npc/victoria/npc_teslar.sp"
@@ -1988,7 +1991,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_squadleader.sp"
 #include "npc/victoria/npc_signaller.sp"
 
-//wave 16~30
+//wave 11~20
 #include "npc/victoria/npc_humbee.sp"
 #include "npc/victoria/npc_shotgunner.sp"
 #include "npc/victoria/npc_bulldozer.sp"
@@ -2001,7 +2004,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_ironshield.sp"
 #include "npc/victoria/npc_aviator.sp"
 
-//wave 31~45
+//wave 21~30
 #include "npc/victoria/npc_basebreaker.sp"
 #include "npc/victoria/npc_booster.sp"
 #include "npc/victoria/npc_scorcher.sp"
@@ -2016,7 +2019,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_harbringer.sp"
 #include "npc/victoria/npc_bigpipe.sp"
 
-//wave 46~60
+//wave 31~40
 #include "npc/victoria/npc_caffeinator.sp"
 #include "npc/victoria/npc_welder.sp"
 #include "npc/victoria/npc_mechanist.sp"
@@ -2029,7 +2032,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_victoria_radiomast.sp"
 #include "npc/victoria/npc_radioguard.sp"
 #include "npc/victoria/npc_radio_repair.sp"
-
 #include "npc/victoria/npc_victorian_moru.sp"
 #include "npc/victoria/npc_victorian_fragments.sp"
 #include "npc/victoria/npc_victorian_factory.sp"
@@ -2040,6 +2042,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
 #include "npc/raidmode_bosses/victoria/npc_harrison.sp"
 #include "npc/raidmode_bosses/victoria/npc_castellan.sp"
+//special
+#include "npc/victoria/npc_invisible_trigger.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"
