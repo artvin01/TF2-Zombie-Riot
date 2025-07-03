@@ -561,9 +561,12 @@ public void Cheese_Bubble_InflictLogic(int entity, int enemy, float damage, int 
 {
 	if(GetTeam(enemy) == GetTeam(entity))
 	{
-		if(IsValidClient(enemy)) // wanted to do one for NPCs too but it seemed too complicated
+		if(enemy <= MaxClients) // wanted to do one for NPCs too but it seemed too complicated
 		{
-			Elemental_RemoveDamage(enemy, RoundToNearest(float(MaxArmorCalculation(Armor_Level[enemy], enemy, 1.0)) * (0.015 * Cheese_PapLevel[entity])));
+			if(Armor_Charge[enemy] < 0)
+			{
+				GiveArmorViaPercentage(enemy, (0.015 * Cheese_PapLevel[entity]), 1.0);
+			}
 		}
 		return;
 	}
