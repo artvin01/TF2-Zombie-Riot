@@ -4356,7 +4356,7 @@
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, does not apply elemental cooldown and\nreduces buildup penalty when triggering its elemental effect."
+		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, reduces elemental cooldown and\nbuildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
