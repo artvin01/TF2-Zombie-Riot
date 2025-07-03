@@ -1203,8 +1203,6 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 					
 				Repair = 0;
-				float position[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
