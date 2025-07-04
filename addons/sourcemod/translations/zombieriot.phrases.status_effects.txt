@@ -1357,7 +1357,7 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
+		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nThe victim's vulnerability will be multiplied by 10％.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 	}
 	"Ziberian Flagship Weaponry"
 	{
