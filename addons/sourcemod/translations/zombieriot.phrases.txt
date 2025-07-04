@@ -4621,7 +4621,7 @@
 	"Enable Visual Clutter Desc"
 	{
 		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nThis will also enable you seeing dead players (teutons)\nIf you love it, enable it again."
-		"ko"	"이것을 다시 활성화시키면 NPC의 화살 같은 시각적인 요소를 방해하는 것들이 다시 보이게 됩니다.\n그런걸 신경 안 쓰신다면, 다시 활성화시키세요."
+		"ko"	"이것을 다시 활성화시키면 NPC의 화살 같은 시각적인 요소를 방해하는 것들이 다시 보이게 됩니다.\n죽은 유저(튜턴 기사단)도 다시 보이게 됩니다.\n그런걸 신경 안 쓰신다면, 다시 활성화시키세요."
 	}
 	"Enable Reload Interact Desc"
 	{

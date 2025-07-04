@@ -3444,7 +3444,7 @@
 	"Zealot Desc"
 	{
 		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)\nSlow immunity."
-		"ko"	"레이피어: 헤드샷이 가능하며, M2를 꾹 누르면 방어 가능.\nR: 정면을 제외한 아무 방향으로나 대쉬 가능.\nR을 꾹 누른채 리볼버로 사격시 고속으로 사격합니다.\n적중시, 쿨타임 감소.\n후진의 이동 속도 감소량이 10％로 감소합니다.\n둔화 효과에 면역이 됨."
+		"ko"	"레이피어: 헤드샷이 가능하며, M2를 꾹 누르면 방어 가능.\nR: 아무 방향으로나 대쉬 가능.\nR을 꾹 누른채 리볼버로 사격시 고속으로 사격합니다.\n적중시, 쿨타임 감소.\n후진의 이동 속도 감소량이 10％로 감소합니다.\n둔화 효과에 면역이 됨."
 	}
 	"Zealot Pap 1 Desc"
 	{

@@ -37,10 +37,10 @@ enum
 
 static const char StyleName[][] =
 {
-	"Brawler",
-	"Beast",
-	"Rush",
-	"Dragon"
+	"불한당",
+	"파괴자",
+	"러시",
+	"전설"
 };
 
 // https://www.youtube.com/watch?v=VxQXaqDSNUw&t=15s

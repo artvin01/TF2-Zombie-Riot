@@ -1458,7 +1458,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 public Action Waves_AllowVoting(Handle timer)
 {
 	Waves_SetReadyStatus(1);
-	SPrintToChatAll("You may now ready up.");
+	SPrintToChatAll("이제 준비(F4)를 할 수 있습니다.");
 	return Plugin_Continue;
 }
 
