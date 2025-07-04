@@ -1160,9 +1160,13 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				else if(IsValidClient(attacker))
 				{
-					if(IsValidEntity(weapon))	
+					if(IsValidEntity(weapon))
+					{
 						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+
+						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+					}
 				}
 				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 				position[2] += 10.0;
@@ -1196,9 +1200,13 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				else if(IsValidClient(attacker))
 				{
-					if(IsValidEntity(weapon))	
+					if(IsValidEntity(weapon))
+					{
 						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+
+						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+					}
 				}
 				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 					
