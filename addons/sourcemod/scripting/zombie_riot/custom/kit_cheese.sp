@@ -71,7 +71,7 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
 static int Cheese_Bubble_MaxHits[9]  = {150, 150, 140, 130, 120, 110, 100, 90, 80}; // Plasmatized Bubble's max charge
-static float Cheese_Bubble_ElementalDmg = 200.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static float Cheese_Bubble_ElementalDmg = 135.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 27.5, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.25, 2.25, 2.25, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {5.0, 5.0, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5}; // Lethal Injection's elemental damage bonus
@@ -316,7 +316,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, thecooldown);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 2.0), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.25), weapon);
 	}
 
 	return damage;
@@ -529,10 +529,14 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 	float tickrate = pack.ReadFloat();
 
+	float scale = 1.0;
+	if(Cheese_PapLevel[owner] > 1)
+		scale = float(Cheese_PapLevel[owner]) * 0.5;
+
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
-	PlasmicBubble_HealElementalAllies(owner, (0.02 * Cheese_PapLevel[owner]), 1.0, position, 225.0, GetTeam(owner));
+	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0, GetTeam(owner));
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
