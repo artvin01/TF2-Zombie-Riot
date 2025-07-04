@@ -307,6 +307,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Cheese_BeamEffect(position, 1.0, 200.0, 0.2, 5.0);
 			position[2] -= 12.5;
 			Cheese_BeamEffect(position, 1.0, 200.0, 0.2, 5.0);
+			IncreaseEntityDamageTakenBy(victim, 1.1, 5.0);
 
 			Rogue_OnAbilityUse(attacker, weapon);
 			RemoveSpecificBuff(attacker, "Plasmatized Lethalitation");
