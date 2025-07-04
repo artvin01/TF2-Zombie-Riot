@@ -200,7 +200,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 			ApplyStatusEffect(client, client, "Plasmatic Rampage", 999.0);
 
 		HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.01), 0.25, 0.0, HEAL_SELFHEAL);
-		Elemental_AddPlasmicDamage(client, client, 20, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
+		Elemental_AddPlasmicDamage(client, client, 25, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
 	}
 	else
 	{
