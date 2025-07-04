@@ -1349,7 +1349,7 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
+		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY reduces Plasmic Elemental buildup penalty and cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
