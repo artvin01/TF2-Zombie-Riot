@@ -1150,8 +1150,11 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				ElementDamage[victim][Element_Plasma] = 0;
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-				Cheese_SetPenalty(victim, (melee ? 0.7 : 0.45));
-				float duration = (melee ? 2.0 : 8.0);
+
+				float meleepenalty = (b_thisNpcIsARaid[victim] ? 0.85 : 0.75);
+				float rangedpenalty = (b_thisNpcIsARaid[victim] ? 0.65 : 0.5);
+				Cheese_SetPenalty(victim, (melee ? meleepenalty : rangedpenalty));
+				float duration = (melee ? 2.0 : (b_thisNpcIsARaid[victim] ? 4.0 : 8.0));
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
 				float healing = 20.0; // bleh
 				if(!b_NpcHasDied[attacker])
@@ -1168,7 +1171,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
 					}
 				}
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 0.5, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
