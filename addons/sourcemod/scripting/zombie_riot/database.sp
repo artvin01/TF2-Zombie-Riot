@@ -758,10 +758,13 @@ void Database_SaveGameData(int client)
 
 			for(int i = Ammo_Metal; i < Ammo_MAX; i++)
 			{
-				if(i >= Ammo_Pistol || i == Ammo_Metal || i == Ammo_Jar)
+				if((i >= Ammo_Pistol || i == Ammo_Metal))
 				{
-					Local.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_AMMO ... " (steamid, type, amount) VALUES ('%d', '%d', '%d')", id, i, CurrentAmmo[client][i]);
-					tr.AddQuery(buffer);
+					if(i != Ammo_Jar && i != Ammo_Hand_Grenade && i != Ammo_Potion_Supply) //DO NOT SAVE THESE.)
+					{
+						Local.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_AMMO ... " (steamid, type, amount) VALUES ('%d', '%d', '%d')", id, i, CurrentAmmo[client][i]);
+						tr.AddQuery(buffer);
+					}
 				}
 			}
 			
