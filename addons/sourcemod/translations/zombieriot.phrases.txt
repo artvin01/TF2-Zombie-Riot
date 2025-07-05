@@ -2913,10 +2913,7 @@
 	}	
 	"You have been Infected by Nemesis"
 	{
-		"en"		"You have been Infected by Nemesis!\nDo not get close to allies."
-		"fr"		"Vous êtes infectés par Nemesis!\nGardez votre distance de vos alliés."
-		"ru"		"Вы были заражены Немезидом!\nНе приближайтесь к союзникам."
-		"chi"		"你被复仇女神感染了!不要与队友走得太近。"
+		"en"		"You have been Infected by Nemesis!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
 		"ko"		"당신은 네메시스에게 감염 당했습니다!\n다른 아군과 너무 가까이 접근하지 마세요."
 	}	
 	"Xeno_Wave_1"

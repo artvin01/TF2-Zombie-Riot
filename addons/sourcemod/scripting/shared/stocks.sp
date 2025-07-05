@@ -1202,14 +1202,14 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 }
 
 
-stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0)
+stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0, int effectoverride = 0)
 {
 	if(IsValidEntity(victim) && IsValidEntity(attacker))
 	{
 		if(HasSpecificBuff(victim, "Hardened Aura"))
 			return;
 
-		if(HasSpecificBuff(victim, "Thick Blood"))
+		if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != 1)
 			return;
 
 		if(attacker > 0 && attacker <= MaxClients)
@@ -1228,6 +1228,7 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		else
 			pack.WriteCell(-1);
 		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(effectoverride);
 		pack.WriteCell(damagetype);
 		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
@@ -1274,6 +1275,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			attacker = 0; //Make it the world that attacks them?
 	}
 
+	int effectoverride = pack.ReadCell();
 	if(StatusEffects_RapidSuturingCheck(victim, GameTimeClense))
 	{
 		return Plugin_Stop;
@@ -1285,7 +1287,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-	if(HasSpecificBuff(victim, "Thick Blood"))
+	if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != -1)
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)

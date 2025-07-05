@@ -1682,7 +1682,7 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
 			int InfectionCount = 15;
-			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0);
+			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0, 1);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));
