@@ -845,7 +845,7 @@ static void Internal_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
-					CPrintToChatAll("{blue}Atomizer{default}: 아! 바로 이거야!");
+					CPrintToChatAll("{blue}인수분해{default}: 아! 바로 이거야!");
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flNextRangedAttack += 2.0;
 					npc.m_flRangedSpecialDelay += 2.0;

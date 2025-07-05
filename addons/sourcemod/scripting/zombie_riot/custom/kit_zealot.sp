@@ -8,10 +8,10 @@
 #define SAMURAI_SWORD_PARRY 	"weapons/samurai/tf_katana_impact_object_02.wav"
 public const char PotionNames[][] =
 {
-	"활력 포션",
-	"신속 포션",
-	"쾌활성 포션",
-	"집중 포션",
+	"Potion of Vigor",
+	"Potion of Swiftness",
+	"Potion of Resilience",
+	"Potion of Focus",
 };
 
 Handle Timer_Zealot_Management[MAXPLAYERS+1] = {null, ...};
