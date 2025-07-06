@@ -72,7 +72,7 @@ static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
 static int Cheese_Bubble_MaxHits[9]  = {150, 150, 140, 130, 120, 110, 100, 90, 80}; // Plasmatized Bubble's max charge
 static float Cheese_Bubble_ElementalDmg = 135.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
-static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 27.5, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
+static float Cheese_Lethal_Cooldown[9]  = {25.0, 25.0, 25.0, 22.5, 20.0, 17.5, 15.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.25, 2.25, 2.25, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {5.0, 5.0, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5}; // Lethal Injection's elemental damage bonus
 static float Cheese_Burst_ElementalDmg[9]  = {0.75, 0.75, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65}; // Additional Elemental damage multiplier for Plasmic Burst
@@ -608,6 +608,7 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 				GetClientAbsOrigin(client, clientpos);
 				if(GetVectorDistance(clientpos, position, false) <= distance)
 				{
+					Elemental_RemoveDamage(client, RoundToNearest(percent));
 					if(healer != -1)
 					{
 						if(GetTeam(client) == GetTeam(healer))
