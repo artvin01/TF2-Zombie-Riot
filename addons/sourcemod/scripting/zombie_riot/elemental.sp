@@ -76,7 +76,6 @@ stock void Elemental_RemoveDamage(int entity, int amount)
 {
 	for(int i; i < Element_MAX; i++)
 	{
-		PrintToServer("Removing elemental damage type %s from %N", ElementName[i], entity);
 		if(ElementDamage[entity][i] > 0)
 		{
 			ElementDamage[entity][i] -= amount;
