@@ -3058,18 +3058,22 @@ static void MenuPage(int client, int section)
 	}
 	
 	int cash = CurrentCash-CashSpent[client];
-	
+	/*
+
+	remove, dont bother.
 	if(ClientTutorialStep(client) == 2)
 	{
 		//This is here so the player doesnt just have no money to buy anything.
-		if(cash < 1000)
+		if(cash < 700)
 		{
-			int give_Extra_JustIncase = cash - 1000;
+			int give_Extra_JustIncase = cash - 700;
 			
 			CashSpent[client] += give_Extra_JustIncase;
 			cash += give_Extra_JustIncase;
 		}
 	}
+
+	*/
 	
 	if(StarterCashMode[client])
 	{

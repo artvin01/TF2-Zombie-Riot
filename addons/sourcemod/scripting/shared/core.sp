@@ -1984,7 +1984,7 @@ public void Update_Ammo(DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
-	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+	if(IsValidClient(client) && IsPlayerAlive(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
