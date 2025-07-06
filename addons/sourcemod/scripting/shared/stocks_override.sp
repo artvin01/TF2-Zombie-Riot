@@ -412,6 +412,7 @@ void Edited_TF2_RegeneratePlayer(int client)
 	//delete at all times, they have no purpose here, you respawn.
 	TF2_RegeneratePlayer(client);
 
+	SDKCall_GiveCorrectAmmoCount(client);
 	//player needs to be fully nowmally visible.
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);

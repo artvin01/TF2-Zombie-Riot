@@ -266,6 +266,7 @@ static Handle ProgressTimer;
 static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
+static int CurrentCountHud;
 static int CurrentStage;
 static bool CurrentType;
 static ArrayList CurrentExclude;
@@ -794,6 +795,7 @@ void Rogue_RoundEnd()
 	CurrentFloor = 0;
 	CurrentStage = -1;
 	CurrentCount = -1;
+	CurrentCountHud = -1;
 	delete CurrentExclude;
 	delete CurrentMissed;
 	CurrentIngots = 0;
@@ -1183,6 +1185,7 @@ void Rogue_NextProgress()
 			
 			CurrentFloor = 0;
 			CurrentCount = -1;
+			CurrentCountHud = -1;
 			delete CurrentExclude;
 
 			int startingIngots = highestLevel + 8;
@@ -1333,6 +1336,7 @@ void Rogue_NextProgress()
 				CurrentFloor++;
 				CurrentStage = -1;
 				CurrentCount = -1;
+				CurrentCountHud = -1;
 				ExtraStageCount = 0;
 				
 				bool victory = CurrentFloor >= Floors.Length;
@@ -1350,6 +1354,7 @@ void Rogue_NextProgress()
 						{
 							// Check next floor
 							CurrentCount = maxRooms + 1;
+							CurrentCountHud = maxRooms + 1;
 							Rogue_NextProgress();
 							return;
 						}
@@ -1479,6 +1484,7 @@ void Rogue_NextProgress()
 				{
 					// We somehow don't have a final stage
 					CurrentCount = maxRooms + 1;
+					CurrentCountHud = maxRooms + 1;
 					Rogue_NextProgress();
 				}
 				else
@@ -1492,6 +1498,7 @@ void Rogue_NextProgress()
 			else	// Normal Stage
 			{
 				Rogue_CreateGenericVote(Rogue_Vote_NextStage, "Vote for the next stage");
+				CurrentCountHud++;
 
 				int count = RogueTheme == BobChaos ? 2 : 3;
 				if(!(GetURandomInt() % 6))
@@ -1551,6 +1558,7 @@ void Rogue_NextProgress()
 				{
 					delete Voting;
 					CurrentCount = maxRooms;
+					CurrentCountHud = maxRooms;
 					Rogue_NextProgress();
 				}
 			}
@@ -1728,6 +1736,7 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 static void SetNextStage(int id, bool type, const Stage stage, float time = 5.0)
 {
 	CurrentCount++;
+	CurrentCountHud = CurrentCount;
 	CurrentStage = id;
 	CurrentType = type;
 
@@ -2800,8 +2809,8 @@ bool Rogue_UpdateMvMStats()
 
 		int maxRooms = floor.RoomCount + ExtraStageCount;
 
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentCount + 1);
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", maxRooms + 2);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", 0);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", 0);
 
 		for(int i; i < 24; i++)
 		{
@@ -2914,8 +2923,41 @@ bool Rogue_UpdateMvMStats()
 						}
 					}
 				}
-			}
+				case 4:
+				{
+					//current Stage
+					int DisplayDo = CurrentCountHud + 1;
+					if(DisplayDo <= 1)
+						DisplayDo = 1;
+					Waves_SetWaveClass(objective, i, DisplayDo, "current_stage", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				case 5:
+				{
+					//Max Stages
+					Waves_SetWaveClass(objective, i, maxRooms + 2, "max_stage", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				case 6:
+				{
+					//Current Floor
+					int DisplayDo = CurrentFloor + 1;
+					if(DisplayDo <= 1)
+						DisplayDo = 1;
+					Waves_SetWaveClass(objective, i, DisplayDo, "current_floor", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				/*
 
+				case 7:
+				{
+					//Max Floors
+					int length1 = Floors.Length;
+					Waves_SetWaveClass(objective, i, length1, "max_floor", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				*/
+			}
 			Waves_SetWaveClass(objective, i);
 		}
 	}
