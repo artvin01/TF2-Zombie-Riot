@@ -537,7 +537,7 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
-	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0, GetTeam(owner));
+	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
@@ -593,7 +593,7 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 }
 
 // im KILLING myself i already tried doing logic with Explode_Logic_Custom and i spent like 5 hours failing over and over i HATE IT
-public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance, int correct_team)
+public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -609,15 +609,17 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 				if(GetVectorDistance(clientpos, position, false) <= distance)
 				{
 					Elemental_RemoveDamage(client, RoundToNearest(percent));
-					if(healer != -1)
+					if(GetTeam(client) == GetTeam(healer))
 					{
-						if(GetTeam(client) == GetTeam(healer))
-							GiveArmorViaPercentage(client, percent, maxmulti, _, _, healer);
-					}
-					else
-					{
-						if(GetTeam(client) == correct_team)
-							GiveArmorViaPercentage(client, percent, maxmulti);
+						GiveArmorViaPercentage(client, percent, maxmulti, _, _, healer);
+						if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+						{
+							ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+						}
+						else if(Cheese_PapLevel[healer] >= 5)
+						{
+							ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
+						}
 					}
 				}
 			}
