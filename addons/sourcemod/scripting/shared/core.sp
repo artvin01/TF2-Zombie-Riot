@@ -1508,6 +1508,8 @@ public void OnClientPutInServer(int client)
 		OverridePlayerModel(client, NIKO_2, true);
 #endif
 	MedigunPutInServerclient(client);
+	if(!Waves_Started() || Waves_InSetup())
+		DoGlobalMultiScaling();
 }
 
 public void OnClientCookiesCached(int client)
