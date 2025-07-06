@@ -264,7 +264,7 @@ methodmap BobTheFirstFollower < CClotBody
 			// Cutscene Here
 			npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
 			npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
-			Rogue_SetProgressTime(10.0, false);
+		//	Rogue_SetProgressTime(10.0, false);
 		}
 
 		return npc;

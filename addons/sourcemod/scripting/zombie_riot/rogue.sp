@@ -2800,8 +2800,8 @@ bool Rogue_UpdateMvMStats()
 
 		int maxRooms = floor.RoomCount + ExtraStageCount;
 
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentCount + 1);
-		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", maxRooms + 2);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", 0);
+		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", 0);
 
 		for(int i; i < 24; i++)
 		{
@@ -2914,8 +2914,41 @@ bool Rogue_UpdateMvMStats()
 						}
 					}
 				}
-			}
+				case 4:
+				{
+					//current Stage
+					int DisplayDo = CurrentCount + 1;
+					if(DisplayDo <= 1)
+						DisplayDo = 1;
+					Waves_SetWaveClass(objective, i, DisplayDo, "current_stage", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				case 5:
+				{
+					//Max Stages
+					Waves_SetWaveClass(objective, i, maxRooms + 2, "max_stage", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				case 6:
+				{
+					//Current Floor
+					int DisplayDo = CurrentFloor + 1;
+					if(DisplayDo <= 1)
+						DisplayDo = 1;
+					Waves_SetWaveClass(objective, i, DisplayDo, "current_floor", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				/*
 
+				case 7:
+				{
+					//Max Floors
+					int length1 = Floors.Length;
+					Waves_SetWaveClass(objective, i, length1, "max_floor", MVM_CLASS_FLAG_NORMAL, true);
+					continue;
+				}
+				*/
+			}
 			Waves_SetWaveClass(objective, i);
 		}
 	}

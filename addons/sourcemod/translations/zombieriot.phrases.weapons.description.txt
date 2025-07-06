@@ -580,19 +580,13 @@
 	
 	"Quad Launcher Desc"
 	{
-		"en"		"4 shots into 1 spam.." 
-		"fr"		"4 tirs par spam..." 
-		"ru"		"4 выстрела за один выстрел."
-		"chi"	    "4次射击后将发射垃圾...."
-		"ko"		"한 번에 4발을 발사합니다."
+		"en"		"4 shots into 1 spam.\nIncreased damage\nCannot fire until reload is complete.\nDeals 50％ dmg against raids."
+		"ko"		"한 번에 4발을 발사합니다.\n피해량이 증가합니다.\n재장전이 완료될 때까지 발사할 수 없습니다.\n레이드 보스 대상 피해량 +50％ 증가"
 	}
 	"Quad Launcher Pap 1"
 	{
-		"en"		"Increased damage and attackspeed"
-		"fr"		"Dégats et cadence de tir améliorés"
-		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"	    "增加伤害和攻击速度。"
-		"ko"		"피해량과 공격 속도가 증가합니다."
+		"en"		"10 shots into 1 spam.\nIncreased damage and ReloadSpeed"
+		"ko"		"한 번에 10발을 발사합니다.\n피해량과 재장전 속도가 증가합니다."
 	}
 	
 	"The Loch-n-Load Pap 1"
