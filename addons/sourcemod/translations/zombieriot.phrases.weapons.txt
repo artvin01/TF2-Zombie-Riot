@@ -2859,6 +2859,16 @@
 		"chi"	   "超电磁炮"
 		"ko"	   "IEM 런처"
 	}
+	"Messenger's Launcher"
+	{
+		"en"	   "Messenger's Launcher"
+		"ko"	   "메신저의 발사기"
+	}
+	"Angered Messenger's Launcher"
+	{
+		"en"	   "Angered Messenger's Launcher"
+		"ko"	   "격분한 메신저의 발사기"
+	}
 	"Quad Launcher"
 	{
 		"en"	   "Quad Launcher"
