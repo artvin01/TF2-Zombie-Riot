@@ -559,7 +559,7 @@
 		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
 		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
 		"chi"	    "工程师说不要碰他的东西，但你不在乎"
-		"ko"		"발사시 느린 투사체가 나아가며 투사체 주변의 적들에게 피해를 줍니다.\n완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴"
+		"ko"		"발사시 느린 투사체가 나아가며 투사체 주변의 적들에게 피해를 줌.\n완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴"
 	}
 	"IEM Launcher Pap 1"
 	{
@@ -567,7 +567,7 @@
 		"fr"		"Dégats et cadence de tir améliorés, baisse de puissance avec distance réduite"
 		"ru"		"Увеличенный урон и дальность, а также меньшее падение урона на расстоянии."
 		"chi"	    "增加伤害和射程，伤害衰减程度减少"
-		"ko"		"피해량과 사거리가 증가하고 거리 비례 피해량 감소 수치가 줄어듭니다."
+		"ko"		"피해량과 사거리가 증가하고 거리 비례 피해량이 감소."
 	}
 	
 	"Marksman Rifle Pap 1"
@@ -575,7 +575,7 @@
 		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.\nArchetype changes to ''Explosive Mind''"
 		"fr"		"Dégats et cadence de tir améliorés, balles deviennent explosives.\nArchetype devient «Maître des Explosions»"
 		"ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные.\nАрхетип меняется на «Взрывной разум»"
-		"ko"		"피해량, 공격 속도 증가 및 이제 적중시 폭발하는 히트스캔형 폭발탄을 사격.\n무기의 유형이 ''폭발형''으로 변경됩니다."
+		"ko"		"피해량, 공격 속도 증가 및 이제 적중시 폭발하는 히트스캔형 폭발탄을 사격.\n무기의 유형이 ''폭발형''으로 변경."
 	}
 	
 	"Quad Launcher Desc"
@@ -608,7 +608,7 @@
 	{
 		"en"		"Load 4 bullets and shoot all at once\nDeals 10％ dmg against raids."
 		"fr"		"Chargez 4 munitions et tirez-les toutes à la fois\nInflige +10％ des dégats contre les Raids."
-		"ko"		"최대 4발의 장탄을 장전하고 발사시 한꺼번에 발사합니다.\n레이드 보스 대상 피해량 +10％ 증가"
+		"ko"		"최대 4발의 장탄을 장전하고 발사시 한꺼번에 발사.\n레이드 보스 대상 피해량 +10％ 증가"
 	}
 	
 	"Boomstick Pap 1"
@@ -617,33 +617,33 @@
 		"fr"		"Dégats et cadence de tir améliorés, charge 6 munitions à la fois"
 		"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
 		"chi"	    "增加伤害和攻击速度，子弹装载量增加到6发。"
-		"ko"		"피해량, 공격 속도 증가 및 최대 6발의 장탄을 장전할 수 있습니다."
+		"ko"		"피해량, 공격 속도 증가 및 최대 6발의 장탄을 장전 가능."
 	}
 	"Boomstick Pap 3"
 	{
 		"en"		"Increased damage and attackspeed, Louder and loads more clips!"
 		"fr"		"Dégats et cadence de tir améliorés, charge plus de munitions et fait plus de bruit!"
-		"ko"		"피해량, 공격 속도 증가 및 더 많은 장탄을 장전할 수 있습니다."
+		"ko"		"피해량, 공격 속도 증가 및 더 많은 장탄을 장전 가능."
 	}
 	"Boomstick Pap 2"
 	{
 		"en"		"Bullets turn into piercing lasers with damage falloff.\nDamage stays the same on full hits but it is easier to hit as you dont have to headshot."
 		"fr"		"Remplace les plombs avec des rayons laser perçantes.\nDégats sont identiques à courte portée mais les tirs en pleine tête ne sont plus possibles."
 		"chi"		"子弹换为带穿透的激光子弹，带有距离衰减。伤害无改变，但更容易集中敌人。"
-		"ko"		"이제 거리 비례 피해량 감소가 적용되는 관통형 레이저를 발사.\n풀히트 시의 피해량은 동일하지만, 헤드샷의 필요성이 사라지므로 맞추기 더 쉬워짐."
+		"ko"		"이제 거리 비례 피해량 효과가 적용되는 관통형 레이저를 발사.\n풀히트 시의 피해량은 동일하지만, 헤드샷의 필요성이 사라지므로 맞추기 더 쉬워짐."
 	}
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
 		"en"	"Implant a bomb onto the target you hit, press R to detonate them. More charge = more bombs, headshot = more bombs\nBombs dont suffer from downed dmg reduction.\nBomblimit = 200-ish"
-		"ko"	"적중한 대상에게 폭약을 부착하고 R키로 폭약을 폭파시킵니다. 헤드샷 또는 충전량에 따라 더 많은 폭약이 부착됩니다\n폭약은 피해량 감소 영향을 받지 않음\n최대 상한수 = 200개"
+		"ko"	"적중한 대상에게 폭약을 부착하고 R키로 폭약을 폭파. 헤드샷 또는 충전량에 따라 더 많은 폭약이 부착됨\n폭약은 피해량 감소 영향을 받지 않음\n최대 상한수 = 200개"
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
 		"en"	"Increases firerare, chargetime, and bombs planted at once"
 		"fr"	"Cadence de tir et vitesse de charge améliorés, plante plus de bombes à la fois"
 		"chi"	"加攻速，充能速度，以及炸弹上限"
-		"ko"	"공격 속도, 충전 속도 증가 및 한 번에 더 많은 폭약을 부착할 수 있습니다."
+		"ko"	"공격 속도, 충전 속도 증가 및 한 번에 더 많은 폭약을 부착 가능."
 	}
 	
 	"Rampager Automatic Rifle Desc"
@@ -652,7 +652,7 @@
 		"fr"	"Mitraillette sans rechargeur. Plus que vous tirez, plus la cadence de tirs accélère."
 		"ru"	"Скорострельный ручной пулемёт без перезарядки, чем больше вы стреляете, тем быстрее он стреляет."
 		"chi"   "无需装填的速射轻机枪，你射击的时间越久，它射得越快。"
-		"ko"	"재장전이 필요 없는 자동 소총입니다. 공격할 수록 공격 속도가 더욱 증가합니다."
+		"ko"	"재장전이 필요 없는 자동 소총입니다. 공격할 수록 공격 속도가 더욱 증가."
 	}
 	
 	"Star Shooter Desc"
@@ -2195,7 +2195,7 @@
 	{
 		"en"	"Your bullets deal 15％ more damage, however their damage falloff is amplified by 20％\nMost hitscan weapons work with this, if the weapon has no damage falloff, then this does nothing."
 		"fr"	"+15％ dégats, 20％ plus de perte de dégats en fonction de la distance.\nAucun effet si votre arme perd pas de dégats en fonction de la distance."
-		"ko"	"탄환의 피해량 +15％. 하지만 거리 비례 피해 감소량 20％ 증가.\n해당 무기가 거리 비례 피해량 감소가 없다면, 이건 아무 효과도 없습니다."
+		"ko"	"탄환의 피해량 +15％. 하지만 거리 비례 피해 감소량 20％ 증가.\n해당 무기가 거리 비례 피해량 효과가 없다면, 이건 아무 효과도 없습니다."
 	}
 	
 	"Mage Fragility Desc"
@@ -2836,7 +2836,7 @@
 		"en"	"Increases damage.\nDoubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
 		"fr"	"Double la perte de dégats avec distance. Abilité étonne et recule 2 ennemis. Abilité utilise un chargeur par victime."
 		"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 2 цели, расходует одну обойму на каждую поражённую цель."
-		"ko"	"거리 비례 피해량 감소가 2배로 증가하지만, 최대 2명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄이 1 소모됨."
+		"ko"	"거리 비례 피해량이 2배로 증가하지만, 최대 2명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄이 1 소모됨."
 	}
 	"The Enforcer Pap 1"
 	{
@@ -3934,7 +3934,7 @@
 	"USP PAP 4"
 	{
 		"en" 	"Increased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
-		"ko"	"피해량, 장탄수, 공격 속도 증가.\n이 무기의 거리 비례 피해량 감소량이 감소.\n능력의 버프 지속 시간이 증가."
+		"ko"	"피해량, 장탄수, 공격 속도 증가.\n이 무기의 거리 비례 피해량 감소.\n능력의 버프 지속 시간이 증가."
 	}
 	"Autoshotgun Pap 2"
 	{

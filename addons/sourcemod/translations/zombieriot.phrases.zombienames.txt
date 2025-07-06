@@ -4835,7 +4835,7 @@
 	"Hijacked Red Pill"
 	{
 		"en"		"Hijacked Red Pill"
-		"ko"		"해킹한 빨간 약"
+		"ko"		"해킹당한 빨간 약"
 	}
 	"Seaborn Metro Cop"
 	{

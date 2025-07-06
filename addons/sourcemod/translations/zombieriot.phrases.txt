@@ -4936,4 +4936,21 @@
 		"en"		"Your body slowly starts to break down...."
 		"ko"		"당신의 몸이 천천히 망가져가기 시작합니다..."
 	}
+	"Standard"
+	{
+		"en"	"Standard"
+		"ru"	"Стандартный"
+		"ko"	"일반"
+	}
+	"Old Times"
+	{
+		"en"	"Old Times"
+		"ru"	"Старые времена"
+		"ko"	"그때 그 시절"
+	}
+	"Paranormal Activity"
+	{
+		"en"	"Paranormal Activity"
+		"ko"	"초자연적 현상"
+	}
 }
