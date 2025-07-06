@@ -1357,7 +1357,23 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nThe victim's vulnerability will be multiplied by 10％.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
+		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nThe victim's vulnerability will be multiplied by +10％.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
+	}
+	"Plasmic Layering I"
+	{
+		"en"	"Plasmic Layering I"
+	}
+	"Plasmic Layering I Desc"
+	{
+		"en" 	"Increases damage and resistance by +15％.\nElemental damage is removed off you while in the Plasmatized Bubble."
+	}
+	"Plasmic Layering II"
+	{
+		"en"	"Plasmic Layering II"
+	}
+	"Plasmic Layering II Desc"
+	{
+		"en" 	"Increases damage and resistance by +25％.\nElemental damage is removed off you while in the Plasmatized Bubble."
 	}
 	"Ziberian Flagship Weaponry"
 	{
