@@ -627,7 +627,7 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 						}
 						*/
 
-						// using this until the above is fixed
+						// using this because the above is for npcs, not for clients (breb)
 						GiveArmorViaPercentage(client, percent, 1.0, _, true, healer);
 					}
 
@@ -655,6 +655,11 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 			{
 				if(GetTeam(npc) == GetTeam(healer))
 				{
+					for(int i; i < 9; i++)
+					{
+						Elemental_RemoveDamage(npc, i, RoundToNearest(float(Elemental_TriggerDamage(victim, i)) * percent));
+					}
+
 					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
 					{
 						ApplyStatusEffect(healer, npc, "Plasmic Layering I", 1.0);
