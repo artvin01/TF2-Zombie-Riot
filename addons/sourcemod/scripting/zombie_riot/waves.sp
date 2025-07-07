@@ -3849,6 +3849,14 @@ void Waves_EnemySpawned(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 	}
+	if(!b_thisNpcIsARaid[entity] && XenoExtraLogic(true))
+	{
+		ApplyStatusEffect(entity, entity, "Xeno's Territory", 99999.0);
+	}
+	if(!b_thisNpcIsARaid[entity] && FishExtraLogic(true))
+	{
+		ApplyStatusEffect(entity, entity, "Weakened Godly Power", 99999.0);
+	}
 }
 
 bool Waves_NextFreeplayCall(bool donotAdvanceRound)
