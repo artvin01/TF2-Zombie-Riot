@@ -611,10 +611,15 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 	
 					if(GetTeam(client) == GetTeam(healer))
 					{
-						for(int i; i < 8; i++) // Remove all elementals except Plasma
+						/*
+						for(int i; i < 8; i++) // Remove all elementals except Plasma 
 						{
-							Elemental_RemoveDamage(client, i, RoundToNearest(float(MaxArmorCalculation(Armor_Level[client], client, 1.0)) * percent));
+							if(i != 8)
+								Elemental_RemoveDamage(client, i, RoundToNearest(float(MaxArmorCalculation(Armor_Level[client], client, 1.0)) * percent));
 						}
+						*/
+						// using this until the above is fixed
+						GiveArmorViaPercentage(client, percent, 1.0, _, true, healer);
 					}
 				}
 
