@@ -3855,7 +3855,7 @@ void Waves_EnemySpawned(int entity)
 	}
 	if(!b_thisNpcIsARaid[entity] && FishExtraLogic(true))
 	{
-		ApplyStatusEffect(entity, entity, "Weakened Godly Power", 99999.0);
+		ApplyStatusEffect(entity, entity, "Corrupted Godly Power", 99999.0);
 	}
 }
 
