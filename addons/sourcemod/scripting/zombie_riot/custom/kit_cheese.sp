@@ -593,6 +593,7 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 }
 
 // im KILLING myself i already tried doing logic with Explode_Logic_Custom and i spent like 5 hours failing over and over i HATE IT
+// I also wanted to do one for npcs but i don't know how yet so... yeah
 public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance)
 {
 	for(int client = 1; client <= MaxClients; client++)
@@ -610,8 +611,10 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 	
 					if(GetTeam(client) == GetTeam(healer))
 					{
-						Elemental_RemoveDamage(client, RoundToNearest(percent));
-						GiveArmorViaPercentage(client, percent, maxmulti, _, _, healer);
+						for(int i; i < 7; i++) // Remove all elementals except Plasma
+						{
+							Elemental_RemoveDamage(client, i, RoundToNearest(float(MaxArmorCalculation(Armor_Level[client], client, 1.0)) * percent));
+						}
 					}
 				}
 
