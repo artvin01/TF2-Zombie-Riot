@@ -74,7 +74,7 @@ stock bool Elemental_GoingCritical(int entity)
 
 // See the Elemental_MAX enum to see types
 // Set type to -1 to remove all elemental damage types from the user instead
-// TODO: fix, doesn't even work (bleb)
+// NOTE: Doesn't work for clients, this only works for npcs
 stock void Elemental_RemoveDamage(int entity, int type, int amount)
 {
 	if(type >= 0)
