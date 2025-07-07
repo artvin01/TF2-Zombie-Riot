@@ -76,7 +76,7 @@ stock void Elemental_RemoveDamage(int entity, int amount)
 {
 	for(int i; i < Element_MAX; i++)
 	{
-		PrintToChatAll("Removing Elemental Damage type %s", ElementName[i]);
+		PrintToChatAll("Removing Elemental Damage type %s (Number: %d) (Amount: %d)", ElementName[i], i, amount);
 		if(ElementDamage[entity][i] > 0)
 		{
 			ElementDamage[entity][i] -= amount;
