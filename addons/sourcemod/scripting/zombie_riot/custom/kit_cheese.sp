@@ -599,28 +599,29 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
-			if(Armor_Charge[client] < 0)
+			float clientpos[3];
+			GetClientAbsOrigin(client, clientpos);
+			if(GetVectorDistance(clientpos, position, false) <= distance)
 			{
-				if(f_TimeUntillNormalHeal[client] > GetGameTime())
-					percent *= 0.5;
-
-				float clientpos[3];
-				GetClientAbsOrigin(client, clientpos);
-				if(GetVectorDistance(clientpos, position, false) <= distance)
+				if(Armor_Charge[client] < 0)
 				{
-					Elemental_RemoveDamage(client, RoundToNearest(percent));
+					if(f_TimeUntillNormalHeal[client] > GetGameTime())
+						percent *= 0.5;
+	
 					if(GetTeam(client) == GetTeam(healer))
 					{
+						Elemental_RemoveDamage(client, RoundToNearest(percent));
 						GiveArmorViaPercentage(client, percent, maxmulti, _, _, healer);
-						if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
-						{
-							ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
-						}
-						else if(Cheese_PapLevel[healer] >= 5)
-						{
-							ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
-						}
 					}
+				}
+
+				if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+				{
+					ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+				}
+				else if(Cheese_PapLevel[healer] >= 5)
+				{
+					ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
 				}
 			}
 		}
