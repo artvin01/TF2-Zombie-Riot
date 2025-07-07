@@ -4382,7 +4382,7 @@
 	{
 		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
 	}
-	"Plasma Bubble Pap 2 Desc"
+	"Plasma Bubble Pap 3 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering I."
 	}
