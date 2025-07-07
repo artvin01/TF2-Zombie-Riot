@@ -16,6 +16,7 @@ Inflicts a LOT of its damage as Plasmic Elemental damage due to its kinda-averag
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.25 damage
 - Next melee attack will deal x5 Plasmic Elemental damage. THIS IS SEPARATE FROM THE DAMAGE BONUS!
+- Next melee attack will multiply the target's vulnerability by x1.1
 PaP Upgrades (all of them increase overall stats):
 1 - Nothing special
 2 - Unlocks Lethal Injection.
@@ -33,7 +34,9 @@ which scales based off the weapon's damage attribs.
 This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
 - The bubble lasts for a base duration of 5 seconds.
 All PaP upgrades reduce the hits required to charge the Plasmatized Bubble by 10, increase
-the Plasmic Elemental Damage it deals, and increase the bubble duration by 1s (up to 10s).
+the Plasmic Elemental Damage it deals, and increase the bubble duration by 1.5s (up to 12.5s).
+Pap 3 allows the Plasmatized Bubble to grant Plasmic Layering to allies inside it, Pap 5 boosts
+the level of Plasmic Layering.
 
 Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
 These projectiles deal 50% of their damage as Plasmic Elemental damage.
@@ -71,7 +74,7 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
 static int Cheese_Bubble_MaxHits[9]  = {150, 150, 140, 130, 120, 110, 100, 90, 80}; // Plasmatized Bubble's max charge
-static float Cheese_Bubble_ElementalDmg = 135.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static float Cheese_Bubble_ElementalDmg = 100.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {25.0, 25.0, 25.0, 22.5, 20.0, 17.5, 15.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.25, 2.25, 2.25, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {5.0, 5.0, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5}; // Lethal Injection's elemental damage bonus
@@ -599,7 +602,6 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 }
 
 // im KILLING myself i already tried doing logic with Explode_Logic_Custom and i spent like 5 hours failing over and over i HATE IT
-// I also wanted to do one for npcs but i don't know how yet so... yeah
 public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance)
 {
 	for(int client = 1; client <= MaxClients; client++)
@@ -610,13 +612,13 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 			GetClientAbsOrigin(client, clientpos);
 			if(GetVectorDistance(clientpos, position, false) <= distance)
 			{
-				if(Armor_Charge[client] < 0)
+				if(GetTeam(client) == GetTeam(healer))
 				{
-					if(f_TimeUntillNormalHeal[client] > GetGameTime())
-						percent *= 0.5;
-	
-					if(GetTeam(client) == GetTeam(healer))
+					if(Armor_Charge[client] < 0)
 					{
+						if(f_TimeUntillNormalHeal[client] > GetGameTime())
+							percent *= 0.5;
+
 						/*
 						for(int i; i < 8; i++) // Remove all elementals except Plasma 
 						{
@@ -624,18 +626,43 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 								Elemental_RemoveDamage(client, i, RoundToNearest(float(MaxArmorCalculation(Armor_Level[client], client, 1.0)) * percent));
 						}
 						*/
+
 						// using this until the above is fixed
 						GiveArmorViaPercentage(client, percent, 1.0, _, true, healer);
 					}
-				}
 
-				if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
-				{
-					ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+					{
+						ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+					}
+					else if(Cheese_PapLevel[healer] >= 5)
+					{
+						ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
+					}
 				}
-				else if(Cheese_PapLevel[healer] >= 5)
+			}
+		}
+	}
+
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc))
+		{
+			float npcpos[3];
+			GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", npcpos);
+			if(GetVectorDistance(npcpos, position, false) <= distance)
+			{
+				if(GetTeam(npc) == GetTeam(healer))
 				{
-					ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
+					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+					{
+						ApplyStatusEffect(healer, npc, "Plasmic Layering I", 1.0);
+					}
+					else if(Cheese_PapLevel[healer] >= 5)
+					{
+						ApplyStatusEffect(healer, npc, "Plasmic Layering II", 1.0);
+					}
 				}
 			}
 		}
