@@ -19,7 +19,6 @@ Inflicts a LOT of its damage as Plasmic Elemental damage due to its kinda-averag
 Lethal Injection (M2 Melee Ability), upon activation:
 - Next melee attack will deal x2.25 damage
 - Next melee attack will deal x5 Plasmic Elemental damage. THIS IS SEPARATE FROM THE DAMAGE BONUS!
-- Next melee attack will multiply the target's vulnerability by x1.1
 PaP Upgrades (all of them increase overall stats):
 1 - Nothing special
 2 - Unlocks Lethal Injection.
@@ -314,7 +313,6 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Cheese_BeamEffect(position, 1.0, 200.0, 0.2, 5.0);
 			position[2] -= 12.5;
 			Cheese_BeamEffect(position, 1.0, 200.0, 0.2, 5.0);
-			IncreaseEntityDamageTakenBy(victim, 1.1, 5.0);
 
 			Rogue_OnAbilityUse(attacker, weapon);
 			RemoveSpecificBuff(attacker, "Plasmatized Lethalitation");
