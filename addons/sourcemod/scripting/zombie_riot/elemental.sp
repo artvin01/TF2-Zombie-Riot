@@ -1,17 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-enum
+enum				// Types
 {
-	Element_Nervous,
-	Element_Chaos,
-	Element_Cyro,
-	Element_Necrosis,
-	Element_Void,
-	Element_Osmosis,
-	Element_Corruption,
-	Element_Burger,
-	Element_Plasma,
+	Element_Nervous, 	// 0
+	Element_Chaos,		// 1
+	Element_Cyro,		// 2
+	Element_Necrosis,	// 3
+	Element_Void,		// 4
+	Element_Osmosis,	// 5
+	Element_Corruption,	// 6
+	Element_Burger,		// 7
+	Element_Plasma,		// 8
 
 	Element_MAX
 }
@@ -72,16 +72,30 @@ stock bool Elemental_GoingCritical(int entity)
 	return false;
 }
 
-stock void Elemental_RemoveDamage(int entity, int amount)
+// See the Elemental_MAX enum to see types
+// Set type to -1 to remove all elemental damage types from the user instead
+stock void Elemental_RemoveDamage(int entity, int type, int amount)
 {
-	for(int i; i < Element_MAX; i++)
+	if(type >= 0)
 	{
-		PrintToChatAll("Removing Elemental Damage type %s (Number: %d) (Amount: %d)", ElementName[i], i, amount);
-		if(ElementDamage[entity][i] > 0)
+		PrintToChatAll("Removing elemental damage type %s (Number: %d) (Amount: %d)", ElementName[type], type, amount);
+		if(ElementDamage[entity][type] > 0)
 		{
-			ElementDamage[entity][i] -= amount;
-			if(ElementDamage[entity][i] < 0)
-				ElementDamage[entity][i] = 0;
+			ElementDamage[entity][type] -= amount;
+			if(ElementDamage[entity][type] < 0)
+				ElementDamage[entity][type] = 0;
+		}
+	}
+	else
+	{
+		for(int i; i < Element_MAX; i++)
+		{
+			if(ElementDamage[entity][i] > 0)
+			{
+				ElementDamage[entity][i] -= amount;
+				if(ElementDamage[entity][i] < 0)
+					ElementDamage[entity][i] = 0;
+			}
 		}
 	}
 }
