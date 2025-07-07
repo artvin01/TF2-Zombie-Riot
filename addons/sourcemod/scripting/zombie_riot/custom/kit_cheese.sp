@@ -4,9 +4,12 @@
 /*
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
-- an AoE healing effect is triggered, healing allies around the affected.
+- an AoE healing effect is triggered, healing allies around the affected. healing is based on the user's pap level,
+although it can also be affected by the heal rate attribute.
 - inflicting the effect on the target multiple times will cause buildup to slow down overtime until the target dies.
-- if triggered via melee, elemental cooldown is reduced from 7.5s to 2.5s, and buildup penalty is lowered.
+- if triggered via melee, elemental cooldown is reduced from 8s to 2s, and buildup penalty is lowered.
+- on raids, elemental cooldown via ranged appliance is reduced from 8s to 4s.
+- on raids, buildup penalty is reduced by a flat 15% on both types.
 
 Passive - The kit revives allies 30% faster.
 
@@ -31,7 +34,8 @@ Plasmatized Bubble (M1/M2 Ability), upon activation:
 - Shoots a gravity-affected projectile that, upon landing, creates an AoE zone that grows,
 enemies inside this AoE zone recieve a high amount of Plasmic Elemental Damage, 
 which scales based off the weapon's damage attribs.
-This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
+- Allies inside this bubble are cured from elemental damage, for a percent based on the owner's pap level.
+- This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
 - The bubble lasts for a base duration of 5 seconds.
 All PaP upgrades reduce the hits required to charge the Plasmatized Bubble by 10, increase
 the Plasmic Elemental Damage it deals, and increase the bubble duration by 1.5s (up to 12.5s).
