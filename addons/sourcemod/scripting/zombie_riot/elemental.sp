@@ -74,11 +74,12 @@ stock bool Elemental_GoingCritical(int entity)
 
 // See the Elemental_MAX enum to see types
 // Set type to -1 to remove all elemental damage types from the user instead
+// TODO: fix, doesn't even work (bleb)
 stock void Elemental_RemoveDamage(int entity, int type, int amount)
 {
 	if(type >= 0)
 	{
-		PrintToChatAll("Removing elemental damage type %s (Number: %d) (Amount: %d)", ElementName[type], type, amount);
+		//PrintToChatAll("Removing elemental damage type %s (Number: %d) (Amount: %d)", ElementName[type], type, amount);
 		if(ElementDamage[entity][type] > 0)
 		{
 			ElementDamage[entity][type] -= amount;
