@@ -4364,7 +4364,7 @@
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage.\nThe victim will take more damage temporarily."
+		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
