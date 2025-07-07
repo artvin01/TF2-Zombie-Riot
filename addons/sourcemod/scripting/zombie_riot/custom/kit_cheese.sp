@@ -472,11 +472,17 @@ static Action CheeseBubble_FirstCheck(Handle timer, int ref)
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
 	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
+
+	float scale = 1.0;
+	if(Cheese_PapLevel[owner] > 1)
+		scale = float(Cheese_PapLevel[owner]) * 0.5;
 
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
