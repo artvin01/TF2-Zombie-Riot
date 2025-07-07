@@ -659,9 +659,9 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 			{
 				if(GetTeam(npc) == GetTeam(healer))
 				{
-					for(int i; i < 9; i++)
+					for(int e; e < 9; e++)
 					{
-						Elemental_RemoveDamage(npc, i, RoundToNearest(float(Elemental_TriggerDamage(victim, i)) * percent));
+						Elemental_RemoveDamage(npc, e, RoundToNearest(float(Elemental_TriggerDamage(npc, e)) * percent));
 					}
 
 					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
