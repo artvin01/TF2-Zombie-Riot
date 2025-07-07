@@ -4878,7 +4878,7 @@ void StatusEffects_Plasm()
 	data.DamageDealMulti			= 0.15;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
+	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 15; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -4890,7 +4890,7 @@ void StatusEffects_Plasm()
 	data.DamageDealMulti			= 0.25;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
+	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 15; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
