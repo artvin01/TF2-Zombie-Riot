@@ -1365,7 +1365,7 @@
 	}
 	"Plasmic Layering I Desc"
 	{
-		"en" 	"Increases damage and resistance by +15％.\nElemental damage is removed off you while in the Plasmatized Bubble."
+		"en" 	"Increases damage and resistance by +15％ while inside the Plasmatized Bubble's radius."
 	}
 	"Plasmic Layering II"
 	{
@@ -1373,7 +1373,7 @@
 	}
 	"Plasmic Layering II Desc"
 	{
-		"en" 	"Increases damage and resistance by +25％.\nElemental damage is removed off you while in the Plasmatized Bubble."
+		"en" 	"Increases damage and resistance by +25％ while inside the Plasmatized Bubble's radius."
 	}
 	"Ziberian Flagship Weaponry"
 	{
