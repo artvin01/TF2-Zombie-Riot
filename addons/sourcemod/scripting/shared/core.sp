@@ -1506,10 +1506,10 @@ public void OnClientPutInServer(int client)
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
-#endif
-	MedigunPutInServerclient(client);
 	if(!Waves_Started() || Waves_InSetup())
 		DoGlobalMultiScaling();
+#endif
+	MedigunPutInServerclient(client);
 }
 
 public void OnClientCookiesCached(int client)

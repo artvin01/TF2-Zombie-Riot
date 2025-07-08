@@ -1770,6 +1770,22 @@
 		"en"	"+30％ damage dealt, healing done, and damage reduction"
 		"ko"	"공격 피해량, 치유 속도 및 피해 저항력 +30％ 증가."
 	}
+	"Xeno's Territory"
+	{
+		"en"	"Xeno's Territory"
+	}
+	"Xeno's Territory Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
+	}
+	"Corrupted Godly Power"
+	{
+		"en"	"Corrupted Godly Power"
+	}
+	"Corrupted Godly Power Desc"
+	{
+		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
+	}
 	"Paralysis"
 	{
 		"en"	"Paralysis"
