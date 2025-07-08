@@ -29,6 +29,8 @@ void Commands_PluginStart()
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
+	char buffer[64];
+	KvGetSectionName(kv, buffer, sizeof(buffer));
 	if(f_PreventMovementClient[client] > GetGameTime())
 	{
 #if defined ZR
@@ -48,8 +50,6 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		//dont call anything.
 		return Plugin_Handled;
 	}
-	char buffer[64];
-	KvGetSectionName(kv, buffer, sizeof(buffer));
 #if defined ZR
 	if(BlockNext[client])
 	{
