@@ -367,10 +367,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					if(enemy.ExtraThinkSpeed != 0.0 && enemy.ExtraThinkSpeed != 1.0)
 						f_AttackSpeedNpcIncrease[entity_Spawner]	= enemy.ExtraThinkSpeed;
 						
-					if(!b_thisNpcIsARaid[entity_Spawner] && XenoExtraLogic(true))
-					{
-						fl_Extra_Damage[entity_Spawner] *= 1.1;
-					}
 					if(enemy.ExtraSize != 1.0)
 					{
 						float scale = GetEntPropFloat(entity_Spawner, Prop_Send, "m_flModelScale");

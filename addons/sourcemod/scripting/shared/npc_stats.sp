@@ -1578,10 +1578,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 
 #if defined ZR
-		if(!b_thisNpcIsARaid[this.index] && GetTeam(this.index) != TFTeam_Red && XenoExtraLogic(true))
-		{
-			GetPercentageAdjust *= 1.1;
-		}
 		if(GetTeam(this.index) != TFTeam_Red && Zombie_DelayExtraSpeed() != 1.0)
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
@@ -3481,6 +3477,8 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("zr_iRefSergeantProtect")
 		.DefineFloatField("zr_fSergeantProtectTime")
 		.DefineIntField("m_iHealthBar")
+		.DefineIntField("m_iTowerdefense_CheckpointAt")
+		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();

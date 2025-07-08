@@ -3181,10 +3181,11 @@ float GetScaledPlayerCountMulti(int players)
     return multiplier;
 }
 
-void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
+void ScalingMultiplyEnemyHpGlobalScale(int iNpc, float modif_hp = 1.0)
 {
 	float Maxhealth = float(ReturnEntityMaxHealth(iNpc));
 	Maxhealth *= MultiGlobalHealth;
+	Maxhealth *= modif_hp;
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToNearest(Maxhealth));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(Maxhealth));
 }
@@ -3847,6 +3848,14 @@ void Waves_EnemySpawned(int entity)
 		Call_StartFunction(null, ModFuncEnemy);
 		Call_PushCell(entity);
 		Call_Finish();
+	}
+	if(!b_thisNpcIsARaid[entity] && XenoExtraLogic(true))
+	{
+		ApplyStatusEffect(entity, entity, "Xeno's Territory", 99999.0);
+	}
+	if(!b_thisNpcIsARaid[entity] && FishExtraLogic(true))
+	{
+		ApplyStatusEffect(entity, entity, "Corrupted Godly Power", 99999.0);
 	}
 }
 

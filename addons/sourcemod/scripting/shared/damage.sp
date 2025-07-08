@@ -1222,7 +1222,6 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Wkit_Soldin_NPCTakeDamage_Ranged(attacker, victim, damage, weapon, damagetype);
 		}
-		/*
 		case WEAPON_CHEESY_MELEE:
 		{
 			if(!CheckInHud())
@@ -1233,7 +1232,6 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				Cheese_OnTakeDamage_Primary(attacker, victim, damage, weapon);
 		}
-		*/
 		case WEAPON_CHEMICAL_THROWER:
 		{
 			if(!CheckInHud())
@@ -1372,11 +1370,6 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			{
 				TotalMeleeRes *= Medival_Difficulty_Level;
 			}
-
-			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-			{
-				TotalMeleeRes *= 0.85;
-			}
 #endif
 			TotalMeleeRes *= fl_MeleeArmor[victim];
 			TotalMeleeRes *= fl_Extra_MeleeArmor[victim];	
@@ -1413,13 +1406,6 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 #endif
 			TotalMeleeRes *= fl_RangedArmor[victim];
 			TotalMeleeRes *= fl_Extra_RangedArmor[victim];
-
-#if defined ZR
-			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-			{
-				TotalMeleeRes *= 0.85;
-			}
-#endif
 
 			damage *= TotalMeleeRes;
 		}

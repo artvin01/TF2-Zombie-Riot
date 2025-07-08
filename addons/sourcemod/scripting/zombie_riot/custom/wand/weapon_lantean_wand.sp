@@ -75,7 +75,7 @@ public void Weapon_Lantean_Mouse1(int client, int weapon, bool crit, int slot)
 
 	if(mana_cost <= Current_Mana[client])
 	{
-		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		Current_Mana[client] -= mana_cost;
 		Mana_Hud_Delay[client] = 0.0;
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -177,7 +177,7 @@ public void Lantean_Reload_Ability(int client, int weapon, bool crit, int slot)
 
 public void Weapon_lantean_Wand_m2(int client, int weapon, bool crit, int slot)
 {
-	int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));

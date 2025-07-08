@@ -3,19 +3,19 @@
 
 static const char BloonLowData[][] =
 {
+	"4",
 	"5",
 	"6",
-	"7",
 	"9"
 };
 
 // Halved on Elite
 static const int BloonLowCount[] =
 {
+	2,
+	2,
 	4,
-	4,
-	6,
-	6
+	4
 };
 
 static const char BloonHigh[][] =
@@ -37,7 +37,7 @@ static const char BloonHighData[][] =
 // Halved on Elite
 static const int BloonHighCount[] =
 {
-	2,//30,
+	1,//30,
 	2,//60,
 	2,//6,
 	1//10
@@ -142,12 +142,12 @@ static void SetBossBloonPower(int players, bool elite)
 void Bloonarius_MapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bloonarius");
+	strcopy(data.Name, sizeof(data.Name), "Bloonarius the Inflator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloonarius");
 	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -241,6 +241,7 @@ methodmap Bloonarius < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
+		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bStaticNPC = elite;
 		
 		if(elite)

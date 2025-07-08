@@ -812,7 +812,12 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
-
+	Core_DoTickrateChanges();
+}
+void Core_DoTickrateChanges()
+{
+	//needs to get called a few times just incase.
+	//it isnt expensive so it really doesnt matter.
 	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
 
@@ -987,7 +992,7 @@ public void OnMapStart()
 	FileNetwork_MapStart();
 	Core_PrecacheGlobalCustom();
 #endif
-
+	Core_DoTickrateChanges();
 	PrecacheSound("weapons/explode1.wav");
 	PrecacheSound("weapons/explode2.wav");
 	PrecacheSound("weapons/explode3.wav");
@@ -1109,6 +1114,7 @@ public void OnMapStart()
 			PrecacheScriptSound(soundname);
 		}
 	}
+	ConVar_ToggleDo();
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -1284,6 +1290,7 @@ public Action Command_ToggleCheats(int client, int args)
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				SendConVarValue(i, sv_cheats, "0");
+				Convars_FixClientsideIssues(i);
 			}
 		}	
 	}
@@ -1296,6 +1303,7 @@ public Action Command_ToggleCheats(int client, int args)
 			if(IsClientInGame(i) && !IsFakeClient(i))
 			{
 				SendConVarValue(i, sv_cheats, "1");
+				Convars_FixClientsideIssues(i);
 			}
 		}
 	}
@@ -1405,6 +1413,7 @@ public void OnClientPostAdminCheck(int client)
 				
 public void OnClientPutInServer(int client)
 {
+	Core_DoTickrateChanges();
 #if defined ZR || defined RPG
 	KillFeed_ClientPutInServer(client);
 #endif
@@ -1497,6 +1506,8 @@ public void OnClientPutInServer(int client)
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
+	if(!Waves_Started() || Waves_InSetup())
+		DoGlobalMultiScaling();
 #endif
 	MedigunPutInServerclient(client);
 }
@@ -1975,7 +1986,7 @@ public void Update_Ammo(DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
-	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+	if(IsValidClient(client) && IsPlayerAlive(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{

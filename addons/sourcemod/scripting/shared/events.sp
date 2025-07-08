@@ -314,14 +314,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 		if(i_ClientHasCustomGearEquipped[client])
 		{
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 
 			ViewChange_PlayerModel(client);
 			ViewChange_Update(client);
@@ -347,7 +340,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			Attributes_Set(client, 68, -1.0);
 			SetVariantString(COMBINE_CUSTOM_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-	   		
+			
+#if defined ZR
+			SDKUnhook(client, SDKHook_SetTransmit, TeutonViewOnly);
+			SDKHook(client, SDKHook_SetTransmit, TeutonViewOnly);
+#endif
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
@@ -405,14 +402,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-	   		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 	   		
 		}
 		else
@@ -439,14 +429,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				Store_GiveAll(client, Waves_GetRoundScale()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 			
 			//PrintHintText(client, "%T", "Open Store", client);
 		}
@@ -712,3 +695,24 @@ void CheckAndValidifyTeam()
 			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
 	}
 }
+
+#if defined ZR
+public Action TeutonViewOnly(int teuton, int client)
+{
+	if(TeutonType[teuton] == TEUTON_NONE)
+	{
+		SDKUnhook(teuton, SDKHook_SetTransmit, TeutonViewOnly);
+		return Plugin_Continue;
+	}
+
+	//incase they love it.
+	if(b_EnableClutterSetting[client])
+		return Plugin_Continue;
+
+	if(TeutonType[client] == TEUTON_NONE)
+		return Plugin_Handled;
+	
+	return Plugin_Continue;
+	
+}
+#endif

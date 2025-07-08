@@ -184,6 +184,7 @@ void NPC_ConfigSetup()
 	MedicHealer_OnMapStart_NPC();
 	XenoHeavyGiant_OnMapStart_NPC();
 	XenoSpy_OnMapStart_NPC();
+	XenoInfectedLabDoctor_OnMapStart_NPC();
 	XenoSoldier_OnMapStart_NPC();
 	XenoSoldierMinion_OnMapStart_NPC();
 	XenoSoldierGiant_OnMapStart_NPC();
@@ -1185,6 +1186,7 @@ void ZR_NpcTauntWin()
 void NPCDeath(int entity)
 {
 	Freeplay_OnNPCDeath(entity);
+	Cheese_OnNPCDeath(entity);
 	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{
 		int GiveMoney = 0;
@@ -1408,6 +1410,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/xeno/npc_xeno_sniper_main.sp"
 #include "npc/xeno/npc_xeno_zombie_demo_main.sp"
 #include "npc/xeno/npc_xeno_medic_main.sp"
+#include "npc/xeno/npx_xeno_infected_lab_doctor.sp"
 #include "npc/xeno/npc_xeno_zombie_pyro_giant_main.sp"
 #include "npc/xeno/npc_xeno_combine_soldier_deutsch_ritter.sp"
 #include "npc/xeno/npc_xeno_spy_boss.sp"

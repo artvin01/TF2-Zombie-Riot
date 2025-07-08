@@ -96,7 +96,7 @@ void LanceDamageCalc(int client, int weapon, float &damage, bool checkvalidity =
 			
 			delay_hud[client] = 0.0;
 
-			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 			damage *= Attributes_Get(weapon, 410, 1.0);
 		}
 	}
@@ -551,7 +551,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 		{
-			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 		//	Impact_Lance_CosmeticRemoveEffects(client);
 		//	ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
@@ -574,7 +574,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 	{
-		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		if(i_Current_Pap[client]<4)
 		{
 			//CPrintToChatAll("Voided lance");

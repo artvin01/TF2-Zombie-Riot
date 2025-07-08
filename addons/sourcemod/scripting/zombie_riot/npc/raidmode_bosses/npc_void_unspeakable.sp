@@ -1285,7 +1285,7 @@ public void VoidUnspeakableWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}After detroying everyrhing here, it leaves to plan another attack.");
+	CPrintToChatAll("{purple}After detroying everything here, it leaves to plan another attack.");
 	CPrintToChatAll("{crimson}At the rest of Irln.");
 }
 

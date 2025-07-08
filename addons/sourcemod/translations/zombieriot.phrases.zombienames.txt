@@ -556,6 +556,10 @@
 		"pt"		"Xeno Medic Main de Combate"
 		"nl"		"Xeno Strijd Medicus Main"
 	}
+	"Xeno Infected Lab Doctor"
+	{
+		"en" 	"Xeno Infected Lab Doctor"
+	}
 	"Xeno Giant Pyro Main"
 	{
 		"en" 		"Xeno Giant Pyro Main"
@@ -662,11 +666,13 @@
 		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 	}
-	"Bloonarius"
+	"Bloonarius the Inflator"
 	{
-		"en" 		"Bloonarius"
-		"pt"		"Balãorista"
-		"ru" 		"Шариус"
+		"en" 		"Bloonarius the Inflator"
+	}
+	"Reality Warper Phayze"
+	{
+		"en" 		"Reality Warper Phayze"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -854,6 +860,10 @@
 	"Barracks Militia Desc"
 	{
 		"en"		"Basic unit of basic melee needs."
+	}
+	"Xeno Infected Lab Doctor Desc"
+	{
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
 	}
 	"Archer"
 	{
@@ -3298,7 +3308,7 @@
 	}
 	"Sentinel Desc"
 	{
-		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+		"en"		"If it loses its armor, it buffs everyone around it massively for a short time."
 	}
 	"Ironborus"
 	{
@@ -4318,5 +4328,15 @@
 	"Instinct's Summon"
 	{
 		"en"	"Instinct's Summon"
+	}
+	"Plasmic Elemental Damage"
+	{
+		"en"	"Plasmic Elemental Damage"
+		"es"	"Daño Elemental Plasmico"
+	}
+	"Plasmic Elemental Damage Desc"
+	{
+		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
 }

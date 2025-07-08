@@ -217,6 +217,8 @@ int Building_Add(BuildingInfo info)
 
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
+	MenuSection[client] = -1;
+	//reset to main menu for easier quick access
 	delete MenuTimer[client];
 	BuildingMenu(client);
 }
@@ -415,6 +417,15 @@ static void BuildingMenu(int client)
 
 			NPC_GetNameByPlugin(info.Plugin, buffer1, sizeof(buffer1));
 
+			if(EnableSilentMode)
+			{
+				if(StrContains(info.Plugin, "obj_barracks", false) != -1)
+				{
+					//ignore barracks if they didnt have it previously
+					if(!(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES))
+						continue;
+				}
+			}
 			if(ducking)
 			{
 				FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
@@ -1580,7 +1591,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
 {
 	EmitSoundToAll("npc/manhack/bat_away.wav", client, SNDCHAN_AUTO, 70,_,0.15, GetRandomInt(130, 145));
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 	float MaxRange = 200.0;
 

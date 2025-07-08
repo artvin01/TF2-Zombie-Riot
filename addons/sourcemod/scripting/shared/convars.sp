@@ -7,6 +7,7 @@ enum struct CvarInfo
 	char value[16];
 	char defaul[16];
 	int OldFlags;
+	int FlagsToDelete;
 	bool enforce;
 }
 
@@ -40,9 +41,10 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_weapon_criticals_melee", "0.0");		//Remove crits
 	ConVar_Add("tf_boost_drain_time", "99999.0"); //Overheal Logic, make it perma
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
+	tf_scout_air_dash_count = ConVar_Add("tf_scout_air_dash_count", "0", false); 
 
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
-	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
+	ConVar_Add("tf_flamethrower_boxsize", "0.0", true, (FCVAR_NOTIFY | FCVAR_CHEAT)); //Flamethrower Particles are useless in ZR
 
 	ConVar_Add("sv_hudhint_sound", "0.0"); //Removes the wind sound when calling hint hunds
 #if defined ZR
@@ -120,15 +122,15 @@ void ConVar_PluginStart()
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
-	sv_cheats = ConVar_Add("sv_cheats", "0", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
+	sv_cheats = ConVar_Add("sv_cheats", "0", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	nav_edit = FindConVar("nav_edit");
 
 #if defined ZR
 	cvarTimeScale = FindConVar("host_timescale");
 #endif
 
-	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
-	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED));
+	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 	
 #if defined RPG	
@@ -142,18 +144,22 @@ static ConVar ConVar_Add(const char[] name, const char[] value, bool enforce=tru
 	info.cvar = FindConVar(name);
 	info.OldFlags = info.cvar.Flags;
 	info.cvar.Flags &= ~(flagsremove);
+	info.FlagsToDelete = flagsremove;
 	strcopy(info.value, sizeof(info.value), value);
 	info.enforce = enforce;
 
 	if(CvarEnabled)
-	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		if(value[0])
-			info.cvar.SetString(info.value);
-		info.cvar.AddChangeHook(ConVar_OnChanged);
-	}
 
 	CvarList.PushArray(info);
+	
+	if(CvarEnabled)
+	{
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+		if(value[0])
+			info.cvar.SetString(info.value);
+	}
+	
 	return (info.cvar);
 }
 
@@ -179,17 +185,19 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 	info.enforce = enforce;
 
 	if(CvarEnabled)
-	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		if(value[0])
-			info.cvar.SetString(info.value);
-		info.cvar.AddChangeHook(ConVar_OnChanged);
-	}
 
 	if(!CvarMapList)
 		CvarMapList = new ArrayList(sizeof(CvarInfo));
 
 	CvarMapList.PushArray(info);
+	
+	if(CvarEnabled)
+	{
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+		if(value[0])
+			info.cvar.SetString(info.value);
+	}
 }
 
 stock void ConVar_RemoveTemp(const char[] name)
@@ -213,6 +221,18 @@ stock void ConVar_RemoveTemp(const char[] name)
 	}
 }
 
+//its better to-inforce the flags.
+void ConVar_ToggleDo()
+{
+	CvarInfo info;
+	int length = CvarList.Length;
+	for(int i; i<length; i++)
+	{
+		CvarList.GetArray(i, info);
+		info.cvar.Flags &= ~(info.FlagsToDelete);
+		CvarList.SetArray(i, info);
+	}
+}
 void ConVar_Enable()
 {
 	if(!CvarEnabled)
@@ -286,10 +306,10 @@ void ConVar_Disable()
 
 public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] newValue)
 {
+	CvarInfo info;
 	int index = CvarList.FindValue(cvar, CvarInfo::cvar);
 	if(index != -1)
 	{
-		CvarInfo info;
 		CvarList.GetArray(index, info);
 
 		if(!StrEqual(newValue, info.value))
@@ -299,6 +319,25 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 				strcopy(info.defaul, sizeof(info.defaul), newValue);
 				CvarList.SetArray(index, info);
 				info.cvar.SetString(info.value);
+			}
+		}
+	}
+
+	if(CvarMapList)
+	{
+		int index2 = CvarMapList.FindValue(cvar, CvarInfo::cvar);
+		if(index2 != -1)
+		{
+			CvarMapList.GetArray(index2, info);
+
+			if(!StrEqual(newValue, info.value))
+			{
+				if(info.enforce)
+				{
+					strcopy(info.defaul, sizeof(info.defaul), newValue);
+					CvarMapList.SetArray(index2, info);
+					info.cvar.SetString(info.value);
+				}
 			}
 		}
 	}
@@ -342,3 +381,27 @@ static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char
 	delete kv;
 }
 #endif
+
+
+void Convars_FixClientsideIssues(int client)
+{
+	SendConVarValue(client, tf_scout_air_dash_count, "1");
+	//set to 1 for a frame...
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(client));
+	RequestFrames(Convars_FixClientsideIssuesFrameAfter, 1, pack);
+}
+stock void Convars_FixClientsideIssuesFrameAfter(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(client))
+	{
+		delete pack;
+		return;
+	}
+
+	//set to 0 afterwards.
+	SendConVarValue(client, tf_scout_air_dash_count, "0");
+	delete pack;
+}
