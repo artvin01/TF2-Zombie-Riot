@@ -414,10 +414,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			SuperStarShooterOnHit(entity, target);
 		}
-		case WEAPON_HEAVY_PARTICLE_RIFLE:
-		{
-			Weapon_Heavy_Particle_Rifle(entity, target);
-		}
 		case WEAPON_KAHMLFIST:
 		{
 			Melee_KahmlFistTouch(entity, target);
