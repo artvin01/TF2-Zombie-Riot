@@ -3062,6 +3062,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	{
 		SDKCall_SetSpeed(client);
 	}
+	else if (condition == TFCond_Taunting && f_PreventMovementClient[client] > GetGameTime())
+	{
+		TF2_RemoveCondition(client, TFCond_Taunting);
+	}
 }
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)

@@ -29,6 +29,11 @@ void Commands_PluginStart()
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+		//dont call anything.
+		return Plugin_Handled;
+	}
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
 #if defined ZR
@@ -62,19 +67,6 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		}
 #endif
 		return Plugin_Continue;
-	}
-#if defined ZR
-	else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
-	{
-		//Remove MVM buy hud
-		BlockNext[client] = true;
-		ClientCommand(client, "+inspect");
-		ClientCommand(client, "-inspect");
-		return Plugin_Handled;
-	}
-	else if(!StrContains(buffer, "MvM_Upgrade", false))
-	{
-		return Plugin_Handled;
 	}
 	else if(StrEqual(buffer, "-use_action_slot_item_server", false))
 	{
