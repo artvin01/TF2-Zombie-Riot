@@ -4,9 +4,12 @@
 /*
 This kit introduces the Plasmic Elemental debuff.
 If filled, the following happens:
-- an AoE healing effect is triggered, healing allies around the affected.
+- an AoE healing effect is triggered, healing allies around the affected. healing is based on the user's pap level,
+although it can also be affected by the heal rate attribute.
 - inflicting the effect on the target multiple times will cause buildup to slow down overtime until the target dies.
-- if triggered via melee, elemental cooldown is reduced from 7.5s to 2.5s, and buildup penalty is lowered.
+- if triggered via melee, elemental cooldown is reduced from 8s to 2s, and buildup penalty is lowered.
+- on raids, elemental cooldown via ranged appliance is reduced from 8s to 4s.
+- on raids, buildup penalty is reduced by a flat 15% on both types.
 
 Passive - The kit revives allies 30% faster.
 
@@ -30,10 +33,13 @@ Plasmatized Bubble (M1/M2 Ability), upon activation:
 - Shoots a gravity-affected projectile that, upon landing, creates an AoE zone that grows,
 enemies inside this AoE zone recieve a high amount of Plasmic Elemental Damage, 
 which scales based off the weapon's damage attribs.
-This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
+- Allies inside this bubble are cured from elemental damage, for a percent based on the owner's pap level.
+- This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
 - The bubble lasts for a base duration of 5 seconds.
 All PaP upgrades reduce the hits required to charge the Plasmatized Bubble by 10, increase
-the Plasmic Elemental Damage it deals, and increase the bubble duration by 1s (up to 10s).
+the Plasmic Elemental Damage it deals, and increase the bubble duration by 1.5s (up to 12.5s).
+Pap 3 allows the Plasmatized Bubble to grant Plasmic Layering to allies inside it, Pap 5 boosts
+the level of Plasmic Layering.
 
 Koshi's Plasminator (primary) - Shoots "plasmic balls" in quick succession, like the clockwork assault rifle from Terraria.
 These projectiles deal 50% of their damage as Plasmic Elemental damage.
@@ -71,8 +77,8 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
 static int Cheese_Bubble_MaxHits[9]  = {150, 150, 140, 130, 120, 110, 100, 90, 80}; // Plasmatized Bubble's max charge
-static float Cheese_Bubble_ElementalDmg = 200.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
-static float Cheese_Lethal_Cooldown[9]  = {30.0, 30.0, 30.0, 27.5, 25.0, 22.5, 20.0, 15.0, 10.0}; // Lethal Injection's cooldown
+static float Cheese_Bubble_ElementalDmg = 100.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static float Cheese_Lethal_Cooldown[9]  = {25.0, 25.0, 25.0, 22.5, 20.0, 17.5, 15.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.25, 2.25, 2.25, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {5.0, 5.0, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5}; // Lethal Injection's elemental damage bonus
 static float Cheese_Burst_ElementalDmg[9]  = {0.75, 0.75, 0.75, 0.9, 1.05, 1.2, 1.35, 1.5, 1.65}; // Additional Elemental damage multiplier for Plasmic Burst
@@ -200,7 +206,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 			ApplyStatusEffect(client, client, "Plasmatic Rampage", 999.0);
 
 		HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.01), 0.25, 0.0, HEAL_SELFHEAL);
-		Elemental_AddPlasmicDamage(client, client, 20, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
+		Elemental_AddPlasmicDamage(client, client, 25, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
 	}
 	else
 	{
@@ -316,7 +322,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, thecooldown);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 2.0), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.25), weapon);
 	}
 
 	return damage;
@@ -471,11 +477,17 @@ static Action CheeseBubble_FirstCheck(Handle timer, int ref)
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
 	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
+
+	float scale = 1.0;
+	if(Cheese_PapLevel[owner] > 1)
+		scale = float(Cheese_PapLevel[owner]) * 0.5;
 
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
@@ -529,10 +541,14 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 	float tickrate = pack.ReadFloat();
 
+	float scale = 1.0;
+	if(Cheese_PapLevel[owner] > 1)
+		scale = float(Cheese_PapLevel[owner]) * 0.5;
+
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
-	PlasmicBubble_HealElementalAllies(owner, (0.02 * Cheese_PapLevel[owner]), 1.0, position, 225.0, GetTeam(owner));
+	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
@@ -588,30 +604,71 @@ public void Cheese_Bubble_OverrideTouch(int entity, int target)
 }
 
 // im KILLING myself i already tried doing logic with Explode_Logic_Custom and i spent like 5 hours failing over and over i HATE IT
-public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance, int correct_team)
+public void PlasmicBubble_HealElementalAllies(int healer, float percent, float maxmulti, float position[3], float distance)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{
-			if(Armor_Charge[client] < 0)
+			float clientpos[3];
+			GetClientAbsOrigin(client, clientpos);
+			if(GetVectorDistance(clientpos, position, false) <= distance)
 			{
-				if(f_TimeUntillNormalHeal[client] > GetGameTime())
-					percent *= 0.5;
-
-				float clientpos[3];
-				GetClientAbsOrigin(client, clientpos);
-				if(GetVectorDistance(clientpos, position, false) <= distance)
+				if(GetTeam(client) == GetTeam(healer))
 				{
-					if(healer != -1)
+					if(Armor_Charge[client] < 0)
 					{
-						if(GetTeam(client) == GetTeam(healer))
-							GiveArmorViaPercentage(client, percent, maxmulti, _, _, healer);
+						if(f_TimeUntillNormalHeal[client] > GetGameTime())
+							percent *= 0.5;
+
+						/*
+						for(int i; i < 8; i++) // Remove all elementals except Plasma 
+						{
+							if(i != 8)
+								Elemental_RemoveDamage(client, i, RoundToNearest(float(MaxArmorCalculation(Armor_Level[client], client, 1.0)) * percent));
+						}
+						*/
+
+						// using this because the above is for npcs, not for clients (breb)
+						GiveArmorViaPercentage(client, percent, 1.0, _, true, healer);
 					}
-					else
+
+					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
 					{
-						if(GetTeam(client) == correct_team)
-							GiveArmorViaPercentage(client, percent, maxmulti);
+						ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+					}
+					else if(Cheese_PapLevel[healer] >= 5)
+					{
+						ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
+					}
+				}
+			}
+		}
+	}
+
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc))
+		{
+			float npcpos[3];
+			GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", npcpos);
+			if(GetVectorDistance(npcpos, position, false) <= distance)
+			{
+				if(GetTeam(npc) == GetTeam(healer))
+				{
+					for(int e; e < 9; e++)
+					{
+						Elemental_RemoveDamage(npc, e, RoundToNearest(float(Elemental_TriggerDamage(npc, e)) * percent));
+					}
+
+					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+					{
+						ApplyStatusEffect(healer, npc, "Plasmic Layering I", 1.0);
+					}
+					else if(Cheese_PapLevel[healer] >= 5)
+					{
+						ApplyStatusEffect(healer, npc, "Plasmic Layering II", 1.0);
 					}
 				}
 			}
