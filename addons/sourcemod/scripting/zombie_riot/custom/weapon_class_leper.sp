@@ -700,11 +700,11 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	{
 		case LEPER_NORMAL_SWING:
 		{
-			Format(LeperHud, sizeof(LeperHud), "Hew Inactive [R]");
+			Format(LeperHud, sizeof(LeperHud), "가르기 비활성화중 [R]");
 		}
 		case LEPER_AOE_HEW:
 		{
-			Format(LeperHud, sizeof(LeperHud), "Hew ACTIVE [R]");
+			Format(LeperHud, sizeof(LeperHud), "가르기 발동 대기중 [R]");
 		}
 	}
 	if(CurrentPapLeper[client] >= 2)
@@ -713,28 +713,28 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 		{
 			if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
 			{
-				Format(LeperHud, sizeof(LeperHud), "%s\nSolemnity OVER [M2] %i", LeperHud,Leper_SolemnyUses[client]);
+				Format(LeperHud, sizeof(LeperHud), "%s\n평온 초과 [M2] %i", LeperHud,Leper_SolemnyUses[client]);
 			}
 			else
 			{
-				Format(LeperHud, sizeof(LeperHud), "%s\nSolemnity [M2] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
+				Format(LeperHud, sizeof(LeperHud), "%s\n평온 [M2] %i", LeperHud,LEPER_SOLEMNY_MAX - Leper_SolemnyUses[client]);
 			}
 		}
 		else
 		{
 			if(Leper_SolemnyUses[client] >= LEPER_SOLEMNY_MAX)
 			{
-				Format(LeperHud, sizeof(LeperHud), "%s\nSolemnity OVER (%i/%i)", LeperHud,Leper_SolemnyCharge[client], MaxCurrentHitsNeededSolemnity(client));	
+				Format(LeperHud, sizeof(LeperHud), "%s\n평온 초과 (%i/%i)", LeperHud,Leper_SolemnyCharge[client], MaxCurrentHitsNeededSolemnity(client));	
 			}
 			else
 			{
-				Format(LeperHud, sizeof(LeperHud), "%s\nSolemnity (%i/%i)", LeperHud,Leper_SolemnyCharge[client], MaxCurrentHitsNeededSolemnity(client));	
+				Format(LeperHud, sizeof(LeperHud), "%s\n평온 (%i/%i)", LeperHud,Leper_SolemnyCharge[client], MaxCurrentHitsNeededSolemnity(client));	
 			}
 		}
 	}
 	if(CurrentPapLeper[client] >= 3)
 	{
-		Format(LeperHud, sizeof(LeperHud), "%s\nKing's Wrath [R + M2]", LeperHud);
+		Format(LeperHud, sizeof(LeperHud), "%s\n왕의 분노 [R + M2]", LeperHud);
 	}
 
 

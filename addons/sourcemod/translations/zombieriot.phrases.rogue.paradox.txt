@@ -1666,12 +1666,12 @@
 	"Whiteflower Avenger's"
 	{
 		"en"	"Whiteflower Avenger's"
-		"ko"	"해풍등의 복수자 무리"
+		"ko"	"배풍등의 복수자 무리"
 	}
 	"Whiteflower Avenger's!"
 	{
 		"en"	"Whiteflower Avenger's ⚠"
-		"ko"	"해풍등의 복수자 무리 ⚠"
+		"ko"	"배풍등의 복수자 무리 ⚠"
 	}
 	"Barricade"
 	{

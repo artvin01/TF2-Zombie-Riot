@@ -1386,7 +1386,7 @@
 	"Whiteflower Mercenaries"
 	{
 		"en"	"Whiteflower Mercenaries ☠"
-		"ko"	"해풍등의 용병들 ☠"
+		"ko"	"배풍등의 용병들 ☠"
 	}
 	"City Hall"
 	{
@@ -1814,7 +1814,7 @@
 	"Nickel Injected Pack Desc"
 	{
 		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35％ more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
-		"ko"	"힘과 장비를 강화하는 다양한 약물이 포함된 고위 기술력이 첨가된 보따리다.\n- 체력이 꽉 찬 상태일때, 공격 피해량이 35％ 증가. 이 피해량 증가는 체력이 감소할수록 점차 감소함."
+		"ko"	"체력이 꽉 찬 상태일때, 공격 피해량이 35％ 증가. 이 피해량 증가는 체력이 감소할수록 점차 감소함."
 	}
 	"Spanish Specialised Gunpowder"
 	{
@@ -1877,7 +1877,7 @@
 	{
 		"en"	"Thumb Ring"
 		"ru"	"Пальцевое кольцо"
-		"ko"	"Thumb Ring"
+		"ko"	"손가락 보호대"
 	}
 	"Thumb Ring Desc"
 	{
@@ -2218,7 +2218,7 @@
 	"Revenge Squad Desc"
 	{
 		"en"	"{blue}You remember what happened, to all of them."
-		"ko"	"{blue}넌 이들에게 무슨 일이 기억하고 있겠지."
+		"ko"	"{blue}넌 이들에게 무슨 일이 일어났는지 기억하고 있겠지."
 	}
 	"Bob's Orders"
 	{

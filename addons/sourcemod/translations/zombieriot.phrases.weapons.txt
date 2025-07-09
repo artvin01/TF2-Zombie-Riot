@@ -2536,7 +2536,7 @@
 	"Whiteflower's Elite Grenade"
 	{
 		"en"		"Whiteflower's Elite Grenade"
-		"ko"		"해풍등의 첨단 수류탄"
+		"ko"		"배풍등의 첨단 수류탄"
 	}
 	"Avangard's Processing Core-B"
 	{

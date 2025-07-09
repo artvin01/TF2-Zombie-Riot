@@ -3523,12 +3523,12 @@
 	"Leper Sword Desc Pap 1"
 	{
 		"en"	"Increase all stats, Hew has less cooldown."
-		"ko"	"전체 능력치 증가 및 능력 쿨타임이 감소."
+		"ko"	"전체 능력치 증가 및 가르기 능력의 쿨타임이 감소."
 	}
 	"Leper Sword Desc Pap 2"
 	{
 		"en"	"Increase all stats.\nDamage taken during animations is reduced by 33％.\nUnlocks Solemity, Charge with hits and press (M2) to use it\nHeals 33％ of your max health and armor"
-		"ko"	"이제 능력 사용 도중 받는 피해량이 33％ 감소.\n장엄 능력 해금: 적중시 충전이 차오르며, 전부 충전되면 M2로 사용 가능.\n사용시 최대 체력의 33％만큼 체력과 아머를 회복."
+		"ko"	"이제 능력 사용 도중 받는 피해량이 33％ 감소.\n평온 능력 해금: 적중시 충전이 차오르며, 전부 충전되면 M2로 사용 가능.\n사용시 최대 체력의 33％만큼 체력과 아머를 회복."
 	}
 	"Leper Sword Desc Pap 3"
 	{
@@ -3538,17 +3538,17 @@
 	"Leper Sword Desc Pap 4"
 	{
 		"en"	"Increase all stats.\nSolemity heals 50％"
-		"ko"	"장엄의 회복량이 50％로 증가."
+		"ko"	"평온의 회복량이 50％로 증가."
 	}
 	"Leper Sword Desc Pap 5"
 	{
 		"en"	"Increase all stats, Hew has less cooldown"
-		"ko"	"전체 능력치 증가 및 능력 쿨타임이 감소."
+		"ko"	"전체 능력치 증가 및 가르기 능력의 쿨타임이 감소."
 	}
 	"Leper Sword Desc Pap 6"
 	{
 		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack recieved."
-		"ko"	"전체 능력치 증가 및 장엄의 회복량이 66％로 증가.\n왕의 분노 상태일때, 공격 받을때마다 증가하는 피해량 수치가 더욱 증가."
+		"ko"	"전체 능력치 증가 및 평온의 회복량이 66％로 증가.\n왕의 분노 상태일때, 공격 받을때마다 증가하는 피해량 수치가 더욱 증가."
 	}
 	"Leper Sword Desc Pap 7"
 	{
@@ -5129,14 +5129,17 @@
 	"Plasma Bubble Pap 3 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering I."
+		"ko"	"플라즈마 원소 피해 부여량 및 아군의 원소 피해 제거량 증가.\n거품의 지속 시간 및 충전 요구량 감소.\n거품 범위 내의 모든 아군에게 플라즈마 단층 I 버프 부여."
 	}
 	"Plasma Bubble Pap 5 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering II instead of I."
+		"ko"	"플라즈마 원소 피해 부여량 및 아군의 원소 피해 제거량 증가.\n거품의 지속 시간 및 충전 요구량 감소.\n거품 범위 내의 모든 아군에게 플라즈마 단층 II 버프 부여."
 	}
 	"Plasma Bubble Pap 7 or 8 Desc"
 	{
 		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
+		"ko"	"플라즈마 원소 피해 부여량 및 아군의 원소 피해 제거량 증가.\n거품의 지속 시간 및 충전 요구량 감소."
 	}
 	"Plasminator Desc"
 	{
