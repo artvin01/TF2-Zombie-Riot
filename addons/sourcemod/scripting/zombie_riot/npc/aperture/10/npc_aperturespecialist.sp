@@ -50,7 +50,7 @@ void ApertureSpecialist_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

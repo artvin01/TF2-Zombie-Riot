@@ -2,29 +2,29 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_paincriticaldeath01.mp3",
-	"vo/mvm/norm/engineer_mvm_paincriticaldeath02.mp3",
-	"vo/mvm/norm/engineer_mvm_paincriticaldeath03.mp3",
+	"vo/mvm/norm/soldier_mvm_paincriticaldeath01.mp3",
+	"vo/mvm/norm/soldier_mvm_paincriticaldeath02.mp3",
+	"vo/mvm/norm/soldier_mvm_paincriticaldeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_painsharp01.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp02.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp03.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp04.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp05.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp06.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp07.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp08.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp01.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp02.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp03.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp04.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp05.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp06.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp07.mp3",
+	"vo/mvm/norm/soldier_mvm_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_battlecry01.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry02.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry03.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry04.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry05.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry06.mp3",
+	"vo/mvm/norm/soldier_mvm_battlecry01.mp3",
+	"vo/mvm/norm/soldier_mvm_battlecry02.mp3",
+	"vo/mvm/norm/soldier_mvm_battlecry03.mp3",
+	"vo/mvm/norm/soldier_mvm_battlecry04.mp3",
+	"vo/mvm/norm/soldier_mvm_battlecry05.mp3",
+	"vo/mvm/norm/soldier_mvm_battlecry06.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -37,21 +37,21 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cbar_hitbod3.wav",
 };
 
-void MechaEngineerGiant_OnMapStart_NPC()
+void FirstSoldinePrototype_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/scout.mdl");
+	PrecacheModel("models/bots/soldier/bot_soldier.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Aperture Combatant");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_combatant");
+	strcopy(data.Name, sizeof(data.Name), "First Soldine Prototype");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_first_soldine_prototype");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Matrix;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -59,9 +59,9 @@ void MechaEngineerGiant_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return MechaEngineerGiant(vecPos, vecAng, ally);
+	return FirstSoldinePrototype(vecPos, vecAng, ally);
 }
-methodmap MechaEngineerGiant < CClotBody
+methodmap FirstSoldinePrototype < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -100,9 +100,9 @@ methodmap MechaEngineerGiant < CClotBody
 	}
 	
 	
-	public MechaEngineerGiant(float vecPos[3], float vecAng[3], int ally)
+	public FirstSoldinePrototype(float vecPos[3], float vecAng[3], int ally)
 	{
-		MechaEngineerGiant npc = view_as<MechaEngineerGiant>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.35", "700", ally));
+		FirstSoldinePrototype npc = view_as<FirstSoldinePrototype>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.35", "700", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -116,9 +116,9 @@ methodmap MechaEngineerGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
-		func_NPCDeath[npc.index] = view_as<Function>(MechaEngineerGiant_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(MechaEngineerGiant_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(MechaEngineerGiant_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(FirstSoldinePrototype_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(FirstSoldinePrototype_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(FirstSoldinePrototype_ClotThink);
 		
 		
 		//IDLE
@@ -141,9 +141,9 @@ methodmap MechaEngineerGiant < CClotBody
 	}
 }
 
-public void MechaEngineerGiant_ClotThink(int iNPC)
+public void FirstSoldinePrototype_ClotThink(int iNPC)
 {
-	MechaEngineerGiant npc = view_as<MechaEngineerGiant>(iNPC);
+	FirstSoldinePrototype npc = view_as<FirstSoldinePrototype>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -186,7 +186,7 @@ public void MechaEngineerGiant_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		MechaEngineerGiantSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		FirstSoldinePrototypeSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -196,9 +196,9 @@ public void MechaEngineerGiant_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action MechaEngineerGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FirstSoldinePrototype_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	MechaEngineerGiant npc = view_as<MechaEngineerGiant>(victim);
+	FirstSoldinePrototype npc = view_as<FirstSoldinePrototype>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -212,9 +212,9 @@ public Action MechaEngineerGiant_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-public void MechaEngineerGiant_NPCDeath(int entity)
+public void FirstSoldinePrototype_NPCDeath(int entity)
 {
-	MechaEngineerGiant npc = view_as<MechaEngineerGiant>(entity);
+	FirstSoldinePrototype npc = view_as<FirstSoldinePrototype>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -232,7 +232,7 @@ public void MechaEngineerGiant_NPCDeath(int entity)
 
 }
 
-void MechaEngineerGiantSelfDefense(MechaEngineerGiant npc, float gameTime, int target, float distance)
+void FirstSoldinePrototypeSelfDefense(FirstSoldinePrototype npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

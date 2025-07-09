@@ -50,7 +50,7 @@ void ApertureJumperV2_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Matrix;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

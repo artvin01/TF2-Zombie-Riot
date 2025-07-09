@@ -27,7 +27,7 @@ void ApertureSentry_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_sentry");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.Flags = -1;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	PrecacheModel("models/buildables/sentry3.mdl");

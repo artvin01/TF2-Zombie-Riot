@@ -44,7 +44,7 @@ void ApertureHuntsmanV2_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Medieval;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

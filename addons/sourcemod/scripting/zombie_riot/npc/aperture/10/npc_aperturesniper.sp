@@ -38,7 +38,7 @@ void ApertureSniper_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Interitus;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
