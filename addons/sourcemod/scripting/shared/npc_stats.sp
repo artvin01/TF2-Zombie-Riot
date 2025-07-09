@@ -3245,14 +3245,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
-				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
-					PlaybackSpeed = f_MaxAnimationSpeed[this.index];
-					
 				if (this.m_iPose_MoveScale >= 0) 
 				{
 					//how much they move
-					this.SetPoseParameter(this.m_iPose_MoveScale, (PlaybackSpeed));
+					this.SetPoseParameter(this.m_iPose_MoveScale, (clamp((PlaybackSpeed), 0.0, 1.0)));
 				}
+				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
+					PlaybackSpeed = f_MaxAnimationSpeed[this.index];
+					
 
 				if(PlaybackSpeed <= 0.01)
 					PlaybackSpeed = 0.01;
