@@ -3248,6 +3248,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				if (this.m_iPose_MoveScale != -1)
 				{
 					//how much they move
+					PrintToChatAll(" pose Movescale %.0f",clamp((PlaybackSpeed), 0.0, 1.0));
 					this.SetPoseParameter(this.m_iPose_MoveScale, (clamp((PlaybackSpeed), 0.0, 1.0)));
 				}
 				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
