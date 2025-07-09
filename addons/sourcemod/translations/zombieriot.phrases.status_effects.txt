@@ -1464,4 +1464,28 @@
 	{
 		"en"	"-50％ attack speed and movement speed"
 	}
+"Hypodermic Toxin Injection"
+	{
+		"en"	"Hypodermic Toxin Injection"
+	}
+	"Hypodermic Toxin Injection Desc"
+	{
+		"en"	"Increases damage taken by 20％"
+	}
+	"Cellular Breakdown"
+	{
+		"en"	"Cellular Breakdown"
+	}
+	"Cellular Breakdown Desc"
+	{
+		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％."
+	}
+	"Molecular Collapse"
+	{
+		"en"	"Molecular Collapse"
+	}
+	"Molecular Collapse Desc"
+	{
+		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％.\nDecreases damage by 20％."
+	}
 }
