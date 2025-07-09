@@ -1706,7 +1706,8 @@
 	}
 	"Plasmic Layering II Desc"
 	{
-		"en" 	"플라즈마 거품 안에 있을시 공격력과 피해 저항력이 +25％ 증가합니다."
+		"en" 	"Increases damage and resistance by +25％ while inside the Plasmatized Bubble's radius."
+		"ko" 	"플라즈마 거품 안에 있을시 공격력과 피해 저항력이 +25％ 증가합니다."
 	}
 	"Ziberian Flagship Weaponry"
 	{
