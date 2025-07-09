@@ -188,11 +188,11 @@ public void ApertureJumperPerfected_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		ApertureJumperPerfectedSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -218,7 +218,7 @@ public void ApertureJumperPerfected_ClotThink(int iNPC)
 			float vBackoffPos[3];
 			npc.m_flSpeed = 300.0;
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex, 50.0, vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.SetGoalVector(vBackoffPos, true);
 		}
 	}
 	npc.PlayIdleAlertSound();

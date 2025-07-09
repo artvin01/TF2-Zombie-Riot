@@ -117,7 +117,7 @@ methodmap ApertureHuntsmanPerfected < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -219,9 +219,9 @@ public void ApertureHuntsmanPerfected_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < 160000)
@@ -247,7 +247,7 @@ public void ApertureHuntsmanPerfected_ClotThink(int iNPC)
 						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 						SDKHook(projectile, SDKHook_StartTouch, ApertureHuntsmanPerfected_Particle_StartTouch);
 					}
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_bPathing = false;
 				}
 				else
@@ -264,7 +264,7 @@ public void ApertureHuntsmanPerfected_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);

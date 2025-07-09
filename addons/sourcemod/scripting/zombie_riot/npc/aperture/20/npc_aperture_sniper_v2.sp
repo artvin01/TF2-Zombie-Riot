@@ -204,11 +204,11 @@ public void ApertureSniperV2_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 	}
 	else
