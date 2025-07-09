@@ -71,7 +71,7 @@ methodmap IberiaBeacon < CClotBody
 
 	public IberiaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", MinibossHealthScaling(27.0, true), ally, .NpcTypeLogic = 1));
+		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", MinibossHealthScaling(50.0, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		

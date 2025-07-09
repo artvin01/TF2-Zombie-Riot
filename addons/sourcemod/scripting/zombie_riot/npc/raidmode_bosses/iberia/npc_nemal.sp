@@ -554,7 +554,7 @@ methodmap Nemal < CClotBody
 			value = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 30)
+		if(RaidModeScaling < 35)
 		{
 			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
@@ -563,7 +563,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.5;
 		}
 
-		if(value > 30)
+		if(value > 35)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;

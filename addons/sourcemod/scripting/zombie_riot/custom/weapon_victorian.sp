@@ -81,11 +81,31 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		{
 			switch(i_CurrentEquippedPerk[client])
 			{
-				case 4:{if(!Victoria_PerkSpeedCola[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=true;
-				SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 4 Perk Desc");}}
-				case 5:{if(!Victoria_PerkDeadShot[client]){Victoria_PerkDeadShot[client]=true;Victoria_PerkSpeedCola[client]=false;
-				SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");}}
-				default:{Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;}
+				case 4:
+				{
+					if(!Victoria_PerkSpeedCola[client])
+					{
+						Victoria_PerkDeadShot[client]=false;
+						Victoria_PerkSpeedCola[client]=true;
+						SetGlobalTransTarget(client);
+						PrintToChat(client, "%t", "VictorianLauncher 4 Perk Desc");
+					}
+				}
+				case 5:
+				{
+					if(!Victoria_PerkDeadShot[client])
+					{
+						Victoria_PerkDeadShot[client]=true;
+						Victoria_PerkSpeedCola[client]=false;
+						SetGlobalTransTarget(client);
+						PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
+					}
+				}
+				default:
+				{
+					Victoria_PerkDeadShot[client]=false;
+					Victoria_PerkSpeedCola[client]=false;
+				}
 			}
 			delete h_TimerVictorianLauncher[client];
 			h_TimerVictorianLauncher[client] = null;
@@ -99,11 +119,31 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	{
 		switch(i_CurrentEquippedPerk[client])
 		{
-			case 4:{if(!Victoria_PerkSpeedCola[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=true;
-			SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 4 Perk Desc");}}
-			case 5:{if(!Victoria_PerkDeadShot[client]){Victoria_PerkDeadShot[client]=true;Victoria_PerkSpeedCola[client]=false;
-			SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");}}
-			default:{Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;}
+			case 4:
+			{
+				if(!Victoria_PerkSpeedCola[client])
+				{
+					Victoria_PerkDeadShot[client]=false;
+					Victoria_PerkSpeedCola[client]=true;
+					SetGlobalTransTarget(client);
+					PrintToChat(client, "%t", "VictorianLauncher 4 Perk Desc");
+				}
+			}
+			case 5:
+			{
+				if(!Victoria_PerkDeadShot[client])
+				{
+					Victoria_PerkDeadShot[client]=true;
+					Victoria_PerkSpeedCola[client]=false;
+					SetGlobalTransTarget(client);
+					PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
+				}
+			}
+			default:
+			{
+				Victoria_PerkDeadShot[client]=false;
+				Victoria_PerkSpeedCola[client]=false;
+			}
 		}
 		DataPack pack;
 		h_TimerVictorianLauncher[client] = CreateDataTimer(0.1, Timer_VictoriaLauncher, pack, TIMER_REPEAT);

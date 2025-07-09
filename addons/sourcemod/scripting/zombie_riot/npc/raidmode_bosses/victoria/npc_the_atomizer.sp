@@ -375,7 +375,7 @@ methodmap Atomizer < CClotBody
 			{	
 				RaidModeScaling = float(Waves_GetRoundScale()+1);
 			}
-			if(RaidModeScaling < 30)
+			if(RaidModeScaling < 35)
 			{
 				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
