@@ -3160,19 +3160,19 @@ methodmap CClotBody < CBaseCombatCharacter
 		float flNextBotGroundSpeed;
 		if(i_IsNpcType[this.index] != 1)
 		{
-			if (this.m_iPoseMoveX < 0 && this.m_iPoseMoveX != -1)  
+			if (this.m_iPoseMoveX == 0)   
 			{
 				this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
 			}
-			if (this.m_iPoseMoveY < 0 && this.m_iPoseMoveY != -1) 
+			if (this.m_iPoseMoveY == 0)  
 			{
 				this.m_iPoseMoveY = this.LookupPoseParameter("move_y");
 			}
-			if (this.m_iPose_MoveYaw == 0 && this.m_iPose_MoveYaw != -1) 
+			if (this.m_iPose_MoveYaw == 0) 
 			{
 				this.m_iPose_MoveYaw = this.LookupPoseParameter("move_yaw");
 			}
-			if (this.m_iPose_MoveScale == 0 && this.m_iPose_MoveScale != -1) 
+			if (this.m_iPose_MoveScale == 0) 
 			{
 				this.m_iPose_MoveScale = this.LookupPoseParameter("move_scale");
 			}
@@ -3181,19 +3181,19 @@ methodmap CClotBody < CBaseCombatCharacter
 			
 			if (flNextBotGroundSpeed < 0.01) 
 			{
-				if (this.m_iPoseMoveX >= 0) 
+				if (this.m_iPoseMoveX != -1) 
 				{
 					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
-				if (this.m_iPoseMoveY >= 0) 
+				if (this.m_iPoseMoveY != -1) 
 				{
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
 				}
-				if (this.m_iPose_MoveYaw >= 0) 
+				if (this.m_iPose_MoveYaw != -1) 
 				{
 					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
 				}
-				if (this.m_iPose_MoveScale >= 0) 
+				if (this.m_iPose_MoveScale != -1) 
 				{
 					this.SetPoseParameter(this.m_iPose_MoveScale, 0.0);
 				}
@@ -3205,15 +3205,15 @@ methodmap CClotBody < CBaseCombatCharacter
 				
 				float vecMotion[3]; this.GetGroundMotionVector(vecMotion);
 			
-				if (this.m_iPoseMoveX >= 0) 
+				if (this.m_iPoseMoveX != -1) 
 				{
 					this.SetPoseParameter(this.m_iPoseMoveX, GetVectorDotProduct(vecMotion, vecFwd));
 				}
-				if (this.m_iPoseMoveY >= 0) 
+				if (this.m_iPoseMoveY != -1) 
 				{
 					this.SetPoseParameter(this.m_iPoseMoveY, GetVectorDotProduct(vecMotion, vecRight));
 				}
-				if (this.m_iPose_MoveYaw >= 0) 
+				if (this.m_iPose_MoveYaw != -1) 
 				{
 					//too lazy to code this :D
 					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
@@ -3245,7 +3245,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
-				if (this.m_iPose_MoveScale >= 0) 
+				if (this.m_iPose_MoveScale != -1)
 				{
 					//how much they move
 					this.SetPoseParameter(this.m_iPose_MoveScale, (clamp((PlaybackSpeed), 0.0, 1.0)));
@@ -8688,8 +8688,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NoKillFeed[entity] = false;
 	b_ThisWasAnNpc[entity] = false;
 	i_Activity[entity] = -1;
-	i_PoseMoveX[entity] = -1;
-	i_PoseMoveY[entity] = -1;
+	i_PoseMoveX[entity] = 0;
+	i_PoseMoveY[entity] = 0;
 	b_PlayHurtAnimation[entity] = false;
 	IgniteTimer[entity] = null;
 	IgniteFor[entity] = 0;
