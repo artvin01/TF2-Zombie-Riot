@@ -3113,13 +3113,13 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	property int m_iPose_MoveScale
 	{
-		public get()							{ return this.GetPropF(Prop_Data, "m_imove_scale"); }
-		public set(int TempValueForProperty) 	{ this.SetPropF(Prop_Data, "m_imove_scale", TempValueForProperty); }
+		public get()							{ return this.GetProp(Prop_Data, "m_imove_scale"); }
+		public set(int TempValueForProperty) 	{ this.SetProp(Prop_Data, "m_imove_scale", TempValueForProperty); }
 	}
 	property int m_iPose_MoveYaw
 	{
-		public get()							{ return this.GetPropFloat(Prop_Data, "m_imove_yaw"); }
-		public set(int TempValueForProperty) 	{ this.SetPropFloat(Prop_Data, "m_imove_yaw", TempValueForProperty); }
+		public get()							{ return this.GetProp(Prop_Data, "m_imove_yaw"); }
+		public set(int TempValueForProperty) 	{ this.SetProp(Prop_Data, "m_imove_yaw", TempValueForProperty); }
 	}
 	
 	property int m_iPoseMoveY
