@@ -589,7 +589,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 	if(LastMann && !AlreadySaidLastmann)
 	{
 		AlreadySaidLastmann = true;
-		CPrintToChatAll("{purple}It grins. Wide.");
+		CPrintToChatAll("{purple}저것이... 활짝 웃기 시작한다.");
 	}
 	if(!npc.m_flMaxDeath && RaidModeTime < GetGameTime())
 	{
@@ -597,7 +597,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 	//	ForcePlayerLoss();
 	//	RaidBossActive = INVALID_ENT_REFERENCE;
 	//	func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{purple}It laughs at your incompetence.");
+		CPrintToChatAll("{purple}저것이 당신의 무능함을 비웃고 있다...");
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 1.85);
 		RaidModeScaling *= 5.0;
 		fl_Extra_Speed[npc.index] *= 2.0;
@@ -729,7 +729,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		npc.Anger = true;
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
-		CPrintToChatAll("{purple}It's Angered.");
+		CPrintToChatAll("{purple}저것이 격노하기 시작했다.");
 		RaidModeScaling *= 1.1;
 	}
 	if(npc.g_TimesSummoned < 3)
@@ -752,11 +752,11 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}It recoils in pain.");
+					CPrintToChatAll("{purple}저것이 고통에 움츠러들었다.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{purple}It screams in agony.");
+					CPrintToChatAll("{purple}저것이 고통스럽게 비명을 지르고 있다.");
 				}
 			}
 		}
@@ -1330,19 +1330,19 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		{
 			case 11:
 			{
-				CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
+				CPrintToChatAll("{purple}어리석은 필멸자들아, 너희가 정녕 우릴 막을 수 있을것 같으냐?");
 			}
 			case 12:
 			{
-				CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
+				CPrintToChatAll("{purple}너희들이 더 이상 할 수 있는건 아무것도 없다!");
 			}
 			case 13:
 			{
-				CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
+				CPrintToChatAll("{purple}지금 이 곳에서 모든 시대의 종말을 목격해라!");
 			}
 			case 14:
 			{
-				CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
+				CPrintToChatAll("{purple}너희도 공허와 하나가 되는거다!");
 			}
 		}
 		i_RaidGrantExtra[npc.index]++;

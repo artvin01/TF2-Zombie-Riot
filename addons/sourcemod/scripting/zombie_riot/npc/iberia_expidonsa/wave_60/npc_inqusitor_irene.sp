@@ -295,7 +295,7 @@ public void Iberiainqusitor_irene_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
 	npc.m_bDissapearOnDeath = true;
-	CPrintToChatAll("{snow}Irene{default}: You really think you're killing us? We are mearly simulating a death, no worries.");
+	CPrintToChatAll("{snow}아이린{default}: 저희가 정말 죽을거라고 생각하십니까? 우린 그저 죽음을 연기하고 있을 뿐입니다. 걱정하지 마십시오.");
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -636,7 +636,7 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 			if(!Irene_TargetsFound)
 			{
 				npc.m_flAirTimeAbilityHappening = 0.0;
-				CPrintToChatAll("{snow}Irene{default}: ...");
+				CPrintToChatAll("{snow}아이린{default}: ...");
 			}
 			else
 			{
@@ -644,19 +644,19 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My blade will cleave the tides!");
+						CPrintToChatAll("{snow}아이린{default}: 내 검이 파도를 가르리라!");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My light will purge the vice!");
+						CPrintToChatAll("{snow}아이린{default}: 내 빛이 악을 씻어내리니!");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My eyes will find the truth!");
+						CPrintToChatAll("{snow}아이린{default}: 내 눈이 정의를 찾아내리라!");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{snow}Irene{default}: My heart will be the judge!");
+						CPrintToChatAll("{snow}아이린{default}: 나의 판단은 틀리지 않으리!");
 					}
 				}
 				npc.m_flAirTimeAbilityHappening = GetGameTime(npc.index) + 2.0;
@@ -731,13 +731,13 @@ static void Irene_Weapon_Lines(Iberiainqusitor_irene npc, int client)
 			switch(GetRandomInt(0,3))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Let's see who wields the wrath of Ibera better {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "똑같은 무기를 쓰는 자와의 대결이라니, 기대되는군요, {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran{default} tought you too {gold}%N{default}?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "{crimson}리란{default}에게서 가르침을 받으셨군요, {gold}%N{default}.",client);
 				case 2:
-					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran's{default} legacy will move on with us {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "{crimson}리란{default}의 유산이 우리를 더욱 밝게 비춰줄 것입니다, {gold}%N{default}!",client);
 				case 3:
-					Format(Text_Lines, sizeof(Text_Lines), "We both can finish what {crimson}Liran{default} failed, eradicade the seaborn {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "{crimson}리란{default}이 못 다한 시본 청소를 우리가 해내봅시다, {gold}%N{default}!",client);
 			}
 		}
 

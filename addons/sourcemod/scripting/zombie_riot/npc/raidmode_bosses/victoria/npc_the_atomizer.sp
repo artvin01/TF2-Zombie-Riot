@@ -292,7 +292,7 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 99.0;
 			npc.m_flAngerDelay = GetGameTime() + 99.0;
 			npc.PlaySupportSpawnSound();
-			CPrintToChatAll("{blue}Atomizer{default}: Did you really think we would let you sabotage our Radiotower?");
+			CPrintToChatAll("{blue}인수분해{default}: 우리의 방송탑을 파괴하게 놔둘것 같으냐?");
 		}
 		else
 		{
@@ -358,7 +358,7 @@ methodmap Atomizer < CClotBody
 				Music_SetRaidMusic(music);
 			}
 			
-			CPrintToChatAll("{blue}Atomizer{default}: Intruders in sight, I won't let them get out alive!");
+			CPrintToChatAll("{blue}인수분해{default}: 침입자 포착, 절대로 살려보내선 안 된다!");
 			Vs_Atomizer_To_Huscarls=Victoria_Melee_or_Ranged(npc);
 			
 			char buffers[3][64];
@@ -648,15 +648,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: Ready to die?");
+					CPrintToChatAll("{blue}인수분해{default}: 죽을 준비는 됐나?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: You can't run forever.");
+					CPrintToChatAll("{blue}인수분해{default}: 영원히 도망칠 수는 없다.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Atomizer{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{blue}인수분해{default}: 네 동료는 전부 죽었다.");
 				}
 			}
 		}
@@ -670,7 +670,7 @@ static void Internal_ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		BlockLoseSay = true;
 		
-		CPrintToChatAll("{blue}Atomizer{default}: Mission Accomplished, we will figure out who is behind them");
+		CPrintToChatAll("{blue}인수분해{default}: 임무 성공. 저 놈들의 배후가 누군지 찾아내야겠군.");
 		return;
 	}
 	npc.m_flSpeed = 300.0+(((FTL[npc.index]-(RaidModeTime - GetGameTime()))/FTL[npc.index])*150.0);
@@ -683,10 +683,10 @@ static void Internal_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Atomizer{default}: Victoria will be in peace. Once and for all.");
-			case 2:CPrintToChatAll("{blue}Atomizer{default}: The troops have arrived and will begin destroying the intruders!");
-			case 3:CPrintToChatAll("{blue}Atomizer{default}: Backup team has arrived. Catch those damn bastards!");
-			case 4:CPrintToChatAll("{blue}Atomizer{default}: After this, Im heading to Rusted Bolt Pub. {unique}I need beer.{default}");
+			case 1:CPrintToChatAll("{blue}인수분해{default}: 빅토리아는 영원할 것이다. 너희따위가 망칠 평화가 아니야.");
+			case 2:CPrintToChatAll("{blue}인수분해{default}: 제군들, 침입자들을 제거하라!");
+			case 3:CPrintToChatAll("{blue}인수분해{default}: 지원군이 도착했군. 저 망할 놈들을 다 쓸어버려!");
+			case 4:CPrintToChatAll("{blue}인수분해{default}: 이게 끝나면 나사 선술집을 가야겠군. {unique}맥주 한 잔이 땡기는데.{default}");
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -799,7 +799,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Atomizer{default}: Not Enough Energy! Nitro Fuel going in!");
+				CPrintToChatAll("{blue}인수분해{default}: 에너지가 부족하군, 연료 공급을 시작한다!");
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
@@ -845,7 +845,7 @@ static void Internal_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					ApplyStatusEffect(npc.index, npc.index, "Call To Victoria", 999.9);
-					CPrintToChatAll("{blue}Atomizer{default}: Oh yes! I FEEL ALIVE!");
+					CPrintToChatAll("{blue}인수분해{default}: 아! 바로 이거야!");
 					I_cant_do_this_all_day[npc.index]=0;
 					npc.m_flNextRangedAttack += 2.0;
 					npc.m_flRangedSpecialDelay += 2.0;
@@ -870,7 +870,7 @@ static void Internal_ClotThink(int iNPC)
 		float ProjLocBase[3];
 		if(I_cant_do_this_all_day[npc.index] <= 0)
 		{
-			CPrintToChatAll("{blue}Atomizer{default}: Ready to fly?");
+			CPrintToChatAll("{blue}인수분해{default}: 하늘을 날아갈 준비는 됐나?");
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
@@ -1152,9 +1152,9 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{blue}Atomizer{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{blue}Atomizer{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		case 2:CPrintToChatAll("{blue}Atomizer{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:CPrintToChatAll("{blue}인수분해{default}: 으, 지원이 필요하다...");
+		case 1:CPrintToChatAll("{blue}인수분해{default}: 네 놈들이 {gold}빅토리아{default}의 평화를 망치게 둘 수는 없는데..!");
+		case 2:CPrintToChatAll("{blue}인수분해{default}: 자만하지 마라. 나 말고 더  {crimson}강력한 자{default}들이 널 막을테니.");
 	}
 
 }

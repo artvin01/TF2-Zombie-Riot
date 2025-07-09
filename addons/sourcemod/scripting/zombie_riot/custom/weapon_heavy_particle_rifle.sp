@@ -115,7 +115,7 @@ public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classna
 		if(f_hud_timer[client]<GameTime)
 		{
 			f_hud_timer[client] = GameTime+0.5;
-			PrintHintText(client, "Particle Reactor: [%.0f％]",100.0*Ratio);
+			PrintHintText(client, "입자 반응로: [%.0f％]",100.0*Ratio);
 		}
 	}
 

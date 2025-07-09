@@ -1458,7 +1458,7 @@ public Action Waves_RoundStartTimer(Handle timer)
 public Action Waves_AllowVoting(Handle timer)
 {
 	Waves_SetReadyStatus(1);
-	SPrintToChatAll("You may now ready up.");
+	SPrintToChatAll("이제 준비(F4)를 할 수 있습니다.");
 	return Plugin_Continue;
 }
 
@@ -1745,7 +1745,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			float WaitingTimeGive = wave.EnemyData.WaitingTimeGive;
 			if(!LastMann && WaitingTimeGive > 0.0)
 			{
-				SPrintToChatAll("You were given extra %.1f seconds to prepare.",WaitingTimeGive);
+				SPrintToChatAll("준비 시간 %.1f 초 드립니다.",WaitingTimeGive);
 				GiveProgressDelay(WaitingTimeGive);
 				f_DelaySpawnsForVariousReasons = GetGameTime() + WaitingTimeGive;
 				SpawnTimer(WaitingTimeGive);
@@ -1757,14 +1757,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					if(LastMann)
 					{
-						SPrintToChatAll("You were given extra 45 seconds to prepare for the raidboss... Get ready.");
+						SPrintToChatAll("레이드 보스 등장 전까지 45 초 남았습니다... 준비하십시오");
 						GiveProgressDelay(45.0);
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 45.0;
 						SpawnTimer(45.0);
 					}
 					else if(WaitingTimeGive <= 0.0)
 					{
-						SPrintToChatAll("You were given extra 30 seconds to prepare for the raidboss... Get ready.");
+						SPrintToChatAll("레이드 보스 등장 전까지 30 초 남았습니다... 준비하십시오.");
 						GiveProgressDelay(30.0);
 						f_DelaySpawnsForVariousReasons = GetGameTime() + 30.0;
 						SpawnTimer(30.0);
@@ -2123,7 +2123,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				Citizen_SpawnAtPoint("b");
 				Citizen_SpawnAtPoint();
-				CPrintToChatAll("{gray}Barney: {default}Hey! We came late to assist! Got a friend too!");
+				CPrintToChatAll("{gray}바니 칼훈: {default}이봐! 좀 늦었지만 이제 도착했어! 친구도 데려왔지!");
 			}
 			else if(CurrentRound == (RoundToNearest(8.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
 			{
@@ -2481,7 +2481,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						Waves_SetReadyStatus(2);
 						//wait a minimum of 30 seconds when theres too many players.
-						SPrintToChatAll("You cannot ready up for 30 seconds.");
+						SPrintToChatAll("30 초간은 준비할 수 없습니다.");
 						CreateTimer(30.0, Waves_AllowVoting, _, TIMER_FLAG_NO_MAPCHANGE);
 					}
 					else
@@ -2505,7 +2505,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				SpawnTimer(45.0);
 				CreateTimer(45.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
-				SPrintToChatAll("You were given extra 45 seconds to prepare...");
+				SPrintToChatAll("준비 시간 45 초 드립니다...");
 			}
 			else if(GiveBreakForPlayers && !Rogue_Mode() && round.Waves.Length)
 			{
@@ -2514,7 +2514,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				SpawnTimer(30.0);
 				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				
-				SPrintToChatAll("You were given extra 30 seconds to prepare, as most of your team died......");
+				SPrintToChatAll("많은 팀원이 사망했으므로, 준비 시간 30 초 드립니다...");
 			}
 			else
 			{
@@ -2550,7 +2550,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 //		else if(i_WaveHasFreeplay == 1)
 //			//EarlyReturn = Waves_NextSpecialWave();
 		else
-			SPrintToChatAll("wave somehow failed, report this.");
+			SPrintToChatAll("웨이브가 알 수 없는 이유로 고장남. 빨리 리포트할 것.");
 
 		if(EarlyReturn)
 		{
@@ -2974,7 +2974,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 1;
-				CPrintToChatAll("{crimson}Enemies grow restless...");
+				CPrintToChatAll("{crimson}적들이 불안해하고 있습니다...");
 			}
 		}
 		case 1:
@@ -2982,7 +2982,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 15.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 2;
-				CPrintToChatAll("{crimson}Enemies grow annoyed and go faster...");
+				CPrintToChatAll("{crimson}적들이 점점 짜증내며 속도를 올리고 있습니다...");
 			}
 		}
 		case 2:
@@ -2990,7 +2990,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 35.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 3;
-				CPrintToChatAll("{crimson}Enemies grow furious and become even faster...");
+				CPrintToChatAll("{crimson}적들이 화를 내고 있어, 이동 속도가 더욱 증가하고 있습니다...");
 			}
 		}
 		case 3:
@@ -2998,7 +2998,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 55.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 4;
-				CPrintToChatAll("{crimson}Enemies become pissed off and gain super speed...");
+				CPrintToChatAll("{crimson}적들이 분노하여 이동 속도가 매우 빨라졌습니다...");
 			}
 		}
 		case 4:
@@ -3006,7 +3006,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 75.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 5;
-				CPrintToChatAll("{crimson}Enemies become infuriated and will reach you...");
+				CPrintToChatAll("{crimson}적들이 완전히 격노하여 대상을 순식간에 쫒아갑니다...");
 			}
 		}
 		case 5:
@@ -3014,7 +3014,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 100.0 < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 6;
-				CPrintToChatAll("{crimson}Die.");
+				CPrintToChatAll("{crimson}죽어라.");
 				
 				if(Construction_Mode())
 					ForcePlayerLoss();
@@ -3959,22 +3959,22 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 	{
 		if(FreeplayTimeLimit < GetGameTime())
 		{
-			CPrintToChatAll("{gold}Koshi{white}: looks like you survived for an hour, hm...");
-			CPrintToChatAll("{gold}Koshi{white}: You got as far as wave {green}%i!",CurrentRound+1);
+			CPrintToChatAll("{gold}코쉬{white}: 1 시간 정도는 살아남은것 같네. 흐음...");
+			CPrintToChatAll("{gold}코쉬{white}: 너희가 버틴 웨이브는... : {green}%i!",CurrentRound+1);
 			if(CurrentRound+1 < 100)
 			{
-				CPrintToChatAll("{gold}Koshi{white}: See if you can go higher next time, dont be so lazy and stop stalling!");
-				CPrintToChatAll("{lightcyan}Zeina{white}: Finally done? I can go back home now, {lightblue}Nemal's {white}waiting on me.");
+				CPrintToChatAll("{gold}코쉬{white}: 봐봐, 더 오래 버틸 수 있었잖아! 그러니까 밍기적대지도 말고, 빨리 빨리 진행하라구!");
+				CPrintToChatAll("{lightcyan}제이나{white}: 끝난거 맞죠? 이제 집에 갈 수 있겠네요, {lightblue}네말{white}이 절 기다리고 있을거에요.");
 			}
 			else if(CurrentRound+1 >= 100 && CurrentRound+1 < 150)
 			{
-				CPrintToChatAll("{gold}Koshi{white}: Quite a great record, i'd say... But you could go {orange}further next time.");
-				CPrintToChatAll("{lightcyan}Zeina{white}: Further!? Are you insane!?!?");
+				CPrintToChatAll("{gold}코쉬{white}: 대단한 기록이었어. 그치만... {orange}더 오래 버틸 수 있을지도.");
+				CPrintToChatAll("{lightcyan}제이나{white}: 여기서 더 오래...? 진심으로 하시는 소리세요!?");
 			}
 			else
 			{
-				CPrintToChatAll("{gold}Koshi{white}: That... was {crimson}MARVELOUS! {white}Truly a spectacular training!");
-				CPrintToChatAll("{lightcyan}Zeina{white}: {red}...sometimes i really question your mental health, {gold}Koshi.");
+				CPrintToChatAll("{gold}코쉬{white}: 정말... {crimson}멋져! {white}너무 멋지고 완벽한 훈련이야!");
+				CPrintToChatAll("{lightcyan}제이나{white}: {red}...당신, 지금 괜찮은거 맞으시죠, {gold}코쉬?");
 			}
 				
 

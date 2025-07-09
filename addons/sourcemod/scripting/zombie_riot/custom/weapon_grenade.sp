@@ -250,7 +250,8 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 		
 		float speed = 1500.0;
 		float damage = 100.0;
-			
+		int PerShot = RoundToCeil(4.0*Attributes_Get(weapon, 4, 1.0));
+		Attributes_Set(weapon, 298, float(PerShot));
 		damage *= Attributes_Get(weapon, 1, 1.0);
 
 		damage *= Attributes_Get(weapon, 2, 1.0);
@@ -266,69 +267,70 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 		extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 			
 		int team = GetClientTeam(client);
-			
-		for (int repeat = 1; repeat <= 4; repeat++)
+		int LoopShot=0;
+		for(int repeat = 1; repeat <= PerShot; repeat++)
 		{
-		
 			int entity = CreateEntityByName("tf_projectile_pipe");
 			if(IsValidEntity(entity))
 			{
-					static float pos[3], ang[3], vel_2[3];
-					GetClientEyeAngles(client, ang);
-					GetClientEyePosition(client, pos);	
-					
-					switch(repeat)
+				static float pos[3], ang[3], vel_2[3];
+				GetClientEyeAngles(client, ang);
+				GetClientEyePosition(client, pos);	
+				LoopShot++;
+				switch(LoopShot)
+				{
+					case 1:
 					{
-						case 1:
-						{
-							ang[0] += -extra_accuracy;
-							ang[1] += extra_accuracy;
-						}
-						case 2:
-						{
-							ang[0] += extra_accuracy;
-							ang[1] += extra_accuracy;
-						}
-						case 3:
-						{
-							ang[0] += extra_accuracy;
-							ang[1] += -extra_accuracy;
-						}
-						case 4:
-						{
-							ang[0] += -extra_accuracy;
-							ang[1] += -extra_accuracy;
-						}
+						ang[0] += -extra_accuracy;
+						ang[1] += extra_accuracy;
 					}
-	
-					ang[0] -= 8.0;
-	
-					vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
-					vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
-					vel_2[2] = Sine(DegToRad(ang[0]))*speed;
-					vel_2[2] *= -1;
-					
-					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-					SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
-					SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
-					SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-					SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
-					SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
-					for(int i; i<4; i++)
+					case 2:
 					{
-						SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+						ang[0] += extra_accuracy;
+						ang[1] += extra_accuracy;
 					}
-					
-					SetVariantInt(team);
-					AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
-					SetVariantInt(team);
-					AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
-					
-					SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
-	
-					DispatchSpawn(entity);
-					TeleportEntity(entity, pos, ang, vel_2);
-					IsCustomTfGrenadeProjectile(entity, damage);
+					case 3:
+					{
+						ang[0] += extra_accuracy;
+						ang[1] += -extra_accuracy;
+					}
+					case 4:
+					{
+						ang[0] += -extra_accuracy;
+						ang[1] += -extra_accuracy;
+						extra_accuracy+=0.05;
+						LoopShot=0;
+					}
+				}
+
+				ang[0] -= 8.0;
+
+				vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+				vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+				vel_2[2] = Sine(DegToRad(ang[0]))*speed;
+				vel_2[2] *= -1;
+				
+				SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+				SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+				SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+				SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
+				SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
+				for(int i; i<4; i++)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+				}
+				
+				SetVariantInt(team);
+				AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+				SetVariantInt(team);
+				AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
+				
+				SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+
+				DispatchSpawn(entity);
+				TeleportEntity(entity, pos, ang, vel_2);
+				IsCustomTfGrenadeProjectile(entity, damage);
 			}
 		}
 	}
@@ -358,7 +360,9 @@ public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char
 		
 		float speed = 1500.0;
 		float damage = 100.0;
-			
+		int PerShot = RoundToCeil(4.0*Attributes_Get(weapon, 4, 2.5));
+		
+		Attributes_Set(weapon, 298, float(PerShot));
 		damage *= Attributes_Get(weapon, 1, 1.0);
 
 		damage *= Attributes_Get(weapon, 2, 1.0);
@@ -374,97 +378,98 @@ public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char
 		extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
 			
 		int team = GetClientTeam(client);
-			
-		for (int repeat = 1; repeat <= 10; repeat++)
+		int LoopShot=0;
+		for (int repeat = 1; repeat <= PerShot; repeat++)
 		{
-		
 			int entity = CreateEntityByName("tf_projectile_pipe");
 			if(IsValidEntity(entity))
 			{
-					static float pos[3], ang[3], vel_2[3];
-					GetClientEyeAngles(client, ang);
-					GetClientEyePosition(client, pos);	
-					
-					switch(repeat)
+				static float pos[3], ang[3], vel_2[3];
+				GetClientEyeAngles(client, ang);
+				GetClientEyePosition(client, pos);	
+				LoopShot++;
+				switch(LoopShot)
+				{
+					case 1:
 					{
-						case 1:
-						{
-							ang[0] += -extra_accuracy;
-							ang[1] += extra_accuracy;
-						}
-						case 2:
-						{
-							ang[0] += extra_accuracy;
-							ang[1] += extra_accuracy;
-						}
-						case 3:
-						{
-							ang[0] += extra_accuracy;
-							ang[1] += -extra_accuracy;
-						}
-						case 4:
-						{
-							ang[0] += -extra_accuracy;
-							ang[1] += -extra_accuracy;
-						}
-						case 5:
-						{
-							ang[0] += -extra_accuracy;
-							ang[1] += extra_accuracy * 2.0;
-						}
-						case 6:
-						{
-							ang[0] += extra_accuracy;
-							ang[1] += extra_accuracy * 2.0;
-						}
-						case 7:
-						{
-							ang[0] += extra_accuracy;
-							ang[1] += -(extra_accuracy * 2.0);
-						}
-						case 8:
-						{
-							ang[0] += -extra_accuracy;
-							ang[1] += -(extra_accuracy * 2.0);
-						}
-						case 9:
-						{
-							ang[0] += extra_accuracy;
-						}
-						case 10:
-						{
-							ang[0] += -extra_accuracy;
-						}
+						ang[0] += -extra_accuracy;
+						ang[1] += extra_accuracy;
 					}
-	
-					ang[0] -= 8.0;
-	
-					vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
-					vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
-					vel_2[2] = Sine(DegToRad(ang[0]))*speed;
-					vel_2[2] *= -1;
-					
-					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-					SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
-					SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
-					SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
-					SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
-					SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
-					for(int i; i<4; i++)
+					case 2:
 					{
-						SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+						ang[0] += extra_accuracy;
+						ang[1] += extra_accuracy;
 					}
-					
-					SetVariantInt(team);
-					AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
-					SetVariantInt(team);
-					AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
-					
-					SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
-	
-					DispatchSpawn(entity);
-					TeleportEntity(entity, pos, ang, vel_2);
-					IsCustomTfGrenadeProjectile(entity, damage);
+					case 3:
+					{
+						ang[0] += extra_accuracy;
+						ang[1] += -extra_accuracy;
+					}
+					case 4:
+					{
+						ang[0] += -extra_accuracy;
+						ang[1] += -extra_accuracy;
+					}
+					case 5:
+					{
+						ang[0] += -extra_accuracy;
+						ang[1] += extra_accuracy * 2.0;
+					}
+					case 6:
+					{
+						ang[0] += extra_accuracy;
+						ang[1] += extra_accuracy * 2.0;
+					}
+					case 7:
+					{
+						ang[0] += extra_accuracy;
+						ang[1] += -(extra_accuracy * 2.0);
+					}
+					case 8:
+					{
+						ang[0] += -extra_accuracy;
+						ang[1] += -(extra_accuracy * 2.0);
+					}
+					case 9:
+					{
+						ang[0] += extra_accuracy;
+					}
+					case 10:
+					{
+						ang[0] += -extra_accuracy;
+						extra_accuracy+=0.05;
+						LoopShot=0;
+					}
+				}
+
+				ang[0] -= 8.0;
+
+				vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+				vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+				vel_2[2] = Sine(DegToRad(ang[0]))*speed;
+				vel_2[2] *= -1;
+				
+				SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+				SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+				SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+				SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
+				SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
+				for(int i; i<4; i++)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+				}
+				
+				SetVariantInt(team);
+				AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+				SetVariantInt(team);
+				AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
+				
+				SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+
+				DispatchSpawn(entity);
+				TeleportEntity(entity, pos, ang, vel_2);
+				IsCustomTfGrenadeProjectile(entity, damage);
 			}
 		}
 	}

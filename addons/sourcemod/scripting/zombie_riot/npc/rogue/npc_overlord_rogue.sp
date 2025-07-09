@@ -525,7 +525,7 @@ public void OverlordRogue_NPCDeath(int entity)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 			{
 				Items_GiveNamedItem(client, "Overlords Final Wish");
-				CPrintToChat(client,"{default}You defeated the final overlord and thus he bestows you... {red}''His final wish.''{default}!");
+				CPrintToChat(client,"{default}당신은 최후의 대군주를 퇴치했고, 그가 당신에게 준 것은...: {red}''대군주의 최후의 소원''{default}!");
 			}
 		}
 	}

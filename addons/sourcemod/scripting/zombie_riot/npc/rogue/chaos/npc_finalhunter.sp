@@ -187,7 +187,7 @@ static void ClotThink(int iNPC)
 			RaidAllowsBuildings = true;
 			Waves_Progress();
 
-			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
+			CPrintToChatAll("{darkred}와일딩겐 히트맨{default}: {black}그것이 내 안에 있어.");
 
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
@@ -195,7 +195,7 @@ static void ClotThink(int iNPC)
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<GogglesFollower>(other).Speech("What the fuck!");
-					CPrintToChatAll("{darkblue}Waldch{default}: What the fuck!");
+					CPrintToChatAll("{darkblue}월드치{default}: 이런 썅!");
 					break;
 				}
 			}

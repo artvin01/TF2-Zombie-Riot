@@ -225,7 +225,7 @@ static void BlitzHud(int client, float GameTime, int wep)
 
 	char HUDText[255] = "";
 
-	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%.0f/%.0f]", HUDText, fl_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
+	Format(HUDText, sizeof(HUDText), "%s이온 충전: [%.0f/%.0f]", HUDText, fl_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
 	
 	if(wep==1)
 	{
@@ -245,14 +245,14 @@ static void BlitzHud(int client, float GameTime, int wep)
 	if(fl_ion_timer_recharge[client]>GameTime)
 	{
 		float Duration = fl_ion_timer_recharge[client] - GameTime;
-		Format(HUDText, sizeof(HUDText), "%s\nION Recharging... [%.1f]", HUDText, Duration);
+		Format(HUDText, sizeof(HUDText), "%s\n이온 재충전중... [%.1f]", HUDText, Duration);
 	}
 	
 	
 	if(fl_primary_reloading[client]>GameTime)
 	{
 		float Duration = fl_primary_reloading[client] - GameTime;
-		Format(HUDText, sizeof(HUDText), "%s\nPrimary Reloading... [%.1f]", HUDText, Duration);
+		Format(HUDText, sizeof(HUDText), "%s\n주 무기 재장전중... [%.1f]", HUDText, Duration);
 	}
 
 

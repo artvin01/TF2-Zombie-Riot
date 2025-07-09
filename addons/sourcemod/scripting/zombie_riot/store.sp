@@ -2805,16 +2805,16 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 		if(i_SpecialGrigoriReplace == 0)
 		{
 			if(addItem == 0)
-				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering new wares!");
+				CPrintToChatAll("{green}그리고리 신부{default}: 형제여, 지금 막 새로운 상품이 입고되었다네!");
 			else
-				CPrintToChatAll("{green}Father Grigori{default}: My child, I'm offering extra for a limited time!");
+				CPrintToChatAll("{green}그리고리 신부{default}: 형제여, 지금 새로운 상품을 입고했다네! 판매 시간이 그리 길지 않으니 주의하게!");
 		}
 		else
 		{
 			if(addItem == 0)
-				CPrintToChatAll("{purple}The World Machine{default}: Come here! I managed to get some items!");
+				CPrintToChatAll("{purple}세상 기계{default}: 방금 새로운 아이템을 들여왔어요!");
 			else
-				CPrintToChatAll("{purple}The World Machine{default}: Come here! I managed to get some items, but they vanish fast!");
+				CPrintToChatAll("{purple}세상 기계{default}: 방금 새로운 아이템을 들여왔어요! 오래 가진 않는 물건이니까, 조심하세요!");
 		}
 		bool OneSuperSale = (override < 0.0 && !rogue);
 		SortIntegers(indexes, amount, Sort_Random);

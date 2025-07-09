@@ -227,7 +227,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		i_RaidGrantExtra[npc.index] = 0;
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{midnightblue}Barney{maroon}: About that beer I owed ya...");
+		CPrintToChatAll("{midnightblue}바니 칼훈{maroon}: 내가 빚진 그 맥주 말이야...");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}
 
@@ -251,7 +251,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
-		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
+		CPrintToChatAll("{midnightblue}바니 칼훈{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 	}
 	else
 	{
@@ -371,7 +371,7 @@ public void CorruptedBarney_NPCDeath(int entity)
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat] > 500)
 			{
 				Items_GiveNamedItem(client_repat, "Corrupted Barney's Chainsaw");
-				CPrintToChat(client_repat, "{default}Corrupted Barney Vanishes and leaves...: {crimson}''Corrupted Barney's Chainsaw''{default}!");
+				CPrintToChat(client_repat, "{default}타락한 바니 칼훈이 소멸되었다... 당신이 얻은 것: {crimson}''타락한 바니 칼훈의 전기톱''{default}!");
 			}
 		}
 	}

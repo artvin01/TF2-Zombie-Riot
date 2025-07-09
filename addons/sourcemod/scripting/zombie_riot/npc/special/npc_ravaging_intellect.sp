@@ -263,7 +263,7 @@ methodmap RavagingIntellect < CClotBody
 			MarkAreaForBuff[0] = 0.0;
 			if(GetRandomInt(0,100) == 100)
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: What is this, some type of rioting of Zombies?");
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 이건 또 뭐야, 무슨 좀비 폭동이라도 되는거야?");
 			}
 			else
 			{
@@ -271,19 +271,19 @@ methodmap RavagingIntellect < CClotBody
 				{
 					case 0:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You're annoying.");
+						CPrintToChatAll("{darkblue}황폐의 지식인{default}: 짜증나는데, 너 말야.");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get out before I make you.");
+						CPrintToChatAll("{darkblue}황폐의 지식인{default}: 내 시야에서 당장 꺼져.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Blah blah blah I don't care.");
+						CPrintToChatAll("{darkblue}황폐의 지식인{default}: 쫑알 쫑알 시끄럽네.");
 					}
 					case 3:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Don't say hi.");
+						CPrintToChatAll("{darkblue}황폐의 지식인{default}: 반갑다고 말하지 마.");
 					}
 				}
 			}
@@ -680,19 +680,19 @@ public void RavagingIntellect_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: This is getting on my nerves, i'm leaving.");
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 계속 짜증만 나는데. 난 간다.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Hope you'll have fun dealing with the aftermath.");
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 그 이후에 나올 여파들도 한 번 잘 해결해봐.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Just because you can, doesn't mean you should.");
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 네가 할 수 있다고 해서 꼭 해야되는 건 아니야.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You're really good at pissing me off.");
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 사람 짜증나게 만드는 실력만 높은 주제에.");
 			}
 		}
 		for(int client = 1; client <= MaxClients; client++)

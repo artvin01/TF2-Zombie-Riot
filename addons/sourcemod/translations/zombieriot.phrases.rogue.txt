@@ -5,69 +5,81 @@
 		"en"	"INVALID NAME"
 		"pt"	"NOME INVÁLIDO"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ИМЯ"
+		"ko"	"잘못된 이름"
 	}
 	"Missing Rogue Translation Desc"
 	{
 		"en"	"INVALID DESC"
 		"pt"	"DESCRIÇÃO INVÁLIDA"
 		"ru"	"НЕДЕЙСТВИТЕЛЬНОЕ ОПИСАНИЕ"
+		"ko"	"잘못된 설명"
 	}
 	"Allies Amongst Chaos"
 	{
 		"en"	"Allies Amongst Chaos"
 		"pt"	"Aliados em meio o Caos"
 		"ru"	"Союзники среди хаоса"
+		"ko"	"혼돈 속의 동맹"
 	}
 	"A Deeper Discovery"
 	{
 		"en"	"A Deeper Discovery"
 		"pt"	"A Descoberta Profunda"
 		"ru"	"Более глубокая находка"
+		"ko"	"깊숙한 곳 속에서의 발견"
 	}
 	"All Parties Involved"
 	{
 		"en"	"All Parties Involved"
 		"ru"	"Все группы вовлечены"
 		"pt"	"Todas as partes envolvidas"
+		"ko"	"모든 당사자들"
 	}
 	"Nightmares Evolve"
 	{
 		"en"	"Nightmares Evolve"
 		"ru"	"Кошмар Эволиционирует"
 		"pt"	"Pesadelos Evolvem"
+		"ko"	"악몽들의 진화"
 	}
 	"Lost Ingots"
 	{
 		"#format"	"{1:d}"
 		"en"		"{red}Lost {1} Australium Ingots!"
+		"ko"		"{red}오스트레일륨 주괴를 {1} 잃었습니다!"
 	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
 		"ru"	"Время Стоит На Месте"
 		"pt"	"O Tempo Está Parado"
+		"ko"	"멈춰있는 시간"
 	}
 	"The Void"
 	{
 		"en"	"The Void"
 		"ru"	"Бездна"
 		"pt"	"O Vazio"
+		"ko"	"공허"
 	}
 	"For the Fallen"
 	{
 		"en"	"For the Fallen"
+		"ko"	"타락한 자를 위하여"
 	}
 	"Vote for the starting item"
 	{
 		"en"	"Vote for the starting item:"
 		"pt"	"Vote no item inicial:"
 		"ru"	"Голосование за начальный предмет:"
+		"ko"	"시작 아이템을 투표하세요:"
 	}
 	"Vote for the next stage"
 	{
 		"en"	"Vote for the next stage:"
 		"pt"	"Vote na próxima etapa:"
 		"ru"	"Голосование за следующий этап:"
+		"ko"	"다음 스테이지를 투표하세요:"
 	}
 	"Additional Starting Ingot"
 	{
@@ -75,6 +87,7 @@
 		"en"	"Starting Australium Ingots ({1} -> {2})"
 		"pt"	"Lingotes iniciais de Austrálio ({1} -> {2})"
 		"ru"	"Начальные слитки австралия ({1} -> {2})"
+		"ko"	"초기 오스트레일륨 주괴 보유량 ({1} -> {2})"
 	}
 	"Stage"
 	{
@@ -82,6 +95,7 @@
 		"en"		"Stage: {1}-{2}"
 		"pt"		"Fase: {1}-{2}"
 		"ru"		"Этап: {1}-{2}"
+		"ko"		"스테이지: {1}-{2}"
 	}
 	"New Artifact"
 	{
@@ -89,6 +103,7 @@
 		"en"	"Collected Artifact: {yellow}{1}"
 		"pt"	"Artefatos Coletados: {yellow}{1}"
 		"ru"	"Получен артефакт: {yellow}{1}"
+		"ko"	"획득한 소장품: {yellow}{1}"
 	}
 	"Artifact Info"
 	{
@@ -101,6 +116,7 @@
 		"en"	"{green}Gained {1} Australium Ingots!"
 		"pt"	"{green}Adquiriu {1} Barras de Australium!"
 		"ru"	"{green}Получено {1} слитков австралия!"
+		"ko"	"{green}오스트레일륨 주괴를 {1} 얻었습니다!"
 	}
 	"Australium Ingots"
 	{
@@ -108,18 +124,21 @@
 		"en"	"Australium Ingots: {1}"
 		"pt"	"Barras de Australium: {1}"
 		"ru"	"Слитков австралия: {1}"
+		"ko"	"오스트레일륨 주괴: {1}"
 	}
 	"Encounter"
 	{
 		"en"	"Encounter"
 		"pt"	"Encontro"
 		"ru"	"Встреча"
+		"ko"	"우연한 만남"
 	}
 	"Collected Artifacts"
 	{
 		"en"	"Collected Artifacts"
 		"pt"	"Artefatos Coletados"
 		"ru"	"Собранные артефакты"
+		"ko"	"보유한 소장품들"
 	}
 
 	// Encounters
@@ -128,1117 +147,1367 @@
 		"en"	"Something seems off about this, should we fight or leave right here?"
 		"ru"	"Что-то здесь не так, стоит ли нам драться или уйти прямо здесь?"
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
+		"ko"	"무언가 이상하다. 싸워야 할까, 아니면 여기서 나가야할까?"
 	}
 	"Nightmare Battle Title"
 	{
 		"en"	"You are having a terrible nightmare..."
+		"ko"	"당신은 지금 끔찍한 악몽을 꾸고 있다..."
 	}
 	"We can handle this"
 	{
 		"en"	"We can handle this"
 		"pt"	"Podemos cuidar disso"
 		"ru"	"Мы справимся"
+		"ko"	"우린 해낼 수 있어"
 	}
 	"Stay and find out who is causing it"
 	{
 		"en"	"Stay and find out who is causing it"
+		"ko"	"누가 이런 짓을 하는지 알아낸다"
 	}
 	"Pinch yourself awake"
 	{
 		"en"	"Pinch yourself awake"
+		"ko"	"꼬집어서 잠을 강제로 깬다"
 	}
 	"Better leave now"
 	{
 		"en"	"Better leave now"
 		"pt"	"Melhor ir agora"
 		"ru"	"Лучше уйти сейчас"
+		"ko"	"지금은 떠나는게 좋겠어"
 	}
 	"Enter a special battle"
 	{
 		"en"	"Enter a special battle"
 		"pt"	"Entrar em uma batalha especial"
 		"ru"	"Вступить в особую битву"
+		"ko"	"특수한 전투 직면"
 	}
 	"Leave this encounter"
 	{
 		"en"	"Leave this encounter"
 		"pt"	"Abandonar esse encontro"
 		"ru"	"Оставить эту встречу"
+		"ko"	"여기서 떠나기"
 	}
 	"Shop Encounter Title"
 	{
 		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
+		"ko"	"당신은 우연히 가게에 들어갔더니, 물건을 파는 노인이 보였다. 그의 거래 제안을 받아들일까?"
 	}
 	"Shop Encounter Title Ruina"
 	{
 		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apperantly."
+		"ko"	"당신은 숨어있는 루이나인을 발견했다. 그들은 당신에게 여기서 빨리 탈출하고 싶다고 하며, 약간의 자금을 주면 보답을 해주겠다고 한다."
 	}
 	"Shop Encounter Title Ruina Evil"
 	{
 		"en"	"''Hey i saw you steal before! get away from here! i dont trust you!''"
+		"ko"	"''야! 너 전에 여기서 뭐 훔친 놈이었지! 여기서 당장 나가! 널 도저히 믿을 수 없으니까!''"
 	}
 	"Shop Ruina Sad"
 	{
 		"en"	"{snow}Hiuldan:{default} Why...? Twirl why do you let them..?"
+		"ko"	"{snow}힐단:{default} 트윌... 왜 저들을 들여보낸거야...?"
 	}
 	"Shop Ruina Sad 1"
 	{
 		"en"	"{purple}Twirl{snow}: ... I will give you a personal ride home, i dont know why they are like this. But this is very important, im very sorry."
+		"ko"	"{purple}트윌{snow}: ... 이따가 집에 데려다줄게. 저들이 왜 이런걸 즐기는 지를 모르겠어. 그렇지만 이건 정말 중요한 일이야. 미안."
 	}
 	"Shop Ruina Happy"
 	{
 		"en"	"{snow}Hiuldan:{default} W-What?? for free?? Youre too generous!!!"
+		"ko"	"{snow}힐단:{default} 뭐... 공짜로 주겠다고!? 너무 관대하잖아!?"
 	}
 	"Shop Ruina Happy 1"
 	{
 		"en"	"{purple}Twirl{snow}: ... i half expected you to rob that poor guy given your track record, im proud of you."
+		"ko"	"{purple}트윌{snow}: ... 솔직히 너희의 행동 기록을 보았을때, 네가 그 불쌍한 자의 물건을 강탈할 거라고 생각했었지만, 넌 그러지 않았어. 정말 잘 했어."
 	}
 	"Better save up now"
 	{
 		"en"	"Better save up now"
 		"pt"	"É melhor salvar agora"
 		"ru"	"Лучше поднакопить"
+		"ko"	"지금은 저축하는게 좋아보인다"
 	}
 	"Boons Encounter Title"
 	{
 		"en"	"Some items are present before you, but you seem to be only to pick one."
 		"pt"	"Alguns itens são apresentados diante a você, mas você so pode escolher um."
 		"ru"	"Перед вами лежат несколько предметов, но вы, кажется, должны выбрать только один."
+		"ko"	"당신의 앞에는 여러 가지 물품이 놓여있지만, 그 중 하나만을 고를 수 있는것 같다."
 	}
 	"There's nothing here?"
 	{
 		"en"	"There's nothing here?"
 		"pt"	"Não tem nada aqui?"
 		"ru"	"Тут ничего не было?"
+		"ko"	"여기엔 아무것도 없는건가?"
 	}
 	"Lore Title"
 	{
 		"en"	"..."
+		"ko"	"..."
 	}
 	"Sword and Stone Lore"
 	{
 		"en"	"You stumble on a knight wearing a worn-out set of armor and gloomily looking at a sword in a stone.\nHe claims to be a knight journeying in search of the holy sword, and he must bring this sword back to his kingdom to become its rightful ruler.\nHowever, he has no way to pull out the sword from the stone."
 		"pt"	"Você se depara com um cavaleiro vestindo uma armadura desgastada e olhando sombriamente para a espada em uma pedra.\nEle afirma ser um cavaleiro que viaja em busca da espada sagrada e deve trazer essa espada de volta ao seu reino para se tornar seu governante legítimo.\nNo entanto, ele não tem como retirar a espada da pedra."
 		"ru"	"Вы натыкаетесь на рыцаря в изношенных доспехах, который мрачно смотрит на меч в камне.\nОн утверждает, что является рыцарем, путешествующим в поисках священного меча, и должен вернуть этот меч в своё королевство, чтобы стать его законным правителем.\nОднако у него нет способа вытащить меч из камня."
+		"ko"	"당신은 낡은 갑옷을 입은 한 기사를 만났는데, 그는 커다란 바위에 꽂힌 검을 수심에 찬 얼굴로 바라보고 있었다.\n성검을 찾으러 온 용사라고 주장하는 그는 이 검을 자신의 왕국으로 가져가야 국왕이 될 수 있다고 밝혔다.\n하지만 그는 검을 바위에서 빼내지조차 못하고 있었다."
 	}
 	"Sword and Stone Option 1"
 	{
 		"en"	"Might as well smash the sword into two halves"
 		"pt"	"Aproveitar e dividir a espada em duas metades"
 		"ru"	"С таким же успехом можно разбить меч на две половины."
+		"ko"	"차라리 검을 부러뜨릴까"
 	}
 	"Sword and Stone Lore 1"
 	{
 		"en"	"You rack your brain to come up with a solution. In the end, you smash the sword in two. Seeing half of the sword still stuck in the stone, the knight lets out a long sigh, shakes his head, and leaves."
 		"pt"	"Você quebra a cabeça para encontrar uma solução. No final, você quebra a espada em duas. Ao ver a metade da espada ainda presa na pedra, o cavaleiro solta um longo suspiro, balança a cabeça e vai embora."
 		"ru"	"Вы ломаете голову, пытаясь найти решение. В конце концов, вы разбиваете меч на две части. Видя, что половина меча по-прежнему застряла в камне, рыцарь испустил долгий вздох, покачал головой и ушёл."
+		"ko"	"당신이 갖은 방법을 다 써봤지만 결국 검은 두 동강이 나고 말았다. 기사는 바위에 남은 반쪽의 검을 바라보더니 길게 한숨을 쉬며 돌아갔다."
 	}
 	"Sword and Stone Option 2"
 	{
 		"en"	"Could use the stone as a hammer"
 		"pt"	"Poderia usar a pedra como martelo"
 		"ru"	"Может использовать камень в качестве молотка"
+		"ko"	"바위째로 망치처럼 써도 되잖아"
 	}
 	"Sword and Stone Lore 2"
 	{
 		"en"	"Taking your advice, the knight attempts to lift the sword, the stone still attached. Unable to keep his balance, he trips and falls on the ground head first, knocking himself unconscious."
 		"pt"	"Seguindo seu conselho, o cavaleiro tenta levantar a espada com a pedra ainda presa. Sem conseguir manter o equilíbrio, ele tropeça e cai de cabeça no chão, ficando inconsciente."
 		"ru"	"Послушавшись вашего совета, рыцарь пытается поднять меч, камень всё ещё прикреплен к нему. Не удержав равновесия, он спотыкается и падает на землю головой вперёд, теряя сознание."
+		"ko"	"당신의 조언대로 기사는 바위째로 들어보았지만, 중심을 잃고 넘어지고 말았고, 결국 땅에 머리를 부딪치면서 순간 기절해버렸다."
 	}
 	"Sword and Stone Option 3"
 	{
 		"en"	"Doesn't look like it's necessary"
 		"pt"	"Parece não ser necessário"
 		"ru"	"Не думаю, что оно больше нужно"
+		"ko"	"그럴 필요는 없다"
 	}
 	"Sword and Stone Lore 3a"
 	{
 		"en"	"''Strange stones lying in forts distributing swords is no basis for a system of government."
 		"pt"	"\"Pedras estranhas em fortalezas distribuindo espadas não são base para um sistema de governo."
+		"ko"	"''이상한 돌에 꽂힌 검 따위가 국가와 정부의 기반이 될 수는 없다."
 	}
 	"Sword and Stone Lore 3b"
 	{
 		"en"	"Supreme executive power derives from a mandate from the masses, not from some farcical geologic ceremony.'' The knight thinks you have a point and leaves on a satisfied note."
 		"pt"	"O poder executivo supremo deriva de um mandato das massas, não de alguma cerimônia geológica farsesca\". O cavaleiro acha que você tem razão e sai satisfeito."
+		"ko"	"국왕이 되려면 국민들의 지지를 얻어야지, 정체불명의 성검으로 국왕이 된다는 건 말도 안 되는 소리다.'' 기사는 당신의 말에 아주 일리가 있다며, 흡족해하며 떠났다."
 	}
 	"Theatrical Lore"
 	{
 		"en"	"You find a middle-aged man rambling away in front of a dressing table.\nHe notices you and howls in your direction, asking you to deliver the prop on the table to the actress.\nYou look at the dressing table and find a crown entwined with thorns."
 		"ru"	"Вы обнаруживаете мужчину средних лет, бредущего к туалетному столику.\nОн замечает вас и завывает в вашу сторону, прося передать актрисе реквизит, лежащий на столике.\n Вы смотрите на туалетный столик и обнаруживаете корону, увитую шипами."
+		"ko"	"당신은 화장대 앞에서 중얼거리고 있는 한 중년을 발견했고,\n그는 당신을 보자마자 다짜고짜 소리 지르며 화장대 위의 소품을 배우에게 전해주라고 했다.\n화장대 쪽을 바라보니, 거긴 가시덤불로 휘감긴 왕관이 놓여 있었다."
 	}
 	"Theatrical Option 1"
 	{
 		"en"	"Listen to his demands"
 		"ru"	"Выслушать его требования"
+		"ko"	"요구대로 한다"
 	}
 	"Theatrical Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 10 боеприпасов"
+		"ko"	"{yellow}정체 불명의 소장품을 얻습니다. {red}탄약 보급이 10 감소합니다."
 	}
 	"Theatrical Lore 1a"
 	{
 		"en"	"You cut your fingers when you reach your hand out for the crown. You let go immediately, dropping the crown to the floor and shattering it in half. The middle-aged man is just about to yell at you but turns around all of a sudden."
+		"ko"	"왕관을 집어 들자 당신은 가시에 손가락이 찔렸고, 놀란 나머지 손을 놓았더니 왕관은 땅에 떨어져 반쯤은 부서졌다. 그 중년은 당신에게 막 화를 내려다가, 무슨 소리를 들은 듯 별안간 고개를 돌렸다."
 	}
 	"Theatrical Lore 1b"
 	{
 		"en"	"You hear something. The man scratches his ear. Apparently the actress no longers want to play the queen and has run away. He trots away shortly afterwards. With the charade over, you pick up the intact half-crown, now freed from its thorny enclosure."
+		"ko"	"그러고는 몹시 초조한 듯 귀와 볼을 막 긁어대며 배우들이 황후 배역을 맡기 싫어 도망갔다는 둥 이상한 말을 남기고는 달음박질하며 떠났다. 소동이 끝난 뒤, 당신은 가시덤불에서 해방된, 여전히 멀쩡한 반쪽 왕관을 주워들었다."
 	}
 	"Theatrical Option 2"
 	{
 		"en"	"Ignore him"
 		"ru"	"Не обращать на него внимания"
+		"ko"	"무시한다"
 	}
 	"Theatrical Lore 2"
 	{
 		"en"	"You ignore the middle-aged man's howlings and leave."
 		"ru"	"Вы не обращаете внимания на вопли мужчины и уходите."
+		"ko"	"당신은 그 중년을 무시하고 곧장 자리를 떠났다."
 	}
 	"Eccentric Lore"
 	{
 		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Combine, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
 		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
+		"ko"	"''자네가 누굴 찾는지 난 알고 있어, 외부인.'' 한 곱사등에 수척하게 야윈 사람이 괴상한 웃음소리를 내며 말을 건넸다.\n''하지만 자넨 저 콤바인을 모르지. 안 그래? 자네가 그를 신뢰한다 해도.''\n괴인은 후드와 목도리 사이로 당신을 바라보며 웃고 있었다.\n''내가 녀석의 과거를 알려줄 수 있는데. 궁금하지 않아?''\n그녀는 메마른 두 손을 내밀었고, 당신에게 무언가 요구하는 것 같았다."
 	}
 	"Eccentric Option 1"
 	{
 		"en"	"I definitely want to know"
 		"ru"	"Я определённо хочу знать"
+		"ko"	"확실히 궁금하긴 하다"
 	}
 	"Eccentric Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 4 слитков австралия"
+		"ko"	"{yellow}정체 불명의 소장품을 얻습니다. {red}오스트레일륨 주괴를 4 잃습니다."
 	}
 	"Eccentric Lore 1a"
 	{
 		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
+		"ko"	"''그는 강력하며 그들 자신이 믿는 대의를 지키고자 하는 콤바인 군주들 중 하나였지. 다른 콤바인 군주들은 그와는 다른 관점을 지니고 있었어. '그림자' 는 세상에 어둠을 덮어 씌워, 마치 폭탄처럼 세상을 끝내는 것에서 의미를 보고 있다."
 	}
 	"Eccentric Lore 1b"
 	{
 		"en"	"'Bladedance' sees in putting everyone against each other, everyone to fight for themselves. 'Whiteflower' sees nothing in humanity, only letting nature exist. As 'The First', well let's just say it's complicated what they both have with each other.''"
+		"ko"	"'칼춤' 은 모든 이가 서로에게 맞서 싸우고, 각자가 자신을 위해 싸우도록 만드는 것에 의미를 본다. '배풍등' 은 인류에게 아무런 의미도 두고 있지 않아. 오직 자연만이 존재하도록 내버려 두는 것을 바라고 있지. 그리고 '1세'는... 글쎄, 그 둘 사이에서 어떤 일이 있었는지는, 말하자면 복잡해..''"
 	}
 	"Eccentric Option 2"
 	{
 		"en"	"Guess not, then"
 		"ru"	"Видимо, нет"
+		"ko"	"아냐, 됐어"
 	}
 	"Eccentric Lore 2"
 	{
 		"en"	"This is too sketchy. Forget it."
 		"ru"	"Это слишком сложно. Забудь об этом."
+		"ko"	"아무래도 이 사람은 너무 수상하다. 그만하자."
 	}
 	"Eccentric Option 1-1"
 	{
 		"en"	"Ask about the ''Shadow''"
 		"ru"	"Спросить о «Тени»"
+		"ko"	"''그림자''에 관해 묻는다"
 	}
 	"Eccentric Lore 1-1a"
 	{
 		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+		"ko"	"''아, '그림자' 말인가. 언제 나타날지 모르게 그림자 속을 맴도는 존재. 가끔 세상과 단절된 느낌이 들지? 그게 그가 널 슬쩍 건드린 증거야. 지금은 그저 심심풀이로 장난만 치고 있지만, 만약 진짜 모습을 드러내게 된다면... 모든 게 멈추고, 우린 그에게 집어삼켜지겠지.''"
 	}
 	"Eccentric Lore 1-1b"
 	{
 		"en"	"Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+		"ko"	"지금은 그저 심심풀이로 장난만 치고 있지만, 만약 진짜 모습을 드러내게 된다면... 모든 게 멈추고, 우린 그에게 집어삼켜지겠지.''"
 	}
 	"Eccentric Option 1-2"
 	{
 		"en"	"Ask about the ''Bladedance''"
 		"ru"	"Спросить о «Взбешённом клинке»"
+		"ko"	"''칼춤''에 관해 묻는다"
 	}
 	"Eccentric Lore 1-2"
 	{
 		"en"	"''Ah, he's locked away. Your Combine friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
 		"ru"	"\"А, под замком. Ваш друг комбайн запер «Взбешённого клинка», как он это сделал, я до сих пор не знаю. Скажем так, он никогда не увидит дневной свет, пока он в клетке.\""
+		"ko"	"''아, 그는 봉인 됐어. 네 콤바인 친구가 저 멀리에 '칼춤' 을 봉인했지. 그가 도대체 어떻게 한 건지는 아직도 이해가 안 가지만 말이지. 하지만 말이지, 그 봉인이 존재하는 한, 그는 결코 다시 세상의 빛을 보지 못할 거야.''"
 	}
 	"Eccentric Option 1-3"
 	{
 		"en"	"Ask about the ''Whiteflower''"
 		"ru"	"Спросить о «Белом цветке»"
+		"ko"	"''배풍등''에 관해 묻는다"
 	}
 	"Eccentric Lore 1-3"
 	{
 		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
 		"ru"	"\"Ха-ха-ха, «Белый цветок» даже не представляет, как это провернуть. Особенно учитывая, что у других лордов другие планы. Однако в мире есть участок, где есть только природа, но туда легко вторгнуться.\""
+		"ko"	"''하하하, '배풍등은' 은 그 일을 어떻게 시작해야 할지 전혀 감도 못 잡고 있어. 다른 군주들까지 각자 자기 계획만을 위해 따로 놀고 있으니 상황은 더 복잡하지. 물론 세상 어딘가에는 자연만이 숨 쉬는 고요한 땅이 있긴 해. 다만, 그 지역은 너무 쉽게 침범당할 수 있는 곳이야.''"
 	}
 	"Eccentric Option 1-4"
 	{
 		"en"	"Ask about ''The First''"
 		"ru"	"Спросить о «Первейшем»"
+		"ko"	"''1세''에 관해 묻는다"
 	}
 	"Eccentric Desc 1-4"
 	{
 		"en"	"{green}Gain 4 Australium Ingots"
 		"ru"	"{green}Получить 4 слитков австралия"
+		"ko"	"{green}오스트레일륨 주괴를 4 얻습니다."
 	}
 	"Eccentric Lore 1-4"
 	{
 		"en"	"''How could be so brave as to ask about him? What a reckless lunatic. For your fearlessness, I will give you your money back, but I don't want to die yet. I can't tell you anything.''"
 		"ru"	"«Да как вам только смелости хватило, чтобы спрашивать о нём? Какой безрассудный безумец. За ваше бесстрашие я верну вам деньги, но я пока не хочу умирать. Я не могу вам ничего рассказать.»"
+		"ko"	"''감히 그분에 관해 묻다니, 정말 겁도 없는 녀석이로군. 자네의 그 배짱에 탄복해 이 돈은 돌려주도록 하지. 아쉽게도 나는 이 보잘것없는 목숨이라도 부지하고 싶으니, 아무것도 알려줄 수 없네.''"
 	}
 	"Forcefield Chest Title"
 	{
 		"en"	"An item rests on the table in front of you, something else is in the distance.\nTake what's on the table and go or try to find out what's over there?"
 		"ru"	"Перед вами на столе лежит предмет, а вдалеке что-то еще.\nВзять то, что лежит на столе и уйти или попытаться узнать, что там?"
+		"ko"	"당신 앞에 물품이 놓여있는 탁자가 보이고, 저 멀리에는 무언가 다른 물체가 보인다.\n탁자 위에 놓인게 무엇인지 집고 떠날까? 아니면 저기에 무엇이 있는지 찾는게 나을까?"
 	}
 	"Unknown Artifact"
 	{
 		"en"	"Unknown Artifact"
 		"ru"	"Неизвестный артефакт"
+		"ko"	"정체불명의 소장품"
 	}
 	"Unknown Artifact Desc"
 	{
 		"en"	"{yellow}Receive an unknown artifact{default}"
 		"ru"	"{yellow}Получить неизвестный артефакт{default}"
+		"ko"	"{yellow}무작위 소장품 1개를 얻습니다.{default}"
 	}
 	"Crimson Troupe Title"
 	{
 		"en"	"A knight appears in the distance, from thin air.\nA spotlight appears on him as he stands on a stage, preparing for a show."
 		"ru"	"Рыцарь появляется вдали из воздуха.\nНа него падает свет прожектора, когда он стоит на сцене, готовясь к выступлению."
+		"ko"	"저 멀리, 허공에서 기사 한 명이 나타난다.\n무대에 서서 쇼를 준비하는 그에게 스포트라이트가 비친다."
 	}
 	"Let's check out this show"
 	{
 		"en"	"Let's check out this show"
 		"ru"	"Давайте посмотрим на это шоу"
+		"ko"	"이 연극을 살펴본다"
 	}
 	"Camp Title"
 	{
 		"en"	"You find a quiet corner safe enough to harbor your entire squad from harm, allowing you to rest and reorganize.\nHaving helped your teammates settle in, your consciousness slowly begins to loosen up."
 		"ru"	"Вы находите тихий уголок, достаточно безопасный, чтобы укрыть весь ваш отряд от опасности, позволяя вам отдохнуть и реорганизоваться.\nПомогая своим товарищам устроиться, вы начинаете медленно терять сознание."
+		"ko"	"한적한 작은 모퉁이를 찾은 덕분에, 부대는 위험에서 벗어나 충분한 정비 시간을 가질 수 있게 되었다.\n동료들의 배정을 마친 후 당신도 서서히 긴장이 풀렸다."
 	}
 	"Camp Option"
 	{
 		"en"	"Drift into slumber"
 		"ru"	"Погрузиться в сон"
+		"ko"	"잠에 곯아떨어진다"
 	}
 	"Camp Desc"
 	{
 		"en"	"{green}Fully heal allies and gain 30 ammo supplies"
 		"ru"	"{green}Полностью вылечить союзников и получить 30 боеприпасов"
+		"ko"	"{green}아군 전체의 체력을 전부 회복하고 탄약 보급을 30 얻습니다."
 	}
 	"Camp Lore"
 	{
 		"en"	"By the time you open your eyes again, your anxiety and exhaustion have long departed your body. You gather up your bags and continue exploring the unknown with your teammates."
 		"ru"	"Когда вы снова открываете глаза, беспокойство и усталость уже давно покинули ваше тело. Вы собираете свои вещи и продолжаете исследовать неизвестность вместе со своими товарищами."
+		"ko"	"눈을 떠 보니, 긴장감과 피로감은 이미 사라진 지 오래됐다. 행낭을 정리하곤 당신은 동료들과 함께 계속해서 미지의 앞길을 탐색해나갔다."
 	}
 	"Coffin of Evil Lore"
 	{
 		"en"	"You discover a dark room. There are no windows in the room, nor are there any light sources.\nIn the center of the room is a massive coffin with many gems and jewels affixed.\nJust as you are about to inspect the coffin, you hear a voice from inside it.\nIt seems to be asking for your help to open the coffin."
 		"ru"	"Вы обнаруживаете тёмную комнату. В комнате нет ни окон, ни источников света.\nВ центре комнаты стоит массивный гроб с множеством драгоценных камней и украшений.\nВ тот момент, когда вы собираетесь осмотреть гроб, вы слышите голос изнутри.\nПохоже, он просит вас помочь открыть гроб."
+		"ko"	"당신이 고성 깊숙한 곳에서 어두컴컴한 방 한 칸을 발견했는데 방안에는 창문이 없었고 불빛도 전혀 없었다.\n방 가운데에는 육중해 보이는 관이 하나 놓여 있었는데, 그 위에는 수많은 보석이 박혀 있었다.\n당신이 관을 조사해 보려고 하자,\n관 속에서 뚜껑을 열어달라는 구조 요청 소리가 들렸다."
 	}
 	"Coffin of Evil Option 1"
 	{
 		"en"	"We can't stand idly by when someone's asking for help"
 		"ru"	"Мы не можем оставаться в стороне, когда кто-то просит о помощи"
+		"ko"	"일단 사람부터 구한다"
 	}
 	"Coffin of Evil Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
 		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 30 боеприпасов"
+		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {red}탄약 보급을 30 잃습니다."
 	}
 	"Coffin of Evil Lore 1"
 	{
 		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
 		"ru"	"Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
+		"ko"	"관에는 못이 단단히 박혀 있어 강제로 열 수밖에 없었다. 관을 열자 준수하게 생긴 콤바인이 관에서 나왔다. 그는 호의를 베푼 당신에게 감사의 선물을 주었다."
 	}
 	"Coffin of Evil Option 2"
 	{
 		"en"	"Looks way too sketchy"
 		"ru"	"Выглядит слишком подозрительно"
+		"ko"	"딱 봐도 수상하다"
 	}
 	"Coffin of Evil Desc 2"
 	{
 		"en"	"{green}Gain 8 Australium Ingots"
 		"ru"	"{green}Получить 8 слитков австралия"
+		"ko"	"{green}오스트레일륨 주괴를 8 얻습니다."
 	}
 	"Coffin of Evil Lore 2"
 	{
 		"en"	"In many stories, those who offer others help often find their kindness backfiring. Being the cautious person you are, you ignore the suspicious pleas. You even take the jewels on the coffin with you and close the door on your way out."
 		"ru"	"Во многих историях те, кто предлагает другим помощь, часто сталкиваются с тем, что их доброта была напрасной. Будучи осторожным человеком, вы игнорируете подозрительные просьбы. Вы даже забираете с собой драгоценности, лежащие на гробу, и закрываете дверь, покидая место."
+		"ko"	"많은 이야기 속엔 호의를 베풀었다가 오히려 곤경에 빠진 일이 많았기에 당신은 매우 신중했으며, 그 수상한 구조 요청에 모른척하기로 했다. 결국 당신은 관에 박혀 있는 보석만 챙기고는 방문을 닫고 나갔다."
 	}
 	"Eye for an Eye Lore"
 	{
 		"en"	"A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
 		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
+		"en"	"행동거지가 우아하고 깔끔하게 차려입은 콤바인 한 명이 당신 앞에 나타나더니.\n깍듯이 예의를 차리며 자신 대신 무고하게 대속 중인 불쌍한 사람을 못 봤냐고 물었다.\n그 콤바인에게 자세히 물어본 후에야 그의 실수로 중세인들이 그의 친구를 마녀로 오해하고 이곳에 가둬뒀다는 것을 알게 되었다.\n이어서 그는 만약 자신을 도와준다면 높은 보수를 지불하겠다고 약속했다."
 	}
 	"Eye for an Eye Option 1"
 	{
 		"en"	"This story sounds familiar"
 		"ru"	"Эта история кажется знакомой"
+		"ko"	"뻔한 레퍼토리다"
 	}
 	"Eye for an Eye Desc 1"
 	{
 		"en"	"{green}Gain 30 Australium Ingots"
 		"ru"	"{green}Получить 30 слитков австралия"
+		"ko"	"{green}오스트레일륨 주괴를 30 얻습니다"
 	}
 	"Eye for an Eye Lore 1"
 	{
 		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
 		"ru"	"Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
+		"ko"	"그에게 그의 친구가 이미 풀려났다고 말해주자, 그 콤바인은 너무 기쁘다며 반드시 사례하겠다고 말했다."
 	}
 	"Eye for an Eye Option 2"
 	{
 		"en"	"Lead the way"
 		"ru"	"Показывай путь"
+		"ko"	"길을 안내한다"
 	}
 	"Eye for an Eye Desc 2"
 	{
 		"en"	"{green}Gain 3000 cash {red}but lose 20 ammo supplies"
 		"ru"	"{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
+		"ko"	"{green}자금을 3000 얻습니다. {red}탄약 보급을 20 잃습니다."
 	}
 	"Eye for an Eye Lore 2"
 	{
 		"en"	"He gives you his thanks and explains the whole story to you on your way there. However, in the end, he implores you not to ask the Medievalists what happened thereafter."
 		"ru"	"Он благодарит вас и по дороге объясняет вам всю историю. Однако в конце он просит вас не спрашивать медиевистов о том, что произошло потом."
+		"ko"	"그는 고맙다는 인사를 한 뒤 길을 걸으며 당신에게 사건의 경위를 온전하게 설명했다. 다만, 마지막에 그는 중세인들의 행방에 대해서는 묻지 말라며 고개를 저었다."
 	}
 	"Eye for an Eye Option 3"
 	{
 		"en"	"Stay alert"
 		"ru"	"Не теряйте бдительность"
+		"ko"	"경계한다"
 	}
 	"Eye for an Eye Desc 3"
 	{
 		"en"	"{green}Gain 30 ammo supplies"
 		"ru"	"{green}Получить 30 боеприпасов"
+		"ko"	"{green}탄약 보급을 30 얻습니다."
 	}
 	"Eye for an Eye Lore 3"
 	{
 		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
 		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
+		"ko"	"이런 곳에서 움직이려면 반드시 각별히 경각심을 가져야 했다. 당신이 움직이지 않자, 신사는 한숨을 내쉬며 자신의 이 시나리오가 비극으로 끝날 것 같다며 한탄했다."
 	}
 	"Xeno Shaft Title"
 	{
 		"en"	"You can hear a figure walking about in the mines, perhaps guarding something of value?"
 		"ru"	"Вы можете слышать как фигура ходит в шахтах,возможно охраняет что-нибудь ценое?"
+		"ko"	"광산 근처에서 뭔가 가치 있는 것을 지키고 있는 듯한 모습을 보이는 자들이 돌아다니고 있다."
 	}
 	"Investigate the mines"
 	{
 		"en"	"Investigate the mines"
 		"ru"	"Исследовать шахты"
+		"ko"	"광산을 조사한다"
 	}
 	"Stultifera Title"
 	{
 		"en"	"A sticky creep is covering the walls of the mine, smells like the ocean, should we check it out?"
 		"ru"	"Стены шахты покрыты липким налетом, пахнет, как океан, стоит ли нам это проверить?"
+		"ko"	"수상하게 끈적거리는 물체들이 광산의 벽을 뒤덮고 있는데, 꼭 바다와 같은 냄새가 난다. 확인해볼까?"
 	}
 	"Broken Crown Lore"
 	{
 		"en"	"You find a golden sword stuck into the ground along with a broken crown hanging around it.\nYou feel you've seen these before, an aura of rage surrounds it."
 		"ru"	"Вы находите золотой меч застрявший в земле вместе с сломанной короной весящий на нём.\nУ вас возникает чувство Дежавю,Аура ярости окружает её."
+		"ko"	"당신이 황금의 검이 땅에 꽂혀 있고 깨진 왕관이 그 주위에 걸려 있는 것을 발견한다.\n분노의 기운이 검을 감싸고 있는 이 광경은 전에 본 적이 있는 것 같은 느낌이 든다."
 	}
 	"Broken Crown Option 1"
 	{
 		"en"	"Take the broken crown"
 		"ru"	"Забрать корону"
+		"ko"	"부서진 왕관을 가져간다"
 	}
 	"Broken Crown Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
 		"ru"	"{yellow}Получить неизвестный артифакт и {blue}Поменять концовку"
+		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {blue}게임 엔딩이 변경됩니다."
 	}
 	"Broken Crown Lore 1"
 	{
 		"en"	"The broken crown stabs you as you try to pick it up, it's sharp broken edges glare. The evil aura grows as you feel yourself finding a new path to follow."
 		"ru"	"Сломанная корона Пронзает вас как только вы пытаетесь её поднять,Её острые края блики. Зловещая аура растёт и вы понимаете по какому пути стоит идти."
+		"ko"	"부러진 왕관을 주우려 하자 찔리는 듯한 통증이 밀려온다. 그것의 날카로운 부러진 모서리가 번뜩였다. 사악한 기운이 퍼져나가고, 이것으로 뭔가 새로운 길을 찾을 수 있게 된 듯한 기분이 든다."
 	}
 	"Broken Crown Option 2"
 	{
 		"en"	"Take the golden sword"
+		"ko"	"황금 검을 가져간다"
 	}
 	"Broken Crown Desc 2"
 	{
 		"en"	"{green}Gain 8 Australium Ingots"
+		"ko"	"{green}오스트레일륨 주괴를 8 얻습니다."
 	}
 	"Broken Crown Lore 2"
 	{
 		"en"	"You brush aside the crown as you try picking up the sword from the ground. The blade snaps in half. Worthless as a weapon now but we could sell the gold later."
+		"ko"	"땅에 떨어진 검을 주워 올리면서 왕관을 검으로 쓸어 넘겼다. 그리고 검이 반으로 부러져버렸다. 지금은 무기로 쓸 수 없지만, 나중에 자금으로 바꿀 수도 있을 것 같다."
 	}
 	"Bob Research Lore"
 	{
 		"en"	"You find yourself in a blank room.\nIn the distance is a tiny office setup, with a wooden desk, file cabinet, and reading lamp."
+		"ko"	"당신은 텅텅 빈 방에 도착했다.\n저 멀리 나무 책상, 서류함, 독서등이 놓인 작은 사무실이 보인다."
 	}
 	"Bob Research Option 1"
 	{
 		"en"	"Take a look at it"
+		"ko"	"가서 살펴본다"
 	}
 	"Bob Research Lore 1"
 	{
 		"en"	"You find it's messy as if someone rushed out. You find papers on the desk, you read it."
+		"ko"	"이 책상은 마치 누군가 급히 나간 것처럼 어질러져있었다. 책상 위에 놓인 서류를 보고 읽기 시작했다."
 	}
 	"Bob Research Option 2"
 	{
 		"en"	"We're getting lost"
+		"ko"	"함정일지도 몰라"
 	}
 	"Bob Research Lore 2"
 	{
 		"en"	"You head out, it's dark and we have other things to take care of."
-	}
-	"Bob Final Lore"
-	{
-		"en"	"You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
-	}
-	"Bob Final Option 1"
-	{
-		"en"	"I don't remember turning it off"
-	}
-	"Bob Final Desc 1"
-	{
-		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
-	}
-	"Bob Final Lore 1"
-	{
-		"en"	"You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
-	}
-	"Bob Final Option 2"
-	{
-		"en"	"Nothing changed"
-	}
-	"Bob Final Lore 2"
-	{
-		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
-	}
-	"Bob Final Option 3"
-	{
-		"en"	"I do remember"
-	}
-	"Bob Final Desc 3"
-	{
-		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ko"	"당신은 자리를 떴다. 날이 점점 어두워지고, 처리해야 할 다른 일도 있기 때문이다."
 	}
 	"Bob Final Option 3 No"
 	{
 		"en"	"You cant seem to remember..."
+		"ko"	"당신은 이걸 기억하지 못 하는것 같다..."
 	}
 	"Bob Final Option 3 No desc"
 	{
 		"en"	"Unaccessable area."
+		"ko"	"접촉 불가한 구역."
 	}
 	"Bob Final Desc 3"
 	{
 		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ko"	"{yellow}정체불명의 소장품을 얻고 {blue}게임 엔딩이 변경됩니다."
+	}
+	"Bob Final Lore"
+	{
+		"en"	"You find yourself in a blank room.\nYou find the same tiny office setup from before but the lights are off."
+		"ko"	"당신은 텅텅 빈 방에 도착했다.\n이전의 그 사무실과 완전히 똑같은 형태의 작은 사무실이 보이는데, 이번엔 독서등이 꺼져있다."
+	}
+	"Bob Final Option 1"
+	{
+		"en"	"I don't remember turning it off"
+		"ko"	"저걸 끈 기억이 없는데"
+	}
+	"Bob Final Desc 1"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {blue}게임 엔딩이 변경됩니다."
+	}
+	"Bob Final Lore 1"
+	{
+		"en"	"You get up closer to find it's clean and empty, only a single hardcopy paper on the table. You read it."
+		"ko"	"당신이 가까이 다가가 보니 깨끗하고 텅 비어 있었다. 이제 책상 위에는 종이 한 장만 놓여 있었다. 당신은 그것을 읽어 내려간다."
+	}
+	"Bob Final Option 2"
+	{
+		"en"	"Nothing changed"
+		"ko"	"별로 바뀐 것도 없네"
+	}
+	"Bob Final Lore 2"
+	{
+		"en"	"It could just be out of power or prehaps just turned it off earlier. Moving on."
+		"ko"	"전원이 꺼졌거나, 아니면 방금 전에 꺼졌을 수도 있다. 움직이자."
+	}
+	"Bob Final Option 3"
+	{
+		"en"	"I do remember"
+		"ko"	"이제야 기억난다"
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {blue}게임 엔딩이 변경됩니다."
 	}
 	"Bob Final Lore 3"
 	{
 		"en"	"Those that we lost. Bladedance... Guln... Finish the job."
+		"ko"	"우리가 잃어버린 자들. 칼춤... 귄... 일을 끝낼 시간이다."
 	}
 	"Mediveal Ally Title"
 	{
 		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+		"ko"	"중세인들 무리가 시본 무리들과 싸우고 있는 것처럼 보인다. 그들은 전투에서 패배하고 있다."
 	}
 	"Mediveal Option 1"
 	{
 		"en"	"Side with the Medievalists"
+		"ko"	"중세인들을 도와준다"
 	}
 	"Broken Bridge Title"
 	{
 		"en"	"In your path, a bridge breaks in front of you."
+		"ko"	"당신이 가는 길목에 파괴된 다리가 보인다."
 	}
 	"Broken Bridge Option 1"
 	{
 		"en"	"We could rebuild this"
+		"ko"	"재건설이 가능할지도"
 	}
 	"Broken Bridge Desc 1"
 	{
 		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+		"ko"	"{yellow}정체불명의 소장품을 얻습니다. {red}오스트레일륨 주괴를 4 잃습니다."
 	}
 	"Broken Bridge Lore 1"
 	{
 		"en"	"You rebuilt the bridge using your supplies, one the other side you happen to find a dropped item."
+		"ko"	"약간의 재료가 소모되긴 했지만 다리를 어떻게든 수리해냈고, 그 과정에서 누군가가 떨어뜨린 듯한 물품을 발견했다."
 	}
 	"Broken Bridge Option 2"
 	{
 		"en"	"Better go around"
+		"ko"	"돌아서 가는게 낫겠어"
 	}
 	"Broken Bridge Lore 2"
 	{
 		"en"	"Time is better spent elsewhere, nothing important anyways."
+		"ko"	"이건 중요한 일도 아니다. 다른 곳에 시간을 쓰는게 더 나을 것이다."
 	}
 
 	// Stages
 	"Dense Fog"
 	{
 		"en"	"Dense Fog"
+		"ko"	"자욱한 안개"
 	}
 	"Forcefield Chest"
 	{
 		"en"	"Forcefield Chest"
 		"ru"	"Сундук силового поля"
+		"ko"	"역장 상자"
 	}
 	"Electric Tower"
 	{
 		"en"	"Electric Tower"
 		"ru"	"Электробашня"
+		"ko"	"송전탑"
 	}
 	"Electric Tower!"
 	{
 		"en"	"Electric Tower ⚠"
+		"ko"	"송전탑 ⚠"
 	}
 	"Tower Madness"
 	{
 		"en"	"Tower Madness"
 		"ru"	"Безумие башни"
+		"ko"	"광란의 탑"
 	}
 	"Tower Madness!"
 	{
 		"en"	"Tower Madness ⚠"
+		"ko"	"광란의 탑 ⚠"
 	}
 	"Caged Beast"
 	{
 		"en"	"Caged Beast"
 		"ru"	"Зверь в клетке"
+		"ko"	"철장에 갇힌 짐승"
 	}
 	"Elevated Presence"
 	{
 		"en"	"Elevated Presence"
 		"ru"	"Существенное присутствие"
+		"ko"	"높아진 존재감"
 	}
 	"Shop"
 	{
 		"en"	"Shop"
 		"ru"	"Магазин"
+		"ko"	"상점"
 	}
 	"Boons"
 	{
 		"en"	"Boons"
 		"ru"	"Блага"
+		"ko"	"선물"
 	}
 	"Uncertain Goals"
 	{
 		"en"	"Uncertain Goals"
+		"ko"	"불확실한 목표"
 	}
 	"Uncertain Goals 1"
 	{
 		"en"	"Uncertain Goals 1"
+		"ko"	"불확실한 목표 1"
 	}
 	"Uncertain Goals 2"
 	{
 		"en"	"Uncertain Goals 2"
+		"ko"	"불확실한 목표 2"
 	}
 	"Uncertain Goals 3"
 	{
 		"en"	"Uncertain Goals 3"
+		"ko"	"불확실한 목표 3"
 	}
 	"Water Fountain"
 	{
 		"en"	"Water Fountain"
 		"ru"	"Водный фонтан"
+		"ko"	"물분수"
 	}
 	"Water Fountain!"
 	{
 		"en"	"Water Fountain ⚠"
+		"ko"	"물분수 ⚠"
 	}
 	"Abandoned Graveyard"
 	{
 		"en"	"Abandoned Graveyard"
 		"ru"	"Заброшенное кладбище"
+		"ko"	"폐허가 된 묘지"
 	}
 	"Abandoned Graveyard!"
 	{
 		"en"	"Abandoned Graveyard ⚠"
+		"ko"	"폐허가 된 묘지 ⚠"
 	}
 	"Pure Desert"
 	{
 		"en"	"Pure Desert"
 		"ru"	"Чистая пустыня"
+		"ko"	"정제된 사막"
 	}
 	"The Sword in the Stone"
 	{
 		"en"	"The Sword in the Stone"
 		"ru"	"Меч в камне"
+		"ko"	"'바위에 꽂힌 검"
 	}
 	"Theatrical Necessities"
 	{
 		"en"	"Theatrical Necessities"
 		"ru"	"Театральные нужды"
+		"ko"	"레퍼토리 수요"
 	}
 	"Eccentric Hunchback"
 	{
 		"en"	"Eccentric Hunchback"
 		"ru"	"Горбун-эксцентрик"
+		"ko"	"곱사등이 괴인"
 	}
 	"Crimson Troupe Stage"
 	{
 		"en"	"Crimson Troupe Stage"
+		"ko"	"크림슨 무도회"
 	}
 	"Camp"
 	{
 		"en"	"Camp"
 		"ru"	"Лагерь"
+		"ko"	"야영"
 	}
 	"Coffin of Evil"
 	{
 		"en"	"Coffin of Evil"
 		"ru"	"Гроб зла"
+		"ko"	"사악의 관"
 	}
 	"Xeno Shaft"
 	{
 		"en"	"Xeno Shaft"
 		"ru"	"Шахта ксено"
+		"ko"	"제노 갱도"
 	}
 	"Stultifera Navis"
 	{
 		"en"	"Stultifera Navis"
 		"ru"	"Стултифера Навис"
+		"ko"	"스툴티페라 나비스"
 	}
 	"Wake Up Call"
 	{
 		"en"	"Wake Up Call"
 		"ru"	"Тревожный звонок"
+		"ko"	"경각의 알람"
 	}
 	"Wake Up Call!"
 	{
 		"en"	"Wake Up Call ⚠"
 		"ru"	"Тревожный звонок ⚠"
+		"ko"	"경각의 알람 ⚠"
 	}
 	"Shoot The Messager"
 	{
 		"en"	"Shoot The Messenger"
 		"ru"	"Застрелить посланника"
+		"ko"	"엉뚱한 남탓"
 	}
 	"Shoot The Messager!"
 	{
 		"en"	"Shoot The Messenger ⚠"
 		"ru"	"Застрелить посланника ⚠"
+		"ko"	"엉뚱한 남탓 ⚠"
 	}
 	"Flanking Tactics"
 	{
 		"en"	"Flanking Tactics"
 		"ru"	"Тактика обхода с флангов"
+		"ko"	"측면 공격"
 	}
 	"Flanking Tactics!"
 	{
 		"en"	"Flanking Tactics ⚠"
 		"ru"	"Тактика обхода с флангов ⚠"
+		"ko"	"측면 공격 ⚠"
 	}
 	"Phone Service"
 	{
 		"en"	"Phone Service"
 		"ru"	"Телефонная связь"
+		"ko"	"폰 서비스"
 	}
 	"Phone Service!"
 	{
 		"en"	"Phone Service ⚠"
 		"ru"	"Телефонная связь ⚠"
+		"ko"	"폰 서비스 ⚠"
 	}
 	"Scouting Party"
 	{
 		"en"	"Scouting Party"
+		"ko"	"정찰대 무리"
 	}
 	"Scouting Party!"
 	{
 		"en"	"Scouting Party ⚠"
+		"ko"	"정찰대 무리 ⚠"
 	}
 	"Speed Demons"
 	{
 		"en"	"Speed Demons"
+		"ko"	"스피드광"
 	}
 	"Speed Demons!"
 	{
 		"en"	"Speed Demons ⚠"
+		"ko"	"스피드광 ⚠"
 	}
 	"Dried Kelp"
 	{
 		"en"	"Dried Kelp"
+		"ko"	"말린 켈프"
 	}
 	"Dried Kelp!"
 	{
 		"en"	"Dried Kelp ⚠"
+		"ko"	"말린 켈프 ⚠"
 	}
 	"Fueled By Gold"
 	{
 		"en"	"Fueled By Gold"
+		"ko"	"금을 연료로 쓰는 것"
 	}
 	"Fueled By Gold!"
 	{
 		"en"	"Fueled By Gold ⚠"
+		"ko"	"금을 연료로 쓰는 것 ⚠"
 	}
 	"Eye for an Eye"
 	{
 		"en"	"Eye for an Eye"
 		"ru"	"Око за око"
+		"ko"	"피에는 피"
 	}
 	"Fight to the Death"
 	{
 		"en"	"Fight to the Death"
+		"ko"	"사력을 다한 전투"
 	}
 	"Fight to the Death!"
 	{
 		"en"	"Fight to the Death ⚠"
+		"ko"	"사력을 다한 전투 ⚠"
 	}
 	"Shooting Range"
 	{
 		"en"	"Shooting Range"
+		"ko"	"사격장"
 	}
 	"Shooting Range!"
 	{
 		"en"	"Shooting Range ⚠"
+		"ko"	"사격장 ⚠"
 	}
 	"Car Battery"
 	{
 		"en"	"Car Battery"
+		"ko"	"자동차 배터리"
 	}
 	"Car Battery!"
 	{
 		"en"	"Car Battery ⚠"
+		"ko"	"자동차 배터리 ⚠"
 	}
 	"A Date with Arrows"
 	{
 		"en"	"A Date with Arrows"
+		"ko"	"화살들과 함께"
 	}
 	"A Date with Arrows!"
 	{
 		"en"	"A Date with Arrows ⚠"
+		"ko"	"화살들과 함께 ⚠"
 	}
 	"Not So Finale"
 	{
 		"en"	"Not So Finale"
+		"ko"	"예상 외의 피날레"
 	}
 	"Not So Finale!"
 	{
 		"en"	"Not So Finale ⚠"
+		"ko"	"예상 외의 피날레 ⚠"
 	}
 	"Gift Delivery"
 	{
 		"en"	"Gift Delivery"
+		"ko"	"위문품 전달"
 	}
 	"Gift Delivery!"
 	{
 		"en"	"Gift Delivery ⚠"
+		"ko"	"위문품 전달 ⚠"
 	}
 	"Viscera Cleanup"
 	{
 		"en"	"Viscera Cleanup"
+		"ko"	"내장 청소"
 	}
 	"Viscera Cleanup!"
 	{
 		"en"	"Viscera Cleanup ⚠"
+		"ko"	"내장 청소 ⚠"
 	}
 	"Forgot My Passport"
 	{
 		"en"	"Forgot My Passport"
+		"ko"	"깜빡 잊은 여권"
 	}
 	"Forgot My Passport!"
 	{
 		"en"	"Forgot My Passport ⚠"
+		"ko"	"깜빡 잊은 여권 ⚠"
 	}
 	"Castle Age"
 	{
 		"en"	"Castle Age"
+		"ko"	"성주 시대"
 	}
 	"Castle Age!"
 	{
 		"en"	"Castle Age ⚠"
+		"ko"	"성주 시대 ⚠"
 	}
 	"Terrifying Legends"
 	{
 		"en"	"Terrifying Legends ☠"
+		"ko"	"공포의 전설 ☠"
 	}
 	"Dungeon Rematch"
 	{
 		"en"	"Dungeon Rematch ☠"
+		"ko"	"던전 속 재전 ☠"
 	}
 	"On Your Guard"
 	{
 		"en"	"On Your Guard"
+		"ko"	"경계 태세 유지"
 	}
 	"On Your Guard!"
 	{
 		"en"	"On Your Guard ⚠"
+		"ko"	"경계 태세 유지 ⚠"
 	}
 	"Darkest Dungeon"
 	{
 		"en"	"Darkest Dungeon"
+		"ko"	"다키스트 던전"
 	}
 	"Darkest Dungeon!"
 	{
 		"en"	"Darkest Dungeon ⚠"
+		"ko"	"다키스트 던전 ⚠"
 	}
 	"The Hitman"
 	{
 		"en"	"The Hitman"
+		"ko"	"히트맨"
 	}
 	"The Hitman!"
 	{
 		"en"	"The Hitman ⚠"
+		"ko"	"히트맨 ⚠"
 	}
 	"Under Tides"
 	{
 		"en"	"Under Tides"
+		"ko"	"언더 타이즈"
 	}
 	"Under Tides!"
 	{
 		"en"	"Under Tides ⚠"
+		"ko"	"언더 타이즈 ⚠"
 	}
 	"Fish Bait"
 	{
 		"en"	"Fish Bait"
+		"ko"	"낚시용 미끼"
 	}
 	"Fish Bait!"
 	{
 		"en"	"Fish Bait ⚠"
+		"ko"	"낚시용 미끼 ⚠"
 	}
 	"Need For Speed"
 	{
 		"en"	"Need For Speed"
+		"ko"	"니드 포 스피드"
 	}
 	"Need For Speed!"
 	{
 		"en"	"Need For Speed ⚠"
+		"ko"	"니드 포 스피드 ⚠"
 	}
 	"Deep Rock Heist"
 	{
 		"en"	"Deep Rock Heist"
+		"ko"	"딥 락 헤이스트"
 	}
 	"Deep Rock Heist!"
 	{
 		"en"	"Deep Rock Heist ⚠"
+		"ko"	"딥 락 헤이스트 ⚠"
 	}
 	"Teutons"
 	{
 		"en"	"Teutons"
+		"ko"	"튜튼족"
 	}
 	"Teutons!"
 	{
 		"en"	"Teutons ⚠"
+		"ko"	"튜튼족 ⚠"
 	}
 	"Blitz"
 	{
 		"en"	"Blitz"
+		"ko"	"블리츠"
 	}
 	"Blitz!"
 	{
 		"en"	"Blitz ⚠"
+		"ko"	"블리츠 ⚠"
 	}
 	"Heroic Age"
 	{
 		"en"	"Heroic Age"
+		"ko"	"영웅의 시대"
 	}
 	"Heroic Age!"
 	{
 		"en"	"Heroic Age ⚠"
+		"ko"	"영웅의 시대 ⚠"
 	}
 	"Undead Warriors"
 	{
 		"en"	"Undead Warriors"
+		"ko"	"불멸의 전사들"
 	}
 	"Undead Warriors!"
 	{
 		"en"	"Undead Warriors ⚠"
+		"ko"	"불멸의 전사들 ⚠"
 	}
 	"Gray Robots"
 	{
 		"en"	"Gray Robots"
+		"ko"	"잿빛 로봇들"
 	}
 	"Gray Robots!"
 	{
 		"en"	"Gray Robots ⚠"
+		"ko"	"잿빛 로봇들 ⚠"
 	}
 	"Xeno Monsters"
 	{
 		"en"	"Xeno Monsters"
+		"ko"	"제노 괴수들"
 	}
 	"Xeno Monsters!"
 	{
 		"en"	"Xeno Monsters ⚠"
+		"ko"	"제노 괴수들 ⚠"
 	}
 	"Ambush"
 	{
 		"en"	"Ambush"
+		"ko"	"매복"
 	}
 	"Ambush!"
 	{
 		"en"	"Ambush ⚠"
+		"ko"	"매복 ⚠"
 	}
 	"Steel Workers"
 	{
 		"en"	"Steel Workers"
+		"ko"	"강철 노동자"
 	}
 	"Steel Workers!"
 	{
 		"en"	"Steel Workers ⚠"
+		"ko"	"강철 노동자 ⚠"
 	}
 	"Infighting"
 	{
 		"en"	"Infighting"
+		"ko"	"인파이팅"
 	}
 	"Infighting!"
 	{
 		"en"	"Infighting ⚠"
+		"ko"	"인파이팅 ⚠"
 	}
 	"Simple Yet Deadly"
 	{
 		"en"	"Simple Yet Deadly"
+		"ko"	"간단하지만 치명적인 것"
 	}
 	"Simple Yet Deadly!"
 	{
 		"en"	"Simple Yet Deadly ⚠"
+		"ko"	"간단하지만 치명적인 것 ⚠"
 	}
 	"Patient Zero"
 	{
 		"en"	"Patient Zero ☠"
+		"ko"	"최초의 감염자 ☠"
 	}
 	"Highest Rule"
 	{
 		"en"	"Highest Rule ☠"
+		"ko"	"최고위 규칙 ☠"
 	}
 	"Familiar Yet Not!"
 	{
 		"en"	"Familiar Yet Not ⚠"
+		"ko"	"친숙하면서도 그렇지 않은 것 ⚠"
 	}
 	"Future Or Not!"
 	{
 		"en"	"Future Or Not ⚠"
+		"ko"	"미래가 아니면 죽음을 ⚠"
 	}
 	"Bob's Fear"
 	{
 		"en"	"Bob's Fear ☠"
+		"ko"	"밥의 공포 ☠"
 	}
 	"Lost Crown and Sword"
 	{
 		"en"	"Lost Crown and Sword"
+		"ko"	"잃어버린 왕관과 검"
 	}
 	"Bob's Room"
 	{
 		"en"	"Bob's Room"
+		"ko"	"밥의 공간"
 	}
 	"Bob's Dark Room"
 	{
 		"en"	"Bob's Dark Room"
+		"ko"	"밥의 어두운 공간"
 	}
 	"Temporary Alliance"
 	{
 		"en"	"Temporary Alliance"
+		"ko"	"임시 동맹"
 	}
 	"Broken Bridge"
 	{
 		"en"	"Broken Bridge"
+		"ko"	"파괴된 다리"
 	}
 	"Home Sick"
 	{
 		"en"	"Home Sick"
+		"ko"	"향수병"
 	}
 	"Home Sick!"
 	{
 		"en"	"Home Sick ⚠"
+		"ko"	"향수병 ⚠"
 	}
 	"A Lost War"
 	{
 		"en"	"A Lost War"
+		"ko"	"잃어버린 전쟁"
 	}
 	"A Lost War!"
 	{
 		"en"	"A Lost War ⚠"
+		"ko"	"잃어버린 전쟁 ⚠"
 	}
 	"Falling Hazard"
 	{
 		"en"	"Falling Hazard"
+		"ko"	"추락 위험"
 	}
 	"Falling Hazard!"
 	{
 		"en"	"Falling Hazard ⚠"
+		"ko"	"추락 위험 ⚠"
 	}
 	"Whiteflower Mercenaries"
 	{
 		"en"	"Whiteflower Mercenaries ☠"
+		"ko"	"배풍등의 용병들 ☠"
 	}
 	"City Hall"
 	{
 		"en"	"City Hall"
+		"ko"	"도시 센터"
 	}
 	"City Hall!"
 	{
 		"en"	"City Hall ⚠"
+		"ko"	"도시 센터 ⚠"
 	}
 	"Prompting Engineer"
 	{
 		"en"	"Prompting Engineer ⚠"
+		"ko"	"프롬프팅 엔지니어 ⚠"
 	}
 	"At Strength"
 	{
 		"en"	"At Strength ⚠"
+		"ko"	"사람이 모이는 곳 ⚠"
 	}
 
 	// Curses
 	"Bewildered"
 	{
 		"en"	"Bewildered"
+		"ko"	"막연한"
 	}
 	"Bewildered Desc"
 	{
 		"en"	"{green}More stages to pick from {yellow}but the chapter is now longer."
+		"ko"	"{green}선택할 수 있는 스테이지가 많아집니다. {yellow}한 챕터의 플레이타임이 길어집니다."
 	}
 	"Bewildered Lore"
 	{
 		"en"	"The road branches into multiple directions. You feel you are unable to pick the right path."
+		"ko"	"길은 사면팔방으로 뻗었지만 올바른 방향을 선택하기 어렵다."
 	}
 	"Sensitive"
 	{
 		"en"	"Sensitive"
+		"ko"	"예민한"
 	}
 	"Sensitive Desc"
 	{
 		"en"	"{red}Players take +25％ more damage {green}but heal +100％ more."
+		"ko"	"{red}플레이어가 받는 모든 피해량이 +25％ 증가합니다. {green}플레이어가 받는 체력 회복 효과가 +100％ 증가합니다."
 	}
 	"Sensitive Lore"
 	{
 		"en"	"Whether joy or sorrow, everything you feel is intensified."
+		"ko"	"기쁨이든 슬픔이든 당신의 모든 감정이 확대된다."
 	}
 	"Obsessed"
 	{
 		"en"	"Obsessed"
+		"ko"	"편집적인"
 	}
 	"Obsessed Desc"
 	{
 		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
+		"ko"	"{green}전투 종료시, 오스트레일륨 주괴를 추가로 3 얻습니다.{red}다음 챕터로 이동시, 이번 챕터에서 획득한 모든 오스트레일륨은 다음 챕터에서 전부 차감됩니다."
 	}
 	"Obsessed Lore"
 	{
 		"en"	"Your extra riches make you ecstatic, but your fear of losing them keeps you just as restless."
+		"ko"	"더 많은 재화에 당신은 미친 듯이 기뻐했지만, 잃을 수도 있다는 두려움 또한 그림자처럼 따라다닌다."
 	}
 	"Solitary"
 	{
 		"en"	"Solitary"
+		"ko"	"고독한"
 	}
 	"Solitary Desc"
 	{
 		"en"	"{red}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
+		"ko"	"{red}상점의 모든 아이템의 가격이 10％ 상승합니다. {green}팩 어 펀치 개선의 가격이 10％ 감소합니다."
 	}
 	"Solitary Lore"
 	{
 		"en"	"You are afraid of losing all that you hold dear. You will do everything it takes to make sure they do not go anywhere."
+		"ko"	"잃는 것이 두려워 당신은 어떤 대가를 치르더라도 모든 걸 붙잡아 두고 싶어 한다."
 	}
 	"Blind"
 	{
 		"en"	"Blind"
+		"ko"	"맹목적인"
 	}
 	"Blind Desc"
 	{
 		"en"	"{green}Gain an extra Australium Ingot each stage but {red}you can not see the name of stages in votes."
+		"ko"	"{green}매 스테이지마다 추가 오스트레일륨 주괴를 획득합니다. {red}더 이상 투표에서 스테이지의 이름을 확인할 수 없습니다."
 	}
 	"Blind Lore"
 	{
 		"en"	"Even though everything is right before your eyes, you feel it is all a haze."
+		"ko"	"사물이 바로 눈앞에 있어도 여전히 희미하게 느껴진다."
 	}
 	"Gravity Upset"
 	{
 		"en"	"Gravity Upset"
 		"ru"	"Нарушение гравитации"
+		"ko"	"격분한 중력"
 	}
 	"Gravity Upset Desc"
 	{
 		"en"	"Gravity is twice as high for you, but you gain an increased change in item drops."
 		"ru"	"Гравитация для вас в два раза выше, но вы получаете повышенное изменение в выпадении предметов."
+		"ko"	"모든 플레이어의 중력이 2배 더 증가하지만, 아이템 드랍 확률이 증가합니다."
 	}
 	"Pure Greed"
 	{
 		"en"	"Pure Greed"
 		"ru"	"Чистая жадность"
+		"ko"	"순수한 탐욕"
 	}
 	"Pure Greed Desc"
 	{
 		"en"	"On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
 		"ru"	"На этом этаже вы получите +25％ слитков австралия, но все враги будут наносить на +25％ больше урона."
+		"ko"	"이번 층에서 얻는 오스트레일륨 주괴량이 +25％ 증가하지만, 모든 적의 공격 피해량이 +25％ 증가합니다."
 	}
 	
 	// Artifacts
@@ -1246,730 +1515,894 @@
 	{
 		"en"	"Leader Squad"
 		"ru"	"Лидер отряда"
+		"ko"	"지휘 분대"
 	}
 	"Leader Squad Desc"
 	{
 		"en"	"{green}Extra Health powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"ko"	"{green}스테이지 시작시, 추가적인 체력 보급 아이템이 시작 지점 근처에 생성됩니다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
 	"Gathering Squad"
 	{
 		"en"	"Gathering Squad"
 		"ru"	"Собирающий отряд"
+		"ko"	"집합 분대"
 	}
 	"Gathering Squad Desc"
 	{
 		"en"	"{green}Extra Ammo powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"ko"	"{green}스테이지 시작시, 추가적인 탄약 보급 아이템이 시작 지점 근처에 생성됩니다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
 	"Support Squad"
 	{
 		"en"	"Support Squad"
 		"ru"	"Отряд поддержки"
+		"ko"	"지원 분대"
 	}
 	"Support Squad Desc"
 	{
 		"en"	"{green}Start with +20 Australium Ignots and +250 Cash.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"ru"	"{green}Начните с +20 слитками австралия и +250 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"ko"	"{green}추가 자금을 +250 얻고 추가 오스트레일륨을 +20 얻은채로 게임을 시작합니다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
 	"Spearhead Squad"
 	{
 		"en"	"Spearhead Squad"
 		"ru"	"Отряд копьеносцев"
+		"ko"	"예봉 분대"
 	}
 	"Spearhead Squad Desc"
 	{
 		"en"	"{green}All Allies gain +15％ damage bonus and +50 max health"
+		"ko"	"{green}모든 아군의 최대 체력이 +50 증가하고 공격 피해량이 +15％ 증가합니다."
 	}
 	"Research Squad"
 	{
 		"en"	"Research Squad"
 		"ru"	"Отряд исследователей"
+		"ko"	"연구 분대"
 	}
 	"Research Squad Desc"
 	{
 		"en"	"{green}Store items are 10％ off while not in combat"
 		"ru"	"{green}Скидка на товары в магазине 10％ вне боя"
+		"ko"	"{green}전투 상황이 아니라면, 상점의 모든 아이템의 가격이 10％ 감소합니다."
 	}
 	"First Class Squad"
 	{
 		"en"	"First Class Squad"
 		"ru"	"Отряд первого класса"
+		"ko"	"고급화 분대"
 	}
 	"First Class Squad Desc"
 	{
 		"en"	"{green}Father Grigori will acompany you."
+		"ko"	"{green}그리고리 신부가 함께 합니다."
 	}
 	"Provoked Anger"
 	{
 		"en"	"Provoked Anger"
 		"ru"	"Вызванный гнев"
+		"ko"	"불타오르는 분노"
 	}
 	"Provoked Anger Desc"
 	{
 		"en"	"Anger is usually provoked, this anger can be useful.\n- Every time you are hurt, gain +5％ extra damage for your holding weapon for 5 seconds."
 		"ru"	"Гнев обычно провоцируется, этот гнев может быть полезен.\n- Каждый раз, когда вас ранят, получайте +5％ доп. урона для вашего оружия в руках на 5 сек."
+		"ko"	"분노는 일반적으로 계속해서 불타오른다. 이 분노는 쓸모가 있을 것이다.\n- 피해를 받을 때마다, 현재 들고 있는 무기의 공격 피해량이 5초간 +5％ 증가합니다."
 	}
 	"Grigori's Coin Purse"
 	{
 		"en"	"Grigori's Coin Purse"
 		"ru"	"Монетный кошелёк Григория"
+		"ko"	"그리고리의 동전 지갑"
 	}
 	"Grigori's Coin Purse Desc"
 	{
 		"en"	"Alot of money, yet never too much.\n- Gain More attackspeed and healspeed the more australium ingots you own."
 		"ru"	"Много денег, но никогда не бывает слишком много.\n- Увеличивайте скорость атаки и скорость лечения тем больше, чем больше слитков австралиума вы имеете."
+		"ko"	"돈이 꽤 있지만, 그렇게까지 많지도 않다.\n- 공격 속도와 받는 체력 회복량이 현재 보유한 오스트레일륨 주괴량에 비례하여 증가합니다."
 	}
 	"Malfunctioning Shield"
 	{
 		"en"	"Malfunctioning Shield"
 		"ru"	"Неисправный щит"
+		"ko"	"망가진 방패"
 	}
 	"Malfunctioning Shield Desc"
 	{
 		"en"	"A broken shield that is still useable.\n- Every 10 seconds gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
+		"ko"	"고장난 방패이지만 여전히 쓸만하다.\n- 매 10 초마다, 받은 피해를 1회 무효화시키는 보호막이 생성됩니다.\n- 이 보호막은 새로운 전투에 진입하면 즉시 생성됩니다."
 	}
 	"Bob's Exchange Money"
 	{
 		"en"	"Bob's Exchange Money"
 		"ru"	"Обменные деньги Боба"
+		"ko"	"밥의 환전금"
 	}
 	"Bob's Exchange Money Desc"
 	{
 		"en"	"Must have left it behind.\n- Gain 12 australium ingots."
 		"ru"	"Должно быть, забыл их.\n- Получите 12 слитков австралия."
+		"ko"	"아무래도 그가 두고 간 게 확실하다.\n- 오스트레일륨 주괴를 12 얻습니다."
 	}
 	"Music Releasing Radio"
 	{
 		"en"	"Music Releasing Radio"
 		"ru"	"Радио, выпускающее музыку"
+		"ko"	"음악 재생용 라디오"
 	}
 	"Music Releasing Radio Desc"
 	{
 		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10％ slower."
 		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10％."
+		"ko"	"오직 음악만을 재생할 수 있는 라디오. 그런데 라디오를 멈출 수가 없는 것 같다.\n- 모든 적의 이동 속도가 10％ 감소합니다."
 	}
 	"Wrath Of Itallians"
 	{
 		"en"	"Wrath Of Itallians"
 		"ru"	"Гнев итальянцев"
+		"ko"	"이탈리아인들의 분노"
 	}
 	"Wrath Of Itallians Desc"
 	{
 		"en"	"Its Spaghetti thats covered in chocolate.\n- Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
 		"ru"	"Это спагетти, покрытые шоколадом.\n- Каждый раз, когда активируется способность оружия, это оружие будет наносить 2x урона в течение 1 сек."
+		"ko"	"이 스파게티는 초콜릿으로 범벅이 되어있다.\n- 어떤 방식으로든 무기의 능력이 발동할 때마다, 해당 무기의 공격 피해량이 1초간 2배로 증가합니다."
 	}
 	"Hand Of The Elder Mages"
 	{
 		"en"	"Hand Of The Elder Mages"
 		"ru"	"Десница старших магов"
+		"ko"	"고대 마법사의 손"
 	}
 	"Hand Of The Elder Mages Desc"
 	{
 		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 2 seconds of reduced cooldown."
+		"ko"	"작은 조각상에서 떨어져나온 부러진 손이다.\n- 모든 ''체인 캐스터'', ''멀티 캐스터'', ''소환사'' 의 무기로 공격 적중시, 쿨타임이 2 초 감소합니다."
 	}
 	"Bracelets of Agility"
 	{
 		"en"	"Bracelets of Agility"
 		"ru"	"Браслеты ловкости"
+		"ko"	"민첩의 허리띠"
 	}
 	"Bracelets of Agility Desc"
 	{
 		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10％ dodge chance."
 		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10％ шанс уклонения."
+		"ko"	"저 멀리 카시미어에서 쓰는 가볍고 민첩한 허리띠. \n- 공격 회피 확률이 10％ 증가합니다."
 	}
 	"Elastic Flying Cape"
 	{
 		"en"	"Elastic Flying Cape"
 		"ru"	"Эластичный летучий плащ"
+		"ko"	"탄성형 비행 망토"
 	}
 	"Elastic Flying Cape Desc"
 	{
 		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10％ dodge chance against ranged attacks."
 		"ru"	"Плащ, который окружает вас и даёт дополнительные чувства.\n- Получите 10％ шанс уклонения от атак дальнего боя."
+		"ko"	"당신의 예리한 감각을 북돋게 해주는 몸을 감싸는 형태의 망토.\n- 원거리 공격을 회피할 확률이 10％ 증가합니다."
 	}
 	"Healing Salve"
 	{
 		"en"	"Healing Salve"
 		"ru"	"Лечебная мазь"
+		"ko"	"치유의 연고"
 	}
 	"Healing Salve Desc"
 	{
 		"en"	"Some salve for your wounds.\n- +1hp regen."
 		"ru"	"Немного мази для ваших ран.\n- +1 к восстановлению здоровья."
+		"ko"	"당신의 상처에 바를 수 있는 약간의 연고.\n- 초당 체력 회복량이 +1 증가합니다."
 	}
 	"Steel Razor"
 	{
 		"en"	"Steel Razor"
 		"ru"	"Стальная бритва"
+		"ko"	"강철 면도칼"
 	}
 	"Steel Razor Desc"
 	{
 		"en"	"Sharp and pointy.\n- +15％ more melee damage."
 		"ru"	"Острый, заточенный.\n- +15％ к урону в ближнем бою."
+		"ko"	"날카롭고 뾰족하다.\n- 근접 무기의 피해량이 +15％ 증가합니다."
 	}
 	"Healthy Essence"
 	{
 		"en"	"Healthy Essence"
 		"ru"	"Эссенция здоровья"
+		"ko"	"회복의 정수"
 	}
 	"Healthy Essence Desc"
 	{
 		"en"	"Being near it makes you feel better.\n- +25％ more healing from most sources."
 		"ru"	"Находясь рядом с этим, вы чувствуете себя лучше.\n- +25％ к лечению от большинства источников."
+		"ko"	"이것에 가까이 가니 기분이 좀 더 좋아지는 것 같다.\n- 체력 회복량이 +25％ 증가합니다."
 	}
 	"Chicken Nugget Box"
 	{
 		"en"	"Chicken Nugget Box"
 		"ru"	"Коробка с куриными наггетсами"
+		"ko"	"치킨 너겟 박스"
 	}
 	"Chicken Nugget Box Desc"
 	{
 		"en"	"Still good and tasty as ever.\n- +15％ more health."
 		"ru"	"Всё так же хорошо и вкусно.\n- +15％ к здоровью."
+		"ko"	"여전히 멀쩡하고, 여전히 맛있다.\n- 최대 체력이 +15％ 증가합니다."
 	}
 	"Fizzy Drink"
 	{
 		"en"	"Fizzy Drink"
 		"ru"	"Газированный напиток"
+		"ko"	"탄산음료"
 	}
 	"Fizzy Drink Desc"
 	{
 		"en"	"Be careful when you open it, its shook.\n- All enemies will gib no matter what."
 		"ru"	"Будьте осторожны, когда открываете его, он шипит.\n- Все враги будут разлетаться на кусочки, несмотря ни на что."
+		"ko"	"열 때 조심해야겠다. 누가 이미 많이 흔든 상태다.\n- 모든 적은 사망시 시체가 조각나서 회복용 파편을 남깁니다."
 	}
 	"Hover Glider"
 	{
 		"en"	"Hover Glider"
 		"ru"	"Парящий планёр"
+		"ko"	"호버 글라이더"
 	}
 	"Hover Glider Desc"
 	{
 		"en"	"A device from old german technology.\n- You deal 30％ more damage while being in the air or in mid swim."
 		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30％ больше урона, находясь в воздухе или во время плавания."
+		"ko"	"옛날 독일에서 제작된 기구.\n- 공중에 떠있는 상태일때, 공격 피해량이 30％ 증가합니다."
 	}
 	"Hand Written Letter"
 	{
 		"en"	"Hand Written Letter"
 		"ru"	"Рукописное письмо"
+		"ko"	"손글씨 편지"
 	}
 	"Hand Written Letter Desc"
 	{
 		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Cash, 2％ more damage."
 		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2％ больше урона."
+		"ko"	"떨어져있는 편지. 프랑스어로 적혀있는 것 같으며, 당신에게 보낸 것이 아니다. \n- 추가 자금을 +750 얻습니다. 공격 피해량이 2％ 증가합니다."
 	}
 	"Crude Flute"
 	{
 		"en"	"Crude Flute"
 		"ru"	"Грубая флейта"
+		"ko"	"천연 플루트"
 	}
 	"Crude Flute Desc"
 	{
 		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3％ MaxHealth."
 		"ru"	"Музыкальный инструмент, хорошо расслабляет, необходим в подобных ситуациях.\n- +500 кредитов, +3％ макс. запас здоровья."
+		"ko"	"휴식에 좋은 악기. 이런 상황에서는 꼭 필요하다.\n- 추가 자금을 +500 얻습니다. 최대 체력이 +3％ 증가합니다."
 	}
 	"Scrapped Wallet"
 	{
 		"en"	"Scrapped Wallet"
 		"ru"	"Выброшенный кошелёк"
+		"ko"	"버려진 지갑"
 	}
 	"Scrapped Wallet Desc"
 	{
 		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Cash and 1％ more damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
+		"ko"	"오래된 러시아 지갑. 안에는 약간의 자금과 사진 몇 장이 들어있다.\n- 추가 자금을 +500 얻습니다. 공격 피해량이 1％ 증가합니다."
 	}
 	"Golden Coin"
 	{
 		"en"	"Golden Coin"
 		"ru"	"Золотая монета"
+		"ko"	"황금 동전"
 	}
 	"Golden Coin Desc"
 	{
 		"en"	"A Valueable golden coin from old greek.\n- +2000 Cash and +10 Australium ingots."
 		"ru"	"Ценная золотая монета из старой Греции.\n- +2000 кредитов и +10 слитков австралия."
+		"ko"	"고대 그리스에서나 발견될만한 가치 있는 황금 동전.\n- 추가 자금을 +2000 얻고 오스트레일륨 주괴를 +10 얻습니다."
 	}
 	"Nickel Injected Pack"
 	{
 		"en"	"Nickel Injected Pack"	
 		"ru"	"Пакет с никелевым вкраплением"	
+		"ko"	"니켈이 주입된 보따리"	
 	}
 	"Nickel Injected Pack Desc"
 	{
 		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35％ more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
+		"ko"	"체력이 꽉 찬 상태일때, 공격 피해량이 35％ 증가. 이 피해량 증가는 체력이 감소할수록 점차 감소함."
 	}
 	"Spanish Specialised Gunpowder"
 	{
 		"en"	"Spanish Specialised Gunpowder"
 		"ru"	"Испанский специальный порох"
+		"ko"	"스페인 특수 화약"
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
 		"en"	"Gunpower created in spain, and made specifically for spanish troops.\n- +15％ more ranged damage."
 		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15％ к урону в дальнем бою."
+		"ko"	"스페인에서 개발된 화약. 특히 스페인 군대를 위하여 만들어진 것이다.\n- 원거리 공격 피해량이 +15％ 증가합니다."
 	}
 	"Supply Depot"
 	{
 		"en"	"Supply Depot"
 		"ru"	"Хранилище"
+		"ko"	"보급고"
 	}
 	"Supply Depot Desc"
 	{
 		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +2 maximum allies."
 		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +2 к максимуму союзников."
+		"ko"	"''보급고가 부족합니다.''\n{green}배럭의 보급품이 +1 증가하고, 최대 아군 수가 +2 증가합니다."
 	}
 	"Al-Hallam's Fortress Blueprints"
 	{
 		"en"	"Al-Hallam's Fortress Blueprints"
+		"ko"	"알할람의 요새 청사진"
 	}
 	"Al-Hallam's Fortress Blueprints Desc"
 	{
-		"en"	"''Seems almost mythological...''\n{green}+2 supply for Barracks, +4 maximum allies."
+		"en"	"''신화적인 물건으로 보이는군요...''\n{green}배럭의 보급품이 +2 증가하고, 최대 아군 수가 +4 증가합니다."
 	}
 	"Gambesons"
 	{
 		"en"	"Gambesons"
 		"ru"	"Гамбезон"
+		"ko"	"갬비슨"
 	}
 	"Gambesons Desc"
 	{
 		"en"	"A medieval armor plate, the balance seems off.\n{green}Barrack Units receive a flat 10 damage reduction."
 		"ru"	"Средневековая броня, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 10 ед."
+		"ko"	"중세 시대의 갑옷. 균형이 굉장히 잘 잡혔다.\n{green}모든 배럭 유닛들이 피해를 고정적으로 10만큼 덜 받습니다."
 	}
 	"Neosteal Plating"
 	{
 		"en"	"Neosteel Plating"
 		"ru"	"Обшивка из неостали"
+		"ko"	"신소재 강철 장갑"
 	}
 	"Neosteal Plating Desc"
 	{
 		"en"	"A space building armor plate, the balance seems off.\n{green}Barrack Units receive a flat 20 damage reduction."
 		"ru"	"Космическая броня строения, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 20 ед."
+		"ko"	"우주 전쟁 속 건물들의 장갑. 균형이 굉장히 잘 잡혔다.\n{green}모든 배럭 유닛들이 피해를 고정적으로 20만큼 덜 받습니다."
 	}
 	"Thumb Ring"
 	{
 		"en"	"Thumb Ring"
 		"ru"	"Пальцевое кольцо"
+		"ko"	"손가락 보호대"
 	}
 	"Thumb Ring Desc"
 	{
 		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 33％ faster."
 		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 33％ быстрее."
+		"ko"	"이 중세 시대의 물건은 화살 명중률이 100％ 증가하게 만들어주는 효과가 있는 것 같다.\n{green}모든 궁사와 석궁병 계열 아군 유닛들의 공격 속도와 재장전 속도 +33％ ."
 	}
 	"Blademace"
 	{
 		"en"	"''Blademace''"
 		"ru"	"«Булава с лезвием»"
+		"ko"	"''망치의 검''"
 	}
 	"Blademace Desc"
 	{
 		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20％ damage bonus, +20％ max health, +2％ damage resistance {red}but -10％ movement speed{yellow}."
+		"ko"	"커다란 바위에 꽂혀 있는 검. 대체 누가 이딴 장난을 치는 건지.\n{green}모든 아군의 최대 체력 및 공격력 +20％, 저항력 +2％. {red}대신 이동 속도 -10％ 감소yellow}."
 	}
 	"Brokenblade"
 	{
 		"en"	"''Brokenblade''"
 		"ru"	"«Сломанный клинок»"
+		"ko"	"''부러진 검''"
 	}
 	"Brokenblade Desc"
 	{
 		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20％ max health{yellow}."
 		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20％ макс. запаса здоровья{yellow}."
+		"ko"	"부러진 검 한 자루. 아마…… 쓸 수 있겠지……\n{green}플레이어와 반시민군의 회생 속도가 2배로 증가하지만, {red}최대 체력이 -20％ 감소{yellow}."
 	}
 	"Bladedance"
 	{
 		"en"	"''Bladedance''"
 		"ru"	"«Взбешённый клинок»"
+		"ko"	"''칼춤''"
 	}
 	"Bladedance Desc"
 	{
 		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus, and +100％ Healing Rate."
+		"ko"	"카지노 주인이 남기고 간 유물.\n{green}한 번에 한 명의 플레이어만 최대 체력, 공격 피해량, 받는 체력 회복량이 +100％ 증가합니다."
 	}
 	"Whiteflower"
 	{
 		"en"	"''Whiteflower''"
 		"ru"	"«Белый цветок»"
+		"ko"	"''배풍등''"
 	}
 	"Whiteflower Desc"
 	{
 		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped"
+		"ko"	"''크림슨 극단'' 멤버의 유물.\n{green}모든 아군의 최대 체력이 +25％ 증가합니다. {yellow}최대 체력이 무작위 수치로 변경됩니다."
 	}
 	"Shadow"
 	{
 		"en"	"''Shadow''"
 		"ru"	"«Тень»"
+		"ko"	"''그림자''"
 	}
 	"Shadow Desc"
 	{
 		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}Non-player allies will use the same max health from players."
 		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{yellow}Персонажи-союзники будут иметь тот же макс. запас здоровья, что и игроки."
+		"ko"	"''크림슨 극단'' 멤버의 유물.\n{yellow}모든 아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해집니다."
 	}
 	"Right Eye of the Natator"
 	{
 		"en"	"''Right Eye of the Natator''"
 		"ru"	"«Правый глаз нататора»"
+		"ko"	"''프릴리베의 오른 눈''"
 	}
 	"Right Eye of the Natator Desc"
 	{
 		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {red}but -5％ melee damage{yellow}."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{red}, но -5％ урона в ближнем бою{yellow}."
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}원거리 공격의 피해량 +20％. {red}근접 공격의 피해량이 -5％ 감소합니다{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
 		"en"	"''Left Eye of the Natator''"
 		"ru"	"«Левый глаз нататора»"
+		"ko"	"''프릴리베의 왼 눈''"
 	}
 	"Left Eye of the Natator Desc"
 	{
 		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {red}but -5％ ranged damage{yellow}."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{red}, но -5％ урона в дальнем бою{yellow}."
+		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}근접 공격의 피해량 +20％. {red}원거리 공격의 피해량이 -5％ 감소합니다{yellow}."
 	}
 	"End of Times"
 	{
 		"en"	"''End of Times''"
 		"ru"	"«Конец времён»"
+		"ko"	"''시간의 끝''"
 	}
 	"End of Times Desc"
 	{
 		"en"	"As long as a new cycle has not been reached, there is still time to fix your mistakes.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"ru"	"Пока новый цикл не достигнут, ещё есть время исправить свои ошибки.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
+		"ko"	"새로운 순환이 시작되지 않은 한 아직 잘못을 만회할 기회가 있다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
 	"Proof of Friendship"
 	{
 		"en"	"Proof of Friendship"
 		"ru"	"Доказательство дружбы"
+		"ko"	"우정의 상징"
 	}
 	"Proof of Friendship Desc"
 	{
 		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from battles, doubled on Elite battles."
 		"ru"	"Когда они распространяют на других свою дружбу, они не позволяют ей быть запятнанной.\n{green}+1 слиток австралиума выпадает из сражений, удваивается в элитных сражениях."
+		"ko"	"그들은 깊은 우정을 대가로 함부로 무례를 범하는 걸 용납하지 않는다.\n{green}전투 종료시, 오스트레일륨 주괴 획득량이 +1 개 증가합니다. 정예 전투일시 효과가 2배로 증가."
 	}
 	"Broken Combine Crown"
 	{
 		"en"	"Broken Combine Crown"
+		"ko"	"부서진 콤바인 왕관"
 	}
 	"Broken Combine Crown Desc"
 	{
 		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5％ max health {blue}and the ending is changed."
+		"ko"	"녹슬고, 젖고, 날카로운 모서리가 돋보이는 부서진 왕관. 이걸 전에도 본 적이 있는 듯한 기분이 든다.\n{red}모든 아군의 최대 체력 -5％. {blue}게임 엔딩 변경."
 	}
 	"Bob's Reseach Papers"
 	{
 		"en"	"Bob's Reseach Papers"
+		"ko"	"밥의 연구 기록장"
 	}
 	"Bob's Reseach Papers Desc"
 	{
 		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10％ movement speed."
+		"ko"	"마치 실험 대상들인 것마냥 이름들이 적혀있다. 그리고 이걸 읽는 동안, 무언가가 당신을 지켜보고 있는 듯한 불안한 기운이 든다.\n{red}모든 플레이어의 이동 속도 -10％."
 	}
 	"Bob's Final Draft"
 	{
 		"en"	"Bob's Final Draft"
+		"ko"	"밥의 최종 초안"
 	}
 	"Bob's Final Draft Desc"
 	{
 		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
+		"ko"	"칼춤이라는 이름을 가진 콤바인에 대한 보고서. 미완성이고, 굉장히 급하게 작성되었다. 작성 도중 뭔가 좋지 않은 일이 발생한 것 같다.\n{green}모든 아군의 공격력 +15％, 이동 속도 +20％. {blue}게임 엔딩 변경."
 	}
 	"Hand of Sticks"
 	{
 		"en"	"Hand of Sticks"
+		"ko"	"총기 부품의 손"
 	}
 	"Hand of Sticks Desc"
 	{
 		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
+		"ko"	"{green}''산탄'', ''연발'' 태그 무기들을 들고 있으면 받는 근접 피해량이 +35％ 감소하며, 적중시 0.5 초간 이동 속도 증진을 얻습니다."
 	}
 	"Hand of Quake"
 	{
 		"en"	"Hand of Quake"
+		"ko"	"퀘이크의 손"
 	}
 	"Hand of Quake Desc"
 	{
 		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150％ jump height and 50％ more damage."
+		"ko"	"로켓 점프는 어디로 갔을까?\n{green}''폭발형'' 태그 무기와 수류탄 종류 무기의 공격 피해량이 +50％ 증가하고 점프 높이가 +150％ 증가합니다."
 	}
 	"Hand of Travel"
 	{
 		"en"	"Hand of Travel"
+		"ko"	"여행의 손"
 	}
 	"Hand of Travel Desc"
 	{
 		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knife and ''Abyssal hunter'' weapons weapons grant +10 health regen."
+		"ko"	"출발 준비 완료.\n{green}''아군 지원'', ''어비설 헌터'' 태그의 무기와 흡혈귀 칼날 무기가 초당 체력 회복량 +10 을 얻습니다."
 	}
 	"Hand of Flesh"
 	{
 		"en"	"Hand of Flesh"
+		"ko"	"살점의 손"
 	}
 	"Hand of Flesh Desc"
 	{
 		"en"	"Flesh burns and bleeds.\n{yellow}Afterburn is replaced with bleed."
+		"ko"	"살점이 불타오르며 피를 흘린다.\n{yellow}이제 모든 화상 부여 효과가 출혈 부여로 대체됩니다."
 	}
 	"Hand of Trapmaster"
 	{
 		"en"	"Hand of Trapmaster"
+		"ko"	"함정술사의 손"
 	}
 	"Hand of Trapmaster Desc"
 	{
 		"en"	"{green}Builder trap weapons can hold shots.\n{green}Stickybomb launchers gain +6 max stickies {yellow}and detonates on your crosshair."
+		"ko"	"{green}함정 무기 계열의 장탄수와 공격 속도 증가. {yellow}점착 폭탄 발사기는 최대 점착 폭탄 설치 개수 증가 및 조준선 근처의 점착 폭탄만 폭파 가능."
 	}
 	"Hand of Geek"
 	{
 		"en"	"Hand of Geek"
+		"ko"	"괴짜의 손"
 	}
 	"Hand of Geek Desc"
 	{
 		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
+		"ko"	"{green}''풀 오토'', ''디버퍼'', ''빅토리아'' 무기들이 적중시 체력을 +3 회복하고 원거리 저항력 35％ 증가. ''빅토리아'' 태그 무기는 적중시 체력 회복량이 15로 증가."
 	}
 	"Hand of Incredible Speeds"
 	{
 		"en"	"Hand of Fisting"
+		"ko"	"주먹질의 손"
 	}
 	"Hand of Incredible Speeds Desc"
 	{
 		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +33％ firing speed and +33％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
+		"ko"	"{green}''싸움꾼'', ''단발'', ''장거리'' 태그 무기들의 공격 속도와 재장전 속도 +33％. \n추가로 ''장거리'' 태그 무기들의 장탄수 +50％."
 	}
 	"Hand of Suprise"
 	{
 		"en"	"Hand of Suprise"
+		"ko"	"등짝의 손"
 	}
 	"Hand of Suprise Desc"
 	{
 		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
+		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''투사'' 태그 무기들의 공격 속도 +33％ 및 적중시 5초간 지속되는 출혈을 부여."
 	}
 	"Hand of Revenge"
 	{
 		"en"	"Hand of Revenge"
+		"ko"	"복수자의 손"
 	}
 	"Hand of Revenge Desc"
 	{
 		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150％ damage bonus while below half health."
+		"ko"	"건드리지 말았어야 했다.\n{green}''결전자'', ''변이'', ''대검사'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +150％ 증가."
 	}
 	"Hand of Stock"
 	{
 		"en"	"Hand of Stock"
+		"ko"	"평범함의 손"
 	}
 	"Hand of Stock Desc"
 	{
 		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
+		"ko"	"{green}''기본 캐스터'' 태그 무기들의 최대 마나 및 마나 재생 속도, 공격 속도가 +100％ 향상됩니다."
 	}
 	"Hand of the Elite"
 	{
 		"en"	"Hand of the Elite"
+		"ko"	"정예병의 손"
 	}
 	"Hand of the Elite Desc"
 	{
 		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75％ damage bonus while over half health"
+		"ko"	"엘레강스한 물건.\n{green}''카시미어'', ''로드'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +75％ 증가."
 	}
 	"Soul of Boss vs Boss"
 	{
 		"en"	"Soul of Boss vs Boss"
+		"ko"	"보스 vs 보스 의 영혼"
 	}
 	"Soul of Boss vs Boss Desc"
 	{
 		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100％ jump height"
+		"ko"	"모든 창조물은 어디선가부터 나타나기 마련이다.\n{green}특정 무기들은 이제 들고 있으면 점프 높이가 +100％ 증가."
 	}
 	"Soul of Arknights"
 	{
 		"en"	"Soul of Arknights"
+		"ko"	"명일방주의 영혼"
 	}
 	"Soul of Arknights Desc"
 	{
 		"en"	"Is this your final choice?\n{green}Specific themed weapons remove the down limit"
+		"ko"	"이게 네 최종 결정인가?\n{green}특정 무기들의 하한선이 제거됩니다."
 	}
 	"Soul of Bloons Tower Defense"
 	{
 		"en"	"Soul of Bloons Tower Defense"
+		"ko"	"풍선 타워 디펜스의 영혼"
 	}
 	"Soul of Bloons Tower Defense Desc"
 	{
 		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20％ damage to each other, stacking"
+		"ko"	"빨리 사원을 건설해야겠군.\n{green}특정 무기가 서로에게 공격 피해량 +20％ 증가 효과를 부여하며, 이 효과는 중첩됨."
 	}
 	"Soul of Yakuza"
 	{
 		"en"	"Soul of Yakuza"
+		"ko"	"야쿠자의 영혼"
 	}
 	"Soul of Yakuza Desc"
 	{
 		"en"	"10 years.\n{green}Specific themed weapons allow their special stance to always gain HEAT"
+		"ko"	"10년의 세월.\n{green}''일반 주먹'' 무기는 이제 히트 게이지가 상시로 증가하는 특수한 스타일이 해금."
 	}
 	"Soul of Darkest Dungeon"
 	{
 		"en"	"Soul of Darkest Dungeon"
+		"ko"	"다키스트 던전의 영혼"
 	}
 	"Soul of Darkest Dungeon Desc"
 	{
 		"en"	"Face the light or be consumed.\n{green}Specific themed weapons have a chance to prevent dying and instead remain at one health"
+		"ko"	"{green}특정 무기들은 이제 체력이 0이 되면, 사망하는 대신 일정 시간 동안 체력이 1로 고정되어 죽지 않게 되는 버프 획득."
 	}
 	"Soul of Terraria"
 	{
 		"en"	"Soul of Terraria"
+		"ko"	"테라리아의 영혼"
 	}
 	"Soul of Terraria Desc"
 	{
 		"en"	"And there will be mods.\n{green}Specific themed weapons grant 1000 HP every so often"
+		"ko"	"이제 그 곳에 모드 있으라.\n{green}이제 특정 무기들은 일정 시간마다 특수한 효과음과 함께 사용자의 체력을 1000 회복시킵니다."
 	}
 	"Xeno Anti-Vial"
 	{
 		"en"	"Xeno Anti-Vial"
+		"ko"	"제노 항바이러스"
 	}
 	"Xeno Anti-Vial Desc"
 	{
 		"en"	"Suppresses the effects of Xeno, for a moment.\n{green}Xeno enemies take +75％ damage"
+		"ko"	"제노 감염의 효과를 억제한다... 잠깐 동안은.\n{green}제노 소속 적들에게 주는 공격 피해량이 +75％ 증가합니다."
 	}
 	"Seaborn Anti-Vial"
 	{
 		"en"	"Seaborn Anti-Vial"
+		"ko"	"시본 항바이러스"
 	}
 	"Seaborn Anti-Vial Desc"
 	{
 		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75％ damage"
+		"ko"	"시본이 두려워하는 랜턴.\n{green}시본 소속 적들에게 주는 공격 피해량이 +75％ 증가합니다."
 	}
 	"Revenge Squad"
 	{
 		"en"	"Revenge Squad"
+		"ko"	"복수자들의 무리"
 	}
 	"Revenge Squad Desc"
 	{
 		"en"	"{blue}You remember what happened, to all of them."
+		"ko"	"{blue}넌 이들에게 무슨 일이 일어났는지 기억하고 있겠지."
 	}
 	"Bob's Orders"
 	{
 		"en"	"Bob's Orders"
+		"ko"	"밥의 명령"
 	}
 	"Bob's Orders Desc"
 	{
 		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
+		"ko"	"배풍등을 처단하라.\n{green}모든 아군의 피해량 +15％ 및 이동 속도 +20％ 증가. {blue}게임 엔딩이 변경됩니다."
 	}
 	"But Nobody Is Here"
 	{
 		"en"	"But nobody is here..."
+		"ko"	"여기엔 아무도 없는 것 같다..."
 	}
 	"W.F. Mercenary Iberian"
 	{
 		"en"	"W.F. Mercenary Iberian"
+		"ko"	"W.F. 용병 이베리아인"
 	}
 	"W.F. Mercenary Ruinian"
 	{
 		"en"	"W.F. Mercenary Ruinian"
+		"ko"	"W.F. 용병 루이나인"
 	}
 	"Guln"
 	{
 		"en"	"Guln"
+		"ko"	"귄"
 	}
 	"Automatic Robot Defense"
 	{
 		"en"	"Automatic Robot Defense"
+		"ko"	"자동화 로봇 수비 장치"
 	}
 	"Cursed Relic"
 	{
 		"en"	"Cursed Relic"
+		"ko"	"저주받은 유물"
 	}
 	"Cursed Relic Desc"
 	{
 		"en"	"From the back of the bin in the shop.\n{green}Players gain +8％ firing speed {red}most of the time"
+		"ko"	"상점 뒷편의 쓰레기통에서 발견한 물건이다.\n{green}모든 플레이어의 공격 속도 +8％. {red}낮은 확률로 공격 속도가 10% 감소."
 	}
 	"Australium Printer"
 	{
 		"en"	"Australium Printer"
+		"ko"	"오스트레일륨 프린터"
 	}
 	"Australium Printer Desc"
 	{
 		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 Cash each"
+		"ko"	"오스트레일륨을 상점에 쓸 자금으로 바꿔준다!\n{yellow}오스트레일륨 1개당, 자금 200으로 전환합니다."
 	}
 	"Elite Voucher"
 	{
 		"en"	"Elite Voucher"
+		"ko"	"정예병의 증표"
 	}
 	"Elite Voucher Desc"
 	{
 		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
+		"ko"	"이런 것들은 찾기가 어렵다. 잘 사용해야겠다.\n{green}상점의 할인을 통해 고급 무기를 회수할 수 있습니다."
 	}
 	"Rotten Bone"
 	{
 		"en"	"Rotten Bone"
+		"ko"	"썩은 뼈"
 	}
 	"Rotten Bone Desc"
 	{
 		"en"	"Corroding as we speak.\n{green}Each newly spawned enemy takes increasingly more damage and stacks"
+		"ko"	"딱 봐도 점점 부식되어가는게 보인다.\n{green}새로 생성된 적들은 저항력이 감소된 채로 등장하며, 이 효과는 중첩됩니다."
 	}
 	"Eyes of the Sea"
 	{
 		"en"	"Eyes of the Sea"
+		"ko"	"바다의 눈"
 	}
 	"Eyes of the Sea Desc"
 	{
 		"en"	"You saw what they saw.\n{green}Enemies are silenced for 10 seconds on spawn"
+		"ko"	"저들이 보는걸 당신도 볼 수 있다.\n{green}새로 생성된 적들은 10초간 침묵이 부여된 채로 생성됩니다."
 	}
 	"Copper Ore"
 	{
 		"en"	"Copper Ore"
+		"ko"	"구리 광석"
 	}
 	"Copper Ore Desc"
 	{
 		"en"	"Copper.\n{green}Weapons fire +35％ bullets per shot {red}but stops working when Iron Ore is collected"
+		"ko"	"구리 광석.\n{green}무기가 발사될때 발사되는 탄환 수 +35％. {red}철 광석이 있으면 이 소장품이 더 이상 작동하지 않음."
 	}
 	"Iron Ore"
 	{
 		"en"	"Iron Ore"
+		"ko"	"철 광석"
 	}
 	"Iron Ore Desc"
 	{
 		"en"	"Iron.\n{green}Weapon projectiles gain +35％ projectile speed and range {red}but stops working when Copper Ore is collected"
+		"ko"	"철 광석.\n{green}투사체들의 비행 속도와 날아가는 거리 +35％. {red}구리 광석이 있으면 이 소장품이 더 이상 작동하지 않음."
 	}
 	"Empty Plate"
 	{
 		"en"	"Empty Plate"
+		"ko"	"빈 접시"
 	}
 	"Empty Plate Desc"
 	{
 		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
+		"ko"	"웨이터! 신탁 도살자 좀 더 줘봐!\n{green}전장에 배치된 남겨진 유해들을 흡수하고 새로운 소장품으로 만듭니다. 최대 5개까지 가능."
 	}
 	"Founder Fondue"
 	{
 		"en"	"Founder Fondue"
+		"ko"	"정초자 퐁듀"
 	}
 	"Founder Fondue Desc"
 	{
 		"en"	"{green}Players take 10 less elemental damage"
+		"ko"	"{green}모든 플레이어들은 받는 원소 피해가 10 만큼 감소합니다."
 	}
 	"Predator Pancakes"
 	{
 		"en"	"Predator Pancakes"
+		"ko"	"포식자 팬케이크"
 	}
 	"Predator Pancakes Desc"
 	{
 		"en"	"{green}Players gain 10％ dodge chance"
+		"ko"	"{green}모든 플레이어의 공격 회피 확률이 10％ 증가합니다."
 	}
 	"Brandguider Brunch"
 	{
 		"en"	"Brandguider Brunch"
+		"ko"	"인도자 아침밥"
 	}
 	"Brandguider Brunch Desc"
 	{
 		"en"	"{green}Players take 50％ less nethersea brand damage"
+		"ko"	"{green}모든 플레이어가 명흔으로 받는 피해가 50％ 감소합니다."
 	}
 	"Spewer Spewers"
 	{
 		"en"	"Spewer Spewers"
+		"ko"	"분출자 콜라"
 	}
 	"Spewer Spewers Desc"
 	{
 		"en"	"{green}Weapon projectiles gain +50％ range"
+		"ko"	"{green}투사체가 날아가는 거리가 +50％ 증가합니다."
 	}
 	"Swarmcaller Sandwich"
 	{
 		"en"	"Swarmcaller Sandwich"
+		"ko"	"소용자 샌드위치"
 	}
 	"Swarmcaller Sandwich Desc"
 	{
 		"en"	"{green}Players are immune to slow effects"
+		"ko"	"{green}이제 모든 플레이어는 둔화 계열 효과에 면역이 됩니다."
 	}
 	"Reefbreaker Ravioli"
 	{
 		"en"	"Reefbreaker Ravioli"
+		"ko"	"열초자 라비올리"
 	}
 	"Reefbreaker Ravioli Desc"
 	{
 		"en"	"{green}Players gain +15％ damage"
+		"ko"	"{green}모든 플레이어의 공격력이 +15％ 증가합니다."
 	}
 	"Whiteflower Final Speech 1"
 	{
 		"en"	"I got rid of Guln, tricked Bob to get rid of Bladedance...\nYou and Bob are the last ones."
+		"ko"	"난 귄을 죽였고, 밥을 속여서 칼춤도 제거했다...\n너와 밥이 마지막이다."
 	}
 	"Whiteflower Final Speech 2"
 	{
 		"en"	"You think I fight alone?"
+		"ko"	"내가 혼자 싸우는 것처럼 보이는거냐?"
 	}
 }

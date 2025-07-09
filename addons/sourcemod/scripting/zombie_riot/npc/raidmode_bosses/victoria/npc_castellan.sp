@@ -483,7 +483,7 @@ methodmap Castellan < CClotBody
 		SetVariantColor(view_as<int>({150, 150, 150, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 		
-		CPrintToChatAll("{blue}Castellan{default}: In the name of Victoria, I won't allow you to proceed any further.");
+		CPrintToChatAll("{blue}카스텔란{default}: 빅토리아의 이름으로, 이 이상 지나가게 두진 않겠다.");
 		
 		return npc;
 	}
@@ -699,15 +699,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: Weaklings");
+					CPrintToChatAll("{blue}카스텔란{default}: 약골들 같으니!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: After you, Im going back to the frontlines");
+					CPrintToChatAll("{blue}카스텔란{default}: 널 잡은 후에는 다시 전선으로 돌아갈 수 있겠군.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{blue}Castellan{default}: All of your comrades are fallen.");
+					CPrintToChatAll("{blue}카스텔란{default}: 네 동지들은 전부 사라졌다.");
 				}
 			}
 		}
@@ -721,10 +721,10 @@ static void Internal_ClotThink(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{blue}Castellan{default}: All Tanks refueled, RUSH THEM!");
-			case 2:CPrintToChatAll("{blue}Castellan{default}: Ziberia will pay with their blood for this");
-			case 3:CPrintToChatAll("{blue}Castellan{default}: Times up! RUN OVER THEM!");
-			case 4:CPrintToChatAll("{blue}Castellan{default}: Seems like your precious knight friends didn't help you so much this time.");
+			case 1:CPrintToChatAll("{blue}카스텔란{default}: 전차들의 연료는 충분하다. 돌격!");
+			case 2:CPrintToChatAll("{blue}카스텔란{default}: 자이베리아 놈들은 이 짓을 한 대가로 피바다가 될 것이다.");
+			case 3:CPrintToChatAll("{blue}카스텔란{default}: 이제 끝이군! 전부 돌격!");
+			case 4:CPrintToChatAll("{blue}카스텔란{default}: 보아하나 네 작은 기사 친구들도 더 이상 버틸 수 없었나보군.");
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
@@ -980,9 +980,9 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{blue}Castellan{default}: Ugh, I need backup");
-		case 1:CPrintToChatAll("{blue}Castellan{default}: I will never let you trample over the glory of {gold}Victoria{default} Again!");
-		case 2:CPrintToChatAll("{blue}Castellan{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:CPrintToChatAll("{blue}카스텔란{default}: 으, 지원이 필요하다!");
+		case 1:CPrintToChatAll("{blue}카스텔란{default}: 네 놈들이 {gold}빅토리아{default}의 영광을 짓밟게 두진 않겠다!");
+		case 2:CPrintToChatAll("{blue}카스텔란{default}: 기대해라, 다음 번엔 {crimson}더 강한 공세{default}로 되돌아올테니.");
 	}
 
 }
@@ -1076,7 +1076,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 {
 	if(npc.m_flTimeUntillSupportSpawn < gameTime)
 	{
-		CPrintToChatAll("{blue}Castellan{default}: Comeon boys, I need some support.");
+		CPrintToChatAll("{blue}카스텔란{default}: 어서 와라, 지원이 좀 필요하다.");
 		float SelfPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 		npc.m_flTimeUntillSupportSpawn = gameTime + 20.0;
@@ -1232,7 +1232,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: I got primary target in sight. {skyblue}Harrison{default}!");
+				CPrintToChatAll("{blue}카스텔란{default}: 주 목표가 발견됐다, {skyblue}해리슨{default}!");
 				npc.AddActivityViaSequence("layer_taunt_cyoa_PDA_intro");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.01);
@@ -1271,7 +1271,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 			{
 				if(Delay_Attribute[npc.index] < gameTime)
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Roger that. Targetting primary threat");
+					CPrintToChatAll("{skyblue}해리슨{default}: 확인. 주 목표 제거 시도.");
 					Gone_Stats[npc.index] = true;
 					Gone[npc.index] = true;
 					b_DoNotUnStuck[npc.index] = true;
@@ -1415,7 +1415,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 		{
 			case 0:
 			{
-				CPrintToChatAll("{blue}Castellan{default}: These rockets won't miss you");
+				CPrintToChatAll("{blue}카스텔란{default}: 그 로켓들은 널 놓치지 않는다.");
 				npc.StopPathing();
 				
 				npc.m_bisWalking = false;

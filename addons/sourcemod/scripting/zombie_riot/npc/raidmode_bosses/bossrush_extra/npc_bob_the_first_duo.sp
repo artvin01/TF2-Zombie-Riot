@@ -444,9 +444,9 @@ static void GivePlayerItems(int coolwin = 0)
 		{
 			Items_GiveNamedItem(client, "Bob's Curing Hand");
 			if(coolwin == 0)
-				CPrintToChat(client, "{default}Bob has cured you of the sea, you gained: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}밥이 당신에게 깃든 심해의 감염원을 전부 제거해주었습니다. 당신이 얻은 것은...: {yellow}''밥의 치유의 손길''{default}!");
 			else
-				CPrintToChat(client, "{default}You didnt attack bob for no reason and thus he gives you: {yellow}''Bob's Curing Hand''{default}!");
+				CPrintToChat(client, "{default}당신은 밥을 공격하지 않았고, 그런 밥이 당신에게 준 것은...: {yellow}''밥의 치유의 손길''{default}!");
 		}
 	}
 
@@ -843,5 +843,5 @@ public void Raidmode_BobFirst_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
-	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
+	CPrintToChatAll("{white}밥 1세{default}: 심해의 위협은 이제 완전히 사라졌다. 드디어 평화가 찾아오겠군...");
 }

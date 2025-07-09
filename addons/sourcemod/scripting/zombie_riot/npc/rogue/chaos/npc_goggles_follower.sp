@@ -1026,8 +1026,8 @@ static void ClotFinalThink(int iNPC)
 	{
 		npc.Speech("It's over.");
 		npc.SpeechDelay(4.0, "Chaos will not harm Wildingen anymore.");
-		CPrintToChatAll("{darkblue}Waldch{default}: It's over.");
-		CPrintToChatAll("{darkblue}Waldch{default}: Chaos will not harm Wildingen anymore.");
+		CPrintToChatAll("{darkblue}월드치{default}: 끝났어.");
+		CPrintToChatAll("{darkblue}월드치{default}: 혼돈은 이제 와일딩겐을 위협하지 못 할거야.");
 		npc.m_flNextMeleeAttack = 0.0;
 
 		npc.StopPathing();

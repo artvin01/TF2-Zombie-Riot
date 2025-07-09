@@ -181,7 +181,7 @@ static void Internal_NPCDeath(int entity)
 	}
 	if(npc.m_iState != 0)
 	{
-		CPrintToChatAll("{blue}The spirit is able to move on onto the afterlife...");
+		CPrintToChatAll("{blue}이제 영혼이 저승으로 나아갈 수 있게 되었다...");
 	}
 }
 
@@ -257,7 +257,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 				{
 					npc.m_iState = 0;
 					SmiteNpcToDeath(npc.index);
-					CPrintToChatAll("{crimson}%t is unable to move on and splits apart...",c_NpcName[npc.index]);
+					CPrintToChatAll("{crimson}%t 가 더 이상 움직일 수 없게 되어 분열한다...",c_NpcName[npc.index]);
 					float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 					float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 					for(int loop=1; loop<=CountPlayersOnRed(); loop++)

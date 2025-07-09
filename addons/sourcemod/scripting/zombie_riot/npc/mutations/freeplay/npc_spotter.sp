@@ -344,32 +344,32 @@ methodmap Spotter < CClotBody
 		{
 			case 1:
 			{
-			    	CPrintToChatAll("{orange}Spotter: {white}Aaaalright Bob, lets see what you put me into...");
+			    	CPrintToChatAll("{orange}스포터: {white}좋아, 밥. 이번엔 날 어떤 훈련에 데려가려는거야?");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{orange}Spotter: {white}Well heello there, hope you have space in here for me.");
+				CPrintToChatAll("{orange}스포터: {white}어, 안녕? 내가 나올 공간 좀 만들어줄래?");
 			}
 			case 3:
 			{
-			    	CPrintToChatAll("{orange}Spotter: {white}I'd say its time to end this, but this is different...");
+			    	CPrintToChatAll("{orange}스포터: {white}꼭 마치 이 전쟁을 끝내러 왔다고 말해야할 것 같은 분위기인데...");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{orange}Spotter: {white}Apparently Bob told me he saw some sort of ''titan soldier'' that calls himself a sigma.");
-				CPrintToChatAll("{orange}Spotter: {white}Quite {strange}strange{white}, to be honest.");
+				CPrintToChatAll("{orange}스포터: {white}밥이 그러던데, ''거대한 솔저''가 자신을 시그마라고 부르는 걸 봤대.");
+				CPrintToChatAll("{orange}스포터: {white}솔직히 좀 {strange}이상한{white} 얘기지?");
 			}
 			case 5:
 			{
-			    	CPrintToChatAll("{orange}Spotter: {white}Another day, another session of training.");
+			    	CPrintToChatAll("{orange}스포터: {white}또 훈련의 때가 왔구만.");
 			}
 			case 6:
 			{
-				CPrintToChatAll("{orange}Spotter: {white}Hello there!");
+				CPrintToChatAll("{orange}스포터: {white}안녕!");
 			}
 			default:
 			{
-			    	CPrintToChatAll("{orange}Spotter: {white}Im hoping that little {lightblue}Ant {white}Bob told me about shows up now.");
+			    	CPrintToChatAll("{orange}스포터: {white}그래서 네가 밥이 말한 {lightblue}그 인물 {white}인가보네.");
 			}
 		}
 
@@ -480,15 +480,15 @@ public void Spotter_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-						    	CPrintToChat(ally, "{orange}Spotter: {white}Here ya go %N.", ally);
+						    	CPrintToChat(ally, "{orange}스포터: {white}지금 간다, %N.", ally);
 						}
 						case 2:
 						{
-							CPrintToChat(ally, "{orange}Spotter: {white}Well well, don't get too hurt next time yeah %N?", ally);
+							CPrintToChat(ally, "{orange}스포터: {white}그래, 그래. 다음엔 너무 많이 다치지 말자, %N?", ally);
 						}
 						default:
 						{
-						    	CPrintToChat(ally, "{orange}Spotter: {white}Have a nice day, %N.", ally);
+						    	CPrintToChat(ally, "{orange}스포터: {white}좋은 시간 보내, %N.", ally);
 						}
 					}
 				}
@@ -559,27 +559,27 @@ public void Spotter_NPCDeath(int entity)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{orange}Spotter: {white}I-i think im gonna go now... ouchie...");
+			CPrintToChatAll("{orange}스포터: {white}어... 잠깐 빠질게...");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{orange}Spotter: {crimson}OOOUUCH!!! {white}Retreating, retreating!");
+			CPrintToChatAll("{orange}스포터: {crimson}어이구!!! {white}후퇴, 후퇴!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{orange}Spotter: {white}Yyeeooowwch.... That's gonna leave a mark...");
+			CPrintToChatAll("{orange}스포터: {white}아오.... 이거 흉터 좀 남겠는데...");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{orange}Spotter: {crimson}OOW!");
+			CPrintToChatAll("{orange}스포터: {crimson}아야!");
 		}
 		default:
 		{
-			CPrintToChatAll("{orange}Spotter: {white}Ow ow, im retreating now, heavily wounded...");
+			CPrintToChatAll("{orange}스포터: {white}아나, 좀 후퇴할게. 나 다쳤어...");
 		}
 	}
 	
-	CPrintToChatAll("{crimson}The Spotter bails away.");
+	CPrintToChatAll("{crimson}스포터가 도주했다.");
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -694,22 +694,22 @@ void SpotterAllyBuff(Spotter npc)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{orange}Spotter: {gold}PUSH ON FURTHER!!!!");
+			CPrintToChatAll("{orange}스포터: {gold}전진 앞으로!!!!");
 			npc.Speech("PUSH ON FURTHER!!!!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{orange}Spotter: {gold}COME ON!!!!!");
+			CPrintToChatAll("{orange}스포터: {gold}가자!!!!!");
 			npc.Speech("COME ON!!!!!!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{orange}Spotter: {gold}CHARGE AT FULL POWER!!!!");
+			CPrintToChatAll("{orange}스포터: {gold}힘을 보여줘!!!!");
 			npc.Speech("CHARGE AT FULL POWER!!!!");
 		}
 		default:
 		{
-			CPrintToChatAll("{orange}Spotter: {gold}KEEP ON THE PRESSURE!!!!");
+			CPrintToChatAll("{orange}스포터: {gold}계속 밀어붙여!!!!");
 			npc.Speech("KEEP ON THE PRESSURE!!!!");
 		}
 	}

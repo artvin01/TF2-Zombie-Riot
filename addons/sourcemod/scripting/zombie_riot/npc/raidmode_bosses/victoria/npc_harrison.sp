@@ -355,7 +355,7 @@ methodmap Harrison < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			CPrintToChatAll("{skyblue}Harrison{default}: I see you Intruders.");
+			CPrintToChatAll("{skyblue}해리슨{default}: 네가 보인다, 침입자.");
 		}
 		else
 		{
@@ -410,7 +410,7 @@ methodmap Harrison < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 200.0;
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
-			CPrintToChatAll("{skyblue}Harrison{default}: Spotted the Intruders. I guess they leave me no chance but to do it myself");
+			CPrintToChatAll("{skyblue}해리슨{default}: 침입자 발견. 아무래도 내가 나서야할 것 같군.");
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -662,15 +662,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: You guys are weaker than I expected");
+					CPrintToChatAll("{skyblue}해리슨{default}: 내 생각보다 훨씬 약하군.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Comeon, where is your 'adrenaline'?");
+					CPrintToChatAll("{skyblue}해리슨{default}: 허, 네 잘난 '아드레날린'이 다 소모되기라도 한거냐?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{skyblue}Harrison{default}: Can't believe {lightblue}Huscarls{default} and {blue}Atomizer{default} was defeated by these weaklings.");
+					CPrintToChatAll("{skyblue}해리슨{default}: 나참, {lightblue}허스칼{default}과 {blue}인수분해{default}가 이런 약골들에게 패퇴했다고?");
 				}
 			}
 		}
@@ -682,10 +682,10 @@ static void Internal_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:CPrintToChatAll("{skyblue}Harrison{default}: That's it. Calling in for special forces.");
-			case 2:CPrintToChatAll("{skyblue}Harrison{default}: Your small knight pals won't save you now");
-			case 3:CPrintToChatAll("{skyblue}Harrison{default}: The artilleries are fully loaded. Bombardment in 3...2...1...");
-			case 4:CPrintToChatAll("{skyblue}Harrison{default}: {unique}I need beer.{default}");
+			case 1:CPrintToChatAll("{skyblue}해리슨{default}: 이제 끝이다. 특수 부대를 요청했으니까.");
+			case 2:CPrintToChatAll("{skyblue}해리슨{default}: 네 작은 기사 친구들도 이제 널 돕지 못 한다.");
+			case 3:CPrintToChatAll("{skyblue}해리슨{default}: 포격대 준비 완료. 폭격까지 3...2...1...");
+			case 4:CPrintToChatAll("{skyblue}해리슨{default}: {unique}맥주가 필요해.{default}");
 		}
 		YaWeFxxked[npc.index] = true;
 		Vs_RechargeTimeMax[npc.index] = 3.0;
@@ -739,7 +739,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 				*/
-				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
+				CPrintToChatAll("{skyblue}해리슨{default}: 숨어보시던가. 그러는 동안 난 내 총의 탄약을 보급할테니.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.StopPathing();
@@ -982,9 +982,9 @@ static void Internal_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:CPrintToChatAll("{skyblue}Harrison{default}: Dammit it hurts!");
-		case 1:CPrintToChatAll("{skyblue}Harrison{default}: I should've brought more Explosives...");
-		case 2:CPrintToChatAll("{skyblue}Harrison{default}: You intruders will soon face the {crimson}Real Deal.{default}");
+		case 0:CPrintToChatAll("{skyblue}해리슨{default}: 젠장, 좀 아픈데!");
+		case 1:CPrintToChatAll("{skyblue}해리슨{default}: 폭발물을 더 많이 가져왔어야 하는건데...");
+		case 2:CPrintToChatAll("{skyblue}해리슨{default}: 너희 침입자 놈들은 곧 {crimson}진짜 악몽{default}과 마주하게 될 거다.");
 	}
 
 }
@@ -1086,10 +1086,10 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.m_iCurrentAbilityDo = 1;
 				switch(GetRandomInt(1, 4))
 				{
-					case 1:CPrintToChatAll("{skyblue}Harrison{default}: Do you think I would miss?");
-					case 2:CPrintToChatAll("{skyblue}Harrison{default}: I see you.");
-					case 3:CPrintToChatAll("{skyblue}Harrison{default}: They won't miss you. Probably.");
-					case 4:CPrintToChatAll("{skyblue}Harrison{default}: Auto Rockets are fully charged");
+					case 1:CPrintToChatAll("{skyblue}해리슨{default}: 널 놓칠 수는 없지.");
+					case 2:CPrintToChatAll("{skyblue}해리슨{default}: 네가 보인다.");
+					case 3:CPrintToChatAll("{skyblue}해리슨{default}: 절대 놓치지 않는다.");
+					case 4:CPrintToChatAll("{skyblue}해리슨{default}: 자동 로켓 충전 완료.");
 				}
 				npc.StopPathing();
 				

@@ -951,10 +951,10 @@ methodmap Twirl < CClotBody
 
 		if(b_tripple_raid)
 		{
-			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
-			Twirl_Lines(npc, "... Except Karlas but shhhh!");
-			CPrintToChatAll("{crimson}Karlas{snow}: .....");
-			CPrintToChatAll("{crimson}Karlas{snow}: :(");
+			Twirl_Lines(npc, "어머, 엑스피돈사인들이 너한테 좀 관대하게 대해줬나봐? 우리? 우린 안 그럴건데, 우리 루이나인들은 일하는 방식이 다르니까~");
+			Twirl_Lines(npc, "...카를라스 빼고, 아, 이건 말하면 안 되지!");
+			CPrintToChatAll("{crimson}카를라스{snow}: .....");
+			CPrintToChatAll("{crimson}카를라스{snow}: :(");
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
 
@@ -965,12 +965,12 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 5;
 			switch(GetRandomInt(0, 5))
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
-				case 1: Twirl_Lines(npc, "Oh the joy I will get from {crimson}fighting{snow} you all");
-				case 2: Twirl_Lines(npc, "From what {aqua}Stella{snow}'s told, this should be great {purple}fun{snow}..");
-				case 3: Twirl_Lines(npc, "Let's see who dies {crimson}first{snow}!");
-				case 4: Twirl_Lines(npc, "Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you");	//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
-				case 5: Twirl_Lines(npc, "Its time to \"Twirl\" like a beyblade");
+				case 0: Twirl_Lines(npc, "아, 가끔은 외출도 좋은 것 같네...");
+				case 1: Twirl_Lines(npc, "흐음, 과연 내가 너희와의 {crimson}싸움{snow}에서 얻을 행복이란...");
+				case 2: Twirl_Lines(npc, "{aqua}스텔라{snow}가 말한대로라면, 이건 좀 {purple}재밌겠네{snow}..");
+				case 3: Twirl_Lines(npc, "자, 한쪽이 {crimson}죽을때까지{snow} 싸워볼까!");
+				case 4: Twirl_Lines(npc, "음, 흥미롭네. 너희가 과연 어떤 존재일까? 뭐, {crimson}붙어봐야 알겠지만?");	//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
+				case 5: Twirl_Lines(npc, "같이 돌아볼까? 끝없는 \"팽이\" 들의 회전처럼.");
 			}
 		}
 		else if(wave <=20)
@@ -978,11 +978,11 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 7;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Last time, it was a great workout, {crimson}Time to do it again{snow}!");
-				case 1: Twirl_Lines(npc, "Our last fight was so fun, I hope this fight is as fun as the last one!");
-				case 2: Twirl_Lines(npc, "{aqua}Stella{snow} was right, you all ARE great fun to play with!");
-				case 3: Twirl_Lines(npc, "Ehe, now who will die {crimson}last{snow}?");
-				case 4: Twirl_Lines(npc, "You spin me right round..");
+				case 0: Twirl_Lines(npc, "지난 번엔, 운동 좀 됐었어. {crimson}그럼 또 해야지{snow}!");
+				case 1: Twirl_Lines(npc, "이전의 싸움은 정말 즐거웠어. 이번에도 이전처럼 즐거웠으면 좋겠네!");
+				case 2: Twirl_Lines(npc, "{aqua}스텔라{snow}가 맞았어, 너희가 가장 재밌어!");
+				case 3: Twirl_Lines(npc, "으흠, 이제 누가 먼저 {crimson}죽을까{snow}?");
+				case 4: Twirl_Lines(npc, "You spin me right round...");
 			}
 		}
 		else if(wave <=30)
@@ -990,11 +990,11 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 9;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "My Oh my, you're still here, {purple}how wonderful!");
-				case 1: Twirl_Lines(npc, "You must enjoy fighting as much as {purple}I do{snow}, considering you've made it this far!");
-				case 2: Twirl_Lines(npc, "{aqua}Stella{snow}, you understated how {purple}fun{snow} this would be!");
-				case 3: Twirl_Lines(npc, "I've brought some {purple}Heavy Equipment{snow} heh");
-				case 4: Twirl_Lines(npc, "Time to \"Twirl\", heh");
+				case 0: Twirl_Lines(npc, "어머나, 아직도 여기 있었구나, {purple}정말 대단해!");
+				case 1: Twirl_Lines(npc, "여기까지 너희가 온 걸 생각해보면, {purple}나처럼{snow} 싸우는걸 좋아하는구나?");
+				case 2: Twirl_Lines(npc, "{aqua}스텔라{snow}, 이 자들이 가진 {purple}재미{snow}를 너무 과소평가 한 것 같네!");
+				case 3: Twirl_Lines(npc, "좀 더 강한 {purple}중장비{snow}를 가지고 왔단다.");
+				case 4: Twirl_Lines(npc, "아직 우리들의 \"회전\"은 끝나지 않았단다.");
 			}
 		}
 		else if(wave <=40)
@@ -1002,22 +1002,22 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope yoyou're all as excited as I am{snow}!");
-				case 1: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 2: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
-				case 3: Twirl_Lines(npc, "Kuru Kuru~");
+				case 0: Twirl_Lines(npc, "마지막 공연이야. 자, {purple}너희도 전부 기대하고 있길 바랄게{snow}!");
+				case 1: Twirl_Lines(npc, "아아, {aqua}스텔라{snow}가 놓친 이 재미,{purple} 바보같네{snow}.");
+				case 2: Twirl_Lines(npc, "이 {purple}싸움{snow}에 대한 대비가 되어있길 바래.");
+				case 3: Twirl_Lines(npc, "쿠루 쿠루~");
 				case 4:
 				{
 					switch(GetRandomInt(0, 2))
 					{
 						case 1:	//1/6*1/3 ~ 5.(5)% of it happening
 						{
-							Twirl_Lines(npc, "You know, there's something I've always wondered about, why do you people keep on calling me a masochist.");
-							Twirl_Lines(npc, "Since like, I'm not one for the record, and yet some of the \"people\" I've fought in the past keep calling me that.");
-							Twirl_Lines(npc, "And I'm at a loss as to WHY they say that, if anything it would be more accurate to call me a sadist, for the record, I'm not..");
-							Twirl_Lines(npc, "So yaknow, if you can, try and explain it, please?");
+							Twirl_Lines(npc, "있잖아, 내가 항상 궁금해했던 게 있어, 왜 사람들이 나를 계속 마조히스트라고 부르는지.");
+							Twirl_Lines(npc, "그러니까, 나는 그런 사람이 아닌데, 과거에 나와 싸웠던 \"사람\" 들 중 일부가 날 그렇게 부르더라구.");
+							Twirl_Lines(npc, "그리고 걔들이 왜 그런 말을 하는지 이해할 수가 없어. 왜 그럴까? 정말로. 난 새디스트조차 아니란 말이야.");
+							Twirl_Lines(npc, "그래서... 음, 가능하다면 네가 그 이유를 좀 알려줄래?");
 						}
-						default: Twirl_Lines(npc, "Kururing~");
+						default: Twirl_Lines(npc, "쿠루링~");
 					}
 				}
 			}
@@ -1031,9 +1031,9 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 3))
 			{
-				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
-				case 2: Twirl_Lines(npc, "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}of course you do{snow}!");
-				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
+				case 1: Twirl_Lines(npc, "마법의 흐름을 따라 이끌려왔는데, {purple}참 흥미롭네{snow}...");
+				case 2: Twirl_Lines(npc, "아, 너희들이구나. 어때, {crimson}붙어볼까{snow}? {purple}너도 나랑 싸우는걸 원할테니까{snow}!");
+				case 3: Twirl_Lines(npc, "긴장 좀 풀어야할 타이밍이었는데, 마침 잘 찾아왔네!");
 			}
 		}
 
@@ -1098,24 +1098,24 @@ static void Twirl_WinLine(int entity)
 
 	if(b_force_transformation)
 	{
-		Twirl_Lines(npc, "{crimson}Perish");
+		Twirl_Lines(npc, "{crimson}스러져라...");
 		return;
 	}
 
 	switch(GetRandomInt(0, 10))
 	{
-		case 0: Twirl_Lines(npc, "Wait, you're all dead already??");
-		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
-		case 2: Twirl_Lines(npc, "Huh, I guess this was all you were capable of, a shame");
-		case 3: Twirl_Lines(npc, "I, as the empress, thank you for this wonderful time");
-		case 4: Twirl_Lines(npc, "Ahhh, that was a great workout, time to hit the showers");
-		case 5: Twirl_Lines(npc, "You call this fighting? We call this resisting arrest");
-		case 6: Twirl_Lines(npc, "Another one bites the dust");
-		case 7: Twirl_Lines(npc, "Ah foolish Mercenaries, maybe next time think about a proper strategy");
-		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
-		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
-		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-		case 11: Twirl_Lines(npc, "And you're all supposed to be strong?");
+		case 0: Twirl_Lines(npc, "왜, 포기하려고?");
+		case 1: Twirl_Lines(npc, "재밌었어. 이런 느낌을 받은건 참 오랜만이야!");
+		case 2: Twirl_Lines(npc, "허, 이게 너희가 할 수 있는 전부였나봐. 안타깝네.");
+		case 3: Twirl_Lines(npc, "여왕으로서, 이런 좋은 시간을 보내게 해줘서 정말 고마워.");
+		case 4: Twirl_Lines(npc, "아아, 정말 멋진 운동이었어. 이제 샤워해야겠네.");
+		case 5: Twirl_Lines(npc, "이건 싸움이 아니라 저항이라 부른단다.");
+		case 6: Twirl_Lines(npc, "또 한 명 쓰러져가네.");
+		case 7: Twirl_Lines(npc, "아, 어리석은 용병들, 다음에는 적절한 전략을 생각해 보는 게 어떨까.");
+		case 8: Twirl_Lines(npc, "그래, 순수한 힘도 좋지. 그런데 그걸 못 버티는 이유는, {crimson}디버프 때문이지.");
+		case 9: Twirl_Lines(npc, "만약 더 많은 {aqua}지원{snow} 요소가 있었다면 네가 이겼을텐데, 아깝네.");
+		case 10: Twirl_Lines(npc, "{crimson}정말 귀엽군{snow}.");
+		case 11: Twirl_Lines(npc, "이것보다 더 강한거 아니었니?");
 	}
 
 }
@@ -1146,19 +1146,19 @@ static void ClotThink(int iNPC)
 			fl_next_textline = GameTime + 3.0;
 			switch(i_current_Text)
 			{
-				case 0: Twirl_Lines(npc, "So then, you managed to beat me");
-				case 1: Twirl_Lines(npc, "Thats great, why you may ask?");
-				case 2: Twirl_Lines(npc, "Its quite simple, it shows that you've all gone far");
-				case 3: Twirl_Lines(npc, "You beat several world ending infections, alongside that gained many allies");
-				case 4: Twirl_Lines(npc, "But the future holds many more hardships and dangers");
-				case 5: Twirl_Lines(npc, "And so, it was decided that we the Ruanian's would test your skills");
-				case 6: Twirl_Lines(npc, "To see if you’re all ready for what the future holds");
-				case 7: Twirl_Lines(npc, "And well, you do, you are certainly ready for the future");
-				case 8: Twirl_Lines(npc, "But do keep this in mind, the ''Ruina'' that you fought here, was just a mere...");
-				case 9: Twirl_Lines(npc, "Heh.. Yeah, a mere fraction of what we are capable off");
+				case 0: Twirl_Lines(npc, "자, 나를 이길 수 있었구나.");
+				case 1: Twirl_Lines(npc, "정말 잘 했어. ...이긴 이유를 모르겠다고?");
+				case 2: Twirl_Lines(npc, "간단하잖아. 네가 얼마나 많은 것을 해왔는지 보여주는거야.");
+				case 3: Twirl_Lines(npc, "넌 세계를 멸망시킬수도 있는 감염을 여러 차례 격퇴했고, 그로 인해 많은 동맹을 얻었어.");
+				case 4: Twirl_Lines(npc, "하지만 그 뒤에는 훨씬 더 많은 어려움과 위험이 도사리고 있어.");
+				case 5: Twirl_Lines(npc, "그래서 우리 루이나인들이 너희의 실력을 시험해보기로 결정한 거야.");
+				case 6: Twirl_Lines(npc, "너희 모두가 그 미래에 대한 대비가 되어있는지를 확인해보기 위해서.");
+				case 7: Twirl_Lines(npc, "그리고, 보아하니 너흰 전부 다 준비되어있는 것 같네.");
+				case 8: Twirl_Lines(npc, "하지만 이건 명심해. 네가 여기서 싸웠던 루이나인들은...");
+				case 9: Twirl_Lines(npc, "흠.. 그래, 그냥 그들의 힘의 극히 일부분일 뿐이야.");
 				case 10:
 				{
-					Twirl_Lines(npc, "Regardless take this, it's something that might help in your future adventures");
+					Twirl_Lines(npc, "어쨌든, 이걸 받아줘. 네 미래를 위한 여정에 도움이 될 거야.");
 
 					npc.m_bDissapearOnDeath = true;
 
@@ -1173,10 +1173,10 @@ static void ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Twirl's Hairpins");
-							CPrintToChat(client,"You have been given {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
+							CPrintToChat(client,"당신은 {purple}%s{snow}의 헤어핀을 얻었습니다...", c_NpcName[npc.index]);
 						}
 					}
-					Twirl_Lines(npc, "Make sure to take good care of them... or else.");
+					Twirl_Lines(npc, "그거 소중히 다뤄야해.");
 					return;
 				}
 			}
@@ -1192,14 +1192,14 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 7))
 			{
-				case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
-				case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
-				case 2: Twirl_Lines(npc, "I know you're capable more than just this");
-				case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
-				case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
-				case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
-				case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-				case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
+				case 0: Twirl_Lines(npc, "이런, 지금 네가 처한 상황을 보렴.");
+				case 1: Twirl_Lines(npc, "이것 봐, {purple}이게 너희가 할 수 있는 전부야{snow}? 아니란걸 증명해봐.");
+				case 2: Twirl_Lines(npc, "너희가 이 이상의 능력을 가지고 있다는 걸 알아.");
+				case 3: Twirl_Lines(npc, "혼자 남았네? 그럼 {purple}네가{snow} 제일 강하다는 뜻이겠지?");
+				case 4: Twirl_Lines(npc, "흥미로운데. 어쩌면 과대평가했을지도.");
+				case 5: Twirl_Lines(npc, "만약 지금 네가 {purple}숨겨둔 무기{snow}같은걸 가지고 있다면, 지금 써야해.");
+				case 6: Twirl_Lines(npc, "이런게 바로 전장이지. 한 명만 남을때까지 {purple}계속 죽어나가는 것...{snow}.");
+				case 7: Twirl_Lines(npc, "{crimson}정말 귀엽군{snow}. 너 혼자라니, 정말 멋진 광경이야.");
 			}
 		}
 	}
@@ -1218,22 +1218,22 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 2))
 			{
-				case 0: Twirl_Lines(npc, "You ain't getting a normal phase shift");
-				case 1: Twirl_Lines(npc, "This time, I ain't waiting");
-				case 2: Twirl_Lines(npc, "Its time to ramp the heater up to {crimson}max");
+				case 0: Twirl_Lines(npc, "그럼 이제 진짜 싸움을 시작해볼까?");
+				case 1: Twirl_Lines(npc, "이번엔 기다리고 싶지 않은데.");
+				case 2: Twirl_Lines(npc, "열을 더 올려보자. {crimson}끝까지.");
 			}
 		}
 		else
 		{
 			switch(GetRandomInt(0, 6))
 			{
-				case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
-				case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
-				case 2: Twirl_Lines(npc, "Round 2. Fight!");
-				case 3: Twirl_Lines(npc, "Ai, this is getting fun");
-				case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
-				case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
-				case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+				case 0: Twirl_Lines(npc, "그럼 이제 올려볼까? {purple}열기 말이야.");
+				case 1: Twirl_Lines(npc, "아하, 진짜 {purple}재밌네!{snow} 여기서 하나 더 첨가해주면 더 재밌겠는데?");
+				case 2: Twirl_Lines(npc, "2라운드!");
+				case 3: Twirl_Lines(npc, "음~ 더 재밌어지고 있네.");
+				case 4: Twirl_Lines(npc, "우리 좀만 더 진득하게 놀아볼까?");
+				case 5: Twirl_Lines(npc, "넌 안 즐겁니? 난 즐겁기만 한데!");
+				case 6: Twirl_Lines(npc, "이 {aqua}마나{snow}의 흐름은 정말 {purple}흥미로워{snow}, 마음에 드는데!");
 			}
 		}
 		
@@ -1552,24 +1552,24 @@ static void Final_Invocation(Twirl npc)
 	{
 		switch(GetRandomInt(0, 3))
 		{
-			case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
-			case 1: Twirl_Lines(npc, "{crimson}Perish.");
-			case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
-			case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
+			case 0: Twirl_Lines(npc, "이제 이 이상으로는 못 넘어갈걸.");
+			case 1: Twirl_Lines(npc, "{crimson}스러져라.");
+			case 2: Twirl_Lines(npc, "{crimson}여기까지 온 건 처음이야.");
+			case 3: Twirl_Lines(npc, "{crimson}슬슬 끝낼때가 됐지?");
 		}
 	}
 	else
 	{
 		switch(GetRandomInt(0, 7))
 		{
-			case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
-			case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
-			case 2: Twirl_Lines(npc, "How's your aoe situation?");
-			case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
-			case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-			case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
-			case 6: Twirl_Lines(npc, "The Final Invocation!");
-			case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+			case 0: Twirl_Lines(npc, "음, 이게 끝이라고 생각했어? {crimson}난 아닌데...");
+			case 1: Twirl_Lines(npc, "아하하, 내가 집정관이라는거 알고 있지? {purple}그럼 이것도 누구 물건이란것도 알겠네?");
+			case 2: Twirl_Lines(npc, "그래, 광역 공격은 잘 챙겼고?");
+			case 3: Twirl_Lines(npc, "어, 걱정 마. {aqua}스텔라 위버{snow}는 저기서 안 나와.");
+			case 4: Twirl_Lines(npc, "흐음, 지원이 필요하다고? 여기 있어! 비록 네 지원군은 아니지만.");
+			case 5: Twirl_Lines(npc, "이걸 첨가하는 싸움은 더 재밌어질거야!");
+			case 6: Twirl_Lines(npc, "마지막 호출!");
+			case 7: Twirl_Lines(npc, "{lightblue}알락시오스{default}? 아, 걔... 맞아, 걔한테서 좀 배운 기술이거든. 그러니까 이건 걔한테는 비밀이다?");
 		}
 	}
 	
@@ -1581,8 +1581,8 @@ static void Final_Invocation(Twirl npc)
 	{
 		switch(GetRandomInt(0, 1))
 		{
-			case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
-			case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
+			case 0: Twirl_Lines(npc, "음? 이게 뭐야? 너 뭔가 열망하고 있는것 같은데...");
+			case 1: Twirl_Lines(npc, "아, 내 생각보단 쉽지 않을것 같네.");
 		}
 	}
 	
@@ -1650,15 +1650,15 @@ static void lunar_Radiance(Twirl npc)
 	{
 		switch(GetRandomInt(0, 17))
 		{
-			case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
-			case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
-			case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
-			case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
-			case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
-			case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-			case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
-			case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
-			case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
+			case 0: Twirl_Lines(npc, "이건 내가 쓰는 개인용 {crimson}이온{snow}일 뿐이야. 루이나쪽이 더 무섭단다~");
+			case 2: Twirl_Lines(npc, "어어, {crimson}머리 조심{snow}!");
+			case 5: Twirl_Lines(npc, "{crimson}위를 봐{snow}!");
+			case 7: Twirl_Lines(npc, "잘 피하길 바래. {crimson}그렇지 않으면 {snow}끔찍한 일이 벌어질테니.");
+			case 9: Twirl_Lines(npc, "음악도 우리 {aqua}마법{snow}의 핵심이야!");
+			case 11: Twirl_Lines(npc, "춤추렴, 용병들아. 춤 춰...");
+			case 13: Twirl_Lines(npc, "{crimson}에헤{snow}.");
+			case 15: Twirl_Lines(npc, "{crimson}올림바단조 {snow}방식의 죽음을 맞이하렴.");
+			case 17: Twirl_Lines(npc, "오, {crimson}불쌍한{snow} 아이들...");
 		}
 	}
 
@@ -2998,19 +2998,19 @@ static bool Retreat(Twirl npc, bool block_ions = false)
 	switch(GetRandomInt(0, 13))
 	{
 		case 0: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
-		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
-		case 2: Twirl_Lines(npc, "Ahaaa, {crimson}bad");
-		case 3: Twirl_Lines(npc, "So close, yet far");
-		case 4: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
-		case 5: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
-		case 6: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
-		case 7: Twirl_Lines(npc, "Don't surround me like that.");
-		case 8: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
-		case 9: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
-		case 10: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
-		case 11: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
-		case 12: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
-		case 13: Twirl_Lines(npc, "Aaa, hai hai~");
+		case 1: Twirl_Lines(npc, "정말로 날 {purple}붙잡는게 {snow}가능하다 생각해?");
+		case 2: Twirl_Lines(npc, "어허, {crimson}안 되지.");
+		case 3: Twirl_Lines(npc, "너무 가까운데?");
+		case 4: Twirl_Lines(npc, "{crimson}빙글 빙글{snow}~");
+		case 5: Twirl_Lines(npc, "이봐, 좀 떨어져있어야지?");
+		case 6: Twirl_Lines(npc, "{purple}포위{snow}는 그렇게 하는게 아닌데?");
+		case 7: Twirl_Lines(npc, "너무 가까운거 아니니?");
+		case 8: Twirl_Lines(npc, "빠져나갈 틈이 너무 많네? 그럼 포위가 아니잖아?");
+		case 9: Twirl_Lines(npc, "나한테 그렇게 쉽게 다가올 수 있을거란 생각은 하지마.");
+		case 10: Twirl_Lines(npc, "우리 아직 잘 모르는 사이인데 그렇게 가까이 오면 안 되지.");
+		case 11: Twirl_Lines(npc, "{crimson}쿠루 쿠루{snow}~");
+		case 12: Twirl_Lines(npc, "오 이런, 여러 명이 이렇게 한 명을 {purple}둘러싸는{snow} 장면이라니!");
+		case 13: Twirl_Lines(npc, "아하, 네네~");
 	}
 	return true;
 }
@@ -4057,51 +4057,51 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "I've had it up to here MISTER {gold}%N{snow}.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "How would you feel {gold}%N{snow} if I grabbed YOU?", client);}
+		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "네가 하는 걸 더 이상 못 봐주겠네, {gold}%N{snow}씨?", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "내가 널 잡으면 어떤 기분이 들겠어, {gold}%N{snow}?", client);}
 		
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
-		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud your efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
-		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
-		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
-		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
-		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
-		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N{snow}!", client);}	
-		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
-		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, are you {gold}%N{snow}, trying to cosplay as {aqua}Stella{snow}?", client); 					case 1: Format(Text_Lines, sizeof(Text_Lines), "That Laser Tickles {gold}%N{crimson} Get a bigger laser{aqua} NOW!", client);}
-		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
-		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
-		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 	
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "어머나, {gold}%N{snow}, 그거 혹시 그 기계를 따라하려는 거니?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "으음, {gold}%N{snow}, 하필이면 블리츠크리그 같은 실패작을 따라하려 한다는건...", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "아, 코즈믹 테러, 그 유물, 오랜만에 보네."); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "써보니까 달이 되게 강력한 레이저지? 그치, {gold}%N{snow}?",client);}
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "아, {gold}%N{snow}, 그 드론들, {crimson}참 귀엽네...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "이 곳에서 랜턴 스태프를 쓰려고 애쓴 {gold}%N{snow} 너에게 찬사를 보낼 수 밖에 없어...", client);}
+		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "오, {gold}%N{snow}. 너 좀 활기차진 것 같네?", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "계속해, {gold}%N{snow}. 그렇게 하면 너 자신이 {aqua}몰아치는 폭풍이 될 수 있어!{crimson}!", client);}
+		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "흠, 이중 에너지 코어라? 그거 좋네, {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "그래서, 네가 {aqua}탐사정{snow}이라도 되려는거야? %N{snow}?", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "와우, {gold} %N{snow}, 그 무기, {crimson}카를라스의{snow} 오래된 검인데?", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "판타지 블레이드. 좋은 무기지. 그런데, {gold}%N{snow}. 그건 그런 식으로 쓰는게 아니란다..", client);}	
+		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "오, {aqua}퀸시{snow}가 여기 있네. 어서 {crimson}사신{snow}을 불러!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "흠, 여전히 진정한 퀸시로는 거듭나지 못 했나봐, {gold}%N{snow}?", client);}	
+		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "그 무지개 레이저는 개선이 더 필요해보이네, {gold}%N{snow}.",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "네 무지개 레이저엔 큰 잠재력이 있어, {gold}%N{snow}!", client);}	
+		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "음, {gold}%N{snow}, 네 박동이 펄스를 타고 흐르는구나!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "네 파동이 이 곳에 점점 흘러넘치고 있어, {gold}%N{snow}!", client);}	
+		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "우와, {gold}%N{snow}지금 {aqua}스텔라{snow}를 따라하는거니?", client); 					case 1: Format(Text_Lines, sizeof(Text_Lines), "레이저가 너무 작잖아, {gold}%N{crimson}! 좀 더 크기를 키워봐!", client);}
+		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "피드백 루프를 잘 쓰고 있구나, {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "피드백 루프가 좀 흥미로운 물건이지, 그치? {gold}%N", client);}				
+		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "정말 그걸로 날 찌를거야, {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 그 창을 제대로 쓸 줄 알려면 사용법을 알아야할텐데.", client);}	
+		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "중력의 일부를 제어하는 기분이 어때, {gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "중력 마법은 아직 다 완성되지 못 했지만, 그래도 {gold}%N{snow}, 네가 잘 써먹고 있는걸 보면 뭐...", client);}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "밥의 총? {crimson}진심으로? {gold}%N ?", client); 	
 		
 		case WEAPON_KIT_FRACTAL: 
 		{
 			switch(GetRandomInt(0,4)) 		
 			{
-				case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's against me {gold}%N{snow}?", client); 				
-				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Do you take pleasure in stealing other people's belongings?", client);
-				case 2: Format(Text_Lines, sizeof(Text_Lines), "So you {gold}%N{snow} just taught me that the people at the department of anti-theft are complete idiots, I'm firing them when I get home", client);
+				case 0: Format(Text_Lines, sizeof(Text_Lines), "아, 그러니까 내 힘을 나에게 써먹어보겠다고, {gold}%N{snow}?", client); 				
+				case 1: Format(Text_Lines, sizeof(Text_Lines), "흠, {gold}%N{snow}, 손버릇이 좀 나쁜가봐? 남의 물건도 막 훔치고.", client);
+				case 2: Format(Text_Lines, sizeof(Text_Lines), "그러니까... 지금 {gold}%N{snow} 네 덕분에 방금 도난 방지 소속원들이 완전 바보들이라는 걸 알게 됐어. 집에 가면 전부 해고할 거야.", client);
 				case 3:
 				{
 					if(!IsValidEntity(Cosmetic_WearableExtra[client]))
-						Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You don't even have the wings, how dare you use that?", client);
+						Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, 넌 날개도 없는데 그걸 어떻게 사용하고 있는거니?", client);
 					else
 					{
 						if(MagiaWingsDo(client))
 						{
-							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You, you have OUR WINGS???, And your using the {aqua}Fractal{snow}, atleast that makes sense", client);
+							Format(Text_Lines, sizeof(Text_Lines), "뭐야. {gold}%N{snow} 너 그 날개는 우리의 것인데?, 거기다 {aqua}프랙탈{snow}까지 사용한다고? 이해가 아예 안 되는건 아니지만...", client);
 						}
 						else if(SilvesterWingsDo(client))
 						{
-							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} Wait a minute, those are {gold}Silvesters{snow} wings, and your using our spells?. That doesn't make sense", client);
+							Format(Text_Lines, sizeof(Text_Lines), "음? {gold}%N{snow}, 그건 {gold}실베스터{snow}의 날개인데? 거기다 우리의 마법까지 쓸 줄 안다고? 이게 무슨 원리지?", client);
 						}
 						else
 						{
-							Format(Text_Lines, sizeof(Text_Lines), "You Mr {gold}%N{snow} are using MY {aqua}Fractal{snow}, but you're wings aren't known to me.. huh?", client);
+							Format(Text_Lines, sizeof(Text_Lines), "이상하네, {gold}%N{snow} 가 쓰는건 분명 내 {aqua}프랙탈{snow}인데, 왜 네 날개가 우리 데이터베이스 쪽에 없는걸까?", client);
 						}
 					}
 				}
-				case 4: Format(Text_Lines, sizeof(Text_Lines), "Mr {gold}%N{snow}. I'm coming for you. {crimson}you cannot hide{snow}. You will pay for stealing the {aqua}Fractal{snow}.", client);
+				case 4: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}. 내가 간다. {crimson}더 이상 도망갈 길은 없어{snow}. 넌 {aqua}프랙탈{snow}을 훔친 대가를 치를거야.", client);
 			}
 		}
 		default:
@@ -4189,41 +4189,41 @@ static void NPC_Death(int entity)
 		{
 			switch(GetRandomInt(0, 1))
 			{
-				case 0: Twirl_Lines(npc, "{crimson}Bye");
-				case 1: Twirl_Lines(npc, "{crimson}I'm Leaving.");
+				case 0: Twirl_Lines(npc, "{crimson}그럼 이만.");
+				case 1: Twirl_Lines(npc, "{crimson}난 간다.");
 			}
 		}
 		else if(wave <=10)
 		{
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
-				case 1: Twirl_Lines(npc, "You're strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
-				case 2: Twirl_Lines(npc, "Ahaha, toodles");
-				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
-				case 4: Twirl_Lines(npc, "How interesting..");
+				case 0: Twirl_Lines(npc, "아, 이건 좋네. 우리의 다음 만남을 기대하고 있을게.");
+				case 1: Twirl_Lines(npc, "넌 강해. 그러니 다음을 기대할게.");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
+				case 2: Twirl_Lines(npc, "아하, 재밌네.");
+				case 3: Twirl_Lines(npc, "훌륭해. 내가 기대했던 대로야.");
+				case 4: Twirl_Lines(npc, "흥미롭구나...");
 			}
 		}
 		else if(wave <=20)
 		{
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "This was great fun, better not let me down and not make it to our next battle!");
-				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
-				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
-				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
-				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
+				case 0: Twirl_Lines(npc, "정말 재밌었어. 다음에도 우리 꼭 만나자?");
+				case 1: Twirl_Lines(npc, "오우, 아마도 널 과소평가 한 것 같네.");
+				case 2: Twirl_Lines(npc, "{aqua}스텔라{snow}가 잘못 알고 있었나봐. 그냥 재밌는게 아닌데.");
+				case 3: Twirl_Lines(npc, "최고야. 네가 날 또 이겼어. 그럼 또 만나자!");
+				case 4: Twirl_Lines(npc, "시뮬레이션이 틀린것 같군..");
 			}
 		}
 		else if(wave <=30)
 		{
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
-				case 1: Twirl_Lines(npc, "You're quite strong, can't wait for our next match");
-				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
-				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
-				case 4: Twirl_Lines(npc, "Whoever made those simulations is gonna get fired..");
+				case 0: Twirl_Lines(npc, "이거 분명 {purple}''중장비''{snow}인데, 그래도 너희가 이겼네? 잘했어.");
+				case 1: Twirl_Lines(npc, "이러면 다음번에 얼마나 강해져있을지 기다릴 수가 없네...");
+				case 2: Twirl_Lines(npc, "너희도 나만큼 즐거웠길 바래.");
+				case 3: Twirl_Lines(npc, "너희 전부 내 기대를 뛰어넘었어. 난 다음번의 {crimson}우리의 마지막 전투{snow}가 더욱 신날거라고 믿을게!");
+				case 4: Twirl_Lines(npc, "너희가 지는 시뮬레이션이 있었는데, 그거 만든 놈들 전부 해고해야겠어.");
 			}
 		}
 		else
@@ -4232,19 +4232,19 @@ static void NPC_Death(int entity)
 			{
 				switch(GetRandomInt(0, 2))
 				{
-					case 0: Twirl_Lines(npc, "Nice job.");
-					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
-					case 2: Twirl_Lines(npc, "Good luck with the rest~");
+					case 0: Twirl_Lines(npc, "잘 했어.");
+					case 1: Twirl_Lines(npc, "에헤, 이거 좀 신나는데, 다음에 또 다시 만나자.");
+					case 2: Twirl_Lines(npc, "마음에 드는데~");
 				}
 			}
 			else
 			{
 				switch(GetRandomInt(1, 4))
 				{
-					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
-					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
-					case 3: Twirl_Lines(npc, "toodles!");
-					case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+					case 1: Twirl_Lines(npc, "에헤, 이거 좀 신나는데, 다음에 또 다시 만나자.");
+					case 2: Twirl_Lines(npc, "그리고, 우리의 싸움은 끝났어. 네가 이겼어.");
+					case 3: Twirl_Lines(npc, "완벽해!");
+					case 4: Twirl_Lines(npc, "{crimson}정말 귀엽군{snow}.");
 				}
 			}
 		}
@@ -4321,31 +4321,31 @@ static bool HandleRaidTimer(Twirl npc)
 		b_wonviatimer = true;
 		if(b_force_transformation)
 		{
-			Twirl_Lines(npc, "Begone. Times Up.");
+			Twirl_Lines(npc, "이제 끝.");
 		}
 		else if(wave <=40)
 		{
 			switch(GetRandomInt(0, 9))
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
-				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
-				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
-				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
-				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
-				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
-				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
-				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
-				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+				case 0: Twirl_Lines(npc, "아, 좋은 운동이었어.");
+				case 1: Twirl_Lines(npc, "헤, 좀 재미있었는데.");
+				case 2: Twirl_Lines(npc, "어쩌면 {aqua}스텔라{snow}가 좀 과장해서 얘기해준 것 같은데..");
+				case 3: Twirl_Lines(npc, "너희 전부 하나씩 쓰러지는게 아름답구나.");
+				case 4: Twirl_Lines(npc, "잠깐, 지금 내가 해야 할 일이 많이 생겼으니까, 대신 나중에 다시 해보자!");
+				case 5: Twirl_Lines(npc, "아무래도 여기까지 버틸만큼 투지가 부족한 것 같은데, {crimson}그럼 나와 싸울 자격은 없지.");
+				case 6: Twirl_Lines(npc, "어머나, 이렇게 많은 시간을 보냈음에도 불구하고 여전히 나를 못 이겼다는건, 좀 한심하네.");
+				case 7: Twirl_Lines(npc, "이것 봐, 난 {gold}엑스피돈사{default} 친구들이 쓰는 보호막도 없었단 말야.");
+				case 8: Twirl_Lines(npc, "왜 이리 질질 끄는지 말해주겠어?");
+				case 9: Twirl_Lines(npc, "지루하네. {crimson}그냥 다 끝내버리자.");
 			}
 		}
 		else	//freeplay
 		{
 			switch(GetRandomInt(0, 2))
 			{
-				case 0: Twirl_Lines(npc, "Well considering you all were just some randoms this was to be expected");
-				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
-				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+				case 0: Twirl_Lines(npc, "흠, 너희가 전부 아무데서나 끌려온 자들이라는 점을 고려하면 예상된 일이었어.");
+				case 1: Twirl_Lines(npc, "생각했던 것보다 실망이야. 요즘 내 마법 감각이 좀 이상해져서 그런가.");
+				case 2: Twirl_Lines(npc, "{crimson}정말 귀엽군{snow}.");
 			}
 		}
 		
@@ -4371,7 +4371,7 @@ void Twirl_OnStellaKarlasDeath()
 	//stella died first.
 	if(!Stella_index && Karlas_index)
 	{
-		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
+		Twirl_Lines(npc, "{crimson}카를라스{snow}! 나와 자리 바꿔. 이제 내가 할게.");
 
 		Set_Karlas_Ally(npc.index, Karlas_index, i_current_wave[npc.index], false, true);
 		Stella stella = view_as<Stella>(npc.index);
@@ -4385,9 +4385,9 @@ void Twirl_OnStellaKarlasDeath()
 	{
 		switch(GetRandomInt(0, 2))
 		{
-			case 0: Twirl_Lines(npc, "Hey, just because hes the only man here doesn't mean he should have died first.");
-			case 1: Twirl_Lines(npc, "Oh, neat, now {aqua}Stella{snow}'s all mine.");
-			case 2: Twirl_Lines(npc, "Huh, there goes my rival.");
+			case 0: Twirl_Lines(npc, "그가 우리쪽의 유일한 남성이었는데... 허망하게 쓰러져버렸네.");
+			case 1: Twirl_Lines(npc, "흠, 이제 {aqua}스텔라{snow}는 내 거란 소리인가?");
+			case 2: Twirl_Lines(npc, "허, 이제 쟤들이 내 라이벌이겠네.");
 		}
 		
 	}
@@ -4397,9 +4397,9 @@ void Twirl_OnStellaKarlasDeath()
 		b_force_transformation = true;
 		switch(GetRandomInt(0, 2))
 		{
-			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
-			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
-			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
+			case 0:Twirl_Lines(npc, "오오, 이게 쉽게 끝날거라고 생각하는구나, {crimson}그렇지?");
+			case 1:Twirl_Lines(npc, "{crimson}이제 좀 마음에 드네.");
+			case 2:Twirl_Lines(npc, "{crimson}더 세게 가볼까?");
 		}
 		b_tripple_raid = false;
 		if(fl_Extra_Damage[npc.index] < 1.0)

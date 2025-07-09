@@ -341,7 +341,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{green} The infection got all your friends... Run while you can.");
+			CPrintToChatAll("{green} 감염이 당신의 동료를 전부 집어삼키고 말았습니다... 가능하면 도주하세요.");
 		}
 	}
 	if(RaidModeTime < GetGameTime())
@@ -350,7 +350,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		i_RaidGrantExtra[npc.index] = 0;
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{green} The infection proves too strong for you to resist as you join his side...");
+		CPrintToChatAll("{green} 당신은 감염에 저항조차 못 했습니다... 당신은 이제 한낱 감염체로 전락하고 말았습니다.");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -1007,7 +1007,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}Mr.X: I have to activate Project Nemesis...");
+					CPrintToChat(client_repat, "{green}Mr.X: 네메시스 프로젝트를 가동시킬 때가 왔다...");
 				}
 			}
 		}
@@ -1020,7 +1020,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}Mr.X Escapes... but heavily wounded...");
+					CPrintToChat(client_repat, "{green}Mr.X 가 도주했습니다... 중상을 입은 채로 말이죠.");
 				}
 			}
 		}
