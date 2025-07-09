@@ -855,6 +855,14 @@
 	{
 		"en"	"Ignore."
 	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
+	}
 	"Mystery Beer"
 	{
 		"en"	"Mystery Beer"
