@@ -1,17 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-enum
+enum				// Types
 {
-	Element_Nervous,
-	Element_Chaos,
-	Element_Cyro,
-	Element_Necrosis,
-	Element_Void,
-	Element_Osmosis,
-	Element_Corruption,
-	Element_Burger,
-	Element_Plasma,
+	Element_Nervous, 	// 0
+	Element_Chaos,		// 1
+	Element_Cyro,		// 2
+	Element_Necrosis,	// 3
+	Element_Void,		// 4
+	Element_Osmosis,	// 5
+	Element_Corruption,	// 6
+	Element_Burger,		// 7
+	Element_Plasma,		// 8
 
 	Element_MAX
 }
@@ -72,15 +72,31 @@ stock bool Elemental_GoingCritical(int entity)
 	return false;
 }
 
-stock void Elemental_RemoveDamage(int entity, int amount)
+// See the Elemental_MAX enum to see types
+// Set type to -1 to remove all elemental damage types from the user instead
+// NOTE: Doesn't work for clients, this only works for npcs
+stock void Elemental_RemoveDamage(int entity, int type, int amount)
 {
-	for(int i; i < Element_MAX; i++)
+	if(type >= 0)
 	{
-		if(ElementDamage[entity][i] > 0)
+		//PrintToChatAll("Removing elemental damage type %s (Number: %d) (Amount: %d)", ElementName[type], type, amount);
+		if(ElementDamage[entity][type] > 0)
 		{
-			ElementDamage[entity][i] -= amount;
-			if(ElementDamage[entity][i] < 0)
-				ElementDamage[entity][i] = 0;
+			ElementDamage[entity][type] -= amount;
+			if(ElementDamage[entity][type] < 0)
+				ElementDamage[entity][type] = 0;
+		}
+	}
+	else
+	{
+		for(int i; i < Element_MAX; i++)
+		{
+			if(ElementDamage[entity][i] > 0)
+			{
+				ElementDamage[entity][i] -= amount;
+				if(ElementDamage[entity][i] < 0)
+					ElementDamage[entity][i] = 0;
+			}
 		}
 	}
 }
@@ -1096,7 +1112,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					float position[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-					if(Yakuza_Lastman(-1) == 11) // lastman for plasmic surprise
+					if(HasSpecificBuff(victim, "Plasmatic Rampage")) // lastman for plasmic surprise
 					{
 						SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 						IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
@@ -1150,21 +1166,34 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				ElementDamage[victim][Element_Plasma] = 0;
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-				Cheese_SetPenalty(victim, (melee ? 0.7 : 0.45));
-				float duration = (melee ? 2.0 : 8.0);
-				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
+				float meleepenalty = (b_thisNpcIsARaid[victim] ? 0.85 : 0.75);
+				float rangedpenalty = (b_thisNpcIsARaid[victim] ? 0.65 : 0.5);
+				float duration = (melee ? 2.0 : (b_thisNpcIsARaid[victim] ? 4.0 : 8.0));
 				float healing = 20.0; // bleh
+
 				if(!b_NpcHasDied[attacker])
 				{
 					healing = float(ReturnEntityMaxHealth(victim)) * 0.01;
 				}
 				else if(IsValidClient(attacker))
 				{
-					if(IsValidEntity(weapon))	
+					if(IsValidEntity(weapon))
+					{
 						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+
+						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+						if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
+						{
+							meleepenalty = 0.95;
+							rangedpenalty = 0.9;
+							duration = 0.1;
+						}
+					}
 				}
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
+				Cheese_SetPenalty(victim, (melee ? meleepenalty : rangedpenalty));
+				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
+				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 0.5, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
@@ -1196,9 +1225,13 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				else if(IsValidClient(attacker))
 				{
-					if(IsValidEntity(weapon))	
+					if(IsValidEntity(weapon))
+					{
 						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
 							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+
+						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+					}
 				}
 				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
 					

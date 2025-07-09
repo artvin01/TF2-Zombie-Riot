@@ -3015,6 +3015,9 @@ static void MenuPage(int client, int section)
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 		return;
 	
+	if(f_PreventMovementClient[client] > GetGameTime())
+		return;
+	
 	if(Waves_Started())
 	{
 	//	if(CashSpentTotal[client] <= 0)
@@ -4323,6 +4326,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 			
 			if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
 			{
+				return 0;
+			}
+			if(f_PreventMovementClient[client] > GetGameTime())
+			{
+				//dont call anything.
 				return 0;
 			}
 			
