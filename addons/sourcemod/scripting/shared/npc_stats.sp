@@ -3170,11 +3170,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			{
 				this.m_iPoseMoveY = this.LookupPoseParameter("move_y");
 			}
-			if (this.m_iPose_MoveYaw < 0 && this.m_iPose_MoveYaw != -1) 
+			if (this.m_iPose_MoveYaw == 0 && this.m_iPose_MoveYaw != -1) 
 			{
 				this.m_iPose_MoveYaw = this.LookupPoseParameter("move_yaw");
 			}
-			if (this.m_iPose_MoveScale < 0 && this.m_iPose_MoveScale != -1) 
+			if (this.m_iPose_MoveScale == 0 && this.m_iPose_MoveScale != -1) 
 			{
 				this.m_iPose_MoveScale = this.LookupPoseParameter("move_scale");
 			}
