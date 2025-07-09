@@ -665,6 +665,7 @@ static void Internal_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_avangard", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 3.0);
 				fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 				fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
@@ -732,8 +733,8 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(npc.m_bFUCKYOU)
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		switch(I_cant_do_this_all_day[npc.index])
 		{
@@ -758,6 +759,7 @@ static void Internal_ClotThink(int iNPC)
 					int spawn_index = NPC_CreateByName("npc_avangard", -1, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), "only");
 					if(spawn_index > MaxClients)
 					{
+						NpcStats_CopyStats(npc.index, spawn_index);
 						int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) * 0.15);
 						fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[npc.index];
 						fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[npc.index];
@@ -898,8 +900,8 @@ static void Internal_ClotThink(int iNPC)
 					}
 				}
 			}
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 0;
 			npc.m_flHuscarlsRushCoolDown += 0.1;
@@ -935,7 +937,7 @@ static void Internal_ClotThink(int iNPC)
 			case 0:
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bisWalking = true;
 				npc.m_bAllowBackWalking = false;
 				//Get the normal prediction code.
@@ -943,40 +945,40 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bisWalking = true;
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 			case 2:
 			{
 				npc.StopPathing();
-				npc.m_bPathing = false;
+				
 				npc.m_bisWalking = false;
 			}
 			case 3:
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bisWalking = true;
 				npc.m_bAllowBackWalking = false;
 				static float vOrigin[3], vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 				vAngles[0]=5.0;
 				EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
-				NPC_SetGoalVector(npc.index, vOrigin);
+				npc.SetGoalVector(vOrigin);
 			}
 		}
 	}
@@ -1275,8 +1277,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 			case 0:
 			{
 				CPrintToChatAll("{lightblue}Huscarls{default}: Hit me. I DARE YOU.");
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_unleashed_rage_heavy");
 				npc.m_flAttackHappens = 0.0;
@@ -1462,8 +1464,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 				
 					if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
 					{
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
+						npc.StopPathing();
+						
 						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("layer_taunt_bare_knuckle_beatdown_outro");
 						npc.m_flAttackHappens = 0.0;

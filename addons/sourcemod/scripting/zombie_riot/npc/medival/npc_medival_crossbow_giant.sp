@@ -266,9 +266,9 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < 500000)
@@ -292,8 +292,8 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					}
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 				else
 				{
@@ -309,8 +309,8 @@ public void MedivalCrossbowGiant_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

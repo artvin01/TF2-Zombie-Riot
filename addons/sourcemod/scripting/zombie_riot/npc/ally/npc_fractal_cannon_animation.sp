@@ -215,7 +215,7 @@ methodmap Fracatal_Kit_Animation < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.

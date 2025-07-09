@@ -70,6 +70,7 @@ char[] MinibossHealthScaling(float healthDo = 110.0, bool ingoreplayers = false)
 		healthDo *= ZRStocks_PlayerScalingDynamic(); //yeah its high. will need to scale with waves exponentially.
 	
 	healthDo *= MinibossScalingReturn();
+	healthDo *= 1.5;
 	
 	if(Waves_GetRoundScale()+1 < RoundToNearest(20.0 * (1.0 / MinibossScalingReturn())))
 	{
@@ -318,11 +319,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius()) 
 		{
 			PredictSubjectPosition(npc, target,_,_,vecTarget);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			npc.SetGoalVector(vecTarget);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		int Enemy_I_See;
@@ -334,7 +335,7 @@ static void ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 		else

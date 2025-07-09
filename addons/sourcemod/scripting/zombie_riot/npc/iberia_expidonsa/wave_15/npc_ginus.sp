@@ -204,7 +204,7 @@ public void IberiaGinus_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 				//Stand still.
 			}
@@ -236,11 +236,11 @@ public void IberiaGinus_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 	}
 	else
@@ -407,7 +407,7 @@ int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
 		npc.m_flAttackHappens = gameTime + 0.9;
 		npc.m_flDoingAnimation = gameTime + 0.55;
 		if(NpcStats_IberiaIsEnemyMarked(npc.m_iTargetWalkTo))
-			npc.m_flDoingAnimation = gameTime + 0.7;
+			npc.m_flDoingAnimation = gameTime + 0.8;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 3;

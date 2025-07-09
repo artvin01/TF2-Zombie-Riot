@@ -509,11 +509,11 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
 				
 				SDKCall_EquipWearable(client, entity);
-				float AttribDo = Attributes_Get(active, 4021, 0.0);
-				if(AttribDo > 0.0)
-				{
-					SetEntProp(entity, Prop_Send, "m_nSkin", RoundToNearest(AttribDo));
-				}
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(active));
+				pack.WriteCell(EntIndexToEntRef(entity));
+				//needs to be delayed...
+				RequestFrame(AdjustWeaponFrameDelay, pack);
 			}
 			
 			HidePlayerWeaponModel(client, active);
@@ -566,6 +566,26 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 	WeaponClass[client] = TFClass_Unknown;
 }
 
+void AdjustWeaponFrameDelay(DataPack pack)
+{
+	pack.Reset();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int wearable = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(weapon) && IsValidEntity(wearable))
+	{
+		float AttribDo = Attributes_Get(weapon, 4021, -1.0);
+		if(AttribDo != -1.0)
+		{
+			SetEntProp(wearable, Prop_Send, "m_nSkin", RoundToNearest(AttribDo));
+		}
+		AttribDo = Attributes_Get(weapon, 542, -1.0);
+		if(AttribDo != -1.0)
+		{
+			Attributes_Set(wearable, 542, AttribDo);
+		}
+	}
+	delete pack;
+}
 void MedicAdjustModel(int client)
 {
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);

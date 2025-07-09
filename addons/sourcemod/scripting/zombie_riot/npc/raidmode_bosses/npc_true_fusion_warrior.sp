@@ -490,8 +490,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 			
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.m_bInKame = false;
 		npc.m_bisWalking = false;
@@ -655,9 +655,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, closest);
+				npc.SetGoalEntity(closest);
 			}
 			
 			
@@ -673,8 +673,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			if(npc.m_bInKame)
 			{
 				npc.FaceTowards(vecTarget, 650.0);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_flSpeed = 0.0;
 			}
 			else

@@ -1402,6 +1402,8 @@ void Waves_RoundStart(bool event = false)
 				TF2_RegeneratePlayer(client);
 		}
 	}
+	if(CvarInfiniteCash.BoolValue)
+		CurrentCash = 999999;
 
 	if(Construction_Mode())
 	{
@@ -1450,6 +1452,13 @@ public Action Waves_RoundStartTimer(Handle timer)
 		}
 		
 	}
+	return Plugin_Continue;
+}
+
+public Action Waves_AllowVoting(Handle timer)
+{
+	Waves_SetReadyStatus(1);
+	SPrintToChatAll("You may now ready up.");
 	return Plugin_Continue;
 }
 
@@ -2468,7 +2477,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						AlreadyWaitingSet(true);
 					}
-					Waves_SetReadyStatus(1);
+					if(EnableSilentMode)
+					{
+						Waves_SetReadyStatus(2);
+						//wait a minimum of 30 seconds when theres too many players.
+						SPrintToChatAll("You cannot ready up for 30 seconds.");
+						CreateTimer(30.0, Waves_AllowVoting, _, TIMER_FLAG_NO_MAPCHANGE);
+					}
+					else
+						Waves_SetReadyStatus(1);
 				}
 				else
 				{
@@ -3079,7 +3096,7 @@ void DoGlobalMultiScaling()
 		EnableSilentMode = true;
 	else
 		EnableSilentMode = false;
-
+	
 	playercount *= 0.88;
 	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 
@@ -3164,10 +3181,11 @@ float GetScaledPlayerCountMulti(int players)
     return multiplier;
 }
 
-void ScalingMultiplyEnemyHpGlobalScale(int iNpc)
+void ScalingMultiplyEnemyHpGlobalScale(int iNpc, float modif_hp = 1.0)
 {
 	float Maxhealth = float(ReturnEntityMaxHealth(iNpc));
 	Maxhealth *= MultiGlobalHealth;
+	Maxhealth *= modif_hp;
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToNearest(Maxhealth));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToNearest(Maxhealth));
 }
@@ -3830,6 +3848,14 @@ void Waves_EnemySpawned(int entity)
 		Call_StartFunction(null, ModFuncEnemy);
 		Call_PushCell(entity);
 		Call_Finish();
+	}
+	if(!b_thisNpcIsARaid[entity] && XenoExtraLogic(true))
+	{
+		ApplyStatusEffect(entity, entity, "Xeno's Territory", 99999.0);
+	}
+	if(!b_thisNpcIsARaid[entity] && FishExtraLogic(true))
+	{
+		ApplyStatusEffect(entity, entity, "Corrupted Godly Power", 99999.0);
 	}
 }
 

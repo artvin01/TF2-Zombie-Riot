@@ -855,6 +855,14 @@
 	{
 		"en"	"Ignore."
 	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
+	}
 	"Mystery Beer"
 	{
 		"en"	"Mystery Beer"
@@ -1343,37 +1351,13 @@
 	{
 		"en"	"You cannot get downed."
 	}
-	"Plasm I"
-	{
-		"en" 	"Plasm I"
-	}
-	"Plasm I Desc"
-	{
-		"en"	"Slows NPCs by 8％.\nReduces attackspeed by 5％."
-	}
-	"Plasm II"
-	{
-		"en"	"Plasm II"
-	}
-	"Plasm II Desc"
-	{
-		"en" 	"Slows NPCs by 11％.\nReduces attackspeed by 8％."
-	}
-	"Plasm III"
-	{
-		"en"	"Plasm III"
-	}
-	"Plasm III Desc"
-	{
-		"en" 	"Slows NPCs by 14％.\nReduces attackspeed by 11％."
-	}
 	"Plasmatic Rampage"
 	{
 		"en"	"Plasmatic Rampage"
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Boost damage dealt and resist +15％.\nBoosts attackspeed by +25％\n{yellow}(BELOW IS FOR PLASMIC SURPRISE ONLY)\n{darkviolet}Ability cooldowns are reduced, gain extra regen below 25％ HP."
+		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY reduces Plasmic Elemental buildup penalty and cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
@@ -1381,23 +1365,23 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Increased Attackspeed and 2x Plasmic Elemental Buildup against enemies."
+		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 	}
-	"Plasmatized Inoculation"
+	"Plasmic Layering I"
 	{
-		"en"	"Plasmatized Inoculation"
+		"en"	"Plasmic Layering I"
 	}
-	"Plasmatized Inoculation Desc"
+	"Plasmic Layering I Desc"
 	{
-		"en" 	"Gain Random Plasma Effect shown in your hud."
+		"en" 	"Increases damage and resistance by +15％ while inside the Plasmatized Bubble's radius."
 	}
-	"Plasm-Allocator"
+	"Plasmic Layering II"
 	{
-		"en"	"Plasm-Allocator"
+		"en"	"Plasmic Layering II"
 	}
-	"Plasm-Allocator Desc"
+	"Plasmic Layering II Desc"
 	{
-		"en" 	"1.5x Plasmic Elemental Buildup against enemies."
+		"en" 	"Increases damage and resistance by +25％ while inside the Plasmatized Bubble's radius."
 	}
 	"Ziberian Flagship Weaponry"
 	{
@@ -1463,6 +1447,22 @@
 	"Liberal Tango Desc"
 	{
 		"en"	"+30％ damage dealt, healing done, and damage reduction"
+	}
+	"Xeno's Territory"
+	{
+		"en"	"Xeno's Territory"
+	}
+	"Xeno's Territory Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
+	}
+	"Corrupted Godly Power"
+	{
+		"en"	"Corrupted Godly Power"
+	}
+	"Corrupted Godly Power Desc"
+	{
+		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
 	}
 	"Paralysis"
 	{

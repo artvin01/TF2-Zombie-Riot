@@ -321,8 +321,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -406,15 +406,15 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 

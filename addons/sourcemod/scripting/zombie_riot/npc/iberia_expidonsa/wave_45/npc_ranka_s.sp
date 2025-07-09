@@ -184,11 +184,11 @@ public void IberiaRanka_S_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		IberiaRanka_SSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -288,7 +288,7 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 						npc.m_flArmorToGive = 1000.0;
 					}
 					if(NpcStats_IberiaIsEnemyMarked(target))
-						npc.m_flArmorToGive *= 1.25;
+						npc.m_flArmorToGive *= 1.5;
 						
 					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,IberiaBeaconGiveArmor);
 					IberiaArmorEffect(npc.index, 150.0);

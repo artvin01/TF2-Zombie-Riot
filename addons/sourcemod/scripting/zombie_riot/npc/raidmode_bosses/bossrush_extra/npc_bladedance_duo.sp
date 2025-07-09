@@ -226,7 +226,7 @@ public void RaidbossBladedance_Duo_ClotThink(int iNPC)
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 	}
 

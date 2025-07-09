@@ -753,11 +753,11 @@ static void Internal_ClotThink(int iNPC)
 		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 	}
@@ -1036,6 +1036,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 		{
 			Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(spawn_index);
 			npc.m_iTargetAlly = entity;
+			NpcStats_CopyStats(entity, spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

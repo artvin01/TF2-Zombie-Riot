@@ -143,11 +143,11 @@ static void Internal_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		WanderingSpiritSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -265,6 +265,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
 						if(spawn_index > MaxClients)
 						{
+							NpcStats_CopyStats(npc.index, spawn_index);
 							if(StrEqual(c_NpcName[npc.index], "Wandering Spitit"))
 								strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), "Vengeful Spitit");
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);

@@ -279,23 +279,23 @@ public void Diversionistico_ClotThink(int iNPC)
 			if(AntiCheeseReply == 0)
 			{
 				if(!npc.m_bPathing)
-					NPC_StartPathing(npc.index);
+					npc.StartPathing();
 
-				NPC_SetGoalVector(npc.index, vPredictedPos, true);
+				npc.SetGoalVector(vPredictedPos, true);
 			}
 			else if(AntiCheeseReply == 1)
 			{
 				if(npc.m_bPathing)
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 			}
 		}
 		else 
 		{
 			DiversionCalmDownCheese(npc.index);
 			if(!npc.m_bPathing)
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		switch(AntiCheeseReply)
 		{
@@ -520,8 +520,6 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 
 		if(RespectOutOfBounds && IsPointOutsideMap(AproxRandomSpaceToWalkTo))
 			continue;
-
-		AproxRandomSpaceToWalkTo[2] += 1.0;
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
 		if(b_IsGiant[npc.index])
@@ -534,24 +532,16 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 			hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
 		}
+		if(IsBoxHazard(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again)) //Retry.
+			continue;
+
+		AproxRandomSpaceToWalkTo[2] += 1.0;
 		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 			continue;
 			
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+		if(IsBoxHazard(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again)) //Retry.
 			continue;
 		
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			continue;
-		
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			continue;
-		
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-		AproxRandomSpaceToWalkTo[2] += 18.0;
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
 		RemoveSpawnProtectionLogic(npc.index, true);

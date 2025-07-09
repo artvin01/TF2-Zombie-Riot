@@ -89,7 +89,7 @@ public void QuincyMapStart()
 }
 static int Get_Quincy_Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
 public void Activate_Quincy_Bow(int client, int weapon)
 {

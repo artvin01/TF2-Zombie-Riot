@@ -326,14 +326,14 @@ static void ClotThink(int iNPC)
 					Ruina_Color(color);
 					Helia_Healing_Logic(npc.index, 1200, 250.0, GameTime, 3.5);
 
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 			}
 			else				
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
 				int color[4];
@@ -344,7 +344,7 @@ static void ClotThink(int iNPC)
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 		}
 
 		Ruina_Self_Defense Melee;
@@ -376,8 +376,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

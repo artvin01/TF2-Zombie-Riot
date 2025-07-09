@@ -546,8 +546,8 @@ static void Clone_ClotThink(int iNPC)
 	{
 		case 0:
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
 			npc.PlayRocketshotready();
@@ -742,8 +742,8 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddActivityViaSequence("layer_taunt_most_wanted");
@@ -766,8 +766,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 0;
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
 					npc.m_flDoingAnimation = gameTime + 15.0;	
@@ -874,11 +874,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -886,7 +886,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1091,8 +1091,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 					case 3:CPrintToChatAll("{skyblue}Harrison{default}: They won't miss you. Probably.");
 					case 4:CPrintToChatAll("{skyblue}Harrison{default}: Auto Rockets are fully charged");
 				}
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
 				npc.PlayRocketshotready();

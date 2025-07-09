@@ -1781,31 +1781,31 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30％ (cant go below 1)"
+		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Panic Attack Desc"
@@ -2790,7 +2790,7 @@
 	}
 	"The Standchen Desc AltPap"
 	{
-		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
+		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage (true damage)."
 		"fr"	"Attaques ont un effet élémental Necrôse"
 	}
 	"The Standchen Desc AltPap 2"
@@ -3081,8 +3081,8 @@
 	}
 	"The Flagellant Extra Desc"
 	{
-		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract more mini-bosses. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
-		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de KO. Cet ensemble pourrait attirer plus de Mini-boss. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
+		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
+		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de Knockback. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
 		"chi"	"在倒地时使用自疗，复活，另有几率无视复活次数。这个套装更容易拉精英怪的仇恨。检查武器+tab可以读取更多武器信息。"
 	}
 	"The Flagellant Generic Pap"
@@ -3652,26 +3652,36 @@
 		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
 		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
 		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
-		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포로, 최대 1초까지 지속됩니다.\n공격 속도가 느리고 원거리 피해 저항력이 강합니다.\n근접 피해에 취약해집니다."
+		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포.\n공속이 감소하고 원거리 저항 증가\n근접 취약."
 	}
 	"Victorian 2 Desc"
 	{
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
-		"ko"	"피해량 증가, 원거리 피해 저항, 발사 속도 증가.\n새로운 능력(M2) - 충전 사격: 강력한 포탄 10개를 장전합니다.\n5개에 도달하면 남은 포탄을 모두 발사할 수 있습니다.\n경고! 체력을 잃고 무기가 과열되어 잠시 로켓을 쏠 수 없습니다."
+		"ko"	"피해량, 원거리 저항, 발사 속도 증가.\nM2 - 강력한 포탄 10개를 장전합니다.\n5발 남으면 전탄발사 사용가능.\n경고! 전탄발사시, 자가피해및 일정시간  피해량 감소및 다른 어빌 활성화 불가."
 	}
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
-		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 피해 저항이 증가.\n새로운 능력 - 폭격: 30초 동안 공격 속도가 엄청나게 짧아지고 15초 후에는 피해량도 증가합니다.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
+		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 저항 증가.\nR - 30초동안 공속이 증가하고 피해량 감소, 15초후 피해량 대폭 증가.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
 	}
 	"VictorianLauncher Desc Extra"
 	{
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 범위 +10％"
+	}
+	"VictorianLauncher 4 Perk Desc"
+	{
+		"en"	"Reduced Over Heated Duration by 25％"
+		"ko"	"과열 지속시간 25％ 감소"
+	}
+	"VictorianLauncher 5 Perk Desc"
+	{
+		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
+		"ko"	"추가 투사체 속도 +200Hu\n조준 지원 활성화"
 	}
 	"The Merchant Desc"
 	{
@@ -4352,47 +4362,59 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A special gift made by Koshi for the mercs, as a reward for all the training in the Expidonsan Simulator."
-	}
-	"Plasma Elemental Desc"
-	{
-		"en"	"{darkviolet}Upon filled, Plasmic Elemental debuff inflicts vulnerability and the Plasm debuff on the enemy.\n{green}Plasm strength increases if the victim is already Plasm-ed.\n{yellow}Plasm debuff duration and vulnerability strength/duration scale with the attacker's PaP level.\n{green}If fully filled via melee, immunity cooldown is reduced, and debuff/vuln durations are increased."
+		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, heals nearby allies around the affected, buildup slows down on the victim.\nYou revive allies 30％ faster!"
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage and has extra effects when triggering its elemental effect with this."
+		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, reduces elemental cooldown and\nbuildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Increases overall stats, grants a bunch of health.\nNow deals extra damage against Plasm-ed targets!"
+		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict extra damage and MASSIVE Plasmic Elemental damage."
+		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
-		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown, and allows it to inflict Plasm I on the victim."
-	}
-	"Plasma Inject Pap 4 Desc"
-	{
-		"en" 	"Increases overall stats.\nReduces Lethal Injection's cooldown, and grants it an extra ability charge!"
-	}
-	"Plasma Inject Pap 5 Desc"
-	{
-		"en" 	"Increases overall stats.\nGrants Lethal Injection another extra charge, and allows it to inflict Plasm II instead of I."
+		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
 		"en" 	"Increases overall stats."
 	}
+	"Plasma Bubble Desc"
+	{
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
+	}
+	"Plasma Bubble Pap Any Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+	}
+	"Plasma Bubble Pap 3 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering I."
+	}
+	"Plasma Bubble Pap 5 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering II instead of I."
+	}
+	"Plasma Bubble Pap 7 or 8 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
+	}
 	"Plasminator Desc"
 	{
 		"en"	"An Expidonsan clockwork assault rifle, that shoots rapid Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
 	}
+	"Plasminator Pap 1 Desc"
+	{
+		"en"	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
+	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts 35％ of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts its damage as additional Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
@@ -4400,11 +4422,11 @@
 	}
 	"Plasminator Pap 4 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range, plasmic elemental damage and reduces its cooldown."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage, and reduces its cooldown."
 	}
 	"Chemical Spewer Desc"
 	{
-		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage equal to 50％ of damage dealt.\nApplies afterburn that deals True damage."
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage alongside damage dealt.\nApplies afterburn that deals Magic damage."
 	}
 	"Chemical Spewer Pap 1"
 	{

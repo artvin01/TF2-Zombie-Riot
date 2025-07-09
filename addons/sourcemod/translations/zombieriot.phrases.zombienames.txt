@@ -556,6 +556,10 @@
 		"pt"		"Xeno Medic Main de Combate"
 		"nl"		"Xeno Strijd Medicus Main"
 	}
+	"Xeno Infected Lab Doctor"
+	{
+		"en" 	"Xeno Infected Lab Doctor"
+	}
 	"Xeno Giant Pyro Main"
 	{
 		"en" 		"Xeno Giant Pyro Main"
@@ -662,11 +666,13 @@
 		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 	}
-	"Bloonarius"
+	"Bloonarius the Inflator"
 	{
-		"en" 		"Bloonarius"
-		"pt"		"Balãorista"
-		"ru" 		"Шариус"
+		"en" 		"Bloonarius the Inflator"
+	}
+	"Reality Warper Phayze"
+	{
+		"en" 		"Reality Warper Phayze"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -854,6 +860,10 @@
 	"Barracks Militia Desc"
 	{
 		"en"		"Basic unit of basic melee needs."
+	}
+	"Xeno Infected Lab Doctor Desc"
+	{
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
 	}
 	"Archer"
 	{
@@ -3086,7 +3096,7 @@
 	}
 	"Chaos Elemental Damage Desc"
 	{
-		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.}nHits only upto 3 additional allies."
+		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
 		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
 	}
 	"Nervous Impairment Elemental Damage"
@@ -3119,6 +3129,14 @@
 		"en" "It will display in your hud as the above icon.\nIf it fills up your armor bar, you take heavy drawbacks, unqiue to each.\nRegain armor to cure yourself."
 		"es" "Se mostrara en tu HUD como el icono superior.\nSi la barra entera se llena, recibes maleficios fuertes y diferentes.\nRecibe armadura para curar este daño."
 	}
+	"Necrosis Elemental Damage"
+	{
+		"en"	"Necrosis Elemental Damage"
+	}
+	"Necrosis Elemental Damage Desc"
+	{
+		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+	}
 
 	"Overmana Overload"
 	{
@@ -3129,6 +3147,22 @@
 	{
 		"en" "Your mana overloads, you cannot contain it.\nYou are slowed for some time heavily, a ruinan cannon strikes onto your location after sometime.\nDamage depends on your Max mana."
 		"es" "Tu mana se sobrecarga, no puedes contenerlo.\nEres ralentizado temporalmente, y un Cañon Ruiniaco es marcado en tu posicion.\nEl daño depende de tu mana maximo."
+	}
+	"Wrench Building"
+	{
+		"en" "Wrench Usage"
+	}
+	"Wrench Building Desc"
+	{
+		"en" "Press {yellow}(R) {green}to access your building menu.\nWith {yellow}(F) {green}You have access to an extra menu for buildings.\nPlace buildings by buying them with scrap in this menu."
+	}
+	"Barracks Building Explain"
+	{
+		"en" "Barracks Building"
+	}
+	"Barracks Building Explain Desc"
+	{
+		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
 	}
 	"Vhxis"
 	{
@@ -3274,7 +3308,7 @@
 	}
 	"Sentinel Desc"
 	{
-		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+		"en"		"If it loses its armor, it buffs everyone around it massively for a short time."
 	}
 	"Ironborus"
 	{
@@ -4294,5 +4328,15 @@
 	"Instinct's Summon"
 	{
 		"en"	"Instinct's Summon"
+	}
+	"Plasmic Elemental Damage"
+	{
+		"en"	"Plasmic Elemental Damage"
+		"es"	"Daño Elemental Plasmico"
+	}
+	"Plasmic Elemental Damage Desc"
+	{
+		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
 }

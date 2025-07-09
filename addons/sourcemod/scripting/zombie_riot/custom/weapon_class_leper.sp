@@ -310,6 +310,11 @@ void LeperReturnToNormal(int client, int propdelete, int ExtraLogic = 0)
 			SetVariantInt(1);
 			AcceptEntityInput(client, "SetForcedTauntCam");
 		}
+		else
+		{
+			SetVariantInt(0);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
 			
 		if(ExtraLogic == 1)
 		{
@@ -926,5 +931,5 @@ int SetCameraEffectLeperWrath(int client, int &ModelToDelete)
 
 static int Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }

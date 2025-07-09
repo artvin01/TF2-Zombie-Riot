@@ -249,7 +249,7 @@ public void VoidCarrier_ClotThink(int iNPC)
 			else 
 			{
 				npc.m_flSpeed = 400.0;
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+				npc.SetGoalEntity(npc.m_iTargetAlly);
 			}
 		}
 		else
@@ -277,7 +277,7 @@ public void VoidCarrier_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 				//Throw valid ally
 				if(npc.m_iOverlordComboAttack == 2)
 				{
@@ -298,7 +298,7 @@ public void VoidCarrier_ClotThink(int iNPC)
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}
 			VoidCarrierSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		}

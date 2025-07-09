@@ -600,8 +600,8 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
@@ -626,8 +626,8 @@ static void Internal_ClotThink(int iNPC)
 			RemoveSpecificBuff(npc.index, "Solid Stance");
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			npc.m_flSpeed = 330.0;
 			npc.m_iInKame = 0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
@@ -736,8 +736,8 @@ static void Internal_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 			npc.FaceTowards(vecTarget, 80.0);
 		}
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flSpeed = 0.0;
 		npc.m_flDoingAnimation = GetGameTime() + 0.1;
 	}
@@ -745,8 +745,8 @@ static void Internal_ClotThink(int iNPC)
 	{
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		NPC_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 		SilvesterApplyEffects(npc.index, false);
@@ -779,8 +779,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(npc.m_flReloadDelay && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		NPC_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 		npc.m_flReloadDelay = 0.0;
@@ -1050,11 +1050,11 @@ static void Internal_ClotThink(int iNPC)
 		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1166,8 +1166,8 @@ static void Internal_ClotThink(int iNPC)
 			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
 			{
 		//		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
-		//		NPC_StopPathing(npc.index);
-		//		npc.m_bPathing = false;
+		//		npc.StopPathing();
+		//		
 		//		npc.m_flSpeed = 0.0;
 				npc.FaceTowards(vecTarget, 99999.9);
 				float pos[3];
@@ -1233,8 +1233,8 @@ static void Internal_ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
 				npc.m_flReloadDelay = GetGameTime(npc.index) + 3.0;
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_flSpeed = 0.0;
 				float pos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1623,6 +1623,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(entity, spawn_index);
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
 			if(i_RaidGrantExtra[spawn_index] == 6)
 			{

@@ -586,18 +586,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		return;
 
 	int wave = iRuinaWave();
-	//whats a "switch" statement??
-	/*if(wave<=15)	
-	{
-
-	}
-	else if(wave <=30)	
-	{
-		
-	}
-	//npc's during "stage 3" get energy from taking dmg. going into its whole "sacrifice" theme.
-	else*/ 
-	if(wave <= 45)	
+	if(wave <= 20)	
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
@@ -606,11 +595,11 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
 	}
-	else if(wave <=60)
+	else if(wave <=40)
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1350.0*(Ratio-Difference);
+		float Give = 1450.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -619,7 +608,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1500.0*(Ratio-Difference);
+		float Give = 1700.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -711,9 +700,9 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 				fl_npc_healing_duration[npc.index] = GameTime + 2.5;		
 				if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
 				{
-					NPC_SetGoalEntity(npc.index, Healer);
+					npc.SetGoalEntity(Healer);
 					npc.StartPathing();
-					npc.m_bPathing = true;
+					
 					
 				}
 				return;
@@ -803,21 +792,21 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 									
 					float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 							
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					npc.SetGoalEntity(PrimaryThreatIndex);
 				}
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 
 				Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -838,9 +827,9 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 			
 						if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
 						{
-							NPC_SetGoalEntity(npc.index, Master_Id_Main);
+							npc.SetGoalEntity(Master_Id_Main);
 							npc.StartPathing();
-							npc.m_bPathing = true;
+							
 
 							Ruina_Special_Logic(npc.index, Master_Id_Main);
 								
@@ -849,8 +838,8 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 						{
 							if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
 							{
-								NPC_StopPathing(npc.index);
-								npc.m_bPathing = false;
+								npc.StopPathing();
+								
 							}
 							else	//but if master's target is too close we attack them
 							{
@@ -860,11 +849,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 										
 									float vPredictedPos[3];  PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 										
-									NPC_SetGoalVector(npc.index, vPredictedPos);
+									npc.SetGoalVector(vPredictedPos);
 								}
 								else 
 								{
-									NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+									npc.SetGoalEntity(PrimaryThreatIndex);
 								}
 								npc.StartPathing();
 							}
@@ -878,11 +867,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 								
 							float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 							
-							NPC_SetGoalVector(npc.index, vPredictedPos);
+							npc.SetGoalVector(vPredictedPos);
 						}
 						else 
 						{
-							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+							npc.SetGoalEntity(PrimaryThreatIndex);
 						}
 
 						Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
@@ -898,17 +887,17 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 						
 					if(dist > (100.0 * 100.0))
 					{
-						NPC_SetGoalEntity(npc.index, Master_Id_Main);
+						npc.SetGoalEntity(Master_Id_Main);
 						npc.StartPathing();
-						npc.m_bPathing = true;
+						
 
 						Ruina_Special_Logic(npc.index, Master_Id_Main);
 						
 					}
 					else
 					{
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
+						npc.StopPathing();
+						
 					}	
 				}
 				//for the double type just gonna use melee npc logic
@@ -919,11 +908,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 									
 						float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
 									
-						NPC_SetGoalVector(npc.index, vPredictedPos);
+						npc.SetGoalVector(vPredictedPos);
 					}
 					else 
 					{
-						NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+						npc.SetGoalEntity(PrimaryThreatIndex);
 					}
 					npc.StartPathing();
 
@@ -938,8 +927,8 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 	{
 		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			return;
@@ -954,11 +943,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 			
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 		npc.StartPathing();
@@ -983,11 +972,11 @@ void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//
 	{
 		float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 		
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	}
 	else 
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 	}
 	npc.StartPathing();
 }
@@ -1018,17 +1007,17 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 						
 		if(dist > (225.0 * 225.0))
 		{
-			NPC_SetGoalEntity(npc.index, Anchor_Id);
+			npc.SetGoalEntity(Anchor_Id);
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 
 			Ruina_Special_Logic(npc.index, Anchor_Id);
 					
 		}
 		else
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 		}	
 	}
 	else
@@ -1041,11 +1030,11 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		npc.StartPathing();
 	}
@@ -1349,14 +1338,14 @@ enum struct Ruina_Self_Defense
 	}
 }
 
-static float fl_mana_sickness_multi[MAXENTITIES];
-static int i_mana_sickness_flat[MAXENTITIES];
-static bool b_override_Sickness[MAXENTITIES];
+static float fl_mana_sickness_multi;
+static int i_mana_sickness_flat;
+static bool b_override_Sickness;
 void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0, bool override = false)
 {
-	fl_mana_sickness_multi[iNPC] = Multi;
-	i_mana_sickness_flat[iNPC] = flat_amt;
-	b_override_Sickness[iNPC] = override;
+	fl_mana_sickness_multi = Multi;
+	i_mana_sickness_flat= flat_amt;
+	b_override_Sickness= override;
 	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
 }
 void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
@@ -1369,13 +1358,13 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
-	bool override = b_override_Sickness[entity];
+	bool override = b_override_Sickness;
 	
 	if(fl_mana_sickness_timeout[victim] > GameTime && !override)
 		return;
 		
-	float Multi = fl_mana_sickness_multi[entity];
-	int flat_amt = i_mana_sickness_flat[entity];
+	float Multi = fl_mana_sickness_multi;
+	int flat_amt = i_mana_sickness_flat;
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
 	int wep_hold = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
@@ -1387,7 +1376,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 		}
 	}
 
-	b_override_Sickness[entity] = false;
+	b_override_Sickness = false;
 
 	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
 
@@ -1446,7 +1435,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(mana <=400.0)	//a base mana asumption
 		mana=400.0;
 
-	if(wave<=15)
+	if(wave<=10)
 	{
 		Radius		= 100.0;
 		dmg 		= mana+100.0;	//evil.
@@ -1454,7 +1443,7 @@ static void Apply_Sickness(int iNPC, int Target)
 		Timeout 	= 6.0;
 		Slow_Time 	= 5.0;
 	}
-	else if(wave<=30)
+	else if(wave<=20)
 	{
 		Radius		= 125.0;
 		dmg 		= mana*1.25+200.0;
@@ -1462,7 +1451,7 @@ static void Apply_Sickness(int iNPC, int Target)
 		Timeout 	= 5.5;
 		Slow_Time 	= 5.0;
 	}
-	else if(wave<=45)
+	else if(wave<=30)
 	{
 		Radius		= 175.0;
 		dmg 		= mana*1.5+300.0;
@@ -1742,7 +1731,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 				npc.StartPathing();
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 			}
 			else
 			{
@@ -1754,7 +1743,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 			npc.StartPathing();
 			float vBackoffPos[3];
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.SetGoalVector(vBackoffPos, true);
 		}
 		
 		return;
@@ -1765,8 +1754,8 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	{
 		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bAllowBackWalking=false;
 		}
 		else
@@ -1776,8 +1765,8 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 	else	//no?
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bAllowBackWalking=false;
 	}
 }
@@ -1911,8 +1900,8 @@ bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, flo
 				npc.m_flDoingAnimation = GameTime + 1.0;
 				npc.SetPlaybackRate(1.0);	
 				npc.SetCycle(0.1);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");
 				return false;

@@ -367,10 +367,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					if(enemy.ExtraThinkSpeed != 0.0 && enemy.ExtraThinkSpeed != 1.0)
 						f_AttackSpeedNpcIncrease[entity_Spawner]	= enemy.ExtraThinkSpeed;
 						
-					if(!b_thisNpcIsARaid[entity_Spawner] && XenoExtraLogic(true))
-					{
-						fl_Extra_Damage[entity_Spawner] *= 1.1;
-					}
 					if(enemy.ExtraSize != 1.0)
 					{
 						float scale = GetEntPropFloat(entity_Spawner, Prop_Send, "m_flModelScale");
@@ -1924,7 +1920,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
+		if(!(b_DamageNumbers[attacker] && b_DisplayDamageHudSettingInvert[attacker])) //hide if dmg numbers on, and setting on
 		{
 			static char c_DmgDelt[64];
 			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
@@ -2034,7 +2030,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(Debuff_Adder[0])
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
 
-		if(b_DisplayDamageHudSetting[attacker] || !b_DamageNumbers[attacker])
+		if(!(b_DamageNumbers[attacker] && b_DisplayDamageHudSettingInvert[attacker])) //hide if dmg numbers on, and setting on
 		{
 			static char c_DmgDelt[64];
 			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));

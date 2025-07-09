@@ -601,8 +601,8 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",true);
 				TeleportEntity(npc.index, Pos);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				i_khamlCutscene[npc.index] = 13;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
 				MusicEnum music;
@@ -906,7 +906,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 					if(npc.m_flCharge_delay < GetGameTime(npc.index))
 					{
 						if(npc.IsOnGround() && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
@@ -960,7 +960,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 							}
 						}
 					}
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -968,7 +968,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1000,8 +1000,8 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		{
 			npc.PlayIdleAlertSound();
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump");
 			npc.m_flAttackHappens = 0.0;
@@ -1071,8 +1071,8 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 
 		}
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
 		npc.m_flAttackHappens = 0.0;
@@ -1119,8 +1119,8 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 	if(!npc.m_flInJump && npc.m_flRangedSpecialDelay < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_yetipunch");
 		npc.m_flAttackHappens = 0.0;
@@ -1914,8 +1914,8 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flJumpCooldown < GetGameTime(npc.index) && !npc.m_flFixAttackCanceling)
 	{
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown");
 		npc.m_flAttackHappens = 0.0;

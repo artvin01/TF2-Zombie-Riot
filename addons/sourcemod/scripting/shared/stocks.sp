@@ -226,6 +226,18 @@ stock bool FindInfoTarget(const char[] name)
 	}
 	return false;
 }
+stock int FindInfoTargetInt(const char[] name)
+{
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
+	{
+		static char buffer[32];
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(StrEqual(buffer, name, false))
+			return entity;
+	}
+	return 0;
+}
 
 stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 {
@@ -1190,14 +1202,14 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 }
 
 
-stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0)
+stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0, int effectoverride = 0)
 {
 	if(IsValidEntity(victim) && IsValidEntity(attacker))
 	{
 		if(HasSpecificBuff(victim, "Hardened Aura"))
 			return;
 
-		if(HasSpecificBuff(victim, "Thick Blood"))
+		if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != 1)
 			return;
 
 		if(attacker > 0 && attacker <= MaxClients)
@@ -1216,6 +1228,7 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		else
 			pack.WriteCell(-1);
 		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(effectoverride);
 		pack.WriteCell(damagetype);
 		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
@@ -1262,6 +1275,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			attacker = 0; //Make it the world that attacks them?
 	}
 
+	int effectoverride = pack.ReadCell();
 	if(StatusEffects_RapidSuturingCheck(victim, GameTimeClense))
 	{
 		return Plugin_Stop;
@@ -1273,7 +1287,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-	if(HasSpecificBuff(victim, "Thick Blood"))
+	if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != -1)
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)
@@ -4278,7 +4292,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	if(b_IsATrigger[entity])
+	if(b_IsATriggerHurt[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{

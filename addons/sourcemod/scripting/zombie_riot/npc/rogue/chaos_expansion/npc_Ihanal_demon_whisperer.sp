@@ -247,12 +247,12 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 			npc.StartPathing();
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			npc.SetGoalEntity(npc.m_iTargetAlly);
 			npc.StartPathing();
 		}
 		HallamDemonWhispererSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 

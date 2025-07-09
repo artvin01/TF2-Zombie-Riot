@@ -148,8 +148,8 @@ methodmap ArkSinger < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 200, 200, 255);
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		return npc;
 	}
 	
@@ -212,8 +212,8 @@ public void ArkSinger_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = gameTime + 0.9;
 			npc.m_flNextRangedAttackHappening = 0.0;
 			npc.m_bisWalking = false;
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 
 			f_SingerBuffedFor[npc.index] = gameTime + (npc.m_iOverlordComboAttack * 0.25);
 
@@ -271,11 +271,11 @@ public void ArkSinger_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -328,8 +328,8 @@ public void ArkSinger_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + (f_SingerBuffedFor[npc.index] > gameTime ? 1.5 : 2.0);
 
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 			}
 		}
