@@ -3666,7 +3666,7 @@
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
-		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 저항 증가.\nR - 30초동안 공속 감소및 피해량 증가, 15초후 피해량 증가.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
+		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 저항 증가.\nR - 30초동안 공속이 증가하고 피해량 감소, 15초후 피해량 대폭 증가.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
 	}
 	"VictorianLauncher Desc Extra"
 	{
