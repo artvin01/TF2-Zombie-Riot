@@ -845,7 +845,7 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 100％\nDecreases damage dealt by 40％"
+		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 	}
 	"Tonic Affliction Hide"
 	{

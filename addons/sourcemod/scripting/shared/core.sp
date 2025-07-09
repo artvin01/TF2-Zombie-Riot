@@ -1198,7 +1198,16 @@ public Action OnReloadBlockNav(int args)
 public void OnGameFrame()
 {
 #if defined ZR
-	NPC_SpawnNext(false, false);
+	int MaxLimitTest = 0;
+	while(NPC_SpawnNext(false, false))
+	{
+		MaxLimitTest++;
+		//failsafe
+		if(MaxLimitTest >= 2)
+		{
+			break;
+		}
+	}
 #endif	
 #if defined RPG
 	DoubleJumpGameFrame();
