@@ -300,7 +300,7 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 						npc.m_iAttacksTillReload --;
 						if(NpcStats_IberiaIsEnemyMarked(target))
 						{
-							npc.m_flNextMeleeAttack = gameTime + 0.5;
+							npc.m_flNextMeleeAttack = gameTime + 0.3;
 						}
 
 						if(IsValidEnemy(npc.index, target))
