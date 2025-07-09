@@ -137,6 +137,15 @@ static Action Timer_VictoriaLauncher(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerVictorianLauncher[client] = null;
+		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
+		if(IsValidEntity(entity))
+			RemoveEntity(entity);
+		entity = EntRefToEntIndex(VictoriaParticle_II[client]);
+		if(IsValidEntity(entity))
+			RemoveEntity(entity);
+		entity = EntRefToEntIndex(VictoriaParticle_III[client]);
+		if(IsValidEntity(entity))
+			RemoveEntity(entity);
 		return Plugin_Stop;
 	}	
 	
@@ -262,6 +271,7 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 			ApplyStatusEffect(client, client, "Victorian Launcher Overdrive", 1.0);
 		else //Once you activate the ability, don't swap to another weapon.
 			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
+		VL_EYEParticle(client);
 		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
 		if(!IsValidEntity(entity))
 		{
@@ -306,23 +316,7 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 		StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
 	}
 	else if(Charge_Mode[client])
-	{
-		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
-		if(!IsValidEntity(entity))
-		{
-			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-			if(IsValidEntity(entity))
-			{
-				float flPos[3];
-				float flAng[3];
-				GetAttachment(entity, "eyeglow_l", flPos, flAng);
-				int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
-				AddEntityToThirdPersonTransitMode(entity, particle);
-				SetParent(entity, particle, "eyeglow_l");
-				VictoriaParticle_I[client] = EntIndexToEntRef(particle);
-			}
-		}
-	}
+		VL_EYEParticle(client);
 	else
 	{
 		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
@@ -740,6 +734,24 @@ static void Did_Someone_Get_Hit(int entity, int victim, float damage, int weapon
 			Ability_CD = 0.0;
 		else
 			Ability_Apply_Cooldown(entity, 2, Ability_CD-(b_thisNpcIsARaid[victim] ? 1.0 : 0.2));
+	}
+}
+static void VL_EYEParticle(int client)
+{
+	int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
+	if(!IsValidEntity(entity))
+	{
+		entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+		if(IsValidEntity(entity))
+		{
+			float flPos[3];
+			float flAng[3];
+			GetAttachment(entity, "eyeglow_l", flPos, flAng);
+			int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
+			AddEntityToThirdPersonTransitMode(entity, particle);
+			SetParent(entity, particle, "eyeglow_l");
+			VictoriaParticle_I[client] = EntIndexToEntRef(particle);
+		}
 	}
 }
 
