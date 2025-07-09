@@ -3673,11 +3673,6 @@
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 범위 +10％"
 	}
-	"VictorianLauncher 3 Perk Desc"
-	{
-		"en"	"deals more damage 35％ the longer it travels"
-		"ko"	"비행시간 비례 피해량 35％ 증가"
-	}
 	"VictorianLauncher 4 Perk Desc"
 	{
 		"en"	"Reduced Over Heated Duration by 25％"

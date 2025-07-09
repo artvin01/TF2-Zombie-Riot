@@ -31,7 +31,6 @@ static int iHESH_Particle_I[MAXENTITIES];
 static int iHESH_Particle_II[MAXENTITIES];
 static int iHESH_Particle_III[MAXENTITIES];
 static bool bHESH_BIG_BOOM[MAXENTITIES];
-static bool bHESH_DoubleTap[MAXENTITIES];
 
 static int Load_SuperCharge[MAXPLAYERS];
 static bool Charge_Mode[MAXPLAYERS];
@@ -41,7 +40,6 @@ static bool Overheat_Mode[MAXPLAYERS];
 
 static float Victoria_TmepSpeed[MAXPLAYERS];
 static float Victoria_DoubleTapR[MAXPLAYERS];
-static bool Victoria_PerkDoubleTap[MAXPLAYERS];
 static bool Victoria_PerkDeadShot[MAXPLAYERS];
 static bool Victoria_PerkSpeedCola[MAXPLAYERS];
 
@@ -83,13 +81,11 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		{
 			switch(i_CurrentEquippedPerk[client])
 			{
-				case 3:{if(!Victoria_PerkDoubleTap[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;Victoria_PerkDoubleTap[client]=true;
-				SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 3 Perk Desc");}}
-				case 4:{if(!Victoria_PerkSpeedCola[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=true;Victoria_PerkDoubleTap[client]=false;
+				case 4:{if(!Victoria_PerkSpeedCola[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=true;
 				SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 4 Perk Desc");}}
-				case 5:{if(!Victoria_PerkDeadShot[client]){Victoria_PerkDeadShot[client]=true;Victoria_PerkSpeedCola[client]=false;Victoria_PerkDoubleTap[client]=false;
+				case 5:{if(!Victoria_PerkDeadShot[client]){Victoria_PerkDeadShot[client]=true;Victoria_PerkSpeedCola[client]=false;
 				SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");}}
-				default:{Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;Victoria_PerkDoubleTap[client]=false;}
+				default:{Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;}
 			}
 			delete h_TimerVictorianLauncher[client];
 			h_TimerVictorianLauncher[client] = null;
@@ -103,13 +99,11 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	{
 		switch(i_CurrentEquippedPerk[client])
 		{
-			case 3:{if(!Victoria_PerkDoubleTap[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;Victoria_PerkDoubleTap[client]=true;
-			SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 3 Perk Desc");}}
-			case 4:{if(!Victoria_PerkSpeedCola[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=true;Victoria_PerkDoubleTap[client]=false;
+			case 4:{if(!Victoria_PerkSpeedCola[client]){Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=true;
 			SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 4 Perk Desc");}}
-			case 5:{if(!Victoria_PerkDeadShot[client]){Victoria_PerkDeadShot[client]=true;Victoria_PerkSpeedCola[client]=false;Victoria_PerkDoubleTap[client]=false;
+			case 5:{if(!Victoria_PerkDeadShot[client]){Victoria_PerkDeadShot[client]=true;Victoria_PerkSpeedCola[client]=false;
 			SetGlobalTransTarget(client);PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");}}
-			default:{Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;Victoria_PerkDoubleTap[client]=false;}
+			default:{Victoria_PerkDeadShot[client]=false;Victoria_PerkSpeedCola[client]=false;}
 		}
 		DataPack pack;
 		h_TimerVictorianLauncher[client] = CreateDataTimer(0.1, Timer_VictoriaLauncher, pack, TIMER_REPEAT);
@@ -437,7 +431,6 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 	int entity = CreateEntityByName("zr_projectile_base");
 	if(IsValidEntity(entity))
 	{
-		bHESH_DoubleTap[entity]=Victoria_PerkDoubleTap[client];
 		bHESH_BIG_BOOM[entity]=false;
 		fHESH_FlyTime[entity]=GetGameTime()+1.0;
 		fHESH_DMG[entity]=RocketDMG;
@@ -688,23 +681,13 @@ static void Victorian_HESH_Touch(int entity, int target)
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 		int owner = EntRefToEntIndex(iHESH_Owner[entity]);
 		float DMGBoost=1.0, BaseDMG=fHESH_DMG[entity], DistBoost=fHESH_Radius[entity];
-		DMGBoost=((fHESH_FlyTime[entity]-GetGameTime()/1.0)*(bHESH_DoubleTap[entity] ? 0.35 : 0.15));
+		DMGBoost=((fHESH_FlyTime[entity]-GetGameTime()/1.0)*0.15);
 		DMGBoost *= -1.0;
 		DMGBoost += 1.0;
-		if(bHESH_DoubleTap[entity])
-		{
-			if(DMGBoost > 1.35)
-				DMGBoost=1.35;
-			if(DMGBoost < 0.85)
-				DMGBoost=0.85;
-		}
-		else
-		{
-			if(DMGBoost > 1.15)
-				DMGBoost=1.15;
-			if(DMGBoost < 0.85)
-				DMGBoost=0.85;
-		}
+		if(DMGBoost > 1.15)
+			DMGBoost=1.15;
+		if(DMGBoost < 0.85)
+			DMGBoost=0.85;
 		DistBoost*=DMGBoost;
 		BaseDMG*=DMGBoost;
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, DistBoost, Attributes_Get(weapon, 117, 1.0), _, _, _, _, _, Did_Someone_Get_Hit);
