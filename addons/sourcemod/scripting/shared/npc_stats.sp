@@ -3158,8 +3158,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void Update()
 	{
 		float flNextBotGroundSpeed;
-		this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
-		this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
 		if(i_IsNpcType[this.index] != 1)
 		{
 			if (this.m_iPoseMoveX < 0 && this.m_iPoseMoveX != -1)  
@@ -3220,7 +3218,9 @@ methodmap CClotBody < CBaseCombatCharacter
 					//too lazy to code this :D
 					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
 				}
-			}		
+			}	
+			this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
+			this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();	
 		}
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
