@@ -257,10 +257,11 @@ static void Victoria_Launcher_Effect(int client, bool HoldOn=false)
 	}
 	if(Rapid_Mode[client]>GetGameTime())
 	{
+		//It's ridiculous, but this is the solution I came up with.
 		if(HoldOn)
 			ApplyStatusEffect(client, client, "Victorian Launcher Overdrive", 1.0);
-		else
-			RemoveSpecificBuff(client, "Victorian Launcher Overdrive");
+		else //Once you activate the ability, don't swap to another weapon.
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime()+1.0);
 		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
 		if(!IsValidEntity(entity))
 		{
