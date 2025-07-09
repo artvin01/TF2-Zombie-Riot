@@ -3111,15 +3111,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_PoseMoveX[this.index]; }
 		public set(int TempValueForProperty) 	{ i_PoseMoveX[this.index] = TempValueForProperty; }
 	}
-	property float m_iPose_MoveScale
+	property int m_iPose_MoveScale
 	{
-		public get()							{ return this.GetPropFloat(Prop_Data, "m_fmove_scale"); }
-		public set(float TempValueForProperty) 	{ this.SetPropFloat(Prop_Data, "m_fmove_scale", TempValueForProperty); }
+		public get()							{ return this.GetPropF(Prop_Data, "m_imove_scale"); }
+		public set(int TempValueForProperty) 	{ this.SetPropF(Prop_Data, "m_imove_scale", TempValueForProperty); }
 	}
-	property float m_iPose_MoveYaw
+	property int m_iPose_MoveYaw
 	{
-		public get()							{ return this.GetPropFloat(Prop_Data, "m_fmove_yaw"); }
-		public set(float TempValueForProperty) 	{ this.SetPropFloat(Prop_Data, "m_fmove_yaw", TempValueForProperty); }
+		public get()							{ return this.GetPropFloat(Prop_Data, "m_imove_yaw"); }
+		public set(int TempValueForProperty) 	{ this.SetPropFloat(Prop_Data, "m_imove_yaw", TempValueForProperty); }
 	}
 	
 	property int m_iPoseMoveY
@@ -3510,8 +3510,8 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
-		.DefineFloatField("m_fmove_scale")
-		.DefineFloatField("m_fmove_yaw")
+		.DefineIntField("m_imove_scale")
+		.DefineIntField("m_imove_yaw")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
