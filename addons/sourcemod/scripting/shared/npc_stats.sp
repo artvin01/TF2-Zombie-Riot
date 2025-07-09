@@ -3242,13 +3242,17 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(this.m_bisWalking && i_IsNpcType[this.index] != 1) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
+			if (this.m_iPose_MoveScale != -1)
+			{
+				//robots use this wierdly enough.
+				m_flGroundSpeed = 300.0; //assume 300.0
+			}
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
 				if (this.m_iPose_MoveScale != -1)
 				{
 					//how much they move
-					PrintToChatAll(" pose Movescale %.0f",clamp((PlaybackSpeed), 0.0, 1.0));
 					this.SetPoseParameter(this.m_iPose_MoveScale, (clamp((PlaybackSpeed), 0.0, 1.0)));
 				}
 				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
