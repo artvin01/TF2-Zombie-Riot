@@ -2,53 +2,52 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_paincriticaldeath01.mp3",
-	"vo/mvm/norm/engineer_mvm_paincriticaldeath02.mp3",
-	"vo/mvm/norm/engineer_mvm_paincriticaldeath03.mp3",
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_painsharp01.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp02.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp03.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp04.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp05.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp06.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp07.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp08.mp3",
+	"vo/soldier_painsharp01.mp3",
+	"vo/soldier_painsharp02.mp3",
+	"vo/soldier_painsharp03.mp3",
+	"vo/soldier_painsharp04.mp3",
+	"vo/soldier_painsharp05.mp3",
+	"vo/soldier_painsharp06.mp3",
+	"vo/soldier_painsharp07.mp3",
+	"vo/soldier_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_battlecry01.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry02.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry03.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry04.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry05.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry06.mp3",
+	"vo/taunts/soldier_taunts19.mp3",
+	"vo/taunts/soldier_taunts20.mp3",
+	"vo/taunts/soldier_taunts21.mp3",
+	"vo/taunts/soldier_taunts18.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"weapons/pickaxe_swing1.wav",
+	"weapons/pickaxe_swing2.wav",
+	"weapons/pickaxe_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cbar_hitbod1.wav",
-	"weapons/cbar_hitbod2.wav",
-	"weapons/cbar_hitbod3.wav",
+	"weapons/cbar_hit1.wav",
+	"weapons/cbar_hit2.wav",
 };
 
-void MechaEngineerGiant_OnMapStart_NPC()
+void ApertureJumperPerfected_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/bots/engineer/bot_engineer.mdl");
+	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Mecha Giant Engineer");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mecha_engineer_giant");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Name, sizeof(data.Name), "Perfected Aperture Jumper");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_jumper_perfected");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Aperture;
@@ -59,16 +58,16 @@ void MechaEngineerGiant_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return MechaEngineerGiant(vecPos, vecAng, ally);
+	return ApertureJumperPerfected(vecPos, vecAng, ally);
 }
-methodmap MechaEngineerGiant < CClotBody
+methodmap ApertureJumperPerfected < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -80,13 +79,13 @@ methodmap MechaEngineerGiant < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME), 80;
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound()
@@ -100,11 +99,11 @@ methodmap MechaEngineerGiant < CClotBody
 	}
 	
 	
-	public MechaEngineerGiant(float vecPos[3], float vecAng[3], int ally)
+	public ApertureJumperPerfected(float vecPos[3], float vecAng[3], int ally)
 	{
-		MechaEngineerGiant npc = view_as<MechaEngineerGiant>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.35", "700", ally));
+		ApertureJumperPerfected npc = view_as<ApertureJumperPerfected>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
 		
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -112,38 +111,48 @@ methodmap MechaEngineerGiant < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_METAL;
+		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(MechaEngineerGiant_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(MechaEngineerGiant_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(MechaEngineerGiant_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(ApertureJumperPerfected_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureJumperPerfected_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ApertureJumperPerfected_ClotThink);
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 400.0;
+		npc.m_flSpeed = 300.0;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_paintrain/c_paintrain.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+	
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/hardhat.mdl");
 		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2022_safety_stripes/hwn2022_safety_stripes.mdl");
 
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr17_flakcatcher/spr17_flakcatcher.mdl");
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void MechaEngineerGiant_ClotThink(int iNPC)
+public void ApertureJumperPerfected_ClotThink(int iNPC)
 {
-	MechaEngineerGiant npc = view_as<MechaEngineerGiant>(iNPC);
+	ApertureJumperPerfected npc = view_as<ApertureJumperPerfected>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -173,7 +182,6 @@ public void MechaEngineerGiant_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -186,19 +194,39 @@ public void MechaEngineerGiant_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		MechaEngineerGiantSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		ApertureJumperPerfectedSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+	int PrimaryThreatIndex = npc.m_iTarget;
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(flDistanceToTarget < 4000.0) //too close, back off!! Now!
+	{
+		npc.StartPathing();
+		
+		int Enemy_I_See;
+	
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		{
+			float vBackoffPos[3];
+			npc.m_flSpeed = 300.0;
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex, 50.0, vBackoffPos);
+			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+		}
+	}
 	npc.PlayIdleAlertSound();
 }
 
-public Action MechaEngineerGiant_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ApertureJumperPerfected_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	MechaEngineerGiant npc = view_as<MechaEngineerGiant>(victim);
+	ApertureJumperPerfected npc = view_as<ApertureJumperPerfected>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -212,9 +240,9 @@ public Action MechaEngineerGiant_OnTakeDamage(int victim, int &attacker, int &in
 	return Plugin_Changed;
 }
 
-public void MechaEngineerGiant_NPCDeath(int entity)
+public void ApertureJumperPerfected_NPCDeath(int entity)
 {
-	MechaEngineerGiant npc = view_as<MechaEngineerGiant>(entity);
+	ApertureJumperPerfected npc = view_as<ApertureJumperPerfected>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -232,7 +260,7 @@ public void MechaEngineerGiant_NPCDeath(int entity)
 
 }
 
-void MechaEngineerGiantSelfDefense(MechaEngineerGiant npc, float gameTime, int target, float distance)
+void ApertureJumperPerfectedSelfDefense(ApertureJumperPerfected npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -253,9 +281,44 @@ void MechaEngineerGiantSelfDefense(MechaEngineerGiant npc, float gameTime, int t
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 1.5;
+				if(i_IsABuilding[target])
+				{
+					static float flMyPos[3];
+					static float flMyPos_2[3];
+					flMyPos[2] += 250.0;
+					flMyPos[0] = flMyPos_2[0];
+					flMyPos[1] = flMyPos_2[1];
+					WorldSpaceCenter(target, flMyPos_2);
+					PluginBot_Jump(npc.index, flMyPos);
+					npc.m_iOverlordComboAttack++;
+				}
+				if(npc.m_iOverlordComboAttack >= 1)
+				{
+					SetVariantString("1.25");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+					damageDealt = 95.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.0;
+				}
+				if(npc.m_iOverlordComboAttack >= 2)
+				{
+					SetVariantString("1.50");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+					damageDealt = 115.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.0;
+				}
+				if(npc.m_iOverlordComboAttack >= 3)
+				{
+					SetVariantString("2.0");
+					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+					damageDealt = 145.0;
+					if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2.0;
+				}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -283,7 +346,7 @@ void MechaEngineerGiantSelfDefense(MechaEngineerGiant npc, float gameTime, int t
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.5;
+				npc.m_flNextMeleeAttack = gameTime + 0.8;
 			}
 		}
 	}
