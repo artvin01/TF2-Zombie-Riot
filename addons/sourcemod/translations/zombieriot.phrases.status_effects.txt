@@ -855,6 +855,14 @@
 	{
 		"en"	"Ignore."
 	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
+	}
 	"Mystery Beer"
 	{
 		"en"	"Mystery Beer"
@@ -1439,6 +1447,22 @@
 	"Liberal Tango Desc"
 	{
 		"en"	"+30％ damage dealt, healing done, and damage reduction"
+	}
+	"Xeno's Territory"
+	{
+		"en"	"Xeno's Territory"
+	}
+	"Xeno's Territory Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
+	}
+	"Corrupted Godly Power"
+	{
+		"en"	"Corrupted Godly Power"
+	}
+	"Corrupted Godly Power Desc"
+	{
+		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
 	}
 	"Paralysis"
 	{

@@ -670,7 +670,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Oy oy oy! Cant attack her like that! I'll crush you!");
+						CPrintToChatAll("{gold}Silvester{default}: Thinking of taking {lightblue}Nemal{default} out first?");
 					}
 					case 2:
 					{
@@ -1309,6 +1309,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			if(!NemalAssistance)
 				cooldownDo *= 0.5;
 
+			if(NpcStats_IberiaIsEnemyMarked(target))
+				cooldownDo *= 0.5;
+
 			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
 		}
 	}
@@ -1479,6 +1482,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 
 					if(i_RaidGrantExtra[npc.index] >= 4)
 						cooldownDo *= 0.75;
+
+					if(NpcStats_IberiaIsEnemyMarked(Enemy_I_See))
+						cooldownDo *= 0.35;
 
 					npc.f_SilvesterMeleeSliceHappeningCD = gameTime + cooldownDo;
 					npc.m_flDoingAnimation = gameTime + 0.25;

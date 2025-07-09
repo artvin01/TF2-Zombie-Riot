@@ -514,6 +514,7 @@ static void ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					cooldown = 3.0;
+					npc.m_flSpeed = 500.0;
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
@@ -525,7 +526,7 @@ static void ClotThink(int iNPC)
 					npc.SetWeaponModel("");
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
-					npc.m_flSpeed = 400.0;
+					npc.m_flSpeed = 500.0;
 					cooldown = 5.0;
 					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
 				}

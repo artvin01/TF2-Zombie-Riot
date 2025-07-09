@@ -4292,7 +4292,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	if(b_IsATrigger[entity])
+	if(b_IsATriggerHurt[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{

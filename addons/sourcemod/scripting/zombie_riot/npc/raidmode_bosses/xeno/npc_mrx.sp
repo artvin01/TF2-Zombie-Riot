@@ -260,13 +260,12 @@ methodmap RaidbossMrX < CClotBody
 		if(XenoExtraLogic())
 			RaidModeTime = GetGameTime(npc.index) + 250.0;
 
-		npc.m_flMeleeArmor = 1.5; 		//Melee should be rewarded for trying to face this monster
-		npc.m_flRangedArmor = 0.75; 		//Melee should be rewarded for trying to face this monster
+		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
+		npc.m_flRangedArmor = 0.75;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
@@ -432,7 +431,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 2500.0;
+							float damage = 5000.0;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);								
 						
@@ -476,7 +475,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		{
 			if(npc.m_iChanged_WalkCycle != 14) 
 			{
-				fl_TotalArmor[npc.index] = 2.0;
+				fl_TotalArmor[npc.index] = 1.5;
 				npc.SetActivity("ACT_RAID_TYRANT_CHARGE_STUN");
 				npc.SetPlaybackRate(0.75);
 				npc.m_iChanged_WalkCycle = 14;
@@ -527,7 +526,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 9;
 				if(IsValidEntity(client))
 				{
-					SDKHooks_TakeDamage(client, npc.index, npc.index, 7000.0, DMG_CRUSH, -1);
+					SDKHooks_TakeDamage(client, npc.index, npc.index, 50000.0, DMG_CLUB, -1);
 					f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0;
 					ApplyStatusEffect(client, client, "Intangible", 3.0);
 					if(client <= MaxClients)
@@ -650,9 +649,9 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		if(f_NemesisHitBoxStart[npc.index] < gameTime && f_NemesisHitBoxEnd[npc.index] > gameTime)
 		{
 			if(i_SideHurtWhich[npc.index] == 2)
-				Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "RightHand", 2);
+				Nemesis_AreaAttack(npc.index, 6000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "RightHand", 2);
 			else
-				Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "LeftHand", 2);
+				Nemesis_AreaAttack(npc.index, 6000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "LeftHand", 2);
 		}
 		
 		if(npc.m_flAttackHappens < gameTime + 1.0)

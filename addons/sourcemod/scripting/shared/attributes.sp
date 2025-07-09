@@ -46,6 +46,11 @@ enum
 	Attrib_BuildingStatus_PreventAbuse = 4046, 
 	//used for anti abuse.
 	//specifally so you cant make ranged units lategame and sell all other units and just keep those alive forever.
+
+	Attrib_Weapon_MaxDmgMulti = 4047, 
+	Attrib_Weapon_MinDmgMulti = 4048, 
+	//used currently for heavy particle rifle
+	//but will probably be used for other weapons to define max/min dmg depending on whatever the weapon specific plugin does with it.
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

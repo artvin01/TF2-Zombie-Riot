@@ -229,8 +229,8 @@ void RitualistApplyBuff(int attacker, int victim, float &damage, int weapon)
 		if(!HasSpecificBuff(victim, "Liberal Tango"))
 		{
 			int BeamIndex = ConnectWithBeam(attacker, victim, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
-			SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
-			CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+			SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
+			CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		ApplyStatusEffect(attacker, victim, "Liberal Tango", DurationGive);
 	}
