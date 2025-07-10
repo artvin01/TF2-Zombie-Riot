@@ -175,9 +175,6 @@ public void SoulRunner_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		float targPos[3];
-		float chargerPos[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", chargerPos);
 		npc.m_iTarget = GetClosestTarget(npc.index, true);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}

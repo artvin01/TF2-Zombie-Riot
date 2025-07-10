@@ -258,7 +258,13 @@ public Action NpcEnemyAliveLimit(int client, int args)
 
 public Action Waves_ForcePanzer(int client, int args)
 {
-	NPC_SpawnNext(true, true); //This will force spawn a panzer.
+	char arg[20];
+	int index=0;
+	GetCmdArg(1, arg, sizeof(arg));
+	if(StringToIntEx(arg, index) <= 0 || index <= 0)
+		index=-1;
+
+	NPC_SpawnNext(true, true, index); //This will force spawn a panzer.
 	return Plugin_Handled;
 }
 

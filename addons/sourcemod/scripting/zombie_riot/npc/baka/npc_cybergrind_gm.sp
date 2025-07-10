@@ -774,13 +774,13 @@ static void CyberGrindGM_Final_Item(int iNPC)
 		{
 			case 0:
 			{
-				CyberGrindGM_Talk(npc, "MrV Talk 05");
+				CyberGrindGM_Talk("MrV Talk 05");
 				npc.m_flNextMeleeAttack = gameTime + 4.0;
 				npc.m_iOverlordComboAttack=1;
 			}
 			case 1:
 			{
-				CyberGrindGM_Talk(npc, "MrV Talk 06");
+				CyberGrindGM_Talk("MrV Talk 06");
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
@@ -989,18 +989,18 @@ static void CyberGrindGM_ClotThink(int iNPC)
 				case 0:
 				{
 					if(CyberGrind_Difficulty==4)
-						CyberGrindGM_Talk(npc, "MrV Talk 03");
+						CyberGrindGM_Talk("MrV Talk 03");
 					else
-						CyberGrindGM_Talk(npc, "MrV Talk 01");
+						CyberGrindGM_Talk("MrV Talk 01");
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
 					npc.m_iOverlordComboAttack=1;
 				}
 				case 1:
 				{
 					if(CyberGrind_Difficulty==4)
-						CyberGrindGM_Talk(npc, "MrV Talk 04");
+						CyberGrindGM_Talk("MrV Talk 04");
 					else
-						CyberGrindGM_Talk(npc, "MrV Talk 02");
+						CyberGrindGM_Talk("MrV Talk 02");
 					CyberGrind_InternalDifficulty = CyberGrind_Difficulty;
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
 					npc.m_iOverlordComboAttack=2;
@@ -1024,7 +1024,7 @@ static void CyberGrindGM_ClotThink(int iNPC)
 						}
 						NPC_CreateByName("npc_invisible_trigger_man", -1, SelfPos, AllyAng, TFTeam_Stalkers, "cybergrind_ex_hard");
 					}
-					CyberGrindGM_Talk(npc, "Rebels Arrive", true);
+					CyberGrindGM_Talk("Rebels Arrive", true);
 					/*if(CyberGrind_Difficulty!=4)
 					{
 						Waves_ClearWaves();
@@ -1399,7 +1399,7 @@ static Action RaidMode_EndVote(Handle timer, float time)
 	return Plugin_Continue;
 }
 
-static void CyberGrindGM_Talk(CyberGrindGM npc, const char[] text, bool NoName=false)
+static void CyberGrindGM_Talk(const char[] text, bool NoName=false)
 {
 	for(int i=0 ; i < MaxClients ; i++)
 	{
@@ -1407,7 +1407,7 @@ static void CyberGrindGM_Talk(CyberGrindGM npc, const char[] text, bool NoName=f
 		{
 			SetGlobalTransTarget(i);
 			if(NoName) CPrintToChat(i, "%t", text);
-			else CPrintToChat(i, "{slateblue}%s{default}: %t", npc.GetName(), text);
+			else CPrintToChat(i, "{slateblue}Mr.V{default}: %t", text);
 		}
 	}
 }
