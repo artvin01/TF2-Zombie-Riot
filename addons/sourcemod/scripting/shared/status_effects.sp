@@ -394,6 +394,7 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 
 void StatusEffects_Baka()
 {
+	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Cybergrind EX-Hard Enemy Buff");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛡");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");

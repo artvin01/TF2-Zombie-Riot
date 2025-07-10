@@ -1816,4 +1816,14 @@
 		"en"	"-50％ attack speed and movement speed"
 		"ko"	"이동 속도, 공격 속도가 -50％ 감소합니다."
 	}
+	"Cybergrind EX-Hard Enemy Buff"
+	{
+		"en"	"Cybergrind EX Hard Enemy Buff"
+		"ko"	"Cybergrind EX Hard 적 버프"
+	}
+	"Cybergrind EX-Hard Enemy Buff Desc"
+	{
+		"en"	"Enemies gain additional effects...\nCan be offset by the silence effect."
+		"ko"	"적이 추가적인 피해량, 저항, 이속 증가를 얻습니다.\n침묵 효과로 상쇄할수있습니다."
+	}
 }

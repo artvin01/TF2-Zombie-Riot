@@ -934,7 +934,7 @@ bool Waves_GetMiniBoss(MiniBoss boss, int RND = -1)
 	if(length > level)
 		length = level;
 	
-	MiniBosses.GetArray(RND != -1 ? RND : GetURandomInt()) % length, boss);
+	MiniBosses.GetArray((RND != -1 ? RND : GetURandomInt()) % length, boss);
 	return true;
 }
 
