@@ -112,6 +112,53 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		{
 			case 0:
 			{
+				TemporalAnomalySpawn(npc.index, "npc_poisonzombie", pos, ang, team, 1000);
+			}
+			case 1:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_xeno_combine_soldier_swordsman_ddt", pos, ang, team, 1000);
+			}
+			case 2:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_medival_archer", pos, ang, team, 1000);
+			}
+			case 3:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_selfam_ire", pos, ang, team, 1000);
+			}
+			case 4:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_searunner", pos, ang, team, 1000);
+			}
+			case 5:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_beacon_constructor", pos, ang, team, 1000);
+			}
+			case 6:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_charger", pos, ang, team, 1000);
+			}
+			case 7:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_ruina_magia", pos, ang, team, 1000);
+			}
+			case 8:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_void_carrier", pos, ang, team, 1000);
+			}
+			case 9:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_khazaan", pos, ang, team, 1000);
+			}
+		}
+	}
+	//Wave 10-20
+	if(wave >= 10)
+	{
+		switch(GetRandomInt(0,9))
+		{
+			case 0:
+			{
 				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
 			}
 			case 1,2,3,4,5,6,7,8,9:
@@ -119,182 +166,34 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
 			}
 		}
-			if(wave >= 10)
-			//Wave 10-20
+	}
+	//Wave 20-30
+	if(wave >= 20)
+	{
+		switch(GetRandomInt(0,9))
+		{
+			case 0:
 			{
-				switch(GetRandomInt(0,5))
-				{
-					case 0:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 1:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-				}
+				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
 			}
-			if(wave >= 20)
-			//Wave 20-30
+			case 1,2,3,4,5,6,7,8,9:
 			{
-				switch(GetRandomInt(0,5))
-				{
-					case 0:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 1:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-				}
+				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
 			}
-			if(wave >= 30)
-			//Wave 30-40
+		}
+	}
+	//Wave 30-40
+	if(wave >= 30)
+	{
+		switch(GetRandomInt(0,9))
+		{
+			case 0:
 			{
-				switch(GetRandomInt(0,5))
-				{
-					case 0:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 1:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-				}
+				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
+			}
+			case 1,2,3,4,5,6,7,8,9:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
 			}
 		}
 	}
