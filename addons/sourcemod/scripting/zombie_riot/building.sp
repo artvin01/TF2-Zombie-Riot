@@ -1027,7 +1027,8 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		}
 		return false;
 	}
-	CanBuild_VisualiseAndWarn(client, buildingindx, false, VecPos);
+	if(client <= MaxClients)
+		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecPos);
 	if(!TestClient)
 	{
 		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
