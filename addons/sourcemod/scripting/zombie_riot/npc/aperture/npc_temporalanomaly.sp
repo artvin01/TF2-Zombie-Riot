@@ -159,11 +159,43 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		{
 			case 0:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_last_survivor", pos, ang, team, 2500);
 			}
-			case 1,2,3,4,5,6,7,8,9:
+			case 1:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_xeno_early_infected", pos, ang, team, 2500);
+			}
+			case 2:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_medival_construct", pos, ang, team, 2500);
+			}
+			case 3:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_vaus_magica", pos, ang, team, 5000);
+			}
+			case 4:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_firsttotalk", pos, ang, team, 5000);
+			}
+			case 5:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_speedus_initus", pos, ang, team, 5000);
+			}
+			case 6:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_zapper", pos, ang, team, 5000);
+			}
+			case 7:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_ruina_lazius", pos, ang, team, 5000);
+			}
+			case 8:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_void_ixufan", pos, ang, team, 2500);
+			}
+			case 9:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_freezing_cleaner", pos, ang, team, 5000);
 			}
 		}
 	}
@@ -174,11 +206,43 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		{
 			case 0:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_combine_soldier_giant_swordsman", pos, ang, team, 10000);
 			}
-			case 1,2,3,4,5,6,7,8,9:
+			case 1:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_xeno_combine_soldier_overlord", pos, ang, team, 7500);
+			}
+			case 2:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_medival_crossbow_giant", pos, ang, team, 10000);
+			}
+			case 3:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_siccerino", pos, ang, team, 10000);
+			}
+			case 4:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_seaborn_heavy", pos, ang, team, 10000);
+			}
+			case 5:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_combastia", pos, ang, team, 10000);
+			}
+			case 6:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_antiarmor_infantry", pos, ang, team, 10000);
+			}
+			case 7:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_ruina_magianas", pos, ang, team, 10000);
+			}
+			case 8:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_void_minigate_keeper", pos, ang, team, 10000);
+			}
+			case 9:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_absolute_incinirator", pos, ang, team, 10000);
 			}
 		}
 	}
@@ -189,11 +253,43 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		{
 			case 0:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_combine_soldier_deutsch_ritter", pos, ang, team, 15000);
 			}
-			case 1,2,3,4,5,6,7,8,9:
+			case 1:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_xeno_spy_half_cloacked_main", pos, ang, team, 15000);
+			}
+			case 2:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_medival_samurai", pos, ang, team, 15000);
+			}
+			case 3:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_ignitus", pos, ang, team, 15000);
+			}
+			case 4:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_netherseaspewer", pos, ang, team, 15000);
+			}
+			case 5:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_destructius", pos, ang, team, 15000);
+			}
+			case 6:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_taser", pos, ang, team, 15000);
+			}
+			case 7:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_ruina_loonarionus", pos, ang, team, 15000);
+			}
+			case 8:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_void_erasus", pos, ang, team, 15000);
+			}
+			case 9:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_hitman", pos, ang, team, 7500);
 			}
 		}
 	}
@@ -224,8 +320,8 @@ void TemporalAnomalySpawn(int iGatePortal, const char[] Npcplugininfo, float pos
 		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
 		ScalingMultiplyEnemyHpGlobalScale(other); //makre sure to scale Hp extra as we SET hp values here!
 		NpcStats_CopyStats(iGatePortal, other);	//copy any stats over idk
-		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[iGatePortal] * 0.40;
-		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[iGatePortal] * 0.40;
+		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[iGatePortal] * 0.50; //they get some buffs from being time-travelled or sum shit idfk
+		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[iGatePortal] * 0.50;
 		fl_Extra_Speed[other] = fl_Extra_Speed[iGatePortal];
 		fl_Extra_Damage[other] = fl_Extra_Damage[iGatePortal];
 		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[iGatePortal];
