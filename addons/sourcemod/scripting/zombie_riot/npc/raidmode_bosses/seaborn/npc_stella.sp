@@ -684,7 +684,7 @@ methodmap Stella < CClotBody
 		
 		c_NpcName[npc.index] = "Stella";
 
-		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
+		//data: test , force10, force20, force30, force40, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
