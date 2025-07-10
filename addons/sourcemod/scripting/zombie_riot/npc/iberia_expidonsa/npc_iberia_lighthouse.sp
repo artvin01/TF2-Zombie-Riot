@@ -247,7 +247,7 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(npc.m_flLighthouseBuffEffect < GetGameTime(npc.index))
+	if(npc.m_flLighthouseBuffEffect < GetGameTime(npc.index) && !npc.m_flLighthouseDyingAnim)
 	{
 		npc.m_flLighthouseBuffEffect = GetGameTime(npc.index) + 3.0;
 		float ProjectileLoc[3];
