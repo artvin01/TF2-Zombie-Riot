@@ -1050,8 +1050,8 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 100％\nDecreases damage dealt by 40％"
-		"ko"	"공격 속도, 재장전 속도, 치유 속도가 100％ 증가합니다.\n공격 피해량이 40％ 감소합니다."
+		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
+		"ko"	"공격 속도, 재장전 속도, 치유 속도가 100％ 증가합니다.\n{crimson}공격 피해량이 40％ 감소합니다."
 	}
 	"Tonic Affliction Hide"
 	{
@@ -1062,6 +1062,14 @@
 	{
 		"en"	"Ignore."
 		"ko"	"이 텍스트는 무시하십시오."
+	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
 	}
 	"Mystery Beer"
 	{
@@ -1696,8 +1704,8 @@
 	}
 	"Plasmic Layering I Desc"
 	{
-		"en" 	"Increases damage and resistance by +15％ while inside the Plasmatized Bubble's radius."
-		"ko" 	"플라즈마 거품 안에 있을시 공격력과 피해 저항력이 +15％ 증가합니다."
+		"en" 	"Increases damage by +15％ and resistance by +10％ while inside the Plasmatized Bubble's radius."
+		"ko" 	"플라즈마 거품 안에 있을시 공격력 +15％, 피해 저항력이 +10％ 증가합니다."
 	}
 	"Plasmic Layering II"
 	{
@@ -1706,8 +1714,8 @@
 	}
 	"Plasmic Layering II Desc"
 	{
-		"en" 	"Increases damage and resistance by +25％ while inside the Plasmatized Bubble's radius."
-		"ko" 	"플라즈마 거품 안에 있을시 공격력과 피해 저항력이 +25％ 증가합니다."
+		"en" 	"Increases damage by +25％ and resistance by +15％ while inside the Plasmatized Bubble's radius."
+		"ko" 	"플라즈마 거품 안에 있을시 공격력 +25％, 피해 저항력이 +15％ 증가합니다."
 	}
 	"Ziberian Flagship Weaponry"
 	{
@@ -1787,8 +1795,8 @@
 	}
 	"Liberal Tango Desc"
 	{
-		"en"	"+30％ damage dealt, healing done, and damage reduction"
-		"ko"	"공격 피해량, 치유 속도 및 피해 저항력 +30％ 증가."
+		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
+		"ko"	"피해량, 치유 속도 +30％, 피해 저항력 +20％ 증가."
 	}
 	"Xeno's Territory"
 	{

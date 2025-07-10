@@ -167,6 +167,7 @@ int Animation_Retry[MAXPLAYERS];
 
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
+int i_IDependOnThisBuilding[MAXENTITIES];
 
 int g_particleImpactFlesh;
 int g_particleImpactRubber;

@@ -33,7 +33,6 @@ static int MenuSection[MAXPLAYERS] = {-1, ...};
 static int MenuPage[MAXPLAYERS];
 static Handle MenuTimer[MAXPLAYERS];
 static int Player_BuildingBeingCarried[MAXPLAYERS];
-static int i_IDependOnThisBuilding[MAXENTITIES];
 static float PlayerWasHoldingProp[MAXPLAYERS];
 float PreventSameFrameActivation[2][MAXPLAYERS];
 int RandomIntSameRequestFrame[MAXPLAYERS];
@@ -962,10 +961,31 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		endPos2[0] = VecPos[0];
 		endPos2[1] = VecPos[1];
 		endPos2[2] += Delta;
+		float endPos3[3];
+		endPos3 = endPos2;
+		endPos3[2] += 1.0;
+		//little offset is needed beacause otherwise itll collde with the bottom part
+		Success = BuildingSafeSpot(buildingindx, endPos3, VecMin, VecMax);
+		if(!Success)
+		{
+			if(client <= MaxClients)
+			{
+				CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
+				if(!TestClient)
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+			}
+			return false;
+		}
+		else
+		{
+			endPos2 = endPos3;
+		}
 		if(!TestClient)
 			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
 		if(client <= MaxClients)
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
+
+		
 		
 		if(!TestClient)
 		{
@@ -994,8 +1014,29 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 	{
 		if(!TestClient)
 			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+
+		if(client <= MaxClients)
+		{
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
 		return false;
 	}
+	Success = Building_ValidSpaceEmpty(buildingindx, VecPos,VecMin, VecMax);
+	if(!Success)
+	{
+		if(!TestClient)
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		if(client <= MaxClients)
+		{
+			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
+		return false;
+	}
+	if(client <= MaxClients)
+		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecPos);
 	if(!TestClient)
 	{
 		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
@@ -1221,7 +1262,9 @@ bool IsSafePosition_Building(int entity, float Pos[3], float mins[3], float maxs
 {
 	if(!BuildingValidPositionFinal(Pos, entity))
 		return false;
-
+	if(!Building_ValidSpaceEmpty(entity, Pos, mins, maxs))
+		return false;
+		
 	int ref;
 	
 	Handle hTrace;
@@ -1277,9 +1320,6 @@ bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3
 		return false;
 	}
 	VecBottom = VecCheckBottom;
-
-	if(client <= MaxClients)
-		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecBottom);
 	
 	return true;
 }
@@ -1295,7 +1335,7 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 	VecLaser = VecBottom;
 	if(Fail)
 	{
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({255, 0, 0, 255}));
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.2, view_as<int>({255, 0, 0, 255}));
 		SetDefaultHudPosition(client, 255, 0, 0, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
@@ -1305,7 +1345,7 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
 			VecLaser[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
 
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({0, 255, 0, 255}));
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.2, view_as<int>({0, 255, 0, 255}));
 		SetDefaultHudPosition(client,_,_,_, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
@@ -1482,13 +1522,25 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 	float posStacked[3]; 
 	GetEntPropVector(DestroyedBuilding, Prop_Data, "m_vecAbsOrigin", posStacked);
 
-//	posMain = posStacked;
-	posMain[2] = posStacked[2];	
+	posMain[2] = posStacked[2];
 	
 	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
 	{
 		//wierd offset.
 		posMain[2] -= f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+	}
+	float VecMin[3];
+	float VecMax[3];
+	VecMax = f3_CustomMinMaxBoundingBox[building];
+	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[building];
+
+	posMain[2] += 0.5;
+	//go up a lil.
+	bool Success = BuildingSafeSpot(building, posMain, VecMin, VecMax);
+	if(!Success)
+	{
+		posMain = posStacked;
+		//resort to teleporting to the other buildings position.
 	}
 	TeleportEntity(building, posMain, NULL_VECTOR, NULL_VECTOR);
 	//make npc's that target the previous building target the stacked one now.
@@ -2797,4 +2849,25 @@ void ExplainBuildingInChat(int client, int ExplainWhat)
 			Force_ExplainBuffToClient(client, "Barracks Building Explain", true);
 		}
 	}
+}
+
+
+bool Building_ValidSpaceEmpty(int buildingindx, float VecBottom[3], float HullMin[3], float HullMaxTemp[3])
+{
+	//This code checks if we try to place the building inside other buildings
+	float HullMax[3];
+	HullMax = HullMaxTemp;
+	HullMax[2] -= 1.0;
+	//allow tight space fitting
+	Handle hTrace;
+	hTrace = TR_TraceHullFilterEx(VecBottom, VecBottom, HullMin, HullMax, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, buildingindx);
+	
+	int target_hit = TR_GetEntityIndex(hTrace);	
+	delete hTrace;
+	
+	if(target_hit > 0)
+	{
+		return false;
+	}
+	return true;
 }
