@@ -425,7 +425,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 20％, If silenced, this is 10％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 	}
 	"Void Strength II"
 	{
@@ -433,7 +433,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 30％, If silenced, this is 15％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％
 	}
 	"MERLT0N-BUFF"
 	{
@@ -521,7 +521,7 @@
 	}
 	"Hussar's Warscream Desc"
 	{
-		"en"	"Increases damage dealt by 10％\nBlocked by Silence."
+		"en"	"Increases damage dealt by 10％"
 	}
 	"Flagellants Punishment"
 	{
