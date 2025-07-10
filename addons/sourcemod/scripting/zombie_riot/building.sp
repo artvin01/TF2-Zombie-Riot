@@ -911,69 +911,61 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
-bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false)
+bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false, float AbsOriginOffset = 0.0)
 {
 	float VecPos[3];
 	GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
+	VecPos[2] += AbsOriginOffset;
+	float VecMin[3];VecMin = f3_CustomMinMaxBoundingBoxMinExtra[buildingindx];
+	float VecMax[3];VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
 
-	float VecMin[3];
-	float VecMax[3];
-	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
-	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[buildingindx];
-
+	//for this calculation we want the building to be concidered not carried.
 	b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
-	bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
-	if(!Success)
-	{
-		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
-		if(client <= MaxClients)
-		{
-			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
-			if(!TestClient)
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-		}
-		return false;
-	}
-	
-	//do we want to build on anothrer building?
+
 	int buildingHit;
 	float endPos[3];
-	if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx)) //130.0
+	//we will first check if we hit a building under us.
+	if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx))
 	{
+		//we successfully found a building we want to go ontop of.
 		float endPos2[3];
 		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
-		//We use custom offets for buildings, so we do our own magic here
+		//How far high is the offset for the building, and then place ourselves ontop
 		float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
-
-	//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])
-	//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
-
-		//Be sure to now set all the things we need.
-		//Set the dependency
+		
 		endPos2[0] = VecPos[0];
 		endPos2[1] = VecPos[1];
 		endPos2[2] += Delta;
 		float endPos3[3];
 		endPos3 = endPos2;
-		endPos3[2] += 1.0;
-		//little offset is needed beacause otherwise itll collde with the bottom part
-		Success = BuildingSafeSpot(buildingindx, endPos3, VecMin, VecMax);
+		//for this calculation we want to pretend that the bottom building is our dependand so we dont interact with it and get blocked.
+		int SavePrevious = i_IDependOnThisBuilding[buildingindx];
+		i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+		bool Success = BuildingSafeSpot(buildingindx, endPos3, VecMin, VecMax);
+		i_IDependOnThisBuilding[buildingindx] = SavePrevious;
 		if(!Success)
 		{
+			//we did not find a safe place to place ourselves in.
 			if(client <= MaxClients)
 			{
 				CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
 				if(!TestClient)
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 			}
+			
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
 			return false;
 		}
 		else
 		{
+			//we found a safe place.
 			endPos2 = endPos3;
 		}
+
+		//we now make the building we just placed, dependand on the building below it.
 		if(!TestClient)
 			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+
 		if(client <= MaxClients)
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
 
@@ -981,59 +973,63 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		
 		if(!TestClient)
 		{
-		//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])	//wierd offset.
-		//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
-
-			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+			//offset needed for stuff like ammoboxes as their model is halfway in
+			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])
 				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
 
 			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			if(client <= MaxClients)
+			{
 				Player_BuildingBeingCarried[client] = 0;
+				EmitSoundToClient(client, SOUND_TOSS_TF);
+			}
 		
 			Building_BuildingBeingCarried[buildingindx] = 0;
 			b_ThisEntityIgnored[buildingindx] = false;
 			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
-
-			if(client <= MaxClients)
-				EmitSoundToClient(client, SOUND_TOSS_TF);
+			//reset all defaults and confirm a placement
 		}
 		return true;
 	}
-	Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
-	if(!Success)
+	//no valid building below us, lets try to go to the bottom.
+	if(!Building_IsValidGroundFloor(client, buildingindx, VecPos))
 	{
-		if(!TestClient)
-			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		if(client <= MaxClients)
+		{
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
+		return false;
+	}
+	//little elevation so it doesnt hit the floor.
+	VecPos[2] += 0.1;
+	if(!BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax))
+	{
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+		if(client <= MaxClients)
+		{
+			endPos = VecPos;
+			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+				endPos[2] += f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+			CanBuild_VisualiseAndWarn(client, buildingindx, true, endPos);
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
+		return false;
+	}
 
-		if(client <= MaxClients)
-		{
-			if(!TestClient)
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-		}
-		return false;
-	}
-	Success = Building_ValidSpaceEmpty(buildingindx, VecPos,VecMin, VecMax);
-	if(!Success)
-	{
-		if(!TestClient)
-			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
-		if(client <= MaxClients)
-		{
-			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
-			if(!TestClient)
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-		}
-		return false;
-	}
 	if(client <= MaxClients)
-		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecPos);
+	{
+		endPos = VecPos;
+		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+			endPos[2] += f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
+		CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos);
+	}
 	if(!TestClient)
 	{
-		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
-			VecPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
-
 		SDKCall_SetLocalOrigin(buildingindx, VecPos);	
 		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 		Building_BuildingBeingCarried[buildingindx] = 0;
@@ -1152,7 +1148,32 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
 
-	for (int x = 0; x < 6; x++)
+	for (int x = 0; x < 5; x++)
+	{
+		//first we check up and down here
+		if (FoundSafeSpot)
+			break;
+
+		endPos = OriginalPos;
+		switch(x)
+		{
+			case 0:
+				endPos[2] += 1.0;
+			case 1:
+				endPos[2] += TELEPORT_STUCK_CHECK_1;
+			case 2:
+				endPos[2] += TELEPORT_STUCK_CHECK_1 * 2.0;
+			case 3:
+				endPos[2] += TELEPORT_STUCK_CHECK_2;
+			case 4:
+				endPos[2] += TELEPORT_STUCK_CHECK_2 * 2.0;
+			case 5:
+				endPos[2] += TELEPORT_STUCK_CHECK_3;
+		}
+		if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+			FoundSafeSpot = true;
+	}
+	for (int x = -1; x < 6; x++)
 	{
 		if (FoundSafeSpot)
 			break;
@@ -1351,36 +1372,41 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 	bool foundbuilding = false;
 	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilterBuildOnBuildings, self);
 
-	if (TR_DidHit(trace))
+	if (!TR_DidHit(trace))
 	{
-		int EntityHit = TR_GetEntityIndex(trace);
+		delete trace;
+		return false;
+	}
+	int EntityHit = TR_GetEntityIndex(trace);
+	if (EntityHit <= 0 || EntityHit==self)
+	{
+		//if we hit the world or ourselves somehow, we dont care.
+		delete trace;
+		return false;
+	}
 
-		if (EntityHit <= 0 || EntityHit==self)
-		{
-			delete trace;
-			return false;
-		}
+	if(!i_IsABuilding[EntityHit])
+	{
+		//if we didnt hit any building then we do not care.
+		delete trace;
+		return false;
+	}
 
-		if(!i_IsABuilding[EntityHit])
-		{
-			delete trace;
-			return false;
-		}
-		//no multi stacking
-		if(IsValidEntity(i_IDependOnThisBuilding[EntityHit]))
-		{
-			delete trace;
-			return false;
-		}
+	if(IsValidEntity(i_IDependOnThisBuilding[EntityHit]))
+	{
+		//we dont allow stacking of stacking of stacking.
+		delete trace;
+		return false;
+	}
 
 
-		TR_GetEndPosition(posEnd, trace);
+	TR_GetEndPosition(posEnd, trace);
 
-		if (GetVectorDistance(pos, posEnd, true) <= (distance * distance))
-		{
-			foundbuilding = true;
-			buildingHit = EntityHit;
-		}
+	if (GetVectorDistance(pos, posEnd, true) <= (distance * distance))
+	{
+		//is the building we hit close enough to us?
+		foundbuilding = true;
+		buildingHit = EntityHit;
 	}
 
 	delete trace;
@@ -1504,6 +1530,8 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 			BuildingAdjustMe(i, entityLost);
 		}
 	}
+	//Remove its dependency off anything else.
+	i_IDependOnThisBuilding[entityLost] = 0;
 }
 
 //Make sure all buildings are placed correctly

@@ -4033,7 +4033,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
 
-	for (int x = 0; x < 6; x++)
+	for (int x = -1; x < 6; x++)
 	{
 		if (FoundSafeSpot)
 			break;
@@ -4767,8 +4767,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-		//	if(b_ThisEntityIgnoredBeingCarried[enemy])
-		//		return false;
 				
 			return true;
 		}

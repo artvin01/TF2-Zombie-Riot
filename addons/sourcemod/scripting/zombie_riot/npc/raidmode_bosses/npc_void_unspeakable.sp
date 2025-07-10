@@ -1318,7 +1318,6 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
 		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
-		if(npc.m_flVoidMatterAbosorbInternalCDBoom > gameTime)
 		if(IsValidEntity(npc.m_iTarget))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);

@@ -3376,7 +3376,7 @@ int inflictor = 0)
 			static float damage_1;
 			damage_1 = damage;
 
-			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			if(ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
