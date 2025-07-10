@@ -558,6 +558,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
+	
 	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_TRUEDAMAGE);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))

@@ -39,28 +39,18 @@ void Board_DoSwingTrace(int &enemies_hit_aoe, float &CustomMeleeRange)
 public void Board_M1_ability(int client, int weapon, int slot)
 {
 	ApplyTempAttrib(weapon, 2, 0.25, 1.0);
-	if (Ability_Check_Cooldown(client, 2) < 0.0)
+	if (Ability_Check_Cooldown(client, 2) < 1.0)
 	{
 		Ability_Apply_Cooldown(client, 2, 1.0);
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, 2);
-		Ability_Apply_Cooldown(client, 2, Ability_CD + 1.0);
 	}
 }
 
 public void Board_M1_ability_Spike(int client, int weapon, int slot)
 {
 	ApplyTempAttrib(weapon, 2, 0.35, 1.0);
-	if (Ability_Check_Cooldown(client, 2) < 0.0)
+	if (Ability_Check_Cooldown(client, 2) < 1.0)
 	{
 		Ability_Apply_Cooldown(client, 2, 1.0);
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, 2);
-		Ability_Apply_Cooldown(client, 2, Ability_CD + 1.0);
 	}
 }
 
