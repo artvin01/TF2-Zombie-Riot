@@ -580,6 +580,12 @@ void Store_OnCached(int client)
 		
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
 			amount += 50;
+			
+		if(Items_HasNamedItem(client, "Sardis Gold"))
+			amount += 20;
+			
+		if(Items_HasNamedItem(client, "Originium"))
+			amount += 30;
 		
 		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
 		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") / 5;

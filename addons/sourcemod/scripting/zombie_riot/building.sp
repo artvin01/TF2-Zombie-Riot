@@ -625,7 +625,15 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 										float CooldownGive = info.Cooldown;
 										if(Rogue_Mode())
 											CooldownGive *= 0.5;
-											
+										
+										if(Items_HasNamedItem(client, "Builder's Blueprints"))
+										{
+											if(CooldownGive>1.0)
+												CooldownGive-=1.0;
+											else
+												CooldownGive=0.0;
+										}
+										
 										if(Construction_Mode())
 											CooldownGive *= 3.0;
 											

@@ -147,6 +147,7 @@ void InitStatusEffects()
 	DeleteStatusEffectsFromAll();
 	//clear all existing ones
 	StatusEffects_TeslarStick();
+	StatusEffects_Baka();
 	StatusEffects_Ludo();
 	StatusEffects_Cryo();
 	StatusEffects_PotionWand();
@@ -389,6 +390,80 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		if(E_AL_StatusEffects[victim].Length < 1)
 			delete E_AL_StatusEffects[victim];
 	}
+}
+
+void StatusEffects_Baka()
+{
+	strcopy(data.BuffName, sizeof(data.BuffName), "Cybergrind EX-Hard Enemy Buff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛡");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= 0.0;
+	data.MovementspeedModif			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc 	= Cybergrind_EX_Hard_ResistanceFunc;
+	data.OnTakeDamage_DealFunc 	= Cybergrind_EX_Hard_DamageFunc;
+	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
+	data.Status_SpeedFunc 		= Cybergrind_EX_Hard_SpeedFunc;
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
+}
+
+float Cybergrind_EX_Hard_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float f_Resistance = 0.8;
+	if(Waves_GetRound()+1>64)f_Resistance = 0.95;
+	else if(Waves_GetRound()+1>63)f_Resistance = 0.9;
+	else if(Waves_GetRound()+1>62)f_Resistance = 0.9;
+	else if(Waves_GetRound()+1>59)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>58)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>44)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>43)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>29)f_Resistance = 0.75;
+	else if(Waves_GetRound()+1>28)f_Resistance = 0.8;
+	else if(Waves_GetRound()+1>14)f_Resistance = 0.75;
+	if(NpcStats_IsEnemySilenced(victim))f_Resistance*=1.0/(f_Resistance*1.25);
+	if(f_Resistance>1.0)f_Resistance=1.0;
+	
+	return f_Resistance;
+}
+
+float Cybergrind_EX_Hard_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float f_Damage = 1.25;
+	if(NpcStats_IsEnemySilenced(victim))f_Damage = 1.1;
+	else if(Waves_GetRound()+1>64)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>63)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>62)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>58)f_Damage = 1.3;
+	else if(Waves_GetRound()+1>44)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>43)f_Damage = 1.35;
+	else if(Waves_GetRound()+1>29)f_Damage = 1.25;
+	else if(Waves_GetRound()+1>28)f_Damage = 1.3;
+	else if(Waves_GetRound()+1>14)f_Damage = 1.25;
+	if(f_Damage<1.0)f_Damage=1.0;
+	return f_Damage;
+}
+
+float Cybergrind_EX_Hard_SpeedFunc(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float f_Speed = 1.06;
+	if(NpcStats_IsEnemySilenced(victim))f_Speed = 1.0;
+	else if(Waves_GetRound()+1>64)f_Speed = 1.01;
+	else if(Waves_GetRound()+1>63)f_Speed = 1.01;
+	else if(Waves_GetRound()+1>62)f_Speed = 1.01;
+	else if(Waves_GetRound()+1>58)f_Speed = 1.04;
+	else if(Waves_GetRound()+1>44)f_Speed = 1.05;
+	else if(Waves_GetRound()+1>43)f_Speed = 1.06;
+	else if(Waves_GetRound()+1>29)f_Speed = 1.05;
+	else if(Waves_GetRound()+1>28)f_Speed = 1.06;
+	else if(Waves_GetRound()+1>14)f_Speed = 1.06;
+	return f_Speed;
 }
 
 //Got lazy, tired of doing so many indexs.

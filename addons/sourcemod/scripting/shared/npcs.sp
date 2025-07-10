@@ -48,7 +48,7 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-public void NPC_SpawnNext(bool panzer, bool panzer_warning)
+public void NPC_SpawnNext(bool panzer, bool panzer_warning, int RND)
 {
 	float GameTime = GetGameTime();
 	if(f_DelaySpawnsForVariousReasons > GameTime)
@@ -186,7 +186,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	float pos[3], ang[3];
 
 	MiniBoss boss;
-	if(panzer && Waves_GetMiniBoss(boss))
+	if(panzer && Waves_GetMiniBoss(boss, RND))
 	{
 		bool isBoss = false;
 		int deathforcepowerup = boss.Powerup;

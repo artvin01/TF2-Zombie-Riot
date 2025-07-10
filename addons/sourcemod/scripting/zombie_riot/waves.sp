@@ -908,7 +908,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		delete kv;
 }
 
-bool Waves_GetMiniBoss(MiniBoss boss)
+bool Waves_GetMiniBoss(MiniBoss boss, int RND = -1)
 {
 	if(!MiniBosses)
 		return false;
@@ -934,7 +934,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	if(length > level)
 		length = level;
 	
-	MiniBosses.GetArray(GetURandomInt() % length, boss);
+	MiniBosses.GetArray(RND != -1 ? RND : GetURandomInt()) % length, boss);
 	return true;
 }
 
@@ -2523,7 +2523,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 
 				
-				NPC_SpawnNext(panzer_spawn, panzer_sound);
+				NPC_SpawnNext(panzer_spawn, panzer_sound, -1);
 				return;
 			}
 
@@ -3942,11 +3942,11 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if(Freeplay_ShouldMiniBoss())
 		{
-			NPC_SpawnNext(true, true);
+			NPC_SpawnNext(true, true, -1);
 		}
 		else
 		{
-			NPC_SpawnNext(false, false);
+			NPC_SpawnNext(false, false, -1);
 		}
 		
 		CurrentWave = 9;

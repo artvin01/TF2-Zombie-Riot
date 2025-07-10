@@ -4805,6 +4805,11 @@
 		"en" 	"(11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
 		"ko"	"(11) 센살은 당신에게 현재 빅토리아가 공격하고 있는 자이베리아를 방문해달라고 부탁했습니다."
 	}
+	"CYBER GRIND Desc"
+	{
+		"en" 	"[Custom Wave]YES. Boss Rush."
+		"ko" 	"[커스텀 임무]보스 러쉬 시뮬레이션 입니다. 난이도마다 얻을수있는 보상이 달라집니다."
+	}
 	"Ability already Active"
 	{
 		"en"	"Ability already Active"

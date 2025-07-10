@@ -626,6 +626,7 @@ void ZR_PluginLoad()
 void ZR_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.zombienames");
+	LoadTranslations("zombieriot.phrases.npctalk");
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
@@ -2413,6 +2414,8 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
+	if(Items_HasNamedItem(client, "Widemouth Refill Port") && !ignoreperk)
+		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.1);
 	if(Multi != 1.0)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * Multi);

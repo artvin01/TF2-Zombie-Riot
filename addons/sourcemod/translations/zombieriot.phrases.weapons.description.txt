@@ -4543,7 +4543,7 @@
 	"Skull Servants PaP 1"
 	{
 		"en"	"Skulls deal more damage, attack faster, and have better range.\nAlso enables you to have up to three skulls active at once."
-		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。
+		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。"
 		"ko"	"해골의 피해량이 증가하고, 공격 속도가 증가하며, 사거리가 증가합니다.\n이제 최대 3개의 해골을 보유 가능."
 	}
 	"Skull Servants PaP 2"
@@ -5074,6 +5074,27 @@
 	{
 		"en" "Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
 		"ko" "피해량, 공격 속도가 조금 증가.\n방울의 피해량 증가량이 증폭.\n광란의 방울 능력의 디버프 능력과 디버프 지속 시간이 조금 증가."
+	}
+	
+	"Widemouth Refill Port Desc"
+	{
+		"en"		"You have cleared [Normal] Cyber ​​Grind!\nIncreases ammo/metal/mana obtained from Smmo Boxes by 10％"
+		"ko"		"[보통] 난이도의 사이버 그라인드를 클리어했습니다!\n탄약 박스로부터 얻는 탄약/금속/마나가 10％ 증가합니다"
+	}
+	"Builder's Blueprints Desc"
+	{
+		"en"		"You have cleared [Hard] Cyber ​​Grind!\nReduces building construction cooldown by 1 second"
+		"ko"		"[어려움] 난이도의 사이버 그라인드를 클리어했습니다!\n구조물 설치 쿨다운 1초 감소"
+	}
+	"Sardis Gold Desc"
+	{
+		"en"		"You have cleared [Expert] Cyber ​​Grind!\nStart with extra 20 extra credits."
+		"ko"		"[전문가] 난이도의 사이버 그라인드를 클리어했습니다!\n시작 자금 +20"
+	}
+	"Originium Desc"
+	{
+		"en"		"You have cleared [EX Hard] Cyber ​​Grind!\nStart with extra 30 extra credits."
+		"ko"		"[EX Hard] 난이도의 사이버 그라인드를 클리어했습니다!\n시작 자금 +30"
 	}
 
 	"Merchant Brewing Stand Desc"
