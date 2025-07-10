@@ -85,7 +85,9 @@ enum struct Round
 	char FogColor2[32];
 	float FogStart;
 	float FogEnd;
-	float FogDesnity;
+	float FogDesnity;	
+	
+	bool Override_Music_Setup;
 }
 
 enum struct Vote
@@ -292,6 +294,10 @@ public Action Waves_RevoteCmd(int client, int args)
 	{
 		Rogue_RevoteCmd(client);
 	}
+	else if(CyberVote)
+	{
+		RaidMode_RevoteCmd(client);
+	}
 	else if(Voting)
 	{
 		VotedFor[client] = 0;
@@ -309,6 +315,8 @@ bool Waves_CallVote(int client, int force = 0)
 {
 	if(Rogue_Mode() || Construction_Mode())
 		return Rogue_CallVote(client);
+	else if(CyberVote)
+		return RaidMode_CallVote(client);
 	
 	if((Voting || VotingMods) && (force || !VotedFor[client]))
 	{
@@ -1058,6 +1066,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GotoFirstSubKey();
 	do
 	{
+		round.music_setup.SetupKv("music_setup", kv);
+		round.Override_Music_Setup=view_as<bool>(kv.GetNum("override_music_setup"));
 		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_setup") != -1)
 		{
 			continue;
@@ -1999,6 +2009,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					{
 						Music_Stop_All(client);
 					}
+				}
+			}
+			if(round.music_setup.Valid()&&round.Override_Music_Setup)
+			{
+				round.music_setup.CopyTo(MusicSetup1);
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
+						SetMusicTimer(client, GetTime() + 5);
 				}
 			}
 			if(round.GrigoriMaxSellsItems > 0)

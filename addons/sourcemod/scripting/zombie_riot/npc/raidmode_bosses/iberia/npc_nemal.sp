@@ -495,6 +495,31 @@ methodmap Nemal < CClotBody
 				}
 			}
 		}
+		TripleLol = false;
+		if(StrContains(data, "triple_enemies") != -1)
+		{
+			TripleLol = true;
+			i_RaidGrantExtra[npc.index] = 4;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: {blue}센살{default}과 함께 하기로 했어.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: 아, {blue}센살{default}. 여기야.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: 이건 좀 너무 심한거 아닌가?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}네말{default}: 미안한데 어... 그게 끝이네.");
+				}
+			}
+		}
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
@@ -577,7 +602,6 @@ methodmap Nemal < CClotBody
 		{
 			amount_of_people = 12.0;
 		}
-
 		
 		amount_of_people *= 0.12;
 		
@@ -585,31 +609,6 @@ methodmap Nemal < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		TripleLol = false;
-		if(!StrContains(data, "triple_enemies"))
-		{
-			TripleLol = true;
-			i_RaidGrantExtra[npc.index] = 4;
-			switch(GetRandomInt(0,3))
-			{
-				case 0:
-				{
-					CPrintToChatAll("{lightblue}네말{default}: {blue}센살{default}과 함께 하기로 했어.");
-				}
-				case 1:
-				{
-					CPrintToChatAll("{lightblue}네말{default}: 아, {blue}센살{default}. 여기야.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{lightblue}네말{default}: 이건 좀 너무 심한거 아닌가?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{lightblue}네말{default}: 미안한데 어... 그게 끝이네.");
-				}
-			}
-		}
 		if(!TripleLol)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);

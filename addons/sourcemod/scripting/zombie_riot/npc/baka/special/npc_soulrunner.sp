@@ -93,7 +93,7 @@ methodmap SoulRunner < CClotBody
 	
 	public SoulRunner(float vecPos[3], float vecAng[3], int ally)
 	{
-		SoulRunner npc = view_as<SoulRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/SoulRunner_2.mdl", "1.35", MinibossHealthScaling(90.0), ally, false, true, true));
+		SoulRunner npc = view_as<SoulRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", MinibossHealthScaling(90.0), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -336,7 +336,7 @@ public void SoulRunner_NPCDeath(int entity)
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
 		
 //		GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
-		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/SoulRunner_2.mdl");
+		DispatchKeyValue(entity_death, "model", "models/zombie_riot/cof/sawrunner_2.mdl");
 
 		DispatchSpawn(entity_death);
 		
