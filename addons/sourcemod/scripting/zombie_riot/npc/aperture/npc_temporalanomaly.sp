@@ -89,279 +89,36 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 	int team = GetTeam(npc.index);
 	float gameTime = GetGameTime(npc.index);
 	int wave = (Waves_GetRoundScale() + 1);
-
-	if(npc.m_flAbilityOrAttack0)
+	if(npc.m_flNextDelayTime > gameTime)
 	{
-		if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
+		//neccecary or stuns wont workd an alike.
+		return;
+	}
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	if(npc.m_flAbilityOrAttack0 > GetGameTime(npc.index))
+	{
+		//we are in cooldown, stop
+		return;
+	}
+	//spawn delay!
+	npc.m_flAbilityOrAttack0 = gameTime + 2.0;
+	//spawn limit.
+	npc.m_iOverlordComboAttack++;
+	npc.PlayTeleportSound();
+	//Wave 1-10
+	if(wave >= 1)
+	{
+		switch(GetRandomInt(0,9))
 		{
-			npc.PlayTeleportSound();
-			//Wave 1-10
-			if(wave >= 1)
+			case 0:
 			{
-				switch(GetRandomInt(0,9))
-				{
-					case 0:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 1:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 2:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 3:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 4:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 5:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 6:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 7:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 8:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-					case 9:
-					{
-						for(int i; i < 1; i++)
-						{
-							int other = NPC_CreateByName("npc_xeno_headcrabzombie", -1, pos, ang, team);
-							if(other > MaxClients)
-							{
-								if(team != TFTeam_Red)
-								Zombies_Currently_Still_Ongoing++;
-
-								SetEntProp(other, Prop_Data, "m_iHealth", 10000);
-								SetEntProp(other, Prop_Data, "m_iMaxHealth", 10000);
-
-								fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index] * 0.40;
-								fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index] * 0.40;
-								fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
-								fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
-								b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
-								b_StaticNPC[other] = b_StaticNPC[npc.index];
-								if(b_StaticNPC[other])
-									AddNpcToAliveList(other, 1);
-								npc.m_iOverlordComboAttack++;
-								npc.m_flAbilityOrAttack0 = gameTime + 2.0;
-							}
-						}
-					}
-				}
+				TemporalAnomalySpawn(npc.index, "npc_headcrabzombie", pos, ang, team, 10000);
 			}
+			case 1,2,3,4,5,6,7,8,9:
+			{
+				TemporalAnomalySpawn(npc.index, "npc_xeno_headcrabzombie", pos, ang, team, 10000);
+			}
+		}
 			if(wave >= 10)
 			//Wave 10-20
 			{
@@ -545,11 +302,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 	{
 		SmiteNpcToDeath(npc.index);
 	}
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
+
 }
 
 public void TemporalAnomaly_NPCDeath(int entity)
@@ -557,4 +310,30 @@ public void TemporalAnomaly_NPCDeath(int entity)
 	TemporalAnomaly npc = view_as<TemporalAnomaly>(entity);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
+
+
+void TemporalAnomalySpawn(int iGatePortal, const char[] Npcplugininfo, float pos[3], float ang[3], int team, int health)
+{
+	int other = NPC_CreateByName(Npcplugininfo, -1, pos, ang, team);
+	if(other > MaxClients)
+	{
+		if(team != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+
+		SetEntProp(other, Prop_Data, "m_iHealth", health);
+		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+		ScalingMultiplyEnemyHpGlobalScale(other); //makre sure to scale Hp extra as we SET hp values here!
+		NpcStats_CopyStats(iGatePortal, other);	//copy any stats over idk
+		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[iGatePortal] * 0.40;
+		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[iGatePortal] * 0.40;
+		fl_Extra_Speed[other] = fl_Extra_Speed[iGatePortal];
+		fl_Extra_Damage[other] = fl_Extra_Damage[iGatePortal];
+		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[iGatePortal];
+		b_StaticNPC[other] = b_StaticNPC[iGatePortal];
+		if(b_StaticNPC[other])
+			AddNpcToAliveList(other, 1);
+		npc.m_iOverlordComboAttack++;
+		npc.m_flAbilityOrAttack0 = gameTime + 2.0;
+	}
 }
