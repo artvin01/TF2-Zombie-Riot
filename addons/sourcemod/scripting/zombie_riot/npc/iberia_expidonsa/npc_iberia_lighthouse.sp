@@ -453,7 +453,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 			npc.PlayMeleeSound();
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 75.0 * npc.m_flWaveScale;
+				float damageDealt = 210.0 * npc.m_flWaveScale;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.5;
 
@@ -519,6 +519,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;
 		}
 	}
 	else
@@ -582,7 +583,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 
 	if(gameTime > npc.m_flLighthouseShortAttackHappeningNext)
 	{
-		npc.m_flLighthouseShortAttackHappening = gameTime + 0.15;
+		npc.m_flLighthouseShortAttackHappening = gameTime + 0.1;
 		npc.m_flLighthouseShortAttackHappeningAnim = gameTime + 0.1;
 		npc.m_flLighthouseShortAttackHappeningNext = gameTime + 0.2;
 	}

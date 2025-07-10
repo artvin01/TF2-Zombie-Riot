@@ -554,7 +554,7 @@ methodmap Nemal < CClotBody
 			value = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 30)
+		if(RaidModeScaling < 35)
 		{
 			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
@@ -563,7 +563,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.5;
 		}
 
-		if(value > 30)
+		if(value > 35)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;
@@ -2746,7 +2746,7 @@ bool NemalMarkAreas(Nemal npc)
 	{
 		if(npc.m_flNemalPlaceAirMines < GetGameTime(npc.index))
 		{
-			NemalPlaceAirMines(npc.index, 35.0 * RaidModeScaling, 1.5, 15.0, 70.0);
+			NemalPlaceAirMines(npc.index, 85.0 * RaidModeScaling, 1.5, 15.0, 70.0);
 			npc.i_GunMode = 0;
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flNemalPlaceAirMines = 0.0;	
@@ -2843,7 +2843,7 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 		pack3.WriteFloat(damage);
 		pack3.WriteFloat(Size);
 		pack3.WriteFloat(TimeUntillArm + GetGameTime());
-		pack3.WriteFloat((MaxDuration * 1.5) + GetGameTime());
+		pack3.WriteFloat((MaxDuration * 2.5) + GetGameTime());
 	}
 }
 
@@ -2951,7 +2951,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
-		damage *= 1.45;
+		damage *= 2.5;
 	}
 	if(b_ThisWasAnNpc[victim])
 		PluginBot_Jump(victim, {0.0,0.0,1000.0});
@@ -2981,7 +2981,7 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 			
-		maxhealth -= (maxhealth / 4);
+		maxhealth = RoundToNearest(float(maxhealth) * 0.67);
 
 		int spawn_index;
 		switch(i_RaidGrantExtra[entity])

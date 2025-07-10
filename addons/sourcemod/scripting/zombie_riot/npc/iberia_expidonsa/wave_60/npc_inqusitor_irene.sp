@@ -687,7 +687,7 @@ float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
-		damage *= 1.45;
+		damage *= 2.5;
 	}
 	if(b_ThisWasAnNpc[victim])
 		PluginBot_Jump(victim, {0.0,0.0,1000.0});

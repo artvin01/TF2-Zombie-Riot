@@ -81,6 +81,7 @@ methodmap AlliedRitualistAbility < CClotBody
 			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 		}
+		TF2_RemoveCondition(client, TFCond_Taunting);
 
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));

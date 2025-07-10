@@ -845,7 +845,7 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 100％\nDecreases damage dealt by 40％"
+		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 	}
 	"Tonic Affliction Hide"
 	{
@@ -854,6 +854,14 @@
 	"Tonic Affliction Hide Desc"
 	{
 		"en"	"Ignore."
+	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
 	}
 	"Mystery Beer"
 	{
@@ -1349,7 +1357,7 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
+		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY reduces Plasmic Elemental buildup penalty and cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
@@ -1358,6 +1366,22 @@
 	"Plasmatized Lethalitation Desc"
 	{
 		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
+	}
+	"Plasmic Layering I"
+	{
+		"en"	"Plasmic Layering I"
+	}
+	"Plasmic Layering I Desc"
+	{
+		"en" 	"Increases damage and resistance by +15％ while inside the Plasmatized Bubble's radius."
+	}
+	"Plasmic Layering II"
+	{
+		"en"	"Plasmic Layering II"
+	}
+	"Plasmic Layering II Desc"
+	{
+		"en" 	"Increases damage and resistance by +25％ while inside the Plasmatized Bubble's radius."
 	}
 	"Ziberian Flagship Weaponry"
 	{

@@ -1198,7 +1198,16 @@ public Action OnReloadBlockNav(int args)
 public void OnGameFrame()
 {
 #if defined ZR
-	NPC_SpawnNext(false, false);
+	int MaxLimitTest = 0;
+	while(NPC_SpawnNext(false, false))
+	{
+		MaxLimitTest++;
+		//failsafe
+		if(MaxLimitTest >= 2)
+		{
+			break;
+		}
+	}
 #endif	
 #if defined RPG
 	DoubleJumpGameFrame();
@@ -3061,6 +3070,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
 		SDKCall_SetSpeed(client);
+	}
+	else if (condition == TFCond_Taunting && f_PreventMovementClient[client] > GetGameTime())
+	{
+		TF2_RemoveCondition(client, TFCond_Taunting);
 	}
 }
 

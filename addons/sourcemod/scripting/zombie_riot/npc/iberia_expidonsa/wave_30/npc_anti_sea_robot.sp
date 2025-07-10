@@ -318,7 +318,7 @@ void Iberia_AntiSeaRobotSelfDefense(Iberia_AntiSeaRobot npc, float gameTime, int
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 				if(NpcStats_IberiaIsEnemyMarked(npc.m_iTarget))
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flNextMeleeAttack = gameTime + 0.35;
 			}
 		}
 	}

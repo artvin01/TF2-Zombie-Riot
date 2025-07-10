@@ -31,6 +31,37 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+#if defined ZR
+		//Medic E call, its really really delayed it is NOT the same as voicemenu 0 0, this is way faster.
+		if(StrEqual(buffer, "+helpme_server", false))
+		{
+			//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
+			f_MedicCallIngore[client] = GetGameTime() + 0.5;
+			
+			bool has_been_done = BuildingCustomCommand(client);
+			if(has_been_done)
+			{
+				return Plugin_Handled;
+			}
+		}
+		else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
+		{
+			//Remove MVM buy hud
+			BlockNext[client] = true;
+			ClientCommand(client, "+inspect");
+			ClientCommand(client, "-inspect");
+			return Plugin_Handled;
+		}
+		else if(!StrContains(buffer, "MvM_Upgrade", false))
+		{
+			return Plugin_Handled;
+		}
+#endif
+		//dont call anything.
+		return Plugin_Handled;
+	}
 #if defined ZR
 	if(BlockNext[client])
 	{
