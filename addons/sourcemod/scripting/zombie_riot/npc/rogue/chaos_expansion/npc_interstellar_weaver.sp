@@ -674,6 +674,7 @@ static int Storm_Weaver_Get_Target(Interstellar_Weaver npc)
 
 		npc.m_iTarget = GetClosestTarget(npc.index, true, _, false, false, _, _,false,_,_,true,_,TargetValidityExtra);
 
+		/*
 		if(IsValidClient(npc.m_iTarget))
 			CPrintToChatAll("weaver target: %N", npc.m_iTarget);
 		else
@@ -683,6 +684,7 @@ static int Storm_Weaver_Get_Target(Interstellar_Weaver npc)
 			CPrintToChatAll("lel target | disregard: %N", disregard);
 		else
 			CPrintToChatAll("lel target | disregard: %i", disregard);
+		*/
 
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
