@@ -170,6 +170,10 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
+
+//model uses self made IK rigs, to not break the top stuff.
+#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
+
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_47.mdl"
 /*
 	1 - sensal scythe
@@ -1001,6 +1005,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel(COMBINE_CUSTOM_2_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	PrecacheModel(WINGS_MODELS_1);
 	

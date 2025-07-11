@@ -329,25 +329,22 @@ public Action XenoMedicMain_OnTakeDamage(int victim, int &attacker, int &inflict
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-	if(!NpcStats_IsEnemySilenced(victim))
+	if(!npc.bXenoInfectedSpecialHurt)
 	{
-		if(!npc.bXenoInfectedSpecialHurt)
-		{
-			npc.bXenoInfectedSpecialHurt = true;
-			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
-			
-			npc.m_flSpeed = 400.0;
-			CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		}
+		npc.bXenoInfectedSpecialHurt = true;
+		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
+		
+		npc.m_flSpeed = 400.0;
+		CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		float TrueArmor = 1.0;
 		if(!NpcStats_IsEnemySilenced(victim))
 		{

@@ -10178,7 +10178,10 @@ stock void SmiteNpcToDeath(int entity)
 	if(!b_ThisWasAnNpc[entity])
 		return;
 		
-	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
+	CClotBody npc = view_as<CClotBody>(entity);
+	float Push[3];
+	npc.m_vecpunchforce(Push, true);
+	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
 	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_TRUEDAMAGE, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 

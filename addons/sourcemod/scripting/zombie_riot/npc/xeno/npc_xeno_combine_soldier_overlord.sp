@@ -188,8 +188,7 @@ methodmap XenoCombineOverlord < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_RUN");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_WF_OVERLORD_RUN");
 		
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
@@ -300,7 +299,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 7)
 					{
 						npc.m_iChanged_WalkCycle = 7;
-						npc.SetActivity("ACT_RUN");
+						npc.SetActivity("ACT_WF_OVERLORD_RUN");
 					}
 					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
 					npc.m_flSpeed = 330.0;
@@ -310,7 +309,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					if(npc.m_iChanged_WalkCycle != 8)
 					{
 						npc.m_iChanged_WalkCycle = 8;
-						npc.SetActivity("ACT_RUN_ON_FIRE");
+						npc.SetActivity("ACT_WF_OVERLORD_RUN_RAGE");
 					}
 					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
 					npc.m_flSpeed = 380.0;
@@ -360,7 +359,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				}
 				npc.PlaySpecialChargeSound();
-				npc.AddGesture("ACT_ACTIVATE_BATON");
+				npc.AddGesture("ACT_WF_OVERLORD_RAGE_START", .SetGestureSpeed = 2.0);
 				npc.m_flmovedelay = GetGameTime(npc.index) + 0.5;
 				npc.m_flJumpStartTime = GetGameTime(npc.index) + 1.0;
 				npc.StopPathing();
@@ -372,7 +371,7 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 			//	npc.FaceTowards(vecTarget, 2000.0);
 				if(!npc.m_fbRangedSpecialOn)
 				{
-					npc.AddGesture("ACT_PUSH_PLAYER");
+					npc.AddGesture("ACT_WF_OVERLORD_ATTACK_PULSE");
 					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
 					npc.m_fbRangedSpecialOn = true;
 					npc.m_flReloadDelay = GetGameTime(npc.index) + 0.3;
@@ -440,8 +439,14 @@ public void XenoCombineOverlord_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.RemoveGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE",_, 0.25);
+						npc.RemoveGesture("ACT_WF_OVERLORD_ATTACK_NORMAL");
+						npc.RemoveGesture("ACT_WF_OVERLORD_ATTACK_NORMAL_RAGE");
+						if(npc.m_flAngerDelay > GetGameTime(npc.index))
+						{
+							npc.AddGesture("ACT_WF_OVERLORD_ATTACK_NORMAL_RAGE",_, 0.25);
+						}
+						else
+							npc.AddGesture("ACT_WF_OVERLORD_ATTACK_NORMAL",_, 0.25);
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
