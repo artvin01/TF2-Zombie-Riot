@@ -3114,6 +3114,6 @@
 	"CyberGrind_EX_Hard Desc"
 	{
 		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
-		"ko"	"우린 *되고말거에요\n시작 자금:4100\n시작 보급품: 25"
+		"ko"	"우린 좆된거야...\n시작 자금:4100\n시작 보급품: 25"
 	}
 }

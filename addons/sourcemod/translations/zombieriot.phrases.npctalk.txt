@@ -3,7 +3,7 @@
 	"Adrenalive rushes engage"
 	{
 		"en"	"{green}Adrenalive rushes through your body, healing you and giving you an extra revive."
-		"ko"	"{green}아드레날린이 온몸으로 퍼져나갑니다, 체력이 전부회복되고 모든 사람이 소생됩니다!"
+		"ko"	"{green}아드레날린이 온몸으로 퍼져나갑니다, 체력이 전부 회복되고 모든 사람이 소생됩니다!"
 	}
 	"Rebels Arrive"
 	{
@@ -18,27 +18,27 @@
 	"MrV Talk 02"
 	{
 		"en"	"I checked. Have a Funny Time."
-		"ko"	"확인됬어. 즐거운 시간 보내."
+		"ko"	"확인 됐어. 즐거운 시간 보내."
 	}
 	"MrV Talk 03"
 	{
 		"en"	"What, really?"
-		"ko"	"뭣, 진짜?"
+		"ko"	"뭣, 진짜로?"
 	}
 	"MrV Talk 04"
 	{
 		"en"	"Okay, {crimson}Good Luck.{default}"
-		"ko"	"좋아, {crimson}행운을 빌께.{default}"
+		"ko"	"좋아, {crimson}행운을 빌게.{default}"
 	}
 	"MrV Talk 05"
 	{
 		"en"	"Congratulations, Cleared the Challenge"
-		"ko"	"챌린지를 깻구나 축하해"
+		"ko"	"축하한다. 챌린지를 클리어했네."
 	}
 	"MrV Talk 06"
 	{
 		"en"	"Here, I'll give you the {unique}Item{default} as promised."
-		"ko"	"여기 약속한 {unique}보상{default}을 줄께."
+		"ko"	"여기 약속한 {unique}보상{default}이야."
 	}
 	"MrV Talk 07"
 	{

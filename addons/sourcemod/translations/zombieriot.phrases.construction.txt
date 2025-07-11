@@ -82,13 +82,13 @@
 	"Claim Research"
 	{
 		"en"	"Claim Research"
-		"ko"	"소유권 연구"
+		"ko"	"연구 목록"
 	}
 	"Claim Research Time"
 	{
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
-		"ko"	"소유권 연구: {1} 초"
+		"ko"	"연구 : {1} 초"
 	}
 	"Start Mining"
 	{
@@ -169,7 +169,7 @@
 	"Pickaxes and a Map Desc"
 	{
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
-		"ko"	"안내를 요청했더니, 이것만 툭 던져주고 갔다.\n{green}모든 적과 광물들의 이동 속도가 20％ 감소하고, 받는 피해가 35％ 증가하며, 공격 피해량이 35％ 감소합니다.\n{crimson}이 아이템을 획득하면 다른 엔딩을 볼 수 없게 됩니다."
+		"ko"	"{green}모든 적과 광물들의 이동 속도 20％ 감소, 받는 피해 35％ 증가, 공격력 35％ 감소.\n{crimson}획득시 다른 엔딩을 볼 수 없음."
 	}
 	"Loud Firepower"
 	{
@@ -179,7 +179,7 @@
 	"Loud Firepower Desc"
 	{
 		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
-		"ko"	"오염이 너무 방출되어 적대 세력의 주의가 조금 끌렸습니다...\n{green}위저 광석 50 개를 보유한 채로 시작하고, 모든 아군의 공격 속도가 +10％ 증가합니다. {red}스토커 계열 적이 해당 지역을 순찰하게 됩니다."
+		"ko"	"{green}위저 광석 50 개 보유 및 모든 아군의 공격 속도 +10％. {red}스토커 계열 적이 해당 지역을 순찰하게 됨."
 	}
 	"Heavy Equippment"
 	{
@@ -189,7 +189,7 @@
 	"Heavy Equippment Desc"
 	{
 		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
-		"ko"	"우리의 엔지니어들이 ''안내서'' 의 지침대로 안전을 준비했다고 합니다.\n{green}잘란 광석 50 개를 보유한 채로 시작하고, 모든 아군의 최대 체력이 +125 증가합니다. {red}광물들과 적 구조물의 최대 체력이 +15％ 증가합니다."
+		"ko"	"{green}잘란 광석 50 개 보유 및, 모든 아군의 최대 체력 +125. {red}광물들과 적 구조물의 최대 체력 +15％."
 	}
 	"Vehicle Production"
 	{
@@ -199,7 +199,7 @@
 	"Vehicle Production Desc"
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
-		"ko"	"차량은 전부 준비되어있습니다. 어서 탑승하시죠.\n{green}오수니아 광석 50 개와 철 광석 15개 및 거점 레벨 I 과 차량 공장 연구가 마쳐진 상태로 시작합니다. {red}희귀 적군이 평소보다 자주 등장합니다.."
+		"ko"	"{green}오수니아 광석 50 개와 철 광석 15개 보유 및 거점 레벨 I 과 차량 공장 연구가 마쳐진 상태로 시작. {red}희귀 적군이 평소보다 자주 등장."
 	}
 	"Void Blueprints"
 	{
@@ -209,7 +209,7 @@
 	"Void Blueprints Desc"
 	{
 		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
-		"ko"	"이 청사진을 따라하면 안 될 것 같은 기분이 듭니다.\n{red}희귀 적군의 등장 확률이 크게 증가합니다.\n모든 적들의 공격력이 15％ 증가하고 최대 체력이 10％ 증가합니다."
+		"ko"	"{red}희귀 적군의 등장 확률이 크게 증가.\n모든 적들의 공격력 +15％ 및 최대 체력 +10％."
 	}
 	"Ambulance"
 	{
@@ -219,7 +219,7 @@
 	"Ambulance Desc"
 	{
 		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
-		"ko"	"최대 8 명의 플레이어를 태울 수 있는 차량입니다. 다운된 플레이어를 태우고 부활시킬 수 있습니다. 패신저들을 전부 치유합니다. 이 효과들은 운전자의 메딕 개선에 따라서 증가합니다."
+		"ko"	"최대 8 명의 플레이어 탑승 가능. 다운된 플레이어를 태우고 부활 가능. 패신저들을 전부 치유함. 이 효과들은 운전자의 지원 개선에 따라서 증가."
 	}
 	"Bus"
 	{
@@ -239,7 +239,7 @@
 	"Camper Van Desc"
 	{
 		"en"	"A vehicle that can hold up to 4 players. Able to collect ammo from the an ammo box in the back."
-		"ko"	"최대 4 명의 플레이어를 태울 수 있는 차량입니다. 차량 뒤쪽의 탄약 상자를 통해 탄약을 보급할 수 있습니다."
+		"ko"	"최대 4 명의 플레이어를 태울 수 있는 차량. 차량 뒤쪽의 탄약 상자를 통해 탄약을 보급 가능."
 	}
 	"Dump Truck"
 	{
@@ -249,7 +249,7 @@
 	"Dump Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
-		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량입니다. 이 차량은 최대 아머가 증가한 상태입니다."
+		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량. 이 차량은 최대 아머가 증가했습니다."
 	}
 	"Landrover"
 	{
@@ -259,7 +259,7 @@
 	"Landrover Desc"
 	{
 		"en"	"A vehicle that can hold up to 3 players. Has increased driving speed."
-		"ko"	"최대 3 명의 플레이어를 태울 수 있는 차량입니다. 이 차량은 운전 속도가 증가했습니다."
+		"ko"	"최대 3 명의 플레이어를 태울 수 있는 차량. 이 차량은 운전 속도가 증가했습니다."
 	}
 	"Pickup Truck"
 	{
@@ -269,7 +269,7 @@
 	"Pickup Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
-		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량입니다. 외부 좌석을 우선시 합니다."
+		"ko"	"최대 6 명의 플레이어를 태울 수 있는 차량. 외부 좌석을 우선시 합니다."
 	}
 	"Research Station"
 	{
@@ -489,7 +489,7 @@
 	"Bread in Milk Desc"
 	{
 		"en"	"I guess it makes it soggy?\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
-		"ko"	"이거 이러면 빵이 축축해지는거 아닌가요?\n{green}모든 아군의 최대 체력이 +10％ 증가하지만 {red}이동 속도가 -1％ 감소합니다."
+		"ko"	"이거 이러면 빵이 축축해지는거 아닌가요?\n{green}모든 아군의 최대 체력 +10％ {red}대신 이동 속도 -1％ 감소."
 	}
 	"Steamed Mackerel"
 	{
@@ -509,7 +509,7 @@
 	"BBQ Mackerel Desc"
 	{
 		"en"	"Ocean to grill to sauce to my mouth.\n{green}Allies gain +10％ attack speed {red}but -5％ max health"
-		"ko"	"바다에서 그릴로, 그릴에서 소스로, 소스에서 입으로 걸어들어오는 음식.\n{green}모든 아군의 공격 속도가 +10％ 증가하지만 {red}최대 체력이 -5％ 감소합니다."
+		"ko"	"바다에서 그릴로, 그릴에서 소스로, 소스에서 입으로 걸어들어오는 음식.\n{green}모든 아군의 공격 속도 +10％. {red}대신 최대 체력 -5％ 감소."
 	}
 	"Beer Bottle"
 	{
@@ -519,7 +519,7 @@
 	"Beer Bottle Desc"
 	{
 		"en"	"I need beer.\n{green}Allies gain +10％ damage bonus {red}but -1％ movement speed"
-		"ko"	"맥주가 필요하다.\n{green}모든 아군의 공격 피해량이 +10％ 증가하지만 {red}이동 속도가 -1％ 감소합니다."
+		"ko"	"맥주가 필요하다.\n{green}모든 아군의 공격력 +10％ . {red}대신 이동 속도 -1％ 감소."
 	}
 	"The Sandvich"
 	{

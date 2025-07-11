@@ -4249,7 +4249,7 @@
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
-		"ko"	"피해량, 원거리 저항, 발사 속도 증가.\nM2 - 강력한 포탄 10개를 장전합니다.\n5발 남으면 전탄발사 사용가능.\n경고! 전탄발사시, 자가피해및 일정시간  피해량 감소및 다른 어빌 활성화 불가."
+		"ko"	"피해량, 원거리 저항, 발사 속도 증가.\nM2 - 강력한 포탄 10개를 장전합니다.\n5발 남으면 전탄발사 사용가능.\n경고! 전탄발사시, 자가피해및 일정시간  피해량 감소및 다른 능력 활성화 불가."
 	}
 	"Victorian 3 Desc"
 	{
@@ -4548,19 +4548,19 @@
 	{
 		"en"	"M2 summons a skull to shoot for you, M1 launches your skulls which explode for heavy damage.\nUp to two skulls may orbit you at once. Summoning another one will launch the oldest skull.\nSkulls will automatically launch themselves after some time."
 		"chi"	"M2召唤骷髅头随从。M1可以将它们丢出去，造成大量爆炸伤害。\n最多可召唤两个骷髅，超过上限时会丢出额外的骷髅。\n骷髅在一段时间后会自行飞出去。"
-		"ko"	"우클릭으로 해골을 소환하고 좌클릭으로 해골을 발사합니다. 해골은 폭발하며 높은 피해를 입힘.\n최대 2개의 해골이 주변을 회전하며,\n이 상태에서 해골을 소환시 가장 오래된 해골이 자동으로 발사.\n해골은 소환후 시간이 지나면 자동으로 발사."
+		"ko"	"우클릭으로 해골을 소환하고 좌클릭으로 해골을 발사 해골은 폭발하며 높은 피해를 입힘.\n최대 2개의 해골이 주변을 회전하며,\n이 상태에서 해골을 소환시 가장 오래된 해골이 자동으로 발사.\n해골은 소환후 시간이 지나면 자동으로 발사."
 	}
 	"Skull Servants PaP 1"
 	{
 		"en"	"Skulls deal more damage, attack faster, and have better range.\nAlso enables you to have up to three skulls active at once."
 		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。"
-		"ko"	"해골의 피해량이 증가하고, 공격 속도가 증가하며, 사거리가 증가합니다.\n이제 최대 3개의 해골을 보유 가능."
+		"ko"	"해골의 피해량, 공격 속도, 사거리 증가.\n이제 최대 3개의 해골을 보유 가능."
 	}
 	"Skull Servants PaP 2"
 	{
 		"en"	"Skulls deal even more damage, attack even faster, and have much bigger range.\nYou may now have up to four skulls active at once."
 		"chi"	"提高伤害，攻速，大幅度增加射程。\n上限提升至4个骷髅"
-		"ko"	"해골의 피해량이 증가하고, 공격 속도가 증가하며, 사거리가 증가합니다.\n이제 최대 4개의 해골을 보유 가능."
+		"ko"	"해골의 피해량, 공격 속도, 사거리 증가.\n이제 최대 4개의 해골을 보유 가능."
 	}
 	"Trash Cannon Desc"
 	{
