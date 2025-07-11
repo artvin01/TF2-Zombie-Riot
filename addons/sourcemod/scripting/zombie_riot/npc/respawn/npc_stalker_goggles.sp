@@ -304,7 +304,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			b_DoGibThisNpc[npc.index] = true;
 			SmiteNpcToDeath(npc.index);
 			if(AppearedBefore_Suicide)
-				NPC_SpawnNext(true, true); //This will force spawn a panzer.
+				NPC_SpawnNext(true, true, -1); //This will force spawn a panzer.
 
 			AppearedBefore_Suicide = true;
 			return;

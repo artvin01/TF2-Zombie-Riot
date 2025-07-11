@@ -11,6 +11,12 @@ static const char g_HurtSounds[][] = {
 	"weapons/sentry_damage3.wav",
 	"weapons/sentry_damage4.wav",
 };
+
+static int MechanizedProtector[MAXENTITIES];
+static int LifeSupportDevice[MAXENTITIES];
+static int i_LinkStat[MAXENTITIES];
+static bool b_Already_Link[MAXENTITIES];
+
 static int NPCId;
 
 void VictorianOfflineAvangard_MapStart()
@@ -20,6 +26,7 @@ void VictorianOfflineAvangard_MapStart()
 	PrecacheSound(g_DeathSounds);
 	PrecacheSound(g_ActivationSounds);
 	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheModel(LASERBEAM);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
@@ -63,7 +70,11 @@ methodmap VictorianOfflineAvangard < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(80,110));
-		
+	}
+	property int m_i_linkStat
+	{
+		public get()							{ return i_LinkStat[this.index]; }
+		public set(int TempValueForProperty) 	{ i_LinkStat[this.index] = TempValueForProperty; }
 	}
 	
 	public VictorianOfflineAvangard(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -90,7 +101,9 @@ methodmap VictorianOfflineAvangard < CClotBody
 		npc.m_flSpeed = 100.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
+		npc.m_i_linkStat = 0;
 		npc.m_flAttackHappens = 0.0;
 
 		npc.m_flMeleeArmor = 1.00;
@@ -100,11 +113,21 @@ methodmap VictorianOfflineAvangard < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-		
-		if(!StrContains(data, "only"))
+		npc.m_fbRangedSpecialOn = false;
+		npc.m_bFUCKYOU = false;
+		b_Already_Link[npc.index] = false;
+			
+		static char countext[20][1024];
+		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
+		for(int i = 0; i < count; i++)
 		{
-			i_AttacksTillMegahit[npc.index]=600;
-			npc.m_bFUCKYOU = true;
+			if(!StrContains(countext[i], "only"))
+			{
+				i_AttacksTillMegahit[npc.index]=600;
+				npc.m_bFUCKYOU = true;
+			}
+			else if(!StrContains(countext[i], "link_majorsteam"))
+				npc.m_fbRangedSpecialOn = true;
 		}
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -203,6 +226,61 @@ static void ClotThink(int iNPC)
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		}
+		
+		if(npc.m_fbRangedSpecialOn && npc.m_flNextRangedAttack < gameTime)
+		{
+			switch(npc.m_i_linkStat)
+			{
+				case 0:
+				{
+					bool Link_MajorSteam=false;
+					for(int i; i < i_MaxcountNpcTotal; i++)
+					{
+						int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+						if(IsValidEntity(entity))
+						{
+							char npc_classname[60];
+							NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+							if(entity != INVALID_ENT_REFERENCE && StrEqual(npc_classname, "npc_majorsteam") && IsEntityAlive(entity) && !b_Already_Link[entity])
+							{
+								LifeSupportDevice[npc.index] = EntIndexToEntRef(entity);
+								b_Already_Link[entity] = true;
+								int TempEntity = ConnectWithBeam(npc.index, entity, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+								if(IsValidEntity(TempEntity))
+								{
+									SetEntityRenderMode(TempEntity, RENDER_TRANSCOLOR);
+									SetEntityRenderColor(TempEntity, 0, 205, 255, 255);
+								}
+								MechanizedProtector[npc.index] = EntIndexToEntRef(TempEntity);
+								Link_MajorSteam=true;
+								break;
+							}
+						}
+					}
+					if(Link_MajorSteam)
+						npc.m_i_linkStat=1;
+					npc.m_flNextRangedAttack = gameTime + 1.0;
+				}
+				case 1:
+				{
+					int entity = EntRefToEntIndex(LifeSupportDevice[npc.index]);
+					if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(npc.index))
+					{
+						IncreaseEntityDamageTakenBy(npc.index, 0.5, 0.25);
+						HealEntityGlobal(npc.index, npc.index, 4000.0, 1.0);
+						HealEntityGlobal(npc.index, entity, 75.0, 1.0);
+						npc.m_flNextRangedAttack = gameTime + 0.25;
+					}
+					else
+					{
+						npc.m_i_linkStat=2;
+						if(IsValidEntity(MechanizedProtector[npc.index]))
+							RemoveEntity(MechanizedProtector[npc.index]);
+						b_Already_Link[entity]=false;
+					}
+				}
+			}
+		}
 
 		int target = npc.m_iTarget;
 		if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
@@ -255,6 +333,19 @@ static void ClotThink(int iNPC)
 					if(entity != -1)
 					{
 						//max duration of 4 seconds beacuse of simply how fast they fire
+						if(npc.m_i_linkStat==1)
+						{
+							i_ChaosArrowAmount[entity] = 80;
+							if(Rogue_Paradox_RedMoon())
+								i_ChaosArrowAmount[entity] = 125;
+							float vecSwingStart[3], vecAngles[3];
+							GetAbsOrigin(entity, vecSwingStart);
+							int particle = ParticleEffectAt(vecSwingStart, "critical_rocket_blue", 2.4);
+							i_rocket_particle[entity]= EntIndexToEntRef(particle);
+							GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAngles);
+							TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
+							SetParent(entity, particle);
+						}
 						CreateTimer(2.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					}
 
@@ -319,6 +410,11 @@ static void ClotDeath(int entity)
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 
 	npc.PlayDeathSound();
+
+	if(IsValidEntity(MechanizedProtector[npc.index]))
+		RemoveEntity(MechanizedProtector[npc.index]);
+	LifeSupportDevice[npc.index] = INVALID_ENT_REFERENCE;
+	MechanizedProtector[npc.index] = INVALID_ENT_REFERENCE;
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

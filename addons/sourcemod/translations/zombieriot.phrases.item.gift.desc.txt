@@ -3076,4 +3076,44 @@
 		"en" 	"A being made out of chaos and void combined..."
 		"ko" 	"혼돈과 공허가 합쳐진 존재입니다..."
 	}
+	"CyberGrind_Normal"
+	{
+		"en"	"Normal"
+		"ko"	"보통"
+	}
+	"CyberGrind_Normal Desc"
+	{
+		"en"	"Normal difficulty. Raid Boss only.\nStarting Cash:5706\nStarting Supplies: 100"
+		"ko"	"통상 난이도 입니다. 레이드 보스만 등장합니다.\n시작 자금:5706\n시작 보급품: 100"
+	}
+	"CyberGrind_Hard"
+	{
+		"en"	"Hard"
+		"ko"	"어려움"
+	}
+	"CyberGrind_Hard Desc"
+	{
+		"en"	"Added Wave Boss!\nStarting Cash:4700\nStarting Supplies: 50"
+		"ko"	"웨이브 보스가 추가됩니다!\n시작 자금:4700\n시작 보급품: 50"
+	}
+	"CyberGrind_Expert"
+	{
+		"en"	"Expert"
+		"ko"	"전문가"
+	}
+	"CyberGrind_Expert Desc"
+	{
+		"en"	"Added Mini Boss!\nStarting Cash:4500\nStarting Supplies: 25"
+		"ko"	"미니 보스가 추가됩니다!\n시작 자금:4500\n시작 보급품: 25"
+	}
+	"CyberGrind_EX_Hard"
+	{
+		"en"	"Ex Hard"
+		"ko"	"Ex 하드"
+	}
+	"CyberGrind_EX_Hard Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
+		"ko"	"우린 *되고말거에요\n시작 자금:4100\n시작 보급품: 25"
+	}
 }

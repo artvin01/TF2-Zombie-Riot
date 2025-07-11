@@ -3972,6 +3972,26 @@
 		"en"	"Braced Pistol"
 		"ko"	"보호형 권총"
 	}
+	"Widemouth Refill Port"
+	{
+		"en"		"Widemouth Refill Port"
+		"ko"		"넓쩍한 재보급 포드"
+	}
+	"Builder's Blueprints"
+	{
+		"en"		"Builder's Blueprints"
+		"ko"		"건축가의 청사진"
+	}
+	"Sardis Gold"
+	{
+		"en"		"Sardis Gold"
+		"ko"		"사르디스 골드"
+	}
+	"Originium"
+	{
+		"en"		"Originium"
+		"ko"		"오리지늄"
+	}
 	"Confess Your Fears"
 	{
 		"en"	"Confess Your Fears"

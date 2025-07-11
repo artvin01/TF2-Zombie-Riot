@@ -4242,26 +4242,36 @@
 		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
 		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
 		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
-		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포로, 최대 1초까지 지속됩니다.\n공격 속도가 느리고 원거리 피해 저항력이 높습니다.\n근접 피해에 취약해집니다."
+		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포.\n공속이 감소하고 원거리 저항 증가\n근접 취약."
 	}
 	"Victorian 2 Desc"
 	{
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
-		"ko"	"피해량 증가, 원거리 피해 저항력, 공격 속도 증가.\n새 능력: M2를 누르면 강력한 포탄 10개를 장전.\n5개에 도달하면 남은 포탄을 모두 발사.\n!!경고!!: 체력을 잃고 무기가 과열되어 잠시 로켓을 쏠 수 없게 됨."
+		"ko"	"피해량, 원거리 저항, 발사 속도 증가.\nM2 - 강력한 포탄 10개를 장전합니다.\n5발 남으면 전탄발사 사용가능.\n경고! 전탄발사시, 자가피해및 일정시간  피해량 감소및 다른 어빌 활성화 불가."
 	}
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
-		"ko"	"피해량과 원거리 피해 저항력 증가.\n새 능력(폭격): 30초 동안 공격 속도가 엄청나게 증가하고 15초 후에는 피해량도 증가.\n !!경고!!: 15초 후에 체력이 감소하기 시작."
+		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 저항 증가.\nR - 30초동안 공속이 증가하고 피해량 감소, 15초후 피해량 대폭 증가.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
 	}
 	"VictorianLauncher Desc Extra"
 	{
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"무기의 유형이 ''빅토리아''인 다른 무기의 폭발 범위가 +10％ 증가."
+	}
+	"VictorianLauncher 4 Perk Desc"
+	{
+		"en"	"Reduced Over Heated Duration by 25％"
+		"ko"	"과열 지속시간 25％ 감소"
+	}
+	"VictorianLauncher 5 Perk Desc"
+	{
+		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
+		"ko"	"추가 투사체 속도 +200Hu\n조준 지원 활성화"
 	}
 	"The Merchant Desc"
 	{
@@ -4543,7 +4553,7 @@
 	"Skull Servants PaP 1"
 	{
 		"en"	"Skulls deal more damage, attack faster, and have better range.\nAlso enables you to have up to three skulls active at once."
-		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。
+		"chi"	"骷髅造成更多伤害，攻击更快，射程更远。\n上限提升至3个骷髅。"
 		"ko"	"해골의 피해량이 증가하고, 공격 속도가 증가하며, 사거리가 증가합니다.\n이제 최대 3개의 해골을 보유 가능."
 	}
 	"Skull Servants PaP 2"
@@ -5074,6 +5084,27 @@
 	{
 		"en" "Greatly increases damage and very slightly increases swing speed.\nIncreases the damage boost based on lifetime.\nSlightly strengthens Bubble Frenzy's debuff penalty, and increases its duration a bit."
 		"ko" "피해량, 공격 속도가 조금 증가.\n방울의 피해량 증가량이 증폭.\n광란의 방울 능력의 디버프 능력과 디버프 지속 시간이 조금 증가."
+	}
+	
+	"Widemouth Refill Port Desc"
+	{
+		"en"		"You have cleared [Normal] Cyber ​​Grind!\nIncreases ammo/metal/mana obtained from Smmo Boxes by 10％"
+		"ko"		"[보통] 난이도의 사이버 그라인드를 클리어했습니다!\n탄약 박스로부터 얻는 탄약/금속/마나가 10％ 증가합니다"
+	}
+	"Builder's Blueprints Desc"
+	{
+		"en"		"You have cleared [Hard] Cyber ​​Grind!\nReduces building construction cooldown by 1 second"
+		"ko"		"[어려움] 난이도의 사이버 그라인드를 클리어했습니다!\n구조물 설치 쿨다운 1초 감소"
+	}
+	"Sardis Gold Desc"
+	{
+		"en"		"You have cleared [Expert] Cyber ​​Grind!\nStart with extra 20 extra credits."
+		"ko"		"[전문가] 난이도의 사이버 그라인드를 클리어했습니다!\n시작 자금 +20"
+	}
+	"Originium Desc"
+	{
+		"en"		"You have cleared [EX Hard] Cyber ​​Grind!\nStart with extra 30 extra credits."
+		"ko"		"[EX Hard] 난이도의 사이버 그라인드를 클리어했습니다!\n시작 자금 +30"
 	}
 
 	"Merchant Brewing Stand Desc"

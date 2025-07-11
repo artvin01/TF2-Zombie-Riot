@@ -558,6 +558,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
+	
 	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_TRUEDAMAGE);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
@@ -673,6 +674,9 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];
+					int BeamIndex = ConnectWithBeam(client, target, 125, 125, 255, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+					SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+					CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 					ApplyStatusEffect(client, target, "Tonic Affliction", 10.0);
 					ApplyStatusEffect(client, target, "Tonic Affliction Hide", 10.0);
 					
@@ -692,6 +696,9 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 			if(GetVectorDistance(pos1, pos2, true) < 40000) // 200 HU
 			{
 				i_ExtraPlayerPoints[client] += 10;
+				int BeamIndex = ConnectWithBeam(client, entity1, 125, 125, 255, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 				ApplyStatusEffect(client, entity1, "Tonic Affliction", 10.0);
 				ApplyStatusEffect(client, entity1, "Tonic Affliction Hide", 10.0);
 				if(++count > 2)

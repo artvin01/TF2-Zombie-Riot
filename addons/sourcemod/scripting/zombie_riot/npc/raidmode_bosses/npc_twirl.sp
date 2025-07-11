@@ -765,7 +765,7 @@ methodmap Twirl < CClotBody
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 
-		//data: sc%% ; test, verkia, force15, force30, force45, force60, triple_enemies, final_item, blockinv, anger
+		//data: sc%% ; test, verkia, force10, force20, force30, force40, triple_enemies, final_item, blockinv, anger
 		
 		npc.m_iChanged_WalkCycle = 1;
 		npc.m_iBarrageAmmo = 0;
@@ -1528,7 +1528,7 @@ static void Final_Invocation(Twirl npc)
 	{
 		float AproxRandomSpaceToWalkTo[3];
 		WorldSpaceCenter(npc.index, AproxRandomSpaceToWalkTo);
-		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force60;raid;noweaver;full");
+		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force40;raid;noweaver;full");
 		if(spawn_index > MaxClients)
 		{
 			NpcStats_CopyStats(npc.index, spawn_index);
@@ -1575,6 +1575,8 @@ static void Final_Invocation(Twirl npc)
 	
 	RaidModeTime += 60.0;
 
+	/*
+	simply un comment to readd.
 	GiveOneRevive(false);
 
 	if(!b_force_transformation)
@@ -1594,7 +1596,7 @@ static void Final_Invocation(Twirl npc)
 			HealEntityGlobal(i, i, float(SDKCall_GetMaxHealth(i)) * 0.5, 1.0, 1.0, HEAL_ABSOLUTE);
 			CPrintToChat(i, "{green}Adrenalive rushes through your body, healing you and giving you an extra revive.");
 		}
-	}
+	}*/
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1686,8 +1688,6 @@ static void lunar_Radiance(Twirl npc)
 		if(IsValidEntity(ent2))
 			RemoveEntity(ent2);
 	}
-
-	
 
 	npc.m_flLunarThrottle = GameTime + 0.5;
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
@@ -3542,6 +3542,30 @@ static Action IonicFracture_Think(int iNPC)
 	}
 	return Plugin_Continue;
 }
+//usefull for ion pillar indicators, creates a ring at roughly the eye height of a the player it renders it to
+static void IonPillarRadiusIndicator(float Loc[3], float radius, int color[4])
+{
+	float offset_radius = radius * 4.0;
+	float dist_Check = (offset_radius * offset_radius);
+	for(int i=1 ; i < MaxClients ; i++)
+	{
+		if(!IsValidClient(i) || !IsClientInGame(i))
+			continue;
+
+		float clientLoc[3]; GetClientEyePosition(i, clientLoc);
+		float offsetLoc[3]; offsetLoc = Loc;
+		offsetLoc[2] = clientLoc[2] - 25.0;
+
+		float dist = GetVectorDistance(clientLoc, offsetLoc, true);
+
+		//no need to render this one since the client is far enough away to not care.
+		if(dist > dist_Check)
+			continue;
+
+		TE_SetupBeamRingPoint(offsetLoc, 2.0*radius + 0.5, 2.0*radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, TWIRL_TE_DURATION, 10.0, 0.1, color, 1, 0);
+		TE_SendToClient(i);
+	}
+}
 static Action IonicFracture_ProjectileThink(int entity)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -3595,11 +3619,9 @@ static Action IonicFracture_ProjectileThink(int entity)
 		return Plugin_Continue;
 
 	// do visuals
-	int Beam_Index = g_Ruina_BEAM_Combine_Blue;
 
 	float sky[3]; sky = ProjectileLoc; sky[2]+=1500.0; 
-	float ground[3]; ground = ProjectileLoc;
-	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, ground); ground[2]-=50.0;
+	float ground[3]; ground = ProjectileLoc; ground[2]-=1500.0;
 
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
@@ -3609,7 +3631,9 @@ static Action IonicFracture_ProjectileThink(int entity)
 
 	float TE_Duration = TWIRL_TE_DURATION;
 
-	TE_SetupBeamPoints(ground, sky, Beam_Index,	g_Ruina_BEAM_Combine_Black, 0, 66, TE_Duration, Diameter_Rng, Diameter_Rng, 0, 0.1, color, 3);
+	IonPillarRadiusIndicator(ground, diameter, color);
+
+	TE_SetupBeamPoints(ground, sky, g_Ruina_BEAM_Combine_Blue,	g_Ruina_BEAM_Combine_Black, 0, 66, TE_Duration, Diameter_Rng, Diameter_Rng, 0, 0.1, color, 3);
 	TE_SendToAll(0.0);
 
 	//do dmg
