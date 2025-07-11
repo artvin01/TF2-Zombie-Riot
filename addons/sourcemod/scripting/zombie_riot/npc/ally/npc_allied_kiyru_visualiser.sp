@@ -610,7 +610,9 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
+					if(!b_thisNpcIsARaid[npc.m_iTarget])
+						SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
+
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);

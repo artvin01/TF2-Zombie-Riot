@@ -5608,14 +5608,14 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return true;
 	}
 
-	if(entity == data)
-	{
-		return false;
-	}
-
 	if(entity == Entity_to_Respect)
 	{
 		return true;
+	}
+	
+	if(entity == data)
+	{
+		return false;
 	}
 
 	if(entity > 0 && entity <= MaxClients) 
@@ -6663,12 +6663,13 @@ stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false
 }
 
 
-public bool Can_I_See_Enemy_Only(int attacker, int enemy)
+bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0.0})
 {
 	Handle trace;
-	float pos_npc[3];
+	
 	float pos_enemy[3];
-	WorldSpaceCenter(attacker, pos_npc);
+	if(pos_npc[2] == 0.0)
+		WorldSpaceCenter(attacker, pos_npc);
 	WorldSpaceCenter(enemy, pos_enemy);
 
 	

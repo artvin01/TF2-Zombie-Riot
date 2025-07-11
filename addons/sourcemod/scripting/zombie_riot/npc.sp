@@ -668,6 +668,11 @@ void NPC_ConfigSetup()
 	Huscarls_OnMapStart_NPC();
 	Harrison_OnMapStart_NPC();
 	Castellan_OnMapStart_NPC();
+	
+//Special
+	CyberGrindGM_OnMapStart_NPC();
+	Invisible_TRIGGER_Man_OnMapStart_NPC();
+	SoulRunner_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2045,6 +2050,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
 #include "npc/raidmode_bosses/victoria/npc_harrison.sp"
 #include "npc/raidmode_bosses/victoria/npc_castellan.sp"
+
+//Special
+#include "npc/baka/npc_cybergrind_gm.sp"
+#include "npc/baka/npc_invisible_trigger_man.sp"
+#include "npc/baka/special/npc_soulrunner.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"

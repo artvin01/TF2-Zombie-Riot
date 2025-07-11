@@ -85,7 +85,9 @@ enum struct Round
 	char FogColor2[32];
 	float FogStart;
 	float FogEnd;
-	float FogDesnity;
+	float FogDesnity;	
+	
+	bool Override_Music_Setup;
 }
 
 enum struct Vote
@@ -258,7 +260,13 @@ public Action NpcEnemyAliveLimit(int client, int args)
 
 public Action Waves_ForcePanzer(int client, int args)
 {
-	NPC_SpawnNext(true, true); //This will force spawn a panzer.
+	char arg[20];
+	int index=0;
+	GetCmdArg(1, arg, sizeof(arg));
+	if(StringToIntEx(arg, index) <= 0 || index <= 0)
+		index=-1;
+
+	NPC_SpawnNext(true, true, index); //This will force spawn a panzer.
 	return Plugin_Handled;
 }
 
@@ -286,6 +294,10 @@ public Action Waves_RevoteCmd(int client, int args)
 	{
 		Rogue_RevoteCmd(client);
 	}
+	else if(CyberVote)
+	{
+		RaidMode_RevoteCmd(client);
+	}
 	else if(Voting)
 	{
 		VotedFor[client] = 0;
@@ -303,6 +315,8 @@ bool Waves_CallVote(int client, int force = 0)
 {
 	if(Rogue_Mode() || Construction_Mode())
 		return Rogue_CallVote(client);
+	else if(CyberVote)
+		return RaidMode_CallVote(client);
 	
 	if((Voting || VotingMods) && (force || !VotedFor[client]))
 	{
@@ -908,7 +922,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 		delete kv;
 }
 
-bool Waves_GetMiniBoss(MiniBoss boss)
+bool Waves_GetMiniBoss(MiniBoss boss, int RND = -1)
 {
 	if(!MiniBosses)
 		return false;
@@ -934,7 +948,7 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	if(length > level)
 		length = level;
 	
-	MiniBosses.GetArray(GetURandomInt() % length, boss);
+	MiniBosses.GetArray((RND != -1 ? RND : GetURandomInt()) % length, boss);
 	return true;
 }
 
@@ -1052,6 +1066,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GotoFirstSubKey();
 	do
 	{
+		round.music_setup.SetupKv("music_setup", kv);
+		round.Override_Music_Setup=view_as<bool>(kv.GetNum("override_music_setup"));
 		if(kv.GetSectionName(buffer, sizeof(buffer)) && StrContains(buffer, "music_setup") != -1)
 		{
 			continue;
@@ -1995,6 +2011,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
+			if(round.music_setup.Valid()&&round.Override_Music_Setup)
+			{
+				round.music_setup.CopyTo(MusicSetup1);
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client) && !b_IsPlayerABot[client])
+						SetMusicTimer(client, GetTime() + 5);
+				}
+			}
 			if(round.GrigoriMaxSellsItems > 0)
 			{
 				GrigoriMaxSells = round.GrigoriMaxSellsItems;
@@ -2523,7 +2548,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 
 				
-				NPC_SpawnNext(panzer_spawn, panzer_sound);
+				NPC_SpawnNext(panzer_spawn, panzer_sound, -1);
 				return;
 			}
 
@@ -3942,11 +3967,11 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		if(Freeplay_ShouldMiniBoss())
 		{
-			NPC_SpawnNext(true, true);
+			NPC_SpawnNext(true, true, -1);
 		}
 		else
 		{
-			NPC_SpawnNext(false, false);
+			NPC_SpawnNext(false, false, -1);
 		}
 		
 		CurrentWave = 9;

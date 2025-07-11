@@ -4632,6 +4632,21 @@
 		"en"	"Castellan"
 		"ko"	"카스텔란"
 	}
+	"Mr.V"
+	{
+		"en"	"Mr.V"
+		"ko"	"Mr.V"
+	}
+	"Invisible Trigger Man"
+	{
+		"en"	"=Failed name="
+		"ko"	"=Failed name="
+	}
+	"Soulrunner"
+	{
+		"en" 		"Soulrunner"
+		"ko" 		"소울러너"
+	}
 	"Agent John"
 	{
 		"en"		"Agent John"

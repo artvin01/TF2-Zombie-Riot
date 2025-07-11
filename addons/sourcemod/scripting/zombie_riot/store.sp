@@ -580,6 +580,12 @@ void Store_OnCached(int client)
 		
 		if(Items_HasNamedItem(client, "ZR Contest 2024 Artist"))
 			amount += 50;
+			
+		if(Items_HasNamedItem(client, "Sardis Gold"))
+			amount += 20;
+			
+		if(Items_HasNamedItem(client, "Originium"))
+			amount += 30;
 		
 		amount += SkillTree_GetByName(client, "Cash Up 1") * 2;
 		amount += SkillTree_GetByName(client, "Cash Up 1 Infinite") / 5;
@@ -2670,10 +2676,6 @@ void Store_DiscountNamedItem(const char[] name, int timed = 0, float discount = 
 		}
 	}
 }
-
-#define ZR_STORE_RESET (1 << 1) //This will reset the entire store to default
-#define ZR_STORE_DEFAULT_SALE (1 << 2) //This  will reset the current normally sold items, and put up a new set of items
-#define ZR_STORE_WAVEPASSED (1 << 3) //any storelogic that should be called when a wave passes
 
 void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -1.0)
 {

@@ -117,6 +117,8 @@ static float BlitzLight_DMG_Base;
 static float BlitzLight_Radius_Base;
 
 
+static int NPCId;
+
 public void Blitzkrieg_OnMapStart()
 {
 	g_f_blitz_dialogue_timesincehasbeenhurt=0.0;
@@ -137,7 +139,12 @@ public void Blitzkrieg_OnMapStart()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+}
+
+int RaidBoss_Blitzkrieg_ID()
+{
+	return NPCId;
 }
 
 void PrecacheBlitzMusic()
@@ -146,6 +153,7 @@ void PrecacheBlitzMusic()
 		return;
 	
 	b_musicprecached = true;
+	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/dm_loop1.mp3");
 	PrecacheSoundCustom("#zombiesurvival/altwaves_and_blitzkrieg/music/blitzkrieg_ost.mp3");
 }
 
