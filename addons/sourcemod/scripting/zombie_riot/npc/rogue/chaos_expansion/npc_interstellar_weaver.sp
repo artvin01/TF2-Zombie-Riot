@@ -667,12 +667,16 @@ static int Storm_Weaver_Get_Target(Interstellar_Weaver npc)
 	disregard = -1;
 	if(npc.m_flGetClosestTargetTime < GameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		
+		int from = npc.index;
 		if(IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)))
+		{
 			disregard = view_as<CClotBody>(EntRefToEntIndex(npc.m_iState)).m_iTarget;
+			from = EntRefToEntIndex(npc.m_iState);
+		}
+			
 		//get the target nearest to lelouch's location that ISN'T the target he is attacking!
 
-		npc.m_iTarget = GetClosestTarget(npc.index, true, _, false, false, _, _,false,_,_,true,_,TargetValidityExtra);
+		npc.m_iTarget = GetClosestTarget(from, true, _, false, false, _, _,false,_,_,true,_,TargetValidityExtra);
 
 		/*
 		if(IsValidClient(npc.m_iTarget))
