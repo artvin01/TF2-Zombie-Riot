@@ -171,6 +171,11 @@ static Action Timer_VictoriaLauncher(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerVictorianLauncher[client] = null;
+		Zero(Load_SuperCharge);
+		Zero(Charge_Mode);
+		Zero(Burst_Mode);
+		Zero(Rapid_Mode);
+		Zero(Overheat_Mode);
 		int entity = EntRefToEntIndex(VictoriaParticle_I[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);

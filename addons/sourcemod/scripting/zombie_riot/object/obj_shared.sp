@@ -179,7 +179,7 @@ methodmap ObjectGeneric < CClotBody
 		{
 			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
 			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
-			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] -= FakemodelOffset;
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] = -FakemodelOffset;
 		}
 		else
 		{

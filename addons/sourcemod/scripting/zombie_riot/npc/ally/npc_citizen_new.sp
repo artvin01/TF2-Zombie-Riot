@@ -3494,7 +3494,16 @@ public void Citizen_ClotThink(int iNPC)
 							int entity = Building_BuildByName(BuildingPlugin[id], npc.index, vecPos, vecAng);
 							if(entity != -1)
 							{
-								if(Building_AttemptPlace(entity, npc.index))
+								bool TryPlace = false;
+								TryPlace = Building_AttemptPlace(entity, npc.index, _ , 0.0);
+								for(int loop = 1; loop <= 4; loop++)
+								{
+									if(TryPlace)
+										break;
+									TryPlace = Building_AttemptPlace(entity, npc.index, _ , float(20 * loop));
+								}
+
+								if(TryPlace)
 								{
 									if(view_as<ObjectGeneric>(entity).SentryBuilding)
 									{

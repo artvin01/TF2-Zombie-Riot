@@ -19,6 +19,11 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 
 	if(i_IsABuilding[iExclude])
 	{
+		//dont try to collide with your dependant building,.
+		if(EntRefToEntIndex(i_IDependOnThisBuilding[iExclude]) == entity)
+		{
+			return false;
+		}
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iExclude);
 		if(objstats.m_iExtrabuilding1 == entity)
 			return false;
@@ -301,6 +306,8 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	}
 	if(i_IsABuilding[entity])
 	{
+		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
+			return false;
 		return true;
 	}
 	if(GetTeam(data) == GetTeam(entity))
@@ -313,6 +320,8 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	
 	if(i_IsABuilding[entity])
 	{
+		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
+			return false;
 		return true;//They blockin me
 	}
 	return false;

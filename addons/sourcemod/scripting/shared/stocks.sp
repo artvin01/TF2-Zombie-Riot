@@ -1212,6 +1212,11 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != 1)
 			return;
 
+		if(damagetype & DMG_TRUEDAMAGE)
+		{
+			StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, DMG_CLUB);
+		}
+
 		if(attacker > 0 && attacker <= MaxClients)
 			Force_ExplainBuffToClient(attacker, "Bleed");
 		else if(victim > 0 && victim <= MaxClients)
@@ -3371,7 +3376,7 @@ int inflictor = 0)
 			static float damage_1;
 			damage_1 = damage;
 
-			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			if(ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}

@@ -4033,7 +4033,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
 
-	for (int x = 0; x < 6; x++)
+	for (int x = -1; x < 6; x++)
 	{
 		if (FoundSafeSpot)
 			break;
@@ -4767,8 +4767,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-		//	if(b_ThisEntityIgnoredBeingCarried[enemy])
-		//		return false;
 				
 			return true;
 		}
@@ -5608,14 +5606,14 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 		return true;
 	}
 
-	if(entity == data)
-	{
-		return false;
-	}
-
 	if(entity == Entity_to_Respect)
 	{
 		return true;
+	}
+	
+	if(entity == data)
+	{
+		return false;
 	}
 
 	if(entity > 0 && entity <= MaxClients) 
@@ -6663,12 +6661,13 @@ stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false
 }
 
 
-public bool Can_I_See_Enemy_Only(int attacker, int enemy)
+bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0.0})
 {
 	Handle trace;
-	float pos_npc[3];
+	
 	float pos_enemy[3];
-	WorldSpaceCenter(attacker, pos_npc);
+	if(pos_npc[2] == 0.0)
+		WorldSpaceCenter(attacker, pos_npc);
 	WorldSpaceCenter(enemy, pos_enemy);
 
 	
