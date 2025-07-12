@@ -162,18 +162,11 @@ methodmap VoidIxufan < CClotBody
 		skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-	//	SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-	//	SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 		
 		return npc;
 	}
@@ -213,31 +206,26 @@ public void VoidIxufan_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 290.0;
 		fl_TotalArmor[iNPC] = 1.0;
-		SetEntityRenderFx(npc.index, RENDERFX_NONE);
-		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_NONE);
-		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_NONE);
-		SetEntityRenderFx(npc.m_iWearable3, RENDERFX_NONE);
-		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_NONE);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable2))
 		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable3))
 		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable4))
 		{
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
 		}
 	}
