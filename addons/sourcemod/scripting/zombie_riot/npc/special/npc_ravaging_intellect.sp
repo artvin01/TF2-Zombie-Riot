@@ -480,10 +480,6 @@ public void RavagingIntellect_ClotThink(int iNPC)
 	{
 		fl_TotalArmor[npc.index] *= 0.75;
 	}
-	if(npc.m_iHealthBar == 0)
-	{
-		fl_TotalArmor[npc.index] *= 0.75;
-	}
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
