@@ -193,7 +193,7 @@ enum
 	WINGS_KARLAS	= 64
 }
 
-#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_2.mdl"
+#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_7.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
@@ -211,7 +211,7 @@ enum	//it appears if I try to make it go above 14 it starts glitching out
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_3.mdl"
+#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_4.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -236,7 +236,7 @@ enum
 	RUINA_LAZER_CANNON_2	= 524288,		//20
 	RUINA_WINGS_2			= 1048576		//21	going beyond this it legit cannot compile anymore, likely due to too many things
 }
-#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_2.mdl"
+#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_3.mdl"
 enum
 {
 	RUINA_WINGS_4			= 1,			//1
@@ -255,7 +255,7 @@ enum
 	RUINA_TWIRL_CREST_4		= 8192,			//14
 	RUINA_QUINCY_BOW_3		= 16384			//15
 }
-#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_3.mdl"
+#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_4.mdl"
 enum
 {
 	RUINA_STELLA_CREST			= 1,			//1

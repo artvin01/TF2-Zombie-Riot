@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_1_2.mdl"	//current one on the server: "1_1"
+$modelname "zombie_riot/weapons/ruina_models_1_7.mdl"	//current one on the server: "1_2"
 
 $bodygroup "ruina_icbm"	//done
 {
@@ -88,6 +88,7 @@ $mostlyopaque
 $cdmaterials "models\custom_weaponry\"
 $cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
 $cdmaterials "models\weapons\c_items\"				//MORE GOLD 		c_saxxy.vmt		//EVEN MORE GOLD 	c_frying_pan_gold.vmt 
+$cdmaterials "models\props_mvm\"
 $cdmaterials "passtime\neons\"	
 $cdmaterials ""
 
@@ -98,7 +99,6 @@ $bbox -1.784 -1.784 -2.533 1.77 1.773 29.017
 //Good to know I can use these to create special points for vector getting to connect beams or TE or for effects
 
 $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
-#definebone "root"	"" 0 0 0 0 0 0 0 0 0 0 0 0
 
 
 $sequence "idle" {
