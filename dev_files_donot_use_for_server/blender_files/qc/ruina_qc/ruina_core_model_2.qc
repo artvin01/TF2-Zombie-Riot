@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_2_3.mdl"	//current one on the server: 2_1
+$modelname "zombie_riot/weapons/ruina_models_2_5.mdl"	//current one on the server: _2_5
 
 $bodygroup "ruina_bow_2"	//done
 {
@@ -138,7 +138,6 @@ $bbox -1.784 -1.784 -2.533 1.77 1.773 29.017
 //Good to know I can use these to create special points for vector getting to connect beams or TE or for effects
 
 $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
-#definebone "root"	"" 0 0 0 0 0 0 0 0 0 0 0 0
 
 
 $sequence "idle" {
