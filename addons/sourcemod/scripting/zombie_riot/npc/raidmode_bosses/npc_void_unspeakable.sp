@@ -782,6 +782,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 float VoidUnspeakable_Absorber(int entity, int victim, float damage, int weapon)
 {
 	ApplyStatusEffect(entity, victim, "Teslar Shock", 5.0);
+	ApplyStatusEffect(entity, victim, "Heavy Presence", 1.0);
 
 	float damageDealt = 10.0 * RaidModeScaling;
 	Elemental_AddVoidDamage(victim, entity, RoundToNearest(damageDealt), true, true);	
