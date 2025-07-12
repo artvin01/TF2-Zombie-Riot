@@ -9,7 +9,7 @@ static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXPLAYERS][MAXENTITIES];
-static int ParryCounter = 0;
+static int ParryCounter[MAXPLAYERS];
 static int EnemiesHit[6];
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
@@ -528,9 +528,9 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		
 		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
 		{
-			ParryCounter += 1;
+			ParryCounter[victim] += 1;
 			float ParriedDamage = 0.0; //why did I let Lucella's code live like this
-			switch (ParryCounter)
+			switch (ParryCounter[victim])
 			{
 				case 1:
 				{
@@ -593,17 +593,17 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 
 		if(!(damagetype & DMG_TRUEDAMAGE))
 		{
-			if(ParryCounter <= 1)
+			if(ParryCounter[victim] <= 1)
 			{
 				if(b_thisNpcIsARaid[attacker])
 				{
-					ParryCounter = 3;
+					ParryCounter[victim] = 3;
 				}
 			}
-			else if(b_thisNpcIsARaid[attacker] && ParryCounter != 2)
-				ParryCounter = 999;
+			else if(b_thisNpcIsARaid[attacker] && ParryCounter[victim] != 2)
+				ParryCounter[victim] = 999;
 
-			switch (ParryCounter)
+			switch (ParryCounter[victim])
 			{
 				case 1:
 				{
@@ -612,7 +612,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 				case 2:
 				{
 					if(b_thisNpcIsARaid[attacker])
-						ParryCounter = 999;
+						ParryCounter[victim] = 999;
 					float Cooldown = Ability_Check_Cooldown(client, 2);
 					Cooldown += (5.0 * CooldownReductionAmount(client));
 					Ability_Apply_Cooldown(client, 2, Cooldown);
@@ -862,9 +862,9 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 	pack.WriteCell(EntIndexToEntRef(Glow));
 	RequestFrames(RemoveEffectsOffShield_Board, FramesActive, pack); // 60 is 1 sec?
 
-	if (ParryCounter != 0)
+	if (ParryCounter[victim] != 0)
 	{
-		ParryCounter = 0;
+		ParryCounter[victim] = 0;
 	}
 //	SetEntPropFloat(WeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[active] * 1.25);
 }
