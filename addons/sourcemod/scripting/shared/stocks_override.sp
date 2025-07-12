@@ -416,6 +416,15 @@ void Edited_TF2_RegeneratePlayer(int client)
 	//player needs to be fully nowmally visible.
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
 }
 
 #define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
@@ -437,6 +446,15 @@ stock void Edited_TF2_RespawnPlayer(int client)
 	//player needs to be fully nowmally visible.
 	SetEntityRenderMode(client, RENDER_NORMAL);
 	SetEntityRenderColor(client, 255, 255, 255, 255);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
 }
 
 #define TF2_RespawnPlayer Edited_TF2_RespawnPlayer
