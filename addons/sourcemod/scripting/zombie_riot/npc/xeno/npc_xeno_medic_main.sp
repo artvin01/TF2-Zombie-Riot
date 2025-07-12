@@ -162,13 +162,9 @@ methodmap XenoMedicMain < CClotBody
 		npc.StartPathing();
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 		
 		return npc;
@@ -333,13 +329,9 @@ public Action XenoMedicMain_OnTakeDamage(int victim, int &attacker, int &inflict
 	{
 		npc.bXenoInfectedSpecialHurt = true;
 		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
 		
 		npc.m_flSpeed = 400.0;
@@ -374,23 +366,16 @@ public Action XenoMedicMain_Revert_Poison_Zombie_Resistance(Handle timer, int re
 	{
 		XenoMedicMain npc = view_as<XenoMedicMain>(zombie);
 		npc.m_flSpeed = 300.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		if(IsValidEntity(npc.m_iWearable1))
-		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);	
-		}
+		
 		if(IsValidEntity(npc.m_iWearable2))
-		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);	
-		}
+		
 		if(IsValidEntity(npc.m_iWearable3))
-		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);	
-		}
 	}
 	return Plugin_Handled;
 }

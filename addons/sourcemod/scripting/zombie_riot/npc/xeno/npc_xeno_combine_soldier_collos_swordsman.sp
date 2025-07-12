@@ -196,16 +196,14 @@ methodmap XenoCombineCollos < CClotBody
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 215, NORMAL_ZOMBIE_SOUNDLEVEL, 255);
+		
+		SetEntityRenderColor(npc.index, 200, 215, 80, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 215, NORMAL_ZOMBIE_SOUNDLEVEL, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 200, 215, 80, 255);
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
 		
@@ -213,8 +211,7 @@ methodmap XenoCombineCollos < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 215, NORMAL_ZOMBIE_SOUNDLEVEL, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 200, 215, 80, 255);
 		
 		return npc;
 	}

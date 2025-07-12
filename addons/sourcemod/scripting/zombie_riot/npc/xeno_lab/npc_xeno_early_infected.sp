@@ -158,7 +158,6 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 550.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 185, 50, 50, 255);
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
@@ -333,7 +332,6 @@ public Action XenoFortifiedEarlyZombie_OnTakeDamage(int victim, int &attacker, i
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 			npc.bXenoInfectedSpecialHurt = true;
 		}

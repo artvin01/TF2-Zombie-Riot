@@ -129,8 +129,7 @@ methodmap XenoOuroborosEkas < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 125.0;
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		
 		SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		
 		npc.m_flAttackHappenswillhappen = false;
