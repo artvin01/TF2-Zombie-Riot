@@ -10752,6 +10752,7 @@ void IsEntityInvincible_Shield(int entity)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 0)
 			{
+				SetEntityRenderMode(Shield, RENDER_NORMAL);
 				SetEntityRenderColor(Shield, 0, 255, 0, 255);
 				i_InvincibleParticlePrev[Shield] = 0;
 				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -10761,6 +10762,7 @@ void IsEntityInvincible_Shield(int entity)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 1)
 			{
+				SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(Shield, 0, 50, 50, 35);
 				i_InvincibleParticlePrev[Shield] = 1;
 				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -10770,6 +10772,7 @@ void IsEntityInvincible_Shield(int entity)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 2)
 			{
+				SetEntityRenderMode(Shield, RENDER_NORMAL);
 				SetEntityRenderColor(Shield, 255, 255, 255, 255);
 				i_InvincibleParticlePrev[Shield] = 2;
 				SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
@@ -10786,13 +10789,13 @@ void IsEntityInvincible_Shield(int entity)
 	i_InvincibleParticlePrev[Shield] = -1;
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 	if(NpcInvulShieldDisplay == 1)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 0)
 		{
+			SetEntityRenderMode(Shield, RENDER_NORMAL);
 			SetEntityRenderColor(Shield, 0, 255, 0, 255);
 			i_InvincibleParticlePrev[Shield] = 0;
 		}
@@ -10801,6 +10804,7 @@ void IsEntityInvincible_Shield(int entity)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 1)
 		{
+			SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(Shield, 0, 50, 50, 35);
 			i_InvincibleParticlePrev[Shield] = 1;
 		}
@@ -10809,6 +10813,7 @@ void IsEntityInvincible_Shield(int entity)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 2)
 		{
+			SetEntityRenderMode(Shield, RENDER_NORMAL);
 			SetEntityRenderColor(Shield, 255, 255, 255, 255);
 			i_InvincibleParticlePrev[Shield] = 2;
 			SetEntProp(Shield, Prop_Send, "m_nSkin", 4);

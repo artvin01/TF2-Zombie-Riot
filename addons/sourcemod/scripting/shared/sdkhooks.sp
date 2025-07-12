@@ -2166,7 +2166,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					
@@ -2181,8 +2181,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 					if(!autoRevive)
 					{
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(entity, 255, 255, 255, 125);
+						SetEntityRenderMode(entity, RENDER_NORMAL);
+						SetEntityRenderColor(entity, 255, 125, 125, 255);
 					}
 					else
 					{
@@ -2192,8 +2192,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 				if(!autoRevive)
 				{
-					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(victim, 255, 255, 255, 125);
+					SetEntityRenderMode(victim, RENDER_NORMAL);
+					SetEntityRenderColor(victim, 255, 125, 125, 255);
 				}
 				else
 				{

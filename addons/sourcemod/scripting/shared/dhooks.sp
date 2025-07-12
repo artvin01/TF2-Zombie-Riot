@@ -1780,20 +1780,17 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		ClientCommand(owner, "playgamesound items/medshotno1.wav");
 		SetGlobalTransTarget(owner);
-		PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 	}
 	else
 	{
-		int HealedFor = HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
+		HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
 		
 		ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 		SetGlobalTransTarget(owner);
-		
-		PrintHintText(owner,"%t", "You healed for", target, HealedFor);
 			
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);

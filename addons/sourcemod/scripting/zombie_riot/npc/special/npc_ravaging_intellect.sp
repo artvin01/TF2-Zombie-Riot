@@ -287,7 +287,6 @@ methodmap RavagingIntellect < CClotBody
 		}
 		else
 		{
-			
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 175, 100, 100, 125);
 			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);

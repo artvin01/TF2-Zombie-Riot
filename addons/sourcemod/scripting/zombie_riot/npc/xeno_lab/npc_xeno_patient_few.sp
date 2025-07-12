@@ -172,7 +172,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 		npc.m_flSpeed = 300.0;
 		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 50, 255, 50, 255);
 			npc.m_flSpeed = 150.0;
 		}
@@ -325,7 +325,7 @@ public Action XenoPatientFew_OnTakeDamage(int victim, int &attacker, int &inflic
 		{
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.0;
 			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(victim, RENDER_NORMAL);
 			SetEntityRenderColor(victim, 255, 50, 50, 255);
 		}
 	}
