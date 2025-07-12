@@ -286,7 +286,6 @@ methodmap RaidbossNemesis < CClotBody
 		
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
 	
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 65, 255, 65, 255);
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -1147,7 +1146,6 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		AcceptEntityInput(entity_death, "SetAnimation");
 		SetVariantInt(4);
 		AcceptEntityInput(entity_death, "SetBodyGroup");
-		SetEntityRenderMode(entity_death, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity_death, 65, 255, 65, 255);		
 		CClotBody npcstuff = view_as<CClotBody>(entity_death);
 		npcstuff.m_iWearable6 = npcstuff.EquipItem("weapon_bone" ,"models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");

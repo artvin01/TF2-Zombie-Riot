@@ -281,7 +281,6 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 
 			if(IsValidEntity(npc.m_iWearable4))
 			{
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 125, 125, 125, 255);
 			}
 			int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);

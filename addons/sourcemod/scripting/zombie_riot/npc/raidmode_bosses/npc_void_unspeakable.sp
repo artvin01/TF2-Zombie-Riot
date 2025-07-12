@@ -419,19 +419,12 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 			}
 			case 2:
@@ -451,19 +444,12 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 			}
 			case 3:
@@ -485,21 +471,13 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable8, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable8, 200, 0, 200, 255);
 			}
 			case 4,5:
@@ -519,19 +497,12 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 				SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 				SetEntityRenderFx(npc.index,		 RENDERFX_DISTORT);
@@ -545,7 +516,6 @@ methodmap VoidUnspeakable < CClotBody
 			}
 		}
 		
-		SetEntityRenderMode(npc.index, 		RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index,		 200, 0, 200, 255);
 		
 		return npc;

@@ -178,8 +178,6 @@ methodmap MedivalEagleGiant < CClotBody
 		func_NPCOnTakeDamage[npc.index] = MedivalEagleGiant_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalEagleGiant_ClotThink;
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -192,28 +190,24 @@ methodmap MedivalEagleGiant < CClotBody
 		npc.m_flMeleeArmor = 1.6; //They take MORE melee damage.
 		npc.m_flRangedArmor = 0.5;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/fall17_war_eagle/fall17_war_eagle_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 215, 0, 255);
 		
 

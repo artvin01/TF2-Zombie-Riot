@@ -190,7 +190,6 @@ methodmap FallenWarrior < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -231,12 +230,6 @@ methodmap FallenWarrior < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 
 		SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);

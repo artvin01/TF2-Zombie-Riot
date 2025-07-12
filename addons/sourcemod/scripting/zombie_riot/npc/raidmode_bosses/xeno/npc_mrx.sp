@@ -324,9 +324,7 @@ methodmap RaidbossMrX < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone" ,"models/player/items/spy/spy_hat.mdl", .model_size = 1.2);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 25, 25, 25, 255);
 		return npc;
 	}
@@ -1036,9 +1034,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 		AcceptEntityInput(entity_death, "SetBodyGroup");
 		CClotBody npcstuff = view_as<CClotBody>(entity_death);
 		npcstuff.m_iWearable6 = npcstuff.EquipItem("weapon_bone" ,"models/player/items/spy/spy_hat.mdl", .model_size = 1.2);
-		SetEntityRenderMode(npcstuff.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npcstuff.m_iWearable6, 25, 25, 25, 255);
-		SetEntityRenderMode(npcstuff.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npcstuff.index, 125, 125, 125, 255);
 		
 		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);

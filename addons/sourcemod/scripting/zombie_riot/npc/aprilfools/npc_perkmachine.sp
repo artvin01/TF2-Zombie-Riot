@@ -89,7 +89,6 @@ methodmap PerkMachiner < CClotBody
 		npc.m_flMeleeArmor = 0.42;
 		npc.m_flRangedArmor = 0.42;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 1, 255, 1, 255);
 		
 		if(Garrison[npc.index])

@@ -263,13 +263,9 @@ methodmap LostKnight < CClotBody
 			}
 		}
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 		
 		npc.StopPathing();
