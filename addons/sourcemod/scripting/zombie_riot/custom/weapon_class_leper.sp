@@ -772,9 +772,9 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 	if (IsLeperInAnimation(victim))
 	{
 		if(CurrentPapLeper[victim] >= 2)
-			return damage * 0.66; //half damage during animations.
+			return damage * 0.66;
 		else
-			return damage * 0.75; //half damage during animations.
+			return damage * 0.75; 
 	}
 	return damage; //half damage during animations.
 }

@@ -156,7 +156,7 @@ public void Barrack_Alt_Advanced_Mage_ClotThink(int iNPC)
 			
 			if(fl_barragetimer[npc.index] <= GetGameTime(npc.index) && fl_singularbarrage[npc.index] <= GetGameTime(npc.index))
 			{	
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
 
 				i_barrage[npc.index]++;

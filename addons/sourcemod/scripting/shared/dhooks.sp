@@ -12,12 +12,8 @@ static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXPLAYERS];
 Handle g_DhookWantsLagCompensationOnEntity;
 
-#if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
-//static bool Disconnecting;
-//DynamicHook g_ObjStartUpgrading;
 static DynamicHook g_DHookScoutSecondaryFire; 
-#endif
 
 #if defined ZR
 static bool IsRespawning;

@@ -2931,7 +2931,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			if(hide_projectile)
 			{
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 			
@@ -2943,7 +2943,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				i_rocket_particle[entity]= EntIndexToEntRef(particle);
 				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
 				SetParent(entity, particle);	
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 			
@@ -6861,7 +6861,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			{
 				if(!EnableSilentMode)
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
 			}
 			case BLEEDTYPE_METAL:
@@ -6878,7 +6877,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			{
 				if(!EnableSilentMode)
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
 			case BLEEDTYPE_SKELETON:
@@ -6889,7 +6887,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			{
 				if(!EnableSilentMode)
 					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);
 			}
 			case BLEEDTYPE_VOID:
@@ -6899,7 +6896,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
 					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
 				}
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 200, 0, 200, 255);
 			}
 		}	

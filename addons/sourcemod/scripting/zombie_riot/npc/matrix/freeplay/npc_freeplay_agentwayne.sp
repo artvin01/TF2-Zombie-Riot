@@ -462,15 +462,15 @@ static void AgentWayneFreeplay_Reflect_Enable(AgentWayneFreeplay npc)
 static void AgentWayneFreeplay_Reflect_Disable(AgentWayneFreeplay npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable6, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;
