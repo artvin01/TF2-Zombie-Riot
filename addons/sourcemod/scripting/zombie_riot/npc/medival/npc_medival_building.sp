@@ -198,7 +198,7 @@ methodmap MedivalBuilding < CClotBody
 		if(data[0])
 		{
 			i_AttacksTillMegahit[npc.index] = StringToInt(data);
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NONE);
 			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		}
 
@@ -478,11 +478,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		}
 
 		int alpha = i_AttacksTillMegahit[iNPC];
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		if(alpha > 255)
 		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			alpha = 255;
 		}
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
 	}
 }

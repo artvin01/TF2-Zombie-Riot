@@ -462,7 +462,7 @@ public Action XenoCombinePolicePistol_OnTakeDamage(int victim, int &attacker, in
 		{
 			npc.bXenoInfectedSpecialHurt = true;
 			npc.m_flSpeed = 420.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
 			CreateTimer(2.0, XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(10.0, XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
@@ -492,7 +492,7 @@ public Action XenoCombinePolicePistol_Revert_Poison_Zombie_Resistance(Handle tim
 	{
 		XenoCombinePolicePistol npc = view_as<XenoCombinePolicePistol>(zombie);
 		npc.m_flSpeed = 170.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 	}
 	return Plugin_Handled;

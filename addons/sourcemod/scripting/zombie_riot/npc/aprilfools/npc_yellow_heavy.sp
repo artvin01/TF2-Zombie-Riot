@@ -121,7 +121,6 @@ methodmap YellowHeavy < CClotBody
 
 		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 1.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 0, 255);
 
 		return npc;

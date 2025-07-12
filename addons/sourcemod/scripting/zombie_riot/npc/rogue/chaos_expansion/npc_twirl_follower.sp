@@ -783,7 +783,7 @@ static bool Laser_Initiate(TwirlFollower npc)
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	npc.m_flLaserDuration = GameTime + TWIRL_FOLLOWER_LASER_DURATION + 0.75;
@@ -820,7 +820,7 @@ static Action Magia_Overflow_Tick_Follower(int iNPC)
 
 		StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");

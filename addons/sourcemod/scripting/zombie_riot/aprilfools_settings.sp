@@ -126,42 +126,42 @@ void AprilFoolsModelHideWearables(int iNpc)
 	
 	if(IsValidEntity(npc.m_iWearable1) && !b_EntityCantBeColoured[npc.m_iWearable1])
 	{
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable2) && !b_EntityCantBeColoured[npc.m_iWearable2])
 	{
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable3) && !b_EntityCantBeColoured[npc.m_iWearable3])
 	{
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable4) && !b_EntityCantBeColoured[npc.m_iWearable4])
 	{
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable5) && !b_EntityCantBeColoured[npc.m_iWearable5])
 	{
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable6) && !b_EntityCantBeColoured[npc.m_iWearable6])
 	{
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable7) && !b_EntityCantBeColoured[npc.m_iWearable7])
 	{
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable7, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable8) && !b_EntityCantBeColoured[npc.m_iWearable8])
 	{
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable8, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable8, 0, 0, 0, 0);
 	}
 

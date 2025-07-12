@@ -195,12 +195,13 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
+		SetEntityRenderMode(npc.index, RENDER_NONE);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+
 		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
 		int wave = Waves_GetRoundScale()+1;
 
@@ -881,15 +882,17 @@ static bool Charging(Magia_Anchor npc)
 	{
 	
 		Ruina_Add_Battery(npc.index, 0.5);	//the anchor has the ability to build itself, but it stacks with the builders
+		
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		int alpha = RoundToFloor(fl_ruina_battery[npc.index]);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		if(alpha > 255)
 		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			alpha = 255;
 		}
 		//PrintToChatAll("Alpha: %i", alpha);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
 		return false;
@@ -917,7 +920,7 @@ static bool Charging(Magia_Anchor npc)
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		fl_ruina_battery[npc.index]=333.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 	}
 

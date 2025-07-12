@@ -366,17 +366,11 @@ methodmap Vhxis < CClotBody
 		CPrintToChatAll("{purple}Vhxis: {default}Youre nothing before the power of the void!");
 
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 
 		
@@ -1220,13 +1214,9 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 					fl_Extra_Damage[spawn_index] *= 8.5;
 					fl_Extra_Speed[spawn_index] *= 0.35;
-					SetEntityRenderMode(npc1.index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.index, 125, 0, 125, 255);
-					SetEntityRenderMode(npc1.m_iWearable1, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.m_iWearable1, 125, 0, 125, 255);
-					SetEntityRenderMode(npc1.m_iWearable2, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.m_iWearable2, 125, 0, 125, 255);
-					SetEntityRenderMode(npc1.m_iWearable3, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.m_iWearable3, 125, 0, 125, 255);
 					FormatEx(c_NpcName[npc1.index], sizeof(c_NpcName[]), "Voided Vanguard");
 				}

@@ -151,14 +151,12 @@ methodmap MedivalCrossbowGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 
 		SetVariantInt(1);
@@ -169,9 +167,6 @@ methodmap MedivalCrossbowGiant < CClotBody
 		func_NPCOnTakeDamage[npc.index] = MedivalCrossbowGiant_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalCrossbowGiant_ClotThink;
 		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_GiantCrossbowMan;
-		
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 120.0;

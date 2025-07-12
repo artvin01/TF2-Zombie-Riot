@@ -175,8 +175,6 @@ methodmap MedivalLongbowmen < CClotBody
 		func_NPCThink[npc.index] = MedivalLongbowmen_ClotThink;
 		func_NPCAnimEvent[npc.index] = HandleAnimEventMedivalLongbowmen;
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;

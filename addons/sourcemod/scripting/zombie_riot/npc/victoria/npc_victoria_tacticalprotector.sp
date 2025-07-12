@@ -128,7 +128,6 @@ methodmap VictoriaProtector < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_war_helmet/sbox2014_war_helmet.mdl");

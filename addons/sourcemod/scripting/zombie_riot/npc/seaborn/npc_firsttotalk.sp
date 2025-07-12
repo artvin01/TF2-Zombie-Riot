@@ -105,10 +105,8 @@ methodmap FirstToTalk < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
@@ -171,7 +169,6 @@ public void FirstToTalk_ClotThink(int iNPC)
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 					
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
 					WorldSpaceCenter(entity, vecTarget);
@@ -287,7 +284,6 @@ public Action FirstToTalk_TimerShoot(Handle timer, DataPack pack)
 			if(IsValidEntity(f_ArrowTrailParticle[entity]))
 				RemoveEntity(f_ArrowTrailParticle[entity]);
 			
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(entity, 100, 100, 255, 255);
 			
 			WorldSpaceCenter(entity, vecPos);

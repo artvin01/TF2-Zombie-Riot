@@ -102,7 +102,6 @@ methodmap XenoKamikaze < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoKamikaze_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoKamikaze_ClotThink;		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -121,7 +120,6 @@ methodmap XenoKamikaze < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);

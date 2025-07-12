@@ -835,7 +835,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 11:	
 		{
-			CPrintToChatAll("{green}NEMESIS! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
+			CPrintToChatAll("{green}Calmaticus! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
 		}
 		case 12:	
 		{

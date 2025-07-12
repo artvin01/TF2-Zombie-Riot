@@ -120,7 +120,6 @@ methodmap CyanHeavy < CClotBody
 		AddNpcToAliveList(npc.index, 1);
 		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 1.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 66, 252, 255, 255);
 
 		return npc;
