@@ -597,7 +597,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			{
 				if(b_thisNpcIsARaid[attacker])
 				{
-					ParryCounter = 3;
+					ParryCounter = 2;
 				}
 			}
 			else if(b_thisNpcIsARaid[attacker] && ParryCounter != 2)
