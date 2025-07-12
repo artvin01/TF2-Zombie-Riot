@@ -1257,10 +1257,8 @@ void Nemesis_TryDodgeAttack(int entity)
 		{
 			if(npc.m_iChanged_WalkCycle != 8) 
 			{
-				int DodgeLeft;
 				b_IgnoredByPlayerProjectiles[npc.index] = true;
 
-				DodgeLeft = GetRandomInt(0,1);
 				float PosToDodgeTo[3];
 
 				npc.SetActivity("ACT_CALMATICUS_MINIGUN_DODGE");
