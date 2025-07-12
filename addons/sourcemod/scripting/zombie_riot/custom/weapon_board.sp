@@ -862,9 +862,9 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 	pack.WriteCell(EntIndexToEntRef(Glow));
 	RequestFrames(RemoveEffectsOffShield_Board, FramesActive, pack); // 60 is 1 sec?
 
-	if (ParryCounter[victim] != 0)
+	if (ParryCounter[client] != 0)
 	{
-		ParryCounter[victim] = 0;
+		ParryCounter[client] = 0;
 	}
 //	SetEntPropFloat(WeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[active] * 1.25);
 }
