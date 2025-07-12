@@ -326,6 +326,9 @@ methodmap RaidbossMrX < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone" ,"models/player/items/spy/spy_hat.mdl", .model_size = 1.2);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable6, 25, 25, 25, 255);
+		npc.m_iWearable7 = npc.EquipItem("weapon_bone" ,"models/workshop/player/items/sniper/dec2014_hunter_vest/dec2014_hunter_vest.mdl", .model_size = 1.0);
+		SetEntityRenderColor(npc.m_iWearable7, 25, 25, 25, 255);
+
 		return npc;
 	}
 }
@@ -849,13 +852,13 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					npc.PlayMeleeSound();
 				}
 			}
-			case 5:
+			case 4:
 			{
 				npc.m_flNextRangedAttack = gameTime + 30.0;
 				npc.m_flNextRangedAttackHappening = gameTime + 5.0;
 				Mr_xWalkingAnimInit(npc.index);
 			}
-			case 6:
+			case 5:
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				npc.m_iLastChargedTarget = 0;
@@ -1036,11 +1039,15 @@ public void RaidbossMrX_NPCDeath(int entity)
 		npcstuff.m_iWearable6 = npcstuff.EquipItem("weapon_bone" ,"models/player/items/spy/spy_hat.mdl", .model_size = 1.2);
 		SetEntityRenderColor(npcstuff.m_iWearable6, 25, 25, 25, 255);
 		SetEntityRenderColor(npcstuff.index, 125, 125, 125, 255);
+		npcstuff.m_iWearable7 = npcstuff.EquipItem("weapon_bone" ,"models/workshop/player/items/sniper/dec2014_hunter_vest/dec2014_hunter_vest.mdl", .model_size = 1.0);
+		SetEntityRenderColor(npcstuff.m_iWearable7, 25, 25, 25, 255);
 		
 		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(npcstuff.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(npcstuff.m_iWearable7), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(1.65, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(1.65, Timer_RemoveEntity, EntIndexToEntRef(npcstuff.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.65, Timer_RemoveEntity, EntIndexToEntRef(npcstuff.m_iWearable7), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	i_GrabbedThis[npc.index] = -1;

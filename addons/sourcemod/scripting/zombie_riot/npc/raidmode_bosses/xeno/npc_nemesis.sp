@@ -218,6 +218,7 @@ methodmap RaidbossNemesis < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
+		fl_TotalArmor[npc.index] = 0.8;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
