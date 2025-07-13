@@ -49,7 +49,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return CyberGrindGM(client, vecPos, vecAng, ally, data);
+	return CyberGrindGM(vecPos, vecAng, ally, data);
 }
 
 void ResetCyberGrindGMLogic()
@@ -64,7 +64,7 @@ methodmap CyberGrindGM < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public CyberGrindGM(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public CyberGrindGM(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CyberGrindGM npc = view_as<CyberGrindGM>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "12000", ally));
 		
