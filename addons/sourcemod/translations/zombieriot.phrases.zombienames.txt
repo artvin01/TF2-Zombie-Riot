@@ -2583,7 +2583,7 @@
 	}
 	"Vivithorn"
 	{
-		"en"	"Vivithornr"
+		"en"	"Vivithorn"
 	}
 	"Xeno Acclaimed Swordsman"
 	{

@@ -911,6 +911,11 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
+/*
+
+	if(f3_CustomMinMaxBoundingBoxMinExtra[client][2])
+		endPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[client][2];
+*/
 bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false, float AbsOriginOffset = 0.0)
 {
 	float VecPos[3];
@@ -940,7 +945,7 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		endPos3 = endPos2;
 		//for this calculation we want to pretend that the bottom building is our dependand so we dont interact with it and get blocked.
 		int SavePrevious = i_IDependOnThisBuilding[buildingindx];
-		i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+		i_IDependOnThisBuilding[buildingindx] = 0;
 		bool Success = BuildingSafeSpot(buildingindx, endPos3, VecMin, VecMax);
 		i_IDependOnThisBuilding[buildingindx] = SavePrevious;
 		if(!Success)
@@ -967,15 +972,15 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
 
 		if(client <= MaxClients)
+		{
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
+		}
 
 		
 		
 		if(!TestClient)
 		{
-			//offset needed for stuff like ammoboxes as their model is halfway in
-			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])
-				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+			//offset needed for stuff like ammoboxes as their model is halfway i
 
 			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
@@ -1003,6 +1008,9 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		}
 		return false;
 	}
+	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+		VecPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
 	//little elevation so it doesnt hit the floor.
 	VecPos[2] += 0.1;
 	if(!BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax))
@@ -1011,8 +1019,6 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 		if(client <= MaxClients)
 		{
 			endPos = VecPos;
-			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
-				endPos[2] += f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
 			CanBuild_VisualiseAndWarn(client, buildingindx, true, endPos);
 			if(!TestClient)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -1022,11 +1028,7 @@ bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false
 
 	if(client <= MaxClients)
 	{
-		endPos = VecPos;
-		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
-			endPos[2] += f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
-
-		CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos);
+		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecPos);
 	}
 	if(!TestClient)
 	{
@@ -1241,7 +1243,7 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
-		
+
 	return FoundSafeSpot;
 }
 
@@ -1331,9 +1333,6 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 	}
 	else
 	{
-		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
-			VecLaser[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
-
 		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.2, view_as<int>({0, 255, 0, 255}));
 		SetDefaultHudPosition(client,_,_,_, 0.3);
 		SetGlobalTransTarget(client);
