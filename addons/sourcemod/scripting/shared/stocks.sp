@@ -5826,3 +5826,21 @@ stock void Projectile_TeleportAndClip(int entity)
 	}
 	delete hTrace;
 }
+
+
+void Stocks_ColourPlayernormal(int client)
+{
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+#if defined ZR
+		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+#endif
+
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
+}
