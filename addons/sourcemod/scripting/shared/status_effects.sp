@@ -147,7 +147,9 @@ void InitStatusEffects()
 	DeleteStatusEffectsFromAll();
 	//clear all existing ones
 	StatusEffects_TeslarStick();
+#if defined ZR
 	StatusEffects_Baka();
+#endif
 	StatusEffects_Ludo();
 	StatusEffects_Cryo();
 	StatusEffects_PotionWand();
@@ -391,7 +393,7 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 			delete E_AL_StatusEffects[victim];
 	}
 }
-
+#if defined ZR
 void StatusEffects_Baka()
 {
 	StatusEffect data;
@@ -466,6 +468,7 @@ float Cybergrind_EX_Hard_SpeedFunc(int victim, StatusEffect Apply_MasterStatusEf
 	else if(Waves_GetRound()+1>14)f_Speed = 1.06;
 	return f_Speed;
 }
+#endif
 
 //Got lazy, tired of doing so many indexs.
 
