@@ -3116,4 +3116,14 @@
 		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
 		"ko"	"우린 좆된거야...\n시작 자금:4100\n시작 보급품: 25"
 	}
+	"CyberGrind_Fast"
+	{
+		"en"	"Fast Mode"
+		"ko"	"빠른 모드"
+	}
+	"CyberGrind_Fast Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:85000\nStarting Supplies: 1557"
+		"ko"	"쉬는시간 없이 모든 보스를 만날수있습니다!\n시작 자금:85000\n시작 보급품: 1557"
+	}
 }
