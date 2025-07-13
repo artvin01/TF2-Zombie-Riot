@@ -49,7 +49,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return CyberGrindGM(client, vecPos, vecAng, ally, data);
+	return CyberGrindGM(vecPos, vecAng, ally, data);
 }
 
 void ResetCyberGrindGMLogic()
@@ -64,7 +64,7 @@ methodmap CyberGrindGM < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public CyberGrindGM(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public CyberGrindGM(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CyberGrindGM npc = view_as<CyberGrindGM>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "12000", ally));
 		
@@ -109,8 +109,15 @@ methodmap CyberGrindGM < CClotBody
 					Ammo_Count_Used[target] -= (CyberGrind_InternalDifficulty>2 ? 20 : 15);
 			}
 			
+			int iNextSetWave;
+			switch(CyberGrind_InternalDifficulty)
+			{
+				case 1:iNextSetWave=14;
+				case 5:iNextSetWave=60;
+				default:iNextSetWave=13;
+			}
 			Waves_ClearWaves();
-			CurrentRound = (CyberGrind_InternalDifficulty>1 ? 13 : 14);
+			CurrentRound = iNextSetWave;
 			CurrentWave = -1;
 			Waves_Progress();
 			
@@ -207,7 +214,7 @@ methodmap CyberGrindGM < CClotBody
 			if(CyberGrind_InternalDifficulty==4)
 			{
 				Waves_ClearWaves();
-				CurrentRound = 62;
+				CurrentRound = 63;
 				CurrentWave = -1;
 				Waves_Progress();
 			}
@@ -242,7 +249,7 @@ methodmap CyberGrindGM < CClotBody
 			
 			if(CyberGrind_InternalDifficulty>2)
 			{
-				switch(GetRandomInt(0, 7))
+				switch(GetRandomInt(0, 6))
 				{
 					case 0: NPC_SpawnNext(true, true, 0);
 					case 1: NPC_SpawnNext(true, true, 1);
@@ -251,7 +258,6 @@ methodmap CyberGrindGM < CClotBody
 					case 4: NPC_SpawnNext(true, true, 5);
 					case 5: NPC_SpawnNext(true, true, 6);
 					case 6: NPC_SpawnNext(true, true, 7);
-					case 7: NPC_SpawnNext(true, true, 10);
 				}
 			}
 			WaveStart_SubWaveStart(GetGameTime() + 3000.0);
@@ -487,7 +493,6 @@ methodmap CyberGrindGM < CClotBody
 			func_NPCThink[npc.index] = CyberGrindGM_OverrideMusic;
 			npc.m_iOverlordComboAttack = 1;
 			npc.m_flNextRangedAttack = GetGameTime() + 0.5;
-
 			return npc;
 		}
 		else if(!StrContains(data, "is_twirl"))
@@ -790,46 +795,57 @@ static void CyberGrindGM_Final_Item(int iNPC)
 			case 1:
 			{
 				CyberGrindGM_Talk("MrV Talk 06");
+				bool bCGNormal, bCGHard, bCGExpert, bCGEX_Hard;
+				if(CyberGrind_InternalDifficulty!=5)
+				{
+					if(CyberGrind_InternalDifficulty>0)
+						bCGNormal=true;
+					if(CyberGrind_InternalDifficulty>1)
+						bCGHard=true;
+					if(CyberGrind_InternalDifficulty>2)
+						bCGExpert=true;
+					if(CyberGrind_InternalDifficulty>3)
+						bCGEX_Hard=true;
+				}
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
 						SetGlobalTransTarget(client);
 						CPrintToChat(client, "%t", "MrV Talk 07");
-						if(CyberGrind_InternalDifficulty>0 && !(Items_HasNamedItem(client, "Widemouth Refill Port")))
+						if(bCGNormal && !(Items_HasNamedItem(client, "Widemouth Refill Port")))
 						{
 							Items_GiveNamedItem(client, "Widemouth Refill Port");
 							CPrintToChat(client, "%t", "MrV Talk 08");
 						}
-						if(CyberGrind_InternalDifficulty>1 && !(Items_HasNamedItem(client, "Builder's Blueprints")))
+						if(bCGHard && !(Items_HasNamedItem(client, "Builder's Blueprints")))
 						{
 							Items_GiveNamedItem(client, "Builder's Blueprints");
 							CPrintToChat(client, "%t", "MrV Talk 09");
 						}
-						if(CyberGrind_InternalDifficulty>2 && !(Items_HasNamedItem(client, "Sardis Gold")))
+						if(bCGExpert && !(Items_HasNamedItem(client, "Sardis Gold")))
 						{
 							Items_GiveNamedItem(client, "Sardis Gold");
 							CPrintToChat(client, "%t", "MrV Talk 10");
 						}
-						if(CyberGrind_InternalDifficulty>3)
+						if(bCGEX_Hard && !(Items_HasNamedItem(client, "Originium")))
 						{
-							if(!(Items_HasNamedItem(client, "Originium")))
-							{
-								Items_GiveNamedItem(client, "Originium");
-								CPrintToChat(client, "%t", "MrV Talk 11");
-							}
+							Items_GiveNamedItem(client, "Originium");
+							CPrintToChat(client, "%t", "MrV Talk 11");
 						}
 						int MultiExtra = 1;
 						switch(CyberGrind_InternalDifficulty)
 						{
 							case 0, 1:
-								MultiExtra = 5;
-							case 2:
 								MultiExtra = 10;
-							case 3:
+							case 2:
 								MultiExtra = 15;
+							case 3:
+								MultiExtra = 20;
+							case 4:
+								MultiExtra = 35;
 							default:
-								MultiExtra = 25;
+								MultiExtra = 5;
 						}
 
 						int TempCalc = Level[client];
@@ -1100,6 +1116,12 @@ static void RaidMode_SetupVote()
 	Voting = new ArrayList(sizeof(Vote));
 	CyberVote=true;
 	Vote vote;
+	
+	strcopy(vote.Name, sizeof(vote.Name), "CyberGrind_Fast");
+	strcopy(vote.Desc, sizeof(vote.Desc), "CyberGrind_Fast Desc");
+	vote.Config[0] = 0;
+	vote.Level = 100;
+	Voting.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "CyberGrind_Normal");
 	strcopy(vote.Desc, sizeof(vote.Desc), "CyberGrind_Normal Desc");
@@ -1381,6 +1403,16 @@ static Action RaidMode_EndVote(Handle timer, float time)
 				{
 					if(IsValidClient(client))
 						Ammo_Count_Used[client] = -50;
+				}
+			}
+			else if(!StrContains(vote.Name, "CyberGrind_Fast"))
+			{
+				CyberGrind_Difficulty = 5;
+				CurrentCash = 85000;
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsValidClient(client))
+						Ammo_Count_Used[client] = -1557;
 				}
 			}
 			else

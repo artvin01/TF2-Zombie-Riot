@@ -59,7 +59,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Invisible_TRIGGER_Man(client, vecPos, vecAng, ally, data);
+	return Invisible_TRIGGER_Man(vecPos, vecAng, ally, data);
 }
 
 methodmap Invisible_TRIGGER_Man < CClotBody
@@ -95,7 +95,7 @@ methodmap Invisible_TRIGGER_Man < CClotBody
 		EmitSoundToAll(g_TeleSounds[GetRandomInt(0, sizeof(g_TeleSounds) - 1)], _, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 
-	public Invisible_TRIGGER_Man(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Invisible_TRIGGER_Man(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool Cybergrind_EX_Hard_Mode=false;
 		if(!StrContains(data, "cybergrind_ex_hard"))

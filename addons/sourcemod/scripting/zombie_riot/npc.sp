@@ -672,7 +672,6 @@ void NPC_ConfigSetup()
 //Special
 	CyberGrindGM_OnMapStart_NPC();
 	Invisible_TRIGGER_Man_OnMapStart_NPC();
-	SoulRunner_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -2054,7 +2053,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //Special
 #include "npc/baka/npc_cybergrind_gm.sp"
 #include "npc/baka/npc_invisible_trigger_man.sp"
-#include "npc/baka/special/npc_soulrunner.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"
