@@ -529,6 +529,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle != 999) 	
 		{
+			npc.m_bAllowBackWalking = false;
 			i_GunMode[npc.index] = 0;
 			npc.m_iChanged_WalkCycle = 999;
 			fl_RegainWalkAnim[npc.index] = gameTime + 0.2;

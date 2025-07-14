@@ -235,6 +235,8 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 			return false;
 		else if(objstats.m_iExtrabuilding2 == entity)
 			return false;
+		else if(IsValidEntity(Building_Mounted[entity]))
+			return false;
 	}
 #endif
 
@@ -306,7 +308,17 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	}
 	if(i_IsABuilding[entity])
 	{
+		if(i_IsABuilding[data])
+		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(data);
+			if(objstats.m_iExtrabuilding1 == entity)
+				return false;
+			else if(objstats.m_iExtrabuilding2 == entity)
+				return false;
+		}
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
+			return false;
+		if(IsValidEntity(Building_Mounted[entity]))
 			return false;
 		return true;
 	}
@@ -320,7 +332,17 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	
 	if(i_IsABuilding[entity])
 	{
+		if(i_IsABuilding[data])
+		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(data);
+			if(objstats.m_iExtrabuilding1 == entity)
+				return false;
+			else if(objstats.m_iExtrabuilding2 == entity)
+				return false;
+		}
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
+			return false;
+		if(IsValidEntity(Building_Mounted[entity]))
 			return false;
 		return true;//They blockin me
 	}

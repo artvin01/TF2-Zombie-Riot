@@ -339,7 +339,7 @@ static void BuildingMenu(int client)
 
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
-			if(i == 2 && !Waves_Started())
+			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
 				menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
 			else
 				menu.AddItem(buffer1, buffer1);
@@ -1371,6 +1371,13 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 	if(!i_IsABuilding[EntityHit])
 	{
 		//if we didnt hit any building then we do not care.
+		delete trace;
+		return false;
+	}
+	ObjectGeneric objstats1 = view_as<ObjectGeneric>(EntityHit);
+	ObjectGeneric objstats2 = view_as<ObjectGeneric>(self);
+	if(objstats1.m_bConstructBuilding || objstats2.m_bConstructBuilding)
+	{
 		delete trace;
 		return false;
 	}

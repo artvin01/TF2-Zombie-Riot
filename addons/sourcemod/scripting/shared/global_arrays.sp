@@ -165,6 +165,7 @@ int Animation_Index[MAXPLAYERS];
 int Animation_Retry[MAXPLAYERS];
 #endif
 
+int Building_Mounted[MAXENTITIES];
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
 int i_IDependOnThisBuilding[MAXENTITIES];

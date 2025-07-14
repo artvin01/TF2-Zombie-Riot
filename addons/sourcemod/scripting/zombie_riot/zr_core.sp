@@ -424,8 +424,6 @@ float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
 float f_MedigunChargeSave[MAXPLAYERS][4];
 float f_SaveBannerRageMeter[MAXPLAYERS][2];
 
-int Building_Mounted[MAXENTITIES];
-
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
 int i_DyingParticleIndication[MAXPLAYERS + 1][3];
