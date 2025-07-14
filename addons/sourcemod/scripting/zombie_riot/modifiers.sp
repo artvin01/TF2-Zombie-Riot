@@ -259,7 +259,7 @@ float ZRModifs_SpawnSpeedModif()
 		}
 		if(Construction_Mode())
 		{
-			value *= 0.5;
+			value *= 0.65;
 			//spawn much faster in construction.
 		}
 		//just spawn much faster.
