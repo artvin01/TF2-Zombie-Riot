@@ -3156,6 +3156,7 @@
 	"Old Wooden Board Desc"
 	{
 		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nDefence rating: 10％\nParrying 3 attacks or 1 raid attack gives it an extra cooldown."
+		"ko"	"적의 피해를 흡수하고 반사할 수 있는 ''방패''.\n방어 등급: 10％\n패링을 3회 성공하거나 레이드 보스의 공격을 1회 패링하면 추가 쿨타임 발생."
 	}
 	"Spike Shield Desc"
 	{

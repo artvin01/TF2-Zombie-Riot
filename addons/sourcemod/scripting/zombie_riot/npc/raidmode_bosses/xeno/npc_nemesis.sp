@@ -278,11 +278,11 @@ methodmap RaidbossNemesis < CClotBody
 		if(XenoExtraLogic())
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS:");
+			CPrintToChatAll("{green}칼마티커스: 너희는 좋은 DNA 공급원이 될 테지...");
 		}
 		else
 		{
-			CPrintToChatAll("{green}Calmaticus: You all will be one with the virus.");
+			CPrintToChatAll("{green}칼마티커스: 너희도 저기 굴러다니는 감염체 중 하나가 될 것이다...");
 		}
 		
 		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
@@ -1757,7 +1757,7 @@ public void Raidmode_Nemesis_Win(int entity)
 		}
 		else
 		{
-			CPrintToChatAll("{snow}???{default}: Good job Calmaticus, head back to the lab.");
+			CPrintToChatAll("{snow}???{default}: 아주 잘 했다, 칼마티커스. 연구소로 돌아와라");
 		}
 	}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;

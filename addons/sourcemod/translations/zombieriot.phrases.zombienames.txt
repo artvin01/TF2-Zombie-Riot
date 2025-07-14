@@ -1819,12 +1819,14 @@
 	{
 		"en"		"Calmaticus"
 		"pt"		"Calmaticus"
+		"ko"		"칼마티커스"
 	}
 	"Enraged Calmaticus"
 	{
 		"en"		"Enraged Calmaticus"
 		"ru" 		"Разъяренный Немезид"
 		"pt"		"Calmaticus Enfurecido"
+		"ko"		"격노한 칼마티커스"
 	}
 	"Shell Sea Runner"
 	{
@@ -3058,6 +3060,7 @@
 	"Vivithorn"
 	{
 		"en"	"Vivithorn"
+		"ko"	"비비쏜즈"
 	}
 	"Xeno Acclaimed Swordsman"
 	{

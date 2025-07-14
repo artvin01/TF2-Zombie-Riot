@@ -663,7 +663,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Thinking of taking {lightblue}Nemal{default} out first?");
+						CPrintToChatAll("{gold}실베스터{default}: 나 대신 {lightblue}네말{default}을 먼저 마킹하시겠다고?");
 					}
 					case 2:
 					{

@@ -25,11 +25,12 @@
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
 		"pt"		"Calmaticus, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
-		"ko" 		"최초의 제노 감염자, 네메시스가 등장했습니다."
+		"ko" 		"최초의 제노 감염자, 칼마티커스가 등장했습니다."
 	}
 	"Vivithorn Arrived."
 	{
 		"en" 		"Vivithorn... Is here."
+		"ko" 		"비비쏜즈가... 이 곳에 왔습니다."
 	}
 	"Alaxios Arrived"
 	{

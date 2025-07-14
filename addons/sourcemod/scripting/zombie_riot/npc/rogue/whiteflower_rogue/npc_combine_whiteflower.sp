@@ -923,7 +923,7 @@ public Action Whiteflower_Boss_OnTakeDamage(int victim, int &attacker, int &infl
 	if(RoundToCeil(damage) > Health)
 	{	
 		if(i_RaidGrantExtra[npc.index] == 1)
-			CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+			CPrintToChatAll("{crimson}배풍등{default}: 이... 미친 쥐새끼들이... 지옥에서 너희들을...\n...\n배풍등이 소멸해간다.\n그의 무리가 사기를 잃고 흩어진다.");	
 		
 		npc.StopPathing();
 		ApplyStatusEffect(victim, victim, "Infinite Will", 5.0);
@@ -951,7 +951,7 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	if(i_RaidGrantExtra[npc.index] == 1)
-		CPrintToChatAll("{crimson}행풍등{default}: 이... 미친 쥐새끼들이... 지옥에서 너희들을...\n...\n해풍등이 소멸해간다.\n그의 무리가 사기를 잃고 흩어진다.");	
+		CPrintToChatAll("{crimson}배풍등{default}: 이... 미친 쥐새끼들이... 지옥에서 너희들을...\n...\n배풍등이 소멸해간다.\n그의 무리가 사기를 잃고 흩어진다.");	
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

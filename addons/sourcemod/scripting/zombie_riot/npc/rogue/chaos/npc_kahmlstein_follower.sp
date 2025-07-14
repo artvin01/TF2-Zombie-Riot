@@ -320,7 +320,7 @@ static void ClotThink(int iNPC)
 	{
 		if(npc.m_flIsAwayOrSomething)
 		{
-			CPrintToChatAll("{darkblue}Kahmlstein fights the void, not knowing you already perished....");
+			CPrintToChatAll("{darkblue}캄르스타인은 공허와 싸워갑니다. 당신이 이미 처참하게 죽은 것을 모른채로 말이죠....");
 			npc.m_flIsAwayOrSomething = 0.0;
 		}		
 		return;
@@ -398,19 +398,19 @@ static void ClotThink(int iNPC)
 						{
 							case 0:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: Fight him, ill fend off the gates so nothing goes through!");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 저 놈과 싸워야한다! 난 게이트 속에서 아무것도 나오지 못 하게 막고 있겠다!");
 							}
 							case 1:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: Good luck! ill keep the void things away.");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 내가 공허 쪽을 막겠다. 행운을 빈다.");
 							}
 							case 2:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: You got this, ill keep the rest in bay as much as i can.");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 할 수 있다. 난 널 믿고 게이트를 막아내겠다.");
 							}
 							case 3:
 							{
-								CPrintToChatAll("{darkblue}Kahmlstein{default}: I cant help you, i have to make sure no other void things come for this!");
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 여기서 우리가 같이 싸울 순 없어. 곧 쏟아져나올 공허 놈들도 막아야한다! 그리고 그건 내가 담당하겠다!");
 							}
 						}
 					}
@@ -472,19 +472,19 @@ static void ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Im back, glad youre ok.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 방금 돌아왔다. 네가 무사하길 바래야겠군.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: You destroyed him? He'll come right back.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 놈을 처치한건가? 비록 그 놈은 얼마 지나지 않아 곧 돌아올 테지만.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have feeling he aint sentient, somethings controlling him.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 뭔가 이상해. 저 놈은 자신의 의지대로 움직이는것 같진 않다. 마치 무언가에 조종이라도 당하는 것처럼.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: The more i fight the void, the more i feel like the void isnt an infection.");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 공허와 싸워나갈수록 이 공허란게 감염과는 별개의 존재라는 느낌이 든다.");
 			}
 		}
 		
@@ -730,7 +730,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 그렇겐 못 한다!");
 				SetEntityRenderMode(npc.index, RENDER_NORMAL);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 				SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
