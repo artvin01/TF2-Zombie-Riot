@@ -9,7 +9,7 @@ static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXPLAYERS][MAXENTITIES];
-static int ParryCounter = 0;
+static int ParryCounter[MAXPLAYERS];
 static int EnemiesHit[6];
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
@@ -155,8 +155,7 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 {
 	float damage = 107.5;
 	damage *= Attributes_Get(weapon, 2, 1.0);
-	damage *= 2.0;
-	damage *= 2.0;
+	damage *= 3.2;
 			
 	int value = i_ExplosiveProjectileHexArray[victim];
 	i_ExplosiveProjectileHexArray[victim] = EP_DEALS_CLUB_DAMAGE;
@@ -529,9 +528,9 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		
 		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
 		{
-			ParryCounter += 1;
+			ParryCounter[victim] += 1;
 			float ParriedDamage = 0.0; //why did I let Lucella's code live like this
-			switch (ParryCounter)
+			switch (ParryCounter[victim])
 			{
 				case 1:
 				{
@@ -564,7 +563,6 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			}
 			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
 			ParriedDamage *= 2.0;
-			ParriedDamage *= 2.0;
 		
 			static float angles[3];
 			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
@@ -595,17 +593,17 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 
 		if(!(damagetype & DMG_TRUEDAMAGE))
 		{
-			if(ParryCounter <= 2)
+			if(ParryCounter[victim] <= 1)
 			{
 				if(b_thisNpcIsARaid[attacker])
 				{
-					ParryCounter = 3;
+					ParryCounter[victim] = 3;
 				}
 			}
-			else if(b_thisNpcIsARaid[attacker] && ParryCounter != 3)
-				ParryCounter = 999;
+			else if(b_thisNpcIsARaid[attacker] && ParryCounter[victim] != 2)
+				ParryCounter[victim] = 999;
 
-			switch (ParryCounter)
+			switch (ParryCounter[victim])
 			{
 				case 1:
 				{
@@ -613,15 +611,15 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 				}
 				case 2:
 				{
+					if(b_thisNpcIsARaid[attacker])
+						ParryCounter[victim] = 999;
+					float Cooldown = Ability_Check_Cooldown(client, 2);
+					Cooldown += (5.0 * CooldownReductionAmount(client));
+					Ability_Apply_Cooldown(client, 2, Cooldown);
 					return damage * 0.3;
 				}
 				case 3:
 				{
-					if(b_thisNpcIsARaid[attacker])
-						ParryCounter = 999;
-					float Cooldown = Ability_Check_Cooldown(client, 2);
-					Cooldown += (5.0 * CooldownReductionAmount(client));
-					Ability_Apply_Cooldown(client, 2, Cooldown);
 					return damage * 0.3;
 				}
 				case 4, 5:
@@ -864,9 +862,9 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 	pack.WriteCell(EntIndexToEntRef(Glow));
 	RequestFrames(RemoveEffectsOffShield_Board, FramesActive, pack); // 60 is 1 sec?
 
-	if (ParryCounter != 0)
+	if (ParryCounter[client] != 0)
 	{
-		ParryCounter = 0;
+		ParryCounter[client] = 0;
 	}
 //	SetEntPropFloat(WeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[active] * 1.25);
 }

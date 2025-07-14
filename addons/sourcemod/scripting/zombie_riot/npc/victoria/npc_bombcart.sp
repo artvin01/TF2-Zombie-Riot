@@ -70,7 +70,6 @@ methodmap VictoriaBombcart < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/workshop/player/items/demo/sum22_head_banger/sum22_head_banger.mdl",_,1,1.75,-120.0);

@@ -129,12 +129,10 @@ methodmap VictoriaMortar < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");

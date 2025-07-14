@@ -373,7 +373,7 @@ static void GiantReflector_Reflect_Enable(GiantReflector npc)
 static void GiantReflector_Reflect_Disable(GiantReflector npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;

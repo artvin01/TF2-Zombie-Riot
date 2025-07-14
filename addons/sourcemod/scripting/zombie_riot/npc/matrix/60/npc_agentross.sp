@@ -168,7 +168,6 @@ methodmap AgentRoss < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		

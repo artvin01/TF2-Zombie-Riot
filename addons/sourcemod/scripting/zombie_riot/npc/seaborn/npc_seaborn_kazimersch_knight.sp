@@ -147,7 +147,6 @@ methodmap KazimierzKnight < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("1.0");
@@ -157,28 +156,11 @@ methodmap KazimierzKnight < CClotBody
 		SetVariantString("1.35");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 155, 155, 255, 255);
 
 
-/*
-		int seed = GetURandomInt();
-		bool female = !(seed % 2);
-		char buffer[PLATFORM_MAX_PATH];
 
-		Citizen_GenerateModel(seed, female, GetRandomInt(0,5), buffer, sizeof(buffer));
-
-		npc.m_iWearable3 = npc.EquipItem("partyhat", buffer);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		//SetEntProp(npc.index, Prop_Send, "m_fEffects", GetEntProp(npc.index, Prop_Send, "m_fEffects") | EF_NODRAW);
-		//causes immensive lag, cannot.
-*/
 		npc.StartPathing();
 		
 		

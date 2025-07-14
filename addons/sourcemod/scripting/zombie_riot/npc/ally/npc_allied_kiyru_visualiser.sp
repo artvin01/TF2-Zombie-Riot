@@ -239,7 +239,6 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 							npc.m_iWearablePlayerModel = WearablePostIndex;
 						}
-						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 255);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}
@@ -403,16 +402,19 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
 	{	
+		bool AllowStandStill = true;
+		if(npc.m_iKiryuActionWhich == 4)
+			if(b_thisNpcIsARaid[npc.m_iTarget])
+				AllowStandStill = false;
 		
-		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
-			f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
-		/*
-		if(f_DoNotUnstuckDuration[npc.m_iTarget] < GetGameTime() + 0.5)
-			f_DoNotUnstuckDuration[npc.m_iTarget] = GetGameTime() + 0.5;
-		*/
+		if(AllowStandStill)
+		{
+			if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
+				f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
 
-		if(f_TankGrabbedStandStill[npc.m_iTarget] < GetGameTime() + 0.1)
-			f_TankGrabbedStandStill[npc.m_iTarget] = GetGameTime() + 0.1;
+			if(f_TankGrabbedStandStill[npc.m_iTarget] < GetGameTime() + 0.1)
+				f_TankGrabbedStandStill[npc.m_iTarget] = GetGameTime() + 0.1;
+		}
 
 		AlliedKiryuVisualiserAbility npc3 = view_as<AlliedKiryuVisualiserAbility>(npc.m_iTarget);
 		

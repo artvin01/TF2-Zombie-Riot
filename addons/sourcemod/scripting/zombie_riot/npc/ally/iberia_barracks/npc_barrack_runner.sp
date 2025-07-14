@@ -126,14 +126,7 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2015_death_racer_jacket/hwn2015_death_racer_jacket.mdl","",skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style2/hwn2019_fuel_injector_style2.mdl","",skin);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 255, 255);
-
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 
 		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 255);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 200, 255, 255);

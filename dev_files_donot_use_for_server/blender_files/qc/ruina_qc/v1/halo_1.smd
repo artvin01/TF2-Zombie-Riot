@@ -1,6 +1,6 @@
 version 1
 nodes
-0 "root" -1
+0 "weapon_bone" -1
 end
 skeleton
 time 0

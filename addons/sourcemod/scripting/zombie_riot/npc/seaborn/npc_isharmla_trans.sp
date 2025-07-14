@@ -111,7 +111,6 @@ methodmap IsharmlaTrans < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 		f_ExtraOffsetNpcHudAbove[npc.index] = 35.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 55, 55, 255, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");

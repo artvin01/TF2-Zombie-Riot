@@ -161,7 +161,6 @@ methodmap MutatedDrowedZombieHuman < CClotBody
 		func_NPCOnTakeDamage[npc.index] = MutatedDrowedZombieHuman_OnTakeDamage;
 		func_NPCThink[npc.index] = MutatedDrowedZombieHuman_ClotThink;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -180,10 +179,8 @@ methodmap MutatedDrowedZombieHuman < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
 		npc.StopPathing();
 			

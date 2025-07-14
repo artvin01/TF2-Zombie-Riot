@@ -670,6 +670,59 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 						break;
 					}
 				}
+				if(npc.m_flIsAwayOrSomething)
+				{
+					b_NoHealthbar[npc.index] = false;
+					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
+					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
+					if(IsValidEntity(npc.m_iWearable1))
+					{
+						SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable2))
+					{
+						SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable3))
+					{
+						SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable4))
+					{
+						SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable5))
+					{
+						SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable6))
+					{
+						SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable7))
+					{
+						SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable8))
+					{
+						SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iTeamGlow))
+						RemoveEntity(npc.m_iTeamGlow);
+					npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+					
+					SetVariantColor(view_as<int>({184, 56, 59, 200}));
+					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					npc.m_flIsAwayOrSomething = 0.0;
+				}
 				float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2 );
 				CreateEarthquake(vecTarget2, 2.5, 350.0, 16.0, 255.0);
 				npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
@@ -678,15 +731,15 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
-				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.index, RENDER_NORMAL);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 255);
 				npc.PlayBobMeleePostHit();
 				npc.m_flDeathAnimationCD = gameTime + 2.0;

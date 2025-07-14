@@ -494,19 +494,16 @@ methodmap Harrison < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/pyro_hazmat_4/pyro_hazmat_4_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 50, 50, 50, 255);
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/xms2013_sniper_jacket/xms2013_sniper_jacket.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 50, 50, 50, 255);
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum24_daring_dell_style3/sum24_daring_dell_style3.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

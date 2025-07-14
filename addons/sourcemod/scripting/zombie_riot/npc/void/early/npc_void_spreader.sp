@@ -143,15 +143,10 @@ methodmap VoidSpreader < CClotBody
 		skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
 		
 		return npc;
@@ -264,7 +259,6 @@ int VoidSpreaderSelfDefense(VoidSpreader npc, float gameTime, int target, float 
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 					
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 200, 0, 200, 255);
 					
 					WorldSpaceCenter(entity, vecTarget);

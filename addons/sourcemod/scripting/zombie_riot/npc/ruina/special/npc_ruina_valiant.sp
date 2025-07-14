@@ -598,7 +598,7 @@ static void Venium_Build_Anchor(Valiant npc)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		}
 		fl_ruina_battery[spawn_index]=10.0;
-		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(spawn_index, RENDER_NONE);
 		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
 	}
 }

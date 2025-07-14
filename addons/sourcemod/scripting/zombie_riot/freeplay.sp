@@ -372,7 +372,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 11:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
 			case 12:	
@@ -835,7 +835,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 11:	
 		{
-			CPrintToChatAll("{green}NEMESIS! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
+			CPrintToChatAll("{green}Calmaticus! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
 		}
 		case 12:	
 		{

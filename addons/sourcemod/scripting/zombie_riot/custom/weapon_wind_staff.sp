@@ -271,7 +271,7 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	
 	DataPack pack;
