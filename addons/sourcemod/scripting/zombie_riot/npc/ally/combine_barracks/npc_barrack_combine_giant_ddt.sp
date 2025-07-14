@@ -135,7 +135,6 @@ methodmap Barrack_Combine_Giant_Ddt < BarrackBody
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
@@ -146,7 +145,6 @@ methodmap Barrack_Combine_Giant_Ddt < BarrackBody
 		SetVariantString("1.4");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
 		
 		return npc;

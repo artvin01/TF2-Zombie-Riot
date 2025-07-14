@@ -245,9 +245,7 @@ methodmap XenoFatherGrigori < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, XenoFatherGrigori_ClotDamagedPost);
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-					
-					
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		//IDLE

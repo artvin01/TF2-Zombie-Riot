@@ -167,19 +167,14 @@ methodmap Soldier_Barrager < CClotBody
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 125, 100, 100, 255);
 		
 		npc.StartPathing();

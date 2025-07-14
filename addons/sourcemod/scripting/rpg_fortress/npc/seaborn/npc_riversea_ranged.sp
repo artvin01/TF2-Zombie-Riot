@@ -106,7 +106,6 @@ methodmap RiverSeaRanged < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 126, 126, 255, 255);
 
 		return npc;
@@ -168,7 +167,6 @@ static void ClotThink(int iNPC)
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
 						WorldSpaceCenter(entity, vecMe);

@@ -191,7 +191,6 @@ methodmap XenoCombineSoldierShotgun < CClotBody
 		func_NPCThink[npc.index] = XenoCombineSoldierShotgun_ClotThink;
 
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
 		npc.m_fbGunout = false;

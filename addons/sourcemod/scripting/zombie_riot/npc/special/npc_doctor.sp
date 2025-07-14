@@ -482,7 +482,6 @@ public void SpecialDoctor_NPCDeath(int entity)
 	SpecialDoctor npc = view_as<SpecialDoctor>(entity);
 
 	npc.SetModel("models/player/medic.mdl");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
 	if(IsValidEntity(npc.m_iWearable1))

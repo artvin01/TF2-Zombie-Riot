@@ -1815,19 +1815,16 @@
 		"ru"		"Ангел Сильвестр"
 		"ko"		"승천한 실베스터"
 	}
-	"Nemesis"
+	"Calmaticus"
 	{
-		"en"		"Nemesis"
-		"pt"		"Nemesis"
-		"ru"		"Немезид"
-		"ko"		"네메시스"
+		"en"		"Calmaticus"
+		"pt"		"Calmaticus"
 	}
-	"Enraged Nemesis"
+	"Enraged Calmaticus"
 	{
-		"en"		"Enraged Nemesis"
+		"en"		"Enraged Calmaticus"
 		"ru" 		"Разъяренный Немезид"
-		"pt"		"Nemesis Enfurecido"
-		"ko"		"격노한 네메시스"
+		"pt"		"Calmaticus Enfurecido"
 	}
 	"Shell Sea Runner"
 	{
@@ -3058,11 +3055,9 @@
 		"en"	"Wildingen Hitman"
 		"ko"	"와일딩겐 히트맨"
 	}
-	"Mr.X"
+	"Vivithorn"
 	{
-		"en"	"Mr.X"
-		"ru" 	"Мистер X"
-		"ko"	"Mr.X"
+		"en"	"Vivithorn"
 	}
 	"Xeno Acclaimed Swordsman"
 	{

@@ -212,7 +212,6 @@ methodmap NecroCalcium < CClotBody
 		
 		SetEntityCollisionGroup(npc.index, 27);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
 		npc.StartPathing();

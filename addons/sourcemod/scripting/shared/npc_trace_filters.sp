@@ -21,8 +21,9 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		//dont try to collide with your dependant building,.
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[iExclude]) == entity)
+		{
 			return false;
-
+		}
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iExclude);
 		if(objstats.m_iExtrabuilding1 == entity)
 			return false;

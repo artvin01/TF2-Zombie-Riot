@@ -190,7 +190,6 @@ methodmap CombineDDT < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
 		npc.StartPathing();

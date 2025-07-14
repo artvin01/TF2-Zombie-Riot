@@ -1245,7 +1245,6 @@ static void ClotThink(int iNPC)
 		RemoveSpecificBuff(npc.index, "Solid Stance");
 		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		Explode_Logic_Custom(500.0*RaidModeScaling, npc.index, npc.index, -1, VecSelfNpc, 350.0, _, _, true, _, false, _, LifelossExplosion);
@@ -1693,7 +1692,7 @@ static void lunar_Radiance(Twirl npc)
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
 	npc.m_flDoingAnimation = GameTime + 2.5;
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	npc.m_flLunarTimer = 0.0;
@@ -1726,7 +1725,7 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 	npc.m_flSpeed = fl_npc_basespeed;
@@ -2245,7 +2244,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 	float Windup = 2.0;
@@ -2645,7 +2644,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		}
 		npc.m_iBarrageAmmo = 0;
@@ -2663,7 +2662,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		}
 		return;
@@ -2685,7 +2684,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	if(IsValidEntity(npc.m_iWearable1))
 	{
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 	}
 	
@@ -3023,7 +3022,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
@@ -3064,7 +3063,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -3307,7 +3306,7 @@ static bool IonicFracture(Twirl npc)
 
 	NPCStats_RemoveAllDebuffs(npc.index);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	npc.m_flIonicFractureCD = GameTime + (npc.Anger ? 90.0 : 120.0);
@@ -3681,7 +3680,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	//EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
@@ -3736,7 +3735,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -4007,7 +4006,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayAngerSound();
 
 		npc.m_bisWalking = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 		npc.m_flSpeed = 0.0;

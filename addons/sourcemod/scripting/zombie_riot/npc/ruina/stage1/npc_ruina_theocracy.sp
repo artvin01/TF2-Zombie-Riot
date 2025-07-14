@@ -204,7 +204,6 @@ methodmap Theocracy < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		
 		npc.m_flSpeed = 330.0;

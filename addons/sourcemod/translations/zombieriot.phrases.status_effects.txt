@@ -530,8 +530,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 20％, If silenced, this is 10％"
-		"ko"	"자신의 최대 체력의 ％ 비율만큼 체력을 회복합니다.\nNPC의 이동 속도가 5％ 증가합니다.\n받는 모든 피해가 15％ 감소합니다.\n(영향 대상이 플레이어 또는 침묵 상태일시 5％씩 감소)\n공격 피해량이 20％ 증가합니다. (침묵 상태일시, 10％ 증가)"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 	}
 	"Void Strength II"
 	{
@@ -540,8 +539,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 30％, If silenced, this is 15％"
-		"ko"	"자신의 최대 체력의 ％ 비율만큼 체력을 회복합니다.\nNPC의 이동 속도가 15％ 증가합니다.\n받는 모든 피해가 20％ 감소합니다.\n(영향 대상이 플레이어 또는 침묵 상태일시 5％씩 감소)\n공격 피해량이 30％ 증가합니다. (침묵 상태일시, 15％ 증가)"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 	}
 	"MERLT0N-BUFF"
 	{
@@ -650,8 +648,7 @@
 	}
 	"Hussar's Warscream Desc"
 	{
-		"en"	"Increases damage dealt by 10％\nBlocked by Silence."
-		"ko"	"공격 피해량이 10％ 증가합니다.\n이 효과는 침묵 디버프가 있는 상태일시 무효과가 됩니다."
+		"en"	"Increases damage dealt by 10％"
 	}
 	"Flagellants Punishment"
 	{

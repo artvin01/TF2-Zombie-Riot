@@ -38,6 +38,7 @@ void ObjectVillage_MapStart()
 	PrecacheModel(VILLAGE_MODEL_REBEL);
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
+	Zero(Village_ReloadBuffFor);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Village");

@@ -125,8 +125,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/bak_hood_of_sorrows/bak_hood_of_sorrows.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem/dec15_medic_winter_jacket2_emblem.mdl");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 180);
+		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 255);
 
 		return npc;
 	}

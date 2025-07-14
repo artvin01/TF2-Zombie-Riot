@@ -3376,7 +3376,7 @@ int inflictor = 0)
 			static float damage_1;
 			damage_1 = damage;
 
-			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			if(ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
@@ -5825,4 +5825,22 @@ stock void Projectile_TeleportAndClip(int entity)
 		SDKCall_SetAbsOrigin(entity, VecPos);
 	}
 	delete hTrace;
+}
+
+
+void Stocks_ColourPlayernormal(int client)
+{
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+#if defined ZR
+		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+#endif
+
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
 }

@@ -2911,10 +2911,9 @@
 		"fr"		"Désactiver Musique"
 		"ko"		"맵 음악 끄기"
 	}	
-	"You have been Infected by Nemesis"
+	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Nemesis!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
-		"ko"		"당신은 네메시스에게 감염 당했습니다!\n다른 아군과 너무 가까이 접근하지 마세요.\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
+		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{

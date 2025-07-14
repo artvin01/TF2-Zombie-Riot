@@ -236,10 +236,6 @@ methodmap RavagingIntellect < CClotBody
 		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.StartPathing();
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 
 		SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
@@ -291,9 +287,12 @@ methodmap RavagingIntellect < CClotBody
 		}
 		else
 		{
-			
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 175, 100, 100, 125);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 125);
 			SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 125);
 			SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 125);
@@ -478,10 +477,6 @@ public void RavagingIntellect_ClotThink(int iNPC)
 	}
 	fl_TotalArmor[npc.index] = 1.0;
 	if(HasSpecificBuff(npc.index, "Altered Functions"))
-	{
-		fl_TotalArmor[npc.index] *= 0.75;
-	}
-	if(npc.m_iHealthBar == 0)
 	{
 		fl_TotalArmor[npc.index] *= 0.75;
 	}

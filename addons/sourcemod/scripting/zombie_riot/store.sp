@@ -5070,6 +5070,7 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("820", 1.0);
 		map.SetValue("821", 1.0);
 		map.SetValue("107", 0.001);
+		map.SetValue("698", 1.0);
 		//try prevent.
 	}
 	else

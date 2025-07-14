@@ -154,23 +154,18 @@ methodmap VictorianRaider < CClotBody
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 150, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 150, 150, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 80, 50, 50, 255);
 		return npc;
 	}

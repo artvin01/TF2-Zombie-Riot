@@ -165,16 +165,9 @@ methodmap XenoMedicHealer < CClotBody
 		npc.StartPathing();
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 		
 		return npc;
@@ -306,16 +299,10 @@ public void XenoMedicHealer_ClotThink(int iNPC)
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
 			if(IsValidEntity(npc.m_iWearable2))
-			{
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
-			}
 			
 			if(IsValidEntity(npc.m_iWearable3))
-			{
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
-			}
 		
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);

@@ -104,7 +104,6 @@ void Party_PlayerModel(int client, const char[] model)
 		SetVariantString("!activator");
 		AcceptEntityInput(entity, "SetParent", client);
 
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
 		SDKHook(entity, SDKHook_SetTransmit, Party_Transmit);
 

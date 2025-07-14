@@ -737,11 +737,11 @@ static void ImportSkinAttribs(int wearable, int weapon)
 
 void HidePlayerWeaponModel(int client, int entity, bool OnlyHide = false)
 {
-	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
-	SetEntityRenderColor(entity, 0, 0, 0, 0);
+	SetEntityRenderMode(entity, RENDER_NONE);
+//	SetEntityRenderColor(entity, 0, 0, 0, 0);
 //	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
-//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
-	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
+//	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
 	if(OnlyHide)

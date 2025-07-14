@@ -468,17 +468,32 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 	bool SpreadVoid = pack.ReadCell();
 	if(SpreadVoid)
 	{
+		float SpawnPos[3];
+		GetEntPropVector(SpawnRef, Prop_Data, "m_vecAbsOrigin", SpawnPos);
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
+		wave *= MinibossScalingReturn();
+		float damage = 25.0;
+		i_ExplosiveProjectileHexArray[EntRefToEntIndex(ParticleRef)] = (EP_DEALS_TRUE_DAMAGE | EP_NO_KNOCKBACK);
+		Explode_Logic_Custom(damage * wave, EntRefToEntIndex(ParticleRef), EntRefToEntIndex(ParticleRef), -1, SpawnPos, 70.0, 1.0, _, false, 99,_,15.0, .FunctionToCallBeforeHit = VoidGateHurtVoid);
 		float SpreadVoidCooldown = pack.ReadFloat();
 		if(SpreadVoidCooldown < GetGameTime())
 		{
 			SpreadVoidCooldown = GetGameTime() + 3.0;
 			pack.Position--;
 			pack.WriteFloat(SpreadVoidCooldown, false);
-			float SpawnPos[3];
-			GetEntPropVector(SpawnRef, Prop_Data, "m_vecAbsOrigin", SpawnPos);
 			VoidArea_SpawnNethersea(SpawnPos);
 		}
 	}
 
 	return Plugin_Continue;
+}
+
+static float VoidGateHurtVoid(int attacker, int victim, float &damage, int weapon)
+{
+	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
+	{
+		damage = 0.0;
+	}
+	return 0.0;
 }

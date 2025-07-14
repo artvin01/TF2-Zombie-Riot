@@ -155,11 +155,7 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 		func_NPCDeath[npc.index] = XenoTorsolessHeadcrabZombie_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoTorsolessHeadcrabZombie_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoTorsolessHeadcrabZombie_ClotThink;				
-	
 		
-		
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		//IDLE

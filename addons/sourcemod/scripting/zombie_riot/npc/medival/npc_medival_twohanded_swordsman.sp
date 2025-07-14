@@ -186,9 +186,6 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 		func_NPCDeath[npc.index] = MedivalTwoHandedSwordsman_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalTwoHandedSwordsman_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalTwoHandedSwordsman_ClotThink;
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;

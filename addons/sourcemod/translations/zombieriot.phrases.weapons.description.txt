@@ -3155,10 +3155,7 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: 10％"
-		"fr"	"Un «bouclier» qui absorbe les dégats et bloque les attaques pour faire des dégats.\nVous soigne quand vous êtes hors du combat.\nS'améliore avec les améliorations corps-à-corps.\nRang de défense: 10％"
-		"chi"	"一个''盾牌''。\n吸收部分伤害并可以盾反，造成伤害。\n自带回血，受伤时或者换武器时暂停。\n''防御评分：10％''"
-		"ko"	"적의 피해를 흡수하고 반사할 수 있는 ''방패''입니다.\n이 무기는 근접 개선과 공속 속성의 영향을 받습니다.\n방어 등급: 10％"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nDefence rating: 10％\nParrying 3 attacks or 1 raid attack gives it an extra cooldown."
 	}
 	"Spike Shield Desc"
 	{

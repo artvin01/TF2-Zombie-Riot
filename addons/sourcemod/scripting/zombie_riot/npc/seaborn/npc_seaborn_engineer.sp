@@ -109,7 +109,6 @@ methodmap SeabornEngineer < CClotBody
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + GetRandomFloat(4.0, 6.0);
 		npc.m_fbRangedSpecialOn = false;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");

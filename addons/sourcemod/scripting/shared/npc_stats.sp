@@ -2931,7 +2931,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			if(hide_projectile)
 			{
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 			
@@ -2943,7 +2943,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				i_rocket_particle[entity]= EntIndexToEntRef(particle);
 				TeleportEntity(particle, NULL_VECTOR, vecAngles, NULL_VECTOR);
 				SetParent(entity, particle);	
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 			
@@ -4033,7 +4033,7 @@ stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = tru
 	if(IsSafePosition(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
 
-	for (int x = 0; x < 6; x++)
+	for (int x = -1; x < 6; x++)
 	{
 		if (FoundSafeSpot)
 			break;
@@ -4767,8 +4767,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-		//	if(b_ThisEntityIgnoredBeingCarried[enemy])
-		//		return false;
 				
 			return true;
 		}
@@ -6863,7 +6861,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			{
 				if(!EnableSilentMode)
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
 			}
 			case BLEEDTYPE_METAL:
@@ -6880,7 +6877,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			{
 				if(!EnableSilentMode)
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
 			case BLEEDTYPE_SKELETON:
@@ -6891,7 +6887,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 			{
 				if(!EnableSilentMode)
 					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);
 			}
 			case BLEEDTYPE_VOID:
@@ -6901,7 +6896,6 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
 					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
 				}
-				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(prop, 200, 0, 200, 255);
 			}
 		}	
@@ -10180,7 +10174,10 @@ stock void SmiteNpcToDeath(int entity)
 	if(!b_ThisWasAnNpc[entity])
 		return;
 		
-	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
+	CClotBody npc = view_as<CClotBody>(entity);
+	float Push[3];
+	npc.m_vecpunchforce(Push, true);
+	SDKHooks_TakeDamage(entity, 0, 0, 199999999.0, DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE); // 2048 is DMG_NOGIB?
 	CBaseCombatCharacter_EventKilledLocal(entity, 0, 0, 1.0, DMG_TRUEDAMAGE, -1, {0.0,0.0,0.0}, {0.0,0.0,0.0});
 }
 
@@ -10755,6 +10752,7 @@ void IsEntityInvincible_Shield(int entity)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 0)
 			{
+				SetEntityRenderMode(Shield, RENDER_NORMAL);
 				SetEntityRenderColor(Shield, 0, 255, 0, 255);
 				i_InvincibleParticlePrev[Shield] = 0;
 				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -10764,6 +10762,7 @@ void IsEntityInvincible_Shield(int entity)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 1)
 			{
+				SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(Shield, 0, 50, 50, 35);
 				i_InvincibleParticlePrev[Shield] = 1;
 				SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -10773,6 +10772,7 @@ void IsEntityInvincible_Shield(int entity)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 2)
 			{
+				SetEntityRenderMode(Shield, RENDER_NORMAL);
 				SetEntityRenderColor(Shield, 255, 255, 255, 255);
 				i_InvincibleParticlePrev[Shield] = 2;
 				SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
@@ -10789,13 +10789,13 @@ void IsEntityInvincible_Shield(int entity)
 	i_InvincibleParticlePrev[Shield] = -1;
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 	if(NpcInvulShieldDisplay == 1)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 0)
 		{
+			SetEntityRenderMode(Shield, RENDER_NORMAL);
 			SetEntityRenderColor(Shield, 0, 255, 0, 255);
 			i_InvincibleParticlePrev[Shield] = 0;
 		}
@@ -10804,6 +10804,7 @@ void IsEntityInvincible_Shield(int entity)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 1)
 		{
+			SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(Shield, 0, 50, 50, 35);
 			i_InvincibleParticlePrev[Shield] = 1;
 		}
@@ -10812,6 +10813,7 @@ void IsEntityInvincible_Shield(int entity)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 2)
 		{
+			SetEntityRenderMode(Shield, RENDER_NORMAL);
 			SetEntityRenderColor(Shield, 255, 255, 255, 255);
 			i_InvincibleParticlePrev[Shield] = 2;
 			SetEntProp(Shield, Prop_Send, "m_nSkin", 4);
