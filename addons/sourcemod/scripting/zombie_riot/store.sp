@@ -942,7 +942,6 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 	int topWeapon = -1;
 	int firstWeapon = -1;
 	int previousIndex = -1;
-
 	int length = GetMaxWeapons(client);
 	for(int i; i < length; i++)
 	{
