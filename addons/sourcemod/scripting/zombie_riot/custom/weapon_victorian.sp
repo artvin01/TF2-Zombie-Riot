@@ -629,11 +629,10 @@ public void Weapon_Victoria_Sub(int client, int weapon, bool crit, int slot)
 			Rogue_OnAbilityUse(client, weapon);
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.0);
 			float temp_maxcharge = 10;
-			temp_maxcharge = *=Attributes_Get(weapon, 3, 1.0);
-			temp_maxcharge = *=Attributes_Get(weapon, 4, 1.0);
-			int RoundToZero(temp_maxcharge)
-			Victoria_Supercharge = temp_maxcharge;
-			Load_SuperCharge[client]= Victoria_Supercharge;
+			temp_maxcharge *= Attributes_Get(weapon, 3, 1.0);
+			temp_maxcharge *= Attributes_Get(weapon, 4, 1.0);
+			Victoria_Supercharge = RoundToZero(temp_maxcharge[client]);
+			Load_SuperCharge[client]= Victoria_Supercharge[client];
 			Charge_Mode[client]=true;
 		}
 		else if(!Burst_Mode[client] && Load_SuperCharge[client]>1 && Load_SuperCharge[client]<=5)
