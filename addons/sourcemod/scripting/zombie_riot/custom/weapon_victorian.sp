@@ -224,7 +224,7 @@ static void Victoria_Launcher_HUD(int client)
 				Format(C_point_hints, sizeof(C_point_hints),
 				"%s\nRapid Fire", C_point_hints);
 			Format(C_point_hints, sizeof(C_point_hints),
-			"%s\nPress R Again to Manually Deactivated\n[%.2f]", C_point_hints, Rapid_Mode[client]-GetGameTime());
+			"%s\nPress R Again to Manually Deactivate\n[%.2f]", C_point_hints, Rapid_Mode[client]-GetGameTime());
 		}
 		else if(Charge_Mode[client])
 		{
@@ -429,7 +429,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 				newhealth=1;
 			SetEntityHealth(client, newhealth);
 			Ability_Apply_Cooldown(client, 2, 40.0);
-			Ability_Apply_Cooldown(client, 1, Victoria_PerkSpeedCola[client] ? float(Load_SuperCharge[client])*2.25 : float(Load_SuperCharge[client])*2.5);
+			Ability_Apply_Cooldown(client, 1, Victoria_PerkSpeedCola[client] ? float(Load_SuperCharge[client])*4.0 : float(Load_SuperCharge[client])*3.0);
 		}
 		else
 		{
@@ -455,14 +455,14 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 		{
 			SIZEOverdrive*=1.35;
 			Overdrive=true;
-			RocketDMG*=1.65;
+			RocketDMG*=1.45;
 		}
 		else RocketDMG*=0.8;
 	}
 	//Steam Major's rocket is always equipped
 	RocketDMG*=1.1;
 	if(RaidbossIgnoreBuildingsLogic(1))
-		RocketRadius*=1.5;
+		RocketRadius*=1.2;
 	if(Victoria_PerkDeadShot[client])
 	{
 		DEADSHOT=true;
