@@ -320,14 +320,10 @@ static void ClotThink(int iNPC)
 					if(IsValidEntity(Proj))
 					{
 						Projectile.Apply_Particle("raygun_projectile_blue");
-						Projectile.Size = 2.0;
+						Projectile.Size = 1.0;
 						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_1);
 						if(IsValidEntity(ModelApply))
 						{
-							float angles[3];
-							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-							angles[1]+=90.0;
-							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 							SetVariantInt(RUINA_ICBM);
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
