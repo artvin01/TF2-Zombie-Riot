@@ -3605,6 +3605,10 @@
 	{
 		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
+	"Tinker Pap 7 Desc"
+	{
+		"en"	"Improved stats."
+	}
 	"West Pap 1 Desc"
 	{
 		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire.\nYou loose guranteed gibs."
