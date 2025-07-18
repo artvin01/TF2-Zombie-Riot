@@ -72,6 +72,32 @@ public void Modifier_Remove_ParanormalActivity()
 }
 
 
+public void Modifier_RecolourAlly_SecondaryMercs(int client, StringMap map)
+{
+	if(client > MaxClients)
+		return;
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 3);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
+	}	
+	RequestFrame(OvverideTeamcolour, GetClientUserId(client));
+}
+
+static void OvverideTeamcolour(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!client)
+		return;
+		
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 3);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
+	}	
+}
 public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 {
 	fl_Extra_Damage[iNpc] *= 1.12;
