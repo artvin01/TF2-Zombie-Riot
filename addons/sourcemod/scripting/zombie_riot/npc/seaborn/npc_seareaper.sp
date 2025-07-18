@@ -128,7 +128,6 @@ methodmap SeaReaper < CSeaBody
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
 		return npc;
 	}

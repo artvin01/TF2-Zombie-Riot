@@ -106,7 +106,6 @@ methodmap PathshaperFractal < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_iAttacksTillMegahit = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		return npc;
 	}

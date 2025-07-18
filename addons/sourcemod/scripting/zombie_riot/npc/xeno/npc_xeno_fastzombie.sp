@@ -365,7 +365,7 @@ public Action XenoFastZombie_OnTakeDamage(int victim, int &attacker, int &inflic
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
 			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 			damage = 0.0;
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", attacker, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5);

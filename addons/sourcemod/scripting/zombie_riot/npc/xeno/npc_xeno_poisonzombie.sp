@@ -148,7 +148,6 @@ methodmap XenoPoisonZombie < CClotBody
 		
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		//IDLE
@@ -365,7 +364,7 @@ public Action XenoPoisonZombie_Revert_Poison_Zombie_Resistance(Handle timer, int
 	int zombie = EntRefToEntIndex(ref);
 	if(IsValidEntity(zombie))
 	{
-		SetEntityRenderMode(zombie, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(zombie, RENDER_NORMAL);
 		SetEntityRenderColor(zombie, 150, 255, 150, 255);
 	}
 	return Plugin_Handled;

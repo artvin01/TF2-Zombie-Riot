@@ -131,7 +131,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		if(hideprojectile)
 		{
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+			SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 			SetEntityRenderColor(entity, 255, 255, 255, 0);
 		}
 		
@@ -413,10 +413,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_STAR_SHOOTER:
 		{
 			SuperStarShooterOnHit(entity, target);
-		}
-		case WEAPON_HEAVY_PARTICLE_RIFLE:
-		{
-			Weapon_Heavy_Particle_Rifle(entity, target);
 		}
 		case WEAPON_KAHMLFIST:
 		{

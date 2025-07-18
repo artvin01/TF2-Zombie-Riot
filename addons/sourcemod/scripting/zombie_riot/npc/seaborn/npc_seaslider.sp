@@ -113,7 +113,6 @@ methodmap SeaSlider < CSeaBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 126, 126, 255, 255);
 		return npc;
 	}

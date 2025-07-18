@@ -2166,7 +2166,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					
@@ -2181,8 +2181,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 					if(!autoRevive)
 					{
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(entity, 255, 255, 255, 125);
+						SetEntityRenderMode(entity, RENDER_NORMAL);
+						SetEntityRenderColor(entity, 255, 125, 125, 255);
 					}
 					else
 					{
@@ -2192,8 +2192,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 				if(!autoRevive)
 				{
-					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(victim, 255, 255, 255, 125);
+					SetEntityRenderMode(victim, RENDER_NORMAL);
+					SetEntityRenderColor(victim, 255, 125, 125, 255);
 				}
 				else
 				{
@@ -3465,7 +3465,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			//Compare active weapon to weapon that in "myweapons"
 
 			
-		//	f_CheckWeaponDouble[client] = GetGameTime () + 0.5; 
+			f_CheckWeaponDouble[client] = 0.0;
 			//check every 0.5 seconds.
 
 			int weaponAm = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -3476,7 +3476,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			GetEntityClassname(weaponAm, buffer, sizeof(buffer));
 			int CurrentSlot = TF2_GetClassnameSlot(buffer, weaponAm);
 
-			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
+			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, false);
 
 			int Maxloop = 1;
 			while(WeaponValidCheck == weaponAm && Maxloop < 10) //dont be on same weapon!

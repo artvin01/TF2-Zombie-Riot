@@ -164,14 +164,12 @@ methodmap Zapper < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 80, 0, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2022_propaniac/hwn2022_propaniac.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 200, 255, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum23_flamewarrior_style1/sum23_flamewarrior_style1.mdl");

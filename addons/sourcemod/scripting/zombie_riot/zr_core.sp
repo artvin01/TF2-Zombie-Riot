@@ -157,7 +157,7 @@ enum
 	WEAPON_RAPIER = 80,
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
-	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
+	UNUSED_WEAPON_83 = 83,
 	WEAPON_SICCERINO = 84,
 	WEAPON_DIMENSION_RIPPER = 85,
 	WEAPON_HELL_HOE_1 = 86,
@@ -227,6 +227,8 @@ enum
 	WEAPON_SHERRIF = 150,
 	WEAPON_SHERRIF_LEVERACTION = 151,
 	WEAPON_CHEESY_SECONDARY = 152
+
+	//UNUSED_WEAPON_83 is unused!!
 }
 
 enum
@@ -421,8 +423,6 @@ float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
 
 float f_MedigunChargeSave[MAXPLAYERS][4];
 float f_SaveBannerRageMeter[MAXPLAYERS][2];
-
-int Building_Mounted[MAXENTITIES];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
@@ -2470,28 +2470,88 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 	}
 }
 
+public Action ZR_CheckValidityOfPostions_OfObjects(Handle timer,bool recheck)
+{
+	ZR_CheckValidityOfPostions_OfObjectsInternal(recheck);
+	return Plugin_Stop;
+}
+void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
+{
+	//if in setup, keep checking.
+	if(Waves_InSetup() && recheck)
+		CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, true, TIMER_FLAG_NO_MAPCHANGE);
+
+	float pos2[3];
+	for(int iEntity; iEntity<i_MaxcountBuilding; iEntity++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int iObj = EntRefToEntIndexFast(i_ObjectsBuilding[iEntity]);
+		if(!IsValidEntity(iObj))
+			continue;
+
+		GetEntPropVector(iObj, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[iObj], f3_CustomMinMaxBoundingBox[iObj]))
+			continue;
+		if(Building_Mounted[iObj] != -1)
+			continue;
+		//Make sure that mounted buildings are never deleted like this!
+			
+		int builder_owner = GetEntPropEnt(iObj, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, iObj);
+	}
+	
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+		if(!Citizen_IsIt(entity))
+			continue;
+
+		Citizen npc = view_as<Citizen>(entity);
+		if(npc.m_nDowned && npc.m_iWearable3 > 0)
+		{
+			
+		}
+		else
+			continue;
+
+		npc.SetDowned(false);
+		if(Waves_InSetup())
+			continue;
+		int target = 0;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+				{
+					target = i;
+					break;
+				}
+			}
+		}
+		
+		if(target)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
+			TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+		}
+	}
+}
 void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 {
 	//only set false here
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
-	float pos2[3];
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
-	{
-		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
-		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
-		if(!IsValidEntity(entity_close))
-			continue;
-
-		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
-			continue;
-			
-		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
-		DeleteAndRefundBuilding(builder_owner, entity_close);
-	}
-//	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+	ZR_CheckValidityOfPostions_OfObjectsInternal(true);
+	CreateTimer(1.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	//needed for map logic!
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2587,46 +2647,6 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				}
 			}
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
-		}
-	}
-	
-	int a, entity;
-	while((entity = FindEntityByNPC(a)) != -1)
-	{
-		if(!b_NpcHasDied[entity])
-		{
-			if(Citizen_IsIt(entity))
-			{
-				Citizen npc = view_as<Citizen>(entity);
-				if(npc.m_nDowned && npc.m_iWearable3 > 0)
-				{
-					npc.SetDowned(false);
-					if(!Waves_InSetup())
-					{
-						int target = 0;
-						for(int i=1; i<=MaxClients; i++)
-						{
-							if(IsClientInGame(i))
-							{
-								if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
-								{
-									target = i;
-									break;
-								}
-							}
-						}
-						
-						if(target)
-						{
-							float pos[3], ang[3];
-							GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							ang[2] = 0.0;
-							TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-						}
-					}
-				}
-			}
 		}
 	}
 	

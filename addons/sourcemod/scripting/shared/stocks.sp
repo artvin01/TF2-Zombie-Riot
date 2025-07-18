@@ -1202,15 +1202,20 @@ public Action Timer_DisableMotion(Handle timer, any entid)
 }
 
 
-stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0)
+stock void StartBleedingTimer(int victim, int attacker, float damage, int amount, int weapon, int damagetype, int customtype = 0, int effectoverride = 0)
 {
 	if(IsValidEntity(victim) && IsValidEntity(attacker))
 	{
 		if(HasSpecificBuff(victim, "Hardened Aura"))
 			return;
 
-		if(HasSpecificBuff(victim, "Thick Blood"))
+		if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != 1)
 			return;
+
+		if(damagetype & DMG_TRUEDAMAGE)
+		{
+			StatusEffect_OnTakeDamage_DealNegative(victim, attacker, damage, DMG_CLUB);
+		}
 
 		if(attacker > 0 && attacker <= MaxClients)
 			Force_ExplainBuffToClient(attacker, "Bleed");
@@ -1228,6 +1233,7 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		else
 			pack.WriteCell(-1);
 		pack.WriteCell(EntIndexToEntRef(attacker));
+		pack.WriteCell(effectoverride);
 		pack.WriteCell(damagetype);
 		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
@@ -1274,6 +1280,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			attacker = 0; //Make it the world that attacks them?
 	}
 
+	int effectoverride = pack.ReadCell();
 	if(StatusEffects_RapidSuturingCheck(victim, GameTimeClense))
 	{
 		return Plugin_Stop;
@@ -1285,7 +1292,7 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-	if(HasSpecificBuff(victim, "Thick Blood"))
+	if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != -1)
 	{
 		BleedAmountCountStack[OriginalIndex] -= 1;
 		if(BleedAmountCountStack[OriginalIndex] < 0)
@@ -3369,7 +3376,7 @@ int inflictor = 0)
 			static float damage_1;
 			damage_1 = damage;
 
-			if(FromBlueNpc && ShouldNpcDealBonusDamage(ClosestTarget))
+			if(ShouldNpcDealBonusDamage(ClosestTarget))
 			{
 				damage_1 *= dmg_against_entity_multiplier; //enemy is an entityt that takes bonus dmg, and i am an npc.
 			}
@@ -4290,7 +4297,7 @@ stock bool IsPointHazard(const float pos1[3])
 }
 public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 {
-	if(b_IsATrigger[entity])
+	if(b_IsATriggerHurt[entity])
 	{
 		if(!GetEntProp(entity, Prop_Data, "m_bDisabled"))
 		{
@@ -5818,4 +5825,22 @@ stock void Projectile_TeleportAndClip(int entity)
 		SDKCall_SetAbsOrigin(entity, VecPos);
 	}
 	delete hTrace;
+}
+
+
+void Stocks_ColourPlayernormal(int client)
+{
+	SetEntityRenderMode(client, RENDER_NORMAL);
+	SetEntityRenderColor(client, 255, 255, 255, 255);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+#if defined ZR
+		if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+#endif
+
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
 }

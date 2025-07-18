@@ -95,7 +95,6 @@ methodmap SeaSwarmcaller < CSeaBody
 		npc.m_bThisNpcIsABoss = true;
 		b_thisNpcHasAnOutline[npc.index] = true;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		if(carrier)
@@ -117,7 +116,6 @@ methodmap SeaSwarmcaller < CSeaBody
 
 		if(elite)
 		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 255);
 		}
 

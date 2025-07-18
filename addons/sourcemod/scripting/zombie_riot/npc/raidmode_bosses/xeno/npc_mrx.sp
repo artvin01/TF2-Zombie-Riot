@@ -86,12 +86,11 @@ static int i_SideHurtWhich[MAXENTITIES];
 static float f_MassRushHitAttack[MAXENTITIES];
 static float f_MassRushHitAttackCD[MAXENTITIES];
 static int i_lastTargetCharged[MAXENTITIES];
-#define MRX_MODEL "models/zombie_riot/bosses/mrx/x_normal_3.mdl"
 
 void RaidbossMrX_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Mr.X");
+	strcopy(data.Name, sizeof(data.Name), "Vivithorn");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_mrx");
 	strcopy(data.Icon, sizeof(data.Icon), "mrx");
 	data.IconCustom = true;
@@ -113,7 +112,6 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_NeckSnap));   i++) { PrecacheSound(g_NeckSnap[i]);   }
 	PrecacheModel(INFECTION_MODEL);
-	PrecacheModel(MRX_MODEL);
 	PrecacheSound("weapons/cow_mangler_explode.wav");
 	PrecacheSoundCustom("#zombiesurvival/xeno_raid/mr_duo_battle.mp3");
 	PrecacheSoundCustom("#zombiesurvival/xeno_raid/mr_x_solo.mp3");
@@ -232,18 +230,16 @@ methodmap RaidbossMrX < CClotBody
 	}
 	public RaidbossMrX(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RaidbossMrX npc = view_as<RaidbossMrX>(CClotBody(vecPos, vecAng, MRX_MODEL, "1.75", "20000000", ally, false, true, true,true)); //giant!
+		RaidbossMrX npc = view_as<RaidbossMrX>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "2.0", "20000000", ally, false, true, true,true)); //giant!
 		
-		//model originally from Roach, https://steamcommunity.com/sharedfiles/filedetails/?id=2053348633&searchtext=nemesis
-
-		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_TYRANT_SPAWN");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		SetVariantInt(8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.SetActivity("ACT_VIVITHORN_RUN");
 		
 		
 		func_NPCDeath[npc.index] = RaidbossMrX_NPCDeath;
@@ -260,13 +256,12 @@ methodmap RaidbossMrX < CClotBody
 		if(XenoExtraLogic())
 			RaidModeTime = GetGameTime(npc.index) + 250.0;
 
-		npc.m_flMeleeArmor = 1.5; 		//Melee should be rewarded for trying to face this monster
-		npc.m_flRangedArmor = 0.75; 		//Melee should be rewarded for trying to face this monster
+		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
+		npc.m_flRangedArmor = 0.75;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
@@ -292,9 +287,10 @@ methodmap RaidbossMrX < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Mrx Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Vivithorn Arrived.");
 			}
 		}
+		
 		b_thisNpcIsARaid[npc.index] = true;
 
 		RaidModeScaling = 0.0;
@@ -317,17 +313,22 @@ methodmap RaidbossMrX < CClotBody
 		f_NemesisSpecialDeathAnimation[npc.index] = 0.0;
 		f_NemesisRandomInfectionCycle[npc.index] = GetGameTime(npc.index) + 10.0;
 		Zero(f_NemesisImmuneToInfection);
-		npc.m_flNextDelayTime = GetGameTime(npc.index) + 1.5;
 		npc.m_bUseDefaultAnim = true;
 
 		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + GetRandomFloat(45.0, 60.0);
 		npc.m_flNextRangedSpecialAttackHappens = 0.0;
 		i_SideHurtWhich[npc.index] = 0;
 
-		CPrintToChatAll("{green}MR.X: ...");
+		CPrintToChatAll("{green}Vivithorn: ...");
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
+		npc.m_iWearable6 = npc.EquipItem("weapon_bone" ,"models/player/items/spy/spy_hat.mdl", .model_size = 1.2);
+		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable6, 25, 25, 25, 255);
+		npc.m_iWearable7 = npc.EquipItem("weapon_bone" ,"models/workshop/player/items/sniper/dec2014_hunter_vest/dec2014_hunter_vest.mdl", .model_size = 1.0);
+		SetEntityRenderColor(npc.m_iWearable7, 25, 25, 25, 255);
+
 		return npc;
 	}
 }
@@ -361,6 +362,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 	}
 	if(npc.m_bUseDefaultAnim)
 	{
+		npc.AddGesture("ACT_HURT",false);
 		npc.m_bUseDefaultAnim = false;
 		Mr_xWalkingAnimInit(npc.index);
 	}
@@ -404,11 +406,11 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				{
 					case 1:
 					{
-						npc.AddGesture("ACT_TYRANT_PUSH_RIGHT_ATTACK");
+						npc.AddGesture("ACT_VIVITHORN_CHARGE_ATTACK_RIGHT");
 					}
 					case 2:
 					{
-						npc.AddGesture("ACT_TYRANT_PUSH_LEFT_ATTACK");
+						npc.AddGesture("ACT_VIVITHORN_CHARGE_ATTACK_LEFT");
 					}
 				}
 				npc.m_flDoingAnimation = gameTime + 0.7;
@@ -432,7 +434,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 							
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 2500.0;
+							float damage = 5000.0;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);								
 						
@@ -476,9 +478,8 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		{
 			if(npc.m_iChanged_WalkCycle != 14) 
 			{
-				fl_TotalArmor[npc.index] = 2.0;
-				npc.SetActivity("ACT_RAID_TYRANT_CHARGE_STUN");
-				npc.SetPlaybackRate(0.75);
+				fl_TotalArmor[npc.index] = 1.5;
+				npc.SetActivity("ACT_VIVITHORN_CHARGE_STUN");
 				npc.m_iChanged_WalkCycle = 14;
 				npc.m_bisWalking = false;
 				npc.m_flSpeed = 0.0;
@@ -492,6 +493,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 	}
 	if(npc.m_blPlayHurtAnimation)
 	{
+		npc.AddGesture("ACT_HURT", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -514,12 +516,13 @@ public void RaidbossMrX_ClotThink(int iNPC)
 			float flPos[3]; // original
 			float flAng[3]; // original
 		
-			npc.GetAttachment("RightHand", flPos, flAng);
+			npc.GetAttachment("anim_attachment_RH", flPos, flAng);
 		//	TeleportEntity(Enemy_I_See, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 			flPos[2] -= 70.0;
 			SDKCall_SetLocalOrigin(client, flPos);
 		}
 		
+	
 		if(npc.flXenoInfectedSpecialHurtTime < gameTime + 1.0)
 		{
 			if(npc.m_iChanged_WalkCycle != 9) 
@@ -527,7 +530,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 9;
 				if(IsValidEntity(client))
 				{
-					SDKHooks_TakeDamage(client, npc.index, npc.index, 7000.0, DMG_CRUSH, -1);
+					SDKHooks_TakeDamage(client, npc.index, npc.index, 50000.0, DMG_CLUB, -1);
 					f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0;
 					ApplyStatusEffect(client, client, "Intangible", 3.0);
 					if(client <= MaxClients)
@@ -552,6 +555,22 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					TeleportEntity(client, pos, Angles, NULL_VECTOR);
 				}
 				i_GrabbedThis[npc.index] = 0;
+			}
+		}
+		else
+		{
+			if(npc.flXenoInfectedSpecialHurtTime < gameTime + 2.0)
+			{
+				if(npc.m_iChanged_WalkCycle != 55) 
+				{
+					npc.SetActivity("ACT_VIVITHORN_GRAB_END");
+					npc.m_iChanged_WalkCycle = 55;
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 0.0;
+
+					npc.StopPathing();
+					f_NpcTurnPenalty[npc.index] = 0.0;
+				}
 			}
 		}
 		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
@@ -583,7 +602,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				{
 					if(npc.m_iChanged_WalkCycle != 8) 
 					{
-						npc.SetActivity("ACT_ATTACK_TYRANT_GRAB_SUCCEED");
+						npc.SetActivity("ACT_VIVITHORN_GRAB_START");
 						npc.m_iChanged_WalkCycle = 8;
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
@@ -603,14 +622,14 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					}
 					
 					npc.m_flNextRangedAttackHappening = 0.0;
-					npc.m_flDoingAnimation = gameTime + 5.0;
-					npc.flXenoInfectedSpecialHurtTime = gameTime + 5.0;
+					npc.m_flDoingAnimation = gameTime + 3.0;
+					npc.flXenoInfectedSpecialHurtTime = gameTime + 3.0;
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", f3_LastValidPosition[Enemy_I_See]);
 					
 					float flPos[3]; // original
 					float flAng[3]; // original
 				
-					npc.GetAttachment("RightHand", flPos, flAng);
+					npc.GetAttachment("anim_attachment_RH", flPos, flAng);
 					
 					TeleportEntity(Enemy_I_See, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 					flPos[2] -= 70.0;
@@ -649,10 +668,12 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 30.0, false);
 		if(f_NemesisHitBoxStart[npc.index] < gameTime && f_NemesisHitBoxEnd[npc.index] > gameTime)
 		{
-			if(i_SideHurtWhich[npc.index] == 2)
-				Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "RightHand", 2);
+			if(i_SideHurtWhich[npc.index] == 3)
+				Nemesis_AreaAttack(npc.index, 6000.0, {-40.0,-40.0,5.0}, {40.0,40.0,80.0}, "anim_attachment_L_Foot", 2);
+			else if(i_SideHurtWhich[npc.index] == 2)
+				Nemesis_AreaAttack(npc.index, 6000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "anim_attachment_RH", 2);
 			else
-				Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "LeftHand", 2);
+				Nemesis_AreaAttack(npc.index, 6000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "anim_attachment_LH", 2);
 		}
 		
 		if(npc.m_flAttackHappens < gameTime + 1.0)
@@ -709,15 +730,15 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		}
 		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.50) && npc.m_flNextMeleeAttack < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && !npc.m_flRushAttack)
 		{
-			ActionToTake = GetRandomInt(1,2);
+			ActionToTake = GetRandomInt(1,3);
 		}
 		else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.50) && npc.m_flNextRangedAttack < GetGameTime(npc.index) && !npc.m_flRushAttack)
 		{
-			ActionToTake = 3;
+			ActionToTake = 4;
 		}
 		else if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.50) && npc.m_flRushAttackCD < GetGameTime(npc.index) && !npc.m_flRushAttack)
 		{
-			ActionToTake = 4;
+			ActionToTake = 5;
 		}
 
 		switch(ActionToTake)
@@ -728,6 +749,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 			}
 			case 1:
 			{
+				npc.FaceTowards(vecTarget, 99999.9);
 				i_SideHurtWhich[npc.index] = 1;
 				npc.m_flNextMeleeAttack = gameTime + 2.5;
 				npc.m_flDoingAnimation = gameTime + 1.5;
@@ -735,20 +757,20 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				float flPos[3]; // original
 				float flAng[3]; // original
 				
-				npc.GetAttachment("LeftHand", flPos, flAng);
+				npc.GetAttachment("anim_attachment_LH", flPos, flAng);
 				if(IsValidEntity(npc.m_iWearable5))
 					RemoveEntity(npc.m_iWearable5);
 		
 				npc.m_iWearable5 = ParticleEffectAt(flPos, "spell_fireball_small_red", 1.0);
 				TeleportEntity(npc.m_iWearable5, flPos, flAng, NULL_VECTOR);
-				SetParent(npc.index, npc.m_iWearable5, "LeftHand");
+				SetParent(npc.index, npc.m_iWearable5, "anim_attachment_LH");
 				f_NemesisHitBoxStart[npc.index] = gameTime + 0.5;
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.3;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
 				if(npc.m_iChanged_WalkCycle != 1) 
 				{
-					npc.SetActivity("ACT_RAID_TYRANT_PUNCH_LEFT");
+					npc.SetActivity("ACT_VIVITHORN_ATTACK_LEFT");
 					npc.m_iChanged_WalkCycle = 1;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 450.0;
@@ -762,6 +784,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 			}
 			case 2:
 			{
+				npc.FaceTowards(vecTarget, 99999.9);
 				i_SideHurtWhich[npc.index] = 2;
 				npc.m_flNextMeleeAttack = gameTime + 2.5;
 				npc.m_flDoingAnimation = gameTime + 1.5;
@@ -769,20 +792,20 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				float flPos[3]; // original
 				float flAng[3]; // original
 				
-				npc.GetAttachment("RightHand", flPos, flAng);
+				npc.GetAttachment("anim_attachment_RH", flPos, flAng);
 				if(IsValidEntity(npc.m_iWearable5))
 					RemoveEntity(npc.m_iWearable5);
 		
 				npc.m_iWearable5 = ParticleEffectAt(flPos, "spell_fireball_small_red", 1.0);
 				TeleportEntity(npc.m_iWearable5, flPos, flAng, NULL_VECTOR);
-				SetParent(npc.index, npc.m_iWearable5, "RightHand");
+				SetParent(npc.index, npc.m_iWearable5, "anim_attachment_RH");
 				f_NemesisHitBoxStart[npc.index] = gameTime + 0.5;
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.3;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
 				if(npc.m_iChanged_WalkCycle != 1) 
 				{
-					npc.SetActivity("ACT_RAID_TYRANT_PUNCH_RIGHT");
+					npc.SetActivity("ACT_VIVITHORN_ATTACK_RIGHT");
 					npc.m_iChanged_WalkCycle = 1;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 450.0;
@@ -796,11 +819,46 @@ public void RaidbossMrX_ClotThink(int iNPC)
 			}
 			case 3:
 			{
+				npc.FaceTowards(vecTarget, 99999.9);
+				i_SideHurtWhich[npc.index] = 3;
+				npc.m_flNextMeleeAttack = gameTime + 2.5;
+				npc.m_flDoingAnimation = gameTime + 1.5;
+				npc.m_flAttackHappens = gameTime + 1.5;
+				float flPos[3]; // original
+				float flAng[3]; // original
+				
+				npc.GetAttachment("anim_attachment_L_Foot", flPos, flAng);
+				if(IsValidEntity(npc.m_iWearable5))
+					RemoveEntity(npc.m_iWearable5);
+		
+				npc.m_iWearable5 = ParticleEffectAt(flPos, "spell_fireball_small_red", 1.0);
+				TeleportEntity(npc.m_iWearable5, flPos, flAng, NULL_VECTOR);
+				SetParent(npc.index, npc.m_iWearable5, "anim_attachment_L_Foot");
+				f_NemesisHitBoxStart[npc.index] = gameTime + 0.5;
+				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.3;
+				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
+
+				if(npc.m_iChanged_WalkCycle != 1) 
+				{
+					npc.SetActivity("ACT_VIVITHORN_ATTACK_STOMP");
+					npc.m_iChanged_WalkCycle = 1;
+					npc.m_bisWalking = false;
+					npc.m_flSpeed = 450.0;
+					if(npc.Anger)
+						npc.m_flSpeed = 500.0;
+
+					npc.StartPathing();
+					f_NpcTurnPenalty[npc.index] = 0.25;
+					npc.PlayMeleeSound();
+				}
+			}
+			case 4:
+			{
 				npc.m_flNextRangedAttack = gameTime + 30.0;
 				npc.m_flNextRangedAttackHappening = gameTime + 5.0;
 				Mr_xWalkingAnimInit(npc.index);
 			}
-			case 4:
+			case 5:
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				npc.m_iLastChargedTarget = 0;
@@ -837,7 +895,7 @@ void Mr_xWalkingAnimInit(int entity)
 		{		
 			if(npc.m_iChanged_WalkCycle != 10) 	
 			{
-				npc.SetActivity("ACT_RAID_TYRANT_CHARGE_START");
+				npc.SetActivity("ACT_VIVITHORN_CHARGE_START");
 				npc.m_iChanged_WalkCycle = 10;
 				npc.m_bisWalking = false;
 				npc.m_flSpeed = 0.0;
@@ -849,7 +907,7 @@ void Mr_xWalkingAnimInit(int entity)
 		{		
 			if(npc.m_iChanged_WalkCycle != 11) 	
 			{
-				npc.SetActivity("ACT_RAID_TYRANT_CHARGE_LOOP");
+				npc.SetActivity("ACT_VIVITHORN_CHARGE_RUN");
 				npc.m_iChanged_WalkCycle = 11;
 				npc.m_bisWalking = true;
 				npc.m_flSpeed = 500.0;
@@ -867,7 +925,7 @@ void Mr_xWalkingAnimInit(int entity)
 		{		
 			if(npc.m_iChanged_WalkCycle != 4) 	
 			{
-				npc.SetActivity("ACT_TYRANT_WALK");
+				npc.SetActivity("ACT_VIVITHORN_GRAB_RUN");
 				npc.m_iChanged_WalkCycle = 4;
 				npc.m_bisWalking = true;
 				npc.m_flSpeed = 200.0;
@@ -879,7 +937,7 @@ void Mr_xWalkingAnimInit(int entity)
 		{		
 			if(npc.m_iChanged_WalkCycle != 5) 	
 			{
-				npc.SetActivity("ACT_TYRANT_WALK_FAST");
+			//	npc.SetActivity("ACT_TYRANT_WALK_FAST");
 				npc.m_iChanged_WalkCycle = 5;
 				npc.m_bisWalking = true;
 				npc.m_flSpeed = 300.0;
@@ -891,7 +949,7 @@ void Mr_xWalkingAnimInit(int entity)
 		{
 			if(npc.m_iChanged_WalkCycle != 6) 	
 			{
-				npc.SetActivity("ACT_RAID_TYRANT_RUN");
+			//	npc.SetActivity("ACT_RAID_TYRANT_RUN");
 				npc.m_iChanged_WalkCycle = 6;
 				npc.m_bisWalking = true;
 				npc.m_flSpeed = 500.0;
@@ -906,12 +964,12 @@ void Mr_xWalkingAnimInit(int entity)
 	//If nothing special happens, do normal walking.
 	if(npc.m_iChanged_WalkCycle != 2) 	
 	{
-		npc.SetActivity("ACT_TYRANT_WALK_FAST");
+		npc.SetActivity("ACT_VIVITHORN_RUN");
 		npc.m_iChanged_WalkCycle = 2;
 		npc.m_bisWalking = true;
 		npc.m_flSpeed = 300.0;
 		if(npc.Anger)
-				npc.m_flSpeed = 350.0;
+			npc.m_flSpeed = 350.0;
 		npc.StartPathing();
 		f_NpcTurnPenalty[npc.index] = 1.0;
 	}
@@ -969,15 +1027,27 @@ public void RaidbossMrX_NPCDeath(int entity)
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-		DispatchKeyValue(entity_death, "model", MRX_MODEL);
+		DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_2_MODEL);
 		DispatchSpawn(entity_death);
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.75); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.0); 
 		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("tyrant_death");
+		SetVariantString("vivithorn_death");
 		AcceptEntityInput(entity_death, "SetAnimation");
+		SetVariantInt(8);
+		AcceptEntityInput(entity_death, "SetBodyGroup");
+		CClotBody npcstuff = view_as<CClotBody>(entity_death);
+		npcstuff.m_iWearable6 = npcstuff.EquipItem("weapon_bone" ,"models/player/items/spy/spy_hat.mdl", .model_size = 1.2);
+		SetEntityRenderColor(npcstuff.m_iWearable6, 25, 25, 25, 255);
+		SetEntityRenderColor(npcstuff.index, 125, 125, 125, 255);
+		npcstuff.m_iWearable7 = npcstuff.EquipItem("weapon_bone" ,"models/workshop/player/items/sniper/dec2014_hunter_vest/dec2014_hunter_vest.mdl", .model_size = 1.0);
+		SetEntityRenderColor(npcstuff.m_iWearable7, 25, 25, 25, 255);
 		
-		CreateTimer(0.5, Prop_Gib_FadeSet, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(1.25, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(npcstuff.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.3, Prop_Gib_FadeSet, EntIndexToEntRef(npcstuff.m_iWearable7), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.65, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.65, Timer_RemoveEntity, EntIndexToEntRef(npcstuff.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.65, Timer_RemoveEntity, EntIndexToEntRef(npcstuff.m_iWearable7), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 	i_GrabbedThis[npc.index] = -1;
@@ -1008,7 +1078,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}Mr.X: I have to activate Project Nemesis...");
+					CPrintToChat(client_repat, "{green}Vivithorn: I have to activate Project Calmaticus...");
 				}
 			}
 		}
@@ -1021,7 +1091,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 			{
 				if(XenoExtraLogic())
 				{
-					CPrintToChat(client_repat, "{green}Mr.X Escapes... but heavily wounded...");
+					CPrintToChat(client_repat, "{green}Vivithorn Escapes... but heavily wounded...");
 				}
 			}
 		}

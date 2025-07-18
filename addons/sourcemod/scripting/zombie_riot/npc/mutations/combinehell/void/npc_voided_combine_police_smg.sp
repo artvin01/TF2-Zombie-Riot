@@ -193,8 +193,7 @@ methodmap VoidCombinePoliceSmg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = VoidCombinePoliceSmg_OnTakeDamage;
 		func_NPCThink[npc.index] = VoidCombinePoliceSmg_ClotThink;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 0, 200, 200);
+		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");

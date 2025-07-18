@@ -141,7 +141,6 @@ methodmap VictoriaBatter < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hiphunter_boots/hiphunter_boots_scout.mdl");
 
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);

@@ -81,6 +81,7 @@ methodmap AlliedRitualistAbility < CClotBody
 			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 		}
+		TF2_RemoveCondition(client, TFCond_Taunting);
 
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
@@ -130,7 +131,6 @@ methodmap AlliedRitualistAbility < CClotBody
 							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 						}
-						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 255);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}

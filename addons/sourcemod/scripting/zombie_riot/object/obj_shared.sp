@@ -179,7 +179,7 @@ methodmap ObjectGeneric < CClotBody
 		{
 			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
 			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
-			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] -= FakemodelOffset;
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] = -FakemodelOffset;
 		}
 		else
 		{
@@ -206,8 +206,6 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
-		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
-		//Main prop is always half visible.
 		/*
 			how it works:
 			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
@@ -224,8 +222,11 @@ methodmap ObjectGeneric < CClotBody
 		int entity;
 		if(DoFakeModel)
 		{
+			SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
+			//Main prop is always half visible.
+
 			entity = objstats.EquipItemSeperate(model);
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 			objstats.m_iWearable1 = entity;

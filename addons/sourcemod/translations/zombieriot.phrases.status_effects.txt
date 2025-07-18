@@ -425,7 +425,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 20％, If silenced, this is 10％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 	}
 	"Void Strength II"
 	{
@@ -433,7 +433,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 30％, If silenced, this is 15％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 	}
 	"MERLT0N-BUFF"
 	{
@@ -521,7 +521,7 @@
 	}
 	"Hussar's Warscream Desc"
 	{
-		"en"	"Increases damage dealt by 10％\nBlocked by Silence."
+		"en"	"Increases damage dealt by 10％"
 	}
 	"Flagellants Punishment"
 	{
@@ -845,7 +845,7 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 100％\nDecreases damage dealt by 40％"
+		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 	}
 	"Tonic Affliction Hide"
 	{
@@ -854,6 +854,14 @@
 	"Tonic Affliction Hide Desc"
 	{
 		"en"	"Ignore."
+	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
 	}
 	"Mystery Beer"
 	{
@@ -1349,7 +1357,7 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
+		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY reduces Plasmic Elemental buildup penalty and cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
@@ -1358,6 +1366,22 @@
 	"Plasmatized Lethalitation Desc"
 	{
 		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
+	}
+	"Plasmic Layering I"
+	{
+		"en"	"Plasmic Layering I"
+	}
+	"Plasmic Layering I Desc"
+	{
+		"en" 	"Increases damage by +15％ and resistance by +10％ while inside the Plasmatized Bubble's radius."
+	}
+	"Plasmic Layering II"
+	{
+		"en"	"Plasmic Layering II"
+	}
+	"Plasmic Layering II Desc"
+	{
+		"en" 	"Increases damage by +25％ and resistance by +15％ while inside the Plasmatized Bubble's radius."
 	}
 	"Ziberian Flagship Weaponry"
 	{
@@ -1422,7 +1446,23 @@
 	}
 	"Liberal Tango Desc"
 	{
-		"en"	"+30％ damage dealt, healing done, and damage reduction"
+		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
+	}
+	"Xeno's Territory"
+	{
+		"en"	"Xeno's Territory"
+	}
+	"Xeno's Territory Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
+	}
+	"Corrupted Godly Power"
+	{
+		"en"	"Corrupted Godly Power"
+	}
+	"Corrupted Godly Power Desc"
+	{
+		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
 	}
 	"Paralysis"
 	{

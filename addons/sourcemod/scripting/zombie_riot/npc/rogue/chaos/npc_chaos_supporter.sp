@@ -145,9 +145,7 @@ methodmap ChaosSupporter < CClotBody
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 		
 		float flPos[3], flAng[3];
@@ -292,7 +290,6 @@ void ChaosSupporterSelfDefense(ChaosSupporter npc, float gameTime, int target, f
 				if(IsValidEntity(f_ArrowTrailParticle[entity]))
 					RemoveEntity(f_ArrowTrailParticle[entity]);
 				
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(entity, 200, 0, 200, 255);
 				
 				WorldSpaceCenter(entity, vecTarget);

@@ -169,8 +169,12 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_47.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_227.mdl"
+
+//model uses self made IK rigs, to not break the top stuff.
+#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
+
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_49.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -189,7 +193,7 @@ enum
 	WINGS_KARLAS	= 64
 }
 
-#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_2.mdl"
+#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_2_2.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
@@ -207,7 +211,7 @@ enum	//it appears if I try to make it go above 14 it starts glitching out
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_3.mdl"
+#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_5.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -1001,6 +1005,7 @@ public void OnMapStart()
 	PrecacheSound(")weapons/pipe_bomb3.wav");
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel(COMBINE_CUSTOM_2_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 	PrecacheModel(WINGS_MODELS_1);
 	
@@ -1198,7 +1203,16 @@ public Action OnReloadBlockNav(int args)
 public void OnGameFrame()
 {
 #if defined ZR
-	NPC_SpawnNext(false, false);
+	int MaxLimitTest = 0;
+	while(NPC_SpawnNext(false, false))
+	{
+		MaxLimitTest++;
+		//failsafe
+		if(MaxLimitTest >= 2)
+		{
+			break;
+		}
+	}
 #endif	
 #if defined RPG
 	DoubleJumpGameFrame();
@@ -1506,6 +1520,8 @@ public void OnClientPutInServer(int client)
 	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN | HIDEHUD_BONUS_PROGRESS); 
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
+	if(!Waves_Started() || Waves_InSetup())
+		DoGlobalMultiScaling();
 #endif
 	MedigunPutInServerclient(client);
 }
@@ -1984,7 +2000,7 @@ public void Update_Ammo(DataPack pack)
 {
 	pack.Reset();
 	int client = GetClientOfUserId(pack.ReadCell());
-	if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+	if(IsValidClient(client) && IsPlayerAlive(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
 	{
 		for(int i; i<Ammo_MAX; i++)
 		{
@@ -3059,6 +3075,10 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
 		SDKCall_SetSpeed(client);
+	}
+	else if (condition == TFCond_Taunting && f_PreventMovementClient[client] > GetGameTime())
+	{
+		TF2_RemoveCondition(client, TFCond_Taunting);
 	}
 }
 

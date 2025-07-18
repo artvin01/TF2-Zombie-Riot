@@ -166,7 +166,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(float vecPos[3], float vecAng[3], int ally)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.4", MinibossHealthScaling(100.0), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.4", MinibossHealthScaling(100.0), ally));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 
@@ -174,9 +174,6 @@ methodmap FallenWarrior < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-
-		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SAMURAI");
-		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		if(ally == TFTeam_Red)
 		{
@@ -193,7 +190,6 @@ methodmap FallenWarrior < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
 		{
@@ -234,12 +230,6 @@ methodmap FallenWarrior < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 
 		SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
@@ -250,6 +240,7 @@ methodmap FallenWarrior < CClotBody
 
 		if(ally != TFTeam_Red)
 		{
+			npc.SetActivity("ACT_GULN_CORRUPTED_FIRST_WALK");
 			float flPos[3], flAng[3];
 					
 			npc.GetAttachment("head", flPos, flAng);
@@ -257,6 +248,11 @@ methodmap FallenWarrior < CClotBody
 			i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0}));
 			i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {50.0,-200.0,0.0}));
 		}
+		else
+		{
+			npc.SetActivity("ACT_GULN_NORMAL_FIRST_WALK");
+		}
+		npc.m_bDissapearOnDeath = true;
 
 		float wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
@@ -282,7 +278,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
+		npc.AddGesture("ACT_HURT", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -364,6 +360,28 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		if(GetTeam(npc.index) == TFTeam_Red)
+		{
+			if(npc.m_bLostHalfHealth)
+			{
+				npc.SetActivity("ACT_GULN_CORRUPTED_FIRST_WALK");
+			}
+			else
+			{
+				npc.SetActivity("ACT_GULN_NORMAL_FIRST_WALK");
+			}
+		}
+		else
+		{
+			if(npc.m_bLostHalfHealth)
+			{
+				npc.SetActivity("ACT_GULN_CORRUPTED_SECOND_WALK");
+			}
+			else
+			{
+				npc.SetActivity("ACT_GULN_CORRUPTED_FIRST_WALK");
+			}
+		}
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	
@@ -384,6 +402,44 @@ public void FallenWarrior_ClotThink(int iNPC)
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
+		
+		if(GetTeam(npc.index) == TFTeam_Red)
+		{
+			int ally = npc.m_iTargetWalkTo;
+			ally = GetClosestAllyPlayer(npc.index);
+			npc.m_iTargetWalkTo = ally;
+			if(ally > 0)
+			{
+				float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+				float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
+
+				if(flDistanceToTarget > 25000.0)
+				{
+					npc.SetGoalEntity(ally);
+					npc.StartPathing();
+					if(npc.m_bLostHalfHealth)
+					{
+						npc.SetActivity("ACT_GULN_CORRUPTED_FIRST_WALK");
+					}
+					else
+					{
+						npc.SetActivity("ACT_GULN_NORMAL_FIRST_WALK");
+					}
+					return;
+				}
+			}
+
+			npc.StopPathing();
+			if(npc.m_bLostHalfHealth)
+			{
+				npc.SetActivity("ACT_GULN_CORRUPTED_FIRST_IDLE");
+			}
+			else
+			{
+				npc.SetActivity("ACT_GULN_NORMAL_FIRST_IDLE");
+			}
+		}
 	}
 
 	if(npc.Anger || GetTeam(npc.index) != TFTeam_Red)
@@ -428,6 +484,12 @@ public void FallenWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	npc.PlayDeathSound();
 
@@ -636,16 +698,31 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float fasterattack = 2.0;
-				if(npc.m_bLostHalfHealth)
+				if(GetTeam(npc.index) == TFTeam_Red)
 				{
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_ANGRY");
-					fasterattack /= 2;
+					if(npc.m_bLostHalfHealth)
+					{
+						npc.AddGesture("ACT_GULN_CORRUPTED_FIRST_ATTACK");
+						fasterattack /= 2;
+					}
+					else
+					{
+						npc.AddGesture("ACT_GULN_NORMAL_FIRST_ATTACK");
+					}
 				}
 				else
 				{
-					npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_CALM");
-				}
+					if(npc.m_bLostHalfHealth)
+					{
+						npc.AddGesture("ACT_GULN_CORRUPTED_SECOND_ATTACK");
+						fasterattack /= 2;
+					}
+					else
+					{
+						npc.AddGesture("ACT_GULN_CORRUPTED_FIRST_ATTACK");
+					}
 				
+				}
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;

@@ -34,7 +34,6 @@ float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
 
 float fl_ruina_helia_healing_timer[MAXENTITIES];
-static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 
 
@@ -220,7 +219,6 @@ void Ruina_Ai_Core_Mapstart()
 	Zero(b_ruina_npc_healer);
 	Zero(fl_npc_healing_duration);
 	Zero(fl_ruina_helia_healing_timer);
-	Zero(fl_ruina_internal_healing_timer);
 
 	Zero(fl_ruina_internal_teleport_timer);
 	Zero(b_ruina_allow_teleport);
@@ -447,7 +445,11 @@ static void Ruina_Update_Shield(int client)
 	}
 	if(IsValidEntity(i_shield_entity))
 	{
-		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		if(alpha != 255)
+			SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		else
+			SetEntityRenderMode(i_shield_entity, RENDER_NORMAL);
+
 		SetEntityRenderColor(i_shield_entity, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	}
 	else
@@ -466,7 +468,10 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 		SetVariantString("1.0");
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	if(alpha != 255)
+		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	else
+		SetEntityRenderMode(Shield, RENDER_NORMAL);
 	
 	SetEntityRenderColor(Shield, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -1117,7 +1122,7 @@ enum struct Ruina_Projectiles
 				//Make it entirely invis. Shouldnt even render these 8 polygons.
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 
@@ -1152,7 +1157,7 @@ enum struct Ruina_Projectiles
 		i_rocket_particle[this.Projectile_Index]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
 		SetParent(this.Projectile_Index, particle);	
-		SetEntityRenderMode(this.Projectile_Index, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderMode(this.Projectile_Index, RENDER_NONE); //Make it entirely invis.
 		SetEntityRenderColor(this.Projectile_Index, 255, 255, 255, 0);
 
 		return particle;
@@ -1776,7 +1781,7 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
-		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers , Ruina_HealVisualEffect);
+		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers);
 		DesertYadeamDoHealEffect(npc.index, Range);
 
 		//int color[4]; Ruina_Color(color);
@@ -1806,11 +1811,11 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		
 		if(b_ruina_nerf_healing[healed_target])
 		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
-			healingammount *=0.7;
+			healingammount *=0.8;
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
-			healingammount *=0.8;
+			healingammount *=0.9;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
@@ -1825,37 +1830,6 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 	
 
 	return false;
-}
-
-void Ruina_HealVisualEffect(int healer, int victim)
-{
-	CClotBody npc = view_as<CClotBody>(victim);
-
-	float GameTime = GetGameTime(npc.index);
-
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-
-	if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
-		return;
-
-	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-	WorldSpaceVec[2]-=25.0;
-
-	fl_ruina_internal_healing_timer[npc.index]=GameTime+RUINA_INTERNAL_HEALING_COOLDOWN;
-
-	char Particle[30];
-	
-	switch(GetRandomInt(0,2))
-	{
-		case 0:
-			Particle = "spell_cast_wheel_red";
-		case 1:
-			Particle = "spell_cast_wheel_blue";
-	}
-	int Healing_Effect = ParticleEffectAt_Parent(WorldSpaceVec, Particle, npc.index, "", {0.0,0.0,0.0});
-
-	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(Healing_Effect), TIMER_FLAG_NO_MAPCHANGE);
 }
 bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, float Dist_Max, float recharge, float dmg = 0.0, float radius = 0.0, Function OnTeleportLaseHit = INVALID_FUNCTION)
 {
@@ -2048,23 +2022,17 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 		Ruina_Color(colour);
 		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, Thickness, 0.5, colour, 1, 0);
 		TE_SendToAll();
-		int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
-		if(IsValidEntity(entity))
-		{
-			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
-			//Ruina_Move_Entity(entity, Loc, 5.0);
-		}
 		float effect_duration = 0.25;
 	
 		end_offset = vPredictedPos;
-							
+		
 		start_offset[2]-= 25.0;
 		end_offset[2] -= 25.0;
-							
+		
 		for(int help=1 ; help<=8 ; help++)
 		{	
 			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_RED, effect_duration, start_offset, end_offset);
-							
+			
 			start_offset[2] += 12.5;
 			end_offset[2] += 12.5;
 		}
@@ -2350,59 +2318,6 @@ void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecori
 
 	delete trace;
 	//if it doesnt hit anything, then it just does buisness as usual
-}
-static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
-{
-	if (IsValidEntity(entity))
-	{
-		int part1 = CreateEntityByName("info_particle_system");
-		if (IsValidEdict(part1))
-		{
-			float pos[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-			
-			if (zTrans != 0.0)
-			{
-				pos[2] += zTrans;
-			}
-			
-			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
-			DispatchKeyValue(part1, "effect_name", type);
-			SetVariantString("!activator");
-			AcceptEntityInput(part1, "SetParent", entity, part1);
-			SetVariantString(point);
-			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
-			DispatchKeyValue(part1, "targetname", "present");
-			DispatchSpawn(part1);
-			ActivateEntity(part1);
-			AcceptEntityInput(part1, "Start");
-			
-			if (duration > 0.0)
-			{
-				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
-			}
-			return part1;
-		}
-		else
-		{
-			return -1;
-		}
-	}
-	return -1;
-}
-
-static int Ruina_Create_Entity_Specific(float Loc[3], int old_particle=-1, float time=0.0)
-{
-	if(!IsValidEntity(old_particle))
-	{
-		//i_laser_particle_index[client][cycle]= EntIndexToEntRef(ParticleEffectAt({0.0,0.0,0.0}, "", 0.0));
-		int particle_new = Ruina_Create_Entity(Loc, time);
-		return particle_new;
-	}
-	else
-	{
-		return old_particle;
-	}
 }
 int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 {
