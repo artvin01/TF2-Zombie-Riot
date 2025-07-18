@@ -185,7 +185,15 @@ public void VictorianSupplier_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttackHappening < GetGameTime())
 	{
 		npc.m_flNextRangedAttackHappening = GetGameTime() + 5.0;
-		IberiaArmorEffect(npc.index, 200.0);
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			IberiaArmorEffect(npc.index, 300.0);
+		}
+		else
+		{
+			IberiaArmorEffect(npc.index, 200.0);										
+		}
+		
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -247,7 +255,15 @@ public void VictorianSupplier_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.00;
-		ExpidonsaGroupHeal(npc.index, 100.0, 3, 20.0, 1.0, false,SupplierGiveArmor);
+		if(NpcStats_VictorianCallToArms(npc.index))
+		{
+			ExpidonsaGroupHeal(npc.index, 100.0, 3, 50.0, 1.0, false,SupplierGiveArmorSignalled);
+		}
+		else
+		{
+			ExpidonsaGroupHeal(npc.index, 100.0, 3, 25.0, 1.0, false,SupplierGiveArmor);										
+		}
+		
 	}
 	VictorianSupplierSelfDefense(npc, npc.m_iTarget, GetGameTime(npc.index)); 
 }
@@ -345,6 +361,16 @@ void SupplierGiveArmor(int entity, int victim)
 	VictorianSupplier npc1 = view_as<VictorianSupplier>(entity);
 	GrantEntityArmor(victim, false, 2.0, 0.75, 0,
 	npc1.m_flArmorToGive * 0.5);
+}
+
+void SupplierGiveArmorSignalled(int entity, int victim)
+{
+	if(i_NpcIsABuilding[victim])
+		return;
+
+	VictorianSupplier npc1 = view_as<VictorianSupplier>(entity);
+	GrantEntityArmor(victim, false, 2.0, 0.75, 0,
+	npc1.m_flArmorToGive * 0.75);
 }
 
 public Action VictorianSupplier_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

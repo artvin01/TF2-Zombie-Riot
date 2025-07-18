@@ -2552,4 +2552,33 @@
 	{
 		"en" 	"A being made out of chaos and void combined..."
 	}
+	"Batter Desc"
+	{
+		"en"	"Basic melee unit of Leatherboots Scoutsquad.\nMoves faster when direct operation orders are given \n (When signalled) Gain speed boost"
+	}
+	"Charger Desc"
+	{
+		"en"	"melee unit with shortest melee range of Leatherboots Scoutsquad.\nThey are slow at first but accelerates into high speed \nTheir damage multiplies by their current speed\nMoves faster when direct operation orders are given \n (When signalled) Accelerate faster"
+	}
+	"Teslar Desc"
+	{
+		"en"	"basic melee unit with electrical stick of Leatherboots Scoutsquad.\nApply teslar debuff to their victim on hit \n(When signalled) Duration of the debuff is increased"
+	}
+	"Victorian Vanguard Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	"Supplier Desc"
+	{
+		"en"	"Ranged Support unit of Leatherboots Scoutsquad.\nSupports team by providing ammo and health at the same time. \nThey could heal and provide armor to themselves too \n(When signalled) Heal and provide more armor"
+	}
+	"Victorian Vanguard Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	"Ballista Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	
 }
