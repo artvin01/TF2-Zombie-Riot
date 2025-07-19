@@ -268,7 +268,7 @@ methodmap Ruliana < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, _, 0.5);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 
 		SetVariantInt(RUINA_REI_LAUNCHER);
