@@ -220,7 +220,7 @@ methodmap Lancelot < CClotBody
 			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",
 			"models/workshop/player/items/medic/sf14_vampire_makeover/sf14_vampire_makeover.mdl",
 			"models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl",
-			RUINA_CUSTOM_MODELS_3,
+			WINGS_MODELS_1,
 			RUINA_CUSTOM_MODELS_2
 		};
 
@@ -235,7 +235,7 @@ methodmap Lancelot < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_WINGS_3);
+		SetVariantInt(WINGS_LANCELOT);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		SetVariantInt(RUINA_IMPACT_LANCE_4);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	

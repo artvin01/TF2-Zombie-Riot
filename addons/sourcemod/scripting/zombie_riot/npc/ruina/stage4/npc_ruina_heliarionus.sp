@@ -192,7 +192,7 @@ methodmap Heliarionus < CClotBody
 			"models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl",
 			"models/workshop/player/items/sniper/spr17_guilden_guardian/spr17_guilden_guardian.mdl",
 			"models/workshop/player/items/sniper/hwn2022_hunting_cloak/hwn2022_hunting_cloak.mdl",
-			RUINA_CUSTOM_MODELS_2,
+			WINGS_MODELS_1,
 			RUINA_CUSTOM_MODELS_1,
 			RUINA_CUSTOM_MODELS_2
 		};
@@ -206,13 +206,15 @@ methodmap Heliarionus < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,2.0,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.5,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_WINGS_2);
+		SetVariantInt(WINGS_HELIA);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
+
 		SetVariantInt(RUINA_HALO_1);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
+
 		SetVariantInt(RUINA_HEALING_STAFF_2);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 				
