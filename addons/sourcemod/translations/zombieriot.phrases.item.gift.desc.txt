@@ -2578,7 +2578,11 @@
 	}
 	"Ballista Desc"
 	{
-		"en"	"Cyborg Ranged unit of Leatherboots Scoutsquad \nFires 3 projectiles per attack \n(When signalled) pull stronger"
+		"en"	"Cyborg Ranged unit of Leatherboots Scoutsquad \nFires 3 projectiles per attack \n(When signalled) reload faster"
+	}
+	"Victorian Igniter Desc"
+	{
+		"en"	"Giant ranged unit of Leatherboots Scoutsquad \nFires a flare that ignites its target \n(When signalled) afterburn damage increased"
 	}
 	
 }

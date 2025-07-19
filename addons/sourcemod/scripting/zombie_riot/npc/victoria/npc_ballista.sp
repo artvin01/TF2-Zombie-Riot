@@ -205,6 +205,10 @@ public void VictorianBallista_ClotThink(int iNPC)
 					npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.0;
 				}
 			}
+			else
+			{
+				npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 4.0;
+			}
 			
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 6;
