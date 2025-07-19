@@ -255,7 +255,7 @@ methodmap Ruliana < CClotBody
 		static const char Items[][] = {
 			"models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
-			RUINA_CUSTOM_MODELS_2,
+			WINGS_MODELS_1,
 			"models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl",
 			RUINA_CUSTOM_MODELS_2,
 			"models/player/items/medic/berliners_bucket_helm.mdl"
@@ -273,7 +273,7 @@ methodmap Ruliana < CClotBody
 
 		SetVariantInt(RUINA_REI_LAUNCHER);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
-		SetVariantInt(RUINA_WINGS_1);
+		SetVariantInt(WINGS_RULIANA);
 		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
 
 		b_angered_once[npc.index] = false;
