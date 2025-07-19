@@ -2578,7 +2578,7 @@
 	}
 	"Ballista Desc"
 	{
-		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+		"en"	"Cyborg Ranged unit of Leatherboots Scoutsquad \nFires 3 projectiles per attack \n(When signalled) pull stronger"
 	}
 	
 }
