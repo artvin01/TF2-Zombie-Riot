@@ -4191,6 +4191,7 @@
 	"Tinker Pap 7 Desc"
 	{
 		"en"	"Improved stats."
+		"ko"	"능력치 증가."
 	}
 	"West Pap 1 Desc"
 	{
