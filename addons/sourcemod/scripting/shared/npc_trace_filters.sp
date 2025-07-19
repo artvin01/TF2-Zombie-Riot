@@ -308,6 +308,7 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	}
 	if(i_IsABuilding[entity])
 	{
+#if defined ZR
 		if(i_IsABuilding[data])
 		{
 			ObjectGeneric objstats = view_as<ObjectGeneric>(data);
@@ -316,6 +317,7 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 			else if(objstats.m_iExtrabuilding2 == entity)
 				return false;
 		}
+#endif
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
 			return false;
 		if(IsValidEntity(Building_Mounted[entity]))
@@ -332,6 +334,7 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	
 	if(i_IsABuilding[entity])
 	{
+#if defined ZR
 		if(i_IsABuilding[data])
 		{
 			ObjectGeneric objstats = view_as<ObjectGeneric>(data);
@@ -340,6 +343,7 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 			else if(objstats.m_iExtrabuilding2 == entity)
 				return false;
 		}
+#endif
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
 			return false;
 		if(IsValidEntity(Building_Mounted[entity]))

@@ -640,25 +640,6 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 		defaul = defaultstat;
 	}
 	float result = Attributes_Get(client, index, defaul);
-
-	/*
-	int wearable = MaxClients + 1;
-	while(TF2_GetWearable(client, wearable))
-	{
-		float value = Attributes_Get(wearable, index, defaul);
-		if(value != defaul)
-		{
-			if(multi)
-			{
-				result *= value;
-			}
-			else
-			{
-				result += value;
-			}
-		}
-	}
-	*/
 	
 	if(entity > MaxClients)
 	{
