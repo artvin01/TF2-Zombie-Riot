@@ -1471,7 +1471,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
+				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 			}
 		}
 		else

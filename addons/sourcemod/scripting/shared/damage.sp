@@ -244,7 +244,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 									if(flDistanceToTarget < 90000)
 									{
 										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-										ApplyStatusEffect(victim, baseboss_index, "Widows Wine", FL_WIDOWS_WINE_DURATION);
+										ApplyStatusEffect(victim, baseboss_index, "Nemal's Teslar Mule", FL_WIDOWS_WINE_DURATION);
 									}
 								}
 							}
@@ -1471,7 +1471,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				damage *= 0.5;
 
-			ApplyStatusEffect(attacker, attacker, "Widows Wine", FL_WIDOWS_WINE_DURATION_NPC);
+			ApplyStatusEffect(attacker, attacker, "Nemal's Teslar Mule", FL_WIDOWS_WINE_DURATION_NPC);
 		}
 	}
 }

@@ -2209,9 +2209,7 @@
 	}
 	"Barracks Desc Extra"
 	{
-		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
-		"fr"	"Résurrection Rapide: soigne vos unités automatiquement\nVin des Veuves: affaiblit les ennemis frappés\nDaiquiri: 1.25x dégats à distance\nDouble-Touche: 1.15x cadence des attaques\nSpeed Cola: 1.25x vitesse\nRecyclage Poiré: 1.25x gain de ressources\nJuggernog: 1.3x santé, 1.15x résistance"
-		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
+		"en"	"Perks work on your minions!"
 	}
 	"Barracks Desc Extra 2"
 	{
