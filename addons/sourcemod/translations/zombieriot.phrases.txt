@@ -58,7 +58,7 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
+		"en"		" \n---Starter Store---\n70％ Sale in this store!\nCash: {1}"
 	}
 	"Preview Mode Pap"
 	{
