@@ -1249,7 +1249,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
-					char buf[64];
+					char buf[84];
 					if(PapPreviewMode[client])
 					{
 						Format(buf, sizeof(buf), "%T", "Preview Mode Pap", client);
@@ -3110,7 +3110,7 @@ static void MenuPage(int client, int section)
 
 			item.GetItemInfo(level, info);
 			
-			char buf[64];
+			char buf[84];
 			if(StarterCashMode[client])
 				Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 			else
@@ -3352,7 +3352,7 @@ static void MenuPage(int client, int section)
 			return;
 		}
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -3388,7 +3388,7 @@ static void MenuPage(int client, int section)
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
