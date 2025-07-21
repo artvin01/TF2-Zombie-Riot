@@ -689,7 +689,10 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
+		{
+			SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
+		}
 		
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
@@ -740,7 +743,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		{
 			SetEntityRenderColor(objstats.index, r, g, 0, 100);
 			SetEntityRenderColor(wearable, r, g, 0, 255);
-
+			SetEntityRenderMode(wearable, RENDER_NORMAL);
 		}
 		else
 		{

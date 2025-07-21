@@ -1230,7 +1230,7 @@
 	}
 	"Silvester's Energy Drink Recieved"
 	{
-		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction!"
+		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 	}
 	"Freeze Bomb Activated"
 	{
