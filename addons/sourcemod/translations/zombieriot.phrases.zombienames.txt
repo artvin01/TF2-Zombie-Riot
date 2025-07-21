@@ -3168,7 +3168,7 @@
 	}
 	"Explain Building Cash Desc"
 	{
-		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} with people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
+		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} from people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
 	}
 	
 	"Vhxis"
