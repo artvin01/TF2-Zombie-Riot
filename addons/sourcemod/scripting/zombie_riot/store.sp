@@ -3024,11 +3024,6 @@ static void MenuPage(int client, int section)
 	
 	if(Waves_Started())
 	{
-	//	if(CashSpentTotal[client] <= 0)
-	//	{
-	//		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-	//	}
-	//	else 
 		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
 		{
 			StarterCashMode[client] = false; //confirm automatically.
@@ -3065,23 +3060,6 @@ static void MenuPage(int client, int section)
 	}
 	
 	int cash = CurrentCash-CashSpent[client];
-	/*
-
-	remove, dont bother.
-	if(ClientTutorialStep(client) == 2)
-	{
-		//This is here so the player doesnt just have no money to buy anything.
-		if(cash < 700)
-		{
-			int give_Extra_JustIncase = cash - 700;
-			
-			CashSpent[client] += give_Extra_JustIncase;
-			cash += give_Extra_JustIncase;
-		}
-	}
-
-	*/
-	
 	if(StarterCashMode[client])
 	{
 		int maxCash = StartCash;
@@ -6735,11 +6713,12 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
+	Force_ExplainBuffToClient(client, "Explain Building Cash", true);
 	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{
-			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
+			CPrintToChat(client,"{darkgrey}%T","Pre Setup Cash Gain Hint", client);
 			CashSpentGivePostSetupWarning[client] = true;
 		}
 		int CreditsGive = credits / 2;
