@@ -158,12 +158,15 @@
 		"en"	"Increases Damage Taken by 10％"
 		"ko"	"받는 피해량이 10％ 증가합니다."
 	}
-	"Widows Wine"
+	"Nemal's Teslar Mule"
 	{
-		"en"	"Widows Wine"
-		"ko"	"미망인 와인"
+		"en"	"Nemal's Teslar Mule"
 	}
-	"Widows Wine Desc"
+	"Silvester's Energy Drink"
+	{
+		"en"	"Silvester's Energy Drink"
+	}
+	"Nemal's Teslar Mule Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 		"ko"	"받는 피해량이 35％ 증가합니다.\nNPC의 이동 속도를 80％ 감소시키고, 시간이 지날수록 점점 감소하여 최종적으로 이동 속도가 0％가 됩니다."

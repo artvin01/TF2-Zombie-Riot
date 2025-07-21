@@ -710,6 +710,9 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.25;
 	}
+	if(i_CurrentEquippedPerk[client] == 8)
+		Cooldown *= 0.85;
+		
 	return Cooldown;
 }
 
@@ -1252,7 +1255,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
-					char buf[64];
+					char buf[84];
 					if(PapPreviewMode[client])
 					{
 						Format(buf, sizeof(buf), "%T", "Preview Mode Pap", client);
@@ -3109,7 +3112,7 @@ static void MenuPage(int client, int section)
 
 			item.GetItemInfo(level, info);
 			
-			char buf[64];
+			char buf[84];
 			if(StarterCashMode[client])
 				Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 			else
@@ -3351,7 +3354,7 @@ static void MenuPage(int client, int section)
 			return;
 		}
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -3387,7 +3390,7 @@ static void MenuPage(int client, int section)
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -5124,7 +5127,6 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
 	
-	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
@@ -6134,7 +6136,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
 			//dont give it if it doesnt have it.
@@ -6142,7 +6143,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
-		//DOUBLE TAP!
 		if(i_CurrentEquippedPerk[client] == 3)
 		{
 			if(Attributes_Has(entity, 6))
@@ -6160,7 +6160,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
-		//QUICK REVIVE!
+		//Karlas's Regene Berry!
 		if(i_CurrentEquippedPerk[client] == 1)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.

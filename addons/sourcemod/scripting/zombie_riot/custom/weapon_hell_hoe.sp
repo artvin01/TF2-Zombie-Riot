@@ -38,7 +38,6 @@ void Hell_Hoe_MapStart()
 }
 
 
-// yeah, i love recycle (see survival knife)
 public void Reset_Management_Hell_Hoe(int client) //This is on disconnect/connect
 {
 	if (g_hHell_Hoe_Management[client] != INVALID_HANDLE)

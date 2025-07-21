@@ -2608,7 +2608,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				if(i_CurrentEquippedPerk[target] == 7) 
 				{
 					Ammo_Count_Used[target] -= 1;
 				}
@@ -2624,7 +2624,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				if(i_CurrentEquippedPerk[target] == 7)
 				{
 					Ammo_Count_Used[target] -= 1;
 				}

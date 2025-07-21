@@ -2145,7 +2145,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		{
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.85;
 		}
-		//juggernog
 		if(i_CurrentEquippedPerk[entity] != 2 && i_CurrentEquippedPerk[client] == 2)
 		{
 			if(BarracksUpgrade)
