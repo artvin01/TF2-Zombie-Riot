@@ -984,7 +984,7 @@ public void RattlerBones_ClotThink(int iNPC)
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 		{
 			npc.StartPathing();
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		else
 		{
@@ -992,12 +992,12 @@ public void RattlerBones_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				NPC_SetGoalVector(npc.index, optimalPos, true);
+				npc.SetGoalVector(optimalPos, true);
 			}
 			else
 			{
 				npc.StartPathing();
-				NPC_SetGoalEntity(npc.index, closest);
+				npc.SetGoalEntity(closest);
 			}
 
 			Rattler_CheckShoot(npc, closest);
@@ -1005,8 +1005,8 @@ public void RattlerBones_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

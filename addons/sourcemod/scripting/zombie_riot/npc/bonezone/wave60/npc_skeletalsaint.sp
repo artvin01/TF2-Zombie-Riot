@@ -925,8 +925,8 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 	
 	if (!IsValidEntity(closest) || closest == npc.index)
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		if (Priest_IsHealing[npc.index])
@@ -961,7 +961,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			Priest_OldHealTarget[npc.index] = EntIndexToEntRef(closest);
 		}
 		
-		NPC_SetGoalEntity(npc.index, closest);
+		npc.SetGoalEntity(closest);
 		
 		//Only walk up to 66% the healing distance away from the target, we don't want to be *too* close to them.
 		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE * 0.66 && Can_I_See_Ally(npc.index, closest))
@@ -1048,7 +1048,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		if (!Can_I_See_Enemy_Only(npc.index, closest))
 		{
 			npc.StartPathing();
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		else
 		{
@@ -1056,12 +1056,12 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				NPC_SetGoalVector(npc.index, optimalPos, true);
+				npc.SetGoalVector(optimalPos, true);
 			}
 			else if (flDistanceToTarget > Priest_EnemyHover_MaxDist)
 			{
 				npc.StartPathing();
-				NPC_SetGoalEntity(npc.index, closest);
+				npc.SetGoalEntity(closest);
 			}
 			else
 			{
@@ -1090,8 +1090,8 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 	
 	if (!IsValidEntity(closest))
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		if (Priest_IsHealing[npc.index])
@@ -1112,7 +1112,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 	
 	if (IsValidAlly(npc.index, closest))
 	{
-		NPC_SetGoalEntity(npc.index, closest);
+		npc.SetGoalEntity(closest);
 		
 		//Only walk up to 80% the healing distance away from the target, we don't want to be *too* close to them.
 		if (flDistanceToTarget <= SAINTBONES_HEAL_RANGE_BUFFED * 0.5 && Can_I_See_Ally(npc.index, closest))
@@ -1229,7 +1229,7 @@ public void SaintBones_SaintLogic(SaintBones npc, int closest)
 		}
 		
 		npc.StartPathing();
-		NPC_SetGoalEntity(npc.index, closest);
+		npc.SetGoalEntity(closest);
 	}
 	
 	//Only rotate and allow movement if we are not casting our lightning spell.

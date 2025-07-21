@@ -462,7 +462,7 @@ public Action BigBones_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		b_NpcIsInvulnerable[npc.index] = true;
 		npc.StopPathing();
-		npc.m_bPathing = false;
+		
 
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);

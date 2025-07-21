@@ -276,7 +276,7 @@ public void MolotovBones_ClotThink(int iNPC)
 		{
 			if (!Can_I_See_Enemy_Only(npc.index, closest))
 			{
-				NPC_SetGoalEntity(npc.index, closest);
+				npc.SetGoalEntity(closest);
 				npc.StartPathing();
 			}
 			else
@@ -285,7 +285,7 @@ public void MolotovBones_ClotThink(int iNPC)
 				{
 					npc.StartPathing();
 					BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, vecTarget);
-					NPC_SetGoalVector(npc.index, vecTarget, true);
+					npc.SetGoalVector(vecTarget, true);
 				}
 				else if (flDistanceToTarget <= MOLOTOV_STOP_RANGE)
 				{
@@ -293,7 +293,7 @@ public void MolotovBones_ClotThink(int iNPC)
 				}
 				else
 				{
-					NPC_SetGoalEntity(npc.index, closest);
+					npc.SetGoalEntity(closest);
 					npc.StartPathing();
 				}
 			}
@@ -319,8 +319,8 @@ public void MolotovBones_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

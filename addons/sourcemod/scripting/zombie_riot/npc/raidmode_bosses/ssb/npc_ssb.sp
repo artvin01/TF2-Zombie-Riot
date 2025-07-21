@@ -4110,9 +4110,8 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 		if (!SSB_Paused[npc.index])
 		{
 			npc.StartPathing();
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 			npc.FaceTowards(targPos, 225.0);
-			npc.m_bPathing = true;
 		}
 
 		if (npc.IsSpecialReady())
@@ -4130,8 +4129,8 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
