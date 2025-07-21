@@ -289,8 +289,14 @@ void ViewChange_PlayerModel(int client)
 #endif
 		
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+#if defined ZR
+		if(CurrentModifOn() == SECONDARY_MERCS)
+		{
+			team = 3;
+		}
+#endif
 		SetTeam(entity, team);
-		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(client, Prop_Send, "m_nSkin"));
+		SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 		SetEntityCollisionGroup(entity, 11);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
@@ -425,14 +431,18 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				}
 			}
 
-			// entity here is m_hViewModel
-			/*	
-				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
-			*/
-			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
-			//SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
+			
+			int team = GetClientTeam(client);
+#if defined ZR
+			if(CurrentModifOn() == SECONDARY_MERCS)
+			{
+				team = 3;
+			}
+#endif
+			SetTeam(entity, team);
+			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 			int model = GetEntProp(active, Prop_Send, "m_iWorldModelIndex");
 			
 			entity = CreateViewmodel(client, model, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : model, active, true);
@@ -465,7 +475,6 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			entity = CreateEntityByName("tf_wearable");
 			if(entity != -1)	// Weapon worldmodel
 			{
-				int team = GetClientTeam(client);
 				if(i_WeaponModelIndexOverride[active] > 0)
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
 				else
@@ -495,6 +504,12 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				ImportSkinAttribs(entity, active);
 
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+#if defined ZR
+				if(CurrentModifOn() == SECONDARY_MERCS)
+				{
+					team = 3;
+				}
+#endif
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);

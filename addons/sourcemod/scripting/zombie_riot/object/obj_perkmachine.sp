@@ -93,27 +93,32 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
 	menu2.SetTitle("%t", "Which perk do you desire?");
 		
-	FormatEx(buffer, sizeof(buffer), "%t", "Recycle Poire");
+	FormatEx(buffer, sizeof(buffer), "%t", "Castellan's Corvus Stout");
 	menu2.AddItem("-9", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
+	FormatEx(buffer, sizeof(buffer), "%t", "Nemal's Teslar Mule");
 	menu2.AddItem("-8", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Deadshot Daiquiri");
+	FormatEx(buffer, sizeof(buffer), "%t", "Waldch's Root Beer");
 	menu2.AddItem("-7", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Speed Cola");
+	FormatEx(buffer, sizeof(buffer), "%t", "Twirl's Ginger Ale");
 	menu2.AddItem("-6", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Double Tap");
+	FormatEx(buffer, sizeof(buffer), "%t", "Bob's Banana Juice");
 	menu2.AddItem("-5", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Juggernog");
+	FormatEx(buffer, sizeof(buffer), "%t", "Purge's Cerveza Obsidian");
 	menu2.AddItem("-4", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Quick Revive");
+	FormatEx(buffer, sizeof(buffer), "%t", "Karlas's Regene Berry");
 	menu2.AddItem("-3", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Silvester's Energy Drink");
+	menu2.AddItem("-10", buffer);
 						
+	menu2.Pagination = 0;
+	menu2.ExitButton = true;
 	menu2.Display(client, MENU_TIME_FOREVER);
 	
 	return true;
@@ -140,7 +145,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 			if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
 			{
-				id = GetRandomInt(-9, -4);
+				id = GetRandomInt(-10, -4);
 			}
 
 			if(id == -3)
@@ -213,6 +218,16 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 					Do_Perk_Machine_Logic(owner, client, entity, 7);
 				}
 			}
+			else if(id == -10)
+			{
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = -1;
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+					Do_Perk_Machine_Logic(owner, client, entity, 8);
+				}
+			}
 		}
 	}
 	return 0;
@@ -225,8 +240,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 		
 	if((GetEntityFlags(client) & FL_DUCKING))
 	{
-		SetGlobalTransTarget(client);
-		CPrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
+		CPrintToChat(client, "{green} %T", PerkNames_Recieved[what_perk], client);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
 		ClotInteract(client, -1, npc);
 		return;
@@ -251,9 +265,8 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
 	Perk_Machine_Sickness[client] = GetGameTime() + 2.0;
 	SetDefaultHudPosition(client, _, _, _, 5.0);
-	SetGlobalTransTarget(client);
-	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 	Barracks_UpdateAllEntityUpgrades(client);
+	CPrintToChat(client, "{green} %T", PerkNames_Recieved[what_perk], client);
 }

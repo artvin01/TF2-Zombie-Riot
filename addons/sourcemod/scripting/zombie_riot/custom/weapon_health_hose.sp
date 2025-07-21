@@ -518,7 +518,7 @@ bool SpawnHealthkit_SyringeGun(int client, float VectorGoal[3])
 	float AbsOrigin_after[3];
 	AbsOrigin_after = VectorGoal;
 	AbsOrigin_after[2] -= 1000.0;
-	VectorGoal[2] += 12.0;
+	VectorGoal[2] += 24.0;
 	TR_TraceHullFilter(VectorGoal, AbsOrigin_after, hullcheckmins_Player, hullcheckmaxs_Player, MASK_PLAYERSOLID_BRUSHONLY, TraceRayHitWorldOnly, client);
 	if(TR_DidHit())
 	{

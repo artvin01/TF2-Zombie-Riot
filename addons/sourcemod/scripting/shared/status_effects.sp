@@ -1847,7 +1847,7 @@ void StatusEffects_BuildingAntiRaid()
 void StatusEffects_WidowsWine()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Widows Wine");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nemal's Teslar Mule");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "४");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -5109,6 +5109,20 @@ void StatusEffects_Explainelemental()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Barracks Building Explain");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Explain Building Cash");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused

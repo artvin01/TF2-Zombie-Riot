@@ -127,11 +127,15 @@
 	{
 		"en"	"Increases Damage Taken by 10％"
 	}
-	"Widows Wine"
+	"Nemal's Teslar Mule"
 	{
-		"en"	"Widows Wine"
+		"en"	"Nemal's Teslar Mule"
 	}
-	"Widows Wine Desc"
+	"Silvester's Energy Drink"
+	{
+		"en"	"Silvester's Energy Drink"
+	}
+	"Nemal's Teslar Mule Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 	}

@@ -1441,7 +1441,8 @@ public void OnPostThink(int client)
 				Cooldowntocheck = 99.9;
 			if(Cooldowntocheck > 0.0)
 			{
-				Format(buffer2, sizeof(buffer2), "%s:%0.f",npc_classname[4], Cooldowntocheck);
+				//add one second so it itll never show 0 in there, thats stupid.
+				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
@@ -1462,7 +1463,7 @@ public void OnPostThink(int client)
 				
 				if(slowdown_amount < 0.0)
 				{
-					Format(buffer2, sizeof(buffer2), "%sWI", buffer2, slowdown_amount);
+					Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2,PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 				}
 				else
 				{
@@ -1471,7 +1472,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
+				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 			}
 		}
 		else
@@ -3465,7 +3466,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			//Compare active weapon to weapon that in "myweapons"
 
 			
-		//	f_CheckWeaponDouble[client] = GetGameTime () + 0.5; 
+			f_CheckWeaponDouble[client] = 0.0;
 			//check every 0.5 seconds.
 
 			int weaponAm = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -3476,7 +3477,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			GetEntityClassname(weaponAm, buffer, sizeof(buffer));
 			int CurrentSlot = TF2_GetClassnameSlot(buffer, weaponAm);
 
-			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
+			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, false);
 
 			int Maxloop = 1;
 			while(WeaponValidCheck == weaponAm && Maxloop < 10) //dont be on same weapon!

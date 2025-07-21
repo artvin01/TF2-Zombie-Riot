@@ -3162,6 +3162,15 @@
 	{
 		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
 	}
+	"Explain Building Cash"
+	{
+		"en" "Building Cash Gain"
+	}
+	"Explain Building Cash Desc"
+	{
+		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} from people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
+	}
+	
 	"Vhxis"
 	{
 		"en"	"Vhxis"

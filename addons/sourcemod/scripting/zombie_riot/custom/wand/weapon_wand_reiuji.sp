@@ -408,15 +408,10 @@ static void FireBarrageProjectile(int client, int weapon, float Angles[3], int v
 
 	fl_ruina_Projectile_bonus_dmg[projectile] = 0.0;
 	fl_ruina_Projectile_radius[projectile] = radius;
-	
-	//so since the ICBM model isn't correctly orientated, I need to do this wonky trick
-	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_1, 2.0, "icbm_idle");
+
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_1, 1.0, "icbm_idle");
 	if(IsValidEntity(ModelApply))
 	{
-		float angles[3];
-		GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-		angles[1]+=90.0;
-		TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 		SetVariantInt(RUINA_ICBM);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
 	}
