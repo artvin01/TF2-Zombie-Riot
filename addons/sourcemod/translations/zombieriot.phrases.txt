@@ -1369,6 +1369,7 @@
 	"Silvester's Energy Drink Recieved"
 	{
 		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
+		"ko" 		"실베스터의 에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 15％ 감소!"
 	}
 	"Freeze Bomb Activated"
 	{
