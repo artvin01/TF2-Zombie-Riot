@@ -2778,6 +2778,6 @@
 	}
 	"Victoria Castellan Desc"
 	{
-		"en"	" `Did you really thought you could get out this mess that easily?` \nGeneral of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
+		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
 	}
 }
