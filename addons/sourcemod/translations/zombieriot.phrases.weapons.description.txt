@@ -2544,6 +2544,7 @@
 	"Barracks Desc Extra"
 	{
 		"en"	"Perks work on your minions!"
+		"ko"	"퍽은 당신의 하수인들에게도 영향을 줍니다!"
 	}
 	"Barracks Desc Extra 2"
 	{

@@ -161,10 +161,12 @@
 	"Nemal's Teslar Mule"
 	{
 		"en"	"Nemal's Teslar Mule"
+		"ko"	"네말의 테슬라 뮬"
 	}
 	"Silvester's Energy Drink"
 	{
 		"en"	"Silvester's Energy Drink"
+		"ko"	"실베스터의 에너지 드링크"
 	}
 	"Nemal's Teslar Mule Desc"
 	{

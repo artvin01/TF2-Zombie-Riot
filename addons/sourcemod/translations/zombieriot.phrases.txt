@@ -64,6 +64,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
+		"ko"		" \n---초기 상점---\n이 상점은 물품 가격이 70％ 할인됨!\n초기 자금: {1}"
 	}
 	"Preview Mode Pap"
 	{
@@ -345,6 +346,7 @@
 	"Sell Items Confirm Pref"
 	{
 		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your Starter Store!"
+		"ko"		"정말로 당신의 모든 아이템을 판매하시겠습니까?\n당신은 아직 재구매 단계이며 다시 로드아웃 상점으로 되돌아갈 것입니다!"
 	}
 	"Sell All Items"
 	{
@@ -359,6 +361,7 @@
 	"Confirm Loadout"
 	{
 		"en"		"Exit Starter Store"
+		"ko"		"초기 상점 나가기"
 	}
 	"N/A"
 	{
@@ -1277,19 +1280,22 @@
 		"pt"		"Rápida ressureição"
 		"nl"		"Snel tot leven brengen"
 		"chi" 		"快速起身"
-		"ko" 		"신속 부활"
+		"ko" 		"카를라스의 재생형 열매"
 	}
 	"Purge's Cerveza Obsidian"
 	{
 		"en" 		"Purge's Cerveza Obsidian"
+		"ko" 		"퍼지의 흑요석 맥주"
 	}
 	"Bob's Banana Juice"
 	{
 		"en" 		"Bob's Banana Juice"
+		"ko" 		"밥의 바나나 주스"
 	}	
 	"Twirl's Ginger Ale"
 	{
 		"en" 		"Twirl's Ginger Ale"
+		"ko" 		"트윌의 진저 에일"
 	}
 	"Waldch's Root Beer"
 	{
@@ -1300,7 +1306,7 @@
 		"pt"		"Tiro morto de Daiquiri"
 		"nl"		"Dood schot Daiquiri"
 		"chi" 		"死亡宣告"
-		"ko" 		"데드샷 다이키리"
+		"ko" 		"월드치의 루트비어"
 	}
 	
 	"Nemal's Teslar Mule"
@@ -1311,7 +1317,7 @@
 		"pt"		"Vinho Viúvo"
 		"nl"		"Wijn van de weduwe"
 		"chi" 		"恶魔领域"
-		"ko" 		"미망인 와인"
+		"ko" 		"네말의 테슬라 뮬"
 	}
 	"Castellan's Corvus Stout"
 	{
@@ -1319,7 +1325,7 @@
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
-		"ko" 		"재사용 배"
+		"ko" 		"카스텔란의 코르부스 흑맥주"
 	}
 
 	"Karlas's Regene Berry Recieved"
@@ -1328,35 +1334,42 @@
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
-		"ko" 		"신속 부활! 부활 속도가 2배 증가하고 치유 속도가 15％ 증가하며 부활시 현재 체력이 2배로 증가합니다"
+		"ko" 		"카를라스의 재생형 열매! 부활 속도가 2배 증가 및 치유 속도가 15％ 증가하고 부활시 현재 체력이 2배로 증가"
 	}
 	"Purge's Cerveza Obsidian Recieved"
 	{
 		"en" 		"Purge's Cerveza Obsidian! 15％ Damage resistance and +100HP"
+		"ko" 		"퍼지의 흑요석 맥주! 피해 저항력 +15％ 및 최대 체력 +100"
 	}
 	"Bob's Banana Juice Recieved"
 	{
 		"en" 		"Bob's Banana Juice! 17％ Extra attack speed and Building Damage"
+		"ko" 		"밥의 바나나 주스! 공격 속도와 구조물 피해량 +17％ 증가"
 	}	
 	"Twirl's Ginger Ale Recieved"
 	{
 		"en" 		"Twirl's Ginger Ale! 1.42x Extra reload, switchspeed and Mana regen"
+		"ko" 		"네말의 테슬라 뮬! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다"
 	}
 	"Waldch's Root Beer Recieved"
 	{
 		"en" 		"Waldch's Root Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"ko" 		"월드치의 루트비어! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.25배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
 	}
 	"Nemal's Teslar Mule Recieved"
 	{
 		"en" 		"Nemal's Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"ko" 		"네말의 테슬라 뮬! 활성화시 적중한 대상의 피해량을 75％ 감소시키고 디버프를 부여하는 재생형 보호 버프 획득.\n부여된 대상은 이속 감소 및 35％의 추가 피해를 받음."
 	}
 	"Castellan's Corvus Stout Recieved"
 	{
 		"en" 		"Castellan's Corvus Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"ko" 		"카스텔란의 코르부스 흑맥주! 상점을 제외한 모든 요소에서 획득하는 탄약량이 33％ 증가하고 아머 획득량과 아머 최대치가 50％ 증가.\nY탄약 보급량이 2배만큼 증가."
 	}
 	"Silvester's Energy Drink Recieved"
 	{
 		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction!"
+		"ko" 		"실베스터의 에너지 드링크! 능력 쿨타임 15％ 감소!"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -4594,18 +4607,22 @@
 	"DPS Class"
 	{
 		"en"	"DPS Class\nFocus on damage and get Twirl's Ginger Ale perk"
+		"ko"	"DPS\n피해량을 중시하며 트윌의 진저 에일 퍽을 획득함"
 	}
 	"Tank Class"
 	{
 		"en"	"Tank Class\nFocus on tanking and get Purge's Cerveza Obsidian perk"
+		"ko"	"탱커\n탱킹을 중시하며 퍼지의 흑요석 맥주 퍽을 획득함"
 	}
 	"Healer Class"
 	{
 		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Berry perk"
+		"ko"	"힐러\n치유가 가능해지며, DPS가 낮아짐. 카를라스의 재생형 열매 퍽을 획득함"
 	}
 	"Builder Class"
 	{
 		"en"	"Builder Class\nAble to build, repair, and get Bob's Banana Juice perk"
+		"ko"	"건축가\n구조물을 건설하고 수리하게 됨, 밥의 바나나 주스 퍽을 획득함"
 	}
 	"Don't Follow Me"
 	{
@@ -4812,6 +4829,7 @@
 	"Loadout In Store"
 	{
 		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
+		"ko"		"라운드가 시작되었고 당신은 아직 초기 상점에 있습니다!\n상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!"
 	}
 	"Getting favorite loadout"
 	{
