@@ -140,6 +140,12 @@ static void ClotThink(int iNPC)
 			float damageDeal = 600.0;
 			float ProjectileSpeed = 1400.0;
 
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				ProjectileSpeed *= 1.25
+			}
+
+
 			npc.PlayMeleeSound();
 
 			int entity = npc.FireRocket(vecTarget, damageDeal, ProjectileSpeed,_,_,_,45.0);

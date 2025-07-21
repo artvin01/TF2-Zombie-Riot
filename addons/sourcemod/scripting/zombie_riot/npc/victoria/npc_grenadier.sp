@@ -24,7 +24,7 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
+	"weapons/cleaver_throw.wav",
 };
 
 
@@ -338,8 +338,16 @@ int VictorianGrenadierSelfDefense(VictorianGrenadier npc, float gameTime, float 
 					//	npc.PlayRangedSound();
 					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed, "models/workshop/weapons/c_models/c_caber/c_caber.mdl", 1.2);
 				}
-						
-				npc.m_flNextMeleeAttack = gameTime + 1.75;
+				
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
+				}
+				else
+				{
+					npc.m_flNextMeleeAttack = gameTime + 1.75;
+				}
+				
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.

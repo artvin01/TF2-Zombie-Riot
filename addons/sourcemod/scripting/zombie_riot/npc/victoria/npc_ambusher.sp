@@ -349,7 +349,15 @@ int VIctorianAmbusherSelfDefense(int iNPC, int target, float gameTime)
 		if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 		{
 			npc.PlayChargeSound();
-			npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
+			if(NpcStats_VictorianCallToArms(npc.index))
+			{
+				npc.m_flCharge_delay = GetGameTime(npc.index) + 3.5;
+			}
+			else
+			{
+				npc.m_flCharge_delay = GetGameTime(npc.index) + 90.0;
+			}
+			
 			PluginBot_Jump(npc.index, vecTarget);
 			float flPos[3];
 			float flAng[3];
