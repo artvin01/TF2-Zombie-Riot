@@ -732,7 +732,7 @@ methodmap Lelouch < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -981,8 +981,8 @@ static void ClotThink(int iNPC)
 	}*/
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_bAllowBackWalking = false;
@@ -2082,11 +2082,12 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	AproxRandomSpaceToWalkTo[0]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	AproxRandomSpaceToWalkTo[1]+=GetRandomFloat(GetRandomFloat(-250.0, -50.0), GetRandomFloat(50.0, 250.0));
 	char Data[64]; Data = red ? "lelouch;nospawns;noweaver;full" : "nospawns;noweaver;full";
-	if(ZR_Waves_GetRound()+1 < 60)
-		Format(Data, sizeof(Data), "%sforce60", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
+	if(Waves_GetRoundScale()+1 < 40)
+		Format(Data, sizeof(Data), "%sforce40", Data);	//this way if somehow they are spawned before wave 60, they will have the proper wave logic.
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(spawn_index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -2532,8 +2533,8 @@ static void Initiate_Anim(Lelouch npc, float time, char[] Anim = "", float Rate 
 {
 	npc.m_flDoingAnimation = GetGameTime(npc.index) + time;
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 	npc.m_flGetClosestTargetTime = 0.0;
 	npc.m_flSpeed = 0.0;
 	npc.m_iChanged_WalkCycle  = -1;
@@ -2591,6 +2592,7 @@ static int i_CreateManipulation(Lelouch npc, float Spawn_Loc[3], float Spawn_Ang
 	int spawn_index = NPC_CreateByName("npc_ruina_manipulation", npc.index, Spawn_Loc, Spawn_Ang, GetTeam(npc.index), Model);
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -2655,8 +2657,12 @@ static float Modify_Damage(int Target, float damage)
 	char classname[32];
 	GetEntityClassname(weapon, classname, 32);
 
-	int weapon_slot = TF2_GetClassnameSlot(classname);
-
+	int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
+										
+	if(i_OverrideWeaponSlot[weapon] != -1)
+	{
+		weapon_slot = i_OverrideWeaponSlot[weapon];
+	}
 	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 		damage *= 1.7;
 
@@ -2708,7 +2714,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			case 2: Lelouch_Lines(npc, "Don't think this is over, I still have plenty of fight left in me!");
 		}
 		
-		RaidModeScaling *= 1.2;
+		RaidModeScaling *= 1.5;
 
 		RaidModeTime += 200.0;
 
@@ -2763,10 +2769,6 @@ static void LelouchSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, i
 	if(health != 0)
 	{
 		enemy.Health = health;
-		if(!is_a_boss)
-		{
-			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
-		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;
@@ -2885,6 +2887,7 @@ static int i_summon_weaver(Lelouch npc)
 	int spawn_index = NPC_CreateByName("npc_interstellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -3012,7 +3015,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 	{
 		CPrintToChatAll("{crimson}The Island falls down as Twirl escorts you, Lelouch was successfull in the end, but he paid with his life..");
 		CPrintToChatAll("{crimson}The Space to the Courtain has weakened... something terrible is comming...");
-		for(int i=0 ; i < MaxClients ; i++)
+		for(int i=1 ; i <= MaxClients ; i++)
 		{
 			if(IsValidClient(i) && Rogue_Mode())
 			{
@@ -3047,7 +3050,7 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 		EmitSoundToAll("items/cart_explode.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, {8705.115234, -137.372833, -3051.154297});
 	}
 		
-	for(int i=0 ; i < MaxClients ; i++)
+	for(int i=1 ; i <= MaxClients ; i++)
 	{
 		if(IsValidClient(i) && Rogue_Mode())
 		{

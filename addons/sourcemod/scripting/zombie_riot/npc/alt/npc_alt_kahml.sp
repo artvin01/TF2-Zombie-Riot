@@ -272,14 +272,10 @@ methodmap Kahmlstein < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 21, 71, 171, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 21, 71, 171, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 21, 71, 171, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 21, 71, 171, 255);
 		
 		float flPos[3]; // original
@@ -750,11 +746,11 @@ static void Internal_ClotThink(int iNPC)
 		}
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		npc.StartPathing();
 		//Target close enough to hit
@@ -805,8 +801,12 @@ static void Internal_ClotThink(int iNPC)
 										char classname[32];
 										GetEntityClassname(weapon, classname, 32);
 										
-										int weapon_slot = TF2_GetClassnameSlot(classname);
+										int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
 										
+										if(i_OverrideWeaponSlot[weapon] != -1)
+										{
+											weapon_slot = i_OverrideWeaponSlot[weapon];
+										}
 										if(weapon_slot != 2)
 										{
 											Bonus_damage = 1.5;
@@ -894,8 +894,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

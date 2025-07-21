@@ -16,7 +16,7 @@ static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
 static float g_vecDomeCP[3];
-static float g_flDomePlayerTime[MAXTF2PLAYERS] ={0.0, ...};
+static float g_flDomePlayerTime[MAXPLAYERS] ={0.0, ...};
 static bool g_bDomePlayerOutside[MAXENTITIES] = {false, ...};
 static Handle g_hDomeTimerBleed = null;
 
@@ -49,7 +49,7 @@ void Rogue_Dome_WaveStart(const float pos[3])
 	
 	DispatchSpawn(iDome);
 	
-	SetEntityRenderMode(iDome, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iDome, RENDER_NORMAL);
 	SetEntityRenderColor(iDome, 255, 255, 255, 255);
 	b_IsEntityAlwaysTranmitted[iDome] = true;
 	Hook_DHook_UpdateTransmitState(iDome);

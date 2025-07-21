@@ -163,7 +163,6 @@ methodmap Alt_Medic_Constructor < CClotBody
 		
 		npc.StartPathing();
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 			
 		return npc;
@@ -243,17 +242,17 @@ static void Internal_ClotThink(int iNPC)
 		int PrimaryThreatIndex = npc.m_iTarget;
 		if(IsValidAlly(npc.index, PrimaryThreatIndex))
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
-			if(flDistanceToTarget < 250000)
+			if(flDistanceToTarget < 250000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 			{
 				if(flDistanceToTarget < 62500)
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				else
 				{
@@ -267,20 +266,11 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_bnew_target = true;
 				}
 				
-				if(!NpcStats_IsEnemySilenced(npc.index))
-				{
-					if(IsValidEntity(npc.m_iWearable4))
-					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
-					}
-					HealEntityGlobal(npc.index, PrimaryThreatIndex, 60.0, 1.0);
-				}
-				else
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				}
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
+				if(b_thisNpcIsABoss[PrimaryThreatIndex])
+					MaxHealth = RoundToCeil(float(MaxHealth) * 0.05);
+
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 70), 1.0);
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.FaceTowards(WorldSpaceVec, 2000.0);
@@ -305,14 +295,13 @@ static void Internal_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 		
 			if(IsValidEntity(npc.m_iWearable4))
 				RemoveEntity(npc.m_iWearable4);
 				
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.StopHealing();
 			npc.Healing = false;
 			npc.m_bnew_target = false;
@@ -361,9 +350,9 @@ static void Internal_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -431,8 +420,8 @@ static void Internal_ClotThink(int iNPC)
 		}
 		else
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}

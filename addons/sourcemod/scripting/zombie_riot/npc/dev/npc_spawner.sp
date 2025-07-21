@@ -13,7 +13,7 @@ enum
 	Mode_Damage
 }
 
-static int MenuPos[MAXTF2PLAYERS] = {Mode_None, ...};
+static int MenuPos[MAXPLAYERS] = {Mode_None, ...};
 
 void DevSpawner_MapStart()
 {

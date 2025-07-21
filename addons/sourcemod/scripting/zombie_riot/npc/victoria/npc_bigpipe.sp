@@ -197,10 +197,8 @@ methodmap VictoriaBigpipe < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 255, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -311,17 +309,17 @@ public void VictoriaBigpipe_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 				npc.m_flSpeed = 200.0;
 			}
 			case 1:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 				//Stand still.
 			}
@@ -332,11 +330,11 @@ public void VictoriaBigpipe_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 				npc.m_flSpeed = 300.0;
 			}
@@ -417,7 +415,6 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 						npc.SetWeaponModel("models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl", 1.25);
 						m_iGunType=0;
 						SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
-						SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable1, 50, 150, 255, 255);
 					}
 				
@@ -463,8 +460,8 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 						if(IsValidEnemy(npc.index, target))
 						{
 							float damageDealt = 20.0;
-							if(ZR_Waves_GetRound()+1 > 12)
-								damageDealt *= float(ZR_Waves_GetRound()+1)*0.1;
+							if(Waves_GetRoundScale()+1 > 8)
+								damageDealt *= float(Waves_GetRoundScale()+1)*0.133333;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 

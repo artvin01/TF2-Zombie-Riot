@@ -2,18 +2,18 @@
 #pragma newdecls required
 
 Handle TimerYamatoManagement[MAXPLAYERS+1] = {null, ...};
-static float f_Yamatohuddelay[MAXTF2PLAYERS+1];
+static float f_Yamatohuddelay[MAXPLAYERS+1];
 
-static int i_Yamato_Rainsword_Count[MAXTF2PLAYERS+1];
+static int i_Yamato_Rainsword_Count[MAXPLAYERS+1];
 static int g_particleImpactTornado;
 
-static bool b_mouse2_held[MAXTF2PLAYERS+1];
+static bool b_mouse2_held[MAXPLAYERS+1];
 
-static int b_Yamato_State[MAXTF2PLAYERS+1];
+static int b_Yamato_State[MAXPLAYERS+1];
 
-static float fl_Yamato_Motivation[MAXTF2PLAYERS+1];
+static float fl_Yamato_Motivation[MAXPLAYERS+1];
 
-static float fl_yamato_stats_timer[MAXTF2PLAYERS+1];
+static float fl_yamato_stats_timer[MAXPLAYERS+1];
 
 #define YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN	1.0	//Self explanitory
 #define YAMATO_MAX_RAINSWORD_COUNT 10	//How many maximum swords can exist, blocks the hp scaling from going higher than this
@@ -37,18 +37,18 @@ static float fl_yamato_stats_timer[MAXTF2PLAYERS+1];
 
 #define YAMATO_RAINSWORD_SOUND "weapons/shooting_star_shoot.wav"
 
-static int i_Yamato_Max_Rainsword_Count[MAXTF2PLAYERS+1];
-static float f_Yamato_Rainsword_Reload_Time[MAXTF2PLAYERS+1];
-static float f_Yamato_Rainsword_Damage[MAXTF2PLAYERS+1];
-static float f_Yamato_Rainsword_Cost[MAXTF2PLAYERS+1];
+static int i_Yamato_Max_Rainsword_Count[MAXPLAYERS+1];
+static float f_Yamato_Rainsword_Reload_Time[MAXPLAYERS+1];
+static float f_Yamato_Rainsword_Damage[MAXPLAYERS+1];
+static float f_Yamato_Rainsword_Cost[MAXPLAYERS+1];
 
-static float f_Yamato_Mouse2_attack_delay[MAXTF2PLAYERS+1];
+static float f_Yamato_Mouse2_attack_delay[MAXPLAYERS+1];
 
-static float f_Yamato_Sub_Rainsword_Dmg[MAXTF2PLAYERS+1];
-static float f_Yamato_Sub_Rainsword_Passive_Drain[MAXTF2PLAYERS+1];
+static float f_Yamato_Sub_Rainsword_Dmg[MAXPLAYERS+1];
+static float f_Yamato_Sub_Rainsword_Passive_Drain[MAXPLAYERS+1];
 
-static float f_Yamato_Rainsword_Reload_Timer[MAXTF2PLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
-static float fl_Sprial_Trace_Throttle[MAXTF2PLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
+static float f_Yamato_Rainsword_Reload_Timer[MAXPLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
+static float fl_Sprial_Trace_Throttle[MAXPLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
 
 enum struct Yamato_Blades
 {
@@ -188,7 +188,7 @@ static Action SetTransmitBlades(int entity, int target)
 	return Plugin_Handled;
 }
 
-static Yamato_Blades struct_Yamato_Blades[MAXTF2PLAYERS][YAMATO_MAX_RAINSWORD_COUNT+1];
+static Yamato_Blades struct_Yamato_Blades[MAXPLAYERS][YAMATO_MAX_RAINSWORD_COUNT+1];
 
 public void Npc_OnTakeDamage_Yamato(int client, int damagetype)
 {
@@ -252,7 +252,7 @@ public void Yamato_Start_M2(int client, int weapon, bool crit, int slot)
 
 }
 
-static float fl_spiral_angle[MAXTF2PLAYERS+1];
+static float fl_spiral_angle[MAXPLAYERS+1];
 
 static void Yamato_Rainsword_Skill_2_Loop(int client)
 {

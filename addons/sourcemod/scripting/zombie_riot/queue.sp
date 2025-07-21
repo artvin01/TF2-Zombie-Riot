@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool AddedPoint[MAXTF2PLAYERS];
+static bool AddedPoint[MAXPLAYERS];
 
 void Queue_PutInServer(int client)
 {
@@ -162,7 +162,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 				{
 					if(IsValidClient(client))
 					{
-						ChangeClientTeam(client, 1);
+						SetTeam(client, 1);
 						Queue_Menu(client);
 					}
 				}
@@ -180,7 +180,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 									Queue_Menu(client);
 									if(GetClientTeam(client) != 2)
 									{
-										ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+										SetTeam(client, view_as<int>(TFTeam_Red));
 										ShowVGUIPanel(client, "class_red");
 									}
 									return 0;
@@ -188,7 +188,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 							}
 						}
 						
-						ChangeClientTeam(client, view_as<int>(TFTeam_Red));
+						SetTeam(client, view_as<int>(TFTeam_Red));
 						if(IsPlayerAlive(client))
 							ForcePlayerSuicide(client);
 						
@@ -237,7 +237,7 @@ bool Queue_JoinTeam(int client)
 			if(++count >= CalcMaxPlayers())
 			{
 				WaitingInQueue[client] = true;
-				ChangeClientTeam(client, 2);
+				SetTeam(client, 2);
 				PrintCenterText(client, "Server is Full: You will now join when a slot is available");
 				return false;
 			}
@@ -282,7 +282,7 @@ void Queue_ClientDisconnect(int client)
 		if(IsPlayerAlive(target))
 			ForcePlayerSuicide(target);
 		
-		ChangeClientTeam(target, view_as<int>(TFTeam_Red));
+		SetTeam(target, view_as<int>(TFTeam_Red));
 		ShowVGUIPanel(target, "class_red");
 		PlayStreak[client] = 1;
 	}

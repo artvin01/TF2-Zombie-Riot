@@ -33,27 +33,27 @@ int BaseMaxLevel;
 ConVar mp_disable_respawn_times;
 ConVar CvarSkyName;
 
-bool DisabledDownloads[MAXTF2PLAYERS];
+bool DisabledDownloads[MAXPLAYERS];
 
-int RaceIndex[MAXTF2PLAYERS];
-int i_TransformationSelected[MAXTF2PLAYERS];
-int i_TransformationLevel[MAXTF2PLAYERS];
-float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
+int RaceIndex[MAXPLAYERS];
+int i_TransformationSelected[MAXPLAYERS];
+int i_TransformationLevel[MAXPLAYERS];
+float f_TransformationDelay[MAXPLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
 
 char StoreWeapon[MAXENTITIES][48];
-int i_TagColor[MAXTF2PLAYERS][4];
-char c_TagName[MAXTF2PLAYERS][64];
+int i_TagColor[MAXPLAYERS][4];
+char c_TagName[MAXPLAYERS][64];
 int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
-float Animal_Happy[MAXTF2PLAYERS][10][3];
+float Animal_Happy[MAXPLAYERS][10][3];
 float f3_PositionArrival[MAXENTITIES][3];
 int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 
 int b_PlayerIsPVP[MAXENTITIES];
-int i_CurrentStamina[MAXTF2PLAYERS];
-int i_MaxStamina[MAXTF2PLAYERS];
-float f_ClientTargetedByNpc[MAXTF2PLAYERS];
-float f_MasteryTextHint[MAXTF2PLAYERS];
+int i_CurrentStamina[MAXPLAYERS];
+int i_MaxStamina[MAXPLAYERS];
+float f_ClientTargetedByNpc[MAXPLAYERS];
+float f_MasteryTextHint[MAXPLAYERS];
 
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
@@ -72,14 +72,14 @@ int Agility[MAXENTITIES];
 int Luck[MAXENTITIES];
 int ArmorCorrosion[MAXENTITIES];
 
-float f_ClientSinceLastHitNpc[MAXENTITIES][MAXTF2PLAYERS];
+float f_ClientSinceLastHitNpc[MAXENTITIES][MAXPLAYERS];
 float f_FlatDamagePiercing[MAXENTITIES];
 
 //CC CONTRACT DIFFICULTIES!
-bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
-bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
-bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
-//bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
+bool b_DungeonContracts_LongerCooldown[MAXPLAYERS];
+bool b_DungeonContracts_SlowerAttackspeed[MAXPLAYERS];
+bool b_DungeonContracts_SlowerMovespeed[MAXPLAYERS];
+//bool b_DungeonContracts_BleedOnHit[MAXPLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES];
 
 static char MapConfig[64];
@@ -556,11 +556,11 @@ static void HudSettings_ClientCookiesCached(int client)
 	if(buffer[0])
 	{
 		// Cookie has stuff, get values
-		bool buffers[3];
+		int buffers[3];
 		ExplodeStringInt(buffer, ";", buffers, sizeof(buffers));
-		b_HudScreenShake[client] = buffers[0];
-		b_HudLowHealthShake_UNSUED[client] = buffers[1];
-		b_HudHitMarker[client] = buffers[2];
+		b_HudScreenShake[client] = view_as<bool>(buffers[0]);
+		b_HudLowHealthShake_UNSUED[client] = view_as<bool>(buffers[1]);
+		b_HudHitMarker[client] = view_as<bool>(buffers[2]);
 	}
 	else
 	{
@@ -990,7 +990,7 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	f_Stats_GetCurrentFormMastery = RPGStats_FlatDamageSetStats(client, 0, RoundToNearest(CombinedDamages));
 
 	//only a 5% chance!
-	int GrantGuranteed[MAXTF2PLAYERS];
+	int GrantGuranteed[MAXPLAYERS];
 
 	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
 	{

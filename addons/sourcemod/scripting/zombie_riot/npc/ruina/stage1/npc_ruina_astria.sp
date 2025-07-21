@@ -161,7 +161,7 @@ methodmap Astria < CClotBody
 	
 	public Astria(float vecPos[3], float vecAng[3], int ally)
 	{
-		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
+		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally, _,_,true));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -309,7 +309,7 @@ static void ClotThink(int iNPC)
 
 		//Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
 
-		Master_Apply_Defense_Buff(npc.index, 300.0, 15.0, 0.10);	//10% resistances
+		Master_Apply_Defense_Buff(npc.index, 300.0, 15.0, 0.9);	//10% resistances
 		//a long lasting defense buff.
 
 		Ruina_Master_Release_Slaves(npc.index);
@@ -321,8 +321,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -406,15 +406,15 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 

@@ -185,7 +185,6 @@ methodmap Iberiainqusitor_irene < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
 
 		return npc;
@@ -242,11 +241,11 @@ public void Iberiainqusitor_irene_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 				npc.m_flSpeed = 345.0;
 				npc.m_bAllowBackWalking = false;
@@ -256,7 +255,7 @@ public void Iberiainqusitor_irene_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 				npc.m_flSpeed = 300.0;
 			}
 		}
@@ -328,7 +327,7 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 9;
 				npc.SetActivity("ACT_MP_CROUCH_MELEE");
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 			}	
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, _, 90, _, 0.85);
@@ -670,7 +669,7 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 11;
 					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_flSpeed = 0.0;
 				}	
 			}
@@ -687,7 +686,7 @@ float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
-		damage *= 1.45;
+		damage *= 2.5;
 	}
 	if(b_ThisWasAnNpc[victim])
 		PluginBot_Jump(victim, {0.0,0.0,1000.0});

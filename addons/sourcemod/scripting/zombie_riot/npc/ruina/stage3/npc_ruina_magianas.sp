@@ -323,14 +323,10 @@ static void ClotThink(int iNPC)
 					if(IsValidEntity(Proj))
 					{
 						Projectile.Apply_Particle("raygun_projectile_blue");
-						Projectile.Size = 2.0;
+						Projectile.Size = 1.0;
 						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_1);
 						if(IsValidEntity(ModelApply))
 						{
-							float angles[3];
-							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-							angles[1]+=90.0;
-							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 							SetVariantInt(RUINA_ICBM);
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
@@ -364,22 +360,22 @@ static void ClotThink(int iNPC)
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}		
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}
 
@@ -459,8 +455,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

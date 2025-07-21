@@ -5,6 +5,11 @@
 
 public void Kritzkrieg_OnMapStart()
 {
+	PrecacheSound("player/invuln_on_vaccinator.wav");
+	PrecacheSound("player/mannpower_invulnerable.wav");
+}
+public void Kritzkrieg_PluginStart()
+{
 	HookEvent("player_chargedeployed", OnKritzkriegDeployed);
 }
 
@@ -26,50 +31,31 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 			Continune = true;
 		}
 	}
-	if(!Continune)
-		return;
-
-	CreateTimer(0.1, Timer_Kritzkrieg, EntIndexToEntRef(medigun), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	GiveMedigunBuffUber(medigun, client, client);
 	int target = GetHealingTarget(client);
+	if(IsValidAlly(client, target))
+	{
+		GiveMedigunBuffUber(medigun, client, target);
+	}
+	if(!Continune)
+	{
+		if(IsValidEntity(target) && IsValidClient(target))
+			EmitSoundToClient(target, "player/invuln_on_vaccinator.wav", target, SNDCHAN_AUTO, 65, _, 0.6);
+
+		EmitSoundToAll("player/invuln_on_vaccinator.wav", client, SNDCHAN_AUTO, 65, _, 0.6);
+		return;
+	}
+	if(IsValidEntity(target) && IsValidClient(target))
+		EmitSoundToClient(target, "player/mannpower_invulnerable.wav", target, SNDCHAN_AUTO, 65, _, 0.6);
+
+	EmitSoundToAll("player/mannpower_invulnerable.wav", client, SNDCHAN_AUTO, 65, _, 0.6);
+
 	if(IsValidClient(target) && IsPlayerAlive(target)) 
 	{
-		GiveArmorViaPercentage(target, 0.5, 1.0);
+		GiveArmorViaPercentage(target, 0.5, 1.0,_,_,client);
 	}
-	GiveArmorViaPercentage(client, 0.5, 1.0);
+	GiveArmorViaPercentage(client, 0.5, 1.0,_,_,client);
 }
-
-static Action Timer_Kritzkrieg(Handle timer, any medigunid)
-{
-	int medigun = EntRefToEntIndex(medigunid);
-	if(!IsValidEntity(medigun))
-		return Plugin_Stop;
-	int client = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(client))
-		return Plugin_Stop;
-	int target = GetHealingTarget(client);
-	float charge = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-
-	if((!IsValidClient(client) && !IsPlayerAlive(client)) || charge <= 0.05)
-		return Plugin_Stop;
-
-	if(IsValidClient(target) && IsPlayerAlive(target))
-	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
-		Kritzkrieg_Magical(target, 0.05, true);
-	}
-	else if(target != INVALID_ENT_REFERENCE && IsEntityAlive(target) && GetTeam(client) == GetTeam(target))
-	{
-		ApplyStatusEffect(client, target, "Weapon Overclock", 1.0);
-	}
-	
-	if(IsValidClient(client) && IsPlayerAlive(client))
-	{
-		ApplyStatusEffect(client, client, "Weapon Overclock", 1.0);
-		Kritzkrieg_Magical(client, 0.05, true);
-	}
-	return Plugin_Continue;
-}
-
 static int GetHealingTarget(int client)
 {
 	int medigun;
@@ -97,7 +83,7 @@ static int GetHealingTarget(int client)
 	return -1;
 }
 
-static void Kritzkrieg_Magical(int client, float Scale, bool apply)
+void Kritzkrieg_Magical(int client, float Scale, bool apply)
 {
 	int entity, i;
 	bool HasMageWeapon;

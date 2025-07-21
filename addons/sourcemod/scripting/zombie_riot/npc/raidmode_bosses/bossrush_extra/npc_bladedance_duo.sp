@@ -189,10 +189,8 @@ methodmap RaidbossBladedance_Duo < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 55, 55, 255);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 55, 55, 255);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -226,7 +224,7 @@ public void RaidbossBladedance_Duo_ClotThink(int iNPC)
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 	}
 

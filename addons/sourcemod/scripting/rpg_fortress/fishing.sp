@@ -51,12 +51,12 @@ static int DrawNum;
 static StringMap PlaceList;
 static StringMap FishList;
 static ArrayList PoolList;
-static float f_ClientWasFishingDelayCheck[MAXTF2PLAYERS];
-static float f_ClientWasPreviouslyFishing[MAXTF2PLAYERS];
-static float FishingRate[MAXTF2PLAYERS] = {1.0, ...};
-static int FishingTier[MAXTF2PLAYERS];
-static int Desired_FishingTier[MAXTF2PLAYERS];
-static char CurrentFishing[MAXTF2PLAYERS][32];
+static float f_ClientWasFishingDelayCheck[MAXPLAYERS];
+static float f_ClientWasPreviouslyFishing[MAXPLAYERS];
+static float FishingRate[MAXPLAYERS] = {1.0, ...};
+static int FishingTier[MAXPLAYERS];
+static int Desired_FishingTier[MAXPLAYERS];
+static char CurrentFishing[MAXPLAYERS][32];
 
 static int g_FishCaughtParticle;
 static int g_FishCaughtText;
@@ -610,10 +610,10 @@ public void Fishing_RodM2(int client, int weapon)
 	PrintHintText(client,"These fish apear at your current desired tier: [%i]", Desired_FishingTier[client]);
 }
 
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentRarityEditing[MAXTF2PLAYERS][64];
-static char CurrentSectionEditing[MAXTF2PLAYERS][64];
-static int CurrentMenuEditing[MAXTF2PLAYERS];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentRarityEditing[MAXPLAYERS][64];
+static char CurrentSectionEditing[MAXPLAYERS][64];
+static int CurrentMenuEditing[MAXPLAYERS];
 
 void Fishing_EditorMenu(int client)
 {

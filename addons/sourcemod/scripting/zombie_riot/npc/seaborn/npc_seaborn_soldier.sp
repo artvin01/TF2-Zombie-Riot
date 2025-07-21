@@ -113,7 +113,6 @@ methodmap SeabornSoldier < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl");
@@ -163,11 +162,11 @@ public void SeabornSoldier_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();
@@ -193,9 +192,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 						{
 							int health = ReturnEntityMaxHealth(npc.index);
 
-							bool regrow = true;
-							Building_CamoOrRegrowBlocker(npc.index, _, regrow);
-							if(regrow)
+							if(!HasSpecificBuff(npc.index, "Growth Blocker"))
 								SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 							
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

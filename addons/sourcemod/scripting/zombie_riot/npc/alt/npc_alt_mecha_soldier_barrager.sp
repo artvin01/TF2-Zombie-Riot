@@ -172,13 +172,10 @@ methodmap MechaSoldier_Barrager < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 100, 100, 255);
 		
 		
@@ -228,8 +225,8 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.PlayIdleAlertSound();
@@ -281,7 +278,7 @@ static void Internal_ClotThink(int iNPC)
 			
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			
-			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.SetGoalVector(vBackoffPos, true);
 		}
 	}
 	else if(flDistanceToTarget < 120000 && npc.m_iAmmo>0)
@@ -337,11 +334,11 @@ static void Internal_ClotThink(int iNPC)
 		TE_SendToAllInRange(vecTarget, RangeType_Visibility);
 		*/
 		
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	}
 	else
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 	}
 }
 

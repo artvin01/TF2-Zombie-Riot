@@ -3,9 +3,9 @@
 #define SAGA_ABILITY_3	"npc/waste_scanner/grenade_fire.wav"
 
 //NA GO GOHOM
-static Handle WeaponTimer[MAXTF2PLAYERS];
-static int WeaponRef[MAXTF2PLAYERS];
-static int WeaponCharge[MAXTF2PLAYERS];
+static Handle WeaponTimer[MAXPLAYERS];
+static int WeaponRef[MAXPLAYERS];
+static int WeaponCharge[MAXPLAYERS];
 static float SagaCrippled[MAXENTITIES + 1];
 static int SagaCrippler[MAXENTITIES + 1];
 static bool SagaRegen[MAXENTITIES];

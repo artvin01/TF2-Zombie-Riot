@@ -145,7 +145,7 @@ methodmap MedivalVillager < CClotBody
 	
 	public MedivalVillager(float vecPos[3], float vecAng[3], int ally)
 	{
-		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(50), ally));
+		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(50.0), ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -189,9 +189,9 @@ methodmap MedivalVillager < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 	
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -200,7 +200,7 @@ methodmap MedivalVillager < CClotBody
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 
 		if(!zr_disablerandomvillagerspawn.BoolValue)
 		{
@@ -346,9 +346,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			//Go repair!
 			if(!b_AlreadyReparing[npc.index])
 			{
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					b_AlreadyReparing[npc.index] = true;
 					Behavior = 2;
@@ -399,15 +397,15 @@ public void MedivalVillager_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_VILLAGER_IDLE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+					view_as<CClotBody>(iNPC).StartPathing();
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;
@@ -423,8 +421,8 @@ public void MedivalVillager_ClotThink(int iNPC)
 				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
 				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
 				
-				NPC_SetGoalEntity(npc.index, buildingentity);
-				NPC_StartPathing(iNPC);
+				npc.SetGoalEntity(buildingentity);
+				view_as<CClotBody>(iNPC).StartPathing();
 				//Walk to building.
 				if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, buildingentity))
 				{
@@ -444,7 +442,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_VILLAGER_IDLE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 			}
@@ -456,7 +454,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_VILLAGER_IDLE");
-					NPC_StopPathing(iNPC);
+					view_as<CClotBody>(iNPC).StopPathing();
 				}
 			}
 		}
@@ -480,7 +478,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 						{
 							npc.m_iChanged_WalkCycle = 3;
 							npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
-							NPC_StopPathing(iNPC);
+							view_as<CClotBody>(iNPC).StopPathing();
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
 						}
@@ -491,8 +489,8 @@ public void MedivalVillager_ClotThink(int iNPC)
 					{
 						float AproxRandomSpaceToWalkTo[3];
 						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-						NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+						view_as<CClotBody>(iNPC).StartPathing();
 						//Walk to building.
 						if(npc.m_iChanged_WalkCycle != 4) 	
 						{
@@ -516,8 +514,8 @@ public void MedivalVillager_ClotThink(int iNPC)
 				
 				if(IsValidEnemy(npc.index,npc.m_iTarget))
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-					NPC_StartPathing(iNPC);
+					npc.SetGoalEntity(npc.m_iTarget);
+					view_as<CClotBody>(iNPC).StartPathing();
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_bisWalking = true;
@@ -534,7 +532,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_VILLAGER_IDLE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 
@@ -614,6 +612,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_medival_building", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
 					if(b_StaticNPC[spawn_index])
 						AddNpcToAliveList(spawn_index, 1);
@@ -645,14 +644,12 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_VILLAGER_BUILD_LOOP");
-					NPC_StopPathing(iNPC);
+					view_as<CClotBody>(iNPC).StopPathing();
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
 				}
 
-				bool regrow = true;
-				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
-				if(regrow)
+				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
 				{
 					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
 					int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
@@ -680,8 +677,8 @@ public void MedivalVillager_ClotThink(int iNPC)
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-				NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-				NPC_StartPathing(iNPC);
+				view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+				view_as<CClotBody>(iNPC).StartPathing();
 				//Walk to building.
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -711,13 +708,13 @@ public void MedivalVillager_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
-				NPC_StartPathing(iNPC);
+				view_as<CClotBody>(iNPC).StartPathing();
 				//Walk to building.
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -735,7 +732,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 					npc.m_flSpeed = 0.0;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_VILLAGER_IDLE");
-					NPC_StopPathing(iNPC);
+					view_as<CClotBody>(iNPC).StopPathing();
 				}
 			}
 		}
@@ -829,7 +826,7 @@ void VillagerSelfDefense(MedivalVillager npc, float gameTime)
 		}
 		else
 		{
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}	

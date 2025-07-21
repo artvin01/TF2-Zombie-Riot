@@ -183,11 +183,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 		
 		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.7))
@@ -252,7 +252,7 @@ static void ClotThink(int iNPC)
 
 			if(flDistanceToTarget > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.7))
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				return;

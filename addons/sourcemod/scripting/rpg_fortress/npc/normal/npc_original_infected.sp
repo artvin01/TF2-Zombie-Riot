@@ -192,7 +192,6 @@ methodmap OriginalInfected < CClotBody
 		{
 			npc.m_iOverlordComboAttack = 1;
 		}
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_skullbat/c_skullbat.mdl");
@@ -211,19 +210,15 @@ methodmap OriginalInfected < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
 
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		npc.Anger = false;
 		
 		return npc;
@@ -354,11 +349,11 @@ public void OriginalInfected_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -440,8 +435,8 @@ public void OriginalInfected_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextRangedSpecialAttack = gameTime + 10.5;
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 				else
 				{
@@ -473,8 +468,8 @@ public void OriginalInfected_ClotThink(int iNPC)
 					npc.m_flNextRangedAttack = gameTime + 7.5;
 
 					npc.m_bisWalking = false;
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 			}
 		}
@@ -745,19 +740,14 @@ public void OriginalInfected_OnTakeDamagePost(int victim, int attacker, int infl
 		{
 			fl_Extra_Damage[victim] *= 2.0;
 			fl_Extra_Speed[victim] *= 1.1;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable5, 255, 0, 0, 255);
 			IgniteTargetEffect(npc.m_iWearable1);
 		}

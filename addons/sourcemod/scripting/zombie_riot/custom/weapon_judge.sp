@@ -4,9 +4,9 @@
 #define JUDGE_MAX_CLIP 5
 
 Handle h_TimerJudgeManagement[MAXPLAYERS+1] = {null, ...};
-static float f_JudgeHudDelay[MAXTF2PLAYERS];
-static bool b_JudgeFullAmmoSound[MAXTF2PLAYERS];
-static int i_TraurusJudge[MAXTF2PLAYERS];
+static float f_JudgeHudDelay[MAXPLAYERS];
+static bool b_JudgeFullAmmoSound[MAXPLAYERS];
+static int i_TraurusJudge[MAXPLAYERS];
 
 void Judge_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
@@ -166,7 +166,7 @@ float GetJudgeReloadCooldown(float cooldown, int client)
 	float returncooldown;
 	returncooldown = cooldown;
 
-	if(i_CurrentEquippedPerk[client] == 4) //speed cola
+	if(i_CurrentEquippedPerk[client] == 4)
 		returncooldown *= 0.65;
 
 	return returncooldown;

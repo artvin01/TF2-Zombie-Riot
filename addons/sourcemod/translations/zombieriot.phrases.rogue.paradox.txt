@@ -648,7 +648,7 @@
 	}
 	"Ancient Vuntulum Silver Coin Desc"
 	{
-		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 6s when a wave starts"
+		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 15s when a wave starts"
 	}
 	"Bank of Vunt Check"
 	{
@@ -656,7 +656,7 @@
 	}
 	"Bank of Vunt Check Desc"
 	{
-		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 9s when a wave starts"
+		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 25s when a wave starts"
 	}
 	"Second Economic Reform Act"
 	{
@@ -664,7 +664,7 @@
 	}
 	"Second Economic Reform Act Desc"
 	{
-		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 12s when a wave starts"
+		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 500s when a wave starts"
 	}
 	"String Puppet"
 	{
@@ -753,9 +753,12 @@
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
-		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 50 Chaos Affliction."
+		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 10 Chaos Affliction."
 	}
-
+	"Terrible Nightmare"
+	{
+		"en"	"Terrible Nightmare"
+	}
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"

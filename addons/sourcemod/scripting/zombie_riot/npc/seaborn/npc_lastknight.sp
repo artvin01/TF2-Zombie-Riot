@@ -207,7 +207,6 @@ public void LastKnight_ClotThink(int iNPC)
 			SetVariantString("1.1");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable6, 55, 55, 55, 255);
 		}
 		return;
@@ -395,11 +394,11 @@ public void LastKnight_ClotThink(int iNPC)
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos, true);
+				npc.SetGoalVector(vPredictedPos, true);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}
 
 			npc.StartPathing();

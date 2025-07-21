@@ -195,7 +195,6 @@ methodmap XenoAcclaimedSwordsman < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoAcclaimedSwordsman_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoAcclaimedSwordsman_ClotThink;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 255, 100, 255);
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -212,19 +211,16 @@ methodmap XenoAcclaimedSwordsman < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 255, 100, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/spr17_flash_of_inspiration/spr17_flash_of_inspiration.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 255, 50, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/pyro/hero_academy_pyro/hero_academy_pyro.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 100, 255, 100, 255);
 
 		npc.StartPathing();
@@ -261,7 +257,6 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 	{
 		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
 		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 50, 255, 50, 255);
 		}
 		else
@@ -403,11 +398,11 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -446,7 +441,7 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 320.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -476,7 +471,7 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				//how long do they do their pulse attack barrage?
@@ -510,7 +505,6 @@ public Action XenoAcclaimedSwordsman_OnTakeDamage(int victim, int &attacker, int
 			fl_TotalArmor[victim] = 0.0;
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.5;
 			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 50, 50, 255);
 		}
 	}

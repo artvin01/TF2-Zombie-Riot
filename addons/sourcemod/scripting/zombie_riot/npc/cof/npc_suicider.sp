@@ -235,19 +235,19 @@ public void Suicider_ClotThink(int iNPC)
 		/*if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else*/
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		
 		Suicider_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -318,7 +318,7 @@ static void Suicider_SelfDefense(Suicider npc, float gameTime, int target, float
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.85;
 				npc.m_flSpeed = npc.b_Nightmare ? fl_DefaultSpeed_Suicider_Nightmare: fl_DefaultSpeed_Suicider;
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 			}
@@ -344,8 +344,8 @@ static void Suicider_SelfDefense(Suicider npc, float gameTime, int target, float
 			
 				if(npc.m_bPathing)
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 			}
 		}

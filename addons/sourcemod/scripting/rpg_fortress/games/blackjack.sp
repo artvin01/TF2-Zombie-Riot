@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int Hands[MAXTF2PLAYERS][2][12];
-static int Dealer[MAXTF2PLAYERS][12];
-static int CurrentBet[MAXTF2PLAYERS];
-static ArrayList CurrentDeck[MAXTF2PLAYERS];
+static int Hands[MAXPLAYERS][2][12];
+static int Dealer[MAXPLAYERS][12];
+static int CurrentBet[MAXPLAYERS];
+static ArrayList CurrentDeck[MAXPLAYERS];
 
 void Games_Blackjack(int client, bool results = false)
 {

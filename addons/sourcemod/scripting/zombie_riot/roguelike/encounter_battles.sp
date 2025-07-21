@@ -29,6 +29,28 @@ public float Rogue_Encounter_OptionalBattle()
 	return 25.0;
 }
 
+public float Rogue_Encounter_OptionalBattle_Nightmare()
+{
+	Rogue_SetBattleIngots(8);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Nightmare Battle Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Stay and find out who is causing it");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	vote.Config[0] = 1;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Pinch yourself awake");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
 public float Rogue_Encounter_HardBattle()
 {
 	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));

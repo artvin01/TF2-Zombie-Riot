@@ -279,10 +279,18 @@ methodmap OmegaRaid < CClotBody
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 100);	
 
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
+		if(item)
+		{
+			RaidModeTime = GetGameTime(npc.index) + 240.0;
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 200.0;
+		}
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		npc.m_bWasSadAlready = false;
+		npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 7.5;
 
 		AlreadySaidWin = false;
 		
@@ -333,16 +341,16 @@ methodmap OmegaRaid < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		float amount_of_people = float(CountPlayersOnRed());
 		
@@ -410,6 +418,9 @@ static void RocketBarrage_Ability(OmegaRaid npc, int target)
 			//pos[2] += 5.0;
 			//float ang_Look[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang_Look);
 			npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 30.0;
+			if(npc.Anger)
+				ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.0);
+
 			if(!IsValidEntity(npc.m_iWearable8))
 			{
 				float flAng[3];
@@ -437,7 +448,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(npc.m_flAttackHappens < GetGameTime(npc.index))
 			{
 				int TargetEnemy = false;
@@ -457,7 +468,7 @@ static bool Omega_AirAttack(OmegaRaid npc)
 
 					npc.AddGesture("ACT_RANGE_ATTACK_RPG",_,_,_, 2.0);
 					int PrimaryThreatIndex = npc.m_iTarget;
-					float DamageCalc = 40.0 * RaidModeScaling;
+					float DamageCalc = 30.0 * RaidModeScaling;
 					float VecEnemy[3]; WorldSpaceCenter(TargetEnemy, VecEnemy);
 					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					npc.FaceTowards(VecEnemy, 150.0);
@@ -626,11 +637,11 @@ public void OmegaRaid_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
@@ -841,6 +852,7 @@ static Action OmegaRaid_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			CPrintToChatAll("{gold}Omega{default}: God damn it! Just die already!");
 		}
 		npc.Anger = true;
+		ApplyStatusEffect(npc.index, npc.index, "Combine Command", 10.0);
 		ParticleEffectAt(vecTarget, "hammer_bell_ring_shockwave", 1.0);
 	}
 	OmegaRaid_Weapon_Lines(npc, attacker);
@@ -1346,7 +1358,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 
 static void OmegaRaid_GrantItem()
 {
-	for (int client = 0; client < MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
@@ -1364,8 +1376,8 @@ void OmegaRaid_DefeatAnimation(OmegaRaid npc)
 	int iActivity = npc.LookupActivity("ACT_IDLE_IMPATIENT");
 	if(iActivity > 0) npc.StartActivity(iActivity);
 	npc.SetActivity("ACT_IDLE_IMPATIENT");
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 	npc.m_flSpeed = 0.0;
 	//npc.SetCycle(0.50);//why
 	//npc.SetPlaybackRate(1.0);	

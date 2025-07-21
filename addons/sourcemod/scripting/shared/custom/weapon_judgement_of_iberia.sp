@@ -21,16 +21,16 @@
 #define IRENE_KICKUP_1 "mvm/giant_soldier/giant_soldier_rocket_shoot.wav"
 
 Handle h_TimerIreneManagement[MAXPLAYERS+1] = {null, ...};
-static float f_Irenehuddelay[MAXTF2PLAYERS];
-static int i_IreneHitsDone[MAXTF2PLAYERS];
+static float f_Irenehuddelay[MAXPLAYERS];
+static int i_IreneHitsDone[MAXPLAYERS];
 static bool b_WeaponAttackSpeedModifiedSeaborn[MAXENTITIES];
-static int i_IreneTargetsAirborn[MAXTF2PLAYERS][IRENE_MAX_HITUP];
+static int i_IreneTargetsAirborn[MAXPLAYERS][IRENE_MAX_HITUP];
 static float f_TargetAirtime[MAXENTITIES];
 static float f_TargetAirtimeDelayHit[MAXENTITIES];
 static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_IreneNpcWasShotUp[MAXENTITIES];
-static int i_RefWeaponDelete[MAXTF2PLAYERS];
-static float f_WeaponDamageCalculated[MAXTF2PLAYERS];
+static int i_RefWeaponDelete[MAXPLAYERS];
+static float f_WeaponDamageCalculated[MAXPLAYERS];
 static bool b_SeabornDetected;
 
 static int LaserSprite;

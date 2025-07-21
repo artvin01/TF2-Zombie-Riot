@@ -636,7 +636,6 @@ methodmap GogglesFollower < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		WaldchEarsApply(npc.index,_, 0.75);
 
@@ -781,7 +780,7 @@ static void ClotThink(int iNPC)
 			{
 				// Run to ally target, ignore enemies
 				npc.SetActivity("ACT_MP_RUN_ITEM2");
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 				target = -1;
 			}
@@ -794,7 +793,7 @@ static void ClotThink(int iNPC)
 		else
 		{
 			// Walk to ally target
-			NPC_SetGoalEntity(npc.index, ally);
+			npc.SetGoalEntity(ally);
 			npc.StartPathing();
 		}
 
@@ -961,11 +960,11 @@ static void ClotFinalThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.m_flSpeed = 340.0;

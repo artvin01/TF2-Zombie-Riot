@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 static KeyValues SaveKv;
-static char CharacterId[MAXTF2PLAYERS][32];
+static char CharacterId[MAXPLAYERS][32];
 #define MAX_CHARACTER_SLOTS 5 
 
 void Saves_PluginStart()
@@ -86,7 +86,7 @@ static void EnableCharacter(int client, const char[] id)
 		if(kv.JumpToKey(id))
 		{
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
-			ChangeClientTeam(client, TFTeam_Red);
+			SetTeam(client, TFTeam_Red);
 			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
 			RaceIndex[client] = kv.GetNum("race");
 
@@ -230,7 +230,7 @@ static void SaveCharacter(int client, bool remove)
 		if(IsClientInGame(client) && IsPlayerAlive(client))
 		{
 			ForcePlayerSuicide(client);
-			ChangeClientTeam(client, TFTeam_Spectator);
+			SetTeam(client, TFTeam_Spectator);
 		}
 	}
 }
@@ -438,7 +438,7 @@ static int CharacterMenuH(Menu menuaaaa, MenuAction action, int client, int choi
 						}
 						else
 						{
-							ChangeClientTeam(client, TFTeam_Red);
+							SetTeam(client, TFTeam_Red);
 						}
 					}
 				}
@@ -656,7 +656,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
 
 				FormatEx(buffer1, sizeof(buffer1), "Race: %s", race.Name);
-				menu.AddItem(id, buffer1, (level > 99 && !CvarRPGInfiniteLevelAndAmmo.BoolValue) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(id, buffer1, (level > 199 && !CvarRPGInfiniteLevelAndAmmo.BoolValue) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 				kv.GetString("model", buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Outfit: %s", buffer2);

@@ -419,11 +419,11 @@ public void Spotter_ClotThink(int iNPC)
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, target);
+				npc.SetGoalEntity(target);
 			}
 	
 			npc.StartPathing();
@@ -450,7 +450,7 @@ public void Spotter_ClotThink(int iNPC)
 			npc.m_flSpeed = 420.0;
 			if(flDistanceToTarget > 25000.0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 				npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 				return;
@@ -679,7 +679,7 @@ void SpotterAllyBuff(Spotter npc)
 		}
 	}
 
-	for (int client = 0; client < MaxClients; client++)
+	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && IsPlayerAlive(client))
 		{

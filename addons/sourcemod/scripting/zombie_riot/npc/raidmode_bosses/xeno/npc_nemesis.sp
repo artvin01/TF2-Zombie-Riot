@@ -75,7 +75,6 @@ static char g_HappySounds[][] =
 };
 
 
-#define NEMESIS_MODEL "models/zombie_riot/bosses/nemesis_ft1_v6.mdl"
 #define INFECTION_MODEL "models/weapons/w_bugbait.mdl"
 #define INFECTION_RANGE 150.0
 
@@ -86,10 +85,12 @@ float InfectionDelay()
 	
 	return 0.8;
 }
+// NAME IS OLD AND UNUSED FROM NEMESIS!!
+//too lazy to replace all files, aint doing it.
 void RaidbossNemesis_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Nemesis");
+	strcopy(data.Name, sizeof(data.Name), "Calmaticus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_nemesis");
 	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
 	data.IconCustom = true;
@@ -111,9 +112,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	PrecacheModel(INFECTION_MODEL);
-	PrecacheModel(NEMESIS_MODEL);
 	PrecacheSound("weapons/cow_mangler_explode.wav");
-	PrecacheSoundCustom("#zombie_riot/320_now_1.mp3");
+	PrecacheSoundCustom("#zombiesurvival/xeno_raid/genesis_of_the_virus.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -149,7 +149,7 @@ methodmap RaidbossNemesis < CClotBody
 	}
 	public void PlayRangedSoundMinigun()
 	{
-		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5,65);
+		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_WEAPON, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.5,110);
 	}
 	public void PlayRangedSpecialSound()
 	{
@@ -183,20 +183,19 @@ methodmap RaidbossNemesis < CClotBody
 	{
 		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+
 	public RaidbossNemesis(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, NEMESIS_MODEL, "2.25", "20000000", ally, false, true, true,true)); //giant!
+		RaidbossNemesis npc = view_as<RaidbossNemesis>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "2.0", "20000000", ally, false, true, true,true)); //giant!
 		
-		//model originally from Roach, https://steamcommunity.com/sharedfiles/filedetails/?id=2053348633&searchtext=nemesis
-
-		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.SetActivity("ACT_CALMATICUS_RUN");
 		
 		
 		func_NPCDeath[npc.index] = RaidbossNemesis_NPCDeath;
@@ -219,6 +218,7 @@ methodmap RaidbossNemesis < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
+		fl_TotalArmor[npc.index] = 0.8;
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -233,13 +233,21 @@ methodmap RaidbossNemesis < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Nemesis Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Calmaticus Arrived.");
 			}
 		}
 		b_thisNpcIsARaid[npc.index] = true;
 		RemoveAllDamageAddition();
 
-		Music_SetRaidMusicSimple("#zombie_riot/320_now_1.mp3", 200, true, 1.3);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/xeno_raid/genesis_of_the_virus.mp3");
+		music.Time = 185;
+		music.Volume = 1.3;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Genesis of the void");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+		Music_SetRaidMusic(music);
+
 		RaidModeScaling = 0.0;
 		Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "??????????????????????????????????");
 		WavesUpdateDifficultyName();
@@ -269,14 +277,17 @@ methodmap RaidbossNemesis < CClotBody
 		fl_StopDodgeCD[npc.index] = GetGameTime(npc.index) + 25.0;
 		if(XenoExtraLogic())
 		{
-			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Nemesis");
-			CPrintToChatAll("{green}Nemesis: ... NGHRRRRR....");
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
+			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS:");
 		}
 		else
 		{
-			CPrintToChatAll("{green}Nemesis: S.T.A.R.S ...");
+			CPrintToChatAll("{green}Calmaticus: You all will be one with the virus.");
 		}
 		
+		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
+	
+		SetEntityRenderColor(npc.index, 65, 255, 65, 255);
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 		return npc;
@@ -336,6 +347,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
+		npc.AddGesture("ACT_HURT", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -385,45 +397,40 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			}
 		}
 
-		if(f_NemesisSpecialDeathAnimation[npc.index] + 0.1 > GetGameTime(npc.index))
+		if(f_NemesisSpecialDeathAnimation[npc.index] + 2.3 > GetGameTime(npc.index))
 		{
 			if(npc.m_iChanged_WalkCycle != 20) 	
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_bisWalking = false;
-				npc.m_bPathing = false;
+				
 				npc.m_flSpeed = 0.0;
-				int iActivity = npc.LookupActivity("ACT_FT_FLINCH");
-				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.SetActivity("ACT_CALMATICUS_MINIGUN_REGEN_START");
 				npc.m_iChanged_WalkCycle = 20;
-			}
-		}
-		else if(f_NemesisSpecialDeathAnimation[npc.index] + 3.0 > GetGameTime(npc.index))
-		{
-			if(npc.m_iChanged_WalkCycle != 12) 	
-			{
-				int iActivity = npc.LookupActivity("ACT_FT_DOWN_1");
-				if(iActivity > 0) npc.StartActivity(iActivity);
-				npc.m_iChanged_WalkCycle = 12;
 			}
 		}
 		else if(f_NemesisSpecialDeathAnimation[npc.index] + 14.0 > GetGameTime(npc.index))
 		{
-			if(npc.m_iChanged_WalkCycle != 13) 	
+			if(npc.m_iChanged_WalkCycle != 12) 	
 			{
-				int iActivity = npc.LookupActivity("ACT_FT_DOWN_2");
-				if(iActivity > 0) npc.StartActivity(iActivity);
-				npc.m_iChanged_WalkCycle = 13;
+				npc.SetActivity("ACT_CALMATICUS_MINIGUN_REGEN_LOOP");
+				npc.m_iChanged_WalkCycle = 12;
+				SetEntProp(npc.index, Prop_Data, "m_bSequenceLoops", true);
 			}
 		}
-		else if(f_NemesisSpecialDeathAnimation[npc.index] + 15.0 > GetGameTime(npc.index))
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 14.5 > GetGameTime(npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 13) 	
+			{
+				npc.SetActivity("ACT_CALMATICUS_MINIGUN_REGEN_END");
+				npc.m_iChanged_WalkCycle = 13;
+				npc.SetPlaybackRate(0.75);
+			}
+		}
+		else if(f_NemesisSpecialDeathAnimation[npc.index] + 16.5 > GetGameTime(npc.index))
 		{
 			if(npc.m_iChanged_WalkCycle != 14) 	
 			{
-				int iActivity = npc.LookupActivity("ACT_FT_DOWN_3");
-				if(iActivity > 0) npc.StartActivity(iActivity);
-				npc.m_iChanged_WalkCycle = 14;
-				npc.SetPlaybackRate(0.4);
 				if(IsValidEntity(npc.m_iWearable1))
 				{
 					RemoveEntity(npc.m_iWearable1);
@@ -440,8 +447,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				i_GunMode[npc.index] = 1;
 				i_GunAmmo[npc.index] = 250;
-				int iActivity = npc.LookupActivity("ACT_FT_WALK");
-				if(iActivity > 0) npc.StartActivity(iActivity);
+				npc.SetActivity("ACT_CALMATICUS_MINIGUN_WALK");
 				npc.m_iChanged_WalkCycle = 10;
 				npc.m_bisWalking = true;
 				npc.m_flSpeed = 50.0;
@@ -477,7 +483,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		f_NemesisRandomInfectionCycle[npc.index] = GetGameTime(npc.index) + 10.0;
 		float flPos[3]; // original
 		float flAng[3]; // original
-		npc.GetAttachment("RightHand", flPos, flAng);
+		npc.GetAttachment("anim_attachment_LH", flPos, flAng);
 		Nemesis_DoInfectionThrow(npc.index, 5);
 		ParticleEffectAt(flPos, "duck_collect_blood_green", 1.0);
 	}
@@ -487,13 +493,11 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		if(fl_StopDodge[npc.index] < GetGameTime(npc.index))
 		{
 			b_IgnoredByPlayerProjectiles[npc.index] = false;
-			int iActivity = npc.LookupActivity("ACT_FT_RAISE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
 			npc.m_iChanged_WalkCycle = 9;
 			npc.m_bisWalking = false;
 			npc.m_bAllowBackWalking = true;
 			npc.m_flSpeed = 0.0;
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			fl_StopDodge[npc.index] = 0.0;
 
 			i_GunMode[npc.index] = 1;
@@ -514,7 +518,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			float flPos[3]; // original
 			float flAng[3]; // original
-			npc.GetAttachment("RightHand", flPos, flAng);
+			npc.GetAttachment("anim_attachment_LH", flPos, flAng);
 			Nemesis_DoInfectionThrow(npc.index, 10);
 			ParticleEffectAt(flPos, "duck_collect_blood_green", 1.0);
 			f_NemesisCauseInfectionBox[npc.index] = 0.0;
@@ -523,18 +527,13 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 
 	if(i_GunAmmo[npc.index] < 0 && i_GunMode[npc.index] == 1)
 	{
-		if(npc.m_iChanged_WalkCycle != 11) 	
+		if(npc.m_iChanged_WalkCycle != 999) 	
 		{
-			int iActivity = npc.LookupActivity("ACT_FT_LOWER");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-			npc.m_iChanged_WalkCycle = 11;
-			npc.m_bisWalking = false;
 			npc.m_bAllowBackWalking = false;
-			npc.m_flSpeed = 0.0;
-			NPC_StopPathing(npc.index);
 			i_GunMode[npc.index] = 0;
-			fl_RegainWalkAnim[npc.index] = gameTime + 1.5;
-			npc.m_flDoingAnimation = gameTime + 1.55;
+			npc.m_iChanged_WalkCycle = 999;
+			fl_RegainWalkAnim[npc.index] = gameTime + 0.2;
+			npc.m_flDoingAnimation = gameTime + 0.1;
 			f_NpcTurnPenalty[npc.index] = 1.0;
 		}
 	}
@@ -574,8 +573,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						{
 							RemoveEntity(npc.m_iWearable1);
 						}
-						int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.SetActivity("ACT_CALMATICUS_RUN");
 						npc.m_iChanged_WalkCycle = 2;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 300.0;
@@ -589,8 +587,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					if(npc.m_iChanged_WalkCycle != 10) 	
 					{
-						int iActivity = npc.LookupActivity("ACT_FT_WALK");
-						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.SetActivity("ACT_CALMATICUS_MINIGUN_WALK");
 						npc.m_iChanged_WalkCycle = 10;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 50.0;
@@ -621,7 +618,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(XenoExtraLogic())
 				{
-					ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 150.0);
+					ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 350.0);
 				}
 				else
 				{
@@ -632,7 +629,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					float flAng[3]; // original
 							
 							
-					npc.GetAttachment("RightHand", flPos, flAng);
+					npc.GetAttachment("anim_attachment_LH", flPos, flAng);
 					TeleportEntity(client_victim, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 							
 					if(client_victim <= MaxClients)
@@ -671,17 +668,17 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 6 && npc.m_iChanged_WalkCycle != 5 && npc.m_iChanged_WalkCycle != 7) 
 				{
+					if(XenoExtraLogic())
+						npc.SetActivity("ACT_CALMATICUS_CHARGE_LOOP_LAB");
+					else
+						npc.SetActivity("ACT_CALMATICUS_CHARGE_LOOP");
+
 					npc.m_iChanged_WalkCycle = 6;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 600.0;
 					if(npc.Anger)
 							npc.m_flSpeed = 900.0;
 					npc.StartPathing();
-				}
-				if(npc.flXenoInfectedSpecialHurtTime < gameTime && npc.m_flNextRangedAttackHappening - 1.5 > gameTime)
-				{
-					npc.flXenoInfectedSpecialHurtTime = gameTime + 0.4;
-					npc.SetCycle(0.45);
 				}
 			}
 
@@ -701,15 +698,14 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 						//Target close enough to hit
 						if(IsValidEntity(npc.m_iTarget) && IsValidEnemy(npc.index, Enemy_I_See))
 						{
-							int iActivity = npc.LookupActivity("ACT_FT2_GRABKILL");
-							if(iActivity > 0) npc.StartActivity(iActivity);
+							npc.SetActivity("ACT_CALMATICUS_CHARGE_END");
 							npc.m_iChanged_WalkCycle = 5;
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
-							npc.m_flDoingAnimation = gameTime + 5.0;
-							npc.m_flNextRangedAttackHappening = gameTime + 3.1;
-							fl_RegainWalkAnim[npc.index] = gameTime + 5.1;
+							npc.StopPathing();
+							npc.m_flDoingAnimation = gameTime + 3.5;
+							npc.m_flNextRangedAttackHappening = gameTime + 2.0;
+							fl_RegainWalkAnim[npc.index] = gameTime + 3.5;
 							npc.PlayRangedSound();
 
 							if(i_IsVehicle[Enemy_I_See] == 2)
@@ -727,7 +723,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							float flPos[3]; // original
 							float flAng[3]; // original
 						
-							npc.GetAttachment("RightHand", flPos, flAng);
+							npc.GetAttachment("anim_attachment_LH", flPos, flAng);
 							
 							TeleportEntity(Enemy_I_See, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 							
@@ -737,7 +733,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							{
 								SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
 								SetEntityCollisionGroup(Enemy_I_See, 1);
-								SetParent(npc.index, Enemy_I_See, "RightHand");
+								SetParent(npc.index, Enemy_I_See, "anim_attachment_LH");
 							}
 							else
 							{
@@ -760,18 +756,18 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				{
 					if(npc.m_iChanged_WalkCycle != 7) 
 					{
+						npc.SetActivity("ACT_CALMATICUS_CHARGE_FAIL");
 						npc.m_iChanged_WalkCycle = 7;
 						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 					}
 				}
 				if(npc.m_flNextRangedAttackHappening < gameTime)
 				{
 					if(npc.m_iChanged_WalkCycle != 2) 	
 					{
-						int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.SetActivity("ACT_CALMATICUS_RUN");
 						npc.m_iChanged_WalkCycle = 2;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 300.0;
@@ -790,7 +786,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		if(f_NemesisHitBoxStart[npc.index] < gameTime && f_NemesisHitBoxEnd[npc.index] > gameTime)
 		{
-			Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0});
+			if(npc.m_iChanged_WalkCycle == 13)
+				Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0}, "anim_attachment_RH");
+			else
+				Nemesis_AreaAttack(npc.index, 3000.0, {-40.0,-40.0,-40.0}, {40.0,40.0,40.0});
 		}
 
 		if(npc.m_flAttackHappens < gameTime)
@@ -810,19 +809,21 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							//the enemy is still close, do another attack.
 							float flPos[3]; // original
 							float flAng[3]; // original
-							npc.GetAttachment("RightHand", flPos, flAng);
+							npc.GetAttachment("anim_attachment_RH", flPos, flAng);
 							if(IsValidEntity(npc.m_iWearable5))
 								RemoveEntity(npc.m_iWearable5);
 						
 							npc.m_iWearable5 = ParticleEffectAt(flPos, "spell_fireball_small_blue", 1.25);
 							TeleportEntity(npc.m_iWearable5, flPos, flAng, NULL_VECTOR);
-							SetParent(npc.index, npc.m_iWearable5, "RightHand");
+							SetParent(npc.index, npc.m_iWearable5, "anim_attachment_RH");
 							npc.m_flAttackHappens = gameTime + 2.0;
 							npc.m_flDoingAnimation = gameTime + 2.0;
 							f_NemesisHitBoxStart[npc.index] = gameTime + 0.65;
 							f_NemesisHitBoxEnd[npc.index] = gameTime + 1.25;
 							f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
-							npc.SetActivity("ACT_FT2_ATTACK_2");
+							npc.FaceTowards(vecTarget, 99999.9);
+							npc.SetActivity("ACT_CALMATICUS_ATTACK_RIGHT");
+							npc.SetPlaybackRate(0.6);
 							npc.m_iChanged_WalkCycle = 13;
 							npc.m_bisWalking = false;
 							if(XenoExtraLogic())
@@ -852,7 +853,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	
 				{
-					npc.SetActivity("ACT_FT2_WALK");
+					npc.SetActivity("ACT_CALMATICUS_RUN");
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 300.0;
@@ -876,11 +877,11 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} 
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}	
 		}
 
@@ -890,10 +891,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		npc.m_flRangedArmor = 1.0;	//Due to his speed, ranged will deal less
 		if(npc.m_flDoingAnimation > GetGameTime(npc.index)) //I am doing an animation or doing something else, default to doing nothing!
 		{
-			if(!npc.m_flNextRangedAttackHappening)
-			{
-				npc.m_flRangedArmor = 0.5;	//Due to his speed, ranged will deal less
-			}
 			ActionToTake = -1;
 		}
 		else if(i_GunMode[npc.index] == 0)
@@ -932,32 +929,27 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			case 1:
 			{
-				if(XenoExtraLogic())
-				{
-					npc.m_flNextMeleeAttack = gameTime + 3.0;
-				}
-				else
-				{
-					npc.m_flNextMeleeAttack = gameTime + 5.0;
-				}
+				npc.m_flNextMeleeAttack = gameTime + 2.5;
 				npc.m_flDoingAnimation = gameTime + 2.5;
 				npc.m_flAttackHappens = gameTime + 1.25;
 				float flPos[3]; // original
 				float flAng[3]; // original
-				npc.GetAttachment("RightHand", flPos, flAng);
+				npc.GetAttachment("anim_attachment_LH", flPos, flAng);
 				if(IsValidEntity(npc.m_iWearable5))
 					RemoveEntity(npc.m_iWearable5);
 		
 				npc.m_iWearable5 = ParticleEffectAt(flPos, "spell_fireball_small_red", 1.0);
 				TeleportEntity(npc.m_iWearable5, flPos, flAng, NULL_VECTOR);
-				SetParent(npc.index, npc.m_iWearable5, "RightHand");
+				SetParent(npc.index, npc.m_iWearable5, "anim_attachment_LH");
 				f_NemesisHitBoxStart[npc.index] = gameTime + 0.45;
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.0;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
 				if(npc.m_iChanged_WalkCycle != 15) 
 				{
-					npc.SetActivity("ACT_FT2_ATTACK_1");
+					npc.FaceTowards(vecTarget, 99999.9);
+					npc.SetActivity("ACT_CALMATICUS_ATTACK_LEFT");
+					npc.SetPlaybackRate(0.6);
 					npc.m_iChanged_WalkCycle = 15;
 					npc.m_bisWalking = false;
 					if(XenoExtraLogic())
@@ -988,12 +980,14 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 
 				{
 					npc.PlayAngerSound();
-					int iActivity = npc.LookupActivity("ACT_FT2_GRAB");
-					if(iActivity > 0) npc.StartActivity(iActivity);
+					if(XenoExtraLogic())
+						npc.SetActivity("ACT_CALMATICUS_CHARGE_START_LAB");
+					else
+						npc.SetActivity("ACT_CALMATICUS_CHARGE_START");
 					npc.m_iChanged_WalkCycle = 4;
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					f_NpcTurnPenalty[npc.index] = 1.0;
 				}
 			}
@@ -1022,8 +1016,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					{
 						i_GunMode[npc.index] = 1;
 						i_GunAmmo[npc.index] = 250;
-						int iActivity = npc.LookupActivity("ACT_FT_WALK");
-						if(iActivity > 0) npc.StartActivity(iActivity);
+						npc.SetActivity("ACT_CALMATICUS_MINIGUN_WALK");
 						npc.m_iChanged_WalkCycle = 10;
 						npc.m_bisWalking = true;
 						npc.m_flSpeed = 50.0;
@@ -1120,7 +1113,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s",WhatDifficultySetting_Internal);
 	WavesUpdateDifficultyName();
-	
+
 	if(IsValidEntity(client))
 	{
 		AcceptEntityInput(client, "ClearParent");
@@ -1147,14 +1140,20 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-		DispatchKeyValue(entity_death, "model", NEMESIS_MODEL);
+		DispatchKeyValue(entity_death, "model", COMBINE_CUSTOM_2_MODEL);
 		DispatchSpawn(entity_death);
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.25); 
+		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 2.0); 
 		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("ft2_death");
+		SetVariantString("calmaticus_death");
 		AcceptEntityInput(entity_death, "SetAnimation");
+		SetVariantInt(4);
+		AcceptEntityInput(entity_death, "SetBodyGroup");
+		SetEntityRenderColor(entity_death, 65, 255, 65, 255);		
+		CClotBody npcstuff = view_as<CClotBody>(entity_death);
+		npcstuff.m_iWearable6 = npcstuff.EquipItem("weapon_bone" ,"models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
 		
 		CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(npcstuff.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
 
 	}
 
@@ -1180,7 +1179,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
+		for (int client_repat = 1; client_repat <= MaxClients; client_repat++)
 		{
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING && PlayerPoints[client_repat	] > 500)
 			{
@@ -1260,24 +1259,11 @@ void Nemesis_TryDodgeAttack(int entity)
 		{
 			if(npc.m_iChanged_WalkCycle != 8) 
 			{
-				int DodgeLeft;
 				b_IgnoredByPlayerProjectiles[npc.index] = true;
 
-				DodgeLeft = GetRandomInt(0,1);
 				float PosToDodgeTo[3];
 
-				if(DodgeLeft == 0)
-				{
-					int iActivity = npc.LookupActivity("ACT_DODGE_2");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					PosToDodgeTo = Nemesis_DodgeToDirection(npc, 200.0, -90.0);
-				}
-				else
-				{
-					int iActivity = npc.LookupActivity("ACT_DODGE_1");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					PosToDodgeTo = Nemesis_DodgeToDirection(npc, 200.0, 90.0);					
-				}
+				npc.SetActivity("ACT_CALMATICUS_MINIGUN_DODGE");
 				npc.m_iChanged_WalkCycle = 8;
 				npc.m_bisWalking = false;
 				npc.m_bAllowBackWalking = true;
@@ -1289,7 +1275,7 @@ void Nemesis_TryDodgeAttack(int entity)
 					float vecTarget[3]; WorldSpaceCenter(ref, vecTarget);
 					npc.FaceTowards(vecTarget);
 				}
-				NPC_SetGoalVector(npc.index, PosToDodgeTo);
+				npc.SetGoalVector(PosToDodgeTo);
 				npc.StartPathing();
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.55;
 				fl_StopDodge[npc.index] = GetGameTime(npc.index) + 0.5;
@@ -1316,7 +1302,7 @@ public bool TraceRayHitProjectilesOnly(int entity,int mask,any data)
 }
 
 
-void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_vecMaxs_1[3], char[] Attachment ="RightHand", int who = 1)
+void Nemesis_AreaAttack(int entity, float damage, float m_vecMins_1[3], float m_vecMaxs_1[3], char[] Attachment ="anim_attachment_LH", int who = 1)
 {
 	if(who == 1)
 	{
@@ -1671,18 +1657,10 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 			float HudX = -1.0;
 			SetHudTextParams(HudX, HudY, 3.0, 50, 255, 50, 255);
 			SetGlobalTransTarget(victim);
-			ShowHudText(victim,  -1, "%t", "You have been Infected by Nemesis");
+			ShowHudText(victim,  -1, "%t", "You have been Infected by Calmaticus");
 			ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");		
-//		float flPos[3];
-//		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
-//		flPos[2] += 100.0;
-//		int particle = ParticleEffectAt_Building_Custom(flPos, "powerup_icon_plague", victim);
-//		flPos[2] -= 100.0;
-//		int particle2 = ParticleEffectAt_Building_Custom(flPos, "powerup_plague_carrier", victim);
-//		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
-//		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
 			int InfectionCount = 15;
-			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0);
+			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0, 1);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));
@@ -1780,7 +1758,7 @@ public void Raidmode_Nemesis_Win(int entity)
 		}
 		else
 		{
-			CPrintToChatAll("{snow}???{default}: Good job nemesis, head back to the lab.");
+			CPrintToChatAll("{snow}???{default}: Good job Calmaticus, head back to the lab.");
 		}
 	}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;

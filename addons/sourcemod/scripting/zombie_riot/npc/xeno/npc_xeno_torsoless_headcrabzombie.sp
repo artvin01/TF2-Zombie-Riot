@@ -155,11 +155,7 @@ methodmap XenoTorsolessHeadcrabZombie < CClotBody
 		func_NPCDeath[npc.index] = XenoTorsolessHeadcrabZombie_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoTorsolessHeadcrabZombie_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoTorsolessHeadcrabZombie_ClotThink;				
-	
 		
-		
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		//IDLE
@@ -214,11 +210,11 @@ public void XenoTorsolessHeadcrabZombie_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		npc.StartPathing();
 		
@@ -279,8 +275,8 @@ public void XenoTorsolessHeadcrabZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

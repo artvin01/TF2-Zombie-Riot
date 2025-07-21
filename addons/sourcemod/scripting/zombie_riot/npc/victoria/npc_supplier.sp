@@ -168,12 +168,10 @@ methodmap VictorianSupplier < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 150, 255, 255);
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 150, 255, 255);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
@@ -228,20 +226,20 @@ public void VictorianSupplier_ClotThink(int iNPC)
 			
 			if(flDistanceToTarget > (100.0*100.0))
 			{
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+					npc.SetGoalEntity(npc.m_iTargetAlly);
 				}
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;

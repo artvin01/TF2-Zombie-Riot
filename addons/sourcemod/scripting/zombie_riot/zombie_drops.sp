@@ -91,11 +91,11 @@ public void BalanceDropMinimum(float multi)
 	if(VIPBuilding_Active())
 		f_PowerupSpawnMulti *= 4.0;
 		
-	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
-	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (ZR_Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRoundScale() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRoundScale() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Health = RoundToCeil((f_KillTheseManyMorePowerup_base_Health + (Waves_GetRoundScale() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Money = RoundToCeil((f_KillTheseManyMorePowerup_base_Money + (Waves_GetRoundScale() * 2)) * (f_PowerupSpawnMulti));
+	i_KillTheseManyMorePowerup_Grigori = RoundToCeil((f_KillTheseManyMorePowerup_base_Grigori + (Waves_GetRoundScale() * 2)) * (f_PowerupSpawnMulti));
 }
 
 void Drops_ResetChances()
@@ -438,14 +438,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										{
 											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
 										}
-										else if(weaponindex == 211 || weaponindex == 998)
-										{
-											AddAmmoClient(client_Hud, 21 ,_,4.0);
-										}
-										else if(weaponindex == 411)
-										{
-											AddAmmoClient(client_Hud, 22 ,_,4.0);
-										}
 										else if(weaponindex == 441 || weaponindex == 35)
 										{
 											AddAmmoClient(client_Hud, 23 ,_,4.0);	
@@ -471,18 +463,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 							{
 								CurrentAmmo[client_Hud][i] = GetAmmo(client_Hud, i);
 							}
-							/*
-							Only give ammo to weapons they already have. Otherwise its just op lol, never had ammo issues ever with this, it was funny.
-							SetAmmo(client_Hud, Ammo_Metal, GetAmmo(client_Hud, Ammo_Metal)+(AmmoData[Ammo_Metal][1]*4));
-							for(int i=Ammo_Jar; i<Ammo_MAX; i++)
-							{
-								SetAmmo(client_Hud, i, GetAmmo(client_Hud, i)+(AmmoData[i][1]*4));
-							}
-							for(int i; i<Ammo_MAX; i++)
-							{
-								CurrentAmmo[client_Hud][i] = GetAmmo(client_Hud, i);
-							}
-							*/
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Ammo Activated");
@@ -789,7 +769,8 @@ public Action Timer_Detect_Player_Near_Grigori(Handle timer, any entid)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(GRIGORI_POWERUP_SOUND, _, SNDCHAN_STATIC, 100, _);
-					Store_RandomizeNPCStore(0, 1);
+					Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 1);
+					
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))

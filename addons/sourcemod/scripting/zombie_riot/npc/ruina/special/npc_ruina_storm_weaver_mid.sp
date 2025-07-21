@@ -87,8 +87,8 @@ methodmap Storm_Weaver_Mid < CClotBody
 		
 		npc.m_flGetClosestTargetTime = 0.0;
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 
 		b_NoGravity[npc.index] = true;	//Found ya!
 
@@ -172,7 +172,7 @@ static void ClotThink(int iNPC)
 
 			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 			{
-				float Ratio = (ZR_Waves_GetRound()+1)/60.0;
+				float Ratio = (Waves_GetRoundScale()+1)/40.0;
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
 				Stellar_Weaver_Attack(npc.index, vecTarget, 50.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
 				b_stellar_weaver_allow_attack[npc.index] = false;
@@ -182,7 +182,7 @@ static void ClotThink(int iNPC)
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
-				float Ratio = (ZR_Waves_GetRound()+1)/60.0;
+				float Ratio = (Waves_GetRoundScale()+1)/40.0;
 				float DamageDone = 50.0*Ratio;
 				npc.FireParticleRocket(vecTarget, DamageDone, 1250.0, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 5.0;

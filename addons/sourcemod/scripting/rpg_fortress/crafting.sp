@@ -142,10 +142,10 @@ enum struct CraftEnum
 
 static ArrayList CraftList;
 static StringMap BluePrints;
-static bool CurrentCustom[MAXTF2PLAYERS];
-static ArrayList CurrentMenu[MAXTF2PLAYERS];
-static int CurrentPrint[MAXTF2PLAYERS];
-static char CurrentRecipe[MAXTF2PLAYERS][64];
+static bool CurrentCustom[MAXPLAYERS];
+static ArrayList CurrentMenu[MAXPLAYERS];
+static int CurrentPrint[MAXPLAYERS];
+static char CurrentRecipe[MAXPLAYERS][64];
 
 void Crafting_ConfigSetup()
 {
@@ -614,10 +614,10 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentRecipeEditing[MAXTF2PLAYERS][64];
-static char CurrentSectionEditing[MAXTF2PLAYERS][64];
-static int CurrentMenuEditing[MAXTF2PLAYERS];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentRecipeEditing[MAXPLAYERS][64];
+static char CurrentSectionEditing[MAXPLAYERS][64];
+static int CurrentMenuEditing[MAXPLAYERS];
 
 static void OpenEditorFrom(int client, const CraftEnum craft)
 {

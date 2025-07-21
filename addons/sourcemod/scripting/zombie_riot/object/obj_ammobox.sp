@@ -91,8 +91,10 @@ static void ClotShowInteractHud(ObjectAmmobox npc, int client)
 {
 	SetGlobalTransTarget(client);
 	char ButtonDisplay[255];
+	char ButtonDisplay2[255];
 	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
-	PrintCenterText(client, "%s%t", ButtonDisplay, "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
+	BuildingVialityDisplay(client, npc.index, ButtonDisplay2, sizeof(ButtonDisplay2));
+	PrintCenterText(client, "%s\n%s%t", ButtonDisplay2, ButtonDisplay, "Ammobox Tooltip", Ammo_Count_Ready - Ammo_Count_Used[client]);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
@@ -210,32 +212,6 @@ int AmmoboxUsed(int client, int entity)
 				{
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}
-				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				return true;
-			}
-			else if(weaponindex == 211 || weaponindex == 998)
-			{
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				AddAmmoClient(client, 21 ,_,2.0);
-				Ammo_Count_Used[client] += 1;
-				for(int i; i<Ammo_MAX; i++)
-				{
-					CurrentAmmo[client][i] = GetAmmo(client, i);
-				}	
-				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				return true;
-			}
-			else if(weaponindex == 411)
-			{
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-				AddAmmoClient(client, 22 ,_,2.0);
-				Ammo_Count_Used[client] += 1;
-				for(int i; i<Ammo_MAX; i++)
-				{
-					CurrentAmmo[client][i] = GetAmmo(client, i);
-				}	
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 				return true;
 			}

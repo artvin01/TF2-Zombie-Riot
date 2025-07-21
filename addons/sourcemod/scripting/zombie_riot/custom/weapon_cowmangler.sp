@@ -58,8 +58,15 @@ void DoPlayerLaserEffectsBigger(Player_Laser_Logic Laser, int color[4])
 }
 void PlayerLaserDoDamageCombined(Player_Laser_Logic Laser, float Close_Dps, float Long_Dps)
 {
+	Laser.weapon = GetEntPropEnt(Laser.client, Prop_Send, "m_hActiveWeapon");
 	float TargetsHitFallOff = 1.0;
 	Laser.Enumerate_Simple();
+
+	float Falloff = LASER_AOE_DAMAGE_FALLOFF;
+
+	if(Laser.target_hitfalloff)
+		Falloff = Laser.target_hitfalloff;
+
 	for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
 	{
 		//get victims from the "Enumerate_Simple"
@@ -69,7 +76,7 @@ void PlayerLaserDoDamageCombined(Player_Laser_Logic Laser, float Close_Dps, floa
 
 		float playerPos[3];
 		GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-		float Dist = GetVectorDistance(Laser.Start_Point, playerPos);	//make is squared for optimisation sake
+		float Dist = GetVectorDistance(Laser.Start_Point, playerPos);
 
 		float Ratio = Dist / Laser.MaxDist;
 		float damage = Close_Dps + (Long_Dps-Close_Dps) * Ratio;
@@ -77,9 +84,11 @@ void PlayerLaserDoDamageCombined(Player_Laser_Logic Laser, float Close_Dps, floa
 		//somehow negative damage. invert.
 		if (damage < 0)
 			damage *= -1.0;
+
+		Laser.DoDamage(victim, damage*TargetsHitFallOff, Laser.weapon, {0.0,0.0,0.0});
 		
-		SDKHooks_TakeDamage(victim, Laser.client, Laser.client, damage*TargetsHitFallOff, DMG_PLASMA);
-		TargetsHitFallOff *= LASER_AOE_DAMAGE_FALLOFF;
+		//SDKHooks_TakeDamage(victim, Laser.client, Laser.client, damage*TargetsHitFallOff, DMG_PLASMA);
+		TargetsHitFallOff *= Falloff;
 	}
 }
 
@@ -102,7 +111,7 @@ public void Weapon_ManglerLol(int client, int weapon, const char[] classname, bo
 	DoPlayerLaserEffectsBigger(Laser, color);
 }
 
-float AttackDelayBobGun[MAXTF2PLAYERS];
+float AttackDelayBobGun[MAXPLAYERS];
 public void Weapon_BobsGunBullshit(int client, int weapon, const char[] classname, bool &result)
 {
 	AttackDelayBobGun[client] = 0.0;

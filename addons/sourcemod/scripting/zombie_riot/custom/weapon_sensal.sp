@@ -115,7 +115,7 @@ void ResetMapStartSensalWeapon()
 	PrecacheSound(SensalWeapon_SOUND_MELEE);
 }
 
-float f_AttackDelaySensal[MAXTF2PLAYERS];
+float f_AttackDelaySensal[MAXPLAYERS];
 public void Sensal_Ability_M2_Auto(int client, int weapon, const char[] classname, bool &result)
 {
 	f_AttackDelaySensal[client] = 0.0;

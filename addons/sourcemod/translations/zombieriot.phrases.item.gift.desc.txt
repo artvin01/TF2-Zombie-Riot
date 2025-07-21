@@ -1060,7 +1060,7 @@
 	}
 	"Nearl Radiant Sword Desc"
 	{
-		"en"		"A distacting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
+		"en"		"A distracting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
 		"ru"		"Искажающий меч отвлекающий врагов на себя,когда враги атакуют его,любое максимальное улучшение энергетического клинка будет наносить в 2 раза больше урона им."
 	}
 	"Whiteflower Subject Desc"
@@ -1092,10 +1092,9 @@
 		"en"		"A higher tier form of Silvester, what is this, magic or technology?\nWhere does he come from?"
 		"ru"		"Более Сильная форма Сильвестера,что это,Магия или Технология?\nОткуда он появился?"
 	}
-	"Nemesis Desc"
+	"Calmaticus Desc"
 	{
-		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
-		"ru"		"Создатель Ксено инфекции,Настоящие имя Было Калматикус.\nОни попытались предупредить тебя,ты не послушал.\nЕго сопротивление во время регенерации (можно заглушить на половину)."
+		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -1660,8 +1659,7 @@
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
-		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health, takes 50％ more dmg from the back, once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 2x as much damage to the armor."
-		"ru"	"Под лидер Разведочной группы.\nИмеет высокий уровень здоровья и большой урон,получает 50％ урона со спины,когда теряет половину здоровья получает огромный бонус к скорости и броне,сломайте броню что бы убрать эффекты.\nБлижний бой наноси двойной урон броне."
+		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health,once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 1.4x as much damage to the armor."
 	}
 	"Speedus Adivus Desc"
 	{
@@ -2023,9 +2021,9 @@
 		"en"	"Very fast but loses its speed once hit."
 		"ru"	"Очень быстрый но теряет скорость когда получит урон."
 	}
-	"Mr.X Desc"
+	"Vivithorn Desc"
 	{
-		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
 		"ru"	"Активатор источника Ксено инфекции,Настоящие имя было Виротхорн.\nМожет делать рывки,может взять тебя и сломать шею,Остальные атаки наносит повторный урон но разным противникамв радиусе.\n(заглушение) теряет скольжение при ударе"
 	}
 	"Lex Desc"
@@ -2133,8 +2131,8 @@
 	}
 	"Chaos Intrusion Desc"
 	{
-		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 15％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
-		"ru"	"Вы пришли слишком поздно,Хаос получил полный эффект...\nВолны спавнят 25％ больше врагов,Спанят на 15％ быстрее,10％ больше зомби в живых единовременнл.\nВраги наносят на 12％ больше урона,и имеют 30％ больше здоровья и на 3％ быстрее"
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
+		"ru"	"Вы пришли слишком поздно,Хаос получил полный эффект...\nВолны спавнят 25％ больше врагов,Спанят на 20％ быстрее,10％ больше зомби в живых единовременнл.\nВраги наносят на 12％ больше урона,и имеют 30％ больше здоровья и на 3％ быстрее"
 	}
 	"Standard"
 	{
@@ -2153,7 +2151,15 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 25％ faster.\n1 down, enemies heal 50％ more."
+		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 33％ faster.\n1 down, enemies heal 50％ more."
+	}
+	"Turbulance"
+	{
+		"en"	"Turbulance"
+	}
+	"Turbulance Desc"
+	{
+		"en"	"Play the game under extreme Speed.\nEveryone gets the ''Dimensional Turbulance'' Buff."
 	}
 	"Secondary Mercs"
 	{
@@ -2162,8 +2168,16 @@
 	}
 	"Secondary Mercs Desc"
 	{
-		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 25％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
-		"ru"	"Первые наёмники уже потерпели крах.\n35％ больше врагов,25％ быстрее спавн,15％ больше живих врагов одновременно\nОни наносят 15％ больше урона и 25％ больше барикадам,имеют 50％ больше хп и на 4％ быстрее\nВраги получают 50％ больше исцеления."
+		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
+		"ru"	"Первые наёмники уже потерпели крах.\n35％ больше врагов,33％ быстрее спавн,15％ больше живих врагов одновременно\nОни наносят 15％ больше урона и 25％ больше барикадам,имеют 50％ больше хп и на 4％ быстрее\nВраги получают 50％ больше исцеления."
+	}
+	"Paranormal Activity"
+	{
+		"en"	"Paranormal Activity"
+	}
+	"Paranormal Activity Desc"
+	{
+		"en"	"You killed them all, and now, you will pay the price.\nEvery enemy is a spirit, and they deal 5％ extra damage."
 	}
 	"BUSTING"
 	{

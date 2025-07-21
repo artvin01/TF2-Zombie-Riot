@@ -1,7 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define DATABASE_LOCAL		"zr_local"
+//whenever you wish to update the local database, add a _1
+//this is only ever saved per game anyways.
+#define DATABASE_LOCAL		"zr_local_1"
 #define DATATABLE_MAIN		"zr_timestamp"
 #define DATATABLE_AMMO		"zr_ammo"
 #define DATATABLE_GAMEDATA	"zr_gamedata"
@@ -15,7 +17,7 @@
 
 static Database Local;
 static Database Global;
-static bool Cached[MAXTF2PLAYERS];
+static bool Cached[MAXPLAYERS];
 
 void Database_PluginStart()
 {
@@ -291,6 +293,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			b_DisableSetupMusic[client] = view_as<bool>(music & (1 << 7));
 			b_DisableStatusEffectHints[client] = view_as<bool>(music & (1 << 8));
 			b_LastManDisable[client] = view_as<bool>(music & (1 << 9));
+			b_DisplayDamageHudSettingInvert[client] = view_as<bool>(music & (1 << 10));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -329,6 +332,27 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			
 		if(ForceNiko)
 			OverridePlayerModel(client, NIKO_2, true);
+	}
+	Loadout_DatabaseLoadFavorite(client);
+}
+
+public void Loadout_DatabaseLoadFavorite(int client)
+{
+	if(!Loadouts[client])
+		return;
+
+	int LengthIAm = Loadouts[client].Length;
+	char BufferString[255];
+	for(int i; i < LengthIAm; i++)
+	{
+		Loadouts[client].GetString(i, BufferString, sizeof(BufferString));
+		if(!StrContains(BufferString, "[♥]"))
+		{
+			//Force buy me!
+			SPrintToChat(client, "%t", "Getting favorite loadout");
+			Database_LoadLoadout(client, BufferString, false);
+			return;
+		}
 	}
 }
 
@@ -401,7 +425,7 @@ void DataBase_ClientDisconnect(int client)
 				f_ZombieVolumeSetting[client],
 				b_TauntSpeedIncrease[client],
 				f_Data_InBattleHudDisableDelay[client],
-				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0) + (b_LastManDisable[client] ? 512 : 0)),
+				view_as<int>(view_as<int>(b_IgnoreMapMusic[client]) + (b_DisableDynamicMusic[client] ? 2 : 0) + (b_EnableRightSideAmmoboxCount[client] ? 4 : 0) + (b_EnableCountedDowns[client] ? 8 : 0) + (b_EnableClutterSetting[client] ? 16 : 0) + (b_EnableNumeralArmor[client] ? 32 : 0) + (b_InteractWithReload[client] ? 64 : 0) + (b_DisableSetupMusic[client] ? 128 : 0) + (b_DisableStatusEffectHints[client] ? 256 : 0) + (b_LastManDisable[client] ? 512 : 0) + (b_DisplayDamageHudSettingInvert[client] ? 1024 : 0)),
 				id);
 			}
 			else
@@ -514,6 +538,23 @@ void Database_DeleteLoadout(int client, const char[] name)
 			
 			char buffer[256];
 			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_LOADOUT ... " WHERE steamid = %d AND loadout = '%s';", id, name);
+			tr.AddQuery(buffer);
+			
+			Global.Execute(tr, Database_Success, Database_Fail);
+		}
+	}
+}
+void Database_EditName(int client, const char[] name, const char[] newname)
+{
+	if(Global)
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[256];
+			Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_LOADOUT ... " SET loadout = '%s' WHERE steamid = %d AND loadout = '%s';", newname, id, name);
 			tr.AddQuery(buffer);
 			
 			Global.Execute(tr, Database_Success, Database_Fail);
@@ -636,6 +677,7 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 				CashSpent[client] = results[0].FetchInt(2);
 				CashSpentTotal[client] = results[0].FetchInt(3);
 				Ammo_Count_Used[client] = results[0].FetchInt(4);
+				CashSpentLoadout[client] = results[0].FetchInt(5);
 
 				Transaction tr = new Transaction();
 				
@@ -719,10 +761,13 @@ void Database_SaveGameData(int client)
 
 			for(int i = Ammo_Metal; i < Ammo_MAX; i++)
 			{
-				if(i >= Ammo_Pistol || i == Ammo_Metal || i == Ammo_Jar)
+				if((i >= Ammo_Pistol || i == Ammo_Metal))
 				{
-					Local.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_AMMO ... " (steamid, type, amount) VALUES ('%d', '%d', '%d')", id, i, CurrentAmmo[client][i]);
-					tr.AddQuery(buffer);
+					if(i != Ammo_Jar && i != Ammo_Hand_Grenade && i != Ammo_Potion_Supply) //DO NOT SAVE THESE.)
+					{
+						Local.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_AMMO ... " (steamid, type, amount) VALUES ('%d', '%d', '%d')", id, i, CurrentAmmo[client][i]);
+						tr.AddQuery(buffer);
+					}
 				}
 			}
 			
@@ -731,13 +776,13 @@ void Database_SaveGameData(int client)
 			... "spent = %d, "
 			... "total = %d, "
 			... "ammo = %d, "
-			... "leftfordead = %.1f "
+			... "cashspendloadout = %d"
 			... "WHERE steamid = %d;",
 			CurrentGame,
 			CashSpent[client],
 			CashSpentTotal[client],
 			Ammo_Count_Used[client],
-			0.0,
+			CashSpentLoadout[client],
 			id);
 			
 

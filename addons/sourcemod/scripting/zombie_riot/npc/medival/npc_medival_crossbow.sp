@@ -173,9 +173,6 @@ methodmap MedivalCrossbowMan < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
-
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -187,11 +184,6 @@ methodmap MedivalCrossbowMan < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-
 	/*	
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
 		SetVariantString("1.0");
@@ -273,9 +265,9 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			if(flDistanceToTarget < 160000)
@@ -299,8 +291,8 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 						npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.7; //Reuse this!
 					}
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 				else
 				{
@@ -316,8 +308,8 @@ public void MedivalCrossbowMan_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -345,7 +337,7 @@ public void HandleAnimEventMedival_CrossbowMan(int entity, int event)
 			npc.PlayMeleeSound();
 			
 			float damage = 20.0;
-			if(Medival_Difficulty_Level < 0.93)
+			if(Medival_Difficulty_Level_NotMath >= 2)
 			{
 				damage = 30.0;
 			}

@@ -146,7 +146,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 	
 	public ZMainHeadcrabZombie(float vecPos[3], float vecAng[3], int ally)
 	{
-		ZMainHeadcrabZombie npc = view_as<ZMainHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", MinibossHealthScaling(20), ally, false));
+		ZMainHeadcrabZombie npc = view_as<ZMainHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", MinibossHealthScaling(20.0), ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -166,9 +166,9 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 330.0;
 
-		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
+		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -314,11 +314,11 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Just walk.
 		return;
@@ -344,7 +344,7 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 		npc.m_bAllowBackWalking = true;
 		float vBackoffPos[3];
 		BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 1);
-		NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+		npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 		return;
 	}
 
@@ -364,7 +364,7 @@ void ZMainHeadcrabZombie_AnnoyingZmainwalkLogic(ZMainHeadcrabZombie npc, float g
 	}
 	float vBackoffPos[3];
 	BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 2);
-	NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+	npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 	npc.m_bAllowBackWalking = true;
 }
 

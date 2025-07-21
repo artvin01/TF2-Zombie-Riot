@@ -10,21 +10,21 @@
 #define MYLNAR_MAXANGLEYAW		90.0
 
 Handle h_TimerMlynarManagement[MAXPLAYERS+1] = {null, ...};
-static float f_MlynarHudDelay[MAXTF2PLAYERS];
-static float f_MlynarDmgMultiPassive[MAXTF2PLAYERS] = {1.0, ...};
-static float f_MlynarDmgMultiAgressiveClose[MAXTF2PLAYERS] = {1.0, ...};
-static float f_MlynarDmgMultiHurt[MAXTF2PLAYERS] = {1.0, ...};
-static float f_MlynarAbilityActiveTime[MAXTF2PLAYERS];
-static bool b_MlynarResetStats[MAXTF2PLAYERS];
+static float f_MlynarHudDelay[MAXPLAYERS];
+static float f_MlynarDmgMultiPassive[MAXPLAYERS] = {1.0, ...};
+static float f_MlynarDmgMultiAgressiveClose[MAXPLAYERS] = {1.0, ...};
+static float f_MlynarDmgMultiHurt[MAXPLAYERS] = {1.0, ...};
+static float f_MlynarAbilityActiveTime[MAXPLAYERS];
+static bool b_MlynarResetStats[MAXPLAYERS];
 int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
-static float f_MlynarHurtDuration[MAXTF2PLAYERS];
-static float f_MlynarReflectCooldown[MAXTF2PLAYERS][MAXENTITIES];
+static float f_MlynarHurtDuration[MAXPLAYERS];
+static float f_MlynarReflectCooldown[MAXPLAYERS][MAXENTITIES];
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
-static int i_RefWeaponDelete[MAXTF2PLAYERS];
+static int i_RefWeaponDelete[MAXPLAYERS];
 
 //This will be used to tone down damage over time/on kill
-static float f_MlynarDmgAfterAbility[MAXTF2PLAYERS];
+static float f_MlynarDmgAfterAbility[MAXPLAYERS];
 
 void Mlynar_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {

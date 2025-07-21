@@ -89,8 +89,9 @@ methodmap Huirgrajo < CClotBody
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flWaveScale = (ZR_Waves_GetRound() + 1) * 0.1;
+		npc.m_flWaveScale = (Waves_GetRoundScale() + 1) * 0.133333;
 		npc.m_flExtraDamage *= npc.m_flWaveScale;
+		npc.m_flExtraDamage *= 2.0;
 		
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
@@ -236,14 +237,14 @@ static void ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, walk, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 
 			npc.StartPathing();
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, walk);
+			npc.SetGoalEntity(walk);
 			
 			npc.StartPathing();
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");

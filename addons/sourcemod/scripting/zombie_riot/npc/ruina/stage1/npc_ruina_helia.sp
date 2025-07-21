@@ -293,14 +293,14 @@ static void ClotThink(int iNPC)
 					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
 					Helia_Healing_Logic(npc.index, 300, 150.0, GameTime, 3.5);
 
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 			}
 			else				
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
 				fl_multi_attack_delay[npc.index] = GameTime + 0.5;
@@ -310,7 +310,7 @@ static void ClotThink(int iNPC)
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 		}
 
 		if(npc.m_bAllowBackWalking)
@@ -350,8 +350,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

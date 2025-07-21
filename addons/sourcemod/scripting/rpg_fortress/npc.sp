@@ -487,15 +487,15 @@ void RPGNpc_UpdateHpHud(int entity)
 		return;
 		
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(IsValidEntity(npc.m_iTextEntity3))
-	{
-		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		char HealthString[64];
-		IntToString(Health,HealthString, sizeof(HealthString));
-		int offset = Health < 0 ? 1 : 0;
-		ThousandString(HealthString[offset], sizeof(HealthString) - offset);
-		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-	}
+	if(!IsValidEntity(npc.m_iTextEntity3))
+		return;
+		
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	char HealthString[64];
+	IntToString(Health,HealthString, sizeof(HealthString));
+	int offset = Health < 0 ? 1 : 0;
+	ThousandString(HealthString[offset], sizeof(HealthString) - offset);
+	DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 }
 
 void HealOutOfBattleNpc(int entity)
@@ -503,7 +503,7 @@ void HealOutOfBattleNpc(int entity)
 	int MaxHealth = ReturnEntityMaxHealth(entity);
 	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
 
-	int HealthToHealPerIncrement = MaxHealth / 100;
+	int HealthToHealPerIncrement = MaxHealth / 50;
 
 	if(HealthToHealPerIncrement < 1) //should never be 0
 	{

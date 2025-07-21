@@ -9,34 +9,34 @@
 #define RAILCANNONPAP4_HIT			"physics/glass/glass_largesheet_break1.wav"
 
 #define RAILCANNON_MAXTARGETS 3
-static float Strength[MAXTF2PLAYERS];
+static float Strength[MAXPLAYERS];
 
-static bool BEAM_CanUse[MAXTF2PLAYERS];
-static bool BEAM_IsUsing[MAXTF2PLAYERS];
-static int BEAM_TicksActive[MAXTF2PLAYERS];
+static bool BEAM_CanUse[MAXPLAYERS];
+static bool BEAM_IsUsing[MAXPLAYERS];
+static int BEAM_TicksActive[MAXPLAYERS];
 static int Beam_Laser;
 static int Beam_Glow;
-static int BEAM_MaxDistance[MAXTF2PLAYERS];
-static int BEAM_BeamRadius[MAXTF2PLAYERS];
-static int BEAM_ColorHex[MAXTF2PLAYERS];
-static float BEAM_BeamOffset[MAXTF2PLAYERS][3];
-static float BEAM_ZOffset[MAXTF2PLAYERS];
-static bool BEAM_HitDetected[MAXTF2PLAYERS];
+static int BEAM_MaxDistance[MAXPLAYERS];
+static int BEAM_BeamRadius[MAXPLAYERS];
+static int BEAM_ColorHex[MAXPLAYERS];
+static float BEAM_BeamOffset[MAXPLAYERS][3];
+static float BEAM_ZOffset[MAXPLAYERS];
+static bool BEAM_HitDetected[MAXPLAYERS];
 static int BEAM_BuildingHit[RAILCANNON_MAXTARGETS];
-static bool BEAM_UseWeapon[MAXTF2PLAYERS];
-static float BEAM_Targets_Hit[MAXTF2PLAYERS];
-static float BEAM_CloseBuildingDPT[MAXTF2PLAYERS];
-static float BEAM_FarBuildingDPT[MAXTF2PLAYERS];
+static bool BEAM_UseWeapon[MAXPLAYERS];
+static float BEAM_Targets_Hit[MAXPLAYERS];
+static float BEAM_CloseBuildingDPT[MAXPLAYERS];
+static float BEAM_FarBuildingDPT[MAXPLAYERS];
 
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static float base_chargetime[MAXPLAYERS+1]={-1.0, ...};
 
-static bool Zoom_Active[MAXTF2PLAYERS] = {false, ...};
-static int Zoom_Default[MAXTF2PLAYERS] = {90, ...};
-static Handle ORC_Timer[MAXTF2PLAYERS];
-static Handle ORC_BeepTimer[MAXTF2PLAYERS];
-static bool ORC_Charging[MAXTF2PLAYERS] = {false, ...};
-static float ORC_LastFireTime[MAXTF2PLAYERS] = {0.0, ...};
+static bool Zoom_Active[MAXPLAYERS] = {false, ...};
+static int Zoom_Default[MAXPLAYERS] = {90, ...};
+static Handle ORC_Timer[MAXPLAYERS];
+static Handle ORC_BeepTimer[MAXPLAYERS];
+static bool ORC_Charging[MAXPLAYERS] = {false, ...};
+static float ORC_LastFireTime[MAXPLAYERS] = {0.0, ...};
 
 void Precache_Railcannon()
 {
@@ -512,7 +512,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 		{
 			ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 		}
-		for (int i = 1; i < MAXTF2PLAYERS; i++)
+		for (int i = 1; i < MAXPLAYERS; i++)
 		{
 			BEAM_HitDetected[i] = false;
 		}

@@ -404,21 +404,21 @@ public void Rogue_Store1_Collect()
 {
 	int recover = 1;
 	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-	Store_RandomizeNPCStore(0, recover);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 }
 
 public void Rogue_Store2_Collect()
 {
 	int recover = 2;
 	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-	Store_RandomizeNPCStore(0, recover);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 }
 
 public void Rogue_Store3_Collect()
 {
 	int recover = 3;
 	Rogue_TriggerFunction(Artifact::FuncRecoverWeapon, recover);
-	Store_RandomizeNPCStore(0, recover);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, recover);
 }
 
 public void Rogue_Shield1_Collect()

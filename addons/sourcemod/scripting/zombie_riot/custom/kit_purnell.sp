@@ -30,16 +30,16 @@ No buffs.
 
 static int LaserIndex;
 static bool Precached;
-static int i_Pap_Level[MAXTF2PLAYERS];
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static int i_Current_Pap[MAXTF2PLAYERS] = {0, ...};
-Handle Timer_Purnell_Management[MAXTF2PLAYERS] = {null, ...};
+static int i_Pap_Level[MAXPLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static int i_Current_Pap[MAXPLAYERS] = {0, ...};
+Handle Timer_Purnell_Management[MAXPLAYERS] = {null, ...};
 static int EnemiesHit[PURNELL_MAX_TARGETS];
-static bool b_PushSound[MAXTF2PLAYERS];
-static bool b_ShoveSound[MAXTF2PLAYERS];
-static float fl_Push_Knockback[MAXTF2PLAYERS];
+static bool b_PushSound[MAXPLAYERS];
+static bool b_ShoveSound[MAXPLAYERS];
+static float fl_Push_Knockback[MAXPLAYERS];
 static bool b_PurnellLastMann;
-static int i_SaveWeapon_Revolv[MAXTF2PLAYERS] = {-1, ...};
+static int i_SaveWeapon_Revolv[MAXPLAYERS] = {-1, ...};
 
 int Purnell_ReturnRevolver(int client)
 {
@@ -55,7 +55,7 @@ static char g_MeleeAttackSounds[][] = {
 static int Fantasy_Blade_Get_Pap(int weapon)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 
@@ -407,23 +407,26 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 			b_ShoveSound[client] = true;
 			static float Entity_Position[3];
 			WorldSpaceCenter(EnemyHit, Entity_Position);
-			switch(TypeOfShove)
+			if(!b_NpcIsInvulnerable[EnemyHit])
 			{
-				case 0:
+				switch(TypeOfShove)
 				{
-					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
-					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+					case 0:
+					{
+						float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
+						SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+					}
+					case 1:
+					{
+						float knockback = fl_Push_Knockback[client];
+						if(!b_thisNpcIsARaid[EnemyHit])
+							SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
+						Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
+						float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
+						SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
+					}
+					//dmg penalty
 				}
-				case 1:
-				{
-					float knockback = fl_Push_Knockback[client];
-					if(!b_thisNpcIsARaid[EnemyHit])
-						SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
-					Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
-					float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
-					SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
-				}
-				//dmg penalty
 			}
 			damage *= 0.75;
 		}
@@ -442,7 +445,7 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 					Add_OneClip_Purnell(Reolver, client);
 
 				float CurrentCD = Ability_Check_Cooldown(client, 3, Reolver);
-				Ability_Apply_Cooldown(client, 3, CurrentCD - 1.5, Reolver);
+				Ability_Apply_Cooldown(client, 3, CurrentCD - 1.5, Reolver, true);
 			}
 			EmitCustomToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 2.0, 100);
 		}
@@ -682,7 +685,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		}
 		
 		ClientCommand(client, "playgamesound items/suitchargeok1.wav");
-		if(target < MaxClients)
+		if(target <= MaxClients)
 			ClientCommand(target, "playgamesound items/gift_drop.wav");
 		
 		Ability_Apply_Cooldown(client, slot, cooldown);
@@ -1030,6 +1033,9 @@ static void Purnell_DebuffApply(int client, int target, int overdose, float Dura
 			}
 		}
 	}
+
+	//for hud
+	ApplyStatusEffect(client, target, "Therapy Duration", DurationGive);
 //	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 //	PrintHintText(client, "%s", text);
 }

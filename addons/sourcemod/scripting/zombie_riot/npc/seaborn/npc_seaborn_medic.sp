@@ -83,11 +83,9 @@ methodmap SeabornMedic < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_hat.mdl");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
 
 		npc.StartPathing();
@@ -163,7 +161,7 @@ public void SeabornMedic_ClotThink(int iNPC)
 	}
 	if(npc.m_iTargetAlly > 0)
 	{
-		NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+		npc.SetGoalEntity(npc.m_iTargetAlly);
 	}
 
 	npc.PlayIdleSound();

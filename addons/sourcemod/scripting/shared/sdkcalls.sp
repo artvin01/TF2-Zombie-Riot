@@ -328,7 +328,7 @@ void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 		{
 			b_LagCompAlliedPlayers = true;
 		}
-		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(3512)));
+		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(OffsetLagCompStart_UserInfoReturn())));
 //		StartLagCompensation_Base_Boss(client, true);
 	}
 }
@@ -417,17 +417,7 @@ stock void Manual_Impulse_101(int client, int health)
 	{
 		SetConVarInt(sv_cheats, 0, false, false);
 	}
-	
-	//how quirky.
-	SetAmmo(client, 1, 9999);
-	SetAmmo(client, 2, 9999);
-#if defined ZR
-	SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-	for(int i=Ammo_Jar; i<Ammo_MAX; i++)
-	{
-		SetAmmo(client, i, CurrentAmmo[client][i]);
-	}
-#endif
+	SDKCall_GiveCorrectAmmoCount(client);
 
 	OnWeaponSwitchPost(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"));
 
@@ -441,6 +431,19 @@ stock void Manual_Impulse_101(int client, int health)
 		SetEntityHealth(client, health);
 }
 
+void SDKCall_GiveCorrectAmmoCount(int client)
+{
+	//how quirky.
+	SetAmmo(client, 1, 9999);
+	SetAmmo(client, 2, 9999);
+#if defined ZR
+	SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+	for(int i=Ammo_Jar; i<Ammo_MAX; i++)
+	{
+		SetAmmo(client, i, CurrentAmmo[client][i]);
+	}
+#endif
+}
 #if defined ZR
 void SDKCall_ResetPlayerAndTeamReadyState()
 {

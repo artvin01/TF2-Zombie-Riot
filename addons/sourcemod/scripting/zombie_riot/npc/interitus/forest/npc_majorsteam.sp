@@ -136,11 +136,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.StartPathing();
@@ -316,7 +316,7 @@ static void ClotDeath(int entity)
 		if(b_StaticNPC[other])
 			AddNpcToAliveList(other, 1);
 		
-		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime(other) + 8.0;
+		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime(other) + 4.0;
 	}
 
 	if(IsValidEntity(npc.m_iWearable1))

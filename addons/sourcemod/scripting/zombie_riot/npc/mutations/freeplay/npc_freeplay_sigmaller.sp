@@ -224,11 +224,11 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 			if(distance2 < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, target);
+				npc.SetGoalEntity(target);
 			}
 	
 			npc.StartPathing();
@@ -300,7 +300,7 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 
 	if(npc.m_iTargetAlly > 0)
 	{
-		NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+		npc.SetGoalEntity(npc.m_iTargetAlly);
 	}
 
 	npc.PlayIdleSound();

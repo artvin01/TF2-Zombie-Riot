@@ -1,37 +1,37 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float Strength[MAXTF2PLAYERS];
+static float Strength[MAXPLAYERS];
 
 // the R
 static int use_id[MAXPLAYERS + 1]               = { 0, ... };
 static int is_currently_boosted[MAXPLAYERS + 1] = { 0, ... };
 
 
-static bool  BeamWand_CanUse[MAXTF2PLAYERS];
-static bool  BeamWand_IsUsing[MAXTF2PLAYERS];
-static int   BeamWand_TicksActive[MAXTF2PLAYERS];
+static bool  BeamWand_CanUse[MAXPLAYERS];
+static bool  BeamWand_IsUsing[MAXPLAYERS];
+static int   BeamWand_TicksActive[MAXPLAYERS];
 static int   BeamWand_Laser;
 static int   BeamWand_Glow1;
 static int   BeamWand_Glow2;
-static float BeamWand_CloseDPT[MAXTF2PLAYERS];
-static float BeamWand_FarDPT[MAXTF2PLAYERS];
-static int   BeamWand_MaxDistance[MAXTF2PLAYERS];
-static int   BeamWand_BeamRadius[MAXTF2PLAYERS];
-static int   BeamWand_ChargeUpTime[MAXTF2PLAYERS];
-static float BeamWand_CloseBuildingDPT[MAXTF2PLAYERS];
-static float BeamWand_FarBuildingDPT[MAXTF2PLAYERS];
-static float BeamWand_Duration[MAXTF2PLAYERS];
-static float BeamWand_BeamOffset[MAXTF2PLAYERS][3];
-static float BeamWand_ZOffset[MAXTF2PLAYERS];
-static bool  BeamWand_HitDetected[MAXTF2PLAYERS];
+static float BeamWand_CloseDPT[MAXPLAYERS];
+static float BeamWand_FarDPT[MAXPLAYERS];
+static int   BeamWand_MaxDistance[MAXPLAYERS];
+static int   BeamWand_BeamRadius[MAXPLAYERS];
+static int   BeamWand_ChargeUpTime[MAXPLAYERS];
+static float BeamWand_CloseBuildingDPT[MAXPLAYERS];
+static float BeamWand_FarBuildingDPT[MAXPLAYERS];
+static float BeamWand_Duration[MAXPLAYERS];
+static float BeamWand_BeamOffset[MAXPLAYERS][3];
+static float BeamWand_ZOffset[MAXPLAYERS];
+static bool  BeamWand_HitDetected[MAXPLAYERS];
 static int   BeamWand_BuildingHit[MAX_TARGETS_HIT];
-static bool  BeamWand_UseWeapon[MAXTF2PLAYERS];
+static bool  BeamWand_UseWeapon[MAXPLAYERS];
 static int   red;
 static int   green;
 static int   blue;
 
-static float BeamWand_Targets_Hit[MAXTF2PLAYERS];
+static float BeamWand_Targets_Hit[MAXPLAYERS];
 // BeamWand for all the stuffs
 void         Atomic_MapStart()
 {
@@ -339,7 +339,7 @@ static void TBB_Tick(int client)
 		{
 			ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 		}
-		for (int i = 1; i < MAXTF2PLAYERS; i++)
+		for (int i = 1; i < MAXPLAYERS; i++)
 		{
 			BeamWand_HitDetected[i] = false;
 		}

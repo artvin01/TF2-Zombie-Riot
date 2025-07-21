@@ -10,9 +10,9 @@ static bool LongDebuff;
 static bool ShortStun;
 static bool LongStun;
 static Handle TulipTimer;
-static float CurrentTulipDamage[MAXTF2PLAYERS];
+static float CurrentTulipDamage[MAXPLAYERS];
 static Handle CastleTimer;
-static float CurrentCastleHealth[MAXTF2PLAYERS];
+static float CurrentCastleHealth[MAXPLAYERS];
 
 void Rogue_ParadoxDLC_Flawless(int chaos)
 {
@@ -60,7 +60,7 @@ void Rogue_ParadoxDLC_AbilityUsed(int client)
 
 public void Rogue_RuinaGem_Collect()
 {
-	Rogue_RemoveChaos(50);
+	Rogue_RemoveChaos(10);
 }
 
 public void Rogue_Flawless1_Collect()
@@ -238,22 +238,22 @@ public void Rogue_Smoking_Remove()
 
 public void Rogue_FreeWeapon_Collect()
 {
-	Store_RandomizeNPCStore(0, 1, _, 0.0);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 1, 0.01);
 }
 
 public void Rogue_StartSP1_WaveStart()
 {
-	StartSP(6.0);
+	StartSP(15.0);
 }
 
 public void Rogue_StartSP2_WaveStart()
 {
-	StartSP(12.0);
+	StartSP(25.0);
 }
 
 public void Rogue_StartSP3_WaveStart()
 {
-	StartSP(18.0);
+	StartSP(500.0);
 }
 
 static void StartSP(float amount)

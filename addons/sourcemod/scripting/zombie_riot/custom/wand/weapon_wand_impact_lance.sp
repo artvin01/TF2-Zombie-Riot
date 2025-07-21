@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int i_Current_Pap[MAXTF2PLAYERS+1];
-static float fl_thorwn_lance[MAXTF2PLAYERS+1];
+static int i_Current_Pap[MAXPLAYERS+1];
+static float fl_thorwn_lance[MAXPLAYERS+1];
 static float f_projectile_dmg[MAXENTITIES];
 static int i_Impact_Lance_index[MAXENTITIES+1];
 static int i_Impact_Lance_wep[MAXENTITIES+1];
@@ -84,7 +84,7 @@ void LanceDamageCalc(int client, int weapon, float &damage, bool checkvalidity =
 		return;
 	}
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-
+	mana_cost = RoundToNearest(float(mana_cost) * LaserWeapons_ReturnManaCost(weapon));
 	if(mana_cost <= Current_Mana[client])
 	{
 		if(!checkvalidity)
@@ -96,7 +96,7 @@ void LanceDamageCalc(int client, int weapon, float &damage, bool checkvalidity =
 			
 			delay_hud[client] = 0.0;
 
-			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 			damage *= Attributes_Get(weapon, 410, 1.0);
 		}
 	}
@@ -348,7 +348,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		i_rocket_particle[entity]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
 		SetParent(entity, particle);	
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 		SetEntityRenderColor(entity, 255, 255, 255, 0);
 
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
@@ -551,7 +551,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 		{
-			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 		//	Impact_Lance_CosmeticRemoveEffects(client);
 		//	ApplyExtra_Impact_Lance_CosmeticEffects(client,_);
@@ -574,7 +574,7 @@ public void Enable_Impact_Lance(int client, int weapon)
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_IMPACT_LANCE)
 	{
-		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		if(i_Current_Pap[client]<4)
 		{
 			//CPrintToChatAll("Voided lance");

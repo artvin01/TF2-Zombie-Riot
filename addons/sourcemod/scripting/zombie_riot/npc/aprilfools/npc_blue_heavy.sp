@@ -118,8 +118,8 @@ methodmap BlueHeavy < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		AddNpcToAliveList(npc.index, 1);
+		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 1.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 60, 254, 255);
 
 		return npc;
@@ -143,12 +143,17 @@ public void BlueHeavy_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
-
-	if(IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	if(npc.m_flAbilityOrAttack0)
 	{
-		int ally = GetClosestAlly(npc.index);
-		float DurationGive = 999999.0;
-		ApplyStatusEffect(npc.index, ally, "Squad Leader", DurationGive);
+		npc.m_flAbilityOrAttack0 = gameTime + 10.0;
+		for(int Ally; Ally < MAXENTITIES; Ally ++)
+		{
+			if(IsValidAlly(npc.index, Ally))
+			{
+				float DurationGive = 999999.0;
+				ApplyStatusEffect(npc.index, Ally, "Squad Leader", DurationGive);
+			}
+		}
 	}
 	
 	if(npc.m_flNextThinkTime > gameTime)
@@ -174,11 +179,11 @@ public void BlueHeavy_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();

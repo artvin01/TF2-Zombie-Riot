@@ -204,7 +204,6 @@ methodmap Theocracy < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		
 		npc.m_flSpeed = 330.0;
@@ -312,8 +311,8 @@ static void ClotThink(int iNPC)
 		if(npc.m_flNextRangedBarrage_Spam < GameTime)
 		{	
 			
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 			
 			i_NpcWeight[npc.index] = 999;
@@ -397,8 +396,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -423,7 +422,7 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 		i_NpcWeight[npc.index] = 1;
 		
 		npc.m_flSpeed = 300.0;
-		npc.m_bPathing = true;
+		
 
 		RemoveSpecificBuff(npc.index, "Solid Stance");
 		
@@ -459,7 +458,7 @@ static Action Theocracy_Barrage_Anim(Handle timer, int ref)
 		TE_SendToAll();
 
 		UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-		int enemy_2[30];
+		int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 		GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false);
 		for(int i; i < sizeof(enemy_2); i++)
 		{

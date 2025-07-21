@@ -156,8 +156,6 @@ methodmap Fracatal_Kit_Animation < CClotBody
 							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 						}
-						//SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
-						//SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 125);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}
 					break;
@@ -215,7 +213,7 @@ methodmap Fracatal_Kit_Animation < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.

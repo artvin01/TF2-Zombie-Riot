@@ -164,7 +164,6 @@ methodmap Merlton_Boss < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		if(!clone)
 		{
@@ -235,7 +234,7 @@ static void Merlton_Boss_ClotThink(int iNPC)
 
 		if(IsValidAlly(npc.index, closest) /*&& Merlton_IsNotMyClone(npc.index, closest)*/)
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 			float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 		
 			float VecLook[3]; WorldSpaceCenter(npc.index, VecLook);
@@ -245,7 +244,7 @@ static void Merlton_Boss_ClotThink(int iNPC)
 				
 				if(flDistanceToTarget < 62500)
 				{
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 				else
 				{
@@ -310,11 +309,11 @@ static void Merlton_Boss_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}
 			
 			Merlton_SelfDefense(npc, GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 

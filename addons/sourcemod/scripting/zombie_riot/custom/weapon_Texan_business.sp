@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float f_TimerForDamageTexan[MAXTF2PLAYERS];
+static float f_TimerForDamageTexan[MAXPLAYERS];
 
 #define SOUND_DASH "npc/roller/mine/rmine_explode_shock1.wav"
 

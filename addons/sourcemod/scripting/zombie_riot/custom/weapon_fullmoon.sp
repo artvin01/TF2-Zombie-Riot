@@ -1,6 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-static float f_FullMoonHudCD[MAXTF2PLAYERS];
+static float f_FullMoonHudCD[MAXPLAYERS];
 static Handle h_TimerFullMoon[MAXPLAYERS+1] = {null, ...};
 static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
 static float f_FullMoonAbility[MAXPLAYERS+1] = {0.0, ...};
@@ -133,7 +133,7 @@ public void Weapon_FullMoon(int attacker, float &damage, int damagetype)
 static int Fantasy_Blade_Get_Pap(int weapon)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 

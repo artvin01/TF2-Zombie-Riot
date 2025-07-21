@@ -9,71 +9,71 @@
 
 Handle Timer_Ludo_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 
-static int BlackJack[MAXTF2PLAYERS];
-static int BlackjackCounter[MAXTF2PLAYERS];
-static int BlackjackCounterRandom[MAXTF2PLAYERS]; 
-static int CardCounter[MAXTF2PLAYERS];
-static int i_CardParticle[MAXTF2PLAYERS];
-static int i_Current_Pap[MAXTF2PLAYERS+1];
+static int BlackJack[MAXPLAYERS];
+static int BlackjackCounter[MAXPLAYERS];
+static int BlackjackCounterRandom[MAXPLAYERS]; 
+static int CardCounter[MAXPLAYERS];
+static int i_CardParticle[MAXPLAYERS];
+static int i_Current_Pap[MAXPLAYERS+1];
 
-static char CardParticle[MAXTF2PLAYERS][48];
+static char CardParticle[MAXPLAYERS][48];
 
-static char FirstCard[MAXTF2PLAYERS][3];
-static char SecondCard[MAXTF2PLAYERS][3];
-static char ThirdCard[MAXTF2PLAYERS][3];
-static char FourthCard[MAXTF2PLAYERS][3];
-static char FifthCard[MAXTF2PLAYERS][3];
-static char SixthCard[MAXTF2PLAYERS][3];
-static char SeventhCard[MAXTF2PLAYERS][3];
+static char FirstCard[MAXPLAYERS][3];
+static char SecondCard[MAXPLAYERS][3];
+static char ThirdCard[MAXPLAYERS][3];
+static char FourthCard[MAXPLAYERS][3];
+static char FifthCard[MAXPLAYERS][3];
+static char SixthCard[MAXPLAYERS][3];
+static char SeventhCard[MAXPLAYERS][3];
 
-static char FirstCardSymbol[MAXTF2PLAYERS][3];
-static char SecondCardSymbol[MAXTF2PLAYERS][3];
-static char ThirdCardSymbol[MAXTF2PLAYERS][3];
-static char FourthCardSymbol[MAXTF2PLAYERS][3];
-static char FifthCardSymbol[MAXTF2PLAYERS][3];
-static char SixthCardSymbol[MAXTF2PLAYERS][3];
-static char SeventhCardSymbol[MAXTF2PLAYERS][3];
+static char FirstCardSymbol[MAXPLAYERS][3];
+static char SecondCardSymbol[MAXPLAYERS][3];
+static char ThirdCardSymbol[MAXPLAYERS][3];
+static char FourthCardSymbol[MAXPLAYERS][3];
+static char FifthCardSymbol[MAXPLAYERS][3];
+static char SixthCardSymbol[MAXPLAYERS][3];
+static char SeventhCardSymbol[MAXPLAYERS][3];
 
-static int SpadeCounter[MAXTF2PLAYERS];
-static int DiamondCounter[MAXTF2PLAYERS];
-static bool HasClubs[MAXTF2PLAYERS];
+static int SpadeCounter[MAXPLAYERS];
+static int DiamondCounter[MAXPLAYERS];
+static bool HasClubs[MAXPLAYERS];
 
-static float Ludo_hud_delay[MAXTF2PLAYERS];
+static float Ludo_hud_delay[MAXPLAYERS];
 
-static bool AceReserve[MAXTF2PLAYERS];
-static bool SecondReserve[MAXTF2PLAYERS];
-static bool ThirdReserve[MAXTF2PLAYERS];
-static bool FourthReserve[MAXTF2PLAYERS];
-static bool FifthReserve[MAXTF2PLAYERS];
-static bool SixthReserve[MAXTF2PLAYERS];
-static bool SeventhReserve[MAXTF2PLAYERS];
-static bool EighthReserve[MAXTF2PLAYERS];
-static bool NinethReserve[MAXTF2PLAYERS];
-static bool TenthReserve[MAXTF2PLAYERS];
-static bool JackReserve[MAXTF2PLAYERS];
-static bool QueenReserve[MAXTF2PLAYERS];
-static bool KingReserve[MAXTF2PLAYERS];
+static bool AceReserve[MAXPLAYERS];
+static bool SecondReserve[MAXPLAYERS];
+static bool ThirdReserve[MAXPLAYERS];
+static bool FourthReserve[MAXPLAYERS];
+static bool FifthReserve[MAXPLAYERS];
+static bool SixthReserve[MAXPLAYERS];
+static bool SeventhReserve[MAXPLAYERS];
+static bool EighthReserve[MAXPLAYERS];
+static bool NinethReserve[MAXPLAYERS];
+static bool TenthReserve[MAXPLAYERS];
+static bool JackReserve[MAXPLAYERS];
+static bool QueenReserve[MAXPLAYERS];
+static bool KingReserve[MAXPLAYERS];
 
-static int Second[MAXTF2PLAYERS];
-static int Third[MAXTF2PLAYERS];
-static int Fourth[MAXTF2PLAYERS];
-static int Fifth[MAXTF2PLAYERS];
-static int Sixth[MAXTF2PLAYERS];
-static int Seventh[MAXTF2PLAYERS];
-static int Eighth[MAXTF2PLAYERS];
-static int Nineth[MAXTF2PLAYERS];
-static int Tenth[MAXTF2PLAYERS];
-static int Jack[MAXTF2PLAYERS];
-static int Queen[MAXTF2PLAYERS];
-static int King[MAXTF2PLAYERS];
+static int Second[MAXPLAYERS];
+static int Third[MAXPLAYERS];
+static int Fourth[MAXPLAYERS];
+static int Fifth[MAXPLAYERS];
+static int Sixth[MAXPLAYERS];
+static int Seventh[MAXPLAYERS];
+static int Eighth[MAXPLAYERS];
+static int Nineth[MAXPLAYERS];
+static int Tenth[MAXPLAYERS];
+static int Jack[MAXPLAYERS];
+static int Queen[MAXPLAYERS];
+static int King[MAXPLAYERS];
 
-static int SixthDebuff[MAXTF2PLAYERS];
-static int SeventhDebuff[MAXTF2PLAYERS];
-static int EighthDebuff[MAXTF2PLAYERS];
-static int NinethDebuff[MAXTF2PLAYERS];
-static int TenthDebuff[MAXTF2PLAYERS];
+static int SixthDebuff[MAXPLAYERS];
+static int SeventhDebuff[MAXPLAYERS];
+static int EighthDebuff[MAXPLAYERS];
+static int NinethDebuff[MAXPLAYERS];
+static int TenthDebuff[MAXPLAYERS];
 
-static bool OverLimit[MAXTF2PLAYERS];
+static bool OverLimit[MAXPLAYERS];
 
 void Weapon_Ludo_MapStart()
 {
@@ -1626,7 +1626,7 @@ public void Weapon_Ludo_WandTouch(int entity, int target)
 static int Ludo_Get_Pap(int weapon) //deivid inspired pap detection system (as in literally a copy-paste from fantasy blade)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 

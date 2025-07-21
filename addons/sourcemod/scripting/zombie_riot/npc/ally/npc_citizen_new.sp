@@ -845,12 +845,12 @@ static float TalkCooldown[MAXENTITIES];
 static float TalkTurnPos[MAXENTITIES][3];
 static float TalkTurningFor[MAXENTITIES];
 static float HealingCooldown[MAXENTITIES];
-static bool IgnorePlayer[MAXTF2PLAYERS];
+static bool IgnorePlayer[MAXPLAYERS];
 static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
 static float CommandCooldown[MAXENTITIES];
 static bool TempRebel[MAXENTITIES];
-static int PlayerRenameWho[MAXTF2PLAYERS];
+static int PlayerRenameWho[MAXPLAYERS];
 
 void Citizen_OnMapStart()
 {
@@ -1027,7 +1027,6 @@ methodmap Citizen < CClotBody
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,-5.0});
 			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-20.0});
 			npc.StartPathing();
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 			npc.m_bRebelAgressive = true;
 			npc.m_bStaticNPC = false;
@@ -1310,8 +1309,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				NPC_StopPathing(this.index);
-				this.m_bPathing = false;
+				this.StopPathing();
 			}
 			
 			int glow = this.m_iTeamGlow;
@@ -1335,8 +1333,7 @@ methodmap Citizen < CClotBody
 			
 			if(this.m_bPathing)
 			{
-				NPC_StopPathing(this.index);
-				this.m_bPathing = false;
+				this.StopPathing();
 			}
 			
 			int glow = this.m_iTeamGlow;
@@ -1555,11 +1552,32 @@ methodmap Citizen < CClotBody
 stock void Citizen_PlayerReplacement(int client)
 {
 	PlayerRenameWho[client] = -1;
-	if(Waves_Started() && !Waves_InSetup() && TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+	if(b_IsPlayerABot[client])
+		return;
+	
+	if(!Waves_Started())
+		return;
+	if(Waves_InSetup())
+		return;
+	//were they alive?
+	if(TeutonType[client] != TEUTON_NONE)
+		return;
+	//were they here since the start of the wave?
+	if(!b_HasBeenHereSinceStartOfWave[client])
+		return;
+	
+
+	if(IsClientInGame(client))
+	{
+		//easy, just spawn where they disconnected!
 		Citizen_SpawnAtPoint("temp", client);
+		return;
+	}
+	//hmm, they crashed and this somehow doesnt work out...
+	Citizen_SpawnAtPoint("temp", 0, f3_VecTeleportBackSave_OutOfBounds[client]);
 }
 
-int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
+int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3] = {0.0,0.0,0.0})
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
@@ -1592,11 +1610,18 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 	
 	if(count)
 	{
-		int entity = list[GetURandomInt() % count];
-		
 		float pos[3], ang[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		int entity;
+		if(VecPos[0] == 0.0)
+		{
+			entity = list[GetURandomInt() % count];
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+		}
+		else
+		{
+			pos = VecPos;
+		}
 		
 		entity = NPC_CreateByName("npc_citizen", client, pos, ang, TFTeam_Red, data);
 		if(IsValidEntity(entity))
@@ -1605,13 +1630,20 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0)
 			if(npc.m_nDowned)
 			{
 				npc.m_iWearable3 = TF2_CreateGlow(npc.index);
-					
+
 				SetVariantColor(view_as<int>({0, 255, 0, 255}));
 				AcceptEntityInput(npc.m_iWearable3, "SetGlowColor");
 					
 				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 			}
+			if(client != 0)
+			{
+				GetClientName(client, c_NpcName[entity], sizeof(c_NpcName[]));
+				b_NameNoTranslation[entity] = true;
+				Format(c_NpcName[entity], sizeof(c_NpcName[]), "%s's Replacement",c_NpcName[entity]);
+			}
+			ApplyStatusEffect(entity, entity, "UBERCHARGED", 2.0);
 
 			return entity;
 		}
@@ -1667,7 +1699,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	return 0;
 }
 
-static int MenuEntRef[MAXTF2PLAYERS];
+static int MenuEntRef[MAXPLAYERS];
 
 bool Citizen_Interact(int client, int entity)
 {
@@ -2095,6 +2127,7 @@ bool Rebel_Rename(int client)
 	char buffer[32];
 	GetCmdArgString(buffer, sizeof(buffer));
 	ReplaceString(buffer, sizeof(buffer), "\"", "");
+	CRemoveTags(buffer, sizeof(buffer));
 
 	if(!buffer[0])
 		return true;
@@ -2725,7 +2758,7 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			reloadStatus = 2;	// I need to reload now
 		}
-		else if(npc.m_iAttacksTillReload != npc.m_iGunClip)
+		else if(npc.m_iAttacksTillReload < (npc.m_iGunClip * 3 / 4))
 		{
 			reloadStatus = 1;	// Reload when free
 		}
@@ -3074,7 +3107,7 @@ public void Citizen_ClotThink(int iNPC)
 											NpcAddedToZombiesLeftCurrently(spawn_index, true);
 										
 										i_AttacksTillMegahit[spawn_index] = 1;
-										SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
+										SetEntityRenderMode(spawn_index, RENDER_NONE);
 										SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
 									}
 								}
@@ -3460,7 +3493,16 @@ public void Citizen_ClotThink(int iNPC)
 							int entity = Building_BuildByName(BuildingPlugin[id], npc.index, vecPos, vecAng);
 							if(entity != -1)
 							{
-								if(Building_AttemptPlace(entity, npc.index))
+								bool TryPlace = false;
+								TryPlace = Building_AttemptPlace(entity, npc.index, _ , 0.0);
+								for(int loop = 1; loop <= 4; loop++)
+								{
+									if(TryPlace)
+										break;
+									TryPlace = Building_AttemptPlace(entity, npc.index, _ , float(20 * loop));
+								}
+
+								if(TryPlace)
 								{
 									if(view_as<ObjectGeneric>(entity).SentryBuilding)
 									{
@@ -4351,7 +4393,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 			
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget, _, vecTarget);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			npc.SetGoalVector(vecTarget);
 			
 			npc.StartPathing();
 		}
@@ -4385,7 +4427,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			if(ally > 0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 			}
 		}
@@ -4426,7 +4468,7 @@ public void Citizen_ClotThink(int iNPC)
 
 			if(ally > 0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 			}
 		}
@@ -4447,7 +4489,7 @@ public void Citizen_ClotThink(int iNPC)
 					WorldSpaceCenter(ally, vecMe);
 					if(GetVectorDistance(vecMe, vecTarget, true) > 300000.0)
 					{
-						NPC_SetGoalEntity(npc.index, ally);
+						npc.SetGoalEntity(ally);
 						found = true;
 					}
 				}
@@ -4456,7 +4498,7 @@ public void Citizen_ClotThink(int iNPC)
 			if(!found)
 			{
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, target, _, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget, true);
+				npc.SetGoalVector(vecTarget, true);
 			}
 			
 			npc.StartPathing();
@@ -4469,12 +4511,12 @@ public void Citizen_ClotThink(int iNPC)
 			WorldSpaceCenter(target, vecTarget);
 			if(GetVectorDistance(vecMe, vecTarget, true) > 29000.0)
 			{
-				NPC_SetGoalEntity(npc.index, target);
+				npc.SetGoalEntity(target);
 			}
 			else
 			{
 				PredictSubjectPosition(npc, target, _, _, vecTarget);
-				NPC_SetGoalVector(npc.index, vecTarget);
+				npc.SetGoalVector(vecTarget);
 			}
 			
 			npc.StartPathing();

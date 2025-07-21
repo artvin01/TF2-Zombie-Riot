@@ -538,23 +538,48 @@ public float Rogue_Encounter_BobFinal()
 	Vote vote;
 
 	bool altfinal = Rogue_HasNamedArtifact("Revenge Squad");
-	
+	bool LockOut = altfinal;
+	bool BeatenBob = false;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && (CvarRogueSpecialLogic.BoolValue || Items_HasNamedItem(client, "Bob's true fear")))
+		{
+			BeatenBob = true;
+			break;
+		}
+	}
+	if(altfinal && !BeatenBob)
+	{
+		LockOut = false;
+	}
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Desc 1");
-	vote.Locked = altfinal;
+	vote.Locked = LockOut;
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	vote.Locked = altfinal;
+	vote.Locked = LockOut;
 	list.PushArray(vote);
 
 	if(altfinal)
 	{
-		strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 3");
-		strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Desc 3");
-		vote.Locked = false;
-		list.PushArray(vote);
+		if(LockOut)
+		{
+			//Incase the top ones are locked
+			strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 3");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Desc 3");
+			vote.Locked = false;
+			list.PushArray(vote);
+		}
+		else
+		{
+			strcopy(vote.Name, sizeof(vote.Name), "Bob Final Option 3 No");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Bob Final Option 3 No desc");
+			strcopy(vote.Append, sizeof(vote.Append), " (Win against Bladedance)");
+			vote.Locked = true;
+			list.PushArray(vote);
+		}
 	}
 
 	Rogue_StartGenericVote(20.0);

@@ -163,11 +163,8 @@ methodmap AgentDaveFreeplay < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		
@@ -236,8 +233,8 @@ public void AgentDaveFreeplay_ClotThink(int iNPC)
 			npc.m_bmovedelay = false;
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 		//	npc.FaceTowards(vecTarget, 1000.0);
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 		}
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -248,11 +245,11 @@ public void AgentDaveFreeplay_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
@@ -319,11 +316,6 @@ public void AgentDaveFreeplay_ClotThink(int iNPC)
 				NormalizeVector(vecDir, vecDir);
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				
-				if(EscapeModeForNpc)
-				{
-					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-				}
-				else
 				{
 					FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, 5.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
 				}
@@ -468,15 +460,15 @@ static void AgentDaveFreeplay_Reflect_Enable(AgentDaveFreeplay npc)
 static void AgentDaveFreeplay_Reflect_Disable(AgentDaveFreeplay npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable6, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;

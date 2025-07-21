@@ -41,7 +41,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return Liberi(vecPos, vecAng, team);
 }
-static float LiberiBuff[MAXENTITIES];
 
 methodmap Liberi < CClotBody
 {
@@ -78,6 +77,8 @@ methodmap Liberi < CClotBody
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
+		npc.m_flNextRangedAttackHappening = GetGameTime() + 3.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 3.0;
 		
 		Is_a_Medic[npc.index] = true;
 		npc.m_flSpeed = Rogue_Paradox_RedMoon() ? 500.0 : 300.0;
@@ -125,12 +126,12 @@ static void ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttackHappening < GetGameTime())
 	{
 		npc.m_flNextRangedAttackHappening = GetGameTime() + 2.5;
-		DesertYadeamDoHealEffect(npc.index, 200.0);
+		DesertYadeamDoHealEffect(npc.index, 300.0);
 	}
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 200.0, 99, 2000.0, 1.0, false,Expidonsa_DontHealSameIndex);
+		ExpidonsaGroupHeal(npc.index, 300.0, 99, 1000.0, 1.5, false,Expidonsa_DontHealSameIndex,Liberi_GrantImmortality);
 	}
 
 	int target = npc.m_iTargetAlly;
@@ -153,23 +154,17 @@ static void ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
+		VausMagicaGiveShield(target, 1);
+		//give shield to the target they follow
 		if(distance < 40000.0)
 		{
 			npc.StopPathing();
 
-			LiberiBuff[target] = GetGameTime() + (Rogue_Paradox_RedMoon() ? 3.0 : 0.2);
-
-			if(Rogue_Paradox_RedMoon() || !NpcStats_IsEnemySilenced(npc.index))
-			{
-				b_NpcIsInvulnerable[target] = true;
-				SDKUnhook(target, SDKHook_ThinkPost, LiberiBuffThink);
-				SDKHook(target, SDKHook_ThinkPost, LiberiBuffThink);
-			}
 		}
 		else
 		{
 			npc.StartPathing();
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 	}
 	else
@@ -180,13 +175,27 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-static void LiberiBuffThink(int entity)
+void Liberi_GrantImmortality(int entity, int victim)
 {
-	if(GetGameTime() > LiberiBuff[entity])
+	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int flMaxHealth = ReturnEntityMaxHealth(victim);
+	ApplyStatusEffect(entity, victim, "Unstoppable Force", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);
+	ApplyStatusEffect(entity, victim, "War Cry",		  Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
+	ApplyStatusEffect(entity, victim, "Defensive Backup", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
+	ApplyStatusEffect(entity, victim, "Ancient Melodies", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
+	flMaxHealth = RoundToCeil(float(flMaxHealth) * 1.45);
+	//silence disables this superbuff accuring.
+	if(!NpcStats_IsEnemySilenced(entity) && !NpcStats_IsEnemySilenced(victim))
 	{
-		b_NpcIsInvulnerable[entity] = false;
-		SDKUnhook(entity, SDKHook_ThinkPost, LiberiBuffThink);
+		if(flHealth > flMaxHealth)
+		{
+			//super power!
+			ApplyStatusEffect(entity, victim, "War Cry", 999999.0);	
+			ApplyStatusEffect(entity, victim, "Defensive Backup", 999999.0);	
+			ApplyStatusEffect(entity, victim, "Ancient Melodies", 999999.0);	
+		}
 	}
+	//yippie reuse
 }
 
 static void ClotDeath(int entity)

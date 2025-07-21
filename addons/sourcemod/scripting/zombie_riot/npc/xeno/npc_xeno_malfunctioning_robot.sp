@@ -170,15 +170,11 @@ methodmap XenoMalfuncRobot < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum22_combat_casual/sum22_combat_casual.mdl", "", skin);
 		//npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec22_heavy_heating_style3/dec22_heavy_heating_style3.mdl", "", skin);//breaks
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_horror_shawl_style2/hwn2022_horror_shawl_style2.mdl", "", skin);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
 
 		func_NPCDeath[npc.index] = XenoMalfuncRobot_NPCDeath;
@@ -288,11 +284,11 @@ public void XenoMalfuncRobot_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		
 		//Target close enough to hit
@@ -300,8 +296,8 @@ public void XenoMalfuncRobot_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

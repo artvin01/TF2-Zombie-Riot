@@ -196,7 +196,7 @@ methodmap RavagingIntellect < CClotBody
 	
 	public RavagingIntellect(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RavagingIntellect npc = view_as<RavagingIntellect>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", MinibossHealthScaling(40), ally));
+		RavagingIntellect npc = view_as<RavagingIntellect>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", MinibossHealthScaling(40.0), ally));
 		i_NpcWeight[npc.index] = 3;
 		
 
@@ -230,16 +230,12 @@ methodmap RavagingIntellect < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.StartPathing();
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 
 		SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
@@ -275,11 +271,11 @@ methodmap RavagingIntellect < CClotBody
 					}
 					case 1:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get out before i make you.");
+						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get out before I make you.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Blah blah blah i don't care.");
+						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Blah blah blah I don't care.");
 					}
 					case 3:
 					{
@@ -291,9 +287,12 @@ methodmap RavagingIntellect < CClotBody
 		}
 		else
 		{
-			
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 175, 100, 100, 125);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 125);
 			SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 125);
 			SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 125);
@@ -325,8 +324,8 @@ methodmap RavagingIntellect < CClotBody
 				SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 90);
 				SetEntityRenderColor(npc.m_iWearable3, 175, 175, 175, 90);
 				SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 90);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_neck_snap_scout");
 				npc.SetPlaybackRate(1.0);
@@ -337,6 +336,7 @@ methodmap RavagingIntellect < CClotBody
 		}
 		npc.m_flSpawnClone = GetGameTime() + 5.0;
 		float flPos[3], flAng[3];
+		RavagingIntellectEars(npc.index);
 				
 		npc.GetAttachment("eyes", flPos, flAng);
 		npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {5.0,0.0,0.0});
@@ -464,8 +464,8 @@ public void RavagingIntellect_ClotThink(int iNPC)
 	{
 		npc.Anger = true;
 		npc.m_flAttackHappens = 0.0;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_commending_clap_scout");
 		npc.SetCycle(0.7);
@@ -478,7 +478,7 @@ public void RavagingIntellect_ClotThink(int iNPC)
 	fl_TotalArmor[npc.index] = 1.0;
 	if(HasSpecificBuff(npc.index, "Altered Functions"))
 	{
-		fl_TotalArmor[npc.index] = 0.75;
+		fl_TotalArmor[npc.index] *= 0.75;
 	}
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -570,8 +570,8 @@ public void RavagingIntellect_ClotThink(int iNPC)
 								npc.m_flTeleportCooldown = GetGameTime(npc.index) + 40.0;
 								ExpidonsaGroupHeal(npc.index, RAVAGING_INTELLECT_RANGE, 10, 0.0, 1.0, false,RavagingIntellectStun);
 								npc.m_flAttackHappens = 0.0;
-								NPC_StopPathing(npc.index);
-								npc.m_bPathing = false;
+								npc.StopPathing();
+								
 								npc.m_bisWalking = false;
 								npc.AddActivityViaSequence("taunt_yeti");
 								npc.SetCycle(0.696);
@@ -603,11 +603,11 @@ public void RavagingIntellect_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 	}
 	npc.PlayIdleAlertSound();
@@ -667,6 +667,7 @@ public void RavagingIntellect_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	ExpidonsaRemoveEffects(entity);
 	
 	if(!b_NoKillFeed[npc.index])
 	{
@@ -674,7 +675,7 @@ public void RavagingIntellect_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: This is getting on my nerves, im leaving.");
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: This is getting on my nerves, i'm leaving.");
 			}
 			case 1:
 			{
@@ -813,4 +814,56 @@ void RavagingIntellect_ApplyBuffInLocation(float BannerPos[3], int Team, int iMe
 			}
 		}
 	}
+}
+
+
+void RavagingIntellectEars(int iNpc, char[] attachment = "head")
+{
+	
+	int red = 200;
+	int green = 25;
+	int blue = 200;
+	float flPos[3];
+	float flAng[3];
+	int particle_ears1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	
+	//fist ear
+	int particle_ears2 = InfoTargetParentAt({0.0,-1.85,0.0}, "", 0.0); //First offset we go by
+	int particle_ears3 = InfoTargetParentAt({0.0,-4.44,-3.7}, "", 0.0); //First offset we go by
+	int particle_ears4 = InfoTargetParentAt({0.0,-5.9,2.2}, "", 0.0); //First offset we go by
+	
+	//fist ear
+	int particle_ears2_r = InfoTargetParentAt({0.0,1.85,0.0}, "", 0.0); //First offset we go by
+	int particle_ears3_r = InfoTargetParentAt({0.0,4.44,-3.7}, "", 0.0); //First offset we go by
+	int particle_ears4_r = InfoTargetParentAt({0.0,5.9,2.2}, "", 0.0); //First offset we go by
+
+	SetParent(particle_ears1, particle_ears2, "",_, true);
+	SetParent(particle_ears1, particle_ears3, "",_, true);
+	SetParent(particle_ears1, particle_ears4, "",_, true);
+	SetParent(particle_ears1, particle_ears2_r, "",_, true);
+	SetParent(particle_ears1, particle_ears3_r, "",_, true);
+	SetParent(particle_ears1, particle_ears4_r, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_ears1, flPos);
+	SetEntPropVector(particle_ears1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_ears1, attachment,_);
+
+
+	int Laser_ears_1 = ConnectWithBeamClient(particle_ears4, particle_ears2, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_ears_2 = ConnectWithBeamClient(particle_ears4, particle_ears3, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+
+	int Laser_ears_1_r = ConnectWithBeamClient(particle_ears4_r, particle_ears2_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	int Laser_ears_2_r = ConnectWithBeamClient(particle_ears4_r, particle_ears3_r, red, green, blue, 1.0, 1.0, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(particle_ears1);
+	i_ExpidonsaEnergyEffect[iNpc][16] = EntIndexToEntRef(particle_ears2);
+	i_ExpidonsaEnergyEffect[iNpc][17] = EntIndexToEntRef(particle_ears3);
+	i_ExpidonsaEnergyEffect[iNpc][18] = EntIndexToEntRef(particle_ears4);
+	i_ExpidonsaEnergyEffect[iNpc][19] = EntIndexToEntRef(Laser_ears_1);
+	i_ExpidonsaEnergyEffect[iNpc][20] = EntIndexToEntRef(Laser_ears_2);
+	i_ExpidonsaEnergyEffect[iNpc][21] = EntIndexToEntRef(particle_ears2_r);
+	i_ExpidonsaEnergyEffect[iNpc][22] = EntIndexToEntRef(particle_ears3_r);
+	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
+	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
+	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
 }

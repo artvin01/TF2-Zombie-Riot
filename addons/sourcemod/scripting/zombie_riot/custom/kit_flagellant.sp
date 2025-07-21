@@ -19,21 +19,24 @@ Sepsis - M2 on Enemy with big damage, self heal, requires <50% HP, 1 use per wav
 
 static int LaserIndex;
 
-static int DeathDoors[MAXTF2PLAYERS];
-static int LastDeathDoor[MAXTF2PLAYERS];
-static bool LastDeathDoorRaid[MAXTF2PLAYERS];
+static int DeathDoors[MAXPLAYERS];
+static int LastDeathDoor[MAXPLAYERS];
+static bool LastDeathDoorRaid[MAXPLAYERS];
 
-static int HealLevel[MAXTF2PLAYERS];
-static int MeleeLevel[MAXTF2PLAYERS];
+static int HealLevel[MAXPLAYERS];
+static int MeleeLevel[MAXPLAYERS];
 
-static float MoreMoreFor[MAXTF2PLAYERS];
-static int MoreMoreHits[MAXTF2PLAYERS];
-static int MoreMoreHealing[MAXTF2PLAYERS];
-static int MoreMoreCap[MAXTF2PLAYERS];
+static float MoreMoreFor[MAXPLAYERS];
+static int MoreMoreHits[MAXPLAYERS];
+static int MoreMoreHealing[MAXPLAYERS];
+static int MoreMoreCap[MAXPLAYERS];
 
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static Handle EffectTimer[MAXTF2PLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXPLAYERS];
 static bool Precached = false;
+
+#define FLAGGELANT_BASE_HEAL 40.0
+#define FLAGGELANT_GLOBAL_HP_NERF 0.8
 void Flagellant_MapStart()
 {
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -92,6 +95,8 @@ bool IsFlaggilant(int client)
 }
 void Flagellant_MiniBossChance(int &chance)
 {
+	return;
+	/*
 	if(chance > 0)
 	{
 		int count;
@@ -132,6 +137,7 @@ void Flagellant_MiniBossChance(int &chance)
 			remainer = multi;
 		}
 	}
+	*/
 }
 
 public Action Flagellant_EffectTimer(Handle timer, int client)
@@ -364,6 +370,8 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 	MoreMoreHits[client] = 0;
 	MoreMoreCap[client] = 30 + (MeleeLevel[client] * 10) + (HealLevel[client] * 5);
 
+	MoreMoreCap[client] = RoundToNearest(float(MoreMoreCap[client]) * FLAGGELANT_GLOBAL_HP_NERF);
+
 	float ratio = 0.01 + (MeleeLevel[client] * 0.005) + (HealLevel[client] * 0.0025);
 
 	MoreMoreHealing[client] = RoundToFloor(SDKCall_GetMaxHealth(client) * ratio);
@@ -493,8 +501,11 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 			float multi = Attributes_Get(weapon, 2, 1.0);
 			multi *= Attributes_GetOnWeapon(client, weapon, 8, true);
 			
-			float base = 40.0 + (HealLevel[client] * 7.5);
+			float base = FLAGGELANT_BASE_HEAL + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
+
+			base *= FLAGGELANT_GLOBAL_HP_NERF;
+			cost *= FLAGGELANT_GLOBAL_HP_NERF;
 
 			float healing = base * multi;
 			float injured = float(maxhealth - health);
@@ -534,7 +545,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				
 				ClientCommand(client, "playgamesound player/invuln_off_vaccinator.wav");
 
-				if(target < MaxClients)
+				if(target <= MaxClients)
 					ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 				
 				float cooldown = (healing / multi) / 15.0;
@@ -700,6 +711,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	if(validAlly)
 	{
 		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.35 : 0.25));
+		healing = RoundToNearest(float(healing) * FLAGGELANT_GLOBAL_HP_NERF);
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
 		{
@@ -815,6 +827,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		Rogue_OnAbilityUse(client, weapon);
 
 		int healing = RoundToFloor(maxhealth * (HealLevel[client] > 1 ? 0.5 : 0.35));
+		healing = RoundToNearest(float(healing) * FLAGGELANT_GLOBAL_HP_NERF);
 		TriggerDeathDoor(client, healing);
 		if(healing > 0)
 		{
@@ -916,7 +929,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
 
-		int round = ZR_Waves_GetRound();
+		int round = Waves_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
 		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)
@@ -931,6 +944,7 @@ static void TriggerDeathDoor(int client, int &healing)
 			DeathDoors[client]--;
 			i_AmountDowned[client]--;
 		}
+		CheckLastMannStanding(0);
 	}
 }
 

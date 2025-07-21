@@ -34,11 +34,10 @@ float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
 
 float fl_ruina_helia_healing_timer[MAXENTITIES];
-static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 
 
-static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
+static float fl_mana_sickness_timeout[MAXPLAYERS];
 
 float fl_ruina_in_combat_timer[MAXENTITIES];
 static float fl_ruina_internal_teleport_timer[MAXENTITIES];
@@ -220,7 +219,6 @@ void Ruina_Ai_Core_Mapstart()
 	Zero(b_ruina_npc_healer);
 	Zero(fl_npc_healing_duration);
 	Zero(fl_ruina_helia_healing_timer);
-	Zero(fl_ruina_internal_healing_timer);
 
 	Zero(fl_ruina_internal_teleport_timer);
 	Zero(b_ruina_allow_teleport);
@@ -269,9 +267,17 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_Glow_Blue = PrecacheModel("sprites/blueglow2.vmt", true);
 	g_Ruina_Glow_Red = PrecacheModel("sprites/redglow2.vmt", true);
 }
+static void OffsetGive_BatteryChargeStatus(int ref)
+{
+	int npc = EntRefToEntIndex(ref);
+	if(!IsValidEntity(npc))
+		return;
+	
+	ApplyStatusEffect(npc, npc, "Ruina Battery Charge", 9999.0);
+}
 void Ruina_Set_Heirarchy(int client, int type)
 {
-	ApplyStatusEffect(client, client, "Ruina Battery Charge", 9999.0);
+	RequestFrame(OffsetGive_BatteryChargeStatus, EntIndexToEntRef(client));
 
 	Ruina_Remove_Shield(client);
 	b_ruina_npc[client] = true;
@@ -439,7 +445,11 @@ static void Ruina_Update_Shield(int client)
 	}
 	if(IsValidEntity(i_shield_entity))
 	{
-		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		if(alpha != 255)
+			SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		else
+			SetEntityRenderMode(i_shield_entity, RENDER_NORMAL);
+
 		SetEntityRenderColor(i_shield_entity, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	}
 	else
@@ -458,7 +468,10 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 		SetVariantString("1.0");
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	if(alpha != 255)
+		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	else
+		SetEntityRenderMode(Shield, RENDER_NORMAL);
 	
 	SetEntityRenderColor(Shield, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -577,18 +590,8 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	if(b_is_battery_buffed[npc.index] && fl_ruina_battery_timer[npc.index] > GameTime)
 		return;
 
-	int wave = ZR_Waves_GetRound()+1;
-	//whats a "switch" statement??
-	if(wave<=15)	
-	{
-
-	}
-	else if(wave <=30)	
-	{
-		
-	}
-	//npc's during "stage 3" get energy from taking dmg. going into its whole "sacrifice" theme.
-	else if(wave <= 45)	
+	int wave = iRuinaWave();
+	if(wave <= 20)	
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
@@ -597,11 +600,11 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
 	}
-	else if(wave <=60)
+	else if(wave <=40)
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1350.0*(Ratio-Difference);
+		float Give = 1450.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -610,7 +613,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	{
 		float Health_Post = (Health-damage);
 		float Difference = Health_Post/Max_Health;
-		float Give = 1500.0*(Ratio-Difference);
+		float Give = 1700.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
 		//CPrintToChatAll("Gave %f battery",Give );
@@ -702,9 +705,9 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 				fl_npc_healing_duration[npc.index] = GameTime + 2.5;		
 				if(dist > (100.0 * 100.0))	//go to master until we reach this distance from master
 				{
-					NPC_SetGoalEntity(npc.index, Healer);
+					npc.SetGoalEntity(Healer);
 					npc.StartPathing();
-					npc.m_bPathing = true;
+					
 					
 				}
 				return;
@@ -794,21 +797,21 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 									
 					float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 							
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+					npc.SetGoalEntity(PrimaryThreatIndex);
 				}
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 
 				Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -829,9 +832,9 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 			
 						if(dist > (150.0 * 150.0))	//go to master until we reach this distance from master
 						{
-							NPC_SetGoalEntity(npc.index, Master_Id_Main);
+							npc.SetGoalEntity(Master_Id_Main);
 							npc.StartPathing();
-							npc.m_bPathing = true;
+							
 
 							Ruina_Special_Logic(npc.index, Master_Id_Main);
 								
@@ -840,8 +843,8 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 						{
 							if(flDistanceToTarget>(300.0 * 300.0))	//if master is within range we stop moving and stand still
 							{
-								NPC_StopPathing(npc.index);
-								npc.m_bPathing = false;
+								npc.StopPathing();
+								
 							}
 							else	//but if master's target is too close we attack them
 							{
@@ -851,11 +854,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 										
 									float vPredictedPos[3];  PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 										
-									NPC_SetGoalVector(npc.index, vPredictedPos);
+									npc.SetGoalVector(vPredictedPos);
 								}
 								else 
 								{
-									NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+									npc.SetGoalEntity(PrimaryThreatIndex);
 								}
 								npc.StartPathing();
 							}
@@ -869,11 +872,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 								
 							float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 							
-							NPC_SetGoalVector(npc.index, vPredictedPos);
+							npc.SetGoalVector(vPredictedPos);
 						}
 						else 
 						{
-							NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+							npc.SetGoalEntity(PrimaryThreatIndex);
 						}
 
 						Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
@@ -889,17 +892,17 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 						
 					if(dist > (100.0 * 100.0))
 					{
-						NPC_SetGoalEntity(npc.index, Master_Id_Main);
+						npc.SetGoalEntity(Master_Id_Main);
 						npc.StartPathing();
-						npc.m_bPathing = true;
+						
 
 						Ruina_Special_Logic(npc.index, Master_Id_Main);
 						
 					}
 					else
 					{
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
+						npc.StopPathing();
+						
 					}	
 				}
 				//for the double type just gonna use melee npc logic
@@ -910,11 +913,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 									
 						float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
 									
-						NPC_SetGoalVector(npc.index, vPredictedPos);
+						npc.SetGoalVector(vPredictedPos);
 					}
 					else 
 					{
-						NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+						npc.SetGoalEntity(PrimaryThreatIndex);
 					}
 					npc.StartPathing();
 
@@ -929,8 +932,8 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 	{
 		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 			return;
@@ -945,11 +948,11 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 			
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		Ruina_Special_Logic(npc.index, PrimaryThreatIndex);
 		npc.StartPathing();
@@ -974,11 +977,11 @@ void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//
 	{
 		float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
 		
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	}
 	else 
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 	}
 	npc.StartPathing();
 }
@@ -1009,17 +1012,17 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 						
 		if(dist > (225.0 * 225.0))
 		{
-			NPC_SetGoalEntity(npc.index, Anchor_Id);
+			npc.SetGoalEntity(Anchor_Id);
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 
 			Ruina_Special_Logic(npc.index, Anchor_Id);
 					
 		}
 		else
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 		}	
 	}
 	else
@@ -1032,16 +1035,15 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		npc.StartPathing();
 	}
 }
-int i_ruina_Projectile_Particle[MAXENTITIES];
 float fl_ruina_Projectile_dmg[MAXENTITIES];
 float fl_ruina_Projectile_radius[MAXENTITIES];
 float fl_ruina_Projectile_bonus_dmg[MAXENTITIES];
@@ -1120,7 +1122,7 @@ enum struct Ruina_Projectiles
 				//Make it entirely invis. Shouldnt even render these 8 polygons.
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 
@@ -1152,10 +1154,10 @@ enum struct Ruina_Projectiles
 		if(!IsValidEntity(particle))
 			return -1;
 
-		i_ruina_Projectile_Particle[this.Projectile_Index]= EntIndexToEntRef(particle);
+		i_rocket_particle[this.Projectile_Index]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
 		SetParent(this.Projectile_Index, particle);	
-		SetEntityRenderMode(this.Projectile_Index, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderMode(this.Projectile_Index, RENDER_NONE); //Make it entirely invis.
 		SetEntityRenderColor(this.Projectile_Index, 255, 255, 255, 0);
 
 		return particle;
@@ -1236,7 +1238,7 @@ static Action Remove_Projectile_Timer(Handle Timer, int Ref)
 }
 void Ruina_Remove_Projectile(int entity)
 {
-	int particle = EntRefToEntIndex(i_ruina_Projectile_Particle[entity]);
+	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);
@@ -1341,14 +1343,14 @@ enum struct Ruina_Self_Defense
 	}
 }
 
-static float fl_mana_sickness_multi[MAXENTITIES];
-static int i_mana_sickness_flat[MAXENTITIES];
-static bool b_override_Sickness[MAXENTITIES];
+static float fl_mana_sickness_multi;
+static int i_mana_sickness_flat;
+static bool b_override_Sickness;
 void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0, bool override = false)
 {
-	fl_mana_sickness_multi[iNPC] = Multi;
-	i_mana_sickness_flat[iNPC] = flat_amt;
-	b_override_Sickness[iNPC] = override;
+	fl_mana_sickness_multi = Multi;
+	i_mana_sickness_flat= flat_amt;
+	b_override_Sickness= override;
 	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
 }
 void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
@@ -1361,13 +1363,13 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	ManaCalculationsBefore(victim);
 	float GameTime = GetGameTime();
 
-	bool override = b_override_Sickness[entity];
+	bool override = b_override_Sickness;
 	
 	if(fl_mana_sickness_timeout[victim] > GameTime && !override)
 		return;
 		
-	float Multi = fl_mana_sickness_multi[entity];
-	int flat_amt = i_mana_sickness_flat[entity];
+	float Multi = fl_mana_sickness_multi;
+	int flat_amt = i_mana_sickness_flat;
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
 	int wep_hold = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
@@ -1379,7 +1381,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 		}
 	}
 
-	b_override_Sickness[entity] = false;
+	b_override_Sickness = false;
 
 	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
 
@@ -1423,7 +1425,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 
-	int wave = ZR_Waves_GetRound()+1;
+	int wave = iRuinaWave();
 
 	float 	dmg 		= 250.0,
 			time 		= 2.5,		//how long until it goes boom
@@ -1438,7 +1440,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(mana <=400.0)	//a base mana asumption
 		mana=400.0;
 
-	if(wave<=15)
+	if(wave<=10)
 	{
 		Radius		= 100.0;
 		dmg 		= mana+100.0;	//evil.
@@ -1446,7 +1448,7 @@ static void Apply_Sickness(int iNPC, int Target)
 		Timeout 	= 6.0;
 		Slow_Time 	= 5.0;
 	}
-	else if(wave<=30)
+	else if(wave<=20)
 	{
 		Radius		= 125.0;
 		dmg 		= mana*1.25+200.0;
@@ -1454,7 +1456,7 @@ static void Apply_Sickness(int iNPC, int Target)
 		Timeout 	= 5.5;
 		Slow_Time 	= 5.0;
 	}
-	else if(wave<=45)
+	else if(wave<=30)
 	{
 		Radius		= 175.0;
 		dmg 		= mana*1.5+300.0;
@@ -1481,6 +1483,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(!HasSpecificBuff(Target, "Fluid Movement"))
 		TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);	//50% slower
 
+	Force_ExplainBuffToClient(Target, "Overmana Overload");
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
 	end_point[2]+=5.0;
@@ -1520,17 +1523,17 @@ static void Apply_Sickness(int iNPC, int Target)
 void Ruina_Color(int color[4], int wave = -1)
 {
 	if(wave == -1)
-		wave = ZR_Waves_GetRound()+1;
+		wave = iRuinaWave();
 		
-	if(wave<=15)
+	if(wave<=10)
 	{
 		color 	= {255, 0, 0, 255};
 	}
-	else if(wave<=30)
+	else if(wave<=20)
 	{
 		color 	= {255, 150, 150, 255};
 	}
-	else if(wave<=45)
+	else if(wave<=30)
 	{	
 		color 	= {255, 200, 200, 255};
 	}
@@ -1733,7 +1736,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 				npc.StartPathing();
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 			}
 			else
 			{
@@ -1745,7 +1748,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 			npc.StartPathing();
 			float vBackoffPos[3];
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.SetGoalVector(vBackoffPos, true);
 		}
 		
 		return;
@@ -1756,8 +1759,8 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	{
 		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bAllowBackWalking=false;
 		}
 		else
@@ -1767,8 +1770,8 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 	else	//no?
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bAllowBackWalking=false;
 	}
 }
@@ -1778,7 +1781,7 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
-		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers , Ruina_HealVisualEffect);
+		ExpidonsaGroupHeal(npc.index, Range, 15, float(Healing), 1.3, false, Ruina_NerfHealingOnBossesOrHealers);
 		DesertYadeamDoHealEffect(npc.index, Range);
 
 		//int color[4]; Ruina_Color(color);
@@ -1808,11 +1811,11 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 		
 		if(b_ruina_nerf_healing[healed_target])
 		{//the npc is a special case that needs to get less healing otherwise unfun balance happens
-			healingammount *=0.7;
+			healingammount *=0.8;
 		}
 		else if(b_thisNpcIsABoss[healed_target] || b_thisNpcIsARaid[healed_target])
 		{//this npc is a raid/boss healing target
-			healingammount *=0.8;
+			healingammount *=0.9;
 		}
 	}
 	if(b_ruina_npc_healer[healed_target])
@@ -1827,37 +1830,6 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 	
 
 	return false;
-}
-
-void Ruina_HealVisualEffect(int healer, int victim)
-{
-	CClotBody npc = view_as<CClotBody>(victim);
-
-	float GameTime = GetGameTime(npc.index);
-
-	if(AtEdictLimit(EDICT_NPC))
-		return;
-
-	if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
-		return;
-
-	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-	WorldSpaceVec[2]-=25.0;
-
-	fl_ruina_internal_healing_timer[npc.index]=GameTime+RUINA_INTERNAL_HEALING_COOLDOWN;
-
-	char Particle[30];
-	
-	switch(GetRandomInt(0,2))
-	{
-		case 0:
-			Particle = "spell_cast_wheel_red";
-		case 1:
-			Particle = "spell_cast_wheel_blue";
-	}
-	int Healing_Effect = ParticleEffectAt_Parent(WorldSpaceVec, Particle, npc.index, "", {0.0,0.0,0.0});
-
-	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(Healing_Effect), TIMER_FLAG_NO_MAPCHANGE);
 }
 bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, float Dist_Max, float recharge, float dmg = 0.0, float radius = 0.0, Function OnTeleportLaseHit = INVALID_FUNCTION)
 {
@@ -1902,8 +1874,8 @@ bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, flo
 				npc.m_flDoingAnimation = GameTime + 1.0;
 				npc.SetPlaybackRate(1.0);	
 				npc.SetCycle(0.1);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_trackmans_touchdown");
 				return false;
@@ -2050,23 +2022,17 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 		Ruina_Color(colour);
 		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, Thickness, 0.5, colour, 1, 0);
 		TE_SendToAll();
-		int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
-		if(IsValidEntity(entity))
-		{
-			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
-			//Ruina_Move_Entity(entity, Loc, 5.0);
-		}
 		float effect_duration = 0.25;
 	
 		end_offset = vPredictedPos;
-							
+		
 		start_offset[2]-= 25.0;
 		end_offset[2] -= 25.0;
-							
+		
 		for(int help=1 ; help<=8 ; help++)
 		{	
 			Astria_Teleport_Effect(RUINA_BALL_PARTICLE_RED, effect_duration, start_offset, end_offset);
-							
+			
 			start_offset[2] += 12.5;
 			end_offset[2] += 12.5;
 		}
@@ -2353,59 +2319,6 @@ void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecori
 	delete trace;
 	//if it doesnt hit anything, then it just does buisness as usual
 }
-static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
-{
-	if (IsValidEntity(entity))
-	{
-		int part1 = CreateEntityByName("info_particle_system");
-		if (IsValidEdict(part1))
-		{
-			float pos[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-			
-			if (zTrans != 0.0)
-			{
-				pos[2] += zTrans;
-			}
-			
-			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
-			DispatchKeyValue(part1, "effect_name", type);
-			SetVariantString("!activator");
-			AcceptEntityInput(part1, "SetParent", entity, part1);
-			SetVariantString(point);
-			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
-			DispatchKeyValue(part1, "targetname", "present");
-			DispatchSpawn(part1);
-			ActivateEntity(part1);
-			AcceptEntityInput(part1, "Start");
-			
-			if (duration > 0.0)
-			{
-				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
-			}
-			return part1;
-		}
-		else
-		{
-			return -1;
-		}
-	}
-	return -1;
-}
-
-static int Ruina_Create_Entity_Specific(float Loc[3], int old_particle=-1, float time=0.0)
-{
-	if(!IsValidEntity(old_particle))
-	{
-		//i_laser_particle_index[client][cycle]= EntIndexToEntRef(ParticleEffectAt({0.0,0.0,0.0}, "", 0.0));
-		int particle_new = Ruina_Create_Entity(Loc, time);
-		return particle_new;
-	}
-	else
-	{
-		return old_particle;
-	}
-}
 int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 {
 	int prop = CreateEntityByName("prop_physics_override");
@@ -2459,6 +2372,12 @@ stock void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result
 	Result_Vec[0] += actualBeamOffset[0];
 	Result_Vec[1] += actualBeamOffset[1];
 	Result_Vec[2] += actualBeamOffset[2];
+}
+int iRuinaWave()
+{
+	int wave = Waves_GetRoundScale()+1;
+	wave = RoundToCeil(wave * MinibossScalingReturn());
+	return wave;
 }
 enum struct Ruina_Laser_Logic
 {

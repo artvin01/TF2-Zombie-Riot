@@ -209,11 +209,11 @@ static void Internal_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		npc.StartPathing();
 		
@@ -254,7 +254,7 @@ static void Internal_ClotThink(int iNPC)
 						{
 							
 							float damage = 30.0;
-							if(ZR_Waves_GetRound()>30)	//the shit slapper will become the most feard thing on the planet
+							if(iRuinaWave()>20)	//the shit slapper will become the most feard thing on the planet
 							{
 								damage=175.0;
 							}
@@ -297,8 +297,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

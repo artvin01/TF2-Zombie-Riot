@@ -309,11 +309,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -321,11 +321,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
 				}
-				NPC_StartPathing(npc.index); //Charge at them!
+				npc.StartPathing(); //Charge at them!
 			}
 			else
 			{
-				NPC_StopPathing(iNPC);
+				view_as<CClotBody>(iNPC).StopPathing();
 				npc.m_iTarget = GetClosestTarget(npc.index); //Find new target instantly.
 			}
 		}
@@ -348,11 +348,11 @@ public void MedivalHussar_ClotThink(int iNPC)
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
 					float vPredictedPos[3];  PredictSubjectPosition(npc, i_ClosestAllyTarget[npc.index],_,_,vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, i_ClosestAllyTarget[npc.index]);
+					npc.SetGoalEntity(i_ClosestAllyTarget[npc.index]);
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -360,7 +360,7 @@ public void MedivalHussar_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
 				}
-				NPC_StartPathing(npc.index); //Charge at them!
+				npc.StartPathing(); //Charge at them!
 			}
 			else
 			{
@@ -374,15 +374,15 @@ public void MedivalHussar_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RIDER_IDLE");
-						NPC_StopPathing(iNPC);
+						view_as<CClotBody>(iNPC).StopPathing();
 					}
 				}
 				else
 				{
 					float AproxRandomSpaceToWalkTo[3];
 					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
+					view_as<CClotBody>(iNPC).StartPathing();
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
 						npc.m_flSpeed = 350.0;
@@ -496,11 +496,11 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 75.0;
 
-					if(Medival_Difficulty_Level < 0.93) //Damage is high as its more of a support
+					if(Medival_Difficulty_Level_NotMath >= 2)
 					{
 						damage = 100.0;
 					}
-					if(Medival_Difficulty_Level < 0.85) //Damage is high as its more of a support
+					if(Medival_Difficulty_Level_NotMath >= 3)
 					{
 						damage = 150.0;
 					}
@@ -554,7 +554,7 @@ void HussarSelfDefense(MedivalHussar npc, float gameTime)
 		}
 		else
 		{
-			npc.m_bPathing = false;
+			
 			npc.m_flGetClosestTargetTime = 0.0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}	

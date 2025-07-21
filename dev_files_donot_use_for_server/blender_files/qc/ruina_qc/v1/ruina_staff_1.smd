@@ -1,12 +1,10 @@
 version 1
 nodes
 0 "weapon_bone" -1
-1 "c_weapon_stattrack" 0
 end
 skeleton
 time 0
 0  0.000000 0.000000 0.000000  0.000000 -0.000000 0.000000
-1  -0.980838 5.458203 0.564254  0.076775 -1.277525 3.137441
 end
 triangles
 glow_inner_2

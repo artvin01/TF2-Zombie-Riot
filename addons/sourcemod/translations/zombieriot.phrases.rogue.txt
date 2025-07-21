@@ -129,11 +129,23 @@
 		"ru"	"Что-то здесь не так, стоит ли нам драться или уйти прямо здесь?"
 		"pt"	"Algo parece errado sobre isso, devemos lutar ou sair daqui?"
 	}
+	"Nightmare Battle Title"
+	{
+		"en"	"You are having a terrible nightmare..."
+	}
 	"We can handle this"
 	{
 		"en"	"We can handle this"
 		"pt"	"Podemos cuidar disso"
 		"ru"	"Мы справимся"
+	}
+	"Stay and find out who is causing it"
+	{
+		"en"	"Stay and find out who is causing it"
+	}
+	"Pinch yourself awake"
+	{
+		"en"	"Pinch yourself awake"
 	}
 	"Better leave now"
 	{
@@ -589,6 +601,18 @@
 	"Bob Final Option 3"
 	{
 		"en"	"I do remember"
+	}
+	"Bob Final Desc 3"
+	{
+		"en"	"{yellow}Receive an unknown artifact {blue}and change the ending"
+	}
+	"Bob Final Option 3 No"
+	{
+		"en"	"You cant seem to remember..."
+	}
+	"Bob Final Option 3 No desc"
+	{
+		"en"	"Unaccessable area."
 	}
 	"Bob Final Desc 3"
 	{
@@ -1526,8 +1550,8 @@
 	}
 	"Thumb Ring Desc"
 	{
-		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 15％ faster."
-		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 15％ быстрее."
+		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 33％ faster."
+		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 33％ быстрее."
 	}
 	"Blademace"
 	{
@@ -1694,7 +1718,7 @@
 	}
 	"Hand of Incredible Speeds Desc"
 	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +25％ firing speed and +25％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
+		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +33％ firing speed and +33％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
 	}
 	"Hand of Suprise"
 	{
@@ -1702,7 +1726,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 25％ faster."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
 	}
 	"Hand of Revenge"
 	{
@@ -1718,7 +1742,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +50％ faster."
+		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
 	}
 	"Hand of the Elite"
 	{

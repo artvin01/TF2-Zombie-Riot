@@ -168,6 +168,7 @@ methodmap CaptinoAgentus < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.i_GunMode = 1;
+		npc.g_TimesSummoned = 0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -245,7 +246,7 @@ methodmap CaptinoAgentus < CClotBody
 		SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		TeleportDiversioToRandLocation(npc.index);
+	//	TeleportDiversioToRandLocation(npc.index);
 		return npc;
 	}
 }
@@ -306,9 +307,9 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 				if(AntiCheeseReply == 0)
 				{
 					if(!npc.m_bPathing)
-						NPC_StartPathing(npc.index);
+						npc.StartPathing();
 
-					NPC_SetGoalVector(npc.index, vPredictedPos, true);
+					npc.SetGoalVector(vPredictedPos, true);
 					if(GetGameTime(npc.index) > npc.f_CaptinoAgentusTeleport)
 					{
 						
@@ -323,19 +324,25 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 						bool Succeed = Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
 						if(Succeed)
 						{
-							int maxhealth = ReturnEntityMaxHealth(npc.index);
-							maxhealth /= 20;
-							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							
-							int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
-							if(spawn_index > MaxClients)
+							if(npc.g_TimesSummoned < 1)
 							{
-								NpcAddedToZombiesLeftCurrently(spawn_index, true);
-								TeleportEntity(spawn_index, pos, ang);
-								SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-								fl_Extra_Damage[spawn_index] = 1.5; //2x dmg so they are scary
+								//only spawn 5
+								int maxhealth = ReturnEntityMaxHealth(npc.index);
+								maxhealth /= 20;
+								float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+								float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+								
+								int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
+								if(spawn_index > MaxClients)
+								{
+									NpcStats_CopyStats(npc.index, spawn_index);
+									npc.g_TimesSummoned++;
+									NpcAddedToZombiesLeftCurrently(spawn_index, true);
+									TeleportEntity(spawn_index, pos, ang);
+									SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+									SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+									fl_Extra_Damage[spawn_index] *= 1.5; //1.5x dmg so they are scary
+								}
 							}
 							npc.PlayTeleportSound();
 							ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
@@ -356,17 +363,17 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 				else if(AntiCheeseReply == 1)
 				{
 					if(!npc.m_bPathing)
-					NPC_StartPathing(npc.index);
+					npc.StartPathing();
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 					{
 						npc.m_bAllowBackWalking = true;
 						float vBackoffPos[3];
 						BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-						NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+						npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 					}
 					else
 					{
-						NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+						npc.SetGoalEntity(npc.m_iTarget);
 					}
 				}
 			}
@@ -374,20 +381,20 @@ public void CaptinoAgentus_ClotThink(int iNPC)
 			{
 				DiversionCalmDownCheese(npc.index);
 				if(!npc.m_bPathing)
-					NPC_StartPathing(npc.index);
+					npc.StartPathing();
 
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 		}
 		else 
 		{
 			DiversionCalmDownCheese(npc.index);
 			if(!npc.m_bPathing)
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		if(AntiCheeseReply == 0)
 		{
@@ -507,7 +514,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 500.0;
+					float damageDealt = 400.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -570,7 +577,7 @@ void CaptinoAgentusSelfDefense(CaptinoAgentus npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 150.0;
+					float damageDealt = 100.0;
 
 					if(BackstabDone)
 					{
@@ -662,8 +669,8 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-					fl_RangedArmor[npc.index] = 0.5;
-					fl_MeleeArmor[npc.index] = 0.5;
+					fl_RangedArmor[npc.index] = 0.65;
+					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
@@ -675,8 +682,8 @@ void CaptinoAgentusAnimationChange(CaptinoAgentus npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-					fl_RangedArmor[npc.index] = 0.5;
-					fl_MeleeArmor[npc.index] = 0.5;
+					fl_RangedArmor[npc.index] = 0.65;
+					fl_MeleeArmor[npc.index] = 0.65;
 					ResetCaptinoAgentusWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;

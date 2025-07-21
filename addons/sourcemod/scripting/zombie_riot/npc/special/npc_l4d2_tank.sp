@@ -136,7 +136,7 @@ methodmap L4D2_Tank < CClotBody
 	
 	public L4D2_Tank(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", MinibossHealthScaling(100), ally, false, true));
+		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", MinibossHealthScaling(100.0), ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -198,9 +198,9 @@ methodmap L4D2_Tank < CClotBody
 		}
 
 		
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 	
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -255,8 +255,8 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	if(npc.m_flStandStill > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;		
+		npc.StopPathing();
+				
 	}
 	else
 	{
@@ -308,7 +308,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 		if(IsValidEntity(EntRefToEntIndex(i_IWantToThrowHim[npc.index])))
 		{
 			I_Wanna_Throw_ally = true;
-			NPC_SetGoalEntity(npc.index, EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
+			npc.SetGoalEntity(EntRefToEntIndex(i_IWantToThrowHim[npc.index]));
 			WorldSpaceCenter(EntRefToEntIndex(i_IWantToThrowHim[npc.index]), vecTarget);
 			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 			flDistanceToTarget  = GetVectorDistance(vecTarget, npc_vec, true);
@@ -328,11 +328,11 @@ public void L4D2_Tank_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 		//		PrintToChatAll("cutoff");
-				NPC_SetGoalVector(npc.index, vPredictedPos);	
+				npc.SetGoalVector(vPredictedPos);	
 			}
 			else
 			{
-				NPC_SetGoalEntity(npc.index, closest);
+				npc.SetGoalEntity(closest);
 			}
 		}
 		if(b_ThrowPlayerImmenent[npc.index])
@@ -474,12 +474,15 @@ public void L4D2_Tank_ClotThink(int iNPC)
 							TR_GetEndPosition(vecHit, swingTrace);
 							if(target > 0) 
 							{
-								float damage = 60.0;
+								float damage = 70.0;
 								
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 4.0 * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
+								damage *= npc.m_flWaveScale;
+
+								if(ShouldNpcDealBonusDamage(target))
+								{
+									damage *= 15.0;
+								}
+								SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								
 								
 								EntityKilled_HitDetectionCooldown(target, TankThrowLogic);
@@ -519,7 +522,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					}
 				}
 			}
-			else if(!I_Wanna_Throw_ally && (flDistanceToTarget < 12500 && fl_ThrowPlayerCooldown[iNPC] < GetGameTime(npc.index) && !npc.m_bLostHalfHealth && (!b_NpcHasDied[closest] || closest < MaxClients) && !i_IsABuilding[closest]))
+			else if(!I_Wanna_Throw_ally && (flDistanceToTarget < 12500 && fl_ThrowPlayerCooldown[iNPC] < GetGameTime(npc.index) && !npc.m_bLostHalfHealth && (!b_NpcHasDied[closest] || closest <= MaxClients) && !i_IsABuilding[closest]))
 			{
 				int Enemy_I_See;
 					
@@ -616,7 +619,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 						fl_ThrowPlayerImmenent[npc.index] = GetGameTime(npc.index) + 1.0;
 						b_ThrowPlayerImmenent[npc.index] = true;
 						npc.m_flStandStill = GetGameTime(npc.index) + 1.5;
-						ApplyStatusEffect(npc.index, npc.index, "UBERCHARGED", 1.5);
+						ApplyStatusEffect(npc.index, ally, "Unstoppable Force", 1.5);
 						i_IWantToThrowHim[npc.index] = -1;
 					}
 				}
@@ -630,8 +633,8 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

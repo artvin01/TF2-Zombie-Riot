@@ -154,12 +154,7 @@ methodmap XenoHeadcrabZombie < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 130.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 210.0;
-		}
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
@@ -228,11 +223,11 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 	//		PrintToChatAll("cutoff");
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		npc.StartPathing();
 		
@@ -266,14 +261,6 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 85.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
@@ -306,8 +293,8 @@ public void XenoHeadcrabZombie_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -326,11 +313,6 @@ public Action XenoHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &in
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			if(EscapeModeForNpc)
-			{
-				npc.m_flSpeed = 300.0;
-			}
-			else
 			{
 				npc.m_flSpeed = 250.0;
 			}

@@ -43,6 +43,9 @@ static float f_LappLandAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_LappLandhuddelay[MAXPLAYERS+1]={0.0, ...};
 static int i_QuibaiAttacksMade[MAXPLAYERS+1]={0, ...};
 
+//final pap new ability thingies
+static float Duration[MAXPLAYERS];
+
 void Ark_autoaim_Map_Precache()
 {
 	PrecacheSound(SOUND_WAND_SHOT_AUTOAIM);
@@ -81,7 +84,11 @@ public void Ark_empower_ability(int client, int weapon, bool crit, int slot) // 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		if(HasSpecificBuff(client, "Empowering Domain"))
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
+		else
+			Ability_Apply_Cooldown(client, slot, 15.0);
+
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
@@ -123,7 +130,10 @@ public void Ark_empower_ability_2(int client, int weapon, bool crit, int slot) /
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		if(HasSpecificBuff(client, "Empowering Domain"))
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
+		else
+			Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
@@ -167,7 +177,10 @@ public void Ark_empower_ability_3(int client, int weapon, bool crit, int slot) /
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		if(HasSpecificBuff(client, "Empowering Domain"))
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
+		else
+			Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
@@ -210,7 +223,10 @@ public void Ark_empower_ability_4(int client, int weapon, bool crit, int slot) /
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		if(HasSpecificBuff(client, "Empowering Domain"))
+			Ability_Apply_Cooldown(client, slot, 15.0 * 0.4);
+		else
+			Ability_Apply_Cooldown(client, slot, 15.0);
 		ClientCommand(client, "playgamesound weapons/samurai/tf_katana_draw_02.wav");
 		Ark_ParryTiming[client] = GetGameTime() + 1.0;
 
@@ -577,20 +593,21 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			float flAng[3]; // original
 			
 			GetAttachment(victim, "effect_hand_r", flPos, flAng);
-			
-			int particler = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 0.15);
-
 
 		//	TE_Particle("mvm_soldier_shockwave", damagePosition, NULL_VECTOR, flAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
-			
-			DataPack pack = new DataPack();
-			pack.WriteCell(EntIndexToEntRef(particler));
-			pack.WriteFloat(Entity_Position[0]);
-			pack.WriteFloat(Entity_Position[1]);
-			pack.WriteFloat(Entity_Position[2]);
-			
-			RequestFrame(TeleportParticleArk, pack);
+			float diameter = float(4 * 2);
+			int r = 200;
+			int g = 125;
+			int b = 125;
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, r, g, b, 60);
+			TE_SetupBeamPoints(flPos, Entity_Position, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(flPos, Entity_Position, g_Ruina_BEAM_Combine_Black, 0, 0, 66, 0.22, ClampBeamWidth(diameter * 0.4 * 1.28), ClampBeamWidth(diameter * 0.4 * 1.28), 0, 1.0,  {255,255,255,125}, 3);
+			TE_SendToAll(0.0);
 
+			TE_SetupBeamPoints(flPos, Entity_Position, Shared_BEAM_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, colorLayer4, 1);
+			TE_SendToAll(0.0);
 			float ReflectPosVec[3];
 			CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
 
@@ -682,24 +699,6 @@ public void Enable_WeaponArk(int client, int weapon) // Enable management, handl
 }
 
 
-
-
-
-void TeleportParticleArk(DataPack pack)
-{
-	pack.Reset();
-	int particleEntity = EntRefToEntIndex(pack.ReadCell());
-	float Vec_Pos[3];
-	Vec_Pos[0] = pack.ReadFloat();
-	Vec_Pos[1] = pack.ReadFloat();
-	Vec_Pos[2] = pack.ReadFloat();
-	
-	if(IsValidEntity(particleEntity))
-	{
-		TeleportEntity(particleEntity, Vec_Pos);
-	}
-	delete pack;
-}
 
 
 public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int slot)
@@ -1416,10 +1415,11 @@ void ChangeAttackspeedQuibai(int client, int weapon)
 	if(f_LappLandAbilityActive[client] > GetGameTime())
 	{
 		i_QuibaiAttacksMade[client]++;
-		if(i_QuibaiAttacksMade[client] > 20)
+		if(i_QuibaiAttacksMade[client] > 15)
 		{
-			i_QuibaiAttacksMade[client] = 20;
+			i_QuibaiAttacksMade[client] = 15;
 		}
+		//too much attackspeed....
 		Attributes_Set(weapon, 396, QuibaiAttackSpeed(i_QuibaiAttacksMade[client]));
 		Attributes_Set(weapon, 1, QuibaiAttackSpeed(i_QuibaiAttacksMade[client] / 2));
 	}
@@ -1443,4 +1443,93 @@ float QuibaiAttackSpeed(int number_bef)
 	Number -= (0.03 * number_bef);
 
 	return Number;
+}
+
+
+public void Ark_Melee_Empower_State(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		if(Ark_Hits[client] >= 15)
+		{
+			Ark_Hits[client] -= 15;
+			Rogue_OnAbilityUse(client, weapon);
+			//duration of the domain should be included.
+			Ability_Apply_Cooldown(client, slot, 60.0 + 15.0); //Semi long cooldown, this is a strong buff.
+			Ability_Apply_Cooldown(client, 2, 1.0);
+
+			Duration[client] = GetGameTime() + 15.0; //Just a test.
+			GetClientAbsOrigin(client, fl_AbilityVectorData[client]);
+
+			//EmitSoundToAll(EMPOWER_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
+			weapon_id[client] = EntIndexToEntRef(weapon);
+			CreateTimer(0.4, ArkDomainLogic, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			spawnRing_Vectors(fl_AbilityVectorData[client], 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 0.5, 20.0, 5.0, 1, _,client);
+			TE_Particle("merasmus_object_spawn", fl_AbilityVectorData[client], NULL_VECTOR, NULL_VECTOR, client, _, _, _, _, _, _, _, _, _, 0.0, client);
+			ClientCommand(client, "playgamesound misc/outer_space_transition_01.wav");
+			ClientCommand(client, "playgamesound mvm/mvm_deploy_giant.wav");
+			ApplyStatusEffect(client, client, "Empowering Domain Hidden", 0.5);
+			ApplyStatusEffect(client, client, "Empowering Domain", 0.5);
+			
+			spawnRing(client, EMPOWER_RANGE * 2.0, 0.0, 0.0, EMPOWER_HIGHT_OFFSET, EMPOWER_MATERIAL, /*R*/0, /*G*/255, /*B*/255, 125, 30, 0.51, EMPOWER_WIDTH, 6.0, 10);
+		}
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not enough charge");
+		}
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+	}
+}
+
+
+static Action ArkDomainLogic(Handle ringTracker, int client)
+{
+	if (IsValidClient(client) && Duration[client] > GetGameTime())
+	{
+		int ActiveWeapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+		if(EntRefToEntIndex(weapon_id[client]) == ActiveWeapon)
+		{
+			spawnRing_Vectors(fl_AbilityVectorData[client], 300.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", /*R*/204, /*G*/0, /*B*/255, /*alpha*/50, 1, /*duration*/ 0.5, 20.0, 5.0, 1, _,client);
+			b_NpcIsTeamkiller[client] = true;
+			b_AllowSelfTarget[client] = true;
+			Explode_Logic_Custom(0.0, client, client, ActiveWeapon, fl_AbilityVectorData[client], 300.0, _, _, false, 99, _, _, ArkAreaBuffAbility);
+			b_NpcIsTeamkiller[client] = false;
+			b_AllowSelfTarget[client] = false;
+		}
+		else
+		{
+			return Plugin_Stop;
+		}
+
+	}
+	else
+	{
+		return Plugin_Stop;
+	}
+
+	return Plugin_Continue;
+}
+
+void ArkAreaBuffAbility(int attacker, int victim, float &damage, int weapon)
+{
+	if(attacker == victim)
+	{
+		ApplyStatusEffect(attacker, attacker, "Empowering Domain Hidden", 0.5);
+		ApplyStatusEffect(attacker, attacker, "Empowering Domain", 0.5);
+	}
 }

@@ -152,17 +152,11 @@ methodmap VoidRejuvinator < CClotBody
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 125, 0, 125, 255);
 		
 		return npc;
@@ -245,17 +239,17 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTargetAlly;
 	if(IsValidAlly(npc.index, PrimaryThreatIndex) && VoidRejuvinator_HealCheck(npc.index, PrimaryThreatIndex))
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(flDistanceToTarget < 250000)
+		if(flDistanceToTarget < 250000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 		{
 			if(flDistanceToTarget < 62500)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 			else
 			{
@@ -271,25 +265,11 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 				npc.m_bnew_target = true;
 			}
 
-			if(!NpcStats_IsEnemySilenced(npc.index))
+			if(IsValidEntity(npc.m_iWearable4))
 			{
-				if(IsValidEntity(npc.m_iWearable4))
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
-				}
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, 999999.9, 1.5);
+				SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
 			}
-			else
-			{
-				if(IsValidEntity(npc.m_iWearable4))
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 200, 50, 200, 255);
-				}
-				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 50), 1.5);
-			}
+			HealEntityGlobal(npc.index, PrimaryThreatIndex, 999999.9, 1.5);
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 			npc.FaceTowards(WorldSpaceVec, 2000.0);
 		}

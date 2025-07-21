@@ -819,7 +819,7 @@ public MRESReturn Ice_Explode(int entity)
 
 void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 {
-	Cryo_FreezeZombie(entity, victim, 1);
+	Elemental_AddCyroDamage(entity, victim, RoundFloat(damage * 12.5), 1);
 }
 
 public bool Trash_RollTrash(int client, int tier)
@@ -1081,7 +1081,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 	if (!b_MondoEnabled[tier])
 		return false;
 		
-	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier] || (ZR_Waves_GetRound() == i_LastMondoWave && !allowMultipleMondos))
+	if (GetRandomFloat(0.0, 1.0) > f_MondoChance[tier] || (Waves_GetRoundScale() == i_LastMondoWave && !allowMultipleMondos))
 		return false;
 		
 	int M_O_N_D_O = Trash_LaunchPhysProp(client, MODEL_MONDO, 5.0, f_MondoVelocity[tier], weapon, tier, Mondo_Explode, true, true);
@@ -1091,7 +1091,7 @@ public bool Trash_Mondo(int client, int weapon, int tier)
 		EmitSoundToAll(SOUND_MONDO_FIRE, client, SNDCHAN_STATIC, 120, _, 1.0, 80);
 	}
 		
-	i_LastMondoWave = ZR_Waves_GetRound();
+	i_LastMondoWave = Waves_GetRoundScale();
 	return true;
 }
 

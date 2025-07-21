@@ -224,11 +224,9 @@ methodmap VictoriaBirdeye < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
@@ -370,11 +368,11 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+					npc.SetGoalEntity(npc.m_iTargetWalkTo);
 				}
 			}
 			case 3:
@@ -390,7 +388,7 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 			case 4:
 			{
@@ -412,7 +410,7 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 			}
 		}
 		
@@ -422,11 +420,11 @@ public void VictoriaBirdeye_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			}
 		}
 	}
@@ -516,7 +514,7 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 	else
 	{
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", Vec);
-		NPC_SetGoalVector(npc.index, Vec, true);
+		npc.SetGoalVector(Vec, true);
 		float SoClose = GetVectorDistance(Vec, VecOld);
 		if(SoClose < 500.0)
 		{
@@ -798,6 +796,7 @@ void VictoriaBirdeye_SpawnAllyDuo(int ref)
 		int spawn_index2 = NPC_CreateByName("npc_bigpipe", entity, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(entity, spawn_index);
 			//i_ally_index = EntIndexToEntRef(spawn_index);
 			//VictoriaHarbringer_Set_Ally_Index(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);

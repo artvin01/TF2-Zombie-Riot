@@ -1,18 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle MarketTimer[MAXTF2PLAYERS] = {null, ...};
-static float MarketHUDDelay[MAXTF2PLAYERS];
-static int Market_WeaponPap[MAXTF2PLAYERS];
-static int Market_Perk[MAXTF2PLAYERS];
-static int i_MarketParticleOne[MAXTF2PLAYERS];
-static int i_MarketParticleTwo[MAXTF2PLAYERS];
-static int i_RocketJump_AirboneTime[MAXTF2PLAYERS];
+static Handle MarketTimer[MAXPLAYERS] = {null, ...};
+static float MarketHUDDelay[MAXPLAYERS];
+static int Market_WeaponPap[MAXPLAYERS];
+static int Market_Perk[MAXPLAYERS];
+static int i_MarketParticleOne[MAXPLAYERS];
+static int i_MarketParticleTwo[MAXPLAYERS];
+static int i_RocketJump_AirboneTime[MAXPLAYERS];
 
-static float i_SoldinAmmoSet[MAXTF2PLAYERS];
-static int i_SoldinCharging[MAXTF2PLAYERS];
-static int i_SoldinChargingMAX[MAXTF2PLAYERS];
-static bool b_SoldinPowerHit[MAXTF2PLAYERS];
+static float i_SoldinAmmoSet[MAXPLAYERS];
+static int i_SoldinCharging[MAXPLAYERS];
+static int i_SoldinChargingMAX[MAXPLAYERS];
+static bool b_SoldinPowerHit[MAXPLAYERS];
 static bool b_SoldinLastMann_Buff;
 static bool PrecachedMusic;
 

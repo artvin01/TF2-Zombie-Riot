@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float f_BlemishineThinkDelay[MAXTF2PLAYERS];
-static float f_Blemishine_AbilityActive[MAXTF2PLAYERS];
-static int i_BlemishineWhichAbility[MAXTF2PLAYERS];
-static float f_AbilityHealAmmount[MAXTF2PLAYERS];
+static float f_BlemishineThinkDelay[MAXPLAYERS];
+static float f_Blemishine_AbilityActive[MAXPLAYERS];
+static int i_BlemishineWhichAbility[MAXPLAYERS];
+static float f_AbilityHealAmmount[MAXPLAYERS];
 
 #define BLEMISHINE_RANGE_ABILITY	150.0
 #define BLEMISHINE_COOLDOWN			40.0

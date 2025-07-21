@@ -202,11 +202,11 @@ public void IberiaBeaconConstructor_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		if(npc.m_iChanged_WalkCycle == 1)
 		{
@@ -284,10 +284,12 @@ void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float dista
 			int spawn_index = NPC_CreateByName("npc_iberia_beacon", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				CClotBody npc1 = view_as<CClotBody>(spawn_index);
 				npc1.m_flNextThinkTime = GetGameTime() + 2.0;
 				fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 			}
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;

@@ -424,6 +424,7 @@ static Action Bob_DeathCutsceneCheck(Handle timer)
 			
 			ApplyLastmanOrDyingOverlay(client);
 			SendConVarValue(client, sv_cheats, "1");
+			Convars_FixClientsideIssues(client);
 		}
 	}
 	ResetReplications();
@@ -586,7 +587,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst_Duo npc = view_as<RaidbossBobTheFirst_Duo>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 

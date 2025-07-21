@@ -10,7 +10,7 @@
 	its a tigerdrop
 	how it works:
 	Activate ability, for 0.2 seconds it checks if you take damage, if you do, 
-	negate all damage for animation duration, and do attack in the direction you aimed at
+	negate 90% of all damage for animation duration, and do attack in the direction you aimed at
 
 	(Jump + M2) M2 -> R = Heat Special (Pap 4)
 	better idea:when pressing m2 and instantly pressing r, itll do this instead
@@ -46,22 +46,22 @@ static const char StyleName[][] =
 // https://www.youtube.com/watch?v=VxQXaqDSNUw&t=15s
 #define INDEX_BUILDINGHOLDING	474
 
-static Handle WeaponTimer[MAXTF2PLAYERS];
-static int WeaponRef[MAXTF2PLAYERS] = {-1, ...};
-static int WeaponLevel[MAXTF2PLAYERS];
-static int WeaponCharge[MAXTF2PLAYERS];
-static int WeaponStyle[MAXTF2PLAYERS];
-static bool SuperDragon[MAXTF2PLAYERS];
-static int LastAttack[MAXTF2PLAYERS];
-static int LastVictim[MAXTF2PLAYERS] = {-1, ...};
-static float BlockNextFor[MAXTF2PLAYERS];
-static int BlockStale[MAXTF2PLAYERS];
-static int CurrentWeaponComboAt[MAXTF2PLAYERS];
-static float LastDamage[MAXTF2PLAYERS];
-static float LastSpeed[MAXTF2PLAYERS];
-static float CurrentlyInAttack[MAXTF2PLAYERS];
+static Handle WeaponTimer[MAXPLAYERS];
+static int WeaponRef[MAXPLAYERS] = {-1, ...};
+static int WeaponLevel[MAXPLAYERS];
+static int WeaponCharge[MAXPLAYERS];
+static int WeaponStyle[MAXPLAYERS];
+static bool SuperDragon[MAXPLAYERS];
+static int LastAttack[MAXPLAYERS];
+static int LastVictim[MAXPLAYERS] = {-1, ...};
+static float BlockNextFor[MAXPLAYERS];
+static int BlockStale[MAXPLAYERS];
+static int CurrentWeaponComboAt[MAXPLAYERS];
+static float LastDamage[MAXPLAYERS];
+static float LastSpeed[MAXPLAYERS];
+static float CurrentlyInAttack[MAXPLAYERS];
 static bool Precached;
-static float HeatActionCooldown[MAXTF2PLAYERS];
+static float HeatActionCooldown[MAXPLAYERS];
 static float HeatActionCooldownEnemy[MAXENTITIES];
 
 void Yakuza_MapStart()
@@ -703,7 +703,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
-						IncreaseEntityDamageTakenBy(client, 0.0001, 0.75);
+						IncreaseEntityDamageTakenBy(client, 0.1, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
 					}

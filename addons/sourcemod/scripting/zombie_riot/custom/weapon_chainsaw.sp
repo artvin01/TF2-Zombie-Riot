@@ -4,7 +4,7 @@ static Handle h_TimerChainSawWeaponManagement[MAXPLAYERS+1] = {null, ...};
 static float f_ChainSawhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_ChainsawLoopSound[MAXPLAYERS+1]={0.0, ...};
 static bool f_ChainsawPlaySound[MAXPLAYERS+1];
-float f_AttackDelayChainsaw[MAXTF2PLAYERS];	
+float f_AttackDelayChainsaw[MAXPLAYERS];	
 
 static const char g_MeleeAttack[][] = {
 	"npc/roller/blade_out.wav",

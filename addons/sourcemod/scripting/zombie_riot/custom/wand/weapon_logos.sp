@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle PerishTimer[MAXTF2PLAYERS];
-static bool PerishReady[MAXTF2PLAYERS];
+static Handle PerishTimer[MAXPLAYERS];
+static bool PerishReady[MAXPLAYERS];
 
 void Logos_MapStart()
 {
@@ -88,7 +88,7 @@ void Weapon_Logos_ProjectileTouch(int entity, int target)
 		Elemental_AddNecrosisDamage(target, owner, RoundFloat(f_WandDamage[entity]), weapon);
 
 		if(secondary && Nymph_AllowBonusDamage(target))
-			StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.15, 4, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			StartBleedingTimer(target, owner, f_WandDamage[entity] * 0.15, 4, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)

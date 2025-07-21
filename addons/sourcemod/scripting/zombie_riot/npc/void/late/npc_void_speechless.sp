@@ -25,6 +25,13 @@ static const char g_MeleeHitSounds[][] = {
 static const char g_RangedAttackSounds[][] = {
 	"weapons/bumper_car_speed_boost_start.wav",
 };
+static const char g_SuperJumpSound[][] = {
+	"misc/halloween/spell_blast_jump.wav",
+};
+static const char g_PlayRegenShieldInit[][] = {
+	"weapons/cow_mangler_over_charge_shot.wav",
+};
+
 
 void VoidSpeechless_OnMapStart_NPC()
 {
@@ -34,8 +41,10 @@ void VoidSpeechless_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_SuperJumpSound)); i++) { PrecacheSound(g_SuperJumpSound[i]); }
+	for (int i = 0; i < (sizeof(g_PlayRegenShieldInit)); i++) { PrecacheSound(g_PlayRegenShieldInit[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Voided Expidonsan Explorer");
+	strcopy(data.Name, sizeof(data.Name), "Speechless");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_speechless");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_armored_hyper");
 	data.IconCustom = true;
@@ -45,9 +54,9 @@ void VoidSpeechless_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return VoidSpeechless(vecPos, vecAng, team);
+	return VoidSpeechless(vecPos, vecAng, team, data);
 }
 
 methodmap VoidSpeechless < CClotBody
@@ -89,11 +98,35 @@ methodmap VoidSpeechless < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
 	}
+	public void PlayShieldRegenSoundInit()
+	{
+		EmitSoundToAll(g_PlayRegenShieldInit[GetRandomInt(0, sizeof(g_PlayRegenShieldInit) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 130);
+		EmitSoundToAll(g_PlayRegenShieldInit[GetRandomInt(0, sizeof(g_PlayRegenShieldInit) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 130);
+	}
+	property float m_flGiveBuffOnce
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flDashAtTarget
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flAttackspeedIncrease
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	public void PlaySuperJumpSound()
+	{
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SuperJumpSound[GetRandomInt(0, sizeof(g_SuperJumpSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}	
 	
 	
-	public VoidSpeechless(float vecPos[3], float vecAng[3], int ally)
+	public VoidSpeechless(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidSpeechless npc = view_as<VoidSpeechless>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "12500", ally));
 		
@@ -117,8 +150,47 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		VausMagicaGiveShield(npc.index, 5);
+		npc.m_flGiveBuffOnce = 0.0;
 
 		
+		bool final = StrContains(data, "final_item") != -1;
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = MultiGlobalHealth;
+			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
+				RaidModeScaling = 0.0;
+		}
+
+		npc.m_iHealthBar = 1;
+		if(i_RaidGrantExtra[npc.index] == 1)
+		{
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: It controlls us, it knows our immunity to chaos, kill us...");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: Help me..");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: Tell {blue}Sensal{default}.. his shields are useless...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{violet}Speechless{default}: I cannot controll my body...");
+				}
+			}
+		}
 		
 		npc.m_iWearable1 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
 		SetVariantString("1.0");
@@ -126,9 +198,9 @@ methodmap VoidSpeechless < CClotBody
 		SetVariantInt(8192);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 7);
-		
+		npc.m_flAttackspeedIncrease = 1.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 330.0;
 		
 		
 		int skin = 1;
@@ -141,14 +213,10 @@ methodmap VoidSpeechless < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
 		
 		return npc;
@@ -165,6 +233,7 @@ public void VoidSpeechless_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	ExpidonsanExplorerLifeLoss(npc);
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -194,16 +263,18 @@ public void VoidSpeechless_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
+		VoidSpeechlessDash(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		VoidSpeechlessSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
-	{
+	{	
+		ExpidonsanExplorerScaleAttackspeed(npc, 0.1);
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -223,6 +294,7 @@ public Action VoidSpeechless_OnTakeDamage(int victim, int &attacker, int &inflic
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
+	ExpidonsanExplorerLifeLoss(npc);
 	return Plugin_Changed;
 }
 
@@ -252,10 +324,43 @@ public void VoidSpeechless_NPCDeath(int entity)
 
 }
 
+void VoidSpeechlessDash(VoidSpeechless npc, float gameTime, float distance)
+{
+	if(npc.m_flJumpCooldown > gameTime)
+		return;
+
+	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+	{
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			npc.FaceTowards(vecTarget, 15000.0);
+			PluginBot_Jump(npc.index, vecTarget);
+			npc.PlayIdleAlertSound();
+			npc.m_flJumpCooldown = GetGameTime(npc.index) + 7.5;
+			npc.PlaySuperJumpSound();
+			float flPos[3];
+			float flAng[3];
+			int Particle_1;
+			int Particle_2;
+			npc.GetAttachment("foot_L", flPos, flAng);
+			Particle_1 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_L", {0.0,0.0,0.0});
+			
+
+			npc.GetAttachment("foot_R", flPos, flAng);
+			Particle_2 = ParticleEffectAt_Parent(flPos, "rockettrail", npc.index, "foot_R", {0.0,0.0,0.0});
+			CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(Particle_2), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+}
+
 void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, float distance)
 {
+	bool InAttackTry = false;
 	if(npc.m_flAttackHappens)
 	{
+		InAttackTry = true;
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
@@ -273,11 +378,13 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 250.0;
+					float damageDealt = 400.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 11.0;
+						damageDealt *= 10.0;
 					}
+					damageDealt *= MultiGlobalHealth; //Incase too many enemies, boost damage.
+
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -286,7 +393,7 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						VausMagicaGiveShield(npc.index, 4, true);
+						VausMagicaGiveShield(npc.index, 2, true);
 					}
 
 					// Hit sound
@@ -307,13 +414,14 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
+				InAttackTry = true;
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", .SetGestureSpeed= (1.0 / npc.m_flAttackspeedIncrease));
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.6;
+				npc.m_flAttackHappens = gameTime + (0.25 * npc.m_flAttackspeedIncrease);
+				npc.m_flDoingAnimation = gameTime + (0.25 * npc.m_flAttackspeedIncrease);
+				npc.m_flNextMeleeAttack = gameTime + (0.6 * npc.m_flAttackspeedIncrease);
 			}
 		}
 	}
@@ -331,6 +439,11 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 			npc.PlayRangedSound();
 		}
 	}
+	if(InAttackTry)
+		ExpidonsanExplorerScaleAttackspeed(npc, -0.1);
+	else
+		ExpidonsanExplorerScaleAttackspeed(npc, 0.1);
+
 }
 
 
@@ -438,8 +551,8 @@ void VoidSpeechlessInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, VoidSpeechless_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 300.0;
-	float FarDamage = 250.0;
+	float CloseDamage = 450.0;
+	float FarDamage = 300.0;
 	float MaxDistance = 2000.0;
 	float playerPos[3];
 	bool HitEnemy = false;
@@ -456,6 +569,8 @@ void VoidSpeechlessInitiateLaserAttack_DamagePart(DataPack pack)
 			
 			if(ShouldNpcDealBonusDamage(victim))
 				damage *= 3.0;
+
+			damage *= MultiGlobalHealth; //Incase too many enemies, boost damage.
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);
@@ -483,4 +598,37 @@ public bool VoidSpeechless_BEAM_TraceUsers(int entity, int contentsMask, int cli
 public bool VoidSpeechless_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
+}
+
+
+void ExpidonsanExplorerLifeLoss(VoidSpeechless npc)
+{
+	if(!npc.m_flGiveBuffOnce && !npc.m_iHealthBar)
+	{
+		npc.m_flGiveBuffOnce = 1.0;
+		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 99999.0);
+		ApplyStatusEffect(npc.index, npc.index, "Expidonsan Anger", 99999.0);
+		ApplyStatusEffect(npc.index, npc.index, "Zilius Prime Technology", 99999.0);
+		npc.m_flSpeed = 330.0;
+		if(i_RaidGrantExtra[npc.index] == 1)
+		{
+			CPrintToChatAll("{violet}Speechless{default}: Zilius was right... Im sorry...\n{purple}It takes full controll of The expidonsans body.");
+			CPrintToChatAll("{violet}The forgotten expidonsans suit activates its protocolls and repells the void as much as it can, as such, blocks all healing from itself.");
+		}
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		npc.PlayShieldRegenSoundInit();
+	}
+}
+
+
+void ExpidonsanExplorerScaleAttackspeed(VoidSpeechless npc, float Addition)
+{
+	npc.m_flAttackspeedIncrease += Addition;
+
+	if(npc.m_flAttackspeedIncrease <= 0.33)
+		npc.m_flAttackspeedIncrease = 0.33;
+
+	if(npc.m_flAttackspeedIncrease >= 1.0)
+		npc.m_flAttackspeedIncrease = 1.0;
 }

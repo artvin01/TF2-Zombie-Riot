@@ -289,22 +289,22 @@ static void ClotThink(int iNPC)
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}
 
@@ -385,7 +385,7 @@ static void ClotThink(int iNPC)
 
 						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 						CreateTimer(Laser_Time, Timer_RemoveEntity, EntIndexToEntRef(beam), TIMER_FLAG_NO_MAPCHANGE);
-						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
+						i_rocket_particle[Proj] = EntIndexToEntRef(beam);
 					}
 				}
 			}
@@ -444,8 +444,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

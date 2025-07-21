@@ -110,14 +110,13 @@ methodmap ArkSlug < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 25, 0, 255);
 
 		SDKHook(npc.index, SDKHook_OnTakeDamage, ArkSlug_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, ArkSlug_ClotThink);
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 
 		i_NoEntityFoundCount[npc.index] = 6;
 		
@@ -257,11 +256,11 @@ public void ArkSlug_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

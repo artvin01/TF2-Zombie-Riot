@@ -108,6 +108,7 @@ methodmap DesertQanaas < CClotBody
 			npc.StartPathing();
 			npc.m_flSpeed = 200.0;
 		}	
+		Is_a_Medic[npc.index] = true;
 		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -223,11 +224,11 @@ public void DesertQanaas_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 	}
 	else

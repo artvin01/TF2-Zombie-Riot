@@ -10,10 +10,10 @@ static bool b_ActivatedDuringLastMann[MAXPLAYERS+1];
 static int g_ProjectileModel;
 static int g_ProjectileModelArmor;
 int g_BeamIndex_heal = -1;
-static int i_BurstpackUsedThisRound [MAXTF2PLAYERS];
-static int i_MaxMorhpinesThisRound [MAXTF2PLAYERS];
-static float f_ReinforceTillMax[MAXTF2PLAYERS];
-static bool b_ReinforceReady_soundonly[MAXTF2PLAYERS];
+static int i_BurstpackUsedThisRound [MAXPLAYERS];
+static int i_MaxMorhpinesThisRound [MAXPLAYERS];
+static float f_ReinforceTillMax[MAXPLAYERS];
+static bool b_ReinforceReady_soundonly[MAXPLAYERS];
 static int i_MaxRevivesAWave;
 static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
 
@@ -434,11 +434,11 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
-							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0);
+							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0,_,_,client);
 						}
 						else
 						{
-							GiveArmorViaPercentage(target, 0.075, 1.0);
+							GiveArmorViaPercentage(target, 0.075, 1.0, _,_,client);
 						}
 						continue;
 					}
@@ -446,18 +446,18 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 					if(b_ThisWasAnNpc[target] && IsEntityAlive(target, true))
 					{
 						//IsValidnpc
-						float Healing_GiveArmor = 3.0;
+						float Healing_GiveArmor = 0.075;
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
 							//recently hurt, half armor.
 							Healing_GiveArmor *= 0.5;
 							GrantEntityArmor(target, false, 0.25, 0.25, 0,
-								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor, client);
 						}
 						else
 						{
 							GrantEntityArmor(target, false, 0.25, 0.25, 0,
-								ReturnEntityMaxHealth(target) * Healing_GiveArmor);
+								ReturnEntityMaxHealth(target) * Healing_GiveArmor, client);
 						}	
 						continue;
 					}
@@ -788,7 +788,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 			}
 			case WEAPON_PURNELL_PRIMARY:
 			{
-				Healing_Amount=Attributes_Get(weapon, 122, 0.0);
+				Healing_Amount=Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 				//it starts at -1.0, so it should go upto 1.0.
 				if(Healing_Amount<1.0)
 					Healing_Amount=1.0;
@@ -1055,6 +1055,10 @@ public void BuilderMenu(int client)
 									
 		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
 		menu.AddItem("-4", buffer);
+
+	//	FormatEx(buffer, sizeof(buffer), "%t", "Display top 5");
+	//	menu.AddItem("-5", buffer);
+		
 									
 		menu.ExitButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -1105,6 +1109,13 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 						ShowVGUIPanel(client, GetTeam(client) == TFTeam_Red ? "class_red" : "class_blue");
 					}
 				}
+				//case -5:
+				//{
+				//	if(IsValidClient(client))
+				//	{
+				//		DisplayCurrentTopScorers(client);
+				//	}
+				//}
 				default:
 				{
 					delete menu;
@@ -1118,8 +1129,12 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
-
-
+/*
+void DisplayCurrentTopScorers(int client)
+{
+	nv
+}
+*/
 int i_BuildingSelectedToBeDeleted[MAXPLAYERS + 1];
 int i_BuildingSelectedToBeUnClaimed[MAXPLAYERS + 1];
 

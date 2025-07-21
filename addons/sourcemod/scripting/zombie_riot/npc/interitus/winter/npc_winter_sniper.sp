@@ -92,6 +92,7 @@ methodmap WinterSniper < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(WinterSniper_ClotThink);
 		
 		npc.m_iChanged_WalkCycle = 0;
+		Is_a_Medic[npc.index] = true;
 
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
@@ -214,11 +215,11 @@ public void WinterSniper_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 	}
 	else

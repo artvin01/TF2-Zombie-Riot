@@ -97,7 +97,10 @@ static void ClotShowInteractHud(ObjectMinter npc, int client)
 {
 	if(Building_Collect_Cooldown[npc.index][0] > GetGameTime())
 	{
-		PrintCenterText(client, "%t", "Object Cooldown", Building_Collect_Cooldown[npc.index][0] - GetGameTime());
+		if((Building_Collect_Cooldown[npc.index][0] - GetGameTime()) >= 999999.9)
+			PrintCenterText(client, "%t","Object Cooldown NextWave");
+		else
+			PrintCenterText(client, "%t", "Object Cooldown", Building_Collect_Cooldown[npc.index][0] - GetGameTime());
 	}
 	else
 	{

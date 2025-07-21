@@ -232,7 +232,7 @@ public void RPG_BobWetstone(int client, int weapon, int index)
 	}
 }
 
-int CurrentHitBobWetstone[MAXTF2PLAYERS];
+int CurrentHitBobWetstone[MAXPLAYERS];
 
 public float RPG_BobWetstoneTakeDamage(int attacker, int victim, float damagePosition[3])
 {

@@ -2,12 +2,12 @@
 #pragma newdecls required
 
 static Handle h_Gravaton_Wand_Hud_Management[MAXPLAYERS+1] = {null, ...};
-static float fl_gravaton_charges[MAXTF2PLAYERS+1];
-static int i_Current_Pap[MAXTF2PLAYERS+1];
-static float fl_hud_timer[MAXTF2PLAYERS+1];
-static bool b_gained_charge[MAXTF2PLAYERS+1];
-static float fl_gravaton_duration[MAXTF2PLAYERS+1];
-static float f3_LastGravitonHitLoc[MAXTF2PLAYERS+1][3];
+static float fl_gravaton_charges[MAXPLAYERS+1];
+static int i_Current_Pap[MAXPLAYERS+1];
+static float fl_hud_timer[MAXPLAYERS+1];
+static bool b_gained_charge[MAXPLAYERS+1];
+static float fl_gravaton_duration[MAXPLAYERS+1];
+static float f3_LastGravitonHitLoc[MAXPLAYERS+1][3];
 
 
 #define GRAVATON_WAND_MAX_CHARGES 9.0
@@ -81,7 +81,7 @@ public void Enable_Gravaton_Wand(int client, int weapon)
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRAVATON_WAND)
 		{
-			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 			//Is the weapon it again?
 			//Yes?
 			delete h_Gravaton_Wand_Hud_Management[client];
@@ -97,7 +97,7 @@ public void Enable_Gravaton_Wand(int client, int weapon)
 	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GRAVATON_WAND)
 	{
-		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_Current_Pap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		DataPack pack;
 		h_Gravaton_Wand_Hud_Management[client] = CreateDataTimer(0.1, Timer_Gravaton_Wand, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -372,13 +372,13 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 	return Plugin_Continue;
 }
 
-static float fl_gravaton_throttle[MAXTF2PLAYERS+1];
-static float fl_gravaton_location[MAXTF2PLAYERS+1][3];
-static float fl_gravaton_sky_location[MAXTF2PLAYERS+1][3];
-static float fl_gravaton_damage[MAXTF2PLAYERS+1];
-static float fl_gravaton_radius[MAXTF2PLAYERS+1];
-//static float fl_gravaton_cooldown[MAXTF2PLAYERS+1][i_MaxcountNpc];
-static int i_gravaton_weapon_index[MAXTF2PLAYERS+1];
+static float fl_gravaton_throttle[MAXPLAYERS+1];
+static float fl_gravaton_location[MAXPLAYERS+1][3];
+static float fl_gravaton_sky_location[MAXPLAYERS+1][3];
+static float fl_gravaton_damage[MAXPLAYERS+1];
+static float fl_gravaton_radius[MAXPLAYERS+1];
+//static float fl_gravaton_cooldown[MAXPLAYERS+1][i_MaxcountNpc];
+static int i_gravaton_weapon_index[MAXPLAYERS+1];
 
 public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, int slot)
 {
@@ -560,7 +560,7 @@ public bool Gravaton_Trace_Walls(int entity, int contentsMask)
 	return !entity;
 }
 
-static float fl_gravation_angle[MAXTF2PLAYERS+1];
+static float fl_gravation_angle[MAXPLAYERS+1];
 
 public Action Gravaton_Wand_Tick(int client)
 {

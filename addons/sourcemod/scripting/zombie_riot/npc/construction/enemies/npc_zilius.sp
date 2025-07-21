@@ -457,13 +457,13 @@ methodmap Construction_Raid_Zilius < CClotBody
 			RaidModeScaling = float(Waves_GetRound()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -753,11 +753,11 @@ static void Internal_ClotThink(int iNPC)
 		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 	}
@@ -1036,6 +1036,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 		{
 			Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(spawn_index);
 			npc.m_iTargetAlly = entity;
+			NpcStats_CopyStats(entity, spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1638,7 +1639,7 @@ public Action Zilius_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		static float flMyPos[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
-		int enemy[MAXENTITIES];
+		int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 		GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, Particle, (2800.0 * 2800.0));
 		bool Foundenemies = false;
 

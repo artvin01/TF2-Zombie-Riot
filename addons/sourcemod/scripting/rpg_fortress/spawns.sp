@@ -8,7 +8,7 @@ enum struct SpawnEnum
 {
 	int Index;
 	char Zone[32];
-	bool Touching[MAXTF2PLAYERS];
+	bool Touching[MAXPLAYERS];
 	float Pos[3];
 	float Angle;
 	int Count;
@@ -759,10 +759,10 @@ public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-//static Handle TimerZoneEditing[MAXTF2PLAYERS];
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+//static Handle TimerZoneEditing[MAXPLAYERS];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentSpawnEditing[MAXPLAYERS][64];
+static char CurrentZoneEditing[MAXPLAYERS][64];
 
 void Spawns_EditorMenu(int client)
 {

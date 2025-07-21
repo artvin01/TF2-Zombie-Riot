@@ -139,9 +139,9 @@ void Worldtext_DisableZone(const char[] zone)
 	}
 }
 
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentSectionEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+static char CurrentKeyEditing[MAXPLAYERS][64];
+static char CurrentSectionEditing[MAXPLAYERS][64];
+static char CurrentZoneEditing[MAXPLAYERS][64];
 
 void Worldtext_EditorMenu(int client)
 {

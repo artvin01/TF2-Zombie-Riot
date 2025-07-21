@@ -72,7 +72,7 @@ methodmap BossSummonRandom < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(BossSummonRandom_ClotThink);
 
 		i_RaidGrantExtra[npc.index] = StringToInt(data);
-		if(i_RaidGrantExtra[npc.index] <= 60)
+		if(i_RaidGrantExtra[npc.index] <= 40)
 		{
 			Zero(SameBossDisallow);
 			//Reset
@@ -132,7 +132,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs
 			PluginName = "npc_true_fusion_warrior";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
 			enemy.ExtraDamage *= 1.30;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.65); 
@@ -141,7 +141,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			PluginName = "npc_blitzkrieg";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
 			enemy.ExtraDamage *= 1.4;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.65); 
@@ -150,7 +150,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			PluginName = "npc_xeno_raidboss_silvester";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
 			enemy.ExtraDamage *= 1.25;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.8); 
@@ -163,12 +163,12 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 				case 1:
 				{
 					PluginName = "npc_sea_god_alaxios";
-					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3;seainfection");
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40;res3;seainfection");
 				}
 				default:
 				{
 					PluginName = "npc_god_alaxios";	
-					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60;res3");
+					Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40;res3");
 				}
 			}
 			
@@ -179,7 +179,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			PluginName = "npc_sensal";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
 			enemy.ExtraDamage *= 1.05;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
@@ -188,7 +188,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			//needs buffs!!
 			PluginName = "npc_stella";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "force60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "force40");
 			
 			enemy.ExtraDamage *= 0.75;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.5); 
@@ -196,7 +196,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 7:
 		{
 			PluginName = "npc_the_purge";	
-		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "force60");
+		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "force40");
 			
 			enemy.ExtraDamage *= 1.15;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 2.3); 
@@ -204,7 +204,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 8:
 		{
 			PluginName = "npc_the_messenger";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_30");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_20");
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
@@ -230,6 +230,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 12:
@@ -268,7 +269,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 16:
 		{
 			PluginName = "npc_nemal";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
 			enemy.ExtraDamage *= 0.85;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
@@ -276,10 +277,10 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 17:
 		{
 			PluginName = "npc_ruina_twirl";	
-			Format(CharData, sizeof(CharData), "%s%s",CharData, "force60");
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "force40");
 			
 			enemy.ExtraDamage *= 0.85;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.265); 
 		}
 		case 18:
 		{

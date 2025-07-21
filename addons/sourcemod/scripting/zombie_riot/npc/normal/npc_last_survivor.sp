@@ -255,10 +255,6 @@ methodmap FatherGrigori < CClotBody
 		npc.Anger = false;
 		npc.StartPathing();
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 250.0;
-		}
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_annabelle.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -292,8 +288,8 @@ methodmap FatherGrigori < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
 			SetEntPropEnt(entity, Prop_Send, "m_hThrower", this.index);
 			
-			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 76.0); 
-			f_CustomGrenadeDamage[entity] = 76.0;	
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 77.0); 
+			f_CustomGrenadeDamage[entity] = 77.0;	
 			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Blue);
 			TeleportEntity(entity, vecSwingStart, vecAngles, NULL_VECTOR);
 			DispatchSpawn(entity);
@@ -354,11 +350,11 @@ public void FatherGrigori_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 		npc.StartPathing();
 		
@@ -477,15 +473,6 @@ public void FatherGrigori_ClotThink(int iNPC)
 						
 						if(target > 0) 
 						{
-							
-							if(EscapeModeForNpc)
-							{
-								if(!ShouldNpcDealBonusDamage(target))
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 125.0, DMG_CLUB, -1, _, vecHit);
-								else
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 300.0, DMG_CLUB, -1, _, vecHit);
-							}
-							else
 							{
 								if(!ShouldNpcDealBonusDamage(target))
 									SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
@@ -521,8 +508,8 @@ public void FatherGrigori_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -775,11 +762,6 @@ public void FatherGrigori_OnTakeDamagePost(int victim, int attacker, int inflict
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-		else
 		{
 			npc.m_flSpeed = 200.0;
 		}

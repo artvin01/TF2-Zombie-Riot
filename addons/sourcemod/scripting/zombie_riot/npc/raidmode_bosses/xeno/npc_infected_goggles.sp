@@ -248,9 +248,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-	//	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-	//	SetEntityRenderColor(npc.m_iWearable4, 65, 65, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		f_GogglesHurtTeleport[npc.index] = 0.0;
 		i_GogglesHurtTalkMessage[npc.index] = 0;
@@ -346,7 +343,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable3);
 		
 		// Play funny animation intro
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
@@ -626,14 +623,14 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius()) 
 		{
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			npc.SetGoalVector(vecTarget);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
-		int tier = (ZR_Waves_GetRound() / 15);
+		int tier = (Waves_GetRoundScale() / 10);
 		if(alone)
 			tier++;
 

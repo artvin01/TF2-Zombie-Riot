@@ -189,17 +189,11 @@ methodmap VoidedDiversionistico < CClotBody
 		SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 500.0);
 		SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 750.0);
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 23);
@@ -274,23 +268,23 @@ public void VoidedDiversionistico_ClotThink(int iNPC)
 			if(AntiCheeseReply == 0)
 			{
 				if(!npc.m_bPathing)
-					NPC_StartPathing(npc.index);
+					npc.StartPathing();
 
-				NPC_SetGoalVector(npc.index, vPredictedPos, true);
+				npc.SetGoalVector(vPredictedPos, true);
 			}
 			else if(AntiCheeseReply == 1)
 			{
 				if(npc.m_bPathing)
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 			}
 		}
 		else 
 		{
 			DiversionCalmDownCheese(npc.index);
 			if(!npc.m_bPathing)
-				NPC_StartPathing(npc.index);
+				npc.StartPathing();
 
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		switch(AntiCheeseReply)
 		{

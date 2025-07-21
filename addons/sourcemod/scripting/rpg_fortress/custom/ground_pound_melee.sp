@@ -1,5 +1,5 @@
 
-static float Duration_Pound[MAXTF2PLAYERS];
+static float Duration_Pound[MAXPLAYERS];
 static float Is_Duration_Pound[MAXENTITIES];
 
 
@@ -7,17 +7,17 @@ float AbilityGroundPoundReturnFloat(int client)
 {
 	return Is_Duration_Pound[client];
 }
-static int particle[MAXTF2PLAYERS];
-static int particle_1[MAXTF2PLAYERS];
-static int i_weaponused[MAXTF2PLAYERS];
+static int particle[MAXPLAYERS];
+static int particle_1[MAXPLAYERS];
+static int i_weaponused[MAXPLAYERS];
 
-static int client_slammed_how_many_times[MAXTF2PLAYERS];
-static int client_slammed_how_many_times_limit[MAXTF2PLAYERS];
-static float client_slammed_pos[MAXTF2PLAYERS][3];
-static float client_slammed_forward[MAXTF2PLAYERS][3];
-static float client_slammed_right[MAXTF2PLAYERS][3];
-static float f_OriginalDamage[MAXTF2PLAYERS];
-static bool b_GroundPoundHit[MAXTF2PLAYERS][MAXENTITIES];
+static int client_slammed_how_many_times[MAXPLAYERS];
+static int client_slammed_how_many_times_limit[MAXPLAYERS];
+static float client_slammed_pos[MAXPLAYERS][3];
+static float client_slammed_forward[MAXPLAYERS][3];
+static float client_slammed_right[MAXPLAYERS][3];
+static float f_OriginalDamage[MAXPLAYERS];
+static bool b_GroundPoundHit[MAXPLAYERS][MAXENTITIES];
 
 
 void GroundSlam_Map_Precache()
@@ -46,7 +46,7 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
-	if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	if (TF2_GetClassnameSlot(classname, weapon) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");

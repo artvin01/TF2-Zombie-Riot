@@ -95,7 +95,7 @@ static bool b_tripple_raid[MAXENTITIES];
 #define STELLA_NC_DURATION 13.0
 #define STELLA_NC_TURNRATE 500.0	//max turnrate.
 #define STELLA_NC_TURNRATE_ANGER 700.0
-#define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/donner_schwert_5.mp3"
+#define STELLA_KARLAS_THEME "#zombiesurvival/seaborn/echos_of_the_wrong_war.mp3"
 
 #define STELLA_NORMAL_LASER_DURATION 0.7
 
@@ -490,6 +490,7 @@ methodmap Stella < CClotBody
 		int spawn_index = NPC_CreateByName("npc_karlas", this.index, pos, ang, GetTeam(this.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(this.index, spawn_index);
 			this.Ally = spawn_index;
 			Set_Karlas_Ally(spawn_index, this.index, i_current_wave[this.index], b_bobwave[this.index], b_tripple_raid[this.index]);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -683,20 +684,20 @@ methodmap Stella < CClotBody
 		
 		c_NpcName[npc.index] = "Stella";
 
-		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
+		//data: test , force10, force20, force30, force40, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
-		int wave = ZR_Waves_GetRound()+1;
+		int wave = Waves_GetRoundScale()+1;
 
-		if(StrContains(data, "force15") != -1)
-			wave = 15;
+		if(StrContains(data, "force10") != -1)
+			wave = 10;
+		else if(StrContains(data, "force20") != -1)
+			wave = 20;
 		else if(StrContains(data, "force30") != -1)
 			wave = 30;
-		else if(StrContains(data, "force45") != -1)
-			wave = 45;
-		else if(StrContains(data, "force60") != -1)
-			wave = 60;
+		else if(StrContains(data, "force40") != -1)
+			wave = 40;
 		else if(StrContains(data, "hell") != -1)
 			wave = -1;
 
@@ -712,7 +713,7 @@ methodmap Stella < CClotBody
 		//idk
 		if(wave == -1)
 		{
-			wave = 60 + ZR_Waves_GetRound();
+			wave = 40 + Waves_GetRoundScale();
 		}
 		i_current_wave[npc.index] = wave;
 		
@@ -756,10 +757,14 @@ methodmap Stella < CClotBody
 			RaidModeScaling = float(wave);
 		}
 
-		if(RaidModeScaling < 55)
-			RaidModeScaling *= 0.19;
+		if(RaidModeScaling < 35)
+		{
+			RaidModeScaling *= 0.25; //abit low, inreacing
+		}
 		else
-			RaidModeScaling *= 0.38;
+		{
+			RaidModeScaling *= 0.5;
+		}
 
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
@@ -796,14 +801,15 @@ methodmap Stella < CClotBody
 
 		if(!b_tripple_raid[npc.index] && (StrContains(data, "twirl") != -1))
 		{
+			PrecacheTwirlMusic();
 			default_theme = false;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-			music.Time = 285;
-			music.Volume = 2.0;
+			music.Time = 190;
+			music.Volume = 1.65;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
-			strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
+			strcopy(music.Name, sizeof(music.Name), "Night life in Ruina");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);	
 		}
 
@@ -811,11 +817,11 @@ methodmap Stella < CClotBody
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), STELLA_KARLAS_THEME);
-			music.Time = 290;
-			music.Volume = 2.0;
+			music.Time = 237;
+			music.Volume = 1.85;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
-			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			strcopy(music.Name, sizeof(music.Name), "Echos of the wrong war");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		
@@ -1142,7 +1148,7 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 
-	if(wave > 30)	//beyond wave 30.
+	if(wave > 20)	//beyond wave 20.
 		if(Lunar_Grace(npc))
 			return;
 
@@ -1150,13 +1156,13 @@ static void Internal_ClotThink(int iNPC)
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	npc.AdjustWalkCycle();
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 	npc.PlayIdleAlertSound();
 	
 	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		return;
@@ -1412,7 +1418,7 @@ static Action Lunar_Grace_Tick(int iNPC)
 	TE_SetupGlowSprite(flPos, gGlow1, STELLA_TE_DURATION, 0.65, 255);
 	TE_SendToAll();
 
-	if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget < MaxClients)
+	if(IsValidEnemy(npc.index, npc.m_iTarget) && npc.m_iTarget <= MaxClients)
 	{
 		//the one who is getting targeted will see the ring a bit differently.
 		TE_SetupBeamRingPoint(struct_Lunar_Grace_Data[npc.index].Loc, fl_lunar_radius*2.0, fl_lunar_radius*2.0 + 0.5, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, STELLA_TE_DURATION, 6.0, 0.1, {255,255,255,255}, 1, 0);
@@ -1510,22 +1516,22 @@ static bool KeepDistance(Stella npc, float flDistanceToTarget, int PrimaryThreat
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 
@@ -1537,8 +1543,8 @@ static bool b_MoveTowardsKarlas(Stella npc)
 	if(!IsValidAlly(npc.index, npc.Ally))
 		return false;
 
-	//if its less then wave 30, no reflect.
-	if(i_current_wave[npc.index] < 30)
+	//if its less then wave 20, no reflect.
+	if(i_current_wave[npc.index] < 20)
 		return false;
 
 	int Near_Stella = Nearby_Players(npc, 9000.0);
@@ -1699,8 +1705,8 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 
 	if(npc.m_bInKame)
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flSpeed = 0.0;
 		return false;
 	}
@@ -1713,7 +1719,7 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
 
 		npc.m_bKarlasRetreat = true;
-		int max_dialogue = i_current_wave[npc.index] >= 30 ? 11 : 9;
+		int max_dialogue = i_current_wave[npc.index] >= 20 ? 11 : 9;
 		int chose = GetRandomInt(1, max_dialogue);
 		switch(chose)
 		{
@@ -1795,8 +1801,8 @@ static bool Stella_Nightmare_Logic(Stella npc, int PrimaryThreatIndex, float vec
 		npc.m_flSpeed = 0.0;
 		npc.NC_StartupSound();
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flSpeed = 0.0;
 
 		return true;
@@ -1984,8 +1990,7 @@ static void FindKarlas(int client, int entity, int damagetype, float damage)
 		npc.m_iKarlasNCState = 1;	
 		if(npc.m_flNC_LockedOn > GetGameTime(karl.index))
 			return;
-		NPC_StopPathing(karl.index);
-		karl.m_bPathing = false;
+		karl.StopPathing();
 		karl.m_flGetClosestTargetTime = 0.0;
 		karl.m_flSpeed = 0.0;
 	}
@@ -2091,7 +2096,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
 		
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
@@ -2223,7 +2228,7 @@ static void Internal_NPCDeath(int entity)
 
 	if(b_tripple_raid[npc.index])
 	{
-		Twirl_OnStellaKarlasDeath(npc.Ally);
+		Twirl_OnStellaKarlasDeath();
 	}
 
 	if(!npc.m_bSaidWinLine)
@@ -2330,7 +2335,7 @@ static bool BlockTurn(Stella npc)
 }
 static float fl_Normal_Laser_Range(Stella npc)
 {
-	return (npc.Anger ? 3000.0 : 750.0);
+	return (npc.Anger ? 1250.0 : 750.0);
 }
 static void Self_Defense(Stella npc, float flDistanceToTarget)
 {
@@ -2461,7 +2466,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	if(IsValidEnemy(npc.index, target))
 	{
 		f_NpcTurnPenalty[npc.index] = 0.0;	//:)
-		//times these value has been altered: 45.
+		//times these value has been altered: 47.
 		//:(
 		//warp_turn_speed
 		float Bonus_Speed_Range = 500.0*500.0;
@@ -2470,7 +2475,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Dist = GetVectorDistance(vecTarget, Self_Vec, true);
 
 		//HEVILY buff turnrate when angry
-		float Turn_Speed = (npc.Anger ? 50.0 : 12.0);
+		float Turn_Speed = (npc.Anger ? 40.0 : 24.0);
 		
 		if(Dist <= 0.0)
 			Dist = 1.0;
@@ -2486,16 +2491,18 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			Turn_Speed *= 0.8;
 
 		Turn_Speed /=TickrateModify;
-		Turn_Speed /=f_AttackSpeedNpcIncrease[npc.index];
+		Turn_Speed /= ReturnEntityAttackspeed(npc.index);
 
 		float Turn_Extra = 0.94 + ((Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5)*(Ratio+0.5));	
 		//this ^ what I did here is ass. NORMALLY what you would do is (Ratio+0.5)^4.0. BUT FOR WHATEVER REASON, doing that results in numbers that physically shouldn't be possible.
 		//CPrintToChatAll("Turn Extra before: %f", Turn_Extra);
-		if(Turn_Extra > 3.25)
-			Turn_Extra = 3.25;
+		//if(Turn_Extra > 3.25)
+		//	Turn_Extra = 3.25;
 		//CPrintToChatAll("Turn Extra after: %f", Turn_Extra);
 
 		Turn_Speed *= Turn_Extra;
+
+		//CPrintToChatAll("turn speed: %f", Turn_Speed);
 
 		npc.FaceTowards(vecTarget, Turn_Speed);
 	}
@@ -2506,7 +2513,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		float Dmg = Modify_Damage(npc.Anger ? 2.0 : 1.1);
 		Dmg *= (0.75-Logarithm(Ratio));
 		Dmg /= TickrateModify;	//since the damage is dealt every tick, make it so the dmg is modified by tickrate modif.
-		Dmg /=f_AttackSpeedNpcIncrease[npc.index];
+		Dmg /=ReturnEntityAttackspeed(npc.index);
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
@@ -2520,8 +2527,8 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 			npc.m_flNorm_Attack_Throttle = GameTime + 0.1;
 			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 			spawnRing_Vectors(VecSelfNpcabs, STELLA_DEBUFF_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, /*duration*/ 0.11, 3.0, 3.0, 1);	
-
-			Explode_Logic_Custom(Dmg, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
+			//6.6 is due to this being only done 10 times a second, instead of every tick.
+			Explode_Logic_Custom(Dmg*6.6, 0, npc.index, -1, VecSelfNpcabs, STELLA_DEBUFF_RANGE, 1.0, _, true, 20,_,_,_,StellaDebuffTargetsInRange);
 		}
 		//CPrintToChatAll("Damage: %f", Dmg);
 	}
@@ -2535,7 +2542,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 	int color[4];
 	Ruina_Color(color, i_current_wave[npc.index]);
 
-	if(i_current_wave[npc.index] >=45)
+	if(i_current_wave[npc.index] >=30)
 	{
 		color[0] = 0;
 		color[1] = 250;
@@ -2738,7 +2745,7 @@ static float Target_Angle_Value(Stella npc, int Target)
 static int i_Get_Laser_Target(Stella npc, float Range = -1.0)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXTF2PLAYERS];
+	int enemy_2[MAXPLAYERS];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of stella that are players. + wall check obv
 	int Tmp_Target = -1;

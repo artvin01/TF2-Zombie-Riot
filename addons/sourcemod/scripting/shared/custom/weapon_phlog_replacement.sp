@@ -6,10 +6,10 @@
 #define PHLOG_ABILITY "misc/halloween/spell_overheal.wav"
 
 Handle h_TimerPHLOGManagement[MAXPLAYERS+1] = {null, ...};
-static float f_PHLOGhuddelay[MAXTF2PLAYERS];
-static float f_PHLOGabilitydelay[MAXTF2PLAYERS];
-static int i_PHLOGHitsDone[MAXTF2PLAYERS];
-static float f_FlameerDelay[MAXTF2PLAYERS];
+static float f_PHLOGhuddelay[MAXPLAYERS];
+static float f_PHLOGabilitydelay[MAXPLAYERS];
+static int i_PHLOGHitsDone[MAXPLAYERS];
+static float f_FlameerDelay[MAXPLAYERS];
 
 void Npc_OnTakeDamage_Phlog(int attacker)
 {
@@ -50,7 +50,7 @@ void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 #define MAX_TARGETS_FLAME 5
 
 static int BEAM_BuildingHit[MAX_TARGETS_FLAME];
-static float BEAM_Targets_Hit[MAXTF2PLAYERS];
+static float BEAM_Targets_Hit[MAXPLAYERS];
 
 public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 {
@@ -89,7 +89,8 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	BEAM_Targets_Hit[client] = 1.0;
 	float damage = 25.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
-	damage *= (1.0 / Attributes_Get(weapon, 6, 1.0));
+//	damage *= (1.0 / Attributes_Get(weapon, 6, 1.0)); //already does it, see attribute Attrib_AttackspeedConvertIntoDmg
+
 	float playerPos[3];
 
 	for (int building = 0; building < MAX_TARGETS_FLAME; building++)
@@ -242,7 +243,7 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);
-		TF2_AddCondition(client, TFCond_Ubercharged, 1.0); //ohboy
+		TF2_AddCondition(client, TFCond_UberchargedCanteen, 1.0); //ohboy
 		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 10.0);
 		TF2_AddCondition(client, TFCond_CritCanteen, 10.0);
 		ApplyTempAttrib(weapon, 2, 1.35, 10.0); //way higher damage.

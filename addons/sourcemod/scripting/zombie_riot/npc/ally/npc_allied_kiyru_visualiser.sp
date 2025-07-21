@@ -239,7 +239,6 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 							npc.m_iWearablePlayerModel = WearablePostIndex;
 						}
-						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 255);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}
@@ -269,7 +268,7 @@ methodmap AlliedKiryuVisualiserAbility < CClotBody
 		npc.m_flRangedArmor = 1.0;
 		npc.m_iTarget = enemyattach;
 
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -403,14 +402,19 @@ public void AlliedKiryuVisaluser_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget) && !VIPBuilding_Active() && !HasSpecificBuff(npc.m_iTarget, "Solid Stance"))
 	{	
-		if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
-			f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
+		bool AllowStandStill = true;
+		if(npc.m_iKiryuActionWhich == 4)
+			if(b_thisNpcIsARaid[npc.m_iTarget])
+				AllowStandStill = false;
+		
+		if(AllowStandStill)
+		{
+			if(f_NoUnstuckVariousReasons[npc.m_iTarget] < GetGameTime() + 0.5)
+				f_NoUnstuckVariousReasons[npc.m_iTarget] = GetGameTime() + 0.5;
 
-		if(f_DoNotUnstuckDuration[npc.m_iTarget] < GetGameTime() + 0.5)
-			f_DoNotUnstuckDuration[npc.m_iTarget] = GetGameTime() + 0.5;
-
-		if(f_TankGrabbedStandStill[npc.m_iTarget] < GetGameTime() + 0.1)
-			f_TankGrabbedStandStill[npc.m_iTarget] = GetGameTime() + 0.1;
+			if(f_TankGrabbedStandStill[npc.m_iTarget] < GetGameTime() + 0.1)
+				f_TankGrabbedStandStill[npc.m_iTarget] = GetGameTime() + 0.1;
+		}
 
 		AlliedKiryuVisualiserAbility npc3 = view_as<AlliedKiryuVisualiserAbility>(npc.m_iTarget);
 		
@@ -608,7 +612,9 @@ void BrawlerHeat4(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 				npc.m_iChanged_WalkCycle = 3;
 				if(IsValidEnemy(npc.index, npc.m_iTarget))
 				{
-					SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
+					if(!b_thisNpcIsARaid[npc.m_iTarget])
+						SensalCauseKnockback(npc.index, npc.m_iTarget,_,false);
+
 					npc.PlayHitSound();
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 					CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);

@@ -300,8 +300,8 @@ static void Internal_ClotThink(int iNPC)
 	if(g_b_donner_died && g_b_item_allowed && i_RaidGrantExtra[npc.index] == 1)
 	{
 		npc.m_flNextThinkTime = 0.0;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
@@ -328,7 +328,7 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}Karlas{snow}!");
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{
@@ -460,9 +460,9 @@ static void Internal_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 				
 			if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
@@ -571,8 +571,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -659,7 +659,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				npc.StartPathing();
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 				
 				if(fl_BEAM_ChargeUpTime[npc.index]<GameTime)
 				{
@@ -733,7 +733,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			{
 				npc.StartPathing();
 				
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 		}
 		
@@ -762,7 +762,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				
 		npc.StartPathing();
 		
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 		
 		float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 		if(g_b_angered)
@@ -774,8 +774,8 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			npc.FaceTowards(WorldSpaceVec, 5.0);
 		}
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flSpeed = 0.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 	}
@@ -904,8 +904,8 @@ static void DonnerNormAttack(Donnerkrieg npc)
 	Data.Radius = 10.0;
 	Data.Range = 1000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = 200.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = 100.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = 200.0 / 6.0 / TickrateModify / ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = 100.0 / 6.0 / TickrateModify / ReturnEntityAttackspeed(npc.index);
 	Data.Color = {255, 255, 255, 30};
 	Data.DoEffects = true;
 	GetAttachment(npc.index, "effect_hand_r", Data.EffectsStartLoc, NULL_VECTOR);
@@ -954,8 +954,8 @@ public Action NightmareCannon_TBB_Tick(int client)
 	Data.Radius = 150.0;
 	Data.Range = -1.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = 750.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = 450.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = 750.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = 450.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = {255, 3, 3, 60};
 	Data.DoEffects = true;
 	Data.RelativeOffset = true;

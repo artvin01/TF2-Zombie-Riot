@@ -226,10 +226,6 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
 			}
-			case WEAPON_VICTORIAN_LAUNCHER:
-			{
-				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
-			}
 			case WEAPON_ULPIANUS:
 			{
 				enemies_hit_aoe = Ulpianus_EnemyHitCount();
@@ -587,7 +583,12 @@ public void Timer_Do_Melee_Attack(int weapon, int client,int FrameDelay, char[] 
 	if(FrameDelay > 0)
 		RequestFrames(Timer_Do_Melee_Attack_Internal, FrameDelay, pack);
 
-	f_TimeTillMeleeAttackShould[weapon] = (GetTickInterval() * float(FrameDelay) + GetGameTime());
+	static float DefaultInterval;
+	if(DefaultInterval == 0.0)
+	{
+		DefaultInterval = 1.0 / 66.0;
+	}
+	f_TimeTillMeleeAttackShould[weapon] = ((DefaultInterval * float(FrameDelay)) + GetGameTime());
 }
 public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 {
@@ -737,8 +738,8 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 		{
 			damage = 40.0;
 		}
-		
-		if(Item_Index != 155)
+
+		if(Attributes_Get(weapon, 4042, 0.0) != 1.0)
 		{
 			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}

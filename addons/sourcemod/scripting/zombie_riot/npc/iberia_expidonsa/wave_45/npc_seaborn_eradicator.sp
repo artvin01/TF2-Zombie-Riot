@@ -124,13 +124,16 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 30.0;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		if(!VIPBuilding_Active())
 		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			for(int i; i < ZR_MAX_SPAWNERS; i++)
 			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-				break;
+				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+				{
+					Spawns_AddToArray(npc.index, true);
+					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+					break;
+				}
 			}
 		}
 		
@@ -237,7 +240,7 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 6;
 						npc.AddActivityViaSequence("dieviolent");
 						npc.StartPathing();
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_flSpeed = 0.0;
 						npc.PlayAngerSound();
 					}
@@ -273,11 +276,11 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		Iberia_SeabornAnnihilatorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -314,6 +317,16 @@ public void Iberia_SeabornAnnihilator_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	Spawns_RemoveFromArray(entity);
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
+	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))

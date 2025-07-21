@@ -178,11 +178,11 @@ public void AnarchyMadDoctor_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		AnarchyMadDoctorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -257,7 +257,7 @@ void AnarchyMadDoctorSelfDefense(AnarchyMadDoctor npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 65.0;
 					if(npc.m_iOverlordComboAttack >= 3)
 					{
 						damageDealt *= 2.0;

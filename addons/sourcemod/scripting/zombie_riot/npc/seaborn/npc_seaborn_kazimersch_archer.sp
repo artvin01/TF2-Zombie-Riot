@@ -129,7 +129,6 @@ methodmap KazimierzKnightArcher < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + 10.0;
  
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_crusaders_crossbow/c_crusaders_crossbow.mdl");
 		SetVariantString("0.8");
@@ -139,30 +138,12 @@ methodmap KazimierzKnightArcher < CClotBody
 		SetVariantString("1.35");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 155, 155, 255, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-/*
-		int seed = GetURandomInt();
-		bool female = !(seed % 2);
-		char buffer[PLATFORM_MAX_PATH];
-
-		Citizen_GenerateModel(seed, female, GetRandomInt(0,5), buffer, sizeof(buffer));
-
-		npc.m_iWearable3 = npc.EquipItem("partyhat", buffer);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		//SetEntProp(npc.index, Prop_Send, "m_fEffects", GetEntProp(npc.index, Prop_Send, "m_fEffects") | EF_NODRAW);
-		//causes immensive lag, cannot.
-*/
 		npc.StartPathing();
 		
 		
@@ -229,11 +210,11 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 		if(npc.m_flJumpStartTime < GetGameTime(npc.index))
@@ -305,16 +286,16 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 					
 					npc.m_bisWalking = true;
 					
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 			}
 		}
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

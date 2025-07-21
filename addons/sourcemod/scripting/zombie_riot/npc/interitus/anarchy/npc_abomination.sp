@@ -253,11 +253,11 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -265,7 +265,7 @@ public void AnarchyAbomination_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -388,7 +388,7 @@ int AnarchyAbominationSelfDefense(AnarchyAbomination npc, bool &SpinSound)
 			if(npc.Anger)
 			{
 				PredictSubjectPositionForProjectiles(npc, target, ProjectileSpeed, _,vecTarget);
-				projectile = npc.FireParticleRocket(vecTarget, 15.0, ProjectileSpeed, 150.0, "superrare_burning2", true);
+				projectile = npc.FireParticleRocket(vecTarget, 20.0, ProjectileSpeed, 150.0, "superrare_burning2", true);
 				static float ang_Look[3];
 				GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 				Initiate_HomingProjectile(projectile,
@@ -402,7 +402,7 @@ int AnarchyAbominationSelfDefense(AnarchyAbomination npc, bool &SpinSound)
 			}
 			else
 			{
-				projectile = npc.FireParticleRocket(vecTarget, 15.0, ProjectileSpeed, 150.0, "superrare_burning1", true);
+				projectile = npc.FireParticleRocket(vecTarget, 20.0, ProjectileSpeed, 150.0, "superrare_burning1", true);
 			}
 			SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 			int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
@@ -471,13 +471,13 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= 7.5;
+			DamageDeal *= 12.5;
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 
 		Elemental_AddChaosDamage(target, owner, 15, true, true);
 
-		NPC_Ignite(target, owner,12.0, -1, 5.0);
+		NPC_Ignite(target, owner,12.0, -1, 8.0);
 
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))

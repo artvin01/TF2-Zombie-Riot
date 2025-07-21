@@ -85,6 +85,12 @@
 				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x24\xA1\x2A\x2A\x2A\x2A\x56\x8B\xF1\x89\x75\xF0"
 			}
+			"CTFPlayer::Taunt"
+			{
+				"library"	"server"
+				"linux"		"@_ZN9CTFPlayer5TauntE8taunts_ti"
+				"windows"	"\x55\x8B\xEC\x81\xEC\xD0\x00\x00\x00\x53\x56\x57\x8B\xF9\xE8"
+			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
 				//inlined in windows 64, but it doesnt matter we dont directly need it.
@@ -102,17 +108,21 @@
 				"library"	"server"
 				
 				"linux"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
-				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xF4\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
+				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xF8\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
 			}
 			"CTFPlayer::CanAirDash"
 			{
 				//air_dash_count, smaller function.
 				"library"	"server"
-				"linux64"		"@_ZNK9CTFPlayer10CanAirDashEv"
-				"windows64"	"\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x57\x48\x83\xEC\x30\x8B\x81\xD4\x1E\x00\x00"
 				
 				"linux"		"@_ZNK9CTFPlayer10CanAirDashEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xB4\x1B\x00\x00"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x57\x8B\xF9\x8B\x87\xBC\x1B\x00\x00"
+			}
+			"CBaseAnimating::GetBoneCache"
+			{
+				"library"	"server"
+				
+				"linux"		"@_ZN14CBaseAnimating12GetBoneCacheEv"
 			}
 			"CTFPlayer::GetChargeEffectBeingProvided"
 			{
@@ -120,19 +130,14 @@
 				// CTFPlayerShared::SetChargeEffect called by CTFPlayerShared::RecalculateChargeEffects
 				// CTFPlayerShared::RecalculateChargeEffects calls CTFPlayer::GetChargeEffectBeingProvided
 				"library"	"server"
-				"linux64"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
-				"windows64"	"\x40\x53\x48\x83\xEC\x50\x48\x8D\x81\x20\x27\x00\x00"
-				
 				
 				"linux"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xC4\x22\x00\x00"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xCC\x22\x00\x00"
 			}
 			"CTFPlayer::RegenThink"
 			{
 				//string RegenThink, small function
 				"library"	"server"
-			//	"linux64"		"@_ZN9CTFPlayer10RegenThinkEv"
-			//	"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x45\x33\xC0"
 				
 				"linux"		"@_ZN9CTFPlayer10RegenThinkEv"
 				"windows"	"\x55\x8B\xEC\x83\xEC\x7C\x56\x8B\xF1\x8B\x06"
@@ -177,9 +182,6 @@
 			"CBaseAnimating::InvalidateBoneCache"// Void CBaseCombatCharacter::Weapon_Drop ("ValveBiped.Weapon_bone"), Big function with 11 calls, the 5th one from top, very small function
 			{
 				"library"	"server"
-				"linux64"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
-				"windows64"	"\x48\x8B\x89\x88\x05\x00\x00\xE9\x2A\x2A\x2A\x2A"
-				
 				"linux"		"@_ZN14CBaseAnimating19InvalidateBoneCacheEv"
 				"windows"	"\xFF\xB1\x6C\x04\x00\x00"
 			}
@@ -266,6 +268,12 @@
 				"windows"		"\x55\x8B\xEC\x83\xEC\x6C\x57\x8B\xF9\xE8\x2A\x2A\x2A\x2A"
 
 			}
+			"CTFPlayerShared::RecalculateChargeEffects"
+			{
+				"library"	"server"
+				"linux"		"@_ZN15CTFPlayerShared24RecalculateChargeEffectsEb"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x38\x53\x56\x57\x8B\xF9\xC7\x45\xCC\x00\x00\x00\x00"
+			}
 			"CTFWeaponBaseMelee::GetShootSound"
 			{
 				// "Weapon_Slap.OpenHand", last function in the end
@@ -275,7 +283,6 @@
 
 				"linux"			"@_ZNK18CTFWeaponBaseMelee13GetShootSoundEi"
 				"windows"			"\x55\x8B\xEC\x53\x8B\x5D\x08\x57\x8B\xF9\x83\xFB\x09"
-
 			}
 			"CBaseAnimating::ResetSequenceInfo" //( )
 			{
@@ -330,9 +337,60 @@
 				"linux"		"@_ZN18CTraceFilterSimple15ShouldHitEntityEP13IHandleEntityi"
 				"windows"	"\x55\x8B\xEC\x57\xFF\x75\x0C\x8B\xF9\xFF\x75\x08\xE8\x2A\x2A\x2A\x2A\x83\xC4\x08"
 			}
+			"CGameEventManager::CreateEvent" // Look for string "CreateEvent: event '%s' not registered."
+            {
+                "library"    "engine"
+                "linux"        "@_ZN17CGameEventManager11CreateEventEPKcb"
+                "windows"    "\x55\x8B\xEC\x56\x8B\x75\x08\x57\x85\xF6\x74\x20\x80\x3E\x00\x74\x1B\x56\xE8\x19"
+                "linux64"    "@_ZN17CGameEventManager11CreateEventEPKcb"
+                "windows64"    ""
+            }
+			"SV_CreateBaseline" // Look for string "aCreatedClassBa ; "Created class baseline: %i classes, %i ""
+            {
+                "library"    	"engine"
+                "linux"        	"@_Z17SV_CreateBaselinev"
+                "windows"   	"\x55\x8B\xEC\xB8\x74\xA5\x04\x00"
+                "linux64"    	"@_Z17SV_CreateBaselinev"
+                "windows64"   	""
+            }
 		}
 		"Functions"
 		{
+			"CTFPlayerShared::RecalculateChargeEffects"
+			{
+				"signature"		"CTFPlayerShared::RecalculateChargeEffects"
+				"callconv"		"thiscall"
+				"return"		"void"
+				"this"			"address"
+				
+				"arguments"
+				{
+					"bInstantRemove"
+					{
+						"type"	"bool"
+					}
+				}
+			}
+			"CGameEventManager::CreateEvent"
+			{
+				"signature" "CGameEventManager::CreateEvent"
+				"callconv"	"thiscall"
+				"return"	"int"
+				"this"		"address"
+				
+				"arguments"
+				{
+					"name"
+					{
+						"type" "charptr"
+					}
+					
+					"force"
+					{
+						"type" "bool"
+					}
+				}
+			}
 			"CTFPlayer::TeamFortress_SetSpeed()"
 			{
 				"signature"	"CTFPlayer::TeamFortress_SetSpeed()"
@@ -529,6 +587,24 @@
 				"return"	"void"
 				"this"		"entity"
 			}
+			"CTFPlayer::Taunt"
+			{
+				"signature"	"CTFPlayer::Taunt"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"entity"
+				"arguments"
+				{
+					"taunts_t"
+					{
+						"type"	"int"
+					}
+					"int"
+					{
+						"type"	"int"
+					}
+				}
+			}
 			"CTFPlayer::CanAirDash"
 			{
 				"signature"	"CTFPlayer::CanAirDash"
@@ -536,6 +612,14 @@
 				"return"	"bool"
 				"this"		"entity"
 			}
+			"CBaseAnimating::GetBoneCache"
+			{
+				"signature"	"CBaseAnimating::GetBoneCache"
+				"callconv"	"thiscall"
+				"return"	"int"
+				"this"		"entity"
+			}
+			
 			"CTFProjectile_HealingBolt::ImpactTeamPlayer()"
 			{
 				"signature"		"CTFProjectile_HealingBolt::ImpactTeamPlayer()"
@@ -767,6 +851,13 @@
 		}
 		"Offsets"
 		{
+			"CGameEventManager::LoadEventsFromFile"
+            {
+                "linux"        "2"
+                "windows"    "1"
+                "linux64"    "2"
+                "windows64"    "1"
+            }
 			"CBaseEntity::WorldSpaceCenter"		
 			{		
 				"windows"	"156"		
@@ -819,8 +910,8 @@
 			}
 			"CTFParticleCannon::FireChargedShot"
 			{
-				"windows"	"493"
-				"linux"		"500"
+				"windows"	"494"
+				"linux"		"501"
 			}
 			"CBaseGrenade::Explode"
 			{
@@ -883,6 +974,12 @@
 				// Offset from m_lastHealthPercentage
 				"windows"	"28"
 				"linux"		"28"
+			}
+			"CServerGameDLL::GetTickInterval()"
+			{
+                "library"    	"server"
+				"windows"		"10"
+				"linux"			"10"
 			}
 		}
 	}

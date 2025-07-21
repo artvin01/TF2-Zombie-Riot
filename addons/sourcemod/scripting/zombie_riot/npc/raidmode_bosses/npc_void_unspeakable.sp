@@ -323,17 +323,17 @@ methodmap VoidUnspeakable < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
-			value = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
+			value = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -349,11 +349,11 @@ methodmap VoidUnspeakable < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(value > 40.0 && value < 55.0)
+		if(value > 25.0 && value < 35.0)
 		{
 			RaidModeScaling *= 0.85;
 		}
-		else if(value > 55.0)
+		else if(value > 35.0)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.85;
@@ -419,19 +419,12 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 			}
 			case 2:
@@ -451,19 +444,12 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 			}
 			case 3:
@@ -485,21 +471,13 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable8, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable8, 200, 0, 200, 255);
 			}
 			case 4,5:
@@ -519,19 +497,12 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable6, 200, 0, 200, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 				SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 				SetEntityRenderFx(npc.index,		 RENDERFX_DISTORT);
@@ -545,7 +516,6 @@ methodmap VoidUnspeakable < CClotBody
 			}
 		}
 		
-		SetEntityRenderMode(npc.index, 		RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index,		 200, 0, 200, 255);
 		
 		return npc;
@@ -698,11 +668,11 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VoidUnspeakableSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -782,6 +752,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 float VoidUnspeakable_Absorber(int entity, int victim, float damage, int weapon)
 {
 	ApplyStatusEffect(entity, victim, "Teslar Shock", 5.0);
+	ApplyStatusEffect(entity, victim, "Heavy Presence", 1.0);
 
 	float damageDealt = 10.0 * RaidModeScaling;
 	Elemental_AddVoidDamage(victim, entity, RoundToNearest(damageDealt), true, true);	
@@ -1020,8 +991,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			npc.AddActivityViaSequence("taunt_bubbles");
 			npc.SetCycle(0.62);
 			npc.SetPlaybackRate(0.2);	
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
@@ -1215,7 +1186,8 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 			}
 
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
+			int enemy[10];
+			//It should target upto 10 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.index, (700.0 * 700.0));
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({125, 0, 125, 200});
@@ -1284,7 +1256,7 @@ public void VoidUnspeakableWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}After detroying everyrhing here, it leaves to plan another attack.");
+	CPrintToChatAll("{purple}After detroying everything here, it leaves to plan another attack.");
 	CPrintToChatAll("{crimson}At the rest of Irln.");
 }
 
@@ -1303,8 +1275,8 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		npc.AddActivityViaSequence("taunt_bubbles");
 		npc.SetCycle(0.62);
 		npc.SetPlaybackRate(0.0);	
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flSpeed = 0.0;
 		if(IsValidEntity(npc.m_iWearable4))
 		{
@@ -1317,7 +1289,6 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
 		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
-		if(npc.m_flVoidMatterAbosorbInternalCDBoom > gameTime)
 		if(IsValidEntity(npc.m_iTarget))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);

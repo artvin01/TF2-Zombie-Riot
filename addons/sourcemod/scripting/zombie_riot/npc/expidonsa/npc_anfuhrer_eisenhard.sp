@@ -220,7 +220,7 @@ public void AnfuhrerEisenhard_ClotThink(int iNPC)
 	float TrueArmor = 1.0;
 	if(npc.Anger)
 	{
-		TrueArmor *= 0.65;
+		TrueArmor *= 0.75;
 	}
 	fl_TotalArmor[npc.index] = TrueArmor;
 
@@ -246,11 +246,11 @@ public void AnfuhrerEisenhard_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		AnfuhrerEisenhardSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -269,7 +269,7 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-
+	/*
 	//if youre behind him and attack him ,you deal 2x the damage.
 	if(IsBehindAndFacingTarget(attacker, victim))
 	{
@@ -286,6 +286,7 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 		}
 		damage *= 1.35;
 	}
+	*/
 	
 	if(npc.m_flArmorCount > 0.0)
 	{

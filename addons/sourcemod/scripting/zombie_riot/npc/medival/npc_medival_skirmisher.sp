@@ -185,11 +185,6 @@ methodmap MedivalSkirmisher < CClotBody
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 0.35;
 		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
-
 	/*	
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/all_class/sbox2014_toowoomba_tunic/sbox2014_toowoomba_tunic_sniper.mdl");
 		SetVariantString("1.0");
@@ -271,7 +266,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 						
 						BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 						
-						NPC_SetGoalVector(npc.index, vBackoffPos, true);
+						npc.SetGoalVector(vBackoffPos, true);
 					}
 				}
 				else
@@ -295,8 +290,8 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 2.0;
 							npc.m_flJumpStartTime = GetGameTime(npc.index) + 0.9;
 						}
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
+						npc.StopPathing();
+						
 					}
 					else
 					{
@@ -328,15 +323,15 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 				
 				
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

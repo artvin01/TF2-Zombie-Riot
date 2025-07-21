@@ -9,8 +9,8 @@
 #define SOUND_TRANSFORM2	"ambient/halloween/thunder_01.wav"
 #define SOUND_SHRINK		"items/powerup_pickup_plague_infected.wav"
 
-static float TonicBuff[MAXTF2PLAYERS];
-static float TonicBuff_CD[MAXTF2PLAYERS];
+static float TonicBuff[MAXPLAYERS];
+static float TonicBuff_CD[MAXPLAYERS];
 static Handle ShrinkTimer[MAXENTITIES];
 static float f_RaidShrinkImmunity[MAXENTITIES];
 
@@ -558,14 +558,23 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
+	
 	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_TRUEDAMAGE);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
 	{
-		if(view_as<Bloon>(enemy).m_bFortified)
+		if(view_as<Bloon>(enemy).m_bFortified && (view_as<Bloon>(enemy).m_iType == Bloon_Ceramic || view_as<Bloon>(enemy).m_iType == Bloon_Lead))
 		{
 			view_as<Bloon>(enemy).m_bFortified = false;
-			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", Bloon_Health(false, view_as<Bloon>(enemy).m_iOriginalType));
+			float ratio = Bloon_HPRatio(false, view_as<Bloon>(enemy).m_iOriginalType) / Bloon_HPRatio(true, view_as<Bloon>(enemy).m_iOriginalType);
+
+			int maxhealth = GetEntProp(enemy, Prop_Data, "m_iMaxHealth");
+			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", RoundFloat(maxhealth * ratio));
+
+			int health = GetEntProp(enemy, Prop_Data, "m_iHealth");
+			
+			int bonus = health - RoundFloat(health * ratio);
+			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_TRUEDAMAGE, weapon);
 		}
 	}
 	else
@@ -665,6 +674,9 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
 					TonicBuff[target] = Mana_Regen_Delay[client];
+					int BeamIndex = ConnectWithBeam(client, target, 125, 125, 255, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+					SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+					CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 					ApplyStatusEffect(client, target, "Tonic Affliction", 10.0);
 					ApplyStatusEffect(client, target, "Tonic Affliction Hide", 10.0);
 					
@@ -684,6 +696,9 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 			if(GetVectorDistance(pos1, pos2, true) < 40000) // 200 HU
 			{
 				i_ExtraPlayerPoints[client] += 10;
+				int BeamIndex = ConnectWithBeam(client, entity1, 125, 125, 255, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
+				SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
+				CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 				ApplyStatusEffect(client, entity1, "Tonic Affliction", 10.0);
 				ApplyStatusEffect(client, entity1, "Tonic Affliction Hide", 10.0);
 				if(++count > 2)

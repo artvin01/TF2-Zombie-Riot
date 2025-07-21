@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float fl_cosmic_heating_timer[MAXTF2PLAYERS];
+static float fl_cosmic_heating_timer[MAXPLAYERS];
 static float Cosmic_Base_BeamSpeed[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_DMG[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_Radius[MAXPLAYERS+1] = {0.0, ...};
@@ -9,10 +9,10 @@ static float Cosmic_BeamLoc[MAXPLAYERS+1][3];
 static float Cosmic_Terror_Hud_Delay[MAXPLAYERS+1] = {0.0, ...};
 static float Cosmic_Terror_Trace_Delay[MAXPLAYERS+1] = {0.0, ...};
 
-static int i_Railcannon_ammo[MAXTF2PLAYERS];
-static float fl_Ammo_Gain_Timer[MAXTF2PLAYERS];
-static float fl_Railcannon_recharge[MAXTF2PLAYERS];
-static float fl_recently_added_heat[MAXTF2PLAYERS];
+static int i_Railcannon_ammo[MAXPLAYERS];
+static float fl_Ammo_Gain_Timer[MAXPLAYERS];
+static float fl_Railcannon_recharge[MAXPLAYERS];
+static float fl_recently_added_heat[MAXPLAYERS];
 
 static char gLaser1;
 static int BeamWand_Laser;
@@ -54,7 +54,7 @@ void Cosmic_Map_Precache()
 }
 
 static float fl_Cosmic_Dmg_Throttle[MAXPLAYERS+1]={0.0,...};
-static bool b_cosmic_touchdown[MAXTF2PLAYERS];
+static bool b_cosmic_touchdown[MAXPLAYERS];
 static float fl_Cosmic_TE_Throttle[MAXPLAYERS+1]={0.0,...};
 static float fl_Cosmic_Heat[MAXPLAYERS+1]={0.0,...};
 static float Cosmic_Heat_Max[MAXPLAYERS+1]={0.0,...};
@@ -68,7 +68,7 @@ static int i_effect_amount[MAXPLAYERS+1];
 static int i_current_number[MAXPLAYERS+1];
 static bool b_arced_number[MAXPLAYERS+1];
 
-static float fl_cosmic_heat_multi[MAXTF2PLAYERS];
+static float fl_cosmic_heat_multi[MAXPLAYERS];
 static int Cosmic_Terror_Pap[MAXPLAYERS+1]={0,...};
 static bool b_cosmic_overheat[MAXPLAYERS+1]={false, ...};
 static bool Cosmic_Terror_On[MAXPLAYERS+1]={false, ...};
@@ -871,15 +871,15 @@ public void Cosmic_Terror_Do_Dmg(int client)
 }
 
 static Handle h_Cosmic_Weapons_Managment[MAXPLAYERS+1] = {null, ...};
-static float fl_hud_timer[MAXTF2PLAYERS+1];
+static float fl_hud_timer[MAXPLAYERS+1];
 
 //Railgun
 
 #define RAILCANNON_MAX_AMMO 3
 
-static bool b_Railgun_Charging[MAXTF2PLAYERS];
-static float fl_railgun_chargetime[MAXTF2PLAYERS];
-static float fl_Railgun_charge[MAXTF2PLAYERS];
+static bool b_Railgun_Charging[MAXPLAYERS];
+static float fl_railgun_chargetime[MAXPLAYERS];
+static float fl_Railgun_charge[MAXPLAYERS];
 #define RAILGUN_INNACURACY_RANGE 250.0
 
 //Pillars
@@ -918,7 +918,7 @@ static bool IsCosmic(int weapon, int client)
 {
 	if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_PILLAR)
 	{
-		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		if(pap==1)
 		{
 			Cosmic_Heat_Max[client] = 500.0;
@@ -933,7 +933,7 @@ static bool IsCosmic(int weapon, int client)
 	else if(i_CustomWeaponEquipLogic[weapon]==WEAPON_COSMIC_RAILCANNON)
 	{
 		Kill_Railgun(client);
-		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		if(pap==1)
 		{
 			Cosmic_Heat_Max[client] = 100.0;
@@ -1011,9 +1011,9 @@ static void Kill_Railgun(int client)
 	b_Railgun_Charging[client]=false;
 }
 
-static float fl_innacuracy_angles[MAXTF2PLAYERS];
-static float fl_accuracy_multi[MAXTF2PLAYERS];
-static float fl_accuracy_switch_speed[MAXTF2PLAYERS];
+static float fl_innacuracy_angles[MAXPLAYERS];
+static float fl_accuracy_multi[MAXPLAYERS];
+static float fl_accuracy_switch_speed[MAXPLAYERS];
 public void Cosmic_Terror_Railgun(int client, int weapon, bool &result, int slot)
 {
 	if(b_Railgun_Charging[client])

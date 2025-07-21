@@ -48,8 +48,6 @@ methodmap ObjectTinkerBrew < ObjectGeneric
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		int entity = npc.EquipItemSeperate("models/props_halloween/hwn_flask_vial.mdl", "idle", _, 0.85, 8.0);
-		//SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		//SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		npc.m_iWearable5 = entity;
 		AcceptEntityInput(entity, "Disable");
 		npc.Anger = false;
@@ -112,7 +110,11 @@ static bool ClotCanUse(ObjectTinkerBrew npc, int client)
 
 static void ClotShowInteractHud(ObjectTinkerBrew npc, int client)
 {
-	PrintCenterText(client, "Press [T (spray)] to apply a potion effect to your active weapon.");
+	char ButtonDisplay[255];
+	char ButtonDisplay2[255];
+	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+	BuildingVialityDisplay(client, npc.index, ButtonDisplay2, sizeof(ButtonDisplay2));
+	PrintCenterText(client, "%s\n%sto apply a potion effect to your active weapon.", ButtonDisplay,ButtonDisplay2);
 }
 
 static bool ClotInteract(int client, int weapon, ObjectTinkerBrew npc)

@@ -323,6 +323,18 @@
 	{
 		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\nYou will now always gib."
 	}
+	"Sherrif Pap 1"
+	{
+		"en"		"Slgihtly Increased Damage, Weapon changes.\nM2 now marks upto 5 enemies near you, hitting them deals 3x damage once.\nYour revolver turns into a burst 6 shot weapon."
+	}
+	"Sherrif Pap 2"
+	{
+		"en"		"Increased Damage\nM2 has a shorter cooldown."
+	}
+	"Sherrif Pap 3"
+	{
+		"en"		"Increased Damage\nR Ability Allows you to get your Lever-action.\nIts limited ammo, and also benifits from the same m2 bonus if you wish to combine it.\nSemifire is much faster then holding m1.\nIt deals explosive damage.\nHitting marked targets with your revolver reduces R Cooldown."
+	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
@@ -779,7 +791,8 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing buffs.\nallows revive from afar but slower\nUber gives debuff immunity.\nChange Mode with R (If you interact with R, its Crouch + R)"
+		"en"	"Heals and buffs allies and yourself while healing, overheal is permanent.\nAllows slow revival from afar, ubercharge grants the UBERCHARGED and Hardened Aura buffs.\nDAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
+		"es"	"Cura y potencia a tus aliados y a ti mismo mientras curas.\nPermite revivir a distancia, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nMODO DAÑO: Cambia con CTRL/Agachar + RELOAD."
 	}
 	
 	"Battle Medigun Desc"
@@ -1078,7 +1091,7 @@
 	}
 	"Fractured Ark Pap 12"
 	{
-		"en"	"Increased damage, energy gain and parry reflect power increased.\nYour first parry during the ability is greatly empowered"
+		"en"	"Increased damage, energy gain and parry reflect power increased.\nYour first parry during the ability is greatly empowered.\nUnlocks a new ability which summons a stationary domain which buffs you"
 	}
 	
 	"Longsword Desc"
@@ -1263,15 +1276,13 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nArchetype changes to ''Chain Caster''"
+		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nProjectile speed/Range affect manacost.\nArchetype changes to ''Chain Caster''"
 	}
 	
 	"Beam Wand Desc"
 	{
-		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD."
-		"fr"	"Laser constant qui épuise le Mana. M2 pompe plus de Mana dans l'attaque pour améliorer les dégats."
-		"ru"	"Удерживайте М1 для постоянного луча уничтожения. М2 - усиление магии, больше маны = сильнее, но выше восстановление."
-		"chi"   "按住M1发出一个恒定的光束来清除你的敌人。M2:魔法超速。更多的法力值=更强更快的CD"
+		"en"	"Increased damage\nHold M1 for a constant beam to eviscerate your enemies. M2: Magic overdrive, more mana=stronger but higher CD.\nProjectile speed/Range affect manacost."
+
 	}
 	"Beam Wand Pap 1"
 	{
@@ -1426,12 +1437,14 @@
 	
 	"Wrench Desc"
 	{
-		"en"	"Repairs buildings and sentrys, have in hand to Claim buildings, works with any wrench.\nHold crouch and M2 to mount buildings on yourself!"
+		"en"	"Press RELOAD/SPRAY to place buildings while the wrench is out.\nAllows you to repair buildings and to mount yours.\n(Press CTRL/Crouch + RIGHT CLICK while looking at one)"
+		"es"	"Presiona RELOAD/SPRAY para colocar construcciones teniendo la llave en la mano.\nPermite reparar construcciones y montar las tuyas.\n(CTRL/Agachar + CLICK DERECHO mientras miras una)"
 	}
 	
-	"Texan business Desc"
+	"Builders Axe Desc"
 	{
-		"en"	"A melee Wrench that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
+		"en"	"A melee axe that scales with builder damage.\nM2 to Lunge and for the next attack to deal 12x the damage.\nYou need to have enough upgrades for this to work."
+		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200％ de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
@@ -1454,46 +1467,55 @@
 	"Armor Table Desc"
 	{
 		"en"	"using gives you Armour."
+		"es"	"usar esto te otorga Armadura."
 		"fr"	"Donne de l'armure."
 	}
 	"Ammo Box Desc"
 	{
 		"en"	"using gives you ammo for your holding weapon."
+		"es"	"usar esto te dara municion para tu arma."
 		"fr"	"Donne des munitions."
 	}
 	"Perk Machine Desc"
 	{
 		"en"	"using will give you a perk that vanishes on death/downed."
+		"es"	"usar esto te dara un beneficio que dura hasta que mueras/te derriben."
 		"fr"	"Donne des Perks, qui améliorent les joueurs, mais se perdent quand KO."
 	}
 	"Pack-a-Punch Desc"
 	{
-		"en"	"gives weapnos upgrades, person with the most upgrades gets the most cash instead."
+		"en"	"allows you to upgrade your weapon, recommended to have only one globally."
+		"es"	"permite mejorar tu arma, recomendado no poner mas de 1 globalmente."
 		"fr"	"Améliore les armes."
 	}
 	"Sentrygun Desc"
 	{
 		"en"	"Good against everything."
+		"es"	"Util contra todo."
 		"fr"	"Bon pour tout."
 	}
 	"Mortar Desc"
 	{
 		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto.\nDeals massive group damage, good against massses."
+		"es"	"Llama al MEDICO para marcar un lugar para que el mortero dispare una bomba.\nHace daño masivo en area."
 		"fr"	"Appuyez MEDIC pour marquer un endroit où faire tomber un tir de mortier.\nBon pour les groupes d'ennemis."
 	}
 	"Railgun Desc"
 	{
 		"en"	"Use it with MEDIC to make it shoot a giant laser.\nDeals huge damage to the first enemy hit, good against single bosses."
+		"es"	"Usalo llamando al MEDICO para disparar un gran laser.\nHace MUCHO daño al primer enemigo que golpea."
 		"fr"	"Appuyez MEDIC pour le faire tirer un rayon laser massif.\nInflige beaucoup de dégats au premier ennemi frappé. Bon pour les Boss."
 	}
 	"Food Fridge Desc"
 	{
-		"en"	"Heals for 40 Health, scales with medigun upgrades."
+		"en"	"Heals for 60 Health, scales with medic upgrades."
+		"es"	"Cura 60 de vida al usarse, se mejora con mejoras Medicas."
 		"fr"	"Soigne pour 40 santé. Soins améliorés avec les améliorations Medigun."
 	}
 	"Village Desc"
 	{
 		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuilt."
+		"es"	"Provee varios buffs a tus aliados y puede mejorarse para mas buffs.\nLos buffs comprados persisten aun si se destruye y reconstruye."
 		"fr"	"Améliore vos coéquipiers et peut être amélioré pour plus d'améliorations.\nAméliorations restent même si détruit et replacé."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
@@ -1582,11 +1604,11 @@
 	
 	"Alien Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
 	}
 	"Engineering Repair Handling book Desc"
 	{
-		"en"	"2.0x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
+		"en"	"2.0x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 25％ (Cant go below 1)"
 	}
 	"Construction Worker Desc"
 	{
@@ -1597,7 +1619,7 @@
 	
 	"Cosmic Repair Handling book Desc"
 	{
-		"en"	"3x Repair Rate\nBuilding damage increaed by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
+		"en"	"3x Repair Rate\nBuilding damage increased by 1.15x (Not barracks)\nReduces cost of metal usage by 20％ (Cant go below 1)"
 	}
 	
 	"Construction Expert Desc"
@@ -1759,32 +1781,31 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 30％ (cant go below 1)"
+		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
-	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
-	
+
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.4x Medigun Heal, 20％ extra support weapon damage\n+2 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.45x Medigun Heal, 20％ extra support weapon damage\n+1 seconds of uber and 5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5％ melee resistance with Healing Support Weapons out\nReduces Medifluid drain by 15％ (cant go below 1)"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	
 	"Panic Attack Desc"
@@ -1898,9 +1919,9 @@
 	}
 	"Concentrated Agelitus Desc"
 	{
-		"en"	"Magic Weapons deal 5％ less damage, you have 10％ less max mana and mana regen, but your magic projectiles are 50％ faster."
-		"fr"	"-5％ dégats magiques, -10％ Mana maximum et regénération de Mana, +50％ vitesse des projectiles"
-		"chi"	"魔法武器-5％伤害，-10％回蓝和上限，但是投射物+50％速度。"
+		"en"	"Magic Weapons deal 5％ less damage, you have 10％ less max mana and mana regen, but your magic projectiles are 25％ faster."
+		"fr"	"-5％ dégats magiques, -10％ Mana maximum et regénération de Mana, +25％ vitesse des projectiles"
+		"chi"	"魔法武器-5％伤害，-10％回蓝和上限，但是投射物+25％速度。"
 	}
 	"Aggreviated Silence Desc"
 	{
@@ -2188,9 +2209,7 @@
 	}
 	"Barracks Desc Extra"
 	{
-		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
-		"fr"	"Résurrection Rapide: soigne vos unités automatiquement\nVin des Veuves: affaiblit les ennemis frappés\nDaiquiri: 1.25x dégats à distance\nDouble-Touche: 1.15x cadence des attaques\nSpeed Cola: 1.25x vitesse\nRecyclage Poiré: 1.25x gain de ressources\nJuggernog: 1.3x santé, 1.15x résistance"
-		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
+		"en"	"Perks work on your minions!"
 	}
 	"Barracks Desc Extra 2"
 	{
@@ -2719,9 +2738,7 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: 10％"
-		"fr"	"Un «bouclier» qui absorbe les dégats et bloque les attaques pour faire des dégats.\nVous soigne quand vous êtes hors du combat.\nS'améliore avec les améliorations corps-à-corps.\nRang de défense: 10％"
-		"chi"	"一个''盾牌''。\n吸收部分伤害并可以盾反，造成伤害。\n自带回血，受伤时或者换武器时暂停。\n''防御评分：10％''"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nDefence rating: 10％\nParrying 3 attacks or 1 raid attack gives it an extra cooldown."
 	}
 	"Spike Shield Desc"
 	{
@@ -2769,7 +2786,7 @@
 	}
 	"The Standchen Desc AltPap"
 	{
-		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
+		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage (true damage)."
 		"fr"	"Attaques ont un effet élémental Necrôse"
 	}
 	"The Standchen Desc AltPap 2"
@@ -3060,8 +3077,8 @@
 	}
 	"The Flagellant Extra Desc"
 	{
-		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. Using this kit may attract more mini-bosses. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
-		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de KO. Cet ensemble pourrait attirer plus de Mini-boss. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
+		"en"	"When using self-healing abilities while downed, self revive with a chance to ignore the downed limit. You can read weapon specific abilities by using Inspect + Scoreboard on a weapon."
+		"fr"	"L'abilité de vous soigner peut vous sortir du KO, avec une chance d'ignorer la limite de Knockback. INSPECT + TAB vous permet de lire l'information des abilités de votre arme."
 		"chi"	"在倒地时使用自疗，复活，另有几率无视复活次数。这个套装更容易拉精英怪的仇恨。检查武器+tab可以读取更多武器信息。"
 	}
 	"The Flagellant Generic Pap"
@@ -3120,9 +3137,7 @@
 	}
 	"Impact Lance Desc 1"
 	{
-		"en"	"Increased damage\nA Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width"
-		"fr"	"Une lance magique qui est manié comme une arme corps-à-corps.\nUtilise du Mana pour attaquer, cause aucun dégat si votre Mana est épuisé.\nPortée longue,\ngrandeur et cadence des attaques réduites."
-		"chi"	"魔法所造的长矛。和近战无区别。\攻击消耗蓝，稍慢的攻击速度。\n蓝耗尽时，不会造成任何伤害。\n更长的距离，更细的判定。"
+		"en"	"A Magic Lance, acts like a melee weapon, consumes mana to attack, slow attack speed\nIf you don't have enough mana, it just doesn't deal damage\nHas longer reach\nLess Melee Width\nProjectile speed/Range affect manacost."
 	}
 	"Impact Lance Desc 2"
 	{
@@ -3351,6 +3366,26 @@
 		"fr"	"Cadence de tir améliorée, dégats réduits. Arme se recharge en une fois.\nChaque deuxième tir utilise pas de munitions."
 		"chi"	"同时填装整个弹夹，超高射速，但是伤害更低。每第二发不消耗弹药。"
 	}
+	"USP Desc"
+	{
+		"en" 	"Basic pistol.\nDeals 20％ Extra headshot damage."
+	}
+	"USP PAP 1"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 2"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nWith your pistol you now revive allies 50％ Faster.\nM2 Activates Trigger finger!"
+	}
+	"USP PAP 3"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage."
+	}
+	"USP PAP 4"
+	{
+		"en" 	"Increased Attackspeed, clipsize, and damage.\nYour weapon has less falloff.\nAbility Lasts Longer."
+	}
 	"Autoshotgun Pap 2"
 	{
 		"en"	"More dmg, more clip, more attackspeed."
@@ -3377,15 +3412,18 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"You have different medigun modes! boost melee, ranged, or both resitances.\nPress Crouch+R to swítch damage modes instead now"
+		"en"	"Changes the medigun to grant different mode types, boosting melee/ranged resistance or both.\nDamage mode is now changed via CTRL/Crouch + RELOAD now."
+		"es"	"Cambia la medigun para dar distintos modos, aumentando la resistencia cuerpo a cuerpo, a distancia, o ambas.\nCambiar de modo ahora requiere siempre que utilizes CTRL/Agacharse + RELOAD."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now gives armor aswell.\nScales with medigun upgrades."
+		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades."
+		"es"	"Curar a aliados con la medigun ahora restaurara tu armadura y la de tu paciente.\nAumenta con mejoras medicas."
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"When using Uber, it instantly restores armor, improves weapon performance of the target, +mana recovery, + overclock buff on heal."
+		"en"	"Your uber will now instantly restore your armor, and will greatly increase your patient's efficiency.\n(Mana regeneration, Extra attackspeed and damage boost)"
+		"es"	"Tu uber ahora restaurara completamente la armadura, y incrementara mayormente la eficiencia de tu paciente.\n(Regeneracion de mana, velocidad de ataque extra y daño extra)"
 	}
 	"Flash Grenade Desc"
 	{
@@ -3434,6 +3472,10 @@
 		"en"	"You can now see the armor of fellow allies via their shield."
 		"fr"	"Vous permet de voir l'armure de vos alliés."
 		"chi"	"看队友的护甲！"
+	}
+	"Building Health Forcer Desc"
+	{
+		"en"	"This makes you always see building HP, No matter what weapon you have."
 	}
 	"Siccerino Pap 2"
 	{
@@ -3502,9 +3544,7 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A blacksmith builder, already including building upgrades and gear.\nProvides a custom building which allows players to tinker weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes.\nGenerates metal and able to tank more damage."
-		"fr"	"Bonne résistance et regénére du métal.\nPeut construire une enclume qui permet aux coéquiper de modifier leurs armes.\nLes modifications donne des attributs aléatoires.\nVient avec des améliorations pour Constructeur."
-		"chi"	"匠工建筑师，自带建筑升级和装备。\n多一个建筑：匠工台。\n会对武器附加随机属性。\n自动回复金属，更肉。"
+		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\nAnvil can upgrade weapons.\nPrimary: Heals buildings, hurts enemeis, infinite range building pickup.\nSecondary: Generates metal."
 	}
 	"Tinker Wrench Desc"
 	{
@@ -3539,29 +3579,33 @@
 	}
 	"Tinker Pap 1 Desc"
 	{
-		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -30s Tinker Cooldown."
-		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -30s temps de rechargement de l'enclume."
-		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-30s工作台"
+		"en"	"+65％ Building Health, +202％ Weapon Damage, +100％ Repair Rate, +6 Metal Regen, +3 Support Buildings, and -20s Tinker Cooldown."
+		"fr"	"+65％ durabilité pour constructions, +202％ dégats, +100％ vitesse de réparation, +6 regénération de métal, +3 espaces pour construction de support et -20s temps de rechargement de l'enclume."
+		"chi"	"+65％建筑血量，+202%武器伤害，+100％修复速度，+6金属回复，+3辅助建筑，-20s工作台"
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -30s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -30s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+	}
+	"Tinker Pap 7 Desc"
+	{
+		"en"	"Improved stats."
 	}
 	"West Pap 1 Desc"
 	{
@@ -3608,30 +3652,40 @@
 		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
 		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
 		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
-		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포로, 최대 1초까지 지속됩니다.\n공격 속도가 느리고 원거리 피해 저항력이 강합니다.\n근접 피해에 취약해집니다."
+		"ko"	"빅토리아의 자랑. 투사체 비행 시간이 길어질수록 데미지가 커지는 박격포.\n공속이 감소하고 원거리 저항 증가\n근접 취약."
 	}
 	"Victorian 2 Desc"
 	{
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
-		"ko"	"피해량 증가, 원거리 피해 저항, 발사 속도 증가.\n새로운 능력(M2) - 충전 사격: 강력한 포탄 10개를 장전합니다.\n5개에 도달하면 남은 포탄을 모두 발사할 수 있습니다.\n경고! 체력을 잃고 무기가 과열되어 잠시 로켓을 쏠 수 없습니다."
+		"ko"	"피해량, 원거리 저항, 발사 속도 증가.\nM2 - 강력한 포탄 10개를 장전합니다.\n5발 남으면 전탄발사 사용가능.\n경고! 전탄발사시, 자가피해및 일정시간  피해량 감소및 다른 어빌 활성화 불가."
 	}
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
-		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 피해 저항이 증가.\n새로운 능력 - 폭격: 30초 동안 공격 속도가 엄청나게 짧아지고 15초 후에는 피해량도 증가합니다.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
+		"ko"	"빅토리아의 영광스러운 창.\n피해량과 원거리 저항 증가.\nR - 30초동안 공속이 증가하고 피해량 감소, 15초후 피해량 대폭 증가.\n 경고! 15초 후에 체력이 감소하기 시작합니다."
 	}
 	"VictorianLauncher Desc Extra"
 	{
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 범위 +10％"
 	}
+	"VictorianLauncher 4 Perk Desc"
+	{
+		"en"	"Reduced Over Heated Duration by 25％"
+		"ko"	"과열 지속시간 25％ 감소"
+	}
+	"VictorianLauncher 5 Perk Desc"
+	{
+		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
+		"ko"	"추가 투사체 속도 +200Hu\n조준 지원 활성화"
+	}
 	"The Merchant Desc"
 	{
-		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand."
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAllows the construction of the brewing stand.\nYour secondary gets an ability selection upon its first pap."
 	}
 	"Merchant Pap -1 Desc"
 	{
@@ -3932,7 +3986,7 @@
 	}
 	"Super-Uber-Saw Desc"
 	{
-		"en"	"Healing allies, reviving teammates, and hurting with the battle medigun charges the ubersaw.\nThe more its charged, the stronger and more enemeis it hits with 1 attack.\nScales with medigun upgrades.\nIf above 50％ Charge, deals 2x dmg vs raids."
+		"en"	"Healing allies, reviving teammates, and hurting with the battle medigun charges the ubersaw.\nAt 100％ Power it deals massive damage, cleaves, and knocks back.\nWhen charged,deals 2.5x dmg vs raids.\nScales with medigun upgrades.\n"
 	}
 	"Super-Uber-Saw Desc 1"
 	{
@@ -4087,11 +4141,11 @@
 	}
 	"Magia Fractal Desc"
 	{
-		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals\nTwirl's Hairpints give 25 extra crystals"
+		"en"	"Primary:\nM1:enter an animation where you shoot a big laser of doom.\nHold M2: Increase distance, faster turn speed. uses 10 crystals/s and does 10%% more damage \nSecondary:\nM1: Harvester, gain mana on targets hit.\nM2: Summon an Ion that bounces\nMelee:\nM1: Energy Wave. Costs Crystals. On hit gain crystals"
 	}
 	"Fractal Kit Desc 1"
 	{
-		"en"	"More Damage! And crystal capacity."
+		"en"	"More Damage! And crystal capacity. Lower StarFall Cooldown."
 	}
 	"WPrototype Kit Desc"
 	{
@@ -4129,11 +4183,7 @@
 	}
 	"Therapy Desc"
 	{
-		"en"	"Kit has no self resistance, you instead have high hp regen as youre a doctor."
-	}
-	"Hand Desc"
-	{
-		"en"	"Relax, I'm not one of them.\nCure your teammates, or charge the enemies extra money for another therapy session.\nM2: Shove enemies away, and apply a random debuff upon doing so.\nM1: Apply a random buff on an ally."
+		"en"	"Kit has no self resistance, you instead have high hp regen as youre a doctor.\nYour pistol cannot reload.\nDebuff the enemy with your M2, a melee attack.\nOn melee hit, gain ammo."
 	}
 	"Hand Pap 1"
 	{
@@ -4149,7 +4199,7 @@
 	}
 	"Taurus Revolver Pap 1"
 	{
-		"en"	"Base damage increased, More regen.\nGain an M2 Ability that allows you to Pistol Whip the enemies, gives 1 ammo and reduces cooldowns on hit, more against raids.\nGain Expert's Mind as a passive buff.\nBuffing allies heals them and you for 10％ max hp upto 50％ max hp"
+		"en"	"Base damage increased, More regen.\nGain Expert's Mind as a passive buff.\nYou can now buff allies with R\nBuffing allies heals them and you for 10％ max hp upto 50％ max hp"
 	}
 	"Taurus Revolver Last Pap"
 	{
@@ -4312,54 +4362,94 @@
 	}
 	"Plasma Kit Desc"
 	{
-		"en"	"A special type of weaponry designed by Koshi, if that wasn't obvious.\n[PLASMIC ELEMENTAL STATUS]: Upon filled, deals massive damage to the target and inflicts the Plasm II debuff.\nIf triggered via Melee, immunity cooldown is reduced and deals more dmg."
+		"en"	"A gift made by Koshi, as a reward for all the training in the Simulations.\n[PLASMIC ELEMENTAL]: When triggered, heals nearby allies around the affected, buildup slows down on the victim.\nYou revive allies 30％ faster!"
 	}
 	"Plasma Inject Desc"
 	{
-		"en" 	"A big syringe, filled to the brim with Plasma.\nDamage is below average, but builds the Plasmic Elemental status faster.\nHas a high 'health on kill' stat, deals +15%% extra dmg to raids."
+		"en" 	"A big saw-syringe, filled to the brim with Plasma.\nDeals Plasmic Elemental damage, reduces elemental cooldown and\nbuildup penalty when triggering its elemental effect."
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Overall stat increase, grants a bunch of health."
+		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Now grants slight ranged resistance. Unlocks Lethal Injection [M2]:\nTemporarily boosts attackspeed, resistance, and doubles Plasmic Elemental melee buildup."
+		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
-		"en" 	"Maybe injecting yourself with Plasma isn't a great idea...\nUnlocks Plasmic Inoculation [R]:\nInject yourself with Plasma to gain a huge stat increase (dmg, res, plasmic buildup and atkspd)\nand heal a bit of HP overtime up to 50%%."
-	}
-	"Plasma Inject Pap 4 Desc"
-	{
-		"en" 	"Increases overall stats.\nIncreases Lethal Injection's, duration, attackspeed and resistances.\nPlasmic Inoculation's buffs and healing are now stronger."
-	}
-	"Plasma Inject Pap 5 Desc"
-	{
-		"en" 	"Increases overall stats.\nPlasmic Inoculation's buffs and healing are now slightly stronger."
+		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
 		"en" 	"Increases overall stats."
 	}
+	"Plasma Bubble Desc"
+	{
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
+	}
+	"Plasma Bubble Pap Any Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly."
+	}
+	"Plasma Bubble Pap 3 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering I."
+	}
+	"Plasma Bubble Pap 5 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering II instead of I."
+	}
+	"Plasma Bubble Pap 7 or 8 Desc"
+	{
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
+	}
 	"Plasminator Desc"
 	{
-		"en"	"Koshi's own weapon - an Expidonsan clockwork assault rifle that shoots Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
+		"en"	"An Expidonsan clockwork assault rifle, that shoots rapid Plasma projectiles.\nBuilds the Plasmic Elemental status slower than the melee."
+	}
+	"Plasminator Pap 1 Desc"
+	{
+		"en"	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
 	}
 	"Plasminator Pap 2 Desc"
 	{
-		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage, inflicts Plasm I temporarily and inflicts 25%% of its damage as Plasmic Elemental damage."
+		"en"	"Unlocks Plasmic Burst, which shoots a short-ranged Plasmic laser.\nPlasmic Burst deals AoE damage and inflicts its damage as additional Plasmic Elemental damage."
 	}
 	"Plasminator Pap 3 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and debuff duration."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage."
 	}
 	"Plasminator Pap 4 Desc"
 	{
-		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and reduces its cooldown."
+		"en"	"Increases overall stats.\nSlightly increases Plasmic Burst's range and plasmic elemental damage, and reduces its cooldown."
 	}
-	"Plasminator Pap 5 Desc"
+	"Chemical Spewer Desc"
 	{
-		"en"	"Increases overall stats.\nPlasmic Burst now inflicts Plasm II instead of I, and for a slightly longer duration."
+		"en"	"A flamethrower that scales with building upgrades.\nInflicts Nervous Impairment elemental damage alongside damage dealt.\nApplies afterburn that deals Magic damage."
+	}
+	"Chemical Spewer Pap 1"
+	{
+		"en"	"Base damage is increased, consumes less ammo."
+	}
+	"The Ritualist Desc"
+	{
+		"en"	"A simple mage weapon that can be upgraded to inflict elemental damage.\nOnce enough elemental damage is applied to a target, an effect happens with a cooldown."
+	}
+	"Necrosis Ritualist Desc"
+	{
+		"en"	"Up to 4 enemies within range take Necrosis elemental damage every second and take increased Necrosis elemental damage.\nBeing in a taunt increases Necrosis elemental damage dealt through this."
+	}
+	"Necrosis Ritualist Pap Desc"
+	{
+		"en"	"Damage increased, passive effect can now hit up to 6 enemies within range.\nAbility increases damage heavily and buffs 3 allies within range for a long duration."
+	}
+	"Impairment Ritualist Desc"
+	{
+		"en"	"Attacks now inflict Nervous Impairment in a splash radius, hitting up to 4 enemies."
+	}
+	"Impairment Ritualist Pap Desc"
+	{
+		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment."
 	}
 }

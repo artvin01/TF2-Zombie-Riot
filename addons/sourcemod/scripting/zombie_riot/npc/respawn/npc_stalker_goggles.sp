@@ -89,8 +89,8 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		
@@ -133,6 +133,7 @@ methodmap StalkerGoggles < StalkerShared
 			SetVariantString("!activator");
 			AcceptEntityInput(entity, "SetParent", npc.index);
 			AcceptEntityInput(entity, "LightOn");
+			b_EntityCantBeColoured[entity] = true;
 		}
 		
 		npc.m_iWearable1 = entity;
@@ -142,9 +143,8 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
-		npc.i_GunMode = ZR_Waves_GetRound();
+		npc.i_GunMode = Waves_GetRoundScale();
 
 		if(!Construction_Mode())
 			TeleportDiversioToRandLocation(npc.index, .forceSpawn = Rogue_Mode());
@@ -275,7 +275,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
@@ -289,7 +289,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		return;
 	}
 	//2 waves passed or its a raid.
-	if(npc.i_GunMode <= (ZR_Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
+	if(npc.i_GunMode <= (Waves_GetRoundScale() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
 	{
 		if(!Rogue_Mode() && !Construction_Mode() && npc.m_iSurrender == 0)
 		{
@@ -310,7 +310,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 	}
 
-	bool sniper = view_as<bool>((npc.i_GunMode + 1) == ZR_Waves_GetRound());
+	bool sniper = view_as<bool>((npc.i_GunMode + 1) == Waves_GetRoundScale());
 	if(Construction_Mode())
 		sniper = (npc.i_GunMode + 1) == (Construction_GetRisk() / 2);
 
@@ -354,7 +354,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 						if(Construction_Mode())
 						{
-							float wave = float(ZR_Waves_GetRound()+1);
+							float wave = float(Waves_GetRoundScale()+1);
 							wave *= 0.1;
 							npc.m_flWaveScale = wave;
 							npc.m_flWaveScale *= MinibossScalingReturn();
@@ -367,7 +367,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 							damage *= 4.0;
 						else
 						{
-							if(target > MAXTF2PLAYERS)
+							if(target > MAXPLAYERS)
 								damage *= 10.0;
 						}
 						
@@ -443,11 +443,11 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						if(distance < npc.GetLeadRadius()) 
 						{
 							PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
-							NPC_SetGoalVector(npc.index, LastKnownPos);
+							npc.SetGoalVector(LastKnownPos);
 						}
 						else
 						{
-							NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+							npc.SetGoalEntity(npc.m_iTarget);
 						}
 
 						if(state)
@@ -511,7 +511,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					npc.PickRandomPos(LastKnownPos);
 
 				npc.StartPathing();
-				NPC_SetGoalVector(npc.index, LastKnownPos);
+				npc.SetGoalVector(LastKnownPos);
 			}
 			case 1:
 			{
@@ -597,7 +597,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 	StalkerGoggles npc = view_as<StalkerGoggles>(victim);
 
-	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && ZR_Waves_GetRound() < 59)
+	if(npc.m_iSurrender <= 0 && !Rogue_Mode() && !Construction_Mode() && GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRoundScale() < 39)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
@@ -666,7 +666,7 @@ void StalkerGoggles_NPCDeath(int entity)
 
 int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 {
-	bool sniper = view_as<bool>((npc.i_GunMode + 1) == ZR_Waves_GetRound());
+	bool sniper = view_as<bool>((npc.i_GunMode + 1) == Waves_GetRoundScale());
 	if(!npc.m_flAttackHappens)
 	{
 		if(IsValidEnemy(npc.index,npc.m_iTarget))
@@ -763,15 +763,15 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 			{
 				if(Construction_Mode())
 				{
-					float wave = float(ZR_Waves_GetRound()+1);
-					wave *= 0.1;
+					float wave = float(Waves_GetRoundScale()+1);
+					wave *= 0.133333;
 					npc.m_flWaveScale = wave;
 					npc.m_flWaveScale *= MinibossScalingReturn();
 				}
 
 				float damageDealt = 150.0;
 				damageDealt *= npc.m_flWaveScale;
-				if(target > MAXTF2PLAYERS)
+				if(target > MAXPLAYERS)
 					damageDealt *= 10.0;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);

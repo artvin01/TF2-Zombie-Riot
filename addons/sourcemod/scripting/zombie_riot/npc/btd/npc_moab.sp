@@ -30,8 +30,11 @@ static float MoabSpeed()
 
 static int MoabHealth(bool fortified)
 {
-	float value = 20000.0;	// 200 RGB
-	value *= 0.5;
+	float value = 200.0;	// 200 RGB
+	
+	value *= BLOON_HP_MULTI_GLOBAL;
+	if(IsValidEntity(RaidBossActive))
+		value *= 0.8;
 	
 	if(fortified)
 		value *= 2.0;
@@ -49,7 +52,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value) + (Bloon_Health(fortified, Bloon_Ceramic) * 3);	// 104x3 RGB
+	return RoundFloat((value + (Bloon_HPRatio(fortified, Bloon_Ceramic) * 3.0) * Bloon_BaseHealth()));	// 104x3 RGB
 }
 
 void Moab_MapStart()
@@ -211,11 +214,11 @@ public void Moab_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
-			NPC_SetGoalVector(npc.index, VecPredictPos);
+			npc.SetGoalVector(VecPredictPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		
 		if(flDistanceToTarget < 20000)
@@ -224,28 +227,14 @@ public void Moab_ClotThink(int iNPC)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
+				float damageDealDo = 30.0;
+				
 				if(npc.m_bFortified)
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 85.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}
-				else
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 65.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}					
+					damageDealDo *= 1.4;
+				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					damageDealDo *= 25.0;
+					
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);					
 			}
 		}
 		
@@ -254,8 +243,8 @@ public void Moab_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -291,5 +280,9 @@ public void Moab_NPCDeath(int entity)
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "9f" : "9");
 	if(spawn_index > MaxClients)
+	{
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
+		NpcStats_CopyStats(npc.index, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }

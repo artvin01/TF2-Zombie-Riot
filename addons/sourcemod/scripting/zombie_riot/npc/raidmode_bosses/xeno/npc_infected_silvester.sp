@@ -293,19 +293,19 @@ methodmap RaidbossSilvester < CClotBody
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -339,19 +339,19 @@ methodmap RaidbossSilvester < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 
 		f_TalkDelayCheck = 0.0;
 		i_TalkDelayCheck = 0;
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -412,13 +412,9 @@ methodmap RaidbossSilvester < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 
 
@@ -600,8 +596,8 @@ static void Internal_ClotThink(int iNPC)
 	{
 		if(!b_RageAnimated[npc.index])
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
@@ -626,8 +622,8 @@ static void Internal_ClotThink(int iNPC)
 			RemoveSpecificBuff(npc.index, "Solid Stance");
 			RemoveSpecificBuff(npc.index, "Fluid Movement");
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
-			NPC_StartPathing(npc.index);
-			npc.m_bPathing = true;
+			npc.StartPathing();
+			
 			npc.m_flSpeed = 330.0;
 			npc.m_iInKame = 0;
 			npc.m_flNextChargeSpecialAttack = 0.0;
@@ -736,8 +732,8 @@ static void Internal_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 			npc.FaceTowards(vecTarget, 80.0);
 		}
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flSpeed = 0.0;
 		npc.m_flDoingAnimation = GetGameTime() + 0.1;
 	}
@@ -745,8 +741,8 @@ static void Internal_ClotThink(int iNPC)
 	{
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		NPC_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 		SilvesterApplyEffects(npc.index, false);
@@ -779,8 +775,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(npc.m_flReloadDelay && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		NPC_StartPathing(npc.index);
-		npc.m_bPathing = true;
+		npc.StartPathing();
+		
 		npc.m_flSpeed = 330.0;
 		npc.m_iInKame = 0;
 		npc.m_flReloadDelay = 0.0;
@@ -837,12 +833,10 @@ static void Internal_ClotThink(int iNPC)
 				int laserentity = EntRefToEntIndex(i_LaserEntityIndex[npc.index]);
 				if(Goggles_TookDamageRecently(AllyEntity))
 				{
-					SetEntityRenderMode(laserentity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(laserentity, 255, 0, 0, 255);
 				}
 				else
 				{
-					SetEntityRenderMode(laserentity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(laserentity, 0, 255, 0, 255);
 				}
 			}
@@ -1050,11 +1044,11 @@ static void Internal_ClotThink(int iNPC)
 		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
@@ -1166,8 +1160,8 @@ static void Internal_ClotThink(int iNPC)
 			case 4: //Cause a pillar attack, more fany and better looking elemental wand attack
 			{
 		//		npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 0.5;
-		//		NPC_StopPathing(npc.index);
-		//		npc.m_bPathing = false;
+		//		npc.StopPathing();
+		//		
 		//		npc.m_flSpeed = 0.0;
 				npc.FaceTowards(vecTarget, 99999.9);
 				float pos[3];
@@ -1233,8 +1227,8 @@ static void Internal_ClotThink(int iNPC)
 			{
 				npc.m_flDoingAnimation = GetGameTime(npc.index) + 3.0;
 				npc.m_flReloadDelay = GetGameTime(npc.index) + 3.0;
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_flSpeed = 0.0;
 				float pos[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1623,6 +1617,7 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(entity, spawn_index);
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
 			if(i_RaidGrantExtra[spawn_index] == 6)
 			{
@@ -1861,7 +1856,9 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchKeyValueVector(prop, "angles",	 direction);
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
-			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+			if(i_ColoursTEPillars[3] != 255)
+				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				
 			SetEntityRenderColor(prop, i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3]);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
@@ -1962,8 +1959,8 @@ public Action Silvester_TBB_Tick(int client)
 	Data.Radius = 45.0;
 	Data.Range = 2000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = RaidModeScaling * 16.0 / 6.0 / TickrateModify;
-	Data.Long_Dps = RaidModeScaling * 12.0 / 6.0 / TickrateModify;
+	Data.Close_Dps = RaidModeScaling * 16.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = RaidModeScaling * 12.0 / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = {238, 221, 68, 60};
 	Data.DoEffects = true;
 	Basic_NPC_Laser_Logic(Data);
@@ -2025,7 +2022,7 @@ bool SharedGiveupSilvester(int entity, int entity2)
 						CPrintToChatAll("{gold}Silvester{default}: I REFUSE to let this happen again to us two, don't say i didnt warn you!");
 
 					i_TalkDelayCheck = 5;
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{

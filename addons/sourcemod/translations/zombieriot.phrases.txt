@@ -58,11 +58,12 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		"---Loadout Store---\nCredit Points: {1}"
+		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
 	}
 	"Preview Mode Pap"
 	{
 		"en"		"Preview Mode"
+		"es"		"Vista Previa"
 	}
 	"Credits"
 	{
@@ -96,11 +97,13 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Current Skillpoints: {1}"
+		"es"		"{green}Puntos de Habilidad actuales: {1}"
 	}
 	"Credits_Menu_New"
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
+		"es"		"Dinero Extra: +{1}"
 		"ru"		"Дополнительные кредиты: +{1}"
 		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
@@ -191,6 +194,7 @@
 	"XP Loading"
 	{
 		"en"		"Loading your levels..."
+		"es"		"Cargando tus niveles..."
 		"fr"		"Chargement de vos niveaux..."
 		"pt"		"Carregando seus níveis..."
 		"ru"		"Загрузка уровней..."
@@ -286,6 +290,7 @@
 	"Unequip"
 	{
 		"en"		"Unequip"
+		"es"		"Desequipar"
 		"fr"		"Déséquiper"
 		"ru"		"Снять"
 		"de"		"Ablegen"
@@ -296,6 +301,7 @@
 	"Owned Items"
 	{
 		"en"		"Bought Items"
+		"es"		"Objetos Adquiridos"
 		"fr"		"Objets Achetés"
 		"ru"		"Приобретённое"
 		"pt"		"Itens Comprados"
@@ -305,16 +311,37 @@
 	"Sell Items Confirm"
 	{
 		"en"		"Are you sure you want to sell all your items?"
+		"es"		"Estas seguro que quieres vender todos tus objetos?"
+	}
+	"Sell Items Confirm Pref"
+	{
+		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your Starter Store!"
 	}
 	"Sell All Items"
 	{
 		"en"		"Sell all items"
 	}
+	"Return to loadout Menu"
+	{
+		"en"		"Return to loadout Menu"
+	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm & Access Store"
+		"en"		"Exit Starter Store"
 	}
 	"N/A"
+	{
+		"en"		"N/A"
+		"it"		"N/A"
+		"ru"		"Нет"
+		"pl"		"N/A"
+		"es"		"N/A"
+		"fr"		"N/D"
+		"de"		"N/A"
+		"pt"		"N/A"
+		"nl"		"Nvt"
+	}
+	"N/A Desc"
 	{
 		"en"		"N/A"
 		"it"		"N/A"
@@ -424,6 +451,7 @@
 	"Flamethrower Tank"
 	{
 		"en"		"Oil"
+		"es"		"Aceite"
 	}
 	"Flares"
 	{
@@ -733,6 +761,11 @@
 		"nl"		"U hebt uw maximale mana berijkt!"
 		"chi"       "你的法力值已达到最大值"
 	}
+	"Object Cooldown NextWave"
+	{
+		"en" 		"This Object is unuseable untill the next wave."
+		"es"		"Este objeto no es usable hasta la siguiente oleada."
+	}
 	"Object Cooldown"
 	{
 		"#format"	"{1:.1f}"
@@ -881,6 +914,14 @@
 		"fr" 		"Mana: [{1}/{2}] (+{3})"
 		"pt"		"Mana: [{1}/{2}] (+{3})"
 		"chi" 		"法力值: [{1}/{2}] (+{3})"
+	}
+	"Current Mana Inf"
+	{
+		"en" 		"Mana: [∞]"
+		"ru"		"Мана: [∞]"
+		"fr" 		"Mana: [∞]"
+		"pt"		"Mana: [∞]"
+		"chi" 		"法力值: [∞]"
 	}
 	"Not Enough Mana"
 	{
@@ -1106,9 +1147,9 @@
 		"nl"		"Geen perk"
 		"chi" 		"无 Buff"
 	}
-	"Quick Revive"
+	"Karlas's Regene Strawberry"
 	{
-		"en" 		"Quick Revive"
+		"en" 		"Karlas's Regene Strawberry"
 		"fr" 		"Résurrection Rapide"
 		"ru" 		"Реаниматор"
 		"de"		"Schnelles Wiederbeleben"
@@ -1116,37 +1157,21 @@
 		"nl"		"Snel tot leven brengen"
 		"chi" 		"快速起身"
 	}
-	"Juggernog"
+	"Purge's Cerveza Obsidian"
 	{
-		"en" 		"Juggernog"
-		"fr" 		"Juggernog"
-		"ru" 		"Джаггер-фанта"
-		"pt"		"Juggernog"
-		"chi" 		"身体强化"
+		"en" 		"Purge's Cerveza Obsidian"
 	}
-	"Double Tap"
+	"Bob's Banana Juice"
 	{
-		"en" 		"Double Tap"
-		"fr" 		"Double-Touche"
-		"ru" 		"Пиф-паф"
-		"de"		"Doppeltippen"
-		"pt"		"Toque Duplo"
-		"nl"		"Dubbeltikken"
-		"chi" 		"精神强化"
+		"en" 		"Bob's Banana Juice"
 	}	
-	"Speed Cola"
+	"Twirl's Ginger Ale"
 	{
-		"en" 		"Speed Cola"
-		"fr" 		"Speed Cola"
-		"ru" 		"Быстрокола"
-		"de"		"Geschwindigkeits Cola"
-		"pt"		"Refri-Veloz"
-		"nl"		"SnelheidsCola"
-		"chi" 		"极速可乐"
+		"en" 		"Twirl's Ginger Ale"
 	}
-	"Deadshot Daiquiri"
+	"Waldch's Root Beer"
 	{
-		"en" 		"Deadshot Daiquiri"
+		"en" 		"Waldch's Root Beer"
 		"fr" 		"Tir Mortel de Daiquiri"
 		"ru" 		"Снайпер-лайм"
 		"de"		"Todesschuss Daiquiri"
@@ -1155,76 +1180,57 @@
 		"chi" 		"死亡宣告"
 	}
 	
-	"Widows Wine"
+	"Nemal's Teslar Mule"
 	{
-		"en" 		"Widows Wine"
+		"en" 		"Nemal's Teslar Mule"
 		"fr" 		"Vin des Veuves"
 		"ru" 		"Вино вдовы"
 		"pt"		"Vinho Viúvo"
 		"nl"		"Wijn van de weduwe"
 		"chi" 		"恶魔领域"
 	}
-	"Recycle Poire"
+	"Castellan's Corvus Stout"
 	{
-		"en" 		"Recycle Poiré"
+		"en" 		"Castellan's Corvus Stout"
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
 	}
 
-	"Quick Revive Recieved"
+	"Karlas's Regene Strawberry Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"en" 		"Karlas's Regene Strawberry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 	}
-	"Juggernog Recieved"
+	"Purge's Cerveza Obsidian Recieved"
 	{
-		"en" 		"JUGGERNOG! 1.15x Damage resistance and +100HP"
-		"fr" 		"JUGGERNOG! 1.15x résistance contre les dégats, +100HP"
-		"ru" 		"ДЖАГГЕР-ФАНТА! 1.15x сопротивления урону и +100 ед. здоровья"
-		"de"		"JUGGERNOG!	1.15-fache Schaden Resistenz und +100HP"
-		"pt"		"JUGGERNOG! 1.15x Resistência a danos e +100HP"
-		"nl"		"JUGGERNOG! 1.15x Schade resistentie en +100 levenspunten"
-		"chi" 		"身体强化:获得伤害抗性和生命值提升"
+		"en" 		"Purge's Cerveza Obsidian! 15％ Damage resistance and +100HP"
 	}
-	"Double Tap Recieved"
+	"Bob's Banana Juice Recieved"
 	{
-		"en" 		"DOUBLE TAP! 1.15x Extra attack speed and Building Damage"
-		"fr" 		"DOUBLE-TOUCHE! Attaques 1.15x plus rapides, 1.15x dégats par vos bâtiments."
-		"ru" 		"ПИФ-ПАФ! 1.15x дополнительной скорости атаки и урона у построек"
-		"pt"		"TOQUE DUPLO! 1.15x Velocidade de Ataque extra e Dano com construções"
-		"nl"		"DUBBELTIKKEN! 1.15 Extra Aanvalssnelheid en Gebouwsschade"
-		"chi" 		"精神强化:攻击速度提升、建筑伤害提升"
+		"en" 		"Bob's Banana Juice! 17％ Extra attack speed and Building Damage"
 	}	
-	"Speed Cola Recieved"
+	"Twirl's Ginger Ale Recieved"
 	{
-		"en" 		"SPEED COLA! 1.3x Extra reload, switchspeed and Mana regen"
-		"fr" 		"SPEED COLA! 1.3x vitesse de recharge de munitions et de Mana, 1.3x vitesse de changement d'arme."
+		"en" 		"Twirl's Ginger Ale! 1.42x Extra reload, switchspeed and Mana regen"
 	}
-	"Deadshot Daiquiri Recieved"
+	"Waldch's Root Beer Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
-		"fr" 		"TIR MORTEL DAIQUIRI! 1.2x précision d'armes, 1.25x dégats par Tirs en Pleine Tête ou par Poignardage,\n 1.2x vitesse des projectiles."
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.2x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
-		"chi"       "死神射击:提升1.2倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
+		"en" 		"Waldch's Root Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 	}
-	"Widows Wine Recieved"
+	"Nemal's Teslar Mule Recieved"
 	{
-		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75％ des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35％ plus de dégats et se ralentissent considérablement."
-		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
-		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
-		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
-		"chi" 		"恶魔领域:当激活时，格挡75%的僵尸伤害并减速，对减速的僵尸额外造成35%的伤害"
+		"en" 		"Nemal's Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 	}
-	"Recycle Poire Recieved"
+	"Castellan's Corvus Stout Recieved"
 	{
-		"en" 		"RECYCLE POIRÉ! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
-		"fr" 		"RECYCLAGE POIRÉ! 33％ plus de munitions provenant hors de la boutique, 50％ plus d'armure.\nVous recevrez 2x plus de Réserves de Munitions."
-		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
-		"chi"		"超级回收:所有非商店弹药增加33％+最大护甲值和护甲增益增加50％+2倍弹药补给"
+		"en" 		"Castellan's Corvus Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+	}
+	"Silvester's Energy Drink Recieved"
+	{
+		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -1362,22 +1368,23 @@
 	}
 	"Gamemode Help Explained"
 	{
-		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
-		"fr" 		"Survivez jusqu'a 60(?) vagues de zombies.\nAchetez des armes et construisez des barricades pour survivre.\nTravaillez avec vos coéquipiers et n'ayez pas peur d'échanger votre Argent\nou riquez de perdre le jeu pour votre équipe.\n\n Si vous ne savez pas quelle arme vous devrez vous acheter, essayez n'importe quelle arme à haut prix.\nN'oubliez pas d'obtenir des améliorations dans la boutique.\nLe reste vous viendra naturellement."
-		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
-	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
-		"pt"		"Sobrevive contra ondas de zumbis até normalmente 60 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
-		"nl"		"Probeer om tot wel 60 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
+		"en" 		"You survive against waves of zombies upto usually 40 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
+		"fr" 		"Survivez jusqu'a 40(?) vagues de zombies.\nAchetez des armes et construisez des barricades pour survivre.\nTravaillez avec vos coéquipiers et n'ayez pas peur d'échanger votre Argent\nou riquez de perdre le jeu pour votre équipe.\n\n Si vous ne savez pas quelle arme vous devrez vous acheter, essayez n'importe quelle arme à haut prix.\nN'oubliez pas d'obtenir des améliorations dans la boutique.\nLe reste vous viendra naturellement."
+		"ru" 		"Вам предстоит выжить против 40 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
+	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 40 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
+		"pt"		"Sobrevive contra ondas de zumbis até normalmente 40 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
+		"nl"		"Probeer om tot wel 40 golven van zombies te overleven.\nKoop geweren en versperringen om uw overlevingskans te verhogen.\nProbeer om als een team te spelen en niet altijd te sparen.\nAnders kan dit leiden tot het verlies van uw team\n\n als je niet weet wat je moet kopen, probeer dan het duurste wapen van uw keuze te kopen en verbeteringen voor dat wapentype te verkrijgen in de upgrade tab.\nProbeer ook Passieve verbeteringen te kopen voor meer overlevingskans.\nDe rest komt met ervaring."
 		"chi"       "任务目标：在一波又一波的僵尸潮中生存下来\n通过击杀僵尸获得的现金奖励购买各种强力的武器\n帮助你的队友一起撑到黎明的到来~"
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken."
-		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement.\nLa main représente le ％ des dégats corps à corps reçus, La flèche représente le ％ des dégats à portée reçus."
+		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damgae calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
+		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 	}
 	"Debuff/Buff Explain 2"
 	{
-		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff."
+		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff.\nAlternatively, you get a message in chat when you get a new debuff or buff applied to you."
+		"es"		"Hay demasiados buffs y debuffs a mostrar.\nMira 'Lista de Efectos' para ver todos los buffs/debuffs.\nAlternativamente, cuando recibes uno, se mostrara en el chat."
 	}
 	"Show Debuffs"
 	{
@@ -1431,12 +1438,7 @@
 	}
 	"Building Explained"
 	{
-		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
-		"fr" 		"Vous pouvez utiliser des construction en appuyant R.\nLes constructeurs peuvent monter leurs constructions.\nCeci vous permet d'appuyer R sur eux pour utiliser les constructions montés."
-		"ru" 		"R - использование построек.\nНад головой игроков с постройкой будет значок.\nR - для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
-		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
-		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
-		"nl"		"Je kunt machines gebruiken met de R toets.\nMensen kunnen gebouwen dragen en zullen dan een icoon boven hun hoofd hebben.\nDit zorgt ervoor dat je de R toets op hen kunt gebruiken om hetzelfde effect te bekomen als het gebouw dat ze dragen.\nGeneratie icoon: Amunitiekist\nSchild icoon: Schild tafel.\nKoning's icoon: Perk Machine.\nKlop Icoon: Pack-A-Punch.\nVampier icoon: genezingsstation"
+		"en" 		"You can use machines by pressing R/T on them.\nYou can mount buildings with a wrench.\nUse them by looking UP and pressing your interact key.\nThis allows you to press R on them for the same effect.\nBuilding display is shown above a building, in this order, its explained as:\nName of owner\nCurrent health\nRepair Left."
 	}
 	"Extra Buttons Explained"
 	{
@@ -1485,6 +1487,11 @@
 	{
 		"en"		"Press [R/ Use] "
 	}
+	"Viality Building Display"
+	{
+		"#format"	"{1:s},{2:s},{3:.0f}"
+		"en"		"HP: {1} / {2} | Repair left: {3}％"
+	}
 	"Interact With T Spray"
 	{
 		"en"		"Press [T(Spray)/ Use] "
@@ -1509,7 +1516,7 @@
 	}
 	"Perkmachine Tooltip"
 	{
-		"en" 		"on the Perkmachine to gain a strong temporary perk."
+		"en" 		"on the Perkmachine to gain a strong perk that lasts till you are dead/downed."
 	}
 	"PackAPunch Tooltip"
 	{
@@ -1707,39 +1714,19 @@
 	}
 	"Raidboss"
 	{
-		"en" 		"Raidboss"
-		"fr" 		"Boss de Raid"
-		"ru" 		"Рейд Босс"
-		"pt"		"Invasão Chefe" // i suppose is some sort of bossrush
-		"nl"		"Invalsbaas"
-		"chi"		"世界级Boss"
+		"en" 		"RAID"
 	}
 	"Superboss"
 	{
-		"en" 		"Superboss"
-		"ru" 		"Супер босс"
-		"fr" 		"Super Boss"
-		"chi"		"Super-Boss"
+		"en" 		"Super"
 	}
 	"Power"
 	{
-		"en" 		"Power"
-		"fr" 		"Pouvoir"
-		"ru" 		"Сила"
-		"de"		"Kraft"
-		"pt"		"Força"
-		"nl"		"Kracht"
-		"chi"       "力量"
+		"en" 		" ✹"
 	}
 	"TIME LEFT"
 	{
-		"en" 		"TIME LEFT"
-		"fr" 		"TEMPS RESTANT"
-		"ru" 		"ОСТАЛОСЬ ВРЕМЕНИ"
-		"de"		"ZEIT VERBLEIBT"
-		"pt"		"TEMPO RESTANTE"
-		"nl"		"OVERIGE TIJD"
-		"chi"       "剩余时间"
+		"en" 		"⏱ "
 	}	
 	"Father Grigori No Talk"
 	{
@@ -1754,6 +1741,7 @@
 	"Father Grigori Spawn"
 	{
 		"en"		"Grigori Has been cured!\nYou can talk to him during setup times to get a 20％ Discount on random items!"
+		"es"		"Grigori ha sido curado!\nHablale a cada tanto para ver sus descuentos en su tienda!"
 		"fr"		"Grigori est guéri!\nVous pouvez lui parler lors des temps de préparation pour un rabais de 20％ dans son boutique!"
 		"ru"		"Григорий был вылечен!\nВы можете поговорить с ним во время таймера подготовки, чтобы получить скидку 20％ на случайные предметы!"
 		"de"		"Grigori wurde geheilt!\nDu kannst mit ihm reden während der Setup zeit um einen 20％ Discount auf zufällige Gegenstände zu bekommen!"
@@ -1775,14 +1763,17 @@
 	"StatusEffectList"
 	{
 		"en" 		"Status Effect List"
+		"es"		"Lista de Efectos"
 	}
 	"Status Effect List"
 	{
 		"en" 		"Status Effect List"
+		"es"		"Lista de Efectos"
 	}
 	"Father Grigori's Store"
 	{
 		"en" 		"Father Grigori's Store"
+		"es"		"Tienda del Padre Grigori"
 		"fr" 		"Boutique de Père Grigori"
 		"ru" 		"Магазин отца Григория"
 		"de"		"Vater Grigori's Shop"
@@ -1817,6 +1808,7 @@
 	"All Items are 20％ off here!"
 	{
 		"en"		"All Items are 20％ off here! {$}\nOne Item is 30％ off! {$$}"
+		"es"		"Todos los items aca tienen un descuento del 20%%! {$}\nUn item tiene descuento del 30%%! {$$}"
 		"fr"		"Tous achats ont un rabais de 20％! {$}\nUn achat a un rabais de 30％! {$$}"
 		"ru"		"На все товары скидка 20％! {$}\nНа один товар скидка 30%! {$$}"
 //		"de"		"All Gegenstände sind 20％ off hier!"
@@ -1837,6 +1829,7 @@
 	"Can Be Pack-A-Punched"
 	{
 		"en"		"Can Be Pack-A-Punched"
+		"es"		"Puede ser Mejorado"
 		"pr"		"Peut être amélioré avec Pack-a-Punch"
 		"ru"		"Можно улучшить"
 		"de"		"Kann man Pack-A-Punchen"
@@ -1856,6 +1849,7 @@
 	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
+		"es"		"Tu equipamiento se actualizo de tu estado anterior."
 		"fr"		"Votre chargement a été mis à jour."
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
@@ -1883,10 +1877,12 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en"		"{green}''{1}'' picked up a gift box! Everyone gains {2} XP!"
+		"es"		"{green}''{1}'' agarro un regalito! Todos reciben {2} de XP!"
 	}
 	"Press TAB To open the store"
 	{
 		"en"		"Press TAB To open the store"
+		"es"		"Presiona TAB para abrir la tienda."
 		"fr"		"Appuyez TAB pour ouvrir la boutique"
 		"ru"		"Нажмите TAB для открытия магазина"
 		"de"		"Drücke auf TAB, um den Shop zu öffnen."
@@ -1927,6 +1923,7 @@
 	"Difficulty set to"
 	{
 		"en"		"Difficulty set to"
+		"es"		"Dificultad puesta en"
 		"fr"		"La difficulté est maintenant"
 		"ru"		"Сложность установлена на"
 		"de"		"Schwierigkeitgrad eingestellt auf"
@@ -1937,6 +1934,7 @@
 	"Vote for the difficulty"
 	{
 		"en"		"Vote for the difficulty"
+		"es"		"Vota por la dificultad"
 		"fr"		"Votez pour la difficulté"
 		"ru"		"Проголосуйте за сложность"
 		"de"		"Stimmen sie für die Schwierigkeit ab"
@@ -1952,17 +1950,38 @@
 		"pt"		"Você quer melhorar sua arma atual?"
 		"nl"		"Wil je uw huidige wapen Pack-A-Punchen?"
 	}
+	"Mount Menu Explain"
+	{
+		"en"		"When you crouch and M2 a building, you mount it!\nYou see it in your armor hud as a 2 letter name!\nLeft is mounted building, right is your perk."
+		"es"		"Cuando te agachas y le haces click derecho a una construccion, la montas!\nLa ves en tu hud con un nombre de 2 letras!\nIzquierda - Construccion montada, Derecha - Beneficio actual."
+	}	
 	"Support Buildings"
 	{
 		"en"		"Support Buildings"
+		"es"		"Construcciones de Soporte"
 	}	
-	"Singular Buildings"
+	"Support Buildings Explain"
 	{
-		"en"		"Singular Buildings"
+		"en"		"To build more, buy builder upgrades!\nYou gain money and ammobox supplies when your buildings are used!"
+		"es"		"Para construir mas, compra mejoras de construccion!\nGanas dinero y mas suministros de municion cuando se usan tus construcciones!"
+	}	
+	"Unique Buildings"
+	{
+		"en"		"Unique Buildings"
+		"es"		"Construcciones Unicas"
+	}	
+	"Unique Buildings Explain"
+	{
+		"en"		"You can only have 1 building from this section at once!\nThey are used on [E]"
+		"es"		"Solo puedes tener 1 de estas construcciones a la vez!\nSe usan llamando al MEDICO. [E]"
 	}	
 	"Construct Buildings"
 	{
 		"en"		"Construct Buildings"
+	}	
+	"Construct Buildings Explain"
+	{
+		"en"		"Global limits, and you can move any of these from other players!"
 	}	
 	"Which perk do you desire?"
 	{
@@ -2060,7 +2079,7 @@
 	}
 	"tutorial_3"
 	{
-		"en"		"Only have 1 weapon at a time at the start!\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+		"en"		"Only have 1 weapon at a time at the start!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''\nTeamwork is the key to victory!"
 		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
 		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
 		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
@@ -2077,7 +2096,7 @@
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
-		"en"		"Use this machine to get a temporary boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"en"		"Use this machine to get a boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
@@ -2141,6 +2160,14 @@
 		"nl"		"Koop alleen graties artikelen"
 		"chi"       "只购买免费商品"
 	}
+	"Favorite"
+	{
+		"en"		"Favorite this loadout to autobuy it when you connect"
+	}
+	"Un Favorite"
+	{
+		"en"		"Un Favorite"
+	}
 	"Getting Your Items"
 	{
 		"en"		"Getting Your Items..."
@@ -2191,17 +2218,15 @@
 	}
 	"Skip Starter"
 	{
-		"en"		"Skip starter weapons and unlock advanced weapons"
-		"ru"		"Пропустить начальное оружие и открыть продвинутое оружие"
-		"chi"       "跳过初级武器并解锁高级武器"
+		"en"		"I have played Zombie Riot before"
 	}
 	"Skip Starter Confirm"
 	{
-		"en"		"You have access to advanced weapons\nAre you familiar with the basics of buying and surviving?\n "
+		"en"		"Are you already familiar with Zombie Riot?\n \nAre you sure?\nlike, very sure that you know what youre doing?"
 	}
-	"Skip Starter Yes"
+	"Skip Starter Button"
 	{
-		"en"		"Yes, I am."
+		"en"		"Pretty sure."
 	}
 	"nothing"
 	{
@@ -2422,6 +2447,10 @@
 		"fr"		"Menu Extra"
 		"chi"		"建筑管理菜单"
 	}
+	"Destroy Building Select"
+	{
+		"en"		"Sell viewed building\n(Extra Menu [F])"
+	}
 	"Destroy all your non-Mounted Buildings"
 	{
 		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
@@ -2531,12 +2560,9 @@
 		"en"		"Disable Map Music"
 		"fr"		"Désactiver Musique"
 	}	
-	"You have been Infected by Nemesis"
+	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Nemesis!\nDo not get close to allies."
-		"fr"		"Vous êtes infectés par Nemesis!\nGardez votre distance de vos alliés."
-		"ru"		"Вы были заражены Немезидом!\nНе приближайтесь к союзникам."
-		"chi"		"你被复仇女神感染了!不要与队友走得太近。"
+		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -2548,6 +2574,18 @@
 	"SeaLab_badEnding"
 	{
 		"en"		"You have an uneasy feeling, as if you entered the wrong path... this is BAD."
+	}
+	"Xeno_Lore_1"
+	{
+		"en"		"The infection grows and expands per second...\nSilvester can be seen in the distance running to you."
+	}
+	"Xeno_Lore_2"
+	{
+		"en"		"Each passing lifetime of a cell, this xeno virus mutates."
+	}
+	"Xeno_Lore_3"
+	{
+		"en"		"This virus has just started a few hours ago, and already is mutating them to no end."
 	}
 	"Xeno_Wave_2"
 	{
@@ -2613,6 +2651,10 @@
 	"Show Ragdoll Teeth Message"
 	{
 		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
+	}
+	"Buildable Village"
+	{
+		"en"	"Buildable Village"
 	}
 	"Redirect to different ZR server"
 	{
@@ -3474,6 +3516,14 @@
 	{
 		"en" 	"This will disable lastman music for you during raidbosses music"
 	}
+	"DamageHud Setting"
+	{
+		"en" 	"Dont Always Display Damage Hud"
+	}
+	"DamageHud Setting Explain"
+	{
+		"en" 	"Enabling this setting will hide ZR damage numbers if you enabled the TF2 damage number setting."
+	}
 	"Fix First Sound Play Manually"
 	{
 		"en" 	"Fix First Sound Play Manually"
@@ -3561,7 +3611,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"(3) You trying to find out what xeno is... Silverster and waldch are here to stop you from getting infected."
+		"en"	"(3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
 	}
 	"Xeno Hard Desc"
 	{
@@ -3766,7 +3816,15 @@
 	}
 	"The Blacksmith Failed!"
 	{
-		"en"		"The builder is no longer alive or nothing is on this!"
+		"en"		"The owner no longer owns this kit! Self detonation!!!"
+	}
+	"Weapon No Effect Tinker"
+	{
+		"en"		"This doesn't seem to effect this weapon!"
+	}
+	"No Burger Left"
+	{
+		"en"		"No Burgers Left! Probably."
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3796,6 +3854,10 @@
 		"en"	"Bring up Class Change Menu"
 		"fr"	"Montrer le Menu de Changement de Classe"
 		"chi"	"打开兵种切换菜单"
+	}
+	"Display top 5"
+	{
+		"en"	"Display Top 5 Damage and Support"
 	}
 	"Corrode"
 	{
@@ -3960,7 +4022,7 @@
 	}
 	"Enable Visual Clutter Desc"
 	{
-		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nIf you love it, enable it again."
+		"en"	"Re-Enables Things like arrows in npc's and other things that are just hindering visual things.\nThis will also enable you seeing dead players (teutons)\nIf you love it, enable it again."
 	}
 	"Enable Reload Interact Desc"
 	{
@@ -3980,19 +4042,19 @@
 	}
 	"DPS Class"
 	{
-		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
+		"en"	"DPS Class\nFocus on damage and get Twirl's Ginger Ale perk"
 	}
 	"Tank Class"
 	{
-		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
+		"en"	"Tank Class\nFocus on tanking and get Purge's Cerveza Obsidian perk"
 	}
 	"Healer Class"
 	{
-		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
+		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Strawberry perk"
 	}
 	"Builder Class"
 	{
-		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
+		"en"	"Builder Class\nAble to build, repair, and get Bob's Banana Juice perk"
 	}
 	"Don't Follow Me"
 	{
@@ -4147,6 +4209,66 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the loadout store!\nConfirm your loadout in the store menu to get access to more weapons and cash from the waves!"
+		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
+	}
+	"Getting favorite loadout"
+	{
+		"en"		"Loading your favorited loadout...."
+	}
+	"Explain Construction 0"
+	{
+		"en" 		"How to play, Quick Guide:"
+	}
+	"Explain Construction 1"
+	{
+		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
+	}
+	"Explain Construction 2"
+	{
+		"en"		"Interact with ores on the map with your interact button (R Or T)!"
+	}
+	"Explain Construction 3"
+	{
+		"en"		"If you main building falls, or you all die, you lose."
+	}
+	"Explain Construction 4"
+	{
+		"en"		"During peace phases you see the current risk/power (skull) and your resoruces at the top!"
+	}
+	"Explain Rogue1 1"
+	{
+		"en"		"Select a stage, battles or encounters!"
+	}
+	"Explain Rogue1 2"
+	{
+		"en"		"In peace phases you see your ingots on the top menu, And health on the top aswell."
+	}
+	"Explain Rogue1 3"
+	{
+		"en"		"You sometimes collect artifacts after battles or stages (harder battles have a higher chance) these buff you up!"
+	}
+	"Explain Rogue2 1"
+	{
+		"en"		"In rogue2 You also get chaos for getting downed too much (see top during peace phases)"
+	}
+	"Explain Rogue2 2"
+	{
+		"en"		"Weapons must be recovered, or else their price is 1.2x Higher then normal."
+	}
+	"Call for medic to cancel!"
+	{
+		"en"		"Call for medic to cancel your dance!"
+	}
+	"Barracks Invalid suicide"
+	{
+		"en"		"You tried to sell/unequip upgrades your barracks units needed, a rift in time opens and consumes them and kills them in a nanosecond.\n{crimson}Tried to bug abuse huh?"
+	}
+	"Plasma Kit Insufficient Charge"
+	{
+		"en"		"Insufficient charge!!"
+	}
+	"Plasma Kit Warning"
+	{
+		"en"		"Your body slowly starts to break down...."
 	}
 }

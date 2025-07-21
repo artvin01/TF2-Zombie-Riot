@@ -173,11 +173,11 @@ enum struct ItemInfo
 			this.WeaponModelIndexOverride = 0;
 		}
 
-		if(this.WeaponSoundOverrideString[0])
-		{
-			//precache the sound!
-			PrecacheSound(this.WeaponSoundOverrideString, true);
-		}
+		//if(this.WeaponSoundOverrideString[0])
+		//{
+		//	//precache the sound!
+		//	PrecacheSound(this.WeaponSoundOverrideString, true);
+		//}
 
 		char buffer[256];
 		kv.GetString("func_attack", buffer, sizeof(buffer));
@@ -271,7 +271,7 @@ enum struct ItemInfo
 }
 
 static ArrayList EquippedItems;
-static Function HolsterFunc[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
 void RpgPluginStart_Store()
 {
@@ -1103,22 +1103,6 @@ void Store_ApplyAttribs(int client)
 	int attribs = 0;
 	for(int i; i < length; i++)
 	{
-		/*
-		if(attribs && !(attribs % 16))
-		{
-			if(!TF2_GetWearable(client, entity))
-				break;
-
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			{
-				i--;
-				continue;
-			}
-
-			Attributes_RemoveAll(entity);
-			attribs++;
-		}
-		*/
 
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
@@ -1137,15 +1121,6 @@ void Store_ApplyAttribs(int client)
 
 	Stats_ApplyAttribsPost(client, ClassForStats);
 	
-	/*
-	while(TF2_GetWearable(client, entity))
-	{
-		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			continue;
-		
-		Attributes_RemoveAll(entity);
-	}
-	*/
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
 	
@@ -1326,7 +1301,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			if(info.Classname[0])
 			{
-				slot = TF2_GetClassnameSlot(info.Classname);
+				int saveslot = TF2_GetClassnameSlot(info.Classname);
+				slot = saveslot;
 				if(info.Weapon_Override_Slot != -1)
 				{
 					slot = info.Weapon_Override_Slot;
@@ -1345,6 +1321,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				if(GiveWeaponIndex > 0)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
+
+					i_SavedActualWeaponSlot[entity] = saveslot;
 					/*
 				//	LogMessage("Weapon Spawned!");
 				//	LogMessage("Name of client %N and index %i",client,client);
@@ -2095,7 +2073,7 @@ int GetAmmoType_WeaponPrimary(int weapon)
 
 
 
-static ArrayList List_TempApplyWeaponPer[MAXTF2PLAYERS];
+static ArrayList List_TempApplyWeaponPer[MAXPLAYERS];
 
 /*
 	Example:
@@ -2136,7 +2114,7 @@ enum struct TempAttribStore
 //on map restart
 void ClearAllTempAttributes()
 {
-	for(int c = 0; c < MAXTF2PLAYERS; c++)
+	for(int c = 0; c < MAXPLAYERS; c++)
 	{
 		delete List_TempApplyWeaponPer[c];
 	}

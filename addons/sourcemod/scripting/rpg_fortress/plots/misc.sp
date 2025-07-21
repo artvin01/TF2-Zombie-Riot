@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float RegenPlayerCooldown[MAXTF2PLAYERS];
+float RegenPlayerCooldown[MAXPLAYERS];
 
 void MapStartPlotMisc()
 {

@@ -107,9 +107,14 @@ methodmap IberiaLighthouse < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
+	property float m_flLighthouseBuffEffect
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
 	public IberiaLighthouse(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(100), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
+		IberiaLighthouse npc = view_as<IberiaLighthouse>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, MinibossHealthScaling(100.0), ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
@@ -127,9 +132,9 @@ methodmap IberiaLighthouse < CClotBody
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
-		float wave = float(ZR_Waves_GetRound()+1);
+		float wave = float(Waves_GetRoundScale()+1);
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 	
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
@@ -164,18 +169,23 @@ methodmap IberiaLighthouse < CClotBody
 		npc.m_flSpeed = 0.0;
 		npc.m_flNemalSummonSilvesterCD = GetGameTime() + 25.0;
 
-		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
 		switch(Decicion)
 		{
 			case 2:
 			{
-				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0, .NeedLOSPlayer = true);
 				if(Decicion == 2)
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0, .NeedLOSPlayer = true);
 					if(Decicion == 2)
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0, .NeedLOSPlayer = true);
+						if(Decicion == 2)
+						{
+							//damn, cant find any.... guess we'll just not care about LOS.
+							Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+						}
 					}
 				}
 			}
@@ -212,6 +222,8 @@ methodmap IberiaLighthouse < CClotBody
 			event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
 			event.Fire();
 		}
+		VecSelfNpcabs[2] -= 200.0;
+		TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
 		return npc;
 	}
 }
@@ -235,7 +247,15 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 	{
 		return;
 	}
-	
+	if(npc.m_flLighthouseBuffEffect < GetGameTime(npc.index) && !npc.m_flLighthouseDyingAnim)
+	{
+		npc.m_flLighthouseBuffEffect = GetGameTime(npc.index) + 3.0;
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		ProjectileLoc[2] += 200.0;
+		float range = 2000.0;
+		spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 125, 100, 1, 10.0, 20.0, 1.0, 2, range * 2.0);	
+	}
 	if(npc.m_flNemalSummonSilvesterCD < GetGameTime(npc.index))
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -247,6 +267,7 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		int spawn_index = NPC_CreateByName("npc_huirgrajo", -1, pos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			CClotBody npc1 = view_as<CClotBody>(spawn_index);
 			npc1.m_iTargetAlly = npc.index;
 			b_thisNpcIsABoss[spawn_index] = true;
@@ -452,7 +473,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 			npc.PlayMeleeSound();
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 75.0 * npc.m_flWaveScale;
+				float damageDealt = 210.0 * npc.m_flWaveScale;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.5;
 
@@ -518,6 +539,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;
 		}
 	}
 	else
@@ -581,7 +603,7 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 
 	if(gameTime > npc.m_flLighthouseShortAttackHappeningNext)
 	{
-		npc.m_flLighthouseShortAttackHappening = gameTime + 0.15;
+		npc.m_flLighthouseShortAttackHappening = gameTime + 0.1;
 		npc.m_flLighthouseShortAttackHappeningAnim = gameTime + 0.1;
 		npc.m_flLighthouseShortAttackHappeningNext = gameTime + 0.2;
 	}

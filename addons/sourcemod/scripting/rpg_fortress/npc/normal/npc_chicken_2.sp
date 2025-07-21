@@ -151,8 +151,8 @@ public void StartChicken_ClotThink(int iNPC)
 
 		if(npc.m_bPathing)
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;	
+			npc.StopPathing();
+				
 		}
 	}
 	else
@@ -208,8 +208,8 @@ public void StartChicken_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		NPC_StartPathing(iNPC);
-		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
+		view_as<CClotBody>(iNPC).StartPathing();
+		view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
 		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];

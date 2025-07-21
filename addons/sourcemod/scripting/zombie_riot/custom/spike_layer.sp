@@ -63,8 +63,8 @@ static int Spike_MaxHealth[MAXENTITIES]={0, ...};
 static int Is_Spike[MAXENTITIES]={false, ...};
 static int Spikes_AliveGlobal;
 Handle h_TimerSpikeLayerManagement[MAXPLAYERS+1] = {null, ...};
-static float f_SpikeLayerHudDelay[MAXTF2PLAYERS];
-static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
+static float f_SpikeLayerHudDelay[MAXPLAYERS];
+static float f_DeleteAllSpikesDelay[MAXPLAYERS];
 
 
 bool IsEntitySpike(int entity)

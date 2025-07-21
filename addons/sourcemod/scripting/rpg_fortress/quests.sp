@@ -10,8 +10,8 @@ enum
 }
 
 static KeyValues QuestKv;
-static int BookPage[MAXTF2PLAYERS];
-static bool BookDirty[MAXTF2PLAYERS];
+static int BookPage[MAXPLAYERS];
+static bool BookDirty[MAXPLAYERS];
 
 void Quests_PluginStart()
 {
@@ -614,9 +614,9 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 	return 0;
 }
 
-static char CurrentSectionEditing[MAXTF2PLAYERS][64];
-static char CurrentQuestEditing[MAXTF2PLAYERS][64];
-static char CurrentKeyEditing[MAXTF2PLAYERS][64];
+static char CurrentSectionEditing[MAXPLAYERS][64];
+static char CurrentQuestEditing[MAXPLAYERS][64];
+static char CurrentKeyEditing[MAXPLAYERS][64];
 
 void Quests_EditorMenu(int client)
 {

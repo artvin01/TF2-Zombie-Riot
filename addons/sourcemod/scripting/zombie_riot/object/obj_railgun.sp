@@ -289,7 +289,7 @@ static void Railgun_Boom(int client, int obj)
 		{
 			ConformLineDistance(endPoint, startPoint, endPoint, curDist - lineReduce);
 		}
-		for (int i = 1; i < MAXTF2PLAYERS; i++)
+		for (int i = 1; i < MAXPLAYERS; i++)
 		{
 			BEAM_HitDetected[i] = false;
 		}

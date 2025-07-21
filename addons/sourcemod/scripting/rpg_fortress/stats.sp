@@ -3,19 +3,19 @@
 
 //#define MACRO_SHOWDIFF(%1)	if(oldAmount != newAmount) { FormatEx(buffer, sizeof(buffer), %1 ... " (%d -> %d)", oldAmount, newAmount); menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED); }
 
-static bool HasKeyHintHud[MAXTF2PLAYERS];
-static int SaveIn[MAXTF2PLAYERS];
-static int InputMulti[MAXTF2PLAYERS];
-static StringMap Mastery[MAXTF2PLAYERS];
-static ArrayList HasKilled[MAXTF2PLAYERS];
-static int StatStrength[MAXTF2PLAYERS];
-static int StatPrecision[MAXTF2PLAYERS];
-static int StatArtifice[MAXTF2PLAYERS];
-static int StatEndurance[MAXTF2PLAYERS];
-static int StatStructure[MAXTF2PLAYERS];
-static int StatIntelligence[MAXTF2PLAYERS];
-static int StatCapacity[MAXTF2PLAYERS];
-static int ReskillPoints[MAXTF2PLAYERS];
+static bool HasKeyHintHud[MAXPLAYERS];
+static int SaveIn[MAXPLAYERS];
+static int InputMulti[MAXPLAYERS];
+static StringMap Mastery[MAXPLAYERS];
+static ArrayList HasKilled[MAXPLAYERS];
+static int StatStrength[MAXPLAYERS];
+static int StatPrecision[MAXPLAYERS];
+static int StatArtifice[MAXPLAYERS];
+static int StatEndurance[MAXPLAYERS];
+static int StatStructure[MAXPLAYERS];
+static int StatIntelligence[MAXPLAYERS];
+static int StatCapacity[MAXPLAYERS];
+static int ReskillPoints[MAXPLAYERS];
 
 #define INTELLIGENCE_1ST_STAT_MULTI 3000
 #define INTELLIGENCE_2ST_STAT_MULTI 8000

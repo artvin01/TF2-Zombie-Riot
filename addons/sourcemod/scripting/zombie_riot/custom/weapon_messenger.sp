@@ -177,7 +177,7 @@ public void Gun_MessengerTouch(int entity, int target)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		if(IsValidEntity(owner) && IsValidEntity(weapon))
 		{
-			float pap = Attributes_Get(weapon, 122, 0.0);
+			float pap = Attributes_Get(weapon, Attrib_PapNumber, 0.0);
 
 			if(Change[owner] == false)
 			{

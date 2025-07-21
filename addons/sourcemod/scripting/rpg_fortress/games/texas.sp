@@ -16,11 +16,11 @@ static int GameWinner;
 static int CurrentBet;
 static float TimeLeft;
 static int GlobalHand[5];
-static bool Viewing[MAXTF2PLAYERS];
-static int BlindSince[MAXTF2PLAYERS];
-static bool Playing[MAXTF2PLAYERS];
-static int PlayerBet[MAXTF2PLAYERS];
-static int Cards[MAXTF2PLAYERS][2];
+static bool Viewing[MAXPLAYERS];
+static int BlindSince[MAXPLAYERS];
+static bool Playing[MAXPLAYERS];
+static int PlayerBet[MAXPLAYERS];
+static int Cards[MAXPLAYERS][2];
 static ArrayList CurrentDeck;
 static Handle TexasTimer;
 
@@ -329,7 +329,7 @@ static void TexasMenu(int client)
 			{
 				menu.SetTitle("Texas Hold 'Em\n%s... %.0f\n ", RankNames[GetCardRank(Cards[client])], TimeLeft - GetGameTime());
 
-				for(int i; i < sizeof(GlobalHand[]); i++)
+				for(int i; i < sizeof(GlobalHand); i++)
 				{
 					menu.AddItem(buffer, Games_GetCardIcon(GlobalHand[i]), ITEMDRAW_DISABLED);
 				}

@@ -190,8 +190,8 @@ methodmap Interstellar_Weaver < CClotBody
 
 		npc.m_flMeleeArmor = 2.0;
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 
 		bool solo = StrContains(data, "solo") != -1;
 
@@ -443,6 +443,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Interstellar_Weaver npc)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "full;lelouch;noweaver");
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -577,21 +578,8 @@ static void ClotThink(int iNPC)
 		Ruina_Add_Battery(npc.index, Gain);
 
 	
-	if(npc.m_flGetClosestTargetTime < GameTime)
-	{
-		if(IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)))
-			npc.m_iTarget = GetClosestTarget(EntRefToEntIndex(npc.m_iState), true);
-		else
-			npc.m_iTarget = GetClosestTarget(npc.index, true);
 
-		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime()*3.0 + 10.0;
-
-		if(!IsValidEnemy(npc.index, npc.m_iTarget))	//a failsafe targeting system thats a LOT more forgiving.
-		{
-			npc.m_iTarget = Storm_Weaver_Get_Target(npc);
-		}
-	}
-	if(!IsValidEntity(npc.m_iState))
+	if(!IsValidEntity(EntRefToEntIndex(npc.m_iState)))
 	{
 		int tower = i_GetMagiaAnchor(npc);
 		if(IsValidEntity(tower))
@@ -607,7 +595,7 @@ static void ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Health);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", Health);		
 	}
-	int PrimaryThreatIndex = npc.m_iTarget;
+	int PrimaryThreatIndex = Storm_Weaver_Get_Target(npc);
 
 	float Battery_Cost = 3500.0;
 
@@ -617,48 +605,44 @@ static void ClotThink(int iNPC)
 		fl_ruina_battery[npc.index] = 0.0;
 	}
 			
-	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+	if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
+		return;
+
+	Storm_Weaver_Heading_Control(npc, PrimaryThreatIndex);
+	
+	int Enemy_I_See;
+			
+	Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+	//Target close enough to hit
+	if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 	{
-		Storm_Weaver_Heading_Control(npc, PrimaryThreatIndex);
-		
-		int Enemy_I_See;
-				
-		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-		//Target close enough to hit
-		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		float flDistanceToTarget, vecTarget[3];
+		WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
+		if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 		{
-			float flDistanceToTarget, vecTarget[3];
-			WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-
-			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
-			{
-				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
-				Stellar_Weaver_Attack(npc.index, vecTarget, 3.0*RaidModeScaling, 500.0, 15.0, 15.0*RaidModeScaling, 150.0, 10.0, true);
-				b_stellar_weaver_allow_attack[npc.index] = false;
-			}
-			if(GameTime > npc.m_flNextRangedAttack)
-			{
-				npc.PlayBasicAttackSound();
-				float projectile_speed = 1250.0;
-				//lets pretend we have a projectile.
-				if(flDistanceToTarget < 1250.0*1250.0)
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, 40.0, vecTarget);
-
-				if(!Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-				}
-				float DamageDone = 10.0*RaidModeScaling;
-				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
-				npc.m_flNextRangedAttack = GameTime + 1.1;
-			}
+			fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
+			Stellar_Weaver_Attack(npc.index, vecTarget, 3.0*RaidModeScaling, 500.0, 15.0, 15.0*RaidModeScaling, 150.0, 10.0, true);
+			b_stellar_weaver_allow_attack[npc.index] = false;
 		}
-	}
-	else	//random-ish wandering
-	{
-		npc.m_flGetClosestTargetTime = 0.0;
+		if(GameTime > npc.m_flNextRangedAttack)
+		{
+			npc.PlayBasicAttackSound();
+			float projectile_speed = 1250.0;
+			//lets pretend we have a projectile.
+			if(flDistanceToTarget < 1250.0*1250.0)
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, 40.0, vecTarget);
+
+			if(!Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex)) //cant see enemy in the predicted position, we will instead just attack normally
+			{
+				WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			}
+			float DamageDone = 10.0*RaidModeScaling;
+			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+			npc.m_flNextRangedAttack = GameTime + 1.1;
+		}
 	}
 }
 static void Initiate_Attack(Interstellar_Weaver npc)
@@ -676,16 +660,56 @@ static void Initiate_Attack(Interstellar_Weaver npc)
 		}
 	}
 }
+static int disregard;
 static int Storm_Weaver_Get_Target(Interstellar_Weaver npc)
 {
+	float GameTime = GetGameTime(npc.index);
+	disregard = -1;
+	if(npc.m_flGetClosestTargetTime < GameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		int from = npc.index;
+		if(IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)))
+		{
+			disregard = view_as<CClotBody>(EntRefToEntIndex(npc.m_iState)).m_iTarget;
+			from = EntRefToEntIndex(npc.m_iState);
+		}
+			
+		//get the target nearest to lelouch's location that ISN'T the target he is attacking!
+
+		npc.m_iTarget = GetClosestTarget(from, true, _, false, false, _, _,false,_,_,true,_,TargetValidityExtra);
+
+		/*
+		if(IsValidClient(npc.m_iTarget))
+			CPrintToChatAll("weaver target: %N", npc.m_iTarget);
+		else
+			CPrintToChatAll("weaver target: %i", npc.m_iTarget);
+
+		if(IsValidClient(disregard))
+			CPrintToChatAll("lel target | disregard: %N", disregard);
+		else
+			CPrintToChatAll("lel target | disregard: %i", disregard);
+		*/
+
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+	}
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+		//CPrintToChatAll("return %i",npc.m_iTarget);
+		return npc.m_iTarget;
+	}
+	npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+
+	//this version of the "targeting" ignores walls.
+	//also mainly acts as a final final failsafe
 	float npc_vec[3]; GetAbsOrigin(npc.index, npc_vec);
 	float last_dist = 3333333.0;
 	int closest_yet = -1;
-	for(int entity=0 ; entity < MAXENTITIES ; entity++)
+	for(int entity=1 ; entity < MAXENTITIES ; entity++)
 	{
-		if(IsValidEntity(entity))
+		if(IsValidEntity(entity) && entity != disregard)
 		{
-			if(IsValidEnemy(npc.index, entity))
+			if(!i_IsABuilding[entity] && IsValidEnemy(npc.index, entity))
 			{
 				float vecTarget[3]; WorldSpaceCenter(entity, vecTarget);
 		
@@ -699,18 +723,19 @@ static int Storm_Weaver_Get_Target(Interstellar_Weaver npc)
 			}
 		}
 	}
+	if(last_dist == 3333333.0)
+		if(IsValidEnemy(npc.index, disregard))
+			return disregard;
+
 	return closest_yet;
+}
+static bool TargetValidityExtra(int iNPC, int enemy)
+{
+	return (enemy != disregard);
 }
 static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 {
 	float Npc_Vec[3]; GetAbsOrigin(npc.index, Npc_Vec);
-	
-	//enemy target
-	int New_Target = GetClosestTarget(npc.index, true, _, _, _, _, _, true);	//ignore buildings, only attack what it can see!
-	if(!IsValidEntity(New_Target))
-	{
-		New_Target = Target;
-	}
 
 	//if(npc.IsOnGround())
 	//{
@@ -719,11 +744,10 @@ static void Storm_Weaver_Heading_Control(Interstellar_Weaver npc, int Target)
 	//}
 	b_NoGravity[npc.index] = true;	//Found ya!
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
 
 	float target_vec[3];
-	GetAbsOrigin(New_Target, target_vec);
+	GetAbsOrigin(Target, target_vec);
 	target_vec[2]+=250.0;
 /*
 	float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);

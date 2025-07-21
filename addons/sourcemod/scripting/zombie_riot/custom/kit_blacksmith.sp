@@ -16,12 +16,12 @@ enum struct TinkerEnum
 
 static const int SupportBuildings[] = { 2, 2, 5, 9, 14, 14, 15 };
 static const int MetalGain[] = { 0, 5, 8, 11, 15, 20, 35 };
-static const float Cooldowns[] = { 180.0, 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
-static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
-static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
+static const float Cooldowns[] = { 150.0, 130.0, 110.0, 90.0, 70.0, 50.0, 30.0 };
+static int SmithLevel[MAXPLAYERS] = {-1, ...};
+static int i_AdditionalSupportBuildings[MAXPLAYERS] = {0, ...};
 
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static Handle EffectTimer[MAXTF2PLAYERS];
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXPLAYERS];
 
 static ArrayList Tinkers;
 
@@ -114,6 +114,7 @@ void Blacksmith_Enable(int client, int weapon)
 		EffectTimer[client] = CreateTimer(0.5, Blacksmith_TimerEffect, client, TIMER_REPEAT);
 
 		i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
+		Weapon_OnBuyUpdateBuilding(client);
 	}
 
 	if(Tinkers)
@@ -243,8 +244,8 @@ int Blacksmith_Level(int client)
 }
 */
 
-static int AnvilClickedOn[MAXTF2PLAYERS];
-static int ClickedWithWeapon[MAXTF2PLAYERS];
+static int AnvilClickedOn[MAXPLAYERS];
+static int ClickedWithWeapon[MAXPLAYERS];
 void Blacksmith_BuildingUsed(int entity, int client)
 {
 	AnvilClickedOn[client] = EntIndexToEntRef(entity);
@@ -260,9 +261,8 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 	if(owner == -1 || SmithLevel[owner] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
-		ApplyBuildingCollectCooldown(entity, client, FAR_FUTURE);
+		DestroyBuildingDo(entity);
+		SPrintToChat(client, "%t", "The Blacksmith Failed!");
 		return;
 	}
 	
@@ -374,7 +374,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 
 		char classname[64];
 		GetEntityClassname(weapon, classname, sizeof(classname));
-		int slot = TF2_GetClassnameSlot(classname);
+		int slot = TF2_GetClassnameSlot(classname, weapon);
 
 		if(i_OverrideWeaponSlot[weapon] != -1)
 		{
@@ -548,6 +548,25 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 							}
 						}	
 					}
+				}
+				else if(StrEqual(classname, "tf_weapon_flamethrower"))
+				{
+					//flamethrowers get different logic.
+					switch(GetURandomInt() % 3)
+					{
+						case 0:
+						{
+							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+						}
+						case 1:
+						{
+							TinkerHeavyTrigger(tinker.Rarity, tinker);
+						}
+						case 2:
+						{
+							TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+						}
+					}	
 				}
 				else
 				{

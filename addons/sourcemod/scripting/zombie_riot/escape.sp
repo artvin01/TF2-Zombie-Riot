@@ -1,4 +1,4 @@
-static int Carrying[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int Carrying[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
 void Escape_RoundStart()
 {
 	DeleteAndRemoveAllNpcs = 5.0;

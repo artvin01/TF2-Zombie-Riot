@@ -39,9 +39,9 @@ void BeheadedKamiKaze_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return BeheadedKamiKaze(vecPos, vecAng, team);
+	return BeheadedKamiKaze(vecPos, vecAng, team, data);
 }
 
 methodmap BeheadedKamiKaze < CClotBody
@@ -58,15 +58,14 @@ methodmap BeheadedKamiKaze < CClotBody
 		
 	}
 	
-	public void PlaySpawnSound() {
-		
+	public void PlaySpawnSound() 
+	{
 		EmitCustomToAll(g_Spawn[GetRandomInt(0, sizeof(g_Spawn) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.5, 100);
-		
 	}
 	
-	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally)
+	public BeheadedKamiKaze(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(3, true), ally));
+		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", MinibossHealthScaling(2.0, true), ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.m_bisWalking = false;
@@ -100,15 +99,19 @@ methodmap BeheadedKamiKaze < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		
-		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
+		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		npc.m_bDissapearOnDeath = true;
 
-		if(ally == TFTeam_Blue)
+		bool norandom = StrContains(data, "norandom") != -1;
+		if(norandom)
+			npc.m_fbRangedSpecialOn = true;
+
+		if(ally == TFTeam_Blue && !norandom)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
 			{
@@ -129,7 +132,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 			fl_KamikazeInitiate = GetGameTime() + 15.0;
 			
-			if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
+			if(!TeleportDiversioToRandLocation(npc.index,_,2500.0, 1250.0))
 			{
 				//incase their random spawn code fails, they'll spawn here.
 				int Spawner_entity = GetRandomActiveSpawner();
@@ -181,7 +184,7 @@ public void BeheadedKamiKaze_ClotThink(int iNPC)
 			
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(!npc.m_fbRangedSpecialOn && npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -212,11 +215,11 @@ public void BeheadedKamiKaze_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		
 		//Target close enough to hit
@@ -227,8 +230,8 @@ public void BeheadedKamiKaze_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

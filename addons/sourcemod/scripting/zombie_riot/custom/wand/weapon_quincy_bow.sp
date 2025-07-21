@@ -2,10 +2,10 @@
 #pragma newdecls required
 
 static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {null, ...};
-static float fl_hud_timer[MAXTF2PLAYERS+1];
-static float fl_Quincy_Charge[MAXTF2PLAYERS + 1];
-static float fl_Quincy_Max_Battery[MAXTF2PLAYERS + 1];
-static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
+static float fl_hud_timer[MAXPLAYERS+1];
+static float fl_Quincy_Charge[MAXPLAYERS + 1];
+static float fl_Quincy_Max_Battery[MAXPLAYERS + 1];
+static float fl_Quincy_Charge_Multi[MAXPLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
@@ -17,11 +17,11 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 #define QUINCY_BOW_HYPER_CHARGE	1500.0
 #define QUINCY_BOW_ONHIT_GAIN	50.0
 #define QUINCY_BOW_ONHIT_MULTI_ARROW 10.0
-static float fl_hyper_arrow_charge[MAXTF2PLAYERS];
+static float fl_hyper_arrow_charge[MAXPLAYERS];
 
 
-static float fl_quincy_hyper_arrow_timeout[MAXTF2PLAYERS];
-static float fl_sound_timer[MAXTF2PLAYERS + 1];
+static float fl_quincy_hyper_arrow_timeout[MAXPLAYERS];
+static float fl_sound_timer[MAXPLAYERS + 1];
 
 static const char hyper_arrow_sounds[][] = {
 	"ambient_mp3/halloween/thunder_01.mp3",
@@ -51,7 +51,7 @@ static const char Zap_Sound[][] = {
 #define QUINCY_BOW_BASELINE_BATTERY 400.0	//this is kinda like the true mana cost of the weapon
 
 
-static float fl_Quincy_Barrage_Firerate[MAXTF2PLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
+static float fl_Quincy_Barrage_Firerate[MAXPLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
 
 static int g_particleImpactTornado;
 
@@ -81,7 +81,7 @@ public void QuincyMapStart()
 	
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	
-	for(int client=1 ; client <= MAXTF2PLAYERS ; client++)
+	for(int client=1 ; client <= MAXPLAYERS ; client++)
 	{
 		fl_Quincy_Charge_Multi[client] = 1.0;
 		fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
@@ -89,7 +89,7 @@ public void QuincyMapStart()
 }
 static int Get_Quincy_Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
 public void Activate_Quincy_Bow(int client, int weapon)
 {
@@ -344,7 +344,7 @@ public Action Timer_Management_Quincy_Bow(Handle timer, DataPack pack)
 		
 	return Plugin_Continue;
 }
-static bool b_lockout[MAXTF2PLAYERS+1];
+static bool b_lockout[MAXPLAYERS+1];
 static void Quincy_Bow_Loop_Logic(int client, int weapon)
 {
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");

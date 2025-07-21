@@ -167,7 +167,6 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_helmet/tw_soldierbot_helmet.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 
@@ -178,7 +177,6 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
@@ -193,7 +191,6 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
-		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 
 		if(PrimaryThreatIndex > 0)

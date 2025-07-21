@@ -16,29 +16,29 @@
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
 static Handle h_TimerNeuvellete_Management[MAXPLAYERS+1] = {null, ...};
-static int i_hand_particle[MAXTF2PLAYERS][11];
-static float fl_hud_timer[MAXTF2PLAYERS];
+static int i_hand_particle[MAXPLAYERS][11];
+static float fl_hud_timer[MAXPLAYERS];
 
-static float fl_ion_charge_ammount[MAXTF2PLAYERS];
-static float fl_Ion_timer[MAXTF2PLAYERS + 1];
+static float fl_ion_charge_ammount[MAXPLAYERS];
+static float fl_Ion_timer[MAXPLAYERS + 1];
 
-static bool b_special_active[MAXTF2PLAYERS];
-static float fl_beam_angle[MAXTF2PLAYERS][2];
-static float fl_throttle[MAXTF2PLAYERS];
-static float fl_throttle2[MAXTF2PLAYERS];
-static float fl_extra_effects_timer[MAXTF2PLAYERS + 1];
-static float fl_m2_timer[MAXTF2PLAYERS + 1];
-static int i_Neuvellete_penetration[MAXTF2PLAYERS + 1];
+static bool b_special_active[MAXPLAYERS];
+static float fl_beam_angle[MAXPLAYERS][2];
+static float fl_throttle[MAXPLAYERS];
+static float fl_throttle2[MAXPLAYERS];
+static float fl_extra_effects_timer[MAXPLAYERS + 1];
+static float fl_m2_timer[MAXPLAYERS + 1];
+static int i_Neuvellete_penetration[MAXPLAYERS + 1];
 
-static float fl_Neuvellete_Beam_Timeout[MAXTF2PLAYERS + 1];
-static bool b_skill_points_give_at_pap[MAXTF2PLAYERS + 1][5];
-static int i_skill_point_used[MAXTF2PLAYERS + 1];
-static int i_Neuvellete_HEX_Array[MAXTF2PLAYERS + 1];
-static int i_Neuvellete_Skill_Points[MAXTF2PLAYERS + 1];
+static float fl_Neuvellete_Beam_Timeout[MAXPLAYERS + 1];
+static bool b_skill_points_give_at_pap[MAXPLAYERS + 1][5];
+static int i_skill_point_used[MAXPLAYERS + 1];
+static int i_Neuvellete_HEX_Array[MAXPLAYERS + 1];
+static int i_Neuvellete_Skill_Points[MAXPLAYERS + 1];
 
-static float fl_Special_Timer[MAXTF2PLAYERS + 1];
+static float fl_Special_Timer[MAXPLAYERS + 1];
 
-static int i_pap[MAXTF2PLAYERS];
+static int i_pap[MAXPLAYERS];
 
 
 static int BeamWand_Laser;
@@ -114,13 +114,13 @@ public void Ion_Beam_Wand_MapStart()
 //Pulse: Instead of the beam being constant, the beam only lasts for 2.5 seconds, but has huge turnrate, and resonable damage, increases the useage cooldown
 //Feedback: the longer its active, the more damage it deals, beam also moves slower the longer its active
 
-static float fl_turnspeed[MAXTF2PLAYERS + 1];
-static float fl_pitchspeed[MAXTF2PLAYERS + 1];
-static float fl_main_damage[MAXTF2PLAYERS + 1];
-static float fl_main_range[MAXTF2PLAYERS + 1];
-static int i_manacost[MAXTF2PLAYERS + 1];
-static int i_Effect_Hex[MAXTF2PLAYERS + 1];
-static float fl_penetration_falloff[MAXTF2PLAYERS + 1];
+static float fl_turnspeed[MAXPLAYERS + 1];
+static float fl_pitchspeed[MAXPLAYERS + 1];
+static float fl_main_damage[MAXPLAYERS + 1];
+static float fl_main_range[MAXPLAYERS + 1];
+static int i_manacost[MAXPLAYERS + 1];
+static int i_Effect_Hex[MAXPLAYERS + 1];
+static float fl_penetration_falloff[MAXPLAYERS + 1];
 
 static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, float &Pitch_Speed, float &DamagE, float &Range, int &Penetration, int &Mana_Cost, float &Pen_FallOff, int &Effects, int weapon)
 {
@@ -622,12 +622,12 @@ static void Neuvellete_Hud(int client, int weapon)
 	PrintHintText(client, HUDText);
 	
 }
-static bool b_hexagon_ancored[MAXTF2PLAYERS];
-static bool b_hexagon_created[MAXTF2PLAYERS];
-static float fl_hexagon_vec[MAXTF2PLAYERS][3];
-static float fl_ability_timer[MAXTF2PLAYERS];
-static float fl_dmg[MAXTF2PLAYERS];
-static float fl_range[MAXTF2PLAYERS];
+static bool b_hexagon_ancored[MAXPLAYERS];
+static bool b_hexagon_created[MAXPLAYERS];
+static float fl_hexagon_vec[MAXPLAYERS][3];
+static float fl_ability_timer[MAXPLAYERS];
+static float fl_dmg[MAXPLAYERS];
+static float fl_range[MAXPLAYERS];
 static void Witch_Hexagon_Witchery(int client, int weapon)
 {
 	fl_throttle2[client] = 0.0;
@@ -655,7 +655,7 @@ static void Witch_Hexagon_Witchery(int client, int weapon)
 	fl_dmg[client] = DamagE;
 	fl_range[client] = range;
 }
-static float fl_hexagon_angle[MAXTF2PLAYERS];
+static float fl_hexagon_angle[MAXPLAYERS];
 
 static Action Hexagon_Witchery_Tick(int client)
 {
@@ -909,7 +909,7 @@ public void Ion_Beam_On_Buy_Reset(int client)
 
 static int Get_Pap(int weapon)
 {
-	return RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
 static void Give_Skill_Points(int client, int pap)
 {
@@ -1048,7 +1048,7 @@ static void Prismatic_Adjust_Stats(int client, int weapon)
 	fl_penetration_falloff[client] = Pen_Falloff;
 }
 
-static float fl_spinning_angle[MAXTF2PLAYERS];
+static float fl_spinning_angle[MAXPLAYERS];
 public Action Neuvellete_tick(int client)
 {
 	//if(IsValidClient(client))

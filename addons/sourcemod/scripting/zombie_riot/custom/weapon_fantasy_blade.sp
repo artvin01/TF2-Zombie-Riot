@@ -31,12 +31,12 @@
 static Handle h_TimerFantasyManagement[MAXPLAYERS+1] = {null, ...};
 
 
-static float fl_Shard_Ammount[MAXTF2PLAYERS+1];
-static float fl_blade_swing_reload_time[MAXTF2PLAYERS+1];
-static float fl_teleport_recharge_time[MAXTF2PLAYERS+1];
-static float fl_hud_timer[MAXTF2PLAYERS+1];
+static float fl_Shard_Ammount[MAXPLAYERS+1];
+static float fl_blade_swing_reload_time[MAXPLAYERS+1];
+static float fl_teleport_recharge_time[MAXPLAYERS+1];
+static float fl_hud_timer[MAXPLAYERS+1];
 
-static int i_Current_Pap[MAXTF2PLAYERS+1];
+static int i_Current_Pap[MAXPLAYERS+1];
 
 #define FANTASY_BLADE_SHOOT_1 	"weapons/physcannon/energy_sing_flyby1.wav"
 #define FANTASY_BLADE_SHOOT_2 	"weapons/physcannon/energy_sing_flyby2.wav"
@@ -135,7 +135,7 @@ public Action Timer_Management_Fantasy(Handle timer, DataPack pack)
 static int Fantasy_Blade_Get_Pap(int weapon)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 
@@ -419,7 +419,7 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 	return 0.0;
 }
 
-static bool b_I_hit_something[MAXTF2PLAYERS+1];
+static bool b_I_hit_something[MAXPLAYERS+1];
 
 static bool Check_if_targets_exist(int client, float range)
 {
@@ -455,10 +455,10 @@ static bool Check_if_targets_exist(int client, float range)
 			 /// Jibril's Wings and Halo
 			///
 			
-static int i_wing_lasers[MAXTF2PLAYERS+1][6];
-static int i_wing_particles[MAXTF2PLAYERS+1][6];
+static int i_wing_lasers[MAXPLAYERS+1][6];
+static int i_wing_particles[MAXPLAYERS+1][6];
 
-static int i_halo_particles[MAXTF2PLAYERS+1];
+static int i_halo_particles[MAXPLAYERS+1];
 			
 static void Create_Halo_And_Wings(int client)
 {
@@ -666,7 +666,7 @@ static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
 static float H_fl_starting_vec[MAXENTITIES][3];
 static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
 
-static float H_fl_damage[MAXTF2PLAYERS + 1];
+static float H_fl_damage[MAXPLAYERS + 1];
 
 static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float time, float damage)
 {
@@ -825,7 +825,7 @@ static Action Horizontal_Slicer_Tick(int client)
 
 //	Verical Slier
 
-static float fl_damage[MAXTF2PLAYERS + 1];
+static float fl_damage[MAXPLAYERS + 1];
 static int Tick_Count[MAXENTITIES];
 static int Tick_Count_Max[MAXENTITIES];
 

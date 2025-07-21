@@ -1,17 +1,32 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+//4007 4008 4009 40010 Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
 enum
 {
+	Attrib_PapNumber = 122,
+	Attrib_MaxEnemiesHitExplode = 4011,
+	Attrib_ReducedGibHealing = 4012,
+	Attrib_ExplosionFalloff = 4013,
+	Attrib_ConsumeReserveAmmo = 4014,
+	Attrib_NeverAttack = 4015, //If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
+	Attrib_BonusRaidDamage = 4016,
+	Attrib_AttackspeedConvertIntoDmg = 4017,
+	Attrib_ClaimCadesAlways = 4018,
+	Attrib_MaxManaAdd = 4019,
+	Attrib_ManaRegen = 4020, 
+	Attrib_OverrideWeaponSkin = 4021, // Override Weapon Skin To This
 	Attrib_TerrianRes = 4022,
 	Attrib_ElementalDef = 4023,
 	Attrib_SlowImmune = 4024,
 	Attrib_ObjTerrianAbsorb = 4025,
 	Attrib_SetArchetype = 4026,
-	Attrib_SetSecondaryDelayInf = 4027,
+	Attrib_SetSecondaryDelayInf = 4027, // Set secondary weapon delay to FAR_FUTURE
 	Attrib_FormRes = 4028,
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
+	// 4031
+	// 4032
 	Attrib_ReviveTimeCut = 4033,
 	Attrib_ExtendExtraCashGain = 4034,
 	Attrib_ReduceMedifluidCost = 4035,
@@ -20,24 +35,26 @@ enum
 	Attrib_BarracksDamage = 4038,
 	Attrib_BlessingBuff = 4039,
 	Attrib_ArmorOnHit = 4040,
-	Attrib_ArmorOnHitMax = 4041
+	Attrib_ArmorOnHitMax = 4041,
+	Attrib_Melee_UseBuilderDamage = 4042,
+	Attrib_HeadshotBonus = 4043,
+	Attrib_ReviveSpeedBonus = 4044,
+	Attrib_BuildingOnly_PreventUpgrade = 4045, 
+	//used for anti abuse.
+	//specifically so you cant repair buildings for low cost and re-upgrade them.
+
+	Attrib_BuildingStatus_PreventAbuse = 4046, 
+	//used for anti abuse.
+	//specifally so you cant make ranged units lategame and sell all other units and just keep those alive forever.
+
+	Attrib_Weapon_MaxDmgMulti = 4047, 
+	Attrib_Weapon_MinDmgMulti = 4048, 
+	//used currently for heavy particle rifle
+	//but will probably be used for other weapons to define max/min dmg depending on whatever the weapon specific plugin does with it.
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
 
-//4007 4008 4009 40010 Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
-// 4011: Explosive enemeis hit MAX
-// 4012: redued healing from gibs
-// 4013: Override Explosion FAloff
-// 4014: Ammo consume extra in reserve
-// 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
-// 4016: bonus damage to raidbosses
-// 4017: attackspeed directly converts into damage
-// 4018: allow Claiming of cades regardless
-// 4019: Mana Max Add
-// 4020: Mana Regen 
-// 4021: Override Weapon Skin To This
-// 4027: Set secondary weapon delay to FAR_FUTURE
 bool Attribute_ServerSide(int attribute)
 {
 	if(attribute > 3999)
@@ -294,7 +311,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
-float PreventSameFrameGivearmor[MAXTF2PLAYERS];
+float PreventSameFrameGivearmor[MAXPLAYERS];
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
@@ -361,7 +378,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			value = Attributes_Get(weapon, 17, 0.0);
 			if(value)
 			{
-				if(!TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
+				if(!HasSpecificBuff(client, "UBERCHARGED") && !TF2_IsPlayerInCondition(client, TFCond_Ubercharged)) //No infinite uber chain.
 				{
 					// add uber charge on hit
 					
@@ -422,7 +439,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		if(value)
 			view_as<CClotBody>(victim).m_bGib = true;
 		
-		value = Attributes_Get(weapon, 4016, 1.0);	// bonus damage to raids
+		value = Attributes_Get(weapon, Attrib_BonusRaidDamage, 1.0);	// bonus damage to raids
 		if(value != 1.0)
 		{
 			if(b_thisNpcIsARaid[victim])
@@ -430,7 +447,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 				damage *= value;
 			}
 		}
-		value = Attributes_Get(weapon, 4017, 0.0);	// Attackspeed converts into damage
+		value = Attributes_Get(weapon, Attrib_AttackspeedConvertIntoDmg, 0.0);	// Attackspeed converts into damage
 		if(value)
 		{
 			value = Attributes_Get(weapon, 6, 0.0);
@@ -623,25 +640,6 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 		defaul = defaultstat;
 	}
 	float result = Attributes_Get(client, index, defaul);
-
-	/*
-	int wearable = MaxClients + 1;
-	while(TF2_GetWearable(client, wearable))
-	{
-		float value = Attributes_Get(wearable, index, defaul);
-		if(value != defaul)
-		{
-			if(multi)
-			{
-				result *= value;
-			}
-			else
-			{
-				result += value;
-			}
-		}
-	}
-	*/
 	
 	if(entity > MaxClients)
 	{

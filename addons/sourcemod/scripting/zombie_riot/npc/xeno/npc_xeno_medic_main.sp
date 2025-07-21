@@ -162,13 +162,9 @@ methodmap XenoMedicMain < CClotBody
 		npc.StartPathing();
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 		
 		return npc;
@@ -245,9 +241,9 @@ public void XenoMedicMain_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -315,8 +311,8 @@ public void XenoMedicMain_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -329,25 +325,18 @@ public Action XenoMedicMain_OnTakeDamage(int victim, int &attacker, int &inflict
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-	if(!NpcStats_IsEnemySilenced(victim))
+	if(!npc.bXenoInfectedSpecialHurt)
 	{
-		if(!npc.bXenoInfectedSpecialHurt)
-		{
-			npc.bXenoInfectedSpecialHurt = true;
-			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
-			
-			npc.m_flSpeed = 400.0;
-			CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
-		}
+		npc.bXenoInfectedSpecialHurt = true;
+		npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
+		
+		npc.m_flSpeed = 400.0;
+		CreateTimer(2.0, XenoMedicMain_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(10.0, XenoMedicMain_Revert_Poison_Zombie_Resistance_Enable, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		float TrueArmor = 1.0;
 		if(!NpcStats_IsEnemySilenced(victim))
 		{
@@ -377,23 +366,16 @@ public Action XenoMedicMain_Revert_Poison_Zombie_Resistance(Handle timer, int re
 	{
 		XenoMedicMain npc = view_as<XenoMedicMain>(zombie);
 		npc.m_flSpeed = 300.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		if(IsValidEntity(npc.m_iWearable1))
-		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);	
-		}
+		
 		if(IsValidEntity(npc.m_iWearable2))
-		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);	
-		}
+		
 		if(IsValidEntity(npc.m_iWearable3))
-		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);	
-		}
 	}
 	return Plugin_Handled;
 }

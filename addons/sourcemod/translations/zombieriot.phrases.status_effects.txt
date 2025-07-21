@@ -3,14 +3,17 @@
 	"Is Elemental"
 	{
 		"en"	"This is an Elemental status effect."
+		"es"	"Este es un efecto de status elemental."
 	}
 	"Applied Onto Others"
 	{
 		"en"	"{yellow}Applied Onto Others"
+		"es"	"{yellow}Aplicado en otros"
 	}
 	"Scale With Player"
 	{
 		"en"	"{yellow}Scales with playercount, unless youre the buff owner or enemies benefit from it."
+		"es"	"{yellow}Escala con la cantidad de jugadores, a menos que seas el emisor del buff o si el enemigo se beneficia de este."
 	}
 	"Teslar Shock"
 	{
@@ -114,7 +117,7 @@
 	}
 	"Enfeeble Desc"
 	{
-		"en"	"Lowers Damage Delt by 10％, which lowers over time up untill 0％"
+		"en"	"Decreases damage dealt by 25％, which lowers over time to 0％"
 	}
 	"Iberia's Anti Raid"
 	{
@@ -124,11 +127,15 @@
 	{
 		"en"	"Increases Damage Taken by 10％"
 	}
-	"Widows Wine"
+	"Nemal's Teslar Mule"
 	{
-		"en"	"Widows Wine"
+		"en"	"Nemal's Teslar Mule"
 	}
-	"Widows Wine Desc"
+	"Silvester's Energy Drink"
+	{
+		"en"	"Silvester's Energy Drink"
+	}
+	"Nemal's Teslar Mule Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 	}
@@ -295,18 +302,21 @@
 	"Silenced"
 	{
 		"en"	"Silenced"
+		"es"	"Silenciado"
 	}
 	"Silenced Desc"
 	{
-		"en"	"Disables Some enemeies abiltiies, see their Encylopedia entrances.\nSlows attack/reload speed & healrate by 5％."
+		"en"	"Slows attack/reload speed & healrate by 10％.\nRaidbosses that are affected lose/weaken some ability, check Encyclopedia."
 	}
 	"Hardened Aura"
 	{
 		"en"	"Hardened Aura"
+		"es"	"Aura Reforzada"
 	}
 	"Hardened Aura Desc"
 	{
 		"en"	"Immune to any and ALL that debuffs.\n{yellow}Elemental Is excluded from this.\n{yellow}Stuns and movement displacements are not counted as debuffs."
+		"es"	"Inmune a cualquier debuff Y cualquer cosa que inflinga debuffs.\n{yellow}(No incluye buffs elementales, aturdimientos y desplazamientos)"
 	}
 	"Intangible"
 	{
@@ -315,6 +325,7 @@
 	"Intangible Desc"
 	{
 		"en"	"Allows you to phase through enemies."
+		"es"	"Permite pasar a traves de enemigos."
 	}
 	"Infinite Will"
 	{
@@ -418,7 +429,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 20％, If silenced, this is 10％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 	}
 	"Void Strength II"
 	{
@@ -426,7 +437,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 30％, If silenced, this is 15％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 	}
 	"MERLT0N-BUFF"
 	{
@@ -514,7 +525,7 @@
 	}
 	"Hussar's Warscream Desc"
 	{
-		"en"	"Increases damage dealt by 10％\nBlocked by Silence."
+		"en"	"Increases damage dealt by 10％"
 	}
 	"Flagellants Punishment"
 	{
@@ -535,26 +546,32 @@
 	"Oceanic Singing"
 	{
 		"en"	"Oceanic Singing"
+		"es"	"Canto Oceanico"
 	}
 	"Oceanic Singing Desc"
 	{
 		"en"	"Increases damage dealt by 10％"
+		"es"	"Aumenta el daño hecho en un 10％."
 	}
 	"Oceanic Scream"
 	{
 		"en"	"Oceanic Scream"
+		"es"	"Grito Oceanico"
 	}
 	"Oceanic Scream Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
+		"es"	"Aumenta el daño hecho en un 25％."
 	}
 	"War Cry"
 	{
 		"en"	"War Cry"
+		"es"	"Grito de Guerra"
 	}
 	"War Cry Desc"
 	{
 		"en"	"Increases damage dealt by 25％"
+		"es"	"Aumenta el daño hecho en un 25％."
 	}
 	"Expidonsan War Cry"
 	{
@@ -567,10 +584,12 @@
 	"Defensive Backup"
 	{
 		"en"	"Defensive Backup"
+		"es"	"Apoyo Defensivo"
 	}
 	"Defensive Backup Desc"
 	{
 		"en"	"Decreases damage taken by 15％"
+		"es"	"Reduce el daño recibido en un 15％."
 	}
 	"Very Defensive Backup"
 	{
@@ -583,42 +602,68 @@
 	"UBERCHARGED"
 	{
 		"en"	"UBERCHARGED"
+		"es"	"SOBRECARGADO"
 	}
 	"UBERCHARGED Desc"
 	{
-		"en"	"Invulnerable to damage\nDuring raids, have 50％ resistance."
+		"en"	"Decreases damage taken by 90％.\n{yellow}During raids, you take 50％ reduced damage instead."
+		"es"	"Reduce el daño recibido en un 90％.\n{yellow}Durante un raid, recibes 50％ en lugar de 90％."
+	}
+	"Unstoppable Force"
+	{
+		"en"	"Unstoppable Force"
+	}
+	"Unstoppable Force Desc"
+	{
+		"en"	"Immune to any and all damage with no exceptions."
+	}
+	"Archo's Posion"
+	{
+		"en"	"Archo's Posion"
+	}
+	"Archo's Posion Desc"
+	{
+		"en"	"Any and all damage you take is converted into true damage."
 	}
 	"Healing Resolve"
 	{
 		"en"	"Healing Resolve"
+		"es"	"Resolucion Curativa"
 	}
 	"Healing Resolve Desc"
 	{
 		"en"	"Decreases damage taken by 5％, Increases damage dealt by 25％"
+		"es"	"Reduce el daño recibido en un 5％.\nAumenta el daño hecho en un 25％."
 	}
 	"Healing Adaptiveness All"
 	{
 		"en"	"Healing Adaptiveness All"
+		"es"	"Adaptabilidad Curativa Global"
 	}
 	"Healing Adaptiveness All Desc"
 	{
 		"en"	"Decreases damage taken by 5％"
+		"es"	"Reduce el daño recibido en un 5％."
 	}
 	"Healing Adaptiveness Melee"
 	{
 		"en"	"Healing Adaptiveness Melee"
+		"es"	"Adaptabilidad Curativa (MELEE)"
 	}
 	"Healing Adaptiveness Melee Desc"
 	{
 		"en"	"Decreases damage taken from melee sources by 15％"
+		"es"	"Reduce el daño cuerpo a cuerpo recibido en un 15％."
 	}
 	"Healing Adaptiveness Ranged"
 	{
 		"en"	"Healing Adaptiveness Ranged"
+		"es"	"Adaptabilidad Curativa (DISTANCIA)"
 	}
 	"Healing Adaptiveness Ranged Desc"
 	{
 		"en"	"Decreases damage taken from ranged sources by 15％"
+		"es"	"Reduce el daño a distancia recibido en un 15％."
 	}
 	"Self Empowerment"
 	{
@@ -639,10 +684,12 @@
 	"Ancient Melodies"
 	{
 		"en"	"Ancient Melodies"
+		"es"	"Melodias Antiguas"
 	}
 	"Ancient Melodies Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by a 20％."
+		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 20％."
 	}
 	"Bobs Duck Dubby"
 	{
@@ -802,15 +849,23 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 66％\nDecreases damage dealt by 56％"
+		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 	}
-	"Tonic Affliction Hidden"
+	"Tonic Affliction Hide"
 	{
-		"en"	"Tonic Affliction Hidden"
+		"en"	"Tonic Affliction Hide"
 	}
-	"Tonic Affliction  Hidden Desc"
+	"Tonic Affliction Hide Desc"
 	{
 		"en"	"Ignore."
+	}
+	"Victorian Launcher Overdrive"
+	{
+		"en"	"Ignore"
+	}
+	"Victorian Launcher Overdrive Desc"
+	{
+		"en"	"Ignore"
 	}
 	"Mystery Beer"
 	{
@@ -840,11 +895,11 @@
 	{
 		"en"	"Ruina Battery Charge"
 	}
-	"Village"
+	"Village Radar"
 	{
-		"en"	"Village"
+		"en"	"Village Radar"
 	}
-	"Village Desc"
+	"Village Radar Desc"
 	{
 		"en"	"Increases projectile speed and range by 10％"
 	}
@@ -870,7 +925,23 @@
 	}
 	"Homeland Defense Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 12％"
+		"en"	"Increases attack/reload speed & healrate by 24％"
+	}
+	"Growth Blocker"
+	{
+		"en"	"Growth Blocker"
+	}
+	"Growth Blocker Desc"
+	{
+		"en"	"Reduces healing by 15％\nOn some enemies it has extra effects..."
+	}
+	"Revealed"
+	{
+		"en"	"Revealed"
+	}
+	"Revealed Desc"
+	{
+		"en"	"Affected entity is revealed and cannot camo."
 	}
 	"Call To Arms"
 	{
@@ -887,6 +958,30 @@
 	"Iberia Light Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 10％"
+	}
+	"Elemental Curing"
+	{
+		"en"	"Elemental Curing"
+	}
+	"Elemental Curing Desc"
+	{
+		"en"	"Slowly cures your elemental damage by 1％ every second\n{yellow}If recently hurt, its only 0.25％"
+	}
+	"Armor Curing"
+	{
+		"en"	"Armor Curing"
+	}
+	"Armor Curing Desc"
+	{
+		"en"	"Slowly regenerates your armor by 1％ every second upto half of your armor\n{yellow}If recently hurt, its only 0.25％"
+	}
+	"Nethersea Antidote"
+	{
+		"en"	"Nethersea Antidote"
+	}
+	"Nethersea Antidote Desc"
+	{
+		"en"	"Reduces the damage caused by nethersea brands by 80％"
 	}
 	"Victoria Nuke"
 	{
@@ -947,10 +1042,12 @@
 	"Burn"
 	{
 		"en"	"Burn"
+		"es"	"Quemadura"
 	}
 	"Burn Desc"
 	{
-		"en"	"True DMG.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
+		"en"	"Deals True DMG.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
+		"es"	"Hace daño verdadero.\nLa curacion es un -25％ eficiente al quemarse. Si un NPC te aplica fuego de nuevo, recibes un 50％ de daño de quemadura extra.\n{green}Matar un enemigo en fuego dara +10％ de HP extra."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -1092,6 +1189,14 @@
 	{
 		"en"	"Prevents any healing.\n{green}Doesnt prevent absolute healing."
 	}
+	"Zeinas Protection"
+	{
+		"en" "Zeinas Protection"
+	}
+	"Zeinas Protection Desc"
+	{
+		"en"	"Take 15％ less damage"
+	}
 	"Zilius Prime Technology"
 	{
 		"en" "Zilius Prime Technology"
@@ -1131,6 +1236,22 @@
 	"Bubble Frenzy Desc"
 	{
 		"en" "Attack 2x Faster, only works on bubble wand."
+	}
+	"Trigger Finger"
+	{
+		"en" "Trigger Finger"
+	}
+	"Trigger Finger Desc"
+	{
+		"en" "Attack & reload 2x Faster, only works on USP.\n{crimson}But deal 15％ less damage during it."
+	}
+	"Trigger Finger Hidden"
+	{
+		"en" "Trigger Finger Hidden"
+	}
+	"Trigger Finger Hidden Desc"
+	{
+		"en" "Trigger Finger Hidden Desc"
 	}
 	"Hectic Therapy"
 	{
@@ -1200,19 +1321,23 @@
 	{
 		"en"	"Overclock"
 		"ko"	"과부하"
+		"es"	"Overclock"
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"Increases damage by 50％\nBoosts attack/reload speed & healrate by 30％ and mana is continuously restored."
+		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
+		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 	}
 	"Weapon Clocking"
 	{
 		"en"	"Weapon Clocking"
 		"ko"	"과부하"
+		"es" 	"Arma-ficiencia"
 	}
 	"Weapon Clocking Desc"
 	{
-		"en"	"Boosts attack/reload speed & healrate by 10％"
+		"en"	"Boosts attack/reload speed & healrate by 5％"
+		"es"	"Aumenta la velocidad de ataque/recarga y curacion medica en un 5％."
 	}
 	"7 Heavy Souls"
 	{
@@ -1222,21 +1347,13 @@
 	{
 		"en"	"Increases damage by 50％\nIncreases resistance by 50％\nIncreases attack speed by 100％"
 	}
-	"Plasm I"
+	"Nightmare Terror"
 	{
-		"en" 	"Plasm I"
+		"en"	"Nightmare Terror"
 	}
-	"Plasm I Desc"
+	"Nightmare Terror Desc"
 	{
-		"en"	"Slows NPCs by 5％.\nReduces attackspeed by 7％."
-	}
-	"Plasm II"
-	{
-		"en"	"Plasm II"
-	}
-	"Plasm II Desc"
-	{
-		"en" 	"Slows NPCs by 7％.\nReduces attackspeed by 10％."
+		"en"	"You cannot get downed."
 	}
 	"Plasmatic Rampage"
 	{
@@ -1244,7 +1361,7 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"{darkviolet}Enveloped in plasma...\n{green}Boost damage dealt and resist +15％.\nBoosts attackspeed by +25％\n{yellow}(BELOW IS FOR PLASMIC SURPRISE ONLY)\n{darkviolet}Ability cooldowns are reduced, gain extra regen below 25％ HP."
+		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY reduces Plasmic Elemental buildup penalty and cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 	}
 	"Plasmatized Lethalitation"
 	{
@@ -1252,23 +1369,23 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Incrased Attackspeed and 2x Plasmic Elemental Buildup against enemies."
+		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 	}
-	"Plasmatized Inoculation"
+	"Plasmic Layering I"
 	{
-		"en"	"Plasmatized Inoculation"
+		"en"	"Plasmic Layering I"
 	}
-	"Plasmatized Inoculation Desc"
+	"Plasmic Layering I Desc"
 	{
-		"en" 	"Gain Random Plasma Effect shown in your hud."
+		"en" 	"Increases damage by +15％ and resistance by +10％ while inside the Plasmatized Bubble's radius."
 	}
-	"Plasm-Allocator"
+	"Plasmic Layering II"
 	{
-		"en"	"Plasm-Allocator"
+		"en"	"Plasmic Layering II"
 	}
-	"Plasm-Allocator Desc"
+	"Plasmic Layering II Desc"
 	{
-		"en" 	"1.5x Plasmic Elemental Buildup against enemies."
+		"en" 	"Increases damage by +25％ and resistance by +15％ while inside the Plasmatized Bubble's radius."
 	}
 	"Ziberian Flagship Weaponry"
 	{
@@ -1277,5 +1394,86 @@
 	"Ziberian Flagship Weaponry Desc"
 	{
 		"en" 	"Take 25％ Less damage\nDeal 10％ More damage\nAttack 10％ Faster.\nReduces cooldowns by 15％"
+	}
+	"Dimensional Turbulence"
+	{
+		"en"	"Dimensional Turbulence"
+	}
+	"Dimensional Turbulence Desc"
+	{
+		"en" 	"2x Attackspeed, Infinite mana/Reserve Ammo\n20％ Movementspeed\n75％ Less Cooldowns\n2x Revive speed\n50％ more HP and Healing\n50％ less stun duration"
+	}
+	"Therapy Duration"
+	{
+		"en"	"Therapy Duration"
+	}
+	"Therapy Duration Desc"
+	{
+		"en" 	"Under the influence of Therapy debuffs..."
+	}
+	"Empowering Domain Hidden"
+	{
+		"en"	"Empowering Domai Hidden"
+	}
+	"Empowering Domain"
+	{
+		"en"	"Empowering Domain"
+	}
+	"Empowering Domain Desc"
+	{
+		"en"	"Increases damage +15％\nBoosts attackspeed by +25％\nReduces Ark's Parry cooldown by 60％.\nResets Ark parry cooldown upon activation to 1 Sec.\n{crimson}However, you take 20％ more damage..."
+	}
+	"Purging Intention"
+	{
+		"en" "Purging Intention"
+	}
+	"Purging Intention Desc"
+	{
+		"en" "Uncureable.\nPurge is after you.\nYou gain Primal fear much faster."
+	}
+	"Primal Fear"
+	{
+		"en" "Primal Fear"
+	}
+	"Primal Fear Desc"
+	{
+		"en" "Uncureable.\nGain a multiplicative damage vulnerability.\nStacks upto 2x damage taken.\nAvoid purge to lower this overtime."
+	}
+	//This is just used for cooldown stuff.
+	"Primal Fear Hide"
+	{
+		"en" "Primal Fear Hide"
+	}
+	"Liberal Tango"
+	{
+		"en"	"''Liberal Tango''"
+	}
+	"Liberal Tango Desc"
+	{
+		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
+	}
+	"Xeno's Territory"
+	{
+		"en"	"Xeno's Territory"
+	}
+	"Xeno's Territory Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 25％ extra damage, 25％ attackspeed, 15％ speed bonus."
+	}
+	"Corrupted Godly Power"
+	{
+		"en"	"Corrupted Godly Power"
+	}
+	"Corrupted Godly Power Desc"
+	{
+		"en"	"Gain 15％ damage reduction, 10％ extra damage, 5％ attackspeed."
+	}
+	"Paralysis"
+	{
+		"en"	"Paralysis"
+	}
+	"Paralysis Desc"
+	{
+		"en"	"-50％ attack speed and movement speed"
 	}
 }

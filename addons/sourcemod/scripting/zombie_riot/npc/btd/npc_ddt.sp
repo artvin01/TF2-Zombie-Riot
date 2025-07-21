@@ -40,6 +40,9 @@ static int MoabHealth(bool fortified)
 {
 	float value = 40000.0;	// 400 RGB
 	value *= 0.5;
+	value *= BLOON_HP_MULTI_GLOBAL;
+	if(IsValidEntity(RaidBossActive))
+		value *= 0.8;
 	
 	if(fortified)
 		value *= 2.0;
@@ -57,7 +60,7 @@ static int MoabHealth(bool fortified)
 		value *= 1.0 + (CurrentRound - 79) * 0.02;
 	}
 	
-	return RoundFloat(value) + (Bloon_Health(fortified, Bloon_Ceramic) * 3);	// 104x3 RGB
+	return RoundFloat((value + (Bloon_HPRatio(fortified, Bloon_Ceramic) * 3.0) * Bloon_BaseHealth()));	// 104x3 RGB
 }
 
 void DDT_MapStart()
@@ -213,7 +216,8 @@ public void DDT_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	bool camo = !NpcStats_IsEnemySilenced(npc.index);
-	Building_CamoOrRegrowBlocker(npc.index, camo);
+	if(camo && HasSpecificBuff(npc.index, "Revealed"))
+		camo = false;
 
 	if(npc.m_bCamo)
 	{
@@ -250,11 +254,11 @@ public void DDT_ClotThink(int iNPC)
 			
 			
 			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
-			NPC_SetGoalVector(npc.index, VecPredictPos);
+			npc.SetGoalVector(VecPredictPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		
 		//Target close enough to hit
@@ -264,29 +268,14 @@ public void DDT_ClotThink(int iNPC)
 			{
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				float damageDealDo = 60.0;
 				
 				if(npc.m_bFortified)
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}
-				else
-				{
-					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
-					}
-				}					
+					damageDealDo *= 1.4;
+				if(ShouldNpcDealBonusDamage(PrimaryThreatIndex))
+					damageDealDo *= 25.0;
+					
+				SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, damageDealDo, DMG_CLUB, -1, _, WorldSpaceVec);					
 			}
 		}
 		
@@ -295,8 +284,8 @@ public void DDT_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -316,7 +305,7 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else if((damagetype & DMG_BLAST))
 	{
-		damage *= 0.15;
+		damage *= 0.15 / MultiGlobalHealthBoss;
 
 		damagePosition[2] += 50.0;
 		npc.DispatchParticleEffect(npc.index, "medic_resist_match_blast_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
@@ -324,7 +313,7 @@ public Action DDT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else
 	{
-		damage *= 0.15;
+		damage *= 0.15 / MultiGlobalHealthBoss;
 		npc.PlayLeadSound();
 
 		damagePosition[2] += 50.0;
@@ -388,7 +377,11 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
+	{
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
+		NpcStats_CopyStats(caller, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }
 
 public void DDT_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
@@ -402,5 +395,9 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	
 	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
+	{
+		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
+		NpcStats_CopyStats(caller, spawn_index);
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+	}
 }

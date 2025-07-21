@@ -556,6 +556,10 @@
 		"pt"		"Xeno Medic Main de Combate"
 		"nl"		"Xeno Strijd Medicus Main"
 	}
+	"Xeno Infected Lab Doctor"
+	{
+		"en" 	"Xeno Infected Lab Doctor"
+	}
 	"Xeno Giant Pyro Main"
 	{
 		"en" 		"Xeno Giant Pyro Main"
@@ -662,11 +666,13 @@
 		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 	}
-	"Bloonarius"
+	"Bloonarius the Inflator"
 	{
-		"en" 		"Bloonarius"
-		"pt"		"Balãorista"
-		"ru" 		"Шариус"
+		"en" 		"Bloonarius the Inflator"
+	}
+	"Reality Warper Phayze"
+	{
+		"en" 		"Reality Warper Phayze"
 	}
 	"Medic Apprentice Mage"
 	{
@@ -685,13 +691,11 @@
 	"Infected Silvester"
 	{
 		"en" 		"Infected Silvester"
-		"ru" 		"Истинный Термоядерный Воин"
-		"pt"		"Verdadeiro Guerreiro de Fusão"
-		"nl"		"Ware Fuzie Krijger"
 	}
 	"Silvester's Past Afterimage"
 	{
 		"en" 		"Silvester's Past Afterimage"
+		"es"		"Ilusion de Silvester"
 	}
 	"Medic Charger"
 	{
@@ -857,6 +861,10 @@
 	{
 		"en"		"Basic unit of basic melee needs."
 	}
+	"Xeno Infected Lab Doctor Desc"
+	{
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
+	}
 	"Archer"
 	{
 		"en" 		"Archer"
@@ -932,6 +940,7 @@
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
+		"es"		"Blitzkrieg"
 		"fr" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
 		"pt"		"Blitzkrieg"
@@ -1538,20 +1547,20 @@
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
+		"es"		"Silvester Angelico"
 		"pt"		"Silvester Angelical"
 		"ru"		"Ангел Сильвестр"
 	}
-	"Nemesis"
+	"Calmaticus"
 	{
-		"en"		"Nemesis"
-		"pt"		"Nemesis"
-		"ru"		"Немезид"
+		"en"		"Calmaticus"
+		"pt"		"Calmaticus"
 	}
-	"Enraged Nemesis"
+	"Enraged Calmaticus"
 	{
-		"en"		"Enraged Nemesis"
+		"en"		"Enraged Calmaticus"
 		"ru" 		"Разъяренный Немезид"
-		"pt"		"Nemesis Enfurecido"
+		"pt"		"Calmaticus Enfurecido"
 	}
 	"Shell Sea Runner"
 	{
@@ -1818,6 +1827,7 @@
 	"God Alaxios"
 	{
 		"en"		"God Alaxios"
+		"es"		"Dios Alaxios"
 		"ru"		"Бог Алаксиос"
 	}
 	"Sea-Infected God Alaxios"
@@ -2357,20 +2367,24 @@
 	"?????????????"
 	{
 		"en"	"?????????????"
+		"es"	"???????????????"
 	}
 	"??????? First"
 	{
 		"en"	"??????? First"
+		"es"	"??????? Primero"
 		"ru" 	"?????? Первый"
 	}
 	"??? the First"
 	{
 		"en"	"??? the First"
+		"es"	"???, el Primero"
 		"ru" 	"??? Первый"
 	}
 	"Bob the First"
 	{
 		"en"	"Bob the First"
+		"es"	"Bob, el Primero"
 		"ru" 	"Боб Первый"
 	}
 	"Ahim"
@@ -2540,11 +2554,13 @@
 	"The Messenger"
 	{
 		"en"	"The Messenger"
+		"es"	"El Mensajero"
 		"ru" 	"Предвестник"
 	}
 	"The Purge"
 	{
 		"en"	"The Purge"
+		"es"	"La Purga"
 		"ru" 	"Зачищик"
 	}
 	"Rouge Expidonsan Doctor"
@@ -2558,16 +2574,16 @@
 	"Bob the Second"
 	{
 		"en"	"Bob the Second"
+		"es"	"Bob, el Segundo"
 		"ru" 	"Боб Второй"
 	}
 	"Wildingen Hitman"
 	{
 		"en"	"Wildingen Hitman"
 	}
-	"Mr.X"
+	"Vivithorn"
 	{
-		"en"	"Mr.X"
-		"ru" 	"Мистер X"
+		"en"	"Vivithorn"
 	}
 	"Xeno Acclaimed Swordsman"
 	{
@@ -3019,13 +3035,13 @@
 	{
 		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
 	}
-	"Voided Expidonsan Explorer"
+	"Speechless"
 	{
-		"en"	"Voided Expidonsan Explorer"
+		"en"	"Speechless"
 	}
-	"Voided Expidonsan Explorer Desc"
+	"Speechless Desc"
 	{
-		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHas extreme speeds even with such power."
+		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHe ignores the shield cooldown if hitting a barricade, or anything with his laser.\nGains attackspeed as he attacks, lowers when he doesnt."
 	}
 	"Unspeakable"
 	{
@@ -3064,11 +3080,97 @@
 	"Void Elemental Damage"
 	{
 		"en"	"Void Elemental Damage"
+		"es"	"Daño Elemental del Vacio"
 	}
 	"Void Elemental Damage Desc"
 	{
 		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
+		"es"	"Cuando se llena, los enemigos del Vacio se fortalecen, y liberas fluido del Vacio debajo tuyo.\nSe cura con armadura.\nLos enemigos fortalecidos se pueden debilitar con Silencio."
 	}
+	"Chaos Elemental Damage"
+	{
+		"en"	"Chaos Elemental Damage"
+		"es"	"Daño Elemental Caótico"
+	}
+	"Chaos Elemental Damage Desc"
+	{
+		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
+		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
+	}
+	"Nervous Impairment Elemental Damage"
+	{
+		"en"	"Nervous Impairment Elemental Damage"
+		"es"	"Daño Elemental Nervioso"
+	}
+	"Nervous Impairment Elemental Damage Desc"
+	{
+		"en"	"Once full, Your nervous system breaks down.\nYou recieve 500 truedamage and are heavily slowed for 5 seconds."
+		"es"	"Cuando se llena, tu sistema nervioso se pone... nervioso, y falla.\nRecibes 500 de daño verdadero y te ralentizas mucho por 5 segundos."
+	}
+	"Corruption Elemental Damage"
+	{
+		"en"	"Corruption Elemental Damage"
+		"es"	"Daño Elemental Corrupto"
+	}
+	"Corruption Elemental Damage Desc"
+	{
+		"en"	"Once full, You aleart more agents.\nA extreamly strong agent appaers somewhere."
+		"es"	"Cuando se llena, alertas a mas agentes.\nUn agente muy fuerte aparece en algun lado."
+	}
+	"Elemental Damage"
+	{
+		"en" "Elemental Damage"
+		"es" "Daño Elemental"
+	}
+	"Elemental Damage Desc"
+	{
+		"en" "It will display in your hud as the above icon.\nIf it fills up your armor bar, you take heavy drawbacks, unqiue to each.\nRegain armor to cure yourself."
+		"es" "Se mostrara en tu HUD como el icono superior.\nSi la barra entera se llena, recibes maleficios fuertes y diferentes.\nRecibe armadura para curar este daño."
+	}
+	"Necrosis Elemental Damage"
+	{
+		"en"	"Necrosis Elemental Damage"
+	}
+	"Necrosis Elemental Damage Desc"
+	{
+		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+	}
+
+	"Overmana Overload"
+	{
+		"en" "Overmana Overload"
+		"es" "Sobrecarga de Mana"
+	}
+	"Overmana Overload Desc"
+	{
+		"en" "Your mana overloads, you cannot contain it.\nYou are slowed for some time heavily, a ruinan cannon strikes onto your location after sometime.\nDamage depends on your Max mana."
+		"es" "Tu mana se sobrecarga, no puedes contenerlo.\nEres ralentizado temporalmente, y un Cañon Ruiniaco es marcado en tu posicion.\nEl daño depende de tu mana maximo."
+	}
+	"Wrench Building"
+	{
+		"en" "Wrench Usage"
+	}
+	"Wrench Building Desc"
+	{
+		"en" "Press {yellow}(R) {green}to access your building menu.\nWith {yellow}(F) {green}You have access to an extra menu for buildings.\nPlace buildings by buying them with scrap in this menu."
+	}
+	"Barracks Building Explain"
+	{
+		"en" "Barracks Building"
+	}
+	"Barracks Building Explain Desc"
+	{
+		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
+	}
+	"Explain Building Cash"
+	{
+		"en" "Building Cash Gain"
+	}
+	"Explain Building Cash Desc"
+	{
+		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} from people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
+	}
+	
 	"Vhxis"
 	{
 		"en"	"Vhxis"
@@ -3114,6 +3216,10 @@
 	"Chaos Swordsman Desc"
 	{
 		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+	}
+	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	{
+		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 	}
 	"Chaos Mercenaries"
 	{
@@ -3373,7 +3479,7 @@
 	}
 	"Sentinel Desc"
 	{
-		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
+		"en"		"If it loses its armor, it buffs everyone around it massively for a short time."
 	}
 	"Ironborus"
 	{
@@ -3429,7 +3535,7 @@
 	}
 	"Cambino Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback (silenceable)"
+		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback"
 	}
 	"Irani"
 	{
@@ -3437,7 +3543,7 @@
 	}
 	"Irani Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"		"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"Kinat"
 	{
@@ -3493,7 +3599,7 @@
 	}
 	"Vivintu Desc"
 	{
-		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"		"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"Cenula"
 	{
@@ -3509,7 +3615,7 @@
 	}
 	"Kumbai Desc"
 	{
-		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback (silenceable)"
+		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback"
 	}
 	"Speedus Instantus"
 	{
@@ -3629,11 +3735,11 @@
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"	"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"Death Marker Desc"
 	{
-		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+		"en"	"Marks an enemy on hit. Deals no melee knockback"
 	}
 	"W.F. Flowering Darkness"
 	{
@@ -4389,5 +4495,19 @@
 	"Vaus Shaldus Desc"
 	{
 		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
+	}
+	"Instinct's Summon"
+	{
+		"en"	"Instinct's Summon"
+	}
+	"Plasmic Elemental Damage"
+	{
+		"en"	"Plasmic Elemental Damage"
+		"es"	"Daño Elemental Plasmico"
+	}
+	"Plasmic Elemental Damage Desc"
+	{
+		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
 }

@@ -46,7 +46,7 @@ methodmap VengefullSpirit < CClotBody
 	
 	public VengefullSpirit(float vecPos[3], float vecAng[3], int ally)
 	{
-		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", MinibossHealthScaling(45, true), ally));
+		VengefullSpirit npc = view_as<VengefullSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", MinibossHealthScaling(45.0, true), ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -67,8 +67,8 @@ methodmap VengefullSpirit < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		
@@ -129,11 +129,11 @@ static void Internal_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VengefullSpiritSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}

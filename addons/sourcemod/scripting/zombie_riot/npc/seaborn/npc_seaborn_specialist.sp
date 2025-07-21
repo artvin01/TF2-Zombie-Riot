@@ -176,13 +176,9 @@ methodmap SeabornSpecialist < CClotBody
 		}
 		else
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable4, 155, 155, 255, 255);
 		}
 		return npc;
@@ -280,11 +276,11 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 			if(distance < npc.GetLeadRadius())
 			{
 				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}
 
 			npc.StartPathing();

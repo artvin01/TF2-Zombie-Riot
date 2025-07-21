@@ -134,7 +134,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
 				int WavesAllow = spawn.MaxWavesAllowed;
-				int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
+				int WavesLeft = Waves_GetRoundScale() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
 					SpawnerList.Erase(i);
@@ -174,7 +174,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				{
 					//999 means its a perma spawn or a boss spawn, whatever it may be.
 					int WavesAllow = spawn.MaxWavesAllowed;
-					int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
+					int WavesLeft = Waves_GetRoundScale() - spawn.WaveCreatedIn;
 					if(WavesLeft >= WavesAllow)
 					{
 						SpawnerList.Erase(i);
@@ -214,15 +214,6 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		{
 			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy));
 		}
-		/*
-		else if(name[0])
-		{
-			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
-			float baseTime = 2.0 + (nonBossSpawners * 0.15);
-
-			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / playerSpeedUp));
-		}
-		*/
 		else
 		{
 			float nearSpeedUp = 4.0 * (spawn.Points / HighestPoints);
@@ -282,7 +273,7 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.BaseBoss = base_boss;
 		spawn.AllySpawner = allyspawner;
 		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
-		spawn.WaveCreatedIn = ZR_Waves_GetRound();
+		spawn.WaveCreatedIn = Waves_GetRoundScale();
 		spawn.MaxWavesAllowed = WavesAllowed;
 		spawn.CurrentSpawnsPerformed = 0;
 		spawn.SpawnSetting = i_SpawnSetting;
@@ -330,7 +321,7 @@ void Spawners_Timer()
 			{
 				//999 means its a perma spawn or a boss spawn, whatever it may be.
 				int WavesAllow = spawn.MaxWavesAllowed;
-				int WavesLeft = ZR_Waves_GetRound() - spawn.WaveCreatedIn;
+				int WavesLeft = Waves_GetRoundScale() - spawn.WaveCreatedIn;
 				if(WavesLeft >= WavesAllow)
 				{
 					SpawnerList.Erase(index);

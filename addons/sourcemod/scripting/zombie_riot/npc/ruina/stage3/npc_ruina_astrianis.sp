@@ -179,7 +179,7 @@ methodmap Astrianis < CClotBody
 	
 	public Astrianis(float vecPos[3], float vecAng[3], int ally)
 	{
-		Astrianis npc = view_as<Astrianis>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
+		Astrianis npc = view_as<Astrianis>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally, _,_,true));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -329,8 +329,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -413,15 +413,15 @@ static void Astrianis_SelfDefense(Astrianis npc, float gameTime)
 				}
 				else
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}

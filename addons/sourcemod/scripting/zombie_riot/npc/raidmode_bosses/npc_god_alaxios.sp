@@ -316,19 +316,19 @@ methodmap GodAlaxios < CClotBody
 		}
 
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -415,7 +415,7 @@ methodmap GodAlaxios < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
 		npc.Anger = false;
@@ -427,13 +427,13 @@ methodmap GodAlaxios < CClotBody
 		npc.g_TimesSummoned = 0;
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -467,11 +467,8 @@ methodmap GodAlaxios < CClotBody
 
 		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 100, 100, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
@@ -731,6 +728,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_seaslider", -1, pos, ang, TFTeam_Blue);
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
@@ -749,6 +747,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
@@ -773,6 +772,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				int spawn_index = NPC_CreateByName("npc_xeno_acclaimed_swordsman", -1, pos, ang, TFTeam_Red);
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
@@ -792,6 +792,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			int spawn_index = NPC_CreateByName("npc_xeno_raidboss_nemesis", -1, pos, ang, TFTeam_Red);
 			if(spawn_index > MaxClients)
 			{
+				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 100000000);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 100000000);
@@ -818,7 +819,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		npc.SetActivity("ACT_IDLE");
 		npc.m_bisWalking = false;
 		npc.StopPathing();
-		for (int client = 0; client < MaxClients; client++)
+		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 			{
@@ -969,11 +970,11 @@ public void GodAlaxios_ClotThink(int iNPC)
 		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 
 		if(npc.m_flNextRangedAttackHappening > GetGameTime(npc.index))
@@ -1027,8 +1028,8 @@ public void GodAlaxios_ClotThink(int iNPC)
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 				if(npc.m_iChanged_WalkCycle != 8) 	
 				{
@@ -1402,8 +1403,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1200000.0 * MultiGlobalHighHealthBoss), 1, true);		
 			}			
 		}
 	}
@@ -1527,10 +1527,6 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 	if(health != 0)
 	{
 		enemy.Health = health;
-		if(!is_a_boss)
-		{
-			enemy.Health = RoundToNearest(float(enemy.Health) * MultiGlobalHealth);
-		}
 	}
 	enemy.Is_Boss = view_as<int>(is_a_boss);
 	enemy.Is_Immune_To_Nuke = true;
@@ -1851,7 +1847,6 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 						{
 							int laser = EntRefToEntIndex(i_LaserEntityIndex[EnemyLoop]);
 							SetEntityRenderColor(laser, red, green, blue, 255);
-							SetEntityRenderMode(laser, RENDER_TRANSCOLOR);
 						}
 					}
 					else
@@ -1919,7 +1914,6 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 							{
 								int laser = EntRefToEntIndex(i_LaserEntityIndex[entity_close]);
 								SetEntityRenderColor(laser, red, green, blue, 255);
-								SetEntityRenderMode(laser, RENDER_TRANSCOLOR);
 							}
 						}
 						else
@@ -2326,7 +2320,7 @@ bool AlaxiosForceTalk()
 			{
 				CPrintToChatAll("{lightblue}God Alaxios{default}: ALL HEIL THE MERCENARIES!! {crimson} FOR ATLANTISSSSS!!!!!!!!!!!!!!.");
 				i_TalkDelayCheck = 11;
-				for (int client = 0; client < MaxClients; client++)
+				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 					{

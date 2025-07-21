@@ -115,6 +115,7 @@ methodmap VausTechicus < CClotBody
 		func_NPCThink[npc.index] = VausTechicus_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		VausTechicusShieldGiving(npc, GetGameTime()); //Give shield on spawn
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(0.0, 15.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -221,11 +222,11 @@ public void VausTechicus_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VausTechicusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}

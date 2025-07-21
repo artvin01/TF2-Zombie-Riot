@@ -181,7 +181,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.m_fbGunout = false;
@@ -195,11 +194,6 @@ methodmap XenoCombineSoldierAr2 < CClotBody
 		func_NPCDeath[npc.index] = XenoCombineSoldierAr2_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoCombineSoldierAr2_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoCombineSoldierAr2_ClotThink;
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
@@ -252,16 +246,12 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	if(npc.m_flReloadDelay > GetGameTime(npc.index))
 	{
 		npc.m_flSpeed = 0.0;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;		
+		npc.StopPathing();
+				
 	}
 	else
 	{
 		npc.m_flSpeed = 190.0;
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 	}
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
@@ -308,9 +298,9 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 25000 && flDistanceToTarget < 40000 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -385,14 +375,8 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 					NormalizeVector(vecDir, vecDir);
 					
 					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-					if(EscapeModeForNpc)
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
-					else
-					{
-						FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 3.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					}
+					FireBullet(npc.index, npc.m_iWearable1, npc_vec, vecDir, 10.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+					
 					npc.PlayRangedSound();
 				}
 			}
@@ -434,12 +418,6 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									
-									if(EscapeModeForNpc)
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 75.0, DMG_CLUB, -1, _, vecHit);
-									}
-									else
 									{
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, vecHit);
 									}
@@ -475,8 +453,8 @@ public void XenoCombineSoldierAr2_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

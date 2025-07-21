@@ -198,7 +198,7 @@ public void WinterIrritatedPerson_ClotThink(int iNPC)
 		static float flMyPos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		flMyPos[2] += 15.0;
-		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,100.0, 1.0, _, true, 20);
+		Explode_Logic_Custom(damageDealt, npc.index, npc.index, -1, flMyPos,250.0, 1.0, _, true, 20);
 		TE_Particle("asplode_hoodoo", flMyPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
 		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, flMyPos);
@@ -233,11 +233,11 @@ public void WinterIrritatedPerson_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		WinterIrritatedPersonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		if(npc.g_TimesSummoned <= 2 && npc.m_flJumpCooldown < GetGameTime(npc.index))

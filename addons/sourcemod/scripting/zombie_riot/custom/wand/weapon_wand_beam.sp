@@ -58,6 +58,7 @@ static int[] AdjustColorToMana(int client)
 bool CanCastWand(int client, int weapon, int &mana_cost)
 {
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+	mana_cost = RoundToNearest(float(mana_cost) * LaserWeapons_ReturnManaCost(weapon));
 	if(mana_cost > Current_Mana[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");

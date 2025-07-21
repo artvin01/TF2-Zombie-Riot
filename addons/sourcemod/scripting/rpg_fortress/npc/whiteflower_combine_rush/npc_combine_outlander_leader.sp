@@ -247,8 +247,8 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 	
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -353,11 +353,11 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -402,7 +402,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -443,7 +443,7 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 							npc.m_iChanged_WalkCycle = 4;
 							npc.SetActivity("ACT_RUN");
 							npc.m_flSpeed = 350.0;
-							NPC_StartPathing(iNPC);
+							view_as<CClotBody>(iNPC).StartPathing();
 						}
 						return;
 					}
@@ -502,8 +502,8 @@ public void Whiteflower_OutlanderLeader_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 9;
 					npc.AddActivityViaSequence("Stand_to_crouch");
 					npc.SetPlaybackRate(0.75);	
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 				}
 				npc.m_flCloneRageInit = gameTime + 1.35;
 				npc.m_flCloneRageCD = gameTime + 15.0;

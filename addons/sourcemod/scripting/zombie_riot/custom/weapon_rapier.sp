@@ -11,13 +11,13 @@ static Handle DuelState_timer[MAXPLAYERS+1];
 #define DUEL5					"ui/duel_challenge_accepted_with_restriction.wav"
 #define DUEL6					"ui/duel_challenge_rejected_with_restriction.wav"
 
-static int i_Current_Pap_Rapier[MAXTF2PLAYERS+1];
-static int i_CashLimit[MAXTF2PLAYERS+1];
+static int i_Current_Pap_Rapier[MAXPLAYERS+1];
+static int i_CashLimit[MAXPLAYERS+1];
 static int DuelHit = 0;
 
-static bool b_WonDuel[MAXTF2PLAYERS];
+static bool b_WonDuel[MAXPLAYERS];
 
-static float fl_Rapier_hud_delay[MAXTF2PLAYERS];
+static float fl_Rapier_hud_delay[MAXPLAYERS];
 
 void Weapon_RapierMapChange()
 {
@@ -270,7 +270,7 @@ public Action DuelState(Handle cut_timer, int client)
 static int Rapier_Get_Pap(int weapon)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 

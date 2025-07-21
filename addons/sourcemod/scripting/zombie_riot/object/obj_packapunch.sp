@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float f_CheckWeaponDelay[MAXTF2PLAYERS];
-bool b_LastWeaponCheckBias[MAXTF2PLAYERS];
+float f_CheckWeaponDelay[MAXPLAYERS];
+bool b_LastWeaponCheckBias[MAXPLAYERS];
 
 void ObjectPackAPunch_MapStart()
 {
@@ -95,8 +95,10 @@ static void ClotShowInteractHud(ObjectPackAPunch npc, int client)
 {
 	SetGlobalTransTarget(client);
 	char ButtonDisplay[255];
+	char ButtonDisplay2[255];
 	PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
-	PrintCenterText(client, "%s%t", ButtonDisplay,"PackAPunch Tooltip");
+	BuildingVialityDisplay(client, npc.index, ButtonDisplay2, sizeof(ButtonDisplay2));
+	PrintCenterText(client, "%s\n%s%t", ButtonDisplay2, ButtonDisplay,"PackAPunch Tooltip");
 }
 
 static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)

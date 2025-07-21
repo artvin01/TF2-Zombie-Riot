@@ -89,7 +89,6 @@ methodmap PerkMachiner < CClotBody
 		npc.m_flMeleeArmor = 0.42;
 		npc.m_flRangedArmor = 0.42;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 1, 255, 1, 255);
 		
 		if(Garrison[npc.index])
@@ -175,9 +174,9 @@ public void PerkMachiner_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 	
 			//Target close enough to hit
@@ -240,8 +239,8 @@ public void PerkMachiner_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
 		if(npc.m_iTarget < 1)
@@ -348,7 +347,7 @@ void PerkMachiner_NPCDeath(int entity)
 		{
 			for(int i; i < 1; i++)
 			{
-				int other = NPC_CreateByName("npc_chaos_mage", -1, pos, ang, team);
+				int other = NPC_CreateByName("npc_suicider", -1, pos, ang, team);
 				if(other > MaxClients)
 				{
 					if(team != TFTeam_Red)

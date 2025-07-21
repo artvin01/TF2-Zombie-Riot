@@ -105,7 +105,6 @@ methodmap SeaFounder < CSeaBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flRangedArmor = 0.4;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		if(carrier)
@@ -121,7 +120,6 @@ methodmap SeaFounder < CSeaBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, elite ? 0 : 255, elite ? 0 : 155, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("weapon_targe", "models/workshop/weapons/c_models/c_persian_shield/c_persian_shield_all.mdl");
@@ -173,11 +171,11 @@ public void SeaFounder_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();
@@ -355,7 +353,7 @@ public Action SeaFounder_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 
-	if(++SpreadTicks > (CurrentRound == 59 ? 24 : 8))
+	if(++SpreadTicks > (CurrentRound >= 39 ? 24 : 8))
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -610,7 +608,10 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NervousLastTouch[client] = TheNavMesh.GetNavArea(pos, 70.0);
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
-				bool resist = (Building_NeatherseaReduced(client));
+				bool resist = false;
+				if(HasSpecificBuff(client, "Nethersea Antidote"))
+					resist = true;
+					
 				bool ignore = false;
 				bool Benifit = (SeaMelee_IsSeaborn(client));
 				int Active_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");

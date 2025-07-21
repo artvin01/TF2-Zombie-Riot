@@ -243,7 +243,7 @@ methodmap LostKnight < CClotBody
 			DispatchKeyValue(entity, "fogcolor2", "10 10 10 255");
 			DispatchKeyValueFloat(entity, "fogstart", 10.0);
 			DispatchKeyValueFloat(entity, "fogend", 125.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.900);
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.825);
 
 			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
 			DispatchKeyValue(entity, "fogenable", "1");
@@ -263,13 +263,9 @@ methodmap LostKnight < CClotBody
 			}
 		}
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 		
 		npc.StopPathing();
@@ -309,7 +305,7 @@ public void LostKnight_ClotThink(int iNPC)
 	float distance = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.1) && distance < 8000.0)
 	{
-		NPC_StartPathing(npc.index);
+		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -385,9 +381,9 @@ public void LostKnight_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -454,8 +450,8 @@ public void LostKnight_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

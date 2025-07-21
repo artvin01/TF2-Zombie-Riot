@@ -191,17 +191,17 @@ public void IberiaCambino_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 				npc.m_flSpeed = 270.0;
 			}
 			case 1:
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 				npc.m_flSpeed = 0.0;
 				//Stand still.
 			}
@@ -300,7 +300,7 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 						npc.m_iAttacksTillReload --;
 						if(NpcStats_IberiaIsEnemyMarked(target))
 						{
-							npc.m_flNextMeleeAttack = gameTime + 0.5;
+							npc.m_flNextMeleeAttack = gameTime + 0.3;
 						}
 
 						if(IsValidEnemy(npc.index, target))

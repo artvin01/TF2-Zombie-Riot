@@ -183,7 +183,6 @@ methodmap Alt_CombineDeutsch < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 175, 255, 255);
 
 		npc.m_iState = 0;
@@ -211,13 +210,9 @@ methodmap Alt_CombineDeutsch < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 150, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 150, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 50, 125, 150, 255);
 		
 		npc.StartPathing();
@@ -302,18 +297,18 @@ static void Internal_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		} else {
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		
 		if(fl_barragetimer[npc.index] <= GetGameTime(npc.index) && fl_singularbarrage[npc.index] <= GetGameTime(npc.index))
 		{	
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 			SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
 			
 			float  dmg=40.0;
-			if(ZR_Waves_GetRound()<40)
+			if(iRuinaWave()<20)
 			{
 				dmg=20.0;
 			}
@@ -362,7 +357,7 @@ static void Internal_ClotThink(int iNPC)
 			b_barrage[npc.index] = true;
 			if (i_barrage[npc.index] >= 1)	//Stays here incase you want this multi shoot to act like a barrage
 			{
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 				i_barrage[npc.index] = 0;
 				fl_barragetimer[npc.index] = GetGameTime(npc.index) + 60.0;
@@ -401,7 +396,7 @@ static void Internal_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								float damage=150.0;
-								if(ZR_Waves_GetRound()<40)
+								if(iRuinaWave()<20)
 								{
 									damage=75.0;
 								}
@@ -436,8 +431,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

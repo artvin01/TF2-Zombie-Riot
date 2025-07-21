@@ -247,7 +247,7 @@ methodmap Whiteflower_Boss < CClotBody
 	}
 	public Whiteflower_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Whiteflower_Boss npc = view_as<Whiteflower_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		Whiteflower_Boss npc = view_as<Whiteflower_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
@@ -256,7 +256,7 @@ methodmap Whiteflower_Boss < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		npc.AddActivityViaSequence("p_jumpuploop");
+		npc.SetActivity("ACT_WHITEFLOWER_IDLE");
 
 		npc.m_bisWalking = false;
 
@@ -313,16 +313,16 @@ methodmap Whiteflower_Boss < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -373,7 +373,8 @@ methodmap Whiteflower_Boss < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
-		NPC_StartPathing(npc.index);
+		npc.StartPathing();
+		AlreadySaidWin = false;
 		
 		return npc;
 	}
@@ -388,7 +389,6 @@ public void WhiteflowerWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	//b_NpcHasDied[client]
 	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs Bob.");	
 }
 
@@ -410,7 +410,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
+		npc.AddGesture("ACT_HURT", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -423,7 +423,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
 		CPrintToChatAll("{crimson}Whiteflower{default}: Out of time, youre entirely surrounded.\nYou now belong to me.\nSubmit.\nHelp me kill Bob, and we will rule it all.");	
@@ -510,10 +510,6 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 		{
 			npc.m_flKickUpHappening = 0.0;
 			
-			float vAngles[3];								
-			GetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 
-			vAngles[0] = 0.0;	
-			SetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
@@ -592,6 +588,9 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				npc.m_flDoingAnimation = gameTime + 0.45;
 				WorldSpaceCenterVec[2] += 15.0;
 				PluginBot_Jump(npc.index, WorldSpaceCenterVec);
+				f_CheckIfStuckPlayerDelay[npc.index] = GetGameTime() + 1.0;
+				b_ThisEntityIgnoredBeingCarried[npc.index] = true;
+				ApplyStatusEffect(npc.index, npc.index, "Intangible", 1.0);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				npc.m_flWasAirbornInJump = gameTime + 0.5;
 				Zero(b_TouchedEnemyTarget);
@@ -601,9 +600,10 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_JUMP");
+					npc.SetActivity("ACT_WHITEFLOWER_DASH_FLOAT");
+					npc.AddGesture("ACT_WHITEFLOWER_DASH_START");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 			}
 		}
@@ -613,6 +613,8 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 	{
 		if(npc.IsOnGround() && npc.m_flWasAirbornInJump < gameTime)
 		{
+			b_ThisEntityIgnoredBeingCarried[npc.index] = false;
+			npc.AddGesture("ACT_WHITEFLOWER_DASH_LAND", .SetGestureSpeed = 2.0);
 			npc.m_flWasAirbornInJump = 0.0;
 			npc.m_flHitKickDoInstaDash = 0.0;
 			ExtinguishTarget(npc.index);
@@ -644,11 +646,11 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				float vPredictedPos[3]; 
 				PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_,vPredictedPos);
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			}
 		}
 		WorldSpaceCenter(npc.m_iTarget, vecTarget);
@@ -698,9 +700,9 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
+					npc.SetActivity("ACT_WHITEFLOWER_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -713,9 +715,9 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
+					npc.SetActivity("ACT_WHITEFLOWER_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
@@ -724,7 +726,13 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE", _,_,_,1.0);
+					switch(GetRandomInt(0,1))
+					{
+						case 0:
+							npc.AddGesture("ACT_WHITEFLOWER_ATTACK_LEFT", _,_,_,1.0);
+						case 1:
+							npc.AddGesture("ACT_WHITEFLOWER_ATTACK_RIGHT", _,_,_,1.0);
+					}
 
 					npc.PlayMeleeSound();
 					
@@ -743,9 +751,9 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 				{
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_RUN");
+					npc.SetActivity("ACT_WHITEFLOWER_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				//Can i see This enemy, is something in the way of us?
@@ -757,22 +765,17 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flKickUpHappening = gameTime + 0.15;
-					npc.m_flDoingAnimation = gameTime + 0.35;
+					npc.m_flKickUpHappening = gameTime + 0.25;
+					npc.m_flDoingAnimation = gameTime + 0.45;
 					npc.m_flKickUpCD = gameTime + 4.0;
 					if(npc.m_iChanged_WalkCycle != 8) 	
 					{
-						float vAngles[3];								
-						GetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 
-						vAngles[0] = -45.0;	
-						SetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 
 						npc.m_iChanged_WalkCycle = 8;
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;
+						npc.StopPathing();
+						
 						npc.m_bisWalking = false;
-						npc.AddActivityViaSequence("kickdoorbaton");
-						npc.SetCycle(0.30);
+						npc.SetActivity("ACT_WHITEFLOWER_KICK_GROUND");
 						npc.SetPlaybackRate(2.0);
 					}
 				}
@@ -790,10 +793,9 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = false;
 						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_RANGE_ATTACK_THROW");
-						npc.SetPlaybackRate(1.5);
-						NPC_StopPathing(npc.index);
-						npc.m_bPathing = false;	
+						npc.SetActivity("ACT_WHITEFLOWER_BOMB");
+						npc.StopPathing();
+							
 					}
 					npc.m_flAttackHappens = 0.0;
 					npc.m_flDoingAnimation = gameTime + 1.0;
@@ -868,12 +870,13 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 						SetParent(npc.index, particler);
 						if(npc.m_iChanged_WalkCycle != 6) 	
 						{
+							IgniteTargetEffect(npc.index);
 							npc.m_bisWalking = false;
 							npc.m_iChanged_WalkCycle = 6;
-							npc.AddActivityViaSequence("citizen4_preaction");
+							npc.SetActivity("ACT_WHITEFLOWER_IDLE");
 							npc.SetPlaybackRate(0.0);
 							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 						}
 					}
 				}
@@ -883,9 +886,9 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 					{
 						npc.m_bisWalking = true;
 						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_RUN");
+						npc.SetActivity("ACT_WHITEFLOWER_RUN");
 						npc.m_flSpeed = 350.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 			}
@@ -915,6 +918,28 @@ public Action Whiteflower_Boss_OnTakeDamage(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(RoundToCeil(damage) > Health)
+	{	
+		if(i_RaidGrantExtra[npc.index] == 1)
+			CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+		
+		npc.StopPathing();
+		ApplyStatusEffect(victim, victim, "Infinite Will", 5.0);
+		RequestFrames(KillNpc, 66 * 2, EntIndexToEntRef(npc.index));
+		//2 seconds.
+		npc.m_bisWalking = false;
+		npc.SetActivity("ACT_WHITEFLOWER_DEATH");
+		SetEntProp(victim, Prop_Data, "m_bSequenceLoops", false);
+		func_NPCDeath[npc.index] = Whiteflower_Boss_NPCDeath_After;
+		func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+		func_NPCDeathForward[npc.index] = INVALID_FUNCTION;
+		npc.m_flNextThinkTime = FAR_FUTURE;
+		b_OnDeathExtraLogicNpc[npc.index] |= ZRNPC_DEATH_NOGIB;
+		RaidModeTime = FAR_FUTURE;
+		return Plugin_Changed;
+	}
 	return Plugin_Changed;
 }
 
@@ -928,6 +953,23 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 	if(i_RaidGrantExtra[npc.index] == 1)
 		CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
 		
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+}
+
+public void Whiteflower_Boss_NPCDeath_After(int entity)
+{
+	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(entity);
+	if(!npc.m_bGib)
+	{
+		npc.PlayDeathSound();
+	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -1212,6 +1254,7 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 
 	Whiteflower_Boss npc = view_as<Whiteflower_Boss>(entity);
 	b_TouchedEnemyTarget[enemy] = true;
+	npc.AddGesture("ACT_WHITEFLOWER_DASH_KICK", .SetGestureSpeed = 2.0);
 	
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);

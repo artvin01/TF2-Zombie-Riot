@@ -88,7 +88,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup()/* && ZR_Waves_GetRound() > 29*/)
+	if(!Waves_InSetup()/* && Waves_GetRoundScale() > 19*/)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -189,11 +189,11 @@ public void StalkerFather_ClotThink(int iNPC)
 				if(distance < npc.GetLeadRadius()) 
 				{
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
-					NPC_SetGoalVector(npc.index, LastKnownPos);
+					npc.SetGoalVector(LastKnownPos);
 				}
 				else
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -251,7 +251,7 @@ public void StalkerFather_ClotThink(int iNPC)
 					npc.PickRandomPos(LastKnownPos);
 
 				npc.StartPathing();
-				NPC_SetGoalVector(npc.index, LastKnownPos);
+				npc.SetGoalVector(LastKnownPos);
 			}
 			case 1:
 			{
@@ -337,7 +337,7 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 
 	damage *= 15.0 / float(PlayersInGame);
 
-	if(!Waves_InSetup() && ZR_Waves_GetRound() > 29)
+	if(!Waves_InSetup() && Waves_GetRoundScale() > 19)
 		return Plugin_Changed;
 	
 	damage = 0.0;

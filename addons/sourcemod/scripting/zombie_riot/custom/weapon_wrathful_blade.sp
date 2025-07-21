@@ -23,9 +23,9 @@ static float Fury_HealRate[3] = { 2.0, 3.0, 4.0 };				//Stored healing given per
 static float Fury_HealRate_Penalty[3] = { 0.5, 0.5, 0.5 };		//Amount to multiply Fury_HealRate if the user has taken damage within the past 3 seconds.
 static float Fury_MinCD[3] = { 10.0, 10.0, 10.0 };				//Minimum Infernal Fury cooldown.
 static float Fury_MinCDTime[3] = { 2.0, 2.0, 2.0 };				//Maximum duration Infernal Fury can be used and still have the minimum cooldown applied.
-static float Fury_CDRaise[3] = { 0.4, 0.4, 0.33 };				//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
-static float Fury_MaxCD[3] = { 120.0, 120.0, 120.0 };			//Maximum cooldown applied to Infernal Fury.
-static float Fury_CDR[3] = { 0.5, 0.5, 0.5 };					//Amount to reduce Infernal Fury's remaining cooldown upon killing a zombie while Infernal Fury is not active.
+static float Fury_CDRaise[3] = { 0.2, 0.2, 0.25 };				//Amount to increase Infernal Fury's cooldown per 0.1s of usage past the minimum CD window.
+static float Fury_MaxCD[3] = { 80.0, 80.0, 80.0 };			//Maximum cooldown applied to Infernal Fury.
+static float Fury_CDR[3] = { 2.0, 2.0, 1.0 };					//Amount to reduce Infernal Fury's remaining cooldown upon killing a zombie while Infernal Fury is not active.
 static float Fury_MedicHealMultiplier[3] = { 0.33, 0.33, 0.165 };	//Amount to multiply healing received from outside sources during Infernal Fury.
 
 //WRATH STRIKE: If enabled: Infernal Fury now charges up a powerful melee hit, which is given when Infernal Fury ends.

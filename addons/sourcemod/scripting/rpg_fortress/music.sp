@@ -30,16 +30,16 @@ enum struct MusicEnum
 	}
 }
 
-static int CurrentZone[MAXTF2PLAYERS] = {-1, ...};
-static int NextZone[MAXTF2PLAYERS] = {-1, ...};
-static int NextSoundIn[MAXTF2PLAYERS];
-static float FadingOut[MAXTF2PLAYERS];
-static float FadingIn[MAXTF2PLAYERS];
-static char OverrideSong[MAXTF2PLAYERS][PLATFORM_MAX_PATH];
-static int OverrideTime[MAXTF2PLAYERS];
-static bool OverrideCustom[MAXTF2PLAYERS];
-static float OverrideVolume[MAXTF2PLAYERS];
-static float MusicDelay[MAXTF2PLAYERS];
+static int CurrentZone[MAXPLAYERS] = {-1, ...};
+static int NextZone[MAXPLAYERS] = {-1, ...};
+static int NextSoundIn[MAXPLAYERS];
+static float FadingOut[MAXPLAYERS];
+static float FadingIn[MAXPLAYERS];
+static char OverrideSong[MAXPLAYERS][PLATFORM_MAX_PATH];
+static int OverrideTime[MAXPLAYERS];
+static bool OverrideCustom[MAXPLAYERS];
+static float OverrideVolume[MAXPLAYERS];
+static float MusicDelay[MAXPLAYERS];
 
 
 void Music_ZoneEnter(int client, int entity)

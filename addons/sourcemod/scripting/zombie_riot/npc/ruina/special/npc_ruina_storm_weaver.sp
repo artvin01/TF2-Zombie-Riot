@@ -259,8 +259,8 @@ methodmap Storm_Weaver < CClotBody
 		fl_teleport_time[npc.index]=0.0;
 		fl_recently_teleported[npc.index]=0.0;
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 
 		bool solo = StrContains(data, "solo") != -1;
 
@@ -508,6 +508,7 @@ static void Storm_Weaver_Force_Spawn_Anchors(Storm_Weaver npc)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "full");
 	if(spawn_index > MaxClients)
 	{
+		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -596,7 +597,7 @@ static void ClotThink(int iNPC)
 
 	//should result in a total of 300 dmg a second.
 	//*should*
-	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ (4.545/TickrateModify) * ((ZR_Waves_GetRound()+1)/60.0), true);
+	ResolvePlayerCollisions_Npc(iNPC, /*damage crush*/ (4.545/TickrateModify) * ((Waves_GetRoundScale()+1)/40.0), true);
 
 	if(!IsValidAlly(npc.index, EntRefToEntIndex(npc.m_iState)) && fl_special_invuln_timer[npc.index] < GameTime)
 	{
@@ -697,7 +698,7 @@ static void ClotThink(int iNPC)
 
 			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
 			{
-				float Ratio = (ZR_Waves_GetRound()+1)/60.0;
+				float Ratio = (Waves_GetRoundScale()+1)/40.0;
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
 				Stellar_Weaver_Attack(npc.index, vecTarget, 50.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
 				b_stellar_weaver_allow_attack[npc.index] = false;
@@ -714,7 +715,7 @@ static void ClotThink(int iNPC)
 				{
 					WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				}
-				float Ratio = (ZR_Waves_GetRound()+1)/60.0;
+				float Ratio = (Waves_GetRoundScale()+1)/40.0;
 				float DamageDone = 100.0*Ratio;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 1.1;
@@ -906,8 +907,8 @@ static void Storm_Weaver_Heading_Control(Storm_Weaver npc, int Target)
 	//}
 	b_NoGravity[npc.index] = true;	//Found ya!
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 
 	float target_vec[3], flDistanceToTarget; GetAbsOrigin(New_Target, target_vec);
 
@@ -982,7 +983,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 	if(i_HexCustomDamageTypes[npc.index] & ZR_DAMAGE_NPC_REFLECT)	//do not.
 		return;
 	
-	if(attacker<MAXTF2PLAYERS)
+	if(attacker<MAXPLAYERS)
 	{
 		//CPrintToChatAll("Dmg Instance Amt: %i", i_storm_weaver_damage_instance[attacker]);
 		if(i_storm_weaver_damage_instance[attacker]>=RUINA_DAMAGE_INSTANCES_PER_FRAME)
@@ -1018,7 +1019,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 	if(total<=0)
 	{
 		//CPrintToChatAll("somehow 0 dmg on share all weaver!");
-		if(attacker<MAXTF2PLAYERS)
+		if(attacker<MAXPLAYERS)
 			RequestFrame(Nulify_Instance, attacker);
 		return;
 	}
@@ -1030,7 +1031,7 @@ void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflicto
 			SDKHooks_TakeDamage(other_npc, attacker, inflictor, damage/total, damagetype, weapon, damageForce, damagePosition, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 		}	
 	}
-	if(attacker<MAXTF2PLAYERS)
+	if(attacker<MAXPLAYERS)
 		RequestFrame(Nulify_Instance, attacker);
 }
 

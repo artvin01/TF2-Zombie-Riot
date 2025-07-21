@@ -316,17 +316,16 @@ methodmap Vhxis < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 
-
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -367,17 +366,11 @@ methodmap Vhxis < CClotBody
 		CPrintToChatAll("{purple}Vhxis: {default}Youre nothing before the power of the void!");
 
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 
 		
@@ -421,7 +414,7 @@ public void Vhxis_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 10;
 			npc.SetActivity("ACT_ROGUE2_VOID_DRAMATIC_DEATH");
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		if(npc.m_flDeathAnimation < GetGameTime(npc.index))
@@ -512,11 +505,11 @@ public void Vhxis_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		VhxisSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -788,8 +781,8 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			npc.m_iChanged_WalkCycle = 3;
 			npc.SetActivity("ACT_ROGUE2_VOID_GROUND_VAPORISER");
 			npc.SetPlaybackRate(0.5);
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 
@@ -894,6 +887,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 				int spawn_index = NPC_CreateByName("npc_void_ixufan", -1, ProjectileLoc, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
@@ -922,8 +916,8 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 5;
 			npc.SetActivity("ACT_ROGUE2_VOID_GENERATOR");
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 		float ProjectileLoc[3];
@@ -1015,8 +1009,8 @@ bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.SetActivity("ACT_ROGUE2_VOID_STAND_PULSEATTACK");
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 		if(IsValidEntity(npc.m_iWearable7))
@@ -1213,19 +1207,16 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
+					NpcStats_CopyStats(npc.index, spawn_index);
 					CClotBody npc1 = view_as<CClotBody>(spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 					fl_Extra_Damage[spawn_index] *= 8.5;
 					fl_Extra_Speed[spawn_index] *= 0.35;
-					SetEntityRenderMode(npc1.index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.index, 125, 0, 125, 255);
-					SetEntityRenderMode(npc1.m_iWearable1, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.m_iWearable1, 125, 0, 125, 255);
-					SetEntityRenderMode(npc1.m_iWearable2, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.m_iWearable2, 125, 0, 125, 255);
-					SetEntityRenderMode(npc1.m_iWearable3, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.m_iWearable3, 125, 0, 125, 255);
 					FormatEx(c_NpcName[npc1.index], sizeof(c_NpcName[]), "Voided Vanguard");
 				}
@@ -1250,8 +1241,8 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 6;
 			npc.SetActivity("ACT_ROGUE2_VOID_MAGIC");
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_flSpeed = 0.0;
 		}
 		

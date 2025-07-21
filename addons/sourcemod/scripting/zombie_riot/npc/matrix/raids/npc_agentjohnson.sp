@@ -188,16 +188,16 @@ methodmap AgentJohnson < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		float amount_of_people = float(CountPlayersOnRed());
 		
@@ -257,12 +257,16 @@ methodmap AgentJohnson < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		
 		return npc;
 	}
+}
+
+public void Johnson_GroundCheck(int entity, int victim, float damage, int weapon)
+{
+	Custom_Knockback(entity, victim, 1000.0, true);
 }
 
 public void AgentJohnson_ClotThink(int iNPC)
@@ -333,7 +337,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 	{
 		if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
 		{
-			float radius = 200.0;
+			float radius = 300.0;
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			pos[2] += 5.0;
 			int color[4] = {255, 50, 40, 255};
@@ -356,14 +360,14 @@ public void AgentJohnson_ClotThink(int iNPC)
 				if(iActivity_melee > 0) 
 					npc.StartActivity(iActivity_melee);
 				i_NpcWeight[npc.index] = 4;
-				npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 20.0;
+				npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 17.0;
 				npc.m_flAbilityOrAttack1 = 0.0;
 				npc.m_flAbilityOrAttack2 = 0.0;
 				npc.m_flAbilityOrAttack3 = 0.0;
 				spawnRing_Vectors(pos, radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.33, 6.0, 0.1, 1, 1.0);
-				float damage = 9.0;
+				float damage = 60.0;
 				damage *= RaidModeScaling;
-				Explode_Logic_Custom(damage , npc.index , npc.index , -1 , pos, radius);	//acts like a rocket
+				Explode_Logic_Custom(damage , npc.index , npc.index , -1 , pos, radius, _, _, false, 99,_,_,_, Johnson_GroundCheck);	//acts like a rocket
 				
 				DataPack pack_boom = new DataPack();
 				pack_boom.WriteFloat(pos[0]);
@@ -418,11 +422,11 @@ public void AgentJohnson_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, closest);
+			npc.SetGoalEntity(closest);
 		}
 
 		if(npc.m_flAbilityOrAttack0)//Slam Prepare

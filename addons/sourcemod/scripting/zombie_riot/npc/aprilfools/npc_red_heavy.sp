@@ -123,7 +123,8 @@ methodmap RedHeavy < CClotBody
 		AddNpcToAliveList(npc.index, 1);
 		NoSoundLoop = false;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 1.0;
+
 		SetEntityRenderColor(npc.index, 254, 0, 0, 255);
 
 		return npc;
@@ -147,14 +148,16 @@ public void RedHeavy_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
-
-	if(IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	if(npc.m_flAbilityOrAttack0)
 	{
-		int ally = GetClosestAlly(npc.index);
-		if(GetTeam(npc.index) == GetTeam(ally))
+		npc.m_flAbilityOrAttack0 = gameTime + 10.0;
+		for(int Ally; Ally < MAXENTITIES; Ally ++)
 		{
-			float DurationGive = 999999.0;
-			ApplyStatusEffect(npc.index, ally, "Ally Empowerment", DurationGive);
+			if(IsValidAlly(npc.index, Ally))
+			{
+				float DurationGive = 999999.0;
+				ApplyStatusEffect(npc.index, Ally, "Ally Empowerment", DurationGive);
+			}
 		}
 	}
 	
@@ -184,7 +187,7 @@ public void RedHeavy_ClotThink(int iNPC)
 						MusicEnum music;
 						strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/finale.mp3");
 						music.Time = 555;
-						music.Volume = 1.8;
+						music.Volume = 2.0;
 						music.Custom = true;
 						strcopy(music.Name, sizeof(music.Name), "Finale");
 						strcopy(music.Artist, sizeof(music.Artist), "Toby Fox");
@@ -222,11 +225,11 @@ public void RedHeavy_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();

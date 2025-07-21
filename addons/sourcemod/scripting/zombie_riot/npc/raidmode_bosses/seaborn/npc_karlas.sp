@@ -480,14 +480,14 @@ methodmap Karlas < CClotBody
 		i_NpcWeight[npc.index] = 3;
 		b_bobwave[npc.index] = false;
 		
-		if(StrContains(data, "force15") != -1)
-			i_current_wave[npc.index] = 15;
+		if(StrContains(data, "force10") != -1)
+			i_current_wave[npc.index] = 10;
+		else if(StrContains(data, "force20") != -1)
+			i_current_wave[npc.index] = 20;
 		else if(StrContains(data, "force30") != -1)
 			i_current_wave[npc.index] = 30;
-		else if(StrContains(data, "force45") != -1)
-			i_current_wave[npc.index] = 45;
-		else if(StrContains(data, "force60") != -1)
-			i_current_wave[npc.index] = 60;
+		else if(StrContains(data, "force40") != -1)
+			i_current_wave[npc.index] = 40;
 		
 		if(StrContains(data, "bob") != -1)
 			b_bobwave[npc.index] = true;
@@ -643,7 +643,7 @@ static void Win_Line(int entity)
 void Set_Karlas_Ally(int karlas, int stella, int wave = -2, bool bob, bool tripple)
 {	
 	if(wave == -2)
-		wave = ZR_Waves_GetRound()+1;
+		wave = Waves_GetRoundScale()+1;
 
 	i_current_wave[karlas] = wave;
 	i_ally_index[karlas] = EntIndexToEntRef(stella);
@@ -740,7 +740,7 @@ static void Internal_ClotThink(int iNPC)
 	if(npc.m_flNC_LockedOn > GameTime)
 		abort_teleport = true;
 	//slicer is about to be ready, don't teleport.
-	if(npc.m_flSlicerBarrageCD < GameTime + 2.0 && i_current_wave[npc.index] >=30)
+	if(npc.m_flSlicerBarrageCD < GameTime + 2.0 && i_current_wave[npc.index] >=20)
 		abort_teleport = true;
 	
 	if(abort_teleport && Karlas_Status(npc, GameTime)==1 && b_teleport_strike_active[npc.index])
@@ -756,7 +756,7 @@ static void Internal_ClotThink(int iNPC)
 		fl_teleport_strike_recharge[npc.index]=GameTime+5.0; 
 	}
 	GetTarget(npc);	
-	if(i_current_wave[npc.index] >= 30)
+	if(i_current_wave[npc.index] >= 20)
 		Fire_Wave_Barrage(npc);
 
 	if(npc.m_flNC_LockedOn > GameTime)
@@ -823,8 +823,8 @@ static void Internal_ClotThink(int iNPC)
 		}
 		if(Karlas_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_npc_basespeed;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		GetTarget(npc);
 		return;
@@ -963,6 +963,7 @@ static void GetTarget(Karlas npc)
 	if(npc.m_flGetClosestTargetTime > GameTime)
 		return;
 
+	//stella has NC on karlas, use special targeting logic!
 	if(npc.m_flNC_LockedOn > GameTime)
 	{
 		//stella is dead, but the "lockon" is still valid, kill the lockon
@@ -1007,9 +1008,6 @@ static void GetTarget(Karlas npc)
 		return;
 	}
 
-	if(npc.m_bRetreat)
-		return;
-
 	//Karlas will always prefer attacking enemies who are near Stella.
 	if(IsValidAlly(npc.index, npc.Ally))	
 	{
@@ -1053,7 +1051,7 @@ static float Target_Angle_Value(Karlas npc, int Target)
 static int i_Get_Laser_Target(Karlas npc, float Range = -1.0)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXTF2PLAYERS];
+	int enemy_2[MAXPLAYERS];
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of karlas that are players. + wall check obv
 	int Tmp_Target = -1;
@@ -1382,7 +1380,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 		npc.m_bAllowBackWalking=true;
 		float vBackoffPos[3];
 		BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-		NPC_SetGoalVector(npc.index, vBackoffPos, true);
+		npc.SetGoalVector(vBackoffPos, true);
 
 		npc.FaceTowards(vecTarget, 20000.0);
 
@@ -1395,7 +1393,7 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 	}
 
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 
 	
 	Karlas_Teleport_Strike(npc, flDistanceToTarget, GameTime, PrimaryThreatIndex);
@@ -2086,16 +2084,16 @@ static bool Karlas_Teleport(int iNPC, float vecTarget[3], float Min_Range)
 static void Karlas_Movement(Karlas npc, float flDistanceToTarget, int target)
 {	
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 	if(flDistanceToTarget < npc.GetLeadRadius())
 	{
 		float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 								
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	} 
 	else 
 	{
-		NPC_SetGoalEntity(npc.index, target);
+		npc.SetGoalEntity(target);
 	}
 }
 static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, int ally, float GameTime, int PrimaryThreatIndex_Karlas, float flDistanceToTarget_Karlas, bool block_defense=false)
@@ -2104,7 +2102,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 		npc.m_bAllowBackWalking=false;
 		
 	npc.StartPathing();
-	npc.m_bPathing = true;
+	
 	
 	float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex_Karlas, WorldSpaceVec2);
 	
@@ -2120,7 +2118,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 	
 	if(block_defense)
 	{
-		NPC_SetGoalEntity(npc.index, donner.index);
+		npc.SetGoalEntity(donner.index);
 		if(Karlas_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_npc_basespeed*2.0;
 		return;
@@ -2146,7 +2144,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 			if(npc.m_flNC_LockedOn < GameTime)
 			{
 				npc.m_flSpeed = fl_npc_basespeed;
-				NPC_SetGoalVector(npc.index, Return_Loc, true);
+				npc.SetGoalVector(Return_Loc, true);
 			}
 		}
 		else
@@ -2196,7 +2194,7 @@ static void Karlas_Movement_Ally_Movement(Karlas npc, float flDistanceToAlly, in
 	} 
 	else 
 	{
-		NPC_SetGoalEntity(npc.index, donner.index);
+		npc.SetGoalEntity(donner.index);
 		if(Karlas_Status(npc, GameTime)!=1)
 			npc.m_flSpeed =  fl_npc_basespeed*2.0;
 			
@@ -2259,7 +2257,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 15)
+	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
 
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
@@ -2315,8 +2313,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	int wave = i_current_wave[npc.index];
 
-	//stella is dead, its wave 30 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
-	if(!b_angered_twice[npc.index] && wave >=30 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	//stella is dead, its wave 20 or beyond, health is less then 80% we are not teleporting, we are not being lockedon by stella, we are not doing an animation
+	if(!b_angered_twice[npc.index] && wave >=20 && (!IsValidAlly(npc.index, npc.Ally) || b_allow_karlas_transform[npc.index]) && Health/MaxHealth<=0.8 && !b_teleport_strike_active[npc.index] && npc.m_flNC_LockedOn < GetGameTime(npc.index) && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		b_allow_karlas_transform[npc.index] = false;
 		b_angered_twice[npc.index]=true;
@@ -2651,7 +2649,7 @@ static void Internal_NPCDeath(int entity)
 
 	if(b_tripple_raid[npc.index])
 	{
-		Twirl_OnStellaKarlasDeath(-2);
+		Twirl_OnStellaKarlasDeath();
 	}
 
 	if(npc.Ally)

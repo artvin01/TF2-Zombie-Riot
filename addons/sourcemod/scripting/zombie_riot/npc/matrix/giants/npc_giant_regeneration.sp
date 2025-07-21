@@ -42,7 +42,7 @@ void GiantRegeneration_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_giant_regeneration");
 	strcopy(data.Icon, sizeof(data.Icon), "matrix_medic_regeneration");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Matrix;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -161,7 +161,7 @@ methodmap GiantRegeneration < CClotBody
 		}
 		else
 		{	
-			npc.i_WaveType = (ZR_Waves_GetRound()+1);
+			npc.i_WaveType = (Waves_GetRoundScale()+1);
 		}
 		//IDLE
 		npc.m_iState = 0;
@@ -200,7 +200,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 	//Is this even needed, this is only applies if they are close
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.1) && distance < 7500.0)
 	{
-		if(npc.i_WaveType < 30 && npc.i_WaveType >= 15)
+		if(npc.i_WaveType < 20 && npc.i_WaveType >= 10)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -209,7 +209,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.80;
 			npc.f_Cooldown = gameTime + 10.0;//Does not get applied.
 		}
-		else if(npc.i_WaveType < 45 && npc.i_WaveType >= 30)
+		else if(npc.i_WaveType < 30 && npc.i_WaveType >= 20)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -220,7 +220,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.65;
 			npc.f_Cooldown = gameTime + 10.0;
 		}
-		else if(npc.i_WaveType < 60 && npc.i_WaveType >= 45)
+		else if(npc.i_WaveType < 40 && npc.i_WaveType >= 30)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -233,7 +233,7 @@ public void GiantRegeneration_ClotThink(int iNPC)
 			npc.m_flMeleeArmor = 0.50;
 			npc.f_Cooldown = gameTime + 10.0;
 		}
-		else if(npc.i_WaveType >= 59)
+		else if(npc.i_WaveType >= 39)
 		{
 			vecTarget2[2] += 300.0;
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", 10.0);
@@ -316,10 +316,10 @@ public void GiantRegeneration_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else 
 			{
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{

@@ -168,13 +168,9 @@ methodmap HallamDemonWhisperer < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 
 		float flPos[3], flAng[3];
@@ -247,12 +243,12 @@ public void HallamDemonWhisperer_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 			npc.StartPathing();
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetAlly);
+			npc.SetGoalEntity(npc.m_iTargetAlly);
 			npc.StartPathing();
 		}
 		HallamDemonWhispererSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 

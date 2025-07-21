@@ -199,11 +199,11 @@ static void Internal_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		DesertAhimSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -275,7 +275,7 @@ void DesertAhimSelfDefense(DesertAhim npc, float gameTime, int target, float dis
 			float EnemyPos[3];
 			WorldSpaceCenter(npc.m_iTarget, EnemyPos);
 			npc.FaceTowards(EnemyPos, 15000.0);
-			npc.FireArrow(EnemyPos, 35.0, 1200.0, "models/workshop_partner/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl");
+			npc.FireArrow(EnemyPos, 60.0, 1200.0, "models/workshop_partner/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl");
 
 			if(IsValidEntity(npc.m_iWearable1))
 			{
@@ -316,7 +316,7 @@ void DesertAhimSelfDefense(DesertAhim npc, float gameTime, int target, float dis
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 12.0;
+					float damageDealt = 25.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 

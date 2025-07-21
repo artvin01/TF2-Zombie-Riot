@@ -266,8 +266,8 @@ methodmap EnemyFatherGrigori < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -327,7 +327,6 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		if(npc.m_flJumpCooldown < gameTime)
 		{
 			npc.m_flJumpCooldown = 0.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);		
 		}
 	}
@@ -497,11 +496,11 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -821,7 +820,6 @@ public void EnemyFatherGrigori_OnTakeDamagePost(int victim, int attacker, int in
 		npc.PlayAngerSound();
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 30.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0; //Take way less damage for 5 seconds.
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 	}

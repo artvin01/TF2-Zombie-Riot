@@ -272,7 +272,7 @@ public void ZealotPotionDrink(int client, int weapon, bool crit, int slot)
 		EmitSoundToAll("player/pl_scout_dodge_can_drink.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 		Ability_Apply_Cooldown(client, slot, 60.0); //Semi long cooldown, this is a strong buff.
 		ApplyStatusEffect(client, client, "Zealot's Random Drinks", BuffDuration);
-		f_PotionCooldownDo[client] = GetGameTime() + 60.0;
+		f_PotionCooldownDo[client] = GetGameTime() + (CooldownReductionAmount(client) * 60.0);
 		GrenadeApplyCooldownHud(client, f_PotionCooldownDo[client] - GetGameTime());
 		
 		i_WhatPotionDrink[client] = i_RandomCurrentPotion[client];
@@ -453,7 +453,7 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 				damage = 0.0;
 				GiveCompleteInvul(victim, 2.0);
 				EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.5, 70);
-				Zealot_OneshotProtection[victim] = GetGameTime() + 300.0; // 60 second cooldown
+				Zealot_OneshotProtection[victim] = GetGameTime() + (CooldownReductionAmount(victim) * 300.0); // 60 second cooldown
 			}
 		}
 		return damage;
@@ -489,7 +489,7 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 			damage = 0.0;
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.5, 70);
-			Zealot_OneshotProtection[victim] = GetGameTime() + 300.0; // 60 second cooldown
+			Zealot_OneshotProtection[victim] = GetGameTime() + (CooldownReductionAmount(victim) * 300.0); // 60 second cooldown
 		}
 	}
 	return damage;
@@ -574,7 +574,7 @@ public void Client_ZealotThink(int client)
 	/*
 	Find a better solution before continuning
 	*/
-	static int holding[MAXTF2PLAYERS];
+	static int holding[MAXPLAYERS];
 	int buttons = GetClientButtons(client);
 	if(holding[client] & IN_RELOAD)
 	{

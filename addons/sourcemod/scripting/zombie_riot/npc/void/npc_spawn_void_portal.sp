@@ -24,16 +24,6 @@ void VoidPortal_OnMapStart_NPC()
 	data2.Category = Type_Void; 
 	data2.Func = ClotSummon;
 	NPC_Add(data2);
-
-	NPCData data3;
-	strcopy(data3.Name, sizeof(data3.Name), "Void Elemental Damage");
-	strcopy(data3.Plugin, sizeof(data3.Plugin), "npc_donotuseever_2");
-	strcopy(data3.Icon, sizeof(data3.Icon), "");
-	data3.IconCustom = false;
-	data3.Flags = 0;
-	data3.Category = Type_Void; 
-	data3.Func = ClotSummon;
-	NPC_Add(data3);
 	PrecacheSound("npc/combine_gunship/see_enemy.wav");
 	SpawnedOneAlready = 0.0;
 	IdRef = 0;

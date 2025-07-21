@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 // Amount of aspect (kills) needed for one part of a potion
-#define ASPECT_REQUIRED	17.0
+#define ASPECT_REQUIRED	8.5
 
 static const char AspectName[][] =
 {
@@ -43,15 +43,15 @@ enum struct BrewEnum
 	float EntMulti[TINKER_LIMIT];
 }
 
-static const float Cooldowns[] = { 270.0, 240.0, 210.0, 180.0, 150.0, 120.0, 90.0 };
+static const float Cooldowns[] = { 210.0, 190.0, 170.0, 150.0, 130.0, 110.0, 90.0 };
 
-static float Aspects[MAXTF2PLAYERS][Aspect_MAX];
-static int AspectMenu[MAXTF2PLAYERS][3];
-static int SellingType[MAXTF2PLAYERS];
-static int SellingAmount[MAXTF2PLAYERS];
-static float SellingPower[MAXTF2PLAYERS];
-static float SellingTime[MAXTF2PLAYERS];
-static bool InMenu[MAXTF2PLAYERS];
+static float Aspects[MAXPLAYERS][Aspect_MAX];
+static int AspectMenu[MAXPLAYERS][3];
+static int SellingType[MAXPLAYERS];
+static int SellingAmount[MAXPLAYERS];
+static float SellingPower[MAXPLAYERS];
+static float SellingTime[MAXPLAYERS];
+static bool InMenu[MAXPLAYERS];
 static int RandomSeed;
 static ArrayList Brews;
 static ArrayList Crafts;
@@ -129,31 +129,6 @@ static void CacheBrewer()
 	c.Add(Brew_502, A_Agility, A_Strength, A_Water);
 }
 
-/*
-bool BlacksmithBrew_HasEffect(int client, int index, float &duration)
-{
-	if(Brews)
-	{
-		int account = GetSteamAccountID(client, false);
-		if(account)
-		{
-			static BrewEnum brew;
-			int length = Brews.Length;
-			for(int a; a < length; a++)
-			{
-				Brews.GetArray(a, brew);
-				if(brew.AccountId == account && brew.StoreIndex == index)
-				{
-					duration = brew.EndAt - GetGameTimeBrew();
-					return true;
-				}
-			}
-		}
-	}
-	
-	return false;
-}
-*/
 void BlacksmithBrew_ExtraDesc(int client, int weapon, bool first = false)
 {
 	if(Brews)
@@ -411,9 +386,12 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 					{
 						if(IsClientInGame(client) && GetSteamAccountID(client, false) == brew.AccountId)
 						{
-							char buffer2[64];
-							Store_GetItemName(brew.StoreIndex, client, buffer2, sizeof(buffer2));
-							CPrintToChat(client, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+							if(brew.StoreIndex != -1)
+							{
+								char buffer2[64];
+								Store_GetItemName(brew.StoreIndex, client, buffer2, sizeof(buffer2));
+								CPrintToChat(client, "{yellow}%s {default}effect has ran out on {yellow}%s", buffer, buffer2);
+							}
 							break;
 						}
 					}
@@ -428,8 +406,8 @@ static Action BlacksmithBrew_GlobalTimer(Handle timer)
 	return Plugin_Continue;
 }
 
-static int AnvilClickedOn[MAXTF2PLAYERS];
-static int ClickedWithWeapon[MAXTF2PLAYERS];
+static int AnvilClickedOn[MAXPLAYERS];
+static int ClickedWithWeapon[MAXPLAYERS];
 void BlacksmithBrew_BuildingUsed(int entity, int client)
 {
 	AnvilClickedOn[client] = EntIndexToEntRef(entity);
@@ -468,17 +446,21 @@ static void Brew_Menu(int client, int entity)
 		if(owner == -1)
 			owner = 0;
 		
+		char NameOfPotion[64];
+		char NameOfPotion2[64];
 		if(SellingAmount[owner] > 0)
 		{
-			LookupById(SellingType[owner], buffer);
+			LookupById(SellingType[owner], NameOfPotion);
 		}
 		else
 		{
-			strcopy(buffer, sizeof(buffer), "N/A");
+			strcopy(NameOfPotion, sizeof(NameOfPotion), "N/A");
 		}
 
-		Format(buffer, sizeof(buffer), "Drink: %s (x%d)", buffer, SellingAmount[owner]);
-		menu.AddItem("-1", buffer, SellingAmount[owner] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+		Format(NameOfPotion2, sizeof(NameOfPotion2), "%s Desc", NameOfPotion);
+		char buffer2[128];
+		Format(buffer2, sizeof(buffer2), "Drink: %T (x%d)\n%T %T\n ", NameOfPotion,client, SellingAmount[owner], "Effect:",client,NameOfPotion2, client);
+		menu.AddItem("-1", buffer2, SellingAmount[owner] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client)
 		{
@@ -553,6 +535,7 @@ static int Brew_MenuH(Menu menu, MenuAction action, int client, int choice)
 
 static void PotionMakingMenu(int client, const char[] msg = "")
 {
+	CacheBrewer();
 	if(AspectMenu[client][0] == AspectMenu[client][1])
 	{
 		AspectMenu[client][1]++;
@@ -600,11 +583,17 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 	strcopy(buffer, sizeof(buffer), "N/A");
 	if(LookupByAspect(AspectMenu[client][0], AspectMenu[client][1], AspectMenu[client][2], _, buffer) == -1)
 		failed = true;
+
+	char NameOfPotion[128];
+	char NameOfPotion2[128];
+	strcopy(NameOfPotion, sizeof(NameOfPotion), buffer);
 	
 	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_SPACER);
 
-	Format(buffer, sizeof(buffer), "New Brew: %s\n ", buffer);
-	menu.AddItem(NULL_STRING, buffer, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	Format(NameOfPotion2, sizeof(NameOfPotion2), "%s Desc", NameOfPotion);
+	char buffer2[128];
+	Format(buffer2, sizeof(buffer2), "New Brew: %T\n%T %T\n ", NameOfPotion, client, "Effect:",client, NameOfPotion2, client);
+	menu.AddItem(NULL_STRING, buffer2, failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	
 	if(SellingAmount[client] > 0)
 	{
@@ -615,7 +604,7 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 		strcopy(buffer, sizeof(buffer), "N/A");
 	}
 
-	Format(buffer, sizeof(buffer), "Selling: %s (x%d)", buffer, SellingAmount[client]);
+	Format(buffer, sizeof(buffer), "Selling: %T (x%d)", buffer, client, SellingAmount[client]);
 	menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 	InMenu[client] = menu.Display(client, MENU_TIME_FOREVER);
@@ -784,7 +773,7 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 				{
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					SetDefaultHudPosition(client);
-					ShowSyncHudText(client, SyncHud_Notifaction, "This doesn't seem to effect this weapon!");
+					ShowSyncHudText(client, SyncHud_Notifaction, "Weapon No Effect Tinker");
 					ApplyBuildingCollectCooldown(entity, client, 2.0);
 					return;
 				}
@@ -846,9 +835,8 @@ static void BuildingUsed_Internal(int weapon, int entity, int client, int owner)
 		}
 	}
 
-	ClientCommand(client, "playgamesound items/medshotno1.wav");
-	SetDefaultHudPosition(client);
-	ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
+	DestroyBuildingDo(entity);
+	SPrintToChat(client, "%t", "The Blacksmith Failed!");
 	ApplyBuildingCollectCooldown(entity, client, 3.0);
 }
 
@@ -918,12 +906,10 @@ static float Brew_Default(char name[64], int attrib[TINKER_LIMIT], float value[T
 static float Brew_012(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
 	strcopy(name, sizeof(name), "Potion of Flexibility");
-	attrib[0] = 54;
-	value[0] = 1.05;
+	attrib[0] = 6;
+	value[0] = 0.95;
 	attrib[1] = 97;
 	value[1] = 0.85;
-	attrib[2] = 326;
-	value[2] = 1.25;
 	return 180.0;
 }
 

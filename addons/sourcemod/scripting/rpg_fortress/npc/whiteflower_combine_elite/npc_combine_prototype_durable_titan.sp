@@ -190,11 +190,10 @@ methodmap Whiteflower_PrototypeDDT < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -336,11 +335,11 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 		
@@ -389,7 +388,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 6;
 					npc.SetActivity("ACT_COLOSUS_WALK");
 					npc.m_flSpeed = 345.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 3:
@@ -404,7 +403,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RUN_AIM_RIFLE");
 					npc.m_flSpeed = 345.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -437,7 +436,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 9;
 						npc.SetActivity("ACT_IDLE_ANGRY_AR2");
 						npc.m_flSpeed = 0.0;
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 					}
 					npc.FaceTowards(vecTarget, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 
@@ -486,7 +485,7 @@ public void Whiteflower_PrototypeDDT_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 8;
 						npc.SetActivity("ACT_RUN_AIM_RIFLE");
 						npc.m_flSpeed = 340.0;
-						NPC_StartPathing(iNPC);
+						view_as<CClotBody>(iNPC).StartPathing();
 					}
 				}
 			}

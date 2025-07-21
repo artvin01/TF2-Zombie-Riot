@@ -425,17 +425,17 @@ methodmap Harrison < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(ZR_Waves_GetRound()+1);
-				value = float(ZR_Waves_GetRound()+1);
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
+				value = float(Waves_GetRoundScale()+1);
 			}
 
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 			
 			float amount_of_people = float(CountPlayersOnRed());
@@ -450,11 +450,11 @@ methodmap Harrison < CClotBody
 
 			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 			
-			if(value > 40 && value < 55)
+			if(value > 25 && value < 35)
 			{
 				RaidModeScaling *= 0.85;
 			}
-			else if(value > 55)
+			else if(value > 35)
 			{
 				RaidModeTime = GetGameTime(npc.index) + 220.0;
 				RaidModeScaling *= 0.85;
@@ -494,19 +494,16 @@ methodmap Harrison < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/pyro_hazmat_4/pyro_hazmat_4_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 50, 50, 50, 255);
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/xms2013_sniper_jacket/xms2013_sniper_jacket.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 50, 50, 50, 255);
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum24_daring_dell_style3/sum24_daring_dell_style3.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -546,8 +543,8 @@ static void Clone_ClotThink(int iNPC)
 	{
 		case 0:
 		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;
+			npc.StopPathing();
+			
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
 			npc.PlayRocketshotready();
@@ -742,8 +739,8 @@ static void Internal_ClotThink(int iNPC)
 				CPrintToChatAll("{skyblue}Harrison{default}: Hide if you can. I'll get some ammo for my gun.");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				b_NpcIsInvulnerable[npc.index] = true;
 				npc.AddActivityViaSequence("layer_taunt_most_wanted");
@@ -766,8 +763,8 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 0;
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 					EmitSoundToAll("mvm/ambient_mp3/mvm_siren.mp3", npc.index, SNDCHAN_STATIC, 120, _, 1.0);
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
+					npc.StopPathing();
+					
 					npc.m_bisWalking = false;
 					AirRaidStart[npc.index] = true;
 					npc.m_flDoingAnimation = gameTime + 15.0;	
@@ -805,7 +802,7 @@ static void Internal_ClotThink(int iNPC)
 		if(AirRaidStart[npc.index] && npc.m_flAirRaidDelay < gameTime)
 		{
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-			int enemy[MAXENTITIES];
+			int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
 			for(int i; i < sizeof(enemy); i++)
 			{
@@ -874,11 +871,11 @@ static void Internal_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -886,7 +883,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -1091,8 +1088,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 					case 3:CPrintToChatAll("{skyblue}Harrison{default}: They won't miss you. Probably.");
 					case 4:CPrintToChatAll("{skyblue}Harrison{default}: Auto Rockets are fully charged");
 				}
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("layer_taunt_i_see_you_primary");
 				npc.PlayRocketshotready();
@@ -1758,6 +1755,7 @@ static bool Victoria_Support(Harrison npc)
 	float GameTime = GetGameTime(npc.index);
 	if(Vs_DelayTime[npc.index] > GameTime)
 		return false;
+
 	Vs_DelayTime[npc.index] = GameTime + 0.1;
 	float Vs_Raged = (YaWeFxxked[npc.index] ? 1000.0 : 250.0);
 	bool Vs_Online=false;
@@ -1765,7 +1763,7 @@ static bool Victoria_Support(Harrison npc)
 	bool Vs_IncomingBoom=false;
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy[MAXENTITIES];
-	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy));
+	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), false);
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsValidClient(client) && !IsFakeClient(client) && !IsPlayerAlive(client) && TeutonType[client] != TEUTON_NONE)
@@ -1828,7 +1826,8 @@ static bool Victoria_Support(Harrison npc)
 			position[0] = Vs_Temp_Pos[enemy[i]][0];
 			position[1] = Vs_Temp_Pos[enemy[i]][1];
 			position[2] = Vs_Temp_Pos[enemy[i]][2] - 100.0;
-			TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
+			if(IsValidEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]])))
+				TeleportEntity(EntRefToEntIndex(Vs_ParticleSpawned[enemy[i]]), position, NULL_VECTOR, NULL_VECTOR);
 			position[2] += 100.0;
 			
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_TRUE_DAMAGE;

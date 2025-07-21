@@ -62,51 +62,40 @@ static const char g_FractalSound[][] = {
 	"weapons/capper_shoot.wav"
 };
 
+static int i_lunar_entities[MAXENTITIES][3];
 
 #define TWIRL_TE_DURATION 0.1
-#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3"
-static float fl_player_weapon_score[MAXTF2PLAYERS];
-
-static int i_melee_combo[MAXENTITIES];
-static float fl_retreat_timer[MAXENTITIES];
-static int i_ranged_ammo[MAXENTITIES];
-static int i_hand_particles[MAXENTITIES];
-static float fl_force_ranged[MAXENTITIES];
-static float fl_comsic_gaze_timer[MAXENTITIES];
-static bool b_tripple_raid[MAXENTITIES];
-
+//#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/ruler_of_ruina_decends.mp3", now used for wave 15, deivid cant decide 
+#define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/twirl_theme_new.mp3"
+static float fl_player_weapon_score[MAXPLAYERS];
+static float fl_next_textline;
+static float fl_raidmode_freeze;
 static float fl_npc_basespeed;
 
-static int i_barrage_ammo[MAXENTITIES];
-static int i_lunar_ammo[MAXENTITIES];
-static float fl_lunar_timer[MAXENTITIES];
+static bool b_tripple_raid;
+static bool b_force_transformation;
 static bool b_lastman;
 static bool b_wonviatimer;
 static bool b_wonviakill;
-static bool b_allow_final[MAXENTITIES];
-static float fl_next_textline[MAXENTITIES];
-static float fl_raidmode_freeze[MAXENTITIES];
-static int i_current_Text[MAXENTITIES];
+static bool b_allow_final;
+static bool b_allow_final_invocation;
+static bool b_test_mode;
 
-static float fl_final_invocation_timer[MAXENTITIES];
-static bool b_allow_final_invocation[MAXENTITIES];
-static float fl_final_invocation_logic[MAXENTITIES];
+static int i_current_Text;
 
-static float fl_magia_overflow_recharge[MAXENTITIES];
-static bool b_test_mode[MAXENTITIES];
-
-static const char Cosmic_Launch_Sounds[][] ={
-	"weapons/physcannon/superphys_launch1.wav",
-	"weapons/physcannon/superphys_launch2.wav",
-	"weapons/physcannon/superphys_launch3.wav",
-	"weapons/physcannon/superphys_launch4.wav"
-}; 
 static char gGlow1;	//blue
 #define TWIRL_THUMP_SOUND				"ambient/machines/thumper_hit.wav"
 #define TWIRL_COSMIC_GAZE_LOOP_SOUND1 	"weapons/physcannon/energy_sing_loop4.wav"
-#define TWIRL_LASER_SOUND 		"zombiesurvival/seaborn/loop_laser.mp3"
+#define TWIRL_LASER_SOUND 				"zombiesurvival/seaborn/loop_laser.mp3"
 #define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
 #define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
+
+#define TWIRL_IONIC_FRACTURE_EXPLOSION		"misc/halloween/spell_mirv_explode_primary.wav"
+#define TWIRL_IONIC_FRACTURE_PASSIVE_SOUND 	"ambient/machines/thumper_amb.wav"
+#define TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2 "npc/combine_gunship/dropship_engine_near_loop1.wav"
+#define TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3	"ambient/alarms/combine_bank_alarm_loop4.wav"
+#define TWIRL_IONIC_FRACTURE_INIT_SOUND		"weapons/cguard/charging.wav"
+
 
 #define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
 
@@ -137,10 +126,11 @@ void PrecacheTwirlMusic()
 static void ClotPrecache()
 {
 	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
-	Zero(i_barrage_ammo);
-	Zero(fl_force_ranged);
-	Zero(fl_retreat_timer);
-	Zero(fl_comsic_gaze_timer);
+	PrecacheSound(TWIRL_IONIC_FRACTURE_EXPLOSION, true);
+	PrecacheSound(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND, true);
+	PrecacheSound(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2, true);
+	PrecacheSound(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3, true);
+	PrecacheSound(TWIRL_IONIC_FRACTURE_INIT_SOUND, true);
 	PrecacheSoundArray(g_DefaultMedic_DeathSounds);
 	PrecacheSoundArray(g_DefaultMedic_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -149,7 +139,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_RangeAttackSounds);
 	PrecacheSoundArray(g_TeleportSounds);
-	PrecacheSoundArray(Cosmic_Launch_Sounds);
+	PrecacheSoundArray(g_DefaultLaserLaunchSound);
 	PrecacheSoundArray(g_FractalSound);
 	PrecacheSound(TWIRL_THUMP_SOUND, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
@@ -190,25 +180,18 @@ static const char TextColour[] = "{snow}";
 
 methodmap Twirl < CClotBody
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
-		
-
 	}
 	public void PlayFractalSound() {
 		EmitSoundToAll(g_FractalSound[GetRandomInt(0, sizeof(g_FractalSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
-	
 	property bool m_bInKame
 	{
 		public get()							{ return b_InKame[this.index]; }
@@ -220,46 +203,30 @@ methodmap Twirl < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
-		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-			
+		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
-
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
-
 	public void PlayRangeAttackSound() {
 		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	public void PlayAngerSound() {
-	
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
 	}
-
 	public void PlayMagiaOverflowSound() {
 		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
 			return;
@@ -322,42 +289,40 @@ methodmap Twirl < CClotBody
 		}
 		
 	}
-
 	public bool Add_Combo(int amt)
 	{
 		bool fired = false;
-		if(i_melee_combo[this.index]>amt)
+		if(this.m_iMeleeCombo>amt)
 		{
-			i_melee_combo[this.index] = 0;
+			this.m_iMeleeCombo = 0;
 			fired = true;
 		}
 		else
 		{
-			i_melee_combo[this.index]++;
+			this.m_iMeleeCombo++;
 		}
-		if(i_melee_combo[this.index]>=amt)
+		if(this.m_iMeleeCombo>=amt)
 		{
-			if(!IsValidEntity(EntRefToEntIndex(i_hand_particles[this.index])))
+			if(!IsValidEntity(EntRefToEntIndex(this.m_iHandParticle)))
 			{
 				float flPos[3], flAng[3];
 				this.GetAttachment("effect_hand_r", flPos, flAng);
-				i_hand_particles[this.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", this.index, "effect_hand_r", {0.0,0.0,0.0}));
+				this.m_iHandParticle = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", this.index, "effect_hand_r", {0.0,0.0,0.0}));
 			}
 		}
 		else
 		{
-			int ent = EntRefToEntIndex(i_hand_particles[this.index]);
+			int ent = EntRefToEntIndex(this.m_iHandParticle);
 			if(IsValidEntity(ent))
 			{
 				RemoveEntity(ent);
-				i_hand_particles[this.index] = INVALID_ENT_REFERENCE;
+				this.m_iHandParticle = INVALID_ENT_REFERENCE;
 			}
 				
 		}
 		return fired;
 
 	}
-
 	public void Handle_Weapon()
 	{
 		switch(this.i_stance_status())
@@ -414,7 +379,7 @@ methodmap Twirl < CClotBody
 		float GameTime = GetGameTime(this.index);
 
 		//We recently retreated, so lets use ranged attacks
-		if(fl_force_ranged[this.index] > GameTime)
+		if(this.m_flForceRanged > GameTime)
 			type = 1;
 
 		//the player is a "ranged" player, now do 1 extra check!
@@ -452,15 +417,15 @@ methodmap Twirl < CClotBody
 
 		if(this.m_fbGunout)	//ranged
 		{
-			if(wave<=15)	
+			if(wave<=10)	
 			{
 				return RUINA_TWIRL_CREST_1;
 			}
-			else if(wave <=30)	
+			else if(wave <=20)	
 			{
 				return RUINA_TWIRL_CREST_2;
 			}
-			else if(wave <= 45)	
+			else if(wave <= 30)	
 			{
 				return RUINA_TWIRL_CREST_3;
 			}
@@ -471,15 +436,15 @@ methodmap Twirl < CClotBody
 		}
 		else				//melee
 		{
-			if(wave<=15)	
+			if(wave<=10)	
 			{
 				return RUINA_TWIRL_MELEE_1;
 			}
-			else if(wave <=30)	
+			else if(wave <=20)	
 			{
 				return RUINA_TWIRL_MELEE_2;
 			}
-			else if(wave <= 45)	
+			else if(wave <= 30)	
 			{
 				return RUINA_TWIRL_MELEE_3;
 			}
@@ -489,7 +454,6 @@ methodmap Twirl < CClotBody
 			}
 		}
 	}
-
 	public int PlayerType()
 	{
 		if(!IsValidEnemy(this.index, this.m_iTarget))
@@ -583,6 +547,146 @@ methodmap Twirl < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flIonicFractureCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flIonicFractureEndTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flIonicFractureChargeTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flIonicFractureWindUpTimer
+	{
+		public get()							{ return fl_BEAM_ThrottleTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_ThrottleTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flIonicFractureAnimTimer
+	{
+		public get()							{ return fl_BEAM_ChargeUpTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_ChargeUpTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flIonicFractureHoverTimer
+	{
+		public get()							{ return fl_BEAM_RechargeTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_RechargeTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flMagiaOverflowRecharge
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flLunarTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flLunarThrottle
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flLunarLoop
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+	property int m_iLunarAmmo
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property float m_flCosmicGazeTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
+	property float m_flRetreatTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
+	property float m_flForceRanged
+	{
+		public get()							{ return fl_Dead_Ringer_Invis[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Dead_Ringer_Invis[this.index] = TempValueForProperty; }
+	}
+	property float m_flCosmicGazeActive
+	{
+		public get()							{ return fl_Dead_Ringer[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Dead_Ringer[this.index] = TempValueForProperty; }
+	}
+	property int m_iRangedAmmo
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
+	property int m_iMeleeCombo
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	property int m_iBarrageAmmo
+	{
+		public get()							{ return i_AttacksTillReload[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillReload[this.index] = TempValueForProperty; }
+	}
+	property int m_iHandParticle
+	{
+		public get()							{ return i_WeaponArchetype[this.index]; }
+		public set(int TempValueForProperty) 	{ i_WeaponArchetype[this.index] = TempValueForProperty; }
+	}
+	property float m_flFinalInvocationTimer
+	{
+		public get()							{ return fl_Charge_delay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Charge_delay[this.index] = TempValueForProperty; }
+	}
+	property float m_flFinalInvocationLogic
+	{
+		public get()							{ return fl_Charge_Duration[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_Charge_Duration[this.index] = TempValueForProperty; }
+	}
+	property float m_flCosmicGazeThrottle
+	{
+		public get()							{ return fl_BEAM_ThrottleTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_ThrottleTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flCosmicGazeWindUp
+	{
+		public get()							{ return fl_BEAM_ChargeUpTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_ChargeUpTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flCosmicGazeDurationOffset
+	{
+		public get()							{ return fl_BEAM_DurationTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_DurationTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flCosmicGazeDistance
+	{
+		public get()							{ return fl_BEAM_RechargeTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_RechargeTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flRetreatLaserThrottle
+	{
+		public get()							{ return fl_BEAM_ThrottleTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_BEAM_ThrottleTime[this.index] = TempValueForProperty; }
+	}
+	property bool m_bAnimationSet
+	{
+		public get()							{ return b_Half_Life_Regen[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Half_Life_Regen[this.index] = TempValueForProperty; }
+	}
+	property float m_flMagiaAngle
+	{
+		public get()							{ return fl_ThrowDelay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_ThrowDelay[this.index] = TempValueForProperty; }
+	}
 
 	public char[] GetName()
 	{
@@ -590,7 +694,6 @@ methodmap Twirl < CClotBody
 		Format(Name, sizeof(Name), "%s%s%s:", NameColour, NpcStats_ReturnNpcName(this.index), TextColour);
 		return Name;
 	}
-
 	public void AdjustWalkCycle()
 	{
 		if(this.IsOnGround())
@@ -612,16 +715,62 @@ methodmap Twirl < CClotBody
 			}
 		}
 	}
-	
-	
+	public void RangedArmour()
+	{
+		float GameTime = GetGameTime(this.index);
+		float armour = 1.0;
+		
+		//check if lunar radiance is active.
+		int ent = EntRefToEntIndex(i_lunar_entities[this.index][0]);
+		if(IsValidEntity(ent))
+			armour *= 0.3;
+
+		//check if cosmic gaze is active
+		if(this.m_flCosmicGazeActive > GameTime)
+			armour *= 0.3;
+
+		//check if ionic fracture is active
+		if(this.m_flIonicFractureEndTimer > GameTime)
+			armour *= 0.3;
+
+		if(b_force_transformation)
+			armour *= 0.5;
+
+		this.m_flRangedArmor = armour;
+	}
+	public void MeleeArmour()
+	{
+		float GameTime = GetGameTime(this.index);
+		float armour = 1.25;
+
+		//check if lunar radiance is active.
+		int ent = EntRefToEntIndex(i_lunar_entities[this.index][0]);
+		if(IsValidEntity(ent))
+			armour *= 0.625;
+
+		//check if cosmic gaze is active
+		if(this.m_flCosmicGazeActive > GameTime)
+			armour *= 0.625;
+
+		//check if ionic fracture is active
+		if(this.m_flIonicFractureEndTimer > GameTime)
+			armour *= 0.625;
+
+		if(b_force_transformation)
+			armour *= 0.75;
+
+		this.m_flMeleeArmor = armour;
+	}
 	public Twirl(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+
+		//data: sc%% ; test, verkia, force10, force20, force30, force40, triple_enemies, final_item, blockinv, anger
 		
 		npc.m_iChanged_WalkCycle = 1;
-		i_barrage_ammo[npc.index] = 0;
-		i_melee_combo[npc.index] = 0;
-		i_lunar_ammo[npc.index] = 0;
+		npc.m_iBarrageAmmo = 0;
+		npc.m_iMeleeCombo = 0;
+		npc.m_iLunarAmmo = 0;
 		b_lastman = false;
 		b_wonviatimer = false;
 		b_wonviakill = false;
@@ -631,18 +780,21 @@ methodmap Twirl < CClotBody
 
 		c_NpcName[npc.index] = "Twirl";
 
-		b_test_mode[npc.index] = StrContains(data, "test") != -1;
+		b_force_transformation = false;
 
-		int wave = ZR_Waves_GetRound()+1;
+		b_test_mode = StrContains(data, "test") != -1;
+		b_force_transformation = StrContains(data, "verkia") != -1;
 
-		if(StrContains(data, "force15") != -1)
-			wave = 15;
+		int wave = Waves_GetRoundScale()+1;
+
+		if(StrContains(data, "force10") != -1)
+			wave = 10;
+		if(StrContains(data, "force20") != -1)
+			wave = 20;
 		if(StrContains(data, "force30") != -1)
 			wave = 30;
-		if(StrContains(data, "force45") != -1)
-			wave = 45;
-		if(StrContains(data, "force60") != -1)
-			wave = 60;
+		if(StrContains(data, "force40") != -1)
+			wave = 40;
 
 		npc.m_bDissapearOnDeath = true;
 		npc.m_fbGunout = true;
@@ -659,7 +811,7 @@ methodmap Twirl < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 	
-		fl_next_textline[npc.index] = 0.0;
+		fl_next_textline = 0.0;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -669,11 +821,11 @@ methodmap Twirl < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Twirl Spawn");
 			}
 		}
-		b_tripple_raid[npc.index] = false;
+		b_tripple_raid = false;
 		bool default_theme = true;
-		if((StrContains(data, "triple_enemi") != -1))
+		if((StrContains(data, "triple_enemies") != -1))
 		{
-			b_tripple_raid[npc.index] = true;
+			b_tripple_raid = true;
 			default_theme = false;
 		}
 		RemoveAllDamageAddition();
@@ -683,19 +835,18 @@ methodmap Twirl < CClotBody
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-			music.Time = 172;
+			music.Time = 190;
 			music.Volume = 1.65;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Ruler Of Ruina Decends");
+			strcopy(music.Name, sizeof(music.Name), "Night life in Ruina");
 			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);	
 		}
 		
-		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
+		b_allow_final = StrContains(data, "final_item") != -1;
 		TwirlEarsApply(npc.index,_,0.75);
 
-
-		if(b_allow_final[npc.index])
+		if(b_allow_final)
 		{
 			b_NpcUnableToDie[npc.index] = true;
 		}
@@ -736,16 +887,16 @@ methodmap Twirl < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -781,7 +932,7 @@ methodmap Twirl < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
-		npc.m_iWearable2 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
+		npc.m_iWearable2 = npc.EquipItem("head", WINGS_MODELS_1);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl", _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl", _, skin);
@@ -791,14 +942,14 @@ methodmap Twirl < CClotBody
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetVariantInt(RUINA_WINGS_4);
-		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		SetVariantInt(WINGS_TWIRL);
+		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 
 		npc.Anger = false;
 
-		if(StrContains(data, "triple_enemies") != -1)
+		if(b_tripple_raid)
 		{
 			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
 			Twirl_Lines(npc, "... Except Karlas but shhhh!");
@@ -806,10 +957,12 @@ methodmap Twirl < CClotBody
 			CPrintToChatAll("{crimson}Karlas{snow}: :(");
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
+
+			npc.m_iRangedAmmo = 18;
 		}
-		else if(wave <=15)
+		else if(wave <=10)
 		{
-			i_ranged_ammo[npc.index] = 5;
+			npc.m_iRangedAmmo = 5;
 			switch(GetRandomInt(0, 5))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
@@ -820,9 +973,9 @@ methodmap Twirl < CClotBody
 				case 5: Twirl_Lines(npc, "Its time to \"Twirl\" like a beyblade");
 			}
 		}
-		else if(wave <=30)
+		else if(wave <=20)
 		{
-			i_ranged_ammo[npc.index] = 7;
+			npc.m_iRangedAmmo = 7;
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Last time, it was a great workout, {crimson}Time to do it again{snow}!");
@@ -832,9 +985,9 @@ methodmap Twirl < CClotBody
 				case 4: Twirl_Lines(npc, "You spin me right round..");
 			}
 		}
-		else if(wave <=45)
+		else if(wave <=30)
 		{
-			i_ranged_ammo[npc.index] = 9;
+			npc.m_iRangedAmmo = 9;
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "My Oh my, you're still here, {purple}how wonderful!");
@@ -844,9 +997,9 @@ methodmap Twirl < CClotBody
 				case 4: Twirl_Lines(npc, "Time to \"Twirl\", heh");
 			}
 		}
-		else if(wave <=60)
+		else if(wave <=40)
 		{	
-			i_ranged_ammo[npc.index] = 12;
+			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope yoyou're all as excited as I am{snow}!");
@@ -868,14 +1021,14 @@ methodmap Twirl < CClotBody
 					}
 				}
 			}
-			if(!b_tripple_raid[npc.index])
+			if(!b_tripple_raid)
 				RaidModeScaling *=0.9;
 		}
 		else	//freeplay
 		{
-			if(!b_tripple_raid[npc.index])
+			if(!b_tripple_raid)
 				RaidModeScaling *=0.9;
-			i_ranged_ammo[npc.index] = 12;
+			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 3))
 			{
 				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
@@ -884,39 +1037,42 @@ methodmap Twirl < CClotBody
 			}
 		}
 
-		i_current_Text[npc.index] = 0;
+		i_current_Text = 0;
 
 		npc.m_flDoingAnimation = 0.0;
 
 		npc.m_flNextTeleport = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
-		fl_comsic_gaze_timer[npc.index] = GetGameTime(npc.index)  + GetRandomFloat(5.0, 10.0);
-		fl_lunar_timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
-		fl_magia_overflow_recharge[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
-		fl_final_invocation_timer[npc.index] = 0.0;
-		fl_final_invocation_logic[npc.index] = 0.0;
-		b_allow_final_invocation[npc.index] = false;
+		npc.m_flCosmicGazeTimer = GetGameTime(npc.index)  + GetRandomFloat(5.0, 10.0);
+		npc.m_flLunarTimer = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+		npc.m_flMagiaOverflowRecharge = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+		
+		npc.m_flIonicFractureCD = GetGameTime(npc.index) + GetRandomFloat(15.0, 20.0);// GetRandomFloat(10.0, 20.0);
+
+		npc.m_flFinalInvocationTimer = 0.0;
+		npc.m_flFinalInvocationLogic = 0.0;
+		b_allow_final_invocation = false;
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_GLOBAL_NPC, true, 999, 999);	
 
-		if(!b_test_mode[npc.index])	//my EARS
+		if(!b_test_mode)	//my EARS
 		{
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 			EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 		}	
 
-		if(b_test_mode[npc.index])
+		if(b_test_mode)
 		{
 			RaidModeTime = FAR_FUTURE;
 		}
 
-		npc.m_flMeleeArmor = 1.5;
-
 		npc.m_bInKame = false;
 
 		if(StrContains(data, "blockinv") != -1)
-			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
+			npc.m_flFinalInvocationTimer = FAR_FUTURE;
+
+		npc.Anger = (StrContains(data, "anger") != -1);
 
 		Zero(fl_player_weapon_score);
 		Ruina_Set_Battery_Buffer(npc.index, true);
@@ -939,6 +1095,12 @@ static void Twirl_WinLine(int entity)
 	Twirl npc = view_as<Twirl>(entity);
 	if(b_wonviatimer)
 		return;
+
+	if(b_force_transformation)
+	{
+		Twirl_Lines(npc, "{crimson}Perish");
+		return;
+	}
 
 	switch(GetRandomInt(0, 10))
 	{
@@ -965,10 +1127,10 @@ static void ClotThink(int iNPC)
 	float GameTime = GetGameTime(npc.index);
 
 	CheckChargeTimeTwirl(npc);
-	if(npc.m_flNextThinkTime == FAR_FUTURE && b_allow_final[npc.index])
+	if(npc.m_flNextThinkTime == FAR_FUTURE && b_allow_final)
 	{
 		GameTime = GetGameTime();	//No slowing it down!
-		RaidModeTime = fl_raidmode_freeze[npc.index] + GameTime;	//"freeze" the raid timer
+		RaidModeTime = fl_raidmode_freeze + GameTime;	//"freeze" the raid timer
 		if(npc.m_iChanged_WalkCycle != 99)
 		{
 			if(IsValidEntity(npc.m_iWearable1))
@@ -979,10 +1141,10 @@ static void ClotThink(int iNPC)
 			npc.AddActivityViaSequence("competitive_loserstate_idle");
 			
 		}
-		if(fl_next_textline[npc.index] < GameTime)
+		if(fl_next_textline < GameTime)
 		{	
-			fl_next_textline[npc.index] = GameTime + 3.0;
-			switch(i_current_Text[npc.index])
+			fl_next_textline = GameTime + 3.0;
+			switch(i_current_Text)
 			{
 				case 0: Twirl_Lines(npc, "So then, you managed to beat me");
 				case 1: Twirl_Lines(npc, "Thats great, why you may ask?");
@@ -1006,7 +1168,7 @@ static void ClotThink(int iNPC)
 					b_NpcUnableToDie[npc.index] = false;
 
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-					for (int client = 0; client < MaxClients; client++)
+					for (int client = 1; client <= MaxClients; client++)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
@@ -1018,7 +1180,7 @@ static void ClotThink(int iNPC)
 					return;
 				}
 			}
-			i_current_Text[npc.index]++;
+			i_current_Text++;
 		}
 		return;
 	}
@@ -1026,72 +1188,56 @@ static void ClotThink(int iNPC)
 	if(LastMann && !b_lastman)
 	{
 		b_lastman = true;
-		switch(GetRandomInt(0, 7))
+		if(b_force_transformation)
 		{
-			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
-			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
-			case 2: Twirl_Lines(npc, "I know you're capable more than just this");
-			case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
-			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
-			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
-			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-			case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
+			switch(GetRandomInt(0, 7))
+			{
+				case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
+				case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
+				case 2: Twirl_Lines(npc, "I know you're capable more than just this");
+				case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
+				case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
+				case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
+				case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
+				case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
+			}
 		}
 	}
 
-	if(RaidModeTime < GetGameTime())
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		int wave = i_current_wave[npc.index];
-		b_wonviatimer = true;
-		if(wave <=60)
-		{
-			switch(GetRandomInt(0, 9))
-			{
-				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
-				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
-				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
-				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
-				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
-				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
-				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
-				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
-				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
-			}
-		}
-		else	//freeplay
-		{
-			switch(GetRandomInt(0, 2))
-			{
-				case 0: Twirl_Lines(npc, "Well considering you all were just some randoms this was to be expected");
-				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
-				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-			}
-		}
-		
+	if(HandleRaidTimer(npc))
 		return;
-	}
 
-	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
+	if((npc.Anger) && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
 
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 6))
+
+		if(b_force_transformation)
 		{
-			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
-			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
-			case 2: Twirl_Lines(npc, "Round 2. Fight!");
-			case 3: Twirl_Lines(npc, "Ai, this is getting fun");
-			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
-			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
-			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+			switch(GetRandomInt(0, 2))
+			{
+				case 0: Twirl_Lines(npc, "You ain't getting a normal phase shift");
+				case 1: Twirl_Lines(npc, "This time, I ain't waiting");
+				case 2: Twirl_Lines(npc, "Its time to ramp the heater up to {crimson}max");
+			}
 		}
-		fl_magia_overflow_recharge[npc.index] -= 15.0;
+		else
+		{
+			switch(GetRandomInt(0, 6))
+			{
+				case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
+				case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
+				case 2: Twirl_Lines(npc, "Round 2. Fight!");
+				case 3: Twirl_Lines(npc, "Ai, this is getting fun");
+				case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
+				case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
+				case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+			}
+		}
+		
+		npc.m_flMagiaOverflowRecharge -= 15.0;
 		npc.m_flNextTeleport -= 10.0;
 
 		b_NoKnockbackFromSources[npc.index] = false;
@@ -1099,7 +1245,6 @@ static void ClotThink(int iNPC)
 		RemoveSpecificBuff(npc.index, "Solid Stance");
 		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		Explode_Logic_Custom(500.0*RaidModeScaling, npc.index, npc.index, -1, VecSelfNpc, 350.0, _, _, true, _, false, _, LifelossExplosion);
@@ -1130,17 +1275,18 @@ static void ClotThink(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 	}
 
-	if(npc.m_flNextDelayTime > GameTime)
-	{
-		return;
-	}
+	npc.RangedArmour();
+	npc.MeleeArmour();
 
-	if(b_allow_final_invocation[npc.index])
+	if(npc.m_flNextDelayTime > GameTime)
+		return;
+
+	if(b_allow_final_invocation)
 	{
-		if(fl_final_invocation_timer[npc.index] != FAR_FUTURE)
+		if(npc.m_flFinalInvocationTimer != FAR_FUTURE)
 		{
-			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
-			//fl_final_invocation_logic[npc.index] = GetGameTime() + 5.0;
+			npc.m_flFinalInvocationTimer = FAR_FUTURE;
+			//npc.m_flFinalInvocationLogic = GetGameTime() + 5.0;
 			Final_Invocation(npc);
 		}
 	}
@@ -1174,7 +1320,6 @@ static void ClotThink(int iNPC)
 			int Nearby = Nearby_Players(npc, (npc.Anger ? 300.0 : 250.0));
 			if(Nearby > 3)
 			{
-
 				Turn_Speed *= (Nearby/2.0)*1.2;
 			}
 			npc.FaceTowards(vecTarget, Turn_Speed);
@@ -1235,7 +1380,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 
-	if(b_allow_final_invocation[npc.index])
+	if(b_allow_final_invocation)
 		SacrificeAllies(npc.index);
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -1246,6 +1391,8 @@ static void ClotThink(int iNPC)
 			Cosmic_Gaze(npc, PrimaryThreatIndex);
 			lunar_Radiance(npc);
 			if(Magia_Overflow(npc))
+				return;
+			if(IonicFracture(npc))
 				return;
 
 			if(npc.m_flDoingAnimation > GetGameTime(npc.index))
@@ -1294,8 +1441,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -1329,7 +1476,8 @@ static float Target_Angle_Value(Twirl npc, int Target)
 static int i_Get_Laser_Target(Twirl npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXTF2PLAYERS];
+	int enemy_2[MAXPLAYERS];
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, true);
 	//only bother getting targets infront of twirl that are players. + wall check obv
 	int Tmp_Target = -1;
@@ -1379,9 +1527,10 @@ static void Final_Invocation(Twirl npc)
 	{
 		float AproxRandomSpaceToWalkTo[3];
 		WorldSpaceCenter(npc.index, AproxRandomSpaceToWalkTo);
-		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force60;raid;noweaver;full");
+		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force40;raid;noweaver;full");
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			if(GetTeam(npc.index) != TFTeam_Red)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1398,34 +1547,55 @@ static void Final_Invocation(Twirl npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
 	}
-	switch(GetRandomInt(0, 7))
+	if(b_force_transformation)
 	{
-		case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
-		case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
-		case 2: Twirl_Lines(npc, "How's your aoe situation?");
-		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
-		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-		case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
-		case 6: Twirl_Lines(npc, "The Final Invocation!");
-		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+		switch(GetRandomInt(0, 3))
+		{
+			case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
+			case 1: Twirl_Lines(npc, "{crimson}Perish.");
+			case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
+			case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
+		}
 	}
+	else
+	{
+		switch(GetRandomInt(0, 7))
+		{
+			case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
+			case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
+			case 2: Twirl_Lines(npc, "How's your aoe situation?");
+			case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
+			case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
+			case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
+			case 6: Twirl_Lines(npc, "The Final Invocation!");
+			case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
+		}
+	}
+	
 	RaidModeTime += 60.0;
 
+	/*
+	simply un comment to readd.
 	GiveOneRevive(false);
-	switch(GetRandomInt(0, 1))
-	{
-		case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
-		case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
-	}
 
-	for(int i=0 ; i < MaxClients ; i++)
+	if(!b_force_transformation)
+	{
+		switch(GetRandomInt(0, 1))
+		{
+			case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
+			case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
+		}
+	}
+	
+
+	for(int i=1 ; i <= MaxClients ; i++)
 	{
 		if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i) && TeutonType[i] == TEUTON_NONE && dieingstate[i] == 0)
 		{
 			HealEntityGlobal(i, i, float(SDKCall_GetMaxHealth(i)) * 0.5, 1.0, 1.0, HEAL_ABSOLUTE);
 			CPrintToChat(i, "{green}Adrenalive rushes through your body, healing you and giving you an extra revive.");
 		}
-	}
+	}*/
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1446,19 +1616,16 @@ static float fl_Lunar_RadianceTimer(Twirl npc)
 	float time = (npc.Anger ? 0.7 : 1.2);
 	return time;
 }
-static float fl_lunar_throttle[MAXENTITIES];
-static int i_lunar_entities[MAXENTITIES][3];
-static float fl_lunar_loop[MAXENTITIES];
 static void lunar_Radiance(Twirl npc)
 {
-	if(i_current_wave[npc.index] <=45)
+	if(i_current_wave[npc.index] <=30)
 		return;
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
 	if(npc.m_flDoingAnimation > GameTime)
 		return;
-	if(fl_lunar_timer[npc.index] > GameTime)
+	if(npc.m_flLunarTimer > GameTime)
 		return;
 
 	EmitSoundToAll("player/taunt_surgeons_squeezebox_draw_accordion.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
@@ -1467,9 +1634,9 @@ static void lunar_Radiance(Twirl npc)
 	EmitSoundToAll("npc/attack_helicopter/aheli_charge_up.wav");
 	EmitSoundToAll("npc/attack_helicopter/aheli_charge_up.wav");
 	
-	NPC_StopPathing(npc.index);
+	npc.StopPathing();
 
-	fl_lunar_loop[npc.index] = 0.0;
+	npc.m_flLunarLoop = 0.0;
 
 	for(int i= 0 ; i < 3 ; i ++)
 	{
@@ -1480,17 +1647,20 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
-	switch(GetRandomInt(0, 17))
+	if(!b_force_transformation)
 	{
-		case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
-		case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
-		case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
-		case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
-		case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
-		case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-		case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
-		case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
-		case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
+		switch(GetRandomInt(0, 17))
+		{
+			case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
+			case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
+			case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
+			case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
+			case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
+			case 11: Twirl_Lines(npc, "Dance little merc, dance...");
+			case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
+			case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
+			case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
+		}
 	}
 
 	float flPos[3], flAng[3];
@@ -1518,28 +1688,25 @@ static void lunar_Radiance(Twirl npc)
 			RemoveEntity(ent2);
 	}
 
-	npc.m_flRangedArmor = 0.3;
-	npc.m_flMeleeArmor = 0.5;
-
-	fl_lunar_throttle[npc.index] = GameTime + 0.5;
+	npc.m_flLunarThrottle = GameTime + 0.5;
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
 	npc.m_flDoingAnimation = GameTime + 2.5;
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
-	fl_lunar_timer[npc.index] = 0.0;
+	npc.m_flLunarTimer = 0.0;
 	npc.m_bisWalking = false;
 	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
 	npc.SetPlaybackRate(0.7);
 	npc.SetCycle(0.01);
 
-	i_lunar_ammo[npc.index] = 0;
+	npc.m_iLunarAmmo = 0;
 
 	npc.m_flSpeed = 0.0;
 	
-	SDKUnhook(npc.index, SDKHook_Think, lunar_Radiance_Tick);
-	SDKHook(npc.index, SDKHook_Think, lunar_Radiance_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Lunar_Radiance_Tick);
+	SDKHook(npc.index, SDKHook_Think, Lunar_Radiance_Tick);
 }
 static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 {
@@ -1551,9 +1718,6 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 
 	float GameTime = GetGameTime(npc.index);
 
-	npc.m_flRangedArmor = 1.0;
-	npc.m_flMeleeArmor = 1.5;
-
 	npc.m_iState = 0;
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
 	npc.m_flReloadIn = GameTime + 0.5;
@@ -1561,7 +1725,7 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 	npc.m_flSpeed = fl_npc_basespeed;
@@ -1577,34 +1741,34 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 
 	return Plugin_Stop;
 }
-static void lunar_Radiance_Tick(int iNPC)
+static void Lunar_Radiance_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
 
-	if(fl_lunar_throttle[npc.index] > GameTime)
+	if(npc.m_flLunarThrottle > GameTime)
 		return;
 
-	if(fl_lunar_loop[npc.index] < GameTime)
+	if(npc.m_flLunarLoop < GameTime)
 	{
-		fl_lunar_loop[npc.index] = FAR_FUTURE;
+		npc.m_flLunarLoop = FAR_FUTURE;
 		EmitSoundToAll("player/taunt_surgeons_squeezebox_music.wav", npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 	}
 
-	fl_lunar_throttle[npc.index] = GameTime + 0.1;
+	npc.m_flLunarThrottle = GameTime + 0.1;
 
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.0;
 	npc.m_flDoingAnimation = GameTime + 2.0;
 
 	int amt = i_Lunar_RadianceAmt(npc);
 
-	if(i_lunar_ammo[npc.index] > amt)
+	if(npc.m_iLunarAmmo > amt)
 	{
-		i_lunar_ammo[npc.index] = 0;
-		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 30.0 : 45.0);
-		if(b_tripple_raid[npc.index])
-			fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 50.0 : 60.0);
+		npc.m_iLunarAmmo = 0;
+		npc.m_flLunarTimer = GameTime + (npc.Anger ? 55.0 : 75.0);
+		if(b_tripple_raid)
+			npc.m_flLunarTimer = GameTime + (npc.Anger ? 60.0 : 90.0);
 
 		StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 
@@ -1629,20 +1793,21 @@ static void lunar_Radiance_Tick(int iNPC)
 			i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 		}
 
-		SDKUnhook(npc.index, SDKHook_Think, lunar_Radiance_Tick);
+		SDKUnhook(npc.index, SDKHook_Think, Lunar_Radiance_Tick);
 
 		return;
 	}
 
-	if(fl_lunar_timer[npc.index] > GameTime)
+	if(npc.m_flLunarTimer > GameTime)
 		return;
 
-	fl_lunar_timer[npc.index] = GameTime + fl_Lunar_RadianceTimer(npc);
+	npc.m_flLunarTimer = GameTime + fl_Lunar_RadianceTimer(npc);
 
-	i_lunar_ammo[npc.index] +=1;
+	npc.m_iLunarAmmo +=1;
 
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy_2[MAXENTITIES];
+	int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
 	int i_te_used = 0;
 	for(int i; i < sizeof(enemy_2); i++)
@@ -1715,22 +1880,22 @@ static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 
@@ -1777,7 +1942,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		float	Multi_Delay = fl_self_defense_multiattack_speed(npc),
 				Reload_Delay = (npc.Anger ? 2.0 : 4.0);
 		
-		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
+		if(npc.m_iState >= npc.m_iRangedAmmo)	//"ammo"
 		{
 			npc.m_iState = 0;
 			npc.m_flReloadIn = GameTime + Reload_Delay;	//"reload" time
@@ -1800,20 +1965,37 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			
 		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-		float 	projectile_speed = (npc.Anger ? 1800.0 : 900.0),
-				target_vec[3];
-
-		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+		float target_vec[3];
+		WorldSpaceCenter(PrimaryThreatIndex, target_vec);
 
 		float Dmg = 21.0;
-		float Radius = (npc.Anger ? 150.0 : 100.0);
 		char Particle[50];
 		if(npc.m_iState % 2)
 			Particle = "raygun_projectile_blue";
 		else
 			Particle = "raygun_projectile_red";
 
-		npc.FireParticleRocket(target_vec, Modify_Damage(-1, Dmg) , projectile_speed , Radius , Particle, _, _, true, flPos);
+		float start_speed = 50.0;
+
+		float Ang[3];
+		MakeVectorFromPoints(flPos, target_vec, Ang);
+		GetVectorAngles(Ang, Ang);
+
+		Ruina_Projectiles Projectile;
+		Projectile.iNPC = npc.index;
+		Projectile.Start_Loc = flPos;
+		Projectile.Angles = Ang;
+		Projectile.speed = start_speed;
+		Projectile.radius = 0.0;
+		Projectile.damage = Modify_Damage(-1, Dmg);
+		Projectile.bonus_dmg = Modify_Damage(-1, Dmg)*2.5;
+		Projectile.Time = 5.0;
+		Projectile.visible = false;
+		int projectile = Projectile.Launch_Projectile(FuncTwirlParticleRocketTouch);
+		Projectile.Apply_Particle(Particle);
+
+		if(IsValidEntity(projectile))
+			Initiate_Projectile_ParticleAccelerator(npc, projectile, PrimaryThreatIndex);
 	}
 	else
 	{
@@ -1826,7 +2008,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			{
 				npc.m_flAttackHappens = 0.0;
 
-				fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+				npc.m_flRetreatTimer = GameTime+(Swing_Speed*0.35);
 
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(PrimaryThreatIndex, VecEnemy);
@@ -1852,18 +2034,18 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 						Ruina_Add_Battery(npc.index, 250.0);
 						
-						if(!b_test_mode[npc.index])	//while testing the kb is annoying *Who would have guessed*
+						if(!b_test_mode)	//while testing the kb is annoying *Who would have guessed*
 						{
 							float Kb = (npc.Anger ? 900.0 : 450.0);
 
 							Custom_Knockback(npc.index, target, Kb, true);
-							if(target < MaxClients)
+							if(target <= MaxClients)
 							{
 								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 						}
-						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(target, 7.0)));
+						Ruina_Add_Mana_Sickness(npc.index, target, 0.2, RoundToNearest(Modify_Damage(target, 7.0)));
 					}
 					npc.PlayMeleeHitSound();
 					
@@ -1873,11 +2055,11 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		}
 		else
 		{
-			if(fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime))
+			if(npc.m_flRetreatTimer > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime))
 			{
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			}
@@ -1901,6 +2083,125 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		}
 	}
 }
+static void FuncTwirlParticleRocketTouch(int entity, int other)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
+	{
+		Ruina_Remove_Projectile(entity);
+		return;
+	}
+
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	if(fl_ruina_Projectile_radius[entity]>0.0)
+	{
+		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+		TE_Particle(fl_BEAM_DurationTime[entity] % 2 ? "spell_batball_impact_blue" : "spell_batball_impact_red", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	}
+	else
+	{
+		float dmg = fl_ruina_Projectile_dmg[entity];
+
+		if(ShouldNpcDealBonusDamage(other))
+			dmg *=fl_ruina_Projectile_bonus_dmg[entity];
+
+		SDKHooks_TakeDamage(other, owner, owner, dmg, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, ProjectileLoc);
+	}
+	
+	Ruina_Remove_Projectile(entity);
+}
+//makes a projectile accelerate from slow speeds to really high speeds in 1 second.
+static float fl_projectile_acceleration_time = 0.75;
+static void Initiate_Projectile_ParticleAccelerator(Twirl npc, int projectile, int PrimaryThreatIndex)
+{
+	float GameTime = GetGameTime();
+	fl_BEAM_ChargeUpTime[projectile] = GameTime + fl_projectile_acceleration_time;
+
+	fl_BEAM_DurationTime[projectile] = float(npc.m_iState);
+
+	float 	Homing_Power = 3.0,
+			Homing_Lockon = 80.0;
+
+	float angles[3];
+	GetEntPropVector(projectile, Prop_Data, "m_angRotation", angles);
+
+	Initiate_HomingProjectile(projectile,
+	npc.index,
+	Homing_Lockon,			// float lockonAngleMax,
+	Homing_Power,			// float homingaSec,
+	true,				// bool LockOnlyOnce,
+	true,					// bool changeAngles,
+	angles,
+	PrimaryThreatIndex
+	);
+
+	SDKHook(projectile, SDKHook_Think, Projectile_ParticleCannonThink);
+	SDKHook(projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+
+}
+static Action Projectile_ParticleCannonThink(int entity)
+{
+	float GameTime = GetGameTime();
+	float speed = 375.0;	//this is a magical number that reults in 3k speed in at the end of the formula.
+	//projectile acceleration is complete, kill the think hook
+
+	float Angles[3]; GetRocketAngles(entity, Angles);
+	if(fl_BEAM_ChargeUpTime[entity] < GameTime)
+	{
+		ReplaceProjectileParticle(entity, fl_BEAM_DurationTime[entity] % 2 ? "drg_manmelter_trail_blue" : "drg_manmelter_trail_red");
+		HomingProjectile_SetProjectileSpeed(entity, 3000.0);
+		SetProjectileSpeed(entity, 3000.0, Angles);
+		//CPrintToChatAll("killed proj hook");
+		SDKUnhook(entity, SDKHook_Think, Projectile_ParticleCannonThink);
+		HomingProjectile_Deactivate(entity);	//also kill homing
+
+		//make the projectile deal AOE once its fully speed up.
+
+		fl_ruina_Projectile_dmg[entity] *=1.1;
+		fl_ruina_Projectile_radius[entity] = 300.0;
+
+		return Plugin_Stop;
+	}
+	float Ratio = 1.0 - (fl_BEAM_ChargeUpTime[entity] - GameTime) / fl_projectile_acceleration_time;
+	float Original = Ratio;
+
+	//make it start out slower
+	Ratio *= 0.25;
+	if(Original > 0.75)
+		Ratio *= 4.0;//then omega buff it
+	
+	float CalcRatio = (1.0+Ratio);	//when the math isn't math-ing, same issue I had with stella, UGH
+	float projectile_speed = speed * (CalcRatio*CalcRatio*CalcRatio);
+
+	//CPrintToChatAll("speed: %.1f",projectile_speed);
+
+	HomingProjectile_SetProjectileSpeed(entity, projectile_speed);
+	SetProjectileSpeed(entity, projectile_speed, Angles);
+	return Plugin_Continue;
+}
+//since homing only sets speeds every 0.1s and this is a every tick operation, in some instances the projectile will have uneven acceleration, and even won't accelerate fully.
+//as such, we need to also manually set the speed real time every tick.
+static void SetProjectileSpeed(int projectile, float speed, float angles[3])
+{
+	float forward_direction[3];
+	GetAngleVectors(angles, forward_direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(forward_direction, speed);
+	TeleportEntity(projectile, NULL_VECTOR, NULL_VECTOR, forward_direction);
+}
+static void ReplaceProjectileParticle(int projectile, const char[] particle_string)
+{
+	int particle = EntRefToEntIndex(i_rocket_particle[projectile]);
+	if(IsValidEntity(particle))
+		RemoveEntity(particle);
+
+	float ProjLoc[3];
+	WorldSpaceCenter(projectile, ProjLoc);
+	particle = ParticleEffectAt(ProjLoc, particle_string, 0.0); //Inf duartion
+	i_rocket_particle[projectile]= EntIndexToEntRef(particle);
+	SetParent(projectile, particle);	
+}
 
 static float Modify_Damage(int Target, float damage)
 {
@@ -1911,23 +2212,18 @@ static float Modify_Damage(int Target, float damage)
 
 	return damage;
 }
-static bool b_animation_set[MAXENTITIES];
-static float fl_cosmic_gaze_throttle[MAXENTITIES];
-static float fl_cosmic_gaze_windup[MAXENTITIES];
-static float fl_cosmic_gaze_duration_offset[MAXENTITIES];
-static float fl_gaze_Dist[MAXENTITIES];
 static float fl_cosmic_gaze_range = 1500.0;
 static float fl_cosmic_gaze_radius = 750.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
 {
-	if(i_current_wave[npc.index]<=30)
+	if(i_current_wave[npc.index]<=20)
 		return;
 
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
 
-	if(fl_comsic_gaze_timer[npc.index] > GameTime)
+	if(npc.m_flCosmicGazeTimer > GameTime)
 		return;
 
 	int Enemy_I_See;
@@ -1948,6 +2244,9 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+
 	float Windup = 2.0;
 	float Duration;
 	float Baseline = 1.75;
@@ -1960,10 +2259,12 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	npc.m_bisWalking = false; 
 	npc.m_flDoingAnimation = GameTime + Duration + Windup + 0.2;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration +Windup;
-	fl_cosmic_gaze_windup[npc.index] = GameTime + Windup;
+	npc.m_flCosmicGazeWindUp = GameTime + Windup;
 
-	b_animation_set[npc.index] = false;
-	fl_cosmic_gaze_throttle[npc.index] = 0.0;
+	npc.m_flCosmicGazeActive = fl_ruina_battery_timeout[npc.index];
+
+	npc.m_bAnimationSet = false;
+	npc.m_flCosmicGazeThrottle = 0.0;
 	
 	npc.AddActivityViaSequence("taunt08");
 	npc.SetPlaybackRate(1.36*anim_ratio);	
@@ -1972,8 +2273,8 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	float VecTarget[3]; WorldSpaceCenter(Target, VecTarget);
 	npc.FaceTowards(VecTarget, 10000.0);
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 
 	npc.m_flSpeed = 0.0;
 
@@ -1996,7 +2297,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	float EndLoc[3];
 	EndLoc = Laser.End_Point;
 
-	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
+	npc.m_flCosmicGazeDistance = GetVectorDistance(EndLoc, Start);
 	float Thickness = 15.0;
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup-0.75), Thickness, 1.5, color, 1, 0);
@@ -2013,9 +2314,9 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
-		fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 45.0 : 60.0);
-		if(b_tripple_raid[npc.index])
-			fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 60.0 : 90.0);
+		npc.m_flCosmicGazeTimer = GameTime + (npc.Anger ? 45.0 : 60.0);
+		if(b_tripple_raid)
+			npc.m_flCosmicGazeTimer = GameTime + (npc.Anger ? 60.0 : 90.0);
 		SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
@@ -2030,7 +2331,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	}
 
 	bool tick = false;
-	if(fl_cosmic_gaze_throttle[npc.index] < GameTime)
+	if(npc.m_flCosmicGazeThrottle < GameTime)
 	{
 		tick = true;
 	}
@@ -2040,23 +2341,23 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
 
-	if(fl_cosmic_gaze_windup[npc.index] < GameTime)
+	if(npc.m_flCosmicGazeWindUp < GameTime)
 	{
-		if(!b_animation_set[npc.index])
+		if(!npc.m_bAnimationSet)
 		{
 			npc.SetPlaybackRate(0.25);
 
-			EmitSoundToAll(Cosmic_Launch_Sounds[GetRandomInt(0, sizeof(Cosmic_Launch_Sounds) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
-			EmitSoundToAll(Cosmic_Launch_Sounds[GetRandomInt(0, sizeof(Cosmic_Launch_Sounds) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			EmitSoundToAll(g_DefaultLaserLaunchSound[GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			EmitSoundToAll(g_DefaultLaserLaunchSound[GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 
 			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			
-			b_animation_set[npc.index] = true;
+			npc.m_bAnimationSet = true;
 
-			fl_cosmic_gaze_duration_offset[npc.index] = GameTime + 0.72;
+			npc.m_flCosmicGazeDurationOffset = GameTime + 0.72;
 		}
-		if(fl_cosmic_gaze_duration_offset[npc.index] > GameTime && fl_cosmic_gaze_duration_offset[npc.index] !=FAR_FUTURE)
+		if(npc.m_flCosmicGazeDurationOffset > GameTime && npc.m_flCosmicGazeDurationOffset !=FAR_FUTURE)
 		{
 			float Angles[3], Start[3];
 			WorldSpaceCenter(npc.index, Start);
@@ -2092,11 +2393,11 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 				Laser.damagetype = DMG_PLASMA;
 				Laser.Damage = Modify_Damage(-1, 35.0);
 				Laser.Bonus_Damage = Modify_Damage(-1, 60.0);
-				Laser.Deal_Damage();
+				Laser.Deal_Damage(On_LaserHit);
 
-				fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);	
+				npc.m_flCosmicGazeDistance = GetVectorDistance(EndLoc, Start);	
 			}
-			Get_Fake_Forward_Vec(fl_gaze_Dist[npc.index], Angles, EndLoc, Start);
+			Get_Fake_Forward_Vec(npc.m_flCosmicGazeDistance, Angles, EndLoc, Start);
 
 			float 	flPos[3], // original
 					flAng[3]; // original
@@ -2151,9 +2452,9 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			TE_SendToAll();
 
 		}
-		else if(fl_cosmic_gaze_duration_offset[npc.index] != FAR_FUTURE)
+		else if(npc.m_flCosmicGazeDurationOffset != FAR_FUTURE)
 		{
-			fl_cosmic_gaze_duration_offset[npc.index] = FAR_FUTURE;
+			npc.m_flCosmicGazeDurationOffset = FAR_FUTURE;
 			npc.SetPlaybackRate(1.36*0.72);
 
 			Ruina_Laser_Logic Laser;
@@ -2179,7 +2480,6 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	}
 	return Plugin_Continue;
 }
-static int i_explosion_core[MAXENTITIES];
 static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 {
 	float Radius = fl_cosmic_gaze_radius;
@@ -2188,7 +2488,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 
 	if(IsValidEntity(create_center))
 	{
-		i_explosion_core[client] = EntIndexToEntRef(create_center);
+		i_haloslot[client] = EntIndexToEntRef(create_center);
 	}
 
 	int color[4]; Ruina_Color(color, i_current_wave[client]);
@@ -2254,7 +2554,7 @@ static Action Delayed_Explosion(Handle Timer, DataPack data)
 	if(!IsValidEntity(iNPC))
 		return Plugin_Stop;
 
-	int creater = EntRefToEntIndex(i_explosion_core[iNPC]);
+	int creater = EntRefToEntIndex(i_haloslot[iNPC]);
 
 	if(IsValidEntity(creater))
 	{
@@ -2311,17 +2611,21 @@ static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int wea
 static int i_Fractal_Gram_Amt(Twirl npc)
 {
 	int amt = (npc.Anger ? 20 : 10);
+	if(b_force_transformation)
+		amt = 40;
 
 	return amt;
 }
 static float fl_Fractal_Gram_SpamTimer(Twirl npc)
 {
 	float timer = (npc.Anger ? 0.2 : 0.4);
+	if(b_force_transformation)
+		timer = 0.1;
 	return timer;
 }
 static void Fractal_Gram(Twirl npc, int Target)
 {
-	if(i_current_wave[npc.index]<=15)
+	if(i_current_wave[npc.index]<=10)
 		return;
 
 	float GameTime = GetGameTime(npc.index);
@@ -2336,11 +2640,16 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	int amt = i_Fractal_Gram_Amt(npc);
 
-	if(i_barrage_ammo[npc.index] > amt)
+	if(npc.m_iBarrageAmmo > amt)
 	{
-		i_barrage_ammo[npc.index] = 0;
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		}
+		npc.m_iBarrageAmmo = 0;
 		npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 25.0 : 30.0);
-		if(b_tripple_raid[npc.index])
+		if(b_tripple_raid)
 			npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 45.0 : 60.0);
 		return;
 	}
@@ -2350,7 +2659,15 @@ static void Fractal_Gram(Twirl npc, int Target)
 	Enemy_I_See = Can_I_See_Enemy(npc.index, Target);
 	//Target close enough to hit
 	if(!IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+	{
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		}
 		return;
+	}
+		
 
 	npc.PlayFractalSound();
 
@@ -2359,9 +2676,18 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	Target = Enemy_I_See;
 
-	i_barrage_ammo[npc.index]++;
+	npc.m_iBarrageAmmo++;
 
 	npc.m_flNextRangedBarrage_Singular = GameTime + fl_Fractal_Gram_SpamTimer(npc);
+
+	npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_PRIMARY");
+
+	if(IsValidEntity(npc.m_iWearable1))
+	{
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+	}
+	
 
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
@@ -2370,8 +2696,8 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float Speed = (npc.Anger ? 1300.0 : 1100.0);
 	float Direct_Dmg = 3.5;
 	Fractal_Attack(npc.index, vecTarget, Modify_Damage(-1, Laser_Dmg), Speed, 15.0, Modify_Damage(-1, Direct_Dmg), 0.0, 5.0);
+	npc.FaceTowards(vecTarget, 30000.0);
 }
-static int i_laser_entity[MAXENTITIES];
 static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
 {
 	float SelfVec[3];
@@ -2389,7 +2715,7 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 	Projectile.bonus_dmg = direct_damage*2.5;
 	Projectile.Time = time;
 	Projectile.visible = false;
-	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
+	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);
 
 	if(IsValidEntity(Proj))
 	{
@@ -2401,7 +2727,7 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 		Ruina_Color(color, i_current_wave[iNPC]);
 		Twirl npc = view_as<Twirl>(iNPC);
 		int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
-		i_laser_entity[Proj] = EntIndexToEntRef(beam);
+		i_rocket_particle[Proj] = EntIndexToEntRef(beam);
 		DataPack pack;
 		CreateDataTimer(0.1, Laser_Projectile_Timer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 		pack.WriteCell(EntIndexToEntRef(iNPC));
@@ -2422,11 +2748,11 @@ static void Func_On_Proj_Touch(int entity, int other)
 		return;
 	}
 
-	int beam = EntRefToEntIndex(i_laser_entity[entity]);
+	int beam = EntRefToEntIndex(i_rocket_particle[entity]);
 	if(IsValidEntity(beam))
 		RemoveEntity(beam);
 
-	i_laser_entity[entity] = INVALID_ENT_REFERENCE;
+	i_rocket_particle[entity] = INVALID_ENT_REFERENCE;
 	
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -2438,7 +2764,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 	TE_Particle("spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-	if(i_current_wave[owner] >= 45)
+	if(i_current_wave[owner] >= 30)
 	{
 		Twirl npc = view_as<Twirl>(owner);
 		float radius = (npc.Anger ? 300.0 : 250.0);
@@ -2494,7 +2820,7 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 	Laser.Bonus_Damage = dmg*6.0;
 	Laser.damagetype = DMG_PLASMA;
 
-	Laser.Deal_Damage();
+	Laser.Deal_Damage(On_LaserHit);
 
 
 	return Plugin_Continue;
@@ -2528,22 +2854,21 @@ static void CheckChargeTimeTwirl(Twirl npc)
 
 	TwirlSetBatteryPercentage(npc.index, PercentageCharge);
 }
-static bool Retreat(Twirl npc, bool custom = false)
+static bool Retreat(Twirl npc, bool block_ions = false)
 {
 	float GameTime = GetGameTime(npc.index);
 	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
 	
 
-	if((npc.m_flNextTeleport > GameTime || npc.m_flTempIncreaseCDTeleport > GameTime) && !custom)	//internal teleportation device is still recharging...
+	if((npc.m_flNextTeleport > GameTime || npc.m_flTempIncreaseCDTeleport > GameTime))	//internal teleportation device is still recharging...
 		return false;
 
-	if(!custom)
-		npc.m_flTempIncreaseCDTeleport = GameTime + 1.0;
+	npc.m_flTempIncreaseCDTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	
 
-	if(Nearby_Players(npc, Radius) < 4 && !custom)	//not worth "retreating"
+	if(Nearby_Players(npc, Radius) < 4)	//not worth "retreating"
 		return false;
 
 	//OH SHIT OH FUCK, WERE BEING OVERRUN, TIME TO GET THE FUCK OUTTA HERE
@@ -2590,8 +2915,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 	if(!success)
 		return false;
 	
-	if(!custom)
-		npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
+	npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
 	
 	//YAY IT WORKED!!!!!!!
 
@@ -2626,12 +2950,13 @@ static bool Retreat(Twirl npc, bool custom = false)
 		end_offset[2] += 12.5;
 	}
 
-	if(custom)
+	//for non standard teleport, don't do the AOE ion strikes when she teleports
+	if(block_ions)
 		return true;
 
-	fl_force_ranged[npc.index] = GameTime + 5.0;	//now force ranged mode for a bit, wouldn't make sense to just rush straight into the same situation you just escaped from
+	npc.m_flForceRanged = GameTime + 5.0;	//now force ranged mode for a bit, wouldn't make sense to just rush straight into the same situation you just escaped from
 
-	if(wave<=15)	//stage 1: a simple ion where she was.
+	if(wave<=10)	//stage 1: a simple ion where she was.
 	{
 		float radius = (npc.Anger ? 325.0 : 250.0);
 		float dmg = 50.0;
@@ -2640,7 +2965,7 @@ static bool Retreat(Twirl npc, bool custom = false)
 		float Time = (npc.Anger ? 1.25 : 1.5);
 		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 	}
-	else if(wave <=45)	//stage 2, 3: an ion cast on anyone near her previous location when she teleports
+	else if(wave <=30)	//stage 2, 3: an ion cast on anyone near her previous location when she teleports
 	{
 		float aoe_check = (npc.Anger ? 250.0 : 175.0);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
@@ -2663,8 +2988,11 @@ static bool Retreat(Twirl npc, bool custom = false)
 		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 		Retreat_Laser(npc, VecSelfNpc);
 		//2 second duration laser.
-		fl_force_ranged[npc.index] = GameTime + 8.0;	
+		npc.m_flForceRanged = GameTime + 8.0;	
 	}
+
+	if(b_force_transformation)
+		return true;
 
 	switch(GetRandomInt(0, 13))
 	{
@@ -2686,7 +3014,6 @@ static bool Retreat(Twirl npc, bool custom = false)
 	return true;
 }
 //taunt_the_scaredycat_medic
-static float fl_retreat_laser_throttle[MAXENTITIES];
 static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 {
 	float GameTime = GetGameTime(npc.index);
@@ -2695,7 +3022,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
@@ -2704,17 +3031,17 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	npc.m_bisWalking = false;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
 	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
-	fl_retreat_laser_throttle[npc.index] = GameTime + 0.7;
+	npc.m_flRetreatLaserThrottle = GameTime + 0.7;
 
 	npc.FaceTowards(Last_Pos, 10000.0);
 
 	if(!npc.Anger)
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 	}
 
-	b_animation_set[npc.index] = false;
+	npc.m_bAnimationSet = false;
 
 	npc.m_flSpeed = 0.0;
 
@@ -2736,7 +3063,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -2748,17 +3075,17 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	npc.m_flSpeed = 0.0;	//DON'T MOVE
 
-	if(fl_retreat_laser_throttle[npc.index] > GameTime)
+	if(npc.m_flRetreatLaserThrottle > GameTime)
 		return Plugin_Continue;
 
-	if(!b_animation_set[npc.index])
+	if(!npc.m_bAnimationSet)
 	{
 		npc.SetCycle(0.51948051);	//math bitch!
-		b_animation_set[npc.index] = true;
+		npc.m_bAnimationSet = true;
 		npc.SetPlaybackRate(0.0);	
 		//npc.SetCycle(0.4);
 	}
-	fl_retreat_laser_throttle[npc.index] = GameTime + 0.1;
+	npc.m_flRetreatLaserThrottle = GameTime + 0.1;
 
 	float Radius = 30.0;
 	float diameter = Radius*2.0;
@@ -2904,18 +3231,443 @@ static void On_LaserHit(int client, int target, int damagetype, float damage)
 	Twirl npc = view_as<Twirl>(client);
 	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
 }
-static float fl_magia_angle[MAXENTITIES];
-static bool Magia_Overflow(Twirl npc)
+static float fl_ionic_fracture_range = 1000.0;
+static float fl_ionic_fracture_detionation_radius = 1500.0;
+static int 	 i_ionic_fracture_amt = 12;
+static float fl_ionic_fracture_det_timer = 2.5;
+static float fl_ionic_fracture_windup = 2.0;
+static float fl_ionic_fracture_charge_time = 2.0;
+static float fl_ionic_fracture_hover_time = 1.0;
+
+static float fl_ionic_fracture_timer_ratio;
+
+static bool IonicFracture(Twirl npc)
 {
+	if(i_current_wave[npc.index] < 30)
+		return false;
+
 	float GameTime = GetGameTime(npc.index);
-	if(fl_magia_overflow_recharge[npc.index] > GameTime)
+	if(npc.m_flIonicFractureCD > GameTime)
 		return false;
 
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return false;
 
-	if(!Retreat(npc, true))
+	fl_ionic_fracture_range = (npc.Anger ? 1500.0 : 1000.0);
+		
+	if(Nearby_Players(npc, fl_ionic_fracture_range) < 5 && !b_test_mode)
 		return false;
+
+	fl_ionic_fracture_detionation_radius = (npc.Anger ? 1250.0 : 800.0);
+	i_ionic_fracture_amt = (npc.Anger ? 16 : 12);
+
+	fl_ionic_fracture_timer_ratio = (npc.Anger ? 0.8 : 0.9);
+
+	float ratio = fl_ionic_fracture_timer_ratio;
+
+	EmitSoundToAll(TWIRL_IONIC_FRACTURE_INIT_SOUND);
+	EmitSoundToAll(TWIRL_IONIC_FRACTURE_INIT_SOUND);
+
+	EmitSoundToAll(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+	EmitSoundToAll(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3, npc.index, SNDCHAN_STATIC, SNDLEVEL_RAIDSIREN, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+	
+	//these values are heavily fine tuned relative to the animation.
+	fl_ionic_fracture_windup = 2.5		* ratio;
+	fl_ionic_fracture_det_timer = 2.25	* ratio;
+	fl_ionic_fracture_hover_time = 0.75	* ratio;
+	fl_ionic_fracture_charge_time = 1.5 * ratio;
+
+	float charge_time = fl_ionic_fracture_charge_time;
+	float windup = fl_ionic_fracture_windup;
+	float det_time = fl_ionic_fracture_det_timer + fl_ionic_fracture_hover_time;
+
+	npc.m_flIonicFractureHoverTimer = GameTime + fl_ionic_fracture_windup + fl_ionic_fracture_charge_time + fl_ionic_fracture_hover_time;
+
+	npc.AddActivityViaSequence("taunt01");
+	npc.SetPlaybackRate(0.65 / ratio);
+	npc.SetCycle(0.1);
+	npc.m_bAnimationSet = false;
+	npc.m_flIonicFractureAnimTimer = GameTime + 1.0;
+
+	float Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=5.0;
+
+	float Radius = fl_ionic_fracture_detionation_radius;
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
+	TE_SetupBeamRingPoint(Origin, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, windup , 50.0, 0.75, color, 1, 0);
+	TE_SendToAll();
+
+	SDKUnhook(npc.index, SDKHook_Think, IonicFracture_Think);
+	SDKHook(npc.index, SDKHook_Think, IonicFracture_Think);
+
+	npc.StopPathing();
+	
+	npc.m_flSpeed = 0.0;
+	npc.m_bisWalking = false;
+
+	NPCStats_RemoveAllDebuffs(npc.index);
+
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+
+	npc.m_flIonicFractureCD = GameTime + (npc.Anger ? 90.0 : 120.0);
+	fl_BEAM_DurationTime[npc.index] = 0.0;
+
+	npc.m_flDoingAnimation = GameTime + charge_time + det_time + windup + 0.5;
+	fl_ruina_battery_timeout[npc.index] = GameTime + charge_time + det_time + windup + 0.5;
+	npc.m_flIonicFractureEndTimer = GameTime + charge_time + det_time + windup;
+	npc.m_flIonicFractureChargeTimer = GameTime + charge_time + windup;
+	npc.m_flIonicFractureWindUpTimer = GameTime + windup;
+
+	return true;
+}
+static void FuncTwirlIonicFractalProjectileTouch(int entity, int other)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
+	{
+		Ruina_Remove_Projectile(entity);
+		return;
+	}
+	//we have hit the world, time to start the light show.
+	if(other == 0 && fl_BEAM_ChargeUpTime[entity] == -1)
+	{
+		fl_BEAM_ChargeUpTime[entity] = 1.0;
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 0.0});
+	}
+
+	if(fl_BEAM_ChargeUpTime[entity] != -1.0)
+		return;
+
+	if(other == 0)
+		return;
+	
+	if(IsIn_HitDetectionCooldown(owner,other))
+		return;
+			
+	Set_HitDetectionCooldown(owner,other, GetGameTime() + 0.25);	//if they walk backwards, its likely to hit them 2 times, but who on earth would willingly walk backwards/alongside the trajectory of the projectile
+
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	if(fl_ruina_Projectile_radius[entity]>0.0)
+	{
+		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+		TE_Particle(fl_BEAM_DurationTime[entity] % 2 ? "spell_batball_impact_blue" : "spell_batball_impact_red", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	}
+	else
+	{
+		float dmg = fl_ruina_Projectile_dmg[entity];
+
+		if(ShouldNpcDealBonusDamage(other))
+			dmg *=fl_ruina_Projectile_bonus_dmg[entity];
+
+		SDKHooks_TakeDamage(other, owner, owner, dmg, DMG_PLASMA|DMG_PREVENT_PHYSICS_FORCE, -1, _, ProjectileLoc);
+	}
+}
+static Action IonicFracture_Think(int iNPC)
+{
+	Twirl npc = view_as<Twirl>(iNPC);
+	float GameTime = GetGameTime(npc.index);
+	if(!npc.m_bAnimationSet && npc.m_flIonicFractureAnimTimer < GameTime)
+	{
+		npc.m_flIonicFractureAnimTimer = GameTime + 2.0;
+		npc.SetPlaybackRate(0.3 / fl_ionic_fracture_timer_ratio);
+		npc.m_bAnimationSet = true;
+	}
+
+	ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 0.25);
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.25);
+
+	if(npc.m_flIonicFractureWindUpTimer < GameTime)
+	{
+		npc.m_flIonicFractureWindUpTimer = FAR_FUTURE;
+		float Dmg = 20.0;
+		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+		Origin[2]+=50.0;
+		Ruina_Projectiles Projectile;
+		Projectile.iNPC = npc.index;
+		Projectile.Start_Loc = Origin;
+		Projectile.radius = 150.0;
+		Projectile.damage = Modify_Damage(-1, Dmg);
+		Projectile.bonus_dmg = Modify_Damage(-1, Dmg)*2.5;
+		Projectile.Time = (npc.m_flIonicFractureEndTimer - GameTime) + 10.0;	//the +10.0 is for potential npc stuns and such. the projectile gets deleted by the ability itself anyway so technically the timer isn't even needed, but its here just incase
+		Projectile.visible = false;
+
+		Origin[2]-=45.0;
+
+		float Radius = fl_ionic_fracture_detionation_radius;
+		int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
+		TE_SetupBeamRingPoint(Origin, Radius*2.0, Radius*2.0 + 0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, (npc.m_flIonicFractureEndTimer - GameTime) , 50.0, 0.75, color, 1, 0);
+		TE_SendToAll();
+
+		Origin[2]+=45.0;
+
+		EmitSoundToAll(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+		EmitSoundToAll(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+		EmitSoundToAll(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+		EmitSoundToAll(TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+
+
+		for(int i = 0 ; i < i_ionic_fracture_amt ; i++)
+		{
+			char Particle[50];
+			if(i % 2)
+				Particle = "drg_manmelter_trail_blue";
+			else
+				Particle = "drg_manmelter_trail_red";
+			
+			float Angles[3]; Angles = GetNPCAngles(npc);
+			Angles[0] = 0.0; Angles[2] = 0.0;
+			Angles[1] = Angles[1] + 360.0/i_ionic_fracture_amt*i;	//go in a 360 angle, evenly spaced depending on loop count
+			Ruina_Laser_Logic Laser;
+			Laser.client = npc.index;
+			Laser.DoForwardTrace_Custom(Angles, Origin, fl_ionic_fracture_range);
+
+			float distance = GetVectorDistance(Laser.Start_Point, Laser.End_Point);	//get the distance from start to end loc, adjust for what distance we want
+			float speed = distance / fl_ionic_fracture_charge_time;	//then adjust speed acordingly.
+			Projectile.speed = speed;
+			Projectile.Angles = Angles;
+			int projectile = Projectile.Launch_Projectile(FuncTwirlIonicFractalProjectileTouch);
+			
+			if(!IsValidEntity(projectile))
+				continue;
+
+			fl_BEAM_DurationTime[projectile] = float(i);
+			//fractals[i] = projectile;
+
+			SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
+
+			Projectile.Apply_Particle(Particle);
+			fl_BEAM_ChargeUpTime[projectile] = -1.0;
+			SDKHook(projectile, SDKHook_Think, IonicFracture_ProjectileThink);
+			SDKHook(projectile, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+		}
+	}
+
+	if(npc.m_flIonicFractureChargeTimer < GameTime)
+	{
+		int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
+		float Radius = fl_ionic_fracture_detionation_radius;
+		float Thickness = 20.0;
+		float ground[3]; GetAbsOrigin(npc.index, ground);
+
+		ground[2] += fl_BEAM_DurationTime[npc.index];
+
+		TE_SetupBeamRingPoint(ground, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, TWIRL_TE_DURATION , Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+
+		fl_BEAM_DurationTime[npc.index]+=3.0;
+
+		if(fl_BEAM_DurationTime[npc.index] > 60.0)
+			fl_BEAM_DurationTime[npc.index] = 1.0;
+	}
+
+	if(npc.m_flIonicFractureEndTimer < GameTime)
+	{
+		npc.SetPlaybackRate(1.0);
+
+		float Origin[3]; GetAbsOrigin(npc.index, Origin);
+
+		fl_ruina_battery_timeout[npc.index] = GameTime + 0.6;
+		npc.m_flDoingAnimation = GameTime + 0.6;
+
+		CreateTimer(0.6, Lunar_Radiance_RestoreAnim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+
+		SDKUnhook(npc.index, SDKHook_Think, IonicFracture_Think);
+
+		int color[4];
+		Ruina_Color(color, i_current_wave[npc.index]);
+		color[3] = 175;
+		int loop_for = 15;		//15
+		float height = 1500.0;	//1500
+		float sky_loc[3]; sky_loc = Origin; sky_loc[2]+=height;
+		float radius = fl_ionic_fracture_detionation_radius;
+
+		Explode_Logic_Custom(Modify_Damage(-1, 200.0), npc.index, npc.index, -1, Origin, radius,_,0.8, true);
+		Ruina_AOE_Add_Mana_Sickness(Origin, npc.index, radius, 0.5, 200, true);
+
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3);
+		StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3);
+
+		EmitAmbientSound(TWIRL_IONIC_FRACTURE_EXPLOSION, Origin, _, 120, _, _, GetRandomInt(55, 75));
+		EmitAmbientSound(TWIRL_IONIC_FRACTURE_EXPLOSION, Origin, _, 120, _, _, GetRandomInt(55, 75));
+		TE_SetupBeamRingPoint(Origin, 1.0, radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
+		TE_SendToAll();
+		
+		float start = 75.0;
+		float end = 75.0;
+		TE_SetupBeamPoints(Origin, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.0, start, end, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Origin, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.25, start*0.5, end*0.5, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Origin, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.5, start*0.25, end*0.25, 0, 1.0, color, 3);
+		TE_SendToAll();
+
+		TE_SetupBeamPoints(Origin, sky_loc, g_Ruina_BEAM_Combine_Blue, g_Ruina_HALO_Laser, 0, 0, 1.0, start, end, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Origin, sky_loc, g_Ruina_BEAM_Combine_Blue, g_Ruina_HALO_Laser, 0, 0, 1.25, start*0.5, end*0.5, 0, 1.0, color, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Origin, sky_loc, g_Ruina_BEAM_Combine_Blue, g_Ruina_HALO_Laser, 0, 0, 1.5, start*0.25, end*0.25, 0, 1.0, color, 3);
+		TE_SendToAll();
+
+		float Time = 1.0;
+
+		float thicc = 4.0;
+		float Seperation = height / loop_for;
+		float Offset_Time = Time / loop_for;
+		for(int i = 1 ; i <= loop_for ; i++)
+		{
+			float timer = Offset_Time*i+0.3;
+			if(timer<=0.02)
+				timer=0.02;
+			float end_ratio = (((loop_for/2.0)/i));
+			float final_radius = radius*end_ratio;
+			if(final_radius > 4096.0)	//so apperantly there is a max endradius, these are the types of things you only findout if you are dumb enough to even try...
+				final_radius= 4095.0;
+			TE_SetupBeamRingPoint(Origin, 0.0, final_radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, timer, thicc, 0.1, color, 1, 0);
+
+			TE_SendToAll();
+			Origin[2]+=Seperation;
+		}
+
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
+//usefull for ion pillar indicators, creates a ring at roughly the eye height of a the player it renders it to
+static void IonPillarRadiusIndicator(float Loc[3], float radius, int color[4])
+{
+	float offset_radius = radius * 4.0;
+	float dist_Check = (offset_radius * offset_radius);
+	for(int i=1 ; i < MaxClients ; i++)
+	{
+		if(!IsValidClient(i) || !IsClientInGame(i))
+			continue;
+
+		float clientLoc[3]; GetClientEyePosition(i, clientLoc);
+		float offsetLoc[3]; offsetLoc = Loc;
+		offsetLoc[2] = clientLoc[2] - 25.0;
+
+		float dist = GetVectorDistance(clientLoc, offsetLoc, true);
+
+		//no need to render this one since the client is far enough away to not care.
+		if(dist > dist_Check)
+			continue;
+
+		TE_SetupBeamRingPoint(offsetLoc, 2.0*radius + 0.5, 2.0*radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, TWIRL_TE_DURATION, 10.0, 0.1, color, 1, 0);
+		TE_SendToClient(i);
+	}
+}
+static Action IonicFracture_ProjectileThink(int entity)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
+	{
+		Ruina_Remove_Projectile(entity);
+		return Plugin_Stop;
+	}
+	Twirl npc = view_as<Twirl>(owner);
+	//make it so the ionic fracture fragments are affected by things that stun npc's
+	float GameTime = GetGameTime(npc.index);
+
+	//light show has *yet* to begin.
+	if(npc.m_flIonicFractureChargeTimer > GameTime)
+		return Plugin_Continue;
+
+	//we are still charging, don't do anything yet.
+	if(npc.m_flIonicFractureChargeTimer > GameTime)
+		return Plugin_Continue;
+
+	if(npc.m_flIonicFractureEndTimer < GameTime)
+	{
+		Ruina_Remove_Projectile(entity);
+		return Plugin_Stop;
+	}
+
+	float ProjectileLoc[3], Origin[3]; GetAbsOrigin(npc.index, Origin); Origin[2]+=50.0;
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	float Distance = GetVectorDistance(Origin, ProjectileLoc);
+
+	if(fl_BEAM_ChargeUpTime[entity] < 2.0 && npc.m_flIonicFractureChargeTimer < GameTime)
+	{	
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, {0.0, 0.0, 0.0});
+		if(npc.m_flIonicFractureHoverTimer < GameTime)
+		{
+			int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+			if(IsValidEntity(particle))
+				RemoveEntity(particle);
+
+			float Angles[3];
+			MakeVectorFromPoints(ProjectileLoc, Origin, Angles);
+			GetVectorAngles(Angles, Angles);
+			float speed = Distance / (fl_ionic_fracture_det_timer);
+			SetProjectileSpeed(entity, speed, Angles);
+			fl_BEAM_ChargeUpTime[entity] = 2.0;
+		}
+	}
+
+	if(npc.m_flIonicFractureChargeTimer > GameTime)
+		return Plugin_Continue;
+
+	// do visuals
+
+	float sky[3]; sky = ProjectileLoc; sky[2]+=1500.0; 
+	float ground[3]; ground = ProjectileLoc; ground[2]-=1500.0;
+
+	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
+
+	float diameter = 80.0;
+
+	float Diameter_Rng = GetRandomFloat(diameter*0.5, diameter);
+
+	float TE_Duration = TWIRL_TE_DURATION;
+
+	IonPillarRadiusIndicator(ground, diameter, color);
+
+	TE_SetupBeamPoints(ground, sky, g_Ruina_BEAM_Combine_Blue,	g_Ruina_BEAM_Combine_Black, 0, 66, TE_Duration, Diameter_Rng, Diameter_Rng, 0, 0.1, color, 3);
+	TE_SendToAll(0.0);
+
+	//do dmg
+
+	Ruina_Laser_Logic Laser;
+	Laser.client = owner;
+	Laser.Start_Point = ground;
+	Laser.End_Point = sky;
+	Laser.Radius = diameter;
+	Laser.damagetype = DMG_PLASMA;
+	Laser.Damage = Modify_Damage(-1, 10.0);
+	Laser.Bonus_Damage = Modify_Damage(-1, 14.0);
+	Laser.Deal_Damage(On_LaserHit);
+
+	return Plugin_Continue;
+}
+
+
+static bool Magia_Overflow(Twirl npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	if(npc.m_flMagiaOverflowRecharge > GameTime)
+		return false;
+
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return false;
+		
+	if(Nearby_Players(npc, 500.0) > 3)
+		return false;
+
+	if(Nearby_Players(npc, 300.0) <= 0)
+		return false;
+		
+	npc.m_flTempIncreaseCDTeleport = 0.0;	//so it doesn't block this specific teleport
+	Retreat(npc, true);
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure she WILL get the shield.
 	//give the shield to itself.
@@ -2928,7 +3680,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	//EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
@@ -2937,8 +3689,8 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_bisWalking = false;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
 	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
-	fl_retreat_laser_throttle[npc.index] = GameTime + 0.7;
-	fl_magia_overflow_recharge[npc.index] = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
+	npc.m_flRetreatLaserThrottle = GameTime + 0.7;
+	npc.m_flMagiaOverflowRecharge = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	int color[4]; 
@@ -2949,13 +3701,13 @@ static bool Magia_Overflow(Twirl npc)
 	TE_SetupBeamRingPoint(VecSelfNpc, (npc.Anger ? 350.0 : 275.0)*2.0, (npc.Anger ? 350.0 : 275.0)*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Duration+0.7, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
 
-	b_animation_set[npc.index] = false;
+	npc.m_bAnimationSet = false;
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 	npc.m_flSpeed = 0.0;
 
-	fl_magia_angle[npc.index] = GetRandomFloat(0.0, 360.0);
+	npc.m_flMagiaAngle = GetRandomFloat(0.0, 360.0);
 
 	npc.m_bInKame = true;
 	NPCStats_RemoveAllDebuffs(npc.index);
@@ -2983,7 +3735,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -2998,19 +3750,19 @@ static Action Magia_Overflow_Tick(int iNPC)
 	npc.m_flSpeed = 0.0;	//DON'T MOVE
 
 	bool update = false;
-	if(fl_retreat_laser_throttle[npc.index] < GameTime)
+	if(npc.m_flRetreatLaserThrottle < GameTime)
 	{
 		update = true;
-		fl_retreat_laser_throttle[npc.index] = GameTime + 0.1;
+		npc.m_flRetreatLaserThrottle = GameTime + 0.1;
 	}
 
-	if(!b_animation_set[npc.index] && update)
+	if(!npc.m_bAnimationSet && update)
 	{
-		b_animation_set[npc.index] = true;
+		npc.m_bAnimationSet = true;
 		npc.SetPlaybackRate(0.0);	
 		//npc.SetCycle(0.4);
 	}
-	if(!b_animation_set[npc.index])
+	if(!npc.m_bAnimationSet)
 		return Plugin_Continue;
 
 	npc.PlayMagiaOverflowSound();
@@ -3059,7 +3811,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		float Ratio = (1.0 - (Duration / TWIRL_MAGIA_OVERFLOW_DURATION));
 		if(Ratio<0.1)
 			Ratio=0.1;
-		float Dps = Modify_Damage(-1, 5.25)*Ratio;
+		float Dps = Modify_Damage(-1, 35.0)*Ratio;
 		Laser.Damage = Dps;
 		Laser.Radius = Radius;
 		Laser.Bonus_Damage = Dps*6.0;
@@ -3072,7 +3824,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	float EndLoc[3]; EndLoc = Laser.End_Point;
 
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
-	if(i_current_wave[npc.index] >=60)
+	if(i_current_wave[npc.index] >=40)
 	{
 		color[0] = 0;
 		color[1] = 250;
@@ -3118,10 +3870,10 @@ static Action Magia_Overflow_Tick(int iNPC)
 	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter3*0.9, End_Diameter3, 0, 0.1, colorLayer4, 3);
 	TE_SendToAll(0.0);
 
-	if(fl_magia_angle[npc.index]>360.0)
-		fl_magia_angle[npc.index] -=360.0;
+	if(npc.m_flMagiaAngle>360.0)
+		npc.m_flMagiaAngle -=360.0;
 	
-	fl_magia_angle[npc.index]+=2.5/TickrateModify;
+	npc.m_flMagiaAngle+=2.5/TickrateModify;
 
 	Twirl_Magia_Rings(npc, Offset_Loc, Angles, 3, true, 50.0, 1.0, TE_Duration, color, EndLoc);
 
@@ -3137,7 +3889,7 @@ static void Twirl_Magia_Rings(Twirl npc, float Origin[3], float Angles[3], int l
 		float tempAngles[3], Direction[3], endLoc[3];
 		tempAngles[0] = Angles[0];
 		tempAngles[1] = Angles[1];	//has to the same as the beam
-		tempAngles[2] = (fl_magia_angle[npc.index]+((360.0/loop_for)*float(i)))*ang_multi;	//we use the roll angle vector to make it speeen
+		tempAngles[2] = (npc.m_flMagiaAngle+((360.0/loop_for)*float(i)))*ang_multi;	//we use the roll angle vector to make it speeen
 		/*
 			Using this method we can actuall keep proper pitch/yaw angles on the turning, unlike say fantasy blade or mlynar newspaper's special swing thingy.
 		*/
@@ -3197,12 +3949,12 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 
-	if(b_allow_final[npc.index])
+	if(b_allow_final)
 	{
 		int Health_After_Damage = RoundToCeil(float(Health)-damage);
 		if(Health_After_Damage <= 5)
 		{
-			i_current_Text[npc.index] = 0;
+			i_current_Text = 0;
 			npc.m_flNextThinkTime = FAR_FUTURE;
 			b_NpcIsInvulnerable[npc.index] = true;
 			damage = 0.0;
@@ -3220,7 +3972,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			float timer = RaidModeTime - GetGameTime();
 			if(timer < 75.0)	//to avoid the "you are running out of time" thing.
 				timer = 75.0;
-			fl_raidmode_freeze[npc.index] = timer;
+			fl_raidmode_freeze = timer;
 
 			RaidModeTime +=0.1;
 
@@ -3243,19 +3995,18 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		//CPrintToChatAll("Damage nulified");
 		return Plugin_Changed;
 	}
-	if(!b_allow_final_invocation[npc.index] && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=60 && npc.m_flDoingAnimation < GetGameTime(npc.index))
+	if(!b_allow_final_invocation && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=40 && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		b_allow_final_invocation[npc.index] = true;
+		b_allow_final_invocation = true;
 	}
-
-	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30) //Anger after half hp
+	if(!npc.Anger && (((MaxHealth/2) >= Health) || b_force_transformation ) && i_current_wave[npc.index] >=20) //Anger after half hp
 	{
 		Kill_Abilities(npc);	//force kill abilities when entering a transformation.
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 
 		npc.m_bisWalking = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 		npc.m_flSpeed = 0.0;
@@ -3288,7 +4039,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.m_flNextChargeSpecialAttack = GameTime + 2.5;
 		
 
-		i_ranged_ammo[npc.index] += RoundToFloor(i_ranged_ammo[npc.index]*0.5);
+		npc.m_iRangedAmmo += RoundToFloor(npc.m_iRangedAmmo*0.5);
 
 	}
 	
@@ -3303,6 +4054,9 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 }
 static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 {
+	if(b_force_transformation)
+		return;
+
 	if(client > MaxClients)
 		return;
 
@@ -3341,8 +4095,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 
-		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 	
 		
 		case WEAPON_KIT_FRACTAL: 
 		{
@@ -3393,6 +4146,8 @@ static void Kill_Abilities(Twirl npc)
 	SDKUnhook(npc.index, SDKHook_Think, Retreat_Laser_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Lunar_Radiance_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, IonicFracture_Think);
 
 	for(int i= 0 ; i < 3 ; i ++)
 	{
@@ -3403,14 +4158,22 @@ static void Kill_Abilities(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
-	npc.m_flRangedArmor = 1.0;
-	npc.m_flMeleeArmor = 1.5;
+	npc.m_flIonicFractureEndTimer = 0.0;
 
 	StopSound(npc.index, SNDCHAN_STATIC, "player/taunt_surgeons_squeezebox_music.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
 	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_LASER_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND2);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_IONIC_FRACTURE_PASSIVE_SOUND3);
 
 	npc.m_bInKame = false;
 }
@@ -3429,23 +4192,31 @@ static void NPC_Death(int entity)
 	ExpidonsaRemoveEffects(entity);
 
 
-	int ent = EntRefToEntIndex(i_hand_particles[npc.index]);
+	int ent = EntRefToEntIndex(npc.m_iHandParticle);
 	if(IsValidEntity(ent))
 	{
 		RemoveEntity(ent);
 	}
-	i_hand_particles[npc.index] = INVALID_ENT_REFERENCE;
+	npc.m_iHandParticle = INVALID_ENT_REFERENCE;
 
-	b_tripple_raid[npc.index] = false;
+	b_tripple_raid = false;
 
 
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 
-	if(!b_wonviakill && !b_wonviatimer && !b_allow_final[npc.index])
+	if(!b_wonviakill && !b_wonviatimer && !b_allow_final)
 	{	
 		int wave = i_current_wave[npc.index];
-		if(wave <=15)
+		if(b_force_transformation)
+		{
+			switch(GetRandomInt(0, 1))
+			{
+				case 0: Twirl_Lines(npc, "{crimson}Bye");
+				case 1: Twirl_Lines(npc, "{crimson}I'm Leaving.");
+			}
+		}
+		else if(wave <=10)
 		{
 			switch(GetRandomInt(0, 4))
 			{
@@ -3456,7 +4227,7 @@ static void NPC_Death(int entity)
 				case 4: Twirl_Lines(npc, "How interesting..");
 			}
 		}
-		else if(wave <=30)
+		else if(wave <=20)
 		{
 			switch(GetRandomInt(0, 4))
 			{
@@ -3467,7 +4238,7 @@ static void NPC_Death(int entity)
 				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
 			}
 		}
-		else if(wave <=45)
+		else if(wave <=30)
 		{
 			switch(GetRandomInt(0, 4))
 			{
@@ -3480,7 +4251,7 @@ static void NPC_Death(int entity)
 		}
 		else
 		{
-			if(b_tripple_raid[npc.index])
+			if(b_tripple_raid)
 			{
 				switch(GetRandomInt(0, 2))
 				{
@@ -3545,14 +4316,132 @@ static bool Similar(float val1, float val2)
 
 static void Twirl_Lines(Twirl npc, const char[] text)
 {
-	if(b_test_mode[npc.index])
+	if(b_test_mode)
 		return;
 
 	CPrintToChatAll("%s %s", npc.GetName(), text);
 }
-void Twirl_OnStellaKarlasDeath(int karlas)
+static float[] GetNPCAngles(CClotBody npc)
 {
-	int Twirl_Index = -1;
+	float Angles[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+			
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	Angles[0] = flPitch;
+
+	return Angles;
+}
+static bool HandleRaidTimer(Twirl npc)
+{
+	if(RaidModeTime < GetGameTime())
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		int wave = i_current_wave[npc.index];
+		b_wonviatimer = true;
+		if(b_force_transformation)
+		{
+			Twirl_Lines(npc, "Begone. Times Up.");
+		}
+		else if(wave <=40)
+		{
+			switch(GetRandomInt(0, 9))
+			{
+				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
+				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
+				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
+				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
+				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
+				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
+				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
+				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
+				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
+				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+			}
+		}
+		else	//freeplay
+		{
+			switch(GetRandomInt(0, 2))
+			{
+				case 0: Twirl_Lines(npc, "Well considering you all were just some randoms this was to be expected");
+				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
+				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
+			}
+		}
+		
+		return true;
+	}
+	return false;
+}
+void Twirl_OnStellaKarlasDeath()
+{
+	int Raids[3];
+	Raids = i_GetAllPartiesInvolved();
+	//twirl is dead, simple.
+
+	int Twirl_index = Raids[0],
+		Stella_index = Raids[1],
+		Karlas_index = Raids[2];
+
+	if(!IsValidEntity(Twirl_index))
+		return;
+
+	Twirl npc = view_as<Twirl>(Twirl_index);
+
+	//stella died first.
+	if(!Stella_index && Karlas_index)
+	{
+		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
+
+		Set_Karlas_Ally(npc.index, Karlas_index, i_current_wave[npc.index], false, true);
+		Stella stella = view_as<Stella>(npc.index);
+		Karlas karl = view_as<Karlas>(Karlas_index);
+		karl.m_flNextRangedBarrage_Singular -= 15.0;
+		karl.Anger = true;
+		stella.m_bKarlasRetreat = false;
+	}
+	//Karlas died first
+	else if(Stella_index && !Karlas_index)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0: Twirl_Lines(npc, "Hey, just because hes the only man here doesn't mean he should have died first.");
+			case 1: Twirl_Lines(npc, "Oh, neat, now {aqua}Stella{snow}'s all mine.");
+			case 2: Twirl_Lines(npc, "Huh, there goes my rival.");
+		}
+		
+	}
+	//both are dead.
+	else if(!Stella_index && !Karlas_index)
+	{
+		b_force_transformation = true;
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
+			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
+			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
+		}
+		b_tripple_raid = false;
+		if(fl_Extra_Damage[npc.index] < 1.0)
+			fl_Extra_Damage[npc.index] = 1.0;
+		if(fl_Extra_Speed[npc.index] < 1.0)
+			fl_Extra_Speed[npc.index] = 1.0;
+		npc.m_iRangedAmmo += RoundToFloor(npc.m_iRangedAmmo*0.5);
+
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+		NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+		NpcStats_RuinaAgilityStengthen(npc.index, 1.2); //20% speed bonus, going bellow 1.0 will make npc's slower
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+		NpcStats_RuinaDamageStengthen(npc.index, 0.2);	//20% dmg bonus
+	}
+}
+static int[] i_GetAllPartiesInvolved()
+{
+	int BothAlive[3] = {0, 0, 0};
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
@@ -3561,48 +4450,24 @@ void Twirl_OnStellaKarlasDeath(int karlas)
 			char npc_classname[60];
 			NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 
-			if(entity != INVALID_ENT_REFERENCE && (StrEqual(npc_classname, "npc_ruina_twirl") && IsEntityAlive(entity)))
+			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcHasDied[entity])
 			{
-				Twirl_Index = entity;
-				break;
+				if(StrEqual(npc_classname, "npc_ruina_twirl"))
+				{
+					BothAlive[0] = entity;
+				}
+				else if(StrEqual(npc_classname, "npc_stella"))
+				{
+					BothAlive[1] = entity;
+				}
+				else if(StrEqual(npc_classname, "npc_karlas"))
+				{
+					BothAlive[2] = entity;
+				}
 			}
 		}
 	}
-	
-	//twirl is dead, simple.
-	if(!IsValidEntity(Twirl_Index))
-		return;
-
-	Twirl npc = view_as<Twirl>(Twirl_Index);
-	//karlas is dead.
-	//-2 == karlas is dead 100%
-	//is valid ent is for when stella dies, we need to check if karlas is still valid or not.
-	//TECHNICALLY, its possible for karlas to die first, meaning stella is still alive when twirl unlocks herself.
-	//but like, when the fuck is karlas ever killed first????
-	if(karlas == -2 || !IsValidEntity(karlas))
-	{
-		switch(GetRandomInt(0, 2))
-		{
-			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
-			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
-			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
-		}
-		b_tripple_raid[Twirl_Index] = false;
-		fl_Extra_Damage[Twirl_Index] = 1.0;
-		fl_Extra_Speed[Twirl_Index]  = 1.0;
-		
-		return;
-	}
-	else
-	{
-		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
-	}
-	Set_Karlas_Ally(Twirl_Index, karlas, i_current_wave[Twirl_Index], false, true);
-	Stella stella = view_as<Stella>(Twirl_Index);
-	Karlas karl = view_as<Karlas>(karlas);
-	karl.m_flNextRangedBarrage_Singular -= 15.0;
-	karl.Anger = true;	//he won't transform tho
-	stella.m_bKarlasRetreat = false;
+	return BothAlive;
 }
 
 

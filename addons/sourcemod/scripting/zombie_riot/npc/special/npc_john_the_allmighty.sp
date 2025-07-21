@@ -134,7 +134,7 @@ methodmap JohnTheAllmighty < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		npc.m_iActualHealth = StringToInt(MinibossHealthScaling(160));
+		npc.m_iActualHealth = StringToInt(MinibossHealthScaling(160.0));
 
 		npc.m_flNextMeleeAttack = 0.0;
 		for(int client1 = 1; client1 <= MaxClients; client1++)
@@ -231,8 +231,8 @@ methodmap JohnTheAllmighty < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(JohnTheAllmighty_ClotThink);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, JohnTheAllmighty_OnTakeDamagePost);	
 		
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		
@@ -323,11 +323,11 @@ public void JohnTheAllmighty_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		JohnTheAllmightySelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}

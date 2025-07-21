@@ -5,7 +5,7 @@
 #define SOLDINE_MAX_ROCKETJUMP_CHARGE 65.0
 #define SOLDINE_ROCKET_JUMP_DURATION_MAX 2.0
 
-static Handle Soldine_Timer[MAXTF2PLAYERS] = {null, ...};
+static Handle Soldine_Timer[MAXPLAYERS] = {null, ...};
 static bool Precached;
 float Soldine_HudDelay[MAXPLAYERS+1];
 static int ParticleRef[MAXPLAYERS+1];

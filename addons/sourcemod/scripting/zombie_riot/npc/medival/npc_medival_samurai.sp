@@ -290,9 +290,9 @@ public void MedivalSamurai_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			//Target close enough to hit
@@ -346,8 +346,12 @@ public void MedivalSamurai_ClotThink(int iNPC)
 									char classname[32];
 									GetEntityClassname(weapon, classname, 32);
 									
-									int weapon_slot = TF2_GetClassnameSlot(classname);
-									
+									int weapon_slot = TF2_GetClassnameSlot(classname, weapon);
+										
+									if(i_OverrideWeaponSlot[weapon] != -1)
+									{
+										weapon_slot = i_OverrideWeaponSlot[weapon];
+									}
 									if(weapon_slot != 2 || i_IsWandWeapon[weapon])
 									{
 										Bonus_damage = 1.25;
@@ -388,8 +392,8 @@ public void MedivalSamurai_ClotThink(int iNPC)
 	else
 	{
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

@@ -7,7 +7,7 @@
 #define SOUND_BUBBLE_ABILITY "misc/halloween/spell_lightning_ball_cast.wav"
 
 // don't ask why please i NEED THESE IT TOOK ME LIKE 6 HOURS
-static float sf_Bubble_M2Duration[MAXTF2PLAYERS];
+static float sf_Bubble_M2Duration[MAXPLAYERS];
 static float sf_BubbleTime[MAXENTITIES];
 static float sf_BubbleSpeed[MAXENTITIES];
 static float sf_BubbleDamage[MAXENTITIES];
@@ -48,7 +48,7 @@ public void Weapon_Wand_Bubble_Wand(int client, int weapon, bool crit)
 	{
 		float thetime;
 		int pap = 0;
-		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		switch(pap)
 		{
 			case 1:
@@ -140,7 +140,7 @@ public Action Timer_BubbleWand(Handle timer, int ent)
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", startPosition);
 
 	int pap = 0;
-	pap = RoundFloat(Attributes_Get(sf_BubbleWeapon[projectile], 122, 0.0)); 
+	pap = RoundFloat(Attributes_Get(sf_BubbleWeapon[projectile], Attrib_PapNumber, 0.0)); 
 	int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 	if(sf_BubbleTime[projectile] > GetGameTime())
 	{
@@ -257,7 +257,7 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 	if(weapon >= MaxClients)
 	{
 		int pap = 0;
-		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 		// This is for the ability's mana cost to scale with mana cost modifiers
 		int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
@@ -352,7 +352,7 @@ public void BubbleWand_Logic(int entity, int enemy, float damage, int weapon)
 	}
 
 	int pap = 0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	float time = 4.0;
 	switch(pap)
 	{

@@ -325,7 +325,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 	if (InMadness[client])
 		return;
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -515,7 +515,7 @@ public void Event_Knife_Touch(int entity, int target)
 	}
 }
 
-float f_AttackDelayKnife[MAXTF2PLAYERS];
+float f_AttackDelayKnife[MAXPLAYERS];
 
 public void Survival_Knife_ThrowBlade(int client, int weapon, const char[] classname, bool &result)
 {

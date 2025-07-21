@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-bool b_IsInTutorialMode[MAXTF2PLAYERS];
-int i_TutorialStep[MAXTF2PLAYERS];
-bool b_GrantFreeItemsOnce[MAXTF2PLAYERS];
+bool b_IsInTutorialMode[MAXPLAYERS];
+int i_TutorialStep[MAXPLAYERS];
+bool b_GrantFreeItemsOnce[MAXPLAYERS];
 
 static Handle SyncHud;
 

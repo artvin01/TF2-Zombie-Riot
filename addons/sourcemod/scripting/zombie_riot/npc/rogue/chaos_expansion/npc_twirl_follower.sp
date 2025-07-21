@@ -235,7 +235,7 @@ methodmap TwirlFollower < CClotBody
 	}
 	public int i_weapon_type()
 	{
-		int wave = ZR_Waves_GetRound()+1;
+		int wave = Waves_GetRoundScale()+1;
 
 		if(this.m_fbGunout)	//ranged
 		{
@@ -493,11 +493,11 @@ static void ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_,vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 			
 		npc.m_iTargetWalkTo = -1;
@@ -545,7 +545,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.m_bAllowBackWalking = false;
 				}
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				return;
 			}
 			npc.m_bAllowBackWalking = false;
@@ -658,7 +658,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 						float Kb = 450.0;
 
 						Custom_Knockback(npc.index, target, Kb, true);
-						if(target < MaxClients)
+						if(target <= MaxClients)
 						{
 							TF2_AddCondition(target, TFCond_LostFooting, 0.5);
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
@@ -676,7 +676,7 @@ static void Self_Defense(TwirlFollower npc, float flDistanceToTarget, int Primar
 			{
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+				npc.SetGoalVector(vBackoffPos, true);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENALTY;
 			}
@@ -718,22 +718,22 @@ static bool KeepDistance(TwirlFollower npc, float flDistanceToTarget, int Primar
 			}
 			else
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-			npc.m_bPathing = true;
+			
 			npc.m_bAllowBackWalking=false;
 		}		
 	}
 	else
 	{
 		npc.StartPathing();
-		npc.m_bPathing = true;
+		
 		npc.m_bAllowBackWalking=false;
 	}
 
@@ -783,7 +783,7 @@ static bool Laser_Initiate(TwirlFollower npc)
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	npc.m_flLaserDuration = GameTime + TWIRL_FOLLOWER_LASER_DURATION + 0.75;
@@ -794,25 +794,25 @@ static bool Laser_Initiate(TwirlFollower npc)
 	b_animation_set[npc.index] = false;
 	npc.m_flLaserAngle = GetRandomFloat(0.0, 360.0);
 
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 	npc.m_flSpeed = 0.0;
 
 	npc.m_bisWalking = false;
 
-	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
-	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick_Follower);
+	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick_Follower);
 
 	return true;
 }
-static Action Magia_Overflow_Tick(int iNPC)
+static Action Magia_Overflow_Tick_Follower(int iNPC)
 {
 	TwirlFollower npc = view_as<TwirlFollower>(iNPC);
 	float GameTime = GetGameTime(npc.index);
 
 	if(npc.m_flLaserDuration < GameTime)
 	{
-		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick_Follower);
 
 		npc.m_bisWalking = true;
 		npc.m_flSpeed = fl_npc_basespeed;
@@ -820,7 +820,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 
 		StopCustomSound(npc.index, SNDCHAN_STATIC, g_LaserLoop[GetRandomInt(0, sizeof(g_LaserLoop) - 1)]);
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");

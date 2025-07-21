@@ -120,7 +120,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 		}
 	}
 }
-
+#define DEFAULTMAXRAID_SHIELDCAP 250
 void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
 	float CapacityMaxMulti = float(CountPlayersOnRed(_, true)) / 7.0;
@@ -131,8 +131,8 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	}
 	if(b_thisNpcIsARaid[entity])
 	{
-		MaxShieldCapacity = 250;
-		if(amount >= 250)
+		MaxShieldCapacity = DEFAULTMAXRAID_SHIELDCAP;
+		if(amount >= DEFAULTMAXRAID_SHIELDCAP)
 			MaxShieldCapacity = amount;
 		if(Construction_Mode())
 			MaxShieldCapacity = 99999999; //no limit.
@@ -144,7 +144,7 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	if(MaxShieldCapacity < 1)
 		MaxShieldCapacity = 1;
 
-	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < 250)
+	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < DEFAULTMAXRAID_SHIELDCAP)
 	{
 		return; //do not give shield.
 	}
@@ -182,7 +182,10 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 		SetVariantString("1.0");
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	if(alpha == 255)
+		SetEntityRenderMode(Shield, RENDER_NORMAL);
+	else
+		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
 	SetEntityRenderFx(Shield, RENDERFX_NONE);
 	if(npc.m_iBleedType == BLEEDTYPE_VOID)

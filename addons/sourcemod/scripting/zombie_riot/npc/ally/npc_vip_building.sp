@@ -1,12 +1,86 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool IsActive;
-static int NPCId;
+static int IsActive;
+//static int NPCId;
 
+void VIPBuilding_PluginStart()
+{
+	CEntityFactory factory = new CEntityFactory("trigger_towerdefense", OnCreate, OnDestroy);
+	factory.DeriveFromClass("trigger_multiple");
+	factory.BeginDataMapDesc()
+	.DefineIntField("m_iPathAlt")
+	.DefineIntField("m_iPathNumber")
+	.EndDataMapDesc();
+	factory.Install();
+}
+static void OnCreate(int entity)
+{
+	HookSingleEntityOutput(entity, "OnStartTouch", Touch_TowerDefenseTrigger, false);
+}
+
+static void OnDestroy(int entity)
+{
+	UnhookSingleEntityOutput(entity, "OnStartTouch", Touch_TowerDefenseTrigger);
+}
+
+public Action Touch_TowerDefenseTrigger(const char[] output, int entity, int caller, float delay)
+{
+	if(caller > 0 && caller <= MAXENTITIES)
+	{
+		if(!b_ThisWasAnNpc[caller])
+			return Plugin_Continue;
+
+		if(!IsEntityTowerDefense(caller))
+			return Plugin_Continue;
+
+		//already done.
+		if(GetEntProp(caller, Prop_Data, "m_iTowerdefense_CheckpointAt") == -1)
+			return Plugin_Continue;
+		//char name[64];
+		//GetEntProp(entity, Prop_Data, "m_iPathAlt"); //blah blah if not on same alth path dont do shit.
+
+		//See if we get a number higher then us.
+		if(GetEntProp(entity, Prop_Data, "m_iPathNumber") != GetEntProp(caller, Prop_Data, "m_iTowerdefense_CheckpointAt") + 1)
+			return Plugin_Continue;
+		//if this isnt their next touch, dont do anything.
+		
+		CClotBody npc = view_as<CClotBody>(caller);
+		npc.StartPathing();
+
+		//set the checkpoint they are are currently at, set the next.
+
+		static char CheckpointGet[32];
+		//check for an even higher number once obtained.
+		Format(CheckpointGet, sizeof(CheckpointGet), "zr_checkpoint_%i", GetEntProp(entity, Prop_Data, "m_iPathNumber") + 1);
+		int EntityCheckpoint = FindInfoTargetInt(CheckpointGet);
+		if(!IsValidEntity(EntityCheckpoint))
+		{
+			SetEntProp(caller, Prop_Data, "m_iTowerdefense_CheckpointAt", -1);
+			npc.m_iTarget = VIPBuilding_Get();
+			if(IsValidEntity(npc.m_iTarget))
+			{
+				static float flNextPos[3];
+				GetEntPropVector(npc.m_iTarget, Prop_Data, "m_vecAbsOrigin", flNextPos);
+				npc.SetGoalTowerDefense(flNextPos);
+				npc.m_iCheckpointTarget = npc.m_iTarget;
+			}
+		}
+		else
+		{
+			SetEntProp(caller, Prop_Data, "m_iTowerdefense_CheckpointAt", GetEntProp(entity, Prop_Data, "m_iPathNumber"));
+			static float flNextPos[3];
+			GetEntPropVector(EntityCheckpoint, Prop_Data, "m_vecAbsOrigin", flNextPos);
+			npc.SetGoalTowerDefense(flNextPos);
+			npc.m_iCheckpointTarget = EntityCheckpoint;
+			//get next goal.
+		}
+	}
+	return Plugin_Continue;
+}
 void VIPBuilding_MapStart()
 {
-	IsActive = false;
+	IsActive = 0;
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "VIP Building, The Objective");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vip_building");
@@ -15,14 +89,15 @@ void VIPBuilding_MapStart()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
 }
-
+/*
 int VIPBuilding_ID()
 {
 	return NPCId;
 }
 
+*/
 static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally,  const char[] data)
 {
 	return VIPBuilding(client, vecPos, vecAng, data);
@@ -33,7 +108,12 @@ methodmap VIPBuilding < BarrackBody
 	{
 		if(data[0])
 			ExplodeStringFloat(data, " ", vecPos, sizeof(vecPos));
-		
+
+		int EndFound = FindInfoTargetInt("zr_checkpoint_final");
+		if(IsValidEntity(EndFound))
+		{
+			GetEntPropVector(EndFound, Prop_Data, "m_vecAbsOrigin", vecPos);
+		}
 		VIPBuilding npc = view_as<VIPBuilding>(BarrackBody(client, vecPos, vecAng, "10000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0, "models/pickups/pickup_powerup_resistance.mdl"));
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
@@ -50,9 +130,9 @@ methodmap VIPBuilding < BarrackBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		func_NPCDeath[npc.index] = VIPBuilding_NPCDeath;
 		func_NPCThink[npc.index] = VIPBuilding_ClotThink;
@@ -60,7 +140,8 @@ methodmap VIPBuilding < BarrackBody
 
 		npc.m_flSpeed = 0.0;
 
-		IsActive = true;
+		IsActive = EntIndexToEntRef(npc.index);
+		DoTriggerTouchLogic_Towerdefense();
 		return npc;
 	}
 }
@@ -93,26 +174,21 @@ public void VIPBuilding_ClotThink(int iNPC)
 
 			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-			health -= maxhealth / 50;
+			health -= maxhealth / 25;
 
 			if(health > 0)
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			}
-			else  if(Waves_Started())
+			else
 			{
-				int endround = CreateEntityByName("game_round_win"); 
-				DispatchKeyValue(endround, "force_map_reset", "1");
-				SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-				DispatchSpawn(endround);
-				AcceptEntityInput(endround, "RoundWin");
-				Music_RoundEnd(endround);
+				SmiteNpcToDeath(npc.index);
 			}
 		}
 		else
 		{
 			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-			float health = float(maxhealth) / 500.0;
+			float health = float(maxhealth) / 5000.0;
 
 			HealEntityGlobal(npc.index, npc.index, health, _, _, _, _);
 		}
@@ -123,7 +199,7 @@ void VIPBuilding_NPCDeath(int entity)
 {
 	VIPBuilding npc = view_as<VIPBuilding>(entity);
 
-	IsActive = false;
+	IsActive = 0;
 
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
@@ -131,12 +207,7 @@ void VIPBuilding_NPCDeath(int entity)
 	BarrackBody_NPCDeath(npc.index);
 	if(Waves_Started())
 	{
-		int endround = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(endround, "force_map_reset", "1");
-		SetEntProp(endround, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(endround);
-		AcceptEntityInput(endround, "RoundWin");
-		Music_RoundEnd(endround);
+		ForcePlayerLoss();
 	}
 }
 
@@ -148,5 +219,52 @@ void VIPBuilding_ClotTakeDamage(int victim, int &attacker, int &inflictor, float
 
 bool VIPBuilding_Active()
 {
-	return IsActive;
+	return view_as<bool>(IsActive);
+}
+int VIPBuilding_Get()
+{
+	return EntRefToEntIndex(IsActive);
+}
+
+
+void DoTriggerTouchLogic_Towerdefense()
+{
+
+	int entity = -1;
+	static float Pos[3];
+	while((entity=FindEntityByClassname(entity, "info_target")) != -1)
+	{
+		static char buffer[32];
+		GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+		if(StrContains(buffer, "zr_checkpoint_") == -1)
+			continue;
+			
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Pos);
+		int trigger_entity = CreateEntityByName("trigger_towerdefense");
+		if(trigger_entity != -1)
+		{
+			DispatchKeyValueVector(trigger_entity, "origin", Pos);
+			DispatchKeyValue(trigger_entity, "spawnflags", "3");
+			DispatchKeyValue(trigger_entity, "targetname", buffer);
+
+			DispatchSpawn(trigger_entity);
+			ActivateEntity(trigger_entity);    
+
+			SetEntityModel(trigger_entity, "models/error.mdl");
+			SetEntProp(trigger_entity, Prop_Send, "m_nSolidType", 2);
+			SetEntityFlags(trigger_entity, FL_NPC);
+			SetEntityCollisionGroup(trigger_entity, 5);
+			int number = StringToInt(buffer[14]);
+			SetEntProp(trigger_entity, Prop_Data, "m_iPathNumber", number);
+			
+			SetEntPropVector(trigger_entity, Prop_Data, "m_vecMinsPreScaled", {0.0,0.0,0.0});
+			SetEntPropVector(trigger_entity, Prop_Data, "m_vecMins", {0.0,0.0,0.0});
+			
+			SetEntPropVector(trigger_entity, Prop_Data, "m_vecMaxsPreScaled", {5.0,5.0,5.0});
+			SetEntPropVector(trigger_entity, Prop_Data, "m_vecMaxs", {5.0,5.0,5.0});
+
+			SetEntProp(trigger_entity, Prop_Send, "m_fEffects", GetEntProp(trigger_entity, Prop_Send, "m_fEffects") | EF_NODRAW); 
+			TeleportEntity(trigger_entity, Pos, NULL_VECTOR, NULL_VECTOR);
+		}
+	}
 }

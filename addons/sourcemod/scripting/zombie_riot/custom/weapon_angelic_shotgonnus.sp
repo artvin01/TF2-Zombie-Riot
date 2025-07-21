@@ -1,6 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-static float f_AngelicShotgunHudCD[MAXTF2PLAYERS];
+static float f_AngelicShotgunHudCD[MAXPLAYERS];
 #define ANGELIC_STACKS_UNTILL_DOUBLE 2
 #define ANGELIC_ABILITY_CHARGE_0 10
 #define ANGELIC_ABILITY_CHARGE_1 32
@@ -133,7 +133,7 @@ public void Weapon_AngelicShotgun(int attacker, float &damage, int damagetype)
 static int Fantasy_Blade_Get_Pap(int weapon)
 {
 	int pap=0;
-	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	return pap;
 }
 

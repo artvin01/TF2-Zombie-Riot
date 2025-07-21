@@ -66,10 +66,10 @@ enum struct MealEnum
 
 static StringMap LevelBalance;
 static ArrayList MealList;
-static int CurrentMeal[MAXTF2PLAYERS] = {-1, ...};
-static int CurrentChoice[MAXTF2PLAYERS] = {-1, ...};
-static int CurrentLevelBuff[MAXTF2PLAYERS];
-static int CurrentFood[MAXTF2PLAYERS][16];
+static int CurrentMeal[MAXPLAYERS] = {-1, ...};
+static int CurrentChoice[MAXPLAYERS] = {-1, ...};
+static int CurrentLevelBuff[MAXPLAYERS];
+static int CurrentFood[MAXPLAYERS][16];
 
 void Cooking_ConfigSetup()
 {

@@ -23,8 +23,6 @@ Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allo
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
 
-if you for some ungodly reason need 100 player zr, grab the 100 player version, otherwise use the other version for more performance and less ram usage.
-
 
 ### Where can I see this gamemode in action?
 
@@ -46,6 +44,7 @@ Main Servers:
 ## cvar's
 
 Check the Cvar File.
+shared/convars.sp
  
 ## Commands
 
@@ -92,13 +91,17 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)
 - [Load Soundscript](https://github.com/haxtonsale/LoadSoundScript)
+- [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
 
 If you want to compile, this include is needed!
 - [More Colours](https://github.com/DoctorMcKay/sourcemod-plugins)
 
 
 ## Optional Things
-- [Max speed unlocker/Edict Alloc](https://github.com/Mikusch/SourceScramble-Patches) (install both speed unlocker and Alloc)
+If youre above 16 players, i recommend these plugins extra:
+- [Any Tickrate modifier](https://github.com/Mikusch/SM-TickrateChanger)
+This is an example for a LINUX one.
+Any one will work.
 ## Credits
 
 Current coders that in anyway actively helped, in order of how much:

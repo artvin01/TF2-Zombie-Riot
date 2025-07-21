@@ -52,25 +52,40 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Quick Revive",
-	"Juggernog",
-	"Double Tap",
-	"Speed Cola",
-	"Deadshot Daiquiri",
-	"Widows Wine",
-	"Recycle Poire"
+	"Karlas's Regene Strawberry",
+	"Purge's Cerveza Obsidian",
+	"Bob's Banana Juice",
+	"Twirl's Ginger Ale",
+	"Waldch's Root Beer",
+	"Nemal's Teslar Mule",
+	"Castellan's Corvus Stout",
+	"Silvester's Energy Drink"
 };
 
 public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
-	"Quick Revive Recieved",
-	"Juggernog Recieved",
-	"Double Tap Recieved",
-	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved",
-	"Widows Wine Recieved",
-	"Recycle Poire Recieved"
+	"Karlas's Regene Strawberry Recieved",
+	"Purge's Cerveza Obsidian Recieved",
+	"Bob's Banana Juice Recieved",
+	"Twirl's Ginger Ale Recieved",
+	"Waldch's Root Beer Recieved",
+	"Nemal's Teslar Mule Recieved",
+	"Castellan's Corvus Stout Recieved",
+	"Silvester's Energy Drink Recieved"
+};
+
+public const char PerkNames_two_Letter[][] =
+{
+	"--",
+	"RB",
+	"CO",
+	"BJ",
+	"GA",
+	"RS",
+	"TM",
+	"CS",
+	"ED"
 };
 
 enum
@@ -157,7 +172,7 @@ enum
 	WEAPON_RAPIER = 80,
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
-	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
+	UNUSED_WEAPON_83 = 83,
 	WEAPON_SICCERINO = 84,
 	WEAPON_DIMENSION_RIPPER = 85,
 	WEAPON_HELL_HOE_1 = 86,
@@ -222,6 +237,13 @@ enum
 	WEAPON_REIUJI_WAND = 145,
 	WEAPON_CHEESY_MELEE = 146,
 	WEAPON_CHEESY_PRIMARY = 147,
+	WEAPON_CHEMICAL_THROWER = 148,
+	WEAPON_RITUALIST = 149,
+	WEAPON_SHERRIF = 150,
+	WEAPON_SHERRIF_LEVERACTION = 151,
+	WEAPON_CHEESY_SECONDARY = 152
+
+	//UNUSED_WEAPON_83 is unused!!
 }
 
 enum
@@ -267,10 +289,10 @@ ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
-ConVar zr_enemymulticap;
+ConVar zr_maxscaling_untillhp;
 ConVar zr_raidmultihp;
-ConVar zr_multi_maxcap;
-ConVar zr_multi_multiplier;
+ConVar zr_multi_maxenemiesalive_cap;
+ConVar zr_multi_scaling;
 int CurrentGame = -1;
 bool b_GameOnGoing = true;
 //bool b_StoreGotReset = false;
@@ -300,10 +322,10 @@ int PlayersAliveScaling;
 int PlayersInGame;
 bool ZombieMusicPlayed;
 int GlobalIntencity;
-bool b_HasBeenHereSinceStartOfWave[MAXTF2PLAYERS];
+bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
 Cookie CookieScrap;
 Cookie CookieXP;
-ArrayList Loadouts[MAXTF2PLAYERS];
+ArrayList Loadouts[MAXPLAYERS];
 
 float f_RingDelayGift[MAXENTITIES];
 float Resistance_for_building_High[MAXENTITIES];
@@ -322,21 +344,21 @@ int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];
 char WhatDifficultySetting[32];
-float healing_cooldown[MAXTF2PLAYERS];
-float f_TimeAfterSpawn[MAXTF2PLAYERS];
-float WoodAmount[MAXTF2PLAYERS];
-float FoodAmount[MAXTF2PLAYERS];
-float GoldAmount[MAXTF2PLAYERS];
-int SupplyRate[MAXTF2PLAYERS];
+float healing_cooldown[MAXPLAYERS];
+float f_TimeAfterSpawn[MAXPLAYERS];
+float WoodAmount[MAXPLAYERS];
+float FoodAmount[MAXPLAYERS];
+float GoldAmount[MAXPLAYERS];
+int SupplyRate[MAXPLAYERS];
 //int i_PreviousBuildingCollision[MAXENTITIES];
 bool b_AlaxiosBuffItem[MAXENTITIES];
-int i_Reviving_This_Client[MAXTF2PLAYERS];
-float f_Reviving_This_Client[MAXTF2PLAYERS];
-float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
-int i_MaxArmorTableUsed[MAXTF2PLAYERS];
+int i_Reviving_This_Client[MAXPLAYERS];
+float f_Reviving_This_Client[MAXPLAYERS];
+float f_HudCooldownAntiSpamRaid[MAXPLAYERS];
+int i_MaxArmorTableUsed[MAXPLAYERS];
 float ResourceRegenMulti;
 bool Barracks_InstaResearchEverything;
-bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
+bool b_HoldingInspectWeapon[MAXPLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -346,34 +368,34 @@ bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 #define ZR_ARMOR_DAMAGE_REDUCTION 0.75
 #define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
 
-float Armor_regen_delay[MAXTF2PLAYERS];
+float Armor_regen_delay[MAXPLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 //ConVar CvarSvRollagle; // sv_rollangle
-//int i_SvRollAngle[MAXTF2PLAYERS];
+//int i_SvRollAngle[MAXPLAYERS];
 
 	
-int CashSpent[MAXTF2PLAYERS];
-int CashSpentGivePostSetup[MAXTF2PLAYERS];
-bool CashSpentGivePostSetupWarning[MAXTF2PLAYERS];
-int CashSpentTotal[MAXTF2PLAYERS];
-int CashSpentLoadout[MAXTF2PLAYERS];
-int CashRecievedNonWave[MAXTF2PLAYERS];
-bool StarterCashMode[MAXTF2PLAYERS] = {true, ...};
-int Scrap[MAXTF2PLAYERS];
-int PlayStreak[MAXTF2PLAYERS];
+int CashSpent[MAXPLAYERS];
+int CashSpentGivePostSetup[MAXPLAYERS];
+bool CashSpentGivePostSetupWarning[MAXPLAYERS];
+int CashSpentTotal[MAXPLAYERS];
+int CashSpentLoadout[MAXPLAYERS];
+int CashRecievedNonWave[MAXPLAYERS];
+bool StarterCashMode[MAXPLAYERS] = {true, ...};
+int Scrap[MAXPLAYERS];
+int PlayStreak[MAXPLAYERS];
 int Ammo_Count_Ready;
-int Ammo_Count_Used[MAXTF2PLAYERS];
-//float Armor_Ready[MAXTF2PLAYERS];
+int Ammo_Count_Used[MAXPLAYERS];
+//float Armor_Ready[MAXPLAYERS];
 int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...}; 
 
-int Armour_Level_Current[MAXTF2PLAYERS];
+int Armour_Level_Current[MAXPLAYERS];
 int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
-float LastStoreMenu[MAXTF2PLAYERS];
-bool LastStoreMenu_Store[MAXTF2PLAYERS];
+float LastStoreMenu[MAXPLAYERS];
+bool LastStoreMenu_Store[MAXPLAYERS];
 
 //We kinda check these almost 24/7, its better to put them into an array!
 const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
@@ -384,16 +406,16 @@ int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
 
 int StoreWeapon[MAXENTITIES];
-int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
-float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
+int i_HealthBeforeSuit[MAXPLAYERS]={0, ...};
+float f_HealthBeforeSuittime[MAXPLAYERS]={0.0, ...};
 
-int Level[MAXTF2PLAYERS];
-int XP[MAXTF2PLAYERS];
-int i_ExtraPlayerPoints[MAXTF2PLAYERS];
-int i_PreviousPointAmount[MAXTF2PLAYERS];
+int Level[MAXPLAYERS];
+int XP[MAXPLAYERS];
+int i_ExtraPlayerPoints[MAXPLAYERS];
+int i_PreviousPointAmount[MAXPLAYERS];
 int SpecialLastMan;
 
-bool WaitingInQueue[MAXTF2PLAYERS];
+bool WaitingInQueue[MAXPLAYERS];
 float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
@@ -412,13 +434,11 @@ float MultiGlobalHealthBoss = 0.25;
 float MultiGlobalHighHealthBoss = 0.34;
 //This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
 
-float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
-float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
+float f_WasRecentlyRevivedViaNonWave[MAXPLAYERS];
+float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
 
-float f_MedigunChargeSave[MAXTF2PLAYERS][4];
-float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
-
-int Building_Mounted[MAXENTITIES];
+float f_MedigunChargeSave[MAXPLAYERS][4];
+float f_SaveBannerRageMeter[MAXPLAYERS][2];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
@@ -431,9 +451,9 @@ float GlobalCheckDelayAntiLagPlayerScale;
 bool AllowSpecialSpawns;
 int i_AmountDowned[MAXPLAYERS+1];
 
-bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
+bool b_IgnoreWarningForReloadBuidling[MAXPLAYERS];
 
-float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
+float Building_Collect_Cooldown[MAXENTITIES][MAXPLAYERS];
 
 bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
@@ -609,6 +629,8 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/wand/weapon_bubble_wand.sp"
 #include "custom/kit_blacksmith_grill.sp"
 #include "custom/kit_cheese.sp"
+#include "custom/weapon_flamethrower_chemical.sp"
+#include "custom/wand/weapon_ritualist.sp"
 
 void ZR_PluginLoad()
 {
@@ -621,7 +643,6 @@ void ZR_PluginStart()
 	
 	RegServerCmd("zr_reloadnpcs", OnReloadCommand, "Reload NPCs");
 	RegServerCmd("sm_reloadnpcs", OnReloadCommand, "Reload NPCs", FCVAR_HIDDEN);
-	
 
 	//any noob will eventually type these!!
 	RegConsoleCmd("sm_store", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -651,7 +672,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_wearme", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_zr", 			Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_lidlnord", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_lidlsüd", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_kaufland", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_ikea",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_zabka",		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -659,9 +679,10 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
+	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
+	RegAdminCmd("sm_give_buff", Command_GiveBuff, ADMFLAG_ROOT, "Give a named buff");
 	RegAdminCmd("sm_give_scrap", Command_GiveScrap, ADMFLAG_ROOT, "Give scrap to the Person"); //old and unused.
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
 	RegAdminCmd("sm_set_xp", Command_SetXp, ADMFLAG_ROOT, "Set XP to the Person");
@@ -674,12 +695,9 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_ROOT, "Fake Death Count"); 	//DEBUG
 	RegAdminCmd("sm_spawn_vehicle", Command_PropVehicle, ADMFLAG_ROOT, "Spawn Vehicle"); 	//DEBUG
 	RegAdminCmd("sm_loadbgmusic", CommandBGTest, ADMFLAG_RCON, "Load a config containing a music field as passive music");
+	RegAdminCmd("sm_forceset_team", Command_SetTeamCustom, ADMFLAG_ROOT, "Set Team custom to a player"); 	//DEBUG
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
 	CookieScrap = new Cookie("zr_Scrap", "Your Scrap", CookieAccess_Protected);
-	
-//	CvarSvRollagle = FindConVar("sv_rollangle");
-//	if(CvarSvRollagle)
-//		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
 	Construction_PluginStart();
@@ -696,6 +714,7 @@ void ZR_PluginStart()
 	Object_PluginStart();
 	SteamWorks_PluginStart();
 	Vehicle_PluginStart();
+	Kritzkrieg_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -710,6 +729,7 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
+	VIPBuilding_PluginStart();
 }
 
 void ZR_MapStart()
@@ -725,7 +745,6 @@ void ZR_MapStart()
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
-	DHooks_MapStart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
@@ -881,6 +900,7 @@ void ZR_MapStart()
 	Ion_Beam_Wand_MapStart();
 	OnMapStartLeper();
 	Flagellant_MapStart();
+	Ritualist_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
 	Rusty_Rifle_Precache();
@@ -927,8 +947,6 @@ void ZR_MapStart()
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
 	RoundStartTime = FAR_FUTURE;
-	
-	//Store_RandomizeNPCStore(1);
 }
 
 public void OnMapInit()
@@ -1014,6 +1032,20 @@ public Action GlobalTimer(Handle timer)
 		if(IsClientInGame(client))
 		{
 			PlayerApplyDefaults(client);
+			if(HasSpecificBuff(client, "Dimensional Turbulence"))
+			{
+				if(IsValidClient(client) && i_HealthBeforeSuit[client] == 0 && TeutonType[client] == TEUTON_NONE)
+				{
+					for(int i; i<=Ammo_Laser; i++)
+					{
+						if(i == Ammo_Jar)
+							continue;
+							
+						CurrentAmmo[client][i] = 9999;
+						SetAmmo(client, i, 9999);
+					}
+				}
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -1056,10 +1088,12 @@ void ZR_ClientPutInServer(int client)
 			TeutonType[client_summon] = TEUTON_NONE;
 		}
 	}
+	CheckAllClientPrefs(client);
 }
 
 void ZR_ClientDisconnect(int client)
 {
+	Citizen_PlayerReplacement(client);
 	Native_ZR_OnGetXP(client, XP[client], 1);
 	SetClientTutorialMode(client, false);
 	SetClientTutorialStep(client, 0);
@@ -1067,7 +1101,6 @@ void ZR_ClientDisconnect(int client)
 	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Vehicle_Exit(client, true, false);
-	Citizen_PlayerReplacement(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1245,7 +1278,7 @@ public Action Command_AFK(int client, int args)
 		UnequipDispenser(client, true);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
-		ChangeClientTeam(client, 1);
+		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
 	}
 	return Plugin_Handled;
@@ -1284,15 +1317,23 @@ public Action CommandDebugHudTest(int client, int args)
 {
 	//What are you.
 	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: wat <cash>");
-        return Plugin_Handled;
-    }
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
+	        return Plugin_Handled;
+	}
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-	CheckAlivePlayers(0, 0, true);
-
+	DoGlobalMultiScaling();
+	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
+	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 2);
+		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
+	}
+	CheckAlivePlayers(_, _, true);
 	return Plugin_Handled;
 }
 
@@ -1359,6 +1400,45 @@ public Action Command_GiveCash(int client, int args)
 			PrintToChat(targets[target], "You lost %i cash due to the admin %N!", money, client);
 			CashSpent[targets[target]] -= money;			
 		}
+	}
+	
+	return Plugin_Handled;
+}
+
+public Action Command_GiveBuff(int client, int args)
+{
+	//What are you.
+	if(args < 2)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_buff <target> <buffname> <duration>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[128];
+	GetCmdArg(2, buf, sizeof(buf));
+
+	char buf2[16];
+	GetCmdArg(3, buf2, sizeof(buf2));
+	float buffduration = StringToFloat(buf2); 
+	
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		PrintToChat(targets[target], "You got the %s buff for %.1f seconds, from the admin %N!", buf, buffduration, client);
+		ApplyStatusEffect(targets[target], targets[target], buf, buffduration);
 	}
 	
 	return Plugin_Handled;
@@ -1543,7 +1623,7 @@ public Action Command_AFKKnight(int client, int args)
 	if(client)
 	{
 		WaitingInQueue[client] = true;
-		ChangeClientTeam(client, 2);
+		SetTeam(client, 2);
 	}
 	return Plugin_Handled;
 }
@@ -1551,7 +1631,7 @@ public Action Command_AFKKnight(int client, int args)
 public Action Command_SpawnGrigori(int client, int args)
 {
 	Spawn_Cured_Grigori();
-	Store_RandomizeNPCStore(0);
+	Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE);
 	return Plugin_Handled;
 }
 
@@ -1909,7 +1989,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 
 	if(LastMann)
 	{
-		static bool Died[MAXTF2PLAYERS];
+		static bool Died[MAXPLAYERS];
 		for(int client=1; client<=MaxClients; client++)
 		{
 			Died[client] = false;
@@ -2039,9 +2119,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						}
 						if(Is_Cheesed_Up(client))
 						{
-							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
+							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
+						
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
@@ -2237,7 +2318,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2247,21 +2328,14 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 }
 
 float f_IncrementalSmallArmor[MAXENTITIES];
-stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false)
+stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti, bool flat = false, bool HealCorrosion = false, int ArmorGiver = -1)
 {
 	int Armor_Max;
 	
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
-	/*
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
-	{
-		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
-	}
-	*/
+	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
-		float ArmorToGive;
-
 		if(flat)
 		{
 			int i_TargetHealAmount; //Health to actaully apply
@@ -2310,7 +2384,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 		{
 			if(dieingstate[client] == 0)
 				HealEntityGlobal(client, client, ArmorToGive * 0.5, 1.0,_,HEAL_SELFHEAL);
-
 			return;
 		}
 		Armor_Charge[client] += RoundToNearest(ArmorToGive);
@@ -2326,6 +2399,11 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 			Armor_Charge[client] = Armor_Max;
 		}
 	}
+
+	if(ArmorGiver > 0 && ArmorToGive > 0.0)
+	{
+		ApplyArmorEvent(client, RoundToNearest(ArmorToGive), ArmorGiver);
+	}
 	
 }
 stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Multi = 1.0, bool ignoreperk = false)
@@ -2339,7 +2417,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
@@ -2402,28 +2480,88 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 	}
 }
 
+public Action ZR_CheckValidityOfPostions_OfObjects(Handle timer,bool recheck)
+{
+	ZR_CheckValidityOfPostions_OfObjectsInternal(recheck);
+	return Plugin_Stop;
+}
+void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
+{
+	//if in setup, keep checking.
+	if(Waves_InSetup() && recheck)
+		CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, true, TIMER_FLAG_NO_MAPCHANGE);
+
+	float pos2[3];
+	for(int iEntity; iEntity<i_MaxcountBuilding; iEntity++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int iObj = EntRefToEntIndexFast(i_ObjectsBuilding[iEntity]);
+		if(!IsValidEntity(iObj))
+			continue;
+
+		GetEntPropVector(iObj, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[iObj], f3_CustomMinMaxBoundingBox[iObj]))
+			continue;
+		if(Building_Mounted[iObj] != -1)
+			continue;
+		//Make sure that mounted buildings are never deleted like this!
+			
+		int builder_owner = GetEntPropEnt(iObj, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, iObj);
+	}
+	
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+		if(!Citizen_IsIt(entity))
+			continue;
+
+		Citizen npc = view_as<Citizen>(entity);
+		if(npc.m_nDowned && npc.m_iWearable3 > 0)
+		{
+			
+		}
+		else
+			continue;
+
+		npc.SetDowned(false);
+		if(Waves_InSetup())
+			continue;
+		int target = 0;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+				{
+					target = i;
+					break;
+				}
+			}
+		}
+		
+		if(target)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
+			TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+		}
+	}
+}
 void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 {
 	//only set false here
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
-	float pos2[3];
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
-	{
-		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
-		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
-		if(!IsValidEntity(entity_close))
-			continue;
-
-		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
-			continue;
-			
-		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
-		DeleteAndRefundBuilding(builder_owner, entity_close);
-	}
-//	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+	ZR_CheckValidityOfPostions_OfObjectsInternal(true);
+	CreateTimer(1.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	//needed for map logic!
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2522,51 +2660,11 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 		}
 	}
 	
-	int a, entity;
-	while((entity = FindEntityByNPC(a)) != -1)
-	{
-		if(!b_NpcHasDied[entity])
-		{
-			if(Citizen_IsIt(entity))
-			{
-				Citizen npc = view_as<Citizen>(entity);
-				if(npc.m_nDowned && npc.m_iWearable3 > 0)
-				{
-					npc.SetDowned(false);
-					if(!Waves_InSetup())
-					{
-						int target = 0;
-						for(int i=1; i<=MaxClients; i++)
-						{
-							if(IsClientInGame(i))
-							{
-								if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
-								{
-									target = i;
-									break;
-								}
-							}
-						}
-						
-						if(target)
-						{
-							float pos[3], ang[3];
-							GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							ang[2] = 0.0;
-							TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-						}
-					}
-				}
-			}
-		}
-	}
-	
 	Music_EndLastmann();
 	CheckAlivePlayers();
 }
 
-float XpFloatGive[MAXTF2PLAYERS];
+float XpFloatGive[MAXPLAYERS];
 
 void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilently = false)
 {
@@ -2620,8 +2718,6 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					SetEntityHealth(client, maxhealth);
 			}
 			
-			SetGlobalTransTarget(client);
-			PrintToChat(client, "%t", "Level Up", Level[client]);
 			
 			while(Level[client] < nextLevel)
 			{
@@ -2637,10 +2733,11 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 					Store_PrintLevelItems(client, Level[client]);
 				}
 			}
+			PrintToChat(client, "%T", "Level Up",client, Level[client]);
 			if(!SetXpAndLevelSilently && CvarSkillPoints.BoolValue && Level[client] >= STARTER_WEAPON_LEVEL)
 			{
 				SkillTree_CalcSkillPoints(client);
-				CPrintToChat(client, "%t", "Current Skill Points", SkillTree_UnspentPoints(client));
+				CPrintToChat(client, "%T", "Current Skill Points",client, SkillTree_UnspentPoints(client));
 			}
 		}
 	}
@@ -2661,22 +2758,7 @@ void PlayerApplyDefaults(int client)
 	}
 	else if(!IsFakeClient(client))
 	{
-
-		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
-
-		if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
-		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
-			QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
-		}
-
-		if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
-		{
-			f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
-			QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
-		}
-
+		CheckAllClientPrefs(client);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)
@@ -2689,8 +2771,27 @@ void PlayerApplyDefaults(int client)
     }
 }
 
-float GetClientSaveUberGametime[MAXTF2PLAYERS];
-float GetClientSaveRageGametime[MAXTF2PLAYERS];
+void CheckAllClientPrefs(int client)
+{
+	QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
+	QueryClientConVar(client, "hud_combattext", ConVarCallback_DamageNumbers); //cl_showpluginmessages
+	QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
+
+	if(f_BegPlayerToSetRagdollFade[client] != FAR_FUTURE && f_BegPlayerToSetRagdollFade[client] < GetGameTime())
+	{
+		f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 15.0;
+		QueryClientConVar(client, "g_ragdoll_fadespeed", ConVarCallback_g_ragdoll_fadespeed);
+	}
+
+	if(f_BegPlayerR_TeethSet[client] != FAR_FUTURE && f_BegPlayerR_TeethSet[client] < GetGameTime())
+	{
+		f_BegPlayerR_TeethSet[client] = GetGameTime() + (60.0 * 20.0); //every 20 minutes.
+		QueryClientConVar(client, "r_teeth", ConVarCallback_r_teeth);
+	}
+}
+
+float GetClientSaveUberGametime[MAXPLAYERS];
+float GetClientSaveRageGametime[MAXPLAYERS];
 
 void ClientSaveUber(int client)
 {
@@ -2914,6 +3015,7 @@ void ForcePlayerWin(bool fakeout = false)
 			Music_Stop_All(client);
 			SetMusicTimer(client, GetTime() + 33);
 			SendConVarValue(client, sv_cheats, "1");
+			Convars_FixClientsideIssues(client);
 		}
 	}
 	if(!fakeout)
@@ -2945,6 +3047,7 @@ void ForcePlayerWin(bool fakeout = false)
 void ForcePlayerLoss()
 {
 	MVMHud_Disable();
+	ZR_NpcTauntWin();
 	ZR_NpcTauntWinClear();
 	int entity = CreateEntityByName("game_round_win"); 
 	DispatchKeyValue(entity, "force_map_reset", "1");
@@ -2990,4 +3093,43 @@ void ZR_FastDownloadForce()
 	YakuzaMusicDownload();
 	FullmoonDownload();
 	Cheese_PrecacheMusic();
+	Core_PrecacheGlobalCustom();
+	PrecacheMusicZr();
+}
+
+
+
+public Action Command_SetTeamCustom(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_forceset_team <target> <team (above 4)>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int teamset = StringToInt(buf); 
+	
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		PrintToChatAll("target %i, TeamSet %i",targets[target], teamset);
+		SetTeam(targets[target], teamset);
+	}
+	
+	return Plugin_Handled;
 }

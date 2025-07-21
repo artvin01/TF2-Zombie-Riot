@@ -187,14 +187,14 @@ static void ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, target, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 
 			npc.StartPathing();
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 			
 			npc.StartPathing();
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");

@@ -15,9 +15,9 @@
 #define SPECTER_THREE	(1 << 0)
 #define SPECTER_REVIVE	(1 << 1)
 
-static float SpecterExpireIn[MAXTF2PLAYERS];
-static int SpecterCharge[MAXTF2PLAYERS];
-static float SpecterSurviveFor[MAXTF2PLAYERS];
+static float SpecterExpireIn[MAXPLAYERS];
+static int SpecterCharge[MAXPLAYERS];
+static float SpecterSurviveFor[MAXPLAYERS];
 Handle h_TimerSpecterAlterManagement[MAXPLAYERS+1] = {null, ...};
 static float f_SpecterAlterhuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_SpecterDeadDamage[MAXPLAYERS+1]={0.0, ...};
@@ -70,7 +70,7 @@ void PlayCustomSoundSpecter(int client)
 
 static int Specter_GetSpecterFlags(int weapon)
 {
-	int flags = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+	int flags = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 	
 	return flags;
 }

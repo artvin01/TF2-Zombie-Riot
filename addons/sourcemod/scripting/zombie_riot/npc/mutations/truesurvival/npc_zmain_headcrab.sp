@@ -96,7 +96,7 @@ methodmap ZMainHeadcrab < CClotBody
 	
 	public ZMainHeadcrab(float vecPos[3], float vecAng[3], int ally)
 	{
-		ZMainHeadcrab npc = view_as<ZMainHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", MinibossHealthScaling(20), ally, false));
+		ZMainHeadcrab npc = view_as<ZMainHeadcrab>(CClotBody(vecPos, vecAng, "models/headcrabclassic.mdl", "1.15", MinibossHealthScaling(20.0), ally, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -116,9 +116,9 @@ methodmap ZMainHeadcrab < CClotBody
 		//IDLE
 		npc.m_flSpeed = 330.0;
 
-		float wave = float(ZR_Waves_GetRound()+1); //Wave scaling
+		float wave = float(Waves_GetRoundScale()+1); //Wave scaling
 		
-		wave *= 0.1;
+		wave *= 0.133333;
 
 		npc.m_flWaveScale = wave;
 
@@ -253,11 +253,11 @@ void ZMainHeadcrab_AnnoyingZmainwalkLogic(ZMainHeadcrab npc, float gameTime, flo
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Just walk.
 		return;
@@ -283,7 +283,7 @@ void ZMainHeadcrab_AnnoyingZmainwalkLogic(ZMainHeadcrab npc, float gameTime, flo
 		npc.m_bAllowBackWalking = true;
 		float vBackoffPos[3];
 		BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 1);
-		NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+		npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 		return;
 	}
 
@@ -303,7 +303,7 @@ void ZMainHeadcrab_AnnoyingZmainwalkLogic(ZMainHeadcrab npc, float gameTime, flo
 	}
 	float vBackoffPos[3];
 	BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos, 2);
-	NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+	npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 	npc.m_bAllowBackWalking = true;
 }
 

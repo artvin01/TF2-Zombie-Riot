@@ -191,16 +191,16 @@ methodmap Matrix_Twins < CClotBody
 			}
 			else
 			{	
-				RaidModeScaling = float(ZR_Waves_GetRound()+1);
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
 			}
 			
-			if(RaidModeScaling < 55)
+			if(RaidModeScaling < 35)
 			{
-				RaidModeScaling *= 0.19; //abit low, inreacing
+				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
 			else
 			{
-				RaidModeScaling *= 0.38;
+				RaidModeScaling *= 0.5;
 			}
 			float amount_of_people = float(CountPlayersOnRed());
 			
@@ -273,7 +273,6 @@ methodmap Matrix_Twins < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 
@@ -405,11 +404,11 @@ public void Matrix_Twins_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget, _, _, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		int value = Matrix_Twins_SelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget);
@@ -446,7 +445,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			npc.m_bmovedelay = false;
 			npc.m_iChanged_WalkCycle = 4;
 			npc.m_bisWalking = true;
-			npc.m_bPathing = true;
+			
 			npc.m_flSpeed = 310.0;
 			int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 			if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -551,7 +550,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 				{
 					npc.m_iChanged_WalkCycle = 3;
 					npc.m_bisWalking = false;
-					npc.m_bPathing = false;
+					
 					npc.m_flSpeed = 0.0;
 					int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 					if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
@@ -650,7 +649,7 @@ static int Matrix_Twins_SelfDefense(Matrix_Twins npc, float gameTime, int target
 			{
 				npc.m_iChanged_WalkCycle = 6;
 				npc.m_bisWalking = true;
-				npc.m_bPathing = true;
+				
 				npc.m_flSpeed = 310.0;
 			}
 		}

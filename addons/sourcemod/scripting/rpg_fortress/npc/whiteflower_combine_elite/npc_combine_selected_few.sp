@@ -226,8 +226,8 @@ methodmap Whiteflower_selected_few < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 	
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -302,7 +302,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_RUN");
 				npc.m_flSpeed = 350.0;
-				NPC_StartPathing(iNPC);
+				view_as<CClotBody>(iNPC).StartPathing();
 			}
 		}
 		return;
@@ -347,7 +347,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			npc.m_flSpeed = 0.0;
 			npc.AddActivityViaSequence("preSkewer");
 			npc.SetPlaybackRate(0.35);
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			return;
 		}
 	}
@@ -433,7 +433,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_JUMP");
 					npc.m_flSpeed = 0.0;
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 				}
 			}
 		}
@@ -494,11 +494,11 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -539,7 +539,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 			}
 			case 1:
@@ -553,7 +553,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
@@ -577,7 +577,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_RUN");
 					npc.m_flSpeed = 350.0;
-					NPC_StartPathing(iNPC);
+					view_as<CClotBody>(iNPC).StartPathing();
 				}
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
@@ -617,7 +617,7 @@ public void Whiteflower_selected_few_ClotThink(int iNPC)
 							npc.AddActivityViaSequence("citizen4_preaction");
 							npc.SetPlaybackRate(0.0);
 							npc.m_flSpeed = 0.0;
-							NPC_StopPathing(npc.index);
+							npc.StopPathing();
 						}
 					}
 				}

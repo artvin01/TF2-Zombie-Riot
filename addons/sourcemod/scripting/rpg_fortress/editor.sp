@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Function EditorMenu[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
+static Function EditorMenu[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
 methodmap EditMenu < Menu
 {
@@ -35,7 +35,7 @@ methodmap EditMenu < Menu
 	}
 }
 
-static int PickRange[MAXTF2PLAYERS];
+static int PickRange[MAXPLAYERS];
 
 void Editor_PluginStart()
 {
@@ -64,7 +64,7 @@ void Editor_PlayerRunCmd(int client, int buttons)
 {
 	if(EditorMenu[client] != INVALID_FUNCTION)
 	{
-		static bool holding[MAXTF2PLAYERS];
+		static bool holding[MAXPLAYERS];
 		if(holding[client])
 		{
 			if(!(buttons & IN_ATTACK3))

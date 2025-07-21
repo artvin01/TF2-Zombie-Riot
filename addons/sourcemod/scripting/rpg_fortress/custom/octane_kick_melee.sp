@@ -1,6 +1,6 @@
 
-float f_OctaneDashDamage[MAXTF2PLAYERS];
-float f_OctaneDashDuration[MAXTF2PLAYERS];
+float f_OctaneDashDamage[MAXPLAYERS];
+float f_OctaneDashDuration[MAXPLAYERS];
 
 
 void OctaneKick_Map_Precache()
@@ -27,7 +27,7 @@ public float AbilityOctaneKick(int client, int index, char name[48])
 
 	static char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
-	if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	if (TF2_GetClassnameSlot(classname, weapon) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
@@ -64,8 +64,8 @@ public float AbilityOctaneKick(int client, int index, char name[48])
 	return (GetGameTime() + 15.0);
 }
 
-bool f_OctaneDashHitTarget[MAXTF2PLAYERS][MAXENTITIES];
-int i_ParticleIndex[MAXTF2PLAYERS];
+bool f_OctaneDashHitTarget[MAXPLAYERS][MAXENTITIES];
+int i_ParticleIndex[MAXPLAYERS];
 public void Ability_OnAbility_OctaneKick(int client, int level, int weapon, float damage)
 {	
 	

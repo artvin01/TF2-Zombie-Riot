@@ -1,9 +1,9 @@
-static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
-static float CreepPos[MAXTF2PLAYERS][3];
-static float CreepSize[MAXTF2PLAYERS];
-static float MeleeRes[MAXTF2PLAYERS] = {1.0, ...};
-static float RangedRes[MAXTF2PLAYERS] = {1.0, ...};
-static int WeaponRes[MAXTF2PLAYERS] = {-1, ...};
+static int ParticleRef[MAXPLAYERS] = {-1, ...};
+static float CreepPos[MAXPLAYERS][3];
+static float CreepSize[MAXPLAYERS];
+static float MeleeRes[MAXPLAYERS] = {1.0, ...};
+static float RangedRes[MAXPLAYERS] = {1.0, ...};
+static int WeaponRes[MAXPLAYERS] = {-1, ...};
 static Handle CreepTimer;
 static int Sprite;
 
@@ -96,6 +96,22 @@ public void Seaborn_Activation_Enable_form_2(int client)
 
 	ParticleEffectAt(pos, "halloween_boss_summon", 8.0);
 	
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntityRenderColor(entity, 125, 125, 255, 255);
+		SetTeam(entity, 3);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
+	}	
+	
+	GetClientAbsOrigin(client, CreepPos[client]);
+	CreepPos[client][2] += 1.0;
+	entity = ParticleEffectAt(CreepPos[client], "utaunt_spirit_winter_base", -1.0);
+	if(entity > MaxClients)
+	{
+		SetParent(client, entity);
+		ParticleRef[client] = EntIndexToEntRef(entity);
+	}
 }
 
 public void Seaborn_Activation_Disable_form_2(int client)
@@ -107,11 +123,15 @@ public void Seaborn_Activation_Disable_form_2(int client)
 	float pos[3]; GetClientAbsOrigin(client, pos);
 	pos[2] += 1.0;
 	
-	int entity = ParticleEffectAt(pos, "halloween_boss_death", 1.0);
-	if(entity > MaxClients)
+	ParticleEffectAt(pos, "halloween_boss_death", 1.0);
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
 	{
-		SetParent(client, entity);
-	}
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+		SetTeam(entity, 2);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 0);
+	}	
 
 }
 
@@ -152,6 +172,13 @@ public void Seaborn_Activation_Enable_form_3(int client)
 	float maxMastery;
 	float mastery = Stats_GetCurrentFormMastery(client, maxMastery);
 
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntityRenderColor(entity, 0, 0, 255, 255);
+		SetTeam(entity, 3);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
+	}	
 	bool rage;
 	if(maxMastery)
 	{
@@ -167,7 +194,7 @@ public void Seaborn_Activation_Enable_form_3(int client)
 		}
 	}
 
-	int entity = ParticleEffectAt(CreepPos[client], rage ? "utaunt_fish_parent" : "utaunt_hands_floor2_blue", -1.0);
+	entity = ParticleEffectAt(CreepPos[client], rage ? "utaunt_fish_parent" : "utaunt_fish_base2", -1.0);
 	if(entity > MaxClients)
 	{
 		SetParent(client, entity);
@@ -294,5 +321,13 @@ public void Seaborn_Activation_Disable_form_3(int client)
 {
 	CleanEffects(client);
 
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+		SetTeam(entity, 2);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 0);
+	}	
 	EmitSoundToAll("ambient/halloween/male_scream_17.wav", client, SNDCHAN_AUTO, 80);
 }

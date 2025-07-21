@@ -17,10 +17,10 @@ static int GameWinner;
 static int CurrentBet;
 static int PhantomCard;
 static float TimeLeft;
-static bool Viewing[MAXTF2PLAYERS];
-static int Playing[MAXTF2PLAYERS];
-static int Cards[MAXTF2PLAYERS][7];
-static int Discarding[MAXTF2PLAYERS];
+static bool Viewing[MAXPLAYERS];
+static int Playing[MAXPLAYERS];
+static int Cards[MAXPLAYERS][7];
+static int Discarding[MAXPLAYERS];
 static ArrayList CurrentDeck;
 static Handle CrimsonTimer;
 

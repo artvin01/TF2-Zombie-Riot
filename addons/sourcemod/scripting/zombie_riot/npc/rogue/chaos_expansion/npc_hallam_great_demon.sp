@@ -163,11 +163,8 @@ methodmap HallamGreatDemon < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 65, 65, 65, 200);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 65, 65, 65, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 65, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 65, 65, 65, 255);
 		
 		float flPos[3], flAng[3];
@@ -204,6 +201,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		int spawn_index = NPC_CreateByName("npc_ihanal_demon_whisperer", npc.index, SelfPos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			flMaxHealthally /= 2;
 			npc.m_iTargetAlly = spawn_index;
 			HallamGreatDemon npcally = view_as<HallamGreatDemon>(spawn_index);
@@ -306,11 +304,11 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		HallamGreatDemonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, DemonScaling); 
 	}
@@ -426,7 +424,6 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 15, 15, 15, 255);
 					
 					WorldSpaceCenter(entity, vPredictedPos);

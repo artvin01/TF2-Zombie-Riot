@@ -274,19 +274,19 @@ methodmap TheMessenger < CClotBody
 		
 
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -327,17 +327,17 @@ methodmap TheMessenger < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
-			value = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
+			value = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -352,11 +352,11 @@ methodmap TheMessenger < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		if(value > 40 && value < 55)
+		if(value > 25 && value < 35)
 		{
 			RaidModeScaling *= 0.85;
 		}
-		else if(value > 55)
+		else if(value > 35)
 		{
 			RaidModeScaling *= 0.7;
 		}
@@ -581,12 +581,12 @@ public void TheMessenger_ClotThink(int iNPC)
 				{
 					float vPredictedPos[3];
 					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
 					Messanger_Elemental_Attack_FingerPoint(npc);
 				}
 				else 
 				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+					npc.SetGoalEntity(npc.m_iTarget);
 				}
 			}
 			case 1:
@@ -594,7 +594,7 @@ public void TheMessenger_ClotThink(int iNPC)
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
+				npc.SetGoalVector(vBackoffPos, true); //update more often, we need it
 			}
 		}
 	}
@@ -614,8 +614,8 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 	if(!npc.m_flAttackHappens_2 && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_roar_owar");
 		npc.m_flAttackHappens = 0.0;
@@ -717,8 +717,8 @@ bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
 	if(!npc.m_flNextRangedBarrage_Spam && npc.m_flAttackHappens_bullshit < GetGameTime(npc.index))
 	{
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_cheers_demo");
 		npc.m_flAttackHappens = 0.0;
@@ -1162,7 +1162,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							{
 								int ChaosDamage = 150;
 								if(NpcStats_IsEnemySilenced(npc.index))
-									ChaosDamage = 100;
+									ChaosDamage = 140;
 
 								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
@@ -1255,13 +1255,15 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 		{
 			int ChaosDamage = 75;
 			if(NpcStats_IsEnemySilenced(owner))
-				ChaosDamage = 40;
+				ChaosDamage = 65;
+			//above is kahmlstein
 
 			if(i_NpcInternalId[owner] == NPCId)
 			{
-				ChaosDamage = 40;
+				//This is messenger
+				ChaosDamage = 60;
 				if(NpcStats_IsEnemySilenced(owner))
-					ChaosDamage = 30;
+					ChaosDamage = 50;
 			}
 
 			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);
@@ -1289,7 +1291,8 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 void MessengerInitiateGroupAttack(TheMessenger npc)
 {
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-	int enemy[MAXENTITIES];
+	int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
+	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	if(!IsValidEntity(npc.m_iWearable2))
 	{
 		float flPos[3];

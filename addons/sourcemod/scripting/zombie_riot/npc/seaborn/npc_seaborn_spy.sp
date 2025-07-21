@@ -145,7 +145,9 @@ public void SeabornSpy_ClotThink(int iNPC)
 		int alpha = 255;
 
 		bool camo = true;
-		Building_CamoOrRegrowBlocker(npc.index, camo);
+		if(HasSpecificBuff(npc.index, "Revealed"))
+			camo = false;
+			
 		if(camo)
 		{
 			alpha = 255 - RoundFloat((gameTime - npc.m_flNextRangedAttack) * 350.0);
@@ -189,11 +191,11 @@ public void SeabornSpy_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();

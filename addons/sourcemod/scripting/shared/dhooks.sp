@@ -9,51 +9,36 @@ enum struct RawHooks
 }
 
 static DynamicHook ForceRespawn;
-static int ForceRespawnHook[MAXTF2PLAYERS];
+static int ForceRespawnHook[MAXPLAYERS];
 Handle g_DhookWantsLagCompensationOnEntity;
 
-#if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
-//static bool Disconnecting;
-//DynamicHook g_ObjStartUpgrading;
 static DynamicHook g_DHookScoutSecondaryFire; 
-#endif
 
 #if defined ZR
 static bool IsRespawning;
 #endif
-
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DhookCrossbowHolster;
 DynamicHook g_DhookUpdateTransmitState; 
-//static DynamicHook g_DHookShouldCollide; //from mikusch but edited
 
 static DynamicDetour g_CalcPlayerScore;
-
 static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
-
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
-
 static bool b_LagCompNPC;
 
-//static DynamicHook HookCreateFakeClientStuff;
 static DynamicHook HookItemIterateAttribute;
 static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
 static int m_Item;
-//Handle dHookCheckUpgradeOnHit;
-/*
-// Offsets from mikusch but edited
-static int g_OffsetWeaponMode;
-static int g_OffsetWeaponInfo;
-static int g_OffsetWeaponPunchAngle;
-*/
 static bool GrenadeExplodedAlready[MAXENTITIES];
+Handle g_hSDKLoadEvents;
+Handle g_hSDKReloadEvents;
+Address g_aGameEventManager;
 
-//#include <dhooks_gameconf_shim>
 
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
@@ -67,7 +52,6 @@ stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
 
 void DHook_Setup()
 {
-//	return;
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
 	if (!gamedata) 
@@ -81,6 +65,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
+	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 
 	//Borrowed from Mikusch, thanks!
 	//https://github.com/Mikusch/MannVsMann/blob/db821cd173a53aad4cc499babbcbd118f4cea234/addons/sourcemod/scripting/mannvsmann/dhooks.sp#L315
@@ -90,9 +75,8 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFGameRules::IsQuickBuildTime", DHookCallback_CTFGameRules_IsQuickBuildTime_Pre);
 #endif
 
-#if !defined RTS
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-#endif
+
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
@@ -106,8 +90,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBaseBoss::ResolvePlayerCollision", DHook_ResolvePlayerCollisionPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
 	DHook_CreateDetour(gamedata, "CTFSpellBook::CastSelfStealth", Dhook_StealthCastSpellPre, _);
-//	DHook_CreateDetour(gamedata, "PassServerEntityFilter", CH_PassServerEntityFilter);
-// Dhooking it like this is broken.
+	DHook_CreateDetour(gamedata, "CTFPlayerShared::RecalculateChargeEffects", DHookCallback_RecalculateChargeEffects_Pre);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -163,6 +146,37 @@ void DHook_Setup()
 	//Fixes mediguns giving extra speed where it was not intended.
 	//gamedata first try!!
 	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
+
+
+	//https://github.com/CookieCat45/Risk-Fortress-2/blob/a98baf90d1074da6f82b53d30747aae354589b9a/scripting/rf2.sp#L281
+	DynamicDetour g_hDetourCreateEvent = DynamicDetour.FromConf(gamedata, "CGameEventManager::CreateEvent");
+	if (!g_hDetourCreateEvent || !g_hDetourCreateEvent.Enable(Hook_Pre, Detour_CreateEvent))
+	{
+		LogError("[DHooks] Failed to create detour for CGameEventManager::CreateEvent");
+	}
+
+	StartPrepSDKCall(SDKCall_Raw);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CGameEventManager::LoadEventsFromFile");
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
+	g_hSDKLoadEvents = EndPrepSDKCall();
+	if (!g_hSDKLoadEvents)
+	{
+		LogError("[SDK] Failed to create call to CGameEventManager::LoadEventsFromFile");
+	}
+	
+	if (g_hDetourCreateEvent)
+	{
+		CreateEvent("give_me_my_cgameeventmanager_pointer", true);
+	}
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "SV_CreateBaseline");
+	g_hSDKReloadEvents = EndPrepSDKCall();
+	if (!g_hSDKReloadEvents)
+	{
+		LogError("[SDK] Failed to create call to SV_CreateBaseline");
+	}
+
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -171,6 +185,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
 		
+
 	g_DhookWantsLagCompensationOnEntity = DHookCreateFromConf(gamedata_lag_comp,
 			"CTFPlayer::WantsLagCompensationOnEntity");
 
@@ -180,27 +195,7 @@ void DHook_Setup()
 	
 	delete gamedata_lag_comp;
 }
-/*
-public MRESReturn DhookStrikeTargetArrow_Pre(int pThis, Handle hReturn, Handle hParams)
-{
-	PrintToChatAll("DhookStrikeTargetArrow_Pre");
-	int projtype = GetEntProp(pThis, Prop_Send, "m_iProjectileType");
-	PrintToChatAll("DhookStrikeTargetArrow_Pre projtype %i",projtype);
-	
-	if(projtype != 8)
-		return MRES_Ignored;
 
-	PrintToChatAll("DhookStrikeTargetArrow_Pre2");
-	int other = DHookGetParam(hParams, 2);
-
-	if(!b_ThisWasAnNpc[other])
-		return MRES_Ignored;
-	PrintToChatAll("DhookStrikeTargetArrow_Pre3");
-
-	DHookSetReturn(hReturn, true);
-	return MRES_Override;
-}
-*/
 int ClientThatWasChanged = 0;
 int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
@@ -944,7 +939,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
 #if defined RPG
-		if(ent1 < MaxClients && ent2 < MaxClients)
+		if(ent1 <= MaxClients && ent2 <= MaxClients)
 		{
 			if(RPGCore_PlayerCanPVP(ent1, ent2))
 				return true;
@@ -975,13 +970,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		{
 			return false;
 		}
-#if !defined RTS
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
-			Wand_Base_StartTouch(entity1, entity2);
+		//	Wand_Base_StartTouch(entity1, entity2);
 			return false;
 		}
-#endif
 
 #if defined ZR
 	
@@ -1013,15 +1006,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-#if !defined RTS
 			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
 			}
-#endif
 		}
-
-#if !defined RTS
 		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 #if defined ZR
@@ -1030,10 +1019,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1])
 #endif
 			{
+#if defined ZR
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					if(i_WandIdNumber[entity1] != 0)
+					if(func_WandOnTouchReturn(entity1))
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
@@ -1055,6 +1045,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 						}						
 					}
 				}
+#endif
 				return false;
 			}
 			if(b_IsATrigger[entity2])
@@ -1113,13 +1104,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-#endif	// Non-RTS
-//enemy NPC
-#if defined RTS
-		if(!b_NpcHasDied[entity1])
-#else	
 		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
-#endif
 		{
 			//ignore buildings, neccecary during some situations
 			if(i_IsABuilding[entity2])
@@ -1141,11 +1126,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
-#if defined RTS
-			else if(!b_NpcHasDied[entity2])
-#else
 			else if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
-#endif
 			{
 				return false;
 			}
@@ -1174,7 +1155,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			
 		}
 //allied NPC
-#if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 			
@@ -1195,7 +1175,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 			
 		}
-#endif
 		else if(i_IsVehicle[entity1])
 		{
 			if(!i_IsVehicle[entity2])
@@ -1229,12 +1208,13 @@ public void StartLagCompResetValues()
 	b_LagCompNPC_OnlyAllies = false;
 }
 
+int TeamBeforeChange;
 //if you find a way thats better to ignore fellow dispensers then tell me..!
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
 	StartLagCompResetValues();
-	
+//	PrintToChatAll("StartLagCompensationPre");
 	bool already_moved = false;
 	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
 	{
@@ -1243,7 +1223,8 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-	//	TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
+		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Blue);
 		return MRES_Ignored;
 	}
 	
@@ -1425,8 +1406,12 @@ public void FinishLagCompMoveBack()
 
 public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //This code does not need to be touched. mostly.
 {
-//	PrintToChatAll("finish lag comp");
+//	PrintToChatAll("FinishLagCompensation");
 	//Set this to false to be sure.
+	int Compensator = param.Get(1);
+	if(TeamBeforeChange)
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TeamBeforeChange);
+	TeamBeforeChange = 0;
 	FinishLagCompMoveBack();
 	b_LagCompAlliedPlayers = false;
 	
@@ -1446,21 +1431,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	return MRES_Supercede;
 }
 
-/*
-void Dhook_BotFastNow(int bot)
-{
-	if(HookCreateFakeClientStuff)
-	{
-		int RawHookGive = DHookRaw(HookCreateFakeClientStuff, true, view_as<Address>(baseNPC.GetBody()));
-	}
-}
-public MRESReturn Create_FakeClientExPre(Address pThis, Handle hReturn, Handle hParams)			  
-{ 
-	//this sets the fakebot to true.
-	DHookSetParam(hParams, 2, true);
-	return MRES_Supercede; 
-}
-*/
 void DHook_HookClient(int client)
 {
 
@@ -1484,17 +1454,6 @@ void DHook_UnhookClient(int client)
 		DynamicHook.RemoveHook(ForceRespawnHook[client]);
 	
 }
-/*
-void DHook_ClientDisconnect()
-{
-	Disconnecting = true;
-}
-
-void DHook_ClientDisconnectPost()
-{
-	Disconnecting = false;
-}
-*/
 
 #if defined ZR
 void DHook_RespawnPlayer(int client)
@@ -1541,7 +1500,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 #if !defined RTS
 		int team = KillFeed_GetBotTeam(client);
 		if(GetClientTeam(client) != team)
-			ChangeClientTeam(client, team);
+			SetTeam(client, team);
 #endif
 		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
@@ -1549,14 +1508,14 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(GetClientTeam(client) != 2)
 	{
-		ChangeClientTeam(client, 2);
+		SetTeam(client, 2);
 		return MRES_Supercede;
 	}
 
 #if defined RPG
 	if(!Saves_HasCharacter(client))
 	{
-		ChangeClientTeam(client, TFTeam_Spectator);
+		SetTeam(client, TFTeam_Spectator);
 		return MRES_Supercede;
 	}
 	
@@ -1707,7 +1666,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 	return MRES_Ignored;
 }
 
-bool WasMedicPreRegen[MAXTF2PLAYERS];
+bool WasMedicPreRegen[MAXPLAYERS];
 
 public MRESReturn DHook_RegenThinkPre(int client, DHookParam param)
 {
@@ -1760,57 +1719,24 @@ public MRESReturn DHookCallback_GameModeUsesUpgrades_Post(DHookReturn ret)
 */
 
 #if !defined RTS
-/*
+static TFClassType LastClass;
 public MRESReturn DHook_TauntPre(int client, DHookParam param)
 {
-	//Dont allow taunting if disguised or cloaked
-	if(TF2_IsPlayerInCondition(client, TFCond_Disguising) || TF2_IsPlayerInCondition(client, TFCond_Disguised) || TF2_IsPlayerInCondition(client, TFCond_Cloaked))
+	if(f_PreventMovementClient[client] > GetGameTime() || TF2_IsPlayerInCondition(client, TFCond_Disguising) || TF2_IsPlayerInCondition(client, TFCond_Disguised) || TF2_IsPlayerInCondition(client, TFCond_Cloaked))
 		return MRES_Supercede;
-
-	//Player wants to taunt, set class to whoever can actually taunt with active weapon
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon <= MaxClients)
-		return MRES_Ignored;
-
-	if(!b_TauntSpeedIncrease[client])
-	{
-		Attributes_Set(client, 201, 1.0);
-		f_DelayAttackspeedPreivous[client] = 1.0;
-	}
 	
-	//static char buffer[36];
-	//GetEntityClassname(weapon, buffer, sizeof(buffer));
-	//TFClassType class = TF2_GetWeaponClass(GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"), CurrentClass[client], TF2_GetClassnameSlot(buffer));
-	//if(class != TFClass_Unknown)
-	{
-		TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-	}
-
-	return MRES_Ignored;
-}
-public MRESReturn DHook_TauntPost(int client, DHookParam param)
-{
-	//Set class back to what it was
+	LastClass = TF2_GetPlayerClass(client);
 	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
-}*/
-#endif
-/*
-// g_bWarnedAboutMaxplayersInMVM
-public MRESReturn PreClientUpdatePre(Handle hParams)
-{
-//	CvarTfMMMode.IntValue = 1;
-	GameRules_SetProp("m_bPlayingMannVsMachine", true);
-	return MRES_Ignored;
 }
 
-public MRESReturn PreClientUpdatePost(Handle hParams)
+public MRESReturn DHook_TauntPost(int client, DHookParam param)
 {
-//	CvarTfMMMode.IntValue = 0;
-	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	TF2_SetPlayerClass_ZR(client, LastClass, false, false);
 	return MRES_Ignored;
 }
-*/
+#endif
+
 #if defined ZR
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
@@ -1830,69 +1756,44 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	
 	
 	int target = DHookGetParam(hParams, 1);
+
+	float HealAmmount = 20.0;
+
+	HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
 	
-	int ammo_amount_left = GetAmmo(owner, 21);
-	if(ammo_amount_left > 0)
+
+	
+	float GameTime = GetGameTime();
+	if(f_TimeUntillNormalHeal[target] > GameTime)
 	{
-		float HealAmmount = 20.0;
-
-		HealAmmount *= Attributes_GetOnWeapon(owner, originalLauncher, 8, true);
+		HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
+	}
+	
+	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
+	int flMaxHealth = SDKCall_GetMaxHealth(target);
+	
+	int Health_To_Max;
+	
+	Health_To_Max = flMaxHealth - flHealth;
+	
+	if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
+	{
+		ClientCommand(owner, "playgamesound items/medshotno1.wav");
+		SetGlobalTransTarget(owner);
 		
-
+		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
+	}
+	else
+	{
+		HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
 		
-		float GameTime = GetGameTime();
-		if(f_TimeUntillNormalHeal[target] > GameTime)
-		{
-			HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
-		}
-		
-		if(ammo_amount_left > RoundToCeil(HealAmmount))
-		{
-			ammo_amount_left = RoundToCeil(HealAmmount);
-		}
-		
-		int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
-		int flMaxHealth = SDKCall_GetMaxHealth(target);
-		
-		int Health_To_Max;
-		
-		Health_To_Max = flMaxHealth - flHealth;
-		
-		if(Health_To_Max <= 0 || Health_To_Max > flMaxHealth)
-		{
-			ClientCommand(owner, "playgamesound items/medshotno1.wav");
-			SetGlobalTransTarget(owner);
-			PrintHintText(owner,"%N %t", target, "Is already at full hp");
+		ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
+		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
+		SetGlobalTransTarget(owner);
 			
-			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
-		}
-		else
-		{
-			if(Health_To_Max < RoundToCeil(HealAmmount))
-			{
-				ammo_amount_left = Health_To_Max;
-			}
-
-			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
-			
-			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
-			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-			SetGlobalTransTarget(owner);
-			
-			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
-			if(ammo_amount_left > 0)
-				ReduceMediFluidCost(owner, ammo_amount_left);
-				
-			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
-			SetAmmo(owner, 21, new_ammo);
-			ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
-			ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
-			for(int i; i<Ammo_MAX; i++)
-			{
-				CurrentAmmo[owner][i] = GetAmmo(owner, i);
-			}
-		}
+		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
+		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 	}
 
 	
@@ -1975,8 +1876,56 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 
 //We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
 
+
 #if defined ZR
-bool PersonInitiatedHornBlow[MAXTF2PLAYERS];
+int BannerWearable[MAXPLAYERS];
+int BannerWearableModelIndex[3];
+#endif
+bool DidEventHandleChange = false;
+void DHooks_MapStart()
+{
+#if defined ZR
+	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
+	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
+	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
+#endif
+	DidEventHandleChange = false;
+	RequestFrame(OverrideNpcHurtShortToLong);
+	//g_bCustomEventsAvailable = false;
+
+	//if(g_DHookShouldCollide)
+	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
+}
+
+void OverrideNpcHurtShortToLong()
+{
+	if(!DidEventHandleChange)
+	{
+		if (g_aGameEventManager && g_hSDKLoadEvents)
+		{
+			DidEventHandleChange = true;
+			char eventsFile[PLATFORM_MAX_PATH];
+			BuildPath(Path_SM, eventsFile, sizeof(eventsFile), "data/zombie_riot/zrevents.res");
+			LogMessage("Loading custom events file '%s'", eventsFile);
+			if (SDKCall(g_hSDKLoadEvents, g_aGameEventManager, eventsFile))
+			{
+				//g_bCustomEventsAvailable = true;
+				LogMessage("Success!");
+				SDKCall(g_hSDKReloadEvents);
+			}
+			else
+			{
+				LogError("FAILED to load custom events file '%s'", eventsFile);
+			}
+		}
+		else
+		{
+			LogError("FAILED to load custom events file (Missing Gamedata!)");
+		}
+	}
+}
+#if defined ZR
+bool PersonInitiatedHornBlow[MAXPLAYERS];
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
@@ -2092,18 +2041,6 @@ stock void DelayEffectOnHorn(int ref)
 	
 
 	//"Expidonsan Battery Device"
-}
-
-int BannerWearable[MAXTF2PLAYERS];
-int BannerWearableModelIndex[3];
-void DHooks_MapStart()
-{
-	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
-	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
-	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
-	
-	//if(g_DHookShouldCollide)
-	//	g_DHookShouldCollide.HookGamerules(Hook_Post, DHook_ShouldCollide);
 }
 
 public Action TimerGrantBannerDuration(Handle timer, int ref)
@@ -2347,4 +2284,30 @@ public MRESReturn DhookBlockCrossbowPost(int entity)
 		SetBackAmmoCrossbow = false;
 	}
 	return MRES_Ignored;
+}
+
+int OffsetLagCompStart_UserInfoReturn()
+{
+	//Get to CUserCmd				*m_pCurrentCommand;
+	static int ReturnInfo;
+	if(!ReturnInfo)
+		ReturnInfo = (FindSendPropInfo("CTFPlayer", "m_hViewModel") + 76);
+
+	return ReturnInfo;
+}
+
+
+public MRESReturn Detour_CreateEvent(Address eventManager, DHookReturn returnVal, DHookParam params)
+{
+	g_aGameEventManager = eventManager;
+	
+	RequestFrame(OverrideNpcHurtShortToLong);
+	return MRES_Ignored;
+}
+
+
+static MRESReturn DHookCallback_RecalculateChargeEffects_Pre(Address pShared, DHookParam params)
+{
+//	DHookSetParam(params, 1, true);
+	return MRES_Supercede;
 }

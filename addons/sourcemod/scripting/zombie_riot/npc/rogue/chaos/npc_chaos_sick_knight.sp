@@ -211,11 +211,8 @@ methodmap ChaosSickKnight < CClotBody
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 50, 50, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 50, 50, 255);
 		
 		float flPos[3], flAng[3];
@@ -273,7 +270,7 @@ public void ChaosSickKnight_ClotThink(int iNPC)
 			npc.m_iChanged_WalkCycle = 6;
 			npc.SetActivity("ACT_ROGUE2_CHAOS_KNIGHT_COUGHING");
 			npc.SetPlaybackRate(0.75);
-			NPC_StopPathing(npc.index);
+			npc.StopPathing();
 			npc.m_flSpeed = 0.0;
 		}
 		npc.PlayCoughSound();
@@ -331,11 +328,11 @@ public void ChaosSickKnight_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		ChaosSickKnightSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -448,7 +445,6 @@ void ChaosSickKnightSelfDefense(ChaosSickKnight npc, float gameTime, int target,
 				if(IsValidEntity(f_ArrowTrailParticle[entity]))
 					RemoveEntity(f_ArrowTrailParticle[entity]);
 				
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(entity, 200, 0, 200, 255);
 				
 				WorldSpaceCenter(entity, vecTarget);
@@ -533,7 +529,7 @@ void ChaosSickKnightSelfDefense(ChaosSickKnight npc, float gameTime, int target,
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetActivity("ACT_ROGUE2_CHAOS_KNIGHT_WALK");
-					NPC_StopPathing(npc.index);
+					npc.StopPathing();
 					npc.m_flSpeed = 0.0;
 				}
 			}

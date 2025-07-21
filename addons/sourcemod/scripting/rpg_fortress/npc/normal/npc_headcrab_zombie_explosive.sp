@@ -142,8 +142,8 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, ExplosiveHeadcrabZombie_OnTakeDamagePost);
 
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -238,7 +238,6 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 		{
 			npc.m_iChanged_WalkCycle = 6;
 			npc.SetActivity("ACT_ZOMBIE_TANTRUM");
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		}
 		float vecabsorigin[3];
@@ -253,13 +252,12 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
 			npc.m_flNextRangedAttackHappening = 0.0;
 			float vecTarget2[3];
 			WorldSpaceCenter(npc.index, vecTarget2);
-			makeexplosion(npc.index, npc.index, vecTarget2, "", 35000, 200);
+			makeexplosion(npc.index, vecTarget2, 35000, 200);
 			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			maxhealth /= 5;
 			HealEntityGlobal(npc.index, npc.index, -float(maxhealth), 1.0, 0.0, _);
@@ -282,11 +280,11 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

@@ -310,22 +310,22 @@ static void ClotThink(int iNPC)
 					}
 					else
 					{
-						NPC_StopPathing(npc.index);
+						npc.StopPathing();
 						npc.m_bAllowBackWalking=false;
-						npc.m_bPathing = false;
+						
 					}
 				}
 				else
 				{
 					npc.StartPathing();
-					npc.m_bPathing = true;
+					
 					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
-				npc.m_bPathing = true;
+				
 				npc.m_bAllowBackWalking=false;
 			}
 		}
@@ -346,8 +346,8 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -626,5 +626,5 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 	//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
 			
 	int beam = ConnectWithBeamClient(npc.m_iWearable6, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
-	i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
+	i_rocket_particle[Proj] = EntIndexToEntRef(beam);
 }

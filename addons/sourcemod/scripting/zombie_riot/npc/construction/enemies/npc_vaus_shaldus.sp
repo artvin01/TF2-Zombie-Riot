@@ -120,6 +120,7 @@ methodmap VausShaldus < CClotBody
 		func_NPCThink[npc.index] = VausShaldus_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		VausShaldusShieldGiving(npc, GetGameTime()); //Give shield on spawn
 		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(0.0, 15.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -242,11 +243,11 @@ public void VausShaldus_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 		}
 	}
 
@@ -262,11 +263,11 @@ public void VausShaldus_ClotThink(int iNPC)
 			{
 				float vPredictedPos[3];
 				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			}
 			else 
 			{
-				NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				npc.SetGoalEntity(npc.m_iTarget);
 			}
 		}
 		VausShaldusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 

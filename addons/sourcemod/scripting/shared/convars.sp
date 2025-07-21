@@ -6,6 +6,8 @@ enum struct CvarInfo
 	ConVar cvar;
 	char value[16];
 	char defaul[16];
+	int OldFlags;
+	int FlagsToDelete;
 	bool enforce;
 }
 
@@ -22,7 +24,13 @@ void ConVar_PluginStart()
 	ConVar_Add("mp_forceautoteam", "1.0"); //Force red
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");//Bot logic to not break it
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0"); //Bot logic to not break it
-	ConVar_Add("mp_humans_must_join_team", "red"); //Only read
+#if defined ZR
+	ConVar_Add("mp_humans_must_join_team", "any");
+#else 
+	ConVar_Add("mp_humans_must_join_team", "red"); //Only red
+#endif
+	ConVar_Add("mp_allowspectators", "1");
+	
 	ConVar_Add("mp_teams_unbalance_limit", "0.0"); //Dont rebalance
 	ConVar_Add("mp_scrambleteams_auto", "0.0"); //No scramble
 	ConVar_Add("tf_dropped_weapon_lifetime", "0.0"); //Remove dropped weapons
@@ -33,22 +41,24 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_weapon_criticals_melee", "0.0");		//Remove crits
 	ConVar_Add("tf_boost_drain_time", "99999.0"); //Overheal Logic, make it perma
 	ConVar_Add("tf_avoidteammates_pushaway", "0"); 
+	tf_scout_air_dash_count = ConVar_Add("tf_scout_air_dash_count", "0", false); 
 
-	ConVar_Add("tf_scout_air_dash_count", "-1"); //Remove doublejumps
 	ConVar_Add("tf_allow_player_use", "1"); //Allow use!
-	ConVar_Add("tf_flamethrower_boxsize", "0.0"); //Flamethrower Particles are useless in ZR
+	ConVar_Add("tf_flamethrower_boxsize", "0.0", true, (FCVAR_NOTIFY | FCVAR_CHEAT)); //Flamethrower Particles are useless in ZR
 
 	ConVar_Add("sv_hudhint_sound", "0.0"); //Removes the wind sound when calling hint hunds
 #if defined ZR
 	ConVar_Add("mp_tournament", "1"); //NEEDS to be 1 , or else mvm logic seems to break in ZR.
 	ConVar_Add("mp_disable_respawn_times", "1.0"); 
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
-	//going above this is dumb
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 #endif
-#if defined ZR || defined RPG
+
+#if defined RPG
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
+
+//	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
 #if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0");
 #endif
@@ -58,7 +68,7 @@ void ConVar_PluginStart()
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
 	Cvar_VshMapFix = CreateConVar("zr_stripmaplogic", "0", "Strip maps of logic for ZR", FCVAR_DONTRECORD);
 	CvarNoSpecialZombieSpawn = CreateConVar("zr_nospecial", "0", "No Panzer will spawn or anything alike");
-	zr_voteconfig = CreateConVar("zr_voteconfig", "raidmode", "Vote config zr/ .cfg already included");
+	zr_voteconfig = CreateConVar("zr_voteconfig", "fastmode", "Vote config zr/ .cfg already included");
 	zr_tagblacklist = CreateConVar("zr_tagblacklist", "", "Tags to blacklist from weapons config");
 	zr_tagwhitelist = CreateConVar("zr_tagwhitelist", "", "Tags to whitelist from weapons config");
 	zr_tagwhitehard = CreateConVar("zr_tagwhitehard", "1", "If whitelist requires a tag instead of allowing");
@@ -67,9 +77,9 @@ void ConVar_PluginStart()
 	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
-	zr_enemymulticap = CreateConVar("zr_enemymulticap", "4.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
-	zr_multi_multiplier = CreateConVar("zr_multi_enemy", "1.0", "Multiply the current scaling");
-	zr_multi_maxcap = CreateConVar("zr_multi_zr_cap", "1.0", "Multiply the current max enemies allowed");
+	zr_maxscaling_untillhp = CreateConVar("zr_maxscaling_untillhp", "3.4", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
+	zr_multi_scaling = CreateConVar("zr_multi_scaling", "1.0", "Multiply the current scaling");
+	zr_multi_maxenemiesalive_cap = CreateConVar("zr_multi_maxenemiesalive_cap", "1.0", "Multiply the current max enemies allowed");
 	zr_raidmultihp = CreateConVar("zr_raidmultihp", "1.0", "Multiply any boss HP that acts as a raid or megaboss, usefull for certain maps.");
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
@@ -112,26 +122,45 @@ void ConVar_PluginStart()
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 
-	//AutoExecConfig(true, "zombie_riot");
+	sv_cheats = ConVar_Add("sv_cheats", "0", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	nav_edit = FindConVar("nav_edit");
+
+#if defined ZR
+	cvarTimeScale = FindConVar("host_timescale");
+#endif
+
+	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 	
+#if defined RPG	
+	AutoExecConfig(true, "zombie_riot");
+#endif
 }
 
-static void ConVar_Add(const char[] name, const char[] value, bool enforce=true)
+static ConVar ConVar_Add(const char[] name, const char[] value, bool enforce=true, int flagsremove = FCVAR_CHEAT)
 {
 	CvarInfo info;
 	info.cvar = FindConVar(name);
-	info.cvar.Flags &= ~FCVAR_CHEAT;
+	info.OldFlags = info.cvar.Flags;
+	info.cvar.Flags &= ~(flagsremove);
+	info.FlagsToDelete = flagsremove;
 	strcopy(info.value, sizeof(info.value), value);
 	info.enforce = enforce;
 
 	if(CvarEnabled)
-	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		info.cvar.SetString(info.value);
-		info.cvar.AddChangeHook(ConVar_OnChanged);
-	}
 
 	CvarList.PushArray(info);
+	
+	if(CvarEnabled)
+	{
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+		if(value[0])
+			info.cvar.SetString(info.value);
+	}
+	
+	return (info.cvar);
 }
 
 stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=true)
@@ -150,21 +179,25 @@ stock void ConVar_AddTemp(const char[] name, const char[] value, bool enforce=tr
 		return;
 	}
 	
+	info.OldFlags = info.cvar.Flags;
 	info.cvar.Flags &= ~FCVAR_CHEAT;
 	strcopy(info.value, sizeof(info.value), value);
 	info.enforce = enforce;
 
 	if(CvarEnabled)
-	{
 		info.cvar.GetString(info.defaul, sizeof(info.defaul));
-		info.cvar.SetString(info.value);
-		info.cvar.AddChangeHook(ConVar_OnChanged);
-	}
 
 	if(!CvarMapList)
 		CvarMapList = new ArrayList(sizeof(CvarInfo));
 
 	CvarMapList.PushArray(info);
+	
+	if(CvarEnabled)
+	{
+		info.cvar.AddChangeHook(ConVar_OnChanged);
+		if(value[0])
+			info.cvar.SetString(info.value);
+	}
 }
 
 stock void ConVar_RemoveTemp(const char[] name)
@@ -188,6 +221,18 @@ stock void ConVar_RemoveTemp(const char[] name)
 	}
 }
 
+//its better to-inforce the flags.
+void ConVar_ToggleDo()
+{
+	CvarInfo info;
+	int length = CvarList.Length;
+	for(int i; i<length; i++)
+	{
+		CvarList.GetArray(i, info);
+		info.cvar.Flags &= ~(info.FlagsToDelete);
+		CvarList.SetArray(i, info);
+	}
+}
 void ConVar_Enable()
 {
 	if(!CvarEnabled)
@@ -199,8 +244,10 @@ void ConVar_Enable()
 			CvarList.GetArray(i, info);
 			info.cvar.GetString(info.defaul, sizeof(info.defaul));
 			CvarList.SetArray(i, info);
+			
+			if(info.value[0])
+				info.cvar.SetString(info.value);
 
-			info.cvar.SetString(info.value);
 			info.cvar.AddChangeHook(ConVar_OnChanged);
 		}
 
@@ -213,7 +260,9 @@ void ConVar_Enable()
 				info.cvar.GetString(info.defaul, sizeof(info.defaul));
 				CvarMapList.SetArray(i, info);
 
-				info.cvar.SetString(info.value);
+				if(info.value[0])
+					info.cvar.SetString(info.value);
+					
 				info.cvar.AddChangeHook(ConVar_OnChanged);
 			}
 		}
@@ -231,9 +280,9 @@ void ConVar_Disable()
 		for(int i; i<length; i++)
 		{
 			CvarList.GetArray(i, info);
-
 			info.cvar.RemoveChangeHook(ConVar_OnChanged);
 			info.cvar.SetString(info.defaul);
+			info.cvar.Flags = info.OldFlags;
 		}
 
 		if(CvarMapList)
@@ -245,6 +294,7 @@ void ConVar_Disable()
 
 				info.cvar.RemoveChangeHook(ConVar_OnChanged);
 				info.cvar.SetString(info.defaul);
+				info.cvar.Flags = info.OldFlags;
 			}
 
 			delete CvarMapList;
@@ -256,10 +306,10 @@ void ConVar_Disable()
 
 public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] newValue)
 {
+	CvarInfo info;
 	int index = CvarList.FindValue(cvar, CvarInfo::cvar);
 	if(index != -1)
 	{
-		CvarInfo info;
 		CvarList.GetArray(index, info);
 
 		if(!StrEqual(newValue, info.value))
@@ -270,10 +320,24 @@ public void ConVar_OnChanged(ConVar cvar, const char[] oldValue, const char[] ne
 				CvarList.SetArray(index, info);
 				info.cvar.SetString(info.value);
 			}
-			else
+		}
+	}
+
+	if(CvarMapList)
+	{
+		int index2 = CvarMapList.FindValue(cvar, CvarInfo::cvar);
+		if(index2 != -1)
+		{
+			CvarMapList.GetArray(index2, info);
+
+			if(!StrEqual(newValue, info.value))
 			{
-				info.cvar.RemoveChangeHook(ConVar_OnChanged);
-				CvarList.Erase(index);
+				if(info.enforce)
+				{
+					strcopy(info.defaul, sizeof(info.defaul), newValue);
+					CvarMapList.SetArray(index2, info);
+					info.cvar.SetString(info.value);
+				}
 			}
 		}
 	}
@@ -290,7 +354,7 @@ static void StoreCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 
 static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if(!Configs_HasExecuted())
+	if(!Configs_HasExecuted() || StrEqual(oldValue, newValue))
 		return;
 	
 	char mapname[64];
@@ -303,7 +367,7 @@ static void WavesCvarChanged(ConVar convar, const char[] oldValue, const char[] 
 
 static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	if(!Configs_HasExecuted())
+	if(!Configs_HasExecuted() || StrEqual(oldValue, newValue))
 		return;
 	
 	char mapname[64];
@@ -317,3 +381,27 @@ static void DownloadCvarChanged(ConVar convar, const char[] oldValue, const char
 	delete kv;
 }
 #endif
+
+
+void Convars_FixClientsideIssues(int client)
+{
+	SendConVarValue(client, tf_scout_air_dash_count, "1");
+	//set to 1 for a frame...
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(client));
+	RequestFrames(Convars_FixClientsideIssuesFrameAfter, 1, pack);
+}
+stock void Convars_FixClientsideIssuesFrameAfter(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(client))
+	{
+		delete pack;
+		return;
+	}
+
+	//set to 0 afterwards.
+	SendConVarValue(client, tf_scout_air_dash_count, "0");
+	delete pack;
+}

@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// static int Weapon_Id[MAXTF2PLAYERS]; // Why did I do taht?
+// static int Weapon_Id[MAXPLAYERS]; // Why did I do taht?
 
 Handle g_hHell_Hoe_Management[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static bool isStrikeHorizontal[MAXPLAYERS+1] = {false, ...};
@@ -38,7 +38,6 @@ void Hell_Hoe_MapStart()
 }
 
 
-// yeah, i love recycle (see survival knife)
 public void Reset_Management_Hell_Hoe(int client) //This is on disconnect/connect
 {
 	if (g_hHell_Hoe_Management[client] != INVALID_HANDLE)
@@ -769,7 +768,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 				Ability_Apply_Cooldown(client, slot, 1.0);
 				if(dieingstate[client] == 0)
 					HealEntityGlobal(client, client,-(clientMaxHp * 0.1), 1.0, 0.5);
-				int playerMaxHp = SDKCall_GetMaxHealth(HealAlly);
+				int playerMaxHp = ReturnEntityMaxHealth(HealAlly);
 				if (playerMaxHp<clientMaxHp)
 					playerMaxHp=clientMaxHp;
 

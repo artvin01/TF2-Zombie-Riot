@@ -173,7 +173,6 @@ methodmap VictoriaRepair < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/hardhat_tower.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun_defense/c_medigun_defense.mdl");
@@ -187,13 +186,11 @@ methodmap VictoriaRepair < CClotBody
 		npc.m_iWearable6	= npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_physician_mask/robo_medic_physician_mask.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sum23_uber_wear/sum23_uber_wear.mdl");
@@ -287,17 +284,17 @@ public void VictoriaRepair_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 	if(IsValidAlly(npc.index, PrimaryThreatIndex))
 	{
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(flDistanceToTarget < 300000)
+		if(flDistanceToTarget < 300000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
 		{
 			if(flDistanceToTarget < 100000)
 			{
-				NPC_StopPathing(npc.index);
+				npc.StopPathing();
 			}
 			else
 			{
@@ -315,7 +312,6 @@ public void VictoriaRepair_ClotThink(int iNPC)
 			{
 				if(IsValidEntity(npc.m_iWearable4))
 				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 				}
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, 3000.0, 1.0);
@@ -323,7 +319,6 @@ public void VictoriaRepair_ClotThink(int iNPC)
 			}
 			else
 			{
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 			}
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);

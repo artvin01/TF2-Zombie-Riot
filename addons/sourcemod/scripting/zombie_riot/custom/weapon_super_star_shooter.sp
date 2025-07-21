@@ -2,9 +2,9 @@
 #pragma newdecls required
 
 static int SSS_overheat[MAXENTITIES]={0, ...};
-static float starshooter_hud_delay[MAXTF2PLAYERS];
-static float StarShooterCoolDelay[MAXTF2PLAYERS];
-static int IsAbilityActive[MAXTF2PLAYERS];
+static float starshooter_hud_delay[MAXPLAYERS];
+static float StarShooterCoolDelay[MAXPLAYERS];
+static int IsAbilityActive[MAXPLAYERS];
 
 Handle Timer_Starshooter_Management[MAXPLAYERS+1] = {null, ...};
 

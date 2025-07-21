@@ -192,8 +192,8 @@ methodmap ChaosAfflictedMiner < CClotBody
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_arcane_purple_sparkle", npc.index, "", {0.0,0.0,0.0});
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
+		npc.StopPathing();
+			
 		
 		return npc;
 	}
@@ -316,11 +316,11 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 

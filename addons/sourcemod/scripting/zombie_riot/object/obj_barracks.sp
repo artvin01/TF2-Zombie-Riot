@@ -2,29 +2,29 @@
 #pragma newdecls required
 
 /*
-float WoodAmount[MAXTF2PLAYERS];
-float FoodAmount[MAXTF2PLAYERS];
-float GoldAmount[MAXTF2PLAYERS];
-int SupplyRate[MAXTF2PLAYERS];
+float WoodAmount[MAXPLAYERS];
+float FoodAmount[MAXPLAYERS];
+float GoldAmount[MAXPLAYERS];
+int SupplyRate[MAXPLAYERS];
 See ZR core.
 */
 
 static float f_VillageSavingResources[MAXENTITIES];
 
-static int InMenu[MAXTF2PLAYERS];
-static float TrainingStartedIn[MAXTF2PLAYERS];
-static float TrainingIn[MAXTF2PLAYERS];
-static int TrainingIndex[MAXTF2PLAYERS];
-static int TrainingQueue[MAXTF2PLAYERS];
-static float ResearchStartedIn[MAXTF2PLAYERS];
-static float ResearchIn[MAXTF2PLAYERS];
-static int ResearchIndex[MAXTF2PLAYERS];
-static int CommandMode[MAXTF2PLAYERS];
+static int InMenu[MAXPLAYERS];
+static float TrainingStartedIn[MAXPLAYERS];
+static float TrainingIn[MAXPLAYERS];
+static int TrainingIndex[MAXPLAYERS];
+static int TrainingQueue[MAXPLAYERS];
+static float ResearchStartedIn[MAXPLAYERS];
+static float ResearchIn[MAXPLAYERS];
+static int ResearchIndex[MAXPLAYERS];
+static int CommandMode[MAXPLAYERS];
 //bool FinalBuilder[MAXENTITIES];
-static bool MedievalUnlock[MAXTF2PLAYERS];
+static bool MedievalUnlock[MAXPLAYERS];
 //bool GlassBuilder[MAXENTITIES];
-static int CivType[MAXTF2PLAYERS];
-static bool b_InUpgradeMenu[MAXTF2PLAYERS];
+static int CivType[MAXPLAYERS];
+static bool b_InUpgradeMenu[MAXPLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
 
@@ -275,7 +275,7 @@ void ObjectBarracks_MapStart()
 	build.Cost = 1200;
 	build.Health = 50;
 	build.Cooldown = 15.0;
-	build.Func = ObjectGeneric_CanBuildSentry;
+	build.Func = ObjectGeneric_CanBuildSentryBarracks;
 	Building_Add(build);
 }
 
@@ -886,8 +886,9 @@ public void Building_Summoner(int client, int entity)
 	}
 	SetGlobalTransTarget(client);
 
-	PrintToChat(client, "%t", "Barracks Desc Extra");
-	PrintToChat(client, "%t", "Barracks Desc Extra 2");
+	CPrintToChat(client, "{yellow}%t", "Barracks Desc Extra");
+	CPrintToChat(client, "{yellow}%t", "Barracks Desc Extra 2");
+	ExplainBuildingInChat(client, 2);
 	TrainingIn[client] = 0.0;
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
@@ -928,7 +929,7 @@ void Barracks_TryRegenIfBuilding(int client, float ammount = 1.0)
 		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
 			//regen barracks resoruces
-			SummonerRenerateResources(client, 20.0 * ammount, 0.0, true);
+			SummonerRenerateResources(client, 12.5 * ammount, 0.0, true);
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
@@ -961,8 +962,9 @@ void Barracks_BuildingThink(int entity)
 	if(Barracks_InstaResearchEverything)
 	{
 		//adds all flags except ZR_BARRACKS_TROOP_CLASSES
-		i_NormalBarracks_HexBarracksUpgrades[client] |= ((1 << 31));
-		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 31) - (ZR_BARRACKS_TROOP_CLASSES));
+		i_NormalBarracks_HexBarracksUpgrades[client] = (0xFFFFFFFF);
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 1));
+		i_NormalBarracks_HexBarracksUpgrades_2[client] |= ((1 << 2));
 	}
 		
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
@@ -1422,14 +1424,14 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 
 	if(AllowResoruceGen)
 	{
-		float SupplyRateCalc = SupplyRate[client] / (10.0);
+		float SupplyRateCalc = SupplyRate[client] / 10.0;
 
 		float SupplyRateCalcBase = SupplyRateCalc;
 		SupplyRateCalc *= multi;
 
 		SupplyRateCalc *= ResourceGenMulti(client);
-		WoodAmount[client] += SupplyRateCalc * (1.15 * 0.5);
-		FoodAmount[client] += SupplyRateCalc * (1.40 * 0.5);
+		WoodAmount[client] += SupplyRateCalc * (0.7667);
+		FoodAmount[client] += SupplyRateCalc * (0.9333);
 
 		if(MedievalUnlock[client] || GoldGenMulti != 1.0)
 		{
@@ -1472,14 +1474,14 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		}
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 1.35;
+			SupplyRateCalc *= 1.1;
 		}
 	}
 	else
 	{
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 1.5;
+			SupplyRateCalc *= 1.2;
 		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
 		{

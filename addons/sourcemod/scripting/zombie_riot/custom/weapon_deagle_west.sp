@@ -15,6 +15,8 @@ void ResetMapStartWest()
 }
 void West_Map_Precache()
 {
+	PrecacheSound("items/powerup_pickup_haste.wav");
+	PrecacheSound("items/battery_pickup.wav");
 	PrecacheSound(SOUND_REVOLVER_FANG);
 	PrecacheSound(SOUND_REVOLVER_NOON);
 }
@@ -151,7 +153,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			return;
 		}
-		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
@@ -227,4 +229,229 @@ void REVOLER_AIM(int client)
 		TF2_RemoveCondition(client, TFCond_HalloweenCritCandy);
 		f_West_Aim_Duration[client] = 0.0;
 	}
+}
+
+
+public void TriggerFinger_UspAbility(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(IsValidEntity(client))
+	{
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+		
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+			return;
+		}
+		
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 35.0);
+		ApplyTempAttrib(weapon, 6, 0.5, 3.0);
+		ApplyTempAttrib(weapon, 97, 0.5, 3.0);
+		MakePlayerGiveResponseVoice(client, 1);
+		EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+		ApplyStatusEffect(client, client, "Trigger Finger", 3.0);
+		ApplyStatusEffect(client, client, "Trigger Finger Hidden", 3.0);
+	}
+}
+public void TriggerFinger_UspAbility2(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(IsValidEntity(client))
+	{
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
+		{
+			float Ability_CD = Ability_Check_Cooldown(client, slot);
+	
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+		
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+			return;
+		}
+		
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 35.0);
+		ApplyTempAttrib(weapon, 6, 0.5, 4.0);
+		ApplyTempAttrib(weapon, 97, 0.5, 4.0);
+		MakePlayerGiveResponseVoice(client, 1);
+		EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+		ApplyStatusEffect(client, client, "Trigger Finger", 4.0);
+		ApplyStatusEffect(client, client, "Trigger Finger Hidden", 4.0);
+	}
+}
+
+// SHERRIF REVOLVER
+public void DepthPerception_RevolverM2(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(!IsValidEntity(client))
+		return;
+
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+	
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		return;
+	}
+	
+	Rogue_OnAbilityUse(client, weapon);
+	Ability_Apply_Cooldown(client, slot, 16.0);
+	if(CvarInfiniteCash.BoolValue)
+		Ability_Apply_Cooldown(client, slot, 0.0);
+	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+			
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	Explode_Logic_Custom(0.0, client, client, weapon, _, 9999.9,_,_,true,4,_,_,SherrifRevolverHit);
+	//add LOS check.
+	FinishLagCompensation_Base_boss();
+	ApplyStatusEffect(client, client, "Depth Percieve", 3.0);
+}
+// SHERRIF REVOLVER
+public void DepthPerception_RevolverM2_PAP(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(!IsValidEntity(client))
+		return;
+
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+	
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		return;
+	}
+	
+	Rogue_OnAbilityUse(client, weapon);
+	Ability_Apply_Cooldown(client, slot, 12.0);
+	if(CvarInfiniteCash.BoolValue)
+		Ability_Apply_Cooldown(client, slot, 0.0);
+
+	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+			
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	float flPos[3];
+	GetClientEyePosition(client, flPos);
+	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 3000.9,_,_,true,4,_,_,SherrifRevolverHit);
+	//add LOS check.
+	FinishLagCompensation_Base_boss();
+	ApplyStatusEffect(client, client, "Depth Percieve", 3.0);
+}
+
+void SherrifRevolverHit(int entity, int victim, float damage, int weapon)
+{
+	ApplyStatusEffect(entity, victim, "Depth Percepted", 3.0);
+	StatusEffects_AddDepthPerception_Glow(victim);
+}
+
+
+void SherrifRevolver_NPCTakeDamage(int attacker, int victim, float &damage, int weapon, int whichtype)
+{
+	if(!HasSpecificBuff(attacker, "", StatusIdDepthPerceptionOwnerFunc()))
+		return;
+
+	if(!StatusEffects_AddDepthPerception_Glow_IsaOwner(victim, attacker))
+		return;
+	//am the owner!
+	StatusEffects_AddDepthPerception_UseUpMark(victim, attacker);
+	damage *= 3.0;
+	bool PlaySound = false;
+	if(f_MinicritSoundDelay[attacker] < GetGameTime())
+	{
+		PlaySound = true;
+		f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
+	}
+	
+	DisplayCritAboveNpc(victim, attacker, PlaySound); //Display crit above head
+	if(whichtype == WEAPON_SHERRIF)
+	{
+		float CurrentCD = Ability_Check_Cooldown(attacker, 3, weapon);
+		Ability_Apply_Cooldown(attacker, 3, CurrentCD - 1.5, weapon, true);
+	}
+}
+
+
+// SHERRIF REVOLVER
+public void DepthPerception_RevolverR(int client, int weapon, bool crit, int slot, int victim)
+{
+	if(!IsValidEntity(client))
+		return;
+
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+	
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		return;
+	}
+	
+	Rogue_OnAbilityUse(client, weapon);
+	Ability_Apply_Cooldown(client, slot, 60.0);
+	EmitSoundToAll("items/battery_pickup.wav", client, _, 70);
+	if(CvarInfiniteCash.BoolValue)
+		Ability_Apply_Cooldown(client, slot, 0.0);
+
+	int WeaponDo = Store_GiveSpecificItem(client, "Wanted's Lever Action");
+	SetAmmo(client, 27, 0);
+	CurrentAmmo[client][27] = 0;
+	ResetClipOfWeaponStore(WeaponDo, client, 8);
+}
+// SHERRIF REVOLVER
+public void Weapon_ShootOnRemoveSelf_LeverAction(int client, int weapon, bool crit, int slot, int victim)
+{
+	int CurrentAmmoHave = GetAmmo(client, 27);
+	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+	int CurrentClip = GetEntData(weapon, iAmmoTable, 4);
+	if(CurrentAmmoHave <= 1 && CurrentClip <= 1)
+	{
+		Store_RemoveSpecificItem(client, "Wanted's Lever Action");
+		CreateTimer(0.5, LazyCoding_RemoveWeapon, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
+		FakeClientCommand(client, "use tf_weapon_revolver");
+	}
+}
+
+public Action LazyCoding_RemoveWeapon(Handle Calcium_Remove_SpellHandle, int ref)
+{
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
+	{
+		int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+		if(IsValidClient(owner))
+		{
+			int weapon_holding = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+			if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
+			{
+				FakeClientCommand(owner, "use tf_weapon_revolver");
+			}
+			TF2_RemoveItem(owner, weapon);
+		}
+	}	
+	return Plugin_Handled;
 }

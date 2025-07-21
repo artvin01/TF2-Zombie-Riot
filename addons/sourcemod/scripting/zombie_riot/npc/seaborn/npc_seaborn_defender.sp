@@ -104,21 +104,20 @@ methodmap SeabornDefender < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		
-		switch(ZR_Waves_GetRound() % 3)
+		switch(Waves_GetRoundScale() % 3)
 		{
 			case 0:
 			{
-				SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
+				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 0, 255);
 			}
 			case 1:
 			{
-				SetEntityRenderColor(npc.m_iWearable1, 255, 0, 255, 255);
+				SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
 			}
 			case 2:
 			{
-				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 0, 255);
+				SetEntityRenderColor(npc.m_iWearable1, 255, 0, 255, 255);
 			}
 		}
 
@@ -134,9 +133,7 @@ methodmap SeabornDefender < CClotBody
 		}
 		else
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
 		}
 		return npc;
@@ -184,11 +181,11 @@ public void SeabornDefender_ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 
 		npc.StartPathing();
@@ -261,9 +258,20 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 
-		switch(ZR_Waves_GetRound() % 3)
+		switch(Waves_GetRoundScale() % 3)
 		{
 			case 0:
+			{
+				if(!pierce)
+				{
+					damage *= 0.1;
+					
+					damagePosition[2] += 30.0;
+					npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+					damagePosition[2] -= 30.0;
+				}
+			}
+			case 1:
 			{
 				if(hot)
 				{
@@ -274,7 +282,7 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					damagePosition[2] -= 30.0;
 				}
 			}
-			case 1:
+			case 2:
 			{
 				if(magic)
 				{
@@ -282,17 +290,6 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 					damagePosition[2] += 30.0;
 					npc.DispatchParticleEffect(npc.index, "medic_resist_match_fire_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
-					damagePosition[2] -= 30.0;
-				}
-			}
-			case 2:
-			{
-				if(!pierce)
-				{
-					damage *= 0.1;
-					
-					damagePosition[2] += 30.0;
-					npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
 					damagePosition[2] -= 30.0;
 				}
 			}

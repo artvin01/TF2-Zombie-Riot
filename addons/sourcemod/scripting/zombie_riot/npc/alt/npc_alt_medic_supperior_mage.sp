@@ -161,17 +161,11 @@ methodmap Npc_Alt_Medic_Supperior_Mage < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 7, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 7, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 7, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 7, 255, 255, 255);	
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 7, 255, 255, 255);
 		
 		
@@ -263,9 +257,9 @@ static void Internal_ClotThink(int iNPC)
 			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		} else {
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		if(flDistanceToTarget < 60000)	//Do laser of hopefully not doom within a 100 hu's, might be too close but who knows.
 		{
@@ -327,7 +321,7 @@ static void Internal_ClotThink(int iNPC)
 						if(target > 0) 
 						{
 							float damage = 45.0 * (1.0+(1-(Health/MaxHealth))*2);
-							if(ZR_Waves_GetRound()<=45)
+							if(iRuinaWave()<=30)
 							{
 								damage=damage/1.75;
 							}
@@ -378,8 +372,8 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
@@ -481,8 +475,8 @@ static Action Superrior_Mage_LaserTick(int client)
 	Data.Radius = 10.0;
 	Data.Range = (npc.Anger ? 750.0 : 500.0);
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = (npc.Anger ? 30.0 : 20.0) / 6.0 / TickrateModify;
-	Data.Long_Dps = (npc.Anger ? 17.5: 10.0) / 6.0 / TickrateModify;
+	Data.Close_Dps = (npc.Anger ? 30.0 : 20.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = (npc.Anger ? 17.5: 10.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = (npc.Anger ? {255, 255, 255, 60} : {5, 9, 250, 30});
 	Data.DoEffects = true;
 	GetAttachment(npc.index, "effect_hand_l", Data.EffectsStartLoc, NULL_VECTOR);

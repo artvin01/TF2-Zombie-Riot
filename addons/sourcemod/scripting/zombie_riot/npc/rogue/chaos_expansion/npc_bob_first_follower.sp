@@ -264,7 +264,7 @@ methodmap BobTheFirstFollower < CClotBody
 			// Cutscene Here
 			npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
 			npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
-			Rogue_SetProgressTime(10.0, false);
+		//	Rogue_SetProgressTime(10.0, false);
 		}
 
 		return npc;
@@ -313,11 +313,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 		if(npc.m_flAttackHappens)
 		{
@@ -386,7 +386,7 @@ static void ClotThink(int iNPC)
 
 			if(flDistanceToTarget > 25000.0)
 			{
-				NPC_SetGoalEntity(npc.index, ally);
+				npc.SetGoalEntity(ally);
 				npc.StartPathing();
 				npc.SetActivity("ACT_RUN_BOB");
 				return;

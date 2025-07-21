@@ -1,12 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float	 Timetillnextbullet[MAXTF2PLAYERS];
-static int		 IsAbilityActive[MAXTF2PLAYERS];
-static float		 BulletsLoaded[MAXTF2PLAYERS]={5.0, ...};
-static float		 CurrentMaxBullets[MAXTF2PLAYERS];
-static int		 IsCurrentlyReloading[MAXTF2PLAYERS];
-static float		AttackedRecently[MAXTF2PLAYERS];
+static float	 Timetillnextbullet[MAXPLAYERS];
+static int		 IsAbilityActive[MAXPLAYERS];
+static float		 BulletsLoaded[MAXPLAYERS]={5.0, ...};
+static float		 CurrentMaxBullets[MAXPLAYERS];
+static int		 IsCurrentlyReloading[MAXPLAYERS];
+static float		AttackedRecently[MAXPLAYERS];
 static float	 AmmoHudDelay[MAXPLAYERS+1]={0.0, ...};
 float reload_speed_bonus[MAXPLAYERS+1]={1.0, ...};
 float clip_size_bonus[MAXPLAYERS+1]={1.0, ...};

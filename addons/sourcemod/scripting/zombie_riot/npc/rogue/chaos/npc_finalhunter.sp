@@ -48,9 +48,9 @@ int FinalHunter_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return FinalHunter(vecPos, vecAng, team);
+	return FinalHunter(vecPos, vecAng, team, data);
 }
 
 methodmap FinalHunter < CClotBody
@@ -76,8 +76,22 @@ methodmap FinalHunter < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 
-	public FinalHunter(float vecPos[3], float vecAng[3], int ally)
+	public FinalHunter(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		bool final = StrContains(data, "final_wave") != -1;
+		if(final)
+		{
+			
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+				{
+					Is_a_Medic[other] = false;
+					return view_as<FinalHunter>(-1);
+				}
+			}
+		}
 		FinalHunter npc = view_as<FinalHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.175", "50000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
@@ -153,10 +167,9 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_bStaticNPC)
 	{
-		if(Waves_Started() && (Waves_GetMaxRound() -1) == ZR_Waves_GetRound())
+		if(!Is_a_Medic[npc.index])
 		{
 			npc.m_bStaticNPC = false;
-			Is_a_Medic[npc.index] = false;
 			b_NpcIsInvulnerable[npc.index] = false;
 
 			//remove from static.
@@ -237,11 +250,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius())
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		npc.StartPathing();

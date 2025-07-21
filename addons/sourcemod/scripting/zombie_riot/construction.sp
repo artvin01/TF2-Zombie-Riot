@@ -129,7 +129,7 @@ static StringMap CurrentMaterials;
 static ArrayList CurrentResearch;
 static int InResearch = -1;
 static float InResearchAt;
-static Handle InResearchMenu[MAXTF2PLAYERS];
+static Handle InResearchMenu[MAXPLAYERS];
 
 bool Construction_Mode()
 {
@@ -148,9 +148,9 @@ bool Construction_InSetup()
 
 int Construction_GetRound()
 {
-	int round = CurrentRisk * 70 / HighestRisk;
+	int round = CurrentRisk * 50 / HighestRisk;
 	if(AttackType > 0 && AttackHardcore > 0)
-		round += AttackHardcore * 3;
+		round += AttackHardcore * 2;
 	
 	return round;
 }
@@ -770,7 +770,7 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
-		int cash = 500;
+		int cash = 300;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
 		CPrintToChatAll("%t", "Gained Material", cash, "Cash");
@@ -983,7 +983,7 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 	if(goalArea == NULL_AREA)
 	{
 		CurrentSpawnName[0] = 0;
-		PrintToChatAll("ERROR: Could not find valid nav area for location (%f %f %f)", pos1[0], pos1[1], pos1[2]);
+		PrintToServer("ERROR: Could not find valid nav area for location (%f %f %f)", pos1[0], pos1[1], pos1[2]);
 		return false;
 	}
 
@@ -1255,7 +1255,8 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
-					damage -= float(info.Defense);
+					if(!(damagetype & DMG_TRUEDAMAGE))
+						damage -= float(info.Defense);
 					if(damage < minDamage)
 						damage = minDamage;
 
@@ -1329,7 +1330,7 @@ static int ConstructionProvokeH(Menu menu, MenuAction action, int client, int ch
 				if(entity != -1)
 				{
 					view_as<CClotBody>(entity).m_bCamo = false;
-					SDKHooks_TakeDamage(entity, client, client, 65.0, DMG_CLUB);
+					Construction_Material_Interact(client, entity);
 				}
 			}
 		}

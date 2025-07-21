@@ -71,7 +71,7 @@ methodmap IberiaBeacon < CClotBody
 
 	public IberiaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", GetBuildingHealth(), ally, .NpcTypeLogic = 1));
+		IberiaBeacon npc = view_as<IberiaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.15", MinibossHealthScaling(50.0, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -194,32 +194,4 @@ public void IberiaBeacon_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, pos, 0, 0);
-}
-
-static char[] GetBuildingHealth()
-{
-	int health = 25;
-	
-//	Dont scale with players, dumb idea.
-//	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
-	
-	float temp_float_hp = float(health);
-	
-	if(ZR_Waves_GetRound()+1 < 30)
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
-	}
-	else
-	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
-	}
-	
-	health /= 2;
-	
-	
-	health = RoundToCeil(float(health) * 1.2);
-	
-	char buffer[16];
-	IntToString(health, buffer, sizeof(buffer));
-	return buffer;
 }

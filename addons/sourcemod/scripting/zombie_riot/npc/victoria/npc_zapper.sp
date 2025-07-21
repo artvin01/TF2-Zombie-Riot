@@ -164,14 +164,12 @@ methodmap Zapper < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 80, 0, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2022_propaniac/hwn2022_propaniac.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 200, 255, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum23_flamewarrior_style1/sum23_flamewarrior_style1.mdl");
@@ -256,9 +254,9 @@ public void Zapper_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 			
 			ZapperSelfdefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 

@@ -286,8 +286,8 @@ static StringMap NPCList;
 static ArrayList TinkerList;
 static ArrayList WeaponList;
 static ArrayList ForgeList;
-static int CurrentWeapon[MAXTF2PLAYERS];
-static bool ChatListen[MAXTF2PLAYERS];
+static int CurrentWeapon[MAXPLAYERS];
+static bool ChatListen[MAXPLAYERS];
 
 void Tinker_ConfigSetup()
 {

@@ -43,6 +43,7 @@ methodmap MaterialCash < CClotBody
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "resource");
 		ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999999.0);	
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 	//	npc.m_flRangedArmor = 0.1;
 		npc.g_TimesSummoned = 0;
@@ -71,9 +72,12 @@ static void ClotDeath(int entity)
 	int cash = 1000;
 
 	int GetRound = Construction_GetRisk() + 1;
-	
-	cash *= GetRound;
 
+	if(GetRound > 5)
+		GetRound = 5;
+		
+	cash *= GetRound;
+	
 	CPrintToChatAll("%t", "Gained Material", cash, "Cash");
 	CurrentCash += cash;
 }

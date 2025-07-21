@@ -15,20 +15,17 @@
 	{
 		"en" 		"Zilius Arrived the leader of the exlusionary Expidonsans."
 	}
-	"Nemesis Arrived."
+	"Calmaticus Arrived."
 	{
-		"en" 		"Nemesis, the original Xeno infector arrived."
-		"fr" 		"Nemesis, la source de l'infection Xéno, est ici."
+		"en" 		"Calmaticus, the original Xeno infector arrived."
+		"fr" 		"Calmaticus, la source de l'infection Xéno, est ici."
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
-		"pt"		"Nemesis, o Xeno infector original chegou."
+		"pt"		"Calmaticus, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
 	}
-	"Mrx Arrived."
+	"Vivithorn Arrived."
 	{
-		"en" 		"Mrx... Is here."
-		"ru" 		"Мистер X... Появлися."
-		"fr" 		"M.x... est ici."
-		"chi"		"Mr.X来了。。。"
+		"en" 		"Vivithorn... Is here."
 	}
 	"Alaxios Arrived"
 	{

@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static int how_many_times_fisted[MAXTF2PLAYERS];
-static float f_DurationOfProjectileAttack[MAXTF2PLAYERS];
+static int how_many_times_fisted[MAXPLAYERS];
+static float f_DurationOfProjectileAttack[MAXPLAYERS];
 
 #define SOUND_AUTOAIM_IMPACT_FLESH_1 		"physics/flesh/flesh_impact_bullet1.wav"
 #define SOUND_AUTOAIM_IMPACT_FLESH_2 		"physics/flesh/flesh_impact_bullet2.wav"
@@ -166,7 +166,7 @@ public Action Apply_cool_effects_kahml(Handle cut_timer, int client)
 public void Fists_of_Kahml_Ablity_2(int client, int weapon, bool crit, int slot)
 {
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);

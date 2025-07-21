@@ -6,10 +6,10 @@
 // TODO: If more party settings are added, use a enum/enum struct
 
 static int PartyLeader[MAXENTITIES];
-static bool PartyXPLowShare[MAXTF2PLAYERS];
+static bool PartyXPLowShare[MAXPLAYERS];
 static bool PartyFriendlyFire[MAXENTITIES];
-static int PartyInvitedBy[MAXTF2PLAYERS];
-static int PartyOutlineRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int PartyInvitedBy[MAXPLAYERS];
+static int PartyOutlineRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
 void Party_PluginStart()
 {
@@ -19,7 +19,7 @@ void Party_PluginStart()
 
 void Party_PluginEnd()
 {
-	for(int i; i < MAXTF2PLAYERS; i++)
+	for(int i; i < MAXPLAYERS; i++)
 	{
 		int entity = EntRefToEntIndex(PartyOutlineRef[i]);
 		if(entity != -1)
@@ -104,7 +104,6 @@ void Party_PlayerModel(int client, const char[] model)
 		SetVariantString("!activator");
 		AcceptEntityInput(entity, "SetParent", client);
 
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
 		SDKHook(entity, SDKHook_SetTransmit, Party_Transmit);
 

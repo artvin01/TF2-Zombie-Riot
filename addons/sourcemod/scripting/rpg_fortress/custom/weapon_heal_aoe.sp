@@ -3,9 +3,9 @@
 
 #define WAND_INIT_SOUND "player/mannpower_invulnerable.wav"
 
-static float f_HealAmount[MAXTF2PLAYERS];
+static float f_HealAmount[MAXPLAYERS];
 static char gLaser1;
-static bool b_WasMagicFocus[MAXTF2PLAYERS];
+static bool b_WasMagicFocus[MAXPLAYERS];
 
 
 void Wand_HolyLight_Map_Precache()

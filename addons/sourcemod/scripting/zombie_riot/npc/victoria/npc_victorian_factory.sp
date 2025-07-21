@@ -42,18 +42,19 @@ static char[] GetBuildingHealth()
 	health = RoundToNearest(float(health) * ZRStocks_PlayerScalingDynamic()); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
+	float wave = float(Waves_GetRoundScale()+1) / 0.75;
 	
-	if(ZR_Waves_GetRound()+1 < 30)
+	if(wave < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.20));
 	}
-	else if(ZR_Waves_GetRound()+1 < 45)
+	else if(wave < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_Waves_GetRound()+1)) * float(ZR_Waves_GetRound()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + wave) * wave),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;
@@ -143,7 +144,6 @@ methodmap VictorianFactory < CClotBody
 		SetEntityRenderColor(npc.index, 80, 50, 50, 60);
 
 		npc.m_iWearable3 = npc.EquipItemSeperate("models/props_c17/substation_transformer01a.mdl",_,1,1.001,5100.0,true);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		TeleportEntity(npc.m_iWearable3, NULL_VECTOR, {0.0, 0.0, 0.0}, NULL_VECTOR);
 
@@ -235,7 +235,6 @@ static void ClotThink(int iNPC)
 			Vec[1] -= 62.5;
 			Vec[2] += 55.0;
 			TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 			
 			npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
@@ -246,7 +245,6 @@ static void ClotThink(int iNPC)
 			Vec[1] += 62.5;
 			Vec[2] += 55.0;
 			TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 			
 			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
@@ -326,6 +324,7 @@ static void ClotThink(int iNPC)
 					int spawn_index = NPC_CreateByName("npc_victoria_fragments", npc.index, Vec, {0.0,0.0,0.0}, GetTeam(npc.index), "factory;mk2;isvoli");
 					if(spawn_index > MaxClients)
 					{
+						NpcStats_CopyStats(npc.index, spawn_index);
 						int maxhealth = RoundToFloor(ReturnEntityMaxHealth(npc.index)*0.25);
 						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 						SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
@@ -381,39 +380,6 @@ static void ClotThink(int iNPC)
 	}
 }
 
-/*static Action Timer_MachineShop(Handle timer, int iNPC)
-{
-	VictorianFactory npc = view_as<VictorianFactory>(iNPC);
-	float Vec[3], Ang[3];
-	npc.m_iWearable1 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
-	GetAbsOrigin(npc.m_iWearable1, Vec);
-	GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
-	Ang[1] += 180.0;
-	Vec[0] -= 50.0;
-	Vec[1] -= 62.5;
-	Vec[2] += 55.0;
-	TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
-	
-	npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
-	GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
-	GetAbsOrigin(npc.m_iWearable2, Vec);
-	Ang[1] += 90.0;
-	Vec[0] += 50.0;
-	Vec[1] += 62.5;
-	Vec[2] += 55.0;
-	TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
-	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-	
-	EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-	EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-	npc.m_flMeleeArmor = 2.0;
-	npc.m_flRangedArmor = 0.5;
-	i_AttacksTillMegahit[npc.index] = 602;
-	return Plugin_Stop;
-}*/
 
 static void ClotDeath(int entity)
 {

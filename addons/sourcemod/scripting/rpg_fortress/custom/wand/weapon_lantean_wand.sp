@@ -95,7 +95,7 @@ public void Weapon_Lantean_Mouse1(int client, int weapon, bool crit, int slot)
 
 		RPGCore_ResourceReduction(client, mana_cost);
 
-		int pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		Current_Mana[client] -= mana_cost;
 		Mana_Hud_Delay[client] = 0.0;
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);

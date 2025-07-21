@@ -3,11 +3,11 @@
 
 float f_Actualm_flNextPrimaryAttack[MAXENTITIES];
 
-int i_EmptyBulletboop[MAXTF2PLAYERS];
+int i_EmptyBulletboop[MAXPLAYERS];
 
 public void SemiAutoWeapon(int client, int buttons)
 {
-	static int holding_semiauto[MAXTF2PLAYERS];
+	static int holding_semiauto[MAXPLAYERS];
 	if(buttons & IN_ATTACK)
 	{
 		if(!holding_semiauto[client])
@@ -88,7 +88,7 @@ public void SemiAutoWeapon(int client, int buttons)
 			}
 		}
 	}
-	static int holding_semiauto_reload[MAXTF2PLAYERS];
+	static int holding_semiauto_reload[MAXPLAYERS];
 	if(buttons & IN_RELOAD)
 	{
 		if(!holding_semiauto_reload[client])

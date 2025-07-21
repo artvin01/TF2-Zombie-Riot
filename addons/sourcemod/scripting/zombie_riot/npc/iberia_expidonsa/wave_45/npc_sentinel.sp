@@ -186,6 +186,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	GrantEntityArmor(npc.index, true, 0.5, 0.5, 0);
 	
 
 	if(npc.m_blPlayHurtAnimation)
@@ -195,7 +196,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 		npc.PlayHurtSound();	
 	}
 	
-	if(npc.Anger && !npc.m_fbRangedSpecialOn)
+	if(npc.m_flArmorCount <= 0.0 && !npc.m_fbRangedSpecialOn)
 	{
 		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
 		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
@@ -220,8 +221,6 @@ public void IberianSentinel_ClotThink(int iNPC)
 		npc.m_fbRangedSpecialOn = true;
 
 		SentinelAOEBuff(npc,GetGameTime(npc.index));
-
-		npc.m_flArmorToGive = 5000.0;
 		
 		npc.PlayBuffReaction();
 	}
@@ -247,11 +246,11 @@ public void IberianSentinel_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		IberianSentinelSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -269,37 +268,12 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
-	bool AllowRage = true;
-	
-	if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
-	{
-		AllowRage = false;
-	}
-	if (AllowRage && npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-		if(npc.m_iAttacksTillReload < 12 && !npc.Anger)
-		{
-			npc.m_iAttacksTillReload += 1;
-		}
-		else if(npc.m_iAttacksTillReload >= 12 && !npc.Anger)
-		{
-			npc.Anger = true;
-		}
 	}
-	/*
-	float hittimes = 0;
-	if(ZR_Waves_GetRound()+1 >= 15)
-		hittimes = 25;
-	if(ZR_Waves_GetRound()+1 >= 30)
-		hittimes = 20;
-	if(ZR_Waves_GetRound()+1 >= 45)
-		hittimes = 15;
-	if(ZR_Waves_GetRound()+1 >= 55)
-		hittimes = 10;
-	*/
 	
 	return Plugin_Changed;
 }
@@ -352,9 +326,9 @@ void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 350.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 10.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -403,27 +377,20 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
+					if(GetVectorDistance(pos1, pos2, true) < (500.0 * 500.0))
 					{
 						if(!Can_I_See_Ally(npc.index, entitycount))
 							continue;
 							
-						float DurationGive = 20.0;
+						float DurationGive = 10.0;
 						
 						if(b_thisNpcIsABoss[entitycount] ||
 							b_thisNpcIsARaid[entitycount] ||
 							b_StaticNPC[entitycount])
 							DurationGive = 5.0;
-						else
-						{
-							HealEntityGlobal(npc.index, entitycount, 999999.9, 1.25, 0.0, HEAL_ABSOLUTE);
-							GrantEntityArmor(entitycount, true, 1.2, 0.33, 0);
-						}
 
-						ApplyStatusEffect(npc.index, entitycount, "Combine Command", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "War Cry", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Defensive Backup", DurationGive);
-						ApplyStatusEffect(npc.index, entitycount, "False Therapy", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Healing Resolve", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Self Empowerment", DurationGive);
 						ApplyStatusEffect(npc.index, entitycount, "Ally Empowerment", DurationGive);

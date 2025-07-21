@@ -13,7 +13,7 @@ void Events_PluginStart()
 	HookEvent("player_connect_client", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerConnect, EventHookMode_Pre);
 	HookEvent("deploy_buff_banner", OnBannerDeploy, EventHookMode_Pre);
-//	HookEvent("nav_blocked", NavBlocked, EventHookMode_Pre);
+	HookEvent("teams_changed", EventHook_TeamsChanged, EventHookMode_PostNoCopy);
 #if defined ZR
 	HookEvent("teamplay_round_win", OnRoundEnd, EventHookMode_Pre);
 	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
@@ -97,6 +97,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	for(int client=1; client<=MaxClients; client++)
 	{
 		i_AmountDowned[client] = 0;
+		Building_ClientDisconnect(client);
 		for(int i; i<Ammo_MAX; i++)
 		{
 			CurrentAmmo[client][i] = CurrentAmmo[0][i];
@@ -116,8 +117,20 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zealot_RoundStart();
 	Drops_ResetChances();
 
+	for(int client=1; client<=MaxClients; client++)
+	{
+		Armor_Charge[client] = 0; //reset armor to 0
+	}
 	if(RoundStartTime > GetGameTime())
+	{
+		//This asumes it already picked a map, get loadouts while not redoing map logic!
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsValidClient(client))
+				Loadout_DatabaseLoadFavorite(client);
+		}
 		return;
+	}
 	
 	Waves_SetReadyStatus(2);
 	RoundStartTime = FAR_FUTURE;
@@ -146,7 +159,17 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	DeleteShadowsOffZombieRiot();
+	if(CvarAutoSelectWave.BoolValue && !Waves_Started())
+	{
+		//Do this only once!
+		char mapname[64];
+		GetMapName(mapname, sizeof(mapname));
+		
+		KeyValues kv = Configs_GetMapKv(mapname);
+		Waves_SetupVote(kv, true);
+		delete kv;
+	}
+	
 	for(int client=1; client<=MaxClients; client++)
 	{
 		SetMusicTimer(client, 0);
@@ -164,7 +187,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		int client = GetClientOfUserId(event.GetInt("userid"));
 		if(client)
 		{
-			ChangeClientTeam(client, 3);
+			SetTeam(client, 3);
 			OnAutoTeam(client, name, 0);
 		}
 	}
@@ -173,7 +196,7 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 		return Plugin_Continue;
 	
 	event.BroadcastDisabled = true;
-	return Plugin_Changed;
+	return Plugin_Continue;
 }
 
 public Action OnBannerDeploy(Event event, const char[] name, bool dontBroadcast)
@@ -254,9 +277,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 		ForcePlayerCrouch(client, false);
 
-#if defined RTS
-		RTS_PlayerResupply(client);
-#else
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
@@ -276,7 +296,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			}
 		}
-#endif
+		Stocks_ColourPlayernormal(client);
 
 #if defined ZR
 		//DEFAULTS
@@ -291,14 +311,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 		if(i_ClientHasCustomGearEquipped[client])
 		{
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 
 			ViewChange_PlayerModel(client);
 			ViewChange_Update(client);
@@ -324,7 +337,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			Attributes_Set(client, 68, -1.0);
 			SetVariantString(COMBINE_CUSTOM_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-	   		
+			
+#if defined ZR
+			SDKUnhook(client, SDKHook_SetTransmit, TeutonViewOnly);
+			SDKHook(client, SDKHook_SetTransmit, TeutonViewOnly);
+#endif
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
@@ -382,14 +399,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-	   		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 	   		
 		}
 		else
@@ -413,17 +423,10 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			else
 			{
-				Store_GiveAll(client, ZR_Waves_GetRound()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
+				Store_GiveAll(client, Waves_GetRoundScale()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 			
 			//PrintHintText(client, "%T", "Open Store", client);
 		}
@@ -499,22 +502,6 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR || defined RPG
 		Thirdperson_PlayerSpawn(client);
 #endif
-		/*
-		// Resets the hand/arm pos for melee weapons 
-		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
-		//come out from behind and it litterally looks like a dick
-		//Im unsure why this happens, something with the hothand probably as it looks like that.
-		CClotBody npc = view_as<CClotBody>(client);
-		int index = npc.LookupPoseParameter("r_hand_grip");
-		if(index >= 0)
-			npc.SetPoseParameter(index, 0.0);
-		
-		index = npc.LookupPoseParameter("r_arm");
-		if(index >= 0)
-			npc.SetPoseParameter(index, 0.0);
-
-			THis now crashes in 64bit? perhaps?
-		*/
 	}
 }
 
@@ -544,6 +531,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	pack.WriteCell(-1);
 	Update_Ammo(pack);
 	Escape_DropItem(client);
+	Armor_Charge[client] = 0; //reset to 0 on death
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
@@ -605,22 +593,6 @@ public Action OnRestartTimer(Event event, const char[] name, bool dontBroadcast)
 	return Plugin_Changed;
 }
 
-/*
-public Action NavBlocked(Event event, const char[] name, bool dontBroadcast)
-{
-	PrintHintText(1, "t");
-	
-	int area = event.GetInt("area");
-	bool blocked = event.GetBool("blocked");
-	if(blocked)
-	{
-		PrintToChatAll("%i", area);
-	}
-	
-	return Plugin_Stop;
-}
-*/
-
 public Action Hook_BlockUserMessageEx(UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init)
 {
 	char message[32];
@@ -663,17 +635,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						dieingstate[client] = 0;
 						Store_ApplyAttribs(client);
 						SDKCall_SetSpeed(client);
-						int entity_wearable, i;
-						while(TF2U_GetWearable(client, entity_wearable, i))
-						{
-							if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity_wearable] != -1)
-								continue;
-
-							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
-							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
-						}
-						SetEntityRenderMode(client, RENDER_NORMAL);
-						SetEntityRenderColor(client, 255, 255, 255, 255);
+						Stocks_ColourPlayernormal(client);
 						SetEntityCollisionGroup(client, 5);
 						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
 					}
@@ -699,42 +661,45 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 	//This breaks maps.
 	return Plugin_Continue;
 }
-/*
-#if defined ZR
-public Action OnRelayFireUser1(const char[] output, int entity, int caller, float delay)
+
+static float DontRepeatSameFrame;
+static void EventHook_TeamsChanged(Event event, const char[] name, bool dontBroadcast)
 {
-	int client = caller;
-	if(client > MaxClients)
-		client = GetOwnerLoop(client);
-
-	if(client > 0 && client <= MaxClients)
-	{
-
-
-		char name[32];
-		GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
-
-		if(!StrContains(name, "zr_cash_", false))
-		{
-			float gameTime = GetGameTime();
-			if(GiveCashDelay[client] > gameTime)
-				return Plugin_Continue;
-		
-			GiveCashDelay[client] = gameTime + 0.5;
-
-			char buffers[4][12];
-			ExplodeString(name, "_", buffers, sizeof(buffers), sizeof(buffers[]));
-			
-			int cash = StringToInt(buffers[2]);
-			CashSpent[client] -= cash;
-			CashRecievedNonWave[client] += cash;
-			
-			PrintToChat(client, "Gained %d cash!", cash);
-		}
-	}
-	// DO NOT DO 
-	// return Plugin_Handled;!!!!!!
-	//This breaks maps.
-	return Plugin_Continue;
+	if(DontRepeatSameFrame == GetGameTime())
+		return;
+	
+	DontRepeatSameFrame = GetGameTime();
+	RequestFrame(CheckAndValidifyTeam);
+	//No way to seemingly detect
+	//PrintToChatAll("EventHook_TeamsChanged");
 }
-#endif*/
+
+void CheckAndValidifyTeam()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && TeamNumber[client] <= 4) //If their team is customly set, dont do this
+			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
+	}
+}
+
+#if defined ZR
+public Action TeutonViewOnly(int teuton, int client)
+{
+	if(TeutonType[teuton] == TEUTON_NONE)
+	{
+		SDKUnhook(teuton, SDKHook_SetTransmit, TeutonViewOnly);
+		return Plugin_Continue;
+	}
+
+	//incase they love it.
+	if(b_EnableClutterSetting[client])
+		return Plugin_Continue;
+
+	if(TeutonType[client] == TEUTON_NONE)
+		return Plugin_Handled;
+	
+	return Plugin_Continue;
+	
+}
+#endif

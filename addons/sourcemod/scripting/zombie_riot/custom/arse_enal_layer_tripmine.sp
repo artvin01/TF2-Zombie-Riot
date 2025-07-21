@@ -7,7 +7,7 @@ int Trip_Owner[MAXENTITIES+1] = {-1, ...};
 float Trip_DMG[MAXPLAYERS+1] = {0.0, ...};
 float Trip_BlastDMG[MAXPLAYERS+1] = {0.0, ...};
 Handle Timer_Trip_Management[MAXPLAYERS+1] = {null, ...};
-static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
+static float f_DeleteAllSpikesDelay[MAXPLAYERS];
 float TimeItWasArmed[MAXENTITIES];
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};

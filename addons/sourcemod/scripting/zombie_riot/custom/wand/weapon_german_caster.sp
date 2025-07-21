@@ -5,11 +5,11 @@
 #define WAND_GERMAN_M2_SOUND	"Taunt.MedicViolinUber"
 #define WAND_GERMAN_M1_SOUND	"WeaponMedigun_Vaccinator.Charged_tier_0%d"
 
-static Handle GermanTimer[MAXTF2PLAYERS];
-static Handle GermanSilence[MAXTF2PLAYERS];
-static int GermanCharges[MAXTF2PLAYERS];
-static int GermanWeapon[MAXTF2PLAYERS];
-static int GermanAltModule[MAXTF2PLAYERS];
+static Handle GermanTimer[MAXPLAYERS];
+static Handle GermanSilence[MAXPLAYERS];
+static int GermanCharges[MAXPLAYERS];
+static int GermanWeapon[MAXPLAYERS];
+static int GermanAltModule[MAXPLAYERS];
 static float f3_GermanFiredFromHere[MAXENTITIES][3];
 
 void Weapon_German_MapStart()
@@ -298,7 +298,7 @@ void Weapon_German_WandTouch(int entity, int target)
 		if(GermanAltModule[owner] > 1)
 		{
 			if(Nymph_AllowBonusDamage(target))
-				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 		}
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);

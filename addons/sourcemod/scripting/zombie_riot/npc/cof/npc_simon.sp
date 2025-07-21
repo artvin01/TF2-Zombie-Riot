@@ -232,7 +232,7 @@ public void Simon_ClotThink(int iNPC)
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(!npc.m_bRetreating && npc.m_bHasKilled && health < (maxhealth / 2))
 		{
-			if(ZR_Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
+			if(Waves_GetRoundScale() != (npc.m_bLostHalfHealth ? 39 : 34))
 				npc.m_bRetreating = true;
 		}
 		
@@ -392,8 +392,8 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 			}
 		}
 		case 1:	// Move After the Player
@@ -403,7 +403,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flSpeed = npc.m_bInjured ? 200.0 : 220.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -414,7 +414,7 @@ public void Simon_ClotThink(int iNPC)
 			npc.m_flSpeed = npc.m_bInjured ? 220.0 : 240.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -428,7 +428,7 @@ public void Simon_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 			
 			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos);
+			npc.SetGoalVector(vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -443,8 +443,8 @@ public void Simon_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 			}
 			
 			npc.PlayReloadSound();
@@ -497,7 +497,7 @@ public void Simon_ClotThink(int iNPC)
 				}
 				
 				GetEntPropVector( ClosestTarget, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				NPC_SetGoalVector(npc.index, TargetLocation);
+				npc.SetGoalVector(TargetLocation);
 				
 				if(!npc.m_bPathing)
 					npc.StartPathing();
@@ -521,7 +521,7 @@ public void Simon_ClotThink(int iNPC)
 				if(npc.m_iTarget)
 				{
 					float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
-					NPC_SetGoalVector(npc.index, vBackoffPos);
+					npc.SetGoalVector(vBackoffPos);
 					
 					if(!npc.m_bPathing)
 						npc.StartPathing();
@@ -546,8 +546,8 @@ public void Simon_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
 	
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
+	npc.StopPathing();
+	
 	
 	if(!npc.m_bRanAway)
 	{

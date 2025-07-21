@@ -8,8 +8,8 @@
  */
 
 
-static float medigun_heal_delay[MAXTF2PLAYERS];
-static float medigun_hud_delay[MAXTF2PLAYERS];
+static float medigun_heal_delay[MAXPLAYERS];
+static float medigun_hud_delay[MAXPLAYERS];
 Handle g_DHookWeaponPostFrame;
 
 float f_MedigunDelayAttackThink[MAXENTITIES];
@@ -36,7 +36,7 @@ void Medigun_PluginStart() {
 	delete hGameConf_med;
 }
 
-int MedigunModeSet[MAXTF2PLAYERS];
+int MedigunModeSet[MAXPLAYERS];
 static bool b_MediunDamageModeSet[MAXENTITIES]={false, ...};
 
 void MedigunPutInServerclient(int client)
@@ -64,7 +64,7 @@ public MRESReturn DHook_MedigunPrimaryAttack(int entity)
 }
 
 //static bool s_ForceGibRagdoll;
-static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
+static bool gb_medigun_on_reload[MAXPLAYERS]={false, ...};
 
 /*
 	Battle medigun
@@ -77,7 +77,7 @@ static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
 
 */
 
-public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
+bool NeedCrouchAbility(int client)
 {
 	bool NeedCrouch = zr_interactforcereload.BoolValue;
 
@@ -89,7 +89,12 @@ public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
 	{
 		NeedCrouch = b_InteractWithReload[client];
 	}
-	MedigunChangeModeRInternal(client, weapon, crit, slot, NeedCrouch);
+	return NeedCrouch;
+}
+public void MedigunChangeModeR(int client, int weapon, bool crit, int slot)
+{
+
+	MedigunChangeModeRInternal(client, weapon, crit, slot, NeedCrouchAbility(client));
 }
 public void MedigunChangeModeRInternal(int client, int weapon, bool crit, int slot, bool checkCrouch)
 {
@@ -228,14 +233,44 @@ public void Medigun_ClearAll()
 		target_sucked_long[entity] = 0.85;
 	}
 }
+#define UBERCHARGE_BUFFDURATION 1.0
 
+public void GiveMedigunBuffUber(int medigun, int owner, int reciever)
+{
+	NPCStats_RemoveAllDebuffs(reciever, UBERCHARGE_BUFFDURATION);
+	switch(i_CustomWeaponEquipLogic[medigun])
+	{
+		case WEAPON_KRITZKRIEG:
+		{
+			if(IsValidClient(reciever))
+			{
+				
+#if defined ZR
+				Kritzkrieg_Magical(reciever, 0.05, true);
+#endif
+				TF2_AddCondition(reciever, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
+			}
+			ApplyStatusEffect(owner, reciever, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
+		}
+		default:
+		{
+			if(IsValidClient(reciever))
+			{
+				TF2_AddCondition(reciever, TFCond_UberBulletResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(reciever, TFCond_UberBlastResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(reciever, TFCond_UberFireResist, UBERCHARGE_BUFFDURATION);
+			}
+			ApplyStatusEffect(owner, reciever, "UBERCHARGED", UBERCHARGE_BUFFDURATION);
+		}
+	}
+}
 public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
 		if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
 		{
-			NPCStats_RemoveAllDebuffs(owner, 0.6);
+			GiveMedigunBuffUber(medigun, owner, owner);
 		}
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
@@ -244,7 +279,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		if(b_MediunDamageModeSet[medigun])
 		{
 			//We hurt enemies, make sure all valid checks are the same as before.
-			int new_ammo = GetAmmo(owner, 21);
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 21) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
@@ -260,9 +294,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if (!team)
 				{
 					float AttributeRate = Attributes_GetOnWeapon(owner, medigun, 8, true);
-					AttributeRate = Pow(AttributeRate, MEDIGUN_ATTRIBUTE_EXPONTENT);
+					AttributeRate *= Attributes_Get(medigun, 7, 1.0); //Extra damage
 					flDrainRate *= AttributeRate; // We have to make it more exponential, damage scales much harder.
-					//do the same for super uber mega duper uber saw!
 					target_sucked_long[healTarget] += 0.10;
 				
 					if(target_sucked_long[healTarget] >= 4.0)
@@ -286,28 +319,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					HealPointToReinforce(owner, 1, 0.0005);
 #endif		
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
-					new_ammo -= 1;
 					
 				}
-#if defined ZR						
-				SetAmmo(owner, 21, new_ammo);
-				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-#endif					
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				if(new_ammo > 0)
-					PrintHintText(owner,"[DAMAGE MODE]\nMedigun Medicine Fluid: %iml", new_ammo);
-				else
-					PrintHintText(owner,"[DAMAGE MODE]\nMedigun Medicine Fluid: NO AMMO!!!", new_ammo);
+				PrintHintText(owner,"[DAMAGE MODE]");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
 		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			//we heal players or npcs, make sure we can heal them.
-			int new_ammo = GetAmmo(owner, 21);
-			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && !b_NpcHasDied[healTarget] && GetTeam(healTarget) == TFTeam_Red) && GetAmmo(owner, 21) > 0)
+			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && !b_NpcHasDied[healTarget] && GetTeam(healTarget) == TFTeam_Red))
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
 				if(team)
@@ -342,7 +366,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 					}
 #if defined ZR
-					if(Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
+					if(dieingstate[owner] == 0 && (Citizen_ThatIsDowned(healTarget) || healTarget <= MaxClients && dieingstate[healTarget] > 0))
 					{
 						if(healTarget <= MaxClients)
 						{
@@ -409,10 +433,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 								Healing_GiveArmor *= 0.33;
 							}	
 							if(healTarget <= MaxClients)
-								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true,_,owner);
 							else
+							{
 								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
-									flMaxHealth * Healing_GiveArmor);
+									flMaxHealth * Healing_GiveArmor, owner);
+							}
 
 							
 							Healing_GiveArmor = 0.35;
@@ -423,60 +449,44 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							{
 								Healing_GiveArmor *= 0.25;
 							}
-							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
+							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true,_,owner);
 						}
 #endif
 
 						i_targethealedLastBy[healTarget] = owner;
 						//self heal
-						int ammoSubtract;
-						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
-						if(ammoSubtract > 0)
-							ReduceMediFluidCost(owner, ammoSubtract);
-						new_ammo -= ammoSubtract;
+						HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0);
 
 						//Ally Heal
-						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
-						if(ammoSubtract > 0)
-							ReduceMediFluidCost(owner, ammoSubtract);
-						new_ammo -= ammoSubtract;
+						HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0);
 
 						if(!b_NpcHasDied[healTarget])
 						{
 							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
 						}
 						
-						ApplyStatusEffect(owner, healTarget, "Healing Resolve", 1.0);
-						ApplyStatusEffect(owner, owner, "Healing Resolve", 1.0);
+						ApplyStatusEffect(owner, healTarget, "Healing Resolve", UBERCHARGE_BUFFDURATION);
+						ApplyStatusEffect(owner, owner, "Healing Resolve", UBERCHARGE_BUFFDURATION);
 
 						if(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"))
 						{
-							NPCStats_RemoveAllDebuffs(healTarget, 0.6);
-							if(i_CustomWeaponEquipLogic[medigun] != WEAPON_KRITZKRIEG && healTarget > MaxClients)
-								ApplyStatusEffect(owner, healTarget, "UBERCHARGED", 0.25);
+							GiveMedigunBuffUber(medigun, owner, healTarget);
 						}
 
 						if(i_CustomWeaponEquipLogic[medigun] == WEAPON_KRITZKRIEG)
 						{
-							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", 1.0);
-							ApplyStatusEffect(owner, owner, "Weapon Clocking", 1.0);
+							ApplyStatusEffect(owner, healTarget, "Weapon Clocking", UBERCHARGE_BUFFDURATION);
+							ApplyStatusEffect(owner, owner, "Weapon Clocking", UBERCHARGE_BUFFDURATION);
 						}
 					}
 				}
 				Set_HitDetectionCooldown(healTarget,owner, GetGameTime() + 0.25, SupportDisplayHurtHud);
-#if defined ZR
-				SetAmmo(owner, 21, new_ammo);
-				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-#endif
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
 				if(What_type_Heal != 5.0)
 				{
-					if(new_ammo > 0)
-						PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
-					else
-						PrintHintText(owner,"NO MEDIGUN AMMO!!!");
+					PrintHintText(owner,"[HEALING MODE]");
 				}
 				else
 				{
@@ -484,157 +494,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							if(new_ammo > 0)
-								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: General", new_ammo);
-							else
-								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: General");
+							PrintHintText(owner,"[HEALING MODE]\nMode: General");
 						}
 						case 1:
 						{
-							if(new_ammo > 0)
-								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Melee", new_ammo);
-							else
-								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: Melee");
+							PrintHintText(owner,"[HEALING MODE]\nMode: Melee");
 						}
 						case 2:
 						{
-							if(new_ammo > 0)
-								PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Ranged", new_ammo);
-							else
-								PrintHintText(owner,"NO MEDIGUN AMMO!!!\nMode: Ranged");
+							PrintHintText(owner,"[HEALING MODE]\nMode: Ranged");
 						}
 					}
 				}
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
-			}
-		}
-		else if(What_type_Heal == 4.0 && GetAmmo(owner, 22) > 0)
-		{
-			//Special medigun that sucks hp, but also reduces has cooldown.
-			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
-			{
-				float flDrainRate = 500.0;
-				if (b_thisNpcIsARaid[healTarget])
-				{
-					flDrainRate *= 0.65;
-				}
-				
-				MedigunChargeUber(owner, medigun, 5.0);
-
-				int new_ammo = GetAmmo(owner, 22);
-				
-				flDrainRate *= Attributes_Get(medigun, 1, 1.0);
-				flDrainRate *= Attributes_GetOnWeapon(owner, medigun, 8, true);
-				//there are some updgras that require medigun damage only!
-				
-				target_sucked_long[healTarget] += 0.07;
-				
-				if(target_sucked_long[healTarget] >= 4.0)
-				{
-					target_sucked_long[healTarget] = 4.0;
-				}
-					
-				if(Handle_on_target_sucked_long[healTarget])
-				{
-					delete Revert_target_sucked_long_timer[healTarget];
-				}
-				Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
-				Handle_on_target_sucked_long[healTarget] = true;
-					
-				flDrainRate *= target_sucked_long[healTarget];
-					
-				static float Entity_Position[3];
-				WorldSpaceCenter(healTarget, Entity_Position );
-					
-				SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
-
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-				if (flChargeLevel==1.0) 
-				{
-					SetEntProp(medigun, Prop_Send, "m_bChargeRelease", 1);
-				}
-				new_ammo -= 6;
-
-#if defined ZR
-				SetAmmo(owner, 22, new_ammo);
-				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
-#endif				
-				if(medigun_hud_delay[owner] < GetGameTime())
-				{
-					if(!gb_medigun_on_reload[owner])
-					{
-						PrintHintText(owner,"Medigun Medicine Fluid: %iml\n Press RELOAD to Enable Fast Cooldown system.\n Press M2 to Shoot Energy projectiles.", new_ammo);
-					}
-					else
-					{
-						PrintHintText(owner,"FASTER COOLING DOWN ON! Unable to attack untill fully Cooled down!");
-					}
-					medigun_hud_delay[owner] = GetGameTime() + 0.5;
-				}
-			}
-			else if (gb_medigun_on_reload[owner])
-			{
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
-				if (flChargeLevel > 0.0) 
-				{
-					float heatrefresh = 0.05;
-
-					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
-					
-					flChargeLevel -= heatrefresh*0.1;
-					
-					if (flChargeLevel < 0.0)
-					{
-						flChargeLevel = 0.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
-				else
-				{
-					
-					gb_medigun_on_reload[owner] = false;
-				}
-			}
-			else if (GetEntProp(medigun, Prop_Send, "m_bChargeRelease")==1)
-			{
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-				if (flChargeLevel > 0.0) 
-				{
-					float heatrefresh = 0.05;
-
-					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
-					
-					flChargeLevel -= heatrefresh*0.1;
-					
-					if (flChargeLevel < 0.0)
-					{
-						flChargeLevel = 0.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
-			}
-			else 
-			{
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
-				if (flChargeLevel > 0.0) 
-				{
-					float heatrefresh = 0.05;
-
-					heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
-
-					flChargeLevel -= heatrefresh*0.1;
-
-					if (flChargeLevel < 0.0)
-					{
-						flChargeLevel = 0.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
 			}
 		}
 	}
@@ -691,6 +563,8 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 
 	float HeatExtra = 0.10;
+	
+	HeatExtra *= TickrateModify; //incase tickrate is different.
 
 	if(RespectUberDuration)
 		HeatExtra = HeatExtra / MedigunGetUberDuration(owner);

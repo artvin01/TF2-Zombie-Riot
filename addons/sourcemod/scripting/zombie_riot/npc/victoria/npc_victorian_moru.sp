@@ -95,7 +95,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		npc.Anger = false;
 		Is_a_Medic[npc.index] = true;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
@@ -104,12 +104,10 @@ methodmap VictorianDroneAnvil < CClotBody
 		Vec[1] += 0.5;
 		Vec[2] -= 61.5;
 		TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 		
 		GetAbsOrigin(npc.index, Vec);
 		npc.m_iWearable2 = npc.EquipItemSeperate("models/props_teaser/saucer.mdl",_,1,1.001,_,true);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 		
 		SetVariantString("!activator");
@@ -143,7 +141,7 @@ methodmap VictorianDroneAnvil < CClotBody
 		}
 		Vec[2]+=45.0;
 		TeleportEntity(npc.index, Vec, NULL_VECTOR, NULL_VECTOR);
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		return npc;
 	}
 }

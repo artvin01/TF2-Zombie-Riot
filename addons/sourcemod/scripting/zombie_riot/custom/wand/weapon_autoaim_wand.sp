@@ -30,7 +30,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 	if(weapon >= MaxClients)
 	{
 		int pap=0;
-		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		int mana_cost = 140;
 		if(pap == 1)
 		{
@@ -185,7 +185,7 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM, client, _, 75, _, 0.7, 135);
 
 		int pap=0;
-		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 
 		int projectile;
 		if(pap == 0)

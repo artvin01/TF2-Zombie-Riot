@@ -20,25 +20,25 @@ static const char g_Siccerino_snapSound[][] = {
 
 
 
-static float f_AniSoundSpam[MAXTF2PLAYERS];
-static float Duration[MAXTF2PLAYERS];
-static int Weapon_Id[MAXTF2PLAYERS];
+static float f_AniSoundSpam[MAXPLAYERS];
+static float Duration[MAXPLAYERS];
+static int Weapon_Id[MAXPLAYERS];
 
-static float f_NearlDurationCheckApply[MAXTF2PLAYERS];
-static float f_NearlThinkDelay[MAXTF2PLAYERS];
-static int i_NearlWeaponUsedWith[MAXTF2PLAYERS];
+static float f_NearlDurationCheckApply[MAXPLAYERS];
+static float f_NearlThinkDelay[MAXPLAYERS];
+static int i_NearlWeaponUsedWith[MAXPLAYERS];
 
-static float f_SpeedFistsOfSpeed[MAXTF2PLAYERS];
-static int i_SpeedFistsOfSpeedHit[MAXTF2PLAYERS];
-static int i_PreviousBladePap[MAXTF2PLAYERS];
+static float f_SpeedFistsOfSpeed[MAXPLAYERS];
+static int i_SpeedFistsOfSpeedHit[MAXPLAYERS];
+static int i_PreviousBladePap[MAXPLAYERS];
 
-static float f_SiccerinoExtraDamage[MAXTF2PLAYERS][MAXENTITIES];
+static float f_SiccerinoExtraDamage[MAXPLAYERS][MAXENTITIES];
 static float f_VoidHudDelay[MAXPLAYERS+1]={0.0, ...};
-static int i_VoidCurrentShields[MAXTF2PLAYERS];
-static float f_VoidShieldTillCharge[MAXTF2PLAYERS];
-static bool b_HasVoidBladeInHand[MAXTF2PLAYERS];
-static int i_VoidCurrentPap[MAXTF2PLAYERS];
-static float f_VoidDoubleTapAbility[MAXTF2PLAYERS];
+static int i_VoidCurrentShields[MAXPLAYERS];
+static float f_VoidShieldTillCharge[MAXPLAYERS];
+static bool b_HasVoidBladeInHand[MAXPLAYERS];
+static int i_VoidCurrentPap[MAXPLAYERS];
+static float f_VoidDoubleTapAbility[MAXPLAYERS];
 
 public void Fusion_Melee_OnMapStart()
 {
@@ -209,7 +209,7 @@ public void Fusion_Melee_Empower_State(int client, int weapon, bool crit, int sl
 public void Fusion_Melee_Empower_State_PAP(int client, int weapon, bool crit, int slot)
 {
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -382,6 +382,10 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 				}
 
 				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
+				if(HasSpecificBuff(client, "Dimensional Turbulence"))
+					maxhealth *= 0.35;
+					//lol
+
 				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
 				ApplyTempAttrib(weapon, 6, 1.45, 10.0); //slower attack speed
 				ApplyTempAttrib(weapon, 412, 0.58, 10.0); //Less damage taken from all sources decreased by 40%
@@ -1143,13 +1147,13 @@ public Action Siccerino_revert_damageBonus(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-float f_SuperSliceTimeUntillAttack[MAXTF2PLAYERS];
-float f_SuperSliceTimeUntillAttack_CD[MAXTF2PLAYERS];
+float f_SuperSliceTimeUntillAttack[MAXPLAYERS];
+float f_SuperSliceTimeUntillAttack_CD[MAXPLAYERS];
 
 public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 {
 	
-	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && b_InteractWithReload[client])
+	if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK) && NeedCrouchAbility(client))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -1184,7 +1188,7 @@ public void Siccerino_ability_R(int client, int weapon, bool crit, int slot)
 }
 
 static int BEAM_BuildingHit[MAX_TARGETS_HIT];
-static float BEAM_Targets_Hit[MAXTF2PLAYERS];
+static float BEAM_Targets_Hit[MAXPLAYERS];
 
 static void Siccerino_SuperSlice(int client)
 {
@@ -1364,7 +1368,7 @@ public void Enable_VoidBlade(int client, int weapon) // Enable management, handl
 			h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+			i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		}
 		return;
 	}
@@ -1376,7 +1380,7 @@ public void Enable_VoidBlade(int client, int weapon) // Enable management, handl
 		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_VoidWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		i_VoidCurrentPap[client] = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 		return;
 	}
 }

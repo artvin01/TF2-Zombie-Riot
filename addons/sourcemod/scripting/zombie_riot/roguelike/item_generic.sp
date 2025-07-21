@@ -143,7 +143,7 @@ public void Rogue_SteelRazor_Weapon(int entity)
 	// +15% damage bonus for melee's
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, entity);
 	if(i_OverrideWeaponSlot[entity] != -1)
 	{
 		WeaponSlot = i_OverrideWeaponSlot[entity];
@@ -452,7 +452,7 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Weapon(int entity)
 	// +15% damage bonus for ranged
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));
-	int WeaponSlot = TF2_GetClassnameSlot(classname);
+	int WeaponSlot = TF2_GetClassnameSlot(classname, entity);
 	if(i_OverrideWeaponSlot[entity] != -1)
 	{
 		WeaponSlot = i_OverrideWeaponSlot[entity];
@@ -592,7 +592,37 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 	}
 }
 
+public void Dimensional_Turbulence_Enemy(int iNpc)
+{
+	ApplyStatusEffect(iNpc, iNpc, "Dimensional Turbulence", 999999.9);
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.5));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.5));
+	fl_GibVulnerablity[iNpc] *= 1.5;
+}
+public void Dimensional_Turbulence_Ally(int entity, StringMap map)
+{
+	ApplyStatusEffect(entity, entity, "Dimensional Turbulence", 999999.9);
+	if(map)	// Player
+	{
+		float value;
 
+		// +50% max health
+		map.GetValue("26", value);
+		map.SetValue("26", value * 1.5);
+
+		value = 1.0;
+		map.GetValue("107", value);
+		map.SetValue("107", value * 1.2);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		// +15% max health
+		int health = RoundToCeil((float(ReturnEntityMaxHealth(entity)) * 1.5));
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	}
+}
 
 public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 {

@@ -150,7 +150,6 @@ methodmap KazimierzKnightAssasin < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);		
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_scout_sword/c_scout_sword.mdl");
@@ -161,9 +160,7 @@ methodmap KazimierzKnightAssasin < CClotBody
 		SetVariantString("1.35");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 350.0);
@@ -222,7 +219,8 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		bool camo = true;
-		Building_CamoOrRegrowBlocker(npc.index, camo);
+		if(HasSpecificBuff(npc.index, "Revealed"))
+			camo = false;
 
 		if(camo && !KazimierzMeleeAssasinRange(npc, 500.0))
 		{
@@ -308,11 +306,11 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -384,8 +382,8 @@ public void KazimierzKnightAssasin_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

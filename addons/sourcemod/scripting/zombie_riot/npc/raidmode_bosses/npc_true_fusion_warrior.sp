@@ -248,19 +248,19 @@ methodmap TrueFusionWarrior < CClotBody
 		}
 		
 		i_RaidGrantExtra[npc.index] = 1;
-		if(StrContains(data, "wave_15") != -1)
+		if(StrContains(data, "wave_10") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 		}
-		else if(StrContains(data, "wave_30") != -1)
+		else if(StrContains(data, "wave_20") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 3;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 4;
 		}
-		else if(StrContains(data, "wave_60") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
 			i_RaidGrantExtra[npc.index] = 5;
 		}
@@ -294,7 +294,7 @@ methodmap TrueFusionWarrior < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
 		/*
@@ -308,13 +308,13 @@ methodmap TrueFusionWarrior < CClotBody
 			92800 wave 60, 1.546 times.
 			//it is roughly always double.
 		*/
-		if(RaidModeScaling < 55.0)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
 		RemoveAllDamageAddition();
 		
@@ -377,13 +377,9 @@ methodmap TrueFusionWarrior < CClotBody
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
 		
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		npc.m_bDissapearOnDeath = true;
 		
@@ -490,8 +486,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 			
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.m_bInKame = false;
 		npc.m_bisWalking = false;
@@ -512,7 +508,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			CPrintToChatAll("{gold}Silvester{default}: You will get soon in touch with a friend of mine, I thank you, though beware of the rogue machine... {red}Blitzkrieg.");
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
-			for (int client = 0; client < MaxClients; client++)
+			for (int client = 1; client <= MaxClients; client++)
 			{
 				if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 				{
@@ -655,9 +651,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, closest);
+				npc.SetGoalEntity(closest);
 			}
 			
 			
@@ -673,8 +669,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			if(npc.m_bInKame)
 			{
 				npc.FaceTowards(vecTarget, 650.0);
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 				npc.m_flSpeed = 0.0;
 			}
 			else
@@ -718,7 +714,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						
 						for(int client = 1; client <= MaxClients; client++)
 						{
-							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							if (IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == 0 && GetTeam(client) == TFTeam_Red)
 							{
 								float vAngles[3], vDirection[3];
 								
@@ -733,7 +729,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								{				
 									if(vAngles[0] > -45.0)
 									{
-												vAngles[0] = -45.0;
+										vAngles[0] = -45.0;
 									}
 														
 									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
@@ -767,7 +763,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 						npc.FaceTowards(vecTarget);
 						for(int client = 1; client <= MaxClients; client++)
 						{
-							if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+							if (IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0 && TeutonType[client] == 0 && GetTeam(client) == TFTeam_Red)
 							{
 								float vAngles[3], vDirection[3];
 								
@@ -1095,8 +1091,8 @@ static Action TrueFusionWarrior_TBB_Tick(int client)
 	Data.Radius = 45.0;
 	Data.Range = 2000.0;
 	//divided by 6 since its every tick, and by TickrateModify
-	Data.Close_Dps = RaidModeScaling * (npc.Anger ? 20.0 : 15.0) / 6.0 / TickrateModify;
-	Data.Long_Dps = RaidModeScaling * (npc.Anger ? 18.5 : 12.0) / 6.0 / TickrateModify;
+	Data.Close_Dps = RaidModeScaling * (npc.Anger ? 20.0 : 15.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
+	Data.Long_Dps = RaidModeScaling * (npc.Anger ? 18.5 : 12.0) / 6.0 / TickrateModify/ ReturnEntityAttackspeed(npc.index);
 	Data.Color = (npc.Anger ? {238, 221, 68, 60} : {255, 255, 255, 30});
 	Data.DoEffects = true;
 	Basic_NPC_Laser_Logic(Data);

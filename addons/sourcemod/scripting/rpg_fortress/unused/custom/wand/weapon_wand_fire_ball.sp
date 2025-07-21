@@ -3,8 +3,8 @@
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static int i_FireBallsToThrow[MAXPLAYERS+1]={0, ...};
-static float f_OriginalDamage[MAXTF2PLAYERS];
-static int i_weaponused[MAXTF2PLAYERS];
+static float f_OriginalDamage[MAXPLAYERS];
+static int i_weaponused[MAXPLAYERS];
 
 #define SOUND_WAND_ATTACKSPEED_ABILITY "weapons/physcannon/energy_disintegrate4.wav"
 #define WAND_FIREBALL_SOUND "misc/halloween/spell_fireball_cast.wav"

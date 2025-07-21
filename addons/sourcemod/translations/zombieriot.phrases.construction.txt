@@ -169,7 +169,7 @@
 	}
 	"Void Blueprints Desc"
 	{
-		"en"	"I don't think we should be following these blueprints.\n{red}Start with +1 Risk"
+		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
 	}
 	"Ambulance"
 	{

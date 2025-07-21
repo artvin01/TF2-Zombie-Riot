@@ -292,9 +292,7 @@ public void Isharmla_ClotThink(int iNPC)
 
 					int healing = npc.Anger ? 24000 : 16000;
 
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(npc.m_iTarget, _, regrow);
-					if(!regrow)
+					if(!HasSpecificBuff(npc.m_iTarget, "Growth Blocker"))
 						healing -= 16000;
 					
 					if(healing > 0)
@@ -330,9 +328,7 @@ public void Isharmla_ClotThink(int iNPC)
 
 					int healing = npc.Anger ? 24000 : 16000;
 
-					bool regrow = true;
-					Building_CamoOrRegrowBlocker(ally, _, regrow);
-					if(!regrow)
+					if(HasSpecificBuff(npc.m_iTarget, "Growth Blocker"))
 						healing -= 16000;
 					
 					if(healing > 0)
@@ -380,7 +376,7 @@ public void Isharmla_ClotThink(int iNPC)
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 			npc.StartPathing();
 			npc.SetActivity("ACT_SKADI_WALK");
 			npc.m_bisWalking = true;

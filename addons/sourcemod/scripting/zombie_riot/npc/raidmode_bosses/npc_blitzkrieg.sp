@@ -369,36 +369,36 @@ methodmap Blitzkrieg < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		i_current_wave[npc.index]=(ZR_Waves_GetRound()+1);
-		if(StrContains(data, "wave_15") != -1)
+		i_current_wave[npc.index]=(Waves_GetRoundScale()+1);
+		if(StrContains(data, "wave_10") != -1)
 		{
-			i_current_wave[npc.index] = 15;
+			i_current_wave[npc.index] = 10;
+		}
+		else if(StrContains(data, "wave_20") != -1)
+		{
+			i_current_wave[npc.index] = 20;
 		}
 		else if(StrContains(data, "wave_30") != -1)
 		{
 			i_current_wave[npc.index] = 30;
 		}
-		else if(StrContains(data, "wave_45") != -1)
+		else if(StrContains(data, "wave_40") != -1)
 		{
-			i_current_wave[npc.index] = 45;
-		}
-		else if(StrContains(data, "wave_60") != -1)
-		{
-			i_current_wave[npc.index] = 60;
+			i_current_wave[npc.index] = 40;
 		}
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.16; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.33;
+			RaidModeScaling *= 0.5;
 		}
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
@@ -478,19 +478,14 @@ methodmap Blitzkrieg < CClotBody
 		SetVariantString(BLITZKRIEG_PUNISHMENT_SHIELD_MULTI);
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 55, 30, 30, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 100, 100, 255);
 		
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
@@ -505,7 +500,10 @@ methodmap Blitzkrieg < CClotBody
 		npc.m_iMaxRockets = 20;		//blitz's max ammo, this number changes on lifeloss.
 
 		b_buffed_blitz = StrContains(data, "hyper") != -1;	//mostly for testing. buuuut....
-
+		if(FindInfoTarget("zr_hyperblitz")) //if the map asks for hyperblitz, force hyperblitz.
+		{
+			b_buffed_blitz = true;
+		}
 		b_pureblitz = false;
 		if(!b_buffed_blitz)
 		{
@@ -585,7 +583,7 @@ methodmap Blitzkrieg < CClotBody
 		if(b_buffed_blitz && !b_pureblitz)
 		{
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Hyper Blitzkrieg");
-			if(i_current_wave[npc.index] <=15)
+			if(i_current_wave[npc.index] <=10)
 			{
 				RaidModeScaling *=1.5;
 				switch(GetRandomInt(0,1))
@@ -600,7 +598,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 				}
 			}
-			else if(i_current_wave[npc.index] <=30)
+			else if(i_current_wave[npc.index] <=20)
 			{
 				RaidModeScaling *=1.5;
 				switch(GetRandomInt(0,1))
@@ -615,7 +613,7 @@ methodmap Blitzkrieg < CClotBody
 					}
 				}
 			}
-			else if(i_current_wave[npc.index] <=45)
+			else if(i_current_wave[npc.index] <=30)
 			{
 				RaidModeScaling *=1.5;
 				switch(GetRandomInt(0,1))
@@ -652,16 +650,16 @@ methodmap Blitzkrieg < CClotBody
 		
 		bool final = StrContains(data, "final_item") != -1;
 		fl_base_raidmodescaling = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
-		if(i_current_wave[npc.index]<=30)
+		if(i_current_wave[npc.index]<=20)
 		{
 			fl_base_raidmodescaling *= 2.0;	//blitz is quite weak on wave 15, and 30
 		}
-		else if(i_current_wave[npc.index]>=60)
+		else if(i_current_wave[npc.index]>=40)
 		{
 			if(!b_buffed_blitz)
 				fl_base_raidmodescaling /= 3.0;	//blitz is quite scary on wave 60, so nerf him a bit
 		}
-		if(i_current_wave[npc.index]>60 && !final)
+		if(i_current_wave[npc.index]>40 && !final)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 900.0;	//tripple the time for waves beyond 60!
 		}
@@ -899,7 +897,7 @@ static void ClotThink(int iNPC)
 
 		npc.m_iMaxRockets =6969;	//Buff's the clipsize
 
-		i_current_wave[npc.index] = 60;
+		i_current_wave[npc.index] = 40;
 
 		b_timer_lose = true;
 
@@ -1070,9 +1068,9 @@ static void ClotThink(int iNPC)
 	
 	//Predict their pos.
 	if(flDistanceToTarget < npc.GetLeadRadius()) {
-		NPC_SetGoalVector(npc.index, vPredictedPos);
+		npc.SetGoalVector(vPredictedPos);
 	} else {
-		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+		npc.SetGoalEntity(PrimaryThreatIndex);
 	}
 	npc.StartPathing();
 	
@@ -1326,7 +1324,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	
 	//Blitz's power scales off of current health. the health scaling is dependant on current stage, 1 stage being 15 waves.
-	if(i_current_wave[npc.index]<=15)
+	if(i_current_wave[npc.index]<=10)
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth)));
 		npc.m_flRocketFireRate=((Health/MaxHealth)-0.4)/zr_smallmapbalancemulti.FloatValue;
@@ -1335,7 +1333,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			npc.m_flRocketFireRate=0.3;
 		}
 	}
-	else if(i_current_wave[npc.index]<=30 && i_current_wave[npc.index]>15)	//waves 16-30 he scales with this
+	else if(i_current_wave[npc.index]<=30 && i_current_wave[npc.index]>10)	//waves 16-30 he scales with this
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth))*1.1);
 		npc.m_flRocketFireRate=((Health/MaxHealth)-0.5)/zr_smallmapbalancemulti.FloatValue;
@@ -1344,7 +1342,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			npc.m_flRocketFireRate=0.25;
 		}
 	}
-	else if(i_current_wave[npc.index]<=45 && i_current_wave[npc.index]>30)//waves 31-45 he scales with this
+	else if(i_current_wave[npc.index]<=45 && i_current_wave[npc.index]>20)//waves 31-45 he scales with this
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth))*1.22);
 		npc.m_flRocketFireRate=((Health/MaxHealth)-0.75)/zr_smallmapbalancemulti.FloatValue;
@@ -1353,7 +1351,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			npc.m_flRocketFireRate=0.075;
 		}
 	}
-	else if(i_current_wave[npc.index]>=60)	//beyond wave 60 he scales with this
+	else if(i_current_wave[npc.index]>=40)	//beyond wave 60 he scales with this
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth))*1.3);
 		npc.m_flRocketFireRate=((Health/MaxHealth)-0.85)/zr_smallmapbalancemulti.FloatValue;
@@ -1372,7 +1370,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	float Ratio = Health/MaxHealth;
 	
-	if(Ratio<0.75 && npc.m_iCurrentLife == 0 && i_current_wave[npc.index]>=15)
+	if(Ratio<0.75 && npc.m_iCurrentLife == 0 && i_current_wave[npc.index]>=10)
 	{	//75%-50%
 		BlitzLifeLossBase(npc, "models/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl");
 		
@@ -1426,7 +1424,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			}
 		}
 	}
-	else if(Ratio<0.5 && npc.m_iCurrentLife == 1 && i_current_wave[npc.index]>=30)
+	else if(Ratio<0.5 && npc.m_iCurrentLife == 1 && i_current_wave[npc.index]>=20)
 	{
 		BlitzLifeLossBase(npc, "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");
 
@@ -1480,7 +1478,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			}
 		}
 	}
-	else if(Ratio<0.25 && npc.m_iCurrentLife == 2 && i_current_wave[npc.index]>=45)
+	else if(Ratio<0.25 && npc.m_iCurrentLife == 2 && i_current_wave[npc.index]>=30)
 	{	
 		BlitzLifeLossBase(npc, "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl");
 		
@@ -1534,7 +1532,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			}
 		}
 	} 
-	else if(Ratio < 0.175 && i_current_wave[npc.index] >=45 && fl_BEAM_RechargeTime[npc.index] != FAR_FUTURE && npc.m_iCurrentLife == 3)
+	else if(Ratio < 0.175 && i_current_wave[npc.index] >=30 && fl_BEAM_RechargeTime[npc.index] != FAR_FUTURE && npc.m_iCurrentLife == 3)
 	{
 		
 		npc.m_iCurrentLife++;
@@ -1635,7 +1633,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		}
 		npc.m_iChanged_WalkCycle = -1;	//Sets current anim to a non value so when clot think is called the correct anim is set
 	}
-	if(!b_pureblitz && !npc.m_bAlliesSummoned && i_current_wave[npc.index]>=45 && Ratio < 0.5)
+	if(!b_pureblitz && !npc.m_bAlliesSummoned && i_current_wave[npc.index]>=30 && Ratio < 0.5)
 	{	
 		npc.m_bAlliesSummoned = true;
 		//This system is used to spawn minnions depending on wave and life. Also almost everything here is hard coded to waves meaning they won't on other waves.
@@ -1671,7 +1669,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 {
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-	if(i_current_wave[npc.index]==45)
+	if(i_current_wave[npc.index]==30)
 	{
 		CPrintToChatAll("{crimson}%s{default}: The minions have joined the battle.", NpcStats_ReturnNpcName(npc.index, true));
 	}
@@ -1680,12 +1678,13 @@ static void Spawn_Allies(Blitzkrieg npc)
 	int spawn_index;
 	heck= maxhealth;
 	maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
-	if(i_current_wave[npc.index]==45)	//Only spwans if the wave is 45.
+	if(i_current_wave[npc.index]==30)	//Only spwans if the wave is 45.
 	{
 		spawn_index = NPC_CreateByName("npc_alt_combine_soldier_deutsch_ritter", npc.index, pos, ang, GetTeam(npc.index));
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1694,11 +1693,12 @@ static void Spawn_Allies(Blitzkrieg npc)
 		if(spawn_index > MaxClients)
 		{
 		
+			NpcStats_CopyStats(npc.index, spawn_index);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
 	}
-	if(i_current_wave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
+	if(i_current_wave[npc.index]>=40)	//Only spawns if the wave is 60 or beyond.
 	{
 		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index, true));
 		maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
@@ -1707,6 +1707,8 @@ static void Spawn_Allies(Blitzkrieg npc)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
+			b_thisNpcIsABoss[spawn_index] = true;
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1715,6 +1717,8 @@ static void Spawn_Allies(Blitzkrieg npc)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
 		{
+			NpcStats_CopyStats(npc.index, spawn_index);
+			b_thisNpcIsABoss[spawn_index] = true;
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1733,8 +1737,6 @@ static void NPC_Death(int entity)
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);	
 	}
-
-//	Music_RoundEnd(entity);
 
 
 	RaidModeTime += 45.0;
@@ -2434,7 +2436,7 @@ static void BlitzLight_DealDamage(Blitzkrieg npc, float damage, float radius)
 	GetAbsOrigin(npc.index, beamLoc);
 	
 	float dmg_pen = 1.0;
-	if(i_current_wave[npc.index]>=60)
+	if(i_current_wave[npc.index]>=40)
 	{
 		dmg_pen = 1.75;	//A slight buff to damage on wave 60
 	}

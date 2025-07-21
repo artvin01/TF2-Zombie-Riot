@@ -133,7 +133,7 @@ methodmap WinterZiberianMiner < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe_s2.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe_s2.mdl", .model_size = 2.0);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/mining_hat.mdl");
 
@@ -191,11 +191,11 @@ public void WinterZiberianMiner_ClotThink(int iNPC)
 		{
 			float vPredictedPos[3];
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else 
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		WinterZiberianMinerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -232,6 +232,8 @@ public void WinterZiberianMiner_NPCDeath(int entity)
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
@@ -267,11 +269,17 @@ void WinterZiberianMinerSelfDefense(WinterZiberianMiner npc, float gameTime, int
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 35.0;
+					if(IsValidEntity(npc.m_iWearable1))
+					{
+						damageDealt *= 2.0;
+						RemoveEntity(npc.m_iWearable1);
+						npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe_s2.mdl");
+					}
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 15.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
+					
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 

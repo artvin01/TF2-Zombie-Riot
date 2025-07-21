@@ -142,8 +142,7 @@ methodmap XenoPatientFew < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 150.0;
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		
 		SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		
 		npc.m_flAttackHappenswillhappen = false;
@@ -173,7 +172,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 		npc.m_flSpeed = 300.0;
 		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 50, 255, 50, 255);
 			npc.m_flSpeed = 150.0;
 		}
@@ -248,11 +247,11 @@ public void XenoPatientFew_ClotThink(int iNPC)
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		//Get position for just travel here.
 
@@ -326,7 +325,7 @@ public Action XenoPatientFew_OnTakeDamage(int victim, int &attacker, int &inflic
 		{
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.0;
 			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(victim, RENDER_NORMAL);
 			SetEntityRenderColor(victim, 255, 50, 50, 255);
 		}
 	}

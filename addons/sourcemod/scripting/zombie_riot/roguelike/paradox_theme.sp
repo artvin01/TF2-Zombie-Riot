@@ -139,6 +139,12 @@ public void Rogue_CompassMap_Enemy(int entity)
 	fl_Extra_RangedArmor[entity] *= 1.35;
 	fl_Extra_Damage[entity] *= 0.65;
 }
+public void Construction_VoidStart_EnemySpawn(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.15;
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 1.1));
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.1));
+}
 
 public void Rogue_CompassMap_Remove()
 {

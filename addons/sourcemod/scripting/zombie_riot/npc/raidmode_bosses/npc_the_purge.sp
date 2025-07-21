@@ -25,6 +25,9 @@ static const char g_AngerSounds[][] =
 	"vo/heavy_domination14.mp3",
 	"vo/heavy_domination16.mp3"
 };
+static const char g_HurtSounds[][] = {
+	"physics/metal/metal_box_impact_bullet1.wav",
+};
 
 void ThePurge_MapStart()
 {
@@ -45,6 +48,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_BoomSounds);
 	PrecacheSoundArray(g_AngerSounds);
+	PrecacheSoundArray(g_HurtSounds);
 
 	PrecacheSound("weapons/family_business_shoot.wav");
 	PrecacheSound("weapons/tf2_backshot_shotty.wav");
@@ -83,6 +87,11 @@ methodmap ThePurge < CClotBody
 		
 		i_TimesSummoned[this.index] = 1;
 		EmitSoundToAll("mvm/giant_heavy/giant_heavy_gunfire.wav", this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayHurtSound() 
+	{
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(85,100));
+		
 	}
 	public void StopMinigunSound()
 	{
@@ -126,7 +135,17 @@ methodmap ThePurge < CClotBody
 		public get()			{	return this.m_flGrappleCooldown;	}
 		public set(float value) 	{	this.m_flGrappleCooldown = value;	}
 	}
+	property int m_iPreviousPhaseSave
+	{
+		public get()		{	return this.m_iAttacksTillReload;	}
+		public set(int value) 	{	this.m_iAttacksTillReload = value;	}
+	}
 
+	property float m_flEffectCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void SetWeaponModel(const char[] model)
 	{
 		if(IsValidEntity(this.m_iWearable1))
@@ -160,7 +179,7 @@ methodmap ThePurge < CClotBody
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
 		
-		SetVariantColor(view_as<int>({0, 0, 255, 200}));
+		SetVariantColor(view_as<int>({200, 200, 50, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr17_wingman/spr17_wingman_heavy.mdl");
@@ -169,6 +188,16 @@ methodmap ThePurge < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
 		
+		npc.m_iWearable7 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+		npc.m_iWearable8 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-120.0, true);
+
+		SetVariantString("2.1");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+		SetVariantString("2.6");
+		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+		SetEntityRenderColor(npc.m_iWearable7, 0, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable8, 0, 0, 0, 255);
+
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
@@ -181,7 +210,7 @@ methodmap ThePurge < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bDissapearOnDeath = true;
 		npc.Anger = false;
@@ -231,9 +260,9 @@ methodmap ThePurge < CClotBody
 		}
 		else
 		{	
-			RaidModeScaling = float(ZR_Waves_GetRound()+1);
+			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
-		RaidModeScaling *= 0.19;
+		RaidModeScaling *= 0.25;
 		
 		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
@@ -249,7 +278,8 @@ methodmap ThePurge < CClotBody
 		RaidModeScaling *= 1.55;
 		RaidModeScaling *= 5.0;
 		RaidModeScaling *= 1.65;
-
+		RaidModeScaling *= 1.20;
+		//This is just balance changes, but it looks hillarious in here lol
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_engineered_cyborg.mp3");
 		music.Time = 183;
@@ -272,6 +302,38 @@ static void ClotThink(int iNPC)
 	if(i_RaidGrantExtra[iNPC] == RAIDITEM_INDEX_WIN_COND)
 	{
 		return;
+	}
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
+	if(IsValidEntity(npc.m_iWearable7))
+	{
+		float vecTarget[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
+		vecTarget[2] -= 100.0;
+		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable7, vecTarget);
+	}
+	if(IsValidEntity(npc.m_iWearable8))
+	{
+		float vecTarget[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", vecTarget);
+		vecTarget[2] -= 120.0;
+		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable8, vecTarget);
+	}
+	if(npc.m_flEffectCooldown < GetGameTime())
+	{
+		if(IsValidEntity(npc.m_iTarget))
+			ApplyStatusEffect(npc.m_iTarget, npc.m_iTarget, "Purging Intention", 0.2);
+
+		float RangeSupport = 350.0;
+		float pos[3]; GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 5.0;
+
+		spawnRing_Vectors(pos,  RangeSupport/*startin range*/ * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, 0.11, 30.0, 0.0, 1);
+		Explode_Logic_Custom(0.0 , iNPC , iNPC , -1 , pos , RangeSupport, .FunctionToCallBeforeHit = Purge_ApplyFearToEnemy);	//acts like a rocket
+		npc.m_flEffectCooldown = GetGameTime() + 0.1;
 	}
 
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
@@ -312,7 +374,6 @@ static void ClotThink(int iNPC)
 	//Think throttling
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	if(LastMann)
@@ -350,11 +411,11 @@ static void ClotThink(int iNPC)
 		if(distance < npc.GetLeadRadius()) 
 		{
 			PredictSubjectPosition(npc, target,_,_,vecTarget);
-			NPC_SetGoalVector(npc.index, vecTarget);
+			npc.SetGoalVector(vecTarget);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, target);
+			npc.SetGoalEntity(target);
 		}
 
 		if(npc.m_flSwitchCooldown < gameTime)
@@ -453,6 +514,7 @@ static void ClotThink(int iNPC)
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					cooldown = 3.0;
+					npc.m_flSpeed = 500.0;
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
@@ -464,7 +526,7 @@ static void ClotThink(int iNPC)
 					npc.SetWeaponModel("");
 					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
-					npc.m_flSpeed = 400.0;
+					npc.m_flSpeed = 500.0;
 					cooldown = 5.0;
 					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
 				}
@@ -480,11 +542,23 @@ static void ClotThink(int iNPC)
 		{
 			case 0:	// Fists
 			{
-				RaidModeScaling *= 1.01;
+				RaidModeScaling *= 1.008;
 				npc.StartPathing();
 			}
 			case 1, 4, 7:	// Shotgun
 			{
+				if(npc.m_iPreviousPhaseSave)
+				{
+					if(npc.m_iPreviousPhaseSave == 1)
+						npc.m_iPreviousPhaseSave = 0;
+					else
+					{
+						npc.m_iGunType = npc.m_iPreviousPhaseSave - 1;
+						npc.m_flSwitchCooldown = 0.0;
+						npc.m_iPreviousPhaseSave = 0;
+						return;
+					}
+				}
 				npc.StartPathing();
 
 				if(distance < 160000.0 && npc.m_flNextMeleeAttack < gameTime)	// 400 HU
@@ -803,6 +877,11 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	{
 		ThePurge npc = view_as<ThePurge>(victim);
 		
+		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + 0.2;
+			npc.m_blPlayHurtAnimation = true;
+		}		
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 		if(damage >= health)
@@ -834,6 +913,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.StopMinigunSound();
 			npc.SetWeaponModel("");
 			npc.m_flSwitchCooldown = GetGameTime(npc.index) + 3.0;
+			npc.m_iPreviousPhaseSave = npc.m_iGunType;
 			npc.m_iGunType = 10;
 
 			if(RaidModeTime < GetGameTime())
@@ -877,6 +957,12 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	
 	Citizen_MiniBossDeath(entity);
 }
@@ -886,4 +972,15 @@ public void ThePurge_Win(int entity)
 {
 	CPrintToChatAll("{crimson}The Purge{default}: {crimson}Annihilation completed.");
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+}
+
+
+void Purge_ApplyFearToEnemy(int entity, int victim, float damage, int weapon)
+{
+	ApplyStatusEffect(victim, victim, "Primal Fear", 99.0);
+	ApplyStatusEffect(victim, victim, "Primal Fear Hide", 5.0);
+	if(HasSpecificBuff(victim, "Purging Intention"))
+		NpcStats_PrimalFearChange(victim, 0.02);
+	else
+		NpcStats_PrimalFearChange(victim, 0.01);
 }

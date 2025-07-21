@@ -183,13 +183,16 @@ public void UnderTides_ClotThink(int iNPC)
 
 		Citizen_MiniBossSpawn();
 		
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		if(!VIPBuilding_Active())
 		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			for(int i; i < ZR_MAX_SPAWNERS; i++)
 			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-				break;
+				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+				{
+					Spawns_AddToArray(npc.index, true);
+					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+					break;
+				}
 			}
 		}
 	}
@@ -286,7 +289,6 @@ public void UnderTides_ClotThink(int iNPC)
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
 						WorldSpaceCenter(entity, vecTarget);

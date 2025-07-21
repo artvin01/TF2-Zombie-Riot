@@ -95,11 +95,10 @@ methodmap SpecialDoctor < CClotBody
 
 	public SpecialDoctor(float vecPos[3], float vecAng[3], int ally)
 	{
-		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70), ally));
+		SpecialDoctor npc = view_as<SpecialDoctor>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", MinibossHealthScaling(70.0), ally));
 		i_NpcWeight[npc.index] = 3;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_MP_RUN_SECONDARY");
@@ -152,8 +151,8 @@ methodmap SpecialDoctor < CClotBody
 		npc.m_iAttacksTillReload = 5;
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 0.8;
 
-		float wave = float(ZR_Waves_GetRound()+1);
-		wave *= 0.1;
+		float wave = float(Waves_GetRoundScale()+1);
+		wave *= 0.133333;
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
 		
@@ -202,7 +201,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 		int target = GetClosestAlly(npc.index, (250.0 * 250.0), _,DoctorBuffAlly);
 		if(target)
 		{
-			if(HasSpecificBuff(target, "False Therapy"))
+			if(!HasSpecificBuff(target, "False Therapy"))
 			{
 				ApplyStatusEffect(npc.index, target, "False Therapy", 30.0);
 				npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_SECONDARY",_,_,_,3.0);
@@ -412,8 +411,8 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 			}
 		}
 		case 1:	// Move After the Player
@@ -422,7 +421,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			npc.m_flSpeed = 200.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -432,7 +431,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			npc.m_flSpeed = 250.0;
 			npc.m_flRangedSpecialDelay = 0.0;
 			
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			npc.SetGoalEntity(npc.m_iTargetWalkTo);
 			if(!npc.m_bPathing)
 				npc.StartPathing();
 		}
@@ -444,7 +443,7 @@ public void SpecialDoctor_ClotThink(int iNPC)
 				npc.m_flRangedSpecialDelay = gameTime + 4.0;
 			
 			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTargetWalkTo,_,vBackoffPos);
-			NPC_SetGoalVector(npc.index, vBackoffPos);
+			npc.SetGoalVector(vBackoffPos);
 			
 			if(!npc.m_bPathing)
 				npc.StartPathing();
@@ -459,8 +458,8 @@ public void SpecialDoctor_ClotThink(int iNPC)
 			
 			if(npc.m_bPathing)
 			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
+				npc.StopPathing();
+				
 			}
 			
 			npc.PlayReloadSound();
@@ -482,7 +481,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 {
 	SpecialDoctor npc = view_as<SpecialDoctor>(entity);
 
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	npc.SetModel("models/player/medic.mdl");
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
 	if(IsValidEntity(npc.m_iWearable1))
@@ -509,7 +508,7 @@ public void SpecialDoctor_NPCDeath(int entity)
 public bool DoctorBuffAlly(int provider, int entity)
 {
 	if(HasSpecificBuff(entity, "False Therapy"))
-		return true;
-		
-	return false;
+		return false;
+
+	return true;
 }

@@ -211,11 +211,11 @@ public void GiantReflector_ClotThink(int iNPC)
 			
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			npc.SetGoalEntity(PrimaryThreatIndex);
 		}
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index) && flDistanceToTarget > 62500 && flDistanceToTarget < 122500 && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
@@ -352,8 +352,8 @@ public Action GiantReflector_OnTakeDamage(int victim, int &attacker, int &inflic
 //did this for you so it's simpler to learn
 static void GiantReflector_Reflect_Enable(GiantReflector npc)
 {
-	float wave = float(ZR_Waves_GetRound()+1);
-	wave *= 0.05;
+	float wave = float(Waves_GetRoundScale()+1);
+	wave *= 0.06667;
 	npc.m_flWaveScale = wave;
 
 	npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 3.0 * npc.m_flWaveScale;
@@ -373,7 +373,7 @@ static void GiantReflector_Reflect_Enable(GiantReflector npc)
 static void GiantReflector_Reflect_Disable(GiantReflector npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;

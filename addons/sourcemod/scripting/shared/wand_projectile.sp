@@ -14,14 +14,12 @@ stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Functio
 {
 	func_WandOnTouch[projectile] = Function;
 }
-#endif
 
-int iref_PropAppliedToRocket[MAXENTITIES];
-//todo:
-//Redo entirely, these projectiles are invis once
-// spawning for some god knows what reason that pisses me the fuck off.
-//somehow make another projectile.
-//for now, we set another model and parent this beacuse fuck this shit.
+stock Function func_WandOnTouchReturn(int entity)
+{
+	return func_WandOnTouch[entity];
+}
+#endif
 
 void WandProjectile_GamedataInit()
 {
@@ -133,7 +131,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		if(hideprojectile)
 		{
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+			SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 			SetEntityRenderColor(entity, 255, 255, 255, 0);
 		}
 		
@@ -167,13 +165,15 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
 		//so they dont get stuck on entities in the air.
-		//todo: Fix them
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
+
+		SDKHook(entity, SDKHook_Think, ProjectileBaseThink);
+		SDKHook(entity, SDKHook_ThinkPost, ProjectileBaseThinkPost);
 
 		if(h_NpcSolidHookType[entity] != 0)
 			DHookRemoveHookID(h_NpcSolidHookType[entity]);
 		h_NpcSolidHookType[entity] = 0;
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); 
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
 		SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
 
@@ -185,6 +185,82 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 }
 #endif
 
+public void ProjectileBaseThink(int Projectile)
+{	
+	/*
+		Why does this exist?
+		When using FSOLID_NOT_SOLID | FSOLID_TRIGGER to fix projectiles getting stuck in npcs i.e. setting speed to 0
+		Another problem acurred.
+
+		When a projectile chekcs the world, these flags can cause the projectile to just go through entities without calling start touch.
+		My guess is tat a trace that happens only checks the world, and not any entities.
+
+		This fires a trace ourselves and calls whatever we need.
+	*/
+
+	ArrayList Projec_HitEntitiesInTheWay = new ArrayList();
+	DataPack packFilter = new DataPack();
+	packFilter.WriteCell(Projec_HitEntitiesInTheWay);
+	packFilter.WriteCell(Projectile);
+	
+	static float AbsOrigin[3];
+	GetAbsOrigin(Projectile, AbsOrigin);
+	static float CurrentVelocity[3];
+	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsVelocity", CurrentVelocity);
+
+	CurrentVelocity[0] *= 0.05;
+	CurrentVelocity[1] *= 0.05;
+	CurrentVelocity[2] *= 0.05;
+
+	static float VecEndLocation[3];
+	VecEndLocation[0] = AbsOrigin[0] + CurrentVelocity[0];
+	VecEndLocation[1] = AbsOrigin[1] + CurrentVelocity[1];
+	VecEndLocation[2] = AbsOrigin[2] + CurrentVelocity[2];
+
+//	int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+//	TE_SetupBeamPoints(AbsOrigin, VecEndLocation, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+//	TE_SendToAll();
+	Handle trace = TR_TraceRayFilterEx( AbsOrigin, VecEndLocation, ( MASK_ALL ), RayType_EndPoint, ProjectileTraceHitTargets, packFilter );
+	delete packFilter;
+	delete trace;
+
+	int length = Projec_HitEntitiesInTheWay.Length;
+	for (int i = 0; i < length; i++)
+	{
+		int entity_traced = Projec_HitEntitiesInTheWay.Get(i);
+		Wand_Base_StartTouch(Projectile, entity_traced);
+	}
+	delete Projec_HitEntitiesInTheWay;
+	
+}
+
+bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter)
+{
+	if(entity == 0)
+	{
+		return false;
+	}
+	packFilter.Reset();
+	ArrayList Projec_HitEntitiesInTheWay = packFilter.ReadCell();
+	int iExclude = packFilter.ReadCell();
+	if(entity == iExclude)
+	{
+		return false;
+	}
+	int target = Target_Hit_Wand_Detection(iExclude, entity);
+	if(target > 0)
+	{
+		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
+		//Add a new entity to the arrray list
+		Projec_HitEntitiesInTheWay.Push(entity);
+	}
+	return false;
+}
+
+public void ProjectileBaseThinkPost(int Projectile)
+{
+	CBaseCombatCharacter(Projectile).SetNextThink(GetGameTime() + 0.05);
+}
 public MRESReturn Wand_DHook_RocketExplodePre(int arrow)
 {
 	return MRES_Supercede; //DONT.
@@ -207,6 +283,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 }
 
 #if defined ZR || defined RPG
+
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
@@ -337,10 +414,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			SuperStarShooterOnHit(entity, target);
 		}
-		case WEAPON_HEAVY_PARTICLE_RIFLE:
-		{
-			Weapon_Heavy_Particle_Rifle(entity, target);
-		}
 		case WEAPON_KAHMLFIST:
 		{
 			Melee_KahmlFistTouch(entity, target);
@@ -360,6 +433,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_NYMPH:
 		{
 			Weapon_Nymph_ProjectileTouch(entity, target);
+		}
+		case WEAPON_RITUALIST:
+		{
+			Weapon_Ritualist_ProjectileTouch(entity, target);
 		}
 	}
 #endif

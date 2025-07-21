@@ -116,7 +116,7 @@ static void ClotThink(int iNPC)
 		else
 		{
 			// Walk to ally target
-			NPC_SetGoalEntity(npc.index, ally);
+			npc.SetGoalEntity(ally);
 			npc.StartPathing();
 		}
 	}

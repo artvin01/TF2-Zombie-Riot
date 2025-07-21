@@ -26,36 +26,31 @@ KeyValues Configs_GetMapKv(const char[] mapname)
 	char buffer[PLATFORM_MAX_PATH];
 	KeyValues kv;
 	
-#if defined ZR
-	if(!zr_ignoremapconfig.BoolValue)
-#endif
+	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
+	DirectoryListing dir = OpenDirectory(buffer);
+	if(dir != INVALID_HANDLE)
 	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/maps");
-		DirectoryListing dir = OpenDirectory(buffer);
-		if(dir != INVALID_HANDLE)
+		FileType file;
+		char filename[68];
+		while(dir.GetNext(filename, sizeof(filename), file))
 		{
-			FileType file;
-			char filename[68];
-			while(dir.GetNext(filename, sizeof(filename), file))
-			{
-				if(file != FileType_File)
-					continue;
+			if(file != FileType_File)
+				continue;
 
-				if(SplitString(filename, ".cfg", filename, sizeof(filename)) == -1)
-					continue;
-					
-				if(StrContains(mapname, filename))
-					continue;
+			if(SplitString(filename, ".cfg", filename, sizeof(filename)) == -1)
+				continue;
+				
+			if(StrContains(mapname, filename))
+				continue;
 
-				kv = new KeyValues("Map");
-				Format(buffer, sizeof(buffer), "%s/%s.cfg", buffer, filename);
-				if(!kv.ImportFromFile(buffer))
-					LogError("[Config] Found '%s' but was unable to read", buffer);
+			kv = new KeyValues("Map");
+			Format(buffer, sizeof(buffer), "%s/%s.cfg", buffer, filename);
+			if(!kv.ImportFromFile(buffer))
+				LogError("[Config] Found '%s' but was unable to read", buffer);
 
-				break;
-			}
-			delete dir;
+			break;
 		}
+		delete dir;
 	}
 
 	return kv;

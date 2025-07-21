@@ -281,7 +281,7 @@ stock void RemoveSlotWeapons(int client, int slot)
 		while(TF2_GetItem(client, entity, i))
 		{
 			GetEntityClassname(entity, buffer, sizeof(buffer));
-			if(TF2_GetClassnameSlot(buffer) == slot)
+			if(TF2_GetClassnameSlot(buffer, entity) == slot)
 			{
 				TF2_RemoveItem(client, entity);
 				found = true;
@@ -412,9 +412,9 @@ void Edited_TF2_RegeneratePlayer(int client)
 	//delete at all times, they have no purpose here, you respawn.
 	TF2_RegeneratePlayer(client);
 
+	SDKCall_GiveCorrectAmmoCount(client);
 	//player needs to be fully nowmally visible.
-	SetEntityRenderMode(client, RENDER_NORMAL);
-	SetEntityRenderColor(client, 255, 255, 255, 255);
+	Stocks_ColourPlayernormal(client);
 }
 
 #define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
@@ -426,9 +426,7 @@ stock void Edited_TF2_RespawnPlayer(int client)
 	PreMedigunCheckAntiCrash(client);
 	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
-#endif
 
-#if defined ZR
 	KillDyingGlowEffect(client);
 #endif
 	ForcePlayerCrouch(client, false);
@@ -436,8 +434,7 @@ stock void Edited_TF2_RespawnPlayer(int client)
 	TF2_RespawnPlayer(client);
 
 	//player needs to be fully nowmally visible.
-	SetEntityRenderMode(client, RENDER_NORMAL);
-	SetEntityRenderColor(client, 255, 255, 255, 255);
+	Stocks_ColourPlayernormal(client);
 }
 
 #define TF2_RespawnPlayer Edited_TF2_RespawnPlayer

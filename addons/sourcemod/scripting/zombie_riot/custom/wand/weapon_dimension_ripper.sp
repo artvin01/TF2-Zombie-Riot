@@ -8,7 +8,7 @@
 #define MAX_DIMENSION_CHARGE_SUPER 50
 static bool Change[MAXPLAYERS];
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
-static int how_many_times_swinged[MAXTF2PLAYERS];
+static int how_many_times_swinged[MAXPLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 

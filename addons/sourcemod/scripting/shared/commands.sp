@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 #if defined ZR
-static bool BlockNext[MAXTF2PLAYERS];
+static bool BlockNext[MAXPLAYERS];
 #endif
 
 void Commands_PluginStart()
@@ -31,6 +31,37 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
 	char buffer[64];
 	KvGetSectionName(kv, buffer, sizeof(buffer));
+	if(f_PreventMovementClient[client] > GetGameTime())
+	{
+#if defined ZR
+		//Medic E call, its really really delayed it is NOT the same as voicemenu 0 0, this is way faster.
+		if(StrEqual(buffer, "+helpme_server", false))
+		{
+			//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
+			f_MedicCallIngore[client] = GetGameTime() + 0.5;
+			
+			bool has_been_done = BuildingCustomCommand(client);
+			if(has_been_done)
+			{
+				return Plugin_Handled;
+			}
+		}
+		else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
+		{
+			//Remove MVM buy hud
+			BlockNext[client] = true;
+			ClientCommand(client, "+inspect");
+			ClientCommand(client, "-inspect");
+			return Plugin_Handled;
+		}
+		else if(!StrContains(buffer, "MvM_Upgrade", false))
+		{
+			return Plugin_Handled;
+		}
+#endif
+		//dont call anything.
+		return Plugin_Handled;
+	}
 #if defined ZR
 	if(BlockNext[client])
 	{
@@ -169,7 +200,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	{
 		CurrentClass[client] = ClassChangeTo;
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", ClassChangeTo);
-		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
+		PrintToChat(client, "You are unable to change classes instantly, it'll be changed later when you respawn.");
 		return;
 	}
 #if defined ZR
@@ -193,7 +224,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	TeleportEntity(client, clientvec, clientveceye, SubjectAbsVelocity);
 	RemoveInvul(client);
 	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
-	PrintToChat(client, "You changed classes immedietly!");
+	PrintToChat(client, "You changed classes immedietely!");
 	f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; //little cooldown to prevent bug
 }
 #endif
@@ -231,17 +262,16 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 	{
 		if(IsFakeClient(client))
 		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Blue));
+			SetTeam(client, view_as<int>(TFTeam_Blue));
+			return Plugin_Handled;
 		}
 #if defined ZR
-		else if(Queue_JoinTeam(client))
+		Queue_JoinTeam(client);
+		return Plugin_Continue;
 #else
-		else
+		SetTeam(client, view_as<int>(TFTeam_Red));
+		ShowVGUIPanel(client, "class_red");
 #endif
-		{
-			ChangeClientTeam(client, view_as<int>(TFTeam_Red));
-			ShowVGUIPanel(client, "class_red");
-		}
 	}
 	return Plugin_Handled;
 }

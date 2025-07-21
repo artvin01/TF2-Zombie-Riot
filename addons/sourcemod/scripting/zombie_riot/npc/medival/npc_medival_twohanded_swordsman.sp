@@ -186,9 +186,6 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 		func_NPCDeath[npc.index] = MedivalTwoHandedSwordsman_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalTwoHandedSwordsman_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalTwoHandedSwordsman_ClotThink;
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
@@ -200,11 +197,6 @@ methodmap MedivalTwoHandedSwordsman < CClotBody
 		
 		npc.m_flMeleeArmor = 0.75;
 		npc.m_flRangedArmor = 1.0;
-		
-		if(EscapeModeForNpc)
-		{
-			npc.m_flSpeed = 270.0;
-		}
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.0");
@@ -290,9 +282,9 @@ public void MedivalTwoHandedSwordsman_ClotThink(int iNPC)
 				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
 				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
 				
-				NPC_SetGoalVector(npc.index, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
 			} else {
-				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+				npc.SetGoalEntity(PrimaryThreatIndex);
 			}
 	
 			//Target close enough to hit
@@ -356,8 +348,8 @@ public void MedivalTwoHandedSwordsman_ClotThink(int iNPC)
 	}
 	else
 	{
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
+		npc.StopPathing();
+		
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
