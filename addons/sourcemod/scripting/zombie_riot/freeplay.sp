@@ -1866,7 +1866,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			default:
 			{
-				CPrintToChatAll("{green}All enemies are now using the Karlas's Regene Berry perk, this is useless and removes their previous perk.");
+				CPrintToChatAll("{green}All enemies are now using the Karlas's Regene Strawberry perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
 		}
@@ -2282,7 +2282,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{green}All enemies are now using the Karlas's Regene Berry perk, this is useless and removes their previous perk.");
+				strcopy(message, sizeof(message), "{green}All enemies are now using the Karlas's Regene Strawberry perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
 	

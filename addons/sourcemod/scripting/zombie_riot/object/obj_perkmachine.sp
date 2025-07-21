@@ -111,7 +111,7 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	FormatEx(buffer, sizeof(buffer), "%t", "Purge's Cerveza Obsidian");
 	menu2.AddItem("-4", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Karlas's Regene Berry");
+	FormatEx(buffer, sizeof(buffer), "%t", "Karlas's Regene Strawberry");
 	menu2.AddItem("-3", buffer);
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Silvester's Energy Drink");

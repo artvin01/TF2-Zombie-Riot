@@ -1,7 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define DATABASE_LOCAL		"zr_local"
+//whenever you wish to update the local database, add a _1
+//this is only ever saved per game anyways.
+#define DATABASE_LOCAL		"zr_local_1"
 #define DATATABLE_MAIN		"zr_timestamp"
 #define DATATABLE_AMMO		"zr_ammo"
 #define DATATABLE_GAMEDATA	"zr_gamedata"

@@ -52,7 +52,7 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Karlas's Regene Berry",
+	"Karlas's Regene Strawberry",
 	"Purge's Cerveza Obsidian",
 	"Bob's Banana Juice",
 	"Twirl's Ginger Ale",
@@ -65,7 +65,7 @@ public const char PerkNames[][] =
 public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
-	"Karlas's Regene Berry Recieved",
+	"Karlas's Regene Strawberry Recieved",
 	"Purge's Cerveza Obsidian Recieved",
 	"Bob's Banana Juice Recieved",
 	"Twirl's Ginger Ale Recieved",
@@ -82,7 +82,7 @@ public const char PerkNames_two_Letter[][] =
 	"CO",
 	"BJ",
 	"GA",
-	"RB",
+	"RS",
 	"TM",
 	"CS",
 	"ED"

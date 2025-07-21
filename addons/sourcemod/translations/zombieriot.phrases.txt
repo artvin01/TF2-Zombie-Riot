@@ -1147,9 +1147,9 @@
 		"nl"		"Geen perk"
 		"chi" 		"无 Buff"
 	}
-	"Karlas's Regene Berry"
+	"Karlas's Regene Strawberry"
 	{
-		"en" 		"Karlas's Regene Berry"
+		"en" 		"Karlas's Regene Strawberry"
 		"fr" 		"Résurrection Rapide"
 		"ru" 		"Реаниматор"
 		"de"		"Schnelles Wiederbeleben"
@@ -1197,9 +1197,9 @@
 		"ru" 		"Переработка пуаре"
 	}
 
-	"Karlas's Regene Berry Recieved"
+	"Karlas's Regene Strawberry Recieved"
 	{
-		"en" 		"Karlas's Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"en" 		"Karlas's Regene Strawberry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
@@ -4042,7 +4042,7 @@
 	}
 	"Healer Class"
 	{
-		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Berry perk"
+		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Strawberry perk"
 	}
 	"Builder Class"
 	{

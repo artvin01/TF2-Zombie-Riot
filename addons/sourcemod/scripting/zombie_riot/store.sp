@@ -6136,7 +6136,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
-		//Karlas's Regene Berry!
+		//Karlas's Regene Strawberry!
 		if(i_CurrentEquippedPerk[client] == 1)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
