@@ -52,39 +52,39 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Karlas's Regene Strawberry",
-	"Purge's Cerveza Obsidian",
-	"Bob's Banana Juice",
-	"Twirl's Ginger Ale",
-	"Waldch's Root Beer",
-	"Nemal's Teslar Mule",
-	"Castellan's Corvus Stout",
-	"Silvester's Energy Drink"
+	"Regene Berry",
+	"Obsidian Oaf",
+	"Morning Coffee",
+	"Hasty Hops",
+	"Marksman Beer",
+	"Teslar Mule",
+	"Stockpile Stout",
+	"Energy Drink"
 };
 
 public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
-	"Karlas's Regene Strawberry Recieved",
-	"Purge's Cerveza Obsidian Recieved",
-	"Bob's Banana Juice Recieved",
-	"Twirl's Ginger Ale Recieved",
-	"Waldch's Root Beer Recieved",
-	"Nemal's Teslar Mule Recieved",
-	"Castellan's Corvus Stout Recieved",
-	"Silvester's Energy Drink Recieved"
+	"Regene Berry Recieved",
+	"Obsidian Oaf Recieved",
+	"Morning Coffee Recieved",
+	"Hasty Hops Recieved",
+	"Marksman Beer Recieved",
+	"Teslar Mule Recieved",
+	"Stockpile Stout Recieved",
+	"Energy Drink Recieved"
 };
 
 public const char PerkNames_two_Letter[][] =
 {
 	"--",
 	"RB",
-	"CO",
-	"BJ",
-	"GA",
-	"RS",
+	"OO",
+	"MC",
+	"AR",
+	"MB",
 	"TM",
-	"CS",
+	"SS",
 	"ED"
 };
 
