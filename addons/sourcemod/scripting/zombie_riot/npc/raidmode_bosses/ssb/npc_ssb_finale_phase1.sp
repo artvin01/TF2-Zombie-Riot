@@ -168,6 +168,8 @@ static char g_SSBChair_ChairThudSounds[][] = {
 #define SND_TELEPORT_CHARGEUP		")weapons/teleporter_receive.wav"
 #define SND_FALLING_SCREAM			"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_falling.mp3"
 #define SND_FALLING_LAND			"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_landed.mp3"
+#define SND_CATASTROPHE_INTRO_BOOM	")misc/halloween/spell_lightning_ball_impact.wav"
+#define SND_CATASTROPHE_INTRO_BOOM_2	")misc/halloween/merasmus_spell.wav"
 
 #define PARTICLE_BOMBARDMENT_SNAP		"merasmus_dazed_bits"
 #define PARTICLE_BOMBARDMENT_SNAP_EXTRA	"hammer_bell_ring_shockwave2"
@@ -188,6 +190,7 @@ static char g_SSBChair_ChairThudSounds[][] = {
 #define PARTICLE_TELEPORT_SLAM_2		"hammer_impact_button_dust"
 #define PARTICLE_TELEPORT_SLAM_3		"hammer_bones_kickup"
 #define PARTICLE_TELEPORT_HAND			"unusual_robot_time_warp2"
+#define PARTICLE_CATASTROPHE_FINGER		"raygun_projectile_blue_crit"
 
 static int NPCId;
 
@@ -224,6 +227,8 @@ public void SSBChair_OnMapStart_NPC()
 	PrecacheSound(SND_TELEPORT_CHARGEUP);
 	PrecacheSound(SND_FALLING_SCREAM);
 	PrecacheSound(SND_FALLING_LAND);
+	PrecacheSound(SND_CATASTROPHE_INTRO_BOOM);
+	PrecacheSound(SND_CATASTROPHE_INTRO_BOOM_2);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
@@ -902,6 +907,31 @@ public void ScrambleArray(ArrayList list)
 	}
 }
 
+public void SSBChair_Catastrophe(SSBChair ssb, int target)
+{
+	useHeightOverride[ssb.index] = false;
+	//We can use CastSpellWithAnimation for spells like this even if we don't call animevent 1003 in the sequence, 
+	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_CATASTROPHE_INTRO", SSBChair_Catastrophe_AttachFingerParticle, "", PARTICLE_GREENBLAST_SSB, "", "effect_hand_R", "");
+}
+
+void SSBChair_Catastrophe_AttachFingerParticle(SSBChair ssb, int target)
+{
+	float pos[3], trash[3];
+	ssb.GetAttachment("finger_R", pos, trash);
+	ssb.m_iWearable5 = ParticleEffectAt_Parent(pos, PARTICLE_CATASTROPHE_FINGER, ssb.index, "finger_R");
+	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM, ssb.index, _, 120, _, _, 60);
+	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM_2, ssb.index, _, 120, _, _, 80);
+}
+
+void Catastrophe_ChargeUp(SSBChair ssb)
+{
+	int activity = ssb.LookupActivity("ACT_FINALE_CHAIR_CATASTROPHE_CHARGEUP");
+	if (activity)
+		ssb.StartActivity(activity);
+
+	//TODO
+}
+
 methodmap SSBChair < CClotBody
 {
 	public void PlayIdleSound() {
@@ -1062,9 +1092,10 @@ methodmap SSBChair < CClotBody
 		SSB_ChairSpells[this.index] = new ArrayList(255);
 
 		//TODO: Populate abilities here
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Bombardment_Cooldown[0], 3.0, 0, SSBChair_Bombardment, _, Bombardment_GlobalCD[0], BOMBARDMENT_NAME));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[0], 6.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[0], HELLRING_NAME));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[0], 9.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[0], TELEPORT_NAME));
+		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Bombardment_Cooldown[0], 3.0, 0, SSBChair_Bombardment, _, Bombardment_GlobalCD[0], BOMBARDMENT_NAME));
+		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[0], 6.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[0], HELLRING_NAME));
+		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[0], 9.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[0], TELEPORT_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Catastrophe_Cooldown[0], 3.0, 0, SSBChair_Catastrophe, _, Catastrophe_GlobalCD[0], CATASTROPHE_NAME));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, float globalCD = 0.0, char[] name = "")
@@ -1323,11 +1354,11 @@ public void SSBChair_AnimEvent(int entity, int event)
 		}
 		case 1007:	//Necrotic Catastrophe intro animation has finished, transition to charge-up loop and begin VFX.
 		{
-			//TODO
+			Catastrophe_ChargeUp(npc);
 		}
 		case 1008:	//SSB yells something at this point in the animation, play sound.
 		{
-			//TODO
+			npc.PlayGenericSpell();
 		}
 	}
 }
