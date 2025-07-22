@@ -61,7 +61,7 @@ shared/convars.sp
 
 Go to Database.cfg inside your configs folder, and add
 
-	"zr_local"
+	"zr_local_1"
 	{
 		"driver"			"sqlite"
 		"database"			"zr_local_database"
