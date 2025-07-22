@@ -447,6 +447,7 @@
 		"pt"		"Foguetes"
 		"nl"		"Raketten"
 		"chi"       "火箭弹"
+		"ko"		"로켓"
 	}
 	"Flamethrower Tank"
 	{
