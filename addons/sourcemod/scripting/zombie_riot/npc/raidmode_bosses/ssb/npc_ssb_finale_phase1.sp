@@ -16,6 +16,7 @@ static float f_DamageSinceLastArmy[2049] = { 0.0, ... };
 static bool Chair_ChangeSequence[2049] = { false, ... };
 static bool useHeightOverride[2049] = { false, ... };
 static bool b_SSBChairHasArmy[2049] = { false, ... };
+static bool SSBChair_LaserHit[2049] = { false, ... };
 static char Chair_Sequence[2049][255];
 static char Chair_SpellEffect[2049][255];
 static char Chair_SpellEffectExtra[2049][255];
@@ -149,6 +150,18 @@ static char g_SSBChair_ChairThudSounds[][] = {
 	")physics/wood/wood_box_footstep4.wav"
 };
 
+static char g_SSBCatastrophe_Dialogue[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_3.mp3"
+};
+
+static char g_SSBCatastrophe_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}FUCK YOU!!!!!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}BOOM, BABY!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}DAMN!!!!!{default}"
+};
+
 #define SND_SNAP					"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_snap.mp3"
 #define SND_CLAP					"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_clap.mp3"
 #define SND_BOMBARDMENT_STRIKE		")misc/halloween/spell_spawn_boss.wav"
@@ -170,6 +183,8 @@ static char g_SSBChair_ChairThudSounds[][] = {
 #define SND_FALLING_LAND			"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_landed.mp3"
 #define SND_CATASTROPHE_INTRO_BOOM	")misc/halloween/spell_lightning_ball_impact.wav"
 #define SND_CATASTROPHE_INTRO_BOOM_2	")misc/halloween/merasmus_spell.wav"
+#define SND_CATASTROPHE_CHARGEUP		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_chargeup.mp3"
+#define SND_CATASTROPHE_BIGBANG		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_extra.mp3"
 
 #define PARTICLE_BOMBARDMENT_SNAP		"merasmus_dazed_bits"
 #define PARTICLE_BOMBARDMENT_SNAP_EXTRA	"hammer_bell_ring_shockwave2"
@@ -206,6 +221,7 @@ public void SSBChair_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBGenericSpell_Sounds));   i++) { PrecacheSound(g_SSBGenericSpell_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBChair_ChairThudSounds));   i++) { PrecacheSound(g_SSBChair_ChairThudSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBCatastrophe_Dialogue));   i++) { PrecacheSound(g_SSBCatastrophe_Dialogue[i]);   }
 
 	PrecacheSound(SND_SPAWN_ALERT);
 	PrecacheSound(SND_SNAP);
@@ -229,6 +245,8 @@ public void SSBChair_OnMapStart_NPC()
 	PrecacheSound(SND_FALLING_LAND);
 	PrecacheSound(SND_CATASTROPHE_INTRO_BOOM);
 	PrecacheSound(SND_CATASTROPHE_INTRO_BOOM_2);
+	PrecacheSound(SND_CATASTROPHE_CHARGEUP);
+	PrecacheSound(SND_CATASTROPHE_BIGBANG);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
@@ -921,6 +939,8 @@ void SSBChair_Catastrophe_AttachFingerParticle(SSBChair ssb, int target)
 	ssb.m_iWearable5 = ParticleEffectAt_Parent(pos, PARTICLE_CATASTROPHE_FINGER, ssb.index, "finger_R");
 	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM, ssb.index, _, 120, _, _, 60);
 	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM_2, ssb.index, _, 120, _, _, 80);
+
+	Catastrophe_ChargeUp(ssb);
 }
 
 void Catastrophe_ChargeUp(SSBChair ssb)
@@ -929,7 +949,183 @@ void Catastrophe_ChargeUp(SSBChair ssb)
 	if (activity)
 		ssb.StartActivity(activity);
 
-	//TODO
+	ssb.PlayCatastropheChargeUp();
+
+	float fireTime = GetGameTime(ssb.index) + Catastrophe_Delay[Chair_Tier[ssb.index]] + 0.75;
+
+	DataPack pack2 = new DataPack();
+	RequestFrame(Catastrophe_ChargeVFX, pack2);
+	WritePackCell(pack2, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack2, Chair_Tier[ssb.index]);
+	WritePackFloat(pack2, fireTime);
+	WritePackFloat(pack2, GetGameTime(ssb.index));
+	WritePackFloat(pack2, 0.0);
+	WritePackFloat(pack2, 0.0);
+}
+
+public void Catastrophe_ChargeVFX(DataPack pack)
+{
+	ResetPack(pack);
+
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float end = ReadPackFloat(pack);
+	float start = ReadPackFloat(pack);
+	float spin = ReadPackFloat(pack);
+	float next = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(user))
+		return;
+
+	float gt = GetGameTime(user);
+	if (gt >= end)
+	{
+		Catastrophe_Fire(view_as<SSBChair>(user), phase);
+		return;
+	}
+
+	if (gt >= next)
+	{
+		float remaining = end - GetGameTime(user);
+		float total = end - start;
+		float ratio = remaining / total;
+
+		//RaidModeScaling = (SSB_RaidPower[phase] * 100000.0) * (1.0 - ratio);
+
+		int alpha = 255 - RoundToCeil(255.0 * ratio);
+		
+		float pos[3], ang[3], Direction[3];
+		//WorldSpaceCenter(user, pos);
+		view_as<SSBChair>(user).GetAttachment("finger_R", pos, ang);
+		GetEntPropVector(user, Prop_Data, "m_angRotation", ang);
+		ang[0] = 0.0;
+		ang[2] = 0.0;
+
+		//GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+		//ScaleVector(Direction, 90.0);
+		//AddVectors(pos, Direction, pos);
+
+		for (float i = 0.0; i < 360.0; i += 45.0)
+		{
+			float spawnAng[3], startPos[3], endPos[3];
+			spawnAng[0] = i + spin;
+			spawnAng[1] = ang[1] + 90.0;
+			spawnAng[2] = ang[2];
+
+			GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, Catastrophe_Width[phase] * 0.5);
+			AddVectors(pos, Direction, startPos);
+
+			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, 9999.0);
+			AddVectors(startPos, Direction, endPos);
+
+			SpawnBeam_Vectors(pos, startPos, 0.1, 0, 255, 60, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
+			SpawnBeam_Vectors(startPos, endPos, 0.1, 0, 255, 60, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
+		}
+
+		next = gt + 0.0;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Catastrophe_ChargeVFX, pack);
+	WritePackCell(pack, EntIndexToEntRef(user));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, end);
+	WritePackFloat(pack, start);
+	WritePackFloat(pack, spin + 16.0);
+	WritePackFloat(pack, next);
+}
+
+public void Catastrophe_Fire(SSBChair ssb, int phase)
+{
+	int particle = ssb.m_iWearable5;
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+		
+	ssb.PlayCatastropheFire();
+
+	float ang[3], pos[3], hullMin[3], hullMax[3], testAng[3], shootPos[3], Direction[3];
+	ssb.GetAttachment("finger_R", pos, ang);
+	GetEntPropVector(ssb.index, Prop_Data, "m_angRotation", ang);
+	ang[0] = 0.0;
+	ang[2] = 0.0;
+	///WorldSpaceCenter(ssb.index, pos);
+	testAng[1] = ang[1];
+
+	///GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+	///ScaleVector(Direction, 90.0);
+	///AddVectors(pos, Direction, pos);
+
+	hullMin[0] = -Catastrophe_Width[phase] * 0.475;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	GetPointFromAngles(pos, testAng, 9999.0, shootPos, Priest_IgnoreAll, MASK_SHOT);
+
+	TR_TraceHullFilter(pos, shootPos, hullMin, hullMax, 1073741824, SSBChair_LaserTrace, ssb.index);
+			
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (SSBChair_LaserHit[victim])
+		{
+			SSBChair_LaserHit[victim] = false;
+					
+			if (IsValidEnemy(ssb.index, victim))
+			{
+				float damage = Catastrophe_DMG[phase];
+					
+				if (ShouldNpcDealBonusDamage(victim))
+				{
+					damage *= Catastrophe_EntityMult[phase];
+				}
+						
+				float vicLoc[3];
+				WorldSpaceCenter(victim, vicLoc);
+				SDKHooks_TakeDamage(victim, ssb.index, ssb.index, damage, DMG_CLUB|DMG_BLAST|DMG_ALWAYSGIB, _, NULL_VECTOR, vicLoc);
+			}
+		}
+	}
+
+	for (float i = 0.0; i < 360.0; i += 22.5)
+	{
+		float spawnAng[3], startPos[3], endPos[3];
+		spawnAng[0] = i;
+		spawnAng[1] = ang[1] + 90.0;
+		spawnAng[2] = ang[2];
+
+		GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, Catastrophe_Width[phase] * 0.5);
+		AddVectors(pos, Direction, startPos);
+
+		GetAngleVectors(testAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, 9999.0);
+		AddVectors(startPos, Direction, endPos);
+
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 0, 255, 60, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 66.0, 66.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 0, 255, 60, 255, PrecacheModel("materials/sprites/glow02.vmt"), 66.0, 66.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 0, 255, 60, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 33.0, 33.0, _, 10.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 0, 255, 60, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 11.0, 11.0, _, 20.0);
+	}
+
+	SSB_BigVFX(true, _, _, 2.0, false);
+
+	int activity = ssb.LookupActivity("ACT_FINALE_CHAIR_CATASTROPHE_FIRE");
+	if (activity)
+		ssb.StartActivity(activity);
+}
+
+public bool SSBChair_LaserTrace(int entity, int contentsMask, int user)
+{
+	if (IsEntityAlive(entity) && entity != user)
+		SSBChair_LaserHit[entity] = true;
+	
+	return false;
 }
 
 methodmap SSBChair < CClotBody
@@ -1018,6 +1214,28 @@ methodmap SSBChair < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CSSBChair::PlayChairThud()");
+		#endif
+	}
+
+	public void PlayCatastropheChargeUp()
+	{
+		EmitSoundToAll(SND_CATASTROPHE_CHARGEUP, _, _, 120);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSSBChair::PlayNecroBlastWarning()");
+		#endif
+	}
+
+	public void PlayCatastropheFire()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBCatastrophe_Dialogue) - 1);
+		EmitSoundToAll(g_SSBCatastrophe_Dialogue[rand], _, _, 120);
+		CPrintToChatAll(g_SSBCatastrophe_Captions[rand]);
+		EmitSoundToAll(SND_NECROBLAST_EXTRA_1, _, _, 120, _, _, GetRandomInt(70, 90));
+		EmitSoundToAll(SND_NECROBLAST_BIGBANG, _, _, 120);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSSBChair::PlayNecroBlast()");
 		#endif
 	}
 
