@@ -262,6 +262,13 @@ float ReturnEntityAttackspeed(int iNpc)
     return f_AttackSpeedNpcIncrease[iNpc];
 }
 
+//I moved these up here so they can be precached, because the server crashes if a skeleton is gibbed and these aren't precached:
+static char m_cGibModelSkeleton[][] = {
+    "models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl",
+    "models/bots/skeleton_sniper/skelton_sniper_gib_leg_l.mdl",
+    "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
+};
+
 void OnMapStart_NPC_Base()
 {
     for (int i = 0; i < (sizeof(g_GibSound)); i++)
@@ -347,6 +354,10 @@ void OnMapStart_NPC_Base()
     PrecacheModel(MODEL_SSB);
     PrecacheSound(SND_TRANSFORM);
     PrecacheSound(SND_GIB_SKELETON);
+    for (int i = 0; i < (sizeof(m_cGibModelSkeleton)); i++)
+    {
+        PrecacheModel(m_cGibModelSkeleton[i]);
+    }
 #endif
 
     g_sModelIndexBloodDrop  = PrecacheModel("sprites/bloodspray.vmt");
@@ -7575,11 +7586,6 @@ static char m_cGibModelMetal[][] = {
     "models/gibs/scanner_gib01.mdl",
     "models/gibs/metal_gib2.mdl"
 };
-static char m_cGibModelSkeleton[][] = {
-    "models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl",
-    "models/bots/skeleton_sniper/skelton_sniper_gib_leg_l.mdl",
-    "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
-};
 
 void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 {
@@ -7652,8 +7658,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 
         if (npc.m_iBleedType == BLEEDTYPE_METAL)
             DispatchKeyValue(prop, "model", m_cGibModelMetal[GibLoop]);
-        else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
-            DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
+        //TODO: Figure out why this crashes the server:
+        //else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
+        //    DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
         else
             DispatchKeyValue(prop, "model", m_cGibModelDefault[GibLoop]);
 
