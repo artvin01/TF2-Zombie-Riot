@@ -25,7 +25,7 @@ static float Magnesis_Grab_Cost_Scaling_Normal[3] = { 0.01, 0.01, 0.01 };		//Add
 static float Magnesis_Grab_Cost_Special[3] = { 35.0, 35.0, 35.0 };				//Mana drained per 0.1s while holding a boss/mini-boss.
 static float Magnesis_Grab_Cost_Scaling_Special[3] = { 0.01, 0.01, 0.01 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a special enemy (0.1 = 10%).
 static float Magnesis_Grab_Cost_Raid[3] = { 35.0, 35.0, 35.0 };					//Mana drained per 0.1s while holding a raid.
-static float Magnesis_Grab_Cost_Scaling_Raid[3] = { 0.025, 0.025, 0.025 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a raid.
+static float Magnesis_Grab_Cost_Scaling_Raid[3] = { 0.020, 0.020, 0.020 };		//Additional percentage of the user's max mana to drain per 0.1s while holding a raid.
 static float Magnesis_Grab_DragRate[3] = { 10.0, 10.0, 10.0 };					//Base speed at which grabbed targets move towards the puller, per frame.
 static float Magnesis_Grab_DragRate_WeightPenalty[3] = { 7.5, 3.0, 1.25 };		//Amount to reduce grab movement speed per point of NPC weight above 1.
 static float Magnesis_Grab_Range[3] = { 150.0, 200.0, 250.0 };					//Maximum distance from which enemies can be grabbed.
@@ -480,6 +480,12 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		if(HasSpecificBuff(victim, "Solid Stance"))
 			return;
 
+		if(HasSpecificBuff(victim, "Raid Strangle Protection", _ , client))
+		{
+			//already grabbed once.
+			return;
+		}
+
 		if (Magnesis_Grabbed[victim])
 		{
 			Utility_HUDNotification_Translation(client, "Magnesis Already Grabbed", true);
@@ -513,7 +519,10 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		}
 		float cd = Magnesis_Grab_Cooldown_Normal[tier];
 		if (b_thisNpcIsARaid[victim])
+		{
+			ApplyStatusEffect(client, victim, "Raid Strangle Protection", 999999.9);
 			cd = Magnesis_Grab_Cooldown_Raids[tier];
+		}
 		else if (b_thisNpcIsABoss[victim])
 			cd = Magnesis_Grab_Cooldown_Special[tier];
 		Magnesis_CooldownToApply[client] = cd;
