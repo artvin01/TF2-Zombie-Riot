@@ -10,6 +10,7 @@
 #define SOUND_OVERHEAT "player/medic_charged_death.wav"
 
 #define MAX_VICTORIAN_SUPERCHARGE 10
+static int Victoria_Supercharge[MAXPLAYERS];
 
 static Handle h_TimerVictorianLauncher[MAXPLAYERS+1] = {null, ...};
 
@@ -47,6 +48,7 @@ void ResetMapStartVictoria()
 {
 	Victoria_Map_Precache();
 	Zero(Load_SuperCharge);
+	Zero(Victoria_Supercharge);
 	Zero(Charge_Mode);
 	Zero(Burst_Mode);
 	Zero(Rapid_Mode);
@@ -224,7 +226,7 @@ static void Victoria_Launcher_HUD(int client)
 				Format(C_point_hints, sizeof(C_point_hints),
 				"%s\nRapid Fire", C_point_hints);
 			Format(C_point_hints, sizeof(C_point_hints),
-			"%s\nPress R Again to Manually Deactivated\n[%.2f]", C_point_hints, Rapid_Mode[client]-GetGameTime());
+			"%s\nPress R Again to Manually Deactivate\n[%.2f]", C_point_hints, Rapid_Mode[client]-GetGameTime());
 		}
 		else if(Charge_Mode[client])
 		{
@@ -236,7 +238,7 @@ static void Victoria_Launcher_HUD(int client)
 			else
 			{
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\nCharged Rockets [%i%/%i]", C_point_hints, Load_SuperCharge[client], MAX_VICTORIAN_SUPERCHARGE);
+				"%s\nCharged Rockets [%i%/%i]", C_point_hints, Load_SuperCharge[client], Victoria_Supercharge[client]);
 				if(Load_SuperCharge[client]>1 && Load_SuperCharge[client]<=5)
 					Format(C_point_hints, sizeof(C_point_hints),
 					"%s\nPress M2 Again to Fire all at once", C_point_hints);
@@ -398,11 +400,13 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 	float RocketRadius=EXPLOSION_RADIUS;
 	float Angles[3], Position[3];
 	float SIZEOverdrive=2.0;
+	float Cooldownbuff = 1.0;
 	bool S2, S3, Overdrive, DEADSHOT;
 	
 	RocketSpeed*=Attributes_Get(weapon, 103, 1.0);
 	RocketDMG*=Attributes_Get(weapon, 2, 1.0);
 	RocketRadius*=Attributes_Get(weapon, 99, 1.0);
+	Cooldownbuff*= Attributes_Get(weapon, 97, 1.0);
 	
 	GetClientEyeAngles(client, Angles);
 	GetClientEyePosition(client, Position);
@@ -429,7 +433,10 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 				newhealth=1;
 			SetEntityHealth(client, newhealth);
 			Ability_Apply_Cooldown(client, 2, 40.0);
-			Ability_Apply_Cooldown(client, 1, Victoria_PerkSpeedCola[client] ? float(Load_SuperCharge[client])*2.25 : float(Load_SuperCharge[client])*2.5);
+			if (Cooldownbuff >= 1.0) //if attackspeed is bonus, apply it by halving it while applying it straight when it is debuff (for the sake of balance)
+				Ability_Apply_Cooldown(client, 1, Victoria_PerkSpeedCola[client] ? float(Load_SuperCharge[client])*4.0*Cooldownbuff : float(Load_SuperCharge[client])*3.0*Cooldownbuff);
+			else
+				Ability_Apply_Cooldown(client, 1, Victoria_PerkSpeedCola[client] ? float(Load_SuperCharge[client])*4.0*(Cooldownbuff *0.5) : float(Load_SuperCharge[client])*3.0*(Cooldownbuff *0.5));
 		}
 		else
 		{
@@ -455,14 +462,14 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 		{
 			SIZEOverdrive*=1.35;
 			Overdrive=true;
-			RocketDMG*=1.65;
+			RocketDMG*=1.45;
 		}
 		else RocketDMG*=0.8;
 	}
 	//Steam Major's rocket is always equipped
 	RocketDMG*=1.1;
 	if(RaidbossIgnoreBuildingsLogic(1))
-		RocketRadius*=1.5;
+		RocketRadius*=1.2;
 	if(Victoria_PerkDeadShot[client])
 	{
 		DEADSHOT=true;
@@ -621,7 +628,11 @@ public void Weapon_Victoria_Sub(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.0);
-			Load_SuperCharge[client]=MAX_VICTORIAN_SUPERCHARGE;
+			float temp_maxcharge = 10.0;
+			temp_maxcharge *= Attributes_Get(weapon, 3, 1.0);
+			temp_maxcharge *= Attributes_Get(weapon, 4, 1.0);
+			Victoria_Supercharge[client] = RoundToZero(temp_maxcharge);
+			Load_SuperCharge[client]= Victoria_Supercharge[client];
 			Charge_Mode[client]=true;
 		}
 		else if(!Burst_Mode[client] && Load_SuperCharge[client]>1 && Load_SuperCharge[client]<=5)
