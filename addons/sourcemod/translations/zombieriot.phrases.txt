@@ -1552,6 +1552,16 @@
 		"nl"		"Uw huidig wapen kan niet worden gePack-A-Punched."
 		"chi"       "你的武器不能升级"
 	}
+	"Pap Weapon Upgraded"
+	{
+		"#format"	"{1:s}"
+		"en"		"Your weapon has been upgraded to {1}:"
+	}
+	"Pap Weapon Preview"
+	{
+		"#format"	"{1:s}"
+		"en"		"Pack-a-Punch preview for {1}:"
+	}
 	"Revive Teammate tooltip"
 	{
 		"en" 		"to revive this dying teammate."
