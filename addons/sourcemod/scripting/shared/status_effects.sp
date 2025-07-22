@@ -1900,7 +1900,6 @@ void StatusEffects_CrippleDebuff()
 }
 
 #if defined ZR
-static int StrangdleIDCheck = 0;
 void StatusEffects_MagnesisStrangle()
 {
 	StatusEffect data;
@@ -1954,7 +1953,7 @@ void StatusEffects_MagnesisStrangle()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	StrangdleIDCheck = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 }
 #endif
 void StatusEffects_Freeplay1()

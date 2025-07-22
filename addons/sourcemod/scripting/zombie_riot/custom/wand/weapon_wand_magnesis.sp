@@ -480,9 +480,9 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 		if(HasSpecificBuff(victim, "Solid Stance"))
 			return;
 
-		if(HasSpecificBuff(victim, "Raid Strangle Protection", _ , client))
+		if(HasSpecificBuff(victim, "Raid Strangle Protection", _ , client) == 3)
 		{
-			//already grabbed once.
+			//already grabbed once, the owner that is.
 			return;
 		}
 
