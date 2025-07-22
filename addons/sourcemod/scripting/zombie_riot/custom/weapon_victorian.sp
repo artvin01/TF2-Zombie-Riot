@@ -209,7 +209,7 @@ static void Victoria_Launcher_HUD(int client)
 			if(Burst_Mode[client])
 			{
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\n%t", C_point_hints, Load_SuperCharge[client]);
+				"%s\n%t", C_point_hints, "VictorianLauncher SuperShot", Load_SuperCharge[client]);
 			}
 			else
 			{
@@ -381,7 +381,11 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 	float Cooldownbuff=Attributes_Get(weapon, 97, 1.0);
 	//if Reloadspeed is bonus, apply it by halving it while applying it straight when it is debuff (for the sake of balance)
 	if(Cooldownbuff!=1.0 && Cooldownbuff<1.0)
-		Cooldownbuff*=0.5;
+	{
+		Cooldownbuff*=1.15;
+		if(Cooldownbuff>0.9)
+			Cooldownbuff=0.9;
+	}
 	
 	GetClientEyeAngles(client, Angles);
 	GetClientEyePosition(client, Position);
