@@ -684,7 +684,7 @@ static void CyberGrindGM_OverrideMusic(int iNPC)
 				strcopy(music.Name, sizeof(music.Name), "Rock Orchestra 2");
 				strcopy(music.Artist, sizeof(music.Artist), "Goukisan");
 				Music_SetRaidMusic(music);
-				RaidModeTime = GetGameTime(npc.index) + 300.0;
+				RaidModeTime = GetGameTime() + 300.0;
 			}
 			case 1:
 			{
@@ -696,7 +696,7 @@ static void CyberGrindGM_OverrideMusic(int iNPC)
 				strcopy(music.Name, sizeof(music.Name), "Cyberfantasia");
 				strcopy(music.Artist, sizeof(music.Artist), "tn-shi");
 				Music_SetRaidMusic(music);
-				RaidModeTime = GetGameTime(npc.index) + 300.0;
+				RaidModeTime = GetGameTime() + 300.0;
 			}
 		}
 		b_NpcForcepowerupspawn[npc.index] = 0;
