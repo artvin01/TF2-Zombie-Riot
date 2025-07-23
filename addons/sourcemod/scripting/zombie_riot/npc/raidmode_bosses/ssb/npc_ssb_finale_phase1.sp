@@ -107,7 +107,7 @@ static float Absorption_Speed[4] = { 90.0, 120.0, 150.0, 180.0 };			//SSB's move
 static float Absorption_DMG[4] = { 30.0, 35.0, 40.0, 50.0 };				//Damage dealt per 0.1s to enemies within the radius.
 static float Absorption_EntityMult[4] = { 5.0, 7.5, 10.0, 12.5 };			//Amount to multiply damage dealt to entities.
 static float Absorption_Radius[4] = { 600.0, 650.0, 700.0, 750.0 };			//Effect radius.
-static float Absorption_TeleRadius[4] = { 1200.0, 1200.0, 1200.0, 1200.0 };		//Max distance from his victim to which SSB will teleport before using this ability. Lower = he teleports closer and then uses this.
+static float Absorption_TeleRadius[4] = { 400.0, 375.0, 350.0, 350.0 };		//Max distance from his victim to which SSB will teleport before using this ability. Lower = he teleports closer and then uses this.
 static float Absorption_PullStrength[4] = { 400.0, 450.0, 500.0, 550.0 };			//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
 static float Absorption_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The minimum percentage of the pull force to use, depending on how far the target is. It's recommended to be at least a *little* bit above 0.0, because otherwise the knockback from the damage will outweigh the pull if you're far enough away and actually *push* you, making escape easier.
 static float Absorption_HealRatio[4] = { 2.0, 3.0, 4.0, 5.0 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
@@ -1172,9 +1172,13 @@ public bool SSBChair_LaserTrace(int entity, int contentsMask, int user)
 	return false;
 }
 
+public bool SSBChair_AbsorptionFilter(SSBChair ssb, int target)
+{
+	return ssb.TeleportNearEnemy(Absorption_TeleRadius[Chair_Tier[ssb.index]], 100.0, true, true, true, 0.0);
+}
+
 public void SSBChair_Absorption(SSBChair ssb, int target)
 {
-	ssb.TeleportNearEnemy(Absorption_TeleRadius[Chair_Tier[ssb.index]], 100.0, true, true, true, 0.0);
 	ssb.SetPlaybackRate(Absorption_IntroSpeed[Chair_Tier[ssb.index]]);
 	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_ABSORPTION_INTRO", SSBChair_Absorption_AttachParticles, "", PARTICLE_GREENBLAST_SPARKLES, PARTICLE_GREENBLAST_SPARKLES, "effect_hand_R", "", "effect_hand_L");
 }
@@ -1568,7 +1572,7 @@ methodmap SSBChair < CClotBody
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[Chair_Tier[this.index]], 4.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[Chair_Tier[this.index]], HELLRING_NAME));
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[Chair_Tier[this.index]], 5.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[Chair_Tier[this.index]], TELEPORT_NAME));
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Catastrophe_Cooldown[Chair_Tier[this.index]], 6.0, 0, SSBChair_Catastrophe, SSBChair_CatastropheFilter, Catastrophe_GlobalCD[Chair_Tier[this.index]], CATASTROPHE_NAME));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Absorption_Cooldown[Chair_Tier[this.index]], 7.0, 0, SSBChair_Absorption, _, Absorption_GlobalCD[Chair_Tier[this.index]], ABSORPTION_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Absorption_Cooldown[Chair_Tier[this.index]], 7.0, 0, SSBChair_Absorption, SSBChair_AbsorptionFilter, Absorption_GlobalCD[Chair_Tier[this.index]], ABSORPTION_NAME));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, float globalCD = 0.0, char[] name = "")
@@ -1684,7 +1688,7 @@ methodmap SSBChair < CClotBody
 				CNavArea navi = GetArrayCell(areas, i);
 				navi.GetCenter(randPos);
 
-				if (GetVectorDistance(pos, randPos) < minDist || fabs(pos[2] - randPos[2]) > maxHeightDiff)
+				if (GetVectorDistance(pos, randPos) < minDist || (maxHeightDiff > 0.0 && fabs(pos[2] - randPos[2]) > maxHeightDiff))
 					continue;
 
 				float randLOSCheck[3];
@@ -2101,7 +2105,7 @@ public void SSBChair_ClotThink(int iNPC)
 
 	if (!Chair_UsingAbility[npc.index] && GetGameTime(npc.index) >= npc.f_NextTeleport)
 	{
-		if (npc.TeleportNearEnemy(800.0, 100.0, true, false, true, 9999999.0))
+		if (npc.TeleportNearEnemy(800.0, 100.0, true, false, true, 0.0))
 			npc.f_NextTeleport = GetGameTime(npc.index) + Teleport_Interval[Chair_Tier[npc.index]];
 	}
 }
