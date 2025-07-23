@@ -12,6 +12,7 @@ static int Chair_Tier[2049] = { 0, ... };	//The current "tier" the raid is on. S
 static bool Chair_UsingAbility[2049] = { false, ... };	//Whether or not SSB is currently using an ability. Set to TRUE upon ability activation and FALSE once the ability is finished. Otherwise, he can use abilities while using other abilities, which can break animations. Very stinky!
 Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's cast animation plays out.
 static float f_DamageSinceLastArmy[2049] = { 0.0, ... };
+static float f_NextTeleport[2049] = { 0.0, ... };
 
 static bool Chair_ChangeSequence[2049] = { false, ... };
 static bool Chair_CanMove[2049] = { false, ... };
@@ -23,7 +24,9 @@ static char Chair_SpellEffect[2049][255];
 static char Chair_SpellEffectExtra[2049][255];
 static char Chair_SpellEffect_Point[2049][255];
 
-static float SSBCHAIR_ARMY_INTERVAL = 0.25;		//Every X% of max health lost, SSB will summon his next army. When that army is defeated, SSB powers up and Chair_Tier increases by 1.
+static float SSBCHAIR_ARMY_INTERVAL = 0.25;		//Every X% of max health lost, SSB will summon his next army. When that army is defeated, SSB powers up and Chair_Tier increases by 1. Note that if Chair_Tier can reach a max value higher than 3, you'll need to increase the size of all arrays accordingly.
+
+static float Teleport_Interval[4] = { 14.0, 13.0, 12.0, 10.0 };	//Every X seconds, SSB will teleport to a random enemy and face towards them. This stops him from being a total sitting duck. Keep in mind he still has a few abilities that teleport him automatically, so don't make these too low or he'll be cancer to fight against.
 
 //DEATH WAVER: If at least X enemies and/or Y allies are within radius, SSB waves his hand, healing all allies within radius while damaging and knocking back all enemies.
 //This is NOT a Spell Card, and is thus unaffected by the casting system. It DOES get stronger based on tier, though.
@@ -100,10 +103,11 @@ static float Catastrophe_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global coold
 #define ABSORPTION_NAME		"Soul Redistribution"
 static float Absorption_IntroSpeed[4] = { 1.0, 1.1, 1.2, 1.35 };			//Intro speed multiplier. Higher values make the intro animation play faster, which means SSB will begin to absorb souls sooner.
 static float Absorption_Duration[4] = { 12.0, 14.0, 16.0, 18.0 };			//Duration of the absorption phase.
-static float Absorption_Speed[4] = { 125.0, 150.0, 175.0, 200.0 };			//SSB's movement speed during the absorption phase.
+static float Absorption_Speed[4] = { 90.0, 120.0, 150.0, 180.0 };			//SSB's movement speed during the absorption phase.
 static float Absorption_DMG[4] = { 30.0, 35.0, 40.0, 50.0 };				//Damage dealt per 0.1s to enemies within the radius.
 static float Absorption_EntityMult[4] = { 5.0, 7.5, 10.0, 12.5 };			//Amount to multiply damage dealt to entities.
 static float Absorption_Radius[4] = { 600.0, 650.0, 700.0, 750.0 };			//Effect radius.
+static float Absorption_TeleRadius[4] = { 1200.0, 1200.0, 1200.0, 1200.0 };		//Max distance from his victim to which SSB will teleport before using this ability. Lower = he teleports closer and then uses this.
 static float Absorption_PullStrength[4] = { 400.0, 450.0, 500.0, 550.0 };			//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
 static float Absorption_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The minimum percentage of the pull force to use, depending on how far the target is. It's recommended to be at least a *little* bit above 0.0, because otherwise the knockback from the damage will outweigh the pull if you're far enough away and actually *push* you, making escape easier.
 static float Absorption_HealRatio[4] = { 2.0, 3.0, 4.0, 5.0 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
@@ -288,9 +292,9 @@ public void SSBChair_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-static any Summon_SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
+static any Summon_SSBChair(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return SSBChair(client, vecPos, vecAng, ally);
+	return SSBChair(client, vecPos, vecAng, ally, data);
 }
 
 #define SSBCHAIR_MAX_ABILITIES 99999
@@ -846,6 +850,10 @@ public void SSBChair_Teleport_Falling(int ref)
 
 	if (ssb.IsOnGround())
 	{
+		//Since this ability has a built-in teleport, we don't want to let him teleport again immediately after using it:
+		if (ssb.f_NextTeleport <= GetGameTime(ssb.index))
+			ssb.f_NextTeleport = GetGameTime(ssb.index) + Teleport_Interval[Chair_Tier[ssb.index]];
+
 		int iActivity = ssb.LookupActivity("ACT_FINALE_CHAIR_LANDING");
 		if (iActivity > 0)
 			ssb.StartActivity(iActivity);
@@ -952,6 +960,11 @@ public void ScrambleArray(ArrayList list)
 			SetArrayCell(list, them, me);
 		}
 	}
+}
+
+public bool SSBChair_CatastropheFilter(SSBChair ssb, int target)
+{
+	return ssb.TeleportNearEnemy(1600.0, 100.0, true, true, false, 100.0);
 }
 
 public void SSBChair_Catastrophe(SSBChair ssb, int target)
@@ -1161,6 +1174,7 @@ public bool SSBChair_LaserTrace(int entity, int contentsMask, int user)
 
 public void SSBChair_Absorption(SSBChair ssb, int target)
 {
+	ssb.TeleportNearEnemy(Absorption_TeleRadius[Chair_Tier[ssb.index]], 100.0, true, true, true, 0.0);
 	ssb.SetPlaybackRate(Absorption_IntroSpeed[Chair_Tier[ssb.index]]);
 	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_ABSORPTION_INTRO", SSBChair_Absorption_AttachParticles, "", PARTICLE_GREENBLAST_SPARKLES, PARTICLE_GREENBLAST_SPARKLES, "effect_hand_R", "", "effect_hand_L");
 }
@@ -1234,11 +1248,11 @@ void Absorption_ActivePhase(DataPack pack)
 			RemoveEntity(vortex);
 
 		Chair_ChangeSequence[ssb.index] = true;
-		Chair_Sequence[ssb.index] = "ACT_FINALE_CHAIR_IDLE";
-		Chair_UsingAbility[ssb.index] = false;
+		Chair_Sequence[ssb.index] = "ACT_FINALE_CHAIR_ABSORPTION_OUTRO";
 		StopSound(user, SNDCHAN_AUTO, SND_ABSORPTION_LOOP);
 		StopSound(user, SNDCHAN_AUTO, SND_ABSORPTION_LOOP);
 		EmitSoundToAll(SND_ABSORPTION_END, user, _, _, _, _, 80);
+		EmitSoundToAll(SND_BIG_SWING, user, _, _, _, _, 80);
 		ssb.StopPathing();
 		ssb.b_CanMove = false;
 
@@ -1265,7 +1279,7 @@ void Absorption_ActivePhase(DataPack pack)
 		ssb.GetAttachment("effect_hand_L", handPos, trash);
 		SpawnBeam_Vectors(handPos, vortexPos, 0.1, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 10.0);
 
-		spawnRing_Vectors(userPos, Absorption_Radius[tier] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, 0.1, 24.0, 0.0, 1);
+		spawnRing_Vectors(userPos, Absorption_Radius[tier] * 2.15, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, 0.1, 24.0, 0.0, 1);
 
 		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 		Absorption_Hits = 0;
@@ -1550,11 +1564,11 @@ methodmap SSBChair < CClotBody
 		SSB_ChairSpells[this.index] = new ArrayList(255);
 
 		//TODO: Populate abilities here
-		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Bombardment_Cooldown[0], 3.0, 0, SSBChair_Bombardment, _, Bombardment_GlobalCD[0], BOMBARDMENT_NAME));
-		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[0], 6.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[0], HELLRING_NAME));
-		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[0], 9.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[0], TELEPORT_NAME));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Catastrophe_Cooldown[0], 3.0, 0, SSBChair_Catastrophe, _, Catastrophe_GlobalCD[0], CATASTROPHE_NAME));
-		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Absorption_Cooldown[0], 3.0, 0, SSBChair_Absorption, _, Absorption_GlobalCD[0], ABSORPTION_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Bombardment_Cooldown[Chair_Tier[this.index]], 3.0, 0, SSBChair_Bombardment, _, Bombardment_GlobalCD[Chair_Tier[this.index]], BOMBARDMENT_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[Chair_Tier[this.index]], 4.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[Chair_Tier[this.index]], HELLRING_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[Chair_Tier[this.index]], 5.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[Chair_Tier[this.index]], TELEPORT_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Catastrophe_Cooldown[Chair_Tier[this.index]], 6.0, 0, SSBChair_Catastrophe, SSBChair_CatastropheFilter, Catastrophe_GlobalCD[Chair_Tier[this.index]], CATASTROPHE_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Absorption_Cooldown[Chair_Tier[this.index]], 7.0, 0, SSBChair_Absorption, _, Absorption_GlobalCD[Chair_Tier[this.index]], ABSORPTION_NAME));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, float globalCD = 0.0, char[] name = "")
@@ -1645,6 +1659,85 @@ methodmap SSBChair < CClotBody
 		}
 	}
 
+	public bool TeleportNearEnemy(float maxDist, float minDist, bool faceTarget, bool warnTarget, bool requireLOS, float maxHeightDiff)
+	{
+		int target = this.m_iTarget;
+		if (!IsValidEntity(target))
+			target = GetClosestTarget(this.index, true, _, true);
+
+		if (!IsValidEntity(target))
+			return false;
+
+		float pos[3], targPos[3];
+		WorldSpaceCenter(target, pos);
+
+		bool passed = false;
+
+		ArrayList areas = GetAllNearbyAreas(pos, maxDist);
+
+		if (GetArraySize(areas) > 0)
+		{
+			ScrambleArray(areas);
+			for (int i = 0; i < GetArraySize(areas); i++)
+			{
+				float randPos[3];
+				CNavArea navi = GetArrayCell(areas, i);
+				navi.GetCenter(randPos);
+
+				if (GetVectorDistance(pos, randPos) < minDist || fabs(pos[2] - randPos[2]) > maxHeightDiff)
+					continue;
+
+				float randLOSCheck[3];
+				randLOSCheck = randPos;
+				randLOSCheck[2] += 40.0;
+
+				if (requireLOS && !Can_I_See_Enemy_Only(target, target, randLOSCheck))
+					continue;
+
+				targPos = randPos;
+				passed = true;
+			}
+		}
+
+		delete areas;
+
+		if (!passed)
+			return false;
+
+		float startPos[3];
+		this.WorldSpaceCenter(startPos);
+
+		int particle = ParticleEffectAt(startPos, PARTICLE_TELEPORT);
+		if (IsValidEntity(particle))
+		{
+			EmitSoundToAll(SND_TELEPORT, particle, _, 120, _, _, GetRandomInt(90, 110));
+			EmitSoundToAll(SND_TELEPORT, particle, _, 120, _, _, GetRandomInt(90, 110));
+		}
+
+		TeleportEntity(this.index, targPos);
+
+		ParticleEffectAt(targPos, PARTICLE_SSB_SPAWN);
+		EmitSoundToAll(SND_TELEPORT, this.index, _, 120, _, _, GetRandomInt(90, 110));
+		EmitSoundToAll(SND_TELEPORT, this.index, _, 120, _, _, GetRandomInt(90, 110));
+
+		if (faceTarget)
+			this.FaceTowards(pos, 999999.0);
+
+		if (warnTarget && IsValidClient(target))
+		{
+			float HudY = -1.0;
+			float HudX = -1.0;
+			SetHudTextParams(HudX, HudY, 2.0, 0, 255, 120, 255);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "SSB Teleport Warning");
+
+			EmitSoundToClient(target, SND_COSMIC_MARKED, _, _, _, _, _, GetRandomInt(80, 120));
+			EmitSoundToClient(target, SND_COSMIC_MARKED, _, _, _, _, _, GetRandomInt(80, 120));
+		}
+
+		return true;
+	}
+
 	public void ForceVelocity(float targVel[3])
 	{
 		SDKUnhook(this.index, SDKHook_Think, NpcJumpThink);
@@ -1658,9 +1751,29 @@ methodmap SSBChair < CClotBody
 		public set(bool value) { Chair_CanMove[this.index] = value; }
 	}
 
-	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
+	property float f_NextTeleport
+	{
+		public get() { return f_NextTeleport[this.index]; }
+		public set(float value) { f_NextTeleport[this.index] = value; }
+	}
+
+	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{	
 		SSBChair npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
+
+		if (StrEqual(data, ""))
+			Chair_Tier[npc.index] = 0;
+		else
+		{
+			int tier = StringToInt(data);
+
+			if (tier < 0)
+				tier = 0;
+			if (tier > RoundFloat(1.0 / SSBCHAIR_ARMY_INTERVAL) - 1)
+				tier = RoundFloat(1.0 / SSBCHAIR_ARMY_INTERVAL) - 1;
+
+			Chair_Tier[npc.index] = tier;
+		}
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;
@@ -1668,6 +1781,7 @@ methodmap SSBChair < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bisWalking = false;
 		Chair_UsingAbility[npc.index] = false;
+		npc.f_NextTeleport = GetGameTime(npc.index) + Teleport_Interval[Chair_Tier[npc.index]];
 
 		func_NPCDeath[npc.index] = view_as<Function>(SSBChair_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(SSBChair_OnTakeDamage);
@@ -1692,7 +1806,6 @@ methodmap SSBChair < CClotBody
 		b_NoKnockbackFromSources[npc.index] = false;
 		b_SSBChairHasArmy[npc.index] = false;
 		f_DamageSinceLastArmy[npc.index] = 0.0;
-		Chair_Tier[npc.index] = 0;
 		npc.b_CanMove = false;
 
 		//IDLE
@@ -1838,6 +1951,14 @@ public void SSBChair_AnimEvent(int entity, int event)
 			if (activity)
 				npc.StartActivity(activity);
 		}
+		case 1011:	//SSB's chair hits the ground violently, spawn dust particles and play a sound.
+		{
+			float pos[3];
+			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+			ParticleEffectAt(pos, PARTICLE_TELEPORT_SLAM_1);
+			ParticleEffectAt(pos, PARTICLE_TELEPORT_SLAM_2);
+			EmitSoundToAll(SND_TELEPORT_SLAM_1, npc.index, _, 120, _, _, 80);
+		}
 	}
 }
 
@@ -1978,7 +2099,11 @@ public void SSBChair_ClotThink(int iNPC)
 		}
 	}
 
-	npc.PlayIdleSound();
+	if (!Chair_UsingAbility[npc.index] && GetGameTime(npc.index) >= npc.f_NextTeleport)
+	{
+		if (npc.TeleportNearEnemy(800.0, 100.0, true, false, true, 9999999.0))
+			npc.f_NextTeleport = GetGameTime(npc.index) + Teleport_Interval[Chair_Tier[npc.index]];
+	}
 }
 
 

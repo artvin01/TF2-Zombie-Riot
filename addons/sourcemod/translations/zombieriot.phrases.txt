@@ -962,6 +962,10 @@
 	{
 		"en"		"Behind you."
 	}
+	"SSB Teleport Warning"
+	{
+		"en"		"YOU'RE BONED!"
+	}
 	"Rusty Ability Blocked"
 	{
 		"en"		"You can't do that right now!"
