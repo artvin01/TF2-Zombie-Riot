@@ -81,7 +81,7 @@ public const char PerkNames_two_Letter[][] =
 	"RB",
 	"OO",
 	"MC",
-	"AR",
+	"HH",
 	"MB",
 	"TM",
 	"SS",
