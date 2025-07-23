@@ -409,7 +409,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 				newhealth=100;
 			SetEntityHealth(client, newhealth);
 			Ability_Apply_Cooldown(client, 2, 40.0);
-			Ability_Apply_Cooldown(client, 1, (float(Load_SuperCharge[client])*4.0)*Cooldownbuff);
+			Ability_Apply_Cooldown(client, 1, (float(Load_SuperCharge[client])*4.0)*Cooldownbuff, .ignoreCooldown=true);
 			Burst_Mode[client]=false;
 			Charge_Mode[client]=false;
 			Load_SuperCharge[client]=0;
