@@ -77,10 +77,6 @@ static bool ClotInteract(int client, int weapon, ObjectTradingStation npc)
 	*/
 	FormatEx(buffer, sizeof(buffer), "%t", "Open Exchange Menu");
 	menu2.AddItem("-1", buffer);
-
-//	FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
-//	menu2.AddItem("-2", buffer);
-	
 						
 	menu2.Display(client, MENU_TIME_FOREVER);
 	return true;

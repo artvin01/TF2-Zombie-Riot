@@ -207,7 +207,6 @@ public void LastKnight_ClotThink(int iNPC)
 			SetVariantString("1.1");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
-			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable6, 55, 55, 55, 255);
 		}
 		return;

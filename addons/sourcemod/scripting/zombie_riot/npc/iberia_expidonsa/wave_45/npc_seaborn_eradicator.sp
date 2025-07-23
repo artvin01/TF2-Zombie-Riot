@@ -317,6 +317,16 @@ public void Iberia_SeabornAnnihilator_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	Spawns_RemoveFromArray(entity);
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
+	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))

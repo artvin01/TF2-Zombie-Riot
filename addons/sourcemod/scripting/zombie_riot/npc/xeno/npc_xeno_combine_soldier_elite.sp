@@ -202,7 +202,6 @@ methodmap XenoCombineElite < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_bmovedelay = false;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.m_iAttacksTillReload = 30;

@@ -154,7 +154,6 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 		func_NPCOnTakeDamage[npc.index] = ZombiefiedCombineSwordsman_OnTakeDamage;
 		func_NPCThink[npc.index] = ZombiefiedCombineSwordsman_ClotThink;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -165,10 +164,8 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
 		npc.StopPathing();
 			

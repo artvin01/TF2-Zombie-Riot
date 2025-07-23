@@ -48,8 +48,6 @@ methodmap ObjectTinkerBrew < ObjectGeneric
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		int entity = npc.EquipItemSeperate("models/props_halloween/hwn_flask_vial.mdl", "idle", _, 0.85, 8.0);
-		//SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		//SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		npc.m_iWearable5 = entity;
 		AcceptEntityInput(entity, "Disable");
 		npc.Anger = false;

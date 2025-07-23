@@ -255,7 +255,7 @@ methodmap Ruliana < CClotBody
 		static const char Items[][] = {
 			"models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
-			RUINA_CUSTOM_MODELS_2,
+			WINGS_MODELS_1,
 			"models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl",
 			RUINA_CUSTOM_MODELS_2,
 			"models/player/items/medic/berliners_bucket_helm.mdl"
@@ -268,12 +268,12 @@ methodmap Ruliana < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, _, 0.5);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 
 		SetVariantInt(RUINA_REI_LAUNCHER);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
-		SetVariantInt(RUINA_WINGS_1);
+		SetVariantInt(WINGS_RULIANA);
 		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
 
 		b_angered_once[npc.index] = false;
@@ -862,14 +862,10 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		if(IsValidEntity(Proj))
 		{
 			Projectile.Apply_Particle("raygun_projectile_blue");
-			Projectile.Size = 2.0;
+			Projectile.Size = 1.0;
 			int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_1);
 			if(IsValidEntity(ModelApply))
 			{
-				float angles[3];
-				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-				angles[1]+=90.0;
-				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 				SetVariantInt(RUINA_ICBM);
 				AcceptEntityInput(ModelApply, "SetBodyGroup");
 			}

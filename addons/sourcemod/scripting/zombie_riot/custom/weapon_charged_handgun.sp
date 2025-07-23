@@ -396,7 +396,7 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	
 	DataPack pack;
@@ -501,7 +501,7 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	SetEntProp(iCarrier, Prop_Send, "m_usSolidFlags", 200);
 	SetEntProp(iCarrier, Prop_Data, "m_nSolidType", 0);
@@ -1210,7 +1210,7 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	SetEntProp(iCarrier, Prop_Send, "m_usSolidFlags", 200);
 	SetEntProp(iCarrier, Prop_Data, "m_nSolidType", 0);

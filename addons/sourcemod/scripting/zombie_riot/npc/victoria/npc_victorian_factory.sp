@@ -144,7 +144,6 @@ methodmap VictorianFactory < CClotBody
 		SetEntityRenderColor(npc.index, 80, 50, 50, 60);
 
 		npc.m_iWearable3 = npc.EquipItemSeperate("models/props_c17/substation_transformer01a.mdl",_,1,1.001,5100.0,true);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		TeleportEntity(npc.m_iWearable3, NULL_VECTOR, {0.0, 0.0, 0.0}, NULL_VECTOR);
 
@@ -236,7 +235,6 @@ static void ClotThink(int iNPC)
 			Vec[1] -= 62.5;
 			Vec[2] += 55.0;
 			TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 			
 			npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
@@ -247,7 +245,6 @@ static void ClotThink(int iNPC)
 			Vec[1] += 62.5;
 			Vec[2] += 55.0;
 			TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
 			
 			EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
@@ -383,39 +380,6 @@ static void ClotThink(int iNPC)
 	}
 }
 
-/*static Action Timer_MachineShop(Handle timer, int iNPC)
-{
-	VictorianFactory npc = view_as<VictorianFactory>(iNPC);
-	float Vec[3], Ang[3];
-	npc.m_iWearable1 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
-	GetAbsOrigin(npc.m_iWearable1, Vec);
-	GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
-	Ang[1] += 180.0;
-	Vec[0] -= 50.0;
-	Vec[1] -= 62.5;
-	Vec[2] += 55.0;
-	TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
-	
-	npc.m_iWearable2 = npc.EquipItemSeperate("models/props_c17/lockers001a.mdl",_,1,2.0,_,true);
-	GetEntPropVector(npc.m_iWearable3, Prop_Data, "m_angRotation", Ang);
-	GetAbsOrigin(npc.m_iWearable2, Vec);
-	Ang[1] += 90.0;
-	Vec[0] += 50.0;
-	Vec[1] += 62.5;
-	Vec[2] += 55.0;
-	TeleportEntity(npc.m_iWearable2, Vec, NULL_VECTOR, NULL_VECTOR);
-	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-	SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-	
-	EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-	EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
-	npc.m_flMeleeArmor = 2.0;
-	npc.m_flRangedArmor = 0.5;
-	i_AttacksTillMegahit[npc.index] = 602;
-	return Plugin_Stop;
-}*/
 
 static void ClotDeath(int entity)
 {

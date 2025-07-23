@@ -91,7 +91,6 @@ methodmap TidelinkedBishop < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
@@ -208,7 +207,6 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 					
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
 					WorldSpaceCenter(entity, vecTarget);

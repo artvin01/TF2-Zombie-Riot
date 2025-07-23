@@ -194,6 +194,11 @@ methodmap KahmlsteinFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flIsAwayOrSomething
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	public KahmlsteinFollower(float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
@@ -245,7 +250,7 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_camopants/sbox2014_heavy_camopants.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-
+		AlreadySaidWin = false;
 		if(npc.m_bScalesWithWaves)
 		{
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -311,7 +316,15 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-
+	if(AlreadySaidWin)
+	{
+		if(npc.m_flIsAwayOrSomething)
+		{
+			CPrintToChatAll("{darkblue}캄르스타인은 공허와 싸워갑니다. 당신이 이미 처참하게 죽은 것을 모른채로 말이죠....");
+			npc.m_flIsAwayOrSomething = 0.0;
+		}		
+		return;
+	}
 	//Do stuff if the being is here
 	if(npc.m_bScalesWithWaves)
 	{
@@ -321,7 +334,7 @@ static void ClotThink(int iNPC)
 			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other))
 			{
-				if(i_RaidGrantExtra[other] >= 6 && i_RaidGrantExtra[other] < 888)
+				if(i_RaidGrantExtra[other] >= 15 && i_RaidGrantExtra[other] < 888)
 				{
 					npc.m_flDeathAnimation = GetGameTime() + 45.0;
 					npc.m_iTarget = other;
@@ -331,10 +344,77 @@ static void ClotThink(int iNPC)
 					stop_thinking = true;
 					break;
 				}
-				else if(i_RaidGrantExtra[other] >= 2 && i_RaidGrantExtra[other] < 6)
+				else if(i_RaidGrantExtra[other] >= 1 && i_RaidGrantExtra[other] < 15)
 				{
 					npc.StopPathing();
-					
+					if(!npc.m_flIsAwayOrSomething)
+					{
+						SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
+						SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
+						if(IsValidEntity(npc.m_iWearable1))
+						{
+							SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable2))
+						{
+							SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable3))
+						{
+							SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable4))
+						{
+							SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable5))
+						{
+							SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable6))
+						{
+							SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable7))
+						{
+							SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						if(IsValidEntity(npc.m_iWearable8))
+						{
+							SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 1.0);
+							SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 1.0);
+						}
+						b_NoHealthbar[npc.index] = true;
+						if(IsValidEntity(npc.m_iTeamGlow))
+							RemoveEntity(npc.m_iTeamGlow);
+						switch(GetRandomInt(0,3))
+						{
+							case 0:
+							{
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 저 놈과 싸워야한다! 난 게이트 속에서 아무것도 나오지 못 하게 막고 있겠다!");
+							}
+							case 1:
+							{
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 내가 공허 쪽을 막겠다. 행운을 빈다.");
+							}
+							case 2:
+							{
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 넌 할 수 있다. 난 널 믿고 게이트를 막아내겠다.");
+							}
+							case 3:
+							{
+								CPrintToChatAll("{darkblue}캄르스타인{default}: 여기서 우리가 같이 싸울 순 없어. 곧 쏟아져나올 공허 놈들도 막아야한다! 그리고 그건 내가 담당하겠다!");
+							}
+						}
+					}
+					npc.m_flIsAwayOrSomething = 1.0;
 					stop_thinking = true;
 					break;
 				}
@@ -342,6 +422,79 @@ static void ClotThink(int iNPC)
 		}
 		if(stop_thinking)
 			return;
+	}
+	if(npc.m_flIsAwayOrSomething)
+	{
+		b_NoHealthbar[npc.index] = false;
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable3))
+		{
+			SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable4))
+		{
+			SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable5))
+		{
+			SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable6))
+		{
+			SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable7))
+		{
+			SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		if(IsValidEntity(npc.m_iWearable8))
+		{
+			SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 0.0);
+		}
+		switch(GetRandomInt(0,3))
+		{
+			case 0:
+			{
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 방금 돌아왔다. 네가 무사하길 바래야겠군.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 놈을 처치한건가? 비록 그 놈은 얼마 지나지 않아 곧 돌아올 테지만.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 뭔가 이상해. 저 놈은 자신의 의지대로 움직이는것 같진 않다. 마치 무언가에 조종이라도 당하는 것처럼.");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{darkblue}캄르스타인{default}: 공허와 싸워나갈수록 이 공허란게 감염과는 별개의 존재라는 느낌이 든다.");
+			}
+		}
+		
+		if(IsValidEntity(npc.m_iTeamGlow))
+			RemoveEntity(npc.m_iTeamGlow);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		
+		SetVariantColor(view_as<int>({184, 56, 59, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+		npc.m_flIsAwayOrSomething = 0.0;
 	}
 
 	int target = npc.m_iTarget;
@@ -517,6 +670,59 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 						break;
 					}
 				}
+				if(npc.m_flIsAwayOrSomething)
+				{
+					b_NoHealthbar[npc.index] = false;
+					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
+					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
+					if(IsValidEntity(npc.m_iWearable1))
+					{
+						SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable2))
+					{
+						SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable3))
+					{
+						SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable4))
+					{
+						SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable5))
+					{
+						SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable6))
+					{
+						SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable7))
+					{
+						SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iWearable8))
+					{
+						SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 0.0);
+						SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 0.0);
+					}
+					if(IsValidEntity(npc.m_iTeamGlow))
+						RemoveEntity(npc.m_iTeamGlow);
+					npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+					
+					SetVariantColor(view_as<int>({184, 56, 59, 200}));
+					AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+					npc.m_flIsAwayOrSomething = 0.0;
+				}
 				float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2 );
 				CreateEarthquake(vecTarget2, 2.5, 350.0, 16.0, 255.0);
 				npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
@@ -525,15 +731,15 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
 				CPrintToChatAll("{darkblue}캄르스타인{default}: 그렇겐 못 한다!");
-				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.index, RENDER_NORMAL);
 				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 255);
 				npc.PlayBobMeleePostHit();
 				npc.m_flDeathAnimationCD = gameTime + 2.0;

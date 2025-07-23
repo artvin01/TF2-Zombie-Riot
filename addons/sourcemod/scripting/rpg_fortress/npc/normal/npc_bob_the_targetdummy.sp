@@ -82,10 +82,8 @@ methodmap BobTheTargetDummy < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 255, 200, 255);
 
 		npc.StopPathing();

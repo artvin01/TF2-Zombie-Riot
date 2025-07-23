@@ -212,8 +212,7 @@ methodmap XenoFlyingArmorTiny < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		
 		npc.StartPathing();
 		

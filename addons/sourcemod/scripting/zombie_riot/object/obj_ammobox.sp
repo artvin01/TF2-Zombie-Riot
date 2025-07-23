@@ -186,8 +186,8 @@ int AmmoboxUsed(int client, int entity)
 					
 					Current_Mana[client] += RoundToCeil(RefillMana);
 					
-					if(Current_Mana[client] > RoundToCeil(RefillMana)) //Should only apply during actual regen
-						Current_Mana[client] = RoundToCeil(RefillMana);
+					if(Current_Mana[client] > RoundToCeil(max_mana[client] * 2.0)) //Should only apply during actual regen
+						Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);
 				}
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);

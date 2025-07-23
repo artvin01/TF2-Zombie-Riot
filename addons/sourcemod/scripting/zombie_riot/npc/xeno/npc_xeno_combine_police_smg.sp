@@ -403,7 +403,7 @@ public Action XenoCombinePoliceSmg_OnTakeDamage(int victim, int &attacker, int &
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
 			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
 			CreateTimer(2.0, XenoCombinePoliceSmg_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
@@ -426,7 +426,7 @@ public Action XenoCombinePoliceSmg_Revert_Poison_Zombie_Resistance(Handle timer,
 	if(IsValidEntity(zombie))
 	{
 		XenoCombinePoliceSmg npc = view_as<XenoCombinePoliceSmg>(zombie);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 	}
 	return Plugin_Handled;

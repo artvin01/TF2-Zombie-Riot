@@ -99,7 +99,6 @@ public void Seaborn_Activation_Enable_form_2(int client)
 	int entity, i;
 	while(TF2U_GetWearable(client, entity, i))
 	{
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity, 125, 125, 255, 255);
 		SetTeam(entity, 3);
 		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
@@ -176,7 +175,6 @@ public void Seaborn_Activation_Enable_form_3(int client)
 	int entity, i;
 	while(TF2U_GetWearable(client, entity, i))
 	{
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity, 0, 0, 255, 255);
 		SetTeam(entity, 3);
 		SetEntProp(entity, Prop_Send, "m_nSkin", 1);

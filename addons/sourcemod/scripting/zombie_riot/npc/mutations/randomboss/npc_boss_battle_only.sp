@@ -230,6 +230,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 12:

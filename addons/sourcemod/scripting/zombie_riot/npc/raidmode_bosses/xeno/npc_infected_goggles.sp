@@ -248,9 +248,6 @@ methodmap RaidbossBlueGoggles < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-	//	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-	//	SetEntityRenderColor(npc.m_iWearable4, 65, 65, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
 		f_GogglesHurtTeleport[npc.index] = 0.0;
 		i_GogglesHurtTalkMessage[npc.index] = 0;

@@ -141,7 +141,6 @@ methodmap Barrack_Combine_Super < BarrackBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 180, 180, 180, 255);
 		
 		return npc;

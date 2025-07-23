@@ -21,8 +21,9 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		//dont try to collide with your dependant building,.
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[iExclude]) == entity)
+		{
 			return false;
-
+		}
 		ObjectGeneric objstats = view_as<ObjectGeneric>(iExclude);
 		if(objstats.m_iExtrabuilding1 == entity)
 			return false;
@@ -234,6 +235,8 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 			return false;
 		else if(objstats.m_iExtrabuilding2 == entity)
 			return false;
+		else if(IsValidEntity(Building_Mounted[entity]))
+			return false;
 	}
 #endif
 
@@ -305,7 +308,19 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	}
 	if(i_IsABuilding[entity])
 	{
+#if defined ZR
+		if(i_IsABuilding[data])
+		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(data);
+			if(objstats.m_iExtrabuilding1 == entity)
+				return false;
+			else if(objstats.m_iExtrabuilding2 == entity)
+				return false;
+		}
+#endif
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
+			return false;
+		if(IsValidEntity(Building_Mounted[entity]))
 			return false;
 		return true;
 	}
@@ -319,7 +334,19 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	
 	if(i_IsABuilding[entity])
 	{
+#if defined ZR
+		if(i_IsABuilding[data])
+		{
+			ObjectGeneric objstats = view_as<ObjectGeneric>(data);
+			if(objstats.m_iExtrabuilding1 == entity)
+				return false;
+			else if(objstats.m_iExtrabuilding2 == entity)
+				return false;
+		}
+#endif
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[data]) == entity)
+			return false;
+		if(IsValidEntity(Building_Mounted[entity]))
 			return false;
 		return true;//They blockin me
 	}

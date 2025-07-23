@@ -2543,10 +2543,8 @@
 	}
 	"Barracks Desc Extra"
 	{
-		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
-		"fr"	"Résurrection Rapide: soigne vos unités automatiquement\nVin des Veuves: affaiblit les ennemis frappés\nDaiquiri: 1.25x dégats à distance\nDouble-Touche: 1.15x cadence des attaques\nSpeed Cola: 1.25x vitesse\nRecyclage Poiré: 1.25x gain de ressources\nJuggernog: 1.3x santé, 1.15x résistance"
-		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
-		"ko"	"신속 부활: 유닛들의 체력이 매 초마다 회복\n미망인 와인: 공격한 적에게 디버프 부여\n데드샷 와이키리: 유닛들의 원거리 공격 피해량이 1.25배 증가\n더블 탭: 유닛들의 공격 속도가 1.15배 증가\n스피드 콜라: 유닛들의 이동 속도가 1.25배 증가\n재사용 배: 획득 자원량이 1.25배 증가\n저거노그: 유닛들의 최대 체력이 1.3배 증가하고 피해 저항력이 1.15배 증가"
+		"en"	"Perks work on your minions!"
+		"ko"	"퍽은 당신의 하수인들에게도 영향을 줍니다!"
 	}
 	"Barracks Desc Extra 2"
 	{
@@ -3155,10 +3153,8 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: 10％"
-		"fr"	"Un «bouclier» qui absorbe les dégats et bloque les attaques pour faire des dégats.\nVous soigne quand vous êtes hors du combat.\nS'améliore avec les améliorations corps-à-corps.\nRang de défense: 10％"
-		"chi"	"一个''盾牌''。\n吸收部分伤害并可以盾反，造成伤害。\n自带回血，受伤时或者换武器时暂停。\n''防御评分：10％''"
-		"ko"	"적의 피해를 흡수하고 반사할 수 있는 ''방패''입니다.\n이 무기는 근접 개선과 공속 속성의 영향을 받습니다.\n방어 등급: 10％"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nDefence rating: 10％\nParrying 3 attacks or 1 raid attack gives it an extra cooldown."
+		"ko"	"적의 피해를 흡수하고 반사할 수 있는 ''방패''.\n방어 등급: 10％\n패링을 3회 성공하거나 레이드 보스의 공격을 1회 패링하면 추가 쿨타임 발생."
 	}
 	"Spike Shield Desc"
 	{
@@ -4189,6 +4185,11 @@
 	{
 		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 		"ko"	"구조물 체력 +70％ 증가, 무기 피해량 +250％, 지원 구조물 최대 상한 +1개, 재련 쿨타임 -20 초 감소.\n금속 소모량 감소 (1 이하로 감소하지 않음)"
+	}
+	"Tinker Pap 7 Desc"
+	{
+		"en"	"Improved stats."
+		"ko"	"능력치 증가."
 	}
 	"West Pap 1 Desc"
 	{

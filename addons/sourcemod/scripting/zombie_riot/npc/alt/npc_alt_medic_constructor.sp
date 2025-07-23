@@ -163,7 +163,6 @@ methodmap Alt_Medic_Constructor < CClotBody
 		
 		npc.StartPathing();
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 			
 		return npc;
@@ -296,7 +295,6 @@ static void Internal_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 		
 			if(IsValidEntity(npc.m_iWearable4))

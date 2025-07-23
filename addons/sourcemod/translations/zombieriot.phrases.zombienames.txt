@@ -1815,19 +1815,18 @@
 		"ru"		"Ангел Сильвестр"
 		"ko"		"승천한 실베스터"
 	}
-	"Nemesis"
+	"Calmaticus"
 	{
-		"en"		"Nemesis"
-		"pt"		"Nemesis"
-		"ru"		"Немезид"
-		"ko"		"네메시스"
+		"en"		"Calmaticus"
+		"pt"		"Calmaticus"
+		"ko"		"칼마티커스"
 	}
-	"Enraged Nemesis"
+	"Enraged Calmaticus"
 	{
-		"en"		"Enraged Nemesis"
+		"en"		"Enraged Calmaticus"
 		"ru" 		"Разъяренный Немезид"
-		"pt"		"Nemesis Enfurecido"
-		"ko"		"격노한 네메시스"
+		"pt"		"Calmaticus Enfurecido"
+		"ko"		"격노한 칼마티커스"
 	}
 	"Shell Sea Runner"
 	{
@@ -3058,11 +3057,10 @@
 		"en"	"Wildingen Hitman"
 		"ko"	"와일딩겐 히트맨"
 	}
-	"Mr.X"
+	"Vivithorn"
 	{
-		"en"	"Mr.X"
-		"ru" 	"Мистер X"
-		"ko"	"Mr.X"
+		"en"	"Vivithorn"
+		"ko"	"비비쏜즈"
 	}
 	"Xeno Acclaimed Swordsman"
 	{
@@ -3781,6 +3779,17 @@
 		"en" "Make an army!\nMake units that fit the situation.\nBuilder upgrades allow better units.\nResearch barracks upgrades aswell.\nInteract with units {yellow}(R or T) {green}to give them commands personally.\nScroll up for more info."
 		"ko" "군대를 만드세요!\n상황에 맞는 전투 유닛을 생산하세요.\n구조물 개선은 더 좋은 유닛을 생산 가능.\n배럭 개선도 마찬가지로 유닛에 영향을 줌.\n유닛에게 {yellow}(R 또는 T) {green}키로 개별 명령이 가능.\n스크롤을 올려 더 많은 정보를 얻으세요."
 	}
+	"Explain Building Cash"
+	{
+		"en" "Building Cash Gain"
+		"ko" "구조물 자금 회수"
+	}
+	"Explain Building Cash Desc"
+	{
+		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} with people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
+		"ko" "다른 사람이 당신의 구조물을 사용하면, 당신은 {yellow}추가 자금{green}을 얻고 {yellow}보급이 증가합니다.{green}\n추가 자금은 자금 근처에 표시됩니다.\n{yellow}이 효과로 얻는 자금은 제한되어있음."
+	}
+	
 	"Vhxis"
 	{
 		"en"	"Vhxis"

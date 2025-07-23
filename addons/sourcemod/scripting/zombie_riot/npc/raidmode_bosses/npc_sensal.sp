@@ -1672,7 +1672,7 @@ bool SensalTalkPostWin(Sensal npc)
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}센살{default}: 하지만 이제 그 둘의 행동이 당신들을 보호하기 위해 한 행동이란걸 알았어. 여전히, 네메시스를 파괴할만한 힘은 있는것 같군.");
+		CPrintToChatAll("{blue}센살{default}: 하지만 이제 그 둘의 행동이 당신들을 보호하기 위해 한 행동이란걸 알았어. 여전히, 칼마티커스를 파괴할만한 힘은 있는것 같군.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
