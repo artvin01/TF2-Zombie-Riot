@@ -59,7 +59,6 @@ methodmap RitualistInstinct < CClotBody
 
 		SetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity", client);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 255);
 
 		EmitSoundToAll(g_LoopSound, npc.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	

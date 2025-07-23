@@ -117,7 +117,6 @@ methodmap Nightmare < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 255);
 		func_NPCDeath[npc.index] = view_as<Function>(Nightmare_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Nightmare_OnTakeDamage);

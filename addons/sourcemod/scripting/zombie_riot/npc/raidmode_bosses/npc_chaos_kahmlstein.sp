@@ -500,16 +500,18 @@ methodmap ChaosKahmlstein < CClotBody
 		
 		int Alpha = 255;
 		if(i_RaidGrantExtra[npc.index] >= 2)
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 			Alpha = 180;
+		}
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 21, 71, 171, Alpha);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 21, 71, 171, Alpha);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 21, 71, 171, Alpha);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 21, 71, 171, Alpha);
 
 //		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

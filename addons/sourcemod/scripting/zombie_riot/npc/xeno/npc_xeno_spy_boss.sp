@@ -233,8 +233,6 @@ methodmap XenoSpyMainBoss < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		npc.Anger = false;
@@ -256,32 +254,27 @@ methodmap XenoSpyMainBoss < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_dex_revolver/c_dex_revolver.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 		
 		
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/spy/shogun_ninjamask/shogun_ninjamask.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 		
 		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/short2014_invisible_ishikawa/short2014_invisible_ishikawa.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
 		
 		npc.m_iWearable5 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/spr17_legendary_lid/spr17_legendary_lid_spy.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
 		
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -371,22 +364,22 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 			npc.m_flHalf_Life_Regen = false;
 			GiveNpcOutLineLastOrBoss(npc.index, true);
 			
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 				
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 				
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 				
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 				
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
 			
-			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
 		}
 	}
@@ -397,22 +390,22 @@ public void XenoSpyMainBoss_ClotThink(int iNPC)
 		npc.m_bTeamGlowDefault = true;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 			
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 			
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 			
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 			
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 			
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
 			
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
 			
 		npc.PlayDecloakSound();
@@ -718,22 +711,22 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 
 		HealEntityGlobal(npc.index, npc.index, float(maxhealth) * 0.01, 1.0, _,HEAL_SELFHEAL);
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 1);
 		
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 1);
 		
 		npc.m_flDead_Ringer_Invis = GetGameTime(npc.index) + 2.0;

@@ -18,22 +18,19 @@
 		"en" 		"Zilius Arrived the leader of the exlusionary Expidonsans."
 		"ko" 		"엑스피돈산의 배타적인 지도자, 질리우스가 등장했습니다."
 	}
-	"Nemesis Arrived."
+	"Calmaticus Arrived."
 	{
-		"en" 		"Nemesis, the original Xeno infector arrived."
-		"fr" 		"Nemesis, la source de l'infection Xéno, est ici."
+		"en" 		"Calmaticus, the original Xeno infector arrived."
+		"fr" 		"Calmaticus, la source de l'infection Xéno, est ici."
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
-		"pt"		"Nemesis, o Xeno infector original chegou."
+		"pt"		"Calmaticus, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
-		"ko" 		"최초의 제노 감염자, 네메시스가 등장했습니다."
+		"ko" 		"최초의 제노 감염자, 칼마티커스가 등장했습니다."
 	}
-	"Mrx Arrived."
+	"Vivithorn Arrived."
 	{
-		"en" 		"Mrx... Is here."
-		"ru" 		"Мистер X... Появлися."
-		"fr" 		"M.x... est ici."
-		"chi"		"Mr.X来了。。。"
-		"ko" 		"Mr X가... 이 곳에 왔습니다."
+		"en" 		"Vivithorn... Is here."
+		"ko" 		"비비쏜즈가... 이 곳에 왔습니다."
 	}
 	"Alaxios Arrived"
 	{

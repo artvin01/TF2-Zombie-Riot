@@ -69,9 +69,8 @@ methodmap VictoriaRadiomast < CClotBody
 	{
 		VictoriaRadiomast npc = view_as<VictoriaRadiomast>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE,"1000000", ally, false,true,_,_,{30.0,30.0,200.0}, .NpcTypeLogic = 1));
 		
-		SetEntityRenderMode(npc.index, RENDER_NONE);
 		i_NpcWeight[npc.index] = 999;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		npc.m_iWearable1 = npc.EquipItemSeperate(VictoriaRadiomast_MODEL_1,_,1);
 		SetVariantString("0.5");

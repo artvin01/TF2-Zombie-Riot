@@ -63,9 +63,8 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		"---Loadout Store---\nCredit Points: {1}"
-		"es"		"---Tienda de Equipamiento---\nPuntos de Credito: {1}"
-		"ko"		"---로드아웃 상점---\n보유 자금: {1}"
+		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
+		"ko"		" \n---초기 상점---\n이 상점은 물품 가격이 70％ 할인됨!\n초기 자금: {1}"
 	}
 	"Preview Mode Pap"
 	{
@@ -346,7 +345,7 @@
 	}
 	"Sell Items Confirm Pref"
 	{
-		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your loadout store!"
+		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your Starter Store!"
 		"ko"		"정말로 당신의 모든 아이템을 판매하시겠습니까?\n당신은 아직 재구매 단계이며 다시 로드아웃 상점으로 되돌아갈 것입니다!"
 	}
 	"Sell All Items"
@@ -361,9 +360,8 @@
 	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm & Access Store"
-		"es"		"Confirmar y acceder a la tienda"
-		"ko"		"확인 & 상점 접근"
+		"en"		"Exit Starter Store"
+		"ko"		"초기 상점 나가기"
 	}
 	"N/A"
 	{
@@ -1273,139 +1271,105 @@
 		"chi" 		"无 Buff"
 		"ko" 		"퍽 없음"
 	}
-	"Quick Revive"
+	"Karlas's Regene Berry"
 	{
-		"en" 		"Quick Revive"
+		"en" 		"Karlas's Regene Berry"
 		"fr" 		"Résurrection Rapide"
 		"ru" 		"Реаниматор"
 		"de"		"Schnelles Wiederbeleben"
 		"pt"		"Rápida ressureição"
 		"nl"		"Snel tot leven brengen"
 		"chi" 		"快速起身"
-		"ko" 		"신속 부활"
+		"ko" 		"카를라스의 재생형 열매"
 	}
-	"Juggernog"
+	"Purge's Cerveza Obsidian"
 	{
-		"en" 		"Juggernog"
-		"fr" 		"Juggernog"
-		"ru" 		"Джаггер-фанта"
-		"pt"		"Juggernog"
-		"chi" 		"身体强化"
-		"ko" 		"저거노그"
+		"en" 		"Purge's Cerveza Obsidian"
+		"ko" 		"퍼지의 흑요석 맥주"
 	}
-	"Double Tap"
+	"Bob's Banana Juice"
 	{
-		"en" 		"Double Tap"
-		"fr" 		"Double-Touche"
-		"ru" 		"Пиф-паф"
-		"de"		"Doppeltippen"
-		"pt"		"Toque Duplo"
-		"nl"		"Dubbeltikken"
-		"chi" 		"精神强化"
-		"ko" 		"더블 탭"
+		"en" 		"Bob's Banana Juice"
+		"ko" 		"밥의 바나나 주스"
 	}	
-	"Speed Cola"
+	"Twirl's Ginger Ale"
 	{
-		"en" 		"Speed Cola"
-		"fr" 		"Speed Cola"
-		"ru" 		"Быстрокола"
-		"de"		"Geschwindigkeits Cola"
-		"pt"		"Refri-Veloz"
-		"nl"		"SnelheidsCola"
-		"chi" 		"极速可乐"
-		"ko" 		"스피드 콜라"
+		"en" 		"Twirl's Ginger Ale"
+		"ko" 		"트윌의 진저 에일"
 	}
-	"Deadshot Daiquiri"
+	"Waldch's Root Beer"
 	{
-		"en" 		"Deadshot Daiquiri"
+		"en" 		"Waldch's Root Beer"
 		"fr" 		"Tir Mortel de Daiquiri"
 		"ru" 		"Снайпер-лайм"
 		"de"		"Todesschuss Daiquiri"
 		"pt"		"Tiro morto de Daiquiri"
 		"nl"		"Dood schot Daiquiri"
 		"chi" 		"死亡宣告"
-		"ko" 		"데드샷 다이키리"
+		"ko" 		"월드치의 루트비어"
 	}
 	
-	"Widows Wine"
+	"Nemal's Teslar Mule"
 	{
-		"en" 		"Widows Wine"
+		"en" 		"Nemal's Teslar Mule"
 		"fr" 		"Vin des Veuves"
 		"ru" 		"Вино вдовы"
 		"pt"		"Vinho Viúvo"
 		"nl"		"Wijn van de weduwe"
 		"chi" 		"恶魔领域"
-		"ko" 		"미망인 와인"
+		"ko" 		"네말의 테슬라 뮬"
 	}
-	"Recycle Poire"
+	"Castellan's Corvus Stout"
 	{
-		"en" 		"Recycle Poiré"
+		"en" 		"Castellan's Corvus Stout"
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
-		"ko" 		"재사용 배"
+		"ko" 		"카스텔란의 코르부스 흑맥주"
 	}
 
-	"Quick Revive Recieved"
+	"Karlas's Regene Berry Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"en" 		"Karlas's Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
-		"ko" 		"신속 부활! 부활 속도가 2배 증가하고 치유 속도가 15％ 증가하며 부활시 현재 체력이 2배로 증가합니다"
+		"ko" 		"카를라스의 재생형 열매! 부활 속도가 2배 증가 및 치유 속도가 15％ 증가하고 부활시 현재 체력이 2배로 증가"
 	}
-	"Juggernog Recieved"
+	"Purge's Cerveza Obsidian Recieved"
 	{
-		"en" 		"JUGGERNOG! 15％ Damage resistance and +100HP"
-		"fr" 		"JUGGERNOG! 15％ résistance contre les dégats, +100HP"
-		"ru" 		"ДЖАГГЕР-ФАНТА! 15％ сопротивления урону и +100 ед. здоровья"
-		"de"		"JUGGERNOG!	15％ Schaden Resistenz und +100HP"
-		"pt"		"JUGGERNOG! 15％ Resistência a danos e +100HP"
-		"nl"		"JUGGERNOG! 15％ Schade resistentie en +100 levenspunten"
-		"chi" 		"身体强化:获得伤害抗性和生命值提升"
-		"ko" 		"저거노그! 피해 저항력이 15％ 증가하며 최대 체력이 +100 증가합니다"
+		"en" 		"Purge's Cerveza Obsidian! 15％ Damage resistance and +100HP"
+		"ko" 		"퍼지의 흑요석 맥주! 피해 저항력 +15％ 및 최대 체력 +100"
 	}
-	"Double Tap Recieved"
+	"Bob's Banana Juice Recieved"
 	{
-		"en" 		"DOUBLE TAP! 17％ Extra attack speed and Building Damage"
-		"fr" 		"DOUBLE-TOUCHE! Attaques 17％ plus rapides, 17％ dégats par vos bâtiments."
-		"ru" 		"ПИФ-ПАФ! 17％ дополнительной скорости атаки и урона у построек"
-		"pt"		"TOQUE DUPLO! 17％ Velocidade de Ataque extra e Dano com construções"
-		"nl"		"DUBBELTIKKEN! 17％ Extra Aanvalssnelheid en Gebouwsschade"
-		"chi" 		"精神强化:攻击速度提升、建筑伤害提升"
-		"ko" 		"더블 탭! 공격 속도와 구조물의 피해량이 17％ 증가합니다"
+		"en" 		"Bob's Banana Juice! 17％ Extra attack speed and Building Damage"
+		"ko" 		"밥의 바나나 주스! 공격 속도와 구조물 피해량 +17％ 증가"
 	}	
-	"Speed Cola Recieved"
+	"Twirl's Ginger Ale Recieved"
 	{
-		"en" 		"SPEED COLA! 1.42x Extra reload, switchspeed and Mana regen"
-		"fr" 		"SPEED COLA! 1.42x vitesse de recharge de munitions et de Mana, vitesse de changement d'arme."
-		"ko" 		"스피드 콜라! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다"
+		"en" 		"Twirl's Ginger Ale! 1.42x Extra reload, switchspeed and Mana regen"
+		"ko" 		"네말의 테슬라 뮬! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다"
 	}
-	"Deadshot Daiquiri Recieved"
+	"Waldch's Root Beer Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
-		"fr" 		"TIR MORTEL DAIQUIRI! 1.2x précision d'armes, 1.25x dégats par Tirs en Pleine Tête ou par Poignardage,\n 1.2x vitesse des projectiles."
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.2x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
-		"chi"       "死神射击:提升1.2倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
-		"ko" 		"데드샷 다이키리! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.25배만큼 추가로 증가합니다. \n 투사체 비행 속도가 1.2배만큼 증가합니다."
+		"en" 		"Waldch's Root Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"ko" 		"월드치의 루트비어! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.25배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
 	}
-	"Widows Wine Recieved"
+	"Nemal's Teslar Mule Recieved"
 	{
-		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75％ des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35％ plus de dégats et se ralentissent considérablement."
-		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
-		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
-		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
-		"chi" 		"恶魔领域:当激活时，格挡75%的僵尸伤害并减速，对减速的僵尸额外造成35%的伤害"
-		"ko" 		"미망인 와인! 활성화시 적중한 대상의 피해량을 75％ 감소시키고 디버프를 부여하는 재생형 보호 버프 획득.\n부여된 대상은 이속 감소 및 35％의 추가 피해를 받음."
+		"en" 		"Nemal's Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"ko" 		"네말의 테슬라 뮬! 활성화시 적중한 대상의 피해량을 75％ 감소시키고 디버프를 부여하는 재생형 보호 버프 획득.\n부여된 대상은 이속 감소 및 35％의 추가 피해를 받음."
 	}
-	"Recycle Poire Recieved"
+	"Castellan's Corvus Stout Recieved"
 	{
-		"en" 		"RECYCLE POIRÉ! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
-		"fr" 		"RECYCLAGE POIRÉ! 33％ plus de munitions provenant hors de la boutique, 50％ plus d'armure.\nVous recevrez 2x plus de Réserves de Munitions."
-		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
-		"chi"		"超级回收:所有非商店弹药增加33％+最大护甲值和护甲增益增加50％+2倍弹药补给"
-		"ko" 		"재사용 배! 상점을 제외한 모든 요소에서 획득하는 탄약량이 33％ 증가하고, 아머 획득량와 아머 최대치가 50％ 증가합니다.\n탄약 보급량이 2배만큼 증가합니다."
+		"en" 		"Castellan's Corvus Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"ko" 		"카스텔란의 코르부스 흑맥주! 상점을 제외한 모든 요소에서 획득하는 탄약량이 33％ 증가하고 아머 획득량과 아머 최대치가 50％ 증가.\nY탄약 보급량이 2배만큼 증가."
+	}
+	"Silvester's Energy Drink Recieved"
+	{
+		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
+		"ko" 		"실베스터의 에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 15％ 감소!"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -2911,10 +2875,10 @@
 		"fr"		"Désactiver Musique"
 		"ko"		"맵 음악 끄기"
 	}	
-	"You have been Infected by Nemesis"
+	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Nemesis!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
-		"ko"		"당신은 네메시스에게 감염 당했습니다!\n다른 아군과 너무 가까이 접근하지 마세요.\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
+		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
+		"ko"		"당신은 칼마티커스에게 감염 당했습니다!\n다른 아군과 너무 가까이 접근하지 마세요.\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -4642,23 +4606,23 @@
 	}
 	"DPS Class"
 	{
-		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
-		"ko"	"DPS\n피해량을 중시하며 스피드 콜라 퍽을 획득함"
+		"en"	"DPS Class\nFocus on damage and get Twirl's Ginger Ale perk"
+		"ko"	"DPS\n피해량을 중시하며 트윌의 진저 에일 퍽을 획득함"
 	}
 	"Tank Class"
 	{
-		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
-		"ko"	"탱커\n탱킹을 중시하며 저거노그 퍽을 획득함"
+		"en"	"Tank Class\nFocus on tanking and get Purge's Cerveza Obsidian perk"
+		"ko"	"탱커\n탱킹을 중시하며 퍼지의 흑요석 맥주 퍽을 획득함"
 	}
 	"Healer Class"
 	{
-		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
-		"ko"	"힐러\n치유가 가능해지며, 공격력이 낮아짐. 신속 부활 퍽을 획득함"
+		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Berry perk"
+		"ko"	"힐러\n치유가 가능해지며, DPS가 낮아짐. 카를라스의 재생형 열매 퍽을 획득함"
 	}
 	"Builder Class"
 	{
-		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
-		"ko"	"건축가\n구조물을 건설하고 수리하게 됨, 더블 탭 퍽을 획득함"
+		"en"	"Builder Class\nAble to build, repair, and get Bob's Banana Juice perk"
+		"ko"	"건축가\n구조물을 건설하고 수리하게 됨, 밥의 바나나 주스 퍽을 획득함"
 	}
 	"Don't Follow Me"
 	{
@@ -4864,8 +4828,8 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the loadout store!\nConfirm your loadout in the store menu to get access to more weapons and cash from the waves!"
-		"ko"		"라운드가 시작되었고 당신은 아직 로드아웃 상점에 있습니다!\n상점 메뉴에서 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!"
+		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
+		"ko"		"라운드가 시작되었고 당신은 아직 초기 상점에 있습니다!\n상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!"
 	}
 	"Getting favorite loadout"
 	{

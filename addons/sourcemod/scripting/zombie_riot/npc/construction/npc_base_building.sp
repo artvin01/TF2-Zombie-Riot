@@ -48,9 +48,8 @@ methodmap BaseBuilding < BarrackBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		func_NPCDeath[npc.index] = BaseBuilding_NPCDeath;
 		func_NPCThink[npc.index] = BaseBuilding_ClotThink;

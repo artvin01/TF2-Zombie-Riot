@@ -412,13 +412,9 @@ methodmap RaidbossSilvester < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 
 
@@ -837,12 +833,10 @@ static void Internal_ClotThink(int iNPC)
 				int laserentity = EntRefToEntIndex(i_LaserEntityIndex[npc.index]);
 				if(Goggles_TookDamageRecently(AllyEntity))
 				{
-					SetEntityRenderMode(laserentity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(laserentity, 255, 0, 0, 255);
 				}
 				else
 				{
-					SetEntityRenderMode(laserentity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(laserentity, 0, 255, 0, 255);
 				}
 			}
@@ -1862,7 +1856,9 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchKeyValueVector(prop, "angles",	 direction);
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
-			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+			if(i_ColoursTEPillars[3] != 255)
+				SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+				
 			SetEntityRenderColor(prop, i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3]);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 

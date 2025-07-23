@@ -445,7 +445,11 @@ static void Ruina_Update_Shield(int client)
 	}
 	if(IsValidEntity(i_shield_entity))
 	{
-		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		if(alpha != 255)
+			SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
+		else
+			SetEntityRenderMode(i_shield_entity, RENDER_NORMAL);
+
 		SetEntityRenderColor(i_shield_entity, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	}
 	else
@@ -464,7 +468,10 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 		SetVariantString("1.0");
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	if(alpha != 255)
+		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	else
+		SetEntityRenderMode(Shield, RENDER_NORMAL);
 	
 	SetEntityRenderColor(Shield, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
@@ -1115,7 +1122,7 @@ enum struct Ruina_Projectiles
 				//Make it entirely invis. Shouldnt even render these 8 polygons.
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
 
@@ -1150,7 +1157,7 @@ enum struct Ruina_Projectiles
 		i_rocket_particle[this.Projectile_Index]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
 		SetParent(this.Projectile_Index, particle);	
-		SetEntityRenderMode(this.Projectile_Index, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderMode(this.Projectile_Index, RENDER_NONE); //Make it entirely invis.
 		SetEntityRenderColor(this.Projectile_Index, 255, 255, 255, 0);
 
 		return particle;

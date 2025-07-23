@@ -125,7 +125,6 @@ methodmap PetrisBaron < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
 		func_NPCDeath[npc.index] = view_as<Function>(PetrisBaron_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(PetrisBaron_OnTakeDamage);

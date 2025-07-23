@@ -90,7 +90,6 @@ methodmap PackaPunch < CClotBody
 		npc.m_flMeleeArmor = 0.69;
 		npc.m_flRangedArmor = 0.69;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 1, 255, 1, 255);
 		
 		if(Garrison[npc.index])

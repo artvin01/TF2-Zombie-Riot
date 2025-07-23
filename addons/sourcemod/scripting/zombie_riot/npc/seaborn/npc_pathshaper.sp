@@ -105,7 +105,6 @@ methodmap Pathshaper < CClotBody
 		npc.m_iAttacksTillReload = 0;
 		npc.m_iAttacksTillMegahit = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 55, 55, 255, 255);
 
 		return npc;

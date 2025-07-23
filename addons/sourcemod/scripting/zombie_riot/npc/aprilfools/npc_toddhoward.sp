@@ -439,11 +439,8 @@ methodmap ToddHoward < CClotBody
 
 		if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 100, 100, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
@@ -1826,7 +1823,6 @@ void ToddHowardHurricane(ToddHoward npc, float gameTime)
 						{
 							int laser = EntRefToEntIndex(i_LaserEntityIndex[EnemyLoop]);
 							SetEntityRenderColor(laser, red, green, blue, 255);
-							SetEntityRenderMode(laser, RENDER_TRANSCOLOR);
 						}
 					}
 					else
@@ -1894,7 +1890,6 @@ void ToddHowardHurricane(ToddHoward npc, float gameTime)
 							{
 								int laser = EntRefToEntIndex(i_LaserEntityIndex[entity_close]);
 								SetEntityRenderColor(laser, red, green, blue, 255);
-								SetEntityRenderMode(laser, RENDER_TRANSCOLOR);
 							}
 						}
 						else

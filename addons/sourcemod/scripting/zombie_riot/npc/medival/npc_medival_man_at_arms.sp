@@ -181,8 +181,6 @@ methodmap MedivalManAtArms < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		func_NPCDeath[npc.index] = MedivalManAtArms_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalManAtArms_OnTakeDamage;

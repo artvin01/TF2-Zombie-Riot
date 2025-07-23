@@ -1027,7 +1027,6 @@ methodmap Citizen < CClotBody
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,-5.0});
 			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-20.0});
 			npc.StartPathing();
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 			npc.m_bRebelAgressive = true;
 			npc.m_bStaticNPC = false;
@@ -3108,7 +3107,7 @@ public void Citizen_ClotThink(int iNPC)
 											NpcAddedToZombiesLeftCurrently(spawn_index, true);
 										
 										i_AttacksTillMegahit[spawn_index] = 1;
-										SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
+										SetEntityRenderMode(spawn_index, RENDER_NONE);
 										SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
 									}
 								}
@@ -3494,7 +3493,16 @@ public void Citizen_ClotThink(int iNPC)
 							int entity = Building_BuildByName(BuildingPlugin[id], npc.index, vecPos, vecAng);
 							if(entity != -1)
 							{
-								if(Building_AttemptPlace(entity, npc.index))
+								bool TryPlace = false;
+								TryPlace = Building_AttemptPlace(entity, npc.index, _ , 0.0);
+								for(int loop = 1; loop <= 4; loop++)
+								{
+									if(TryPlace)
+										break;
+									TryPlace = Building_AttemptPlace(entity, npc.index, _ , float(20 * loop));
+								}
+
+								if(TryPlace)
 								{
 									if(view_as<ObjectGeneric>(entity).SentryBuilding)
 									{

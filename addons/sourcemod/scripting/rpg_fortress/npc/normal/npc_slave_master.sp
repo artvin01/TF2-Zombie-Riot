@@ -214,21 +214,17 @@ public void SlaveMaster_ClotThink(int iNPC)
 		if(Health >= maxHealth)
 		{
 			npc.Anger = false;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 			if(IsValidEntity(npc.m_iWearable1))
 			{
-				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 			}
 			if(IsValidEntity(npc.m_iWearable2))
 			{
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 			}
 			if(IsValidEntity(npc.m_iWearable3))
 			{
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
 			}
 		}
@@ -432,21 +428,17 @@ public void SlaveMaster_OnTakeDamagePost(int victim, int attacker, int inflictor
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 100, 100, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable2))
 		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 100, 100, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable3))
 		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 100, 100, 255);
 		}
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);

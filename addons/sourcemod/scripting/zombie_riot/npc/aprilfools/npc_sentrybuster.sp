@@ -179,7 +179,6 @@ methodmap Temperals_Buster < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = Temperals_Buster_ClotThink;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 106, 168, 79, 255);
 		
 		npc.StartPathing();
@@ -435,47 +434,4 @@ static void Temperals_Buster_NPCDeath(int entity)
 		StopSound(entity, SNDCHAN_STATIC, "mvm/sentrybuster/mvm_sentrybuster_loop.wav");
 	}
 	
-	/*int entity_death = CreateEntityByName("prop_dynamic_override");
-	if(IsValidEntity(entity_death))
-	{
-		float pos[3];
-		float Angles[3];
-		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
-
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
-		
-		DispatchKeyValue(entity_death, "model", "models/bots/demo/bot_sentry_buster.mdl");
-
-		DispatchSpawn(entity_death);
-		
-		SetEntPropFloat(entity_death, Prop_Send, "m_flModelScale", 1.0); 
-		SetEntityCollisionGroup(entity_death, 2);
-		SetVariantString("taunt04");
-		AcceptEntityInput(entity_death, "SetAnimation");
-		
-		SetEntityRenderMode(entity_death, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(entity_death, 106, 168, 79, 255);
-		
-		EmitSoundToAll(g_BustingSound[GetRandomInt(0, sizeof(g_BustingSound) - 1)], entity_death, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		pos[2] += 20.0;
-		
-		CreateTimer(1.6, Timer_RemoveEntitySentryBuster_Explosion, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
-	}*/
 }
-
-/*
-static Action Timer_RemoveEntitySentryBuster_Explosion(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity>MaxClients)
-	{
-		float pos[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-		makeexplosion(-1, pos, 2000, 350);
-		EmitSoundToAll(g_ExplosionSound[GetRandomInt(0, sizeof(g_ExplosionSound) - 1)], entity, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		RemoveEntity(entity);
-	}
-	return Plugin_Handled;
-}*/

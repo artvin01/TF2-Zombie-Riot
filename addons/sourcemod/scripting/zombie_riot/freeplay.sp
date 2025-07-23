@@ -372,7 +372,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 11:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
 			case 12:	
@@ -835,7 +835,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 11:	
 		{
-			CPrintToChatAll("{green}NEMESIS! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
+			CPrintToChatAll("{green}Calmaticus! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
 		}
 		case 12:	
 		{
@@ -1846,27 +1846,27 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
+				CPrintToChatAll("{red}All enemies are now using the Purge's Cerveza Obsidian perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
+				CPrintToChatAll("{red}All enemies are now using the Bob's Banana Juice perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
 			case 3:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
+				CPrintToChatAll("{red}All enemies are now using the Waldch's Root Beer perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
 			case 4:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
+				CPrintToChatAll("{red}All enemies are now using the Twirl's Ginger Ale perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
 			default:
 			{
-				CPrintToChatAll("{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
+				CPrintToChatAll("{green}All enemies are now using the Karlas's Regene Berry perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
 		}
@@ -2238,7 +2238,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Juggernog perk, And thus gain +20% resist and +15% HP!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Purge's Cerveza Obsidian perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
 			case 27:
@@ -2249,7 +2249,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Double Tap perk, And thus gain 35% Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Bob's Banana Juice perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
 			case 28: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
@@ -2260,7 +2260,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Deadshot Daiquiri perk, and thus gain 15% Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Waldch's Root Beer perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
 			case 29:
@@ -2271,7 +2271,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Speed Cola perk, and thus cannot be slowed!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Twirl's Ginger Ale perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
 			case 30:
@@ -2282,7 +2282,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{green}All enemies are now using the Quick Revive perk, this is useless and removes their previous perk.");
+				strcopy(message, sizeof(message), "{green}All enemies are now using the Karlas's Regene Berry perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
 	

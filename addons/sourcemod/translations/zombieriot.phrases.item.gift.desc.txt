@@ -1302,11 +1302,10 @@
 		"ru"		"Более Сильная форма Сильвестера,что это,Магия или Технология?\nОткуда он появился?"
 		"ko"		"실베스터의 상위 티어 폼입니다. 이건 뭔 마법인건지, 기술력인건지... \n이 자가 도대체 어디서 온 겁니까?"
 	}
-	"Nemesis Desc"
+	"Calmaticus Desc"
 	{
-		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
-		"ru"		"Создатель Ксено инфекции,Настоящие имя Было Калматикус.\nОни попытались предупредить тебя,ты не послушал.\nЕго сопротивление во время регенерации (можно заглушить на половину)."
-		"ko"		"제노 감염의 창시자. 본래 이름은 칼마티커스였습니다.\n그들은 당신에게 경고하려고 했지만, 당신은 듣지도 않았죠.\n체력 재생 사용 중에는 피해 저항력이 생깁니다. (침묵으로 재생량과 저항력을 낮출 수 있음)."
+		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"ko"		"제노 감염의 창시자.\n그들이 경고한 건 이것이었고, 당신이 그들의 말을 듣지 않은 결과입니다.\n체력 재생 사용 중에는 피해 저항력이 생깁니다. (침묵으로 재생량과 저항력을 낮출 수 있음)."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -2419,11 +2418,11 @@
 		"ru"	"Очень быстрый но теряет скорость когда получит урон."
 		"ko"	"이동 속도가 극도로 빠르지만, 한 번이라도 피해를 받으면 이동 속도가 느려집니다."
 	}
-	"Mr.X Desc"
+	"Vivithorn Desc"
 	{
-		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
 		"ru"	"Активатор источника Ксено инфекции,Настоящие имя было Виротхорн.\nМожет делать рывки,может взять тебя и сломать шею,Остальные атаки наносит повторный урон но разным противникамв радиусе.\n(заглушение) теряет скольжение при ударе"
-		"ko"	"제노 감염을 퍼뜨린 장본인. 본명은 바이로쏜즈.\n대쉬를 사용할 수 있으며, 대상을 잡은 후 목을 부러뜨리는 공격과, 공격 범위 내의 적들에게 지속적으로 피해를 주는 광역 공격을 사용합니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태일시, 이 디버프를 부여하지 않음)"
+		"ko"	"제노 감염을 퍼뜨린 장본인.\n대쉬를 사용할 수 있으며, 대상을 잡은 후 목을 부러뜨리는 공격과, 공격 범위 내의 적들에게 지속적으로 피해를 주는 광역 공격을 사용합니다.\n공격이 적중한 대상은 조작에 상관없이 쭉 미끄러지게 됩니다. (침묵 상태일시, 이 디버프를 부여하지 않음)"
 	}
 	"Lex Desc"
 	{
@@ -3115,5 +3114,15 @@
 	{
 		"en"	"It's joever...\nStarting Cash:4100\nStarting Supplies: 25"
 		"ko"	"우린 좆된거야...\n시작 자금:4100\n시작 보급품: 25"
+	}
+	"CyberGrind_Fast"
+	{
+		"en"	"Fast Mode"
+		"ko"	"빠른 모드"
+	}
+	"CyberGrind_Fast Desc"
+	{
+		"en"	"It's joever...\nStarting Cash:85000\nStarting Supplies: 1557"
+		"ko"	"쉬는시간 없이 모든 보스를 만날수있습니다!\n시작 자금:85000\n시작 보급품: 1557"
 	}
 }

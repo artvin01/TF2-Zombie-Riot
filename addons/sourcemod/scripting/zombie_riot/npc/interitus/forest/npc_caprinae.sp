@@ -128,7 +128,6 @@ methodmap Caprinae < CClotBody
 
 		if(npc.Anger)
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 0, 0, 0, 255, _, false, false);
 		}
 

@@ -308,21 +308,18 @@ public Action GiantKnockout_OnTakeDamage(int victim, int &attacker, int &inflict
 	{
 		npc.m_flMeleeArmor = 0.80;
 		npc.m_flRangedArmor = 0.80;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 85, 0, 255);
 	}
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
 	{
 		npc.m_flMeleeArmor = 0.50;
 		npc.m_flRangedArmor = 0.50;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 170, 0, 255);
 	}
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth)
 	{
 		npc.m_flMeleeArmor = 0.25;
 		npc.m_flRangedArmor = 0.25;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 255, 0, 255);
 	}
 

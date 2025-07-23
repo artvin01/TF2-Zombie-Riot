@@ -180,7 +180,7 @@ methodmap OverlordRogue < CClotBody
 	
 	public OverlordRogue(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "100000", ally));
+		OverlordRogue npc = view_as<OverlordRogue>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.25", "100000", ally));
 		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -189,8 +189,7 @@ methodmap OverlordRogue < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_PRINCE_IDLE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_LAST_OVERLORD_IDLE");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -220,12 +219,13 @@ methodmap OverlordRogue < CClotBody
 			strcopy(music.Artist, sizeof(music.Artist), "Arknights");
 			Music_SetRaidMusic(music);
 		}
+		npc.m_bDissapearOnDeath = true;
 		
+		CPrintToChatAll("{crimson}최후의 대군주{default}: 이 대군주들은 나의 자리를 차지하기 위해 찾아온 자들이다... 그리고 네 놈도 저 놈들과 별 다를게 없겠지...");
 		strcopy(SpawnPoint, sizeof(SpawnPoint), data);
 		ReplaceString(SpawnPoint, sizeof(SpawnPoint), "final_item ", "");
 		ReplaceString(SpawnPoint, sizeof(SpawnPoint), "final_item", "");
 
-	//	npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;
@@ -243,7 +243,7 @@ methodmap OverlordRogue < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("1.75");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
@@ -251,6 +251,9 @@ methodmap OverlordRogue < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/demo/crown.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/demo/tw_kingcape/tw_kingcape.mdl");
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 2);
 		
 		return npc;
 	}
@@ -285,6 +288,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
+		npc.AddGesture("ACT_HURT", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -306,184 +310,184 @@ public void OverlordRogue_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			if (npc.m_flReloadDelay < GetGameTime(npc.index))
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		if (npc.m_flReloadDelay < GetGameTime(npc.index))
+		{
+			if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
 			{
-				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index))
+				if(npc.m_iChanged_WalkCycle != 7)
 				{
-					if(npc.m_iChanged_WalkCycle != 7)
-					{
-						npc.m_iChanged_WalkCycle = 7;
-						npc.SetActivity("ACT_PRINCE_WALK");
-					}
-					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
-					npc.m_flSpeed = 73.6;
+					npc.m_iChanged_WalkCycle = 7;
+					npc.SetActivity("ACT_LAST_OVERLORD_WALK");
 				}
-				if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay > GetGameTime(npc.index))
-				{
-					if(npc.m_iChanged_WalkCycle != 8)
-					{
-						npc.m_iChanged_WalkCycle = 8;
-						npc.SetActivity("ACT_RUN_SHIELDZOBIE");
-					}
-					npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
-					npc.m_flSpeed = 380.0;
-				}
-			//	npc.FaceTowards(vecTarget);
+				npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
+				npc.m_flSpeed = 90.0;
 			}
-			
-			if(npc.m_flJumpStartTime > GetGameTime(npc.index))
+			if (npc.m_flmovedelay < GetGameTime(npc.index) && npc.m_flAngerDelay > GetGameTime(npc.index))
 			{
-				npc.m_flSpeed = 0.0;
-			}
-			
-		//	npc.FaceTowards(vecTarget, 1000.0);
-			
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-			//Predict their pos.
-			if(flDistanceToTarget < npc.GetLeadRadius()) {
-				
-				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-				
-			/*	int color[4];
-				color[0] = 255;
-				color[1] = 255;
-				color[2] = 0;
-				color[3] = 255;
-			
-				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
-			
-				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
-				
-				npc.SetGoalVector(vPredictedPos);
-			} else {
-				npc.SetGoalEntity(PrimaryThreatIndex);
-			}
-			
-			if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 160000)
-			{
-				npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 20.0;
-				npc.m_flReloadDelay = GetGameTime(npc.index) + 2.0;
-				npc.m_flRangedSpecialDelay += GetGameTime(npc.index) + 2.0;
-				npc.m_flAngerDelay = GetGameTime(npc.index) + 5.0;
-				if(npc.m_bThisNpcIsABoss)
+				if(npc.m_iChanged_WalkCycle != 8)
 				{
-					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+					npc.m_iChanged_WalkCycle = 8;
+					npc.SetActivity("ACT_LAST_OVERLORD_CHARGE_LOOP");
 				}
-				npc.PlaySpecialChargeSound();
-				npc.SetActivity("ACT_RUN_SHIELDZOBIE");
-				npc.m_flmovedelay = GetGameTime(npc.index) + 0.5;
-				npc.m_flJumpStartTime = GetGameTime(npc.index) + 2.0;
+				npc.m_flmovedelay = GetGameTime(npc.index) + 1.0;
+				npc.m_flSpeed = 380.0;
+			}
+		//	npc.FaceTowards(vecTarget);
+		}
+			
+		if(npc.m_flJumpStartTime > GetGameTime(npc.index))
+		{
+			npc.m_flSpeed = 0.0;
+		}
+		
+	//	npc.FaceTowards(vecTarget, 1000.0);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		
+		//Predict their pos.
+		if(flDistanceToTarget < npc.GetLeadRadius()) {
+			
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
+			
+		/*	int color[4];
+			color[0] = 255;
+			color[1] = 255;
+			color[2] = 0;
+			color[3] = 255;
+		
+			int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+		
+			TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+			TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+			
+			npc.SetGoalVector(vPredictedPos);
+		} else {
+			npc.SetGoalEntity(PrimaryThreatIndex);
+		}
+		
+		if(npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 160000)
+		{
+			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 20.0;
+			npc.m_flReloadDelay = GetGameTime(npc.index) + 2.0;
+			npc.m_flRangedSpecialDelay += GetGameTime(npc.index) + 2.0;
+			npc.m_flAngerDelay = GetGameTime(npc.index) + 5.0;
+			if(npc.m_bThisNpcIsABoss)
+			{
+				npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+			}
+			npc.PlaySpecialChargeSound();
+			npc.SetActivity("ACT_LAST_OVERLORD_CHARGE_LOOP");
+			npc.m_flmovedelay = GetGameTime(npc.index) + 0.5;
+			npc.m_flJumpStartTime = GetGameTime(npc.index) + 2.0;
+			npc.StopPathing();
+			
+		}
+
+		if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index) || npc.m_fbRangedSpecialOn)
+		{
+		//	npc.FaceTowards(vecTarget, 2000.0);
+			if(!npc.m_fbRangedSpecialOn)
+			{
 				npc.StopPathing();
 				
+				npc.AddGesture("ACT_LAST_OVERLORD_FIRE");
+				npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
+				npc.m_fbRangedSpecialOn = true;
+				npc.m_flReloadDelay = GetGameTime(npc.index) + 0.4;
 			}
-	
-			if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index) && npc.m_flAngerDelay < GetGameTime(npc.index) || npc.m_fbRangedSpecialOn)
+			if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
-			//	npc.FaceTowards(vecTarget, 2000.0);
-				if(!npc.m_fbRangedSpecialOn)
-				{
-					npc.StopPathing();
-					
-					npc.AddGesture("ACT_MELEE_PULSE");
-					npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 0.3;
-					npc.m_fbRangedSpecialOn = true;
-					npc.m_flReloadDelay = GetGameTime(npc.index) + 0.4;
-				}
-				if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-				{
-					npc.m_fbRangedSpecialOn = false;
-					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 8.0;
-					npc.PlayRangedAttackSecondarySound();
+				npc.m_fbRangedSpecialOn = false;
+				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 8.0;
+				npc.PlayRangedAttackSecondarySound();
 
-					npc.FaceTowards(vecTarget, 20000.0);
-					
-					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-					
-					NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
-				}
-			}
-			
-			//Target close enough to hit
-			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
-			{
-				npc.StartPathing();
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-				{
-					if (!npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.RemoveGesture(npc.m_flAngerDelay > GetGameTime(npc.index) ? "ACT_GENERAL_ATTACK_POKE" : "ACT_ACHILLES_ATTACK_DAGGER");
-						npc.AddGesture(npc.m_flAngerDelay > GetGameTime(npc.index) ? "ACT_GENERAL_ATTACK_POKE" : "ACT_ACHILLES_ATTACK_DAGGER",_, 0.25);
-						npc.PlayMeleeSound();
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
-						npc.m_flAttackHappenswillhappen = true;
-					}
-						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.FaceTowards(vecTarget, 20000.0);
-						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
-							{
-								
-								int target = TR_GetEntityIndex(swingTrace);	
-								
-								float vecHit[3];
-								TR_GetEndPosition(vecHit, swingTrace);
-								
-								if(target > 0) 
-								{
-									KillFeed_SetKillIcon(npc.index, "sword");
-
-									if(!ShouldNpcDealBonusDamage(target))
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
-									else
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
-									
-									KillFeed_SetKillIcon(npc.index, "firedeath");
-
-									Custom_Knockback(npc.index, target, 450.0);
-									StartBleedingTimer(target, npc.index, 5.0, 20, -1, DMG_TRUEDAMAGE, 0);
-									
-									// Hit sound
-									npc.PlayMeleeHitSound();
-								} 
-							}
-						delete swingTrace;
-						if(npc.m_flAngerDelay > GetGameTime(npc.index))
-						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.2;
-						}
-						else
-						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
-						}
-						npc.m_flAttackHappenswillhappen = false;
-					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						if(npc.m_flAngerDelay > GetGameTime(npc.index))
-						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.2;
-						}
-						else
-						{
-							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
-						}
-					}
-				}
-			}
-			if (npc.m_flReloadDelay < GetGameTime(npc.index))
-			{
-				npc.StartPathing();
+				npc.FaceTowards(vecTarget, 20000.0);
 				
+				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+				
+				NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
 			}
+		}
+		
+		//Target close enough to hit
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index) || npc.m_flAttackHappenswillhappen)
+		{
+			npc.StartPathing();
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+			{
+				if (!npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
+					npc.RemoveGesture(npc.m_flAngerDelay > GetGameTime(npc.index) ? "ACT_LAST_OVERLORD_ATTACK_CHARGE" : "ACT_LAST_OVERLORD_ATTACK");
+					npc.AddGesture(npc.m_flAngerDelay > GetGameTime(npc.index) ? "ACT_LAST_OVERLORD_ATTACK_CHARGE" : "ACT_LAST_OVERLORD_ATTACK");
+					npc.PlayMeleeSound();
+					npc.m_flAttackHappens = GetGameTime(npc.index)+0.3;
+					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.44;
+					npc.m_flAttackHappenswillhappen = true;
+				}
+					
+				if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+				{
+					npc.FaceTowards(vecTarget, 20000.0);
+					Handle swingTrace;
+					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+						{
+							
+							int target = TR_GetEntityIndex(swingTrace);	
+							
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							
+							if(target > 0) 
+							{
+								KillFeed_SetKillIcon(npc.index, "sword");
+
+								if(!ShouldNpcDealBonusDamage(target))
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
+								else
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
+								
+								KillFeed_SetKillIcon(npc.index, "firedeath");
+
+								Custom_Knockback(npc.index, target, 450.0);
+								StartBleedingTimer(target, npc.index, 5.0, 20, -1, DMG_TRUEDAMAGE, 0);
+								
+								// Hit sound
+								npc.PlayMeleeHitSound();
+							} 
+						}
+					delete swingTrace;
+					if(npc.m_flAngerDelay > GetGameTime(npc.index))
+					{
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.2;
+					}
+					else
+					{
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
+					}
+					npc.m_flAttackHappenswillhappen = false;
+				}
+				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flAttackHappenswillhappen = false;
+					if(npc.m_flAngerDelay > GetGameTime(npc.index))
+					{
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.2;
+					}
+					else
+					{
+						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.4;
+					}
+				}
+			}
+		}
+		if (npc.m_flReloadDelay < GetGameTime(npc.index))
+		{
+			npc.StartPathing();
+			
+		}
 	}
 	else
 	{
@@ -520,6 +524,7 @@ public void OverlordRogue_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
+		CPrintToChatAll("{crimson}최후의 대군주{default}: 아... 아무래도 난 틀린것 같군... 절대로 배풍등이 목적을 이루게 해서는 안 돼 ... 그 놈을 끝내고 {black}이 어둠을 끝내야해.");
 		for (int client = 1; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
@@ -529,6 +534,13 @@ public void OverlordRogue_NPCDeath(int entity)
 			}
 		}
 	}
+	CPrintToChatAll("{crimson}최후의 대군주{default}: 난 돌아간다... 네가 날 놓아준다면.");
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
@@ -537,4 +549,6 @@ public void OverlordRogue_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
