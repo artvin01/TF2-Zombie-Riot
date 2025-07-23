@@ -3433,9 +3433,7 @@
 	}
 	"Flash Grenade Pap Desc"
 	{
-		"en"	"Now also briefly stuns enemies."
-		"fr"	"Étonne aussi les ennemis."
-		"chi"	"可短暂眩晕敌人。"
+		"en"	"Now also briefly stuns enemies.\nDuring raids it has 3x the cooldown."
 	}
 	"Outlaw Railcannon Desc"
 	{
@@ -3987,7 +3985,7 @@
 	}
 	"Telekinesis PaP 2"
 	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses."
+		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses, once per raid."
 		"chi"	"''这款药的戒断后果十分严重。你的时间观念会降至近零。将你困在死前最后一刻，直到永恒…\n…但这些药用不完的…\n…对吧？\n现可抓RAIDBOSS。''"
 	}
 	"Newtonian Knuckles Desc"
@@ -4007,10 +4005,6 @@
 	"Telekinesis PaP 1"
 	{
 		"en"	"You may now grab bosses, raids included. Held enemies are strangled and take more damage."
-	}
-	"Telekinesis PaP 2"
-	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nIncreases to all stats."
 	}
 	"Newtonian Knuckles Desc"
 	{

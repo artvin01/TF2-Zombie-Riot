@@ -127,15 +127,15 @@
 	{
 		"en"	"Increases Damage Taken by 10％"
 	}
-	"Nemal's Teslar Mule"
+	"Teslar Mule"
 	{
-		"en"	"Nemal's Teslar Mule"
+		"en"	"Teslar Mule"
 	}
-	"Silvester's Energy Drink"
+	"Energy Drink"
 	{
-		"en"	"Silvester's Energy Drink"
+		"en"	"Energy Drink"
 	}
-	"Nemal's Teslar Mule Desc"
+	"Teslar Mule Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 	}
@@ -370,6 +370,14 @@
 	"Solid Stance Desc"
 	{
 		"en"	"Immune to knockback or displacements"
+	}
+	"Raid Strangle Protection"
+	{
+		"en"	"Raid Strangle Protection"
+	}
+	"Raid Strangle Protection Desc"
+	{
+		"en"	"Prevents the buff owners from grabbing the raid twice."
 	}
 	"Fluid Movement"
 	{

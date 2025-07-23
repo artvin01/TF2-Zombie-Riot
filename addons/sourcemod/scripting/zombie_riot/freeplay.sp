@@ -1846,27 +1846,27 @@ void Freeplay_SetupStart(bool extra = false)
 		{
 			case 1:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Purge's Cerveza Obsidian perk, And thus gain +20% resist and +15% HP!");
+				CPrintToChatAll("{red}All enemies are now using the Obsidian Oaf perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Bob's Banana Juice perk, And thus gain 35% Extra Damage!");
+				CPrintToChatAll("{red}All enemies are now using the Morning Coffee perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
 			case 3:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Waldch's Root Beer perk, and thus gain 15% Extra Damage!");
+				CPrintToChatAll("{red}All enemies are now using the Marksman Beer perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
 			case 4:
 			{
-				CPrintToChatAll("{red}All enemies are now using the Twirl's Ginger Ale perk, and thus cannot be slowed!");
+				CPrintToChatAll("{red}All enemies are now using the Hasty Hops perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
 			default:
 			{
-				CPrintToChatAll("{green}All enemies are now using the Karlas's Regene Strawberry perk, this is useless and removes their previous perk.");
+				CPrintToChatAll("{green}All enemies are now using the Regene Berry perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
 		}
@@ -2238,7 +2238,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Purge's Cerveza Obsidian perk, And thus gain +20% resist and +15% HP!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Obsidian Oaf perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
 			case 27:
@@ -2249,7 +2249,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Bob's Banana Juice perk, And thus gain 35% Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Morning Coffee perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
 			case 28: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
@@ -2260,7 +2260,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Waldch's Root Beer perk, and thus gain 15% Extra Damage!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Marksman Beer perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
 			case 29:
@@ -2271,7 +2271,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{red}All enemies are now using the Twirl's Ginger Ale perk, and thus cannot be slowed!");
+				strcopy(message, sizeof(message), "{red}All enemies are now using the Hasty Hops perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
 			case 30:
@@ -2282,7 +2282,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 	
-				strcopy(message, sizeof(message), "{green}All enemies are now using the Karlas's Regene Strawberry perk, this is useless and removes their previous perk.");
+				strcopy(message, sizeof(message), "{green}All enemies are now using the Regene Berry perk, this is useless and removes their previous perk.");
 				PerkMachine = 0;
 			}
 	

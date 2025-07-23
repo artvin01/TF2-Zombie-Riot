@@ -2442,7 +2442,7 @@ bool CurrentSliceIndexAviable[MAX_SLICES_ALLOWED];
 bool TargetsHitNemal[MAX_SLICES_ALLOWED][MAXENTITIES];
 int EntityBelongsToMasterIndex[MAXENTITIES];
 
-void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle)
+void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle, bool GiveDebuff = true)
 {
 	//This determines on what was hit beforehand, we cant have duplicates!
 	int EntityMasterMainIndex = -1;
@@ -2616,6 +2616,7 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		pack2.WriteFloat(OverridePosOfSpawned[1]);
 		pack2.WriteFloat(OverridePosOfSpawned[2]);
 		pack2.WriteCell(EntityMasterMainIndex);
+		pack2.WriteCell(GiveDebuff);
 		
 	}
 }
@@ -2669,6 +2670,7 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 	OldPositionGet[1] = pack.ReadFloat();
 	OldPositionGet[2] = pack.ReadFloat();
 	int EntityMasterMainIndex = pack.ReadCell();
+	int GiveDebuff = pack.ReadCell();
 	if(IsValidEntity(Projectile))
 	{
 		//Get new abs origin
@@ -2679,6 +2681,7 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 		Zero(DoDamageActiveHereNemal);
 		Handle trace = TR_TraceHullFilterEx(OldPositionGet, NewPos, hullMin, hullMax, 1073741824, BEAM_TraceUsers, Projectile);
 		delete trace;
+		pack.Position--;
 		pack.Position--;
 		pack.Position--;
 		pack.Position--;
@@ -2711,8 +2714,8 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 					{
 						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile] * 0.5, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 					}
-				
-					ApplyStatusEffect(OwnerEntity, Loop, "Teslar Shock", 5.0);
+					if(GiveDebuff)
+						ApplyStatusEffect(OwnerEntity, Loop, "Teslar Shock", 5.0);
 				}
 			}
 		}
@@ -2981,7 +2984,7 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 			
-		maxhealth = RoundToNearest(float(maxhealth) * 0.67);
+		maxhealth = RoundToNearest(float(maxhealth) * 0.63);
 
 		int spawn_index;
 		switch(i_RaidGrantExtra[entity])
@@ -3014,6 +3017,8 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
 			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
+			fl_Extra_Damage[spawn_index] *= 1.1;
+			//10% dmg buff
 		}
 	}
 }

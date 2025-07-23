@@ -247,6 +247,8 @@ methodmap Kahmlstein < CClotBody
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -785,7 +787,11 @@ static void Internal_ClotThink(int iNPC)
 							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
-							
+							float DamageDoExtra = MultiGlobalHealth;
+							if(DamageDoExtra != 1.0)
+							{
+								DamageDoExtra *= 1.5;
+							}
 							if(target > 0) 
 							{
 								if(target <= MaxClients)
@@ -813,16 +819,16 @@ static void Internal_ClotThink(int iNPC)
 										}
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * DamageDoExtra, DMG_CLUB, -1, _, vecHit);
 								}
 								else if(ShouldNpcDealBonusDamage(target))
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index] * DamageDoExtra, DMG_CLUB, -1, _, vecHit);
 								
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * DamageDoExtra, DMG_CLUB, -1, _, vecHit);
 								}
 								if(IsValidClient(target))
 								{
