@@ -214,7 +214,7 @@ static void Victoria_Launcher_HUD(int client)
 			else
 			{
 				Format(C_point_hints, sizeof(C_point_hints),
-				"%s\n%t[%i\/%i]", C_point_hints, "VictorianLauncher CRockets", Load_SuperCharge[client], Load_Maximum[client]);
+				"%s\n%t[%i/%i]", C_point_hints, "VictorianLauncher CRockets", Load_SuperCharge[client], Load_Maximum[client]);
 				if(Load_SuperCharge[client]>1 && Load_SuperCharge[client]<=5)
 					Format(C_point_hints, sizeof(C_point_hints),
 					"%s\n%t", C_point_hints, "VictorianLauncher ManuallyM2");
