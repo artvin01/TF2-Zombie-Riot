@@ -14,6 +14,7 @@ Function Chair_QueuedSpell[2049];			//The spell which will be cast when SSB's ca
 static float f_DamageSinceLastArmy[2049] = { 0.0, ... };
 
 static bool Chair_ChangeSequence[2049] = { false, ... };
+static bool Chair_CanMove[2049] = { false, ... };
 static bool useHeightOverride[2049] = { false, ... };
 static bool b_SSBChairHasArmy[2049] = { false, ... };
 static bool SSBChair_LaserHit[2049] = { false, ... };
@@ -102,7 +103,7 @@ static float Absorption_Duration[4] = { 12.0, 14.0, 16.0, 18.0 };			//Duration o
 static float Absorption_Speed[4] = { 125.0, 150.0, 175.0, 200.0 };			//SSB's movement speed during the absorption phase.
 static float Absorption_DMG[4] = { 30.0, 35.0, 40.0, 50.0 };				//Damage dealt per 0.1s to enemies within the radius.
 static float Absorption_EntityMult[4] = { 5.0, 7.5, 10.0, 12.5 };			//Amount to multiply damage dealt to entities.
-static float Absorption_Radius[4] = { 400.0, 450.0, 500.0, 550.0 };			//Effect radius.
+static float Absorption_Radius[4] = { 600.0, 650.0, 700.0, 750.0 };			//Effect radius.
 static float Absorption_PullStrength[4] = { 400.0, 450.0, 500.0, 550.0 };			//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
 static float Absorption_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The minimum percentage of the pull force to use, depending on how far the target is. It's recommended to be at least a *little* bit above 0.0, because otherwise the knockback from the damage will outweigh the pull if you're far enough away and actually *push* you, making escape easier.
 static float Absorption_HealRatio[4] = { 2.0, 3.0, 4.0, 5.0 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
@@ -1195,6 +1196,7 @@ void Absorption_BeginAbsorbing(SSBChair ssb)
 	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM_2, ssb.index, _, 120, _, _, 80);
 
 	ssb.StartPathing();
+	ssb.b_CanMove = true;
 	ssb.m_flSpeed = Absorption_Speed[Chair_Tier[ssb.index]];
 
 	DataPack pack = new DataPack();
@@ -1238,6 +1240,7 @@ void Absorption_ActivePhase(DataPack pack)
 		StopSound(user, SNDCHAN_AUTO, SND_ABSORPTION_LOOP);
 		EmitSoundToAll(SND_ABSORPTION_END, user, _, _, _, _, 80);
 		ssb.StopPathing();
+		ssb.b_CanMove = false;
 
 		int particle = ssb.m_iWearable5;
 		if (IsValidEntity(particle))
@@ -1292,7 +1295,7 @@ public void Absorption_OnHit(int attacker, int victim, float damage, int weapon)
 	int healing = RoundToCeil(damage * Absorption_HealRatio[Chair_Tier[attacker]] * (victim > MaxClients ? 0.35 : 1.0));
 	int allyHealing = RoundToCeil(damage * Absorption_HealRatio_Allies[Chair_Tier[attacker]] * (victim > MaxClients ? 0.35 : 1.0));
 	if (healing > 0 && victim > 0)
-		SSBChair_HealNPC(attacker, healing, false);
+		SSBChair_HealEntity(attacker, healing, false);
 
 	if (allyHealing > 0 && victim > 0)
 	{
@@ -1304,7 +1307,7 @@ public void Absorption_OnHit(int attacker, int victim, float damage, int weapon)
 			if (!IsValidAlly(attacker, i))
 				continue;
 
-			SSBChair_HealNPC(i, allyHealing);
+			SSBChair_HealEntity(i, allyHealing, false);
 		}
 	}
 
@@ -1341,7 +1344,7 @@ public void Absorption_OnHit(int attacker, int victim, float damage, int weapon)
 	TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, velocity);   
 }
 
-void SSBChair_HealNPC(int target, int amount, bool particle = true)
+void SSBChair_HealEntity(int target, int amount, bool particle = true)
 {
 	int hp = GetEntProp(target, Prop_Data, "m_iHealth");
 
@@ -1349,7 +1352,7 @@ void SSBChair_HealNPC(int target, int amount, bool particle = true)
 	if (hp <= 0)
 		return;
 
-	int maxHP = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+	int maxHP = ReturnEntityMaxHealth(target);
 
 	hp += amount;
 	if (hp > maxHP)
@@ -1649,6 +1652,12 @@ methodmap SSBChair < CClotBody
 		SDKHook(this.index, SDKHook_Think, NpcJumpThink);
 	}
 
+	property bool b_CanMove
+	{
+		public get() { return Chair_CanMove[this.index]; }
+		public set(bool value) { Chair_CanMove[this.index] = value; }
+	}
+
 	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
 		SSBChair npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
@@ -1684,6 +1693,7 @@ methodmap SSBChair < CClotBody
 		b_SSBChairHasArmy[npc.index] = false;
 		f_DamageSinceLastArmy[npc.index] = 0.0;
 		Chair_Tier[npc.index] = 0;
+		npc.b_CanMove = false;
 
 		//IDLE
 		npc.m_flSpeed = SSB_CHAIR_SPEED;
@@ -1874,7 +1884,8 @@ public void SSBChair_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
-		//npc.StartPathing();
+		if (npc.b_CanMove)
+			npc.StartPathing();
 	}
 	
 	int closest = npc.m_iTarget;
