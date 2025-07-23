@@ -52,25 +52,40 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Quick Revive",
-	"Juggernog",
-	"Double Tap",
-	"Speed Cola",
-	"Deadshot Daiquiri",
-	"Widows Wine",
-	"Recycle Poire"
+	"Regene Berry",
+	"Obsidian Oaf",
+	"Morning Coffee",
+	"Hasty Hops",
+	"Marksman Beer",
+	"Teslar Mule",
+	"Stockpile Stout",
+	"Energy Drink"
 };
 
 public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
-	"Quick Revive Recieved",
-	"Juggernog Recieved",
-	"Double Tap Recieved",
-	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved",
-	"Widows Wine Recieved",
-	"Recycle Poire Recieved"
+	"Regene Berry Recieved",
+	"Obsidian Oaf Recieved",
+	"Morning Coffee Recieved",
+	"Hasty Hops Recieved",
+	"Marksman Beer Recieved",
+	"Teslar Mule Recieved",
+	"Stockpile Stout Recieved",
+	"Energy Drink Recieved"
+};
+
+public const char PerkNames_two_Letter[][] =
+{
+	"--",
+	"RB",
+	"OO",
+	"MC",
+	"HH",
+	"MB",
+	"TM",
+	"SS",
+	"ED"
 };
 
 enum
@@ -2302,7 +2317,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2317,12 +2332,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 	int Armor_Max;
 	
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
-	/*
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
-	{
-		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
-	}
-	*/
 	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
@@ -2407,7 +2416,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}

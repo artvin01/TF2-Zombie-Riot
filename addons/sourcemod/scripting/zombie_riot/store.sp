@@ -6,6 +6,12 @@ bool PapPreviewMode[MAXPLAYERS];
 float CDDisplayHint_LoadoutStore[MAXPLAYERS];
 float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
+enum
+{
+	PAP_DESC_BOUGHT,
+	PAP_DESC_PREVIEW
+}
+
 enum struct ItemInfo
 {
 	int Cost;
@@ -704,6 +710,9 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.25;
 	}
+	if(i_CurrentEquippedPerk[client] == 8)
+		Cooldown *= 0.85;
+		
 	return Cooldown;
 }
 
@@ -1246,7 +1255,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
-					char buf[64];
+					char buf[84];
 					if(PapPreviewMode[client])
 					{
 						Format(buf, sizeof(buf), "%T", "Preview Mode Pap", client);
@@ -1359,28 +1368,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					ItemInfo info;
 					if(item.GetItemInfo(ValuesDisplay[1], info) && info.Cost)
 					{ 	
-						//This code is ass
-						TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-						SPrintToChat(client, "%s:",info.Custom_Name);
-						char bufferSizeSplit[512];
-						char DescDo[256];
-						Format(DescDo, sizeof(DescDo), "%s", info.Desc);
-						char DescDo2[256];
-						Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
-						TranslateItemName(client, DescDo, DescDo2, bufferSizeSplit, sizeof(bufferSizeSplit));
-						char Display1[240];
-						char Display2[240];
-						Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
-						if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
-						{
-							Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
-							CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
-						}
-						else
-							CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
-
-						if(Display2[0])
-							CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
+						PrintPapDescription(client, item, info, PAP_DESC_PREVIEW);
 					}
 				}
 
@@ -1468,6 +1456,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						SetDefaultHudPosition(client);
 						
 						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+						PrintPapDescription(client, item, info, PAP_DESC_BOUGHT);
+						
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = EntRefToEntIndex(values[2]);
@@ -1481,6 +1471,44 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+void PrintPapDescription(int client, Item item, ItemInfo info, int type = PAP_DESC_BOUGHT)
+{
+	//This code is ass
+	TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
+	char bufferHeader[128];
+	
+	switch (type)
+	{
+		case PAP_DESC_BOUGHT:
+			FormatEx(bufferHeader, sizeof(bufferHeader), "%T", "Pap Weapon Upgraded", client, info.Custom_Name);	
+		
+		case PAP_DESC_PREVIEW:
+			FormatEx(bufferHeader, sizeof(bufferHeader), "%T", "Pap Weapon Preview", client, info.Custom_Name);
+	}
+	
+	SPrintToChat(client, "%s", bufferHeader);
+	
+	char bufferSizeSplit[512];
+	char DescDo[256];
+	Format(DescDo, sizeof(DescDo), "%s", info.Desc);
+	char DescDo2[256];
+	Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
+	TranslateItemName(client, DescDo, DescDo2, bufferSizeSplit, sizeof(bufferSizeSplit));
+	char Display1[240];
+	char Display2[240];
+	Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
+	if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
+	{
+		Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
+		CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
+	}
+	else
+		CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
+
+	if(Display2[0])
+		CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
 }
 
 void Store_RogueEndFightReset()
@@ -3019,11 +3047,6 @@ static void MenuPage(int client, int section)
 	
 	if(Waves_Started())
 	{
-	//	if(CashSpentTotal[client] <= 0)
-	//	{
-	//		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-	//	}
-	//	else 
 		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
 		{
 			StarterCashMode[client] = false; //confirm automatically.
@@ -3060,23 +3083,6 @@ static void MenuPage(int client, int section)
 	}
 	
 	int cash = CurrentCash-CashSpent[client];
-	/*
-
-	remove, dont bother.
-	if(ClientTutorialStep(client) == 2)
-	{
-		//This is here so the player doesnt just have no money to buy anything.
-		if(cash < 700)
-		{
-			int give_Extra_JustIncase = cash - 700;
-			
-			CashSpent[client] += give_Extra_JustIncase;
-			cash += give_Extra_JustIncase;
-		}
-	}
-
-	*/
-	
 	if(StarterCashMode[client])
 	{
 		int maxCash = StartCash;
@@ -3107,7 +3113,7 @@ static void MenuPage(int client, int section)
 
 			item.GetItemInfo(level, info);
 			
-			char buf[64];
+			char buf[84];
 			if(StarterCashMode[client])
 				Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 			else
@@ -3349,7 +3355,7 @@ static void MenuPage(int client, int section)
 			return;
 		}
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -3385,7 +3391,7 @@ static void MenuPage(int client, int section)
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -5122,7 +5128,6 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
 	
-	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
@@ -6132,7 +6137,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
 			//dont give it if it doesnt have it.
@@ -6140,7 +6144,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
-		//DOUBLE TAP!
 		if(i_CurrentEquippedPerk[client] == 3)
 		{
 			if(Attributes_Has(entity, 6))
@@ -6158,7 +6161,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
-		//QUICK REVIVE!
+		//Regene Berry!
 		if(i_CurrentEquippedPerk[client] == 1)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
@@ -6733,11 +6736,12 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
+	Force_ExplainBuffToClient(client, "Explain Building Cash", true);
 	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{
-			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
+			CPrintToChat(client,"{darkgrey}%T","Pre Setup Cash Gain Hint", client);
 			CashSpentGivePostSetupWarning[client] = true;
 		}
 		int CreditsGive = credits / 2;

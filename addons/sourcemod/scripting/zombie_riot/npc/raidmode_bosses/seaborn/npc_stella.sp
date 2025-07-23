@@ -739,7 +739,7 @@ methodmap Stella < CClotBody
 		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		
-		RaidModeTime = GetGameTime() + 250.0;
+		RaidModeTime = GetGameTime() + 200.0;
 		
 	
 		char buffers[3][64];
@@ -776,6 +776,8 @@ methodmap Stella < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people;
+		RaidModeScaling *= 1.25;
+		//needed buff as their damage is really low
 			
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{

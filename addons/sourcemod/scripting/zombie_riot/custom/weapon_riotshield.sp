@@ -149,7 +149,6 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 				cooldownAbility = 35.0;
 			}
 
-			//speed cola
 			if(i_CurrentEquippedPerk[client] == 4)
 			{
 				cooldownAbility *= 0.65;

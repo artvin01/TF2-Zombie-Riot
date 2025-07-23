@@ -153,6 +153,8 @@ methodmap LastKnight < CClotBody
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -342,7 +344,12 @@ public void LastKnight_ClotThink(int iNPC)
 							damage *= 1.75;
 						}
 						
-						damage *= MultiGlobalHealth; //Incase too many enemies, boost damage.
+						float DamageDoExtra = MultiGlobalHealth;
+						if(DamageDoExtra != 1.0)
+						{
+							DamageDoExtra *= 1.5;
+						}
+						damage *= DamageDoExtra; //Incase too many enemies, boost damage.
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 

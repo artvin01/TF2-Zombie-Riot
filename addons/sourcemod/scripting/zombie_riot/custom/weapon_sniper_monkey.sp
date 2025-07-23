@@ -242,9 +242,15 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slot)
 {
+	if(SuppliesUsed >= 2)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+	}
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		int target = MaxClients + 1;
+		int target = -1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
@@ -260,6 +266,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_expert_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 90.0);
+			SuppliesUsed++;
 		}
 		else
 		{
