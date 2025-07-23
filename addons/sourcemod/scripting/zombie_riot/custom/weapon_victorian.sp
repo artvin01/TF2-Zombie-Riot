@@ -419,7 +419,7 @@ public void Weapon_Victoria_Main(int client, int weapon, bool crit)
 			Load_SuperCharge[client]--;
 			RocketDMG*=1.2;
 			RocketRadius*=1.2;
-			if(Load_SuperCharge[client]<=Load_Maximum[client]/2)RocketDMG*=1.1; 
+			if(Load_SuperCharge[client]<=5)RocketDMG*=1.1;
 			if(Load_SuperCharge[client]<=0)
 			{
 				Ability_Apply_Cooldown(client, 2, 40.0);
