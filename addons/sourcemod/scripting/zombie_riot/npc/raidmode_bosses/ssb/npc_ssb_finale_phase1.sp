@@ -96,6 +96,20 @@ static float Catastrophe_YawSpeed[4];//TODO: = { X, X, X, X };				//Yaw speed ap
 static float Catastrophe_Cooldown[4] = { 30.0, 25.0, 20.0, 15.0 };			//Ability cooldown.
 static float Catastrophe_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global cooldown.
 
+#define ABSORPTION_NAME		"Soul Redistribution"
+static float Absorption_IntroSpeed[4] = { 1.0, 1.1, 1.2, 1.35 };			//Intro speed multiplier. Higher values make the intro animation play faster, which means SSB will begin to absorb souls sooner.
+static float Absorption_Duration[4] = { 12.0, 14.0, 16.0, 18.0 };			//Duration of the absorption phase.
+static float Absorption_Speed[4] = { 125.0, 150.0, 175.0, 200.0 };			//SSB's movement speed during the absorption phase.
+static float Absorption_DMG[4] = { 30.0, 35.0, 40.0, 50.0 };				//Damage dealt per 0.1s to enemies within the radius.
+static float Absorption_EntityMult[4] = { 5.0, 7.5, 10.0, 12.5 };			//Amount to multiply damage dealt to entities.
+static float Absorption_Radius[4] = { 400.0, 450.0, 500.0, 550.0 };			//Effect radius.
+static float Absorption_PullStrength[4] = { 400.0, 450.0, 500.0, 550.0 };			//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
+static float Absorption_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The minimum percentage of the pull force to use, depending on how far the target is. It's recommended to be at least a *little* bit above 0.0, because otherwise the knockback from the damage will outweigh the pull if you're far enough away and actually *push* you, making escape easier.
+static float Absorption_HealRatio[4] = { 2.0, 3.0, 4.0, 5.0 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
+static float Absorption_HealRatio_Allies[4] = { 1.0, 1.5, 2.0, 2.5 };				//Amount to heal all of SSB's allies per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
+static float Absorption_Cooldown[4] = { 30.0, 25.0, 20.0, 15.0 };			//Ability cooldown.
+static float Absorption_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global cooldown.
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -185,6 +199,9 @@ static char g_SSBCatastrophe_Captions[][] = {
 #define SND_CATASTROPHE_INTRO_BOOM_2	")misc/halloween/merasmus_spell.wav"
 #define SND_CATASTROPHE_CHARGEUP		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_chargeup.mp3"
 #define SND_CATASTROPHE_BIGBANG		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_extra.mp3"
+#define SND_ABSORPTION_LOOP			")zombie_riot/the_bone_zone/supreme_spookmaster_bones/absorption.wav"
+#define SND_ABSORPTION_END			")misc/halloween/merasmus_disappear.wav"
+#define SND_SPELL_MIRV				")misc/halloween/spell_mirv_cast.wav"
 
 #define PARTICLE_BOMBARDMENT_SNAP		"merasmus_dazed_bits"
 #define PARTICLE_BOMBARDMENT_SNAP_EXTRA	"hammer_bell_ring_shockwave2"
@@ -206,6 +223,14 @@ static char g_SSBCatastrophe_Captions[][] = {
 #define PARTICLE_TELEPORT_SLAM_3		"hammer_bones_kickup"
 #define PARTICLE_TELEPORT_HAND			"unusual_robot_time_warp2"
 #define PARTICLE_CATASTROPHE_FINGER		"raygun_projectile_blue_crit"
+#define PARTICLE_GREENZAP				"merasmus_zap"
+#define PARTICLE_GREENSMOKE				"merasmus_ambient"
+#define PARTICLE_WARP					"merasmus_tp_warp"
+#define PARTICLE_ABSORPTION_ORB			"spell_lightningball_parent_blue"
+#define PARTICLE_ABSORPTION_HAND		"superrare_burning2"
+#define PARTICLE_GREENBLAST_SPARKLES	"duck_collect_green"
+#define PARTICLE_HEALBURST_RED			"healthgained_red"
+#define PARTICLE_HEALBURST_BLUE			"healthgained_blu"
 
 static int NPCId;
 
@@ -247,6 +272,9 @@ public void SSBChair_OnMapStart_NPC()
 	PrecacheSound(SND_CATASTROPHE_INTRO_BOOM_2);
 	PrecacheSound(SND_CATASTROPHE_CHARGEUP);
 	PrecacheSound(SND_CATASTROPHE_BIGBANG);
+	PrecacheSound(SND_ABSORPTION_LOOP);
+	PrecacheSound(SND_SPELL_MIRV);
+	PrecacheSound(SND_ABSORPTION_END);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones, Magistrate of the Dead");
@@ -927,9 +955,9 @@ public void ScrambleArray(ArrayList list)
 
 public void SSBChair_Catastrophe(SSBChair ssb, int target)
 {
-	useHeightOverride[ssb.index] = false;
-	//We can use CastSpellWithAnimation for spells like this even if we don't call animevent 1003 in the sequence, 
+	//REMINDER FOR FUTURE ME: we can use CastSpellWithAnimation for spells like this even if we don't call animevent 1003 in the sequence
 	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_CATASTROPHE_INTRO", SSBChair_Catastrophe_AttachFingerParticle, "", PARTICLE_GREENBLAST_SSB, "", "effect_hand_R", "");
+	ssb.SetPlaybackRate(Catastrophe_IntroSpeed[Chair_Tier[ssb.index]]);
 }
 
 void SSBChair_Catastrophe_AttachFingerParticle(SSBChair ssb, int target)
@@ -945,6 +973,8 @@ void SSBChair_Catastrophe_AttachFingerParticle(SSBChair ssb, int target)
 
 void Catastrophe_ChargeUp(SSBChair ssb)
 {
+	ssb.SetPlaybackRate(1.0);
+
 	int activity = ssb.LookupActivity("ACT_FINALE_CHAIR_CATASTROPHE_CHARGEUP");
 	if (activity)
 		ssb.StartActivity(activity);
@@ -1126,6 +1156,213 @@ public bool SSBChair_LaserTrace(int entity, int contentsMask, int user)
 		SSBChair_LaserHit[entity] = true;
 	
 	return false;
+}
+
+public void SSBChair_Absorption(SSBChair ssb, int target)
+{
+	ssb.SetPlaybackRate(Absorption_IntroSpeed[Chair_Tier[ssb.index]]);
+	ssb.CastSpellWithAnimation("ACT_FINALE_CHAIR_ABSORPTION_INTRO", SSBChair_Absorption_AttachParticles, "", PARTICLE_GREENBLAST_SPARKLES, PARTICLE_GREENBLAST_SPARKLES, "effect_hand_R", "", "effect_hand_L");
+}
+
+public void SSBChair_Absorption_AttachParticles(SSBChair ssb, int target)
+{
+	float pos[3], trash[3];
+	ssb.GetAttachment("effect_hand_R", pos, trash);
+	ssb.m_iWearable5 = ParticleEffectAt_Parent(pos, PARTICLE_ABSORPTION_HAND, ssb.index, "effect_hand_R");
+	ssb.GetAttachment("effect_hand_L", pos, trash);
+	ssb.m_iWearable6 = ParticleEffectAt_Parent(pos, PARTICLE_ABSORPTION_HAND, ssb.index, "effect_hand_L");
+
+	EmitSoundToAll(SND_SPELL_MIRV, ssb.index, _, 120, _, _, 80);
+}
+
+void Absorption_BeginAbsorbing(SSBChair ssb)
+{
+	float vortexPos[3], handPos[3], trash[3];
+	ssb.WorldSpaceCenter(vortexPos);
+	vortexPos[2] += 320.0;
+
+	int vortex = ParticleEffectAt(vortexPos, PARTICLE_ABSORPTION_ORB, Absorption_Duration[Chair_Tier[ssb.index]]);
+	SetParent(ssb.index, vortex);
+
+	ssb.GetAttachment("effect_hand_R", handPos, trash);
+	SpawnParticle_ControlPoints(handPos, vortexPos, PARTICLE_GREENZAP, 2.0);
+	ssb.GetAttachment("effect_hand_L", handPos, trash);
+	SpawnParticle_ControlPoints(handPos, vortexPos, PARTICLE_GREENZAP, 2.0);
+
+	EmitSoundToAll(SND_ABSORPTION_LOOP, ssb.index, _, 120, _, _, GetRandomInt(60, 100));
+	EmitSoundToAll(SND_ABSORPTION_LOOP, ssb.index, _, 120, _, _, GetRandomInt(60, 100));
+	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM, ssb.index, _, 120, _, _, 60);
+	EmitSoundToAll(SND_CATASTROPHE_INTRO_BOOM_2, ssb.index, _, 120, _, _, 80);
+
+	ssb.StartPathing();
+	ssb.m_flSpeed = Absorption_Speed[Chair_Tier[ssb.index]];
+
+	DataPack pack = new DataPack();
+	RequestFrame(Absorption_ActivePhase, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, EntIndexToEntRef(vortex));
+	WritePackFloat(pack, GetGameTime(ssb.index) + Absorption_Duration[Chair_Tier[ssb.index]]);
+	WritePackCell(pack, Chair_Tier[ssb.index]);
+	WritePackFloat(pack, GetGameTime(ssb.index) + 0.1);
+}
+
+int Absorption_Hits = 0;
+void Absorption_ActivePhase(DataPack pack)
+{
+	ResetPack(pack);
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int vortex = EntRefToEntIndex(ReadPackCell(pack));
+	float endTime = ReadPackFloat(pack);
+	int tier = ReadPackCell(pack);
+	float nextHit = ReadPackFloat(pack);
+	delete pack;
+
+	if (!IsValidEntity(user))
+	{
+		if (IsValidEntity(vortex))
+			RemoveEntity(vortex);
+		return;
+	}
+
+	SSBChair ssb = view_as<SSBChair>(user);
+	float gt = GetGameTime(user);
+	if (gt >= endTime)
+	{
+		if (IsValidEntity(vortex))
+			RemoveEntity(vortex);
+
+		Chair_ChangeSequence[ssb.index] = true;
+		Chair_Sequence[ssb.index] = "ACT_FINALE_CHAIR_IDLE";
+		Chair_UsingAbility[ssb.index] = false;
+		StopSound(user, SNDCHAN_AUTO, SND_ABSORPTION_LOOP);
+		StopSound(user, SNDCHAN_AUTO, SND_ABSORPTION_LOOP);
+		EmitSoundToAll(SND_ABSORPTION_END, user, _, _, _, _, 80);
+		ssb.StopPathing();
+
+		int particle = ssb.m_iWearable5;
+		if (IsValidEntity(particle))
+			RemoveEntity(particle);
+		particle = ssb.m_iWearable6;
+		if (IsValidEntity(particle))
+			RemoveEntity(particle); 
+		
+		return;
+	}
+
+	if (gt >= nextHit)
+	{
+		float vortexPos[3], handPos[3], trash[3], userPos[3];
+
+		ssb.GetAbsOrigin(userPos);
+		ssb.WorldSpaceCenter(vortexPos);
+		vortexPos[2] += 320.0;
+
+		ssb.GetAttachment("effect_hand_R", handPos, trash);
+		SpawnBeam_Vectors(handPos, vortexPos, 0.1, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 10.0);
+		ssb.GetAttachment("effect_hand_L", handPos, trash);
+		SpawnBeam_Vectors(handPos, vortexPos, 0.1, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 10.0);
+
+		spawnRing_Vectors(userPos, Absorption_Radius[tier] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, 0.1, 24.0, 0.0, 1);
+
+		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Absorption_Hits = 0;
+		Explode_Logic_Custom(Absorption_DMG[tier], ssb.index, ssb.index, 0, userPos, Absorption_Radius[tier], 1.0, 1.0, isBlue, 9999, _, Absorption_EntityMult[tier], Absorption_OnHit);
+		if (Absorption_Hits > 0)
+		{
+			TE_SetupParticleEffect((view_as<TFTeam>(GetEntProp(ssb.index, Prop_Send, "m_iTeamNum")) == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, ssb.index);
+			TE_WriteNum("m_bControlPoint1", ssb.index);	
+			TE_SendToAll();
+		}
+
+		nextHit = gt + 0.1;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Absorption_ActivePhase, pack);
+	WritePackCell(pack, EntIndexToEntRef(user));
+	WritePackCell(pack, EntIndexToEntRef(vortex));
+	WritePackFloat(pack, endTime);
+	WritePackCell(pack, tier);
+	WritePackFloat(pack, nextHit);
+}
+
+public void Absorption_OnHit(int attacker, int victim, float damage, int weapon)
+{
+	Absorption_Hits++;
+	int healing = RoundToCeil(damage * Absorption_HealRatio[Chair_Tier[attacker]] * (victim > MaxClients ? 0.35 : 1.0));
+	int allyHealing = RoundToCeil(damage * Absorption_HealRatio_Allies[Chair_Tier[attacker]] * (victim > MaxClients ? 0.35 : 1.0));
+	if (healing > 0 && victim > 0)
+		SSBChair_HealNPC(attacker, healing, false);
+
+	if (allyHealing > 0 && victim > 0)
+	{
+		for (int i = 1; i < MAXENTITIES; i++)
+		{
+			if (!IsValidEntity(i) || i_IsABuilding[i] || i == attacker)
+				continue;
+					
+			if (!IsValidAlly(attacker, i))
+				continue;
+
+			SSBChair_HealNPC(i, allyHealing);
+		}
+	}
+
+	float userPos[3], vicPos[3], portalPos[3];
+	WorldSpaceCenter(attacker, userPos);
+	WorldSpaceCenter(victim, vicPos);
+	portalPos = userPos;
+	portalPos[2] += 320.0;
+	SpawnBeam_Vectors(portalPos, vicPos, 0.1, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 10.0);
+
+	float multiplier = 1.0 - (GetVectorDistance(userPos, vicPos) / Absorption_Radius[Chair_Tier[attacker]]);
+	if (multiplier < Absorption_MinPullStrengthMultiplier[Chair_Tier[attacker]])
+		multiplier = Absorption_MinPullStrengthMultiplier[Chair_Tier[attacker]];
+
+	float pullStrength = Absorption_PullStrength[Chair_Tier[attacker]] * multiplier;
+
+	static float angles[3];
+	GetVectorAnglesTwoPoints(userPos, vicPos, angles);
+
+	if (GetEntityFlags(victim) & FL_ONGROUND)
+		angles[0] = 0.0;
+
+	float velocity[3], currentVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", currentVelocity);
+	GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(velocity, -pullStrength);
+																
+	if (GetEntityFlags(victim) & FL_ONGROUND)
+		velocity[2] = fmax(25.0, velocity[2]);
+
+	for (int i = 0; i < 3; i++)
+		velocity[i] += currentVelocity[i];
+												
+	TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, velocity);   
+}
+
+void SSBChair_HealNPC(int target, int amount, bool particle = true)
+{
+	int hp = GetEntProp(target, Prop_Data, "m_iHealth");
+
+	//This should never happen, but just to be safe...
+	if (hp <= 0)
+		return;
+
+	int maxHP = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+
+	hp += amount;
+	if (hp > maxHP)
+		hp = maxHP;
+
+	SetEntProp(target, Prop_Data, "m_iHealth", hp);
+
+	if (particle)
+	{
+		TE_SetupParticleEffect((view_as<TFTeam>(GetEntProp(target, Prop_Send, "m_iTeamNum")) == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_WriteNum("m_bControlPoint1", target);	
+		TE_SendToAll();
+	}
 }
 
 methodmap SSBChair < CClotBody
@@ -1314,6 +1551,7 @@ methodmap SSBChair < CClotBody
 		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(HellRing_Cooldown[0], 6.0, 0, SSBChair_RingOfHell, _, HellRing_GlobalCD[0], HELLRING_NAME));
 		//PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Teleport_Cooldown[0], 9.0, 0, SSBChair_Teleport, _, Teleport_GlobalCD[0], TELEPORT_NAME));
 		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Catastrophe_Cooldown[0], 3.0, 0, SSBChair_Catastrophe, _, Catastrophe_GlobalCD[0], CATASTROPHE_NAME));
+		PushArrayCell(SSB_ChairSpells[this.index], this.CreateAbility(Absorption_Cooldown[0], 3.0, 0, SSBChair_Absorption, _, Absorption_GlobalCD[0], ABSORPTION_NAME));
 	}
 
 	public SSBChair_Spell CreateAbility(float cooldown, float startingCD, int tier, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, float globalCD = 0.0, char[] name = "")
@@ -1578,6 +1816,18 @@ public void SSBChair_AnimEvent(int entity, int event)
 		{
 			npc.PlayGenericSpell();
 		}
+		case 1009:	//Soul Redistribution intro anim has reached the point where the spell has been cast, start absorbing souls.
+		{
+			Absorption_BeginAbsorbing(npc);
+		}
+		case 1010:	//Soul Redistribution intro has ended, transition to the looping sequence if still active.
+		{
+			npc.SetPlaybackRate(1.0);
+
+			int activity = npc.LookupActivity("ACT_FINALE_CHAIR_ABSORPTION_LOOP");
+			if (activity)
+				npc.StartActivity(activity);
+		}
 	}
 }
 
@@ -1627,7 +1877,6 @@ public void SSBChair_ClotThink(int iNPC)
 		//npc.StartPathing();
 	}
 	
-	//TODO: Probably erase all of this pathing logic, we won't end up needing it unless the concept changes during development
 	int closest = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, closest))
