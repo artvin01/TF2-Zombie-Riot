@@ -1443,11 +1443,39 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 2:
 							{
-								npc.m_bisWalking = false;
-								npc.SetActivity("ACT_COMBO3_BOBPRIME");
-								npc.m_flAttackHappens = gameTime + 3.25;
-								
-								BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								if(npc.m_bFakeClone)
+								{
+									//main bob shouldnt do this long windup kick, takes too long...
+									npc.m_bisWalking = false;
+									npc.SetActivity("ACT_COMBO3_BOBPRIME");
+									npc.m_flAttackHappens = gameTime + 3.25;
+									
+									BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								}
+								else
+								{
+									switch(GetURandomInt() % 2)
+									{
+										case 0:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO1_BOBPRIME");
+											npc.m_iAttackType = 2;
+											npc.m_flAttackHappens = gameTime + 0.916;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+										}
+										case 1:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO2_BOBPRIME");
+											npc.m_iAttackType = 4;
+											npc.m_flAttackHappens = gameTime + 0.5;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+										}
+									}
+								}
 							}
 						}
 
