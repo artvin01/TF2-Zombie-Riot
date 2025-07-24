@@ -161,10 +161,12 @@
 	"Teslar Mule"
 	{
 		"en"	"Teslar Mule"
+		"ko"	"테슬라 뮬"
 	}
 	"Energy Drink"
 	{
 		"en"	"Energy Drink"
+		"ko"	"에너지 드링크"
 	}
 	"Teslar Mule Desc"
 	{
@@ -464,10 +466,12 @@
 	"Raid Strangle Protection"
 	{
 		"en"	"Raid Strangle Protection"
+		"ko"	"레이드 잡기 방지용"
 	}
 	"Raid Strangle Protection Desc"
 	{
 		"en"	"Prevents the buff owners from grabbing the raid twice."
+		"ko"	"이 버프를 소유한 자는 레이드 보스를 2번 잡는걸 방지하게 합니다."
 	}
 	"Fluid Movement"
 	{

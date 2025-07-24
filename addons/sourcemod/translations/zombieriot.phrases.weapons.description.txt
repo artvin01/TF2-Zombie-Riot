@@ -3982,6 +3982,7 @@
 	"Flash Grenade Pap Desc"
 	{
 		"en"	"Now also briefly stuns enemies.\nDuring raids it has 3x the cooldown."
+		"ko"	"이제 적을 잠시 동안 기절 시킵니다.\n레이드 모드에선 쿨타임이 3배로 증가합니다."
 	}
 	"Outlaw Railcannon Desc"
 	{
@@ -4630,7 +4631,7 @@
 	{
 		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses, once per raid."
 		"chi"	"''这款药的戒断后果十分严重。你的时间观念会降至近零。将你困在死前最后一刻，直到永恒…\n…但这些药用不完的…\n…对吧？\n现可抓RAIDBOSS。''"
-		"ko"	"이제 레이드 보스를 잡을 수 있습니다."
+		"ko"	"이제 레이드 보스를 잡을 수 있습니다. 레이드 보스당 1번만 잡을수 있습니다."
 	}
 	"Newtonian Knuckles Desc"
 	{
