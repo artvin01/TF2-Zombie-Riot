@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+//this is only ever saved per game anyways.
 #define DATABASE_LOCAL		"zr_local"
 #define DATATABLE_MAIN		"zr_timestamp"
 #define DATATABLE_AMMO		"zr_ammo"
@@ -20,6 +21,11 @@ static bool Cached[MAXPLAYERS];
 void Database_PluginStart()
 {
 	char error[512];
+	char DelteThisFile[256];
+	
+	Format(DelteThisFile, sizeof(DelteThisFile), "addons/sourcemod/data/sqlite/%s.sq3", DATABASE_LOCAL);
+	DeleteFile(DelteThisFile);
+	//clear out the database that we dont need saved from before!
 
 	Database db = SQLite_UseDatabase(DATABASE_LOCAL, error, sizeof(error));
 	Database_LocalConnected(db, error);
@@ -625,7 +631,7 @@ static void Database_LocalConnected(Database db, const char[] error)
 		... "spent INTEGER NOT NULL DEFAULT 0, "
 		... "total INTEGER NOT NULL DEFAULT 0, "
 		... "ammo INTEGER NOT NULL DEFAULT 0, "
-		... "leftfordead FLOAT NOT NULL DEFAULT 0.0);");
+		... "cashspendloadout INTEGER NOT NULL DEFAULT 0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_AMMO ... " ("
 		... "steamid INTEGER NOT NULL, "
@@ -774,7 +780,7 @@ void Database_SaveGameData(int client)
 			... "spent = %d, "
 			... "total = %d, "
 			... "ammo = %d, "
-			... "cashspendloadout = %d"
+			... "cashspendloadout = %d "
 			... "WHERE steamid = %d;",
 			CurrentGame,
 			CashSpent[client],

@@ -3981,10 +3981,8 @@
 	}
 	"Flash Grenade Pap Desc"
 	{
-		"en"	"Now also briefly stuns enemies."
-		"fr"	"Étonne aussi les ennemis."
-		"chi"	"可短暂眩晕敌人。"
-		"ko"	"이제 적을 잠시 동안 기절 시킵니다."
+		"en"	"Now also briefly stuns enemies.\nDuring raids it has 3x the cooldown."
+		"ko"	"이제 적을 잠시 동안 기절 시킵니다.\n레이드 모드에선 쿨타임이 3배로 증가합니다."
 	}
 	"Outlaw Railcannon Desc"
 	{
@@ -4264,15 +4262,51 @@
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"무기의 유형이 ''빅토리아''인 다른 무기의 폭발 범위가 +10％ 증가."
 	}
-	"VictorianLauncher 4 Perk Desc"
-	{
-		"en"	"Reduced Over Heated Duration by 25％"
-		"ko"	"과열 지속시간 25％ 감소"
-	}
 	"VictorianLauncher 5 Perk Desc"
 	{
 		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
 		"ko"	"추가 투사체 속도 +200Hu\n조준 지원 활성화"
+	}
+	"VictorianLauncher 5 Perk On"
+	{
+		"en"	"[Aim Assist Online]"
+		"ko"	"[조준 지원 활성화]"
+	}
+	"VictorianLauncher OverHeated"
+	{
+		"en"	"!OVERHEATED! [DMG X0.5]"
+		"ko"	"!과열됨! [피해량 X0.5]"
+	}
+	"VictorianLauncher OverDrive"
+	{
+		"en"	"!OVERDRIVE! [Gradually lose HP]"
+		"ko"	"!과부하! [체력 지속 감소]"
+	}
+	"VictorianLauncher RapidFire"
+	{
+		"en"	"Rapid Fire"
+		"ko"	"속사 모드"
+	}
+	"VictorianLauncher ManuallyR"
+	{
+		"en"	"Press R Again to Manually Deactivate"
+		"ko"	"R키를 눌러 수동 종료"
+	}
+	"VictorianLauncher CRockets"
+	{
+		"en"	"Charged Rockets"
+		"ko"	"고폭 로켓"
+	}
+	"VictorianLauncher SuperShot"
+	{
+		"#format"	"{1:i}"
+		"en"	"SUPER SHOT READY! [Next shot: X {1} DMG]"
+		"ko"	"전탄발사 준비! [다음 공격 피해량 X {1}]"
+	}
+	"VictorianLauncher ManuallyM2"
+	{
+		"en"	"Press M2 Again to Fire all at once"
+		"ko"	"M2를 눌러 전탄발사 준비"
 	}
 	"The Merchant Desc"
 	{
@@ -4595,9 +4629,9 @@
 	}
 	"Telekinesis PaP 2"
 	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses."
+		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses, once per raid."
 		"chi"	"''这款药的戒断后果十分严重。你的时间观念会降至近零。将你困在死前最后一刻，直到永恒…\n…但这些药用不完的…\n…对吧？\n现可抓RAIDBOSS。''"
-		"ko"	"이제 레이드 보스를 잡을 수 있습니다."
+		"ko"	"이제 레이드 보스를 잡을 수 있습니다. 레이드 보스당 1번만 잡을수 있습니다."
 	}
 	"Newtonian Knuckles Desc"
 	{
@@ -4620,11 +4654,6 @@
 	{
 		"en"	"You may now grab bosses, raids included. Held enemies are strangled and take more damage."
 		"ko"	"이제 미니 보스와 보스를 잡을 수 있으며, 잡고 있는 적에게 교살 디버프를 부여해 대상이 받는 피해를 증폭시킴."
-	}
-	"Telekinesis PaP 2"
-	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nIncreases to all stats."
-		"ko"	"모든 능력치 증가."
 	}
 	"Newtonian Knuckles Desc"
 	{

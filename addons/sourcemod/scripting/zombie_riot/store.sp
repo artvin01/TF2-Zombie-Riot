@@ -6,6 +6,12 @@ bool PapPreviewMode[MAXPLAYERS];
 float CDDisplayHint_LoadoutStore[MAXPLAYERS];
 float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
+enum
+{
+	PAP_DESC_BOUGHT,
+	PAP_DESC_PREVIEW
+}
+
 enum struct ItemInfo
 {
 	int Cost;
@@ -1368,28 +1374,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					ItemInfo info;
 					if(item.GetItemInfo(ValuesDisplay[1], info) && info.Cost)
 					{ 	
-						//This code is ass
-						TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-						SPrintToChat(client, "%s:",info.Custom_Name);
-						char bufferSizeSplit[512];
-						char DescDo[256];
-						Format(DescDo, sizeof(DescDo), "%s", info.Desc);
-						char DescDo2[256];
-						Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
-						TranslateItemName(client, DescDo, DescDo2, bufferSizeSplit, sizeof(bufferSizeSplit));
-						char Display1[240];
-						char Display2[240];
-						Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
-						if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
-						{
-							Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
-							CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
-						}
-						else
-							CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
-
-						if(Display2[0])
-							CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
+						PrintPapDescription(client, item, info, PAP_DESC_PREVIEW);
 					}
 				}
 
@@ -1477,6 +1462,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						SetDefaultHudPosition(client);
 						
 						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+						PrintPapDescription(client, item, info, PAP_DESC_BOUGHT);
+						
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = EntRefToEntIndex(values[2]);
@@ -1490,6 +1477,44 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+void PrintPapDescription(int client, Item item, ItemInfo info, int type = PAP_DESC_BOUGHT)
+{
+	//This code is ass
+	TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
+	char bufferHeader[128];
+	
+	switch (type)
+	{
+		case PAP_DESC_BOUGHT:
+			FormatEx(bufferHeader, sizeof(bufferHeader), "%T", "Pap Weapon Upgraded", client, info.Custom_Name);	
+		
+		case PAP_DESC_PREVIEW:
+			FormatEx(bufferHeader, sizeof(bufferHeader), "%T", "Pap Weapon Preview", client, info.Custom_Name);
+	}
+	
+	SPrintToChat(client, "%s", bufferHeader);
+	
+	char bufferSizeSplit[512];
+	char DescDo[256];
+	Format(DescDo, sizeof(DescDo), "%s", info.Desc);
+	char DescDo2[256];
+	Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
+	TranslateItemName(client, DescDo, DescDo2, bufferSizeSplit, sizeof(bufferSizeSplit));
+	char Display1[240];
+	char Display2[240];
+	Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
+	if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
+	{
+		Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
+		CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
+	}
+	else
+		CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
+
+	if(Display2[0])
+		CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
 }
 
 void Store_RogueEndFightReset()
@@ -6138,7 +6163,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
-		//Karlas's Regene Berry!
+		//Regene Berry!
 		if(i_CurrentEquippedPerk[client] == 1)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.

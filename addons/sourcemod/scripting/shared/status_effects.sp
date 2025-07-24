@@ -472,7 +472,7 @@ float Cybergrind_EX_Hard_SpeedFunc(int victim, StatusEffect Apply_MasterStatusEf
 
 //Got lazy, tired of doing so many indexs.
 
-int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
+int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacker = 0)
 {
 	//doesnt even have abuff...
 	if(!E_AL_StatusEffects[victim])
@@ -504,7 +504,9 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		}
 		else
 		{
-			if(Apply_StatusEffect.TotalOwners[victim])
+			if(Apply_StatusEffect.TotalOwners[attacker])
+				Return = 3;
+			else if(Apply_StatusEffect.TotalOwners[victim])
 				Return = 2;
 			else
 				Return = 1;
@@ -512,6 +514,7 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1)
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
 		delete E_AL_StatusEffects[victim];
+
 	return Return;
 }
 stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
@@ -1926,7 +1929,7 @@ void StatusEffects_BuildingAntiRaid()
 void StatusEffects_WidowsWine()
 {
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Nemal's Teslar Mule");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Teslar Mule");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "४");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -2015,6 +2018,20 @@ void StatusEffects_MagnesisStrangle()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 3; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Raid Strangle Protection");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
 #endif
@@ -5057,7 +5074,6 @@ stock float Status_Effects_GetCustomValue(int victim, int Index)
 
 	return BuffValuereturn;
 }
-
 
 
 void StatusEffects_Modifiers()

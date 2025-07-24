@@ -184,7 +184,7 @@ public void SeabornSniper_ClotThink(int iNPC)
 
 							if(target > MaxClients)
 							{
-								ApplyStatusEffect(npc.index, target, "Nemal's Teslar Mule", 5.0);
+								ApplyStatusEffect(npc.index, target, "Teslar Mule", 5.0);
 							}
 							else
 							{

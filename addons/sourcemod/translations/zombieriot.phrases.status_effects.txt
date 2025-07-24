@@ -158,17 +158,17 @@
 		"en"	"Increases Damage Taken by 10％"
 		"ko"	"받는 피해량이 10％ 증가합니다."
 	}
-	"Nemal's Teslar Mule"
+	"Teslar Mule"
 	{
-		"en"	"Nemal's Teslar Mule"
-		"ko"	"네말의 테슬라 뮬"
+		"en"	"Teslar Mule"
+		"ko"	"테슬라 뮬"
 	}
-	"Silvester's Energy Drink"
+	"Energy Drink"
 	{
-		"en"	"Silvester's Energy Drink"
-		"ko"	"실베스터의 에너지 드링크"
+		"en"	"Energy Drink"
+		"ko"	"에너지 드링크"
 	}
-	"Nemal's Teslar Mule Desc"
+	"Teslar Mule Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 		"ko"	"받는 피해량이 35％ 증가합니다.\nNPC의 이동 속도를 80％ 감소시키고, 시간이 지날수록 점점 감소하여 최종적으로 이동 속도가 0％가 됩니다."
@@ -462,6 +462,16 @@
 	{
 		"en"	"Immune to knockback or displacements"
 		"ko"	"모든 넉백과 변위 효과에 면역이 됩니다."
+	}
+	"Raid Strangle Protection"
+	{
+		"en"	"Raid Strangle Protection"
+		"ko"	"레이드 잡기 방지용"
+	}
+	"Raid Strangle Protection Desc"
+	{
+		"en"	"Prevents the buff owners from grabbing the raid twice."
+		"ko"	"이 버프를 소유한 자는 레이드 보스를 2번 잡는걸 방지하게 합니다."
 	}
 	"Fluid Movement"
 	{

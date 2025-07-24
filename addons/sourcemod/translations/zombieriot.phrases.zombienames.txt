@@ -3786,7 +3786,7 @@
 	}
 	"Explain Building Cash Desc"
 	{
-		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} with people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
+		"en" "You get some {yellow}cash{green} and {yellow}ammobox uses{green} from people using your buildings!\nThis is seen as extra cash next to your cash, its automatically added.\n{yellow}This has a limit."
 		"ko" "다른 사람이 당신의 구조물을 사용하면, 당신은 {yellow}추가 자금{green}을 얻고 {yellow}보급이 증가합니다.{green}\n추가 자금은 자금 근처에 표시됩니다.\n{yellow}이 효과로 얻는 자금은 제한되어있음."
 	}
 	

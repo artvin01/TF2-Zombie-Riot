@@ -426,7 +426,7 @@ methodmap Huscarls < CClotBody
 			
 			npc.m_iChanged_WalkCycle = -1;
 
-			CPrintToChatAll("{lightblue}허스칼{default}: 이 ''강철 게이트를''를 지나갈 생각 마라! ");
+			CPrintToChatAll("{lightblue}허스칼{default}: 이 ''강철 게이트''를 지나갈 생각 마라! ");
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -1200,8 +1200,8 @@ static void Internal_NPCDeath(int entity)
 	switch(GetRandomInt(0,2))
 	{
 		case 0:CPrintToChatAll("{lightblue}허스칼{default}: 후퇴! 이건 전략적 후퇴다!.");
-		case 1:CPrintToChatAll("{lightblue}허스칼{default}: {gold}빅토리아{default}에 문제가 발생했다.");
-		case 2:CPrintToChatAll("{lightblue}허스칼{default}: 다음엔 네 놈을 꼭 {crimson}박살내주마{default}");
+		case 1:CPrintToChatAll("{lightblue}허스칼{default}: 여기 {gold}빅토리아{default}에 문제가 발생했다! 지원을 더 요청한다!");
+		case 2:CPrintToChatAll("{lightblue}허스칼{default}: 다음엔 네 놈을 꼭 {crimson}박살내주마{default}!");
 	}
 	npc.PlayDeathSound();	
 }
