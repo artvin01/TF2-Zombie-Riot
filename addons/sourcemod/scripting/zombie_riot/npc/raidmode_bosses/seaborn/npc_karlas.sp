@@ -518,8 +518,8 @@ methodmap Karlas < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
-		if(RaidModeTime < GetGameTime() + 250.0)
-			RaidModeTime = GetGameTime() + 250.0;
+		if(RaidModeTime < GetGameTime() + 200.0)
+			RaidModeTime = GetGameTime() + 200.0;
 
 		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
 		b_swords_created[npc.index]=false;
@@ -882,6 +882,7 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.PlayIdleAlertSound();
 }
+
 static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTarget)
 {
 	int Ally = npc.Ally;
@@ -900,7 +901,7 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 	int KarlasMaxHealth = ReturnEntityMaxHealth(npc.index);
 	int KarlasHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
-	if(KarlasHealth > (KarlasMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 4))
+	if(KarlasHealth > (KarlasMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 3))
 	{
 		float vecAlly[3];
 		float vecMe[3];
@@ -913,9 +914,10 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 		if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 		{
 			NpcSpeechBubble(npc.index, "..!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-			CPrintToChatAll("{crimson}카를라스{snow}: ..!");
-			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
+			CPrintToChatAll("{crimson}Karlas{snow}: ..!");
+			CPrintToChatAll("{crimson}Karlas Heals Stella, and provides himself with some adrenaline...");
+			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 7)), 1.0, 0.0, HEAL_ABSOLUTE);
+			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 5.0);
 
 			spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 			spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
@@ -2257,14 +2259,20 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int KarlasMaxHealth = ReturnEntityMaxHealth(victim);
+	if(health < (KarlasMaxHealth / 2) && !npc.m_fbRangedSpecialOn)
+	{
+		npc.m_fbRangedSpecialOn = true;
+		CPrintToChatAll("{crimson}Karlas's Healing tank breaks once he lost half his health, he can no longer heal stella...");
+	}
 	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
-
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
 		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
 		int ally = npc.Ally;
 		if(IsValidEntity(ally))
 		{
+			ApplyStatusEffect(ally, ally, "Extreme Anxiety", 999.0);
 			switch(GetRandomInt(0, 1))
 			{
 				case 0: CPrintToChatAll("{crimson}카를라스{snow}: *거친 숨소리*");
@@ -2659,6 +2667,7 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(!b_bobwave[npc.index])
 			{
+				ApplyStatusEffect(stella.index, stella.index, "Extreme Anxiety", 999.0);
 				switch(GetRandomInt(1,3))
 				{
 					case 1: Stella_Lines(stella,"흠, 어쩔 수 없이 나 혼자 처리해야하나.");

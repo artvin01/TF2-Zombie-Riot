@@ -45,6 +45,8 @@ methodmap EndSpeaker2 < EndSpeakerSmall
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		return npc;
@@ -99,6 +101,12 @@ public void EndSpeaker2_ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				
 				float attack = (npc.m_bHardMode ? 229.5 : 204.0) * npc.Attack(gameTime);
+				float DamageDoExtra = MultiGlobalHealth;
+				if(DamageDoExtra != 1.0)
+				{
+					DamageDoExtra *= 1.5;
+				}
+				attack *= DamageDoExtra;
 				// 800 x 0.85 x 0.3
 				// 900 x 0.85 x 0.3
 

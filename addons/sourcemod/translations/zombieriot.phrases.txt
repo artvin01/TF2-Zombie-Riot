@@ -1271,9 +1271,9 @@
 		"chi" 		"无 Buff"
 		"ko" 		"퍽 없음"
 	}
-	"Karlas's Regene Berry"
+	"Regene Berry"
 	{
-		"en" 		"Karlas's Regene Berry"
+		"en" 		"Regene Berry"
 		"fr" 		"Résurrection Rapide"
 		"ru" 		"Реаниматор"
 		"de"		"Schnelles Wiederbeleben"
@@ -1282,24 +1282,21 @@
 		"chi" 		"快速起身"
 		"ko" 		"카를라스의 재생형 열매"
 	}
-	"Purge's Cerveza Obsidian"
+	"Obsidian Oaf"
 	{
-		"en" 		"Purge's Cerveza Obsidian"
-		"ko" 		"퍼지의 흑요석 맥주"
+		"en" 		"Obsidian Oaf"
 	}
-	"Bob's Banana Juice"
+	"Morning Coffee"
 	{
-		"en" 		"Bob's Banana Juice"
-		"ko" 		"밥의 바나나 주스"
+		"en" 		"Morning Coffee"
 	}	
-	"Twirl's Ginger Ale"
+	"Hasty Hops"
 	{
-		"en" 		"Twirl's Ginger Ale"
-		"ko" 		"트윌의 진저 에일"
+		"en" 		"Hasty Hops"
 	}
-	"Waldch's Root Beer"
+	"Marksman Beer"
 	{
-		"en" 		"Waldch's Root Beer"
+		"en" 		"Marksman Beer"
 		"fr" 		"Tir Mortel de Daiquiri"
 		"ru" 		"Снайпер-лайм"
 		"de"		"Todesschuss Daiquiri"
@@ -1309,9 +1306,9 @@
 		"ko" 		"월드치의 루트비어"
 	}
 	
-	"Nemal's Teslar Mule"
+	"Teslar Mule"
 	{
-		"en" 		"Nemal's Teslar Mule"
+		"en" 		"Teslar Mule"
 		"fr" 		"Vin des Veuves"
 		"ru" 		"Вино вдовы"
 		"pt"		"Vinho Viúvo"
@@ -1319,57 +1316,50 @@
 		"chi" 		"恶魔领域"
 		"ko" 		"네말의 테슬라 뮬"
 	}
-	"Castellan's Corvus Stout"
+	"Stockpile Stout"
 	{
-		"en" 		"Castellan's Corvus Stout"
+		"en" 		"Stockpile Stout"
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
 		"ko" 		"카스텔란의 코르부스 흑맥주"
 	}
 
-	"Karlas's Regene Berry Recieved"
+	"Regene Berry Recieved"
 	{
-		"en" 		"Karlas's Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"en" 		"Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 		"ko" 		"카를라스의 재생형 열매! 부활 속도가 2배 증가 및 치유 속도가 15％ 증가하고 부활시 현재 체력이 2배로 증가"
 	}
-	"Purge's Cerveza Obsidian Recieved"
+	"Obsidian Oaf Recieved"
 	{
-		"en" 		"Purge's Cerveza Obsidian! 15％ Damage resistance and +100HP"
-		"ko" 		"퍼지의 흑요석 맥주! 피해 저항력 +15％ 및 최대 체력 +100"
+		"en" 		"Obsidian Oaf! 15％ Damage resistance and +100HP"
 	}
-	"Bob's Banana Juice Recieved"
+	"Morning Coffee Recieved"
 	{
-		"en" 		"Bob's Banana Juice! 17％ Extra attack speed and Building Damage"
-		"ko" 		"밥의 바나나 주스! 공격 속도와 구조물 피해량 +17％ 증가"
+		"en" 		"Morning Coffee! 17％ Extra attack speed and Building Damage"
 	}	
-	"Twirl's Ginger Ale Recieved"
+	"Hasty Hops Recieved"
 	{
-		"en" 		"Twirl's Ginger Ale! 1.42x Extra reload, switchspeed and Mana regen"
-		"ko" 		"네말의 테슬라 뮬! 재장전 속도, 무기 전환 속도, 마나 재생이 1.42배 더 빨라집니다"
+		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
 	}
-	"Waldch's Root Beer Recieved"
+	"Marksman Beer Recieved"
 	{
-		"en" 		"Waldch's Root Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
-		"ko" 		"월드치의 루트비어! 무기 명중률이 1.2배 증가하고 헤드샷과 백스탭 피해량이 1.25배만큼 추가로 증가\n 투사체 속도 1.2배 증가."
+		"en" 		"Marksman Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 	}
-	"Nemal's Teslar Mule Recieved"
+	"Teslar Mule Recieved"
 	{
-		"en" 		"Nemal's Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"ko" 		"네말의 테슬라 뮬! 활성화시 적중한 대상의 피해량을 75％ 감소시키고 디버프를 부여하는 재생형 보호 버프 획득.\n부여된 대상은 이속 감소 및 35％의 추가 피해를 받음."
+		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 	}
-	"Castellan's Corvus Stout Recieved"
+	"Stockpile Stout Recieved"
 	{
-		"en" 		"Castellan's Corvus Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
-		"ko" 		"카스텔란의 코르부스 흑맥주! 상점을 제외한 모든 요소에서 획득하는 탄약량이 33％ 증가하고 아머 획득량과 아머 최대치가 50％ 증가.\nY탄약 보급량이 2배만큼 증가."
+		"en" 		"Stockpile Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
 	}
-	"Silvester's Energy Drink Recieved"
+	"Energy Drink Recieved"
 	{
-		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
-		"ko" 		"실베스터의 에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 15％ 감소!"
+		"en" 		"Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -1733,6 +1723,16 @@
 		"nl"		"Uw huidig wapen kan niet worden gePack-A-Punched."
 		"chi"       "你的武器不能升级"
 		"ko" 		"이 무기는 개선이 불가능합니다."
+	}
+	"Pap Weapon Upgraded"
+	{
+		"#format"	"{1:s}"
+		"en"		"Your weapon has been upgraded to {1}:"
+	}
+	"Pap Weapon Preview"
+	{
+		"#format"	"{1:s}"
+		"en"		"Pack-a-Punch preview for {1}:"
 	}
 	"Revive Teammate tooltip"
 	{
@@ -4606,23 +4606,19 @@
 	}
 	"DPS Class"
 	{
-		"en"	"DPS Class\nFocus on damage and get Twirl's Ginger Ale perk"
-		"ko"	"DPS\n피해량을 중시하며 트윌의 진저 에일 퍽을 획득함"
+		"en"	"DPS Class\nFocus on damage and get Hasty Hops perk"
 	}
 	"Tank Class"
 	{
-		"en"	"Tank Class\nFocus on tanking and get Purge's Cerveza Obsidian perk"
-		"ko"	"탱커\n탱킹을 중시하며 퍼지의 흑요석 맥주 퍽을 획득함"
+		"en"	"Tank Class\nFocus on tanking and get Obsidian Oaf perk"
 	}
 	"Healer Class"
 	{
-		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Berry perk"
-		"ko"	"힐러\n치유가 가능해지며, DPS가 낮아짐. 카를라스의 재생형 열매 퍽을 획득함"
+		"en"	"Healer Class\nAble to heal, less DPS, and get Regene Berry perk"
 	}
 	"Builder Class"
 	{
-		"en"	"Builder Class\nAble to build, repair, and get Bob's Banana Juice perk"
-		"ko"	"건축가\n구조물을 건설하고 수리하게 됨, 밥의 바나나 주스 퍽을 획득함"
+		"en"	"Builder Class\nAble to build, repair, and get Morning Coffee perk"
 	}
 	"Don't Follow Me"
 	{
