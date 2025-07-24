@@ -1018,6 +1018,10 @@ methodmap Citizen < CClotBody
 				AddNpcToAliveList(npc.index, 1);
 			}
 		}
+		if(!Waves_Started())
+		{
+			npc.SetDowned(0);
+		}
 
 		if(chaos)
 		{
@@ -5035,7 +5039,11 @@ int BuildingAmountRebel(int rebel, int buildingType, int &buildingmax)
 		case 1:
 			limit = 1;
 		case 2:
-			limit = 4;
+		{
+			limit = 2 + (npc.m_iGunValue / 4000);
+			if(limit > 4)
+				limit = 4;
+		}
 	}
 	int ActiveLimit = 0;
 	switch(buildingType)
