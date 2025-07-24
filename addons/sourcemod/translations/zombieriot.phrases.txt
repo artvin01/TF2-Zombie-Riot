@@ -1738,11 +1738,12 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Your weapon has been upgraded to {1}:"
+		"ko"		"당신의 무기가 {1} 로 개선됨:"
 	}
 	"Pap Weapon Preview"
 	{
 		"#format"	"{1:s}"
-		"en"		"Pack-a-Punch preview for {1}:"
+		"en"		"{1} 의 팩어펀치 개선 미리보기:"
 	}
 	"Revive Teammate tooltip"
 	{
