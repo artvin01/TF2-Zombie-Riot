@@ -1280,7 +1280,7 @@
 		"pt"		"Rápida ressureição"
 		"nl"		"Snel tot leven brengen"
 		"chi" 		"快速起身"
-		"ko" 		"카를라스의 재생형 열매"
+		"ko" 		"재생형 열매"
 	}
 	"Obsidian Oaf"
 	{

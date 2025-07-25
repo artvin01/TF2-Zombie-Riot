@@ -4206,8 +4206,8 @@ void Waves_TrySpawnBarney()
 	}
 	Citizen_SpawnAtPoint("b");
 	Citizen_SpawnAtPoint(_);
-	CPrintToChatAll("{gray}Barney{default}: Hey buddy, looks like you need a hand!");
-	CPrintToChatAll("{gray}Barney{default}: Talk to my friend here if you want him to do anything in specific.");
+	CPrintToChatAll("{gray}바니 칼훈{default}: 이봐, 좀 늦었지만 도와주러 왔어! 잘 버텨줬어!");
+	CPrintToChatAll("{gray}바니 칼훈{default}: 내 친구한테 말을 걸면 뭔가 특별한 명령을 내릴수 있으니까 기억해둬.");
 }
 
 #include "modifiers.sp"
