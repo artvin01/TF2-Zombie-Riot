@@ -914,8 +914,8 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 		if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 		{
 			NpcSpeechBubble(npc.index, "..!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-			CPrintToChatAll("{crimson}Karlas{snow}: ..!");
-			CPrintToChatAll("{crimson}Karlas Heals Stella, and provides himself with some adrenaline...");
+			CPrintToChatAll("{crimson}카를라스{snow}: ..!");
+			CPrintToChatAll("{crimson}카를라스가 스텔라를 치유하며, 그 자신의 몸에 아드레날린이 퍼져나가고 있습니다...");
 			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 7)), 1.0, 0.0, HEAL_ABSOLUTE);
 			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 5.0);
 
@@ -2263,7 +2263,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(health < (KarlasMaxHealth / 2) && !npc.m_fbRangedSpecialOn)
 	{
 		npc.m_fbRangedSpecialOn = true;
-		CPrintToChatAll("{crimson}Karlas's Healing tank breaks once he lost half his health, he can no longer heal stella...");
+		CPrintToChatAll("{crimson}카를라스의 체력이 절반 이하가 되자, 그의 치유 배낭이 파괴되었습니다. 그는 더 이상 스텔라를 치료할 수 없게 되었습니다...");
 	}
 	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
