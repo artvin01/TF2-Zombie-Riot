@@ -1026,8 +1026,8 @@ static void CyberGrindGM_ClotThink(int iNPC)
 				}
 				case 2:
 				{
-					Citizen_SpawnAtPoint("b");
-					Citizen_SpawnAtPoint();
+					//Citizen_SpawnAtPoint("b");
+					//Citizen_SpawnAtPoint();
 					if(CyberGrind_Difficulty==4)
 					{
 						float SelfPos[3];
@@ -1043,7 +1043,7 @@ static void CyberGrindGM_ClotThink(int iNPC)
 						NPC_CreateByName("npc_invisible_trigger_man", -1, SelfPos, AllyAng, TFTeam_Stalkers, "cybergrind_ex_hard");
 					}
 					Spawn_Cured_Grigori();
-					CyberGrindGM_Talk("Rebels Arrive", true);
+					//CyberGrindGM_Talk("Rebels Arrive", true);
 					/*if(CyberGrind_Difficulty!=4)
 					{
 						Waves_ClearWaves();
