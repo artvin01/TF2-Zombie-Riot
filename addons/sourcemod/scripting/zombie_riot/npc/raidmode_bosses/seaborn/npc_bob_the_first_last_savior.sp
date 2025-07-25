@@ -1443,11 +1443,39 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 2:
 							{
-								npc.m_bisWalking = false;
-								npc.SetActivity("ACT_COMBO3_BOBPRIME");
-								npc.m_flAttackHappens = gameTime + 3.25;
-								
-								BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								if(npc.m_bFakeClone)
+								{
+									//main bob shouldnt do this long windup kick, takes too long...
+									npc.m_bisWalking = false;
+									npc.SetActivity("ACT_COMBO3_BOBPRIME");
+									npc.m_flAttackHappens = gameTime + 3.25;
+									
+									BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								}
+								else
+								{
+									switch(GetURandomInt() % 2)
+									{
+										case 0:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO1_BOBPRIME");
+											npc.m_iAttackType = 2;
+											npc.m_flAttackHappens = gameTime + 0.916;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+										}
+										case 1:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO2_BOBPRIME");
+											npc.m_iAttackType = 4;
+											npc.m_flAttackHappens = gameTime + 0.5;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+										}
+									}
+								}
 							}
 						}
 
@@ -1921,7 +1949,8 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
+
+	TimeUntillHit = (TimeUntillHit * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 
@@ -1985,7 +2014,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 		GetBeamDrawStartPoint_Stock(entity, VectorStartEdit,OffsetFromMiddle, AnglesEdit);
 
 		SetColorRGBA(glowColor, red, green, blue, Alpha);
-		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit * ReturnEntityAttackspeed(entity), ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
+		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
 	
@@ -2000,7 +2029,9 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	pack.WriteFloat(VectorStart[2]);
 	pack.WriteFloat(damage);
 	pack.WriteCell(kick);
-	RequestFrames(BobInitiatePunch_DamagePart, FramesUntillHit, pack);
+	// 66.6 assumes normal tickrate.
+	int i_FrameCount = RoundToNearest(TimeUntillHit * 66.6);
+	RequestFrames(BobInitiatePunch_DamagePart, i_FrameCount, pack);
 }
 
 void BobInitiatePunch_DamagePart(DataPack pack)

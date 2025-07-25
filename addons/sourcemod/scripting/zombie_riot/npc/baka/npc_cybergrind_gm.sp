@@ -114,6 +114,7 @@ methodmap CyberGrindGM < CClotBody
 			{
 				case 1:iNextSetWave=14;
 				case 5:iNextSetWave=60;
+				case 6:iNextSetWave=62;
 				default:iNextSetWave=13;
 			}
 			Waves_ClearWaves();
@@ -798,7 +799,7 @@ static void CyberGrindGM_Final_Item(int iNPC)
 			{
 				CyberGrindGM_Talk("MrV Talk 06");
 				bool bCGNormal, bCGHard, bCGExpert, bCGEX_Hard;
-				if(CyberGrind_InternalDifficulty!=5)
+				if(CyberGrind_InternalDifficulty<5)
 				{
 					if(CyberGrind_InternalDifficulty>0)
 						bCGNormal=true;
@@ -1125,6 +1126,12 @@ static void RaidMode_SetupVote()
 	vote.Level = 100;
 	Voting.PushArray(vote);
 	
+	strcopy(vote.Name, sizeof(vote.Name), "CyberGrind_EX_Fast");
+	strcopy(vote.Desc, sizeof(vote.Desc), "CyberGrind_EX_Fast Desc");
+	vote.Config[0] = 0;
+	vote.Level = 250;
+	Voting.PushArray(vote);
+	
 	strcopy(vote.Name, sizeof(vote.Name), "CyberGrind_Normal");
 	strcopy(vote.Desc, sizeof(vote.Desc), "CyberGrind_Normal Desc");
 	vote.Config[0] = 0;
@@ -1146,7 +1153,7 @@ static void RaidMode_SetupVote()
 	strcopy(vote.Name, sizeof(vote.Name), "CyberGrind_EX_Hard");
 	strcopy(vote.Desc, sizeof(vote.Desc), "CyberGrind_EX_Hard Desc");
 	vote.Config[0] = 0;
-	vote.Level = 250;
+	vote.Level = 300;
 	Voting.PushArray(vote);
 
 	CreateTimer(1.0, RaidMode_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
@@ -1415,6 +1422,16 @@ static Action RaidMode_EndVote(Handle timer, float time)
 				{
 					if(IsValidClient(client))
 						Ammo_Count_Used[client] = -1557;
+				}
+			}
+			else if(!StrContains(vote.Name, "CyberGrind_EX_Fast"))
+			{
+				CyberGrind_Difficulty = 6;
+				CurrentCash = 129800;
+				for(int client = 1; client <= MaxClients; client++)
+				{
+					if(IsValidClient(client))
+						Ammo_Count_Used[client] = -220;
 				}
 			}
 			else

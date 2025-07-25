@@ -138,6 +138,8 @@ methodmap XenoHeavyGiant < CClotBody
 		
 		i_NpcWeight[npc.index] = 3;
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		

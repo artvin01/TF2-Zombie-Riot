@@ -100,6 +100,8 @@ methodmap VoidBlobbingMonster < CClotBody
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		SetVariantInt(2);

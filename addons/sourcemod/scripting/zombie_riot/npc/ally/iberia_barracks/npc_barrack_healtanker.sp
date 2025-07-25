@@ -110,6 +110,8 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 		func_NPCThink[npc.index] = Barracks_Iberia_Healtanker_ClotThink;
 		npc.m_flSpeed = 200.0;
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
