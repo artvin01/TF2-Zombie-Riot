@@ -112,10 +112,6 @@ methodmap DesertKhazaan < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(0);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
-		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
