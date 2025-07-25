@@ -313,7 +313,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = true, bool player_only = false, int TraceFrom = -1, float RangeLimit = 0.0)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = true, int player_only = 0, int TraceFrom = -1, float RangeLimit = 0.0)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -339,50 +339,57 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		}
 	}
 
-	for(int client = 1; client <= MaxClients; client++)
+	// 0 assumes we only target players
+	// 1 assumes we target both
+	// 2 assumes we only target npcs
+	if(player_only != 2)
 	{
-		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
-				continue;
-				
-			if(RangeLimit > 0.0)
+			if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client))
 			{
-				float npc_vec[3]; WorldSpaceCenter(client, npc_vec);
-				float flDistanceToTarget = GetVectorDistance(npc_vec, Pos1, true);
-				if(flDistanceToTarget > RangeLimit)
+				if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 					continue;
-			}
-
-			for(int i; i < count; i++)
-			{
-				float percentage_ranged = 100.0;
-				int i_TheWorld = 0;
-				int testvalue = 1;
-				int testvalue2 = -1;
-				float testvalue1[3];
-				int DmgType = DMG_BULLET;
-
-				CheckInHudEnable(1);
-				Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
-				CheckInHudEnable(0);
-
-				if(enemy[i])
+					
+				if(RangeLimit > 0.0)
 				{
-					if(def[i] < percentage_ranged)
-					{
+					float npc_vec[3]; WorldSpaceCenter(client, npc_vec);
+					float flDistanceToTarget = GetVectorDistance(npc_vec, Pos1, true);
+					if(flDistanceToTarget > RangeLimit)
 						continue;
-					}
 				}
 
-				AddToList(client, i, enemy, count);
-				AddToList(percentage_ranged, i, def, count);
-				break;
+				for(int i; i < count; i++)
+				{
+					float percentage_ranged = 100.0;
+					int i_TheWorld = 0;
+					int testvalue = 1;
+					int testvalue2 = -1;
+					float testvalue1[3];
+					int DmgType = DMG_BULLET;
+
+					CheckInHudEnable(1);
+					Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
+					CheckInHudEnable(0);
+
+					if(enemy[i])
+					{
+						if(def[i] < percentage_ranged)
+						{
+							continue;
+						}
+					}
+
+					AddToList(client, i, enemy, count);
+					AddToList(percentage_ranged, i, def, count);
+					break;
+				}
 			}
 		}
+
 	}
 
-	if(!player_only)
+	if(player_only == 0 || player_only == 2)
 	{
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{
