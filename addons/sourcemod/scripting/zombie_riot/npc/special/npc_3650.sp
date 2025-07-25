@@ -67,7 +67,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 char[] MinibossHealthScaling(float healthDo = 110.0, bool ingoreplayers = false)
 {
 	if(!ingoreplayers)
+	{
+		float ScalingAm = ZRStocks_PlayerScalingDynamic();
+		if(ScalingAm <= 2.5) //account for this many, or else bosses just die in 1 hit.
+			ScalingAm = 2.5;
 		healthDo *= ZRStocks_PlayerScalingDynamic(); //yeah its high. will need to scale with waves exponentially.
+	}
 	
 	healthDo *= MinibossScalingReturn();
 	healthDo *= 1.5;
