@@ -3671,15 +3671,51 @@
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 범위 +10％"
 	}
-	"VictorianLauncher 4 Perk Desc"
-	{
-		"en"	"Reduced Over Heated Duration by 25％"
-		"ko"	"과열 지속시간 25％ 감소"
-	}
 	"VictorianLauncher 5 Perk Desc"
 	{
 		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
 		"ko"	"추가 투사체 속도 +200Hu\n조준 지원 활성화"
+	}
+	"VictorianLauncher 5 Perk On"
+	{
+		"en"	"[Aim Assist Online]"
+		"ko"	"[조준 지원 활성화]"
+	}
+	"VictorianLauncher OverHeated"
+	{
+		"en"	"!OVERHEATED! [DMG X0.5]"
+		"ko"	"!과열됨! [피해량 X0.5]"
+	}
+	"VictorianLauncher OverDrive"
+	{
+		"en"	"!OVERDRIVE! [Gradually lose HP]"
+		"ko"	"!과부하! [체력 지속 감소]"
+	}
+	"VictorianLauncher RapidFire"
+	{
+		"en"	"Rapid Fire"
+		"ko"	"속사 모드"
+	}
+	"VictorianLauncher ManuallyR"
+	{
+		"en"	"Press R Again to Manually Deactivate"
+		"ko"	"R키를 눌러 수동 종료"
+	}
+	"VictorianLauncher CRockets"
+	{
+		"en"	"Charged Rockets"
+		"ko"	"고폭 로켓"
+	}
+	"VictorianLauncher SuperShot"
+	{
+		"#format"	"{1:i}"
+		"en"	"SUPER SHOT READY! [Next shot: X {1} DMG]"
+		"ko"	"전탄발사 준비! [다음 공격 피해량 X {1}]"
+	}
+	"VictorianLauncher ManuallyM2"
+	{
+		"en"	"Press M2 Again to Fire all at once"
+		"ko"	"M2를 눌러 전탄발사 준비"
 	}
 	"The Merchant Desc"
 	{

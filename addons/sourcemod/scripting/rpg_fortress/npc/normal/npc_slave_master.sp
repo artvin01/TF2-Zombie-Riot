@@ -119,7 +119,9 @@ methodmap SlaveMaster < CClotBody
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "pickaxe");
-
+		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 

@@ -101,6 +101,8 @@ methodmap VoidingBedrock < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		if(data[0])
 		{
 			npc.m_iOverlordComboAttack = StringToInt(data);

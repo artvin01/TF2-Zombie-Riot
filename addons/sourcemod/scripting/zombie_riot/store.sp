@@ -6625,7 +6625,7 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = RoundToCeil(float(cost) * 0.9);
 	}
-	
+	/*
 	if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
 	{
 		switch(CurrentPlayers)
@@ -6643,6 +6643,7 @@ static void ItemCost(int client, Item item, int &cost)
 				cost = RoundToNearest(float(cost) * 0.95);
 		}
 	}
+	*/
 	
 	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!
 	if(item.MaxCost > 0 && cost > item.MaxCost)
