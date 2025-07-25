@@ -991,6 +991,11 @@ void NPC_ConfigSetup()
 	Diversionistico_Elitus_OnMapStart_NPC();
 	Construction_Raid_Zilius_OnMapStart();
 	ZeinaPrisoner_OnMapStart_NPC();
+
+	Aperture_Halter_OnMapStart_NPC();
+	Aperture_Suppressor_OnMapStart_NPC();
+	Aperture_collector_OnMapStart_NPC();
+	Aperture_Fueler_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2178,3 +2183,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_zilius.sp"
 #include "npc/construction/enemies/npc_zeina_prison.sp"
 #include "npc/construction/enemies/npc_zeina_freed.sp"
+
+#include "npc/aperture/npc_halter.sp"
+#include "npc/aperture/npc_suppressor.sp"
+#include "npc/aperture/npc_collector.sp"
+#include "npc/aperture/npc_fueler.sp"
