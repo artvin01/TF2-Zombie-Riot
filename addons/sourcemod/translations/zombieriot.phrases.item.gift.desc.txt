@@ -3122,7 +3122,17 @@
 	}
 	"CyberGrind_Fast Desc"
 	{
-		"en"	"It's joever...\nStarting Cash:85000\nStarting Supplies: 1557"
+		"en"	"Fight all Bosses! without resting\nStarting Cash:85000\nStarting Supplies: 1557"
 		"ko"	"쉬는시간 없이 모든 보스를 만날수있습니다!\n시작 자금:85000\n시작 보급품: 1557"
+	}
+	"CyberGrind_EXFast"
+	{
+		"en"	"EX Fast Mode"
+		"ko"	"실전압축 모드"
+	}
+	"CyberGrind_EXFast Desc"
+	{
+		"en"	"Simulates the Final Round of EX Hard.\nStarting Cash:129800\nStarting Supplies: 220"
+		"ko"	"EX 하드 마지막 라운드를 시뮬레이션 합니다.\n시작 자금:129800\n시작 보급품: 220"
 	}
 }
