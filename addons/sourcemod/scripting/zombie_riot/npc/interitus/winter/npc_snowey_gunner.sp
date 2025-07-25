@@ -97,7 +97,7 @@ methodmap WinterSnoweyGunner < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(0);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		

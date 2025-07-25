@@ -116,6 +116,8 @@ methodmap DesertKhazaan < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
