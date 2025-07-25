@@ -174,7 +174,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 //model uses self made IK rigs, to not break the top stuff.
 #define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
 
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_49.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_51.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
