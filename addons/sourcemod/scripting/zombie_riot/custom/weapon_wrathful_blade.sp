@@ -148,7 +148,7 @@ void WrathfulBlade_OnKill(int client, int victim)
 	{
 		float cd = Ability_Check_Cooldown(client, 2);
 		cd -= Fury_CDR[Fury_Tier[client]];
-		Ability_Apply_Cooldown(client, 2, cd);
+		Ability_Apply_Cooldown(client, 2, cd, .ignoreCooldown = true);
 	}
 
 	for (int i = 1; i <= MaxClients; i++)

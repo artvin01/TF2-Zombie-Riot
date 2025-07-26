@@ -95,6 +95,10 @@ methodmap UnderTides < CClotBody
 
 		npc.m_flSpeed = 1.0;
 		npc.Anger = !zr_disablerandomvillagerspawn.BoolValue;
+		if(!npc.Anger)
+		{
+			npc.Anger = !DisableRandomSpawns;
+		}
 
 		if(!npc.Anger)
 		{
