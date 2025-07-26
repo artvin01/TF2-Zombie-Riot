@@ -5306,11 +5306,19 @@ void StatusEffects_XenoLab()
 
 void WeakeningCompoundStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+		
 	SetEntityRenderMode(victim, RENDER_NORMAL, false, 1, false, true);
 	SetEntityRenderColor(victim, 255, 255, 25, 255, false, false, true);
 }
 void WeakeningCompoundEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
 	SetEntityRenderMode(victim, i_EntityRenderMode[victim], true, 2, false, true);
 	SetEntityRenderColor(victim, i_EntityRenderColour1[victim], i_EntityRenderColour2[victim],
 	 i_EntityRenderColour3[victim], i_EntityRenderColour4[victim], true, false, true);
