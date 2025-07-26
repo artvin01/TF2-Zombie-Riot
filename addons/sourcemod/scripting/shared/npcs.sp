@@ -1312,9 +1312,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	}
 #if defined ZR
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #endif
 	{
 #if !defined RTS

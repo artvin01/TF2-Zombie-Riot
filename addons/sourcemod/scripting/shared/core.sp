@@ -2472,7 +2472,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 #if defined ZR
-		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
 		Board_EntityCreated(entity);
