@@ -28,7 +28,7 @@ static float LastNamedSpawn;
 
 void Spawns_PluginStart()
 {
-	MapSpawnersActive = CreateConVar("zr_spawnersactive", "32", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
+	MapSpawnersActive = CreateConVar("zr_spawnersactive", "16", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 }
 
 void Spawns_MapEnd()
@@ -377,19 +377,7 @@ void Spawners_Timer()
 		//no dividing by 0 crap.
 		PlayersGathered = 1;
 	}
-	for(int index; index < length; index++)
-	{
-		SpawnerList.GetArray(index, spawn);
-		if(spawn.AllySpawner || spawn.Points < 0.0)
-			continue;
-		
-		int entity_Ref = spawn.EntRef;
-		
-		if(!spawn.BaseBoss && GetEntProp(entity_Ref, Prop_Data, "m_bDisabled"))
-		{
-			continue;
-		}	
-	}
+	
 	// Get max spawner count
 	int maxSpawners = MapSpawnersActive.IntValue;
 
@@ -402,6 +390,7 @@ void Spawners_Timer()
 	// Get list of points
 	ArrayList pointsList = new ArrayList();
 
+	
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
@@ -411,6 +400,7 @@ void Spawners_Timer()
 			SpawnerList.SetArray(index, spawn);
 		}
 	}
+	
 
 	bool Spawners_found = false;
 	for(int LoopTry = 10; LoopTry >= 1; LoopTry--)
@@ -418,7 +408,7 @@ void Spawners_Timer()
 		for(int index; index < length; index++)
 		{
 			SpawnerList.GetArray(index, spawn);
-			if((spawn.Points / PlayersGathered) >= (0.85 *(float(LoopTry) * 0.1)))
+			if((spawn.Points) >= (0.85 *(float(LoopTry) * 0.1)))
 			{
 				//itll go down in increments of 0.85 untill it finds spawners.
 				Spawners_found = true;
