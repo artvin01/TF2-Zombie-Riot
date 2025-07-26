@@ -864,7 +864,7 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
-		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] == -1)
+		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > 0)
 		{
 			RaidModeTime += 0.2;
 			//if the raidboss is in spawn protection, prevent raidmode from going up.
