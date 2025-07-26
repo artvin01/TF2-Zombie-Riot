@@ -510,7 +510,7 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 		static float minn[3], maxx[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
-		if(IsBoxHazard(PosNpc, maxx, minn))
+		if(IsBoxHazard(PosNpc, minn, maxx))
 			KeepProtection = true;
 	}
 
