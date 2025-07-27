@@ -174,7 +174,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 //model uses self made IK rigs, to not break the top stuff.
 #define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
 
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_49.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_51.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -864,6 +864,11 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
+		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > 0)
+		{
+			RaidModeTime += 0.2;
+			//if the raidboss is in spawn protection, prevent raidmode from going up.
+		}
 		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
@@ -2467,7 +2472,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 #if defined ZR
-		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
 		Board_EntityCreated(entity);

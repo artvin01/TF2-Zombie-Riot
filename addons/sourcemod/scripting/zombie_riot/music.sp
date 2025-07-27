@@ -416,15 +416,10 @@ void PrecacheMusicZr()
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
 	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
-//	ForceNiko = FindInfoTarget("zr_niko");
-//people didnt like it lol
-
-	if(XenoMapExtra)
-	{
-		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
-		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
-	}
+	DisableSpawnProtection = FindInfoTarget("zr_disablespawn_protection");
+	DisableRandomSpawns = FindInfoTarget("zr_disable_randomspawn");
 }
+
 void Music_MapStart()
 {
 	Zero(DelayStopSoundAll);

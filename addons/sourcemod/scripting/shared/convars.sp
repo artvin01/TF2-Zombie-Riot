@@ -74,7 +74,6 @@ void ConVar_PluginStart()
 	zr_tagwhitehard = CreateConVar("zr_tagwhitehard", "1", "If whitelist requires a tag instead of allowing");
 	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
-	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
 	zr_maxscaling_untillhp = CreateConVar("zr_maxscaling_untillhp", "3.4", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
@@ -108,8 +107,8 @@ void ConVar_PluginStart()
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 	
-	//default should be 0.1
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
+	//default should be 0.5
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.5", "How long zombie spawn protection lasts for.");
 #endif
 
 #if defined ZR || defined RTS	

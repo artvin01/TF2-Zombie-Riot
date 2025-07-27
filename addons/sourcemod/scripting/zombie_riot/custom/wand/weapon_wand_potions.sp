@@ -11,8 +11,6 @@
 
 static float TonicBuff[MAXPLAYERS];
 static float TonicBuff_CD[MAXPLAYERS];
-static Handle ShrinkTimer[MAXENTITIES];
-static float f_RaidShrinkImmunity[MAXENTITIES];
 
 
 static Handle h_PotionBuff[MAXPLAYERS+1] = {null, ...};
@@ -130,19 +128,12 @@ public Action Timer_Management_BuffPotion(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-
-void Wands_Potions_EntityCreated(int entity)
-{
-	delete ShrinkTimer[entity];
-}
-
 void Wand_Potions_Precache()
 {
 	PrecacheSound(SOUND_JAREXPLODE);
 	PrecacheSound(SOUND_TRANSFORM1);
 	PrecacheSound(SOUND_TRANSFORM2);
 	PrecacheSound(SOUND_SHRINK);
-	Zero(f_RaidShrinkImmunity);
 
 	Zero(TonicBuff_CD);
 	Zero(TonicBuff);
@@ -898,53 +889,21 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 	}
 	if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 	{
-		if(!ShrinkOnlyOneTarget && f_RaidShrinkImmunity[enemy] < GetGameTime())
+		if(!ShrinkOnlyOneTarget)
 		{
 			float time = 3.0;
 			if(b_thisNpcIsARaid[enemy])
 			{
 				time = 1.5;
 			}
-			f_RaidShrinkImmunity[enemy] = GetGameTime() + (time * 3.0);
 			ShrinkOnlyOneTarget = true;
 			
-			ApplyStatusEffect(owner, enemy, "Shrinking", time);
+			ApplyStatusEffect(owner, enemy, "Weakening Compound", time);
 			
-			if(ShrinkTimer[enemy] != null)
-				delete ShrinkTimer[enemy];
-			else
-			{
-				//no timer beforehand.
-				float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
-			}
-			DataPack pack_repack;
-			ShrinkTimer[enemy] = CreateDataTimer(time, Weapon_Wand_PotionEndShrink, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
-			pack_repack.WriteCell(enemy);
-			pack_repack.WriteCell(EntIndexToEntRef(enemy));
 		}
 	}
 	else
 	{
-		if(!NpcStats_IsEnemyShank(enemy))
-		{
-			float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
-		}
-		ApplyStatusEffect(owner, enemy, "Shrinking", 999999.0);	
-	//	Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
+		ApplyStatusEffect(owner, enemy, "Weakening Compound", 999999.0);	
 	}
-}
-public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int IndexDefualt = pack.ReadCell();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(entity))
-	{
-		float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.5);
-	}
-	ShrinkTimer[IndexDefualt] = null;
-	return Plugin_Continue;
 }

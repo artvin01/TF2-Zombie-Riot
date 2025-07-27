@@ -85,8 +85,7 @@
 	}
 	"Freeze Desc"
 	{
-		"en"	"Increases Damage Taken by 5％\nSlows NPC'S by 5％"
-		"ko"	"받는 피해량이 5％ 증가합니다.\nNPC의 이동 속도를 5％ 감소시킵니다."
+		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 10％"
 	}
 	"Cryo"
 	{
@@ -95,8 +94,7 @@
 	}
 	"Cryo Desc"
 	{
-		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 10％"
-		"ko"	"받는 피해량이 10％ 증가합니다.\nNPC의 이동 속도를 10％ 감소시킵니다."
+		"en"	"Increases Damage Taken by 15％\nSlows NPC'S by 15％"
 	}
 	"Near Zero"
 	{
@@ -105,8 +103,7 @@
 	}
 	"Near Zero Desc"
 	{
-		"en"	"Increases Damage Taken by 15％\nSlows NPC'S by 15％"
-		"ko"	"받는 피해량이 15％ 증가합니다.\nNPC의 이동 속도를 15％ 감소시킵니다."
+		"en"	"Increases Damage Taken by 20％\nSlows NPC'S by 20％"
 	}
 	"Frozen"
 	{
@@ -115,15 +112,13 @@
 	}
 	"Frozen Desc"
 	{
-		"en"	"Increases Damage Taken by 15％\nStuns for a duration."
-		"ko"	"받는 피해량이 15％ 증가합니다.\n지속 시간 동안 기절합니다."
+		"en"	"Increases Damage Taken by 20％\nStuns for a duration."
 	}
-	"Shrinking"
+	"Weakening Compound"
 	{
-		"en"	"Shrinking"
-		"ko"	"축소화"
+		"en"	"Weakening Compound"
 	}
-	"Shrinking Desc"
+	"Weakening Compound Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 35％\nLowers Damage Delt by 25％"
 		"ko"	"받는 피해량이 35％ 증가합니다.\nNPC의 이동 속도를 35％ 감소시킵니다.\n적에게 입히는 공격 피해량이 25％ 감소합니다."
@@ -330,8 +325,7 @@
 	}
 	"Maimed Desc"
 	{
-		"en"	"Slows NPC'S Movementspeed by 65％"
-		"ko"	"NPC의 이동 속도가 65％ 감소합니다."
+		"en"	"Slows NPC'S Movementspeed by 50％"
 	}
 	"Prosperity I"
 	{
