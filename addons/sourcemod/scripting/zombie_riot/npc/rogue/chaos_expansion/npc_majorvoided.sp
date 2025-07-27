@@ -245,8 +245,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			func_NPCThink[npc.index] = MajorVoided_DownedThink;
 			
 			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-			spawnRing_Vectors(vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
-			spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 450.0 * zr_smallmapbalancemulti.FloatValue * 2.0);
+			spawnRing_Vectors(vecMe, 450.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
+			spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 450.0 * 2.0);
 			
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
@@ -272,7 +272,7 @@ static void ClotDeath(int entity)
 	int team = GetTeam(npc.index);
 
 	b_NpcIsTeamkiller[npc.index] = true;
-	Explode_Logic_Custom(999999.9, npc.index, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorVoidedExplodePre);
+	Explode_Logic_Custom(999999.9, npc.index, npc.index, -1, vecMe, 450.0 , 1.0, _, true, 40, _, _, _, MajorVoidedExplodePre);
 	b_NpcIsTeamkiller[npc.index] = false;
 
 	int health = ReturnEntityMaxHealth(npc.index) / 4;
