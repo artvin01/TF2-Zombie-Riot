@@ -141,9 +141,7 @@ static void ClotThink(int iNPC)
 			float ProjectileSpeed = 1400.0;
 
 			if(NpcStats_VictorianCallToArms(npc.index))
-			{
-				ProjectileSpeed *= 1.25
-			}
+				ProjectileSpeed *= 1.25;
 
 
 			npc.PlayMeleeSound();
