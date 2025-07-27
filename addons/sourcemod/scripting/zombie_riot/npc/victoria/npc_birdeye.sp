@@ -623,7 +623,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 	}
 	if(npc.m_flAttackHappens)
 	{
-		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {0,0,255,255}, 3);
+		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {7,255,255,155}, 3);
 		TE_SendToAll(0.0);
 	}
 			
@@ -655,7 +655,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 250.0;
+				float damageDealt = 500.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 99.0;
 				

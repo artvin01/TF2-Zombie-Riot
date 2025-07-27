@@ -194,7 +194,22 @@ public void VictorianBallista_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle != 6)
 		{
-			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.0;
+			if(!NpcStats_IsEnemySilenced(npc.index))
+			{
+				if(NpcStats_VictorianCallToArms(npc.index))
+				{
+					npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 1.5;
+				}
+				else
+				{
+					npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 2.0;
+				}
+			}
+			else
+			{
+				npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 4.0;
+			}
+			
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 6;
 			npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY", true,_,_,0.5);

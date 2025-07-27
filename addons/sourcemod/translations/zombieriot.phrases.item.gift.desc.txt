@@ -2552,4 +2552,232 @@
 	{
 		"en" 	"A being made out of chaos and void combined..."
 	}
+	"Batter Desc"
+	{
+		"en"	"Basic melee unit of Leatherboots Scoutsquad.\nMoves faster when direct operation orders are given \n (When signalled) Gain speed boost"
+	}
+	"Charger Desc"
+	{
+		"en"	"melee unit with shortest melee range of Leatherboots Scoutsquad.\nThey are slow at first but accelerates into high speed \nTheir damage multiplies by their current speed\nMoves faster when direct operation orders are given \n (When signalled) Accelerate faster"
+	}
+	"Teslar Desc"
+	{
+		"en"	"basic melee unit with electrical stick of Leatherboots Scoutsquad.\nApply teslar debuff to their victim on hit \n(When signalled) Duration of the debuff is increased"
+	}
+	"Victorian Vanguard Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	"Supplier Desc"
+	{
+		"en"	"Ranged Support unit of Leatherboots Scoutsquad.\nSupports team by providing ammo and health at the same time. \nThey could heal and provide armor to themselves too \n(When signalled) Heal and provide more armor"
+	}
+	"Victorian Vanguard Desc"
+	{
+		"en"	"Melee unit of Leatherboots Scoutsquad that has long range.\nslightly pulls their victim on hit \n(When signalled) pull stronger"
+	}
+	"Ballista Desc"
+	{
+		"en"	"Cyborg Ranged unit of Leatherboots Scoutsquad \nFires 3 projectiles per attack \n(When signalled) reload faster"
+	}
+	"Victorian Igniter Desc"
+	{
+		"en"	"Giant ranged unit of Leatherboots Scoutsquad \nFires a flare that ignites its target \n(When signalled) afterburn damage increased"
+	}
+	"Grenadier Desc"
+	{
+		"en"	"Ranged unit of Leatherboots Scoutsquad. It throws an inaccurate grenade \n(When signalled) firing speed increased"
+	}
+	"Victorian ScoutSquad Leader Desc"
+	{
+		"en"	"Capable leader of Leatherboots Scoutsquad \nFires a shotgun with limited ammo that applies stacking vulnerability. \nWhen it runs out of ammo, it will pull out his axe and perform melee attacks. \nWith some cooldowns, it will grant heavy speedboost to all enemies near him \n(When signalled) Never lose ammo"
+	}
+	"Signaller Desc"
+	{
+		"en"	"Elite unit of Victorian army. He receives a direct opertion order from radiotower and deliver it to all enemies \n While alive, all the enemies get Signal buff which increases their damage and speed. \nAlso, all victorian enemies will unlock special traits"
+	}
+	"Humbee Desc"
+	{
+		"en"	"Rocketlauncher mounted vehicle of Irongate Defense Units. It ensures the safety of the driver until it breaks \n On death, spawns Irongate Shotgunner to continue the battle \n(When signalled) rocket's projectile speed is increased"
+	}
+	"Shotgunner Desc"
+	{
+		"en"	"Ranged unit of Irongate Defense Units. Has decent health and fires shotgun rapidly. \n Reloads deadly ammunition when he recieves a direct operation order \n(When signalled) Applies bleed on target"
+	}
+	"Bulldozer Desc"
+	{
+		"en"	"Giant melee of Irongate Defense Units. Has high health and armor by sacrificing his speed. \n While his armor is up, he will take significantly less blast damage. \n(When signalled) Gains additional resistance"
+	}
+	"Hardender Desc"
+	{
+		"en"	"Medic unit of Irongate Defense Units. He heals and slowly provides armor to their targets. \n They also spawn with some armor for their survivability \n(When signalled) Provides battalion buff to their patients"
+	}
+	"Raider Desc"
+	{
+		"en"	"Ranged robotic unit of Irongate Defense Units. It fires strong but slow plasma projectile. \n(When signalled) Deals significantly more damage"
+	}
+	"Shotgunner Desc"
+	{
+		"en"	"Ranged unit of Irongate Defense Units. Has decent health and fires shotgun rapidly. \n Reloads deadly ammunition when he recieves a direct operation order \n(When signalled) Applies bleed on target"
+	}
+	"Zapper Desc"
+	{
+		"en"	"Melee unit of Irongate Defense Units. Better variant of teslar. \n Applies stronger teslar debuff to its victim \n(When signalled) duration of debuff is longer"
+	}
+	"Payback Desc"
+	{
+		"en"	"Elite Combine unit of Irongate Defense Units. He inject himself with strong adrenaline that will delay his death. \n Damage increases as health drops. On death, revives and gain massive speed but will perish in few seconds \n(When signalled) Damage increase"
+	}
+	"Blocker Desc"
+	{
+		"en"	"Melee unit of Irongate Defense Units. got a skill to block incoming damage. \n when damaged, enters defense mode, and gains high damage resistance. \nwhen attacking, every 4th damage deals higher damage \n(When signalled) block cooldown reduced"
+	}
+	"Victoria Destructor Desc"
+	{
+		"en"	"Ranged unit of Irongate Defense Units. Creates explosion that ignites all targets. \n performs stronger explosion when he receives a direct operation order \n(When signalled) wider explosion range"
+	}
+	"IronShield Desc"
+	{
+		"en"	"Powerful Mecha of Irongate Defense Units. moves slowly but hits hard. \nperforms aoe attack every few attacks. Also, when destroyed, drops the aviator to continue the fight \n(When signalled) performs aoe attack often"
+	}
+	"Victoria Aviator Desc"
+	{
+		"en"	"Elite mechanists who rides the Ironshield Mecha. It will ride Ironshield after few seconds. \n it fires a shotgun and slams the enemy to the ground with hammer \n(When signalled) calls Ironshield faster"
+	}
+	"Booster Desc"
+	{
+		"en"	"Medical unit of StormTrooper team. Heals and gives damage boost to its patient. \n(When signalled) provides additional damage boost"
+	}
+	"Scorcher Desc"
+	{
+		"en"	"Ranged unit with flamethrower in Stormtrooper team. \n(When signalled) Applies stronger burn damage"
+	}
+	"Mowdown Desc"
+	{
+		"en"	"Giant mehanical unit of Stormtrooper team. Closes up and fire full barrage of bullets. \n Moves very slowly, but VERY deadly up close and hardens its head when operation orders are given \n(When signalled) Cannot be headshotted"
+	}
+	"Mechafist Desc"
+	{
+		"en"	"Melee unit of Stormtrooper Team. Capable of pulling enemy towards him on hit. \n on 3rd hit, it will push its victim with strong force \n(When signalled) Stronger push and pull"
+	}
+	"Assulter Desc"
+	{
+		"en"	"Basic Infantry Stormtrooper Team. Fires his firearm rapidly. \n fires 3 round per fire \n(When signalled) fire more rounds on fire"
+	}
+	"Anti-Armor Infantry Desc"
+	{
+		"en"	"Elite ranged unit of Stormtrooper Team. He is holding disposable RPG. \n When target is in range, fire a rocket and rush in with his melee \n(When signalled) Damage heavily increased"
+	}
+	"Victorian Mortar Desc"
+	{
+		"en"	"Elite ranged unit of Irongate Defense Units. Has infinite range and can predict opponent's movement. \n gets motivated and reloads small rockets on direct operation order \n(When signalled) Fires small rockets faster"
+	}
+	"Bomb Cart Desc"
+	{
+		"en"	"Small cart filled with bombs. Obviously explodes on contact with its target. \n Can be defused by killing it before attacking\n(When signalled) Explodes on death"
+	}
+	"Breachcart Desc"
+	{
+		"en"	"Vehicle of Irongate Defense Units filled with bombcarts. Releases bombcart with cooldown. \n Unlike Humbee, they could ram into players and buildings \n(When signalled) summon bombcarts faster"
+	}
+	"Birdeye Desc"
+	{
+		"en"	"One of the elite mercenaries hired by Castellan. Always support Harbringer and Bigpipe. \nBirdeye enjoys watching its victim suffer in pain by sniping targets with special vulnerability bullet. \nEquipped with teleportation device that he will use it to reposition himself from incoming threats \nHe also got transmitter from victorian army to get specific orders and locks into target much faster\n(When signalled) Always hit target within sight"
+	}
+	"Harbringer Desc"
+	{
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \nHolds LMG and rushes in fast speed. He also got painkiller and transmitter from victorian army which he would use it on command \n(When signalled) sets max cap of damage that he could take per hit"
+	}
+	"Bigpipe Desc"
+	{
+		"en"	"One of the elite mercenaries hired by Castellan. Always get along with Bigpipe and Birdeye. \nEquipped with special grenade launcher, Bigpipe fires arching pipes that will explode on contact. He perfroms good crowd-control against enemies and building destruction\nHe is also equipped with HE ammunition and victorian transmitter which he will use on given orders \n(When signalled) Ignite targets hit by pipes"
+	}
+	"Caffeinator Desc"
+	{
+		"en"	"Robotic medic unit of Brassbunker Special Force. \nHeals its target and injects strong dose of caffeine which increase patient's speed, damage, and attackspeed\n When enemy is too close or its patient dies, it will start to release caffeinated gas around it thus buffing all near allies\n(When signalled) provides additional damage buff to its patient"
+	}
+	"Welder Desc"
+	{
+		"en"	"Melee unit and best repairman of Brassbunker Special Force. Gains armor when hitting buildings and deal incrased damage. \n (When signalled) Gain more armor"
+	}
+	"Mechanist Desc"
+	{
+		"en"	"Elite engineers of Brassbunker Special Force. Teleports into the map and spawns and activates the avangard \nAfter activating avangard, it will follow and repair it constantly \n (When signalled) Build it faster"
+	}
+	"Avangard Desc"
+	{
+		"en"	"Giant robot of Brassbunker Special Force. Fires sentry rocket constantly."
+	}
+	"Tanker Desc"
+	{
+		"en"	"Elite ranged tank unit of Brassbunker Special Force. Takes max 10% of its maxhp as single burst damage. \n (When signalled) max cap for damage is enhanced"
+	}
+	"Pulverizer Desc"
+	{
+		"en"	"Elite pyro unit of Brassbunker Special Force. Deals insane burn damage and fire damage up close. \nDO NOT APPROACH TO THIS UNIT \n (When signalled) Deals even more burn damage"
+	}
+	"Brassbunker Ambusher Desc"
+	{
+		"en"	"Ranged unit of Brassbunker Special Force. They randomly spawn around the players and ambush them.\n They are equipped with disposable jetpack which will launch towards their target once \n Also, when they are reloading, they run away and take cover \n (When signalled) Jump cd decreased heavily"
+	}
+	"Victoria Taser Desc"
+	{
+		"en"	"Elite ranged unit of Brassbunker Special Force armed with taser. Slows down its victim heavily . \n (When signalled) attacks faster"
+	}
+	"Victoria Tank Desc"
+	{
+		"en"	"Elite Vehicle of Brassbunker Special Force. Slow and powerful unit that fires a rocket dealing deadly damage. \nHowever, it turns slowly and moves slowly \nUpon death, it releases the squad it was carrying with \n (When signalled) projecticle speed increased"
+	}
+	"Victoria Radiomast Desc"
+	{
+		"en"	"Giant radiotower that receives a signal and spreads it to other places via signaller. \nSince radiotower is crucial for transmission, Victorians will do everything to preotect it \nWHile the Radiotower is alive, endless waves of enemies will appear and all enemies existing in the map will receive signal buff \nWhen below half health, summons radio repair and guard to protect and heal"
+	}
+	"Radio Guard Desc"
+	{
+		"en"	"Guard who protects Victorian Radiotower\n He is armed with speical cannon that pushes enemies far away when hit\nSlows down its victim heavily .\nHowever, he will lose his ability to push when Radiotower is gone (When signalled) Pushes enemies with rocket"
+	}
+	"Radio Repair Desc"
+	{
+		"en"	"Medic who repairs Victorian Radiotower instead of allies\n They do not care about surroundings and only heal.\n They will also provide small defense boost to their targets"
+	}
+	"Victoria Anvil Desc"
+	{
+		"en"	"Victorian supportive drone which spawns from drone factory\nThey fly and heal all allies within the area. \nUpgraded version, MK2, will heal more and even apply small defense buff to allies"
+	}
+	"Victoria Fragments Desc"
+	{
+		"en"	"Victorian aggresive drone which spawns from drone factory\nHover to designated area and fire leads at the enemies within range. \nUpgraded version, MK2, will deal more damage"
+	}
+	"Victoria Factory Desc"
+	{
+		"en"	"Victorian frontline arms factory which create and store drones \nWhen specific enemies order support fire or heal, it will release the drones to support them.\nVictorian Drone factory in invincible and will only retreat before raid \nUpgraded version, MK2, will deal more damage"
+	}
+	"Victoria Tactical Protector Desc"
+	{
+		"en"	"Giant robot unit that calls for Anvil drone when below half health \nHowever, they will not order drones if factory does not exist in the map"
+	}
+	"Victoria Tactical Protector Desc"
+	{
+		"en"	"Giant robot unit that calls for Anvil drone when below half health \nHowever, they will not order drones if factory does not exist in the map"
+	}
+	"Victoria Tacticalunit Desc"
+	{
+		"en"	"Fast unit armed with kukri and pointer \nThey will call in Fragment drones using their pointers \nHowever, they will not order drones if factory does not exist in the map"
+	}
+	"Victoria Atomizer Desc"
+	{
+		"en"	" `You can't outrun me!` \nCaptain of Victoria's Leatherboots Scoutsquad. Priorities speed over everything \nFires barrage of homing energy balls which will slow targets down and often drags all people to him to swing a homerun \n Harrison will help Atomizer by controlling victorian artillery and target the furtherest target from atomizer dealing devastating damage"
+	}
+	"Victoria Huscarls Desc"
+	{
+		"en"	" `You're up against the wall and I am the fucking wall!` \nLieutenant of Victoria's Irongate Defense Units. Aquires adaptive armor on each amount of health loss \nPeform various abilities focused on defense and blocking attacks\nHe will summon Brassbunker Avangards when he is in danger. However, they are not ready yet so easy to kill \n Harrison will help Atomizer by controlling victorian artillery and target the furtherest target from atomizer dealing devastating damage"
+	}
+	"Victoria Harrison Desc"
+	{
+		"en"	" `Do I really have to do this myself?` \nLieutenant Colonel of Victoria's Stormtrooper Team and controller of Victorian Artillery. \nUtilizes lots of ranged firearms \nHe will call in massive airstrikes and rearm himself when he takes enough damage. Then, he will set Victorian Artillery to automode and greatly increase his firepower "
+	}
+	"Victoria Castellan Desc"
+	{
+		"en"	" `Did you really thought you could get out this mess that easily?` \nColonel of Victoria's Army. He has mastered skill for explosives and command \nHe wants your death for the amends of Radiotower's destruction. Do we really have to fight him while we got same enemeis in common? \nHe will utilize all of the abilites that previous raidbosses used and often call in for support"
+	}
 }

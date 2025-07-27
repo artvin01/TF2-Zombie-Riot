@@ -174,12 +174,7 @@ public void VictorianSignaller_ClotThink(int iNPC)
 			return;
 		}
 		
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-		if(!NpcStats_IsEnemySilenced(npc.index))
-		{
-			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Ally Empowerment", 1.5);
-		}
-			
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;	
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
