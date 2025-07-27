@@ -22,7 +22,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Invisible_TRIGGER(client, vecPos, vecAng, ally, data);
+	return Invisible_TRIGGER(vecPos, vecAng, ally, data);
 }
 
 methodmap Invisible_TRIGGER < CClotBody
@@ -38,7 +38,7 @@ methodmap Invisible_TRIGGER < CClotBody
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 
-	public Invisible_TRIGGER(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Invisible_TRIGGER(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ally = TFTeam_Stalkers;
 		Invisible_TRIGGER npc = view_as<Invisible_TRIGGER>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "12000", ally));
