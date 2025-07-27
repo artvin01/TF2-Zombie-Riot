@@ -414,7 +414,7 @@ public Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_flReloadDelay = GetGameTime(npc.index) + 1.0;
 		IncreaseEntityDamageTakenBy(npc.index, 0.2, 1.0);
 		npc.DispatchParticleEffect(npc.index, "manmelter_impact_electro", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-		NPC_StopPathing(npc.index);
+		npc.StopPathing();
 		npc.m_bPathing = false;
 		return Plugin_Changed;
 	}
