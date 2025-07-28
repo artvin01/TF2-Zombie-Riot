@@ -2512,6 +2512,7 @@
 	"Alchemist Potion Pap 9"
 	{
 		"en"	"Increased Damage\nM2 now is able to weaken enemy skin, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
+		"ko"	"이제 M2가 대상에게 영구적으로 지속되는 약화 코팅 디버프를 부여하여, 이동 속도 둔화 및 공격력을 감소시킴.\n보스에게는 일정 시간 이후 축소화 디버프가 제거됨.(레이드 보스는 더 빨리 제거됨)"
 	}
 
 	"Crusader Desc"
