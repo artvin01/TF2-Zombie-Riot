@@ -482,7 +482,7 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Health", RoundFloat(flMaxHealth * 0.1));
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Health", RoundFloat(HealthToUse));
 			}
 		}
 		else {
