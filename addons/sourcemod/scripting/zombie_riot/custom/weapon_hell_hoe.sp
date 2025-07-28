@@ -172,7 +172,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 				spawnRing_Vectors(flPos, /*RANGE*/ NIGHTMARE_RADIUS * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 125, 125, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5);
 				
-				Explode_Logic_Custom(flCorruptedLastDmg[client], client, client, -1, flPos, NIGHTMARE_RADIUS, _, _, false, 4,_,_,_,HellHoe_AoeDamageLogic);
+				Explode_Logic_Custom(flCorruptedLastDmg[client], client, client, -1, flPos, NIGHTMARE_RADIUS, _, _, false, 5,_,_,_,HellHoe_AoeDamageLogic);
 
 			}
 		}

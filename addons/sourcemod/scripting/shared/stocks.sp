@@ -3321,7 +3321,7 @@ int inflictor = 0)
 	//Im lazy and dumb, i dont know a better way.
 
 	
-	for (int repeatloop = 0; repeatloop <= maxtargetshit && length > 0; repeatloop++)
+	for (int repeatloop = 0; repeatloop < maxtargetshit && length > 0; repeatloop++)
 	{
 		float ClosestDistance;
 		int ClosestIndex;

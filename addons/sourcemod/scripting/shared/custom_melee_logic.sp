@@ -901,7 +901,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
 				
-			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5,_,_,_,AOEHammerExtraLogic); //Only allow 5 targets hit, otherwise it can be really op.
+			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 6,_,_,_,AOEHammerExtraLogic); //Only allow 5 targets hit, otherwise it can be really op.
 			DataPack pack_boom = new DataPack();
 			pack_boom.WriteFloat(vecHit[0]);
 			pack_boom.WriteFloat(vecHit[1]);

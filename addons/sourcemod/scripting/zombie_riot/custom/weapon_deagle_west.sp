@@ -289,6 +289,7 @@ public void TriggerFinger_UspAbility2(int client, int weapon, bool crit, int slo
 	}
 }
 
+bool FoundTargetRevolver = false;
 // SHERRIF REVOLVER
 public void DepthPerception_RevolverM2(int client, int weapon, bool crit, int slot, int victim)
 {
@@ -313,13 +314,22 @@ public void DepthPerception_RevolverM2(int client, int weapon, bool crit, int sl
 	Ability_Apply_Cooldown(client, slot, 16.0);
 	if(CvarInfiniteCash.BoolValue)
 		Ability_Apply_Cooldown(client, slot, 0.0);
-	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
+	FoundTargetRevolver = false;
 			
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
-	Explode_Logic_Custom(0.0, client, client, weapon, _, 9999.9,_,_,true,4,_,_,SherrifRevolverHit);
+	float flPos[3];
+	GetClientEyePosition(client, flPos);
+	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 9999.9,_,_,true,4,_,_,SherrifRevolverHit);
 	//add LOS check.
 	FinishLagCompensation_Base_boss();
+	if(!FoundTargetRevolver)
+	{
+		Ability_Apply_Cooldown(client, slot, 1.0);
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 	ApplyStatusEffect(client, client, "Depth Percieve", 3.0);
 }
 // SHERRIF REVOLVER
@@ -346,21 +356,29 @@ public void DepthPerception_RevolverM2_PAP(int client, int weapon, bool crit, in
 	Ability_Apply_Cooldown(client, slot, 12.0);
 	if(CvarInfiniteCash.BoolValue)
 		Ability_Apply_Cooldown(client, slot, 0.0);
+	FoundTargetRevolver = false;
 
-	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 			
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	float flPos[3];
 	GetClientEyePosition(client, flPos);
-	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 3000.9,_,_,true,4,_,_,SherrifRevolverHit);
+	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 9999.9,_,_,true,4,_,_,SherrifRevolverHit);
 	//add LOS check.
 	FinishLagCompensation_Base_boss();
+	if(!FoundTargetRevolver)
+	{
+		Ability_Apply_Cooldown(client, slot, 1.0);
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	EmitSoundToAll("items/powerup_pickup_haste.wav", client, _, 70);
 	ApplyStatusEffect(client, client, "Depth Percieve", 3.0);
 }
 
 void SherrifRevolverHit(int entity, int victim, float damage, int weapon)
 {
+	FoundTargetRevolver = true;
 	ApplyStatusEffect(entity, victim, "Depth Percepted", 3.0);
 	StatusEffects_AddDepthPerception_Glow(victim);
 }

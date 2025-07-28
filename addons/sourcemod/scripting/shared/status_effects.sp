@@ -1760,7 +1760,7 @@ void StatusEffects_PotionWand()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Weakening Compound");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "▼");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "\\/");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.35;
 	data.DamageDealMulti			= 0.75;
