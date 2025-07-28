@@ -132,7 +132,10 @@ methodmap Caprinae < CClotBody
 
 		if(npc.Anger)
 		{
-			SetEntityRenderColor(npc.index, 0, 0, 0, 255, _, false, false);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		}
 
 		return npc;
