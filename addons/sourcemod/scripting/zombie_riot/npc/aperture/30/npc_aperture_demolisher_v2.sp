@@ -126,6 +126,8 @@ methodmap ApertureDemolisherV2 < CClotBody
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/sbox2014_killers_kit/sbox2014_killers_kit.mdl");
 
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);

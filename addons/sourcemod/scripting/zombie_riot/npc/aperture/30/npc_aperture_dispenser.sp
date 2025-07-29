@@ -23,13 +23,13 @@ void ApertureDispenser_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Dispenser");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_dispenser");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.Flags = -1;
+	strcopy(data.Icon, sizeof(data.Icon), "dispenser_lite");
+	data.IconCustom = true;
+	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	PrecacheModel("models/buildables/dispenser_lvl3.mdl");
-	GlobalCooldownWarCry = 0.0;
 }
 
 
@@ -73,7 +73,7 @@ methodmap ApertureDispenser < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flRangedArmor = 0.5;
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	

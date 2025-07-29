@@ -133,7 +133,7 @@ methodmap ApertureCombatantPerfected < CClotBody
 	
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/scout/hardhat.mdl");
 		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

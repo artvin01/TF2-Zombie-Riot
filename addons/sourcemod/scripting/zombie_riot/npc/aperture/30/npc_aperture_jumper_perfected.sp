@@ -139,7 +139,7 @@ methodmap ApertureJumperPerfected < CClotBody
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr17_flakcatcher/spr17_flakcatcher.mdl");
 
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

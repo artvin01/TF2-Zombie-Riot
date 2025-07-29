@@ -126,6 +126,8 @@ methodmap ApertureDemolisherPerfected < CClotBody
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec23_trench_warefarer/dec23_trench_warefarer.mdl");
 
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);

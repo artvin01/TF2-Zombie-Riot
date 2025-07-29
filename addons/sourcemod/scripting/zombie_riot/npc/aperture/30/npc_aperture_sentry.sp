@@ -25,8 +25,8 @@ void ApertureSentry_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Sentry");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_sentry");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.Flags = -1;
+	strcopy(data.Icon, sizeof(data.Icon), "sentry_gun_lvl3_lite");
+	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
