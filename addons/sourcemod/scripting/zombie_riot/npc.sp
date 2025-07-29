@@ -1039,8 +1039,10 @@ void NPC_ConfigSetup()
 	ApertureExterminator_OnMapStart_NPC();
 	ApertureSpokesman_OnMapStart_NPC();
 	ApertureResearcher_OnMapStart_NPC();
-	MechaEngineerGiant_OnMapStart_NPC();
-	MechaMedicGiant_OnMapStart_NPC();
+	Aperture_Halter_OnMapStart_NPC();
+	Aperture_Suppressor_OnMapStart_NPC();
+	Aperture_collector_OnMapStart_NPC();
+	Aperture_Fueler_OnMapStart_NPC();
 	Test_OnMapStart_NPC();
 	CAT_OnMapStart_NPC();
 }
@@ -2279,6 +2281,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/40/npc_aperture_repulsor_perfected.sp"
 #include "npc/aperture/40/npc_aperture_supporter_perfected.sp"
 #include "npc/aperture/40/npc_aperture_researcher.sp"
+#include "npc/aperture/npc_halter.sp"
+#include "npc/aperture/npc_suppressor.sp"
+#include "npc/aperture/npc_collector.sp"
+#include "npc/aperture/npc_fueler.sp"
 #include "npc/aperture/npc_temporalanomaly.sp"
 #include "npc/aperture/10/npc_test.sp"
 #include "npc/aperture/raids/npc_cat.sp"
