@@ -926,7 +926,7 @@ void Ravaging_SaySpecialLine()
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client) && GetTeam(client) == 2)
 		{
 			static char buffer[96];
 			GetClientName(client, buffer, sizeof(buffer));
@@ -977,6 +977,10 @@ void Ravaging_SaySpecialLine()
 				victim[victims++] = client;
 			}
 			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "Black_Knight", false))
 			{
 				victim[victims++] = client;
 			}
@@ -1053,6 +1057,11 @@ void Ravaging_SaySpecialLine()
 			{
 				
 				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I vote {crimson}%N{default} for admin! (i dont know who you are)",client);
+			}
+			else if(StrEqual(buffer, "Black_Knight", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Seems i have some hardware issues, can you help me out {crimson}%N{default} ?",client);
 			}
 		}
 	}
