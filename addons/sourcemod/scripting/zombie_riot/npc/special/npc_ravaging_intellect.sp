@@ -984,7 +984,6 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
-			break;
 		}
 	}
 	if(victims)
@@ -1031,7 +1030,7 @@ void Ravaging_SaySpecialLine()
 			else if(StrEqual(buffer, "ficool2", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Arent you supposed to be chilling vscript some more {crimson}%N{default}?",client);
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Aren't you supposed to be shilling vscript some more {crimson}%N{default}?",client);
 			}
 			else if(StrEqual(buffer, "riversid", false))
 			{
