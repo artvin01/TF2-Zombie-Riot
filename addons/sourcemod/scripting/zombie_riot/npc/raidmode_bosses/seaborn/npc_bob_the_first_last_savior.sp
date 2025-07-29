@@ -854,7 +854,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 
 		GiveOneRevive();
-		RaidModeTime += 140.0;
+		RaidModeTime += 60.0;
 
 		npc.m_flRangedArmor = 0.9;
 		npc.m_flMeleeArmor = 1.125;
@@ -994,7 +994,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 			
 			GiveOneRevive();
-			RaidModeTime += 260.0;
+			RaidModeTime += 200.0;
 
 			npc.Anger = true;
 			npc.m_bisWalking = false;
@@ -1160,7 +1160,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								float vecHit[3];
 								WorldSpaceCenter(target, vecHit);
 
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);	
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);	
 								
 								bool Knocked = false;
 
@@ -1176,18 +1176,18 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									}									
 									else
 									{
-										float VulnerabilityToGive = 0.10;
+										float VulnerabilityToGive = 0.20;
 										if(npc.m_bFakeClone)
-											VulnerabilityToGive = 0.05;
+											VulnerabilityToGive = 0.10;
 										IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 									}	
 	
 								}
 								else
 								{
-									float VulnerabilityToGive = 0.10;
+									float VulnerabilityToGive = 0.20;
 									if(npc.m_bFakeClone)
-										VulnerabilityToGive = 0.05;
+										VulnerabilityToGive = 0.10;
 
 									IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
@@ -1219,16 +1219,19 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					WritePackCell(data, 95.0); // Distance
 					WritePackFloat(data, 0.0); // nphi
 					WritePackFloat(data, 250.0); // Range
-					WritePackFloat(data, 1000.0); // Damge
+					WritePackFloat(data, 1500.0); // Damge
 					WritePackCell(data, ref);
 					ResetPack(data);
 					TrueFusionwarrior_IonAttack(data);
-
-					for(int client = 1; client <= MaxClients; client++)
+					
+					int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
+					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+					GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
+					for(int i; i < sizeof(enemy_2); i++)
 					{
-						if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+						if(enemy_2[i])
 						{
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
+							GetEntPropVector(enemy_2[i], Prop_Data, "m_vecAbsOrigin", vecTarget);
 							
 							data = CreateDataPack();
 							WritePackFloat(data, vecTarget[0]);
@@ -1237,7 +1240,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							WritePackCell(data, 160.0); // Distance
 							WritePackFloat(data, 0.0); // nphi
 							WritePackFloat(data, 250.0); // Range
-							WritePackFloat(data, 1000.0); // Damge
+							WritePackFloat(data, 2500.0); // Damge
 							WritePackCell(data, ref);
 							ResetPack(data);
 							TrueFusionwarrior_IonAttack(data);
@@ -1440,11 +1443,39 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 2:
 							{
-								npc.m_bisWalking = false;
-								npc.SetActivity("ACT_COMBO3_BOBPRIME");
-								npc.m_flAttackHappens = gameTime + 3.25;
-								
-								BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								if(npc.m_bFakeClone)
+								{
+									//main bob shouldnt do this long windup kick, takes too long...
+									npc.m_bisWalking = false;
+									npc.SetActivity("ACT_COMBO3_BOBPRIME");
+									npc.m_flAttackHappens = gameTime + 3.25;
+									
+									BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								}
+								else
+								{
+									switch(GetURandomInt() % 2)
+									{
+										case 0:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO1_BOBPRIME");
+											npc.m_iAttackType = 2;
+											npc.m_flAttackHappens = gameTime + 0.916;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+										}
+										case 1:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO2_BOBPRIME");
+											npc.m_iAttackType = 4;
+											npc.m_flAttackHappens = gameTime + 0.5;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+										}
+									}
+								}
 							}
 						}
 
@@ -1581,82 +1612,12 @@ void GiveOneRevive(bool ignorelimit = false)
 	{
 		if(IsClientInGame(client))
 		{
-			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
-			if(glowentity > MaxClients)
-				RemoveEntity(glowentity);
-			
-			glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][1]);
-			if(glowentity > MaxClients)
-				RemoveEntity(glowentity);
-			
-			if(IsPlayerAlive(client))
-			{
-				SetEntityMoveType(client, MOVETYPE_WALK);
-				SDKCall_SetSpeed(client);
-				int entity, i;
-				while(TF2U_GetWearable(client, entity, i))
-				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
-						continue;
-
-					SetEntityRenderMode(entity, RENDER_NORMAL);
-					SetEntityRenderColor(entity, 255, 255, 255, 255);
-				}
-			}
-			
-			ForcePlayerCrouch(client, false);
-			//just make visible.
-			SetEntityRenderMode(client, RENDER_NORMAL);
-			SetEntityRenderColor(client, 255, 255, 255, 255);
-			
 			i_AmountDowned[client]--;
 			if(!ignorelimit && i_AmountDowned[client] < 0)
 				i_AmountDowned[client] = 0;
-			
-			DoOverlay(client, "", 2);
-			if(GetClientTeam(client) == 2)
-			{
-				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
-				{
-					DHook_RespawnPlayer(client);
-					GiveCompleteInvul(client, 2.0);
-				}
-				else if(dieingstate[client] > 0)
-				{
-					GiveCompleteInvul(client, 2.0);
-
-					if(b_LeftForDead[client])
-					{
-						dieingstate[client] = -8; //-8 for incode reasons, check dieing timer.
-					}
-					else
-					{
-						dieingstate[client] = 0;
-					}
-
-					Store_ApplyAttribs(client);
-					SDKCall_SetSpeed(client);
-
-					int entity, i;
-					while(TF2U_GetWearable(client, entity, i))
-					{
-						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
-							continue;
-
-						SetEntityRenderMode(entity, RENDER_NORMAL);
-						SetEntityRenderColor(entity, 255, 255, 255, 255);
-					}
-
-					SetEntityRenderMode(client, RENDER_NORMAL);
-					SetEntityRenderColor(client, 255, 255, 255, 255);
-					SetEntityCollisionGroup(client, 5);
-
-					SetEntityHealth(client, 50);
-					RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
-				}
-			}
 		}
 	}
+	/*
 
 	int a, entity;
 	while((entity = FindEntityByNPC(a)) != -1)
@@ -1671,6 +1632,7 @@ void GiveOneRevive(bool ignorelimit = false)
 
 	CheckAlivePlayers();
 	WaveEndLogicExtra();
+	*/
 }
 
 static void SetupMidWave(int entity)
@@ -1708,11 +1670,11 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 {
 	Enemy enemy;
 
+	health *= 5;
 	enemy.Index = NPC_GetByPlugin(plugin);
-	enemy.Is_Boss = boss;
-	enemy.Is_Health_Scaled = 1;
-	enemy.ExtraMeleeRes = 0.03;
-	enemy.ExtraRangedRes = 0.03;
+	enemy.Is_Boss = view_as<int>(boss);
+	enemy.ExtraMeleeRes = 0.15;
+	enemy.ExtraRangedRes = 0.15;
 	enemy.ExtraSpeed = 1.5;
 	enemy.ExtraDamage = 4.0;
 	enemy.ExtraSize = 1.0;
@@ -1987,7 +1949,8 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
+
+	TimeUntillHit = (TimeUntillHit * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 
@@ -2051,7 +2014,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 		GetBeamDrawStartPoint_Stock(entity, VectorStartEdit,OffsetFromMiddle, AnglesEdit);
 
 		SetColorRGBA(glowColor, red, green, blue, Alpha);
-		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit * ReturnEntityAttackspeed(entity), ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
+		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
 	
@@ -2066,7 +2029,9 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	pack.WriteFloat(VectorStart[2]);
 	pack.WriteFloat(damage);
 	pack.WriteCell(kick);
-	RequestFrames(BobInitiatePunch_DamagePart, FramesUntillHit, pack);
+	// 66.6 assumes normal tickrate.
+	int i_FrameCount = RoundToNearest(TimeUntillHit * 66.6);
+	RequestFrames(BobInitiatePunch_DamagePart, i_FrameCount, pack);
 }
 
 void BobInitiatePunch_DamagePart(DataPack pack)

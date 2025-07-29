@@ -235,6 +235,8 @@ methodmap Kahmlstein < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		SetVariantInt(4);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -247,6 +249,8 @@ methodmap Kahmlstein < CClotBody
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		
@@ -272,14 +276,10 @@ methodmap Kahmlstein < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 21, 71, 171, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 21, 71, 171, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 21, 71, 171, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 21, 71, 171, 255);
 		
 		float flPos[3]; // original
@@ -789,7 +789,11 @@ static void Internal_ClotThink(int iNPC)
 							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
-							
+							float DamageDoExtra = MultiGlobalHealth;
+							if(DamageDoExtra != 1.0)
+							{
+								DamageDoExtra *= 1.5;
+							}
 							if(target > 0) 
 							{
 								if(target <= MaxClients)
@@ -817,16 +821,16 @@ static void Internal_ClotThink(int iNPC)
 										}
 									}
 									fl_kahml_main_melee_damage[npc.index] *= Bonus_damage;
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * DamageDoExtra, DMG_CLUB, -1, _, vecHit);
 								}
 								else if(ShouldNpcDealBonusDamage(target))
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 25.0*fl_kahml_main_melee_damage[npc.index] * DamageDoExtra, DMG_CLUB, -1, _, vecHit);
 								
 								}
 								else
 								{
-									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * MultiGlobalHealth, DMG_CLUB, -1, _, vecHit);
+									SDKHooks_TakeDamage(target, npc.index, npc.index, fl_kahml_main_melee_damage[npc.index] * DamageDoExtra, DMG_CLUB, -1, _, vecHit);
 								}
 								if(IsValidClient(target))
 								{

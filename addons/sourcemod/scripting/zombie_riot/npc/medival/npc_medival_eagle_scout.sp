@@ -187,9 +187,6 @@ methodmap MedivalEagleScout < CClotBody
 		func_NPCOnTakeDamage[npc.index] = MedivalEagleScout_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalEagleScout_ClotThink;
 	
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 340.0;

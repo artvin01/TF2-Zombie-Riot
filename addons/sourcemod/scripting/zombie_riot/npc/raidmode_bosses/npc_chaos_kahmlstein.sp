@@ -287,8 +287,8 @@ methodmap ChaosKahmlstein < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-///		SetVariantInt(4);
-//		AcceptEntityInput(npc.index, "SetBodyGroup");
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -500,16 +500,18 @@ methodmap ChaosKahmlstein < CClotBody
 		
 		int Alpha = 255;
 		if(i_RaidGrantExtra[npc.index] >= 2)
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 			Alpha = 180;
+		}
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 21, 71, 171, Alpha);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 21, 71, 171, Alpha);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 21, 71, 171, Alpha);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 21, 71, 171, Alpha);
 
 //		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -1711,7 +1713,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
+	TimeUntillHit = (TimeUntillHit * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 
@@ -1781,7 +1783,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 		GetBeamDrawStartPoint_Stock(entity, VectorStartEdit_2,OffsetFromMiddle, AnglesEdit);
 
 		SetColorRGBA(glowColor, red, green, blue, Alpha);
-		TE_SetupBeamPoints(VectorStartEdit, VectorStartEdit_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit * ReturnEntityAttackspeed(entity), ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
+		TE_SetupBeamPoints(VectorStartEdit, VectorStartEdit_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
 	
@@ -1796,7 +1798,9 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	pack.WriteFloat(VectorStart[2]);
 	pack.WriteFloat(damage);
 	pack.WriteCell(kick);
-	RequestFrames(KahmlsteinInitiatePunch_DamagePart, FramesUntillHit, pack);
+	// 66.6 assumes normal tickrate.
+	int i_FrameCount = RoundToNearest(TimeUntillHit * 66.6);
+	RequestFrames(KahmlsteinInitiatePunch_DamagePart, i_FrameCount, pack);
 }
 
 void KahmlsteinInitiatePunch_DamagePart(DataPack pack)

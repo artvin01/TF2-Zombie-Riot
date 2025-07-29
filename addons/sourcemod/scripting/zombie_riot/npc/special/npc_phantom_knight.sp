@@ -208,7 +208,6 @@ methodmap PhantomKnight < CClotBody
 		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 200, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
@@ -220,13 +219,9 @@ methodmap PhantomKnight < CClotBody
 		,_,_, 2.0);
 		//face
 
-	//	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-	//	SetEntityRenderColor(npc.m_iWearable3, 130, 130, 130, 255);
-
 		npc.m_iWearable2 = npc.EquipItem("forward", "models/workshop/player/items/soldier/sf14_hellhunters_headpiece/sf14_hellhunters_headpiece.mdl",_,_, 1.2);
 		//Hat
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 200, 200, 255);
 
 
@@ -234,7 +229,6 @@ methodmap PhantomKnight < CClotBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 255, 150, 150, 255);
 		//Cape
 
@@ -717,7 +711,6 @@ public void PhantomKnight_NPCDeath(int entity)
 		DispatchSpawn(entity_death);
 		
 
-		SetEntityRenderMode(prop.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(prop.index, 200, 200, 200, 255);
 
 		prop.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
@@ -729,13 +722,10 @@ public void PhantomKnight_NPCDeath(int entity)
 		,_,_, 2.0);
 		//face
 
-	//	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-	//	SetEntityRenderColor(npc.m_iWearable3, 130, 130, 130, 255);
 
 		prop.m_iWearable2 = prop.EquipItem("forward", "models/workshop/player/items/soldier/sf14_hellhunters_headpiece/sf14_hellhunters_headpiece.mdl",_,_, 1.2);
 		//Hat
 
-		SetEntityRenderMode(prop.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(prop.m_iWearable2, 255, 200, 200, 255);
 
 
@@ -743,7 +733,6 @@ public void PhantomKnight_NPCDeath(int entity)
 		SetVariantString("1.2");
 		AcceptEntityInput(prop.m_iWearable4, "SetModelScale");
 
-		SetEntityRenderMode(prop.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(prop.m_iWearable4, 255, 150, 150, 255);
 		//Cape
 

@@ -327,7 +327,6 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		if(npc.m_flJumpCooldown < gameTime)
 		{
 			npc.m_flJumpCooldown = 0.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);		
 		}
 	}
@@ -821,7 +820,6 @@ public void EnemyFatherGrigori_OnTakeDamagePost(int victim, int attacker, int in
 		npc.PlayAngerSound();
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 30.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0; //Take way less damage for 5 seconds.
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 	}

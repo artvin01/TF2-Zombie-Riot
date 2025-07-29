@@ -142,7 +142,7 @@ methodmap GiantTankus < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flRangedArmor = 0.75;
 		npc.m_flMeleeArmor = 1.25;		

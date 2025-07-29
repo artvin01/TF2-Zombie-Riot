@@ -69,7 +69,7 @@
 	}
 	"Freeze Desc"
 	{
-		"en"	"Increases Damage Taken by 5％\nSlows NPC'S by 5％"
+		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 10％"
 	}
 	"Cryo"
 	{
@@ -77,7 +77,7 @@
 	}
 	"Cryo Desc"
 	{
-		"en"	"Increases Damage Taken by 10％\nSlows NPC'S by 10％"
+		"en"	"Increases Damage Taken by 15％\nSlows NPC'S by 15％"
 	}
 	"Near Zero"
 	{
@@ -85,7 +85,7 @@
 	}
 	"Near Zero Desc"
 	{
-		"en"	"Increases Damage Taken by 15％\nSlows NPC'S by 15％"
+		"en"	"Increases Damage Taken by 20％\nSlows NPC'S by 20％"
 	}
 	"Frozen"
 	{
@@ -93,13 +93,13 @@
 	}
 	"Frozen Desc"
 	{
-		"en"	"Increases Damage Taken by 15％\nStuns for a duration."
+		"en"	"Increases Damage Taken by 20％\nStuns for a duration."
 	}
-	"Shrinking"
+	"Weakening Compound"
 	{
-		"en"	"Shrinking"
+		"en"	"Weakening Compound"
 	}
-	"Shrinking Desc"
+	"Weakening Compound Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 35％\nLowers Damage Delt by 25％"
 	}
@@ -127,11 +127,15 @@
 	{
 		"en"	"Increases Damage Taken by 10％"
 	}
-	"Widows Wine"
+	"Teslar Mule"
 	{
-		"en"	"Widows Wine"
+		"en"	"Teslar Mule"
 	}
-	"Widows Wine Desc"
+	"Energy Drink"
+	{
+		"en"	"Energy Drink"
+	}
+	"Teslar Mule Desc"
 	{
 		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 	}
@@ -261,7 +265,7 @@
 	}
 	"Maimed Desc"
 	{
-		"en"	"Slows NPC'S Movementspeed by 65％"
+		"en"	"Slows NPC'S Movementspeed by 50％"
 	}
 	"Prosperity I"
 	{
@@ -367,6 +371,14 @@
 	{
 		"en"	"Immune to knockback or displacements"
 	}
+	"Raid Strangle Protection"
+	{
+		"en"	"Raid Strangle Protection"
+	}
+	"Raid Strangle Protection Desc"
+	{
+		"en"	"Prevents the buff owners from grabbing the raid twice."
+	}
 	"Fluid Movement"
 	{
 		"en"	"Fluid Movement"
@@ -425,7 +437,7 @@
 	}
 	"Void Strength I Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 20％, If silenced, this is 10％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 5％\nLess damage taken by 15％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 20％"
 	}
 	"Void Strength II"
 	{
@@ -433,7 +445,7 @@
 	}
 	"Void Strength II Desc"
 	{
-		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player/silenced each reduces this by 5％ flat.\nIncreases Damage dealt by 30％, If silenced, this is 15％"
+		"en"	"Heals dependant on ％ of max HP.\nBoosts NPC'S Speed by 15％\nLess damage taken by 20％\nBeing a player each reduces this by 5％ flat.\nIncreases Damage dealt by 30％"
 	}
 	"MERLT0N-BUFF"
 	{
@@ -521,7 +533,7 @@
 	}
 	"Hussar's Warscream Desc"
 	{
-		"en"	"Increases damage dealt by 10％\nBlocked by Silence."
+		"en"	"Increases damage dealt by 10％"
 	}
 	"Flagellants Punishment"
 	{
@@ -845,7 +857,7 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 100％\nDecreases damage dealt by 40％"
+		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
 	}
 	"Tonic Affliction Hide"
 	{
@@ -1373,7 +1385,7 @@
 	}
 	"Plasmic Layering I Desc"
 	{
-		"en" 	"Increases damage and resistance by +15％ while inside the Plasmatized Bubble's radius."
+		"en" 	"Increases damage by +15％ and resistance by +10％ while inside the Plasmatized Bubble's radius."
 	}
 	"Plasmic Layering II"
 	{
@@ -1381,7 +1393,7 @@
 	}
 	"Plasmic Layering II Desc"
 	{
-		"en" 	"Increases damage and resistance by +25％ while inside the Plasmatized Bubble's radius."
+		"en" 	"Increases damage by +25％ and resistance by +15％ while inside the Plasmatized Bubble's radius."
 	}
 	"Ziberian Flagship Weaponry"
 	{
@@ -1446,7 +1458,7 @@
 	}
 	"Liberal Tango Desc"
 	{
-		"en"	"+30％ damage dealt, healing done, and damage reduction"
+		"en"	"+30％ damage dealt, healing done, and +20％ damage reduction"
 	}
 	"Xeno's Territory"
 	{

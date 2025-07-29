@@ -58,8 +58,7 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		"---Loadout Store---\nCredit Points: {1}"
-		"es"		"---Tienda de Equipamiento---\nPuntos de Credito: {1}"
+		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
 	}
 	"Preview Mode Pap"
 	{
@@ -316,7 +315,7 @@
 	}
 	"Sell Items Confirm Pref"
 	{
-		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your loadout store!"
+		"en"		"Are you sure you want to sell all your items?\nYou are still in the rebuy phase and will gain back your Starter Store!"
 	}
 	"Sell All Items"
 	{
@@ -328,8 +327,7 @@
 	}
 	"Confirm Loadout"
 	{
-		"en"		"Confirm & Access Store"
-		"es"		"Confirmar y acceder a la tienda"
+		"en"		"Exit Starter Store"
 	}
 	"N/A"
 	{
@@ -449,6 +447,7 @@
 		"pt"		"Foguetes"
 		"nl"		"Raketten"
 		"chi"       "火箭弹"
+		"ko"		"로켓"
 	}
 	"Flamethrower Tank"
 	{
@@ -1149,9 +1148,9 @@
 		"nl"		"Geen perk"
 		"chi" 		"无 Buff"
 	}
-	"Quick Revive"
+	"Regene Berry"
 	{
-		"en" 		"Quick Revive"
+		"en" 		"Regene Berry"
 		"fr" 		"Résurrection Rapide"
 		"ru" 		"Реаниматор"
 		"de"		"Schnelles Wiederbeleben"
@@ -1159,37 +1158,21 @@
 		"nl"		"Snel tot leven brengen"
 		"chi" 		"快速起身"
 	}
-	"Juggernog"
+	"Obsidian Oaf"
 	{
-		"en" 		"Juggernog"
-		"fr" 		"Juggernog"
-		"ru" 		"Джаггер-фанта"
-		"pt"		"Juggernog"
-		"chi" 		"身体强化"
+		"en" 		"Obsidian Oaf"
 	}
-	"Double Tap"
+	"Morning Coffee"
 	{
-		"en" 		"Double Tap"
-		"fr" 		"Double-Touche"
-		"ru" 		"Пиф-паф"
-		"de"		"Doppeltippen"
-		"pt"		"Toque Duplo"
-		"nl"		"Dubbeltikken"
-		"chi" 		"精神强化"
+		"en" 		"Morning Coffee"
 	}	
-	"Speed Cola"
+	"Hasty Hops"
 	{
-		"en" 		"Speed Cola"
-		"fr" 		"Speed Cola"
-		"ru" 		"Быстрокола"
-		"de"		"Geschwindigkeits Cola"
-		"pt"		"Refri-Veloz"
-		"nl"		"SnelheidsCola"
-		"chi" 		"极速可乐"
+		"en" 		"Hasty Hops"
 	}
-	"Deadshot Daiquiri"
+	"Marksman Beer"
 	{
-		"en" 		"Deadshot Daiquiri"
+		"en" 		"Marksman Beer"
 		"fr" 		"Tir Mortel de Daiquiri"
 		"ru" 		"Снайпер-лайм"
 		"de"		"Todesschuss Daiquiri"
@@ -1198,76 +1181,57 @@
 		"chi" 		"死亡宣告"
 	}
 	
-	"Widows Wine"
+	"Teslar Mule"
 	{
-		"en" 		"Widows Wine"
+		"en" 		"Teslar Mule"
 		"fr" 		"Vin des Veuves"
 		"ru" 		"Вино вдовы"
 		"pt"		"Vinho Viúvo"
 		"nl"		"Wijn van de weduwe"
 		"chi" 		"恶魔领域"
 	}
-	"Recycle Poire"
+	"Stockpile Stout"
 	{
-		"en" 		"Recycle Poiré"
+		"en" 		"Stockpile Stout"
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
 	}
 
-	"Quick Revive Recieved"
+	"Regene Berry Recieved"
 	{
-		"en" 		"QUICK REVIVE! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"en" 		"Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 	}
-	"Juggernog Recieved"
+	"Obsidian Oaf Recieved"
 	{
-		"en" 		"JUGGERNOG! 15％ Damage resistance and +100HP"
-		"fr" 		"JUGGERNOG! 15％ résistance contre les dégats, +100HP"
-		"ru" 		"ДЖАГГЕР-ФАНТА! 15％ сопротивления урону и +100 ед. здоровья"
-		"de"		"JUGGERNOG!	15％ Schaden Resistenz und +100HP"
-		"pt"		"JUGGERNOG! 15％ Resistência a danos e +100HP"
-		"nl"		"JUGGERNOG! 15％ Schade resistentie en +100 levenspunten"
-		"chi" 		"身体强化:获得伤害抗性和生命值提升"
+		"en" 		"Obsidian Oaf! 15％ Damage resistance and +100HP"
 	}
-	"Double Tap Recieved"
+	"Morning Coffee Recieved"
 	{
-		"en" 		"DOUBLE TAP! 17％ Extra attack speed and Building Damage"
-		"fr" 		"DOUBLE-TOUCHE! Attaques 17％ plus rapides, 17％ dégats par vos bâtiments."
-		"ru" 		"ПИФ-ПАФ! 17％ дополнительной скорости атаки и урона у построек"
-		"pt"		"TOQUE DUPLO! 17％ Velocidade de Ataque extra e Dano com construções"
-		"nl"		"DUBBELTIKKEN! 17％ Extra Aanvalssnelheid en Gebouwsschade"
-		"chi" 		"精神强化:攻击速度提升、建筑伤害提升"
+		"en" 		"Morning Coffee! 17％ Extra attack speed and Building Damage"
 	}	
-	"Speed Cola Recieved"
+	"Hasty Hops Recieved"
 	{
-		"en" 		"SPEED COLA! 1.42x Extra reload, switchspeed and Mana regen"
-		"fr" 		"SPEED COLA! 1.42x vitesse de recharge de munitions et de Mana, vitesse de changement d'arme."
+		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
 	}
-	"Deadshot Daiquiri Recieved"
+	"Marksman Beer Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
-		"fr" 		"TIR MORTEL DAIQUIRI! 1.2x précision d'armes, 1.25x dégats par Tirs en Pleine Tête ou par Poignardage,\n 1.2x vitesse des projectiles."
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.2x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
-		"chi"       "死神射击:提升1.2倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
+		"en" 		"Marksman Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 	}
-	"Widows Wine Recieved"
+	"Teslar Mule Recieved"
 	{
-		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75％ des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35％ plus de dégats et se ralentissent considérablement."
-		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
-		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
-		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
-		"chi" 		"恶魔领域:当激活时，格挡75%的僵尸伤害并减速，对减速的僵尸额外造成35%的伤害"
+		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
 	}
-	"Recycle Poire Recieved"
+	"Stockpile Stout Recieved"
 	{
-		"en" 		"RECYCLE POIRÉ! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
-		"fr" 		"RECYCLAGE POIRÉ! 33％ plus de munitions provenant hors de la boutique, 50％ plus d'armure.\nVous recevrez 2x plus de Réserves de Munitions."
-		"pt"		"PÊRA RECICLADA! 1.33x Munição de todas as fontes que não são a loja, e 1.5x mais ganho e armadura máxima\nVocê ganha 2x mais munição de suprimentos"
-		"chi"		"超级回收:所有非商店弹药增加33％+最大护甲值和护甲增益增加50％+2倍弹药补给"
+		"en" 		"Stockpile Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+	}
+	"Energy Drink Recieved"
+	{
+		"en" 		"Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -1588,6 +1552,16 @@
 		"pt"		"Está arma não pode ser melhorada."
 		"nl"		"Uw huidig wapen kan niet worden gePack-A-Punched."
 		"chi"       "你的武器不能升级"
+	}
+	"Pap Weapon Upgraded"
+	{
+		"#format"	"{1:s}"
+		"en"		"Your weapon has been upgraded to {1}:"
+	}
+	"Pap Weapon Preview"
+	{
+		"#format"	"{1:s}"
+		"en"		"Pack-a-Punch preview for {1}:"
 	}
 	"Revive Teammate tooltip"
 	{
@@ -2597,9 +2571,9 @@
 		"en"		"Disable Map Music"
 		"fr"		"Désactiver Musique"
 	}	
-	"You have been Infected by Nemesis"
+	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Nemesis!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
+		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -3010,10 +2984,7 @@
 	}
 	"Barracks Donjon Desc"
 	{
-		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
-		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Échange 1 espace de déploiement pour plus d'améliorations."
-		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
-		"chi"		"增加生命值，伤害和箭数，你失去1个补给槽，解锁更多升级。"
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 	}
 	"Barracks Krepost"
 	{
@@ -3205,10 +3176,7 @@
 	}
 	"Barracks Exquisite Housing Desc"
 	{
-		"en"		"Gain back your lost 1 deployment slot from making a tower."
-		"fr"		"Récuperez l'espace de déploiement que vous avez perdu lors de la construction d'une tour."
-		"ru"		"Верните себе 1 ячейку развёртывания, потерянную при создании башни."
-		"chi"       "从制作塔中获得丢失的1个部署槽位。"
+		"en"		"Make Units 20％ faster."
 	}
 	"Barracks Villager Desc"
 	{
@@ -4071,19 +4039,19 @@
 	}
 	"DPS Class"
 	{
-		"en"	"DPS Class\nFocus on damage and get Speed Cola perk"
+		"en"	"DPS Class\nFocus on damage and get Hasty Hops perk"
 	}
 	"Tank Class"
 	{
-		"en"	"Tank Class\nFocus on tanking and get Juggernog perk"
+		"en"	"Tank Class\nFocus on tanking and get Obsidian Oaf perk"
 	}
 	"Healer Class"
 	{
-		"en"	"Healer Class\nAble to heal, less DPS, and get Quick Revive perk"
+		"en"	"Healer Class\nAble to heal, less DPS, and get Regene Berry perk"
 	}
 	"Builder Class"
 	{
-		"en"	"Builder Class\nAble to build, repair, and get Double Tap perk"
+		"en"	"Builder Class\nAble to build, repair, and get Morning Coffee perk"
 	}
 	"Don't Follow Me"
 	{
@@ -4238,7 +4206,7 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the loadout store!\nConfirm your loadout in the store menu to get access to more weapons and cash from the waves!"
+		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
 	}
 	"Getting favorite loadout"
 	{

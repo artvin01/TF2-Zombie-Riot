@@ -183,8 +183,6 @@ methodmap MedivalRiddenArcher < CClotBody
 		func_NPCThink[npc.index] = MedivalRiddenArcher_ClotThink;
 		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_RiddenArcher;
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;

@@ -199,7 +199,6 @@ methodmap XenoCombineDDT < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 255, 192, 255);
 		
 		npc.StartPathing();
@@ -397,16 +396,16 @@ public Action XenoCombineDDT_Revert_Poison_Zombie_Resistance(Handle timer, int r
 	if(IsValidEntity(zombie))
 	{
 		XenoCombineDDT npc = view_as<XenoCombineDDT>(zombie);
-		SetEntityRenderMode(zombie, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(zombie, RENDER_NORMAL);
 		SetEntityRenderColor(zombie, 192, 255, 192, 255);
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 192, 255, 192, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable2))
 		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 192, 255, 192, 255);
 		}
 	}

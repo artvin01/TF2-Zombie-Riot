@@ -765,7 +765,7 @@ methodmap Twirl < CClotBody
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 
-		//data: sc%% ; test, verkia, force15, force30, force45, force60, triple_enemies, final_item, blockinv, anger
+		//data: sc%% ; test, verkia, force10, force20, force30, force40, triple_enemies, final_item, blockinv, anger
 		
 		npc.m_iChanged_WalkCycle = 1;
 		npc.m_iBarrageAmmo = 0;
@@ -932,7 +932,7 @@ methodmap Twirl < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
-		npc.m_iWearable2 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
+		npc.m_iWearable2 = npc.EquipItem("head", WINGS_MODELS_1);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl", _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl", _, skin);
@@ -942,10 +942,10 @@ methodmap Twirl < CClotBody
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		
-		SetVariantInt(RUINA_WINGS_4);
-		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		SetVariantInt(WINGS_TWIRL);
+		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 
 		npc.Anger = false;
 
@@ -1245,7 +1245,6 @@ static void ClotThink(int iNPC)
 		RemoveSpecificBuff(npc.index, "Solid Stance");
 		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		Explode_Logic_Custom(500.0*RaidModeScaling, npc.index, npc.index, -1, VecSelfNpc, 350.0, _, _, true, _, false, _, LifelossExplosion);
@@ -1528,7 +1527,7 @@ static void Final_Invocation(Twirl npc)
 	{
 		float AproxRandomSpaceToWalkTo[3];
 		WorldSpaceCenter(npc.index, AproxRandomSpaceToWalkTo);
-		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force60;raid;noweaver;full");
+		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force40;raid;noweaver;full");
 		if(spawn_index > MaxClients)
 		{
 			NpcStats_CopyStats(npc.index, spawn_index);
@@ -1575,6 +1574,8 @@ static void Final_Invocation(Twirl npc)
 	
 	RaidModeTime += 60.0;
 
+	/*
+	simply un comment to readd.
 	GiveOneRevive(false);
 
 	if(!b_force_transformation)
@@ -1594,7 +1595,7 @@ static void Final_Invocation(Twirl npc)
 			HealEntityGlobal(i, i, float(SDKCall_GetMaxHealth(i)) * 0.5, 1.0, 1.0, HEAL_ABSOLUTE);
 			CPrintToChat(i, "{green}Adrenalive rushes through your body, healing you and giving you an extra revive.");
 		}
-	}
+	}*/
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1687,13 +1688,11 @@ static void lunar_Radiance(Twirl npc)
 			RemoveEntity(ent2);
 	}
 
-	
-
 	npc.m_flLunarThrottle = GameTime + 0.5;
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
 	npc.m_flDoingAnimation = GameTime + 2.5;
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	npc.m_flLunarTimer = 0.0;
@@ -1726,7 +1725,7 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 	npc.m_flSpeed = fl_npc_basespeed;
@@ -2245,7 +2244,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 	float Windup = 2.0;
@@ -2645,7 +2644,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		}
 		npc.m_iBarrageAmmo = 0;
@@ -2663,7 +2662,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		}
 		return;
@@ -2685,7 +2684,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	if(IsValidEntity(npc.m_iWearable1))
 	{
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 	}
 	
@@ -3023,7 +3022,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
@@ -3064,7 +3063,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -3307,7 +3306,7 @@ static bool IonicFracture(Twirl npc)
 
 	NPCStats_RemoveAllDebuffs(npc.index);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	npc.m_flIonicFractureCD = GameTime + (npc.Anger ? 90.0 : 120.0);
@@ -3542,6 +3541,30 @@ static Action IonicFracture_Think(int iNPC)
 	}
 	return Plugin_Continue;
 }
+//usefull for ion pillar indicators, creates a ring at roughly the eye height of a the player it renders it to
+static void IonPillarRadiusIndicator(float Loc[3], float radius, int color[4])
+{
+	float offset_radius = radius * 4.0;
+	float dist_Check = (offset_radius * offset_radius);
+	for(int i=1 ; i < MaxClients ; i++)
+	{
+		if(!IsValidClient(i) || !IsClientInGame(i))
+			continue;
+
+		float clientLoc[3]; GetClientEyePosition(i, clientLoc);
+		float offsetLoc[3]; offsetLoc = Loc;
+		offsetLoc[2] = clientLoc[2] - 25.0;
+
+		float dist = GetVectorDistance(clientLoc, offsetLoc, true);
+
+		//no need to render this one since the client is far enough away to not care.
+		if(dist > dist_Check)
+			continue;
+
+		TE_SetupBeamRingPoint(offsetLoc, 2.0*radius + 0.5, 2.0*radius, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, TWIRL_TE_DURATION, 10.0, 0.1, color, 1, 0);
+		TE_SendToClient(i);
+	}
+}
 static Action IonicFracture_ProjectileThink(int entity)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -3595,11 +3618,9 @@ static Action IonicFracture_ProjectileThink(int entity)
 		return Plugin_Continue;
 
 	// do visuals
-	int Beam_Index = g_Ruina_BEAM_Combine_Blue;
 
 	float sky[3]; sky = ProjectileLoc; sky[2]+=1500.0; 
-	float ground[3]; ground = ProjectileLoc;
-	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, ground); ground[2]-=50.0;
+	float ground[3]; ground = ProjectileLoc; ground[2]-=1500.0;
 
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
@@ -3609,7 +3630,9 @@ static Action IonicFracture_ProjectileThink(int entity)
 
 	float TE_Duration = TWIRL_TE_DURATION;
 
-	TE_SetupBeamPoints(ground, sky, Beam_Index,	g_Ruina_BEAM_Combine_Black, 0, 66, TE_Duration, Diameter_Rng, Diameter_Rng, 0, 0.1, color, 3);
+	IonPillarRadiusIndicator(ground, diameter, color);
+
+	TE_SetupBeamPoints(ground, sky, g_Ruina_BEAM_Combine_Blue,	g_Ruina_BEAM_Combine_Black, 0, 66, TE_Duration, Diameter_Rng, Diameter_Rng, 0, 0.1, color, 3);
 	TE_SendToAll(0.0);
 
 	//do dmg
@@ -3657,7 +3680,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 	//EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
@@ -3712,7 +3735,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bInKame = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -3983,7 +4006,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayAngerSound();
 
 		npc.m_bisWalking = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
 		npc.m_flSpeed = 0.0;

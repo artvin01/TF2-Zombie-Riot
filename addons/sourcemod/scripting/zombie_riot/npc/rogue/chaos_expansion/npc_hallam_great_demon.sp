@@ -163,11 +163,8 @@ methodmap HallamGreatDemon < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 65, 65, 65, 200);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 65, 65, 65, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 65, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 65, 65, 65, 255);
 		
 		float flPos[3], flAng[3];
@@ -427,7 +424,6 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 15, 15, 15, 255);
 					
 					WorldSpaceCenter(entity, vPredictedPos);

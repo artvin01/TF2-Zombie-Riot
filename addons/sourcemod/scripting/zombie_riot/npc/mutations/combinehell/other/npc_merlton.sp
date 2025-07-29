@@ -164,7 +164,6 @@ methodmap Merlton_Boss < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		if(!clone)
 		{

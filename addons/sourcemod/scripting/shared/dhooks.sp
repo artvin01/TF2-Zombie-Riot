@@ -12,12 +12,8 @@ static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXPLAYERS];
 Handle g_DhookWantsLagCompensationOnEntity;
 
-#if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
-//static bool Disconnecting;
-//DynamicHook g_ObjStartUpgrading;
 static DynamicHook g_DHookScoutSecondaryFire; 
-#endif
 
 #if defined ZR
 static bool IsRespawning;
@@ -28,7 +24,6 @@ static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DhookCrossbowHolster;
 DynamicHook g_DhookUpdateTransmitState; 
 
-static DynamicDetour g_CalcPlayerScore;
 static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
@@ -130,17 +125,7 @@ void DHook_Setup()
 	DHookEnableDetour(dtWeaponFinishReload, true, OnWeaponReplenishClipPost);
 #endif
 	
-	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
-	if (!(g_CalcPlayerScore = DHookCreateDetour(Address_Null, CallConv_CDECL, ReturnType_Int, ThisPointer_Ignore)))
-	{
-		SetFailState("Failed to create detour for CTFGameRules::CalcPlayerScore");
-	}
-	if (DHookSetFromConf(g_CalcPlayerScore, gamedata, SDKConf_Signature, "CTFGameRules::CalcPlayerScore"))
-	{
-		g_CalcPlayerScore.AddParam(HookParamType_Int);
-		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);
-		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
-	}
+	DHook_CreateDetour(gamedata, "CTFGameRules::CalcPlayerScore", Detour_CalcPlayerScore);
 
 	HookItemIterateAttribute = DynamicHook.FromConf(gamedata, "CEconItemView::IterateAttributes");
 
@@ -1784,20 +1769,17 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		ClientCommand(owner, "playgamesound items/medshotno1.wav");
 		SetGlobalTransTarget(owner);
-		PrintHintText(owner,"%N %t", target, "Is already at full hp");
 		
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);
 	}
 	else
 	{
-		int HealedFor = HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
+		HealEntityGlobal(owner, target, HealAmmount, 1.0, 1.0, _);
 		
 		ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 		SetGlobalTransTarget(owner);
-		
-		PrintHintText(owner,"%t", "You healed for", target, HealedFor);
 			
 		ApplyStatusEffect(owner, owner, 	"Healing Resolve", 5.0);
 		ApplyStatusEffect(owner, target, 	"Healing Resolve", 15.0);

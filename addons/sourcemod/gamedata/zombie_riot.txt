@@ -848,6 +848,24 @@
 					}
 				}
 			}
+			"CTFGameRules::CalcPlayerScore"
+			{
+				"signature"	"CTFGameRules::CalcPlayerScore"
+				"callconv"	"cdecl"
+				"return"	"int"
+				"this"		"ignore"
+				"arguments"
+				{
+					"value1"
+					{
+						"type"	"int"
+					}
+					"cPlayer"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
 		}
 		"Offsets"
 		{

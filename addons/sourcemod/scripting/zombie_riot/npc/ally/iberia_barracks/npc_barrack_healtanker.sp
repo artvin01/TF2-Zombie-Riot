@@ -110,6 +110,8 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 		func_NPCThink[npc.index] = Barracks_Iberia_Healtanker_ClotThink;
 		npc.m_flSpeed = 200.0;
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
@@ -128,9 +130,7 @@ methodmap  Barracks_Iberia_Healtanker < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_war_helmet_s1/sbox2014_war_helmet_s1.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/eotl_sheavyshirt/eotl_sheavyshirt.mdl", "" , skin);
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 120, 120, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 100, 100, 100, 250);
 
 		return npc;

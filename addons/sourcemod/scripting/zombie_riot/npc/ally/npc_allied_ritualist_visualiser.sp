@@ -131,7 +131,6 @@ methodmap AlliedRitualistAbility < CClotBody
 							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 						}
-						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 255);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}

@@ -469,9 +469,9 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false, bool NeedLOSPlayer = false)
 {
-	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue)
+	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		return 3;
 	
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
@@ -541,6 +541,28 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 			
 		if(IsBoxHazard(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again)) //Retry.
 			continue;
+
+		if(NeedLOSPlayer)
+		{
+			DoNotTeleport = true;
+			float f3_PositionTemp[3];
+			f3_PositionTemp = AproxRandomSpaceToWalkTo;
+			f3_PositionTemp[2] += 40.0;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+				{		
+					if(Can_I_See_Enemy_Only(client_check,client_check, f3_PositionTemp))
+					{
+						DoNotTeleport = false;
+						break;
+					}
+				}
+			}
+			//fail, try again.
+			if(DoNotTeleport)
+				continue;
+		}
 		
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);

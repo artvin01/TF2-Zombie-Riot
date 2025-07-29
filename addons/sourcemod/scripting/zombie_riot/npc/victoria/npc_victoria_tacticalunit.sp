@@ -255,7 +255,6 @@ static void VictoriaTacticalunit_ClotThink(int iNPC)
 			npc.m_iWearable7 = ConnectWithBeam(npc.m_iWearable2, target, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
 			if(IsValidEntity(npc.m_iWearable7))
 			{
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 255, 13, 13, 255);
 			}
 			npc.PlayDronPingSound();

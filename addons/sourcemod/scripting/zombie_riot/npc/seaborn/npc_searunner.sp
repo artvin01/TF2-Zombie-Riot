@@ -105,7 +105,6 @@ methodmap SeaRunner < CSeaBody
 		npc.m_flAttackHappens = 0.0;
 		f_ExtraOffsetNpcHudAbove[npc.index] = -65.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
 		return npc;
 	}

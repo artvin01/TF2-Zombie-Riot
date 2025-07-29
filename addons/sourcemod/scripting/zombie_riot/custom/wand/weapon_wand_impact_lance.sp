@@ -348,7 +348,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		i_rocket_particle[entity]= EntIndexToEntRef(particle);
 		TeleportEntity(particle, NULL_VECTOR, fAng, NULL_VECTOR);
 		SetParent(entity, particle);	
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 		SetEntityRenderColor(entity, 255, 255, 255, 0);
 
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);

@@ -170,15 +170,11 @@ methodmap XenoMalfuncRobot < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum22_combat_casual/sum22_combat_casual.mdl", "", skin);
 		//npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec22_heavy_heating_style3/dec22_heavy_heating_style3.mdl", "", skin);//breaks
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_horror_shawl_style2/hwn2022_horror_shawl_style2.mdl", "", skin);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 255, 150, 255);
 
 		func_NPCDeath[npc.index] = XenoMalfuncRobot_NPCDeath;

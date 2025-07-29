@@ -447,7 +447,7 @@ public Action XenoCombineSwordsman_OnTakeDamage(int victim, int &attacker, int &
 		{
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 0.5;
 			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		}
 	}

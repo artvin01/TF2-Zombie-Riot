@@ -270,7 +270,6 @@ public void MedicHealer_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
 		
 			if(IsValidEntity(npc.m_iWearable4))

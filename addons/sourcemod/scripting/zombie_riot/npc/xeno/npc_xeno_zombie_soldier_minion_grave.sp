@@ -168,7 +168,6 @@ methodmap XenoSoldierMinion < CClotBody
 		npc.StartPathing();
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 		

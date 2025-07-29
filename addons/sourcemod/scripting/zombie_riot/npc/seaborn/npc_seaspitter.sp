@@ -112,7 +112,6 @@ methodmap SeaSpitter < CSeaBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 255, 255);
 		return npc;
 	}
@@ -174,7 +173,6 @@ public void SeaSpitter_ClotThink(int iNPC)
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
 					WorldSpaceCenter(entity, vecTarget);

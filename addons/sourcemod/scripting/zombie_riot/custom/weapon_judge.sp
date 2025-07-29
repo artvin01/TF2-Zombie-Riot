@@ -166,7 +166,7 @@ float GetJudgeReloadCooldown(float cooldown, int client)
 	float returncooldown;
 	returncooldown = cooldown;
 
-	if(i_CurrentEquippedPerk[client] == 4) //speed cola
+	if(i_CurrentEquippedPerk[client] == 4)
 		returncooldown *= 0.65;
 
 	return returncooldown;

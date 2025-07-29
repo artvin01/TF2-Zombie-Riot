@@ -1083,8 +1083,7 @@ void Construction_ClotThink(int entity)
 		{
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NpcIsInvulnerable[npc.index] = true;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR, false, 1, false, true);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 150, false, false, true);
+			SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
 		}
 	}
 	else
@@ -1093,9 +1092,7 @@ void Construction_ClotThink(int entity)
 		{
 			b_ThisEntityIgnored[npc.index] = false;
 			b_NpcIsInvulnerable[npc.index] = false;
-			SetEntityRenderMode(npc.index, i_EntityRenderMode[npc.index], true, 2, false, true);
-			SetEntityRenderColor(npc.index, i_EntityRenderColour1[npc.index], i_EntityRenderColour2[npc.index],
-			 i_EntityRenderColour3[npc.index], i_EntityRenderColour4[npc.index], true, false, true);
+			SetEntityRenderFx(npc.index, RENDERFX_NONE);
 		}
 	}
 }

@@ -197,7 +197,6 @@ methodmap SeabornCombinePoliceSmg < CClotBody
 		func_NPCOnTakeDamage[npc.index] = SeabornCombinePoliceSmg_OnTakeDamage;
 		func_NPCThink[npc.index] = SeabornCombinePoliceSmg_ClotThink;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_smg1.mdl");
 		SetVariantString("1.15");

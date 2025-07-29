@@ -104,7 +104,6 @@ methodmap SeabornDefender < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		
 		switch(Waves_GetRoundScale() % 3)
 		{
@@ -134,9 +133,7 @@ methodmap SeabornDefender < CClotBody
 		}
 		else
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
 		}
 		return npc;

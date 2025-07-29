@@ -196,7 +196,7 @@ methodmap Heliara < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,2.0,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.25,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_HALO_1);

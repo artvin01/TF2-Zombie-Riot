@@ -2134,9 +2134,7 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x2 the damage from bleeding."
-		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 2x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
-		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х2 урона от кровотечения."
+		"en"	"Increases fire rate, and metallic enemies suffer x2 the damage from bleeding."
 	}
 	"Alchemist Potion Pap 4"
 	{
@@ -2181,10 +2179,7 @@
 	}
 	"Alchemist Potion Pap 9"
 	{
-		"en"	"Increased Damage\nM2 now is able to shrink enemies, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
-		"fr"	"Potion secondaire fait rétrécir les ennemis, les faisant plus long et réduit leurs dégats.\nLes boss retourneront à normal après quelques secondes. Les Raids deviennent plus vites."
-		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление и заставляя наносить меньше урона.\nБоссы будут снимать этот эффект через несколько секунд, а рейды ещё быстрее."
-		"chi"	"M2现可缩小敌人，造成永久debuff - 减速及低伤害。\n精英怪和boss可以在一定时间内移除效果。"
+		"en"	"Increased Damage\nM2 now is able to weaken enemy skin, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
 	}
 
 	"Crusader Desc"
@@ -2209,9 +2204,7 @@
 	}
 	"Barracks Desc Extra"
 	{
-		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
-		"fr"	"Résurrection Rapide: soigne vos unités automatiquement\nVin des Veuves: affaiblit les ennemis frappés\nDaiquiri: 1.25x dégats à distance\nDouble-Touche: 1.15x cadence des attaques\nSpeed Cola: 1.25x vitesse\nRecyclage Poiré: 1.25x gain de ressources\nJuggernog: 1.3x santé, 1.15x résistance"
-		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
+		"en"	"Perks work on your minions!"
 	}
 	"Barracks Desc Extra 2"
 	{
@@ -2740,9 +2733,7 @@
 	}
 	"Old Wooden Board Desc"
 	{
-		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nScales with melee upgrades and attackspeed.\nDefence rating: 10％"
-		"fr"	"Un «bouclier» qui absorbe les dégats et bloque les attaques pour faire des dégats.\nVous soigne quand vous êtes hors du combat.\nS'améliore avec les améliorations corps-à-corps.\nRang de défense: 10％"
-		"chi"	"一个''盾牌''。\n吸收部分伤害并可以盾反，造成伤害。\n自带回血，受伤时或者换武器时暂停。\n''防御评分：10％''"
+		"en"	"A ''shield'' that let's you absorb damage and parry enemies for damage.\nDefence rating: 10％\nParrying 3 attacks or 1 raid attack gives it an extra cooldown."
 	}
 	"Spike Shield Desc"
 	{
@@ -3437,9 +3428,7 @@
 	}
 	"Flash Grenade Pap Desc"
 	{
-		"en"	"Now also briefly stuns enemies."
-		"fr"	"Étonne aussi les ennemis."
-		"chi"	"可短暂眩晕敌人。"
+		"en"	"Now also briefly stuns enemies.\nDuring raids it has 3x the cooldown."
 	}
 	"Outlaw Railcannon Desc"
 	{
@@ -3607,6 +3596,10 @@
 	{
 		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
 	}
+	"Tinker Pap 7 Desc"
+	{
+		"en"	"Improved stats."
+	}
 	"West Pap 1 Desc"
 	{
 		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire.\nYou loose guranteed gibs."
@@ -3673,15 +3666,51 @@
 		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
 		"ko"	"'유형: 빅토리아'인 다른 무기에 폭발 범위 +10％"
 	}
-	"VictorianLauncher 4 Perk Desc"
-	{
-		"en"	"Reduced Over Heated Duration by 25％"
-		"ko"	"과열 지속시간 25％ 감소"
-	}
 	"VictorianLauncher 5 Perk Desc"
 	{
 		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
 		"ko"	"추가 투사체 속도 +200Hu\n조준 지원 활성화"
+	}
+	"VictorianLauncher 5 Perk On"
+	{
+		"en"	"[Aim Assist Online]"
+		"ko"	"[조준 지원 활성화]"
+	}
+	"VictorianLauncher OverHeated"
+	{
+		"en"	"!OVERHEATED! [DMG X0.5]"
+		"ko"	"!과열됨! [피해량 X0.5]"
+	}
+	"VictorianLauncher OverDrive"
+	{
+		"en"	"!OVERDRIVE! [Gradually lose HP]"
+		"ko"	"!과부하! [체력 지속 감소]"
+	}
+	"VictorianLauncher RapidFire"
+	{
+		"en"	"Rapid Fire"
+		"ko"	"속사 모드"
+	}
+	"VictorianLauncher ManuallyR"
+	{
+		"en"	"Press R Again to Manually Deactivate"
+		"ko"	"R키를 눌러 수동 종료"
+	}
+	"VictorianLauncher CRockets"
+	{
+		"en"	"Charged Rockets"
+		"ko"	"고폭 로켓"
+	}
+	"VictorianLauncher SuperShot"
+	{
+		"#format"	"{1:i}"
+		"en"	"SUPER SHOT READY! [Next shot: X {1} DMG]"
+		"ko"	"전탄발사 준비! [다음 공격 피해량 X {1}]"
+	}
+	"VictorianLauncher ManuallyM2"
+	{
+		"en"	"Press M2 Again to Fire all at once"
+		"ko"	"M2를 눌러 전탄발사 준비"
 	}
 	"The Merchant Desc"
 	{
@@ -3951,7 +3980,7 @@
 	}
 	"Telekinesis PaP 2"
 	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses."
+		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nCan now grab raid bosses, once per raid."
 		"chi"	"''这款药的戒断后果十分严重。你的时间观念会降至近零。将你困在死前最后一刻，直到永恒…\n…但这些药用不完的…\n…对吧？\n现可抓RAIDBOSS。''"
 	}
 	"Newtonian Knuckles Desc"
@@ -3971,10 +4000,6 @@
 	"Telekinesis PaP 1"
 	{
 		"en"	"You may now grab bosses, raids included. Held enemies are strangled and take more damage."
-	}
-	"Telekinesis PaP 2"
-	{
-		"en"	"''The withdrawal symptoms of this drug will slow your perception of time to near-zero, trapping you in the moment of your death for eternity...\nThat sure would suck! Good thing you'll never run out. Right?''\nIncreases to all stats."
 	}
 	"Newtonian Knuckles Desc"
 	{

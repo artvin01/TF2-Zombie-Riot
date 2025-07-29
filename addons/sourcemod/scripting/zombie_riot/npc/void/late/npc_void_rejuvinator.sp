@@ -152,17 +152,11 @@ methodmap VoidRejuvinator < CClotBody
 		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 125, 0, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 125, 0, 125, 255);
 		
 		return npc;
@@ -271,25 +265,11 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 				npc.m_bnew_target = true;
 			}
 
-			if(!NpcStats_IsEnemySilenced(npc.index))
+			if(IsValidEntity(npc.m_iWearable4))
 			{
-				if(IsValidEntity(npc.m_iWearable4))
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
-				}
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, 999999.9, 1.5);
+				SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
 			}
-			else
-			{
-				if(IsValidEntity(npc.m_iWearable4))
-				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 200, 50, 200, 255);
-				}
-				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 50), 1.5);
-			}
+			HealEntityGlobal(npc.index, PrimaryThreatIndex, 999999.9, 1.5);
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 			npc.FaceTowards(WorldSpaceVec, 2000.0);
 		}

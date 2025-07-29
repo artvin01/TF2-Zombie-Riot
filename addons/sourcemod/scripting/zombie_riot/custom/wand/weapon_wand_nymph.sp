@@ -114,8 +114,8 @@ public void Weapon_Nymph_ActivateAbility(int client, int weapon, bool crit, int 
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0);
 				IsAbilityActive[client] = 1;
-				ApplyTempAttrib(weapon, 6, 0.6, 15.0);
-				ApplyTempAttrib(weapon, 410, 2.2, 15.0);
+				ApplyTempAttrib(weapon, 6, 0.75, 15.0);
+				ApplyTempAttrib(weapon, 410, 1.65, 15.0);
 				CreateTimer(15.0, Disable_Nymph_Ability, client);
 			}
 			else

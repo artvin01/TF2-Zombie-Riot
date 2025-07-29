@@ -169,8 +169,6 @@ methodmap MedivalHandCannoneer < CClotBody
 		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_HandCannoneer;
 		
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;

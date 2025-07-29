@@ -194,7 +194,6 @@ methodmap XenoCombineDeutsch < CClotBody
 		func_NPCDeath[npc.index] = XenoCombineDeutsch_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoCombineDeutsch_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoCombineDeutsch_ClotThink;		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 
 		npc.m_flSpeed = 190.0;
@@ -221,11 +220,8 @@ methodmap XenoCombineDeutsch < CClotBody
 		npc.StartPathing();
 		
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 		
 		return npc;

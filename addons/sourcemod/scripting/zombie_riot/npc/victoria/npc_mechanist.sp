@@ -184,14 +184,12 @@ methodmap VictorianMechanist_as < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
 		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum23_cranium_cooler/sum23_cranium_cooler.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec23_sleuth_suit_style3/dec23_sleuth_suit_style3.mdl");
@@ -221,7 +219,7 @@ methodmap VictorianMechanist_as < CClotBody
 				EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, 1.0);
 			}
 			LastSpawnDiversio = GetGameTime() + 20.0;
-			if(!zr_disablerandomvillagerspawn.BoolValue)
+			if(!zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 			{
 				int AreasCollected = 0;
 				float CurrentPoints = 0.0;

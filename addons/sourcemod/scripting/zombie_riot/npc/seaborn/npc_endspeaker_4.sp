@@ -9,7 +9,7 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
 
 		char health[12];
-		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 4, health, sizeof(health));
+		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 7, health, sizeof(health));
 
 		EndSpeaker4 npc = view_as<EndSpeaker4>(CClotBody(vecPos, vecAng, "models/antlion_guard.mdl", "1.15", health, ally, false, true));
 		
@@ -36,7 +36,6 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 255, 255);
 		
 		if(!npc.m_bHardMode && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
@@ -46,6 +45,8 @@ methodmap EndSpeaker4 < EndSpeakerLarge
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		return npc;
@@ -115,7 +116,12 @@ public void EndSpeaker4_ClotThink(int iNPC)
 								attack *= 15.0;
 							
 							KillFeed_SetKillIcon(npc.index, "warrior_spirit");
-							attack*= MultiGlobalHealth; //Incase too many enemies, boost damage.
+							float DamageDoExtra = MultiGlobalHealth;
+							if(DamageDoExtra != 1.0)
+							{
+								DamageDoExtra *= 1.5;
+							}
+							attack*= DamageDoExtra; //Incase too many enemies, boost damage.
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 							if(target <= MaxClients)
 								Custom_Knockback(npc.index, target, attack * 2.0);
@@ -132,7 +138,12 @@ public void EndSpeaker4_ClotThink(int iNPC)
 				{
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _, vecTarget);
 					
-					attack *= MultiGlobalHealth; //Incase too many enemies, boost damage.
+					float DamageDoExtra = MultiGlobalHealth;
+					if(DamageDoExtra != 1.0)
+					{
+						DamageDoExtra *= 1.5;
+					}
+					attack *= DamageDoExtra; //Incase too many enemies, boost damage.
 					int entity = -1;
 					if(npc.m_hBuffs & BUFF_SPEWER)
 					{
@@ -150,7 +161,6 @@ public void EndSpeaker4_ClotThink(int iNPC)
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
 						WorldSpaceCenter(entity, vecTarget);
