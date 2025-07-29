@@ -116,7 +116,7 @@ void ResetMapStartSensalWeapon()
 }
 
 float f_AttackDelaySensal[MAXPLAYERS];
-public void Sensal_Ability_M2_Auto(int client, int weapon, const char[] classname, bool &result)
+public void Sensal_Ability_M2_Auto(int client, int weapon, bool crit, int slot)
 {
 	f_AttackDelaySensal[client] = 0.0;
 	SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);

@@ -5,7 +5,7 @@ static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
 
-public void Weapon_Magic_Restore(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Magic_Restore(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
