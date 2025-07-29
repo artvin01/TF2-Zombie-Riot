@@ -58,15 +58,15 @@ stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=25
 {	
 	int Override_r,Override_g,Override_b;
 	
-	Override_r = i_EntityRenderColourSave[entity][0];
-	Override_g = i_EntityRenderColourSave[entity][1];
-	Override_b = i_EntityRenderColourSave[entity][2];
 	if(AllowWritingSave)
 	{
 		i_EntityRenderColourSave[entity][0] = r;
 		i_EntityRenderColourSave[entity][1] = g;
 		i_EntityRenderColourSave[entity][2] = b;
 	}
+	Override_r = i_EntityRenderColourSave[entity][0];
+	Override_g = i_EntityRenderColourSave[entity][1];
+	Override_b = i_EntityRenderColourSave[entity][2];
 
 	Override_r = RoundToNearest(float(Override_r) * f_EntityRenderColour[entity][0]);
 	Override_g = RoundToNearest(float(Override_g) * f_EntityRenderColour[entity][1]);
