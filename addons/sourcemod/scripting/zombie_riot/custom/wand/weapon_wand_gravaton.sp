@@ -332,7 +332,7 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 				
 	i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE;
 	
-	int EnemiesHitMax = (i_Current_Pap[client] + 1);
+	int EnemiesHitMax = (i_Current_Pap[client] + 2);
 	
 	b_gained_charge[client]=false;
 	Explode_Logic_Custom(damage, client, client, weapon, startPosition, Ionrange,_,_,_,EnemiesHitMax);

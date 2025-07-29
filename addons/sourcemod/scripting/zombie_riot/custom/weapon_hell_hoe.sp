@@ -152,7 +152,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 			{
 				int health = GetClientHealth(client);
 				int healthToLoose = RoundFloat(flCorruptedLastHealthTook[client]);
-				flCorruptedLastHealthTook[client] *= 1.05;
+				flCorruptedLastHealthTook[client] *= 1.03;
 				if (health <= healthToLoose)
 				{
 					TF2_StunPlayer(client, 2.0, 100.0, TF_STUNFLAGS_NORMALBONK);
@@ -172,7 +172,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 				spawnRing_Vectors(flPos, /*RANGE*/ NIGHTMARE_RADIUS * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 125, 125, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5);
 				
-				Explode_Logic_Custom(flCorruptedLastDmg[client], client, client, -1, flPos, NIGHTMARE_RADIUS, _, _, false, 4,_,_,_,HellHoe_AoeDamageLogic);
+				Explode_Logic_Custom(flCorruptedLastDmg[client], client, client, -1, flPos, NIGHTMARE_RADIUS, _, _, false, 5,_,_,_,HellHoe_AoeDamageLogic);
 
 			}
 		}
@@ -464,14 +464,14 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 		
 		if (g_isPlayerInDeathMarch_HellHoe[client])
 		{
-			int flMaxHealth = SDKCall_GetMaxHealth(client);
+			int HealthToUse = 100;/*= SDKCall_GetMaxHealth(client)*/
 			int health = GetClientHealth(client);
 			
-			if (health > RoundFloat(flMaxHealth * 0.1)) {
-				int newHealth = health - RoundFloat(flMaxHealth * 0.1);
+			if (health > HealthToUse) {
+				int newHealth = health - HealthToUse;
 				
-				if (newHealth > flMaxHealth)
-					newHealth = flMaxHealth;
+				if (newHealth > HealthToUse)
+					newHealth = HealthToUse;
 					
 				SetEntProp(client, Prop_Data, "m_iHealth", newHealth);
 				
@@ -482,7 +482,7 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Health", RoundFloat(flMaxHealth * 0.1));
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Health", HealthToUse);
 			}
 		}
 		else {
@@ -910,9 +910,9 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 			{
 				int flMaxHealth = SDKCall_GetMaxHealth(owner);
 			
-				Healing_Projectile[entity] = 0.0;//dont gain multiple charges.
 				if(dieingstate[owner] == 0)
 					HealEntityGlobal(owner, owner, float(flMaxHealth) * Healing_Projectile[entity], 1.0,_, HEAL_SELFHEAL);
+				Healing_Projectile[entity] = 0.0;//dont gain multiple charges.
 			}
 		}
 		else if (Healing_Projectile[entity] == -2.0) 
@@ -926,6 +926,16 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 					PrintHintText(owner, "Holy Charge: %i/%i", iCurrentAngelHit[owner], ANGEL_BLESSING_HIT_COUNT);
 				}
 			}
+		}
+		
+		if(f_WandDamage[entity] <= 1.0)
+		{
+			//damage so low it doesnt even matter.+
+			if(IsValidEntity(particle) && particle != 0)
+			{
+				RemoveEntity(particle);
+			}
+			RemoveEntity(entity);
 		}
 	}
 	else if(target == 0)

@@ -552,7 +552,7 @@ void BrawlerHeat2(int owner, AlliedKiryuVisualiserAbility npc, float GameTime)
 			//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
 				i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
 				i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
-				Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5, .FunctionToCallOnHit = DealAoeKnockbackBeastMode);
+				Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 6, .FunctionToCallOnHit = DealAoeKnockbackBeastMode);
 				i_ExplosiveProjectileHexArray[npc.index] == 0;
 				npc.m_iAttachmentWhichDo = -1;
 				npc.b_NoLongerResetVel = true;
@@ -654,7 +654,7 @@ void BeastBuildingHeat1(int owner, AlliedKiryuVisualiserAbility npc, float GameT
 			//	CauseKiyruDamageLogic(owner, npc.m_iTarget, npc.f_DamageDo);
 				i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
 				i_ExplosiveProjectileHexArray[npc.index] |= EP_GIBS_REGARDLESS;
-				Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 5);
+				Explode_Logic_Custom(npc.f_DamageDo, owner, npc.index, -1, EnemyVecPos, 300.0, .maxtargetshit = 6);
 				i_ExplosiveProjectileHexArray[npc.index] == 0;
 				npc.m_iAttachmentWhichDo = -1; 	
 				npc.b_NoLongerResetVel = true;

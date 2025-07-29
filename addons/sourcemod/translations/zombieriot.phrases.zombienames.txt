@@ -4346,4 +4346,172 @@
 		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
 		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
+	"Aperture Combatant"
+	{
+		"en"	"Aperture Combatant"
+	}
+	"Aperture Shotgunner"
+	{
+		"en"	"Aperture Shotgunner"
+	}
+	"Aperture Devastator"
+	{
+		"en"	"Aperture Devastator"
+	}
+	"Aperture Huntsman"
+	{
+		"en"	"Aperture Huntsman"
+	}
+	"Aperture Jumper"
+	{
+		"en"	"Aperture Jumper"
+	}
+	"Aperture Phaser"
+	{
+		"en"	"Aperture Phaser"
+	}
+	"Aperture Sniper"
+	{
+		"en"	"Aperture Sniper"
+	}
+	"Aperture Specialist"
+	{
+		"en"	"Aperture Specialist"
+	}
+	"Aperture Supporter"
+	{
+		"en"	"Aperture Supporter"
+	}
+	"Aperture Demolisher"
+	{
+		"en"	"Aperture Demolisher"
+	}
+	"Aperture Repulsor"
+	{
+		"en"	"Aperture Repulsor"
+	}
+	"Aperture Minigunner"
+	{
+		"en"	"Aperture Minigunner"
+	}
+	"Aperture Combatant V2"
+	{
+		"en"	"Aperture Combatant V2"
+	}
+	"Aperture Shotgunner V2"
+	{
+		"en"	"Aperture Shotgunner V2"
+	}
+	"Aperture Devastator V2"
+	{
+		"en"	"Aperture Devastator V2"
+	}
+	"Aperture Huntsman V2"
+	{
+		"en"	"Aperture Huntsman V2"
+	}
+	"Aperture Jumper V2"
+	{
+		"en"	"Aperture Jumper V2"
+	}
+	"Aperture Phaser V2"
+	{
+		"en"	"Aperture Phaser V2"
+	}
+	"Aperture Sniper V2"
+	{
+		"en"	"Aperture Sniper V2"
+	}
+	"Aperture Specialist V2"
+	{
+		"en"	"Aperture Specialist V2"
+	}
+	"Aperture Supporter V2"
+	{
+		"en"	"Aperture Supporter V2"
+	}
+	"Aperture Demolisher V2"
+	{
+		"en"	"Aperture Demolisher V2"
+	}
+	"Aperture Repulsor V2"
+	{
+		"en"	"Aperture Repulsor V2"
+	}
+	"Aperture Minigunner V2"
+	{
+		"en"	"Aperture Minigunner V2"
+	}
+	"Perfected Aperture Combatant"
+	{
+		"en"	"Perfected Aperture Combatant"
+	}
+	"Perfected Aperture Shotgunner"
+	{
+		"en"	"Perfected Aperture Shotgunner"
+	}
+	"Perfected Aperture Devastator"
+	{
+		"en"	"Perfected Aperture Devastator"
+	}
+	"Perfected Aperture Huntsman"
+	{
+		"en"	"Perfected Aperture Huntsman"
+	}
+	"Perfected Aperture Jumper"
+	{
+		"en"	"Perfected Aperture Jumper"
+	}
+	"Perfected Aperture Phaser"
+	{
+		"en"	"Perfected Aperture Phaser"
+	}
+	"Perfected Aperture Sniper"
+	{
+		"en"	"Perfected Aperture Sniper"
+	}
+	"Perfected Aperture Specialist"
+	{
+		"en"	"Perfected Aperture Specialist"
+	}
+	"Perfected Aperture Supporter"
+	{
+		"en"	"Perfected Aperture Supporter"
+	}
+	"Perfected Aperture Demolisher"
+	{
+		"en"	"Perfected Aperture Demolisher"
+	}
+	"Perfected Aperture Repulsor"
+	{
+		"en"	"Perfected Aperture Repulsor"
+	}
+	"Perfected Aperture Minigunner"
+	{
+		"en"	"Perfected Aperture Minigunner"
+	}
+	"Aperture Container"
+	{
+		"en"	"Aperture Container"
+	}
+	"Aperture Traveller"
+	{
+		"en"	"Aperture Traveller"
+	}
+	"Perfected Father Grigori"
+	{
+		"en"	"Perfected Father Grigori"
+	}
+	"Aperture Exterminator"
+	{
+		"en"	"Aperture Exterminator"
+	}
+	"Aperture Spokesman"
+	{
+		"en"	"Aperture Spokesman"
+	}
+	"Aperture Researcher"
+	{
+		"en"	"Aperture Researcher"
+	}
 }

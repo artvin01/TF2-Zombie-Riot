@@ -268,6 +268,7 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
+	Type_Aperture,
 	Type_Mutation
 }
 
@@ -282,7 +283,6 @@ ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
@@ -374,6 +374,8 @@ float Armor_regen_delay[MAXPLAYERS];
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
+bool DisableSpawnProtection;
+bool DisableRandomSpawns;
 int CashSpent[MAXPLAYERS];
 int CashSpentGivePostSetup[MAXPLAYERS];
 bool CashSpentGivePostSetupWarning[MAXPLAYERS];

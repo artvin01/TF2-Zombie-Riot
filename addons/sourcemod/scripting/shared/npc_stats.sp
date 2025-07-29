@@ -3111,6 +3111,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_PoseMoveX[this.index]; }
 		public set(int TempValueForProperty) 	{ i_PoseMoveX[this.index] = TempValueForProperty; }
 	}
+	property int m_iPose_MoveScale
+	{
+		public get()							{ return this.GetProp(Prop_Data, "m_imove_scale"); }
+		public set(int TempValueForProperty) 	{ this.SetProp(Prop_Data, "m_imove_scale", TempValueForProperty); }
+	}
+	property int m_iPose_MoveYaw
+	{
+		public get()							{ return this.GetProp(Prop_Data, "m_imove_yaw"); }
+		public set(int TempValueForProperty) 	{ this.SetProp(Prop_Data, "m_imove_yaw", TempValueForProperty); }
+	}
 	
 	property int m_iPoseMoveY
 	{
@@ -3150,38 +3160,67 @@ methodmap CClotBody < CBaseCombatCharacter
 		float flNextBotGroundSpeed;
 		if(i_IsNpcType[this.index] != 1)
 		{
-			if (this.m_iPoseMoveX < 0) {
+			if (this.m_iPoseMoveX == 0)   
+			{
 				this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
 			}
-			if (this.m_iPoseMoveY < 0) {
+			if (this.m_iPoseMoveY == 0)  
+			{
 				this.m_iPoseMoveY = this.LookupPoseParameter("move_y");
+			}
+			if (this.m_iPose_MoveYaw == 0) 
+			{
+				this.m_iPose_MoveYaw = this.LookupPoseParameter("move_yaw");
+			}
+			if (this.m_iPose_MoveScale == 0) 
+			{
+				this.m_iPose_MoveScale = this.LookupPoseParameter("move_scale");
 			}
 		
 			flNextBotGroundSpeed = this.GetGroundSpeed();
 			
-			if (flNextBotGroundSpeed < 0.01) {
-				if (this.m_iPoseMoveX >= 0) {
+			if (flNextBotGroundSpeed < 0.01) 
+			{
+				if (this.m_iPoseMoveX != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
-				if (this.m_iPoseMoveY >= 0) {
+				if (this.m_iPoseMoveY != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
 				}
-			} else {
+				if (this.m_iPose_MoveYaw != -1) 
+				{
+					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
+				}
+				if (this.m_iPose_MoveScale != -1) 
+				{
+					this.SetPoseParameter(this.m_iPose_MoveScale, 0.0);
+				}
+			}
+			else 
+			{
 				float vecFwd[3], vecRight[3], vecUp[3];
 				this.GetVectors(vecFwd, vecRight, vecUp);
 				
 				float vecMotion[3]; this.GetGroundMotionVector(vecMotion);
-				
-				if (this.m_iPoseMoveX >= 0) {
+			
+				if (this.m_iPoseMoveX != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveX, GetVectorDotProduct(vecMotion, vecFwd));
 				}
-				if (this.m_iPoseMoveY >= 0) {
+				if (this.m_iPoseMoveY != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveY, GetVectorDotProduct(vecMotion, vecRight));
 				}
-				
-			}		
+				if (this.m_iPose_MoveYaw != -1) 
+				{
+					//too lazy to code this :D
+					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
+				}
+			}	
 			this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
-			this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
+			this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();	
 		}
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
@@ -3203,15 +3242,27 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(this.m_bisWalking && i_IsNpcType[this.index] != 1) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
+			if (this.m_iPose_MoveScale != -1)
+			{
+				//robots use this wierdly enough.
+				m_flGroundSpeed = 300.0; //assume 300.0
+			}
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
+				if (this.m_iPose_MoveScale != -1)
+				{
+					//how much they move
+					this.SetPoseParameter(this.m_iPose_MoveScale, (clamp((PlaybackSpeed), 0.0, 1.0)));
+				}
 				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
 					PlaybackSpeed = f_MaxAnimationSpeed[this.index];
+					
 
 				if(PlaybackSpeed <= 0.01)
 					PlaybackSpeed = 0.01;
 					
+				
 				this.SetPlaybackRate(PlaybackSpeed, true);
 			}
 			else
@@ -3464,6 +3515,8 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+		.DefineIntField("m_imove_scale")
+		.DefineIntField("m_imove_yaw")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -8635,8 +8688,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NoKillFeed[entity] = false;
 	b_ThisWasAnNpc[entity] = false;
 	i_Activity[entity] = -1;
-	i_PoseMoveX[entity] = -1;
-	i_PoseMoveY[entity] = -1;
+	i_PoseMoveX[entity] = 0;
+	i_PoseMoveY[entity] = 0;
 	b_PlayHurtAnimation[entity] = false;
 	IgniteTimer[entity] = null;
 	IgniteFor[entity] = 0;

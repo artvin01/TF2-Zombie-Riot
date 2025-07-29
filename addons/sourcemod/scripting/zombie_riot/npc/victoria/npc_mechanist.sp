@@ -219,7 +219,7 @@ methodmap VictorianMechanist_as < CClotBody
 				EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, 1.0);
 			}
 			LastSpawnDiversio = GetGameTime() + 20.0;
-			if(!zr_disablerandomvillagerspawn.BoolValue)
+			if(!zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 			{
 				int AreasCollected = 0;
 				float CurrentPoints = 0.0;

@@ -992,10 +992,59 @@ void NPC_ConfigSetup()
 	Construction_Raid_Zilius_OnMapStart();
 	ZeinaPrisoner_OnMapStart_NPC();
 
+	//Aperture
+	ApertureCombatant_OnMapStart_NPC();
+	ApertureShotgunner_OnMapStart_NPC();
+	ApertureDevastator_OnMapStart_NPC();
+	ApertureHuntsman_OnMapStart_NPC();
+	ApertureJumper_OnMapStart_NPC();
+	AperturePhaser_OnMapStart_NPC();
+	ApertureSniper_OnMapStart_NPC();
+	ApertureSpecialist_OnMapStart_NPC();
+	ApertureSupporter_OnMapStart_NPC();
+	ApertureCombatantV2_OnMapStart_NPC();
+	ApertureShotgunnerV2_OnMapStart_NPC();
+	ApertureHuntsmanV2_OnMapStart_NPC();
+	ApertureJumperV2_OnMapStart_NPC();
+	AperturePhaserV2_OnMapStart_NPC();
+	ApertureSniperV2_OnMapStart_NPC();
+	ApertureSpecialistV2_OnMapStart_NPC();
+	ApertureDemolisherV2_OnMapStart_NPC();
+	ApertureDevastatorV2_OnMapStart_NPC();
+	ApertureMinigunnerV2_OnMapStart_NPC();
+	ApertureRepulsorV2_OnMapStart_NPC();
+	ApertureSupporterV2_OnMapStart_NPC();
+	ApertureCombatantPerfected_OnMapStart_NPC();
+	ApertureShotgunnerPerfected_OnMapStart_NPC();
+	ApertureHuntsmanPerfected_OnMapStart_NPC();
+	ApertureSniperPerfected_OnMapStart_NPC();
+	AperturePhaserPerfected_OnMapStart_NPC();
+	ApertureJumperPerfected_OnMapStart_NPC();
+	ApertureSpecialistPerfected_OnMapStart_NPC();
+	ApertureDemolisherPerfected_OnMapStart_NPC();
+	ApertureMinigunnerPerfected_OnMapStart_NPC();
+	ApertureRepulsorPerfected_OnMapStart_NPC();
+	ApertureSupporterPerfected_OnMapStart_NPC();
+	ApertureBuilder_OnMapStart_NPC();
+	ApertureSentry_OnMapStart_NPC();
+	ApertureDispenser_OnMapStart_NPC();
+	ApertureTeleporter_OnMapStart_NPC();
+	ApertureDemolisher_OnMapStart_NPC();
+	ApertureContainer_OnMapStart_NPC();
+	ApertureTraveller_OnMapStart_NPC();
+	ApertureRepulsor_OnMapStart_NPC();
+	ApertureMinigunner_OnMapStart_NPC();
+	TemporalAnomaly_OnMapStart_NPC();
+	FatherGrigoriScience_OnMapStart_NPC();
+	ApertureExterminator_OnMapStart_NPC();
+	ApertureSpokesman_OnMapStart_NPC();
+	ApertureResearcher_OnMapStart_NPC();
 	Aperture_Halter_OnMapStart_NPC();
 	Aperture_Suppressor_OnMapStart_NPC();
 	Aperture_collector_OnMapStart_NPC();
 	Aperture_Fueler_OnMapStart_NPC();
+	Test_OnMapStart_NPC();
+	CAT_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2184,7 +2233,58 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_zeina_prison.sp"
 #include "npc/construction/enemies/npc_zeina_freed.sp"
 
+//Aperture
+#include "npc/aperture/10/npc_aperture_combatant.sp"
+#include "npc/aperture/10/npc_aperture_shotgunner.sp"
+#include "npc/aperture/10/npc_aperture_jumper.sp"
+#include "npc/aperture/10/npc_aperture_phaser.sp"
+#include "npc/aperture/10/npc_aperture_specialist.sp"
+#include "npc/aperture/10/npc_aperture_sniper.sp"
+#include "npc/aperture/10/npc_aperture_huntsman.sp"
+#include "npc/aperture/10/npc_last_survivor_science.sp"
+#include "npc/aperture/20/npc_aperture_combatant_v2.sp"
+#include "npc/aperture/20/npc_aperture_huntsman_v2.sp"
+#include "npc/aperture/20/npc_aperture_jumper_v2.sp"
+#include "npc/aperture/20/npc_aperture_phaser_v2.sp"
+#include "npc/aperture/20/npc_aperture_shotgunner_v2.sp"
+#include "npc/aperture/20/npc_aperture_sniper_v2.sp"
+#include "npc/aperture/20/npc_aperture_specialist_v2.sp"
+#include "npc/aperture/20/npc_aperture_supporter.sp"
+#include "npc/aperture/20/npc_aperture_devastator.sp"
+#include "npc/aperture/20/npc_aperture_demolisher.sp"
+#include "npc/aperture/20/npc_aperture_minigunner.sp"
+#include "npc/aperture/20/npc_aperture_repulsor.sp"
+#include "npc/aperture/20/npc_mecha_engineer_giant.sp"
+#include "npc/aperture/20/npc_aperture_exterminator.sp"
+#include "npc/aperture/30/npc_aperture_combatant_perfected.sp"
+#include "npc/aperture/30/npc_aperture_shotgunner_perfected.sp"
+#include "npc/aperture/30/npc_aperture_huntsman_perfected.sp"
+#include "npc/aperture/30/npc_aperture_phaser_perfected.sp"
+#include "npc/aperture/30/npc_aperture_sniper_perfected.sp"
+#include "npc/aperture/30/npc_aperture_specialist_perfected.sp"
+#include "npc/aperture/30/npc_aperture_jumper_perfected.sp"
+#include "npc/aperture/30/npc_aperture_demolisher_v2.sp"
+#include "npc/aperture/30/npc_aperture_devastator_v2.sp"
+#include "npc/aperture/30/npc_aperture_minigunner_v2.sp"
+#include "npc/aperture/30/npc_aperture_repulsor_v2.sp"
+#include "npc/aperture/30/npc_aperture_supporter_v2.sp"
+#include "npc/aperture/30/npc_aperture_builder.sp"
+#include "npc/aperture/30/npc_aperture_sentry.sp"
+#include "npc/aperture/30/npc_aperture_dispenser.sp"
+#include "npc/aperture/30/npc_aperture_teleporter.sp"
+#include "npc/aperture/30/npc_aperture_container.sp"
+#include "npc/aperture/30/npc_mecha_medic_giant.sp"
+#include "npc/aperture/30/npc_aperture_spokesman.sp"
+#include "npc/aperture/40/npc_aperture_traveller.sp"
+#include "npc/aperture/40/npc_aperture_demolisher_perfected.sp"
+#include "npc/aperture/40/npc_aperture_minigunner_perfected.sp"
+#include "npc/aperture/40/npc_aperture_repulsor_perfected.sp"
+#include "npc/aperture/40/npc_aperture_supporter_perfected.sp"
+#include "npc/aperture/40/npc_aperture_researcher.sp"
 #include "npc/aperture/npc_halter.sp"
 #include "npc/aperture/npc_suppressor.sp"
 #include "npc/aperture/npc_collector.sp"
 #include "npc/aperture/npc_fueler.sp"
+#include "npc/aperture/npc_temporalanomaly.sp"
+#include "npc/aperture/10/npc_test.sp"
+#include "npc/aperture/raids/npc_cat.sp"

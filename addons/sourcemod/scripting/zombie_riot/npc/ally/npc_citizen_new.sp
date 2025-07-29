@@ -1693,10 +1693,13 @@ int Citizen_ShowInteractionHud(int entity, int client)
 		}
 		else if(npc.m_nDowned == 1)
 		{
-			SetGlobalTransTarget(client);
-			char ButtonDisplay[255];
-			PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
-			PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");
+			if(IsValidClient(client))
+			{
+				SetGlobalTransTarget(client);
+				char ButtonDisplay[255];
+				PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+				PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");	
+			}
 			return -1;
 		}
 	}
@@ -2613,8 +2616,16 @@ public void Citizen_ClotThink(int iNPC)
 			npc.ThinkCombat(":(");
 			npc.ThinkFriendly(":(");
 
-			if(npc.m_iReviveTicks > 50)
+			if(b_IsAloneOnServer || npc.m_iReviveTicks > 50)
+			{
 				npc.m_iReviveTicks--;
+				if(npc.m_iReviveTicks <= 0)
+				{
+					Citizen_ReviveTicks(npc.index, 1, npc.index, false);
+				}
+			}
+
+			
 
 			if(npc.m_flidle_talk == 0.0)
 			{

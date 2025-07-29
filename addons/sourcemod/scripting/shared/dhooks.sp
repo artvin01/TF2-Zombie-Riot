@@ -24,7 +24,6 @@ static DynamicHook g_DHookFireballExplode; //from mikusch but edited
 static DynamicHook g_DhookCrossbowHolster;
 DynamicHook g_DhookUpdateTransmitState; 
 
-static DynamicDetour g_CalcPlayerScore;
 static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
@@ -126,17 +125,7 @@ void DHook_Setup()
 	DHookEnableDetour(dtWeaponFinishReload, true, OnWeaponReplenishClipPost);
 #endif
 	
-	// from https://github.com/shavitush/bhoptimer/blob/b78ae36a0ef72d15620d2b18017bbff18d41b9fc/addons/sourcemod/scripting/shavit-misc.sp
-	if (!(g_CalcPlayerScore = DHookCreateDetour(Address_Null, CallConv_CDECL, ReturnType_Int, ThisPointer_Ignore)))
-	{
-		SetFailState("Failed to create detour for CTFGameRules::CalcPlayerScore");
-	}
-	if (DHookSetFromConf(g_CalcPlayerScore, gamedata, SDKConf_Signature, "CTFGameRules::CalcPlayerScore"))
-	{
-		g_CalcPlayerScore.AddParam(HookParamType_Int);
-		g_CalcPlayerScore.AddParam(HookParamType_CBaseEntity);
-		g_CalcPlayerScore.Enable(Hook_Pre, Detour_CalcPlayerScore);
-	}
+	DHook_CreateDetour(gamedata, "CTFGameRules::CalcPlayerScore", Detour_CalcPlayerScore);
 
 	HookItemIterateAttribute = DynamicHook.FromConf(gamedata, "CEconItemView::IterateAttributes");
 
