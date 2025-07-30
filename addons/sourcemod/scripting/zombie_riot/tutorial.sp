@@ -99,7 +99,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 			if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
 			{
 				CDDisplayHint_LoadoutStore[client] = GetGameTime() + 1.0;
-				SetHudTextParams(-1.0, 0.4, 1.1, 255, 255, 255, 255);
+				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
 				ShowSyncHudText(client, SyncHud, "%T", "Loadout In Store", client);
 				//try!
 			}
