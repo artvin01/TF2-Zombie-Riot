@@ -103,8 +103,8 @@ void DoTutorialStep(int client, bool obeycooldown)
 				ShowSyncHudText(client, SyncHud, "%T", "Loadout In Store", client);
 				//try!
 			}
+			return;
 		}
-		return;
 	}
 
 	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)
