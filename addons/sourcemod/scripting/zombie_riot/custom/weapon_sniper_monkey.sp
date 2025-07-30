@@ -188,6 +188,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+		return;
 	}
 	else if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -247,6 +248,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+		return;
 	}
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
