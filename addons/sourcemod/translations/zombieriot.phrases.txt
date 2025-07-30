@@ -4206,7 +4206,7 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
+		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 	}
 	"Getting favorite loadout"
 	{

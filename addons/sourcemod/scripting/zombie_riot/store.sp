@@ -3,7 +3,6 @@
 
 #define SELL_AMOUNT 0.9
 bool PapPreviewMode[MAXPLAYERS];
-float CDDisplayHint_LoadoutStore[MAXPLAYERS];
 float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
 enum
@@ -984,7 +983,6 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
-	Zero(CDDisplayHint_LoadoutStore);
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -3050,11 +3048,7 @@ static void MenuPage(int client, int section)
 		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
 		{
 			StarterCashMode[client] = false; //confirm automatically.
-		}
-		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
-		{
-			SPrintToChat(client, "%t", "Loadout In Store");
-			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
+			
 		}
 	}
 	else
