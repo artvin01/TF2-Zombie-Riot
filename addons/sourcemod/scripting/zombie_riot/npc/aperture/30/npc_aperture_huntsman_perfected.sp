@@ -327,8 +327,8 @@ public void ApertureHuntsmanPerfected_Particle_StartTouch(int entity, int target
 			inflictor = owner;
 
 	
-		NPC_Ignite(target, owner, 25.0, -1, 5.0);
-		StartBleedingTimer(target, owner, 5.0, 75, -1, DMG_TRUEDAMAGE, 0);
+		NPC_Ignite(target, owner, 4.0, -1, 25.0);
+		StartBleedingTimer(target, owner, 4.0, 25, -1, DMG_TRUEDAMAGE, 0);
 	}
 	RemoveEntity(entity);
 }

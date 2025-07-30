@@ -263,7 +263,7 @@ void ApertureRepulsorPerfectedSelfDefense(ApertureRepulsorPerfected npc, float g
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					npc.m_flNextMeleeAttack = gameTime + 4.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_BULLET, -1, _, vecHit);
 					Custom_Knockback(npc.index, target, 800.0, true, true);

@@ -19,11 +19,11 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/scout_mvm_standonthepoint01.mp3",
-	"vo/mvm/norm/scout_mvm_standonthepoint02.mp3",
-	"vo/mvm/norm/scout_mvm_standonthepoint03.mp3",
-	"vo/mvm/norm/scout_mvm_standonthepoint04.mp3",
-	"vo/mvm/norm/scout_mvm_standonthepoint05.mp3",
+	"vo/mvm/norm/scout_mvm_battlecry01.mp3",
+	"vo/mvm/norm/scout_mvm_battlecry02.mp3",
+	"vo/mvm/norm/scout_mvm_battlecry03.mp3",
+	"vo/mvm/norm/scout_mvm_battlecry04.mp3",
+	"vo/mvm/norm/scout_mvm_battlecry05.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -62,10 +62,10 @@ void CAT_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "C.A.T");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cat");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "scout_explode_nys");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Matrix;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

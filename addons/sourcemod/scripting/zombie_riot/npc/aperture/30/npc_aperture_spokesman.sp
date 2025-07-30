@@ -133,12 +133,10 @@ methodmap ApertureSpokesman < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_ava_roseknife/c_ava_roseknife.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 	
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/spy/hardhat.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -190,7 +188,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 0.10;
 		
-		int target = GetClosestAlly(npc.index, (500.0 * 500.0), _,DoctorBuffAlly);
+		int target = GetClosestAlly(npc.index, (500.0 * 500.0), _);
 		if(target && b_thisNpcIsABoss[target])
 		{
 			if(!HasSpecificBuff(target, "Dimensional Turbulence"))
@@ -225,7 +223,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget > (100.0*100.0))
+			if(flDistanceToTarget > (25.0*25.0))
 			{
 				npc.StartPathing();
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -336,7 +334,7 @@ void ApertureSpokesmanSelfDefense(ApertureSpokesman npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 50.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 

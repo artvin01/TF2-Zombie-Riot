@@ -69,7 +69,7 @@ methodmap ApertureSentry < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 1.0;
+		npc.m_flRangedArmor = 0.5;
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -80,6 +80,10 @@ methodmap ApertureSentry < CClotBody
 		i_NpcIsABuilding[npc.index] = true;
 		npc.m_flNextMeleeAttack = 0.0;
 		AddNpcToAliveList(npc.index, 1);
+
+		float wave = float(Waves_GetRound()+1);
+		wave *= 0.5;
+		npc.m_flWaveScale = wave;
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -191,13 +195,17 @@ void ApertureSentrySelfDefense(ApertureSentry npc, float gameTime, int target, f
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
-					view_as<CClotBody>(npc.index).GetAttachment("muzzle", origin, angles);
+					float origin2[3], angles2[3];
+					view_as<CClotBody>(npc.index).GetAttachment("muzzle_l", origin, angles);
+					view_as<CClotBody>(npc.index).GetAttachment("muzzle_r", origin2, angles2);
 					ShootLaser(npc.index, "bullet_tracer02_blue", origin, vecHit, false );
+					ShootLaser(npc.index, "bullet_tracer02_blue", origin2, vecHit, false );
 					npc.m_flNextMeleeAttack = gameTime + 0.25;
 
 					if(IsValidEnemy(npc.index, target))
 					{
 						float damageDealt = 10.0;
+						damageDealt *= npc.m_flWaveScale;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

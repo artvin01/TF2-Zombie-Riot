@@ -164,6 +164,8 @@ methodmap ApertureResearcher < CClotBody
 				CPrintToChatAll("{normal}Researcher{default}: Please don't harm me, I-...");
 			}
 		}
+
+		TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
 		
 		return npc;
 	}

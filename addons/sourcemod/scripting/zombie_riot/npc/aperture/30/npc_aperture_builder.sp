@@ -49,6 +49,7 @@ void ApertureBuilder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/scout.mdl");
+	PrecacheSound("music/mvm_class_select.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Builder");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_builder");
@@ -153,6 +154,18 @@ methodmap ApertureBuilder < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+
+		TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
+		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);	
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "voice_player", 1, "%s", "Engineers Appear");
+			}
+		}
 		
 		return npc;
 	}
@@ -311,7 +324,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if(npc.m_iChanged_WalkCycle != 3) 	
 						{
 							npc.m_iChanged_WalkCycle = 3;
-							npc.SetActivity("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+							npc.SetActivity("ACT_MP_STAND_MELEE");
 							view_as<CClotBody>(iNPC).StopPathing();
 							npc.m_bisWalking = false;
 							npc.m_flSpeed = 0.0;
@@ -439,26 +452,35 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				//Retry.
 
 				//Timeout
-				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(5.0, 7.0);
 				int spawn_index = NPC_CreateByName("npc_aperture_sentry", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
-				NPC_CreateByName("npc_aperture_sentry", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index_2 = NPC_CreateByName("npc_aperture_dispenser", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+				int spawn_index_3 = NPC_CreateByName("npc_aperture_teleporter", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					//NpcStats_CopyStats(npc.index, spawn_index);
 					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
 					if(b_StaticNPC[spawn_index])
 						AddNpcToAliveList(spawn_index, 1);
+						AddNpcToAliveList(spawn_index_2, 1);
+						AddNpcToAliveList(spawn_index_3, 1);
 					
 					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
 					if(GetTeam(iNPC) != TFTeam_Red)
 					{
 						if(!b_StaticNPC[spawn_index])
 							NpcAddedToZombiesLeftCurrently(spawn_index, true);
+							NpcAddedToZombiesLeftCurrently(spawn_index_2, true);
+							NpcAddedToZombiesLeftCurrently(spawn_index_3, true);
 					}
 					i_AttacksTillMegahit[spawn_index] = 10;
 					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
+					SetEntityRenderColor(spawn_index, 255, 255, 255, 255);
 				}
+				TeleportDiversioToRandLocation(spawn_index,_,1000.0, 500.0);
+				TeleportDiversioToRandLocation(spawn_index_2,_,1000.0, 500.0);
+				TeleportDiversioToRandLocation(spawn_index_3,_,1000.0, 500.0);
+				b_WantTobuild[npc.index] = false;
 			}
 		}
 		case 2:
@@ -475,7 +497,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 3) 	
 				{
 					npc.m_iChanged_WalkCycle = 3;
-					npc.SetActivity("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+					npc.SetActivity("ACT_MP_STAND_MELEE");
 					view_as<CClotBody>(iNPC).StopPathing();
 					npc.m_bisWalking = false;
 					npc.m_flSpeed = 0.0;
@@ -525,8 +547,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 		{
 			if(IsValidEntity(buildingentity) && !b_NpcHasDied[buildingentity])
 			{
-				b_WantTobuild[npc.index] = true; //done.
-				//How?? I wanna build again!
+				b_WantTobuild[npc.index] = false;
 			}
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{

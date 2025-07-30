@@ -356,10 +356,9 @@ int ApertureSniperSelfDefense(ApertureSniper npc, float gameTime)
 			{
 				float damageDealt = 50.0;
 				if(ShouldNpcDealBonusDamage(target))
-					damageDealt *= 2.0;
+					damageDealt *= 10.0;
 				
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				StartBleedingTimer(target, npc.index,45.0, 5, -1, DMG_TRUEDAMAGE, 0);
 			} 
 		}
 	}

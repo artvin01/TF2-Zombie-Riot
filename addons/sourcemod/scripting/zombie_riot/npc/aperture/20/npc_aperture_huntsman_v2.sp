@@ -322,7 +322,7 @@ public void ApertureHuntsmanV2_Particle_StartTouch(int entity, int target)
 
 	
 		
-		StartBleedingTimer(target, owner, 25.0, 4, -1, DMG_TRUEDAMAGE, 0);
+		StartBleedingTimer(target, owner, 10.0, 4, -1, DMG_TRUEDAMAGE, 0);
 	}
 	RemoveEntity(entity);
 }

@@ -281,7 +281,7 @@ void ApertureMinigunnerSelfDefense(ApertureMinigunner npc)
 						damageDealt *= 4.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-					if (!IsInvuln(target) && !i_IsABuilding[target])
+					if (!IsInvuln(target) && !i_IsABuilding[target] && !b_ThisWasAnNpc[target])
 					{
 						if(!HasSpecificBuff(target, "Fluid Movement"))
 						TF2_StunPlayer(target, 0.1, 0.5, TF_STUNFLAG_SLOWDOWN);

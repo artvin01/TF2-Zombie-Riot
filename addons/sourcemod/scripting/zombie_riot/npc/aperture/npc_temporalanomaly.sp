@@ -132,7 +132,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 			}
 			case 5:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_beacon_constructor", pos, ang, team, 1000);
+				TemporalAnomalySpawn(npc.index, "npc_victorian", pos, ang, team, 1000);
 			}
 			case 6:
 			{
@@ -153,7 +153,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		}
 	}
 	//Wave 10-20
-	if(wave >= 10)
+	if(wave >= 11)
 	{
 		switch(GetRandomInt(0,9))
 		{
@@ -200,7 +200,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		}
 	}
 	//Wave 20-30
-	if(wave >= 20)
+	if(wave >= 21)
 	{
 		switch(GetRandomInt(0,9))
 		{
@@ -226,7 +226,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 			}
 			case 5:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_combastia", pos, ang, team, 10000);
+				TemporalAnomalySpawn(npc.index, "npc_sea_xploder", pos, ang, team, 10000);
 			}
 			case 6:
 			{
@@ -247,7 +247,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 		}
 	}
 	//Wave 30-40
-	if(wave >= 30)
+	if(wave >= 31)
 	{
 		switch(GetRandomInt(0,9))
 		{
@@ -277,7 +277,7 @@ public void TemporalAnomaly_ClotThink(TemporalAnomaly npc, int iNPC)
 			}
 			case 6:
 			{
-				TemporalAnomalySpawn(npc.index, "npc_taser", pos, ang, team, 15000);
+				TemporalAnomalySpawn(npc.index, "npc_pulverizer", pos, ang, team, 15000);
 			}
 			case 7:
 			{
@@ -320,15 +320,13 @@ void TemporalAnomalySpawn(int iGatePortal, const char[] Npcplugininfo, float pos
 		SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
 		ScalingMultiplyEnemyHpGlobalScale(other); //makre sure to scale Hp extra as we SET hp values here!
 		NpcStats_CopyStats(iGatePortal, other);	//copy any stats over idk
-		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[iGatePortal] * 0.50; //they get some buffs from being time-travelled or sum shit idfk
-		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[iGatePortal] * 0.50;
+		fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[iGatePortal];
+		fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[iGatePortal];
 		fl_Extra_Speed[other] = fl_Extra_Speed[iGatePortal];
 		fl_Extra_Damage[other] = fl_Extra_Damage[iGatePortal];
 		b_thisNpcIsABoss[other] = b_thisNpcIsABoss[iGatePortal];
 		b_StaticNPC[other] = b_StaticNPC[iGatePortal];
 		if(b_StaticNPC[other])
 			AddNpcToAliveList(other, 1);
-		npc.m_iOverlordComboAttack++;
-		npc.m_flAbilityOrAttack0 = gameTime + 2.0;
 	}
 }

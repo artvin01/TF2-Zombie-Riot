@@ -53,8 +53,8 @@ void ApertureExterminator_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Exterminator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_exterminator");
-	strcopy(data.Icon, sizeof(data.Icon), "demo");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "demo_robot_nys");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
@@ -107,10 +107,9 @@ methodmap ApertureExterminator < CClotBody
 	
 	public ApertureExterminator(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureExterminator npc = view_as<ApertureExterminator>(CClotBody(vecPos, vecAng, "models/bots/demo_boss/bot_demo_boss.mdl", "2.0", "700", ally));
+		ApertureExterminator npc = view_as<ApertureExterminator>(CClotBody(vecPos, vecAng, "models/bots/demo_boss/bot_demo_boss.mdl", "2.0", "700", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 999;
-		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);

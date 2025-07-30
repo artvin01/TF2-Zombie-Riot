@@ -73,7 +73,7 @@ methodmap ApertureDispenser < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 0.5;
+		npc.m_flRangedArmor = 1.0;
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	

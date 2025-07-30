@@ -296,7 +296,7 @@ void ApertureCombatantSelfDefense(ApertureCombatant npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 20.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 

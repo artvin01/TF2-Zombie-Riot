@@ -18,9 +18,9 @@ void ApertureTeleporter_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Teleporter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_teleporter");
-	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
+	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -53,6 +53,9 @@ methodmap ApertureTeleporter < CClotBody
 		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
+
+		npc.m_flMeleeArmor = 2.0;
+		npc.m_flRangedArmor = 0.5;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
@@ -109,9 +112,9 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 		int target = GetClosestAlly(npc.index, (250.0 * 250.0));
 		if(target)
 		{
-			if(!HasSpecificBuff(target, "False Therapy"))
+			if(!HasSpecificBuff(target, "Quantum Entanglement"))
 			{
-				ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 60.0);
+				ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 30.0);
 			}
 		}
 	}

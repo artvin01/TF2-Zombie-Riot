@@ -38,7 +38,7 @@ void ApertureDevastatorV2_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Devastator V2");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_devastator_v2");
-	strcopy(data.Icon, sizeof(data.Icon), "demoman");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Aperture;

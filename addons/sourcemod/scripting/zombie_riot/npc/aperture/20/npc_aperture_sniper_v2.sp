@@ -355,7 +355,7 @@ int ApertureSniperV2SelfDefense(ApertureSniperV2 npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 100.0;
+				float damageDealt = 50.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.0;
 				

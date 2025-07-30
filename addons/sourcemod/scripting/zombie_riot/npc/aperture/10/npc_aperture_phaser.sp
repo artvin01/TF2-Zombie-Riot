@@ -124,7 +124,6 @@ methodmap AperturePhaser < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		b_IgnorePlayerCollisionNPC[npc.index] = true;
-		SetEntityCollisionGroup(npc.index, 1);
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
