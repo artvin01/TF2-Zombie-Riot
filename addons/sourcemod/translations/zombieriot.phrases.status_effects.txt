@@ -1189,6 +1189,14 @@
 	{
 		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
 	}
+	"Starting Grace"
+	{
+		"en" "Starting Grace"
+	}
+	"Starting Grace Desc"
+	{
+		"en"	"Buff for a limited starting time.\nIncreases damage dealt by 25％, Decreases damage taken by 15％."
+	}
 	"Anti-Waves"
 	{
 		"en" "Anti-Waves"

@@ -4971,7 +4971,7 @@ stock int GetClosestTarget(int entity,
 				{
 					//if its a downed citizen, dont target.
 					if(Citizen_ThatIsDowned(entity_close))
-							continue;
+						continue;
 
 					if(CanSee)
 					{
@@ -10249,9 +10249,11 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 	switch(value)
 	{
 		//if a raidboss exists, but we have a rule to make it still target buildings, set to true!
+
+		//construction forces building attacking.
 		case 1:
 		{
-			if(RaidAllowsBuildings)
+			if(!Construction_Mode() && RaidAllowsBuildings)
 				return false;
 
 			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
@@ -10264,7 +10266,7 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 		//same as above, but if it has the tower defense mode on, also ignore
 		case 2:
 		{
-			if(RaidAllowsBuildings)
+			if(!Construction_Mode() && RaidAllowsBuildings)
 				return false;
 
 			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))

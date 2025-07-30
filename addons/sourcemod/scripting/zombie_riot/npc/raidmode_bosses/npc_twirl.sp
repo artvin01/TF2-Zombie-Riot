@@ -3770,6 +3770,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	float Radius = 30.0;
 	float diameter = Radius*2.0;
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 20.0;
 	Laser.client = npc.index;
 	float 	flPos[3], // original
 			flAng[3]; // original

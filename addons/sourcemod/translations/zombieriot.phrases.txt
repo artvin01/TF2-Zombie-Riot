@@ -4220,10 +4220,6 @@
 	{
 		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
 	}
-	"Explain Construction 2"
-	{
-		"en"		"Interact with ores on the map with your interact button (R Or T)!"
-	}
 	"Explain Construction 3"
 	{
 		"en"		"If you main building falls, or you all die, you lose."

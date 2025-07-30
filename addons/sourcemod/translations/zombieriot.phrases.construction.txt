@@ -74,6 +74,10 @@
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
 	}
+	"Mine Resources"
+	{
+		"en"	"Mine resources with your use key [T or R] once!\nStay near them to mine them!"
+	}
 	"Start Mining"
 	{
 		"#format"	"{1:s}"

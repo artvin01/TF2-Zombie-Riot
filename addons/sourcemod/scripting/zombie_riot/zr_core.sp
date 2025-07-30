@@ -1080,6 +1080,7 @@ void ZR_ClientPutInServer(int client)
 	if(Waves_Started())
 		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
+	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);

@@ -116,6 +116,7 @@ static ArrayList ResourceList;
 static ArrayList RewardList;
 static ArrayList ResearchList;
 static MusicEnum BackgroundMusic;
+static bool ExplainOreMining[MAXPLAYERS];
 
 static Handle GameTimer;
 static int CurrentRisk;
@@ -131,6 +132,11 @@ static int InResearch = -1;
 static float InResearchAt;
 static Handle InResearchMenu[MAXPLAYERS];
 
+
+void Construction_PutInServer(int client)
+{
+	ExplainOreMining[client] = false;
+}
 bool Construction_Mode()
 {
 	return InConstMode;
@@ -490,12 +496,11 @@ void Construction_Start()
 		}
 	}
 
-	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
-	Citizen_SpawnAtPoint("b");
 
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
+
 
 	int length = ResourceList.Length;
 	if(length)
@@ -563,7 +568,9 @@ void Construction_Start()
 		delete navPicked;
 	}
 
-	
+	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
+	Citizen_SpawnAtPoint("b");
+
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -574,6 +581,80 @@ void Construction_Start()
 	}
 
 	BackgroundMusic.CopyTo(BGMusicSpecial1);
+}
+
+void TutorialShort_ExplainOres(int client)
+{
+	if(!Construction_Mode())
+		return;
+	if(ExplainOreMining[client])
+		return;
+
+
+	if(!IsEntityAlive(client))
+		return;
+	int entity_found = GetClosestOre(client);
+	if(!IsValidEntity(entity_found))
+		return;
+	
+	float pos2[3];
+	ExplainOreMining[client] = true;
+	GetEntPropVector(entity_found, Prop_Data, "m_vecAbsOrigin", pos2);
+	pos2[2] += 80.0;
+	Event event = CreateEvent("show_annotation");
+	if(event)
+	{
+		char buffer[255];
+		FormatEx(buffer, sizeof(buffer), "%T", "Mine Resources", client);
+		event.SetFloat("worldPosX", pos2[0]);
+		event.SetFloat("worldPosY", pos2[1]);
+		event.SetFloat("worldPosZ", pos2[2]);
+		event.SetFloat("lifetime", 7.0);
+		event.SetString("text", buffer);
+		event.SetString("play_sound", "vo/null.mp3");
+		IdRef++;
+		event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+		event.FireToClient(client);
+	}
+}
+
+
+stock int GetClosestOre(int entity)
+{
+	float TargetDistance = 0.0; 
+	int ClosestTarget = 0; 
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+		if(i != entity && IsValidEntity(i) && GetTeam(i) != GetTeam(entity))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+
+			if(!(StrContains(npc_classname, "npc_material") != -1))
+				continue;
+				
+			float EntityLocation[3], TargetLocation[3]; 
+			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+			
+			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+			if( TargetDistance ) 
+			{
+				if( distance < TargetDistance ) 
+				{
+					ClosestTarget = i; 
+					TargetDistance = distance;		  
+				}
+			} 
+			else 
+			{
+				ClosestTarget = i; 
+				TargetDistance = distance;
+			}	
+		}
+	}
+	return ClosestTarget; 
 }
 
 static bool GetRandomResourceInfo(float distance, ResourceInfo info, int[] picked)
@@ -1158,7 +1239,8 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
-					damage -= float(info.Defense);
+					if(!(damagetype & DMG_TRUEDAMAGE))
+						damage -= float(info.Defense);
 					if(damage < minDamage)
 						damage = minDamage;
 				}
