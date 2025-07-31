@@ -149,7 +149,7 @@
 	}
 	"Roaming Silently Desc"
 	{
-		"en"	"We just decided to make a base here, nothing more..."
+		"en"	"We just decided to make a base here after what happend at that broken ruina island, to prepare, nothing more."
 	}
 	"Loud Firepower"
 	{
