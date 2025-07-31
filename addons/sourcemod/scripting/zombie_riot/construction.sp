@@ -120,6 +120,7 @@ static bool ExplainOreMining[MAXPLAYERS];
 
 static Handle GameTimer;
 static int CurrentRisk;
+static bool CurrentMidRaise;
 static int CurrentAttacks;
 static float NextAttackAt;
 static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
@@ -697,15 +698,23 @@ static bool GetRandomResourceInfo(float distance, ResourceInfo info, int[] picke
 
 static Action Timer_StartAttackWave(Handle timer)
 {
-	if(NextAttackAt > GetGameTime())
+	float time = NextAttackAt - GetGameTime();
+	if(time > 0.0)
 	{
+		if(value < 120.0 && !CurrentMidRaise)
+		{
+			CurrentRisk++;
+			CurrentMidRaise = true;
+		}
+		
 		GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 		Waves_UpdateMvMStats();
 		return Plugin_Stop;
 	}
 	
-	CurrentRisk += RiskIncrease;
+	CurrentRisk += RiskIncrease - 1;
 	CurrentAttacks++;
+	CurrentMidRaise = false;
 	
 	// Clear out existing enemies
 	for(int i; i < i_MaxcountNpcTotal; i++)
