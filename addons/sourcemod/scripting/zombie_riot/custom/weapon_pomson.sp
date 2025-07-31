@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 //pomson is the same as bison code... so why not just make both weapons use the same void? ah well
-public void Weapon_Pomson(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Pomson(int client, int weapon, bool crit, int slot)
 {
 	float damage = 18.0;
 	damage *= Attributes_Get(weapon, 1, 1.0);

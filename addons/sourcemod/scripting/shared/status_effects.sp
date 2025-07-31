@@ -1839,7 +1839,7 @@ void StatusEffects_PotionWand()
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Weakening Compound");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "▼");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "\\/");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.35;
 	data.DamageDealMulti			= 0.75;
@@ -5388,9 +5388,8 @@ void WeakeningCompoundStart(int victim, StatusEffect Apply_MasterStatusEffect, E
 	//not an npc, ignore.
 	if(!b_ThisWasAnNpc[victim])
 		return;
-		
-	SetEntityRenderMode(victim, RENDER_NORMAL, false, 1, false, true);
-	SetEntityRenderColor(victim, 255, 255, 25, 255, false, false, true);
+	
+	SetEntityRenderColor_NpcAll(victim, 2.0, 2.0, 0.25);
 }
 void WeakeningCompoundEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -5398,7 +5397,5 @@ void WeakeningCompoundEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
-	SetEntityRenderMode(victim, i_EntityRenderMode[victim], true, 2, false, true);
-	SetEntityRenderColor(victim, i_EntityRenderColour1[victim], i_EntityRenderColour2[victim],
-	 i_EntityRenderColour3[victim], i_EntityRenderColour4[victim], true, false, true);
+	SetEntityRenderColor_NpcAll(victim, 0.5, 0.5, 4.0);
 }

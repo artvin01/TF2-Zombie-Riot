@@ -72,7 +72,7 @@ static float Newtonian_M2_Knockback_Vertical[3] = { 400.0, 600.0, 750.0 };		//Ve
 static float Newtonian_M2_Knockback_RaidMult[3] = { 1.0, 1.0, 1.0 };			//Amount to multiply knockback dealt to raids.
 static float Newtonian_M2_Knockback_WeightPenalty[3] = { 150.0, 100.0, 100.0 };	//Amount to reduce knockback per point of NPC weight above 1.0.
 static float Newtonian_M2_AttackDelay[3] = { 0.66, 0.66, 0.66 };				//Duration to prevent the user from attacking with M1 after triggering a shockwave. This is to prevent cheesy combos where you press M2 and M1 at the same time.
-static int Newtonian_M2_MaxTargets[3] = { 4, 6, 8 };							//Max zombies hit by M2 shockwave.
+static int Newtonian_M2_MaxTargets[3] = { 7, 8, 9 };							//Max zombies hit by M2 shockwave.
 
 //Client/entity-specific global variables below, don't touch these:
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};

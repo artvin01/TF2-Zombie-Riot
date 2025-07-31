@@ -545,7 +545,7 @@ public void Weapon_Casino_M1(int client, int weapon)
 	}
 }
 
-public void CasinoWeaponHoldM2(int client, int weapon, const char[] classname, bool &result)
+public void CasinoWeaponHoldM2(int client, int weapon, bool crit, int slot)
 {
 	f_AttackDelayKnife[client] = 0.0;
 	SDKUnhook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);

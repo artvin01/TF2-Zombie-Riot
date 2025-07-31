@@ -2395,12 +2395,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
-		i_EntityRenderMode[entity] = RENDER_NORMAL;
-		i_EntityRenderColour1[entity] = 255;
-		i_EntityRenderColour2[entity] = 255;
-		i_EntityRenderColour3[entity] = 255;
-		i_EntityRenderColour4[entity] = 255;
-		i_EntityRenderOverride[entity] = false;
+		f_EntityRenderColour[entity][0] = 1.0;
+		f_EntityRenderColour[entity][1] = 1.0;
+		f_EntityRenderColour[entity][2] = 1.0;
+		i_EntityRenderColourSave[entity][0] = 255;
+		i_EntityRenderColourSave[entity][1] = 255;
+		i_EntityRenderColourSave[entity][2] = 255;
 		b_StickyIsSticking[entity] = false;
 		h_ArrowInflictorRef[entity] = -1;
 		i_ProjectileExtraFunction[entity] = INVALID_FUNCTION;
@@ -3021,6 +3021,14 @@ public void CheckIfAloneOnServer()
 		Bob_Exists = false;
 		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
 		Bob_Exists_Index = -1;
+	}
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] == TEUTON_NONE)
+		{
+			//update clients
+			Store_ApplyAttribs(client);
+		}
 	}
 #endif
 }

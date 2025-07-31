@@ -411,12 +411,8 @@ int ReplicateClient_RollAngle[MAXPLAYERS];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
-RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
-int i_EntityRenderColour1[MAXENTITIES]={255, ...};
-int i_EntityRenderColour2[MAXENTITIES]={255, ...};
-int i_EntityRenderColour3[MAXENTITIES]={255, ...};
-int i_EntityRenderColour4[MAXENTITIES]={255, ...};
-bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
+float f_EntityRenderColour[MAXENTITIES][3];
+int i_EntityRenderColourSave[MAXENTITIES][3];
 
 //6 wearables
 int i_Wearable[MAXENTITIES][9];

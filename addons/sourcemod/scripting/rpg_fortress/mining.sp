@@ -311,7 +311,7 @@ bool Mining_Interact(int client, int entity, int weapon)
 	return false;
 }
 
-public void Mining_PickaxeM1(int client, int weapon, const char[] classname, bool &result)
+public void Mining_PickaxeM1(int client, int weapon, bool crit, int slot)
 {
 	float ApplyCooldown =  0.8 * Attributes_Get(weapon, 6, 1.0);
 	Ability_Apply_Cooldown(client, 1,ApplyCooldown);

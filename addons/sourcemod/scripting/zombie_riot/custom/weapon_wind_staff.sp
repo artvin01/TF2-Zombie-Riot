@@ -34,7 +34,7 @@ void Wind_Staff_MapStart()
 	TBB_Precache_Wind_Staff();
 }
 
-public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wind_Staff(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -113,7 +113,7 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 }
 
 
-public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wind_StaffM2(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
