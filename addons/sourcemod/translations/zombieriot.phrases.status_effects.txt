@@ -1195,7 +1195,7 @@
 	}
 	"Starting Grace Desc"
 	{
-		"en"	"Buff for a limited starting time.\nIncreases damage dealt by 25％, Decreases damage taken by 15％."
+		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
 	}
 	"Anti-Waves"
 	{
