@@ -440,6 +440,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
+		if(Construction_Mode())
+		{
+			b_NpcIgnoresbuildings[npc] = false;
+		}
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
 			AddEntityToLagCompList(npc);
@@ -10245,6 +10249,10 @@ bool RaidAllowsBuildings = false;
 
 stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 {
+	if(Construction_Mode())
+	{
+		RaidAllowsBuildings = true;
+	}
 #if defined ZR
 	switch(value)
 	{
@@ -10253,7 +10261,7 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 		//construction forces building attacking.
 		case 1:
 		{
-			if(!Construction_Mode() && RaidAllowsBuildings)
+			if(RaidAllowsBuildings)
 				return false;
 
 			if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
@@ -10266,7 +10274,7 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 		//same as above, but if it has the tower defense mode on, also ignore
 		case 2:
 		{
-			if(!Construction_Mode() && RaidAllowsBuildings)
+			if(RaidAllowsBuildings)
 				return false;
 
 			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))

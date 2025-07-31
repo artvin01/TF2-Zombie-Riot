@@ -4194,7 +4194,7 @@
 	}
 	"freeplay_start_2"
 	{
-		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull upto like 3.\nI have added some of my own wanna-be enemies to make sure you see the weirdest creations, we dont know the void."
 	}
 	"freeplay_start_3"
 	{

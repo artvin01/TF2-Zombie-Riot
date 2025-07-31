@@ -44,7 +44,7 @@ methodmap BaseBuilding < BarrackBody
 		b_NoKnockbackFromSources[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flHeadshotCooldown = 0.0;
-		BuffTimerLimited = GetGameTime() + 60.0;
+		BuffTimerLimited = GetGameTime() + 120.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	

@@ -76,7 +76,7 @@
 	}
 	"Mine Resources"
 	{
-		"en"	"Mine resources with your use key [T or R] once!\nStay near them to mine them!"
+		"en"	"Mine resources with your use key [T or R], tap it once!\nOn left menu you must confirm!\nStay near them to mine them over time!"
 	}
 	"Start Mining"
 	{
@@ -143,13 +143,21 @@
 	{
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
 	}
+	"Roaming Silently"
+	{
+		"en"	"Roaming Silently"
+	}
+	"Roaming Silently Desc"
+	{
+		"en"	"We just decided to make a base here, nothing more..."
+	}
 	"Loud Firepower"
 	{
 		"en"	"Loud Firepower"
 	}
 	"Loud Firepower Desc"
 	{
-		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
+		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}Enemies gain +15％ damage."
 	}
 	"Heavy Equippment"
 	{

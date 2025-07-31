@@ -1117,7 +1117,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 						IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
 						TF2_StunPlayer(victim, 1.0, 0.75, TF_STUNFLAG_SLOWDOWN);
-						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 150.0, 2.0, 0, 3);
+						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 0, 3);
 						float HudY = -1.0;
 						float HudX = -1.0;
 						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
@@ -1134,7 +1134,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 							theteam = 3;
 						else if(theteam == 3)
 							theteam = 2;
-						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 150.0, 2.0, 2, theteam);
+						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 2, theteam);
 					}
 					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 2.5;
 
@@ -1193,7 +1193,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				Cheese_SetPenalty(victim, (melee ? meleepenalty : rangedpenalty));
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 0.5, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 0.5, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
@@ -1233,7 +1233,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
 					}
 				}
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 1.0, 2, GetTeam(attacker));
 					
 				Repair = 0;
 				position[2] += 10.0;

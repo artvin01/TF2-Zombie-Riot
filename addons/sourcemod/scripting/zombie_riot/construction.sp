@@ -609,7 +609,7 @@ void TutorialShort_ExplainOres(int client)
 		event.SetFloat("worldPosX", pos2[0]);
 		event.SetFloat("worldPosY", pos2[1]);
 		event.SetFloat("worldPosZ", pos2[2]);
-		event.SetFloat("lifetime", 7.0);
+		event.SetFloat("lifetime", 12.0);
 		event.SetString("text", buffer);
 		event.SetString("play_sound", "vo/null.mp3");
 		IdRef++;
