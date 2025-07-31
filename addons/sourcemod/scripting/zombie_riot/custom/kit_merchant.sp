@@ -207,6 +207,7 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 		MerchantEnd(client);
 
 	Menu menu = new Menu(MerchantMenuH);
+	AnyMenuOpen[client] = 1.0;
 
 	menu.SetTitle("Select Merchant Style:\n ");
 
@@ -265,10 +266,12 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 	{
 		case MenuAction_End:
 		{
+			AnyMenuOpen[client] = 0.0;
 			delete menu;
 		}
 		case MenuAction_Select:
 		{
+			AnyMenuOpen[client] = 0.0;
 			char buffer[4];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 

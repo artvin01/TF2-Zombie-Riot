@@ -2992,8 +2992,10 @@ void Store_Menu(int client)
 		StarterCashMode[client] = false;
 	}
 	Store_OnCached(client);
-	if(LastStoreMenu[client])
+	if(LastStoreMenu[client] || AnyMenuOpen[client])
 	{
+		HideMenuInstantly(client);
+		//show a blank page to instantly hide it
 		CancelClientMenu(client);
 		ClientCommand(client, "slot10");
 		ResetStoreMenuLogic(client);
@@ -3012,7 +3014,22 @@ void Store_Menu(int client)
 		MenuPage(client, -1);
 	}
 }
-
+void HideMenuInstantly(int client)
+{
+	Menu menu = new Menu(Store_BlankHide);
+	menu.AddItem("", "", ITEMDRAW_SPACER);
+	menu.Pagination = 0;
+	menu.ExitButton = false;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+static int Store_BlankHide(Menu menu, MenuAction action, int client, int choice)
+{
+	if(action == MenuAction_End)
+	{
+		delete menu;
+	}
+	return 0;
+}
 void Store_OpenNPCStore(int client)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
@@ -7056,6 +7073,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgr
 void ResetStoreMenuLogic(int client)
 {
 	LastStoreMenu[client] = 0.0;
+	AnyMenuOpen[client] = 0.0;
 }
 
 void SetStoreMenuLogic(int client, bool store = true)

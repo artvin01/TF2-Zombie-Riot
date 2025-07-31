@@ -1585,6 +1585,7 @@ void Construction_OpenResearch(int client)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(ResearchMenuH);
+	AnyMenuOpen[client] = 1.0;
 
 	ResearchInfo info;
 	char index[16], buffer[128];
@@ -1682,14 +1683,17 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
 			delete InResearchMenu[client];
+			AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
 			delete InResearchMenu[client];
+			AnyMenuOpen[client] = 0.0;
 			
 			ResearchInfo info;
 			char buffer[64];
