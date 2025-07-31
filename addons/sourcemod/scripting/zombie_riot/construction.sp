@@ -701,7 +701,8 @@ static Action Timer_StartAttackWave(Handle timer)
 	float time = NextAttackAt - GetGameTime();
 	if(time > 0.0)
 	{
-		if(value < 120.0 && !CurrentMidRaise)
+		//halfwaay time point boosts power.
+		if(time < 200.0 && !CurrentMidRaise)
 		{
 			CurrentRisk++;
 			CurrentMidRaise = true;
@@ -1149,7 +1150,7 @@ void Construction_EnemySpawned(int entity)
 	
 	if(AttackType > 0 && AttackHardcore > 0)
 	{
-		float stats = Pow(1.05, float(AttackHardcore));
+		float stats = Pow(1.06, float(AttackHardcore));
 		fl_Extra_Damage[entity] *= stats;
 		
 		SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * stats));

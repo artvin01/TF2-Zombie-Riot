@@ -4218,7 +4218,7 @@
 	}
 	"Explain Construction 1"
 	{
-		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
+		"en"		"Gather resources and build up your base, use your {yellow}''Research Center''{green} to upgrade, You have extra buildings in your builder menu."
 	}
 	"Explain Construction 3"
 	{
