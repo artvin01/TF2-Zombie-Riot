@@ -92,6 +92,9 @@ void Tutorial_MakeClientNotMove(int client)
 
 void DoTutorialStep(int client, bool obeycooldown)
 {
+	if(GetClientTeam(client) != 2)
+		return;
+		
 	TutorialShort_ExplainOres(client);
 	if(i_TutorialStep[client] >= 4 || i_TutorialStep[client] == 0)
 	{
