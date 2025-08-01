@@ -480,21 +480,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 		}
 
-		if(Waves_GetRoundScale() > 124)
-			enemy.ExtraDamage *= 1.25;
-
-		if(Waves_GetRoundScale() > 174)
-			enemy.ExtraDamage *= 2.0;
-
 		// Raid health is lower before w101.
 		if(Waves_GetRoundScale() < 101)
 			enemy.Health = RoundToCeil(float(enemy.Health) * 0.75);
-
-		if(Waves_GetRoundScale() > 149)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.25);
-
-		if(Waves_GetRoundScale() > 174)
-			enemy.Health = RoundToCeil(float(enemy.Health) * 1.5);
 
 		enemy.Health = RoundToCeil(float(enemy.Health) * HealthMulti);
 		
@@ -781,7 +769,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 	float ExtraHpAdd;
 	ExtraHpAdd = float(postWaves);
-	ExtraHpAdd *= 0.1;
+	ExtraHpAdd *= 0.075;
 	if(ExtraHpAdd <= 1.0)
 	{
 		ExtraHpAdd = 1.0;
