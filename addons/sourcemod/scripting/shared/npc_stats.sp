@@ -10251,10 +10251,6 @@ bool RaidAllowsBuildings = false;
 
 stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 {
-	if(Construction_Mode())
-	{
-		RaidAllowsBuildings = true;
-	}
 #if defined ZR
 	if(Construction_Mode())
 	{
