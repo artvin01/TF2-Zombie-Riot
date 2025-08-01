@@ -83,7 +83,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_TeleportSound)); i++) { PrecacheSound(g_TeleportSound[i]); }
-	PrecacheSoundCustom("#zombiesurvival/void_wave/unspeakable_raid.mp3");
+	PrecacheSoundCustom("#zombiesurvival/void_wave/center_of_the_void_1.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -283,12 +283,12 @@ methodmap VoidUnspeakable < CClotBody
 		//if(!cutscene)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/void_wave/unspeakable_raid.mp3");
-			music.Time = 187;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/void_wave/center_of_the_void_1.mp3");
+			music.Time = 175;
 			music.Volume = 0.75;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Lilith");
-			strcopy(music.Artist, sizeof(music.Artist), "Gost");
+			strcopy(music.Name, sizeof(music.Name), "Center Of The Void");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 			Music_SetRaidMusic(music);
 		}
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
