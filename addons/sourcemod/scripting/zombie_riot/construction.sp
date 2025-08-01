@@ -709,8 +709,8 @@ static Action Timer_StartAttackWave(Handle timer)
 	float time = NextAttackAt - GetGameTime();
 	if(time > 0.0)
 	{
-		//halfwaay time point boosts power.
-		if(time < 200.0 && !CurrentMidRaise)
+		//when 150 ticks left, boost power
+		if(time < 150.0 && !CurrentMidRaise)
 		{
 			CurrentRisk++;
 			CurrentMidRaise = true;
