@@ -168,7 +168,7 @@ static void ThisBuildingMenu(int client)
 	Menu menu = new Menu(ThisBuildingMenuH);
 
 	char buffer2[512];
-	Format(buffer2, sizeof(buffer2), "%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description");
+	Format(buffer2, sizeof(buffer2), "%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description Alone");
 	menu.SetTitle(buffer2);
 
 	char buffer[64];

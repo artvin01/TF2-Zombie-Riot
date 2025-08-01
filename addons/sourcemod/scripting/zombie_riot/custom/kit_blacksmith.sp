@@ -1628,8 +1628,9 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 	{
 		case MenuAction_End:
 		{
-			AnyMenuOpen[client] = 0.0;
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{

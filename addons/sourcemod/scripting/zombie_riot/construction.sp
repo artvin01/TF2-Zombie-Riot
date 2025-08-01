@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+int PlayerVotedForThis[MAXPLAYERS];
+
 enum struct AttackInfo
 {
 	char WaveSet[64];
@@ -67,6 +69,7 @@ enum struct ResearchInfo
 	char Name[48];
 	char Key[48];
 	float Time;
+	int Res_InternalID;
 	StringMap CostMap;
 
 	void SetupKv(KeyValues kv)
@@ -80,6 +83,10 @@ enum struct ResearchInfo
 
 		this.Time = kv.GetFloat("time");
 		kv.GetString("key", this.Key, sizeof(this.Key));
+
+		static int IdIncrement;
+		IdIncrement++;
+		this.Res_InternalID = IdIncrement;
 
 		this.CostMap = new StringMap();
 		if(kv.JumpToKey("cost"))
@@ -399,6 +406,7 @@ void Construction_SetupVote(KeyValues kv)
 // Waves_RoundStart()
 void Construction_StartSetup()
 {
+	Zero(PlayerVotedForThis);
 	Rogue_StartSetup();
 	Construction_RoundEnd();
 
@@ -1309,7 +1317,14 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 			SetGlobalTransTarget(attacker);
 			
 			Menu menu = new Menu(ConstructionProvokeH);
-			menu.SetTitle("%t", "Start Mining", NpcStats_ReturnNpcName(victim));
+			if(b_IsAloneOnServer)
+			{
+				menu.SetTitle("%t", "Start Mining Alone", NpcStats_ReturnNpcName(victim));
+			}
+			else
+			{
+				menu.SetTitle("%t", "Start Mining", NpcStats_ReturnNpcName(victim));
+			}
 
 			char num[16], buffer[16];
 			IntToString(EntIndexToEntRef(victim), num, sizeof(num));
@@ -1418,8 +1433,14 @@ static int ConstructionProvokeH(Menu menu, MenuAction action, int client, int ch
 				int entity = EntRefToEntIndex(StringToInt(buffer));
 				if(entity != -1)
 				{
-					view_as<CClotBody>(entity).m_bCamo = false;
-					Construction_Material_Interact(client, entity);
+					//need atleast 2 parcitipants
+					CClotBody npc = view_as<CClotBody>(entity);
+					if(b_IsAloneOnServer || IsValidEntity(npc.m_iTargetWalkTo) && npc.m_iTargetWalkTo != client)
+					{
+						view_as<CClotBody>(entity).m_bCamo = false;
+						Construction_Material_Interact(client, entity);
+					}
+					npc.m_iTargetWalkTo = client;
 				}
 			}
 		}
@@ -1592,7 +1613,15 @@ void Construction_OpenResearch(int client)
 
 	if(InResearch == -1)
 	{
-		menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
+		if(b_IsAloneOnServer)
+		{
+			menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description Alone");
+
+		}
+		else
+		{
+			menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
+		}
 
 		int amount, items;
 		int length1 = ResearchList.Length;
@@ -1611,7 +1640,30 @@ void Construction_OpenResearch(int client)
 				}
 			}
 
+			bool VotedAlready = false;
+			for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
+			{
+				if(IsClientInGame(clientloop) && GetClientTeam(clientloop) == 2)
+				{
+					if(info.Res_InternalID == PlayerVotedForThis[clientloop] && client != clientloop)
+					{
+						VotedAlready = true;
+					}
+				}
+			}
+			if(b_IsAloneOnServer)
+			{
+				VotedAlready = true;
+			}
 			FormatEx(buffer, sizeof(buffer), "%t", info.Name);
+			if(VotedAlready)
+			{
+				Format(buffer, sizeof(buffer), "%s [✓]", buffer);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "%s [ ]", buffer);
+			}
 
 			bool failed;
 			StringMapSnapshot snap = info.CostMap.Snapshot();
@@ -1671,8 +1723,11 @@ void Construction_OpenResearch(int client)
 
 static Action ResearchTimer(Handle timer, int client)
 {
-	InResearchMenu[client] = null;
-	Construction_OpenResearch(client);
+	if(IsValidClient(client))
+	{
+		InResearchMenu[client] = null;
+		Construction_OpenResearch(client);
+	}
 	return Plugin_Continue;
 }
 
@@ -1683,7 +1738,8 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
-			AnyMenuOpen[client] = 0.0;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
@@ -1708,10 +1764,30 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 
 				ResearchList.GetArray(a, info);
 
-				if(GetClientButtons(client) & IN_DUCK)
+				bool VotedAlready = false;
+				for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
+				{
+					if(IsClientInGame(clientloop) && GetClientTeam(clientloop) == 2 && client != clientloop)
+					{
+						if(info.Res_InternalID == PlayerVotedForThis[clientloop])
+						{
+							VotedAlready = true;
+						}
+					}
+				}
+				if(b_IsAloneOnServer)
+					VotedAlready = true;
+
+				PlayerVotedForThis[client] = info.Res_InternalID;
+
+				if(!VotedAlready || GetClientButtons(client) & IN_DUCK)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s Desc", info.Name);
 					CPrintToChat(client, "%t", "Artifact Info", info.Name, buffer);
+					if(!VotedAlready)
+					{
+						CPrintToChat(client, "%t", "Player Must Agree");
+					}
 				}
 				else
 				{

@@ -61,9 +61,17 @@
 		"#format"	"{1:s},{2:t}"
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
 	}
-	"Crouch and select to view description"
+	"Crouch and select to view description Alone"
 	{
 		"en"	"Crouch and select to view description"
+	}
+	"Crouch and select to view description"
+	{
+		"en"	"Crouch and select to view description\nTwo players need to want 1 research to start it, indicated by [✓]"
+	}
+	"Player Must Agree"
+	{
+		"en"	"One more player must vote for this upgrade to begin."
 	}
 	"Claim Research"
 	{
@@ -79,6 +87,11 @@
 		"en"	"Mine resources with your use key [T or R], tap it once!\nOn left menu you must confirm!\nStay near them to mine them over time!"
 	}
 	"Start Mining"
+	{
+		"#format"	"{1:s}"
+		"en"	"Start mining {1}?\n A raid might spawn nearby.\nYou need atleast one other player to mine with you to start."
+	}
+	"Start Mining Alone"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."

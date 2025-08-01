@@ -531,8 +531,9 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 	{
 		case MenuAction_End:
 		{
-			AnyMenuOpen[client] = 0.0;
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
