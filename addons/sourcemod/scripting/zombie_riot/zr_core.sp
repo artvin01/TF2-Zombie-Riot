@@ -665,7 +665,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
