@@ -1876,7 +1876,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] |= IN_SCORE;
 		
 #if defined ZR
-		if(dieingstate[client] == 0)
+		if(dieingstate[client] == 0 && TF2_GetClientTeam(client) != TFTeam_Spectator && TF2_GetClientTeam(client) != TFTeam_Unassigned)
 		{
 			if(WaitingInQueue[client])
 			{
