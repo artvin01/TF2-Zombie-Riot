@@ -97,11 +97,13 @@ static int CountBuildings()
 static void LighthouseGiveBuff(int iNpc, float range = 2000.0)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
+	float spawnLoc[3]; 	
+	WorldSpaceCenter(iNpc, spawnLoc);
 	Explode_Logic_Custom(0.0,
 	iNpc,
 	iNpc,
 	-1,
-	_,
+	spawnLoc,
 	range,
 	_,
 	_,

@@ -394,6 +394,7 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
+float AnyMenuOpen[MAXPLAYERS];
 float LastStoreMenu[MAXPLAYERS];
 bool LastStoreMenu_Store[MAXPLAYERS];
 
@@ -746,6 +747,7 @@ void ZR_MapStart()
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
 	SkyboxProps_OnMapStart();
+	Tutorial_MapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
@@ -1079,6 +1081,7 @@ void ZR_ClientPutInServer(int client)
 	if(Waves_Started())
 		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
+	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);

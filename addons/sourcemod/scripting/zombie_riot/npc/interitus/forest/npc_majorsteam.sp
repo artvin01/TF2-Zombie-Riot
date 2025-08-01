@@ -315,7 +315,7 @@ static void ClotDeath(int entity)
 		b_StaticNPC[other] = b_StaticNPC[npc.index];
 		if(b_StaticNPC[other])
 			AddNpcToAliveList(other, 1);
-		
+		NpcStats_CopyStats(npc.index, other);
 		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime(other) + 4.0;
 	}
 

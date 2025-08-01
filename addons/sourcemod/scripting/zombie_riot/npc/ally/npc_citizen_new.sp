@@ -1386,7 +1386,7 @@ methodmap Citizen < CClotBody
 				}
 
 				if(client)
-					HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+					HealEntityGlobal(client, client, float(ReturnEntityMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
 				
 				HealEntityGlobal(client ? client : this.index, this.index, ReturnEntityMaxHealth(this.index) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
 

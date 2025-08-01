@@ -329,12 +329,13 @@ static void Fire_Beam(int client, int weapon, bool update)
 	float Angles[3];
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-
+	
+	float flPitch = 0.0;
 	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-		return;
-
-	float flPitch = npc.GetPoseParameter(iPitch);
+	if(iPitch >= 0)
+	{
+		flPitch = npc.GetPoseParameter(iPitch);
+	}
 	flPitch *=-1.0;
 	if(flPitch>25.0)	//limit the pitch. by a lot
 		flPitch=25.0;

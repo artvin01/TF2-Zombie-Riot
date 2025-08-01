@@ -6,10 +6,15 @@ int i_TutorialStep[MAXPLAYERS];
 bool b_GrantFreeItemsOnce[MAXPLAYERS];
 
 static Handle SyncHud;
+float CDDisplayHint_LoadoutStore[MAXPLAYERS];
 
 void Tutorial_PluginStart()
 {
 	SyncHud = CreateHudSynchronizer();
+}
+void Tutorial_MapStart()
+{
+	Zero(CDDisplayHint_LoadoutStore);
 }
 
 void Tutorial_ClientSetup(int client, int value)
@@ -87,6 +92,22 @@ void Tutorial_MakeClientNotMove(int client)
 
 void DoTutorialStep(int client, bool obeycooldown)
 {
+	TutorialShort_ExplainOres(client);
+	if(i_TutorialStep[client] >= 4 || i_TutorialStep[client] == 0)
+	{
+		if(StarterCashMode[client])
+		{
+			if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
+			{
+				CDDisplayHint_LoadoutStore[client] = GetGameTime() + 1.0;
+				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
+				ShowSyncHudText(client, SyncHud, "%T", "Loadout In Store", client);
+				//try!
+			}
+			return;
+		}
+	}
+
 	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)
 	{
 		if(f_TutorialUpdateStep[client] < GetGameTime() || !obeycooldown)

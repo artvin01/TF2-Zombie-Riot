@@ -1643,6 +1643,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 								CreateEarthquake(VecEnemy, 0.5, 350.0, 16.0, 255.0);
 								PlayPOWERSound = true;
 							}
+							if(ShouldNpcDealBonusDamage(target))
+								damage *= 20.0;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 							bool Knocked = false;
