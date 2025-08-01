@@ -1405,7 +1405,7 @@ void Freeplay_SetupStart(bool extra = false)
 	{
 		FreeplayBuffTimer = 0;
 		CreateTimer(4.0, activatebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
-		int irlnreq = 4;
+		int irlnreq = 1;
 
 		int wrathchance = GetRandomInt(0, 100);
 		if(wrathchance < irlnreq)
