@@ -1656,96 +1656,14 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 			float HudY = -1.0;
 			float HudX = -1.0;
 			SetHudTextParams(HudX, HudY, 3.0, 50, 255, 50, 255);
-			SetGlobalTransTarget(victim);
-			ShowHudText(victim,  -1, "%t", "You have been Infected by Calmaticus");
+			ShowHudText(victim, -1, "%T", "You have been Infected by Calmaticus", victim);
 			ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");		
 			int InfectionCount = 15;
 			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0, 1);
-			DataPack pack;
-			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(EntIndexToEntRef(victim));
-			pack.WriteCell(EntIndexToEntRef(entity));
-//			pack.WriteCell(EntIndexToEntRef(particle));
-//			pack.WriteCell(EntIndexToEntRef(particle2));
-			pack.WriteCell(-1);
-			pack.WriteCell(-1);
-			pack.WriteCell(InfectionCount);
 		}
 	}
 }
 
-public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	int Particle_entity = EntRefToEntIndex(pack.ReadCell());
-	int Particle_entity_2 = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidEntity(entity))
-	{
-		if(IsValidEntity(Particle_entity))
-		{
-			RemoveEntity(Particle_entity);
-		}
-		if(IsValidEntity(Particle_entity_2))
-		{
-			RemoveEntity(Particle_entity_2);
-		}
-		return Plugin_Stop;
-	}
-	if(!IsValidEnemy(entity, client))
-	{
-		if(IsValidEntity(Particle_entity))
-		{
-			RemoveEntity(Particle_entity);
-		}
-		if(IsValidEntity(Particle_entity_2))
-		{
-			RemoveEntity(Particle_entity_2);
-		}
-		return Plugin_Stop;
-	}
-
-
-	//everything is valid, infect nearby allies.
-	//dont make it work on npcs, would be unfair.
-	for(int AllyClient = 1; AllyClient <= MaxClients; AllyClient++)
-	{
-		if(IsValidEnemy(entity, AllyClient) && AllyClient != client)
-		{
-			float vAngles[3];				
-			float entity_angles[3];						
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
-			GetEntPropVector(AllyClient, Prop_Data, "m_vecAbsOrigin", entity_angles); 				
-			float Distance = GetVectorDistance(vAngles, entity_angles);
-			if(Distance < 30.0)
-			{		
-				NemesisHitInfection(entity, AllyClient, 0.0 , -1);
-			}
-		}
-	}
-	int bleed_count = pack.ReadCell();
-	if(IsInvuln(client))
-	{
-		bleed_count = 0;
-	}
-	if(bleed_count < 1)
-	{
-		if(IsValidEntity(Particle_entity))
-		{
-			RemoveEntity(Particle_entity);
-		}
-		if(IsValidEntity(Particle_entity_2))
-		{
-			RemoveEntity(Particle_entity_2);
-		}
-		return Plugin_Stop;
-	}
-
-	pack.Position--;
-	pack.WriteCell(bleed_count-1, false);
-	return Plugin_Continue;
-}
 
 public void Raidmode_Nemesis_Win(int entity)
 {

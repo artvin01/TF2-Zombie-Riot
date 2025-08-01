@@ -2573,7 +2573,7 @@
 	}	
 	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
+		"en"		"You have been Infected by Calmaticus!\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{
