@@ -97,8 +97,6 @@ static float NextOrbDamage[MAXENTITIES];
 static int SelfDegradationAbilityState[MAXENTITIES];
 static float NextSelfDegradationAbilityState[MAXENTITIES];
 
-//static int LastEnemyTargeted[MAXENTITIES];
-
 void CAT_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -734,12 +732,9 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	// Make it act like a projectile shield
 	SetEntityModel(projectile, CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
 	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6);
-	//SetEntityRenderMode(projectile, RENDER_NORMAL);
-	//SetEntityRenderColor(projectile);
 	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
 	b_ThisEntityIgnored[projectile] = true;
 	b_ForceCollisionWithProjectile[projectile] = true;
-	//SDKCall(g_hUpdateCollisionBox, projectile); 
 	
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 }
