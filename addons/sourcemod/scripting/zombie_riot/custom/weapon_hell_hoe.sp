@@ -932,16 +932,12 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 				}
 			}
 		}
-		
-		if(f_WandDamage[entity] <= 1.0)
+		//reemove on hit.
+		if(IsValidEntity(particle) && particle != 0)
 		{
-			//damage so low it doesnt even matter.+
-			if(IsValidEntity(particle) && particle != 0)
-			{
-				RemoveEntity(particle);
-			}
-			RemoveEntity(entity);
+			RemoveEntity(particle);
 		}
+		RemoveEntity(entity);
 	}
 	else if(target == 0)
 	{

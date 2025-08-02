@@ -1781,7 +1781,7 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	"Professor Certificate Desc"
 	{

@@ -1567,7 +1567,7 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 		f_VoidDoubleTapAbility[client] = GetGameTime() + 10.0; //Just a test.
-		ApplyStatusEffect(client, client, "Self Empowerment", 10.0);
+	//	ApplyStatusEffect(client, client, "Self Empowerment", 10.0);
 		EmitSoundToAll(NEARL_ACTIVE_SOUND, client, SNDCHAN_STATIC, 85, _, 0.5, 70);
 	}
 	else
