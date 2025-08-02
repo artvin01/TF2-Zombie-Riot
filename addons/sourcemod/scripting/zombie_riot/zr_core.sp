@@ -394,6 +394,7 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
+float AnyMenuOpen[MAXPLAYERS];
 float LastStoreMenu[MAXPLAYERS];
 bool LastStoreMenu_Store[MAXPLAYERS];
 
@@ -664,7 +665,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -746,6 +746,7 @@ void ZR_MapStart()
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
 	SkyboxProps_OnMapStart();
+	Tutorial_MapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
@@ -1079,6 +1080,7 @@ void ZR_ClientPutInServer(int client)
 	if(Waves_Started())
 		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
+	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);

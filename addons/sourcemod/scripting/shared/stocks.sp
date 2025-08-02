@@ -1067,13 +1067,6 @@ int TF2_CreateGlow_White(const char[] model, int victim, float modelsize)
 		SetEntProp(entity, Prop_Send, "m_nBody", GetEntProp(victim, Prop_Send, "m_nBody"));
 		
 		SetParent(victim, entity);
-
-		SetEntityRenderMode(entity, i_EntityRenderMode[victim]);
-		SetEntityRenderColor(entity,
-							i_EntityRenderColour1[victim],
-							i_EntityRenderColour2[victim],
-							i_EntityRenderColour3[victim],
-							i_EntityRenderColour4[victim]);
 	}
 	return entity;
 }
@@ -3066,7 +3059,7 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
-		{
+		{ 
 			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 20)
 			{
 				float CurrentLevel = float(Level[client]);
@@ -3080,9 +3073,11 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 			}
 		}
 	}
-
-	if(rebels)
-		ScaleReturn += Citizen_Count() * rebels;
+	
+	//in construction mode, rebels are not THAT usefull toi warrant extra scaling, so it is blocked in this mode.
+	if(!Construction_Mode())
+		if(rebels)
+			ScaleReturn += Citizen_Count() * rebels;
 
 	if(!IgnoreMulti)
 		ScaleReturn *= zr_multi_scaling.FloatValue;
@@ -3321,7 +3316,7 @@ int inflictor = 0)
 	//Im lazy and dumb, i dont know a better way.
 
 	
-	for (int repeatloop = 0; repeatloop <= maxtargetshit && length > 0; repeatloop++)
+	for (int repeatloop = 0; repeatloop < maxtargetshit && length > 0; repeatloop++)
 	{
 		float ClosestDistance;
 		int ClosestIndex;
@@ -5842,5 +5837,24 @@ void Stocks_ColourPlayernormal(int client)
 
 		SetEntityRenderMode(entity, RENDER_NORMAL);
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
+}
+
+stock void SetEntityRenderColor_NpcAll(int entity, float r, float g, float b)
+{	
+	f_EntityRenderColour[entity][0] *= r;
+	f_EntityRenderColour[entity][1] *= g;
+	f_EntityRenderColour[entity][2] *= b;
+	Update_SetEntityRenderColor(entity);
+	for(int WearableSlot=0; WearableSlot<sizeof(i_Wearable[]); WearableSlot++)
+	{
+		int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
+		if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
+		{	
+			f_EntityRenderColour[WearableEntityIndex][0] *= r;
+			f_EntityRenderColour[WearableEntityIndex][1] *= g;
+			f_EntityRenderColour[WearableEntityIndex][2] *= b;
+			Update_SetEntityRenderColor(WearableEntityIndex);
+		}
 	}
 }

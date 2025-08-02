@@ -2134,9 +2134,7 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x2 the damage from bleeding."
-		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 2x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
-		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х2 урона от кровотечения."
+		"en"	"Increases fire rate, and metallic enemies suffer x2 the damage from bleeding."
 	}
 	"Alchemist Potion Pap 4"
 	{

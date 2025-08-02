@@ -180,7 +180,7 @@ public void SuperStarShooterOnHit(int entity, int target)
 			return;
 
 		Set_HitDetectionCooldown(entity,target, FAR_FUTURE);
-
+		
 		//Code to do damage position and ragdolls
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -197,6 +197,17 @@ public void SuperStarShooterOnHit(int entity, int target)
 		EmitSoundToAll(SOUND_ZAP_STAR, target, SNDCHAN_STATIC, 70, _, 0.7);
 		
 		f_WandDamage[entity] *= LASER_AOE_DAMAGE_FALLOFF;
+		
+		if(f_WandDamage[entity] <= 1.0)
+		{
+			int particle = EntRefToEntIndex(i_WandParticle[entity]);
+			//damage so low it doesnt even matter.+
+			if(IsValidEntity(particle) && particle != 0)
+			{
+				RemoveEntity(particle);
+			}
+			RemoveEntity(entity);
+		}
 	}
 	else if(target == 0)
 	{

@@ -10,6 +10,7 @@ float ConstructionItems_OddIncrease()
 
 public void Construction_Stalker_Collect()
 {
+	/*
 	float pos[3], ang[3];
 	
 	Spawns_GetNextPos(pos, ang, "spawn_1_3");
@@ -20,6 +21,7 @@ public void Construction_Stalker_Collect()
 
 	Spawns_GetNextPos(pos, ang, "spawn_3_4");
 	NPC_CreateByName("npc_stalker_goggles", 0, pos, ang, TFTeam_Blue);
+	*/
 
 	Construction_AddMaterial("wizuh", 50, true);
 }
@@ -71,6 +73,11 @@ public void Construction_HeavyOre_Enemy(int entity)
 		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 1.15));
 	}
+}
+
+public void Construction_Stalker_Enemy(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.1;
 }
 
 public void Construction_CarStart_Collect()

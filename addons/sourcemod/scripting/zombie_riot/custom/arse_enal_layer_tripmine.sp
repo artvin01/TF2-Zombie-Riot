@@ -43,7 +43,7 @@ void Aresenal_Weapons_Map_Precache()
 }
 
 
-public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Arsenal_Trap(int client, int weapon, bool crit, int slot)
 {
 	int traps = Trip_GetNumArmed(client);
 	if(traps < 6)
@@ -196,7 +196,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, const char[] classname, 
 	}
 }
 
-public void Weapon_Arsenal_Trap_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Arsenal_Trap_M2(int client, int weapon, bool crit, int slot)
 {
 	int entity = GetClientPointVisible(client);
 	if(entity > 0)
@@ -229,7 +229,7 @@ public void Weapon_Arsenal_Trap_M2(int client, int weapon, const char[] classnam
 	}
 }
 
-public void Spike_Pick_Back_up_Arse(int client, int weapon, const char[] classname, bool &result)
+public void Spike_Pick_Back_up_Arse(int client, int weapon, bool crit, int slot)
 {
 	static float angles[3];
 	GetClientEyeAngles(client, angles);
@@ -614,12 +614,12 @@ public Action Timer_Management_Trap(Handle timer, int client)
 	return Plugin_Continue;
 }
 
-public void Weapon_Arsenal_Terroriser_M1(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Arsenal_Terroriser_M1(int client, int weapon, bool crit, int slot)
 {
 	f_ChargeTerroriserSniper[weapon] = GetEntPropFloat(weapon, Prop_Send, "m_flChargedDamage");
 }
 
-public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, bool crit, int slot)
 {
 	if (f_TerroriserAntiSpamCd[client] < GetGameTime())
 	{

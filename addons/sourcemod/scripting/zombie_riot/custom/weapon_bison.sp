@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void Weapon_Bison(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Bison(int client, int weapon, bool crit, int slot)
 {
 	float damage = 18.0;
 	damage *= Attributes_Get(weapon, 1, 1.0);

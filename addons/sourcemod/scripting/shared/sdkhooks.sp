@@ -1488,50 +1488,52 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
 		}
 			
+		//only for red.
+		if(GetTeam(client) == 2)
+		{
+			static char HudBuffer[256];
+			HudBuffer[0] = 0;
+			if(!TeutonType[client])
+			{
+				int downsleft;
+				downsleft = 2;
+
+				downsleft -= i_AmountDowned[client];
+				SDKHooks_UpdateMarkForDeath(client);
 				
-		static char HudBuffer[256];
-		HudBuffer[0] = 0;
-		
-		if(!TeutonType[client])
-		{
-			int downsleft;
-			downsleft = 2;
+				if(!HudBuffer[0] && CashSpent[client] < 1)
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
+				}
+				if(b_EnableCountedDowns[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft
+					);
+				}
+				if(b_EnableRightSideAmmoboxCount[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
+					);
+				}
+			}
+			else if (TeutonType[client] == TEUTON_DEAD)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
+				);
 
-			downsleft -= i_AmountDowned[client];
-			SDKHooks_UpdateMarkForDeath(client);
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
+				);
+			}
+			SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 			
-			if(!HudBuffer[0] && CashSpent[client] < 1)
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
-			}
-			if(b_EnableCountedDowns[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Downs left", downsleft
-				);
-			}
-			if(b_EnableRightSideAmmoboxCount[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
-				);
-			}
+			if(HudBuffer[0])
+				PrintKeyHintText(client,"%s", HudBuffer);
 		}
-		else if (TeutonType[client] == TEUTON_DEAD)
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
-			);
-
-		}
-		else
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
-			);
-		}
-		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
-		
-		if(HudBuffer[0])
-			PrintKeyHintText(client,"%s", HudBuffer);
 #endif
 	}
 #if defined ZR
@@ -2586,7 +2588,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			{
 				if(weapon > 0 && i_WeaponVMTExtraSetting[weapon] != -1)
 				{
-					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon], .ForceColour = true);
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon]);
 					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon]; //This makes sure to not reset the alpha.
 				}
 			}

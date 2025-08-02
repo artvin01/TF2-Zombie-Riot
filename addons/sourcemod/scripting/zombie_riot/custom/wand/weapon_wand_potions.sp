@@ -250,18 +250,16 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 	GetClientEyeAngles(client, ang);
 	ang[0] -= 10.0;
 
-	int entity = Wand_Projectile_Spawn(client, speed, 20.0, damage, 0, weapon, NULL_STRING, ang, false);
+	int entity = Wand_Projectile_Spawn(client, speed, 20.0, damage, 0, weapon, NULL_STRING, ang, true);
 	if(entity > MaxClients)
 	{
 		SetEntityGravity(entity, 1.5);
 		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
-
-		int model = i_WeaponModelIndexOverride[weapon];
-		SetEntProp(entity, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
-		for(int i; i < 4; i++)
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
-		}
+		
+		char buffer[256];
+		ModelIndexToString(i_WeaponModelIndexOverride[weapon], buffer, sizeof(buffer));
+		int ModelApply = ApplyCustomModelToWandProjectile(entity, buffer, 1.0, "");
+		SetEntProp(ModelApply, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
 
 		SDKHook(entity, SDKHook_StartTouchPost, touch);
 	}
@@ -312,7 +310,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_DoTrueDamageBleed,
@@ -527,7 +525,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_UnstableTouchDo,
@@ -731,7 +729,7 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_PotionLead,
@@ -793,7 +791,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_PotionGoldDo,
@@ -855,7 +853,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	1.0,
 	1.0,
 	_,
-	2,
+	3,
 	_,
 	_,
 	WandPotion_PotionShrinkDo,

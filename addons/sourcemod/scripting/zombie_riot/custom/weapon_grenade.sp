@@ -115,7 +115,7 @@ public void Grenade_Custom_Precache()
 	g_ProjectileModelPipe = PrecacheModel("models/weapons/w_grenade.mdl");
 }
 
-public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Grenade(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -160,7 +160,7 @@ static Action Give_Back_Grenade(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
-public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Pipebomb(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -185,7 +185,7 @@ public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool
 	}
 }
 
-public void Weapon_Pipebomb_Flash(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Pipebomb_Flash(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -254,7 +254,7 @@ static Action Give_Back_Pipebomb(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
-public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -362,7 +362,7 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 }
 
 
-public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
