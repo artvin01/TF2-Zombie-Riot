@@ -158,6 +158,7 @@ methodmap BobTheFirstFollower < CClotBody
 			{
 				this.Speech("How i made clones in our battle?");
 				this.SpeechDelay(5.0, "I didnt, i just moved around.");
+				this.SpeechDelay(10.0, "Don't give it too much thought.");
 			}
 			case 15:
 			{

@@ -31,11 +31,11 @@ void Charged_Handgun_Map_Precache()
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
-public void Charged_Reload(int client, int weapon, const char[] classname, bool &result) {
+public void Charged_Reload(int client, int weapon, bool crit, int slot) {
 	ClientCommand(client, "playgamesound weapons/teleporter_ready.wav");
 }
 
-public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Launcher(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -84,7 +84,7 @@ public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, 
 	}
 }
 
-public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Launcher_PAP(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -134,7 +134,7 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 	}
 }
 
-public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -185,7 +185,7 @@ public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] cl
 	}
 }
 
-public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Cutter(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -221,7 +221,7 @@ public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bo
 	}
 }
 
-public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, bool crit, int slot)
 {
 	if (!Laser_Cutter_Static[client])
 	{
@@ -236,7 +236,7 @@ public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, const char[] classn
 	
 }
 
-public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Cutter_PAP(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -270,7 +270,7 @@ public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname
 	}
 }
 
-public void Weapon_Charged_Handgun(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Charged_Handgun(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{

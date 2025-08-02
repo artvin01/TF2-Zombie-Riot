@@ -2456,10 +2456,7 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x2 the damage from bleeding."
-		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 2x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
-		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х2 урона от кровотечения."
-		"ko"	"공격 속도 증가 및 범위 피해 효과가 잠깐동안 지속되며, 금속성 적들에게 입히는 출혈 피해가 2배로 증가."
+		"en"	"Increases fire rate, and metallic enemies suffer x2 the damage from bleeding."
 	}
 	"Alchemist Potion Pap 4"
 	{
@@ -2511,11 +2508,8 @@
 	}
 	"Alchemist Potion Pap 9"
 	{
-		"en"	"Increased Damage\nM2 now is able to shrink enemies, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
-		"fr"	"Potion secondaire fait rétrécir les ennemis, les faisant plus long et réduit leurs dégats.\nLes boss retourneront à normal après quelques secondes. Les Raids deviennent plus vites."
-		"ru"	"M2 теперь может уменьшать врагов, накладывая на них постоянный негат. эфф. и замедление и заставляя наносить меньше урона.\nБоссы будут снимать этот эффект через несколько секунд, а рейды ещё быстрее."
-		"chi"	"M2现可缩小敌人，造成永久debuff - 减速及低伤害。\n精英怪和boss可以在一定时间内移除效果。"
-		"ko"	"이제 M2가 대상에게 영구적으로 지속되는 축소화 디버프를 부여하여, 이동 속도 둔화 및 공격력을 감소시킴.\n보스에게는 일정 시간 이후 축소화 디버프가 제거됨.(레이드 보스는 더 빨리 제거됨)"
+		"en"	"Increased Damage\nM2 now is able to weaken enemy skin, causing a permanent debuff and slow and making them deal less damage.\nBosses will instead remove this debuff after a few seconds, raids even faster."
+		"ko"	"이제 M2가 대상에게 영구적으로 지속되는 약화 코팅 디버프를 부여하여, 이동 속도 둔화 및 공격력을 감소시킴.\n보스에게는 일정 시간 이후 축소화 디버프가 제거됨.(레이드 보스는 더 빨리 제거됨)"
 	}
 
 	"Crusader Desc"

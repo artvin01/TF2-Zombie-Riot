@@ -35,7 +35,7 @@ void Heavy_Particle_Rifle_Mapstart()
 	PrecacheSound(HEAVY_PARTICLE_RIFLE_FIRING_PASSIVE_SOUND, true);
 	PrecacheSoundArray(Spark_Sound);
 }
-public void Heavy_Particle_Rifle_M1(int client, int weapon, const char[] classname, bool &result)
+public void Heavy_Particle_Rifle_M1(int client, int weapon, bool crit, int slot)
 {
 	float speed = 1500.0;
 	float time = 10.0;

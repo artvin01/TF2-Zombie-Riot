@@ -1067,13 +1067,6 @@ int TF2_CreateGlow_White(const char[] model, int victim, float modelsize)
 		SetEntProp(entity, Prop_Send, "m_nBody", GetEntProp(victim, Prop_Send, "m_nBody"));
 		
 		SetParent(victim, entity);
-
-		SetEntityRenderMode(entity, i_EntityRenderMode[victim]);
-		SetEntityRenderColor(entity,
-							i_EntityRenderColour1[victim],
-							i_EntityRenderColour2[victim],
-							i_EntityRenderColour3[victim],
-							i_EntityRenderColour4[victim]);
 	}
 	return entity;
 }
@@ -3321,7 +3314,7 @@ int inflictor = 0)
 	//Im lazy and dumb, i dont know a better way.
 
 	
-	for (int repeatloop = 0; repeatloop <= maxtargetshit && length > 0; repeatloop++)
+	for (int repeatloop = 0; repeatloop < maxtargetshit && length > 0; repeatloop++)
 	{
 		float ClosestDistance;
 		int ClosestIndex;
@@ -5842,5 +5835,24 @@ void Stocks_ColourPlayernormal(int client)
 
 		SetEntityRenderMode(entity, RENDER_NORMAL);
 		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
+}
+
+stock void SetEntityRenderColor_NpcAll(int entity, float r, float g, float b)
+{	
+	f_EntityRenderColour[entity][0] *= r;
+	f_EntityRenderColour[entity][1] *= g;
+	f_EntityRenderColour[entity][2] *= b;
+	Update_SetEntityRenderColor(entity);
+	for(int WearableSlot=0; WearableSlot<sizeof(i_Wearable[]); WearableSlot++)
+	{
+		int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
+		if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
+		{	
+			f_EntityRenderColour[WearableEntityIndex][0] *= r;
+			f_EntityRenderColour[WearableEntityIndex][1] *= g;
+			f_EntityRenderColour[WearableEntityIndex][2] *= b;
+			Update_SetEntityRenderColor(WearableEntityIndex);
+		}
 	}
 }

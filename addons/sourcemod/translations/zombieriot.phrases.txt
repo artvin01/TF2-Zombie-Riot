@@ -3362,11 +3362,7 @@
 	}
 	"Barracks Donjon Desc"
 	{
-		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
-		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Échange 1 espace de déploiement pour plus d'améliorations."
-		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
-		"chi"		"增加生命值，伤害和箭数，你失去1个补给槽，解锁更多升级。"
-		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하지만, 인구수를 1 잃습니다. 더 많은 개선을 해금합니다."
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 	}
 	"Barracks Krepost"
 	{
@@ -3585,11 +3581,7 @@
 	}
 	"Barracks Exquisite Housing Desc"
 	{
-		"en"		"Gain back your lost 1 deployment slot from making a tower."
-		"fr"		"Récuperez l'espace de déploiement que vous avez perdu lors de la construction d'une tour."
-		"ru"		"Верните себе 1 ячейку развёртывания, потерянную при создании башни."
-		"chi"       "从制作塔中获得丢失的1个部署槽位。"
-		"ko"		"망루를 만들기 위해 소모된 배치 슬롯 1개를 다시 복구시킵니다."
+		"en"		"Make Units 20％ faster."
 	}
 	"Barracks Villager Desc"
 	{

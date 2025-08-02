@@ -5066,6 +5066,9 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
 
+	if(b_IsAloneOnServer)
+		map.SetValue("412", 0.75);	//if alone, gain 25% resistance
+
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 	map.SetValue("8", 1.5);	//give 50% more healing at the start.

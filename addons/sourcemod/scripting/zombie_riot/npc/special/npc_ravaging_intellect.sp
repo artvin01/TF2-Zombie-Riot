@@ -193,6 +193,16 @@ methodmap RavagingIntellect < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
+	property int g_ColorintAt
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property bool b_ColorDirection
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
 	
 	public RavagingIntellect(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -236,11 +246,13 @@ methodmap RavagingIntellect < CClotBody
 		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.StartPathing();
+		npc.b_ColorDirection = true;
+		npc.g_ColorintAt = 125;
 
-		SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 255);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
-		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 255);
-		SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 255);
+		SetEntityRenderColor(npc.m_iWearable1, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable2, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable3, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable4, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
 
 		npc.m_flSpeed = 330.0;
 		bool final = StrContains(data, "spawn_fake") != -1;
@@ -263,7 +275,7 @@ methodmap RavagingIntellect < CClotBody
 			}
 			else
 			{
-				switch(GetRandomInt(0,3))
+				switch(GetRandomInt(0,4))
 				{
 					case 0:
 					{
@@ -281,9 +293,14 @@ methodmap RavagingIntellect < CClotBody
 					{
 						CPrintToChatAll("{darkblue}황폐의 지식인{default}: 반갑다고 말하지 마.");
 					}
+					case 4:
+					{
+						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: meow");
+					}
 				}
 			}
-			
+			Ravaging_SaySpecialLine();
+		
 		}
 		else
 		{
@@ -293,10 +310,6 @@ methodmap RavagingIntellect < CClotBody
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 125);
-			SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 125);
-			SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 125);
-			SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 125);
 			MakeObjectIntangeable(npc.index);
 			b_DoNotUnStuck[npc.index] = true;
 			b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -320,10 +333,6 @@ methodmap RavagingIntellect < CClotBody
 				SetEntityRenderFx(npc.m_iWearable4, RENDERFX_DISTORT);
 				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.index, 175, 175, 175, 90);
-				SetEntityRenderColor(npc.m_iWearable1, 175, 175, 175, 90);
-				SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 90);
-				SetEntityRenderColor(npc.m_iWearable3, 175, 175, 175, 90);
-				SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 90);
 				npc.StopPathing();
 				
 				npc.m_bisWalking = false;
@@ -358,6 +367,45 @@ methodmap RavagingIntellect < CClotBody
 public void RavagingIntellect_ClotThink(int iNPC)
 {
 	RavagingIntellect npc = view_as<RavagingIntellect>(iNPC);
+
+	int AlphaDo = 255;
+	if(b_NoKillFeed[npc.index])
+	{
+		AlphaDo = 175;
+		if(npc.m_iHealthBar == 3)
+		{
+			AlphaDo = 95;
+		}
+	}
+	if(npc.b_ColorDirection)
+	{
+		npc.g_ColorintAt += 1;
+		if(npc.g_ColorintAt >= 255)
+		{
+			npc.g_ColorintAt = 255;
+			npc.b_ColorDirection = false;
+		}
+	}
+	else
+	{
+		npc.g_ColorintAt -= 1;
+		if(npc.g_ColorintAt <= 125)
+		{
+			npc.g_ColorintAt = 125;
+			npc.b_ColorDirection = true;
+		}
+	}
+	
+
+	if(IsValidEntity(npc.m_iWearable1))
+		SetEntityRenderColor(npc.m_iWearable1, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+	if(IsValidEntity(npc.m_iWearable2))
+		SetEntityRenderColor(npc.m_iWearable2, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+	if(IsValidEntity(npc.m_iWearable3))
+		SetEntityRenderColor(npc.m_iWearable3, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+	if(IsValidEntity(npc.m_iWearable4))
+		SetEntityRenderColor(npc.m_iWearable4, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -866,4 +914,156 @@ void RavagingIntellectEars(int iNpc, char[] attachment = "head")
 	i_ExpidonsaEnergyEffect[iNpc][23] = EntIndexToEntRef(particle_ears4_r);
 	i_ExpidonsaEnergyEffect[iNpc][24] = EntIndexToEntRef(Laser_ears_1_r);
 	i_ExpidonsaEnergyEffect[iNpc][25] = EntIndexToEntRef(Laser_ears_2_r);
+}
+
+
+void Ravaging_SaySpecialLine()
+{
+	
+	int victims;
+	int[] victim = new int[MaxClients];
+	
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client) && GetTeam(client) == 2)
+		{
+			static char buffer[96];
+			GetClientName(client, buffer, sizeof(buffer));
+
+			//i use names instead of id's so people can change their names and see these results.
+			if(StrEqual(buffer, "Mikusch", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "42", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "literail", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "JuneOrJuly", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "wo", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "Batfoxkid", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "ficool2", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "riversid", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "eno", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "alex turtle", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "artvin", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
+			{
+				victim[victims++] = client;
+			}
+			else if(StrEqual(buffer, "Black_Knight", false))
+			{
+				victim[victims++] = client;
+			}
+		}
+	}
+	if(victims)
+	{
+		int winner = victim[GetURandomInt() % victims];
+		int client = winner;
+
+		if(client)
+		{
+			static char buffer[96];
+			GetClientName(client, buffer, sizeof(buffer));
+
+			//i use names instead of id's so people can change their names and see these results.
+			if(StrEqual(buffer, "Mikusch", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: ... Looks like {crimson}%N{default} thinks they can impersonate me, {crimson}i will kill you.",client);
+			}
+			else if(StrEqual(buffer, "42", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: ... Hey {crimson}%N{default} why are you against me, arent we supposed to be a team?",client);
+			}
+			else if(StrEqual(buffer, "literail", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
+			}
+			else if(StrEqual(buffer, "JuneOrJuly", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Get back to work {crimson}%N{default} , cadets dont get stuff for free.",client);
+			}
+			else if(StrEqual(buffer, "wo", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: So about Bombermod {crimson}%N{default}...",client);
+			}
+			else if(StrEqual(buffer, "Batfoxkid", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: When will you finally be done with your scp rework {crimson}%N{default}?",client);
+			}
+			else if(StrEqual(buffer, "ficool2", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Aren't you supposed to be shilling vscript some more {crimson}%N{default}?",client);
+			}
+			else if(StrEqual(buffer, "riversid", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I hope you keep it up {crimson}%N{default}, or else.",client);
+			}
+			else if(StrEqual(buffer, "eno", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: You did quite well so far {crimson}%N, but not well enough.{default}",client);
+			}
+			else if(StrEqual(buffer, "alex turtle", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Your szf heros are not here to save you {crimson}%N{default}.",client);
+			}
+			else if(StrEqual(buffer, "artvin", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I will not say what you tell me to say {crimson}%N{default}.",client);
+			}
+			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I vote {crimson}%N{default} for admin! (i dont know who you are)",client);
+			}
+			else if(StrEqual(buffer, "Black_Knight", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Seems i have some hardware issues, can you help me out {crimson}%N{default} ?",client);
+			}
+		}
+	}
+	
+
 }

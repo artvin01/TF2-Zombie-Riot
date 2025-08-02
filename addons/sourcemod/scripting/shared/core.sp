@@ -174,7 +174,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 //model uses self made IK rigs, to not break the top stuff.
 #define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
 
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_49.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_51.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -864,6 +864,11 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
+		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > 0)
+		{
+			RaidModeTime += 0.2;
+			//if the raidboss is in spawn protection, prevent raidmode from going up.
+		}
 		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
@@ -2390,12 +2395,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
-		i_EntityRenderMode[entity] = RENDER_NORMAL;
-		i_EntityRenderColour1[entity] = 255;
-		i_EntityRenderColour2[entity] = 255;
-		i_EntityRenderColour3[entity] = 255;
-		i_EntityRenderColour4[entity] = 255;
-		i_EntityRenderOverride[entity] = false;
+		f_EntityRenderColour[entity][0] = 1.0;
+		f_EntityRenderColour[entity][1] = 1.0;
+		f_EntityRenderColour[entity][2] = 1.0;
+		i_EntityRenderColourSave[entity][0] = 255;
+		i_EntityRenderColourSave[entity][1] = 255;
+		i_EntityRenderColourSave[entity][2] = 255;
 		b_StickyIsSticking[entity] = false;
 		h_ArrowInflictorRef[entity] = -1;
 		i_ProjectileExtraFunction[entity] = INVALID_FUNCTION;
@@ -2467,7 +2472,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 #if defined ZR
-		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
 		Board_EntityCreated(entity);
@@ -3017,6 +3021,14 @@ public void CheckIfAloneOnServer()
 		Bob_Exists = false;
 		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
 		Bob_Exists_Index = -1;
+	}
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] == TEUTON_NONE)
+		{
+			//update clients
+			Store_ApplyAttribs(client);
+		}
 	}
 #endif
 }

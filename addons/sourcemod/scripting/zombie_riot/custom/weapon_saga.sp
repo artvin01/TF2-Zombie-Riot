@@ -342,8 +342,8 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 		SagaCrippled[victim] = Attributes_Get(weapon, 868, -1.0) == -1.0 ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
-		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);
-		SetEntityRenderColor(victim, 255, 65, 65, 125, false, false, true);
+		SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(victim, 255, 65, 65, 125);
 		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
 		SetEntityCollisionGroup(victim, 17);
 		b_DoNotUnStuck[victim] = true;
