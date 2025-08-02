@@ -972,6 +972,10 @@
 	{
 		"en"		"Not enough charge."
 	}
+	"Fully Charge To Fire"
+	{
+		"en"		"Fully Charge To Fire your IEM"
+	}
 	"Rusty Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"

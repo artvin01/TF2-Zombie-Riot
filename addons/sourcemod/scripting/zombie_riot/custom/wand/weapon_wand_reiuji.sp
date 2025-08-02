@@ -6,7 +6,7 @@ static float fl_hud_timer[MAXPLAYERS];
 static float fl_ammo_timer[MAXPLAYERS];
 static int i_ammo[MAXPLAYERS];
 static int 		i_max_ammo				[6] = {10, 15, 20, 25, 30, 40};
-static float 	fl_ammogain_timerbase	[6] = {1.5, 1.5, 1.3, 1.2, 1.1, 0.9};
+static float 	fl_ammogain_timerbase	[6] = {1.0, 1.0, 0.8, 0.7, 0.6, 0.45};
 static float 	fl_firerate_multi		[6] = {0.5, 0.45, 0.4, 0.3, 0.2, 0.2};
 
 static int 		i_max_barage			[6] = {3, 4, 5, 6, 7, 9};
@@ -346,9 +346,9 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 	}
 
 	//rest the ammo gain timer when firing.
-	fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*2.0;
+	fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*1.25;
 
-	float damage = 100.0 * Attributes_Get(weapon, 410, 1.0);
+	float damage = 125.0 * Attributes_Get(weapon, 410, 1.0);
 		
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);

@@ -14,10 +14,19 @@ void Wand_Fire_Map_Precache()
 
 public void Weapon_Fire_Wand(int client, int weapon, bool crit)
 {
+	Weapon_Fire_WandInternal(client, weapon, crit, 1.0);
+}
+public void Weapon_Fire_Wand_Final(int client, int weapon, bool crit)
+{
+	Weapon_Fire_WandInternal(client, weapon, crit, 1.5);
+}
+public void Weapon_Fire_WandInternal(int client, int weapon, bool crit, float dmgbonus)
+{
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 0.0));
 	if(mana_cost <= Current_Mana[client])
 	{
 		float damage = 65.0 * Attributes_Get(weapon, 410, 1.0);
+		damage *= dmgbonus;
 		
 		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;

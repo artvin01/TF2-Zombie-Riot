@@ -25,6 +25,13 @@ public void Lighting_Wand_Pap_ClearAll()
 	Zero(ability_cooldown);
 }
 
+public void Weapon_Wand_LightningPap2(int client, int weapon, bool &result, int slot)
+{
+	Weapon_Wand_LightningSpell(client, weapon, result, slot);
+	Ability_Apply_Cooldown(client, slot, -1.0);
+	Weapon_Wand_LightningPap(client, weapon, result, slot);
+
+}
 public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)
