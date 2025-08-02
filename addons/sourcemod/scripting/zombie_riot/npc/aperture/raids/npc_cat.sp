@@ -26,6 +26,21 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/mvm/norm/scout_mvm_battlecry05.mp3",
 };
 
+static const char g_OrbBarrageAlertSounds[][] = {
+	"vo/mvm/norm/scout_mvm_taunts13.mp3",
+	"vo/mvm/norm/scout_mvm_taunts15.mp3",
+	"vo/mvm/norm/scout_mvm_dominationpyr01.mp3",
+	"vo/mvm/norm/scout_mvm_dominationsol05.mp3",
+	"vo/mvm/norm/scout_mvm_stunballhit15.mp3",
+};
+
+static const char g_OrbBarrageDizzySounds[][] = {
+	"vo/mvm/norm/scout_mvm_invinciblenotready06.mp3",
+	"vo/mvm/norm/scout_mvm_invinciblenotready07.mp3",
+	"vo/mvm/norm/scout_mvm_autodejectedtie04.mp3",
+	"vo/mvm/norm/scout_mvm_negativevocalization01.mp3",
+};
+
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
@@ -34,8 +49,12 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/bat_hit.wav",
 };
 
+static const char g_MeleeHardHitSounds[][] = {
+	"mvm/melee_impacts/bat_baseball_hit_robo01.wav",
+};
+
 static const char g_RangedAttackSounds[][] = {
-	"weapons/cow_mangler_main_shot.wav",
+	"weapons/capper_shoot.wav",
 };
 
 static const char g_BoomSounds[][] = {
@@ -45,20 +64,61 @@ static const char g_BoomSounds[][] = {
 	"weapons/sentry_damage4.wav",
 };
 
-static int LastEnemyTargeted[MAXENTITIES];
+#define CAT_DEFAULT_SPEED 300.0
+
+#define CAT_ORB_SPAM_ABILITY_DURATION 3.0
+#define CAT_ORB_SPAM_ABILITY_AMOUNT 40
+#define CAT_ORB_SPAM_ABILITY_COLLISION_MODEL "models/weapons/w_models/w_cannonball.mdl"
+
+#define CAT_SELF_DEGRADATION_ABILITY_DURATION 15.0
+#define CAT_SELF_DEGRADATION_ABILITY_MIN_HEALTH_PERCENTAGE 0.2		// based on MAX health! (0.0 - 1.0)
+#define CAT_SELF_DEGRADATION_ABILITY_HURT_HEALTH_PERCENTAGE 0.04	// based on MAX health! (0.0 - 1.0)
+#define CAT_SELF_DEGRADATION_ABILITY_EFFECT "burningplayer_rainbow_stars02"
+
+enum
+{
+	CAT_ORB_SPAM_ABILITY_STATE_NONE,
+	CAT_ORB_SPAM_ABILITY_STATE_READYING_UP,
+	CAT_ORB_SPAM_ABILITY_STATE_FIRING,
+	CAT_ORB_SPAM_ABILITY_STATE_COOLING_OFF
+}
+
+enum
+{
+	CAT_SELF_DEGRADATION_ABILITY_STATE_NONE,
+	CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING,
+	CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE,
+}
+
+static int OrbAbilityState[MAXENTITIES];
+static float NextOrbAbilityState[MAXENTITIES];
+static float NextOrbDamage[MAXENTITIES];
+
+static int SelfDegradationAbilityState[MAXENTITIES];
+static float NextSelfDegradationAbilityState[MAXENTITIES];
+
+//static int LastEnemyTargeted[MAXENTITIES];
 
 void CAT_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_OrbBarrageAlertSounds)); i++) { PrecacheSound(g_OrbBarrageAlertSounds[i]); }
+	for (int i = 0; i < (sizeof(g_OrbBarrageDizzySounds)); i++) { PrecacheSound(g_OrbBarrageDizzySounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHardHitSounds)); i++) { PrecacheSound(g_MeleeHardHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
+	
 	PrecacheSound("#zombiesurvival/matrix/furiousangels.mp3");
 	PrecacheSound("weapons/physgun_off.wav");
 	PrecacheModel("models/bots/scout/bot_scout.mdl");
+	PrecacheModel(CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
+	
+	PrecacheParticleSystem(CAT_SELF_DEGRADATION_ABILITY_EFFECT);
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "C.A.T");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cat");
@@ -82,10 +142,9 @@ methodmap CAT < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -93,42 +152,68 @@ methodmap CAT < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
 	}
-	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
 	}
-	
+	public void PlayOrbBarrageAlertSound()
+	{
+		EmitSoundToAll(g_OrbBarrageAlertSounds[GetRandomInt(0, sizeof(g_OrbBarrageAlertSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayOrbBarrageDizzySound()
+	{
+		EmitSoundToAll(g_OrbBarrageDizzySounds[GetRandomInt(0, sizeof(g_OrbBarrageDizzySounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
+	}
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayMeleeHardHitSound() 
+	{
+		EmitSoundToAll(g_MeleeHardHitSounds[GetRandomInt(0, sizeof(g_MeleeHardHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 100, _, BOSS_ZOMBIE_VOLUME, 110);
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 100, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
 	public void PlayBoomSound() 
 	{
-		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-
-	property float m_flCATORBHappening
+	
+	property int m_iOrbAbilityState
 	{
-		public get()							{ return fl_AttackHappens_2[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_AttackHappens_2[this.index] = TempValueForProperty; }
+		public get()							{ return OrbAbilityState[this.index]; }
+		public set(int TempValueForProperty) 	{ OrbAbilityState[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flNextOrbAbilityState
+	{
+		public get()							{ return NextOrbAbilityState[this.index]; }
+		public set(float TempValueForProperty) 	{ NextOrbAbilityState[this.index] = TempValueForProperty; }
+	}
+	
+	property int m_iSelfDegradationAbilityState
+	{
+		public get()							{ return SelfDegradationAbilityState[this.index]; }
+		public set(int TempValueForProperty) 	{ SelfDegradationAbilityState[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flNextSelfDegradationAbilityState
+	{
+		public get()							{ return NextSelfDegradationAbilityState[this.index]; }
+		public set(float TempValueForProperty) 	{ NextSelfDegradationAbilityState[this.index] = TempValueForProperty; }
 	}
 	
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.50", "700", ally));
+		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.50", "700", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -208,12 +293,13 @@ methodmap CAT < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 25.0;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 28.0;
-		npc.m_flAbilityOrAttack1 = GetGameTime(npc.index) + 15.0;
-		npc.m_flAbilityOrAttack2 = GetGameTime(npc.index) + 16.0;
-		npc.m_flAbilityOrAttack3 = GetGameTime(npc.index) + 24.0;
+		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 15.0;
+		
 		npc.m_iAttacksTillReload = 12;
 		npc.m_fbGunout = false;
+		
+		npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_NONE;
+		npc.m_flNextOrbAbilityState = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -223,7 +309,7 @@ methodmap CAT < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = CAT_DEFAULT_SPEED;
 		npc.m_flMeleeArmor = 1.0;
 				
 		int skin = 1;
@@ -262,14 +348,11 @@ public void CAT_ClotThink(int iNPC)
 	//idk it never was in a bracket
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
-		if(RaidModeTime < GetGameTime())
-		{
-			ForcePlayerLoss();
-			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{blue}C.A.T{default}: We hope your stay at Aperture was pleasant!");
-			func_NPCThink[npc.index] = INVALID_FUNCTION;
-			return;
-		}
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{blue}C.A.T{default}: We hope your stay at Aperture was pleasant!");
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return;
 	}
 
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -298,76 +381,104 @@ public void CAT_ClotThink(int iNPC)
 
 	float gameTime = GetGameTime(npc.index);
 	int closest = npc.m_iTarget;
-
-	if(npc.m_flNextRangedSpecialAttackHappens)
+	
+	// RANGED ABILITY: Orbs - Boss spins while firing homing orbs in a spiral pattern indiscriminately. The orbs deal contact damage and work as a projectile shield
+	if (npc.m_flNextRangedSpecialAttackHappens && npc.m_flNextRangedSpecialAttackHappens < gameTime && npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_NONE)
 	{
-		if(npc.m_flNextRangedSpecialAttackHappens < GetGameTime(npc.index))
+		switch (npc.m_iOrbAbilityState)
 		{
-			int Enemy_I_See;
-			Enemy_I_See = Can_I_See_Enemy(npc.index, closest);
-			if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
+			case CAT_ORB_SPAM_ABILITY_STATE_NONE:
 			{
-				npc.m_flExtraDamage = 1.0;
-				npc.m_flMeleeArmor = 1.0;
-				npc.m_flRangedArmor = 1.0;
-				npc.PlayBoomSound();
-				OrbSpam_Ability(npc, closest);
-				npc.m_flSpeed = 1.0;
-				npc.StopPathing();
-				npc.AddGesture("ACT_DIEVIOLENT");
-				npc.m_flDoingAnimation = gameTime + 0.45;
-				npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
+				// We can only do this attack if we can see at least 33% of all living players, rounding down
+				// If we can't, try again in 5-7 seconds
+				int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
+				int visiblePlayerCount;
+				
+				for (int client = 1; client <= MaxClients; client++)
+				{
+					if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
+						visiblePlayerCount++;
+				}
+				
+				if (visiblePlayerCount >= RoundToFloor(livingPlayerCount * 0.33))
+				{
+					OrbSpam_Ability_ReadyUp(npc);
+					return;
+				}	
+				else
+				{
+					npc.m_flNextRangedSpecialAttackHappens = gameTime + GetRandomFloat(5.0, 7.0);
+				}
+			}
+			
+			case CAT_ORB_SPAM_ABILITY_STATE_READYING_UP:
+			{
+				// We don't really do anything until we're ready. When we're done, start firing
+				if (npc.m_flNextOrbAbilityState < gameTime)
+					OrbSpam_Ability_Start(npc);
+				
+				return;
+			}
+			
+			case CAT_ORB_SPAM_ABILITY_STATE_FIRING:
+			{
+				// Fire until we're done
+				if (npc.m_flNextOrbAbilityState < gameTime)
+					OrbSpam_Ability_CoolOff(npc);
+				else
+					OrbSpam_Ability_Fire(npc);
+				
+				return;
+			}
+			
+			case CAT_ORB_SPAM_ABILITY_STATE_COOLING_OFF:
+			{
+				// We're done cooling off. Resume killing people as normal
+				if (npc.m_flNextOrbAbilityState < gameTime)
+					OrbSpam_Ability_End(npc);
+				
+				return;
 			}
 		}
 	}
 	
-	if(npc.m_flAbilityOrAttack0)
+	// ABILITY 0: Self Degradation - Boss hurts itself, increasing vulnerabilities and damage dealt for a period of time
+	if (npc.m_flAbilityOrAttack0 && npc.m_flAbilityOrAttack0 < gameTime && npc.m_iOrbAbilityState == CAT_ORB_SPAM_ABILITY_STATE_NONE)
 	{
-		if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
+		switch (npc.m_iSelfDegradationAbilityState)
 		{
-			npc.StartPathing();
-			npc.m_flSpeed = 300.0;
-			npc.m_flAbilityOrAttack0 = gameTime + 26.0;
+			case CAT_SELF_DEGRADATION_ABILITY_STATE_NONE:
+			{
+				// We can only do this attack if we have at least 20% of our max health
+				float percentage = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(npc.index));
+				if (percentage >= CAT_SELF_DEGRADATION_ABILITY_MIN_HEALTH_PERCENTAGE)
+				{
+					SelfDegradation_Ability_Start(npc);
+					return;
+				}
+				else
+				{
+					// We can't use this anymore... Doesn't account for getting healed somehow
+					npc.m_flAbilityOrAttack0 = 0.0;
+				}
+			}
+			
+			case CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING:
+			{
+				if (npc.m_flNextSelfDegradationAbilityState < gameTime)
+					SelfDegradation_Ability_Activate(npc);
+				
+				return;
+			}
+			
+			case CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE:
+			{
+				if (npc.m_flNextSelfDegradationAbilityState < gameTime)
+					SelfDegradation_Ability_Deactivate(npc);
+			}
 		}
 	}
-	if(npc.m_flAbilityOrAttack1)
-	{
-		if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
-		{
-			npc.m_flSpeed = 1.0;
-			npc.m_flAbilityOrAttack1 = gameTime + 15.0;
-			npc.AddGesture("ACT_MP_STAND_LOSERSTATE");
-			npc.m_flExtraDamage *= 2.0;
-			npc.m_flMeleeArmor = 1.25;
-			npc.m_flRangedArmor = 1.25;
-		}
-	}
-	if(npc.m_flAbilityOrAttack2)
-	{
-		if(npc.m_flAbilityOrAttack2 < GetGameTime(npc.index))
-		{
-			npc.m_flSpeed = 300.0;
-			npc.m_flAbilityOrAttack2 = gameTime + 16.0;
-			npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		}
-	}
-	if(npc.m_flAbilityOrAttack3)
-	{
-		if(npc.m_flAbilityOrAttack3 < GetGameTime(npc.index))
-		{
-			npc.m_flAbilityOrAttack3 = gameTime + 24.0;
-			npc.m_flExtraDamage = 1.0;
-			npc.m_flMeleeArmor = 1.0;
-			npc.m_flRangedArmor = 1.0;
-		}
-	}
-
-	if(npc.m_flCATORBHappening)
-	{
-		if(Cat_Orbs(npc))
-		return;
-	}
-
+	
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
@@ -468,7 +579,7 @@ static void CATS_SelfDefense(CAT npc, float gameTime, int target, float flDistan
 				}
 				if(PlaySound)
 				{
-					npc.PlayMeleeHitSound();
+					npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE ? npc.PlayMeleeHardHitSound() : npc.PlayMeleeHitSound();
 				}
 			}
 		}
@@ -494,121 +605,267 @@ static void CATS_SelfDefense(CAT npc, float gameTime, int target, float flDistan
 			}
 		}
 	}
-
 }
 
-static void OrbSpam_Ability(CAT npc, int target)
+static void OrbSpam_Ability_ReadyUp(CAT npc)
 {
-	if(IsValidEnemy(npc.index, target))
-	{
-		npc.m_flExtraDamage = 1.0;
-		npc.m_flMeleeArmor = 1.0;
-		npc.m_flRangedArmor = 1.0;
-		int PrimaryThreatIndex = npc.m_iTarget;
-		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		static float flPos[3]; 
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-		flPos[2] += 5.0;
-		ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
-		flPos[2] += 500.0;
-		//ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 3.0);
-		float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
-		//int MaxCount = RoundToNearest(2.0 * RaidModeScaling);
-		npc.FaceTowards(VecEnemy, 99999.9);
-		npc.m_flCATORBHappening = GetGameTime(npc.index) + 2.0;
-	}
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_flExtraDamage = 1.0;
+	npc.m_flMeleeArmor = 1.0;
+	npc.m_flRangedArmor = 1.0;
+	
+	npc.m_bisWalking = false;
+	
+	npc.m_flSpeed = 0.0;
+	npc.StopPathing();
+	
+	npc.AddActivityViaSequence("dieviolent");
+	npc.SetCycle(0.01);
+	npc.SetPlaybackRate(0.4);
+	
+	npc.m_flAttackHappens = gameTime + 999.0;
+	
+	npc.PlayBoomSound();
+	npc.PlayOrbBarrageAlertSound();
+	
+	if (IsValidEntity(npc.m_iWearable1))
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
+	
+	float vecPos[3];
+	GetAbsOrigin(npc.index, vecPos);
+	vecPos[2] += 20.0;
+	spawnRing_Vectors(vecPos, 250 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, 1.5, 5.0, 0.0, 1, 0.0);
+	
+	npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_READYING_UP;
+	npc.m_flNextOrbAbilityState = gameTime + 1.5;
 }
 
-static void Cat_Orbs(CAT npc)
+static void OrbSpam_Ability_Start(CAT npc)
 {
-	if(npc.m_flCATORBHappening)
-	{
-		if(!IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			//bool ForceRedo = false;
-			npc.m_flGetClosestTargetTime = 0.0;
-			
-			if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-			{
-				npc.m_iTarget = GetClosestTarget(npc.index);
-				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-			}
-		}
-		else
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-			if(npc.m_flAttackHappens < GetGameTime(npc.index))
-			{
-				int TargetEnemy = false;
-				TargetEnemy = GetClosestTarget(npc.index,.ingore_client = LastEnemyTargeted[npc.index],  .CanSee = true, .UseVectorDistance = true);
-				LastEnemyTargeted[npc.index] = TargetEnemy;
-				if(TargetEnemy == -1)
-				{
-					TargetEnemy = GetClosestTarget(npc.index, .CanSee = true, .UseVectorDistance = true);
-				}
-				if(IsValidEnemy(npc.index, TargetEnemy))
-				{
-					npc.m_flAttackHappens = GetGameTime(npc.index) + 0.50;
-
-					int PrimaryThreatIndex = npc.m_iTarget;
-					float VecEnemy[3]; WorldSpaceCenter(TargetEnemy, VecEnemy);
-					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-					npc.FaceTowards(VecEnemy, 150.0);
-					npc.PlayRangedSound();
-					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(200.0, 250.0), 150.0, "flaregun_energyfield_blue", true);
-					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-
-					SDKHook(projectile, SDKHook_StartTouch, Cat_Rocket_Particle_StartTouch);
-					float ang_Look[3];
-					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
-					Initiate_HomingProjectile(projectile,
-					npc.index,
-					70.0,			// float lockonAngleMax,
-					50.0,				//float homingaSec,
-					false,				// bool LockOnlyOnce,
-					true,				// bool changeAngles,
-					ang_Look);// float AnglesInitiate[3]);
-					static float pos[3]; 
-					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-				}
-			}
-		}
-		if(npc.m_flCATORBHappening < GetGameTime(npc.index))
-		{
-			npc.m_flAttackHappens = 0.0;
-			npc.m_flCATORBHappening = 0.0;
-		}
-	}
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_FIRING;
+	npc.m_flNextOrbAbilityState = gameTime + CAT_ORB_SPAM_ABILITY_DURATION;
 }
 
-public void Cat_Rocket_Particle_StartTouch(int entity, int target)
+static void OrbSpam_Ability_CoolOff(CAT npc)
 {
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_bisWalking = true;
+	
+	npc.SetActivity("ACT_MP_STUN_MIDDLE");
+	npc.AddGesture("ACT_MP_STUN_BEGIN");
+	npc.SetPlaybackRate(1.0);
+	
+	npc.m_flAttackHappens = gameTime + 999.0;
+	
+	npc.PlayOrbBarrageDizzySound();
+	
+	npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_COOLING_OFF;
+	npc.m_flNextOrbAbilityState = gameTime + 2.0;
+}
 
-		if(inflictor == -1)
-			inflictor = owner;
-			
+static void OrbSpam_Ability_End(CAT npc)
+{
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	npc.AddGesture("ACT_MP_STUN_END");
+	
+	npc.m_flSpeed = CAT_DEFAULT_SPEED;
+	npc.StartPathing();
+	
+	npc.m_flAttackHappens = gameTime + 0.5;
+	npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
+	
+	if (IsValidEntity(npc.m_iWearable1))
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+	
+	npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_NONE;
+	npc.m_flNextOrbAbilityState = 0.0;
+	
+	// If other attacks are ready, delay them a bit so they don't immediately activate
+	npc.m_flAbilityOrAttack0 = fmax(npc.m_flAbilityOrAttack0, gameTime + GetRandomFloat(5.0, 10.0));
+}
+
+static void OrbSpam_Ability_Fire(CAT npc)
+{
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_flAttackHappens = gameTime + (CAT_ORB_SPAM_ABILITY_DURATION / CAT_ORB_SPAM_ABILITY_AMOUNT);
+	
+	static float vecOrbAngles[3];
+	float vecOrbPos[3], vecForward[3], vecCollisionOffset[3];
+	
+	int nextAng = (RoundToNearest(vecOrbAngles[1]) + GetRandomInt(20, 55)) % 360;
+	vecOrbAngles[1] = float(nextAng);
+	
+	GetAbsOrigin(npc.index, vecOrbPos);
+	
+	GetAngleVectors(vecOrbAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	NormalizeVector(vecForward, vecForward);
+	ScaleVector(vecForward, 12.0);
+	AddVectors(vecOrbPos, vecForward, vecOrbPos);
+	vecOrbPos[2] += 54.0;
+	
+	npc.PlayRangedSound();
+	npc.FaceTowards(vecOrbPos, 2300.0);
+	
+	npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
+	
+	int projectile = npc.FireParticleRocket(vecOrbPos, 3000.0, GetRandomFloat(125.0, 150.0), 150.0, "flaregun_energyfield_blue", true);
+	
+	SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+	SDKHook(projectile, SDKHook_StartTouch, Cat_Rocket_Particle_StartTouch);
+	SDKHook(projectile, SDKHook_Touch, Cat_Rocket_Particle_Touch);
+	
+	NextOrbDamage[projectile] = 0.0;
+	
+	Initiate_HomingProjectile(projectile,
+	npc.index,
+	20.0,				// float lockonAngleMax,
+	30.0,				// float homingaSec,
+	false,				// bool LockOnlyOnce,
+	true,				// bool changeAngles,
+	vecOrbAngles);		// float AnglesInitiate[3];
+	
+	// Make it act like a projectile shield
+	SetEntityModel(projectile, CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
+	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6);
+	//SetEntityRenderMode(projectile, RENDER_NORMAL);
+	//SetEntityRenderColor(projectile);
+	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
+	b_ThisEntityIgnored[projectile] = true;
+	b_ForceCollisionWithProjectile[projectile] = true;
+	//SDKCall(g_hUpdateCollisionBox, projectile); 
+	
+	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+static void Cat_Rocket_Particle_StartTouch(int entity, int target)
+{
+	if (target == 0 || target >= MAXENTITIES)
+	{
+		// we hit the world, remove this
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-
-		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
-		{
-			Explode_Logic_Custom(5.0 * RaidModeScaling, inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
-		}
-				
+		
+		TE_Particle("spell_batball_impact_blue", ProjectileLoc);
+		RemoveEntity(entity);
 	}
+}
+
+static void Cat_Rocket_Particle_Touch(int entity, int target)
+{
+	float gameTime = GetGameTime();
+	if (NextOrbDamage[entity] > gameTime)
+		return;
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (!IsValidEntity(owner))
+		owner = 0;
+	
+	if (!owner)
+	{
+		RemoveEntity(entity);
+		return;
+	}
+	
+	if (!IsValidEnemy(owner, target))
+		return;
+	
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+	
+	if(inflictor == -1)
+		inflictor = owner;
+	
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	
+	float damage = 5.0 * RaidModeScaling;
+	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);
+	NextOrbDamage[entity] = gameTime + 0.25;
+}
+
+static void SelfDegradation_Ability_Start(CAT npc)
+{
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_bisWalking = false;
+	
+	npc.AddActivityViaSequence("taunt03");
+	npc.SetPlaybackRate(0.75);
+	npc.SetCycle(0.01);
+	
+	npc.m_flSpeed = 0.0;
+	npc.StopPathing();
+	
+	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING;
+	npc.m_flNextSelfDegradationAbilityState = gameTime + 1.5;
+}
+
+static void SelfDegradation_Ability_Activate(CAT npc)
+{
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_bisWalking = true;
+	
+	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	npc.SetPlaybackRate(1.0);
+	
+	npc.m_flExtraDamage = 2.0;
+	npc.m_flMeleeArmor = 1.25;
+	npc.m_flRangedArmor = 1.25;
+	
+	npc.m_flSpeed = CAT_DEFAULT_SPEED;
+	npc.StartPathing();
+	
+	npc.PlayBoomSound();
+	npc.PlayMeleeHardHitSound();
+	
+	// Add an effect to the weapon
+	if (IsValidEntity(npc.m_iWearable1))
+	{
+		if (IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
+		SetVariantString("1.1");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_NONE);
+		
+		TE_SetupParticleEffect(CAT_SELF_DEGRADATION_ABILITY_EFFECT, PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable2);
+		TE_WriteNum("m_bControlPoint1", npc.m_iWearable2);
+		TE_SendToAll();
+	}
+	
+	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE;
+	npc.m_flNextSelfDegradationAbilityState = gameTime + CAT_SELF_DEGRADATION_ABILITY_DURATION;
+}
+
+static void SelfDegradation_Ability_Deactivate(CAT npc)
+{
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_flExtraDamage = 1.0;
+	npc.m_flMeleeArmor = 1.0;
+	npc.m_flRangedArmor = 1.0;
+	
+	npc.m_flAbilityOrAttack0 = gameTime + 18.0;
+	
+	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_NONE;
+	npc.m_flNextSelfDegradationAbilityState = 0.0;
+	
+	// Remove the effect from the weapon
+	if (IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	
+	// If other attacks are ready, delay them a bit so they don't immediately activate
+	npc.m_flNextRangedSpecialAttackHappens = fmax(npc.m_flNextRangedSpecialAttackHappens, gameTime + GetRandomFloat(3.0, 5.0));
 }
 
 public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -634,14 +891,10 @@ public void CAT_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+	
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
