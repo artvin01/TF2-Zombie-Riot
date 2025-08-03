@@ -6633,6 +6633,12 @@ public void NpcJumpThink(int iNPC)
 
 stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false, float EnemyModifpos[3] = {0.0,0.0,0.0})
 {
+	//assume that if we are tragetting an enemy, dont do anything.
+	if(i_npcspawnprotection[enemy] > 0)
+	{
+		if(!IsValidAlly(attacker, enemy))
+			return 0;
+	}
 	Handle trace; 
 	float pos_npc[3];
 	float pos_enemy[3];
@@ -6669,6 +6675,12 @@ stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false
 
 bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0.0})
 {
+	//assume that if we are tragetting an enemy, dont do anything.
+	if(i_npcspawnprotection[enemy] > 0)
+	{
+		if(!IsValidAlly(attacker, enemy))
+			return false;
+	}
 	Handle trace;
 	
 	float pos_enemy[3];
@@ -9871,6 +9883,15 @@ float GetRandomRetargetTime()
 
 void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
+	if(target > 0 && i_npcspawnprotection[TouchedTarget] > 0)
+	{
+		if(IsValidEnemy(target, TouchedTarget, true, true)) //Must detect camo.
+		{
+			float DamageDeal = float(ReturnEntityMaxHealth(TouchedTarget));
+			DamageDeal *= 0.1;
+			SDKHooks_TakeDamage(TouchedTarget, target, target, DamageDeal, DMG_CRUSH|DMG_TRUEDAMAGE, -1, _);
+		}
+	}
 	int entity = TouchedTarget;
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target) && GetTeam(entity) != TFTeam_Stalkers) //If one entity touches me, then i touch them
