@@ -440,6 +440,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
+#if defined ZR
+		if(Construction_Mode())
+		{
+			b_NpcIgnoresbuildings[npc] = false;
+		}
+#endif
 		if(NpcTypeLogic == NORMAL_NPC) //No need for lagcomp on things that dont even move.
 		{
 			AddEntityToLagCompList(npc);
@@ -4971,7 +4977,7 @@ stock int GetClosestTarget(int entity,
 				{
 					//if its a downed citizen, dont target.
 					if(Citizen_ThatIsDowned(entity_close))
-							continue;
+						continue;
 
 					if(CanSee)
 					{
@@ -10246,9 +10252,15 @@ bool RaidAllowsBuildings = false;
 stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 {
 #if defined ZR
+	if(Construction_Mode())
+	{
+		RaidAllowsBuildings = true;
+	}
 	switch(value)
 	{
 		//if a raidboss exists, but we have a rule to make it still target buildings, set to true!
+
+		//construction forces building attacking.
 		case 1:
 		{
 			if(RaidAllowsBuildings)

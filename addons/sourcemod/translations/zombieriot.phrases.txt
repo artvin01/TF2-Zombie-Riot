@@ -2888,8 +2888,7 @@
 	}	
 	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
-		"ko"		"당신은 칼마티커스에게 감염 당했습니다!\n다른 아군과 너무 가까이 접근하지 마세요.\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
+		"en"		"You have been Infected by Calmaticus!\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -4812,8 +4811,7 @@
 	}
 	"freeplay_start_2"
 	{
-		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
-		"ko"		"그것보다, 이걸 좀 설명할게. -> :\n매 준비 단계마다, 내가 무작위 이벤트가 발생하는 해골을 던질거야.\n그리고 진행할 수록 더 많이 던질거야."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull upto like 3.\nI have added some of my own wanna-be enemies to make sure you see the weirdest creations, we dont know the void."
 	}
 	"freeplay_start_3"
 	{
@@ -4827,8 +4825,7 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
-		"ko"		"라운드가 시작되었고 당신은 아직 초기 상점에 있습니다!\n상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!"
+		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 	}
 	"Getting favorite loadout"
 	{
@@ -4842,13 +4839,7 @@
 	}
 	"Explain Construction 1"
 	{
-		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
-		"ko"		"자원을 모아 기지를 건설. ''연구소''를 통해 업글을 하고, 건축가 메뉴에서 추가 구조물을 건설 가능."
-	}
-	"Explain Construction 2"
-	{
-		"en"		"Interact with ores on the map with your interact button (R Or T)!"
-		"ko"		"맵에 있는 광석에 상호작용(R 또는 T)을 눌러 자원을 모아야함!"
+		"en"		"Gather resources and build up your base, use your {yellow}''Research Center''{green} to upgrade, You have extra buildings in your builder menu."
 	}
 	"Explain Construction 3"
 	{

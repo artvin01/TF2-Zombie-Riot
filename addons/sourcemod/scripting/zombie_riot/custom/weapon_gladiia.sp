@@ -462,6 +462,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			EmitSoundToAll("weapons/grappling_hook_shoot.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 
 			Ability_Apply_Cooldown(client, slot, 1.0);
+			cost = RoundToNearest(float(cost) * CooldownReductionAmount(client));
 			WeaponCharge[client] -= cost;
 
 			Rogue_OnAbilityUse(client, weapon);

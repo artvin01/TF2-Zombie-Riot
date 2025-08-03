@@ -468,20 +468,22 @@ static void Internal_ClotThink(int iNPC)
 			if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
 			{
 				int iPitch = npc.LookupPoseParameter("body_pitch");
-				if(iPitch < 0)
-					return;		
+				if(iPitch >= 0)
+				{
+
+					//Body pitch
+					float v[3], ang[3];
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+					SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
+					NormalizeVector(v, v);
+					GetVectorAngles(v, ang); 
+							
+					float flPitch = npc.GetPoseParameter(iPitch);
+							
+					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 					
-				//Body pitch
-				float v[3], ang[3];
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-				float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
-				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
-				NormalizeVector(v, v);
-				GetVectorAngles(v, ang); 
-						
-				float flPitch = npc.GetPoseParameter(iPitch);
-						
-				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+				}	
 			}
 			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
 			{	
@@ -744,20 +746,21 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
 		{
 			int iPitch = npc.LookupPoseParameter("body_pitch");
-			if(iPitch < 0)
-				return;		
-						
-			//Body pitch
-			float v[3], ang[3];
-			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-			float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
-			SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
-			NormalizeVector(v, v);
-			GetVectorAngles(v, ang); 
-							
-			float flPitch = npc.GetPoseParameter(iPitch);
-							
-			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			if(iPitch >= 0)
+			{
+				//Body pitch
+				float v[3], ang[3];
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
+				NormalizeVector(v, v);
+				GetVectorAngles(v, ang); 
+								
+				float flPitch = npc.GetPoseParameter(iPitch);
+								
+				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+				
+			}	
 		}
 				
 		npc.StartPathing();

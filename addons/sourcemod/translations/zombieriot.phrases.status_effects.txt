@@ -1478,6 +1478,14 @@
 		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
 		"ko"	"헤어스타일이 바뀌셨네요. 엑스피돈사인들은 고양이임에도 불구하고 미용을 정말 잘 하는것 같아요. 그렇죠?"
 	}
+	"Starting Grace"
+	{
+		"en" "Starting Grace"
+	}
+	"Starting Grace Desc"
+	{
+		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
+	}
 	"Anti-Waves"
 	{
 		"en" "Anti-Waves"

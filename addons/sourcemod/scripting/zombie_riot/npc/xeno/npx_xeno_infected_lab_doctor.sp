@@ -200,8 +200,8 @@ public void XenoInfectedLabDoctor_ClotThink(int iNPC)
 	{
 		RatioLeft = fl_TotalArmor[npc.index];
 	}
-	if(RatioLeft <= 0.1)
-		RatioLeft = 0.1;//only 0.1 res.
+	if(RatioLeft <= 0.2)
+		RatioLeft = 0.2;//only 0.1 res.
 
 	if(RatioLeft >= 1.0)
 		RatioLeft = 1.0;
@@ -263,7 +263,7 @@ public void XenoInfectedLabDoctor_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 85.0;
+					float damage = 170.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 4.0;
 

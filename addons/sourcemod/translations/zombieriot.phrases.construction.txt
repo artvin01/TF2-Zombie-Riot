@@ -74,10 +74,18 @@
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
 		"ko"		"{orange}(Construct) {default}다음 연구가 끝났습니다 -> {orange}{1}{default}: {2}"
 	}
-	"Crouch and select to view description"
+	"Crouch and select to view description Alone"
 	{
 		"en"	"Crouch and select to view description"
 		"ko"	"앉은 상태로 선택하여 설명을 보십시오."
+	}
+	"Crouch and select to view description"
+	{
+		"en"	"Crouch and select to view description\nTwo players need to want 1 research to start it, indicated by [✓]"
+	}
+	"Player Must Agree"
+	{
+		"en"	"One more player must vote for this upgrade to begin."
 	}
 	"Claim Research"
 	{
@@ -90,7 +98,16 @@
 		"en"	"Claim Research: {1}s"
 		"ko"	"연구 : {1} 초"
 	}
+	"Mine Resources"
+	{
+		"en"	"Mine resources with your use key [T or R], tap it once!\nOn left menu you must confirm!\nStay near them to mine them over time!"
+	}
 	"Start Mining"
+	{
+		"#format"	"{1:s}"
+		"en"	"Start mining {1}?\n A raid might spawn nearby.\nYou need atleast one other player to mine with you to start."
+	}
+	"Start Mining Alone"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."
@@ -171,6 +188,14 @@
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
 		"ko"	"{green}모든 적과 광물들의 이동 속도 20％ 감소, 받는 피해 35％ 증가, 공격력 35％ 감소.\n{crimson}획득시 다른 엔딩을 볼 수 없음."
 	}
+	"Roaming Silently"
+	{
+		"en"	"Roaming Silently"
+	}
+	"Roaming Silently Desc"
+	{
+		"en"	"We just decided to make a base here after what happend at that broken ruina island, to prepare, nothing more."
+	}
 	"Loud Firepower"
 	{
 		"en"	"Loud Firepower"
@@ -178,8 +203,7 @@
 	}
 	"Loud Firepower Desc"
 	{
-		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
-		"ko"	"{green}위저 광석 50 개 보유 및 모든 아군의 공격 속도 +10％. {red}스토커 계열 적이 해당 지역을 순찰하게 됨."
+		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}Enemies gain +15％ damage."
 	}
 	"Heavy Equippment"
 	{

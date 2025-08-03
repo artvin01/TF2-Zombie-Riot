@@ -144,8 +144,6 @@ static int Freeplay_Info;
 static float MinibossScalingHandle = 1.0;
 static float Freeplay_TimeCash;
 static float Freeplay_CashTimeLeft;
-static float Freeplay_TimeExp;
-static float Freeplay_ExpTimeLeft;
 
 static int RelayCurrentRound = -1;
 static float OverrideScalingManually;
@@ -227,8 +225,6 @@ void Waves_MapStart()
 	Waves_UpdateMvMStats();
 	Freeplay_TimeCash = 0.0;
 	Freeplay_CashTimeLeft = 0.0;
-	Freeplay_TimeExp = 0.0;
-	Freeplay_ExpTimeLeft = 0.0;
 }
 
 int Waves_MapSeed()
@@ -2707,19 +2703,9 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 	{
 		if(Freeplay_TimeCash > 0.0)
 		{
-			Freeplay_TimeCash -= 7.5;
+			Freeplay_TimeCash -= 3.5;
 			if(Freeplay_TimeCash < 0.0)
 				Freeplay_TimeCash = 0.0;
-		}
-	}
-
-	if(Freeplay_ExpTimeLeft < GetGameTime())
-	{
-		if(Freeplay_TimeExp > 0.0)
-		{
-			Freeplay_TimeExp -= 2.5;
-			if(Freeplay_TimeExp < 0.0)
-				Freeplay_TimeExp = 0.0;
 		}
 	}
 
@@ -2739,18 +2725,6 @@ void Freeplay_SetRemainingCash(float amount)
 	Freeplay_TimeCash = amount;
 }
 
-void Freeplay_SetExpTime(float duration)
-{
-	Freeplay_ExpTimeLeft = duration;
-}
-float Freeplay_GetRemainingExp()
-{
-	return Freeplay_TimeExp;
-}
-void Freeplay_SetRemainingExp(float amount)
-{
-	Freeplay_TimeExp = amount;
-}
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
 {

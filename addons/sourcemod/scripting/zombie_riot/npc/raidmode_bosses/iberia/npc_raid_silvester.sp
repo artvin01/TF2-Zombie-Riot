@@ -958,22 +958,24 @@ static void Internal_ClotThink(int iNPC)
 		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, NemalAssistance); 
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
+		if(iPitch >= 0)
+		{
 
-		//Body pitch
-		float v[3], ang[3];
-		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
-		float vecTargetex[3];
-		vecTargetex = vecTarget;
-		vecTargetex[2] -= 20.0;
-		SubtractVectors(SelfVec, vecTargetex, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			//Body pitch
+			float v[3], ang[3];
+			float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
+			float vecTargetex[3];
+			vecTargetex = vecTarget;
+			vecTargetex[2] -= 20.0;
+			SubtractVectors(SelfVec, vecTargetex, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		}	
+
 	}
 	else
 	{

@@ -1876,7 +1876,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] |= IN_SCORE;
 		
 #if defined ZR
-		if(dieingstate[client] == 0)
+		if(dieingstate[client] == 0 && GetClientTeam(client) == 2)
 		{
 			if(WaitingInQueue[client])
 			{
@@ -1886,7 +1886,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			{
 				Store_Menu(client);
 			}
-
 		}
 #endif
 
