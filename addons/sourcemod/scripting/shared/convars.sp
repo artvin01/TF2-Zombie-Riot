@@ -105,7 +105,7 @@ void ConVar_PluginStart()
 	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 	
 	//default should be 0.5
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.5", "How long zombie spawn protection lasts for.");
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.2", "How long zombie spawn protection lasts for.");
 #endif
 
 #if defined ZR || defined RTS	

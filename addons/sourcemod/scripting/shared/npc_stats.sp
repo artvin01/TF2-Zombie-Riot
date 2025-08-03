@@ -6634,7 +6634,7 @@ public void NpcJumpThink(int iNPC)
 stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false, float EnemyModifpos[3] = {0.0,0.0,0.0})
 {
 	//assume that if we are tragetting an enemy, dont do anything.
-	if(i_npcspawnprotection[enemy] > 0)
+	if(i_npcspawnprotection[enemy] > 0 && i_npcspawnprotection[enemy] != 3)
 	{
 		if(!IsValidAlly(attacker, enemy))
 			return 0;
@@ -6676,7 +6676,7 @@ stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false
 bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0.0})
 {
 	//assume that if we are tragetting an enemy, dont do anything.
-	if(i_npcspawnprotection[enemy] > 0)
+	if(i_npcspawnprotection[enemy] > 0 && i_npcspawnprotection[enemy] != 3)
 	{
 		if(!IsValidAlly(attacker, enemy))
 			return false;
@@ -9883,17 +9883,25 @@ float GetRandomRetargetTime()
 
 void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
-	if(target > 0 && i_npcspawnprotection[TouchedTarget] > 0)
-	{
-		if(IsValidEnemy(target, TouchedTarget, true, true)) //Must detect camo.
-		{
-			float DamageDeal = float(ReturnEntityMaxHealth(TouchedTarget));
-			DamageDeal *= 0.1;
-			SDKHooks_TakeDamage(TouchedTarget, target, target, DamageDeal, DMG_CRUSH|DMG_TRUEDAMAGE, -1, _);
-		}
-	}
 	int entity = TouchedTarget;
 	CClotBody npc = view_as<CClotBody>(entity);
+	if(!DoNotLoop)
+	{
+		if(target > 0 && i_npcspawnprotection[entity] > 0 && i_npcspawnprotection[entity] != 3)
+		{
+			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
+			{
+				float DamageDeal = float(ReturnEntityMaxHealth(target));
+				DamageDeal *= 0.1;
+				if(DamageDeal <= 10.0)
+					DamageDeal = 10.0;
+				if(ShouldNpcDealBonusDamage(target))
+					DamageDeal *= 10.0;
+					
+				SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DMG_CRUSH|DMG_TRUEDAMAGE, -1, _);
+			}
+		}
+	}
 	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target) && GetTeam(entity) != TFTeam_Stalkers) //If one entity touches me, then i touch them
 	{
 		NpcStartTouch(target, entity, true);
@@ -10325,7 +10333,7 @@ public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
 	{
-		i_npcspawnprotection[entity] = 1;
+		i_npcspawnprotection[entity] = 3;
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
