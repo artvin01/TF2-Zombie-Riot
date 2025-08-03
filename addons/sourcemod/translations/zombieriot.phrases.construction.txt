@@ -82,10 +82,12 @@
 	"Crouch and select to view description"
 	{
 		"en"	"Crouch and select to view description\nTwo players need to want 1 research to start it, indicated by [✓]"
+		"ko"	"앉은 상태로 선택하여 설명을 보십시오.\n연구를 시작하려면 두 명의 플레이어가 1개의 연구를 원해야 하며 [✓]로 표시됩니다."
 	}
 	"Player Must Agree"
 	{
 		"en"	"One more player must vote for this upgrade to begin."
+		"ko"	"이 개선을 진행하려면 추가로 1명의 플레이어가 이 개선에 투표해야합니다."
 	}
 	"Claim Research"
 	{
@@ -101,11 +103,13 @@
 	"Mine Resources"
 	{
 		"en"	"Mine resources with your use key [T or R], tap it once!\nOn left menu you must confirm!\nStay near them to mine them over time!"
+		"ko"	"[T 또는 R] (상호작용) 키를 눌러 자원을 채광하십시오!\n좌측 메뉴에서 확인할 수 있습니다!\n해당 자원 근처에서 머물러야 채광이 가능합니다!"
 	}
 	"Start Mining"
 	{
 		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby.\nYou need atleast one other player to mine with you to start."
+		"ko"	"이 {1} 를 채광할까요?\n 레이드가 근처에 스폰될 확률이 있습니다.\n채굴하려면 최소한 한 명의 다른 플레이어가 함께 채굴을 시작해야 합니다."
 	}
 	"Start Mining Alone"
 	{
@@ -191,10 +195,12 @@
 	"Roaming Silently"
 	{
 		"en"	"Roaming Silently"
+		"ko"	"조용한 순찰"
 	}
 	"Roaming Silently Desc"
 	{
 		"en"	"We just decided to make a base here after what happend at that broken ruina island, to prepare, nothing more."
+		"ko"	"우리는 그 루이나 섬과 루이나 섬 파괴 사건 이후 이곳에 기지를 짓기로 했을 뿐이다. 준비해야한다. 그것뿐."
 	}
 	"Loud Firepower"
 	{
@@ -204,6 +210,7 @@
 	"Loud Firepower Desc"
 	{
 		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}Enemies gain +15％ damage."
+		"ko"	"{green}위저 광석 50 개 보유 및 모든 아군의 공격 속도 +10％. {red}적의 공격력 +15％ 증가."
 	}
 	"Heavy Equippment"
 	{

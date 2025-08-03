@@ -295,7 +295,7 @@ methodmap RavagingIntellect < CClotBody
 					}
 					case 4:
 					{
-						CPrintToChatAll("{darkblue}Ravaging Intellect{default}: meow");
+						CPrintToChatAll("{darkblue}황폐의 지식인{default}: 왜 이리 설쳐대지? 꼴 보기 싫게.");
 					}
 				}
 			}
@@ -976,11 +976,11 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
+			else if(StrEqual(buffer, "zerosiki__", false))
 			{
 				victim[victims++] = client;
 			}
-			else if(StrEqual(buffer, "Black_Knight", false))
+			else if(StrEqual(buffer, "Bolaven", false))
 			{
 				victim[victims++] = client;
 			}
@@ -1052,15 +1052,15 @@ void Ravaging_SaySpecialLine()
 				
 				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I will not say what you tell me to say {crimson}%N{default}.",client);
 			}
-			else if(StrEqual(buffer, "samuu, the cheesy slime", false))
+			else if(StrEqual(buffer, "zerosiki__", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I vote {crimson}%N{default} for admin! (i dont know who you are)",client);
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: {crimson}%N{default} 이 새끼는 할 줄 아는게 민폐밖에 없냐? 뭐 이리 나대?",client);
 			}
-			else if(StrEqual(buffer, "Black_Knight", false))
+			else if(StrEqual(buffer, "Bolaven", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Seems i have some hardware issues, can you help me out {crimson}%N{default} ?",client);
+				CPrintToChatAll("{darkblue}황폐의 지식인{default}: 어이, {crimson}%N{default} 인지 뭔지 하는 너. 팀원 관리 좀 해보셨나봐?",client);
 			}
 		}
 	}

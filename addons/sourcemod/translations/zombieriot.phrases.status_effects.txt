@@ -1481,10 +1481,12 @@
 	"Starting Grace"
 	{
 		"en" "Starting Grace"
+		"ko" "준비 운동"
 	}
 	"Starting Grace Desc"
 	{
 		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
+		"ko"	"공격 피해량이 25％ 증가하고, 받는 피해량이 15％ 감소합니다."
 	}
 	"Anti-Waves"
 	{
@@ -1524,7 +1526,7 @@
 	"We gotta go bald Desc"
 	{
 		"en"	"They messed up your hair, welp."
-		"ko"	"그들이 실수로 당신의 헤어스타일을 망쳤네요... 용서해주실 거죠?"
+		"ko"	"그들이 '실수로' 당신의 헤어스타일을 망쳤네요... 용서해주실 거죠?"
 	}
 	"Soggy"
 	{

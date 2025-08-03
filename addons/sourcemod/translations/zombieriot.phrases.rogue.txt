@@ -1952,7 +1952,7 @@
 	{
 		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {red}but -5％ melee damage{yellow}."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{red}, но -5％ урона в ближнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 런디니움 로열 박물관에 보관되어 있다.\n{green}원거리 공격의 피해량 +20％. {red}근접 공격의 피해량이 -5％ 감소합니다{yellow}."
+		"ko"	"{green}원거리 공격의 피해량 +20％. {red}근접 공격의 피해량이 -5％ 감소{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
@@ -1964,7 +1964,7 @@
 	{
 		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {red}but -5％ ranged damage{yellow}."
 		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{red}, но -5％ урона в дальнем бою{yellow}."
-		"ko"	"가울 황후의 면관류 장신구 중 일부로, 지금은 라이타니엔 여황제 도서관에 보관되어 있다.\n{green}근접 공격의 피해량 +20％. {red}원거리 공격의 피해량이 -5％ 감소합니다{yellow}."
+		"ko"	"{green}근접 공격의 피해량 +20％. {red}원거리 공격의 피해량이 -5％ 감소{yellow}."
 	}
 	"End of Times"
 	{

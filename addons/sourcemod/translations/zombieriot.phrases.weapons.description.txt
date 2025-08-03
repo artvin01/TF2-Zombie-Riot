@@ -2457,6 +2457,7 @@
 	"Alchemist Potion Pap 3"
 	{
 		"en"	"Increases fire rate, and metallic enemies suffer x2 the damage from bleeding."
+		"ko"	"공격 속도 증가. 금속성 대상이 받는 출혈 피해량을 2배로 증가시킵니다."
 	}
 	"Alchemist Potion Pap 4"
 	{
