@@ -36,6 +36,28 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cbar_hitbod3.wav",
 };
 
+enum
+{
+	APT_BUILDER_STATE_IDLE,
+	APT_BUILDER_STATE_WANTS_TO_BUILD,
+	APT_BUILDER_STATE_BUILDING,
+	APT_BUILDER_STATE_WANTS_TO_REPAIR,
+	APT_BUILDER_STATE_REPAIRING,
+}
+
+enum
+{
+	APT_BUILDER_HAS_SENTRY = (1 << 0),
+	APT_BUILDER_HAS_DISPENSER = (1 << 1),
+	APT_BUILDER_HAS_TELEPORTER = (1 << 2),
+	
+	APT_BUILDER_HAS_ALL_BUILDINGS = 7, // 1, 2, 4
+}
+
+static int BuildingsOwned[MAXENTITIES];
+static float NextBuildingTime[MAXENTITIES];
+static bool QuickBuildings[MAXENTITIES];
+
 static bool b_WantTobuild[MAXENTITIES];
 static bool b_AlreadyReparing[MAXENTITIES];
 static float f_RandomTolerance[MAXENTITIES];
@@ -104,6 +126,23 @@ methodmap ApertureBuilder < CClotBody
 
 	}
 	
+	property int m_iBuildingsOwned
+	{
+		public get()							{ return BuildingsOwned[this.index]; }
+		public set(int TempValueForProperty) 	{ BuildingsOwned[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flNextBuildingTime
+	{
+		public get()							{ return NextBuildingTime[this.index]; }
+		public set(float TempValueForProperty) 	{ NextBuildingTime[this.index] = TempValueForProperty; }
+	}
+	
+	property bool m_bQuickBuildings
+	{
+		public get()							{ return QuickBuildings[this.index]; }
+		public set(bool TempValueForProperty) 	{ QuickBuildings[this.index] = TempValueForProperty; }
+	}
 	
 	public ApertureBuilder(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -129,10 +168,16 @@ methodmap ApertureBuilder < CClotBody
 		
 		
 		//IDLE
-		npc.m_iState = 0;
+		npc.m_iState = APT_BUILDER_STATE_IDLE;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
+		npc.StopPathing(); // Don't path straight away, so we don't fall off an edge right after spawning
 		npc.m_flSpeed = 300.0;
+		
+		// We just spawned, our mission is to build our shit asap
+		npc.m_bQuickBuildings = true;
+		npc.m_flNextBuildingTime = GetGameTime() + 0.75;
+		
+		npc.m_iBuildingsOwned = 0;
 
 		b_WantTobuild[npc.index] = true;
 		b_AlreadyReparing[npc.index] = false;
@@ -154,8 +199,32 @@ methodmap ApertureBuilder < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-
-		TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
+		
+		// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
+		// If we can't find an appropriate spot, just ignore LOS
+		const int maxAttempts = 12;
+		const float loosenedReqPerAttempt = 0.06;
+		int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
+		
+		for (int i = 0; i < maxAttempts; i++)
+		{
+			TeleportDiversioToRandLocation(npc.index, true, 2000.0, 1500.0);
+			
+			int visiblePlayerCount;
+			
+			for (int client = 1; client <= MaxClients; client++)
+			{
+				if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
+					visiblePlayerCount++;
+			}
+			
+			float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
+			
+			// We got what we wanted, no need to try to teleport anymore
+			if (percentage <= i * loosenedReqPerAttempt)
+				break;
+		}
+		
 		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
 		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);	
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -174,11 +243,13 @@ methodmap ApertureBuilder < CClotBody
 public void ApertureBuilder_ClotThink(int iNPC)
 {
 	ApertureBuilder npc = view_as<ApertureBuilder>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	float gameTime = GetGameTime(npc.index);
+	
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation)
@@ -188,407 +259,212 @@ public void ApertureBuilder_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
 	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+	switch (npc.m_iState)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
-
-	int Behavior = -1;
-
-	int buildingentity = EntRefToEntIndex(i_BuildingRef[iNPC]);
-
-	if(b_WantTobuild[npc.index])
-	{
-		Behavior = 1;
-	}
-	else if(IsValidEntity(buildingentity) && i_AttacksTillMegahit[buildingentity] >= 255) //We already have 1
-	{
-		int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
-		int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
-
-		if(healthbuilding >= Maxhealthbuilding)
+		case APT_BUILDER_STATE_IDLE:
 		{
-			Behavior = 0;
-		}
-	}
-	switch(Behavior)
-	{
-		case 0:
-		{
-			if(i_ClosestAllyCD[npc.index] < GetGameTime())
+			if (npc.m_iBuildingsOwned != APT_BUILDER_HAS_ALL_BUILDINGS)
 			{
-				i_ClosestAllyCD[npc.index] = GetGameTime() + 1.0;
-				i_ClosestAlly[npc.index] = GetClosestAlly(npc.index);
-				if(IsValidEntity(buildingentity)) //We already have 1
+				if (npc.m_flNextBuildingTime < gameTime)
 				{
-					i_ClosestAlly[npc.index] = GetClosestAlly(buildingentity, _ , npc.index);
-				}				
-			}
-			if(IsValidAlly(npc.index, i_ClosestAlly[npc.index]))
-			{
-				float WorldSpaceVec[3]; WorldSpaceCenter(i_ClosestAlly[npc.index], WorldSpaceVec);
-				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
-				if(flDistanceToTarget < (125.0* 125.0))
-				{
-					if(npc.m_iChanged_WalkCycle != 5) 	
-					{
-						npc.m_bisWalking = false;
-						npc.m_flSpeed = 0.0;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_MP_STAND_MELEE");
-						view_as<CClotBody>(iNPC).StopPathing();
-					}
-				}
-				else
-				{
-					float AproxRandomSpaceToWalkTo[3];
-					GetEntPropVector(i_ClosestAlly[npc.index], Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-					view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
-					view_as<CClotBody>(iNPC).StartPathing();
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						npc.m_bisWalking = true;
-						npc.m_flSpeed = 200.0;
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-					}		
-				}
-			}
-			else if(IsValidEntity(buildingentity)) //We already have 1
-			{
-				float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
-				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
-				
-				npc.SetGoalEntity(buildingentity);
-				view_as<CClotBody>(iNPC).StartPathing();
-				//Walk to building.
-				if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, buildingentity))
-				{
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						npc.m_bisWalking = true;
-						npc.m_flSpeed = 200.0;
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-					}
-				}
-				else
-				{
-					if(npc.m_iChanged_WalkCycle != 5) 	
-					{
-						npc.m_bisWalking = false;
-						npc.m_flSpeed = 0.0;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_MP_STAND_MELEE");
-						view_as<CClotBody>(iNPC).StopPathing();
-					}
+					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
+					npc.m_iState = APT_BUILDER_STATE_WANTS_TO_BUILD;
+					
+					return;
 				}
 			}
 			else
 			{
-				if(npc.m_iChanged_WalkCycle != 5) 	
-				{
-					npc.m_bisWalking = false;
-					npc.m_flSpeed = 0.0;
-					npc.m_iChanged_WalkCycle = 5;
-					npc.SetActivity("ACT_MP_STAND_MELEE");
-					view_as<CClotBody>(iNPC).StopPathing();
-				}
+				// TODO: Repair stuff while in this state
 			}
 		}
-		case 1:
+		
+		case APT_BUILDER_STATE_WANTS_TO_BUILD:
 		{
-			//Search and find a building.
-			if(IsValidEntity(buildingentity)) //We already have 1
-			{
-				float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
-				float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
-				float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
-
-				int Entity_I_See;
+			float vecPos[3];
+			GetAbsOrigin(npc.index, vecPos);
 			
-				Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
-				if(i_AttacksTillMegahit[buildingentity] < 255)
+			if (npc.m_flNextBuildingTime < gameTime)
+			{
+				if (!GetVectorLength(f3_NpcSavePos[npc.index], true))
 				{
-					if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, Entity_I_See))
+					bool success = false;
+					
+					// We want to search for a valid spot around us to build something first
+					for (int i = 0; i < 60; i++)
 					{
-						if(npc.m_iChanged_WalkCycle != 3) 	
+						float vecPotentialPos[3], vecBuffer[3];
+						GetAbsOrigin(npc.index, vecBuffer);
+						vecPotentialPos = vecBuffer;
+						
+						vecPotentialPos[0] = GetRandomFloat((vecPotentialPos[0] - 200.0), (vecPotentialPos[0] + 200.0));
+						vecPotentialPos[1] = GetRandomFloat((vecPotentialPos[1] - 200.0), (vecPotentialPos[1] + 200.0));
+						
+						Handle trace = TR_TraceRayFilterEx(vecBuffer, vecPotentialPos, GetSolidMask(npc.index), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
+						if (TR_DidHit(trace))
 						{
-							npc.m_iChanged_WalkCycle = 3;
-							npc.SetActivity("ACT_MP_STAND_MELEE");
-							view_as<CClotBody>(iNPC).StopPathing();
-							npc.m_bisWalking = false;
-							npc.m_flSpeed = 0.0;
+							delete trace;
+							continue;
 						}
-						i_AttacksTillMegahit[buildingentity] += 1;
-						npc.FaceTowards(WorldSpaceVec, 15000.0);
+						
+						delete trace;
+						
+						trace = TR_TraceRayFilterEx(vecPotentialPos, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+						
+						TR_GetEndPosition(vecPotentialPos, trace);
+						delete trace;
+						
+						CNavArea area = TheNavMesh.GetNearestNavArea(vecPotentialPos, true);
+						if (area == NULL_AREA)
+							continue;
+			
+						int navAttribs = area.GetAttributes();
+						if (navAttribs & NAV_MESH_AVOID)
+							continue;
+						
+						// too close
+						if (GetVectorDistance(vecPos, vecPotentialPos, true) <= 10000.0)
+							continue;
+						
+						float vecMins[3] = { -35.0, -35.0, 0.0 };
+						float vecMaxs[3] = { 35.0, 35.0, 130.0 };
+						
+						vecPotentialPos[2] += 1.0;
+						if (IsBoxHazard(vecPotentialPos, vecMins, vecMaxs))
+							continue;
+						
+						if (IsSpaceOccupiedIgnorePlayers(vecPotentialPos, vecMins, vecMaxs, npc.index))
+							continue;
+						
+						// Congratulations little fella, you got a place to go
+						// TODO: Make the little guy carry the building weapon while in this state, and revert once the building's built
+						// FIXME: This doesn't actually have a proximity check for other buildings! It only does a check on the engineer's position the moment he's deciding to build
+						npc.m_iTarget = 0;
+						success = true;
+						f3_NpcSavePos[npc.index] = vecPotentialPos;
+						npc.StartPathing();
+						npc.SetGoalVector(vecPotentialPos);
+						break;
+					}
+					
+					if (!success)
+					{
+						// Epic fail, try again in a little bit
+						npc.m_iState = APT_BUILDER_STATE_IDLE;
+						npc.m_flNextBuildingTime = gameTime + 1.5;
+					}
+				
+					return;
+				}
+				
+				npc.SetGoalVector(f3_NpcSavePos[npc.index]);
+				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 400.0)
+				{
+					ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.6);
+					npc.StopPathing();
+					npc.m_iState = APT_BUILDER_STATE_BUILDING;
+					npc.m_flNextBuildingTime = gameTime + 0.5;
+					f3_NpcSavePos[npc.index] = vecPos;
+				}
+				
+				return;
+			}
+		}
+		
+		case APT_BUILDER_STATE_BUILDING:
+		{
+			float vecPos[3];
+			GetAbsOrigin(npc.index, vecPos);
+			
+			if (npc.m_flNextBuildingTime < gameTime)
+			{
+				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) > 600.0)
+				{
+					// What the hell, this isn't where we want to build...
+					npc.m_iState = APT_BUILDER_STATE_IDLE;
+					npc.m_flNextBuildingTime = gameTime + 1.5;
+				}
+				else
+				{
+					int building;
+					float vecAng[3];
+					GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
+					vecAng[2] = 0.0;
+					
+					// TODO: We never let the engineer know it's okay to re-build stuff once a building is destroyed
+					// We have a priority order: Sentry, Teleporter, Dispenser
+					if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_SENTRY))
+					{
+						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_SENTRY;
+						building = NPC_CreateByName("npc_aperture_sentry", -1, vecPos, vecAng, GetTeam(npc.index));
+					}
+					else if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_TELEPORTER))
+					{
+						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_TELEPORTER;
+						building = NPC_CreateByName("npc_aperture_teleporter", -1, vecPos, vecAng, GetTeam(npc.index));
+					}
+					else if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_DISPENSER))
+					{
+						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_DISPENSER;
+						building = NPC_CreateByName("npc_aperture_dispenser", -1, vecPos, vecAng, GetTeam(npc.index));
 					}
 					else
 					{
-						float AproxRandomSpaceToWalkTo[3];
-						GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-						view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
-						view_as<CClotBody>(iNPC).StartPathing();
-						//Walk to building.
-						if(npc.m_iChanged_WalkCycle != 4) 	
-						{
-							npc.m_bisWalking = true;
-							npc.m_flSpeed = 200.0;
-							npc.m_iChanged_WalkCycle = 4;
-							npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-						}
-					}					
-				}
-				else
-				{	
-					b_WantTobuild[npc.index] = false;
-				}
-			}
-			else
-			{
-				npc.m_bisWalking = true;
-				
-				if(IsValidEnemy(npc.index,npc.m_iTarget))
-				{
-					npc.SetGoalEntity(npc.m_iTarget);
-					view_as<CClotBody>(iNPC).StartPathing();
-					if(npc.m_iChanged_WalkCycle != 4) 	
-					{
-						npc.m_bisWalking = true;
-						npc.m_flSpeed = 200.0;
-						npc.m_iChanged_WalkCycle = 4;
-						npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+						// we have everything?????????? how
+						npc.m_iState = APT_BUILDER_STATE_IDLE;
+						npc.m_flNextBuildingTime = gameTime + 1.5;
+						return;
 					}
-				}
-				else
-				{
-					if(npc.m_iChanged_WalkCycle != 5) 	
-					{
-						npc.m_bisWalking = false;
-						npc.m_flSpeed = 0.0;
-						npc.m_iChanged_WalkCycle = 5;
-						npc.SetActivity("ACT_MP_STAND_MELEE");
-						view_as<CClotBody>(iNPC).StopPathing();
-					}
-				}
-
-				// make a building.
-				//For now only one building exists.
-				float AproxRandomSpaceToWalkTo[3];
-
-				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-
-				AproxRandomSpaceToWalkTo[2] += 50.0;
-
-				AproxRandomSpaceToWalkTo[0] = GetRandomFloat((AproxRandomSpaceToWalkTo[0] - 800.0),(AproxRandomSpaceToWalkTo[0] + 800.0));
-				AproxRandomSpaceToWalkTo[1] = GetRandomFloat((AproxRandomSpaceToWalkTo[1] - 800.0),(AproxRandomSpaceToWalkTo[1] + 800.0));
-
-				Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-				
-				TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
-				delete ToGroundTrace;
-
-				CNavArea area = TheNavMesh.GetNearestNavArea(AproxRandomSpaceToWalkTo, true);
-				if(area == NULL_AREA)
-					return;
-
-				int NavAttribs = area.GetAttributes();
-				if(NavAttribs & NAV_MESH_AVOID)
-				{
-					return;
-				}
 					
-			
-				area.GetCenter(AproxRandomSpaceToWalkTo);
-
-				AproxRandomSpaceToWalkTo[2] += 18.0;
-				
-				static float hullcheckmaxs_Player_Again[3];
-				static float hullcheckmins_Player_Again[3];
-
-				hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
-				hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
-
-				if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
-				{
-					return;
-				}
-
-				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-					return;
-
-				
-				AproxRandomSpaceToWalkTo[2] += 18.0;
-				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-					return;
-
-				
-				AproxRandomSpaceToWalkTo[2] -= 18.0;
-				AproxRandomSpaceToWalkTo[2] -= 18.0;
-				AproxRandomSpaceToWalkTo[2] -= 18.0;
-
-				if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-					return;
-
-				
-				AproxRandomSpaceToWalkTo[2] += 18.0;
-				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-
-				float flDistanceToBuild = GetVectorDistance(AproxRandomSpaceToWalkTo, WorldSpaceVec, true);
-				
-				if(flDistanceToBuild < (500.0 * 500.0))
-				{
-					return; //The building is too close, we want to retry! it is unfair otherwise.
-				}
-				//Retry.
-
-				//Timeout
-				npc.m_flNextMeleeAttack = GetGameTime(npc.index) + GetRandomFloat(5.0, 7.0);
-				int spawn_index = NPC_CreateByName("npc_aperture_sentry", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
-				int spawn_index_2 = NPC_CreateByName("npc_aperture_dispenser", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
-				int spawn_index_3 = NPC_CreateByName("npc_aperture_teleporter", -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
-				if(spawn_index > MaxClients)
-				{
-					//NpcStats_CopyStats(npc.index, spawn_index);
-					b_StaticNPC[spawn_index] = b_StaticNPC[iNPC];
-					if(b_StaticNPC[spawn_index])
-						AddNpcToAliveList(spawn_index, 1);
-						AddNpcToAliveList(spawn_index_2, 1);
-						AddNpcToAliveList(spawn_index_3, 1);
+					if (b_StaticNPC[building])
+						AddNpcToAliveList(building, 1);
 					
-					i_BuildingRef[iNPC] = EntIndexToEntRef(spawn_index);
-					if(GetTeam(iNPC) != TFTeam_Red)
+					if (GetTeam(iNPC) != TFTeam_Red)
 					{
-						if(!b_StaticNPC[spawn_index])
-							NpcAddedToZombiesLeftCurrently(spawn_index, true);
-							NpcAddedToZombiesLeftCurrently(spawn_index_2, true);
-							NpcAddedToZombiesLeftCurrently(spawn_index_3, true);
+						if (!b_StaticNPC[building])
+							NpcAddedToZombiesLeftCurrently(building, true);
 					}
-					i_AttacksTillMegahit[spawn_index] = 10;
-					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(spawn_index, 255, 255, 255, 255);
-				}
-				TeleportDiversioToRandLocation(spawn_index,_,1000.0, 500.0);
-				TeleportDiversioToRandLocation(spawn_index_2,_,1000.0, 500.0);
-				TeleportDiversioToRandLocation(spawn_index_3,_,1000.0, 500.0);
-				b_WantTobuild[npc.index] = false;
-			}
-		}
-		case 2:
-		{
-			float WorldSpaceVec[3]; WorldSpaceCenter(buildingentity, WorldSpaceVec);
-			float WorldSpaceVec2[3]; WorldSpaceCenter(npc.index, WorldSpaceVec2);
-			float flDistanceToTarget = GetVectorDistance(WorldSpaceVec, WorldSpaceVec2, true);
-
-			int Entity_I_See;
-			
-			Entity_I_See = Can_I_See_Ally(npc.index, buildingentity);
-			if(flDistanceToTarget < (125.0* 125.0) && IsValidAlly(npc.index, Entity_I_See))
-			{
-				if(npc.m_iChanged_WalkCycle != 3) 	
-				{
-					npc.m_iChanged_WalkCycle = 3;
-					npc.SetActivity("ACT_MP_STAND_MELEE");
-					view_as<CClotBody>(iNPC).StopPathing();
-					npc.m_bisWalking = false;
-					npc.m_flSpeed = 0.0;
-				}
-
-				if(!HasSpecificBuff(buildingentity, "Growth Blocker"))
-				{
-					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");
-					int Maxhealthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iMaxHealth");
-					int AddHealth = Maxhealthbuilding / 1000;
-
-					if(AddHealth < 1)
-					{
-						AddHealth = 1;
-					}
-					healthbuilding += AddHealth;
-					if(healthbuilding > Maxhealthbuilding)
-					{
-						b_AlreadyReparing[npc.index] = false;
-						Maxhealthbuilding = healthbuilding;
-					}
-					SetEntProp(buildingentity, Prop_Data, "m_iHealth",healthbuilding);
-					npc.FaceTowards(WorldSpaceVec, 15000.0);
-				}
-				else
-				{
-					b_AlreadyReparing[npc.index] = false;
+					
+					if (npc.m_iBuildingsOwned == APT_BUILDER_HAS_ALL_BUILDINGS)
+						npc.m_bQuickBuildings = false;
+					
+					npc.m_iState = APT_BUILDER_STATE_IDLE;
+					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 10.0;
+					npc.StartPathing();
 				}
 			}
 			else
 			{
-				float AproxRandomSpaceToWalkTo[3];
-				GetEntPropVector(buildingentity, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
-				view_as<CClotBody>(iNPC).SetGoalVector(AproxRandomSpaceToWalkTo);
-				view_as<CClotBody>(iNPC).StartPathing();
-				//Walk to building.
-				if(npc.m_iChanged_WalkCycle != 4) 	
-				{
-					npc.m_bisWalking = true;
-					npc.m_flSpeed = 200.0;
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-				}
-			}					
+				// TODO: Constantly knock players away while in this state, to prevent them from getting stuck on about-to-be-built buildings
+				return;
+			}
 		}
-		case 3:
+		
+		case APT_BUILDER_STATE_WANTS_TO_REPAIR:
 		{
-			if(IsValidEntity(buildingentity) && !b_NpcHasDied[buildingentity])
-			{
-				b_WantTobuild[npc.index] = false;
-			}
-			if(IsValidEnemy(npc.index, npc.m_iTarget))
-			{
-				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				
-				//Predict their pos.
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
-				{
-					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-
-					npc.SetGoalVector(vPredictedPos);
-				}
-				else
-				{
-					npc.SetGoalEntity(npc.m_iTarget);
-				}
-				view_as<CClotBody>(iNPC).StartPathing();
-				//Walk to building.
-				if(npc.m_iChanged_WalkCycle != 4) 	
-				{
-					npc.m_bisWalking = true;
-					npc.m_flSpeed = 200.0;
-					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-				}
-			}
-			else
-			{
-				if(npc.m_iChanged_WalkCycle != 5) 	
-				{
-					npc.m_bisWalking = false;
-					npc.m_flSpeed = 0.0;
-					npc.m_iChanged_WalkCycle = 5;
-					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-					view_as<CClotBody>(iNPC).StopPathing();
-				}
-			}
+			// TODO: THIS
 		}
+		
+		case APT_BUILDER_STATE_REPAIRING:
+		{
+			// TODO: THIS
+		}
+	}
+	
+	// If he's doing important stuff, ignore other goals
+	if (npc.m_iState != APT_BUILDER_STATE_IDLE)
+		return;
+	
+	if (npc.m_flGetClosestTargetTime < gameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

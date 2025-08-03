@@ -695,7 +695,7 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	npc.m_flAttackHappens = gameTime + (CAT_ORB_SPAM_ABILITY_DURATION / CAT_ORB_SPAM_ABILITY_AMOUNT);
 	
 	static float vecOrbAngles[3];
-	float vecOrbPos[3], vecForward[3], vecCollisionOffset[3];
+	float vecOrbPos[3], vecForward[3];
 	
 	int nextAng = (RoundToNearest(vecOrbAngles[1]) + GetRandomInt(20, 55)) % 360;
 	vecOrbAngles[1] = float(nextAng);

@@ -50,7 +50,7 @@ methodmap ApertureTeleporter < CClotBody
 
 	public ApertureTeleporter(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
+		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter_light.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 
@@ -89,6 +89,9 @@ methodmap ApertureTeleporter < CClotBody
 			}
 		}
 		
+		npc.AddActivityViaSequence("running");
+		npc.SetCycle(0.01);
+		
 		return npc;
 	}
 }
@@ -96,14 +99,11 @@ methodmap ApertureTeleporter < CClotBody
 public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 {
 	float gameTime = GetGameTime(npc.index);
-	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+	float vecPos[3];
+	GetAbsOrigin(npc.index, vecPos);
+	
 	if(!IsValidEntity(npc.m_iWearable1))
-	{
-		float flPos[3]; // original
-		float flAng[3];
-		npc.GetAttachment("centre_attach", flPos, flAng);
-		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "teleporter_blue_charged_level3", npc.index, "centre_attach", {0.0, 0.0, 0.0});
-	}
+		npc.m_iWearable1 = ParticleEffectAt_Parent(vecPos, "teleporter_blue_charged_level3", npc.index, .vOffsets = { 0.0, 0.0, 12.0 });
 
 	if(npc.m_flNextRangedSpecialAttack < gameTime)
 	{
