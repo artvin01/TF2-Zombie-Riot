@@ -20,20 +20,36 @@ static const char g_HurtSounds[][] = {
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/engineer_battlecry01.mp3",
-	"vo/engineer_battlecry02.mp3",
 	"vo/engineer_battlecry03.mp3",
 	"vo/engineer_battlecry04.mp3",
 	"vo/engineer_battlecry05.mp3",
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+static const char g_BuildingSentrySounds[][] = {
+	"vo/engineer_autobuildingsentry01.mp3",
+	"vo/engineer_autobuildingsentry02.mp3",
 };
+
+static const char g_BuildingDispenserSounds[][] = {
+	"vo/engineer_autobuildingdispenser01.mp3",
+	"vo/engineer_autobuildingdispenser02.mp3",
+};
+
+static const char g_BuildingTeleporterSounds[][] = {
+	"vo/engineer_autobuildingteleporter01.mp3",
+	"vo/engineer_autobuildingteleporter02.mp3",
+};
+
+static const char g_BuildingBuiltSound[] = "weapons/sentry_finish.wav";
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/cbar_hitbod1.wav",
 	"weapons/cbar_hitbod2.wav",
 	"weapons/cbar_hitbod3.wav",
+};
+
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/machete_swing.wav",
 };
 
 enum
@@ -68,9 +84,19 @@ void ApertureBuilder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildingSentrySounds)); i++) { PrecacheSound(g_BuildingSentrySounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildingDispenserSounds)); i++) { PrecacheSound(g_BuildingDispenserSounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildingTeleporterSounds)); i++) { PrecacheSound(g_BuildingTeleporterSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/scout.mdl");
+	
+	PrecacheSound(g_BuildingBuiltSound);
+	
+	PrecacheModel("models/player/engineer.mdl");
+	PrecacheModel("models/weapons/c_models/c_wrench/c_wrench.mdl");
+	PrecacheModel("models/weapons/c_models/c_toolbox/c_toolbox.mdl");
+	PrecacheModel("models/player/items/engineer/hardhat.mdl");
+	
 	PrecacheSound("music/mvm_class_select.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Builder");
@@ -116,6 +142,26 @@ methodmap ApertureBuilder < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
+	public void PlayBuildingSentrySound() 
+	{
+		EmitSoundToAll(g_BuildingSentrySounds[GetRandomInt(0, sizeof(g_BuildingSentrySounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
+	public void PlayBuildingDispenserSound() 
+	{
+		EmitSoundToAll(g_BuildingDispenserSounds[GetRandomInt(0, sizeof(g_BuildingDispenserSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
+	public void PlayBuildingTeleporterSound() 
+	{
+		EmitSoundToAll(g_BuildingTeleporterSounds[GetRandomInt(0, sizeof(g_BuildingTeleporterSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
+	public void PlayBuildingBuiltSound(int building) 
+	{
+		EmitSoundToAll(g_BuildingBuiltSound, building, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 130);
+	}
+	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -151,9 +197,6 @@ methodmap ApertureBuilder < CClotBody
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -187,18 +230,14 @@ methodmap ApertureBuilder < CClotBody
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 	
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/hardhat.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/engineer/hardhat.mdl");
 		
-
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		
+		npc.ToggleBuilding(false);
 		
 		// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
 		// If we can't find an appropriate spot, just ignore LOS
@@ -236,7 +275,41 @@ methodmap ApertureBuilder < CClotBody
 			}
 		}
 		
+		float vecNewPos[3];
+		GetAbsOrigin(npc.index, vecNewPos);
+		ParticleEffectAt(vecNewPos, "teleported_blue");
+		
 		return npc;
+	}
+	
+	public void ToggleBuilding(bool toggle)
+	{
+		// This is just used to swap building weapons
+		if (IsValidEntity(this.m_iWearable2))
+			RemoveEntity(this.m_iWearable2);
+		
+		int activity;
+		if (toggle)
+		{
+			this.m_iWearable2 = this.EquipItem("head", "models/weapons/c_models/c_toolbox/c_toolbox.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(this.m_iWearable2, "SetModelScale");
+			
+			SetEntProp(this.m_iWearable2, Prop_Send, "m_nSkin", 1);
+			
+			activity = this.LookupActivity("ACT_MP_RUN_BUILDING_DEPLOYED");
+		}
+		else
+		{
+			this.m_iWearable2 = this.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");
+			SetVariantString("1.0");
+			AcceptEntityInput(this.m_iWearable2, "SetModelScale");
+			
+			activity = this.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		}
+		
+		if (activity > 0)
+			this.StartActivity(activity);
 	}
 }
 
@@ -343,8 +416,8 @@ public void ApertureBuilder_ClotThink(int iNPC)
 							continue;
 						
 						// Congratulations little fella, you got a place to go
-						// TODO: Make the little guy carry the building weapon while in this state, and revert once the building's built
 						// FIXME: This doesn't actually have a proximity check for other buildings! It only does a check on the engineer's position the moment he's deciding to build
+						npc.ToggleBuilding(true);
 						npc.m_iTarget = 0;
 						success = true;
 						f3_NpcSavePos[npc.index] = vecPotentialPos;
@@ -387,6 +460,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) > 600.0)
 				{
 					// What the hell, this isn't where we want to build...
+					npc.ToggleBuilding(false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
 					npc.m_flNextBuildingTime = gameTime + 1.5;
 				}
@@ -401,22 +475,26 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					// We have a priority order: Sentry, Teleporter, Dispenser
 					if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_SENTRY))
 					{
+						npc.PlayBuildingSentrySound();
 						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_SENTRY;
 						building = NPC_CreateByName("npc_aperture_sentry", -1, vecPos, vecAng, GetTeam(npc.index));
 					}
 					else if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_TELEPORTER))
 					{
+						npc.PlayBuildingTeleporterSound();
 						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_TELEPORTER;
 						building = NPC_CreateByName("npc_aperture_teleporter", -1, vecPos, vecAng, GetTeam(npc.index));
 					}
 					else if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_DISPENSER))
 					{
+						npc.PlayBuildingDispenserSound();
 						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_DISPENSER;
 						building = NPC_CreateByName("npc_aperture_dispenser", -1, vecPos, vecAng, GetTeam(npc.index));
 					}
 					else
 					{
 						// we have everything?????????? how
+						npc.ToggleBuilding(false);
 						npc.m_iState = APT_BUILDER_STATE_IDLE;
 						npc.m_flNextBuildingTime = gameTime + 1.5;
 						return;
@@ -431,9 +509,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 							NpcAddedToZombiesLeftCurrently(building, true);
 					}
 					
+					npc.PlayBuildingBuiltSound(building);
+					
 					if (npc.m_iBuildingsOwned == APT_BUILDER_HAS_ALL_BUILDINGS)
 						npc.m_bQuickBuildings = false;
 					
+					npc.ToggleBuilding(false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
 					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 10.0;
 					npc.StartPathing();
@@ -516,12 +597,7 @@ public void ApertureBuilder_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
 	
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
