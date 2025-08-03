@@ -6593,7 +6593,7 @@ public void NpcJumpThink(int iNPC)
 stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false, float EnemyModifpos[3] = {0.0,0.0,0.0})
 {
 	//assume that if we are tragetting an enemy, dont do anything.
-	if(i_npcspawnprotection[enemy] > 0 && i_npcspawnprotection[enemy] != 3)
+	if(i_npcspawnprotection[attacker] > 0 && i_npcspawnprotection[attacker] != 3)
 	{
 		if(!IsValidAlly(attacker, enemy))
 			return 0;
@@ -6635,7 +6635,7 @@ stock int Can_I_See_Enemy(int attacker, int enemy, bool Ignore_Buildings = false
 bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0.0})
 {
 	//assume that if we are tragetting an enemy, dont do anything.
-	if(i_npcspawnprotection[enemy] > 0 && i_npcspawnprotection[enemy] != 3)
+	if(i_npcspawnprotection[attacker] > 0 && i_npcspawnprotection[attacker] != 3)
 	{
 		if(!IsValidAlly(attacker, enemy))
 			return false;
