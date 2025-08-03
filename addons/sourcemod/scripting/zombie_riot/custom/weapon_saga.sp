@@ -345,6 +345,10 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 		SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(victim, 255, 65, 65, 125);
 		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
+		//counts as a static npc, means it wont count towards NPC limit.
+		//thisd is so they dont hog.
+		AddNpcToAliveList(victim, 1);
+
 		SetEntityCollisionGroup(victim, 17);
 		b_DoNotUnStuck[victim] = true;
 		CClotBody npc = view_as<CClotBody>(victim);

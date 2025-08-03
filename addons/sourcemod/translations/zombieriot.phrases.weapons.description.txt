@@ -3654,25 +3654,23 @@
 	}
 	"Pinus Knight Pap 1"
 	{
-		"en"	"Increased Stats.\nAdds an ability, when used allows you to dodge one melee hit (does not stack).\nGenerates money on ability use."
+		"en"	"Increased damage.\nAdds an ability, when used allows you to dodge one melee hit (does not stack).\nGenerates money on ability use."
 	}
 	"Pinus Knight Pap 2"
 	{
-		"en"	"Increased Stats.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
+		"en"	"Increased damage.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
 	}
 	"Pinus Knight Pap 3"
 	{
-		"en"	"Increased Stats.\nAllied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
+		"en"	"Increased damage.\nAllied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
 	}
 	"Pinus Knight Pap 4"
 	{
-		"en"	"Increased Stats.\nAbility instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
+		"en"	"Increased damage."
 	}
 	"Pinus Knight Pap 5"
 	{
-		"en"	"Decreased ability cooldown and increased ability damage bonus."
-		"fr"	"Dégats et temps de recharge de votre abilité améliorés."
-		"chi"	"降低技能冷却并且增加技能伤害。"
+		"en"	"Increased damage, Decreased ability cooldown.\nAbility instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
 	}
 	"Barracks Metro Cop Desc"
 	{
