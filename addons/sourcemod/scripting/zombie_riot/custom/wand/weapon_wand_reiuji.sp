@@ -16,6 +16,7 @@ static float 	fl_barrage_maxcharge	[6] = {600.0, 750.0, 1000.0, 1250.0, 1500.0, 
 
 //charge gained will depend on mana consumed.
 static float fl_barrage_charge[MAXPLAYERS];
+static bool b_BarrageModeOn[MAXPLAYERS];
 
 
 #define REIUJI_WAND_TOUCH_SOUND "friends/friend_online.wav"
@@ -62,6 +63,7 @@ void Reiuji_Wand_OnMapStart()
 	PrecacheSound(REIUJI_WAND_TOUCH_SOUND, true);
 	PrecacheSound(REIUJI_WAND_M2_CAST_SOUND, true);
 	PrecacheSoundArray(WandAttackSounds);
+	Zero(b_BarrageModeOn);
 }
 static void PlayWandAttackSound(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(WandAttackSounds[GetRandomInt(0, sizeof(WandAttackSounds) - 1)], client, SNDCHAN_VOICE, soundlevel, _, volume, pitch);}
 
@@ -143,6 +145,15 @@ static void Hud(int client, int weapon)
 		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i] (%.1fs)", i_ammo[client], i_max_ammo[pap], fl_ammo_timer[client]-GameTime);
 	else
 		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i]", i_ammo[client], i_max_ammo[pap]);
+	
+	if(b_BarrageModeOn[client])
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nAmmo Mode ON [R]", HUDText);
+	}
+	else
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nAmmo Mode OFF [R]", HUDText);
+	}
 
 	if(pap>1)
 	{
@@ -294,6 +305,43 @@ static int IsLineOfSight(int client, int Target, float AnglesMax, float Range)
 	}
 	return 0;
 }
+
+public void Reiuji_Wand_AmmoMode(int client, int weapon, bool crit, int slot)
+{
+	if(b_BarrageModeOn[client])
+	{
+		b_BarrageModeOn[client] = false;
+		ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
+ 	}
+	else
+	{
+		b_BarrageModeOn[client] = true;
+		ClientCommand(client, "playgamesound misc/halloween/spelltick_02.wav");
+	}
+	Reiuji_Wand_AmmomodeInternal(client, weapon, true);
+}
+
+void Reiuji_Wand_AmmomodeInternal(int client, int weapon, bool Toggle = false)
+{
+	int pap = i_pap(weapon);
+	if(i_ammo[client] > 0 && b_BarrageModeOn[client])
+	{
+		if(!Toggle)
+		{
+			i_ammo[client]--;
+			fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*1.25;
+		}
+
+		if(i_ammo[client] > 0)
+			Attributes_Set(weapon, 5, fl_firerate_multi[pap]);
+		else
+			Attributes_Set(weapon, 5, 1.0);
+	}
+	else 
+	{
+		Attributes_Set(weapon, 5, 1.0);
+	}
+}
 public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -333,20 +381,10 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 			We'll use attribute 5, since its a "static" attribute that nothing should modify. probably...
 	*/
 
-	int pap = i_pap(weapon);
-
-	if(i_ammo[client] > 0)
-	{
-		i_ammo[client]--;
-
-		if(i_ammo[client] > 0)
-			Attributes_Set(weapon, 5, fl_firerate_multi[pap]);
-		else
-			Attributes_Set(weapon, 5, 1.0);
-	}
+	Reiuji_Wand_AmmomodeInternal(client, weapon);
 
 	//rest the ammo gain timer when firing.
-	fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*1.25;
+	int pap = i_pap(weapon);
 
 	float damage = 125.0 * Attributes_Get(weapon, 410, 1.0);
 		

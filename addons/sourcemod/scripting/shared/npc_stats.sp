@@ -4619,9 +4619,19 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 
 		if(enemy <= MaxClients || b_ThisWasAnNpc[enemy])
 		{
-			if(b_ThisWasAnNpc[enemy] && b_NpcHasDied[enemy])
+			if(b_ThisWasAnNpc[enemy])
 			{
-				return false;
+				if(b_NpcHasDied[enemy])
+				{
+					return false;
+				}
+			}
+			if(b_ThisWasAnNpc[index])
+			{
+				if(i_npcspawnprotection[enemy] > 0 && i_npcspawnprotection[enemy] != 3)
+				{
+					return false;
+				}
 			}
 			if(enemy > MaxClients && IsInvuln(enemy, true) && !target_invul)
 			{
@@ -9847,8 +9857,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 					DamageDeal = 10.0;
 				if(ShouldNpcDealBonusDamage(target))
 				{
-					DamageDeal *= 10.0;
-					DamageFlags &~ DMG_CRUSH;
+					DamageFlags &= ~DMG_CRUSH;
 				}
 
 				SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DamageFlags, -1, _);

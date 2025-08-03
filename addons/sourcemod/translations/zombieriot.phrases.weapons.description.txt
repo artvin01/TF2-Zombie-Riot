@@ -3197,7 +3197,7 @@
 	}
 	"Reiuji Desc 0"
 	{
-		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus."
+		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus.\nPress R to toggle it on and off to recharge it."
 	}
 	"Reiuji Desc 1"
 	{
