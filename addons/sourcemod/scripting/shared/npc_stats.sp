@@ -293,57 +293,6 @@ Handle DHookCreateEx(Handle gc, const char[] key, HookType hooktype, ReturnType 
 	
 	return DHookCreate(iOffset, hooktype, returntype, thistype, callback);
 }
-
-/*
-public Action NPCStats_StartTouch(const char[] output, int entity, int caller, float delay)
-{
-	if(caller > 0 && caller < MAXENTITIES)
-	{
-		char name[32];
-		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
-		{
-			if(StrEqual(name, "npc_crouch_simulation"))
-			{
-				b_EntityInCrouchSpot[caller] = true;
-			}
-			if(StrEqual(name, "zr_spawner_scaler"))
-			{
-				b_PlayerIsInAnotherPart[caller] = true;
-			}
-			if(StrEqual(name, "zr_anti_stair_abuse"))
-			{
-				b_EntityIsStairAbusing[caller] = true;
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-
-
-public Action NPCStats_EndTouch(const char[] output, int entity, int caller, float delay)
-{
-	if(caller > 0 && caller < MAXENTITIES)
-	{
-		char name[32];
-		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
-		{
-			if(StrEqual(name, "npc_crouch_simulation"))
-			{
-				b_EntityInCrouchSpot[caller] = false;
-			}
-			if(StrEqual(name, "zr_spawner_scaler"))
-			{
-				b_PlayerIsInAnotherPart[caller] = false;
-			}
-			if(StrEqual(name, "zr_anti_stair_abuse"))
-			{
-				b_EntityIsStairAbusing[caller] = false;
-			}
-		}
-	}
-	return Plugin_Continue;
-}
-*/
 #define NORMAL_NPC 0
 #define STATIONARY_NPC 1
 
@@ -9891,14 +9840,18 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 		{
 			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
 			{
+				int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
 				float DamageDeal = float(ReturnEntityMaxHealth(target));
 				DamageDeal *= 0.1;
 				if(DamageDeal <= 10.0)
 					DamageDeal = 10.0;
 				if(ShouldNpcDealBonusDamage(target))
+				{
 					DamageDeal *= 10.0;
-					
-				SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DMG_CRUSH|DMG_TRUEDAMAGE, -1, _);
+					DamageFlags &~ DMG_CRUSH;
+				}
+
+				SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DamageFlags, -1, _);
 			}
 		}
 	}
