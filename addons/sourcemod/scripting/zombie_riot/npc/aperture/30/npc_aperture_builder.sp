@@ -354,7 +354,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			}
 			else
 			{
-				// TODO: Repair stuff while in this state
+				// TODO: Maybe think about repairing stuff while in this state?
 			}
 		}
 		
@@ -401,10 +401,6 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if (navAttribs & NAV_MESH_AVOID)
 							continue;
 						
-						// too close
-						if (GetVectorDistance(vecPos, vecPotentialPos, true) <= 10000.0)
-							continue;
-						
 						float vecMins[3] = { -35.0, -35.0, 0.0 };
 						float vecMaxs[3] = { 35.0, 35.0, 130.0 };
 						
@@ -415,8 +411,27 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if (IsSpaceOccupiedIgnorePlayers(vecPotentialPos, vecMins, vecMaxs, npc.index))
 							continue;
 						
+						// Avoid placing buildings way too close to other buildings
+						int other = INVALID_ENT_REFERENCE;
+						int nothing;
+						while ((other = FindEntityByNPC(nothing)) != INVALID_ENT_REFERENCE)
+						{
+							if (IsValidEntity(other))
+							{
+								if (!i_NpcIsABuilding[other])
+									continue;
+								
+								float vecOtherPos[3];
+								GetAbsOrigin(other, vecOtherPos);
+								if (GetVectorDistance(vecPotentialPos, vecOtherPos, true) <= 8000.0)
+									break;
+							}
+						}
+						
+						if (other != INVALID_ENT_REFERENCE)
+							continue;
+						
 						// Congratulations little fella, you got a place to go
-						// FIXME: This doesn't actually have a proximity check for other buildings! It only does a check on the engineer's position the moment he's deciding to build
 						npc.ToggleBuilding(true);
 						npc.m_iTarget = 0;
 						success = true;
@@ -520,11 +535,6 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 			}
-			else
-			{
-				// TODO: Constantly knock players away while in this state, to prevent them from getting stuck on about-to-be-built buildings
-				return;
-			}
 		}
 		
 		case APT_BUILDER_STATE_WANTS_TO_REPAIR:
@@ -618,7 +628,6 @@ void ApertureBuilderSelfDefense(ApertureBuilder npc, float gameTime, int target,
 			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
 				
 				float vecHit[3];
