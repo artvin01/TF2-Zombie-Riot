@@ -555,7 +555,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					
 					npc.ToggleBuilding(false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
-					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 30.0;
+					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 20.0;
 					npc.StartPathing();
 				}
 			}
