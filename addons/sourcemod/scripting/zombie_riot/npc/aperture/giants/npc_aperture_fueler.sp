@@ -2,31 +2,19 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/engineer_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/engineer_mvm_paincrticialdeath03.mp3",
+	"mvm/giant_common/giant_common_explodes_01",
+	"mvm/giant_common/giant_common_explodes_02",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_painsharp01.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp02.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp03.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp04.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp05.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp06.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp07.mp3",
-	"vo/mvm/norm/engineer_mvm_painsharp08.mp3",
+	"vo/mvm/mght/pyro_mvm_m_jeers01.mp3",
+	"vo/mvm/mght/pyro_mvm_m_jeers02.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/engineer_mvm_battlecry01.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry03.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry04.mp3",
-	"vo/mvm/norm/engineer_mvm_battlecry05.mp3",
-};
-
-static const char g_ShieldDeploy[][] = {
-	"weapons/medi_shield_deploy.wav",
+	"vo/mvm/mght/pyro_mvm_m_cheers01.mp3",
+	"vo/mvm/mght/pyro_mvm_m_battlecry01.mp3",
+	"vo/mvm/mght/pyro_mvm_m_battlecry02.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -42,21 +30,21 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
-void Aperture_Halter_OnMapStart_NPC()
+void ApertureFueler_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/bots/engineer/bot_engineer.mdl");
+	PrecacheModel("models/bots/pyro_boss/bot_pyro_boss.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Halter");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_halter");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
+	strcopy(data.Name, sizeof(data.Name), "Aperture Fueler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_fueler");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_igniter");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Victoria;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -64,9 +52,9 @@ void Aperture_Halter_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Aperture_Halter(vecPos, vecAng, ally);
+	return ApertureFueler(vecPos, vecAng, ally);
 }
-methodmap Aperture_Halter < CClotBody
+methodmap ApertureFueler < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -93,12 +81,6 @@ methodmap Aperture_Halter < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-
-	public void PlayShieldtUpSound() 
-	{
-		EmitSoundToAll(g_ShieldDeploy[GetRandomInt(0, sizeof(g_ShieldDeploy) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
-	}
 	
 	public void PlayMeleeSound()
 	{
@@ -111,29 +93,26 @@ methodmap Aperture_Halter < CClotBody
 	}
 	
 	
-	public Aperture_Halter(float vecPos[3], float vecAng[3], int ally)
+	public ApertureFueler(float vecPos[3], float vecAng[3], int ally)
 	{
-		Aperture_Halter npc = view_as<Aperture_Halter>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.35", "7500", ally));
+		ApertureFueler npc = view_as<ApertureFueler>(CClotBody(vecPos, vecAng, "models/bots/pyro_boss/bot_pyro_boss.mdl", "1.35", "20000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		SetVariantInt(3);
+		SetVariantInt(5);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 10.0;
-		npc.m_fbRangedSpecialOn = true;
-		npc.m_flRangedSpecialDelay = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Aperture_Halter_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Aperture_Halter_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Aperture_Halter_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(ApertureFueler_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureFueler_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ApertureFueler_ClotThink);
 		
 		
 		//IDLE
@@ -146,55 +125,41 @@ methodmap Aperture_Halter < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
-		SetVariantString("1.3");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/rage_hoe.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_mannhattan_protect/hwn2024_mannhattan_protect.mdl");
-		SetVariantString("1.5");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/clockwerk_hat.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/robo_pyro_pyrobotic_tote/robo_pyro_pyrobotic_tote.mdl");
-		npc.m_iWearable5 = npc.SpawnShield(0.0, "models/props_mvm/mvm_player_shield2.mdl",90.0);
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_tin_can/hw2013_tin_can.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/short2014_fowl_fryer/short2014_fowl_fryer.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/pyro/sf14_hw2014_robot_arm/sf14_hw2014_robot_arm.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/pyro/bak_firefly/bak_firefly.mdl");
+
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
 }
 
-public void Aperture_Halter_ClotThink(int iNPC)
+public void ApertureFueler_ClotThink(int iNPC)
 {
-	Aperture_Halter npc = view_as<Aperture_Halter>(iNPC);
+	ApertureFueler npc = view_as<ApertureFueler>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	if(npc.m_fbRangedSpecialOn && npc.m_flNextRangedAttack < GetGameTime())
-	{
-		if(IsValidEntity(npc.m_iWearable5))
-			RemoveEntity(npc.m_iWearable5);
-		npc.m_flRangedSpecialDelay = GetGameTime() + 15.0;
-		npc.m_fbRangedSpecialOn = false;
-	}
-	if(!npc.m_fbRangedSpecialOn && npc.m_flRangedSpecialDelay < GetGameTime())
-	{
-		if(IsValidEntity(npc.m_iWearable5))
-			RemoveEntity(npc.m_iWearable5);
-		npc.PlayShieldtUpSound();
-		npc.m_iWearable5 = npc.SpawnShield(0.0, "models/props_mvm/mvm_player_shield2.mdl",90.0);
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		npc.m_flNextRangedAttack = GetGameTime() + 10.0;
-		npc.m_fbRangedSpecialOn = true;
-	}
 
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -231,7 +196,7 @@ public void Aperture_Halter_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Aperture_HalterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		ApertureFuelerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -243,9 +208,9 @@ public void Aperture_Halter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Aperture_Halter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ApertureFueler_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Aperture_Halter npc = view_as<Aperture_Halter>(victim);
+	ApertureFueler npc = view_as<ApertureFueler>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -259,13 +224,18 @@ public Action Aperture_Halter_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void Aperture_Halter_NPCDeath(int entity)
+public void ApertureFueler_NPCDeath(int entity)
 {
-	Aperture_Halter npc = view_as<Aperture_Halter>(entity);
+	ApertureFueler npc = view_as<ApertureFueler>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -276,7 +246,7 @@ public void Aperture_Halter_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void Aperture_HalterSelfDefense(Aperture_Halter npc, float gameTime, int target, float distance)
+void ApertureFuelerSelfDefense(ApertureFueler npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -292,12 +262,13 @@ void Aperture_HalterSelfDefense(Aperture_Halter npc, float gameTime, int target,
 							
 				target = TR_GetEntityIndex(swingTrace);	
 				
+				float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 150.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
@@ -305,6 +276,9 @@ void Aperture_HalterSelfDefense(Aperture_Halter npc, float gameTime, int target,
 					int DamageType = DMG_CLUB;
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
+					spawnRing_Vectors(vecMe, 150.0, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 255, 175, 0, 150, 1, 0.5, 6.0, 0.1, 1, 640.0);
+			
+					Explode_Logic_Custom(50.0, -1, npc.index, -1, vecMe, 150.0, _, 0.75, true, _, false, _, ApertureFueler_ExplodePost);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -330,8 +304,17 @@ void Aperture_HalterSelfDefense(Aperture_Halter npc, float gameTime, int target,
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 1.25;
 			}
 		}
+	}
+}
+
+public void ApertureFueler_ExplodePost(int attacker, int victim, float damage, int weapon)
+{
+	if(!NpcStats_IsEnemySilenced(attacker))
+	{
+		NPC_Ignite(victim, attacker, 8.0, -1, 5.50);
+		Custom_Knockback(attacker, victim, 500.0, true);
 	}
 }
