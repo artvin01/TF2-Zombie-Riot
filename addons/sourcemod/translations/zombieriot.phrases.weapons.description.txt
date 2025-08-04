@@ -555,11 +555,7 @@
 	
 	"IEM Launcher Desc"
 	{
-		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage."
-		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
-		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
-		"chi"	    "工程师说不要碰他的东西，但你不在乎"
-		"ko"		"발사시 느린 투사체가 나아가며 투사체 주변의 적들에게 피해를 줌.\n완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시킴"
+		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage.\n2x dmg vs raids."
 	}
 	"IEM Launcher Pap 1"
 	{
@@ -651,8 +647,7 @@
 	
 	"Star Shooter Desc"
 	{
-		"en"	"Your M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
-		"ko"	"기본 공격의 쿨타임은 이 무기의 과열이 식는데 필요한 시간으로,\n과열 수치가 높을수록 공격의 피해량이 감소."
+		"en"	"Your M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage.\nInsane power at a cheap price, but high ammo cost."
 	}
 
 	"Star Shooter Pap 1"
@@ -1404,10 +1399,7 @@
 	}
 	"Fire Wand Pap 3"
 	{
-		"en"	"Increased damage, fires 5 fireballs in quick succession, subsequent fireballs deal less damage."
-		"fr"	"Dégats améliorés. Lance 5 boules de feu successivement, chaqun infligeant moins de dégats que le dernier."
-		"chi"	"增加伤害，连续发射5个火球，连发的火球伤害会逐渐降低。"
-		"ko"	"피해량 증가. 우클릭이 파이어볼 5개를 연속으로 발사하며, 늦게 발사되는 파이어볼의 피해량은 낮습니다."
+		"en"	"Increased damage, fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\nYour basic attacks deal much more damage."
 	}
 	
 	"Cryo Staff Desc"
@@ -1460,11 +1452,7 @@
 
 	"Lightning Staff Pap 2"
 	{
-		"en"	"Increased Damage"
-		"fr"	"Dégats améliorés"
-		"ru"	"Увеличенный урон"
-		"chi"   "增加伤害"
-		"ko"	"피해량 증가."
+		"en"	"Increased Damage and Attackspeed\nM2 will cause both lighting strikes at once if enough mana is present."
 	}
 
 	"Lightning Staff Pap 3"
@@ -2050,8 +2038,7 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
-		"ko"	"메디건 치유 속도 2배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％"
+		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
 	}
 	"Professor Certificate Desc"
 	{
@@ -2344,51 +2331,19 @@
 	
 	"Tornado Blitz Desc"
 	{
-		"en"	"We decided to steal blit'z rocket launcher\nThe results are quite intriguing\none of these discoveries are Nano-rockets\nThese rockets remove all explosives and turn these rockets into kinetic shells."
-		"fr"	"On a décidé de voler la lance-roquettes de Blitz.\nLes résultats sont plutôt interessants, ayant découvert les nano-roquettes.\nCes roquettes ne sont pas explosifs, étant plutôt des balles cinétiques."
-		"ru"	"Мы решили украсть ракетомёт Блитца\nРезультаты оказались весьма интригующими\nОдно из этих открытий - наноракеты\nВ этих ракетах удалены все взрывчатые вещества и они превращаются в кинетические снаряды."
-		"chi"   "我们偷到了blitz的火箭筒，结果很有趣，发现都不是纳米火箭，这些火箭清除了所有炸药，把这些火箭变成动能炮弹。"
-		"ko"	"블리츠크리그에게서 훔친 로켓 발사기입니다. 이 나노 로켓은 폭발물을 전부 제거하고 이 로켓을을 키네틱 탄환으로 변경시켰습니다."
+		"en"	"Infinite Fire, Projectile hit weapon."
 	}
 	"Tornado Blitz Desc Spam1"
 	{
-		"en" 	"We increased the kinetic damage of the Nano-rockets"
-		"fr" 	"Dégats améliorés."
-		"ru" 	"Мы увеличили кинетический урон наноракет"
-		"chi"   "我们增加了纳米火箭的动能伤害"
-		"ko" 	"나노 로켓의 키네틱 피해량 증가."
+		"en" 	"Extra Damage and Attackspeed"
 	}
 	"Tornado Blitz Desc Spam2"
 	{
-		"en"	"We may be approaching the upper limit of what our technology can do at this point\nBut we must press on\nWe increased the cooling of the launcher to achieve even more potent kinetic Nano-rockets\nOh also you can switch between barrage mode and standard with mouse2\nBe ware barrage mode is less rocket efficient\nEnjoy!"
-		"fr"	"Dégats améliorés. Appuyez sur M2 pour utiliser le mode barrage.\nNous approchons la limite de ce que notre technologie peut faire, mais les limites sont faites pour être surpassées."
-		"ru"	"Возможно, мы приближаемся к самому пределу возможностей нашей технологии на данный момент\nНо мы должны продолжать\nМы увеличили охлаждение ракетомёта, чтобы получить ещё более мощные кинетические наноракеты\nТакже вы можете переключаться между стандартным и режимом залпа с помощью M2\nРежим залпа менее эффективен.\nНаслаждайтесь!"
-		"chi"   "在这一点上，我们可能已经接近了我们技术的上限，但我们必须继续努力，我们增加了发射装置的冷却，以实现更强大的动能纳米火箭，享受!"
-		"ko"	"발사기의 냉각 성능을 더욱 강화시켰습니다.\nM2로 폭격 모드와 일반 모드를 전환 가능.\n폭격 모드일때는 로켓의 효력이 감소."
+		"en" 	"Extra Damage and Attackspeed\nM2 now allows you to fire a barrage.\nBarrage charges with m1 shots."
 	}
 	"Tornado Blitz Desc Spam3"
 	{
-		"en"	"We are not responsible for what this monstrosity may cause\nWe have added liquid nitrogen cooling to increase the Nano-rocket efficiency\nBarrage was also made more powerfull\nWe have no idea if this is safe, however it is still quite potent."
-		"fr"	"Dégats améliorés. Mode barrage amélioré.\nNous avons aucune idée si c'est toujours une bonne idée, mais l'arme est très efficace."
-		"ru"	"Мы не несём ответственности за то, что может вызвать это чудовище\nМы добавили охлаждение жидким азотом, чтобы увеличить эффективность наноракеты\nРежим залпа также стал более мощным\nМы не знаем, безопасно ли это, однако она всё ещё достаточно мощная."
-		"chi"   "我们对这个怪物可能造成的后果不负责，我们已经添加了液氮冷却来提高纳米火箭的效率，我们不知道这是否安全，但它仍然相当有效。"
-		"ko"	"피해량이 더욱 증가하고 폭격 모드가 더욱 강력해짐."
-	}
-	"The Street Fighter Desc"
-	{
-		"en"	"Fight your away while creating your own combos that give off different effects."
-		"fr"	"Crée des combos qui donne des effets différents."
-		"ru"	"Сражайтесь с противником, создавая собственные комбо, которые дают различные эффекты."
-		"chi"   "战斗，同时创造自己的连击，给不同的效果。"
-		"ko"	"다양한 효과를 내는 당신만의 콤보를 만들어 전투할 수 있습니다."
-	}
-	"The Street Fighter Pap 1"
-	{
-		"en"	"Increased damage and combos are now affected by being mid-air or ducking."
-		"fr"	"Dégats améliorés. Être dans l'air ou l'acroupissement vous donne plus d'options d'attaque."
-		"ru"	"На увеличение урона и комбо теперь влияет нахождение в воздухе или состояние пригнувшись."
-		"chi"   "增加的伤害和连击现在受到空中或躲闪的影响。"
-		"ko"	"피해량 증가 및 콤보가 이제 공중과 앉아있을때도 적용됩니다."
+		"en"	"Extra Damage and Attackspeed."
 	}
 	
 	"Irene Weapon Desc"
@@ -2399,36 +2354,6 @@
 		"ko"	"공격이 한 번에 2회씩 적중.\n적을 42 회 적중시 능력 획득.\n능력은 적을 공중으로 날려버리고 광역 피해를 주는 폭격을 가함.\n나에게 시본 속성이 있다면 공격 속도 15％ 증가."
 	}
 	
-	"Cosmic Terror Desc"
-	{
-		"en" "Have you ever looked at the sky and wondered if you could use that as a weapon?\nWell wonder-no-more!\nIntroducing the ''Cosmic Terror''\nEnjoy eviscerating your foes with the power of the moon!"
-		"fr" "Avez-vous observé le ciel vous demandant si vous pourriez l'utiliser comme une arme?\nVoici le Terreur Cosmique!\nExterminez vos ennemis avec la puissance de la Lune!"
-		"ru" "Вы когда-нибудь смотрели на небо и думали, можно ли использовать его в качестве оружия?\nЧто ж, не удивляйтесь!\nПредставляем вам «Космический террор»\nНаслаждайтесь уничтожением своих врагов с помощью силы луны!"
-		"chi" "你是否曾仰望天空，想过是否可以将其用作武器?\n不必再等待!\n介绍“宇宙恐怖”\n享受与月亮的力量掏空你的敌人!"
-		"ko" "혹시 하늘을 올려다보면서 저걸 무기로 쓸 수 있을지 고민해본적 있으십니까?\n그런 당신에게 ''코즈믹 테러''를 소개합니다!\n달의 힘을 빌어 적들을 섬멸하세요!"
-	}
-	"Cosmic Terror Desc pap1"
-	{
-		"en" "Do you need more power? more oomph?\nWell look no further, introducing 3 magnifying lenses that almost double the potential damage\nWarning: Warranty void on purchase."
-		"fr" "Double les dégats.\nVoici 3 lunnetes de magnification massives pour donner plus de puissance à votre arme ultime.\n(Garantie anulée avec achat du kit de lunnetes de magnification gigantesques.)"
-		"ru" "Вам нужно больше силы? Больше мощи?\nНу тогда смотрите дальше, представляем вам 3 увеличительные линзы, которые почти удваивают потенциальный урон\nПредупреждение: Гарантия аннигилируется при покупке."
-		"chi" "你需要更多的动力吗?更多的性感吗?\n我们不会再看了，介绍3个放大镜，几乎是潜在损害的两倍\n警告:购买保修无效。"
-		"ko" "피해량 포텐셜을 거의 2배까지 끌어올릴수 있는 추가적인 3개의 망원 렌즈를 생성.\n경고: 구매시 보증이 무효화됩니다."
-	}
-	"Cosmic Terror Desc pap2"
-	{
-		"en" "Whats better than 1 death beam?\n4 more death beams of course\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
-		"fr" "Quadruple les rayons.\nAvec un total de quatre rayons, nous avons répliqué la puissance totale de la lune!\n(Garantie exterminée avec achat.)"
-		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
-		"chi" "什么比一个激光更好?\n当然是更多激光！\n多亏这些光束，我们成功复刻出了月球之力！\n警告:购买时保修失效。"
-		"ko" "레이저 빔의 개수가 1개에서 4개로 증가.\n경고: 구매시 보증이 무효화됩니다."
-	}
-	"Cosmic Terror Extra Desc"
-	{
-		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
-		"fr"	"Améliorations de cadence de tir améliore la vitesse du rayon laser.\nAméliorations de vitesse du rechargement ralentit le rechauffement de l'arme."
-		"ko"	"공격 속도 속성은 이 무기의 빔의 속도에 영향을 줌.\n재장전 속도 속성은 이 무기로 얻는 과열량을 증가시킴."
-	}
 
 	"Alchemist Potion Desc"
 	{
@@ -2823,7 +2748,7 @@
 		"en"	"Increases damage.\nDoubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
 		"fr"	"Double la perte de dégats avec distance. Abilité étonne et recule 2 ennemis. Abilité utilise un chargeur par victime."
 		"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 2 цели, расходует одну обойму на каждую поражённую цель."
-		"ko"	"거리 비례 피해량이 2배로 증가하지만, 최대 2명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄이 1 소모됨."
+		"ko"	"거리 비례 피해량이 2배로 증가하지만, 최대 10명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄이 1 소모됨."
 	}
 	"The Enforcer Pap 1"
 	{
@@ -2843,83 +2768,11 @@
 	}
 	"The Enforcer Pap 3"
 	{
-		"en"	"Increases damage.\nIncreased ability knockback by +10％ and can hit up to 8 targets"
-		"fr"	"+10％ recul pour abilité. Abilité frappe 8 ennemis."
-		"ru"	"Увеличение отдачи способности на +10％ и может поразить до 8 целей."
-		"chi"	"技能击退+10％，可击中8个敌人。"
-		"ko"	"최대 8명의 적을 타격할 수 있게 되며 능력의 넉백력이 +5％ 증가합니다."
+		"en"	"Increases damage.\nIncreased ability knockback, massively"
 	}
 	"The Enforcer Pap 4"
 	{
-		"en"	"Increases damage.\nIncreased ability knockback by +10％ and can hit up to 10 targets"
-		"fr"	"+10％ recul pour abilité. Abilité frappe 10 ennemis."
-		"ru"	"Увеличение отдачи способности на +10％ и может поразить до 10 целей."
-		"chi"	"技能击退+10％，可击中10个敌人。"
-		"ko"	"피해량이 증가합니다.\n최대 10명의 적을 타격할 수 있게 되고 능력의 넉백력 +10％ 증가."
-	}
-	"The Enforcer Pap 5"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +20％"
-		"fr"	"+20％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +20％."
-		"chi"	"技能击退+20％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +20％ 증가합니다."
-	}
-	"The Enforcer Pap 6"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +25％"
-		"fr"	"+25％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +25％."
-		"chi"	"技能击退+25％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +25％ 증가합니다."
-	}
-	"The Enforcer Pap 7"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +25％"
-		"fr"	"+25％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +25％."
-		"chi"	"技能击退+25％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +25％ 증가합니다."
-	}
-	"The Enforcer Pap 8"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +50％"
-		"fr"	"+50％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +50％."
-		"chi"	"技能击退+50％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +50％ 증가합니다."
-	}
-	"The Enforcer Pap 9"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +50％"
-		"fr"	"+50％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +50％."
-		"chi"	"技能击退+50％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +50％ 증가합니다."
-	}
-	"The Enforcer Pap 10"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +50％"
-		"fr"	"+50％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +50％."
-		"chi"	"技能击退+50％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +50％ 증가합니다."
-	}
-	"The Enforcer Pap 11"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +50％"
-		"fr"	"+50％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +50％."
-		"chi"	"技能击退+50％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +50％ 증가합니다."
-	}
-	"The Enforcer Pap 12"
-	{
-		"en"	"Increases damage.\nIncreased ability knockback by +100％"
-		"fr"	"+100％ recul pour abilité."
-		"ru"	"Увеличение отдачи способности на +100％."
-		"chi"	"技能击退+100％。"
-		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 +100％ 증가합니다."
+		"en"	"Increases damage.\nIncreased ability knockback, massively"
 	}
 	"Mlynar Sword Desc"
 	{
@@ -3844,8 +3697,7 @@
 	}
 	"Reiuji Desc 0"
 	{
-		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus."
-		"ko"	"당신의 완드는 탄약을 소모합니다. 탄약이 0보다 많으면 공격 속도가 증가합니다."
+		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus.\nPress R to toggle it on and off to recharge it."
 	}
 	"Reiuji Desc 1"
 	{
@@ -4379,30 +4231,23 @@
 	}
 	"Pinus Knight Pap 1"
 	{
-		"en"	"Increased Stats.\nAdds an ability, when used allows you to dodge one melee hit (does not stack).\nGenerates money on ability use."
-		"ko"	"전체적인 능력치가 증가합니다.\n새로운 능력을 얻습니다. 사용시, 근접 무기 피해를 1회 회피합니다. (중첩되지 않음)\n사용시 자금이 생성됩니다."
+		"en"	"Increased damage.\nAdds an ability, when used allows you to dodge one melee hit (does not stack).\nGenerates money on ability use."
 	}
 	"Pinus Knight Pap 2"
 	{
-		"en"	"Increased Stats.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
-		"ko"	"전체적인 능력치가 증가합니다.\n이제 능력 사용시, 4초간 40％ 확률로 근접 공격을 회피합니다. (레이드 모드일시 0.5배로 감소)\n공격을 회피하면, 다음 근접 공격의 피해량이 2배로 증가합니다."
+		"en"	"Increased damage.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
 	}
 	"Pinus Knight Pap 3"
 	{
-		"en"	"Increased Stats.\nAllied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
-		"ko"	"전체적인 능력치가 증가합니다.\n당신이 살아있는 동안, 모든 아군의 카시미어 유형 무기 사용자들은 11％ 확률로 근접 공격을 회피합니다. 당신은 회피 확률이 2배로 증가합니다. (레이드 모드일시 0.5배로 감소)\n능력 사용시, 60％ 확률로 모든 공격을 회피합니다. (레이드 모드일시 0.5배로 감소)\n공격을 회피하면, 다음 근접 공격이 광역 공격이 됩니다."
+		"en"	"Increased damage.\nAllied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
 	}
 	"Pinus Knight Pap 4"
 	{
-		"en"	"Increased Stats.\nAbility instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
-		"ko"	"전체적인 능력치가 증가합니다.\n이제 능력 사용시, 4초간 80％ 확률로 모든 공격을 회피합니다. (레이드 모드일시 0.5배로 감소)"
+		"en"	"Increased damage."
 	}
 	"Pinus Knight Pap 5"
 	{
-		"en"	"Decreased ability cooldown and increased ability damage bonus."
-		"fr"	"Dégats et temps de recharge de votre abilité améliorés."
-		"chi"	"降低技能冷却并且增加技能伤害。"
-		"ko"	"능력의 쿨타임이 감소하고 피해량이 증가합니다."
+		"en"	"Increased damage, Decreased ability cooldown.\nAbility instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
 	}
 	"Barracks Metro Cop Desc"
 	{
@@ -4697,8 +4542,7 @@
 	}
 	"Yakuza Pap 4"
 	{
-		"en"	"+25 max HEAT. Can now use the Dragon style by ducking while using R ability."
-		"ko"	"최대 히트 게이지 +25. 이제 앉은 상태에서 R 능력을 사용하면, 전설 스타일을 사용할 수 있음."
+		"en"	"+25 max HEAT. Can now use the Dragon style by ducking while using R ability.\nDragon style allows you to use heatactions without needing a stun."
 	}
 	"Yakuza Pap 5"
 	{

@@ -1066,6 +1066,10 @@
 		"en"		"Not enough charge."
 		"ko"		"충전이 부족합니다."
 	}
+	"Fully Charge To Fire"
+	{
+		"en"		"Fully Charge To Fire your IEM"
+	}
 	"Rusty Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"

@@ -1673,10 +1673,10 @@ static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = ""
 	health *= 5;
 	enemy.Index = NPC_GetByPlugin(plugin);
 	enemy.Is_Boss = view_as<int>(boss);
-	enemy.ExtraMeleeRes = 0.15;
-	enemy.ExtraRangedRes = 0.15;
-	enemy.ExtraSpeed = 1.5;
-	enemy.ExtraDamage = 4.0;
+	enemy.ExtraMeleeRes = 0.175;
+	enemy.ExtraRangedRes = 0.175;
+	enemy.ExtraSpeed = 1.3;
+	enemy.ExtraDamage = 3.0;
 	enemy.ExtraSize = 1.0;
 	if(health != 0)
 	{

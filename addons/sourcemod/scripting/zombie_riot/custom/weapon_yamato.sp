@@ -69,7 +69,7 @@ enum struct Yamato_Blades
 			DispatchKeyValue(prop, "modelscale", "0.01");
 			
 
-			int ModelApply = ApplyCustomModelToWandProjectile(prop, RUINA_CUSTOM_MODELS_2, 1.5, "");
+			int ModelApply = ApplyCustomModelToWandProjectile(prop, RUINA_CUSTOM_MODELS_2, 1.0, "");
 			if(IsValidEntity(ModelApply))
 			{
 				SetEntPropEnt(ModelApply, Prop_Send, "m_hOwnerEntity", client);
@@ -390,6 +390,10 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)
 	TR_GetEndPosition(LookatVec, look_trace);
 	int i_entity_hit = TR_GetEntityIndex(look_trace);
 	delete look_trace;
+	if(!IsValidEnemy(client, i_entity_hit, true, false))
+	{
+		i_entity_hit = -1;
+	}
 	
 	FinishLagCompensation_Base_boss();
 
@@ -497,7 +501,7 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 
 	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, dmg, 0, weapon, rocket_particle, Angles, false , startVec);
 	WandProjectile_ApplyFunctionToEntity(projectile, Yamato_Projectile_Touch);
-	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_2, 1.5, "");
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_2, 1.0, "");
 	if(IsValidEntity(ModelApply))
 	{
 		float angles[3];
@@ -509,10 +513,11 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 	}
 	float Homing_Power = 9.0;
 	float Homing_Angle = 90.0;
-	if(!IsValidEntity(i_entity_hit))
-	{
-		return;
-	}
+//	if(!IsValidEntity(i_entity_hit))
+//	{
+//Home anyways
+//		return;
+//	}
 		
 
 	Initiate_HomingProjectile(projectile,
@@ -521,8 +526,8 @@ static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], floa
 	Homing_Power,				//float homingaSec,
 	true,				// bool LockOnlyOnce,
 	true,				// bool changeAngles,
-	Angles
-	);			// float AnglesInitiate[3]);
+	Angles,
+	i_entity_hit);			// float AnglesInitiate[3]);
 }
 
 

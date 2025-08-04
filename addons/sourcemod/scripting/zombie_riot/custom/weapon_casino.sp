@@ -361,7 +361,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 			i_ExplosiveProjectileHexArray[attacker] = 0;
 			LastHitTarget = victim;
 			
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 0.83, _, false, 3);		
+			Explode_Logic_Custom(damage * 0.75, attacker, attacker, weapon, damagePosition, 250.0, _, _, false, 3);		
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
 			i_Ricochet[attacker] -= 1;
