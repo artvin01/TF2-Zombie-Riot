@@ -110,8 +110,8 @@ void CAT_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	
-	PrecacheSound("#zombiesurvival/matrix/furiousangels.mp3");
-	PrecacheSound("weapons/physgun_off.wav");
+	PrecacheSound("#zombiesurvival/aperture/cat.mp3");
+	PrecacheSound("mvm/mvm_tank_end.wav");
 	PrecacheModel("models/bots/scout/bot_scout.mdl");
 	PrecacheModel(CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
 	
@@ -281,12 +281,12 @@ methodmap CAT < CClotBody
 		RaidModeScaling *= amount_of_people;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
-		music.Time = 161;
-		music.Volume = 1.7;
-		music.Custom = false;
-		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
-		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/cat.mp3");
+		music.Time = 137;
+		music.Volume = 1.1;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "You Will Be Perfect");
+		strcopy(music.Artist, sizeof(music.Artist), "Mike Morasky");
 		Music_SetRaidMusic(music);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -713,7 +713,7 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	
 	npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 	
-	int projectile = npc.FireParticleRocket(vecOrbPos, 3000.0, GetRandomFloat(125.0, 150.0), 150.0, "flaregun_energyfield_blue", true);
+	int projectile = npc.FireParticleRocket(vecOrbPos, 3000.0, GetRandomFloat(125.0, 150.0), 150.0, "dxhr_lightningball_parent_blue", true);
 	
 	SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 	SDKHook(projectile, SDKHook_StartTouch, Cat_Rocket_Particle_StartTouch);
@@ -782,7 +782,7 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	
 	float damage = 5.0 * RaidModeScaling;
-	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);
+	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 30.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
 	NextOrbDamage[entity] = gameTime + 0.25;
 }
 
