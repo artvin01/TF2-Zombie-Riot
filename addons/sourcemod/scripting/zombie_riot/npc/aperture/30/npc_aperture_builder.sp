@@ -63,21 +63,19 @@ enum
 
 enum
 {
-	APT_BUILDER_HAS_SENTRY = (1 << 0),
-	APT_BUILDER_HAS_DISPENSER = (1 << 1),
-	APT_BUILDER_HAS_TELEPORTER = (1 << 2),
+	APT_BUILDER_NONE = -1,
+	APT_BUILDER_SENTRY,
+	APT_BUILDER_DISPENSER,
+	APT_BUILDER_TELEPORTER,
 	
-	APT_BUILDER_HAS_ALL_BUILDINGS = 7, // 1, 2, 4
+	APT_BUILDER_BUILDING_COUNT,
 }
 
-static int BuildingsOwned[MAXENTITIES];
+static int BuildingsPlaced[MAXENTITIES];
 static float NextBuildingTime[MAXENTITIES];
 static bool QuickBuildings[MAXENTITIES];
 
-static bool b_WantTobuild[MAXENTITIES];
-static bool b_AlreadyReparing[MAXENTITIES];
-static float f_RandomTolerance[MAXENTITIES];
-static int i_BuildingRef[MAXENTITIES];
+static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
 void ApertureBuilder_OnMapStart_NPC()
 {
@@ -172,10 +170,10 @@ methodmap ApertureBuilder < CClotBody
 
 	}
 	
-	property int m_iBuildingsOwned
+	property int m_iBuildingsPlaced
 	{
-		public get()							{ return BuildingsOwned[this.index]; }
-		public set(int TempValueForProperty) 	{ BuildingsOwned[this.index] = TempValueForProperty; }
+		public get()							{ return BuildingsPlaced[this.index]; }
+		public set(int TempValueForProperty) 	{ BuildingsPlaced[this.index] = TempValueForProperty; }
 	}
 	
 	property float m_flNextBuildingTime
@@ -220,13 +218,13 @@ methodmap ApertureBuilder < CClotBody
 		npc.m_bQuickBuildings = true;
 		npc.m_flNextBuildingTime = GetGameTime() + 0.75;
 		
-		npc.m_iBuildingsOwned = 0;
+		npc.m_iBuildingsPlaced = 0;
 
-		b_WantTobuild[npc.index] = true;
-		b_AlreadyReparing[npc.index] = false;
-		f_RandomTolerance[npc.index] = GetRandomFloat(0.25, 0.75);
+		i_BuildingRefs[npc.index][APT_BUILDER_SENTRY] = -1;
+		i_BuildingRefs[npc.index][APT_BUILDER_DISPENSER] = -1;
+		i_BuildingRefs[npc.index][APT_BUILDER_TELEPORTER] = -1;
+		
 		Is_a_Medic[npc.index] = true;
-		i_BuildingRef[npc.index] = -1;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -280,6 +278,21 @@ methodmap ApertureBuilder < CClotBody
 		ParticleEffectAt(vecNewPos, "teleported_blue");
 		
 		return npc;
+	}
+	
+	public int NeedsToBuild()
+	{
+		// We have a priority order: Sentry, Teleporter, Dispenser
+		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_SENTRY]))
+			return APT_BUILDER_SENTRY;
+		
+		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_TELEPORTER]))
+			return APT_BUILDER_TELEPORTER;
+		
+		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_DISPENSER]))
+			return APT_BUILDER_DISPENSER;
+		
+		return APT_BUILDER_NONE;
 	}
 	
 	public void ToggleBuilding(bool toggle)
@@ -342,19 +355,20 @@ public void ApertureBuilder_ClotThink(int iNPC)
 	{
 		case APT_BUILDER_STATE_IDLE:
 		{
-			if (npc.m_iBuildingsOwned != APT_BUILDER_HAS_ALL_BUILDINGS)
+			if (npc.m_flNextBuildingTime < gameTime)
 			{
-				if (npc.m_flNextBuildingTime < gameTime)
+				if (npc.NeedsToBuild() != APT_BUILDER_NONE)
 				{
 					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
 					npc.m_iState = APT_BUILDER_STATE_WANTS_TO_BUILD;
 					
 					return;
 				}
-			}
-			else
-			{
-				// TODO: Maybe think about repairing stuff while in this state?
+				else
+				{
+					npc.m_flNextBuildingTime = gameTime + 1.5;
+					// TODO: Maybe think about repairing stuff while in this state?
+				}
 			}
 		}
 		
@@ -452,7 +466,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				}
 				
 				npc.SetGoalVector(f3_NpcSavePos[npc.index]);
-				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 400.0)
+				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 450.0)
 				{
 					ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.6);
 					npc.StopPathing();
@@ -484,35 +498,37 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					int building;
 					float vecAng[3];
 					GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
-					vecAng[2] = 0.0;
+					vecAng[0] = 0.0;
 					
-					// TODO: We never let the engineer know it's okay to re-build stuff once a building is destroyed
-					// We have a priority order: Sentry, Teleporter, Dispenser
-					if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_SENTRY))
+					int needToBuild = npc.NeedsToBuild();
+					switch (needToBuild)
 					{
-						npc.PlayBuildingSentrySound();
-						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_SENTRY;
-						building = NPC_CreateByName("npc_aperture_sentry", -1, vecPos, vecAng, GetTeam(npc.index));
-					}
-					else if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_TELEPORTER))
-					{
-						npc.PlayBuildingTeleporterSound();
-						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_TELEPORTER;
-						building = NPC_CreateByName("npc_aperture_teleporter", -1, vecPos, vecAng, GetTeam(npc.index));
-					}
-					else if (!(npc.m_iBuildingsOwned & APT_BUILDER_HAS_DISPENSER))
-					{
-						npc.PlayBuildingDispenserSound();
-						npc.m_iBuildingsOwned |= APT_BUILDER_HAS_DISPENSER;
-						building = NPC_CreateByName("npc_aperture_dispenser", -1, vecPos, vecAng, GetTeam(npc.index));
-					}
-					else
-					{
-						// we have everything?????????? how
-						npc.ToggleBuilding(false);
-						npc.m_iState = APT_BUILDER_STATE_IDLE;
-						npc.m_flNextBuildingTime = gameTime + 1.5;
-						return;
+						case APT_BUILDER_SENTRY:
+						{
+							npc.PlayBuildingSentrySound();
+							building = NPC_CreateByName("npc_aperture_sentry", -1, vecPos, vecAng, GetTeam(npc.index));
+						}
+						
+						case APT_BUILDER_DISPENSER:
+						{
+							npc.PlayBuildingDispenserSound();
+							building = NPC_CreateByName("npc_aperture_dispenser", -1, vecPos, vecAng, GetTeam(npc.index));
+						}
+						
+						case APT_BUILDER_TELEPORTER:
+						{
+							npc.PlayBuildingTeleporterSound();
+							building = NPC_CreateByName("npc_aperture_teleporter", -1, vecPos, vecAng, GetTeam(npc.index));
+						}
+						
+						default:
+						{
+							// we have everything?????????? how
+							npc.ToggleBuilding(false);
+							npc.m_iState = APT_BUILDER_STATE_IDLE;
+							npc.m_flNextBuildingTime = gameTime + 1.5;
+							return;
+						}
 					}
 					
 					if (b_StaticNPC[building])
@@ -524,14 +540,16 @@ public void ApertureBuilder_ClotThink(int iNPC)
 							NpcAddedToZombiesLeftCurrently(building, true);
 					}
 					
-					npc.PlayBuildingBuiltSound(building);
+					i_BuildingRefs[npc.index][needToBuild] = EntIndexToEntRef(building);
 					
-					if (npc.m_iBuildingsOwned == APT_BUILDER_HAS_ALL_BUILDINGS)
+					if (++npc.m_iBuildingsPlaced == 3)
 						npc.m_bQuickBuildings = false;
+					
+					npc.PlayBuildingBuiltSound(building);
 					
 					npc.ToggleBuilding(false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
-					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 10.0;
+					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 30.0;
 					npc.StartPathing();
 				}
 			}
@@ -539,12 +557,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 		
 		case APT_BUILDER_STATE_WANTS_TO_REPAIR:
 		{
-			// TODO: THIS
+			// TODO: THIS??
 		}
 		
 		case APT_BUILDER_STATE_REPAIRING:
 		{
-			// TODO: THIS
+			// TODO: THIS??
 		}
 	}
 	
