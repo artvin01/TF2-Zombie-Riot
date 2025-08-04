@@ -507,18 +507,24 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						{
 							npc.PlayBuildingSentrySound();
 							building = NPC_CreateByName("npc_aperture_sentry", -1, vecPos, vecAng, GetTeam(npc.index));
+							ApertureSentry npcOther = view_as<ApertureSentry>(building);
+							npcOther.Anger = npc.m_bQuickBuildings;
 						}
 						
 						case APT_BUILDER_DISPENSER:
 						{
 							npc.PlayBuildingDispenserSound();
 							building = NPC_CreateByName("npc_aperture_dispenser", -1, vecPos, vecAng, GetTeam(npc.index));
+							ApertureDispenser npcOther = view_as<ApertureDispenser>(building);
+							npcOther.Anger = npc.m_bQuickBuildings;
 						}
 						
 						case APT_BUILDER_TELEPORTER:
 						{
 							npc.PlayBuildingTeleporterSound();
 							building = NPC_CreateByName("npc_aperture_teleporter", -1, vecPos, vecAng, GetTeam(npc.index));
+							ApertureTeleporter npcOther = view_as<ApertureTeleporter>(building);
+							npcOther.Anger = npc.m_bQuickBuildings;
 						}
 						
 						default:

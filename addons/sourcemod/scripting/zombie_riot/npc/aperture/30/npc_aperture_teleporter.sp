@@ -15,6 +15,10 @@ void ApertureTeleporter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	
+	PrecacheModel("models/buildables/teleporter.mdl");
+	PrecacheModel("models/buildables/teleporter_light.mdl");
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Teleporter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_teleporter");
@@ -50,7 +54,7 @@ methodmap ApertureTeleporter < CClotBody
 
 	public ApertureTeleporter(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter_light.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
+		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 
@@ -63,34 +67,22 @@ methodmap ApertureTeleporter < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
-		npc.Anger = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		AddNpcToAliveList(npc.index, 1);
-
+		
+		npc.Anger = false;
+		npc.m_flDoingAnimation = 0.0;
+		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		
+		// Fixes weird collision
+		SetEntityModel(npc.index, "models/buildables/teleporter.mdl");
 
 		func_NPCDeath[npc.index] = view_as<Function>(ApertureTeleporter_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(ApertureTeleporter_ClotThink);
-
-		if(!VIPBuilding_Active())
-		{
-			for(int i; i < ZR_MAX_SPAWNERS; i++)
-			{
-				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
-				{
-					Spawns_AddToArray(npc.index, true);
-					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-					//npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR);
-					break;
-				}
-			}
-		}
-		
-		npc.AddActivityViaSequence("running");
-		npc.SetCycle(0.01);
 		
 		return npc;
 	}
@@ -99,22 +91,75 @@ methodmap ApertureTeleporter < CClotBody
 public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 {
 	float gameTime = GetGameTime(npc.index);
-	float vecPos[3];
-	GetAbsOrigin(npc.index, vecPos);
 	
-	if(!IsValidEntity(npc.m_iWearable1))
-		npc.m_iWearable1 = ParticleEffectAt_Parent(vecPos, "teleporter_blue_charged_level3", npc.index, .vOffsets = { 0.0, 0.0, 12.0 });
-
-	if(npc.m_flNextRangedSpecialAttack < gameTime)
+	switch (npc.m_iState)
 	{
-		npc.m_flNextRangedSpecialAttack = gameTime + 0.1;
-		
-		int target = GetClosestAlly(npc.index, (250.0 * 250.0));
-		if(target)
+		case 0:
 		{
-			if(!HasSpecificBuff(target, "Quantum Entanglement"))
+			// Building
+			if (!npc.m_flDoingAnimation)
 			{
-				ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 30.0);
+				npc.AddActivityViaSequence("build");
+				npc.SetCycle(0.01);
+				
+				const float animTime = 9.2; // Teleporter anim takes about 9.2 seconds
+				float duration = npc.Anger ? 1.0 : 10.0;
+				
+				npc.SetPlaybackRate(animTime / duration);
+				npc.m_flDoingAnimation = gameTime + duration;
+			}
+			else if (npc.m_flDoingAnimation < gameTime)
+			{
+				SetEntityModel(npc.index, "models/buildables/teleporter_light.mdl");
+				npc.m_iState = 1;
+			}
+			
+			return;
+		}
+		
+		case 1:
+		{
+			// Built
+			npc.AddActivityViaSequence("running");
+			npc.SetCycle(0.01);
+			
+			float vecPos[3];
+			GetAbsOrigin(npc.index, vecPos);
+	
+			if (!IsValidEntity(npc.m_iWearable1))
+				npc.m_iWearable1 = ParticleEffectAt_Parent(vecPos, "teleporter_blue_charged_level3", npc.index, .vOffsets = { 0.0, 0.0, 12.0 });
+			
+			if (!VIPBuilding_Active())
+			{
+				for (int i; i < ZR_MAX_SPAWNERS; i++)
+				{
+					if (!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+					{
+						Spawns_AddToArray(npc.index, true);
+						i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
+						//npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR);
+						break;
+					}
+				}
+			}
+			
+			npc.m_iState = 2;
+		}
+		
+		case 2:
+		{
+			if (npc.m_flNextRangedSpecialAttack < gameTime)
+			{
+				npc.m_flNextRangedSpecialAttack = gameTime + 0.1;
+				
+				int target = GetClosestAlly(npc.index, (250.0 * 250.0));
+				if (target)
+				{
+					if(!HasSpecificBuff(target, "Quantum Entanglement"))
+					{
+						ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 30.0);
+					}
+				}
 			}
 		}
 	}

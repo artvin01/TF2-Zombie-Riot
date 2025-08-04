@@ -29,9 +29,9 @@ void ApertureDispenser_OnMapStart_NPC()
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-	PrecacheModel("models/buildables/dispenser_lvl3.mdl");
+	PrecacheModel("models/buildables/dispenser.mdl");
+	PrecacheModel("models/buildables/dispenser_lvl3_light.mdl");
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -44,6 +44,7 @@ methodmap ApertureDispenser < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -66,7 +67,7 @@ methodmap ApertureDispenser < CClotBody
 
 	public ApertureDispenser(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureDispenser npc = view_as<ApertureDispenser>(CClotBody(vecPos, vecAng, "models/buildables/dispenser_lvl3.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
+		ApertureDispenser npc = view_as<ApertureDispenser>(CClotBody(vecPos, vecAng, "models/buildables/dispenser.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -82,26 +83,25 @@ methodmap ApertureDispenser < CClotBody
 		Is_a_Medic[npc.index] = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
-		AddNpcToAliveList(npc.index, 1);
+		
+		npc.Anger = false;
+		npc.m_flDoingAnimation = 0.0;
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_flArmorToGive = 25.0;
-		//these are default settings! please redefine these when spawning!
 
 		func_NPCDeath[npc.index] = view_as<Function>(ApertureDispenser_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureDispenser_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ApertureDispenser_ClotThink);
 		
+		// Fixes weird collision
+		SetEntityModel(npc.index, "models/buildables/dispenser.mdl");
+		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-
-		//counts as a static npc, means it wont count towards NPC limit.
-		AddNpcToAliveList(npc.index, 1);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 150);
 
 		return npc;
 	}
@@ -110,11 +110,13 @@ methodmap ApertureDispenser < CClotBody
 public void ApertureDispenser_ClotThink(int iNPC)
 {
 	ApertureDispenser npc = view_as<ApertureDispenser>(iNPC);
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	float gameTime = GetGameTime(npc.index);
+	
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
 	if(npc.m_blPlayHurtAnimation)
@@ -122,21 +124,46 @@ public void ApertureDispenser_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
 	}
-	if(npc.m_iState == 0)
+	
+	switch (npc.m_iState)
 	{
-		npc.m_iState = 1;
-		SetEntityRenderMode(npc.index, RENDER_NORMAL);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+		case 0:
+		{
+			npc.m_flNextThinkTime = gameTime + 0.1;
+			
+			// Building
+			if (!npc.m_flDoingAnimation)
+			{
+				npc.AddActivityViaSequence("build");
+				npc.SetCycle(0.01);
+				
+				const float animTime = 9.5; // Dispenser anim takes about 9.5 seconds
+				float duration = npc.Anger ? 1.0 : 10.0;
+				
+				npc.SetPlaybackRate(animTime / duration);
+				npc.m_flDoingAnimation = gameTime + duration;
+			}
+			else if (npc.m_flDoingAnimation < gameTime)
+			{
+				SetEntityModel(npc.index, "models/buildables/dispenser_lvl3_light.mdl");
+				npc.m_iState = 1;
+			}
+			
+			return;
+		}
+		
+		case 1:
+		{
+			npc.m_flNextThinkTime = gameTime + 0.5;
+			
+			ExpidonsaGroupHeal(npc.index, 500.0, 5000, 500.0, 1.0, false, ApertureDispenserGiveArmor);
+			ApertureArmorEffect(npc.index, 250.0);
+		}
 	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.5;
-
-	ExpidonsaGroupHeal(npc.index, 500.0, 5000, 500.0, 1.0, false,ApertureDispenserGiveArmor);
-	ApertureArmorEffect(npc.index, 250.0);
-	npc.m_flNextRangedSpecialAttack = 0.0;
 }
 
 void ApertureArmorEffect(int entity, float range)
