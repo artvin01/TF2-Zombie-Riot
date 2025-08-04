@@ -220,9 +220,9 @@ methodmap ApertureBuilder < CClotBody
 		
 		npc.m_iBuildingsPlaced = 0;
 
-		i_BuildingRefs[npc.index][APT_BUILDER_SENTRY] = -1;
-		i_BuildingRefs[npc.index][APT_BUILDER_DISPENSER] = -1;
-		i_BuildingRefs[npc.index][APT_BUILDER_TELEPORTER] = -1;
+		i_BuildingRefs[npc.index][APT_BUILDER_SENTRY] = INVALID_ENT_REFERENCE;
+		i_BuildingRefs[npc.index][APT_BUILDER_DISPENSER] = INVALID_ENT_REFERENCE;
+		i_BuildingRefs[npc.index][APT_BUILDER_TELEPORTER] = INVALID_ENT_REFERENCE;
 		
 		Is_a_Medic[npc.index] = true;
 				
