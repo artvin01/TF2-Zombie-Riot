@@ -288,6 +288,7 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 				ApplyStatusEffect(client, client, "Bubble Frenzy", 10.0);
 				ApplyTempAttrib(weapon, 6, 0.65, 10.0);
 				ApplyTempAttrib(weapon, 733, 0.65, 10.0);
+				ApplyTempAttrib(weapon, 410, 0.85, 10.0);
 				//dont allow the player to use this and then switch weapons
 				//inacse of tonic and etc, its not a problem as its supposed to be mixed, i.e. group buff
 				//in this case its a free damage buff that can be spammed alot
@@ -429,4 +430,5 @@ public void Wand_BubbleWandTouch(int entity, int target)
 		RemoveEntity(entity);
 	}
 }
+
 
