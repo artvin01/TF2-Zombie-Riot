@@ -119,7 +119,7 @@ methodmap VictorianDroneFragments < CClotBody
 		Is_a_Medic[npc.index] = true;
 		SET_XZY_POS[npc.index]={0.0, 0.0, 0.0};
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
 		GetAbsOrigin(npc.index, Vec);
@@ -128,7 +128,6 @@ methodmap VictorianDroneFragments < CClotBody
 		Ang[1] = 270.0;
 		Vec[1] -= 36.5;
 		TeleportEntity(npc.m_iWearable1, Vec, Ang, NULL_VECTOR);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
 
 		GetAbsOrigin(npc.index, Vec);
@@ -153,7 +152,6 @@ methodmap VictorianDroneFragments < CClotBody
 		
 		GetAbsOrigin(npc.index, Vec);
 		npc.m_iWearable4 = npc.EquipItemSeperate("models/props_teaser/saucer.mdl",_,1,1.001,_,true);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 80, 50, 50, 255);
 		
 		SetVariantString("!activator");
@@ -447,7 +445,7 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 							damageDealt *= 4.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						if(!ShouldNpcDealBonusDamage(target))
-							Explode_Logic_Custom(damageDealt/5.0, npc.index, npc.index, -1, vecHit, 125.0,_,_,_,3, _, 1.0);
+							Explode_Logic_Custom(damageDealt/5.0, npc.index, npc.index, -1, vecHit, 125.0,_,_,_,4, _, 1.0);
 					}
 					else
 					{
@@ -455,7 +453,7 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 							damageDealt *= 4.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						if(!ShouldNpcDealBonusDamage(target))
-							Explode_Logic_Custom(damageDealt/10.0, npc.index, npc.index, -1, vecHit, 85.0,_,_,_,3, _, 1.0);
+							Explode_Logic_Custom(damageDealt/10.0, npc.index, npc.index, -1, vecHit, 85.0,_,_,_,4, _, 1.0);
 					}
 				}
 				npc.m_iOverlordComboAttack--;

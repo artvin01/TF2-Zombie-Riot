@@ -179,7 +179,10 @@ void Liberi_GrantImmortality(int entity, int victim)
 {
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int flMaxHealth = ReturnEntityMaxHealth(victim);
-	ApplyStatusEffect(entity, victim, "Unstoppable Force", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);
+
+	//due to how op this is, we will restrict it.
+	if(IsCaprinneId() != i_NpcInternalId[victim])
+		ApplyStatusEffect(entity, victim, "Unstoppable Force", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);
 	ApplyStatusEffect(entity, victim, "War Cry",		  Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
 	ApplyStatusEffect(entity, victim, "Defensive Backup", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	
 	ApplyStatusEffect(entity, victim, "Ancient Melodies", Rogue_Paradox_RedMoon() ? 3.0 : 0.5);	

@@ -115,6 +115,8 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "bat");
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
@@ -122,7 +124,6 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style2/sum23_brother_mann_style2.mdl");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 255);
 
 		return npc;

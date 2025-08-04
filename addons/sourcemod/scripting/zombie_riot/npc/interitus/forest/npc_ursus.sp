@@ -96,6 +96,8 @@ methodmap Ursus < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		func_NPCDeath[npc.index] = ClotDeath;

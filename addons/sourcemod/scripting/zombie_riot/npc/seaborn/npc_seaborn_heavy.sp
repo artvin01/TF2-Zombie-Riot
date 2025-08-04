@@ -91,6 +91,8 @@ methodmap SeabornHeavy < CClotBody
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "fists");
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -109,7 +111,6 @@ methodmap SeabornHeavy < CClotBody
 		npc.m_flMeleeArmor = 0.9;
 		npc.m_flRangedArmor = 0.9;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		return npc;

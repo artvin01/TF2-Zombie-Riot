@@ -100,6 +100,8 @@ methodmap YellowHeavy < CClotBody
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "fists");
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -121,7 +123,6 @@ methodmap YellowHeavy < CClotBody
 
 		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 1.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 0, 255);
 
 		return npc;

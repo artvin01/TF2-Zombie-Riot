@@ -22,13 +22,9 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 	
 	if(LastHitTarget != victim && !(damagetype & DMG_BLAST))
 	{
-		
 		if(SmartBounce)
 		{
-			if(RaidbossIgnoreBuildingsLogic(1))
-			{
-				damage *= 1.5;
-			}
+
 			float pos[3];
 			
 			int targets[3];
@@ -77,7 +73,15 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			for(i = 0; i < sizeof(targets); i++)
 			{
 				if(targets[i])
-					SDKHooks_TakeDamage(targets[i], inflictor, attacker, damage * (0.875 - (0.125 * float(i))), damagetype|DMG_BLAST, weapon, damageForce, damagePosition);
+				{
+					float DamageDealDo = damage * (0.875 - (0.2 * float(i)));
+					if(DamageDealDo >= 0.0)
+						SDKHooks_TakeDamage(targets[i], inflictor, attacker, DamageDealDo, damagetype|DMG_BLAST, weapon, damageForce, damagePosition);
+				}
+			}
+			if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				damage *= 1.5;
 			}
 		}
 		else
@@ -86,7 +90,7 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 			i_ExplosiveProjectileHexArray[attacker] = 0;	// If DMG_TRUEDAMAGE doesn't block NPC_OnTakeDamage_Equipped_Weapon_Logic, adjust this
 			LastHitTarget = victim;
 			
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 1.2, _, false, 4);
+			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, EXPLOSION_AOE_DAMAGE_FALLOFF, _, false, 4);
 			if(RaidbossIgnoreBuildingsLogic(1))
 			{
 				damage *= 1.5;
@@ -188,6 +192,7 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+		return;
 	}
 	else if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -242,9 +247,16 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slot)
 {
+	if(SuppliesUsed >= 2)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Supply drop limit reached this wave");
+		return;
+	}
 	if(Ability_Check_Cooldown(client, slot) < 0.0)
 	{
-		int target = MaxClients + 1;
+		int target = -1;
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
 			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
@@ -260,6 +272,7 @@ public void Weapon_SupplyDropElite(int client, int weapon, bool &result, int slo
 			b_NpcForcepowerupspawn[target] = 2;
 			ClientCommand(client, "playgamesound ui/quest_status_tick_expert_friend.wav");
 			Ability_Apply_Cooldown(client, slot, 90.0);
+			SuppliesUsed++;
 		}
 		else
 		{

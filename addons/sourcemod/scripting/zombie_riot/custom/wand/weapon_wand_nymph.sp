@@ -114,8 +114,8 @@ public void Weapon_Nymph_ActivateAbility(int client, int weapon, bool crit, int 
 				Rogue_OnAbilityUse(client, weapon);
 				Ability_Apply_Cooldown(client, slot, 60.0);
 				IsAbilityActive[client] = 1;
-				ApplyTempAttrib(weapon, 6, 0.6, 15.0);
-				ApplyTempAttrib(weapon, 410, 2.2, 15.0);
+				ApplyTempAttrib(weapon, 6, 0.75, 15.0);
+				ApplyTempAttrib(weapon, 410, 1.65, 15.0);
 				CreateTimer(15.0, Disable_Nymph_Ability, client);
 			}
 			else
@@ -172,13 +172,13 @@ void Weapon_Nymph_ProjectileTouch(int entity, int target)
 		{
 			if (IsAbilityActive[owner] == 1)
 			{
-				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.65, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // 100% bonus damage under necrosis burst
+				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.3, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // 100% bonus damage under necrosis burst
 				ClientCommand(owner, "playgamesound weapons/phlog_end.wav");
 				// PrintToChatAll("Buffed damage");
 			}
 			else
 			{
-				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.35, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	   // 50% bonus damage under necrosis burst
+				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.3, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	   // 50% bonus damage under necrosis burst
 				ClientCommand(owner, "playgamesound weapons/phlog_end.wav");
 				// PrintToChatAll("Normal damage");
 			}

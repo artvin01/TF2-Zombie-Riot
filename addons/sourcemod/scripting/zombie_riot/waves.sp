@@ -109,6 +109,7 @@ static ArrayList MiniBosses;
 static float Cooldown;
 static bool InSetup;
 static int FakeMaxWaves;
+static bool NoBarneySpawn;
 static int WaveLevel;
 static int MapSeed;
 
@@ -141,8 +142,6 @@ static int Freeplay_Info;
 static float MinibossScalingHandle = 1.0;
 static float Freeplay_TimeCash;
 static float Freeplay_CashTimeLeft;
-static float Freeplay_TimeExp;
-static float Freeplay_ExpTimeLeft;
 
 static int RelayCurrentRound = -1;
 static float OverrideScalingManually;
@@ -210,6 +209,7 @@ void Waves_MapStart()
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
+	NoBarneySpawn = true;
 	Freeplay_Info = 0;
 	FirstMapRound = true;
 	MinibossScalingHandle = 1.0;
@@ -223,8 +223,6 @@ void Waves_MapStart()
 	Waves_UpdateMvMStats();
 	Freeplay_TimeCash = 0.0;
 	Freeplay_CashTimeLeft = 0.0;
-	Freeplay_TimeExp = 0.0;
-	Freeplay_ExpTimeLeft = 0.0;
 }
 
 int Waves_MapSeed()
@@ -1007,10 +1005,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
+	NoBarneySpawn = view_as<bool>(kv.GetNum("no_barney", 0));
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
 	OverrideScalingManually = kv.GetFloat("miniboss_scaling", 0.0);
+	Waves_TrySpawnBarney();
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1065,7 +1065,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
 		round.NoMiniboss = view_as<bool>(kv.GetNum("no_miniboss"));
-		round.NoBarney = view_as<bool>(kv.GetNum("no_barney"));
 
 		round.music_round_1.SetupKv("music_1", kv);
 		round.music_round_2.SetupKv("music_2", kv);
@@ -2119,19 +2118,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			// ?????? Old code, we dont know what it does.
 			*/
 			//always increase chance of miniboss.
-			if(!subgame && ((!Classic_Mode() && CurrentRound == 4) || (Classic_Mode() && CurrentRound == 1)) && !round.NoBarney)
-			{
-				Citizen_SpawnAtPoint("b");
-				Citizen_SpawnAtPoint();
-				CPrintToChatAll("{gray}Barney: {default}Hey! We came late to assist! Got a friend too!");
-			}
-			else if(CurrentRound == (RoundToNearest(8.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
+			if(CurrentRound == (RoundToNearest(7.0 * (1.0 / MinibossScalingReturn()))) && !round.NoMiniboss)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if((CurrentRound > RoundToNearest(8.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
+			else if((CurrentRound > RoundToNearest(7.0 * (1.0 / MinibossScalingReturn())) && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				if(panzer_chance != 10)
@@ -2583,7 +2576,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				if(i_CurrentEquippedPerk[target] == 7) 
 				{
 					Ammo_Count_Used[target] -= 1;
 				}
@@ -2599,7 +2592,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				if(i_CurrentEquippedPerk[target] == 7)
 				{
 					Ammo_Count_Used[target] -= 1;
 				}
@@ -2685,19 +2678,9 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 	{
 		if(Freeplay_TimeCash > 0.0)
 		{
-			Freeplay_TimeCash -= 7.5;
+			Freeplay_TimeCash -= 3.5;
 			if(Freeplay_TimeCash < 0.0)
 				Freeplay_TimeCash = 0.0;
-		}
-	}
-
-	if(Freeplay_ExpTimeLeft < GetGameTime())
-	{
-		if(Freeplay_TimeExp > 0.0)
-		{
-			Freeplay_TimeExp -= 2.5;
-			if(Freeplay_TimeExp < 0.0)
-				Freeplay_TimeExp = 0.0;
 		}
 	}
 
@@ -2717,18 +2700,6 @@ void Freeplay_SetRemainingCash(float amount)
 	Freeplay_TimeCash = amount;
 }
 
-void Freeplay_SetExpTime(float duration)
-{
-	Freeplay_ExpTimeLeft = duration;
-}
-float Freeplay_GetRemainingExp()
-{
-	return Freeplay_TimeExp;
-}
-void Freeplay_SetRemainingExp(float amount)
-{
-	Freeplay_TimeExp = amount;
-}
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
 {
@@ -3104,9 +3075,20 @@ void DoGlobalMultiScaling()
 	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
+
+	if(MultiGlobalHealthBoss <= 1.0)
+	{
+		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
+		MultiGlobalHealthBoss = 1.0;
+	}
 	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
+	if(MultiGlobalHighHealthBoss <= 0.8)
+	{
+		//on very low playercounts raids deal less damage anyways, so hp shouldnt go that low.
+		MultiGlobalHighHealthBoss = 0.8;
+	}
 
 	//Enemy bosses AMOUNT
 	MultiGlobalEnemyBoss = playercount * 0.3; 
@@ -4149,6 +4131,32 @@ int Waves_AverageLevelGet(int MaxLevelAllow)
 	return (LevelObtained / ClientsGot);
 }
 
-
+void Waves_TrySpawnBarney()
+{
+	if(Rogue_Mode())
+		return;
+	if(Construction_Mode())
+		return;
+	if(NoBarneySpawn)
+		return;
+		
+	//check for barney.
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+		if(!Citizen_IsIt(entity))
+			continue;
+		Citizen npc = view_as<Citizen>(entity);
+		if(npc.m_bHero)
+			return;
+		//we have a barney or alyx
+	}
+	Citizen_SpawnAtPoint("b");
+	Citizen_SpawnAtPoint(_);
+	CPrintToChatAll("{gray}Barney{default}: Hey buddy, looks like you need a hand!");
+	CPrintToChatAll("{gray}Barney{default}: Talk to my friend here if you want him to do anything in specific.");
+}
 
 #include "modifiers.sp"

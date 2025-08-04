@@ -1018,6 +1018,10 @@ methodmap Citizen < CClotBody
 				AddNpcToAliveList(npc.index, 1);
 			}
 		}
+		if(!Waves_Started())
+		{
+			npc.SetDowned(0);
+		}
 
 		if(chaos)
 		{
@@ -1027,7 +1031,6 @@ methodmap Citizen < CClotBody
 			npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {10.0,0.0,-5.0});
 			npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyes", {10.0,0.0,-20.0});
 			npc.StartPathing();
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 			npc.m_bRebelAgressive = true;
 			npc.m_bStaticNPC = false;
@@ -1383,7 +1386,7 @@ methodmap Citizen < CClotBody
 				}
 
 				if(client)
-					HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+					HealEntityGlobal(client, client, float(ReturnEntityMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
 				
 				HealEntityGlobal(client ? client : this.index, this.index, ReturnEntityMaxHealth(this.index) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
 
@@ -1690,10 +1693,13 @@ int Citizen_ShowInteractionHud(int entity, int client)
 		}
 		else if(npc.m_nDowned == 1)
 		{
-			SetGlobalTransTarget(client);
-			char ButtonDisplay[255];
-			PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
-			PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");
+			if(IsValidClient(client))
+			{
+				SetGlobalTransTarget(client);
+				char ButtonDisplay[255];
+				PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+				PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");	
+			}
 			return -1;
 		}
 	}
@@ -2610,8 +2616,16 @@ public void Citizen_ClotThink(int iNPC)
 			npc.ThinkCombat(":(");
 			npc.ThinkFriendly(":(");
 
-			if(npc.m_iReviveTicks > 50)
+			if(b_IsAloneOnServer || npc.m_iReviveTicks > 50)
+			{
 				npc.m_iReviveTicks--;
+				if(npc.m_iReviveTicks <= 0)
+				{
+					Citizen_ReviveTicks(npc.index, 1, npc.index, false);
+				}
+			}
+
+			
 
 			if(npc.m_flidle_talk == 0.0)
 			{
@@ -3108,7 +3122,7 @@ public void Citizen_ClotThink(int iNPC)
 											NpcAddedToZombiesLeftCurrently(spawn_index, true);
 										
 										i_AttacksTillMegahit[spawn_index] = 1;
-										SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
+										SetEntityRenderMode(spawn_index, RENDER_NONE);
 										SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
 									}
 								}
@@ -3494,7 +3508,16 @@ public void Citizen_ClotThink(int iNPC)
 							int entity = Building_BuildByName(BuildingPlugin[id], npc.index, vecPos, vecAng);
 							if(entity != -1)
 							{
-								if(Building_AttemptPlace(entity, npc.index))
+								bool TryPlace = false;
+								TryPlace = Building_AttemptPlace(entity, npc.index, _ , 0.0);
+								for(int loop = 1; loop <= 4; loop++)
+								{
+									if(TryPlace)
+										break;
+									TryPlace = Building_AttemptPlace(entity, npc.index, _ , float(20 * loop));
+								}
+
+								if(TryPlace)
 								{
 									if(view_as<ObjectGeneric>(entity).SentryBuilding)
 									{
@@ -5027,7 +5050,11 @@ int BuildingAmountRebel(int rebel, int buildingType, int &buildingmax)
 		case 1:
 			limit = 1;
 		case 2:
-			limit = 4;
+		{
+			limit = 2 + (npc.m_iGunValue / 4000);
+			if(limit > 4)
+				limit = 4;
+		}
 	}
 	int ActiveLimit = 0;
 	switch(buildingType)

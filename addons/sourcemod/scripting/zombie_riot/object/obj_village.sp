@@ -38,6 +38,7 @@ void ObjectVillage_MapStart()
 	PrecacheModel(VILLAGE_MODEL_REBEL);
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
+	Zero(Village_ReloadBuffFor);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Village");
@@ -165,11 +166,10 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		range *= 0.55;
 
 	int points = VillagePointsLeft(owner);
-	if(points < 0)
+	if(points >= 0)
 	{
-		range = 0.0;
+		BuildingApplyDebuffyToEnemiesInRange(owner, range, mounted);
 	}
-	BuildingApplyDebuffyToEnemiesInRange(owner, range, mounted);
 
 	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
 }

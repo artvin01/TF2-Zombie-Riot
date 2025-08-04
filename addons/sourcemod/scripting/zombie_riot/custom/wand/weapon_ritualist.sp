@@ -386,7 +386,7 @@ void StatusEffects_Ritualist()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Liberal Tango");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♬");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	data.DamageTakenMulti 			= 0.7;	// +30% res
+	data.DamageTakenMulti 			= 0.8;	// +20% res
 	data.DamageDealMulti			= 0.3;	// +30% dmg
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;

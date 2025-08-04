@@ -33,6 +33,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	KvGetSectionName(kv, buffer, sizeof(buffer));
 	if(f_PreventMovementClient[client] > GetGameTime())
 	{
+#if defined ZR
 		//Medic E call, its really really delayed it is NOT the same as voicemenu 0 0, this is way faster.
 		if(StrEqual(buffer, "+helpme_server", false))
 		{
@@ -45,7 +46,6 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 				return Plugin_Handled;
 			}
 		}
-#if defined ZR
 		else if(!StrContains(buffer, "MvM_UpgradesBegin", false))
 		{
 			//Remove MVM buy hud

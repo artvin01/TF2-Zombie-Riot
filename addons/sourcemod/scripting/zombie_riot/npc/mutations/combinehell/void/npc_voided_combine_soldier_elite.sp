@@ -189,7 +189,6 @@ methodmap VoidCombineElite < CClotBody
 		
 		npc.m_iAttacksTillReload = 30;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");

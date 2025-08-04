@@ -1372,7 +1372,7 @@ static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 	
 	float DamageLuck = (0.1 * (tinker.Luck[0]));
 	float ProjectileSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
-	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
@@ -1406,7 +1406,7 @@ static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 	
 	float DamageLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
 	float ProjectileSpeedLuck = (0.1 * (tinker.Luck[1]));
-	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
+	float AttackspeedLuck = (0.1 * (tinker.Luck[2]));
 
 	switch(rarity)
 	{
@@ -1602,6 +1602,7 @@ public void Anvil_Menu(int client)
 		SetStoreMenuLogic(client, false);
 		static char buffer[128];
 		Menu menu = new Menu(Anvil_MenuH);
+		AnyMenuOpen[client] = 1.0;
 
 		SetGlobalTransTarget(client);
 		
@@ -1628,9 +1629,12 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
+			AnyMenuOpen[client] = 0.0;
 			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));

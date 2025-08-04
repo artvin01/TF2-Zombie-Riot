@@ -130,9 +130,9 @@ methodmap VIPBuilding < BarrackBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		func_NPCDeath[npc.index] = VIPBuilding_NPCDeath;
 		func_NPCThink[npc.index] = VIPBuilding_ClotThink;

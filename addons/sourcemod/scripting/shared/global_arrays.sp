@@ -161,8 +161,10 @@ int Animation_Index[MAXPLAYERS];
 int Animation_Retry[MAXPLAYERS];
 #endif
 
+int Building_Mounted[MAXENTITIES];
 bool i_HasBeenBackstabbed[MAXENTITIES];
 bool i_HasBeenHeadShotted[MAXENTITIES];
+int i_IDependOnThisBuilding[MAXENTITIES];
 
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
@@ -405,12 +407,8 @@ int ReplicateClient_RollAngle[MAXPLAYERS];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
-RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
-int i_EntityRenderColour1[MAXENTITIES]={255, ...};
-int i_EntityRenderColour2[MAXENTITIES]={255, ...};
-int i_EntityRenderColour3[MAXENTITIES]={255, ...};
-int i_EntityRenderColour4[MAXENTITIES]={255, ...};
-bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
+float f_EntityRenderColour[MAXENTITIES][3];
+int i_EntityRenderColourSave[MAXENTITIES][3];
 
 //6 wearables
 int i_Wearable[MAXENTITIES][9];

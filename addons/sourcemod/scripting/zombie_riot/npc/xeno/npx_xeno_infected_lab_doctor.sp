@@ -168,21 +168,6 @@ methodmap XenoInfectedLabDoctor < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-		
-		
-	
-		
 		return npc;
 	}
 	
@@ -215,8 +200,8 @@ public void XenoInfectedLabDoctor_ClotThink(int iNPC)
 	{
 		RatioLeft = fl_TotalArmor[npc.index];
 	}
-	if(RatioLeft <= 0.1)
-		RatioLeft = 0.1;//only 0.1 res.
+	if(RatioLeft <= 0.2)
+		RatioLeft = 0.2;//only 0.1 res.
 
 	if(RatioLeft >= 1.0)
 		RatioLeft = 1.0;
@@ -278,7 +263,7 @@ public void XenoInfectedLabDoctor_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 85.0;
+					float damage = 170.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 4.0;
 

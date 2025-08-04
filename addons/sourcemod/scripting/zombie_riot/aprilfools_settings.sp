@@ -96,19 +96,7 @@ void AprilFoolsModelHideWearables(int iNpc)
 {
 	if(f_AprilFoolsSetStuff[iNpc])
 	{
-		//Reuse....
-		/*
-		if(!b_thisNpcIsARaid[iNpc])
-		{
-			//If its not a raidboss,then dont send over animation data, it really doesnt make a big difference.
-			//Lets hope it wont break.
-			SetEntProp(iNpc, Prop_Send, "m_bClientSideAnimation", 1);
-		}
-		else
-			SetEntProp(iNpc, Prop_Send, "m_bClientSideAnimation", 0);
-		*/
-
-		f_AprilFoolsSetStuff[iNpc] = 1.0;
+		return;
 	}
 
 	if(AprilFoolsMode <= 0)
@@ -126,42 +114,42 @@ void AprilFoolsModelHideWearables(int iNpc)
 	
 	if(IsValidEntity(npc.m_iWearable1) && !b_EntityCantBeColoured[npc.m_iWearable1])
 	{
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable2) && !b_EntityCantBeColoured[npc.m_iWearable2])
 	{
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable3) && !b_EntityCantBeColoured[npc.m_iWearable3])
 	{
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable4) && !b_EntityCantBeColoured[npc.m_iWearable4])
 	{
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable5) && !b_EntityCantBeColoured[npc.m_iWearable5])
 	{
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable6) && !b_EntityCantBeColoured[npc.m_iWearable6])
 	{
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable7) && !b_EntityCantBeColoured[npc.m_iWearable7])
 	{
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable7, 0, 0, 0, 0);
 	}
 	if(IsValidEntity(npc.m_iWearable8) && !b_EntityCantBeColoured[npc.m_iWearable8])
 	{
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable8, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable8, 0, 0, 0, 0);
 	}
 

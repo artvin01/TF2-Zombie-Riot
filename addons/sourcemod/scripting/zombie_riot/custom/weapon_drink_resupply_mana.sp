@@ -5,16 +5,16 @@ static Handle Give_bomb_back[MAXPLAYERS+1];
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
 
-public void Weapon_Magic_Restore(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Magic_Restore(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		if(CurrentAmmo[client][Ammo_Hand_Grenade] >= 1)
 		{
-			Give_bomb_back[client] = CreateTimer(60.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(60.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+			Give_bomb_back[client] = CreateTimer(90.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(90.0 * CooldownReductionAmount(client), Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
 		//	CreateTimer(59.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
-			GrenadeApplyCooldownHud(client, 60.0);
+			GrenadeApplyCooldownHud(client, 90.0 * CooldownReductionAmount(client));
 			if(Handle_on[client])
 			{
 				delete Give_bomb_back[client];
@@ -26,7 +26,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 			CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
 			Handle_on[client] = true;
 			
-			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + (60.0 * CooldownReductionAmount(client));
+			f_TempCooldownForVisualManaPotions[client] = GetGameTime() + (90.0 * CooldownReductionAmount(client));
 			
 				
 			ManaCalculationsBefore(client);

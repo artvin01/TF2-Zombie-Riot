@@ -202,7 +202,7 @@ methodmap MedivalVillager < CClotBody
 
 		npc.StopPathing();
 
-		if(!zr_disablerandomvillagerspawn.BoolValue)
+		if(!zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		{
 			int AreasCollected = 0;
 			float CurrentPoints = 0.0;

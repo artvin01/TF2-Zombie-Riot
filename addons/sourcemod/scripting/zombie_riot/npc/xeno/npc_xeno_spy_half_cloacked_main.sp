@@ -219,12 +219,10 @@ methodmap XenoSpyCloaked < CClotBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 120);
 		
-		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/spy/spy_zombie.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 254);
+		SetEntityRenderColor(npc.m_iWearable3, 150, 255, 150, 255);
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		

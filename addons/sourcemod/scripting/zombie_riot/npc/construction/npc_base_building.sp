@@ -3,6 +3,7 @@
 
 static int NPCId;
 
+static float BuffTimerLimited;
 void BaseBuilding_MapStart()
 {
 	NPCData data;
@@ -43,21 +44,20 @@ methodmap BaseBuilding < BarrackBody
 		b_NoKnockbackFromSources[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flHeadshotCooldown = 0.0;
+		BuffTimerLimited = GetGameTime() + 90.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		func_NPCDeath[npc.index] = BaseBuilding_NPCDeath;
 		func_NPCThink[npc.index] = BaseBuilding_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = BaseBuilding_ClotTakeDamage;
 		CPrintToChatAll("{crimson}%t", "Explain Construction 0");
 		CPrintToChatAll("{green}%t", "Explain Construction 1");
-		CPrintToChatAll("{green}%t", "Explain Construction 2");
 		CPrintToChatAll("{green}%t", "Explain Construction 3");
 		CPrintToChatAll("{green}%t", "Explain Construction 4");
 
@@ -72,6 +72,8 @@ public void BaseBuilding_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
+	if(BuffTimerLimited)
+		StartingBaseBuffGiveBuff(npc.index);
 	
 	npc.m_flNextDelayTime = gameTime + 0.1;
 	BarrackBody npc1 = view_as<BarrackBody>(iNPC);
@@ -152,4 +154,43 @@ void BaseBuilding_ClotTakeDamage(int victim, int &attacker, int &inflictor, floa
 {
 	if(attacker > 0 && damage < 999999.9)
 		damage = 0.0;
+}
+
+static void StartingBaseBuffGiveBuff(int iNpc)
+{
+
+	b_NpcIsTeamkiller[iNpc] = true;
+	float spawnLoc[3]; 	
+	WorldSpaceCenter(iNpc, spawnLoc);
+	Explode_Logic_Custom(0.0,
+	iNpc,
+	iNpc,
+	-1,
+	spawnLoc,
+	9999.9,
+	_,
+	_,
+	false,
+	99,
+	false,
+	_,
+	StartingBaseBuffGiveBuffInternal);
+	b_NpcIsTeamkiller[iNpc] = false;
+}
+
+static void StartingBaseBuffGiveBuffInternal(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && (!b_NpcHasDied[victim] || victim <= MaxClients))
+	{
+		float GiveBuffDuration = BuffTimerLimited - GetGameTime();
+		if(GiveBuffDuration <= 0.0)
+		{
+			BuffTimerLimited = 0.0;
+			return;
+		}
+		ApplyStatusEffect(entity, victim, "Starting Grace", GiveBuffDuration);
+	}
 }

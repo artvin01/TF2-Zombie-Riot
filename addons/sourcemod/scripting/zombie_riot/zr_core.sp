@@ -52,25 +52,40 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Quick Revive",
-	"Juggernog",
-	"Double Tap",
-	"Speed Cola",
-	"Deadshot Daiquiri",
-	"Widows Wine",
-	"Recycle Poire"
+	"Regene Berry",
+	"Obsidian Oaf",
+	"Morning Coffee",
+	"Hasty Hops",
+	"Marksman Beer",
+	"Teslar Mule",
+	"Stockpile Stout",
+	"Energy Drink"
 };
 
 public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
-	"Quick Revive Recieved",
-	"Juggernog Recieved",
-	"Double Tap Recieved",
-	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved",
-	"Widows Wine Recieved",
-	"Recycle Poire Recieved"
+	"Regene Berry Recieved",
+	"Obsidian Oaf Recieved",
+	"Morning Coffee Recieved",
+	"Hasty Hops Recieved",
+	"Marksman Beer Recieved",
+	"Teslar Mule Recieved",
+	"Stockpile Stout Recieved",
+	"Energy Drink Recieved"
+};
+
+public const char PerkNames_two_Letter[][] =
+{
+	"--",
+	"RB",
+	"OO",
+	"MC",
+	"HH",
+	"MB",
+	"TM",
+	"SS",
+	"ED"
 };
 
 enum
@@ -267,7 +282,6 @@ ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
@@ -359,6 +373,8 @@ float Armor_regen_delay[MAXPLAYERS];
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
+bool DisableSpawnProtection;
+bool DisableRandomSpawns;
 int CashSpent[MAXPLAYERS];
 int CashSpentGivePostSetup[MAXPLAYERS];
 bool CashSpentGivePostSetupWarning[MAXPLAYERS];
@@ -378,6 +394,7 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
+float AnyMenuOpen[MAXPLAYERS];
 float LastStoreMenu[MAXPLAYERS];
 bool LastStoreMenu_Store[MAXPLAYERS];
 
@@ -423,8 +440,6 @@ float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
 
 float f_MedigunChargeSave[MAXPLAYERS][4];
 float f_SaveBannerRageMeter[MAXPLAYERS][2];
-
-int Building_Mounted[MAXENTITIES];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
@@ -650,7 +665,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -732,6 +746,7 @@ void ZR_MapStart()
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
 	SkyboxProps_OnMapStart();
+	Tutorial_MapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
@@ -1043,6 +1058,7 @@ void ZR_ClientPutInServer(int client)
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 3)
 		i_AmountDowned[client] = 1;
+	Waves_TrySpawnBarney();
 		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
@@ -1064,6 +1080,7 @@ void ZR_ClientPutInServer(int client)
 	if(Waves_Started())
 		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
+	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);
@@ -2304,7 +2321,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2319,12 +2336,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 	int Armor_Max;
 	
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
-	/*
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
-	{
-		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
-	}
-	*/
 	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
@@ -2409,7 +2420,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
@@ -2472,28 +2483,88 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 	}
 }
 
+public Action ZR_CheckValidityOfPostions_OfObjects(Handle timer,bool recheck)
+{
+	ZR_CheckValidityOfPostions_OfObjectsInternal(recheck);
+	return Plugin_Stop;
+}
+void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
+{
+	//if in setup, keep checking.
+	if(Waves_InSetup() && recheck)
+		CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, true, TIMER_FLAG_NO_MAPCHANGE);
+
+	float pos2[3];
+	for(int iEntity; iEntity<i_MaxcountBuilding; iEntity++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int iObj = EntRefToEntIndexFast(i_ObjectsBuilding[iEntity]);
+		if(!IsValidEntity(iObj))
+			continue;
+
+		GetEntPropVector(iObj, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[iObj], f3_CustomMinMaxBoundingBox[iObj]))
+			continue;
+		if(Building_Mounted[iObj] != -1)
+			continue;
+		//Make sure that mounted buildings are never deleted like this!
+			
+		int builder_owner = GetEntPropEnt(iObj, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, iObj);
+	}
+	
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+		if(!Citizen_IsIt(entity))
+			continue;
+
+		Citizen npc = view_as<Citizen>(entity);
+		if(npc.m_nDowned && npc.m_iWearable3 > 0)
+		{
+			
+		}
+		else
+			continue;
+
+		npc.SetDowned(false);
+		if(Waves_InSetup())
+			continue;
+		int target = 0;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+				{
+					target = i;
+					break;
+				}
+			}
+		}
+		
+		if(target)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
+			TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+		}
+	}
+}
 void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 {
 	//only set false here
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
-	float pos2[3];
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
-	{
-		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
-		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
-		if(!IsValidEntity(entity_close))
-			continue;
-
-		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
-			continue;
-			
-		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
-		DeleteAndRefundBuilding(builder_owner, entity_close);
-	}
-//	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+	ZR_CheckValidityOfPostions_OfObjectsInternal(true);
+	CreateTimer(1.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	//needed for map logic!
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2589,46 +2660,6 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				}
 			}
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
-		}
-	}
-	
-	int a, entity;
-	while((entity = FindEntityByNPC(a)) != -1)
-	{
-		if(!b_NpcHasDied[entity])
-		{
-			if(Citizen_IsIt(entity))
-			{
-				Citizen npc = view_as<Citizen>(entity);
-				if(npc.m_nDowned && npc.m_iWearable3 > 0)
-				{
-					npc.SetDowned(false);
-					if(!Waves_InSetup())
-					{
-						int target = 0;
-						for(int i=1; i<=MaxClients; i++)
-						{
-							if(IsClientInGame(i))
-							{
-								if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
-								{
-									target = i;
-									break;
-								}
-							}
-						}
-						
-						if(target)
-						{
-							float pos[3], ang[3];
-							GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							ang[2] = 0.0;
-							TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-						}
-					}
-				}
-			}
 		}
 	}
 	

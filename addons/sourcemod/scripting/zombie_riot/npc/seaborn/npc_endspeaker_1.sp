@@ -25,7 +25,6 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		if(!npc.m_bHardMode && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
@@ -35,6 +34,8 @@ methodmap EndSpeaker1 < EndSpeakerSmall
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		return npc;
@@ -119,7 +120,6 @@ void EndSpeaker1_NPCDeath(int entity)
 		
 		HookSingleEntityOutput(entity_death, "OnAnimationDone", EndSpeaker_BurrowAnim, true);
 
-		SetEntityRenderMode(entity_death, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity_death, 100, 100, 255, 255);
 	}
 }

@@ -6,7 +6,7 @@ static float fl_hud_timer[MAXPLAYERS];
 static float fl_ammo_timer[MAXPLAYERS];
 static int i_ammo[MAXPLAYERS];
 static int 		i_max_ammo				[6] = {10, 15, 20, 25, 30, 40};
-static float 	fl_ammogain_timerbase	[6] = {1.5, 1.5, 1.3, 1.2, 1.1, 0.9};
+static float 	fl_ammogain_timerbase	[6] = {1.0, 1.0, 0.8, 0.7, 0.6, 0.45};
 static float 	fl_firerate_multi		[6] = {0.5, 0.45, 0.4, 0.3, 0.2, 0.2};
 
 static int 		i_max_barage			[6] = {3, 4, 5, 6, 7, 9};
@@ -16,6 +16,7 @@ static float 	fl_barrage_maxcharge	[6] = {600.0, 750.0, 1000.0, 1250.0, 1500.0, 
 
 //charge gained will depend on mana consumed.
 static float fl_barrage_charge[MAXPLAYERS];
+static bool b_BarrageModeOn[MAXPLAYERS];
 
 
 #define REIUJI_WAND_TOUCH_SOUND "friends/friend_online.wav"
@@ -62,6 +63,7 @@ void Reiuji_Wand_OnMapStart()
 	PrecacheSound(REIUJI_WAND_TOUCH_SOUND, true);
 	PrecacheSound(REIUJI_WAND_M2_CAST_SOUND, true);
 	PrecacheSoundArray(WandAttackSounds);
+	Zero(b_BarrageModeOn);
 }
 static void PlayWandAttackSound(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(WandAttackSounds[GetRandomInt(0, sizeof(WandAttackSounds) - 1)], client, SNDCHAN_VOICE, soundlevel, _, volume, pitch);}
 
@@ -143,6 +145,15 @@ static void Hud(int client, int weapon)
 		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i] (%.1fs)", i_ammo[client], i_max_ammo[pap], fl_ammo_timer[client]-GameTime);
 	else
 		Format(HUDText, sizeof(HUDText), "Ammo: [%i/%i]", i_ammo[client], i_max_ammo[pap]);
+	
+	if(b_BarrageModeOn[client])
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nAmmo Mode ON [R]", HUDText);
+	}
+	else
+	{
+		Format(HUDText, sizeof(HUDText), "%s\nAmmo Mode OFF [R]", HUDText);
+	}
 
 	if(pap>1)
 	{
@@ -294,6 +305,43 @@ static int IsLineOfSight(int client, int Target, float AnglesMax, float Range)
 	}
 	return 0;
 }
+
+public void Reiuji_Wand_AmmoMode(int client, int weapon, bool crit, int slot)
+{
+	if(b_BarrageModeOn[client])
+	{
+		b_BarrageModeOn[client] = false;
+		ClientCommand(client, "playgamesound misc/halloween/spelltick_01.wav");
+ 	}
+	else
+	{
+		b_BarrageModeOn[client] = true;
+		ClientCommand(client, "playgamesound misc/halloween/spelltick_02.wav");
+	}
+	Reiuji_Wand_AmmomodeInternal(client, weapon, true);
+}
+
+void Reiuji_Wand_AmmomodeInternal(int client, int weapon, bool Toggle = false)
+{
+	int pap = i_pap(weapon);
+	if(i_ammo[client] > 0 && b_BarrageModeOn[client])
+	{
+		if(!Toggle)
+		{
+			i_ammo[client]--;
+			fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*1.25;
+		}
+
+		if(i_ammo[client] > 0)
+			Attributes_Set(weapon, 5, fl_firerate_multi[pap]);
+		else
+			Attributes_Set(weapon, 5, 1.0);
+	}
+	else 
+	{
+		Attributes_Set(weapon, 5, 1.0);
+	}
+}
 public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -333,22 +381,12 @@ public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int sl
 			We'll use attribute 5, since its a "static" attribute that nothing should modify. probably...
 	*/
 
-	int pap = i_pap(weapon);
-
-	if(i_ammo[client] > 0)
-	{
-		i_ammo[client]--;
-
-		if(i_ammo[client] > 0)
-			Attributes_Set(weapon, 5, fl_firerate_multi[pap]);
-		else
-			Attributes_Set(weapon, 5, 1.0);
-	}
+	Reiuji_Wand_AmmomodeInternal(client, weapon);
 
 	//rest the ammo gain timer when firing.
-	fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*2.0;
+	int pap = i_pap(weapon);
 
-	float damage = 100.0 * Attributes_Get(weapon, 410, 1.0);
+	float damage = 125.0 * Attributes_Get(weapon, 410, 1.0);
 		
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
@@ -408,15 +446,10 @@ static void FireBarrageProjectile(int client, int weapon, float Angles[3], int v
 
 	fl_ruina_Projectile_bonus_dmg[projectile] = 0.0;
 	fl_ruina_Projectile_radius[projectile] = radius;
-	
-	//so since the ICBM model isn't correctly orientated, I need to do this wonky trick
-	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_1, 2.0, "icbm_idle");
+
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_1, 1.0, "icbm_idle");
 	if(IsValidEntity(ModelApply))
 	{
-		float angles[3];
-		GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-		angles[1]+=90.0;
-		TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 		SetVariantInt(RUINA_ICBM);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
 	}

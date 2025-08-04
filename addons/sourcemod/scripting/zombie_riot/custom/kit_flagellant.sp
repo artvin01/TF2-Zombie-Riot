@@ -629,7 +629,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
-		Explode_Logic_Custom(600.0 * multi, client, client, secondary, pos, _, _, _, false, 3, false, _, Flagellant_AcidHitPost);
+		Explode_Logic_Custom(600.0 * multi, client, client, secondary, pos, _, _, _, false, 4, false, _, Flagellant_AcidHitPost);
 		pos[2] += 5.0;
 		ParticleEffectAt(pos, "bombinomicon_burningdebris", 0.5);
 

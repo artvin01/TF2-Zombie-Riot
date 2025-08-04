@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void Weapon_Star_shooter(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Star_shooter(int client, int weapon, bool crit, int slot)
 {
 	int chose = GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound)-1);
 	EmitSoundToAll(g_DefaultLaserLaunchSound[chose], client, 80, _, _, 1.0);

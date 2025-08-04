@@ -31,11 +31,11 @@ void Charged_Handgun_Map_Precache()
 	Beam_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
-public void Charged_Reload(int client, int weapon, const char[] classname, bool &result) {
+public void Charged_Reload(int client, int weapon, bool crit, int slot) {
 	ClientCommand(client, "playgamesound weapons/teleporter_ready.wav");
 }
 
-public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Launcher(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -47,9 +47,8 @@ public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, 
 		else 
 		{
 			float flMultiplier = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime"); // 4.0 is the default one
-			if (flMultiplier<-0.05)
+			if (!FireWeaponTry_IEM(client, 40, flMultiplier, -0.05))
 			{
-				SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+20);
 				return;
 			}
 		}
@@ -84,7 +83,7 @@ public void Weapon_IEM_Launcher(int client, int weapon, const char[] classname, 
 	}
 }
 
-public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Launcher_PAP(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -96,9 +95,8 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 		else 
 		{
 			float flMultiplier = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime"); // 4.0 is the default one
-			if (flMultiplier<-0.05)
+			if (!FireWeaponTry_IEM(client, 80, flMultiplier, -0.05))
 			{
-				SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+40);
 				return;
 			}
 		}
@@ -134,7 +132,7 @@ public void Weapon_IEM_Launcher_PAP(int client, int weapon, const char[] classna
 	}
 }
 
-public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -146,9 +144,8 @@ public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] cl
 		else 
 		{
 			float flMultiplier = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime"); // 4.0 is the default one
-			if (flMultiplier<-0.05)
+			if (!FireWeaponTry_IEM(client, 200, flMultiplier, -0.05))
 			{
-				SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+100);
 				return;
 			}
 		}
@@ -185,7 +182,7 @@ public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, const char[] cl
 	}
 }
 
-public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Cutter(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -197,9 +194,8 @@ public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bo
 		else 
 		{
 			float flMultiplier = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime"); // 4.0 is the default one
-			if (flMultiplier<-0.05)
+			if (!FireWeaponTry_IEM(client, 40, flMultiplier, -0.05))
 			{
-				SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+20);
 				return;
 			}
 		}
@@ -221,7 +217,7 @@ public void Weapon_IEM_Cutter(int client, int weapon, const char[] classname, bo
 	}
 }
 
-public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, bool crit, int slot)
 {
 	if (!Laser_Cutter_Static[client])
 	{
@@ -236,7 +232,7 @@ public void Weapon_IEM_Cutter_PAP_M2(int client, int weapon, const char[] classn
 	
 }
 
-public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_IEM_Cutter_PAP(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -248,9 +244,8 @@ public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname
 		else 
 		{
 			float flMultiplier = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime"); // 4.0 is the default one
-			if (flMultiplier<-0.05)
+			if (!FireWeaponTry_IEM(client, 80, flMultiplier, -0.05))
 			{
-				SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+40);
 				return;
 			}
 		}
@@ -270,7 +265,7 @@ public void Weapon_IEM_Cutter_PAP(int client, int weapon, const char[] classname
 	}
 }
 
-public void Weapon_Charged_Handgun(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Charged_Handgun(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -290,7 +285,7 @@ public void Weapon_Charged_Handgun(int client, int weapon, const char[] classnam
 			
 			flMultiplier -= GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
 			flMultiplier /= base_chargetime[client];
-			if (flMultiplier<3.85)
+			if (!FireWeaponTry_IEM(client, 1, flMultiplier, 3.85))
 			{
 				SetEntProp(weapon, Prop_Data, "m_iClip1", GetEntProp(weapon, Prop_Data, "m_iClip1")+1);
 				return;
@@ -396,7 +391,7 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	
 	DataPack pack;
@@ -423,7 +418,10 @@ public Action Event_Charged_Hand_OnHatTouch(int entity, int other)
 		//Code to do damage position and ragdolls
 		
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Damagedeal = Damage_Projectile[entity];
+		if(b_thisNpcIsARaid[other])
+			Damagedeal *= 2.0;
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damagedeal, DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{
@@ -501,7 +499,7 @@ static void Wand_Launch_IEM(int client, int iRot, float speed, float time, float
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	SetEntProp(iCarrier, Prop_Send, "m_usSolidFlags", 200);
 	SetEntProp(iCarrier, Prop_Data, "m_nSolidType", 0);
@@ -544,7 +542,10 @@ public Action Event_Wand_IEM_OnHatTouch(int entity, int other)
 		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Damagedeal = Damage_Projectile[entity];
+		if(b_thisNpcIsARaid[other])
+			Damagedeal *= 2.0;
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damagedeal, DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 0)
 	{
@@ -629,6 +630,8 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 						float damage_1 = Damage_Tornado[iCarrier];
 						damage_1 *= Damage_Reduction[iCarrier];
 						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+						if(b_thisNpcIsARaid[baseboss_index])
+							damage_1 *= 2.0;
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos);
 						
 						//If the npc is gibbed at anytime, it will cause this to just go to the world origin...
@@ -651,19 +654,10 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 							
 						int colorLayer4[4];
 						SetColorRGBA(colorLayer4, r, g, b, 60);
-						int colorLayer3[4];
-						SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-						int colorLayer2[4];
-						SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
 						int colorLayer1[4];
 						SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
 						TE_SendToAll(0.0);
-						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-						TE_SendToAll(0.0);
-						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-						TE_SendToAll(0.0);
-						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
 						int glowColor[4];
 						SetColorRGBA(glowColor, r, g, b, 200);
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
@@ -743,7 +737,7 @@ public Action Timer_Electric_Think_PAP_Star(Handle timer, int ref)
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "Open");
 	
-	Wand_Launch_IEM(client, iRot, 100.0, 5.0, Damage_Tornado[iCarrier]/2, 1, nfAng, flCarrierPos);
+	Wand_Launch_IEM(client, iRot, 100.0, 1.0, Damage_Tornado[iCarrier]/2, 1, nfAng, flCarrierPos);
 
 	return Plugin_Continue;
 }
@@ -817,21 +811,10 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 						float damage_1 = Damage_Tornado[iCarrier];		
 						damage_1 *= Damage_Reduction[iCarrier];
 						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+						if(b_thisNpcIsARaid[baseboss_index])
+							damage_1 *= 2.0;
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
 						
-						//If the npc is gibbed at anytime, it will cause this to just go to the world origin...
-						/*			
-						if(b_NpcHasDied[baseboss_index]) //The npc died!
-						{
-							PrintToChatAll("dead!");
-						}
-						else
-					 	{
-						 	int beam = EntIndexToEntRef(ConnectWithBeam(iCarrier, baseboss_index, 50, 50, 250, 3.0, 3.0, 1.35, "materials/sprites/lgtning.vmt"));
-						
-							CreateTimer(0.3, Timer_RemoveEntityBeam, beam, TIMER_FLAG_NO_MAPCHANGE);
-						}
-						*/
 						int r = 125;
 						int g = 125;
 						int b = 255;
@@ -839,19 +822,10 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 							
 						int colorLayer4[4];
 						SetColorRGBA(colorLayer4, r, g, b, 60);
-						int colorLayer3[4];
-						SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, 60);
-						int colorLayer2[4];
-						SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 60);
 						int colorLayer1[4];
 						SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 60);
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
 						TE_SendToAll(0.0);
-						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
-						TE_SendToAll(0.0);
-						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
-						TE_SendToAll(0.0);
-						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Laser, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
 						int glowColor[4];
 						SetColorRGBA(glowColor, r, g, b, 200);
 						TE_SetupBeamPoints(flCarrierPos, targPos, Beam_Glow, 0, 0, 0, 0.33, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
@@ -1004,7 +978,10 @@ public Action Event_Wand_Cutter_IEM_OnHatTouch(int entity, int other)
 		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Damagedeal = Damage_Projectile[entity];
+		if(b_thisNpcIsARaid[other])
+			Damagedeal *= 2.0;
+		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damagedeal, DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 	}
 	else if(target == 0)
 	{
@@ -1145,7 +1122,10 @@ public bool IEM_Cutter_TraceUsers(int entity, int contentsMask, int carrier)
 	if (GetTeam(carrier)==GetTeam(entity))
 		return false;
 		
-	SDKHooks_TakeDamage(entity, client, client, Damage_Reduction[carrier]*Damage_Tornado[carrier], DMG_PLASMA, -1);
+	float Damagedeal = Damage_Reduction[carrier]*Damage_Tornado[carrier];
+	if(b_thisNpcIsARaid[entity])
+		Damagedeal *= 2.0;
+	SDKHooks_TakeDamage(entity, client, client, Damagedeal, DMG_PLASMA, -1);
 	Damage_Reduction[carrier] *= 0.75; // I don't want it to be underpower
 	
 	return false;
@@ -1210,7 +1190,7 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	SetEntProp(iCarrier, Prop_Send, "m_usSolidFlags", 200);
 	SetEntProp(iCarrier, Prop_Data, "m_nSolidType", 0);
@@ -1223,4 +1203,27 @@ stock int CreateWandCutterProjectile(int client, float flSpeed, float flPos[3], 
 	pack.WriteCell(EntIndexToEntRef(iRot));
 	
 	return iCarrier;
+}
+
+
+bool FireWeaponTry_IEM(int client, int AmmoAmount, float flMultiplier, float MaxAllow)
+{
+	int CurrentAmmoIEM = GetAmmo(client, 23);
+	if(CurrentAmmoIEM < AmmoAmount)
+	{
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Not Enough Ammo", client, AmmoAmount);
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return false;
+	}
+	if (flMultiplier<MaxAllow)
+	{
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Fully Charge To Fire", client);
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return false;
+	}
+	CurrentAmmo[client][23] = CurrentAmmoIEM - AmmoAmount;
+	SetAmmo(client, 23, CurrentAmmoIEM - AmmoAmount);
+	return true;
 }

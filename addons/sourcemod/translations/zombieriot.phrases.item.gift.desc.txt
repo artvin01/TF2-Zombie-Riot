@@ -1088,10 +1088,9 @@
 		"en"		"A higher tier form of Silvester, what is this, magic or technology?\nWhere does he come from?"
 		"ru"		"Более Сильная форма Сильвестера,что это,Магия или Технология?\nОткуда он появился?"
 	}
-	"Nemesis Desc"
+	"Calmaticus Desc"
 	{
-		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
-		"ru"		"Создатель Ксено инфекции,Настоящие имя Было Калматикус.\nОни попытались предупредить тебя,ты не послушал.\nЕго сопротивление во время регенерации (можно заглушить на половину)."
+		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -2018,9 +2017,9 @@
 		"en"	"Very fast but loses its speed once hit."
 		"ru"	"Очень быстрый но теряет скорость когда получит урон."
 	}
-	"Mr.X Desc"
+	"Vivithorn Desc"
 	{
-		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
 		"ru"	"Активатор источника Ксено инфекции,Настоящие имя было Виротхорн.\nМожет делать рывки,может взять тебя и сломать шею,Остальные атаки наносит повторный урон но разным противникамв радиусе.\n(заглушение) теряет скольжение при ударе"
 	}
 	"Lex Desc"

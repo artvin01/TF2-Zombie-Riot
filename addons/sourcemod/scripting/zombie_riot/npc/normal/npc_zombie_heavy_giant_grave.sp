@@ -141,6 +141,8 @@ methodmap HeavyGiant < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

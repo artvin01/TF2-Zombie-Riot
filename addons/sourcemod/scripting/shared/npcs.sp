@@ -48,12 +48,12 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-public void NPC_SpawnNext(bool panzer, bool panzer_warning)
+public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 {
 	float GameTime = GetGameTime();
 	if(f_DelaySpawnsForVariousReasons > GameTime)
 	{
-		return;
+		return false;
 	}
 	int limit = 0;
 	
@@ -130,7 +130,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	
 	if(!b_GameOnGoing) //no spawn if the round is over
 	{
-		return;
+		return false;
 	}
 	
 	if(!AllowSpecialSpawns)
@@ -174,13 +174,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		//emercency stop. 
 		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 		{
-			return;
+			return false;
 		}
 	}
 
 	if(!Spawns_CanSpawnNext())
 	{
-		return;
+		return false;
 	}
 	
 	float pos[3], ang[3];
@@ -259,6 +259,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			pack.WriteCell(boss.Index);
 			pack.WriteCell(deathforcepowerup);
 			pack.WriteFloat(boss.HealthMulti);
+			return true;
 		}
 		else
 		{
@@ -382,9 +383,9 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
+					if(!DisableSpawnProtection && zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
 					{
-				
+						
 						i_npcspawnprotection[entity_Spawner] = 1;
 						
 						/*
@@ -423,6 +424,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 
 					if(Waves_InFreeplay())
 						Freeplay_SpawnEnemy(entity_Spawner);
+
+					return true;
 				}
 			}
 			else
@@ -454,8 +457,11 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			{
 				Waves_Progress(donotprogress);
 			}
+			return true;
+			//we reached limit. stop trying.
 		}
 	}
+	return false;
 }
 #endif	// ZR
 
@@ -472,13 +478,48 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
+	bool KeepProtection = false;
 	if(Rogue_Theme() == 1 && !force)
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
-			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-			return;
+			KeepProtection = true;
 		}
+	}
+	float PosNpc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+	if(!KeepProtection)
+	{
+		if(IsPointOutsideMap(PosNpc))
+		{
+			KeepProtection = true;
+		}
+	}
+	if(!KeepProtection)
+	{
+		if(i_InHurtZone[entity])
+			KeepProtection = true;
+	}
+	if(!KeepProtection)
+	{
+		if(i_InHurtZone[entity])
+			KeepProtection = true;
+	}
+	if(!KeepProtection)
+	{
+		static float minn[3], maxx[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+		if(IsBoxHazard(PosNpc, minn, maxx))
+			KeepProtection = true;
+	}
+
+
+	if(KeepProtection)
+	{
+		//npc is in some type of out of bounds spot probably, keep them safe.
+		CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		return;
 	}
 #endif	// ZR
 	
@@ -1271,9 +1312,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	}
 #if defined ZR
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #endif
 	{
 #if !defined RTS

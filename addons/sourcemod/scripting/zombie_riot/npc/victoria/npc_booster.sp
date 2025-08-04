@@ -189,7 +189,6 @@ methodmap VictorianBooster < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_contaminated_carryall/hwn2024_contaminated_carryall.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 80, 50, 50, 255);
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
@@ -332,7 +331,6 @@ public void VictorianBooster_ClotThink(int iNPC)
 			SetVariantString("1.25");
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
 		
 			if(IsValidEntity(npc.m_iWearable4))

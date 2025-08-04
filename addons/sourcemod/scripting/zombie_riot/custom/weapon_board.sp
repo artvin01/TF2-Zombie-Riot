@@ -9,7 +9,7 @@ static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXPLAYERS][MAXENTITIES];
-static int ParryCounter = 0;
+static int ParryCounter[MAXPLAYERS];
 static int EnemiesHit[6];
 
 Handle h_TimerWeaponBoardManagement[MAXPLAYERS+1] = {null, ...};
@@ -38,29 +38,17 @@ void Board_DoSwingTrace(int &enemies_hit_aoe, float &CustomMeleeRange)
 
 public void Board_M1_ability(int client, int weapon, int slot)
 {
-	ApplyTempAttrib(weapon, 2, 0.25, 1.0);
-	if (Ability_Check_Cooldown(client, 2) < 0.0)
+	if (Ability_Check_Cooldown(client, 2) < 1.0)
 	{
 		Ability_Apply_Cooldown(client, 2, 1.0);
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, 2);
-		Ability_Apply_Cooldown(client, 2, Ability_CD + 1.0);
 	}
 }
 
 public void Board_M1_ability_Spike(int client, int weapon, int slot)
 {
-	ApplyTempAttrib(weapon, 2, 0.35, 1.0);
-	if (Ability_Check_Cooldown(client, 2) < 0.0)
+	if (Ability_Check_Cooldown(client, 2) < 1.0)
 	{
 		Ability_Apply_Cooldown(client, 2, 1.0);
-	}
-	else
-	{
-		float Ability_CD = Ability_Check_Cooldown(client, 2);
-		Ability_Apply_Cooldown(client, 2, Ability_CD + 1.0);
 	}
 }
 
@@ -167,6 +155,7 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 {
 	float damage = 107.5;
 	damage *= Attributes_Get(weapon, 2, 1.0);
+	damage *= 3.2;
 			
 	int value = i_ExplosiveProjectileHexArray[victim];
 	i_ExplosiveProjectileHexArray[victim] = EP_DEALS_CLUB_DAMAGE;
@@ -232,7 +221,7 @@ public void Board_empower_ability(int client, int weapon, bool crit, int slot) /
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 0;
@@ -264,7 +253,7 @@ public void Board_empower_ability_Spike(int client, int weapon, bool crit, int s
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 1;
@@ -294,8 +283,8 @@ public void Board_empower_ability_Rookie(int client, int weapon, bool crit, int 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		float Cooldown = 3.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		float Cooldown = 4.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 3;
@@ -328,7 +317,7 @@ public void Board_empower_ability_Punishment(int client, int weapon, bool crit, 
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 4;
@@ -361,8 +350,8 @@ public void Board_empower_ability_Cudgel(int client, int weapon, bool crit, int 
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		float Cooldown = 3.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		float Cooldown = 4.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 6;
@@ -394,7 +383,7 @@ public void Board_empower_ability_Purgatory(int client, int weapon, bool crit, i
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		float Cooldown = 5.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 7;
@@ -427,8 +416,8 @@ public void Board_empower_ability_Limbo(int client, int weapon, bool crit, int s
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Rogue_OnAbilityUse(client, weapon);
-		float Cooldown = 3.0;
-		Cooldown = ShieldCutOffCooldown_Board(Cooldown, weapon);
+		float Cooldown = 4.0;
+		Cooldown = ShieldCutOffCooldown_Board(Cooldown);
 		Ability_Apply_Cooldown(client, slot, Cooldown);
 
 		Board_Level[client] = 8;
@@ -539,9 +528,9 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 		
 		if(f_BoardReflectCooldown[victim][attacker] < GetGameTime())
 		{
-			ParryCounter += 1;
+			ParryCounter[victim] += 1;
 			float ParriedDamage = 0.0; //why did I let Lucella's code live like this
-			switch (ParryCounter)
+			switch (ParryCounter[victim])
 			{
 				case 1:
 				{
@@ -573,6 +562,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 				}
 			}
 			ParriedDamage = CalculateDamageBonus_Board(ParriedDamage, weapon);
+			ParriedDamage *= 2.0;
 		
 			static float angles[3];
 			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
@@ -603,13 +593,32 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 
 		if(!(damagetype & DMG_TRUEDAMAGE))
 		{
-			switch (ParryCounter)
+			if(ParryCounter[victim] <= 1)
+			{
+				if(b_thisNpcIsARaid[attacker])
+				{
+					ParryCounter[victim] = 3;
+				}
+			}
+			else if(b_thisNpcIsARaid[attacker] && ParryCounter[victim] != 2)
+				ParryCounter[victim] = 999;
+
+			switch (ParryCounter[victim])
 			{
 				case 1:
 				{
 					return damage * 0.25;
 				}
-				case 2, 3:
+				case 2:
+				{
+					if(b_thisNpcIsARaid[attacker])
+						ParryCounter[victim] = 999;
+					float Cooldown = Ability_Check_Cooldown(client, 2);
+					Cooldown += (5.0 * CooldownReductionAmount(client));
+					Ability_Apply_Cooldown(client, 2, Cooldown);
+					return damage * 0.3;
+				}
+				case 3:
 				{
 					return damage * 0.3;
 				}
@@ -853,9 +862,9 @@ void OnAbilityUseEffect_Board(int client, int active, int FramesActive = 35)
 	pack.WriteCell(EntIndexToEntRef(Glow));
 	RequestFrames(RemoveEffectsOffShield_Board, FramesActive, pack); // 60 is 1 sec?
 
-	if (ParryCounter != 0)
+	if (ParryCounter[client] != 0)
 	{
-		ParryCounter = 0;
+		ParryCounter[client] = 0;
 	}
 //	SetEntPropFloat(WeaponModel, Prop_Send, "m_flModelScale", f_WeaponSizeOverride[active] * 1.25);
 }
@@ -943,8 +952,11 @@ public void PassiveBoardHeal(int client)
 	}
 }
 
-float ShieldCutOffCooldown_Board(float CooldownCurrent, int weapon)
+float ShieldCutOffCooldown_Board(float CooldownCurrent)
 {
+//	CooldownCurrent *= 1.0;
+	return CooldownCurrent;
+	/*
 	float attackspeed = Attributes_Get(weapon, 6, 1.0);
 
 	CooldownCurrent *= 0.5;
@@ -956,6 +968,7 @@ float ShieldCutOffCooldown_Board(float CooldownCurrent, int weapon)
 		CooldownCurrent = 0.7; //cant get lower then 0.7
 	}
 	return CooldownCurrent;
+	*/
 }
 float CalculateDamageBonus_Board(float damage, int weapon)
 {

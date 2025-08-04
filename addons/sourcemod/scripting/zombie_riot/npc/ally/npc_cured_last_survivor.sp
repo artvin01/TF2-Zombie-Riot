@@ -1282,19 +1282,20 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						npc.FaceTowards(WorldSpaceVec2, 500.0);
 						WorldSpaceVec2[2] += 30.0;
 						int iPitch = npc.LookupPoseParameter("body_pitch");
-						if(iPitch < 0)
-							return;		
+						if(iPitch >= 0)
+						{
+							//Body pitch
+							float v[3], ang[3];
+							SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
+							NormalizeVector(v, v);
+							GetVectorAngles(v, ang); 
+							
+							float flPitch = npc.GetPoseParameter(iPitch);
+							
+						//	ang[0] = clamp(ang[0], -44.0, 89.0);
+							npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+						}
 					
-						//Body pitch
-						float v[3], ang[3];
-						SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
-						NormalizeVector(v, v);
-						GetVectorAngles(v, ang); 
-						
-						float flPitch = npc.GetPoseParameter(iPitch);
-						
-					//	ang[0] = clamp(ang[0], -44.0, 89.0);
-						npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 					}
 				}
 			}

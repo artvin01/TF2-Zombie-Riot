@@ -1441,7 +1441,8 @@ public void OnPostThink(int client)
 				Cooldowntocheck = 99.9;
 			if(Cooldowntocheck > 0.0)
 			{
-				Format(buffer2, sizeof(buffer2), "%s:%0.f",npc_classname[4], Cooldowntocheck);
+				//add one second so it itll never show 0 in there, thats stupid.
+				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
@@ -1462,7 +1463,7 @@ public void OnPostThink(int client)
 				
 				if(slowdown_amount < 0.0)
 				{
-					Format(buffer2, sizeof(buffer2), "%sWI", buffer2, slowdown_amount);
+					Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2,PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 				}
 				else
 				{
@@ -1471,7 +1472,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
+				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 			}
 		}
 		else
@@ -1487,50 +1488,52 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
 		}
 			
+		//only for red.
+		if(GetTeam(client) == 2)
+		{
+			static char HudBuffer[256];
+			HudBuffer[0] = 0;
+			if(!TeutonType[client])
+			{
+				int downsleft;
+				downsleft = 2;
+
+				downsleft -= i_AmountDowned[client];
+				SDKHooks_UpdateMarkForDeath(client);
 				
-		static char HudBuffer[256];
-		HudBuffer[0] = 0;
-		
-		if(!TeutonType[client])
-		{
-			int downsleft;
-			downsleft = 2;
+				if(!HudBuffer[0] && CashSpent[client] < 1)
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
+				}
+				if(b_EnableCountedDowns[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft
+					);
+				}
+				if(b_EnableRightSideAmmoboxCount[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
+					);
+				}
+			}
+			else if (TeutonType[client] == TEUTON_DEAD)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
+				);
 
-			downsleft -= i_AmountDowned[client];
-			SDKHooks_UpdateMarkForDeath(client);
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
+				);
+			}
+			SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 			
-			if(!HudBuffer[0] && CashSpent[client] < 1)
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
-			}
-			if(b_EnableCountedDowns[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Downs left", downsleft
-				);
-			}
-			if(b_EnableRightSideAmmoboxCount[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
-				);
-			}
+			if(HudBuffer[0])
+				PrintKeyHintText(client,"%s", HudBuffer);
 		}
-		else if (TeutonType[client] == TEUTON_DEAD)
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
-			);
-
-		}
-		else
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
-			);
-		}
-		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
-		
-		if(HudBuffer[0])
-			PrintKeyHintText(client,"%s", HudBuffer);
 #endif
 	}
 #if defined ZR
@@ -2166,7 +2169,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 
-					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,90.0}, 10, {0, 255, 0, 255}, victim);
+					entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
 					i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 					b_DyingTextOff[victim] = false;
 					
@@ -2181,8 +2184,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 					if(!autoRevive)
 					{
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-						SetEntityRenderColor(entity, 255, 255, 255, 125);
+						SetEntityRenderMode(entity, RENDER_NORMAL);
+						SetEntityRenderColor(entity, 255, 125, 125, 255);
 					}
 					else
 					{
@@ -2192,8 +2195,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				}
 				if(!autoRevive)
 				{
-					SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(victim, 255, 255, 255, 125);
+					SetEntityRenderMode(victim, RENDER_NORMAL);
+					SetEntityRenderColor(victim, 255, 125, 125, 255);
 				}
 				else
 				{
@@ -2585,7 +2588,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			{
 				if(weapon > 0 && i_WeaponVMTExtraSetting[weapon] != -1)
 				{
-					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon], .ForceColour = true);
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon]);
 					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon]; //This makes sure to not reset the alpha.
 				}
 			}
@@ -3380,8 +3383,8 @@ void ManaCalculationsBefore(int client)
 {
 	has_mage_weapon[client] = false;
 	int i, entity;
-	float ManaRegen = 10.0;
-	float ManaMaxExtra = 400.0;
+	float ManaRegen = 12.0;
+	float ManaMaxExtra = 500.0;
 	
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -3418,17 +3421,17 @@ void ManaCalculationsBefore(int client)
 
 	if(b_AggreviatedSilence[client])	
 	{
-		mana_regen[client] *= 0.30;
+		mana_regen[client] *= 0.35;
 	}
 	else
 	{
 		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-		MultiplyRegen *= 0.5;
+	//	MultiplyRegen *= 0.85;
 		if(MultiplyRegen < 1.0)
 			MultiplyRegen = 1.0;
 
-		if(MultiplyRegen >= 3.0)
-			MultiplyRegen = 3.0;
+		if(MultiplyRegen >= 6.0)
+			MultiplyRegen = 6.0;
 
 		mana_regen[client] *= MultiplyRegen;
 	}
@@ -3465,7 +3468,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			//Compare active weapon to weapon that in "myweapons"
 
 			
-		//	f_CheckWeaponDouble[client] = GetGameTime () + 0.5; 
+			f_CheckWeaponDouble[client] = 0.0;
 			//check every 0.5 seconds.
 
 			int weaponAm = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -3476,7 +3479,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 			GetEntityClassname(weaponAm, buffer, sizeof(buffer));
 			int CurrentSlot = TF2_GetClassnameSlot(buffer, weaponAm);
 
-			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, true);
+			int WeaponValidCheck = Store_CycleItems(client, CurrentSlot, false);
 
 			int Maxloop = 1;
 			while(WeaponValidCheck == weaponAm && Maxloop < 10) //dont be on same weapon!

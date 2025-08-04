@@ -158,7 +158,6 @@ methodmap XenoFortifiedHeadcrabZombie < CClotBody
 		//IDLE
 		npc.m_flSpeed = 150.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 255, 150, 255);
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);

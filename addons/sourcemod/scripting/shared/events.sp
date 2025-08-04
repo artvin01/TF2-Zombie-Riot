@@ -277,9 +277,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 		ForcePlayerCrouch(client, false);
 
-#if defined RTS
-		RTS_PlayerResupply(client);
-#else
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
@@ -299,7 +296,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			}
 		}
-#endif
+		Stocks_ColourPlayernormal(client);
 
 #if defined ZR
 		//DEFAULTS
@@ -638,17 +635,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						dieingstate[client] = 0;
 						Store_ApplyAttribs(client);
 						SDKCall_SetSpeed(client);
-						int entity_wearable, i;
-						while(TF2U_GetWearable(client, entity_wearable, i))
-						{
-							if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity_wearable] != -1)
-								continue;
-
-							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
-							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
-						}
-						SetEntityRenderMode(client, RENDER_NORMAL);
-						SetEntityRenderColor(client, 255, 255, 255, 255);
+						Stocks_ColourPlayernormal(client);
 						SetEntityCollisionGroup(client, 5);
 						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
 					}

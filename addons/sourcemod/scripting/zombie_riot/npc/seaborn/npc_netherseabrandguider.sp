@@ -114,7 +114,6 @@ methodmap SeaBrandguider < CSeaBody
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		if(carrier)
