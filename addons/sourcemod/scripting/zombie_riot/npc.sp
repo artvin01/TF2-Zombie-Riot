@@ -1000,6 +1000,8 @@ void NPC_ConfigSetup()
 	ApertureJumper_OnMapStart_NPC();
 	AperturePhaser_OnMapStart_NPC();
 	ApertureSniper_OnMapStart_NPC();
+	ApertureRepulsor_OnMapStart_NPC();
+	ApertureMinigunner_OnMapStart_NPC();
 	ApertureSpecialist_OnMapStart_NPC();
 	ApertureSupporter_OnMapStart_NPC();
 	ApertureCombatantV2_OnMapStart_NPC();
@@ -1022,6 +1024,7 @@ void NPC_ConfigSetup()
 	ApertureJumperPerfected_OnMapStart_NPC();
 	ApertureSpecialistPerfected_OnMapStart_NPC();
 	ApertureDemolisherPerfected_OnMapStart_NPC();
+	ApertureDevastatorPerfected_OnMapStart_NPC();
 	ApertureMinigunnerPerfected_OnMapStart_NPC();
 	ApertureRepulsorPerfected_OnMapStart_NPC();
 	ApertureSupporterPerfected_OnMapStart_NPC();
@@ -1032,19 +1035,31 @@ void NPC_ConfigSetup()
 	ApertureDemolisher_OnMapStart_NPC();
 	ApertureContainer_OnMapStart_NPC();
 	ApertureTraveller_OnMapStart_NPC();
-	ApertureRepulsor_OnMapStart_NPC();
-	ApertureMinigunner_OnMapStart_NPC();
-	TemporalAnomaly_OnMapStart_NPC();
+	PortalGate_OnMapStart_NPC();
 	FatherGrigoriScience_OnMapStart_NPC();
 	ApertureExterminator_OnMapStart_NPC();
 	ApertureSpokesman_OnMapStart_NPC();
 	ApertureResearcher_OnMapStart_NPC();
-	Aperture_Halter_OnMapStart_NPC();
-	Aperture_Suppressor_OnMapStart_NPC();
-	Aperture_collector_OnMapStart_NPC();
-	Aperture_Fueler_OnMapStart_NPC();
-	Test_OnMapStart_NPC();
+	RefragmentedHeadcrabZombie_OnMapStart_NPC();
+	RefragmentedFastZombie_OnMapStart_NPC();
+	RefragmentedPoisonZombie_OnMapStart_NPC();
+	Refragmented_Combine_Police_Pistol_OnMapStart_NPC();
+	RefragmentedCombinePoliceSmg_OnMapStart_NPC();
+	RefragmentedCombineSoldierAr2_OnMapStart_NPC();
+	RefragmentedCombineElite_OnMapStart_NPC();
+	RefragmentedHeavy_OnMapStart_NPC();
+	RefragmentedMedic_OnMapStart_NPC();
+	RefragmentedSpy_OnMapStart_NPC();
+	Parasihtta_OnMapStart_NPC();
+	Hostis_OnMapStart_NPC();
+	Defectio_OnMapStart_NPC();
+	ApertureCollector_OnMapStart_NPC();
+	ApertureFueler_OnMapStart_NPC();
+	ApertureHalter_OnMapStart_NPC();
+	ApertureSuppressor_OnMapStart_NPC();
 	CAT_OnMapStart_NPC();
+	ARIS_OnMapStart_NPC();
+	Test_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2254,7 +2269,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/20/npc_aperture_demolisher.sp"
 #include "npc/aperture/20/npc_aperture_minigunner.sp"
 #include "npc/aperture/20/npc_aperture_repulsor.sp"
-#include "npc/aperture/20/npc_mecha_engineer_giant.sp"
 #include "npc/aperture/20/npc_aperture_exterminator.sp"
 #include "npc/aperture/30/npc_aperture_combatant_perfected.sp"
 #include "npc/aperture/30/npc_aperture_shotgunner_perfected.sp"
@@ -2273,18 +2287,32 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/30/npc_aperture_dispenser.sp"
 #include "npc/aperture/30/npc_aperture_teleporter.sp"
 #include "npc/aperture/30/npc_aperture_container.sp"
-#include "npc/aperture/30/npc_mecha_medic_giant.sp"
 #include "npc/aperture/30/npc_aperture_spokesman.sp"
 #include "npc/aperture/40/npc_aperture_traveller.sp"
 #include "npc/aperture/40/npc_aperture_demolisher_perfected.sp"
+#include "npc/aperture/40/npc_aperture_devastator_perfected.sp"
 #include "npc/aperture/40/npc_aperture_minigunner_perfected.sp"
 #include "npc/aperture/40/npc_aperture_repulsor_perfected.sp"
 #include "npc/aperture/40/npc_aperture_supporter_perfected.sp"
 #include "npc/aperture/40/npc_aperture_researcher.sp"
-#include "npc/aperture/npc_halter.sp"
-#include "npc/aperture/npc_suppressor.sp"
-#include "npc/aperture/npc_collector.sp"
-#include "npc/aperture/npc_fueler.sp"
-#include "npc/aperture/npc_temporalanomaly.sp"
-#include "npc/aperture/10/npc_test.sp"
+#include "npc/aperture/refragmented/npc_refragmented_headcrabzombie.sp"
+#include "npc/aperture/refragmented/npc_refragmented_fastzombie.sp"
+#include "npc/aperture/refragmented/npc_refragmented_poisonzombie.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_police_pistol.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_police_smg.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_soldier_ar2.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_soldier_elite.sp"
+#include "npc/aperture/refragmented/npc_refragmented_heavy.sp"
+#include "npc/aperture/refragmented/npc_refragmented_medic.sp"
+#include "npc/aperture/refragmented/npc_refragmented_spy.sp"
+#include "npc/aperture/refragmented/npc_refragmented_parasihtta.sp"
+#include "npc/aperture/refragmented/npc_refragmented_hostis.sp"
+#include "npc/aperture/refragmented/npc_refragmented_defectio.sp"
+#include "npc/aperture/npc_portalgate.sp"
+#include "npc/aperture/giants/npc_aperture_collector.sp"
+#include "npc/aperture/giants/npc_aperture_fueler.sp"
+#include "npc/aperture/giants/npc_aperture_halter.sp"
+#include "npc/aperture/giants/npc_aperture_suppressor.sp"
 #include "npc/aperture/raids/npc_cat.sp"
+#include "npc/aperture/raids/npc_aris.sp"
+#include "npc/aperture/10/npc_test.sp"

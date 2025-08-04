@@ -4498,6 +4498,78 @@
 	{
 		"en"	"Aperture Traveller"
 	}
+	"Aperture Builder"
+	{
+		"en"	"Aperture Builder"
+	}
+	"Aperture Sentry"
+	{
+		"en"	"Aperture Sentry"
+	}
+	"Aperture Dispenser"
+	{
+		"en"	"Aperture Dispenser"
+	}
+	"Aperture Teleporter"
+	{
+		"en"	"Aperture Teleporter"
+	}
+	"Portal Gate"
+	{
+		"en"	"Portal Gate"
+	}
+	"Refragmented Headcrab Zombie"
+	{
+		"en"	"Refragmented Headcrab Zombie"
+	}
+	"Refragmented Fast Zombie"
+	{
+		"en"	"Refragmented Fast Zombie"
+	}
+	"Refragmented Poison Zombie"
+	{
+		"en"	"Refragmented Poison Zombie"
+	}
+	"Refragmented Metro Cop"
+	{
+		"en"	"Refragmented Metro Cop"
+	}
+	"Refragmented Metro Raider"
+	{
+		"en"	"Refragmented Metro Raider"
+	}
+	"Refragmented W.F. Rifler"
+	{
+		"en"	"Refragmented W.F. Rifler"
+	}
+	"Refragmented W.F. Elite"
+	{
+		"en"	"Refragmented W.F. Elite"
+	}
+	"Refragmented Heavy"
+	{
+		"en"	"Refragmented Heavy"
+	}
+	"Refragmented Medic"
+	{
+		"en"	"Refragmented Medic"
+	}
+	"Refragmented Spy"
+	{
+		"en"	"Refragmented Spy"
+	}
+	"Refragmented Parasihtta"
+	{
+		"en"	"Refragmented Parasihtta"
+	}
+	"Refragmented Hostis"
+	{
+		"en"	"Refragmented Hostis"
+	}
+	"Refragmented Defectio"
+	{
+		"en"	"Refragmented Defectio"
+	}
 	"Perfected Father Grigori"
 	{
 		"en"	"Perfected Father Grigori"
@@ -4513,5 +4585,9 @@
 	"Aperture Researcher"
 	{
 		"en"	"Aperture Researcher"
+	}
+	"C.A.T"
+	{
+		"en"	"C.A.T"
 	}
 }
