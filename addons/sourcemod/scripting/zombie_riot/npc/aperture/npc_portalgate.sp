@@ -106,9 +106,9 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 	npc.m_iOverlordComboAttack++;
 	npc.PlayTeleportSound();
 	//Wave 1-10
-	if(wave >= 1)
+	if(wave >= 1 && wave <= 11)
 	{
-		switch(GetRandomInt(0,9))
+		switch(GetRandomInt(0,12))
 		{
 			case 0,1:
 			{
@@ -145,9 +145,9 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 		}
 	}
 	//Wave 10-20
-	if(wave >= 11)
+	if(wave >= 11 && wave <= 21)
 	{
-		switch(GetRandomInt(0,9))
+		switch(GetRandomInt(0,12))
 		{
 			case 0,1:
 			{
@@ -184,9 +184,9 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 		}
 	}
 	//Wave 20-30
-	if(wave >= 21)
+	if(wave >= 21 && wave <= 31)
 	{
-		switch(GetRandomInt(0,9))
+		switch(GetRandomInt(0,12))
 		{
 			case 0,1:
 			{
@@ -210,22 +210,22 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			}
 			case 10:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_combine_police_pistol", pos, ang, team, 7500);
+				PortalGateSpawn(npc.index, "npc_refragmented_heavy", pos, ang, team, 7500);
 			}
 			case 11:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_ar2", pos, ang, team, 7500);
+				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7500);
 			}
 			case 12:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_elite", pos, ang, team, 7500);
+				PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 7500);
 			}
 		}
 	}
 	//Wave 30-40
 	if(wave >= 31)
 	{
-		switch(GetRandomInt(0,9))
+		switch(GetRandomInt(0,12))
 		{
 			case 0,1:
 			{
