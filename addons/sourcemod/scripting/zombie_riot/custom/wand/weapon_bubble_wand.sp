@@ -167,29 +167,29 @@ public Action Timer_BubbleWand(Handle timer, int ent)
 			TE_SendToClient(sf_BubbleOwner[projectile]);
 
 			float dmgmult = 1.0;
-			float dmgmultrate = 1.0275;
+			float dmgmultrate = 1.03;
 			float dmglimit = 1.5;
 			switch(pap)
 			{
 				case 1:
 				{
 					dmglimit = 1.7;
-					dmgmultrate = 1.04;
+					dmgmultrate = 1.0425;
 				}
 				case 2:
 				{
 					dmglimit = 1.85;
-					dmgmultrate = 1.04;
+					dmgmultrate = 1.045;
 				}
 				case 3:
 				{
 					dmglimit = 2.0;
-					dmgmultrate = 1.045;
+					dmgmultrate = 1.05;
 				}
 				case 4:
 				{
 					dmglimit = 2.15;
-					dmgmultrate = 1.055;
+					dmgmultrate = 1.06;
 				}
 				default:
 				{
@@ -265,11 +265,15 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 		{
 			case 2:
 			{
-				mana_cost = RoundToFloor(mana_cost*4.0); // 65 base -> ability costs 260 on pap 2
+				mana_cost = RoundToFloor(mana_cost*3.0); // 65 base -> ability costs 195 on pap 2
 			}
-			case 3, 4:
+			case 3:
 			{
-				mana_cost = RoundToFloor(mana_cost*3.0); // 90/115 base -> ability costs 270/345 on pap 3/4 respectively
+				mana_cost = RoundToFloor(mana_cost*3.0); // 75/100 base -> ability costs 225/300 on pap 3/4 respectively
+			}
+			case 4:
+			{
+
 			}
 		}
 
@@ -282,8 +286,9 @@ public void Weapon_Wand_Bubble_Wand_Ability(int client, int weapon, bool &result
 				EmitSoundToClient(client, SOUND_BUBBLE_ABILITY);
 
 				ApplyStatusEffect(client, client, "Bubble Frenzy", 10.0);
-				ApplyTempAttrib(weapon, 6, 0.5, 10.0);
+				ApplyTempAttrib(weapon, 6, 0.65, 10.0);
 				ApplyTempAttrib(weapon, 733, 0.65, 10.0);
+				ApplyTempAttrib(weapon, 410, 0.85, 10.0);
 				//dont allow the player to use this and then switch weapons
 				//inacse of tonic and etc, its not a problem as its supposed to be mixed, i.e. group buff
 				//in this case its a free damage buff that can be spammed alot
@@ -425,3 +430,5 @@ public void Wand_BubbleWandTouch(int entity, int target)
 		RemoveEntity(entity);
 	}
 }
+
+
