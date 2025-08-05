@@ -9833,7 +9833,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 	int entity = TouchedTarget;
 	CClotBody npc = view_as<CClotBody>(entity);
 #if defined ZR
-	if(target > 0 && entity > Maxclients && i_npcspawnprotection[entity] > NPC_SPAWNPROT_INIT && i_npcspawnprotection[entity] != NPC_SPAWNPROT_UNSTUCK)
+	if(target > 0 && entity > MaxClients && i_npcspawnprotection[entity] > NPC_SPAWNPROT_INIT && i_npcspawnprotection[entity] != NPC_SPAWNPROT_UNSTUCK)
 	{
 		if(IsValidEnemy(entity, target, true, true)) //Must detect camo.
 		{
