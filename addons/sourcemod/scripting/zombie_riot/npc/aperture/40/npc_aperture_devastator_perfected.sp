@@ -28,7 +28,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
 };
 
-void ApertureDevastatorV2_OnMapStart_NPC()
+void ApertureDevastatorPerfected_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -49,9 +49,9 @@ void ApertureDevastatorV2_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return ApertureDevastatorV2(vecPos, vecAng, ally);
+	return ApertureDevastatorPerfected(vecPos, vecAng, ally);
 }
-methodmap ApertureDevastatorV2 < CClotBody
+methodmap ApertureDevastatorPerfected < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -85,9 +85,9 @@ methodmap ApertureDevastatorV2 < CClotBody
 	}
 	
 	
-	public ApertureDevastatorV2(float vecPos[3], float vecAng[3], int ally)
+	public ApertureDevastatorPerfected(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureDevastatorV2 npc = view_as<ApertureDevastatorV2>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
+		ApertureDevastatorPerfected npc = view_as<ApertureDevastatorPerfected>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -101,9 +101,9 @@ methodmap ApertureDevastatorV2 < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(ApertureDevastatorV2_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureDevastatorV2_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(ApertureDevastatorV2_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(ApertureDevastatorPerfected_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureDevastatorPerfected_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ApertureDevastatorPerfected_ClotThink);
 		
 		
 		//IDLE
@@ -136,9 +136,9 @@ methodmap ApertureDevastatorV2 < CClotBody
 	}
 }
 
-public void ApertureDevastatorV2_ClotThink(int iNPC)
+public void ApertureDevastatorPerfected_ClotThink(int iNPC)
 {
-	ApertureDevastatorV2 npc = view_as<ApertureDevastatorV2>(iNPC);
+	ApertureDevastatorPerfected npc = view_as<ApertureDevastatorPerfected>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -207,7 +207,7 @@ public void ApertureDevastatorV2_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		ApertureDevastatorV2SelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		ApertureDevastatorPerfectedSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -217,9 +217,9 @@ public void ApertureDevastatorV2_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action ApertureDevastatorV2_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action ApertureDevastatorPerfected_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	ApertureDevastatorV2 npc = view_as<ApertureDevastatorV2>(victim);
+	ApertureDevastatorPerfected npc = view_as<ApertureDevastatorPerfected>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -233,9 +233,9 @@ public Action ApertureDevastatorV2_OnTakeDamage(int victim, int &attacker, int &
 	return Plugin_Changed;
 }
 
-public void ApertureDevastatorV2_NPCDeath(int entity)
+public void ApertureDevastatorPerfected_NPCDeath(int entity)
 {
-	ApertureDevastatorV2 npc = view_as<ApertureDevastatorV2>(entity);
+	ApertureDevastatorPerfected npc = view_as<ApertureDevastatorPerfected>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -253,7 +253,7 @@ public void ApertureDevastatorV2_NPCDeath(int entity)
 
 }
 
-void ApertureDevastatorV2SelfDefense(ApertureDevastatorV2 npc, float gameTime, int target, float distance)
+void ApertureDevastatorPerfectedSelfDefense(ApertureDevastatorPerfected npc, float gameTime, int target, float distance)
 {
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
