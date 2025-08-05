@@ -9720,22 +9720,14 @@ int ConvertTouchedResolve(int index)
 //TODO: teleport entities instead, but this is easier to i sleep :)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
-	float flMyPos[3];
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	static float vel[3];
+	static float flMyPos[3];
+	npc.GetVelocity(vel);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	float vecUp[3];
-	float vecForward[3];
-	float vecRight[3];
-
-	GetVectors(iNPC, vecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = flMyPos[0] + vecForward[0] * (25.0);
-	vecSwingEnd[1] = flMyPos[1] + vecForward[1] * (25.0);
-	vecSwingEnd[2] = flMyPos[2];
-				
-
-	float hullcheckmaxs[3];
-	float hullcheckmins[3];
+		
+	static float hullcheckmins[3];
+	static float hullcheckmaxs[3];
 	if(b_IsGiant[iNPC])
 	{
 		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
@@ -9756,18 +9748,14 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
 	}
-		
-	//god i love floating point imprecision
-	hullcheckmaxs[0] += 0.001;
-	hullcheckmaxs[1] += 0.001;
-	hullcheckmaxs[2] += 0.001;
-
-	hullcheckmins[0] -= 0.001;
-	hullcheckmins[1] -= 0.001;
-	hullcheckmins[2] -= 0.001;
-
+	
+	static float flPosEnd[3];
+	flPosEnd = flMyPos;
+	ScaleVector(vel, 0.1);
+	AddVectors(flMyPos, vel, flPosEnd);
+	
 	ResetTouchedentityResolve();
-	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
+	ResolvePlayerCollisions_Npc_Internal(flMyPos, flPosEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	float vAngles[3], vDirection[3];								
 	GetEntPropVector(iNPC, Prop_Data, "m_angRotation", vAngles); 								
@@ -9804,8 +9792,8 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 			}
 			else
 			{
-				CClotBody npc = view_as<CClotBody>(EntityHit);
-				npc.SetVelocity(vDirection);
+				CClotBody npc1 = view_as<CClotBody>(EntityHit);
+				npc1.SetVelocity(vDirection);
 			}
 		}
 	}
@@ -9813,9 +9801,9 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	ResetTouchedentityResolve(); 	
 }
 
-stock void ResolvePlayerCollisions_Npc_Internal(const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
+stock void ResolvePlayerCollisions_Npc_Internal(const float startpos[3],const float pos[3], const float mins[3], const float maxs[3],int entity=-1)
 {
-	TR_EnumerateEntitiesHull(pos, pos, mins, maxs, PARTITION_SOLID_EDICTS, ResolvePlayerCollisionsTrace, entity);
+	TR_EnumerateEntitiesHull(startpos, pos, mins, maxs, PARTITION_SOLID_EDICTS, ResolvePlayerCollisionsTrace, entity);
 }
 
 public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
@@ -9844,24 +9832,20 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
 	int entity = TouchedTarget;
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(!DoNotLoop)
+	if(target > 0 && i_npcspawnprotection[entity] > 0 && i_npcspawnprotection[entity] != 3)
 	{
-		if(target > 0 && i_npcspawnprotection[entity] > 0 && i_npcspawnprotection[entity] != 3)
+		if(IsValidEnemy(entity, target, true, true)) //Must detect camo.
 		{
-			if(IsValidEnemy(target, entity, true, true)) //Must detect camo.
+			int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
+			float DamageDeal = float(ReturnEntityMaxHealth(target));
+			DamageDeal *= 0.1;
+			if(DamageDeal <= 10.0)
+				DamageDeal = 10.0;
+			if(ShouldNpcDealBonusDamage(target) || entity > MaxClients)
 			{
-				int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
-				float DamageDeal = float(ReturnEntityMaxHealth(target));
-				DamageDeal *= 0.1;
-				if(DamageDeal <= 10.0)
-					DamageDeal = 10.0;
-				if(ShouldNpcDealBonusDamage(target))
-				{
-					DamageFlags &= ~DMG_CRUSH;
-				}
-
-				SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DamageFlags, -1, _);
+				DamageFlags &= ~DMG_CRUSH;
 			}
+			SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DamageFlags, -1, _);
 		}
 	}
 	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target) && GetTeam(entity) != TFTeam_Stalkers) //If one entity touches me, then i touch them
