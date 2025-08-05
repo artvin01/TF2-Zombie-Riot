@@ -36,8 +36,8 @@ void ApertureDevastatorPerfected_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Aperture Devastator V2");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_devastator_v2");
+	strcopy(data.Name, sizeof(data.Name), "Perfected Aperture Devastator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_devastator_perfected");
 	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -114,6 +114,7 @@ methodmap ApertureDevastatorPerfected < CClotBody
 		npc.m_iAttacksTillReload = 4;
 		npc.m_flAbilityOrAttack0 = 0.0;
 		npc.m_flAbilityOrAttack1 = 0.0;
+		npc.m_flAbilityOrAttack2 = 0.0;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -165,30 +166,39 @@ public void ApertureDevastatorPerfected_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	float gameTime = GetGameTime(npc.index);
 	float damage = 50.0, speed = 700.0;
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
 	if(npc.m_flAbilityOrAttack0)
 	{
-		if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
+		if(npc.m_flAbilityOrAttack0 <= GetGameTime(npc.index))
 		{
-			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
 			npc.PlayMeleeSound();
 			int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
 			npc.m_flAbilityOrAttack0 = 0.0;
-			npc.m_flAbilityOrAttack1 = 0.5;
 			SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 		}
 	}
 	if(npc.m_flAbilityOrAttack1)
 	{
-		if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
+		if(npc.m_flAbilityOrAttack1 <= GetGameTime(npc.index))
 		{
-			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
 			npc.PlayMeleeSound();
 			int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
 			npc.m_flAbilityOrAttack1 = 0.0;
+			SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
+		}
+	}
+	if(npc.m_flAbilityOrAttack2)
+	{
+		if(npc.m_flAbilityOrAttack2 <= GetGameTime(npc.index))
+		{
+			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
+			npc.PlayMeleeSound();
+			int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
+			npc.m_flAbilityOrAttack2 = 0.0;
 			SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 		}
 	}
@@ -263,7 +273,7 @@ void ApertureDevastatorPerfectedSelfDefense(ApertureDevastatorPerfected npc, flo
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", true);
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
@@ -283,9 +293,10 @@ void ApertureDevastatorPerfectedSelfDefense(ApertureDevastatorPerfected npc, flo
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					npc.m_flNextMeleeAttack = gameTime + 2.0;
-					npc.m_flAbilityOrAttack0 = 1.0;
-					npc.m_flAbilityOrAttack1 = 0.5;
+					npc.m_flNextMeleeAttack = gameTime + 2.5;
+					npc.m_flAbilityOrAttack0 = gameTime + 0.5;
+					npc.m_flAbilityOrAttack1 = gameTime + 1.0;
+					npc.m_flAbilityOrAttack2 = gameTime + 1.5;
 					float damage = 50.0, speed = 700.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 2.0;

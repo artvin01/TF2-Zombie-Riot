@@ -165,25 +165,23 @@ public void ApertureDevastatorV2_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	float gameTime = GetGameTime(npc.index);
 	float damage = 50.0, speed = 700.0;
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
 	if(npc.m_flAbilityOrAttack0)
 	{
-		if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
+		if(npc.m_flAbilityOrAttack0 <= GetGameTime(npc.index))
 		{
 			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
 			npc.PlayMeleeSound();
 			int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
 			npc.m_flAbilityOrAttack0 = 0.0;
-			npc.m_flAbilityOrAttack1 = 0.5;
 			SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 		}
 	}
 	if(npc.m_flAbilityOrAttack1)
 	{
-		if(npc.m_flAbilityOrAttack1 < GetGameTime(npc.index))
+		if(npc.m_flAbilityOrAttack1 <= GetGameTime(npc.index))
 		{
 			npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
 			npc.PlayMeleeSound();
@@ -284,8 +282,8 @@ void ApertureDevastatorV2SelfDefense(ApertureDevastatorV2 npc, float gameTime, i
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					npc.m_flNextMeleeAttack = gameTime + 2.0;
-					npc.m_flAbilityOrAttack0 = 1.0;
-					npc.m_flAbilityOrAttack1 = 0.5;
+					npc.m_flAbilityOrAttack0 = gameTime + 1.0;
+					npc.m_flAbilityOrAttack1 = gameTime + 1.5;
 					float damage = 50.0, speed = 700.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 2.0;
