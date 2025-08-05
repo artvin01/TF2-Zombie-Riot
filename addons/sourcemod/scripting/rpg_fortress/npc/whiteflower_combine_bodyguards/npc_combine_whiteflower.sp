@@ -1084,6 +1084,8 @@ void WhiteflowerKickLogic(int iNPC)
 	npc.GetVelocity(vel);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
 	if(b_IsGiant[iNPC])
 	{
 		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );

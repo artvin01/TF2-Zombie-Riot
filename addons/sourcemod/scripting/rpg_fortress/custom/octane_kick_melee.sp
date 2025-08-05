@@ -135,7 +135,6 @@ void OctaneKick_ClientPrethink(int client)
 void OctaneKick_Logic(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	static float vel[3];
 	static float flMyPos[3];
 	float vel[3];
 	
@@ -143,6 +142,8 @@ void OctaneKick_Logic(int iNPC)
 	vel[1] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[1]");
 	vel[2] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[2]");
 	
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	if(b_IsGiant[iNPC])
