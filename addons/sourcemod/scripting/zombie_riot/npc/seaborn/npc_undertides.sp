@@ -138,17 +138,21 @@ public void UnderTides_ClotThink(int iNPC)
 
 	float gameTime = GetGameTime();	// You can't stun it
 
-	/*if(npc.m_flNextDelayTime > gameTime)
+	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(npc.m_flNextThinkTime > gameTime)
-		return;
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;*/
-
+	/*
+	if(npc.m_flAbilityOrAttack0 < gameTime)
+	{
+		PrintToChatAll("ttest");
+		npc.SetCycle(0.0);
+		npc.m_flAbilityOrAttack0 = gameTime + 3.0;
+	}
+	*/
 	if(npc.Anger)
 	{
 		if(npc.m_flNextThinkTime > gameTime)

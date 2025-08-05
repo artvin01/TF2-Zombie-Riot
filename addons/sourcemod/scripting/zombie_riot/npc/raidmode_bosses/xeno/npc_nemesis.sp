@@ -278,7 +278,7 @@ methodmap RaidbossNemesis < CClotBody
 		if(XenoExtraLogic())
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS:");
+			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS.");
 		}
 		else
 		{
