@@ -1390,7 +1390,7 @@ methodmap Citizen < CClotBody
 				
 				HealEntityGlobal(client ? client : this.index, this.index, ReturnEntityMaxHealth(this.index) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
 
-				i_npcspawnprotection[this.index] = 1;
+				i_npcspawnprotection[this.index] = NPC_SPAWNPROT_UNSTUCK;
 				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(this.index), TIMER_FLAG_NO_MAPCHANGE);
 			}
 			else if(client)
