@@ -211,7 +211,7 @@ methodmap CAT < CClotBody
 	
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.50", "700", ally, false, true, true, true));
+		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.50", "5000", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -322,6 +322,16 @@ methodmap CAT < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}C.A.T{default}: CONTROL AGAINST TRESPASSERS, NOW ONLINE");
+			case 1:
+				CPrintToChatAll("{rare}C.A.T{default}: C.A.T, ENGAGED");
+			case 2:
+				CPrintToChatAll("{rare}C.A.T{default}: SYSTEM POWER-UP COMPLETE");
+		}
+
 		return npc;
 	}
 }
@@ -339,7 +349,7 @@ public void CAT_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}C.A.T{default}: Intruders taken care of.");
+		CPrintToChatAll("{rare}C.A.T{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
 		return;
 	}
 
@@ -348,7 +358,7 @@ public void CAT_ClotThink(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{blue}C.A.T{default}: We hope your stay at Aperture was pleasant!");
+		CPrintToChatAll("{rare}C.A.T{default}: IT IS TOO LATE TO LEAVE NOW, YOU HAVE BEEN MARKED AS A POTENTIAL THREAT TO THIS RACE");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -637,6 +647,22 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	
 	npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_READYING_UP;
 	npc.m_flNextOrbAbilityState = gameTime + 1.5;
+
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: PARTICLE RADIATOR IS {unique}READY");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: PREPARING FOR PARTICLE {crimson}DISPERSAL");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: PARTICLES ARE DONE {crimson}WARMING UP");
+		}
+	}
 }
 
 static void OrbSpam_Ability_Start(CAT npc)
@@ -686,6 +712,22 @@ static void OrbSpam_Ability_End(CAT npc)
 	
 	// If other attacks are ready, delay them a bit so they don't immediately activate
 	npc.m_flAbilityOrAttack0 = fmax(npc.m_flAbilityOrAttack0, gameTime + GetRandomFloat(5.0, 10.0));
+
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+		}
+	}
 }
 
 static void OrbSpam_Ability_Fire(CAT npc)
@@ -801,6 +843,21 @@ static void SelfDegradation_Ability_Start(CAT npc)
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING;
 	npc.m_flNextSelfDegradationAbilityState = gameTime + 1.5;
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: INITIATING SELF-DEGRADATION");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION IN PROCESS...");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SWITCHING TO SELF-DEGRADATION MODE");
+		}
+	}
 }
 
 static void SelfDegradation_Ability_Activate(CAT npc)
@@ -840,6 +897,22 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE;
 	npc.m_flNextSelfDegradationAbilityState = gameTime + CAT_SELF_DEGRADATION_ABILITY_DURATION;
+
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION: {unique}ACTIVATED");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+		}
+	}
 }
 
 static void SelfDegradation_Ability_Deactivate(CAT npc)
@@ -861,6 +934,22 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 	
 	// If other attacks are ready, delay them a bit so they don't immediately activate
 	npc.m_flNextRangedSpecialAttackHappens = fmax(npc.m_flNextRangedSpecialAttackHappens, gameTime + GetRandomFloat(3.0, 5.0));
+
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION {crimson}SHUTTING DOWN");
+		}
+	}
 }
 
 public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -875,8 +964,91 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	CAT_Weapon_Lines(npc, attacker);
+	i_SaidLineAlready[npc.index] = 0;
 	
 	return Plugin_Changed;
+}
+
+static void CAT_Weapon_Lines(CAT npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		
+		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "ANALYZING WEAPON... ... ... INSUFFICIENT DATA",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "IT APPEARS YOU HAVE STOLEN THIS WEAPON FROM SOMEONE, HAND IT OVER OR FACE CONSEQUENCES");
+			}
+		}
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "WEAPON'S ORIGIN CAN NOT BE DETERMINED",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "TECHNOLOGY APPEARS TO HAVE ADVANCED FORWARD, WITH THE LABS LEFT BEHIND, EVEN IF IT APPEARS TO BE A POORLY DESIGNED WEAPON");
+			}
+		}
+		case WEAPON_KIT_BLITZKRIEG_CORE:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "ANALYZING MODEL ... OLD PROTOTYPE DISCOVERED, GIVEN ITS POOR STATISTICS, DISREGARD");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "ESTIMATING OPPONENT'S THREAT LEVEL... UNDERWHELMING",client);
+			}
+		}
+		case WEAPON_KIT_PROTOTYPE, WEAPON_KIT_PROTOTYPE_MELEE:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "FIRST PROTOTYPE'S WEAPONRIES DETECTED",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "THE ANCESTORS OF THE GLORIOUS RACE WOULD'VE LOVED TO SEE YOU USING THESE FIREARMS...AND ALSO HATED YOU");
+			}
+		}
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		CPrintToChatAll("{rare}C.A.T{default}: %s", Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(15.0, 22.0);
+		b_said_player_weaponline[client] = true;
+	}
 }
 
 public void CAT_NPCDeath(int entity)
