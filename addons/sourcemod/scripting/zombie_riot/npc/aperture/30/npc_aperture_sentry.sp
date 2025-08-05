@@ -13,9 +13,8 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet3.wav",
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/sentry_shoot3.wav",
-};
+static const char g_FiringSound[] = "weapons/sentry_shoot3.wav";
+static const char g_RocketFiringSound[] = "weapons/sentry_rocket.wav";
 
 static bool AlternatingBarrel[MAXENTITIES];
 
@@ -25,7 +24,9 @@ void ApertureSentry_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	
+	PrecacheSound(g_FiringSound);
+	PrecacheSound(g_RocketFiringSound);
 	
 	PrecacheModel("models/buildables/sentry1_heavy.mdl");
 	PrecacheModel("models/buildables/sentry3.mdl");
@@ -65,9 +66,15 @@ methodmap ApertureSentry < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeSound()
+	
+	public void PlayShootSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_FiringSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
+	public void PlayRocketSound()
+	{
+		EmitSoundToAll(g_RocketFiringSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	public int GetValidSentryTarget()
@@ -328,7 +335,7 @@ void ApertureSentrySelfDefense(ApertureSentry npc, float gameTime, int target)
 	if (gameTime > npc.m_flNextMeleeAttack)
 	{
 		// At this point we know we can see and should shoot our target, let's avoid doing allat again
-		npc.PlayMeleeSound();
+		npc.PlayShootSound();
 		npc.AddGesture("ACT_RANGE_ATTACK1");
 		
 		float vecBarrelPos[3], vecBarrelAng[3], vecTraceAng[3];
@@ -371,7 +378,7 @@ void ApertureSentrySelfDefense(ApertureSentry npc, float gameTime, int target)
 	
 	if (gameTime > npc.m_flNextRangedAttack)
 	{
-		char model[64];
+		npc.PlayRocketSound();
 		npc.AddGesture("ACT_RANGE_ATTACK2", false);
 		
 		float damageDealt = 60.0;
@@ -379,7 +386,23 @@ void ApertureSentrySelfDefense(ApertureSentry npc, float gameTime, int target)
 		if (ShouldNpcDealBonusDamage(target))
 			damageDealt *= 3.0;
 		
-		npc.FireRocket(vecTargetPos, damageDealt, 450.0, "models/buildables/sentry3_rockets.mdl", .offset = 12.0, .inflictor = npc.index);
+		int rocket = npc.FireRocket(vecTargetPos, damageDealt, 450.0, "models/buildables/sentry3_rockets.mdl", .offset = 12.0, .inflictor = npc.index);
+		if (IsValidEntity(rocket))
+		{
+			float vecRocketPos[3], vecRocketAng[3];
+			GetAbsOrigin(rocket, vecRocketPos);
+			GetEntPropVector(rocket, Prop_Send, "m_angRotation", vecRocketAng);
+			
+			Initiate_HomingProjectile(rocket,
+			npc.index,
+			20.0,				// float lockonAngleMax,
+			20.0,				// float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			vecRocketAng,		// float AnglesInitiate[3];
+			target);			// int initialTarget
+		}
+	
 		npc.m_flNextRangedAttack = gameTime + 3.0;
 	}
 }
