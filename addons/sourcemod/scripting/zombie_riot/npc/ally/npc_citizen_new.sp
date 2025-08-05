@@ -2346,9 +2346,9 @@ void Citizen_UpdateStats(int entity, int type, int role)
 			case 2, 3:
 			{
 				// Speedy
-				npc.m_fGunDamage *= 0.75;
-				npc.m_fGunFirerate *= 0.75;
-				npc.m_fGunReload *= 0.75;
+				npc.m_fGunDamage *= 0.8;
+				npc.m_fGunFirerate *= 0.8;
+				npc.m_fGunReload *= 0.8;
 			}
 			case 4, 5:
 			{
@@ -2366,9 +2366,9 @@ void Citizen_UpdateStats(int entity, int type, int role)
 			case 7:
 			{
 				// Super Speed
-				npc.m_fGunDamage *= 0.5;
-				npc.m_fGunFirerate *= 0.5;
-				npc.m_fGunReload *= 0.5;
+				npc.m_fGunDamage *= 0.65;
+				npc.m_fGunFirerate *= 0.65;
+				npc.m_fGunReload *= 0.65;
 				npc.m_iGunClip *= 2;
 			}
 			case 8:
@@ -3358,9 +3358,12 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						npc.m_flNextMeleeAttack = gameTime + (npc.m_iHasPerk == npc.m_iGunType ? 0.16 : 0.2);
 						
-						int healing = RoundToCeil(npc.m_iGunValue * 0.0004);
-						if(healing > 20)
-							healing = 20;
+						int healing = RoundToCeil(npc.m_iGunValue * 0.004);
+						if(healing < 2)
+							healing = 2;
+
+						if(healing > 50)
+							healing = 50;
 						
 						if(team != TFTeam_Red)
 							healing *= 200;
@@ -3456,21 +3459,21 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							HealingCooldown[npc.index] = gameTime + 10.0;
 
-							float healing = npc.m_iGunValue * 0.015;
+							float healing = npc.m_iGunValue * 0.03;
 							if(team != TFTeam_Red)
-								healing *= 200;
+								healing *= 100;
 							
 							if(f_TimeUntillNormalHeal[ally] - 2.0 > GetGameTime())
 							{
-								healing *= 0.33;
+								healing *= 0.5;
 							}
 							int BeamIndex = ConnectWithBeam(npc.index, ally, 50, 125, 50, 1.5, 1.5, 1.35, "sprites/laserbeam.vmt");
 							SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 
-							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
-							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
+							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 7.0);
+							ApplyStatusEffect(npc.index, ally, "Healing Resolve", 7.0);
 							
 							if(ally <= MaxClients)
 								ClientCommand(ally, "playgamesound items/smallmedkit1.wav");
