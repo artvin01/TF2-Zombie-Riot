@@ -64,6 +64,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		" \n---Starter Store---\n[Big Sale] in this store!\nStarter Cash: {1}"
+		"ko"		" \n---초기 상점---\n이 상점은 [대할인] 중!\n초기 자금: {1}"
 	}
 	"Preview Mode Pap"
 	{

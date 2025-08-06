@@ -1556,6 +1556,7 @@
 	"Bubble Frenzy Desc"
 	{
 		"en" "(Only works on Bubble Wand)\nIncreases attackspeed by around 53％.\n{crimson}Multiplies damage dealt by x0.85."
+		"ko" "(방울 완드에만 적용)\n공격 속도가 53％ 증가.\n{crimson}총합 피해량이 0.85배로 감소."
 	}
 	"Trigger Finger"
 	{
@@ -1709,6 +1710,7 @@
 	"Plasmatic Rampage Desc"
 	{
 		"en" 	"+30％ dmg dealt, resist and attackspeed.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY Reduces Plasmic Elemental buildup penalty + cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
+		"ko" 	"피해량, 저항력, 공격 속도 +30％.\n능력 쿨타임이 절반으로 감소하고, 체력이 25％ 이하일때 추가 재생력을 얻음.\n플라즈마 원소 피해 축적 페널티와 쿨타임이 크게 감소.\n{darkviolet}하지만, 시간이 지날수록 플라즈마가 당신의 몸을 천천히 삼킬 것입니다..."
 	}
 	"Plasmatized Lethalitation"
 	{
