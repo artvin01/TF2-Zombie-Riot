@@ -268,7 +268,7 @@ public void ApertureSupporterPerfected_ClotThink(int iNPC)
 				if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedAttack = GameTime + 12.0;
-					ExpidonsaGroupHeal(npc.index, 600.0, 99, 7500.0, 4.0, false,Expidonsa_DontHealSameIndex,Aperture_GrantGrantness);
+					ExpidonsaGroupHeal(npc.index, 600.0, 99, 7500.0, 15.0, false,Expidonsa_DontHealSameIndex,Aperture_GrantGrantness);
 				}
 
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
