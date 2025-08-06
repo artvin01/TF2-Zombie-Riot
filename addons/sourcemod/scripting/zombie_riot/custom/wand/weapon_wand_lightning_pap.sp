@@ -39,8 +39,7 @@ public void Weapon_Wand_LightningPap2(int client, int weapon, bool &result, int 
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Ability has cooldown", client, Ability_CD);	
 		return;
 	}
-	Weapon_Wand_LightningSpell(client, weapon, result, slot);
-	Ability_Apply_Cooldown(client, slot, -1.0);
+	Weapon_Wand_LightningSpell_Internal(client, weapon, result, slot, true);
 	Weapon_Wand_LightningPap(client, weapon, result, slot);
 
 }

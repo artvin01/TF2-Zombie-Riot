@@ -63,8 +63,7 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
-		"ko"		" \n---초기 상점---\n이 상점은 물품 가격이 70％ 할인됨!\n초기 자금: {1}"
+		"en"		" \n---Starter Store---\n[Big Sale] in this store!\nStarter Cash: {1}"
 	}
 	"Preview Mode Pap"
 	{

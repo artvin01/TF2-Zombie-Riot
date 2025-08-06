@@ -1020,6 +1020,29 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 	NoBarneySpawn = view_as<bool>(kv.GetNum("no_barney", 0));
+
+	if(NoBarneySpawn)
+	{
+		//delete any rebels that exist to be sure.
+		int INPC = 0;
+		int a;
+		while((INPC = FindEntityByNPC(a)) != -1)
+		{
+			if(IsValidEntity(INPC))
+			{
+				if(INPC != 0 && Citizen_IsIt(INPC))
+				{
+					b_DissapearOnDeath[INPC] = true;
+					b_DoGibThisNpc[INPC] = true;
+					SmiteNpcToDeath(INPC);
+					SmiteNpcToDeath(INPC);
+					SmiteNpcToDeath(INPC);
+					SmiteNpcToDeath(INPC);
+				}
+			}
+		}
+		//Delete any existing rebels to be sure.
+	}
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
