@@ -1766,7 +1766,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
-
+	
+	if(HasSpecificBuff(victim, "Envenomed"))
+	{
+		bool venom = true;
+		if(venom)
+		{
+			venom = false;
+			GetEntProp(victim, Prop_Send, "m_iHealth");
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			HealEntityGlobal(victim, victim, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
+			RemoveSpecificBuff(victim, "Envenomed");
+			Force_ExplainBuffToClient(victim, "Envenomed");
+		}
+	}
 	if(HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))

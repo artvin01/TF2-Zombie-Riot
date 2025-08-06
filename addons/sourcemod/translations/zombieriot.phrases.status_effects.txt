@@ -1524,6 +1524,14 @@
 	{
 		"en"	"Reduces damage taken by 25％.\nIncreases attack speed by 25％.\nIncreases damage by 25％.\nIncreases NPC movement speed by 25％."
 	}
+	"Envenomed"
+	{
+		"en"	"Envenomed"
+	}
+	"Envenomed Desc"
+	{
+		"en"	"Brings your health down to 1, your health partially recovers overtime."
+	}
 	"Energizing Gel"
 	{
 		"en"	"Energizing Gel"
