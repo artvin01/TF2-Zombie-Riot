@@ -620,8 +620,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
 		int healing = RoundToFloor(i_damage_taken[npc.index]*0.15);
 
-		if(healing > RoundToFloor(Max_Health*0.75))
-			healing = RoundToFloor(Max_Health*0.75);
+		if(healing > RoundToFloor(Max_Health*0.35))
+			healing = RoundToFloor(Max_Health*0.35);
 
 		//CPrintToChatAll("Healing: %i",healing);
 			
