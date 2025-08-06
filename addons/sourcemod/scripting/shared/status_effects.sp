@@ -4679,6 +4679,19 @@ void StatusEffects_Construction()
 	data.LinkedStatusEffect 		= 0;
 	data.LinkedStatusEffectNPC 		= 0;
 	data.AttackspeedBuff			= 0.0;
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Starting Grace");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "G");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.85;
+	data.DamageDealMulti			= 0.25;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Anti-Waves");

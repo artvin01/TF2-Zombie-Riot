@@ -17,6 +17,7 @@ static DynamicHook g_DHookScoutSecondaryFire;
 
 #if defined ZR
 static bool IsRespawning;
+static DynamicHook g_DHookTakeDmgPlayer;
 #endif
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
@@ -82,6 +83,7 @@ void DHook_Setup()
 
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+	g_DHookTakeDmgPlayer = DHook_CreateVirtual(gamedata, "CTeamplayRules::FPlayerCanTakeDamage");
 
 #endif
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
@@ -1874,6 +1876,11 @@ bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
 #if defined ZR
+	if(g_DHookTakeDmgPlayer) 
+	{
+		g_DHookTakeDmgPlayer.HookGamerules(Hook_Pre, FPlayerCanTakeDamagePre);
+		g_DHookTakeDmgPlayer.HookGamerules(Hook_Post, FPlayerCanTakeDamagePost);
+	}
 	BannerWearableModelIndex[0]= PrecacheModel("models/weapons/c_models/c_buffbanner/c_buffbanner.mdl", true);
 	BannerWearableModelIndex[1]= PrecacheModel("models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl", true);
 	BannerWearableModelIndex[2]= PrecacheModel("models/weapons/c_models/c_shogun_warbanner/c_shogun_warbanner.mdl", true);
@@ -2300,3 +2307,19 @@ static MRESReturn DHookCallback_RecalculateChargeEffects_Pre(Address pShared, DH
 //	DHookSetParam(params, 1, true);
 	return MRES_Supercede;
 }
+
+
+
+#if defined ZR
+
+MRESReturn FPlayerCanTakeDamagePre(Address pThis, Handle hReturn, Handle hParams)
+{
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
+	return MRES_Ignored;
+}
+MRESReturn FPlayerCanTakeDamagePost(Address pThis, Handle hReturn, Handle hParams)
+{
+	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+	return MRES_Ignored;
+}
+#endif

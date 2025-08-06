@@ -58,7 +58,7 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
+		"en"		" \n---Starter Store---\n[Big Sale] in this store!\nStarter Cash: {1}"
 	}
 	"Preview Mode Pap"
 	{
@@ -971,6 +971,10 @@
 	"Not enough charge"
 	{
 		"en"		"Not enough charge."
+	}
+	"Fully Charge To Fire"
+	{
+		"en"		"Fully Charge To Fire your IEM"
 	}
 	"Rusty Ability Cooldown"
 	{
@@ -2573,7 +2577,7 @@
 	}	
 	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
+		"en"		"You have been Infected by Calmaticus!\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -4194,7 +4198,7 @@
 	}
 	"freeplay_start_2"
 	{
-		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull upto like 3.\nI have added some of my own wanna-be enemies to make sure you see the weirdest creations, we dont know the void."
 	}
 	"freeplay_start_3"
 	{
@@ -4206,7 +4210,7 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
+		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 	}
 	"Getting favorite loadout"
 	{
@@ -4218,11 +4222,7 @@
 	}
 	"Explain Construction 1"
 	{
-		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
-	}
-	"Explain Construction 2"
-	{
-		"en"		"Interact with ores on the map with your interact button (R Or T)!"
+		"en"		"Gather resources and build up your base, use your {yellow}''Research Center''{green} to upgrade, You have extra buildings in your builder menu."
 	}
 	"Explain Construction 3"
 	{

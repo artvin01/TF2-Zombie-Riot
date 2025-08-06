@@ -485,15 +485,28 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	
 	if(b_NpcIsInvulnerable[victim])
 		return;
-	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
-		return;
-	//cant void other voids!
-
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+
+	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
+	{
+		if(victim <= MaxClients && Armor_Charge[victim] > 0)
+		{
+			Armor_Charge[victim] -= damage;
+			if(Armor_Charge[victim] < 0)
+			{
+				Armor_Charge[victim] = 0;
+			}
+			ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
+		}
+
+		return;
+	}
+	//cant void other voids!
+
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 3;
@@ -1117,7 +1130,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 						IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
 						TF2_StunPlayer(victim, 1.0, 0.75, TF_STUNFLAG_SLOWDOWN);
-						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 150.0, 2.0, 0, 3);
+						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 0, 3);
 						float HudY = -1.0;
 						float HudX = -1.0;
 						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
@@ -1134,7 +1147,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 							theteam = 3;
 						else if(theteam == 3)
 							theteam = 2;
-						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 150.0, 2.0, 2, theteam);
+						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 2, theteam);
 					}
 					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 2.5;
 
@@ -1193,7 +1206,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				Cheese_SetPenalty(victim, (melee ? meleepenalty : rangedpenalty));
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 0.5, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 0.5, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
@@ -1233,7 +1246,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
 					}
 				}
-				PlasmicElemental_HealNearby(attacker, healing, position, 150.0, 1.0, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 1.0, 2, GetTeam(attacker));
 					
 				Repair = 0;
 				position[2] += 10.0;

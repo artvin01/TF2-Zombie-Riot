@@ -142,8 +142,6 @@ static int Freeplay_Info;
 static float MinibossScalingHandle = 1.0;
 static float Freeplay_TimeCash;
 static float Freeplay_CashTimeLeft;
-static float Freeplay_TimeExp;
-static float Freeplay_ExpTimeLeft;
 
 static int RelayCurrentRound = -1;
 static float OverrideScalingManually;
@@ -225,8 +223,6 @@ void Waves_MapStart()
 	Waves_UpdateMvMStats();
 	Freeplay_TimeCash = 0.0;
 	Freeplay_CashTimeLeft = 0.0;
-	Freeplay_TimeExp = 0.0;
-	Freeplay_ExpTimeLeft = 0.0;
 }
 
 int Waves_MapSeed()
@@ -1010,6 +1006,29 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 	NoBarneySpawn = view_as<bool>(kv.GetNum("no_barney", 0));
+
+	if(NoBarneySpawn)
+	{
+		//delete any rebels that exist to be sure.
+		int INPC = 0;
+		int a;
+		while((INPC = FindEntityByNPC(a)) != -1)
+		{
+			if(IsValidEntity(INPC))
+			{
+				if(INPC != 0 && Citizen_IsIt(INPC))
+				{
+					b_DissapearOnDeath[INPC] = true;
+					b_DoGibThisNpc[INPC] = true;
+					SmiteNpcToDeath(INPC);
+					SmiteNpcToDeath(INPC);
+					SmiteNpcToDeath(INPC);
+					SmiteNpcToDeath(INPC);
+				}
+			}
+		}
+		//Delete any existing rebels to be sure.
+	}
 	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 	Barracks_InstaResearchEverything = view_as<bool>(kv.GetNum("full_research"));
 	StartCash = kv.GetNum("cash", StartCash);
@@ -2682,19 +2701,9 @@ static Action Freeplay_ExtraCashTimer(Handle timer)
 	{
 		if(Freeplay_TimeCash > 0.0)
 		{
-			Freeplay_TimeCash -= 7.5;
+			Freeplay_TimeCash -= 3.5;
 			if(Freeplay_TimeCash < 0.0)
 				Freeplay_TimeCash = 0.0;
-		}
-	}
-
-	if(Freeplay_ExpTimeLeft < GetGameTime())
-	{
-		if(Freeplay_TimeExp > 0.0)
-		{
-			Freeplay_TimeExp -= 2.5;
-			if(Freeplay_TimeExp < 0.0)
-				Freeplay_TimeExp = 0.0;
 		}
 	}
 
@@ -2714,18 +2723,6 @@ void Freeplay_SetRemainingCash(float amount)
 	Freeplay_TimeCash = amount;
 }
 
-void Freeplay_SetExpTime(float duration)
-{
-	Freeplay_ExpTimeLeft = duration;
-}
-float Freeplay_GetRemainingExp()
-{
-	return Freeplay_TimeExp;
-}
-void Freeplay_SetRemainingExp(float amount)
-{
-	Freeplay_TimeExp = amount;
-}
 
 public void Medival_Wave_Difficulty_Riser(int difficulty)
 {

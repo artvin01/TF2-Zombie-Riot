@@ -10,7 +10,6 @@ static float flCorruptedLastDmg[MAXPLAYERS+1] = {0.0, ...};
 static float flCorruptedLastHealthTook[MAXPLAYERS+1] = {0.0, ...};
 static float flCorruptedLastHealthGain[MAXPLAYERS+1] = {0.0, ...};
 bool g_isPlayerInDeathMarch_HellHoe[MAXPLAYERS+1] = {false, ...};
-static float nextDeathMarch[MAXPLAYERS+1] = {0.0, ...};
 static int iCurrentAngelHit[MAXPLAYERS+1] = {1, ...};
 
 static float Healing_Projectile[MAXENTITIES]={0.0, ...};
@@ -137,7 +136,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 					Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 					Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 					
-					nextDeathMarch[client] = GetGameTime() + 20.0;
+					Ability_Apply_Cooldown(client, 2, 20.0,weapon);
 					g_isPlayerInDeathMarch_HellHoe[client] = false;
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
@@ -157,7 +156,8 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				{
 					TF2_StunPlayer(client, 2.0, 100.0, TF_STUNFLAGS_NORMALBONK);
 					isCorruptedNightmare[client] = false;
-					nextDeathMarch[client] = GetGameTime() + 10.0;
+					
+					Ability_Apply_Cooldown(client, 2, 10.0,weapon);
 					g_isPlayerInDeathMarch_HellHoe[client] = false;
 					
 					ClientCommand(client, "playgamesound ui/halloween_boss_summoned_monoculus.wav");
@@ -217,7 +217,7 @@ void HellHoe_AoeDamageLogic(int entity, int victim, float damage, int weapon)
 	flCorruptedLastHealthTook[entity] *= 1.015;
 }
 
-public Action Weapon_Junker_Staff(int client, int weapon, const char[] classname, bool &result)
+public Action Weapon_Junker_Staff(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 	if(mana_cost <= Current_Mana[client])
@@ -245,7 +245,7 @@ public Action Weapon_Junker_Staff(int client, int weapon, const char[] classname
 		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "drg_manmelter_projectile");
 		
-		result = isStrikeHorizontal[client];
+		crit = isStrikeHorizontal[client];
 		return Plugin_Changed;
 	}
 	else
@@ -258,7 +258,7 @@ public Action Weapon_Junker_Staff(int client, int weapon, const char[] classname
 	}
 }
 
-public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] classname, bool &result)
+public Action Weapon_Junker_Staff_PAP1(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 	if(mana_cost <= Current_Mana[client])
@@ -293,7 +293,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 		}
 		
 		
-		result = isStrikeHorizontal[client];
+		crit = isStrikeHorizontal[client];
 		return Plugin_Changed;
 	}
 	else
@@ -308,7 +308,7 @@ public Action Weapon_Junker_Staff_PAP1(int client, int weapon, const char[] clas
 
 /* Got a better idea for that
 
-public Action Weapon_Junker_Staff_PAP2(int client, int weapon, const char[] classname, bool &result)
+public Action Weapon_Junker_Staff_PAP2(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 	if(mana_cost <= Current_Mana[client])
@@ -336,7 +336,7 @@ public Action Weapon_Junker_Staff_PAP2(int client, int weapon, const char[] clas
 		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		HellHoeLaunch(client, weapon, damage, speed, time, 7, 50.0, "drg_manmelter_projectile", _, true);
 		
-		result = isStrikeHorizontal[client];
+		crit = isStrikeHorizontal[client];
 		return Plugin_Changed;
 	}
 	else
@@ -350,7 +350,7 @@ public Action Weapon_Junker_Staff_PAP2(int client, int weapon, const char[] clas
 }
 */
 
-public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname, bool &result)
+public Action Weapon_Angel_Sword(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
@@ -379,7 +379,7 @@ public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname,
 		HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "drg_manmelter_projectile");
 		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		
-		result = isStrikeHorizontal[client];
+		crit = isStrikeHorizontal[client];
 		return Plugin_Changed;
 	}
 	else
@@ -392,7 +392,7 @@ public Action Weapon_Angel_Sword(int client, int weapon, const char[] classname,
 	}
 }
 
-public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classname, bool &result)
+public Action Weapon_Angel_Sword_PAP(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
@@ -421,7 +421,7 @@ public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classn
 		HellHoeLaunch(client, weapon, damage, speed, time, 7, 50.0, "drg_manmelter_projectile", -2.0);
 		EmitSoundToAll(SOUND_WAND_JUNKER_SHOT, client, 80, _, _, 1.0);
 		
-		result = isStrikeHorizontal[client];
+		crit = isStrikeHorizontal[client];
 		return Plugin_Changed;
 	}
 	else
@@ -436,7 +436,7 @@ public Action Weapon_Angel_Sword_PAP(int client, int weapon, const char[] classn
 
 
 
-public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bool &result)
+public Action Weapon_Hell_Hoe(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
@@ -467,18 +467,17 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 			int HealthToUse = 100;/*= SDKCall_GetMaxHealth(client)*/
 			int health = GetClientHealth(client);
 			
-			if (health > HealthToUse) {
+			if (health > HealthToUse) 
+			{
 				int newHealth = health - HealthToUse;
-				
-				if (newHealth > HealthToUse)
-					newHealth = HealthToUse;
 					
 				SetEntProp(client, Prop_Data, "m_iHealth", newHealth);
 				
 				EmitSoundToAll(SOUND_HELL_HOE, client, 80, _, _, 1.0);
 				HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "spell_teleport_red", 0.008);
 			}
-			else {
+			else 
+			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
@@ -490,7 +489,7 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 			HellHoeLaunch(client, weapon, damage, speed, time, 5, 50.0, "spell_teleport_red", -1.0);
 		}
 		
-		result = isStrikeHorizontal[client];
+		crit = isStrikeHorizontal[client];
 		return Plugin_Changed;
 	}
 	else
@@ -503,14 +502,15 @@ public Action Weapon_Hell_Hoe(int client, int weapon, const char[] classname, bo
 	}
 }
 
-public void Hell_Hoe_Transformation(int client, int weapon, bool crit) {
+public void Hell_Hoe_Transformation(int client, int weapon, bool crit, int slot) {
 	if (!g_isPlayerInDeathMarch_HellHoe[client])
 	{
-		if (nextDeathMarch[client] > GetGameTime()) {
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
+		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Let the beast sleeps", nextDeathMarch[client] - GetGameTime());
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Let the beast sleeps", Ability_Check_Cooldown(client, slot));
 			return;
 		}
 		
@@ -521,7 +521,7 @@ public void Hell_Hoe_Transformation(int client, int weapon, bool crit) {
 	}
 	else
 	{
-		nextDeathMarch[client] = GetGameTime() + 10.0;
+		Ability_Apply_Cooldown(client, slot, 10.0);
 		g_isPlayerInDeathMarch_HellHoe[client] = false;
 		isCorruptedNightmare[client] = false;
 		SetDefaultHudPosition(client);
@@ -530,14 +530,16 @@ public void Hell_Hoe_Transformation(int client, int weapon, bool crit) {
 	}
 }
 
-public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
+public void Angel_Sword_Transformation(int client, int weapon, bool crit, int slot)
+ {
 	if (!g_isPlayerInDeathMarch_HellHoe[client])
 	{
-		if (nextDeathMarch[client] > GetGameTime()) {
+		if(Ability_Check_Cooldown(client, slot) > 0.0)
+		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Wait for power", nextDeathMarch[client] - GetGameTime());
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Wait for power", Ability_Check_Cooldown(client, slot));
 			return;
 		}
 		
@@ -566,7 +568,7 @@ public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
 		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 		Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 		
-		nextDeathMarch[client] = GetGameTime() + 20.0;
+		Ability_Apply_Cooldown(client, slot, 20.0);
 		g_isPlayerInDeathMarch_HellHoe[client] = false;
 		isCorruptedNightmare[client] = false;
 		SetDefaultHudPosition(client);
@@ -576,7 +578,7 @@ public void Angel_Sword_Transformation(int client, int weapon, bool crit) {
 	}
 }
 
-public void Weapon_Hell_Hoe_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Hell_Hoe_M2(int client, int weapon, bool crit, int slot)
 {
 	if (!g_isPlayerInDeathMarch_HellHoe[client]) {
 		if (!isStrikeHorizontal[client])
@@ -592,7 +594,7 @@ public void Weapon_Hell_Hoe_M2(int client, int weapon, const char[] classname, b
 	}
 }
 
-public void Weapon_Angel_Sword_PAP_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Angel_Sword_PAP_M2(int client, int weapon, bool crit, int slot)
 {
 	if (!g_isPlayerInDeathMarch_HellHoe[client]) {
 		if (!isStrikeHorizontal[client])
@@ -649,7 +651,7 @@ public void Weapon_Angel_Sword_PAP_M2(int client, int weapon, const char[] class
 
 
 
-public void Weapon_Hell_Hoe_PAP_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Hell_Hoe_PAP_M2(int client, int weapon, bool crit, int slot)
 {
 	if (!g_isPlayerInDeathMarch_HellHoe[client]) {
 		if (!isStrikeHorizontal[client])
@@ -663,9 +665,11 @@ public void Weapon_Hell_Hoe_PAP_M2(int client, int weapon, const char[] classnam
 			PrintHintText(client, "Weapon Mode: Vertical");
 		}
 	}
-	else {
-		if (isCorruptedNightmare[client]) {
-			nextDeathMarch[client] = GetGameTime() + 10.0;
+	else 
+	{
+		if (isCorruptedNightmare[client]) 
+		{
+			Ability_Apply_Cooldown(client, slot, 10.0);
 			g_isPlayerInDeathMarch_HellHoe[client] = false;
 			isCorruptedNightmare[client] = false;
 			ClientCommand(client, "playgamesound misc/halloween/spell_spawn_boss_disappear.wav");
@@ -673,7 +677,8 @@ public void Weapon_Hell_Hoe_PAP_M2(int client, int weapon, const char[] classnam
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Evil hoe off");
 		}
-		else {
+		else 
+		{
 			ClientCommand(client, "playgamesound misc/halloween/spell_spawn_boss.wav");
 			isCorruptedNightmare[client] = true;
 			
@@ -927,16 +932,12 @@ public void Event_Hell_Hoe_OnHatTouch(int entity, int target)
 				}
 			}
 		}
-		
-		if(f_WandDamage[entity] <= 1.0)
+		//reemove on hit.
+		if(IsValidEntity(particle) && particle != 0)
 		{
-			//damage so low it doesnt even matter.+
-			if(IsValidEntity(particle) && particle != 0)
-			{
-				RemoveEntity(particle);
-			}
-			RemoveEntity(entity);
+			RemoveEntity(particle);
 		}
+		RemoveEntity(entity);
 	}
 	else if(target == 0)
 	{

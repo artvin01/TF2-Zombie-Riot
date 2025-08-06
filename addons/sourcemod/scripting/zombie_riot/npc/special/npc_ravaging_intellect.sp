@@ -926,7 +926,7 @@ void Ravaging_SaySpecialLine()
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client) && GetTeam(client) == 2)
 		{
 			static char buffer[96];
 			GetClientName(client, buffer, sizeof(buffer));
@@ -980,7 +980,10 @@ void Ravaging_SaySpecialLine()
 			{
 				victim[victims++] = client;
 			}
-			break;
+			else if(StrEqual(buffer, "Black_Knight", false))
+			{
+				victim[victims++] = client;
+			}
 		}
 	}
 	if(victims)
@@ -1027,7 +1030,7 @@ void Ravaging_SaySpecialLine()
 			else if(StrEqual(buffer, "ficool2", false))
 			{
 				
-				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Arent you supposed to be chilling vscript some more {crimson}%N{default}?",client);
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Aren't you supposed to be shilling vscript some more {crimson}%N{default}?",client);
 			}
 			else if(StrEqual(buffer, "riversid", false))
 			{
@@ -1053,6 +1056,11 @@ void Ravaging_SaySpecialLine()
 			{
 				
 				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: I vote {crimson}%N{default} for admin! (i dont know who you are)",client);
+			}
+			else if(StrEqual(buffer, "Black_Knight", false))
+			{
+				
+				CPrintToChatAll("{darkblue}Ravaging Intellect{default}: Seems i have some hardware issues, can you help me out {crimson}%N{default} ?",client);
 			}
 		}
 	}

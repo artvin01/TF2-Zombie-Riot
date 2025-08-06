@@ -174,7 +174,7 @@
 	{
 		"en" 		"W.F. Overlord"
 	}
-	"Scout Assulter"
+	"Scout Assaulter"
 	{
 		"en" 		"Scout Assaulter"
 		"ru" 		"Разведчик-нападающий"
@@ -430,7 +430,7 @@
 	{
 		"en" 		"Xeno Overlord"
 	}
-	"Xeno Scout Assulter"
+	"Xeno Scout Assaulter"
 	{
 		"en" 		"Xeno Scout Assaulter"
 		"ru" 		"Ксеноразведчик-нападающий"
@@ -3749,37 +3749,37 @@
 	}
 	"Basebreaker"
 	{
-		"en"	"Trooper  Basebreaker"
+		"en"	"Trooper Basebreaker"
 		"ko"	"트루퍼 기지파괴자"
 	}
 	"Booster"
 	{
-		"en"	"Trooper  Booster"
+		"en"	"Trooper Booster"
 		"ko"	"트루퍼 부스터"
 	}
 	"Scorcher"
 	{
-		"en"	"Trooper  Scorcher"
+		"en"	"Trooper Scorcher"
 		"ko"	"트루퍼 방화병"
 	}	
 	"Mowdown"
 	{
-		"en"	"Trooper  Mowdown"
+		"en"	"Trooper Mowdown"
 		"ko"	"트루퍼 벌집피자 제조기"
 	}
 	"Mechafist"
 	{
-		"en"	"Trooper  Mechafist"
+		"en"	"Trooper Mechafist"
 		"ko"	"트루퍼 메카피스트"
 	}
-	"Assulter"
+	"Assaulter"
 	{
-		"en"	"Trooper  Assulter"
+		"en"	"Trooper Assaulter"
 		"ko"	"트루퍼 보병"
 	}
-	"Cyborg Assulter"
+	"Cyborg Assaulter"
 	{
-		"en"	"Cyborg Assulter"
+		"en"	"Cyborg Assaulter"
 	}
 	"Anti-Armor Infantry"
 	{

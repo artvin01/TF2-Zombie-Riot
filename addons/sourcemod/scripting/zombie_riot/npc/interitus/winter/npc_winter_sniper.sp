@@ -290,7 +290,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 			return 0;
 		}
 	}
-	if(Rogue_Mode() && i_npcspawnprotection[npc.index] == 1)
+	if(Rogue_Mode() && i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
 		return 0;
 
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);

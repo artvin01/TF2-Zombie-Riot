@@ -767,11 +767,11 @@ static void Beam_Wand_pap_Hud(int client, bool type, int duration)
 			}
 			else if(i_cannon_charge[client]<BEAM_WAND_CANNON_ABILITY_COST)
 			{
-				PrintHintText(client,"Paricle Cannon | Charge: [%i%/%i]", i_cannon_charge[client], BEAM_WAND_CANNON_ABILITY_COST);
+				PrintHintText(client,"Particle Cannon | Charge: [%i%/%i]", i_cannon_charge[client], BEAM_WAND_CANNON_ABILITY_COST);
 			}
 			else
 			{
-				PrintHintText(client,"Paricle Cannon | Charge: [FULL!]");
+				PrintHintText(client,"Particle Cannon | Charge: [FULL!]");
 			}
 		}
 		else

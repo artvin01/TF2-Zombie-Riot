@@ -59,7 +59,7 @@ public void XenoScout_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Scout Assulter");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Scout Assaulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_scout_grave");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
 	data.IconCustom = false;

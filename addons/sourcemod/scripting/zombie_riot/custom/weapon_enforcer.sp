@@ -161,11 +161,11 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 			{
 				case 0:
 				{
-					knockback *= 1.25;
+					knockback *= 0.75;
 				}
 				case 2:
 				{
-					knockback *= 0.75;
+					knockback *= 0.65;
 				}
 				case 3:
 				{

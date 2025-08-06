@@ -34,7 +34,7 @@ void Wind_Staff_MapStart()
 	TBB_Precache_Wind_Staff();
 }
 
-public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wind_Staff(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -113,7 +113,7 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 }
 
 
-public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wind_StaffM2(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -393,7 +393,7 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 		damage *= Attributes_Get(weapon, 410, 1.0);
 			
 		Damage_Tornado[iCarrier] = damage;
-		Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
+		Duration_Tornado[iCarrier] = GetGameTime() + 2.0;
 		flCarrierPos[2] += 5.0;
 		
 		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);

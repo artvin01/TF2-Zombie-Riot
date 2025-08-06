@@ -3059,7 +3059,7 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
-		{
+		{ 
 			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 20)
 			{
 				float CurrentLevel = float(Level[client]);
@@ -3073,9 +3073,11 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 			}
 		}
 	}
-
-	if(rebels)
-		ScaleReturn += Citizen_Count() * rebels;
+	
+	//in construction mode, rebels are not THAT usefull toi warrant extra scaling, so it is blocked in this mode.
+	if(!Construction_Mode())
+		if(rebels)
+			ScaleReturn += Citizen_Count() * rebels;
 
 	if(!IgnoreMulti)
 		ScaleReturn *= zr_multi_scaling.FloatValue;
@@ -3614,7 +3616,7 @@ public void CauseDamageLaterSDKHooks_Takedamage(DataPack pack)
 	playerPos[1] = pack.ReadFloat();
 	playerPos[2] = pack.ReadFloat();
 	int damage_type_Custom = pack.ReadCell();
-	if(IsValidEntity(Victim) && IsValidEntity(client) && IsValidEntity(weapon) && IsValidEntity(inflictor))
+	if(IsValidEntity(Victim) && IsValidEntity(client)/* && IsValidEntity(weapon) */&& IsValidEntity(inflictor))
 	{
 		SDKHooks_TakeDamage(Victim, client, inflictor, damage, damage_type, weapon, damage_force, playerPos, _,damage_type_Custom);
 	}

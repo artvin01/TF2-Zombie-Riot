@@ -58,10 +58,7 @@ void ConVar_PluginStart()
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
 
-//	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
-#if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0");
-#endif
 
 #if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");
@@ -108,7 +105,7 @@ void ConVar_PluginStart()
 	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 	
 	//default should be 0.5
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.5", "How long zombie spawn protection lasts for.");
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.2", "How long zombie spawn protection lasts for.");
 #endif
 
 #if defined ZR || defined RTS	

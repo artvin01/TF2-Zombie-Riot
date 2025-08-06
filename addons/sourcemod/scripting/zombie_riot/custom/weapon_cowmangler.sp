@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-public void Weapon_Mangler(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Mangler(int client, int weapon, bool crit, int slot)
 {
 	int new_ammo = GetAmmo(client, 23);
 	if(new_ammo < 10)
@@ -93,7 +93,7 @@ void PlayerLaserDoDamageCombined(Player_Laser_Logic Laser, float Close_Dps, floa
 }
 
 
-public void Weapon_ManglerLol(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_ManglerLol(int client, int weapon, bool crit, int slot)
 {
 	float damage = 112.0;
 	damage *= Attributes_Get(weapon, 1, 1.0);
@@ -112,7 +112,7 @@ public void Weapon_ManglerLol(int client, int weapon, const char[] classname, bo
 }
 
 float AttackDelayBobGun[MAXPLAYERS];
-public void Weapon_BobsGunBullshit(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_BobsGunBullshit(int client, int weapon, bool crit, int slot)
 {
 	AttackDelayBobGun[client] = 0.0;
 	SDKUnhook(client, SDKHook_PreThink, BobsGunM2_PreThink);
