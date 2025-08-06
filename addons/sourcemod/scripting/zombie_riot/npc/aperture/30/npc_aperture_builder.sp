@@ -19,10 +19,10 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/engineer_battlecry01.mp3",
-	"vo/engineer_battlecry03.mp3",
-	"vo/engineer_battlecry04.mp3",
-	"vo/engineer_battlecry05.mp3",
+	"vo/engineer_taunts06.mp3",
+	"vo/engineer_meleedare01.mp3",
+	"vo/engineer_meleedare02.mp3",
+	"vo/engineer_meleedare03.mp3",
 };
 
 static const char g_BuildingSentrySounds[][] = {
@@ -41,6 +41,8 @@ static const char g_BuildingTeleporterSounds[][] = {
 };
 
 static const char g_BuildingBuiltSound[] = "weapons/sentry_finish.wav";
+
+static const char g_OutOfMyWaySound[] = "vo/engineer_sentrymoving02.mp3";
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/cbar_hitbod1.wav",
@@ -85,6 +87,7 @@ void ApertureBuilder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	
 	PrecacheSound(g_BuildingBuiltSound);
+	PrecacheSound(g_OutOfMyWaySound);
 	
 	PrecacheModel("models/player/engineer.mdl");
 	PrecacheModel("models/weapons/c_models/c_wrench/c_wrench.mdl");
@@ -134,6 +137,15 @@ methodmap ApertureBuilder < CClotBody
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
+	public void PlayOutOfMyWaySound()
+	{
+		if (this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_OutOfMyWaySound, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(6.0, 12.0);
 	}
 	
 	public void PlayBuildingSentrySound() 
@@ -721,6 +733,13 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				}
 				
 				ApertureBuilderSelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget); 
+				
+				if (i_NpcIsABuilding[npc.m_iTarget])
+				{
+					// You want me to attack a building? bruhhhhhhhhh I BUILD SHIT I know better... my sentry will do that instead
+					npc.m_bCurrentlyReturning = false;
+					npc.m_iState = APT_BUILDER_STATE_RETURNING_TO_NEST;
+				}
 			}
 			else
 			{
@@ -736,9 +755,27 @@ public void ApertureBuilder_ClotThink(int iNPC)
 		{
 			if (!npc.m_bCurrentlyReturning)
 			{
+				npc.m_flNextIdleSound = 0.0;
 				npc.m_flSpeed = 300.0;
 				npc.StartPathing();
 				npc.m_bCurrentlyReturning = true;
+			}
+			
+			// Continue targetting enemies in this state, but don't move towards them
+			if (npc.m_flGetClosestTargetTime < gameTime)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index, .fldistancelimit = 200.0);
+				npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+			}
+			
+			if (IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float distance = ApertureBuilder_GetEntityDistance(npc.index, npc.m_iTarget, true);
+				ApertureBuilderSelfDefense(npc, gameTime, npc.m_iTarget, distance); 
+			}
+			else
+			{
+				npc.m_flGetClosestTargetTime = 0.0;
 			}
 			
 			int building = EntRefToEntIndex(npc.GetAnyBuilding());
@@ -821,6 +858,27 @@ void ApertureBuilderSelfDefense(ApertureBuilder npc, float gameTime, int target,
 					float damageDealt = 25.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
+					
+					if (npc.m_bCurrentlyReturning)
+					{
+						// get out of my FUCKING way
+						if (ShouldNpcDealBonusDamage(target))
+						{
+							damageDealt *= 35.0;
+						}
+						else
+						{
+							Custom_Knockback(npc.index, target, 1250.0);
+							
+							if (target > 0 && target <= MaxClients)
+							{
+								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+							}
+						}
+						
+						npc.PlayOutOfMyWaySound();
+					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -857,8 +915,8 @@ void ApertureBuilderSelfDefense(ApertureBuilder npc, float gameTime, int target,
 static float ApertureBuilder_GetEntityDistance(int entity, int other, bool squared = true)
 {
 	float vecPos1[3], vecPos2[3];
-	GetAbsOrigin(entity, vecPos1);
-	GetAbsOrigin(other, vecPos2);
+	WorldSpaceCenter(entity, vecPos1);
+	WorldSpaceCenter(other, vecPos2);
 	
 	return GetVectorDistance(vecPos1, vecPos2, squared);
 }
