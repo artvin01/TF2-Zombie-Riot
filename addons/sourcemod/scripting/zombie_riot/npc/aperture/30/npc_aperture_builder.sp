@@ -57,8 +57,8 @@ enum
 	APT_BUILDER_STATE_IDLE,
 	APT_BUILDER_STATE_WANTS_TO_BUILD,
 	APT_BUILDER_STATE_BUILDING,
-	APT_BUILDER_STATE_WANTS_TO_REPAIR,
-	APT_BUILDER_STATE_REPAIRING,
+	APT_BUILDER_STATE_ANGRY,
+	APT_BUILDER_STATE_RETURNING_TO_NEST,
 }
 
 enum
@@ -70,10 +70,6 @@ enum
 	
 	APT_BUILDER_BUILDING_COUNT,
 }
-
-static int BuildingsPlaced[MAXENTITIES];
-static float NextBuildingTime[MAXENTITIES];
-static bool QuickBuildings[MAXENTITIES];
 
 static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
@@ -164,28 +160,40 @@ methodmap ApertureBuilder < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	
 	property int m_iBuildingsPlaced
 	{
-		public get()							{ return BuildingsPlaced[this.index]; }
-		public set(int TempValueForProperty) 	{ BuildingsPlaced[this.index] = TempValueForProperty; }
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
 	
-	property float m_flNextBuildingTime
+	property float m_flNextBuildingStateTime
 	{
-		public get()							{ return NextBuildingTime[this.index]; }
-		public set(float TempValueForProperty) 	{ NextBuildingTime[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	
+	property float m_flNextHangOutTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
 	property bool m_bQuickBuildings
 	{
-		public get()							{ return QuickBuildings[this.index]; }
-		public set(bool TempValueForProperty) 	{ QuickBuildings[this.index] = TempValueForProperty; }
+		public get()							{ return b_Anger[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Anger[this.index] = TempValueForProperty; }
+	}
+	
+	property bool m_bCurrentlyReturning
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
 	
 	public ApertureBuilder(float vecPos[3], float vecAng[3], int ally)
@@ -216,9 +224,11 @@ methodmap ApertureBuilder < CClotBody
 		
 		// We just spawned, our mission is to build our shit asap
 		npc.m_bQuickBuildings = true;
-		npc.m_flNextBuildingTime = GetGameTime() + 0.75;
-		
+		npc.m_flNextBuildingStateTime = GetGameTime() + 0.75;
 		npc.m_iBuildingsPlaced = 0;
+		
+		npc.m_bCurrentlyReturning = false;
+		npc.m_flNextHangOutTime = 0.0;
 
 		i_BuildingRefs[npc.index][APT_BUILDER_SENTRY] = INVALID_ENT_REFERENCE;
 		i_BuildingRefs[npc.index][APT_BUILDER_DISPENSER] = INVALID_ENT_REFERENCE;
@@ -280,9 +290,9 @@ methodmap ApertureBuilder < CClotBody
 		return npc;
 	}
 	
-	public int NeedsToBuild()
+	public int GetWhatToBuild()
 	{
-		// We have a priority order: Sentry, Teleporter, Dispenser
+		// We have a priority order for building: Sentry, Teleporter, Dispenser
 		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_SENTRY]))
 			return APT_BUILDER_SENTRY;
 		
@@ -293,6 +303,65 @@ methodmap ApertureBuilder < CClotBody
 			return APT_BUILDER_DISPENSER;
 		
 		return APT_BUILDER_NONE;
+	}
+	
+	public int GetAnyBuilding()
+	{
+		// We don't care about which, just go for one!!!!
+		for (int i = 0; i < APT_BUILDER_BUILDING_COUNT; i++)
+		{
+			int ref = i_BuildingRefs[this.index][i];
+			if (IsValidEntity(ref) && IsValidAlly(this.index, EntRefToEntIndex(ref)))
+				return ref;	
+		}
+		
+		return INVALID_ENT_REFERENCE;
+	}
+	
+	public int GetRandomBuilding(bool excludeClosest)
+	{
+		// We DO care about which, pick wisely
+		int building = INVALID_ENT_REFERENCE;
+		ArrayList buildingList = new ArrayList();
+		
+		int closestIndex;
+		int index;
+		float closestDist = -1.0;
+		
+		for (int i = 0; i < APT_BUILDER_BUILDING_COUNT; i++)
+		{
+			int ref = i_BuildingRefs[this.index][i];
+			if (IsValidEntity(ref) && IsValidAlly(this.index, EntRefToEntIndex(ref)))
+			{
+				buildingList.Push(ref);
+				
+				if (excludeClosest)
+				{
+					float distance = ApertureBuilder_GetEntityDistance(this.index, ref, true);
+					if (closestDist <= 0.0 || distance < closestDist)
+					{
+						closestIndex = index++;
+						closestDist = distance;
+					}
+				}
+			}
+		}
+		
+		int length = buildingList.Length;
+		if (length > 0)
+		{
+			if (excludeClosest && length != 1)
+			{
+				buildingList.Erase(closestIndex);
+				length--;
+			}
+			
+			building = buildingList.Get(GetURandomInt() % length);
+		}
+		
+		delete buildingList;
+		
+		return building;
 	}
 	
 	public void ToggleBuilding(bool toggle)
@@ -355,19 +424,68 @@ public void ApertureBuilder_ClotThink(int iNPC)
 	{
 		case APT_BUILDER_STATE_IDLE:
 		{
-			if (npc.m_flNextBuildingTime < gameTime)
+			npc.m_iTarget = 0;
+			
+			if (npc.m_flNextBuildingStateTime < gameTime)
 			{
-				if (npc.NeedsToBuild() != APT_BUILDER_NONE)
+				if (npc.GetWhatToBuild() != APT_BUILDER_NONE)
 				{
+					npc.m_flNextHangOutTime = gameTime;
 					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
 					npc.m_iState = APT_BUILDER_STATE_WANTS_TO_BUILD;
 					
 					return;
 				}
+			}
+			
+			// Let players kite builders away from nests, but it'll work a little differently
+			if (npc.m_flGetClosestTargetTime < gameTime)
+			{
+				int target = GetClosestTarget(npc.index, .fldistancelimit = 400.0, .onlyPlayers = true);
+				if (IsValidEnemy(npc.index, target))
+				{
+					npc.m_iTarget = target;
+					npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+					npc.m_iState = APT_BUILDER_STATE_ANGRY;
+					npc.m_flSpeed = 300.0;
+					npc.StartPathing();
+					return;
+				}
+			}
+			
+			float vecPos[3];
+			
+			if (npc.m_flNextHangOutTime <= gameTime)
+			{
+				// Hang out around our nest
+				npc.m_flSpeed = 80.0;
+				
+				int building = EntRefToEntIndex(npc.GetRandomBuilding(true));
+				if (building > MaxClients)
+				{
+					GetAbsOrigin(building, vecPos);
+					f3_NpcSavePos[npc.index] = vecPos;
+					npc.StartPathing();
+				}
 				else
 				{
-					npc.m_flNextBuildingTime = gameTime + 1.5;
-					// TODO: Maybe think about repairing stuff while in this state?
+					Zero(f3_NpcSavePos[npc.index]);
+				}
+				
+				npc.m_flNextHangOutTime = gameTime + 1.5;
+			}
+			
+			if (GetVectorLength(f3_NpcSavePos[npc.index], true))
+			{
+				GetAbsOrigin(npc.index, vecPos);
+				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 4000.0)
+				{
+					npc.StopPathing();
+					Zero(f3_NpcSavePos[npc.index]);
+				}
+				else
+				{
+					npc.SetGoalVector(f3_NpcSavePos[npc.index]);
 				}
 			}
 		}
@@ -377,7 +495,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			float vecPos[3];
 			GetAbsOrigin(npc.index, vecPos);
 			
-			if (npc.m_flNextBuildingTime < gameTime)
+			if (npc.m_flNextBuildingStateTime < gameTime)
 			{
 				if (!GetVectorLength(f3_NpcSavePos[npc.index], true))
 				{
@@ -415,6 +533,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if (navAttribs & NAV_MESH_AVOID)
 							continue;
 						
+						// The teleporter might spawn giants!
 						float vecMins[3] = { -35.0, -35.0, 0.0 };
 						float vecMaxs[3] = { 35.0, 35.0, 130.0 };
 						
@@ -445,9 +564,24 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if (other != INVALID_ENT_REFERENCE)
 							continue;
 						
+						// Ensure the center of the nav mesh is accessible as well, so we can walk on it later
+						float vecCenterPos[3];
+						area.GetCenter(vecCenterPos);
+						
+						vecPotentialPos[2] += 1.0;
+						vecMins = { -24.0, -24.0, 0.0 };
+						vecMaxs = { 24.0, 24.0, 82.0 };
+						
+						if (IsBoxHazard(vecCenterPos, vecMins, vecMaxs))
+							continue;
+						
+						if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, npc.index))
+							continue;
+						
 						// Congratulations little fella, you got a place to go
 						npc.ToggleBuilding(true);
 						npc.m_iTarget = 0;
+						npc.m_flSpeed = 300.0;
 						success = true;
 						f3_NpcSavePos[npc.index] = vecPotentialPos;
 						npc.StartPathing();
@@ -459,7 +593,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					{
 						// Epic fail, try again in a little bit
 						npc.m_iState = APT_BUILDER_STATE_IDLE;
-						npc.m_flNextBuildingTime = gameTime + 1.5;
+						npc.m_flNextBuildingStateTime = gameTime + 1.5;
 					}
 				
 					return;
@@ -471,7 +605,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 0.6);
 					npc.StopPathing();
 					npc.m_iState = APT_BUILDER_STATE_BUILDING;
-					npc.m_flNextBuildingTime = gameTime + 0.5;
+					npc.m_flNextBuildingStateTime = gameTime + 0.5;
 					f3_NpcSavePos[npc.index] = vecPos;
 				}
 				
@@ -484,14 +618,14 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			float vecPos[3];
 			GetAbsOrigin(npc.index, vecPos);
 			
-			if (npc.m_flNextBuildingTime < gameTime)
+			if (npc.m_flNextBuildingStateTime < gameTime)
 			{
 				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) > 600.0)
 				{
 					// What the hell, this isn't where we want to build...
 					npc.ToggleBuilding(false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
-					npc.m_flNextBuildingTime = gameTime + 1.5;
+					npc.m_flNextBuildingStateTime = gameTime + 1.5;
 				}
 				else
 				{
@@ -500,7 +634,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
 					vecAng[0] = 0.0;
 					
-					int needToBuild = npc.NeedsToBuild();
+					int needToBuild = npc.GetWhatToBuild();
 					switch (needToBuild)
 					{
 						case APT_BUILDER_SENTRY:
@@ -532,7 +666,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 							// we have everything?????????? how
 							npc.ToggleBuilding(false);
 							npc.m_iState = APT_BUILDER_STATE_IDLE;
-							npc.m_flNextBuildingTime = gameTime + 1.5;
+							npc.m_flNextBuildingStateTime = gameTime + 1.5;
 							return;
 						}
 					}
@@ -555,57 +689,82 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					
 					npc.ToggleBuilding(false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
-					npc.m_flNextBuildingTime = npc.m_bQuickBuildings ? gameTime : gameTime + 20.0;
+					npc.m_flNextBuildingStateTime = npc.m_bQuickBuildings ? gameTime : gameTime + 20.0;
 					npc.StartPathing();
 				}
 			}
 		}
 		
-		case APT_BUILDER_STATE_WANTS_TO_REPAIR:
+		case APT_BUILDER_STATE_ANGRY:
 		{
-			// TODO: THIS??
+			if (npc.m_flGetClosestTargetTime < gameTime)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index, .fldistancelimit = 400.0, .onlyPlayers = true);
+				npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+			}
+			
+			if (IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			
+				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					npc.SetGoalVector(vPredictedPos);
+				}
+				else 
+				{
+					npc.SetGoalEntity(npc.m_iTarget);
+				}
+				
+				ApertureBuilderSelfDefense(npc, gameTime, npc.m_iTarget, flDistanceToTarget); 
+			}
+			else
+			{
+				npc.m_flGetClosestTargetTime = 0.0;
+				npc.m_bCurrentlyReturning = false;
+				npc.m_iState = APT_BUILDER_STATE_RETURNING_TO_NEST;
+			}
+			
+			npc.PlayIdleAlertSound();
 		}
 		
-		case APT_BUILDER_STATE_REPAIRING:
+		case APT_BUILDER_STATE_RETURNING_TO_NEST:
 		{
-			// TODO: THIS??
+			if (!npc.m_bCurrentlyReturning)
+			{
+				npc.m_flSpeed = 300.0;
+				npc.StartPathing();
+				npc.m_bCurrentlyReturning = true;
+			}
+			
+			int building = EntRefToEntIndex(npc.GetAnyBuilding());
+			if (building > MaxClients)
+			{
+				npc.m_iTargetAlly = building;
+				npc.SetGoalEntity(npc.m_iTargetAlly);
+				
+				float distance = ApertureBuilder_GetEntityDistance(npc.index, building, true);
+				if (distance < 10000.0)
+				{
+					// We reached our nest, can go back to idling
+					npc.m_flNextBuildingStateTime = fmax(npc.m_flNextBuildingStateTime, gameTime + 1.0);
+					npc.m_bCurrentlyReturning = false;
+					npc.m_iState = APT_BUILDER_STATE_IDLE;
+				}
+			}
+			else
+			{
+				// We don't have a nest! Go back to idling and decide what to do from there
+				npc.m_flNextBuildingStateTime = fmax(npc.m_flNextBuildingStateTime, gameTime + 1.0);
+				npc.m_bCurrentlyReturning = false;
+				npc.m_iState = APT_BUILDER_STATE_IDLE;
+			}
 		}
 	}
-	
-	// If he's doing important stuff, ignore other goals
-	if (npc.m_iState != APT_BUILDER_STATE_IDLE)
-		return;
-	
-	if (npc.m_flGetClosestTargetTime < gameTime)
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
-	
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
-	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			npc.SetGoalVector(vPredictedPos);
-		}
-		else 
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-		}
-		ApertureBuilderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-	}
-	else
-	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
-	npc.PlayIdleAlertSound();
 }
 
 public Action ApertureBuilder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -693,4 +852,13 @@ void ApertureBuilderSelfDefense(ApertureBuilder npc, float gameTime, int target,
 			}
 		}
 	}
+}
+
+static float ApertureBuilder_GetEntityDistance(int entity, int other, bool squared = true)
+{
+	float vecPos1[3], vecPos2[3];
+	GetAbsOrigin(entity, vecPos1);
+	GetAbsOrigin(other, vecPos2);
+	
+	return GetVectorDistance(vecPos1, vecPos2, squared);
 }

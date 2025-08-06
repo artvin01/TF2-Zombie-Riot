@@ -141,7 +141,7 @@ public void ApertureDispenser_ClotThink(int iNPC)
 				npc.AddActivityViaSequence("build");
 				npc.SetCycle(0.01);
 				
-				const float animTime = 9.5; // Dispenser anim takes about 9.5 seconds
+				const float animTime = 10.4;
 				float duration = npc.Anger ? 1.0 : 10.0;
 				
 				npc.SetPlaybackRate(animTime / duration);
