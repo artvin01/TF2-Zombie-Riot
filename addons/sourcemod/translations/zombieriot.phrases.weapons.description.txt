@@ -556,6 +556,7 @@
 	"IEM Launcher Desc"
 	{
 		"en"		"Engi says to not touch his stuff, but you don't care\nFull charge to attack.\nProjectile speed actually makes it slower.\nReload speed and attackspeed buff its damage.\n2x dmg vs raids."
+		"ko"		"완전히 충전해야만 공격 가능.\n투사체 속도 속성은 이 무기의 투사체 속도를 느리게 만듬.\n재장전 속도와 공격 속도 속성은 이 무기의 피해량을 증가시.\n레이드 보스에게 주는 피해량 2배."
 	}
 	"IEM Launcher Pap 1"
 	{
@@ -648,6 +649,7 @@
 	"Star Shooter Desc"
 	{
 		"en"	"Your M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage.\nInsane power at a cheap price, but high ammo cost."
+		"ko"	"기본 공격의 쿨타임은 이 무기의 과열이 식는데 필요한 시간으로,\n과열 수치가 높을수록 공격의 피해량이 감소.\n싼 가격으로 강렬한 화력을 자랑하지만, 탄약 문제가 있음."
 	}
 
 	"Star Shooter Pap 1"
@@ -1400,6 +1402,7 @@
 	"Fire Wand Pap 3"
 	{
 		"en"	"Increased damage, fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\nYour basic attacks deal much more damage."
+		"ko"	"피해량 증가. 우클릭이 파이어볼 5개를 연속으로 발사하며, 늦게 발사되는 파이어볼의 피해량은 낮습니다.\n기본 공격의 피해량 증가"
 	}
 	
 	"Cryo Staff Desc"
@@ -1453,6 +1456,7 @@
 	"Lightning Staff Pap 2"
 	{
 		"en"	"Increased Damage and Attackspeed\nM2 will cause both lighting strikes at once if enough mana is present."
+		"ko"	"피해량, 공격 속도 증가\n마나가 충분할때 M2 사용시 2연속 번개 강타 공격을 시전."
 	}
 
 	"Lightning Staff Pap 3"
@@ -2039,6 +2043,7 @@
 	"Doctor Certificate Desc"
 	{
 		"en"	"1.5x Medigun Heal, 20％ extra support weapon damage\n5％ melee resistance with Healing Support Weapons out"
+		"ko"	"메디건 치유 속도 1.5배, 지원 무기의 피해량 +20％\n치유용 지원 무기를 들고 있으면 근접 피해 저항력 +5％"
 	}
 	"Professor Certificate Desc"
 	{
@@ -2332,18 +2337,22 @@
 	"Tornado Blitz Desc"
 	{
 		"en"	"Infinite Fire, Projectile hit weapon."
+		"ko"	"풀오토 계열이며 투사체를 발사하는 무기입니다."
 	}
 	"Tornado Blitz Desc Spam1"
 	{
 		"en" 	"Extra Damage and Attackspeed"
+		"ko"	"피해량, 공격 속도 증가."
 	}
 	"Tornado Blitz Desc Spam2"
 	{
 		"en" 	"Extra Damage and Attackspeed\nM2 now allows you to fire a barrage.\nBarrage charges with m1 shots."
+		"ko"	"피해량, 공격 속도 증가.\nM2로 폭격 스킬 사용 가능.\nM1로 폭격 스킬의 코스트를 채울수 있음."
 	}
 	"Tornado Blitz Desc Spam3"
 	{
 		"en"	"Extra Damage and Attackspeed."
+		"ko"	"피해량, 공격 속도 증가."
 	}
 	
 	"Irene Weapon Desc"
@@ -2748,7 +2757,7 @@
 		"en"	"Increases damage.\nDoubles damage falloff but grants an ability that stuns and knockbacks 2 targets, consumes one clip per target hit."
 		"fr"	"Double la perte de dégats avec distance. Abilité étonne et recule 2 ennemis. Abilité utilise un chargeur par victime."
 		"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 2 цели, расходует одну обойму на каждую поражённую цель."
-		"ko"	"거리 비례 피해량이 2배로 증가하지만, 최대 10명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄이 1 소모됨."
+		"ko"	"거리 비례 피해량이 2배로 증가하지만, 최대 2명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄이 1 소모됨."
 	}
 	"The Enforcer Pap 1"
 	{
@@ -2769,10 +2778,12 @@
 	"The Enforcer Pap 3"
 	{
 		"en"	"Increases damage.\nIncreased ability knockback, massively"
+		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 매우 크게 증가합니다."
 	}
 	"The Enforcer Pap 4"
 	{
 		"en"	"Increases damage.\nIncreased ability knockback, massively"
+		"ko"	"피해량이 증가합니다.\n능력의 넉백력이 매우 크게 증가합니다."
 	}
 	"Mlynar Sword Desc"
 	{
@@ -3698,6 +3709,7 @@
 	"Reiuji Desc 0"
 	{
 		"en"	"Your wand has ammo. While ammo is above 0 you gain a sizeable firerate bonus.\nPress R to toggle it on and off to recharge it."
+		"ko"	"당신의 완드는 탄약을 소모합니다. 탄약이 0보다 많으면 공격 속도가 증가합니다.\nR로 효과를 ON/OFF할 수 있음. "
 	}
 	"Reiuji Desc 1"
 	{
@@ -4232,22 +4244,27 @@
 	"Pinus Knight Pap 1"
 	{
 		"en"	"Increased damage.\nAdds an ability, when used allows you to dodge one melee hit (does not stack).\nGenerates money on ability use."
+		"ko"	"피해량 증가.\n새로운 능력 획득. 사용시, 근접 피해를 1회 회피. (중첩되지 않음)\n사용시 자금이 생성됨."
 	}
 	"Pinus Knight Pap 2"
 	{
 		"en"	"Increased damage.\nAbility now also grants 4 seconds of a 40％ (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
+		"ko"	"피해량 증가.\n이제 능력 사용시, 4초간 40％ 확률로 근접 공격을 회피. (레이드 모드일시 0.5배로 감소)\n공격을 회피하면, 다음 근접 공격의 피해량이 2배로 증가."
 	}
 	"Pinus Knight Pap 3"
 	{
 		"en"	"Increased damage.\nAllied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\nAbility instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
+		"ko"	"당신이 살아있는 동안, 모든 아군의 카시미어 유형 무기 사용자들은 11％ 확률로 근접 공격을 회피. 당신은 회피 확률이 2배로 증가. (레이드 모드일시 0.5배로 감소)\n능력 사용시, 60％ 확률로 모든 공격을 회피. (레이드 모드일시 0.5배로 감소)\n회피 성공시, 다음 근접 공격이 광역 공격이 됨."
 	}
 	"Pinus Knight Pap 4"
 	{
 		"en"	"Increased damage."
+		"ko"	"피해량 증가."
 	}
 	"Pinus Knight Pap 5"
 	{
 		"en"	"Increased damage, Decreased ability cooldown.\nAbility instead grants 80％ (x0.5 vs Raids) chance to dodge any attack."
+		"ko"	"피해량 증가, 능력 쿨타임 감소.\n이제 능력 사용시, 4초간 80％ 확률로 모든 공격을 회피. (레이드 모드일시 0.5배로 감소)"
 	}
 	"Barracks Metro Cop Desc"
 	{
@@ -4543,6 +4560,7 @@
 	"Yakuza Pap 4"
 	{
 		"en"	"+25 max HEAT. Can now use the Dragon style by ducking while using R ability.\nDragon style allows you to use heatactions without needing a stun."
+		"ko"	"최대 히트 게이지 +25. 이제 앉은 상태에서 R 능력을 사용하면, 전설 스타일을 사용할 수 있음.\n전설 스타일은 대상이 스턴 상태가 아니더라도 히트 액션을 시전할 수 있음."
 	}
 	"Yakuza Pap 5"
 	{

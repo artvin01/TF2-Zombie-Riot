@@ -1069,6 +1069,7 @@
 	"Fully Charge To Fire"
 	{
 		"en"		"Fully Charge To Fire your IEM"
+		"ko"		"최대로 충전하여 IEM을 발사하십시오"
 	}
 	"Rusty Ability Cooldown"
 	{
