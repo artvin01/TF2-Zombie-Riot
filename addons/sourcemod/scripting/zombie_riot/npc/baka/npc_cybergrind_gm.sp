@@ -16,6 +16,7 @@ static bool TeleToU[MAXENTITIES];
 static bool Grigori_Refresh=false;
 static bool Grigori_RefreshTwo=false;
 static int GrigoriMaxSellsItems=-1;
+static bool CGBreak;
 
 void CyberGrindGM_OnMapStart_NPC()
 {
@@ -54,7 +55,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 
 void ResetCyberGrindGMLogic()
 {
-	CyberVote = false;
+	CyberVote=false;
+	CGBreak=true;
 }
 
 methodmap CyberGrindGM < CClotBody
@@ -575,6 +577,7 @@ methodmap CyberGrindGM < CClotBody
 			npc.m_flNextRangedAttack = GetGameTime() + 1.0;
 			CyberGrind_Difficulty = 0;
 			TeleToU[npc.index] = true;
+			CGBreak=false;
 		
 			int skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -1106,6 +1109,7 @@ static void CyberGrindGM_NPCDeath(int entity)
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
+	CGBreak=true;
 
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
@@ -1273,7 +1277,7 @@ static int RaidMode_CallVoteH(Menu menu, MenuAction action, int client, int choi
 
 static Action RaidMode_VoteDisplayTimer(Handle timer)
 {
-	if(!Voting)
+	if(!Voting || CGBreak)
 		return Plugin_Stop;
 	
 	RaidMode_DisplayHintVote();
@@ -1364,6 +1368,9 @@ static void RaidMode_RoundStart()
 
 static Action RaidMode_EndVote(Handle timer, float time)
 {
+	if(CGBreak)
+		return Plugin_Stop;	
+
 	if(Voting)
 	{
 		int length = Voting.Length;
