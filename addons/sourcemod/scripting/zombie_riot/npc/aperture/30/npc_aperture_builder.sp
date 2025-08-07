@@ -247,6 +247,7 @@ methodmap ApertureBuilder < CClotBody
 		i_BuildingRefs[npc.index][APT_BUILDER_TELEPORTER] = INVALID_ENT_REFERENCE;
 		
 		Is_a_Medic[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -285,7 +286,10 @@ methodmap ApertureBuilder < CClotBody
 		}
 		
 		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
-		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);
+		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		VecSelfNpcabs[2] -= 200.0;
+		TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))

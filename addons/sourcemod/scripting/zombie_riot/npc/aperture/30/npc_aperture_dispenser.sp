@@ -67,7 +67,7 @@ methodmap ApertureDispenser < CClotBody
 
 	public ApertureDispenser(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureDispenser npc = view_as<ApertureDispenser>(CClotBody(vecPos, vecAng, "models/buildables/dispenser.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
+		ApertureDispenser npc = view_as<ApertureDispenser>(CClotBody(vecPos, vecAng, "models/buildables/dispenser.mdl", "1.0", MinibossHealthScaling(50.5, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -83,6 +83,7 @@ methodmap ApertureDispenser < CClotBody
 		Is_a_Medic[npc.index] = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		npc.Anger = false;
 		npc.m_flDoingAnimation = 0.0;

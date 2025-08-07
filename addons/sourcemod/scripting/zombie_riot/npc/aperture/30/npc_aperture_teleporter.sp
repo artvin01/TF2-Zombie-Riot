@@ -54,7 +54,7 @@ methodmap ApertureTeleporter < CClotBody
 
 	public ApertureTeleporter(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .NpcTypeLogic = 1));
+		ApertureTeleporter npc = view_as<ApertureTeleporter>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", MinibossHealthScaling(50.5, true), ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 

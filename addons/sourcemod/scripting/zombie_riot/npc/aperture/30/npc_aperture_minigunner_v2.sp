@@ -86,7 +86,7 @@ methodmap ApertureMinigunnerV2 < CClotBody
 		{
 			if(this.i_GunMode != 0)
 			{
-				StopSound(this.index, SNDCHAN_STATIC, "ambient/lair/null.wav");
+				StopSound(this.index, SNDCHAN_STATIC, "common/null.wav");
 				EmitSoundToAll("weapons/tomislav_shoot.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
 			}
 			this.i_GunMode = 0;
@@ -96,7 +96,7 @@ methodmap ApertureMinigunnerV2 < CClotBody
 			if(this.i_GunMode != 1)
 			{
 				StopSound(this.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
-				EmitSoundToAll("ambient/lair/null.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
+				EmitSoundToAll("common/null.wav", this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.70);
 			}
 			this.i_GunMode = 1;
 		}
@@ -231,9 +231,9 @@ public void ApertureMinigunnerV2_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	StopSound(npc.index, SNDCHAN_STATIC, "ambient/lair/null.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "common/null.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "ambient/lair/null.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "common/null.wav");
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
 	
 	if(IsValidEntity(npc.m_iWearable4))

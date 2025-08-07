@@ -120,7 +120,7 @@ methodmap ApertureSentry < CClotBody
 	public ApertureSentry(float vecPos[3], float vecAng[3], int ally)
 	{
 		// Important: the Sentry is NOT a building entity! This is so animations work properly.
-		ApertureSentry npc = view_as<ApertureSentry>(CClotBody(vecPos, vecAng, "models/buildables/sentry3.mdl", "1.0", MinibossHealthScaling(4.5, true), ally, .CustomThreeDimensions = CustomMinMaxBoundingBoxDimensions));
+		ApertureSentry npc = view_as<ApertureSentry>(CClotBody(vecPos, vecAng, "models/buildables/sentry3.mdl", "1.0", MinibossHealthScaling(50.5, true), ally, .CustomThreeDimensions = CustomMinMaxBoundingBoxDimensions));
 		
 		// ...we still fake building status anyway
 		i_NpcIsABuilding[npc.index] = true;
@@ -143,7 +143,6 @@ methodmap ApertureSentry < CClotBody
 		Is_a_Medic[npc.index] = false;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		f_AttackSpeedNpcIncrease[npc.index] = 1.0;
-		
 		AddNpcToAliveList(npc.index, 1);
 		
 		npc.Anger = false;
