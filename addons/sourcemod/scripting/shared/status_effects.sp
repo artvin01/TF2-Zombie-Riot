@@ -3006,6 +3006,8 @@ void StatusEffects_Aperture()
 	data.AttackspeedBuff			= 0.75;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnBuffStarted				= QuantumEntanglementStart;
+	data.OnBuffEndOrDeleted			= QuantumEntanglementEnd;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -5443,4 +5445,24 @@ void WeakeningCompoundEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 		return;
 
 	SetEntityRenderColor_NpcAll(victim, 0.5, 0.5, 4.0);
+}
+
+public void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	float QuantumVec[3]; WorldSpaceCenter(victim, QuantumVec);
+	QuantumVec[2] -= 40.0;
+	int quantumparticle = ParticleEffectAt_Parent(QuantumVec, "player_recent_teleport_blue", victim)
+	EntIndexToEntRef(quantumparticle)
+}
+public void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	//find a way to remove the particle lol
 }
