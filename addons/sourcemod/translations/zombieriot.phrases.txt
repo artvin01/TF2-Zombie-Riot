@@ -63,8 +63,8 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
-		"ko"		" \n---초기 상점---\n이 상점은 물품 가격이 70％ 할인됨!\n초기 자금: {1}"
+		"en"		" \n---Starter Store---\n[Big Sale] in this store!\nStarter Cash: {1}"
+		"ko"		" \n---초기 상점---\n이 상점은 [대할인] 중!\n초기 자금: {1}"
 	}
 	"Preview Mode Pap"
 	{
@@ -1065,6 +1065,11 @@
 	{
 		"en"		"Not enough charge."
 		"ko"		"충전이 부족합니다."
+	}
+	"Fully Charge To Fire"
+	{
+		"en"		"Fully Charge To Fire your IEM"
+		"ko"		"최대로 충전하여 IEM을 발사하십시오"
 	}
 	"Rusty Ability Cooldown"
 	{
@@ -2888,8 +2893,8 @@
 	}	
 	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
-		"ko"		"당신은 칼마티커스에게 감염 당했습니다!\n다른 아군과 너무 가까이 접근하지 마세요.\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
+		"en"		"You have been Infected by Calmaticus!\nYou cannot stop this bleeding with thick blood..."
+		"ko"		"당신은 칼마티커스에게 감염 당했습니다!\n진한 피 때문에 출혈이 멈추지 않고 있습니다..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -3363,6 +3368,7 @@
 	"Barracks Donjon Desc"
 	{
 		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
+		"ko"		"체력, 공격 피해량, 발사되는 화살 수가 증가하며 더 많은 개선을 해금합니다."
 	}
 	"Barracks Krepost"
 	{
@@ -3582,6 +3588,7 @@
 	"Barracks Exquisite Housing Desc"
 	{
 		"en"		"Make Units 20％ faster."
+		"ko"		"유닛 생산 속도가 20％ 증가합니다."
 	}
 	"Barracks Villager Desc"
 	{
@@ -4812,8 +4819,8 @@
 	}
 	"freeplay_start_2"
 	{
-		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
-		"ko"		"그것보다, 이걸 좀 설명할게. -> :\n매 준비 단계마다, 내가 무작위 이벤트가 발생하는 해골을 던질거야.\n그리고 진행할 수록 더 많이 던질거야."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull upto like 3.\nI have added some of my own wanna-be enemies to make sure you see the weirdest creations, we dont know the void."
+		"ko"		"그것보다, 이걸 좀 설명할게. -> :\n매 준비 단계마다, 내가 해골을 던질거야. 한... 최대 3개쯤?\n그럼 내가 직접 만들어낸 적들이 몇 개 추가될거야. 아... 우린 아직 공허에 대해서 잘 모르니까 공허 피조물과 닮았단 소리는 하지마."
 	}
 	"freeplay_start_3"
 	{
@@ -4827,8 +4834,8 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
-		"ko"		"라운드가 시작되었고 당신은 아직 초기 상점에 있습니다!\n상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!"
+		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
+		"ko"		"라운드가 시작되었고 당신은 아직 초기 상점에 있습니다!\n상점 메뉴에서 초기 장비 로드아웃을 설정하고 더 많은 무기와 자금을 얻으세요!\n[TAB] 을 눌러 [1] 과 함께 상점을 나가세요!"
 	}
 	"Getting favorite loadout"
 	{
@@ -4842,13 +4849,8 @@
 	}
 	"Explain Construction 1"
 	{
-		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
-		"ko"		"자원을 모아 기지를 건설. ''연구소''를 통해 업글을 하고, 건축가 메뉴에서 추가 구조물을 건설 가능."
-	}
-	"Explain Construction 2"
-	{
-		"en"		"Interact with ores on the map with your interact button (R Or T)!"
-		"ko"		"맵에 있는 광석에 상호작용(R 또는 T)을 눌러 자원을 모아야함!"
+		"en"		"Gather resources and build up your base, use your {yellow}''Research Center''{green} to upgrade, You have extra buildings in your builder menu."
+		"ko"		"자원을 모아 기지를 건설. {yellow}''''연구소''{green}를 통해 개선을 하고, 건축가 메뉴에서 추가 구조물을 건설 가능."
 	}
 	"Explain Construction 3"
 	{

@@ -1488,50 +1488,52 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
 		}
 			
+		//only for red.
+		if(GetTeam(client) == 2)
+		{
+			static char HudBuffer[256];
+			HudBuffer[0] = 0;
+			if(!TeutonType[client])
+			{
+				int downsleft;
+				downsleft = 2;
+
+				downsleft -= i_AmountDowned[client];
+				SDKHooks_UpdateMarkForDeath(client);
 				
-		static char HudBuffer[256];
-		HudBuffer[0] = 0;
-		
-		if(!TeutonType[client])
-		{
-			int downsleft;
-			downsleft = 2;
+				if(!HudBuffer[0] && CashSpent[client] < 1)
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
+				}
+				if(b_EnableCountedDowns[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft
+					);
+				}
+				if(b_EnableRightSideAmmoboxCount[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
+					);
+				}
+			}
+			else if (TeutonType[client] == TEUTON_DEAD)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
+				);
 
-			downsleft -= i_AmountDowned[client];
-			SDKHooks_UpdateMarkForDeath(client);
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
+				);
+			}
+			SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 			
-			if(!HudBuffer[0] && CashSpent[client] < 1)
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
-			}
-			if(b_EnableCountedDowns[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Downs left", downsleft
-				);
-			}
-			if(b_EnableRightSideAmmoboxCount[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
-				);
-			}
+			if(HudBuffer[0])
+				PrintKeyHintText(client,"%s", HudBuffer);
 		}
-		else if (TeutonType[client] == TEUTON_DEAD)
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
-			);
-
-		}
-		else
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
-			);
-		}
-		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
-		
-		if(HudBuffer[0])
-			PrintKeyHintText(client,"%s", HudBuffer);
 #endif
 	}
 #if defined ZR
@@ -3381,8 +3383,8 @@ void ManaCalculationsBefore(int client)
 {
 	has_mage_weapon[client] = false;
 	int i, entity;
-	float ManaRegen = 10.0;
-	float ManaMaxExtra = 400.0;
+	float ManaRegen = 12.0;
+	float ManaMaxExtra = 500.0;
 	
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -3419,17 +3421,17 @@ void ManaCalculationsBefore(int client)
 
 	if(b_AggreviatedSilence[client])	
 	{
-		mana_regen[client] *= 0.30;
+		mana_regen[client] *= 0.35;
 	}
 	else
 	{
 		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-		MultiplyRegen *= 0.5;
+	//	MultiplyRegen *= 0.85;
 		if(MultiplyRegen < 1.0)
 			MultiplyRegen = 1.0;
 
-		if(MultiplyRegen >= 3.0)
-			MultiplyRegen = 3.0;
+		if(MultiplyRegen >= 6.0)
+			MultiplyRegen = 6.0;
 
 		mana_regen[client] *= MultiplyRegen;
 	}

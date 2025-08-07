@@ -1478,6 +1478,16 @@
 		"en"	"You got a new fade, expidonsans despite being cats are really good at cutting hair huh?"
 		"ko"	"헤어스타일이 바뀌셨네요. 엑스피돈사인들은 고양이임에도 불구하고 미용을 정말 잘 하는것 같아요. 그렇죠?"
 	}
+	"Starting Grace"
+	{
+		"en" "Starting Grace"
+		"ko" "준비 운동"
+	}
+	"Starting Grace Desc"
+	{
+		"en"	"Increases damage dealt by 25％, Decreases damage taken by 15％."
+		"ko"	"공격 피해량이 25％ 증가하고, 받는 피해량이 15％ 감소합니다."
+	}
 	"Anti-Waves"
 	{
 		"en" "Anti-Waves"
@@ -1516,7 +1526,7 @@
 	"We gotta go bald Desc"
 	{
 		"en"	"They messed up your hair, welp."
-		"ko"	"그들이 실수로 당신의 헤어스타일을 망쳤네요... 용서해주실 거죠?"
+		"ko"	"그들이 '실수로' 당신의 헤어스타일을 망쳤네요... 용서해주실 거죠?"
 	}
 	"Soggy"
 	{
@@ -1545,8 +1555,8 @@
 	}
 	"Bubble Frenzy Desc"
 	{
-		"en" "Attack 2x Faster, only works on bubble wand."
-		"ko" "방울 완드에만 적용됩니다. 공격 속도가 2배로 증가합니다."
+		"en" "(Only works on Bubble Wand)\nIncreases attackspeed by around 53％.\n{crimson}Multiplies damage dealt by x0.85."
+		"ko" "(방울 완드에만 적용)\n공격 속도가 53％ 증가.\n{crimson}총합 피해량이 0.85배로 감소."
 	}
 	"Trigger Finger"
 	{
@@ -1699,7 +1709,7 @@
 	}
 	"Plasmatic Rampage Desc"
 	{
-		"en" 	"Boosts damage dealt, resistance and attackspeed by +30％.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY reduces Plasmic Elemental buildup penalty and cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
+		"en" 	"+30％ dmg dealt, resist and attackspeed.\nAbility cooldowns are halved, gain extra regen below 25％ HP.\nHEAVILY Reduces Plasmic Elemental buildup penalty + cooldown.\n{darkviolet}However, plasma slowly engulfs your body overtime..."
 		"ko" 	"피해량, 저항력, 공격 속도 +30％.\n능력 쿨타임이 절반으로 감소하고, 체력이 25％ 이하일때 추가 재생력을 얻음.\n플라즈마 원소 피해 축적 페널티와 쿨타임이 크게 감소.\n{darkviolet}하지만, 시간이 지날수록 플라즈마가 당신의 몸을 천천히 삼킬 것입니다..."
 	}
 	"Plasmatized Lethalitation"

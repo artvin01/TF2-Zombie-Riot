@@ -1052,19 +1052,21 @@ static void Internal_ClotThink(int iNPC)
 		}
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
+		if(iPitch >= 0)
+		{
+
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(VecSelfNpc, vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+					
+			float flPitch = npc.GetPoseParameter(iPitch);
+					
+			//	ang[0] = clamp(ang[0], -44.0, 89.0);
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		}
 			
-		//Body pitch
-		float v[3], ang[3];
-		SubtractVectors(VecSelfNpc, vecTarget, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-				
-		float flPitch = npc.GetPoseParameter(iPitch);
-				
-		//	ang[0] = clamp(ang[0], -44.0, 89.0);
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 
 		if(npc.m_flDoingAnimation > GetGameTime(npc.index)) //I am doing an animation or doing something else, default to doing nothing!
 		{

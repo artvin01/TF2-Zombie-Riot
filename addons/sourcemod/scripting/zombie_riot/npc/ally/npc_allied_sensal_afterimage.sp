@@ -372,11 +372,11 @@ void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool
 	{
 		case 0:
 		{
-			knockback *= 1.25;
+			knockback *= 0.75;
 		}
 		case 2:
 		{
-			knockback *= 0.75;
+			knockback *= 0.65;
 		}
 		case 3:
 		{

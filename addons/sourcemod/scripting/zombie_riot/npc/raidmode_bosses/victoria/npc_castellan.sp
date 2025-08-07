@@ -611,7 +611,7 @@ static void Internal_ClotThink(int iNPC)
 						i_InvincibleParticlePrev[Shield] = 0;
 					}
 				}
-				else if(i_npcspawnprotection[npc.index] == 1)
+				else if(i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
 				{
 					if(i_InvincibleParticlePrev[Shield] != 1)
 					{
@@ -1547,6 +1547,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								WorldSpaceCenter(targetTrace, vecHit);
 
 								float damage = 40.0;
+								if(ShouldNpcDealBonusDamage(target))
+									damage *= 20.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									

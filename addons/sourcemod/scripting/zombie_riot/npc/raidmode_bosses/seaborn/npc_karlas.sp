@@ -1478,6 +1478,8 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 							}
 							Custom_Knockback(npc.index, target, Knockback_Deal, true);
 						}
+						if(ShouldNpcDealBonusDamage(target))
+							meleedmg *= 20.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();	
 					

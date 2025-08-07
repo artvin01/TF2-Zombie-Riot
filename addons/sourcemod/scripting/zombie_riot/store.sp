@@ -3,7 +3,6 @@
 
 #define SELL_AMOUNT 0.9
 bool PapPreviewMode[MAXPLAYERS];
-float CDDisplayHint_LoadoutStore[MAXPLAYERS];
 float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
 enum
@@ -990,7 +989,6 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
-	Zero(CDDisplayHint_LoadoutStore);
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -2996,8 +2994,10 @@ void Store_Menu(int client)
 		StarterCashMode[client] = false;
 	}
 	Store_OnCached(client);
-	if(LastStoreMenu[client])
+	if(LastStoreMenu[client] || AnyMenuOpen[client])
 	{
+		HideMenuInstantly(client);
+		//show a blank page to instantly hide it
 		CancelClientMenu(client);
 		ClientCommand(client, "slot10");
 		ResetStoreMenuLogic(client);
@@ -3016,7 +3016,22 @@ void Store_Menu(int client)
 		MenuPage(client, -1);
 	}
 }
-
+void HideMenuInstantly(int client)
+{
+	Menu menu = new Menu(Store_BlankHide);
+	menu.AddItem("", "", ITEMDRAW_SPACER);
+	menu.Pagination = 0;
+	menu.ExitButton = false;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+static int Store_BlankHide(Menu menu, MenuAction action, int client, int choice)
+{
+	if(action == MenuAction_End)
+	{
+		delete menu;
+	}
+	return 0;
+}
 void Store_OpenNPCStore(int client)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
@@ -3052,11 +3067,7 @@ static void MenuPage(int client, int section)
 		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
 		{
 			StarterCashMode[client] = false; //confirm automatically.
-		}
-		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
-		{
-			SPrintToChat(client, "%t", "Loadout In Store");
-			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
+			
 		}
 	}
 	else
@@ -5071,7 +5082,7 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
-	map.SetValue("8", 1.5);	//give 50% more healing at the start.
+	map.SetValue("8", 2.0);	//give 50% more healing at the start.
 	if(f_PreventMovementClient[client] > GetGameTime())
 	{
 		map.SetValue("819", 1.0);
@@ -7064,6 +7075,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgr
 void ResetStoreMenuLogic(int client)
 {
 	LastStoreMenu[client] = 0.0;
+	AnyMenuOpen[client] = 0.0;
 }
 
 void SetStoreMenuLogic(int client, bool store = true)

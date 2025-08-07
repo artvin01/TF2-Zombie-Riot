@@ -1342,6 +1342,7 @@ static bool Lunar_Grace(Stella npc)
 	struct_Lunar_Grace_Data[npc.index].AnimSet = false;
 
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 20.0;
 	Laser.client = npc.index;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float Angles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
@@ -1895,6 +1896,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	float Start_Loc[3];	
 
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 20.0;
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(-1.0);
 	float endPoint[3]; endPoint = Laser.End_Point;
@@ -1938,6 +1940,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			Ruina_Laser_Logic Karl_Laser;
 			Karl_Laser.client = npc.Ally;
 			Karl_Laser.DoForwardTrace_Basic(-1.0);
+			Laser.Bonus_Damage = 20.0;
 			Laser.End_Point = Karl_Laser.Start_Point;
 			NC_CoreBeamEffects(npc, 
 			Karl_Laser.Start_Point, 
@@ -2315,6 +2318,7 @@ static bool Is_Target_Infront(Stella npc, float Radius)
 	float Range = fl_Normal_Laser_Range(npc);
 	Laser.DoForwardTrace_Basic(Range);
 	Laser.Radius = Radius;
+	Laser.Bonus_Damage = 20.0;
 	Laser.Detect_Entities(On_LaserHit);	//by default it only filters out enemies
 
 	return b_hit_something;
@@ -2588,6 +2592,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 20.0;
 	Laser.client = attacker;
 	Laser.Start_Point = pos_npc;
 
@@ -2616,6 +2621,7 @@ static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int
 	Ruina_Laser_Logic Laser;
 	Laser.client = attacker;
 	Laser.Start_Point = pos_npc;
+	Laser.Bonus_Damage = 20.0;
 
 	float vecAngles[3];
 	//get the enemy gamer's location.

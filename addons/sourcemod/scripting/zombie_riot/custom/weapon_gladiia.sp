@@ -97,7 +97,9 @@ bool Gladiia_HasCharge(int client, int weapon)
 void Gladiia_ChargeReduction(int client, int weapon, float time)
 {
 	if(Gladiia_HasCharge(client, weapon))
-		WeaponCharge[client] += RoundFloat(time);
+	{
+		WeaponCharge[client] += Int_CooldownReductionDo(client, RoundToNearest(time));
+	}
 }
 
 public Action Gladiia_TimerHealing(Handle timer, int client)
@@ -200,10 +202,11 @@ public Action Gladiia_TimerS1L4(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				if(++WeaponCharge[client] > 24)
-					WeaponCharge[client] = 24;
+				if(++WeaponCharge[client] > Int_CooldownReductionDo(client, 24))
+					WeaponCharge[client] = Int_CooldownReductionDo(client, 24);
 				
-				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 12, 12 - (WeaponCharge[client] % 12));
+				int ValueCD = Int_CooldownReductionDo(client, 12);
+				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -225,10 +228,12 @@ public Action Gladiia_TimerS1L7(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				if(++WeaponCharge[client] > 20)
-					WeaponCharge[client] = 20;
+				if(++WeaponCharge[client] > Int_CooldownReductionDo(client, 20))
+					WeaponCharge[client] = Int_CooldownReductionDo(client, 20);
 				
-				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
+				int ValueCD = Int_CooldownReductionDo(client, 10);
+				
+				PrintHintText(client, "Parting of the Great Ocean [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -250,10 +255,11 @@ public Action Gladiia_TimerS1L8(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				if(++WeaponCharge[client] > 30)
-					WeaponCharge[client] = 30;
+				if(++WeaponCharge[client] > Int_CooldownReductionDo(client, 30))
+					WeaponCharge[client] = Int_CooldownReductionDo(client, 30);
 				
-				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 10, 10 - (WeaponCharge[client] % 10));
+				int ValueCD = Int_CooldownReductionDo(client, 10);
+				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -275,10 +281,12 @@ public Action Gladiia_TimerS1L10(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				if(++WeaponCharge[client] > 24)
-					WeaponCharge[client] = 24;
+				if(++WeaponCharge[client] > Int_CooldownReductionDo(client, 24))
+					WeaponCharge[client] = Int_CooldownReductionDo(client, 24);
 				
-				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / 8, 8 - (WeaponCharge[client] % 8));
+				int ValueCD = Int_CooldownReductionDo(client, 8);
+				
+				PrintHintText(client, "Parting of the Great Ocean [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -385,6 +393,7 @@ public void Weapon_Gladiia_M2_S1L30M(int client, int weapon, bool crit, int slot
 
 static void PullAbilityM2(int client, int weapon, int slot, int cost, int strength, float damagemulti, bool module = false)
 {
+	cost = Int_CooldownReductionDo(client, cost);
 	if(WeaponCharge[client] < cost && !CvarInfiniteCash.BoolValue)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");

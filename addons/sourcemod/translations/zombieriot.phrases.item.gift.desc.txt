@@ -250,7 +250,7 @@
 		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage (can be silenced)."
 		"ko" 		"이 자는 전세계의 배풍등의 휘하 소속 병사들을 이끄는 자입니다.\n펄스 폭발 공격과 분노 사용시 추가 피해 저항력을 얻습니다. (침묵으로 해당 효과 제거 가능)"
 	}
-	"Scout Assulter Desc"
+	"Scout Assaulter Desc"
 	{
 		"en" 		"Zombified Scout who is fast and attacks quickly too."
 		"ru"		"Зомбифицированный разведчик который быстри и бьёт быстро тоже."
@@ -493,7 +493,7 @@
 		"ru"		"Повелитель стал быстрее, его атака пульсом отталкивает вас в воздух и глючит вас покругу, Он злится в 2 раза быстрее.\nСопротивление от пульс атаки (может быть заткнуто).\nСопротивление урону в ярости велико(можно заглушить)."
 		"ko" 		"이 대군주는 더욱 빨라지고, 펄스 폭발 공격이 당신을 공중으로 띄울 것이며, 2배 더 빨리 격노 상태가 됩니다.\n펄스 폭발 공격의 피해 저항력 부여 효과는 여전합니다. (침묵으로 저지 가능)\n 격노 상태의 피해 저항력이 높아졌습니다. (침묵으로 저지 가능)"
 	}
-	"Xeno Scout Assulter Desc"
+	"Xeno Scout Assaulter Desc"
 	{
 		"en" 		"Hurting these will cause scouts to go at insane speeds."
 		"ru"		"Нанесение урона разведчикам заставит их побежать на безумной скорости."
