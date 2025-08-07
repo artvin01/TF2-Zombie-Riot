@@ -485,15 +485,28 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	
 	if(b_NpcIsInvulnerable[victim])
 		return;
-	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
-		return;
-	//cant void other voids!
-
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+
+	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
+	{
+		if(victim <= MaxClients && Armor_Charge[victim] > 0)
+		{
+			Armor_Charge[victim] -= damage;
+			if(Armor_Charge[victim] < 0)
+			{
+				Armor_Charge[victim] = 0;
+			}
+			ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
+		}
+
+		return;
+	}
+	//cant void other voids!
+
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 3;

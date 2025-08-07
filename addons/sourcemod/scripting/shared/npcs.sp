@@ -383,10 +383,10 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(!DisableSpawnProtection && zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
+					if(!DisableSpawnProtection && zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == NPC_SPAWNPROT_INIT)
 					{
 						
-						i_npcspawnprotection[entity_Spawner] = 1;
+						i_npcspawnprotection[entity_Spawner] = NPC_SPAWNPROT_ON;
 						
 						/*
 						CClotBody npc = view_as<CClotBody>(entity_Spawner);
@@ -502,11 +502,6 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 	}
 	if(!KeepProtection)
 	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
 		static float minn[3], maxx[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
@@ -528,7 +523,7 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 		RemoveEntity(npc.m_iSpawnProtectionEntity);
 	//-1 means none, and dont apply anymore.
-	i_npcspawnprotection[entity] = -1;
+	i_npcspawnprotection[entity] = NPC_SPAWNPROT_OFF;
 }
 
 #if defined ZR
@@ -1674,9 +1669,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	else
 	{
 #if defined RPG
-		if(i_npcspawnprotection[victim] != 1 || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+		if(i_npcspawnprotection[victim] != NPC_SPAWNPROT_ON || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
-		if(i_npcspawnprotection[victim] != 1)
+		if(i_npcspawnprotection[victim] != NPC_SPAWNPROT_ON)
 #endif
 		{
 			DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);

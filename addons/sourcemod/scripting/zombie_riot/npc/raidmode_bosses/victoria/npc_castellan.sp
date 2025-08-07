@@ -611,7 +611,7 @@ static void Internal_ClotThink(int iNPC)
 						i_InvincibleParticlePrev[Shield] = 0;
 					}
 				}
-				else if(i_npcspawnprotection[npc.index] == 1)
+				else if(i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
 				{
 					if(i_InvincibleParticlePrev[Shield] != 1)
 					{

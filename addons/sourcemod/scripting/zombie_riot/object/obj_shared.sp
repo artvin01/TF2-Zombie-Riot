@@ -1028,6 +1028,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		return Plugin_Handled;
 	}
+	
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;

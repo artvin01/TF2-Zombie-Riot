@@ -3383,8 +3383,8 @@ void ManaCalculationsBefore(int client)
 {
 	has_mage_weapon[client] = false;
 	int i, entity;
-	float ManaRegen = 10.0;
-	float ManaMaxExtra = 400.0;
+	float ManaRegen = 12.0;
+	float ManaMaxExtra = 500.0;
 	
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -3421,17 +3421,17 @@ void ManaCalculationsBefore(int client)
 
 	if(b_AggreviatedSilence[client])	
 	{
-		mana_regen[client] *= 0.30;
+		mana_regen[client] *= 0.35;
 	}
 	else
 	{
 		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-		MultiplyRegen *= 0.5;
+	//	MultiplyRegen *= 0.85;
 		if(MultiplyRegen < 1.0)
 			MultiplyRegen = 1.0;
 
-		if(MultiplyRegen >= 3.0)
-			MultiplyRegen = 3.0;
+		if(MultiplyRegen >= 6.0)
+			MultiplyRegen = 6.0;
 
 		mana_regen[client] *= MultiplyRegen;
 	}

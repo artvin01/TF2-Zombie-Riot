@@ -746,7 +746,7 @@ static void Did_Someone_Get_Hit(int entity, int victim, float damage, int weapon
 		if(Ability_CD <= 0.0)
 			Ability_CD = 0.0;
 		else
-			Ability_Apply_Cooldown(entity, 2, Ability_CD-(b_thisNpcIsARaid[victim] ? 1.0 : 0.2));
+			Ability_Apply_Cooldown(entity, 2, Ability_CD-(b_thisNpcIsARaid[victim] ? 1.0 : 0.2), weapon, true);
 	}
 }
 static void VL_EYEParticle(int client)

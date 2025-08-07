@@ -506,7 +506,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				{
 					if(zr_spawnprotectiontime.FloatValue > 0.0)
 					{
-						i_npcspawnprotection[entity] = 1;
+						i_npcspawnprotection[entity] = NPC_SPAWNPROT_ON;
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					}
 				}
