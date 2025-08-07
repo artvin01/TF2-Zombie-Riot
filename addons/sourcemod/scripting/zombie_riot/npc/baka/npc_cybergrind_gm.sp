@@ -626,7 +626,8 @@ methodmap CyberGrindGM < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(CyberGrindGM_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(CyberGrindGM_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(CyberGrindGM_ClotThink);
-		
+		func_NPCFuncWin[npc.index] = view_as<Function>(CyberGrindGM_Exit);
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -997,6 +998,17 @@ static void CyberGrindGM_ClotThink(int iNPC)
 			npc.PlayDeathSound();
 			RaidMode_SetupVote();
 		}
+	}
+	
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		delete Voting;
+		CyberVote=true;
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
+		SmiteNpcToDeath(npc.index);
 	}
 
 	if(CyberGrind_Difficulty>0)
@@ -1449,6 +1461,11 @@ static Action RaidMode_EndVote(Handle timer, float time)
 		}
 	}
 	return Plugin_Continue;
+}
+
+public void CyberGrindGM_Exit(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 
 static void CyberGrindGM_Talk(const char[] text, bool NoName=false)
