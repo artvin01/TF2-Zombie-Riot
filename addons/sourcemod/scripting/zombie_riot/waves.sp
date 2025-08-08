@@ -4156,6 +4156,8 @@ int Waves_AverageLevelGet(int MaxLevelAllow)
 
 void Waves_TrySpawnBarney()
 {
+	if(CvarInfiniteCash.BoolValue)
+		return;
 	if(Rogue_Mode())
 		return;
 	if(Construction_Mode())
