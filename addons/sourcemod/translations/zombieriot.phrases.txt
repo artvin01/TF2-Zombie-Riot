@@ -1227,7 +1227,7 @@
 	}
 	"Teslar Mule Recieved"
 	{
-		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 	}
 	"Stockpile Stout Recieved"
 	{

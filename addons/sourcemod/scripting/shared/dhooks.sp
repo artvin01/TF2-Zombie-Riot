@@ -2115,25 +2115,6 @@ public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 #endif	// ZR
-/*
-( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
-*/
-
-/*
-public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
-{
-	PrintToChatAll("%f DHookGiveDefaultItems_Pre::%d", GetEngineTime(), CurrentClass[client]);
-	//TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
-	return MRES_Ignored;
-}
-
-public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams) 
-{
-	PrintToChatAll("%f DHookGiveDefaultItems_Post::%d", GetEngineTime(), WeaponClass[client]);
-	//TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-	return MRES_Ignored;
-}
-*/
 
 #if !defined RTS
 public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
