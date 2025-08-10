@@ -5456,7 +5456,11 @@ public void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatus
 	float QuantumVec[3]; WorldSpaceCenter(victim, QuantumVec);
 	QuantumVec[2] -= 40.0;
 	int quantumparticle = ParticleEffectAt_Parent(QuantumVec, "player_recent_teleport_blue", victim)
-	EntIndexToEntRef(quantumparticle)
+	if(!HasSpecificBuff(victim, "Quantum Entanglement"))
+	{
+		if(IsValidEntity(quantumparticle))
+		RemoveEntity(quantumparticle);
+	}
 }
 public void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
