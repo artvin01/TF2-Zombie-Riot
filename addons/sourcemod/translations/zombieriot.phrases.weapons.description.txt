@@ -4184,7 +4184,7 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "Enables certain new functions on kits.\n+20％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +5％ Kit Overall Resist\n+5％ Max mana | +25％ Repair Rate | +5％ Buidling HP"
+		"en" "Enables new functions on certain kits at their final pap.\n+20％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +5％ Kit Overall Resist\n+5％ Max mana | +25％ Repair Rate | +5％ Buidling HP"
 	}
 	"Kit Modernizer II Desc"
 	{
