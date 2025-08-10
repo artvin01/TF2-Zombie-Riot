@@ -619,10 +619,6 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 {
 	float gameTime = GetGameTime(npc.index);
 	
-	npc.m_flExtraDamage = 1.0;
-	npc.m_flMeleeArmor = 1.0;
-	npc.m_flRangedArmor = 1.0;
-	
 	npc.m_bisWalking = false;
 	
 	npc.m_flSpeed = 0.0;
@@ -869,10 +865,6 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 	npc.SetPlaybackRate(1.0);
 	
-	npc.m_flExtraDamage = 2.0;
-	npc.m_flMeleeArmor = 1.25;
-	npc.m_flRangedArmor = 1.25;
-	
 	npc.m_flSpeed = CAT_DEFAULT_SPEED;
 	npc.StartPathing();
 	
@@ -897,6 +889,9 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE;
 	npc.m_flNextSelfDegradationAbilityState = gameTime + CAT_SELF_DEGRADATION_ABILITY_DURATION;
+	
+	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation", CAT_SELF_DEGRADATION_ABILITY_DURATION);
+	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation (Debuff)", CAT_SELF_DEGRADATION_ABILITY_DURATION);
 
 	switch(GetRandomInt(0,2))
 	{
@@ -918,10 +913,6 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 static void SelfDegradation_Ability_Deactivate(CAT npc)
 {
 	float gameTime = GetGameTime(npc.index);
-	
-	npc.m_flExtraDamage = 1.0;
-	npc.m_flMeleeArmor = 1.0;
-	npc.m_flRangedArmor = 1.0;
 	
 	npc.m_flAbilityOrAttack0 = gameTime + 18.0;
 	
