@@ -66,6 +66,7 @@ PaP Upgrades (all of them increase overall stats):
 
 static int LaserIndex;
 static int Cheese_PapLevel[MAXPLAYERS];
+static bool Cheese_HasModernizer1[MAXPLAYERS];
 
 static int Cheese_Glow;
 static int Cheese_Bubble_Hits[MAXPLAYERS];
@@ -96,6 +97,7 @@ void Cheese_MapStart()
 	PrecacheSound(SOUND_CAPSULE_EXPLODE, true);
 	PrecacheSound(SOUND_LETHAL_ACTIVATE, true);
 	PrecacheSound(")weapons/tf2_backshot_shotty.wav");
+	Zero(Cheese_HasModernizer1);
 	Zero(Cheese_PapLevel);
 	Zero(Cheese_Bubble_Hits);
 	Zero(Cheese_TargetsHit);
@@ -195,6 +197,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	int weapon = EntRefToEntIndex(DataDo.ReadCell());
 	if(!IsValidEntity(weapon) || !IsValidClient(client) || !IsPlayerAlive(client))
 	{
+		Cheese_OnNPCDeath(client);
 		EffectTimer[client] = null;
 		return Plugin_Stop;
 	}	
@@ -213,9 +216,38 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		if(HasSpecificBuff(client, "Plasmatic Rampage"))
 		{
 			RemoveSpecificBuff(client, "Plasmatic Rampage");
+			Cheese_OnNPCDeath(client);	
 		}
 
-		Cheese_OnNPCDeath(client);
+		if(Cheese_HasModernizer1[client])
+		{
+			HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.01), 0.25, 0.0, HEAL_SELFHEAL);
+			Elemental_AddPlasmicDamage(client, client, 16, EntRefToEntIndex(iref_WeaponConnect[client][0]), true); // less than lastman so its not that punishing
+		}
+		else
+		{
+			Cheese_OnNPCDeath(client);
+		}
+	}
+
+	if(Store_HasNamedItem(client, "Kit Modernizer I"))
+	{
+		if(!Cheese_HasModernizer1[client])
+		{
+			CPrintToChat(client, "{gold}Koshi{white}: What's that, hmm? You really want to feel this weapon's potential?");
+			CPrintToChat(client, "{gold}Koshi{white}: If that's what you want, go ahead. {red}Just don't fill the place with plasma, will you?");
+			CPrintToChat(client, "{darkviolet}Suddenly, plasma starts engulfing your body...!");
+			Cheese_HasModernizer1[client] = true;
+		}
+	}
+	else
+	{
+		if(Cheese_HasModernizer1[client])
+		{
+			CPrintToChat(client, "{gold}Koshi{white}: Oh, getting rid of the fun so soon? Awww...");
+			CPrintToChat(client, "{violet}Plasma is no longer engulfing your body.");
+			Cheese_HasModernizer1[client] = false;
+		}
 	}
 
 	Cheese_Hud(client, false);		
@@ -307,6 +339,12 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			cheesedmg *= Cheese_Lethal_ElementalBoost[Cheese_PapLevel[attacker]];
 			damage *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
 
+			if(Cheese_HasModernizer1[client])
+			{
+				damage *= 1.25;
+				cheesedmg *= 1.25;
+			}
+
 			float position[3];
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 			position[2] += 25.0;
@@ -318,7 +356,17 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			RemoveSpecificBuff(attacker, "Plasmatized Lethalitation");
 			float thecooldown = Cheese_Lethal_Cooldown[Cheese_PapLevel[attacker]];
 			if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
+			{
 				thecooldown *= 0.5;
+			}
+			else
+			{
+				if(Cheese_HasModernizer1[client])
+				{
+					thecooldown *= 0.75;
+				}
+			}
+				
 			Ability_Apply_Cooldown(attacker, 2, thecooldown);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
@@ -343,8 +391,17 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			float Cooldown = Cheese_Burst_Cooldown[Cheese_PapLevel[client]];
-			if(HasSpecificBuff(client, "Plasmatic Rampage"))
+			if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
+			{
 				Cooldown *= 0.5;
+			}
+			else
+			{
+				if(Cheese_HasModernizer1[client])
+				{
+					Cooldown *= 0.75;
+				}
+			}
 
 			Ability_Apply_Cooldown(client, slot, Cooldown);
 			EmitSoundToClient(client, SOUND_CHEDDAR_ABILITY);
@@ -897,6 +954,13 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 		Cheese_TargetsHit[client] = 0.0;
 	}
 
+	if(Cheese_HasModernizer1[client])
+	{
+		maxdist *= 1.25;
+		dmgclose *= 1.25;
+		dmgfar *= 1.25;
+	}
+
 	float diameter = beamradius * 2.0;
 	
 	int red = 235;
@@ -1056,3 +1120,4 @@ static bool TraceUsers(int entity, int contentsMask, int client)
 	}
 	return false;
 }
+
