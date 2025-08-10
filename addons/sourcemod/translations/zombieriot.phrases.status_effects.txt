@@ -137,7 +137,7 @@
 	}
 	"Teslar Mule Desc"
 	{
-		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
+		"en"	"Increases Damage Taken by 30%\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 	}
 	"Cripple"
 	{

@@ -5841,12 +5841,12 @@ public void NpcBaseThink(int iNPC)
 			{
 				HealingAmount *= 0.025;
 				//this means it uses scaling somehow.
-				HpScalingDecrease = NpcDoHealthRegenScaling();
+				HpScalingDecrease = NpcDoHealthRegenScaling(iNPC);
 			}
 			else if(b_thisNpcIsABoss[iNPC])
 			{
 				HealingAmount *= 0.125;
-				HpScalingDecrease = NpcDoHealthRegenScaling();
+				HpScalingDecrease = NpcDoHealthRegenScaling(iNPC);
 			}
 			if(NpcStats_StrongVoidBuff(iNPC))
 				HealingAmount *= 1.25;
@@ -5963,9 +5963,27 @@ public void NpcBaseThink(int iNPC)
 	}
 	*/
 }
-stock float NpcDoHealthRegenScaling()
+stock float NpcDoHealthRegenScaling(int iNPC)
 {
-	return (float(CountPlayersOnRed(1)) / float(CountPlayersOnRed(0)));
+	if(GetTeam(iNPC) == TFTeam_Red)
+		return 1.0;
+	//not allies.
+	
+	float ValueDo = 1.0;
+	if(b_thisNpcIsARaid[iNPC] || b_thisNpcIsABoss[iNPC])
+	{
+		//we want to assume that we never scale above like 14 players, if it is, then we scale the HP regen down.
+		int AliveAssume = CountPlayersOnRed(1);
+		if(AliveAssume > 14)
+			AliveAssume = 14;
+		ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	}
+	else
+	{
+		//if normal enemeis scale higher interms of HP, then we want to tune down the health regen.
+		ValueDo = 1.0 / MultiGlobalHealth;
+	}
+	return ValueDo;
 }
 public void NpcSetGravity(CClotBody npc, int iNPC)
 {
