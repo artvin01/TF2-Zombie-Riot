@@ -98,17 +98,17 @@ methodmap ApertureSentry < CClotBody
 		baseNPC.SetBodyMaxs(vecMaxs);
 		baseNPC.SetBodyMins(vecMins);
 		
-		SetEntPropVector(this, Prop_Data, "m_vecMaxs", vecMaxs);
-		SetEntPropVector(this, Prop_Data, "m_vecMins", vecMins);
+		SetEntPropVector(this.index, Prop_Data, "m_vecMaxs", vecMaxs);
+		SetEntPropVector(this.index, Prop_Data, "m_vecMins", vecMins);
 		
 		//Fixed wierd clientside issue or something
 		float vecMaxsNothing[3], vecMinsNothing[3];
 		vecMaxsNothing = view_as<float>( { 1.0, 1.0, 2.0 } );
 		vecMinsNothing = view_as<float>( { -1.0, -1.0, 0.0 } );		
-		SetEntPropVector(this, Prop_Send, "m_vecMaxsPreScaled", vecMaxsNothing);
-		SetEntPropVector(this, Prop_Data, "m_vecMaxsPreScaled", vecMaxsNothing);
-		SetEntPropVector(this, Prop_Send, "m_vecMinsPreScaled", vecMinsNothing);
-		SetEntPropVector(this, Prop_Data, "m_vecMinsPreScaled", vecMinsNothing);
+		SetEntPropVector(this.index, Prop_Send, "m_vecMaxsPreScaled", vecMaxsNothing);
+		SetEntPropVector(this.index, Prop_Data, "m_vecMaxsPreScaled", vecMaxsNothing);
+		SetEntPropVector(this.index, Prop_Send, "m_vecMinsPreScaled", vecMinsNothing);
+		SetEntPropVector(this.index, Prop_Data, "m_vecMinsPreScaled", vecMinsNothing);
 	}
 	
 	property bool m_bAlternatingBarrel
@@ -225,10 +225,6 @@ public void ApertureSentry_ClotThink(int iNPC)
 		{
 			if (!npc.m_flDoingAnimation)
 			{
-				// FIXME: This doesn't work!
-				// Do these animations work at all? It looks like the same problem was ran-into for the friendly buildings
-				// Just magically make them level three
-				
 				// Built, but we want to also add an upgrade animation
 				npc.AddActivityViaSequence("upgrade");
 				npc.SetCycle(0.01);

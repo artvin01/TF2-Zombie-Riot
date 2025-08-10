@@ -485,7 +485,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				}
 				else
 				{
-					Zero(f3_NpcSavePos[npc.index]);
+					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
 				}
 				
 				npc.m_flNextHangOutTime = gameTime + 1.5;
@@ -497,7 +497,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) < 4000.0)
 				{
 					npc.StopPathing();
-					Zero(f3_NpcSavePos[npc.index]);
+					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
 				}
 				else
 				{
