@@ -5455,18 +5455,28 @@ public void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatus
 	
 	float QuantumVec[3]; WorldSpaceCenter(victim, QuantumVec);
 	QuantumVec[2] -= 40.0;
-	int quantumparticle = ParticleEffectAt_Parent(QuantumVec, "player_recent_teleport_blue", victim)
-	if(!HasSpecificBuff(victim, "Quantum Entanglement"))
-	{
-		if(IsValidEntity(quantumparticle))
-		RemoveEntity(quantumparticle);
-	}
+	int particle = ParticleEffectAt_Parent(QuantumVec, "player_recent_teleport_blue", victim)
+	SetEntPropString(particle, Prop_Data, "m_iName", "quantum_particle");
 }
+
 public void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	//not an npc, ignore.
 	if(!b_ThisWasAnNpc[victim])
 		return;
-
-	//find a way to remove the particle lol
+	
+	int entity = INVALID_ENT_REFERENCE;
+	while ((entity = FindEntityByClassname(entity, "info_particle_system")) != INVALID_ENT_REFERENCE)
+	{
+		if (GetEntPropEnt(entity, Prop_Data, "m_hParent") == victim)
+		{
+			char name[32];
+			GetEntPropString(entity, Prop_Data, "m_iName", name, 32);
+			if (StrEqual(name, "quantum_particle"))
+			{
+				RemoveEntity(entity);
+				return;
+			}
+		}
+	}
 }
