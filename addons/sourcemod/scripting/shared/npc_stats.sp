@@ -5965,6 +5965,7 @@ public void NpcBaseThink(int iNPC)
 }
 stock float NpcDoHealthRegenScaling(int iNPC)
 {
+#if defined ZR
 	if(GetTeam(iNPC) == TFTeam_Red)
 		return 1.0;
 	//not allies.
@@ -5984,6 +5985,9 @@ stock float NpcDoHealthRegenScaling(int iNPC)
 		ValueDo = 1.0 / MultiGlobalHealth;
 	}
 	return ValueDo;
+#else
+	return 1.0;
+#endif
 }
 public void NpcSetGravity(CClotBody npc, int iNPC)
 {
