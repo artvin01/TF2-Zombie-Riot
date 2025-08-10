@@ -118,7 +118,7 @@ void CAT_OnMapStart_NPC()
 	PrecacheParticleSystem(CAT_SELF_DEGRADATION_ABILITY_EFFECT);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "C.A.T");
+	strcopy(data.Name, sizeof(data.Name), "C.A.T.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cat");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_explode_nys");
 	data.IconCustom = true;
@@ -239,7 +239,7 @@ methodmap CAT < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "C.A.T has been engaged");
+				ShowGameText(client_check, "item_armor", 1, "%s", "C.A.T. has been engaged");
 			}
 		}
 		
@@ -325,11 +325,11 @@ methodmap CAT < CClotBody
 		switch(GetRandomInt(0,2))
 		{
 			case 0:
-				CPrintToChatAll("{rare}C.A.T{default}: CONTROL AGAINST TRESPASSERS, NOW ONLINE");
+				CPrintToChatAll("{rare}C.A.T.{default}: CONTROL AGAINST TRESPASSERS, NOW ONLINE");
 			case 1:
-				CPrintToChatAll("{rare}C.A.T{default}: C.A.T, ENGAGED");
+				CPrintToChatAll("{rare}C.A.T.{default}: C.A.T., ENGAGED");
 			case 2:
-				CPrintToChatAll("{rare}C.A.T{default}: SYSTEM POWER-UP COMPLETE");
+				CPrintToChatAll("{rare}C.A.T.{default}: SYSTEM POWER-UP COMPLETE");
 		}
 
 		return npc;
@@ -349,7 +349,7 @@ public void CAT_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{rare}C.A.T{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
+		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
 		return;
 	}
 
@@ -358,7 +358,7 @@ public void CAT_ClotThink(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T{default}: IT IS TOO LATE TO LEAVE NOW, YOU HAVE BEEN MARKED AS A POTENTIAL THREAT TO THIS RACE");
+		CPrintToChatAll("{rare}C.A.T.{default}: IT IS TOO LATE TO LEAVE NOW, YOU HAVE BEEN MARKED AS A POTENTIAL THREAT TO THIS RACE");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -652,15 +652,15 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: PARTICLE RADIATOR IS {unique}READY");
+			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {unique}READY");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: PREPARING FOR PARTICLE {crimson}DISPERSAL");
+			CPrintToChatAll("{rare}C.A.T.{default}: PREPARING FOR PARTICLE {crimson}DISPERSAL");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: PARTICLES ARE DONE {crimson}WARMING UP");
+			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE DONE {crimson}WARMING UP");
 		}
 	}
 }
@@ -717,15 +717,15 @@ static void OrbSpam_Ability_End(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
+			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
+			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
 		}
 	}
 }
@@ -847,15 +847,15 @@ static void SelfDegradation_Ability_Start(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: INITIATING SELF-DEGRADATION");
+			CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DEGRADATION");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION IN PROCESS...");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IN PROCESS...");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SWITCHING TO SELF-DEGRADATION MODE");
+			CPrintToChatAll("{rare}C.A.T.{default}: SWITCHING TO SELF-DEGRADATION MODE");
 		}
 	}
 }
@@ -902,15 +902,15 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION: {unique}ACTIVATED");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {unique}ACTIVATED");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
 		}
 	}
 }
@@ -939,15 +939,15 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T{default}: SELF-DEGRADATION {crimson}SHUTTING DOWN");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION {crimson}SHUTTING DOWN");
 		}
 	}
 }
@@ -1045,7 +1045,7 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{rare}C.A.T{default}: %s", Text_Lines);
+		CPrintToChatAll("{rare}C.A.T.{default}: %s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(15.0, 22.0);
 		b_said_player_weaponline[client] = true;
 	}

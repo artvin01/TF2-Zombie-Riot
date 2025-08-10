@@ -147,7 +147,7 @@ void ARIS_OnMapStart_NPC()
 	PrecacheParticleSystem(ARIS_WEAPON_ARMOR_RETURN_PARTICLE);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "A.R.I.S");
+	strcopy(data.Name, sizeof(data.Name), "A.R.I.S.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aris");
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
 	data.IconCustom = true;
@@ -358,7 +358,7 @@ methodmap ARIS < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "A.R.I.S arrives");
+				ShowGameText(client_check, "item_armor", 1, "%s", "A.R.I.S. arrives");
 			}
 		}
 		
