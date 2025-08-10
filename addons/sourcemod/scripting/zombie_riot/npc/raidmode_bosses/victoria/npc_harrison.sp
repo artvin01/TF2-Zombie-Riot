@@ -1319,7 +1319,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 								float damage = 35.0;
 								damage *= 1.15;
 								if(ShouldNpcDealBonusDamage(target))
-									damage *= 20.0;
+									damage *= 7.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									
