@@ -5963,10 +5963,10 @@ public void NpcBaseThink(int iNPC)
 	}
 	*/
 }
-stock float NpcDoHealthRegenScaling(iNPC)
+stock float NpcDoHealthRegenScaling(int iNPC)
 {
 	if(GetTeam(iNPC) == TFTeam_Red)
-		return;
+		return 1.0;
 	//not allies.
 	
 	float ValueDo = 1.0;
@@ -5983,7 +5983,7 @@ stock float NpcDoHealthRegenScaling(iNPC)
 		//if normal enemeis scale higher interms of HP, then we want to tune down the health regen.
 		ValueDo = 1.0 / MultiGlobalHealth;
 	}
-	return (ValueDo);
+	return ValueDo;
 }
 public void NpcSetGravity(CClotBody npc, int iNPC)
 {
