@@ -158,6 +158,7 @@ methodmap Helia < CClotBody
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
+		Is_a_Medic[npc.index] = true;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
 		SetVariantString("1.0");
@@ -244,6 +245,12 @@ static void ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
@@ -350,6 +357,13 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
+		
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.StopPathing();
 		
 		npc.m_flGetClosestTargetTime = 0.0;

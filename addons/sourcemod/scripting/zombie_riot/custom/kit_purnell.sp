@@ -901,6 +901,7 @@ public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapo
 	float DurationGive = 4.0;
 	int debuff_apply = GetRandomInt(0, 3);
 	Purnell_Configure_Debuffs(i_Pap_Level[client], cooldown, DurationGive, debuff_apply);
+	DurationGive *= 0.75;
 //	DurationGive *= 2.0;
 	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive);
 }

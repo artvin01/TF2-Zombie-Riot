@@ -104,12 +104,12 @@ float SniperMonkey_BouncingBullets(int victim, int &attacker, int &inflictor, fl
 
 float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration = 6.0;
+	float duration = 4.0;
 	
 	if(duration)
 	{
 		if((damagetype & DMG_BLAST))
-			duration *= 2.0 / 3.0;
+			duration *= 1.5;
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
 		{
@@ -122,18 +122,18 @@ float SniperMonkey_MaimMoab(int victim, int &attacker, int &inflictor, float dam
 
 float SniperMonkey_CrippleMoab(int victim, int &attacker, int &inflictor, float damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float duration = 6.0;
+	float duration = 4.0;
 
 	if(duration)
 	{
 		if((damagetype & DMG_BLAST))
-			duration *= 2.0 / 3.0;
+			duration *= 1.5;
 		
 		if(f_ChargeTerroriserSniper[weapon] > 70.0)
 		{
 			ApplyStatusEffect(attacker, victim, "Maimed", duration);
 			
-			duration *= 2.0;
+			duration *= 1.3;
 			ApplyStatusEffect(attacker, victim, "Cripple", duration);
 		}
 	}

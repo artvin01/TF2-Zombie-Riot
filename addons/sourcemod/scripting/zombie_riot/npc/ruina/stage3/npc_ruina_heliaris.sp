@@ -188,6 +188,7 @@ methodmap Heliaris < CClotBody
 			RUINA_CUSTOM_MODELS_2
 		};
 		
+		Is_a_Medic[npc.index] = true;
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -259,6 +260,12 @@ static void ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
@@ -361,6 +368,12 @@ static void ClotThink(int iNPC)
 	{
 		npc.StopPathing();
 		
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
