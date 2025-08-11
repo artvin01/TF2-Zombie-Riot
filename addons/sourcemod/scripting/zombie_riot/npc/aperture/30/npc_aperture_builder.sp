@@ -224,9 +224,6 @@ methodmap ApertureBuilder < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(ApertureBuilder_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureBuilder_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ApertureBuilder_ClotThink);
-
-		i_ClosestAllyCD[npc.index] = 0.0;
-		
 		
 		//IDLE
 		npc.m_iState = APT_BUILDER_STATE_IDLE;
@@ -247,6 +244,7 @@ methodmap ApertureBuilder < CClotBody
 		i_BuildingRefs[npc.index][APT_BUILDER_TELEPORTER] = INVALID_ENT_REFERENCE;
 		
 		Is_a_Medic[npc.index] = true;
+		b_StaticNPC[npc.index] = true;
 		AddNpcToAliveList(npc.index, 1);
 				
 		int skin = 1;
@@ -686,6 +684,9 @@ public void ApertureBuilder_ClotThink(int iNPC)
 							return;
 						}
 					}
+					
+					NpcStats_CopyStats(npc.index, building);
+					b_StaticNPC[building] = b_StaticNPC[npc.index];
 					
 					if (b_StaticNPC[building])
 						AddNpcToAliveList(building, 1);

@@ -70,7 +70,6 @@ methodmap ApertureTeleporter < CClotBody
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
 		npc.m_flNextRangedSpecialAttack = 0.0;
-		AddNpcToAliveList(npc.index, 1);
 		
 		npc.Anger = false;
 		npc.m_flDoingAnimation = 0.0;

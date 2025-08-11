@@ -83,7 +83,6 @@ methodmap ApertureDispenser < CClotBody
 		Is_a_Medic[npc.index] = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
-		AddNpcToAliveList(npc.index, 1);
 		
 		npc.Anger = false;
 		npc.m_flDoingAnimation = 0.0;
