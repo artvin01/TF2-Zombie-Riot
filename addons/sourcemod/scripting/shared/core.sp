@@ -2375,9 +2375,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		WildingenBuilder[entity] = false;
 		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
+#endif
 		b_IsATrigger[entity] = false;
 		b_IsATriggerHurt[entity] = false;
-#endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		b_CanSeeBuildingValues[entity] = false;

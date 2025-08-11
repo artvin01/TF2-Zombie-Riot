@@ -2071,11 +2071,6 @@ void ToddHowardAOEBuff(ToddHoward npc, float gameTime, bool mute = false)
 						if(entitycount != npc.index)
 						{
 							buffedAlly = true;
-							float flPos[3]; // original
-							ToddHoward npc1 = view_as<ToddHoward>(entitycount);
-							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
-							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc1.index, "", {0.0,0.0,0.0});
-							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 				}

@@ -419,12 +419,7 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacke
 	if(ArrayPosition != -1)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			//dont delete it here, it will break other for loops.
-		//	Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			if(Apply_StatusEffect.TotalOwners[attacker])
 				Return = 3;
@@ -532,9 +527,6 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 				AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 				if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 				{
-					Apply_StatusEffect.RemoveStatus();
-					i--;
-					length--;
 					continue;
 				}
 				if(CurrentSlotSaved == Apply_MasterStatusEffect.Slot)
@@ -576,6 +568,8 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 			}
 		}
 	}
+	Apply_StatusEffect.BuffIndex = index;
+	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
 	if(!HadBuffBefore)
 	{
 		Apply_StatusEffect.TimeUntillOver = GetGameTime() + Duration;
@@ -589,8 +583,6 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 			Call_Finish();
 		}
 	}
-	Apply_StatusEffect.BuffIndex = index;
-	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
 
 	if(owner > 0 && owner <= MaxClients && owner != victim)
 		ExplainBuffToClient(owner, Apply_MasterStatusEffect, true);
@@ -694,9 +686,6 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.DamageTakenMulti == -1.0)
@@ -769,9 +758,6 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.DamageDealMulti == -1.0)
@@ -851,9 +837,6 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, float &b
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.DamageTakenMulti == -1.0)
@@ -935,9 +918,6 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.DamageDealMulti == -1.0)
@@ -1090,7 +1070,6 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		//Right are buffs
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
 			continue;
 		}
 		/*
@@ -1206,12 +1185,7 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, link_Apply_StatusEffect);
 		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
-		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			link_Apply_StatusEffect.RemoveStatus();
-			//Ran out, remove buffs?
-		}
-		else
+		if(link_Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			HasBuff = true;
 		}
@@ -1454,9 +1428,6 @@ void StatusEffects_HudAbove(int victim, char[] HudAbove, int SizeOfChar)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(!Apply_MasterStatusEffect.AboveEnemyDisplay[0])
@@ -1497,9 +1468,6 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.MovementspeedModif == -1.0)
@@ -1616,11 +1584,7 @@ stock bool NpcStats_IsEnemyTeslar(int victim, bool High)
 	{
 		E_StatusEffect Apply_StatusEffect;
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 			return true;
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
@@ -1741,11 +1705,7 @@ stock bool NpcStats_IsEnemyFrozen(int victim, int TierDo)
 	{
 		E_StatusEffect Apply_StatusEffect;
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 			return true;
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
@@ -2452,11 +2412,7 @@ stock void ApplyRapidSuturing(int victim)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			Apply_StatusEffect.DataForUse = GetGameTime();
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
@@ -2475,11 +2431,7 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 	{
 		E_StatusEffect Apply_StatusEffect;
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			if(BleedTimeActive <= Apply_StatusEffect.DataForUse)
 			{
@@ -2667,11 +2619,7 @@ static bool CheckBuffIndex(int victim, int buffIndex)
 	{
 		E_StatusEffect Apply_StatusEffect;
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 			return true;
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
@@ -2824,11 +2772,16 @@ void StatusEffects_Medieval()
 	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnBuffStarted				= GodlyMotivaitonGive;
+	data.OnBuffEndOrDeleted			= GodlyMotivaitonEnd;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hussar's Warscream");
@@ -2880,6 +2833,30 @@ void StatusEffects_Medieval()
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 }
+
+void GodlyMotivaitonGive(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+void GodlyMotivaitonEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
+
 void StatusEffects_MERLT0N_BUFF()
 {
 	StatusEffect data;
@@ -3461,11 +3438,7 @@ stock void NpcStats_CasinoDebuffStengthen(int victim, float NewBuffValue)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
 			if(NewBuffValue >= Apply_StatusEffect.DataForUse)
@@ -3595,11 +3568,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
 			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
@@ -3630,11 +3599,7 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
 			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
@@ -3667,11 +3632,7 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//Buffs the damgae for casino, and saves it, as its random somewhat
 			if(Apply_StatusEffect.DataForUse == 0.0 || NewBuffValue >= Apply_StatusEffect.DataForUse)
@@ -4130,7 +4091,6 @@ void StatusEffect_TimerCallDo(int victim)
 		}
 		if(Apply_MasterStatusEffect.TimerRepeatCall_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.TimerRepeatCall_Func)
 		{
-			
 			Call_StartFunction(null, Apply_MasterStatusEffect.TimerRepeatCall_Func);
 			Call_PushCell(victim);
 			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
@@ -4157,9 +4117,6 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.OnTakeDamage_PostVictim != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_PostVictim)
@@ -4194,9 +4151,6 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.OnTakeDamage_PostAttacker != INVALID_FUNCTION && Apply_MasterStatusEffect.OnTakeDamage_PostAttacker)
@@ -4813,10 +4767,6 @@ stock void StatusEffects_AddDepthPerception_Glow(int victim)
 	AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 	if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 	{
-		Apply_StatusEffect.RemoveStatus();
-		
-		if(E_AL_StatusEffects[victim].Length < 1)
-			delete E_AL_StatusEffects[victim];
 		return;
 	}
 	//Add a new glow if we dont have one.
@@ -4970,11 +4920,7 @@ stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Inde
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			//We always set it instantly.
 			Apply_StatusEffect.DataForUse = NewBuffValue;
@@ -4998,11 +4944,7 @@ stock float Status_Effects_GetCustomValue(int victim, int Index)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			BuffValuereturn = Apply_StatusEffect.DataForUse;
 			//add scaling?
@@ -5254,11 +5196,7 @@ stock void NpcStats_PrimalFearChange(int victim, float AddBuff)
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-		}
-		else
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
 			float NewBuffValue = Apply_StatusEffect.DataForUse;
 			NewBuffValue += AddBuff;
