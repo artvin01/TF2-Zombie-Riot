@@ -107,7 +107,7 @@ methodmap ApertureExterminator < CClotBody
 	
 	public ApertureExterminator(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureExterminator npc = view_as<ApertureExterminator>(CClotBody(vecPos, vecAng, "models/bots/demo_boss/bot_demo_boss.mdl", "2.0", "700", ally, false, true, true, true));
+		ApertureExterminator npc = view_as<ApertureExterminator>(CClotBody(vecPos, vecAng, "models/bots/demo_boss/bot_demo_boss.mdl", "2.0", "700", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		
