@@ -723,6 +723,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	menu.Pagination = 0;
 	menu.ExitButton = true;
 	menu.Display(viewer, MENU_TIME_FOREVER);
+	AnyMenuOpen[viewer] = 1.0;
 }
 
 public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int choice)
@@ -732,6 +733,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{

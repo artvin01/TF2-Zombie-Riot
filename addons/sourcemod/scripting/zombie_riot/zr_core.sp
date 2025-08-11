@@ -422,20 +422,6 @@ float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
-float MultiGlobalEnemy = 0.25;
-float MultiGlobalEnemyBoss = 0.25;
-//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
-//isnt affected when selecting Modificators.
-//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
-float MultiGlobalHealth = 1.0;
-//See above
-
-float MultiGlobalHealthBoss = 0.25;
-//This is normal boss scaling, this scales ontop of enemies spawning
-
-float MultiGlobalHighHealthBoss = 0.34;
-//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
-
 float f_WasRecentlyRevivedViaNonWave[MAXPLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
 
@@ -1078,8 +1064,6 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	if(Waves_Started())
-		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
 	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)

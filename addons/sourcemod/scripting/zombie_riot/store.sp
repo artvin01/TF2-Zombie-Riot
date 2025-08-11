@@ -3,7 +3,6 @@
 
 #define SELL_AMOUNT 0.9
 bool PapPreviewMode[MAXPLAYERS];
-float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
 
 enum
 {
@@ -3059,20 +3058,6 @@ static void MenuPage(int client, int section)
 	
 	if(f_PreventMovementClient[client] > GetGameTime())
 		return;
-	
-	if(Waves_Started())
-	{
-		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
-		{
-			StarterCashMode[client] = false; //confirm automatically.
-			
-		}
-	}
-	else
-	{
-		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-		//this is done because new players are confused often.
-	}
 	
 	Menu menu;
 	
