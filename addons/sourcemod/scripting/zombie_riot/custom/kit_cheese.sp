@@ -339,7 +339,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			cheesedmg *= Cheese_Lethal_ElementalBoost[Cheese_PapLevel[attacker]];
 			damage *= Cheese_Lethal_DmgBoost[Cheese_PapLevel[attacker]];
 
-			if(Cheese_HasModernizer1[client])
+			if(Cheese_HasModernizer1[attacker])
 			{
 				damage *= 1.25;
 				cheesedmg *= 1.25;
@@ -361,7 +361,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			}
 			else
 			{
-				if(Cheese_HasModernizer1[client])
+				if(Cheese_HasModernizer1[attacker])
 				{
 					thecooldown *= 0.75;
 				}
@@ -391,7 +391,7 @@ public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int 
 		{
 			Rogue_OnAbilityUse(client, weapon);
 			float Cooldown = Cheese_Burst_Cooldown[Cheese_PapLevel[client]];
-			if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
+			if(HasSpecificBuff(client, "Plasmatic Rampage"))
 			{
 				Cooldown *= 0.5;
 			}
@@ -1120,4 +1120,5 @@ static bool TraceUsers(int entity, int contentsMask, int client)
 	}
 	return false;
 }
+
 
