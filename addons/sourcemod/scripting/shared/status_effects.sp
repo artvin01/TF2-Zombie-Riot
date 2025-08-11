@@ -371,8 +371,7 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 
 	if(index == -1)
 	{
-		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
-		LogError("ApplyStatusEffect A DEV FUCKED UP!!!!!!!!! Name %s",name);
+		LogError("ApplyStatusEffect , invalid buff name: ''%s''",name);
 		return;
 	}
 	E_StatusEffect Apply_StatusEffect;
@@ -466,14 +465,16 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		{
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 			Apply_StatusEffect.RemoveStatus();
-			i--;
+			i = 0;
+			//reloop
 			continue;
 		}
 		else if(Apply_MasterStatusEffect.Positive && RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 			Apply_StatusEffect.RemoveStatus();
-			i--;
+			i = 0;
+			//reloop
 			continue;
 		}
 	}
@@ -536,6 +537,9 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 						// New buff is high priority, remove this one, stop the loop
 						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 						Apply_StatusEffect.RemoveStatus();
+						i = 0;
+						//reloop
+						length = E_AL_StatusEffects[victim].Length;
 						break;
 					}
 					else if(CurrentPriority < Apply_MasterStatusEffect.SlotPriority)
@@ -569,10 +573,13 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 		}
 	}
 	Apply_StatusEffect.BuffIndex = index;
-	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
 	if(!HadBuffBefore)
 	{
 		Apply_StatusEffect.TimeUntillOver = GetGameTime() + Duration;
+	}
+	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
+	if(!HadBuffBefore)
+	{
 		AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
 		if(Apply_MasterStatusEffect.OnBuffStarted != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffStarted)
 		{
@@ -602,6 +609,7 @@ void StatusEffect_UpdateAttackspeedAsap(int victim, StatusEffect Apply_MasterSta
 		//do twice due to npc buffs and such.
 		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffectNPC);
 		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+		
 		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffect);
 		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
 	}
@@ -1081,7 +1089,13 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		//0 means npcs
 		if(DisplayWeapon >= 0 && Apply_MasterStatusEffect.AttackspeedBuff > 0.0)
 		{
-			Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+			if(Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect))
+			{
+				i = 0;
+				//reloop
+				length = E_AL_StatusEffects[victim].Length;
+				continue;
+			}
 		}
 		if(!Apply_MasterStatusEffect.HudDisplay[0])
 			continue;
@@ -1137,9 +1151,10 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		delete E_AL_StatusEffects[victim];
 }
 
-void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	bool HasBuff = false;
+	bool returnDo = false;
 	float BuffAmount = 1.0;
 	//LinkedStatusEffect
 	int FlagAttackspeedLogicInternal = Apply_MasterStatusEffect.FlagAttackspeedLogic;
@@ -1185,15 +1200,21 @@ void Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, link_Apply_StatusEffect);
 		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
-		if(link_Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			Apply_StatusEffect.RemoveStatus();
+			returnDo = true;
+		}
+		else
 		{
 			HasBuff = true;
 		}
 	}
 	if(E_AL_StatusEffects[victim].Length < 1)
 		delete E_AL_StatusEffects[victim];
-		
+	
 	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC, FlagAttackspeedLogicInternal);
+	return returnDo;
 }
 
 bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAmount, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
