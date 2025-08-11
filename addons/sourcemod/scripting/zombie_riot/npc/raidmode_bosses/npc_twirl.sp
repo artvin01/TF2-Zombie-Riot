@@ -3391,7 +3391,7 @@ static Action IonicFracture_Think(int iNPC)
 		Projectile.Start_Loc = Origin;
 		Projectile.radius = 150.0;
 		Projectile.damage = Modify_Damage(-1, Dmg);
-		Projectile.bonus_dmg = Modify_Damage(-1, Dmg)*2.5;
+		Projectile.bonus_dmg = 1.0;
 		Projectile.Time = (npc.m_flIonicFractureEndTimer - GameTime) + 10.0;	//the +10.0 is for potential npc stuns and such. the projectile gets deleted by the ability itself anyway so technically the timer isn't even needed, but its here just incase
 		Projectile.visible = false;
 

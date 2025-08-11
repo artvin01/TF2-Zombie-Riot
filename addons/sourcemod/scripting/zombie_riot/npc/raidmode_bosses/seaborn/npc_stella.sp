@@ -1940,7 +1940,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			Ruina_Laser_Logic Karl_Laser;
 			Karl_Laser.client = npc.Ally;
 			Karl_Laser.DoForwardTrace_Basic(-1.0);
-			Laser.Bonus_Damage = 20.0;
 			Laser.End_Point = Karl_Laser.Start_Point;
 			NC_CoreBeamEffects(npc, 
 			Karl_Laser.Start_Point, 
@@ -1955,7 +1954,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
 				Karl_Laser.Damage = Modify_Damage(25.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*6.0;
+				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*0.1;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -2523,7 +2522,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = Dmg*5.0;
+		Laser.Bonus_Damage = Dmg*4.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 

@@ -1769,7 +1769,7 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage.\nGain armor per enemy hit upto half of your armor."
+		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurns enemies.\nGain armor per enemy hit upto half of your armor."
 	}
 	"Doctor Certificate Desc"
 	{
@@ -2053,7 +2053,7 @@
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash.\nM2 throws a secondary potion with it's own attack delay."
 		"fr"	"Lancez des potions qui font la plupart des dégats par le saignement.\nPeut frapper jusqu'a 5 cibles, et ignore la plupart des résistances.\nAppuyez sur M2 pour lancer une potion secondaire, avec rechargement."
 		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
 		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
@@ -2659,7 +2659,7 @@
 	}
 	"The Standchen Desc AltPap"
 	{
-		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage (true damage)."
+		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
 		"fr"	"Attaques ont un effet élémental Necrôse"
 	}
 	"The Standchen Desc AltPap 2"
@@ -3947,7 +3947,7 @@
 	}
 	"Whistle Stop Desc"
 	{
-		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals True Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals Ranged Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
 	}
 	"Ancestor Launcher Desc"
 	{

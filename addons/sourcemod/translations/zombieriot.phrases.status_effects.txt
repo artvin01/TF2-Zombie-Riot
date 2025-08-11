@@ -1054,8 +1054,7 @@
 	}
 	"Burn Desc"
 	{
-		"en"	"Deals True DMG.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
-		"es"	"Hace daño verdadero.\nLa curacion es un -25％ eficiente al quemarse. Si un NPC te aplica fuego de nuevo, recibes un 50％ de daño de quemadura extra.\n{green}Matar un enemigo en fuego dara +10％ de HP extra."
+		"en"	"Deals True Damage if allies are affected, otherwise ranged.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
 	}
 	"Zealot's Random Drinks"
 	{
