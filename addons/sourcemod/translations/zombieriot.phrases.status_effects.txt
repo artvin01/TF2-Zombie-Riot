@@ -170,8 +170,7 @@
 	}
 	"Teslar Mule Desc"
 	{
-		"en"	"Increases Damage Taken by 35％\nSlows NPC'S by 80％, which lowers over time up untill 0％"
-		"ko"	"받는 피해량이 35％ 증가합니다.\nNPC의 이동 속도를 80％ 감소시키고, 시간이 지날수록 점점 감소하여 최종적으로 이동 속도가 0％가 됩니다."
+		"en"	"Increases Damage Taken by 30%\nSlows NPC'S by 80％, which lowers over time up untill 0％"
 	}
 	"Cripple"
 	{

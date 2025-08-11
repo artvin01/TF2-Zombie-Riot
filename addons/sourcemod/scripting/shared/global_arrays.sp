@@ -833,3 +833,23 @@ int i_ally_index[MAXENTITIES];
 //some lasers had some variation of this, i just condeced it down to 1
 int LaserVarious_HitDetection[MAXENTITIES];
 int i_SaidLineAlready[MAXENTITIES];
+
+
+
+#if defined ZR
+
+float MultiGlobalEnemy = 0.25;
+float MultiGlobalEnemyBoss = 0.25;
+//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
+//isnt affected when selecting Modificators.
+//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
+float MultiGlobalHealth = 1.0;
+//See above
+
+float MultiGlobalHealthBoss = 0.25;
+//This is normal boss scaling, this scales ontop of enemies spawning
+
+float MultiGlobalHighHealthBoss = 0.34;
+//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
+
+#endif

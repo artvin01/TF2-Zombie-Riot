@@ -1229,7 +1229,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
-					flMaxhealth *= NpcDoHealthRegenScaling();
+					flMaxhealth *= NpcDoHealthRegenScaling(npc.index);
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{

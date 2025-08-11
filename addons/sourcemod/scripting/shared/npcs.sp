@@ -502,11 +502,6 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 	}
 	if(!KeepProtection)
 	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
 		static float minn[3], maxx[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
 		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);

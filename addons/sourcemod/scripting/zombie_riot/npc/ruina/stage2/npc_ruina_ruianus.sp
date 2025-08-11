@@ -302,10 +302,12 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
+
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 50);
 }
+
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Ruianus npc = view_as<Ruianus>(victim);

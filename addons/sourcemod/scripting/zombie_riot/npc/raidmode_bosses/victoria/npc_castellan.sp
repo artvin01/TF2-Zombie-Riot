@@ -1548,7 +1548,7 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 
 								float damage = 40.0;
 								if(ShouldNpcDealBonusDamage(target))
-									damage *= 20.0;
+									damage *= 7.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									

@@ -1644,7 +1644,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 								PlayPOWERSound = true;
 							}
 							if(ShouldNpcDealBonusDamage(target))
-								damage *= 20.0;
+								damage *= 7.0;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 							bool Knocked = false;

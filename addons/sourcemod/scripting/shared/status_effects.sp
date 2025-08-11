@@ -1944,7 +1944,7 @@ void StatusEffects_WidowsWine()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "४");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.35;
+	data.DamageTakenMulti 			= 0.30;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.0;
 	data.Positive 					= false;

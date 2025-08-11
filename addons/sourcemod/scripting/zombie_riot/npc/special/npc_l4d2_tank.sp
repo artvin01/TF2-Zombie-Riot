@@ -218,7 +218,7 @@ methodmap L4D2_Tank < CClotBody
 public void L4D2_Tank_ClotThink(int iNPC)
 {
 	L4D2_Tank npc = view_as<L4D2_Tank>(iNPC);
-	
+	Tank_AdjustGrabbedTarget(iNPC);
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -370,6 +370,7 @@ public void L4D2_Tank_ClotThink(int iNPC)
 								PluginBot_Jump(client, vecTarget_closest);
 								RequestFrame(ApplySdkHookTankThrow, EntIndexToEntRef(client));
 								i_TankAntiStuck[client] = EntIndexToEntRef(npc.index);
+								i_GrabbedThis[npc.index] = -1;
 								CreateTimer(0.1, CheckStuckTank, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 							}
 						}
@@ -378,8 +379,6 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					}
 					else
 					{
-						AcceptEntityInput(client, "ClearParent");
-						
 						float flPos[3]; // original
 						float flAng[3]; // original
 						
@@ -561,10 +560,6 @@ public void L4D2_Tank_ClotThink(int iNPC)
 					
 					
 					b_DoNotUnStuck[Enemy_I_See] = true;
-					if(Enemy_I_See <= MaxClients)
-					{
-						SetParent(npc.index, Enemy_I_See, "rhand");
-					}
 					npc.AddGesture("ACT_HULK_THROW");
 					
 					i_GrabbedThis[npc.index] = EntIndexToEntRef(Enemy_I_See);
@@ -698,7 +693,6 @@ public void L4D2_Tank_NPCDeath(int entity)
 	
 	if(IsValidClient(client))
 	{
-		AcceptEntityInput(client, "ClearParent");
 		
 		SetEntityMoveType(client, MOVETYPE_WALK); //can move XD
 		SetEntityCollisionGroup(client, 5);
@@ -986,4 +980,19 @@ public Action CheckStuckTank(Handle timer, any entid)
 		}
 	}
 	return Plugin_Handled;
+}
+
+void Tank_AdjustGrabbedTarget(int iNPC)
+{
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	if(!IsValidEntity(i_GrabbedThis[npc.index]))
+		return;
+
+	int EnemyGrab = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	float flPos[3]; // original
+	float flAng[3]; // original
+
+	npc.GetAttachment("rhand", flPos, flAng);
+	
+	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }

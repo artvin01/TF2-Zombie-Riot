@@ -1363,8 +1363,7 @@
 	}
 	"Teslar Mule Recieved"
 	{
-		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"ko" 		"테슬라 뮬! 활성화시 적중한 대상의 피해량을 75％ 감소시키고 디버프를 부여하는 재생형 보호 버프 획득.\n부여된 대상은 이속 감소 및 35％의 추가 피해를 받음."
+		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 	}
 	"Stockpile Stout Recieved"
 	{

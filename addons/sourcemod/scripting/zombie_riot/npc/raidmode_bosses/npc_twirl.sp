@@ -2208,7 +2208,7 @@ static void ReplaceProjectileParticle(int projectile, const char[] particle_stri
 static float Modify_Damage(int Target, float damage)
 {
 	if(ShouldNpcDealBonusDamage(Target))
-		damage*=10.0;
+		damage*=4.0;
 
 	damage*=RaidModeScaling;
 

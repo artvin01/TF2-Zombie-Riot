@@ -285,7 +285,7 @@ methodmap VoidUnspeakable < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/void_wave/center_of_the_void_1.mp3");
 			music.Time = 175;
-			music.Volume = 1.0;
+			music.Volume = 1.35;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Center Of The Void");
 			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
