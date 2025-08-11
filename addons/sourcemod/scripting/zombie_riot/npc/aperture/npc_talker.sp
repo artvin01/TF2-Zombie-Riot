@@ -4,8 +4,51 @@
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
+// This NPC will also store/handle shared "last stand" raid boss stuff!!!
+
+enum
+{
+	APERTURE_BOSS_NONE = 0,
+	APERTURE_BOSS_CAT = (1 << 0),
+	APERTURE_BOSS_ARIS = (1 << 1),
+	APERTURE_BOSS_CHIMERA = (1 << 2),
+	APERTURE_BOSS_VINCENT = (1 << 3),
+}
+
+enum
+{
+	APERTURE_LAST_STAND_STATE_STARTING,
+	APERTURE_LAST_STAND_STATE_ALMOST_HAPPENING,
+	APERTURE_LAST_STAND_STATE_HAPPENING,
+	APERTURE_LAST_STAND_STATE_SPARED,
+	APERTURE_LAST_STAND_STATE_KILLED,
+}
+
+int i_ApertureBossesDead = APERTURE_BOSS_NONE;
+
+#define APERTURE_LAST_STAND_TIMER_TOTAL 20.0
+#define APERTURE_LAST_STAND_TIMER_INVULN 5.0
+#define APERTURE_LAST_STAND_TIMER_BEFORE_INVULN 2.5
+
+#define APERTURE_LAST_STAND_HEALTH_MULT 0.05
+#define APERTURE_LAST_STAND_DAMAGE_MULT 0.2
+
+#define APERTURE_LAST_STAND_EXPLOSION_PARTICLE "fluidSmokeExpl_ring"
+
+static const char g_ApertureSharedStunStartSound[] = "ui/mm_door_open.wav";
+static const char g_ApertureSharedStunMainSound[] = "mvm/mvm_robo_stun.wav";
+static const char g_ApertureSharedStunTeleportSound[] = "weapons/teleporter_send.wav";
+static const char g_ApertureSharedStunExplosionSound[] = "mvm/mvm_tank_explode.wav";
+
 void Talker_OnMapStart_NPC()
 {
+	PrecacheSound(g_ApertureSharedStunStartSound);
+	PrecacheSound(g_ApertureSharedStunMainSound);
+	PrecacheSound(g_ApertureSharedStunTeleportSound);
+	PrecacheSound(g_ApertureSharedStunExplosionSound);
+	
+	PrecacheParticleSystem(APERTURE_LAST_STAND_EXPLOSION_PARTICLE);
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_talker");
@@ -18,14 +61,13 @@ void Talker_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Talker(vecPos, vecAng, team);
+	return Talker(vecPos, vecAng, team, data);
 }
 methodmap Talker < CClotBody
 {
-
-	public Talker(float vecPos[3], float vecAng[3], int ally)
+	public Talker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Talker npc = view_as<Talker>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", "100000000", ally, .NpcTypeLogic = 1));
 
@@ -44,12 +86,19 @@ methodmap Talker < CClotBody
 		b_thisNpcHasAnOutline[npc.index] = true;
 		i_TalkDelayCheck = 0;
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 
+		char buffers[3][64];
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		for (int i = 0; i < 64; i++)
+		{
+			if (buffers[i][0] == '\0')
+				break;
+			
+			if (StrEqual(buffers[i], "reset"))
+				i_ApertureBossesDead = APERTURE_BOSS_NONE;
+		}
 		
-
-		func_NPCDeath[npc.index] = view_as<Function>(Talker_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(Talker_ClotThink);
 		
 		return npc;
@@ -58,7 +107,7 @@ methodmap Talker < CClotBody
 
 public void Talker_ClotThink(Talker npc, int iNPC)
 {
-	float gameTime = GetGameTime(npc.index);
+	//float gameTime = GetGameTime(npc.index);
 	int wave = (Waves_GetRoundScale() + 1);
 	//Wave 1-5
 	if(wave >= 1 && wave <= 5)
@@ -425,7 +474,190 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 	*/
 }
 
-public void Talker_NPCDeath(int entity)
+//
+// SHARED RAID BOSS FUNCTIONS
+//
+
+void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 {
-	Talker npc = view_as<Talker>(entity);
+	float gameTime = GetGameTime();
+	
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+	
+	RemoveAllBuffs(npc.index, true, true);
+	ReviveAll(true);
+	
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	
+	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+	b_NpcIsInvulnerable[npc.index] = true;
+	
+	npc.m_bDissapearOnDeath = true;
+	npc.m_flSpeed = 0.0;
+	npc.m_bisWalking = false;
+	npc.StopPathing();
+	
+	npc.SetActivity("ACT_MP_STUN_MIDDLE");
+	npc.AddGesture("ACT_MP_STUN_BEGIN");
+	npc.SetPlaybackRate(0.0);
+	
+	RaidModeScaling = 0.0;
+	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
+	EmitSoundToAll(g_ApertureSharedStunStartSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
+	
+	npc.m_flNextThinkTime = gameTime + APERTURE_LAST_STAND_TIMER_BEFORE_INVULN;
+	
+	func_NPCDeath[npc.index] = Aperture_Shared_LastStandSequence_NPCDeath;
+	func_NPCOnTakeDamage[npc.index] = Aperture_Shared_LastStandSequence_OnTakeDamage;
+	func_NPCThink[npc.index] = Aperture_Shared_LastStandSequence_ClotThink;
+	
+	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_STARTING;
+}
+
+static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
+{
+	/*
+	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(ReturnEntityMaxHealth(npc.index) * APERTURE_LAST_STAND_HEALTH_MULT));
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
+	*/
+	
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToNearest(ReturnEntityMaxHealth(npc.index) * APERTURE_LAST_STAND_HEALTH_MULT));
+	
+	EmitSoundToAll(g_ApertureSharedStunMainSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
+	
+	Event event = CreateEvent("show_annotation");
+	if (event)
+	{
+		float vecPos[3];
+		GetAbsOrigin(npc.index, vecPos);
+		vecPos[2] += 160.0; // hardcoded lollium!
+		
+		char message[128];
+		Aperture_GetDyingBoss(npc, message, 128);
+		
+		Format(message, 128, "Choose to spare or kill %s!\nYou DO NOT have to kill it to proceed!", message);
+		
+		event.SetFloat("worldPosX", vecPos[0]);
+		event.SetFloat("worldPosY", vecPos[1]);
+		event.SetFloat("worldPosZ", vecPos[2]);
+	//	event.SetInt("follow_entindex", 0);
+		event.SetFloat("lifetime", APERTURE_LAST_STAND_TIMER_TOTAL);
+	//	event.SetInt("visibilityBitfield", (1<<client));
+		//event.SetBool("show_effect", effect);
+		event.SetString("text", message);
+		event.SetString("play_sound", "vo/null.mp3");
+		event.SetInt("id", npc.index); //What to enter inside? Need a way to identify annotations by entindex!
+		event.Fire();
+	}
+	
+	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_ALMOST_HAPPENING;
+}
+
+static void Aperture_Shared_LastStandSequence_Happening(CClotBody npc)
+{
+	b_NpcIsInvulnerable[npc.index] = false; // NPCs should still not target this boss
+	
+	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_HAPPENING;
+}
+
+// Shared NPC functions
+
+public void Aperture_Shared_LastStandSequence_ClotThink(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	float gameTime = GetGameTime();
+	
+	if (IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
+	{
+		// Boss was spared!
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_SPARED;
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		
+		return;
+	}
+	
+	npc.Update();
+	
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	if (npc.m_iAnimationState == APERTURE_LAST_STAND_STATE_STARTING)
+	{
+		Aperture_Shared_LastStandSequence_AlmostHappening(npc);
+		npc.m_flNextThinkTime = gameTime + APERTURE_LAST_STAND_TIMER_INVULN - APERTURE_LAST_STAND_TIMER_BEFORE_INVULN;
+		return;
+	}
+	
+	if (npc.m_iAnimationState == APERTURE_LAST_STAND_STATE_ALMOST_HAPPENING)
+	{
+		Aperture_Shared_LastStandSequence_Happening(npc);
+		npc.m_flNextThinkTime = gameTime + 1.0;
+		return;
+	}
+	
+	npc.m_flNextThinkTime = gameTime + 1.0;
+}
+
+public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	damage *= APERTURE_LAST_STAND_DAMAGE_MULT;
+	return Plugin_Changed;
+}
+
+public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+	float vecPos[3];
+	WorldSpaceCenter(npc.index, vecPos);
+	if (npc.m_iAnimationState != APERTURE_LAST_STAND_STATE_SPARED)
+	{
+		// Boss was killed!
+		EmitSoundToAll(g_ApertureSharedStunExplosionSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
+		ParticleEffectAt(vecPos, APERTURE_LAST_STAND_EXPLOSION_PARTICLE, 0.5);
+		
+		i_ApertureBossesDead |= npc.m_iState;
+		npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_KILLED;
+	}
+	else
+	{
+		EmitSoundToAll(g_ApertureSharedStunTeleportSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
+		ParticleEffectAt(vecPos, "teleported_blue", 0.5);
+	}
+	
+	Event event = CreateEvent("hide_annotation");
+	if (event)
+	{
+		event.SetInt("id", npc.index);
+		event.Fire();
+	}
+	
+	StopSound(npc.index, SNDCHAN_AUTO, g_ApertureSharedStunMainSound);
+}
+
+static void Aperture_GetDyingBoss(CClotBody npc, char[] buffer, int size)
+{
+	switch (npc.m_iState)
+	{
+		case APERTURE_BOSS_CAT: strcopy(buffer, size, "C.A.T.");
+		case APERTURE_BOSS_ARIS: strcopy(buffer, size, "A.R.I.S.");
+		case APERTURE_BOSS_CHIMERA: strcopy(buffer, size, "C.H.I.M.E.R.A.");
+		case APERTURE_BOSS_VINCENT: strcopy(buffer, size, "Vincent");
+		default: strcopy(buffer, size, "Unknown Boss");
+	}
+}
+
+bool Aperture_ShouldDoLastStand()
+{
+	return StrContains(WhatDifficultySetting_Internal, "Vincent") == 0;
+}
+
+bool Aperture_IsBossDead(int type)
+{
+	return (i_ApertureBossesDead & type) != 0;
 }

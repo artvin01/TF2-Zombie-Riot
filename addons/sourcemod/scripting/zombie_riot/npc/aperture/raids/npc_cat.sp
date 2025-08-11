@@ -339,8 +339,9 @@ methodmap CAT < CClotBody
 public void CAT_ClotThink(int iNPC)
 {
 	CAT npc = view_as<CAT>(iNPC);
+	float gameTime = GetGameTime();
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
 	}
@@ -354,7 +355,7 @@ public void CAT_ClotThink(int iNPC)
 	}
 
 	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -363,7 +364,7 @@ public void CAT_ClotThink(int iNPC)
 		return;
 	}
 
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
 	
@@ -374,20 +375,19 @@ public void CAT_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
-
-	float gameTime = GetGameTime(npc.index);
+	
 	int closest = npc.m_iTarget;
 	
 	// RANGED ABILITY: Orbs - Boss spins while firing homing orbs in a spiral pattern indiscriminately. The orbs deal contact damage and work as a projectile shield
@@ -949,14 +949,24 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	
 	CAT_Weapon_Lines(npc, attacker);
 	i_SaidLineAlready[npc.index] = 0;
+	
+	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	{
+		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
+		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		
+		damage = 0.0;
+		return Plugin_Handled;
+	}
 	
 	return Plugin_Changed;
 }
@@ -1045,6 +1055,7 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 public void CAT_NPCDeath(int entity)
 {
 	CAT npc = view_as<CAT>(entity);
+	
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

@@ -1051,6 +1051,7 @@ void NPC_ConfigSetup()
 	RefragmentedMedic_OnMapStart_NPC();
 	RefragmentedSpy_OnMapStart_NPC();
 	Parasihtta_OnMapStart_NPC();
+	Talker_OnMapStart_NPC();
 	Hostis_OnMapStart_NPC();
 	Defectio_OnMapStart_NPC();
 	ApertureCollector_OnMapStart_NPC();
@@ -2309,6 +2310,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/refragmented/npc_refragmented_hostis.sp"
 #include "npc/aperture/refragmented/npc_refragmented_defectio.sp"
 #include "npc/aperture/npc_portalgate.sp"
+#include "npc/aperture/npc_talker.sp"
 #include "npc/aperture/giants/npc_aperture_collector.sp"
 #include "npc/aperture/giants/npc_aperture_fueler.sp"
 #include "npc/aperture/giants/npc_aperture_halter.sp"
