@@ -1587,9 +1587,12 @@ bool Rogue_ShowStatus(int client)
 
 				SetHudTextParams(0.1, 0.1, 0.81, 255, 255, 255, 255);
 				ShowSyncHudText(client, SyncHud_WandMana, "Rogue Stage Status", floor.Name, CurrentCountHud, floor.RoomCount + ExtraStageCount);
+				return true;
 			}
 		}
 	}
+
+	return false;
 }
 
 static void SetFloorMusic(const Floor floor, bool stop)
@@ -2821,11 +2824,6 @@ bool Rogue_UpdateMvMStats()
 	{
 		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", Rogue_GetChaosLevel() > 2 ? (GetURandomInt() % 99999) : 0);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", 0);
-
-		Floor floor;
-		Floors.GetArray(CurrentFloor, floor);
-
-		int maxRooms = floor.RoomCount + ExtraStageCount;
 
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", 0);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", 0);
