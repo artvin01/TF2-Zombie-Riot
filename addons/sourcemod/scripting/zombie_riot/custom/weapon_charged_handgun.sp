@@ -960,7 +960,7 @@ public Action Timer_Electric_Cutter_Think_Next(Handle timer, int ref)
 	int iCarrier = EntRefToEntIndex(ref);
 	if (!IsValidEntity(iCarrier))
 		return Plugin_Stop;
-	CreateTimer(0.2, Timer_Electric_Cutter_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+	CreateTimer(0.2, Timer_Electric_Cutter_Think, ref, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	return Plugin_Continue;
 }
 
@@ -1026,7 +1026,6 @@ public Action Timer_Electric_Cutter_Think(Handle timer, int ref)
 	
 	if (!IsValidEdict(iCarrier) || iCarrier<=MaxClients)
 	{
-		
 		if(IsValidEdict(particle) && particle>MaxClients)
 		{
 			RemoveEntity(particle);
