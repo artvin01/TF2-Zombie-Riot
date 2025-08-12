@@ -2462,11 +2462,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponForceClass[entity] = 0;
 		b_ProjectileCollideWithPlayerOnly[entity] = false;
 		b_EntityCantBeColoured[entity] = false;
-#if defined RTS
-		TeamNumber[entity] = 0;
-#else
 		TeamNumber[entity] = -1;
-#endif
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
