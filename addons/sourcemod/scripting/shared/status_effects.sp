@@ -3020,6 +3020,9 @@ void StatusEffects_Aperture()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	
+	data.OnBuffStarted				= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Energizing Gel");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "❁");
@@ -3031,8 +3034,6 @@ void StatusEffects_Aperture()
 	data.AttackspeedBuff			= -1.0;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.OnBuffStarted				= INVALID_FUNCTION;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3049,8 +3050,6 @@ void StatusEffects_Aperture()
 	data.AttackspeedBuff			= -1.0;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.OnBuffStarted				= INVALID_FUNCTION;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3067,8 +3066,6 @@ void StatusEffects_Aperture()
 	data.AttackspeedBuff			= 0.5;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
-	data.OnBuffStarted				= INVALID_FUNCTION;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
