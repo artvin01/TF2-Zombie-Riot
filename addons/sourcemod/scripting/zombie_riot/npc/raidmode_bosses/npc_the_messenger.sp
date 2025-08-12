@@ -1160,10 +1160,12 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							}
 							else
 							{
+								
 								int ChaosDamage = 150;
 								if(NpcStats_IsEnemySilenced(npc.index))
 									ChaosDamage = 140;
 
+								ApplyStatusEffect(npc.index, targetTrace, "Near Zero", 3.5);
 								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
 
@@ -1264,6 +1266,8 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 				ChaosDamage = 60;
 				if(NpcStats_IsEnemySilenced(owner))
 					ChaosDamage = 50;
+					
+				ApplyStatusEffect(owner, target, "Near Zero", 3.5);
 			}
 
 			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);

@@ -734,7 +734,15 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
 				value *= 5.0;
-			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				
+			int DamageTypes = DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE;
+
+			if(GetTeam(entity) != TFTeam_Red)
+			{
+				DamageTypes &= ~DMG_TRUEDAMAGE;
+				DamageTypes |= DMG_BULLET;
+			}
+			SDKHooks_TakeDamage(entity, attacker, attacker, value, DamageTypes, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 			
 			//Setting burn dmg to slash cus i want it to work with melee!!!
 			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.

@@ -2375,9 +2375,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		WildingenBuilder[entity] = false;
 		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
+#endif
 		b_IsATrigger[entity] = false;
 		b_IsATriggerHurt[entity] = false;
-#endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		b_CanSeeBuildingValues[entity] = false;
@@ -2709,6 +2709,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			
 		}

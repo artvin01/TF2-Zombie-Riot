@@ -2883,12 +2883,12 @@ methodmap CClotBody < CBaseCombatCharacter
 			SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
 	
 			//Make it entirely invis. Shouldnt even render these 8 polygons.
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 			if(hide_projectile)
 			{
 				SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
+			Hook_DHook_UpdateTransmitState(entity);
 			
 			int particle = 0;
 	

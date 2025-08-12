@@ -286,7 +286,7 @@ methodmap ThePurge < CClotBody
 		music.Volume = 1.6;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Chaos Engineered Cyborg");
-		strcopy(music.Artist, sizeof(music.Artist), "Granda Bard");
+		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 		
 		Citizen_MiniBossSpawn();
