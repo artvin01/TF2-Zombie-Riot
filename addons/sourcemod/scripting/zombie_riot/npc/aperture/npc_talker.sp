@@ -31,7 +31,6 @@ int i_ApertureBossesDead = APERTURE_BOSS_NONE;
 #define APERTURE_LAST_STAND_TIMER_BEFORE_INVULN 2.5
 
 #define APERTURE_LAST_STAND_HEALTH_MULT 0.05
-#define APERTURE_LAST_STAND_DAMAGE_MULT 0.2
 
 #define APERTURE_LAST_STAND_EXPLOSION_PARTICLE "fluidSmokeExpl_ring"
 
@@ -486,6 +485,7 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	RemoveAllBuffs(npc.index, true, false);
 	NPCStats_RemoveAllDebuffs(npc.index);
+	ApplyStatusEffect(npc.index, npc.index, "Last Stand", FAR_FUTURE);
 	
 	ReviveAll(true);
 	
@@ -514,7 +514,7 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	npc.m_flNextThinkTime = gameTime + APERTURE_LAST_STAND_TIMER_BEFORE_INVULN;
 	
 	func_NPCDeath[npc.index] = Aperture_Shared_LastStandSequence_NPCDeath;
-	func_NPCOnTakeDamage[npc.index] = Aperture_Shared_LastStandSequence_OnTakeDamage;
+	func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
 	func_NPCThink[npc.index] = Aperture_Shared_LastStandSequence_ClotThink;
 	
 	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_STARTING;
@@ -603,12 +603,6 @@ public void Aperture_Shared_LastStandSequence_ClotThink(int entity)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 1.0;
-}
-
-public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	damage *= APERTURE_LAST_STAND_DAMAGE_MULT;
-	return Plugin_Changed;
 }
 
 public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
