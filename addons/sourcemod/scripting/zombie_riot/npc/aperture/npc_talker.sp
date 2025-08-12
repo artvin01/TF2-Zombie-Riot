@@ -484,7 +484,9 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 	
-	RemoveAllBuffs(npc.index, true, true);
+	RemoveAllBuffs(npc.index, true, false);
+	NPCStats_RemoveAllDebuffs(npc.index);
+	
 	ReviveAll(true);
 	
 	if(IsValidEntity(npc.m_iWearable2))

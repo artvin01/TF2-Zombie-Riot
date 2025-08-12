@@ -1155,6 +1155,15 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 {
 	ARIS npc = view_as<ARIS>(victim);
 	
+	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	{
+		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
+		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		
+		damage = 0.0;
+		return Plugin_Handled;
+	}
+	
 	if (!npc.m_bLostHalfHealth && (ReturnEntityMaxHealth(npc.index) / 2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		npc.m_bLostHalfHealth = true;
 		
@@ -1165,15 +1174,6 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-	}
-	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
-	{
-		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
-		
-		damage = 0.0;
-		return Plugin_Handled;
 	}
 	
 	return Plugin_Changed;

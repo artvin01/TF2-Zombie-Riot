@@ -90,12 +90,7 @@ enum
 	CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE,
 }
 
-static int OrbAbilityState[MAXENTITIES];
-static float NextOrbAbilityState[MAXENTITIES];
 static float NextOrbDamage[MAXENTITIES];
-
-static int SelfDegradationAbilityState[MAXENTITIES];
-static float NextSelfDegradationAbilityState[MAXENTITIES];
 
 void CAT_OnMapStart_NPC()
 {
@@ -185,28 +180,40 @@ methodmap CAT < CClotBody
 		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
+	property float m_flNextOrbAbilityTime
+	{
+		public get()							{ return fl_NextRangedSpecialAttackHappens[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRangedSpecialAttackHappens[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flNextSelfDegradationAbilityTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	
 	property int m_iOrbAbilityState
 	{
-		public get()							{ return OrbAbilityState[this.index]; }
-		public set(int TempValueForProperty) 	{ OrbAbilityState[this.index] = TempValueForProperty; }
+		public get()							{ return i_AttacksTillReload[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillReload[this.index] = TempValueForProperty; }
 	}
 	
 	property float m_flNextOrbAbilityState
 	{
-		public get()							{ return NextOrbAbilityState[this.index]; }
-		public set(float TempValueForProperty) 	{ NextOrbAbilityState[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
 	property int m_iSelfDegradationAbilityState
 	{
-		public get()							{ return SelfDegradationAbilityState[this.index]; }
-		public set(int TempValueForProperty) 	{ SelfDegradationAbilityState[this.index] = TempValueForProperty; }
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
 	}
 	
 	property float m_flNextSelfDegradationAbilityState
 	{
-		public get()							{ return NextSelfDegradationAbilityState[this.index]; }
-		public set(float TempValueForProperty) 	{ NextSelfDegradationAbilityState[this.index] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 	
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -290,11 +297,8 @@ methodmap CAT < CClotBody
 		Music_SetRaidMusic(music);
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 25.0;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 15.0;
-		
-		npc.m_iAttacksTillReload = 12;
-		npc.m_fbGunout = false;
+		npc.m_flNextOrbAbilityTime = GetGameTime(npc.index) + 25.0;
+		npc.m_flNextSelfDegradationAbilityTime = GetGameTime(npc.index) + 15.0;
 		
 		npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_NONE;
 		npc.m_flNextOrbAbilityState = 0.0;
@@ -391,7 +395,7 @@ public void CAT_ClotThink(int iNPC)
 	int closest = npc.m_iTarget;
 	
 	// RANGED ABILITY: Orbs - Boss spins while firing homing orbs in a spiral pattern indiscriminately. The orbs deal contact damage and work as a projectile shield
-	if (npc.m_flNextRangedSpecialAttackHappens && npc.m_flNextRangedSpecialAttackHappens < gameTime && npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_NONE)
+	if (npc.m_flNextOrbAbilityTime && npc.m_flNextOrbAbilityTime < gameTime && npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_NONE)
 	{
 		switch (npc.m_iOrbAbilityState)
 		{
@@ -415,7 +419,7 @@ public void CAT_ClotThink(int iNPC)
 				}	
 				else
 				{
-					npc.m_flNextRangedSpecialAttackHappens = gameTime + GetRandomFloat(5.0, 7.0);
+					npc.m_flNextOrbAbilityTime = gameTime + GetRandomFloat(5.0, 7.0);
 				}
 			}
 			
@@ -451,7 +455,7 @@ public void CAT_ClotThink(int iNPC)
 	}
 	
 	// ABILITY 0: Self Degradation - Boss hurts itself, increasing vulnerabilities and damage dealt for a period of time
-	if (npc.m_flAbilityOrAttack0 && npc.m_flAbilityOrAttack0 < gameTime && npc.m_iOrbAbilityState == CAT_ORB_SPAM_ABILITY_STATE_NONE)
+	if (npc.m_flNextSelfDegradationAbilityTime && npc.m_flNextSelfDegradationAbilityTime < gameTime && npc.m_iOrbAbilityState == CAT_ORB_SPAM_ABILITY_STATE_NONE)
 	{
 		switch (npc.m_iSelfDegradationAbilityState)
 		{
@@ -467,7 +471,7 @@ public void CAT_ClotThink(int iNPC)
 				else
 				{
 					// We can't use this anymore... Doesn't account for getting healed somehow
-					npc.m_flAbilityOrAttack0 = 0.0;
+					npc.m_flNextSelfDegradationAbilityTime = 0.0;
 				}
 			}
 			
@@ -698,7 +702,7 @@ static void OrbSpam_Ability_End(CAT npc)
 	npc.StartPathing();
 	
 	npc.m_flAttackHappens = gameTime + 0.5;
-	npc.m_flNextRangedSpecialAttackHappens = gameTime + 25.0;
+	npc.m_flNextOrbAbilityTime = gameTime + 25.0;
 	
 	if (IsValidEntity(npc.m_iWearable1))
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
@@ -707,7 +711,7 @@ static void OrbSpam_Ability_End(CAT npc)
 	npc.m_flNextOrbAbilityState = 0.0;
 	
 	// If other attacks are ready, delay them a bit so they don't immediately activate
-	npc.m_flAbilityOrAttack0 = fmax(npc.m_flAbilityOrAttack0, gameTime + GetRandomFloat(5.0, 10.0));
+	npc.m_flNextSelfDegradationAbilityTime = fmax(npc.m_flNextSelfDegradationAbilityTime, gameTime + GetRandomFloat(5.0, 10.0));
 
 	switch(GetRandomInt(0,2))
 	{
@@ -914,7 +918,7 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 {
 	float gameTime = GetGameTime(npc.index);
 	
-	npc.m_flAbilityOrAttack0 = gameTime + 18.0;
+	npc.m_flNextSelfDegradationAbilityTime = gameTime + 18.0;
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_NONE;
 	npc.m_flNextSelfDegradationAbilityState = 0.0;
@@ -924,7 +928,7 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 		RemoveEntity(npc.m_iWearable2);
 	
 	// If other attacks are ready, delay them a bit so they don't immediately activate
-	npc.m_flNextRangedSpecialAttackHappens = fmax(npc.m_flNextRangedSpecialAttackHappens, gameTime + GetRandomFloat(3.0, 5.0));
+	npc.m_flNextOrbAbilityTime = fmax(npc.m_flNextOrbAbilityTime, gameTime + GetRandomFloat(3.0, 5.0));
 
 	switch(GetRandomInt(0,2))
 	{
@@ -946,6 +950,15 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	CAT npc = view_as<CAT>(victim);
+	
+	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	{
+		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
+		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		
+		damage = 0.0;
+		return Plugin_Handled;
+	}
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -958,15 +971,6 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	CAT_Weapon_Lines(npc, attacker);
 	i_SaidLineAlready[npc.index] = 0;
-	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
-	{
-		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
-		
-		damage = 0.0;
-		return Plugin_Handled;
-	}
 	
 	return Plugin_Changed;
 }
