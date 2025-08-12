@@ -690,8 +690,6 @@ public void OnPostThink(int client)
 	if(Mana_Hud_Delay[client] < GameTime)
 	{
 		OnlyOneAtATime = true;
-		if(R)
-
 		SetGlobalTransTarget(client);
 		static char buffer[255];
 		buffer[0] = 0;
