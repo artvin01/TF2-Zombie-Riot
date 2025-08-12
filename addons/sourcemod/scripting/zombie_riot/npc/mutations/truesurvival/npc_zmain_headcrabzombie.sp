@@ -161,7 +161,6 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		b_thisNpcIsABoss[npc.index] = true;
 		
 		//IDLE
 		npc.m_flSpeed = 330.0;
@@ -172,34 +171,6 @@ methodmap ZMainHeadcrabZombie < CClotBody
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
-
-		if(ally == TFTeam_Blue)
-		{
-			if(fl_KamikazeInitiate < GetGameTime())
-			{
-				//This is a kamikaze that was newly initiated!
-				//add new kamikazies whenever possible.
-				//this needs to happen every tick!
-				DoGlobalMultiScaling();
-				RemainingZmainsSpawn = 4;
-				RequestFrame(SpawnZmainsAFew, 0);
-			
-				if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
-				{
-					//incase their random spawn code fails, they'll spawn here.
-					int Spawner_entity = GetRandomActiveSpawner();
-					if(IsValidEntity(Spawner_entity))
-					{
-						float pos[3];
-						float ang[3];
-						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-					}
-				}
-			}
-			fl_KamikazeInitiate = GetGameTime() + 15.0;	
-		}
 
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;
