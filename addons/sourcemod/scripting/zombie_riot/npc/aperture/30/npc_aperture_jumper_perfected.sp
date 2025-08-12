@@ -284,41 +284,41 @@ void ApertureJumperPerfectedSelfDefense(ApertureJumperPerfected npc, float gameT
 					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
-				if(i_IsABuilding[target])
-				{
-					static float flMyPos[3];
-					static float flMyPos_2[3];
-					flMyPos[2] += 250.0;
-					flMyPos[0] = flMyPos_2[0];
-					flMyPos[1] = flMyPos_2[1];
-					WorldSpaceCenter(target, flMyPos_2);
-					PluginBot_Jump(npc.index, flMyPos);
-					npc.m_iOverlordComboAttack++;
-				}
-				if(npc.m_iOverlordComboAttack >= 1)
-				{
-					SetVariantString("1.25");
-					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-					damageDealt = 95.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-				}
-				if(npc.m_iOverlordComboAttack >= 2)
-				{
-					SetVariantString("1.50");
-					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-					damageDealt = 115.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-				}
-				if(npc.m_iOverlordComboAttack >= 3)
-				{
-					SetVariantString("2.0");
-					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-					damageDealt = 145.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
-				}
+					if(i_IsABuilding[target])
+					{
+						static float flMyPos[3];
+						static float flMyPos_2[3];
+						flMyPos[2] += 250.0;
+						flMyPos[0] = flMyPos_2[0];
+						flMyPos[1] = flMyPos_2[1];
+						WorldSpaceCenter(target, flMyPos_2);
+						PluginBot_Jump(npc.index, flMyPos);
+						npc.m_iOverlordComboAttack++;
+					}
+					if(npc.m_iOverlordComboAttack >= 1)
+					{
+						SetVariantString("1.25");
+						AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+						damageDealt = 95.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 2.0;
+					}
+					if(npc.m_iOverlordComboAttack >= 2)
+					{
+						SetVariantString("1.50");
+						AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+						damageDealt = 115.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 2.0;
+					}
+					if(npc.m_iOverlordComboAttack >= 3)
+					{
+						SetVariantString("2.0");
+						AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+						damageDealt = 145.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 2.0;
+					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

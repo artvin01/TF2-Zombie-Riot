@@ -432,7 +432,7 @@ public void ApertureTraveller_Particle_StartTouch(int entity, int target)
 		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
 		WorldSpaceCenter(target, vecTarget);
 		float vPredictedPos[3];
-		PredictSubjectPosition(owner, target,_,_, vPredictedPos);
+		PredictSubjectPosition(view_as<CClotBody>(owner), target,_,_, vPredictedPos);
 		vPredictedPos = GetBehindTarget(target, 30.0 ,vPredictedPos);
 
 		float PreviousPos[3];
