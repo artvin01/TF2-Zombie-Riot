@@ -1586,7 +1586,10 @@ bool Rogue_ShowStatus(int client)
 				Floors.GetArray(CurrentFloor, floor);
 
 				SetHudTextParams(0.1, 0.1, 0.81, 255, 255, 255, 255);
-				ShowSyncHudText(client, SyncHud_WandMana, "Rogue Stage Status", floor.Name, CurrentCountHud, floor.RoomCount + ExtraStageCount);
+				int DisplayDo = CurrentCountHud + 1;
+				if(DisplayDo <= 1)
+					DisplayDo = 1;
+				ShowSyncHudText(client, SyncHud_WandMana, "%T", "Rogue Stage Status",client, floor.Name, DisplayDo, (floor.RoomCount + ExtraStageCount) + 2);
 				return true;
 			}
 		}
