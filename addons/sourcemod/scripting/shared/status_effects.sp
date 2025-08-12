@@ -5476,36 +5476,26 @@ void WeakeningCompoundEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	SetEntityRenderColor_NpcAll(victim, 0.5, 0.5, 4.0);
 }
 
-public void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	//not an npc, ignore.
-	if(!b_ThisWasAnNpc[victim])
+	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
 		return;
 	
-	float QuantumVec[3]; WorldSpaceCenter(victim, QuantumVec);
-	QuantumVec[2] -= 40.0;
-	int particle = ParticleEffectAt_Parent(QuantumVec, "player_recent_teleport_blue", victim)
-	SetEntPropString(particle, Prop_Data, "m_iName", "quantum_particle");
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "player_recent_teleport_blue", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 
-public void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	//not an npc, ignore.
-	if(!b_ThisWasAnNpc[victim])
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
-	
-	int entity = INVALID_ENT_REFERENCE;
-	while ((entity = FindEntityByClassname(entity, "info_particle_system")) != INVALID_ENT_REFERENCE)
-	{
-		if (GetEntPropEnt(entity, Prop_Data, "m_hParent") == victim)
-		{
-			char name[32];
-			GetEntPropString(entity, Prop_Data, "m_iName", name, 32);
-			if (StrEqual(name, "quantum_particle"))
-			{
-				RemoveEntity(entity);
-				return;
-			}
-		}
-	}
+	RemoveEntity(Apply_StatusEffect.WearableUse);
 }

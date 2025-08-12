@@ -822,7 +822,7 @@ methodmap ARIS < CClotBody
 		
 		if (armor > 0.0)
 		{
-			armor *= NpcDoHealthRegenScaling();
+			armor *= NpcDoHealthRegenScaling(this.index);
 			GrantEntityArmor(this.index, false, 1.0, 0.5, 0, ReturnEntityMaxHealth(this.index) * armor);
 		}	
 		

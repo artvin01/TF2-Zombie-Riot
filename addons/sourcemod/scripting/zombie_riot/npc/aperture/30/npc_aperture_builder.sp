@@ -19,7 +19,7 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/engineer_taunts06.mp3",
+	"vo/taunts/engineer_taunts06.mp3",
 	"vo/engineer_meleedare01.mp3",
 	"vo/engineer_meleedare02.mp3",
 	"vo/engineer_meleedare03.mp3",
