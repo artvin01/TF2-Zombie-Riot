@@ -38,13 +38,21 @@ static const char g_SwitchWeaponSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
+	"weapons/batsaber_draw.wav",
+};
+static const char g_MeleeAttackSounds_Hand[][] = {
 	"weapons/machete_swing.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/axe_hit_flesh1.wav",
-	"weapons/axe_hit_flesh2.wav",
-	"weapons/axe_hit_flesh3.wav",
+	"ambient/sawblade_impact1.wav",
+	"ambient/sawblade_impact2.wav",
+};
+static const char g_MeleeHitSounds_Hand[][] = {
+	"weapons/metal_gloves_hit_flesh1.wav",
+	"weapons/metal_gloves_hit_flesh2.wav",
+	"weapons/metal_gloves_hit_flesh3.wav",
+	"weapons/metal_gloves_hit_flesh4.wav",
 };
 
 static const char g_RangedAttackSounds[][] = {
@@ -62,26 +70,29 @@ static const char g_MalfunctionSounds[][] = {
 	"weapons/sentry_damage3.wav",
 	"weapons/sentry_damage4.wav",
 };
-
-static const char g_MalfunctionParticleAttachments[][] = {
-	"head",
-	"eye_1",
-	"weapon_bone",
-	"flag"
+static const char g_PassiveSound[][] = {
+	"mvm/giant_heavy/giant_heavy_loop.wav",
 };
-
+static const char g_BatteryBladeEmpty[][] = {
+	"weapons/cow_mangler_explosion_normal_04.wav",
+	"weapons/cow_mangler_explosion_normal_05.wav",
+	"weapons/cow_mangler_explosion_normal_06.wav",
+};
 void CHIMERA_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds_Hand)); i++) { PrecacheSound(g_MeleeAttackSounds_Hand[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds_Hand)); i++) { PrecacheSound(g_MeleeHitSounds_Hand[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ShotgunReloadingSounds));   i++) { PrecacheSound(g_ShotgunReloadingSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_MalfunctionSounds));   i++) { PrecacheSound(g_MalfunctionSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_HalfHealthSounds));   i++) { PrecacheSound(g_HalfHealthSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_SwitchWeaponSounds));   i++) { PrecacheSound(g_SwitchWeaponSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_BatteryBladeEmpty));   i++) { PrecacheSound(g_BatteryBladeEmpty[i]);   }
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "C.H.I.M.E.R.A");
@@ -99,6 +110,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 {
 	return CHIMERA(vecPos, vecAng, ally, data);
 }
+
 methodmap CHIMERA < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -126,24 +138,46 @@ methodmap CHIMERA < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(this.m_flBatteryLeftBlade)
+		{
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 140);
+		}
+		else
+		{
+			EmitSoundToAll(g_MeleeAttackSounds_Hand[GetRandomInt(0, sizeof(g_MeleeAttackSounds_Hand) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		}
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(this.m_flBatteryLeftBlade)
+			EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(g_MeleeHitSounds_Hand[GetRandomInt(0, sizeof(g_MeleeHitSounds_Hand) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		
 	}
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 100, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
-	
-	public void PlayRocketSound()
+	public void PlayPassiveSound()
 	{
-		EmitSoundToAll(g_RocketFiringSound, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.6, 80);
+		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void StopPassiveSound()
+	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+	}
+	public void PlayBatteryEmpty()
+	{
+		EmitSoundToAll(g_BatteryBladeEmpty[GetRandomInt(0, sizeof(g_BatteryBladeEmpty) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 80);
+		EmitSoundToAll(g_BatteryBladeEmpty[GetRandomInt(0, sizeof(g_BatteryBladeEmpty) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 80);
 	}
 
-
-	property float m_flAbility1
+	property float m_flBatteryLeftBlade
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
@@ -152,7 +186,7 @@ methodmap CHIMERA < CClotBody
 	
 	public CHIMERA(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		CHIMERA npc = view_as<CHIMERA>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.50", "700", ally, false, true, true, true));
+		CHIMERA npc = view_as<CHIMERA>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.50", "700", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -160,7 +194,7 @@ methodmap CHIMERA < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		func_NPCDeath[npc.index] = CHIMERA_NPCDeath;
@@ -169,8 +203,11 @@ methodmap CHIMERA < CClotBody
 
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
+		npc.PlayPassiveSound();
 		
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		float RaidTimeDo = 160.0;
+		npc.m_flBatteryLeftBlade = GetGameTime(npc.index) + (RaidTimeDo * 0.5);
+		RaidModeTime = GetGameTime(npc.index) + RaidTimeDo;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -234,8 +271,8 @@ methodmap CHIMERA < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		npc.m_iStepNoiseType = -1;	
+		npc.m_iNpcStepVariation = -1;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flMeleeArmor = 1.0;
@@ -246,16 +283,34 @@ methodmap CHIMERA < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/tw_medibot_chariot/tw_medibot_chariot.mdl", _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec24_polar_charger_style4/dec24_polar_charger_style4.mdl", _, skin);
+
+		float flPos[3];
+		float flAng[3];
+		npc.GetAttachment("flag", flPos, flAng);
+		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "projectile_fireball_smoke", npc.index, "flag", {0.0,0.0,0.0});
+
+		npc.m_iWearable5 = npc.EquipItem("head", WEAPON_CUSTOM_WEAPONRY_1);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		SetVariantInt(8192);
+		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
+		SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 8);
+
 		return npc;
-	
+	}
 }
 
 public void CHIMERA_ClotThink(int iNPC)
 {
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(iNPC);
 	
 	if(CHIMERA_LoseConditions(iNPC))
+		return;
+	if(CHIMERA_timeBased(iNPC))
 		return;
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -283,27 +338,27 @@ public void CHIMERA_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 	}
 	
-	int i_Target = npc.m_iTarget;
-	if (IsValidEnemy(npc.index, i_Target))
+	int EnemyTarget = npc.m_iTarget;
+	if (IsValidEnemy(npc.index, EnemyTarget))
 	{
 		float vecPos[3], vecTargetPos[3];
 		WorldSpaceCenter(npc.index, vecPos);
-		WorldSpaceCenter(i_Target, vecTargetPos);
+		WorldSpaceCenter(EnemyTarget, vecTargetPos);
 		
 		float distance = GetVectorDistance(vecPos, vecTargetPos, true);
 	
 		// Predict their pos when not loading our gun
 		if (distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, i_Target, _, _, vPredictedPos);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, EnemyTarget, _, _, vPredictedPos);
 			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			npc.SetGoalEntity(i_Target);
+			npc.SetGoalEntity(EnemyTarget);
 		}
 		
-		CHIMERA_SelfDefense(npc, gameTime, i_Target, distance);
+		CHIMERA_SelfDefense(npc, gameTime, EnemyTarget, distance);
 	}
 	else
 	{
@@ -332,6 +387,10 @@ static void CHIMERA_SelfDefense(CHIMERA npc, float gameTime, int target, float d
 			bool PlaySound = false;
 			float damage = 35.0;
 			damage *= RaidModeScaling;
+			if(npc.m_flBatteryLeftBlade)
+			{
+				damage *= 2.0;
+			}
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
@@ -397,10 +456,8 @@ static void CHIMERA_SelfDefense(CHIMERA npc, float gameTime, int target, float d
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
-				npc.m_flAttackHappens = gameTime + 0.1;
-				float attack = 1.0;
-				npc.m_flNextMeleeAttack = gameTime + attack;
-				return;
+				npc.m_flAttackHappens = gameTime + 0.2;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 	}
@@ -409,18 +466,6 @@ static void CHIMERA_SelfDefense(CHIMERA npc, float gameTime, int target, float d
 public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	CHIMERA npc = view_as<CHIMERA>(victim);
-	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
-	{
-		npc.m_iState = APERTURE_BOSS_CHIMERA; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
-		
-		damage = 0.0;
-		return Plugin_Handled;
-	}
-	
-	if (!npc.m_bLostHalfHealth && (ReturnEntityMaxHealth(npc.index) / 2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
-		npc.m_bLostHalfHealth = true;
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -444,122 +489,41 @@ public void CHIMERA_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	npc.StopPassiveSound();
 
 }
 
-static void CHIMERA_MakeParticleRocketSuitable(int entity, bool fake)
+bool CHIMERA_timeBased(int iNPC)
 {
-	SetEntityCollisionGroup(entity, COLLISION_GROUP_DEBRIS);
-	SDKUnhook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-	
-	if (fake)
-		SDKHook(entity, SDKHook_StartTouch, CHIMERA_Fake_Rocket_Particle_StartTouch);
-	else
-		SDKHook(entity, SDKHook_StartTouch, CHIMERA_Real_Rocket_Particle_StartTouch);
-	
-	// We want to actually see it
-	SetEntityRenderColor(entity);
-	SetEntityRenderMode(entity, RENDER_NORMAL);
-	
-	for (int i = 0; i < 4; i++) //This will make it so it doesnt override its collision box.
-		SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", i_AirStrikeRocketModelIndex, _, i);
-}
 
-static void CHIMERA_Fake_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if (target == 0 || target >= MAXENTITIES)
-		RemoveEntity(entity);
-}
-
-static void CHIMERA_Real_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if (target == 0 || target >= MAXENTITIES)
+	CHIMERA npc = view_as<CHIMERA>(iNPC);
+	//idk it never was in a bracket
+	if(npc.m_flBatteryLeftBlade && npc.m_flBatteryLeftBlade < GetGameTime())
 	{
-		float vecPos[3];
-		GetAbsOrigin(entity, vecPos);
-		ParticleEffectAt(vecPos, CHIMERA_ROCKET_EXPLOSION_PARTICLE);
-		
-		StopSound(entity, SNDCHAN_AUTO, g_RocketLandingSound);
-		EmitSoundToAll(g_RocketExplodingSound, entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL);
-		
-		float radius = CHIMERA_ROCKET_BLAST_RADIUS * 3.0;
-		spawnRing_Vectors(vecPos, 1.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, 0.5, 1.0, 0.1, 1, radius);
-		
-		CreateEarthquake(vecPos, 1.2, radius, 14.0, 230.0);
-		
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if (owner > MaxClients && !b_NpcHasDied[owner])
-		{
-			// Let's just ASSUME this is CHIMERA
-			float damage = 45.0;
-			
-			if (RaidBossActive > 0)
-				damage *= RaidModeScaling;
-			
-			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, CHIMERA_ROCKET_BLAST_RADIUS);
-		}
-		
-		RemoveEntity(entity);
+		npc.m_flBatteryLeftBlade = 0.0;
+		CPrintToChatAll("{crimson}C.H.I.M.E.R.A. 's Expidonsan blade ran out of battery.");
+		float flPos[3];
+		float flAng[3];
+		int Particle_1;
+		npc.GetAttachment("flag", flPos, flAng);
+		Particle_1 = ParticleEffectAt_Parent(flPos, "drg_cow_explosion_sparkles_blue", npc.index, "flag", {0.0,0.0,0.0});
+		CreateTimer(0.75, Timer_RemoveEntity, EntIndexToEntRef(Particle_1), TIMER_FLAG_NO_MAPCHANGE);
+		npc.PlayBatteryEmpty();
+		if(IsValidEntity(npc.m_iWearable5))
+			RemoveEntity(npc.m_iWearable5);
 	}
 }
-
-static void CHIMERA_EmptyGlobalTargetArray(int count)
-{
-	for (int i = 0; i < count; i++)
-		i_TargetArray[i] = 0;
-}
-
-static void CHIMERA_LoopGlobalTargetArray(int count)
-{
-	int nextKnownIndex = 0;
-	for (int i = 0; i < count; i++)
-	{
-		if (i_TargetArray[i] == 0)
-			i_TargetArray[i] = i_TargetArray[nextKnownIndex++];
-	}
-}
-
-static void Timer_CHIMERA_FireRocketTowardsPlayer(Handle timer, int iNPC)
-{
-	if (b_NpcHasDied[iNPC])
-		return;
-	
-	view_as<CHIMERA>(iNPC).FireRocketTowardsPlayer();
-}
-
-static void Timer_CHIMERA_PlaySecondReloadingSound(Handle timer, int iNPC)
-{
-	if (b_NpcHasDied[iNPC])
-		return;
-	
-	EmitSoundToAll(g_ShotgunReloadingSounds[1], iNPC, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
-}
-	
-static bool TraceFilter_CHIMERA_ShotgunBlast(int entity, int mask, int other)
-{
-	if (IsValidEnemy(entity, other, true) && Can_I_See_Enemy(entity, other, true))
-		b_EnemyHitByBlast[entity] = true;
-	
-	return false;
-}
-
-static bool TraceFilter_CHIMERA_ShotgunBullet(int entity, int mask, int other)
-{
-	if (IsValidEnemy(entity, other, true))
-	{
-		if (i_EnemyHitByThisManyBullets[entity] >= 5)
-			return false;
-		
-		i_EnemyHitByThisManyBullets[entity]++;
-	}
-	
-	return false;
-}
-
-
-
 bool CHIMERA_LoseConditions(int iNPC)
 {
+	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -567,9 +531,7 @@ bool CHIMERA_LoseConditions(int iNPC)
 		CPrintToChatAll("{blue}C.A.T{default}: Intruders taken care of.");
 		return true;
 	}
-
-	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -577,5 +539,6 @@ bool CHIMERA_LoseConditions(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
+
 	return false;
 }
