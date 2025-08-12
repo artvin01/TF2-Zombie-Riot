@@ -1574,6 +1574,24 @@ void Rogue_NextProgress()
 	Waves_UpdateMvMStats();
 }
 
+bool Rogue_ShowStatus(int client)
+{
+	if(Rogue_Mode())
+	{
+		switch(GameState)
+		{
+			case State_Trans, State_Vote:
+			{
+				static Floor floor;
+				Floors.GetArray(CurrentFloor, floor);
+
+				SetHudTextParams(0.1, 0.1, 0.81, 255, 255, 255, 255);
+				ShowSyncHudText(client, SyncHud_WandMana, "Rogue Stage Status", floor.Name, CurrentCountHud, floor.RoomCount + ExtraStageCount);
+			}
+		}
+	}
+}
+
 static void SetFloorMusic(const Floor floor, bool stop)
 {
 	// TODO: Fix music not matching in the StrEqual
@@ -2888,10 +2906,7 @@ bool Rogue_UpdateMvMStats()
 								case 0:	// Most Friendly
 									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 								
-								case 1:
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
-								
-								case 2:
+								case 1, 2:
 									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
 								
 								case 3:
@@ -2912,17 +2927,18 @@ bool Rogue_UpdateMvMStats()
 						{
 							if(CurseOne != -1)
 							{
-								Waves_SetWaveClass(objective, i, CurseTime, "void_gate", MVM_CLASS_FLAG_MINIBOSS, true);
+								Waves_SetWaveClass(objective, i, CurseTime, "void_gate", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							else
 							{
-								Waves_SetWaveClass(objective, i, 0, "void_gate", MVM_CLASS_FLAG_MINIBOSS, false);
+								Waves_SetWaveClass(objective, i, 0, "void_gate", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, false);
 							}
 							
 							continue;
 						}
 					}
 				}
+				/*
 				case 4:
 				{
 					//current Stage
@@ -2947,8 +2963,6 @@ bool Rogue_UpdateMvMStats()
 					Waves_SetWaveClass(objective, i, DisplayDo, "current_floor", MVM_CLASS_FLAG_NORMAL, true);
 					continue;
 				}
-				/*
-
 				case 7:
 				{
 					//Max Floors

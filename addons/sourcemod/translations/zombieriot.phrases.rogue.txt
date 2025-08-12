@@ -121,6 +121,11 @@
 		"pt"	"Artefatos Coletados"
 		"ru"	"Собранные артефакты"
 	}
+	"Rogue Stage Status"
+	{
+		"#format"	"{1:t},{2:d},{3:d}"
+		"en"		"{1}\nStage: {2} / {3}"
+	}
 
 	// Encounters
 	"Optional Battle Title"
