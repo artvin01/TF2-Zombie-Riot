@@ -225,28 +225,84 @@ public void ApertureContainer_NPCDeath(int entity)
 	}
 
 	float ProjectileLoc[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 0, 125, 200, 1, 0.3, 5.0, 8.0, 3, 200.0 * 2.0);
-	for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
 		{
-			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 0, 125, 200, 1, 0.3, 5.0, 8.0, 3, 200.0 * 2.0);
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 			{
-				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
 				{
-					float pos1[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-					static float pos2[3];
-					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 					{
-						if(!Can_I_See_Ally(npc.index, entitycount))
-							continue;
-							
-						ApplyStatusEffect(npc.index, entitycount, "Energizing Gel", 15.0);
+						float pos1[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+						static float pos2[3];
+						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
+						{
+							if(!Can_I_See_Ally(npc.index, entitycount))
+								continue;
+
+							ApplyStatusEffect(npc.index, entitycount, "Energizing Gel", 15.0);
+						}
 					}
 				}
 			}
 		}
+		case 1:
+		{
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 100, 0, 200, 1, 0.3, 5.0, 8.0, 3, 200.0 * 2.0);
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+			{
+				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+				{
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					{
+						float pos1[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+						static float pos2[3];
+						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
+						{
+							if(!Can_I_See_Ally(npc.index, entitycount))
+								continue;
+								
+							ApplyStatusEffect(npc.index, entitycount, "Vigorous Gel", 15.0);
+						}
+					}
+				}
+			}
+		}
+		case 2:
+		{
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 200, 0, 200, 1, 0.3, 5.0, 8.0, 3, 200.0 * 2.0);
+			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+			{
+				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+				{
+					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					{
+						float pos1[3];
+						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+						static float pos2[3];
+						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
+						{
+							if(!Can_I_See_Ally(npc.index, entitycount))
+								continue;
+								
+							ApplyStatusEffect(npc.index, entitycount, "Hastening Gel", 15.0);
+						}
+					}
+				}
+			}
+		}
+	}
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))
