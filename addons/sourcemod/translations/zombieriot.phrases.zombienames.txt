@@ -4828,7 +4828,7 @@
 	}
 	"Refragmented Defectio Desc"
 	{
-		"en"	"idk yet lololo placeholder"
+		"en"	"Takes 0 damage inside of his blue radius."
 	}
 	"Perfected Father Grigori"
 	{
@@ -4866,8 +4866,32 @@
 	{
 		"en"	"C.A.T."
 	}
+	"C.A.T. Desc"
+	{
+		"en"	"C.A.T. is a robot built by a certain faction, to keep the laboratories safe from...trespassers.\nC.A.T. is not self-aware, it can't go against its programming, and since you're trespassing, well..."
+	}
 	"A.R.I.S."
 	{
 		"en"	"A.R.I.S."
+	}
+	"A.R.I.S. Desc"
+	{
+		"en"	"A.R.I.S. never makes an appearance in the main laboratories unless C.A.T. fails to fulfill its task, or if it requires assistance.\n but since C.A.T. was never assumed to fail its task, A.R.I.S. was never equipped with any high defense mechanisms to deal with intruders."
+	}
+	"C.H.I.M.E.R.A."
+	{
+		"en"	"C.H.I.M.E.R.A."
+	}
+	"C.H.I.M.E.R.A. Desc"
+	{
+		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
+	}
+	"Vincent"
+	{
+		"en"	"Vincent"
+	}
+	"Vincent Desc"
+	{
+		"en"	"Oldest robot in the facility\n Developed with self-consciousness to see how much better robots could fare in fights if given the ability to make their own choices,\n rather than to follow programming."
 	}
 }
