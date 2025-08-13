@@ -4886,6 +4886,18 @@
 	{
 		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
 	}
+	"Refragmented Winter Sniper"
+	{
+		"en"	"Refragmented Winter Sniper"
+	}
+	"Refragmented Frost Hunter"
+	{
+		"en"	"Refragmented Frost Hunter"
+	}
+	"C.H.I.M.E.R.A. Desc"
+	{
+		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
+	}
 	"Vincent"
 	{
 		"en"	"Vincent"
