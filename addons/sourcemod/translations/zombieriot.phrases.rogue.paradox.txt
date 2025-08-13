@@ -887,7 +887,7 @@
 	"Black Tulip Desc"
 	{
 		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60％, {red}resets after using a weapon ability"
-		"ko"	"침묵에 억압받는 이베리아인들을 위해 그녀는 목소리를 낼 것이다.\n{green}아군의 피해량과 치유량이 120초에 걸쳐 최대 60％까지 증가합니다. {red}무기 능력 발동시, 이 효과가 초기화됩니다."
+		"ko"	"{green}아군의 피해량과 치유량이 120초에 걸쳐 최대 60％까지 증가. {red}무기 능력 발동시, 이 효과가 초기화."
 	}
 	"Castle Offspring"
 	{
@@ -897,7 +897,7 @@
 	"Castle Offspring Desc"
 	{
 		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60％, {red}resets when knocked down"
-		"ko"	"시간만 충분하다면 이 상자는 또 다른 새로운 무대가 될 수 있다.\n{green}아군의 최대 체력이 300초에 걸쳐 최대 60％까지 증가합니다. {red}사망시 이 효과가 초기화됩니다."
+		"ko"	"{green}아군의 최대 체력이 300초에 걸쳐 최대 60％까지 증가. {red}사망시 이 효과가 초기화."
 	}
 
 	"Waldch Assistance"

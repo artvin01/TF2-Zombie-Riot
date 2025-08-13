@@ -2038,6 +2038,7 @@
 	"Flamethrower Extra Desc"
 	{
 		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurns enemies.\nGain armor per enemy hit upto half of your armor."
+		"ko"	"레이드 보스에게 주는 피해량 +1.15배\n들고 있을시, 추가 피해 저항력 획득.\n화상 디버프 부여.\n적중시, 아머를 회복하여 최대 아머의 절반까지 회복."
 	}
 	"Doctor Certificate Desc"
 	{
@@ -3070,7 +3071,7 @@
 	{
 		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
 		"fr"	"Attaques ont un effet élémental Necrôse"
-		"ko"	"피해량 증가.\n적중시, 대상에게 쇠약 원소 피해를 부여. (트루 대미지)"
+		"ko"	"피해량 증가.\n적중시, 대상에게 쇠약 원소 피해를 부여."
 	}
 	"The Standchen Desc AltPap 2"
 	{
@@ -4599,6 +4600,7 @@
 	"Whistle Stop Desc"
 	{
 		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals Ranged Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+		"ko"	"공격이 쇠약 원소 피해를 입힘.\n확률로 추가 투사체를 발사하여, 이동 속도를 둔화시키고 원소 피해가 부여된 대상에게 추가 피해를 입힘.\n능력은 주변 범위 내의 체력이 낮은 적을 처형하며, 무한정으로 지속됨."
 	}
 	"Ancestor Launcher Desc"
 	{
