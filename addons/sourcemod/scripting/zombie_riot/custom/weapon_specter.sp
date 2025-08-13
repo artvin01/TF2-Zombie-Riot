@@ -483,7 +483,7 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 		}
 	}
 
-	if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
+	if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

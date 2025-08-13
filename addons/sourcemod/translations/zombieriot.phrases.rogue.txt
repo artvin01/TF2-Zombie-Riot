@@ -1369,7 +1369,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 2 seconds of reduced cooldown."
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Splash Magic'' and ''Drone Magic'' weapons on hit get 2 seconds of reduced cooldown."
 	}
 	"Bracelets of Agility"
 	{
@@ -1675,7 +1675,7 @@
 	}
 	"Hand of Sticks Desc"
 	{
-		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
+		"en"	"Real close and personal.\n{green}''Charger'' and ''Debuffer'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
 	}
 	"Hand of Quake"
 	{
@@ -1683,7 +1683,7 @@
 	}
 	"Hand of Quake Desc"
 	{
-		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150％ jump height and 50％ more damage."
+		"en"	"Where's the rocket jumping?\n{green}''Artillery'' and ''Mechanic'' weapons weapons grant +150％ jump height and 50％ more damage."
 	}
 	"Hand of Travel"
 	{
@@ -1691,15 +1691,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knife and ''Abyssal hunter'' weapons weapons grant +10 health regen."
-	}
-	"Hand of Flesh"
-	{
-		"en"	"Hand of Flesh"
-	}
-	"Hand of Flesh Desc"
-	{
-		"en"	"Flesh burns and bleeds.\n{yellow}Afterburn is replaced with bleed."
+		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons weapons grant +10 health regen."
 	}
 	"Hand of Trapmaster"
 	{
@@ -1715,15 +1707,7 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
-	}
-	"Hand of Incredible Speeds"
-	{
-		"en"	"Hand of Fisting"
-	}
-	"Hand of Incredible Speeds Desc"
-	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +33％ firing speed and +33％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
+		"en"	"You want my drugs?\n{green}''Tactician'' and ''Deadeye'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance."
 	}
 	"Hand of Suprise"
 	{
@@ -1731,7 +1715,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
 	}
 	"Hand of Revenge"
 	{
@@ -1739,7 +1723,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150％ damage bonus while below half health."
+		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Combatant'' weapons gain +150％ damage bonus while below half health."
 	}
 	"Hand of Stock"
 	{
@@ -1747,7 +1731,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
+		"en"	"Investing in the marketplace.\n{green}''Rapid Magic'' and ''Power Magic'' weapons grant +100％ max mana and regen and attack +100％ faster."
 	}
 	"Hand of the Elite"
 	{
@@ -1755,7 +1739,7 @@
 	}
 	"Hand of the Elite Desc"
 	{
-		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75％ damage bonus while over half health"
+		"en"	"Such elegance.\n{green}''Lord'' and ''Defender'' weapons gain +75％ damage bonus while over half health"
 	}
 	"Soul of Boss vs Boss"
 	{

@@ -2905,16 +2905,16 @@ bool Rogue_UpdateMvMStats()
 							switch(Rogue_GetUmbralLevel())
 							{
 								case 0:	// Most Friendly
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 								
 								case 1, 2:
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL, true);
 								
 								case 3:
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS, true);
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS, true);
 								
 								default:	// Most Hated
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							continue;
 						}
