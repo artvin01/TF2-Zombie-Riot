@@ -50,6 +50,7 @@ enum struct Artifact
 	Function FuncIngotChanged;
 	Function FuncRecoverWeapon;
 	Function FuncStageEnd;
+	Function FuncTakeDamage;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -85,6 +86,9 @@ enum struct Artifact
 		
 		kv.GetString("func_stageend", this.Name, 64);
 		this.FuncStageEnd = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_takedamage", this.Name, 64);
+		this.FuncTakeDamage = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
@@ -2405,6 +2409,30 @@ bool Rogue_UnlockStore()
 	return (Rogue_Mode() && RogueTheme == BlueParadox);
 }
 
+void Rogue_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = CurrentCollection.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			if(artifact.FuncTakeDamage != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncTakeDamage);
+				Call_PushCell(victim);
+				Call_PushCellRef(attacker);
+				Call_PushCellRef(inflictor);
+				Call_PushCellRef(damage);
+				Call_PushCellRef(damagetype);
+				Call_PushCellRef(weapon);
+				Call_Finish();
+			}
+		}
+	}
+}
+
 int Rogue_GetRandomArtfiact(Artifact artifact, bool blacklist, int forcePrice = -1)
 {
 	if(!CurrentMissed)
@@ -3036,7 +3064,6 @@ bool b_ProvokedAnger;
 bool b_MalfunctionShield;				//shield items
 bool b_MusicReleasingRadio;
 bool b_WrathOfItallians; 				//see on_ability_use.sp
-bool b_HandOfElderMages; 				
 bool b_BraceletsOfAgility; 				//shield items
 bool b_ElasticFlyingCape; 				//shield items
 bool b_HealthyEssence; 					//see stocks for healing and various other healing methods like medigun
@@ -3055,7 +3082,6 @@ static void ClearStats()
 	b_MalfunctionShield = false;
 	b_MusicReleasingRadio = false;
 	b_WrathOfItallians = false;
-	b_HandOfElderMages = false;
 	b_BraceletsOfAgility = false;
 	b_ElasticFlyingCape = false;
 	b_HealthyEssence = false;
@@ -3099,3 +3125,7 @@ bool IS_MusicReleasingRadio()
 
 #include "roguelike/item_whiteflower.sp"
 #include "roguelike/paradox_dlc.sp"
+
+//#include "roguelike/rift_main.sp"
+//#include "roguelike/rift_items.sp"
+#include "roguelike/rift_hands.sp"

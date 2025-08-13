@@ -5,4 +5,95 @@
 		"#format"	"{1:t}"
 		"en"		"{green}{1} {default}has closed!"
 	}
+
+	"Hand of Predation"
+	{
+		"en"	"Hand of Predation"
+	}
+	"Hand of Predation Desc"
+	{
+		"en"	"Herds stir, flesh rend asunder.\n{green}''Charger'' weapons gain +7％ fire rate when using an ability {yellow}(resets on stage end or revive)"
+	}
+	"Hand of Rumble"
+	{
+		"en"	"Hand of Rumble"
+	}
+	"Hand of Rumble Desc"
+	{
+		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal full explosion damage to all targets and no target limit"
+	}
+	"Hand of Choker"
+	{
+		"en"	"Hand of Choker"
+	}
+	"Hand of Choker Desc"
+	{
+		"en"	"With your last strength, break open a last bit of hope for yourself.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot"
+	}
+	// TODO: Tactician
+	// TODO: Hunter
+	"Hand of Buckler"
+	{
+		"en"	"Hand of Buckler"
+	}
+	"Hand of Buckler Desc"
+	{
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+	}
+	"Hand of Undulation"
+	{
+		"en"	"Hand of Undulation"
+	}
+	"Hand of Undulation Desc"
+	{
+		"en"	"Blasts conquer, the wake deafening.\n{green}''Splash Magic'' weapon ability cooldowns are reduced by 2 seconds when dealing damage"
+	}
+	"Hand of Mystery"
+	{
+		"en"	"Hand of Mystery"
+	}
+	"Hand of Mystery Desc"
+	{
+		"en"	"Mists part, the truth approaches.\n{green}''Rapid Magic'' weapon ability cooldowns are reduced by 50％"
+	}
+	"Hand of Flowing Water"
+	{
+		"en"	"Hand of Flowing Water"
+	}
+	"Hand of Flowing Water"
+	{
+		"en"	"The ocean's flow never ceases, because it is always surging.\n{green}''Power Magic'' weapons grant +300％ max mana and regen"
+	}
+	// TODO: Drone Magic
+	"Hand of Rending"
+	{
+		"en"	"Hand of Rending"
+	}
+	"Hand of Rending Desc"
+	{
+		"en"	"Mountains shatter, stones devoured.\n{green}''Duelist'' weapons damage type is changed to true damage"
+	}
+	"Hand of Fisticuffs"
+	{
+		"en"	"Hand of Fisticuffs"
+	}
+	"Hand of Fisticuffs Desc"
+	{
+		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
+	}
+	"Hand of Superspeed"
+	{
+		"en"	"Hand of Superspeed"
+	}
+	"Hand of Superspeed Desc"
+	{
+		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +120％ fire rate"
+	}
+	// TODO: Lord
+	// TODO: Crusher
+	// TODO: Combatant
+	// TODO: Medical
+	// TODO: Mechanic
+	// TODO: Buffer
+	// TODO: Debuffer
 }

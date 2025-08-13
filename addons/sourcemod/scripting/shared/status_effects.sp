@@ -199,6 +199,7 @@ void InitStatusEffects()
 
 #if defined ZR
 	StatusEffects_Ritualist();
+	StatusEffects_Rogue3();
 #endif
 }
 
@@ -5275,6 +5276,22 @@ void StatusEffects_XenoLab()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 }
+
+#if defined ZR
+void StatusEffects_Rogue3()
+{
+	StatusEffect data;
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Fisticuffs");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Positive 					= false;
+	data.Slot					= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+}
+#endif
 
 void WeakeningCompoundStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
