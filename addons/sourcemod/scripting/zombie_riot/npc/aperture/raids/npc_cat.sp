@@ -343,7 +343,7 @@ methodmap CAT < CClotBody
 public void CAT_ClotThink(int iNPC)
 {
 	CAT npc = view_as<CAT>(iNPC);
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -753,45 +753,22 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	npc.PlayRangedSound();
 	npc.FaceTowards(vecOrbPos, 2300.0);
 	
-	npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-	
-	int projectile = npc.FireParticleRocket(vecOrbPos, 3000.0, GetRandomFloat(125.0, 150.0), 150.0, "dxhr_lightningball_parent_blue", true);
+	int projectile = npc.FireParticleRocket(vecOrbPos, 10.0, GetRandomFloat(100.0, 400.0), 150.0, "dxhr_lightningball_parent_blue", true);
 	
 	SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-	SDKHook(projectile, SDKHook_StartTouch, Cat_Rocket_Particle_StartTouch);
 	SDKHook(projectile, SDKHook_Touch, Cat_Rocket_Particle_Touch);
+	SDKHook(projectile, SDKHook_ThinkPost, Cat_Rocket_Particle_Think);
 	
 	NextOrbDamage[projectile] = 0.0;
 	
-	Initiate_HomingProjectile(projectile,
-	npc.index,
-	20.0,				// float lockonAngleMax,
-	30.0,				// float homingaSec,
-	false,				// bool LockOnlyOnce,
-	true,				// bool changeAngles,
-	vecOrbAngles);		// float AnglesInitiate[3];
-	
-	// Make it act like a projectile shield
+	// Make its collision box bigger, so it's prettier
 	SetEntityModel(projectile, CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
-	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6);
-	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
-	b_ThisEntityIgnored[projectile] = true;
-	b_ForceCollisionWithProjectile[projectile] = true;
+	SetVariantString("6.0");
+	AcceptEntityInput(projectile, "SetModelScale");
+	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6); // refreshes collision
 	
+	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKET);
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-}
-
-static void Cat_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if (target == 0 || target >= MAXENTITIES)
-	{
-		// we hit the world, remove this
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		
-		TE_Particle("spell_batball_impact_blue", ProjectileLoc);
-		RemoveEntity(entity);
-	}
 }
 
 static void Cat_Rocket_Particle_Touch(int entity, int target)
@@ -826,6 +803,40 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	float damage = 5.0 * RaidModeScaling;
 	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 30.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
 	NextOrbDamage[entity] = gameTime + 0.25;
+}
+
+void Cat_Rocket_Particle_Think(int entity)
+{
+	float gameTime = GetGameTime();
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (!IsValidEntity(owner))
+		owner = 0;
+	
+	if (!owner)
+	{
+		RemoveEntity(entity);
+		return;
+	}
+	
+	float vecPos[3];
+	GetAbsOrigin(entity, vecPos);
+	
+	TR_EnumerateEntitiesSphere(vecPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_CAT_FindProjectiles, entity);
+	
+	float vecVelocity[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelocity);
+	
+	float speed = getLinearVelocity(vecVelocity);
+	PrintToChatAll("speed %.2f", speed);
+	if (speed > 40.0)
+	{
+		ScaleVector(vecVelocity, 0.95);
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecVelocity);
+	}
+	
+	CBaseCombatCharacter(entity).SetNextThink(gameTime + 0.1);
 }
 
 static void SelfDegradation_Ability_Start(CAT npc)
@@ -1070,4 +1081,34 @@ public void CAT_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
+
+static bool TraceEntityEnumerator_CAT_FindProjectiles(int entity, int self)
+{
+	if (entity <= 0 || entity > MAXENTITIES)
+		return true;
+	
+	if (!b_IsAProjectile[entity])
+		return true;
+	
+	// Entity has just been initialized, skip this for now
+	if (GetTeam(entity) == 0)
+		return true;
+	
+	if (GetTeam(entity) == GetTeam(self))
+		return true;
+	
+	float vecPos[3], vecTargetPos[3], vecAng[3];
+	WorldSpaceCenter(self, vecPos);
+	WorldSpaceCenter(entity, vecTargetPos);
+	
+	GetVectorAnglesTwoPoints(vecTargetPos, vecPos, vecAng);
+	int particle = ParticleEffectAtWithRotation(vecTargetPos, vecAng, "dxhr_lightningball_hit_zap_blue", 0.3);
+	
+	// Array netprop, but we only need element 0 anyway
+	SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", self, 0);
+	SetEntProp(particle, Prop_Send, "m_iControlPointParents", self, _, 0);
+	
+	RemoveEntity(entity);
+	return true;
 }
