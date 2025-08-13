@@ -236,7 +236,7 @@ enum
 
 //i ran out of space...
 #define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2) //Done :)
-//allow to get 3 deployment slots again.
+//allows you to have 20% increased unit making speed
 
 //defined higher up, see obj_shared
 //#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
@@ -2072,7 +2072,12 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							{
 								TrainingIndex[client] = item;
 								TrainingStartedIn[client] = GetGameTime();
-								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetSData(CivType[client], item, TrainTime) / 3) : GetSData(CivType[client], item, TrainTime));
+								float ModifySpawnRate = 1.0;
+								if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+								{
+									ModifySpawnRate *= (1.0 / 1.2);
+								}
+								TrainingIn[client] = TrainingStartedIn[client] + (ModifySpawnRate * float(LastMann ? (GetSData(CivType[client], item, TrainTime) / 3) : GetSData(CivType[client], item, TrainTime)));
 								if(CvarInfiniteCash.BoolValue)
 								{
 									TrainingIn[client] = TrainingStartedIn[client] + 0.5;
@@ -2134,7 +2139,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
+int ActiveCurrentNpcsBarracks(int client/*, bool ignore_barricades = false*/)
 {
 	int userid = GetClientUserId(client);
 	int personal;
@@ -2178,16 +2183,19 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 			}
 		}
 	}
-
+	/*
 	if(!ignore_barricades)
 	{
+		
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
 		{
 			personal += 1;
 			if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
 				personal -= 1;
 		}
+		
 	}
+	*/
 
 	if(personal < 0)
 	{

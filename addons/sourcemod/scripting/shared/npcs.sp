@@ -383,10 +383,10 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
+					if(!DisableSpawnProtection && zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == NPC_SPAWNPROT_INIT)
 					{
-				
-						i_npcspawnprotection[entity_Spawner] = 1;
+						
+						i_npcspawnprotection[entity_Spawner] = NPC_SPAWNPROT_ON;
 						
 						/*
 						CClotBody npc = view_as<CClotBody>(entity_Spawner);
@@ -478,13 +478,43 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
+	bool KeepProtection = false;
 	if(Rogue_Theme() == 1 && !force)
 	{
 		if(f_DomeInsideTest[entity] > GetGameTime())
 		{
-			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-			return;
+			KeepProtection = true;
 		}
+	}
+	float PosNpc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+	if(!KeepProtection)
+	{
+		if(IsPointOutsideMap(PosNpc))
+		{
+			KeepProtection = true;
+		}
+	}
+	if(!KeepProtection)
+	{
+		if(i_InHurtZone[entity])
+			KeepProtection = true;
+	}
+	if(!KeepProtection)
+	{
+		static float minn[3], maxx[3];
+		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+		if(IsBoxHazard(PosNpc, minn, maxx))
+			KeepProtection = true;
+	}
+
+
+	if(KeepProtection)
+	{
+		//npc is in some type of out of bounds spot probably, keep them safe.
+		CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		return;
 	}
 #endif	// ZR
 	
@@ -493,7 +523,7 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 		RemoveEntity(npc.m_iSpawnProtectionEntity);
 	//-1 means none, and dont apply anymore.
-	i_npcspawnprotection[entity] = -1;
+	i_npcspawnprotection[entity] = NPC_SPAWNPROT_OFF;
 }
 
 #if defined ZR
@@ -704,7 +734,15 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
 				value *= 5.0;
-			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				
+			int DamageTypes = DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE;
+
+			if(GetTeam(entity) != TFTeam_Red)
+			{
+				DamageTypes &= ~DMG_TRUEDAMAGE;
+				DamageTypes |= DMG_BULLET;
+			}
+			SDKHooks_TakeDamage(entity, attacker, attacker, value, DamageTypes, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 			
 			//Setting burn dmg to slash cus i want it to work with melee!!!
 			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
@@ -1277,9 +1315,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	}
 #if defined ZR
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #endif
 	{
 #if !defined RTS
@@ -1639,9 +1677,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	else
 	{
 #if defined RPG
-		if(i_npcspawnprotection[victim] != 1 || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+		if(i_npcspawnprotection[victim] != NPC_SPAWNPROT_ON || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
-		if(i_npcspawnprotection[victim] != 1)
+		if(i_npcspawnprotection[victim] != NPC_SPAWNPROT_ON)
 #endif
 		{
 			DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);

@@ -116,6 +116,10 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 	}
+
+	if(!CheckInHud())
+		Rogue_TakeDamage(victim, attacker, inflictor, damage, damagetype, weapon);
+	
 #endif
 	if(!CheckInHud() && !b_NpcIsTeamkiller[attacker])
 	{
@@ -244,7 +248,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 									if(flDistanceToTarget < 90000)
 									{
 										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-										ApplyStatusEffect(victim, baseboss_index, "Nemal's Teslar Mule", FL_WIDOWS_WINE_DURATION);
+										ApplyStatusEffect(victim, baseboss_index, "Teslar Mule", FL_WIDOWS_WINE_DURATION);
 									}
 								}
 							}
@@ -1471,7 +1475,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 			if(!(damagetype & DMG_TRUEDAMAGE))
 				damage *= 0.5;
 
-			ApplyStatusEffect(attacker, attacker, "Nemal's Teslar Mule", FL_WIDOWS_WINE_DURATION_NPC);
+			ApplyStatusEffect(attacker, attacker, "Teslar Mule", FL_WIDOWS_WINE_DURATION_NPC);
 		}
 	}
 }
@@ -1800,14 +1804,14 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	//Resistance buffs will not count towards this flat decrease, they will be universal!hussar!
 	//these are absolutes
 #if !defined RPG
-	if(victim > MaxClients && i_npcspawnprotection[victim] == 1)
+	if(victim > MaxClients && i_npcspawnprotection[victim] == NPC_SPAWNPROT_ON)
 	{
 		//dont give spawnprotection if both are
 		if(attacker <= MaxClients)
 		{
 			DamageRes *= 0.05;
 		}
-		else if(i_npcspawnprotection[attacker] != 1)
+		else if(i_npcspawnprotection[attacker] != NPC_SPAWNPROT_ON)
 		{
 			DamageRes *= 0.05;
 		}
@@ -1855,7 +1859,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	damage *= DamageRes;	
 
 #if !defined RPG
-	if(attacker > MaxClients && i_npcspawnprotection[attacker] == 1)
+	if(attacker > MaxClients && i_npcspawnprotection[attacker] == NPC_SPAWNPROT_ON)
 	{
 		damage *= 1.5;
 	}

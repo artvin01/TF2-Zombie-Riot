@@ -58,7 +58,7 @@
 	"Loadout Credits"
 	{
 		"#format"	"{1:d}"
-		"en"		" \n---Starter Store---\n70％ Sale in this store!\nStarter Cash: {1}"
+		"en"		" \n---Starter Store---\n[Big Sale] in this store!\nStarter Cash: {1}"
 	}
 	"Preview Mode Pap"
 	{
@@ -447,6 +447,7 @@
 		"pt"		"Foguetes"
 		"nl"		"Raketten"
 		"chi"       "火箭弹"
+		"ko"		"로켓"
 	}
 	"Flamethrower Tank"
 	{
@@ -975,6 +976,10 @@
 	{
 		"en"		"Not enough charge."
 	}
+	"Fully Charge To Fire"
+	{
+		"en"		"Fully Charge To Fire your IEM"
+	}
 	"Rusty Ability Cooldown"
 	{
 		"#format"	"{1:.1f}"
@@ -1151,9 +1156,9 @@
 		"nl"		"Geen perk"
 		"chi" 		"无 Buff"
 	}
-	"Karlas's Regene Strawberry"
+	"Regene Berry"
 	{
-		"en" 		"Karlas's Regene Strawberry"
+		"en" 		"Regene Berry"
 		"fr" 		"Résurrection Rapide"
 		"ru" 		"Реаниматор"
 		"de"		"Schnelles Wiederbeleben"
@@ -1161,21 +1166,21 @@
 		"nl"		"Snel tot leven brengen"
 		"chi" 		"快速起身"
 	}
-	"Purge's Cerveza Obsidian"
+	"Obsidian Oaf"
 	{
-		"en" 		"Purge's Cerveza Obsidian"
+		"en" 		"Obsidian Oaf"
 	}
-	"Bob's Banana Juice"
+	"Morning Coffee"
 	{
-		"en" 		"Bob's Banana Juice"
+		"en" 		"Morning Coffee"
 	}	
-	"Twirl's Ginger Ale"
+	"Hasty Hops"
 	{
-		"en" 		"Twirl's Ginger Ale"
+		"en" 		"Hasty Hops"
 	}
-	"Waldch's Root Beer"
+	"Marksman Beer"
 	{
-		"en" 		"Waldch's Root Beer"
+		"en" 		"Marksman Beer"
 		"fr" 		"Tir Mortel de Daiquiri"
 		"ru" 		"Снайпер-лайм"
 		"de"		"Todesschuss Daiquiri"
@@ -1184,57 +1189,57 @@
 		"chi" 		"死亡宣告"
 	}
 	
-	"Nemal's Teslar Mule"
+	"Teslar Mule"
 	{
-		"en" 		"Nemal's Teslar Mule"
+		"en" 		"Teslar Mule"
 		"fr" 		"Vin des Veuves"
 		"ru" 		"Вино вдовы"
 		"pt"		"Vinho Viúvo"
 		"nl"		"Wijn van de weduwe"
 		"chi" 		"恶魔领域"
 	}
-	"Castellan's Corvus Stout"
+	"Stockpile Stout"
 	{
-		"en" 		"Castellan's Corvus Stout"
+		"en" 		"Stockpile Stout"
 		"fr" 		"Recyclage Poiré"
 		"pt"		"Pêra Reciclada"
 		"ru" 		"Переработка пуаре"
 	}
 
-	"Karlas's Regene Strawberry Recieved"
+	"Regene Berry Recieved"
 	{
-		"en" 		"Karlas's Regene Strawberry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
+		"en" 		"Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 	}
-	"Purge's Cerveza Obsidian Recieved"
+	"Obsidian Oaf Recieved"
 	{
-		"en" 		"Purge's Cerveza Obsidian! 15％ Damage resistance and +100HP"
+		"en" 		"Obsidian Oaf! 15％ Damage resistance and +100HP"
 	}
-	"Bob's Banana Juice Recieved"
+	"Morning Coffee Recieved"
 	{
-		"en" 		"Bob's Banana Juice! 17％ Extra attack speed and Building Damage"
+		"en" 		"Morning Coffee! 17％ Extra attack speed and Building Damage"
 	}	
-	"Twirl's Ginger Ale Recieved"
+	"Hasty Hops Recieved"
 	{
-		"en" 		"Twirl's Ginger Ale! 1.42x Extra reload, switchspeed and Mana regen"
+		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
 	}
-	"Waldch's Root Beer Recieved"
+	"Marksman Beer Recieved"
 	{
-		"en" 		"Waldch's Root Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"en" 		"Marksman Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 	}
-	"Nemal's Teslar Mule Recieved"
+	"Teslar Mule Recieved"
 	{
-		"en" 		"Nemal's Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
+		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 	}
-	"Castellan's Corvus Stout Recieved"
+	"Stockpile Stout Recieved"
 	{
-		"en" 		"Castellan's Corvus Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
+		"en" 		"Stockpile Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
 	}
-	"Silvester's Energy Drink Recieved"
+	"Energy Drink Recieved"
 	{
-		"en" 		"Silvester's Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
+		"en" 		"Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 	}
 	"Freeze Bomb Activated"
 	{
@@ -1555,6 +1560,16 @@
 		"pt"		"Está arma não pode ser melhorada."
 		"nl"		"Uw huidig wapen kan niet worden gePack-A-Punched."
 		"chi"       "你的武器不能升级"
+	}
+	"Pap Weapon Upgraded"
+	{
+		"#format"	"{1:s}"
+		"en"		"Your weapon has been upgraded to {1}:"
+	}
+	"Pap Weapon Preview"
+	{
+		"#format"	"{1:s}"
+		"en"		"Pack-a-Punch preview for {1}:"
 	}
 	"Revive Teammate tooltip"
 	{
@@ -2566,7 +2581,7 @@
 	}	
 	"You have been Infected by Calmaticus"
 	{
-		"en"		"You have been Infected by Calmaticus!\nDo not get close to allies.\nYou cannot stop this bleeding with thick blood..."
+		"en"		"You have been Infected by Calmaticus!\nYou cannot stop this bleeding with thick blood..."
 	}	
 	"Xeno_Wave_1"
 	{
@@ -2977,10 +2992,7 @@
 	}
 	"Barracks Donjon Desc"
 	{
-		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
-		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Échange 1 espace de déploiement pour plus d'améliorations."
-		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
-		"chi"		"增加生命值，伤害和箭数，你失去1个补给槽，解锁更多升级。"
+		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
 	}
 	"Barracks Krepost"
 	{
@@ -3172,10 +3184,7 @@
 	}
 	"Barracks Exquisite Housing Desc"
 	{
-		"en"		"Gain back your lost 1 deployment slot from making a tower."
-		"fr"		"Récuperez l'espace de déploiement que vous avez perdu lors de la construction d'une tour."
-		"ru"		"Верните себе 1 ячейку развёртывания, потерянную при создании башни."
-		"chi"       "从制作塔中获得丢失的1个部署槽位。"
+		"en"		"Make Units 20％ faster."
 	}
 	"Barracks Villager Desc"
 	{
@@ -3554,6 +3563,11 @@
 		"en"	"Search Store Using Tags"
 		"fr"	"Chercher la Boutique avec des Étiquettes"
 	}
+	"Archetype Type"
+	{
+		"#format"	"{1:t}"
+		"en"	"Archetype: {1}"
+	}
 	"Tags List"
 	{
 		"#format"	"{1:s}"
@@ -3569,6 +3583,11 @@
 	{
 		"en"	"Clear Whitelist"
 		"fr"	"Effacer Étiquettes"
+	}
+	"Faction List"
+	{
+		"#format"	"{1:s}"
+		"en"	"Faction: {1}"
 	}
 	"Crouch on ground for ability"
 	{
@@ -4046,19 +4065,19 @@
 	}
 	"DPS Class"
 	{
-		"en"	"DPS Class\nFocus on damage and get Twirl's Ginger Ale perk"
+		"en"	"DPS Class\nFocus on damage and get Hasty Hops perk"
 	}
 	"Tank Class"
 	{
-		"en"	"Tank Class\nFocus on tanking and get Purge's Cerveza Obsidian perk"
+		"en"	"Tank Class\nFocus on tanking and get Obsidian Oaf perk"
 	}
 	"Healer Class"
 	{
-		"en"	"Healer Class\nAble to heal, less DPS, and get Karlas's Regene Strawberry perk"
+		"en"	"Healer Class\nAble to heal, less DPS, and get Regene Berry perk"
 	}
 	"Builder Class"
 	{
-		"en"	"Builder Class\nAble to build, repair, and get Bob's Banana Juice perk"
+		"en"	"Builder Class\nAble to build, repair, and get Morning Coffee perk"
 	}
 	"Don't Follow Me"
 	{
@@ -4201,7 +4220,7 @@
 	}
 	"freeplay_start_2"
 	{
-		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull, which is a random event or modifier.\nAnd i'll be throwing more and more as you progress."
+		"en"		"...asides from that, let me explain this:\nEach setup, i'll throw in a Skull upto like 3.\nI have added some of my own wanna-be enemies to make sure you see the weirdest creations, we dont know the void."
 	}
 	"freeplay_start_3"
 	{
@@ -4213,7 +4232,7 @@
 	}
 	"Loadout In Store"
 	{
-		"en"		"The round has started and you're in the Starter Store!\nConfirm your Starter loadout in the store menu to get access to more weapons and cash from the waves!"
+		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 	}
 	"Getting favorite loadout"
 	{
@@ -4225,11 +4244,7 @@
 	}
 	"Explain Construction 1"
 	{
-		"en"		"Gather resources and build up your base, use your ''Research Center'' to upgrade, You have extra buildings in your builder menu."
-	}
-	"Explain Construction 2"
-	{
-		"en"		"Interact with ores on the map with your interact button (R Or T)!"
+		"en"		"Gather resources and build up your base, use your {yellow}''Research Center''{green} to upgrade, You have extra buildings in your builder menu."
 	}
 	"Explain Construction 3"
 	{

@@ -1,9 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//whenever you wish to update the local database, add a _1
 //this is only ever saved per game anyways.
-#define DATABASE_LOCAL		"zr_local_1"
+#define DATABASE_LOCAL		"zr_local"
 #define DATATABLE_MAIN		"zr_timestamp"
 #define DATATABLE_AMMO		"zr_ammo"
 #define DATATABLE_GAMEDATA	"zr_gamedata"
@@ -22,6 +21,11 @@ static bool Cached[MAXPLAYERS];
 void Database_PluginStart()
 {
 	char error[512];
+	char DelteThisFile[256];
+	
+	Format(DelteThisFile, sizeof(DelteThisFile), "addons/sourcemod/data/sqlite/%s.sq3", DATABASE_LOCAL);
+	DeleteFile(DelteThisFile);
+	//clear out the database that we dont need saved from before!
 
 	Database db = SQLite_UseDatabase(DATABASE_LOCAL, error, sizeof(error));
 	Database_LocalConnected(db, error);
@@ -364,6 +368,41 @@ public void MapChooser_OnPreMapEnd()
 	}
 }
 
+void Database_SaveXpAndItems(int client)
+{
+	if(Cached[client])
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[512];
+			FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_MISC ... " SET "
+			... "xp = %d, "
+			... "streak = %d, "
+			... "scrap = %d "
+			... "WHERE steamid = %d;",
+			XP[client],
+			PlayStreak[client],
+			Scrap[client],
+			id);
+			tr.AddQuery(buffer);
+			
+			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+			tr.AddQuery(buffer);
+			
+			int level, flags;
+			for(int i; Items_GetNextItem(client, i, level, flags); i++)
+			{
+				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				tr.AddQuery(buffer);
+			}
+
+			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+		}
+	}
+}
 void DataBase_ClientDisconnect(int client)
 {
 	if(Cached[client])
@@ -627,7 +666,7 @@ static void Database_LocalConnected(Database db, const char[] error)
 		... "spent INTEGER NOT NULL DEFAULT 0, "
 		... "total INTEGER NOT NULL DEFAULT 0, "
 		... "ammo INTEGER NOT NULL DEFAULT 0, "
-		... "leftfordead FLOAT NOT NULL DEFAULT 0.0);");
+		... "cashspendloadout INTEGER NOT NULL DEFAULT 0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_AMMO ... " ("
 		... "steamid INTEGER NOT NULL, "
@@ -776,7 +815,7 @@ void Database_SaveGameData(int client)
 			... "spent = %d, "
 			... "total = %d, "
 			... "ammo = %d, "
-			... "cashspendloadout = %d"
+			... "cashspendloadout = %d "
 			... "WHERE steamid = %d;",
 			CurrentGame,
 			CashSpent[client],

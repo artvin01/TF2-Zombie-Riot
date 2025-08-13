@@ -9,7 +9,7 @@ void BoomStick_MapPrecache()
 	PrecacheSound(HITSCAN_BOOM);
 }
 
-public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Boom_Stick(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 4);
 

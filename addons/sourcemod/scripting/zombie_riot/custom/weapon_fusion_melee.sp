@@ -383,7 +383,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 
 				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
 				if(HasSpecificBuff(client, "Dimensional Turbulence"))
-					maxhealth *= 0.35;
+					maxhealth /= 3;
 					//lol
 
 				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.
@@ -1567,7 +1567,7 @@ public void Void_MeleeDoubleTapAbility(int client, int weapon, bool crit, int sl
 		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, slot, 50.0); //Semi long cooldown, this is a strong buff.
 		f_VoidDoubleTapAbility[client] = GetGameTime() + 10.0; //Just a test.
-		ApplyStatusEffect(client, client, "Self Empowerment", 10.0);
+	//	ApplyStatusEffect(client, client, "Self Empowerment", 10.0);
 		EmitSoundToAll(NEARL_ACTIVE_SOUND, client, SNDCHAN_STATIC, 85, _, 0.5, 70);
 	}
 	else

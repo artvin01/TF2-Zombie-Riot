@@ -284,6 +284,7 @@ static void BuildingMenu(int client)
 
 	Menu menu = new Menu(BuildingMenuH);
 	SetGlobalTransTarget(client);
+	AnyMenuOpen[client] = 1.0;
 
 	char buffer1[196], buffer2[64], buffer3[196];
 	if(MenuSection[client] == -1)
@@ -495,14 +496,18 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
 			delete MenuTimer[client];
+			AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
 			delete MenuTimer[client];
+			AnyMenuOpen[client] = 0.0;
 
 			if(HasWrench(client))
 			{

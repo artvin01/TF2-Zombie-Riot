@@ -445,7 +445,7 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 							damageDealt *= 4.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						if(!ShouldNpcDealBonusDamage(target))
-							Explode_Logic_Custom(damageDealt/5.0, npc.index, npc.index, -1, vecHit, 125.0,_,_,_,3, _, 1.0);
+							Explode_Logic_Custom(damageDealt/5.0, npc.index, npc.index, -1, vecHit, 125.0,_,_,_,4, _, 1.0);
 					}
 					else
 					{
@@ -453,7 +453,7 @@ int VictoriaFragmentsAssaultMode(int iNPC, float gameTime, int target, float dis
 							damageDealt *= 4.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						if(!ShouldNpcDealBonusDamage(target))
-							Explode_Logic_Custom(damageDealt/10.0, npc.index, npc.index, -1, vecHit, 85.0,_,_,_,3, _, 1.0);
+							Explode_Logic_Custom(damageDealt/10.0, npc.index, npc.index, -1, vecHit, 85.0,_,_,_,4, _, 1.0);
 					}
 				}
 				npc.m_iOverlordComboAttack--;

@@ -77,7 +77,7 @@ public void Npc_OnTakeDamage_Chainsaw(int client, int damagetype)
 	}
 }
 
-public void Weapon_ChainSawAttack(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_ChainSawAttack(int client, int weapon, bool crit, int slot)
 {
 	SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 	SDKHook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);

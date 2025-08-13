@@ -115,6 +115,8 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "bat");
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");

@@ -10,7 +10,7 @@ void BoomStick_MapPrecache()
 	PrecacheSound(LASER_BOOMSTICK);
 }
 
-public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Boom_Stick(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 4);
 
@@ -58,7 +58,7 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 }
 
-public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Boom_Stick_Louder(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 6);
 
@@ -106,7 +106,7 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 }
 
-public void Weapon_Boom_Stick_Loudest(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Boom_Stick_Loudest(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 8);
 
@@ -154,7 +154,7 @@ public void Weapon_Boom_Stick_Loudest(int client, int weapon, const char[] class
 	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 }
 
-public void Marksman_boom_rifle(int client, int weapon, const char[] classname, bool &result)
+public void Marksman_boom_rifle(int client, int weapon, bool crit, int slot)
 {
 	float damage = 100.0;
 	damage *= RoundToCeil(Attributes_Get(weapon, 2, 1.0));
@@ -182,7 +182,7 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 }
 
 
-public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, bool crit, int slot)
 {
 	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 6);
 

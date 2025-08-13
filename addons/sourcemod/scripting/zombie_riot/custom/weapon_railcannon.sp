@@ -51,27 +51,27 @@ void Precache_Railcannon()
 }
 
 //no pap
-public void Weapon_Railcannon(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon(int client, int weapon, bool crit, int slot)
 {
 	Check_Railcannon(client, weapon, 0);
 }
 //1
-public void Weapon_Railcannon_Pap1(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap1(int client, int weapon, bool crit, int slot)
 {
 	Check_Railcannon(client, weapon, 1);
 }
 //2
-public void Weapon_Railcannon_Pap2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap2(int client, int weapon, bool crit, int slot)
 {
 	Check_Railcannon(client, weapon, 2);
 }
 
-public void Weapon_Railcannon_Pap2_Zoom(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap2_Zoom(int client, int weapon, bool crit, int slot)
 {
 	Zoom_Railcannon(client);
 }
 
-public void Weapon_Railcannon_Pap2_Holster(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap2_Holster(int client, int weapon, bool crit, int slot)
 {
 	int ZoomFOV = 30; //if you change this, change the next 2 occurances too
 	Zoom_Active[client] = false;
@@ -81,17 +81,17 @@ public void Weapon_Railcannon_Pap2_Holster(int client, int weapon, const char[] 
 	SetEntProp(client, Prop_Send, "m_iFOV", Zoom_Default[client]);
 }
 //3
-public void Weapon_Railcannon_Pap3(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap3(int client, int weapon, bool crit, int slot)
 {
 	Check_Railcannon(client, weapon, 3);
 }
 //4
-public void Weapon_Railcannon_Pap4(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap4(int client, int weapon, bool crit, int slot)
 {
 	Check_Railcannon(client, weapon, 4);
 }
 
-public void Weapon_Railcannon_Pap4_Zoom(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap4_Zoom(int client, int weapon, bool crit, int slot)
 {
 	Zoom_Railcannon(client);
 }
@@ -144,7 +144,7 @@ public void Weapon_Railcannon_Pap4_Ability(int client, int weapon, bool crit, in
 	}
 }
 
-public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Railcannon_Pap4_Holster(int client, int weapon, bool crit, int slot)
 {
 	ORC_Charging[client] = false;
 

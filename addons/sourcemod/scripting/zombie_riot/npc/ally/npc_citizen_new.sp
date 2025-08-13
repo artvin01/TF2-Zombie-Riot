@@ -1018,6 +1018,10 @@ methodmap Citizen < CClotBody
 				AddNpcToAliveList(npc.index, 1);
 			}
 		}
+		if(!Waves_Started())
+		{
+			npc.SetDowned(0);
+		}
 
 		if(chaos)
 		{
@@ -1382,11 +1386,11 @@ methodmap Citizen < CClotBody
 				}
 
 				if(client)
-					HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
+					HealEntityGlobal(client, client, float(ReturnEntityMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
 				
 				HealEntityGlobal(client ? client : this.index, this.index, ReturnEntityMaxHealth(this.index) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
 
-				i_npcspawnprotection[this.index] = 1;
+				i_npcspawnprotection[this.index] = NPC_SPAWNPROT_UNSTUCK;
 				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(this.index), TIMER_FLAG_NO_MAPCHANGE);
 			}
 			else if(client)
@@ -1689,10 +1693,13 @@ int Citizen_ShowInteractionHud(int entity, int client)
 		}
 		else if(npc.m_nDowned == 1)
 		{
-			SetGlobalTransTarget(client);
-			char ButtonDisplay[255];
-			PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
-			PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");
+			if(IsValidClient(client))
+			{
+				SetGlobalTransTarget(client);
+				char ButtonDisplay[255];
+				PlayerHasInteract(client, ButtonDisplay, sizeof(ButtonDisplay));
+				PrintCenterText(client, "%s%t", ButtonDisplay,"Revive Teammate tooltip");	
+			}
 			return -1;
 		}
 	}
@@ -2339,9 +2346,9 @@ void Citizen_UpdateStats(int entity, int type, int role)
 			case 2, 3:
 			{
 				// Speedy
-				npc.m_fGunDamage *= 0.75;
-				npc.m_fGunFirerate *= 0.75;
-				npc.m_fGunReload *= 0.75;
+				npc.m_fGunDamage *= 0.8;
+				npc.m_fGunFirerate *= 0.8;
+				npc.m_fGunReload *= 0.8;
 			}
 			case 4, 5:
 			{
@@ -2359,9 +2366,9 @@ void Citizen_UpdateStats(int entity, int type, int role)
 			case 7:
 			{
 				// Super Speed
-				npc.m_fGunDamage *= 0.5;
-				npc.m_fGunFirerate *= 0.5;
-				npc.m_fGunReload *= 0.5;
+				npc.m_fGunDamage *= 0.65;
+				npc.m_fGunFirerate *= 0.65;
+				npc.m_fGunReload *= 0.65;
 				npc.m_iGunClip *= 2;
 			}
 			case 8:
@@ -2609,8 +2616,16 @@ public void Citizen_ClotThink(int iNPC)
 			npc.ThinkCombat(":(");
 			npc.ThinkFriendly(":(");
 
-			if(npc.m_iReviveTicks > 50)
+			if(b_IsAloneOnServer || npc.m_iReviveTicks > 50)
+			{
 				npc.m_iReviveTicks--;
+				if(npc.m_iReviveTicks <= 0)
+				{
+					Citizen_ReviveTicks(npc.index, 1, npc.index, false);
+				}
+			}
+
+			
 
 			if(npc.m_flidle_talk == 0.0)
 			{
@@ -3343,9 +3358,12 @@ public void Citizen_ClotThink(int iNPC)
 					{
 						npc.m_flNextMeleeAttack = gameTime + (npc.m_iHasPerk == npc.m_iGunType ? 0.16 : 0.2);
 						
-						int healing = RoundToCeil(npc.m_iGunValue * 0.0004);
-						if(healing > 20)
-							healing = 20;
+						int healing = RoundToCeil(npc.m_iGunValue * 0.004);
+						if(healing < 2)
+							healing = 2;
+
+						if(healing > 50)
+							healing = 50;
 						
 						if(team != TFTeam_Red)
 							healing *= 200;
@@ -3441,21 +3459,21 @@ public void Citizen_ClotThink(int iNPC)
 						{
 							HealingCooldown[npc.index] = gameTime + 10.0;
 
-							float healing = npc.m_iGunValue * 0.015;
+							float healing = npc.m_iGunValue * 0.03;
 							if(team != TFTeam_Red)
-								healing *= 200;
+								healing *= 100;
 							
 							if(f_TimeUntillNormalHeal[ally] - 2.0 > GetGameTime())
 							{
-								healing *= 0.33;
+								healing *= 0.5;
 							}
 							int BeamIndex = ConnectWithBeam(npc.index, ally, 50, 125, 50, 1.5, 1.5, 1.35, "sprites/laserbeam.vmt");
 							SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 							CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
 							HealEntityGlobal(npc.index, ally, healing, _, 3.0);
 
-							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
-							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 5.0);
+							ApplyStatusEffect(npc.index, npc.index, "Healing Resolve", 7.0);
+							ApplyStatusEffect(npc.index, ally, "Healing Resolve", 7.0);
 							
 							if(ally <= MaxClients)
 								ClientCommand(ally, "playgamesound items/smallmedkit1.wav");
@@ -5035,7 +5053,11 @@ int BuildingAmountRebel(int rebel, int buildingType, int &buildingmax)
 		case 1:
 			limit = 1;
 		case 2:
-			limit = 4;
+		{
+			limit = 2 + (npc.m_iGunValue / 4000);
+			if(limit > 4)
+				limit = 4;
+		}
 	}
 	int ActiveLimit = 0;
 	switch(buildingType)

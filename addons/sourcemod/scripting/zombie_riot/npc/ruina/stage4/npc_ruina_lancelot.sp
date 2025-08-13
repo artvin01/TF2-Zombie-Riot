@@ -433,18 +433,20 @@ static void ClotThink(int iNPC)
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);	
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
+		if(iPitch >= 0)
+		{
 
-		//Body pitch
-		float v[3], ang[3];
-		SubtractVectors(Npc_Vec, vecTarget, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(Npc_Vec, vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			
+		}	
 
 		if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timeout[npc.index] < GameTime)
 			Lancelot_Particle_Accelerator(npc,flDistanceToTarget);

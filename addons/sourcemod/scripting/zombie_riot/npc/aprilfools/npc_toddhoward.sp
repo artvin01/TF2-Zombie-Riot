@@ -1704,7 +1704,7 @@ void ToddHowardJumpSpecial(ToddHoward npc, float gameTime)
 			npc.GetAttachment("weapon_bone", selfpos, flAng);
 			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
 			TE_SendToAll(0.0);
-			spawnRing_Vectors(ThrowPos, Range * 2.0 * zr_smallmapbalancemulti.FloatValue, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.15, 5.0, 0.0, 1);	
+			spawnRing_Vectors(ThrowPos, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.15, 5.0, 0.0, 1);	
 		}
 		
 		if(npc.m_flNextRangedSpecialAttackHappens < gameTime + 0.5 && npc.m_fbRangedSpecialOn)
@@ -1750,10 +1750,10 @@ void ToddHowardJumpSpecial(ToddHoward npc, float gameTime)
 			SetColorRGBA(glowColor, r, g, b, 150);
 			TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Glow, 0, 0, 0, 0.6, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 			TE_SendToAll(0.0);
-			spawnRing_Vectors(ThrowPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.5, 5.0, 0.0, 1,Range * 2.0 * zr_smallmapbalancemulti.FloatValue);	
+			spawnRing_Vectors(ThrowPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 255, 200, 1, /*duration*/ 0.5, 5.0, 0.0, 1,Range * 2.0);	
 			float damage = 600.0;
 				
-			Explode_Logic_Custom(damage * zr_smallmapbalancemulti.FloatValue, 0, npc.index, -1, ThrowPos,Range * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 20);
+			Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,Range, 1.0, _, true, 20);
 			TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			if(i_RaidGrantExtra[npc.index] == TODDHOWARD_SEA_INFECTED)
 				SeaFounder_SpawnNethersea(ThrowPos);
@@ -2071,11 +2071,6 @@ void ToddHowardAOEBuff(ToddHoward npc, float gameTime, bool mute = false)
 						if(entitycount != npc.index)
 						{
 							buffedAlly = true;
-							float flPos[3]; // original
-							ToddHoward npc1 = view_as<ToddHoward>(entitycount);
-							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
-							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc1.index, "", {0.0,0.0,0.0});
-							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 				}

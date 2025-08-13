@@ -211,6 +211,8 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 0);
 
@@ -651,7 +653,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				static float hullcheckmins[3];
 				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
 				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 4; LoopTryAlotAlot++)
+				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 10; LoopTryAlotAlot++)
 				{
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 						

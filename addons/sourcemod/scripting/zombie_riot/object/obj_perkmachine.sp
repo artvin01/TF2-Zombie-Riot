@@ -93,28 +93,28 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
 	menu2.SetTitle("%t", "Which perk do you desire?");
 		
-	FormatEx(buffer, sizeof(buffer), "%t", "Castellan's Corvus Stout");
+	FormatEx(buffer, sizeof(buffer), "%t", "Stockpile Stout");
 	menu2.AddItem("-9", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Nemal's Teslar Mule");
+	FormatEx(buffer, sizeof(buffer), "%t", "Teslar Mule");
 	menu2.AddItem("-8", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Waldch's Root Beer");
+	FormatEx(buffer, sizeof(buffer), "%t", "Marksman Beer");
 	menu2.AddItem("-7", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Twirl's Ginger Ale");
+	FormatEx(buffer, sizeof(buffer), "%t", "Hasty Hops");
 	menu2.AddItem("-6", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Bob's Banana Juice");
+	FormatEx(buffer, sizeof(buffer), "%t", "Morning Coffee");
 	menu2.AddItem("-5", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Purge's Cerveza Obsidian");
+	FormatEx(buffer, sizeof(buffer), "%t", "Obsidian Oaf");
 	menu2.AddItem("-4", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Karlas's Regene Strawberry");
+	FormatEx(buffer, sizeof(buffer), "%t", "Regene Berry");
 	menu2.AddItem("-3", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Silvester's Energy Drink");
+	FormatEx(buffer, sizeof(buffer), "%t", "Energy Drink");
 	menu2.AddItem("-10", buffer);
 						
 	menu2.Pagination = 0;
@@ -134,7 +134,8 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 		}
 		case MenuAction_Cancel:
 		{
-			ResetStoreMenuLogic(client);
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{

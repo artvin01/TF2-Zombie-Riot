@@ -104,7 +104,7 @@ void Saga_ChargeReduction(int client, int weapon, float time)
 
 	if(WeaponTimer[client] && EntRefToEntIndex(WeaponRef[client]) == weapon)
 	{
-		//WeaponCharge[client] += RoundFloat(time) - 1;
+		WeaponCharge[client] += Int_CooldownReductionDo(client, RoundToNearest(time)) + 1;
 		TriggerTimer(WeaponTimer[client], false);
 	}
 	
@@ -189,10 +189,11 @@ public Action Saga_Timer2(Handle timer, int client)
 		{
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
-				if(++WeaponCharge[client] > 32)
-					WeaponCharge[client] = 32;
+				if(++WeaponCharge[client] > Int_CooldownReductionDo(client, 32))
+					WeaponCharge[client] = Int_CooldownReductionDo(client, 32);
 				
-				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / 16, 16 - (WeaponCharge[client] % 16));
+				int ValueCD = Int_CooldownReductionDo(client, 16);
+				PrintHintText(client, "Cleansing Evil [%d / 2] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 
@@ -214,10 +215,11 @@ public Action Saga_Timer3(Handle timer, int client)
 			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
 				SagaRegen[client] = true;
-				if(++WeaponCharge[client] > 39)
-					WeaponCharge[client] = 39;
+				if(++WeaponCharge[client] > Int_CooldownReductionDo(client, 39))
+					WeaponCharge[client] = Int_CooldownReductionDo(client, 39);
 				
-				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / 13, 13 - (WeaponCharge[client] % 13));
+				int ValueCD = Int_CooldownReductionDo(client, 13);
+				PrintHintText(client, "Cleansing Evil [%d / 3] {%ds}", WeaponCharge[client] / ValueCD, ValueCD - (WeaponCharge[client] % ValueCD));
 				
 			}
 			else
@@ -247,6 +249,7 @@ public void Weapon_SagaE2_M2(int client, int weapon, bool crit, int slot)
 static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 {
 	int cost = mastery ? 13 : 16;
+	cost = Int_CooldownReductionDo(client, cost);
 	if(CvarInfiniteCash.BoolValue)
 	{
 		WeaponCharge[client] = 999;
@@ -262,7 +265,10 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 	{
 		Rogue_OnAbilityUse(client, weapon);
 		MakePlayerGiveResponseVoice(client, 4); //haha!
-		WeaponCharge[client] -= cost + 1;
+		WeaponCharge[client] -= cost;
+
+		//cus we call the timer
+		WeaponCharge[client] -= 1;
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			int cash = RoundFloat(6.0 * ResourceRegenMulti);
@@ -342,9 +348,13 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 		SagaCrippled[victim] = Attributes_Get(weapon, 868, -1.0) == -1.0 ? 1.0 : 2.0;
 		CreateTimer(10.0, Saga_ExcuteTarget, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
 		FreezeNpcInTime(victim, 10.2);
-		SetEntityRenderMode(victim, RENDER_TRANSCOLOR, false, 1, false, true);
-		SetEntityRenderColor(victim, 255, 65, 65, 125, false, false, true);
+		SetEntityRenderMode(victim, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(victim, 255, 65, 65, 125);
 		b_ThisEntityIgnoredByOtherNpcsAggro[victim] = true;
+		//counts as a static npc, means it wont count towards NPC limit.
+		//thisd is so they dont hog.
+		AddNpcToAliveList(victim, 1);
+
 		SetEntityCollisionGroup(victim, 17);
 		b_DoNotUnStuck[victim] = true;
 		CClotBody npc = view_as<CClotBody>(victim);
@@ -447,4 +457,11 @@ void SagaAttackBeforeSwing(int client)
 void SagaAttackAfterSwing(int client)
 {
 	SagaCrippled[client] = 0.0;
+}
+
+
+
+int Int_CooldownReductionDo(int client, int OriginalValue)
+{
+	return RoundToNearest(float(OriginalValue) * CooldownReductionAmount(client));
 }

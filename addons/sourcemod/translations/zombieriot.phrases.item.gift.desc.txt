@@ -216,7 +216,7 @@
 	{
 		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage (can be silenced)."
 	}
-	"Scout Assulter Desc"
+	"Scout Assaulter Desc"
 	{
 		"en" 		"Zombified Scout who is fast and attacks quickly too."
 		"ru"		"Зомбифицированный разведчик который быстри и бьёт быстро тоже."
@@ -420,7 +420,7 @@
 		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies (can be silenced).\n Rage reisstance is high (can be silenced)."
 		"ru"		"Повелитель стал быстрее, его атака пульсом отталкивает вас в воздух и глючит вас покругу, Он злится в 2 раза быстрее.\nСопротивление от пульс атаки (может быть заткнуто).\nСопротивление урону в ярости велико(можно заглушить)."
 	}
-	"Xeno Scout Assulter Desc"
+	"Xeno Scout Assaulter Desc"
 	{
 		"en" 		"Hurting these will cause scouts to go at insane speeds."
 		"ru"		"Нанесение урона разведчикам заставит их побежать на безумной скорости."

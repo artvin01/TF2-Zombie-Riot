@@ -172,13 +172,13 @@ void Weapon_Nymph_ProjectileTouch(int entity, int target)
 		{
 			if (IsAbilityActive[owner] == 1)
 			{
-				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.65, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // 100% bonus damage under necrosis burst
+				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.3, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	 // 100% bonus damage under necrosis burst
 				ClientCommand(owner, "playgamesound weapons/phlog_end.wav");
 				// PrintToChatAll("Buffed damage");
 			}
 			else
 			{
-				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.35, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	   // 50% bonus damage under necrosis burst
+				SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity] * 0.3, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _, ZR_DAMAGE_LASER_NO_BLAST);	   // 50% bonus damage under necrosis burst
 				ClientCommand(owner, "playgamesound weapons/phlog_end.wav");
 				// PrintToChatAll("Normal damage");
 			}

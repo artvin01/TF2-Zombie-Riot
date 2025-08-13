@@ -57,7 +57,7 @@ public void Enable_TornadoBlitz(int client, int weapon)
 		Tornado_WeaponSavedAttribute[client] = Attributes_Get(weapon, 4014, 0.0);
 	}
 }
-public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Tornado_Laucher_M2(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
@@ -78,7 +78,7 @@ public void Weapon_Tornado_Laucher_M2(int client, int weapon, const char[] class
 	}
 }
 
-public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_tornado_launcher_Spam(int client, int weapon, bool crit, int slot)
 {
 	i_tornado_pap[client] = 0;
 	bl_tornado_barrage_mode[client]=false;
@@ -87,7 +87,7 @@ public void Weapon_tornado_launcher_Spam(int client, int weapon, const char[] cl
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
-public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, bool crit, int slot)
 {
 	i_tornado_pap[client] = 0;
 	i_RocketsSavedMax[client] = 30;
@@ -98,7 +98,7 @@ public void Weapon_tornado_launcher_Spam_Pap1(int client, int weapon, const char
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
-public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, bool crit, int slot)
 {
 	i_RocketsSavedMax[client] = 15 * ROCKET_EFFICIENCY_MULTI;
 	i_tornado_pap[client]=2;
@@ -108,7 +108,7 @@ public void Weapon_tornado_launcher_Spam_Pap2(int client, int weapon, const char
 	Weapon_Tornado_Launcher_Spam_Fire_Rocket(client, weapon);
 }
 
-public void Weapon_tornado_launcher_Spam_Pap3(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_tornado_launcher_Spam_Pap3(int client, int weapon, bool crit, int slot)
 {
 	i_RocketsSavedMax[client] = 20 * ROCKET_EFFICIENCY_MULTI;
 	i_tornado_pap[client]=4;

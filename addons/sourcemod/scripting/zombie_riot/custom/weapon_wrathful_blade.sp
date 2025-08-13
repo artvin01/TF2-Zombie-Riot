@@ -12,7 +12,7 @@ static float Fury_DMGMult[3] = { 1.25, 1.33, 1.75 };			//Amount to multiply dama
 static float Fury_BurnDMG[3] = { 2.0, 3.0, 5.0 };				//Base damage dealt by Infernal Fury's AOE per 0.1s. This is affected by attributes.
 static float Fury_BurnFalloff[3] = { 0.66, 0.7, 0.75 };			//Amount to multiply Infernal Fury's AOE damage for every enemy it hits.
 static float Fury_BurnRadius[3] = { 120.0, 160.0, 200.0 };		//Infernal Fury AOE radius.
-static int Fury_BurnMaxTargets[3] = { 3, 4, 6 };				//Infernal Fury max targets hit per AOE.	
+static int Fury_BurnMaxTargets[3] = { 4, 5, 7 };				//Infernal Fury max targets hit per AOE.	
 static float Fury_HPDrain_Base[3] = { 0.2, 0.5, 1.0 };			//Base damage taken by the user per 0.1s while Infernal Fury is active.
 static float Fury_HPDrain_Rise[3] = { 0.2, 0.75, 1.0 };			//Amount to increase Infernal Fury's self-damage per second while it is active.
 static float Fury_HPDrain_Max[3] = { 10.0, 30.0, 40.0 };		//Maximum self-damage taken per 0.1s while Infernal Fury is active.
@@ -148,7 +148,7 @@ void WrathfulBlade_OnKill(int client, int victim)
 	{
 		float cd = Ability_Check_Cooldown(client, 2);
 		cd -= Fury_CDR[Fury_Tier[client]];
-		Ability_Apply_Cooldown(client, 2, cd);
+		Ability_Apply_Cooldown(client, 2, cd, .ignoreCooldown = true);
 	}
 
 	for (int i = 1; i <= MaxClients; i++)

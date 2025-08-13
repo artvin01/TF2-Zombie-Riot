@@ -95,7 +95,7 @@ void Reset_stats_SpikeLayer_Singular(int client) //This is on disconnect/connect
 	f_DeleteAllSpikesDelay[client] = 0.0;
 }
 
-public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Spike_Layer(int client, int weapon, bool crit, int slot)
 {
 	Spikes_AliveCap[client] = 15;
 	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
@@ -194,7 +194,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 }
 
 
-public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Spike_Layer_PAP(int client, int weapon, bool crit, int slot)
 {
 	Spikes_AliveCap[client] = 20;
 	if(Spikes_AliveGlobal >= MAXSPIKESALLOWED)
@@ -421,7 +421,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-public void Spike_Pick_Back_up(int client, int weapon, const char[] classname, bool &result)
+public void Spike_Pick_Back_up(int client, int weapon, bool crit, int slot)
 {
 	static float angles[3];
 	GetClientEyeAngles(client, angles);

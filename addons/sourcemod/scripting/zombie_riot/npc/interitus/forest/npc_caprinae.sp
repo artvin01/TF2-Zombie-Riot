@@ -47,6 +47,10 @@ void CaprinaeOnMapStart()
 	NPCId = NPC_Add(data);
 }
 
+int IsCaprinneId()
+{
+	return NPCId;
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return Caprinae(vecPos, vecAng, team, data);
@@ -77,7 +81,7 @@ methodmap Caprinae < CClotBody
 	
 	public Caprinae(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "200000", ally, _, true));
+		Caprinae npc = view_as<Caprinae>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.5", "175000", ally, _, true));
 		
 		if(!data[0])
 		{
@@ -128,7 +132,10 @@ methodmap Caprinae < CClotBody
 
 		if(npc.Anger)
 		{
-			SetEntityRenderColor(npc.index, 0, 0, 0, 255, _, false, false);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		}
 
 		return npc;
@@ -219,7 +226,7 @@ static void ClotThink(int iNPC)
 						fl_Extra_MeleeArmor[entity] = fl_Extra_MeleeArmor[npc.index];
 						fl_Extra_RangedArmor[entity] = fl_Extra_RangedArmor[npc.index];
 						fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index] * 1.1;
-					//	fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] / 4.0;
+						fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index] * 0.75;
 						view_as<CClotBody>(entity).m_flSpeed = npc.m_flSpeed;
 					}
 

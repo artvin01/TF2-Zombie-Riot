@@ -115,7 +115,7 @@ public void Grenade_Custom_Precache()
 	g_ProjectileModelPipe = PrecacheModel("models/weapons/w_grenade.mdl");
 }
 
-public void Weapon_Grenade(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Grenade(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -160,12 +160,39 @@ static Action Give_Back_Grenade(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
-public void Weapon_Pipebomb(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Pipebomb(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
 		weapon_id[client] = weapon;
 		float DefaultCooldownAlly = 15.0;
+		DefaultCooldownAlly *= CooldownReductionAmount(client);
+		DefaultCooldownAlly *= Attributes_Get(weapon, 97, 1.0);
+		Give_bomb_back[client] = CreateTimer(DefaultCooldownAlly, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
+	//	CreateTimer(14.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
+		GrenadeApplyCooldownHud(client, DefaultCooldownAlly);
+		if(Handle_on[client])
+		{
+			delete Give_bomb_back[client];
+		}
+	//	SetDefaultHudPosition(client);
+	//	SetGlobalTransTarget(client);
+	//	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Threw Pipebomb");
+		SetAmmo(client, Ammo_Hand_Grenade, 0); //Give ammo back that they just spend like an idiot
+		CurrentAmmo[client][Ammo_Hand_Grenade] = 0;
+		Handle_on[client] = true;
+		UpdateWeaponVisibleGrenade(weapon, client, true);
+	}
+}
+
+public void Weapon_Pipebomb_Flash(int client, int weapon, bool crit, int slot)
+{
+	if(weapon >= MaxClients)
+	{
+		weapon_id[client] = weapon;
+		float DefaultCooldownAlly = 15.0;
+		if(RaidbossIgnoreBuildingsLogic())
+			DefaultCooldownAlly *= 3.0;
 		DefaultCooldownAlly *= CooldownReductionAmount(client);
 		DefaultCooldownAlly *= Attributes_Get(weapon, 97, 1.0);
 		Give_bomb_back[client] = CreateTimer(DefaultCooldownAlly, Give_Back_Pipebomb, client, TIMER_FLAG_NO_MAPCHANGE);
@@ -227,7 +254,7 @@ static Action Give_Back_Pipebomb(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
-public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{
@@ -335,7 +362,7 @@ public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, const char[] c
 }
 
 
-public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{

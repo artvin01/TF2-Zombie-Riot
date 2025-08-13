@@ -1036,6 +1036,7 @@ public void BuilderMenu(int client)
 		SetStoreMenuLogic(client, false);
 		static char buffer[128];
 		Menu menu = new Menu(BuilderMenuM);
+		AnyMenuOpen[client] = 1.0;
 
 		SetGlobalTransTarget(client);
 		
@@ -1075,6 +1076,7 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 	{
 		case MenuAction_Select:
 		{
+			AnyMenuOpen[client] = 0.0;
 			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
@@ -1124,6 +1126,7 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			AnyMenuOpen[client] = 0.0;
 			ResetStoreMenuLogic(client);
 		}
 	}

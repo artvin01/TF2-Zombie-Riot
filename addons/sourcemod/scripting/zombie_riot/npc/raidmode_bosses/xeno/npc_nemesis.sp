@@ -122,6 +122,29 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 }
 methodmap RaidbossNemesis < CClotBody
 {
+	property int m_iGrabbedTarget
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_TargetToWalkTo[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_TargetToWalkTo[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TargetToWalkTo[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	public void PlayHurtSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
@@ -278,7 +301,7 @@ methodmap RaidbossNemesis < CClotBody
 		if(XenoExtraLogic())
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS:");
+			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS.");
 		}
 		else
 		{
@@ -297,7 +320,7 @@ methodmap RaidbossNemesis < CClotBody
 public void RaidbossNemesis_ClotThink(int iNPC)
 {
 	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
-	
+	Nemesis_AdjustGrabbedTarget(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	if(LastMann)
 	{
@@ -622,8 +645,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				}
 				else
 				{
-					i_GrabbedThis[npc.index] = -1;
-					AcceptEntityInput(client_victim, "ClearParent");
 							
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -653,6 +674,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					}
 					npc.m_flNextRangedAttackHappening = 0.0;	
 					SDKHooks_TakeDamage(client_victim, npc.index, npc.index, 10000.0, DMG_CLUB, -1);
+					i_GrabbedThis[npc.index] = -1;
 					i_TankAntiStuck[client_victim] = EntIndexToEntRef(npc.index);
 					CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client_victim), TIMER_FLAG_NO_MAPCHANGE);
 					npc.PlayRangedSpecialSound();
@@ -733,7 +755,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							{
 								SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
 								SetEntityCollisionGroup(Enemy_I_See, 1);
-								SetParent(npc.index, Enemy_I_See, "anim_attachment_LH");
+							//	SetParent(npc.index, Enemy_I_See, "anim_attachment_LH");
 							}
 							else
 							{
@@ -1084,7 +1106,6 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 		if(IsValidEntity(client))
 		{
-			AcceptEntityInput(client, "ClearParent");
 			b_NoGravity[client] = false;
 			npc.SetVelocity({0.0,0.0,0.0});
 			if(IsValidClient(client))
@@ -1116,7 +1137,6 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	if(IsValidEntity(client))
 	{
-		AcceptEntityInput(client, "ClearParent");
 		b_NoGravity[client] = false;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
@@ -1656,96 +1676,14 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 			float HudY = -1.0;
 			float HudX = -1.0;
 			SetHudTextParams(HudX, HudY, 3.0, 50, 255, 50, 255);
-			SetGlobalTransTarget(victim);
-			ShowHudText(victim,  -1, "%t", "You have been Infected by Calmaticus");
+			ShowHudText(victim, -1, "%T", "You have been Infected by Calmaticus", victim);
 			ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");		
 			int InfectionCount = 15;
 			StartBleedingTimer(victim, entity, 150.0, InfectionCount, -1, DMG_TRUEDAMAGE, 0, 1);
-			DataPack pack;
-			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-			pack.WriteCell(EntIndexToEntRef(victim));
-			pack.WriteCell(EntIndexToEntRef(entity));
-//			pack.WriteCell(EntIndexToEntRef(particle));
-//			pack.WriteCell(EntIndexToEntRef(particle2));
-			pack.WriteCell(-1);
-			pack.WriteCell(-1);
-			pack.WriteCell(InfectionCount);
 		}
 	}
 }
 
-public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = EntRefToEntIndex(pack.ReadCell());
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	int Particle_entity = EntRefToEntIndex(pack.ReadCell());
-	int Particle_entity_2 = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidEntity(entity))
-	{
-		if(IsValidEntity(Particle_entity))
-		{
-			RemoveEntity(Particle_entity);
-		}
-		if(IsValidEntity(Particle_entity_2))
-		{
-			RemoveEntity(Particle_entity_2);
-		}
-		return Plugin_Stop;
-	}
-	if(!IsValidEnemy(entity, client))
-	{
-		if(IsValidEntity(Particle_entity))
-		{
-			RemoveEntity(Particle_entity);
-		}
-		if(IsValidEntity(Particle_entity_2))
-		{
-			RemoveEntity(Particle_entity_2);
-		}
-		return Plugin_Stop;
-	}
-
-
-	//everything is valid, infect nearby allies.
-	//dont make it work on npcs, would be unfair.
-	for(int AllyClient = 1; AllyClient <= MaxClients; AllyClient++)
-	{
-		if(IsValidEnemy(entity, AllyClient) && AllyClient != client)
-		{
-			float vAngles[3];				
-			float entity_angles[3];						
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
-			GetEntPropVector(AllyClient, Prop_Data, "m_vecAbsOrigin", entity_angles); 				
-			float Distance = GetVectorDistance(vAngles, entity_angles);
-			if(Distance < 30.0)
-			{		
-				NemesisHitInfection(entity, AllyClient, 0.0 , -1);
-			}
-		}
-	}
-	int bleed_count = pack.ReadCell();
-	if(IsInvuln(client))
-	{
-		bleed_count = 0;
-	}
-	if(bleed_count < 1)
-	{
-		if(IsValidEntity(Particle_entity))
-		{
-			RemoveEntity(Particle_entity);
-		}
-		if(IsValidEntity(Particle_entity_2))
-		{
-			RemoveEntity(Particle_entity_2);
-		}
-		return Plugin_Stop;
-	}
-
-	pack.Position--;
-	pack.WriteCell(bleed_count-1, false);
-	return Plugin_Continue;
-}
 
 public void Raidmode_Nemesis_Win(int entity)
 {
@@ -1762,4 +1700,21 @@ public void Raidmode_Nemesis_Win(int entity)
 		}
 	}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+}
+
+
+
+void Nemesis_AdjustGrabbedTarget(int iNPC)
+{
+	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
+	if(!IsValidEntity(i_GrabbedThis[npc.index]))
+		return;
+
+	int EnemyGrab = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	float flPos[3]; // original
+	float flAng[3]; // original
+
+	npc.GetAttachment("anim_attachment_LH", flPos, flAng);
+	
+	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }

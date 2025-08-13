@@ -5,7 +5,7 @@ static ArrayList ShopListing;
 
 public float Rogue_Encounter_RiftShop()
 {	
-	if(false)
+	/*if(false)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -24,7 +24,7 @@ public float Rogue_Encounter_RiftShop()
 		MusicString1.Custom = true;
 		strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
 		strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
-	}
+	}*/
 
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
@@ -35,33 +35,33 @@ public float Rogue_Encounter_RiftShop()
 
 	bool rare = Rogue_GetFloor() > 0;
 
-	if(Rogue_GetRandomArtfiact(artifact, true, 6) != -1)
+	if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 		ShopListing.PushArray(artifact);
 
 	if(ingots > 11)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 		
-		if(!rare && Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 17)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 23)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(rare)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
