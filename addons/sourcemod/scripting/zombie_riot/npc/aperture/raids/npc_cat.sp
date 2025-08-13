@@ -218,7 +218,7 @@ methodmap CAT < CClotBody
 	
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.50", "5000", ally, false, true, true, true));
+		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.35", "5000", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
