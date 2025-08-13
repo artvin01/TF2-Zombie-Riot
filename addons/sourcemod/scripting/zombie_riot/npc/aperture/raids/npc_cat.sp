@@ -767,7 +767,7 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	AcceptEntityInput(projectile, "SetModelScale");
 	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6); // refreshes collision
 	
-	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKET);
+	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 }
 

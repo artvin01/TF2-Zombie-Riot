@@ -330,7 +330,7 @@ methodmap ARIS < CClotBody
 	public ARIS(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ARIS npc = view_as<ARIS>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.50", "700", ally, false, true, true, true));
-		float gameTime = GetGameTime();
+		float gameTime = GetGameTime(npc.index);
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -348,7 +348,7 @@ methodmap ARIS < CClotBody
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		RaidModeTime = GetGameTime() + 160.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -543,7 +543,7 @@ methodmap ARIS < CClotBody
 	
 	public void ToggleWeapon()
 	{
-		float gameTime = GetGameTime();
+		float gameTime = GetGameTime(this.index);
 		
 		this.m_fbGunout = !this.m_fbGunout;
 		if (this.m_fbGunout)
@@ -689,7 +689,7 @@ methodmap ARIS < CClotBody
 		this.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
 		
 		this.m_bDoingRangedAttack = true;
-		this.m_flNextRangedAttack = GetGameTime() + ARIS_WEAPON_SHOOT_DELAY;
+		this.m_flNextRangedAttack = GetGameTime(this.index) + ARIS_WEAPON_SHOOT_DELAY;
 		
 		this.PlayShotgunReloadingSound();
 		
@@ -838,14 +838,14 @@ methodmap ARIS < CClotBody
 		
 		if (this.m_bDoingSpecialRangedAttack)
 		{
-			this.m_flNextSpecialRangedAttack = GetGameTime() + ARIS_WEAPON_SPECIAL_COOLDOWN;
+			this.m_flNextSpecialRangedAttack = GetGameTime(this.index) + ARIS_WEAPON_SPECIAL_COOLDOWN;
 			this.m_bDoingSpecialRangedAttack = false;
 		}
 		
 		this.m_flNextRangedAttack = GetGameTime() + ARIS_WEAPON_SHOOT_COOLDOWN;
 		this.m_bDoingRangedAttack = false;
 		
-		this.m_flNextWeaponSwitch = fmax(this.m_flNextWeaponSwitch, GetGameTime() + 1.0);
+		this.m_flNextWeaponSwitch = fmax(this.m_flNextWeaponSwitch, GetGameTime(this.index) + 1.0);
 		
 		this.m_bAllowBackWalking = false;
 		this.m_bInFlightFromRangedAttack = true;
@@ -861,7 +861,7 @@ methodmap ARIS < CClotBody
 public void ARIS_ClotThink(int iNPC)
 {
 	ARIS npc = view_as<ARIS>(iNPC);
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 	{
