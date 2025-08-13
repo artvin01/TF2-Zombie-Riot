@@ -3,6 +3,7 @@
 
 static bool Hand2Charger;
 static bool Hand2Rapid;
+static float Hand2HunterLastTime[MAXPLAYERS];
 
 void Rogue_Hand2_AbilityUse(int client, int weapon)
 {
@@ -162,5 +163,89 @@ public void Rogue_Hand2Power_Weapon(int entity)
 	{
 		// +300% max mana
 		Attributes_SetMulti(entity, 405, 4.0);
+	}
+}
+
+public void Rogue_Hand2Tactician_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Tactician)
+	{
+		if(i_HasBeenHeadShotted[victim] && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			Building_GiveRewardsUse(attacker, attacker, 2);
+		}
+	}
+}
+
+public void Rogue_Hand2Hunter_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hunter)
+	{
+		float time = GetGameTime() - Hand2HunterLastTime[attacker];
+		if(time > 50.0)
+			time = 50.0;
+		
+		damage += damage * (time / 10.0);
+		
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			RequestFrame(RogueHand2HunterReset, attacker);
+	}
+}
+
+static void RogueHand2HunterReset(int client)
+{
+	Hand2HunterLastTime[client] = GetGameTime();
+}
+
+public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Drone)
+	{
+		int count;
+		int entity = -1;
+		while((entity=FindEntityByClassname(entity, "zr_projectile_base")) != -1)
+		{
+			if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == attacker)
+				count++;
+		}
+
+		if(count > 25)
+			count = 25;
+
+		damage += damage * (count / 6.666667);
+	}
+}
+
+public void Rogue_Hand2Lord_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Lord)
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED) && !(GetURandomInt() % 4))
+		{
+			float fAng[3], fPos[3];
+			GetClientEyeAngles(attacker, fAng);
+			GetClientEyePosition(attacker, fPos);
+
+			static const float speed = 1000.0;
+
+			float fVel[3];
+			GetAngleVectors(fAng, fVel, NULL_VECTOR, NULL_VECTOR);
+			fVel[0] *= speed;
+			fVel[1] *= speed;
+			fVel[2] *= speed;
+
+			int entity = CreateEntityByName("tf_projectile_spellfireball");
+			if(IsValidEntity(entity))
+			{
+				SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", attacker);
+				SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
+				SetTeam(entity, GetTeam(attacker));
+				TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
+				DispatchSpawn(entity);
+				TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, fVel);
+				SetEntPropEnt(entity, Prop_Send, "m_hLauncher", EntRefToEntIndex(weapon));
+				f_CustomGrenadeDamage[entity] = damage * 2.0;
+			}
+		}
 	}
 }

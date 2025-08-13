@@ -30,8 +30,22 @@
 	{
 		"en"	"With your last strength, break open a last bit of hope for yourself.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot"
 	}
-	// TODO: Tactician
-	// TODO: Hunter
+	"Hand of Snatcher"
+	{
+		"en"	"Hand of Snatcher"
+	}
+	"Hand of Snatcher Desc"
+	{
+		"en"	"Whatever it is you do not have, snatch it away from your enemy. There is no need to hesitate.\n{green}''Tactician'' weapons gain extra cash on a headshot {yellow}(up to a limit)"
+	}
+	"Hand of Spark"
+	{
+		"en"	"Hand of Spark"
+	}
+	"Hand of Spark Desc"
+	{
+		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +10％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
+	}
 	"Hand of Buckler"
 	{
 		"en"	"Hand of Buckler"
@@ -60,11 +74,18 @@
 	{
 		"en"	"Hand of Flowing Water"
 	}
-	"Hand of Flowing Water"
+	"Hand of Flowing Water Desc"
 	{
 		"en"	"The ocean's flow never ceases, because it is always surging.\n{green}''Power Magic'' weapons grant +300％ max mana and regen"
 	}
-	// TODO: Drone Magic
+	"Hand of Diffusion"
+	{
+		"en"	"Hand of Diffusion"
+	}
+	"Hand of Diffusion Desc"
+	{
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +375％"
+	}
 	"Hand of Rending"
 	{
 		"en"	"Hand of Rending"
@@ -89,7 +110,14 @@
 	{
 		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +120％ fire rate"
 	}
-	// TODO: Lord
+	"Hand of Fireworks"
+	{
+		"en"	"Hand of Fireworks"
+	}
+	"Hand of Fireworks Desc"
+	{
+		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
+	}
 	// TODO: Crusher
 	// TODO: Combatant
 	// TODO: Medical
