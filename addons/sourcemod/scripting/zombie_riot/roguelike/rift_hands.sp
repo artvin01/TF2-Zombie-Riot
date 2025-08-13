@@ -4,6 +4,7 @@
 static bool Hand2Charger;
 static bool Hand2Rapid;
 static float Hand2HunterLastTime[MAXPLAYERS];
+static Handle Hand2Medical[MAXPLAYERS];
 
 void Rogue_Hand2_AbilityUse(int client, int weapon)
 {
@@ -248,4 +249,105 @@ public void Rogue_Hand2Lord_TakeDamage(int victim, int &attacker, int &inflictor
 			}
 		}
 	}
+}
+
+public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Crusher)
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			float firerate = Attributes_Get(weapon, 6);
+			ApplyTempAttrib(weapon, 6, 0.909, firerate * 2.0);
+		}
+	}
+}
+
+public void Rogue_Hand2Combatant_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Combatant)
+	{
+		float value = 0.25;
+		if(!dieingstate[attacker] && !LastMann)
+		{
+			int maxhealth, health;
+			for(int target=1; target<=MaxClients; target++)
+			{
+				if(IsClientInGame(target) && GetClientTeam(target)==2 && TeutonType[target] != TEUTON_WAITING)
+				{
+					if(IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE)
+					{
+						int maxhp = dieingstate[target] ? 1000 : SDKCall_GetMaxHealth(target);
+						maxhealth += maxhp;
+						
+						int hp = GetClientHealth(target);
+						if(hp > maxhp)
+							hp = maxhp;
+						
+						health += hp;
+					}
+					else
+					{
+						maxhealth += 1000;
+					}
+				}
+			}
+			
+			if(maxhealth)
+			{
+				value = float(health) / float(maxhealth);
+				if(value < 0.25)
+					value = 0.25;
+			}
+		}
+
+		damage /= value;
+	}
+}
+
+public void Rogue_Hand2Medical_Weapon(int weapon, int client)
+{
+	if(i_WeaponArchetype[weapon] == Archetype_Medical)
+	{
+		delete Hand2Medical[client];
+
+		DataPack pack;
+		Hand2Medical[client] = CreateDataTimer(0.2, RogueHand2MedicalTimer, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+	}
+}
+
+static Action RogueHand2MedicalTimer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	if(IsClientInGame(client) && IsPlayerAlive(client))
+	{
+		int weapon = EntRefToEntIndex(pack.ReadCell());
+		if(weapon != -1)
+		{
+			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			{
+				spawnRing(client, 800.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 155, 100, 125, 1, 0.25, 6.0, 6.1, 1, _, true);
+				
+				float damage = Attributes_GetOnPlayer(client, 8, true, true);
+				damage *= Attributes_Get(weapon, 8, 1.0);
+
+				Explode_Logic_Custom(damage * 6.5, client, client, weapon, _, 400.0);
+			}
+
+			return Plugin_Continue;
+		}
+		
+	}
+
+	Hand2Medical[client] = null;
+	return Plugin_Stop;
+}
+
+public void Rogue_Hand2Mechanic_Weapon(int weapon)
+{
+	if(i_WeaponArchetype[weapon] == Archetype_Mechanic)
+		Attributes_SetMulti(weapon, 95, 1000.0);
 }

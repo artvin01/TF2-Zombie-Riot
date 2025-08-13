@@ -40,6 +40,7 @@ enum struct Artifact
 	char Name[64];
 	int ShopCost;
 	int DropChance;
+	bool Multi;
 	Function FuncCollect;
 	Function FuncRemove;
 	Function FuncAlly;
@@ -51,11 +52,13 @@ enum struct Artifact
 	Function FuncRecoverWeapon;
 	Function FuncStageEnd;
 	Function FuncTakeDamage;
+	Function FuncFloorChange;
 
 	void SetupKv(KeyValues kv)
 	{
 		this.ShopCost = kv.GetNum("shopcost");
 		this.DropChance = kv.GetNum("dropchance");
+		this.Multi = view_as<bool>(kv.GetNum("multi"));
 		
 		kv.GetString("func_collect", this.Name, 64);
 		this.FuncCollect = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
@@ -89,6 +92,9 @@ enum struct Artifact
 		
 		kv.GetString("func_takedamage", this.Name, 64);
 		this.FuncTakeDamage = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_floorchange", this.Name, 64);
+		this.FuncFloorChange = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
@@ -288,6 +294,7 @@ static int CurseOne = -1;
 static int CurseTwo = -1;
 static int CurseTime;
 static int ExtraStageCount;
+static int ForcedVoteSeed = -1;
 
 // Rogue Items
 bool b_LeaderSquad;
@@ -987,7 +994,7 @@ void Rogue_BattleVictory()
 				if((GetURandomInt() % 8) < BattleIngots)
 				{
 					Artifact artifact;
-					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+					if(Rogue_GetRandomArtifact(artifact, true, -1) != -1)
 						Rogue_GiveNamedArtifact(artifact.Name);
 				}
 			}
@@ -1017,16 +1024,19 @@ void Rogue_BattleVictory()
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{
 					Artifact artifact;
-					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+					if(Rogue_GetRandomArtifact(artifact, true, -1) != -1)
 						Rogue_GiveNamedArtifact(artifact.Name);
 				}
 			}
 			case ReilaRift:
 			{
+				Artifact artifact;
+				if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+					Rogue_GiveNamedArtifact(artifact.Name);
+				
 				if((GetURandomInt() % 8) < BattleIngots)
 				{
-					Artifact artifact;
-					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+					if(Rogue_GetRandomArtifact(artifact, true, -1) != -1)
 						Rogue_GiveNamedArtifact(artifact.Name);
 				}
 			}
@@ -1367,6 +1377,7 @@ void Rogue_NextProgress()
 
 				SteamWorks_UpdateGameTitle();
 				Rogue_BlueParadox_NewFloor(CurrentFloor);
+				Rogue_TriggerFunction(Artifact::FuncFloorChange, CurrentFloor);
 
 				if(victory)	// All the floors are done
 				{
@@ -1483,7 +1494,9 @@ void Rogue_NextProgress()
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
 			{
-				int id = GetRandomStage(floor, stage, 2);
+				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed);
+				ForcedVoteSeed = -1;
+
 				if(id == -1)
 				{
 					// We somehow don't have a final stage
@@ -1521,10 +1534,13 @@ void Rogue_NextProgress()
 				Vote vote;
 				for(int i; i < count; i++)
 				{
-					int id = GetRandomStage(floor, stage, 0);
+					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed);
 					if(id != -1)
 					{
+						ForcedVoteSeed = -1;
+						
 						strcopy(vote.Config, sizeof(vote.Config), stage.Name);
+						vote.Level = GetURandomInt();
 
 						if(Rogue_Curse_HideNames() || Rogue_GetChaosLevel() > 2)
 						{
@@ -1539,10 +1555,42 @@ void Rogue_NextProgress()
 							strcopy(vote.Name, sizeof(vote.Name), stage.Name);
 						}
 
-						Voting.PushArray(vote);
-
 						if(i == ((Rogue_GetChaosLevel() == 4) ? 1 : 0))
 							SetAllCamera(stage.Camera, stage.Skyname);
+						
+						// Show the next stage if possible
+						if(CurrentFloor < 5 && RogueTheme == ReilaRift)
+						{
+							int future = id;
+							vote.Level = GetURandomInt();
+
+							if((CurrentCount -1) == maxRooms)
+							{
+								future = GetRandomStage(floor, stage, 2, vote.Level);
+							}
+							else
+							{
+								future = GetRandomStage(floor, stage, 0, vote.Level);
+							}
+
+							if(future == id || future == -1)
+							{
+								if(stage.Hidden)
+								{
+									strcopy(vote.Append, sizeof(vote.Append), "  (→ Encounter)");
+								}
+								else
+								{
+									Format(vote.Append, sizeof(vote.Append), "  (→ %s)", stage.Name);
+								}
+							}
+							else
+							{
+								strcopy(vote.Append, sizeof(vote.Append), "  (→ ???)");
+							}
+						}
+
+						Voting.PushArray(vote);
 					}
 				}
 
@@ -1604,7 +1652,6 @@ bool Rogue_ShowStatus(int client)
 
 static void SetFloorMusic(const Floor floor, bool stop)
 {
-	// TODO: Fix music not matching in the StrEqual
 	bool curse = CurseOne != -1 || CurseTwo != -1;
 	if(RaidMusicSpecial1.Valid() || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
@@ -1684,6 +1731,9 @@ static bool CallGenericVote(int client)
 		menu.AddItem(vote.Config, vote.Name, vote.Locked ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 
+	if(length < 9)
+		menu.Pagination = 0;
+	
 	menu.ExitButton = false;
 	menu.Display(client, RoundToCeil(VoteEndTime - GetGameTime()));
 	return true;
@@ -2064,7 +2114,7 @@ static int GetStageByName(const Floor floor, const char[] name, bool final, Stag
 	return -1;
 }
 
-static int GetRandomStage(const Floor floor, Stage stage, int type)
+static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -1)
 {
 	ArrayList list = type == 2 ? floor.Finals : floor.Encounters;
 	if(!list)
@@ -2072,7 +2122,9 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 	
 	int length = list.Length;
 
-	int start = GetURandomInt() % length;
+	int rand = seed == -1 ? GetURandomInt() : seed;
+
+	int start = rand % length;
 	int i = start;
 	
 	if(type == 2)
@@ -2119,7 +2171,7 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 			
 			list.GetArray(i, stage);
 
-			if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
+			if((CurrentFloor < 5 && RogueTheme == ReilaRift) || !Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
 			{
 				if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
 				{
@@ -2433,7 +2485,7 @@ void Rogue_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, 
 	}
 }
 
-int Rogue_GetRandomArtfiact(Artifact artifact, bool blacklist, int forcePrice = -1)
+int Rogue_GetRandomArtifact(Artifact artifact, bool blacklist, int forcePrice = -1)
 {
 	if(!CurrentMissed)
 		CurrentMissed = new ArrayList();
@@ -2472,7 +2524,7 @@ int Rogue_GetRandomArtfiact(Artifact artifact, bool blacklist, int forcePrice = 
 		found = list.Get(GetURandomInt() % length);
 		Artifacts.GetArray(found, artifact);
 
-		if(blacklist)
+		if(blacklist && !artifact.Multi)
 			CurrentMissed.Push(found);
 	}
 
@@ -2737,6 +2789,27 @@ stock void Rogue_AddChaos(int amount, bool silent = false)
 		CreateTimer(10.0, Rogue_ChaosChaos, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
+stock void Rogue_AddUmbral(int amount, bool silent = false)
+{
+	int change = amount;
+
+	CurrentUmbral += change;
+
+	Waves_UpdateMvMStats();
+
+	if(!silent)
+	{
+		if(change > 0)
+		{
+			CPrintToChatAll("%t", "Bad Umbral", change);
+		}
+		else
+		{
+			CPrintToChatAll("%t", "Good Umbral", -change);
+		}
+	}
+}
+
 static Action Rogue_ChaosChaos(Handle timer)
 {
 	if(Rogue_GetChaosLevel() < 4)
@@ -2841,6 +2914,8 @@ public void Rogue_Vote_NextStage(const Vote vote)
 		
 		CurrentExclude.PushString(stage.Name);
 	}
+
+	ForcedVoteSeed = vote.Level;
 
 	SetNextStage(id, false, stage);
 }

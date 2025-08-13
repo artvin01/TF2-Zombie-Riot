@@ -5,6 +5,41 @@
 		"#format"	"{1:t}"
 		"en"		"{green}{1} {default}has closed!"
 	}
+	"Good Umbral"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Gained {1} Umbral Affinity"
+	}
+	"Bad Umbral"
+	{
+		"#format"	"{1:d}"
+		"en"		"{red}Lost {1} Umbral Affinity"
+	}
+
+	"Ruin"
+	{
+		"en"	"Ruin"
+	}
+	"Whatever is Left"
+	{
+		"en"	"Whatever is Left"
+	}
+	"Behind The Curtains"
+	{
+		"en"	"Behind The Curtains"
+	}
+	"More Research"
+	{
+		"en"	"More Research"
+	}
+	"Palace of the Void"
+	{
+		"en"	"Palace of the Void"
+	}
+	"The Throne"
+	{
+		"en"	"The Throne"
+	}
 
 	"Hand of Predation"
 	{
@@ -118,10 +153,77 @@
 	{
 		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
 	}
-	// TODO: Crusher
-	// TODO: Combatant
-	// TODO: Medical
-	// TODO: Mechanic
-	// TODO: Buffer
-	// TODO: Debuffer
+	"Hand of Pulverization"
+	{
+		"en"	"Hand of Pulverization"
+	}
+	"Hand of Pulverization Desc"
+	{
+		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +10％ fire rate for a short duration when dealing damage to each enemy"
+	}
+	"Hand of Revenging"
+	{
+		"en"	"Hand of Revenging"
+	}
+	"Hand of Revenging Desc"
+	{
+		"en"	"Better not touch my friends then.\n{green}''Combatant'' weapons gains up to +300％ damage with players more injured or dead"
+	}
+	"Hand of Purification"
+	{
+		"en"	"Hand of Purification"
+	}
+	"Hand of Purification Desc"
+	{
+		"en"	"Where it is, dust is not.\n{green}''Medical'' weapons deals 50％ of healing rate as explosive damage to nearby enemies"
+	}
+	"Hand of Protraction"
+	{
+		"en"	"Hand of Protraction"
+	}
+	"Hand of Protraction Desc"
+	{
+		"en"	"Protracted battles, a home of carnage.\n{green}''Mechanic'' weapons fully repairs buildings on hit"
+	}
+
+	"Pots In The Ground"
+	{
+		"en"	"Pots In The Ground ◈"
+	}
+	"Pots In The Ground Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a common artifact when consumed"
+	}
+	"Walled Gold"
+	{
+		"en"	"Walled Gold ◈"
+	}
+	"Walled Gold Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain an uncommon artifact when consumed"
+	}
+	"Stored Instruments"
+	{
+		"en"	"Stored Instruments ◈"
+	}
+	"Stored Instruments Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a rare artifact when consumed"
+	}
+	"Empty Thoughts"
+	{
+		"en"	"Empty Thoughts ◈"
+	}
+	"Empty Thoughts Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 8 while held\n{purple}Obtain an artifact when consumed"
+	}
+	"Shrivel and Sprout"
+	{
+		"en"	"Shrivel and Sprout ◈"
+	}
+	"Shrivel and Sprout Desc"
+	{
+		"en"	"{yellow}Duplicates when reaching a new floor {red}but Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
+	}
 }
