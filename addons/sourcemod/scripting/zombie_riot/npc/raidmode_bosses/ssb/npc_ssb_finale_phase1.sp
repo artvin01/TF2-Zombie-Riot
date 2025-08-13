@@ -499,7 +499,7 @@ public void DeathWaver_Knockback(int attacker, int victim, float damage)
 		return;
 
 	EmitSoundToAll(SND_WAVER_KNOCKBACK, victim, _, _, _, _, GetRandomInt(80, 100));
-	Custom_Knockback(attacker, victim, Waver_Knockback[Chair_Tier[attacker]], true, _, true, _, _, _, _, true);
+	Custom_Knockback(attacker, victim, Waver_Knockback[Chair_Tier[attacker]], true, true, true);
 }
 
 public void SSBChair_Bombardment(SSBChair ssb, int target)
@@ -930,7 +930,7 @@ public void SSBChair_Teleport_DoKnockback(int attacker, int victim, float damage
 	if (b_NoKnockbackFromSources[victim] || b_NpcIsInvulnerable[victim])
 		return;
 
-	Custom_Knockback(attacker, victim, Teleport_Knockback[Chair_Tier[attacker]], true, _, true, _, _, _, _, true);
+	Custom_Knockback(attacker, victim, Teleport_Knockback[Chair_Tier[attacker]], true, true, true);
 }
 
 public ArrayList GetRandomlySortedEnemies(CClotBody user)
@@ -1290,7 +1290,8 @@ void Absorption_ActivePhase(DataPack pack)
 		Explode_Logic_Custom(Absorption_DMG[tier], ssb.index, ssb.index, 0, userPos, Absorption_Radius[tier], 1.0, 1.0, isBlue, 9999, _, Absorption_EntityMult[tier], Absorption_OnHit);
 		if (Absorption_Hits > 0)
 		{
-			TE_SetupParticleEffect((view_as<TFTeam>(GetEntProp(ssb.index, Prop_Send, "m_iTeamNum")) == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, ssb.index);
+			TFTeam team = view_as<TFTeam>(GetEntProp(ssb.index, Prop_Send, "m_iTeamNum"));
+			TE_SetupParticleEffect((team == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, ssb.index);
 			TE_WriteNum("m_bControlPoint1", ssb.index);	
 			TE_SendToAll();
 		}
@@ -1380,7 +1381,8 @@ void SSBChair_HealEntity(int target, int amount, bool particle = true)
 
 	if (particle)
 	{
-		TE_SetupParticleEffect((view_as<TFTeam>(GetEntProp(target, Prop_Send, "m_iTeamNum")) == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, target);
+		TFTeam team = view_as<TFTeam>(GetEntProp(target, Prop_Send, "m_iTeamNum"));
+		TE_SetupParticleEffect((team == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToAll();
 	}
