@@ -24,19 +24,6 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/mvm/norm/soldier_mvm_standonthepoint03.mp3",
 };
 
-static const char g_HalfHealthSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_robot_see_ghost01.mp3",
-	"vo/mvm/norm/soldier_mvm_robot_see_ghost02.mp3",
-};
-
-static const char g_SwitchWeaponSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_robot10.mp3",
-	"vo/mvm/norm/soldier_mvm_robot11.mp3",
-	"vo/mvm/norm/soldier_mvm_robot12.mp3",
-	"vo/mvm/norm/soldier_mvm_robot15.mp3",
-	"vo/mvm/norm/soldier_mvm_robot20.mp3",
-};
-
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
@@ -47,29 +34,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/axe_hit_flesh3.wav",
 };
 
-static const char g_RangedAttackSounds[][] = {
-	"weapons/shotgun_shoot.wav",
-};
-
-static const char g_ShotgunReloadingSounds[][] = {
-	")weapons/shotgun_cock_back.wav",
-	")weapons/shotgun_cock_forward.wav",
-};
-
-static const char g_MalfunctionSounds[][] = {
-	"weapons/sentry_damage1.wav",
-	"weapons/sentry_damage2.wav",
-	"weapons/sentry_damage3.wav",
-	"weapons/sentry_damage4.wav",
-};
-
-static const char g_MalfunctionParticleAttachments[][] = {
-	"head",
-	"eye_1",
-	"weapon_bone",
-	"flag"
-};
-
 void Vincent_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -77,11 +41,6 @@ void Vincent_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_ShotgunReloadingSounds));   i++) { PrecacheSound(g_ShotgunReloadingSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_MalfunctionSounds));   i++) { PrecacheSound(g_MalfunctionSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_HalfHealthSounds));   i++) { PrecacheSound(g_HalfHealthSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_SwitchWeaponSounds));   i++) { PrecacheSound(g_SwitchWeaponSounds[i]);   }
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_entrance.wav");
 	
@@ -137,12 +96,8 @@ methodmap Vincent < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayRangedSound()
-	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 100, _, BOSS_ZOMBIE_VOLUME, 110);
-	}
 
-	property float m_flAbility1
+	property float m_flNextOilPouring
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
@@ -237,6 +192,8 @@ methodmap Vincent < CClotBody
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flMeleeArmor = 1.0;
+		
+		npc.m_flNextOilPouring = GetGameTime(npc.index) + 3.0;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
