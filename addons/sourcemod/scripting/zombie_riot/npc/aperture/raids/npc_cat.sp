@@ -27,8 +27,8 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_OrbBarrageAlertSounds[][] = {
-	"vo/mvm/norm/scout_mvm_taunts13.mp3",
-	"vo/mvm/norm/scout_mvm_taunts15.mp3",
+	"vo/mvm/norm/taunts/scout_mvm_taunts13.mp3",
+	"vo/mvm/norm/taunts/scout_mvm_taunts15.mp3",
 	"vo/mvm/norm/scout_mvm_dominationpyr01.mp3",
 	"vo/mvm/norm/scout_mvm_dominationsol05.mp3",
 	"vo/mvm/norm/scout_mvm_stunballhit15.mp3",
@@ -71,8 +71,6 @@ static const char g_BoomSounds[][] = {
 #define CAT_ORB_SPAM_ABILITY_COLLISION_MODEL "models/weapons/w_models/w_cannonball.mdl"
 
 #define CAT_SELF_DEGRADATION_ABILITY_DURATION 15.0
-#define CAT_SELF_DEGRADATION_ABILITY_MIN_HEALTH_PERCENTAGE 0.2		// based on MAX health! (0.0 - 1.0)
-#define CAT_SELF_DEGRADATION_ABILITY_HURT_HEALTH_PERCENTAGE 0.04	// based on MAX health! (0.0 - 1.0)
 #define CAT_SELF_DEGRADATION_ABILITY_EFFECT "burningplayer_rainbow_stars02"
 
 enum
@@ -226,7 +224,7 @@ methodmap CAT < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		func_NPCDeath[npc.index] = CAT_NPCDeath;
@@ -461,18 +459,8 @@ public void CAT_ClotThink(int iNPC)
 		{
 			case CAT_SELF_DEGRADATION_ABILITY_STATE_NONE:
 			{
-				// We can only do this attack if we have at least 20% of our max health
-				float percentage = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(npc.index));
-				if (percentage >= CAT_SELF_DEGRADATION_ABILITY_MIN_HEALTH_PERCENTAGE)
-				{
-					SelfDegradation_Ability_Start(npc);
-					return;
-				}
-				else
-				{
-					// We can't use this anymore... Doesn't account for getting healed somehow
-					npc.m_flNextSelfDegradationAbilityTime = 0.0;
-				}
+				SelfDegradation_Ability_Start(npc);
+				return;
 			}
 			
 			case CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING:
@@ -518,88 +506,78 @@ public void CAT_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static void CATS_SelfDefense(CAT npc, float gameTime, int target, float flDistanceToTarget)
+static void CATS_SelfDefense(CAT npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if (npc.m_flAttackHappens && npc.m_flAttackHappens < GetGameTime(npc.index))
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		npc.m_flAttackHappens = 0.0;
+		
+		if(IsValidEnemy(npc.index, target))
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
+			int HowManyEnemeisAoeMelee = 64;
+			Handle swingTrace;
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
+			delete swingTrace;
+			bool PlaySound = false;
+			float damage = 35.0;
+			damage *= RaidModeScaling;
+			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
-				int HowManyEnemeisAoeMelee = 64;
-				Handle swingTrace;
-				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-				npc.FaceTowards(VecEnemy, 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
-				delete swingTrace;
-				bool PlaySound = false;
-				float damage = 35.0;
-				damage *= RaidModeScaling;
-				bool silenced = NpcStats_IsEnemySilenced(npc.index);
-				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
-				{
-					if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
-					{
-						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
-						{
-							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-							float vecHit[3];
-							
-							WorldSpaceCenter(targetTrace, vecHit);
+				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
+					continue;
+				if(!IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					continue;
 
-							if(damage <= 1.0)
-							{
-								damage = 1.0;
-							}
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
-							// On Hit stuff
-							bool Knocked = false;
-							if(!PlaySound)
-							{
-								PlaySound = true;
-							}
-							
-							if(IsValidClient(targetTrace))
-							{
-								if (IsInvuln(targetTrace))
-								{
-									Knocked = true;
-									Custom_Knockback(npc.index, targetTrace, 180.0, true);
-									if(!silenced)
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-								else
-								{
-									if(!silenced)
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-							}			
-							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
-						} 
-					}
-				}
-				if(PlaySound)
+				int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+				float vecHit[3];
+				
+				WorldSpaceCenter(targetTrace, vecHit);
+
+				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+
+				bool Knocked = false;
+				if(!PlaySound)
 				{
-					npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE ? npc.PlayMeleeHardHitSound() : npc.PlayMeleeHitSound();
+					PlaySound = true;
 				}
+				
+				if(IsValidClient(targetTrace))
+				{
+					if (IsInvuln(targetTrace))
+					{
+						Knocked = true;
+						Custom_Knockback(npc.index, targetTrace, 180.0, true);
+						if(!silenced)
+						{
+							TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+						}
+					}
+					else
+					{
+						if(!silenced)
+						{
+							TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+						}
+					}
+				}			
+				if(!Knocked)
+					Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+			}
+			if(PlaySound)
+			{
+				npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE ? npc.PlayMeleeHardHitSound() : npc.PlayMeleeHitSound();
 			}
 		}
 	}
 
-	if(gameTime > npc.m_flNextMeleeAttack)
+	if (gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if (distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 		{
 			int Enemy_I_See;
 			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
