@@ -1061,6 +1061,7 @@ void NPC_ConfigSetup()
 	CAT_OnMapStart_NPC();
 	ARIS_OnMapStart_NPC();
 	CHIMERA_OnMapStart_NPC();
+	Vincent_OnMapStart_NPC();
 	Test_OnMapStart_NPC();
 }
 
@@ -2319,4 +2320,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/raids/npc_cat.sp"
 #include "npc/aperture/raids/npc_aris.sp"
 #include "npc/aperture/raids/npc_chimera.sp"
+#include "npc/aperture/raids/npc_vincent.sp"
 #include "npc/aperture/10/npc_test.sp"
