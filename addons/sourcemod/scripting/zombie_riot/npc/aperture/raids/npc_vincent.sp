@@ -208,7 +208,7 @@ methodmap Vincent < CClotBody
 public void Vincent_ClotThink(int iNPC)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	
 	if(Vincent_LoseConditions(iNPC))
 		return;
