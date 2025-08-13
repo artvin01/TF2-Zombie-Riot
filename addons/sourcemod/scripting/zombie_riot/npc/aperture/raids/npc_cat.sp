@@ -27,8 +27,8 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_OrbBarrageAlertSounds[][] = {
-	"vo/mvm/norm/scout_mvm_taunts13.mp3",
-	"vo/mvm/norm/scout_mvm_taunts15.mp3",
+	"vo/mvm/norm/taunts/scout_mvm_taunts13.mp3",
+	"vo/mvm/norm/taunts/scout_mvm_taunts15.mp3",
 	"vo/mvm/norm/scout_mvm_dominationpyr01.mp3",
 	"vo/mvm/norm/scout_mvm_dominationsol05.mp3",
 	"vo/mvm/norm/scout_mvm_stunballhit15.mp3",
@@ -71,8 +71,6 @@ static const char g_BoomSounds[][] = {
 #define CAT_ORB_SPAM_ABILITY_COLLISION_MODEL "models/weapons/w_models/w_cannonball.mdl"
 
 #define CAT_SELF_DEGRADATION_ABILITY_DURATION 15.0
-#define CAT_SELF_DEGRADATION_ABILITY_MIN_HEALTH_PERCENTAGE 0.2		// based on MAX health! (0.0 - 1.0)
-#define CAT_SELF_DEGRADATION_ABILITY_HURT_HEALTH_PERCENTAGE 0.04	// based on MAX health! (0.0 - 1.0)
 #define CAT_SELF_DEGRADATION_ABILITY_EFFECT "burningplayer_rainbow_stars02"
 
 enum
@@ -226,7 +224,7 @@ methodmap CAT < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		func_NPCDeath[npc.index] = CAT_NPCDeath;
@@ -343,7 +341,7 @@ methodmap CAT < CClotBody
 public void CAT_ClotThink(int iNPC)
 {
 	CAT npc = view_as<CAT>(iNPC);
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -461,18 +459,8 @@ public void CAT_ClotThink(int iNPC)
 		{
 			case CAT_SELF_DEGRADATION_ABILITY_STATE_NONE:
 			{
-				// We can only do this attack if we have at least 20% of our max health
-				float percentage = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(npc.index));
-				if (percentage >= CAT_SELF_DEGRADATION_ABILITY_MIN_HEALTH_PERCENTAGE)
-				{
-					SelfDegradation_Ability_Start(npc);
-					return;
-				}
-				else
-				{
-					// We can't use this anymore... Doesn't account for getting healed somehow
-					npc.m_flNextSelfDegradationAbilityTime = 0.0;
-				}
+				SelfDegradation_Ability_Start(npc);
+				return;
 			}
 			
 			case CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING:
@@ -518,88 +506,78 @@ public void CAT_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static void CATS_SelfDefense(CAT npc, float gameTime, int target, float flDistanceToTarget)
+static void CATS_SelfDefense(CAT npc, float gameTime, int target, float distance)
 {
-	if(npc.m_flAttackHappens)
+	if (npc.m_flAttackHappens && npc.m_flAttackHappens < GetGameTime(npc.index))
 	{
-		if(npc.m_flAttackHappens < GetGameTime(npc.index))
+		npc.m_flAttackHappens = 0.0;
+		
+		if(IsValidEnemy(npc.index, target))
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
+			int HowManyEnemeisAoeMelee = 64;
+			Handle swingTrace;
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
+			delete swingTrace;
+			bool PlaySound = false;
+			float damage = 35.0;
+			damage *= RaidModeScaling;
+			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
-				int HowManyEnemeisAoeMelee = 64;
-				Handle swingTrace;
-				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-				npc.FaceTowards(VecEnemy, 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
-				delete swingTrace;
-				bool PlaySound = false;
-				float damage = 35.0;
-				damage *= RaidModeScaling;
-				bool silenced = NpcStats_IsEnemySilenced(npc.index);
-				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
-				{
-					if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
-					{
-						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
-						{
-							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-							float vecHit[3];
-							
-							WorldSpaceCenter(targetTrace, vecHit);
+				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
+					continue;
+				if(!IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					continue;
 
-							if(damage <= 1.0)
-							{
-								damage = 1.0;
-							}
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
-							// On Hit stuff
-							bool Knocked = false;
-							if(!PlaySound)
-							{
-								PlaySound = true;
-							}
-							
-							if(IsValidClient(targetTrace))
-							{
-								if (IsInvuln(targetTrace))
-								{
-									Knocked = true;
-									Custom_Knockback(npc.index, targetTrace, 180.0, true);
-									if(!silenced)
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-								else
-								{
-									if(!silenced)
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-							}			
-							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
-						} 
-					}
-				}
-				if(PlaySound)
+				int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+				float vecHit[3];
+				
+				WorldSpaceCenter(targetTrace, vecHit);
+
+				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+
+				bool Knocked = false;
+				if(!PlaySound)
 				{
-					npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE ? npc.PlayMeleeHardHitSound() : npc.PlayMeleeHitSound();
+					PlaySound = true;
 				}
+				
+				if(IsValidClient(targetTrace))
+				{
+					if (IsInvuln(targetTrace))
+					{
+						Knocked = true;
+						Custom_Knockback(npc.index, targetTrace, 180.0, true);
+						if(!silenced)
+						{
+							TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+						}
+					}
+					else
+					{
+						if(!silenced)
+						{
+							TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+						}
+					}
+				}			
+				if(!Knocked)
+					Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+			}
+			if(PlaySound)
+			{
+				npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE ? npc.PlayMeleeHardHitSound() : npc.PlayMeleeHitSound();
 			}
 		}
 	}
 
-	if(gameTime > npc.m_flNextMeleeAttack)
+	if (gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if (distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
 		{
 			int Enemy_I_See;
 			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
@@ -753,45 +731,22 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	npc.PlayRangedSound();
 	npc.FaceTowards(vecOrbPos, 2300.0);
 	
-	npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-	
-	int projectile = npc.FireParticleRocket(vecOrbPos, 3000.0, GetRandomFloat(125.0, 150.0), 150.0, "dxhr_lightningball_parent_blue", true);
+	int projectile = npc.FireParticleRocket(vecOrbPos, 10.0, GetRandomFloat(100.0, 400.0), 150.0, "dxhr_lightningball_parent_blue", true);
 	
 	SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-	SDKHook(projectile, SDKHook_StartTouch, Cat_Rocket_Particle_StartTouch);
 	SDKHook(projectile, SDKHook_Touch, Cat_Rocket_Particle_Touch);
+	SDKHook(projectile, SDKHook_ThinkPost, Cat_Rocket_Particle_Think);
 	
 	NextOrbDamage[projectile] = 0.0;
 	
-	Initiate_HomingProjectile(projectile,
-	npc.index,
-	20.0,				// float lockonAngleMax,
-	30.0,				// float homingaSec,
-	false,				// bool LockOnlyOnce,
-	true,				// bool changeAngles,
-	vecOrbAngles);		// float AnglesInitiate[3];
-	
-	// Make it act like a projectile shield
+	// Make its collision box bigger, so it's prettier
 	SetEntityModel(projectile, CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
-	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6);
-	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
-	b_ThisEntityIgnored[projectile] = true;
-	b_ForceCollisionWithProjectile[projectile] = true;
+	SetVariantString("6.0");
+	AcceptEntityInput(projectile, "SetModelScale");
+	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6); // refreshes collision
 	
+	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
-}
-
-static void Cat_Rocket_Particle_StartTouch(int entity, int target)
-{
-	if (target == 0 || target >= MAXENTITIES)
-	{
-		// we hit the world, remove this
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		
-		TE_Particle("spell_batball_impact_blue", ProjectileLoc);
-		RemoveEntity(entity);
-	}
 }
 
 static void Cat_Rocket_Particle_Touch(int entity, int target)
@@ -826,6 +781,40 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	float damage = 5.0 * RaidModeScaling;
 	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 30.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
 	NextOrbDamage[entity] = gameTime + 0.25;
+}
+
+void Cat_Rocket_Particle_Think(int entity)
+{
+	float gameTime = GetGameTime();
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (!IsValidEntity(owner))
+		owner = 0;
+	
+	if (!owner)
+	{
+		RemoveEntity(entity);
+		return;
+	}
+	
+	float vecPos[3];
+	GetAbsOrigin(entity, vecPos);
+	
+	TR_EnumerateEntitiesSphere(vecPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_CAT_FindProjectiles, entity);
+	
+	float vecVelocity[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelocity);
+	
+	float speed = getLinearVelocity(vecVelocity);
+	PrintToChatAll("speed %.2f", speed);
+	if (speed > 40.0)
+	{
+		ScaleVector(vecVelocity, 0.95);
+		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelocity);
+		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecVelocity);
+	}
+	
+	CBaseCombatCharacter(entity).SetNextThink(gameTime + 0.1);
 }
 
 static void SelfDegradation_Ability_Start(CAT npc)
@@ -1070,4 +1059,34 @@ public void CAT_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+}
+
+static bool TraceEntityEnumerator_CAT_FindProjectiles(int entity, int self)
+{
+	if (entity <= 0 || entity > MAXENTITIES)
+		return true;
+	
+	if (!b_IsAProjectile[entity])
+		return true;
+	
+	// Entity has just been initialized, skip this for now
+	if (GetTeam(entity) == 0)
+		return true;
+	
+	if (GetTeam(entity) == GetTeam(self))
+		return true;
+	
+	float vecPos[3], vecTargetPos[3], vecAng[3];
+	WorldSpaceCenter(self, vecPos);
+	WorldSpaceCenter(entity, vecTargetPos);
+	
+	GetVectorAnglesTwoPoints(vecTargetPos, vecPos, vecAng);
+	int particle = ParticleEffectAtWithRotation(vecTargetPos, vecAng, "dxhr_lightningball_hit_zap_blue", 0.3);
+	
+	// Array netprop, but we only need element 0 anyway
+	SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", self, 0);
+	SetEntProp(particle, Prop_Send, "m_iControlPointParents", self, _, 0);
+	
+	RemoveEntity(entity);
+	return true;
 }

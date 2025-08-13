@@ -330,7 +330,7 @@ methodmap ARIS < CClotBody
 	public ARIS(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ARIS npc = view_as<ARIS>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.35", "700", ally, false, true, true, true));
-		float gameTime = GetGameTime();
+		float gameTime = GetGameTime(npc.index);
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -338,7 +338,7 @@ methodmap ARIS < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		func_NPCDeath[npc.index] = ARIS_NPCDeath;
@@ -348,7 +348,7 @@ methodmap ARIS < CClotBody
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		RaidModeTime = GetGameTime() + 160.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -543,7 +543,7 @@ methodmap ARIS < CClotBody
 	
 	public void ToggleWeapon()
 	{
-		float gameTime = GetGameTime();
+		float gameTime = GetGameTime(this.index);
 		
 		this.m_fbGunout = !this.m_fbGunout;
 		if (this.m_fbGunout)
@@ -689,7 +689,7 @@ methodmap ARIS < CClotBody
 		this.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
 		
 		this.m_bDoingRangedAttack = true;
-		this.m_flNextRangedAttack = GetGameTime() + ARIS_WEAPON_SHOOT_DELAY;
+		this.m_flNextRangedAttack = GetGameTime(this.index) + ARIS_WEAPON_SHOOT_DELAY;
 		
 		this.PlayShotgunReloadingSound();
 		
@@ -838,14 +838,14 @@ methodmap ARIS < CClotBody
 		
 		if (this.m_bDoingSpecialRangedAttack)
 		{
-			this.m_flNextSpecialRangedAttack = GetGameTime() + ARIS_WEAPON_SPECIAL_COOLDOWN;
+			this.m_flNextSpecialRangedAttack = GetGameTime(this.index) + ARIS_WEAPON_SPECIAL_COOLDOWN;
 			this.m_bDoingSpecialRangedAttack = false;
 		}
 		
 		this.m_flNextRangedAttack = GetGameTime() + ARIS_WEAPON_SHOOT_COOLDOWN;
 		this.m_bDoingRangedAttack = false;
 		
-		this.m_flNextWeaponSwitch = fmax(this.m_flNextWeaponSwitch, GetGameTime() + 1.0);
+		this.m_flNextWeaponSwitch = fmax(this.m_flNextWeaponSwitch, GetGameTime(this.index) + 1.0);
 		
 		this.m_bAllowBackWalking = false;
 		this.m_bInFlightFromRangedAttack = true;
@@ -861,7 +861,7 @@ methodmap ARIS < CClotBody
 public void ARIS_ClotThink(int iNPC)
 {
 	ARIS npc = view_as<ARIS>(iNPC);
-	float gameTime = GetGameTime();
+	float gameTime = GetGameTime(npc.index);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -1052,79 +1052,69 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 		return;
 	}
 	
-	if (npc.m_flAttackHappens)
+	if (npc.m_flAttackHappens && npc.m_flAttackHappens < GetGameTime(npc.index))
 	{
-		if (npc.m_flAttackHappens < GetGameTime(npc.index))
+		npc.m_flAttackHappens = 0.0;
+		
+		if(IsValidEnemy(npc.index, target))
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
+			int HowManyEnemeisAoeMelee = 64;
+			Handle swingTrace;
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
+			delete swingTrace;
+			bool PlaySound = false;
+			float damage = 35.0;
+			damage *= RaidModeScaling;
+			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
-				int HowManyEnemeisAoeMelee = 64;
-				Handle swingTrace;
-				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-				npc.FaceTowards(VecEnemy, 15000.0);
-				npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
-				delete swingTrace;
-				bool PlaySound = false;
-				float damage = 35.0;
-				damage *= RaidModeScaling;
-				bool silenced = NpcStats_IsEnemySilenced(npc.index);
-				for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
-				{
-					if(i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
-					{
-						if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
-						{
-							int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
-							float vecHit[3];
-							
-							WorldSpaceCenter(targetTrace, vecHit);
+				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
+					continue;
+				if(!IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					continue;
 
-							if(damage <= 1.0)
-							{
-								damage = 1.0;
-							}
-							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-							//Reduce damage after dealing
-							damage *= 0.92;
-							// On Hit stuff
-							bool Knocked = false;
-							if(!PlaySound)
-							{
-								PlaySound = true;
-							}
-							
-							if(IsValidClient(targetTrace))
-							{
-								if (IsInvuln(targetTrace))
-								{
-									Knocked = true;
-									Custom_Knockback(npc.index, targetTrace, 180.0, true);
-									if(!silenced)
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-								else
-								{
-									if(!silenced)
-									{
-										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
-										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
-									}
-								}
-							}			
-							if(!Knocked)
-								Custom_Knockback(npc.index, targetTrace, 450.0, true); 
-						} 
-					}
-				}
-				if(PlaySound)
+				int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+				float vecHit[3];
+				
+				WorldSpaceCenter(targetTrace, vecHit);
+
+				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+
+				bool Knocked = false;
+				if(!PlaySound)
 				{
-					npc.PlayMeleeHitSound();
+					PlaySound = true;
 				}
+				
+				if(IsValidClient(targetTrace))
+				{
+					if (IsInvuln(targetTrace))
+					{
+						Knocked = true;
+						Custom_Knockback(npc.index, targetTrace, 180.0, true);
+						if(!silenced)
+						{
+							TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+						}
+					}
+					else
+					{
+						if(!silenced)
+						{
+							TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
+							TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
+						}
+					}
+				}			
+				if(!Knocked)
+					Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+			}
+			if(PlaySound)
+			{
+				npc.PlayMeleeHitSound();
 			}
 		}
 	}
