@@ -474,18 +474,9 @@ public void CHIMERA_ClotThink(int iNPC)
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 
-	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-	Chimera_ApplyDebuffInLocation(VecSelfNpcabs, GetTeam(npc.index));
-	spawnRing_Vectors(VecSelfNpcabs, CHIMERA_SAFE_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
-	CHIMERA_SpawnAnnotation(iNPC);
-	if(CHIMERA_SuperSlash(iNPC))
-		return;
-	if(CHIMERA_RefractedSniper(iNPC))
-		return;
-	if(CHIMERA_RefractSpawners(iNPC))
-		return;
-	
 	npc.Update();
+
+	
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -498,6 +489,17 @@ public void CHIMERA_ClotThink(int iNPC)
 		return;
 		
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+	Chimera_ApplyDebuffInLocation(VecSelfNpcabs, GetTeam(npc.index));
+	spawnRing_Vectors(VecSelfNpcabs, CHIMERA_SAFE_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 255, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
+	CHIMERA_SpawnAnnotation(iNPC);
+	if(CHIMERA_SuperSlash(iNPC))
+		return;
+	if(CHIMERA_RefractedSniper(iNPC))
+		return;
+	if(CHIMERA_RefractSpawners(iNPC))
+		return;
 
 	if (npc.m_flGetClosestTargetTime < gameTime)
 	{
@@ -1198,6 +1200,8 @@ bool CHIMERA_SuperSlash(int iNPC)
 			npc.m_flSuperSlashInAbility = 0.0;
 			if(IsValidEntity(npc.m_iWearable8))
 				RemoveEntity(npc.m_iWearable8);
+			npc.StartPathing();
+			npc.m_bisWalking = true;
 		}
 		return true;
 	}
@@ -1210,6 +1214,8 @@ bool CHIMERA_SuperSlash(int iNPC)
 	npc.m_flSuperSlashInAbility = GetGameTime(npc.index) + 4.0;
 	npc.m_flSuperSlashInAbilityDo = 0.0;
 	npc.m_flSuperSlash = GetGameTime(npc.index) + 20.0;
+	npc.StopPathing();
+	npc.m_bisWalking = false;
 	return true;
 	
 }
