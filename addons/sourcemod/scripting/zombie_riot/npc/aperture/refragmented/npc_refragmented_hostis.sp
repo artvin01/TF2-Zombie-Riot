@@ -37,7 +37,6 @@ static const char g_BoomSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
 
-static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 void Hostis_OnMapStart_NPC()
 {
@@ -201,61 +200,31 @@ public void Hostis_ClotThink(int iNPC)
 			{
 				npc.m_iWearable1 = ParticleEffectAt(vecMe, "dxhr_lightningball_parent_blue", -1.0);
 				if(IsValidEntity(npc.m_iWearable1))
-				SetParent(npc.index, npc.m_iWearable1);
+					SetParent(npc.index, npc.m_iWearable1);
 			}
-			if(flDistanceToTarget < (500.0 * 500.0))
+			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 			{
-				for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
+				if(IsValidEnemy(npc.index, EnemyLoop, true, true))
 				{
-					if(IsValidEnemy(npc.index, EnemyLoop, true, true))
-					{
-						if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
-						{ 	
-							GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+					if(Can_I_See_Enemy_Only(npc.index, EnemyLoop) && IsEntityAlive(EnemyLoop))
+					{ 	
+						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
+						float flDistanceToTarget2 = GetVectorDistance(cpos, VecSelfNpc2, true);
+						if(flDistanceToTarget2 > (500.0 * 500.0))
+							return;
 
-							MakeVectorFromPoints(pos, cpos, velocity);
-							NormalizeVector(velocity, velocity);
-							ScaleVector(velocity, ScaleVectorDoMulti);
-							if(b_ThisWasAnNpc[EnemyLoop])
-							{
-								CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
-								npc1.SetVelocity(velocity);
-							}
-							else
-							{	
-								TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
-							}
-							if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-							{
-								int red = 0;
-								int green = 150;
-								int blue = 255;
-								if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-								{
-									RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-								}
-								int laser;
-
-								laser = ConnectWithBeam(npc.index, EnemyLoop, red, green, blue, 3.0, 3.0, 2.35, LASERBEAM);
-
-								i_LaserEntityIndex[EnemyLoop] = EntIndexToEntRef(laser);
-								//Im seeing a new target, relocate laser particle.
-							}
+						MakeVectorFromPoints(pos, cpos, velocity);
+						NormalizeVector(velocity, velocity);
+						ScaleVector(velocity, ScaleVectorDoMulti);
+						if(b_ThisWasAnNpc[EnemyLoop])
+						{
+							CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
+							npc1.SetVelocity(velocity);
 						}
 						else
-						{
-							if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-							{
-								RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-							}
+						{	
+							TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 						}
-					}
-					else
-					{
-						if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-						{
-							RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-						}						
 					}
 				}
 			}
@@ -268,13 +237,6 @@ public void Hostis_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 			
-			for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-			{
-				if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-				{
-					RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-				}				
-			}
 			if(flDistanceToTarget < (500.0 * 500.0))
 			{
 				Custom_Knockback(npc.index, npc.m_iTarget, 3000.0);
@@ -350,13 +312,6 @@ public void Hostis_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-	{
-		if(IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
-		{
-			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
-		}				
-	}
 }
 
 void HostisSelfDefense(Hostis npc, float gameTime, int target, float distance)
