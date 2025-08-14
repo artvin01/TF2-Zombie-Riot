@@ -136,7 +136,7 @@ methodmap ApertureCollector < CClotBody
 		MaxAlliesDeath *= MultiGlobalEnemy;
 		npc.m_iAlliesMaxDeath = RoundToCeil(MaxAlliesDeath);
 
-		npc.m_flPercentageAngry = 1.0;
+		npc.m_flPercentageAngry = 0.0;
 		npc.m_iAlliesDied = 0;
 
 		
@@ -306,7 +306,7 @@ void ApertureCollectorSelfDefense(ApertureCollector npc, float gameTime, int tar
 					float damageDealt = 100.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.0;
-					damageDealt *= npc.m_flPercentageAngry * 2.0;
+					damageDealt *= (npc.m_flPercentageAngry * 2.0) + 1.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
