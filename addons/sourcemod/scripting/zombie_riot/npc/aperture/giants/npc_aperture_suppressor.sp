@@ -78,7 +78,7 @@ void ApertureSuppressor_OnMapStart_NPC()
 	PrecacheModel("models/bots/demo_boss/bot_demo_boss.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Suppressor");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ApertureSuppressor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_suppressor");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_punel");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;

@@ -52,7 +52,7 @@ void ApertureHalter_OnMapStart_NPC()
 	PrecacheModel("models/bots/engineer/bot_engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Halter");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ApertureHalter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_halter");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
