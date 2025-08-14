@@ -1634,9 +1634,9 @@
 	{
 		"en"	"The Magic Betrayed"
 	}
-	"The Curtain"
+	"Gate to the Curtain"
 	{
-		"en"	"The Curtain"
+		"en"	"Gate to the Curtain"
 	}
 	"The Great Demons Of Hallam"
 	{
