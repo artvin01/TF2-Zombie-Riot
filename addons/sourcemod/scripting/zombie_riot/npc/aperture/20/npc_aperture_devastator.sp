@@ -111,7 +111,7 @@ methodmap ApertureDevastator < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
-		npc.m_iAttacksTillReload = 4;
+		npc.m_iAttacksTillReload = 2;
 		npc.m_flAbilityOrAttack0 = 0.0;
 				
 		int skin = 1;
@@ -166,24 +166,6 @@ public void ApertureDevastator_ClotThink(int iNPC)
 	float damage = 30.0, speed = 600.0;
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
-	if(!npc.m_bFUCKYOU)
-	{
-		if(npc.m_flAbilityOrAttack0 <= gameTime)
-		{
-			npc.m_bFUCKYOU = true;
-		}
-	}
-
-	if(npc.m_flAbilityOrAttack0)
-	{
-		if(npc.m_flAbilityOrAttack0 < GetGameTime(npc.index))
-		{
-			npc.PlayMeleeSound();
-			int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
-			npc.m_flAbilityOrAttack0 = 0.0;
-			SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
-		}
-	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -275,11 +257,20 @@ void ApertureDevastatorSelfDefense(ApertureDevastator npc, float gameTime, int t
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					npc.m_flNextMeleeAttack = gameTime + 2.0;
 					npc.m_flAbilityOrAttack0 = 1.0;
 					float damage = 30.0, speed = 600.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 2.0;
+					npc.m_iAttacksTillReload--;
+					if(npc.m_iAttacksTillReload <= 0)
+					{
+						npc.m_iAttacksTillReload = 2;
+						npc.m_flNextMeleeAttack = gameTime + 2.0;
+					}
+					else
+					{
+						npc.m_flNextMeleeAttack = gameTime + 0.25;
+					}
 					int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
 					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
 					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
