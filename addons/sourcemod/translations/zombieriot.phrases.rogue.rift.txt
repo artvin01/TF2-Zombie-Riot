@@ -15,6 +15,14 @@
 		"#format"	"{1:d}"
 		"en"		"{red}Lost {1} Umbral Affinity"
 	}
+	"We found a Voidstone"
+	{
+		"en"	"We found a Voidstone"
+	}
+	"Leave it"
+	{
+		"en"	"Leave it"
+	}
 
 	"Ruin"
 	{
@@ -216,7 +224,7 @@
 	}
 	"Empty Thoughts Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 8 while held\n{purple}Obtain an artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 6 while held\n{purple}Obtain a common artifact when consumed"
 	}
 	"Shrivel and Sprout"
 	{
@@ -224,6 +232,163 @@
 	}
 	"Shrivel and Sprout Desc"
 	{
-		"en"	"{yellow}Duplicates when reaching a new floor {red}but Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
+		"en"	"{yellow}Duplicates when reaching a new chapter {red}but Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
+	}
+	"Cheerful Banter"
+	{
+		"en"	"Cheerful Banter ◈"
+	}
+	"Cheerful Banter Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Obtain a very rare artifact when consumed"
+	}
+	"Nemesis Blood"
+	{
+		"en"	"Nemesis Blood ◈"
+	}
+	"Nemesis Blood Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Obtain a rare artifact when consumed"
+	}
+	"Sprouting Stem"
+	{
+		"en"	"Sprouting Stem ◈"
+	}
+	"Sprouting Stem Desc"
+	{
+		"en"	"{green}Umbral Affinity decreased by 5 when obtained"
+	}
+	"Wild Grass by the Door"
+	{
+		"en"	"Wild Grass by the Door ◈"
+	}
+	"Wild Grass by the Door Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 12 while held\n{purple}Obtain a random artifact when consumed"
+	}
+	"Despair"
+	{
+		"en"	"Despair ◈"
+	}
+	"Despair Desc"
+	{
+		"en"	"{red}Shops no longer appear while held\n{purple}Removes all Australium Ingots when consumed"
+	}
+
+	// TODO
+	"Outblood"
+	{
+		"en"	"Outblood ◈"
+	}
+	"Outblood Desc"
+	{
+		"en"	"{green}Allies have +7％ (0.935) fire rate {red}but Umbral Affinity decreased by 2 after a battle"
+	}
+	"Flames"
+	{
+		"en"	"Flames ◈"
+	}
+	"Flames Desc"
+	{
+		"en"	"{green}Allies have +14％ (0.875) fire rate {red}but Umbral Affinity decreased by 3 after a battle"
+	}
+	"Lost"
+	{
+		"en"	"Lost ◈"
+	}
+	"Lost Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain a random voidstone when consumed"
+	}
+	"Witchcraft"
+	{
+		"en"	"Witchcraft ◈"
+	}
+	"Witchcraft Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 2 after a battle {red}but enemies have +10％ health and damage while held"
+	}
+	"Consume"
+	{
+		"en"	"Consume ◈"
+	}
+	"Consume Desc"
+	{
+		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity decreased by 1 after a battle"
+	}
+	"Reclaim"
+	{
+		"en"	"Reclaim ◈"
+	}
+	"Reclaim Desc"
+	{
+		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity decreased by 2 after a battle"
+	}
+	"Pillage"
+	{
+		"en"	"Pillage ◈"
+	}
+	"Pillage Desc"
+	{
+		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity decreased by 1 after a battle"
+	}
+	"Invasion"
+	{
+		"en"	"Invasion ◈"
+	}
+	"Invasion Desc"
+	{
+		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity decreased by 2 after a battle"
+	}
+	"Rise and Fall"
+	{
+		"en"	"Rise and Fall ◈"
+	}
+	"Rise and Fall Desc"
+	{
+		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity decreased by 3 after a battle"
+	}
+	"Words"
+	{
+		"en"	"Words ◈"
+	}
+	"Words Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 6 while held\n{purple}Obtain 2000 cash when consumed"
+	}
+	"Assembly"
+	{
+		"en"	"Assembly ◈"
+	}
+	"Assembly Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 3000 cash when consumed"
+	}
+	"Catastrophe"
+	{
+		"en"	"Catastrophe ◈"
+	}
+	"Catastrophe Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 9 Australium Ingots when consumed"
+	}
+	"Furnace"
+	{
+		"en"	"Furnace ◈"
+	}
+	"Furnace Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain 12 Australium Ingots when consumed"
+	}
+	// TODO
+
+	"Rift Consume Encounter Title"
+	{
+		"en"	"A rift opens up, it's time to throw something in it"
+	}
+	"Consumes Left"
+	{
+		"#format"	"{1:d}"
+		"en"	"We can consume {1} more stones"
 	}
 }

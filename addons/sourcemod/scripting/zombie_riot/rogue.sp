@@ -981,9 +981,12 @@ void Rogue_BattleVictory()
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 	Store_RogueEndFightReset();
 	Rogue_ParadoxShop_Victory();
+	Rogue_RiftShop_Victory();
 
 	if(RogueTheme == BlueParadox)
 		Rogue_Dome_WaveEnd();
+	
+	float time = 5.0;
 	
 	if(BattleIngots > 0)
 	{
@@ -1031,8 +1034,12 @@ void Rogue_BattleVictory()
 			case ReilaRift:
 			{
 				Artifact artifact;
-				if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
-					Rogue_GiveNamedArtifact(artifact.Name);
+
+				if(CurrentFloor < 5 && CurrentCount < 4)
+				{
+					if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+						time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+				}
 				
 				if((GetURandomInt() % 8) < BattleIngots)
 				{
@@ -1069,12 +1076,12 @@ void Rogue_BattleVictory()
 
 	if(CurrentType)
 	{
-		Rogue_SetProgressTime(5.0, false);
+		Rogue_SetProgressTime(time, false);
 		//Rogue_NextProgress();
 	}
 	else
 	{
-		Rogue_SetProgressTime(5.0, true);
+		Rogue_SetProgressTime(time, true);
 
 		Floor floor;
 		Floors.GetArray(CurrentFloor, floor);
@@ -1089,6 +1096,7 @@ void Rogue_BattleVictory()
 bool Rogue_BattleLost()
 {
 	Rogue_ParadoxShop_Fail();
+	Rogue_RiftShop_Fail();
 	bool victory = false;
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
@@ -1517,7 +1525,7 @@ void Rogue_NextProgress()
 				Rogue_CreateGenericVote(Rogue_Vote_NextStage, "Vote for the next stage");
 				CurrentCountHud++;
 
-				int count = RogueTheme == BobChaos ? 2 : 3;
+				int count = RogueTheme == BlueParadox ? 3 : 2;
 				if(!(GetURandomInt() % 6))
 					count++;
 				
@@ -3201,6 +3209,7 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/item_whiteflower.sp"
 #include "roguelike/paradox_dlc.sp"
 
-//#include "roguelike/rift_main.sp"
-//#include "roguelike/rift_items.sp"
+#include "roguelike/rift_main.sp"
+#include "roguelike/rift_items.sp"
 #include "roguelike/rift_hands.sp"
+#include "roguelike/rift_stones.sp"
