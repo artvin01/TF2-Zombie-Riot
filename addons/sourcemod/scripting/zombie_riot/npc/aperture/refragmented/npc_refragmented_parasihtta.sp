@@ -215,6 +215,11 @@ public void Parasihtta_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 0.0, DMG_CLUB, -1, _, vecHit);
 						ApplyStatusEffect(npc.index, target, "Envenomed", 10.0);
+						if (i_IsABuilding[target])
+						{
+							//use void a subtirute, it just reduces repair HP alot.
+							Elemental_AddVoidDamage(target, npc.index, 1000, false, false);
+						}
 						
 						if (!i_IsABuilding[target] && !b_ThisWasAnNpc[target])
 						{
