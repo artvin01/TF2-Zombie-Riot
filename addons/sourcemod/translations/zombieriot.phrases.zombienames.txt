@@ -2857,7 +2857,7 @@
 	}
 	"Void Infestor Desc"
 	{
-		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted. (Can be silenced)"
+		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted."
 	}
 	"Voided Hard Crust"
 	{
@@ -2913,7 +2913,7 @@
 	}
 	"Void Particle Desc"
 	{
-		"en"	"Spreads void on death (can be silenced)"
+		"en"	"Spreads void on death"
 	}
 	"Hosting Blob"
 	{
