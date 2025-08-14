@@ -200,6 +200,7 @@ void InitStatusEffects()
 
 #if defined ZR
 	StatusEffects_Ritualist();
+	StatusEffects_SkullServants();
 #endif
 }
 

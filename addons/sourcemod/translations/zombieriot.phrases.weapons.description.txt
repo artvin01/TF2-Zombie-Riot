@@ -3816,8 +3816,7 @@
 	}
 	"Skull Servants Desc"
 	{
-		"en"	"M2 summons a skull to shoot for you, M1 launches your skulls which explode for heavy damage.\nUp to two skulls may orbit you at once. Summoning another one will launch the oldest skull.\nSkulls will automatically launch themselves after some time."
-		"chi"	"M2召唤骷髅头随从。M1可以将它们丢出去，造成大量爆炸伤害。\n最多可召唤两个骷髅，超过上限时会丢出额外的骷髅。\n骷髅在一段时间后会自行飞出去。"
+		"en"	"M2 summons a skull to shoot for you, M1 makes skulls attack where you look, but their aim sometimes is off....\nUp to two skulls may orbit you at once. Summoning another one will launch the oldest skull.\nSkulls will automatically launch themselves after some time."
 	}
 	"Skull Servants PaP 1"
 	{
