@@ -123,19 +123,25 @@ methodmap Defectio < CClotBody
 		npc.m_flRangedArmor = 0.10;
 
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
-		SetVariantString("2.0");
+		SetVariantString("2.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		if(IsValidEntity(npc.m_iWearable1))
 			SetParent(npc.index, npc.m_iWearable1);
 
-		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
+		npc.m_iWearable3 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_crowbar.mdl");
 		SetVariantString("1.15");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
-		TE_WriteNum("m_bControlPoint1", npc.index);	
-		TE_SendToAll();
+		npc.m_iWearable3 = TF2_CreateGlow_White("models/humans/group03/male_09.mdl", npc.index, 1.15);
+		if(IsValidEntity(npc.m_iWearable3))
+		{
+			SetEntProp(npc.m_iWearable3, Prop_Send, "m_bGlowEnabled", false);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_ENVIRONMENTAL);
+			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable3);
+			TE_WriteNum("m_bControlPoint1", npc.m_iWearable3);	
+			TE_SendToAll();
+		}
 
 		SetEntityRenderMode(npc.index, RENDER_GLOW);
 		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
@@ -165,7 +171,6 @@ public void Defectio_ClotThink(int iNPC)
 	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
 	float distance2 = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-	float flDistanceToTarget = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
 	if(distance2 < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
 	{
 		npc.PlayHurtSound();
@@ -176,15 +181,6 @@ public void Defectio_ClotThink(int iNPC)
 	if(distance2 > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
 	{
 		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-	}
-
-	if(flDistanceToTarget > (200.0 * 200.0))
-	{
-		SetEntityGravity(npc.m_iTarget, 0.75);
-	}
-	if(flDistanceToTarget > (215.0 * 215.0))
-	{
-		SetEntityGravity(npc.m_iTarget, 1.0);
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -232,6 +228,16 @@ public Action Defectio_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
+	float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
+	float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
+	if(flDistanceToTarget < (300.0 * 300.0))
+	{
+		damage = 0.0;
+		return Plugin_Handled;
+	}
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -250,8 +256,10 @@ public void Defectio_NPCDeath(int entity)
 	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 
 }
 

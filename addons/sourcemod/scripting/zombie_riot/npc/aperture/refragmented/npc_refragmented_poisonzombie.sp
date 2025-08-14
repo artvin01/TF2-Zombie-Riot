@@ -154,10 +154,15 @@ methodmap RefragmentedPoisonZombie < CClotBody
 		npc.m_flMeleeArmor = 0.10;
 		npc.m_flRangedArmor = 0.10;
 
-
-		TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
-		TE_WriteNum("m_bControlPoint1", npc.index);	
-		TE_SendToAll();
+		npc.m_iWearable1 = TF2_CreateGlow_White("models/zombie/poison.mdl", npc.index, 1.15);
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntProp(npc.m_iWearable1, Prop_Send, "m_bGlowEnabled", false);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_ENVIRONMENTAL);
+			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable1);
+			TE_WriteNum("m_bControlPoint1", npc.m_iWearable1);	
+			TE_SendToAll();
+		}
 
 		SetEntityRenderMode(npc.index, RENDER_GLOW);
 		SetEntityRenderColor(npc.index, 0, 0, 125, 150);
@@ -366,6 +371,4 @@ public void RefragmentedPoisonZombie_NPCDeath(int entity)
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	
-//	AcceptEntityInput(npc.index, "KillHierarchy");
 }

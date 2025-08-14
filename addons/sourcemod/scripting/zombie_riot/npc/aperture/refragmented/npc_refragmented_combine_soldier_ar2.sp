@@ -194,9 +194,15 @@ methodmap RefragmentedCombineSoldierAr2 < CClotBody
 		npc.m_flMeleeArmor = 0.10;
 		npc.m_flRangedArmor = 0.10;
 
-		TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
-		TE_WriteNum("m_bControlPoint1", npc.index);	
-		TE_SendToAll();
+		npc.m_iWearable2 = TF2_CreateGlow_White("models/combine_soldier.mdl", npc.index, 1.15);
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetEntProp(npc.m_iWearable2, Prop_Send, "m_bGlowEnabled", false);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_ENVIRONMENTAL);
+			TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable2);
+			TE_WriteNum("m_bControlPoint1", npc.m_iWearable2);	
+			TE_SendToAll();
+		}
 
 		SetEntityRenderMode(npc.index, RENDER_GLOW);
 		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
@@ -546,4 +552,6 @@ public void RefragmentedCombineSoldierAr2_NPCDeath(int entity)
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 }
