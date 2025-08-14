@@ -806,7 +806,6 @@ void Cat_Rocket_Particle_Think(int entity)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", vecVelocity);
 	
 	float speed = getLinearVelocity(vecVelocity);
-	PrintToChatAll("speed %.2f", speed);
 	if (speed > 40.0)
 	{
 		ScaleVector(vecVelocity, 0.95);
