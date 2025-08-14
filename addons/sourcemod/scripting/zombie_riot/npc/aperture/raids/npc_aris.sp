@@ -127,7 +127,7 @@ void ARIS_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SwitchWeaponSounds));   i++) { PrecacheSound(g_SwitchWeaponSounds[i]);   }
 	
 	
-	PrecacheSound("#zombiesurvival/matrix/furiousangels.mp3");
+	PrecacheSound("#zombiesurvival/aperture/aris.mp3");
 	PrecacheSound(g_RocketFiringSound);
 	PrecacheSound(g_RocketLandingSound);
 	PrecacheSound(g_RocketExplodingSound);
@@ -400,12 +400,12 @@ methodmap ARIS < CClotBody
 		RaidModeScaling *= amount_of_people;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
-		music.Time = 161;
-		music.Volume = 1.7;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/aris.mp3");
+		music.Time = 167;
+		music.Volume = 1.25;
 		music.Custom = false;
-		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
-		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
+		strcopy(music.Name, sizeof(music.Name), "I Saw a Deer Today (SilvaGunner)");
+		strcopy(music.Artist, sizeof(music.Artist), "Mike Morasky");
 		Music_SetRaidMusic(music);
 		
 		npc.m_flNextMeleeAttack = 0.0;

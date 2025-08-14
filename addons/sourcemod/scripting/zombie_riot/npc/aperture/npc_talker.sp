@@ -72,6 +72,8 @@ methodmap Talker < CClotBody
 
 		i_NpcWeight[npc.index] = 999;
 
+		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_iBleedType = 0;
@@ -84,6 +86,7 @@ methodmap Talker < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		i_TalkDelayCheck = 0;
+		npc.m_bCamo = true;
 
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 
