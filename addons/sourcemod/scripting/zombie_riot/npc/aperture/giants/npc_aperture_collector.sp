@@ -136,7 +136,7 @@ methodmap ApertureCollector < CClotBody
 		MaxAlliesDeath *= MultiGlobalEnemy;
 		npc.m_iAlliesMaxDeath = RoundToCeil(MaxAlliesDeath);
 
-		npc.m_flPercentageAngry = 0.0;
+		npc.m_flPercentageAngry = 1.0;
 		npc.m_iAlliesDied = 0;
 
 		
@@ -370,13 +370,12 @@ public void ApertureCollector_AllyDeath(int self, int ally)
 			npc.m_flPercentageAngry = float(npc.m_iAlliesDied)	/ float(npc.m_iAlliesMaxDeath);
 		}
 
-		float ModelSize = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
-		ModelSize += 1.0 + npc.m_flPercentageAngry;
+		ModelSize += 1.2 + npc.m_flPercentageAngry;
 		if(ModelSize >= 2.0)
 		{
 			ModelSize = 2.0;
 		}
-		fl_TotalArmor[npc.index] = ((2.0 / ModelSize) * 0.5) + 0.5;
+		fl_TotalArmor[npc.index] = ((2.0 / ModelSize) * 0.5);
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", ModelSize);
 	}
 }
