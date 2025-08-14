@@ -1121,14 +1121,30 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	RemoveAllBuffs(npc.index, true, false);
 	NPCStats_RemoveAllDebuffs(npc.index);
 	ApplyStatusEffect(npc.index, npc.index, "Last Stand", FAR_FUTURE);
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);
 	
 	ReviveAll(true);
 	
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
+	if (npc.m_iState == APERTURE_BOSS_CHIMERA)
+	{
+		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+		
+		if(IsValidEntity(npc.m_iWearable5))
+			RemoveEntity(npc.m_iWearable5);
+	}
+	else
+	{
+		npc.SetActivity("ACT_MP_STUN_MIDDLE");
+		npc.AddGesture("ACT_MP_STUN_BEGIN");
+		
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+	}
 	
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
+	npc.SetPlaybackRate(0.0);
 	
 	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 	b_NpcIsInvulnerable[npc.index] = true;
@@ -1137,10 +1153,6 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	npc.m_flSpeed = 0.0;
 	npc.m_bisWalking = false;
 	npc.StopPathing();
-	
-	npc.SetActivity("ACT_MP_STUN_MIDDLE");
-	npc.AddGesture("ACT_MP_STUN_BEGIN");
-	npc.SetPlaybackRate(0.0);
 	
 	RaidModeScaling = 0.0;
 	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
@@ -1181,10 +1193,7 @@ static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
 		event.SetFloat("worldPosX", vecPos[0]);
 		event.SetFloat("worldPosY", vecPos[1]);
 		event.SetFloat("worldPosZ", vecPos[2]);
-	//	event.SetInt("follow_entindex", 0);
 		event.SetFloat("lifetime", APERTURE_LAST_STAND_TIMER_TOTAL);
-	//	event.SetInt("visibilityBitfield", (1<<client));
-		//event.SetBool("show_effect", effect);
 		event.SetString("text", message);
 		event.SetString("play_sound", "vo/null.mp3");
 		event.SetInt("id", npc.index); //What to enter inside? Need a way to identify annotations by entindex!
@@ -1269,6 +1278,23 @@ public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
 	}
 	
 	StopSound(npc.index, SNDCHAN_AUTO, g_ApertureSharedStunMainSound);
+	
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }
 
 static void Aperture_GetDyingBoss(CClotBody npc, char[] buffer, int size)

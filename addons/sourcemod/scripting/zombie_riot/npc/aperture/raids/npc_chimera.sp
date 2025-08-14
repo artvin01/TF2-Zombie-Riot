@@ -635,7 +635,18 @@ static void CHIMERA_SelfDefense(CHIMERA npc, float gameTime, int target, float d
 public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	CHIMERA npc = view_as<CHIMERA>(victim);
+	
+	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	{
+		npc.m_iState = APERTURE_BOSS_CHIMERA; // This will store the boss's "type"
+		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
+		damage = 0.0;
+		
+		CHIMERA_CleanUp(npc.index, false);
+		return Plugin_Handled;
+	}
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -700,8 +711,15 @@ public void CHIMERA_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
+	
+	CHIMERA_CleanUp(npc.index, true);
+}
+
+void CHIMERA_CleanUp(int iNPC, bool death)
+{
+	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	npc.StopPassiveSound();
-	npc.StopStunSound(true);
+	npc.StopStunSound(death);
 	if(FogEntity != INVALID_ENT_REFERENCE)
 	{
 		int entity1 = EntRefToEntIndex(FogEntity);
@@ -710,8 +728,8 @@ public void CHIMERA_NPCDeath(int entity)
 		
 		FogEntity = INVALID_ENT_REFERENCE;
 	}
-
 }
+
 bool CHIMERA_timeBased(int iNPC)
 {
 
