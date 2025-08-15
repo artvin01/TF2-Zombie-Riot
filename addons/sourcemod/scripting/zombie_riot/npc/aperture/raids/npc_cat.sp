@@ -780,7 +780,6 @@ static void OrbSpam_Ability_Fire(CAT npc)
 
 bool CAT_timeBased(int iNPC)
 {
-
 	CAT npc = view_as<CAT>(iNPC);
 	if(npc.m_flLifeReversal)
 	{
@@ -797,6 +796,7 @@ bool CAT_timeBased(int iNPC)
 		}
 		return true;
 	}
+	return false;
 }
 
 static void Cat_Rocket_Particle_Touch(int entity, int target)

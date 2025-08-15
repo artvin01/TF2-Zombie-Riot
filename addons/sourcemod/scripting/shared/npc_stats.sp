@@ -3920,7 +3920,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
-					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
+					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 				}
 			}
 		}

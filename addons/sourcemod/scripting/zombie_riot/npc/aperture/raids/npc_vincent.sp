@@ -40,6 +40,13 @@ static const char g_VincentSlamSound[][] =
 {
 	"weapons/crossbow/bolt_fly4.wav",
 };
+static const char g_VincentJumpSound[][] =
+{
+	"npc/env_headcrabcanister/launch.wav",
+};
+static const char g_PassiveSound[][] = {
+	"mvm/giant_heavy/giant_heavy_loop.wav",
+};
 static const char g_PrepareSlamThrow[][] =
 {
 	"vo/mvm/mght/heavy_mvm_m_incoming01.mp3",
@@ -76,9 +83,11 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
 	PrecacheSoundArray(g_VincentMeleeCharge_Hit);
 	PrecacheSoundArray(g_PrepareSlamThrow);
 	PrecacheSoundArray(g_VincentSlamSound);
+	PrecacheSoundArray(g_VincentJumpSound);
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_entrance.wav");
 	
@@ -152,6 +161,11 @@ methodmap Vincent < CClotBody
 		EmitSoundToAll(g_VincentSlamSound[GetRandomInt(0, sizeof(g_VincentSlamSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 		EmitSoundToAll(g_VincentSlamSound[GetRandomInt(0, sizeof(g_VincentSlamSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
+	public void PlayVincentJumpSound()
+	{
+		int pitch = GetRandomInt(70,80);
+		EmitSoundToAll(g_VincentJumpSound[GetRandomInt(0, sizeof(g_VincentJumpSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+	}
 
 	property float m_flNextOilPouring
 	{
@@ -184,6 +198,15 @@ methodmap Vincent < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	public void PlayPassiveSound()
+	{
+		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void StopPassiveSound()
+	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 	}
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -253,23 +276,42 @@ methodmap Vincent < CClotBody
 			
 		RaidModeScaling *= amount_of_people;
 		
+		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+
+		npc.PlayPassiveSound();
 		npc.Anger = false;
 		if(StrContains(data, "forceangry") != -1)
 		{
 			npc.Anger = true;
 			//force angry
 		}
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.Anger = true;
+		}
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT)  || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
+		{
+			npc.m_flRangedArmor *= 0.9;
+			npc.m_flMeleeArmor *= 0.9;	
+			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
+		}
+		VincentSpawnBeacons(npc.index);
+
 		npc.m_flMeleeArmor = 1.25;	
 		npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
+		npc.m_flSpeed = 320.0;
 		if(npc.Anger)
 		{
+			npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl", _, skin);
+			RaidModeScaling *= 1.1;
 			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
 			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
 			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}I'LL GIVE YOU ONE.", c_NpcName[npc.index]);
 			CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
-			npc.m_flRangedArmor *= 0.9;
-			npc.m_flMeleeArmor *= 0.9;	
+			npc.m_flRangedArmor *= 0.95;
+			npc.m_flMeleeArmor *= 0.95;	
 			npc.m_flOverrideMusicNow = 0.0;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
@@ -304,12 +346,9 @@ methodmap Vincent < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
-		npc.m_flSpeed = 300.0;
 		
 		npc.m_flNextOilPouring = GetGameTime(npc.index) + 3.0;
 		
-		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -326,8 +365,6 @@ methodmap Vincent < CClotBody
 			TE_SendToAll();
 		}
 
-		if(npc.Anger)
-			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl", _, skin);
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -493,7 +530,7 @@ public void Vincent_ClotThink(int iNPC)
 		}
 	}
 	
-	if (npc.m_flNextOilPouring < gameTime)
+	if (npc.m_flNextOilPouring < gameTime && npc.m_flDoingAnimation < gameTime)
 	{
 		npc.m_flSpeed = 0.0;
 		npc.m_bisWalking = false;
@@ -635,9 +672,18 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 				npc.m_iTarget = Enemy_I_See;
 
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
 				npc.m_flAttackHappens = gameTime + 0.2;
+				npc.m_flDoingAnimation = gameTime + 0.2;
 				float attack = 1.0;
+				if(npc.Anger)
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", .SetGestureSpeed = (1.0 / 0.75));
+					attack *= 0.75;
+				}
+				else
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				}
 				npc.m_flNextMeleeAttack = gameTime + attack;
 				return;
 			}
@@ -659,7 +705,9 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	}
 	*/
 	if (!npc.m_bLostHalfHealth && (ReturnEntityMaxHealth(npc.index) / 2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	{
 		npc.m_bLostHalfHealth = true;
+	}
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -687,6 +735,11 @@ public void Vincent_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	npc.StopPassiveSound();
 
 }
 
@@ -931,7 +984,7 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 }
 
 #define VINCENT_PREPARESLAM_TIME 1.5
-#define VINCENT_THROW_AOE_RANGE 300.0
+#define VINCENT_THROW_AOE_RANGE 200.0
 bool Vincent_SlamThrow(int iNPC, int target)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
@@ -975,7 +1028,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 					npc.SetPoseParameter_Easy("body_pitch", 0.0);
 					npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
-					int AnimLayer = npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+					npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
 					npc.m_flSpeed = 0.0;
 					npc.StopPathing();
 					static float flPos_1[3]; 
@@ -983,8 +1036,10 @@ bool Vincent_SlamThrow(int iNPC, int target)
 					flPos_1[2] += 400.0;
 					npc.SetVelocity({0.0,0.0,0.0});
 					PluginBot_Jump(npc.index, flPos_1);
+					npc.PlayVincentJumpSound();
 
 					npc.m_flThrow_Happening = GetGameTime(npc.index) + 1.25;
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.25;
 					i_GrabbedThis[npc.index] = EntIndexToEntRef(npc.m_iTargetWalkTo);
 					GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", ThrowPos); //emergency save pos
 					return true;
@@ -1043,6 +1098,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				npc.m_iWearable4 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 5.0, 0.0, LASERBEAM);
 
 				npc.m_flThrow_Happening = GetGameTime(npc.index) + 2.5;
+				npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
 				return true;
 			}
 			if(npc.m_iChanged_WalkCycle == 5 && IsValidEntity(i_GrabbedThis[npc.index]))
@@ -1099,6 +1155,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				RemoveEntity(npc.m_iWearable4);
 			//end ability?
 			npc.m_flThrow_Happening = 0.0;
+			npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.3;
 			npc.m_flRegainNormalWalk = GetGameTime(npc.index) + 0.3;
 			npc.m_iTargetWalkTo = 0;
 		}
@@ -1116,18 +1173,30 @@ bool Vincent_SlamThrow(int iNPC, int target)
 		npc.PlayPrepareSlamSound();
 		npc.AddActivityViaSequence("layer_taunt_commending_clap_heavy");
 		npc.m_flSpeed = 0.0;
+		float Timeslam = VINCENT_PREPARESLAM_TIME;
 		npc.SetCycle(0.75);
-		npc.SetPlaybackRate(0.4);
+		if(!npc.Anger)
+		{
+			npc.SetPlaybackRate(0.4);
+			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 40.0;
+		}
+		else
+		{
+			npc.SetPlaybackRate(0.4 * (1.0 / 0.75));
+			Timeslam *= 0.75;
+			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 35.0;
+		}
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);
+			
 		npc.m_iWearable4 = ConnectWithBeam(npc.index, target, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "effect_hand_l");
-		npc.m_flThrow_Happening = GetGameTime(npc.index) + VINCENT_PREPARESLAM_TIME;
-		npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 40.0;
+		npc.m_flThrow_Happening = GetGameTime(npc.index) + Timeslam;
+		npc.m_flDoingAnimation = GetGameTime(npc.index) + Timeslam;
 		static float radius = 200.0;
 		float vecPos[3];
 		GetAbsOrigin(npc.index, vecPos);
-		spawnRing_Vectors(vecPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 255, 3, VINCENT_PREPARESLAM_TIME, 10.0, 2.0, 1, 0.0);
-		spawnRing_Vectors(vecPos, radius, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 255, 3, VINCENT_PREPARESLAM_TIME, 10.0, 2.0, 1, 0.0);
+		spawnRing_Vectors(vecPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 255, 3, Timeslam, 10.0, 2.0, 1, 0.0);
+		spawnRing_Vectors(vecPos, radius, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 255, 3, Timeslam, 10.0, 2.0, 1, 0.0);
 	}	
 	return false;
 }
@@ -1144,9 +1213,115 @@ void Vincent_AdjustGrabbedTarget(int iNPC)
 		return;
 	int EnemyGrab = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	float flPos[3]; // original
-	float flAng[3]; // original
+	float flAng[3]; // original#
+	
 
-	npc.GetAttachment("head", flPos, flAng);
+	npc.GetAttachment("effect_hand_r", flPos, flAng);
+
+	flPos[2] -= 30.0;
 	
 	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
+}
+
+#define VINCENT_MINIMUM_RANGE_BEACONS 900.0
+#define VINCENT_MAXTRIES 100
+void VincentSpawnBeacons(int iNPC)
+{
+	Vincent npc = view_as<Vincent>(iNPC);
+	int a, entity;
+	//slay previous bacons
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(entity) && i_NpcInternalId[entity] == VincentBeaconID())
+		{
+			b_DissapearOnDeath[entity] = true;
+			b_DoGibThisNpc[entity] = true;
+			SmiteNpcToDeath(entity);
+		}
+	}
+	int MaxBeacons = 0;
+	float distancelimit = VINCENT_MINIMUM_RANGE_BEACONS;
+	if(npc.Anger)
+	{
+		distancelimit *= 0.75;
+	}
+	float pos[3];
+	float ang[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", pos);
+	int HadCapTry = 2000;
+	int NpcSpawn = 0;
+	for(int counter = 1; counter <= HadCapTry; counter++)
+	{
+		if(MaxBeacons >= VINCENT_MAXTRIES)
+		{
+			if(NpcSpawn != 0)
+				SmiteNpcToDeath(NpcSpawn);
+			break;
+		}
+		if(counter >= HadCapTry)
+		{
+			if(NpcSpawn != 0)
+				SmiteNpcToDeath(NpcSpawn);
+			break;
+		}
+		
+		float VectorSave[3];
+		VectorSave[1] = 1.0;
+		if(NpcSpawn == 0)
+			NpcSpawn = NPC_CreateByName("npc_vincent_beacon", -1, pos, ang, GetTeam(iNPC));
+		TeleportDiversioToRandLocation(NpcSpawn, true, 10000.0, 1.0,_,_,VectorSave);
+		//lazy code but i dont wanna.
+		int gottenTarget = Vincent_GetClosestBeacon(NpcSpawn, VectorSave, distancelimit * distancelimit);
+		if(IsValidEntity(gottenTarget))
+		{
+			continue;
+		}
+		TeleportEntity(NpcSpawn, VectorSave);
+		MaxBeacons++;
+		Vincent npcBeacon = view_as<Vincent>(NpcSpawn);
+		npcBeacon.Anger = npc.Anger;
+		npcBeacon.m_iWearable1 = npcBeacon.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,1,_,-65.0, true);
+		SetVariantString("2.0");
+		AcceptEntityInput(npcBeacon.m_iWearable1, "SetModelScale");
+		NpcSpawn = 0;
+	}
+}
+
+
+stock int Vincent_GetClosestBeacon(int entity, float EntityLocation[3], float limitsquared = 99999999.9)
+{
+	float TargetDistance = 0.0; 
+	int ClosestTarget = 0; 
+	int a, entityloop;
+	//slay previous bacons
+	while((entityloop = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(entityloop) && i_NpcInternalId[entityloop] == VincentBeaconID())
+		{
+			if(entityloop != entity && GetTeam(entity) == GetTeam(entityloop) && IsEntityAlive(entityloop, true))
+			{
+				float TargetLocation[3]; 
+				GetEntPropVector( entityloop, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+				
+				float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+				if( distance < limitsquared )
+				{
+					if( TargetDistance ) 
+					{
+						if( distance < TargetDistance ) 
+						{
+							ClosestTarget = entityloop; 
+							TargetDistance = distance;		  
+						}
+					} 
+					else 
+					{
+						ClosestTarget = entityloop; 
+						TargetDistance = distance;
+					}			
+				}
+			}
+		}
+	}
+	return ClosestTarget; 
 }
