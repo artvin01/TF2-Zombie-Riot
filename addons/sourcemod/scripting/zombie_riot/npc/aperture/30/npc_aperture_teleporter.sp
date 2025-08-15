@@ -91,6 +91,13 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 {
 	float gameTime = GetGameTime(npc.index);
 	
+	if(npc.m_flNextDelayTime > gameTime)
+	{
+		return;
+	}
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+	
 	switch (npc.m_iState)
 	{
 		case 0:
