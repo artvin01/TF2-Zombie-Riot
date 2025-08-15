@@ -112,7 +112,6 @@ methodmap ApertureDevastator < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 260.0;
 		npc.m_iAttacksTillReload = 2;
-		npc.m_flAbilityOrAttack0 = 0.0;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -162,8 +161,6 @@ public void ApertureDevastator_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
-	float gameTime = GetGameTime(npc.index);
-	float damage = 30.0, speed = 600.0;
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
 	
@@ -257,7 +254,6 @@ void ApertureDevastatorSelfDefense(ApertureDevastator npc, float gameTime, int t
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					npc.m_flAbilityOrAttack0 = 1.0;
 					float damage = 30.0, speed = 600.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 2.0;

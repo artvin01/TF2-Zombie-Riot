@@ -139,7 +139,7 @@ methodmap ApertureJumperV2 < CClotBody
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
 
-		SetVariantInt(3);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
