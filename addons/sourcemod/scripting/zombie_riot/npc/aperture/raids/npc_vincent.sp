@@ -54,6 +54,8 @@ void Vincent_OnMapStart_NPC()
 	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
 	PrecacheModel(g_OilModel);
 	
+	PrecacheParticleSystem("gas_can_impact_blue");
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vincent");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vincent");
@@ -127,8 +129,7 @@ methodmap Vincent < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_LOSERSTATE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.SetActivity("ACT_MP_RUN_MELEE");
 
 		func_NPCDeath[npc.index] = Vincent_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Vincent_OnTakeDamage;
@@ -228,19 +229,31 @@ methodmap Vincent < CClotBody
 		this.m_bDoingOilPouring = true;
 		this.m_flNextOilPouring = GetGameTime(this.index) + delayToIgnite + 0.5;
 		
-		float vecPos[3], vecTargetPos[3], vecAng[3], vecNormal[3], vecForward[3];
+		float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecUseless[3];
 		GetAbsOrigin(this.index, vecPos);
 		
 		float radius = VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE * 1.5;
 		
-		this.PourOil(vecPos, radius, duration, delayToIgnite, true);
+		this.PourOil(vecPos, radius, duration, delayToIgnite);
 		
-		vecPos[2] += 3.0;
+		vecPos[2] += 80.0;
 		
-		float ringRadius = radius * 2.0;
-		spawnRing_Vectors(vecPos, ringRadius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, duration + delayToIgnite, 1.0, 0.1, 1);
+		ParticleEffectAt(vecPos, "gas_can_impact_blue");
+		/*
+		this.GetAttachment("effect_hand_L", vecLeft, vecUseless);
+		this.GetAttachment("effect_hand_R", vecRight, vecUseless);
+		*/
+		int rocketL = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
+		int rocketR = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
 		
-		vecPos[2] += 77.0;
+		SetParent(this.index, rocketL, "effect_hand_L");
+		SetParent(this.index, rocketR, "effect_hand_R");
+		
+		SetEntityCollisionGroup(rocketL, COLLISION_GROUP_DEBRIS);
+		SetEntityCollisionGroup(rocketR, COLLISION_GROUP_DEBRIS);
+		
+		CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
 		
 		for (int i = 0; i < 8; i++)
 		{
@@ -261,11 +274,11 @@ methodmap Vincent < CClotBody
 			delete trace;
 			
 			vecTargetPos[2] -= 16.0;
-			this.PourOil(vecTargetPos, radius, duration, delayToIgnite, false);
+			this.PourOil(vecTargetPos, radius, duration, delayToIgnite);
 		}
 	}
 	
-	public void PourOil(float vecPos[3], float radius, float duration, float delayToIgnite, bool think)
+	public void PourOil(float vecPos[3], float radius, float duration, float delayToIgnite)
 	{
 		int prop = CreateEntityByName("prop_dynamic_override");
 		if (!IsValidEntity(prop))
@@ -285,13 +298,13 @@ methodmap Vincent < CClotBody
 		SetTeam(prop, GetTeam(this.index));
 		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", VINCENT_OIL_MODEL_SCALE);
 		
-		SetEntityCollisionGroup(prop, TFCOLLISION_GROUP_ROCKETS);
-		SetEntityRenderColor(prop, 0, 0, 0, 255);
+		SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS);
+		SetEntityRenderColor(prop, 0, 40, 0, 255);
 		
 		DataPack pack;
 		CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(prop));
-		pack.WriteCell(this.index);
+		pack.WriteCell(EntIndexToEntRef(this.index));
 		pack.WriteFloat(radius);
 		
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -329,6 +342,10 @@ public void Vincent_ClotThink(int iNPC)
 	{
 		if (npc.m_flNextOilPouring < gameTime)
 		{
+			npc.m_flSpeed = 300.0;
+			npc.m_bisWalking = true;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			npc.SetPlaybackRate(1.0);
 			npc.m_bDoingOilPouring = false;
 			npc.m_flNextOilPouring = gameTime + 15.0;
 			npc.StartPathing();
@@ -341,6 +358,11 @@ public void Vincent_ClotThink(int iNPC)
 	
 	if (npc.m_flNextOilPouring < gameTime)
 	{
+		npc.m_flSpeed = 0.0;
+		npc.m_bisWalking = false;
+		npc.AddActivityViaSequence("taunt_soviet_strongarm_end");
+		npc.SetCycle(0.05);
+		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
 		npc.PourOilAbility(30.0, 2.0);
 	}
@@ -545,20 +567,25 @@ static bool TraceEntityFilter_Vincent_OnlyWorld(int entity, int mask)
 static void Timer_Vincent_IgniteOil(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int ref = pack.ReadCell();
-	int entity = EntRefToEntIndex(ref);
+	int refEnt = pack.ReadCell();
+	int entity = EntRefToEntIndex(refEnt);
 	if (entity == INVALID_ENT_REFERENCE)
 		return;
 	
-	int owner = pack.ReadCell();
+	int refOwner = pack.ReadCell();
 	float radius = pack.ReadFloat();
 	
 	if (radius > 0.0)
 	{
+		float vecPos[3];
+		GetAbsOrigin(entity, vecPos);
+		
+		spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
+		
 		DataPack pack2;
 		CreateDataTimer(0.3, Timer_Vincent_OilBurning, pack2, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-		pack2.WriteCell(ref);
-		pack2.WriteCell(owner);
+		pack2.WriteCell(refEnt);
+		pack2.WriteCell(refOwner);
 		pack2.WriteFloat(radius);
 	}
 	
@@ -569,12 +596,19 @@ static void Timer_Vincent_IgniteOil(Handle timer, DataPack pack)
 static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 {
 	pack.Reset();
-	int ref = pack.ReadCell();
-	int entity = EntRefToEntIndex(ref);
+	int refEnt = pack.ReadCell();
+	int entity = EntRefToEntIndex(refEnt);
 	if (entity == INVALID_ENT_REFERENCE)
 		return Plugin_Stop;
 	
-	int owner = pack.ReadCell();
+	int refOwner = pack.ReadCell();
+	int owner = EntRefToEntIndex(refOwner);
+	if (owner == INVALID_ENT_REFERENCE)
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+	
 	float radius = pack.ReadFloat();
 	
 	float vecPos[3];
@@ -582,12 +616,30 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	
 	DataPack pack2 = new DataPack();
 	pack2.WriteCell(entity);
-	pack2.WriteCell(owner); // TODO: RADIUS IS SLIGHTLY BIGGER THAN INTENDED / STREAMLINE RADIUS USAGE
-	TR_EnumerateEntitiesSphere(vecPos, radius / 2.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil, pack2);
+	pack2.WriteCell(owner);
+	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil, pack2);
 	
 	delete pack2;
-	//CBaseCombatCharacter(entity).SetNextThink(GetGameTime() + 0.1);
 	
+	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
+	
+	return Plugin_Continue;
+}
+
+static Action Timer_Vincent_LaunchFireDownwards(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (entity == INVALID_ENT_REFERENCE)
+		return Plugin_Continue;
+	
+	float vecVel[3];
+	vecVel[2] = -50.0;
+	
+	// FIXME: This doesn't work! It's supposed to launch the fire downwards (duh), but it aint doin dat
+	AcceptEntityInput(entity, "ClearParent");
+	SetEntityMoveType(entity, MOVETYPE_FLY);
+	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVel);
+	CreateTimer(0.25, Timer_RemoveEntity, ref, TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Continue;
 }
 
@@ -605,7 +657,7 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	pack.Reset();
 	int self = pack.ReadCell();
 	int owner = pack.ReadCell();
-	// TODO: USE OWNER REF
+	
 	if (!IsValidEntity(owner))
 		return true;
 	
@@ -622,42 +674,10 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	GetAbsOrigin(entity, vecTargetPos);
 	
 	float difference = fabs(vecPos[2] - vecTargetPos[2]);
-	if (difference > 150.0)
+	if (difference > 90.0)
 		return true;
 	
 	SDKHooks_TakeDamage(entity, owner, owner, 3.0, DMG_PLASMA, -1);
 	//NPC_Ignite(entity, owner, 7.0, -1);
 	return true;
 }
-/*
-int CreateBonemerge(int iClient)
-{
-	int iProp = CreateEntityByName("tf_taunt_prop");
-	
-	int iTeam = GetTeam(iClient);
-	SetEntProp(iProp, Prop_Data, "m_iInitialTeamNum", iTeam);
-	SetEntProp(iProp, Prop_Send, "m_iTeamNum", iTeam);
-	
-	char sModel[PLATFORM_MAX_PATH];
-	sModel = "models/bots/heavy/bot_heavy.mdl";
-	GetEntPropString(iClient, Prop_Data, "m_ModelName", sModel, sizeof(sModel));
-	SetEntityModel(iProp, sModel);
-	
-	// The entity has to be teleported to the client because, if it isn't,
-	// the particle effect will fail to stop sometimes
-	float vecClientOrigin[3];
-	GetAbsOrigin(iClient, vecClientOrigin);
-	TeleportEntity(iProp, vecClientOrigin);
-	
-	DispatchSpawn(iProp);
-	SetEntPropEnt(iProp, Prop_Data, "m_hEffectEntity", iClient);
-	SetEntPropEnt(iProp, Prop_Send, "m_hOwnerEntity", iClient);
-	SetEntProp(iProp, Prop_Send, "m_fEffects", GetEntProp(iProp, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NORECEIVESHADOW);
-	
-	SetVariantString("!activator");
-	AcceptEntityInput(iProp, "SetParent", iClient);
-	
-	//SetEntityRenderMode(iProp, RENDER_NONE);
-	
-	return iProp;
-}*/
