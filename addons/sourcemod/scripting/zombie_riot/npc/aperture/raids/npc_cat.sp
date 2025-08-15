@@ -832,7 +832,7 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	
-	float damage = 10.0 * RaidModeScaling;
+	float damage = 40.0 * RaidModeScaling;
 	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 60.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
 	NextOrbDamage[entity] = gameTime + 0.25;
 }

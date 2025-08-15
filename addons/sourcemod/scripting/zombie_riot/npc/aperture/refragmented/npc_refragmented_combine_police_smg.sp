@@ -273,7 +273,7 @@ public void RefragmentedCombinePoliceSmg_ClotThink(int iNPC)
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[PrimaryThreatIndex])
 	{
 		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, PrimaryThreatIndex, PrimaryThreatIndex, 10.0, DMG_TRUEDAMAGE, -1, _, vecMe, true);
+		SDKHooks_TakeDamage(npc.index, PrimaryThreatIndex, PrimaryThreatIndex, 10.0, DMG_TRUEDAMAGE, -1, _, vecMe);
 		//Explode_Logic_Custom(10.0, npc.index, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
 		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
 	}

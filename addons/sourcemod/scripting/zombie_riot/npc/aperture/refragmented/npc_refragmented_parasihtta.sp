@@ -173,7 +173,7 @@ public void Parasihtta_ClotThink(int iNPC)
 	if(distance2 < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[npc.m_iTarget])
 	{
 		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, npc.m_iTarget, npc.m_iTarget, 50.0, DMG_TRUEDAMAGE, -1, _, vecMe, true);
+		SDKHooks_TakeDamage(npc.index, npc.m_iTarget, npc.m_iTarget, 50.0, DMG_TRUEDAMAGE, -1, _, vecMe);
 		//Explode_Logic_Custom(10.0, npc.index, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
 		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
 	}
@@ -224,7 +224,7 @@ public void Parasihtta_ClotThink(int iNPC)
 						if (i_IsABuilding[target])
 						{
 							//use void a subtirute, it just reduces repair HP alot.
-							Elemental_AddVoidDamage(target, npc.index, 1000, false, false);
+							Elemental_AddVoidDamage(target, npc.index, 2000, false, false);
 						}
 						
 						if (!i_IsABuilding[target] && !b_ThisWasAnNpc[target])
