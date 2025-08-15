@@ -390,7 +390,6 @@ methodmap CHIMERA < CClotBody
 		npc.m_iNpcStepVariation = -1;
 		
 		npc.m_flSpeed = 330.0;
-		npc.m_flMeleeArmor = 1.0;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);

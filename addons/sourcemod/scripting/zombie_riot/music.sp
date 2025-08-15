@@ -816,7 +816,7 @@ void Music_Update(int client)
 	//	PlaySetupMusicCustom(client);
 		return;
 	}
-	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode())) && !CvarNoRoundStart.BoolValue)
+	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode())) && !CvarNoRoundStart && !CvarInfiniteCash.BoolValue)
 	{
 		if(!b_DisableSetupMusic[client])
 		{
