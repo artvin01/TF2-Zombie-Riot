@@ -343,7 +343,7 @@ methodmap Vincent < CClotBody
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
 			music.Time = 112;
-			music.Volume = 0.9;
+			music.Volume = 1.0;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
 			strcopy(music.Artist, sizeof(music.Artist), "Exedious");
