@@ -36,6 +36,16 @@ static const char g_VincentMeleeCharge_Hit[][] =
 {
 	"misc/halloween/spell_mirv_explode_secondary.wav",
 };
+static const char g_VincentSlamSound[][] =
+{
+	"weapons/crossbow/bolt_fly4.wav",
+};
+static const char g_PrepareSlamThrow[][] =
+{
+	"vo/mvm/mght/heavy_mvm_m_incoming01.mp3",
+	"vo/mvm/mght/heavy_mvm_m_incoming02.mp3",
+	"vo/mvm/mght/heavy_mvm_m_incoming03.mp3",
+};
 
 static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
 
@@ -67,6 +77,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheSoundArray(g_VincentMeleeCharge_Hit);
+	PrecacheSoundArray(g_PrepareSlamThrow);
+	PrecacheSoundArray(g_VincentSlamSound);
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_entrance.wav");
 	
@@ -111,7 +123,13 @@ methodmap Vincent < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
 	}
-	
+	public void PlayPrepareSlamSound() 
+	{
+		int Sound = GetRandomInt(0, sizeof(g_PrepareSlamThrow) - 1);
+		EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
+		EmitSoundToAll(g_PrepareSlamThrow[Sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_PrepareSlamThrow[Sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME);
+	}
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
@@ -127,6 +145,12 @@ methodmap Vincent < CClotBody
 		int pitch = GetRandomInt(70,80);
 		EmitSoundToAll(g_VincentMeleeCharge_Hit[GetRandomInt(0, sizeof(g_VincentMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 		EmitSoundToAll(g_VincentMeleeCharge_Hit[GetRandomInt(0, sizeof(g_VincentMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+	}
+	public void PlayVincentSlamSound()
+	{
+		int pitch = GetRandomInt(70,80);
+		EmitSoundToAll(g_VincentSlamSound[GetRandomInt(0, sizeof(g_VincentSlamSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+		EmitSoundToAll(g_VincentSlamSound[GetRandomInt(0, sizeof(g_VincentSlamSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
 
 	property float m_flNextOilPouring
@@ -156,6 +180,11 @@ methodmap Vincent < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
+	property float m_flRegainNormalWalk
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Vincent npc = view_as<Vincent>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl" /*"models/bots/heavy/bot_heavy.mdl"*/, "1.35", "700", ally, false, true, true, true));
@@ -401,6 +430,7 @@ public void Vincent_ClotThink(int iNPC)
 	Vincent npc = view_as<Vincent>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	
+	Vincent_AdjustGrabbedTarget(iNPC);
 	if(Vincent_LoseConditions(iNPC))
 		return;
 
@@ -422,18 +452,40 @@ public void Vincent_ClotThink(int iNPC)
 		return;
 		
 	npc.m_flNextThinkTime = gameTime + 0.1;
-	
+
+	if (npc.m_flRegainNormalWalk)
+	{
+		if (npc.m_flRegainNormalWalk < gameTime)
+		{
+			npc.m_flRegainNormalWalk = 0.0;
+			if(npc.m_iChanged_WalkCycle != 1)
+			{
+				npc.m_iChanged_WalkCycle = 1;
+				npc.m_bisWalking = true;
+				npc.StartPathing();
+				npc.m_flSpeed = 300.0;
+				npc.SetActivity("ACT_MP_RUN_MELEE");
+				npc.SetPoseParameter_Easy("body_pitch", 0.0);
+				npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
+				if(HasSpecificBuff(npc.index, "Intangible"))
+				{
+					RemoveSpecificBuff(npc.index, "Intangible");
+					f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
+					b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
+
+				}
+			}
+				
+		}
+	}
 	if (npc.m_bDoingOilPouring)
 	{
 		if (npc.m_flNextOilPouring < gameTime)
 		{
-			npc.m_flSpeed = 300.0;
-			npc.m_bisWalking = true;
-			npc.SetActivity("ACT_MP_RUN_MELEE");
-			npc.SetPlaybackRate(1.0);
 			npc.m_bDoingOilPouring = false;
 			npc.m_flNextOilPouring = gameTime + 15.0;
-			npc.StartPathing();
+			npc.m_flRegainNormalWalk = 1.0;
+			return;
 		}
 		else
 		{
@@ -445,6 +497,7 @@ public void Vincent_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 0.0;
 		npc.m_bisWalking = false;
+		npc.m_iChanged_WalkCycle = 3;
 		npc.AddActivityViaSequence("taunt_soviet_strongarm_end");
 		npc.SetCycle(0.05);
 		npc.SetPlaybackRate(0.5);
@@ -466,19 +519,27 @@ public void Vincent_ClotThink(int iNPC)
 		WorldSpaceCenter(target, vecTargetPos);
 		
 		float distance = GetVectorDistance(vecPos, vecTargetPos, true);
-	
-		// Predict their pos when not loading our gun
-		if (distance < npc.GetLeadRadius())
+		
+		//we have a target we wanna walk to, override normal walking, but keep old distance checks.
+		int WalkTo = target;
+		if(IsValidEntity(npc.m_iTargetWalkTo))
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, target, _, _, vPredictedPos);
+			WalkTo = npc.m_iTargetWalkTo;
+		}
+		WorldSpaceCenter(WalkTo, vecTargetPos);
+		float distanceWalk = GetVectorDistance(vecPos, vecTargetPos, true);
+		// Predict their pos when not loading our gun
+		if (distanceWalk < npc.GetLeadRadius())
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, WalkTo, _, _, vPredictedPos);
 			npc.SetGoalVector(vPredictedPos);
 		}
 		else
 		{
-			npc.SetGoalEntity(target);
+			npc.SetGoalEntity(WalkTo);
 		}
 		
-		if(Vincent_SlamThrow(iNPC))
+		if(Vincent_SlamThrow(iNPC, target))
 			return;
 		Vincent_SelfDefense(npc, gameTime, target, distance);
 	}
@@ -641,7 +702,7 @@ static bool Vincent_LoseConditions(int iNPC)
 			npc.m_flOverrideMusicNow = 0.0;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_loop.mp3");
-			music.Time = 76;
+			music.Time = 77;
 			music.Volume = 1.2;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "System Corruption");
@@ -869,19 +930,223 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 	}
 }
 
-
-bool Vincent_SlamThrow(int iNPC)
+#define VINCENT_PREPARESLAM_TIME 1.5
+#define VINCENT_THROW_AOE_RANGE 300.0
+bool Vincent_SlamThrow(int iNPC, int target)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
+	static float ThrowPos[3]; 
+	if(npc.m_iChanged_WalkCycle == 4)
+	{
+		float damage = 10.0;
+		damage *= RaidModeScaling;
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ damage, true);
+	}
 	if(npc.m_flThrow_Happening)
 	{
+		if(!IsValidEnemy(iNPC, npc.m_iTargetWalkTo))
+		{
+			npc.m_iTargetWalkTo = target;
+			if(IsValidEntity(npc.m_iWearable4))
+				RemoveEntity(npc.m_iWearable4);
+			if(npc.m_iChanged_WalkCycle != 4)
+				npc.m_iWearable4 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "effect_hand_l");
+			else
+				npc.m_iWearable4 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 5.0, 0.0, LASERBEAM);
+		}
+		float vecPos[3], vecTargetPos[3];
+		WorldSpaceCenter(iNPC, vecPos);
+		WorldSpaceCenter(npc.m_iTargetWalkTo, vecTargetPos);
+		float distance = GetVectorDistance(vecPos, vecTargetPos, true);
+		
+		if (distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		{
+			//relatively close!
+			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo))
+			{
+				//grabbed!
+				if(npc.m_iChanged_WalkCycle == 4 && npc.m_iChanged_WalkCycle != 5)
+				{
+					ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+					b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
+					f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+
+					npc.m_iChanged_WalkCycle = 5;
+					npc.SetPoseParameter_Easy("body_pitch", 0.0);
+					npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
+					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+					int AnimLayer = npc.AddGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+					static float flPos_1[3]; 
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos_1);
+					flPos_1[2] += 400.0;
+					npc.SetVelocity({0.0,0.0,0.0});
+					PluginBot_Jump(npc.index, flPos_1);
+
+					npc.m_flThrow_Happening = GetGameTime(npc.index) + 1.25;
+					i_GrabbedThis[npc.index] = EntIndexToEntRef(npc.m_iTargetWalkTo);
+					GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", ThrowPos); //emergency save pos
+					return true;
+				}
+			}
+		}
+		if(npc.m_iChanged_WalkCycle == 5)
+		{
+			int closestTarget = GetClosestTarget(npc.index, .ingore_client = EntRefToEntIndex(i_GrabbedThis[npc.index]), .CanSee = true, .UseVectorDistance = true);
+			if(IsValidEntity(closestTarget))
+			{
+				static float enemypos[3]; 
+				GetEntPropVector(closestTarget, Prop_Data, "m_vecAbsOrigin", enemypos);
+
+				enemypos[2] += 45.0;
+				ThrowPos = enemypos;
+				if(npc.m_flThrow_Happening > GetGameTime(npc.index) + 0.5)
+				{
+					ThrowPos = enemypos;
+				}
+				npc.FaceTowards(ThrowPos, 15000.0);
+				static float selfpos[3]; 
+				float flAng[3]; // original
+			
+				int r = 200;
+				int g = 200;
+				int b = 255;
+				float diameter = 25.0;
+				
+				int colorLayer4[4];
+				SetColorRGBA(colorLayer4, r, g, b, 200);
+				int colorLayer2[4];
+				SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, 200);
+
+				npc.GetAttachment("effect_hand_r", selfpos, flAng);
+				TE_SetupBeamPoints(selfpos, ThrowPos, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+				TE_SendToAll(0.0);
+				spawnRing_Vectors(ThrowPos, VINCENT_THROW_AOE_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 50, 200, 1, /*duration*/ 0.15, 5.0, 0.0, 1);	
+			}
+		}
+		if(npc.m_flThrow_Happening < GetGameTime(npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 4 && npc.m_iChanged_WalkCycle != 5)
+			{
+				npc.m_iChanged_WalkCycle = 4;
+				npc.SetActivity("ACT_MP_RUN_PRIMARY");
+				int AnimLayer = npc.AddGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
+				npc.SetPoseParameter_Easy("body_pitch", -45.0);
+				npc.SetLayerPlaybackRate(AnimLayer, (0.01));
+				npc.SetLayerCycle(AnimLayer, (0.0));
+				npc.m_flSpeed = 900.0;
+				npc.StartPathing();
+				if(IsValidEntity(npc.m_iWearable4))
+					RemoveEntity(npc.m_iWearable4);
+
+				npc.m_iWearable4 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 5.0, 0.0, LASERBEAM);
+
+				npc.m_flThrow_Happening = GetGameTime(npc.index) + 2.5;
+				return true;
+			}
+			if(npc.m_iChanged_WalkCycle == 5 && IsValidEntity(i_GrabbedThis[npc.index]))
+			{ 
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+				hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+				int EntityGrabbed = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+
+				b_ThisEntityIsAProjectileForUpdateContraints[EntityGrabbed] = true;
+				if(!IsValidClient(EntityGrabbed))
+					Npc_Teleport_Safe(EntityGrabbed, ThrowPos, hullcheckmins, hullcheckmaxs);
+				else
+					Player_Teleport_Safe(EntityGrabbed, ThrowPos);
+
+					//setting this so it goes through entities in the safe tele.
+				b_ThisEntityIsAProjectileForUpdateContraints[EntityGrabbed] = false;
 
 
+				static float selfpos[3]; 
+				float flAng[3]; // original
+				npc.GetAttachment("effect_hand_r", selfpos, flAng);
+
+				int red = 255;
+				int green = 255;
+				int blue = 50;
+				int Alpha = 222;
+				int colorLayer4[4];
+				int colorLayer1[4];
+				npc.PlayVincentMeleeSuper();
+
+				float diameter = 20.0;
+				SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+				//we set colours of the differnet laser effects to give it more of an effect
+				SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.6), 0, 5.0, colorLayer1, 3);
+				TE_SendToAll(0.0);
+				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.3, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
+				TE_SendToAll(0.0);
+				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
+				TE_SendToAll(0.0);
+				float damage = 70.0;
+				damage *= RaidModeScaling;
+				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
+				TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+				EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, ThrowPos);
+				EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, ThrowPos);
+				npc.SetVelocity({0.0,0.0,-1000.0});
+				npc.PlayVincentSlamSound();
+				i_GrabbedThis[npc.index] = -1;
+			}
+			if(IsValidEntity(npc.m_iWearable4))
+				RemoveEntity(npc.m_iWearable4);
+			//end ability?
+			npc.m_flThrow_Happening = 0.0;
+			npc.m_flRegainNormalWalk = GetGameTime(npc.index) + 0.3;
+			npc.m_iTargetWalkTo = 0;
+		}
 		return true;
 	}
 	if(npc.m_flThrow_Cooldown > GetGameTime(npc.index))
 		return false;
-	
 		
-	return true;
+	if(npc.m_iChanged_WalkCycle != 2)
+	{
+		npc.m_iTargetWalkTo = target;
+		npc.m_iChanged_WalkCycle = 2;
+		npc.m_bisWalking = false;
+		npc.StopPathing();
+		npc.PlayPrepareSlamSound();
+		npc.AddActivityViaSequence("layer_taunt_commending_clap_heavy");
+		npc.m_flSpeed = 0.0;
+		npc.SetCycle(0.75);
+		npc.SetPlaybackRate(0.4);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		npc.m_iWearable4 = ConnectWithBeam(npc.index, target, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "effect_hand_l");
+		npc.m_flThrow_Happening = GetGameTime(npc.index) + VINCENT_PREPARESLAM_TIME;
+		npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 40.0;
+		static float radius = 200.0;
+		float vecPos[3];
+		GetAbsOrigin(npc.index, vecPos);
+		spawnRing_Vectors(vecPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 255, 3, VINCENT_PREPARESLAM_TIME, 10.0, 2.0, 1, 0.0);
+		spawnRing_Vectors(vecPos, radius, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 255, 3, VINCENT_PREPARESLAM_TIME, 10.0, 2.0, 1, 0.0);
+	}	
+	return false;
+}
+
+
+
+
+void Vincent_AdjustGrabbedTarget(int iNPC)
+{
+	Vincent npc = view_as<Vincent>(iNPC);
+	if(!IsValidEntity(i_GrabbedThis[npc.index]))
+		return;
+	if(npc.m_flThrow_Happening < GetGameTime(npc.index) + 0.25)
+		return;
+	int EnemyGrab = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	float flPos[3]; // original
+	float flAng[3]; // original
+
+	npc.GetAttachment("head", flPos, flAng);
+	
+	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }

@@ -2060,15 +2060,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return this.GetLocomotionInterface().IsOnGround();
 	}
-	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
+	public int AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
 	{
 		if(i_IsNpcType[this.index] == STATIONARY_NPC)
-			return;
+			return -1;
 		//Will crash the server via corruption.
 		
 		int activity = this.LookupActivity(anim);
 		if(activity < 0)
-			return;
+			return -1;
 		
 		if(cancel_animation)
 		{
@@ -2082,6 +2082,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
 			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (ReturnEntityAttackspeed(this.index))));
+
+		return layer;
 	}
 
 	public void RemoveGesture(const char[] anim)
@@ -3918,7 +3920,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
-					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
 				}
 			}
 		}
