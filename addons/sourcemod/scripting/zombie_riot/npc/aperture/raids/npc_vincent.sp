@@ -145,6 +145,16 @@ methodmap Vincent < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
+	property float m_flThrow_Cooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flThrow_Happening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 	
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -229,7 +239,8 @@ methodmap Vincent < CClotBody
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
 			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}ILL GIVE YOU ONE.", c_NpcName[npc.index]);
 			CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
-			npc.m_flRangedArmor = 0.9;
+			npc.m_flRangedArmor *= 0.9;
+			npc.m_flMeleeArmor *= 0.9;	
 			npc.m_flOverrideMusicNow = 0.0;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
@@ -258,13 +269,13 @@ methodmap Vincent < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 		
 		npc.m_flSpeed = 300.0;
-		npc.m_flMeleeArmor = 1.0;
 		
 		npc.m_flNextOilPouring = GetGameTime(npc.index) + 3.0;
 		
@@ -467,6 +478,8 @@ public void Vincent_ClotThink(int iNPC)
 			npc.SetGoalEntity(target);
 		}
 		
+		if(Vincent_SlamThrow(iNPC))
+			return;
 		Vincent_SelfDefense(npc, gameTime, target, distance);
 	}
 	else
@@ -854,4 +867,21 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 			Custom_Knockback(iNPC, victim1, 250.0, true);
 		}
 	}
+}
+
+
+bool Vincent_SlamThrow(int iNPC)
+{
+	Vincent npc = view_as<Vincent>(iNPC);
+	if(npc.m_flThrow_Happening)
+	{
+
+
+		return true;
+	}
+	if(npc.m_flThrow_Cooldown > GetGameTime(npc.index))
+		return false;
+	
+		
+	return true;
 }

@@ -311,7 +311,6 @@ methodmap CAT < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		npc.m_flSpeed = CAT_DEFAULT_SPEED;
-		npc.m_flMeleeArmor = 1.0;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
