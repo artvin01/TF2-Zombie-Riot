@@ -2110,13 +2110,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.m_iAnimationState = iSequence;
 	
 	}
-	public void AddGestureViaSequence(const char[] anim)
+	public int AddGestureViaSequence(const char[] anim)
 	{
 		int iSequence = this.LookupSequence(anim);
 		if(iSequence < 0)
-			return;
+			return -1;
 		
-		this.AddGestureSequence(iSequence);
+		return this.AddGestureSequence(iSequence);
 	}
 	public int FindAttachment(const char[] pAttachmentName)
 	{

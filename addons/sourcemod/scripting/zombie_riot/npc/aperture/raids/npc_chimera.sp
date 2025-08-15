@@ -298,7 +298,7 @@ methodmap CHIMERA < CClotBody
 	
 	public CHIMERA(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		CHIMERA npc = view_as<CHIMERA>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.35", "700", ally, false, true, true, true));
+		CHIMERA npc = view_as<CHIMERA>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.45", "700", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

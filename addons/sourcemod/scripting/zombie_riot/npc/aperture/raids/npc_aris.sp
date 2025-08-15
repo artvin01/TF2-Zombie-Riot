@@ -334,7 +334,7 @@ methodmap ARIS < CClotBody
 	
 	public ARIS(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		ARIS npc = view_as<ARIS>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.35", "700", ally, false, true, true, true));
+		ARIS npc = view_as<ARIS>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.45", "700", ally, false, true, true, true));
 		float gameTime = GetGameTime(npc.index);
 		
 		i_NpcWeight[npc.index] = 4;

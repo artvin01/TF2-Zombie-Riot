@@ -220,11 +220,20 @@ methodmap Vincent < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
-	
 	property float m_flRegainNormalWalk
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flTalkRepeat
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
+	property int m_iTalkState
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
 	public void PlayPassiveSound()
 	{
@@ -237,14 +246,14 @@ methodmap Vincent < CClotBody
 	}
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Vincent npc = view_as<Vincent>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl" /*"models/bots/heavy/bot_heavy.mdl"*/, "1.35", "700", ally, false, true, true, true));
+		Vincent npc = view_as<Vincent>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl" /*"models/bots/heavy/bot_heavy.mdl"*/, "1.45", "700", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
-
+		npc.m_flTalkRepeat = 0.0;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
 		func_NPCDeath[npc.index] = Vincent_NPCDeath;
@@ -735,6 +744,17 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	{
 		npc.m_bLostHalfHealth = true;
 	}
+	
+	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	{
+		if(!npc.m_flTalkRepeat)
+		{
+			ApplyStatusEffect(victim, victim, "Infinite Will", 99999.0);
+			npc.m_flTalkRepeat = 1.0;
+			damage = 0.0;
+			return Plugin_Continue;
+		}
+	}
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -774,6 +794,64 @@ static bool Vincent_LoseConditions(int iNPC)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
 	
+	if(npc.m_flTalkRepeat)
+	{
+		if(npc.m_iChanged_WalkCycle != 10)
+		{
+			npc.m_iChanged_WalkCycle = 10;
+			npc.SetPoseParameter_Easy("body_pitch", 0.0);
+			npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+			if(HasSpecificBuff(npc.index, "Intangible"))
+			{
+				RemoveSpecificBuff(npc.index, "Intangible");
+				f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
+				b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
+			}
+			npc.AddActivityViaSequence("layer_tauntrussian_rubdown");
+			int AnimLayer = npc.AddGestureViaSequence("armslayer_throw_fire");
+			npc.SetLayerPlaybackRate(AnimLayer, (0.01));
+			npc.SetLayerCycle(AnimLayer, (0.0));
+			npc.SetCycle(0.5);
+		}
+		if(npc.Anger)
+		{
+			//Angry blah
+			switch(npc.m_iTalkState)
+			{
+				case 0:
+				{
+					//yapping
+					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+				}
+				case 5:
+				{
+					//ending
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				}
+			}
+		}
+		else
+		{
+			//not angry blah
+			switch(npc.m_iTalkState)
+			{
+				case 0:
+				{
+					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+				}
+				case 5:
+				{
+					//ending
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				}
+			}
+		}
+		npc.m_iTalkState++;
+		npc.Update();
+		return true;
+	}
 	//reuse for music.
 	if(npc.m_flOverrideMusicNow)
 	{
