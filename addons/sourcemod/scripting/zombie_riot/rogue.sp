@@ -122,6 +122,10 @@ enum struct Stage
 	bool Hidden;
 	bool Repeat;
 
+	// >0: Rooms progressed eg. 1 is first room, 2 is second room
+	// <0: Room left eg. on a 5 stage floor, -1 is before final room, -4 is first room
+	int ForcePosition;
+
 	Function FuncStart;
 	char WaveSet[PLATFORM_MAX_PATH];
 	char ArtifactKey[64];
@@ -142,6 +146,7 @@ enum struct Stage
 		kv.GetString("skyname", this.Skyname, 64);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
+		this.ForcePosition = kv.GetNum("forcepos");
 		this.IntroMusic.SetupKv("intromusic", kv);
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
@@ -276,7 +281,6 @@ static Handle ProgressTimer;
 static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
-static int CurrentCountHud;
 static int CurrentStage;
 static bool CurrentType;
 static ArrayList CurrentExclude;
@@ -571,6 +575,21 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 		kv.GoBack();
 	}
 
+	MusicEnum music;
+	music.SetupKv("music_setup", kv);
+	if(music.Valid())
+	{
+		music.CopyTo(MusicSetup1);
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client); //This is actually more expensive then i thought.
+				SetMusicTimer(client, GetTime() + 5);
+			}
+		}
+	}
+
 	if(!artifactOnly[0])
 	{
 		SteamWorks_UpdateGameTitle();
@@ -806,7 +825,6 @@ void Rogue_RoundEnd()
 	CurrentFloor = 0;
 	CurrentStage = -1;
 	CurrentCount = -1;
-	CurrentCountHud = -1;
 	delete CurrentExclude;
 	delete CurrentMissed;
 	CurrentIngots = 0;
@@ -1207,7 +1225,6 @@ void Rogue_NextProgress()
 			
 			CurrentFloor = 0;
 			CurrentCount = -1;
-			CurrentCountHud = -1;
 			delete CurrentExclude;
 
 			int startingIngots = highestLevel + 8;
@@ -1218,7 +1235,7 @@ void Rogue_NextProgress()
 			Floors.GetArray(CurrentFloor, floor);
 			
 			Stage stage;
-			int id = GetRandomStage(floor, stage, 1);
+			int id = GetRandomStage(floor, stage, 1, _, 1, 99);
 			if(id == -1)
 			{
 				PrintToChatAll("NO BATTLES ON FIRST FLOOR? BAD CFG, REPORT BUG");
@@ -1358,7 +1375,6 @@ void Rogue_NextProgress()
 				CurrentFloor++;
 				CurrentStage = -1;
 				CurrentCount = -1;
-				CurrentCountHud = -1;
 				ExtraStageCount = 0;
 				
 				bool victory = CurrentFloor >= Floors.Length;
@@ -1376,7 +1392,6 @@ void Rogue_NextProgress()
 						{
 							// Check next floor
 							CurrentCount = maxRooms + 1;
-							CurrentCountHud = maxRooms + 1;
 							Rogue_NextProgress();
 							return;
 						}
@@ -1502,14 +1517,13 @@ void Rogue_NextProgress()
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
 			{
-				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed);
+				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed, CurrentCount + 2, maxRooms + 2);
 				ForcedVoteSeed = -1;
 
 				if(id == -1)
 				{
 					// We somehow don't have a final stage
 					CurrentCount = maxRooms + 1;
-					CurrentCountHud = maxRooms + 1;
 					Rogue_NextProgress();
 				}
 				else
@@ -1523,10 +1537,13 @@ void Rogue_NextProgress()
 			else	// Normal Stage
 			{
 				Rogue_CreateGenericVote(Rogue_Vote_NextStage, "Vote for the next stage");
-				CurrentCountHud++;
 
 				int count = RogueTheme == BlueParadox ? 3 : 2;
 				if(!(GetURandomInt() % 6))
+					count++;
+				
+				bool bonus = (RogueTheme == ReilaRift && !(GetURandomInt() % 4));
+				if(bonus)
 					count++;
 				
 				if(ExtraStageCount > 0)
@@ -1542,7 +1559,7 @@ void Rogue_NextProgress()
 				Vote vote;
 				for(int i; i < count; i++)
 				{
-					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed);
+					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed, CurrentCount + 2, maxRooms + 2);
 					if(id != -1)
 					{
 						ForcedVoteSeed = -1;
@@ -1572,29 +1589,38 @@ void Rogue_NextProgress()
 							int future = id;
 							vote.Level = GetURandomInt();
 
-							if((CurrentCount -1) == maxRooms)
+							if(i == (count-1) && bonus && stage.ForcePosition == 0)
 							{
-								future = GetRandomStage(floor, stage, 2, vote.Level);
+								// Random bonus stage
+								vote.Level = -2;
+								strcopy(vote.Append, sizeof(vote.Append), "  (Ω)");
 							}
 							else
 							{
-								future = GetRandomStage(floor, stage, 0, vote.Level);
-							}
-
-							if(future == id || future == -1)
-							{
-								if(stage.Hidden)
+								if((CurrentCount-1) == maxRooms)
 								{
-									strcopy(vote.Append, sizeof(vote.Append), "  (→ Encounter)");
+									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 3, maxRooms + 2);
 								}
 								else
 								{
-									Format(vote.Append, sizeof(vote.Append), "  (→ %s)", stage.Name);
+									future = GetRandomStage(floor, stage, 0, vote.Level, CurrentCount + 3, maxRooms + 2);
 								}
-							}
-							else
-							{
-								strcopy(vote.Append, sizeof(vote.Append), "  (→ ???)");
+
+								if(future == id || future == -1)
+								{
+									if(stage.Hidden)
+									{
+										strcopy(vote.Append, sizeof(vote.Append), "  (→ Encounter)");
+									}
+									else
+									{
+										Format(vote.Append, sizeof(vote.Append), "  (→ %T)", stage.Name, LANG_SERVER);
+									}
+								}
+								else
+								{
+									strcopy(vote.Append, sizeof(vote.Append), "  (→ ???)");
+								}
 							}
 						}
 
@@ -1618,7 +1644,6 @@ void Rogue_NextProgress()
 				{
 					delete Voting;
 					CurrentCount = maxRooms;
-					CurrentCountHud = maxRooms;
 					Rogue_NextProgress();
 				}
 			}
@@ -1646,7 +1671,7 @@ bool Rogue_ShowStatus(int client)
 				Floors.GetArray(CurrentFloor, floor);
 
 				SetHudTextParams(0.1, 0.1, 0.81, 255, 255, 255, 255);
-				int DisplayDo = CurrentCountHud + 1;
+				int DisplayDo = CurrentCount + (GameState == State_Vote ? 2 : 1);
 				if(DisplayDo <= 1)
 					DisplayDo = 1;
 				ShowSyncHudText(client, SyncHud_WandMana, "%T", "Rogue Stage Status",client, floor.Name, DisplayDo, (floor.RoomCount + ExtraStageCount) + 2);
@@ -1822,7 +1847,6 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 static void SetNextStage(int id, bool type, const Stage stage, float time = 5.0)
 {
 	CurrentCount++;
-	CurrentCountHud = CurrentCount;
 	CurrentStage = id;
 	CurrentType = type;
 
@@ -2122,7 +2146,7 @@ static int GetStageByName(const Floor floor, const char[] name, bool final, Stag
 	return -1;
 }
 
-static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -1)
+static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -1, int pos = 0, int maxstages = 0)
 {
 	ArrayList list = type == 2 ? floor.Finals : floor.Encounters;
 	if(!list)
@@ -2169,6 +2193,7 @@ static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -
 	}
 	else
 	{
+		// Search for "forcepos" key
 		do
 		{
 			if(i >= length)
@@ -2179,14 +2204,44 @@ static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -
 			
 			list.GetArray(i, stage);
 
-			if((CurrentFloor < 5 && RogueTheme == ReilaRift) || !Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
+			if(stage.ForcePosition != 0)
 			{
-				if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
+				if(stage.ForcePosition == pos || (stage.ForcePosition == (pos - maxstages)))
 				{
-					if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+					if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
 					{
-						if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
+						if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
 							return i;
+					}
+				}
+			}
+
+			i++;
+		}
+		while(i != start);
+
+		// Normal Search
+		do
+		{
+			if(i >= length)
+			{
+				i = 0;
+				continue;
+			}
+			
+			list.GetArray(i, stage);
+
+			if(stage.ForcePosition == 0)
+			{
+				if((CurrentFloor < 5 && RogueTheme == ReilaRift) || !Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
+				{
+					if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
+					{
+						if(!type || (stage.WaveSet[0] && stage.FuncStart == INVALID_FUNCTION))	// If Type 1, Normal Battles Only
+						{
+							if(!CurrentExclude || CurrentExclude.FindString(stage.Name) == -1)	// Exclude List
+								return i;
+						}
 					}
 				}
 			}
@@ -2923,7 +2978,15 @@ public void Rogue_Vote_NextStage(const Vote vote)
 		CurrentExclude.PushString(stage.Name);
 	}
 
-	ForcedVoteSeed = vote.Level;
+	if(vote.Level == -2)
+	{
+		ForcedVoteSeed = -1;
+		CurrentCount--;
+	}
+	else
+	{
+		ForcedVoteSeed = vote.Level;
+	}
 
 	SetNextStage(id, false, stage);
 }
@@ -3054,7 +3117,7 @@ bool Rogue_UpdateMvMStats()
 				case 4:
 				{
 					//current Stage
-					int DisplayDo = CurrentCountHud + 1;
+					int DisplayDo = CurrentCount + (GameState == State_Vote ? 2 : 1);
 					if(DisplayDo <= 1)
 						DisplayDo = 1;
 					Waves_SetWaveClass(objective, i, DisplayDo, "current_stage", MVM_CLASS_FLAG_NORMAL, true);

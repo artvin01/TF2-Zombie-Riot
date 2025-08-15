@@ -274,15 +274,13 @@
 	{
 		"en"	"{red}Shops no longer appear while held\n{purple}Removes all Australium Ingots when consumed"
 	}
-
-	// TODO
 	"Outblood"
 	{
 		"en"	"Outblood ◈"
 	}
 	"Outblood Desc"
 	{
-		"en"	"{green}Allies have +7％ (0.935) fire rate {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity decreased by 2 after a battle"
 	}
 	"Flames"
 	{
@@ -290,7 +288,7 @@
 	}
 	"Flames Desc"
 	{
-		"en"	"{green}Allies have +14％ (0.875) fire rate {red}but Umbral Affinity decreased by 3 after a battle"
+		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity decreased by 3 after a battle"
 	}
 	"Lost"
 	{
@@ -380,8 +378,11 @@
 	{
 		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain 12 Australium Ingots when consumed"
 	}
-	// TODO
 
+	"Gateway"
+	{
+		"en"	"Gateway"
+	}
 	"Rift Consume Encounter Title"
 	{
 		"en"	"A rift opens up, it's time to throw something in it"

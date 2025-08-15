@@ -199,7 +199,7 @@ static void FinishOptionalVoteItem(const Vote vote, int index)
 static int ConsumeLimit;
 public float Rogue_Encounter_RiftConsume()
 {
-	ConsumeLimit = 3;
+	ConsumeLimit = 4;
 	StartRiftVote(true);
 	return 35.0;
 }
@@ -228,7 +228,7 @@ static void StartRiftVote(bool first)
 		{
 			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-			if(artifact.ShopCost == 6)
+			if(artifact.Multi && artifact.FuncRemove != INVALID_FUNCTION)
 			{
 				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
