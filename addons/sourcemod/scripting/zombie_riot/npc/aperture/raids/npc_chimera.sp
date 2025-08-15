@@ -96,7 +96,7 @@ void CHIMERA_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "C.H.I.M.E.R.A");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chimera");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
+	strcopy(data.Icon, sizeof(data.Icon), "chimera");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;
@@ -331,7 +331,7 @@ methodmap CHIMERA < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "A.R.I.S. arrives");
+				ShowGameText(client_check, "item_armor", 1, "%s", "???");
 			}
 		}
 		npc.m_flMeleeArmor = 1.25;	
@@ -750,13 +750,13 @@ bool CHIMERA_timeBased(int iNPC)
 			//do both abilities twice.
 			if(npc.m_flDamageCharge < 0)
 			{
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONCIDERED THE MOST DANGEROUS.");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONSIDERED THE MOST DANGEROUS.");
 				MeleeRes = false;
 				npc.m_flDamageCharge *= -1.0;
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}MELEE{default} IS CONCIDERED THE MOST DANGEROUS.");
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}MELEE{default} IS CONSIDERED THE MOST DANGEROUS.");
 			}
 			if(npc.m_flBatteryLeftBlade)
 			{
@@ -794,7 +794,7 @@ bool CHIMERA_timeBased(int iNPC)
 		npc.SetActivity("ACT_DIEVIOLENT");
 		npc.SetPlaybackRate(0.35);
 
-		CPrintToChatAll("{crimson}C.H.I.M.E.R.A.'s Expidonsan blade detects unathorised usage and self destructs.");
+		CPrintToChatAll("{crimson}C.H.I.M.E.R.A.'s Expidonsan blade detects unauthorised usage and self-destructs.");
 		float flPos[3];
 		float flAng[3];
 		int Particle_1;
@@ -828,14 +828,14 @@ bool CHIMERA_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}C.A.T{default}: Intruders taken care of.");
+		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ZIBERIA WOULD BE PROUD, PROVIDED THEY WERE TO SEE ME NOW.");
 		return true;
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{blue}C.A.T{default}: We hope your stay at Aperture was pleasant!");
+		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: TIME TO CHOOSE.");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}

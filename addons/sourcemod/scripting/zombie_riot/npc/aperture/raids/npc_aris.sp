@@ -149,7 +149,7 @@ void ARIS_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "A.R.I.S.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aris");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
+	strcopy(data.Icon, sizeof(data.Icon), "aris");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;

@@ -50,7 +50,7 @@ void Vincent_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vincent");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vincent");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
+	strcopy(data.Icon, sizeof(data.Icon), "vincent");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;
@@ -183,7 +183,7 @@ methodmap Vincent < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "Vincent arrives");
+				ShowGameText(client_check, "item_armor", 1, "%s", "Vincent sets foot");
 			}
 		}
 		
@@ -237,7 +237,7 @@ methodmap Vincent < CClotBody
 			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
 			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}ILL GIVE YOU ONE.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}I'LL GIVE YOU ONE.", c_NpcName[npc.index]);
 			CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
 			npc.m_flRangedArmor *= 0.9;
 			npc.m_flMeleeArmor *= 0.9;	
@@ -247,8 +247,8 @@ methodmap Vincent < CClotBody
 			music.Time = 112;
 			music.Volume = 0.9;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
-			strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
+			strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
+			strcopy(music.Artist, sizeof(music.Artist), "Exedious");
 			Music_SetRaidMusic(music);
 		}
 		else
@@ -256,14 +256,14 @@ methodmap Vincent < CClotBody
 			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
 			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-			CPrintToChatAll("{rare}%t{default}: Not leaving, so ill do it myself.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t{default}: Not gonna leave? I'll make you leave myself.", c_NpcName[npc.index]);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
 			music.Time = 51;
 			music.Volume = 1.2;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
-			strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
+			strcopy(music.Name, sizeof(music.Name), "System Corruption (Intro)");
+			strcopy(music.Artist, sizeof(music.Artist), "Harry Callaghan");
 			Music_SetRaidMusic(music);
 		}
 		
@@ -644,8 +644,8 @@ static bool Vincent_LoseConditions(int iNPC)
 			music.Time = 76;
 			music.Volume = 1.2;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea");
-			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			strcopy(music.Name, sizeof(music.Name), "System Corruption");
+			strcopy(music.Artist, sizeof(music.Artist), "Harry Callaghan");
 			Music_SetRaidMusic(music, false);
 		}
 	}	
@@ -653,14 +653,14 @@ static bool Vincent_LoseConditions(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}C.A.T{default}: Intruders taken care of.");
+		CPrintToChatAll("{rare}Vincent{default}: I'm sorry it had to end this way, you shouldn't have taken that job...");
 		return true;
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{blue}C.A.T{default}: We hope your stay at Aperture was pleasant!");
+		CPrintToChatAll("{rare}Vincent{default}: It's over, please don't come back.");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}

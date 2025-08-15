@@ -1064,7 +1064,6 @@ void NPC_ConfigSetup()
 	RefragmentedWinterSniper_OnMapStart_NPC();
 	RefragmentedWinterFrostHunter_OnMapStart_NPC();
 	Vincent_OnMapStart_NPC();
-	Test_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2325,4 +2324,3 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/refragmented/npc_chimeraboss_refragmented_winter_sniper.sp"
 #include "npc/aperture/refragmented/npc_chimeraboss_refragmented_frost_hunter.sp"
 #include "npc/aperture/raids/npc_vincent.sp"
-#include "npc/aperture/10/npc_test.sp"
