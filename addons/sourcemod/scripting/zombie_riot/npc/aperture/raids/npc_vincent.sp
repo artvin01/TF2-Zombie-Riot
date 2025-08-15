@@ -796,6 +796,9 @@ static bool Vincent_LoseConditions(int iNPC)
 	
 	if(npc.m_flTalkRepeat)
 	{
+		if(npc.m_flTalkRepeat > GetGameTime())
+			return true;
+			
 		if(npc.m_iChanged_WalkCycle != 10)
 		{
 			npc.m_iChanged_WalkCycle = 10;
