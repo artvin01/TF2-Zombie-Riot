@@ -73,7 +73,7 @@ static bool b_tripple_raid[MAXENTITIES];
 
 #define KARLAS_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
 
-#define KARLAS_TELEPORT_STRIKE_RADIUS 750.0
+#define KARLAS_TELEPORT_STRIKE_RADIUS 550.0
 
 static float fl_npc_basespeed;
 
@@ -1879,7 +1879,7 @@ static void Karlas_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, floa
 
 static void Karlas_Teleport_Boom(Karlas npc, float Location[3])
 {
-	float Boom_Time = 5.0;
+	float Boom_Time = 4.0;
 
 	Karlas_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Location);
 
@@ -1942,7 +1942,7 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 	TE_SendToAll();
 	*/
 	color[3] = 100;
-	DrawCircleTE(spawnLoc, 10, radius, color, 1.0, 10.0);
+	DrawCircleTE(spawnLoc, 8, radius, color, 1.0, 10.0);
 
 	Handle pack2;
 	CreateDataTimer(1.0, Karlas_Ring_Loops, pack2, TIMER_FLAG_NO_MAPCHANGE);

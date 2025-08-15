@@ -2718,6 +2718,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			
 		}

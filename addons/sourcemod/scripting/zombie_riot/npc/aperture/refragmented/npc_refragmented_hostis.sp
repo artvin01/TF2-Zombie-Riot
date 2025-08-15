@@ -341,7 +341,7 @@ void HostisSelfDefense(Hostis npc, float gameTime, int target, float distance)
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 

@@ -143,6 +143,8 @@ methodmap ApertureSentry < CClotBody
 		Is_a_Medic[npc.index] = false;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		f_AttackSpeedNpcIncrease[npc.index] = 1.0;
+		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		npc.Anger = false;
 		npc.m_flDoingAnimation = 0.0;

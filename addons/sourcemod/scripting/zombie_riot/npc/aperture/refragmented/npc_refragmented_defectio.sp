@@ -284,7 +284,7 @@ void DefectioSelfDefense(Defectio npc, float gameTime, int target, float distanc
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 

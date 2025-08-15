@@ -258,9 +258,7 @@ void ApertureDemolisherPerfectedSelfDefense(ApertureDemolisherPerfected npc, flo
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					npc.m_flNextMeleeAttack = gameTime + 2.5;
-					float damage = 500.0, speed = 75.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 5.0;
+					float damage = 1500.0, speed = 75.0;
 					npc.FireRocket(vecTarget, damage, speed,_, 1.5);
 				}
 				delete swingTrace;

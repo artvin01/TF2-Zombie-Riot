@@ -268,22 +268,22 @@ public void RefragmentedMedic_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+					{
+						
+						int target = TR_GetEntityIndex(swingTrace);	
+						
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
+						if(target > 0) 
 						{
 							
-							int target = TR_GetEntityIndex(swingTrace);	
+							SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							
-							if(target > 0) 
-							{
-								
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
-								
-								// Hit sound
-								npc.PlayMeleeHitSound();
-							} 
-						}
+							// Hit sound
+							npc.PlayMeleeHitSound();
+						} 
+					}
 					delete swingTrace;
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0;
 					npc.m_flAttackHappenswillhappen = false;

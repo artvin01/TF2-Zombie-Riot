@@ -254,9 +254,7 @@ void ApertureDevastatorPerfectedSelfDefense(ApertureDevastatorPerfected npc, flo
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
-					float damage = 75.0, speed = 700.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damage *= 2.0;
+					float damage = 120.0, speed = 700.0;
 					npc.m_iAttacksTillReload--;
 					if(npc.m_iAttacksTillReload <= 0)
 					{

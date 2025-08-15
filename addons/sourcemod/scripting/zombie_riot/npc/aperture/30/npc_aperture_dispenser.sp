@@ -98,6 +98,8 @@ methodmap ApertureDispenser < CClotBody
 		
 		// Fixes weird collision
 		SetEntityModel(npc.index, "models/buildables/dispenser.mdl");
+		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		//IDLE
 		npc.m_iState = 0;

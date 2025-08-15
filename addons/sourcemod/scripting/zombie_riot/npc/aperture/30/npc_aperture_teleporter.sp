@@ -76,6 +76,8 @@ methodmap ApertureTeleporter < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		b_StaticNPC[npc.index] = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		// Fixes weird collision
 		SetEntityModel(npc.index, "models/buildables/teleporter.mdl");

@@ -284,7 +284,7 @@ void RefragmentedSpySelfDefense(RefragmentedSpy npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 150.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.0;
 
