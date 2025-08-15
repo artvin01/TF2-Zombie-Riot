@@ -87,6 +87,9 @@ methodmap Talker < CClotBody
 		b_thisNpcHasAnOutline[npc.index] = true;
 		i_TalkDelayCheck = 0;
 		npc.m_bCamo = true;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
+		b_NpcIsInvulnerable[npc.index] = true;
+		b_ThisEntityIgnored[npc.index] = true;
 
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 
@@ -1146,9 +1149,6 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	npc.SetPlaybackRate(0.0);
 	
-	b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
-	b_NpcIsInvulnerable[npc.index] = true;
-	
 	npc.m_bDissapearOnDeath = true;
 	npc.m_flSpeed = 0.0;
 	npc.m_bisWalking = false;
@@ -1205,7 +1205,6 @@ static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
 
 static void Aperture_Shared_LastStandSequence_Happening(CClotBody npc)
 {
-	b_NpcIsInvulnerable[npc.index] = false; // NPCs should still not target this boss
 	
 	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_HAPPENING;
 }

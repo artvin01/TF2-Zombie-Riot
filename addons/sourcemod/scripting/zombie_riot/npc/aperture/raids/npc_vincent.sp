@@ -641,7 +641,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 			delete swingTrace;
 			bool PlaySound = false;
-			float damage = 35.0;
+			float damage = 45.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -657,7 +657,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 				WorldSpaceCenter(targetTrace, vecHit);
 
 				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-				Vincent_SuperAttackBehindTarget(npc.index, targetTrace, damage, DMG_CLUB, 400.0, 40.0);
+				Vincent_SuperAttackBehindTarget(npc.index, targetTrace, damage, DMG_CLUB, 500.0, 40.0);
 
 				bool Knocked = false;
 				if(!PlaySound)
@@ -953,7 +953,7 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (entity > 0 && entity <= MaxClients && !HasSpecificBuff(entity, "Burn"))
 		EmitSoundToClient(entity, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity, SNDCHAN_AUTO);
 	
-	float Proj_Damage = 1.0 * RaidModeScaling;
+	float Proj_Damage = 2.0 * RaidModeScaling;
 	SDKHooks_TakeDamage(entity, owner, owner, Proj_Damage, DMG_PLASMA, -1);
 	NPC_Ignite(entity, owner, 5.0, -1, Proj_Damage);
 	
@@ -1039,14 +1039,14 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 }
 
 #define VINCENT_PREPARESLAM_TIME 1.5
-#define VINCENT_THROW_AOE_RANGE 200.0
+#define VINCENT_THROW_AOE_RANGE 150.0
 bool Vincent_SlamThrow(int iNPC, int target)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
 	static float ThrowPos[3]; 
 	if(npc.m_iChanged_WalkCycle == 4)
 	{
-		float damage = 10.0;
+		float damage = 15.0;
 		damage *= RaidModeScaling;
 		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ damage, true);
 	}
@@ -1206,7 +1206,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				TE_SendToAll(0.0);
 				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
 				TE_SendToAll(0.0);
-				float damage = 70.0;
+				float damage = 140.0;
 				damage *= RaidModeScaling;
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
 				TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);

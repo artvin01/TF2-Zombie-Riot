@@ -61,6 +61,7 @@ methodmap PortalGate < CClotBody
 		npc.GetAttachment("centre_attach", flPos, flAng);
 		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "eyeboss_tp_vortex", npc.index, "centre_attach", {0.0,0.0,80.0});
 
+		EmitSoundToAll("weapons/teleporter_receive.wav", _, _, _, _, 1.0, 100);
 		if(ally != TFTeam_Red)
 		{
 			for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -69,7 +70,6 @@ methodmap PortalGate < CClotBody
 				{
 					SetGlobalTransTarget(client_check);
 					ShowGameText(client_check, "voice_player", 1, "%s", "A Portal Gate appears...");
-					EmitSoundToAll("weapons/teleporter_receive.wav", _, _, _, _, 1.0, 100);
 				}
 			}
 			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);

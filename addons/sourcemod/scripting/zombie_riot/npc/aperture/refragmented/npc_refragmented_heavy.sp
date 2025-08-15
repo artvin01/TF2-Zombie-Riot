@@ -110,7 +110,7 @@ methodmap RefragmentedHeavy < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 3.0;
+		npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 6.0;
 
 		npc.m_flMeleeArmor = 0.10;
 		npc.m_flRangedArmor = 0.10;
@@ -159,7 +159,7 @@ public void RefragmentedHeavy_ClotThink(int iNPC)
 			TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 			TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 			TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-			npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 3.0;
+			npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 6.0;
 			TeleportDiversioToRandLocation(npc.index,_,1250.0, 500.0);
 			npc.PlayTeleportSound();
 		}
@@ -228,7 +228,7 @@ public void RefragmentedHeavy_ClotThink(int iNPC)
 					if(target > 0)
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB);
 					}
 				}
 
