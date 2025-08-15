@@ -252,7 +252,7 @@ methodmap Vincent < CClotBody
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 
 		
-		RaidModeTime = GetGameTime() + 160.0;
+		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -1286,7 +1286,7 @@ void Vincent_AdjustGrabbedTarget(int iNPC)
 	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }
 
-#define VINCENT_MINIMUM_RANGE_BEACONS 900.0
+#define VINCENT_MINIMUM_RANGE_BEACONS 800.0
 #define VINCENT_MAXTRIES 100
 void VincentSpawnBeacons(int iNPC)
 {

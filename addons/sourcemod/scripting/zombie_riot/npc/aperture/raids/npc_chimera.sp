@@ -682,6 +682,7 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 			fl_TotalArmor[npc.index] = 0.5;
+			RaidModeTime += 30.0;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 4.0, _, 10.0, HEAL_ABSOLUTE);
 		}
 	}
