@@ -255,7 +255,7 @@ public void Refragmented_Combine_Police_Pistol_ClotThink(int iNPC)
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[PrimaryThreatIndex])
 	{
 		npc.PlayHurtSound();
-		SDKHooks_TakeDamage(npc.index, PrimaryThreatIndex, PrimaryThreatIndex, 25.0, DMG_TRUEDAMAGE, -1, _, vecMe, true);
+		SDKHooks_TakeDamage(npc.index, PrimaryThreatIndex, PrimaryThreatIndex, 25.0, DMG_TRUEDAMAGE, -1, _, vecMe);
 		SetEntityRenderColor(npc.index, 180, 0, 0, 200);
 	}
 	if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.25) && !i_IsABuilding[PrimaryThreatIndex])

@@ -152,14 +152,14 @@ methodmap ApertureSupporterPerfected < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_proto_medigun/c_proto_medigun.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_lavish_labwear/hwn2022_lavish_labwear.mdl");
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_lavish_labwear/hwn2022_lavish_labwear.mdl");
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy/hwn2022_victorian_villainy.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
 		
@@ -459,6 +459,8 @@ public void ApertureSupporterPerfected_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	npc.StopHealing();
 }
 
