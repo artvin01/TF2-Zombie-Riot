@@ -2,24 +2,24 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/mght/heavy_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/mght/heavy_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/mght/heavy_mvm_paincrticialdeath03.mp3",
+	"vo/mvm/norm/heavy_mvm_paincrticialdeath01.mp3",
+	"vo/mvm/norm/heavy_mvm_paincrticialdeath02.mp3",
+	"vo/mvm/norm/heavy_mvm_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/mght/heavy_mvm_painsharp01.mp3",
-	"vo/mvm/mght/heavy_mvm_painsharp02.mp3",
-	"vo/mvm/mght/heavy_mvm_painsharp03.mp3",
-	"vo/mvm/mght/heavy_mvm_painsharp04.mp3",
-	"vo/mvm/mght/heavy_mvm_painsharp05.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp01.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp02.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp03.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp04.mp3",
+	"vo/mvm/norm/heavy_mvm_painsharp05.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/mght/heavy_mvm_standonthepoint01.mp3",
-	"vo/mvm/mght/heavy_mvm_standonthepoint02.mp3",
-	"vo/mvm/mght/heavy_mvm_standonthepoint03.mp3",
-	"vo/mvm/mght/heavy_mvm_standonthepoint04.mp3",
+	"vo/mvm/norm/heavy_mvm_standonthepoint01.mp3",
+	"vo/mvm/norm/heavy_mvm_standonthepoint02.mp3",
+	"vo/mvm/norm/heavy_mvm_standonthepoint03.mp3",
+	"vo/mvm/norm/heavy_mvm_standonthepoint04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
