@@ -99,6 +99,21 @@ static float NextOrbDamage[MAXENTITIES];
 
 void CAT_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "C.A.T.");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cat");
+	strcopy(data.Icon, sizeof(data.Icon), "cat");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Aperture;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -112,24 +127,13 @@ void CAT_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_StunCat));   i++) { PrecacheSound(g_StunCat[i]);   }
 	for (int i = 0; i < (sizeof(g_StunCatEnd));   i++) { PrecacheSound(g_StunCatEnd[i]);   }
 	
-	PrecacheSound("#zombiesurvival/aperture/cat.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aperture/cat.mp3");
 	PrecacheSound("mvm/mvm_tank_end.wav");
 	PrecacheModel("models/bots/scout/bot_scout.mdl");
 	PrecacheModel(CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
 	
 	PrecacheParticleSystem(CAT_SELF_DEGRADATION_ABILITY_EFFECT);
-	
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "C.A.T.");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cat");
-	strcopy(data.Icon, sizeof(data.Icon), "cat");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Aperture;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

@@ -73,7 +73,7 @@ public void AgentSmith_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	PrecacheModel("models/zombie_riot/matrix/smith30.mdl");
-	PrecacheSound("#zombiesurvival/matrix/neodammerung.mp3");
+	PrecacheSoundCustom("#zombiesurvival/matrix/neodammerung.mp3");
 	PrecacheSound("weapons/physgun_off.wav");
 	PrecacheSoundArray(g_TeleDeathSound);
 	PrecacheSoundArray(g_DeathSounds);
@@ -1031,7 +1031,7 @@ static void PrepareSmith_Raid(AgentSmith npc)
 	strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/neodammerung.mp3");
 	music.Time = 240;
 	music.Volume = 1.5;
-	music.Custom = false;
+	music.Custom = true;
 	strcopy(music.Name, sizeof(music.Name), "Neodämmerung");
 	strcopy(music.Artist, sizeof(music.Artist), "Don Davis");
 	Music_SetRaidMusic(music);

@@ -115,6 +115,21 @@ static int i_EnemyHitByThisManyBullets[MAXENTITIES];
 
 void ARIS_OnMapStart_NPC()
 {
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "A.R.I.S.");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aris");
+	strcopy(data.Icon, sizeof(data.Icon), "aris");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Aperture;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -127,7 +142,7 @@ void ARIS_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SwitchWeaponSounds));   i++) { PrecacheSound(g_SwitchWeaponSounds[i]);   }
 	
 	
-	PrecacheSound("#zombiesurvival/aperture/aris.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aperture/aris.mp3");
 	PrecacheSound(g_RocketFiringSound);
 	PrecacheSound(g_RocketLandingSound);
 	PrecacheSound(g_RocketExplodingSound);
@@ -145,16 +160,6 @@ void ARIS_OnMapStart_NPC()
 	PrecacheParticleSystem(ARIS_ROCKET_EXPLOSION_PARTICLE);
 	PrecacheParticleSystem(ARIS_WEAPON_SHOOT_BLAST_PARTICLE);
 	PrecacheParticleSystem(ARIS_WEAPON_ARMOR_RETURN_PARTICLE);
-	
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "A.R.I.S.");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aris");
-	strcopy(data.Icon, sizeof(data.Icon), "aris");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Aperture;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 
@@ -778,6 +783,7 @@ methodmap ARIS < CClotBody
 		{
 			float damage;
 			float armorFromThisTarget;
+
 			
 			int bullets = i_EnemyHitByThisManyBullets[target];
 			if (bullets)
@@ -795,6 +801,7 @@ methodmap ARIS < CClotBody
 				armorFromThisTarget += 0.01;
 				b_EnemyHitByBlast[target] = false;
 			}
+			damage *= RaidModeScaling;
 			
 			if (damage > 0.0)
 			{
@@ -922,7 +929,11 @@ public void ARIS_ClotThink(int iNPC)
 	if (npc.IsOnGround())
 		npc.m_bInFlightFromRangedAttack = false;
 	else if (npc.m_bInFlightFromRangedAttack)
-		ResolvePlayerCollisions_Npc(npc.index, 15.0, true);
+	{
+		float damage = 10.0;
+		damage *= RaidModeScaling;
+		ResolvePlayerCollisions_Npc(npc.index, 10.0, true);
+	}
 	
 	if (npc.m_bLostHalfHealth || !npc.m_fbGunout)
 	{
