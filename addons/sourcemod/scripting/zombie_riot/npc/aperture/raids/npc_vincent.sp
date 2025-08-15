@@ -53,6 +53,10 @@ static const char g_PrepareSlamThrow[][] =
 	"vo/mvm/mght/heavy_mvm_m_incoming02.mp3",
 	"vo/mvm/mght/heavy_mvm_m_incoming03.mp3",
 };
+static const char g_VincentFireIgniteSound[][] =
+{
+	")misc/flame_engulf.wav",
+};
 
 static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
 
@@ -88,6 +92,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_PrepareSlamThrow);
 	PrecacheSoundArray(g_VincentSlamSound);
 	PrecacheSoundArray(g_VincentJumpSound);
+	PrecacheSoundArray(g_VincentFireIgniteSound);
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_entrance.wav");
 	
@@ -166,6 +171,10 @@ methodmap Vincent < CClotBody
 		int pitch = GetRandomInt(70,80);
 		EmitSoundToAll(g_VincentJumpSound[GetRandomInt(0, sizeof(g_VincentJumpSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
+	public void PlayIgniteSound()
+	{
+		EmitSoundToAll(g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7);
+	}
 
 	property float m_flNextOilPouring
 	{
@@ -178,6 +187,19 @@ methodmap Vincent < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+	
+	property float m_flLeakingOilUntil
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+	
+	property float m_flNextOilLeak
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
+	
 	property float m_flOverrideMusicNow
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -225,7 +247,7 @@ methodmap Vincent < CClotBody
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 
 		
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		RaidModeTime = GetGameTime() + 160.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -342,13 +364,11 @@ methodmap Vincent < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
 		
+		npc.m_flNextOilPouring = GetGameTime() + 3.0;
+		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
-		
-		
-		npc.m_flNextOilPouring = GetGameTime(npc.index) + 3.0;
-		
 
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
@@ -385,15 +405,12 @@ methodmap Vincent < CClotBody
 		
 		float radius = VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE * 1.5;
 		
-		this.PourOil(vecPos, radius, duration, delayToIgnite);
+		this.PourOil(vecPos, radius, duration, delayToIgnite, true);
 		
 		vecPos[2] += 80.0;
 		
 		ParticleEffectAt(vecPos, "gas_can_impact_blue");
-		/*
-		this.GetAttachment("effect_hand_L", vecLeft, vecUseless);
-		this.GetAttachment("effect_hand_R", vecRight, vecUseless);
-		*/
+		
 		int rocketL = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
 		int rocketR = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
 		
@@ -425,11 +442,11 @@ methodmap Vincent < CClotBody
 			delete trace;
 			
 			vecTargetPos[2] -= 16.0;
-			this.PourOil(vecTargetPos, radius, duration, delayToIgnite);
+			this.PourOil(vecTargetPos, radius, duration, delayToIgnite, true);
 		}
 	}
 	
-	public void PourOil(float vecPos[3], float radius, float duration, float delayToIgnite)
+	public void PourOil(float vecPos[3], float radius, float duration, float delayToIgnite, bool fromAbility)
 	{
 		int prop = CreateEntityByName("prop_dynamic_override");
 		if (!IsValidEntity(prop))
@@ -450,13 +467,18 @@ methodmap Vincent < CClotBody
 		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", VINCENT_OIL_MODEL_SCALE);
 		
 		SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS);
-		SetEntityRenderColor(prop, 0, 40, 0, 255);
+		
+		if (delayToIgnite <= 0.1)
+			SetEntityRenderMode(prop, RENDER_NONE);
+		else
+			SetEntityRenderColor(prop, 0, 40, 0, 255);
 		
 		DataPack pack;
 		CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(prop));
 		pack.WriteCell(EntIndexToEntRef(this.index));
 		pack.WriteFloat(radius);
+		pack.WriteCell(fromAbility);
 		
 		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -540,6 +562,16 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
 		npc.PourOilAbility(30.0, 2.0);
+	}
+	
+	if (npc.m_flLeakingOilUntil >= gameTime && npc.m_flNextOilLeak < gameTime)
+	{
+		npc.m_flNextOilLeak += 0.5;
+		
+		float vecPos[3];
+		GetAbsOrigin(npc.index, vecPos);
+		
+		npc.PourOil(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
 	}
 	
 	if (npc.m_flGetClosestTargetTime < gameTime)
@@ -694,16 +726,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Vincent npc = view_as<Vincent>(victim);
-	/*
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
-	{
-		npc.m_iState = APERTURE_BOSS_VINCENT; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
-		
-		damage = 0.0;
-		return Plugin_Handled;
-	}
-	*/
+	
 	if (!npc.m_bLostHalfHealth && (ReturnEntityMaxHealth(npc.index) / 2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
 		npc.m_bLostHalfHealth = true;
@@ -796,7 +819,12 @@ static void Timer_Vincent_IgniteOil(Handle timer, DataPack pack)
 		return;
 	
 	int refOwner = pack.ReadCell();
+	int owner = EntRefToEntIndex(refOwner);
+	if (owner == INVALID_ENT_REFERENCE)
+		return;
+	
 	float radius = pack.ReadFloat();
+	bool fromAbility = pack.ReadCell();
 	
 	if (radius > 0.0)
 	{
@@ -810,7 +838,11 @@ static void Timer_Vincent_IgniteOil(Handle timer, DataPack pack)
 		pack2.WriteCell(refEnt);
 		pack2.WriteCell(refOwner);
 		pack2.WriteFloat(radius);
+		pack2.WriteCell(fromAbility);
 	}
+	
+	Vincent npc = view_as<Vincent>(owner);
+	npc.PlayIgniteSound();
 	
 	SetEntityRenderMode(entity, RENDER_NONE);
 	IgniteTargetEffect(entity);
@@ -833,6 +865,7 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	}
 	
 	float radius = pack.ReadFloat();
+	bool fromAbility = pack.ReadCell();
 	
 	float vecPos[3];
 	GetAbsOrigin(entity, vecPos);
@@ -840,6 +873,7 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	DataPack pack2 = new DataPack();
 	pack2.WriteCell(entity);
 	pack2.WriteCell(owner);
+	pack2.WriteCell(fromAbility);
 	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil, pack2);
 	
 	delete pack2;
@@ -855,14 +889,21 @@ static Action Timer_Vincent_LaunchFireDownwards(Handle timer, int ref)
 	if (entity == INVALID_ENT_REFERENCE)
 		return Plugin_Continue;
 	
-	float vecVel[3];
-	vecVel[2] = -50.0;
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner == INVALID_ENT_REFERENCE)
+		return Plugin_Continue;
+	
+	Vincent npc = view_as<Vincent>(owner);
+	float vecPos[3], vecTargetPos[3];
+	GetAbsOrigin(entity, vecPos);
+	vecTargetPos = vecPos;
+	vecTargetPos[2] -= 999.0;
+	
+	int newRocket = npc.FireParticleRocket(vecTargetPos, 0.0, 200.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecPos);
+	RemoveEntity(entity);
 	
 	// FIXME: This doesn't work! It's supposed to launch the fire downwards (duh), but it aint doin dat
-	AcceptEntityInput(entity, "ClearParent");
-	SetEntityMoveType(entity, MOVETYPE_FLY);
-	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVel);
-	CreateTimer(0.25, Timer_RemoveEntity, ref, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(newRocket), TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Continue;
 }
 
@@ -884,9 +925,14 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (!IsValidEntity(owner))
 		return true;
 	
-	if (entity == owner)
+	bool fromAbility = pack.ReadCell();
+	
+	Vincent npc = view_as<Vincent>(owner);
+	if (fromAbility && entity == owner && npc.m_bLostHalfHealth)
 	{
-		// do some stuff
+		npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
+		npc.m_flNextOilLeak = GetGameTime(npc.index) + 0.5;
+		return true;
 	}
 	
 	if (!IsValidEnemy(entity, owner))
@@ -900,8 +946,12 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (difference > 90.0)
 		return true;
 	
+	if (entity > 0 && entity <= MaxClients && !HasSpecificBuff(entity, "Burn"))
+		EmitSoundToClient(entity, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity, SNDCHAN_AUTO);
+	
 	SDKHooks_TakeDamage(entity, owner, owner, 3.0, DMG_PLASMA, -1);
-	//NPC_Ignite(entity, owner, 7.0, -1);
+	NPC_Ignite(entity, owner, 7.0, -1);
+	
 	return true;
 }
 		
