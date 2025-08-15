@@ -953,9 +953,9 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (entity > 0 && entity <= MaxClients && !HasSpecificBuff(entity, "Burn"))
 		EmitSoundToClient(entity, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity, SNDCHAN_AUTO);
 	
-	float Proj_Damage = 2.0 * RaidModeScaling;
+	float Proj_Damage = 1.0 * RaidModeScaling;
 	SDKHooks_TakeDamage(entity, owner, owner, Proj_Damage, DMG_PLASMA, -1);
-	NPC_Ignite(entity, owner, Proj_Damage, -1);
+	NPC_Ignite(entity, owner, 5.0, -1, Proj_Damage);
 	
 	return true;
 }
