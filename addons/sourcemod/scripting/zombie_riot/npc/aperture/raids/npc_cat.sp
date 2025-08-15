@@ -778,7 +778,7 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	AcceptEntityInput(projectile, "SetModelScale");
 	SetEntProp(projectile, Prop_Data, "m_nSolidType", 6); // refreshes collision
 	
-	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKETS);
+	SetEntityCollisionGroup(projectile, TFCOLLISION_GROUP_ROCKET_BUT_NOT_WITH_OTHER_ROCKETS);
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 }
 
@@ -832,8 +832,8 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	
-	float damage = 5.0 * RaidModeScaling;
-	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 30.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
+	float damage = 10.0 * RaidModeScaling;
+	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 60.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
 	NextOrbDamage[entity] = gameTime + 0.25;
 }
 
