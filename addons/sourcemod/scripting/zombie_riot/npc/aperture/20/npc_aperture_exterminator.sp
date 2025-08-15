@@ -143,11 +143,11 @@ methodmap ApertureExterminator < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		float flPos[3]; // original
-		float flAng[3]; // original
-		npc.GetAttachment("pedestal_0", flPos, flAng);
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "critgun_weaponmodel_blu_glow", npc.m_iWearable1, "pedestal_0", {0.0,0.0,0.0});
-		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "critgun_weaponmodel_blu", npc.m_iWearable1, "pedestal_0", {0.0,0.0,0.0});
+		TE_SetupParticleEffect("critgun_weaponmodel_blu", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable1);
+		TE_WriteNum("m_bControlPoint1", npc.m_iWearable1);	
+		TE_SendToAll();
+		
+		IgniteTargetEffect(npc.m_iWearable1, .type = true);
 		
 		return npc;
 	}

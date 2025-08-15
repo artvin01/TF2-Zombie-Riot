@@ -638,6 +638,9 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
 		npc.m_iState = APERTURE_BOSS_CHIMERA; // This will store the boss's "type"
+		fl_TotalArmor[npc.index] = 1.0;
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.0;
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
 		damage = 0.0;
