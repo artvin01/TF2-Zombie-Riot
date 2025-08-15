@@ -814,6 +814,7 @@ static bool Vincent_LoseConditions(int iNPC)
 			npc.SetLayerPlaybackRate(AnimLayer, (0.01));
 			npc.SetLayerCycle(AnimLayer, (0.0));
 			npc.SetCycle(0.5);
+			npc.SetPlaybackRate(0.0);
 		}
 		if(npc.Anger)
 		{
