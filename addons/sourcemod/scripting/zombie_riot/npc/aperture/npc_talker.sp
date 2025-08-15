@@ -121,7 +121,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(GetRandomInt(0,2))
 			{
@@ -227,7 +227,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		//return false;
 	}
 	//Wave 5-10
-	if(wave >= 5 && wave <= 10)
+	if(wave >= 5 && wave <= 9)
 	{
 		int maxyapping2 = 6;
 		if(i_TalkDelayCheck == maxyapping2)
@@ -236,7 +236,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(GetRandomInt(0,1))
 			{
@@ -310,7 +310,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		//return false;
 	}
 	//Wave 10
-	if(wave >= 9 && wave <= 11)
+	if(wave == 10)
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -319,7 +319,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(GetRandomInt(0,1))
 			{
@@ -392,7 +392,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		//return false;
 	}
 	//Wave 11 - Spared CAT
-	if(wave >= 10 && wave <= 12 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
+	if(wave == 11 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -401,7 +401,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -435,7 +435,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 11 - Killed CAT
-	if(wave >= 10 && wave <= 12 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
+	if(wave == 11 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -444,7 +444,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -483,7 +483,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -514,7 +514,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -536,7 +536,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 20 - Spared CAT
-	if(wave >= 19 && wave <= 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
+	if(wave > 19 && wave < 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -545,7 +545,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -569,7 +569,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 20 - Killed CAT
-	if(wave >= 19 && wave <= 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
+	if(wave > 19 && wave < 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -578,7 +578,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -602,7 +602,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 21 - Spared CAT | Spared ARIS
-	if(wave >= 20 && wave <= 22 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave == 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -611,7 +611,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -637,7 +637,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 21 - Killed CAT | Spared ARIS
-	if(wave >= 20 && wave <= 22 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave == 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -646,7 +646,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -672,7 +672,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 21 - Spared CAT | Killed ARIS
-	if(wave >= 20 && wave <= 22 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave == 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -681,7 +681,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -707,7 +707,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 21 - Killed CAT | Killed ARIS
-	if(wave >= 20 && wave <= 22 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave == 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -716,7 +716,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -751,7 +751,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -786,7 +786,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -821,7 +821,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -856,7 +856,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -891,7 +891,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -922,7 +922,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -1008,7 +1008,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -1035,7 +1035,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -1053,7 +1053,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 36 - Spared CAT | Spared ARIS
-	if(wave >= 35 && wave <= 37 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave == 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -1062,7 +1062,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
@@ -1080,7 +1080,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	//Wave 37 - Spared CAT | Spared ARIS
-	if(wave >= 36 && wave <= 38 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave == 37 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		int maxyapping = 6;
 		if(i_TalkDelayCheck == maxyapping)
@@ -1089,7 +1089,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 		if(f_TalkDelayCheck < GetGameTime())
 		{
-			f_TalkDelayCheck = GetGameTime() + 5.0;
+			f_TalkDelayCheck = GetGameTime() + 4.0;
 			i_TalkDelayCheck++;
 			switch(i_TalkDelayCheck)
 			{
