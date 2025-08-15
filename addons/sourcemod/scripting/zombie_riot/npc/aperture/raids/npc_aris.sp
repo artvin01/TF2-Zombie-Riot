@@ -1132,7 +1132,7 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
-				npc.m_flAttackHappens = gameTime + 0.1;
+				npc.m_flAttackHappens = gameTime + 0.2;
 				float attack = 1.0;
 				npc.m_flNextMeleeAttack = gameTime + attack;
 				return;

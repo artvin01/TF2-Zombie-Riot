@@ -25,13 +25,16 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"ui/item_robot_arm_drop.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/axe_hit_flesh1.wav",
-	"weapons/axe_hit_flesh2.wav",
-	"weapons/axe_hit_flesh3.wav",
+	"player/taunt_tank_drop.wav",
+};
+
+static const char g_VincentMeleeCharge_Hit[][] =
+{
+	"misc/halloween/spell_mirv_explode_secondary.wav",
 };
 
 static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
@@ -48,6 +51,7 @@ void Vincent_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	PrecacheSoundArray(g_VincentMeleeCharge_Hit);
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_entrance.wav");
 	
@@ -55,6 +59,7 @@ void Vincent_OnMapStart_NPC()
 	PrecacheModel(g_OilModel);
 	
 	PrecacheParticleSystem("gas_can_impact_blue");
+	//you cant do this lol
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vincent");
@@ -100,11 +105,19 @@ methodmap Vincent < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+	}
+	public void PlayVincentMeleeSuper()
+	{
+		int pitch = GetRandomInt(70,80);
+		EmitSoundToAll(g_VincentMeleeCharge_Hit[GetRandomInt(0, sizeof(g_VincentMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+		EmitSoundToAll(g_VincentMeleeCharge_Hit[GetRandomInt(0, sizeof(g_VincentMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
 
 	property float m_flNextOilPouring
@@ -121,7 +134,7 @@ methodmap Vincent < CClotBody
 	
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Vincent npc = view_as<Vincent>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl" /*"models/bots/heavy/bot_heavy.mdl"*/, "1.50", "700", ally, false, true, true, true));
+		Vincent npc = view_as<Vincent>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl" /*"models/bots/heavy/bot_heavy.mdl"*/, "1.35", "700", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -190,7 +203,7 @@ methodmap Vincent < CClotBody
 		RaidModeScaling *= amount_of_people;
 		
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_loop.mp3");
 		music.Time = 161;
 		music.Volume = 1.7;
 		music.Custom = false;
@@ -220,6 +233,22 @@ methodmap Vincent < CClotBody
 		SetEntityRenderColor(npc.index, .a = 0);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		npc.m_iWearable1 = npc.EquipItem("head", "models/bots/heavy/bot_heavy.mdl", _, skin);
+
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			TE_SetupParticleEffect("utaunt_iconicoutline_orange_glow", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable1);
+			TE_WriteNum("m_bControlPoint1", npc.m_iWearable1);	
+			TE_SendToAll();
+		}
+
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl", _, skin);
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+		
+		SetVariantColor(view_as<int>({200, 200, 50, 200}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		return npc;
 	}
@@ -436,6 +465,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 				WorldSpaceCenter(targetTrace, vecHit);
 
 				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+				Vincent_SuperAttackBehindTarget(npc.index, targetTrace, damage, DMG_CLUB, 400.0, 40.0);
 
 				bool Knocked = false;
 				if(!PlaySound)
@@ -487,7 +517,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
-				npc.m_flAttackHappens = gameTime + 0.1;
+				npc.m_flAttackHappens = gameTime + 0.2;
 				float attack = 1.0;
 				npc.m_flNextMeleeAttack = gameTime + attack;
 				return;
@@ -534,6 +564,10 @@ public void Vincent_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 
 }
 
@@ -680,4 +714,82 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	SDKHooks_TakeDamage(entity, owner, owner, 3.0, DMG_PLASMA, -1);
 	//NPC_Ignite(entity, owner, 7.0, -1);
 	return true;
+}
+		
+//Vincent_SuperAttackBehindTarget(npc.index, targetTrace, damage, DMG_CLUB);
+
+void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int damagetype, float DamageRange, float BoxSize)
+{
+	float vAnglePunch[3];
+	float vecForward[3];
+	float vecPos[3], vecTargetPos[3];
+	GetAbsOrigin(iNPC, vecPos);
+	GetAbsOrigin(victim, vecTargetPos);
+	vecPos[2] += 45.0;
+	vecTargetPos[2] += 45.0;
+	GetVectorAnglesTwoPoints(vecPos, vecTargetPos, vAnglePunch);
+	GetAngleVectors(vAnglePunch, vecForward, NULL_VECTOR, NULL_VECTOR);
+
+
+	float VectorTarget_2[3];
+	float VectorForward = DamageRange;
+	
+	VectorTarget_2[0] = vecTargetPos[0] + vecForward[0] * VectorForward;
+	VectorTarget_2[1] = vecTargetPos[1] + vecForward[1] * VectorForward;
+	VectorTarget_2[2] = vecTargetPos[2] + vecForward[2] * VectorForward;
+
+	int red = 255;
+	int green = 255;
+	int blue = 50;
+	int Alpha = 222;
+	int colorLayer4[4];
+	int colorLayer1[4];
+	Vincent npc = view_as<Vincent>(iNPC);
+	npc.PlayVincentMeleeSuper();
+
+	float diameter = BoxSize * 4.0;
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	//we set colours of the differnet laser effects to give it more of an effect
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	TE_SetupBeamPoints(vecTargetPos, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, 0.2, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.6), 0, 5.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(vecTargetPos, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, 0.3, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(vecTargetPos, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+
+
+	Zero(LaserVarious_HitDetection);
+
+	float hullMin[3];
+	float hullMax[3];
+	hullMin[0] = -float(BOB_MELEE_SIZE);
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx(vecTargetPos, VectorTarget_2, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, iNPC);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+			
+	KillFeed_SetKillIcon(iNPC, "fists");
+	
+	float playerPos[3];
+	for (int victim1 = 1; victim1 < MAXENTITIES; victim1++)
+	{
+		if (victim != victim1 && LaserVarious_HitDetection[victim1] && GetTeam(iNPC) != GetTeam(victim1))
+		{
+			GetEntPropVector(victim1, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+			if(victim1 > MaxClients) //make sure barracks units arent bad
+				damage *= 0.35;
+
+			SDKHooks_TakeDamage(victim1, iNPC, iNPC, damage, damagetype, -1);
+			
+
+			Custom_Knockback(iNPC, victim1, 250.0, true);
+		}
+	}
 }
