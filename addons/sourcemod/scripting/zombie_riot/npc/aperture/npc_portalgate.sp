@@ -223,7 +223,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 		}
 	}
 	//Wave 30-40
-	if(wave >= 31)
+	if(wave >= 31 && !Aperture_IsBossDead(APERTURE_BOSS_CHIMERA))
 	{
 		switch(GetRandomInt(0,12))
 		{
@@ -258,6 +258,60 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			case 12:
 			{
 				PortalGateSpawn(npc.index, "npc_refragmented_hostis", pos, ang, team, 20000);
+			}
+		}
+	}
+	if(wave >= 31 && Aperture_IsBossDead(APERTURE_BOSS_CHIMERA))
+	{
+		switch(GetRandomInt(0,11))
+		{
+			case 0:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_headcrabzombie", pos, ang, team, 20000);
+			}
+			case 1:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_fastzombie", pos, ang, team, 20000);
+			}
+			case 2:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_poisonzombie", pos, ang, team, 20000);
+			}
+			case 3:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_combine_police_pistol", pos, ang, team, 20000);
+			}
+			case 4:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_ar2", pos, ang, team, 20000);
+			}
+			case 5:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_elite", pos, ang, team, 20000);
+			}
+			case 6:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_heavy", pos, ang, team, 20000);
+			}
+			case 7:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 20000);
+			}
+			case 8:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 20000);
+			}
+			case 9:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_parasihtta", pos, ang, team, 20000);
+			}
+			case 10:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_hostis", pos, ang, team, 20000);
+			}
+			case 11:
+			{
+				PortalGateSpawn(npc.index, "npc_refragmented_defectio", pos, ang, team, 20000);
 			}
 		}
 	}
