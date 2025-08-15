@@ -230,7 +230,6 @@ methodmap CHIMERA < CClotBody
 		EmitSoundToAll(g_RefractedSniperSpawn[GetRandomInt(0, sizeof(g_RefractedSniperSpawn) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 150);
 		EmitSoundToAll(g_RefractedSniperSpawn[GetRandomInt(0, sizeof(g_RefractedSniperSpawn) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 150);
 		EmitSoundToAll(g_RefractedSniperSpawn[GetRandomInt(0, sizeof(g_RefractedSniperSpawn) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 150);
-		EmitSoundToAll(g_RefractedSniperSpawn[GetRandomInt(0, sizeof(g_RefractedSniperSpawn) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 150);
 	}
 	public void PlayAdaptStart()
 	{
@@ -319,12 +318,12 @@ methodmap CHIMERA < CClotBody
 		
 		float RaidTimeDo = 160.0;
 		npc.m_flBatteryLeftBlade = GetGameTime(npc.index) + (RaidTimeDo * 0.5);
-		npc.m_flSpawnEvilRefractCircles = GetGameTime() + 10.0;
+		npc.m_flSpawnEvilRefractCircles = GetGameTime() + 5.0;
 		npc.m_flSuperSlash = GetGameTime() + 15.0;
+		npc.m_flSpawnSnipers = GetGameTime() + 20.0;
 		RaidModeTime = GetGameTime(npc.index) + RaidTimeDo;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-		npc.m_flSpawnSnipers = GetGameTime() + 20.0;
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -335,6 +334,7 @@ methodmap CHIMERA < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%s", "A.R.I.S. arrives");
 			}
 		}
+		npc.m_flMeleeArmor = 1.25;	
 		
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -376,7 +376,7 @@ methodmap CHIMERA < CClotBody
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/chimera.mp3");
 		music.Time = 126;
-		music.Volume = 0.8;
+		music.Volume = 0.7;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Citadel's End");
 		strcopy(music.Artist, sizeof(music.Artist), "Serious Sam : Siberian Mayhem");
@@ -746,6 +746,9 @@ bool CHIMERA_timeBased(int iNPC)
 			npc.StopStunSound(false);
 			npc.m_flChargeVulnPhase = 0.0;
 			bool MeleeRes = true;
+			npc.m_flSpawnSnipers = 1.0;
+			npc.m_flSpawnEvilRefractCircles = 1.0;
+			//do both abilities twice.
 			if(npc.m_flDamageCharge < 0)
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONCIDERED THE MOST DANGEROUS.");
@@ -925,7 +928,10 @@ bool CHIMERA_RefractedSniper(int iNPC)
 			NPC_CreateByName("npc_refragmented_winter_sniper", -1, pos, ang, GetTeam(npc.index), buffers);
 		}
 	}
-	npc.m_flSpawnSnipers = GetGameTime(npc.index) + 40.0;
+	if(npc.m_flSpawnSnipers == 1.0)
+		npc.m_flSpawnSnipers = GetGameTime(npc.index) + 10.0;
+	else
+		npc.m_flSpawnSnipers = GetGameTime(npc.index) + 40.0;
 	return true;
 }
 
@@ -941,7 +947,10 @@ bool CHIMERA_RefractSpawners(int iNPC)
 	int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 
 	//It should target upto 20 people only, if its anymore it starts becomming un dodgeable due to the nature of AOE laser attacks
 	GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.m_iWearable7);
-	npc.m_flSpawnEvilRefractCircles = GetGameTime(npc.index) + 30.0;
+	if(npc.m_flSpawnEvilRefractCircles == 1.0)
+		npc.m_flSpawnEvilRefractCircles = GetGameTime(npc.index) + 1.0;
+	else
+		npc.m_flSpawnEvilRefractCircles = GetGameTime(npc.index) + 20.0;
 	for(int i; i < sizeof(enemy); i++)
 	{
 		if(enemy[i])

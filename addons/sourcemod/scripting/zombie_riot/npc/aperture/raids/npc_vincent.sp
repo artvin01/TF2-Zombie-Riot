@@ -46,6 +46,21 @@ static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
 
 void Vincent_OnMapStart_NPC()
 {
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Vincent");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vincent");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Aperture;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -60,16 +75,10 @@ void Vincent_OnMapStart_NPC()
 	
 	PrecacheParticleSystem("gas_can_impact_blue");
 	//you cant do this lol
+	PrecacheSoundCustom("#zombiesurvival/aperture/vincent_loop.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aperture/vincent_intro.mp3");
+	PrecacheSoundCustom("#zombiesurvival/aperture/vincent_angry.mp3");
 	
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Vincent");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vincent");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
-	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Aperture;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 
 
@@ -131,6 +140,11 @@ methodmap Vincent < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+	property float m_flOverrideMusicNow
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -148,8 +162,6 @@ methodmap Vincent < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Vincent_OnTakeDamage;
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 
-		EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
-		EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
 		
 		RaidModeTime = GetGameTime(npc.index) + 160.0;
 		b_thisNpcIsARaid[npc.index] = true;
@@ -202,14 +214,47 @@ methodmap Vincent < CClotBody
 			
 		RaidModeScaling *= amount_of_people;
 		
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_loop.mp3");
-		music.Time = 161;
-		music.Volume = 1.7;
-		music.Custom = false;
-		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
-		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
-		Music_SetRaidMusic(music);
+		npc.Anger = false;
+		if(StrContains(data, "forceangry") != -1)
+		{
+			npc.Anger = true;
+			//force angry
+		}
+		npc.m_flMeleeArmor = 1.25;	
+		npc.m_flOverrideMusicNow = GetGameTime() + 5.0;
+		if(npc.Anger)
+		{
+			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "V.I.N.C.E.N.T.");
+			EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.7, 80);
+			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+			CPrintToChatAll("{rare}%t{default}: You want a death robot? {crimson}ILL GIVE YOU ONE.", c_NpcName[npc.index]);
+			CPrintToChatAll("{fullred}Initating extermination of infection based organisms.");
+			npc.m_flRangedArmor = 0.9;
+			npc.m_flOverrideMusicNow = 0.0;
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_angry.mp3");
+			music.Time = 112;
+			music.Volume = 0.9;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
+			strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vincent");
+			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+			EmitSoundToAll("mvm/giant_heavy/giant_heavy_entrance.wav", _, _, _, _, 1.0, 100);	
+			CPrintToChatAll("{rare}%t{default}: Not leaving, so ill do it myself.", c_NpcName[npc.index]);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_intro.mp3");
+			music.Time = 51;
+			music.Volume = 1.2;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
+			strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
+			Music_SetRaidMusic(music);
+		}
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
@@ -241,8 +286,8 @@ methodmap Vincent < CClotBody
 			TE_SendToAll();
 		}
 
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
+		if(npc.Anger)
+			npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_helmet/tw_heavybot_helmet.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl", _, skin);
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -574,6 +619,23 @@ public void Vincent_NPCDeath(int entity)
 static bool Vincent_LoseConditions(int iNPC)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
+	
+	//reuse for music.
+	if(npc.m_flOverrideMusicNow)
+	{
+		if(npc.m_flOverrideMusicNow < GetGameTime())
+		{
+			npc.m_flOverrideMusicNow = 0.0;
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/vincent_loop.mp3");
+			music.Time = 76;
+			music.Volume = 1.2;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Irln Last Stand against the Sea");
+			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+			Music_SetRaidMusic(music, false);
+		}
+	}	
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;

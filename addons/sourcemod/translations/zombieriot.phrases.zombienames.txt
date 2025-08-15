@@ -4906,4 +4906,8 @@
 	{
 		"en"	"Oldest robot in the facility\n Developed with self-consciousness to see how much better robots could fare in fights if given the ability to make their own choices,\n rather than to follow programming."
 	}
+	"V.I.N.C.E.N.T."
+	{
+		"en"	"V.I.N.C.E.N.T."
+	}
 }

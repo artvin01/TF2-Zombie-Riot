@@ -284,6 +284,7 @@ methodmap CAT < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
+		npc.m_flMeleeArmor = 1.25;	
 		
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/cat.mp3");

@@ -396,6 +396,7 @@ methodmap ARIS < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+		npc.m_flMeleeArmor = 1.25;	
 			
 		RaidModeScaling *= amount_of_people;
 		
@@ -403,7 +404,7 @@ methodmap ARIS < CClotBody
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/aris.mp3");
 		music.Time = 167;
 		music.Volume = 1.25;
-		music.Custom = false;
+		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "I Saw a Deer Today (SilvaGunner)");
 		strcopy(music.Artist, sizeof(music.Artist), "Mike Morasky");
 		Music_SetRaidMusic(music);
