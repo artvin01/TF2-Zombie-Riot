@@ -364,7 +364,7 @@ methodmap Vincent < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flThrow_Cooldown = GetGameTime() + 7.0;
 		
-		npc.m_flNextOilPouring = GetGameTime() + 3.0;
+		npc.m_flNextOilPouring = GetGameTime() + 15.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
