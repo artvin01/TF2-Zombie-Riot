@@ -745,7 +745,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_bLostHalfHealth = true;
 	}
 	
-	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
 		if(!npc.m_flTalkRepeat)
 		{
