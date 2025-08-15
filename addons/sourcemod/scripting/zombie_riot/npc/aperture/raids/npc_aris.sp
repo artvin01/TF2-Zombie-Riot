@@ -932,7 +932,7 @@ public void ARIS_ClotThink(int iNPC)
 	{
 		float damage = 10.0;
 		damage *= RaidModeScaling;
-		ResolvePlayerCollisions_Npc(npc.index, 10.0, true);
+		ResolvePlayerCollisions_Npc(npc.index, damage, true);
 	}
 	
 	if (npc.m_bLostHalfHealth || !npc.m_fbGunout)

@@ -2,26 +2,24 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/soldier_mvm_paincrticialdeath03.mp3",
+	"vo/mvm/mght/heavy_mvm_paincrticialdeath01.mp3",
+	"vo/mvm/mght/heavy_mvm_paincrticialdeath02.mp3",
+	"vo/mvm/mght/heavy_mvm_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_painsharp01.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp02.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp03.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp04.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp05.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp06.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp07.mp3",
-	"vo/mvm/norm/soldier_mvm_painsharp08.mp3",
+	"vo/mvm/mght/heavy_mvm_painsharp01.mp3",
+	"vo/mvm/mght/heavy_mvm_painsharp02.mp3",
+	"vo/mvm/mght/heavy_mvm_painsharp03.mp3",
+	"vo/mvm/mght/heavy_mvm_painsharp04.mp3",
+	"vo/mvm/mght/heavy_mvm_painsharp05.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/soldier_mvm_standonthepoint01.mp3",
-	"vo/mvm/norm/soldier_mvm_standonthepoint02.mp3",
-	"vo/mvm/norm/soldier_mvm_standonthepoint03.mp3",
+	"vo/mvm/mght/heavy_mvm_standonthepoint01.mp3",
+	"vo/mvm/mght/heavy_mvm_standonthepoint02.mp3",
+	"vo/mvm/mght/heavy_mvm_standonthepoint03.mp3",
+	"vo/mvm/mght/heavy_mvm_standonthepoint04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -170,6 +168,8 @@ methodmap Vincent < CClotBody
 	{
 		int pitch = GetRandomInt(70,80);
 		EmitSoundToAll(g_VincentJumpSound[GetRandomInt(0, sizeof(g_VincentJumpSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+		EmitSoundToAll(g_VincentJumpSound[GetRandomInt(0, sizeof(g_VincentJumpSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+		EmitSoundToAll(g_VincentJumpSound[GetRandomInt(0, sizeof(g_VincentJumpSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
 	public void PlayIgniteSound()
 	{
@@ -191,13 +191,18 @@ methodmap Vincent < CClotBody
 	property float m_flLeakingOilUntil
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	
 	property float m_flNextOilLeak
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flLazyJumpFix
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	
 	property float m_flOverrideMusicNow
@@ -537,6 +542,15 @@ public void Vincent_ClotThink(int iNPC)
 				
 		}
 	}
+	if (npc.m_flLeakingOilUntil >= gameTime && npc.m_flNextOilLeak < gameTime)
+	{
+		npc.m_flNextOilLeak += 0.5;
+		
+		float vecPos[3];
+		GetAbsOrigin(npc.index, vecPos);
+		
+		npc.PourOil(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
+	}
 	if (npc.m_bDoingOilPouring)
 	{
 		if (npc.m_flNextOilPouring < gameTime)
@@ -562,16 +576,6 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
 		npc.PourOilAbility(30.0, 2.0);
-	}
-	
-	if (npc.m_flLeakingOilUntil >= gameTime && npc.m_flNextOilLeak < gameTime)
-	{
-		npc.m_flNextOilLeak += 0.5;
-		
-		float vecPos[3];
-		GetAbsOrigin(npc.index, vecPos);
-		
-		npc.PourOil(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
 	}
 	
 	if (npc.m_flGetClosestTargetTime < gameTime)
@@ -949,8 +953,9 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (entity > 0 && entity <= MaxClients && !HasSpecificBuff(entity, "Burn"))
 		EmitSoundToClient(entity, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity, SNDCHAN_AUTO);
 	
-	SDKHooks_TakeDamage(entity, owner, owner, 3.0, DMG_PLASMA, -1);
-	NPC_Ignite(entity, owner, 7.0, -1);
+	float Proj_Damage = 2.0 * RaidModeScaling;
+	SDKHooks_TakeDamage(entity, owner, owner, Proj_Damage, DMG_PLASMA, -1);
+	NPC_Ignite(entity, owner, Proj_Damage, -1);
 	
 	return true;
 }
@@ -1109,6 +1114,16 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				if(npc.m_flThrow_Happening > GetGameTime(npc.index) + 0.5)
 				{
 					ThrowPos = enemypos;
+					npc.m_flLazyJumpFix = 1.0;
+				}
+				else
+				{
+					if(npc.m_flLazyJumpFix)
+					{
+						npc.SetVelocity({0.0,0.0,0.0});
+						PluginBot_Jump(npc.index, ThrowPos);
+						npc.m_flLazyJumpFix = 0.0;
+					}
 				}
 				npc.FaceTowards(ThrowPos, 15000.0);
 				static float selfpos[3]; 
@@ -1258,8 +1273,6 @@ void Vincent_AdjustGrabbedTarget(int iNPC)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
 	if(!IsValidEntity(i_GrabbedThis[npc.index]))
-		return;
-	if(npc.m_flThrow_Happening < GetGameTime(npc.index) + 0.25)
 		return;
 	int EnemyGrab = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	float flPos[3]; // original
