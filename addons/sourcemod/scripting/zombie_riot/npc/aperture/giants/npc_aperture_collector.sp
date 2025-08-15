@@ -370,7 +370,7 @@ public void ApertureCollector_AllyDeath(int self, int ally)
 			npc.m_flPercentageAngry = float(npc.m_iAlliesDied)	/ float(npc.m_iAlliesMaxDeath);
 		}
 
-		ModelSize += 1.2 + npc.m_flPercentageAngry;
+		float ModelSize += 1.2 + npc.m_flPercentageAngry;
 		if(ModelSize >= 2.0)
 		{
 			ModelSize = 2.0;
