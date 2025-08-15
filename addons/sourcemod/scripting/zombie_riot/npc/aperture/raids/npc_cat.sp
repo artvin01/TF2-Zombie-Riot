@@ -64,6 +64,13 @@ static const char g_BoomSounds[][] = {
 	"weapons/sentry_damage4.wav",
 };
 
+static const char g_StunCat[][] = {
+	"mvm/mvm_tank_deploy.wav",
+};
+static const char g_StunCatEnd[][] = {
+	"mvm/mvm_tele_activate.wav",
+};
+
 #define CAT_DEFAULT_SPEED 300.0
 
 #define CAT_ORB_SPAM_ABILITY_DURATION 3.0
@@ -102,6 +109,8 @@ void CAT_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHardHitSounds)); i++) { PrecacheSound(g_MeleeHardHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_StunCat));   i++) { PrecacheSound(g_StunCat[i]);   }
+	for (int i = 0; i < (sizeof(g_StunCatEnd));   i++) { PrecacheSound(g_StunCatEnd[i]);   }
 	
 	PrecacheSound("#zombiesurvival/aperture/cat.mp3");
 	PrecacheSound("mvm/mvm_tank_end.wav");
@@ -177,6 +186,14 @@ methodmap CAT < CClotBody
 	{
 		EmitSoundToAll(g_BoomSounds[GetRandomInt(0, sizeof(g_BoomSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayRevivalStart()
+	{
+		EmitSoundToAll(g_StunCat[GetRandomInt(0, sizeof(g_StunCat) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+	}
+	public void PlayRevivalEnd()
+	{
+		EmitSoundToAll(g_StunCatEnd[GetRandomInt(0, sizeof(g_StunCatEnd) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+	}
 	
 	property float m_flNextOrbAbilityTime
 	{
@@ -213,7 +230,12 @@ methodmap CAT < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	
+	property float m_flLifeReversal
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CAT npc = view_as<CAT>(CClotBody(vecPos, vecAng, "models/bots/scout/bot_scout.mdl", "1.35", "5000", ally, false, true, true, true));
@@ -284,7 +306,6 @@ methodmap CAT < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
-		npc.m_flMeleeArmor = 1.25;	
 		
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/cat.mp3");
@@ -311,7 +332,7 @@ methodmap CAT < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		npc.m_flSpeed = CAT_DEFAULT_SPEED;
-		npc.m_flMeleeArmor = 1.0;
+		npc.m_flMeleeArmor = 1.25;
 				
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -330,7 +351,7 @@ methodmap CAT < CClotBody
 			case 0:
 				CPrintToChatAll("{rare}C.A.T.{default}: CONTROL AGAINST TRESPASSERS, NOW ONLINE");
 			case 1:
-				CPrintToChatAll("{rare}C.A.T.{default}: C.A.T., ENGAGED");
+				CPrintToChatAll("{rare}C.A.T.{default}: C.A.T. HAS BEEN ENGAGED");
 			case 2:
 				CPrintToChatAll("{rare}C.A.T.{default}: SYSTEM POWER-UP COMPLETE");
 		}
@@ -342,11 +363,18 @@ methodmap CAT < CClotBody
 public void CAT_ClotThink(int iNPC)
 {
 	CAT npc = view_as<CAT>(iNPC);
-	float gameTime = GetGameTime(npc.index);
+	float gameTime = GetGameTime(iNPC);
 	
+	if(CAT_timeBased(iNPC))
+		return;
 	if(npc.m_flNextDelayTime > gameTime)
 	{
 		return;
+	}
+
+	if(RaidModeTime >= GetGameTime() + 170.0)
+	{
+		RaidModeTime = GetGameTime() + 160.0;
 	}
 
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
@@ -362,7 +390,7 @@ public void CAT_ClotThink(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T.{default}: IT IS TOO LATE TO LEAVE NOW, YOU HAVE BEEN MARKED AS A POTENTIAL THREAT TO THIS RACE");
+		CPrintToChatAll("{rare}C.A.T.{default}: IT IS TOO LATE TO LEAVE NOW, YOU HAVE BEEN MARKED AS A POTENTIAL THREAT TO THIS PLACE, AND THUS MUST BE DISPOSED OF.");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -750,6 +778,27 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	CreateTimer(15.0, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 }
 
+bool CAT_timeBased(int iNPC)
+{
+
+	CAT npc = view_as<CAT>(iNPC);
+	if(npc.m_flLifeReversal)
+	{
+		if(npc.m_flLifeReversal < GetGameTime())
+		{
+			b_NpcIsInvulnerable[npc.index] = false;
+			npc.PlayRevivalEnd();
+			fl_TotalArmor[npc.index] = 1.0;
+			npc.StartPathing();
+			npc.m_bisWalking = true;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			AcceptEntityInput(npc.m_iWearable1, "Enable");
+			npc.m_flLifeReversal = 0.0;
+		}
+		return true;
+	}
+}
+
 static void Cat_Rocket_Particle_Touch(int entity, int target)
 {
 	float gameTime = GetGameTime();
@@ -947,6 +996,27 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 		damage = 0.0;
 		return Plugin_Handled;
+	}
+
+	if(!npc.Anger)
+	{
+		if((ReturnEntityMaxHealth(npc.index) / 2) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		{
+			npc.PlayRevivalStart();
+			CPrintToChatAll("{rare}C.A.T.{default}: INITIATING {unique}LIFE REVERSAL");
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			TE_Particle("teleported_mvm_bot_rings2", VecSelfNpcabs, _, _, npc.index, 1, 0);
+			npc.Anger = true;
+			npc.m_flLifeReversal = GetGameTime(npc.index) + 10.0;
+			AcceptEntityInput(npc.m_iWearable1, "Disable");
+			npc.StopPathing();
+			npc.m_bisWalking = false;
+			npc.AddGesture("ACT_MP_STUN_BEGIN");
+			npc.SetActivity("ACT_MP_STUN_MIDDLE");
+			b_NpcIsInvulnerable[npc.index] = true;
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 2.0, _, 10.0, HEAL_ABSOLUTE);
+			RaidModeTime += (170.0 + DEFAULT_UPDATE_DELAY_FLOAT);
+		}
 	}
 		
 	if(attacker <= 0)
