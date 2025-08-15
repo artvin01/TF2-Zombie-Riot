@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$baseTexture" "hud/leaderboard_class_heavy_robot_nys"
+	"$baseTexture" "hud/leaderboard_class_aris"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

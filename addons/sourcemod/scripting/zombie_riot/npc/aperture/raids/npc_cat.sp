@@ -113,7 +113,7 @@ void CAT_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "C.A.T.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cat");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_explode_nys");
+	strcopy(data.Icon, sizeof(data.Icon), "cat");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;

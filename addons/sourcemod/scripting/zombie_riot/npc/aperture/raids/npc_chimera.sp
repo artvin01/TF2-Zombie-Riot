@@ -96,7 +96,7 @@ void CHIMERA_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "C.H.I.M.E.R.A");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chimera");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_robot_nys");
+	strcopy(data.Icon, sizeof(data.Icon), "chimera");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;
@@ -331,7 +331,7 @@ methodmap CHIMERA < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%s", "A.R.I.S. arrives");
+				ShowGameText(client_check, "item_armor", 1, "%s", "???");
 			}
 		}
 		npc.m_flMeleeArmor = 1.25;	
