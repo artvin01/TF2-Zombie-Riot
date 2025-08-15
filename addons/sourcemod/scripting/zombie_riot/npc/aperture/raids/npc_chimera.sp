@@ -94,7 +94,7 @@ void CHIMERA_OnMapStart_NPC()
 {
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "C.H.I.M.E.R.A");
+	strcopy(data.Name, sizeof(data.Name), "C.H.I.M.E.R.A.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chimera");
 	strcopy(data.Icon, sizeof(data.Icon), "chimera");
 	data.IconCustom = true;
