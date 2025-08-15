@@ -191,7 +191,20 @@ public Action ApertureDispenser_OnTakeDamage(int victim, int &attacker, int &inf
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	if(attacker <= MaxClients)
+	{
+		//counters too hard, no fun.
+		if(TeutonType[attacker] != TEUTON_NONE)
+		{
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+		if(dieingstate[attacker] != 0)
+		{
+			damage *= 0.25;
+			return Plugin_Changed;
+		}
+	}	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

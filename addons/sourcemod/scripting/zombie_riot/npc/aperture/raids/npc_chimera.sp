@@ -653,11 +653,11 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	{
 		if(damagetype & DMG_CLUB)
 		{
-			npc.m_flDamageCharge += damage * 2.0;
+			npc.m_flDamageCharge += damage * 1.0;
 		}
 		else
 		{
-			npc.m_flDamageCharge -= damage * 2.0;
+			npc.m_flDamageCharge -= damage * 1.0;
 		}
 	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -767,10 +767,11 @@ bool CHIMERA_timeBased(int iNPC)
 			float MaxRes = float(ReturnEntityMaxHealth(npc.index)) * 0.25;
 
 			float Value = (MaxRes / npc.m_flDamageCharge);
-			if(Value <= 0.25)
+			if(Value >= 2.0)
 			{
-				Value = 0.25;
+				Value = 2.0;
 			}
+			
 			if(!MeleeRes)
 			{
 				npc.m_flRangedArmor = Value;
