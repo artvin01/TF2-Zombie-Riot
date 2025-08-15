@@ -1402,7 +1402,8 @@ methodmap Citizen < CClotBody
 
 			this.UpdateModel();
 			
-			IgnorePlayer[client] = false;
+			if(client > 0 && client <= MaxClients)
+				IgnorePlayer[client] = false;
 		}
 	}
 	public bool CanTalk()
