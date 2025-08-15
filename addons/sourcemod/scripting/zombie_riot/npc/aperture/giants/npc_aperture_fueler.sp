@@ -271,7 +271,7 @@ void ApertureFuelerSelfDefense(ApertureFueler npc, float gameTime, int target, f
 					float damageDealt = 150.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 5.5;
 
 					int DamageType = DMG_CLUB;
 					

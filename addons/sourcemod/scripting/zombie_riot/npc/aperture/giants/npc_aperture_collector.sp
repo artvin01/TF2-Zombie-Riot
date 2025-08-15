@@ -303,9 +303,9 @@ void ApertureCollectorSelfDefense(ApertureCollector npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
+						damageDealt *= 5.0;
 					damageDealt *= (npc.m_flPercentageAngry * 2.0) + 1.0;
 
 

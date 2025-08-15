@@ -356,7 +356,7 @@ void ApertureSuppressorSelfDefense(ApertureSuppressor npc, float gameTime, int t
 				{
 					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
+						damageDealt *= 4.0;
 					if(npc.m_fbRangedSpecialOn)
 						damageDealt *= 2.0;
 

@@ -303,7 +303,7 @@ void ApertureHalterSelfDefense(ApertureHalter npc, float gameTime, int target, f
 					float damageDealt = 100.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 4.5;
 
 					int DamageType = DMG_CLUB;
 					
