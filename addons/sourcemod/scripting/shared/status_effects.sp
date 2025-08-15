@@ -3033,8 +3033,8 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 1.5;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffect 		= INVALID_FUNCTION;
+	data.LinkedStatusEffectNPC 		= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3049,8 +3049,8 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffect 		= INVALID_FUNCTION;
+	data.LinkedStatusEffectNPC 		= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3081,8 +3081,8 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffect 		= INVALID_FUNCTION;
+	data.LinkedStatusEffectNPC 		= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3110,8 +3110,8 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffect 		= INVALID_FUNCTION;
+	data.LinkedStatusEffectNPC 		= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3126,8 +3126,8 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffect 		= INVALID_FUNCTION;
+	data.LinkedStatusEffectNPC 		= INVALID_FUNCTION;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3142,8 +3142,8 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffect 		= INVALID_FUNCTION;
+	data.LinkedStatusEffectNPC 		= INVALID_FUNCTION;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
