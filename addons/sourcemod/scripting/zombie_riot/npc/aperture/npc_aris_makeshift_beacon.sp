@@ -251,9 +251,9 @@ void ARISBeacon_GiveArmor(int entity, int victim, float &healingammount)
 	ARISBeacon npc = view_as<ARISBeacon>(entity);
 	switch (npc.m_iType)
 	{
-		case ARIS_MELEE_RESISTANCE: ApplyStatusEffect(entity, victim, "Placeholder Buff Name (Resistance)", 0.6);
-		case ARIS_MELEE_DAMAGE: ApplyStatusEffect(entity, victim, "Placeholder Buff Name (Damage)", 0.6);
-		case ARIS_MELEE_SPEED: ApplyStatusEffect(entity, victim, "Placeholder Buff Name (Speed)", 0.6);
+		case ARIS_MELEE_RESISTANCE: ApplyStatusEffect(entity, victim, "A.R.I.S. ARMOR MODE", 0.6);
+		case ARIS_MELEE_DAMAGE: ApplyStatusEffect(entity, victim, "A.R.I.S. DAMAGE MODE", 0.6);
+		case ARIS_MELEE_SPEED: ApplyStatusEffect(entity, victim, "A.R.I.S. SPEED MODE", 0.6);
 	}
 }
 

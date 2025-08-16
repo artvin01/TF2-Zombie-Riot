@@ -3108,7 +3108,7 @@ void StatusEffects_Aperture()
 	//-1.0 means unused
 	data.DamageTakenMulti			= -1.0;
 	data.DamageDealMulti			= 1.0;
-	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModif			= 1.25;
 	data.AttackspeedBuff			= -1.0;
 	data.LinkedStatusEffect			= 0;
 	data.LinkedStatusEffectNPC 		= 0;
@@ -3150,7 +3150,7 @@ void StatusEffects_Aperture()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Placeholder Buff Name (Resistance)");
+	strcopy(data.BuffName, sizeof(data.BuffName), "A.R.I.S. ARMOR MODE");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -3166,7 +3166,7 @@ void StatusEffects_Aperture()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Placeholder Buff Name (Damage)");
+	strcopy(data.BuffName, sizeof(data.BuffName), "A.R.I.S. DAMAGE MODE");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -3182,7 +3182,7 @@ void StatusEffects_Aperture()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Placeholder Buff Name (Speed)");
+	strcopy(data.BuffName, sizeof(data.BuffName), "A.R.I.S. SPEED MODE");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
