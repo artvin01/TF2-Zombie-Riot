@@ -35,33 +35,33 @@ public float Rogue_Encounter_RiftShop()
 
 	bool rare = Rogue_GetFloor() > 0;
 
-	if(Rogue_GetRandomArtfiact(artifact, true, 6) != -1)
+	if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 		ShopListing.PushArray(artifact);
 
 	if(ingots > 11)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 		
-		if(!rare && Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(!rare && Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 17)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 23)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(rare)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
 	}
 

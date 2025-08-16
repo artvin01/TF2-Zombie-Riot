@@ -116,7 +116,7 @@ public void Rogue_Vote_Clairvoyance(const Vote vote, int index)
 			PrintToChatAll("%t", "Clairvoyance Lore 4");
 
 			Artifact artifact;
-			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+			if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
 		}
 		default:
@@ -130,7 +130,7 @@ public void Rogue_Vote_Clairvoyance(const Vote vote, int index)
 				PrintToChatAll("%t", "Clairvoyance Lore 3a");
 
 				Artifact artifact;
-				if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+				if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 					Rogue_GiveNamedArtifact(artifact.Name);
 				
 			}
@@ -203,7 +203,7 @@ public void Rogue_Vote_Printer(const Vote vote, int index)
 		PrintToChatAll("%t", "Printer Lore 2");
 
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
@@ -225,7 +225,7 @@ public float Rogue_Encounter_WishFulfilled()
 			vote.Config[0] = 0;
 			list.PushArray(vote);
 		}
-		else if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		else if(Rogue_GetRandomArtifact(artifact, true) != -1)
 		{
 			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -247,7 +247,7 @@ public void Rogue_Vote_WishFulfilled(const Vote vote, int index)
 	else
 	{
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
@@ -666,7 +666,7 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 					Rogue_AddIngots(-4);
 
 					Artifact artifact;
-					if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+					if(Rogue_GetRandomArtifact(artifact, true) != -1)
 						Rogue_GiveNamedArtifact(artifact.Name);
 					
 					title = 'c';
@@ -756,7 +756,7 @@ public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 		Rogue_RemoveNamedArtifact(vote.Config);
 		
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 	else
@@ -1006,7 +1006,7 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 		{
 			GiveCash(5000);
 			Artifact artifact;
-			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+			if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
 		}
 		case 1:
