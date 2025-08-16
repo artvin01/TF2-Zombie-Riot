@@ -957,7 +957,7 @@ methodmap ARIS < CClotBody
 				armorFromThisTarget += 0.01;
 				b_EnemyHitByBlast[target] = false;
 			}
-			damage *= 10.0;
+			damage *= 7.0;
 			damage *= RaidModeScaling;
 			
 			if (damage > 0.0)
@@ -1413,7 +1413,7 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 			// Let's just ASSUME this is ARIS
 			float damage = 120.0;
 			
-			if (RaidBossActive > 0)
+			if (IsValidEntity(RaidBossActive))
 				damage *= RaidModeScaling;
 			
 			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, ARIS_ROCKET_BLAST_RADIUS);

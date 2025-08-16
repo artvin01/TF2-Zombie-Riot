@@ -238,9 +238,7 @@ public void ApertureMinigunnerPerfected_NPCDeath(int entity)
 	}
 		
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/gatling_spin.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/gatling_spin.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/gatling_shoot.wav");
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

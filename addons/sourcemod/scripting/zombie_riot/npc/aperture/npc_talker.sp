@@ -468,7 +468,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{rare}???{default}: And yet...you took advantage of that and you disassembled him, part-by-part.");
+					CPrintToChatAll("{rare}???{default}: And yet...you took advantage of that and you disassembled it, part-by-part.");
 				}
 				case 5:
 				{

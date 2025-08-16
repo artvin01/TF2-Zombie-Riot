@@ -293,25 +293,42 @@ void ApertureResearcherSelfDefense(ApertureResearcher npc, float gameTime, int t
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			int HowManyEnemeisAoeMelee = 64;
+			Handle swingTrace;
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, _, HowManyEnemeisAoeMelee);
+			delete swingTrace;
+			bool PlaySound = false;
+			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
+				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
+					continue;
+				if(!IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					continue;
+
+				int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
 				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
 				
-				if(IsValidEnemy(npc.index, target))
+				WorldSpaceCenter(targetTrace, vecHit);
+
+				float damage = 500.0;
+				if(ShouldNpcDealBonusDamage(targetTrace))
+					damage *= 3.5;
+				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+
+				bool Knocked = false;
+				if(!PlaySound)
 				{
-					float damageDealt = 500.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
+					PlaySound = true;
+				}
+				
+				Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+			}
+			if(PlaySound)
+			{
+				npc.PlayMeleeHitSound();
 			}
 			delete swingTrace;
 		}
