@@ -241,26 +241,12 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-		
+	if(attacker > MaxClients)
+	{
+		damage *= 10.0;
+	}
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) 
 	{
-		/*npc.PlayMeleeWarCry();
-		switch(GetRandomInt(0,2))
-		{
-			case 0:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: Gah! See what you made me do!");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: I really did not wanna do this, but you left me no choice!");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: Why can't we just resolve things peacefully?!");
-			}
-		}
-		*/
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
 			ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);

@@ -1780,7 +1780,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			Force_ExplainBuffToClient(victim, "Envenomed");
 		}
 	}
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{

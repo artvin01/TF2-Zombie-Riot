@@ -39,22 +39,22 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_AngrySounds[][] = {
-	"vo/mvm/mght/taunts/mvm_m_taunts01.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts02.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts03.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts04.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts05.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts06.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts07.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts08.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts09.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts10.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts11.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts12.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts13.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts14.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts15.mp3",
-	"vo/mvm/mght/taunts/mvm_m_taunts16.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts01.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts02.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts03.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts04.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts05.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts06.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts07.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts08.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts09.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts10.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts11.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts12.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts13.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts14.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts15.mp3",
+	"vo/mvm/mght/taunts/demoman_mvm_m_taunts16.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {

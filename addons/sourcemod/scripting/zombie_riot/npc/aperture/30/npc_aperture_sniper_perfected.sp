@@ -79,7 +79,7 @@ methodmap ApertureSniperPerfected < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public ApertureSniperPerfected(float vecPos[3], float vecAng[3], int ally)
