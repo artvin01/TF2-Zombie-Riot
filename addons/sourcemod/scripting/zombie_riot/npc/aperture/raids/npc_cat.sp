@@ -324,6 +324,8 @@ methodmap CAT < CClotBody
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 		RaidModeScaling *= 0.75;
+		RaidModeScaling *= 1.19;
+		//scaling old
 		//scaling old
 			
 		RaidModeScaling *= amount_of_people;
@@ -409,7 +411,7 @@ public void CAT_ClotThink(int iNPC)
 	}
 
 	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
