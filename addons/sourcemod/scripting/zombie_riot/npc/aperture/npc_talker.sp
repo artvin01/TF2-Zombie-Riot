@@ -120,6 +120,7 @@ methodmap Talker < CClotBody
 		return npc;
 	}
 }
+/*
 public void Talker_ClotThink(Talker npc, int iNPC)
 {
 	if(i_TalkDelayCheck == -1)
@@ -310,7 +311,8 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 
 	i_TalkDelayCheck++;
 }	
-/*
+*/
+
 public void Talker_ClotThink(Talker npc, int iNPC)
 {
 	//float gameTime = GetGameTime(npc.index);
@@ -1320,7 +1322,6 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 }
-*/
 
 //
 // SHARED RAID BOSS FUNCTIONS
