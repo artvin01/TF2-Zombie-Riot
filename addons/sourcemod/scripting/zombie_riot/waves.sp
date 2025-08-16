@@ -3829,6 +3829,13 @@ void WavesUpdateDifficultyName()
 
 void Waves_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
 {
+	if(Aperture_ShouldDoLastStand())
+	{
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			ApplyStatusEffect(client, client, "Chaos Infliction", 999.0);
+		}
+	}
 	if(ModFuncAlly != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, ModFuncAlly);
