@@ -291,16 +291,12 @@ void ApertureResearcherSelfDefense(ApertureResearcher npc, float gameTime, int t
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
 			int HowManyEnemeisAoeMelee = 64;
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, _, HowManyEnemeisAoeMelee);
+			npc.DoSwingTrace(swingTrace, target, _, _, _, _, _, HowManyEnemeisAoeMelee);
 			delete swingTrace;
 			bool PlaySound = false;
-			bool silenced = NpcStats_IsEnemySilenced(npc.index);
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -317,8 +313,6 @@ void ApertureResearcherSelfDefense(ApertureResearcher npc, float gameTime, int t
 				if(ShouldNpcDealBonusDamage(targetTrace))
 					damage *= 3.5;
 				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
-
-				bool Knocked = false;
 				if(!PlaySound)
 				{
 					PlaySound = true;
@@ -330,7 +324,6 @@ void ApertureResearcherSelfDefense(ApertureResearcher npc, float gameTime, int t
 			{
 				npc.PlayMeleeHitSound();
 			}
-			delete swingTrace;
 		}
 	}
 
