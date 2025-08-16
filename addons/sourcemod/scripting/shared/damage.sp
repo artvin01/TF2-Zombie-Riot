@@ -116,6 +116,8 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 	}
+	if(!CheckInHud())
+		Rogue_TakeDamage(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
 	if(!CheckInHud() && !b_NpcIsTeamkiller[attacker])
 	{

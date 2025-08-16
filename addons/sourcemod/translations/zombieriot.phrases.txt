@@ -3559,6 +3559,16 @@
 		"en"	"Search Store Using Tags"
 		"fr"	"Chercher la Boutique avec des Étiquettes"
 	}
+	"Archetype Type"
+	{
+		"#format"	"{1:t}"
+		"en"	"Archetype: {1}"
+	}
+	"Faction List"
+	{
+		"#format"	"{1:s}"
+		"en"	"Faction: {1}"
+	}
 	"Tags List"
 	{
 		"#format"	"{1:s}"

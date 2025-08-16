@@ -126,7 +126,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
-	if(i_WeaponArchetype[weapon] == 28)	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

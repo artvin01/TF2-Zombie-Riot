@@ -253,7 +253,7 @@ public void Rogue_StartSP2_WaveStart()
 
 public void Rogue_StartSP3_WaveStart()
 {
-	StartSP(500.0);
+	StartSP(50.0);
 }
 
 static void StartSP(float amount)
