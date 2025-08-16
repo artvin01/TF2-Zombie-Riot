@@ -298,28 +298,28 @@ methodmap Vincent < CClotBody
 		{	
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
-		
-		if(RaidModeScaling < 55)
+
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
+		//scaling old
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
