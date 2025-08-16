@@ -485,6 +485,16 @@ methodmap ARIS < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 4R1S R3P0R71N6 F0R DU7Y");
+			case 1:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 4R1S = 10CK3D 4ND L04D3D");
+			case 2:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 0NL1N3, 455UM1N6 MY FUNC710NS");
+		}
+
 		return npc;
 	}
 	
@@ -524,6 +534,16 @@ methodmap ARIS < CClotBody
 		
 		// Each rocket will create a real rocket a bit later
 		CreateTimer(ARIS_ROCKET_DELAY, Timer_ARIS_FireRocketTowardsPlayer, this.index, TIMER_FLAG_NO_MAPCHANGE);
+
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: F1R3 1N 7H3 H0L3");
+			case 1:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: DUCK 4ND C0V3R");
+			case 2:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
+		}
 	}
 	
 	public void FireRocketTowardsPlayer()
@@ -624,6 +644,43 @@ methodmap ARIS < CClotBody
 		this.m_iLastBeaconRef = EntIndexToEntRef(npcSpawn);
 		
 		this.PlayDeployBeaconSound();
+
+		if(ARIS_MELEE_RESISTANCE)
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: D3P10Y1N6 R3S1574N7 M345UR3S");
+				case 1:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: R3S1574NC3S 0NL1N3");
+				case 2:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: D3F3NS3 D3PL0Y3D");
+			}
+		}
+		if(ARIS_MELEE_DAMAGE)
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: 8UFF3R1N6 D4M463");
+				case 1:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 800S73R D3PL0Y3D");
+				case 2:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 = 8UFF3D");
+			}
+		}
+		if(ARIS_MELEE_SPEED)
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: V3L0C17Y R151N6");
+				case 1:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: 4CC3L3R4710N 1NCR34S3D");
+				case 2:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: M0M3N7UM CH4N63");
+			}
+		}
 	}
 	
 	public void ToggleWeapon()
@@ -973,7 +1030,7 @@ public void ARIS_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}C.A.T{default}: Intruders taken care of.");
+		CPrintToChatAll("{rare}A.R.I.S.{default}: M15510N 5UCC355FUL, D3SP173 MY C4P481L1713S");
 		return;
 	}
 
@@ -982,7 +1039,7 @@ public void ARIS_ClotThink(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{blue}C.A.T{default}: We hope your stay at Aperture was pleasant!");
+		CPrintToChatAll("{rare}A.R.I.S.{default}: 7H3 3N3M13S H4V3 F0RF317, M15510N 5UCC355FUL");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
