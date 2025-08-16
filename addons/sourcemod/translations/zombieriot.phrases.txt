@@ -3688,7 +3688,7 @@
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 	}
-	"Vincent Raid Desc"
+	"Laboratories Raid Desc"
 	{
 		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
 	}

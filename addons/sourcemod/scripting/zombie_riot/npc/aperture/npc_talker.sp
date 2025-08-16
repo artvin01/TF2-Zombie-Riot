@@ -1332,7 +1332,7 @@ static void Aperture_GetDyingBoss(CClotBody npc, char[] buffer, int size)
 
 bool Aperture_ShouldDoLastStand()
 {
-	return StrContains(WhatDifficultySetting_Internal, "Vincent") == 0;
+	return StrContains(WhatDifficultySetting_Internal, "Laboratories") == 0;
 }
 
 bool Aperture_IsBossDead(int type)
