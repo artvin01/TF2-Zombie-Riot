@@ -1101,7 +1101,7 @@ public void ARIS_ClotThink(int iNPC)
 			// This is just the warning
 			npc.m_flNextRocketBarrageMain = gameTime + 2.0;
 			npc.m_flNextRocketBarrageStart = FAR_FUTURE; // Need to wait until it's done
-			
+		
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
@@ -1111,7 +1111,6 @@ public void ARIS_ClotThink(int iNPC)
 				case 2:
 					CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
 			}
-			
 			npc.PlayRocketReadyingSound();
 		}
 		

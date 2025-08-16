@@ -748,7 +748,6 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 		//	TE_SendToAll();
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
 			TE_SendToAll();
-	
 			position[2] = startPosition[2] + 50.0;
 			ExpidonsaGroupHeal(client, Ionrange, 500, 1000.0, 1.25, true, .LOS = false,.VecDoAt = position);	
 			//new Float:fDirection[3] = {-90.0,0.0,0.0};
