@@ -3109,6 +3109,8 @@ void DoGlobalMultiScaling()
 
 	float multi = playercount / 4.0;
 	
+	Rogue_Rift_MultiScale(multi);
+	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
 
