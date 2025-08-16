@@ -744,6 +744,11 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 			}
 		}
 	}
+	// Wave 21+ - Instantly kill self because we don't want to talk
+	if(wave >= 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	{
+		SmiteNpcToDeath(npc.index);
+	}
 	//Wave 25 - Spared CAT | Spared ARIS
 	if(wave >= 24 && wave <= 26 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
@@ -946,11 +951,6 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 			}
 		}
 	}
-	// Wave 31+ - Instantly kill self because we don't want to talk
-	if(wave >= 31 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		SmiteNpcToDeath(npc.index);
-	}
 	//Wave 35 - Spared CAT | Spared ARIS
 	if(wave >= 34 && wave <= 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
@@ -1059,6 +1059,10 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 			}
 		}
+	}
+	if(wave >= 36 && (Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
+	{
+		SmiteNpcToDeath(npc.index);
 	}
 	//Wave 36 - Spared CAT | Spared ARIS
 	if(wave == 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))

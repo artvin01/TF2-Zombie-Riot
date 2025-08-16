@@ -595,14 +595,17 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
 		npc.PourOilAbility(30.0, 2.0);
-		switch(GetRandomInt(0,2))
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			case 0:
-				CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
-			case 1:
-				CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
-			case 2:
-				CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
+				case 1:
+					CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
+				case 2:
+					CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+			}
 		}
 	}
 	
@@ -813,10 +816,18 @@ static void Vincent_GrantItem()
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 		{
-			Items_GiveNamedItem(client, "Expidonsan Research Card");
-			CPrintToChat(client,"{default}Vincent permitted you to access the laboratories. You have obtained: {unique}Expidonsan Research Card.");
+			if(!npc.Anger)
+			{
+				Items_GiveNamedItem(client, "Expidonsan Research Card");
+				CPrintToChat(client,"{default}Vincent permitted you to access the laboratories. You have obtained: {unique}Expidonsan Research Card.");
+			}
+			if(npc.Anger)
+			{
+				Items_GiveNamedItem(client, "Expidonsan Research Card");
+				CPrintToChat(client,"{default}Vincent is gone...all that's left is this keycard on the floor. You have obtained: {crimson}Expidonsan Research Card.");
+			}
 		}
 	}
 }
@@ -1460,14 +1471,17 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			Timeslam *= 0.75;
 			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 35.0;
 		}
-		switch(GetRandomInt(0,2))
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			case 0:
-				CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
-			case 1:
-				CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
-			case 2:
-				CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
+				case 1:
+					CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
+				case 2:
+					CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
+			}
 		}
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);
