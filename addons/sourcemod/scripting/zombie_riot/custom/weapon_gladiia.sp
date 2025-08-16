@@ -23,16 +23,6 @@ void Gladiia_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
-		{
-			if (HealingTimer[client] != null)
-			{
-				delete HealingTimer[client];
-			}
-			HealingTimer[client] = null;
-
-			HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
-		}
 		case WEAPON_GLADIIA:
 		{
 			if (HealingTimer[client] != null)
@@ -86,6 +76,19 @@ void Gladiia_Enable(int client, int weapon)
 				}
 			}
 		}
+		default:
+		{
+			if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+			{
+				if (HealingTimer[client] != null)
+				{
+					delete HealingTimer[client];
+				}
+				HealingTimer[client] = null;
+
+				HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
+			}
+		}
 	}
 }
 
@@ -111,7 +114,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon != INVALID_ENT_REFERENCE)
 			{
-				switch(i_CustomWeaponEquipLogic[weapon])
+				if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
 				{
 					case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
 					{
