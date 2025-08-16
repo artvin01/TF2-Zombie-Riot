@@ -16,12 +16,6 @@ void Flametail_RoundStart()
 	Zero(DoubleHit);
 	KaziBuffed = false;
 }
-
-bool IsWeaponKazimierz(int weapon)
-{
-	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
-}
-
 void ResetFlameTail()
 {
 	KaziBuffed = false;
