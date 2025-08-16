@@ -3013,8 +3013,8 @@ static Action Timer_FadoutOffset_Global(Handle Timer, int nothing)
 {
 	if(nothing == 50)
 	{
-		CPrintToChatAll("{crimson}The Island falls down as Twirl escorts you, Lelouch was successfull in the end, but he paid with his life..");
-		CPrintToChatAll("{crimson}The Space to the Courtain has weakened... something terrible is comming...");
+		CPrintToChatAll("{crimson}The Island falls down as Twirl escorts you, Lelouch was successful in the end, but he paid with his life..");
+		CPrintToChatAll("{crimson}The Space to the Curtain has weakened... something terrible is comming...");
 		for(int i=1 ; i <= MaxClients ; i++)
 		{
 			if(IsValidClient(i) && Rogue_Mode())
