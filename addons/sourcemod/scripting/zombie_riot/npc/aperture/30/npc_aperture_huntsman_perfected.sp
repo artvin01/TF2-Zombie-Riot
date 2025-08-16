@@ -12,10 +12,6 @@ static const char g_HurtSounds[][] = {
 	"vo/mvm/norm/sniper_mvm_painsharp02.mp3",
 	"vo/mvm/norm/sniper_mvm_painsharp03.mp3",
 	"vo/mvm/norm/sniper_mvm_painsharp04.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp05.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp06.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp07.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
