@@ -344,7 +344,6 @@ public void Bad_PostFortifiedDeath(const char[] output, int caller, int activato
 		ScalingMultiplyEnemyHpGlobalScale(spawn_index);
 		if(spawn_index > MaxClients)
 			Zombies_Currently_Still_Ongoing++;
-			
 		NpcStats_CopyStats(caller, spawn_index);
 	}
 }

@@ -185,8 +185,8 @@
 	}
 	"W.F. Swordsman Desc"
 	{
-		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances for a short time."
-		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону на небольшой промежуток времени."
+		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances (can be silenced) for a short time."
+		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону(может быть заткнуто) на небольшой промежуток времени."
 	}
 	"W.F. Elite Desc"
 	{
@@ -195,7 +195,7 @@
 	}
 	"W.F. Giant Swordsman Desc"
 	{
-		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies."
+		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Гигантский комбайн рыцарь генетически улучшен что бы быть более устойчивым.\nСопротивление урону от атаки пульсом все ещё применяется (Моежт быть заглушено)."
 	}
 	"W.F. DDT Desc"
@@ -205,12 +205,12 @@
 	}
 	"W.F. Golden Collos Desc"
 	{
-		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies."
+		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Комбайны попытались использовать древнию римскую магию что бы призвать сильных союзников, так и появились Золотые Коллосы.\nСопротивление от атаки пульсом так же применяться(может быть заглушено)."
 	}
 	"W.F. Overlord Desc"
 	{
-		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage."
+		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage (can be silenced)."
 	}
 	"Scout Assaulter Desc"
 	{
@@ -229,7 +229,7 @@
 	}
 	"Flying Armor Desc"
 	{
-		"en" 		"Mysterious flying magical armor from combine rome experiments. Somehow even this got infected.\nDuplicates on death ."
+		"en" 		"Mysterious flying magical armor from combine rome experiments. Somehow even this got infected.\nDuplicates on death (can be silenced)."
 		"ru"		"Мистический летающая магическая броня от Римских эксперементов комбайнов. как-то даже это заразилось.\nДублируется при смерти(Может быть заглушено)."
 	}
 	"Tiny Flying Armor Desc"
@@ -239,12 +239,12 @@
 	}
 	"Kamikaze Demo Desc"
 	{
-		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death."
+		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death (can be silenced)."
 		"ru"		"Очень быстрые,Очень высокий урон,но мало здоровья,Убейте их до того как они доберутся до вас и ваших построек.\nВзрыв после смерти (Может быть заглушено)."
 	}
 	"Medic Supporter Desc"
 	{
-		"en" 		"This medic will heal any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
+		"en" 		"This medic will heal (can be silenced) any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
 		"ru"		"Этот медик будет лечить (может быть заткнуто) Любого зомби рядом с ним,Убийство цель лечения разозлит медика.\nБудет лучше убить медика первым,Разозленные медики очень сильные."
 	}
 	"Giant Heavy Brawler Desc"
@@ -289,7 +289,7 @@
 	}
 	"Sniper Main Desc"
 	{
-		"en" 		"These snipers lost their function to snipe you.\nThey will spam you down via smg's instead, when losing enough health they will bring out their melee.\nThis melee deals heavy damage."
+		"en" 		"These snipers lost their function to snipe you.\nThey will spam you down via smg's instead, when losing enough health they will bring out their melee (can be silenced).\nThis melee deals heavy damage."
 		"ru"		"Эти снайперы Потеряли возможность стрелять из снайперской винтовки.\Они будут стрелять вас из СМГ,когда теряют достаточно здоровья достанут оружие ближнего боя(Может быть заткнуто).\nЭто оружие ближнего боя наносит большой урон."
 	}
 	"Demoknight Main Desc"
@@ -322,23 +322,23 @@
 
 	"Xeno Headcrab Zombie Desc"
 	{
-		"en" 		"This zombie will reach very high speeds once hurt."
+		"en" 		"This zombie will reach very high speeds once hurt (can be silenced)."
 		"ru"		"Этот зомби станет очень быстрым когда по нему нанесут урон(Может быть заглушено)."
 
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater."
+		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater (can be silenced)."
 		"ru"		"Укрепленные зомби имеют мутированную версию ксено инфекции,что приводит к усиленнию их способностей.(могут быть заглушены)."
 	}
 	"Xeno Fast Zombie Desc"
 	{
-		"en" 		"The first hit deals no damage at all. No matter how high."
+		"en" 		"The first hit deals no damage at all. No matter how high (can be silenced)."
 		"ru"		"Первый удар не насёт никакого урона.Не важно насколько сильным он был(Можно заглушено)."
 	}
 	"Xeno Fortified Fast Zombie Desc"
 	{
-		"en" 		"Stronger version of the Xeno Fast Zombie"
+		"en" 		"Stronger version of the Xeno Fast Zombie (can be silenced)"
 		"ru"		"Усиленный вариант Быстрого ксено зомби"
 	}
 	"Xeno Torsoless Headcrab Zombie Desc"
@@ -353,12 +353,12 @@
 	}
 	"Xeno Fortified Poison Zombie Desc"
 	{
-	    "en" 		"Stronger version of the Xeno Poison Zombie"
+	    "en" 		"Stronger version of the Xeno Poison Zombie (can be silenced)"
 	    "ru" 		"Более сильный вариант Ксено ядовитого зомби"	    	    
 	}
 	"Xeno Fortified Giant Poison Zombie Desc"
 	{
-		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger."
+		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger (can be silenced)."
  		"ru" 		"Сохранили способности ''нормального''и более сильные чем он"
 	}
 	"Xeno Father Grigori Desc"
@@ -373,7 +373,7 @@
 	}
 	"Xeno Metro Raider Desc"
 	{
-		"en" 		"When hurt, they will attack 10x as fast, shredding everything."
+		"en" 		"When hurt, they will attack 10x as fast, shredding everything (can be silenced)."
 		"ru"		"Когда получает урон они будут атаковать в десять раз быстрее,разнося все что можно(Можно заглушить)."
 	}
 	"Xeno Rifler Desc"
@@ -388,7 +388,7 @@
 	}
 	"Xeno Swordsman Desc"
 	{
-		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies."
+		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Ксено инфекция смогла заразить даже римские силы.\nСопротивление от атаки пульсом(Можно заглушить)."
 	}
 	"Xeno Elite Desc"
@@ -398,22 +398,22 @@
 	}
 	"Xeno Giant Swordsman Desc"
 	{
-		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies."
+		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Ксено инфекция смогла дать Древним Римлиням способность бежать и атаковать намного быстрее!.\nСопротивление от атаки пульсом(Можно заглушить)."
 	}
 	"Xeno DDT Desc"
 	{
-		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time."
+		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time (can be silenced)."
 		"ru"		"Они получили способности невидимости, когда получат урон они получат почти полную невидимости на короткий промежуток времени (можно заглушить)."
 	}
 	"Xeno Golden Collos Desc"
 	{
-		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies."
+		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies (can be silenced)."
 		"ru"		"Даже статуи из чистого золота могут быть заражены Ксено радиацией.\nСопротивление урону от атаки пульсом (можно заглушить)."
 	}
 	"Xeno Overlord Desc"
 	{
-		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies.\n Rage reisstance is high."
+		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies (can be silenced).\n Rage reisstance is high (can be silenced)."
 		"ru"		"Повелитель стал быстрее, его атака пульсом отталкивает вас в воздух и глючит вас покругу, Он злится в 2 раза быстрее.\nСопротивление от пульс атаки (может быть заткнуто).\nСопротивление урону в ярости велико(можно заглушить)."
 	}
 	"Xeno Scout Assaulter Desc"
@@ -433,7 +433,7 @@
 	}
 	"Xeno Flying Armor Desc"
 	{
-		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one."
+		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one (can be silenced)."
 		"ru"		"Их способность раздвоится усилена вдове, Они теперь будут призывать 2 миньона вместо одного (можно заглушить)."
 	}
 	"Xeno Tiny Flying Armor Desc"
@@ -443,17 +443,17 @@
 	}
 	"Xeno Kamikaze Demo Desc"
 	{
-		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death."
+		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death (can be silenced)."
 		"ru"		"Не дайте этим мутантам докоснутся до ваших барикад.\nСовсем.\nВзрыв при смерти (можно заглушить)."
 	}
 	"Xeno Medic Supporter Desc"
 	{
-		"en" 		"They heal twice as fast due to xeno compatability."
+		"en" 		"They heal (can be silenced) twice as fast due to xeno compatability."
 		"ru"		"Они лечят(может быть заткнуто) в два раза быстрее в связи в c ксено совеместимостью."
 	}
 	"Xeno Giant Heavy Brawler Desc"
 	{
-		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones."
+		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones (can be silenced)."
 		"ru"		"Гиганты сильно мутировали,когда умирают они разделятся на маленькие версии себя(можно заглушить)."
 	}
 	"Xeno Spy Facestabber Desc"
@@ -493,7 +493,7 @@
 	}
 	"Xeno Sniper Main Desc"
 	{
-		"en" 		"Hurting them at all causes them to instantly wield their melee."
+		"en" 		"Hurting them at all causes them to instantly wield their melee (can be silenced)."
 		"ru"		"нанесение им урона заставит их сразу достать холодное оружие (можно заглушить)."
 	}
 	"Xeno Demoknight Main Desc"
@@ -794,7 +794,7 @@
 	}
 	"Sniper Railgunner Desc"
 	{
-		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots."
+		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots (can be silenced)."
 		"ru"		"Снайпер который надоет вам издалека\nТрус,он так же убегает\nстреляет заряженной атакой после нескольких выстрелов(можно заглушить)."
 	}
 	"Soldier Barrager Desc"
@@ -859,7 +859,7 @@
 	}
 	"Medic Constructor Desc"
 	{
-		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies."
+		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies (can be silenced)."
 		"ru"		"Механический разбойник медик конструктор,Часть проекта ''Последняя надежда''\nлечени союзников (можно заглушить)."
 	}
 	"Gambler Desc"
@@ -951,7 +951,7 @@
 	}
 	"Hussar Desc"
 	{
-		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance."
+		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance (can be silenced)."
 		"ru"		"вдохновляет союзников вокург себя,и защищает их,убить как можно быстрее,\nВдохновление даёт 10％ больше урона и сопротевление урону(можно заглушить)"
 	}
 	"Knight Desc"
@@ -966,7 +966,7 @@
 	}
 	"Monk Desc"
 	{
-		"en"		"Heals allies instantly in his damage radius instantly to full."
+		"en"		"Heals allies instantly in his damage radius instantly to full (can be silenced)."
 		"ru"		"мнговенно лечит союзников для полного здоровья  в радиусе его атаки(можно заглушить)"
 	}
 	"Cavalary Desc"
@@ -1580,12 +1580,12 @@
 	}
 	"Soldine Desc"
 	{
-		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
+		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump (can be silenced)\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
 		"ru"	"Воссозданный Сенсалом по пути к вам.\nМожет Прыгнуть на ракете(можно заглушить)\nСтреляет ракетами\nМожет аттаковать в ближнем бою с перезарядкой,эта атака нанесёт огромный урон."
 	}
 	"Protecta Desc"
 	{
-		"en"	"A better defenda, Altough on death will also heal allies"
+		"en"	"A better defenda, Altough on death will also heal allies (can be silenced)"
 		"ru"	"Улучшенный защитник,хотя может вылечить при смерти(можно заглушить)"
 	}
 	"Sniponeer Desc"
@@ -1799,7 +1799,7 @@
 	}
 	"Perro Desc"
 	{
-		"en"	"A soldier that gets faster and deals more damage with less health."
+		"en"	"A soldier that gets faster (can be silenced) and deals more damage with less health."
 		"ru"	"Содат который становится быстрее (можно заглушить) и наночит больше урона с потерей здоровья."
 	}
 	"Caprinae Desc"
@@ -2004,7 +2004,7 @@
 	}
 	"Ouroboros Ekas Desc"
 	{
-		"en"	"Buffs all enemies on the field massively, if its the last one alive, it gains 5x speed, 2x res."
+		"en"	"Buffs all enemies on the field massively (Can be silenced), if its the last one alive, it gains 5x speed, 2x res."
 		"ru"	"Усиливает всех врагов на поле боя(можно заглушить),Если остались одни,получает в 5 раз больше скорости и в двое больше сопротивления."
 	}
 	"Xeno Patient Few Desc"

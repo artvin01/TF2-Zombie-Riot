@@ -1,9 +1,0 @@
-"UnlitGeneric"
-{
-	"$basetexture" "hud/leaderboard_class_sentry_gun_lvl3_lite"
-	"$vertexcolor" 1
-	"$no_fullbright" 1
-	"$ignorez" 1
-	"%keywords" "tf"
-	"$translucent" 1
-}

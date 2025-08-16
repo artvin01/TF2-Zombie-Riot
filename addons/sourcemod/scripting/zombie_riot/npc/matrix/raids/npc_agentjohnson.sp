@@ -52,21 +52,6 @@ static char g_SlamSounds[][] = {
 
 void AgentJohnson_OnMapStart_NPC()
 {
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Agent Johnson");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_johnson");
-	strcopy(data.Icon, sizeof(data.Icon), "matrix_agent_johnson");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Matrix;
-	data.Func = ClotSummon;
-	data.Precache = ClotPrecache;
-	NPC_Add(data);
-}
-
-
-static void ClotPrecache()
-{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
@@ -77,8 +62,19 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_WarningSounds);
 	PrecacheSoundArray(g_SlamSounds);
 	PrecacheModel("models/player/spy.mdl");
-	PrecacheSoundCustom("#zombiesurvival/matrix/navras.mp3");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Agent Johnson");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_johnson");
+	strcopy(data.Icon, sizeof(data.Icon), "matrix_agent_johnson");
+	PrecacheSound("#zombiesurvival/matrix/navras.mp3");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Matrix;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
+
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return AgentJohnson(vecPos, vecAng, ally, data);
@@ -221,7 +217,7 @@ methodmap AgentJohnson < CClotBody
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/navras.mp3");
 		music.Time = 181;
 		music.Volume = 1.3;
-		music.Custom = true;
+		music.Custom = false;
 		strcopy(music.Name, sizeof(music.Name), "Navras");
 		strcopy(music.Artist, sizeof(music.Artist), "Juno Reactor");
 		Music_SetRaidMusic(music);

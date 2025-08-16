@@ -711,10 +711,6 @@ static void ClotThink(int iNPC)
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
 				CPrintToChatAll("{darkblue}Waldch{default}: %s", chaos == 4 ? "..." : "This ends now!");
 				KillFeed_SetKillIcon(npc.index, "sword");
-
-				//cannot heal
-				ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 999999.0);
-				
 				func_NPCThink[npc.index] = ClotFinalThink;
 				b_NpcIsTeamkiller[npc.index] = false;
 				

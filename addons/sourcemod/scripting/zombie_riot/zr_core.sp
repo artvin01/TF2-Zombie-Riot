@@ -268,7 +268,6 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Aperture,
 	Type_Mutation
 }
 

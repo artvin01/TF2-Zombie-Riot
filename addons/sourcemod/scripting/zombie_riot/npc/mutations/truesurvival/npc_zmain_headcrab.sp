@@ -27,7 +27,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"npc/headcrab/attack3.wav"
 };
 
-static float fl_KamikazeInitiate;
 public void ZMainHeadcrab_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -46,7 +45,6 @@ public void ZMainHeadcrab_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	fl_KamikazeInitiate = 0.0;
 	NPC_Add(data);
 }
 
@@ -122,32 +120,6 @@ methodmap ZMainHeadcrab < CClotBody
 
 		npc.m_flWaveScale = wave;
 
-		if(ally == TFTeam_Blue)
-		{
-			if(fl_KamikazeInitiate < GetGameTime())
-			{
-				//This is a kamikaze that was newly initiated!
-				//add new kamikazies whenever possible.
-				//this needs to happen every tick!
-				DoGlobalMultiScaling();
-				RequestFrame(SpawnZmainsAFew, 0);
-			
-				if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
-				{
-					//incase their random spawn code fails, they'll spawn here.
-					int Spawner_entity = GetRandomActiveSpawner();
-					if(IsValidEntity(Spawner_entity))
-					{
-						float pos[3];
-						float ang[3];
-						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-					}
-				}
-			}
-			fl_KamikazeInitiate = GetGameTime() + 15.0;	
-		}
 
 		func_NPCDeath[npc.index] = ZMainHeadcrab_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrab_ClotThink;

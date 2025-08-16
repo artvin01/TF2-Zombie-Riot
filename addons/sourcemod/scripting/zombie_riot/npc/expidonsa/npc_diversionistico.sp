@@ -469,7 +469,7 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false, bool NeedLOSPlayer = false, float VectorSave[3] = {0.0,0.0,0.0})
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false, bool NeedLOSPlayer = false)
 {
 	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		return 3;
@@ -565,10 +565,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		}
 		
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
-		if(VectorSave[1] == 0.0)
-			TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
-
-		VectorSave = AproxRandomSpaceToWalkTo;
+		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
 		RemoveSpawnProtectionLogic(npc.index, true);
 		return 1;
 	}

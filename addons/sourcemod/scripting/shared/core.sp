@@ -2462,7 +2462,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponForceClass[entity] = 0;
 		b_ProjectileCollideWithPlayerOnly[entity] = false;
 		b_EntityCantBeColoured[entity] = false;
+#if defined RTS
+		TeamNumber[entity] = 0;
+#else
 		TeamNumber[entity] = -1;
+#endif
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
@@ -2718,7 +2722,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			
 		}
