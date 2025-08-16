@@ -214,7 +214,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			}
 			case 11:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7500);
+				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 2500);
 			}
 			case 12:
 			{
@@ -295,7 +295,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			}
 			case 7:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 20000);
+				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7000);
 			}
 			case 8:
 			{
