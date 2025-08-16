@@ -372,6 +372,7 @@ methodmap CHIMERA < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= 0.75;
+		RaidModeScaling *= 1.19;
 		//scaling old
 			
 		RaidModeScaling *= amount_of_people;

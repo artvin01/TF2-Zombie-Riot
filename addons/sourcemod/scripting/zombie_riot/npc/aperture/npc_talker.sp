@@ -66,6 +66,16 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 }
 methodmap Talker < CClotBody
 {
+	property int m_iTalkWaveAt
+	{
+		public get()							{ return i_BleedType[this.index]; }
+		public set(int TempValueForProperty) 	{ i_BleedType[this.index] = TempValueForProperty; }
+	}
+	property int m_iRandomTalkNumber
+	{
+		public get()							{ return i_StepNoiseType[this.index]; }
+		public set(int TempValueForProperty) 	{ i_StepNoiseType[this.index] = TempValueForProperty; }
+	}
 	public Talker(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Talker npc = view_as<Talker>(CClotBody(vecPos, vecAng, "models/buildables/teleporter.mdl", "1.0", "100000000", ally, .NpcTypeLogic = 1));
@@ -76,7 +86,6 @@ methodmap Talker < CClotBody
 		AddNpcToAliveList(npc.index, 1);
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_iOverlordComboAttack = 0;
-		npc.m_iBleedType = 0;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
@@ -94,25 +103,214 @@ methodmap Talker < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		for (int i = 0; i < 64; i++)
+		npc.m_iTalkWaveAt = 0;
+		npc.m_iTalkWaveAt = 0;
+		int WaveAmAt;
+		WaveAmAt = StringToInt(data);
+		if (WaveAmAt == 1)
 		{
-			if (buffers[i][0] == '\0')
-				break;
-			
-			if (StrEqual(buffers[i], "reset"))
-			{
-				i_ApertureBossesDead = APERTURE_BOSS_NONE;
-			}
+			i_ApertureBossesDead = APERTURE_BOSS_NONE;
 		}
+		npc.m_iTalkWaveAt = WaveAmAt;
 		
+		npc.m_iRandomTalkNumber = GetRandomInt(0,2);
+
 		func_NPCThink[npc.index] = view_as<Function>(Talker_ClotThink);
 		
 		return npc;
 	}
 }
+public void Talker_ClotThink(Talker npc, int iNPC)
+{
+	if(i_TalkDelayCheck == -1)
+	{
+		SmiteNpcToDeath(npc.index);
+		return;
+	}
+	if(f_TalkDelayCheck > GetGameTime())
+		return;
 
+	f_TalkDelayCheck = GetGameTime() + 4.0;
+
+	switch(npc.m_iTalkWaveAt)
+	{
+		//data is "2"
+		case 2:
+		{
+			switch(npc.m_iRandomTalkNumber)
+			{
+				case 0:
+				{
+					switch(i_TalkDelayCheck)
+					{
+						case 1:
+						{
+							CPrintToChatAll("{rare}???{default}: So the day has finally arrived, welcome back E-");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{rare}???{default}: Hang on a minute...my sensors are going off, you're not one of them.");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{rare}???{default}: The system tells me that none of you are related to them.");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
+						}
+						case 6:
+						{
+							CPrintToChatAll("{rare}???{default}: What are you doing in here? And how did you find this place?");
+							i_TalkDelayCheck = -1;
+						}
+					}
+				}
+				case 1:
+				{
+					switch(i_TalkDelayCheck)
+					{
+						case 1:
+						{
+							CPrintToChatAll("{rare}???{default}: Finally, it's been years since we last saw-");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{rare}???{default}: One moment...who, sorry, what are you?");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{rare}???{default}: My scanners aren't picking you up as valid personnel.");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
+						}
+						case 6:
+						{
+							CPrintToChatAll("{rare}???{default}: Did someone send you here? That can't be possible.");
+							i_TalkDelayCheck = -1;
+						}
+					}
+				}
+				case 2:
+				{
+					switch(i_TalkDelayCheck)
+					{
+						case 1:
+						{
+							CPrintToChatAll("{rare}???{default}: At last, I get to reunite with my makers-");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{rare}???{default}: Wait a second...you're not one of them.");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{rare}???{default}: Your data is...blurry, I'll have to reverse engineer this code.");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
+						}
+						case 6:
+						{
+							CPrintToChatAll("{rare}???{default}: How do you know about this place? You couldn't have just stumbled here on your own.");
+							i_TalkDelayCheck = -1;
+						}
+					}
+				}
+			}
+		}
+		case 3:
+		{
+			if(npc.m_iRandomTalkNumber == 2)
+			{
+				npc.m_iRandomTalkNumber = GetRandomInt(0,1);
+			}
+			switch(npc.m_iRandomTalkNumber)
+			{
+				case 0:
+				{
+					switch(i_TalkDelayCheck)
+					{
+						case 1:
+						{
+							CPrintToChatAll("{rare}???{default}: Right...I should've probably mentioned this earlier, but a long time ago, there were robots designed with a sole task in mind; to defend the laboratory.");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, according to the files.");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{rare}???{default}: It is safe to assume that you might be facing off against one of them sometime soon.");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you stayed, I have no advice left to give you.");
+						}
+						case 6:
+						{
+							CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
+							i_TalkDelayCheck = -1;
+						}
+					}
+				}
+				case 1:
+				{
+					switch(i_TalkDelayCheck)
+					{
+						case 1:
+						{
+							CPrintToChatAll("{rare}???{default}: I should've probably mentioned this sooner, but ages ago, there were robots designed with a sole task in mind; to defend the laboratory.");
+						}
+						case 2:
+						{
+							CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, apparently.");
+						}
+						case 3:
+						{
+							CPrintToChatAll("{rare}???{default}: It's safe to say that you might be facing off against one of these robots sometime soon.");
+						}
+						case 4:
+						{
+							CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
+						}
+						case 5:
+						{
+							CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you decided to stay, I have no advice left to give you.");
+						}
+						case 6:
+						{
+							CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
+							i_TalkDelayCheck = -1;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	i_TalkDelayCheck++;
+}	
+/*
 public void Talker_ClotThink(Talker npc, int iNPC)
 {
 	//float gameTime = GetGameTime(npc.index);
@@ -1122,6 +1320,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 }
+*/
 
 //
 // SHARED RAID BOSS FUNCTIONS

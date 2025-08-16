@@ -66,6 +66,7 @@ static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
 #define VINCENT_OIL_MODEL_SCALE 1.5
 
 #define VINCENT_OIL_MODEL_OFFSET_Z -4.0
+int HitEntitiesSphereMlynar[MAXENTITIES];
 
 void Vincent_OnMapStart_NPC()
 {
@@ -1103,14 +1104,49 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	float vecPos[3];
 	GetAbsOrigin(entity, vecPos);
 	
-	DataPack pack2 = new DataPack();
-	pack2.WriteCell(entity);
-	pack2.WriteCell(owner);
-	pack2.WriteCell(fromAbility);
-	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil, pack2);
+	for(int i=0; i < MAXENTITIES; i++)
+	{
+		HitEntitiesSphereMlynar[i] = false;
+	}
+	//cannot do logic inside, only detect.
+	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil);
 	
-	delete pack2;
-	
+	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	{
+		if (HitEntitiesSphereMlynar[entity_traced] > 0)
+		{
+			int entity_hit = HitEntitiesSphereMlynar[entity_traced];
+			
+			if (!IsValidEntity(owner))
+				continue;
+			
+			Vincent npc = view_as<Vincent>(owner);
+			if (fromAbility && entity_hit == owner && npc.m_bLostHalfHealth)
+			{
+				npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
+				npc.m_flNextOilLeak = GetGameTime(npc.index) + 0.5;
+				continue;
+			}
+			
+			if (!IsValidEnemy(entity_hit, owner))
+				continue;
+			
+			float vecTargetPos[3];
+			GetAbsOrigin(entity_hit, vecTargetPos);
+			
+			float difference = fabs(vecPos[2] - vecTargetPos[2]);
+			if (difference > 90.0)
+				continue;
+			
+			if (entity_hit > 0 && entity_hit <= MaxClients && !HasSpecificBuff(entity_hit, "Burn"))
+				EmitSoundToClient(entity_hit, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity_hit, SNDCHAN_AUTO);
+			
+			float Proj_Damage = 2.0 * RaidModeScaling;
+			SDKHooks_TakeDamage(entity_hit, owner, owner, Proj_Damage, DMG_PLASMA, -1);
+			NPC_Ignite(entity_hit, owner, 5.0, -1, Proj_Damage);
+		}
+	}
+
 	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
 	
 	return Plugin_Continue;
@@ -1140,7 +1176,7 @@ static Action Timer_Vincent_LaunchFireDownwards(Handle timer, int ref)
 	return Plugin_Continue;
 }
 
-static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
+static bool TraceEntityEnumerator_Vincent_Oil(int entity)
 {
 	if (entity <= 0 || entity > MAXENTITIES)
 		return true;
@@ -1151,41 +1187,15 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (GetTeam(entity) == 0)
 		return true;
 	
-	pack.Reset();
-	int self = pack.ReadCell();
-	int owner = pack.ReadCell();
-	
-	if (!IsValidEntity(owner))
-		return true;
-	
-	bool fromAbility = pack.ReadCell();
-	
-	Vincent npc = view_as<Vincent>(owner);
-	if (fromAbility && entity == owner && npc.m_bLostHalfHealth)
+	//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
+	for(int i=0; i < MAXENTITIES; i++)
 	{
-		npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
-		npc.m_flNextOilLeak = GetGameTime(npc.index) + 0.5;
-		return true;
+		if(!HitEntitiesSphereMlynar[i])
+		{
+			HitEntitiesSphereMlynar[i] = entity;
+			break;
+		}
 	}
-	
-	if (!IsValidEnemy(entity, owner))
-		return true;
-	
-	float vecPos[3], vecTargetPos[3];
-	GetAbsOrigin(self, vecPos);
-	GetAbsOrigin(entity, vecTargetPos);
-	
-	float difference = fabs(vecPos[2] - vecTargetPos[2]);
-	if (difference > 90.0)
-		return true;
-	
-	if (entity > 0 && entity <= MaxClients && !HasSpecificBuff(entity, "Burn"))
-		EmitSoundToClient(entity, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity, SNDCHAN_AUTO);
-	
-	float Proj_Damage = 2.0 * RaidModeScaling;
-	SDKHooks_TakeDamage(entity, owner, owner, Proj_Damage, DMG_PLASMA, -1);
-	NPC_Ignite(entity, owner, 5.0, -1, Proj_Damage);
-	
 	return true;
 }
 		

@@ -16,7 +16,6 @@ static float f_MlynarDmgMultiAgressiveClose[MAXPLAYERS] = {1.0, ...};
 static float f_MlynarDmgMultiHurt[MAXPLAYERS] = {1.0, ...};
 static float f_MlynarAbilityActiveTime[MAXPLAYERS];
 static bool b_MlynarResetStats[MAXPLAYERS];
-int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXPLAYERS];
 static float f_MlynarReflectCooldown[MAXPLAYERS][MAXENTITIES];
