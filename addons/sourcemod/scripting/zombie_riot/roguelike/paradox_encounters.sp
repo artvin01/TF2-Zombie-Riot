@@ -796,8 +796,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1a");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1a");
 		strcopy(vote.Append, sizeof(vote.Append), " Bob The Second");
-		vote.Config[0] = -1;
-		vote.Config[1] = -1;
+		strcopy(vote.Config, sizeof(vote.Config), "-1 -1");
 		list.PushArray(vote);
 	}
 	else
@@ -816,14 +815,12 @@ public float Rogue_Encounter_EmergencyDispatch()
 			if(count > (6 + (i*3)))
 			{
 				Format(vote.Append, sizeof(vote.Append), " %N and %N", client1, client2);
-				vote.Config[0] = GetClientUserId(client1);
-				vote.Config[1] = GetClientUserId(client2);
+				FormatEx(vote.Config, sizeof(vote.Config), "%d %d", GetClientUserId(client1), GetClientUserId(client2));
 			}
 			else
 			{
 				Format(vote.Append, sizeof(vote.Append), " %N", client1);
-				vote.Config[0] = GetClientUserId(client1);
-				vote.Config[1] = -1;
+				FormatEx(vote.Config, sizeof(vote.Config), "%d -1", GetClientUserId(client1));
 			}
 
 			list.PushArray(vote);
@@ -838,8 +835,11 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 {
 	if(index)
 	{
-		int client1 = GetClientOfUserId(vote.Config[0]);
-		int client2 = GetClientOfUserId(vote.Config[1]);
+		int clients[2];
+		ExplodeStringInt(vote.Config, " ", clients, sizeof(clients));
+
+		int client1 = GetClientOfUserId(clients[0]);
+		int client2 = GetClientOfUserId(clients[1]);
 
 		if(!client1 && client2)
 		{
