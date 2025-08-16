@@ -3108,7 +3108,7 @@ void StatusEffects_Aperture()
 	//-1.0 means unused
 	data.DamageTakenMulti			= -1.0;
 	data.DamageDealMulti			= 1.0;
-	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModif			= 1.25;
 	data.AttackspeedBuff			= -1.0;
 	data.LinkedStatusEffect			= 0;
 	data.LinkedStatusEffectNPC 		= 0;
