@@ -1230,6 +1230,16 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 #define VINCENT_THROW_AOE_RANGE 150.0
 bool Vincent_SlamThrow(int iNPC, int target)
 {
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+			CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
+		case 1:
+			CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
+		case 2:
+			CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
+	}
+
 	Vincent npc = view_as<Vincent>(iNPC);
 	static float ThrowPos[3]; 
 	if(npc.m_iChanged_WalkCycle == 4)
