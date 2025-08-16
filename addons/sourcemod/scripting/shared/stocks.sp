@@ -2656,7 +2656,7 @@ stock bool TF2U_GetWearable(int client, int &entity, int &index, const char[] cl
 	return false;
 }
 
-stock void spawnRing(int client, float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0, bool personal = false) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing(int client, float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
 	if (IsValidEntity(client))
 	{
@@ -2695,14 +2695,7 @@ stock void spawnRing(int client, float range, float modif_X, float modif_Y, floa
 		}
 		
 		TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-		if(personal)
-		{
-			TE_SendToClient(client);
-		}
-		else
-		{
-			TE_SendToAll();
-		}
+		TE_SendToAll();
 	}
 }
 

@@ -259,7 +259,7 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 		}
 		
 	}
-	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
+	if(i_WeaponArchetype[weapon] == 28)	// Victoria
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

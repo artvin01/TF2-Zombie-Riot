@@ -60,7 +60,7 @@ methodmap VoidPortal < CClotBody
 				ShowGameText(client_check, "voice_player", 1, "%t", "A Void Gate Apeared...");
 			}
 		}
-		if(TeleportDiversioToRandLocation(npc.index,true,1000.0, 700.0, Rogue_Mode(), Rogue_Mode()) == 2)
+		if(TeleportDiversioToRandLocation(npc.index,true,1000.0, 700.0) == 2)
 		{
 			TeleportDiversioToRandLocation(npc.index, true);
 		}

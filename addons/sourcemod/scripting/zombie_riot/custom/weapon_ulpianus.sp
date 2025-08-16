@@ -8,7 +8,7 @@ void Ulpianus_MapStart()
 	Elited = false;
 }
 
-stock void Ulpianus_Enable(int client, int weapon)
+stock void Ulpianus_Enable(int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
@@ -19,7 +19,7 @@ stock void Ulpianus_Enable(int client, int weapon)
 				Elited = true;
 		}
 	}
-	else if(Elited && Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+	else if(Elited && i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
 	{
 		ApplyStatusEffect(weapon, weapon, "Ulpianus' Seriousness", 9999999.0);
 		Attributes_SetMulti(weapon, 6, 0.8);

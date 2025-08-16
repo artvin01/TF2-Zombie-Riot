@@ -106,8 +106,6 @@ enum struct ItemInfo
 	int SpecialAttribRules_2;
 
 	int WeaponArchetype;
-	int WeaponFaction1;
-	int WeaponFaction2;
 	int WeaponForceClass;
 	
 	int CustomWeaponOnEquip;
@@ -417,12 +415,6 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sweapon_archetype", prefix);
 		this.WeaponArchetype			= kv.GetNum(buffer, 0);
-
-		Format(buffer, sizeof(buffer), "%sweapon_faction", prefix);
-		this.WeaponFaction1 = kv.GetNum(buffer);
-
-		Format(buffer, sizeof(buffer), "%sweapon_faction2", prefix);
-		this.WeaponFaction2 = kv.GetNum(buffer);
 
 		Format(buffer, sizeof(buffer), "%sviewmodel_force_class", prefix);
 		this.WeaponForceClass			= kv.GetNum(buffer, 0);
@@ -3328,7 +3320,7 @@ static void MenuPage(int client, int section)
 						Format(buffer, sizeof(buffer), "%T", "View PAP Upgrades", client);
 						menu.AddItem(buffer2, buffer);
 					}
-					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0] || info.WeaponFaction1)
+					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
 						{
@@ -4675,10 +4667,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					item.GetItemInfo(0, info);
 
-					char buffer[256], buffers[6][256];
+					char buffer[256];
 
 					if(item.Tags[0])
 					{
+						char buffers[6][256];
 						int tags = ExplodeString(item.Tags, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 						if(tags)
 						{
@@ -4686,24 +4679,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 							for(int i = 1; i < tags; i++)
 							{
-								TranslateItemName(client, buffers[i], _, buffers[0], sizeof(buffer[]));
-								Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
+								TranslateItemName(client, buffers[i], _, buffer, sizeof(buffer));
 							}
 
 							PrintToChat(client, "%t", "Tags List", buffer);
 						}
-					}
-
-					if(info.WeaponFaction1)
-					{
-						TranslateItemName(client, ItemFaction[info.WeaponFaction1], _, buffer, sizeof(buffer));
-						if(info.WeaponFaction2)
-						{
-							TranslateItemName(client, ItemFaction[info.WeaponFaction2], _, buffers[0], sizeof(buffer[]));
-							Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
-						}
-
-						PrintToChat(client, "%t", "Faction List", buffer);
 					}
 
 					if(info.ExtraDesc[0])
@@ -6295,7 +6275,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
-		Ulpianus_Enable(client, entity);
+		Ulpianus_Enable(entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
@@ -7293,24 +7273,4 @@ void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
 	item.CurrentClipSaved[client] = clipsizeSet; //Reset clip to 8
 	StoreItems.SetArray(StoreWeapon[weapon], item);
 
-}
-
-bool Store_IsWeaponFaction(int client, int weapon, int faction)
-{
-	static Item item;
-	StoreItems.GetArray(StoreWeapon[weapon], item);
-	if(!item.Owned[client])
-		return false;
-
-	static ItemInfo info;
-	if(!item.GetItemInfo(item.Owned[client]-1, info))
-		return false;
-	
-	if(info.WeaponFaction1 == faction)
-		return true;
-	
-	if(info.WeaponFaction2 == faction)
-		return true;
-	
-	return false;
 }

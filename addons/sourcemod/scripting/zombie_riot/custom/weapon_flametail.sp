@@ -17,6 +17,11 @@ void Flametail_RoundStart()
 	KaziBuffed = false;
 }
 
+bool IsWeaponKazimierz(int weapon)
+{
+	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
+}
+
 void ResetFlameTail()
 {
 	KaziBuffed = false;
@@ -57,7 +62,7 @@ void Flametail_Enable(int client, int weapon)
 			}
 		}
 	}
-	if(Store_IsWeaponFaction(client, weapon, Faction_Kazimierz))
+	if(IsWeaponKazimierz(weapon))	// Abyssal Hunter
 	{
 		if(KaziBuffed)
 		{

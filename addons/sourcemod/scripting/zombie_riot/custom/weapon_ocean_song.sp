@@ -361,7 +361,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				int weapon2 = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
 				if(IsValidEntity(weapon2))
 				{
-					if(Store_IsWeaponFaction(ally, weapon, Faction_Seaborn))
+					if(i_WeaponArchetype[weapon2] == 22)	// Abyssal Hunter
 					{
 						healingMulti = 1.0825;
 					}

@@ -586,7 +586,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 	}
 	*/
 	if(Archetype[0])
-		Format(buffer, length, "%s\n%t", buffer, "Archetype Type", Archetype);
+		Format(buffer, length, "%s\n%t", buffer, Archetype);
 }
 #endif	// Non-RTS
 

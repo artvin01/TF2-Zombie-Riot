@@ -229,22 +229,22 @@ public void Irene_Cooldown_Logic(int client, int weapon)
 			{
 				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Seaborn Detected.\nJudgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
-					PrintHintText(client,"Seaborn Detected.\nJudgement Of Iberia [READY!]");
+					PrintHintText(client,"Seaborn Detected.\nJudgemet Of Iberia [READY!]");
 				}
 			}
 			else
 			{	
 				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
 				{
-					PrintHintText(client,"Judgement Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+					PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
 				}
 				else
 				{
-					PrintHintText(client,"Judgement Of Iberia [READY!]");
+					PrintHintText(client,"Judgemet Of Iberia [READY!]");
 				}
 			}
 			
