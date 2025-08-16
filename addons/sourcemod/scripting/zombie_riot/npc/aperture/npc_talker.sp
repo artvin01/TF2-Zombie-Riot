@@ -167,7 +167,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{rare}???{default}: Finally, its been years since we last saw-");
+							CPrintToChatAll("{rare}???{default}: Finally, it's been years since we last saw-");
 						}
 						case 2:
 						{
