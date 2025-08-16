@@ -4878,6 +4878,10 @@
 	{
 		"en"	"A.R.I.S. never makes an appearance in the main laboratories unless C.A.T. fails to fulfill its task, or if it requires assistance.\n but since C.A.T. was never assumed to fail its task, A.R.I.S. was never equipped with any high defense mechanisms to deal with intruders."
 	}
+	"A.R.I.S. Makeshift Beacon"
+	{
+		"en"	"A.R.I.S. Makeshift Beacon"
+	}
 	"C.H.I.M.E.R.A."
 	{
 		"en"	"C.H.I.M.E.R.A."
@@ -4905,6 +4909,10 @@
 	"V.I.N.C.E.N.T."
 	{
 		"en"	"V.I.N.C.E.N.T."
+	}
+	"Vincent Beacon"
+	{
+		"en"	"Vincent Beacon"
 	}
 	"Old forgotten expidonsan robot"
 	{
