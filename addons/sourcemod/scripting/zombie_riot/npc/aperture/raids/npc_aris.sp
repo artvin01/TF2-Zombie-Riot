@@ -70,6 +70,9 @@ static const char g_MalfunctionParticleAttachments[][] = {
 	"flag"
 };
 
+static const char g_DeployBeaconSound[] = "mvm/sentrybuster/mvm_sentrybuster_intro.wav";
+static const char g_MeleeHitChargeSound[] = "weapons/vaccinator_charge_tier_02.wav";
+
 static const char g_RocketFiringSound[] = "weapons/sentry_rocket.wav";
 static const char g_RocketLandingSound[] = "weapons/flare_detonator_launch.wav";
 static const char g_RocketExplodingSound[] = "ambient/explosions/explode_9.wav";
@@ -85,8 +88,8 @@ static int i_TargetArray[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 static bool b_EnemyHitByBlast[MAXENTITIES];
 static int i_EnemyHitByThisManyBullets[MAXENTITIES];
 
-#define ARIS_ROCKET_BARRAGE_COOLDOWN_INITIAL 8.0
-#define ARIS_ROCKET_BARRAGE_COOLDOWN 18.0
+#define ARIS_ROCKET_BARRAGE_COOLDOWN_INITIAL 7.0
+#define ARIS_ROCKET_BARRAGE_COOLDOWN 13.0
 
 #define ARIS_ROCKET_COUNT_MIN 5								// Takes priority over PER_PLAYER
 #define ARIS_ROCKET_COUNT_MAX RAIDBOSS_GLOBAL_ATTACKLIMIT	// Takes priority over PER_PLAYER. If changing, do NOT set it to higher than the global attack limit
@@ -97,8 +100,8 @@ static int i_EnemyHitByThisManyBullets[MAXENTITIES];
 #define ARIS_ROCKET_FLIGHT_TIME 1.5			// How long should it take for a rocket to come from the sky/ceiling onto the target
 #define ARIS_ROCKET_BLAST_RADIUS 250.0
 
-#define ARIS_WEAPON_SWITCH_COOLDOWN_INITIAL 20.0
-#define ARIS_WEAPON_SWITCH_COOLDOWN 20.0
+#define ARIS_WEAPON_SWITCH_COOLDOWN_INITIAL 15.0
+#define ARIS_WEAPON_SWITCH_COOLDOWN 15.0
 
 #define ARIS_WEAPON_SHOOT_COOLDOWN 2.0
 #define ARIS_WEAPON_SHOOT_DELAY 0.7 		// Delay between aiming and firing weapon
@@ -108,6 +111,15 @@ static int i_EnemyHitByThisManyBullets[MAXENTITIES];
 #define ARIS_WEAPON_SHOOT_MAX_DISTANCE 400.0
 #define ARIS_WEAPON_SPECIAL_MIN_DISTANCE_SQUARED 1048576.0 // 1024.0 squared, checked often
 
+enum
+{
+	ARIS_MELEE_RESISTANCE,
+	ARIS_MELEE_DAMAGE,
+	ARIS_MELEE_SPEED,
+	
+	ARIS_MELEE_COUNT
+}
+
 #define ARIS_MALFUNCTION_PARTICLE "ExplosionCore_sapperdestroyed"
 #define ARIS_ROCKET_EXPLOSION_PARTICLE "rd_robot_explosion_smoke_linger"
 #define ARIS_WEAPON_SHOOT_BLAST_PARTICLE "drg_cow_explosioncore_charged_blue"
@@ -115,7 +127,6 @@ static int i_EnemyHitByThisManyBullets[MAXENTITIES];
 
 void ARIS_OnMapStart_NPC()
 {
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "A.R.I.S.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aris");
@@ -141,20 +152,24 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_HalfHealthSounds));   i++) { PrecacheSound(g_HalfHealthSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SwitchWeaponSounds));   i++) { PrecacheSound(g_SwitchWeaponSounds[i]);   }
 	
-	
 	PrecacheSoundCustom("#zombiesurvival/aperture/aris.mp3");
+	
 	PrecacheSound(g_RocketFiringSound);
 	PrecacheSound(g_RocketLandingSound);
 	PrecacheSound(g_RocketExplodingSound);
 	PrecacheSound(g_RocketReadyingSound);
 	
 	PrecacheSound(g_ShotgunFiringSound);
-	
 	PrecacheSound(g_SpecialRangedAttackSound);
+	
+	PrecacheSound(g_DeployBeaconSound);
+	PrecacheSound(g_MeleeHitChargeSound);
 	
 	i_AirStrikeRocketModelIndex = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheModel("models/bots/soldier/bot_soldier.mdl");
 	PrecacheModel("models/workshop/weapons/c_models/c_rr_crossing_sign/c_rr_crossing_sign.mdl");
+	PrecacheModel("models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
+	PrecacheModel("models/weapons/c_models/c_picket/c_picket.mdl");
 	
 	PrecacheParticleSystem(ARIS_MALFUNCTION_PARTICLE);
 	PrecacheParticleSystem(ARIS_ROCKET_EXPLOSION_PARTICLE);
@@ -214,10 +229,16 @@ methodmap ARIS < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitChargeSound, this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RoundToNearest(fClamp(80.0 + (this.m_iTimesHitWithMelee * 3.0), 80.0, 120.0)));
 	}
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 100, _, BOSS_ZOMBIE_VOLUME, 110);
+	}
+	
+	public void PlayDeployBeaconSound()
+	{
+		EmitSoundToAll(g_DeployBeaconSound, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	
 	public void PlayRocketSound()
@@ -332,6 +353,24 @@ methodmap ARIS < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 	
+	property int m_iCurrentMelee
+	{
+		public get()							{ return i_State[this.index]; }
+		public set(int TempValueForProperty) 	{ i_State[this.index] = TempValueForProperty; }
+	}
+	
+	property int m_iTimesHitWithMelee
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	
+	property int m_iLastBeaconRef
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
+	
 	public ARIS(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ARIS npc = view_as<ARIS>(CClotBody(vecPos, vecAng, "models/bots/soldier/bot_soldier.mdl", "1.45", "700", ally, false, true, true, true));
@@ -343,7 +382,7 @@ methodmap ARIS < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		func_NPCDeath[npc.index] = ARIS_NPCDeath;
@@ -546,6 +585,47 @@ methodmap ARIS < CClotBody
 		this.PlayRocketLandingSound(rocket);
 	}
 	
+	public void DestroyDroppedBeacon()
+	{
+		if (this.m_iLastBeaconRef)
+		{
+			int entity = EntRefToEntIndex(this.m_iLastBeaconRef);
+			if (entity != INVALID_ENT_REFERENCE)
+				RequestFrame(KillNpc, entity);
+		}
+	}
+	public void DropMelee()
+	{
+		float vecPos[3], vecAng[3], vecTargetPos[3];
+		GetAbsOrigin(this.index, vecPos);
+		GetEntPropVector(this.index, Prop_Send, "m_angRotation", vecAng);
+		
+		Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({ 90.0, 0.0, 0.0 }), MASK_SOLID, RayType_Infinite, TraceEntityFilter_ARIS_OnlyWorld);
+		TR_GetEndPosition(vecTargetPos, trace);
+		delete trace;
+		
+		char data[64];
+		switch (this.m_iCurrentMelee)
+		{
+			case ARIS_MELEE_RESISTANCE: data = "resistance";
+			case ARIS_MELEE_DAMAGE: data = "damage";
+			case ARIS_MELEE_SPEED: data = "speed";
+		}
+		
+		Format(data, 64, "%s;%d", data, this.m_iTimesHitWithMelee);
+		
+		// This model is a bit too down low, let's raise it up
+		if (this.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
+			vecTargetPos[2] += 50.0;
+		
+		this.DestroyDroppedBeacon();
+		
+		int npcSpawn = NPC_CreateByName("npc_aris_makeshift_beacon", -1, vecTargetPos, vecAng, GetTeam(this.index), data);
+		this.m_iLastBeaconRef = EntIndexToEntRef(npcSpawn);
+		
+		this.PlayDeployBeaconSound();
+	}
+	
 	public void ToggleWeapon()
 	{
 		float gameTime = GetGameTime(this.index);
@@ -557,6 +637,11 @@ methodmap ARIS < CClotBody
 			this.m_bDoingRangedAttack = false;
 			this.m_flNextSpecialRangedAttack = gameTime + ARIS_WEAPON_SPECIAL_COOLDOWN_INITIAL;
 			this.m_bDoingSpecialRangedAttack = false;
+			
+			this.DropMelee();
+			this.m_iCurrentMelee++;
+			this.m_iCurrentMelee = this.m_iCurrentMelee % ARIS_MELEE_COUNT;
+			this.m_iTimesHitWithMelee = 0;
 		}
 		else if (!this.m_bLostHalfHealth)
 		{
@@ -595,7 +680,15 @@ methodmap ARIS < CClotBody
 			{
 				case 0:
 				{
-					this.m_iWearable1 = this.EquipItem("head", "models/workshop/weapons/c_models/c_rr_crossing_sign/c_rr_crossing_sign.mdl");
+					char model[128];
+					switch (this.m_iCurrentMelee)
+					{
+						case ARIS_MELEE_RESISTANCE: model = "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl";
+						case ARIS_MELEE_DAMAGE: model = "models/workshop/weapons/c_models/c_rr_crossing_sign/c_rr_crossing_sign.mdl";
+						case ARIS_MELEE_SPEED: model = "models/weapons/c_models/c_picket/c_picket.mdl";
+					}
+					
+					this.m_iWearable1 = this.EquipItem("head", model);
 					SetVariantString("1.1");
 					AcceptEntityInput(this.m_iWearable1, "SetModelScale");
 				}
@@ -615,13 +708,13 @@ methodmap ARIS < CClotBody
 			case 0:
 			{
 				this.m_bisWalking = true;
-				activity = this.LookupActivity("ACT_MP_RUN_MELEE");
+				activity = this.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 			}
 			
 			case 1:
 			{
 				this.m_bisWalking = false;
-				activity = this.LookupActivity("ACT_MP_AIRWALK_MELEE");
+				activity = this.LookupActivity("ACT_MP_AIRWALK_MELEE_ALLCLASS");
 			}
 			
 			case 2:
@@ -1127,6 +1220,9 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 			if(PlaySound)
 			{
 				npc.PlayMeleeHitSound();
+				
+				// this also means we hit someone
+				npc.m_iTimesHitWithMelee++;
 			}
 		}
 	}
@@ -1159,6 +1255,8 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
+		npc.DestroyDroppedBeacon();
+		
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
@@ -1301,4 +1399,9 @@ static bool TraceFilter_ARIS_ShotgunBullet(int entity, int mask, int other)
 	}
 	
 	return false;
+}
+
+static bool TraceEntityFilter_ARIS_OnlyWorld(int entity, int mask)
+{
+	return entity == 0 || entity > MAXENTITIES;
 }
