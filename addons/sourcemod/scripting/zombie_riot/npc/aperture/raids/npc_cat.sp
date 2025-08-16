@@ -71,6 +71,10 @@ static const char g_StunCatEnd[][] = {
 	"mvm/mvm_tele_activate.wav",
 };
 
+static const char g_PassiveSound[][] = {
+	"mvm/giant_scout/giant_scout_loop.wav",
+};
+
 #define CAT_DEFAULT_SPEED 300.0
 
 #define CAT_ORB_SPAM_ABILITY_DURATION 3.0
@@ -126,6 +130,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_StunCat));   i++) { PrecacheSound(g_StunCat[i]);   }
 	for (int i = 0; i < (sizeof(g_StunCatEnd));   i++) { PrecacheSound(g_StunCatEnd[i]);   }
+	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
 	
 	PrecacheSoundCustom("#zombiesurvival/aperture/cat.mp3");
 	PrecacheSound("mvm/mvm_tank_end.wav");
@@ -198,6 +203,15 @@ methodmap CAT < CClotBody
 	{
 		EmitSoundToAll(g_StunCatEnd[GetRandomInt(0, sizeof(g_StunCatEnd) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
 	}
+	public void PlayPassiveSound()
+	{
+		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void StopPassiveSound()
+	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+	}
 	
 	property float m_flNextOrbAbilityTime
 	{
@@ -259,6 +273,8 @@ methodmap CAT < CClotBody
 
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
+
+		npc.PlayPassiveSound();
 		
 		RaidModeTime = GetGameTime(npc.index) + 160.0;
 		b_thisNpcIsARaid[npc.index] = true;
@@ -1133,6 +1149,8 @@ public void CAT_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+		
+	npc.StopPassiveSound();
 }
 
 static bool TraceEntityEnumerator_CAT_FindProjectiles(int entity, int self)

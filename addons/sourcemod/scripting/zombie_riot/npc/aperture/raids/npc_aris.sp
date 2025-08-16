@@ -63,6 +63,10 @@ static const char g_MalfunctionSounds[][] = {
 	"weapons/sentry_damage4.wav",
 };
 
+static const char g_PassiveSound[][] = {
+	"mvm/giant_soldier/giant_soldier_loop.wav",
+};
+
 static const char g_MalfunctionParticleAttachments[][] = {
 	"head",
 	"eye_1",
@@ -151,6 +155,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MalfunctionSounds));   i++) { PrecacheSound(g_MalfunctionSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_HalfHealthSounds));   i++) { PrecacheSound(g_HalfHealthSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SwitchWeaponSounds));   i++) { PrecacheSound(g_SwitchWeaponSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
 	
 	PrecacheSoundCustom("#zombiesurvival/aperture/aris.mp3");
 	
@@ -286,6 +291,15 @@ methodmap ARIS < CClotBody
 		if (attachment)
 			ParticleEffectAt_Parent(vecPos, ARIS_MALFUNCTION_PARTICLE, this.index, g_MalfunctionParticleAttachments[index]);
 	}
+	public void PlayPassiveSound()
+	{
+		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void StopPassiveSound()
+	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+	}
 	
 	property float m_flNextRocketBarrageMain
 	{
@@ -390,7 +404,9 @@ methodmap ARIS < CClotBody
 		func_NPCThink[npc.index] = ARIS_ClotThink;
 
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
-		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
+		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);
+
+		npc.PlayPassiveSound();
 		
 		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
@@ -1346,6 +1362,8 @@ public void ARIS_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+	npc.StopPassiveSound();
 
 }
 
