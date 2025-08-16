@@ -397,6 +397,16 @@ methodmap CHIMERA < CClotBody
 		Citizen_MiniBossSpawn();
 		npc.StartPathing();
 
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: WELCOME, WELCOME SINNERS!");
+			case 1:
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LET'S BEGIN");
+			case 2:
+				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ENGAGING THE TARGETS");
+		}
+
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/tw_medibot_chariot/tw_medibot_chariot.mdl", _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec24_polar_charger_style4/dec24_polar_charger_style4.mdl", _, skin);
@@ -840,7 +850,7 @@ bool CHIMERA_LoseConditions(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: TIME TO CHOOSE.");
+		CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: TIME TO CHOOSE. LIFE, OR DEATH?");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
@@ -932,6 +942,15 @@ bool CHIMERA_RefractedSniper(int iNPC)
 			NPC_CreateByName("npc_refragmented_winter_sniper", -1, pos, ang, GetTeam(npc.index), buffers);
 		}
 	}
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: BREWING UP A STORM");
+		case 1:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: KEEP RUNNING, THAT'LL HELP");
+		case 2:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LET'S COOL THINGS DOWN");
+	}
 	if(npc.m_flSpawnSnipers == 1.0)
 		npc.m_flSpawnSnipers = GetGameTime(npc.index) + 10.0;
 	else
@@ -945,7 +964,16 @@ bool CHIMERA_RefractSpawners(int iNPC)
 	if(npc.m_flSpawnEvilRefractCircles > GetGameTime(npc.index))
 		return false;
 
-		
+	
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LOOK OUT, I'M RIGHT BEHIND YOU");
+		case 1:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU STOP RUNNING AND I'LL STOP FIRING, THAT SEEMS FAIR");
+		case 2:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS WOULD GO A LOT FASTER IF YOU'D STAY STILL");
+	}
 	npc.PlayRefractedAbilityBall();
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
 	int enemy[RAIDBOSS_GLOBAL_ATTACKLIMIT]; 

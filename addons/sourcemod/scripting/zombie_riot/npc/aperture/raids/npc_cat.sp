@@ -394,7 +394,7 @@ public void CAT_ClotThink(int iNPC)
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T.{default}: IT IS TOO LATE TO LEAVE NOW, YOU HAVE BEEN MARKED AS A POTENTIAL THREAT TO THIS PLACE, AND THUS MUST BE DISPOSED OF.");
+		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
@@ -984,7 +984,7 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 		}
 		case 2:
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION {crimson}SHUTTING DOWN");
+			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
 		}
 	}
 }

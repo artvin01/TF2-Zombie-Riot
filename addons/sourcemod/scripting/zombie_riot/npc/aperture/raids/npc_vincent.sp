@@ -56,6 +56,10 @@ static const char g_VincentFireIgniteSound[][] =
 	")misc/flame_engulf.wav",
 };
 
+static const char g_SuicideSound[][] = {
+	"ambient/explosions/citadel_end_explosion1.wav",
+};
+
 static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
 
 #define VINCENT_OIL_MODEL_DEFAULT_RADIUS 140.0
@@ -86,6 +90,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_SuicideSound));   i++) { PrecacheSound(g_SuicideSound[i]);   }
 	PrecacheSoundArray(g_VincentMeleeCharge_Hit);
 	PrecacheSoundArray(g_PrepareSlamThrow);
 	PrecacheSoundArray(g_VincentSlamSound);
@@ -174,6 +179,11 @@ methodmap Vincent < CClotBody
 	public void PlayIgniteSound()
 	{
 		EmitSoundToAll(g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7);
+	}
+	public void PlaySuicideSound() 
+	{
+		EmitSoundToAll(g_SuicideSound[GetRandomInt(0, sizeof(g_SuicideSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_SuicideSound[GetRandomInt(0, sizeof(g_SuicideSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 	}
 
 	property float m_flNextOilPouring
@@ -790,6 +800,18 @@ public void Vincent_NPCDeath(int entity)
 
 }
 
+static void Vincent_GrantItem()
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			Items_GiveNamedItem(client, "Expidonsan Research Card");
+			CPrintToChat(client,"{default}Vincent permitted you to access the laboratories. You have obtained: {unique}Expidonsan Research Card.");
+		}
+	}
+}
+
 static bool Vincent_LoseConditions(int iNPC)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
@@ -828,6 +850,39 @@ static bool Vincent_LoseConditions(int iNPC)
 				{
 					//yapping
 					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					CPrintToChatAll("{rare}%t{crimson}: No...", c_NpcName[npc.index]);
+				}
+				case 1:
+				{
+					//yapping
+					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					CPrintToChatAll("{rare}%t{crimson}: I can't let you get away with this.", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					//yapping
+					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					CPrintToChatAll("{rare}%t{crimson}: I WON'T let you get away with this!", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					//yapping
+					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					float Loc[3];
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
+					CPrintToChatAll("{rare}%t{crimson}: I'M GONNA DELETE YOU!", c_NpcName[npc.index]);
+				}
+				case 4:
+				{
+					//yapping
+					float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+					npc.m_flTalkRepeat = GetGameTime() + 5.0;
+					UTIL_ScreenFade(target, 66, 50, FFADE_OUT, 255, 255, 255, 255); //make the fade target everyone
+					Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
+					npc.PlaySuicideSound();
 				}
 				case 5:
 				{
@@ -843,7 +898,28 @@ static bool Vincent_LoseConditions(int iNPC)
 			{
 				case 0:
 				{
-					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
+					CPrintToChatAll("{rare}%t{default}: Ah.", c_NpcName[npc.index]);
+				}
+				case 1:
+				{
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
+					CPrintToChatAll("{rare}%t{default}: It appears that I'm not strong enough to take you down.", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
+					CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
+					CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
+				}
+				case 4:
+				{
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
+					CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
 				}
 				case 5:
 				{
@@ -872,18 +948,48 @@ static bool Vincent_LoseConditions(int iNPC)
 			Music_SetRaidMusic(music, false);
 		}
 	}	
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{rare}Vincent{default}: I'm sorry it had to end this way, you shouldn't have taken that job...");
+		CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
 		return true;
 	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	{
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		
+		CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+		return true;
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	{
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		
+		CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);
+		return true;
+	}
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}Vincent{default}: It's over, please don't come back.");
+		CPrintToChatAll("{rare}%t{default}: It's over, please don't come back.", c_NpcName[npc.index]);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return true;
+	}
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{rare}%t{default}: Your reign of chaos ends here.", c_NpcName[npc.index]);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return true;
+	}
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{rare}%t{crimson}: Look at what you made me do. {default} At least I avenged {rare}them{default}.", c_NpcName[npc.index]);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
