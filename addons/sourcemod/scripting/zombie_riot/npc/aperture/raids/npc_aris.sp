@@ -1330,6 +1330,7 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	{
 		npc.DestroyDroppedBeacon();
 		
+		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
