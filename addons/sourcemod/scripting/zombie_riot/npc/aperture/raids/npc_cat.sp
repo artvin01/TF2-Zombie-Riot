@@ -1011,6 +1011,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
+		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		

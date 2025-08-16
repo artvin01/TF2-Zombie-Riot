@@ -233,7 +233,7 @@ void Items_StatusEffectListMenu(int client, int page = -1, bool inPage = false)
 			}
 			else
 			{
-				menu.SetTitle("%s\n%t\n ", data.HudDisplay, data.BuffName);
+				menu.SetTitle("%s\n%s\n ", data.HudDisplay, data.BuffName);
 			}
 		}
 		

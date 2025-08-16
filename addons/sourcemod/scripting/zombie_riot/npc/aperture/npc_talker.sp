@@ -167,7 +167,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{rare}???{default}: Finally, its been years since we last saw-");
+							CPrintToChatAll("{rare}???{default}: Finally, it's been years since we last saw-");
 						}
 						case 2:
 						{
@@ -461,7 +461,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 				case 3:
 				{
-					CPrintToChatAll("{rare}???{default}: I know that he tried to kill you, but he was defenseless.");
+					CPrintToChatAll("{rare}???{default}: I know that it tried to kill you, but it was defenseless.");
 				}
 				case 4:
 				{
@@ -694,7 +694,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{rare}???{default}: What did he do to you to warrant disassembling him?");
+					CPrintToChatAll("{rare}???{default}: What did it do to you to warrant disassembling him?");
 				}
 				case 3:
 				{

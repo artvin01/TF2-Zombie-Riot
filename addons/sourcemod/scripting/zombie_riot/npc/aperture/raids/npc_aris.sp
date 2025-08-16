@@ -550,16 +550,6 @@ methodmap ARIS < CClotBody
 		
 		// Each rocket will create a real rocket a bit later
 		CreateTimer(ARIS_ROCKET_DELAY, Timer_ARIS_FireRocketTowardsPlayer, this.index, TIMER_FLAG_NO_MAPCHANGE);
-
-		switch(GetRandomInt(0,2))
-		{
-			case 0:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: F1R3 1N 7H3 H0L3");
-			case 1:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: DUCK 4ND C0V3R");
-			case 2:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
-		}
 	}
 	
 	public void FireRocketTowardsPlayer()
@@ -1111,7 +1101,16 @@ public void ARIS_ClotThink(int iNPC)
 			// This is just the warning
 			npc.m_flNextRocketBarrageMain = gameTime + 2.0;
 			npc.m_flNextRocketBarrageStart = FAR_FUTURE; // Need to wait until it's done
-			
+		
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: F1R3 1N 7H3 H0L3");
+				case 1:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: DUCK 4ND C0V3R");
+				case 2:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
+			}
 			npc.PlayRocketReadyingSound();
 		}
 		
@@ -1330,6 +1329,7 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	{
 		npc.DestroyDroppedBeacon();
 		
+		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
