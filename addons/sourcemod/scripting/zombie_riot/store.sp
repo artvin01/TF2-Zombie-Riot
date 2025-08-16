@@ -7301,6 +7301,9 @@ bool Store_IsWeaponFaction(int client, int weapon, int faction)
 		return false;
 	if(weapon <= 0)
 		return false;
+	if(StoreWeapon[weapon] <= 0)
+		return false;
+		
 	static Item item;
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	if(!item.Owned[client])
