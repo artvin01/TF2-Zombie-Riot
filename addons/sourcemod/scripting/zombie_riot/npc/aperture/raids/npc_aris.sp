@@ -459,7 +459,7 @@ methodmap ARIS < CClotBody
 		RaidModeScaling *= 0.75;
 		RaidModeScaling *= 1.19;
 		//scaling old
-		
+
 		npc.m_flMeleeArmor = 1.25;	
 			
 		RaidModeScaling *= amount_of_people;
@@ -961,7 +961,7 @@ methodmap ARIS < CClotBody
 				armorFromThisTarget += 0.01;
 				b_EnemyHitByBlast[target] = false;
 			}
-			damage *= 7.0;
+			damage *= 6.0;
 			damage *= RaidModeScaling;
 			
 			if (damage > 0.0)
@@ -1415,7 +1415,7 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 		if (owner > MaxClients && !b_NpcHasDied[owner])
 		{
 			// Let's just ASSUME this is ARIS
-			float damage = 120.0;
+			float damage = 100.0;
 			
 			if (IsValidEntity(RaidBossActive))
 				damage *= RaidModeScaling;
