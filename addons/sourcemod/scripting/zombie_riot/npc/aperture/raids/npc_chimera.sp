@@ -909,7 +909,7 @@ void CHIMERA_SpawnAnnotation(int iNPC)
 		event.SetFloat("worldPosZ", pos[2]);
 		event.SetInt("follow_entindex", npc.index);
 		event.SetFloat("lifetime", 5.0);
-		event.SetString("text", "Extreme freeze detected!\nStand hear him to not be frozen!");
+		event.SetString("text", "Extreme freeze detected!\nStand hear C.H.I.M.E.R.A. to not be frozen!");
 		event.SetString("play_sound", "vo/null.mp3");
 		event.SetInt("id", 6000+npc.index);
 		event.Fire();
