@@ -459,7 +459,7 @@ methodmap ARIS < CClotBody
 		RaidModeScaling *= 0.75;
 		RaidModeScaling *= 1.19;
 		//scaling old
-
+		
 		npc.m_flMeleeArmor = 1.25;	
 			
 		RaidModeScaling *= amount_of_people;

@@ -674,7 +674,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 			delete swingTrace;
 			bool PlaySound = false;
-			float damage = 55.0;
+			float damage = 45.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -1141,7 +1141,7 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 			if (entity_hit > 0 && entity_hit <= MaxClients && !HasSpecificBuff(entity_hit, "Burn"))
 				EmitSoundToClient(entity_hit, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity_hit, SNDCHAN_AUTO);
 			
-			float Proj_Damage = 2.0 * RaidModeScaling;
+			float Proj_Damage = 1.0 * RaidModeScaling;
 			SDKHooks_TakeDamage(entity_hit, owner, owner, Proj_Damage, DMG_PLASMA, -1);
 			NPC_Ignite(entity_hit, owner, 5.0, -1, Proj_Damage);
 		}
