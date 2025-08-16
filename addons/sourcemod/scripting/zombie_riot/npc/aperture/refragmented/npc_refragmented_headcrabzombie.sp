@@ -202,6 +202,8 @@ methodmap RefragmentedHeadcrabZombie < CClotBody
 		npc.m_flMeleeArmor = 0.10;
 		npc.m_flRangedArmor = 0.10;
 
+		//This is the guy responsible for the sick ass unusual effect attached to the npc
+		//Originally wasn't a wearable, had to be made a wearable though because tf2 code is gay and flame particles remove the unusual effect
 		npc.m_iWearable1 = TF2_CreateGlow_White("models/zombie/classic.mdl", npc.index, 1.15);
 		if(IsValidEntity(npc.m_iWearable1))
 		{
@@ -212,6 +214,7 @@ methodmap RefragmentedHeadcrabZombie < CClotBody
 			TE_SendToAll();
 		}
 
+		//MUST be set to render_glow, otherwise aforementioned unusual effect will overlap with the npc's transparent-ness and it'll look shit
 		SetEntityRenderMode(npc.index, RENDER_GLOW);
 		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
 		
@@ -271,6 +274,7 @@ public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 	
 	int closest = npc.m_iTarget;
 
+	//Shitty poopy code but it works, if you're close enough and if you're not a building, the npc will take true damage-damage
 	float vecTarget2[3]; WorldSpaceCenter(closest, vecTarget2);
 	float VecSelfNpc2[3]; WorldSpaceCenter(npc.index, VecSelfNpc2);
 	float distance = GetVectorDistance(vecTarget2, VecSelfNpc2, true);
