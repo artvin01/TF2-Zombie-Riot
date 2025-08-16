@@ -158,8 +158,8 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed = 400.0;
 			float DurationGive = 9999.0;
-			npc.m_flMeleeArmor = 0.10;
-			npc.m_flRangedArmor = 0.10;
+			npc.m_flMeleeArmor = 0.50;
+			npc.m_flRangedArmor = 0.50;
 			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
