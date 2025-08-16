@@ -812,8 +812,9 @@ public void Vincent_NPCDeath(int entity)
 
 }
 
-static void Vincent_GrantItem()
+static void Vincent_GrantItem(int entity)
 {
+	Vincent npc = view_as<Vincent>(entity);
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
@@ -915,7 +916,7 @@ static bool Vincent_LoseConditions(int iNPC)
 				case 5:
 				{
 					//ending
-					Vincent_GrantItem();
+					Vincent_GrantItem(npc.index);
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
 			}
@@ -954,7 +955,7 @@ static bool Vincent_LoseConditions(int iNPC)
 				{
 					//ending
 					npc.m_bDissapearOnDeath = true;
-					Vincent_GrantItem();
+					Vincent_GrantItem(npc.index);
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
 			}
