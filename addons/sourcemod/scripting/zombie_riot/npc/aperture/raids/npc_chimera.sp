@@ -1084,7 +1084,8 @@ public Action Timer_CHIMERAMineLogic(Handle timer, DataPack pack)
 		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 200, 200, 1, 0.5, 12.0, 10.0, 2);
 		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 125, 125, 200, 200, 1, 0.5, 12.0, 10.0, 2);
 		//It hit something, boom.
-		EmitSoundToAll("weapons/physcannon/energy_sing_flyby1.wav", 0, _, 80, _, 1.0,_,_,MinePositionGet);
+		EmitSoundToAll("weapons/physcannon/energy_sing_flyby1.wav", 0, _, 80, _, 0.7,_,_,MinePositionGet);
+		EmitSoundToAll("weapons/physcannon/energy_sing_flyby1.wav", 0, _, 80, _, 0.7,_,_,MinePositionGet);
 		return Plugin_Stop; 
 	}
 	float MaxDuration = pack.ReadFloat();
