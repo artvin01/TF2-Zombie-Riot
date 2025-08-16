@@ -748,7 +748,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		}
 	}
 	// Wave 21+ - Instantly kill self because we don't want to talk
-	if(wave >= 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(wave >= 22 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
 		SmiteNpcToDeath(npc.index);
 	}
@@ -776,7 +776,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 				case 3:
 				{
-					CPrintToChatAll("{rare}???{default}: Were {unique}Expidonsans{default}not brave enough to reach out to us on their own?");
+					CPrintToChatAll("{rare}???{default}: Were {unique}Expidonsans{default} not brave enough to reach out to us on their own?");
 				}
 				case 4:
 				{
@@ -957,7 +957,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 	//Wave 35 - Spared CAT | Spared ARIS
 	if(wave >= 34 && wave <= 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 	{
-		int maxyapping = 6;
+		int maxyapping = 9;
 		if(i_TalkDelayCheck == maxyapping)
 		{
 			SmiteNpcToDeath(npc.index);
