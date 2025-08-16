@@ -595,6 +595,15 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
 		npc.PourOilAbility(30.0, 2.0);
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
+			case 1:
+				CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
+			case 2:
+				CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+		}
 	}
 	
 	if (npc.m_flGetClosestTargetTime < gameTime)
@@ -840,16 +849,6 @@ static bool Vincent_LoseConditions(int iNPC)
 			npc.SetLayerCycle(AnimLayer, (0.0));
 			npc.SetCycle(0.5);
 			npc.SetPlaybackRate(0.0);
-
-			switch(GetRandomInt(0,2))
-			{
-				case 0:
-					CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
-				case 1:
-					CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
-				case 2:
-					CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
-			}
 		}
 		if(npc.Anger)
 		{
