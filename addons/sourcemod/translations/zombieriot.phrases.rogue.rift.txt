@@ -24,6 +24,79 @@
 		"en"	"Leave it"
 	}
 
+	"Rift of Swarms"
+	{
+		"en"	"Rift of Swarms"
+	}
+	"Rift of Swarms Desc"
+	{
+		"en"	"{red}Increases the amount of enemies by +20％"
+	}
+	"Rift of Swarms Lore"
+	{
+		"en"	"A rift opens as it spews out more enemies in your path."
+	}
+	"Rift of Emptiness"
+	{
+		"en"	"Rift of Emptiness"
+	}
+	"Rift of Emptiness Desc"
+	{
+		"en"	"{red}Voidstones no longer drop from battles"
+	}
+	"Rift of Emptiness Lore"
+	{
+		"en"	"A rift opens, as if you can feel it's blankness and void inside it."
+	}
+	"Rift of Darkness"
+	{
+		"en"	"Rift of Darkness"
+	}
+	"Rift of Darkness Desc"
+	{
+		"en"	"{red}Void enemies gain +35％ health and +25％ damage {green}but all other enemies lose -15％ health and -10％ damage"
+	}
+	"Rift of Darkness Lore"
+	{
+		"en"	"A rift opens as you watch it suck light away from the area around it."
+	}
+	"Rift of Expansion"
+	{
+		"en"	"Rift of Expansion"
+	}
+	"Rift of Expansion Desc"
+	{
+		"en"	"{red}Void Gates will appear in stages."
+	}
+	"Rift of Expansion Lore"
+	{
+		"en"	"Multiple rifts opens around, you feel you know what's gonna come out."
+	}
+	"Rift of Corruption"
+	{
+		"en"	"Rift of Corruption"
+	}
+	"Rift of Corruption Desc"
+	{
+		"en"	"{red}Consuming items at a Gateway has a chance to corrupt."
+	}
+	"Rift of Corruption Lore"
+	{
+		"en"	"The gateway used to show offerings, tints darker and darker."
+	}
+	"Rift of Malice"
+	{
+		"en"	"Rift of Malice"
+	}
+	"Rift of Malice Desc"
+	{
+		"en"	"{red}Entering battles reduces Umbral Affinity by 3."
+	}
+	"Rift of Malice Lore"
+	{
+		"en"	"A rift opens, you feel as if you're being watched from inside it."
+	}
+
 	"Ruin"
 	{
 		"en"	"Ruin"
@@ -377,6 +450,14 @@
 	"Furnace Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain 12 Australium Ingots when consumed"
+	}
+	"Fractured"
+	{
+		"en"	"Fractured ◈"
+	}
+	"Fractured Desc"
+	{
+		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter"
 	}
 
 	"Gateway"

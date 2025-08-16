@@ -1053,7 +1053,7 @@ void Rogue_BattleVictory()
 			{
 				Artifact artifact;
 
-				if(CurrentFloor < 5 && CurrentCount < 4)
+				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
 				{
 					if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 						time = Rogue_Rift_OptionalVoteItem(artifact.Name);
@@ -2855,6 +2855,12 @@ stock void Rogue_AddChaos(int amount, bool silent = false)
 stock void Rogue_AddUmbral(int amount, bool silent = false)
 {
 	int change = amount;
+	
+	if(CurrentUmbral < 1)
+	{
+		CurrentUmbral = 0;
+		return;
+	}
 
 	CurrentUmbral += change;
 
@@ -3075,22 +3081,26 @@ bool Rogue_UpdateMvMStats()
 						}
 						case ReilaRift:
 						{
-							// TODO: Icon
-							switch(Rogue_GetUmbralLevel())
+							if(CurrentUmbral > 0)
 							{
-								case 0:	// Most Friendly
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
-								
-								case 1, 2:
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL, true);
-								
-								case 3:
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS, true);
-								
-								default:	// Most Hated
-									Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								// TODO: Custom Icon
+								switch(Rogue_GetUmbralLevel())
+								{
+									case 0:	// Most Friendly
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+									
+									case 1, 2:
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL, true);
+									
+									case 3:
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS, true);
+									
+									default:	// Most Hated
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								}
+
+								continue;
 							}
-							continue;
 						}
 					}
 				}
