@@ -2,6 +2,107 @@
 #pragma newdecls required
 
 static ArrayList ShopListing;
+static int ConsumeLimit;
+static bool CurseSwarm;
+static bool CurseEmpty;
+static bool CurseCorrupt;
+
+stock void Rogue_Rift_MultiScale(float &multi)
+{
+	if(CurseSwarm)
+		multi *= 1.2;
+}
+
+stock bool Rogue_Rift_NoStones()
+{
+	return CurseEmpty;
+}
+
+public void Rogue_Curse_RiftSwarm(bool enable)
+{
+	CurseSwarm = enable;
+}
+
+public void Rogue_Curse_RiftEmpty(bool enable)
+{
+	CurseEmpty = enable;
+}
+
+public void Rogue_Curse_RiftDarkness(bool enable)
+{
+	if(enable)
+	{
+		Rogue_GiveNamedArtifact("Rift of Darkness", true);
+	}
+	else
+	{
+		Rogue_RemoveNamedArtifact("Rift of Darkness");
+	}
+}
+
+public void Rogue_RiftEmpty_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
+	{
+		fl_Extra_Damage[entity] *= 1.25;
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.3));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 1.3));
+	}
+	else
+	{
+		fl_Extra_Damage[entity] *= 0.9;
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.85));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 0.85));
+	}
+}
+
+public void Rogue_Curse_RiftExpansion(bool enable)
+{
+	if(enable)
+	{
+		Rogue_GiveNamedArtifact("Rift of Expansion", true);
+	}
+	else
+	{
+		Rogue_RemoveNamedArtifact("Rift of Expansion");
+	}
+}
+
+public void Rogue_RiftExpansion_StageStart()
+{
+	float pos[3], ang[3];
+
+	Spawns_GetNextPos(pos, ang);
+	NPC_CreateByName("npc_void_portal", 0, pos, ang, TFTeam_Blue);
+
+	Spawns_GetNextPos(pos, ang);
+	NPC_CreateByName("npc_void_portal", 0, pos, ang, TFTeam_Blue);
+
+	Spawns_GetNextPos(pos, ang);
+	NPC_CreateByName("npc_void_portal", 0, pos, ang, TFTeam_Blue);
+}
+
+public void Rogue_Curse_RiftCorrupt(bool enable)
+{
+	CurseCorrupt = enable;
+}
+
+public void Rogue_Curse_RiftMalice(bool enable)
+{
+	if(enable)
+	{
+		Rogue_GiveNamedArtifact("Rift of Malice", true);
+	}
+	else
+	{
+		Rogue_RemoveNamedArtifact("Rift of Malice");
+	}
+}
+
+public void Rogue_RiftMalice_StageStart()
+{
+	Rogue_AddUmbral(-3);
+}
 
 public float Rogue_Encounter_RiftShop()
 {
@@ -196,10 +297,9 @@ static void FinishOptionalVoteItem(const Vote vote, int index)
 		Rogue_GiveNamedArtifact(vote.Config);
 }
 
-static int ConsumeLimit;
 public float Rogue_Encounter_RiftConsume()
 {
-	ConsumeLimit = 3;
+	ConsumeLimit = 4;
 	StartRiftVote(true);
 	return 35.0;
 }
@@ -228,7 +328,7 @@ static void StartRiftVote(bool first)
 		{
 			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-			if(artifact.ShopCost == 6)
+			if(artifact.Multi && artifact.FuncRemove != INVALID_FUNCTION)
 			{
 				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -279,20 +379,27 @@ static void FinishRiftVote(const Vote vote)
 		default:
 		{
 			Rogue_RemoveNamedArtifact(artifact.Name);
-			
-			switch(GetURandomInt() % 5)
+
+			if(CurseCorrupt && (GetURandomInt() % 2))
 			{
-				case 0:
-					GiveShield(500);
-				
-				case 1:
-					GiveShield(1000);
-				
-				case 2:
-					GiveShield(1500);
-				
-				default:
-					GiveCash(1000);
+				Rogue_GiveNamedArtifact("Fractured");
+			}
+			else
+			{
+				switch(GetURandomInt() % 5)
+				{
+					case 0:
+						GiveShield(500);
+					
+					case 1:
+						GiveShield(1000);
+					
+					case 2:
+						GiveShield(1500);
+					
+					default:
+						GiveCash(1000);
+				}
 			}
 
 			ConsumeLimit--;
