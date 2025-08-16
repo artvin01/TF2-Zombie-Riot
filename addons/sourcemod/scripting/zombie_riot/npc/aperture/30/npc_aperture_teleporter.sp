@@ -143,7 +143,7 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 				{
 					if (!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 					{
-						Spawns_AddToArray(npc.index, true);
+						Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
 						i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 						//npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR);
 						break;
@@ -211,4 +211,16 @@ public void ApertureTeleporter_NPCDeath(int entity)
 	makeexplosion(-1, pos, 0, 0);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+
+		
+	Spawns_RemoveFromArray(entity);
+	
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
 }

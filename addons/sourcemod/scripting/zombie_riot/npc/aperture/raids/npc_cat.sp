@@ -305,27 +305,30 @@ methodmap CAT < CClotBody
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+		RaidModeScaling *= 0.75;
+		//scaling old
 			
 		RaidModeScaling *= amount_of_people;
+		RaidModeScaling *= 1.3;
+
 		
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/cat.mp3");
@@ -337,8 +340,8 @@ methodmap CAT < CClotBody
 		Music_SetRaidMusic(music);
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextOrbAbilityTime = GetGameTime(npc.index) + 25.0;
-		npc.m_flNextSelfDegradationAbilityTime = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextOrbAbilityTime = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextSelfDegradationAbilityTime = GetGameTime(npc.index) + 25.0;
 		
 		npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_NONE;
 		npc.m_flNextOrbAbilityState = 0.0;
@@ -638,7 +641,7 @@ static void CATS_SelfDefense(CAT npc, float gameTime, int target, float distance
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
 				npc.m_flAttackHappens = gameTime + 0.2;
-				float attack = 1.0;
+				float attack = 0.75;
 				npc.m_flNextMeleeAttack = gameTime + attack;
 				return;
 			}
@@ -729,7 +732,7 @@ static void OrbSpam_Ability_End(CAT npc)
 	npc.StartPathing();
 	
 	npc.m_flAttackHappens = gameTime + 0.5;
-	npc.m_flNextOrbAbilityTime = gameTime + 25.0;
+	npc.m_flNextOrbAbilityTime = gameTime + 20.0;
 	
 	if (IsValidEntity(npc.m_iWearable1))
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);

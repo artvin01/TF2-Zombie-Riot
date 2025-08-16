@@ -437,25 +437,28 @@ methodmap ARIS < CClotBody
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+
+		RaidModeScaling *= 0.75;
+		//scaling old
+
 		npc.m_flMeleeArmor = 1.25;	
 			
 		RaidModeScaling *= amount_of_people;
@@ -957,7 +960,7 @@ methodmap ARIS < CClotBody
 				armorFromThisTarget += 0.01;
 				b_EnemyHitByBlast[target] = false;
 			}
-			damage *= 10.0;
+			damage *= 7.0;
 			damage *= RaidModeScaling;
 			
 			if (damage > 0.0)
@@ -1413,7 +1416,7 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 			// Let's just ASSUME this is ARIS
 			float damage = 120.0;
 			
-			if (RaidBossActive > 0)
+			if (IsValidEntity(RaidBossActive))
 				damage *= RaidModeScaling;
 			
 			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, ARIS_ROCKET_BLAST_RADIUS);

@@ -178,9 +178,9 @@ void VincentBeaconGiveArmor(int entity, int victim, float &healingammount)
 	VincentBeacon npc = view_as<VincentBeacon>(victim);
 	if(npc.Anger)
 	{
-		ApplyStatusEffect(entity, victim, "Expidonsan Anger", 3.0);
+		ApplyStatusEffect(entity, victim, "Expidonsan Anger", 5.0);
 	}
-	ApplyStatusEffect(entity, victim, "Combine Command", 3.0);
+	ApplyStatusEffect(entity, victim, "Combine Command", 5.0);
 	ApplyStatusEffect(entity, victim, "Very Defensive Backup", 0.6);
 }
 

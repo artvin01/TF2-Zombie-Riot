@@ -86,6 +86,7 @@ methodmap Talker < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		i_TalkDelayCheck = 0;
+		f_TalkDelayCheck = 0.0;
 		npc.m_bCamo = true;
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		b_NpcIsInvulnerable[npc.index] = true;
@@ -101,7 +102,9 @@ methodmap Talker < CClotBody
 				break;
 			
 			if (StrEqual(buffers[i], "reset"))
+			{
 				i_ApertureBossesDead = APERTURE_BOSS_NONE;
+			}
 		}
 		
 		func_NPCThink[npc.index] = view_as<Function>(Talker_ClotThink);
@@ -465,7 +468,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{rare}???{default}: And yet...you took advantage of that and you disassembled him, part-by-part.");
+					CPrintToChatAll("{rare}???{default}: And yet...you took advantage of that and you disassembled it, part-by-part.");
 				}
 				case 5:
 				{

@@ -270,7 +270,6 @@ methodmap Vincent < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Vincent_OnTakeDamage;
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 
-		
 		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -299,28 +298,28 @@ methodmap Vincent < CClotBody
 		{	
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
-		
-		if(RaidModeScaling < 55)
+
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
+		//scaling old
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -548,7 +547,7 @@ public void Vincent_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 1;
 				npc.m_bisWalking = true;
 				npc.StartPathing();
-				npc.m_flSpeed = 300.0;
+				npc.m_flSpeed = 320.0;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				npc.SetPoseParameter_Easy("body_pitch", 0.0);
 				npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
@@ -674,7 +673,7 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 			delete swingTrace;
 			bool PlaySound = false;
-			float damage = 45.0;
+			float damage = 55.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
@@ -769,7 +768,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_bLostHalfHealth = true;
 	}
 	
-	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) && Aperture_ShouldDoLastStand())
 	{
 		if(!npc.m_flTalkRepeat)
 		{
@@ -1019,7 +1018,7 @@ static bool Vincent_LoseConditions(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -1529,7 +1528,7 @@ void Vincent_AdjustGrabbedTarget(int iNPC)
 	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }
 
-#define VINCENT_MINIMUM_RANGE_BEACONS 800.0
+#define VINCENT_MINIMUM_RANGE_BEACONS 600.0
 #define VINCENT_MAXTRIES 100
 void VincentSpawnBeacons(int iNPC)
 {

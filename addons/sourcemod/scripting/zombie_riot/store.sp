@@ -4686,7 +4686,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 							for(int i = 1; i < tags; i++)
 							{
-								TranslateItemName(client, buffers[i], _, buffers[0], sizeof(buffer[]));
+								TranslateItemName(client, buffers[i], _, buffers[0], sizeof(buffer));
 								Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
 							}
 
@@ -4699,7 +4699,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						TranslateItemName(client, ItemFaction[info.WeaponFaction1], _, buffer, sizeof(buffer));
 						if(info.WeaponFaction2)
 						{
-							TranslateItemName(client, ItemFaction[info.WeaponFaction2], _, buffers[0], sizeof(buffer[]));
+							TranslateItemName(client, ItemFaction[info.WeaponFaction2], _, buffers[0], sizeof(buffer));
 							Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
 						}
 
@@ -7297,6 +7297,13 @@ void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
 
 bool Store_IsWeaponFaction(int client, int weapon, int faction)
 {
+	if(client <= 0)
+		return false;
+	if(weapon <= 0)
+		return false;
+	if(StoreWeapon[weapon] <= 0)
+		return false;
+		
 	static Item item;
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	if(!item.Owned[client])
