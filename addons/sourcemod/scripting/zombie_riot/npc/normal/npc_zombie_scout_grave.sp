@@ -57,7 +57,7 @@ void Scout_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Scout Assulter");
+	strcopy(data.Name, sizeof(data.Name), "Scout Assaulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombie_scout_grave");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
 	data.IconCustom = false;

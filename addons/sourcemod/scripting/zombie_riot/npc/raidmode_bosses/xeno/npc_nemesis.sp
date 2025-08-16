@@ -122,6 +122,29 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 }
 methodmap RaidbossNemesis < CClotBody
 {
+	property int m_iGrabbedTarget
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_TargetToWalkTo[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_TargetToWalkTo[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_TargetToWalkTo[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	public void PlayHurtSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
@@ -278,7 +301,7 @@ methodmap RaidbossNemesis < CClotBody
 		if(XenoExtraLogic())
 		{
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Enraged Calmaticus");
-			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS:");
+			CPrintToChatAll("{green}Calmaticus: YOU WILL BECOME DNA SUPLIMENTS.");
 		}
 		else
 		{
@@ -297,7 +320,7 @@ methodmap RaidbossNemesis < CClotBody
 public void RaidbossNemesis_ClotThink(int iNPC)
 {
 	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
-	
+	Nemesis_AdjustGrabbedTarget(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	if(LastMann)
 	{
@@ -622,8 +645,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				}
 				else
 				{
-					i_GrabbedThis[npc.index] = -1;
-					AcceptEntityInput(client_victim, "ClearParent");
 							
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -653,6 +674,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					}
 					npc.m_flNextRangedAttackHappening = 0.0;	
 					SDKHooks_TakeDamage(client_victim, npc.index, npc.index, 10000.0, DMG_CLUB, -1);
+					i_GrabbedThis[npc.index] = -1;
 					i_TankAntiStuck[client_victim] = EntIndexToEntRef(npc.index);
 					CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client_victim), TIMER_FLAG_NO_MAPCHANGE);
 					npc.PlayRangedSpecialSound();
@@ -733,7 +755,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							{
 								SetEntityMoveType(Enemy_I_See, MOVETYPE_NONE); //Cant move XD
 								SetEntityCollisionGroup(Enemy_I_See, 1);
-								SetParent(npc.index, Enemy_I_See, "anim_attachment_LH");
+							//	SetParent(npc.index, Enemy_I_See, "anim_attachment_LH");
 							}
 							else
 							{
@@ -1084,7 +1106,6 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 		int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 		if(IsValidEntity(client))
 		{
-			AcceptEntityInput(client, "ClearParent");
 			b_NoGravity[client] = false;
 			npc.SetVelocity({0.0,0.0,0.0});
 			if(IsValidClient(client))
@@ -1116,7 +1137,6 @@ public void RaidbossNemesis_NPCDeath(int entity)
 
 	if(IsValidEntity(client))
 	{
-		AcceptEntityInput(client, "ClearParent");
 		b_NoGravity[client] = false;
 		npc.SetVelocity({0.0,0.0,0.0});
 		if(IsValidClient(client))
@@ -1680,4 +1700,21 @@ public void Raidmode_Nemesis_Win(int entity)
 		}
 	}
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+}
+
+
+
+void Nemesis_AdjustGrabbedTarget(int iNPC)
+{
+	RaidbossNemesis npc = view_as<RaidbossNemesis>(iNPC);
+	if(!IsValidEntity(i_GrabbedThis[npc.index]))
+		return;
+
+	int EnemyGrab = EntRefToEntIndex(i_GrabbedThis[npc.index]);
+	float flPos[3]; // original
+	float flAng[3]; // original
+
+	npc.GetAttachment("anim_attachment_LH", flPos, flAng);
+	
+	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }

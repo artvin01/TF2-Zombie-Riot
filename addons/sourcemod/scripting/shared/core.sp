@@ -265,7 +265,13 @@ enum
 	RUINA_FRACTAL_LENZ			= 16,			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
 	RUINA_FRACTAL_HARVESTER		= 32
 }
-
+enum
+{
+	NPC_SPAWNPROT_OFF = -1,
+	NPC_SPAWNPROT_INIT = 0,
+	NPC_SPAWNPROT_ON = 1,
+	NPC_SPAWNPROT_UNSTUCK = 3
+}
 
 #if defined ZR
 	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0 //0.0151 //Make it 0 for now
@@ -864,7 +870,7 @@ public Action Timer_Temp(Handle timer)
 #if defined ZR
 	if(RaidbossIgnoreBuildingsLogic())
 	{
-		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > 0)
+		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > NPC_SPAWNPROT_INIT)
 		{
 			RaidModeTime += 0.2;
 			//if the raidboss is in spawn protection, prevent raidmode from going up.
@@ -2369,9 +2375,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		WildingenBuilder[entity] = false;
 		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
+#endif
 		b_IsATrigger[entity] = false;
 		b_IsATriggerHurt[entity] = false;
-#endif
 		i_IsWandWeapon[entity] = false;
 		i_IsWrench[entity] = false;
 		b_CanSeeBuildingValues[entity] = false;
@@ -2703,6 +2709,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			
 		}

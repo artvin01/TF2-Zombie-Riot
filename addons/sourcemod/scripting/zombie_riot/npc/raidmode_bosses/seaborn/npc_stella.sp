@@ -1342,7 +1342,7 @@ static bool Lunar_Grace(Stella npc)
 	struct_Lunar_Grace_Data[npc.index].AnimSet = false;
 
 	Ruina_Laser_Logic Laser;
-	Laser.Bonus_Damage = 20.0;
+	Laser.Bonus_Damage = 6.0;
 	Laser.client = npc.index;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float Angles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
@@ -1940,7 +1940,6 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			Ruina_Laser_Logic Karl_Laser;
 			Karl_Laser.client = npc.Ally;
 			Karl_Laser.DoForwardTrace_Basic(-1.0);
-			Laser.Bonus_Damage = 20.0;
 			Laser.End_Point = Karl_Laser.Start_Point;
 			NC_CoreBeamEffects(npc, 
 			Karl_Laser.Start_Point, 
@@ -1955,7 +1954,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
 				Karl_Laser.Damage = Modify_Damage(25.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*6.0;
+				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*0.1;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -2318,7 +2317,7 @@ static bool Is_Target_Infront(Stella npc, float Radius)
 	float Range = fl_Normal_Laser_Range(npc);
 	Laser.DoForwardTrace_Basic(Range);
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = 20.0;
+	Laser.Bonus_Damage = 6.0;
 	Laser.Detect_Entities(On_LaserHit);	//by default it only filters out enemies
 
 	return b_hit_something;
@@ -2523,7 +2522,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = Dmg*6.0;
+		Laser.Bonus_Damage = Dmg*4.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 
@@ -2592,7 +2591,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
 	Ruina_Laser_Logic Laser;
-	Laser.Bonus_Damage = 20.0;
+	Laser.Bonus_Damage = 6.0;
 	Laser.client = attacker;
 	Laser.Start_Point = pos_npc;
 
@@ -2621,7 +2620,7 @@ static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int
 	Ruina_Laser_Logic Laser;
 	Laser.client = attacker;
 	Laser.Start_Point = pos_npc;
-	Laser.Bonus_Damage = 20.0;
+	Laser.Bonus_Damage = 6.0;
 
 	float vecAngles[3];
 	//get the enemy gamer's location.

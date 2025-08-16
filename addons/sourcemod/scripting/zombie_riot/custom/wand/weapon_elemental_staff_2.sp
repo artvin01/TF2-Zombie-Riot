@@ -452,11 +452,11 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 			b_PassangerExtraCharge[client] = true;
 			float ClientPos[3];
 			WorldSpaceCenter(client, ClientPos);
-			TR_EnumerateEntitiesSphere(ClientPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
+			TR_EnumerateEntitiesSphere(ClientPos, 300.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
 
 			if(b_PassangerExtraCharge[client])
 			{
-				f_PassangerAbilityCooldownRegen[client] -= 0.2;
+				f_PassangerAbilityCooldownRegen[client] -= 0.1;
 			}
 			if(b_PassangerExtraCharge[client])
 			{
@@ -680,6 +680,7 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 	float damage = 150.0;
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
 	damage *= 0.5;
+	damage *= 0.7;
 
 
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!

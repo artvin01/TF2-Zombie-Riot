@@ -1431,35 +1431,42 @@ static void Zilius_KickTouched(int entity, int enemy)
 
 void Zilius_KickLogic(int iNPC)
 {
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	static float vel[3];
 	static float flMyPos[3];
+	npc.GetVelocity(vel);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	float vecUp[3];
-	float vecForward[3];
-	float vecRight[3];
-
-	GetVectors(iNPC, vecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = flMyPos[0] + vecForward[0] * (40.0);
-	vecSwingEnd[1] = flMyPos[1] + vecForward[1] * (40.0);
-	vecSwingEnd[2] = flMyPos[2];
-				
-
-	static float hullcheckmaxs[3];
-	static float hullcheckmins[3];
-	hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-	hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );	
 		
-	//Fat kick!
-	hullcheckmaxs[0] *= 1.5;
-	hullcheckmaxs[1] *= 1.5;
-	hullcheckmaxs[2] *= 1.5;
+	static float hullcheckmins[3];
+	static float hullcheckmaxs[3];
+	if(b_IsGiant[iNPC])
+	{
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
+	{
+		hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
 
-	hullcheckmins[0] *= 1.5;
-	hullcheckmins[1] *= 1.5;
-	hullcheckmins[2] *= 1.5;
+		hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmins[2] = 0.0;	
+	}
+	else
+	{
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
 	
-	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
+	static float flPosEnd[3];
+	flPosEnd = flMyPos;
+	ScaleVector(vel, 0.1);
+	AddVectors(flMyPos, vel, flPosEnd);
+	
+	ResetTouchedentityResolve();
+	ResolvePlayerCollisions_Npc_Internal(flMyPos, flPosEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{
