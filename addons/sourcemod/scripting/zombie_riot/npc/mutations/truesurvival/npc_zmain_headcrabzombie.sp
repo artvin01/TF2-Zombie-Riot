@@ -54,6 +54,9 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
+static int NPCId;
+static int RemainingZmainsSpawn;
+static float fl_KamikazeInitiate;
 public void ZMainHeadcrabZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -74,7 +77,8 @@ public void ZMainHeadcrabZombie_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
+	fl_KamikazeInitiate = 0.0;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -157,6 +161,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		b_thisNpcIsABoss[npc.index] = true;
 		
 		//IDLE
 		npc.m_flSpeed = 330.0;
@@ -167,6 +172,34 @@ methodmap ZMainHeadcrabZombie < CClotBody
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
+
+		if(ally == TFTeam_Blue)
+		{
+			if(fl_KamikazeInitiate < GetGameTime())
+			{
+				//This is a kamikaze that was newly initiated!
+				//add new kamikazies whenever possible.
+				//this needs to happen every tick!
+				DoGlobalMultiScaling();
+				RemainingZmainsSpawn = 4;
+				RequestFrame(SpawnZmainsAFew, 0);
+			
+				if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
+				{
+					//incase their random spawn code fails, they'll spawn here.
+					int Spawner_entity = GetRandomActiveSpawner();
+					if(IsValidEntity(Spawner_entity))
+					{
+						float pos[3];
+						float ang[3];
+						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+						TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+					}
+				}
+			}
+			fl_KamikazeInitiate = GetGameTime() + 15.0;	
+		}
 
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;
@@ -400,4 +433,48 @@ public void ZMainHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+}
+
+
+
+
+void SpawnZmainsAFew(int nulldata)
+{
+	if(Waves_InSetup())
+	{
+		return;
+	}
+
+	if(f_DelaySpawnsForVariousReasons + 0.15 < GetGameTime())
+		f_DelaySpawnsForVariousReasons = GetGameTime() + 0.15;
+
+
+	if(RemainingZmainsSpawn <= 0)
+		return;
+
+	//can we still spawn
+	//spawn a kamikaze here!
+	int Spawner_entity = GetRandomActiveSpawner();
+	float pos[3];
+	float ang[3];
+	if(IsValidEntity(Spawner_entity))
+	{
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+	}
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(i_NpcInternalId[entity] == NPCId)
+		{
+			//spawn inside fellow zobie
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+			break;
+		}
+	}
+	RemainingZmainsSpawn--;
+	int spawn_npc = NPC_CreateById(NPCId, -1, pos, ang, TFTeam_Blue); //can only be enemy
+	NpcAddedToZombiesLeftCurrently(spawn_npc, true);
+	RequestFrame(SpawnZmainsAFew, 0);
 }

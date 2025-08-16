@@ -23,6 +23,16 @@ void Gladiia_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS, WEAPON_SKADI:
+		{
+			if (HealingTimer[client] != null)
+			{
+				delete HealingTimer[client];
+			}
+			HealingTimer[client] = null;
+
+			HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
+		}
 		case WEAPON_GLADIIA:
 		{
 			if (HealingTimer[client] != null)
@@ -76,19 +86,6 @@ void Gladiia_Enable(int client, int weapon)
 				}
 			}
 		}
-		default:
-		{
-			if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
-			{
-				if (HealingTimer[client] != null)
-				{
-					delete HealingTimer[client];
-				}
-				HealingTimer[client] = null;
-
-				HealingTimer[client] = CreateTimer(0.1, Gladiia_TimerHealing, client, TIMER_REPEAT);
-			}
-		}
 	}
 }
 
@@ -114,54 +111,57 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon != INVALID_ENT_REFERENCE)
 			{
-				if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					float amount = 0.0;
-					int elite = EliteLevel[GetHighestGladiiaClient()];
-					switch(elite)
+					case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SKADI:
 					{
-						case 1:
+						float amount = 0.0;
+						int elite = EliteLevel[GetHighestGladiiaClient()];
+						switch(elite)
 						{
-							amount = 0.0015;
-						}
-						case 2:
-						{
-							amount = 0.0025;
-						}
-						case 3:
-						{
-							amount = 0.0035;
-						}
-					}
-
-					if(amount)
-					{
-						ApplyStatusEffect(client, client, "Waterless Training", 0.5);
-						int maxhealth = SDKCall_GetMaxHealth(client);
-						if(maxhealth > 1000)
-							maxhealth = 1000;
-						
-						if(f_TimeUntillNormalHeal[client] > GetGameTime())
-							amount *= 0.25;
-
-						amount *= float(maxhealth);
-
-						HealEntityGlobal(client, client, amount, _, 0.0,HEAL_SELFHEAL);
-
-						if(ParticleRef[client] == -1)
-						{
-							float pos[3]; WorldSpaceCenter(client, pos);
-							pos[2] += 500.0;
-
-							int entity = ParticleEffectAt(pos, "env_rain_128", -1.0);
-							if(entity > MaxClients)
+							case 1:
 							{
-								SetParent(client, entity);
-								ParticleRef[client] = EntIndexToEntRef(entity);
+								amount = 0.0015;
+							}
+							case 2:
+							{
+								amount = 0.0025;
+							}
+							case 3:
+							{
+								amount = 0.0035;
 							}
 						}
 
-						return Plugin_Continue;
+						if(amount)
+						{
+							ApplyStatusEffect(client, client, "Waterless Training", 0.5);
+							int maxhealth = SDKCall_GetMaxHealth(client);
+							if(maxhealth > 1000)
+								maxhealth = 1000;
+							
+							if(f_TimeUntillNormalHeal[client] > GetGameTime())
+								amount *= 0.25;
+
+							amount *= float(maxhealth);
+
+							HealEntityGlobal(client, client, amount, _, 0.0,HEAL_SELFHEAL);
+
+							if(ParticleRef[client] == -1)
+							{
+								float pos[3]; WorldSpaceCenter(client, pos);
+								pos[2] += 500.0;
+
+								int entity = ParticleEffectAt(pos, "env_rain_128", -1.0);
+								if(entity > MaxClients)
+								{
+									SetParent(client, entity);
+									ParticleRef[client] = EntIndexToEntRef(entity);
+								}
+							}
+
+							return Plugin_Continue;
+						}
 					}
 				}
 			}

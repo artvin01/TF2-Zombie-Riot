@@ -58,7 +58,6 @@ enum
 	Ammo_MAX
 };
 
-/*
 public const char ItemArchetype[][] =
 {
 	"",	// No archetype.	
@@ -78,6 +77,8 @@ public const char ItemArchetype[][] =
 	"Brawler",			// 11 most fist melee's
 	"Ambusher",			// 12 spy backstab weapons
 	"Combatant",		// 13 Longsword any melee that has no special abilities, mostly
+//	"Martial Artist",	// ?? Weapons with heavy skill usage such as judgement of iberia
+//	edit: Too general, cant.
 	"Aberration",		// 14 Melee weapons that summon things, currenly only fusion blade
 	"Duelist",			// 15 Melee weapons that exell at taking down/fighting single targets, see ark due to parry
 	"Lord",				// 16 Any melee that heavily has ranged attacks, see Lappland melee as the only one currently
@@ -98,77 +99,6 @@ public const char ItemArchetype[][] =
 	"Mythic Caster",	// 26
 	"Psychic Warlord",	//27, Psychokinesis and Magnesis Staff, possibly more in the future
 	"Archetype Victoria" //28, Damn this is an Archetype for a Victorian weapon made by beep.
-};
-*/
-enum
-{
-	Faction_Expidonsa = 1,
-	Faction_Kazimierz,
-	Faction_Victoria,
-	Faction_PsychicWarlord,
-	Faction_Seaborn
-}
-public const char ItemFaction[][] =
-{
-	"",
-
-	"Expidonsa",
-	"Kazimierz",
-	"Victoria",
-	"Psychic Warlord",
-	"Seaborn"
-}
-
-enum
-{
-	Archetype_Artillery = 1,
-	Archetype_Deadeye,
-	Archetype_Charger,
-	Archetype_Tactician,
-	Archetype_Hunter,
-	Archetype_Drone,
-	Archetype_Splash,
-	Archetype_Rapid,
-	Archetype_Power,
-	Archetype_Hexing,
-	Archetype_Ambusher,
-	Archetype_Duelist,
-	Archetype_Defender,
-	Archetype_Lord,
-	Archetype_Crusher,
-	Archetype_Combatant,
-	Archetype_Medical,
-	Archetype_Mechanic,
-	Archetype_Buffer,
-	Archetype_Debuffer
-}
-public const char ItemArchetype[][] =
-{
-	"",
-
-	"Artillery",	// 1 Explosives, Heavy AOE Focus
-	"Deadeye",	// 2 Sniper, Slow/High Damage at a Range
-	"Charger",	// 3 Shotgun, Slow Fire Rate/Short Range
-	"Tactician",	// 4 Pistol/SMG, Fast Fire Rate/Medium Range
-	"Hunter",	// 5 Stickybomb, Trap Focus
-
-	"Drone Magic",	// 6 High lifetime projectiles or summoning, Skulls/Drone/Nerco
-	"Splash Magic",	// 7 Heavy AOE Focus
-	"Rapid Magic",	// 8 High Fire Rate
-	"Power Magic",	// 9 Low Fire Rate
-	"Hexing Magic",	// 10 Elemental/Debuff Focus
-
-	"Ambusher",	// 11 Knifes, Focus on hitting correct timing
-	"Duelist",	// 12 Survival focus
-	"Defender",	// 13 Tank focus
-	"Lord",		// 14 Long range focus
-	"Crusher",	// 15 AOE focus
-	"Combatant",	// 16 DPS focus
-
-	"Medical",	// 17 Healing focus
-	"Mechanic",	// 18 Building focus
-	"Buffer",	// 19 Buffing focus
-	"Debuffer"	// 20 Debuff focus
 };
 
 public const int RenderColors_RPG[][] =

@@ -3559,11 +3559,6 @@
 		"en"	"Search Store Using Tags"
 		"fr"	"Chercher la Boutique avec des Étiquettes"
 	}
-	"Archetype Type"
-	{
-		"#format"	"{1:t}"
-		"en"	"Archetype: {1}"
-	}
 	"Tags List"
 	{
 		"#format"	"{1:s}"
@@ -3579,11 +3574,6 @@
 	{
 		"en"	"Clear Whitelist"
 		"fr"	"Effacer Étiquettes"
-	}
-	"Faction List"
-	{
-		"#format"	"{1:s}"
-		"en"	"Faction: {1}"
 	}
 	"Crouch on ground for ability"
 	{
@@ -3605,7 +3595,7 @@
 	}
 	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) ''Silvester'' Is infected with the xeno virus, his gear prevents spreading of it."
+		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents spreading of it."
 	}
 	"Alternative Desc"
 	{
@@ -3615,7 +3605,7 @@
 	}
 	"Blitzkrieg Wave Desc"
 	{
-		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
+		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -3630,7 +3620,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"(3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
+		"en"	"Lore order: (3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
 	}
 	"Xeno Hard Desc"
 	{
@@ -3646,7 +3636,7 @@
 	}
 	"God Alaxios Wave Desc"
 	{
-		"en"	"(4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
+		"en"	"Lore order: (4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
 		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 	}
@@ -3658,7 +3648,7 @@
 	}
 	"Sensal Wave Desc"
 	{
-		"en"	"(5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
+		"en"	"Lore order: (5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
 	}
 	"Deep Sea Desc"
 	{
@@ -3668,13 +3658,13 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"Lore order: (7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
+		"en"	"Lore order: (6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 	}
 	"Schwert Donner Alt Desc"
 	{
@@ -3682,7 +3672,7 @@
 	}
 	"Khaml Desc"
 	{
-		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"Lore order: (7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 	}
@@ -3694,13 +3684,17 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"(8) Directly after you release the void in rogue2..."
+		"en"	"Lore order: (9) Directly after you release the void in rogue2..."
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 	}
+	"Laboratories Raid Desc"
+	{
+		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
+	}
 	"Twirl Raid Desc"
 	{
-		"en"	"(9) A certain individual has taken an interest in your group"
+		"en"	"Lore order: (8) A certain individual has taken an interest in your group"
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
 		"chi"	"你貌似引起了 她 的兴趣"
 	}
