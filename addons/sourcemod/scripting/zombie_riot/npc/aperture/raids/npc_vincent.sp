@@ -416,6 +416,8 @@ methodmap Vincent < CClotBody
 		SetVariantColor(view_as<int>({200, 200, 50, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
+		Vincent_SpawnFog(npc.index);
+
 		return npc;
 	}
 	
@@ -809,6 +811,14 @@ public void Vincent_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	npc.StopPassiveSound();
+	if(FogEntity != INVALID_ENT_REFERENCE)
+	{
+		int entity1 = EntRefToEntIndex(FogEntity);
+		if(entity1 > MaxClients)
+			RemoveEntity(entity1);
+		
+		FogEntity = INVALID_ENT_REFERENCE;
+	}
 
 }
 
@@ -1620,4 +1630,55 @@ stock int Vincent_GetClosestBeacon(int entity, float EntityLocation[3], float li
 		}
 	}
 	return ClosestTarget; 
+}
+
+
+void Vincent_SpawnFog(int iNPC)
+{
+	Vincent npc = view_as<Vincent>(iNPC);
+	if(FogEntity != INVALID_ENT_REFERENCE)
+	{
+		int entity = EntRefToEntIndex(FogEntity);
+		if(entity > MaxClients)
+			RemoveEntity(entity);
+		
+		FogEntity = INVALID_ENT_REFERENCE;
+	}
+	
+	int entity = CreateEntityByName("env_fog_controller");
+	if(entity != -1)
+	{
+		DispatchKeyValue(entity, "fogblend", "2");
+		if(npc.Anger)
+		{
+			DispatchKeyValue(entity, "fogcolor", "255 100 100 50");
+			DispatchKeyValue(entity, "fogcolor2", "255 100 100 50");
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.5);
+		}
+		else
+		{
+			DispatchKeyValue(entity, "fogcolor", "75 75 255 25");
+			DispatchKeyValue(entity, "fogcolor2", "75 75 255 25");
+			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.35);
+		}
+		DispatchKeyValueFloat(entity, "fogstart", 400.0);
+		DispatchKeyValueFloat(entity, "fogend", 1000.0);
+
+		DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
+		DispatchKeyValue(entity, "fogenable", "1");
+		DispatchKeyValue(entity, "spawnflags", "1");
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "TurnOn");
+
+		FogEntity = EntIndexToEntRef(entity);
+
+		for(int client1 = 1; client1 <= MaxClients; client1++)
+		{
+			if(IsClientInGame(client1))
+			{
+				SetVariantString("rpg_fortress_envfog");
+				AcceptEntityInput(client1, "SetFogController");
+			}
+		}
+	}
 }
