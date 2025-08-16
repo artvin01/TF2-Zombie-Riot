@@ -849,44 +849,53 @@ static bool Vincent_LoseConditions(int iNPC)
 				case 0:
 				{
 					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
 					CPrintToChatAll("{rare}%t{crimson}: No...", c_NpcName[npc.index]);
 				}
 				case 1:
 				{
 					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
 					CPrintToChatAll("{rare}%t{crimson}: I can't let you get away with this.", c_NpcName[npc.index]);
 				}
 				case 2:
 				{
 					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
 					CPrintToChatAll("{rare}%t{crimson}: I WON'T let you get away with this!", c_NpcName[npc.index]);
 				}
 				case 3:
 				{
 					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 2.0;
+					npc.m_flTalkRepeat = GetGameTime() + 1.5;
 					float Loc[3];
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0*2.0);
+					GetAbsOrigin(npc.index, Loc);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
 					CPrintToChatAll("{rare}%t{crimson}: I'M GONNA DELETE YOU!", c_NpcName[npc.index]);
+					Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Old forgotten expidonsan robot");
 				}
 				case 4:
 				{
 					//yapping
 					float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-					npc.m_flTalkRepeat = GetGameTime() + 5.0;
-					UTIL_ScreenFade(target, 66, 50, FFADE_OUT, 255, 255, 255, 255); //make the fade target everyone
-					Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 15.0, _, _, false, 1, false);
+					npc.m_flTalkRepeat = GetGameTime() + 0.0;
+					for(int client_check=1; client_check<=MaxClients; client_check++)
+					{
+						if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+						{
+							UTIL_ScreenFade(client_check, 66, 50, FFADE_OUT, 255, 255, 255, 255); //make the fade target everyone
+						}
+					}
+					Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 250.0, _, _, false, 1, false);
 					npc.PlaySuicideSound();
 				}
 				case 5:
 				{
 					//ending
+					Vincent_GrantItem();
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
 			}
@@ -924,6 +933,8 @@ static bool Vincent_LoseConditions(int iNPC)
 				case 5:
 				{
 					//ending
+					npc.m_bDissapearOnDeath = true;
+					Vincent_GrantItem();
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
 			}
@@ -948,21 +959,21 @@ static bool Vincent_LoseConditions(int iNPC)
 			Music_SetRaidMusic(music, false);
 		}
 	}	
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
 		return true;
 	}
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
 		return true;
 	}
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
@@ -1230,15 +1241,6 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 #define VINCENT_THROW_AOE_RANGE 150.0
 bool Vincent_SlamThrow(int iNPC, int target)
 {
-	switch(GetRandomInt(0,2))
-	{
-		case 0:
-			CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
-		case 1:
-			CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
-		case 2:
-			CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
-	}
 
 	Vincent npc = view_as<Vincent>(iNPC);
 	static float ThrowPos[3]; 
@@ -1448,6 +1450,15 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			npc.SetPlaybackRate(0.4 * (1.0 / 0.75));
 			Timeslam *= 0.75;
 			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 35.0;
+		}
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}%t{default}: I'm gonna get you.", c_NpcName[npc.index]);
+			case 1:
+				CPrintToChatAll("{rare}%t{default}: Here I come!", c_NpcName[npc.index]);
+			case 2:
+				CPrintToChatAll("{rare}%t{default}: You better run!", c_NpcName[npc.index]);
 		}
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);

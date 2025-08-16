@@ -1164,6 +1164,10 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	RaidModeScaling = 0.0;
 	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
+	if(CurrentModifOn() == 1)
+	{
+		RaidModeTime = FAR_FUTURE;
+	}
 	EmitSoundToAll(g_ApertureSharedStunStartSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
 	
 	npc.m_flNextThinkTime = gameTime + APERTURE_LAST_STAND_TIMER_BEFORE_INVULN;
@@ -1195,8 +1199,14 @@ static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
 		
 		char message[128];
 		Aperture_GetDyingBoss(npc, message, 128);
-		
-		Format(message, 128, "Choose to spare or kill %s!\nYou DO NOT have to kill it to proceed!", message);
+		if(CurrentModifOn() != 1)
+		{
+			Format(message, 128, "Choose to spare or kill %s!\nYou DO NOT have to kill it to proceed!", message);
+		}
+		else
+		{
+			Format(message, 128, "Kill %s.", message);
+		}
 		
 		event.SetFloat("worldPosX", vecPos[0]);
 		event.SetFloat("worldPosY", vecPos[1]);

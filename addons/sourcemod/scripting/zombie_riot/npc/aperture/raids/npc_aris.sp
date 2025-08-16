@@ -661,7 +661,7 @@ methodmap ARIS < CClotBody
 		
 		this.PlayDeployBeaconSound();
 
-		if(ARIS_MELEE_RESISTANCE)
+		if(this.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
 		{
 			switch(GetRandomInt(0,2))
 			{
@@ -673,7 +673,7 @@ methodmap ARIS < CClotBody
 					CPrintToChatAll("{rare}A.R.I.S.{default}: D3F3NS3 D3PL0Y3D");
 			}
 		}
-		if(ARIS_MELEE_DAMAGE)
+		if(this.m_iCurrentMelee == ARIS_MELEE_DAMAGE)
 		{
 			switch(GetRandomInt(0,2))
 			{
@@ -685,7 +685,7 @@ methodmap ARIS < CClotBody
 					CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 = 8UFF3D");
 			}
 		}
-		if(ARIS_MELEE_SPEED)
+		if(this.m_iCurrentMelee == ARIS_MELEE_SPEED)
 		{
 			switch(GetRandomInt(0,2))
 			{
