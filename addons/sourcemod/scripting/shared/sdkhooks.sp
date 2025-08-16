@@ -1237,7 +1237,7 @@ public void OnPostThink(int client)
 			HudY += -0.0345; //correct offset
 		}
 #if defined ZR
-		if(buffer[0] && !SkillTree_InMenu(client))
+		if(!SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
 #else
 		if(buffer[0])
 #endif
