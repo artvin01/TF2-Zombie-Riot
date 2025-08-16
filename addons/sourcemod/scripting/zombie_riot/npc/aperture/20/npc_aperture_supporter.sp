@@ -259,10 +259,15 @@ public void ApertureSupporter_ClotThink(int iNPC)
 					npc.Healing = true;
 					npc.m_bnew_target = true;
 				}
+				
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, 2000.0, 2.0);
 				if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedAttack = GameTime + 16.0;
-					ExpidonsaGroupHeal(npc.index, 300.0, 99, 2000.0, 15.0, false,Expidonsa_DontHealSameIndex,Aperture_GrantImmortality);
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "UBERCHARGED",		8.0);
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "War Cry",		  	8.0);	
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Defensive Backup", 	8.0);	
+					ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Ancient Melodies", 	8.0);
 				}
 
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
@@ -454,26 +459,4 @@ public void ApertureSupporter_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	npc.StopHealing();
-}
-
-void Aperture_GrantImmortality(int entity, int victim)
-{
-	int flMaxHealth = ReturnEntityMaxHealth(victim);
-	ApplyStatusEffect(entity, victim, "UBERCHARGED",		8.0);
-	ApplyStatusEffect(entity, victim, "War Cry",		  	8.0);	
-	ApplyStatusEffect(entity, victim, "Defensive Backup", 	8.0);	
-	ApplyStatusEffect(entity, victim, "Ancient Melodies", 	8.0);
-	ApplyStatusEffect(entity, entity, "UBERCHARGED",		8.0);
-	ApplyStatusEffect(entity, entity, "War Cry",		  	8.0);	
-	ApplyStatusEffect(entity, entity, "Defensive Backup", 	8.0);	
-	ApplyStatusEffect(entity, entity, "Ancient Melodies", 	8.0);
-	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
-	{
-		//bosses and raids need much more overheal to get this insanely strong buff!
-		flMaxHealth = RoundToCeil(float(flMaxHealth) * 2.0);
-	}
-	else
-	{
-		flMaxHealth = RoundToCeil(float(flMaxHealth) * 3.0);
-	}
 }

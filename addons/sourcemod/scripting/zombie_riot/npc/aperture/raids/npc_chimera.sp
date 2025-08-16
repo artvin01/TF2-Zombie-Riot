@@ -758,43 +758,25 @@ bool CHIMERA_timeBased(int iNPC)
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.StopStunSound(false);
 			npc.m_flChargeVulnPhase = 0.0;
-			bool MeleeRes = true;
 			npc.m_flSpawnSnipers = 1.0;
 			npc.m_flSpawnEvilRefractCircles = 1.0;
 			//do both abilities twice.
-			if(npc.m_flDamageCharge < 0)
+			if(npc.m_flDamageCharge < 0.0)
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONSIDERED THE MOST DANGEROUS.");
-				MeleeRes = false;
-				npc.m_flDamageCharge *= -1.0;
+				npc.m_flRangedArmor = 0.5;
+				npc.m_flMeleeArmor = 1.65;
 			}
 			else
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}MELEE{default} IS CONSIDERED THE MOST DANGEROUS.");
+				npc.m_flRangedArmor = 1.65;
+				npc.m_flMeleeArmor = 0.5;
 			}
 			if(npc.m_flBatteryLeftBlade)
 			{
 				//if blade is still on, extend
 				npc.m_flBatteryLeftBlade += 15.0;
-			}
-
-			float MaxRes = float(ReturnEntityMaxHealth(npc.index)) * 0.25;
-
-			float Value = (MaxRes / npc.m_flDamageCharge);
-			if(Value >= 2.0)
-			{
-				Value = 2.0;
-			}
-			
-			if(!MeleeRes)
-			{
-				npc.m_flRangedArmor = Value;
-				npc.m_flMeleeArmor = 1.0 / Value;
-			}
-			else
-			{
-				npc.m_flRangedArmor = 1.0 / Value;
-				npc.m_flMeleeArmor = Value;
 			}
 		}
 		return true;
