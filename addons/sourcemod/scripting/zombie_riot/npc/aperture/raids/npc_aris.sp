@@ -1045,7 +1045,7 @@ public void ARIS_ClotThink(int iNPC)
 	}
 
 	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
