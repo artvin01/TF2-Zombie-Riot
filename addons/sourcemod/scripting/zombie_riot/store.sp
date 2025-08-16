@@ -7297,6 +7297,8 @@ void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
 
 bool Store_IsWeaponFaction(int client, int weapon, int faction)
 {
+	if(client <= 0)
+		return;
 	static Item item;
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	if(!item.Owned[client])
