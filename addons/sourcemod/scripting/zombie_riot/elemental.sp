@@ -891,6 +891,9 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 					int count = RoundToCeil(2.0 * MultiGlobalEnemy);
 					Matrix_Spawning(attacker, count);
 
+					float MatrixLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", MatrixLoc);
+					spawnRing_Vectors(MatrixLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 54, 77, 43, 255, 1, 0.3, 5.0, 8.0, 3, 150.0 * 2.0);
 					EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
 					Force_ExplainBuffToClient(victim, "Corruption Elemental Damage");
