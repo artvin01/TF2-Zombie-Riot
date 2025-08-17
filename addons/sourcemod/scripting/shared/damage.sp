@@ -25,28 +25,6 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 	if(Damage_AnyVictim(victim, attacker, inflictor, damage, damagetype, weapon))
 		return true;
 
-	//LogEntryInvicibleTest(victim, attacker, damage, 6);
-	if(victim <= MaxClients)
-	{
-#if !defined RTS
-		if(Damage_PlayerVictim(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition))
-			return true;
-		//LogEntryInvicibleTest(victim, attacker, damage, 7);
-#endif
-	}
-	else if(b_ThisWasAnNpc[victim])
-	{
-		if(Damage_NPCVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
-			return true;
-		//LogEntryInvicibleTest(victim, attacker, damage, 8);
-	}
-	else if(i_IsABuilding[victim])
-	{
-		if(Damage_BuildingVictim(victim, attacker, inflictor, damage, damagetype, weapon))
-			return true;
-		//LogEntryInvicibleTest(victim, attacker, damage, 9);
-	}
-
 	if(attacker >= 0)
 	{
 		if(Damage_AnyAttacker(victim, attacker, inflictor, damage, damagetype))
@@ -73,6 +51,28 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 				return true;
 			//LogEntryInvicibleTest(victim, attacker, damage, 16);
 		}
+	}
+	
+	//LogEntryInvicibleTest(victim, attacker, damage, 6);
+	if(victim <= MaxClients)
+	{
+#if !defined RTS
+		if(Damage_PlayerVictim(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition))
+			return true;
+		//LogEntryInvicibleTest(victim, attacker, damage, 7);
+#endif
+	}
+	else if(b_ThisWasAnNpc[victim])
+	{
+		if(Damage_NPCVictim(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+			return true;
+		//LogEntryInvicibleTest(victim, attacker, damage, 8);
+	}
+	else if(i_IsABuilding[victim])
+	{
+		if(Damage_BuildingVictim(victim, attacker, inflictor, damage, damagetype, weapon))
+			return true;
+		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
 	Damage_AnyVictimPost(victim, damage, damagetype);
 	return false;

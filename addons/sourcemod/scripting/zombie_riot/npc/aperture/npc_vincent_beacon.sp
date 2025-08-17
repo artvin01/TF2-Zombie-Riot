@@ -104,6 +104,7 @@ methodmap VincentBeacon < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		b_HideHealth[npc.index] = true;
 		b_NoHealthbar[npc.index] = true;
+		b_NpcIsInvulnerable[npc.index] = true;
 
 
 		//these are default settings! please redefine these when spawning!

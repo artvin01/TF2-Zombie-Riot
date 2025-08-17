@@ -74,7 +74,7 @@ void Vincent_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vincent");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vincent");
-	strcopy(data.Icon, sizeof(data.Icon), "vincent");
+	strcopy(data.Icon, sizeof(data.Icon), "vincent_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;
@@ -1278,7 +1278,7 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 }
 
 #define VINCENT_PREPARESLAM_TIME 1.5
-#define VINCENT_THROW_AOE_RANGE 150.0
+#define VINCENT_THROW_AOE_RANGE 200.0
 bool Vincent_SlamThrow(int iNPC, int target)
 {
 
@@ -1333,8 +1333,8 @@ bool Vincent_SlamThrow(int iNPC, int target)
 					PluginBot_Jump(npc.index, flPos_1);
 					npc.PlayVincentJumpSound();
 
-					npc.m_flThrow_Happening = GetGameTime(npc.index) + 1.25;
-					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.25;
+					npc.m_flThrow_Happening = GetGameTime(npc.index) + 1.5;
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
 					i_GrabbedThis[npc.index] = EntIndexToEntRef(npc.m_iTargetWalkTo);
 					GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", ThrowPos); //emergency save pos
 					return true;
@@ -1350,8 +1350,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				GetEntPropVector(closestTarget, Prop_Data, "m_vecAbsOrigin", enemypos);
 
 				enemypos[2] += 45.0;
-				ThrowPos = enemypos;
-				if(npc.m_flThrow_Happening > GetGameTime(npc.index) + 0.5)
+				if(npc.m_flThrow_Happening > GetGameTime(npc.index) + 0.75)
 				{
 					ThrowPos = enemypos;
 					npc.m_flLazyJumpFix = 1.0;
@@ -1446,7 +1445,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				TE_SendToAll(0.0);
 				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
 				TE_SendToAll(0.0);
-				float damage = 140.0;
+				float damage = 170.0;
 				damage *= RaidModeScaling;
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
 				TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);

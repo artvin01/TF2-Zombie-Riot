@@ -2802,6 +2802,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
@@ -2863,6 +2864,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			b_should_explode[entity] = do_aoe_dmg;
@@ -2923,6 +2925,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
@@ -2994,6 +2997,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);

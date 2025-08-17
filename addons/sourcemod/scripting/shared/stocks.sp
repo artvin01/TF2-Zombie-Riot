@@ -3474,8 +3474,10 @@ public bool TraceEntityEnumerator_EnumerateEntitiesInRange(int entity, DataPack 
 	packFilter.Reset();
 	ArrayList HitEntitiesSphereExplosionTrace = packFilter.ReadCell();
 	int filterentity = packFilter.ReadCell();
+	PrintToChatAll("entity %i,filterentity%i", entity, filterentity);
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
 	{
+		PrintToChatAll("yippie");
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
 		//Add a new entity to the arrray list
 		HitEntitiesSphereExplosionTrace.Push(entity);

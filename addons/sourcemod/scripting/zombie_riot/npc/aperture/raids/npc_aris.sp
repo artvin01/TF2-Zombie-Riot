@@ -408,7 +408,7 @@ methodmap ARIS < CClotBody
 
 		npc.PlayPassiveSound();
 		
-		RaidModeTime = GetGameTime() + 200.0;
+		RaidModeTime = GetGameTime() + 220.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -1337,6 +1337,7 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
+		npc.m_flArmorCount = 0.0;
 		damage = 0.0;
 		return Plugin_Handled;
 	}
