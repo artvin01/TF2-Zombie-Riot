@@ -2397,7 +2397,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_IsEntityAlwaysTranmitted[entity] = false;
 		b_IsEntityNeverTranmitted[entity] = false;
 		b_NoHealthbar[entity] = false;
-
+		
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
 		f_EntityRenderColour[entity][0] = 1.0;
@@ -2712,6 +2712,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		else if(!StrContains(classname, "zr_projectile_base"))
 		{
+			SetEntityRenderMode(entity, RENDER_NORMAL); //Make it entirely invis.
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			SDKHook(entity, SDKHook_SpawnPost, ApplyExplosionDhook_Rocket);
 			npc.bCantCollidie = true;

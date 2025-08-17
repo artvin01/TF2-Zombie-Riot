@@ -1026,7 +1026,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if(!npc.Anger)
 	{
-		if((ReturnEntityMaxHealth(npc.index) / 2) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		if((ReturnEntityMaxHealth(npc.index) / 4) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 		{
 			npc.PlayRevivalStart();
 			CPrintToChatAll("{rare}C.A.T.{default}: INITIATING {unique}LIFE REVERSAL");
@@ -1042,6 +1042,8 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			b_NpcIsInvulnerable[npc.index] = true;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 2.0, _, 10.0, HEAL_ABSOLUTE);
 			RaidModeTime += (170.0 + DEFAULT_UPDATE_DELAY_FLOAT);
+			damage = 0.0;
+			return Plugin_Handled;
 		}
 	}
 		

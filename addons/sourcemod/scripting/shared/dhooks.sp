@@ -781,6 +781,11 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	//Projectile_TeleportAndClip(entity);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner < 0)
+	{
+		//no owner..........
+		owner = entity;
+	}
 	float GrenadePos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	if (0 < owner  && owner <= MaxClients)

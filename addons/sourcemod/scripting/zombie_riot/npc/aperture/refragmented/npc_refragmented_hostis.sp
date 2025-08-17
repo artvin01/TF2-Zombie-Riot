@@ -217,7 +217,7 @@ public void Hostis_ClotThink(int iNPC)
 						GetEntPropVector(EnemyLoop, Prop_Data, "m_vecAbsOrigin", cpos);
 						float flDistanceToTarget2 = GetVectorDistance(cpos, VecSelfNpc2, true);
 						if(flDistanceToTarget2 > (500.0 * 500.0))
-							return;
+							continue;
 
 						MakeVectorFromPoints(pos, cpos, velocity);
 						NormalizeVector(velocity, velocity);
