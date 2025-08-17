@@ -960,7 +960,7 @@ stock void NpcTalker_Wave21Talk(Talker npc)
 			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
@@ -1087,7 +1087,7 @@ stock void NpcTalker_Wave25Talk(Talker npc)
 			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
@@ -1201,7 +1201,7 @@ stock void NpcTalker_Wave30Talk(Talker npc)
 			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
@@ -1305,7 +1305,7 @@ stock void NpcTalker_Wave35Talk(Talker npc)
 			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
@@ -1422,7 +1422,7 @@ stock void NpcTalker_Wave36Talk(Talker npc)
 			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
@@ -1502,7 +1502,7 @@ stock void NpcTalker_Wave37Talk(Talker npc)
 			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
