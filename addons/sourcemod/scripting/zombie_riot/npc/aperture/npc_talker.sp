@@ -120,7 +120,7 @@ methodmap Talker < CClotBody
 		return npc;
 	}
 }
-/*
+
 public void Talker_ClotThink(int iNPC)
 {
 	Talker npc = view_as<Talker>(iNPC);
@@ -136,93 +136,61 @@ public void Talker_ClotThink(int iNPC)
 
 	switch(npc.m_iTalkWaveAt)
 	{
-		//data is "2"
-		case 2:
+		//data is "1"
+		case 1:
 		{
 			NpcTalker_Wave1Talk(npc);
 		}
+		case 2:
+		{
+			NpcTalker_Wave5Talk(npc);
+		}
 		case 3:
 		{
-			if(npc.m_iRandomTalkNumber == 2)
-			{
-				npc.m_iRandomTalkNumber = GetRandomInt(0,1);
-			}
-			switch(npc.m_iRandomTalkNumber)
-			{
-				case 0:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: Right...I should've probably mentioned this earlier, but a long time ago, there were robots designed with a sole task in mind; to defend the laboratory.");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, according to the files.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: It is safe to assume that you might be facing off against one of them sometime soon.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you stayed, I have no advice left to give you.");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
-							i_TalkDelayCheck = -1;
-						}
-					}
-				}
-				case 1:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: I should've probably mentioned this sooner, but ages ago, there were robots designed with a sole task in mind; to defend the laboratory.");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, apparently.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: It's safe to say that you might be facing off against one of these robots sometime soon.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you decided to stay, I have no advice left to give you.");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
-							i_TalkDelayCheck = -1;
-						}
-					}
-				}
-			}
+			NpcTalker_Wave10Talk(npc);
 		}
+		case 4:
+		{
+			NpcTalker_Wave11Talk(npc);
+		}
+		case 5:
+		{
+			NpcTalker_Wave15Talk(npc);
+		}
+		case 6:
+		{
+			NpcTalker_Wave20Talk(npc);
+		}
+		case 7:
+		{
+			NpcTalker_Wave21Talk(npc);
+		}
+		case 8:
+		{
+			NpcTalker_Wave25Talk(npc);
+		}
+		case 9:
+		{
+			NpcTalker_Wave30Talk(npc);
+		}
+		case 10:
+		{
+			NpcTalker_Wave35Talk(npc);
+		}
+		case 11:
+		{
+			NpcTalker_Wave36Talk(npc);
+		}
+		case 12:
+		{
+			NpcTalker_Wave37Talk(npc);
+		}
+		
 	}
-
-	i_TalkDelayCheck++;
-}	
-*/
-
-public void Talker_ClotThink(Talker npc, int iNPC)
-{
-	//float gameTime = GetGameTime(npc.index);
-	int wave = (Waves_GetRoundScale() + 1);
+	if(i_TalkDelayCheck != -1)
+	{
+		i_TalkDelayCheck++;
+	}
 }
 
 //
@@ -777,11 +745,11 @@ stock void NpcTalker_Wave11Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 
 	}
@@ -855,11 +823,11 @@ stock void NpcTalker_Wave15Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 
 	}
@@ -913,11 +881,11 @@ stock void NpcTalker_Wave20Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 
 	}
@@ -979,22 +947,22 @@ stock void NpcTalker_Wave21Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		//C.A.T. Dead, A.R.I.S Alive
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 		//C.A.T. Alive, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(5);
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(7);
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
 
 	}
@@ -1106,22 +1074,22 @@ stock void NpcTalker_Wave25Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		//C.A.T. Dead, A.R.I.S Alive
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 		//C.A.T. Alive, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(5);
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(7);
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
 
 	}
@@ -1220,22 +1188,22 @@ stock void NpcTalker_Wave30Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		//C.A.T. Dead, A.R.I.S Alive
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 		//C.A.T. Alive, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(5);
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(7);
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
 
 	}
@@ -1324,22 +1292,22 @@ stock void NpcTalker_Wave35Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		//C.A.T. Dead, A.R.I.S Alive
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 		//C.A.T. Alive, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(5);
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(7);
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
 
 	}
@@ -1441,22 +1409,22 @@ stock void NpcTalker_Wave36Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		//C.A.T. Dead, A.R.I.S Alive
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 		//C.A.T. Alive, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(5);
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(7);
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
 
 	}
@@ -1521,22 +1489,22 @@ stock void NpcTalker_Wave37Talk(Talker npc)
 	if(npc.m_iRandomTalkNumber == -1)
 	{
 		//no random asigned yet. get one.
-		npc.m_iRandomTalkNumber = GetRandomInt(0);
+		npc.m_iRandomTalkNumber = GetRandomInt(0,0);
 
 		//C.A.T. Dead, A.R.I.S Alive
 		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(3);
+			npc.m_iRandomTalkNumber = GetRandomInt(3,3);
 		}
 		//C.A.T. Alive, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(5);
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
 		}
 		//C.A.T. Dead, A.R.I.S Dead
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			npc.m_iRandomTalkNumber = GetRandomInt(7);
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
 		}
 
 	}
