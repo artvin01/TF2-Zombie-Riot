@@ -199,9 +199,9 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 		}
 		if(target && !b_thisNpcIsABoss[target])
 		{
-			if(!HasSpecificBuff(target, "Defensive Backup"))
+			if(!HasSpecificBuff(target, "Very Defensive Backup"))
 			{
-				ApplyStatusEffect(npc.index, target, "Defensive Backup", 15.0);
+				ApplyStatusEffect(npc.index, target, "Very Defensive Backup", 15.0);
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
 			}
 		}
@@ -342,9 +342,9 @@ void ApertureSpokesmanSelfDefense(ApertureSpokesman npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 7.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -372,7 +372,7 @@ void ApertureSpokesmanSelfDefense(ApertureSpokesman npc, float gameTime, int tar
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 0.5;
 			}
 		}
 	}
