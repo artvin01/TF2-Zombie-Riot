@@ -479,34 +479,37 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
 	bool KeepProtection = false;
-	if(Rogue_Theme() == 1 && !force)
+	if(!force)
 	{
-		if(f_DomeInsideTest[entity] > GetGameTime())
+		if(Rogue_Theme() == 1)
 		{
-			KeepProtection = true;
+			if(f_DomeInsideTest[entity] > GetGameTime())
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	float PosNpc[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
-	if(!KeepProtection)
-	{
-		if(IsPointOutsideMap(PosNpc))
+		float PosNpc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+		if(!KeepProtection)
 		{
-			KeepProtection = true;
+			if(IsPointOutsideMap(PosNpc))
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	if(!KeepProtection)
-	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
-		static float minn[3], maxx[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
-		if(IsBoxHazard(PosNpc, minn, maxx))
-			KeepProtection = true;
+		if(!KeepProtection)
+		{
+			if(i_InHurtZone[entity])
+				KeepProtection = true;
+		}
+		if(!KeepProtection)
+		{
+			static float minn[3], maxx[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+			if(IsBoxHazard(PosNpc, minn, maxx))
+				KeepProtection = true;
+		}
 	}
 
 
