@@ -49,12 +49,12 @@ void Talker_OnMapStart_NPC()
 	PrecacheParticleSystem(APERTURE_LAST_STAND_EXPLOSION_PARTICLE);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "");
+	strcopy(data.Name, sizeof(data.Name), "Back");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_talker");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = -1;
-	data.Category = Type_Aperture; 
+	data.Category = Type_Hidden; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -124,7 +124,8 @@ methodmap Talker < CClotBody
 public void Talker_ClotThink(int iNPC)
 {
 	Talker npc = view_as<Talker>(iNPC);
-	if(i_TalkDelayCheck == -1)
+	//10 failsafe
+	if(i_TalkDelayCheck == -1 || i_TalkDelayCheck >= 10)
 	{
 		SmiteNpcToDeath(npc.index);
 		return;
