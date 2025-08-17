@@ -270,6 +270,7 @@ methodmap CAT < CClotBody
 		func_NPCDeath[npc.index] = CAT_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = CAT_OnTakeDamage;
 		func_NPCThink[npc.index] = CAT_ClotThink;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
