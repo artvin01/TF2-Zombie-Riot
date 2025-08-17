@@ -246,6 +246,11 @@ methodmap Vincent < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
+	property float m_flMegaEnrage
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
 	public void PlayPassiveSound()
 	{
 		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
@@ -515,6 +520,14 @@ public void Vincent_ClotThink(int iNPC)
 	Vincent npc = view_as<Vincent>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	
+	if(npc.m_flMegaEnrage)
+	{
+		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+		{
+			if(IsValidEnemy(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Nightmare Terror", 2.0);
+		}
+	}
 	Vincent_AdjustGrabbedTarget(iNPC);
 	if(Vincent_LoseConditions(iNPC))
 		return;
@@ -769,17 +782,73 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_bLostHalfHealth = true;
 	}
 	
-	if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) && Aperture_ShouldDoLastStand())
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+	
+	if(!npc.Anger || (npc.m_flMegaEnrage && npc.m_flMegaEnrage < GetGameTime()))
 	{
-		if(!npc.m_flTalkRepeat)
+		if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) && Aperture_ShouldDoLastStand())
 		{
-			ApplyStatusEffect(victim, victim, "Infinite Will", 99999.0);
-			npc.m_flTalkRepeat = 1.0;
-			damage = 0.0;
-			return Plugin_Continue;
+			if(!npc.m_flTalkRepeat)
+			{
+				ApplyStatusEffect(victim, victim, "Infinite Will", 99999.0);
+				npc.m_flTalkRepeat = 1.0;
+				damage = 0.0;
+				return Plugin_Continue;
+			}
 		}
 	}
-		
+	else if(npc.Anger)
+	{
+		if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		{
+			if(!npc.m_flMegaEnrage)
+			{
+				ApplyStatusEffect(victim, victim, "Infinite Will", 30.0);
+				npc.m_flMegaEnrage = GetGameTime() + 30.0;
+				damage = 0.0;
+				CPrintToChatAll("{rare}%t:{crimson}... IF YOU THINK ILL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
+				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
+				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
+				ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 30.0);
+				RaidModeTime += 35.0;
+				return Plugin_Continue;
+			}
+		}
+	}
+	if(!npc.m_flTalkRepeat)
+	{
+		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+		if(0.9-(npc.g_TimesSummoned*0.25) > ratio)
+		{
+			npc.g_TimesSummoned++;
+			float DurationHave = 3.0;
+			if(npc.Anger)
+				DurationHave = 5.0;
+
+			RaidModeTime += DurationHave;
+
+			float pos[3];
+			float ang[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+
+			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", DurationHave);
+			ApplyStatusEffect(npc.index, npc.index, "Expidonsan War Cry", DurationHave);
+			
+			if(npc.Anger)
+				ApplyStatusEffect(npc.index, npc.index, "Extreme Anxiety", DurationHave);
+
+
+			int NpcSpawn = NPC_CreateByName("npc_vincent_beacon", -1, pos, ang, GetTeam(npc.index));
+
+			Vincent npcBeacon = view_as<Vincent>(NpcSpawn);
+			npcBeacon.Anger = npc.Anger;
+			npcBeacon.m_iWearable1 = npcBeacon.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,1,_,-65.0, true);
+			SetVariantString("2.0");
+			AcceptEntityInput(npcBeacon.m_iWearable1, "SetModelScale");
+			
+			CPrintToChatAll("{rare}%t armor hardens and fists strenghen, the laboratory aids him.", c_NpcName[npc.index]);
+		}	
+	}
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
