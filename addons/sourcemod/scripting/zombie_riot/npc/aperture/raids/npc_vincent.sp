@@ -275,6 +275,7 @@ methodmap Vincent < CClotBody
 		func_NPCDeath[npc.index] = Vincent_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Vincent_OnTakeDamage;
 		func_NPCThink[npc.index] = Vincent_ClotThink;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 
 		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
@@ -1059,55 +1060,44 @@ static bool Vincent_LoseConditions(int iNPC)
 			Music_SetRaidMusic(music, false);
 		}
 	}	
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
+	if(IsValidEntity(RaidBossActive) && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
-		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
+		//won normally
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
+			
+		}
+		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+
+		}
+		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+
+		}
 		return true;
 	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
+	else if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
-		return true;
-	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);
-		return true;
-	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}%t{default}: It's over, please don't come back.", c_NpcName[npc.index]);
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		return true;
-	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}%t{default}: Your reign of chaos ends here.", c_NpcName[npc.index]);
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		return true;
-	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}%t{crimson}: Look at what you made me do. {default} At least I avenged {rare}them{default}.", c_NpcName[npc.index]);
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		//won timer
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			
+		}
+		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+
+		}
+		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+
+		}
 		return true;
 	}
 	
