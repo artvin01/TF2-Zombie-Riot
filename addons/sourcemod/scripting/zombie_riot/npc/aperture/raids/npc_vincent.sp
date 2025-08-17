@@ -992,6 +992,8 @@ static bool Vincent_LoseConditions(int iNPC)
 	}	
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
@@ -999,6 +1001,8 @@ static bool Vincent_LoseConditions(int iNPC)
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
@@ -1006,6 +1010,8 @@ static bool Vincent_LoseConditions(int iNPC)
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);

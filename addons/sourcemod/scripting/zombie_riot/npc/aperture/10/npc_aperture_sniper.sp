@@ -302,6 +302,7 @@ int ApertureSniperSelfDefense(ApertureSniper npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;	
 		}
 	}
 	else
@@ -354,7 +355,7 @@ int ApertureSniperSelfDefense(ApertureSniper npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 50.0;
+				float damageDealt = 65.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 10.0;
 				
@@ -367,7 +368,7 @@ int ApertureSniperSelfDefense(ApertureSniper npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 1.25;
 		npc.m_flDoingAnimation = gameTime + 0.95;
-		npc.m_flNextMeleeAttack = gameTime + 1.5;
+		npc.m_flNextMeleeAttack = gameTime + 1.75;
 	}
 	return 1;
 }
