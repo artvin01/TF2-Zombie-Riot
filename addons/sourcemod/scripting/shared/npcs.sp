@@ -488,19 +488,19 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 	}
 	float PosNpc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
-	if(!KeepProtection)
+	if(!KeepProtection && !force)
 	{
 		if(IsPointOutsideMap(PosNpc))
 		{
 			KeepProtection = true;
 		}
 	}
-	if(!KeepProtection)
+	if(!KeepProtection && !force)
 	{
 		if(i_InHurtZone[entity])
 			KeepProtection = true;
 	}
-	if(!KeepProtection)
+	if(!KeepProtection && !force)
 	{
 		static float minn[3], maxx[3];
 		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
