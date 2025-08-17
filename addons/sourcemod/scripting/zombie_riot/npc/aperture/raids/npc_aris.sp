@@ -408,7 +408,7 @@ methodmap ARIS < CClotBody
 
 		npc.PlayPassiveSound();
 		
-		RaidModeTime = GetGameTime() + 220.0;
+		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
