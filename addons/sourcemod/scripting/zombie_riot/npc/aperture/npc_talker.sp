@@ -897,7 +897,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{rare}???{default}: What did it do to you to warrant disassembling him?");
+					CPrintToChatAll("{rare}???{default}: What did it do to you to warrant disassembling it?");
 				}
 				case 3:
 				{
