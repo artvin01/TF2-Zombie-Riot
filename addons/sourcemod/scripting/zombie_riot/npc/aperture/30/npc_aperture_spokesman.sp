@@ -106,7 +106,7 @@ methodmap ApertureSpokesman < CClotBody
 	{
 		ApertureSpokesman npc = view_as<ApertureSpokesman>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "700", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -194,6 +194,14 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 			if(!HasSpecificBuff(target, "Dimensional Turbulence"))
 			{
 				ApplyStatusEffect(npc.index, target, "Dimensional Turbulence", 30.0);
+				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
+			}
+		}
+		if(target && !b_thisNpcIsABoss[target])
+		{
+			if(!HasSpecificBuff(target, "Very Defensive Backup"))
+			{
+				ApplyStatusEffect(npc.index, target, "Very Defensive Backup", 15.0);
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
 			}
 		}
@@ -334,9 +342,9 @@ void ApertureSpokesmanSelfDefense(ApertureSpokesman npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 200.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 7.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -364,7 +372,7 @@ void ApertureSpokesmanSelfDefense(ApertureSpokesman npc, float gameTime, int tar
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 0.5;
 			}
 		}
 	}
