@@ -2964,7 +2964,7 @@ void StatusEffects_Aperture()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⊙");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 1.2;
+	data.DamageTakenMulti 			= 0.2;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
@@ -2977,7 +2977,7 @@ void StatusEffects_Aperture()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⊚");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 1.2;
+	data.DamageTakenMulti 			= 0.2;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= 1.2;
@@ -2993,8 +2993,8 @@ void StatusEffects_Aperture()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⊛");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 1.2;
-	data.DamageDealMulti			= 1.2;
+	data.DamageTakenMulti 			= 0.2;
+	data.DamageDealMulti			= 0.8;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= 1.2;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
