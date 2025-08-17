@@ -250,8 +250,10 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 	{
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
-			ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
+			if(IsValidEnemy(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
 		}
+		ApplyStatusEffect(npc.index, npc.index, "Kinetic Surge", 20.0);
 	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))

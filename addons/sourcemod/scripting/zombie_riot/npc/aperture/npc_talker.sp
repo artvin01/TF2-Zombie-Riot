@@ -113,7 +113,7 @@ methodmap Talker < CClotBody
 		}
 		npc.m_iTalkWaveAt = WaveAmAt;
 		
-		npc.m_iRandomTalkNumber = GetRandomInt(0,2);
+		npc.m_iRandomTalkNumber = -1;
 
 		func_NPCThink[npc.index] = view_as<Function>(Talker_ClotThink);
 		
@@ -121,8 +121,9 @@ methodmap Talker < CClotBody
 	}
 }
 /*
-public void Talker_ClotThink(Talker npc, int iNPC)
+public void Talker_ClotThink(int iNPC)
 {
+	Talker npc = view_as<Talker>(iNPC);
 	if(i_TalkDelayCheck == -1)
 	{
 		SmiteNpcToDeath(npc.index);
@@ -138,102 +139,7 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 		//data is "2"
 		case 2:
 		{
-			switch(npc.m_iRandomTalkNumber)
-			{
-				case 0:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: So the day has finally arrived, welcome back E-");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Hang on a minute...my sensors are going off, you're not one of them.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: The system tells me that none of you are related to them.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: What are you doing in here? And how did you find this place?");
-							i_TalkDelayCheck = -1;
-						}
-					}
-				}
-				case 1:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: Finally, it's been years since we last saw-");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: One moment...who, sorry, what are you?");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: My scanners aren't picking you up as valid personnel.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: Did someone send you here? That can't be possible.");
-							i_TalkDelayCheck = -1;
-						}
-					}
-				}
-				case 2:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: At last, I get to reunite with my makers-");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Wait a second...you're not one of them.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: Your data is...blurry, I'll have to reverse engineer this code.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: How do you know about this place? You couldn't have just stumbled here on your own.");
-							i_TalkDelayCheck = -1;
-						}
-					}
-				}
-			}
+			NpcTalker_Wave1Talk(npc);
 		}
 		case 3:
 		{
@@ -1541,4 +1447,133 @@ bool Aperture_ShouldDoLastStand()
 bool Aperture_IsBossDead(int type)
 {
 	return (i_ApertureBossesDead & type) != 0;
+}
+
+
+
+stock void NpcTalker_Wave1Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0,2);
+		/*
+		Example if aris death does smth:
+		if(Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3,4);
+		}
+
+		*/
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: So the day has finally arrived, welcome back E-");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Hang on a minute...my sensors are going off, you're not one of them.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: The system tells me that none of you are related to them.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: What are you doing in here? And how did you find this place?");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 1:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: Finally, it's been years since we last saw-");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: One moment...who, sorry, what are you?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: My scanners aren't picking you up as valid personnel.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: Did someone send you here? That can't be possible.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 2:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: At last, I get to reunite with my makers-");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Wait a second...you're not one of them.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Your data is...blurry, I'll have to reverse engineer this code.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: How do you know about this place? You couldn't have just stumbled here on your own.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		/*
+		example of evil text.
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: i hate you !!!!");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		*/
+	}
 }
