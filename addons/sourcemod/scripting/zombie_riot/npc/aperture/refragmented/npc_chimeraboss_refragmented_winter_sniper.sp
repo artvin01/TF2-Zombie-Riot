@@ -380,7 +380,7 @@ int RefragmentedWinterSniperSelfDefense(RefragmentedWinterSniper npc, float game
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 72.0;
+				float damageDealt = 60.0;
 				damageDealt *= RaidModeScaling;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 10.0;

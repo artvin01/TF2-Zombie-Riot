@@ -1171,8 +1171,12 @@ bool CHIMERA_SuperSlash(int iNPC)
 				float VectorStart[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VectorStart);
 				f3_NpcSavePos[npc.index] = vecTarget;
 				npc.FaceTowards(vecTarget, 20000.0);
-				float damage = 70.0;
+				float damage = 50.0;
 				damage *= RaidModeScaling;
+				if(npc.m_flBatteryLeftBlade)
+				{
+					damage *= 1.5;
+				}
 
 				npc.m_flSuperSlashInAbilityDo = GetGameTime(npc.index) + 0.5;
 
