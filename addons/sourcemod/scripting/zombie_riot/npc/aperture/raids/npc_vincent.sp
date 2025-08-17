@@ -1083,6 +1083,9 @@ static bool Vincent_LoseConditions(int iNPC)
 	}
 	else if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		//won timer
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
