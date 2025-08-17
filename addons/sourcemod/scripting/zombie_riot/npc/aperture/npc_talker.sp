@@ -223,1010 +223,6 @@ public void Talker_ClotThink(Talker npc, int iNPC)
 {
 	//float gameTime = GetGameTime(npc.index);
 	int wave = (Waves_GetRoundScale() + 1);
-	//Wave 1-5
-	if(wave >= 1 && wave <= 5)
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(GetRandomInt(0,2))
-			{
-				case 0:
-				{
-					switch(i_TalkDelayCheck)
-					{
-
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: So the day has finally arrived, welcome back E-");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Hang on a minute...my sensors are going off, you're not one of them.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: The system tells me that none of you are related to them.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: What are you doing in here? And how did you find this place?");
-							i_TalkDelayCheck = maxyapping;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-				case 1:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: Finally, it's been years since we last saw-");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: One moment...who, sorry, what are you?");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: My scanners aren't picking you up as valid personnel.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: Did someone send you here? That can't be possible.");
-							i_TalkDelayCheck = maxyapping;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-				case 2:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: At last, I get to reunite with my makers-");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Wait a second...you're not one of them.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: Your data is...blurry, I'll have to reverse engineer this code.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: That's probably why the self-defense mechanisms kicked in.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: But maybe it was for a good reason...");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: How do you know about this place? You couldn't have just stumbled here on your own.");
-							i_TalkDelayCheck = maxyapping;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-			}
-		}
-		//return false;
-	}
-	//Wave 5-10
-	if(wave >= 5 && wave <= 9)
-	{
-		int maxyapping2 = 6;
-		if(i_TalkDelayCheck == maxyapping2)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(GetRandomInt(0,1))
-			{
-				case 0:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: You can not stay here.");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: I still haven't figured out who you are, but you're marked as a threat in these files.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: I have free will, I can choose not to follow these warnings.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: But something leads me to believe that they're in here for a reason.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: Besides having to deal with you, I still have to figure out what's opening up these gates.");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: How peculiar...");
-							i_TalkDelayCheck = maxyapping2;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-				case 1:
-				{
-					switch(i_TalkDelayCheck)
-					{
-
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: You have to leave.");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: I possess limited knowledge on the outside world, and you're marked as a threat in these files.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: I have free will, I can choose not to heed these warnings.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: But something leads me to believe that they're in here for a reason.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: Besides having to deal with you, I still have to find a way to stop these gates.");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: How interesting...");
-							i_TalkDelayCheck = maxyapping2;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-			}
-		}
-		//return false;
-	}
-	//Wave 10
-	if(wave == 10)
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(GetRandomInt(0,1))
-			{
-				case 0:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: Right...I should've probably mentioned this earlier, but a long time ago, there were robots designed with a sole task in mind; to defend the laboratory.");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, according to the files.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: It is safe to assume that you might be facing off against one of them sometime soon.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you stayed, I have no advice left to give you.");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
-							i_TalkDelayCheck = maxyapping;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-				case 1:
-				{
-					switch(i_TalkDelayCheck)
-					{
-						case 1:
-						{
-							CPrintToChatAll("{rare}???{default}: I should've probably mentioned this sooner, but ages ago, there were robots designed with a sole task in mind; to defend the laboratory.");
-						}
-						case 2:
-						{
-							CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, apparently.");
-						}
-						case 3:
-						{
-							CPrintToChatAll("{rare}???{default}: It's safe to say that you might be facing off against one of these robots sometime soon.");
-						}
-						case 4:
-						{
-							CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
-						}
-						case 5:
-						{
-							CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you decided to stay, I have no advice left to give you.");
-						}
-						case 6:
-						{
-							CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
-							i_TalkDelayCheck = maxyapping;
-							SmiteNpcToDeath(npc.index);
-						}
-					}
-				}
-			}
-		}
-		//return false;
-	}
-	//Wave 11 - Spared CAT
-	if(wave == 11 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I have finally figured out what you are! It says here that your race is...human.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: I'm not sure why you're marked as a threat though.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: You don't seem to be showing any violent tendencies.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: Aside from killing all of these...other humans.");
-				}
-				case 5:
-				{
-					CPrintToChatAll("{rare}???{default}: It's alright though, they're probably just copies of one real human, who is actually unharmed.");
-				}
-				case 6:
-				{
-					CPrintToChatAll("{rare}???{default}: Probably.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 11 - Killed CAT
-	if(wave == 11 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I have finally figured out what you are! It says here that your race is...human.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: I think I'm starting to understand why you're marked as a threat.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: I know that it tried to kill you, but it was defenseless.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: And yet...you took advantage of that and you disassembled it, part-by-part.");
-				}
-				case 5:
-				{
-					CPrintToChatAll("{rare}???{default}: I'll be keeping an open eye on you from now on.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 15 - Spared CAT
-	if(wave >= 14 && wave <= 16 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: It really does make me wonder why human species even have their own category in these files.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: There used to be way bigger threats that we were meant to handle.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Maybe it's because of their resilience.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 15 - Killed CAT
-	if(wave >= 14 && wave <= 16 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I am not happy with what you did.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: C.A.T. was just following its programming.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Maybe the files are right about the human species.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 20 - Spared CAT
-	if(wave > 19 && wave < 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: You have willingly ignored my requests to vacate these premises.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: That's not resilience, that's stubbornness.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Now, C.A.T. would have also escorted you out of the lab, but you refused to be helped.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: Whatever happens to you now is your own undoing.");
-				}
-			}
-		}
-	}
-	//Wave 20 - Killed CAT
-	if(wave > 19 && wave < 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: You have willingly ignored my requests to vacate these premises.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: You have also torn down C.A.T.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: A robot designed to kick trespassers out in the least lethal way concepted.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: I do not care what happens to you at this point.");
-				}
-			}
-		}
-	}
-	//Wave 21 - Spared CAT | Spared ARIS
-	if(wave == 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: So, you made it past A.R.I.S.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: I must say, I have definitely underestimated your capabilities.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: If you are so adamant on staying here, I'll have no choice but to face-off against you myself.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: I don't like to resort to violence...but you're not leaving me with the choice to decide.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 21 - Killed CAT | Spared ARIS
-	if(wave == 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: Redemption is not earned by small acts of compassion.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: Just because you had a sudden change of heart doesn't mean that I'll forget about what you did earlier.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: If you are so adamant on staying here, I'll have no choice but to face-off against you myself.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: I don't want to resort to violence...but when it's time to call for help, someone has to step in.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 21 - Spared CAT | Killed ARIS
-	if(wave == 21 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: ...Are you serious?");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: What did it do to you to warrant disassembling it?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: You spared C.A.T. yet you couldn't spare A.R.I.S.?");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: I don't want to resort to violence...but when it's time to call for help, someone has to step in.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 21 - Killed CAT | Killed ARIS
-	if(wave == 21 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: ...");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: {crimson}I guess that's that, then.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: {crimson}I'll be on my way.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{crimson}You feel a heavy sense of dread for the rest of the day...");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	// Wave 21+ - Instantly kill self because we don't want to talk
-	if(wave >= 22 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		SmiteNpcToDeath(npc.index);
-	}
-	//Wave 25 - Spared CAT | Spared ARIS
-	if(wave >= 24 && wave <= 26 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: You definitely didn't come here for no reason.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: So, who sent you?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Were {unique}Expidonsans{default} not brave enough to reach out to us on their own?");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: Maybe you don't even know what {unique}Expidonsa{default} is.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 25 - Killed CAT | Spared ARIS
-	if(wave >= 24 && wave <= 26 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: You definitely didn't come here for no reason.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: So, who sent you?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Someone who just wants to break stuff?");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: What else would your purpose here be?");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 25 - Spared CAT | Killed ARIS
-	if(wave >= 24 && wave <= 26 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: You definitely didn't come here for no reason.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: So, who sent you?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Someone who just wants to break stuff?");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: What else would your purpose here be?");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 30 - Spared CAT | Spared ARIS
-	if(wave >= 29 && wave <= 31 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: But if they've sent you here... that can't be right...");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: Is this why they have so many cryogenically frozen humans?!");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: They just...lured them into the labs and-");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: No no no no no, this can't be right, I- I'll be right back.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 30 - Killed CAT | Spared ARIS
-	if(wave >= 29 && wave <= 31 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: If that's so, haven't you caused enough mayhem?");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: How much destruction does the human race need to bring to be satisfied?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Maybe {unique}Expidonsa{default} was right about treating you like a threat.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 30 - Spared CAT | Killed ARIS
-	if(wave >= 29 && wave <= 31 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: If that's so, haven't you caused enough mayhem?");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: How much destruction does the human race need to bring to be satisfied?");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: Maybe {unique}Expidonsa{default} was right about treating you like a threat.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 35 - Spared CAT | Spared ARIS
-	if(wave >= 34 && wave <= 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 9;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 3.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I was wrong.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: Well, wrong about you being sent by {unique}Expidonsans{default}.");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{rare}???{default}: I wasn't aware of {unique}Expidonsa's{default} full picture.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{rare}???{default}: It appears that they aren't the best when it comes to being ethical.");
-				}
-				case 5:
-				{
-					CPrintToChatAll("{rare}???{default}: I have also reverse-searched your emblems.");
-				}
-				case 6:
-				{
-					CPrintToChatAll("{rare}???{default}: You are some sort of mercēnārius, yeah?");
-				}
-				case 7:
-				{
-					CPrintToChatAll("{rare}???{default}: This would mean that you've been hired by someone to loot this place.");
-				}
-				case 8:
-				{
-					CPrintToChatAll("{rare}???{default}: I'm afraid I can not let that happen.");
-				}
-				case 9:
-				{
-					CPrintToChatAll("{rare}???{default}: But since mercenaries are paid for their work, I have no reason to assume that you intend on stopping.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 35 - Killed CAT | Spared ARIS
-	if(wave >= 34 && wave <= 36 && Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I'm not sure what your goal here is, but I will have to intervene.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: I can not allow you to bring more mayhem.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 35 - Spared CAT | Killed ARIS
-	if(wave >= 34 && wave <= 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I'm not sure what your goal here is, but I will have to intervene.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: I can not allow you to bring more mayhem.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	if(wave >= 36 && (Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
-	{
-		SmiteNpcToDeath(npc.index);
-	}
-	//Wave 36 - Spared CAT | Spared ARIS
-	if(wave == 36 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I can not let you get any of this gear.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: If it were to fall into the wrong hands, the repercussions could be catastrophic.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
-	//Wave 37 - Spared CAT | Spared ARIS
-	if(wave == 37 && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-	{
-		int maxyapping = 6;
-		if(i_TalkDelayCheck == maxyapping)
-		{
-			SmiteNpcToDeath(npc.index);
-		}
-		if(f_TalkDelayCheck < GetGameTime())
-		{
-			f_TalkDelayCheck = GetGameTime() + 4.0;
-			i_TalkDelayCheck++;
-			switch(i_TalkDelayCheck)
-			{
-				case 1:
-				{
-					CPrintToChatAll("{rare}???{default}: I have to intervene.");
-				}
-				case 2:
-				{
-					CPrintToChatAll("{rare}???{default}: I'm sorry.");
-					i_TalkDelayCheck = maxyapping;
-					SmiteNpcToDeath(npc.index);
-				}
-			}
-		}
-	}
 }
 
 //
@@ -1575,5 +571,1025 @@ stock void NpcTalker_Wave1Talk(Talker npc)
 			}
 		}
 		*/
+	}
+}
+
+
+
+stock void NpcTalker_Wave5Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0,1);
+		/*
+		Example if aris death does smth:
+		if(Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3,4);
+		}
+
+		*/
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You can not stay here.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I still haven't figured out who you are, but you're marked as a threat in these files.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: I have free will, I can choose not to follow these warnings.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: But something leads me to believe that they're in here for a reason.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: Besides having to deal with you, I still have to figure out what's opening up these gates.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: How peculiar...");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 1:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You have to leave.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I possess limited knowledge on the outside world, and you're marked as a threat in these files.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: I have free will, I can choose not to heed these warnings.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: But something leads me to believe that they're in here for a reason.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: Besides having to deal with you, I still have to find a way to stop these gates.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: How interesting...");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		/*
+		example of evil text.
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: i hate you !!!!");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		*/
+	}
+}
+
+
+
+stock void NpcTalker_Wave10Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0,1);
+		/*
+		Example if aris death does smth:
+		if(Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3,4);
+		}
+
+		*/
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: Right...I should've probably mentioned this earlier, but a long time ago, there were robots designed with a sole task in mind; to defend the laboratory.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, according to the files.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: It is safe to assume that you might be facing off against one of them sometime soon.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you stayed, I have no advice left to give you.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 1:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I should've probably mentioned this sooner, but ages ago, there were robots designed with a sole task in mind; to defend the laboratory.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Defend the laboratory against who? Well...people like you, apparently.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: It's safe to say that you might be facing off against one of these robots sometime soon.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: One of them was designed as a sort of control against trespassers.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: Since I've warned you to get out while you could, and you decided to stay, I have no advice left to give you.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: If you're actually lost, let the robot do its job, and let it carry you out of the labs.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		/*
+		example of evil text.
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: i hate you !!!!");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		*/
+	}
+}
+
+
+
+stock void NpcTalker_Wave11Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I have finally figured out what you are! It says here that your race is...human.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I'm not sure why you're marked as a threat though.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: You don't seem to be showing any violent tendencies.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: Aside from killing all of these...other humans.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: It's alright though, they're probably just copies of one real human, who is actually unharmed.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: Probably.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I have finally figured out what you are! It says here that your race is...human.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I think I'm starting to understand why you're marked as a threat.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: I know that it tried to kill you, but it was defenseless.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: And yet...you took advantage of that and you disassembled it, part-by-part.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: I'll be keeping an open eye on you from now on.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+
+stock void NpcTalker_Wave15Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: It really does make me wonder why human species even have their own category in these files.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: There used to be way bigger threats that we were meant to handle.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Maybe it's because of their resilience.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I am not happy with what you did.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: C.A.T. was just following its programming.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Maybe the files are right about the human species.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+
+stock void NpcTalker_Wave20Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You have willingly ignored my requests to vacate these premises.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: That's not resilience, that's stubbornness.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Now, C.A.T. would have also escorted you out of the lab, but you refused to be helped.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: Whatever happens to you now is your own undoing.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You have willingly ignored my requests to vacate these premises.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: You have also torn down C.A.T.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: A robot designed to kick trespassers out in the least lethal way concepted.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: I do not care what happens to you at this point.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+
+stock void NpcTalker_Wave21Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//Canon Route
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: So, you made it past A.R.I.S.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I must say, I have definitely underestimated your capabilities.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: If you are so adamant on staying here, I'll have no choice but to face-off against you myself.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: I don't like to resort to violence...but you're not leaving me with the choice to decide.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: Redemption is not earned by small acts of compassion.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Just because you had a sudden change of heart doesn't mean that I'll forget about what you did earlier.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: If you are so adamant on staying here, I'll have no choice but to face-off against you myself.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: I don't want to resort to violence...but when it's time to call for help, someone has to step in.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: ...Are you serious?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: What did it do to you to warrant disassembling it?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: You spared C.A.T. yet you couldn't spare A.R.I.S.?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: I don't want to resort to violence...but when it's time to call for help, someone has to step in.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: ...");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: {crimson}I guess that's that, then.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: {crimson}I'll be on my way.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}You feel a heavy sense of dread for the rest of the day...");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+
+stock void NpcTalker_Wave25Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//Canon Route
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You definitely didn't come here for no reason.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: So, who sent you?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Were {unique}Expidonsans{default} not brave enough to reach out to us on their own?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: Maybe you don't even know what {unique}Expidonsa{default} is.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You definitely didn't come here for no reason.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: So, who sent you?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Someone who just wants to break stuff?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: What else would your purpose here be?");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: You definitely didn't come here for no reason.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: So, who sent you?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Someone who just wants to break stuff?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: What else would your purpose here be?");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+
+stock void NpcTalker_Wave30Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//Canon Route
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: But if they've sent you here... that can't be right...");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Is this why they have so many cryogenically frozen humans?!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: They just...lured them into the labs and-");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: No no no no no, this can't be right, I- I'll be right back.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: If that's so, haven't you caused enough mayhem?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: How much destruction does the human race need to bring to be satisfied?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Maybe {unique}Expidonsa{default} was right about treating you like a threat.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: If that's so, haven't you caused enough mayhem?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: How much destruction does the human race need to bring to be satisfied?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Maybe {unique}Expidonsa{default} was right about treating you like a threat.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+stock void NpcTalker_Wave35Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//Canon Route
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I was wrong.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Well, wrong about you being sent by {unique}Expidonsans{default}.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: I wasn't aware of {unique}Expidonsa's{default} full picture.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{rare}???{default}: It appears that they aren't the best when it comes to being ethical.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{rare}???{default}: I have also reverse-searched your emblems.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{rare}???{default}: You are some sort of mercēnārius, yeah?");
+				}
+				case 7:
+				{
+					CPrintToChatAll("{rare}???{default}: This would mean that you've been hired by someone to loot this place.");
+				}
+				case 8:
+				{
+					CPrintToChatAll("{rare}???{default}: I'm afraid I can not let that happen.");
+				}
+				case 9:
+				{
+					CPrintToChatAll("{rare}???{default}: But since mercenaries are paid for their work, I have no reason to assume that you intend on stopping.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I'm not sure what your goal here is, but I will have to intervene.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I can not allow you to bring more mayhem.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I'm not sure what your goal here is, but I will have to intervene.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I can not allow you to bring more mayhem.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+stock void NpcTalker_Wave36Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//Canon Route
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I can not let you get any of this gear.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: If it were to fall into the wrong hands, the repercussions could be catastrophic.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+
+stock void NpcTalker_Wave37Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//no random asigned yet. get one.
+		npc.m_iRandomTalkNumber = GetRandomInt(0);
+
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//Canon Route
+		case 0:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I have to intervene.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: I'm sorry.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
 	}
 }
