@@ -1062,7 +1062,6 @@ static bool Vincent_LoseConditions(int iNPC)
 	}	
 	if(IsValidEntity(RaidBossActive) && i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
-		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		//won normally
