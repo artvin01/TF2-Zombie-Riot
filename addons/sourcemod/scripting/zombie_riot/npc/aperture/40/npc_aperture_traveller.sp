@@ -132,7 +132,9 @@ methodmap ApertureTraveller < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
