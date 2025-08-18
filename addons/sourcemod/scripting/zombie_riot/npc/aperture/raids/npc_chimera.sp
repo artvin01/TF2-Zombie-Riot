@@ -311,6 +311,7 @@ methodmap CHIMERA < CClotBody
 		func_NPCDeath[npc.index] = CHIMERA_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = CHIMERA_OnTakeDamage;
 		func_NPCThink[npc.index] = CHIMERA_ClotThink;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
 		EmitSoundToAll("mvm/mvm_tank_end.wav", _, _, _, _, 1.0, 100);	
