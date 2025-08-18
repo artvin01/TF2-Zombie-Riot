@@ -199,7 +199,7 @@ methodmap RefragmentedCombinePoliceSmg < CClotBody
 
 		npc.m_flMeleeArmor = 0.1;
 		npc.m_flRangedArmor = 0.1;
-		b_NpcUnableToDie[npc.index] = true; // <-- This is why you don't want to spawn these guys in your waveset normally
+		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 9999.0);
 
 		npc.m_iWearable2 = TF2_CreateGlow_White("models/police.mdl", npc.index, 1.15);
 		if(IsValidEntity(npc.m_iWearable2))
@@ -434,8 +434,18 @@ public Action RefragmentedCombinePoliceSmg_OnTakeDamage(int victim, int &attacke
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity2 = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(entity2 != INVALID_ENT_REFERENCE && i_NpcInternalId[entity2] == RefragmentedCombine_AR2_leader_ID() && IsEntityAlive(entity2) && GetTeam(entity2) == GetTeam(npc.index))
+			{
+				float vecTarget[3]; WorldSpaceCenter(entity2, vecTarget );
+				spawnBeam(0.3, 200, 200, 200, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecTarget, VecSelfNpc);	
+			}
+		}
 	}
 	return Plugin_Changed;
 }
@@ -452,4 +462,20 @@ public void RefragmentedCombinePoliceSmg_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+}
+
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }
