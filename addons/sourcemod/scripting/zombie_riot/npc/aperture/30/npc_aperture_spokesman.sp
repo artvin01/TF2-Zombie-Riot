@@ -195,7 +195,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 	//Apply buffs *only* to bosses, not normal enemies
 	if(npc.m_flNextRangedSpecialAttack < gameTime)
 	{
-		npc.m_flNextRangedSpecialAttack = gameTime + 1.0;
+		npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
 		
 		if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{
@@ -219,7 +219,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 				{
 					if(!HasSpecificBuff(npc.m_iTargetAlly, "Dimensional Turbulence"))
 					{
-						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Dimensional Turbulence", 30.0);
+						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Dimensional Turbulence", 15.0);
 						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
 					}
 				}
@@ -228,7 +228,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 					if(!HasSpecificBuff(npc.m_iTargetAlly, "Very Defensive Backup"))
 					{
 						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Very Defensive Backup", 15.0);
-						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Dimensional Turbulence", 30.0);
+						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Dimensional Turbulence", 15.0);
 						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
 					}
 				}
