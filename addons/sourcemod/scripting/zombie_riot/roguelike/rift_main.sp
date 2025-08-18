@@ -1,17 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static int WarpSeed;
 static int DifficultyLevel;
 static ArrayList ShopListing;
 static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
-
-void Rogue_Rift_Reset()
-{
-	DifficultyLevel = 0;
-}
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -21,18 +17,12 @@ stock void Rogue_Rift_MultiScale(float &multi)
 
 stock bool Rogue_Rift_NoStones()
 {
-	return (DifficultyLevel < 1) || CurseEmpty;
+	return CurseEmpty;
 }
 
 stock int Rogue_Rift_CurseLevel()
 {
-	if(DifficultyLevel < 2)
-		return 0; // None
-	
-	if(DifficultyLevel < 4)
-		return 1; // Normal
-	
-	return 2; // Common
+	return DifficultyLevel;
 }
 
 public void Rogue_Curse_RiftSwarm(bool enable)
@@ -128,9 +118,9 @@ public float Rogue_Encounter_RiftShop()
 
 	Artifact artifact;
 
-	bool rare = (DifficultyLevel > 3 && Rogue_GetFloor() > 0);
+	bool rare = Rogue_GetFloor() > 0;
 
-	if(DifficultyLevel > 0 && Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+	if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 		ShopListing.PushArray(artifact);
 
 	if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
@@ -468,37 +458,42 @@ static void GiveShield(int amount)
 	}
 }
 
-public void Rogue_RiftLevel1_Collect()
+public void Rogue_RiftEasy_Collect()
+{
+	DifficultyLevel = 0;
+}
+
+public void Rogue_RiftEasy_Enemy(int entity)
+{
+	fl_Extra_Speed[entity] *= 0.8;
+	fl_Extra_MeleeArmor[entity] *= 1.35;
+	fl_Extra_RangedArmor[entity] *= 1.35;
+	fl_Extra_Damage[entity] *= 0.65;
+}
+
+public void Rogue_RiftNormal_Collect()
 {
 	DifficultyLevel = 1;
 }
 
-public void Rogue_RiftLevel2_Collect()
+public void Rogue_RiftNormal_Enemy(int entity)
+{
+	float stats = Pow(1.02, (Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
+
+public void Rogue_RiftHard_Collect()
 {
 	DifficultyLevel = 2;
+	Rogue_GiveNamedArtifact("Fractured");
 }
 
-public void Rogue_RiftLevel3_Collect()
+public void Rogue_RiftHard_Enemy(int entity)
 {
-	DifficultyLevel = 3;
-}
-
-public void Rogue_RiftLevel4_Collect()
-{
-	DifficultyLevel = 4;
-}
-
-public void Rogue_RiftLevel5_Collect()
-{
-	DifficultyLevel = 5;
-}
-
-public void Rogue_RiftLevel_Enemy(int entity)
-{
-	if(DifficultyLevel < 3)
-		return;
-	
-	float stats = Pow(1.0 + ((DifficultyLevel - 2) * 0.03333), (Rogue_GetFloor() + 1));
+	float stats = Pow(1.05, (Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -519,7 +514,12 @@ public float Rogue_Encounter_Rift2()
 	if(DifficultyLevel < 1)
 	{
 		vote.Locked = true;
-		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 1)");
+		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 2)");
+	}
+	else if(DifficultyLevel < 1)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 1)");
 	}
 	list.PushArray(vote);
 
@@ -542,4 +542,34 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 			Rogue_GiveNamedArtifact("Reila Assistance");
 		}
 	}
+}
+
+public float Rogue_Encounter_WarpedBattle()
+{
+	WarpSeed = GetURandomInt();
+	Rogue_GiveNamedArtifact("Rift of Warp", true);
+	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
+	return 0.0;
+}
+
+public void Rogue_RiftWarp_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && (GetURandomInt() % 2))
+	{
+		int seed1 = 5 + (WarpSeed % 5);
+		int seed2 = WarpSeed / 5;
+
+		if((seed2 % seed1) == (i_NpcInternalId[entity] % seed1))
+		{
+			fl_Extra_MeleeArmor[entity] /= 3.0;
+			fl_Extra_RangedArmor[entity] /= 3.0;
+			fl_Extra_Speed[entity] *= 1.2;
+			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1500, false, true);
+		}
+	}
+}
+
+public void Rogue_RiftWarp_StageEnd()
+{
+	Rogue_RemoveNamedArtifact("Rift of Warp");
 }

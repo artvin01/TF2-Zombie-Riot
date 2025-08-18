@@ -1286,32 +1286,38 @@ public void OnPostThink(int client)
 			switch(Armor_DebuffType[armorEnt])
 			{
 				//chaos
-				case 2:
+				case Element_Chaos:
 				{
 					red = 0;
 					green = 255;
 					blue = 255;
 				}
 				//void
-				case 3:
+				case Element_Void:
 				{
 					red = 179;
 					green = 8;
 					blue = 209;
 				}
 				//matrix
-				case 4:
+				case Element_Corruption:
 				{
 					red = 54;
 					green = 77;
 					blue = 43;
 				}
 				//plasma
-				case 5:
+				case Element_Plasma:
 				{
 					red = 235;
 					green = 75;
 					blue = 215;
+				}
+				case Element_Warped:
+				{
+					red = 155 + abs(100 - (GetTime() % 200));
+					green = 155 + abs(100 - (RoundFloat(GetGameTime()) % 200));
+					blue = 155 + abs(100 - (RoundFloat(GetEngineTime()) % 200));
 				}
 				//seaborn
 				default:

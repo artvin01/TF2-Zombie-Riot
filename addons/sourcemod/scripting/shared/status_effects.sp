@@ -5409,8 +5409,91 @@ void StatusEffects_Explainelemental()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
-}
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ʬ");	// Ʊ
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnBuffStarted			= Warped_Start;
+	data.OnBuffEndOrDeleted			= Warped_End;
+	data.OnTakeDamage_DealFunc 		= Warped_DamageFunc;
+	data.TimerRepeatCall_Func 		= Warped_FuncTimer;
+	StatusEffect_AddGlobal(data);
+}
+static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float ratio = Elemental_DamageRatio(entity, Element_Warped);
+	if(ratio < 0.0)
+		ratio = 0.0;
+	
+	if(entity <= MaxClients)
+	{
+		float sub = RemoveExtraHealth(WeaponClass[entity], 0.1);
+		float nerfHealth = (Attributes_Get(entity, 125) - sub);
+
+		float baseHealth = ReturnEntityMaxHealth(entity) - nerfHealth;
+		nerfHealth = baseHealth * 0.8 * ratio;
+
+		Attributes_Set(entity, 125, (nerfHealth + sub));
+	}
+	else if(ratio > 0.0 && GetTeam(entity) != TFTeam_Red)
+	{
+		int attacker = entity;
+		
+		for(int i; i < sizeof(Apply_StatusEffect.TotalOwners); i++)
+		{
+			if(i != entity && Apply_StatusEffect.TotalOwners[i])
+			{
+				attacker = i;
+				break;
+			}
+		}
+
+		Elemental_AddWarpedDamage(entity, attacker, RoundFloat(ReturnEntityMaxHealth(entity) * 0.027), false);
+		if(f_AttackSpeedNpcIncrease[entity] > 0.2)
+			f_AttackSpeedNpcIncrease[entity] *= 0.979;
+	}
+
+	if(!ratio)
+		RemoveSpecificBuff(entity, "Warped Elemental Damage");
+}
+static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	if(attacker <= MaxClients)
+		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
+	
+	return basedamage;
+}
+static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_busysnow_parent", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void Warped_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
 
 int PrimalFearIndex;
 void StatusEffects_Purge()

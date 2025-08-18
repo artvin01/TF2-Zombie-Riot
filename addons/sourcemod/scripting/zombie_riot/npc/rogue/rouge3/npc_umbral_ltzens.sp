@@ -129,7 +129,7 @@ methodmap Umbral_Ltzens < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = 0;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 

@@ -3135,6 +3135,14 @@
 	{
 		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
 	}
+	"Warped Elemental Damage"
+	{
+		"en"	"Warped Elemental Damage"
+	}
+	"Warped Elemental Damage Desc"
+	{
+		"en"	"Your body starts to crystalize as chaos and void mix together.\nMax health decreases and damage increases with buildup, permanently freezing when full."
+	}
 
 	"Overmana Overload"
 	{
