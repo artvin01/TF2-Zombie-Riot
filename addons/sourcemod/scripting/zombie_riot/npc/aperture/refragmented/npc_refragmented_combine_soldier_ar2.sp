@@ -53,6 +53,12 @@ static char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 
+static int NPCId;
+
+int RefragmentedCombine_AR2_leader_ID()
+{
+	return NPCId;
+}
 public void RefragmentedCombineSoldierAr2_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -85,7 +91,7 @@ public void RefragmentedCombineSoldierAr2_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -245,18 +251,20 @@ public void RefragmentedCombineSoldierAr2_ClotThink(int iNPC)
 		npc.Anger = false;
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		int entity = NPC_CreateById(RefragmentedCombinePoliceSmg_ID(), -1, pos, ang, GetTeam(npc.index));
-		NPC_CreateById(RefragmentedCombinePoliceSmg_ID(), -1, pos, ang, GetTeam(npc.index));
-		if(entity > MaxClients)
+		for(int i; i < 2; i++)
 		{
-			if(GetTeam(npc.index) != TFTeam_Red)
-				Zombies_Currently_Still_Ongoing++;
+			int entity = NPC_CreateById(RefragmentedCombinePoliceSmg_ID(), -1, pos, ang, GetTeam(npc.index));
+			if(entity > MaxClients)
+			{
+				if(GetTeam(npc.index) != TFTeam_Red)
+					Zombies_Currently_Still_Ongoing++;
+				
+				SetEntProp(entity, Prop_Data, "m_iHealth", 2500);
+				SetEntProp(entity, Prop_Data, "m_iMaxHealth", 2500);
 
-			SetEntProp(entity, Prop_Data, "m_iHealth", 2500);
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", 2500);
-
-			fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
-			fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+				fl_Extra_Speed[entity] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[entity] = fl_Extra_Damage[npc.index];
+			}
 		}
 	}
 	

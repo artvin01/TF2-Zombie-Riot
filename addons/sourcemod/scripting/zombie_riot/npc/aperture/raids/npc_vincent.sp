@@ -1067,16 +1067,15 @@ static bool Vincent_LoseConditions(int iNPC)
 		//won normally
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
-			
+			CPrintToChatAll("{rare}%t{default}: It's over, please don't come back.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{crimson}: Look at what you made me do. {default} At least I avenged {rare}them{default}.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{default}: Your reign of chaos ends here.", c_NpcName[npc.index]);
 		}
 		return true;
 	}
@@ -1088,15 +1087,15 @@ static bool Vincent_LoseConditions(int iNPC)
 		//won timer
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			
+			CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
 		}
 		return true;
 	}
