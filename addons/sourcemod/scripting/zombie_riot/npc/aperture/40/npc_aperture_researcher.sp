@@ -1,6 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char g_TeleDeathSound[][] = {
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
+};
+
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
@@ -43,6 +48,7 @@ void ApertureResearcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_WarCry)); i++) { PrecacheSound(g_WarCry[i]); }
+	for (int i = 0; i < (sizeof(g_TeleDeathSound)); i++) { PrecacheSound(g_TeleDeathSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Researcher");
@@ -101,6 +107,9 @@ methodmap ApertureResearcher < CClotBody
 	{
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_STATIC, 110, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayTeleSound() {
+		EmitSoundToAll(g_TeleDeathSound[GetRandomInt(0, sizeof(g_TeleDeathSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
 	
 	
 	public ApertureResearcher(float vecPos[3], float vecAng[3], int ally)
@@ -130,6 +139,7 @@ methodmap ApertureResearcher < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
+		npc.m_bDissapearOnDeath = true;
 
 		if(!IsValidEntity(RaidBossActive))
 		{
@@ -272,7 +282,29 @@ public void ApertureResearcher_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	if(npc.m_bDissapearOnDeath)
+	{
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	
+		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+		npc.PlayTeleSound();
+	}
+
+	switch(GetRandomInt(0,2))
+	{
+		case 0:
+		{
+			CPrintToChatAll("{normal}Researcher{default}: I'm out of here!");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{normal}Researcher{default}: Teleporter reconfigured, see you in never!");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{normal}Researcher{default}: Start the machine, start the machine!");
+		}
+	}	
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);

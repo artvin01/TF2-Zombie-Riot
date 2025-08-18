@@ -3837,6 +3837,10 @@ void Waves_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
 		{
 			ApplyStatusEffect(client, client, "Chaos Infliction", 999.0);
 		}
+		else
+		{
+			RemoveSpecificBuff(client, "Chaos Infliction");
+		}
 	}
 	if(ModFuncAlly != INVALID_FUNCTION)
 	{
