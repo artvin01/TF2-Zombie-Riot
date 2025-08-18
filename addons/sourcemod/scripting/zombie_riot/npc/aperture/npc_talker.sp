@@ -176,13 +176,17 @@ public void Talker_ClotThink(int iNPC)
 		}
 		case 10:
 		{
-			NpcTalker_Wave35Talk(npc);
+			NpcTalker_Wave31Talk(npc);
 		}
 		case 11:
 		{
-			NpcTalker_Wave36Talk(npc);
+			NpcTalker_Wave35Talk(npc);
 		}
 		case 12:
+		{
+			NpcTalker_Wave36Talk(npc);
+		}
+		case 13:
 		{
 			NpcTalker_Wave37Talk(npc);
 		}
@@ -1270,6 +1274,143 @@ stock void NpcTalker_Wave30Talk(Talker npc)
 				case 3:
 				{
 					CPrintToChatAll("{rare}???{default}: Maybe {unique}Expidonsa{default} was right about treating you like a threat.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//Locked in Genocide
+		case 7:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+	}
+}
+
+
+stock void NpcTalker_Wave31Talk(Talker npc)
+{
+	if(npc.m_iRandomTalkNumber == -1)
+	{
+		//C.A.T. Alive, A.R.I.S Alive, C.H.I.M.E.R.A. Alive
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS) && !Aperture_IsBossDead(APERTURE_BOSS_CHIMERA))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(1,2);
+		}
+		//C.A.T. Alive, A.R.I.S Alive, C.H.I.M.E.R.A. Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS) && Aperture_IsBossDead(APERTURE_BOSS_CHIMERA))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(3,4);
+		}
+		//C.A.T. Dead, A.R.I.S Alive
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(5,5);
+		}
+		//C.A.T. Dead, A.R.I.S Dead
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			npc.m_iRandomTalkNumber = GetRandomInt(7,7);
+		}
+
+	}
+	switch(npc.m_iRandomTalkNumber)
+	{
+		//C.A.T. Alive, A.R.I.S Alive, C.H.I.M.E.R.A. Alive
+		case 1:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: I'm not exactly sure what that thing was...but it seemed to be related with these Portal Gates.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: It doesn't share any origins with the lab. Leaving it intact was probably the right choice.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Well, I'll be going back to doing my research now.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 2:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: That thing...what was that? It appears to be tied with the Portal Gates.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: No correlation with the laboratories either. Looks like it was searching for something.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: As strange as that was, I have to get back to my research.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Alive, C.H.I.M.E.R.A. Dead
+		case 3:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: That thing that you just destroyed...I don't know what it is, or rather what it was.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: Its destruction appears to have affected the Portal Gates. They're more unstable now.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: Well, this is on you. I'm going back to my research now.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		case 4:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}???{default}: That robot...its origins are unknown to me. Not that I'll know what they are with what you did.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}???{default}: What I do know is that it was linked to these Portal Gates. They are precarious now.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{rare}???{default}: You chose to do this. I'm going back to my research now.");
+					i_TalkDelayCheck = -1;
+				}
+			}
+		}
+		//C.A.T. Alive, A.R.I.S Dead
+		case 5:
+		{
+			switch(i_TalkDelayCheck)
+			{
+				case 1:
+				{
 					i_TalkDelayCheck = -1;
 				}
 			}
