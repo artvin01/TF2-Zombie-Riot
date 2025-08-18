@@ -5427,13 +5427,47 @@ void StatusEffects_Explainelemental()
 	data.OnTakeDamage_DealFunc 		= Warped_DamageFunc;
 	data.TimerRepeatCall_Func 		= Warped_FuncTimer;
 	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental End");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnBuffStarted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= Warped_End_Death;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
+
+static const char g_IdleCreepSound[][] = {
+	"vo/mvm/norm/pyro_mvm_jeers01.mp3",
+	"vo/mvm/norm/pyro_mvm_jeers02.mp3",
+};
 static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float ratio = Elemental_DamageRatio(entity, Element_Warped);
 	if(ratio < 0.0)
 		ratio = 0.0;
 	
+	if(ratio >= 1.0)
+		ratio = 1.0;
+	//Extreamly creepy sound
+	//prevent passive talk, mostly.
+	CClotBody npc = view_as<CClotBody>(entity);
+	npc.m_flNextIdleSound = FAR_FUTURE;
+	float SoundLoudness = ratio;
+	if(SoundLoudness < 0.7)
+		SoundLoudness = 0.7;
+	EmitSoundToAll(g_IdleCreepSound[GetRandomInt(0, sizeof(g_IdleCreepSound) - 1)], entity, SNDCHAN_ITEM, NORMAL_ZOMBIE_SOUNDLEVEL, _, SoundLoudness, GetRandomInt(40, 45));
 	if(entity <= MaxClients)
 	{
 		float sub = RemoveExtraHealth(WeaponClass[entity], 0.1);
@@ -5463,7 +5497,11 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 	}
 
 	if(!ratio)
+	{
 		Apply_StatusEffect.TimeUntillOver = 0.0;
+		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
 }
 static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
@@ -5486,6 +5524,19 @@ static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void Warped_End_Death(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse != 0.0)
+		return;
+
+	float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+	TE_Particle("spell_batball_impact_blue", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitSoundToAll("weapons/bottle_break.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 100);
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = 1.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 static void Warped_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)

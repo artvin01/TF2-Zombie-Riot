@@ -1400,12 +1400,35 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			{
 				fl_Extra_MeleeArmor[victim] *= 6.0;
 				fl_Extra_RangedArmor[victim] *= 6.0;
-
-				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 40);
-
+				fl_GibVulnerablity[victim] = 5000000;
+				SetEntProp(victim, Prop_Data, "m_iMaxHealth", 1);
+				//any TOUCH will gib them.
+				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+				float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+				TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
 				FreezeNpcInTime(victim, 999.9, true);
-				SetEntityRenderColor(victim, 96, 96, 96, 255);
+				SetEntityRenderColor(victim, 25, 25, 25, 255);
 				AddNpcToAliveList(victim, 1);
+				b_NoHealthbar[victim] = true;
+				ApplyStatusEffect(victim, victim, "Warped Elemental End", 999.9);
+				
+				CClotBody npc = view_as<CClotBody>(victim);
+				npc.m_bDissapearOnDeath = true;
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal.");
+				if (!IsValidEntity(npc.m_iFreezeWearable))
+				{
+					float offsetToHeight = 40.0;
+					if(b_IsGiant[victim])
+						offsetToHeight = 55.0;
+
+					npc.m_iFreezeWearable = npc.EquipItemSeperate("models/props_moonbase/moon_gravel_crystal_blue.mdl",_,_,_,offsetToHeight);
+					if(b_IsGiant[victim])
+						SetVariantString("3.1");
+					else
+						SetVariantString("2.5");
+					AcceptEntityInput(npc.m_iFreezeWearable, "SetModelScale");
+					SetEntityRenderColor(npc.m_iFreezeWearable, 25, 25, 25, 255);
+				}
 			}
 		}
 		else
