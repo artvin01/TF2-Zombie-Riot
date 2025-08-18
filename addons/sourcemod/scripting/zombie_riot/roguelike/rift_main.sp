@@ -564,7 +564,7 @@ public void Rogue_RiftWarp_Enemy(int entity)
 			fl_Extra_MeleeArmor[entity] /= 3.0;
 			fl_Extra_RangedArmor[entity] /= 3.0;
 			fl_Extra_Speed[entity] *= 1.2;
-			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1500, false, true);
+			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1500, false, _, true);
 		}
 	}
 }

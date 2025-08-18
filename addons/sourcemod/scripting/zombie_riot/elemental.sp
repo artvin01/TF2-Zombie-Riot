@@ -1323,7 +1323,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 }
 
-void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool trueDmg = false)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -1332,7 +1332,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			return;
 	}
 	
-	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	int damage = trueDmg ? damagebase : RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 		damage = RoundToNearest(float(damage) * 1.3);
 	
