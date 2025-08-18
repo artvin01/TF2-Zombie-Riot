@@ -167,6 +167,8 @@ methodmap RefragmentedWinterSniper < CClotBody
 		npc.m_iWearable5 = Trail_Attach(npc.index, ARROW_TRAIL, 255, 1.0, 60.0, 3.0, 5);
 		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
 		
+		KillFeed_SetKillIcon(npc.index, "the_classic");
+		
 		return npc;
 	}
 }

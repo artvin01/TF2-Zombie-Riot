@@ -591,6 +591,7 @@ public void ARIS_ClotThink(int iNPC)
 	{
 		float damage = 10.0;
 		damage *= RaidModeScaling;
+		KillFeed_SetKillIcon(npc.index, "mantreads");
 		ResolvePlayerCollisions_Npc(npc.index, damage, true);
 	}
 	
@@ -747,6 +748,18 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 			float damage = 35.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			
+			char killicon[64];
+			switch (npc.m_iCurrentMelee)
+			{
+				case ARIS_MELEE_RESISTANCE: killicon = "freedom_staff";
+				case ARIS_MELEE_DAMAGE: killicon = "crossing_guard";
+				case ARIS_MELEE_SPEED: killicon = "nonnonviolent_protest";
+				default: killicon = "fists";
+			}
+			
+			KillFeed_SetKillIcon(npc.index, killicon);
+			
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -1250,6 +1263,8 @@ public void ARIS_ShootGun(ARIS npc)
 	
 	int color[4] = { 104, 207, 255, 255 };
 	
+	KillFeed_SetKillIcon(npc.index, "pomson");
+	
 	// Our targetting method is a little different, so we can't use DoSwingTrace
 	// Bullets
 	for (int i = 0; i < 5; i++)
@@ -1426,6 +1441,8 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 			
 			if (IsValidEntity(RaidBossActive))
 				damage *= RaidModeScaling;
+			
+			KillFeed_SetKillIcon(owner, "tf_projectile_rocket");
 			
 			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, ARIS_ROCKET_BLAST_RADIUS);
 		}

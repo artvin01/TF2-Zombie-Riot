@@ -579,6 +579,9 @@ static void CATS_SelfDefense(CAT npc, float gameTime, int target, float distance
 			float damage = 35.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			
+			KillFeed_SetKillIcon(npc.index, "bat");
+			
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -853,6 +856,8 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	
+	KillFeed_SetKillIcon(owner, "spellbook_lightning");
 	
 	float damage = 40.0 * RaidModeScaling;
 	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 60.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);

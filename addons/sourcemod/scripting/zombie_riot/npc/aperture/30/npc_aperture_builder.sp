@@ -257,6 +257,8 @@ methodmap ApertureBuilder < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		
+		KillFeed_SetKillIcon(npc.index, "wrench");
+		
 		ApertureBuilder_ToggleBuilding(npc, false);
 		
 		// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time

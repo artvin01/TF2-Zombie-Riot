@@ -567,12 +567,24 @@ static void CHIMERA_SelfDefense(CHIMERA npc, float gameTime, int target, float d
 			npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1, _, HowManyEnemeisAoeMelee);
 			delete swingTrace;
 			bool PlaySound = false;
+			
+			char killicon[64];
+			
 			float damage = 35.0;
 			damage *= RaidModeScaling;
+			
 			if(npc.m_flBatteryLeftBlade)
 			{
 				damage *= 1.5;
+				killicon = "merasmus_decap";
 			}
+			else
+			{
+				killicon = "robot_arm_kill";
+			}
+			
+			KillFeed_SetKillIcon(npc.index, killicon);
+			
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
@@ -1079,7 +1091,8 @@ public Action Timer_CHIMERAMineLogic(Handle timer, DataPack pack)
 	DetonateCurrentMine = false;
 	
 	spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 125, 200, 200, 1, 0.3, 5.0, 8.0, 2);
-		
+	
+	KillFeed_SetKillIcon(MasterNpc, "bluecapture");
 	Explode_Logic_Custom(Damage_Do, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,CHIMERAMineExploder);
 
 	if(DetonateCurrentMine)

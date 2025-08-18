@@ -603,6 +603,9 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 			float damage = 45.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			
+			KillFeed_SetKillIcon(npc.index, npc.Anger ? "hale_megapunch" : "hale_punch");
+			
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -719,7 +722,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				ApplyStatusEffect(victim, victim, "Infinite Will", 30.0);
 				npc.m_flMegaEnrage = GetGameTime() + 30.0;
 				damage = 0.0;
-				CPrintToChatAll("{rare}%t:{crimson}... IF YOU THINK ILL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
+				CPrintToChatAll("{rare}%t:{crimson} ...IF YOU THINK I'LL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 30.0);
@@ -759,7 +762,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			SetVariantString("2.0");
 			AcceptEntityInput(npcBeacon.m_iWearable1, "SetModelScale");
 			
-			CPrintToChatAll("{rare}%t armor hardens and fists strenghen, the laboratory aids him.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t's armor hardens and fists strengthen, aided by the laboratory.", c_NpcName[npc.index]);
 		}	
 	}
 	if(attacker <= 0)
@@ -899,9 +902,12 @@ static bool Vincent_LoseConditions(int iNPC)
 					{
 						if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 						{
-							UTIL_ScreenFade(client_check, 66, 50, FFADE_OUT, 255, 255, 255, 255); //make the fade target everyone
+							UTIL_ScreenFade(client_check, 66, 99999, FFADE_OUT | FFADE_STAYOUT, 255, 255, 255, 255); //make the fade target everyone
 						}
 					}
+					
+					CreateTimer(6.0, Timer_Vincent_FadeBackIn, TIMER_FLAG_NO_MAPCHANGE);
+					KillFeed_SetKillIcon(npc.index, "megaton");
 					Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 250.0, _, _, false, 1, false);
 					npc.PlaySuicideSound();
 				}
@@ -1087,6 +1093,8 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	//cannot do logic inside, only detect.
 	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil);
 	
+	bool hit = false;
+	
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{
 		if (HitEntitiesSphereMlynar[entity_traced] > 0)
@@ -1116,6 +1124,12 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 			
 			if (entity_hit > 0 && entity_hit <= MaxClients && !HasSpecificBuff(entity_hit, "Burn"))
 				EmitSoundToClient(entity_hit, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity_hit, SNDCHAN_AUTO);
+			
+			if (!hit)
+			{
+				hit = true;
+				KillFeed_SetKillIcon(npc.index, "firedeath");
+			}
 			
 			float Proj_Damage = 1.0 * RaidModeScaling;
 			SDKHooks_TakeDamage(entity_hit, owner, owner, Proj_Damage, DMG_PLASMA, -1);
@@ -1147,7 +1161,6 @@ static Action Timer_Vincent_LaunchFireDownwards(Handle timer, int ref)
 	int newRocket = npc.FireParticleRocket(vecTargetPos, 0.0, 200.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecPos);
 	RemoveEntity(entity);
 	
-	// FIXME: This doesn't work! It's supposed to launch the fire downwards (duh), but it aint doin dat
 	CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(newRocket), TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Continue;
 }
@@ -1232,8 +1245,8 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 	Handle trace;
 	trace = TR_TraceHullFilterEx(vecTargetPos, VectorTarget_2, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, iNPC);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
-			
-	KillFeed_SetKillIcon(iNPC, "fists");
+	
+	KillFeed_SetKillIcon(iNPC, npc.Anger ? "hale_megapunch_collateral" : "hale_punch_collateral");
 	
 	float playerPos[3];
 	for (int victim1 = 1; victim1 < MAXENTITIES; victim1++)
@@ -1421,6 +1434,9 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				TE_SendToAll(0.0);
 				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
 				TE_SendToAll(0.0);
+				
+				KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+				
 				float damage = 170.0;
 				damage *= RaidModeScaling;
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
@@ -1693,8 +1709,12 @@ static void Vincent_PourOilAbility(Vincent npc, float duration, float delayToIgn
 	SetEntityCollisionGroup(rocketL, COLLISION_GROUP_DEBRIS);
 	SetEntityCollisionGroup(rocketR, COLLISION_GROUP_DEBRIS);
 	
-	CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
+	float delay = 1.75;
+	if (npc.m_flMegaEnrage)
+		delay *= 0.5;
+	
+	CreateTimer(delay, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(delay, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
 	
 	for (int i = 0; i < 8; i++)
 	{
@@ -1755,4 +1775,15 @@ static void Vincent_PourOil(Vincent npc, float vecPos[3], float radius, float du
 	pack.WriteCell(fromAbility);
 	
 	CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+static void Timer_Vincent_FadeBackIn(Handle timer)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client) && !IsFakeClient(client))
+		{
+			UTIL_ScreenFade(client, 333, 1, FFADE_IN | FFADE_PURGE, 255, 255, 255, 255); //make the fade target everyone
+		}
+	}
 }
