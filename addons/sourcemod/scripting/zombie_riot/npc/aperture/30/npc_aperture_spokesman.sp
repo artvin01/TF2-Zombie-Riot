@@ -183,12 +183,12 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 
-	//Apply buffs *only* to bosses, not normal enemies
 	if(npc.m_flNextRangedSpecialAttack < gameTime)
 	{
 		npc.m_flNextRangedSpecialAttack = gameTime + 0.10;
 		
 		int target = GetClosestAlly(npc.index, (500.0 * 500.0), _);
+		//Apply buffs *only* to bosses, not normal enemies
 		if(target && b_thisNpcIsABoss[target])
 		{
 			if(!HasSpecificBuff(target, "Dimensional Turbulence"))
@@ -197,6 +197,7 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
 			}
 		}
+		//Apply buffs *only* to normal enemies, not bosses
 		if(target && !b_thisNpcIsABoss[target])
 		{
 			if(!HasSpecificBuff(target, "Very Defensive Backup"))
