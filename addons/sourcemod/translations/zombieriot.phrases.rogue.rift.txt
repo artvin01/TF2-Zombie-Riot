@@ -6,4 +6,472 @@
 		"en"		"{green}{1} {default}has closed!"
 		"ko"		"{green}{1} {default}가 종료됨!"
 	}
+		"Good Umbral"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Gained {1} Umbral Affinity"
+	}
+	"Bad Umbral"
+	{
+		"#format"	"{1:d}"
+		"en"		"{red}Lost {1} Umbral Affinity"
+	}
+	"We found a Voidstone"
+	{
+		"en"	"We found a Voidstone"
+	}
+	"Leave it"
+	{
+		"en"	"Leave it"
+	}
+
+	"Rift of Swarms"
+	{
+		"en"	"Rift of Swarms"
+	}
+	"Rift of Swarms Desc"
+	{
+		"en"	"{red}Increases the amount of enemies by +20％"
+	}
+	"Rift of Swarms Lore"
+	{
+		"en"	"A rift opens as it spews out more enemies in your path."
+	}
+	"Rift of Emptiness"
+	{
+		"en"	"Rift of Emptiness"
+	}
+	"Rift of Emptiness Desc"
+	{
+		"en"	"{red}Voidstones no longer drop from battles"
+	}
+	"Rift of Emptiness Lore"
+	{
+		"en"	"A rift opens, as if you can feel it's blankness and void inside it."
+	}
+	"Rift of Darkness"
+	{
+		"en"	"Rift of Darkness"
+	}
+	"Rift of Darkness Desc"
+	{
+		"en"	"{red}Void enemies gain +35％ health and +25％ damage {green}but all other enemies lose -15％ health and -10％ damage"
+	}
+	"Rift of Darkness Lore"
+	{
+		"en"	"A rift opens as you watch it suck light away from the area around it."
+	}
+	"Rift of Expansion"
+	{
+		"en"	"Rift of Expansion"
+	}
+	"Rift of Expansion Desc"
+	{
+		"en"	"{red}Void Gates will appear in stages."
+	}
+	"Rift of Expansion Lore"
+	{
+		"en"	"Multiple rifts opens around, you feel you know what's gonna come out."
+	}
+	"Rift of Corruption"
+	{
+		"en"	"Rift of Corruption"
+	}
+	"Rift of Corruption Desc"
+	{
+		"en"	"{red}Consuming items at a Gateway has a chance to corrupt."
+	}
+	"Rift of Corruption Lore"
+	{
+		"en"	"The gateway used to show offerings, tints darker and darker."
+	}
+	"Rift of Malice"
+	{
+		"en"	"Rift of Malice"
+	}
+	"Rift of Malice Desc"
+	{
+		"en"	"{red}Entering battles reduces Umbral Affinity by 3."
+	}
+	"Rift of Malice Lore"
+	{
+		"en"	"A rift opens, you feel as if you're being watched from inside it."
+	}
+
+	"Ruin"
+	{
+		"en"	"Ruin"
+	}
+	"Whatever is Left"
+	{
+		"en"	"Whatever is Left"
+	}
+	"Behind The Curtains"
+	{
+		"en"	"Behind The Curtains"
+	}
+	"More Research"
+	{
+		"en"	"More Research"
+	}
+	"Palace of the Void"
+	{
+		"en"	"Palace of the Void"
+	}
+	"The Throne"
+	{
+		"en"	"The Throne"
+	}
+
+	"Hand of Predation"
+	{
+		"en"	"Hand of Predation"
+	}
+	"Hand of Predation Desc"
+	{
+		"en"	"Herds stir, flesh rend asunder.\n{green}''Charger'' weapons gain +7％ fire rate when using an ability {yellow}(resets on stage end or revive)"
+	}
+	"Hand of Rumble"
+	{
+		"en"	"Hand of Rumble"
+	}
+	"Hand of Rumble Desc"
+	{
+		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal full explosion damage to all targets and no target limit"
+	}
+	"Hand of Choker"
+	{
+		"en"	"Hand of Choker"
+	}
+	"Hand of Choker Desc"
+	{
+		"en"	"With your last strength, break open a last bit of hope for yourself.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot"
+	}
+	"Hand of Snatcher"
+	{
+		"en"	"Hand of Snatcher"
+	}
+	"Hand of Snatcher Desc"
+	{
+		"en"	"Whatever it is you do not have, snatch it away from your enemy. There is no need to hesitate.\n{green}''Tactician'' weapons gain extra cash on a headshot {yellow}(up to a limit)"
+	}
+	"Hand of Spark"
+	{
+		"en"	"Hand of Spark"
+	}
+	"Hand of Spark Desc"
+	{
+		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +10％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
+	}
+	"Hand of Buckler"
+	{
+		"en"	"Hand of Buckler"
+	}
+	"Hand of Buckler Desc"
+	{
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+	}
+	"Hand of Undulation"
+	{
+		"en"	"Hand of Undulation"
+	}
+	"Hand of Undulation Desc"
+	{
+		"en"	"Blasts conquer, the wake deafening.\n{green}''Splash Magic'' weapon ability cooldowns are reduced by 2 seconds when dealing damage"
+	}
+	"Hand of Mystery"
+	{
+		"en"	"Hand of Mystery"
+	}
+	"Hand of Mystery Desc"
+	{
+		"en"	"Mists part, the truth approaches.\n{green}''Rapid Magic'' weapon ability cooldowns are reduced by 50％"
+	}
+	"Hand of Flowing Water"
+	{
+		"en"	"Hand of Flowing Water"
+	}
+	"Hand of Flowing Water Desc"
+	{
+		"en"	"The ocean's flow never ceases, because it is always surging.\n{green}''Power Magic'' weapons grant +300％ max mana and regen"
+	}
+	"Hand of Diffusion"
+	{
+		"en"	"Hand of Diffusion"
+	}
+	"Hand of Diffusion Desc"
+	{
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +375％"
+	}
+	"Hand of Rending"
+	{
+		"en"	"Hand of Rending"
+	}
+	"Hand of Rending Desc"
+	{
+		"en"	"Mountains shatter, stones devoured.\n{green}''Duelist'' weapons damage type is changed to true damage"
+	}
+	"Hand of Fisticuffs"
+	{
+		"en"	"Hand of Fisticuffs"
+	}
+	"Hand of Fisticuffs Desc"
+	{
+		"en"	"What she means by standing over there, is that you cannot cross.\n{green}''Defender'' weapons, upon being attacked by a new enemy, reflect damage taken as true damage and shortly stun the enemy"
+	}
+	"Hand of Superspeed"
+	{
+		"en"	"Hand of Superspeed"
+	}
+	"Hand of Superspeed Desc"
+	{
+		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +120％ fire rate"
+	}
+	"Hand of Fireworks"
+	{
+		"en"	"Hand of Fireworks"
+	}
+	"Hand of Fireworks Desc"
+	{
+		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
+	}
+	"Hand of Pulverization"
+	{
+		"en"	"Hand of Pulverization"
+	}
+	"Hand of Pulverization Desc"
+	{
+		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +10％ fire rate for a short duration when dealing damage to each enemy"
+	}
+	"Hand of Revenging"
+	{
+		"en"	"Hand of Revenging"
+	}
+	"Hand of Revenging Desc"
+	{
+		"en"	"Better not touch my friends then.\n{green}''Combatant'' weapons gains up to +300％ damage with players more injured or dead"
+	}
+	"Hand of Purification"
+	{
+		"en"	"Hand of Purification"
+	}
+	"Hand of Purification Desc"
+	{
+		"en"	"Where it is, dust is not.\n{green}''Medical'' weapons deals 50％ of healing rate as explosive damage to nearby enemies"
+	}
+	"Hand of Protraction"
+	{
+		"en"	"Hand of Protraction"
+	}
+	"Hand of Protraction Desc"
+	{
+		"en"	"Protracted battles, a home of carnage.\n{green}''Mechanic'' weapons fully repairs buildings on hit"
+	}
+
+	"Pots In The Ground"
+	{
+		"en"	"Pots In The Ground ◈"
+	}
+	"Pots In The Ground Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a common artifact when consumed"
+	}
+	"Walled Gold"
+	{
+		"en"	"Walled Gold ◈"
+	}
+	"Walled Gold Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain an uncommon artifact when consumed"
+	}
+	"Stored Instruments"
+	{
+		"en"	"Stored Instruments ◈"
+	}
+	"Stored Instruments Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a rare artifact when consumed"
+	}
+	"Empty Thoughts"
+	{
+		"en"	"Empty Thoughts ◈"
+	}
+	"Empty Thoughts Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 6 while held\n{purple}Obtain a common artifact when consumed"
+	}
+	"Shrivel and Sprout"
+	{
+		"en"	"Shrivel and Sprout ◈"
+	}
+	"Shrivel and Sprout Desc"
+	{
+		"en"	"{yellow}Duplicates when reaching a new chapter {red}but Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
+	}
+	"Cheerful Banter"
+	{
+		"en"	"Cheerful Banter ◈"
+	}
+	"Cheerful Banter Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Obtain a very rare artifact when consumed"
+	}
+	"Nemesis Blood"
+	{
+		"en"	"Nemesis Blood ◈"
+	}
+	"Nemesis Blood Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Obtain a rare artifact when consumed"
+	}
+	"Sprouting Stem"
+	{
+		"en"	"Sprouting Stem ◈"
+	}
+	"Sprouting Stem Desc"
+	{
+		"en"	"{green}Umbral Affinity decreased by 5 when obtained"
+	}
+	"Wild Grass by the Door"
+	{
+		"en"	"Wild Grass by the Door ◈"
+	}
+	"Wild Grass by the Door Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 12 while held\n{purple}Obtain a random artifact when consumed"
+	}
+	"Despair"
+	{
+		"en"	"Despair ◈"
+	}
+	"Despair Desc"
+	{
+		"en"	"{red}Shops no longer appear while held\n{purple}Removes all Australium Ingots when consumed"
+	}
+	"Outblood"
+	{
+		"en"	"Outblood ◈"
+	}
+	"Outblood Desc"
+	{
+		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity decreased by 2 after a battle"
+	}
+	"Flames"
+	{
+		"en"	"Flames ◈"
+	}
+	"Flames Desc"
+	{
+		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity decreased by 3 after a battle"
+	}
+	"Lost"
+	{
+		"en"	"Lost ◈"
+	}
+	"Lost Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain a random voidstone when consumed"
+	}
+	"Witchcraft"
+	{
+		"en"	"Witchcraft ◈"
+	}
+	"Witchcraft Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 2 after a battle {red}but enemies have +10％ health and damage while held"
+	}
+	"Consume"
+	{
+		"en"	"Consume ◈"
+	}
+	"Consume Desc"
+	{
+		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity decreased by 1 after a battle"
+	}
+	"Reclaim"
+	{
+		"en"	"Reclaim ◈"
+	}
+	"Reclaim Desc"
+	{
+		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity decreased by 2 after a battle"
+	}
+	"Pillage"
+	{
+		"en"	"Pillage ◈"
+	}
+	"Pillage Desc"
+	{
+		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity decreased by 1 after a battle"
+	}
+	"Invasion"
+	{
+		"en"	"Invasion ◈"
+	}
+	"Invasion Desc"
+	{
+		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity decreased by 2 after a battle"
+	}
+	"Rise and Fall"
+	{
+		"en"	"Rise and Fall ◈"
+	}
+	"Rise and Fall Desc"
+	{
+		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity decreased by 3 after a battle"
+	}
+	"Words"
+	{
+		"en"	"Words ◈"
+	}
+	"Words Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 6 while held\n{purple}Obtain 2000 cash when consumed"
+	}
+	"Assembly"
+	{
+		"en"	"Assembly ◈"
+	}
+	"Assembly Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 3000 cash when consumed"
+	}
+	"Catastrophe"
+	{
+		"en"	"Catastrophe ◈"
+	}
+	"Catastrophe Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 9 Australium Ingots when consumed"
+	}
+	"Furnace"
+	{
+		"en"	"Furnace ◈"
+	}
+	"Furnace Desc"
+	{
+		"en"	"{green}Umbral Affinity increased by 12 while held\n{purple}Obtain 12 Australium Ingots when consumed"
+	}
+	"Fractured"
+	{
+		"en"	"Fractured ◈"
+	}
+	"Fractured Desc"
+	{
+		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter"
+	}
+
+	"Gateway"
+	{
+		"en"	"Gateway"
+	}
+	"Rift Consume Encounter Title"
+	{
+		"en"	"A rift opens up, it's time to throw something in it"
+	}
+	"Consumes Left"
+	{
+		"#format"	"{1:d}"
+		"en"	"We can consume {1} more stones"
+	}
 }

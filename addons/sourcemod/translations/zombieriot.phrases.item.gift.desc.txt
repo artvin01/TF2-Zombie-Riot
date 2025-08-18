@@ -217,9 +217,8 @@
 	}
 	"W.F. Swordsman Desc"
 	{
-		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances (can be silenced) for a short time."
-		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону(может быть заткнуто) на небольшой промежуток времени."
-		"ko" 		"기사의 힘을 부여받은 콤바인. 하지만 여전히 감염되어있습니다.\n이들의 펄스 폭발 공격은 잠깐동안 자기 자신에게 높은 추가 피해 저항을 부여합니다. 침묵 상태라면 이 효과가 제거됩니다."
+		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances for a short time."
+		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону на небольшой промежуток времени."
 	}
 	"W.F. Elite Desc"
 	{
@@ -229,7 +228,7 @@
 	}
 	"W.F. Giant Swordsman Desc"
 	{
-		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies (can be silenced)."
+		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies."
 		"ru"		"Гигантский комбайн рыцарь генетически улучшен что бы быть более устойчивым.\nСопротивление урону от атаки пульсом все ещё применяется (Моежт быть заглушено)."
 		"ko" 		"이 거대 검객은 유전적으로 더욱 강화되었습니다.\n펄스 폭발 공격의 추가 저항력 부여 기능도 여전합니다. (침묵으로 해당 효과 제거 가능)"
 	}
@@ -241,14 +240,13 @@
 	}
 	"W.F. Golden Collos Desc"
 	{
-		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies (can be silenced)."
+		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies."
 		"ru"		"Комбайны попытались использовать древнию римскую магию что бы призвать сильных союзников, так и появились Золотые Коллосы.\nСопротивление от атаки пульсом так же применяться(может быть заглушено)."
 		"ko" 		"콤바인은 고대 로마의 마법을 사용하여 강력한 아군을 소환하려 했고, 그로 인해 이 황금 거인이 탄생했습니다.\n펄스 폭발 공격 사용시 추가 피해 저항력을 얻습니다. (침묵으로 해당 효과 제거 가능)"
 	}
 	"W.F. Overlord Desc"
 	{
-		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage (can be silenced)."
-		"ko" 		"이 자는 전세계의 배풍등의 휘하 소속 병사들을 이끄는 자입니다.\n펄스 폭발 공격과 분노 사용시 추가 피해 저항력을 얻습니다. (침묵으로 해당 효과 제거 가능)"
+		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage."
 	}
 	"Scout Assaulter Desc"
 	{
@@ -270,7 +268,7 @@
 	}
 	"Flying Armor Desc"
 	{
-		"en" 		"Mysterious flying magical armor from combine rome experiments. Somehow even this got infected.\nDuplicates on death (can be silenced)."
+		"en" 		"Mysterious flying magical armor from combine rome experiments. Somehow even this got infected.\nDuplicates on death ."
 		"ru"		"Мистический летающая магическая броня от Римских эксперементов комбайнов. как-то даже это заразилось.\nДублируется при смерти(Может быть заглушено)."
 		"ko" 		"콤바인의 로마 실험에서 생성된 신비로운 비행형 마법 갑옷입니다. 그런데 어째서인지 이것도 감염되었습니다.\n사망시, 복제합니다. (침묵으로 해당 효과 저지 가능)."
 	}
@@ -282,13 +280,13 @@
 	}
 	"Kamikaze Demo Desc"
 	{
-		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death (can be silenced)."
+		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death."
 		"ru"		"Очень быстрые,Очень высокий урон,но мало здоровья,Убейте их до того как они доберутся до вас и ваших построек.\nВзрыв после смерти (Может быть заглушено)."
 		"ko" 		"매우 빠르고, 공격력이 높지만, 체력이 매우 낮습니다. 그러므로 이들이 당신과 구조물들을 산산조각 내기 전에 처리하세요.\n사망시, 자폭합니다. (침묵으로 해당 효과 저지 가능)."
 	}
 	"Medic Supporter Desc"
 	{
-		"en" 		"This medic will heal (can be silenced) any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
+		"en" 		"This medic will heal any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
 		"ru"		"Этот медик будет лечить (может быть заткнуто) Любого зомби рядом с ним,Убийство цель лечения разозлит медика.\nБудет лучше убить медика первым,Разозленные медики очень сильные."
 		"ko" 		"이 좀비는 주변 좀비들을 회복시켜줍니다. (침묵으로 치유 저지 가능) 이 개체의 치유 대상을 먼저 처치하면, 이 좀비가 분노합니다.\n상황에 따라서는 분노한 지원병 메딕이 훨씬 더 강하므로, 이들을 먼저 처치하는 것이 좋을 수도 있습니다."
 	}
@@ -342,7 +340,7 @@
 	}
 	"Sniper Main Desc"
 	{
-		"en" 		"These snipers lost their function to snipe you.\nThey will spam you down via smg's instead, when losing enough health they will bring out their melee (can be silenced).\nThis melee deals heavy damage."
+		"en" 		"These snipers lost their function to snipe you.\nThey will spam you down via smg's instead, when losing enough health they will bring out their melee.\nThis melee deals heavy damage."
 		"ru"		"Эти снайперы Потеряли возможность стрелять из снайперской винтовки.\Они будут стрелять вас из СМГ,когда теряют достаточно здоровья достанут оружие ближнего боя(Может быть заткнуто).\nЭто оружие ближнего боя наносит большой урон."
 		"ko" 		"이 스나이퍼들은 당신을 저격하는 법을 잊었습니다.\n그래서 기관단총으로 마구잡이 사격을 할 것이며, 충분한 체력을 잃으면 근접전을 시작합니다. (침묵으로 해당 효과 저지 가능)\n그들의 근접 무기는 높은 피해를 줍니다."
 	}
@@ -381,25 +379,25 @@
 
 	"Xeno Headcrab Zombie Desc"
 	{
-		"en" 		"This zombie will reach very high speeds once hurt (can be silenced)."
+		"en" 		"This zombie will reach very high speeds once hurt."
 		"ru"		"Этот зомби станет очень быстрым когда по нему нанесут урон(Может быть заглушено)."
 		"ko" 		"이 좀비들은 한 번이라도 피해를 받으면 이동 속도가 증가합니다. (침묵 가능)."
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater (can be silenced)."
+		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater."
 		"ru"		"Укрепленные зомби имеют мутированную версию ксено инфекции,что приводит к усиленнию их способностей.(могут быть заглушены)."
 		"ko" 		"이 강화된 개체들도 마찬가지로 제노 감염체가 되어, 기존보다 더욱 강력해졌습니다. (침묵 가능)."
 	}
 	"Xeno Fast Zombie Desc"
 	{
-		"en" 		"The first hit deals no damage at all. No matter how high (can be silenced)."
+		"en" 		"The first hit deals no damage at all. No matter how high."
 		"ru"		"Первый удар не насёт никакого урона.Не важно насколько сильным он был(Можно заглушено)."
 		"ko" 		"이들의 첫번째 타격의 피해는 얼마나 피해량이 높던간에 0으로 고정됩니다. (침묵 가능)."
 	}
 	"Xeno Fortified Fast Zombie Desc"
 	{
-		"en" 		"Stronger version of the Xeno Fast Zombie (can be silenced)"
+		"en" 		"Stronger version of the Xeno Fast Zombie"
 		"ru"		"Усиленный вариант Быстрого ксено зомби"
 		"ko" 		"이 개체는 제노 패스트 좀비보다 더 강해졌습니다. (침묵 가능)"
 	}
@@ -417,13 +415,12 @@
 	}
 	"Xeno Fortified Poison Zombie Desc"
 	{
-	    "en" 		"Stronger version of the Xeno Poison Zombie (can be silenced)"
-	    "ru" 		"Более сильный вариант Ксено ядовитого зомби"	
-	    "ko" 		"이 개체는 제노 포이즌 좀비보다 더 강해졌습니다. (침묵 가능)"
+	    "en" 		"Stronger version of the Xeno Poison Zombie"
+	    "ru" 		"Более сильный вариант Ксено ядовитого зомби"	    	    
 	}
 	"Xeno Fortified Giant Poison Zombie Desc"
 	{
-		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger (can be silenced)."
+		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger."
  		"ru" 		"Сохранили способности ''нормального''и более сильные чем он"
 		"ko" 		"더 강력해졌을 뿐만 아니라, 원본 개체의 능력도 그대로 보존하고 있습니다. (침묵 가능)."
 	}
@@ -441,7 +438,7 @@
 	}
 	"Xeno Metro Raider Desc"
 	{
-		"en" 		"When hurt, they will attack 10x as fast, shredding everything (can be silenced)."
+		"en" 		"When hurt, they will attack 10x as fast, shredding everything."
 		"ru"		"Когда получает урон они будут атаковать в десять раз быстрее,разнося все что можно(Можно заглушить)."
 		"ko" 		"이 좀비는 피해를 받으면, 공격 속도가 10배 증가하여, 근접한 모든 것을 갈아마실 수 있게 됩니다. (침묵으로 효과 저지 가능)."
 	}
@@ -459,7 +456,7 @@
 	}
 	"Xeno Swordsman Desc"
 	{
-		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies (can be silenced)."
+		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies."
 		"ru"		"Ксено инфекция смогла заразить даже римские силы.\nСопротивление от атаки пульсом(Можно заглушить)."
 		"ko" 		"아무래도 제노 감염원들은 로마의 힘까지 감염시킬 수 있는 것 같습니다. \n펄스 폭발 공격의 피해 저항력 부여 효과도 여전합니다. (침묵으로 해당 효과 저지 가능)"
 	}
@@ -471,25 +468,25 @@
 	}
 	"Xeno Giant Swordsman Desc"
 	{
-		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies (can be silenced)."
+		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies."
 		"ru"		"Ксено инфекция смогла дать Древним Римлиням способность бежать и атаковать намного быстрее!.\nСопротивление от атаки пульсом(Можно заглушить)."
 		"ko" 		"제노 감염으로 인하여 이 고대 로마인들은 더욱 빠르게 이동하고 더욱 빠르게 공격할 수 있게 되었습니다.\n펄스 폭발 공격의 피해 저항력 부여 효과도 여전합니다. (침묵으로 해당 효과 저지 가능)"
 	}
 	"Xeno DDT Desc"
 	{
-		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time (can be silenced)."
+		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time."
 		"ru"		"Они получили способности невидимости, когда получат урон они получат почти полную невидимости на короткий промежуток времени (можно заглушить)."
 		"ko" 		"변이로 인해 은폐 능력을 얻었습니다. 피해를 받으면, 잠깐 동안 은폐 상태가 됩니다. (침묵으로 해당 효과 저지 가능)"
 	}
 	"Xeno Golden Collos Desc"
 	{
-		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies (can be silenced)."
+		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies."
 		"ru"		"Даже статуи из чистого золота могут быть заражены Ксено радиацией.\nСопротивление урону от атаки пульсом (можно заглушить)."
 		"ko" 		"순금 조각상 조차도 제노 감염을 피할 수 없었습니다.\n펄스 폭발 공격의 피해 저항력 부여 효과도 여전합니다. (침묵으로 해당 효과 저지 가능)."
 	}
 	"Xeno Overlord Desc"
 	{
-		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies (can be silenced).\n Rage reisstance is high (can be silenced)."
+		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies.\n Rage reisstance is high."
 		"ru"		"Повелитель стал быстрее, его атака пульсом отталкивает вас в воздух и глючит вас покругу, Он злится в 2 раза быстрее.\nСопротивление от пульс атаки (может быть заткнуто).\nСопротивление урону в ярости велико(можно заглушить)."
 		"ko" 		"이 대군주는 더욱 빨라지고, 펄스 폭발 공격이 당신을 공중으로 띄울 것이며, 2배 더 빨리 격노 상태가 됩니다.\n펄스 폭발 공격의 피해 저항력 부여 효과는 여전합니다. (침묵으로 저지 가능)\n 격노 상태의 피해 저항력이 높아졌습니다. (침묵으로 저지 가능)"
 	}
@@ -513,7 +510,7 @@
 	}
 	"Xeno Flying Armor Desc"
 	{
-		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one (can be silenced)."
+		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one."
 		"ru"		"Их способность раздвоится усилена вдове, Они теперь будут призывать 2 миньона вместо одного (можно заглушить)."
 		"ko" 		"이들의 분열 능력이 2배로 증가하여, 이제 분열시 하나 대신 2개로 늘어납니다. (침묵으로 저지 가능)."
 	}
@@ -525,19 +522,19 @@
 	}
 	"Xeno Kamikaze Demo Desc"
 	{
-		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death (can be silenced)."
+		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death."
 		"ru"		"Не дайте этим мутантам докоснутся до ваших барикад.\nСовсем.\nВзрыв при смерти (можно заглушить)."
 		"ko" 		"이 변이체들이 절대로 당신의 바리케이드에 가까이 오지 못 하게 하십시오.\n절대로!\n사망시, 자폭합니다. (침묵으로 해당 효과 저지 가능)"
 	}
 	"Xeno Medic Supporter Desc"
 	{
-		"en" 		"They heal (can be silenced) twice as fast due to xeno compatability."
+		"en" 		"They heal twice as fast due to xeno compatability."
 		"ru"		"Они лечят(может быть заткнуто) в два раза быстрее в связи в c ксено совеместимостью."
 		"ko" 		"이들의 자체적인 제노 변이 호환성 때문에, 치유 효율이 2배로 증가했습니다. (침묵으로 치유 저지 가능)"
 	}
 	"Xeno Giant Heavy Brawler Desc"
 	{
-		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones (can be silenced)."
+		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones."
 		"ru"		"Гиганты сильно мутировали,когда умирают они разделятся на маленькие версии себя(можно заглушить)."
 		"ko" 		"이 거대 헤비들은 크게 변화했습니다. 사망시, 소형 개체로 분열합니다. (침묵으로 해당 효과 저지 가능)"
 	}
@@ -585,7 +582,7 @@
 	}
 	"Xeno Sniper Main Desc"
 	{
-		"en" 		"Hurting them at all causes them to instantly wield their melee (can be silenced)."
+		"en" 		"Hurting them at all causes them to instantly wield their melee."
 		"ru"		"нанесение им урона заставит их сразу достать холодное оружие (можно заглушить)."
 		"ko" 		"이 개체들은 피해를 받으면 거의 즉시 근접 무기를 꺼내들 것입니다. (침묵으로 저지 가능)."
 	}
@@ -946,7 +943,7 @@
 	}
 	"Sniper Railgunner Desc"
 	{
-		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots (can be silenced)."
+		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots."
 		"ru"		"Снайпер который надоет вам издалека\nТрус,он так же убегает\nстреляет заряженной атакой после нескольких выстрелов(можно заглушить)."
 		"ko"		"멀리서 당신을 괴롭히는 적입니다.\n겁쟁이로서, 그에게 다가가면 그는 도주할 것입니다.\n일정 횟수 이상 발사하면, 차지 샷을 발사합니다.\n(침묵으로 효과 저지 가능)"
 	}
@@ -1024,7 +1021,7 @@
 	}
 	"Medic Constructor Desc"
 	{
-		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies (can be silenced)."
+		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies."
 		"ru"		"Механический разбойник медик конструктор,Часть проекта ''Последняя надежда''\nлечени союзников (можно заглушить)."
 		"ko"		"불량 기계 메딕 건축가. ''마지막 희망'' 프로젝트의 일부입니다.\n주변의 적 NPC를 치료합니다. (침묵으로 치유 저지 가능)"
 	}
@@ -1137,7 +1134,7 @@
 	}
 	"Hussar Desc"
 	{
-		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance (can be silenced)."
+		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance."
 		"ru"		"вдохновляет союзников вокург себя,и защищает их,убить как можно быстрее,\nВдохновление даёт 10％ больше урона и сопротевление урону(можно заглушить)"
 		"ko"		"주변 아군들을 강화시켜주는 버프를 부여하며, 아군을 보호하는 형태로 전투합니다. 가능하면 최대한 빨리 처치하세요.\n이 적은 주변 적의 공격력과 피해 저항력을 10％ 증가시킵니다. (침묵으로 해당 효과 저지 가능)"
 	}
@@ -1155,7 +1152,7 @@
 	}
 	"Monk Desc"
 	{
-		"en"		"Heals allies instantly in his damage radius instantly to full (can be silenced)."
+		"en"		"Heals allies instantly in his damage radius instantly to full."
 		"ru"		"мнговенно лечит союзников для полного здоровья  в радиусе его атаки(можно заглушить)"
 		"ko"		"자신의 피해 반경 내에 있는 적들을 빠르게 치유합니다. (침묵으로 해당 효과 저지 가능)."
 	}
@@ -1892,13 +1889,13 @@
 	}
 	"Soldine Desc"
 	{
-		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump (can be silenced)\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
+		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
 		"ru"	"Воссозданный Сенсалом по пути к вам.\nМожет Прыгнуть на ракете(можно заглушить)\nСтреляет ракетами\nМожет аттаковать в ближнем бою с перезарядкой,эта атака нанесёт огромный урон."
 		"ko"	"센살이 다시 새로 만들어낸 것으로, 당신에게로 향하고 있습니다.\n로켓 점프를 사용할 수 있습니다. (침묵으로 로켓 점프 저지 가능)\n로켓을 발사하며,\n매우 높은 피해를 주지만 쿨타임이 긴 근접 공격을 합니다."
 	}
 	"Protecta Desc"
 	{
-		"en"	"A better defenda, Altough on death will also heal allies (can be silenced)"
+		"en"	"A better defenda, Altough on death will also heal allies"
 		"ru"	"Улучшенный защитник,хотя может вылечить при смерти(можно заглушить)"
 		"ko"	"디판다의 강화 버전으로, 사망시, 주변 아군들을 회복시킵니다. (침묵으로 해당 효과 저지 가능)"
 	}
@@ -2156,7 +2153,7 @@
 	}
 	"Perro Desc"
 	{
-		"en"	"A soldier that gets faster (can be silenced) and deals more damage with less health."
+		"en"	"A soldier that gets faster and deals more damage with less health."
 		"ru"	"Содат который становится быстрее (можно заглушить) и наночит больше урона с потерей здоровья."
 		"ko"	"체력이 줄어들수록 공격력과 이동 속도가 증가하는 솔저입니다. (침묵으로 이동 속도 증가 효과 제거 가능)."
 	}
@@ -2402,7 +2399,7 @@
 	}
 	"Ouroboros Ekas Desc"
 	{
-		"en"	"Buffs all enemies on the field massively (Can be silenced), if its the last one alive, it gains 5x speed, 2x res."
+		"en"	"Buffs all enemies on the field massively, if its the last one alive, it gains 5x speed, 2x res."
 		"ru"	"Усиливает всех врагов на поле боя(можно заглушить),Если остались одни,получает в 5 раз больше скорости и в двое больше сопротивления."
 		"ko"	"전장 위에 있는 모든 적에게 매우 강력한 버프를 부여합니다. (침묵으로 버프 부여 저지 가능), 만약 플레이어가 혼자 남았다면, 이 적의 속도가 5배 증가하고 저항력이 2배로 증가합니다."
 	}

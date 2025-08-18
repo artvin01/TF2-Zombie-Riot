@@ -4039,6 +4039,16 @@
 		"fr"	"Chercher la Boutique avec des Étiquettes"
 		"ko" 	"태그를 통해 상점 검색"
 	}
+	"Archetype Type"
+	{
+		"#format"	"{1:t}"
+		"en"	"Archetype: {1}"
+	}
+	"Faction List"
+	{
+		"#format"	"{1:s}"
+		"en"	"Faction: {1}"
+	}
 	"Tags List"
 	{
 		"#format"	"{1:s}"
@@ -4081,8 +4091,7 @@
 	}
 	"True Fusion Warrior Wave Desc"
 	{
-		"en"	"(1) ''Silvester'' Is infected with the xeno virus, his gear prevents spreading of it."
-		"ko"	"(1) ''실베스터'' 가 제노 바이러스에 감염되고 말았지만, 그의 장비가 제노 감염을 퍼뜨리는 것을 저지하고 있습니다."
+		"en"	"Lore order: (1) ''Silvester'' Is infected with the xeno virus, his gear prevents spreading of it."
 	}
 	"Alternative Desc"
 	{
@@ -4093,8 +4102,7 @@
 	}
 	"Blitzkrieg Wave Desc"
 	{
-		"en"	"(2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
-		"ko"	"(2) 이 기계는 누군가에 의해 해킹 당했습니다... 그리고 그것은 당신이 죽는 것을 원합니다.\n원래는 캄르스타인이 루이나와 엑스피돈사인들과의 협력으로 만들어낸 것이었습니다...\n엑스피돈사 세력의 지역에서 그와 싸우지 마십시오..."
+		"en"	"Lore order: (2) The machine got hacked by someone... it wants you dead.\nOriginally build by Kahmlstein together with Ruina and Expidonsa...\nDo not fight him in any expidonsan areas..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
@@ -4111,8 +4119,7 @@
 	}
 	"Silvester Waldch Desc"
 	{
-		"en"	"(3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
-		"ko"	"(3) 당신은 제노 감염이 도대체 어디에서 퍼진 것인지 알아내려고 했습니다... 그 의도를 알아챈 실베스터와 월드치는 당신이 그 바이러스에 감염되는 것을 막기 위해 왔습니다."
+		"en"	"Lore order: (3) You trying to find out what xeno is... Silvester and waldch are here to stop you from getting infected."
 	}
 	"Xeno Hard Desc"
 	{
@@ -4130,7 +4137,7 @@
 	}
 	"God Alaxios Wave Desc"
 	{
-		"en"	"(4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
+		"en"	"Lore order: (4) Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
 		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 		"ko"	"(4) 그와 그의 급속히 늘어나는 군대에 맞서 싸우세요. 그들이 나타나면, 무슨 일이던간에 병사들을 먼저 처치하세요!"
@@ -4144,8 +4151,7 @@
 	}
 	"Sensal Wave Desc"
 	{
-		"en"	"(5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
-		"ko"	"(5) 당신은 실베스터와 월드치에게 피해를 주었지만, 그 둘은 센살에게 이 경보가 거짓 경보라는 것을 미처 말하지 못 했습니다. 대비하세요."
+		"en"	"Lore order: (5) The scouting party operative, you harmed silvester and waldch, but they were unable to tell sensal that this was a false alarm, brace yourself."
 	}
 	"Deep Sea Desc"
 	{
@@ -4156,15 +4162,14 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"Lore order: (7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"ko"	"(7) 혼돈이 수많은 도시를 뒤덮었고, 그의 무리가 자신들의 정의를 위해 당신을 덮칠 준비가 되었습니다. 대비하세요."
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"(6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
-		"ko"	"(6) 알락시오스가 시본들의 주의를 끌고 당신이 그들을 처치하는 동안... 또 다른 일행들이 지금 이 임시 동맹을 나쁘게 오해하고 있는 것 같습니다."
+		"en"	"Lore order: (6) Invade the seaborn and kill them off while alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 	}
 	"Schwert Donner Alt Desc"
 	{
@@ -4173,7 +4178,7 @@
 	}
 	"Khaml Desc"
 	{
-		"en"	"(7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"en"	"Lore order: (7) Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"ko"	"(7) 혼돈이 수많은 도시를 뒤덮었고, 그의 무리가 자신들의 정의를 위해 당신을 덮칠 준비가 되었습니다. 대비하세요."
@@ -4187,14 +4192,18 @@
 	}
 	"Unspeakable Raid Desc"
 	{
-		"en"	"(8) Directly after you release the void in rogue2..."
+		"en"	"Lore order: (9) Directly after you release the void in rogue2..."
 		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 		"chi"	"深渊已被释放。"
 		"ko"	"(8) 진정한 심연이 풀려나고 말았습니다..."
 	}
+	"Laboratories Raid Desc"
+	{
+		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
+	}
 	"Twirl Raid Desc"
 	{
-		"en"	"(9) A certain individual has taken an interest in your group"
+		"en"	"Lore order: (8) A certain individual has taken an interest in your group"
 		"fr"	"Cet individuel s'est intéressé dans votre groupe."
 		"chi"	"你貌似引起了 她 的兴趣"
 		"ko"	"(9) 아무래도 그녀가 당신의 팀에 관심을 보인것 같습니다."

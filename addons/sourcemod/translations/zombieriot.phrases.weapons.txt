@@ -4213,8 +4213,7 @@
 	}
 	"Flask of Abyssal Hunter Desc"
 	{
-		"en"	"Weapon becomes Abyssal hunter archetype"
-		"ko"	"무기의 유형이 어비설 헌터로 변경됨"
+		"en"	"Adds the Seaborn faction"
 	}
 	"Flask of Kazimierz"
 	{
@@ -4223,7 +4222,6 @@
 	}
 	"Flask of Kazimierz Desc"
 	{
-		"en"	"Weapon becomes Kazimierz archetype"
-		"ko"	"무기의 유형이 카시미어로 변경됨"
+		"en"	"Adds the Kazimierz faction"
 	}
 }

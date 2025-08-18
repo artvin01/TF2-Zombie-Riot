@@ -826,8 +826,7 @@
 	}
 	"Second Economic Reform Act Desc"
 	{
-		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 500s when a wave starts"
-		"ko"	"이 법안을 시작으로 분툴룸은 본격적으로 패권 제국의 길을 걷게 되었다.\n{green}웨이브가 시작될 때마다, 무기의 능력 쿨타임이 500초 감소한 채로 시작합니다."
+		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 50s when a wave starts"
 	}
 	"String Puppet"
 	{
@@ -2033,10 +2032,9 @@
 		"en"	"The Magic Betrayed"
 		"ko"	"배신당한 마법"
 	}
-	"The Courtain"
+	"The Curtain"
 	{
-		"en"	"The Courtain"
-		"ko"	"커튼"
+		"en"	"The Curtain"
 	}
 	"The Great Demons Of Hallam"
 	{

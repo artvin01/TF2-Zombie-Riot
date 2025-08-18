@@ -1237,7 +1237,7 @@ public void OnPostThink(int client)
 			HudY += -0.0345; //correct offset
 		}
 #if defined ZR
-		if(buffer[0] && !SkillTree_InMenu(client))
+		if(!SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
 #else
 		if(buffer[0])
 #endif
@@ -1766,8 +1766,21 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
-
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	
+	if(HasSpecificBuff(victim, "Envenomed"))
+	{
+		bool venom = true;
+		if(venom)
+		{
+			venom = false;
+			GetEntProp(victim, Prop_Send, "m_iHealth");
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			HealEntityGlobal(victim, victim, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
+			RemoveSpecificBuff(victim, "Envenomed");
+			Force_ExplainBuffToClient(victim, "Envenomed");
+		}
+	}
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{

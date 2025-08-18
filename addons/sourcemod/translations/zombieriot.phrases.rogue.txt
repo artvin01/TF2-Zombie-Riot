@@ -140,6 +140,11 @@
 		"ru"	"Собранные артефакты"
 		"ko"	"보유한 소장품들"
 	}
+	"Rogue Stage Status"
+	{
+		"#format"	"{1:t},{2:d},{3:d}"
+		"en"		"{1}\nStage: {2} / {3}"
+	}
 
 	// Encounters
 	"Optional Battle Title"
@@ -1658,8 +1663,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- All ''Chain Caster'' and ''Multi Caster'' and ''Summoner'' weapons on hit get 2 seconds of reduced cooldown."
-		"ko"	"작은 조각상에서 떨어져나온 부러진 손이다.\n- 모든 ''체인 캐스터'', ''멀티 캐스터'', ''소환사'' 의 무기로 공격 적중시, 쿨타임이 2 초 감소합니다."
+		"en"	"It is a miniature statue of a broken hand.\n- All ''Splash Magic'' and ''Drone Magic'' weapons on hit get 2 seconds of reduced cooldown."
 	}
 	"Bracelets of Agility"
 	{
@@ -2027,8 +2031,7 @@
 	}
 	"Hand of Sticks Desc"
 	{
-		"en"	"Real close and personal.\n{green}''Multi Pellet'' and ''Rapid Fire'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
-		"ko"	"{green}''산탄'', ''연발'' 태그 무기들을 들고 있으면 받는 근접 피해량이 +35％ 감소하며, 적중시 0.5 초간 이동 속도 증진을 얻습니다."
+		"en"	"Real close and personal.\n{green}''Charger'' and ''Debuffer'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
 	}
 	"Hand of Quake"
 	{
@@ -2037,8 +2040,7 @@
 	}
 	"Hand of Quake Desc"
 	{
-		"en"	"Where's the rocket jumping?\n{green}''Explosive Mind'' and Hand grenade weapons weapons grant +150％ jump height and 50％ more damage."
-		"ko"	"로켓 점프는 어디로 갔을까?\n{green}''폭발형'' 태그 무기와 수류탄 종류 무기의 공격 피해량이 +50％ 증가하고 점프 높이가 +150％ 증가합니다."
+		"en"	"Where's the rocket jumping?\n{green}''Artillery'' and ''Mechanic'' weapons weapons grant +150％ jump height and 50％ more damage."
 	}
 	"Hand of Travel"
 	{
@@ -2047,18 +2049,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Team Support'' and All Vampire knife and ''Abyssal hunter'' weapons weapons grant +10 health regen."
-		"ko"	"출발 준비 완료.\n{green}''아군 지원'', ''어비설 헌터'' 태그의 무기와 흡혈귀 칼날 무기가 초당 체력 회복량 +10 을 얻습니다."
-	}
-	"Hand of Flesh"
-	{
-		"en"	"Hand of Flesh"
-		"ko"	"살점의 손"
-	}
-	"Hand of Flesh Desc"
-	{
-		"en"	"Flesh burns and bleeds.\n{yellow}Afterburn is replaced with bleed."
-		"ko"	"살점이 불타오르며 피를 흘린다.\n{yellow}이제 모든 화상 부여 효과가 출혈 부여로 대체됩니다."
+		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons weapons grant +10 health regen."
 	}
 	"Hand of Trapmaster"
 	{
@@ -2077,18 +2068,7 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	"You want my drugs?\n{green}''Infinite Fire'' and ''Debuff'' and ''Victoria'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance, ''Victoria'' weapons gain the health benifit 5x more."
-		"ko"	"{green}''풀 오토'', ''디버퍼'', ''빅토리아'' 무기들이 적중시 체력을 +3 회복하고 원거리 저항력 35％ 증가. ''빅토리아'' 태그 무기는 적중시 체력 회복량이 15로 증가."
-	}
-	"Hand of Incredible Speeds"
-	{
-		"en"	"Hand of Fisting"
-		"ko"	"주먹질의 손"
-	}
-	"Hand of Incredible Speeds Desc"
-	{
-		"en"	"Standing here, Jorato.\n{green}''Brawler'' and ''Single Pellet'' and ''Far Range'' weapons gain +33％ firing speed and +33％ Faster Reload Speed. \n''Far Range'' Weapons also gain 50％ more clipsize."
-		"ko"	"{green}''싸움꾼'', ''단발'', ''장거리'' 태그 무기들의 공격 속도와 재장전 속도 +33％. \n추가로 ''장거리'' 태그 무기들의 장탄수 +50％."
+		"en"	"You want my drugs?\n{green}''Tactician'' and ''Deadeye'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance."
 	}
 	"Hand of Suprise"
 	{
@@ -2097,8 +2077,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Combatant'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
-		"ko"	"등짝 좀 보자.\n{green}''매복자'', ''투사'' 태그 무기들의 공격 속도 +33％ 및 적중시 5초간 지속되는 출혈을 부여."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
 	}
 	"Hand of Revenge"
 	{
@@ -2107,8 +2086,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Abberrition'' and ''Crusher'' weapons gain +150％ damage bonus while below half health."
-		"ko"	"건드리지 말았어야 했다.\n{green}''결전자'', ''변이'', ''대검사'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +150％ 증가."
+		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Combatant'' weapons gain +150％ damage bonus while below half health."
 	}
 	"Hand of Stock"
 	{
@@ -2117,8 +2095,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Base Caster'' weapons grant +100％ max mana and regen and attack +100％ faster."
-		"ko"	"{green}''기본 캐스터'' 태그 무기들의 최대 마나 및 마나 재생 속도, 공격 속도가 +100％ 향상됩니다."
+		"en"	"Investing in the marketplace.\n{green}''Rapid Magic'' and ''Power Magic'' weapons grant +100％ max mana and regen and attack +100％ faster."
 	}
 	"Hand of the Elite"
 	{
@@ -2127,8 +2104,7 @@
 	}
 	"Hand of the Elite Desc"
 	{
-		"en"	"Such elegance.\n{green}''Kazimierz'' and ''Lord'' weapons gain +75％ damage bonus while over half health"
-		"ko"	"엘레강스한 물건.\n{green}''카시미어'', ''로드'' 태그 무기들은 이제 체력이 절반 이하일때 공격 피해량이 +75％ 증가."
+		"en"	"Such elegance.\n{green}''Lord'' and ''Defender'' weapons gain +75％ damage bonus while over half health"
 	}
 	"Soul of Boss vs Boss"
 	{

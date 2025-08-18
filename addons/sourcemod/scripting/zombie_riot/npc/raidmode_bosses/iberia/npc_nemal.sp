@@ -334,9 +334,8 @@ methodmap Nemal < CClotBody
 	public void PlayMineLayed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MineLayed) - 1);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	public void PlayShootSoundNemalSnipe() 
 	{
@@ -2832,7 +2831,10 @@ void NemalPlaceAirMinesInternal(int iNpc, float damage, float TimeUntillArm, flo
 	LocationOfMine[2] += 5.0;
 	float SaveOldLoc[3];
 	SaveOldLoc = LocationOfMine;
-
+	
+	TE_SetupBeamPoints(pos_npc, LocationOfMine, Shared_BEAM_Laser, 0, 0, 0, 0.5, 10.0, 10.0, 5, 5.0, {255,50,50,255}, 3);
+	TE_SendToAll(0.0);
+						
 	DataPack pack2;
 	CreateDataTimer(0.25, Timer_NemalMineLogic, pack2, TIMER_REPEAT);
 	pack2.WriteCell(EntIndexToEntRef(iNpc));
@@ -2892,18 +2894,18 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	if(TimeUntillArm > GetGameTime())
 	{
 		if(Friendly)
-			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 125, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 0.3, 2.0, 2.0, 2);
 		else
-			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.3, 2.0, 2.0, 2);
 		//Do not do damage calculations yet.
 		return Plugin_Continue; 
 	}
 	DetonateCurrentMine = false;
 	
 	if(Friendly)
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 0.3, 5.0, 8.0, 2);
 	else
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.3, 5.0, 8.0, 2);
 		
 	if(Friendly)
 		Explode_Logic_Custom(0.0, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploderFriendly);
