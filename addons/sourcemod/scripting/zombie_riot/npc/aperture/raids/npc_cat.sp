@@ -305,27 +305,32 @@ methodmap CAT < CClotBody
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+		RaidModeScaling *= 0.75;
+		RaidModeScaling *= 1.19;
+		//scaling old
+		//scaling old
 			
 		RaidModeScaling *= amount_of_people;
+		RaidModeScaling *= 1.3;
+
 		
 		MusicEnum music;
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aperture/cat.mp3");
@@ -337,8 +342,8 @@ methodmap CAT < CClotBody
 		Music_SetRaidMusic(music);
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextOrbAbilityTime = GetGameTime(npc.index) + 25.0;
-		npc.m_flNextSelfDegradationAbilityTime = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextOrbAbilityTime = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextSelfDegradationAbilityTime = GetGameTime(npc.index) + 25.0;
 		
 		npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_NONE;
 		npc.m_flNextOrbAbilityState = 0.0;
@@ -406,7 +411,7 @@ public void CAT_ClotThink(int iNPC)
 	}
 
 	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -638,7 +643,7 @@ static void CATS_SelfDefense(CAT npc, float gameTime, int target, float distance
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
 				npc.m_flAttackHappens = gameTime + 0.2;
-				float attack = 1.0;
+				float attack = 0.75;
 				npc.m_flNextMeleeAttack = gameTime + attack;
 				return;
 			}
@@ -729,7 +734,7 @@ static void OrbSpam_Ability_End(CAT npc)
 	npc.StartPathing();
 	
 	npc.m_flAttackHappens = gameTime + 0.5;
-	npc.m_flNextOrbAbilityTime = gameTime + 25.0;
+	npc.m_flNextOrbAbilityTime = gameTime + 20.0;
 	
 	if (IsValidEntity(npc.m_iWearable1))
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
@@ -1011,6 +1016,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
+		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
@@ -1020,7 +1026,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if(!npc.Anger)
 	{
-		if((ReturnEntityMaxHealth(npc.index) / 2) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		if((ReturnEntityMaxHealth(npc.index) / 4) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 		{
 			npc.PlayRevivalStart();
 			CPrintToChatAll("{rare}C.A.T.{default}: INITIATING {unique}LIFE REVERSAL");
@@ -1036,6 +1042,8 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			b_NpcIsInvulnerable[npc.index] = true;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 2.0, _, 10.0, HEAL_ABSOLUTE);
 			RaidModeTime += (170.0 + DEFAULT_UPDATE_DELAY_FLOAT);
+			damage = 0.0;
+			return Plugin_Handled;
 		}
 	}
 		

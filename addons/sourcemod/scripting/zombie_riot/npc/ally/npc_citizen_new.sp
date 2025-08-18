@@ -1778,6 +1778,7 @@ static void CitizenMenu(int client, int page = 0)
 			npc.m_iSeakingObject = 0;
 		}
 	}
+	AnyMenuOpen[client] = 1.0;
 
 	SetGlobalTransTarget(client);
 
@@ -2017,6 +2018,8 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 			if(choice == MenuCancel_ExitBack)
 				CitizenMenu(client);
 		}

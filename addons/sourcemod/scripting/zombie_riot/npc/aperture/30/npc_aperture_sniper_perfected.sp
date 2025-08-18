@@ -79,7 +79,7 @@ methodmap ApertureSniperPerfected < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public ApertureSniperPerfected(float vecPos[3], float vecAng[3], int ally)
@@ -279,6 +279,8 @@ int ApertureSniperPerfectedSelfDefense(ApertureSniperPerfected npc, float gameTi
 			return 0;
 		}
 	}
+	if(Rogue_Mode() && i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
+		return 0;
 		
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
@@ -300,6 +302,7 @@ int ApertureSniperPerfectedSelfDefense(ApertureSniperPerfected npc, float gameTi
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;	
 		}
 	}
 	else
@@ -324,12 +327,13 @@ int ApertureSniperPerfectedSelfDefense(ApertureSniperPerfected npc, float gameTi
 		TE_SendToAll(0.0);
 	}
 			
-	npc.FaceTowards(ThrowPos[npc.index], 25000.0);
+	npc.FaceTowards(ThrowPos[npc.index], 15000.0);
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
+			
 			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
 			float pos_npc[3];
 			WorldSpaceCenter(npc.index, pos_npc);
@@ -346,16 +350,15 @@ int ApertureSniperPerfectedSelfDefense(ApertureSniperPerfected npc, float gameTi
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
 			delete hTrace;	
-
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			npc.PlayMeleeSound();
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 100.0;
+				float damageDealt = 115.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.5;
-				
+
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 			} 
 		}
@@ -365,7 +368,7 @@ int ApertureSniperPerfectedSelfDefense(ApertureSniperPerfected npc, float gameTi
 	{
 		npc.m_flAttackHappens = gameTime + 1.25;
 		npc.m_flDoingAnimation = gameTime + 0.95;
-		npc.m_flNextMeleeAttack = gameTime + 1.35;
+		npc.m_flNextMeleeAttack = gameTime + 1.45;
 	}
 	return 1;
 }

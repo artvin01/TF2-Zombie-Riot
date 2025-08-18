@@ -39,7 +39,7 @@ methodmap PortalGate < CClotBody
 		i_NpcWeight[npc.index] = 999;
 
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_iOverlordComboAttack = 0;
+		npc.m_iOverlordComboAttack = RoundToNearest(3.0 * MultiGlobalEnemy);
 		npc.m_iBleedType = 0;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
@@ -103,7 +103,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 	//spawn delay!
 	npc.m_flAbilityOrAttack0 = gameTime + 2.0;
 	//spawn limit.
-	npc.m_iOverlordComboAttack++;
+	npc.m_iOverlordComboAttack--;
 	npc.PlayTeleportSound();
 	//Wave 1-10
 	if(wave >= 1 && wave <= 11)
@@ -214,7 +214,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			}
 			case 11:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7500);
+				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 2500);
 			}
 			case 12:
 			{
@@ -295,7 +295,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			}
 			case 7:
 			{
-				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 20000);
+				PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7000);
 			}
 			case 8:
 			{
@@ -315,7 +315,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 			}
 		}
 	}
-	if(npc.m_iOverlordComboAttack >= 10)
+	if(npc.m_iOverlordComboAttack <= 0)
 	{
 		SmiteNpcToDeath(npc.index);
 	}

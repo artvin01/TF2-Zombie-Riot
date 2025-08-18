@@ -12,10 +12,6 @@ static const char g_HurtSounds[][] = {
 	"vo/mvm/norm/sniper_mvm_painsharp02.mp3",
 	"vo/mvm/norm/sniper_mvm_painsharp03.mp3",
 	"vo/mvm/norm/sniper_mvm_painsharp04.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp05.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp06.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp07.mp3",
-	"vo/mvm/norm/sniper_mvm_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -134,7 +130,7 @@ methodmap ApertureHuntsmanPerfected < CClotBody
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/sniper/hardhat.mdl");
 		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/spr17_hawk_eyed_hunter/spr17_hawk_eyed_hunter.mdl");
 

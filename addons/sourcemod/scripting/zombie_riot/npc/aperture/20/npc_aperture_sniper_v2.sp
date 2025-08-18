@@ -79,7 +79,7 @@ methodmap ApertureSniperV2 < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 60, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public ApertureSniperV2(float vecPos[3], float vecAng[3], int ally)
@@ -303,6 +303,7 @@ int ApertureSniperV2SelfDefense(ApertureSniperV2 npc, float gameTime)
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;	
 		}
 	}
 	else
@@ -355,7 +356,7 @@ int ApertureSniperV2SelfDefense(ApertureSniperV2 npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				float damageDealt = 50.0;
+				float damageDealt = 85.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.0;
 				
@@ -368,7 +369,7 @@ int ApertureSniperV2SelfDefense(ApertureSniperV2 npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 1.25;
 		npc.m_flDoingAnimation = gameTime + 0.95;
-		npc.m_flNextMeleeAttack = gameTime + 1.4;
+		npc.m_flNextMeleeAttack = gameTime + 1.55;
 	}
 	return 1;
 }

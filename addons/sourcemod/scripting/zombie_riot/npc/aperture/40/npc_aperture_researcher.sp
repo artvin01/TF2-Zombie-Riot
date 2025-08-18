@@ -241,30 +241,19 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-		
+	if(attacker > MaxClients)
+	{
+		if(GetTeam(attacker) != TFTeam_Red)
+			damage *= 10.0;
+	}
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) 
 	{
-		/*npc.PlayMeleeWarCry();
-		switch(GetRandomInt(0,2))
-		{
-			case 0:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: Gah! See what you made me do!");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: I really did not wanna do this, but you left me no choice!");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: Why can't we just resolve things peacefully?!");
-			}
-		}
-		*/
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
-			ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
+			if(IsValidEnemy(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
 		}
+		ApplyStatusEffect(npc.index, npc.index, "Kinetic Surge", 20.0);
 	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -305,29 +294,39 @@ void ApertureResearcherSelfDefense(ApertureResearcher npc, float gameTime, int t
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			float VecEnemy[3]; WorldSpaceCenter(target, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 500.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
-			}
+			int HowManyEnemeisAoeMelee = 64;
+			npc.DoSwingTrace(swingTrace, target, _, _, _, _, _, HowManyEnemeisAoeMelee);
 			delete swingTrace;
+			bool PlaySound = false;
+			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
+			{
+				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
+					continue;
+				if(!IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					continue;
+
+				int targetTrace = i_EntitiesHitAoeSwing_NpcSwing[counter];
+				float vecHit[3];
+				
+				WorldSpaceCenter(targetTrace, vecHit);
+
+				float damage = 500.0;
+				if(ShouldNpcDealBonusDamage(targetTrace))
+					damage *= 3.5;
+				SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
+				if(!PlaySound)
+				{
+					PlaySound = true;
+				}
+				
+				Custom_Knockback(npc.index, targetTrace, 450.0, true); 
+			}
+			if(PlaySound)
+			{
+				npc.PlayMeleeHitSound();
+			}
 		}
 	}
 

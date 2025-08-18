@@ -30,6 +30,8 @@ void ApertureMinigunnerPerfected_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	PrecacheModel("models/player/heavy.mdl");
 	PrecacheSound("weapons/tomislav_shoot.wav");
+	PrecacheSound("weapons/gatling_spin.wav");
+	PrecacheSound("weapons/gatling_shoot.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Perfected Aperture Minigunner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_minigunner_perfected");
@@ -236,9 +238,7 @@ public void ApertureMinigunnerPerfected_NPCDeath(int entity)
 	}
 		
 	StopSound(npc.index, SNDCHAN_STATIC, "weapons/gatling_spin.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/gatling_spin.wav");
-	StopSound(npc.index, SNDCHAN_STATIC, "weapons/tomislav_shoot.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/gatling_shoot.wav");
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

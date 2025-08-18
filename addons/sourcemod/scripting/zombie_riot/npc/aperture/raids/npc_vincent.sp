@@ -66,6 +66,7 @@ static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
 #define VINCENT_OIL_MODEL_SCALE 1.5
 
 #define VINCENT_OIL_MODEL_OFFSET_Z -4.0
+int HitEntitiesSphereMlynar[MAXENTITIES];
 
 void Vincent_OnMapStart_NPC()
 {
@@ -73,7 +74,7 @@ void Vincent_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vincent");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vincent");
-	strcopy(data.Icon, sizeof(data.Icon), "vincent");
+	strcopy(data.Icon, sizeof(data.Icon), "vincent_1");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Aperture;
@@ -245,6 +246,11 @@ methodmap Vincent < CClotBody
 		public get()							{ return i_OverlordComboAttack[this.index]; }
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
+	property float m_flMegaEnrage
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
 	public void PlayPassiveSound()
 	{
 		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
@@ -270,7 +276,6 @@ methodmap Vincent < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Vincent_OnTakeDamage;
 		func_NPCThink[npc.index] = Vincent_ClotThink;
 
-		
 		RaidModeTime = GetGameTime() + 200.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
@@ -299,28 +304,28 @@ methodmap Vincent < CClotBody
 		{	
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
-		
-		if(RaidModeScaling < 55)
+
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
+		//scaling old
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -515,6 +520,14 @@ public void Vincent_ClotThink(int iNPC)
 	Vincent npc = view_as<Vincent>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 	
+	if(npc.m_flMegaEnrage)
+	{
+		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+		{
+			if(IsValidEnemy(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Nightmare Terror", 2.0);
+		}
+	}
 	Vincent_AdjustGrabbedTarget(iNPC);
 	if(Vincent_LoseConditions(iNPC))
 		return;
@@ -548,7 +561,7 @@ public void Vincent_ClotThink(int iNPC)
 				npc.m_iChanged_WalkCycle = 1;
 				npc.m_bisWalking = true;
 				npc.StartPathing();
-				npc.m_flSpeed = 300.0;
+				npc.m_flSpeed = 320.0;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				npc.SetPoseParameter_Easy("body_pitch", 0.0);
 				npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
@@ -769,17 +782,73 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_bLostHalfHealth = true;
 	}
 	
-	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+	
+	if(!npc.Anger || (npc.m_flMegaEnrage && npc.m_flMegaEnrage < GetGameTime()))
 	{
-		if(!npc.m_flTalkRepeat)
+		if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) && Aperture_ShouldDoLastStand())
 		{
-			ApplyStatusEffect(victim, victim, "Infinite Will", 99999.0);
-			npc.m_flTalkRepeat = 1.0;
-			damage = 0.0;
-			return Plugin_Continue;
+			if(!npc.m_flTalkRepeat)
+			{
+				ApplyStatusEffect(victim, victim, "Infinite Will", 99999.0);
+				npc.m_flTalkRepeat = 1.0;
+				damage = 0.0;
+				return Plugin_Continue;
+			}
 		}
 	}
-		
+	else if(npc.Anger)
+	{
+		if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		{
+			if(!npc.m_flMegaEnrage)
+			{
+				ApplyStatusEffect(victim, victim, "Infinite Will", 30.0);
+				npc.m_flMegaEnrage = GetGameTime() + 30.0;
+				damage = 0.0;
+				CPrintToChatAll("{rare}%t:{crimson}... IF YOU THINK ILL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
+				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
+				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
+				ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 30.0);
+				RaidModeTime += 35.0;
+				return Plugin_Continue;
+			}
+		}
+	}
+	if(!npc.m_flTalkRepeat)
+	{
+		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+		if(0.9-(npc.g_TimesSummoned*0.25) > ratio)
+		{
+			npc.g_TimesSummoned++;
+			float DurationHave = 3.0;
+			if(npc.Anger)
+				DurationHave = 5.0;
+
+			RaidModeTime += DurationHave;
+
+			float pos[3];
+			float ang[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+
+			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", DurationHave);
+			ApplyStatusEffect(npc.index, npc.index, "Expidonsan War Cry", DurationHave);
+			
+			if(npc.Anger)
+				ApplyStatusEffect(npc.index, npc.index, "Extreme Anxiety", DurationHave);
+
+
+			int NpcSpawn = NPC_CreateByName("npc_vincent_beacon", -1, pos, ang, GetTeam(npc.index));
+
+			Vincent npcBeacon = view_as<Vincent>(NpcSpawn);
+			npcBeacon.Anger = npc.Anger;
+			npcBeacon.m_iWearable1 = npcBeacon.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,1,_,-65.0, true);
+			SetVariantString("2.0");
+			AcceptEntityInput(npcBeacon.m_iWearable1, "SetModelScale");
+			
+			CPrintToChatAll("{rare}%t armor hardens and fists strenghen, the laboratory aids him.", c_NpcName[npc.index]);
+		}	
+	}
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -992,6 +1061,8 @@ static bool Vincent_LoseConditions(int iNPC)
 	}	
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && !Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
@@ -999,6 +1070,8 @@ static bool Vincent_LoseConditions(int iNPC)
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
@@ -1006,6 +1079,8 @@ static bool Vincent_LoseConditions(int iNPC)
 	}
 	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND && Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
 		CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);
@@ -1019,7 +1094,7 @@ static bool Vincent_LoseConditions(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return true;
 	}
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() || Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime() && (Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS)))
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -1104,14 +1179,49 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	float vecPos[3];
 	GetAbsOrigin(entity, vecPos);
 	
-	DataPack pack2 = new DataPack();
-	pack2.WriteCell(entity);
-	pack2.WriteCell(owner);
-	pack2.WriteCell(fromAbility);
-	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil, pack2);
+	for(int i=0; i < MAXENTITIES; i++)
+	{
+		HitEntitiesSphereMlynar[i] = false;
+	}
+	//cannot do logic inside, only detect.
+	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil);
 	
-	delete pack2;
-	
+	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
+	{
+		if (HitEntitiesSphereMlynar[entity_traced] > 0)
+		{
+			int entity_hit = HitEntitiesSphereMlynar[entity_traced];
+			
+			if (!IsValidEntity(owner))
+				continue;
+			
+			Vincent npc = view_as<Vincent>(owner);
+			if (fromAbility && entity_hit == owner && npc.m_bLostHalfHealth)
+			{
+				npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
+				npc.m_flNextOilLeak = GetGameTime(npc.index) + 0.5;
+				continue;
+			}
+			
+			if (!IsValidEnemy(entity_hit, owner))
+				continue;
+			
+			float vecTargetPos[3];
+			GetAbsOrigin(entity_hit, vecTargetPos);
+			
+			float difference = fabs(vecPos[2] - vecTargetPos[2]);
+			if (difference > 90.0)
+				continue;
+			
+			if (entity_hit > 0 && entity_hit <= MaxClients && !HasSpecificBuff(entity_hit, "Burn"))
+				EmitSoundToClient(entity_hit, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity_hit, SNDCHAN_AUTO);
+			
+			float Proj_Damage = 1.0 * RaidModeScaling;
+			SDKHooks_TakeDamage(entity_hit, owner, owner, Proj_Damage, DMG_PLASMA, -1);
+			NPC_Ignite(entity_hit, owner, 5.0, -1, Proj_Damage);
+		}
+	}
+
 	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
 	
 	return Plugin_Continue;
@@ -1141,7 +1251,7 @@ static Action Timer_Vincent_LaunchFireDownwards(Handle timer, int ref)
 	return Plugin_Continue;
 }
 
-static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
+static bool TraceEntityEnumerator_Vincent_Oil(int entity)
 {
 	if (entity <= 0 || entity > MAXENTITIES)
 		return true;
@@ -1152,41 +1262,15 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity, DataPack pack)
 	if (GetTeam(entity) == 0)
 		return true;
 	
-	pack.Reset();
-	int self = pack.ReadCell();
-	int owner = pack.ReadCell();
-	
-	if (!IsValidEntity(owner))
-		return true;
-	
-	bool fromAbility = pack.ReadCell();
-	
-	Vincent npc = view_as<Vincent>(owner);
-	if (fromAbility && entity == owner && npc.m_bLostHalfHealth)
+	//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
+	for(int i=0; i < MAXENTITIES; i++)
 	{
-		npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
-		npc.m_flNextOilLeak = GetGameTime(npc.index) + 0.5;
-		return true;
+		if(!HitEntitiesSphereMlynar[i])
+		{
+			HitEntitiesSphereMlynar[i] = entity;
+			break;
+		}
 	}
-	
-	if (!IsValidEnemy(entity, owner))
-		return true;
-	
-	float vecPos[3], vecTargetPos[3];
-	GetAbsOrigin(self, vecPos);
-	GetAbsOrigin(entity, vecTargetPos);
-	
-	float difference = fabs(vecPos[2] - vecTargetPos[2]);
-	if (difference > 90.0)
-		return true;
-	
-	if (entity > 0 && entity <= MaxClients && !HasSpecificBuff(entity, "Burn"))
-		EmitSoundToClient(entity, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity, SNDCHAN_AUTO);
-	
-	float Proj_Damage = 2.0 * RaidModeScaling;
-	SDKHooks_TakeDamage(entity, owner, owner, Proj_Damage, DMG_PLASMA, -1);
-	NPC_Ignite(entity, owner, 5.0, -1, Proj_Damage);
-	
 	return true;
 }
 		
@@ -1269,7 +1353,7 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 }
 
 #define VINCENT_PREPARESLAM_TIME 1.5
-#define VINCENT_THROW_AOE_RANGE 150.0
+#define VINCENT_THROW_AOE_RANGE 200.0
 bool Vincent_SlamThrow(int iNPC, int target)
 {
 
@@ -1324,8 +1408,8 @@ bool Vincent_SlamThrow(int iNPC, int target)
 					PluginBot_Jump(npc.index, flPos_1);
 					npc.PlayVincentJumpSound();
 
-					npc.m_flThrow_Happening = GetGameTime(npc.index) + 1.25;
-					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.25;
+					npc.m_flThrow_Happening = GetGameTime(npc.index) + 1.5;
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 1.5;
 					i_GrabbedThis[npc.index] = EntIndexToEntRef(npc.m_iTargetWalkTo);
 					GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", ThrowPos); //emergency save pos
 					return true;
@@ -1341,8 +1425,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				GetEntPropVector(closestTarget, Prop_Data, "m_vecAbsOrigin", enemypos);
 
 				enemypos[2] += 45.0;
-				ThrowPos = enemypos;
-				if(npc.m_flThrow_Happening > GetGameTime(npc.index) + 0.5)
+				if(npc.m_flThrow_Happening > GetGameTime(npc.index) + 0.75)
 				{
 					ThrowPos = enemypos;
 					npc.m_flLazyJumpFix = 1.0;
@@ -1437,7 +1520,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				TE_SendToAll(0.0);
 				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
 				TE_SendToAll(0.0);
-				float damage = 140.0;
+				float damage = 170.0;
 				damage *= RaidModeScaling;
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
 				TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
@@ -1529,7 +1612,7 @@ void Vincent_AdjustGrabbedTarget(int iNPC)
 	TeleportEntity(EnemyGrab, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }
 
-#define VINCENT_MINIMUM_RANGE_BEACONS 800.0
+#define VINCENT_MINIMUM_RANGE_BEACONS 600.0
 #define VINCENT_MAXTRIES 100
 void VincentSpawnBeacons(int iNPC)
 {

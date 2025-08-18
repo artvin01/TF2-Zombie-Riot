@@ -61,10 +61,12 @@ void ApertureExterminator_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
+#define ATTACK_RANGE_EXTERMINATOR 300.0
+#define ATTACK_RANGE_EXTERMINATOR_TRACE 250.0
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return ApertureExterminator(vecPos, vecAng, ally);
+	return ApertureExterminator(vecPos, vecAng, ally, data);
 }
 methodmap ApertureExterminator < CClotBody
 {
@@ -105,7 +107,7 @@ methodmap ApertureExterminator < CClotBody
 	}
 	
 	
-	public ApertureExterminator(float vecPos[3], float vecAng[3], int ally)
+	public ApertureExterminator(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ApertureExterminator npc = view_as<ApertureExterminator>(CClotBody(vecPos, vecAng, "models/bots/demo_boss/bot_demo_boss.mdl", "1.5", "700", ally, false, true));
 		
@@ -126,8 +128,12 @@ methodmap ApertureExterminator < CClotBody
 		
 		
 		//IDLE
-		npc.m_bThisNpcIsABoss = true;
 		npc.m_iState = 0;
+		if(StrContains(data, "bossrush") != -1)
+		{
+			npc.m_iState = 1;
+		}
+		npc.m_bThisNpcIsABoss = true;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
@@ -136,7 +142,7 @@ methodmap ApertureExterminator < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
-		SetVariantString("1.10");
+		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 	
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/demo/hardhat.mdl");
@@ -146,8 +152,7 @@ methodmap ApertureExterminator < CClotBody
 		TE_SetupParticleEffect("critgun_weaponmodel_blu", PATTACH_ABSORIGIN_FOLLOW, npc.m_iWearable1);
 		TE_WriteNum("m_bControlPoint1", npc.m_iWearable1);	
 		TE_SendToAll();
-		
-		IgniteTargetEffect(npc.m_iWearable1, .type = true);
+
 		
 		return npc;
 	}
@@ -163,6 +168,7 @@ public void ApertureExterminator_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -175,6 +181,12 @@ public void ApertureExterminator_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	if(npc.m_iState == 0)
+	{
+		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		spawnRing_Vectors(VecSelfNpcabs, (ATTACK_RANGE_EXTERMINATOR * 0.95) * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 75, 75, 255, 200, 1, /*duration*/ 0.11, 5.0, 2.0, 1);	
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -244,6 +256,7 @@ public void ApertureExterminator_NPCDeath(int entity)
 
 }
 
+
 void ApertureExterminatorSelfDefense(ApertureExterminator npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
@@ -255,8 +268,8 @@ void ApertureExterminatorSelfDefense(ApertureExterminator npc, float gameTime, i
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			static float MaxVec[3] = {512.0, 512.0, 512.0};
-			static float MinVec[3] = {-512.0, -512.0, -512.0};
+			static float MaxVec[3] = {ATTACK_RANGE_EXTERMINATOR_TRACE, ATTACK_RANGE_EXTERMINATOR_TRACE, ATTACK_RANGE_EXTERMINATOR_TRACE};
+			static float MinVec[3] = {-ATTACK_RANGE_EXTERMINATOR_TRACE, -ATTACK_RANGE_EXTERMINATOR_TRACE, -ATTACK_RANGE_EXTERMINATOR_TRACE};
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec, MinVec)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -295,8 +308,8 @@ void ApertureExterminatorSelfDefense(ApertureExterminator npc, float gameTime, i
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 0.75;
 			}
 		}

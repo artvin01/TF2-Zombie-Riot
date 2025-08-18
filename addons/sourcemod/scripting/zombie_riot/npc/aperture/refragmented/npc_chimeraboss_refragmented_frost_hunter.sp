@@ -324,7 +324,7 @@ int RefragmentedWinterFrostHunterSelfDefense(RefragmentedWinterFrostHunter npc, 
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 120.0;
+					float damageDealt = 80.0;
 					damageDealt *= RaidModeScaling;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 2.5;

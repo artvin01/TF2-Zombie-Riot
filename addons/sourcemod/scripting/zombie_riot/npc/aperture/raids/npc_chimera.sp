@@ -351,25 +351,28 @@ methodmap CHIMERA < CClotBody
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+			
+		RaidModeScaling *= 1.25;
+		//scaling old
 			
 		RaidModeScaling *= amount_of_people;
 		
@@ -758,43 +761,25 @@ bool CHIMERA_timeBased(int iNPC)
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.StopStunSound(false);
 			npc.m_flChargeVulnPhase = 0.0;
-			bool MeleeRes = true;
 			npc.m_flSpawnSnipers = 1.0;
 			npc.m_flSpawnEvilRefractCircles = 1.0;
 			//do both abilities twice.
-			if(npc.m_flDamageCharge < 0)
+			if(npc.m_flDamageCharge < 0.0)
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONSIDERED THE MOST DANGEROUS.");
-				MeleeRes = false;
-				npc.m_flDamageCharge *= -1.0;
+				npc.m_flRangedArmor = 0.5;
+				npc.m_flMeleeArmor = 1.65;
 			}
 			else
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}MELEE{default} IS CONSIDERED THE MOST DANGEROUS.");
+				npc.m_flRangedArmor = 1.65;
+				npc.m_flMeleeArmor = 0.5;
 			}
 			if(npc.m_flBatteryLeftBlade)
 			{
 				//if blade is still on, extend
 				npc.m_flBatteryLeftBlade += 15.0;
-			}
-
-			float MaxRes = float(ReturnEntityMaxHealth(npc.index)) * 0.25;
-
-			float Value = (MaxRes / npc.m_flDamageCharge);
-			if(Value >= 2.0)
-			{
-				Value = 2.0;
-			}
-			
-			if(!MeleeRes)
-			{
-				npc.m_flRangedArmor = Value;
-				npc.m_flMeleeArmor = 1.0 / Value;
-			}
-			else
-			{
-				npc.m_flRangedArmor = 1.0 / Value;
-				npc.m_flMeleeArmor = Value;
 			}
 		}
 		return true;
@@ -909,7 +894,7 @@ void CHIMERA_SpawnAnnotation(int iNPC)
 		event.SetFloat("worldPosZ", pos[2]);
 		event.SetInt("follow_entindex", npc.index);
 		event.SetFloat("lifetime", 5.0);
-		event.SetString("text", "Extreme freeze detected!\nStand hear him to not be frozen!");
+		event.SetString("text", "Extreme freeze detected!\nStand near C.H.I.M.E.R.A. to not be frozen!");
 		event.SetString("play_sound", "vo/null.mp3");
 		event.SetInt("id", 6000+npc.index);
 		event.Fire();
@@ -1102,7 +1087,8 @@ public Action Timer_CHIMERAMineLogic(Handle timer, DataPack pack)
 		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 200, 200, 1, 0.5, 12.0, 10.0, 2);
 		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 125, 125, 200, 200, 1, 0.5, 12.0, 10.0, 2);
 		//It hit something, boom.
-		EmitSoundToAll("weapons/physcannon/energy_sing_flyby1.wav", 0, _, 80, _, 1.0,_,_,MinePositionGet);
+		EmitSoundToAll("weapons/physcannon/energy_sing_flyby1.wav", 0, _, 80, _, 0.7,_,_,MinePositionGet);
+		EmitSoundToAll("weapons/physcannon/energy_sing_flyby1.wav", 0, _, 80, _, 0.7,_,_,MinePositionGet);
 		return Plugin_Stop; 
 	}
 	float MaxDuration = pack.ReadFloat();
@@ -1185,8 +1171,12 @@ bool CHIMERA_SuperSlash(int iNPC)
 				float VectorStart[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VectorStart);
 				f3_NpcSavePos[npc.index] = vecTarget;
 				npc.FaceTowards(vecTarget, 20000.0);
-				float damage = 70.0;
+				float damage = 50.0;
 				damage *= RaidModeScaling;
+				if(npc.m_flBatteryLeftBlade)
+				{
+					damage *= 1.5;
+				}
 
 				npc.m_flSuperSlashInAbilityDo = GetGameTime(npc.index) + 0.5;
 

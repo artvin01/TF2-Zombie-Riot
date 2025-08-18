@@ -437,25 +437,29 @@ methodmap ARIS < CClotBody
 			RaidModeScaling = float(Waves_GetRoundScale()+1);
 		}
 		
-		if(RaidModeScaling < 55)
+		if(RaidModeScaling < 35)
 		{
-			RaidModeScaling *= 0.19; //abit low, inreacing
+			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
 		else
 		{
-			RaidModeScaling *= 0.38;
+			RaidModeScaling *= 0.5;
 		}
-		float amount_of_people = float(CountPlayersOnRed());
 		
+		float amount_of_people = ZRStocks_PlayerScalingDynamic();
 		if(amount_of_people > 12.0)
 		{
 			amount_of_people = 12.0;
 		}
-		
-		amount_of_people *= 0.15;
+		amount_of_people *= 0.12;
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
+
+		RaidModeScaling *= 0.75;
+		RaidModeScaling *= 1.19;
+		//scaling old
+
 		npc.m_flMeleeArmor = 1.25;	
 			
 		RaidModeScaling *= amount_of_people;
@@ -550,16 +554,6 @@ methodmap ARIS < CClotBody
 		
 		// Each rocket will create a real rocket a bit later
 		CreateTimer(ARIS_ROCKET_DELAY, Timer_ARIS_FireRocketTowardsPlayer, this.index, TIMER_FLAG_NO_MAPCHANGE);
-
-		switch(GetRandomInt(0,2))
-		{
-			case 0:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: F1R3 1N 7H3 H0L3");
-			case 1:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: DUCK 4ND C0V3R");
-			case 2:
-				CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
-		}
 	}
 	
 	public void FireRocketTowardsPlayer()
@@ -967,7 +961,7 @@ methodmap ARIS < CClotBody
 				armorFromThisTarget += 0.01;
 				b_EnemyHitByBlast[target] = false;
 			}
-			damage *= 10.0;
+			damage *= 6.0;
 			damage *= RaidModeScaling;
 			
 			if (damage > 0.0)
@@ -1051,7 +1045,7 @@ public void ARIS_ClotThink(int iNPC)
 	}
 
 	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < gameTime)
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -1111,7 +1105,16 @@ public void ARIS_ClotThink(int iNPC)
 			// This is just the warning
 			npc.m_flNextRocketBarrageMain = gameTime + 2.0;
 			npc.m_flNextRocketBarrageStart = FAR_FUTURE; // Need to wait until it's done
-			
+		
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: F1R3 1N 7H3 H0L3");
+				case 1:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: DUCK 4ND C0V3R");
+				case 2:
+					CPrintToChatAll("{rare}A.R.I.S.{default}: R0CK37S!");
+			}
 			npc.PlayRocketReadyingSound();
 		}
 		
@@ -1330,9 +1333,11 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	{
 		npc.DestroyDroppedBeacon();
 		
+		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
 		
+		npc.m_flArmorCount = 0.0;
 		damage = 0.0;
 		return Plugin_Handled;
 	}
@@ -1411,9 +1416,9 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 		if (owner > MaxClients && !b_NpcHasDied[owner])
 		{
 			// Let's just ASSUME this is ARIS
-			float damage = 120.0;
+			float damage = 100.0;
 			
-			if (RaidBossActive > 0)
+			if (IsValidEntity(RaidBossActive))
 				damage *= RaidModeScaling;
 			
 			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, ARIS_ROCKET_BLAST_RADIUS);

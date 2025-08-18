@@ -72,7 +72,7 @@ enum
 	
 	APT_BUILDER_BUILDING_COUNT,
 }
-
+static float AntiSoundSpam;
 static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
 void ApertureBuilder_OnMapStart_NPC()
@@ -85,6 +85,7 @@ void ApertureBuilder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_BuildingTeleporterSounds)); i++) { PrecacheSound(g_BuildingTeleporterSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	AntiSoundSpam = 0.0;
 	
 	PrecacheSound(g_BuildingBuiltSound);
 	PrecacheSound(g_OutOfMyWaySound);
@@ -266,7 +267,7 @@ methodmap ApertureBuilder < CClotBody
 		
 		for (int i = 0; i < maxAttempts; i++)
 		{
-			TeleportDiversioToRandLocation(npc.index, true, 2000.0, 1500.0);
+			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
 			
 			int visiblePlayerCount;
 			
@@ -283,8 +284,12 @@ methodmap ApertureBuilder < CClotBody
 				break;
 		}
 		
-		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
-		EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);
+		if(AntiSoundSpam < GetGameTime())
+		{
+			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
+			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);
+		}
+		AntiSoundSpam = GetGameTime() + 15.0;
 		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 		VecSelfNpcabs[2] -= 200.0;
 		TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
