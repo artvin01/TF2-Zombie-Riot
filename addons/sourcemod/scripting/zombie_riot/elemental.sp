@@ -28,7 +28,7 @@ static const char ElementName[][] =
 	"CO",
 	"FOOD",
 	"PL",
-	"PU"
+	"WW"
 };
 
 static float LastTime[MAXENTITIES];
@@ -1407,6 +1407,10 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				SetEntityRenderColor(victim, 96, 96, 96, 255);
 				AddNpcToAliveList(victim, 1);
 			}
+		}
+		else
+		{
+			ApplyStatusEffect(attacker, victim, "Warped Elemental Damage", 999.9);
 		}
 
 		if(attacker && attacker <= MaxClients)
