@@ -5482,7 +5482,7 @@ static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 
 	float flPos[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
-	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_busysnow_parent", victim, "", {0.0,0.0,0.0});
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_busysnow_snow_conc_back", victim, "", {0.0,0.0,0.0});
 	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
