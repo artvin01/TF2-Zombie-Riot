@@ -1356,18 +1356,23 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Warped)))
 				{
-					Armor_Charge[victim] = 0;
-					f_ArmorCurrosionImmunity[victim][Element_Warped] = GetGameTime() + 5.0;
-					
-					if(!HasSpecificBuff(victim, "Fluid Movement"))
-						TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+					Armor_Charge[victim] += damage + 50;
 
-					DealTruedamageToEnemy(0, victim, 500.0);
+					i_AmountDowned[victim]--;
+					TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 9999999.9, DMG_TRUEDAMAGE);
+					f_DisableDyingTimer[victim] = FAR_FUTURE;
 				}
 			}
 
 			if(Armor_Charge[victim] >= 0)
+			{
 				fresh = false;
+			}
+			else
+			{
+				ApplyStatusEffect(attacker, victim, "Warped Elemental Damage", 999.9);
+			}
 			
 			if(sound || fresh)
 				ClientCommand(victim, "playgamesound %s", fresh ? "npc/strider/striderx_pain8.wav" : "npc/strider/striderx_pain5.wav");

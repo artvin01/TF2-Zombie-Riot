@@ -1403,6 +1403,9 @@ public void OnPostThink(int client)
 		}
 		else
 		{
+			if(Armor_DebuffType[armorEnt] == Element_Warped)
+				armor /= 4;
+			
 			Format(buffer, sizeof(buffer), "⛛ ", buffer);
 			for(int i=1; i<5; i++)
 			{
@@ -2157,6 +2160,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
+				f_DisableDyingTimer[victim] = 0.0;
 				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
 				Vehicle_Exit(victim);
 				ForcePlayerCrouch(victim, true);
