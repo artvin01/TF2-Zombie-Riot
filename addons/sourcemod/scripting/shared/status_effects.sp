@@ -5412,7 +5412,7 @@ void StatusEffects_Explainelemental()
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "w");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ww");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.0;
@@ -5463,7 +5463,7 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 	}
 
 	if(!ratio)
-		RemoveSpecificBuff(entity, "Warped Elemental Damage");
+		Apply_StatusEffect.TimeUntillOver = 0.0;
 }
 static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
