@@ -426,94 +426,6 @@ methodmap Vincent < CClotBody
 
 		return npc;
 	}
-	
-	public void PourOilAbility(float duration, float delayToIgnite)
-	{
-		this.m_bDoingOilPouring = true;
-		this.m_flNextOilPouring = GetGameTime(this.index) + delayToIgnite + 0.5;
-		
-		float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecUseless[3];
-		GetAbsOrigin(this.index, vecPos);
-		
-		float radius = VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE * 1.5;
-		
-		this.PourOil(vecPos, radius, duration, delayToIgnite, true);
-		
-		vecPos[2] += 80.0;
-		
-		ParticleEffectAt(vecPos, "gas_can_impact_blue");
-		
-		int rocketL = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
-		int rocketR = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
-		
-		SetParent(this.index, rocketL, "effect_hand_L");
-		SetParent(this.index, rocketR, "effect_hand_R");
-		
-		SetEntityCollisionGroup(rocketL, COLLISION_GROUP_DEBRIS);
-		SetEntityCollisionGroup(rocketR, COLLISION_GROUP_DEBRIS);
-		
-		CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
-		
-		for (int i = 0; i < 8; i++)
-		{
-			vecAng[1] = i * (360.0 / 8.0);
-			GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
-			NormalizeVector(vecForward, vecForward);
-			ScaleVector(vecForward, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE);
-			AddVectors(vecPos, vecForward, vecTargetPos);
-			
-			Handle trace = TR_TraceRayFilterEx(vecPos, vecTargetPos, MASK_SOLID, RayType_EndPoint, TraceEntityFilter_Vincent_OnlyWorld);
-			if (!TR_DidHit(trace))
-			{
-				Handle trace2 = TR_TraceRayFilterEx(vecTargetPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
-				TR_GetEndPosition(vecTargetPos, trace);
-				delete trace2;
-			}
-			
-			delete trace;
-			
-			vecTargetPos[2] -= 16.0;
-			this.PourOil(vecTargetPos, radius, duration, delayToIgnite, true);
-		}
-	}
-	
-	public void PourOil(float vecPos[3], float radius, float duration, float delayToIgnite, bool fromAbility)
-	{
-		int prop = CreateEntityByName("prop_dynamic_override");
-		if (!IsValidEntity(prop))
-			return;
-		
-		Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
-		TR_GetEndPosition(vecPos, trace);
-		delete trace;
-		
-		TeleportEntity(prop, vecPos, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(prop, "model", g_OilModel);
-		DispatchKeyValue(prop, "disablereceiveshadows", "1");
-		DispatchKeyValue(prop, "disableshadows", "1");
-		DispatchSpawn(prop);
-		
-		SetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity", this.index);
-		SetTeam(prop, GetTeam(this.index));
-		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", VINCENT_OIL_MODEL_SCALE);
-		
-		SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS);
-		
-		if (delayToIgnite <= 0.1)
-			SetEntityRenderMode(prop, RENDER_NONE);
-		else
-			SetEntityRenderColor(prop, 0, 40, 0, 255);
-		
-		DataPack pack;
-		CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(prop));
-		pack.WriteCell(EntIndexToEntRef(this.index));
-		pack.WriteFloat(radius);
-		pack.WriteCell(fromAbility);
-		
-		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
-	}
 }
 
 public void Vincent_ClotThink(int iNPC)
@@ -584,7 +496,7 @@ public void Vincent_ClotThink(int iNPC)
 		float vecPos[3];
 		GetAbsOrigin(npc.index, vecPos);
 		
-		npc.PourOil(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
+		Vincent_PourOil(npc, vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
 	}
 	if (npc.m_bDoingOilPouring)
 	{
@@ -601,7 +513,7 @@ public void Vincent_ClotThink(int iNPC)
 		}
 	}
 	
-	if (npc.m_flNextOilPouring < gameTime && npc.m_flDoingAnimation < gameTime)
+	if (npc.m_flNextOilPouring < gameTime && npc.m_flDoingAnimation < gameTime && !npc.m_flThrow_Happening)
 	{
 		npc.m_flSpeed = 0.0;
 		npc.m_bisWalking = false;
@@ -610,7 +522,7 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetCycle(0.05);
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
-		npc.PourOilAbility(30.0, 2.0);
+		Vincent_PourOilAbility(npc, 30.0, 2.0);
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			switch(GetRandomInt(0,2))
@@ -1753,4 +1665,94 @@ void Vincent_SpawnFog(int iNPC)
 			}
 		}
 	}
+}
+
+static void Vincent_PourOilAbility(Vincent npc, float duration, float delayToIgnite)
+{
+	// This does the ability that spawns many puddles
+	npc.m_bDoingOilPouring = true;
+	npc.m_flNextOilPouring = GetGameTime(npc.index) + delayToIgnite + 0.5;
+	
+	float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecUseless[3];
+	GetAbsOrigin(npc.index, vecPos);
+	
+	float radius = VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE * 1.5;
+	
+	Vincent_PourOil(npc, vecPos, radius, duration, delayToIgnite, true);
+	
+	vecPos[2] += 80.0;
+	
+	ParticleEffectAt(vecPos, "gas_can_impact_blue");
+	
+	int rocketL = npc.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
+	int rocketR = npc.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
+	
+	SetParent(npc.index, rocketL, "effect_hand_L");
+	SetParent(npc.index, rocketR, "effect_hand_R");
+	
+	SetEntityCollisionGroup(rocketL, COLLISION_GROUP_DEBRIS);
+	SetEntityCollisionGroup(rocketR, COLLISION_GROUP_DEBRIS);
+	
+	CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
+	
+	for (int i = 0; i < 8; i++)
+	{
+		vecAng[1] = i * (360.0 / 8.0);
+		GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+		NormalizeVector(vecForward, vecForward);
+		ScaleVector(vecForward, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE);
+		AddVectors(vecPos, vecForward, vecTargetPos);
+		
+		Handle trace = TR_TraceRayFilterEx(vecPos, vecTargetPos, MASK_SOLID, RayType_EndPoint, TraceEntityFilter_Vincent_OnlyWorld);
+		if (!TR_DidHit(trace))
+		{
+			Handle trace2 = TR_TraceRayFilterEx(vecTargetPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
+			TR_GetEndPosition(vecTargetPos, trace);
+			delete trace2;
+		}
+		
+		delete trace;
+		
+		vecTargetPos[2] -= 16.0;
+		Vincent_PourOil(npc, vecTargetPos, radius, duration, delayToIgnite, true);
+	}
+}
+
+static void Vincent_PourOil(Vincent npc, float vecPos[3], float radius, float duration, float delayToIgnite, bool fromAbility)
+{
+	// This spawns each individual oil puddle
+	int prop = CreateEntityByName("prop_dynamic_override");
+	if (!IsValidEntity(prop))
+		return;
+	
+	Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
+	TR_GetEndPosition(vecPos, trace);
+	delete trace;
+	
+	TeleportEntity(prop, vecPos, NULL_VECTOR, NULL_VECTOR);
+	DispatchKeyValue(prop, "model", g_OilModel);
+	DispatchKeyValue(prop, "disablereceiveshadows", "1");
+	DispatchKeyValue(prop, "disableshadows", "1");
+	DispatchSpawn(prop);
+	
+	SetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity", npc.index);
+	SetTeam(prop, GetTeam(npc.index));
+	SetEntPropFloat(prop, Prop_Send, "m_flModelScale", VINCENT_OIL_MODEL_SCALE);
+	
+	SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS);
+	
+	if (delayToIgnite <= 0.1)
+		SetEntityRenderMode(prop, RENDER_NONE);
+	else
+		SetEntityRenderColor(prop, 0, 40, 0, 255);
+	
+	DataPack pack;
+	CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(prop));
+	pack.WriteCell(EntIndexToEntRef(npc.index));
+	pack.WriteFloat(radius);
+	pack.WriteCell(fromAbility);
+	
+	CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 }
