@@ -522,7 +522,12 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetCycle(0.05);
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
-		Vincent_PourOilAbility(npc, 30.0, 2.0);
+		
+		float delay = 2.0;
+		if (npc.m_flMegaEnrage)
+			delay *= 0.5;
+		
+		Vincent_PourOilAbility(npc, 30.0, delay);
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			switch(GetRandomInt(0,2))
