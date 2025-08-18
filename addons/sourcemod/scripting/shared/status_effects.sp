@@ -5457,7 +5457,7 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 			}
 		}
 
-		Elemental_AddWarpedDamage(entity, attacker, RoundFloat(ReturnEntityMaxHealth(entity) * 0.027), false, _, , true);
+		Elemental_AddWarpedDamage(entity, attacker, RoundFloat(ReturnEntityMaxHealth(entity) * 0.027), false, _, true);
 		if(f_AttackSpeedNpcIncrease[entity] > 0.2)
 			f_AttackSpeedNpcIncrease[entity] *= 0.979;
 	}
