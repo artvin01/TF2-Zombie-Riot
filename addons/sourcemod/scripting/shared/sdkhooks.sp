@@ -1404,7 +1404,7 @@ public void OnPostThink(int client)
 		else
 		{
 			if(Armor_DebuffType[armorEnt] == Element_Warped)
-				armor /= 4;
+				armor /= 2;
 			
 			Format(buffer, sizeof(buffer), "⛛ ", buffer);
 			for(int i=1; i<5; i++)
