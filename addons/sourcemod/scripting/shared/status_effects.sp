@@ -5412,7 +5412,7 @@ void StatusEffects_Explainelemental()
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ʬ");	// Ʊ
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "w");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.0;
@@ -5474,7 +5474,7 @@ static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_Mast
 }
 static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
+	if(!b_ThisWasAnNpc[victim])
 		return;
 	
 	if(IsValidEntity(Apply_StatusEffect.WearableUse))
