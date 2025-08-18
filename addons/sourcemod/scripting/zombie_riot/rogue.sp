@@ -435,7 +435,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 	while(kv.GotoNextKey(false));
 
 	if(!VoteTimer)
-		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_REPEAT);
 
 	if(artifactOnly[0])
 	{
@@ -1736,7 +1736,7 @@ void Rogue_StartGenericVote(float time = 20.0)
 {
 	Zero(VotedFor);
 	if(!VoteTimer)
-		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		VoteTimer = CreateTimer(1.0, Rogue_VoteDisplayTimer, _, TIMER_REPEAT);
 
 	VoteEndTime = GetGameTime() + time;
 	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);

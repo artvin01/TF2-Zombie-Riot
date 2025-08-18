@@ -498,9 +498,48 @@ public void Rogue_RiftLevel_Enemy(int entity)
 	if(DifficultyLevel < 3)
 		return;
 	
-	float stats = Pow(0.9 + (DifficultyLevel * 0.05), (Rogue_GetFloor() + 1));
+	float stats = Pow(1.0 + ((DifficultyLevel - 2) * 0.03333), (Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
+
+public float Rogue_Encounter_Rift2()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rift2, "Rift Ending 1 Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rift Ending 1 Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rift Ending 1 Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rift Ending 1 Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rift Ending 1 Desc 2");
+	if(DifficultyLevel < 1)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 1)");
+	}
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_Rift2(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Artifact artifact;
+			if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+		}
+		case 1:
+		{
+			Rogue_GiveNamedArtifact("Reila Assistance");
+		}
+	}
 }
