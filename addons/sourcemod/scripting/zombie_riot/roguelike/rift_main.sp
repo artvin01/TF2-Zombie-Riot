@@ -478,7 +478,7 @@ public void Rogue_RiftNormal_Collect()
 
 public void Rogue_RiftNormal_Enemy(int entity)
 {
-	float stats = Pow(1.02, (Rogue_GetFloor() + 1));
+	float stats = Pow(1.02, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -493,7 +493,7 @@ public void Rogue_RiftHard_Collect()
 
 public void Rogue_RiftHard_Enemy(int entity)
 {
-	float stats = Pow(1.05, (Rogue_GetFloor() + 1));
+	float stats = Pow(1.05, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));

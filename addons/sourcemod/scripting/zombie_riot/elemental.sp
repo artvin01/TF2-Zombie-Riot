@@ -1323,7 +1323,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 }
 
-void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, int weapon = -1)
+void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	if(i_IsVehicle[victim])
 	{
