@@ -5440,7 +5440,7 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 		float nerfHealth = (Attributes_Get(entity, 125) - sub);
 
 		float baseHealth = ReturnEntityMaxHealth(entity) - nerfHealth;
-		nerfHealth = baseHealth * 0.8 * ratio;
+		nerfHealth = -baseHealth * 0.8 * ratio;
 
 		Attributes_Set(entity, 125, (nerfHealth + sub));
 	}
