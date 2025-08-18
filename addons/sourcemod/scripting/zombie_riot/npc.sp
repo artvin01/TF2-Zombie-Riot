@@ -1068,6 +1068,7 @@ void NPC_ConfigSetup()
 	Vincent_Beacon_OnMapStart_NPC();
 
 	Umbral_Ltzens_OnMapStart_NPC();
+	Umbral_Refract_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2332,3 +2333,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/npc_vincent_beacon.sp"
 
 #include "npc/rogue/rouge3/npc_umbral_ltzens.sp"
+#include "npc/rogue/rouge3/npc_umbral_refract.sp"

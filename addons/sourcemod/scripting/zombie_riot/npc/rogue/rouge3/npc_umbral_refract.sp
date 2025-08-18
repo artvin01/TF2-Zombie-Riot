@@ -14,33 +14,31 @@ static const char g_HurtSounds[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/mvm/norm/pyro_mvm_jeers01.mp3",
-	"vo/mvm/norm/pyro_mvm_jeers02.mp3",
+	"vo/mvm/norm/heavy_mvm_jeers01.mp3",
+	"vo/mvm/norm/heavy_mvm_jeers02.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"player/taunt_yeti_standee_demo_swing.wav",
+	"weapons/fist_swing_crit.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/neon_sign_hit_01.wav",
-	"weapons/neon_sign_hit_02.wav",
-	"weapons/neon_sign_hit_03.wav",
-	"weapons/neon_sign_hit_04.wav",
+	"weapons/fist_hit_world1.wav",
+	"weapons/fist_hit_world2.wav",
 };
 
 
-void Umbral_Ltzens_OnMapStart_NPC()
+void Umbral_Refract_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
+	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Umbral Ltzens");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_ltzens");
+	strcopy(data.Name, sizeof(data.Name), "Umbral Refract");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_refract");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -52,20 +50,10 @@ void Umbral_Ltzens_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Umbral_Ltzens(vecPos, vecAng, team);
+	return Umbral_Refract(vecPos, vecAng, team);
 }
-methodmap Umbral_Ltzens < CClotBody
+methodmap Umbral_Refract < CClotBody
 {
-	property float m_flLaggyMovmentDo
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
-	}
-	property bool m_bLaggyMovementMode
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	property float m_flSpassOut
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
@@ -76,6 +64,21 @@ methodmap Umbral_Ltzens < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flReduceWeight
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property int m_iLayerSave
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
+	property float m_flCauseDamage
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -83,7 +86,7 @@ methodmap Umbral_Ltzens < CClotBody
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + 1.0;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(50, 55));
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(35, 40));
 		
 	}
 	
@@ -94,7 +97,7 @@ methodmap Umbral_Ltzens < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.3;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(40, 60));
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(40, 60));
 		
 	}
 	
@@ -112,87 +115,46 @@ methodmap Umbral_Ltzens < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 60);
 	}
 	
-	public Umbral_Ltzens(float vecPos[3], float vecAng[3], int ally)
+	public Umbral_Refract(float vecPos[3], float vecAng[3], int ally)
 	{
-		Umbral_Ltzens npc = view_as<Umbral_Ltzens>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "22500", ally));
-
-		vecAng[1] = GetRandomFloat(-25.0,25.0);
-		vecAng[2] = GetRandomFloat(-25.0,25.0);
-		SetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng);
+		Umbral_Refract npc = view_as<Umbral_Refract>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "22500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		npc.SetPlaybackRate(1.5);
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_VOID;
-		npc.m_iStepNoiseType = 0;	
-		npc.m_iNpcStepVariation = 0;
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Umbral_Ltzens_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Umbral_Ltzens_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Umbral_Ltzens_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Umbral_Refract_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Umbral_Refract_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Umbral_Refract_ClotThink);
 		
 		npc.StartPathing();
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
-		npc.m_bisWalking = false; //we want them to have laggy animations.
-		f_NpcAdjustFriction[npc.index] = 15.0;
+		npc.m_flGravityMulti = 3.0;
 
 		npc.m_bDissapearOnDeath = true;
 		//dont allow self making
-		npc.m_iPoseMoveX = -1;
-		npc.m_iPoseMoveY = -1;
-		npc.SetPoseParameter_Easy("move_x", 1.0);
 		
-		npc.m_bLaggyMovementMode = true;
-		npc.m_flLaggyMovmentDo = GetRandomFloat(1.0, 2.0);
-		npc.m_flSpeed = 2000.0;
-		npc.m_flSpassOut = 0.0;
+		npc.m_flSpeed = 300.0;
 
-		/*
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_axtinguisher/c_axtinguisher_pyro.mdl");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/fall17_deyemonds/fall17_deyemonds.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/all_class/replay_hat_pyro.mdl");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/sf14_hw2014_robot_arm/sf14_hw2014_robot_arm.mdl");
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/pyro/sf14_hw2014_robot_legg/sf14_hw2014_robot_legg.mdl");
-
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		
-		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable3, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable4, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable5, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable3, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable5, RENDERFX_DISTORT);
-		*/
 		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
-		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
+		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 125);
 
 		return npc;
 	}
 }
 
-public void Umbral_Ltzens_ClotThink(int iNPC)
+public void Umbral_Refract_ClotThink(int iNPC)
 {
-	Umbral_Ltzens npc = view_as<Umbral_Ltzens>(iNPC);
+	Umbral_Refract npc = view_as<Umbral_Refract>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -202,9 +164,43 @@ public void Umbral_Ltzens_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+	//	npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
+		
+		if(npc.IsOnGround())
+		{
+			static float vec3Origin[3];
+			npc.GetVelocity(vec3Origin);
+			npc.GetLocomotionInterface().Jump();
+			vec3Origin[2] += 900.0;
+			npc.SetVelocity(vec3Origin);
+			int Layer = npc.AddGestureViaSequence("layer_taunt_yeti_prop");
+			npc.m_flReduceWeight = 0.9;
+			npc.m_iLayerSave = Layer;
+			npc.SetLayerWeight(Layer, npc.m_flReduceWeight);
+			npc.SetLayerCycle(Layer, 0.14);
+			npc.SetLayerPlaybackRate(Layer, 0.0);
+			npc.m_flCauseDamage = GetGameTime() + 0.5;
+		}
+	}
+
+	if(npc.m_flReduceWeight)
+	{
+		npc.m_flReduceWeight -= 0.05;
+		if(npc.m_flReduceWeight <= 0.0)
+		{
+			npc.m_flReduceWeight = 0.0;
+			if(npc.IsValidLayer(npc.m_iLayerSave))
+				npc.FastRemoveLayer(npc.m_iLayerSave);
+		}
+		else
+		{
+			if(npc.IsValidLayer(npc.m_iLayerSave))
+				npc.SetLayerWeight(npc.m_iLayerSave, npc.m_flReduceWeight);
+			else
+				npc.m_flReduceWeight = 0.0;
+		}
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -213,28 +209,24 @@ public void Umbral_Ltzens_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
-	UmbralLtzensAnimBreak(npc);
-	if(npc.m_flLaggyMovmentDo < GetGameTime())
+	UmbralRefractAnimBreak(npc);
+	if(npc.m_flCauseDamage)
 	{
-		if(npc.m_bLaggyMovementMode)
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float RadiusDamage = 65.0;
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], RadiusDamage*2.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.15, 8.0, 1.5, 1);
+		spawnRing_Vectors(f3_NpcSavePos[npc.index], RadiusDamage*2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.15, 8.0, 1.5, 1);
+		TE_SetupBeamPoints(VecSelfNpc, f3_NpcSavePos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.12, 5.0, 6.0, 0, 5.0, {255,50,50,255}, 3);
+		TE_SendToAll(0.0);
+		if(npc.IsOnGround())
 		{
-			npc.m_flLaggyMovmentDo = GetGameTime() + 3.0;
-			npc.m_bLaggyMovementMode = false;
+			spawnRing_Vectors(f3_NpcSavePos[npc.index], 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.15, 8.0, 1.5, 1, RadiusDamage*2.0);
+			spawnRing_Vectors(f3_NpcSavePos[npc.index], 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.15, 8.0, 1.5, 1, RadiusDamage*2.0);
+			Explode_Logic_Custom(150.0, 0, npc.index, -1, f3_NpcSavePos[npc.index],RadiusDamage, 1.0, _, true);
+			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], -1, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, 60, -1, f3_NpcSavePos[npc.index]);
+			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], -1, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, 60, -1, f3_NpcSavePos[npc.index]);
+			npc.m_flCauseDamage = 0.0;
 		}
-		else
-		{
-			npc.m_flLaggyMovmentDo = GetGameTime() + 0.5;
-			npc.m_bLaggyMovementMode = true;
-		}
-	}
-
-	if(npc.m_bLaggyMovementMode)
-	{
-		npc.m_flSpeed = 2000.0;
-	}
-	else
-	{
-		npc.m_flSpeed = 0.0;
 	}
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -259,7 +251,7 @@ public void Umbral_Ltzens_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Umbral_LtzensSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Umbral_RefractSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -269,25 +261,31 @@ public void Umbral_Ltzens_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Umbral_Ltzens_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Umbral_Refract_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Umbral_Ltzens npc = view_as<Umbral_Ltzens>(victim);
+	Umbral_Refract npc = view_as<Umbral_Refract>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + (DEFAULT_HURTDELAY * 2.0);
 		npc.m_blPlayHurtAnimation = true;
+		if(npc.IsOnGround())
+		{
+			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", f3_NpcSavePos[victim]);
+			f3_NpcSavePos[victim][2] += 5.0;
+		}
+		
 	}
 	
 	return Plugin_Changed;
 }
 
-public void Umbral_Ltzens_NPCDeath(int entity)
+public void Umbral_Refract_NPCDeath(int entity)
 {
-	Umbral_Ltzens npc = view_as<Umbral_Ltzens>(entity);
+	Umbral_Refract npc = view_as<Umbral_Refract>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -312,7 +310,7 @@ public void Umbral_Ltzens_NPCDeath(int entity)
 
 }
 
-void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, float distance)
+void Umbral_RefractSelfDefense(Umbral_Refract npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -332,7 +330,7 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 140.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -355,10 +353,10 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
-				npc.m_flAttackHappens = gameTime + 0.1;
-				npc.m_flDoingAnimation = gameTime + 0.1;
-				npc.m_flNextMeleeAttack = gameTime + 0.3;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.5);
+				npc.m_flAttackHappens = gameTime + 0.2;
+				npc.m_flDoingAnimation = gameTime + 0.2;
+				npc.m_flNextMeleeAttack = gameTime + 0.75;
 			}
 		}
 	}
@@ -366,7 +364,7 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 
 
 
-void UmbralLtzensAnimBreak(Umbral_Ltzens npc)
+void UmbralRefractAnimBreak(Umbral_Refract npc)
 {
 	if(npc.m_flSpassOut < GetGameTime())
 	{
@@ -374,9 +372,9 @@ void UmbralLtzensAnimBreak(Umbral_Ltzens npc)
 		int Layer;
 		npc.m_flSpassOut = GetGameTime() + (Random * 0.5);
 		Layer = npc.AddGesture("ACT_KART_IMPACT_BIG", .SetGestureSpeed = (1.5 * (1.0 / Random)));
-		npc.SetLayerWeight(Layer, 0.8);
+		npc.SetLayerWeight(Layer, 0.2);
 		Layer = npc.AddGesture("ACT_GRAPPLE_PULL_START", .SetGestureSpeed = (1.5 * (1.0 / Random)));
-		npc.SetLayerWeight(Layer, 0.5);
+		npc.SetLayerWeight(Layer, 0.1);
 	}
 	if(npc.m_flSpassOut2 < GetGameTime())
 	{
@@ -384,6 +382,6 @@ void UmbralLtzensAnimBreak(Umbral_Ltzens npc)
 		int Layer;
 		npc.m_flSpassOut2 = GetGameTime() + (Random * 0.5);
 		Layer = npc.AddGesture("ACT_MP_GESTURE_VC_HANDMOUTH_MELEE", .SetGestureSpeed = (1.5 * (1.0 / Random)));
-		npc.SetLayerWeight(Layer, 0.2);
+		npc.SetLayerWeight(Layer, 0.1);
 	}
 }
