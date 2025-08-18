@@ -128,7 +128,7 @@
 	}
 	"Rift Level 5 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +15％\n{red}Start with Fractured voidstone {blue}and we can go to the throne room"
+		"en"	"{red}Enemy stats per chapter +15％\n{red}Start with Fractured voidstone"
 	}
 	"Rift Level 4"
 	{
@@ -144,7 +144,7 @@
 	}
 	"Rift Level 3 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +5％\n{green}Ω stages can show up, not counting towards chapter progress {blue}and we can open up the archive"
+		"en"	"{red}Enemy stats per chapter +5％\n{green}Ω stages can show up, not counting towards chapter progress"
 	}
 	"Rift Level 2"
 	{
@@ -152,7 +152,7 @@
 	}
 	"Rift Level 2 Desc"
 	{
-		"en"	"Rifts, they spawn around us, making it harder for us, if only we can show Umbrals our passion.\n{red}Rift events can occur, causing a random debuff for a certain number of stages"
+		"en"	"Rifts, they spawn around us, making it harder for us, if only we can show Umbrals our passion.\n{red}Rift events can occur, causing a random debuff for a certain number of stages {blue}and we can open up the archive"
 	}
 	"Rift Level 1"
 	{
