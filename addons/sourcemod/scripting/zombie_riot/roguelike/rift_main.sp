@@ -1,11 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static int DifficultyLevel;
 static ArrayList ShopListing;
 static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
+
+void Rogue_Rift_Reset()
+{
+	DifficultyLevel = 0;
+}
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -15,7 +21,18 @@ stock void Rogue_Rift_MultiScale(float &multi)
 
 stock bool Rogue_Rift_NoStones()
 {
-	return CurseEmpty;
+	return (DifficultyLevel < 1) || CurseEmpty;
+}
+
+stock int Rogue_Rift_CurseLevel()
+{
+	if(DifficultyLevel < 2)
+		return 0; // None
+	
+	if(DifficultyLevel < 4)
+		return 1; // Normal
+	
+	return 2; // Common
 }
 
 public void Rogue_Curse_RiftSwarm(bool enable)
@@ -111,9 +128,9 @@ public float Rogue_Encounter_RiftShop()
 
 	Artifact artifact;
 
-	bool rare = Rogue_GetFloor() > 0;
+	bool rare = (DifficultyLevel > 3 && Rogue_GetFloor() > 0);
 
-	if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+	if(DifficultyLevel > 0 && Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 		ShopListing.PushArray(artifact);
 
 	if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
@@ -328,7 +345,7 @@ static void StartRiftVote(bool first)
 		{
 			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-			if(artifact.Multi && artifact.FuncRemove != INVALID_FUNCTION)
+			if(artifact.FuncRemove != INVALID_FUNCTION && (artifact.Multi || artifact.ShopCost == 6))
 			{
 				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -347,7 +364,7 @@ static void StartRiftVote(bool first)
 			{
 				Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-				if(artifact.FuncRemove != INVALID_FUNCTION)
+				if(artifact.FuncRemove != INVALID_FUNCTION && !(artifact.Multi || artifact.ShopCost == 6))
 				{
 					strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 					strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -449,4 +466,41 @@ static void GiveShield(int amount)
 				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
 		}
 	}
+}
+
+public void Rogue_RiftLevel1_Collect()
+{
+	DifficultyLevel = 1;
+}
+
+public void Rogue_RiftLevel2_Collect()
+{
+	DifficultyLevel = 2;
+}
+
+public void Rogue_RiftLevel3_Collect()
+{
+	DifficultyLevel = 3;
+}
+
+public void Rogue_RiftLevel4_Collect()
+{
+	DifficultyLevel = 4;
+}
+
+public void Rogue_RiftLevel5_Collect()
+{
+	DifficultyLevel = 5;
+}
+
+public void Rogue_RiftLevel_Enemy(int entity)
+{
+	if(DifficultyLevel < 3)
+		return;
+	
+	float stats = Pow(0.9 + (DifficultyLevel * 0.05), (Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
 }

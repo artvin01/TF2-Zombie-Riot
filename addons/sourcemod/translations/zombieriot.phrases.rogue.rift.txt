@@ -122,6 +122,54 @@
 		"en"	"The Throne"
 	}
 
+	"Rift Level 5"
+	{
+		"en"	"Rift Level 5"
+	}
+	"Rift Level 5 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +15％\n{red}Start with Fractured voidstone {blue}and we can go to the throne room"
+	}
+	"Rift Level 4"
+	{
+		"en"	"Rift Level 4"
+	}
+	"Rift Level 4 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +10％\n{green}Very rare goods can show up in Shop stages {red}and rift events can occur more often"
+	}
+	"Rift Level 3"
+	{
+		"en"	"Rift Level 3"
+	}
+	"Rift Level 3 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +5％\n{green}Ω stages can show up, not counting towards chapter progress {blue}and we can open up the archive"
+	}
+	"Rift Level 2"
+	{
+		"en"	"Rift Level 2"
+	}
+	"Rift Level 2 Desc"
+	{
+		"en"	"Rifts, they spawn around us, making it harder for us, if only we can show Umbrals our passion.\n{red}Rift events can occur, causing a random debuff for a certain number of stages"
+	}
+	"Rift Level 1"
+	{
+		"en"	"Rift Level 1"
+	}
+	"Rift Level 1 Desc"
+	{
+		"en"	"Voidstones, power of the void contained in crystals, we can make use of them but may show unwanted attention.\n{yellow}Voidstones drop from battles, more encounters appear"
+	}
+	"Rift Level 0"
+	{
+		"en"	"Rift Level 0"
+	}
+	"Rift Level 0 Desc"
+	{
+		"en"	"Lelouch opened a rift to the Curtain. The Void is leaking in through the cracks. It's only been a few weeks, we need to stop this, together with Bob The First and Twirl."
+	}
 	"Hand of Predation"
 	{
 		"en"	"Hand of Predation"

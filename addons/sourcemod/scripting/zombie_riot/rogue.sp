@@ -421,14 +421,15 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 	delete Voting;
 	Voting = new ArrayList(sizeof(Vote));
 	VoteFunc = INVALID_FUNCTION;
-	
+
 	Vote vote;
 	kv.JumpToKey("Starting");
 	kv.GotoFirstSubKey(false);
 	do
 	{
 		kv.GetSectionName(vote.Name, sizeof(vote.Name));
-		vote.Level = kv.GetNum(NULL_STRING);
+		kv.GetString(NULL_STRING, vote.Config, sizeof(vote.Config));
+		
 		Voting.PushArray(vote);
 	}
 	while(kv.GotoNextKey(false));
@@ -618,7 +619,6 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 	{
 		if(VoteFunc == INVALID_FUNCTION)
 		{
-			bool levels = CvarLeveling.BoolValue;
 			Menu menu = new Menu(Rogue_CallVoteH);
 			
 			SetGlobalTransTarget(client);
@@ -634,16 +634,24 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 			{
 				Voting.GetArray(i, vote);
 
-				if(levels)
+				bool locked;
+
+				if(vote.Config[0] && !CvarRogueSpecialLogic.BoolValue)
 				{
-					Format(vote.Config, sizeof(vote.Config), "%t (Lv %d)", vote.Name, vote.Level);
-				}
-				else
-				{
-					Format(vote.Config, sizeof(vote.Config), "%t", vote.Name);
+					locked = true;
+					
+					for(int target = 1; target <= MaxClients; target++)
+					{
+						if(IsClientInGame(target) && GetClientTeam(target) == 2 && Items_HasNamedItem(target, vote.Config))
+						{
+							locked = false;
+							break;
+						}
+					}
 				}
 
-				menu.AddItem(vote.Name, vote.Config);
+				Format(vote.Config, sizeof(vote.Config), "%t%s", vote.Name, locked ? " (Locked)" : "");
+				menu.AddItem(vote.Name, vote.Config, locked ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 			
 			menu.ExitButton = false;
@@ -1337,10 +1345,11 @@ void Rogue_NextProgress()
 				}
 			}
 
-			if(RogueTheme == ReilaRift && CurseTime < -1 && CurseOne == -1)	// Reila Rogue starts curses anytime
+			if(RogueTheme == ReilaRift && CurseTime < 0 && CurseOne == -1)	// Reila Rogue starts curses anytime
 			{
-				int rank = Rogue_GetUmbralLevel();
-				if(rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
+				int diff = Rogue_Rift_CurseLevel();
+				int rank = Rogue_GetUmbralLevel() + (diff - 1);
+				if(diff > 0 && rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
 				{
 					int length = Curses.Length;
 					if(length)
@@ -3250,6 +3259,7 @@ static void ClearStats()
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
 	Rogue_Whiteflower_Reset();
+	Rogue_Rift_Reset();
 }
 
 bool IS_MusicReleasingRadio()
