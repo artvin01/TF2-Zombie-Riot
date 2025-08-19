@@ -308,6 +308,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Nervous);
+		if(damage < 1)
+			return;
+
 		if(f_ArmorCurrosionImmunity[victim][Element_Nervous]  < GetGameTime())
 		{
 			int trigger;
@@ -461,10 +465,18 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		if(ElementDamage[victim][Element_Void] > 0 || ElementDamage[victim][Element_Warped] > 0)
-		{
-			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos);
+		if(damage < 1)
 			return;
+		
+		if(attacker > MaxClients/* || Rogue_Mode()*/ || ElementDamage[victim][Element_Warped] > 0)
+		{
+			// Element mixing into Warped
+			if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4 || ElementDamage[victim][Element_Void] > 0 || ElementDamage[victim][Element_Warped] > 0)
+			{
+				Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+				return;
+			}
 		}
 		
 		if(f_ArmorCurrosionImmunity[victim][Element_Chaos] < GetGameTime())
@@ -586,11 +598,19 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	{
 		if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
 			return;
-
-		if(ElementDamage[victim][Element_Chaos] > 0 || ElementDamage[victim][Element_Warped] > 0)
-		{
-			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+		
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void);
+		if(damage < 1)
 			return;
+
+		if(attacker > MaxClients/* || Rogue_Mode()*/ || ElementDamage[victim][Element_Warped] > 0)
+		{
+			// Element mixing into Warped
+			if(ElementDamage[victim][Element_Chaos] > 0 || ElementDamage[victim][Element_Warped] > 0)
+			{
+				Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+				return;
+			}
 		}
 		
 		if(f_ArmorCurrosionImmunity[victim][Element_Void] < GetGameTime())
@@ -683,6 +703,10 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro);
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Cyro] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Cyro);
@@ -768,6 +792,10 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Necrosis);
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Necrosis);
@@ -846,6 +874,10 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Osmosis);
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Osmosis] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Osmosis);
@@ -959,6 +991,10 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption);
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime())
 		{
 			int trigger;
@@ -1115,6 +1151,10 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger);
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Burger] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Burger);
@@ -1226,6 +1266,10 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	else if(!b_NpcHasDied[victim])	// VS NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma);
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Plasma);
@@ -1380,6 +1424,14 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos);
+		if(damage < 1)
+			return;
+		
+		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Warped);
+		if(damage < 1)
+			return;
+		
 		int trigger = Elemental_TriggerDamage(victim, Element_Warped);
 
 		LastTime[victim] = GetGameTime();
@@ -1400,7 +1452,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			{
 				fl_Extra_MeleeArmor[victim] *= 6.0;
 				fl_Extra_RangedArmor[victim] *= 6.0;
-				fl_GibVulnerablity[victim] = 5000000;
+				fl_GibVulnerablity[victim] = 5000000.0;
 				SetEntProp(victim, Prop_Data, "m_iMaxHealth", 1);
 				//any TOUCH will gib them.
 				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);

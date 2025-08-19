@@ -49,7 +49,7 @@ public void Rogue_Curse_RiftDarkness(bool enable)
 
 public void Rogue_RiftEmpty_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(entity, Prop_Data, "m_flElementRes", Element_Void) > 0.4)
 	{
 		fl_Extra_Damage[entity] *= 1.25;
 		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.3));
@@ -335,7 +335,7 @@ static void StartRiftVote(bool first)
 		{
 			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-			if(artifact.FuncRemove != INVALID_FUNCTION && (artifact.Multi || artifact.ShopCost == 6))
+			if(!artifact.Hidden && artifact.FuncRemove != INVALID_FUNCTION && (artifact.Multi || artifact.ShopCost == 6))
 			{
 				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -354,7 +354,7 @@ static void StartRiftVote(bool first)
 			{
 				Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-				if(artifact.FuncRemove != INVALID_FUNCTION && !(artifact.Multi || artifact.ShopCost == 6))
+				if(!artifact.Hidden && artifact.FuncRemove != INVALID_FUNCTION && !(artifact.Multi || artifact.ShopCost == 6))
 				{
 					strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 					strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -554,7 +554,7 @@ public float Rogue_Encounter_WarpedBattle()
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && (GetURandomInt() % 2))
+	if(GetURandomInt() % 2)
 	{
 		int seed1 = 5 + (WarpSeed % 5);
 		int seed2 = WarpSeed / 5;

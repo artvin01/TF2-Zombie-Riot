@@ -1,5 +1,7 @@
 "Phrases"
 {
+	// TODO: Stage battle names: ⚔︎ or 🗡
+
 	"Curse Rift Closed"
 	{
 		"#format"	"{1:t}"
@@ -532,5 +534,42 @@
 	"Rift Ending 1 Desc 2"
 	{
 		"en"	"{yellow}Reila will acompany you."
+	}
+
+	"Gamemode History Lore"
+	{
+		"en"	"You find yourselves at a terminal, something interesting catches your eyes."
+	}
+	"Gamemode History Option 1"
+	{
+		"en"	"Let's take a look"
+	}
+	"Gamemode History Desc 1"
+	{
+		"en"	"{yellow}Enter a special floor"
+	}
+	"Gamemode History Option 2"
+	{
+		"en"	"Scrap it for something useful"
+	}
+	"Gamemode History Desc 2"
+	{
+		"en"	"{green}Obtain 6000 cash"
+	}
+	"Gamemode History Lore 2"
+	{
+		"en"	"We broke it down, parts for cash and weapons."
+	}
+	"Gamemode History"
+	{
+		"en"	"Gamemode History"
+	}
+	"Gamemode History Desc"
+	{
+		"en"	""
+	}
+	"Bizarre History"
+	{
+		"en"	"Bizarre History"
 	}
 }
