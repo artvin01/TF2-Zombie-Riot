@@ -209,11 +209,7 @@ public void Umbral_Koulm_ClotThink(int iNPC)
 			npc.m_iTarget = 0;
 			return;
 		}
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		Umbral_KoulmSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Umbral_KoulmSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget); 
 		UmbralKoulmAnimBreak(npc);
 	}
 
@@ -279,7 +275,7 @@ public void Umbral_Koulm_NPCDeath(int entity)
 
 }
 
-void Umbral_KoulmSelfDefense(Umbral_Koulm npc, float gameTime, int target, float distance)
+void Umbral_KoulmSelfDefense(Umbral_Koulm npc, float gameTime, int target)
 {
 	if(npc.m_flAttackHappens)
 	{
