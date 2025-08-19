@@ -221,6 +221,11 @@ public void RefragmentedWinterFrostHunter_ClotThink(int iNPC)
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		return;
 	}
+	if (IsValidEntity(Aperture_GetLastStandBoss()))
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		return;
+	}
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);

@@ -1091,6 +1091,14 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	float vecPos[3];
 	GetAbsOrigin(entity, vecPos);
 	
+	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
+	
+	Vincent npc = view_as<Vincent>(owner);
+	
+	// Make fire harmless if Vincent is yapping
+	if (npc.m_flTalkRepeat)
+		return Plugin_Continue;
+	
 	for(int i=0; i < MAXENTITIES; i++)
 	{
 		HitEntitiesSphereMlynar[i] = false;
@@ -1106,10 +1114,6 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 		{
 			int entity_hit = HitEntitiesSphereMlynar[entity_traced];
 			
-			if (!IsValidEntity(owner))
-				continue;
-			
-			Vincent npc = view_as<Vincent>(owner);
 			if (fromAbility && entity_hit == owner && npc.m_bLostHalfHealth)
 			{
 				npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
@@ -1141,8 +1145,6 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 			NPC_Ignite(entity_hit, owner, 5.0, -1, Proj_Damage);
 		}
 	}
-
-	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
 	
 	return Plugin_Continue;
 }

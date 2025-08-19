@@ -1072,8 +1072,13 @@ public Action Timer_CHIMERAMineLogic(Handle timer, DataPack pack)
 	pack.Reset();
 	int MasterNpc = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(MasterNpc))
-		return Plugin_Stop; 
+		return Plugin_Stop;
 	//the master npc isnt existant anymore, delete all mines instantly.
+	
+	int lastStandBoss = EntRefToEntIndex(Aperture_GetLastStandBoss());
+	if (lastStandBoss == MasterNpc)
+		return Plugin_Stop;
+	//the master npc is in the process of dying, delete all mines instantly.
 		
 	float MinePositionGet[3];
 	MinePositionGet[0] = pack.ReadFloat();

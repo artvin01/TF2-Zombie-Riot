@@ -185,6 +185,11 @@ public void RefragmentedWinterSniper_ClotThink(int iNPC)
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		return;
 	}
+	if (IsValidEntity(Aperture_GetLastStandBoss()))
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		return;
+	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 

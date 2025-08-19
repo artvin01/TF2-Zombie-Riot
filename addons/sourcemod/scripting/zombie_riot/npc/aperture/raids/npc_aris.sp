@@ -843,6 +843,7 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
 		ARIS_DestroyDroppedBeacon(npc);
+		ARIS_ClearAllProjectiles(npc);
 		
 		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
@@ -1469,7 +1470,7 @@ static void ARIS_LoopGlobalTargetArray(int count)
 
 static void Timer_ARIS_FireRocketTowardsPlayer(Handle timer, int iNPC)
 {
-	if (b_NpcHasDied[iNPC])
+	if (b_NpcHasDied[iNPC] || IsValidEntity(Aperture_GetLastStandBoss()))
 		return;
 	
 	ARIS npc = view_as<ARIS>(iNPC);
@@ -1508,4 +1509,19 @@ static bool TraceFilter_ARIS_ShotgunBullet(int entity, int mask, int other)
 static bool TraceEntityFilter_ARIS_OnlyWorld(int entity, int mask)
 {
 	return entity == 0 || entity > MAXENTITIES;
+}
+
+static void ARIS_ClearAllProjectiles(ARIS npc)
+{
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		if (!IsValidEntity(i) || !b_IsAProjectile[i])
+			continue;
+		
+		int owner = GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity");
+		if (owner != npc.index)
+			continue;
+		
+		RemoveEntity(i);
+	}
 }
