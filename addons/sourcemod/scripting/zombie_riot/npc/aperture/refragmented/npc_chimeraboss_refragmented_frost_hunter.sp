@@ -200,6 +200,8 @@ methodmap RefragmentedWinterFrostHunter < CClotBody
 		npc.m_iWearable5 = Trail_Attach(npc.index, ARROW_TRAIL, 255, 1.0, 60.0, 3.0, 5);
 		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
 		
+		KillFeed_SetKillIcon(npc.index, "purgatory");
+		
 		return npc;
 	}
 }
@@ -215,6 +217,11 @@ public void RefragmentedWinterFrostHunter_ClotThink(int iNPC)
 	npc.Update();
 
 	if(npc.m_flSuicideTimer < GetGameTime(npc.index))
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		return;
+	}
+	if (IsValidEntity(Aperture_GetLastStandBoss()))
 	{
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		return;
