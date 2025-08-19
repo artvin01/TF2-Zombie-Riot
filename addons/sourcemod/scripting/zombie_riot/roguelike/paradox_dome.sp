@@ -32,9 +32,6 @@ void Rogue_Dome_WaveStart(const float pos[3])
 {
 	Rogue_Dome_WaveEnd();
 
-	if(Rogue_GetFloor() == 2)
-		return;
-	
 	g_vecDomeCP = pos;
 	
 	//Create dome prop
@@ -215,4 +212,12 @@ static float Dome_GetDistance(int iEntity)
 	else return -1.0;
 	
 	return GetVectorDistance(vecPos, g_vecDomeCP, true);
+}
+
+stock bool Dome_PointOutside(float pos[3])
+{
+	if(!IsValidEntity(g_iDomeEntRef))
+		return false;
+	
+	return GetVectorDistance(pos, g_vecDomeCP, true) > (DOME_RADIUS * DOME_RADIUS);
 }

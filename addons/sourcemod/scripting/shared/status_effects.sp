@@ -51,9 +51,14 @@ enum struct StatusEffect
 
 	void Blank()
 	{
-		this.DamageTakenMulti = -1.0;
-		this.DamageDealMulti = -1.0;
-		this.MovementspeedModif = -1.0;
+		this.OnBuffStarted				= INVALID_FUNCTION;
+		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+		this.DamageTakenMulti 			= -1.0;
+		this.DamageDealMulti 			= -1.0;
+		this.MovementspeedModif 		= -1.0;
+		this.LinkedStatusEffect 		= 0;
+		this.LinkedStatusEffectNPC 		= 0;
+		this.ElementalLogic 			= false;
 	}
 }
 
@@ -5409,8 +5414,145 @@ void StatusEffects_Explainelemental()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ww");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= 0.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnBuffStarted			= Warped_Start;
+	data.OnBuffEndOrDeleted			= Warped_End;
+	data.OnTakeDamage_DealFunc 		= Warped_DamageFunc;
+	data.TimerRepeatCall_Func 		= Warped_FuncTimer;
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental End");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.ElementalLogic				= true;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnBuffStarted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= Warped_End_Death;
+	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
+static const char g_IdleCreepSound[][] = {
+	"vo/mvm/norm/pyro_mvm_jeers01.mp3",
+	"vo/mvm/norm/pyro_mvm_jeers02.mp3",
+};
+static const char g_MarkSoundUmbral[][] = {
+	"ui/hitsound_vortex1.wav",
+};
+static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float ratio = Elemental_DamageRatio(entity, Element_Warped);
+	if(ratio < 0.0)
+		ratio = 0.0;
+	
+	if(ratio >= 1.0)
+		ratio = 1.0;
+	//Extreamly creepy sound
+	//prevent passive talk, mostly.
+	CClotBody npc = view_as<CClotBody>(entity);
+	npc.m_flNextIdleSound = FAR_FUTURE;
+	float SoundLoudness = ratio;
+	if(SoundLoudness < 0.7)
+		SoundLoudness = 0.7;
+	EmitSoundToAll(g_IdleCreepSound[GetRandomInt(0, sizeof(g_IdleCreepSound) - 1)], entity, SNDCHAN_ITEM, NORMAL_ZOMBIE_SOUNDLEVEL, _, SoundLoudness, GetRandomInt(40, 45));
+	if(entity <= MaxClients)
+	{
+		float sub = RemoveExtraHealth(WeaponClass[entity], 0.1);
+		float nerfHealth = (Attributes_Get(entity, 125) - sub);
+
+		float baseHealth = ReturnEntityMaxHealth(entity) - nerfHealth;
+		nerfHealth = -baseHealth * 0.8 * ratio;
+
+		Attributes_Set(entity, 125, (nerfHealth + sub));
+	}
+	else if(ratio > 0.0 && GetTeam(entity) != TFTeam_Red)
+	{
+		int attacker = entity;
+		
+		for(int i; i < sizeof(Apply_StatusEffect.TotalOwners); i++)
+		{
+			if(i != entity && Apply_StatusEffect.TotalOwners[i])
+			{
+				attacker = i;
+				break;
+			}
+		}
+
+		Elemental_AddWarpedDamage(entity, attacker, RoundFloat(ReturnEntityMaxHealth(entity) * 0.027), false, _, true);
+		if(f_AttackSpeedNpcIncrease[entity] > 0.2)
+			f_AttackSpeedNpcIncrease[entity] *= 0.979;
+	}
+
+	if(!ratio)
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
+}
+static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	if(attacker <= MaxClients)
+		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
+	
+	return basedamage;
+}
+static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_constellations_blue_cloud", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void Warped_End_Death(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse != 0.0)
+		return;
+
+	float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+	TE_Particle("spell_batball_impact_blue", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitSoundToAll("weapons/bottle_break.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 100);
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = 1.0;
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void Warped_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
 
 int PrimalFearIndex;
 void StatusEffects_Purge()
@@ -5579,5 +5721,100 @@ void StatusEffects_Rogue3()
 	data.Positive 					= false;
 	data.Slot					= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Kolum's View");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꝃ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.ElementalLogic				= true;
+	data.OnBuffStarted				= KolumView_Start;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Umbral Grace");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₲");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= true;
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 0.5;
+	data.TimerRepeatCall_Func 		= UmbralGrace_Timer;
+	data.OnBuffStarted				= UmbralGrace_Start;
+	data.OnBuffEndOrDeleted			= UmbralGrace_End;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Umbral Grace Debuff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.AttackspeedBuff			= 1.5;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
+
+
+void UmbralGrace_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(entity <= MaxClients)
+	{
+		if(Armor_Charge[entity] >= 0)
+			return;
+
+		GiveArmorViaPercentage(entity, 0.05, 1.0, _, true);
+	}
+	else
+	{
+		if(!b_ThisWasAnNpc[entity])
+			return;
+		
+		
+		for(int i; i < Element_MAX; i++) // Remove all elementals except Plasma 
+		{
+			Elemental_RemoveDamage(entity, i, RoundToNearest(float(Elemental_TriggerDamage(entity, i)) * 0.05));
+		}
+	}
+}
+static void UmbralGrace_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_treespiral_blue_glow", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+static void KolumView_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim > MaxClients)
+		return;
+
+	EmitSoundToClient(victim, g_MarkSoundUmbral[GetRandomInt(0, sizeof(g_MarkSoundUmbral) - 1)], victim, SNDCHAN_STATIC, _, _, 1.0, 20);
+	EmitSoundToClient(victim, g_MarkSoundUmbral[GetRandomInt(0, sizeof(g_MarkSoundUmbral) - 1)], victim, SNDCHAN_STATIC, _, _, 1.0, 20);
+}
+static void UmbralGrace_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
+
 #endif

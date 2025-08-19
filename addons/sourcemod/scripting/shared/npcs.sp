@@ -1285,6 +1285,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = false;
 	}
+	//force gibbing.
+	if(HasSpecificBuff(victim, "Warped Elemental End"))
+		npcBase.m_bGib = true;
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 24);
 	

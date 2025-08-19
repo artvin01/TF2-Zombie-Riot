@@ -246,6 +246,7 @@ static void ClotThink(int iNPC)
 
 				SetEntityHealth(target, 50);
 				dieingstate[target] = 250;
+				f_DisableDyingTimer[target] = 0.0;
 				
 				Vehicle_Exit(target);
 				SDKHooks_UpdateMarkForDeath(target, true);
