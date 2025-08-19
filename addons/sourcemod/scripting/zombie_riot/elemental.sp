@@ -1400,7 +1400,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			{
 				fl_Extra_MeleeArmor[victim] *= 6.0;
 				fl_Extra_RangedArmor[victim] *= 6.0;
-				fl_GibVulnerablity[victim] = 5000000;
+				fl_GibVulnerablity[victim] = 5000000.0;
 				SetEntProp(victim, Prop_Data, "m_iMaxHealth", 1);
 				//any TOUCH will gib them.
 				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
@@ -1414,7 +1414,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				
 				CClotBody npc = view_as<CClotBody>(victim);
 				npc.m_bDissapearOnDeath = true;
-				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal.");
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal");
 				if (!IsValidEntity(npc.m_iFreezeWearable))
 				{
 					float offsetToHeight = 40.0;

@@ -126,7 +126,7 @@ methodmap Umbral_Refract < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_VOID;
+		npc.m_iBleedType = BLEEDTYPE_UMBRAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
