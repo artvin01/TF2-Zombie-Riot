@@ -197,7 +197,7 @@ public void Umbral_Koulm_ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, .UseVectorDistance = true, .ExtraValidityFunction = mm_AttackOnly);
+		npc.m_iTarget = GetClosestTarget(npc.index, .UseVectorDistance = true, .ExtraValidityFunction = Kolum_AttackOnly);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.5;
 	}
 	UmbralKoulmRandomlyTeleport(npc);
