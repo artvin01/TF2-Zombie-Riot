@@ -1732,6 +1732,19 @@ bool Rogue_ShowStatus(int client)
 
 static void SetFloorMusic(const Floor floor, bool stop)
 {
+	if(Rogue_HasNamedArtifact("Torn Keycard"))
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 199);
+			}
+		}
+		return;
+	}
+
 	bool curse = CurseOne != -1 || CurseTwo != -1;
 	if(RaidMusicSpecial1.Valid() || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
@@ -2593,6 +2606,15 @@ void Rogue_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, 
 			}
 		}
 	}
+}
+
+int Rogue_GetNamedArtifact(const char[] name, Artifact artifact)
+{
+	int pos = Artifacts.FindString(name, Artifact::Name);
+	if(pos != -1)
+		Artifacts.GetArray(pos, artifact);
+	
+	return pos;
 }
 
 int Rogue_GetRandomArtifact(Artifact artifact, bool blacklist, int forcePrice = -1)

@@ -216,3 +216,11 @@ static float Dome_GetDistance(int iEntity)
 	
 	return GetVectorDistance(vecPos, g_vecDomeCP, true);
 }
+
+stock bool Dome_PointOutside(float pos[3])
+{
+	if(!IsValidEntity(g_iDomeEntRef))
+		return false;
+	
+	return GetVectorDistance(pos, g_vecDomeCP, true) > (DOME_RADIUS * DOME_RADIUS);
+}

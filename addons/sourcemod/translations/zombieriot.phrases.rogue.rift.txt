@@ -501,6 +501,30 @@
 	{
 		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
 	}
+	"Wordless Deed"
+	{
+		"en"	"Wordless Deed ◈"
+	}
+	"Wordless Deed Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+	}
+	"Keycard"
+	{
+		"en"	"Keycard"
+	}
+	"Keycard Desc"
+	{
+		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+	}
+	"Torn Keycard"
+	{
+		"en"	"Torn Keycard"
+	}
+	"Torn Keycard Desc"
+	{
+		"en"	"{blue}What did {red}you {blue}do?"
+	}
 
 	"Gateway"
 	{
