@@ -3484,6 +3484,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_RegenDoLogic")
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
+		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc();
 	EntityFactory.Install();
 

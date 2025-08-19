@@ -41,6 +41,7 @@ enum struct Artifact
 	int ShopCost;
 	int DropChance;
 	bool Multi;
+	bool Hidden;
 	Function FuncCollect;
 	Function FuncRemove;
 	Function FuncAlly;
@@ -59,6 +60,7 @@ enum struct Artifact
 		this.ShopCost = kv.GetNum("shopcost");
 		this.DropChance = kv.GetNum("dropchance");
 		this.Multi = view_as<bool>(kv.GetNum("multi"));
+		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		
 		kv.GetString("func_collect", this.Name, 64);
 		this.FuncCollect = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
@@ -1129,15 +1131,18 @@ bool Rogue_BattleLost()
 	if(RogueTheme == BlueParadox)
 		Rogue_Dome_WaveEnd();
 
-	if(BonusLives > 0 && !RequiredBattle)
+	if(victory || (BonusLives > 0 && !RequiredBattle))
 	{
-		if(BonusLives > 1)
+		if(!victory)
 		{
-			CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
-		}
-		else
-		{
-			CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+			if(BonusLives > 1)
+			{
+				CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+			}
+			else
+			{
+				CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+			}
 		}
 
 		for(int client = 1; client <= MaxClients; client++)
@@ -1155,7 +1160,7 @@ bool Rogue_BattleLost()
 
 		Rogue_SetProgressTime(5.0, false, true);
 		
-		Floor floor;
+		/*Floor floor;
 		Floors.GetArray(CurrentFloor, floor);
 
 		Stage stage;
@@ -1166,7 +1171,7 @@ bool Rogue_BattleLost()
 		else
 		{
 			floor.Encounters.GetArray(CurrentStage, stage);
-		}
+		}*/
 
 		int chaos = RoundToFloor(BattleChaos);
 		if(chaos > 0)
@@ -1175,7 +1180,9 @@ bool Rogue_BattleLost()
 			Rogue_RemoveChaos(chaos);
 		}
 
-		BonusLives--;
+		if(!victory)
+			BonusLives--;
+		
 		return false;
 	}
 	
@@ -1409,7 +1416,6 @@ void Rogue_NextProgress()
 
 				SteamWorks_UpdateGameTitle();
 				Rogue_BlueParadox_NewFloor(CurrentFloor);
-				Rogue_TriggerFunction(Artifact::FuncFloorChange, CurrentFloor);
 
 				if(victory)	// All the floors are done
 				{
@@ -1417,111 +1423,7 @@ void Rogue_NextProgress()
 				}
 				else
 				{
-					TeleportToSpawn();
-
-					SetAllCamera(floor.Camera, floor.Skyname);
-
-					strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
-					strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), floor.Name);
-					WavesUpdateDifficultyName();
-
-					bool cursed;
-					if(RogueTheme != ReilaRift)	// Reila Rogue, see above
-					{
-						if(!(GetURandomInt() % 5) || Rogue_Paradox_SpecialForceCurse(CurrentFloor))
-						{
-							int length = Curses.Length;
-							if(length)
-							{
-								cursed = true;
-
-								if(Rogue_Paradox_SpecialForceCurse(CurrentFloor))
-								{
-									CurseOne = length - 1;
-								}
-								else
-								{
-									CurseOne = GetURandomInt() % length;
-								}
-								
-								if(length > 1 && !(GetURandomInt() % 4))
-								{
-									CurseTwo = GetURandomInt() % (length - 1);
-									if(CurseTwo >= CurseOne)
-										CurseTwo++;
-								}
-								
-								Curse curse;
-								Curses.GetArray(CurseOne, curse);
-								if(curse.Func != INVALID_FUNCTION)
-								{
-									Call_StartFunction(null, curse.Func);
-									Call_PushCell(true);
-									Call_Finish();
-								}
-
-								char buffer[64];
-								FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
-								CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
-
-								FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
-								CPrintToChatAll("%t", buffer);
-
-								if(CurseTwo != -1)
-								{
-									Curses.GetArray(CurseTwo, curse);
-									if(curse.Func != INVALID_FUNCTION)
-									{
-										Call_StartFunction(null, curse.Func);
-										Call_PushCell(true);
-										Call_Finish();
-									}
-
-									FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
-									CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
-
-									FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
-									CPrintToChatAll("%t", buffer);
-								}
-							}
-						}
-					}
-
-					if(RogueTheme == BlueParadox)
-						Rogue_Paradox_OnNewFloor(CurrentFloor);
-
-					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if(!b_IsPlayerABot[client] && IsClientInGame(client))
-						{
-							SetGlobalTransTarget(client);
-							ShowHudText(client, -1, "%t", floor.Name);
-							Music_Stop_All(client);
-							SetMusicTimer(client, GetTime() + (cursed ? 0 : 7));
-						}
-					}
-
-					Rogue_SetProgressTime(7.0, false);
-
-					if(cursed)
-					{
-						RemoveAllCustomMusic();
-						MusicString1.Time = 9;
-
-						if(RogueTheme == BlueParadox)
-						{
-							strcopy(MusicString1.Path, sizeof(MusicString1.Path), "music/stingers/hl1_stinger_song28.mp3");
-						}
-						else
-						{
-							strcopy(MusicString1.Path, sizeof(MusicString1.Path), "misc/halloween/gotohell.wav");
-						}
-					}
-					else
-					{
-						SetFloorMusic(floor, false);
-					}
+					Rogue_SendToFloor(CurrentFloor, CurrentCount);
 				}
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
@@ -1668,6 +1570,141 @@ void Rogue_NextProgress()
 	Waves_UpdateMvMStats();
 }
 
+void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true)
+{
+	CurrentFloor = floorIndex;
+	CurrentCount = stageIndex;
+
+	if(!cutscene)
+		return;
+
+	if(CurrentCollection)
+	{
+		Artifact artifact;
+		int length = CurrentCollection.Length;
+		for(int i; i < length; i++)
+		{
+			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			if(artifact.FuncFloorChange != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, artifact.FuncFloorChange);
+				Call_PushCellRef(CurrentFloor);
+				Call_PushCellRef(CurrentCount);
+				Call_Finish();
+			}
+		}
+	}
+
+	Floor floor;
+	Floors.GetArray(CurrentFloor, floor);
+
+	TeleportToSpawn();
+
+	SetAllCamera(floor.Camera, floor.Skyname);
+
+	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), floor.Name);
+	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), floor.Name);
+	WavesUpdateDifficultyName();
+
+	bool cursed;
+	if(RogueTheme != ReilaRift)	// Reila Rogue
+	{
+		if(!(GetURandomInt() % 5) || Rogue_Paradox_SpecialForceCurse(CurrentFloor))
+		{
+			int length = Curses.Length;
+			if(length)
+			{
+				cursed = true;
+
+				if(Rogue_Paradox_SpecialForceCurse(CurrentFloor))
+				{
+					CurseOne = length - 1;
+				}
+				else
+				{
+					CurseOne = GetURandomInt() % length;
+				}
+				
+				if(length > 1 && !(GetURandomInt() % 4))
+				{
+					CurseTwo = GetURandomInt() % (length - 1);
+					if(CurseTwo >= CurseOne)
+						CurseTwo++;
+				}
+				
+				Curse curse;
+				Curses.GetArray(CurseOne, curse);
+				if(curse.Func != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, curse.Func);
+					Call_PushCell(true);
+					Call_Finish();
+				}
+
+				char buffer[64];
+				FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
+				CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
+
+				FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
+				CPrintToChatAll("%t", buffer);
+
+				if(CurseTwo != -1)
+				{
+					Curses.GetArray(CurseTwo, curse);
+					if(curse.Func != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, curse.Func);
+						Call_PushCell(true);
+						Call_Finish();
+					}
+
+					FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
+					CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
+
+					FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
+					CPrintToChatAll("%t", buffer);
+				}
+			}
+		}
+	}
+
+	if(RogueTheme == BlueParadox)
+		Rogue_Paradox_OnNewFloor(CurrentFloor);
+
+	SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && IsClientInGame(client))
+		{
+			SetGlobalTransTarget(client);
+			ShowHudText(client, -1, "%t", floor.Name);
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + (cursed ? 0 : 7));
+		}
+	}
+
+	Rogue_SetProgressTime(7.0, false);
+
+	if(cursed)
+	{
+		RemoveAllCustomMusic();
+		MusicString1.Time = 9;
+
+		if(RogueTheme == BlueParadox)
+		{
+			strcopy(MusicString1.Path, sizeof(MusicString1.Path), "music/stingers/hl1_stinger_song28.mp3");
+		}
+		else
+		{
+			strcopy(MusicString1.Path, sizeof(MusicString1.Path), "misc/halloween/gotohell.wav");
+		}
+	}
+	else
+	{
+		SetFloorMusic(floor, false);
+	}
+}
+
 bool Rogue_ShowStatus(int client)
 {
 	if(Rogue_Mode())
@@ -1695,6 +1732,19 @@ bool Rogue_ShowStatus(int client)
 
 static void SetFloorMusic(const Floor floor, bool stop)
 {
+	if(Rogue_HasNamedArtifact("Torn Keycard"))
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 199);
+			}
+		}
+		return;
+	}
+
 	bool curse = CurseOne != -1 || CurseTwo != -1;
 	if(RaidMusicSpecial1.Valid() || !StrEqual(MusicString1.Path, curse ? floor.MusicCurse.Path : floor.MusicNormal.Path))
 	{
@@ -2368,8 +2418,8 @@ void Rogue_ArtifactMenu(int client, int page)
 		{
 			int index = CurrentCollection.Get(i);
 			Artifacts.GetArray(index, artifact);
-			
-			menu.AddItem(artifact.Name, artifact.Name);
+			if(!artifact.Hidden)
+				menu.AddItem(artifact.Name, artifact.Name);
 		}
 	}
 	else
@@ -2556,6 +2606,15 @@ void Rogue_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, 
 			}
 		}
 	}
+}
+
+int Rogue_GetNamedArtifact(const char[] name, Artifact artifact)
+{
+	int pos = Artifacts.FindString(name, Artifact::Name);
+	if(pos != -1)
+		Artifacts.GetArray(pos, artifact);
+	
+	return pos;
 }
 
 int Rogue_GetRandomArtifact(Artifact artifact, bool blacklist, int forcePrice = -1)
@@ -2961,13 +3020,18 @@ int Rogue_GetFloor()
 	return CurrentFloor;
 }
 
-void Rogue_AddExtraStage(int count)
+int Rogue_GetStage()
+{
+	return CurrentCount;
+}
+
+stock void Rogue_AddExtraStage(int count)
 {
 	ExtraStageCount += count;
 	Waves_UpdateMvMStats();
 }
 
-void Rogue_SetRequiredBattle(bool value)
+stock void Rogue_SetRequiredBattle(bool value)
 {
 	RequiredBattle = value;
 }
@@ -3293,6 +3357,7 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/paradox_dlc.sp"
 
 #include "roguelike/rift_main.sp"
+#include "roguelike/rift_encounters.sp"
 #include "roguelike/rift_items.sp"
 #include "roguelike/rift_hands.sp"
 #include "roguelike/rift_stones.sp"

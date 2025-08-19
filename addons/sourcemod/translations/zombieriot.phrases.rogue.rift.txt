@@ -1,5 +1,7 @@
 "Phrases"
 {
+	// TODO: Stage battle names: ⚔︎ or 🗡
+
 	"Curse Rift Closed"
 	{
 		"#format"	"{1:t}"
@@ -499,6 +501,30 @@
 	{
 		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
 	}
+	"Wordless Deed"
+	{
+		"en"	"Wordless Deed ◈"
+	}
+	"Wordless Deed Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+	}
+	"Keycard"
+	{
+		"en"	"Keycard"
+	}
+	"Keycard Desc"
+	{
+		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+	}
+	"Torn Keycard"
+	{
+		"en"	"Torn Keycard"
+	}
+	"Torn Keycard Desc"
+	{
+		"en"	"{blue}What did {red}you {blue}do?"
+	}
 
 	"Gateway"
 	{
@@ -532,5 +558,42 @@
 	"Rift Ending 1 Desc 2"
 	{
 		"en"	"{yellow}Reila will acompany you."
+	}
+
+	"Gamemode History Lore"
+	{
+		"en"	"You find yourselves at a terminal, something interesting catches your eyes."
+	}
+	"Gamemode History Option 1"
+	{
+		"en"	"Let's take a look"
+	}
+	"Gamemode History Desc 1"
+	{
+		"en"	"{yellow}Enter a special floor"
+	}
+	"Gamemode History Option 2"
+	{
+		"en"	"Scrap it for something useful"
+	}
+	"Gamemode History Desc 2"
+	{
+		"en"	"{green}Obtain 6000 cash"
+	}
+	"Gamemode History Lore 2"
+	{
+		"en"	"We broke it down, parts for cash and weapons."
+	}
+	"Gamemode History"
+	{
+		"en"	"Gamemode History"
+	}
+	"Gamemode History Desc"
+	{
+		"en"	""
+	}
+	"Bizarre History"
+	{
+		"en"	"Bizarre History"
 	}
 }

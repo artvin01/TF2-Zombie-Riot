@@ -1907,7 +1907,7 @@
 	}
 	"Founder Fondue"
 	{
-		"en"	"Founder Fondue"
+		"en"	"Founder Fondue ◈"
 	}
 	"Founder Fondue Desc"
 	{
@@ -1915,7 +1915,7 @@
 	}
 	"Predator Pancakes"
 	{
-		"en"	"Predator Pancakes"
+		"en"	"Predator Pancakes ◈"
 	}
 	"Predator Pancakes Desc"
 	{
@@ -1923,7 +1923,7 @@
 	}
 	"Brandguider Brunch"
 	{
-		"en"	"Brandguider Brunch"
+		"en"	"Brandguider Brunch ◈"
 	}
 	"Brandguider Brunch Desc"
 	{
@@ -1931,7 +1931,7 @@
 	}
 	"Spewer Spewers"
 	{
-		"en"	"Spewer Spewers"
+		"en"	"Spewer Spewers ◈"
 	}
 	"Spewer Spewers Desc"
 	{
@@ -1939,7 +1939,7 @@
 	}
 	"Swarmcaller Sandwich"
 	{
-		"en"	"Swarmcaller Sandwich"
+		"en"	"Swarmcaller Sandwich ◈"
 	}
 	"Swarmcaller Sandwich Desc"
 	{
@@ -1947,7 +1947,7 @@
 	}
 	"Reefbreaker Ravioli"
 	{
-		"en"	"Reefbreaker Ravioli"
+		"en"	"Reefbreaker Ravioli ◈"
 	}
 	"Reefbreaker Ravioli Desc"
 	{

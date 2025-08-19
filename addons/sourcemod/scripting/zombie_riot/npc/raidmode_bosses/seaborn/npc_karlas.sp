@@ -503,6 +503,7 @@ methodmap Karlas < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 
 		b_angered_twice[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
