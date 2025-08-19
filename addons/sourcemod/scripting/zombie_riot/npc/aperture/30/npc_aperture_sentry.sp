@@ -159,6 +159,8 @@ methodmap ApertureSentry < CClotBody
 		// Fixes weird collision
 		SetEntityModel(npc.index, "models/buildables/sentry1_heavy.mdl");
 		npc.FixCollisionBox();
+		
+		KillFeed_SetKillIcon(npc.index, "obj_sentrygun3");
 
 		func_NPCDeath[npc.index] = view_as<Function>(ApertureSentry_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureSentry_OnTakeDamage);
