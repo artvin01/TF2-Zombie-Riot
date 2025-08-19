@@ -579,6 +579,9 @@ static void CATS_SelfDefense(CAT npc, float gameTime, int target, float distance
 			float damage = 35.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			
+			KillFeed_SetKillIcon(npc.index, "bat");
+			
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -662,8 +665,8 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	npc.StopPathing();
 	
 	npc.AddActivityViaSequence("dieviolent");
-	npc.SetCycle(0.01);
-	npc.SetPlaybackRate(0.4);
+	npc.SetCycle(0.05);
+	npc.SetPlaybackRate(0.33);
 	
 	npc.m_flAttackHappens = gameTime + 999.0;
 	
@@ -854,6 +857,8 @@ static void Cat_Rocket_Particle_Touch(int entity, int target)
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	
+	KillFeed_SetKillIcon(owner, "spellbook_lightning");
+	
 	float damage = 40.0 * RaidModeScaling;
 	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 60.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
 	NextOrbDamage[entity] = gameTime + 0.25;
@@ -1017,6 +1022,8 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
+		CAT_ClearAllProjectiles(npc);
+		
 		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
 		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
@@ -1190,4 +1197,19 @@ static bool TraceEntityEnumerator_CAT_FindProjectiles(int entity, int self)
 	
 	RemoveEntity(entity);
 	return true;
+}
+
+static void CAT_ClearAllProjectiles(CAT npc)
+{
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		if (!IsValidEntity(i) || !b_IsAProjectile[i])
+			continue;
+		
+		int owner = GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity");
+		if (owner != npc.index)
+			continue;
+		
+		RemoveEntity(i);
+	}
 }

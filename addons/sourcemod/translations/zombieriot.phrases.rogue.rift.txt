@@ -1,11 +1,13 @@
 "Phrases"
 {
+	// TODO: Stage battle names: ⚔︎ or 🗡
+
 	"Curse Rift Closed"
 	{
 		"#format"	"{1:t}"
 		"en"		"{green}{1} {default}has closed!"
 	}
-		"Good Umbral"
+	"Good Umbral"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} Umbral Affinity"
@@ -96,6 +98,14 @@
 	{
 		"en"	"A rift opens, you feel as if you're being watched from inside it."
 	}
+	"Rift of Warp"
+	{
+		"en"	"Rift of Warp"
+	}
+	"Rift of Warp Desc"
+	{
+		"en"	"{red}Enemies have a chance to be warpped"
+	}
 
 	"Ruin"
 	{
@@ -122,6 +132,30 @@
 		"en"	"The Throne"
 	}
 
+	"Rift Level 3"
+	{
+		"en"	"Rift Level 3"
+	}
+	"Rift Level 3 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +5％, start with Fractured voidstone, rift events can occur more often"
+	}
+	"Rift Level 2"
+	{
+		"en"	"Rift Level 2"
+	}
+	"Rift Level 2 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +2％ {blue}and other possibilities"
+	}
+	"Rift Level 1"
+	{
+		"en"	"Rift Level 1"
+	}
+	"Rift Level 1 Desc"
+	{
+		"en"	"Lelouch opened a rift to the Curtain. The Void is leaking in through the cracks. It's only been a few weeks, we need to stop this, together with Bob The First and Twirl."
+	}
 	"Hand of Predation"
 	{
 		"en"	"Hand of Predation"
@@ -265,6 +299,14 @@
 	"Hand of Protraction Desc"
 	{
 		"en"	"Protracted battles, a home of carnage.\n{green}''Mechanic'' weapons fully repairs buildings on hit"
+	}
+	"Reila Assistance"
+	{
+		"en"	"Reila's Assistance"
+	}
+	"Reila Assistance Desc"
+	{
+		"en"	"Reila joins you."
 	}
 
 	"Pots In The Ground"
@@ -457,7 +499,31 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter"
+		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
+	}
+	"Wordless Deed"
+	{
+		"en"	"Wordless Deed ◈"
+	}
+	"Wordless Deed Desc"
+	{
+		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+	}
+	"Keycard"
+	{
+		"en"	"Keycard"
+	}
+	"Keycard Desc"
+	{
+		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+	}
+	"Torn Keycard"
+	{
+		"en"	"Torn Keycard"
+	}
+	"Torn Keycard Desc"
+	{
+		"en"	"{crimson}What did you do?"
 	}
 
 	"Gateway"
@@ -472,5 +538,62 @@
 	{
 		"#format"	"{1:d}"
 		"en"	"We can consume {1} more stones"
+	}
+	"Rift Ending 1 Lore"
+	{
+		"en"	"It's dangerous out there, we can get some help if you know somebody that can get us in."
+	}
+	"Rift Ending 1 Option 1"
+	{
+		"en"	"Just the items we have"
+	}
+	"Rift Ending 1 Desc 1"
+	{
+		"en"	"{green}Receive an uncommon artifact."
+	}
+	"Rift Ending 1 Option 2"
+	{
+		"en"	"We have Reila"
+	}
+	"Rift Ending 1 Desc 2"
+	{
+		"en"	"{yellow}Reila will acompany you."
+	}
+
+	"Gamemode History Lore"
+	{
+		"en"	"You find yourselves at a terminal, something interesting catches your eyes."
+	}
+	"Gamemode History Option 1"
+	{
+		"en"	"Let's take a look"
+	}
+	"Gamemode History Desc 1"
+	{
+		"en"	"{yellow}Enter a special floor"
+	}
+	"Gamemode History Option 2"
+	{
+		"en"	"Scrap it for something useful"
+	}
+	"Gamemode History Desc 2"
+	{
+		"en"	"{green}Obtain 6000 cash"
+	}
+	"Gamemode History Lore 2"
+	{
+		"en"	"We broke it down, parts for cash and weapons."
+	}
+	"Gamemode History"
+	{
+		"en"	"Gamemode History"
+	}
+	"Gamemode History Desc"
+	{
+		"en"	""
+	}
+	"Bizarre History"
+	{
+		"en"	"Bizarre History"
 	}
 }

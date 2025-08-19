@@ -4,6 +4,8 @@
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
+static int i_LastStandBossRef;
+
 // This NPC will also store/handle shared "last stand" raid boss stuff!!!
 
 enum
@@ -57,6 +59,8 @@ void Talker_OnMapStart_NPC()
 	data.Category = Type_Hidden; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	
+	i_LastStandBossRef = INVALID_ENT_REFERENCE;
 }
 
 
@@ -259,6 +263,8 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	func_NPCThink[npc.index] = Aperture_Shared_LastStandSequence_ClotThink;
 	
 	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_STARTING;
+	
+	i_LastStandBossRef = EntIndexToEntRef(npc.index);
 }
 
 static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
@@ -377,6 +383,7 @@ public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
 	}
 	
 	StopSound(npc.index, SNDCHAN_AUTO, g_ApertureSharedStunMainSound);
+	i_LastStandBossRef = INVALID_ENT_REFERENCE;
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -411,6 +418,11 @@ static void Aperture_GetDyingBoss(CClotBody npc, char[] buffer, int size)
 bool Aperture_ShouldDoLastStand()
 {
 	return StrContains(WhatDifficultySetting_Internal, "Laboratories") == 0;
+}
+
+int Aperture_GetLastStandBoss()
+{
+	return i_LastStandBossRef;
 }
 
 bool Aperture_IsBossDead(int type)

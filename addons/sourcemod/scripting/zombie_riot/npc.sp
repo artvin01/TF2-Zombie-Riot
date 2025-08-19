@@ -1066,6 +1066,10 @@ void NPC_ConfigSetup()
 	RefragmentedWinterFrostHunter_OnMapStart_NPC();
 	Vincent_OnMapStart_NPC();
 	Vincent_Beacon_OnMapStart_NPC();
+
+	Umbral_Ltzens_OnMapStart_NPC();
+	Umbral_Refract_OnMapStart_NPC();
+	Umbral_Koulm_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2328,3 +2332,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/aperture/refragmented/npc_chimeraboss_refragmented_frost_hunter.sp"
 #include "npc/aperture/raids/npc_vincent.sp"
 #include "npc/aperture/npc_vincent_beacon.sp"
+
+#include "npc/rogue/rouge3/npc_umbral_ltzens.sp"
+#include "npc/rogue/rouge3/npc_umbral_refract.sp"
+#include "npc/rogue/rouge3/npc_umbral_koulm.sp"

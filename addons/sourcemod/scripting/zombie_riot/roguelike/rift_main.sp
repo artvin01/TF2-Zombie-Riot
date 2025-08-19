@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static int WarpSeed;
+static int DifficultyLevel;
 static ArrayList ShopListing;
 static int ConsumeLimit;
 static bool CurseSwarm;
@@ -16,6 +18,11 @@ stock void Rogue_Rift_MultiScale(float &multi)
 stock bool Rogue_Rift_NoStones()
 {
 	return CurseEmpty;
+}
+
+stock int Rogue_Rift_CurseLevel()
+{
+	return DifficultyLevel;
 }
 
 public void Rogue_Curse_RiftSwarm(bool enable)
@@ -42,7 +49,7 @@ public void Rogue_Curse_RiftDarkness(bool enable)
 
 public void Rogue_RiftEmpty_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(entity, Prop_Data, "m_flElementRes", Element_Void) > 0.4)
 	{
 		fl_Extra_Damage[entity] *= 1.25;
 		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.3));
@@ -132,6 +139,10 @@ public float Rogue_Encounter_RiftShop()
 	{
 		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
+	}
+	else if(Rogue_GetNamedArtifact("Fractured", artifact))
+	{
+		ShopListing.PushArray(artifact);
 	}
 
 	int entity = -1;
@@ -310,7 +321,6 @@ static void StartRiftVote(bool first)
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	vote.Append[0] = 0;
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
@@ -328,33 +338,33 @@ static void StartRiftVote(bool first)
 		{
 			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-			if(artifact.Multi && artifact.FuncRemove != INVALID_FUNCTION)
+			if(!artifact.Hidden && artifact.FuncRemove != INVALID_FUNCTION && (artifact.Multi || artifact.ShopCost == 6))
 			{
 				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
 				strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 				list.PushArray(vote);
 				
-				if(++found > 5)
+				if(++found > 7)
 					break;
 			}
 		}
 
-		if(found < 6)
+		if(found < 8)
 		{
 			// Misc items
 			for(int i = length - 1; i >= 0; i--)
 			{
 				Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
 
-				if(artifact.FuncRemove != INVALID_FUNCTION)
+				if(!artifact.Hidden && artifact.FuncRemove != INVALID_FUNCTION && !(artifact.Multi || artifact.ShopCost == 6))
 				{
 					strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 					strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
 					strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 					list.PushArray(vote);
 					
-					if(++found > 5)
+					if(++found > 7)
 						break;
 				}
 			}
@@ -449,4 +459,188 @@ static void GiveShield(int amount)
 				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
 		}
 	}
+}
+
+public void Rogue_RiftEasy_Collect()
+{
+	DifficultyLevel = 0;
+}
+
+public void Rogue_RiftEasy_Enemy(int entity)
+{
+	fl_Extra_Speed[entity] *= 0.8;
+	fl_Extra_MeleeArmor[entity] *= 1.35;
+	fl_Extra_RangedArmor[entity] *= 1.35;
+	fl_Extra_Damage[entity] *= 0.65;
+}
+
+public void Rogue_RiftNormal_Collect()
+{
+	DifficultyLevel = 1;
+}
+
+public void Rogue_RiftNormal_Enemy(int entity)
+{
+	float stats = Pow(1.02, float(Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
+
+public void Rogue_RiftHard_Collect()
+{
+	DifficultyLevel = 2;
+	Rogue_GiveNamedArtifact("Fractured");
+}
+
+public void Rogue_RiftHard_Enemy(int entity)
+{
+	float stats = Pow(1.05, float(Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
+
+public float Rogue_Encounter_Rift1()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rift1, "Rift Ending 1 Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rift Ending 1 Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rift Ending 1 Desc 1");
+	list.PushArray(vote);
+
+	bool easyMode = DifficultyLevel < 1;
+	bool found;
+
+	if(!easyMode)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING1"))
+			{
+				found = true;
+				break;
+			}
+		}
+	}
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rift Ending 1 Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rift Ending 1 Desc 2");
+	if(easyMode)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 2)");
+	}
+	else if(!found)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 1)");
+	}
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_Rift1(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Artifact artifact;
+			if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+		}
+		case 1:
+		{
+			Rogue_GiveNamedArtifact("Reila Assistance");
+		}
+	}
+}
+
+public void Rogue_Rift1_Collect()
+{
+	Rogue_AddUmbral(-30, true);
+}
+
+public void Rogue_Rift1_Remove()
+{
+	if(Rogue_Started())
+	{
+		Rogue_GiveNamedArtifact("Keycard");
+		Rogue_AddUmbral(30);
+	}
+}
+
+public void Rogue_Rift1Good_Collect()
+{
+	Rogue_AddUmbral(-30, true);
+}
+
+public void Rogue_Rift1Good_Remove()
+{
+	if(Rogue_Started())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 199);
+			}
+		}
+
+		Rogue_GiveNamedArtifact("Torn Keycard");
+		Rogue_AddUmbral(-100, true);
+		Rogue_AddIngots(-Rogue_GetIngots(), true);
+	}
+}
+
+public void Rogue_Rift1Bad_Enemy(int entity)
+{
+	Elemental_AddWarpedDamage(entity, entity, RoundFloat(ReturnEntityMaxHealth(entity) * 1.8), false, _, true);
+	
+	if(Elemental_DamageRatio(entity, Element_Warped) <= 0.0)
+	{
+		view_as<CClotBody>(entity).m_bNoKillFeed = true;
+		SmiteNpcToDeath(entity);
+	}
+}
+
+public float Rogue_Encounter_WarpedBattle()
+{
+	WarpSeed = GetURandomInt();
+	Rogue_GiveNamedArtifact("Rift of Warp", true);
+	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
+	return 0.0;
+}
+
+public void Rogue_RiftWarp_Enemy(int entity)
+{
+	if(GetURandomInt() % 2)
+	{
+		int seed1 = 5 + (WarpSeed % 5);
+		int seed2 = WarpSeed / 5;
+
+		if((seed2 % seed1) == (i_NpcInternalId[entity] % seed1))
+		{
+			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1500, false, _, true);
+
+			if(Elemental_DamageRatio(entity, Element_Warped) > 0.0)
+			{
+				fl_Extra_MeleeArmor[entity] /= 3.0;
+				fl_Extra_RangedArmor[entity] /= 3.0;
+				fl_Extra_Speed[entity] *= 1.2;
+			}
+		}
+	}
+}
+
+public void Rogue_RiftWarp_StageEnd()
+{
+	Rogue_RemoveNamedArtifact("Rift of Warp");
 }

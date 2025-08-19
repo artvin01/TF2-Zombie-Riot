@@ -257,7 +257,9 @@ methodmap ApertureBuilder < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		
-		npc.ToggleBuilding(false);
+		KillFeed_SetKillIcon(npc.index, "wrench");
+		
+		ApertureBuilder_ToggleBuilding(npc, false);
 		
 		// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
 		// If we can't find an appropriate spot, just ignore LOS
@@ -308,110 +310,6 @@ methodmap ApertureBuilder < CClotBody
 		
 		return npc;
 	}
-	
-	public int GetWhatToBuild()
-	{
-		// We have a priority order for building: Sentry, Teleporter, Dispenser
-		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_SENTRY]))
-			return APT_BUILDER_SENTRY;
-		
-		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_TELEPORTER]))
-			return APT_BUILDER_TELEPORTER;
-		
-		if (!IsValidEntity(i_BuildingRefs[this.index][APT_BUILDER_DISPENSER]))
-			return APT_BUILDER_DISPENSER;
-		
-		return APT_BUILDER_NONE;
-	}
-	
-	public int GetAnyBuilding()
-	{
-		// We don't care about which, just go for one!!!!
-		for (int i = 0; i < APT_BUILDER_BUILDING_COUNT; i++)
-		{
-			int ref = i_BuildingRefs[this.index][i];
-			if (IsValidEntity(ref) && IsValidAlly(this.index, EntRefToEntIndex(ref)))
-				return ref;	
-		}
-		
-		return INVALID_ENT_REFERENCE;
-	}
-	
-	public int GetRandomBuilding(bool excludeClosest)
-	{
-		// We DO care about which, pick wisely
-		int building = INVALID_ENT_REFERENCE;
-		ArrayList buildingList = new ArrayList();
-		
-		int closestIndex;
-		int index;
-		float closestDist = -1.0;
-		
-		for (int i = 0; i < APT_BUILDER_BUILDING_COUNT; i++)
-		{
-			int ref = i_BuildingRefs[this.index][i];
-			if (IsValidEntity(ref) && IsValidAlly(this.index, EntRefToEntIndex(ref)))
-			{
-				buildingList.Push(ref);
-				
-				if (excludeClosest)
-				{
-					float distance = ApertureBuilder_GetEntityDistance(this.index, ref, true);
-					if (closestDist <= 0.0 || distance < closestDist)
-					{
-						closestIndex = index++;
-						closestDist = distance;
-					}
-				}
-			}
-		}
-		
-		int length = buildingList.Length;
-		if (length > 0)
-		{
-			if (excludeClosest && length != 1)
-			{
-				buildingList.Erase(closestIndex);
-				length--;
-			}
-			
-			building = buildingList.Get(GetURandomInt() % length);
-		}
-		
-		delete buildingList;
-		
-		return building;
-	}
-	
-	public void ToggleBuilding(bool toggle)
-	{
-		// This is just used to swap building weapons
-		if (IsValidEntity(this.m_iWearable2))
-			RemoveEntity(this.m_iWearable2);
-		
-		int activity;
-		if (toggle)
-		{
-			this.m_iWearable2 = this.EquipItem("head", "models/weapons/c_models/c_toolbox/c_toolbox.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(this.m_iWearable2, "SetModelScale");
-			
-			SetEntProp(this.m_iWearable2, Prop_Send, "m_nSkin", 1);
-			
-			activity = this.LookupActivity("ACT_MP_RUN_BUILDING_DEPLOYED");
-		}
-		else
-		{
-			this.m_iWearable2 = this.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");
-			SetVariantString("1.0");
-			AcceptEntityInput(this.m_iWearable2, "SetModelScale");
-			
-			activity = this.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		}
-		
-		if (activity > 0)
-			this.StartActivity(activity);
-	}
 }
 
 public void ApertureBuilder_ClotThink(int iNPC)
@@ -447,7 +345,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 			
 			if (npc.m_flNextBuildingStateTime < gameTime)
 			{
-				if (npc.GetWhatToBuild() != APT_BUILDER_NONE)
+				if (ApertureBuilder_GetWhatToBuild(npc) != APT_BUILDER_NONE)
 				{
 					npc.m_flNextHangOutTime = gameTime;
 					f3_NpcSavePos[npc.index] = { 0.0, 0.0, 0.0 };
@@ -479,7 +377,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				// Hang out around our nest
 				npc.m_flSpeed = 80.0;
 				
-				int building = EntRefToEntIndex(npc.GetRandomBuilding(true));
+				int building = EntRefToEntIndex(ApertureBuilder_GetRandomBuilding(npc, true));
 				if (building > MaxClients)
 				{
 					GetAbsOrigin(building, vecPos);
@@ -598,7 +496,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 							continue;
 						
 						// Congratulations little fella, you got a place to go
-						npc.ToggleBuilding(true);
+						ApertureBuilder_ToggleBuilding(npc, true);
 						npc.m_iTarget = 0;
 						npc.m_flSpeed = 300.0;
 						success = true;
@@ -642,7 +540,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				if (GetVectorDistance(f3_NpcSavePos[npc.index], vecPos, true) > 600.0)
 				{
 					// What the hell, this isn't where we want to build...
-					npc.ToggleBuilding(false);
+					ApertureBuilder_ToggleBuilding(npc, false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
 					npc.m_flNextBuildingStateTime = gameTime + 1.5;
 				}
@@ -653,7 +551,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
 					vecAng[0] = 0.0;
 					
-					int needToBuild = npc.GetWhatToBuild();
+					int needToBuild = ApertureBuilder_GetWhatToBuild(npc);
 					switch (needToBuild)
 					{
 						case APT_BUILDER_SENTRY:
@@ -683,7 +581,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						default:
 						{
 							// we have everything?????????? how
-							npc.ToggleBuilding(false);
+							ApertureBuilder_ToggleBuilding(npc, false);
 							npc.m_iState = APT_BUILDER_STATE_IDLE;
 							npc.m_flNextBuildingStateTime = gameTime + 1.5;
 							return;
@@ -709,7 +607,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					
 					npc.PlayBuildingBuiltSound(building);
 					
-					npc.ToggleBuilding(false);
+					ApertureBuilder_ToggleBuilding(npc, false);
 					npc.m_iState = APT_BUILDER_STATE_IDLE;
 					npc.m_flNextBuildingStateTime = npc.m_bQuickBuildings ? gameTime : gameTime + 20.0;
 					npc.StartPathing();
@@ -788,7 +686,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				npc.m_flGetClosestTargetTime = 0.0;
 			}
 			
-			int building = EntRefToEntIndex(npc.GetAnyBuilding());
+			int building = EntRefToEntIndex(ApertureBuilder_GetAnyBuilding(npc));
 			if (building > MaxClients)
 			{
 				npc.m_iTargetAlly = building;
@@ -942,4 +840,108 @@ static float ApertureBuilder_GetEntityDistance(int entity, int other, bool squar
 	WorldSpaceCenter(other, vecPos2);
 	
 	return GetVectorDistance(vecPos1, vecPos2, squared);
+}
+
+static int ApertureBuilder_GetWhatToBuild(ApertureBuilder npc)
+{
+	// We have a priority order for building: Sentry, Teleporter, Dispenser
+	if (!IsValidEntity(i_BuildingRefs[npc.index][APT_BUILDER_SENTRY]))
+		return APT_BUILDER_SENTRY;
+	
+	if (!IsValidEntity(i_BuildingRefs[npc.index][APT_BUILDER_TELEPORTER]))
+		return APT_BUILDER_TELEPORTER;
+	
+	if (!IsValidEntity(i_BuildingRefs[npc.index][APT_BUILDER_DISPENSER]))
+		return APT_BUILDER_DISPENSER;
+	
+	return APT_BUILDER_NONE;
+}
+
+static int ApertureBuilder_GetAnyBuilding(ApertureBuilder npc)
+{
+	// We don't care about which, just go for one!!!!
+	for (int i = 0; i < APT_BUILDER_BUILDING_COUNT; i++)
+	{
+		int ref = i_BuildingRefs[npc.index][i];
+		if (IsValidEntity(ref) && IsValidAlly(npc.index, EntRefToEntIndex(ref)))
+			return ref;	
+	}
+	
+	return INVALID_ENT_REFERENCE;
+}
+
+static int ApertureBuilder_GetRandomBuilding(ApertureBuilder npc, bool excludeClosest)
+{
+	// We DO care about which, pick wisely
+	int building = INVALID_ENT_REFERENCE;
+	ArrayList buildingList = new ArrayList();
+	
+	int closestIndex;
+	int index;
+	float closestDist = -1.0;
+	
+	for (int i = 0; i < APT_BUILDER_BUILDING_COUNT; i++)
+	{
+		int ref = i_BuildingRefs[npc.index][i];
+		if (IsValidEntity(ref) && IsValidAlly(npc.index, EntRefToEntIndex(ref)))
+		{
+			buildingList.Push(ref);
+			
+			if (excludeClosest)
+			{
+				float distance = ApertureBuilder_GetEntityDistance(npc.index, ref, true);
+				if (closestDist <= 0.0 || distance < closestDist)
+				{
+					closestIndex = index++;
+					closestDist = distance;
+				}
+			}
+		}
+	}
+	
+	int length = buildingList.Length;
+	if (length > 0)
+	{
+		if (excludeClosest && length != 1)
+		{
+			buildingList.Erase(closestIndex);
+			length--;
+		}
+		
+		building = buildingList.Get(GetURandomInt() % length);
+	}
+	
+	delete buildingList;
+	
+	return building;
+}
+
+static void ApertureBuilder_ToggleBuilding(ApertureBuilder npc, bool toggle)
+{
+	// This is just used to swap building weapons
+	if (IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	
+	int activity;
+	if (toggle)
+	{
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_toolbox/c_toolbox.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		
+		activity = npc.LookupActivity("ACT_MP_RUN_BUILDING_DEPLOYED");
+	}
+	else
+	{
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_wrench/c_wrench.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		activity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	}
+	
+	if (activity > 0)
+		npc.StartActivity(activity);
 }

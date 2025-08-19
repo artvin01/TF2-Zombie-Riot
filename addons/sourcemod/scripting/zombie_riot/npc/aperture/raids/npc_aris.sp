@@ -289,7 +289,11 @@ methodmap ARIS < CClotBody
 		int attachment = this.GetAttachment(g_MalfunctionParticleAttachments[index], vecPos, vecAng);
 		
 		if (attachment)
-			ParticleEffectAt_Parent(vecPos, ARIS_MALFUNCTION_PARTICLE, this.index, g_MalfunctionParticleAttachments[index]);
+		{
+			int particle = ParticleEffectAt_Parent(vecPos, ARIS_MALFUNCTION_PARTICLE, this.index, g_MalfunctionParticleAttachments[index]);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+		}
+			
 	}
 	public void PlayPassiveSound()
 	{
@@ -483,7 +487,7 @@ methodmap ARIS < CClotBody
 		npc.Anger = false;
 		npc.m_fbGunout = false;
 		npc.m_iChanged_WalkCycle = 0;
-		npc.RefreshAnimation(true);
+		ARIS_RefreshAnimation(npc, true);
 		
 		npc.m_flNextRocket = FAR_FUTURE;
 		npc.m_iRocketsLoaded = 0;
@@ -517,513 +521,6 @@ methodmap ARIS < CClotBody
 		}
 
 		return npc;
-	}
-	
-	public void CalculateRocketAmount()
-	{
-		int playerCount = CountPlayersOnRed(0); // 0 = includes teutons and downed players
-		int rocketCount = playerCount * ARIS_ROCKET_COUNT_PER_PLAYER;
-		
-		// no int clamp unlucky
-		if (rocketCount < ARIS_ROCKET_COUNT_MIN)
-			rocketCount = ARIS_ROCKET_COUNT_MIN;
-		else if (rocketCount > ARIS_ROCKET_COUNT_MAX)
-			rocketCount = ARIS_ROCKET_COUNT_MAX;
-		
-		ARIS_EmptyGlobalTargetArray(rocketCount);
-		this.m_iTargetArrayIndex = 0;
-		GetHighDefTargets(view_as<UnderTides>(this.index), i_TargetArray, sizeof(i_TargetArray), false, 1);
-		ARIS_LoopGlobalTargetArray(rocketCount);
-		
-		this.m_iRocketsLoaded = rocketCount;
-	}
-	
-	public void FireRocketUpwards()
-	{
-		// Firing a fake rocket upwards. If it hits a ceiling or wall, no biggie, the excuse is they merge into the walls or some shit idk
-		float vecPos[3];
-		WorldSpaceCenter(this.index, vecPos);
-		vecPos[0] += GetRandomFloat(-300.0, 300.0);
-		vecPos[1] += GetRandomFloat(-300.0, 300.0);
-		vecPos[2] += 4000.0;
-		
-		// We use a particle rocket for better manipulation
-		int rocket = this.FireParticleRocket(vecPos, 0.0, 800.0, 0.0, "rockettrail");
-		ARIS_MakeParticleRocketSuitable(rocket, true);
-		
-		this.PlayRocketSound();
-		
-		// Each rocket will create a real rocket a bit later
-		CreateTimer(ARIS_ROCKET_DELAY, Timer_ARIS_FireRocketTowardsPlayer, this.index, TIMER_FLAG_NO_MAPCHANGE);
-	}
-	
-	public void FireRocketTowardsPlayer()
-	{
-		int enemy = i_TargetArray[this.m_iTargetArrayIndex++];
-		if (this.m_iTargetArrayIndex == sizeof(i_TargetArray))
-		{
-			// Huh. Technically this means the attack is over, but doing this just in case
-			this.m_iTargetArrayIndex = 0;
-		}
-		
-		// We only target players who might not exist anymore
-		if (enemy <= 0 || enemy > MaxClients || !IsClientInGame(enemy) || !IsValidEnemy(this.index, enemy))
-			return;
-		
-		float vecPos[3], vecTargetPos[3], vecTraceAng[3], vecForward[3];
-		GetAbsOrigin(enemy, vecTargetPos);
-		vecTraceAng[0] = GetRandomFloat(-88.0, -80.0);
-		vecTraceAng[1] = GetRandomFloat(-180.0, 180.0);
-		
-		vecTargetPos[2] += 3.0;
-		
-		Handle trace;
-		trace = TR_TraceRayFilterEx(vecTargetPos, vecTraceAng, (MASK_SOLID | CONTENTS_SOLID), RayType_Infinite, BulletAndMeleeTrace, enemy);
-		TR_GetEndPosition(vecPos, trace);
-		
-		if (TR_GetSurfaceFlags() & SURF_SKY == 0)
-		{
-			// We didn't hit the sky, but that's fine. I don't do anything here, but if you want to add some lines about rockets coming from walls/ceilings, here's where you do it
-		}
-		
-		delete trace;
-		
-		// Push the end position 24 units off the surface
-		ScaleVector(vecTraceAng, -1.0);
-		GetAngleVectors(vecTraceAng, vecForward, NULL_VECTOR, NULL_VECTOR);
-		NormalizeVector(vecForward, vecForward);
-		ScaleVector(vecForward, 24.0);
-		AddVectors(vecPos, vecForward, vecPos);
-		
-		// Tracing the rest of the way to ensure we hit the floor or a wall or something (in case the target is midair)
-		trace = TR_TraceRayFilterEx(vecTargetPos, vecTraceAng, (MASK_SOLID | CONTENTS_SOLID), RayType_Infinite, BulletAndMeleeTrace, enemy);
-		TR_GetEndPosition(vecTargetPos, trace);
-		
-		delete trace;
-		
-		vecTargetPos[2] += 3.0;
-		
-		float distance = GetVectorDistance(vecPos, vecTargetPos);
-		float speed = distance / ARIS_ROCKET_FLIGHT_TIME;
-		
-		int rocket = this.FireParticleRocket(vecTargetPos, 0.0, speed, 0.0, "rockettrail", .Override_Spawn_Loc = true, .Override_VEC = vecPos);
-		ARIS_MakeParticleRocketSuitable(rocket, false);
-		
-		float radius = ARIS_ROCKET_BLAST_RADIUS * 2.0;
-		spawnRing_Vectors(vecTargetPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, ARIS_ROCKET_FLIGHT_TIME, 1.0, 0.1, 1, 0.0);
-		spawnRing_Vectors(vecTargetPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 220, 255, 1, ARIS_ROCKET_FLIGHT_TIME + 0.3, 1.0, 0.1, 1);
-		
-		this.PlayRocketLandingSound(rocket);
-	}
-	
-	public void DestroyDroppedBeacon()
-	{
-		if (this.m_iLastBeaconRef)
-		{
-			int entity = EntRefToEntIndex(this.m_iLastBeaconRef);
-			if (entity != INVALID_ENT_REFERENCE)
-				RequestFrame(KillNpc, entity);
-		}
-	}
-	public void DropMelee()
-	{
-		float vecPos[3], vecAng[3], vecTargetPos[3];
-		GetAbsOrigin(this.index, vecPos);
-		GetEntPropVector(this.index, Prop_Send, "m_angRotation", vecAng);
-		
-		Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({ 90.0, 0.0, 0.0 }), MASK_SOLID, RayType_Infinite, TraceEntityFilter_ARIS_OnlyWorld);
-		TR_GetEndPosition(vecTargetPos, trace);
-		delete trace;
-		
-		char data[64];
-		switch (this.m_iCurrentMelee)
-		{
-			case ARIS_MELEE_RESISTANCE: data = "resistance";
-			case ARIS_MELEE_DAMAGE: data = "damage";
-			case ARIS_MELEE_SPEED: data = "speed";
-		}
-		
-		Format(data, 64, "%s;%d", data, this.m_iTimesHitWithMelee);
-		
-		// This model is a bit too down low, let's raise it up
-		if (this.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
-			vecTargetPos[2] += 50.0;
-		
-		this.DestroyDroppedBeacon();
-		
-		int npcSpawn = NPC_CreateByName("npc_aris_makeshift_beacon", -1, vecTargetPos, vecAng, GetTeam(this.index), data);
-		this.m_iLastBeaconRef = EntIndexToEntRef(npcSpawn);
-		
-		this.PlayDeployBeaconSound();
-
-		if(this.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
-		{
-			switch(GetRandomInt(0,2))
-			{
-				case 0:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: D3P10Y1N6 R3S1574N7 M345UR3S");
-				case 1:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: R3S1574NC3S 0NL1N3");
-				case 2:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: D3F3NS3 D3PL0Y3D");
-			}
-		}
-		if(this.m_iCurrentMelee == ARIS_MELEE_DAMAGE)
-		{
-			switch(GetRandomInt(0,2))
-			{
-				case 0:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: 8UFF3R1N6 D4M463");
-				case 1:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 800S73R D3PL0Y3D");
-				case 2:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 = 8UFF3D");
-			}
-		}
-		if(this.m_iCurrentMelee == ARIS_MELEE_SPEED)
-		{
-			switch(GetRandomInt(0,2))
-			{
-				case 0:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: V3L0C17Y R151N6");
-				case 1:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: 4CC3L3R4710N 1NCR34S3D");
-				case 2:
-					CPrintToChatAll("{rare}A.R.I.S.{default}: M0M3N7UM CH4N63");
-			}
-		}
-	}
-	
-	public void ToggleWeapon()
-	{
-		float gameTime = GetGameTime(this.index);
-		
-		this.m_fbGunout = !this.m_fbGunout;
-		if (this.m_fbGunout)
-		{
-			this.m_flNextRangedAttack = gameTime + (ARIS_WEAPON_SHOOT_COOLDOWN / 1.7);
-			this.m_bDoingRangedAttack = false;
-			this.m_flNextSpecialRangedAttack = gameTime + ARIS_WEAPON_SPECIAL_COOLDOWN_INITIAL;
-			this.m_bDoingSpecialRangedAttack = false;
-			
-			this.DropMelee();
-			this.m_iCurrentMelee++;
-			this.m_iCurrentMelee = this.m_iCurrentMelee % ARIS_MELEE_COUNT;
-			this.m_iTimesHitWithMelee = 0;
-		}
-		else if (!this.m_bLostHalfHealth)
-		{
-			this.m_flNextRocketBarrageStart = fmax(this.m_flNextRocketBarrageStart, gameTime + 6.0);
-		}
-		
-		this.m_flNextWeaponSwitch = gameTime + ARIS_WEAPON_SWITCH_COOLDOWN;
-		
-		this.RefreshAnimation();
-	}
-	
-	public void RefreshAnimation(bool forceRefreshWeapon = false)
-	{
-		int oldCycle = this.m_iChanged_WalkCycle;
-		int newCycle;
-		
-		if (!this.m_fbGunout)
-			newCycle = this.IsOnGround() ? 0 : 1;
-		else
-			newCycle = this.IsOnGround() ? 2 : 3;
-		
-		if (!forceRefreshWeapon && oldCycle == newCycle)
-			return;
-		
-		// 0 and 1 / 2 = 0, melee out
-		// 2 and 3 / 2 = 1, shotgun out
-		int weaponId = newCycle / 2;
-		bool changeWeapon = oldCycle / 2 != newCycle / 2;
-		
-		if (changeWeapon || forceRefreshWeapon)
-		{
-			if (IsValidEntity(this.m_iWearable1))
-				RemoveEntity(this.m_iWearable1);
-			
-			switch (weaponId)
-			{
-				case 0:
-				{
-					char model[128];
-					switch (this.m_iCurrentMelee)
-					{
-						case ARIS_MELEE_RESISTANCE: model = "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl";
-						case ARIS_MELEE_DAMAGE: model = "models/workshop/weapons/c_models/c_rr_crossing_sign/c_rr_crossing_sign.mdl";
-						case ARIS_MELEE_SPEED: model = "models/weapons/c_models/c_picket/c_picket.mdl";
-					}
-					
-					this.m_iWearable1 = this.EquipItem("head", model);
-					SetVariantString("1.1");
-					AcceptEntityInput(this.m_iWearable1, "SetModelScale");
-				}
-				
-				case 1:
-				{
-					this.m_iWearable1 = this.EquipItem("head", "models/weapons/c_models/c_shotgun/c_shotgun.mdl");
-					SetVariantString("3.0");
-					AcceptEntityInput(this.m_iWearable1, "SetModelScale");
-				}	
-			}
-		}
-		
-		int activity;
-		switch (newCycle)
-		{
-			case 0:
-			{
-				this.m_bisWalking = true;
-				activity = this.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-			}
-			
-			case 1:
-			{
-				this.m_bisWalking = false;
-				activity = this.LookupActivity("ACT_MP_AIRWALK_MELEE_ALLCLASS");
-			}
-			
-			case 2:
-			{
-				this.m_bisWalking = true;
-				activity = this.LookupActivity("ACT_MP_RUN_SECONDARY");
-			}
-			
-			case 3:
-			{
-				this.m_bisWalking = false;
-				activity = this.LookupActivity("ACT_MP_AIRWALK_SECONDARY");
-			}
-		}
-		
-		if (activity > 0)
-			this.StartActivity(activity);
-		
-		this.m_iChanged_WalkCycle = newCycle;
-	}
-	
-	public bool AttemptToShoot(float vecPos[3], float vecTargetPos[3], bool oppositeDirectionOfTarget = false)
-	{
-		// Why would we be here if we got no gun?
-		if (!this.m_fbGunout)
-			return false;
-		
-		// ???? where the fuck are we looking at
-		if (!GetVectorLength(vecTargetPos, true))
-			return false;
-		
-		if (!this.IsOnGround())
-			return false;
-		
-		float vecAng[3], vecForward[3];
-		
-		if (oppositeDirectionOfTarget)
-			GetVectorAnglesTwoPoints(vecTargetPos, vecPos, vecAng);
-		else
-			GetVectorAnglesTwoPoints(vecPos, vecTargetPos, vecAng);
-		
-		GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
-		NormalizeVector(vecForward, vecForward);
-		ScaleVector(vecForward, ARIS_WEAPON_SHOOT_MAX_DISTANCE);
-		AddVectors(vecPos, vecForward, vecTargetPos);
-		
-		if (oppositeDirectionOfTarget)
-		{
-			this.m_bDoingSpecialRangedAttack = true;
-			this.m_flNextSpecialRangedAttack = FAR_FUTURE; // Will be reset when the shot is done
-				
-			// We need to stop IMMEDIATELY
-			this.m_flSpeed = 0.0;
-			this.StopPathing();
-			this.FaceTowards(vecTargetPos, 20000.0);
-		}
-		else
-		{
-			if (this.m_iTarget > 0)
-			{
-				float vecBuffer[3];
-				WorldSpaceCenter(this.m_iTarget, vecBuffer);
-				this.FaceTowards(vecBuffer, 20000.0);
-			}
-			
-			this.m_bAllowBackWalking = true;
-			this.m_flSpeed = 50.0;
-		}
-		
-		this.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
-		
-		this.m_bDoingRangedAttack = true;
-		this.m_flNextRangedAttack = GetGameTime(this.index) + ARIS_WEAPON_SHOOT_DELAY;
-		
-		this.PlayShotgunReloadingSound();
-		
-		return true;
-	}
-	
-	public void ShootGun()
-	{
-		// Why would we be here if we got no gun?
-		if (!this.m_fbGunout)
-			return;
-		
-		float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecBarrelPos[3];
-		float vecBuffer[3];
-		
-		this.GetAttachment("weapon_bone_1", vecBarrelPos, vecAng);
-		ParticleEffectAtWithRotation(vecBarrelPos, vecAng, ARIS_WEAPON_SHOOT_BLAST_PARTICLE);
-		
-		GetAbsOrigin(this.index, vecPos);
-		GetEntPropVector(this.index, Prop_Send, "m_angRotation", vecAng);
-		
-		if (!this.m_bDoingSpecialRangedAttack && this.m_iTarget > 0)
-		{
-			GetAbsOrigin(this.m_iTarget, vecBuffer);
-			GetVectorAnglesTwoPoints(vecPos, vecBuffer, vecBuffer);
-			vecAng[0] = vecBuffer[0];
-		}
-		
-		// If there's not much difference between heights, we'll treat them as the same
-		// FIXME: This doesn't work!
-		GetAbsOrigin(this.m_iTarget, vecBuffer);
-		float difference = fabs(vecPos[2] - vecBuffer[2]);
-		if (difference < 75.0 / 1.3)
-			vecTargetPos[2] = vecBuffer[2];
-		
-		GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
-		NormalizeVector(vecForward, vecForward);
-		ScaleVector(vecForward, ARIS_WEAPON_SHOOT_MAX_DISTANCE - 35.0);
-		AddVectors(vecPos, vecForward, vecTargetPos);
-		
-		int color[4] = { 104, 207, 255, 255 };
-		
-		// Our targetting method is a little different, so we can't use DoSwingTrace
-		// Bullets
-		for (int i = 0; i < 5; i++)
-		{
-			for (int j = 0; j < 5; j++)
-			{
-				vecBuffer = vecAng;
-				vecBuffer[0] += -15.0 + (i * 7.5);
-				vecBuffer[1] += -15.0 + (j * 7.5);
-				
-				GetAngleVectors(vecBuffer, vecForward, NULL_VECTOR, NULL_VECTOR);
-				NormalizeVector(vecForward, vecForward);
-				ScaleVector(vecForward, ARIS_WEAPON_SHOOT_MAX_DISTANCE);
-				AddVectors(vecBarrelPos, vecForward, vecBuffer);
-				
-				Handle trace = TR_TraceRayFilterEx(vecBarrelPos, vecBuffer, (MASK_SOLID | CONTENTS_SOLID), RayType_EndPoint, TraceFilter_ARIS_ShotgunBullet, this.index);
-				TR_GetEndPosition(vecBuffer, trace);
-				delete trace;
-				
-				TE_SetupBeamPoints(vecBarrelPos, vecBuffer, Shared_BEAM_Laser, 0, 0, 0, 0.1, 1.0, 1.0, 30, 0.0, color, 0);
-				TE_SendToAll();
-				
-				for (int k = 1; k < MAXENTITIES; k++)
-				{
-					if (i_EntitiesHitAoeSwing_NpcSwing[k] == this.index)
-					{
-						i_EnemyHitByThisManyBullets[k]++;
-						i_EntitiesHitAoeSwing_NpcSwing[k] = INVALID_ENT_REFERENCE;
-					}
-				}
-			}
-		}
-		
-		// Blast
-		float vecMins[3] = { -85.0, -85.0, 0.0 };
-		float vecMaxs[3] = { 85.0, 85.0, 160.0 };
-		
-		// I have no idea what these flags are, but it's what DoSwingTrace uses for aoe attacks
-		Handle trace = TR_TraceHullFilterEx(vecPos, vecPos, vecMins, vecMaxs, 1073741824, TraceFilter_ARIS_ShotgunBlast, this.index);
-		delete trace;
-		
-		float armor;
-		for (int target = 1; target < MAXENTITIES; target++)
-		{
-			float damage;
-			float armorFromThisTarget;
-
-			
-			int bullets = i_EnemyHitByThisManyBullets[target];
-			if (bullets)
-			{
-				damage += 10.0 + (5.0 + (bullets - 1));
-				armorFromThisTarget += bullets * 0.005;
-				i_EnemyHitByThisManyBullets[target] = 0;
-			}
-			
-			int blast = b_EnemyHitByBlast[target];
-			if (blast)
-			{
-				damage += 25.0;
-				Custom_Knockback(this.index, target, 1200.0);
-				armorFromThisTarget += 0.01;
-				b_EnemyHitByBlast[target] = false;
-			}
-			damage *= 6.0;
-			damage *= RaidModeScaling;
-			
-			if (damage > 0.0)
-			{
-				SDKHooks_TakeDamage(target, this.index, this.index, damage, DMG_BULLET, -1);
-				
-				if (target > MaxClients)
-					armorFromThisTarget *= 0.2;
-				
-				armor += armorFromThisTarget;
-				
-				if (IsValidEntity(this.m_iWearable1))
-				{
-					float vecBufferAng[3];
-					WorldSpaceCenter(target, vecBuffer);
-					
-					GetVectorAnglesTwoPoints(vecBuffer, vecBarrelPos, vecBufferAng);
-					int particle = ParticleEffectAtWithRotation(vecBuffer, vecBufferAng, ARIS_WEAPON_ARMOR_RETURN_PARTICLE, 0.3);
-					
-					// Array netprop, but we only need element 0 anyway
-					SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", this.m_iWearable1, 0);
-					SetEntProp(particle, Prop_Send, "m_iControlPointParents", this.m_iWearable1, _, 0);
-				}
-			}
-		}
-		
-		if (armor > 0.0)
-		{
-			armor *= NpcDoHealthRegenScaling(this.index);
-			GrantEntityArmor(this.index, false, 1.0, 0.5, 0, ReturnEntityMaxHealth(this.index) * armor);
-		}	
-		
-		// Launching ourselves backwards. We don't care if we're being blocked
-		GetEntPropVector(this.index, Prop_Send, "m_angRotation", vecAng);
-		vecAng[0] = 27.5;
-		GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
-		NormalizeVector(vecForward, vecForward);
-		ScaleVector(vecForward, this.m_bDoingSpecialRangedAttack ? -600.0 : -350.0);
-		
-		AddVectors(vecPos, vecForward, vecBuffer);
-		PluginBot_Jump(this.index, vecBuffer, 9000.0);
-		
-		if (this.m_bDoingSpecialRangedAttack)
-		{
-			this.m_flNextSpecialRangedAttack = GetGameTime(this.index) + ARIS_WEAPON_SPECIAL_COOLDOWN;
-			this.m_bDoingSpecialRangedAttack = false;
-		}
-		
-		this.m_flNextRangedAttack = GetGameTime() + ARIS_WEAPON_SHOOT_COOLDOWN;
-		this.m_bDoingRangedAttack = false;
-		
-		this.m_flNextWeaponSwitch = fmax(this.m_flNextWeaponSwitch, GetGameTime(this.index) + 1.0);
-		
-		this.m_bAllowBackWalking = false;
-		this.m_bInFlightFromRangedAttack = true;
-		
-		this.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
-		this.PlayShotgunSound();
-		
-		this.m_flSpeed = 300.0;
-		this.StartPathing();
 	}
 }
 
@@ -1085,7 +582,7 @@ public void ARIS_ClotThink(int iNPC)
 		npc.PlayMalfunctionEffect();
 	}
 	
-	npc.RefreshAnimation();
+	ARIS_RefreshAnimation(npc);
 	
 	// If we're flying from our blast, hurt people in the way
 	if (npc.IsOnGround())
@@ -1094,6 +591,7 @@ public void ARIS_ClotThink(int iNPC)
 	{
 		float damage = 10.0;
 		damage *= RaidModeScaling;
+		KillFeed_SetKillIcon(npc.index, "mantreads");
 		ResolvePlayerCollisions_Npc(npc.index, damage, true);
 	}
 	
@@ -1122,7 +620,7 @@ public void ARIS_ClotThink(int iNPC)
 		if (npc.m_flNextRocketBarrageMain < gameTime)
 		{
 			// Actual ability starts here
-			npc.CalculateRocketAmount();
+			ARIS_CalculateRocketAmount(npc);
 			npc.m_flNextRocket = gameTime;
 			npc.m_flNextRocketBarrageMain = FAR_FUTURE; // Don't need this anymore
 			
@@ -1133,7 +631,7 @@ public void ARIS_ClotThink(int iNPC)
 		{
 			if (npc.m_iRocketsLoaded > 0)
 			{
-				npc.FireRocketUpwards();
+				ARIS_FireRocketUpwards(npc);
 				npc.m_flNextRocket = gameTime + ARIS_ROCKET_INTERVAL;
 				npc.m_iRocketsLoaded--;
 			}
@@ -1148,7 +646,7 @@ public void ARIS_ClotThink(int iNPC)
 	if (npc.m_flNextWeaponSwitch < gameTime && !npc.m_bDoingRangedAttack)
 	{
 		npc.PlayWeaponSwitchSound();
-		npc.ToggleWeapon();
+		ARIS_ToggleWeapon(npc);
 	}
 	
 	int target = npc.m_iTarget;
@@ -1171,7 +669,7 @@ public void ARIS_ClotThink(int iNPC)
 				{
 					if (distance > ARIS_WEAPON_SPECIAL_MIN_DISTANCE_SQUARED && Can_I_See_Enemy(npc.index, target))
 					{
-						if (npc.AttemptToShoot(vecPos, vecTargetPos, true))
+						if (ARIS_AttemptToShoot(npc, vecPos, vecTargetPos, true))
 						{
 							npc.PlaySpecialRangedAttackSound();
 							return;
@@ -1181,7 +679,7 @@ public void ARIS_ClotThink(int iNPC)
 				
 				if (npc.m_bDoingRangedAttack)
 				{
-					npc.ShootGun();
+					ARIS_ShootGun(npc);
 					return;
 				}
 			}
@@ -1228,7 +726,7 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 			float vecPos[3], vecTargetPos[3];
 			WorldSpaceCenter(npc.index, vecPos);
 			WorldSpaceCenter(target, vecTargetPos);
-			npc.AttemptToShoot(vecPos, vecTargetPos);
+			ARIS_AttemptToShoot(npc, vecPos, vecTargetPos);
 		}
 		
 		return;
@@ -1250,6 +748,18 @@ static void ARIS_SelfDefense(ARIS npc, float gameTime, int target, float distanc
 			float damage = 35.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			
+			char killicon[64];
+			switch (npc.m_iCurrentMelee)
+			{
+				case ARIS_MELEE_RESISTANCE: killicon = "freedom_staff";
+				case ARIS_MELEE_DAMAGE: killicon = "crossing_guard";
+				case ARIS_MELEE_SPEED: killicon = "nonnonviolent_protest";
+				default: killicon = "fists";
+			}
+			
+			KillFeed_SetKillIcon(npc.index, killicon);
+			
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -1332,7 +842,8 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	
 	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
 	{
-		npc.DestroyDroppedBeacon();
+		ARIS_DestroyDroppedBeacon(npc);
+		ARIS_ClearAllProjectiles(npc);
 		
 		npc.StopPassiveSound();
 		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
@@ -1371,6 +882,516 @@ public void ARIS_NPCDeath(int entity)
 
 	npc.StopPassiveSound();
 
+}
+
+static void ARIS_CalculateRocketAmount(ARIS npc)
+{
+	int playerCount = CountPlayersOnRed(0); // 0 = includes teutons and downed players
+	int rocketCount = playerCount * ARIS_ROCKET_COUNT_PER_PLAYER;
+	
+	// no int clamp unlucky
+	if (rocketCount < ARIS_ROCKET_COUNT_MIN)
+		rocketCount = ARIS_ROCKET_COUNT_MIN;
+	else if (rocketCount > ARIS_ROCKET_COUNT_MAX)
+		rocketCount = ARIS_ROCKET_COUNT_MAX;
+	
+	ARIS_EmptyGlobalTargetArray(rocketCount);
+	npc.m_iTargetArrayIndex = 0;
+	GetHighDefTargets(view_as<UnderTides>(npc.index), i_TargetArray, sizeof(i_TargetArray), false, 1);
+	ARIS_LoopGlobalTargetArray(rocketCount);
+	
+	npc.m_iRocketsLoaded = rocketCount;
+}
+
+static void ARIS_FireRocketUpwards(ARIS npc)
+{
+	// Firing a fake rocket upwards. If it hits a ceiling or wall, no biggie, the excuse is they merge into the walls or some shit idk
+	float vecPos[3];
+	WorldSpaceCenter(npc.index, vecPos);
+	vecPos[0] += GetRandomFloat(-300.0, 300.0);
+	vecPos[1] += GetRandomFloat(-300.0, 300.0);
+	vecPos[2] += 4000.0;
+	
+	// We use a particle rocket for better manipulation
+	int rocket = npc.FireParticleRocket(vecPos, 0.0, 800.0, 0.0, "rockettrail");
+	ARIS_MakeParticleRocketSuitable(rocket, true);
+	
+	npc.PlayRocketSound();
+	
+	// Each rocket will create a real rocket a bit later
+	CreateTimer(ARIS_ROCKET_DELAY, Timer_ARIS_FireRocketTowardsPlayer, npc.index, TIMER_FLAG_NO_MAPCHANGE);
+}
+
+static void ARIS_FireRocketTowardsPlayer(ARIS npc)
+{
+	int enemy = i_TargetArray[npc.m_iTargetArrayIndex++];
+	if (npc.m_iTargetArrayIndex == sizeof(i_TargetArray))
+	{
+		// Huh. Technically this means the attack is over, but doing this just in case
+		npc.m_iTargetArrayIndex = 0;
+	}
+	
+	// We only target players who might not exist anymore
+	if (enemy <= 0 || enemy > MaxClients || !IsClientInGame(enemy) || !IsValidEnemy(npc.index, enemy))
+		return;
+	
+	float vecPos[3], vecTargetPos[3], vecTraceAng[3], vecForward[3];
+	GetAbsOrigin(enemy, vecTargetPos);
+	vecTraceAng[0] = GetRandomFloat(-88.0, -80.0);
+	vecTraceAng[1] = GetRandomFloat(-180.0, 180.0);
+	
+	vecTargetPos[2] += 3.0;
+	
+	Handle trace;
+	trace = TR_TraceRayFilterEx(vecTargetPos, vecTraceAng, (MASK_SOLID | CONTENTS_SOLID), RayType_Infinite, BulletAndMeleeTrace, enemy);
+	TR_GetEndPosition(vecPos, trace);
+	
+	if (TR_GetSurfaceFlags() & SURF_SKY == 0)
+	{
+		// We didn't hit the sky, but that's fine. I don't do anything here, but if you want to add some lines about rockets coming from walls/ceilings, here's where you do it
+	}
+	
+	delete trace;
+	
+	// Push the end position 24 units off the surface
+	ScaleVector(vecTraceAng, -1.0);
+	GetAngleVectors(vecTraceAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+	NormalizeVector(vecForward, vecForward);
+	ScaleVector(vecForward, 24.0);
+	AddVectors(vecPos, vecForward, vecPos);
+	
+	// Tracing the rest of the way to ensure we hit the floor or a wall or something (in case the target is midair)
+	trace = TR_TraceRayFilterEx(vecTargetPos, vecTraceAng, (MASK_SOLID | CONTENTS_SOLID), RayType_Infinite, BulletAndMeleeTrace, enemy);
+	TR_GetEndPosition(vecTargetPos, trace);
+	
+	delete trace;
+	
+	vecTargetPos[2] += 3.0;
+	
+	float distance = GetVectorDistance(vecPos, vecTargetPos);
+	float speed = distance / ARIS_ROCKET_FLIGHT_TIME;
+	
+	int rocket = npc.FireParticleRocket(vecTargetPos, 0.0, speed, 0.0, "rockettrail", .Override_Spawn_Loc = true, .Override_VEC = vecPos);
+	ARIS_MakeParticleRocketSuitable(rocket, false);
+	
+	float radius = ARIS_ROCKET_BLAST_RADIUS * 2.0;
+	spawnRing_Vectors(vecTargetPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, ARIS_ROCKET_FLIGHT_TIME, 1.0, 0.1, 1, 0.0);
+	spawnRing_Vectors(vecTargetPos, radius, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 220, 220, 220, 255, 1, ARIS_ROCKET_FLIGHT_TIME + 0.3, 1.0, 0.1, 1);
+	
+	npc.PlayRocketLandingSound(rocket);
+}
+
+static void ARIS_DestroyDroppedBeacon(ARIS npc)
+{
+	if (npc.m_iLastBeaconRef)
+	{
+		int entity = EntRefToEntIndex(npc.m_iLastBeaconRef);
+		if (entity != INVALID_ENT_REFERENCE)
+			RequestFrame(KillNpc, entity);
+	}
+}
+
+static void ARIS_ToggleWeapon(ARIS npc)
+{
+	float gameTime = GetGameTime(npc.index);
+	
+	npc.m_fbGunout = !npc.m_fbGunout;
+	if (npc.m_fbGunout)
+	{
+		npc.m_flNextRangedAttack = gameTime + (ARIS_WEAPON_SHOOT_COOLDOWN / 1.7);
+		npc.m_bDoingRangedAttack = false;
+		npc.m_flNextSpecialRangedAttack = gameTime + ARIS_WEAPON_SPECIAL_COOLDOWN_INITIAL;
+		npc.m_bDoingSpecialRangedAttack = false;
+		
+		ARIS_DropMelee(npc);
+		npc.m_iCurrentMelee++;
+		npc.m_iCurrentMelee = npc.m_iCurrentMelee % ARIS_MELEE_COUNT;
+		npc.m_iTimesHitWithMelee = 0;
+	}
+	else if (!npc.m_bLostHalfHealth)
+	{
+		npc.m_flNextRocketBarrageStart = fmax(npc.m_flNextRocketBarrageStart, gameTime + 6.0);
+	}
+	
+	npc.m_flNextWeaponSwitch = gameTime + ARIS_WEAPON_SWITCH_COOLDOWN;
+	
+	ARIS_RefreshAnimation(npc);
+}
+
+static void ARIS_RefreshAnimation(ARIS npc, bool forceRefreshWeapon = false)
+{
+	int oldCycle = npc.m_iChanged_WalkCycle;
+	int newCycle;
+	
+	if (!npc.m_fbGunout)
+		newCycle = npc.IsOnGround() ? 0 : 1;
+	else
+		newCycle = npc.IsOnGround() ? 2 : 3;
+	
+	if (!forceRefreshWeapon && oldCycle == newCycle)
+		return;
+	
+	// 0 and 1 / 2 = 0, melee out
+	// 2 and 3 / 2 = 1, shotgun out
+	int weaponId = newCycle / 2;
+	bool changeWeapon = oldCycle / 2 != newCycle / 2;
+	
+	if (changeWeapon || forceRefreshWeapon)
+	{
+		if (IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		
+		switch (weaponId)
+		{
+			case 0:
+			{
+				char model[128];
+				switch (npc.m_iCurrentMelee)
+				{
+					case ARIS_MELEE_RESISTANCE: model = "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl";
+					case ARIS_MELEE_DAMAGE: model = "models/workshop/weapons/c_models/c_rr_crossing_sign/c_rr_crossing_sign.mdl";
+					case ARIS_MELEE_SPEED: model = "models/weapons/c_models/c_picket/c_picket.mdl";
+				}
+				
+				npc.m_iWearable1 = npc.EquipItem("head", model);
+				SetVariantString("1.1");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			}
+			
+			case 1:
+			{
+				npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shotgun/c_shotgun.mdl");
+				SetVariantString("3.0");
+				AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			}	
+		}
+	}
+	
+	int activity;
+	switch (newCycle)
+	{
+		case 0:
+		{
+			npc.m_bisWalking = true;
+			activity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		}
+		
+		case 1:
+		{
+			npc.m_bisWalking = false;
+			activity = npc.LookupActivity("ACT_MP_AIRWALK_MELEE_ALLCLASS");
+		}
+		
+		case 2:
+		{
+			npc.m_bisWalking = true;
+			activity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+		}
+		
+		case 3:
+		{
+			npc.m_bisWalking = false;
+			activity = npc.LookupActivity("ACT_MP_AIRWALK_SECONDARY");
+		}
+	}
+	
+	if (activity > 0)
+		npc.StartActivity(activity);
+	
+	npc.m_iChanged_WalkCycle = newCycle;
+}
+
+static void ARIS_DropMelee(ARIS npc)
+{
+	float vecPos[3], vecAng[3], vecTargetPos[3];
+	GetAbsOrigin(npc.index, vecPos);
+	GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
+	
+	Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({ 90.0, 0.0, 0.0 }), MASK_SOLID, RayType_Infinite, TraceEntityFilter_ARIS_OnlyWorld);
+	TR_GetEndPosition(vecTargetPos, trace);
+	delete trace;
+	
+	char data[64];
+	switch (npc.m_iCurrentMelee)
+	{
+		case ARIS_MELEE_RESISTANCE: data = "resistance";
+		case ARIS_MELEE_DAMAGE: data = "damage";
+		case ARIS_MELEE_SPEED: data = "speed";
+	}
+	
+	Format(data, 64, "%s;%d", data, npc.m_iTimesHitWithMelee);
+	
+	// This model is a bit too down low, let's raise it up
+	if (npc.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
+		vecTargetPos[2] += 50.0;
+	
+	ARIS_DestroyDroppedBeacon(npc);
+	
+	int npcSpawn = NPC_CreateByName("npc_aris_makeshift_beacon", -1, vecTargetPos, vecAng, GetTeam(npc.index), data);
+	npc.m_iLastBeaconRef = EntIndexToEntRef(npcSpawn);
+	
+	npc.PlayDeployBeaconSound();
+
+	if(npc.m_iCurrentMelee == ARIS_MELEE_RESISTANCE)
+	{
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: D3P10Y1N6 R3S1574N7 M345UR3S");
+			case 1:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: R3S1574NC3S 0NL1N3");
+			case 2:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: D3F3NS3 D3PL0Y3D");
+		}
+	}
+	if(npc.m_iCurrentMelee == ARIS_MELEE_DAMAGE)
+	{
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 8UFF3R1N6 D4M463");
+			case 1:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 800S73R D3PL0Y3D");
+			case 2:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: D4M463 = 8UFF3D");
+		}
+	}
+	if(npc.m_iCurrentMelee == ARIS_MELEE_SPEED)
+	{
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: V3L0C17Y R151N6");
+			case 1:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 4CC3L3R4710N 1NCR34S3D");
+			case 2:
+				CPrintToChatAll("{rare}A.R.I.S.{default}: M0M3N7UM CH4N63");
+		}
+	}
+}
+
+static bool ARIS_AttemptToShoot(ARIS npc, float vecPos[3], float vecTargetPos[3], bool oppositeDirectionOfTarget = false)
+{
+	// Why would we be here if we got no gun?
+	if (!npc.m_fbGunout)
+		return false;
+	
+	// ???? where the fuck are we looking at
+	if (!GetVectorLength(vecTargetPos, true))
+		return false;
+	
+	if (!npc.IsOnGround())
+		return false;
+	
+	float vecAng[3], vecForward[3];
+	
+	if (oppositeDirectionOfTarget)
+		GetVectorAnglesTwoPoints(vecTargetPos, vecPos, vecAng);
+	else
+		GetVectorAnglesTwoPoints(vecPos, vecTargetPos, vecAng);
+	
+	GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+	NormalizeVector(vecForward, vecForward);
+	ScaleVector(vecForward, ARIS_WEAPON_SHOOT_MAX_DISTANCE);
+	AddVectors(vecPos, vecForward, vecTargetPos);
+	
+	if (oppositeDirectionOfTarget)
+	{
+		npc.m_bDoingSpecialRangedAttack = true;
+		npc.m_flNextSpecialRangedAttack = FAR_FUTURE; // Will be reset when the shot is done
+			
+		// We need to stop IMMEDIATELY
+		npc.m_flSpeed = 0.0;
+		npc.StopPathing();
+		npc.FaceTowards(vecTargetPos, 20000.0);
+	}
+	else
+	{
+		if (npc.m_iTarget > 0)
+		{
+			float vecBuffer[3];
+			WorldSpaceCenter(npc.m_iTarget, vecBuffer);
+			npc.FaceTowards(vecBuffer, 20000.0);
+		}
+		
+		npc.m_bAllowBackWalking = true;
+		npc.m_flSpeed = 50.0;
+	}
+	
+	npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY");
+	
+	npc.m_bDoingRangedAttack = true;
+	npc.m_flNextRangedAttack = GetGameTime(npc.index) + ARIS_WEAPON_SHOOT_DELAY;
+	
+	npc.PlayShotgunReloadingSound();
+	
+	return true;
+}
+
+public void ARIS_ShootGun(ARIS npc)
+{
+	// Why would we be here if we got no gun?
+	if (!npc.m_fbGunout)
+		return;
+	
+	float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecBarrelPos[3];
+	float vecBuffer[3];
+	
+	npc.GetAttachment("weapon_bone_1", vecBarrelPos, vecAng);
+	ParticleEffectAtWithRotation(vecBarrelPos, vecAng, ARIS_WEAPON_SHOOT_BLAST_PARTICLE);
+	
+	GetAbsOrigin(npc.index, vecPos);
+	GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
+	
+	if (!npc.m_bDoingSpecialRangedAttack && npc.m_iTarget > 0)
+	{
+		GetAbsOrigin(npc.m_iTarget, vecBuffer);
+		GetVectorAnglesTwoPoints(vecPos, vecBuffer, vecBuffer);
+		vecAng[0] = vecBuffer[0];
+	}
+	
+	// If there's not much difference between heights, we'll treat them as the same
+	// FIXME: This doesn't work!
+	GetAbsOrigin(npc.m_iTarget, vecBuffer);
+	float difference = fabs(vecPos[2] - vecBuffer[2]);
+	if (difference < 75.0 / 1.3)
+		vecTargetPos[2] = vecBuffer[2];
+	
+	GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+	NormalizeVector(vecForward, vecForward);
+	ScaleVector(vecForward, ARIS_WEAPON_SHOOT_MAX_DISTANCE - 35.0);
+	AddVectors(vecPos, vecForward, vecTargetPos);
+	
+	int color[4] = { 104, 207, 255, 255 };
+	
+	KillFeed_SetKillIcon(npc.index, "pomson");
+	
+	// Our targetting method is a little different, so we can't use DoSwingTrace
+	// Bullets
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			vecBuffer = vecAng;
+			vecBuffer[0] += -15.0 + (i * 7.5);
+			vecBuffer[1] += -15.0 + (j * 7.5);
+			
+			GetAngleVectors(vecBuffer, vecForward, NULL_VECTOR, NULL_VECTOR);
+			NormalizeVector(vecForward, vecForward);
+			ScaleVector(vecForward, ARIS_WEAPON_SHOOT_MAX_DISTANCE);
+			AddVectors(vecBarrelPos, vecForward, vecBuffer);
+			
+			Handle trace = TR_TraceRayFilterEx(vecBarrelPos, vecBuffer, (MASK_SOLID | CONTENTS_SOLID), RayType_EndPoint, TraceFilter_ARIS_ShotgunBullet, npc.index);
+			TR_GetEndPosition(vecBuffer, trace);
+			delete trace;
+			
+			TE_SetupBeamPoints(vecBarrelPos, vecBuffer, Shared_BEAM_Laser, 0, 0, 0, 0.1, 1.0, 1.0, 30, 0.0, color, 0);
+			TE_SendToAll();
+			
+			for (int k = 1; k < MAXENTITIES; k++)
+			{
+				if (i_EntitiesHitAoeSwing_NpcSwing[k] == npc.index)
+				{
+					i_EnemyHitByThisManyBullets[k]++;
+					i_EntitiesHitAoeSwing_NpcSwing[k] = INVALID_ENT_REFERENCE;
+				}
+			}
+		}
+	}
+	
+	// Blast
+	float vecMins[3] = { -85.0, -85.0, 0.0 };
+	float vecMaxs[3] = { 85.0, 85.0, 160.0 };
+	
+	// I have no idea what these flags are, but it's what DoSwingTrace uses for aoe attacks
+	Handle trace = TR_TraceHullFilterEx(vecPos, vecPos, vecMins, vecMaxs, 1073741824, TraceFilter_ARIS_ShotgunBlast, npc.index);
+	delete trace;
+	
+	float armor;
+	for (int target = 1; target < MAXENTITIES; target++)
+	{
+		float damage;
+		float armorFromThisTarget;
+
+		
+		int bullets = i_EnemyHitByThisManyBullets[target];
+		if (bullets)
+		{
+			damage += 10.0 + (5.0 + (bullets - 1));
+			armorFromThisTarget += bullets * 0.005;
+			i_EnemyHitByThisManyBullets[target] = 0;
+		}
+		
+		int blast = b_EnemyHitByBlast[target];
+		if (blast)
+		{
+			damage += 25.0;
+			Custom_Knockback(npc.index, target, 1200.0);
+			armorFromThisTarget += 0.01;
+			b_EnemyHitByBlast[target] = false;
+		}
+		damage *= 6.0;
+		damage *= RaidModeScaling;
+		
+		if (damage > 0.0)
+		{
+			SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_BULLET, -1);
+			
+			if (target > MaxClients)
+				armorFromThisTarget *= 0.2;
+			
+			armor += armorFromThisTarget;
+			
+			if (IsValidEntity(npc.m_iWearable1))
+			{
+				float vecBufferAng[3];
+				WorldSpaceCenter(target, vecBuffer);
+				
+				GetVectorAnglesTwoPoints(vecBuffer, vecBarrelPos, vecBufferAng);
+				int particle = ParticleEffectAtWithRotation(vecBuffer, vecBufferAng, ARIS_WEAPON_ARMOR_RETURN_PARTICLE, 0.3);
+				
+				// Array netprop, but we only need element 0 anyway
+				SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", npc.m_iWearable1, 0);
+				SetEntProp(particle, Prop_Send, "m_iControlPointParents", npc.m_iWearable1, _, 0);
+			}
+		}
+	}
+	
+	if (armor > 0.0)
+	{
+		armor *= NpcDoHealthRegenScaling(npc.index);
+		GrantEntityArmor(npc.index, false, 1.0, 0.5, 0, ReturnEntityMaxHealth(npc.index) * armor);
+	}	
+	
+	// Launching ourselves backwards. We don't care if we're being blocked
+	GetEntPropVector(npc.index, Prop_Send, "m_angRotation", vecAng);
+	vecAng[0] = 27.5;
+	GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+	NormalizeVector(vecForward, vecForward);
+	ScaleVector(vecForward, npc.m_bDoingSpecialRangedAttack ? -600.0 : -350.0);
+	
+	AddVectors(vecPos, vecForward, vecBuffer);
+	PluginBot_Jump(npc.index, vecBuffer, 9000.0);
+	
+	if (npc.m_bDoingSpecialRangedAttack)
+	{
+		npc.m_flNextSpecialRangedAttack = GetGameTime(npc.index) + ARIS_WEAPON_SPECIAL_COOLDOWN;
+		npc.m_bDoingSpecialRangedAttack = false;
+	}
+	
+	npc.m_flNextRangedAttack = GetGameTime() + ARIS_WEAPON_SHOOT_COOLDOWN;
+	npc.m_bDoingRangedAttack = false;
+	
+	npc.m_flNextWeaponSwitch = fmax(npc.m_flNextWeaponSwitch, GetGameTime(npc.index) + 1.0);
+	
+	npc.m_bAllowBackWalking = false;
+	npc.m_bInFlightFromRangedAttack = true;
+	
+	npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+	npc.PlayShotgunSound();
+	
+	npc.m_flSpeed = 300.0;
+	npc.StartPathing();
 }
 
 static void ARIS_MakeParticleRocketSuitable(int entity, bool fake)
@@ -1422,6 +1443,8 @@ static void ARIS_Real_Rocket_Particle_StartTouch(int entity, int target)
 			if (IsValidEntity(RaidBossActive))
 				damage *= RaidModeScaling;
 			
+			KillFeed_SetKillIcon(owner, "tf_projectile_rocket");
+			
 			Explode_Logic_Custom(damage, owner, entity, -1, vecPos, ARIS_ROCKET_BLAST_RADIUS);
 		}
 		
@@ -1447,10 +1470,11 @@ static void ARIS_LoopGlobalTargetArray(int count)
 
 static void Timer_ARIS_FireRocketTowardsPlayer(Handle timer, int iNPC)
 {
-	if (b_NpcHasDied[iNPC])
+	if (b_NpcHasDied[iNPC] || IsValidEntity(Aperture_GetLastStandBoss()))
 		return;
 	
-	view_as<ARIS>(iNPC).FireRocketTowardsPlayer();
+	ARIS npc = view_as<ARIS>(iNPC);
+	ARIS_FireRocketTowardsPlayer(npc);
 }
 
 static void Timer_ARIS_PlaySecondReloadingSound(Handle timer, int iNPC)
@@ -1485,4 +1509,19 @@ static bool TraceFilter_ARIS_ShotgunBullet(int entity, int mask, int other)
 static bool TraceEntityFilter_ARIS_OnlyWorld(int entity, int mask)
 {
 	return entity == 0 || entity > MAXENTITIES;
+}
+
+static void ARIS_ClearAllProjectiles(ARIS npc)
+{
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		if (!IsValidEntity(i) || !b_IsAProjectile[i])
+			continue;
+		
+		int owner = GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity");
+		if (owner != npc.index)
+			continue;
+		
+		RemoveEntity(i);
+	}
 }
