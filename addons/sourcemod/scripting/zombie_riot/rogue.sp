@@ -1011,8 +1011,7 @@ void Rogue_BattleVictory()
 	Rogue_ParadoxShop_Victory();
 	Rogue_RiftShop_Victory();
 
-	if(RogueTheme == BlueParadox)
-		Rogue_Dome_WaveEnd();
+	Rogue_Dome_WaveEnd();
 	
 	float time = 5.0;
 	
@@ -1128,8 +1127,7 @@ bool Rogue_BattleLost()
 	bool victory = false;
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
-	if(RogueTheme == BlueParadox)
-		Rogue_Dome_WaveEnd();
+	Rogue_Dome_WaveEnd();
 
 	if(victory || (BonusLives > 0 && !RequiredBattle))
 	{
@@ -2099,8 +2097,18 @@ static void StartStage(const Stage stage)
 		}
 	}
 
-	if(RogueTheme == BlueParadox)
-		Rogue_Dome_WaveStart(pos);
+	switch(RogueTheme)
+	{
+		case BlueParadox:
+		{
+			if(CurrentFloor != 2)
+				Rogue_Dome_WaveStart(pos);
+		}
+		case ReilaRift:
+		{
+			Rogue_Dome_WaveStart(pos);
+		}
+	}
 
 	if(b_LeaderSquad)
 	{
@@ -2132,8 +2140,7 @@ static void StartStage(const Stage stage)
 
 static void TeleportToSpawn()
 {
-	if(RogueTheme == BlueParadox)
-		Rogue_Dome_WaveEnd();
+	Rogue_Dome_WaveEnd();
 	
 	float pos[3], ang[3];
 

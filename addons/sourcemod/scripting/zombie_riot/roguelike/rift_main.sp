@@ -321,7 +321,6 @@ static void StartRiftVote(bool first)
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	vote.Append[0] = 0;
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
@@ -346,12 +345,12 @@ static void StartRiftVote(bool first)
 				strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 				list.PushArray(vote);
 				
-				if(++found > 5)
+				if(++found > 7)
 					break;
 			}
 		}
 
-		if(found < 6)
+		if(found < 8)
 		{
 			// Misc items
 			for(int i = length - 1; i >= 0; i--)
@@ -365,7 +364,7 @@ static void StartRiftVote(bool first)
 					strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 					list.PushArray(vote);
 					
-					if(++found > 5)
+					if(++found > 7)
 						break;
 				}
 			}

@@ -32,9 +32,6 @@ void Rogue_Dome_WaveStart(const float pos[3])
 {
 	Rogue_Dome_WaveEnd();
 
-	if(Rogue_GetFloor() == 2)
-		return;
-	
 	g_vecDomeCP = pos;
 	
 	//Create dome prop

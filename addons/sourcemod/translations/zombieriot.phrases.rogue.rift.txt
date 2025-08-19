@@ -523,7 +523,7 @@
 	}
 	"Torn Keycard Desc"
 	{
-		"en"	"{blue}What did {red}you {blue}do?"
+		"en"	"{crimson}What did you do?"
 	}
 
 	"Gateway"
