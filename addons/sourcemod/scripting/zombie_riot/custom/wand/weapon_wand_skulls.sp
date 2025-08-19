@@ -1058,10 +1058,9 @@ public void Wand_Skulls_Touch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		float position[3];
-	
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
+	//	float position[3];
+	//	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	//	ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
 		EmitSoundToAll(SOUND_SKULL_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		RemoveEntity(entity);
 	}
@@ -1071,9 +1070,9 @@ public void Wand_Skulls_Touch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		float position[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
+	//	float position[3];
+	//	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	//	ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
 		EmitSoundToAll(SOUND_SKULL_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		RemoveEntity(entity);
 	}

@@ -720,6 +720,7 @@ void Music_Stop_All(int client)
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
 	}
 	//dont call so often! causes lag!
 	
