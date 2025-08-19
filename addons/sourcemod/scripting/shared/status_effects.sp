@@ -51,9 +51,14 @@ enum struct StatusEffect
 
 	void Blank()
 	{
-		this.DamageTakenMulti = -1.0;
-		this.DamageDealMulti = -1.0;
-		this.MovementspeedModif = -1.0;
+		this.OnBuffStarted				= INVALID_FUNCTION;
+		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+		this.DamageTakenMulti 			= -1.0;
+		this.DamageDealMulti 			= -1.0;
+		this.MovementspeedModif 		= -1.0;
+		this.LinkedStatusEffect 		= 0;
+		this.LinkedStatusEffectNPC 		= 0;
+		this.ElementalLogic 			= false;
 	}
 }
 
@@ -5452,6 +5457,9 @@ static const char g_IdleCreepSound[][] = {
 	"vo/mvm/norm/pyro_mvm_jeers01.mp3",
 	"vo/mvm/norm/pyro_mvm_jeers02.mp3",
 };
+static const char g_MarkSoundUmbral[][] = {
+	"ui/hitsound_vortex1.wav",
+};
 static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	float ratio = Elemental_DamageRatio(entity, Element_Warped);
@@ -5713,5 +5721,100 @@ void StatusEffects_Rogue3()
 	data.Positive 					= false;
 	data.Slot					= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Kolum's View");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꝃ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.ElementalLogic				= true;
+	data.OnBuffStarted				= KolumView_Start;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Umbral Grace");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "₲");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= true;
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 0.5;
+	data.TimerRepeatCall_Func 		= UmbralGrace_Timer;
+	data.OnBuffStarted				= UmbralGrace_Start;
+	data.OnBuffEndOrDeleted			= UmbralGrace_End;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Umbral Grace Debuff");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.AttackspeedBuff			= 1.5;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
+
+
+void UmbralGrace_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(entity <= MaxClients)
+	{
+		if(Armor_Charge[entity] >= 0)
+			return;
+
+		GiveArmorViaPercentage(entity, 0.05, 1.0, _, true);
+	}
+	else
+	{
+		if(!b_ThisWasAnNpc[entity])
+			return;
+		
+		
+		for(int i; i < Element_MAX; i++) // Remove all elementals except Plasma 
+		{
+			Elemental_RemoveDamage(entity, i, RoundToNearest(float(Elemental_TriggerDamage(entity, i)) * 0.05));
+		}
+	}
+}
+static void UmbralGrace_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
+		return;
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_treespiral_blue_glow", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+static void KolumView_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim > MaxClients)
+		return;
+
+	EmitSoundToClient(victim, g_MarkSoundUmbral[GetRandomInt(0, sizeof(g_MarkSoundUmbral) - 1)], victim, SNDCHAN_STATIC, _, _, 1.0, 20);
+	EmitSoundToClient(victim, g_MarkSoundUmbral[GetRandomInt(0, sizeof(g_MarkSoundUmbral) - 1)], victim, SNDCHAN_STATIC, _, _, 1.0, 20);
+}
+static void UmbralGrace_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
+
 #endif

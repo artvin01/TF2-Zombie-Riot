@@ -491,6 +491,11 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		}
 
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
+
+		//for rouge2 and 3
+		if(Dome_PointOutside(AproxRandomSpaceToWalkTo))
+			continue;
+
 		bool DoNotTeleport = false;
 		int WasTooFarAway = 0;
 		int PlayersCount = 0;

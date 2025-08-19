@@ -1466,7 +1466,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				
 				CClotBody npc = view_as<CClotBody>(victim);
 				npc.m_bDissapearOnDeath = true;
-				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal.");
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal");
 				if (!IsValidEntity(npc.m_iFreezeWearable))
 				{
 					float offsetToHeight = 40.0;

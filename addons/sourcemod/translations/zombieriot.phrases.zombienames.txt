@@ -2217,9 +2217,9 @@
 	{
 		"en"	"Erasus"
 	}
-	"Pure Crystal."
+	"Pure Crystal"
 	{
-		"en"	"Pure Crystal."
+		"en"	"Pure Crystal"
 	}
 	"Giant Tankus"
 	{
