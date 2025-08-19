@@ -296,7 +296,6 @@ void Umbral_KoulmSelfDefense(Umbral_Koulm npc, float gameTime, int target, float
 				npc.PlayMeleeHitSound();
 				TE_SetupBeamPoints(origin, VecEnemy, Shared_BEAM_Laser, 0, 0, 0, 0.12, 5.0, 6.0, 0, 0.0, {200,200,200,255}, 3);
 				TE_SendToAll(0.0);
-				ShootLaser(npc.index, "bullet_tracer02", origin, VecEnemy, false );
 				float damageDealt = 400.0;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 3.0;
