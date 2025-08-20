@@ -119,6 +119,20 @@ public float Rogue_Encounter_RiftShop()
 	Artifact artifact;
 
 	bool rare = Rogue_GetFloor() > 0;
+	bool easyMode = DifficultyLevel < 1;
+	bool found;
+
+	if(!easyMode)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING2"))
+			{
+				found = true;
+				break;
+			}
+		}
+	}
 
 	if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 		ShopListing.PushArray(artifact);
@@ -140,7 +154,7 @@ public float Rogue_Encounter_RiftShop()
 		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
 	}
-	else if(Rogue_GetNamedArtifact("Fractured", artifact))
+	else if(found && Rogue_GetNamedArtifact("Fractured", artifact))
 	{
 		ShopListing.PushArray(artifact);
 	}
@@ -658,9 +672,11 @@ public void Rogue_RiftWarp_Enemy(int entity)
 		int seed1 = 2 + (WarpSeed % 3);
 		int seed2 = WarpSeed / 3;
 
+		PrintToChatAll("Rogue_RiftWarp_Enemy  RNG %d == %d", (seed2 % seed1), (i_NpcInternalId[entity] % seed1));
+		
 		if((seed2 % seed1) == (i_NpcInternalId[entity] % seed1))
 		{
-			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1500, false, _, true);
+			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1000, false, _, true);
 
 			if(Elemental_DamageRatio(entity, Element_Warped) > 0.0)
 			{
