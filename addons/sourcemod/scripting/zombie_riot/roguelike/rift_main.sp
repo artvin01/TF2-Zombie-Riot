@@ -674,7 +674,7 @@ public void Rogue_RiftWarp_Enemy(int entity)
 
 		if((seed2 % seed1) == (i_NpcInternalId[entity] % seed1))
 		{
-			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 500, false, _, true);
+			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1000, false, _, true);
 
 			if(Elemental_DamageRatio(entity, Element_Warped) > 0.0)
 			{
