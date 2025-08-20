@@ -280,7 +280,7 @@ static ArrayList Floors;
 static int GameState;
 static Handle ProgressTimer;
 
-static bool Offline;
+static bool Offline = true;
 static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
