@@ -1520,6 +1520,10 @@ void Rogue_NextProgress()
 
 								if(future == id || future == -1)
 								{
+									strcopy(vote.Append, sizeof(vote.Append), "  (→ ???)");
+								}
+								else
+								{
 									if(stage.Hidden)
 									{
 										strcopy(vote.Append, sizeof(vote.Append), "  (→ Encounter)");
@@ -1528,10 +1532,6 @@ void Rogue_NextProgress()
 									{
 										Format(vote.Append, sizeof(vote.Append), "  (→ %T)", stage.Name, LANG_SERVER);
 									}
-								}
-								else
-								{
-									strcopy(vote.Append, sizeof(vote.Append), "  (→ ???)");
 								}
 							}
 						}
