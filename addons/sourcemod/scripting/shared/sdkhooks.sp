@@ -1409,15 +1409,15 @@ public void OnPostThink(int client)
 			Format(buffer, sizeof(buffer), "⛛ ", buffer);
 			for(int i=1; i<5; i++)
 			{
-				if(armor >= Armor_Max*(float(i)*0.22))
+				if(armor >= Armor_Max*(float(i)*0.25))
 				{
 					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 				}
-				else if(armor > Armor_Max*((float(i)*0.22) - (1.0/60.0)) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+				else if(armor > Armor_Max*((float(i)*0.25) - (1.0/12.0)) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
 				{
 					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 				}
-				else if(armor > Armor_Max*((float(i)*0.22) - (1.0/30.0)))
+				else if(armor > Armor_Max*((float(i)*0.25) - (2.0/12.0)))
 				{
 					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 				}
