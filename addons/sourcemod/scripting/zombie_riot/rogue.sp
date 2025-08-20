@@ -134,7 +134,7 @@ enum struct Stage
 	bool InverseKey;
 	MusicEnum IntroMusic;
 
-	void SetupKv(KeyValues kv)
+	void SetupKv(KeyValues kv, const char[] floorsky)
 	{
 		kv.GetSectionName(this.Name, 64);
 		if(!TranslationPhraseExists(this.Name))
@@ -145,7 +145,7 @@ enum struct Stage
 
 		kv.GetString("camera", this.Camera, 64);
 		kv.GetString("spawn", this.Spawn, 64);
-		kv.GetString("skyname", this.Skyname, 64);
+		kv.GetString("skyname", this.Skyname, 64, floorsky);
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
 		this.ForcePosition = kv.GetNum("forcepos");
@@ -212,7 +212,7 @@ enum struct Floor
 
 				do
 				{
-					stage.SetupKv(kv);
+					stage.SetupKv(kv, this.Skyname);
 					this.Encounters.PushArray(stage);
 				}
 				while(kv.GotoNextKey());
@@ -280,6 +280,7 @@ static ArrayList Floors;
 static int GameState;
 static Handle ProgressTimer;
 
+static bool Offline;
 static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
@@ -794,6 +795,7 @@ static void DisplayHintVote()
 void Rogue_StartSetup()	// Waves_RoundStart()
 {
 	Rogue_RoundEnd();
+	Offline = false;
 
 	float wait = 60.0;
 
@@ -842,6 +844,7 @@ void Rogue_RoundEnd()
 	CurrentUmbral = 50;
 	BonusLives = 0;
 	BattleChaos = 0.0;
+	Offline = true;
 	Rogue_BlueParadox_Reset();
 
 	if(CurrentCollection)
@@ -2694,6 +2697,9 @@ stock bool Rogue_HasNamedArtifact(const char[] name)
 
 void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail = false)
 {
+	if(Offline)
+		return;
+	
 	if(!CurrentCollection)
 		CurrentCollection = new ArrayList();
 	
