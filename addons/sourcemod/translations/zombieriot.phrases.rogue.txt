@@ -2009,4 +2009,12 @@
 	{
 		"en" "⚔⚠ Zombies Land"
 	}
+	"Underpaid Mercs"
+	{
+		"en" "⚔ Underpaid Mercs"
+	}
+	"Underpaid Mercs!"
+	{
+		"en" "⚔⚠ Underpaid Mercs"
+	}
 }
