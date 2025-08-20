@@ -195,7 +195,6 @@ int Elemental_TriggerDamage(int entity, int type)
 	}
 
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
-	PrintToChatAll("Element: %d | Trigger: %d | Ratio: %f%% | Gib Vuln: %f%%", type, amount, divide, fl_GibVulnerablity[entity]);
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
@@ -698,6 +697,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	
+	PrintToChatAll("Elemental_AddCyroDamage damagebase: %d | fl_Extra_Damage: %f", damagebase, fl_Extra_Damage[attacker]);
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -711,6 +711,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro);
+		PrintToChatAll("Elemental_AddCyroDamage m_flElementRes: %f", GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro));
 		if(damage < 1)
 			return;
 		
@@ -721,6 +722,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Cyro;
 			ElementDamage[victim][Element_Cyro] += damage;
+			PrintToChatAll("Elemental_AddCyroDamage %d / %d", ElementDamage[victim][Element_Cyro], trigger);
 			if(ElementDamage[victim][Element_Cyro] > trigger)
 			{
 				ElementDamage[victim][Element_Cyro] = 0;
