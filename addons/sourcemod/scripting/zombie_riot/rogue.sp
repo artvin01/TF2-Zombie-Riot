@@ -1516,7 +1516,7 @@ void Rogue_NextProgress()
 							}
 							else
 							{
-								if((CurrentCount-2) == maxRooms)
+								if((CurrentCount-1) == maxRooms)
 								{
 									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 2, maxRooms + 1);
 								}
