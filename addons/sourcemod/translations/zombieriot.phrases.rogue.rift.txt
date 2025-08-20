@@ -614,7 +614,7 @@
 	}
 	"Gamemode History Desc 2"
 	{
-		"en"	"{green}Obtain 6000 cash"
+		"en"	"{green}Obtain 10000 cash"
 	}
 	"Gamemode History Lore 2"
 	{
@@ -647,7 +647,7 @@
 	}
 	"We Are Fractured Desc 1"
 	{
-		"en"	"Collect an artifact and start a battle"
+		"en"	"{blue}Collect an artifact and start a battle"
 	}
 	"We Are Fractured Lore 1"
 	{
@@ -660,5 +660,71 @@
 	"We Are Fractured Lore 2"
 	{
 		"en"	"You left right away, you feel as if the Fractured voidstone was behind this. Maybe we need to try it when we're ready to handle this."
+	}
+
+	"Poison Water"
+	{
+		"en"	"Poison Water"
+	}
+	"Poison Water Lore"
+	{
+		"en"	"Fresh water we can probably take, but is it safe to drink?"
+	}
+	"Poison Water Option 1"
+	{
+		"en"	"It's poisoned"
+	}
+	"Poison Water Desc 1"
+	{
+		"en"	"{green}Obtain 2000 cash"
+	}
+	"Poison Water Option 2"
+	{
+		"en"	"Take some water"
+	}
+	"Poison Water Desc 2"
+	{
+		"en"	"{green}Obtain an artifact, 2000 cash {red}but a chance to obtain a cursed artifact"
+	}
+	"Poison Water Lore 2a"
+	{
+		"en"	"Looks like it was safe."
+	}
+	"Poison Water Lore 2b"
+	{
+		"en"	"Don't feel so good."
+	}
+	"Poisoned Water"
+	{
+		"en"	"Poisoned Water"
+	}
+	"Poisoned Water Desc"
+	{
+		"en"	"Shouldn't have drank that.\n{red}Allies have -20% max health, cured by visting a Gateway"
+	}
+	
+	"Ruina'n Magic Factory"
+	{
+		"en"	"Ruina'n Magic Factory"
+	}
+	"Magic Factory Lore"
+	{
+		"en"	"Some sort of factory here we could find something useful here."
+	}
+	"Magic Factory Option 1"
+	{
+		"en"	"Take a look inside"
+	}
+	"Magic Factory Desc 1"
+	{
+		"en"	"{green}Obtain a rare artifact"
+	}
+	"Magic Factory Option 2"
+	{
+		"en"	"Go around back"
+	}
+	"Magic Factory Option 2"
+	{
+		"en"	"{green}Obtain 2000 cash {yellow}and a random voidstone"
 	}
 }

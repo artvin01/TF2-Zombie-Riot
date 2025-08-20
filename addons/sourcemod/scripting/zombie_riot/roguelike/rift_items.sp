@@ -37,3 +37,35 @@ public void Rogue_GamemodeHistory_StageEnd(bool &victory)
 		Rogue_SendToFloor(PreviousFloor, PreviousStage, false);
 	}
 }
+
+public void Rogue_PoisonWater_Ally(int entity, StringMap map)
+{
+	GiveMaxHealth(entity, map, 0.8);
+}
+
+public void Rogue_PoisonWater_FloorChange(int &floor, int &stage)
+{
+	if(floor > 1)
+		Rogue_RemoveNamedArtifact("Poisoned Water");
+}
+
+
+static void GiveMaxHealth(int entity, StringMap map, float amount)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +X% max health
+		map.GetValue("26", value);
+		map.SetValue("26", value * amount);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		// +X% max health
+		int health = RoundFloat(ReturnEntityMaxHealth(entity) * amount);
+
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	}
+}
