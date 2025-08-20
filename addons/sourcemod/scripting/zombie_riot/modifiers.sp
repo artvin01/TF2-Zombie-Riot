@@ -255,6 +255,7 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	GiveNpcOutLineLastOrBoss(iNpc, false);
 	b_thisNpcHasAnOutline[iNpc] = true;
 
+	/*
 	float SelfPosParanormal[3];
 	float AllyPosParanormal[3];
 	float flDistanceToTargetParanormal = GetVectorDistance(SelfPosParanormal, AllyPosParanormal, true);
@@ -266,6 +267,7 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	{
 		fl_Extra_Speed[iNpc] *= 0.5;
 	}
+	*/
 
 }
 

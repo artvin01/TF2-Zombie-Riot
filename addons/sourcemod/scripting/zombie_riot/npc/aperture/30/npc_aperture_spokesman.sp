@@ -172,8 +172,6 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "False Therapy", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", DurationGive);
 		}
 	}

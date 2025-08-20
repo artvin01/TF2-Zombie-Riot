@@ -86,9 +86,9 @@ methodmap Umbral_Koulm < CClotBody
 		if(this.m_flSpassOut > GetGameTime(this.index))
 			return;
 
-		this.m_flNextIdleSound = GetGameTime(this.index) + 1.0;
+		this.m_flNextIdleSound = GetGameTime(this.index) + 0.5;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(35, 40));
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(25, 35));
 		
 	}
 	
@@ -118,6 +118,7 @@ methodmap Umbral_Koulm < CClotBody
 	
 	public Umbral_Koulm(float vecPos[3], float vecAng[3], int ally)
 	{
+		ally = TFTeam_Stalkers;
 		Umbral_Koulm npc = view_as<Umbral_Koulm>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.5", "22500", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 5;
@@ -209,11 +210,7 @@ public void Umbral_Koulm_ClotThink(int iNPC)
 			npc.m_iTarget = 0;
 			return;
 		}
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		Umbral_KoulmSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Umbral_KoulmSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget); 
 		UmbralKoulmAnimBreak(npc);
 	}
 
@@ -279,7 +276,7 @@ public void Umbral_Koulm_NPCDeath(int entity)
 
 }
 
-void Umbral_KoulmSelfDefense(Umbral_Koulm npc, float gameTime, int target, float distance)
+void Umbral_KoulmSelfDefense(Umbral_Koulm npc, float gameTime, int target)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -404,6 +401,9 @@ void KoulmAreaBuff(int attacker, int victim, float &damage, int weapon)
 	if(i_NpcInternalId[victim] == Umbral_Koulm_ID())
 		return;
 
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(npc.m_iBleedType = BLEEDTYPE_UMBRAL)
+		return;
 	//grant the "buff"
 	ApplyStatusEffect(attacker, victim, "Umbral Grace Debuff", 2.5);
 	ApplyStatusEffect(attacker, victim, "Umbral Grace", 2.5);
