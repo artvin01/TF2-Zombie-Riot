@@ -1985,4 +1985,28 @@
 	{
 		"en" "⚔⚠ The Insane"
 	}
+	"Confused Ruanians"
+	{
+		"en" "⚔ Confused Ruanians"
+	}
+	"Confused Ruanians!"
+	{
+		"en" "⚔⚠ Confused Ruanians"
+	}
+	"Sabotaging Eletric's"
+	{
+		"en" "⚔ Sabotaging Eletric's"
+	}
+	"Sabotaging Eletric's!"
+	{
+		"en" "⚔⚠ Sabotaging Eletric's"
+	}
+	"Zombies Land"
+	{
+		"en" "⚔ Zombies Land"
+	}
+	"Zombies Land!"
+	{
+		"en" "⚔⚠ Zombies Land"
+	}
 }
