@@ -655,8 +655,8 @@ public void Rogue_RiftWarp_Enemy(int entity)
 {
 	if(GetURandomInt() % 2)
 	{
-		int seed1 =2 + (WarpSeed % 3);
-		int seed2 = WarpSeed / 5 3;
+		int seed1 = 2 + (WarpSeed % 3);
+		int seed2 = WarpSeed / 3;
 
 		if((seed2 % seed1) == (i_NpcInternalId[entity] % seed1))
 		{
