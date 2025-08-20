@@ -672,11 +672,9 @@ public void Rogue_RiftWarp_Enemy(int entity)
 		int seed1 = 2 + (WarpSeed % 3);
 		int seed2 = WarpSeed / 3;
 
-		PrintToChatAll("Rogue_RiftWarp_Enemy  RNG %d == %d", (seed2 % seed1), (i_NpcInternalId[entity] % seed1));
-		
 		if((seed2 % seed1) == (i_NpcInternalId[entity] % seed1))
 		{
-			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 1000, false, _, true);
+			Elemental_AddWarpedDamage(entity, entity, (Rogue_GetFloor() + 1) * 500, false, _, true);
 
 			if(Elemental_DamageRatio(entity, Element_Warped) > 0.0)
 			{
