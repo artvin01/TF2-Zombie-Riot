@@ -231,7 +231,7 @@ enum struct Floor
 				
 				do
 				{
-					stage.SetupKv(kv);
+					stage.SetupKv(kv, this.Skyname);
 					this.Finals.PushArray(stage);
 				}
 				while(kv.GotoNextKey());
