@@ -195,7 +195,7 @@ int Elemental_TriggerDamage(int entity, int type)
 	}
 
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
-	PrintToChatAll("Element: %d | Trigger: %d | Ratio: %f%% | Gib Vuln: %f%%", amount, amount, divide, fl_GibVulnerablity[entity]);
+	PrintToChatAll("Element: %d | Trigger: %d | Ratio: %f%% | Gib Vuln: %f%%", type, amount, divide, fl_GibVulnerablity[entity]);
 	
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
