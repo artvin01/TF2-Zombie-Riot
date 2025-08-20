@@ -108,9 +108,9 @@ void ApertureBuilder_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return ApertureBuilder(vecPos, vecAng, ally);
+	return ApertureBuilder(vecPos, vecAng, ally, data);
 }
 methodmap ApertureBuilder < CClotBody
 {
@@ -209,7 +209,7 @@ methodmap ApertureBuilder < CClotBody
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
 	
-	public ApertureBuilder(float vecPos[3], float vecAng[3], int ally)
+	public ApertureBuilder(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ApertureBuilder npc = view_as<ApertureBuilder>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
 		
@@ -261,29 +261,40 @@ methodmap ApertureBuilder < CClotBody
 		
 		ApertureBuilder_ToggleBuilding(npc, false);
 		
-		// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
-		// If we can't find an appropriate spot, just ignore LOS
-		const int maxAttempts = 12;
-		const float loosenedReqPerAttempt = 0.06;
-		int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
-		
-		for (int i = 0; i < maxAttempts; i++)
+		if (StrContains(data, "noteleport") == -1)
 		{
-			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
+			// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
+			// If we can't find an appropriate spot, just ignore LOS
+			const int maxAttempts = 12;
+			const float loosenedReqPerAttempt = 0.06;
+			int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
 			
-			int visiblePlayerCount;
-			
-			for (int client = 1; client <= MaxClients; client++)
+			for (int i = 0; i <= maxAttempts; i++)
 			{
-				if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
-					visiblePlayerCount++;
+				TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
+				
+				if (i == maxAttempts)
+					break;
+				
+				int visiblePlayerCount;
+				
+				for (int client = 1; client <= MaxClients; client++)
+				{
+					if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
+						visiblePlayerCount++;
+				}
+				
+				float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
+				
+				// We got what we wanted, no need to try to teleport anymore
+				if (percentage <= i * loosenedReqPerAttempt)
+					break;
 			}
 			
-			float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
-			
-			// We got what we wanted, no need to try to teleport anymore
-			if (percentage <= i * loosenedReqPerAttempt)
-				break;
+			float vecNewPos[3];
+			GetAbsOrigin(npc.index, vecNewPos);
+			ParticleEffectAt(vecNewPos, "teleported_blue");
+			TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
 		}
 		
 		if(AntiSoundSpam < GetGameTime())
@@ -292,9 +303,7 @@ methodmap ApertureBuilder < CClotBody
 			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);
 		}
 		AntiSoundSpam = GetGameTime() + 15.0;
-		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-		VecSelfNpcabs[2] -= 200.0;
-		TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
+		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -303,10 +312,6 @@ methodmap ApertureBuilder < CClotBody
 				ShowGameText(client_check, "voice_player", 1, "%s", "Engineers Appear");
 			}
 		}
-		
-		float vecNewPos[3];
-		GetAbsOrigin(npc.index, vecNewPos);
-		ParticleEffectAt(vecNewPos, "teleported_blue");
 		
 		return npc;
 	}
@@ -337,6 +342,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
+	PrintToChatAll("state %d", npc.m_iState);
 	switch (npc.m_iState)
 	{
 		case APT_BUILDER_STATE_IDLE:
@@ -508,8 +514,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					
 					if (!success)
 					{
-						// Epic fail, try again in a little bit
-						npc.m_iState = APT_BUILDER_STATE_IDLE;
+						// Epic fail, try again in a little bit. To not lobotomize ourselves, let's be angry at anyone so we move for a little bit
+						npc.m_flSpeed = 300.0;
+						npc.StartPathing();
+						npc.m_iTarget = GetClosestTarget(npc.index);
+						npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+						npc.m_iState = APT_BUILDER_STATE_ANGRY;
 						npc.m_flNextBuildingStateTime = gameTime + 1.5;
 					}
 				

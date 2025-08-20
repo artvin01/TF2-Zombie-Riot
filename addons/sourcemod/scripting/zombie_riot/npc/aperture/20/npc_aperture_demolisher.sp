@@ -123,7 +123,9 @@ methodmap ApertureDemolisher < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/hardhat.mdl");
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec24_field_fatigues_style1/dec24_field_fatigues_style1.mdl");
-
+		
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
