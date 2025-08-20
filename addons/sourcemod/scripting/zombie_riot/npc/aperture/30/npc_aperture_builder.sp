@@ -342,7 +342,6 @@ public void ApertureBuilder_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
-	PrintToChatAll("state %d", npc.m_iState);
 	switch (npc.m_iState)
 	{
 		case APT_BUILDER_STATE_IDLE:
