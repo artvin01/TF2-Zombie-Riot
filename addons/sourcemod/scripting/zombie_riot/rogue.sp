@@ -1454,7 +1454,7 @@ void Rogue_NextProgress()
 				if(!(GetURandomInt() % 6))
 					count++;
 				
-				bool bonus = (RogueTheme == ReilaRift && !(GetURandomInt() % 4));
+				bool bonus = (RogueTheme == ReilaRift && !(GetURandomInt() % 20));
 				if(bonus)
 					count++;
 				
