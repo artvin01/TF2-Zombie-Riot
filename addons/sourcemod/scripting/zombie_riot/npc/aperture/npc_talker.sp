@@ -184,15 +184,15 @@ public void Talker_ClotThink(int iNPC)
 		}
 		case 11:
 		{
-			NpcTalker_Wave35Talk(npc);
+			NpcTalker_Wave36Talk(npc);
 		}
 		case 12:
 		{
-			NpcTalker_Wave36Talk(npc);
+			NpcTalker_Wave37Talk(npc);
 		}
 		case 13:
 		{
-			NpcTalker_Wave37Talk(npc);
+			NpcTalker_Wave38Talk(npc);
 		}
 		
 	}
@@ -1441,7 +1441,7 @@ stock void NpcTalker_Wave31Talk(Talker npc)
 	}
 }
 
-stock void NpcTalker_Wave35Talk(Talker npc)
+stock void NpcTalker_Wave36Talk(Talker npc)
 {
 	if(npc.m_iRandomTalkNumber == -1)
 	{
@@ -1558,7 +1558,7 @@ stock void NpcTalker_Wave35Talk(Talker npc)
 }
 
 
-stock void NpcTalker_Wave36Talk(Talker npc)
+stock void NpcTalker_Wave37Talk(Talker npc)
 {
 	if(npc.m_iRandomTalkNumber == -1)
 	{
@@ -1638,7 +1638,7 @@ stock void NpcTalker_Wave36Talk(Talker npc)
 
 
 
-stock void NpcTalker_Wave37Talk(Talker npc)
+stock void NpcTalker_Wave38Talk(Talker npc)
 {
 	if(npc.m_iRandomTalkNumber == -1)
 	{
