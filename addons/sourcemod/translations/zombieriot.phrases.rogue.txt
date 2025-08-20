@@ -1961,4 +1961,28 @@
 	{
 		"en"	"You think I fight alone?"
 	}
+	"Cloned Subjects"
+	{
+		"en" "⚔ Cloned Subjects"
+	}
+	"Cloned Subjects!"
+	{
+		"en" "⚔⚠ Cloned Subjects"
+	}
+	"Shipment Deliviered"
+	{
+		"en" "⚔ Shipment Deliviered"
+	}
+	"Shipment Deliviered!"
+	{
+		"en" "⚔⚠ Shipment Deliviered"
+	}
+	"The Insane"
+	{
+		"en" "⚔ The Insane"
+	}
+	"The Insane!"
+	{
+		"en" "⚔⚠ The Insane"
+	}
 }
