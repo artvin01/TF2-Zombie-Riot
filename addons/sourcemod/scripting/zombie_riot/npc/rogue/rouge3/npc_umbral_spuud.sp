@@ -198,10 +198,18 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	*/
-	npc.m_flSpeedIncreaceMeter *= 0.98;
-	if(npc.m_flSpeedIncreaceMeter <= 0.01)
+	if(i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_OFF)
+		npc.m_flSpeedIncreaceMeter *= 0.9975;
+
+	if(npc.m_flSpeedIncreaceMeter <= 0.1)
 	{
-		npc.m_flSpeedIncreaceMeter = 0.01;
+		npc.m_flSpeedIncreaceMeter = 0.1;
+	}
+	npc.m_flMeleeArmor = (1.0 / npc.m_flSpeedIncreaceMeter);
+	npc.m_flMeleeArmor -= 5.0;
+	if(npc.m_flMeleeArmor <= 1.0)
+	{
+		npc.m_flMeleeArmor = 1.0;
 	}
 	UmbralSpuudAnimBreak(npc);
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -321,9 +329,13 @@ void Umbral_SpuudSelfDefense(Umbral_Spuud npc, float gameTime, int target, float
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
+				float MaxAnimSpeed = (1.5 * (1.0 / npc.m_flSpeedIncreaceMeter));
+				if(MaxAnimSpeed >= 4.0)
+					MaxAnimSpeed = 4.0;
+
 				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,(1.5 * (1.0 / npc.m_flSpeedIncreaceMeter)));
+			//	npc.PlayMeleeSound();
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",false,_,_,MaxAnimSpeed);
 				npc.m_flAttackHappens = gameTime + (0.2 * npc.m_flSpeedIncreaceMeter);
 				npc.m_flDoingAnimation = gameTime + (0.2 * npc.m_flSpeedIncreaceMeter);
 				npc.m_flNextMeleeAttack = gameTime + (0.75 * npc.m_flSpeedIncreaceMeter);
@@ -336,15 +348,18 @@ void Umbral_SpuudSelfDefense(Umbral_Spuud npc, float gameTime, int target, float
 
 void UmbralSpuudAnimBreak(Umbral_Spuud npc)
 {
+	float MaxLayer = (0.2 * (1.0 / npc.m_flSpeedIncreaceMeter));
+	if(MaxLayer >= 0.9)
+		MaxLayer = 0.9;
 	if(npc.m_flSpassOut < GetGameTime())
 	{
 		float Random = GetRandomFloat(0.4, 0.7);
 		int Layer;
 		npc.m_flSpassOut = GetGameTime() + (Random * 0.5);
 		Layer = npc.AddGesture("ACT_KART_IMPACT_BIG", .SetGestureSpeed = (1.5 * (1.0 / Random)));
-		npc.SetLayerWeight(Layer, 0.2);
+		npc.SetLayerWeight(Layer, MaxLayer);
 		Layer = npc.AddGesture("ACT_GRAPPLE_PULL_START", .SetGestureSpeed = (1.5 * (1.0 / Random)));
-		npc.SetLayerWeight(Layer, 0.1);
+		npc.SetLayerWeight(Layer, MaxLayer - 0.1);
 	}
 	if(npc.m_flSpassOut2 < GetGameTime())
 	{
@@ -352,6 +367,6 @@ void UmbralSpuudAnimBreak(Umbral_Spuud npc)
 		int Layer;
 		npc.m_flSpassOut2 = GetGameTime() + (Random * 0.5);
 		Layer = npc.AddGesture("ACT_MP_GESTURE_VC_HANDMOUTH_MELEE", .SetGestureSpeed = (1.5 * (1.0 / Random)));
-		npc.SetLayerWeight(Layer, 0.1);
+		npc.SetLayerWeight(Layer, MaxLayer - 0.1);
 	}
 }
