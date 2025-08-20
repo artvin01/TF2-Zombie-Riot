@@ -5417,7 +5417,7 @@ void StatusEffects_Explainelemental()
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ww");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.0;
