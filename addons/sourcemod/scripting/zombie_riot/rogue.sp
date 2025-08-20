@@ -1478,7 +1478,7 @@ void Rogue_NextProgress()
 				Vote vote;
 				for(int i; i < count; i++)
 				{
-					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed, CurrentCount + 1, maxRooms + 1);
+					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed, CurrentCount + 2, maxRooms + 2);
 					if(id != -1)
 					{
 						ForcedVoteSeed = -1;
@@ -1518,11 +1518,11 @@ void Rogue_NextProgress()
 							{
 								if((CurrentCount-1) == maxRooms)
 								{
-									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 2, maxRooms + 1);
+									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 3, maxRooms + 2);
 								}
 								else
 								{
-									future = GetRandomStage(floor, stage, 0, vote.Level, CurrentCount + 2, maxRooms + 1);
+									future = GetRandomStage(floor, stage, 0, vote.Level, CurrentCount + 3, maxRooms + 2);
 								}
 
 								if(future == id || future == -1)
