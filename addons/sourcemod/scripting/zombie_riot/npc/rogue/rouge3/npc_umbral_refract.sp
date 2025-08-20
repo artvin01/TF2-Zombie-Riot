@@ -126,6 +126,9 @@ methodmap Umbral_Refract < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iBleedType = BLEEDTYPE_UMBRAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -148,6 +151,14 @@ methodmap Umbral_Refract < CClotBody
 		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 125);
 
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_road_block/hwn2022_road_block.mdl");
+		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_maniacs_manacles/hw2013_maniacs_manacles.mdl");
+		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
+		
 		return npc;
 	}
 }

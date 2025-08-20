@@ -151,7 +151,7 @@ methodmap Umbral_Koulm < CClotBody
 
 		npc.m_bDissapearOnDeath = true;
 		TeleportDiversioToRandLocation(npc.index,_,2000.0, 1250.0);
-		//dont allow self making
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 		
 		npc.m_flSpeed = 0.0;
 
@@ -401,8 +401,8 @@ void KoulmAreaBuff(int attacker, int victim, float &damage, int weapon)
 	if(i_NpcInternalId[victim] == Umbral_Koulm_ID())
 		return;
 
-	CClotBody npc = view_as<CClotBody>(entity);
-	if(npc.m_iBleedType = BLEEDTYPE_UMBRAL)
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
 		return;
 	//grant the "buff"
 	ApplyStatusEffect(attacker, victim, "Umbral Grace Debuff", 2.5);

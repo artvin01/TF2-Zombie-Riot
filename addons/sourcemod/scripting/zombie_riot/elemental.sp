@@ -196,6 +196,12 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
 	
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+	{	
+		//impossible to elementalise.
+		amount = 999999999;
+	}	
 	return amount;
 }
 

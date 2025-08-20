@@ -170,6 +170,13 @@ methodmap Umbral_Spuud < CClotBody
 		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 125);
 
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
+		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec23_sleuth_suit_style4/dec23_sleuth_suit_style4.mdl");
+		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
 		return npc;
 	}
 }
@@ -198,7 +205,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	*/
-	if(i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_OFF)
+	if(i_npcspawnprotection[npc.index] <= NPC_SPAWNPROT_INIT)
 		npc.m_flSpeedIncreaceMeter *= 0.9975;
 
 	if(npc.m_flSpeedIncreaceMeter <= 0.1)

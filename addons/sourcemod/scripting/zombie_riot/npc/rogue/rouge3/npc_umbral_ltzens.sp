@@ -118,8 +118,11 @@ methodmap Umbral_Ltzens < CClotBody
 
 		vecAng[1] = GetRandomFloat(-25.0,25.0);
 		vecAng[2] = GetRandomFloat(-25.0,25.0);
+
 		SetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng);
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -154,38 +157,12 @@ methodmap Umbral_Ltzens < CClotBody
 		npc.m_flLaggyMovmentDo = GetRandomFloat(1.0, 2.0);
 		npc.m_flSpeed = 2000.0;
 		npc.m_flSpassOut = 0.0;
-
-		/*
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_axtinguisher/c_axtinguisher_pyro.mdl");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/fall17_deyemonds/fall17_deyemonds.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/all_class/replay_hat_pyro.mdl");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/sf14_hw2014_robot_arm/sf14_hw2014_robot_arm.mdl");
-
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/pyro/sf14_hw2014_robot_legg/sf14_hw2014_robot_legg.mdl");
-
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		
-		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable3, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable4, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderColor(npc.m_iWearable5, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
-		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable3, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_DISTORT);
-		SetEntityRenderFx(npc.m_iWearable5, RENDERFX_DISTORT);
-		*/
 		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 65);
 
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_horror_shawl/hwn2022_horror_shawl.mdl");
+		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 65);
 		return npc;
 	}
 }
