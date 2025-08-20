@@ -1265,6 +1265,14 @@
 	{
 		"en"	"{green}Extra Ammo powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 	}
+	"Health Pickup"
+	{
+		"en" 	"Health Pickup"
+	}
+	"Health Pickup Desc"
+	{
+		"en" 	"{green}Extra Health powerup spawns at the start of a stage."
+	}
 	"Support Squad"
 	{
 		"en"	"Support Squad"
@@ -2016,5 +2024,26 @@
 	"Underpaid Mercs!"
 	{
 		"en" "⚔⚠ Underpaid Mercs"
+	}
+	
+	"Lone Health Title"
+	{
+		"en"	"You see a healthpack, alone, just sitting by the tree..."
+	}
+	"Lone Health Accept"
+	{
+		"en"	"Grab the healthkit, it could be usefull."
+	}
+	"Lone Health Accept Desc"
+	{
+		"en"	"{green}Gain a health powerup on stage start."
+	}
+	"Lone Health Decline"
+	{
+		"en"	"Don't touch it, it seems way too suspicious."
+	}
+	"Lone Health Accept Desc"
+	{
+		"en"	"{green}Gain cash, raise Umbral Affinity."
 	}
 }

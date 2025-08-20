@@ -655,3 +655,42 @@ static void GrantAllPlayersCredits_Rogue(int cash)
 	CPrintToChatAll("{green}%t","Cash Gained!", cash);
 	CurrentCash += cash;
 }
+
+
+
+
+public float Rogue_Encounter_Lone_Health()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Lone_Health, "Lone Health Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Lone Health Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Lone Health Accept Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Lone Health Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Lone Health Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Vote_Lone_Health(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Rogue_GiveNamedArtifact("Health Pickup");
+		}
+		case 1:
+		{
+			CPrintToChatAll("{green}%t","Cash Gained!", 2000);
+			CurrentCash += 2000;
+			Rogue_AddUmbral(15, false);
+		}
+	}
+}

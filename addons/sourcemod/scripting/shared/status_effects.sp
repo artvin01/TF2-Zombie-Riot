@@ -5423,11 +5423,11 @@ void StatusEffects_Explainelemental()
 	data.DamageDealMulti			= 0.0;
 	data.MovementspeedModif			= -1.0;
 	data.ElementalLogic				= true;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.OnBuffStarted			= Warped_Start;
+	data.OnBuffStarted				= Warped_Start;
 	data.OnBuffEndOrDeleted			= Warped_End;
 	data.OnTakeDamage_DealFunc 		= Warped_DamageFunc;
 	data.TimerRepeatCall_Func 		= Warped_FuncTimer;
