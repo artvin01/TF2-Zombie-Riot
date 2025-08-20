@@ -1436,7 +1436,7 @@ void Rogue_NextProgress()
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
 			{
-				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed, CurrentCount + 1, maxRooms + 1);
+				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed, CurrentCount + 2, maxRooms + 2);
 				ForcedVoteSeed = -1;
 
 				if(id == -1)
