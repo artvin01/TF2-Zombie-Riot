@@ -314,7 +314,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Nervous);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Nervous));
 		if(damage < 1)
 			return;
 
@@ -471,7 +471,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
 		if(damage < 1)
 			return;
 		
@@ -605,7 +605,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
 			return;
 		
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void));
 		if(damage < 1)
 			return;
 
@@ -697,7 +697,6 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	
-	PrintToChatAll("Elemental_AddCyroDamage damagebase: %d | fl_Extra_Damage: %f", damagebase, fl_Extra_Damage[attacker]);
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
@@ -710,8 +709,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro);
-		PrintToChatAll("Elemental_AddCyroDamage m_flElementRes: %f", GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro));
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro));
 		if(damage < 1)
 			return;
 		
@@ -722,7 +720,6 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Cyro;
 			ElementDamage[victim][Element_Cyro] += damage;
-			PrintToChatAll("Elemental_AddCyroDamage %d / %d", ElementDamage[victim][Element_Cyro], trigger);
 			if(ElementDamage[victim][Element_Cyro] > trigger)
 			{
 				ElementDamage[victim][Element_Cyro] = 0;
@@ -801,7 +798,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Necrosis);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Necrosis));
 		if(damage < 1)
 			return;
 		
@@ -883,7 +880,7 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Osmosis);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Osmosis));
 		if(damage < 1)
 			return;
 		
@@ -1000,7 +997,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption));
 		if(damage < 1)
 			return;
 		
@@ -1160,7 +1157,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger));
 		if(damage < 1)
 			return;
 		
@@ -1275,7 +1272,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	else if(!b_NpcHasDied[victim])	// VS NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma));
 		if(damage < 1)
 			return;
 		
@@ -1433,11 +1430,11 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
 		if(damage < 1)
 			return;
 		
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Warped);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Warped));
 		if(damage < 1)
 			return;
 		
