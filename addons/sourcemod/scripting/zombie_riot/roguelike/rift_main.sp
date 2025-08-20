@@ -383,8 +383,6 @@ static void StartRiftVote(bool first)
 				}
 			}
 		}
-
-		delete collection;
 	}
 
 	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
