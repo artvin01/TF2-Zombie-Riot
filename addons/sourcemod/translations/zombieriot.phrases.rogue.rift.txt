@@ -106,24 +106,52 @@
 	{
 		"en"	"{red}Enemies have a chance to be warpped"
 	}
+	"Rift of Fractured"
+	{
+		"en"	"Rift of Fractured"
+	}
+	"Rift of Fractured Desc"
+	{
+		"en"	"{yellow}Something is coming"
+	}
 
 	"Ruin"
 	{
 		"en"	"Ruin"
 	}
+	"Ruin Lore"
+	{
+		"en"	"We're at the ruined Ruinan islands, we need to find a way to stop the void, something else is coming through?"
+	}
 	"Whatever is Left"
 	{
-		"en"	"Whatever is Left"
+		"en"	"''Whatever is left of it...''"
+	}
+	"Whatever is Left Lore"
+	{
+		"en"	"The portal site, now ruined and in pieces, hope we can get this to help find a way."
 	}
 	"Behind The Curtains"
 	{
 		"en"	"Behind The Curtains"
 	}
+	"Behind The Curtains Lore"
+	{
+		"en"	"We're inside the Curtain, full of plains and crystals. Let's hope we can find what we're looking for, and keep that way out."
+	}
 	"More Research"
 	{
 		"en"	"More Research"
 	}
+	"More Research Lore"
+	{
+		"en"	"It's some kind of abandoned lab here. Something tells it wasn't always a wasteland here."
+	}
 	"Palace of the Void"
+	{
+		"en"	"Palace of the Void"
+	}
+	"Palace of the Void Lore"
 	{
 		"en"	"Palace of the Void"
 	}
@@ -525,6 +553,14 @@
 	{
 		"en"	"{crimson}What did you do?"
 	}
+	"The Shadow"
+	{
+		"en"	"''Shadow''"
+	}
+	"The Shadow Desc"
+	{
+		"en"	"He was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop him.\n{red}Umbral are enraged, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+	}
 
 	"Gateway"
 	{
@@ -595,5 +631,34 @@
 	"Bizarre History"
 	{
 		"en"	"Bizarre History"
+	}
+
+	"We Are Fractured"
+	{
+		"en"	"We Are Fractured"
+	}
+	"We Are Fractured Lore"
+	{
+		"en"	"The voidstone appears right out of a rift, followed by serveral more rifts around you."
+	}
+	"We Are Fractured Option 1"
+	{
+		"en"	"Take it and get ready for a fight"
+	}
+	"We Are Fractured Desc 1"
+	{
+		"en"	"Collect an artifact and start a battle"
+	}
+	"We Are Fractured Lore 1"
+	{
+		"en"	"You hope you haven't threw away that Fractured voidstone too early. Are you strong enough?"
+	}
+	"We Are Fractured Option 2"
+	{
+		"en"	"Leave while we still can"
+	}
+	"We Are Fractured Lore 2"
+	{
+		"en"	"You left right away, you feel as if the Fractured voidstone was behind this. Maybe we need to try it when we're ready to handle this."
 	}
 }

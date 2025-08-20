@@ -3501,6 +3501,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }

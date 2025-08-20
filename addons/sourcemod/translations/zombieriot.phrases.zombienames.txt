@@ -2623,8 +2623,11 @@
 	}
 	"Fallen Warrior"
 	{
+		"en"	"Fallen Warrior"
+	}
+	"Guln the Fallen One"
+	{
 		"en"	"Guln the Fallen One"
-		"ru" 	"Павший Гулн"
 	}
 	"Ravaging Intellectual"
 	{

@@ -554,10 +554,41 @@ public void Rogue_Vote_Rift1(const Vote vote, int index)
 			Artifact artifact;
 			if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
+
+			if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+				Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
 		}
 		case 1:
 		{
-			Rogue_GiveNamedArtifact("Reila Assistance");
+			Rogue_GiveNamedArtifact("Reila Assistance", true);
+			Rogue_GiveNamedArtifact("Wordless Deed");
+		}
+	}
+}
+
+public void Rogue_Reila_Collect()
+{
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_reila_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+
+public void Rogue_Reila_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && /*i_NpcInternalId[other] == ReilaFollower_ID() && */IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
 		}
 	}
 }
@@ -594,6 +625,7 @@ public void Rogue_Rift1Good_Remove()
 			}
 		}
 
+		Rogue_RemoveNamedArtifact("Reila Assistance");
 		Rogue_GiveNamedArtifact("Torn Keycard");
 		Rogue_AddUmbral(-100, true);
 		Rogue_AddIngots(-Rogue_GetIngots(), true);
@@ -643,4 +675,83 @@ public void Rogue_RiftWarp_Enemy(int entity)
 public void Rogue_RiftWarp_StageEnd()
 {
 	Rogue_RemoveNamedArtifact("Rift of Warp");
+}
+
+public void Rogue_StoneFractured_Collect()
+{
+	Rogue_AddUmbral(-5, true);
+}
+
+public void Rogue_StoneFractured_FloorChange()
+{
+	Rogue_AddUmbral(-5);
+}
+
+public void Rogue_StoneFractured_Remove()
+{
+	if(!Rogue_HasNamedArtifact("Rift of Fractured") && !Rogue_HasNamedArtifact("The Shadow"))
+	{
+		Rogue_GiveNamedArtifact("Rift of Fractured");
+
+		if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		{
+			Rogue_GiveNamedArtifact("Bob's Assistance", true);
+		}
+	}
+}
+
+public float Rogue_Encounter_Rift2()
+{
+	Rogue_SetBattleIngots(12);
+	Rogue_RemoveNamedArtifact("Rift of Fractured");
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rift2, "We Are Fractured Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "We Are Fractured Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_Rift2(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Rogue_StartThisBattle(5.0);
+			Rogue_GiveNamedArtifact("The Shadow");
+			PrintToChatAll("%t", "We Are Fractured Lore 1");
+		}
+		case 1:
+		{
+			PrintToChatAll("%t", "We Are Fractured Lore 2");
+		}
+	}
+}
+
+public void Rogue_Rift2_Collect(int entity)
+{
+	Rogue_AddUmbral(-100, true);
+}
+
+public void Rogue_Rift2_Enemy(int entity)
+{
+	if(i_NpcInternalId[entity] == FallenWarrior_ID())
+	{
+		Elemental_AddWarpedDamage(entity, entity, 10, false, _, true);
+
+		if(Elemental_DamageRatio(entity, Element_Warped) > 0.0)
+		{
+			fl_Extra_MeleeArmor[entity] /= 100.0;
+			fl_Extra_RangedArmor[entity] /= 100.0;
+		}
+	}
 }

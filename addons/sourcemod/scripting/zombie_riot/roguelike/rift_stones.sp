@@ -545,16 +545,6 @@ public void Rogue_StoneFurnace_Remove()
 	}
 }
 
-public void Rogue_StoneFractured_Collect()
-{
-	Rogue_AddUmbral(-5, true);
-}
-
-public void Rogue_StoneFractured_FloorChange()
-{
-	Rogue_AddUmbral(-5);
-}
-
 static void GiveCash(int cash)
 {
 	CurrentCash += cash;

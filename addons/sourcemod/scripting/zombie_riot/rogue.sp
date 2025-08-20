@@ -1604,6 +1604,8 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), floor.Name);
 	WavesUpdateDifficultyName();
 
+	char buffer[64];
+
 	bool cursed;
 	if(RogueTheme != ReilaRift)	// Reila Rogue
 	{
@@ -1639,7 +1641,6 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 					Call_Finish();
 				}
 
-				char buffer[64];
 				FormatEx(buffer, sizeof(buffer), "%s Desc", curse.Name);
 				CPrintToChatAll("{red}%t{default}: %t", curse.Name, buffer);
 
@@ -1680,6 +1681,10 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 			SetMusicTimer(client, GetTime() + (cursed ? 0 : 7));
 		}
 	}
+
+	FormatEx(buffer, sizeof(buffer), "%s Lore", floor.Name);
+	if(TranslationPhraseExists(buffer))
+		PrintToChatAll("%t", buffer);
 
 	Rogue_SetProgressTime(7.0, false);
 
@@ -3068,7 +3073,7 @@ public void Rogue_Vote_NextStage(const Vote vote)
 	if(vote.Level == -2)
 	{
 		ForcedVoteSeed = -1;
-		CurrentCount--;
+		ExtraStageCount++;
 	}
 	else
 	{
