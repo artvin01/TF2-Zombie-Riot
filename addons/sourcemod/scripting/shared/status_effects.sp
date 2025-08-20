@@ -5516,7 +5516,7 @@ static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_Mast
 	if(attacker <= MaxClients)
 		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
 	
-	return basedamage;
+	return 0.0;
 }
 static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {

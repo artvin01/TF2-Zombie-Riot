@@ -399,6 +399,7 @@ void Rogue_MapStart()
 	delete Voting;
 	delete Curses;
 	delete Artifacts;
+	delete CurrentCollection;
 	RogueTheme = 0;
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
@@ -457,6 +458,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 
 	delete Curses;
 	delete Artifacts;
+	delete CurrentCollection;
 
 	if(Floors)
 	{
@@ -1270,6 +1272,11 @@ void Rogue_NextProgress()
 					ShowHudText(client, -1, "%t", floor.Name);
 				}
 			}
+
+			char buffer[64];
+			FormatEx(buffer, sizeof(buffer), "%s Lore", floor.Name);
+			if(TranslationPhraseExists(buffer))
+				PrintToChatAll("%t", buffer);
 		}
 		case State_Trans:
 		{
@@ -1429,7 +1436,7 @@ void Rogue_NextProgress()
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
 			{
-				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed, CurrentCount + 2, maxRooms + 2);
+				int id = GetRandomStage(floor, stage, 2, ForcedVoteSeed, CurrentCount + 1, maxRooms + 1);
 				ForcedVoteSeed = -1;
 
 				if(id == -1)
@@ -1471,7 +1478,7 @@ void Rogue_NextProgress()
 				Vote vote;
 				for(int i; i < count; i++)
 				{
-					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed, CurrentCount + 2, maxRooms + 2);
+					int id = GetRandomStage(floor, stage, 0, ForcedVoteSeed, CurrentCount, maxRooms + 1);
 					if(id != -1)
 					{
 						ForcedVoteSeed = -1;
@@ -1509,13 +1516,13 @@ void Rogue_NextProgress()
 							}
 							else
 							{
-								if((CurrentCount-1) == maxRooms)
+								if((CurrentCount-2) == maxRooms)
 								{
-									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 3, maxRooms + 2);
+									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 2, maxRooms + 1);
 								}
 								else
 								{
-									future = GetRandomStage(floor, stage, 0, vote.Level, CurrentCount + 3, maxRooms + 2);
+									future = GetRandomStage(floor, stage, 0, vote.Level, CurrentCount + 2, maxRooms + 1);
 								}
 
 								if(future == id || future == -1)
@@ -2697,7 +2704,7 @@ stock bool Rogue_HasNamedArtifact(const char[] name)
 
 void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail = false)
 {
-	if(Offline)
+	if(Offline || !Artifacts)
 		return;
 	
 	if(!CurrentCollection)
