@@ -1516,6 +1516,7 @@ void Rogue_NextProgress()
 							}
 							else
 							{
+								PrintToChatAll("DEBUG: CurrentCount %d / maxRooms %d", CurrentCount, maxRooms);
 								if((CurrentCount-1) == maxRooms)
 								{
 									future = GetRandomStage(floor, stage, 2, vote.Level, CurrentCount + 3, maxRooms + 2);
