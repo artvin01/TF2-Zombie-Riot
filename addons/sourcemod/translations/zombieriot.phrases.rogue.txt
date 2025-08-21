@@ -2041,6 +2041,30 @@
 	{
 		"en" "⚔⚠ Desperate Voiders"
 	}
+	"Automaton Failure"
+	{
+		"en" "⚔ Automaton Failure"
+	}
+	"Automaton Failure!"
+	{
+		"en" "⚔⚠ Automaton Failure"
+	}
+	"Chaos Sea Creatures"
+	{
+		"en" "⚔ Chaos Sea Creatures"
+	}
+	"Chaos Sea Creatures!"
+	{
+		"en" "⚔⚠ Chaos Sea Creatures"
+	}
+	"Pillaging Mercs"
+	{
+		"en" "⚔ Pillaging Mercs"
+	}
+	"Pillaging Mercs!"
+	{
+		"en" "⚔⚠ Pillaging Mercs"
+	}
 	
 
 	"Looters Keepers"

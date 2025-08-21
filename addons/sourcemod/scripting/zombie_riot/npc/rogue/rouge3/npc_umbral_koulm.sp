@@ -150,7 +150,7 @@ methodmap Umbral_Koulm < CClotBody
 		npc.m_flGravityMulti = 1.0;
 
 		npc.m_bDissapearOnDeath = true;
-		TeleportDiversioToRandLocation(npc.index,_,2000.0, 1250.0);
+		TeleportDiversioToRandLocation(npc.index,_,2000.0, 500.0);
 		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 		
 		npc.m_flSpeed = 0.0;
