@@ -40,7 +40,7 @@ void AdjustBotCount()
 		if(IsClientInGame(clientl) && !IsClientSourceTV(clientl))
 			CurrentPlayersActive++; //includes bot, doesnt include sourcetv
 	}
-	if((MaxClients - 2) <= CurrentPlayersActive)
+	if((MaxClients - 1) <= CurrentPlayersActive)
 	{
 		for(int botcheck = 1; botcheck <= MaxClients; botcheck++)
 		{
