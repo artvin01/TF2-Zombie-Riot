@@ -2025,6 +2025,32 @@
 	{
 		"en" "⚔⚠ Underpaid Mercs"
 	}
+	"Unknown Army"
+	{
+		"en" "⚔ Unknown Army"
+	}
+	"Unknown Army!"
+	{
+		"en" "⚔⚠ Unknown Army"
+	}
+	"Desperate Voiders"
+	{
+		"en" "⚔ Desperate Voiders"
+	}
+	"Desperate Voiders!"
+	{
+		"en" "⚔⚠ Desperate Voiders"
+	}
+	
+
+	"Looters Keepers"
+	{
+		"en" "⚔ Looters Keepers"
+	}
+	"Looters Keepers!"
+	{
+		"en" "⚔⚠ Looters Keepers"
+	}
 	
 	"Lone Health Title"
 	{
@@ -2042,7 +2068,7 @@
 	{
 		"en"	"Don't touch it, it seems way too suspicious."
 	}
-	"Lone Health Accept Desc"
+	"Lone Health Decline Desc"
 	{
 		"en"	"{green}Gain cash, raise Umbral Affinity."
 	}
