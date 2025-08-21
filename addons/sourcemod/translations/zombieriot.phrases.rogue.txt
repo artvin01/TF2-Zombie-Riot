@@ -1969,6 +1969,7 @@
 	{
 		"en"	"You think I fight alone?"
 	}
+<<<<<<< HEAD
 	"Cloned Subjects"
 	{
 		"en" "⚔ Cloned Subjects"
