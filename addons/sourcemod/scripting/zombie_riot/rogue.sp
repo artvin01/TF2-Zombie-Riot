@@ -2433,6 +2433,8 @@ void Rogue_ArtifactMenu(int client, int page)
 	
 	menu.SetTitle("%t\n \n%t\n ", "TF2: Zombie Riot", "Collected Artifacts");
 
+	char buffer[64];
+
 	Artifact artifact;
 	int length = CurrentCollection ? CurrentCollection.Length : 0;
 	if(length)
@@ -2442,7 +2444,10 @@ void Rogue_ArtifactMenu(int client, int page)
 			int index = CurrentCollection.Get(i);
 			Artifacts.GetArray(index, artifact);
 			if(!artifact.Hidden)
-				menu.AddItem(artifact.Name, artifact.Name);
+			{
+				FormatEx(buffer, sizeof(buffer), "%t", artifact.Name);
+				menu.AddItem(artifact.Name, buffer);
+			}
 		}
 	}
 	else
