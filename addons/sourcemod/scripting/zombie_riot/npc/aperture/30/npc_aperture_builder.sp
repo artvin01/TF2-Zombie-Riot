@@ -502,6 +502,8 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						
 						if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, npc.index))
 							continue;
+						if(Dome_PointOutside(vecCenterPos))
+							continue;
 						
 						// Congratulations little fella, you got a place to go
 						ApertureBuilder_ToggleBuilding(npc, true);

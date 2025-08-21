@@ -5473,8 +5473,18 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.m_flNextIdleSound = FAR_FUTURE;
 	float SoundLoudness = ratio;
-	if(SoundLoudness < 0.7)
-		SoundLoudness = 0.7;
+	if(entity <= MaxClients)
+	{
+		if(SoundLoudness > 0.3)
+			SoundLoudness = 0.3;
+	}
+	else
+	{
+
+		if(SoundLoudness < 0.7)
+			SoundLoudness = 0.7;
+	}
+		
 	EmitSoundToAll(g_IdleCreepSound[GetRandomInt(0, sizeof(g_IdleCreepSound) - 1)], entity, SNDCHAN_ITEM, NORMAL_ZOMBIE_SOUNDLEVEL, _, SoundLoudness, GetRandomInt(40, 45));
 	if(entity <= MaxClients)
 	{

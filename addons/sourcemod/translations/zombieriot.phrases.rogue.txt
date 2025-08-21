@@ -1969,7 +1969,6 @@
 	{
 		"en"	"You think I fight alone?"
 	}
-<<<<<<< HEAD
 	"Cloned Subjects"
 	{
 		"en" "⚔ Cloned Subjects"
@@ -2066,8 +2065,6 @@
 	{
 		"en" "⚔⚠ Pillaging Mercs"
 	}
-	
-
 	"Looters Keepers"
 	{
 		"en" "⚔ Looters Keepers"
@@ -2075,6 +2072,30 @@
 	"Looters Keepers!"
 	{
 		"en" "⚔⚠ Looters Keepers"
+	}
+	"Cold Inhabitans"
+	{
+		"en" "⚔ Cold Inhabitans"
+	}
+	"Cold Inhabitans!"
+	{
+		"en" "⚔⚠ Cold Inhabitans"
+	}
+	"Gate Persuers"
+	{
+		"en" "⚔ Gate Persuers"
+	}
+	"Gate Persuers!"
+	{
+		"en" "⚔⚠ Gate Persuers"
+	}
+	"Corrupted Ruinan's"
+	{
+		"en" "⚔ Corrupted Ruinan's"
+	}
+	"Corrupted Ruinan's!"
+	{
+		"en" "⚔⚠ Corrupted Ruinan's"
 	}
 	
 	"Lone Health Title"

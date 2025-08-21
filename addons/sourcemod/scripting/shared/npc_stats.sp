@@ -234,6 +234,8 @@ void OnMapStart_NPC_Base()
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
 	PrecacheSound("weapons/bottle_break.wav");
+	PrecacheSound("npc/strider/striderx_pain8.wav");
+	PrecacheSound("npc/strider/striderx_pain5.wav");
 	
 	PrecacheDecal("sprites/blood.vmt", true);
 	PrecacheDecal("sprites/bloodspray.vmt", true);
@@ -9928,6 +9930,34 @@ public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
 float GetRandomRetargetTime()
 {
 	return GetRandomFloat(3.0, 4.0);
+}
+
+stock ArrayList GetAllNearbyAreas(float pos[3], float radius)
+{
+	ArrayList valid = CreateArray(255);
+
+	int iAreaCount = TheNavAreas.Length;
+	for (int i = 0; i < iAreaCount; i++)
+	{
+		CNavArea navi = TheNavAreas.Get(i);
+
+		if (navi == NULL_AREA)
+			break;    // No nav?
+
+		int NavAttribs = navi.GetAttributes();
+		if (NavAttribs & NAV_MESH_AVOID)
+		{
+			continue;
+		}
+
+		float navPos[3];
+		navi.GetCenter(navPos);
+
+		if (GetVectorDistance(pos, navPos) <= radius)
+			PushArrayCell(valid, navi);
+	}
+
+	return valid;
 }
 
 stock CNavArea GetRandomNearbyArea(float pos[3], float radius)

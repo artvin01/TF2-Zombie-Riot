@@ -1425,7 +1425,12 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			}
 			
 			if(sound || fresh)
-				ClientCommand(victim, "playgamesound %s", fresh ? "npc/strider/striderx_pain8.wav" : "npc/strider/striderx_pain5.wav");
+			{
+				if(fresh)
+					EmitSoundToClient(victim, "npc/strider/striderx_pain8.wav", victim, SNDCHAN_STATIC, _, _, 0.65);
+				else
+					EmitSoundToClient(victim, "npc/strider/striderx_pain5.wav", victim, SNDCHAN_STATIC, _, _, 0.65);
+			}
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
