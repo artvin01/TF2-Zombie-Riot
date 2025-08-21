@@ -1529,7 +1529,19 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(!Rogue_Mode())
 				return 400.0;
 			else
-				return 1200.0;
+			{
+				switch(Rogue_Theme())
+				{
+					case BlueParadox:
+					{
+						return 1200.0;
+					}
+					default:
+					{
+						return 400.0;
+					}
+				}
+			}
 		}
 #endif
 		
@@ -2208,14 +2220,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			if(!this.m_bPathing)
 			{
-				this.GetPathFollower().SetMinLookAheadDistance(100.0);
+				this.GetPathFollower().SetMinLookAheadDistance(50.0);
 				this.m_bPathing = true;
 			}
 			return;
 		}
 		if(!this.m_bPathing)
 		{
-			this.GetPathFollower().SetMinLookAheadDistance(100.0);	
+			this.GetPathFollower().SetMinLookAheadDistance(50.0);	
 		}
 		this.m_bPathing = true;
 	}
@@ -9929,9 +9941,9 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 		{
 			int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
 			float DamageDeal = float(ReturnEntityMaxHealth(target));
-			DamageDeal *= 0.1;
-			if(DamageDeal <= 10.0)
-				DamageDeal = 10.0;
+			DamageDeal *= 0.01;
+			if(DamageDeal <= 5.0)
+				DamageDeal = 5.0;
 			if(ShouldNpcDealBonusDamage(target) || entity > MaxClients)
 			{
 				DamageFlags &= ~DMG_CRUSH;
