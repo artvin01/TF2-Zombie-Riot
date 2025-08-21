@@ -2097,6 +2097,22 @@
 	{
 		"en" "⚔⚠ Corrupted Ruinan's"
 	}
+	"Adamant Expidonsans"
+	{
+		"en" "⚔ Adamant Expidonsans"
+	}
+	"Adamant Expidonsans!"
+	{
+		"en" "⚔⚠ Adamant Expidonsans"
+	}
+	"True Survival Zombies"
+	{
+		"en" "⚔ True Survival Zombies"
+	}
+	"True Survival Zombies!"
+	{
+		"en" "⚔⚠ True Survival Zombies"
+	}
 	
 	"Lone Health Title"
 	{
