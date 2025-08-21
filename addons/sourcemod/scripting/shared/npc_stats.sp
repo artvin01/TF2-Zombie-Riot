@@ -9930,6 +9930,20 @@ float GetRandomRetargetTime()
 	return GetRandomFloat(3.0, 4.0);
 }
 
+stock CNavArea GetRandomNearbyArea(float pos[3], float radius)
+{
+    ArrayList areas = GetAllNearbyAreas(pos, radius);
+    CNavArea navi;
+
+    if (GetArraySize(areas) > 0)
+    {
+        navi = GetArrayCell(areas, GetRandomInt(0, GetArraySize(areas) - 1));
+    }
+
+    delete areas;
+    return navi;
+}
+
 void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
 	int entity = TouchedTarget;

@@ -267,23 +267,31 @@ methodmap ApertureBuilder < CClotBody
 		const float loosenedReqPerAttempt = 0.06;
 		int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
 		
-		for (int i = 0; i < maxAttempts; i++)
+		if(!Rogue_Mode())
 		{
-			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
-			
-			int visiblePlayerCount;
-			
-			for (int client = 1; client <= MaxClients; client++)
+			for (int i = 0; i < maxAttempts; i++)
 			{
-				if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
-					visiblePlayerCount++;
+				TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
+					
+				
+				int visiblePlayerCount;
+				
+				for (int client = 1; client <= MaxClients; client++)
+				{
+					if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
+						visiblePlayerCount++;
+				}
+				
+				float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
+				
+				// We got what we wanted, no need to try to teleport anymore
+				if (percentage <= i * loosenedReqPerAttempt)
+					break;
 			}
-			
-			float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
-			
-			// We got what we wanted, no need to try to teleport anymore
-			if (percentage <= i * loosenedReqPerAttempt)
-				break;
+		}
+		else
+		{
+			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
 		}
 		
 		if(AntiSoundSpam < GetGameTime())
