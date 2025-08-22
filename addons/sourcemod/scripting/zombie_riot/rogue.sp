@@ -2966,11 +2966,11 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 	{
 		if(change > 0)
 		{
-			CPrintToChatAll("%t", "Bad Umbral", change);
+			CPrintToChatAll("%t", "Good Umbral", change);
 		}
 		else
 		{
-			CPrintToChatAll("%t", "Good Umbral", -change);
+			CPrintToChatAll("%t", "Bad Umbral", -change);
 		}
 	}
 }
