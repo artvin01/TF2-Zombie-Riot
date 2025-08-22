@@ -33,6 +33,10 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
+static char g_BuffSounds[][] =
+{
+	"player/invuln_off_vaccinator.wav"
+};
 
 void ApertureSpokesman_OnMapStart_NPC()
 {
@@ -41,6 +45,7 @@ void ApertureSpokesman_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	PrecacheSoundArray(g_BuffSounds);
 	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Spokesman");
@@ -94,6 +99,10 @@ methodmap ApertureSpokesman < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
+	}
+	public void PlayBuffSound()
+	{
+		EmitSoundToAll(g_BuffSounds[GetRandomInt(0, sizeof(g_BuffSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	property float m_flRecheckIfAlliesDead
 	{
@@ -163,8 +172,6 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 			ApplyStatusEffect(npc.index, npc.index, "Combine Command", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "War Cry", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "Godly Motivation", DurationGive);
-			ApplyStatusEffect(npc.index, npc.index, "False Therapy", DurationGive);
 			ApplyStatusEffect(npc.index, npc.index, "Hussar's Warscream", DurationGive);
 		}
 	}
@@ -186,23 +193,47 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 	//Apply buffs *only* to bosses, not normal enemies
 	if(npc.m_flNextRangedSpecialAttack < gameTime)
 	{
-		npc.m_flNextRangedSpecialAttack = gameTime + 0.10;
+		npc.m_flNextRangedSpecialAttack = gameTime + 2.0;
 		
-		int target = GetClosestAlly(npc.index, (500.0 * 500.0), _);
-		if(target && b_thisNpcIsABoss[target])
+		if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 		{
-			if(!HasSpecificBuff(target, "Dimensional Turbulence"))
+			float flDistanceToTarget;
+			float vecTarget[3]; GetEntPropVector(npc.m_iTargetAlly, Prop_Data, "m_vecAbsOrigin", vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			if(flDistanceToTarget < (120.0*120.0))
 			{
-				ApplyStatusEffect(npc.index, target, "Dimensional Turbulence", 30.0);
-				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecTarget, VecSelfNpc);	
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecTarget, VecSelfNpc);	
+				spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, vecTarget, VecSelfNpc);
+				
+				spawnRing_Vectors(vecTarget, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecTarget, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecTarget, 0.0, 0.0, 0.0, 40.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+				spawnRing_Vectors(vecTarget, 0.0, 0.0, 0.0, 60.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 255, 2, 1.0, 5.0, 12.0, 1, 150.0);
+
+				npc.PlayBuffSound();
+				if(b_thisNpcIsABoss[npc.m_iTargetAlly])
+				{
+					if(!HasSpecificBuff(npc.m_iTargetAlly, "Dimensional Turbulence"))
+					{
+						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Dimensional Turbulence", 15.0);
+						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
+					}
+				}
+				else
+				{
+					if(!HasSpecificBuff(npc.m_iTargetAlly, "Very Defensive Backup"))
+					{
+						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Very Defensive Backup", 15.0);
+						ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Dimensional Turbulence", 15.0);
+						npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
+					}
+				}
 			}
-		}
-		if(target && !b_thisNpcIsABoss[target])
-		{
-			if(!HasSpecificBuff(target, "Very Defensive Backup"))
+			else
 			{
-				ApplyStatusEffect(npc.index, target, "Very Defensive Backup", 15.0);
-				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_SECONDARY",_,_,_,3.0);
+				npc.m_flNextRangedSpecialAttack = 0.0;
 			}
 		}
 	}
@@ -213,43 +244,42 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
-	//Code to have this man follow other NPCs
-	if(npc.m_iTargetAlly && !IsValidAlly(npc.index, npc.m_iTargetAlly))
-		npc.m_iTargetAlly = 0;
-	
-	if(!npc.m_iTargetAlly || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 	{
-		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(HasSpecificBuff(npc.m_iTargetAlly, "Dimensional Turbulence"))
+		{
+			npc.m_iTargetAlly = 0;
+		}
+	}
+	//Code to have this man follow other NPCs
+	if(!IsValidAlly(npc.index, npc.m_iTargetAlly))
+	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index, _, _,Aperture_spokeman_Filter);
 		if(npc.m_iTargetAlly < 1)
 		{
 			npc.m_iTargetAlly = GetClosestTarget(npc.index);
 		}
+	}
+	
+	float flDistanceToTarget;
+	if(IsValidAlly(npc.index, npc.m_iTargetAlly))
+	{
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(npc.m_iTargetAlly > 0)
+		if(flDistanceToTarget > (25.0*25.0))
 		{
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-			if(flDistanceToTarget > (25.0*25.0))
+			if(flDistanceToTarget < npc.GetLeadRadius()) 
 			{
-				npc.StartPathing();
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
-				{
-					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
-					npc.SetGoalVector(vPredictedPos);
-				}
-				else 
-				{
-					npc.SetGoalEntity(npc.m_iTargetAlly);
-				}
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
+				npc.SetGoalVector(vPredictedPos);
 			}
-			else
+			else 
 			{
-				npc.StopPathing();
+				npc.SetGoalEntity(npc.m_iTargetAlly);
 			}
 		}
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.5;
 	}
 	//Following ends here
 
@@ -264,18 +294,21 @@ public void ApertureSpokesman_ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		float flDistanceToTarget1 = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		if(flDistanceToTarget < (150.0*150.0)) //if near an ally... and enemy is close enough...
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			npc.SetGoalVector(vPredictedPos);
+			if(flDistanceToTarget1 < npc.GetLeadRadius()) 
+			{
+				float vPredictedPos[3];
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+				npc.SetGoalVector(vPredictedPos);
+			}
+			else 
+			{
+				npc.SetGoalEntity(npc.m_iTarget);
+			}	
 		}
-		else 
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-		}
-		ApertureSpokesmanSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		ApertureSpokesmanSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget1); 
 	}
 	else
 	{
@@ -376,4 +409,31 @@ void ApertureSpokesmanSelfDefense(ApertureSpokesman npc, float gameTime, int tar
 			}
 		}
 	}
+}
+
+
+public bool Aperture_spokeman_Filter(int provider, int entity)
+{
+	if(HasSpecificBuff(entity, "Dimensional Turbulence"))
+		return false;
+
+	return true;
+}
+
+
+
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }

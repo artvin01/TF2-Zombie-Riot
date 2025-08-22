@@ -2606,6 +2606,10 @@
 		"en"	"Erasus"
 		"ko"	"이레이서스"
 	}
+	"Pure Crystal"
+	{
+		"en"	"Pure Crystal"
+	}
 	"Giant Tankus"
 	{
 		"en"	"Giant Tankus"
@@ -3743,6 +3747,14 @@
 	{
 		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
 		"ko"	"원소 피해 게이지가 꽉 차면, 몸이 썩어들어갑니다.\n출혈을 받고 능력의 쿨타임이 증가합니다. 7.5 초 지속."
+	}
+	"Warped Elemental Damage"
+	{
+		"en"	"Warped Elemental Damage"
+	}
+	"Warped Elemental Damage Desc"
+	{
+		"en"	"Your body starts to crystalize as chaos and void mix together.\nMax health decreases and damage increases with buildup, permanently freezing when full."
 	}
 
 	"Overmana Overload"

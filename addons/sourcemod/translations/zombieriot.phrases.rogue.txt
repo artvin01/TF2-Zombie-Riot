@@ -2313,8 +2313,7 @@
 	}
 	"Founder Fondue"
 	{
-		"en"	"Founder Fondue"
-		"ko"	"정초자 퐁듀"
+		"en"	"Founder Fondue ◈"
 	}
 	"Founder Fondue Desc"
 	{
@@ -2323,8 +2322,7 @@
 	}
 	"Predator Pancakes"
 	{
-		"en"	"Predator Pancakes"
-		"ko"	"포식자 팬케이크"
+		"en"	"Predator Pancakes ◈"
 	}
 	"Predator Pancakes Desc"
 	{
@@ -2333,8 +2331,7 @@
 	}
 	"Brandguider Brunch"
 	{
-		"en"	"Brandguider Brunch"
-		"ko"	"인도자 아침밥"
+		"en"	"Brandguider Brunch ◈"
 	}
 	"Brandguider Brunch Desc"
 	{
@@ -2343,8 +2340,7 @@
 	}
 	"Spewer Spewers"
 	{
-		"en"	"Spewer Spewers"
-		"ko"	"분출자 콜라"
+		"en"	"Spewer Spewers ◈"
 	}
 	"Spewer Spewers Desc"
 	{
@@ -2353,8 +2349,7 @@
 	}
 	"Swarmcaller Sandwich"
 	{
-		"en"	"Swarmcaller Sandwich"
-		"ko"	"소용자 샌드위치"
+		"en"	"Swarmcaller Sandwich ◈"
 	}
 	"Swarmcaller Sandwich Desc"
 	{
@@ -2363,8 +2358,7 @@
 	}
 	"Reefbreaker Ravioli"
 	{
-		"en"	"Reefbreaker Ravioli"
-		"ko"	"열초자 라비올리"
+		"en"	"Reefbreaker Ravioli ◈"
 	}
 	"Reefbreaker Ravioli Desc"
 	{

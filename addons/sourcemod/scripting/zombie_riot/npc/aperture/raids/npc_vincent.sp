@@ -426,94 +426,6 @@ methodmap Vincent < CClotBody
 
 		return npc;
 	}
-	
-	public void PourOilAbility(float duration, float delayToIgnite)
-	{
-		this.m_bDoingOilPouring = true;
-		this.m_flNextOilPouring = GetGameTime(this.index) + delayToIgnite + 0.5;
-		
-		float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecUseless[3];
-		GetAbsOrigin(this.index, vecPos);
-		
-		float radius = VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE * 1.5;
-		
-		this.PourOil(vecPos, radius, duration, delayToIgnite, true);
-		
-		vecPos[2] += 80.0;
-		
-		ParticleEffectAt(vecPos, "gas_can_impact_blue");
-		
-		int rocketL = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
-		int rocketR = this.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
-		
-		SetParent(this.index, rocketL, "effect_hand_L");
-		SetParent(this.index, rocketR, "effect_hand_R");
-		
-		SetEntityCollisionGroup(rocketL, COLLISION_GROUP_DEBRIS);
-		SetEntityCollisionGroup(rocketR, COLLISION_GROUP_DEBRIS);
-		
-		CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(1.75, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
-		
-		for (int i = 0; i < 8; i++)
-		{
-			vecAng[1] = i * (360.0 / 8.0);
-			GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
-			NormalizeVector(vecForward, vecForward);
-			ScaleVector(vecForward, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE);
-			AddVectors(vecPos, vecForward, vecTargetPos);
-			
-			Handle trace = TR_TraceRayFilterEx(vecPos, vecTargetPos, MASK_SOLID, RayType_EndPoint, TraceEntityFilter_Vincent_OnlyWorld);
-			if (!TR_DidHit(trace))
-			{
-				Handle trace2 = TR_TraceRayFilterEx(vecTargetPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
-				TR_GetEndPosition(vecTargetPos, trace);
-				delete trace2;
-			}
-			
-			delete trace;
-			
-			vecTargetPos[2] -= 16.0;
-			this.PourOil(vecTargetPos, radius, duration, delayToIgnite, true);
-		}
-	}
-	
-	public void PourOil(float vecPos[3], float radius, float duration, float delayToIgnite, bool fromAbility)
-	{
-		int prop = CreateEntityByName("prop_dynamic_override");
-		if (!IsValidEntity(prop))
-			return;
-		
-		Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
-		TR_GetEndPosition(vecPos, trace);
-		delete trace;
-		
-		TeleportEntity(prop, vecPos, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(prop, "model", g_OilModel);
-		DispatchKeyValue(prop, "disablereceiveshadows", "1");
-		DispatchKeyValue(prop, "disableshadows", "1");
-		DispatchSpawn(prop);
-		
-		SetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity", this.index);
-		SetTeam(prop, GetTeam(this.index));
-		SetEntPropFloat(prop, Prop_Send, "m_flModelScale", VINCENT_OIL_MODEL_SCALE);
-		
-		SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS);
-		
-		if (delayToIgnite <= 0.1)
-			SetEntityRenderMode(prop, RENDER_NONE);
-		else
-			SetEntityRenderColor(prop, 0, 40, 0, 255);
-		
-		DataPack pack;
-		CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(prop));
-		pack.WriteCell(EntIndexToEntRef(this.index));
-		pack.WriteFloat(radius);
-		pack.WriteCell(fromAbility);
-		
-		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
-	}
 }
 
 public void Vincent_ClotThink(int iNPC)
@@ -584,7 +496,7 @@ public void Vincent_ClotThink(int iNPC)
 		float vecPos[3];
 		GetAbsOrigin(npc.index, vecPos);
 		
-		npc.PourOil(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
+		Vincent_PourOil(npc, vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE, 5.0, 0.0, false);
 	}
 	if (npc.m_bDoingOilPouring)
 	{
@@ -601,7 +513,7 @@ public void Vincent_ClotThink(int iNPC)
 		}
 	}
 	
-	if (npc.m_flNextOilPouring < gameTime && npc.m_flDoingAnimation < gameTime)
+	if (npc.m_flNextOilPouring < gameTime && npc.m_flDoingAnimation < gameTime && !npc.m_flThrow_Happening)
 	{
 		npc.m_flSpeed = 0.0;
 		npc.m_bisWalking = false;
@@ -610,7 +522,12 @@ public void Vincent_ClotThink(int iNPC)
 		npc.SetCycle(0.05);
 		npc.SetPlaybackRate(0.5);
 		npc.StopPathing();
-		npc.PourOilAbility(30.0, 2.0);
+		
+		float delay = 2.0;
+		if (npc.m_flMegaEnrage)
+			delay *= 0.5;
+		
+		Vincent_PourOilAbility(npc, 30.0, delay);
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
 			switch(GetRandomInt(0,2))
@@ -691,6 +608,9 @@ static void Vincent_SelfDefense(Vincent npc, float gameTime, int target, float d
 			float damage = 45.0;
 			damage *= RaidModeScaling;
 			bool silenced = NpcStats_IsEnemySilenced(npc.index);
+			
+			KillFeed_SetKillIcon(npc.index, npc.Anger ? "hale_megapunch" : "hale_punch");
+			
 			for(int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
 				if(i_EntitiesHitAoeSwing_NpcSwing[counter] <= 0)
@@ -807,7 +727,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				ApplyStatusEffect(victim, victim, "Infinite Will", 30.0);
 				npc.m_flMegaEnrage = GetGameTime() + 30.0;
 				damage = 0.0;
-				CPrintToChatAll("{rare}%t:{crimson}... IF YOU THINK ILL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
+				CPrintToChatAll("{rare}%t:{crimson} ...IF YOU THINK I'LL GO DOWN WITHOUT A FIGHT...", c_NpcName[npc.index]);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				EmitSoundToAll("mvm/mvm_tank_horn.wav",_, SNDCHAN_STATIC, 80, _, 0.65, 90);
 				ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 30.0);
@@ -847,7 +767,7 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			SetVariantString("2.0");
 			AcceptEntityInput(npcBeacon.m_iWearable1, "SetModelScale");
 			
-			CPrintToChatAll("{rare}%t armor hardens and fists strenghen, the laboratory aids him.", c_NpcName[npc.index]);
+			CPrintToChatAll("{rare}%t's armor hardens and fists strengthen, aided by the laboratory.", c_NpcName[npc.index]);
 		}	
 	}
 	if(attacker <= 0)
@@ -987,9 +907,12 @@ static bool Vincent_LoseConditions(int iNPC)
 					{
 						if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 						{
-							UTIL_ScreenFade(client_check, 66, 50, FFADE_OUT, 255, 255, 255, 255); //make the fade target everyone
+							UTIL_ScreenFade(client_check, 66, 99999, FFADE_OUT | FFADE_STAYOUT, 255, 255, 255, 255); //make the fade target everyone
 						}
 					}
+					
+					CreateTimer(6.0, Timer_Vincent_FadeBackIn, TIMER_FLAG_NO_MAPCHANGE);
+					KillFeed_SetKillIcon(npc.index, "megaton");
 					Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 250.0, _, _, false, 1, false);
 					npc.PlaySuicideSound();
 				}
@@ -1067,16 +990,15 @@ static bool Vincent_LoseConditions(int iNPC)
 		//won normally
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
-			
+			CPrintToChatAll("{rare}%t{default}: It's over, please don't come back.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{crimson}: Look at what you made me do. {default} At least I avenged {rare}them{default}.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{default}: Your reign of chaos ends here.", c_NpcName[npc.index]);
 		}
 		return true;
 	}
@@ -1088,15 +1010,15 @@ static bool Vincent_LoseConditions(int iNPC)
 		//won timer
 		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-			
+			CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);
 		}
 		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
 		{
-
+			CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
 		}
 		return true;
 	}
@@ -1169,6 +1091,14 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	float vecPos[3];
 	GetAbsOrigin(entity, vecPos);
 	
+	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
+	
+	Vincent npc = view_as<Vincent>(owner);
+	
+	// Make fire harmless if Vincent is yapping
+	if (npc.m_flTalkRepeat)
+		return Plugin_Continue;
+	
 	for(int i=0; i < MAXENTITIES; i++)
 	{
 		HitEntitiesSphereMlynar[i] = false;
@@ -1176,16 +1106,14 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 	//cannot do logic inside, only detect.
 	TR_EnumerateEntitiesSphere(vecPos, VINCENT_OIL_MODEL_DEFAULT_RADIUS, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Vincent_Oil);
 	
+	bool hit = false;
+	
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{
 		if (HitEntitiesSphereMlynar[entity_traced] > 0)
 		{
 			int entity_hit = HitEntitiesSphereMlynar[entity_traced];
 			
-			if (!IsValidEntity(owner))
-				continue;
-			
-			Vincent npc = view_as<Vincent>(owner);
 			if (fromAbility && entity_hit == owner && npc.m_bLostHalfHealth)
 			{
 				npc.m_flLeakingOilUntil = GetGameTime(npc.index) + 7.5;
@@ -1206,13 +1134,17 @@ static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
 			if (entity_hit > 0 && entity_hit <= MaxClients && !HasSpecificBuff(entity_hit, "Burn"))
 				EmitSoundToClient(entity_hit, g_VincentFireIgniteSound[GetRandomInt(0, sizeof(g_VincentFireIgniteSound) - 1)], entity_hit, SNDCHAN_AUTO);
 			
+			if (!hit)
+			{
+				hit = true;
+				KillFeed_SetKillIcon(npc.index, "firedeath");
+			}
+			
 			float Proj_Damage = 1.0 * RaidModeScaling;
 			SDKHooks_TakeDamage(entity_hit, owner, owner, Proj_Damage, DMG_PLASMA, -1);
 			NPC_Ignite(entity_hit, owner, 5.0, -1, Proj_Damage);
 		}
 	}
-
-	spawnRing_Vectors(vecPos, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 204, 85, 0, 255, 1, 0.6 /*duration */, 1.0, 0.1, 1, radius);
 	
 	return Plugin_Continue;
 }
@@ -1236,7 +1168,6 @@ static Action Timer_Vincent_LaunchFireDownwards(Handle timer, int ref)
 	int newRocket = npc.FireParticleRocket(vecTargetPos, 0.0, 200.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecPos);
 	RemoveEntity(entity);
 	
-	// FIXME: This doesn't work! It's supposed to launch the fire downwards (duh), but it aint doin dat
 	CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(newRocket), TIMER_FLAG_NO_MAPCHANGE);
 	return Plugin_Continue;
 }
@@ -1321,8 +1252,8 @@ void Vincent_SuperAttackBehindTarget(int iNPC, int victim, float damage, int dam
 	Handle trace;
 	trace = TR_TraceHullFilterEx(vecTargetPos, VectorTarget_2, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, iNPC);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
-			
-	KillFeed_SetKillIcon(iNPC, "fists");
+	
+	KillFeed_SetKillIcon(iNPC, npc.Anger ? "hale_megapunch_collateral" : "hale_punch_collateral");
 	
 	float playerPos[3];
 	for (int victim1 = 1; victim1 < MAXENTITIES; victim1++)
@@ -1510,6 +1441,9 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				TE_SendToAll(0.0);
 				TE_SetupBeamPoints(selfpos, ThrowPos, Shared_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2), ClampBeamWidth(diameter * 0.4), 0, 5.0, colorLayer4, 3);
 				TE_SendToAll(0.0);
+				
+				KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+				
 				float damage = 170.0;
 				damage *= RaidModeScaling;
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
@@ -1752,6 +1686,111 @@ void Vincent_SpawnFog(int iNPC)
 				SetVariantString("rpg_fortress_envfog");
 				AcceptEntityInput(client1, "SetFogController");
 			}
+		}
+	}
+}
+
+static void Vincent_PourOilAbility(Vincent npc, float duration, float delayToIgnite)
+{
+	// This does the ability that spawns many puddles
+	npc.m_bDoingOilPouring = true;
+	npc.m_flNextOilPouring = GetGameTime(npc.index) + delayToIgnite + 0.5;
+	
+	float vecPos[3], vecTargetPos[3], vecAng[3], vecForward[3], vecUseless[3];
+	GetAbsOrigin(npc.index, vecPos);
+	
+	float radius = VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE * 1.5;
+	
+	Vincent_PourOil(npc, vecPos, radius, duration, delayToIgnite, true);
+	
+	vecPos[2] += 80.0;
+	
+	ParticleEffectAt(vecPos, "gas_can_impact_blue");
+	
+	int rocketL = npc.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
+	int rocketR = npc.FireParticleRocket(vecUseless, 0.0, 0.0, 0.0, "spell_fireball_small_trail_red", false, _, true, vecUseless);
+	
+	SetParent(npc.index, rocketL, "effect_hand_L");
+	SetParent(npc.index, rocketR, "effect_hand_R");
+	
+	SetEntityCollisionGroup(rocketL, COLLISION_GROUP_DEBRIS);
+	SetEntityCollisionGroup(rocketR, COLLISION_GROUP_DEBRIS);
+	
+	float delay = 1.75;
+	if (npc.m_flMegaEnrage)
+		delay *= 0.5;
+	
+	CreateTimer(delay, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketL), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(delay, Timer_Vincent_LaunchFireDownwards, EntIndexToEntRef(rocketR), TIMER_FLAG_NO_MAPCHANGE);
+	
+	for (int i = 0; i < 8; i++)
+	{
+		vecAng[1] = i * (360.0 / 8.0);
+		GetAngleVectors(vecAng, vecForward, NULL_VECTOR, NULL_VECTOR);
+		NormalizeVector(vecForward, vecForward);
+		ScaleVector(vecForward, VINCENT_OIL_MODEL_DEFAULT_RADIUS * VINCENT_OIL_MODEL_SCALE);
+		AddVectors(vecPos, vecForward, vecTargetPos);
+		
+		Handle trace = TR_TraceRayFilterEx(vecPos, vecTargetPos, MASK_SOLID, RayType_EndPoint, TraceEntityFilter_Vincent_OnlyWorld);
+		if (!TR_DidHit(trace))
+		{
+			Handle trace2 = TR_TraceRayFilterEx(vecTargetPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
+			TR_GetEndPosition(vecTargetPos, trace);
+			delete trace2;
+		}
+		
+		delete trace;
+		
+		vecTargetPos[2] -= 16.0;
+		Vincent_PourOil(npc, vecTargetPos, radius, duration, delayToIgnite, true);
+	}
+}
+
+static void Vincent_PourOil(Vincent npc, float vecPos[3], float radius, float duration, float delayToIgnite, bool fromAbility)
+{
+	// This spawns each individual oil puddle
+	int prop = CreateEntityByName("prop_dynamic_override");
+	if (!IsValidEntity(prop))
+		return;
+	
+	Handle trace = TR_TraceRayFilterEx(vecPos, view_as<float>({90.0, 0.0, 0.0}), MASK_SOLID, RayType_Infinite, TraceEntityFilter_Vincent_OnlyWorld);
+	TR_GetEndPosition(vecPos, trace);
+	delete trace;
+	
+	TeleportEntity(prop, vecPos, NULL_VECTOR, NULL_VECTOR);
+	DispatchKeyValue(prop, "model", g_OilModel);
+	DispatchKeyValue(prop, "disablereceiveshadows", "1");
+	DispatchKeyValue(prop, "disableshadows", "1");
+	DispatchSpawn(prop);
+	
+	SetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity", npc.index);
+	SetTeam(prop, GetTeam(npc.index));
+	SetEntPropFloat(prop, Prop_Send, "m_flModelScale", VINCENT_OIL_MODEL_SCALE);
+	
+	SetEntityCollisionGroup(prop, COLLISION_GROUP_DEBRIS);
+	
+	if (delayToIgnite <= 0.1)
+		SetEntityRenderMode(prop, RENDER_NONE);
+	else
+		SetEntityRenderColor(prop, 0, 40, 0, 255);
+	
+	DataPack pack;
+	CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(prop));
+	pack.WriteCell(EntIndexToEntRef(npc.index));
+	pack.WriteFloat(radius);
+	pack.WriteCell(fromAbility);
+	
+	CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+}
+
+static void Timer_Vincent_FadeBackIn(Handle timer)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client) && !IsFakeClient(client))
+		{
+			UTIL_ScreenFade(client, 333, 1, FFADE_IN | FFADE_PURGE, 255, 255, 255, 255); //make the fade target everyone
 		}
 	}
 }

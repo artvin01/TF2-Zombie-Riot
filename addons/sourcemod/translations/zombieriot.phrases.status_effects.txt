@@ -1913,4 +1913,20 @@
 	{
 		"en"	"Increases everyone's damage by 100％."
 	}
+	"Umbral Grace"
+	{
+		"en"	"Umbral Grace"
+	}
+	"Umbral Grace Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
+	}
+	"Kolum's View"
+	{
+		"en"	"Kolum's View"
+	}
+	"Kolum's View Desc"
+	{
+		"en"	"Umbral koulm's have their vision on you."
+	}
 }

@@ -233,6 +233,7 @@ void OnMapStart_NPC_Base()
 	
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
+	PrecacheSound("weapons/bottle_break.wav");
 	
 	PrecacheDecal("sprites/blood.vmt", true);
 	PrecacheDecal("sprites/bloodspray.vmt", true);
@@ -1227,6 +1228,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()							{ return fl_Speed[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_Speed[this.index] = TempValueForProperty; }
+	}
+	property float m_flGravityMulti
+	{
+		public get()							{ return fl_GravityMulti[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_GravityMulti[this.index] = TempValueForProperty; }
 	}
 	property int m_iTargetWalkTo
 	{
@@ -3478,6 +3484,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_RegenDoLogic")
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
+		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -6057,9 +6064,9 @@ public void NpcSetGravity(CClotBody npc, int iNPC)
 	else
 	{
 #if defined ZR || defined RPG
-		npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+		npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : (800.0 * npc.m_flGravityMulti);
 #else
-		npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+		npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : (800.0 * npc.m_flGravityMulti);
 #endif
 	}
 }
@@ -8598,6 +8605,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextRunTime[entity] = 0.0;
 	fl_NextMeleeAttack[entity] = 0.0;
 	fl_Speed[entity] = 0.0;
+	fl_GravityMulti[entity] = 1.0;
 	i_Target[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
 	fl_GetClosestTargetTimeTouch[entity] = 0.0;

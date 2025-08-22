@@ -191,7 +191,7 @@ public void ApertureShotgunner_ClotThink(int iNPC)
 			float flPos[3];
 			WorldSpaceCenter(npc.index, flPos);
 			
-			Explode_Logic_Custom(50.0, -1, npc.index, -1, flPos, 100.0, _, _, true, _, false);
+			Explode_Logic_Custom(100.0, -1, npc.index, -1, flPos, 100.0, _, _, true, _, false);
 			ParticleEffectAt(flPos, "rd_robot_explosion_smoke_linger", 1.0);
 			npc.PlayBoomSound();
 			npc.m_flAbilityOrAttack0 = 0.0;

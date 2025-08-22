@@ -125,6 +125,7 @@ methodmap ChaosSupporter < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Elemental_AddChaosDamage(npc.index, npc.index, 1, false);
 
 		func_NPCDeath[npc.index] = view_as<Function>(ChaosSupporter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ChaosSupporter_OnTakeDamage);

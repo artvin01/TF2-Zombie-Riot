@@ -441,6 +441,7 @@ float fl_NextThinkTime[MAXENTITIES];
 float fl_NextRunTime[MAXENTITIES];
 float fl_NextMeleeAttack[MAXENTITIES];
 float fl_Speed[MAXENTITIES];
+float fl_GravityMulti[MAXENTITIES];
 int i_Target[MAXENTITIES];
 float fl_GetClosestTargetTime[MAXENTITIES];
 float fl_GetClosestTargetTimeTouch[MAXENTITIES];
