@@ -4937,4 +4937,29 @@
 	{
 		"en" "???"
 	}
+	
+	"Umbral Ltzens"
+	{
+		"en"	"Ŭ̸̪m̷̰̅b̵̘͆r̵̹̈a̸̤͆l̵̤͆ ̶̗̏L̷͕͊t̴̞͝z̸̺͠e̸͈͝n̷̥͑s̸̞̅"
+	}
+	"Umbral Refract"
+	{
+		"en"	"U̵͎͌m̴̱̒b̷͈̈́r̵̘̊ã̶̺l̶̡͘ ̷͓̈́R̸͔̊e̷͈̍f̵̞͘r̸͉̍a̷͖͛c̵̱͊ţ̷͝"
+	}
+	"Umbral Koulm"
+	{
+		"en"	"Ű̷͈m̵͇̅b̴̬̑r̴͚̆a̵̩̒l̴͈͑ ̴͇̿K̴̼͊o̵̳͊ų̶̒l̷̰̉m̶̜͐"
+	}
+	"Umbral Spuud"
+	{
+		"en"	"U̵͓̚m̶͉̀b̵̟͑r̴̳͌a̵͖̾l̸̢͆ ̵̳͒Ș̸͑p̸̳̅ù̷͖ȕ̸̝d̴͉͘"
+	}
+	"consume"
+	{
+		"en"	"consume"
+	}
+	"Amalgest Researcher"
+	{
+		"en"	"Amalgest Researcher"
+	}
 }

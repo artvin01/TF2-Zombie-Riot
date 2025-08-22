@@ -694,6 +694,10 @@
 	{
 		"en"	"Don't feel so good."
 	}
+	"Lone Health"
+	{
+		"en"	"Lone Health"
+	}
 	"Poisoned Water"
 	{
 		"en"	"Poisoned Water"
@@ -809,25 +813,36 @@
 	{
 		"en" "⚠ Looters Keepers"
 	}
-	
-	"Lone Health Title"
+	"Amalgest Security?"
 	{
-		"en"	"You see a healthpack, alone, just sitting by the tree..."
+		"en" "⚔ Amalgest Security?"
 	}
-	"Lone Health Accept"
+	"Amalgest Security?!"
 	{
-		"en"	"Grab the healthkit, it could be usefull."
+		"en" "⚠ Amalgest Security?"
 	}
-	"Lone Health Accept Desc"
+	"Automatic Defenses"
 	{
-		"en"	"{green}Gain a health powerup on stage start."
+		"en" "⚔ Automatic Defenses"
 	}
-	"Lone Health Decline"
+	"Automatic Defenses!"
 	{
-		"en"	"Don't touch it, it seems way too suspicious."
+		"en" "⚠ Automatic Defenses"
 	}
-	"Lone Health Decline Desc"
+	"Experimental Creatures"
 	{
-		"en"	"{green}Gain cash, raise Umbral Affinity."
+		"en" "⚔ Experimental Creatures"
+	}
+	"Experimental Creatures!"
+	{
+		"en" "⚠ Experimental Creatures"
+	}
+	"Lost Warriors"
+	{
+		"en" "⚔ Lost Warriors"
+	}
+	"Lost Warriors!"
+	{
+		"en" "⚠ Lost Warriors"
 	}
 }

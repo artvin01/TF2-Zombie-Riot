@@ -2105,6 +2105,22 @@
 	{
 		"en" "⚔⚠ Bladedance Animated"
 	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚔⚠ Slaves Controlled"
+	}
+	"Medieval Traitors"
+	{
+		"en" "⚔ Medieval Traitors"
+	}
+	"Medieval Traitors!"
+	{
+		"en" "⚔⚠ Medieval Traitors"
+	}
 	"Adamant Expidonsans"
 	{
 		"en" "⚔ Adamant Expidonsans"
@@ -2141,5 +2157,43 @@
 	"Lone Health Decline Desc"
 	{
 		"en"	"{green}Gain cash, raise Umbral Affinity."
+	}
+
+	
+	"Astra Title"
+	{
+		"en"	"You see a dragon girl, she seems to scuffle around for resources in this area."
+	}
+	"Astra Title Accept"
+	{
+		"en"	"Offer her some australium ingots."
+	}
+	"Astra Title Accept Desc"
+	{
+		"en"	"{green}Obtain a grand item and umbral affinity."
+	}
+	"Astra Title Denie"
+	{
+		"en"	"Ignore her, take whats around."
+	}
+	"Lone Health Denie Desc"
+	{
+		"en"	"{green}Obtain Cash and a common item."
+	}
+	"Blessing of Stars Cape"
+	{
+		"en"	"Blessing of Stars Cape"
+	}
+	"Blessing of Stars Cape Desc"
+	{
+		"en"	"{green}Briefly prevents your death once per stage.\n{default}A luminous aura envelops you...  its mostly just glitter."
+	}
+	"Astra Title Accept Conlusion"
+	{
+		"en"	"{brown}Astra{default} : Oh! Thank you so much! Have this as a thanks, something experimental i made."
+	}
+	"Astra Title Decline Conlusion"
+	{
+		"en"	"You ignore her, she doesnt notice you, or ignores you back..."
 	}
 }

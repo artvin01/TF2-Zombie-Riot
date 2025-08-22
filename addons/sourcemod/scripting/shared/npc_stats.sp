@@ -11246,8 +11246,8 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 	float MaxSpeedjump = loco.GetDesiredSpeed();
 	if(MaxSpeedjump <= 50.0)
 		MaxSpeedjump = 50.0;
-	if(MaxSpeedjump >= 100.0)
-		MaxSpeedjump = 100.0;
+	if(MaxSpeedjump >= 150.0)
+		MaxSpeedjump = 150.0;
 	if (GetVectorDistance(feet, goal) > MaxSpeedjump)
 	{
 		return false;

@@ -177,9 +177,50 @@ public void Rogue_Vote_Lone_Health(const Vote vote, int index)
 		}
 		case 1:
 		{
-			CPrintToChatAll("{green}%t","Cash Gained!", 2000);
-			CurrentCash += 2000;
+			GiveCash(2000);
 			Rogue_AddUmbral(15, false);
 		}
 	}
 }
+
+
+public float Rogue_Encounter_Astra()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Astra_Vote, "Astra Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Astra Title Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Astra Title Accept Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Astra Title Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Astra Title Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Astra Title Decline Conlusion");
+			Rogue_GiveNamedArtifact("Blessing of Stars Cape");
+			Rogue_AddUmbral(15, false);
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
+			Artifact artifact;
+			if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+			GiveCash(3500);
+		}
+	}
+}
+
