@@ -491,6 +491,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 			locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 			locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
+			locomotion.SetCallback(LocomotionCallback_ClimbUpToLedge, TriesClimbingUpLedge);
 			npcstats.ZRHook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 			SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
@@ -3498,6 +3499,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_RegenDoLogic")
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
+		.DefineFloatField("f_JumpedRecently")
 		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc();
 	EntityFactory.Install();
@@ -5716,6 +5718,17 @@ float f_CheckIfStuckPlayerDelay[MAXENTITIES];
 float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
+	CClotBody npc = view_as<CClotBody>(iNPC);
+	float Vectorspeed[3];
+	npc.GetVelocity(Vectorspeed);
+	if(Vectorspeed[2] == 0.0 && !npc.IsOnGround())
+	{
+		float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
+		if(JumpFloat > GetGameTime())
+		{
+			StuckFixNpc_Ledge(npc);
+		}
+	}
 	float lastThink = f_LastBaseThinkTime[iNPC];
 	f_LastBaseThinkTime[iNPC] = GetGameTime();
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
@@ -11220,4 +11233,103 @@ void NpcStats_CopyStats(int Owner, int Child)
 
 	childnpc.m_iTowerdefense_Checkpoint = ownernpc.m_iTowerdefense_Checkpoint;
 	childnpc.m_iCheckpointTarget		= ownernpc.m_iCheckpointTarget;
+}
+
+
+// from https://github.com/TF2-DMB/CBaseNPC/blob/f2af3f7b74af2d20cf5f673565cb31a887835fb8/scripting/cbasenpc/actiontest/nb_test_scout.sp#L125
+//adjusted for various fixes.
+static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], const float fwd[3], int entity)
+{
+	float feet[3];
+	loco.GetFeet(feet);
+	
+	float MaxSpeedjump = loco.GetDesiredSpeed();
+	if(MaxSpeedjump <= 50.0)
+		MaxSpeedjump = 50.0;
+	if(MaxSpeedjump >= 100.0)
+		MaxSpeedjump = 100.0;
+	if (GetVectorDistance(feet, goal) > MaxSpeedjump)
+	{
+		return false;
+	}
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+	loco.SetVelocity({0.0,0.0,0.0});
+	//but we reset the pos to make a perfect jump everytime.
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	float GoalAm[3];
+	GoalAm = goal;
+	npc.FaceTowards(GoalAm, 20000.0);
+
+	//we save when they recently jumped.
+	SetEntPropFloat(bot_entidx, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
+	return loco.CallBaseFunction(goal, fwd, entity);
+}
+
+
+#define DEFAULT_ANTISTUCK_SPEED 100.0
+void StuckFixNpc_Ledge(CClotBody npc)
+{
+	static float flMyPos[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+	if(b_IsGiant[npc.index])
+	{
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else if(f3_CustomMinMaxBoundingBox[npc.index][1] != 0.0)
+	{
+		hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[npc.index][0];
+		hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[npc.index][1];
+		hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[npc.index][2];
+
+		hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[npc.index][0];
+		hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[npc.index][1];
+		hullcheckmins[2] = 0.0;	
+	}
+	else
+	{
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+	hullcheckmaxs[0] += 1.0;
+	hullcheckmaxs[1] += 1.0;
+	hullcheckmaxs[2] += 1.0;
+
+	hullcheckmins[0] -= 1.0;
+	hullcheckmins[1] -= 1.0;
+	hullcheckmins[2] -= 1.0;
+	CNavArea areaNavget;
+	Segment segment;
+	Segment segment2;
+	segment = npc.GetPathFollower().FirstSegment();
+	float VecPos[3];
+	if(segment != NULL_PATH_SEGMENT)
+	{
+		segment2 = npc.GetPathFollower().NextSegment(segment);
+		segment2 = npc.GetPathFollower().NextSegment(segment2);
+	}	
+	if(segment2 != NULL_PATH_SEGMENT)
+	{
+		areaNavget = segment2.area;
+		areaNavget.GetCenter(VecPos);
+	}
+	if(VecPos[2] != 0.0)
+	{
+		flMyPos[2] = VecPos[2];
+	}
+	float ang[3], Vectorspeed[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	Vectorspeed[2] = 150.0;
+	Vectorspeed[0] = -1.0 * (Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
+	Vectorspeed[1] = -1.0 * (Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
+	if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs, true))
+	{
+		Vectorspeed[0] *= -1.0;
+		Vectorspeed[1] *= -1.0;
+	}
+	npc.SetVelocity(Vectorspeed);
+	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
 }

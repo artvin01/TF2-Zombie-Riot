@@ -2097,6 +2097,14 @@
 	{
 		"en" "⚔⚠ Corrupted Ruinan's"
 	}
+	"Bladedance Animated"
+	{
+		"en" "⚔ Bladedance Animated"
+	}
+	"Bladedance Animated!"
+	{
+		"en" "⚔⚠ Bladedance Animated"
+	}
 	"Adamant Expidonsans"
 	{
 		"en" "⚔ Adamant Expidonsans"
