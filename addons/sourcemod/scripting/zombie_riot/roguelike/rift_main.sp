@@ -329,7 +329,7 @@ public float Rogue_Encounter_RiftConsume()
 	return 35.0;
 }
 
-static void StartRiftVote(bool first)
+static bool StartRiftVote(bool first)
 {
 	ArrayList list = Rogue_CreateGenericVote(FinishRiftVote, "Rift Consume Encounter Title");
 	Vote vote;
@@ -385,7 +385,8 @@ static void StartRiftVote(bool first)
 		}
 	}
 
-	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
+	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0)
+	return found;
 }
 
 static void FinishRiftVote(const Vote vote)
@@ -432,8 +433,8 @@ static void FinishRiftVote(const Vote vote)
 			else
 			{
 				CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
-				StartRiftVote(false);
-				Rogue_SetProgressTime(20.0, false);
+				bool found = StartRiftVote(false);
+				Rogue_SetProgressTime(found ? 5.0 : 20.0, false);
 			}
 		}
 	}
