@@ -2290,11 +2290,8 @@ static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -
 			{
 				if(stage.ForcePosition == pos || (stage.ForcePosition == (pos - maxstages)))
 				{
-					if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
-					{
-						if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
-							return i;
-					}
+					if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
+						return i;
 				}
 			}
 
