@@ -408,7 +408,6 @@ static void StartRiftVote(bool first)
 
 static void FinishRiftVote(const Vote vote)
 {
-	Artifact artifact;
 	int index = StringToInt(vote.Config);
 	switch(index)
 	{
@@ -418,7 +417,7 @@ static void FinishRiftVote(const Vote vote)
 		}
 		default:
 		{
-			Rogue_RemoveNamedArtifact(artifact.Name);
+			Rogue_RemoveNamedArtifact(vote.Config);
 
 			if(CurseCorrupt && (GetURandomInt() % 2))
 			{
@@ -438,7 +437,7 @@ static void FinishRiftVote(const Vote vote)
 						GiveShield(1500);
 					
 					default:
-						GiveCash(1000);
+						GiveCash(2000);
 				}
 			}
 

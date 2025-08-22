@@ -2290,11 +2290,8 @@ static int GetRandomStage(const Floor floor, Stage stage, int type, int seed = -
 			{
 				if(stage.ForcePosition == pos || (stage.ForcePosition == (pos - maxstages)))
 				{
-					if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
-					{
-						if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
-							return i;
-					}
+					if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
+						return i;
 				}
 			}
 
@@ -2969,11 +2966,11 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 	{
 		if(change > 0)
 		{
-			CPrintToChatAll("%t", "Bad Umbral", change);
+			CPrintToChatAll("%t", "Good Umbral", change);
 		}
 		else
 		{
-			CPrintToChatAll("%t", "Good Umbral", -change);
+			CPrintToChatAll("%t", "Bad Umbral", -change);
 		}
 	}
 }
