@@ -2172,11 +2172,11 @@
 	{
 		"en"	"{green}Obtain a grand item and umbral affinity."
 	}
-	"Astra Title Denie"
+	"Astra Title Decline"
 	{
 		"en"	"Ignore her, take whats around."
 	}
-	"Lone Health Denie Desc"
+	"Lone Health Decline Desc"
 	{
 		"en"	"{green}Obtain Cash and a common item."
 	}
