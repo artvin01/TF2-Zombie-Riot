@@ -4097,27 +4097,27 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "Enables new functions on certain kits at their final pap.\n+20％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +5％ Kit Overall Resist\n+5％ Max mana | +25％ Repair Rate | +5％ Buidling HP"
+		"en" "+20％ Kit DMG | +5％ Kit Atkspd | +5 Kit HP on kill | +5％ Kit Overall Resist\n+25％ Repair Rate"
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "+35％ Kit DMG | +15％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+10％ Max mana | +35％ Repair Rate | +5％ Buidling HP\n20％ less building cost."
+		"en" "+30％ Kit DMG | +10％ Kit Atkspd | +5 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +35％ Repair Rate | +5％ Buidling HP\n20％ less building cost."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "+50％ Kit DMG | +15％ Kit Atkspd | +15 Kit HP on kill | +10％ Kit Overall Resist\n+15％ Max mana | +50％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+5％ Projectile Speed | 20％ less building cost."
+		"en" "+40％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +50％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+5％ Projectile Speed | 20％ less building cost."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "+75％ Kit DMG | +15％ Kit Atkspd | +15 Kit HP on kill | +10％ Kit Overall Resist\n+20％ Max mana | +100％ Repair Rate | +10％ Buidling HP | +20％ Clip Size\n+10％ Projectile Speed | +5％ Projectile Range | 20％ less building cost."
+		"en" "+50％ Kit DMG | +15％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +100％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+10％ Projectile Speed | +5％ Projectile Range | 20％ less building cost."
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "+100％ Kit DMG | +20％ Kit Atkspd | +20 Kit HP on kill | +15％ Kit Overall Resist\n+25％ Max mana | +100％ Repair Rate | +15％ Buidling HP | +35％ Clip Size\n+15％ Projectile Speed | +10％ Projectile Range | 20％ less building cost."
+		"en" "+75％ Kit DMG | +15％ Kit Atkspd | +15 Kit HP on kill | +15％ Kit Overall Resist\n+10％ Max mana | +100％ Repair Rate | +10％ Buidling HP | +35％ Clip Size\n+15％ Projectile Speed | +10％ Projectile Range | 20％ less building cost."
 	}
 	"Kit Modernizer VI Desc"
 	{
-		"en" "+100％ Kit DMG | +25％ Kit Atkspd | +25 Kit HP on kill | +20％ Kit Overall Resist\n+35％ Max mana | +200％ Repair Rate | +15％ Buidling HP | +50％ Clip Size"
+		"en" "+100％ Kit DMG | +20％ Kit Atkspd | +20 Kit HP on kill | +20％ Kit Overall Resist\n+10％ Max mana | +200％ Repair Rate | +10％ Buidling HP | +50％ Clip Size"
 	}
 	"Unit Reformator I Desc"
 	{
