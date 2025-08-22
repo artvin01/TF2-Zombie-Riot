@@ -221,8 +221,8 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 
 		if(Cheese_HasModernizer1[client])
 		{
-			HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.01), 0.25, 0.0, HEAL_SELFHEAL);
-			Elemental_AddPlasmicDamage(client, client, 16, EntRefToEntIndex(iref_WeaponConnect[client][0]), true); // less than lastman so its not that punishing
+			//HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.01), 0.25, 0.0, HEAL_SELFHEAL);
+			//Elemental_AddPlasmicDamage(client, client, 16, EntRefToEntIndex(iref_WeaponConnect[client][0]), true); // less than lastman so its not that punishing
 		}
 		else
 		{
@@ -230,6 +230,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 		}
 	}
 
+	/*
 	if(Store_HasNamedItem(client, "Kit Modernizer I"))
 	{
 		if(!Cheese_HasModernizer1[client])
@@ -249,6 +250,7 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 			Cheese_HasModernizer1[client] = false;
 		}
 	}
+	*/
 
 	Cheese_Hud(client, false);		
 	
@@ -1120,5 +1122,6 @@ static bool TraceUsers(int entity, int contentsMask, int client)
 	}
 	return false;
 }
+
 
 
