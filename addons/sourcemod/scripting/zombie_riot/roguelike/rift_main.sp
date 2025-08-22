@@ -403,7 +403,7 @@ static bool StartRiftVote(bool first)
 		}
 	}
 
-	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0)
+	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
 	return found;
 }
 
