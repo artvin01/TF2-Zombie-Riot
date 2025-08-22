@@ -17,6 +17,7 @@ void Rogue_OnAbilityUse(int client, int weapon)
 	}
 
 	Rogue_ParadoxDLC_AbilityUsed(client);
+	Rogue_Hand2_AbilityUse(client, weapon);
 }
 
 bool Rogue_InItallianWrath(int weapon)

@@ -55,6 +55,7 @@ methodmap MajorVoided < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Void);
 		
 	//	SetVariantInt(1);
 	//	AcceptEntityInput(npc.index, "SetBodyGroup");

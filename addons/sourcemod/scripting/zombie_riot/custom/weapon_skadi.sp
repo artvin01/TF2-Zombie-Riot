@@ -77,7 +77,7 @@ public void Enable_SkadiWeapon(int client, int weapon) // Enable management, han
 		
 	}	
 
-	if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
+	if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

@@ -479,34 +479,37 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
 	bool KeepProtection = false;
-	if(Rogue_Theme() == 1 && !force)
+	if(!force)
 	{
-		if(f_DomeInsideTest[entity] > GetGameTime())
+		if(Rogue_Theme() == 1)
 		{
-			KeepProtection = true;
+			if(f_DomeInsideTest[entity] > GetGameTime())
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	float PosNpc[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
-	if(!KeepProtection)
-	{
-		if(IsPointOutsideMap(PosNpc))
+		float PosNpc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+		if(!KeepProtection)
 		{
-			KeepProtection = true;
+			if(IsPointOutsideMap(PosNpc))
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	if(!KeepProtection)
-	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
-		static float minn[3], maxx[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
-		if(IsBoxHazard(PosNpc, minn, maxx))
-			KeepProtection = true;
+		if(!KeepProtection)
+		{
+			if(i_InHurtZone[entity])
+				KeepProtection = true;
+		}
+		if(!KeepProtection)
+		{
+			static float minn[3], maxx[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+			if(IsBoxHazard(PosNpc, minn, maxx))
+				KeepProtection = true;
+		}
 	}
 
 
@@ -1150,7 +1153,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Changed;
 		}
 	}
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
@@ -1282,6 +1285,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = false;
 	}
+	//force gibbing.
+	if(HasSpecificBuff(victim, "Warped Elemental End"))
+		npcBase.m_bGib = true;
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 24);
 	

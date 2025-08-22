@@ -150,11 +150,27 @@ public void Weapon_Skulls_M1_Pap2(int client, int weapon, bool crit)
 public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 {
 	int mana_cost = Skulls_ManaCost_M1[tier];
-
+	mana_cost = RoundToNearest(float(mana_cost) * Attributes_Get(weapon, 733, 1.0));
+	Skull_Tier[client] = tier;
+	
+	if (Ability_Check_Cooldown(client, 1) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, 1);
+				
+		if(Ability_CD <= 0.0)
+		Ability_CD = 0.0;
+				
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;
+	}
 	if(mana_cost <= Current_Mana[client] && !Skulls_PlayerHasNoSkulls(client))
 	{	
+		Ability_Apply_Cooldown(client, 1, 6.0);
 		Rogue_OnAbilityUse(client, weapon);
-		SDKhooks_SetManaRegenDelayTime(client, 1.0);
+		SDKhooks_SetManaRegenDelayTime(client, 3.5);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		Current_Mana[client] -= mana_cost;
@@ -168,11 +184,11 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 			
 			if (IsValidEdict(ent))
 			{
-				Skulls_LaunchSkull(ent, weapon, client, tier);
+				Skulls_LaunchSkull(ent, weapon, client, tier, true, 0.5);
 			}
 		}
 		
-		delete Skulls_ArrayStack[client];
+	//	delete Skulls_ArrayStack[client];
 	}
 	else
 	{
@@ -191,7 +207,7 @@ public void Skulls_LaunchAll(int client, int weapon, bool crit, int tier)
 	}
 }
 
-public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
+void Skulls_LaunchSkull(int ent, int weapon, int client, int tier, bool KeepOriginal = false, float damagemulti = 1.0)
 {
 	float damage = Skulls_LaunchDMG[tier];
 	float velocity = Skulls_LaunchVel[tier];
@@ -205,6 +221,7 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 		
 		velocity *= Attributes_Get(weapon, 475, 1.0);
 	}
+	damage *= damagemulti;
 		
 	float pos[3], ang[3], TargetLoc[3], DummyAngles[3];
 	
@@ -219,10 +236,13 @@ public void Skulls_LaunchSkull(int ent, int weapon, int client, int tier)
 
 	NearlSwordAbility npc = view_as<NearlSwordAbility>(ent);
 
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
+	if(!KeepOriginal)
+	{
+		if(IsValidEntity(npc.m_iWearable6))
+			RemoveEntity(npc.m_iWearable6);
 
-	RemoveEntity(ent);
+		RemoveEntity(ent);
+	}
 	if(!IsValidEntity(weapon))
 	{
 		return;
@@ -306,7 +326,9 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 {
 	if (Ability_Check_Cooldown(client, 2) < 0.0)
 	{
+		Skull_Tier[client] = tier;
 		int mana_cost = Skulls_ManaCost_M2[tier];
+		mana_cost = RoundToNearest(float(mana_cost) * Attributes_Get(weapon, 733, 1.0));
 	
 		if(mana_cost <= Current_Mana[client])
 		{
@@ -445,6 +467,7 @@ public void Skulls_Summon(int client, int weapon, bool crit, int tier)
 					}
 					
 					Current_Mana[client] -= mana_cost;
+					SDKhooks_SetManaRegenDelayTime(client, 2.0);
 					Ability_Apply_Cooldown(client, 2, 5.0);
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
@@ -514,6 +537,7 @@ public Action Skulls_PreThink(int client)
 	{	
 		Skulls_Management(client);
 		SkullFloatDelay[client] = GetGameTime() + 0.05; //add a tiny delay, otherwise optentially too much processing.
+		ApplyStatusEffect(client, client, "Serving Skulls", 0.1);
 	}
 	
 	return Plugin_Continue;
@@ -1034,10 +1058,9 @@ public void Wand_Skulls_Touch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		float position[3];
-	
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
+	//	float position[3];
+	//	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	//	ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
 		EmitSoundToAll(SOUND_SKULL_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		RemoveEntity(entity);
 	}
@@ -1047,9 +1070,9 @@ public void Wand_Skulls_Touch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		float position[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-		ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
+	//	float position[3];
+	//	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+	//	ParticleEffectAt(position, SKULL_PARTICLE_IMPACT, 1.0);
 		EmitSoundToAll(SOUND_SKULL_IMPACT, entity, SNDCHAN_STATIC, 80, _, 1.0);
 		RemoveEntity(entity);
 	}
@@ -1168,4 +1191,34 @@ public Action Skulls_Transmit(int entity, int client)
 		return Plugin_Continue;
 	
 	return Plugin_Handled;
+}
+
+
+
+void StatusEffects_SkullServants()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Serving Skulls");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "☠");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.AttackspeedBuff			= -1.0;
+	data.HudDisplay_Func 			= Func_SkullsHud;
+	StatusEffect_AddGlobal(data);
+}
+
+void Func_SkullsHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	int length;
+	if(Skulls_ArrayStack[victim])
+	{
+		length = Skulls_ArrayStack[victim].Length;
+	}
+	Format(HudToDisplay, SizeOfChar,"☠(%i/%i)", length,Skulls_MaxSkulls[Skull_Tier[victim]]);
 }

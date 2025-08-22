@@ -349,7 +349,7 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 			{
 				NervousTouching[entity] = NervousTouching[0];
 			//	NervousLastTouch[entity] = NULL_AREA;
-				if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
+				if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(entity, Prop_Data, "m_flElementRes", Element_Void) > 0.4)
 				{
 					VoidWave_ApplyBuff(entity, 1.0);
 				}
@@ -491,7 +491,7 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 
 static float VoidGateHurtVoid(int attacker, int victim, float &damage, int weapon)
 {
-	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
+	if((!b_NpcHasDied[victim] && (view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4)) || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
 	{
 		damage = 0.0;
 	}

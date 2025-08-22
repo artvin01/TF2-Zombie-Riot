@@ -3109,6 +3109,8 @@ void DoGlobalMultiScaling()
 
 	float multi = playercount / 4.0;
 	
+	Rogue_Rift_MultiScale(multi);
+	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
 
@@ -3829,6 +3831,17 @@ void WavesUpdateDifficultyName()
 
 void Waves_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
 {
+	if(Aperture_ShouldDoLastStand())
+	{
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			ApplyStatusEffect(client, client, "Chaos Infliction", 999.0);
+		}
+		else
+		{
+			RemoveSpecificBuff(client, "Chaos Infliction");
+		}
+	}
 	if(ModFuncAlly != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, ModFuncAlly);

@@ -819,7 +819,7 @@ public MRESReturn Ice_Explode(int entity)
 
 void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 {
-	Elemental_AddCyroDamage(victim, entity, RoundFloat(damage * 240.0), 1);
+	Elemental_AddCyroDamage(victim, entity, RoundFloat(damage * 2000.0), 1);
 }
 
 public bool Trash_RollTrash(int client, int tier)

@@ -112,6 +112,7 @@ methodmap ZeinaPrisoner < CClotBody
 		npc.m_iBleedType = 0;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		VausMagicaGiveShield(npc.index, 10);
 		switch(GetRandomInt(1,3))
 		{
