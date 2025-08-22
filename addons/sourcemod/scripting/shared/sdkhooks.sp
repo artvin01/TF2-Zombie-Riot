@@ -2043,6 +2043,17 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			damage = 0.0;
 			return Plugin_Handled;
 		}
+		if(HasSpecificBuff(victim, "Blessing of Stars"))
+		{
+			HealEntityGlobal(victim, victim, float(ReturnEntityMaxHealth(victim) / 4), 1.0, 1.0, HEAL_ABSOLUTE);
+			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
+			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			RemoveSpecificBuff(victim, "Blessing of Stars");
+			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 4");

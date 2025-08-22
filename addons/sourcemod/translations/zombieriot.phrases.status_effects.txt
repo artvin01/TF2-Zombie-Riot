@@ -335,6 +335,14 @@
 	{
 		"en"	"Your HP cannot drop below 1 no matter what."
 	}
+	"Blessing of Stars"
+	{
+		"en"	"Blessing of Stars"
+	}
+	"Blessing of Stars Desc"
+	{
+		"en"	"Saves you from death, once."
+	}
 	"Death is comming."
 	{
 		"en"	"Death is comming."

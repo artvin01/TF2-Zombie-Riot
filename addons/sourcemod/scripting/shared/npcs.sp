@@ -1442,6 +1442,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
+	
+	if(SlayNpc && HasSpecificBuff(victim, "Blessing of Stars"))
+	{
+		HealEntityGlobal(victim, victim, float(ReturnEntityMaxHealth(victim) / 4), 1.0, 1.0, HEAL_ABSOLUTE);
+		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+		ApplyStatusEffect(victim, victim, "Unstoppable Force", 1.0);
+		RemoveSpecificBuff(victim, "Blessing of Stars");
+		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+		SlayNpc = false;
+	}
 	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);

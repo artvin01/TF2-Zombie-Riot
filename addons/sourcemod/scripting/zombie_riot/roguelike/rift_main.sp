@@ -88,6 +88,24 @@ public void Rogue_RiftExpansion_StageStart()
 	Spawns_GetNextPos(pos, ang);
 	NPC_CreateByName("npc_void_portal", 0, pos, ang, TFTeam_Blue);
 }
+public void Rogue_BlessingStars_Start()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == 2)
+		{
+			ApplyStatusEffect(client, client, "Blessing of Stars", 999.0);
+		}
+	}
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && !b_NpcIsInvulnerable[entity] && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
+		{
+			ApplyStatusEffect(entity, entity, "Blessing of Stars", 999.0);
+		}
+	}
+}
 
 public void Rogue_Curse_RiftCorrupt(bool enable)
 {
