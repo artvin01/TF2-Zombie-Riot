@@ -9967,7 +9967,7 @@ stock ArrayList GetAllNearbyAreas(float pos[3], float radius)
 		float navPos[3];
 		navi.GetCenter(navPos);
 
-		if (GetVectorDistance(pos, navPos) <= radius)
+		if (GetVectorDistance(pos, navPos, true) <= (radius * radius))
 			PushArrayCell(valid, navi);
 	}
 

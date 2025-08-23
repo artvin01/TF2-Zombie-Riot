@@ -2468,6 +2468,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		f_AttackSpeedNpcIncrease[entity] 	= 1.0;
 		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR || defined RPG
 		KillFeed_EntityCreated(entity);

@@ -44,7 +44,7 @@
 	"Gained Shield"
 	{
 		"#format"	"{1:d}"
-		"en"		"{red}Gained {1} Shield!"
+		"en"		"{green}Gained {1} Barrier!"
 	}
 	"Time Stands Still"
 	{
