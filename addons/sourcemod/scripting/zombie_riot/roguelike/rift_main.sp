@@ -377,12 +377,12 @@ static bool StartRiftVote(bool first)
 				strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 				list.PushArray(vote);
 				
-				if(++found > 7)
+				if(++found > 6)
 					break;
 			}
 		}
 
-		if(found < 8)
+		if(found < 7)
 		{
 			// Misc items
 			for(int i = length - 1; i >= 0; i--)
@@ -396,7 +396,7 @@ static bool StartRiftVote(bool first)
 					strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 					list.PushArray(vote);
 					
-					if(++found > 7)
+					if(++found > 6)
 						break;
 				}
 			}
