@@ -4958,6 +4958,10 @@
 	{
 		"en"	"Ű̷͈m̵͇̅b̴̬̑r̴͚̆a̵̩̒l̴͈͑ ̴͇̿K̴̼͊o̵̳͊ų̶̒l̷̰̉m̶̜͐"
 	}
+	"Umbral Keitosis"
+	{
+		"en"	"U̶̩̎m̷̦̎b̵͓̈r̷͔̋a̸͇̍l̸̘̓ ̸͖̔K̷͍̉e̸̤̓ĭ̶̥t̸̤́ǫ̵̌s̴͚̈́i̴̠̓s̷̓͜"
+	}
 	"Umbral Spuud"
 	{
 		"en"	"U̵͓̚m̶͉̀b̵̟͑r̴̳͌a̵͖̾l̸̢͆ ̵̳͒Ș̸͑p̸̳̅ù̷͖ȕ̸̝d̴͉͘"
@@ -4969,5 +4973,9 @@
 	"Amalgest Researcher"
 	{
 		"en"	"Amalgest Researcher"
+	}
+	"Seinr"
+	{
+		"en"	"Seinr"
 	}
 }

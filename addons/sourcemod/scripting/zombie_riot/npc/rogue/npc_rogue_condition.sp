@@ -129,7 +129,7 @@ static void Umbral_AdjustStats(int ref)
 
 	fl_Extra_Damage[entity] *= 5.0;
 	MultiHealth(entity, 0.05);
-	float HealthGet = ReturnEntityMaxHealth(HealingAmount);
+	int HealthGet = ReturnEntityMaxHealth(entity);
 	if(HealthGet >= 3000)
 	{
 		//give more dmg again!

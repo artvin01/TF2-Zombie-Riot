@@ -1071,6 +1071,8 @@ void NPC_ConfigSetup()
 	Umbral_Refract_OnMapStart_NPC();
 	Umbral_Koulm_OnMapStart_NPC();
 	Umbral_Spuud_OnMapStart_NPC();
+	Umbral_Keitosis_OnMapStart_NPC();
+	AmalgestSeinr_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2338,3 +2340,5 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_refract.sp"
 #include "npc/rogue/rouge3/npc_umbral_koulm.sp"
 #include "npc/rogue/rouge3/npc_umbral_spuud.sp"
+#include "npc/rogue/rouge3/npc_umbral_keitosis.sp"
+#include "npc/rogue/rouge3/npc_amalgest_seinr.sp"

@@ -2006,13 +2006,13 @@
 	{
 		"en" "⚔⚠ Confused Ruanians"
 	}
-	"Sabotaging Eletric's"
+	"Sabotaging Electric's"
 	{
-		"en" "⚔ Sabotaging Eletric's"
+		"en" "⚔ Sabotaging Electric's"
 	}
-	"Sabotaging Eletric's!"
+	"Sabotaging Electric's!"
 	{
-		"en" "⚔⚠ Sabotaging Eletric's"
+		"en" "⚔⚠ Sabotaging Electric's"
 	}
 	"Zombies Land"
 	{

@@ -727,7 +727,7 @@
 	{
 		"en"	"Go around back"
 	}
-	"Magic Factory Option 2"
+	"Magic Factory Desc 2"
 	{
 		"en"	"{green}Obtain 2000 cash {yellow}and a random voidstone"
 	}
@@ -737,7 +737,7 @@
 	}
 	"Cloned Subjects!"
 	{
-		"en" "⚠ Cloned Subjects"
+		"en" "⚔⚠ Cloned Subjects"
 	}
 	"Shipment Deliviered"
 	{
@@ -745,7 +745,7 @@
 	}
 	"Shipment Deliviered!"
 	{
-		"en" "⚠ Shipment Deliviered"
+		"en" "⚔⚠ Shipment Deliviered"
 	}
 	"The Insane"
 	{
@@ -753,7 +753,7 @@
 	}
 	"The Insane!"
 	{
-		"en" "⚠ The Insane"
+		"en" "⚔⚠ The Insane"
 	}
 	"Confused Ruanians"
 	{
@@ -761,15 +761,15 @@
 	}
 	"Confused Ruanians!"
 	{
-		"en" "⚠ Confused Ruanians"
+		"en" "⚔⚠ Confused Ruanians"
 	}
-	"Sabotaging Eletric's"
+	"Sabotaging Electric's"
 	{
-		"en" "⚔ Sabotaging Eletric's"
+		"en" "⚔ Sabotaging Electric's"
 	}
-	"Sabotaging Eletric's!"
+	"Sabotaging Electric's!"
 	{
-		"en" "⚠ Sabotaging Eletric's"
+		"en" "⚔⚠ Sabotaging Electric's"
 	}
 	"Zombies Land"
 	{
@@ -777,7 +777,7 @@
 	}
 	"Zombies Land!"
 	{
-		"en" "⚠ Zombies Land"
+		"en" "⚔⚠ Zombies Land"
 	}
 	"Underpaid Mercs"
 	{
@@ -785,7 +785,7 @@
 	}
 	"Underpaid Mercs!"
 	{
-		"en" "⚠ Underpaid Mercs"
+		"en" "⚔⚠ Underpaid Mercs"
 	}
 	"Unknown Army"
 	{
@@ -793,7 +793,7 @@
 	}
 	"Unknown Army!"
 	{
-		"en" "⚠ Unknown Army"
+		"en" "⚔⚠ Unknown Army"
 	}
 	"Desperate Voiders"
 	{
@@ -801,7 +801,7 @@
 	}
 	"Desperate Voiders!"
 	{
-		"en" "⚠ Desperate Voiders"
+		"en" "⚔⚠ Desperate Voiders"
 	}
 	
 
@@ -811,7 +811,7 @@
 	}
 	"Looters Keepers!"
 	{
-		"en" "⚠ Looters Keepers"
+		"en" "⚔⚠ Looters Keepers"
 	}
 	"Amalgest Security?"
 	{
@@ -819,7 +819,7 @@
 	}
 	"Amalgest Security?!"
 	{
-		"en" "⚠ Amalgest Security?"
+		"en" "⚔⚠ Amalgest Security?"
 	}
 	"Automatic Defenses"
 	{
@@ -827,7 +827,7 @@
 	}
 	"Automatic Defenses!"
 	{
-		"en" "⚠ Automatic Defenses"
+		"en" "⚔⚠ Automatic Defenses"
 	}
 	"Experimental Creatures"
 	{
@@ -835,7 +835,7 @@
 	}
 	"Experimental Creatures!"
 	{
-		"en" "⚠ Experimental Creatures"
+		"en" "⚔⚠ Experimental Creatures"
 	}
 	"Lost Warriors"
 	{
@@ -843,7 +843,7 @@
 	}
 	"Lost Warriors!"
 	{
-		"en" "⚠ Lost Warriors"
+		"en" "⚔⚠ Lost Warriors"
 	}
 	"Failed Mercs"
 	{
@@ -851,7 +851,7 @@
 	}
 	"Failed Mercs!"
 	{
-		"en" "⚠ Failed Mercs"
+		"en" "⚔⚠ Failed Mercs"
 	}
 	"Void Entangled"
 	{
@@ -859,6 +859,94 @@
 	}
 	"Void Entangled!"
 	{
-		"en" "⚠ Void Entangled"
+		"en" "⚔⚠ Void Entangled"
+	}
+	"Brainwashed Expidonsans"
+	{
+		"en" "⚔ Brainwashed Expidonsans"
+	}
+	"Brainwashed Expidonsans!"
+	{
+		"en" "⚔⚠ Brainwashed Expidonsans"
+	}
+	"Umbral Disturbance"
+	{
+		"en" "⚔⚠ Umbral Disturbance"
+	}
+	"Amalgest Desperation"
+	{
+		"en" "⚔⚠ Amalgest Desperation"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚔⚠ Slaves Controlled"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚔⚠ Slaves Controlled"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚔⚠ Slaves Controlled"
+	}
+	"Bladedance Surviors"
+	{
+		"en" "⚔ Bladedance Surviors"
+	}
+	"Bladedance Surviors!"
+	{
+		"en" "⚔⚠ Bladedance Surviors"
+	}
+	"Rescued W.F. Soldiers"
+	{
+		"en" "⚔ Rescued W.F. Soldiers"
+	}
+	"Rescued W.F. Soldiers!"
+	{
+		"en" "⚔⚠ Rescued W.F. Soldiers"
+	}
+	"Unknown Taskforce"
+	{
+		"en" "⚔ Unknown Taskforce"
+	}
+	"Unknown Taskforce!"
+	{
+		"en" "⚔⚠ Unknown Taskforce"
+	}
+	"Beyond Recognition"
+	{
+		"en" "⚔ Beyond Recognition"
+	}
+	"Beyond Recognition!"
+	{
+		"en" "⚔⚠ Beyond Recognition"
+	}
+	"Mind Equals Controlled"
+	{
+		"en" "⚔ Mind Equals Controlled"
+	}
+	"Mind Equals Controlled!"
+	{
+		"en" "⚔⚠ Mind Equals Controlled"
+	}
+	"Top Voided Elites"
+	{
+		"en" "⚔ Top Voided Elites"
+	}
+	"Top Voided Elites!"
+	{
+		"en" "⚔⚠ Top Voided Elites"
 	}
 }
