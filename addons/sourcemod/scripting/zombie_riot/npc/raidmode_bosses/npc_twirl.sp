@@ -1004,7 +1004,7 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope yoyou're all as excited as I am{snow}!");
+				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope you're all as excited as I am{snow}!");
 				case 1: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
 				case 2: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
 				case 3: Twirl_Lines(npc, "Kuru Kuru~");
