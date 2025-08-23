@@ -403,7 +403,7 @@ static bool StartRiftVote(bool first)
 		}
 	}
 
-	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0)
+	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
 	return view_as<bool>(found);
 }
 
@@ -683,7 +683,7 @@ public float Rogue_Encounter_WarpedBattle()
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
-	if(GetURandomInt() % 2)
+	if((GetURandomInt() % 3) == 0)
 	{
 		int seed1 = 2 + (WarpSeed % 3);
 		int seed2 = WarpSeed / 3;
