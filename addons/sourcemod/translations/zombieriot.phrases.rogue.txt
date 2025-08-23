@@ -2154,10 +2154,6 @@
 	{
 		"en"	"Don't touch it, it seems way too suspicious."
 	}
-	"Lone Health Decline Desc"
-	{
-		"en"	"{green}Gain cash, raise Umbral Affinity."
-	}
 
 	
 	"Astra Title"
@@ -2178,7 +2174,7 @@
 	}
 	"Lone Health Decline Desc"
 	{
-		"en"	"{green}Obtain Cash and a common item."
+		"en"	"{green}Gain cash, raise Umbral Affinity."
 	}
 	"Mantle of Stars"
 	{

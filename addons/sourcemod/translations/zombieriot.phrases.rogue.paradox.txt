@@ -458,6 +458,14 @@
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
 	}
+	"Minion Energizer"
+	{
+		"en"	"Minion Energizer"
+	}
+	"Minion Energizer Desc"
+	{
+		"en"	"{green}Npc Allies gain +25％ more damage and HP."
+	}
 	"Acahuallan Bowl"
 	{
 		"en"	"Acahuallan Bowl"

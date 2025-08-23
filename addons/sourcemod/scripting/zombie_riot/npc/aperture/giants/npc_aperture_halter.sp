@@ -113,7 +113,7 @@ methodmap ApertureHalter < CClotBody
 	
 	public ApertureHalter(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureHalter npc = view_as<ApertureHalter>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.35", "7500", ally));
+		ApertureHalter npc = view_as<ApertureHalter>(CClotBody(vecPos, vecAng, "models/bots/engineer/bot_engineer.mdl", "1.35", "7500", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -156,7 +156,6 @@ methodmap ApertureHalter < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/tw_engineerbot_armor/tw_engineerbot_armor.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/robo_pyro_pyrobotic_tote/robo_pyro_pyrobotic_tote.mdl");
 		npc.m_iWearable5 = npc.SpawnShield(0.0, "models/props_mvm/mvm_player_shield2.mdl",90.0);
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

@@ -69,3 +69,17 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	}
 }
+
+
+public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
+{
+	if(map)	// Players
+	{
+		
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		fl_Extra_Damage[entity] *= 1.25;
+		MultiHealth(entity, 1.25);
+	}
+}

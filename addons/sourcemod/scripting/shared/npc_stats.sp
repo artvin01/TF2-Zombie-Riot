@@ -5718,17 +5718,6 @@ float f_CheckIfStuckPlayerDelay[MAXENTITIES];
 float f_QuickReviveHealing[MAXENTITIES];
 public void NpcBaseThinkPost(int iNPC)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
-	float Vectorspeed[3];
-	npc.GetVelocity(Vectorspeed);
-	if(Vectorspeed[2] == 0.0 && !npc.IsOnGround())
-	{
-		float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
-		if(JumpFloat > GetGameTime())
-		{
-			StuckFixNpc_Ledge(npc);
-		}
-	}
 	float lastThink = f_LastBaseThinkTime[iNPC];
 	f_LastBaseThinkTime[iNPC] = GetGameTime();
 	CBaseCombatCharacter(iNPC).SetNextThink(GetGameTime());
@@ -5883,6 +5872,16 @@ public void NpcBaseThink(int iNPC)
 		return;
 	}
 	
+	static float Vectorspeed[3];
+	npc.GetVelocity(Vectorspeed);
+	if(Vectorspeed[2] == 0.0 && !npc.IsOnGround())
+	{
+		float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
+		if(JumpFloat > GetGameTime())
+		{
+			StuckFixNpc_Ledge(npc);
+		}
+	}
 	if(b_KillHookHandleEvent[iNPC])
 	{
 		if(h_NpcHandleEventHook[iNPC] != 0)

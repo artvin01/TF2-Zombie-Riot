@@ -96,11 +96,25 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
 
-		if(friendly)
+		if(GetTeam(entity) == TFTeam_Red)
 		{
 			fl_Extra_Damage[entity] *= 10.0;
 			fl_Extra_MeleeArmor[entity] *= 10.0;
 			fl_Extra_RangedArmor[entity] *= 10.0;
+			TeleportNpcToRandomPlayer(entity);
+		}
+		else
+		{
+			switch(Rogue_GetUmbralLevel())
+			{
+				case 4:
+				{
+					//if completly hated.
+					fl_Extra_Damage[entity] *= 2.0;
+					fl_Extra_MeleeArmor[entity] *= 0.65;
+					fl_Extra_RangedArmor[entity] *= 0.65;
+				}
+			}
 		}
 
 		return entity;

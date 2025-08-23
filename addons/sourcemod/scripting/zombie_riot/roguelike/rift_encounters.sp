@@ -178,7 +178,7 @@ public void Rogue_Vote_Lone_Health(const Vote vote, int index)
 		case 1:
 		{
 			GiveCash(2000);
-			Rogue_AddUmbral(15, false);
+			Rogue_AddUmbral(10, false);
 		}
 	}
 }
@@ -215,7 +215,7 @@ public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 		{
 			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
 			Rogue_GiveNamedArtifact("Mantle of Stars");
-			Rogue_AddUmbral(15, false);
+			Rogue_AddUmbral(5, false);
 		}
 		case 1:
 		{
