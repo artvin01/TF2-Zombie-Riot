@@ -1970,9 +1970,9 @@
 	{
 		"en"		"Iberian Inqusitors"
 	}
-	"Voided Artorias"
+	"Half Voided Erirasus"
 	{
-		"en"		"Voided Artorias"
+		"en"		"Half Voided Erirasus"
 	}
 	"Pathshaper"
 	{

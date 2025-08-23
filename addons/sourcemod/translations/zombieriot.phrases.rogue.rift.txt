@@ -845,4 +845,20 @@
 	{
 		"en" "⚠ Lost Warriors"
 	}
+	"Failed Mercs"
+	{
+		"en" "⚔ Failed Mercs"
+	}
+	"Failed Mercs!"
+	{
+		"en" "⚠ Failed Mercs"
+	}
+	"Void Entangled"
+	{
+		"en" "⚔ Void Entangled"
+	}
+	"Void Entangled!"
+	{
+		"en" "⚠ Void Entangled"
+	}
 }
