@@ -5871,15 +5871,17 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
-	
-	static float Vectorspeed[3];
-	npc.GetVelocity(Vectorspeed);
-	if(Vectorspeed[2] == 0.0 && !npc.IsOnGround())
+	if(i_IsNpcType[npc.index] == NORMAL_NPC)
 	{
-		float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
-		if(JumpFloat > GetGameTime())
+		static float Vectorspeed[3];
+		npc.GetVelocity(Vectorspeed);
+		if(Vectorspeed[2] == 0.0 && !npc.IsOnGround())
 		{
-			StuckFixNpc_Ledge(npc);
+			float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
+			if(JumpFloat > GetGameTime())
+			{
+				StuckFixNpc_Ledge(npc);
+			}
 		}
 	}
 	if(b_KillHookHandleEvent[iNPC])

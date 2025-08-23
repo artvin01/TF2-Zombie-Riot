@@ -83,3 +83,11 @@ public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
 		MultiHealth(entity, 1.25);
 	}
 }
+
+
+
+static void MultiHealth(int entity, float amount)
+{
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
+}
