@@ -774,6 +774,7 @@ methodmap Twirl < CClotBody
 		b_lastman = false;
 		b_wonviatimer = false;
 		b_wonviakill = false;
+		i_RaidGrantExtra[npc.index] = 0;
 
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -951,6 +952,7 @@ methodmap Twirl < CClotBody
 
 		if(b_tripple_raid)
 		{
+			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
 			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
 			Twirl_Lines(npc, "... Except Karlas but shhhh!");
 			CPrintToChatAll("{crimson}Karlas{snow}: .....");
@@ -1102,7 +1104,7 @@ static void Twirl_WinLine(int entity)
 		return;
 	}
 
-	switch(GetRandomInt(0, 10))
+	switch(GetRandomInt(0, 11))
 	{
 		case 0: Twirl_Lines(npc, "Wait, you're all dead already??");
 		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
@@ -1188,7 +1190,7 @@ static void ClotThink(int iNPC)
 	if(LastMann && !b_lastman)
 	{
 		b_lastman = true;
-		if(b_force_transformation)
+		if(!b_force_transformation)
 		{
 			switch(GetRandomInt(0, 7))
 			{
@@ -1204,8 +1206,7 @@ static void ClotThink(int iNPC)
 		}
 	}
 
-	if(HandleRaidTimer(npc))
-		return;
+	HandleRaidTimer(npc);
 
 	if((npc.Anger) && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
@@ -4082,6 +4083,29 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	Text_Lines = "";
 
+	bool ruina_wings = IsValidEntity(Cosmetic_WearableExtra[client]) ? MagiaWingsDo(client) : false;
+
+	if(ruina_wings)
+	{
+		if(GetRandomFloat(0.0, 2.0) < 0.01)
+		{
+			switch(MagiaWingsType(client))
+			{
+				case WINGS_LANCELOT: 	Format(Text_Lines, sizeof(Text_Lines), "Pointy stick man. mr {gold}%N{snow} stole their wings.", client);
+				case WINGS_RULIANA: 	Format(Text_Lines, sizeof(Text_Lines), "Why. {gold}%N{snow}. Why do you have her wings?", client);
+				case WINGS_TWIRL: 		Format(Text_Lines, sizeof(Text_Lines), "Bruh {gold}%N{snow}. THOSE ARE MY WINGS", client);
+				case WINGS_HELIA: 		Format(Text_Lines, sizeof(Text_Lines), "Why, how, where, {gold}%N{snow} did you get Helia's Wings?", client);
+				case WINGS_STELLA: 		Format(Text_Lines, sizeof(Text_Lines), "Stella? what, no, you're {gold}%N{snow}, what", client);
+				case WINGS_KARLAS: 		Format(Text_Lines, sizeof(Text_Lines), "Wait when did {crimson}Karlas{snow} start speak-. WAIT YOURE {gold}%N{snow}, A MERC, NOT HIM", client);
+			}
+
+			Twirl_Lines(npc, Text_Lines);
+			fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+			b_said_player_weaponline[client] = true;
+			return;
+		}
+	}
+
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "I've had it up to here MISTER {gold}%N{snow}.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "How would you feel {gold}%N{snow} if I grabbed YOU?", client);}
@@ -4100,7 +4124,11 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 	
-		
+
+		case WEAPON_REIUJI_WAND: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "So {gold}%N{snow}, you got ahold of Rulianas's Launcher huh?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "Too bad that the weapon your using {gold}%N{snow}, is primarily meant for horde control", client);}
+		case 9:/*9 is passenger*/ switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I'll be frank {gold}%N{snow}, even though that wand looks like one of ours, it ain't", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "I'm somewhat ashamed to admit that the wand you're using {gold}%N{snow}, wasn't made by us, which is frankly a shock considering it has all the characteristics of our wands", client);}
+		case WEAPON_RUINA_DRONE_KNIFE: switch(GetRandomInt(0,2)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "NICE KNIFE {gold}%N{snow}", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "It's british shanking time {gold}%N{snow}", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "OI, {gold}%N{snow} YOU GOT A LOISCENCE FOR THAT KNOIFE?", client);}
+
 		case WEAPON_KIT_FRACTAL: 
 		{
 			switch(GetRandomInt(0,4)) 		
@@ -4114,7 +4142,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 						Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You don't even have the wings, how dare you use that?", client);
 					else
 					{
-						if(MagiaWingsDo(client))
+						if(ruina_wings)
 						{
 							Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} You, you have OUR WINGS???, And your using the {aqua}Fractal{snow}, atleast that makes sense", client);
 						}
@@ -4337,33 +4365,63 @@ static float[] GetNPCAngles(CClotBody npc)
 
 	return Angles;
 }
-static bool HandleRaidTimer(Twirl npc)
+static void HandleRaidTimer(Twirl npc)
 {
+	//only trigger once
+	if(i_RaidGrantExtra[npc.index])
+		return;
+
 	if(RaidModeTime < GetGameTime())
 	{
+		//you lost, its time to die!
+		/*
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		*/
 		int wave = i_current_wave[npc.index];
 		b_wonviatimer = true;
+		RaidModeScaling *= 50.0;
+		i_RaidGrantExtra[npc.index] = 1;
+
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
+		HealEntityGlobal(npc.index, npc.index, float((MaxHealth)), 1.0, 10.0, HEAL_ABSOLUTE);
+
+		npc.m_flMagiaOverflowRecharge = FAR_FUTURE;
+
+		ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
+		ApplyStatusEffect(npc.index, npc.index, "Hardened Aura", 999.0);
+		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999.0);
+
+		npc.m_iRangedAmmo = 999;
+
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Defense", 999.0);
+		NpcStats_RuinaDefenseStengthen(npc.index, 0.8);	//20% resistances
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 999.0);
+		NpcStats_RuinaAgilityStengthen(npc.index, 1.2); //20% speed bonus, going bellow 1.0 will make npc's slower
+		ApplyStatusEffect(npc.index, npc.index, "Ruina's Damage", 999.0);
+		NpcStats_RuinaDamageStengthen(npc.index, 0.2);	//20% dmg bonus
+
+		Kill_Abilities(npc);
+
 		if(b_force_transformation)
 		{
+			i_RaidGrantExtra[npc.index] = 2;
 			Twirl_Lines(npc, "Begone. Times Up.");
 		}
 		else if(wave <=40)
 		{
-			switch(GetRandomInt(0, 9))
+			switch(GetRandomInt(0, 8))
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
-				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
-				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
-				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
+				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk, {crimson}time to end it");
+				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun, now for the cleanup...");
+				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this.. Alass, time to kill you all");
+				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die. And I've got a meeting I need to catch");
 				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
 				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
 				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
+				case 7: Twirl_Lines(npc, "There is a difference being slow and being cautious or methodical, clearly you all are the former");
 				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
-				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
 			}
 		}
 		else	//freeplay
@@ -4375,10 +4433,7 @@ static bool HandleRaidTimer(Twirl npc)
 				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
 			}
 		}
-		
-		return true;
 	}
-	return false;
 }
 void Twirl_OnStellaKarlasDeath()
 {
