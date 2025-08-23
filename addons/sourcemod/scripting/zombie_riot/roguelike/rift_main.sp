@@ -452,7 +452,7 @@ static void FinishRiftVote(const Vote vote)
 			{
 				CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
 				bool found = StartRiftVote(false);
-				Rogue_SetProgressTime(found ? 5.0 : 20.0, false);
+				Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
 			}
 		}
 	}
