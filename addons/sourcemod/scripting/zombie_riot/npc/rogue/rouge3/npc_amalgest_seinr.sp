@@ -138,6 +138,13 @@ methodmap AmalgestSeinr < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(AmalgestSeinr_ClotThink);
 		
 		
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 0.0;
+		}
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
 		fl_RangedArmor[npc.index] = 0.35;
