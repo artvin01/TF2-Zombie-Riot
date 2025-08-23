@@ -2180,13 +2180,13 @@
 	{
 		"en"	"{green}Obtain Cash and a common item."
 	}
-	"Blessing of Stars Cape"
+	"Mantle of Stars"
 	{
-		"en"	"Blessing of Stars Cape"
+		"en"	"Mantle of Stars"
 	}
-	"Blessing of Stars Cape Desc"
+	"Mantle of Stars Desc"
 	{
-		"en"	"{green}Briefly prevents your death once per stage.\n{default}A luminous aura envelops you...  its mostly just glitter."
+		"en"	"{green}Briefly prevents your death once per stage.\n{default}A luminous aura envelops you... its mostly just glitter."
 	}
 	"Astra Title Accept Conlusion"
 	{

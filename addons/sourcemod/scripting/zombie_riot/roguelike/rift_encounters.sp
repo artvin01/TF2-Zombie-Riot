@@ -192,6 +192,7 @@ public float Rogue_Encounter_Astra()
 	strcopy(vote.Name, sizeof(vote.Name), "Astra Title Accept");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Astra Title Accept Desc");
 	int cost = 12;
+	int ingots = Rogue_GetIngots();
 	Format(vote.Append, sizeof(vote.Append), " △%d", cost);
 	vote.Locked = ingots < cost;
 	list.PushArray(vote);
@@ -213,7 +214,7 @@ public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 		case 0:
 		{
 			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
-			Rogue_GiveNamedArtifact("Blessing of Stars Cape");
+			Rogue_GiveNamedArtifact("Mantle of Stars");
 			Rogue_AddUmbral(15, false);
 		}
 		case 1:
