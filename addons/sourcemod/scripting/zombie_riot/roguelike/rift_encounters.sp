@@ -191,6 +191,9 @@ public float Rogue_Encounter_Astra()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Astra Title Accept");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Astra Title Accept Desc");
+	int cost = 12;
+	Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+	vote.Locked = ingots < cost;
 	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Astra Title Decline");

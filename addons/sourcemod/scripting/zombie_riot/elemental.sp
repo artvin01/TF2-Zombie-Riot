@@ -197,7 +197,7 @@ int Elemental_TriggerDamage(int entity, int type)
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
 	
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL || HasSpecificBuff(entity, "Warped Elemental End"))
 	{	
 		//impossible to elementalise.
 		amount = 999999999;
@@ -1474,6 +1474,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				AddNpcToAliveList(victim, 1);
 				b_NoHealthbar[victim] = true;
 				ApplyStatusEffect(victim, victim, "Warped Elemental End", 999.9);
+				ApplyStatusEffect(victim, victim, "Clear Head", 999999.0);	//cant be stunned again
 				
 				CClotBody npc = view_as<CClotBody>(victim);
 				npc.m_bDissapearOnDeath = true;
