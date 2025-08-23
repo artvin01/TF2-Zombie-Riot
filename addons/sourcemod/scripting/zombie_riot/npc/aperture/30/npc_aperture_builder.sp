@@ -296,11 +296,6 @@ methodmap ApertureBuilder < CClotBody
 					if (percentage <= i * loosenedReqPerAttempt)
 						break;
 				}
-				
-				float vecNewPos[3];
-				GetAbsOrigin(npc.index, vecNewPos);
-				ParticleEffectAt(vecNewPos, "teleported_blue");
-				TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
 			}	
 		}
 		else
@@ -308,6 +303,10 @@ methodmap ApertureBuilder < CClotBody
 			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
 		}
 		
+		float vecNewPos[3];
+		GetAbsOrigin(npc.index, vecNewPos);
+		ParticleEffectAt(vecNewPos, "teleported_blue");
+		TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
 		if(AntiSoundSpam < GetGameTime())
 		{
 			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	

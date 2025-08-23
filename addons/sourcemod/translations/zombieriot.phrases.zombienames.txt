@@ -1966,6 +1966,14 @@
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 	}
+	"Iberian Inqusitors"
+	{
+		"en"		"Iberian Inqusitors"
+	}
+	"Voided Artorias"
+	{
+		"en"		"Voided Artorias"
+	}
 	"Pathshaper"
 	{
 		"en"		"Pathshaper"
