@@ -267,12 +267,23 @@ methodmap ApertureBuilder < CClotBody
 		const float loosenedReqPerAttempt = 0.06;
 		int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
 		
-		if(!Rogue_Mode())
+
+		ApertureBuilder_ToggleBuilding(npc, false);
+		
+		if (StrContains(data, "noteleport") == -1)
 		{
-			for (int i = 0; i < maxAttempts; i++)
+			// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
+			// If we can't find an appropriate spot, just ignore LOS
+			const int maxAttempts = 12;
+			const float loosenedReqPerAttempt = 0.06;
+			int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
+			
+			for (int i = 0; i <= maxAttempts; i++)
 			{
 				TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
-					
+				
+				if (i == maxAttempts)
+					break;
 				
 				int visiblePlayerCount;
 				
@@ -288,10 +299,11 @@ methodmap ApertureBuilder < CClotBody
 				if (percentage <= i * loosenedReqPerAttempt)
 					break;
 			}
-		}
-		else
-		{
-			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
+			
+			float vecNewPos[3];
+			GetAbsOrigin(npc.index, vecNewPos);
+			ParticleEffectAt(vecNewPos, "teleported_blue");
+			TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
 		}
 		
 		if(AntiSoundSpam < GetGameTime())
