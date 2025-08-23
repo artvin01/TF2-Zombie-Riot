@@ -58,47 +58,75 @@ enum
 	Ammo_MAX
 };
 
+enum
+{
+	Faction_Expidonsa = 1,
+	Faction_Kazimierz,
+	Faction_Victoria,
+	Faction_PsychicWarlord,
+	Faction_Seaborn
+}
+public const char ItemFaction[][] =
+{
+	"",
+
+	"Expidonsa",
+	"Kazimierz",
+	"Victoria",
+	"Psychic Warlord",
+	"Seaborn"
+}
+
+enum
+{
+	Archetype_Artillery = 1,
+	Archetype_Deadeye,
+	Archetype_Charger,
+	Archetype_Tactician,
+	Archetype_Hunter,
+	Archetype_Drone,
+	Archetype_Splash,
+	Archetype_Rapid,
+	Archetype_Power,
+	Archetype_Hexing,
+	Archetype_Ambusher,
+	Archetype_Duelist,
+	Archetype_Defender,
+	Archetype_Lord,
+	Archetype_Crusher,
+	Archetype_Combatant,
+	Archetype_Medical,
+	Archetype_Mechanic,
+	Archetype_Buffer,
+	Archetype_Debuffer
+}
 public const char ItemArchetype[][] =
 {
-	"",	// No archetype.	
-//PRIMARY SECONDARY
-	"Multi Pellet",		// 1
-	"Rapid Fire",		// 2
-	"Infinite Fire",	// 3
-	"None",		// 4
-	"Single Pellet",	// 5
-	"Far Range",		// 6
-	"Trap Master",		// 7 this can include builder weapons!
-	"Explosive Mind",	// 8 Most Explosive weapons
-//SUPPORT ITEMS
-	"Team Support",		// 9
-	"ArchDebuff",			// 10
-//MELEE'S
-	"Brawler",			// 11 most fist melee's
-	"Ambusher",			// 12 spy backstab weapons
-	"Combatant",		// 13 Longsword any melee that has no special abilities, mostly
-//	"Martial Artist",	// ?? Weapons with heavy skill usage such as judgement of iberia
-//	edit: Too general, cant.
-	"Aberration",		// 14 Melee weapons that summon things, currenly only fusion blade
-	"Duelist",			// 15 Melee weapons that exell at taking down/fighting single targets, see ark due to parry
-	"Lord",				// 16 Any melee that heavily has ranged attacks, see Lappland melee as the only one currently
-	"Crusher",			// 17 Any melee that has very good aoe, see judgement of ibera or final hammer pap
+	"",
 
-	
-//MAGE WEAPONS
-	"Summoner",			// 18
-	"Chain Caster",		// 19
-	"Multi Caster",		// 20
-	"Base Caster",		// 21
+	"Artillery",	// 1 Explosives, Heavy AOE Focus
+	"Deadeye",	// 2 Sniper, Slow/High Damage at a Range
+	"Charger",	// 3 Shotgun, Slow Fire Rate/Short Range
+	"Tactician",	// 4 Pistol/SMG, Fast Fire Rate/Medium Range
+	"Hunter",	// 5 Stickybomb, Trap Focus
 
-// CUSTOM
-	"Abyssal Hunter",	// 22
-	"Kazimierz",		// 23
-	"Bloodletter",	//24, Vampire Knives fast-attack path
-	"Bloody Butcher", //25, Vampire Knives cleaver path
-	"Mythic Caster",	// 26
-	"Psychic Warlord",	//27, Psychokinesis and Magnesis Staff, possibly more in the future
-	"Archetype Victoria" //28, Damn this is an Archetype for a Victorian weapon made by beep.
+	"Drone Magic",	// 6 High lifetime projectiles or summoning, Skulls/Drone/Nerco
+	"Splash Magic",	// 7 Heavy AOE Focus
+	"Rapid Magic",	// 8 High Fire Rate
+	"Power Magic",	// 9 Low Fire Rate
+	"Hexing Magic",	// 10 Elemental/Debuff Focus
+
+	"Ambusher",	// 11 Knifes, Focus on hitting correct timing
+	"Duelist",	// 12 Survival focus
+	"Defender",	// 13 Tank focus
+	"Lord",		// 14 Long range focus
+	"Crusher",	// 15 AOE focus
+	"Combatant",	// 16 DPS focus
+
+	"Medical",	// 17 Healing focus
+	"Mechanic",	// 18 Building focus
+	"Buffer",	// 19 Buffing focus
+	"Debuffer"	// 20 Debuff focus
 };
 
 public const int RenderColors_RPG[][] =
@@ -407,12 +435,8 @@ int ReplicateClient_RollAngle[MAXPLAYERS];
 
 bool b_StickyIsSticking[MAXENTITIES];
 
-RenderMode i_EntityRenderMode[MAXENTITIES]={RENDER_NORMAL, ...};
-int i_EntityRenderColour1[MAXENTITIES]={255, ...};
-int i_EntityRenderColour2[MAXENTITIES]={255, ...};
-int i_EntityRenderColour3[MAXENTITIES]={255, ...};
-int i_EntityRenderColour4[MAXENTITIES]={255, ...};
-bool i_EntityRenderOverride[MAXENTITIES]={false, ...};
+float f_EntityRenderColour[MAXENTITIES][3];
+int i_EntityRenderColourSave[MAXENTITIES][3];
 
 //6 wearables
 int i_Wearable[MAXENTITIES][9];
@@ -767,7 +791,8 @@ enum
 	BLEEDTYPE_XENO = 4,
 	BLEEDTYPE_SKELETON = 5,
 	BLEEDTYPE_SEABORN = 6,
-	BLEEDTYPE_VOID = 7
+	BLEEDTYPE_VOID = 7,
+	BLEEDTYPE_UMBRAL = 8
 }
 
 
@@ -833,3 +858,23 @@ int i_ally_index[MAXENTITIES];
 //some lasers had some variation of this, i just condeced it down to 1
 int LaserVarious_HitDetection[MAXENTITIES];
 int i_SaidLineAlready[MAXENTITIES];
+
+
+
+#if defined ZR
+
+float MultiGlobalEnemy = 0.25;
+float MultiGlobalEnemyBoss = 0.25;
+//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
+//isnt affected when selecting Modificators.
+//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
+float MultiGlobalHealth = 1.0;
+//See above
+
+float MultiGlobalHealthBoss = 0.25;
+//This is normal boss scaling, this scales ontop of enemies spawning
+
+float MultiGlobalHighHealthBoss = 0.34;
+//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
+
+#endif

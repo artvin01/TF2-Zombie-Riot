@@ -166,6 +166,8 @@ methodmap VoidSpeechless < CClotBody
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 		}
 
 		npc.m_iHealthBar = 1;
@@ -383,7 +385,12 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 					{
 						damageDealt *= 10.0;
 					}
-					damageDealt *= MultiGlobalHealth; //Incase too many enemies, boost damage.
+					float DamageDoExtra = MultiGlobalHealth;
+					if(DamageDoExtra != 1.0)
+					{
+						DamageDoExtra *= 1.5;
+					}
+					damageDealt *= DamageDoExtra; //Incase too many enemies, boost damage.
 
 
 
@@ -570,7 +577,12 @@ void VoidSpeechlessInitiateLaserAttack_DamagePart(DataPack pack)
 			if(ShouldNpcDealBonusDamage(victim))
 				damage *= 3.0;
 
-			damage *= MultiGlobalHealth; //Incase too many enemies, boost damage.
+			float DamageDoExtra = MultiGlobalHealth;
+			if(DamageDoExtra != 1.0)
+			{
+				DamageDoExtra *= 1.5;
+			}
+			damage *= DamageDoExtra; //Incase too many enemies, boost damage.
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);

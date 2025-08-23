@@ -138,23 +138,13 @@ methodmap SeaReefbreaker < CSeaBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
 		
 		if(elite)
 		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 255);
 		}
-		else
-		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
-		}
-
 		return npc;
 	}
 	public float Attack(float gameTime)
@@ -242,6 +232,9 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		if(!camo)
 		{
 			npc.m_bCamo = false;
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1500.0);
 			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 3000.0);
@@ -255,6 +248,9 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		SetEntityRenderColor(npc.index, 155, 155, 255, 1);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 150.0);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 300.0);
+		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 1);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 1);
 	}

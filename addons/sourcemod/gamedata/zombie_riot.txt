@@ -848,6 +848,47 @@
 					}
 				}
 			}
+			"CTFGameRules::CalcPlayerScore"
+			{
+				"signature"	"CTFGameRules::CalcPlayerScore"
+				"callconv"	"cdecl"
+				"return"	"int"
+				"this"		"ignore"
+				"arguments"
+				{
+					"value1"
+					{
+						"type"	"int"
+					}
+					"cPlayer"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+			"CTeamplayRules::FPlayerCanTakeDamage"
+			{
+				"offset" "CTeamplayRules::FPlayerCanTakeDamage"
+				"callconv" "thiscall"
+				"return" "bool"
+				"this" "address"
+				"hooktype" "gamerules"
+				"arguments"
+				{
+					"player"
+					{
+						"type" "cbaseentity"
+					}
+					"other"
+					{
+						"type" "cbaseentity"
+					}
+					"dmg"
+					{
+						"type" "objectptr"
+					}
+				}
+			}
 		}
 		"Offsets"
 		{
@@ -882,6 +923,11 @@
 			{
 				"windows"	"288"
 				"linux"		"294"
+			}
+			"CTeamplayRules::FPlayerCanTakeDamage"
+			{
+				"windows"	"63"
+				"linux" 	"64"
 			}
 			"CTFWeaponBase::FinishReload()"
 			{

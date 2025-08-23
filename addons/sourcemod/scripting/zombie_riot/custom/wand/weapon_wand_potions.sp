@@ -11,8 +11,6 @@
 
 static float TonicBuff[MAXPLAYERS];
 static float TonicBuff_CD[MAXPLAYERS];
-static Handle ShrinkTimer[MAXENTITIES];
-static float f_RaidShrinkImmunity[MAXENTITIES];
 
 
 static Handle h_PotionBuff[MAXPLAYERS+1] = {null, ...};
@@ -130,19 +128,12 @@ public Action Timer_Management_BuffPotion(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-
-void Wands_Potions_EntityCreated(int entity)
-{
-	delete ShrinkTimer[entity];
-}
-
 void Wand_Potions_Precache()
 {
 	PrecacheSound(SOUND_JAREXPLODE);
 	PrecacheSound(SOUND_TRANSFORM1);
 	PrecacheSound(SOUND_TRANSFORM2);
 	PrecacheSound(SOUND_SHRINK);
-	Zero(f_RaidShrinkImmunity);
 
 	Zero(TonicBuff_CD);
 	Zero(TonicBuff);
@@ -259,18 +250,16 @@ static bool PotionM1(int client, int weapon, SDKHookCB touch, int extra = 0)
 	GetClientEyeAngles(client, ang);
 	ang[0] -= 10.0;
 
-	int entity = Wand_Projectile_Spawn(client, speed, 20.0, damage, 0, weapon, NULL_STRING, ang, false);
+	int entity = Wand_Projectile_Spawn(client, speed, 20.0, damage, 0, weapon, NULL_STRING, ang, true);
 	if(entity > MaxClients)
 	{
 		SetEntityGravity(entity, 1.5);
 		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
-
-		int model = i_WeaponModelIndexOverride[weapon];
-		SetEntProp(entity, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
-		for(int i; i < 4; i++)
-		{
-			SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", model, _, i);
-		}
+		
+		char buffer[256];
+		ModelIndexToString(i_WeaponModelIndexOverride[weapon], buffer, sizeof(buffer));
+		int ModelApply = ApplyCustomModelToWandProjectile(entity, buffer, 1.0, "");
+		SetEntProp(ModelApply, Prop_Send, "m_nBody", i_WeaponBodygroup[weapon]);
 
 		SDKHook(entity, SDKHook_StartTouchPost, touch);
 	}
@@ -321,7 +310,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_DoTrueDamageBleed,
@@ -341,7 +330,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_BULLET);
 }
 
 
@@ -536,7 +525,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_UnstableTouchDo,
@@ -559,7 +548,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
 	
-	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_BULLET);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
 	{
@@ -574,7 +563,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 			int health = GetEntProp(enemy, Prop_Data, "m_iHealth");
 			
 			int bonus = health - RoundFloat(health * ratio);
-			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_TRUEDAMAGE, weapon);
+			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_BULLET, weapon);
 		}
 	}
 	else
@@ -740,7 +729,7 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_PotionLead,
@@ -762,11 +751,11 @@ public void WandPotion_PotionLead(int entity, int enemy, float damage_Dontuse, i
 
 	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_BULLET);
 	}
 	else
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_BULLET);
 	}
 }
 
@@ -802,7 +791,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	_,
 	_,
 	_,
-	5,
+	6,
 	_,
 	_,
 	WandPotion_PotionGoldDo,
@@ -824,11 +813,11 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 
 	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_BULLET);
 	}
 	else
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_BULLET);
 	}
 	ApplyStatusEffect(owner, enemy, "Golden Curse", 1.5);
 }
@@ -864,7 +853,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	1.0,
 	1.0,
 	_,
-	2,
+	3,
 	_,
 	_,
 	WandPotion_PotionShrinkDo,
@@ -898,53 +887,21 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 	}
 	if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 	{
-		if(!ShrinkOnlyOneTarget && f_RaidShrinkImmunity[enemy] < GetGameTime())
+		if(!ShrinkOnlyOneTarget)
 		{
 			float time = 3.0;
 			if(b_thisNpcIsARaid[enemy])
 			{
 				time = 1.5;
 			}
-			f_RaidShrinkImmunity[enemy] = GetGameTime() + (time * 3.0);
 			ShrinkOnlyOneTarget = true;
 			
-			ApplyStatusEffect(owner, enemy, "Shrinking", time);
+			ApplyStatusEffect(owner, enemy, "Weakening Compound", time);
 			
-			if(ShrinkTimer[enemy] != null)
-				delete ShrinkTimer[enemy];
-			else
-			{
-				//no timer beforehand.
-				float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
-			}
-			DataPack pack_repack;
-			ShrinkTimer[enemy] = CreateDataTimer(time, Weapon_Wand_PotionEndShrink, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
-			pack_repack.WriteCell(enemy);
-			pack_repack.WriteCell(EntIndexToEntRef(enemy));
 		}
 	}
 	else
 	{
-		if(!NpcStats_IsEnemyShank(enemy))
-		{
-			float scale = GetEntPropFloat(enemy, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(enemy, Prop_Send, "m_flModelScale", scale * 0.5);
-		}
-		ApplyStatusEffect(owner, enemy, "Shrinking", 999999.0);	
-	//	Stock_TakeDamage(enemy, owner, owner, GetEntProp(enemy, Prop_Data, "m_iHealth") / 2.0, DMG_TRUEDAMAGE, weapon);
+		ApplyStatusEffect(owner, enemy, "Weakening Compound", 999999.0);	
 	}
-}
-public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int IndexDefualt = pack.ReadCell();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(entity))
-	{
-		float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.5);
-	}
-	ShrinkTimer[IndexDefualt] = null;
-	return Plugin_Continue;
 }

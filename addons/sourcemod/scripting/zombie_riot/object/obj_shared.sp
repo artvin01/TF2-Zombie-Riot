@@ -676,7 +676,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				return false;
 			}
 		}		
-		
 		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
 			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 1)
@@ -689,7 +688,10 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
+		{
+			SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
+		}
 		
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
@@ -714,6 +716,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			}
 		}
 
+		bool HideBuildingForce = false;
 		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
 			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 24)
@@ -721,30 +724,40 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				SetEntityCollisionGroup(objstats.index, 24);
 				b_ThisEntityIgnored[objstats.index] = false;
 			}
+			if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				HideBuildingForce = true;
+			}
 		}
-
-		int g = health * 255  / maxhealth;
-		if(g > 255)
+		if(HideBuildingForce)
 		{
-			g = 255;
-		}
-		else if(g < 0)
-		{
-			g = 0;
-		}
-		
-		int r = 255 - g;
-		
-		int wearable = objstats.m_iWearable1;
-		if(wearable != -1)
-		{
-			SetEntityRenderColor(objstats.index, r, g, 0, 100);
-			SetEntityRenderColor(wearable, r, g, 0, 255);
-
+			SetEntityRenderColor(objstats.index, 0, 0, 0, 255);
 		}
 		else
 		{
-			SetEntityRenderColor(objstats.index, r, g, 0, 255);
+			int g = health * 255  / maxhealth;
+			if(g > 255)
+			{
+				g = 255;
+			}
+			else if(g < 0)
+			{
+				g = 0;
+			}
+			
+			int r = 255 - g;
+			
+			int wearable = objstats.m_iWearable1;
+			if(wearable != -1)
+			{
+				SetEntityRenderColor(objstats.index, r, g, 0, 100);
+				SetEntityRenderColor(wearable, r, g, 0, 255);
+				SetEntityRenderMode(wearable, RENDER_NORMAL);
+			}
+			else
+			{
+				SetEntityRenderColor(objstats.index, r, g, 0, 255);
+			}
 		}
 		
 	}
@@ -1015,6 +1028,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		return Plugin_Handled;
 	}
+	
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;

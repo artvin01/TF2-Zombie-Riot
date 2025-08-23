@@ -95,6 +95,10 @@ methodmap UnderTides < CClotBody
 
 		npc.m_flSpeed = 1.0;
 		npc.Anger = !zr_disablerandomvillagerspawn.BoolValue;
+		if(!npc.Anger)
+		{
+			npc.Anger = !DisableRandomSpawns;
+		}
 
 		if(!npc.Anger)
 		{
@@ -134,17 +138,21 @@ public void UnderTides_ClotThink(int iNPC)
 
 	float gameTime = GetGameTime();	// You can't stun it
 
-	/*if(npc.m_flNextDelayTime > gameTime)
+	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	if(npc.m_flNextThinkTime > gameTime)
-		return;
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;*/
-
+	/*
+	if(npc.m_flAbilityOrAttack0 < gameTime)
+	{
+		PrintToChatAll("ttest");
+		npc.SetCycle(0.0);
+		npc.m_flAbilityOrAttack0 = gameTime + 3.0;
+	}
+	*/
 	if(npc.Anger)
 	{
 		if(npc.m_flNextThinkTime > gameTime)
@@ -189,7 +197,7 @@ public void UnderTides_ClotThink(int iNPC)
 			{
 				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 				{
-					Spawns_AddToArray(npc.index, true);
+					Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
 					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 					break;
 				}
@@ -313,7 +321,7 @@ public void UnderTides_ClotThink(int iNPC)
 	}
 }
 
-void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = true, bool player_only = false, int TraceFrom = -1, float RangeLimit = 0.0)
+void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace = true, int player_only = 0, int TraceFrom = -1, float RangeLimit = 0.0)
 {
 	// Prio:
 	// 1. Highest Defense Stat
@@ -339,50 +347,57 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 		}
 	}
 
-	for(int client = 1; client <= MaxClients; client++)
+	// 0 assumes we only target players
+	// 1 assumes we target both
+	// 2 assumes we only target npcs
+	if(player_only != 2)
 	{
-		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
-				continue;
-				
-			if(RangeLimit > 0.0)
+			if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetTeam(client) != team && IsEntityAlive(client))
 			{
-				float npc_vec[3]; WorldSpaceCenter(client, npc_vec);
-				float flDistanceToTarget = GetVectorDistance(npc_vec, Pos1, true);
-				if(flDistanceToTarget > RangeLimit)
+				if(respectTrace && !Can_I_See_Enemy_Only(TraceEntity, client))
 					continue;
-			}
-
-			for(int i; i < count; i++)
-			{
-				float percentage_ranged = 100.0;
-				int i_TheWorld = 0;
-				int testvalue = 1;
-				int testvalue2 = -1;
-				float testvalue1[3];
-				int DmgType = DMG_BULLET;
-
-				CheckInHudEnable(1);
-				Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
-				CheckInHudEnable(0);
-
-				if(enemy[i])
+					
+				if(RangeLimit > 0.0)
 				{
-					if(def[i] < percentage_ranged)
-					{
+					float npc_vec[3]; WorldSpaceCenter(client, npc_vec);
+					float flDistanceToTarget = GetVectorDistance(npc_vec, Pos1, true);
+					if(flDistanceToTarget > RangeLimit)
 						continue;
-					}
 				}
 
-				AddToList(client, i, enemy, count);
-				AddToList(percentage_ranged, i, def, count);
-				break;
+				for(int i; i < count; i++)
+				{
+					float percentage_ranged = 100.0;
+					int i_TheWorld = 0;
+					int testvalue = 1;
+					int testvalue2 = -1;
+					float testvalue1[3];
+					int DmgType = DMG_BULLET;
+
+					CheckInHudEnable(1);
+					Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, testvalue2, testvalue1, testvalue1,testvalue);
+					CheckInHudEnable(0);
+
+					if(enemy[i])
+					{
+						if(def[i] < percentage_ranged)
+						{
+							continue;
+						}
+					}
+
+					AddToList(client, i, enemy, count);
+					AddToList(percentage_ranged, i, def, count);
+					break;
+				}
 			}
 		}
+
 	}
 
-	if(!player_only)
+	if(player_only == 0 || player_only == 2)
 	{
 		for(int a; a < i_MaxcountNpcTotal; a++)
 		{

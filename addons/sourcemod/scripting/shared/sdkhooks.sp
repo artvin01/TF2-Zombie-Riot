@@ -1237,7 +1237,7 @@ public void OnPostThink(int client)
 			HudY += -0.0345; //correct offset
 		}
 #if defined ZR
-		if(buffer[0] && !SkillTree_InMenu(client))
+		if(!SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
 #else
 		if(buffer[0])
 #endif
@@ -1286,32 +1286,38 @@ public void OnPostThink(int client)
 			switch(Armor_DebuffType[armorEnt])
 			{
 				//chaos
-				case 2:
+				case Element_Chaos:
 				{
 					red = 0;
 					green = 255;
 					blue = 255;
 				}
 				//void
-				case 3:
+				case Element_Void:
 				{
 					red = 179;
 					green = 8;
 					blue = 209;
 				}
 				//matrix
-				case 4:
+				case Element_Corruption:
 				{
 					red = 54;
 					green = 77;
 					blue = 43;
 				}
 				//plasma
-				case 5:
+				case Element_Plasma:
 				{
 					red = 235;
 					green = 75;
 					blue = 215;
+				}
+				case Element_Warped:
+				{
+					red = 155 + abs(100 - (GetTime() % 200));
+					green = 155 + abs(100 - (RoundFloat(GetGameTime()) % 200));
+					blue = 155 + abs(100 - (RoundFloat(GetEngineTime()) % 200));
 				}
 				//seaborn
 				default:
@@ -1397,6 +1403,9 @@ public void OnPostThink(int client)
 		}
 		else
 		{
+			if(Armor_DebuffType[armorEnt] == Element_Warped)
+				armor /= 2;
+			
 			Format(buffer, sizeof(buffer), "⛛ ", buffer);
 			for(int i=1; i<5; i++)
 			{
@@ -1441,7 +1450,8 @@ public void OnPostThink(int client)
 				Cooldowntocheck = 99.9;
 			if(Cooldowntocheck > 0.0)
 			{
-				Format(buffer2, sizeof(buffer2), "%s:%0.f",npc_classname[4], Cooldowntocheck);
+				//add one second so it itll never show 0 in there, thats stupid.
+				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
@@ -1462,7 +1472,7 @@ public void OnPostThink(int client)
 				
 				if(slowdown_amount < 0.0)
 				{
-					Format(buffer2, sizeof(buffer2), "%sWI", buffer2, slowdown_amount);
+					Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2,PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 				}
 				else
 				{
@@ -1471,7 +1481,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames[i_CurrentEquippedPerk[client]][0], PerkNames[i_CurrentEquippedPerk[client]][1]);
+				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
 			}
 		}
 		else
@@ -1487,50 +1497,52 @@ public void OnPostThink(int client)
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
 		}
 			
+		//only for red.
+		if(GetTeam(client) == 2)
+		{
+			static char HudBuffer[256];
+			HudBuffer[0] = 0;
+			if(!TeutonType[client])
+			{
+				int downsleft;
+				downsleft = 2;
+
+				downsleft -= i_AmountDowned[client];
+				SDKHooks_UpdateMarkForDeath(client);
 				
-		static char HudBuffer[256];
-		HudBuffer[0] = 0;
-		
-		if(!TeutonType[client])
-		{
-			int downsleft;
-			downsleft = 2;
+				if(!HudBuffer[0] && CashSpent[client] < 1)
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
+				}
+				if(b_EnableCountedDowns[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Downs left", downsleft
+					);
+				}
+				if(b_EnableRightSideAmmoboxCount[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
+					"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
+					);
+				}
+			}
+			else if (TeutonType[client] == TEUTON_DEAD)
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
+				);
 
-			downsleft -= i_AmountDowned[client];
-			SDKHooks_UpdateMarkForDeath(client);
+			}
+			else
+			{
+				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
+				);
+			}
+			SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
 			
-			if(!HudBuffer[0] && CashSpent[client] < 1)
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%t", "Press To Open Store");
-			}
-			if(b_EnableCountedDowns[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Downs left", downsleft
-				);
-			}
-			if(b_EnableRightSideAmmoboxCount[client])
-			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s\n%t", HudBuffer,
-				"Ammo Crate Supplies", Ammo_Count_Ready - Ammo_Count_Used[client]
-				);
-			}
+			if(HudBuffer[0])
+				PrintKeyHintText(client,"%s", HudBuffer);
 		}
-		else if (TeutonType[client] == TEUTON_DEAD)
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
-			);
-
-		}
-		else
-		{
-			Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
-			);
-		}
-		SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
-		
-		if(HudBuffer[0])
-			PrintKeyHintText(client,"%s", HudBuffer);
 #endif
 	}
 #if defined ZR
@@ -1763,8 +1775,21 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
-
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	
+	if(HasSpecificBuff(victim, "Envenomed"))
+	{
+		bool venom = true;
+		if(venom)
+		{
+			venom = false;
+			GetEntProp(victim, Prop_Send, "m_iHealth");
+			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+			HealEntityGlobal(victim, victim, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
+			RemoveSpecificBuff(victim, "Envenomed");
+			Force_ExplainBuffToClient(victim, "Envenomed");
+		}
+	}
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
@@ -2135,6 +2160,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
+				f_DisableDyingTimer[victim] = 0.0;
 				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
 				Vehicle_Exit(victim);
 				ForcePlayerCrouch(victim, true);
@@ -2585,7 +2611,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 			{
 				if(weapon > 0 && i_WeaponVMTExtraSetting[weapon] != -1)
 				{
-					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon], .ForceColour = true);
+					SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[weapon]);
 					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[weapon]; //This makes sure to not reset the alpha.
 				}
 			}
@@ -3380,8 +3406,8 @@ void ManaCalculationsBefore(int client)
 {
 	has_mage_weapon[client] = false;
 	int i, entity;
-	float ManaRegen = 10.0;
-	float ManaMaxExtra = 400.0;
+	float ManaRegen = 12.0;
+	float ManaMaxExtra = 500.0;
 	
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -3418,17 +3444,17 @@ void ManaCalculationsBefore(int client)
 
 	if(b_AggreviatedSilence[client])	
 	{
-		mana_regen[client] *= 0.30;
+		mana_regen[client] *= 0.35;
 	}
 	else
 	{
 		float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
-		MultiplyRegen *= 0.5;
+	//	MultiplyRegen *= 0.85;
 		if(MultiplyRegen < 1.0)
 			MultiplyRegen = 1.0;
 
-		if(MultiplyRegen >= 3.0)
-			MultiplyRegen = 3.0;
+		if(MultiplyRegen >= 6.0)
+			MultiplyRegen = 6.0;
 
 		mana_regen[client] *= MultiplyRegen;
 	}

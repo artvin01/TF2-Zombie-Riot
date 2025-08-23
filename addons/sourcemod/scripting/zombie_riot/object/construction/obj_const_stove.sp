@@ -163,7 +163,7 @@ static void ThisBuildingMenu(int client)
 
 	Menu menu = new Menu(ThisBuildingMenuH);
 
-	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Cooking Stove", water, WaterCost, "Material water", bofazem, BofaCost, "Material bofazem", "Crouch and select to view description");
+	menu.SetTitle("%t\n%d / %d %t\n%d / %d %t\n \n%t", "Cooking Stove", water, WaterCost, "Material water", bofazem, BofaCost, "Material bofazem", "Crouch and select to view description Alone");
 
 	char buffer[64];
 	for(int i; i < sizeof(Enabled); i++)

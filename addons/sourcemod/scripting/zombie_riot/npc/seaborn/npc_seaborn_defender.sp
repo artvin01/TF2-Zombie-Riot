@@ -235,27 +235,27 @@ void SeabornDefender_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		bool magic;
 		bool pierce;
 		
-		if((damagetype & DMG_TRUEDAMAGE) || NpcStats_IsEnemySilenced(victim))
+		if((damagetype & DMG_TRUEDAMAGE))
+			return;
+
+		if((damagetype & DMG_BLAST))
+		{
+			hot = true;
+			pierce = true;
+		}
+		if((damagetype & DMG_BULLET))
 		{
 			pierce = true;
 		}
-		else
+		
+		if(damagetype & DMG_PLASMA)
 		{
-			if((damagetype & DMG_BLAST))
-			{
-				hot = true;
-				pierce = true;
-			}
-			
-			if(damagetype & DMG_PLASMA)
-			{
-				magic = true;
-				pierce = true;
-			}
-			else if((damagetype & DMG_SHOCK) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_LASER_NO_BLAST))
-			{
-				magic = true;
-			}
+			magic = true;
+			pierce = true;
+		}
+		else if((damagetype & DMG_SHOCK) || (i_HexCustomDamageTypes[victim] & ZR_DAMAGE_LASER_NO_BLAST))
+		{
+			magic = true;
 		}
 
 		switch(Waves_GetRoundScale() % 3)

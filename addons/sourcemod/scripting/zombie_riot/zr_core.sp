@@ -52,25 +52,40 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Quick Revive",
-	"Juggernog",
-	"Double Tap",
-	"Speed Cola",
-	"Deadshot Daiquiri",
-	"Widows Wine",
-	"Recycle Poire"
+	"Regene Berry",
+	"Obsidian Oaf",
+	"Morning Coffee",
+	"Hasty Hops",
+	"Marksman Beer",
+	"Teslar Mule",
+	"Stockpile Stout",
+	"Energy Drink"
 };
 
 public const char PerkNames_Recieved[][] =
 {
 	"No Perk",
-	"Quick Revive Recieved",
-	"Juggernog Recieved",
-	"Double Tap Recieved",
-	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved",
-	"Widows Wine Recieved",
-	"Recycle Poire Recieved"
+	"Regene Berry Recieved",
+	"Obsidian Oaf Recieved",
+	"Morning Coffee Recieved",
+	"Hasty Hops Recieved",
+	"Marksman Beer Recieved",
+	"Teslar Mule Recieved",
+	"Stockpile Stout Recieved",
+	"Energy Drink Recieved"
+};
+
+public const char PerkNames_two_Letter[][] =
+{
+	"--",
+	"RB",
+	"OO",
+	"MC",
+	"HH",
+	"MB",
+	"TM",
+	"SS",
+	"ED"
 };
 
 enum
@@ -253,6 +268,7 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
+	Type_Aperture,
 	Type_Mutation
 }
 
@@ -267,7 +283,6 @@ ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
@@ -359,6 +374,8 @@ float Armor_regen_delay[MAXPLAYERS];
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
+bool DisableSpawnProtection;
+bool DisableRandomSpawns;
 int CashSpent[MAXPLAYERS];
 int CashSpentGivePostSetup[MAXPLAYERS];
 bool CashSpentGivePostSetupWarning[MAXPLAYERS];
@@ -378,6 +395,7 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
+float AnyMenuOpen[MAXPLAYERS];
 float LastStoreMenu[MAXPLAYERS];
 bool LastStoreMenu_Store[MAXPLAYERS];
 
@@ -403,20 +421,6 @@ bool WaitingInQueue[MAXPLAYERS];
 float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
-
-float MultiGlobalEnemy = 0.25;
-float MultiGlobalEnemyBoss = 0.25;
-//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
-//isnt affected when selecting Modificators.
-//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
-float MultiGlobalHealth = 1.0;
-//See above
-
-float MultiGlobalHealthBoss = 0.25;
-//This is normal boss scaling, this scales ontop of enemies spawning
-
-float MultiGlobalHighHealthBoss = 0.34;
-//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
 
 float f_WasRecentlyRevivedViaNonWave[MAXPLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
@@ -648,7 +652,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -730,6 +733,7 @@ void ZR_MapStart()
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
 	SkyboxProps_OnMapStart();
+	Tutorial_MapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
@@ -1041,6 +1045,7 @@ void ZR_ClientPutInServer(int client)
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 3)
 		i_AmountDowned[client] = 1;
+	Waves_TrySpawnBarney();
 		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
@@ -1059,9 +1064,8 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	if(Waves_Started())
-		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
+	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);
@@ -2302,7 +2306,7 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2317,12 +2321,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 	int Armor_Max;
 	
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
-	/*
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
-	{
-		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
-	}
-	*/
 	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
@@ -2407,7 +2405,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}

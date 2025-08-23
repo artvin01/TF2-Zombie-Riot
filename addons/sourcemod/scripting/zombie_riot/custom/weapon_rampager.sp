@@ -7,7 +7,7 @@ static int attacks_made[MAXPLAYERS+1]={12, ...};
 static int weapon_id[MAXPLAYERS+1]={0, ...};
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
-public void Weapon_Rampager(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Rampager(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
 	{

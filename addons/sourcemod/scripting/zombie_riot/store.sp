@@ -3,8 +3,12 @@
 
 #define SELL_AMOUNT 0.9
 bool PapPreviewMode[MAXPLAYERS];
-float CDDisplayHint_LoadoutStore[MAXPLAYERS];
-float CDDisplayHint_LoadoutConfirmAuto[MAXPLAYERS];
+
+enum
+{
+	PAP_DESC_BOUGHT,
+	PAP_DESC_PREVIEW
+}
 
 enum struct ItemInfo
 {
@@ -102,6 +106,8 @@ enum struct ItemInfo
 	int SpecialAttribRules_2;
 
 	int WeaponArchetype;
+	int WeaponFaction1;
+	int WeaponFaction2;
 	int WeaponForceClass;
 	
 	int CustomWeaponOnEquip;
@@ -412,6 +418,12 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sweapon_archetype", prefix);
 		this.WeaponArchetype			= kv.GetNum(buffer, 0);
 
+		Format(buffer, sizeof(buffer), "%sweapon_faction", prefix);
+		this.WeaponFaction1 = kv.GetNum(buffer);
+
+		Format(buffer, sizeof(buffer), "%sweapon_faction2", prefix);
+		this.WeaponFaction2 = kv.GetNum(buffer);
+
 		Format(buffer, sizeof(buffer), "%sviewmodel_force_class", prefix);
 		this.WeaponForceClass			= kv.GetNum(buffer, 0);
 
@@ -704,6 +716,9 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.25;
 	}
+	if(i_CurrentEquippedPerk[client] == 8)
+		Cooldown *= 0.85;
+		
 	return Cooldown;
 }
 
@@ -975,7 +990,6 @@ int Store_CycleItems(int client, int slot, bool ChangeWeapon = true)
 void Store_ConfigSetup()
 {
 	ClearAllTempAttributes();
-	Zero(CDDisplayHint_LoadoutStore);
 	delete StoreTags;
 	StoreTags = new ArrayList(ByteCountToCells(32));
 
@@ -1246,7 +1260,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						maxCash -= CashSpentLoadout[client];
 						cash = maxCash;
 					}
-					char buf[64];
+					char buf[84];
 					if(PapPreviewMode[client])
 					{
 						Format(buf, sizeof(buf), "%T", "Preview Mode Pap", client);
@@ -1359,28 +1373,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 					ItemInfo info;
 					if(item.GetItemInfo(ValuesDisplay[1], info) && info.Cost)
 					{ 	
-						//This code is ass
-						TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-						SPrintToChat(client, "%s:",info.Custom_Name);
-						char bufferSizeSplit[512];
-						char DescDo[256];
-						Format(DescDo, sizeof(DescDo), "%s", info.Desc);
-						char DescDo2[256];
-						Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
-						TranslateItemName(client, DescDo, DescDo2, bufferSizeSplit, sizeof(bufferSizeSplit));
-						char Display1[240];
-						char Display2[240];
-						Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
-						if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
-						{
-							Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
-							CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
-						}
-						else
-							CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
-
-						if(Display2[0])
-							CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
+						PrintPapDescription(client, item, info, PAP_DESC_PREVIEW);
 					}
 				}
 
@@ -1468,6 +1461,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						SetDefaultHudPosition(client);
 						
 						ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was boosted");
+						PrintPapDescription(client, item, info, PAP_DESC_BOUGHT);
+						
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = EntRefToEntIndex(values[2]);
@@ -1481,6 +1476,44 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+void PrintPapDescription(int client, Item item, ItemInfo info, int type = PAP_DESC_BOUGHT)
+{
+	//This code is ass
+	TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
+	char bufferHeader[128];
+	
+	switch (type)
+	{
+		case PAP_DESC_BOUGHT:
+			FormatEx(bufferHeader, sizeof(bufferHeader), "%T", "Pap Weapon Upgraded", client, info.Custom_Name);	
+		
+		case PAP_DESC_PREVIEW:
+			FormatEx(bufferHeader, sizeof(bufferHeader), "%T", "Pap Weapon Preview", client, info.Custom_Name);
+	}
+	
+	SPrintToChat(client, "%s", bufferHeader);
+	
+	char bufferSizeSplit[512];
+	char DescDo[256];
+	Format(DescDo, sizeof(DescDo), "%s", info.Desc);
+	char DescDo2[256];
+	Format(DescDo2, sizeof(DescDo2), "%s", info.Rogue_Desc);
+	TranslateItemName(client, DescDo, DescDo2, bufferSizeSplit, sizeof(bufferSizeSplit));
+	char Display1[240];
+	char Display2[240];
+	Format(Display1, sizeof(Display1), "%s", bufferSizeSplit);
+	if(strlen(bufferSizeSplit) > 240) //If 240 exists, split.
+	{
+		Format(Display2, sizeof(Display2), "%s", bufferSizeSplit[239]);
+		CPrintToChat(client, "%s%s-", STORE_COLOR ,Display1);
+	}
+	else
+		CPrintToChat(client, "%s%s", STORE_COLOR ,Display1);
+
+	if(Display2[0])
+		CPrintToChat(client, "%s%s", STORE_COLOR ,Display2);
 }
 
 void Store_RogueEndFightReset()
@@ -2966,8 +2999,10 @@ void Store_Menu(int client)
 		StarterCashMode[client] = false;
 	}
 	Store_OnCached(client);
-	if(LastStoreMenu[client])
+	if(LastStoreMenu[client] || AnyMenuOpen[client])
 	{
+		HideMenuInstantly(client);
+		//show a blank page to instantly hide it
 		CancelClientMenu(client);
 		ClientCommand(client, "slot10");
 		ResetStoreMenuLogic(client);
@@ -2986,7 +3021,22 @@ void Store_Menu(int client)
 		MenuPage(client, -1);
 	}
 }
-
+void HideMenuInstantly(int client)
+{
+	Menu menu = new Menu(Store_BlankHide);
+	menu.AddItem("", "", ITEMDRAW_SPACER);
+	menu.Pagination = 0;
+	menu.ExitButton = false;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+static int Store_BlankHide(Menu menu, MenuAction action, int client, int choice)
+{
+	if(action == MenuAction_End)
+	{
+		delete menu;
+	}
+	return 0;
+}
 void Store_OpenNPCStore(int client)
 {
 	if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
@@ -3017,29 +3067,6 @@ static void MenuPage(int client, int section)
 	if(f_PreventMovementClient[client] > GetGameTime())
 		return;
 	
-	if(Waves_Started())
-	{
-	//	if(CashSpentTotal[client] <= 0)
-	//	{
-	//		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-	//	}
-	//	else 
-		if(CDDisplayHint_LoadoutConfirmAuto[client] < GetGameTime())
-		{
-			StarterCashMode[client] = false; //confirm automatically.
-		}
-		if(CDDisplayHint_LoadoutStore[client] < GetGameTime() && StarterCashMode[client])
-		{
-			SPrintToChat(client, "%t", "Loadout In Store");
-			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 30.0;
-		}
-	}
-	else
-	{
-		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
-		//this is done because new players are confused often.
-	}
-	
 	Menu menu;
 	
 	bool starterPlayer = (Level[client] < STARTER_WEAPON_LEVEL && Database_IsCached(client));
@@ -3060,23 +3087,6 @@ static void MenuPage(int client, int section)
 	}
 	
 	int cash = CurrentCash-CashSpent[client];
-	/*
-
-	remove, dont bother.
-	if(ClientTutorialStep(client) == 2)
-	{
-		//This is here so the player doesnt just have no money to buy anything.
-		if(cash < 700)
-		{
-			int give_Extra_JustIncase = cash - 700;
-			
-			CashSpent[client] += give_Extra_JustIncase;
-			cash += give_Extra_JustIncase;
-		}
-	}
-
-	*/
-	
 	if(StarterCashMode[client])
 	{
 		int maxCash = StartCash;
@@ -3107,7 +3117,7 @@ static void MenuPage(int client, int section)
 
 			item.GetItemInfo(level, info);
 			
-			char buf[64];
+			char buf[84];
 			if(StarterCashMode[client])
 				Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 			else
@@ -3318,7 +3328,7 @@ static void MenuPage(int client, int section)
 						Format(buffer, sizeof(buffer), "%T", "View PAP Upgrades", client);
 						menu.AddItem(buffer2, buffer);
 					}
-					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
+					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0] || info.WeaponFaction1)
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
 						{
@@ -3349,7 +3359,7 @@ static void MenuPage(int client, int section)
 			return;
 		}
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -3385,7 +3395,7 @@ static void MenuPage(int client, int section)
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
-		char buf[64];
+		char buf[84];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
@@ -4665,11 +4675,10 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 				{
 					item.GetItemInfo(0, info);
 
-					char buffer[256];
+					char buffer[256], buffers[6][256];
 
 					if(item.Tags[0])
 					{
-						char buffers[6][256];
 						int tags = ExplodeString(item.Tags, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 						if(tags)
 						{
@@ -4677,11 +4686,24 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 							for(int i = 1; i < tags; i++)
 							{
-								TranslateItemName(client, buffers[i], _, buffer, sizeof(buffer));
+								TranslateItemName(client, buffers[i], _, buffers[0], sizeof(buffer));
+								Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
 							}
 
 							PrintToChat(client, "%t", "Tags List", buffer);
 						}
+					}
+
+					if(info.WeaponFaction1)
+					{
+						TranslateItemName(client, ItemFaction[info.WeaponFaction1], _, buffer, sizeof(buffer));
+						if(info.WeaponFaction2)
+						{
+							TranslateItemName(client, ItemFaction[info.WeaponFaction2], _, buffers[0], sizeof(buffer));
+							Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
+						}
+
+						PrintToChat(client, "%t", "Faction List", buffer);
 					}
 
 					if(info.ExtraDesc[0])
@@ -5058,9 +5080,12 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
 
+	if(b_IsAloneOnServer)
+		map.SetValue("412", 0.75);	//if alone, gain 25% resistance
+
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
-	map.SetValue("8", 1.5);	//give 50% more healing at the start.
+	map.SetValue("8", 2.0);	//give 50% more healing at the start.
 	if(f_PreventMovementClient[client] > GetGameTime())
 	{
 		map.SetValue("819", 1.0);
@@ -5122,7 +5147,6 @@ void Store_ApplyAttribs(int client)
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
 	
-	//DOUBLE TAP!
 	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
@@ -6132,7 +6156,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-		//SPEED COLA!
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
 			//dont give it if it doesnt have it.
@@ -6140,7 +6163,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
-		//DOUBLE TAP!
 		if(i_CurrentEquippedPerk[client] == 3)
 		{
 			if(Attributes_Has(entity, 6))
@@ -6158,7 +6180,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
-		//QUICK REVIVE!
+		//Regene Berry!
 		if(i_CurrentEquippedPerk[client] == 1)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
@@ -6273,7 +6295,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
-		Ulpianus_Enable(entity);
+		Ulpianus_Enable(client, entity);
 		Enable_WrathfulBlade(client, entity);
 		BlacksmithBrew_Enable(client, entity);
 		Yakuza_Enable(client, entity);
@@ -6622,7 +6644,7 @@ static void ItemCost(int client, Item item, int &cost)
 	{
 		cost = RoundToCeil(float(cost) * 0.9);
 	}
-	
+	/*
 	if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
 	{
 		switch(CurrentPlayers)
@@ -6640,6 +6662,7 @@ static void ItemCost(int client, Item item, int &cost)
 				cost = RoundToNearest(float(cost) * 0.95);
 		}
 	}
+	*/
 	
 	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!
 	if(item.MaxCost > 0 && cost > item.MaxCost)
@@ -6733,11 +6756,12 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
+	Force_ExplainBuffToClient(client, "Explain Building Cash", true);
 	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
 		{
-			PrintToChat(client,"%t","Pre Setup Cash Gain Hint");
+			CPrintToChat(client,"{darkgrey}%T","Pre Setup Cash Gain Hint", client);
 			CashSpentGivePostSetupWarning[client] = true;
 		}
 		int CreditsGive = credits / 2;
@@ -7054,6 +7078,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity, int costOfUpgr
 void ResetStoreMenuLogic(int client)
 {
 	LastStoreMenu[client] = 0.0;
+	AnyMenuOpen[client] = 0.0;
 }
 
 void SetStoreMenuLogic(int client, bool store = true)
@@ -7268,4 +7293,31 @@ void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
 	item.CurrentClipSaved[client] = clipsizeSet; //Reset clip to 8
 	StoreItems.SetArray(StoreWeapon[weapon], item);
 
+}
+
+bool Store_IsWeaponFaction(int client, int weapon, int faction)
+{
+	if(client <= 0)
+		return false;
+	if(weapon <= 0)
+		return false;
+	if(StoreWeapon[weapon] <= 0)
+		return false;
+		
+	static Item item;
+	StoreItems.GetArray(StoreWeapon[weapon], item);
+	if(!item.Owned[client])
+		return false;
+
+	static ItemInfo info;
+	if(!item.GetItemInfo(item.Owned[client]-1, info))
+		return false;
+	
+	if(info.WeaponFaction1 == faction)
+		return true;
+	
+	if(info.WeaponFaction2 == faction)
+		return true;
+	
+	return false;
 }

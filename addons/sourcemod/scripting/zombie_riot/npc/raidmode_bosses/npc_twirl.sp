@@ -1326,18 +1326,18 @@ static void ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 
 			int iPitch = npc.LookupPoseParameter("body_pitch");
-			if(iPitch < 0)
-				return;		
-
-			//Body pitch
-			float v[3], ang[3];
-			SubtractVectors(VecSelfNpc, vecTarget, v); 
-			NormalizeVector(v, v);
-			GetVectorAngles(v, ang); 
-									
-			float flPitch = npc.GetPoseParameter(iPitch);
-									
-			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			if(iPitch >= 0)
+			{
+				//Body pitch
+				float v[3], ang[3];
+				SubtractVectors(VecSelfNpc, vecTarget, v); 
+				NormalizeVector(v, v);
+				GetVectorAngles(v, ang); 
+										
+				float flPitch = npc.GetPoseParameter(iPitch);
+										
+				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			}	
 		}
 		else
 		{
@@ -1404,18 +1404,20 @@ static void ClotThink(int iNPC)
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
+		if(iPitch >= 0)
+		{
 
-		//Body pitch
-		float v[3], ang[3];
-		SubtractVectors(VecSelfNpc, vecTarget, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(VecSelfNpc, vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		}	
+
 
 		npc.StartPathing();
 
@@ -2206,7 +2208,7 @@ static void ReplaceProjectileParticle(int projectile, const char[] particle_stri
 static float Modify_Damage(int Target, float damage)
 {
 	if(ShouldNpcDealBonusDamage(Target))
-		damage*=10.0;
+		damage*=4.0;
 
 	damage*=RaidModeScaling;
 
@@ -3389,7 +3391,7 @@ static Action IonicFracture_Think(int iNPC)
 		Projectile.Start_Loc = Origin;
 		Projectile.radius = 150.0;
 		Projectile.damage = Modify_Damage(-1, Dmg);
-		Projectile.bonus_dmg = Modify_Damage(-1, Dmg)*2.5;
+		Projectile.bonus_dmg = 1.0;
 		Projectile.Time = (npc.m_flIonicFractureEndTimer - GameTime) + 10.0;	//the +10.0 is for potential npc stuns and such. the projectile gets deleted by the ability itself anyway so technically the timer isn't even needed, but its here just incase
 		Projectile.visible = false;
 
@@ -3770,18 +3772,20 @@ static Action Magia_Overflow_Tick(int iNPC)
 	float Radius = 30.0;
 	float diameter = Radius*2.0;
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 20.0;
 	Laser.client = npc.index;
 	float 	flPos[3], // original
 			flAng[3]; // original
 	float Angles[3];
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);	//pitch code stolen from fusion. ty artvin
-
+	float flPitch = 0.0;
 	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-		return Plugin_Continue;
+	if(iPitch >= 0)
+	{
+		flPitch = npc.GetPoseParameter(iPitch);
+	}
 
-	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	Angles[0] = flPitch;
 	GetAttachment(npc.index, "effect_hand_r", flPos, flAng);

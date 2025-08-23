@@ -275,10 +275,10 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		int aspect = random % A_Water;
 
 		// Special Aspects
-		if(i_BleedType[victim] == BLEEDTYPE_SEABORN && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
-		{
-			aspect = A_Water;
-		}
+		//if(i_BleedType[victim] == BLEEDTYPE_SEABORN && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
+		//{
+		//	aspect = A_Water;
+		//}
 		//else if(i_BleedType[victim] == BLEEDTYPE_VOID && (random % 9) == 0)
 		//{
 		//	aspect = A_Void;
@@ -300,8 +300,8 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		{
 			// +1 or -1
 			int aspect2 = (random + ((i_NpcInternalId[victim] % 2) ? 1 : -1)) % A_Water;
-			if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
-				aspect2 = A_Water;
+			//if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
+			//	aspect2 = A_Water;
 			
 			Aspects[attacker][aspect2] += gain;
 
@@ -437,6 +437,7 @@ static void Brew_Menu(int client, int entity)
 		
 		char buffer[64];
 		Menu menu = new Menu(Brew_MenuH);
+		AnyMenuOpen[client] = 1.0;
 
 		SetGlobalTransTarget(client);
 		
@@ -483,6 +484,8 @@ static int Brew_MenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
@@ -527,6 +530,7 @@ static int Brew_MenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			AnyMenuOpen[client] = 0.0;
 			ResetStoreMenuLogic(client);
 		}
 	}
@@ -556,6 +560,7 @@ static void PotionMakingMenu(int client, const char[] msg = "")
 	char buffer[64];
 
 	Menu menu = new Menu(PotionMakingMenuH);
+	AnyMenuOpen[client] = 1.0;
 
 	if(msg[0])
 	{
@@ -617,14 +622,18 @@ static int PotionMakingMenuH(Menu menu, MenuAction action, int client, int choic
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
+			AnyMenuOpen[client] = 0.0;
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 		}
 		case MenuAction_Select:
 		{
+			AnyMenuOpen[client] = 0.0;
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 			

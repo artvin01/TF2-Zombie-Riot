@@ -3,7 +3,7 @@
 
 static bool has_consumed_ammo_before[MAXPLAYERS+1]={false, ...};
 
-public void Weapon_Auto_Shotgun(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Auto_Shotgun(int client, int weapon, bool crit, int slot)
 {
 	if(has_consumed_ammo_before[client])
 	{

@@ -186,6 +186,7 @@ methodmap Heliarionus < CClotBody
 			halo
 			weapon
 		*/
+		Is_a_Medic[npc.index] = true;
 		
 		static const char Items[][] = {
 			"models/workshop/player/items/all_class/jogon/jogon_sniper.mdl",
@@ -272,6 +273,12 @@ static void ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
@@ -380,6 +387,12 @@ static void ClotThink(int iNPC)
 	{
 		npc.StopPathing();
 		
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
