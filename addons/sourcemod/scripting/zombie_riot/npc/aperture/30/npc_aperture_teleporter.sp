@@ -51,6 +51,12 @@ methodmap ApertureTeleporter < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	
+	property int m_iSpawnpoint
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
 
 	public ApertureTeleporter(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -137,19 +143,8 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 			if (!IsValidEntity(npc.m_iWearable1))
 				npc.m_iWearable1 = ParticleEffectAt_Parent(vecPos, "teleporter_blue_charged_level3", npc.index, .vOffsets = { 0.0, 0.0, 12.0 });
 			
-			if (!VIPBuilding_Active())
-			{
-				for (int i; i < ZR_MAX_SPAWNERS; i++)
-				{
-					if (!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
-					{
-						Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
-						i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
-						//npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR);
-						break;
-					}
-				}
-			}
+			vecPos[2] += APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
+			npc.m_iSpawnpoint = Void_PlaceZRSpawnpoint(vecPos, .MaxWaves = 9999);
 			
 			npc.m_iState = 2;
 		}
@@ -209,18 +204,22 @@ public void ApertureTeleporter_NPCDeath(int entity)
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	makeexplosion(-1, pos, 0, 0);
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
-		
-	Spawns_RemoveFromArray(entity);
+	
+	Spawns_RemoveFromArray(npc.m_iSpawnpoint);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
-		if(i_ObjectsSpawners[i] == entity)
+		if(i_ObjectsSpawners[i] == npc.m_iSpawnpoint)
 		{
 			i_ObjectsSpawners[i] = 0;
 			break;
 		}
 	}
+	
+	if(IsValidEntity(npc.m_iSpawnpoint))
+		RemoveEntity(npc.m_iSpawnpoint);
+	
 }

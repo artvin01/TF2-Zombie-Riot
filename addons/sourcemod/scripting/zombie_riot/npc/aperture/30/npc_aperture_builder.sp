@@ -54,6 +54,8 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
 
+#define APERTURE_TELEPORTER_SPAWN_OFFSET_Z 20.0
+
 enum
 {
 	APT_BUILDER_STATE_IDLE,
@@ -72,6 +74,7 @@ enum
 	
 	APT_BUILDER_BUILDING_COUNT,
 }
+
 static float AntiSoundSpam;
 static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
@@ -430,15 +433,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						GetAbsOrigin(npc.index, vecBuffer);
 						vecPotentialPos = vecBuffer;
 						
-						vecPotentialPos[0] = GetRandomFloat((vecPotentialPos[0] - 200.0), (vecPotentialPos[0] + 200.0));
-						vecPotentialPos[1] = GetRandomFloat((vecPotentialPos[1] - 200.0), (vecPotentialPos[1] + 200.0));
-						
+						vecPotentialPos[0] += GetRandomFloat(-200.0, 200.0);
+						vecPotentialPos[1] += GetRandomFloat(-200.0, 200.0);
+						vecPotentialPos[2] += 65.0;
 						Handle trace = TR_TraceRayFilterEx(vecBuffer, vecPotentialPos, GetSolidMask(npc.index), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
 						if (TR_DidHit(trace))
-						{
-							delete trace;
 							continue;
-						}
 						
 						delete trace;
 						
@@ -450,7 +450,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						CNavArea area = TheNavMesh.GetNearestNavArea(vecPotentialPos, true);
 						if (area == NULL_AREA)
 							continue;
-			
+						
 						int navAttribs = area.GetAttributes();
 						if (navAttribs & NAV_MESH_AVOID)
 							continue;
@@ -459,10 +459,10 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						float vecMins[3] = { -35.0, -35.0, 0.0 };
 						float vecMaxs[3] = { 35.0, 35.0, 130.0 };
 						
-						vecPotentialPos[2] += 1.0;
+						vecPotentialPos[2] += APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
 						if (IsBoxHazard(vecPotentialPos, vecMins, vecMaxs))
 							continue;
-						
+							
 						if (IsSpaceOccupiedIgnorePlayers(vecPotentialPos, vecMins, vecMaxs, npc.index))
 							continue;
 						
@@ -497,8 +497,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if (IsBoxHazard(vecCenterPos, vecMins, vecMaxs))
 							continue;
 						
-						if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, npc.index))
-							continue;
+						vecPotentialPos[2] -= APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
 						
 						// Congratulations little fella, you got a place to go
 						ApertureBuilder_ToggleBuilding(npc, true);
