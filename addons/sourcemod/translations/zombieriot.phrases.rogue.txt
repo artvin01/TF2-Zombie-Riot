@@ -2188,6 +2188,10 @@
 	{
 		"en"	"{green}Briefly prevents your death once per stage.\n{default}A luminous aura envelops you... its mostly just glitter."
 	}
+	"Strange Visitor"
+	{
+		"en"	"Strange Visitor"
+	}
 	"Astra Title Accept Conlusion"
 	{
 		"en"	"{brown}Astra{default} : Oh! Thank you so much! Have this as a thanks, something experimental i made."
