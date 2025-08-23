@@ -351,7 +351,7 @@
 	}
 	"Walled Gold Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain an uncommon artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
 	}
 	"Stored Instruments"
 	{
@@ -359,7 +359,7 @@
 	}
 	"Stored Instruments Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a rare artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 12 while held\n{purple}Chance obtain a rare artifact when consumed"
 	}
 	"Empty Thoughts"
 	{
@@ -383,7 +383,7 @@
 	}
 	"Cheerful Banter Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Obtain a very rare artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Chance obtain a rare artifact when consumed"
 	}
 	"Nemesis Blood"
 	{
@@ -391,7 +391,7 @@
 	}
 	"Nemesis Blood Desc"
 	{
-		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Obtain a rare artifact when consumed"
+		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Chance obtain a rare artifact when consumed"
 	}
 	"Sprouting Stem"
 	{

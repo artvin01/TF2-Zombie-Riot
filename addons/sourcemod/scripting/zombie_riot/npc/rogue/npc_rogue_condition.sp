@@ -99,8 +99,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		if(GetTeam(entity) == TFTeam_Red)
 		{
 			fl_Extra_Damage[entity] *= 10.0;
-			fl_Extra_MeleeArmor[entity] *= 10.0;
-			fl_Extra_RangedArmor[entity] *= 10.0;
+			fl_Extra_MeleeArmor[entity] *= 20.0;
+			fl_Extra_RangedArmor[entity] *= 20.0;
 			TeleportNpcToRandomPlayer(entity);
 		}
 		else

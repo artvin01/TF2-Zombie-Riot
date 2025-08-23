@@ -41,6 +41,11 @@
 		"#format"	"{1:d}"
 		"en"		"{red}Lost {1} Australium Ingots!"
 	}
+	"Gained Shield"
+	{
+		"#format"	"{1:d}"
+		"en"		"{red}Gained {1} Shield!"
+	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"

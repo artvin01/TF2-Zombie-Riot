@@ -342,9 +342,13 @@ static void FinishOptionalVoteItem(const Vote vote, int index)
 
 public float Rogue_Encounter_RiftConsume()
 {
-	ConsumeLimit = 4;
+	ConsumeLimit = 2;
 	StartRiftVote(true);
 	return 35.0;
+}
+public void Rogue_IsSellProfin(int entity)
+{
+	f_HeadshotDamageMultiNpc[entity] *= 1.25;
 }
 
 static bool StartRiftVote(bool first)
@@ -381,7 +385,7 @@ static bool StartRiftVote(bool first)
 					break;
 			}
 		}
-
+		/*
 		if(found < 7)
 		{
 			// Misc items
@@ -401,6 +405,7 @@ static bool StartRiftVote(bool first)
 				}
 			}
 		}
+		*/
 	}
 
 	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
@@ -429,16 +434,16 @@ static void FinishRiftVote(const Vote vote)
 				switch(GetURandomInt() % 5)
 				{
 					case 0:
-						GiveShield(500);
+						GiveShield(100);
 					
 					case 1:
-						GiveShield(1000);
+						GiveShield(150);
 					
 					case 2:
-						GiveShield(1500);
+						GiveShield(200);
 					
 					default:
-						GiveCash(2000);
+						GiveCash(1000);
 				}
 			}
 
@@ -683,7 +688,7 @@ public float Rogue_Encounter_WarpedBattle()
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
-	if((GetURandomInt() % 3) == 0)
+	if((GetURandomInt() % 4) == 0)
 	{
 		int seed1 = 2 + (WarpSeed % 3);
 		int seed2 = WarpSeed / 3;
