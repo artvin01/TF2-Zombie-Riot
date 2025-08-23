@@ -209,13 +209,13 @@ public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 	{
 		case 0:
 		{
-			CPrintToChatAll("%t", "Astra Title Decline Conlusion");
+			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
 			Rogue_GiveNamedArtifact("Blessing of Stars Cape");
 			Rogue_AddUmbral(15, false);
 		}
 		case 1:
 		{
-			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
+			CPrintToChatAll("%t", "Astra Title Decline Conlusion");
 			Artifact artifact;
 			if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
