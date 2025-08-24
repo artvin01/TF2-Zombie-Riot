@@ -548,6 +548,13 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 
 	if(victim <= MaxClients)
 	{
+		// Warped overrides
+		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Chaos || Armor_DebuffType[victim] == Element_Warped))
+		{
+			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+			return;
+		}
+		
 		if(ClientPossesesVoidBlade(victim))
 		{
 			if(Armor_Charge[victim] > 0)
@@ -559,13 +566,6 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				}
 				ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
 			}
-			return;
-		}
-
-		// Warped overrides
-		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Chaos || Armor_DebuffType[victim] == Element_Warped))
-		{
-			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
 			return;
 		}
 		
