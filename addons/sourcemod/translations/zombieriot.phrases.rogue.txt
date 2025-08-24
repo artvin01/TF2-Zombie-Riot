@@ -2227,6 +2227,14 @@
 	{
 		"en"	"{green}Players gain an extra level of armor.\n{default}It feels very immoral to own this, if twirl saw you with it, she'd be dissapointed."
 	}
+	"Incorruptable Leaf"
+	{
+		"en"	"Incorruptable Leaf"
+	}
+	"Incorruptable Leaf Desc"
+	{
+		"en"	"{green}Players gain 30％ elemental resistance, when under elemental debuffs, gain 15％ Overall Resistance.\n{default}Very soothing, very calming."
+	}
 	"Strange Visitor"
 	{
 		"en"	"Strange Visitor"

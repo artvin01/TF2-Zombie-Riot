@@ -790,3 +790,28 @@ public void Rogue_Rift2_Enemy(int entity)
 		}
 	}
 }
+
+
+public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(GetTeam(victim) != TFTeam_Red)
+		return;
+
+	bool GiveRes = false;
+	if(victim <= MaxClients)
+	{
+		if(Armor_Charge[victim] < 1)
+		{
+			GiveRes = true;
+		}
+	}
+	else
+	{
+		if(Elemental_HasDamage(victim))
+		{
+			GiveRes = true;
+		}
+	}
+	if(!(damagetype & DMG_TRUEDAMAGE))
+		damage *= 0.85;
+}
