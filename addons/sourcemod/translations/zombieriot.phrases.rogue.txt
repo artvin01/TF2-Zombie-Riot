@@ -2293,4 +2293,20 @@
 	{
 		"en"	"I rather like being alive."
 	}
+	"Almagest Technology Title"
+	{
+		"en"	"You see a piece of abandoned tech, its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring."
+	}
+	"Almagest Technology Accept"
+	{
+		"en"	"Take it."
+	}
+	"Almagest Technology"
+	{
+		"en"	"''Almagest Technology''"
+	}
+	"Almagest Technology Desc"
+	{
+		"en"	"It's Very Aluring.\n{green} Most cooldowns are reduced by 33％"
+	}
 }

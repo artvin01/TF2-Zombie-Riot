@@ -381,22 +381,85 @@ static void PoolOfClarityPost(const Vote vote, int index)
 
 public float Rogue_Encounter_FreeTreasure()
 {
-	Rogue_SetBattleIngots(20);
 
-	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Free Treasure Ahead!");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_FreeTreasure, "Free Treasure Ahead!");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "Free Treasure Ahead! Accept");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
-	vote.Config[0] = 1;
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "Free Treasure Ahead! Decline");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	vote.Config[0] = 0;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
 
 	return 25.0;
+}
+
+public void Rogue_Vote_FreeTreasure(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+			if(Rogue_GetRandomArtifact(artifact, false, 18) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+			Rogue_StartThisBattle(5.0);
+			Rogue_SetBattleIngots(20);
+		}
+		case 1:
+		{
+			GiveCash(5000);
+		}
+	}
+}
+
+
+public float Rogue_Encounter_AlmagestTechnology()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_AlmagestTechnology_Vote, "Almagest Technology Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Almagest Technology Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Almagest Technology Accept");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(10.0);
+
+	return 15.0;
+}
+
+
+public void Rogue_Vote_AlmagestTechnology_Vote(const Vote vote, int index)
+{
+	Rogue_GiveNamedArtifact("Almagest Technology");
+	Rogue_AddUmbral(-25, false);
 }
