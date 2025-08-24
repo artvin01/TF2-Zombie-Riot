@@ -1597,11 +1597,13 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 
 	if(CurrentCollection)
 	{
+		ArrayList list = CurrentCollection.Clone();
+
 		Artifact artifact;
-		int length = CurrentCollection.Length;
+		int length = list.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Artifacts.GetArray(list.Get(i), artifact);
 			if(artifact.FuncFloorChange != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, artifact.FuncFloorChange);
@@ -1610,6 +1612,8 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 				Call_Finish();
 			}
 		}
+
+		delete list;
 	}
 
 	Floor floor;
