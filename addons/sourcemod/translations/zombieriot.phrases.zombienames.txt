@@ -4966,10 +4966,6 @@
 	{
 		"en"	"U̵͓̚m̶͉̀b̵̟͑r̴̳͌a̵͖̾l̸̢͆ ̵̳͒Ș̸͑p̸̳̅ù̷͖ȕ̸̝d̴͉͘"
 	}
-	"consume"
-	{
-		"en"	"consume"
-	}
 	"Almagest Researcher"
 	{
 		"en"	"Almagest Researcher"

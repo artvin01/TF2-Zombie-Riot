@@ -1076,8 +1076,8 @@ void Rogue_BattleVictory()
 
 				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
 				{
-					//half the chance
-					if((GetURandomInt() % 2))
+					//75% chance
+					if((GetURandomInt() % 4) != 0)
 						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
 				}

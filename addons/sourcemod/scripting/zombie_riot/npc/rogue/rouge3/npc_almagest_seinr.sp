@@ -153,11 +153,12 @@ methodmap AlmagestSeinr < CClotBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/mvm_loot/heavy/robo_ushanka.mdl");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");
 		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 255, 200);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		
 		float flPos[3], flAng[3];
 				
@@ -169,8 +170,6 @@ methodmap AlmagestSeinr < CClotBody
 		SetParent(npc.index, particle);
 		npc.m_iWearable5 = particle;
 		
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
