@@ -621,7 +621,7 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
 						
-					HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
+					HealEntityGlobal(client, client, MaxHealth / 100.0, Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					
 					float attrib = Attributes_Get(client, Attrib_BlessingBuff, 1.0);
 					if(f_TimeUntillNormalHeal[client] < GetGameTime())

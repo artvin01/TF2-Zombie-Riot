@@ -706,6 +706,46 @@
 	{
 		"en"	"Shouldn't have drank that.\n{red}Allies have -20% max health, cured by visting a Gateway"
 	}
+	"Pool of Clarity"
+	{
+		"en"	"Pool of Clarity"
+	}
+	"Pool of Clarity Lore"
+	{
+		"en"	"Pool of Clarity Lore"
+	}
+	"Pool of Clarity Option 1"
+	{
+		"en"	"Throw in some voidstones"
+	}
+	"Pool of Clarity Desc 1"
+	{
+		"en"	"Consume up to 2 voidstones"
+	}
+	"Pool of Clarity Lore 1"
+	{
+		"en"	"Pool of Clarity Lore 1"
+	}
+	"Pool of Clarity Option 2"
+	{
+		"en"	"Throw in some ingots with an artifact"
+	}
+	"Pool of Clarity Desc 2"
+	{
+		"en"	"Give up 10 Australium Inogts and an artifact for an item"
+	}
+	"Pool of Clarity Lore 2"
+	{
+		"en"	"What should we throw away?"
+	}
+	"Holy Blessing"
+	{
+		"en"	"Holy Blessing"
+	}
+	"Holy Blessing Desc"
+	{
+		"en"	"{green}Grigori's Blessing now heals up to full health"
+	}
 	
 	"Ruina'n Magic Factory"
 	{

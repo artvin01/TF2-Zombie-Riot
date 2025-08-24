@@ -3,6 +3,12 @@
 
 static int PreviousFloor;
 static int PreviousStage;
+static bool HolyBlessing;
+
+stock bool Rogue_Rift_HolyBlessing()
+{
+	return HolyBlessing;
+}
 
 public void Rogue_GamemodeHistory_Collect()
 {
@@ -49,6 +55,15 @@ public void Rogue_PoisonWater_FloorChange(int &floor, int &stage)
 		Rogue_RemoveNamedArtifact("Poisoned Water");
 }
 
+public void Rogue_HolyBlessing_Collect()
+{
+	HolyBlessing = true;
+}
+
+public void Rogue_HolyBlessing_Remove()
+{
+	HolyBlessing = false;
+}
 
 static void GiveMaxHealth(int entity, StringMap map, float amount)
 {

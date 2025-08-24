@@ -315,39 +315,69 @@ public float Rogue_Encounter_Pool_Of_Clarity()
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Pool_Of_Clarity_Vote, "Pool of Clarity Title");
 	Vote vote;
 
-	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Accept");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Accept Desc");
+	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 1");
 	
-	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Decline");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Decline Desc");
+	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 2");
+	vote.Locked = Rogue_GetIngots() < 10;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
 
 	return 25.0;
 }
-
-
-public void Rogue_Vote_Pool_Of_Clarity_Vote(const Vote vote, int index)
+static void Rogue_Vote_Pool_Of_Clarity_Vote(const Vote vote33, int index)
 {
 	switch(index)
 	{
 		case 0:
 		{
-			CPrintToChatAll("%t", "Incorruptable Tree Accept Conlusion");
-			Rogue_GiveNamedArtifact("Incorruptable Tree Leaf");
-			Rogue_AddUmbral(-10, false);
+			Rogue_SetProgressTime(Rogue_Encounter_RiftConsume(), false);
 		}
 		case 1:
 		{
-			CPrintToChatAll("%t", "Incorruptable Tree Decline Conlusion");
-			GiveCash(5500);
-			Rogue_AddUmbral(10, false);
+			Rogue_AddIngots(-10);
+
+			ArrayList list = Rogue_CreateGenericVote(PoolOfClarityPost, "Pool of Clarity Lore 2");
+			Vote vote;
+
+			ArrayList collection = Rogue_GetCurrentCollection();
+
+			int found;
+			if(collection)
+			{
+				Artifact artifact;
+				int length = collection.Length;
+
+				// Misc items
+				for(int i = length - 1; i >= 0; i--)
+				{
+					Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
+
+					if(!artifact.Hidden && artifact.FuncRemove != INVALID_FUNCTION && !(artifact.Multi || artifact.ShopCost == 6))
+					{
+						strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+						strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+						strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
+						list.PushArray(vote);
+						
+						if(++found > 6)
+							break;
+					}
+				}
+			}
+
+			Rogue_StartGenericVote(20.0);
+			Rogue_SetProgressTime(25.0, false);
 		}
 	}
 }
-
-
+static void PoolOfClarityPost(const Vote vote, int index)
+{
+	Rogue_RemoveNamedArtifact(vote.Config);
+	Rogue_GiveNamedArtifact("Holy Blessing");
+}
 
 public float Rogue_Encounter_FreeTreasure()
 {
