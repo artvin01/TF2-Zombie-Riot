@@ -564,3 +564,13 @@ public void Rogue_LelouchCrestBroken_Ally(int entity, StringMap map)
 		map.SetValue("701", value + 50.0);
 	}
 }
+public void Rogue_IncorruptableLeaf_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+		//give 30% res
+		map.GetValue("4049", value);
+		map.SetValue("4049", value * 0.7);
+	}
+}

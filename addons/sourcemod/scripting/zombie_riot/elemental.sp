@@ -291,6 +291,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -431,6 +432,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -577,6 +579,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -772,6 +775,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -1223,6 +1227,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				int newdmg = RoundToNearest(float(damage) * Cheese_GetPenalty(victim));
 				damage = newdmg;
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -1400,6 +1405,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				

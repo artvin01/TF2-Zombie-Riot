@@ -156,7 +156,7 @@ public float Rogue_Encounter_Lone_Health()
 	strcopy(vote.Name, sizeof(vote.Name), "Lone Health Accept");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Lone Health Accept Desc");
 	list.PushArray(vote);
-	
+		
 	strcopy(vote.Name, sizeof(vote.Name), "Lone Health Decline");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Lone Health Decline Desc");
 	list.PushArray(vote);
@@ -254,7 +254,7 @@ public void Rogue_Vote_Incorruptable_Tree_Vote(const Vote vote, int index)
 		case 0:
 		{
 			CPrintToChatAll("%t", "Incorruptable Tree Accept Conlusion");
-			Rogue_GiveNamedArtifact("Incorruptable Tree Leaf");
+			Rogue_GiveNamedArtifact("Incorruptable Leal");
 			Rogue_AddUmbral(-10, false);
 		}
 		case 1:
