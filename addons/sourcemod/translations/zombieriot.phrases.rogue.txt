@@ -2177,6 +2177,36 @@
 	{
 		"en"	"Ignore her, take whats around."
 	}
+	"Broken Crest Title"
+	{
+		"en"	"You notice a broken crest on the floor, probably left behind after Lelouch perished."
+	}
+	"Broken Crest Accept"
+	{
+		"en"	"Take the crest, seems usefull."
+	}
+	"Broken Crest Decline"
+	{
+		"en"	"Don't risk it, who knows whats in it."
+	}
+	
+	"Broken Crest Accept Desc"
+	{
+		"en"	"{green}Receive the crest and {crimson}lose Umbral Affinity."
+	}
+	"Broken Crest Decline Desc"
+	{
+		"en"	"{green}Gain cash and Umbral Affinity."
+	}
+	"Broken Crest Accept Conlusion"
+	{
+		"en"	"You pick it up, it feels heavy...{crimson}youre being judged."
+	}
+	"Broken Crest Decline Conlusion"
+	{
+		"en"	"You disregard it... The big broken crystal blesses you with a vision, as you follow it, you find cash!"
+	}
+	
 	"Lone Health Decline Desc"
 	{
 		"en"	"{green}Gain cash, raise Umbral Affinity."
@@ -2189,6 +2219,14 @@
 	{
 		"en"	"{green}Briefly prevents your death once per stage.\n{default}A luminous aura envelops you... its mostly just glitter."
 	}
+	"Lelouch's Broken Crest"
+	{
+		"en"	"Lelouch's Broken Crest"
+	}
+	"Lelouch's Broken Crest Desc"
+	{
+		"en"	"{green}Players gain an extra level of armor.\n{default}It feels very immoral to own this, if twirl saw you with it, she'd be dissapointed."
+	}
 	"Strange Visitor"
 	{
 		"en"	"Strange Visitor"
@@ -2200,5 +2238,51 @@
 	"Astra Title Decline Conlusion"
 	{
 		"en"	"You ignore her, she doesnt notice you, or ignores you back..."
+	}
+
+	"Incorruptable Tree Title"
+	{
+		"en" "You find a tree, seemingly untouched by the void and umbrals."
+	}
+
+	"Incorruptable Tree"
+	{
+		"en"	"Incorruptable Tree"
+	}
+	"Incorruptable Tree Accept"
+	{
+		"en"	"Touch"
+	}
+	"Incorruptable Tree Accept Desc"
+	{
+		"en"	"{green}Receive a leaf from the tree and {crimson}lose Umbral Affinity."
+	}
+	"Incorruptable Tree Decline"
+	{
+		"en"	"Do not touch"
+	}
+	"Incorruptable Tree Decline"
+	{
+		"en"	"{green}Gain Cash and gain Umbral Affinity."
+	}
+	"Incorruptable Tree Accept Conlusion"
+	{
+		"en"	"You feel its warmth, its strength..."
+	}
+	"Incorruptable Tree Decline Desc"
+	{
+		"en"	"You decide not to touch it, you see umbrals go to the tree to tend to it... they seemingly thank you?"
+	}
+	"Free Treasure Ahead!"
+	{
+		"en"	"A pile of unprotected, not guraded, very vulnerable chests lay around."
+	}
+	"Free Treasure Ahead! Accept"
+	{
+		"en"	"Free loot!"
+	}
+	"Free Treasure Ahead! Decline"
+	{
+		"en"	"I rather like being alive."
 	}
 }

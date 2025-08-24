@@ -206,7 +206,6 @@ public float Rogue_Encounter_Astra()
 	return 25.0;
 }
 
-
 public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 {
 	switch(index)
@@ -215,16 +214,159 @@ public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 		{
 			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
 			Rogue_GiveNamedArtifact("Mantle of Stars");
-			Rogue_AddUmbral(5, false);
+			Rogue_AddIngots(-12);
 		}
 		case 1:
 		{
 			CPrintToChatAll("%t", "Astra Title Decline Conlusion");
-			Artifact artifact;
-			if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
-				Rogue_GiveNamedArtifact(artifact.Name);
-			GiveCash(3500);
+			GiveCash(5500);
+			Rogue_AddUmbral(5, false);
 		}
 	}
 }
 
+
+
+
+
+public float Rogue_Encounter_Incorruptable_Tree()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Incorruptable_Tree_Vote, "Incorruptable Tree Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Incorruptable Tree Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Incorruptable Tree Accept Desc");
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Incorruptable Tree Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Incorruptable Tree Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Vote_Incorruptable_Tree_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Incorruptable Tree Accept Conlusion");
+			Rogue_GiveNamedArtifact("Incorruptable Tree Leaf");
+			Rogue_AddUmbral(-10, false);
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Incorruptable Tree Decline Conlusion");
+			GiveCash(5500);
+			Rogue_AddUmbral(10, false);
+		}
+	}
+}
+
+
+
+
+public float Rogue_Encounter_BrokenCrest()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BrokenCrest_Vote, "Broken Crest Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Broken Crest Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Broken Crest Accept Desc");
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Broken Crest Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Broken Crest Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Vote_BrokenCrest_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Broken Crest Accept Conlusion");
+			Rogue_GiveNamedArtifact("Lelouch's Broken Crest");
+			Rogue_AddUmbral(-15, false);
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Broken Crest Decline Conlusion");
+			GiveCash(5500);
+			Rogue_AddUmbral(5, false);
+		}
+	}
+}
+
+
+
+
+
+public float Rogue_Encounter_Pool_Of_Clarity()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Pool_Of_Clarity_Vote, "Pool of Clarity Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Accept Desc");
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Vote_Pool_Of_Clarity_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Incorruptable Tree Accept Conlusion");
+			Rogue_GiveNamedArtifact("Incorruptable Tree Leaf");
+			Rogue_AddUmbral(-10, false);
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Incorruptable Tree Decline Conlusion");
+			GiveCash(5500);
+			Rogue_AddUmbral(10, false);
+		}
+	}
+}
+
+
+
+public float Rogue_Encounter_FreeTreasure()
+{
+	Rogue_SetBattleIngots(20);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Free Treasure Ahead!");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Free Treasure Ahead! Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	vote.Config[0] = 1;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Free Treasure Ahead! Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}

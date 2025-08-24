@@ -861,13 +861,13 @@
 	{
 		"en" "⚔⚠ Void Entangled"
 	}
-	"Brainwashed Expidonsans"
+	"Washed Expidonsans"
 	{
-		"en" "⚔ Brainwashed Expidonsans"
+		"en" "⚔ Washed Expidonsans"
 	}
-	"Brainwashed Expidonsans!"
+	"Washed Expidonsans!"
 	{
-		"en" "⚔⚠ Brainwashed Expidonsans"
+		"en" "⚔⚠ Washed Expidonsans"
 	}
 	"Umbral Disturbance"
 	{

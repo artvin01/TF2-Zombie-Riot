@@ -551,3 +551,16 @@ static void GiveCash(int cash)
 	GlobalExtraCash += cash;
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
 }
+
+
+
+public void Rogue_LelouchCrestBroken_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+		//give 1 armor level
+		map.GetValue("701", value);
+		map.SetValue("701", value + 50.0);
+	}
+}
