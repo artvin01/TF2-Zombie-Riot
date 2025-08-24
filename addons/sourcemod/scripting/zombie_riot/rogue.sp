@@ -99,6 +99,7 @@ enum struct Artifact
 		this.FuncFloorChange = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
+		this.Name[0] = CharToUpper(this.Name[0]);
 		if(!TranslationPhraseExists(this.Name))
 		{
 			LogError("\"%s\" translation does not exist", this.Name);
