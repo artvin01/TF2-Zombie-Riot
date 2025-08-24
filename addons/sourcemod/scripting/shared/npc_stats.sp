@@ -9976,15 +9976,28 @@ stock ArrayList GetAllNearbyAreas(float pos[3], float radius)
 
 stock CNavArea GetRandomNearbyArea(float pos[3], float radius)
 {
-    ArrayList areas = GetAllNearbyAreas(pos, radius);
     CNavArea navi;
-
-    if (GetArraySize(areas) > 0)
+    
+    static ArrayList areas;
+    static float vecLastKnownPos[3];
+    
+    if (areas)
     {
-        navi = GetArrayCell(areas, GetRandomInt(0, GetArraySize(areas) - 1));
+        if (!GetVectorDistance(pos, vecLastKnownPos) && areas.Length > 0)
+        {
+            navi = areas.Get(GetURandomInt() % areas.Length);
+            return navi;
+        }
+        
+        delete areas;
     }
-
-    delete areas;
+    
+    areas = GetAllNearbyAreas(pos, radius);
+    
+    if (areas.Length > 0)
+        navi = areas.Get(GetURandomInt() % areas.Length);
+    
+    vecLastKnownPos = pos;
     return navi;
 }
 
