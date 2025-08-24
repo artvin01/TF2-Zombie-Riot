@@ -4970,9 +4970,9 @@
 	{
 		"en"	"consume"
 	}
-	"Amalgest Researcher"
+	"Almagest Researcher"
 	{
-		"en"	"Amalgest Researcher"
+		"en"	"Almagest Researcher"
 	}
 	"Seinr"
 	{
