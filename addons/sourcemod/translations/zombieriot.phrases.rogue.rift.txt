@@ -908,13 +908,13 @@
 	{
 		"en" "⚔⚠ Looters Keepers"
 	}
-	"Amalgest Security?"
+	"Almagest Security?"
 	{
-		"en" "⚔ Amalgest Security?"
+		"en" "⚔ Almagest Security?"
 	}
-	"Amalgest Security?!"
+	"Almagest Security?!"
 	{
-		"en" "⚔⚠ Amalgest Security?"
+		"en" "⚔⚠ Almagest Security?"
 	}
 	"Automatic Defenses"
 	{
@@ -968,9 +968,9 @@
 	{
 		"en" "⚔⚠ Umbral Disturbance"
 	}
-	"Amalgest Desperation"
+	"Almagest Desperation"
 	{
-		"en" "⚔⚠ Amalgest Desperation"
+		"en" "⚔⚠ Almagest Desperation"
 	}
 	"Slaves Controlled"
 	{

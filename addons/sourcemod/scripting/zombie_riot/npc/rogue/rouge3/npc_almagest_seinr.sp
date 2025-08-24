@@ -43,7 +43,7 @@ static const char g_PassiveSound[][] = {
 };
 
 
-void AmalgestSeinr_OnMapStart_NPC()
+void AlmagestSeinr_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -54,7 +54,7 @@ void AmalgestSeinr_OnMapStart_NPC()
 	PrecacheModel("models/bots/heavy_boss/bot_heavy_boss.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seinr");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_amalgest_seinr");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_seinr");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
@@ -65,10 +65,10 @@ void AmalgestSeinr_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AmalgestSeinr(vecPos, vecAng, team);
+	return AlmagestSeinr(vecPos, vecAng, team);
 }
 
-methodmap AmalgestSeinr < CClotBody
+methodmap AlmagestSeinr < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -117,9 +117,9 @@ methodmap AmalgestSeinr < CClotBody
 	}
 	
 	
-	public AmalgestSeinr(float vecPos[3], float vecAng[3], int ally)
+	public AlmagestSeinr(float vecPos[3], float vecAng[3], int ally)
 	{
-		AmalgestSeinr npc = view_as<AmalgestSeinr>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "3000", ally, false, true));
+		AlmagestSeinr npc = view_as<AlmagestSeinr>(CClotBody(vecPos, vecAng, "models/bots/heavy_boss/bot_heavy_boss.mdl", "1.5", "3000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -133,9 +133,9 @@ methodmap AmalgestSeinr < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_PANZER;
 
-		func_NPCDeath[npc.index] = view_as<Function>(AmalgestSeinr_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AmalgestSeinr_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(AmalgestSeinr_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(AlmagestSeinr_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlmagestSeinr_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(AlmagestSeinr_ClotThink);
 		
 		
 		if(!IsValidEntity(RaidBossActive))
@@ -176,9 +176,9 @@ methodmap AmalgestSeinr < CClotBody
 	}
 }
 
-public void AmalgestSeinr_ClotThink(int iNPC)
+public void AlmagestSeinr_ClotThink(int iNPC)
 {
-	AmalgestSeinr npc = view_as<AmalgestSeinr>(iNPC);
+	AlmagestSeinr npc = view_as<AlmagestSeinr>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -232,7 +232,7 @@ public void AmalgestSeinr_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		AmalgestSeinrSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		AlmagestSeinrSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -242,9 +242,9 @@ public void AmalgestSeinr_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action AmalgestSeinr_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action AlmagestSeinr_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	AmalgestSeinr npc = view_as<AmalgestSeinr>(victim);
+	AlmagestSeinr npc = view_as<AlmagestSeinr>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -273,9 +273,9 @@ public Action AmalgestSeinr_OnTakeDamage(int victim, int &attacker, int &inflict
 }
 
 
-public void AmalgestSeinr_NPCDeath(int entity)
+public void AlmagestSeinr_NPCDeath(int entity)
 {
-	AmalgestSeinr npc = view_as<AmalgestSeinr>(entity);
+	AlmagestSeinr npc = view_as<AlmagestSeinr>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -297,7 +297,7 @@ public void AmalgestSeinr_NPCDeath(int entity)
 
 }
 
-void AmalgestSeinrSelfDefense(AmalgestSeinr npc, float gameTime, int target, float distance)
+void AlmagestSeinrSelfDefense(AlmagestSeinr npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
