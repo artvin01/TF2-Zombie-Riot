@@ -463,3 +463,100 @@ public void Rogue_Vote_AlmagestTechnology_Vote(const Vote vote, int index)
 	Rogue_GiveNamedArtifact("Almagest Technology");
 	Rogue_AddUmbral(-25, false);
 }
+
+
+public float Rogue_Encounter_Rogue3Gamble()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rogue3Gamble, "Rouge3 Gamble Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rouge3 Gamble Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rouge3 Gamble Option 2a");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rouge3 Gamble Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rouge3 Gamble Desc 1");
+	vote.Locked = Rogue_GetIngots() < 4;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+static void Rogue3Gamble(const char[] title)
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rogue3Gamble, title);
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rouge3 Gamble Option 2b");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Rouge3 Gamble Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Rouge3 Gamble Desc 1");
+	vote.Locked = Rogue_GetIngots() < 4;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(10.0);
+}
+public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			if(vote.Config[0])
+				Rogue_AddUmbral(15);
+			
+			PrintToChatAll("%t", "Rouge3 Gamble Lore 2");
+		}
+		case 1:
+		{
+			char title;
+			switch(GetURandomInt() % 19)
+			{
+				case 0, 1, 2, 3, 11:
+				{
+					Rogue_AddIngots(2);
+					title = 'b';
+				}
+				case 4, 5:
+				{
+					Rogue_AddIngots(-4);
+
+					Artifact artifact;
+					if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
+					
+					title = 'e';
+				}
+				case 6, 7, 8, 9:
+				{
+					Rogue_AddIngots(-4);
+
+					Artifact artifact;
+					if(Rogue_GetRandomArtifact(artifact, true) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
+					
+					title = 'c';
+				}
+				case 10:
+				{
+					Rogue_AddIngots(26);
+					PrintToChatAll("%t", "Rouge3 Gamble Lore 1d");
+					return;
+				}
+				default:
+				{
+					Rogue_AddIngots(-4);
+					title = 'a';
+				}
+			}
+
+			char buffer[64];
+			FormatEx(buffer, sizeof(buffer), "Rouge3 Gamble Lore 1%c", title);
+			Rogue3Gamble(buffer);
+		}
+	}
+}
