@@ -63,9 +63,6 @@ void HHH_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_PreTeleSound)); i++) { PrecacheSound(g_PreTeleSound[i]); }
 	for (int i = 0; i < (sizeof(g_SpawnSounds)); i++) { PrecacheSound(g_SpawnSounds[i]); }
 	for (int i = 0; i < (sizeof(g_GhostSounds)); i++) { PrecacheSound(g_GhostSounds[i]); }
-	PrecacheModel("models/bots/headless_hatman.mdl");
-	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
-	PrecacheSound("ui/holiday/gamestartup_halloween.mp3")
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Horseless Headless Horsemann");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hhh");
@@ -74,9 +71,16 @@ void HHH_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheModel("models/bots/headless_hatman.mdl");
+	PrecacheModel("models/props_halloween/ghost_no_hat.mdl");
+	PrecacheSound("ui/holiday/gamestartup_halloween.mp3");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -142,6 +146,13 @@ methodmap HHH < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 0.0;
+		}
 		func_NPCDeath[npc.index] = view_as<Function>(HHH_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(HHH_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(HHH_ClotThink);

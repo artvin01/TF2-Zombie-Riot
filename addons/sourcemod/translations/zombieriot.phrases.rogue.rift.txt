@@ -1153,6 +1153,10 @@
 	{
 		"en" "☠ Gun Game"
 	}
+	"Versus Saxton Hale"
+	{
+		"en" "☠ Versus Saxton Hale"
+	}
 	"Super Zombie Fortress"
 	{
 		"en" "☠ Super Zombie Fortress"

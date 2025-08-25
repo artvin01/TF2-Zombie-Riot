@@ -86,10 +86,14 @@ void ChristianBrutalSniper_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
-	PrecacheSoundCustom("#zombiesurvival/rogue3/cbs_theme.mp3");
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/rogue3/cbs_theme.mp3");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -165,6 +169,13 @@ methodmap ChristianBrutalSniper < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		if(!IsValidEntity(RaidBossActive))
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 0.0;
+		}
 		func_NPCDeath[npc.index] = view_as<Function>(ChristianBrutalSniper_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ChristianBrutalSniper_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ChristianBrutalSniper_ClotThink);

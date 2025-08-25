@@ -74,7 +74,7 @@ methodmap StalkerFather < StalkerShared
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
 		npc.m_iChaseVisable = 0;
-		npc.Anger = StringToInt(data);
+		npc.Anger = view_as<bool>(StringToInt(data));
 		return npc;
 	}
 }

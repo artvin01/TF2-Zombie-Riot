@@ -812,6 +812,7 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 			GiveRes = true;
 		}
 	}
-	if(!(damagetype & DMG_TRUEDAMAGE))
-		damage *= 0.85;
+	if(GiveRes)
+		if(!(damagetype & DMG_TRUEDAMAGE))
+			damage *= 0.85;
 }
