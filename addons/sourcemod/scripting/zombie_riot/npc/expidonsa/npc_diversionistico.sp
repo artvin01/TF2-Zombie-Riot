@@ -488,7 +488,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		}
 		else
 		{
-			RandomArea = GetRandomNearbyArea(f3_VecAbs, DomeRadiusGlobal() * 2.5);
+			RandomArea = GetRandomNearbyArea(f3_VecAbs, DomeRadiusGlobal());
 		}
 			
 		if(RandomArea == NULL_AREA) 

@@ -150,21 +150,21 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 	strcopy(c_NpcName[entity], sizeof(c_NpcName[]), g_RandomPlayerName[GetRandomInt(0, sizeof(g_RandomPlayerName) - 1)]);
 	b_NameNoTranslation[entity] = true;
 
-	fl_Extra_Speed[entity] 				*= GetRandomFloat(0.75, (1.0 / 0.75));
-	fl_Extra_Damage[entity] 			*= GetRandomFloat(0.75, (1.0 / 0.75));
-	f_AttackSpeedNpcIncrease[entity] 	*= GetRandomFloat(0.75, (1.0 / 0.75));
-	MultiHealth(entity, 				   GetRandomFloat(0.75, (1.0 / 0.75)));
 
 	//inside joke that they are mega tryhards
 	if(StrEqual(c_NpcName[entity], "Artorias", false) || StrEqual(c_NpcName[entity], "Hun oli", false) || StrEqual(c_NpcName[entity], "Haxton", false))
 	{
-		fl_Extra_Speed[entity] 				*= 1.2;
-		fl_Extra_Damage[entity] 			*= 1.45;
-		f_AttackSpeedNpcIncrease[entity] 	*= 0.55;
-		MultiHealth(entity, 				   2.0);
+		fl_Extra_Speed[entity] 				*= 1.35;
+		fl_Extra_Damage[entity] 			*= 1.75;
+		f_AttackSpeedNpcIncrease[entity] 	*= 0.45;
+		MultiHealth(entity, 				   3.0);
 	}
 	else
 	{
+		fl_Extra_Speed[entity] 				*= GetRandomFloat(0.75, (1.0 / 0.75));
+		fl_Extra_Damage[entity] 			*= GetRandomFloat(0.75, (1.0 / 0.75));
+		f_AttackSpeedNpcIncrease[entity] 	*= GetRandomFloat(0.75, (1.0 / 0.75));
+		MultiHealth(entity, 				   GetRandomFloat(0.75, (1.0 / 0.75)));
 		float AfkTimer = GetRandomFloat(1.5, 2.0);
 		FreezeNpcInTime(entity, AfkTimer);
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
