@@ -2217,6 +2217,10 @@
 	{
 		"en"	"Erasus"
 	}
+	"Pure Crystal"
+	{
+		"en"	"Pure Crystal"
+	}
 	"Giant Tankus"
 	{
 		"en"	"Giant Tankus"
@@ -2857,7 +2861,7 @@
 	}
 	"Void Infestor Desc"
 	{
-		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted. (Can be silenced)"
+		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted."
 	}
 	"Voided Hard Crust"
 	{
@@ -2913,7 +2917,7 @@
 	}
 	"Void Particle Desc"
 	{
-		"en"	"Spreads void on death (can be silenced)"
+		"en"	"Spreads void on death"
 	}
 	"Hosting Blob"
 	{
@@ -3134,6 +3138,14 @@
 	"Necrosis Elemental Damage Desc"
 	{
 		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+	}
+	"Warped Elemental Damage"
+	{
+		"en"	"Warped Elemental Damage"
+	}
+	"Warped Elemental Damage Desc"
+	{
+		"en"	"Your body starts to crystalize as chaos and void mix together.\nMax health decreases and damage increases with buildup, permanently freezing when full."
 	}
 
 	"Overmana Overload"
@@ -4351,5 +4363,577 @@
 	{
 		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
 		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
+	}
+	"Aperture"
+	{
+		"en"	"Aperture"
+	}
+	"Aperture Combatant"
+	{
+		"en"	"Aperture Combatant"
+	}
+	"Aperture Combatant Desc"
+	{
+		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed."
+	}
+	"Aperture Shotgunner"
+	{
+		"en"	"Aperture Shotgunner"
+	}
+	"Aperture Shotgunner Desc"
+	{
+		"en"	"Fires a few shots before inexplicably exploding."
+	}
+	"Aperture Devastator"
+	{
+		"en"	"Aperture Devastator"
+	}
+	"Aperture Devastator Desc"
+	{
+		"en"	"Fires 2 pills in rapid succession."
+	}
+	"Aperture Huntsman"
+	{
+		"en"	"Aperture Huntsman"
+	}
+	"Aperture Huntsman Desc"
+	{
+		"en"	"Shoots arrows that inflict bleed."
+	}
+	"Aperture Jumper"
+	{
+		"en"	"Aperture Jumper"
+	}
+	"Aperture Jumper Desc"
+	{
+		"en"	"Attempts to jump over barricades, every jump increases his damage."
+	}
+	"Aperture Phaser"
+	{
+		"en"	"Aperture Phaser"
+	}
+	"Aperture Phaser Desc"
+	{
+		"en"	"Phases through barricades, dealing damage in the process."
+	}
+	"Aperture Sniper"
+	{
+		"en"	"Aperture Sniper"
+	}
+	"Aperture Sniper Desc"
+	{
+		"en"	"Spawns in silently and shoots you from a lengthy distance."
+	}
+	"Aperture Specialist"
+	{
+		"en"	"Aperture Specialist"
+	}
+	"Aperture Specialist Desc"
+	{
+		"en"	"Fires one bullet that debuffs, switches to melee afterwards."
+	}
+	"Aperture Supporter"
+	{
+		"en"	"Aperture Supporter"
+	}
+	"Aperture Supporter Desc"
+	{
+		"en"	"Heals allies, after a few seconds of healing, he can grant übercharge."
+	}
+	"Aperture Demolisher"
+	{
+		"en"	"Aperture Demolisher"
+	}
+	"Aperture Demolisher Desc"
+	{
+		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades."
+	}
+	"Aperture Repulsor"
+	{
+		"en"	"Aperture Repulsor"
+	}
+	"Aperture Repulsor Desc"
+	{
+		"en"	"Knocks you back by shooting at you."
+	}
+	"Aperture Minigunner"
+	{
+		"en"	"Aperture Minigunner"
+	}
+	"Aperture Minigunner Desc"
+	{
+		"en"	"Slows you down for a very brief moment with his minigun."
+	}
+	"Aperture Combatant V2"
+	{
+		"en"	"Aperture Combatant V2"
+	}
+	"Aperture Combatant V2 Desc"
+	{
+		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed.\nUpgraded version of Aperture Combatant."
+	}
+	"Aperture Shotgunner V2"
+	{
+		"en"	"Aperture Shotgunner V2"
+	}
+	"Aperture Shotgunner V2 Desc"
+	{
+		"en"	"Fires a few quick shots before inexplicably exploding.\nUpgraded version of Aperture Shotgunner."
+	}
+	"Aperture Devastator V2"
+	{
+		"en"	"Aperture Devastator V2"
+	}
+	"Aperture Devastator V2 Desc"
+	{
+		"en"	"Fires 3 pills in rapid succession.\nUpgraded version of Aperture Devastator."
+	}
+	"Aperture Huntsman V2"
+	{
+		"en"	"Aperture Huntsman V2"
+	}
+	"Aperture Huntsman V2 Desc"
+	{
+		"en"	"Shoots arrows that inflict bleed.\nUpgraded version of Aperture Huntsman."
+	}
+	"Aperture Jumper V2"
+	{
+		"en"	"Aperture Jumper V2"
+	}
+	"Aperture Jumper V2 Desc"
+	{
+		"en"	"Attempts to jump over barricades, every jump increases his damage.\nUpgraded version of Aperture Jumper."
+	}
+	"Aperture Phaser V2"
+	{
+		"en"	"Aperture Phaser V2"
+	}
+	"Aperture Phaser V2 Desc"
+	{
+		"en"	"Phases through barricades and players, dealing damage in the process.\nUpgraded version of Aperture Phaser."
+	}
+	"Aperture Sniper V2"
+	{
+		"en"	"Aperture Sniper V2"
+	}
+	"Aperture Sniper V2 Desc"
+	{
+		"en"	"Spawns in silently and shoots you from a lengthy distance, the laser is more translucent.\nUpgraded version of Aperture Sniper."
+	}
+	"Aperture Specialist V2"
+	{
+		"en"	"Aperture Specialist V2"
+	}
+	"Aperture Specialist V2 Desc"
+	{
+		"en"	"Fires one bullet that debuffs, switches to melee afterwards.\nUpgraded version of Aperture Specialist."
+	}
+	"Aperture Supporter V2"
+	{
+		"en"	"Aperture Supporter V2"
+	}
+	"Aperture Supporter V2 Desc"
+	{
+		"en"	"Heals allies, after a few seconds of healing, he can grant overclock.\nUpgraded version of Aperture Supporter."
+	}
+	"Aperture Demolisher V2"
+	{
+		"en"	"Aperture Demolisher V2"
+	}
+	"Aperture Demolisher V2 Desc"
+	{
+		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades.\nUpgraded version of Aperture Demolisher."
+	}
+	"Aperture Repulsor V2"
+	{
+		"en"	"Aperture Repulsor V2"
+	}
+	"Aperture Repulsor V2 Desc"
+	{
+		"en"	"Knocks you back by shooting at you.\nUpgraded version of Aperture Repulsor."
+	}
+	"Aperture Minigunner V2"
+	{
+		"en"	"Aperture Minigunner V2"
+	}
+	"Aperture Minigunner V2 Desc"
+	{
+		"en"	"Moves quietly and fast with his minigun.\nUpgraded version of Aperture Minigunner."
+	}
+	"Perfected Aperture Combatant"
+	{
+		"en"	"Perfected Aperture Combatant"
+	}
+	"Perfected Aperture Combatant Desc"
+	{
+		"en"	"Bludgeons you with his bat, every successful hit increases his attack speed.\nPerfected version of Aperture Combatant."
+	}
+	"Perfected Aperture Shotgunner"
+	{
+		"en"	"Perfected Aperture Shotgunner"
+	}
+	"Perfected Aperture Shotgunner Desc"
+	{
+		"en"	"Fires a few quick shots before inexplicably exploding.\nPerfected version of Aperture Shotgunner."
+	}
+	"Perfected Aperture Devastator"
+	{
+		"en"	"Perfected Aperture Devastator"
+	}
+	"Perfected Aperture Devastator Desc"
+	{
+		"en"	"Fires 4 pills in rapid succession.\nPerfected version of Aperture Devastator."
+	}
+	"Perfected Aperture Huntsman"
+	{
+		"en"	"Perfected Aperture Huntsman"
+	}
+	"Perfected Aperture Huntsman Desc"
+	{
+		"en"	"Shoots predictive arrows that inflict bleed and burn.\nPerfected version of Aperture Huntsman."
+	}
+	"Perfected Aperture Jumper"
+	{
+		"en"	"Perfected Aperture Jumper"
+	}
+	"Perfected Aperture Jumper Desc"
+	{
+		"en"	"Attempts to jump over barricades, every jump increases his damage.\nPerfected version of Aperture Jumper."
+	}
+	"Perfected Aperture Phaser"
+	{
+		"en"	"Perfected Aperture Phaser"
+	}
+	"Perfected Aperture Phaser Desc"
+	{
+		"en"	"Phases through barricades and players, dealing damage in the process.\nPerfected version of Aperture Phaser."
+	}
+	"Perfected Aperture Sniper"
+	{
+		"en"	"Perfected Aperture Sniper"
+	}
+	"Perfected Aperture Sniper Desc"
+	{
+		"en"	"Spawns in silently and shoots you from a lengthy distance, the laser is nigh invisible unless paying close attention.\nPerfected version of Aperture Sniper."
+	}
+	"Perfected Aperture Specialist"
+	{
+		"en"	"Perfected Aperture Specialist"
+	}
+	"Perfected Aperture Specialist Desc"
+	{
+		"en"	"Fires one bullet that debuffs, switches to melee afterwards.\nPerfected version of Aperture Specialist."
+	}
+	"Perfected Aperture Supporter"
+	{
+		"en"	"Perfected Aperture Supporter"
+	}
+	"Perfected Aperture Supporter Desc"
+	{
+		"en"	"Heals allies, grants armor by healing.\nPerfected version of Aperture Supporter."
+	}
+	"Perfected Aperture Demolisher"
+	{
+		"en"	"Perfected Aperture Demolisher"
+	}
+	"Perfected Aperture Demolisher Desc"
+	{
+		"en"	"Fires an extremely slow rocket that deals ludicrous damage to barricades.\nPerfected version of Aperture Demolisher."
+	}
+	"Perfected Aperture Repulsor"
+	{
+		"en"	"Perfected Aperture Repulsor"
+	}
+	"Perfected Aperture Repulsor Desc"
+	{
+		"en"	"Knocks you and himself back by shooting at you.\nPerfected version of Aperture Repulsor."
+	}
+	"Perfected Aperture Minigunner"
+	{
+		"en"	"Perfected Aperture Minigunner"
+	}
+	"Perfected Aperture Minigunner Desc"
+	{
+		"en"	"Slow but loud as shit, deals an enormous amount of damage with his minigun.\nPerfected version of Aperture Minigunner."
+	}
+	"Aperture Container"
+	{
+		"en"	"Aperture Container"
+	}
+	"Aperture Container Desc"
+	{
+		"en"	"On death, applies a random buff to allies close to his vicinity."
+	}
+	"Aperture Traveller"
+	{
+		"en"	"Aperture Traveller"
+	}
+	"Aperture Traveller Desc"
+	{
+		"en"	"Fires a projectile, if it hits, he'll teleport behind the target that got hit."
+	}
+	"Aperture Builder"
+	{
+		"en"	"Aperture Builder"
+	}
+	"Aperture Builder Desc"
+	{
+		"en"	"Appears anywhere at random, if given enough time, he'll set-up a sentry, dispenser, and a teleporter."
+	}
+	"Aperture Sentry"
+	{
+		"en"	"Aperture Sentry"
+	}
+	"Aperture Sentry Desc"
+	{
+		"en"	"Fires bullets and homing rockets."
+	}
+	"Aperture Dispenser"
+	{
+		"en"	"Aperture Dispenser"
+	}
+	"Aperture Dispenser Desc"
+	{
+		"en"	"Grants health and armor to nearby allies."
+	}
+	"Aperture Teleporter"
+	{
+		"en"	"Aperture Teleporter"
+	}
+	"Aperture Teleporter Desc"
+	{
+		"en"	"Acts as a new spawn point for allies, allies teleported through get the Quantum Entanglement buff."
+	}
+	"Portal Gate"
+	{
+		"en"	"Portal Gate"
+	}
+	"Portal Gate Desc"
+	{
+		"en"	"Gates that seem to be opening up on their own...or are they?\nPortal Gates teleport foes that you may or may not have went up against in the past.\nLiving beings that are deemed too weak get refragmented."
+	}
+	"Aperture Collector"
+	{
+		"en"	"Aperture Collector"
+	}
+	"Aperture Collector Desc"
+	{
+		"en"	"Gets increased resistance and damage by allies dying around him."
+	}
+	"Aperture Fueler"
+	{
+		"en"	"Aperture Fueler"
+	}
+	"Aperture Fueler Desc"
+	{
+		"en"	"Creates a ring of fire whenever attacking with melee, pushes enemies back with it as well."
+	}
+	"Aperture Halter"
+	{
+		"en"	"Aperture Halter"
+	}
+	"Aperture Halter Desc"
+	{
+		"en"	"Spawns with a shield deployed, the shield expires on its own but it can be redeployed after some time."
+	}
+	"Aperture Suppressor"
+	{
+		"en"	"Aperture Suppressor"
+	}
+	"Aperture Suppressor Desc"
+	{
+		"en"	"Gains a temporary speed and damage boost after taking damage."
+	}
+	"Refragmented Headcrab Zombie"
+	{
+		"en"	"Refragmented Headcrab Zombie"
+	}
+	"Refragmented Headcrab Zombie Desc"
+	{
+		"en"	"Every few melee hits, it'll spawn another, weaker version of itself."
+	}
+	"Refragmented Fast Zombie"
+	{
+		"en"	"Refragmented Fast Zombie"
+	}
+	"Refragmented Fast Zombie Desc"
+	{
+		"en"	"Faster, stronger, jumps at you a lot more often."
+	}
+	"Refragmented Poison Zombie"
+	{
+		"en"	"Refragmented Poison Zombie"
+	}
+	"Refragmented Poison Zombie Desc"
+	{
+		"en"	"Brings terror to anyone responsible for placing barricades."
+	}
+	"Refragmented Metro Cop"
+	{
+		"en"	"Refragmented Metro Cop"
+	}
+	"Refragmented Metro Cop Desc"
+	{
+		"en"	"Heals by using his pistol."
+	}
+	"Refragmented Metro Raider"
+	{
+		"en"	"Refragmented Metro Raider"
+	}
+	"Refragmented Metro Raider Desc"
+	{
+		"en"	"Has invulnerability due to being linked with another refragmented, sever the link."
+	}
+	"Refragmented W.F. Rifler"
+	{
+		"en"	"Refragmented W.F. Rifler"
+	}
+	"Refragmented W.F. Rifler Desc"
+	{
+		"en"	"Spawns 2 Refragmented Metro Raiders, kill him to kill them."
+	}
+	"Refragmented W.F. Elite"
+	{
+		"en"	"Refragmented W.F. Elite"
+	}
+	"Refragmented W.F. Elite Desc"
+	{
+		"en"	"Has overall increased stats, fires an accumulated source of energy that deals true damage."
+	}
+	"Refragmented Heavy"
+	{
+		"en"	"Refragmented Heavy"
+	}
+	"Refragmented Heavy Desc"
+	{
+		"en"	"Warps around, making him a hard target to focus down."
+	}
+	"Refragmented Medic"
+	{
+		"en"	"Refragmented Medic"
+	}
+	"Refragmented Medic Desc"
+	{
+		"en"	"Possesses multiple lives, every life lost grants him invulnerability for a few seconds."
+	}
+	"Refragmented Spy"
+	{
+		"en"	"Refragmented Spy"
+	}
+	"Refragmented Spy Desc"
+	{
+		"en"	"Facestabs you and self-heals by doing so."
+	}
+	"Refragmented Parasihtta"
+	{
+		"en"	"Refragmented Parasihtta"
+	}
+	"Refragmented Parasihtta Desc"
+	{
+		"en"	"Deals no damage, but inflicts you with envenomed."
+	}
+	"Refragmented Hostis"
+	{
+		"en"	"Refragmented Hostis"
+	}
+	"Refragmented Hostis Desc"
+	{
+		"en"	"Pulls you in, then knocks you away."
+	}
+	"Refragmented Defectio"
+	{
+		"en"	"Refragmented Defectio"
+	}
+	"Refragmented Defectio Desc"
+	{
+		"en"	"Takes 0 damage inside of his blue radius."
+	}
+	"Perfected Father Grigori"
+	{
+		"en"	"Perfected Father Grigori"
+	}
+	"Perfected Father Grigori Desc"
+	{
+		"en"	"So this is where all of those Grigori copies are coming from...\nAnnabelle is replaced with a Boomstick.\nIon Cannon now heals allies.\nHas a shield that activates passively."
+	}
+	"Aperture Exterminator"
+	{
+		"en"	"Aperture Exterminator"
+	}
+	"Aperture Exterminator Desc"
+	{
+		"en"	"Big robot. Very slow, wields a gigantic sword which allows him to hit you from afar.\n Deals true damage."
+	}
+	"Aperture Spokesman"
+	{
+		"en"	"Aperture Spokesman"
+	}
+	"Aperture Spokesman Desc"
+	{
+		"en"	"The man who speaks for the people.\nGrants Dimensional Turbulance buff to bosses.\nIf left alive for last, he'll get increased resistances and buffs."
+	}
+	"Aperture Researcher"
+	{
+		"en"	"Aperture Researcher"
+	}
+	"Aperture Researcher Desc"
+	{
+		"en"	"Both an ally and an enemy, this researcher simply wants to get out.\nGoing below 50%% of his health will cause him to inflict everyone with Kinetic Surge."
+	}
+	"C.A.T."
+	{
+		"en"	"C.A.T."
+	}
+	"C.A.T. Desc"
+	{
+		"en"	"C.A.T. is a robot built by a certain faction, to keep the laboratories safe from...trespassers.\nC.A.T. is not self-aware, it can't go against its programming, and since you're trespassing, well..."
+	}
+	"A.R.I.S."
+	{
+		"en"	"A.R.I.S."
+	}
+	"A.R.I.S. Desc"
+	{
+		"en"	"A.R.I.S. never makes an appearance in the main laboratories unless C.A.T. fails to fulfill its task, or if it requires assistance.\n but since C.A.T. was never assumed to fail its task, A.R.I.S. was never equipped with any high defense mechanisms to deal with intruders."
+	}
+	"A.R.I.S. Makeshift Beacon"
+	{
+		"en"	"A.R.I.S. Makeshift Beacon"
+	}
+	"C.H.I.M.E.R.A."
+	{
+		"en"	"C.H.I.M.E.R.A."
+	}
+	"C.H.I.M.E.R.A. Desc"
+	{
+		"en"	"Built by someone in Ziberia. Does not belong in the labs, maybe it's looking for something?\nIs very fast paced, seems to be trying to replicate Sensal's Portal Gates"
+	}
+	"Refragmented Winter Sniper"
+	{
+		"en"	"Refragmented Winter Sniper"
+	}
+	"Refragmented Frost Hunter"
+	{
+		"en"	"Refragmented Frost Hunter"
+	}
+	"Vincent"
+	{
+		"en"	"Vincent"
+	}
+	"Vincent Desc"
+	{
+		"en"	"Oldest robot in the facility\n Developed with self-consciousness to see how much better robots could fare in fights if given the ability to make their own choices,\n rather than to follow programming."
+	}
+	"V.I.N.C.E.N.T."
+	{
+		"en"	"V.I.N.C.E.N.T."
+	}
+	"Vincent Beacon"
+	{
+		"en"	"Vincent Beacon"
+	}
+	"Old forgotten expidonsan robot"
+	{
+		"en"	"Old forgotten expidonsan robot"
 	}
 }

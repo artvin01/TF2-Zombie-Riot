@@ -26,7 +26,7 @@ int dieingstate[MAXPLAYERS];
 int TeutonType[MAXPLAYERS];
 bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
-int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
+int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what entref is the raid?
 float Medival_Difficulty_Level = 0.0;
 int Medival_Difficulty_Level_NotMath = 0;
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
@@ -233,6 +233,7 @@ void OnMapStart_NPC_Base()
 	
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
+	PrecacheSound("weapons/bottle_break.wav");
 	
 	PrecacheDecal("sprites/blood.vmt", true);
 	PrecacheDecal("sprites/bloodspray.vmt", true);
@@ -1228,6 +1229,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return fl_Speed[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_Speed[this.index] = TempValueForProperty; }
 	}
+	property float m_flGravityMulti
+	{
+		public get()							{ return fl_GravityMulti[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_GravityMulti[this.index] = TempValueForProperty; }
+	}
 	property int m_iTargetWalkTo
 	{
 		public get()		 
@@ -2060,15 +2066,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		return this.GetLocomotionInterface().IsOnGround();
 	}
-	public void AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
+	public int AddGesture(const char[] anim, bool cancel_animation = true, float duration = 1.0, bool autokill = true, float SetGestureSpeed = 1.0)
 	{
 		if(i_IsNpcType[this.index] == STATIONARY_NPC)
-			return;
+			return -1;
 		//Will crash the server via corruption.
 		
 		int activity = this.LookupActivity(anim);
 		if(activity < 0)
-			return;
+			return -1;
 		
 		if(cancel_animation)
 		{
@@ -2082,6 +2088,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		int layer = this.FindGestureLayer(view_as<Activity>(activity));
 		if(layer != -1)
 			this.SetLayerPlaybackRate(layer, (SetGestureSpeed / (ReturnEntityAttackspeed(this.index))));
+
+		return layer;
 	}
 
 	public void RemoveGesture(const char[] anim)
@@ -2108,13 +2116,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.m_iAnimationState = iSequence;
 	
 	}
-	public void AddGestureViaSequence(const char[] anim)
+	public int AddGestureViaSequence(const char[] anim)
 	{
 		int iSequence = this.LookupSequence(anim);
 		if(iSequence < 0)
-			return;
+			return -1;
 		
-		this.AddGestureSequence(iSequence);
+		return this.AddGestureSequence(iSequence);
 	}
 	public int FindAttachment(const char[] pAttachmentName)
 	{
@@ -2800,6 +2808,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			i_ExplosiveProjectileHexArray[entity] = flags;
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.index);
@@ -2861,6 +2870,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			h_BonusDmgToSpecialArrow[entity] = bonusdmg;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
 			b_should_explode[entity] = do_aoe_dmg;
@@ -2921,6 +2931,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("tf_projectile_pipe");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			float vecForward[3], vecSwingStart[3], vecAngles[3];
 			this.GetVectors(vecForward, vecSwingStart, vecAngles);
 	
@@ -2992,6 +3003,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			b_EntityIsArrow[entity] = true;
 			f_ArrowDamage[entity] = rocket_damage;
 			h_ArrowInflictorRef[entity] = inflictor < 1 ? INVALID_ENT_REFERENCE : EntIndexToEntRef(inflictor);
@@ -3066,6 +3078,16 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return i_PoseMoveX[this.index]; }
 		public set(int TempValueForProperty) 	{ i_PoseMoveX[this.index] = TempValueForProperty; }
 	}
+	property int m_iPose_MoveScale
+	{
+		public get()							{ return this.GetProp(Prop_Data, "m_imove_scale"); }
+		public set(int TempValueForProperty) 	{ this.SetProp(Prop_Data, "m_imove_scale", TempValueForProperty); }
+	}
+	property int m_iPose_MoveYaw
+	{
+		public get()							{ return this.GetProp(Prop_Data, "m_imove_yaw"); }
+		public set(int TempValueForProperty) 	{ this.SetProp(Prop_Data, "m_imove_yaw", TempValueForProperty); }
+	}
 	
 	property int m_iPoseMoveY
 	{
@@ -3105,38 +3127,67 @@ methodmap CClotBody < CBaseCombatCharacter
 		float flNextBotGroundSpeed;
 		if(i_IsNpcType[this.index] != 1)
 		{
-			if (this.m_iPoseMoveX < 0) {
+			if (this.m_iPoseMoveX == 0)   
+			{
 				this.m_iPoseMoveX = this.LookupPoseParameter("move_x");
 			}
-			if (this.m_iPoseMoveY < 0) {
+			if (this.m_iPoseMoveY == 0)  
+			{
 				this.m_iPoseMoveY = this.LookupPoseParameter("move_y");
+			}
+			if (this.m_iPose_MoveYaw == 0) 
+			{
+				this.m_iPose_MoveYaw = this.LookupPoseParameter("move_yaw");
+			}
+			if (this.m_iPose_MoveScale == 0) 
+			{
+				this.m_iPose_MoveScale = this.LookupPoseParameter("move_scale");
 			}
 		
 			flNextBotGroundSpeed = this.GetGroundSpeed();
 			
-			if (flNextBotGroundSpeed < 0.01) {
-				if (this.m_iPoseMoveX >= 0) {
+			if (flNextBotGroundSpeed < 0.01) 
+			{
+				if (this.m_iPoseMoveX != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveX, 0.0);
 				}
-				if (this.m_iPoseMoveY >= 0) {
+				if (this.m_iPoseMoveY != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveY, 0.0);
 				}
-			} else {
+				if (this.m_iPose_MoveYaw != -1) 
+				{
+					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
+				}
+				if (this.m_iPose_MoveScale != -1) 
+				{
+					this.SetPoseParameter(this.m_iPose_MoveScale, 0.0);
+				}
+			}
+			else 
+			{
 				float vecFwd[3], vecRight[3], vecUp[3];
 				this.GetVectors(vecFwd, vecRight, vecUp);
 				
 				float vecMotion[3]; this.GetGroundMotionVector(vecMotion);
-				
-				if (this.m_iPoseMoveX >= 0) {
+			
+				if (this.m_iPoseMoveX != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveX, GetVectorDotProduct(vecMotion, vecFwd));
 				}
-				if (this.m_iPoseMoveY >= 0) {
+				if (this.m_iPoseMoveY != -1) 
+				{
 					this.SetPoseParameter(this.m_iPoseMoveY, GetVectorDotProduct(vecMotion, vecRight));
 				}
-				
-			}		
+				if (this.m_iPose_MoveYaw != -1) 
+				{
+					//too lazy to code this :D
+					this.SetPoseParameter(this.m_iPose_MoveYaw, 0.0);
+				}
+			}	
 			this.GetBaseNPC().flRunSpeed = this.GetRunSpeed();
-			this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();
+			this.GetBaseNPC().flWalkSpeed = this.GetRunSpeed();	
 		}
 
 		if(f_TimeFrozenStill[this.index] && f_TimeFrozenStill[this.index] < GetGameTime(this.index))
@@ -3158,15 +3209,27 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(this.m_bisWalking && i_IsNpcType[this.index] != 1) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
+			if (this.m_iPose_MoveScale != -1)
+			{
+				//robots use this wierdly enough.
+				m_flGroundSpeed = 300.0; //assume 300.0
+			}
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
+				if (this.m_iPose_MoveScale != -1)
+				{
+					//how much they move
+					this.SetPoseParameter(this.m_iPose_MoveScale, (clamp((PlaybackSpeed), 0.0, 1.0)));
+				}
 				if(PlaybackSpeed > f_MaxAnimationSpeed[this.index])
 					PlaybackSpeed = f_MaxAnimationSpeed[this.index];
+					
 
 				if(PlaybackSpeed <= 0.01)
 					PlaybackSpeed = 0.01;
 					
+				
 				this.SetPlaybackRate(PlaybackSpeed, true);
 			}
 			else
@@ -3419,6 +3482,9 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+		.DefineIntField("m_imove_scale")
+		.DefineIntField("m_imove_yaw")
+		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3865,7 +3931,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
-					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 1.0, npc.m_iStepNoiseType);
+					npc.PlayStepSound(g_PanzerStepSound[GetRandomInt(0, sizeof(g_PanzerStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 				}
 			}
 		}
@@ -5998,9 +6064,9 @@ public void NpcSetGravity(CClotBody npc, int iNPC)
 	else
 	{
 #if defined ZR || defined RPG
-		npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+		npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : (800.0 * npc.m_flGravityMulti);
 #else
-		npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+		npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : (800.0 * npc.m_flGravityMulti);
 #endif
 	}
 }
@@ -8539,6 +8605,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_NextRunTime[entity] = 0.0;
 	fl_NextMeleeAttack[entity] = 0.0;
 	fl_Speed[entity] = 0.0;
+	fl_GravityMulti[entity] = 1.0;
 	i_Target[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
 	fl_GetClosestTargetTimeTouch[entity] = 0.0;
@@ -8634,8 +8701,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_NoKillFeed[entity] = false;
 	b_ThisWasAnNpc[entity] = false;
 	i_Activity[entity] = -1;
-	i_PoseMoveX[entity] = -1;
-	i_PoseMoveY[entity] = -1;
+	i_PoseMoveX[entity] = 0;
+	i_PoseMoveY[entity] = 0;
 	b_PlayHurtAnimation[entity] = false;
 	IgniteTimer[entity] = null;
 	IgniteFor[entity] = 0;

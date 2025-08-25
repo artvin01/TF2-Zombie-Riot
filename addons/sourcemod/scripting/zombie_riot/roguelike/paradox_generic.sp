@@ -49,34 +49,34 @@ public float Rogue_Encounter_ParadoxShop_Internal()
 
 	if(!rare)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 6) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 11)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 		
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 17)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 23)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(rare)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -818,7 +818,7 @@ public void Rogue_AncientTreeFruit_Collect()
 	Artifact artifact;
 	for(int i; i < 3; i++)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
