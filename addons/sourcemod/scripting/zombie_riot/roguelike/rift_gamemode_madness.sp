@@ -139,6 +139,19 @@ public void StartSlenderFrame()
 	Rogue_Dome_WaveEnd();
 }
 
+public void Rogue_GamemodeMadnessSlender_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// -25% movement speed
+		value = 1.0;
+		map.GetValue("107", value);
+		map.SetValue("107", value * 0.75);
+	}
+}
+
 public void Rogue_GamemodeMadness_EnemyRenameSZF(int entity)
 {
 	Rogue_GamemodeMadness_EnemyRename(entity);
