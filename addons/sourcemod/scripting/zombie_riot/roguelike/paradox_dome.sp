@@ -11,7 +11,7 @@
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"
 
 #define DOME_RADIUS	3000.0
-#define DOME_RADIUS_ROGUE3	2500.0
+#define DOME_RADIUS_ROGUE3	2700.0
 
 float DomeRadiusGlobal()
 {
