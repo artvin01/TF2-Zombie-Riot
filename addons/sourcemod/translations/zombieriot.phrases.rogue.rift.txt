@@ -206,7 +206,7 @@
 	}
 	"Rift Level 3 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +5％, start with Fractured voidstone, rift events can occur more often"
+		"en"	"{red}Enemy stats per chapter +10％, start with Fractured voidstone, rift events can occur more often"
 	}
 	"Rift Level 2"
 	{
@@ -214,7 +214,7 @@
 	}
 	"Rift Level 2 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +2％ {blue}and other possibilities"
+		"en"	"{red}Enemy stats per chapter +5％ {blue}and other possibilities"
 	}
 	"Rift Level 1"
 	{
