@@ -1169,4 +1169,8 @@
 	{
 		"en"	"Collect the 8 heavy pages to win"
 	}
+	"Refragmented Page"
+	{
+		"en"	"Refragmented Page"
+	}
 }
