@@ -2017,7 +2017,7 @@
 		"en"	"Very fast but loses its speed once hit."
 		"ru"	"Очень быстрый но теряет скорость когда получит урон."
 	}
-	"Vivithorn Desc"
+	"Virothorn Desc"
 	{
 		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
 		"ru"	"Активатор источника Ксено инфекции,Настоящие имя было Виротхорн.\nМожет делать рывки,может взять тебя и сломать шею,Остальные атаки наносит повторный урон но разным противникамв радиусе.\n(заглушение) теряет скольжение при ударе"
