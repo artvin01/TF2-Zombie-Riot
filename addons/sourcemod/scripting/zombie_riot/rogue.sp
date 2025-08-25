@@ -1415,6 +1415,27 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
+
+				if(CurrentCollection)
+				{
+					ArrayList list = CurrentCollection.Clone();
+
+					Artifact artifact;
+					int length = list.Length;
+					for(int i; i < length; i++)
+					{
+						Artifacts.GetArray(list.Get(i), artifact);
+						if(artifact.FuncFloorChange != INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, artifact.FuncFloorChange);
+							Call_PushCellRef(CurrentFloor);
+							Call_PushCellRef(CurrentCount);
+							Call_Finish();
+						}
+					}
+
+					delete list;
+				}
 				
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -1446,7 +1467,7 @@ void Rogue_NextProgress()
 				}
 				else
 				{
-					Rogue_SendToFloor(CurrentFloor, CurrentCount);
+					Rogue_SendToFloor(CurrentFloor, CurrentCount, _, false);
 				}
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
@@ -1593,7 +1614,7 @@ void Rogue_NextProgress()
 	Waves_UpdateMvMStats();
 }
 
-void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true)
+void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true, bool forwad = true)
 {
 	CurrentFloor = floorIndex;
 	CurrentCount = stageIndex;
@@ -1602,7 +1623,7 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 	if(!cutscene)
 		return;
 
-	if(CurrentCollection)
+	if(CurrentCollection && forwad)
 	{
 		ArrayList list = CurrentCollection.Clone();
 
