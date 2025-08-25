@@ -1597,6 +1597,7 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 {
 	CurrentFloor = floorIndex;
 	CurrentCount = stageIndex;
+	CurrentStage = -1;
 
 	if(!cutscene)
 		return;

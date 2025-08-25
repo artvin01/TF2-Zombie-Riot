@@ -38,7 +38,7 @@ public void Rogue_GamemodeHistory_Collect()
 	int floor = Rogue_GetFloor();
 	int stage = Rogue_GetStage();
 
-	Rogue_SendToFloor(6, 0);
+	Rogue_SendToFloor(6, -1);
 
 	PreviousFloor = floor;
 	PreviousStage = stage;
