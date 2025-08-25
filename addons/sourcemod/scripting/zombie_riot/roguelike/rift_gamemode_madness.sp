@@ -100,11 +100,38 @@ public float Rogue_Encounter_GamemodeMadnessBattle_SZF()
 	return 0.0;
 }
 
+public float Rogue_Encounter_GamemodeMadnessBattle_Slender()
+{
+	Rogue_GiveNamedArtifact("Gamemode Madness Slender", true);
+	return 0.0;
+}
 
 public void Rogue_RiftWarp_GamemodeMadness()
 {
 	Rogue_RemoveNamedArtifact("Gamemode Madness");
 	Rogue_RemoveNamedArtifact("Gamemode Madness SZF");
+	Rogue_RemoveNamedArtifact("Gamemode Madness Slender");
+}
+
+public void Rogue_GamemodeMadnessSlender_StartStage()
+{
+	RequestFrame(StartSlenderFrame);
+}
+
+public void StartSlenderFrame()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			i_AmountDowned[client] = 99;
+
+			if(IsPlayerAlive(client))
+				SDKHooks_UpdateMarkForDeath(client);
+		}
+	}
+
+	Rogue_Dome_WaveEnd();
 }
 
 public void Rogue_GamemodeMadness_EnemyRenameSZF(int entity)

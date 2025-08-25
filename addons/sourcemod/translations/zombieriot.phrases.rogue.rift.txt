@@ -126,6 +126,14 @@
 	{
 		"en"	"Gamemode Madness SZF"
 	}
+	"Gamemode Madness Slender"
+	{
+		"en"	"Gamemode Madness Slender"
+	}
+	"Gamemode Madness Slender Desc"
+	{
+		"en"	""
+	}
 	"Broken Crest"
 	{
 		"en"	"Broken Crest"
@@ -1148,5 +1156,13 @@
 	"Class Warfare"
 	{
 		"en" "☠ Class Warfare"
+	}
+	"Slender Fortress"
+	{
+		"en"	"☠ Slender Fortress"
+	}
+	"Slender Fortress Desc"
+	{
+		"en"	"Collect the 8 heavy pages to win"
 	}
 }

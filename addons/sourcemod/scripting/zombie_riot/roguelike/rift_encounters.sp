@@ -705,7 +705,10 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 		CreateTimer(5.0, Timer_AdvanceStory, progress + 1);
 		Rogue_SetProgressTime(15.0, false);
 	}
+
+	return Plugin_Continue;
 }
 static int StoryMenuH(Menu menu, MenuAction action, int param1, int param2)
 {
+	return 0;
 }

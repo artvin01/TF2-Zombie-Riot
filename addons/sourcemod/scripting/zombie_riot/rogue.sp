@@ -150,7 +150,6 @@ enum struct Stage
 		this.Hidden = view_as<bool>(kv.GetNum("hidden"));
 		this.Repeat = view_as<bool>(kv.GetNum("repeatable"));
 		this.ForcePosition = kv.GetNum("forcepos");
-		int common = kv.GetNum("common", 1);
 		this.IntroMusic.SetupKv("intromusic", kv);
 		
 		kv.GetString("func_start", this.WaveSet, PLATFORM_MAX_PATH);
@@ -171,7 +170,7 @@ enum struct Stage
 		kv.GetString("key", this.ArtifactKey, 64);
 		this.InverseKey = view_as<bool>(kv.GetNum("keyinverse"));
 
-		return common;
+		return kv.GetNum("common", 1);
 	}
 }
 
@@ -216,8 +215,12 @@ enum struct Floor
 
 				do
 				{
-					stage.SetupKv(kv, this.Skyname);
-					this.Encounters.PushArray(stage);
+					int common = stage.SetupKv(kv, this.Skyname);
+					do
+					{
+						this.Encounters.PushArray(stage);
+					}
+					while(--common > 0);
 				}
 				while(kv.GotoNextKey());
 				
@@ -555,12 +558,8 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 		{
 			do
 			{
-				int common = floor.SetupKv(kv);
-				do
-				{
-					Floors.PushArray(floor);
-				}
-				while(--common > 0);
+				floor.SetupKv(kv);
+				Floors.PushArray(floor);
 			}
 			while(kv.GotoNextKey());
 

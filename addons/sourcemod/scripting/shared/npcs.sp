@@ -272,7 +272,18 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
-			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
+			bool result;
+
+			if(enemy.Spawn[0])
+			{
+				if(ExplodeStringFloat(enemy.Spawn, " ", pos, sizeof(pos)) == 3)
+					result = true;
+			}
+
+			if(!result)
+				result = Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee);
+
+			if(result)
 			{
 				if(enemy.Is_Boss >= 2)
 				{
