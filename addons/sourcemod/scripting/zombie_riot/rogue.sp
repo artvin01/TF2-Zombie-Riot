@@ -2134,7 +2134,8 @@ static void StartStage(const Stage stage)
 		}
 		case ReilaRift:
 		{
-			Rogue_Dome_WaveStart(pos);
+			if(CurrentFloor != 6)
+				Rogue_Dome_WaveStart(pos);
 		}
 	}
 
