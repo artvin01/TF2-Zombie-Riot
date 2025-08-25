@@ -2192,7 +2192,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				else
 					Attributes_SetMulti(victim, 442, 0.65);
 
-				Rogue_Rift_VialityThing_StunEnemies(victim);
+				Rogue_Rift_FlashVest_StunEnemies(victim);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;

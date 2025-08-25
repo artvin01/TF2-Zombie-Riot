@@ -25,6 +25,7 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 		case 0:
 		{
 			Rogue_GiveNamedArtifact("Gamemode History", true);
+			GiveCash(5000);
 		}
 		case 1:
 		{
@@ -199,6 +200,8 @@ public float Rogue_Encounter_Astra()
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Astra Title Decline");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Astra Title Decline Desc");
+	Format(vote.Append, sizeof(vote.Append), "");
+	vote.Locked = false;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
@@ -236,6 +239,7 @@ public float Rogue_Encounter_Incorruptable_Tree()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Incorruptable Tree Accept");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Incorruptable Tree Accept Desc");
+	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Incorruptable Tree Decline");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Incorruptable Tree Decline Desc");
@@ -254,7 +258,7 @@ public void Rogue_Vote_Incorruptable_Tree_Vote(const Vote vote, int index)
 		case 0:
 		{
 			CPrintToChatAll("%t", "Incorruptable Tree Accept Conlusion");
-			Rogue_GiveNamedArtifact("Incorruptable Leal");
+			Rogue_GiveNamedArtifact("Incorruptable Leaf");
 			Rogue_AddUmbral(-10, false);
 		}
 		case 1:

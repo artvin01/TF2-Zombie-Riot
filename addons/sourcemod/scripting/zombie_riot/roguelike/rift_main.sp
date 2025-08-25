@@ -212,6 +212,8 @@ static void StartShopVote(bool first)
 		ShopListing.GetArray(i, artifact);
 
 		int cost = artifact.ShopCost;
+		
+		Rogue_ParadoxGeneric_ShopCost(cost);
 
 		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 		Format(vote.Append, sizeof(vote.Append), " △%d", cost);

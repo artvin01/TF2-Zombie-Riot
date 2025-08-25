@@ -2177,6 +2177,10 @@
 	{
 		"en"	"Ignore her, take whats around."
 	}
+	"Astra Title Decline Desc"
+	{
+		"en"	"{green}Gain cash and Umbral Affinity."
+	}
 	"Broken Crest Title"
 	{
 		"en"	"You notice a broken crest on the floor, probably left behind after Lelouch perished."

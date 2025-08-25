@@ -374,7 +374,7 @@
 	}
 	"Vitality Injection Desc"
 	{
-		"en"	"When when dying, itll keep you alive a little longer.\n{green}You are faster while downed and move faster."
+		"en"	"When when dying, itll keep you alive a little longer.\n{green}You are faster while downed and live longer."
 	}
 	"Flash Vest"
 	{
@@ -761,6 +761,10 @@
 	"Poisoned Water Desc"
 	{
 		"en"	"Shouldn't have drank that.\n{red}Allies have -20％ max health, cured by visting a Gateway"
+	}
+	"Pool of Clarity Title"
+	{
+		"en"	"You find a pool surrounded by nothing by crystals, umbrals can be seen going to it and away."
 	}
 	"Pool of Clarity"
 	{
