@@ -108,11 +108,12 @@ public float Rogue_Encounter_GamemodeMadnessBattle_Slender()
 
 public void Rogue_RiftWarp_GamemodeMadness()
 {
-	
 	if(Rogue_HasNamedArtifact("Gamemode Madness"))
 		Rogue_RemoveNamedArtifact("Gamemode Madness");
+	
 	if(Rogue_HasNamedArtifact("Gamemode Madness SZF"))
 		Rogue_RemoveNamedArtifact("Gamemode Madness SZF");
+	
 	if(Rogue_HasNamedArtifact("Gamemode Madness Slender"))
 		Rogue_RemoveNamedArtifact("Gamemode Madness Slender");
 }
