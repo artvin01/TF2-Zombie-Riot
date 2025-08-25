@@ -165,24 +165,27 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 
 
 	//inside joke that they are mega tryhards
-	if(StrEqual(c_NpcName[entity], "Artorias", false) || StrEqual(c_NpcName[entity], "Hun oli", false) || StrEqual(c_NpcName[entity], "Haxton", false))
+	if(StrEqual(c_NpcName[entity], " Artorias", false) ||
+	 StrEqual(c_NpcName[entity], " Hun oli", false) ||
+	 StrEqual(c_NpcName[entity], " Pinkie", false) ||
+	  StrEqual(c_NpcName[entity], " Haxton", false))
 	{
-		fl_Extra_Speed[entity] 				*= 1.35;
-		fl_Extra_Damage[entity] 			*= 1.75;
-		f_AttackSpeedNpcIncrease[entity] 	*= 0.45;
+		fl_Extra_Speed[entity] 				*= 1.45;
+		fl_Extra_Damage[entity] 			*= 2.5;
+		f_AttackSpeedNpcIncrease[entity] 	*= 0.4;
 		MultiHealth(entity, 				   3.0);
 	}
 	else
 	{
-		fl_Extra_Speed[entity] 				*= GetRandomFloat(0.75, (1.0 / 0.75));
-		fl_Extra_Damage[entity] 			*= GetRandomFloat(0.75, (1.0 / 0.75));
-		f_AttackSpeedNpcIncrease[entity] 	*= GetRandomFloat(0.75, (1.0 / 0.75));
-		MultiHealth(entity, 				   GetRandomFloat(0.75, (1.0 / 0.75)));
+		fl_Extra_Speed[entity] 				*= GetRandomFloat(0.95, 1.35);
+		fl_Extra_Damage[entity] 			*= GetRandomFloat(0.95, 1.35);
+		f_AttackSpeedNpcIncrease[entity] 	*= GetRandomFloat(0.75, 1.05);
+		MultiHealth(entity, 				   GetRandomFloat(0.95, 1.35));
 		float AfkTimer = GetRandomFloat(1.5, 2.0);
 		FreezeNpcInTime(entity, AfkTimer);
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
 	}
-	TeleportDiversioToRandLocation(entity,_,3000.0, 1500.0);
+	TeleportDiversioToRandLocation(entity,_,3000.0, 1500.0, .NeedLOSPlayer = true);
 }
 
 static void MultiHealth(int entity, float amount)
