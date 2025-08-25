@@ -172,7 +172,7 @@ enum struct MusicEnum
 		SetMusicTimer(client, GetTime() + this.Time);
 
 		if(this.Name[0] || this.Artist[0])
-			CPrintToChat(client, "%t", "Now Playing Song", this.Artist, this.Name);
+			CPrintToChat(client, "%t", "Now Playing Song", this.Name, this.Artist);
 		
 		return true;
 	}

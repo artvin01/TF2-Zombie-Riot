@@ -352,6 +352,8 @@ static void GiveShield(int amount)
 				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
 		}
 	}
+	
+	CPrintToChatAll("%t", "Gained Shield", amount);
 }
 
 static void GiveLife(int entity, StringMap map, int amount)
@@ -456,6 +458,16 @@ public void Rogue_Hope1_Collect()
 	CurrentCash += 1000;
 	GlobalExtraCash += 1000;
 }
+public void Rogue_Hope1_1_Collect()
+{
+	CurrentCash += 1750;
+	GlobalExtraCash += 1750;
+}
+public void Rogue_Shadowing_coin_Collect()
+{
+	CurrentCash += 1250;
+	GlobalExtraCash += 1250;
+}
 
 public void Rogue_Hope8_Collect()
 {
@@ -471,6 +483,11 @@ public void Rogue_Ingot25_Collect()
 public void Rogue_Life1_Ally(int entity, StringMap map)
 {
 	GiveLife(entity, map, 125);
+}
+
+public void Rogue_Life1_1_Ally(int entity, StringMap map)
+{
+	GiveLife(entity, map, 50);
 }
 
 public void Rogue_Life2_Ally(int entity, StringMap map)
@@ -502,6 +519,7 @@ public void Rogue_AttackDown1_Enemy(int entity)
 {
 	fl_Extra_Damage[entity] /= 1.07;
 }
+
 
 public void Rogue_AttackDown2_Enemy(int entity)
 {

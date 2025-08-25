@@ -5076,6 +5076,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	map.SetValue("4049", 1.0);// Elemental Res
 
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
@@ -5281,7 +5282,10 @@ void Store_ApplyAttribs(int client)
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		Attributes_SetMulti(client, 442, 0.65);
+		if(Rogue_Rift_VialityThing())
+			Attributes_SetMulti(client, 442, 0.85);
+		else
+			Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);

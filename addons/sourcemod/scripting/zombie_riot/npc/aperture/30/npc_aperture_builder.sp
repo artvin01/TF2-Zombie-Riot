@@ -264,42 +264,49 @@ methodmap ApertureBuilder < CClotBody
 		
 		ApertureBuilder_ToggleBuilding(npc, false);
 		
-		if (StrContains(data, "noteleport") == -1)
+
+		if(!Rogue_Mode())
 		{
-			// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
-			// If we can't find an appropriate spot, just ignore LOS
-			const int maxAttempts = 12;
-			const float loosenedReqPerAttempt = 0.06;
-			int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
-			
-			for (int i = 0; i <= maxAttempts; i++)
+			if (StrContains(data, "noteleport") == -1)
 			{
-				TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
+				// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
+				// If we can't find an appropriate spot, just ignore LOS
+				const int maxAttempts = 12;
+				const float loosenedReqPerAttempt = 0.06;
+				int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
 				
-				if (i == maxAttempts)
-					break;
-				
-				int visiblePlayerCount;
-				
-				for (int client = 1; client <= MaxClients; client++)
+				for (int i = 0; i <= maxAttempts; i++)
 				{
-					if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
-						visiblePlayerCount++;
+					TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
+					
+					if (i == maxAttempts)
+						break;
+					
+					int visiblePlayerCount;
+					
+					for (int client = 1; client <= MaxClients; client++)
+					{
+						if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
+							visiblePlayerCount++;
+					}
+					
+					float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
+					
+					// We got what we wanted, no need to try to teleport anymore
+					if (percentage <= i * loosenedReqPerAttempt)
+						break;
 				}
-				
-				float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
-				
-				// We got what we wanted, no need to try to teleport anymore
-				if (percentage <= i * loosenedReqPerAttempt)
-					break;
-			}
-			
-			float vecNewPos[3];
-			GetAbsOrigin(npc.index, vecNewPos);
-			ParticleEffectAt(vecNewPos, "teleported_blue");
-			TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
+			}	
+		}
+		else
+		{
+			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
 		}
 		
+		float vecNewPos[3];
+		GetAbsOrigin(npc.index, vecNewPos);
+		ParticleEffectAt(vecNewPos, "teleported_blue");
+		TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
 		if(AntiSoundSpam < GetGameTime())
 		{
 			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
@@ -497,8 +504,13 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						if (IsBoxHazard(vecCenterPos, vecMins, vecMaxs))
 							continue;
 						
+						if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, npc.index))
+							continue;
+
+						if(Dome_PointOutside(vecCenterPos))
+							continue;
+
 						vecPotentialPos[2] -= APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
-						
 						// Congratulations little fella, you got a place to go
 						ApertureBuilder_ToggleBuilding(npc, true);
 						npc.m_iTarget = 0;

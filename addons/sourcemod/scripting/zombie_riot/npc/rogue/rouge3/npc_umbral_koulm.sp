@@ -86,9 +86,9 @@ methodmap Umbral_Koulm < CClotBody
 		if(this.m_flSpassOut > GetGameTime(this.index))
 			return;
 
-		this.m_flNextIdleSound = GetGameTime(this.index) + 1.0;
+		this.m_flNextIdleSound = GetGameTime(this.index) + 0.5;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(35, 40));
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(25, 35));
 		
 	}
 	
@@ -118,6 +118,7 @@ methodmap Umbral_Koulm < CClotBody
 	
 	public Umbral_Koulm(float vecPos[3], float vecAng[3], int ally)
 	{
+		ally = TFTeam_Stalkers;
 		Umbral_Koulm npc = view_as<Umbral_Koulm>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.5", "22500", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 5;
@@ -149,8 +150,8 @@ methodmap Umbral_Koulm < CClotBody
 		npc.m_flGravityMulti = 1.0;
 
 		npc.m_bDissapearOnDeath = true;
-		TeleportDiversioToRandLocation(npc.index,_,2000.0, 1250.0);
-		//dont allow self making
+		TeleportDiversioToRandLocation(npc.index,_,2000.0, 500.0);
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 		
 		npc.m_flSpeed = 0.0;
 
@@ -400,6 +401,9 @@ void KoulmAreaBuff(int attacker, int victim, float &damage, int weapon)
 	if(i_NpcInternalId[victim] == Umbral_Koulm_ID())
 		return;
 
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
 	//grant the "buff"
 	ApplyStatusEffect(attacker, victim, "Umbral Grace Debuff", 2.5);
 	ApplyStatusEffect(attacker, victim, "Umbral Grace", 2.5);

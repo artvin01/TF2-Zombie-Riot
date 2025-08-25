@@ -262,6 +262,8 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 		{
 			if(IsValidEnemy(npc.index, entitycount))
 				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
+			else if(IsValidAlly(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
 		}
 		ApplyStatusEffect(npc.index, npc.index, "Kinetic Surge", 20.0);
 	}

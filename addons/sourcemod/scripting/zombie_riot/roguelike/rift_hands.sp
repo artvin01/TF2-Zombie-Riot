@@ -258,7 +258,7 @@ public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflic
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float firerate = Attributes_Get(weapon, 6);
-			ApplyTempAttrib(weapon, 6, 0.909, firerate * 2.0);
+			ApplyTempAttrib(weapon, 6, 0.935, firerate * 2.0);
 		}
 	}
 }

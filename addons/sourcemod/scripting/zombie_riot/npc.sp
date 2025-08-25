@@ -1073,6 +1073,9 @@ void NPC_ConfigSetup()
 	HHH_OnMapStart_NPC();
 	GentleSpy_OnMapStart_NPC();
 	ChristianBrutalSniper_OnMapStart_NPC();
+	Umbral_Spuud_OnMapStart_NPC();
+	Umbral_Keitosis_OnMapStart_NPC();
+	AlmagestSeinr_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2342,3 +2345,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_hhh.sp"
 #include "npc/rogue/rouge3/npc_gentlespy.sp"
 #include "npc/rogue/rouge3/npc_christianbrutalsniper.sp"
+#include "npc/rogue/rouge3/npc_umbral_spuud.sp"
+#include "npc/rogue/rouge3/npc_umbral_keitosis.sp"
+#include "npc/rogue/rouge3/npc_almagest_seinr.sp"
