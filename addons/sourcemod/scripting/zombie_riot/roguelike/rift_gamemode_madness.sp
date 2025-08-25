@@ -108,9 +108,13 @@ public float Rogue_Encounter_GamemodeMadnessBattle_Slender()
 
 public void Rogue_RiftWarp_GamemodeMadness()
 {
-	Rogue_RemoveNamedArtifact("Gamemode Madness");
-	Rogue_RemoveNamedArtifact("Gamemode Madness SZF");
-	Rogue_RemoveNamedArtifact("Gamemode Madness Slender");
+	
+	if(Rogue_HasNamedArtifact("Gamemode Madness"))
+		Rogue_RemoveNamedArtifact("Gamemode Madness");
+	if(Rogue_HasNamedArtifact("Gamemode Madness SZF"))
+		Rogue_RemoveNamedArtifact("Gamemode Madness SZF");
+	if(Rogue_HasNamedArtifact("Gamemode Madness Slender"))
+		Rogue_RemoveNamedArtifact("Gamemode Madness Slender");
 }
 
 public void Rogue_GamemodeMadnessSlender_StartStage()
@@ -164,7 +168,7 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 		FreezeNpcInTime(entity, AfkTimer);
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
 	}
-	TeleportDiversioToRandLocation(entity,_,3000.0, 1000.0);
+	TeleportDiversioToRandLocation(entity,_,3000.0, 1500.0);
 }
 
 static void MultiHealth(int entity, float amount)

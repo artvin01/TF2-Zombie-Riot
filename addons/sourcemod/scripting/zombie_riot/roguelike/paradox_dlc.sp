@@ -294,7 +294,7 @@ static Action StunPuppet1_Timer(Handle timer, int ref)
 		ExtraDamageDealt = 0.35;
 	}
 	DamageDeal *= ExtraDamageDealt;
-	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
+	if(HasSpecificBuff(entity, "Stunned"))
 		SDKHooks_TakeDamage(entity, AttackerWho, AttackerWho, DamageDeal, DMG_PLASMA|DMG_SHOCK, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 	
 	return Plugin_Continue;
@@ -324,7 +324,7 @@ static Action StunPuppet2_Timer(Handle timer, int ref)
 		ExtraDamageDealt = 0.35;
 	}
 	DamageDeal *= ExtraDamageDealt;
-	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
+	if(HasSpecificBuff(entity, "Stunned"))
 		SDKHooks_TakeDamage(entity, AttackerWho, AttackerWho, DamageDeal, DMG_PLASMA|DMG_SHOCK, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 	
 	return Plugin_Continue;
