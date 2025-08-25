@@ -630,7 +630,7 @@ public void OnPostThink(int client)
 						if(attrib >= 1.0)
 						{
 							attrib -= 1.0; //1.0 is default
-							HealEntityGlobal(client, client, (MaxHealth * attrib), 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
+							HealEntityGlobal(client, client, (MaxHealth * attrib), Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					//		DefaultRegenArmor += attrib;
 						}
 					//	if(Armor_Charge[client] >= 0)
@@ -2160,7 +2160,11 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				if(!Waves_InSetup())
 					i_AmountDowned[victim]++;
 				
-				SetEntityHealth(victim, 200);
+				if(Rogue_Rift_VialityThing())
+					SetEntityHealth(victim, 300);
+				else
+					SetEntityHealth(victim, 200);
+
 				if(!b_LeftForDead[victim])
 				{
 					int speed = 10;
@@ -2171,6 +2175,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					dieingstate[victim] = 500;
 				}
+			
 				f_DisableDyingTimer[victim] = 0.0;
 				dieingstate[victim] -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ReviveTimeCut, false,_, 0.0));
 				Vehicle_Exit(victim);
@@ -2182,7 +2187,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-				Attributes_SetMulti(victim, 442, 0.85);
+				if(Rogue_Rift_VialityThing())
+					Attributes_SetMulti(victim, 442, 0.85);
+				else
+					Attributes_SetMulti(victim, 442, 0.65);
+
+				Rogue_Rift_VialityThing_StunEnemies(victim);
 
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;

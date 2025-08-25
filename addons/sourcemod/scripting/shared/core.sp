@@ -1132,6 +1132,8 @@ public void OnMapStart()
 		}
 	}
 	ConVar_ToggleDo();
+	CAddColor("redsunfirst", 0xF78C56);
+	CAddColor("redsunsecond", 0xEEA953);
 }
 
 void DeleteShadowsOffZombieRiot()

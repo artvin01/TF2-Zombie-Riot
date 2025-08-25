@@ -207,6 +207,7 @@ void InitStatusEffects()
 	StatusEffects_Ritualist();
 	StatusEffects_Rogue3();
 	StatusEffects_SkullServants();
+	StatusEffects_GamemodeMadnessSZF();
 #endif
 }
 
@@ -5841,3 +5842,52 @@ static void UmbralGrace_End(int victim, StatusEffect Apply_MasterStatusEffect, E
 }
 
 #endif
+
+
+
+void StatusEffects_GamemodeMadnessSZF()
+{
+	StatusEffect data;
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Damage Scaling");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.DamageTakenMulti 			= 0.1;
+	data.DamageDealMulti			= 0.1;
+	data.OnTakeDamage_TakenFunc 	= SZF_DamageScalingtaken;
+	data.OnTakeDamage_DealFunc 		= SZF_DamageScalingdeal;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+float SZF_DamageScalingtaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	//look at how many enemies are left alive, and then scale off tha
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(2);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	float resist = ValueDo;
+	if(resist >= 1.0)
+	{
+		resist = 1.0;
+	}
+	resist -= 1.0;
+	resist *= -1.0;
+	resist *= 10.0;
+	return (basedamage * resist);
+}
+
+float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(2);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	float resist = ValueDo;
+	return resist;
+}

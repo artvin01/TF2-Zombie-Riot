@@ -404,6 +404,7 @@ public void Rogue_Vote_FreeTreasure(const Vote vote, int index)
 	{
 		case 0:
 		{
+			Artifact artifact;
 			if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
 			if(Rogue_GetRandomArtifact(artifact, false, 18) != -1)

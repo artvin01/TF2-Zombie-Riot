@@ -4,12 +4,34 @@
 static int PreviousFloor;
 static int PreviousStage;
 static bool HolyBlessing;
+static bool VialityThing;
+static bool FlashVestThing;
 
 stock bool Rogue_Rift_HolyBlessing()
 {
 	return HolyBlessing;
 }
+stock bool Rogue_Rift_VialityThing()
+{
+	return VialityThing;
+}
+#define DOWNED_STUN_RANGE 150.0
+stock void Rogue_Rift_VialityThing_StunEnemies(int victim)
+{
+	if(Rogue_Rift_VialityThing())
+		return;
+	Explode_Logic_Custom(0.0, victim, victim, -1, _, DOWNED_STUN_RANGE, 1.0, _, _, 99,_,_,_,Viality_Stunenemy);
+}
 
+float Viality_Stunenemy(int entity, int victim, float damage, int weapon)
+{
+	FreezeNpcInTime(victim, 1.5);	
+	return 0.0;
+}
+stock bool Rogue_Rift_FlashVestThing()
+{
+	return FlashVestThing;
+}
 public void Rogue_GamemodeHistory_Collect()
 {
 	PreviousFloor = -1;
@@ -63,6 +85,24 @@ public void Rogue_HolyBlessing_Collect()
 public void Rogue_HolyBlessing_Remove()
 {
 	HolyBlessing = false;
+}
+public void Rogue_Vitality_Injection_Collect()
+{
+	VialityThing = true;
+}
+
+public void Rogue_Vitality_Injection_Remove()
+{
+	VialityThing = false;
+}
+public void Rogue_FlashVest_Collect()
+{
+	FlashVestThing = true;
+}
+
+public void Rogue_FlashVest_Remove()
+{
+	FlashVestThing = false;
 }
 
 public void Rogue_Mazeat1_Enemy(int entity)

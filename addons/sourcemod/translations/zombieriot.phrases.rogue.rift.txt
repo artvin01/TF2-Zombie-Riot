@@ -106,6 +106,34 @@
 	{
 		"en"	"{red}Enemies have a chance to be warpped"
 	}
+	"Gamemode Madness"
+	{
+		"en"	"Gamemode Madness"
+	}
+	"Gamemode Madness Desc"
+	{
+		"en"	"Gamemode Madness"
+	}
+	"SZF Damage Scaling Mode"
+	{
+		"en"	"{crimson}Enabled SZF damage scaling."
+	}
+	"Gamemode Madness SZF"
+	{
+		"en"	"Gamemode Madness SZF"
+	}
+	"Gamemode Madness SZF Desc"
+	{
+		"en"	"Gamemode Madness SZF"
+	}
+	"Broken Crest"
+	{
+		"en"	"Broken Crest"
+	}
+	"Free Treasure!!!"
+	{
+		"en"	"Free Treasure!!!"
+	}
 	"Rift of Fractured"
 	{
 		"en"	"Rift of Fractured"
@@ -327,6 +355,22 @@
 	"Hand of Protraction Desc"
 	{
 		"en"	"Protracted battles, a home of carnage.\n{green}''Mechanic'' weapons fully repairs buildings on hit"
+	}
+	"Vitality Injection"
+	{
+		"en"	"Vitality Injection"
+	}
+	"Vitality Injection Desc"
+	{
+		"en"	"When when dying, itll keep you alive a little longer.\n{green}You are faster while downed and move faster."
+	}
+	"Flash Vest"
+	{
+		"en"	"Flash Vest"
+	}
+	"Flash Vest Desc"
+	{
+		"en"	"Flash em!\n{green}When downed, stun all surrounding enemies by for 1.5 seconds."
 	}
 	"Reila Assistance"
 	{
@@ -1092,5 +1136,17 @@
 	"Top Voided Elites!"
 	{
 		"en" "⚠ Top Voided Elites"
+	}
+	"Gun Game"
+	{
+		"en" "☠ Gun Game"
+	}
+	"Super Zombie Fortress"
+	{
+		"en" "☠ Super Zombie Fortress"
+	}
+	"Class Warfare"
+	{
+		"en" "☠ Class Warfare"
 	}
 }

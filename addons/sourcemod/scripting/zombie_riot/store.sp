@@ -5282,7 +5282,10 @@ void Store_ApplyAttribs(int client)
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		Attributes_SetMulti(client, 442, 0.65);
+		if(Rogue_Rift_VialityThing())
+			Attributes_SetMulti(client, 442, 0.85);
+		else
+			Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);

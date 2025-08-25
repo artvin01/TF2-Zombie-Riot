@@ -3399,6 +3399,7 @@ bool IS_MusicReleasingRadio()
 
 #include "roguelike/rift_main.sp"
 #include "roguelike/rift_encounters.sp"
+#include "roguelike/rift_gamemode_madness.sp"
 #include "roguelike/rift_items.sp"
 #include "roguelike/rift_hands.sp"
 #include "roguelike/rift_stones.sp"
