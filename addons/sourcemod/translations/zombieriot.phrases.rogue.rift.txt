@@ -110,6 +110,10 @@
 	{
 		"en"	"Gamemode Madness"
 	}
+	"Almagest Alien Tech"
+	{
+		"en"	"Almagest Alien Tech"
+	}
 	"Gamemode Madness Desc"
 	{
 		"en"	"Gamemode Madness"
