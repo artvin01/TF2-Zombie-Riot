@@ -371,12 +371,12 @@ public Action Rogue_DebugSet(int client, int args)
 			}
 			else
 			{
-				SetNextStage(index, true, stage);
+				Rogue_SendToFloor(CurrentFloor, index);
 			}
 		}
 		else
 		{
-			SetNextStage(index, false, stage);
+			Rogue_SendToFloor(CurrentFloor, index);
 		}
 	}
 	else
