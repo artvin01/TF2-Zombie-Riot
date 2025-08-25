@@ -64,6 +64,7 @@ void Rogue_Dome_WaveStart(const float pos[3])
 	
 	SetEntityRenderMode(iDome, RENDER_NORMAL);
 	SetEntityRenderColor(iDome, 255, 255, 255, 255);
+	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
 	b_IsEntityAlwaysTranmitted[iDome] = true;
 	Hook_DHook_UpdateTransmitState(iDome);
 	
