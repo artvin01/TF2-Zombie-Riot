@@ -1980,7 +1980,7 @@
 	}
 	"Cloned Subjects!"
 	{
-		"en" "⚔⚠ Cloned Subjects"
+		"en" "⚠ Cloned Subjects"
 	}
 	"Shipment Deliviered"
 	{
@@ -1988,7 +1988,7 @@
 	}
 	"Shipment Deliviered!"
 	{
-		"en" "⚔⚠ Shipment Deliviered"
+		"en" "⚠ Shipment Deliviered"
 	}
 	"The Insane"
 	{
@@ -1996,7 +1996,7 @@
 	}
 	"The Insane!"
 	{
-		"en" "⚔⚠ The Insane"
+		"en" "⚠ The Insane"
 	}
 	"Confused Ruanians"
 	{
@@ -2004,7 +2004,7 @@
 	}
 	"Confused Ruanians!"
 	{
-		"en" "⚔⚠ Confused Ruanians"
+		"en" "⚠ Confused Ruanians"
 	}
 	"Sabotaging Electric's"
 	{
@@ -2012,7 +2012,7 @@
 	}
 	"Sabotaging Electric's!"
 	{
-		"en" "⚔⚠ Sabotaging Electric's"
+		"en" "⚠ Sabotaging Electric's"
 	}
 	"Zombies Land"
 	{
@@ -2020,7 +2020,7 @@
 	}
 	"Zombies Land!"
 	{
-		"en" "⚔⚠ Zombies Land"
+		"en" "⚠ Zombies Land"
 	}
 	"Underpaid Mercs"
 	{
@@ -2028,7 +2028,7 @@
 	}
 	"Underpaid Mercs!"
 	{
-		"en" "⚔⚠ Underpaid Mercs"
+		"en" "⚠ Underpaid Mercs"
 	}
 	"Unknown Army"
 	{
@@ -2036,7 +2036,7 @@
 	}
 	"Unknown Army!"
 	{
-		"en" "⚔⚠ Unknown Army"
+		"en" "⚠ Unknown Army"
 	}
 	"Desperate Voiders"
 	{
@@ -2044,7 +2044,7 @@
 	}
 	"Desperate Voiders!"
 	{
-		"en" "⚔⚠ Desperate Voiders"
+		"en" "⚠ Desperate Voiders"
 	}
 	"Automaton Failure"
 	{
@@ -2052,7 +2052,7 @@
 	}
 	"Automaton Failure!"
 	{
-		"en" "⚔⚠ Automaton Failure"
+		"en" "⚠ Automaton Failure"
 	}
 	"Chaos Sea Creatures"
 	{
@@ -2060,7 +2060,7 @@
 	}
 	"Chaos Sea Creatures!"
 	{
-		"en" "⚔⚠ Chaos Sea Creatures"
+		"en" "⚠ Chaos Sea Creatures"
 	}
 	"Pillaging Mercs"
 	{
@@ -2068,7 +2068,7 @@
 	}
 	"Pillaging Mercs!"
 	{
-		"en" "⚔⚠ Pillaging Mercs"
+		"en" "⚠ Pillaging Mercs"
 	}
 	"Looters Keepers"
 	{
@@ -2076,7 +2076,7 @@
 	}
 	"Looters Keepers!"
 	{
-		"en" "⚔⚠ Looters Keepers"
+		"en" "⚠ Looters Keepers"
 	}
 	"Cold Inhabitans"
 	{
@@ -2084,7 +2084,7 @@
 	}
 	"Cold Inhabitans!"
 	{
-		"en" "⚔⚠ Cold Inhabitans"
+		"en" "⚠ Cold Inhabitans"
 	}
 	"Gate Persuers"
 	{
@@ -2092,7 +2092,7 @@
 	}
 	"Gate Persuers!"
 	{
-		"en" "⚔⚠ Gate Persuers"
+		"en" "⚠ Gate Persuers"
 	}
 	"Corrupted Ruinan's"
 	{
@@ -2100,7 +2100,7 @@
 	}
 	"Corrupted Ruinan's!"
 	{
-		"en" "⚔⚠ Corrupted Ruinan's"
+		"en" "⚠ Corrupted Ruinan's"
 	}
 	"Bladedance Animated"
 	{
@@ -2108,7 +2108,7 @@
 	}
 	"Bladedance Animated!"
 	{
-		"en" "⚔⚠ Bladedance Animated"
+		"en" "⚠ Bladedance Animated"
 	}
 	"Slaves Controlled"
 	{
@@ -2116,7 +2116,7 @@
 	}
 	"Slaves Controlled!"
 	{
-		"en" "⚔⚠ Slaves Controlled"
+		"en" "⚠ Slaves Controlled"
 	}
 	"Medieval Traitors"
 	{
@@ -2124,7 +2124,7 @@
 	}
 	"Medieval Traitors!"
 	{
-		"en" "⚔⚠ Medieval Traitors"
+		"en" "⚠ Medieval Traitors"
 	}
 	"Adamant Expidonsans"
 	{
@@ -2132,7 +2132,7 @@
 	}
 	"Adamant Expidonsans!"
 	{
-		"en" "⚔⚠ Adamant Expidonsans"
+		"en" "⚠ Adamant Expidonsans"
 	}
 	"True Survival Zombies"
 	{
@@ -2140,7 +2140,7 @@
 	}
 	"True Survival Zombies!"
 	{
-		"en" "⚔⚠ True Survival Zombies"
+		"en" "⚠ True Survival Zombies"
 	}
 	
 	"Lone Health Title"

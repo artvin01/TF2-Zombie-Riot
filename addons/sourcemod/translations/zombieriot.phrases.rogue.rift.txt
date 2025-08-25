@@ -704,7 +704,7 @@
 	}
 	"Poisoned Water Desc"
 	{
-		"en"	"Shouldn't have drank that.\n{red}Allies have -20% max health, cured by visting a Gateway"
+		"en"	"Shouldn't have drank that.\n{red}Allies have -20％ max health, cured by visting a Gateway"
 	}
 	"Pool of Clarity"
 	{
@@ -826,13 +826,62 @@
 		"en"	"Don't bet on it."
 	}
 
+	"Safe House"
+	{
+		"en"	"Safe House"
+	}
+	"Past Lore Lore"
+	{
+		"en"	"Rest now, may I tell you a story?"
+	}
+	"Past Lore Option 1"
+	{
+		"en"	"Tell me a story of "
+	}
+	"Past Lore Desc 1"
+	{
+		"en"	"Read the story, {yellow}obtain an unknown artifact"
+	}
+	"Past Lore Option 2"
+	{
+		"en"	"Skip it"
+	}
+	"Past Lore Desc 2"
+	{
+		"en"	"Skip the story, {yellow}obtain an unknown artifact"
+	}
+	"Mazeat Saves"
+	{
+		"en"	"Mazeat Saves"
+	}
+	"Mazeat Saves Desc"
+	{
+		"en"	"Mazeat is a safe place.\n{green}Non-void enemies have -15％ health and damage"
+	}
+	"Mazeat Lives"
+	{
+		"en"	"Mazeat Lives"
+	}
+	"Mazeat Lives Desc"
+	{
+		"en"	"Mazeat is a place to live.\n{green}Non-void enemies have -10％ movement speed"
+	}
+	"Mazeat Falls"
+	{
+		"en"	"Mazeat Falls"
+	}
+	"Mazeat Falls Desc"
+	{
+		"en"	"Mazeat was.\n{green}Non-void enemies have -30％ health and damage and receive +100％ elemental damage"
+	}
+
 	"Cloned Subjects"
 	{
 		"en" "⚔ Cloned Subjects"
 	}
 	"Cloned Subjects!"
 	{
-		"en" "⚔⚠ Cloned Subjects"
+		"en" "⚠ Cloned Subjects"
 	}
 	"Shipment Deliviered"
 	{
@@ -840,7 +889,7 @@
 	}
 	"Shipment Deliviered!"
 	{
-		"en" "⚔⚠ Shipment Deliviered"
+		"en" "⚠ Shipment Deliviered"
 	}
 	"The Insane"
 	{
@@ -848,7 +897,7 @@
 	}
 	"The Insane!"
 	{
-		"en" "⚔⚠ The Insane"
+		"en" "⚠ The Insane"
 	}
 	"Confused Ruanians"
 	{
@@ -856,7 +905,7 @@
 	}
 	"Confused Ruanians!"
 	{
-		"en" "⚔⚠ Confused Ruanians"
+		"en" "⚠ Confused Ruanians"
 	}
 	"Sabotaging Electric's"
 	{
@@ -864,7 +913,7 @@
 	}
 	"Sabotaging Electric's!"
 	{
-		"en" "⚔⚠ Sabotaging Electric's"
+		"en" "⚠ Sabotaging Electric's"
 	}
 	"Zombies Land"
 	{
@@ -872,7 +921,7 @@
 	}
 	"Zombies Land!"
 	{
-		"en" "⚔⚠ Zombies Land"
+		"en" "⚠ Zombies Land"
 	}
 	"Underpaid Mercs"
 	{
@@ -880,7 +929,7 @@
 	}
 	"Underpaid Mercs!"
 	{
-		"en" "⚔⚠ Underpaid Mercs"
+		"en" "⚠ Underpaid Mercs"
 	}
 	"Unknown Army"
 	{
@@ -888,7 +937,7 @@
 	}
 	"Unknown Army!"
 	{
-		"en" "⚔⚠ Unknown Army"
+		"en" "⚠ Unknown Army"
 	}
 	"Desperate Voiders"
 	{
@@ -896,7 +945,7 @@
 	}
 	"Desperate Voiders!"
 	{
-		"en" "⚔⚠ Desperate Voiders"
+		"en" "⚠ Desperate Voiders"
 	}
 	
 
@@ -906,7 +955,7 @@
 	}
 	"Looters Keepers!"
 	{
-		"en" "⚔⚠ Looters Keepers"
+		"en" "⚠ Looters Keepers"
 	}
 	"Almagest Security?"
 	{
@@ -914,7 +963,7 @@
 	}
 	"Almagest Security?!"
 	{
-		"en" "⚔⚠ Almagest Security?"
+		"en" "⚠ Almagest Security?"
 	}
 	"Automatic Defenses"
 	{
@@ -922,7 +971,7 @@
 	}
 	"Automatic Defenses!"
 	{
-		"en" "⚔⚠ Automatic Defenses"
+		"en" "⚠ Automatic Defenses"
 	}
 	"Experimental Creatures"
 	{
@@ -930,7 +979,7 @@
 	}
 	"Experimental Creatures!"
 	{
-		"en" "⚔⚠ Experimental Creatures"
+		"en" "⚠ Experimental Creatures"
 	}
 	"Lost Warriors"
 	{
@@ -938,7 +987,7 @@
 	}
 	"Lost Warriors!"
 	{
-		"en" "⚔⚠ Lost Warriors"
+		"en" "⚠ Lost Warriors"
 	}
 	"Failed Mercs"
 	{
@@ -946,7 +995,7 @@
 	}
 	"Failed Mercs!"
 	{
-		"en" "⚔⚠ Failed Mercs"
+		"en" "⚠ Failed Mercs"
 	}
 	"Void Entangled"
 	{
@@ -954,7 +1003,7 @@
 	}
 	"Void Entangled!"
 	{
-		"en" "⚔⚠ Void Entangled"
+		"en" "⚠ Void Entangled"
 	}
 	"Washed Expidonsans"
 	{
@@ -962,15 +1011,15 @@
 	}
 	"Washed Expidonsans!"
 	{
-		"en" "⚔⚠ Washed Expidonsans"
+		"en" "⚠ Washed Expidonsans"
 	}
 	"Umbral Disturbance"
 	{
-		"en" "⚔⚠ Umbral Disturbance"
+		"en" "☠ Umbral Disturbance"
 	}
 	"Almagest Desperation"
 	{
-		"en" "⚔⚠ Almagest Desperation"
+		"en" "☠ Almagest Desperation"
 	}
 	"Slaves Controlled"
 	{
@@ -978,7 +1027,7 @@
 	}
 	"Slaves Controlled!"
 	{
-		"en" "⚔⚠ Slaves Controlled"
+		"en" "⚠ Slaves Controlled"
 	}
 	"Slaves Controlled"
 	{
@@ -986,7 +1035,7 @@
 	}
 	"Slaves Controlled!"
 	{
-		"en" "⚔⚠ Slaves Controlled"
+		"en" "⚠ Slaves Controlled"
 	}
 	"Slaves Controlled"
 	{
@@ -994,7 +1043,7 @@
 	}
 	"Slaves Controlled!"
 	{
-		"en" "⚔⚠ Slaves Controlled"
+		"en" "⚠ Slaves Controlled"
 	}
 	"Bladedance Surviors"
 	{
@@ -1002,7 +1051,7 @@
 	}
 	"Bladedance Surviors!"
 	{
-		"en" "⚔⚠ Bladedance Surviors"
+		"en" "⚠ Bladedance Surviors"
 	}
 	"Rescued W.F. Soldiers"
 	{
@@ -1010,7 +1059,7 @@
 	}
 	"Rescued W.F. Soldiers!"
 	{
-		"en" "⚔⚠ Rescued W.F. Soldiers"
+		"en" "⚠ Rescued W.F. Soldiers"
 	}
 	"Unknown Taskforce"
 	{
@@ -1018,7 +1067,7 @@
 	}
 	"Unknown Taskforce!"
 	{
-		"en" "⚔⚠ Unknown Taskforce"
+		"en" "⚠ Unknown Taskforce"
 	}
 	"Beyond Recognition"
 	{
@@ -1026,7 +1075,7 @@
 	}
 	"Beyond Recognition!"
 	{
-		"en" "⚔⚠ Beyond Recognition"
+		"en" "⚠ Beyond Recognition"
 	}
 	"Mind Equals Controlled"
 	{
@@ -1034,7 +1083,7 @@
 	}
 	"Mind Equals Controlled!"
 	{
-		"en" "⚔⚠ Mind Equals Controlled"
+		"en" "⚠ Mind Equals Controlled"
 	}
 	"Top Voided Elites"
 	{
@@ -1042,6 +1091,6 @@
 	}
 	"Top Voided Elites!"
 	{
-		"en" "⚔⚠ Top Voided Elites"
+		"en" "⚠ Top Voided Elites"
 	}
 }

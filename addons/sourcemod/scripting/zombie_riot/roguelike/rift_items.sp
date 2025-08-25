@@ -65,6 +65,38 @@ public void Rogue_HolyBlessing_Remove()
 	HolyBlessing = false;
 }
 
+public void Rogue_Mazeat1_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	{
+		MultiHealth(entity, 0.85);
+		fl_Extra_Damage[entity] *= 0.85;
+	}
+}
+
+public void Rogue_Mazeat2_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	{
+		fl_Extra_Speed[entity] *= 0.9;
+	}
+}
+
+public void Rogue_Mazeat3_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	{
+		MultiHealth(entity, 0.7);
+		fl_Extra_Damage[entity] *= 0.7;
+
+		for(int i; i < Element_MAX; i++)
+		{
+			SetEntPropFloat(entity, Prop_Data, "m_flElementRes", GetEntPropFloat(entity, Prop_Data, "m_flElementRes") - 1.0);
+		}
+	}
+}
+
+
 static void GiveMaxHealth(int entity, StringMap map, float amount)
 {
 	if(map)	// Player
@@ -98,8 +130,6 @@ public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
 		MultiHealth(entity, 1.25);
 	}
 }
-
-
 
 static void MultiHealth(int entity, float amount)
 {

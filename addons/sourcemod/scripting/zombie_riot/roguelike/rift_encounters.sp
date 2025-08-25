@@ -560,3 +560,149 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 		}
 	}
 }
+
+public float Rogue_Encounter_PastLore()
+{
+	int chapter = 1;
+	if(Rogue_HasNamedArtifact("Mazeat Lives"))
+	{
+		chapter = 3;
+	}
+	else if(Rogue_HasNamedArtifact("Mazeat Saves"))
+	{
+		chapter = 2;
+	}
+	
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_PastLore, "Past Lore Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Past Lore Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Past Lore Desc 1");
+	FormatEx(vote.Append, sizeof(vote.Append), "Chapter %d", chapter);
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Past Lore Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Past Lore Desc 2");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_PastLore(const Vote vote, int index)
+{
+	Timer_AdvanceStory(null, index == 0 ? 0 : 99);
+}
+
+static Action Timer_AdvanceStory(Handle timer, int progress)
+{
+	int chapter;
+	/*if(Rogue_HasNamedArtifact("Mazeat Falls"))
+	{
+		chapter = 3;
+	}
+	else */
+	if(Rogue_HasNamedArtifact("Mazeat Lives"))
+	{
+		chapter = 2;
+	}
+	else if(Rogue_HasNamedArtifact("Mazeat Saves"))
+	{
+		chapter = 1;
+	}
+
+	static const char Chapter1[][] =
+	{
+		"Chapter 1: Mazeat Saves",
+		"Thousands of years ago, a planet named Irln called by it's inhabitants,",
+		"felines who were called Expidonsans. They oversaw the planet,",
+		"using their intelligence and technology for them, the animals, and the nature.",
+		"However something was lose outside the planet, an infection spreading,",
+		"traveling planet to planet, destroying life for it's own will, the Void.",
+		"The Expidonsans far-saw this, they had the power to defend themselves",
+		"but felt they could not watch other races and species die out to this.",
+		"And so they ventured out into space, gathering whatever species they could save.",
+		"It didn't matter feral, intelligent, nature; they wanted to save as many they can.",
+		"They brought them back to their home planet, giving them a home",
+		"and safety from the Void that spreads."
+	};
+
+	static const char Chapter2[][] =
+	{
+		"Chapter 2: Mazeat Lives",
+		"The Expidonsans saved these other species but what to do with them?",
+		"Form a unified city, and that city was eventually called,",
+		"Mazeat.",
+		"A giant city where all could live together and share what resources they had.",
+		"The Void could not enter Irln, and nobody could leave Irln.",
+		"A safe bubble formed by the mass life of everyone living on Irln, gift by nature.",
+		"Expidonsans had hoped to work with these races to come up with a solution.",
+		"A solution to fight back against the Void and save their worlds.",
+		"Everything the Expidonsans hoped for, was starting to crack."
+	}
+
+	static const char Chapter3[][] =
+	{
+		"Chapter 3: Mazeat Falls",
+		"Mazeat was a city meant to a place of peace for all races,",
+		"but they didn't get along.",
+		"Conflicts brew, disagreements among races, language, culture.",
+		"Fights storm up with the storm growing by the months, weeks, days.",
+		"Civil war roared across Mazeat, races spread out, passed away, lost to time.",
+		"Expidonsans weren't cleaver enough to foresee this.",
+		"What was there to do?",
+		"Expidonsan research burned away in the ashes of war.",
+		"Expidonsan cities torn away for the new races.",
+		"Expidonsans weren't the kind for war, so they flee.",
+		"They had the knowledge to rebuild, and so they did,",
+		"underground where nobody could find them, eventually forgotten.",
+		"Just like how they forgotten themselves, what they made,",
+		"the unforeseen consequences, and what we call now,",
+		"Chaos."
+	}
+
+	int length = chapter == 0 ? sizeof(Chapter1) : (chapter == 1 ? sizeof(Chapter2) : sizeof(Chapter3));
+	if(progress >= length)
+	{
+		switch(chapter)
+		{
+			case 0:
+				Rogue_GiveNamedArtifact("Mazeat Saves");
+			
+			case 1:
+				Rogue_GiveNamedArtifact("Mazeat Lives");
+			
+			case 2:
+				Rogue_GiveNamedArtifact("Mazeat Falls");
+		}
+	}
+	else
+	{
+		Panel panel = new Panel();
+
+		// Show 4 lines at a time
+		for(int i; i < length; i++)
+		{
+			if(i <= progress && i > (progress - 3))
+			{
+				panel.DrawText(Chapter1[i]);
+			}
+			else
+			{
+				panel.DrawText(" ");
+			}
+		}
+
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+				panel.Send(client, StoryMenuH, 15);
+		}
+
+		CreateTimer(5.0, Timer_AdvanceStory, progress + 1);
+		Rogue_SetProgressTime(15.0, false);
+	}
+}
+static int StoryMenuH(Menu menu, MenuAction action, int param1, int param2)
+{
+}
