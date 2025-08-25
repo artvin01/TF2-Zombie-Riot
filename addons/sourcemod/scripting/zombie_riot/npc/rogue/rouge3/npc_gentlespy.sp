@@ -480,7 +480,7 @@ void GentleSpySelfDefense(GentleSpy npc, float gameTime, int target, float dista
 					}
 					npc.m_flAttackHappens = 1.0;
 					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					npc.m_flNextMeleeAttack = gameTime + 0.8;
 				}
 			}
 		}

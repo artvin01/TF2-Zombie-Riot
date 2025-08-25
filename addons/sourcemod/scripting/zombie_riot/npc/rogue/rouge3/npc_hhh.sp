@@ -385,7 +385,7 @@ public void HHH_ClotThink(int iNPC)
 			}
 			b_NpcUnableToDie[npc.index] = false; //You can kill a pumpkin though
 			SetEntityCollisionGroup(npc.index, 0); //Set collision back to normal
-			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.35; //Restore attack cooldown to normal
+			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.0; //Restore attack cooldown to normal
 			AcceptEntityInput(npc.m_iWearable1, "Enable"); //Enables Axe
 			SetEntityModel(npc.index, "models/bots/headless_hatman.mdl"); //Set model back to pumpkin man
 			npc.m_flAbilityOrAttack2 = GetGameTime(npc.index) + 35.0;	//Reset cooldowns - Ghost Form
@@ -525,7 +525,7 @@ void HHHSelfDefense(HHH npc, float gameTime, int target, float distance)
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.35;
+				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
 	}
