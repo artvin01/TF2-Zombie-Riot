@@ -375,12 +375,14 @@ public Action Rogue_DebugSet(int client, int args)
 			}
 			else
 			{
-				Rogue_SendToFloor(CurrentFloor, index);
+				Rogue_SendToFloor(CurrentFloor, -1);
+				SetNextStage(index, true, stage);
 			}
 		}
 		else
 		{
-			Rogue_SendToFloor(CurrentFloor, index);
+			Rogue_SendToFloor(CurrentFloor, -1);
+			SetNextStage(index, false, stage);
 		}
 	}
 	else
