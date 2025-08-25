@@ -1070,6 +1070,9 @@ void NPC_ConfigSetup()
 	Umbral_Ltzens_OnMapStart_NPC();
 	Umbral_Refract_OnMapStart_NPC();
 	Umbral_Koulm_OnMapStart_NPC();
+	HHH_OnMapStart_NPC();
+	GentleSpy_OnMapStart_NPC();
+	ChristianBrutalSniper_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2336,3 +2339,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_ltzens.sp"
 #include "npc/rogue/rouge3/npc_umbral_refract.sp"
 #include "npc/rogue/rouge3/npc_umbral_koulm.sp"
+#include "npc/rogue/rouge3/npc_hhh.sp"
+#include "npc/rogue/rouge3/npc_gentlespy.sp"
+#include "npc/rogue/rouge3/npc_christianbrutalsniper.sp"

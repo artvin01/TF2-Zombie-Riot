@@ -4930,4 +4930,16 @@
 	{
 		"en"	"Old forgotten expidonsan robot"
 	}
+	"Horseless Headless Horsemann"
+	{
+		"en"	"Horseless Headless Horsemann"
+	}
+	"Gentle Spy"
+	{
+		"en"	"Gentle Spy"
+	}
+	"Christian Brutal Sniper"
+	{
+		"en"	"Christian Brutal Sniper"
+	}
 }
