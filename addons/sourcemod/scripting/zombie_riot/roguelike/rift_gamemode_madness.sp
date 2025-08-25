@@ -152,6 +152,12 @@ public void Rogue_GamemodeMadnessSlender_Ally(int entity, StringMap map)
 	}
 }
 
+public void Rogue_GamemodeMadnessSlender_Enemy(int entity)
+{
+	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 600.0);
+	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1000.0);
+}
+
 public void Rogue_GamemodeMadness_EnemyRenameSZF(int entity)
 {
 	Rogue_GamemodeMadness_EnemyRename(entity);
