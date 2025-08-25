@@ -245,6 +245,10 @@ enum struct Floor
 
 				kv.GoBack();
 			}
+			else
+			{
+				this.Finals = null;
+			}
 
 			kv.GoBack();
 		}
