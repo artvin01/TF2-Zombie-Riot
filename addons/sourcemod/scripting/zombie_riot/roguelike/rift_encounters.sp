@@ -639,7 +639,7 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 		"Expidonsans had hoped to work with these races to come up with a solution.",
 		"A solution to fight back against the Void and save their worlds.",
 		"Everything the Expidonsans hoped for, was starting to crack."
-	}
+	};
 
 	static const char Chapter3[][] =
 	{
@@ -659,7 +659,7 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 		"Just like how they forgotten themselves, what they made,",
 		"the unforeseen consequences, and what we call now,",
 		"Chaos."
-	}
+	};
 
 	int length = chapter == 0 ? sizeof(Chapter1) : (chapter == 1 ? sizeof(Chapter2) : sizeof(Chapter3));
 	if(progress >= length)
@@ -698,6 +698,8 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 			if(IsClientInGame(client))
 				panel.Send(client, StoryMenuH, 15);
 		}
+
+		delete panel;
 
 		CreateTimer(5.0, Timer_AdvanceStory, progress + 1);
 		Rogue_SetProgressTime(15.0, false);
