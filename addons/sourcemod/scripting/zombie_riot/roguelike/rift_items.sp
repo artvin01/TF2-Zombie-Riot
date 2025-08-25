@@ -15,7 +15,7 @@ stock bool Rogue_Rift_VialityThing()
 {
 	return VialityThing;
 }
-#define DOWNED_STUN_RANGE 150.0
+#define DOWNED_STUN_RANGE 200.0
 stock void Rogue_Rift_FlashVest_StunEnemies(int victim)
 {
 	if(!Rogue_Rift_FlashVestThing())
