@@ -2836,11 +2836,13 @@ void Rogue_TriggerFunction(int pos, any &data = 0)
 {
 	if(CurrentCollection)
 	{
+		ArrayList list = CurrentCollection.Clone();
+
 		Artifact artifact;
-		int length = CurrentCollection.Length;
+		int length = list.Length;
 		for(int i; i < length; i++)
 		{
-			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
+			Artifacts.GetArray(list.Get(i), artifact);
 			Function func = GetItemInArray(artifact, pos);
 			if(func != INVALID_FUNCTION)
 			{
@@ -2849,6 +2851,8 @@ void Rogue_TriggerFunction(int pos, any &data = 0)
 				Call_Finish();
 			}
 		}
+
+		delete list;
 	}
 }
 
