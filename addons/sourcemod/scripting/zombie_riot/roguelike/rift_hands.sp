@@ -334,7 +334,7 @@ static Action RogueHand2MedicalTimer(Handle timer, DataPack pack)
 				float damage = Attributes_GetOnPlayer(client, 8, true, true);
 				damage *= Attributes_Get(weapon, 8, 1.0);
 
-				Explode_Logic_Custom(damage * 6.5, client, client, weapon, _, 400.0);
+				Explode_Logic_Custom(damage * 65.0, client, client, weapon, _, 400.0);
 			}
 
 			return Plugin_Continue;
