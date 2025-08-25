@@ -792,7 +792,6 @@ static void OrbSpam_Ability_Fire(CAT npc)
 	int projectile = npc.FireParticleRocket(vecOrbPos, 10.0, GetRandomFloat(100.0, 400.0), 150.0, "dxhr_lightningball_parent_blue", true);
 	
 	SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-	SDKHook(projectile, SDKHook_Touch, Cat_Rocket_Particle_Touch);
 	SDKHook(projectile, SDKHook_ThinkPost, Cat_Rocket_Particle_Think);
 	
 	NextOrbDamage[projectile] = 0.0;
@@ -828,42 +827,6 @@ bool CAT_timeBased(int iNPC)
 	return false;
 }
 
-static void Cat_Rocket_Particle_Touch(int entity, int target)
-{
-	float gameTime = GetGameTime();
-	if (NextOrbDamage[entity] > gameTime)
-		return;
-	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (!IsValidEntity(owner))
-		owner = 0;
-	
-	if (!owner)
-	{
-		RemoveEntity(entity);
-		return;
-	}
-	
-	if (!IsValidEnemy(owner, target))
-		return;
-	
-	int inflictor = h_ArrowInflictorRef[entity];
-	if(inflictor != -1)
-		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-	
-	if(inflictor == -1)
-		inflictor = owner;
-	
-	float ProjectileLoc[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	
-	KillFeed_SetKillIcon(owner, "spellbook_lightning");
-	
-	float damage = 40.0 * RaidModeScaling;
-	Explode_Logic_Custom(damage, inflictor , owner , -1 , ProjectileLoc , 60.0 , _ , _ , b_rocket_particle_from_blue_npc[entity]);
-	NextOrbDamage[entity] = gameTime + 0.25;
-}
-
 void Cat_Rocket_Particle_Think(int entity)
 {
 	float gameTime = GetGameTime();
@@ -892,6 +855,15 @@ void Cat_Rocket_Particle_Think(int entity)
 		ScaleVector(vecVelocity, 0.95);
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVelocity);
 		SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecVelocity);
+	}
+	
+	KillFeed_SetKillIcon(owner, "spellbook_lightning");
+	
+	if (NextOrbDamage[entity] <= gameTime)
+	{
+		float damage = 40.0 * RaidModeScaling;
+		Explode_Logic_Custom(damage, owner, owner, -1, vecPos, 60.0, _, _, b_rocket_particle_from_blue_npc[entity]);
+		NextOrbDamage[entity] = gameTime + 0.3;
 	}
 	
 	CBaseCombatCharacter(entity).SetNextThink(gameTime + 0.1);

@@ -387,10 +387,10 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 
 
 //This places a spawnpoint somewhere on the map.
-void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax, char[] ParticleToSpawn, int ParticleOffset = 0, bool SpreadVoid = false, int MaxWaves = 2)
+int Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, int SpawnsMax = 2000000000, char[] ParticleToSpawn = "", int ParticleOffset = 0, bool SpreadVoid = false, int MaxWaves = 2)
 {
 	if(VIPBuilding_Active())
-		return;
+		return INVALID_ENT_REFERENCE;
 	
 	// info_player_teamspawn
 	int ref = CreateEntityByName("info_player_teamspawn");
@@ -420,6 +420,8 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 		pack.WriteCell(SpreadVoid);						//Should it spread void?
 		pack.WriteFloat(GetGameTime());						//Spread Void
 	}
+	
+	return ref;
 }
 
 
