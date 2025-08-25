@@ -169,7 +169,7 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 		FreezeNpcInTime(entity, AfkTimer);
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
 	}
-	TeleportDiversioToRandLocation(entity,_,3000.0, 1000.0);
+	TeleportDiversioToRandLocation(entity,_,3000.0, 1500.0);
 }
 
 static void MultiHealth(int entity, float amount)
