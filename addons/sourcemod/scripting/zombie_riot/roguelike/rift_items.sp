@@ -131,7 +131,11 @@ public void Rogue_Mazeat3_Enemy(int entity)
 
 		for(int i; i < Element_MAX; i++)
 		{
-			SetEntPropFloat(entity, Prop_Data, "m_flElementRes", GetEntPropFloat(entity, Prop_Data, "m_flElementRes") - 1.0);
+			float res = GetEntPropFloat(entity, Prop_Data, "m_flElementRes");
+			if(res >= 1.0)
+				continue;
+			
+			SetEntPropFloat(entity, Prop_Data, "m_flElementRes", res - 1.0);
 		}
 	}
 }
@@ -310,6 +314,94 @@ public void Rogue_GravityDefying_Enemy(int entity)
 	i_NpcWeight[entity] -= 2;
 	if(i_NpcWeight[entity] < 0)
 		i_NpcWeight[entity] = 0;
+}
+
+public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			Saga_ChargeReduction(attacker, weapon, 2.0);
+		}
+	}
+}
+
+public void Rogue_BansheeVeil_Enemy(int entity)
+{
+	for(int i; i < Element_MAX; i++)
+	{
+		float res = GetEntPropFloat(entity, Prop_Data, "m_flElementRes");
+		if(res >= 1.0)
+			continue;
+		
+		SetEntPropFloat(entity, Prop_Data, "m_flElementRes", res - 0.5);
+	}
+}
+
+public void Rogue_LittleCube_Ally(int entity, StringMap map)
+{
+	GiveMaxHealth(entity, map, Rogue_GetFloor() == 6 ? 1.8 : 1.1);
+}
+
+public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		int highestPlayer, highestCash;
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(CashSpentTotal[target] > highestCash && IsClientInGame(target))
+			{
+				highestCash = CashSpentTotal[target];
+				highestPlayer = target;
+			}
+		}
+
+		if(highestPlayer == entity)
+		{
+			GiveMaxHealth(entity, map, 1.5);
+
+			static int lastTarget;
+			if(lastTarget != highestPlayer)
+			{
+				lastTarget = highestPlayer;
+				CPrintToChatAll("{red}%N {crimson}recieved +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
+			}
+		}
+	}
+}
+
+public void Rogue_FearlessBlade_Weapon(int entity, int client)
+{
+	int highestPlayer, highestCash;
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		if(CashSpentTotal[target] > highestCash && IsClientInGame(target))
+		{
+			highestCash = CashSpentTotal[target];
+			highestPlayer = target;
+		}
+	}
+
+	if(highestPlayer == client)
+	{
+		// Damage bonus
+		if(Attributes_Has(entity, 2))
+			Attributes_SetMulti(entity, 2, 1.5);
+		
+		if(Attributes_Has(entity, 8))
+			Attributes_SetMulti(entity, 8, 1.5);
+		
+		if(Attributes_Has(entity, 410))
+			Attributes_SetMulti(entity, 410, 1.5);
+	}
+}
+
+public void Rogue_ChaosStar_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(GetTeam(victim) != TFTeam_Red && (damagetype & DMG_TRUEDAMAGE))
+		damage *= 2.5;
 }
 
 static void GiveMaxHealth(int entity, StringMap map, float amount)

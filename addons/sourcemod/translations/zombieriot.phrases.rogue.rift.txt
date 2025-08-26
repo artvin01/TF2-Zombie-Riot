@@ -496,6 +496,46 @@
 	{
 		"en"	"Now, though they float in clouds.\n{green}Enemy weight decreased by -2"
 	}
+	"Devilbane Banner"
+	{
+		"en"	"''Devilbane Banner''"
+	}
+	"Devilbane Banner Desc"
+	{
+		"en"	"Made by Al-Hallem mercenaries loyal to Iberia.\n{green}Weapon cooldown reduced by 2s when hitting an Umbral enemy"
+	}
+	"Great Banshee Veil"
+	{
+		"en"	"Great Banshee's Veil"
+	}
+	"Great Banshee Veil Desc"
+	{
+		"en"	"Impale the agonizing wails into the minds of every intruder.\n{green}Enemies receive +50％ elemental damage"
+	}
+	"Little Cube"
+	{
+		"en"	"Little Cube"
+	}
+	"Little Cube Desc"
+	{
+		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +10％ max health, increased to +80％ when on a bizarre chapter"
+	}
+	"Fearless Blade"
+	{
+		"en"	"Fearless Blade"
+	}
+	"Fearless Blade Desc"
+	{
+		"en"	"Ziberia artilleries, Ruina casters, and Victorian Knights all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
+	}
+	"Chaos Star"
+	{
+		"en"	"''Chaos Star''"
+	}
+	"Chaos Star Desc"
+	{
+		"en"	"A symbol of Chaos.\n{green}Enemies receive +150％ damage from True Damage"
+	}
 
 	"Pots In The Ground"
 	{

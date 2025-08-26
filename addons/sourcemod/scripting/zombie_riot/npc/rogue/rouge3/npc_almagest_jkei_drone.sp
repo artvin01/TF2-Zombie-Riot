@@ -67,9 +67,9 @@ void JkeiDrone_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return JkeiDrone(vecPos, vecAng, team, data);
+	return JkeiDrone(vecPos, vecAng, team);
 }
 
 methodmap JkeiDrone < CClotBody
@@ -167,7 +167,7 @@ methodmap JkeiDrone < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.2);
 	}
 	
-	public JkeiDrone(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public JkeiDrone(float vecPos[3], float vecAng[3], int ally)
 	{
 		JkeiDrone npc = view_as<JkeiDrone>(CClotBody(vecPos, vecAng, "models/bots/demo/bot_sentry_buster.mdl", "0.65", "1000", ally));
 		
