@@ -167,7 +167,7 @@ methodmap ApertureResearcher < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		if(ally == TFTeam_Red)
+		if(ally == TFTeam_Blue)
 		{
 			CPrintToChatAll("{normal}Researcher{default}: 𝙹ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ↸╎ᒷᓭᒷ ᒷꖌᒷꖎ⍑ᔑ⎓ℸ ̣ᒷリ ꖌ∷ᒷᔑℸ ̣⚍∷ᒷリ!!!");
 		}
@@ -300,7 +300,7 @@ public void ApertureResearcher_NPCDeath(int entity)
 		npc.PlayTeleSound();
 	}
 
-	if(GetTeam(npc.index) == TFTeam_Red)
+	if(GetTeam(npc.index) == TFTeam_Blue)
 	{
 		CPrintToChatAll("{normal}Researcher{default}: ⍊ᒷ∷↸ᔑᒲᒲℸ ̣, ↸╎ᒷ ⍑ᔑʖᒷリ ↸𝙹ᓵ⍑ ᓭᓵ⍑𝙹リ ∴ᔑᓭ ↸∷ᔑ⚍⎓!");
 	}

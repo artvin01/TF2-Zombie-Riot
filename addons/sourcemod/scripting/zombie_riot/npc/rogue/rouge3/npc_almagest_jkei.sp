@@ -29,13 +29,28 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 
+static const char g_JkeiChargeMeleeDo[][] =
+{
+	"weapons/vaccinator_charge_tier_01.wav",
+};
 
+static const char g_MeleeHitSoundjkei[][] = {
+	"weapons/halloween_boss/knight_axe_hit.wav",
+};
+static const char g_SpawnSoundDrones[][] = {
+	"mvm/mvm_tele_deliver.wav",
+};
+
+static int NPCId;
 void AlmagestJkei_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSoundjkei)); i++) { PrecacheSound(g_MeleeHitSoundjkei[i]); }
+	for (int i = 0; i < (sizeof(g_JkeiChargeMeleeDo)); i++) { PrecacheSound(g_JkeiChargeMeleeDo[i]); }
+	for (int i = 0; i < (sizeof(g_SpawnSoundDrones)); i++) { PrecacheSound(g_SpawnSoundDrones[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Jkei");
@@ -46,16 +61,20 @@ void AlmagestJkei_OnMapStart_NPC()
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
+int Almagest_Jkei()
+{
+	return NPCId;
+}
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return AlmagestJkei(vecPos, vecAng, team);
+	return AlmagestJkei(vecPos, vecAng, team, data);
 }
 
 methodmap AlmagestJkei < CClotBody
@@ -86,6 +105,10 @@ methodmap AlmagestJkei < CClotBody
 	{
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlaySpawnSound() 
+	{
+		EmitSoundToAll(g_SpawnSoundDrones[GetRandomInt(0, sizeof(g_SpawnSoundDrones) - 1)], _, _, _, _, 0.65);
+	}
 	
 	public void PlayMeleeSound()
 	{
@@ -93,14 +116,50 @@ methodmap AlmagestJkei < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(this.m_flMegaSlashNext)
+			EmitSoundToAll(g_MeleeHitSoundjkei[GetRandomInt(0, sizeof(g_MeleeHitSoundjkei) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		else
+			EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayChargeMeleeHit() 
+	{
+		EmitSoundToAll(g_JkeiChargeMeleeDo[GetRandomInt(0, sizeof(g_JkeiChargeMeleeDo) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
-	
 	property float m_flSummonCircularDudes
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property int m_iBattleStageAt
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
+	property int m_iDroneLevelAt
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
+	property float m_flMegaSlashCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flMegaSlashDoing
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flMegaSlashNext
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property int m_iLayerSave
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
 	}
 	public int EquipItemSword(
 	const char[] attachment,
@@ -165,8 +224,82 @@ methodmap AlmagestJkei < CClotBody
 	}
 
 	
-	public AlmagestJkei(float vecPos[3], float vecAng[3], int ally)
+	public AlmagestJkei(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		if(StrContains(data, "battle_stage_2") != -1)
+		{
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				{
+					RemoveSpecificBuff(other, "Unstoppable Force");
+					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
+					f_AttackSpeedNpcIncrease[other] *= 0.9;
+					fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.1;
+					fl_TotalArmor[other] *= 0.9;
+					i_OverlordComboAttack[other] = 2;
+					return view_as<AlmagestJkei>(-1);
+				}
+			}
+		}
+		if(StrContains(data, "battle_stage_3") != -1)
+		{
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				{
+					RemoveSpecificBuff(other, "Unstoppable Force");
+					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
+					f_AttackSpeedNpcIncrease[other] *= 0.9;
+					fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.1;
+					fl_TotalArmor[other] *= 0.9;
+					i_OverlordComboAttack[other] = 3;
+					return view_as<AlmagestJkei>(-1);
+				}
+			}
+		}
+		if(StrContains(data, "battle_stage_4") != -1)
+		{
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				{
+					RemoveSpecificBuff(other, "Unstoppable Force");
+					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
+					f_AttackSpeedNpcIncrease[other] *= 0.9;
+					fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.2;
+					fl_TotalArmor[other] *= 0.9;
+					i_OverlordComboAttack[other] = 4;
+					return view_as<AlmagestJkei>(-1);
+				}
+			}
+		}
+		if(StrContains(data, "battle_stage_5") != -1)
+		{
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				{
+					RemoveSpecificBuff(other, "Unstoppable Force");
+					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
+					RemoveFromNpcAliveList(other);
+					AddNpcToAliveList(other, 0);
+					f_AttackSpeedNpcIncrease[other] *= 0.85;
+					fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.35;
+					fl_TotalArmor[other] *= 0.75;
+					i_OverlordComboAttack[other] = 5;
+					return view_as<AlmagestJkei>(-1);
+				}
+			}
+		}
 		AlmagestJkei npc = view_as<AlmagestJkei>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "3000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
@@ -177,6 +310,23 @@ methodmap AlmagestJkei < CClotBody
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		
 		
+		if(StrContains(data, "force_final_battle") != -1)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
+			music.Time = 101;
+			music.Volume = 0.65;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Nostaglica");
+			strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
+			Music_SetRaidMusic(music);
+			npc.m_iBattleStageAt = 5;
+		}
+		else
+		{
+			AddNpcToAliveList(npc.index, 1);
+			npc.m_iBattleStageAt = 1;
+		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -186,14 +336,6 @@ methodmap AlmagestJkei < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlmagestJkei_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(AlmagestJkei_ClotThink);
 		
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
-		music.Time = 100;
-		music.Volume = 0.75;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Nostaglica");
-		strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
-		Music_SetRaidMusic(music);
 		
 		
 		if(!IsValidEntity(RaidBossActive))
@@ -294,6 +436,35 @@ public Action AlmagestJkei_OnTakeDamage(int victim, int &attacker, int &inflicto
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	float MaxHealthRatioDamage = 1.0;
+	switch(npc.m_iBattleStageAt)
+	{
+		case 1:
+			MaxHealthRatioDamage = 0.85;
+		case 2:
+			MaxHealthRatioDamage = 0.75;
+		case 3:
+			MaxHealthRatioDamage = 0.50;
+		case 4:
+			MaxHealthRatioDamage = 0.35;
+		case 5:
+			MaxHealthRatioDamage = 0.0;
+	}
+
+	if(MaxHealthRatioDamage != 0.0 && !HasSpecificBuff(npc.index, "Unstoppable Force"))
+	{
+		float CurrentRatio = (float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) + damage) / float(ReturnEntityMaxHealth(npc.index));
+		if(CurrentRatio)
+		{
+			CPrintToChatAll("{black}Jkei{crimson} gains a shield, his soldiers give him strength, kill them off.");
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.0);
+			damage = 0.0;
+			//set to hp
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * MaxHealthRatioDamage));
+			return Plugin_Changed;
+		}
+	}
+
 	return Plugin_Changed;
 }
 
@@ -334,7 +505,6 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
-							
 				target = TR_GetEntityIndex(swingTrace);	
 				
 				float vecHit[3];
@@ -345,18 +515,48 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 					float damageDealt = 650.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.5;
+					if(npc.m_flMegaSlashNext)
+					{
+						damageDealt *= 3.0;
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						Elemental_AddVoidDamage(target, npc.index, 600, true, true);
+						float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 5.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
+						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 25.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
+						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 45.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
+						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 65.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
+					}
+					else
+					{
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+						Elemental_AddVoidDamage(target, npc.index, 200, true, true);
 
-					Elemental_AddVoidDamage(target, npc.index, 200, true, true);
-					// Hit sound
+					}
 					npc.PlayMeleeHitSound();
 				} 
 			}
 			delete swingTrace;
+			npc.m_flMegaSlashNext = 0.0;
+			npc.m_flSpeed = 330.0;
 		}
 	}
-
+	if(npc.m_flMegaSlashDoing)
+	{
+		npc.PlayChargeMeleeHit();
+		float flPos[3], flAng[3];
+		npc.GetAttachment("effect_hand_r", flPos, flAng);
+		spawnRing_Vectors(flPos, 50.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 80, 32, 120, 200, 1, /*duration*/ 0.25, 2.0, 0.0, 1, 1.0);	
+		if(npc.m_flMegaSlashDoing < gameTime)
+		{
+			if(npc.IsValidLayer(npc.m_iLayerSave))
+			{
+				npc.SetLayerPlaybackRate(npc.m_iLayerSave, 1.5);
+			}
+			npc.m_flMegaSlashDoing = 0.0;
+			npc.m_flMegaSlashNext = 1.0;
+		}
+	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
@@ -369,11 +569,29 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
+				if(npc.m_flMegaSlashCD < gameTime)
+				{
+					int Layer;
+					Layer = npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+					npc.SetLayerPlaybackRate(Layer, 0.0);
+					npc.SetLayerCycle(Layer, 0.15);
+					npc.m_iLayerSave = Layer;
+							
+					npc.m_flMegaSlashDoing = gameTime + 1.0;
+					npc.m_flAttackHappens = gameTime + 1.25;
+					npc.m_flDoingAnimation = gameTime + 1.25;
+					npc.m_flNextMeleeAttack = gameTime + 1.75;
+					npc.m_flMegaSlashCD = gameTime + 6.5;
+					npc.m_flSpeed = 150.0;
+				}
+				else
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+							
+					npc.m_flAttackHappens = gameTime + 0.25;
+					npc.m_flDoingAnimation = gameTime + 0.25;
+					npc.m_flNextMeleeAttack = gameTime + 0.85;
+				}
 			}
 		}
 	}
@@ -387,9 +605,15 @@ void Jkei_CreateDrones(int iNpc)
 	{
 		return;
 	}
+	npc.m_iDroneLevelAt++;
 	npc.m_flSummonCircularDudes = GetGameTime(iNpc) + 30.0;
 	int MaxenemySpawnScaling = 2;
 	MaxenemySpawnScaling = RoundToNearest(float(MaxenemySpawnScaling) * MultiGlobalEnemy);
+	npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+	npc.PlaySpawnSound();
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+	TE_Particle("teleported_blue", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("spell_batball_impact_blue", vecMe, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
@@ -408,6 +632,8 @@ void Jkei_CreateDrones(int iNpc)
 			npcsummon.m_iTargetAlly = iNpc;
 			npcsummon.m_iTargetWalkTo = iNpc;
 			npcsummon.m_flNextDelayTime = GetGameTime() + GetRandomFloat(0.1, 0.5);
+			npcsummon.m_iDroneLevelAt = npc.m_iDroneLevelAt;
+			
 			
 			SetEntProp(summon, Prop_Data, "m_iHealth", MaxHealthGet);
 			SetEntProp(summon, Prop_Data, "m_iMaxHealth", MaxHealthGet);
@@ -441,6 +667,7 @@ void Jkei_SpawnMinionsToEnemy(int entity, int victim, float damage, int weapon)
 		npcsummon.m_iTargetAlly = npc.index;
 		npcsummon.m_iTarget = victim;
 		npcsummon.m_flNextDelayTime = GetGameTime() + GetRandomFloat(0.1, 0.5);
+		npcsummon.m_iDroneLevelAt = npc.m_iDroneLevelAt;
 		
 		SetEntProp(summon, Prop_Data, "m_iHealth", MaxHealthGet);
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", MaxHealthGet);
