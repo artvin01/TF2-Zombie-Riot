@@ -392,6 +392,110 @@
 	{
 		"en"	"Reila joins you."
 	}
+	"Gift of Remembrance"
+	{
+		"en"	"Gift of Remembrance"
+	}
+	"Gift of Remembrance Desc"
+	{
+		"en"	"Water from Ruina that never loses its shimmer.\n{green}Umbral Affinity increased by 15"
+	}
+	"Bag of Stones"
+	{
+		"en"	"Bag of Stones"
+	}
+	"Bag of Stones Desc"
+	{
+		"en"	"Stones that possibly used to be alive are perfect for sitting inside bags.\n{yellow}Obtain 3 random voidstones"
+	}
+	"Magic Box"
+	{
+		"en"	"Magic Box"
+	}
+	"Magic Box Desc"
+	{
+		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
+	}
+	"Old Fan"
+	{
+		"en"	"Old Fan"
+	}
+	"Old Fan Desc"
+	{
+		"en"	"When it rains for several days on end.\n{green}Allies gain +70％ damage"
+	}
+	"Scout's Scope"
+	{
+		"en"	"Scout's Scope"
+	}
+	"Scout's Scope Desc"
+	{
+		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +100％ the further the target is"
+	}
+	"Lakebed Aegis"
+	{
+		"en"	"Lakebed Aegis"
+	}
+	"Lakebed Aegis Desc"
+	{
+		"en"	"When it rains for several days on end.\n{green}Allies gain 500 barrier and +35％ damage resistance while current health is above max health"
+	}
+	"Living Woodplate"
+	{
+		"en"	"Living Woodplate"
+	}
+	"Living Woodplate Desc"
+	{
+		"en"	"The Umbrals know how trees will cling to survival.\n{green}Allies gain barrier equal to 50％ max health when revived"
+	}
+	"Medicine Sticks"
+	{
+		"en"	"Medicine Sticks"
+	}
+	"Medicine Sticks Desc"
+	{
+		"en"	"No this isn't weed you stoner.\n{green}Allies gain 2 shields when a wave starts"
+	}
+	"Expidonsan Access Card"
+	{
+		"en"	"Expidonsan Access Card"
+	}
+	"Expidonsan Access Card Desc"
+	{
+		"en"	"Each Mercenary is entitled to one physiotherapy session.\n{green}Players gain +40％ fire rate and reload speed for 10 seconds after being revived"
+	}
+	"Expidonsan Prime Membership"
+	{
+		"en"	"Expidonsan Prime Membership"
+	}
+	"Expidonsan Prime Membership Desc"
+	{
+		"en"	"Each Mercenary is entitled to one comprehensive physical and psychological assessment.\n{green}Players gain +70％ fire rate and reload speed for 10 seconds after being revived"
+	}
+	"Familiar Sculpture"
+	{
+		"en"	"Familiar Sculpture"
+	}
+	"Familiar Sculpture Desc"
+	{
+		"en"	"A familiar face but a different vibe.\n{green}Enemy attack speed decreased by -10％"
+	}
+	"Painful Happiness"
+	{
+		"en"	"''Painful Happiness''"
+	}
+	"Painful Happiness"
+	{
+		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy movement speed decreased by -10％"
+	}
+	"Gravity Defying Machine"
+	{
+		"en"	"Gravity Defying Machine"
+	}
+	"Gravity Defying Machine"
+	{
+		"en"	"Now, though they float in clouds.\n{green}Enemy weight decreased by -2"
+	}
 
 	"Pots In The Ground"
 	{
@@ -455,7 +559,7 @@
 	}
 	"Sprouting Stem Desc"
 	{
-		"en"	"{green}Umbral Affinity decreased by 5 when obtained"
+		"en"	"{green}Umbral Affinity reduced by 5 when obtained"
 	}
 	"Wild Grass by the Door"
 	{
@@ -479,7 +583,7 @@
 	}
 	"Outblood Desc"
 	{
-		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity reduced by 2 after a battle"
 	}
 	"Flames"
 	{
@@ -487,7 +591,7 @@
 	}
 	"Flames Desc"
 	{
-		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity decreased by 3 after a battle"
+		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity reduced by 3 after a battle"
 	}
 	"Lost"
 	{
@@ -511,7 +615,7 @@
 	}
 	"Consume Desc"
 	{
-		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity decreased by 1 after a battle"
+		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity reduced by 1 after a battle"
 	}
 	"Reclaim"
 	{
@@ -519,7 +623,7 @@
 	}
 	"Reclaim Desc"
 	{
-		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity reduced by 2 after a battle"
 	}
 	"Pillage"
 	{
@@ -527,7 +631,7 @@
 	}
 	"Pillage Desc"
 	{
-		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity decreased by 1 after a battle"
+		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity reduced by 1 after a battle"
 	}
 	"Invasion"
 	{
@@ -535,7 +639,7 @@
 	}
 	"Invasion Desc"
 	{
-		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity reduced by 2 after a battle"
 	}
 	"Rise and Fall"
 	{
@@ -543,7 +647,7 @@
 	}
 	"Rise and Fall Desc"
 	{
-		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity decreased by 3 after a battle"
+		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity reduced by 3 after a battle"
 	}
 	"Words"
 	{
@@ -583,7 +687,7 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
+		"en"	"{red}Umbral Affinity reduced by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
 	}
 	"Wordless Deed"
 	{

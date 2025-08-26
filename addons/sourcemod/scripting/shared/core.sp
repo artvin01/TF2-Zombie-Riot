@@ -3537,6 +3537,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		npc.m_bThisEntityIgnored = false;
 		TeleportEntity(target, pos, ang, NULL_VECTOR);
 		SetEntityCollisionGroup(target, 5);
+		Rogue_TriggerFunction(Artifact::FuncRevive, target);
 
 		if(WasClientReviving)
 			PrintCenterText(client, "");

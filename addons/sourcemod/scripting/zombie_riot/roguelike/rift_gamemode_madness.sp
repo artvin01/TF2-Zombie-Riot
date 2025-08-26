@@ -3,7 +3,7 @@
 
 
 //added a space beacuse of name overrides
-char g_RandomPlayerName[][] = 
+static const char g_RandomPlayerName[][] = 
 {
 	" kevinmery2009",
 	" jDavid",
@@ -46,7 +46,7 @@ char g_RandomPlayerName[][] =
 	" Pinkie",
 	" catorgator",
 	" 42",
-	" Screwdriver",
+	" <#F00>Serafeline",
 	" CzechMate",
 	" Dencube",
 	" Drandor",
@@ -106,6 +106,33 @@ char g_RandomPlayerName[][] =
 	" Clearwater",
 	" Igor",
 	" Zati",
+	" CookieCat",
+	" BagelBites",
+	" ihop",
+	" Spookmaster",
+	" Xamad",
+	" ★Dr.Heals ㅇㅅㅇ",
+	" ★GANGST The Trackpad Gamer★",
+	" synthakii",
+	" Syko",
+	" Pasta Stalin",
+	" Flaming",
+	" Rodz",
+	" Solace",
+	" Pandora✔",
+	" bob",
+	" Box",
+	" Greed",
+	" LewandaSillyFeathers",
+	" eno",
+	" tocks",
+	" West.",
+	" FurretX",
+	" Vesp",
+	" UberMedicFully",
+	" Clone",
+	" Kitteh",
+	" LeAlex14"
 };
 
 

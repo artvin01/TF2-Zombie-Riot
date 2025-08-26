@@ -54,6 +54,7 @@ enum struct Artifact
 	Function FuncStageEnd;
 	Function FuncTakeDamage;
 	Function FuncFloorChange;
+	Function FuncRevive;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -97,6 +98,9 @@ enum struct Artifact
 		
 		kv.GetString("func_floorchange", this.Name, 64);
 		this.FuncFloorChange = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_revive", this.Name, 64);
+		this.FuncRevive = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		this.Name[0] = CharToUpper(this.Name[0]);
@@ -1377,9 +1381,9 @@ void Rogue_NextProgress()
 
 			if(RogueTheme == ReilaRift && CurseTime < 0 && CurseOne == -1)	// Reila Rogue starts curses anytime
 			{
-				int diff = Rogue_Rift_CurseLevel();
-				int rank = Rogue_GetUmbralLevel() + (diff - 1);
-				if(diff > 0 && rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
+				bool hard = Rogue_Rift_CurseLevel() > 1;
+				int rank = Rogue_GetUmbralLevel() + (hard ? 1 : 0);
+				if(rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
 				{
 					int length = Curses.Length;
 					if(length)

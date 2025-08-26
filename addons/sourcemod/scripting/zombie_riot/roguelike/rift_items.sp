@@ -136,6 +136,181 @@ public void Rogue_Mazeat3_Enemy(int entity)
 	}
 }
 
+public void Rogue_Umbral15_Collect()
+{
+	Rogue_AddUmbral(15, true);
+}
+
+public void Rogue_Stone3_Collect()
+{
+	for(int i; i < 3; i++)
+	{
+		Artifact artifact;
+		if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
+	}
+}
+
+public void Rogue_Umbral6_Collect()
+{
+	Rogue_AddIngots(4, true);
+	Rogue_AddUmbral(6, true);
+}
+
+public void Rogue_OldFan_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// Building damage
+		value = 1.0;
+		map.GetValue("287", value);
+		map.SetValue("287", value * 1.5);
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(Citizen_IsIt(entity))	// Rebel
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			npc.m_fGunBonusDamage *= 1.7;
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+				npc.BonusDamageBonus *= 1.7;
+			}
+		}
+	}
+}
+
+public void Rogue_OldFan_Weapon(int entity)
+{
+	// Damage bonus
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.7);
+	
+	if(Attributes_Has(entity, 8))
+		Attributes_SetMulti(entity, 8, 1.7);
+	
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.7);
+}
+
+public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(IsValidEntity(attacker) && GetTeam(attacker) == TFTeam_Red)
+	{
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			float pos1[3], pos2[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecOrigin", pos1);
+			GetEntPropVector(attacker, Prop_Data, "m_vecOrigin", pos2);
+
+			static const float MaxDist = 1000000.0;
+
+			float distance = GetVectorDistance(pos1, pos2, true);
+			if(distance > MaxDist)
+			{
+				distance = MaxDist;
+				if(attacker && attacker <= MaxClients)
+					DisplayCritAboveNpc(victim, attacker, true, _, _, true);
+			}
+			
+			damage += damage * (distance / MaxDist);
+		}
+	}
+}
+
+public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(GetTeam(victim) == TFTeam_Red && !(damagetype & DMG_TRUEDAMAGE))
+	{
+		if(GetEntProp(victim, Prop_Data, "m_iHealth") > ReturnEntityMaxHealth(victim))
+			damage *= 0.65;
+	}
+}
+
+public void Rogue_Woodplate_Revive(int entity)
+{
+	HealEntityGlobal(entity, entity, ReturnEntityMaxHealth(entity) / 2.0, 1.0, 2.0, HEAL_ABSOLUTE);
+}
+
+public void Rogue_MedicineSticks_WaveStart()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+			VausMagicaGiveShield(client, 2);
+	}
+
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		{
+			if(GetTeam(entity) == TFTeam_Red)
+				VausMagicaGiveShield(entity, 2);
+		}
+	}
+}
+
+public void Rogue_FireRate40_Revive(int entity)
+{
+	if(entity > 0 && entity <= MaxClients)
+	{
+		int weapon, i;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			if(Attributes_Has(weapon, 6))
+				ApplyTempAttrib(weapon, 6, 0.714286, 10.0);
+			
+			if(Attributes_Has(weapon, 8))
+				ApplyTempAttrib(weapon, 6, 1.4, 10.0);
+			
+			if(Attributes_Has(weapon, 97))
+				ApplyTempAttrib(weapon, 97, 0.714286, 10.0);
+		}
+	}
+}
+
+public void Rogue_FireRate70_Revive(int entity)
+{
+	if(entity > 0 && entity <= MaxClients)
+	{
+		int weapon, i;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			if(Attributes_Has(weapon, 6))
+				ApplyTempAttrib(weapon, 6, 0.588235, 10.0);
+			
+			if(Attributes_Has(weapon, 8))
+				ApplyTempAttrib(weapon, 6, 1.7, 10.0);
+			
+			if(Attributes_Has(weapon, 97))
+				ApplyTempAttrib(weapon, 97, 0.588235, 10.0);
+		}
+	}
+}
+
+public void Rogue_Sculpture_Enemy(int entity)
+{
+	f_AttackSpeedNpcIncrease[entity] *= 1.1;
+}
+
+public void Rogue_PainfulHappy_Enemy(int entity)
+{
+	fl_Extra_Speed[entity] /= 1.1;
+}
+
+public void Rogue_GravityDefying_Enemy(int entity)
+{
+	i_NpcWeight[entity] -= 2;
+	if(i_NpcWeight[entity] < 0)
+		i_NpcWeight[entity] = 0;
+}
 
 static void GiveMaxHealth(int entity, StringMap map, float amount)
 {
