@@ -39,7 +39,7 @@ void Umbral_Refract_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Refract");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_refract");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "refract");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;

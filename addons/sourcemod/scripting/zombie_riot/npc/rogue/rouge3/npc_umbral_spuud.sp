@@ -70,7 +70,7 @@ void Umbral_Spuud_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Spuud");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_spuud");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "spuud");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
