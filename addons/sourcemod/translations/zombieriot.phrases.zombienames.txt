@@ -4953,6 +4953,22 @@
 	{
 		"en"	"Christian Brutal Sniper"
 	}
+	"Randomizer"
+	{
+		"en"	"Randomizer"
+	}
+	"Randomizer Base Flamethrower"
+	{
+		"en"	"Randomizer Base Flamethrower"
+	}
+	"Randomizer Base Huntsman"
+	{
+		"en"	"Randomizer Base Huntsman"
+	}
+	"Randomizer Base Southern Hospitality"
+	{
+		"en"	"Randomizer Base Southern Hospitality"
+	}
 	"???"
 	{
 		"en" "???"
