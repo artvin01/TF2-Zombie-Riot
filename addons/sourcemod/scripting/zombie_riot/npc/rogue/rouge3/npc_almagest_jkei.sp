@@ -64,7 +64,7 @@ void AlmagestJkei_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-int Almagest_Jkei()
+int Almagest_JkeiID()
 {
 	return NPCId;
 }
@@ -231,7 +231,7 @@ methodmap AlmagestJkei < CClotBody
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
@@ -249,7 +249,7 @@ methodmap AlmagestJkei < CClotBody
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
@@ -267,7 +267,7 @@ methodmap AlmagestJkei < CClotBody
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
@@ -285,7 +285,7 @@ methodmap AlmagestJkei < CClotBody
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
