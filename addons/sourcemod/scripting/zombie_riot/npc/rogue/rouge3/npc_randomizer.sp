@@ -24,12 +24,7 @@ void Randomizer_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	data.Precache = ClotPrecache;
 	NPC_Add(data);
-}
-
-static void ClotPrecache()
-{
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
