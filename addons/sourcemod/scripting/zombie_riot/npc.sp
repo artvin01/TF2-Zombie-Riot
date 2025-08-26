@@ -1077,6 +1077,10 @@ void NPC_ConfigSetup()
 	Umbral_Keitosis_OnMapStart_NPC();
 	AlmagestSeinr_OnMapStart_NPC();
 	AlmagestJkei_OnMapStart_NPC();
+	RandomizerBaseFlamethrower_OnMapStart_NPC();
+	RandomizerBaseHuntsman_OnMapStart_NPC();
+	RandomizerBaseSouthernHospitality_OnMapStart_NPC();
+	Randomizer_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2350,3 +2354,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_keitosis.sp"
 #include "npc/rogue/rouge3/npc_almagest_seinr.sp"
 #include "npc/rogue/rouge3/npc_almagest_jkei.sp"
+#include "npc/rogue/rouge3/npc_randomizer.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_flamethrower.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_huntsman.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_southern_hospitality.sp"

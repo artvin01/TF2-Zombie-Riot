@@ -41,7 +41,7 @@ void Umbral_Ltzens_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Ltzens");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_ltzens");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "ltzens");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
