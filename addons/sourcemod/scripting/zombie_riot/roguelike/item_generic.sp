@@ -42,38 +42,13 @@ static float GrigoriCoinPurseCalc()
 public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 {
 	float Multi = GrigoriCoinPurseCalc();
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			npc.m_fGunBonusReload *= Multi;
-			npc.m_fGunBonusFireRate *= Multi;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusFireRate /= Multi;
-			}
-		}
-	}
+	RogueHelp_BodyAPSD(entity, 1.0 / Multi);
 }
 
 public void Rogue_Item_GrigoriCoinPurse_Weapon(int entity)
 {
 	float Multi = GrigoriCoinPurseCalc();
-
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, Multi);
-	if(Attributes_Has(entity, 97))
-		Attributes_SetMulti(entity, 97, Multi);
-	if(Attributes_Has(entity, 733))
-		Attributes_SetMulti(entity, 733, Multi);
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, (1.0 / Multi));
+	RogueHelp_WeaponAPSD(entity, 1.0 / Multi);
 }
 
 public void Rogue_Item_Provoked_Anger()
@@ -283,51 +258,12 @@ public void Rogue_Item_HandWrittenLetter()
 
 public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		//3% more building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.03);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +3% damage bonus
-			npc.m_fGunBonusDamage *= 1.03;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +3% damage bonus
-				npc.BonusDamageBonus *= 1.03;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.03);
 }
 
 public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 {
-	// +3% damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.03);
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.03);
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		if(Attributes_Has(entity, 1))
-			Attributes_SetMulti(entity, 1, 1.03);
-	}
-	//Extra damage for mediguns.
+	RogueHelp_WeaponDamage(entity, 1.03);
 }
 
 
@@ -339,38 +275,7 @@ public void Rogue_Item_CrudeFlute()
 }
 public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +3% max health
-			int health = ReturnEntityMaxHealth(npc.index);
-
-			health = RoundToCeil(float(health) * 1.03);
-
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +3% max health
-				int health = ReturnEntityMaxHealth(npc.index);
-
-				health = RoundToCeil(float(health) * 1.03);
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
-	else if(i_IsABuilding[entity])	// Building
-	{
-
-	}
+	RogueHelp_BodyHealth(entity, map, 1.03);
 }
 
 
@@ -382,50 +287,11 @@ public void Rogue_Item_ScrappedWallet()
 
 public void Rogue_Item_ScrappedWallet_Weapon(int entity)
 {
-	// +1% damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.01);
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.01);
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		if(Attributes_Has(entity, 1))
-			Attributes_SetMulti(entity, 1, 1.01);
-	}
-	//Extra damage for mediguns.
+	RogueHelp_WeaponDamage(entity, 1.01);
 }
 public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		//1% more building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.01);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +1% damage bonus
-			npc.m_fGunBonusDamage *= 1.01;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +1% damage bonus
-				npc.BonusDamageBonus *= 1.01;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.01);
 }
 
 public void Rogue_Item_GoldenCoin()
@@ -497,99 +363,20 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Ally(int entity, StringMap ma
 
 public void Rogue_Item_GenericDamage5_Weapon(int entity)
 {
-	// +5% damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.05);
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.05);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		if(Attributes_Has(entity, 1))
-			Attributes_SetMulti(entity, 1, 1.05);
-	}
+	RogueHelp_WeaponDamage(entity, 1.05);
 }
 public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +5% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.05);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +5% damage bonus
-			npc.m_fGunBonusDamage *= 1.05;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +5% damage bonus
-				npc.BonusDamageBonus *= 1.05;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.05);
 }
 
 public void Rogue_Item_GenericDamage10_Weapon(int entity)
 {
-	// +10% damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.1);
-
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.1);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		if(Attributes_Has(entity, 1))
-			Attributes_SetMulti(entity, 1, 1.1);
-	}
+	RogueHelp_WeaponDamage(entity, 1.1);
 }
 public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +10% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.1);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +10% damage bonus
-			npc.m_fGunBonusDamage *= 1.1;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +10% damage bonus
-				npc.BonusDamageBonus *= 1.1;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.1);
 }
 
 public void Dimensional_Turbulence_Enemy(int iNpc)
@@ -603,58 +390,11 @@ public void Dimensional_Turbulence_Enemy(int iNpc)
 public void Dimensional_Turbulence_Ally(int entity, StringMap map)
 {
 	ApplyStatusEffect(entity, entity, "Dimensional Turbulence", 999999.9);
-	if(map)	// Player
-	{
-		float value;
-
-		// +50% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 1.5);
-
-		value = 1.0;
-		map.GetValue("107", value);
-		map.SetValue("107", value * 1.2);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		// +15% max health
-		int health = RoundToCeil((float(ReturnEntityMaxHealth(entity)) * 1.5));
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-	}
+	RogueHelp_BodyHealth(entity, map, 1.5);
+	RogueHelp_BodySpeed(entity, map, 1.2);
 }
 
 public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +15% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 1.15);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +15% max health
-			int health = RoundToCeil((float(ReturnEntityMaxHealth(npc.index)) * 1.15));
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +15% max health
-				int health = RoundToCeil((float(ReturnEntityMaxHealth(npc.index)) * 1.15));
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
+	RogueHelp_BodyHealth(entity, map, 1.15);
 }

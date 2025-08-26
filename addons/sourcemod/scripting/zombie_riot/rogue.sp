@@ -2958,6 +2958,11 @@ stock int Rogue_GetChaosLevel()
 	return 0;
 }
 
+stock int Rogue_GetUmbral()
+{
+	return CurrentUmbral;
+}
+
 // 0 = Allys, 1 = Friendly, 2 = Netural, 3 = Enemy, 4 = Targeted
 stock int Rogue_GetUmbralLevel()
 {
@@ -3008,7 +3013,12 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 		return;
 	}
 
+	Rogue_Rift_UmbralChange(change);
+
 	CurrentUmbral += change;
+	
+	if(CurrentUmbral < 1)
+		CurrentUmbral = 0;
 
 	Waves_UpdateMvMStats();
 
@@ -3410,6 +3420,7 @@ bool IS_MusicReleasingRadio()
 //ROUGELIKE .sp
 //This is only needed for items that are more then just flat stat changes.
 
+#include "roguelike/helpers.sp"
 #include "roguelike/curses.sp"
 #include "roguelike/encounter_battles.sp"
 #include "roguelike/encounter_items.sp"

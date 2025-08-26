@@ -486,7 +486,7 @@
 	}
 	"Painful Happiness"
 	{
-		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy movement speed decreased by -10％"
+		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -15％"
 	}
 	"Gravity Defying Machine"
 	{
@@ -535,6 +535,70 @@
 	"Chaos Star Desc"
 	{
 		"en"	"A symbol of Chaos.\n{green}Enemies receive +150％ damage from True Damage"
+	}
+	"Unripe Yearning"
+	{
+		"en"	"Unripe Yearning"
+	}
+	"Unripe Yearning Desc"
+	{
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +1％ max health per Umbral Affinity"
+	}
+	"Eye of Fortune"
+	{
+		"en"	"Eye of Fortune"
+	}
+	"Eye of Fortune Desc"
+	{
+		"en"	"People began worshipping discs with a single embedded eye.\n{green}Obtain 5 Australium Ingots, obtain 20 Australium Ingots after Emergency Dispatch operation"
+	}
+	"Thoughts Catcher"
+	{
+		"en"	"Thoughts Catcher"
+	}
+	"Thoughts Catcher Desc"
+	{
+		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 2 Australium Ingots when consuming an item at a Gateway"
+	}
+	"Scales of Avarice"
+	{
+		"en"	"Scales of Avarice"
+	}
+	"Scales of Avarice Desc"
+	{
+		"en"	"Merchants offered money, treasure, and even their lives.\n{green}Obtain 2 Australium Ingots when entering a stage when Umbral Affinity is above 61"
+	}
+	"Personal Paintbrush"
+	{
+		"en"	"Personal Paintbrush"
+	}
+	"Personal Paintbrush Desc"
+	{
+		"en"	"A haunted brush that compels its owners to paint with their own blood.\n{green}Umbral Affinity increased by 1 whenever Umbral Affinity is reduced"
+	}
+	"Survivor Contract"
+	{
+		"en"	"Survivor Contract"
+	}
+	"Survivor Contract Desc"
+	{
+		"en"	"Satisfy them all to be the final survivor.\n{green}Barney and Alyx joins you"
+	}
+	"Survivor Party"
+	{
+		"en"	"Survivor Party"
+	}
+	"Survivor Party Desc"
+	{
+		"en"	"A very long contract, in which every term and condition is the result of experience.\n{green}3 Rebels joins you"
+	}
+	"Soul Binding Bone"
+	{
+		"en"	"Soul Binding Bone"
+	}
+	"Soul Binding Bone Desc"
+	{
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +1％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
