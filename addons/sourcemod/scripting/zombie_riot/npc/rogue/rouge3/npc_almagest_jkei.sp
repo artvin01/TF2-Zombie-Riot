@@ -10,15 +10,13 @@ static const char g_HurtSounds[][] = {
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_item_secop_domination01.mp3",
-	"vo/medic_item_secop_idle03.mp3",
-	"vo/medic_item_secop_idle01.mp3",
-	"vo/medic_item_secop_idle02.mp3",
-	"vo/medic_hat_taunts01.mp3",
-	"vo/medic_hat_taunts04.mp3",
-	"vo/medic_item_secop_round_start05.mp3",
-	"vo/medic_item_secop_round_start07.mp3",
-	"vo/medic_item_secop_kill_assist01.mp3",
+	"vo/medic_sf13_spell_super_jump01.mp3",
+	"vo/medic_sf13_spell_super_speed01.mp3",
+	"vo/medic_sf13_spell_generic04.mp3",
+	"vo/medic_sf13_spell_devil_bargain01.mp3",
+	"vo/medic_sf13_spell_teleport_self01.mp3",
+	"vo/medic_sf13_spell_uber01.mp3",
+	"vo/medic_sf13_spell_zombie_horde01.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -47,9 +45,14 @@ void AlmagestJkei_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return AlmagestJkei(vecPos, vecAng, team);
@@ -62,7 +65,7 @@ methodmap AlmagestJkei < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -94,6 +97,11 @@ methodmap AlmagestJkei < CClotBody
 
 	}
 	
+	property float m_flSummonCircularDudes
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public int EquipItemSword(
 	const char[] attachment,
 	const char[] model,
@@ -140,7 +148,7 @@ methodmap AlmagestJkei < CClotBody
 #endif
 
 		this.m_iWearable5 = Trail_Attach(item, ARROW_TRAIL, 255, 1.0, 40.0, 3.0, 5);
-		SetEntityRenderColor(this.m_iWearable5, 0, 0, 0, 255);
+		SetEntityRenderColor(this.m_iWearable5, 80, 32, 120, 255);
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
 
@@ -172,10 +180,20 @@ methodmap AlmagestJkei < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_flSummonCircularDudes = GetGameTime() + 10.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(AlmagestJkei_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlmagestJkei_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(AlmagestJkei_ClotThink);
+		
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
+		music.Time = 100;
+		music.Volume = 0.75;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Nostaglica");
+		strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
+		Music_SetRaidMusic(music);
 		
 		
 		if(!IsValidEntity(RaidBossActive))
@@ -196,11 +214,12 @@ methodmap AlmagestJkei < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2023_medical_mummy/hwn2023_medical_mummy.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_vampiric_vesture/sf14_vampiric_vesture.mdl");
 		npc.m_iWearable4 = npc.EquipItemSword("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana_soldier.mdl");
+		SetEntityRenderColor(npc.m_iWearable4, 80, 32, 120, 255);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 2);
-		CPrintToChatAll("{black}Jkei{default} : If yoh wanu to geh tu {black}Shadowing darkness{default}... wauh.., weh am i saiing, yoh'll be doud soon.");
+		CPrintToChatAll("{black}Jkei{default} : ∴ᒷリリ ↸⚍ ⨅⚍ {black}Shadowing darkness{default}... ⍑ ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ↸⚍ ∴╎∷ᓭℸ ̣ ᒷ⍑ ⊣ꖎᒷ╎ᓵ⍑ ⍊ᒷ∷∷ᒷᓵꖌᒷリ.");
 		
 
 		return npc;
@@ -236,7 +255,7 @@ public void AlmagestJkei_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
+	Jkei_CreateDrones(npc.index);
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -329,6 +348,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
+					Elemental_AddVoidDamage(target, npc.index, 200, true, true);
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
@@ -356,5 +376,79 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
+	}
+}
+
+
+void Jkei_CreateDrones(int iNpc)
+{
+	AlmagestJkei npc = view_as<AlmagestJkei>(iNpc);
+	if(npc.m_flSummonCircularDudes > GetGameTime(iNpc))
+	{
+		return;
+	}
+	npc.m_flSummonCircularDudes = GetGameTime(iNpc) + 30.0;
+	int MaxenemySpawnScaling = 2;
+	MaxenemySpawnScaling = RoundToNearest(float(MaxenemySpawnScaling) * MultiGlobalEnemy);
+
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
+
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+
+	for(int i; i<MaxenemySpawnScaling; i++)
+	{
+		int summon = NPC_CreateByName("npc_jkei_drone", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+		if(IsValidEntity(summon))
+		{
+			AlmagestJkei npcsummon = view_as<AlmagestJkei>(summon);
+			if(GetTeam(npc.index) != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+
+			npcsummon.m_iTargetAlly = iNpc;
+			npcsummon.m_iTargetWalkTo = iNpc;
+			npcsummon.m_flNextDelayTime = GetGameTime() + GetRandomFloat(0.1, 0.5);
+			
+			SetEntProp(summon, Prop_Data, "m_iHealth", MaxHealthGet);
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", MaxHealthGet);
+
+			NpcStats_CopyStats(npc.index, summon);
+			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
+		}
+	}
+	
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, 9999.9, _, _, true, RAIDBOSS_GLOBAL_ATTACKLIMIT,_,_,_,Jkei_SpawnMinionsToEnemy);
+}
+
+
+void Jkei_SpawnMinionsToEnemy(int entity, int victim, float damage, int weapon)
+{
+	AlmagestJkei npc = view_as<AlmagestJkei>(entity);
+	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
+
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+	int summon = NPC_CreateByName("npc_jkei_drone", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	if(IsValidEntity(summon))
+	{
+		AlmagestJkei npcsummon = view_as<AlmagestJkei>(summon);
+		if(GetTeam(npc.index) != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+
+		npcsummon.m_iTargetAlly = npc.index;
+		npcsummon.m_iTarget = victim;
+		npcsummon.m_flNextDelayTime = GetGameTime() + GetRandomFloat(0.1, 0.5);
+		
+		SetEntProp(summon, Prop_Data, "m_iHealth", MaxHealthGet);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", MaxHealthGet);
+
+		NpcStats_CopyStats(npc.index, summon);
+		fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
+		fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
+		fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
+		fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
 	}
 }

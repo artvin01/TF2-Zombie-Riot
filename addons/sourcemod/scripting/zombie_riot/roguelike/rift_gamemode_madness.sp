@@ -23,6 +23,7 @@ char g_RandomPlayerName[][] =
 	" SimplySmiley",
 	" salty_bert",
 	" light",
+	" asyashi",
 	" BeepG",
 	" MetaB",
 	" Artvin",
@@ -81,7 +82,30 @@ char g_RandomPlayerName[][] =
 	" Owlbine",
 	" ♫ SENSAL ♫",
 	" Tori",
-	" Baka"
+	" Baka",
+	" Tumby",
+	" Trobby",
+	" xtrem_spook",
+	" spinel",
+	" Nakiさん",
+	" Cosmo",
+	" GAIDA BG",
+	" spootis",
+	" MrCow",
+	" Robin :3 (she/her)",
+	" Zati",
+	" Canardé",
+	" Zettabyte",
+	" A Suicidal Soldier",
+	" A Fairy With a Pan",
+	" Pandrodor",
+	" Minealberto112",
+	" ★PedritoGMG★",
+	" Sphynx♡",
+	" The man of fent",
+	" Clearwater",
+	" Igor",
+	" Zati",
 };
 
 
@@ -175,6 +199,10 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 	if(StrEqual(c_NpcName[entity], " Artorias", false) ||
 	 StrEqual(c_NpcName[entity], " Hun oli", false) ||
 	 StrEqual(c_NpcName[entity], " Pinkie", false) ||
+	 StrEqual(c_NpcName[entity], " CocoTM", false) ||
+	 StrEqual(c_NpcName[entity], " Juice", false) ||
+	 StrEqual(c_NpcName[entity], " asyashi", false) ||
+	 StrEqual(c_NpcName[entity], " ♫ SENSAL ♫", false) ||
 	  StrEqual(c_NpcName[entity], " Haxton", false))
 	{
 		fl_Extra_Speed[entity] 				*= 1.55;
