@@ -157,7 +157,7 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 	 StrEqual(c_NpcName[entity], " Pinkie", false) ||
 	  StrEqual(c_NpcName[entity], " Haxton", false))
 	{
-		fl_Extra_Speed[entity] 				*= 1.45;
+		fl_Extra_Speed[entity] 				*= 1.55;
 		fl_Extra_Damage[entity] 			*= 2.5;
 		f_AttackSpeedNpcIncrease[entity] 	*= 0.4;
 		MultiHealth(entity, 				   3.0);
@@ -168,7 +168,7 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 		fl_Extra_Damage[entity] 			*= GetRandomFloat(0.95, 1.35);
 		f_AttackSpeedNpcIncrease[entity] 	*= GetRandomFloat(0.75, 1.05);
 		MultiHealth(entity, 				   GetRandomFloat(0.95, 1.35));
-		float AfkTimer = GetRandomFloat(1.5, 2.0);
+		float AfkTimer = GetRandomFloat(0.5, 2.0);
 		FreezeNpcInTime(entity, AfkTimer);
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
 	}

@@ -8452,6 +8452,11 @@ stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
 	{
+		if(fl_GibVulnerablity[ally] >= 50000.0)
+		{
+			//they are dead or something else, mainly used for Crystilioasion wirthtout making it very expensive to check.
+			return false;
+		}
 		if(b_ThisEntityIgnored[ally])
 		{
 			return false;

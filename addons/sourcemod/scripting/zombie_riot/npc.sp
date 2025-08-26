@@ -1076,6 +1076,7 @@ void NPC_ConfigSetup()
 	Umbral_Spuud_OnMapStart_NPC();
 	Umbral_Keitosis_OnMapStart_NPC();
 	AlmagestSeinr_OnMapStart_NPC();
+	AlmagestJkei_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2348,3 +2349,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_spuud.sp"
 #include "npc/rogue/rouge3/npc_umbral_keitosis.sp"
 #include "npc/rogue/rouge3/npc_almagest_seinr.sp"
+#include "npc/rogue/rouge3/npc_almagest_jkei.sp"

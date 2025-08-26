@@ -126,7 +126,7 @@ methodmap Umbral_Keitosis < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		Is_a_Medic[npc.index] = true;
-		ApplyStatusEffect(npc.index, target, "Anti-Waves", 999.0);
+		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 999.0);
 
 		if(!IsValidEntity(RaidBossActive))
 		{
