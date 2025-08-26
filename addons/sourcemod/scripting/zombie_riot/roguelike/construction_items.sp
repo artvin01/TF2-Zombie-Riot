@@ -48,7 +48,7 @@ public void Construction_Stalker_Ally(int entity, StringMap map)
 
 public void Construction_Stalker_Weapon(int entity)
 {
-	Rogue_WeaponAPSD(entity, 1.1);
+	RogueHelp_WeaponAPSD(entity, 1.1);
 }
 
 public void Construction_HeavyOre_Collect()
