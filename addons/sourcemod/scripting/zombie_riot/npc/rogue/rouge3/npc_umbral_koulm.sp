@@ -43,7 +43,7 @@ void Umbral_Koulm_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Koulm");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_koulm");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "koulm");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
