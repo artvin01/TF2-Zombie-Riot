@@ -5004,6 +5004,13 @@
 	"Seinr"
 	{
 		"en"	"Seinr"
-    
+	}
+	"Jkei"
+	{
+		"en"	"Jkei"
+	}
+	"Jkei Drone"
+	{
+		"en"	"Jkei Drone"
 	}
 }

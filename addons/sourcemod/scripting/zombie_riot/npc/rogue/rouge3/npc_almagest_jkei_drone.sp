@@ -28,10 +28,22 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
+
 static const char g_PassiveSound[][] = {
 	"ambient/nucleus_electricity.wav",
 };
-
+static const char g_PassiveSoundNuke[][] = {
+	"mvm/sentrybuster/mvm_sentrybuster_loop.wav",
+};
+static const char g_SentryBusterNukeSoundIntro[][] = {
+	"mvm/sentrybuster/mvm_sentrybuster_intro.wav",
+};
+static const char g_SentryBusterNukeSoundSpin[][] = {
+	"mvm/sentrybuster/mvm_sentrybuster_spin.wav",
+};
+static const char g_SentryBusterNukeSoundKaboom[][] = {
+	"mvm/sentrybuster/mvm_sentrybuster_explode.wav",
+};
 void JkeiDrone_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -39,9 +51,13 @@ void JkeiDrone_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_PassiveSoundNuke));   i++) { PrecacheSound(g_PassiveSoundNuke[i]);   }
+	for (int i = 0; i < (sizeof(g_SentryBusterNukeSoundIntro));   i++) { PrecacheSound(g_SentryBusterNukeSoundIntro[i]);   }
+	for (int i = 0; i < (sizeof(g_SentryBusterNukeSoundSpin));   i++) { PrecacheSound(g_SentryBusterNukeSoundSpin[i]);   }
+	for (int i = 0; i < (sizeof(g_SentryBusterNukeSoundKaboom));   i++) { PrecacheSound(g_SentryBusterNukeSoundKaboom[i]);   }
 	PrecacheModel("models/bots/demo/bot_sentry_buster.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "JkeiDrone");
+	strcopy(data.Name, sizeof(data.Name), "Jkei Drone");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_jkei_drone");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
 	data.IconCustom = false;
@@ -74,10 +90,29 @@ methodmap JkeiDrone < CClotBody
 	{
 		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 70);
 	}
+	public void PlayPassiveSoundNuke()
+	{
+		EmitSoundToAll(g_SentryBusterNukeSoundIntro[GetRandomInt(0, sizeof(g_SentryBusterNukeSoundIntro) - 1)], this.index, SNDCHAN_STATIC, 90, _, 0.5, 100);
+		EmitSoundToAll(g_PassiveSoundNuke[GetRandomInt(0, sizeof(g_PassiveSoundNuke) - 1)], this.index, SNDCHAN_STATIC, 90, _, 0.6, 100);
+	}
+	public void PlayIntroNukeSound()
+	{
+		EmitSoundToAll(g_SentryBusterNukeSoundSpin[GetRandomInt(0, sizeof(g_SentryBusterNukeSoundSpin) - 1)], this.index, SNDCHAN_STATIC, 90, _, 0.6, 100);
+		this.StopPassiveSoundNuke();
+	}
+	public void PlayIntroNukeBoom()
+	{
+		EmitSoundToAll(g_SentryBusterNukeSoundKaboom[GetRandomInt(0, sizeof(g_SentryBusterNukeSoundKaboom) - 1)], this.index, SNDCHAN_STATIC, 90, _, 0.6, 100);
+	}
 	public void StopPassiveSound()
 	{
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+	}
+	public void StopPassiveSoundNuke()
+	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSoundNuke[GetRandomInt(0, sizeof(g_PassiveSoundNuke) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSoundNuke[GetRandomInt(0, sizeof(g_PassiveSoundNuke) - 1)]);
 	}
 	
 	
@@ -92,6 +127,21 @@ methodmap JkeiDrone < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flKamikazeDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	property float m_flKamikazeDoing
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property int m_iDroneLevelAt
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 	
 	public void PlayMeleeSound(bool AttackFast)
@@ -151,6 +201,7 @@ methodmap JkeiDrone < CClotBody
 		npc.m_flSpeed = 450.0;
 		
 		
+		AddNpcToAliveList(npc.index, 1);
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 255);
@@ -161,8 +212,8 @@ methodmap JkeiDrone < CClotBody
 		JkeiDrone npcWearable = view_as<JkeiDrone>(npc.m_iWearable2);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		npcWearable.GetAttachment("", flPos, flAng);
-		npcWearable.m_iWearable3 = ParticleEffectAt_Parent(flPos, "unusual_smoking",				npcWearable.index, "", {0.0,0.0,5.0});
-		npcWearable.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcWearable.index, "", {0.0,0.0,-5.0});
+		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "unusual_smoking",				npcWearable.index, "", {0.0,0.0,5.0});
+		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npcWearable.index, "", {0.0,0.0,-5.0});
 
 		npc.m_iWearable5 = Trail_Attach(npc.m_iWearable2, ARROW_TRAIL, 255, 1.0, 30.0, 3.0, 5);
 		SetEntityRenderColor(npc.m_iWearable5, 0, 0, 0, 255);
@@ -189,12 +240,53 @@ public void JkeiDrone_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
+	if(npc.m_flKamikazeDoing)
+	{
+		if(npc.m_flKamikazeDoing < GetGameTime(npc.index))
+		{
+			npc.PlayIntroNukeBoom();
+			Explode_Logic_Custom(2000.0, npc.index, npc.index, -1, _, 200.0, _, _, true, 99);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+			TE_Particle("rd_robot_explosion", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		}
+		return;
+	}
 	if(npc.m_flPlaySoundPassive)
 	{
 		npc.PlayPassiveSound();
 		npc.m_flPlaySoundPassive = 0.0;
 	}
-	
+	if(!IsValidEntity(npc.m_iTargetAlly))
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		return;
+	}
+	JkeiDrone npcally = view_as<JkeiDrone>(npc.m_iTargetAlly);
+	if(npc.m_flKamikazeDo == 1.0)
+	{
+		//delay sound so you arent ear destroyed
+		npc.PlayPassiveSoundNuke();
+		npc.m_flKamikazeDo = 2.0;
+	}
+	if(!npc.m_flKamikazeDo && npcally.m_iDroneLevelAt != npc.m_iDroneLevelAt)
+	{
+		//kamikazte!!!
+		npc.StopPassiveSound();
+		npc.m_flKamikazeDo = 1.0;
+		npc.m_iTargetWalkTo = 0;
+		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_flNextDelayTime = GetGameTime(npc.index) + GetRandomFloat(0.5, 1.0);
+		if(IsValidEntity(npc.m_iWearable6))
+			RemoveEntity(npc.m_iWearable6);
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
+		SetEntityRenderColor(npc.index, 255, 0, 0, 255);
+	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -219,7 +311,7 @@ public void JkeiDrone_ClotThink(int iNPC)
 		static const float maxs[] = { 10.0, 10.0, 10.0 };
 		static const float mins[] = { -10.0, -10.0, -10.0 };
 		Handle trace;
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, VecSelfNpc);
 		trace = TR_TraceHullFilterEx(VecSelfNpc, VecAlly,mins,maxs , MASK_NPCSOLID, TraceRayHitWorldOnly);
 
 		if(TR_DidHit(trace))
@@ -253,7 +345,20 @@ public void JkeiDrone_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		//get a random target, not closest.
+		int victims;
+		int[] victim = new int[MAXENTITIES];
+
+		for (int victimloop = 1; victimloop < MAXENTITIES; victimloop++)
+		{
+			if(IsValidEnemy(npc.index, victimloop))
+				victim[victims++] = victimloop;
+		}
+		if(victims)
+		{
+			int winner = victim[GetURandomInt() % victims];
+			npc.m_iTarget = winner;
+		}
 		npc.m_flGetClosestTargetTime = FAR_FUTURE;
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -264,6 +369,16 @@ public void JkeiDrone_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		//Get the normal prediction code.
+		if(npc.m_flKamikazeDo && flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		{
+			npc.AddActivityViaSequence("taunt04");
+			npc.m_bisWalking = false;
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+			npc.PlayIntroNukeSound();
+			npc.m_flKamikazeDoing = GetGameTime(npc.index) + 2.1;
+			return;
+		}
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
@@ -281,7 +396,6 @@ public void JkeiDrone_ClotThink(int iNPC)
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 }
 
@@ -303,6 +417,7 @@ public void JkeiDrone_NPCDeath(int entity)
 {
 	JkeiDrone npc = view_as<JkeiDrone>(entity);
 	npc.StopPassiveSound();
+	npc.StopPassiveSoundNuke();
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
@@ -320,6 +435,8 @@ public void JkeiDrone_NPCDeath(int entity)
 void JkeiDrone_DoLaser(int iNpc)
 {
 	JkeiDrone npc = view_as<JkeiDrone>(iNpc);
+	if(npc.m_flKamikazeDo)
+		return;
 	if(IsValidEntity(npc.m_iTargetAlly))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
