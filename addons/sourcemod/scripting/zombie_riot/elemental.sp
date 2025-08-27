@@ -118,7 +118,7 @@ stock float Elemental_DamageRatio(int entity, int type)
 int Elemental_TriggerDamage(int entity, int type)
 {
 	if(entity <= MaxClients)
-		return MaxArmorCalculation(Armor_Level[entity], entity, type == Element_Warped ? 2.0 : 1.0);
+		return MaxArmorCalculation(Armor_Level[entity], entity, type == Element_Warped ? 4.0 : 1.0);
 	
 	float divide = 3.0;
 
