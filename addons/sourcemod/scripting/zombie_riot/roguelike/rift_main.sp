@@ -451,7 +451,7 @@ static void FinishRiftVote(const Vote vote)
 	{
 		case -1:
 		{
-			Rogue_SetProgressTime(5.0, false);
+			EndRiftVote();
 		}
 		default:
 		{	
@@ -497,7 +497,7 @@ static void FinishRiftVote(const Vote vote)
 
 			if(ConsumeLimit < 1)
 			{
-				Rogue_SetProgressTime(5.0, false);
+				EndRiftVote();
 			}
 			else
 			{
@@ -506,6 +506,31 @@ static void FinishRiftVote(const Vote vote)
 				Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
 			}
 		}
+	}
+}
+
+static void EndRiftVote()
+{
+	if(Rogue_HasNamedArtifact("Twirl Guidance"))
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(other != -1 && i_NpcInternalId[other] == TwirlFollower_ID() && IsEntityAlive(other))
+			{
+				SmiteNpcToDeath(other);
+				break;
+			}
+		}
+
+		Rogue_SetProgressTime(10.0, false);
+
+		Rogue_RemoveNamedArtifact("Twirl Guidance");
+		CPrintToChatAll("EndRiftVote");	// Add Twirl leave dialogue
+	}
+	else
+	{
+		Rogue_SetProgressTime(5.0, false);
 	}
 }
 
@@ -519,6 +544,12 @@ static void GiveCash(int cash)
 public void Rogue_RiftEasy_Collect()
 {
 	DifficultyLevel = 0;
+	
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+	
+	if(!Rogue_HasNamedArtifact("Twirl Guidance"))
+		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
 public void Rogue_RiftEasy_Enemy(int entity)
@@ -532,6 +563,12 @@ public void Rogue_RiftEasy_Enemy(int entity)
 public void Rogue_RiftNormal_Collect()
 {
 	DifficultyLevel = 1;
+	
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+	
+	if(!Rogue_HasNamedArtifact("Twirl Guidance"))
+		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
 public void Rogue_RiftNormal_Enemy(int entity)
@@ -547,6 +584,12 @@ public void Rogue_RiftHard_Collect()
 {
 	DifficultyLevel = 2;
 	Rogue_GiveNamedArtifact("Fractured");
+	
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+	
+	if(!Rogue_HasNamedArtifact("Twirl Guidance"))
+		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
 public void Rogue_RiftHard_Enemy(int entity)
@@ -753,9 +796,7 @@ public void Rogue_StoneFractured_Remove()
 		Rogue_GiveNamedArtifact("Rift of Fractured");
 
 		if(!Rogue_HasNamedArtifact("Bob's Assistance"))
-		{
 			Rogue_GiveNamedArtifact("Bob's Assistance", true);
-		}
 	}
 }
 
