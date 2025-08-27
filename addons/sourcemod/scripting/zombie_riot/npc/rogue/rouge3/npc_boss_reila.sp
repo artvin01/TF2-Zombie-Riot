@@ -47,7 +47,6 @@ static int NPCId;
 void BossReila_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-//	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
@@ -387,6 +386,21 @@ public void BossReila_NPCDeath(int entity)
 {
 	BossReila npc = view_as<BossReila>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+	{
+		Waves_ClearWave();
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
+			{
+				if(entitynpc != INVALID_ENT_REFERENCE && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
+			}
+		}
+	}
 		
 	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
@@ -620,7 +634,7 @@ void Reila_DrawBigAssLaser(float Angles[3], int client, float AngleDeviation = 1
 	Laser.client = client;
 	Laser.DoForwardTrace_Custom(Angles, VecMe, Distance);
 	Laser.Damage = 500.0;                //how much dmg should it do?        //100.0*RaidModeScaling
-	Laser.Bonus_Damage = 150.0;            //dmg vs things that should take bonus dmg.
+	Laser.Bonus_Damage = 1500.0;            //dmg vs things that should take bonus dmg.
 	Laser.damagetype = DMG_PLASMA;        //dmg type.
 	Laser.Radius = LaserFatness;                //how big the radius is / hull.
 	Laser.Deal_Damage();

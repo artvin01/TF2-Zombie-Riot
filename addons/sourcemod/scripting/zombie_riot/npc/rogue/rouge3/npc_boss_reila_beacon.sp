@@ -47,6 +47,7 @@ void ReilaBeacon_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_ReilaChargeMeleeDo)); i++) { PrecacheSound(g_ReilaChargeMeleeDo[i]); }
 	for (int i = 0; i < (sizeof(g_SpawnSoundDrones)); i++) { PrecacheSound(g_SpawnSoundDrones[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	PrecacheSound("mvm/mvm_bought_in.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila's Beacon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beacon_reila");
@@ -183,6 +184,10 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Very Defensive Backup", 0.6);
 			RaidModeScaling *= 1.2;
 		}
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		TE_Particle("xms_snowburst_child01", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+		
 		CPrintToChatAll("{green}You gain more time before the Curtain closes...{crimson} However, both {pink}Reila{crimson} and the Construct become stronger.");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 		MultiHealth(npc.index, 1.5);
