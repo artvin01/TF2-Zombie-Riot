@@ -86,7 +86,7 @@ static const char g_RandomPlayerName[][] =
 	" Tumby",
 	" Trobby",
 	" xtrem_spook",
-	" spinel",
+	" spindel",
 	" Nakiさん",
 	" Cosmo",
 	" GAIDA BG",

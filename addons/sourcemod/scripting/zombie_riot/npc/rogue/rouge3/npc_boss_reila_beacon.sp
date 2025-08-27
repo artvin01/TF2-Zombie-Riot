@@ -38,7 +38,6 @@ static const char g_SpawnSoundDrones[][] = {
 	"mvm/mvm_tele_deliver.wav",
 };
 
-static int NPCId;
 void ReilaBeacon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -57,13 +56,9 @@ void ReilaBeacon_OnMapStart_NPC()
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
 }
 
-int Boss_ReilaID()
-{
-	return NPCId;
-}
 static void ClotPrecache()
 {
 	return;
@@ -96,50 +91,46 @@ methodmap ReilaBeacon < CClotBody
 		
 		
 	}
+	property float m_flSpawnAnnotation
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 
 	public ReilaBeacon(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		ReilaBeacon npc = view_as<ReilaBeacon>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "3000", ally));
+		ReilaBeacon npc = view_as<ReilaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.3", "99999", ally, .NpcTypeLogic = 1));
 		
-		i_NpcWeight[npc.index] = 4;
-		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		i_NpcWeight[npc.index] = 999;
 		
-		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		npc.SetActivity("ACT_MP_RUN_ITEM1");
+		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_flMeleeArmor = 2.5;
+		npc.m_flRangedArmor = 1.0;
+
+		npc.m_iBleedType = BLEEDTYPE_METAL;
+		npc.m_iStepNoiseType = 0;	
+		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
+		npc.SetPlaybackRate(1.435);	
+		npc.m_flSpawnAnnotation = GetGameTime() + 0.5;
+
+		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
+		i_NpcIsABuilding[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 9999.0);
+
+		//these are default settings! please redefine these when spawning!
 
 		func_NPCDeath[npc.index] = view_as<Function>(ReilaBeacon_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ReilaBeacon_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ReilaBeacon_ClotThink);
-		
 
-		if(!IsValidEntity(RaidBossActive))
-		{
-			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 9000.0;
-			RaidAllowsBuildings = true;
-			RaidModeScaling = 0.0;
-		}
-		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
-		
-		
-		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec23_boarders_beanie_style2/dec23_boarders_beanie_style2_engineer.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_engineer_gunslinger.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_zipper_suit/sbox2014_zipper_suit_engineer.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_delldozer_style2/hwn2024_delldozer_style2.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/robotarm_silver/robotarm_silver_gem.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/robotarm_silver/robotarm_silver_gem.mdl");
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl", "idle"			, .model_size = 1.5);
+		npc.m_iWearable2 = npc.EquipItemSeperate("models/props_moonbase/moon_gravel_crystal.mdl", "idle", .model_size = 1.4);
 
-		CPrintToChatAll("{pink}Reila{default} : .");
+		//counts as a static npc, means it wont count towards NPC limit.
+		AddNpcToAliveList(npc.index, 1);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		
 
 		return npc;
@@ -148,67 +139,54 @@ methodmap ReilaBeacon < CClotBody
 
 public void ReilaBeacon_ClotThink(int iNPC)
 {
-	ReilaBeacon npc = view_as<ReilaBeacon>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
+	//Need to check this often sadly.
+	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	{
+		//there is no more valid ally, suicide.
+		SmiteNpcToDeath(npc.index);
+		return;
+	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
-
-	if(IsValidEnemy(npc.index, npc.m_iTarget))
-	{
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
-		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			npc.SetGoalVector(vPredictedPos);
-		}
-		else 
-		{
-			npc.SetGoalEntity(npc.m_iTarget);
-		}
-		ReilaBeaconSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-	}
-	else
-	{
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
-	}
-	npc.PlayIdleAlertSound();
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 1.0;
+	ReilaBeacon_SpawnAnnotation(iNPC);
 }
 
 public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	ReilaBeacon npc = view_as<ReilaBeacon>(victim);
-		
-	if(attacker <= 0)
-		return Plugin_Continue;
-		
+
+	
+	if(damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+	{
+		if(IsValidEntity(npc.m_iTargetAlly))
+		{
+			f_AttackSpeedNpcIncrease[npc.m_iTargetAlly] *= 0.85;
+			fl_Extra_Speed[npc.m_iTargetAlly] 			*= 1.05;
+			fl_Extra_Damage[npc.m_iTargetAlly] 			*= 1.25;
+		}
+		CPrintToChatAll("{green}You gain more time before the Curtain closes...{crimson} However, both {pink}Reila{crimson} and the Construct become stronger.");
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
+		MultiHealth(npc.index, 1.5);
+		RaidModeTime = GetGameTime(npc.index) + 120.0;
+		damage = 0.0;
+		return Plugin_Changed;
+	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -296,4 +274,41 @@ void ReilaBeaconSelfDefense(ReilaBeacon npc, float gameTime, int target, float d
 			}
 		}
 	}
+}
+
+
+
+void ReilaBeacon_SpawnAnnotation(int iNPC)
+{
+	CHIMERA npc = view_as<CHIMERA>(iNPC);
+	if(!npc.m_flSpawnAnnotation)
+		return;
+	if(npc.m_flSpawnAnnotation > GetGameTime())	
+		return;
+	npc.m_flSpawnAnnotation = 0.0;
+
+	Event event = CreateEvent("show_annotation");
+	if(event)
+	{
+		static float pos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+		pos[2] += 160.0;
+		event.SetFloat("worldPosX", pos[0]);
+		event.SetFloat("worldPosY", pos[1]);
+		event.SetFloat("worldPosZ", pos[2]);
+		event.SetInt("follow_entindex", npc.index);
+		event.SetFloat("lifetime", 8.0);
+		event.SetString("text", "Curtain closer!\nDestroy to regain timer!");
+		event.SetString("play_sound", "vo/null.mp3");
+		event.SetInt("id", 6000+npc.index);
+		event.Fire();
+	}
+}
+
+
+
+static void MultiHealth(int entity, float amount)
+{
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
 }

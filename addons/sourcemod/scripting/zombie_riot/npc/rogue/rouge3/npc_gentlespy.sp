@@ -251,6 +251,10 @@ public void GentleSpy_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
+	if(cloaked)
+	{
+		NPCStats_RemoveAllDebuffs(npc.index);
+	}
 	//Go invis
 	if(npc.m_flAbilityOrAttack0)
 	{
@@ -317,7 +321,7 @@ public void GentleSpy_ClotThink(int iNPC)
 	{
 		if(npc.m_flAbilityOrAttack3 < GetGameTime(npc.index))
 		{
-			SetEntityCollisionGroup(npc.index, 0);
+			SetEntityCollisionGroup(npc.index, 24);
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);

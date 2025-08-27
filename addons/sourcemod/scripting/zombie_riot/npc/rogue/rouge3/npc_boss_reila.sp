@@ -161,7 +161,7 @@ methodmap BossReila < CClotBody
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidModeTime = GetGameTime(npc.index) + 80.0;
 			RaidAllowsBuildings = true;
 			RaidModeScaling = 0.0;
 		}
@@ -236,8 +236,6 @@ public void BossReila_ClotThink(int iNPC)
 			RemoveEntity(npc.m_iWearable8);
 		if(IsValidEntity(npc.m_iWearable9))
 			RemoveEntity(npc.m_iWearable9);
-		if(IsValidEntity(npc.m_iWearable10))
-			RemoveEntity(npc.m_iWearable10);
 		npc.SetActivity("ACT_MP_RUN_ITEM2");
 		npc.RemoveGesture("ACT_MP_ATTACK_STAND_GRENADE");
 		npc.m_iChanged_WalkCycle = 1;
@@ -449,7 +447,7 @@ bool ReilaReflectDamageDo(int iNpc)
 		
 		if(npc.m_flReflectInMode < GetGameTime(npc.index))
 		{
-			npc.m_flReflectInMode = false;
+			npc.m_flReflectInMode = 0.0;
 		}	
 		return true;
 	}
@@ -467,9 +465,7 @@ void Reila_DrawBigAssLaser(float Angles[3], int client, float AngleDeviation = 1
 	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	float LaserFatness = 25.0;
 	int Colour[4];
-
-	float VectorForward = 5000.0; //a really high number.
-
+	
 	float VecMe[3]; WorldSpaceCenter(client, VecMe);
 	Ruina_Laser_Logic Laser;
 	float Distance = 500.0;
