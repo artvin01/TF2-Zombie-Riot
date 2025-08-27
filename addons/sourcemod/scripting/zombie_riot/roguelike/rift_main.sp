@@ -526,7 +526,9 @@ static void EndRiftVote()
 		Rogue_SetProgressTime(10.0, false);
 
 		Rogue_RemoveNamedArtifact("Twirl Guidance");
-		CPrintToChatAll("EndRiftVote");	// Add Twirl leave dialogue
+		CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
+		CPrintToChatAll("{purple}Twirl{snow} : Hey and if you die, i'll take care of everything, not joking.");
+		CPrintToChatAll("{black}Izan{default} : Bye.");
 	}
 	else
 	{
