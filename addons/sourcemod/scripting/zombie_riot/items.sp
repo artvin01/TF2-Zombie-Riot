@@ -36,6 +36,7 @@ static const char Categories[][] =
 	"Whiteflower Specials",
 	"Victoria",
 	"Matrix",
+	"Aperture",
 	"Mutations",
 };
 

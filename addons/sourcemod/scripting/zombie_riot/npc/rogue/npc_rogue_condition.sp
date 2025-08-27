@@ -96,15 +96,51 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
 
-		if(friendly)
+		if(GetTeam(entity) == TFTeam_Red)
 		{
-			fl_Extra_Damage[entity] *= 10.0;
-			fl_Extra_MeleeArmor[entity] *= 10.0;
-			fl_Extra_RangedArmor[entity] *= 10.0;
+			RequestFrame(Umbral_AdjustStats, EntIndexToEntRef(entity));
+			TeleportNpcToRandomPlayer(entity);
+		}
+		else
+		{
+			switch(Rogue_GetUmbralLevel())
+			{
+				case 4:
+				{
+					//if completly hated.
+					//no need to adjust HP scaling, so it can be done here.
+					fl_Extra_Damage[entity] *= 2.0;
+					fl_Extra_MeleeArmor[entity] *= 0.65;
+					fl_Extra_RangedArmor[entity] *= 0.65;
+				}
+			}
 		}
 
 		return entity;
 	}
 	
 	return -1;
+}
+static void Umbral_AdjustStats(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
+
+	fl_Extra_Damage[entity] *= 5.0;
+	MultiHealth(entity, 0.05);
+	int HealthGet = ReturnEntityMaxHealth(entity);
+	if(HealthGet >= 3000)
+	{
+		//give more dmg again!
+		fl_Extra_Damage[entity] *= 2.0;
+		SetEntProp(entity, Prop_Data, "m_iHealth", 3000);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 3000);
+	}
+}
+
+static void MultiHealth(int entity, float amount)
+{
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
 }

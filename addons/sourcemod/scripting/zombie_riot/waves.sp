@@ -2499,6 +2499,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(subgame)
 				{
+					if(FogEntity != INVALID_ENT_REFERENCE)
+					{
+						int entity = EntRefToEntIndex(FogEntity);
+						if(entity > MaxClients)
+							RemoveEntity(entity);
+						
+						FogEntity = INVALID_ENT_REFERENCE;
+					}
+					
 					if(Construction_Mode())
 					{
 						Construction_BattleVictory();

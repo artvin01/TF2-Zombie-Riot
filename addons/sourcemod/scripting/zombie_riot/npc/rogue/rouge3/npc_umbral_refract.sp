@@ -39,7 +39,7 @@ void Umbral_Refract_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Refract");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_refract");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "refract");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
@@ -78,6 +78,11 @@ methodmap Umbral_Refract < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flJumpCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -126,6 +131,9 @@ methodmap Umbral_Refract < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		npc.m_iBleedType = BLEEDTYPE_UMBRAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -148,6 +156,14 @@ methodmap Umbral_Refract < CClotBody
 		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 125);
 
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_road_block/hwn2022_road_block.mdl");
+		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_maniacs_manacles/hw2013_maniacs_manacles.mdl");
+		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
+		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
+		
 		return npc;
 	}
 }
@@ -213,7 +229,7 @@ public void Umbral_Refract_ClotThink(int iNPC)
 	if(npc.m_flCauseDamage)
 	{
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float RadiusDamage = 65.0;
+		float RadiusDamage = 100.0;
 		spawnRing_Vectors(f3_NpcSavePos[npc.index], RadiusDamage*2.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.15, 8.0, 1.5, 1);
 		spawnRing_Vectors(f3_NpcSavePos[npc.index], RadiusDamage*2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.15, 8.0, 1.5, 1);
 		TE_SetupBeamPoints(VecSelfNpc, f3_NpcSavePos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.12, 5.0, 6.0, 0, 5.0, {255,50,50,255}, 3);
@@ -270,12 +286,13 @@ public Action Umbral_Refract_OnTakeDamage(int victim, int &attacker, int &inflic
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + (DEFAULT_HURTDELAY * 2.0);
-		npc.m_blPlayHurtAnimation = true;
-		if(npc.IsOnGround())
+		if(npc.IsOnGround() && npc.m_flJumpCD < GetGameTime(npc.index))
 		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + (DEFAULT_HURTDELAY * 2.0);
+			npc.m_blPlayHurtAnimation = true;
 			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", f3_NpcSavePos[victim]);
 			f3_NpcSavePos[victim][2] += 5.0;
+			npc.m_flJumpCD = GetGameTime(npc.index) + 3.0;
 		}
 		
 	}

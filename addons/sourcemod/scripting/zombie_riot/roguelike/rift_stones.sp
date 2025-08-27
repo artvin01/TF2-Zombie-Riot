@@ -49,7 +49,7 @@ public void Rogue_StoneItem1_Remove()
 
 public void Rogue_StoneItem2_Collect()
 {
-	Rogue_AddUmbral(-9, true);
+	Rogue_AddUmbral(-6, true);
 }
 
 public void Rogue_StoneItem2_Remove()
@@ -66,13 +66,13 @@ public void Rogue_StoneItem2_Remove()
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
 		
-		Rogue_AddUmbral(9);
+		Rogue_AddUmbral(6);
 	}
 }
 
 public void Rogue_StoneItem3_Collect()
 {
-	Rogue_AddUmbral(-9, true);
+	Rogue_AddUmbral(-12, true);
 }
 
 public void Rogue_StoneItem3_Remove()
@@ -80,7 +80,7 @@ public void Rogue_StoneItem3_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -89,7 +89,7 @@ public void Rogue_StoneItem3_Remove()
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
 		
-		Rogue_AddUmbral(9);
+		Rogue_AddUmbral(12);
 	}
 }
 
@@ -117,7 +117,7 @@ public void Rogue_StoneSprout_Remove()
 
 public void Rogue_StoneCheerful_Collect()
 {
-	Rogue_AddUmbral(-15, true);
+	Rogue_AddUmbral(-12, true);
 }
 
 public void Rogue_StoneCheerful_Remove()
@@ -125,7 +125,7 @@ public void Rogue_StoneCheerful_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
+		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -151,7 +151,7 @@ public void Rogue_StoneNemesis_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -545,19 +545,32 @@ public void Rogue_StoneFurnace_Remove()
 	}
 }
 
-public void Rogue_StoneFractured_Collect()
-{
-	Rogue_AddUmbral(-5, true);
-}
-
-public void Rogue_StoneFractured_FloorChange()
-{
-	Rogue_AddUmbral(-5);
-}
-
 static void GiveCash(int cash)
 {
 	CurrentCash += cash;
 	GlobalExtraCash += cash;
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
+}
+
+
+
+public void Rogue_LelouchCrestBroken_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+		//give 1 armor level
+		map.GetValue("701", value);
+		map.SetValue("701", value + 50.0);
+	}
+}
+public void Rogue_IncorruptableLeaf_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+		//give 30% res
+		map.GetValue("4049", value);
+		map.SetValue("4049", value * 0.7);
+	}
 }

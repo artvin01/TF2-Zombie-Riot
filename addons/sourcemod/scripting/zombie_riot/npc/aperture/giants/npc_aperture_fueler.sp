@@ -95,7 +95,7 @@ methodmap ApertureFueler < CClotBody
 	
 	public ApertureFueler(float vecPos[3], float vecAng[3], int ally)
 	{
-		ApertureFueler npc = view_as<ApertureFueler>(CClotBody(vecPos, vecAng, "models/bots/pyro_boss/bot_pyro_boss.mdl", "1.35", "20000", ally));
+		ApertureFueler npc = view_as<ApertureFueler>(CClotBody(vecPos, vecAng, "models/bots/pyro_boss/bot_pyro_boss.mdl", "1.35", "20000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

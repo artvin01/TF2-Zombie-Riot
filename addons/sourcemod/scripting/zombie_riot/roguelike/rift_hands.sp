@@ -258,7 +258,7 @@ public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflic
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float firerate = Attributes_Get(weapon, 6);
-			ApplyTempAttrib(weapon, 6, 0.909, firerate * 2.0);
+			ApplyTempAttrib(weapon, 6, 0.935, firerate * 2.0);
 		}
 	}
 }
@@ -334,7 +334,7 @@ static Action RogueHand2MedicalTimer(Handle timer, DataPack pack)
 				float damage = Attributes_GetOnPlayer(client, 8, true, true);
 				damage *= Attributes_Get(weapon, 8, 1.0);
 
-				Explode_Logic_Custom(damage * 6.5, client, client, weapon, _, 400.0);
+				Explode_Logic_Custom(damage * 65.0, client, client, weapon, _, 400.0);
 			}
 
 			return Plugin_Continue;

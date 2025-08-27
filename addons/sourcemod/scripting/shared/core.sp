@@ -1132,6 +1132,8 @@ public void OnMapStart()
 		}
 	}
 	ConVar_ToggleDo();
+	CAddColor("redsunfirst", 0xF78C56);
+	CAddColor("redsunsecond", 0xEEA953);
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -2468,6 +2470,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		f_AttackSpeedNpcIncrease[entity] 	= 1.0;
 		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR || defined RPG
 		KillFeed_EntityCreated(entity);
@@ -3534,6 +3537,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		npc.m_bThisEntityIgnored = false;
 		TeleportEntity(target, pos, ang, NULL_VECTOR);
 		SetEntityCollisionGroup(target, 5);
+		Rogue_TriggerFunction(Artifact::FuncRevive, target);
 
 		if(WasClientReviving)
 			PrintCenterText(client, "");

@@ -196,6 +196,12 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
 	
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL || HasSpecificBuff(entity, "Warped Elemental End"))
+	{	
+		//impossible to elementalise.
+		amount = 999999999;
+	}	
 	return amount;
 }
 
@@ -285,6 +291,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -308,7 +315,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Nervous);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Nervous));
 		if(damage < 1)
 			return;
 
@@ -425,6 +432,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -465,7 +473,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
 		if(damage < 1)
 			return;
 		
@@ -540,6 +548,13 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 
 	if(victim <= MaxClients)
 	{
+		// Warped overrides
+		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Chaos || Armor_DebuffType[victim] == Element_Warped))
+		{
+			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+			return;
+		}
+		
 		if(ClientPossesesVoidBlade(victim))
 		{
 			if(Armor_Charge[victim] > 0)
@@ -553,13 +568,6 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			}
 			return;
 		}
-
-		// Warped overrides
-		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Chaos || Armor_DebuffType[victim] == Element_Warped))
-		{
-			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
-			return;
-		}
 		
 		Armor_DebuffType[victim] = Element_Void;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Void] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
@@ -571,6 +579,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -599,7 +608,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
 			return;
 		
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void));
 		if(damage < 1)
 			return;
 
@@ -703,7 +712,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro));
 		if(damage < 1)
 			return;
 		
@@ -766,6 +775,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -792,7 +802,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Necrosis);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Necrosis));
 		if(damage < 1)
 			return;
 		
@@ -874,7 +884,7 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Osmosis);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Osmosis));
 		if(damage < 1)
 			return;
 		
@@ -991,7 +1001,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption));
 		if(damage < 1)
 			return;
 		
@@ -1151,7 +1161,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger));
 		if(damage < 1)
 			return;
 		
@@ -1217,6 +1227,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				int newdmg = RoundToNearest(float(damage) * Cheese_GetPenalty(victim));
 				damage = newdmg;
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -1266,7 +1277,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	else if(!b_NpcHasDied[victim])	// VS NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma));
 		if(damage < 1)
 			return;
 		
@@ -1394,6 +1405,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
@@ -1419,16 +1431,21 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			}
 			
 			if(sound || fresh)
-				ClientCommand(victim, "playgamesound %s", fresh ? "npc/strider/striderx_pain8.wav" : "npc/strider/striderx_pain5.wav");
+			{
+				if(fresh)
+					EmitSoundToClient(victim, "npc/strider/striderx_pain8.wav", victim, SNDCHAN_STATIC, _, _, 0.65);
+				else
+					EmitSoundToClient(victim, "npc/strider/striderx_pain5.wav", victim, SNDCHAN_STATIC, _, _, 0.65);
+			}
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
 		if(damage < 1)
 			return;
 		
-		damage -= damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Warped);
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Warped));
 		if(damage < 1)
 			return;
 		
@@ -1463,6 +1480,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				AddNpcToAliveList(victim, 1);
 				b_NoHealthbar[victim] = true;
 				ApplyStatusEffect(victim, victim, "Warped Elemental End", 999.9);
+				ApplyStatusEffect(victim, victim, "Clear Head", 999999.0);	//cant be stunned again
 				
 				CClotBody npc = view_as<CClotBody>(victim);
 				npc.m_bDissapearOnDeath = true;

@@ -3917,6 +3917,10 @@
 		"en" "Kit Modernizer V"
 		"ko" "키트 현대화 V"
 	}
+	"Kit Modernizer VI"
+	{
+		"en" "Kit Modernizer VI"
+	}
 	"Unit Reformator I"
 	{
 		"en" "Unit Reformator I"

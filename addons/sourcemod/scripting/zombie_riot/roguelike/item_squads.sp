@@ -11,6 +11,10 @@ public void Rogue_Leader_Collect()
 	b_LeaderSquad = true;
 	Rogue_AddBonusLife(1);
 }
+public void Rogue_Leader_Collect_Lite()
+{
+	b_LeaderSquad = true;
+}
 
 public void Rogue_Gathering_Collect()
 {

@@ -54,6 +54,8 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
 
+#define APERTURE_TELEPORTER_SPAWN_OFFSET_Z 20.0
+
 enum
 {
 	APT_BUILDER_STATE_IDLE,
@@ -72,6 +74,7 @@ enum
 	
 	APT_BUILDER_BUILDING_COUNT,
 }
+
 static float AntiSoundSpam;
 static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
@@ -108,9 +111,9 @@ void ApertureBuilder_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return ApertureBuilder(vecPos, vecAng, ally);
+	return ApertureBuilder(vecPos, vecAng, ally, data);
 }
 methodmap ApertureBuilder < CClotBody
 {
@@ -209,7 +212,7 @@ methodmap ApertureBuilder < CClotBody
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
 	
-	public ApertureBuilder(float vecPos[3], float vecAng[3], int ally)
+	public ApertureBuilder(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		ApertureBuilder npc = view_as<ApertureBuilder>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "700", ally));
 		
@@ -261,40 +264,56 @@ methodmap ApertureBuilder < CClotBody
 		
 		ApertureBuilder_ToggleBuilding(npc, false);
 		
-		// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
-		// If we can't find an appropriate spot, just ignore LOS
-		const int maxAttempts = 12;
-		const float loosenedReqPerAttempt = 0.06;
-		int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
-		
-		for (int i = 0; i < maxAttempts; i++)
+
+		if(!Rogue_Mode())
 		{
-			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
-			
-			int visiblePlayerCount;
-			
-			for (int client = 1; client <= MaxClients; client++)
+			if (StrContains(data, "noteleport") == -1)
 			{
-				if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
-					visiblePlayerCount++;
-			}
-			
-			float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
-			
-			// We got what we wanted, no need to try to teleport anymore
-			if (percentage <= i * loosenedReqPerAttempt)
-				break;
+				// Attempt to spawn the builder out of most players' sights. We'll give a few tries while loosening the requirement each time
+				// If we can't find an appropriate spot, just ignore LOS
+				const int maxAttempts = 12;
+				const float loosenedReqPerAttempt = 0.06;
+				int livingPlayerCount = CountPlayersOnRed(2); // 2 = excludes teutons and downed players
+				
+				for (int i = 0; i <= maxAttempts; i++)
+				{
+					TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1500.0);
+					
+					if (i == maxAttempts)
+						break;
+					
+					int visiblePlayerCount;
+					
+					for (int client = 1; client <= MaxClients; client++)
+					{
+						if (IsValidEnemy(npc.index, client) && Can_I_See_Enemy(npc.index, client))
+							visiblePlayerCount++;
+					}
+					
+					float percentage = float(visiblePlayerCount) / float(livingPlayerCount);
+					
+					// We got what we wanted, no need to try to teleport anymore
+					if (percentage <= i * loosenedReqPerAttempt)
+						break;
+				}
+			}	
+		}
+		else
+		{
+			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
 		}
 		
+		float vecNewPos[3];
+		GetAbsOrigin(npc.index, vecNewPos);
+		ParticleEffectAt(vecNewPos, "teleported_blue");
+		TE_Particle("teleported_mvm_bot", vecNewPos, _, _, npc.index, 1, 0);
 		if(AntiSoundSpam < GetGameTime())
 		{
 			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 0.5);	
 			EmitSoundToAll("music/mvm_class_select.wav", _, _, _, _, 1.0);
 		}
 		AntiSoundSpam = GetGameTime() + 15.0;
-		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-		VecSelfNpcabs[2] -= 200.0;
-		TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
+		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -303,10 +322,6 @@ methodmap ApertureBuilder < CClotBody
 				ShowGameText(client_check, "voice_player", 1, "%s", "Engineers Appear");
 			}
 		}
-		
-		float vecNewPos[3];
-		GetAbsOrigin(npc.index, vecNewPos);
-		ParticleEffectAt(vecNewPos, "teleported_blue");
 		
 		return npc;
 	}
@@ -425,15 +440,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						GetAbsOrigin(npc.index, vecBuffer);
 						vecPotentialPos = vecBuffer;
 						
-						vecPotentialPos[0] = GetRandomFloat((vecPotentialPos[0] - 200.0), (vecPotentialPos[0] + 200.0));
-						vecPotentialPos[1] = GetRandomFloat((vecPotentialPos[1] - 200.0), (vecPotentialPos[1] + 200.0));
-						
+						vecPotentialPos[0] += GetRandomFloat(-200.0, 200.0);
+						vecPotentialPos[1] += GetRandomFloat(-200.0, 200.0);
+						vecPotentialPos[2] += 65.0;
 						Handle trace = TR_TraceRayFilterEx(vecBuffer, vecPotentialPos, GetSolidMask(npc.index), RayType_EndPoint, BulletAndMeleeTrace, npc.index);
 						if (TR_DidHit(trace))
-						{
-							delete trace;
 							continue;
-						}
 						
 						delete trace;
 						
@@ -445,7 +457,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						CNavArea area = TheNavMesh.GetNearestNavArea(vecPotentialPos, true);
 						if (area == NULL_AREA)
 							continue;
-			
+						
 						int navAttribs = area.GetAttributes();
 						if (navAttribs & NAV_MESH_AVOID)
 							continue;
@@ -454,10 +466,10 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						float vecMins[3] = { -35.0, -35.0, 0.0 };
 						float vecMaxs[3] = { 35.0, 35.0, 130.0 };
 						
-						vecPotentialPos[2] += 1.0;
+						vecPotentialPos[2] += APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
 						if (IsBoxHazard(vecPotentialPos, vecMins, vecMaxs))
 							continue;
-						
+							
 						if (IsSpaceOccupiedIgnorePlayers(vecPotentialPos, vecMins, vecMaxs, npc.index))
 							continue;
 						
@@ -494,7 +506,11 @@ public void ApertureBuilder_ClotThink(int iNPC)
 						
 						if (IsSpaceOccupiedIgnorePlayers(vecCenterPos, vecMins, vecMaxs, npc.index))
 							continue;
-						
+
+						if(Dome_PointOutside(vecCenterPos))
+							continue;
+
+						vecPotentialPos[2] -= APERTURE_TELEPORTER_SPAWN_OFFSET_Z;
 						// Congratulations little fella, you got a place to go
 						ApertureBuilder_ToggleBuilding(npc, true);
 						npc.m_iTarget = 0;
@@ -508,8 +524,12 @@ public void ApertureBuilder_ClotThink(int iNPC)
 					
 					if (!success)
 					{
-						// Epic fail, try again in a little bit
-						npc.m_iState = APT_BUILDER_STATE_IDLE;
+						// Epic fail, try again in a little bit. To not lobotomize ourselves, let's be angry at anyone so we move for a little bit
+						npc.m_flSpeed = 300.0;
+						npc.StartPathing();
+						npc.m_iTarget = GetClosestTarget(npc.index);
+						npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();	
+						npc.m_iState = APT_BUILDER_STATE_ANGRY;
 						npc.m_flNextBuildingStateTime = gameTime + 1.5;
 					}
 				

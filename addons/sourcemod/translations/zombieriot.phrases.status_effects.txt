@@ -417,6 +417,14 @@
 		"en"	"Your HP cannot drop below 1 no matter what."
 		"ko"	"체력이 1 이하로 떨어지지 않습니다. 죽지 않습니다."
 	}
+	"Blessing of Stars"
+	{
+		"en"	"Blessing of Stars"
+	}
+	"Blessing of Stars Desc"
+	{
+		"en"	"Saves you from death, once."
+	}
 	"Death is comming."
 	{
 		"en"	"Death is comming."

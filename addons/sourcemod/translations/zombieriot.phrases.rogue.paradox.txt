@@ -200,6 +200,22 @@
 		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
 		"ko"	"라면 한 번 끓여먹어볼까?\n{green}추가 자금을 +1000 얻습니다. 모든 아군의 최대 체력이 +125 증가합니다."
 	}
+	"Ziberian Chocolate"
+	{
+		"en"	"Ziberian Chocolate"
+	}
+	"Ziberian Chocolate Desc"
+	{
+		"en"	"It's cold, amazing!\n{green}+1250 Cash, Allies gain +50 max health"
+	}
+	"Shadowing Coin"
+	{
+		"en"	"Shadowing Coin"
+	}
+	"Shadowing Coin Desc"
+	{
+		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}+1750 Cash."
+	}
 	"Special Suppressor"
 	{
 		"en"	"Special Suppressor"
@@ -219,6 +235,14 @@
 	{
 		"en"	"Fits at the palm of your hand.\n{green}Allies gain +375 max health"
 		"ko"	"손바닥만한 조각상.\n{green}모든 아군의 최대 체력이 +375 증가합니다."
+	}
+	"I Sell Profen"
+	{
+		"en"	"I Sell Profen"
+	}
+	"I Sell Profen Desc"
+	{
+		"en"	"Enemies gain a headache.\n{green}Enemies take 25％ more headshot damage."
 	}
 	"Vampire's Bed"
 	{
@@ -569,6 +593,14 @@
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
 		"ko"	"{green}'배럭 유닛과 반시민을 제외한' 일정 시간 이후 소멸하는 소환물의 최대 체력과 공격력이 +30％ 증가하고, 해당 유닛을 소환한 주인은 소환시 10초 동안 공격력이 +60％ 증가합니다."
+	}
+	"Minion Energizer"
+	{
+		"en"	"Minion Energizer"
+	}
+	"Minion Energizer Desc"
+	{
+		"en"	"{green}Npc Allies gain +25％ more damage and HP."
 	}
 	"Acahuallan Bowl"
 	{

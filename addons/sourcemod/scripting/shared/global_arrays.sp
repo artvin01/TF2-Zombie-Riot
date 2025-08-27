@@ -130,7 +130,9 @@ public const char ItemArchetype[][] =
 	"Medical",	// 17 Healing focus
 	"Mechanic",	// 18 Building focus
 	"Buffer",	// 19 Buffing focus
-	"Debuffer"	// 20 Debuff focus
+	"Debuffer",	// 20 Debuff focus
+
+	"Fallen Warrior"// 21 Special
 };
 
 public const int RenderColors_RPG[][] =

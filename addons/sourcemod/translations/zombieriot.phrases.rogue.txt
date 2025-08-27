@@ -48,6 +48,11 @@
 		"en"		"{red}Lost {1} Australium Ingots!"
 		"ko"		"{red}오스트레일륨 주괴를 {1} 잃었습니다!"
 	}
+	"Gained Shield"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Gained {1} Barrier!"
+	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
@@ -1538,6 +1543,14 @@
 		"en"	"{green}Extra Ammo powerup spawns at the start of a stage.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"ko"	"{green}스테이지 시작시, 추가적인 탄약 보급 아이템이 시작 지점 근처에 생성됩니다.\n{green}보스전이 아닌 전투에서 패배하더라도, 계속 진행합니다. {yellow}(1회성)"
 	}
+	"Health Pickup"
+	{
+		"en" 	"Health Pickup"
+	}
+	"Health Pickup Desc"
+	{
+		"en" 	"{green}Extra Health powerup spawns at the start of a stage."
+	}
 	"Support Squad"
 	{
 		"en"	"Support Squad"
@@ -2374,5 +2387,344 @@
 	{
 		"en"	"You think I fight alone?"
 		"ko"	"내가 혼자 싸우는 것처럼 보이는거냐?"
+	}
+	"Cloned Subjects"
+	{
+		"en" "⚔ Cloned Subjects"
+	}
+	"Cloned Subjects!"
+	{
+		"en" "⚠ Cloned Subjects"
+	}
+	"Shipment Deliviered"
+	{
+		"en" "⚔ Shipment Deliviered"
+	}
+	"Shipment Deliviered!"
+	{
+		"en" "⚠ Shipment Deliviered"
+	}
+	"The Insane"
+	{
+		"en" "⚔ The Insane"
+	}
+	"The Insane!"
+	{
+		"en" "⚠ The Insane"
+	}
+	"Confused Ruanians"
+	{
+		"en" "⚔ Confused Ruanians"
+	}
+	"Confused Ruanians!"
+	{
+		"en" "⚠ Confused Ruanians"
+	}
+	"Sabotaging Electric's"
+	{
+		"en" "⚔ Sabotaging Electric's"
+	}
+	"Sabotaging Electric's!"
+	{
+		"en" "⚠ Sabotaging Electric's"
+	}
+	"Zombies Land"
+	{
+		"en" "⚔ Zombies Land"
+	}
+	"Zombies Land!"
+	{
+		"en" "⚠ Zombies Land"
+	}
+	"Underpaid Mercs"
+	{
+		"en" "⚔ Underpaid Mercs"
+	}
+	"Underpaid Mercs!"
+	{
+		"en" "⚠ Underpaid Mercs"
+	}
+	"Unknown Army"
+	{
+		"en" "⚔ Unknown Army"
+	}
+	"Unknown Army!"
+	{
+		"en" "⚠ Unknown Army"
+	}
+	"Desperate Voiders"
+	{
+		"en" "⚔ Desperate Voiders"
+	}
+	"Desperate Voiders!"
+	{
+		"en" "⚠ Desperate Voiders"
+	}
+	"Automaton Failure"
+	{
+		"en" "⚔ Automaton Failure"
+	}
+	"Automaton Failure!"
+	{
+		"en" "⚠ Automaton Failure"
+	}
+	"Chaos Sea Creatures"
+	{
+		"en" "⚔ Chaos Sea Creatures"
+	}
+	"Chaos Sea Creatures!"
+	{
+		"en" "⚠ Chaos Sea Creatures"
+	}
+	"Pillaging Mercs"
+	{
+		"en" "⚔ Pillaging Mercs"
+	}
+	"Pillaging Mercs!"
+	{
+		"en" "⚠ Pillaging Mercs"
+	}
+	"Looters Keepers"
+	{
+		"en" "⚔ Looters Keepers"
+	}
+	"Looters Keepers!"
+	{
+		"en" "⚠ Looters Keepers"
+	}
+	"Cold Inhabitans"
+	{
+		"en" "⚔ Cold Inhabitans"
+	}
+	"Cold Inhabitans!"
+	{
+		"en" "⚠ Cold Inhabitans"
+	}
+	"Gate Persuers"
+	{
+		"en" "⚔ Gate Persuers"
+	}
+	"Gate Persuers!"
+	{
+		"en" "⚠ Gate Persuers"
+	}
+	"Corrupted Ruinan's"
+	{
+		"en" "⚔ Corrupted Ruinan's"
+	}
+	"Corrupted Ruinan's!"
+	{
+		"en" "⚠ Corrupted Ruinan's"
+	}
+	"Bladedance Animated"
+	{
+		"en" "⚔ Bladedance Animated"
+	}
+	"Bladedance Animated!"
+	{
+		"en" "⚠ Bladedance Animated"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚠ Slaves Controlled"
+	}
+	"Medieval Traitors"
+	{
+		"en" "⚔ Medieval Traitors"
+	}
+	"Medieval Traitors!"
+	{
+		"en" "⚠ Medieval Traitors"
+	}
+	"Adamant Expidonsans"
+	{
+		"en" "⚔ Adamant Expidonsans"
+	}
+	"Adamant Expidonsans!"
+	{
+		"en" "⚠ Adamant Expidonsans"
+	}
+	"True Survival Zombies"
+	{
+		"en" "⚔ True Survival Zombies"
+	}
+	"True Survival Zombies!"
+	{
+		"en" "⚠ True Survival Zombies"
+	}
+	
+	"Lone Health Title"
+	{
+		"en"	"You see a healthpack, alone, just sitting by the tree..."
+	}
+	"Lone Health Accept"
+	{
+		"en"	"Grab the healthkit, it could be usefull."
+	}
+	"Lone Health Accept Desc"
+	{
+		"en"	"{green}Gain a health powerup on stage start."
+	}
+	"Lone Health Decline"
+	{
+		"en"	"Don't touch it, it seems way too suspicious."
+	}
+
+	
+	"Astra Title"
+	{
+		"en"	"You see a dragon girl, she seems to scuffle around for resources in this area."
+	}
+	"Astra Title Accept"
+	{
+		"en"	"Offer her some australium ingots."
+	}
+	"Astra Title Accept Desc"
+	{
+		"en"	"{green}Obtain a grand item and umbral affinity."
+	}
+	"Astra Title Decline"
+	{
+		"en"	"Ignore her, take whats around."
+	}
+	"Astra Title Decline Desc"
+	{
+		"en"	"{green}Gain cash and Umbral Affinity."
+	}
+	"Broken Crest Title"
+	{
+		"en"	"You notice a broken crest on the floor, probably left behind after Lelouch perished."
+	}
+	"Broken Crest Accept"
+	{
+		"en"	"Take the crest, seems usefull."
+	}
+	"Broken Crest Decline"
+	{
+		"en"	"Don't risk it, who knows whats in it."
+	}
+	
+	"Broken Crest Accept Desc"
+	{
+		"en"	"{green}Receive the crest and {crimson}lose Umbral Affinity."
+	}
+	"Broken Crest Decline Desc"
+	{
+		"en"	"{green}Gain cash and Umbral Affinity."
+	}
+	"Broken Crest Accept Conlusion"
+	{
+		"en"	"You pick it up, it feels heavy...{crimson}youre being judged."
+	}
+	"Broken Crest Decline Conlusion"
+	{
+		"en"	"You disregard it... The big broken crystal blesses you with a vision, as you follow it, you find cash!"
+	}
+	
+	"Lone Health Decline Desc"
+	{
+		"en"	"{green}Gain cash, raise Umbral Affinity."
+	}
+	"Mantle of Stars"
+	{
+		"en"	"Mantle of Stars"
+	}
+	"Mantle of Stars Desc"
+	{
+		"en"	"{green}Briefly prevents your death once per stage.\n{default}A luminous aura envelops you... its mostly just glitter."
+	}
+	"Lelouch's Broken Crest"
+	{
+		"en"	"Lelouch's Broken Crest"
+	}
+	"Lelouch's Broken Crest Desc"
+	{
+		"en"	"{green}Players gain an extra level of armor.\n{default}It feels very immoral to own this, if twirl saw you with it, she'd be dissapointed."
+	}
+	"Incorruptable Leaf"
+	{
+		"en"	"Incorruptable Leaf"
+	}
+	"Incorruptable Leaf Desc"
+	{
+		"en"	"{green}Players gain 30％ elemental resistance, when under elemental debuffs, gain 15％ Overall Resistance.\n{default}Very soothing, very calming."
+	}
+	"Strange Visitor"
+	{
+		"en"	"Strange Visitor"
+	}
+	"Astra Title Accept Conlusion"
+	{
+		"en"	"{brown}Astra{default} : Oh! Thank you so much! Have this as a thanks, something experimental i made."
+	}
+	"Astra Title Decline Conlusion"
+	{
+		"en"	"You ignore her, she doesnt notice you, or ignores you back..."
+	}
+
+	"Incorruptable Tree Title"
+	{
+		"en" "You find a tree, seemingly untouched by the void and umbrals."
+	}
+
+	"Incorruptable Tree"
+	{
+		"en"	"Incorruptable Tree"
+	}
+	"Incorruptable Tree Accept"
+	{
+		"en"	"Touch"
+	}
+	"Incorruptable Tree Accept Desc"
+	{
+		"en"	"{green}Receive a leaf from the tree and {crimson}lose Umbral Affinity."
+	}
+	"Incorruptable Tree Decline"
+	{
+		"en"	"Do not touch"
+	}
+	"Incorruptable Tree Decline Desc"
+	{
+		"en"	"{green}Gain Cash and gain Umbral Affinity."
+	}
+	"Incorruptable Tree Accept Conlusion"
+	{
+		"en"	"You feel its warmth, its strength..."
+	}
+	"Incorruptable Tree Decline Conlusion"
+	{
+		"en"	"You decide not to touch it, you see umbrals go to the tree to tend to it... they seemingly thank you?"
+	}
+	"Free Treasure Ahead!"
+	{
+		"en"	"A pile of unprotected, not guraded, very vulnerable chests lay around."
+	}
+	"Free Treasure Ahead! Accept"
+	{
+		"en"	"Free loot!"
+	}
+	"Free Treasure Ahead! Decline"
+	{
+		"en"	"I rather like being alive."
+	}
+	"Almagest Technology Title"
+	{
+		"en"	"You see a piece of abandoned tech, its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring."
+	}
+	"Almagest Technology Accept"
+	{
+		"en"	"Take it."
+	}
+	"Almagest Technology"
+	{
+		"en"	"''Almagest Technology''"
+	}
+	"Almagest Technology Desc"
+	{
+		"en"	"It's Very Aluring.\n{green} Most cooldowns are reduced by 33％"
 	}
 }
