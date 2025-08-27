@@ -5013,4 +5013,12 @@
 	{
 		"en"	"Jkei Drone"
 	}
+	"Reila"
+	{
+		"en" "Reila"
+	}
+	"Reila's Beacon"
+	{
+		"en" "The Construct"
+	}
 }
