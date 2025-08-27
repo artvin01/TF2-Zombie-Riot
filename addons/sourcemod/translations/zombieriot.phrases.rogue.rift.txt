@@ -484,7 +484,7 @@
 	{
 		"en"	"''Painful Happiness''"
 	}
-	"Painful Happiness"
+	"Painful Happiness Desc"
 	{
 		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -15％"
 	}
@@ -492,7 +492,7 @@
 	{
 		"en"	"Gravity Defying Machine"
 	}
-	"Gravity Defying Machine"
+	"Gravity Defying Machine Desc"
 	{
 		"en"	"Now, though they float in clouds.\n{green}Enemy weight decreased by -2"
 	}
