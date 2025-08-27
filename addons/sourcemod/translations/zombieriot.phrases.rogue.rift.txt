@@ -830,6 +830,14 @@
 	{
 		"en"	"Gateway"
 	}
+	"Reila Curtain Closer"
+	{
+		"en"	"Reila Curtain Closer"
+	}
+	"Almagest Intrusion"
+	{
+		"en"	"Almagest Intrusion"
+	}
 	"Rift Consume Encounter Title"
 	{
 		"en"	"A rift opens up, it's time to throw something in it"
