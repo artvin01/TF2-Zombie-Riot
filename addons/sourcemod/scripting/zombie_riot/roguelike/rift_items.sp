@@ -122,6 +122,30 @@ public void Rogue_Mazeat2_Enemy(int entity)
 	}
 }
 
+public void Rogue_UmbralKeycardBuffAlly(int entity, StringMap map)
+{
+	if(!map)
+	{
+		if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
+		{
+
+			fl_Extra_Speed[entity] 				*= 1.1;
+			fl_Extra_Damage[entity] 			*= 1.2;
+			RogueHelp_BodyHealth(entity, null, 1.2);
+		}
+	}
+}
+
+public void Rogue_UmbralKeycardBuffEnemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
+	{
+
+		fl_Extra_Speed[entity] 				*= 1.1;
+		fl_Extra_Damage[entity] 			*= 1.2;
+		RogueHelp_BodyHealth(entity, null, 1.2);
+	}
+}
 public void Rogue_Mazeat3_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
@@ -310,7 +334,7 @@ public void Rogue_BansheeVeil_Enemy(int entity)
 
 public void Rogue_LittleCube_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyHealth(entity, map, Rogue_GetFloor() == 6 ? 1.8 : 1.1);
+	RogueHelp_BodyHealth(entity, map, Rogue_GetFloor() == 6 ? 2.0 : 1.25);
 }
 
 public void Rogue_FearlessBlade_Ally(int entity, StringMap map)

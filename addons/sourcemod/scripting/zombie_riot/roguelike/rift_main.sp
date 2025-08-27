@@ -26,18 +26,18 @@ stock int Rogue_Rift_CurseLevel()
 	return DifficultyLevel;
 }
 
+/*
 void Rogue_Rift_StorePriceMulti(int &cost, bool greg)
 {
-	if(!greg && Keycard)
+	if(!greg)
 		cost = cost * 11 / 10;
 }
-
 void Rogue_Rift_PackPriceMulti(int &cost)
 {
 	if(Keycard)
 		cost = cost * 11 / 10;
 }
-
+*/
 public void Rogue_Curse_RiftSwarm(bool enable)
 {
 	CurseSwarm = enable;
@@ -696,7 +696,7 @@ public void Rogue_Reila_Remove()
 
 public void Rogue_Rift1_Collect()
 {
-	Rogue_AddUmbral(-30, true);
+	Rogue_AddUmbral(-20, true);
 }
 
 public void Rogue_Rift1_Remove()
@@ -704,7 +704,7 @@ public void Rogue_Rift1_Remove()
 	if(Rogue_Started())
 	{
 		Rogue_GiveNamedArtifact("Keycard");
-		Rogue_AddUmbral(30);
+		Rogue_AddUmbral(20);
 	}
 }
 

@@ -280,6 +280,7 @@ public float Rogue_Encounter_BrokenCrest()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Broken Crest Accept");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Broken Crest Accept Desc");
+	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Broken Crest Decline");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Broken Crest Decline Desc");
@@ -511,7 +512,7 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 	{
 		case 0:
 		{
-			if(vote.Config[0])
+			if(!vote.Config[0])
 				Rogue_AddUmbral(15);
 			
 			PrintToChatAll("%t", "Rouge3 Gamble Lore 2");
@@ -655,7 +656,7 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 		"Conflicts brew, disagreements among races, language, culture.",
 		"Fights storm up with the storm growing by the months, weeks, days.",
 		"Civil war roared across Mazeat, races spread out, passed away, lost to time.",
-		"Expidonsans weren't cleaver enough to foresee this.",
+		"Expidonsans weren't clever enough to foresee this.",
 		"What was there to do?",
 		"Expidonsan research burned away in the ashes of war.",
 		"Expidonsan cities torn away for the new races.",

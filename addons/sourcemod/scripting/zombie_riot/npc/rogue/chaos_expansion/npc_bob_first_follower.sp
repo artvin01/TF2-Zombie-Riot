@@ -221,7 +221,7 @@ methodmap BobTheFirstFollower < CClotBody
 	
 	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
+		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN_BOB");

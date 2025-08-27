@@ -321,7 +321,7 @@ methodmap TwirlFollower < CClotBody
 	
 	public TwirlFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		TwirlFollower npc = view_as<TwirlFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally, true, true));
+		TwirlFollower npc = view_as<TwirlFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally, true, false));
 		
 		npc.m_iChanged_WalkCycle = 1;
 		i_NpcWeight[npc.index] = 4;

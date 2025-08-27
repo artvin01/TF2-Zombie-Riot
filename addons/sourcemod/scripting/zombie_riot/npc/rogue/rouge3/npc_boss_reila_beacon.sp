@@ -182,11 +182,12 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 			fl_Extra_Speed[npc.m_iTargetAlly] 			*= 1.05;
 			fl_Extra_Damage[npc.m_iTargetAlly] 			*= 1.25;
 			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Very Defensive Backup", 0.6);
-			RaidModeScaling *= 1.2;
+			RaidModeScaling *= 1.25;
 		}
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		TE_Particle("xms_snowburst_child01", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 5.0);
 		
 		CPrintToChatAll("{green}You gain more time before the Curtain closes...{crimson} However, both {pink}Reila{crimson} and the Construct become stronger.");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));

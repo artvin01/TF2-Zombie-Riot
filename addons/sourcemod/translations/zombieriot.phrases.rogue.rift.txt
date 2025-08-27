@@ -270,7 +270,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
@@ -302,7 +302,7 @@
 	}
 	"Hand of Diffusion Desc"
 	{
-		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +375％"
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +240％"
 	}
 	"Hand of Rending"
 	{
@@ -518,7 +518,7 @@
 	}
 	"Little Cube Desc"
 	{
-		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +10％ max health, increased to +80％ when on a bizarre chapter"
+		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +25％ max health, increased to +100％ when on a bizarre chapter"
 	}
 	"Fearless Blade"
 	{
@@ -799,7 +799,7 @@
 	}
 	"Wordless Deed Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 20 while held\n{purple}Obtain a cursed artifact when consumed"
 	}
 	"Keycard"
 	{
@@ -807,7 +807,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
