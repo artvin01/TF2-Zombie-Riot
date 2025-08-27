@@ -145,7 +145,7 @@ static void Randomizer_AdjustClassStats(Randomizer npc, TFClassType class)
 
 static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int forceBehavior = -1)
 {
-	int id = forceBehavior > 0 ? forceBehavior : (GetURandomInt() % 15) + 1; // +1 because 0 is used as "don't force"
+	int id = forceBehavior > 0 ? forceBehavior : (GetURandomInt() % 18) + 1; // +1 because 0 is used as "don't force"
 	int activity;
 	
 	switch (id)
@@ -161,12 +161,26 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 		}
 		case 2:
 		{
-			// Rocket Launcher (Jumper)
-			func_NPCThink[npc.index] = view_as<Function>(SoldinusIlus_ClotThink);
-			func_NPCDeath[npc.index] = view_as<Function>(SoldinusIlus_NPCDeath);
+			int soldierCase = GetURandomInt() % 4;
 			
-			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
-			activity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+			if (soldierCase == 0)
+			{
+				// Pro Soldier
+				func_NPCThink[npc.index] = view_as<Function>(SoldinusIlus_ClotThink);
+				func_NPCDeath[npc.index] = view_as<Function>(SoldinusIlus_NPCDeath);
+				
+				npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+				activity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+			}
+			else
+			{
+				// Noob Soldier
+				func_NPCThink[npc.index] = view_as<Function>(Soldier_ClotThink);
+				func_NPCDeath[npc.index] = view_as<Function>(Soldier_NPCDeath);
+				
+				npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+				activity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+			}
 		}
 		case 3:
 		{
@@ -200,14 +214,49 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 		}
 		case 6:
 		{
-			// Minigun
-			func_NPCThink[npc.index] = view_as<Function>(BigGunAssisa_ClotThink);
-			func_NPCDeath[npc.index] = view_as<Function>(BigGunAssisa_NPCDeath);
+			// Miniguns will have different behaviors
+			int minigunCase = GetURandomInt() % 4;
+			switch (minigunCase)
+			{
+				case 0:
+				{
+					// Minigun
+					func_NPCThink[npc.index] = view_as<Function>(MinigunAssisa_ClotThink);
+					func_NPCDeath[npc.index] = view_as<Function>(MinigunAssisa_NPCDeath);
+					
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_minigun/c_minigun.mdl");
+					npc.m_flSpeed *= 0.57;
+				}
+				case 1:
+				{
+					// Natascha
+					func_NPCThink[npc.index] = view_as<Function>(ApertureMinigunner_ClotThink);
+					func_NPCDeath[npc.index] = view_as<Function>(ApertureMinigunner_NPCDeath);
+					
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_minigun/c_minigun_natascha.mdl");
+					npc.m_flSpeed *= 0.5;
+				}
+				case 2:
+				{
+					// Tomislav
+					func_NPCThink[npc.index] = view_as<Function>(ApertureMinigunnerV2_ClotThink);
+					func_NPCDeath[npc.index] = view_as<Function>(ApertureMinigunnerV2_NPCDeath);
+					
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_minigun/c_minigun_natascha.mdl");
+					npc.m_flSpeed *= 0.57;
+				}
+				case 3:
+				{
+					// Brass Beast
+					func_NPCThink[npc.index] = view_as<Function>(ApertureMinigunnerPerfected_ClotThink);
+					func_NPCDeath[npc.index] = view_as<Function>(ApertureMinigunnerPerfected_NPCDeath);
+					
+					npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl");
+					npc.m_flSpeed *= 0.4;
+				}
+			}
 			
-			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_minigun/c_minigun.mdl");
 			activity = npc.LookupActivity("ACT_MP_DEPLOYED_PRIMARY");
-			
-			npc.m_flSpeed *= 0.57;
 		}
 		
 		case 7:
@@ -340,6 +389,33 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 			
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
 			activity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		}
+		case 16:
+		{
+			// Market Gardener
+			func_NPCThink[npc.index] = view_as<Function>(WinterAirbornExplorer_ClotThink);
+			func_NPCDeath[npc.index] = view_as<Function>(WinterAirbornExplorer_NPCDeath);
+			
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_market_gardener/c_market_gardener.mdl");
+			activity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		}
+		case 17:
+		{
+			// Short Circuit
+			func_NPCThink[npc.index] = view_as<Function>(Vulpo_ClotThink);
+			func_NPCDeath[npc.index] = view_as<Function>(Vulpo_NPCDeath);
+			
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
+			activity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+		}
+		case 18:
+		{
+			// Builder
+			func_NPCThink[npc.index] = view_as<Function>(ApertureBuilder_ClotThink);
+			func_NPCDeath[npc.index] = view_as<Function>(ApertureBuilder_NPCDeath);
+			
+			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
+			activity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		}
 	}
 	
