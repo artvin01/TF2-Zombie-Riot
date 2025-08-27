@@ -235,23 +235,17 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 		fl_Extra_Speed[entity] 				*= 1.55;
 		fl_Extra_Damage[entity] 			*= 2.5;
 		f_AttackSpeedNpcIncrease[entity] 	*= 0.4;
-		MultiHealth(entity, 				   3.0);
+		RogueHelp_BodyHealth(entity, null, 				   3.0);
 	}
 	else
 	{
 		fl_Extra_Speed[entity] 				*= GetRandomFloat(0.95, 1.35);
 		fl_Extra_Damage[entity] 			*= GetRandomFloat(0.95, 1.35);
 		f_AttackSpeedNpcIncrease[entity] 	*= GetRandomFloat(0.75, 1.05);
-		MultiHealth(entity, 				   GetRandomFloat(0.95, 1.35));
+		RogueHelp_BodyHealth(entity, null, 				   GetRandomFloat(0.95, 1.35));
 		float AfkTimer = GetRandomFloat(0.5, 2.0);
 		FreezeNpcInTime(entity, AfkTimer);
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
 	}
 	TeleportDiversioToRandLocation(entity,_,3000.0, 1500.0, .NeedLOSPlayer = true);
-}
-
-static void MultiHealth(int entity, float amount)
-{
-	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
-	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
 }

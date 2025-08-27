@@ -387,7 +387,7 @@ static bool StartRiftVote(bool first)
 					break;
 			}
 		}
-		/*
+		
 		if(found < 7)
 		{
 			// Misc items
@@ -407,7 +407,6 @@ static bool StartRiftVote(bool first)
 				}
 			}
 		}
-		*/
 	}
 
 	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
@@ -424,7 +423,9 @@ static void FinishRiftVote(const Vote vote)
 			Rogue_SetProgressTime(5.0, false);
 		}
 		default:
-		{
+		{	
+			Artifact artifact;
+			Rogue_GetNamedArtifact(vote.Config, artifact);
 			Rogue_RemoveNamedArtifact(vote.Config);
 
 			if(CurseCorrupt && (GetURandomInt() % 2))
@@ -433,21 +434,33 @@ static void FinishRiftVote(const Vote vote)
 			}
 			else
 			{
-				switch(GetURandomInt() % 5)
+				switch(artifact.ShopCost)
 				{
-					case 0:
-						GiveShield(100);
-					
-					case 1:
-						GiveShield(150);
-					
-					case 2:
-						GiveShield(200);
-					
+					case 30:
+					{
+						GiveCash(10000);
+					}
+					case 24:
+					{
+						GiveCash(6000);
+					}
+					case 18:
+					{
+						GiveCash(4000);
+					}
+					case 12:
+					{
+						GiveCash(2000);
+					}
 					default:
-						GiveCash(1000);
+					{
+						if(!artifact.Multi)
+							GiveCash(2000);
+					}
 				}
 			}
+			
+			Rogue_Rift_GatewaySent();
 
 			ConsumeLimit--;
 
@@ -470,32 +483,6 @@ static void GiveCash(int cash)
 	CurrentCash += cash;
 	GlobalExtraCash += cash;
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
-}
-
-static void GiveShield(int amount)
-{
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
-		{
-			int health = GetClientHealth(client);
-			if(health > 0)
-			{
-				ApplyHealEvent(client, amount, client);
-				SetEntityHealth(client, health + amount);
-			}
-		}
-	}
-
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-		{
-			if(GetTeam(entity) == TFTeam_Red)
-				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
-		}
-	}
 }
 
 public void Rogue_RiftEasy_Collect()

@@ -933,6 +933,8 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 
 			Rogue_AddIngots(5);
 		}
+		
+		Rogue_Rift_DispatchReturn();
 	}
 }
 public void Rogue_BlueParadox_Reset()
