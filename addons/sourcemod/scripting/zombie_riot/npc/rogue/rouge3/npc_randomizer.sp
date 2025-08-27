@@ -17,7 +17,7 @@ static char g_RandomizerClasses[][] = {
 void Randomizer_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Randomizer");
+	strcopy(data.Name, sizeof(data.Name), "Randomizer!");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_randomizer");
 	strcopy(data.Icon, sizeof(data.Icon), "unknown");
 	data.IconCustom = true;

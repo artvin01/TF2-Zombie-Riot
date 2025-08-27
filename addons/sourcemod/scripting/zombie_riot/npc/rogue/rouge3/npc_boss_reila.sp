@@ -40,7 +40,7 @@ static const char g_ReilaChargeMeleeDo[][] =
 };
 
 static const char g_SpawnSoundDrones[][] = {
-	"mvm/mvm_tele_deliver.wav",
+	"weapons/cow_mangler_explosion_charge_01.wav",
 };
 
 static int NPCId;
@@ -54,6 +54,9 @@ void BossReila_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_ReilaChargeMeleeDo)); i++) { PrecacheSound(g_ReilaChargeMeleeDo[i]); }
 	for (int i = 0; i < (sizeof(g_SpawnSoundDrones)); i++) { PrecacheSound(g_SpawnSoundDrones[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	PrecacheSound("misc/halloween/spell_mirv_explode_primary.wav");
+	PrecacheSound("weapons/vaccinator_charge_tier_03.wav");
+
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_boss_reila");
@@ -105,7 +108,7 @@ methodmap BossReila < CClotBody
 
 	public void PlaySpawnSound() 
 	{
-		EmitSoundToAll(g_SpawnSoundDrones[GetRandomInt(0, sizeof(g_SpawnSoundDrones) - 1)], _, _, _, _, 0.65);
+		EmitSoundToAll(g_SpawnSoundDrones[GetRandomInt(0, sizeof(g_SpawnSoundDrones) - 1)], this.index, SNDCHAN_WEAPON, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.8, GetRandomInt(125, 130));
 	}
 	
 	public void PlayMeleeSound()
@@ -135,6 +138,26 @@ methodmap BossReila < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flBossSpawnBeacon
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property float m_flSpawnBallsCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flSpawnBallsDoingCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property int m_iBallsLeftToSpawn
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
 
 	public BossReila(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -156,14 +179,16 @@ methodmap BossReila < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(BossReila_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(BossReila_ClotThink);
 		npc.m_flReflectStatusCD = GetGameTime() + 5.0;
+		npc.m_flSpawnBallsCD = GetGameTime() + 5.0;
+		npc.m_flSpawnBallsDoingCD = 0.0;
 		
 
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidModeTime = GetGameTime(npc.index) + 80.0;
+			RaidModeTime = GetGameTime(npc.index) + 60.0;
 			RaidAllowsBuildings = true;
-			RaidModeScaling = 0.0;
+			RaidModeScaling = 1.0;
 		}
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
@@ -189,7 +214,7 @@ methodmap BossReila < CClotBody
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
 		CPrintToChatAll("{pink}Reila{default} : .");
-		
+		npc.m_flBossSpawnBeacon = 1.0;
 
 		return npc;
 	}
@@ -198,6 +223,11 @@ methodmap BossReila < CClotBody
 public void BossReila_ClotThink(int iNPC)
 {
 	BossReila npc = view_as<BossReila>(iNPC);
+	if(npc.m_flArmorCount > 1.0)
+	{
+		ApplyStatusEffect(iNPC, iNPC, "War Cry", 0.6);
+		ApplyStatusEffect(iNPC, iNPC, "Ancient Melodies", 0.6);
+	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -205,7 +235,20 @@ public void BossReila_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-
+	if(RaidModeTime < GetGameTime())
+	{
+		if(IsValidEntity(RaidBossActive))
+		{
+			ForcePlayerLoss();
+			RaidBossActive = INVALID_ENT_REFERENCE;
+		}
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		npc.StopPathing();
+	}
+	if(RaidModeTime < GetGameTime() + 60.0)
+	{
+		PlayTickSound(true, false);
+	}
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -218,11 +261,12 @@ public void BossReila_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	ReilaCreateBeacon(npc.index);
 	if(ReilaReflectDamageDo(npc.index))
 	{
 		return;
 	}
+
 	if(npc.m_iChanged_WalkCycle != 1)
 	{
 		if(npc.m_flDamageTaken > 0.0)
@@ -260,6 +304,7 @@ public void BossReila_ClotThink(int iNPC)
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
+		ReilaSpawnBalls(npc.index, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -296,7 +341,10 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	}
 	if(npc.m_flReflectInMode > GetGameTime(npc.index))
 	{
-		npc.m_flDamageTaken += (damage * 0.25);
+		damagePosition[2] += 30.0;
+		npc.DispatchParticleEffect(npc.index, "medic_resist_match_bullet_blue", damagePosition, NULL_VECTOR, NULL_VECTOR);
+		damagePosition[2] -= 30.0;
+		npc.m_flDamageTaken += (damage * 0.5);
 	}
 	return Plugin_Changed;
 }
@@ -386,12 +434,69 @@ void BossReilaSelfDefense(BossReila npc, float gameTime, int target, float dista
 
 
 
+void ReilaCreateBeacon(int iNpc)
+{
+	BossReila npc = view_as<BossReila>(iNpc);
+	if(!npc.m_flBossSpawnBeacon)
+		return;
 
+	npc.m_flBossSpawnBeacon = 0.0;
+
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	int summon = NPC_CreateByName("npc_beacon_reila", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	if(IsValidEntity(summon))
+	{
+		BossReila npcsummon = view_as<BossReila>(summon);
+		if(GetTeam(npc.index) != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+
+		npcsummon.m_iTargetAlly = iNpc;
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
+		NpcStats_CopyStats(npc.index, summon);
+		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
+	}
+}
+
+void ReilaSpawnBalls(int iNpc, float vecTarget[3])
+{
+	BossReila npc = view_as<BossReila>(iNpc);
+	if(npc.m_flSpawnBallsDoingCD < GetGameTime(npc.index) && npc.m_iBallsLeftToSpawn >= 1)
+	{
+		npc.m_iBallsLeftToSpawn--;
+		npc.m_flSpawnBallsDoingCD = GetGameTime(npc.index) + 0.75;					
+		int projectile = npc.FireParticleRocket(vecTarget, 2000.0, 400.0, 150.0, "halloween_rockettrail", true);
+		float ang_Look[3];
+		GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
+		Initiate_HomingProjectile(projectile,
+			npc.index,
+			70.0,			// float lockonAngleMax,
+			10.0,				//float homingaSec,
+			false,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			ang_Look);// float AnglesInitiate[3]);
+
+		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+		SDKHook(projectile, SDKHook_StartTouch, Reila_Rocket_Particle_StartTouch);
+		SDKHook(projectile, SDKHook_ThinkPost, Reila_Rocket_Particle_Think);
+		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+		npc.PlaySpawnSound();
+		float flPos[3], flAng[3];
+		npc.GetAttachment("effect_hand_l", flPos, flAng);
+		spawnRing_Vectors(flPos, 50.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 80, 32, 120, 200, 1, /*duration*/ 0.25, 2.0, 0.0, 1, 1.0);
+		
+	}
+	if(npc.m_flSpawnBallsCD < GetGameTime(npc.index))
+	{
+		npc.m_iBallsLeftToSpawn = 4;
+		npc.m_flSpawnBallsCD = GetGameTime(npc.index) + 25.0;
+	}
+}
 bool ReilaReflectDamageDo(int iNpc)
 {
 	BossReila npc = view_as<BossReila>(iNpc);
 
-	if(npc.m_flReflectStatusCD < GetGameTime(npc.index))
+	if(npc.m_flReflectStatusCD < GetGameTime(npc.index) && npc.m_iBallsLeftToSpawn <= 0)
 	{
 		npc.m_flReflectInMode = GetGameTime(npc.index) + 2.3;
 		npc.m_flReflectStatusCD = GetGameTime(npc.index) + 10.0;
@@ -465,7 +570,7 @@ void Reila_DrawBigAssLaser(float Angles[3], int client, float AngleDeviation = 1
 	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	float LaserFatness = 25.0;
 	int Colour[4];
-	
+
 	float VecMe[3]; WorldSpaceCenter(client, VecMe);
 	Ruina_Laser_Logic Laser;
 	float Distance = 500.0;
@@ -528,4 +633,192 @@ static void ReilaBeamEffect(float startPoint[3], float endPoint[3], int color[4]
 	SetColorRGBA(glowColor, color[0], color[1], color[2], color[3]);
 	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 	TE_SendToAll(0.0);
+}
+
+
+public void Reila_Rocket_Particle_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+		
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+				
+		Reila_Rocket_Particle_Think(entity);
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	else
+	{
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		//we uhh, missed?
+		Reila_Rocket_Particle_Think(entity);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
+	}
+	RemoveEntity(entity);
+}
+
+
+#define REILA_BOSS_LIGHTNING_RANGE 150.0
+
+#define REILA_BOSS_CHARGE_TIME 1.5
+#define REILA_BOSS_CHARGE_SPAN 0.5
+
+void Reila_Rocket_Particle_Think(int entity)
+{
+	float gameTime = GetGameTime();
+	
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (!IsValidEntity(owner))
+		owner = 0;
+	
+	if (!owner)
+	{
+		RemoveEntity(entity);
+		return;
+	}
+	BossReila npc = view_as<BossReila>(owner);
+	
+	float vecPos[3], VecDown[3];
+	GetAbsOrigin(entity, vecPos);
+	
+	float velocity[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsVelocity", velocity);
+	velocity[2] += 300.0;
+	TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, velocity);		
+
+	VecDown = vecPos;
+	VecDown[2] -= 1000.0;
+	static const float maxs[] = { 10.0, 10.0, 10.0 };
+	static const float mins[] = { -10.0, -10.0, -10.0 };
+	Handle trace;
+	trace = TR_TraceHullFilterEx(vecPos, VecDown,mins,maxs , MASK_NPCSOLID, TraceRayHitWorldOnly);
+	if(TR_DidHit(trace))
+	{
+		TR_GetEndPosition(VecDown, trace);
+		//spawn lighting
+				
+		Handle pack;
+		CreateDataTimer(REILA_BOSS_CHARGE_SPAN, Smite_Timer_REILA_BOSS, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+		WritePackCell(pack, EntIndexToEntRef(npc.index));
+		WritePackFloat(pack, 0.0);
+		WritePackFloat(pack, VecDown[0]);
+		WritePackFloat(pack, VecDown[1]);
+		WritePackFloat(pack, VecDown[2]);
+		WritePackFloat(pack, 1000.0);
+		spawnBeam(0.8, 120, 50, 200, 200, "materials/sprites/laserbeam.vmt", 3.0, 0.2, _, 10.0, vecPos, VecDown);	
+		EmitSoundToAll("weapons/vaccinator_charge_tier_03.wav", _, SNDCHAN_AUTO, 70, _, 0.65, GetRandomInt(80, 110), _, VecDown);
+		spawnRing_Vectors(VecDown, REILA_BOSS_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 100, 50, 150, 200, 1, REILA_BOSS_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+		
+	}
+	delete trace;
+	CBaseCombatCharacter(entity).SetNextThink(gameTime + 1.0);
+}
+
+
+public Action Smite_Timer_REILA_BOSS(Handle Smite_Logic, DataPack pack)
+{
+	ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+	
+	if (!IsValidEntity(entity))
+	{
+		return Plugin_Stop;
+	}
+		
+	float NumLoops = ReadPackFloat(pack);
+	float spawnLoc[3];
+	for (int GetVector = 0; GetVector < 3; GetVector++)
+	{
+		spawnLoc[GetVector] = ReadPackFloat(pack);
+	}
+	
+	float damage = ReadPackFloat(pack);
+	
+	if (NumLoops >= REILA_BOSS_CHARGE_TIME)
+	{
+		float secondLoc[3];
+		for (int replace = 0; replace < 3; replace++)
+		{
+			secondLoc[replace] = spawnLoc[replace];
+		}
+		
+		for (int sequential = 1; sequential <= 3; sequential++)
+		{
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 120, 50, 200, 120, 1, 0.33, 6.0, 0.4, 1, (REILA_BOSS_LIGHTNING_RANGE * 5.0)/float(sequential));
+			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
+		}
+		
+		secondLoc[2] = 1500.0;
+		
+		spawnBeam(0.8, 120, 50, 200, 255, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 120, 50, 200, 200, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 120, 50, 200, 200, "materials/sprites/lgtning.vmt", 3.0, 4.2, _, 2.0, secondLoc, spawnLoc);	
+		
+		EmitSoundToAll("ambient/explosions/explode_9.wav", _, SNDCHAN_AUTO, 75, _, 0.5, 110, _, spawnLoc);
+		
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(spawnLoc[0]);
+		pack_boom.WriteFloat(spawnLoc[1]);
+		pack_boom.WriteFloat(spawnLoc[2]);
+		pack_boom.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		
+		Explode_Logic_Custom(damage, entity, entity, -1, spawnLoc, REILA_BOSS_LIGHTNING_RANGE * 1.4,_,0.8, true);  //Explosion range increase
+	
+		return Plugin_Stop;
+	}
+	else
+	{
+		spawnRing_Vectors(spawnLoc, REILA_BOSS_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 120, 50, 200, 120, 1, 0.33, 6.0, 0.1, 1, 1.0);
+		ResetPack(pack);
+		WritePackCell(pack, EntIndexToEntRef(entity));
+		WritePackFloat(pack, NumLoops + REILA_BOSS_CHARGE_TIME);
+		WritePackFloat(pack, spawnLoc[0]);
+		WritePackFloat(pack, spawnLoc[1]);
+		WritePackFloat(pack, spawnLoc[2]);
+		WritePackFloat(pack, damage);
+	}
+	
+	return Plugin_Continue;
+}
+
+
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+		
+	int SPRITE_INT = PrecacheModel(sprite, false);
+
+	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	TE_SendToAll();
 }

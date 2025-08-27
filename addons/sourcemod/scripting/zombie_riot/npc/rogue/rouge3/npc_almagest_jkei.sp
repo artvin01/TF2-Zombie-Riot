@@ -530,7 +530,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-						Elemental_AddVoidDamage(target, npc.index, 200, true, true);
+						Elemental_AddVoidDamage(target, npc.index, 150, true, true);
 
 					}
 					npc.PlayMeleeHitSound();
@@ -645,8 +645,10 @@ void Jkei_CreateDrones(int iNpc)
 			fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
 		}
 	}
-	
+	//not buildings,
+	b_NpcIgnoresbuildings[npc.index] = true;
 	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, 9999.9, _, _, true, RAIDBOSS_GLOBAL_ATTACKLIMIT,_,_,_,Jkei_SpawnMinionsToEnemy);
+	b_NpcIgnoresbuildings[npc.index] = false;
 }
 
 

@@ -4953,7 +4953,7 @@
 	{
 		"en"	"Christian Brutal Sniper"
 	}
-	"Randomizer"
+	"Randomizer!"
 	{
 		"en"	"Randomizer"
 	}

@@ -125,7 +125,7 @@ methodmap ReilaBeacon < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ReilaBeacon_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ReilaBeacon_ClotThink);
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl", "idle"			, .model_size = 1.5);
+		npc.m_iWearable1 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl", "idle"			, .skin = 1, .model_size = 1.5);
 		npc.m_iWearable2 = npc.EquipItemSeperate("models/props_moonbase/moon_gravel_crystal.mdl", "idle", .model_size = 1.4);
 
 		//counts as a static npc, means it wont count towards NPC limit.
@@ -139,6 +139,7 @@ methodmap ReilaBeacon < CClotBody
 
 public void ReilaBeacon_ClotThink(int iNPC)
 {
+	ReilaBeacon npc = view_as<ReilaBeacon>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -176,14 +177,16 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 	{
 		if(IsValidEntity(npc.m_iTargetAlly))
 		{
-			f_AttackSpeedNpcIncrease[npc.m_iTargetAlly] *= 0.85;
+			f_AttackSpeedNpcIncrease[npc.m_iTargetAlly] *= 0.9;
 			fl_Extra_Speed[npc.m_iTargetAlly] 			*= 1.05;
 			fl_Extra_Damage[npc.m_iTargetAlly] 			*= 1.25;
+			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Very Defensive Backup", 0.6);
+			RaidModeScaling *= 1.2;
 		}
 		CPrintToChatAll("{green}You gain more time before the Curtain closes...{crimson} However, both {pink}Reila{crimson} and the Construct become stronger.");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 		MultiHealth(npc.index, 1.5);
-		RaidModeTime = GetGameTime(npc.index) + 120.0;
+		RaidModeTime = GetGameTime(npc.index) + 80.0;
 		damage = 0.0;
 		return Plugin_Changed;
 	}
@@ -221,66 +224,10 @@ public void ReilaBeacon_NPCDeath(int entity)
 
 }
 
-void ReilaBeaconSelfDefense(ReilaBeacon npc, float gameTime, int target, float distance)
-{
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-			{
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 650.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.5;
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					Elemental_AddVoidDamage(target, npc.index, 200, true, true);
-
-					npc.PlayMeleeHitSound();
-				} 
-			}
-			delete swingTrace;
-		}
-	}
-	if(gameTime > npc.m_flNextMeleeAttack)
-	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
-		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
-			{
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
-			}
-		}
-	}
-}
-
-
 
 void ReilaBeacon_SpawnAnnotation(int iNPC)
 {
-	CHIMERA npc = view_as<CHIMERA>(iNPC);
+	ReilaBeacon npc = view_as<ReilaBeacon>(iNPC);
 	if(!npc.m_flSpawnAnnotation)
 		return;
 	if(npc.m_flSpawnAnnotation > GetGameTime())	
