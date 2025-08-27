@@ -97,10 +97,10 @@ enum struct Artifact
 		this.FuncTakeDamage = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
 		kv.GetString("func_floorchange", this.Name, 64);
-		this.FuncFloorChange = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		this.FuncFloorChange = 	this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
 		kv.GetString("func_revive", this.Name, 64);
-		this.FuncRevive = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		this.FuncRevive = 		this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		this.Name[0] = CharToUpper(this.Name[0]);

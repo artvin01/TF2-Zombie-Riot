@@ -205,7 +205,7 @@ public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflic
 	}
 }
 
-public void Rogue_Woodplate_Revive(int entity)
+public void Rogue_Woodplate_Revive(int &entity)
 {
 	HealEntityGlobal(entity, entity, ReturnEntityMaxHealth(entity) / 2.0, 1.0, 2.0, HEAL_ABSOLUTE);
 }
@@ -229,7 +229,7 @@ public void Rogue_MedicineSticks_WaveStart()
 	}
 }
 
-public void Rogue_FireRate40_Revive(int entity)
+public void Rogue_FireRate40_Revive(int &entity)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
@@ -248,7 +248,7 @@ public void Rogue_FireRate40_Revive(int entity)
 	}
 }
 
-public void Rogue_FireRate70_Revive(int entity)
+public void Rogue_FireRate70_Revive(int &entity)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
