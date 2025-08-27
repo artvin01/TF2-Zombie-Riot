@@ -620,7 +620,7 @@ public float Rogue_Encounter_Rift1()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING1"))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Reila's Scorn Keycard"))
 			{
 				found = true;
 				break;
