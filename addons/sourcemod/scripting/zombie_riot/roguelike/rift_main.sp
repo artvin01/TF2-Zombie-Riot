@@ -8,6 +8,7 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
+static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -23,6 +24,18 @@ stock bool Rogue_Rift_NoStones()
 stock int Rogue_Rift_CurseLevel()
 {
 	return DifficultyLevel;
+}
+
+void Rogue_Rift_StorePriceMulti(int &cost, bool greg)
+{
+	if(!greg && Keycard)
+		cost = cost * 11 / 10;
+}
+
+void Rogue_Rift_PackPriceMulti(int &cost)
+{
+	if(Keycard)
+		cost = cost * 11 / 10;
 }
 
 public void Rogue_Curse_RiftSwarm(bool enable)
@@ -358,16 +371,34 @@ static bool StartRiftVote(bool first)
 	ArrayList list = Rogue_CreateGenericVote(FinishRiftVote, "Rift Consume Encounter Title");
 	Vote vote;
 
-	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	strcopy(vote.Config, sizeof(vote.Config), "-1");
-	list.PushArray(vote);
+	int needToUseNow;
+	if(Rogue_GetFloor() == 4 && Rogue_HasNamedArtifact("Wordless Deed") && !Rogue_HasNamedArtifact("The Shadow"))
+		needToUseNow = ConsumeLimit == 1 ? 2 : 1;
+	
+	if(!needToUseNow)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+		strcopy(vote.Config, sizeof(vote.Config), "-1");
+		list.PushArray(vote);
+	}
+
+	int found;
+	if(needToUseNow == 2)	// Need to consume the item now!
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Wordless Deed");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		strcopy(vote.Config, sizeof(vote.Config), "Wordless Deed");
+		list.PushArray(vote);
+		found++;
+	}
 
 	ArrayList collection = Rogue_GetCurrentCollection();
 
-	int found;
 	if(collection)
 	{
+		vote.Locked = needToUseNow == 2;
+
 		Artifact artifact;
 		int length = collection.Length;
 
@@ -428,7 +459,7 @@ static void FinishRiftVote(const Vote vote)
 			Rogue_GetNamedArtifact(vote.Config, artifact);
 			Rogue_RemoveNamedArtifact(vote.Config);
 
-			if(CurseCorrupt && (GetURandomInt() % 2))
+			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
 				Rogue_GiveNamedArtifact("Fractured");
 			}
@@ -609,7 +640,7 @@ public void Rogue_Reila_Remove()
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(other != -1 && /*i_NpcInternalId[other] == ReilaFollower_ID() && */IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == ReilaFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
@@ -633,11 +664,14 @@ public void Rogue_Rift1_Remove()
 
 public void Rogue_Rift1Good_Collect()
 {
-	Rogue_AddUmbral(-30, true);
+	Keycard = true;
+	CPrintToChatAll("{pink}Reila{default}: I know where to use this.");
 }
 
 public void Rogue_Rift1Good_Remove()
 {
+	Keycard = false;
+
 	if(Rogue_Started())
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -649,6 +683,7 @@ public void Rogue_Rift1Good_Remove()
 			}
 		}
 
+		CPrintToChatAll("{pink}Reila{default}: ...");
 		Rogue_RemoveNamedArtifact("Reila Assistance");
 		Rogue_GiveNamedArtifact("Torn Keycard");
 		Rogue_AddUmbral(-100, true);
@@ -764,6 +799,9 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 public void Rogue_Rift2_Collect(int entity)
 {
 	Rogue_AddUmbral(-100, true);
+
+	if(!Rogue_HasNamedArtifact("Reila Assistance"))
+		Rogue_GiveNamedArtifact("Reila Assistance", true);
 }
 
 public void Rogue_Rift2_Enemy(int entity)

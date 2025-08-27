@@ -63,7 +63,7 @@ void BossReila_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -161,6 +161,9 @@ methodmap BossReila < CClotBody
 
 	public BossReila(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		bool altEnding = data[0] == 'a' || Rogue_HasNamedArtifact("Reila Assistance");	// Ending3!
+		bool badEnding = data[0] == 'b' || Rogue_HasNamedArtifact("Torn Keycard");	// You idiots!
+
 		BossReila npc = view_as<BossReila>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "3000", ally));
 		
 		i_NpcWeight[npc.index] = 4;
@@ -170,7 +173,7 @@ methodmap BossReila < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.SetActivity("ACT_MP_RUN_ITEM2");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = altEnding ? BLEEDTYPE_UMBRAL : BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_bDissapearOnDeath = true;
@@ -213,7 +216,37 @@ methodmap BossReila < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
-		CPrintToChatAll("{pink}Reila{default} : .");
+		if(altEnding)
+		{
+			SetEntityRenderFx(npc.index, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.index, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable1, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable3, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable3, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable4, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable4, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable5, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable5, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable6, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable6, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+		
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Reila?");
+
+			CPrintToChatAll("{pink}Reila{default}: Who are you?!");
+		}
+		else if(badEnding)
+		{
+			CPrintToChatAll("{pink}Reila{default}: Is this what you wanted?!");
+			fl_Extra_Damage[npc.index] *= 3.0;
+			fl_Extra_Speed[npc.index] *= 1.4;
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.7;
+		}
+		else
+		{
+			CPrintToChatAll("{pink}Reila{default}: A.");
+		}
+		
 		npc.m_flBossSpawnBeacon = 1.0;
 
 		return npc;
@@ -455,6 +488,16 @@ void ReilaCreateBeacon(int iNpc)
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
 		NpcStats_CopyStats(npc.index, summon);
 		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
+
+		if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		{
+			SetEntityRenderFx(npc.index, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.index, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable1, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.m_iWearable2, RENDERFX_EXPLODE);
+			SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+		}
 	}
 }
 

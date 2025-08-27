@@ -42,8 +42,7 @@ static float GrigoriCoinPurseCalc()
 public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 {
 	float Multi = GrigoriCoinPurseCalc();
-	bool FIXME;
-//	RogueHelp_BodyAPSD(entity, 1.0 / Multi);
+	RogueHelp_BodyAPSD(entity, map, 1.0 / Multi);
 }
 
 public void Rogue_Item_GrigoriCoinPurse_Weapon(int entity)
