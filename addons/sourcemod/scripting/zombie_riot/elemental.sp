@@ -418,7 +418,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		// Warped overrides
 		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Void || Armor_DebuffType[victim] == Element_Warped))
 		{
-			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+			Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
 			return;
 		}
 		
@@ -482,7 +482,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			// Element mixing into Warped
 			if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4 || ElementDamage[victim][Element_Void] > 0 || ElementDamage[victim][Element_Warped] > 0)
 			{
-				Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+				Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
 				return;
 			}
 		}
@@ -551,7 +551,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		// Warped overrides
 		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Chaos || Armor_DebuffType[victim] == Element_Warped))
 		{
-			Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+			Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
 			return;
 		}
 		
@@ -617,7 +617,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			// Element mixing into Warped
 			if(ElementDamage[victim][Element_Chaos] > 0 || ElementDamage[victim][Element_Warped] > 0)
 			{
-				Elemental_AddWarpedDamage(victim, attacker, sound, ignoreArmor);
+				Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
 				return;
 			}
 		}

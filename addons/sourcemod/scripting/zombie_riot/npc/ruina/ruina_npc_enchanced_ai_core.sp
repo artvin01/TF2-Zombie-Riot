@@ -2648,7 +2648,7 @@ static void GetOffsetLaserStartLoc(Basic_NPC_Laser Data, Ruina_Laser_Logic Laser
 	CClotBody npc = Data.npc;
 	float Angles[3], startPoint[3];
 	WorldSpaceCenter(npc.index, startPoint);
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	GetEntPropVector(npc.index, Prop_Data, "a", Angles);
 	
 	int iPitch = npc.LookupPoseParameter("body_pitch");
 			

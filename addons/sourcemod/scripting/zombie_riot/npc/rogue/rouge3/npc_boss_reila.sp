@@ -9,6 +9,13 @@ static const char g_HurtSounds[][] = {
 };
 
 
+static const char g_nightmare_cannon_core_sound[][] = {
+	"zombiesurvival/seaborn/loop_laser.mp3",
+};
+static const char g_RangedAttackSounds[][] = {
+	"npc/combine_gunship/attack_start2.wav",
+};
+/*
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_sf13_spell_super_jump01.mp3",
 	"vo/medic_sf13_spell_super_speed01.mp3",
@@ -18,15 +25,13 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_sf13_spell_uber01.mp3",
 	"vo/medic_sf13_spell_zombie_horde01.mp3",
 };
-
+*/
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"weapons/gunslinger_swing.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/blade_slice_2.wav",
-	"weapons/blade_slice_3.wav",
-	"weapons/blade_slice_4.wav",
+	"items/powerup_pickup_crits.wav",
 };
 
 static const char g_ReilaChargeMeleeDo[][] =
@@ -42,7 +47,8 @@ static int NPCId;
 void BossReila_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+//	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_ReilaChargeMeleeDo)); i++) { PrecacheSound(g_ReilaChargeMeleeDo[i]); }
@@ -50,7 +56,7 @@ void BossReila_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_Reila");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_boss_reila");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
@@ -80,7 +86,7 @@ methodmap BossReila < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+	//	EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -96,11 +102,7 @@ methodmap BossReila < CClotBody
 		
 		
 	}
-	
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-	}
+
 	public void PlaySpawnSound() 
 	{
 		EmitSoundToAll(g_SpawnSoundDrones[GetRandomInt(0, sizeof(g_SpawnSoundDrones) - 1)], _, _, _, _, 0.65);
@@ -112,15 +114,26 @@ methodmap BossReila < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		if(this.m_flMegaSlashNext)
-			EmitSoundToAll(g_MeleeHitSoundReila[GetRandomInt(0, sizeof(g_MeleeHitSoundReila) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		else
-			EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, GetRandomInt(125, 130));
 	}
 	public void PlayChargeMeleeHit() 
 	{
 		EmitSoundToAll(g_ReilaChargeMeleeDo[GetRandomInt(0, sizeof(g_ReilaChargeMeleeDo) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
+	}
+	property float m_flReflectInMode
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flReflectStatusCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flDamageTaken
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
 
 	public BossReila(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -130,20 +143,21 @@ methodmap BossReila < CClotBody
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		SetVariantInt(1);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.SetActivity("ACT_MP_RUN_ITEM2");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_bDissapearOnDeath = true;
 
 		func_NPCDeath[npc.index] = view_as<Function>(BossReila_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(BossReila_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(BossReila_ClotThink);
+		npc.m_flReflectStatusCD = GetGameTime() + 5.0;
 		
-		
-		
+
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -159,11 +173,20 @@ methodmap BossReila < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec23_boarders_beanie_style2/dec23_boarders_beanie_style2_engineer.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_engineer_gunslinger.mdl");
+		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_zipper_suit/sbox2014_zipper_suit_engineer.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_delldozer_style2/hwn2024_delldozer_style2.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2024_delldozer_style3/hwn2024_delldozer_style3.mdl");
+		SetEntityRenderColor(npc.m_iWearable4, 120, 55, 100, 255);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/robotarm_silver/robotarm_silver_gem.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/robotarm_silver/robotarm_silver_gem.mdl");
+		SetEntityRenderColor(npc.m_iWearable5, 100, 55, 190, 255);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/all_class/fall2013_the_special_eyes_style1/fall2013_the_special_eyes_style1_engineer.mdl");
+		SetEntityRenderColor(npc.m_iWearable6, 120, 55, 100, 255);
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
 		CPrintToChatAll("{pink}Reila{default} : .");
 		
@@ -196,12 +219,45 @@ public void BossReila_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(ReilaReflectDamageDo(npc.index))
+	{
+		return;
+	}
+	if(npc.m_iChanged_WalkCycle != 1)
+	{
+		if(npc.m_flDamageTaken > 0.0)
+		{
+			GrantEntityArmor(npc.index, false, 1.0, 0.33, 0, npc.m_flDamageTaken, npc.index);
+			npc.m_flDamageTaken = 0.0;
+		}
+		if(IsValidEntity(npc.m_iWearable7))
+			RemoveEntity(npc.m_iWearable7);
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
+		if(IsValidEntity(npc.m_iWearable9))
+			RemoveEntity(npc.m_iWearable9);
+		if(IsValidEntity(npc.m_iWearable10))
+			RemoveEntity(npc.m_iWearable10);
+		npc.SetActivity("ACT_MP_RUN_ITEM2");
+		npc.RemoveGesture("ACT_MP_ATTACK_STAND_GRENADE");
+		npc.m_iChanged_WalkCycle = 1;
+		npc.m_flSpeed = 330.0;
+		npc.StartPathing();
+	}
+	/*
+	if(IsValidEntity(npc.m_iWearable5) && Rogue_HasNamedArtifact("Bob's Duck"))
+	{
+		RemoveEntity(npc.m_iWearable5);
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/all_class/all_class_badge_bonusd/all_class_badge_bonusd.mdl");
+		SetEntityRenderColor(npc.m_iWearable7, 120, 55, 190, 255);
+	}
+	*/
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	Reila_CreateDrones(npc.index);
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -240,6 +296,10 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	if(npc.m_flReflectInMode > GetGameTime(npc.index))
+	{
+		npc.m_flDamageTaken += (damage * 0.25);
+	}
 	return Plugin_Changed;
 }
 
@@ -247,11 +307,15 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 public void BossReila_NPCDeath(int entity)
 {
 	BossReila npc = view_as<BossReila>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		
+	TE_Particle("pyro_blast", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_lines", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	EmitCustomToAll("zombiesurvival/internius/blinkarrival.wav", npc.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME * 2.0);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
@@ -278,7 +342,7 @@ void BossReilaSelfDefense(BossReila npc, float gameTime, int target, float dista
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
 				target = TR_GetEntityIndex(swingTrace);	
 				
@@ -287,54 +351,22 @@ void BossReilaSelfDefense(BossReila npc, float gameTime, int target, float dista
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 650.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.5;
-					if(npc.m_flMegaSlashNext)
-					{
-						damageDealt *= 3.0;
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-						Elemental_AddVoidDamage(target, npc.index, 600, true, true);
-						float pos[3]; GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 5.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
-						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 25.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
-						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 45.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
-						spawnRing_Vectors(pos, 50.0 * 2.0, 0.0, 0.0, 65.0, 	"materials/sprites/laserbeam.vmt", 80, 32, 120, 255, 1, /*duration*/ 0.45, 3.0, 1.0, 2, 1.0);
-					}
-					else
-					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					float damageDealt = 400.0;
+				//	if(ShouldNpcDealBonusDamage(target))
+				//		damageDealt *= 5.5;
 
-						Elemental_AddVoidDamage(target, npc.index, 200, true, true);
+				//	SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					SonOfOsiris_Lightning_Strike(npc.index, target, damageDealt, GetTeam(npc.index) == TFTeam_Red);
 
-					}
 					npc.PlayMeleeHitSound();
 				} 
 			}
 			delete swingTrace;
-			npc.m_flMegaSlashNext = 0.0;
-			npc.m_flSpeed = 330.0;
-		}
-	}
-	if(npc.m_flMegaSlashDoing)
-	{
-		npc.PlayChargeMeleeHit();
-		float flPos[3], flAng[3];
-		npc.GetAttachment("effect_hand_r", flPos, flAng);
-		spawnRing_Vectors(flPos, 50.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 80, 32, 120, 200, 1, /*duration*/ 0.25, 2.0, 0.0, 1, 1.0);	
-		if(npc.m_flMegaSlashDoing < gameTime)
-		{
-			if(npc.IsValidLayer(npc.m_iLayerSave))
-			{
-				npc.SetLayerPlaybackRate(npc.m_iLayerSave, 1.5);
-			}
-			npc.m_flMegaSlashDoing = 0.0;
-			npc.m_flMegaSlashNext = 1.0;
 		}
 	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -344,30 +376,160 @@ void BossReilaSelfDefense(BossReila npc, float gameTime, int target, float dista
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				if(npc.m_flMegaSlashCD < gameTime)
-				{
-					int Layer;
-					Layer = npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-					npc.SetLayerPlaybackRate(Layer, 0.0);
-					npc.SetLayerCycle(Layer, 0.15);
-					npc.m_iLayerSave = Layer;
-							
-					npc.m_flMegaSlashDoing = gameTime + 1.0;
-					npc.m_flAttackHappens = gameTime + 1.25;
-					npc.m_flDoingAnimation = gameTime + 1.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.75;
-					npc.m_flMegaSlashCD = gameTime + 6.5;
-					npc.m_flSpeed = 150.0;
-				}
-				else
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-							
-					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 0.85;
-				}
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
+						
+				npc.m_flAttackHappens = gameTime + 0.25;
+				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
 	}
+}
+
+
+
+
+bool ReilaReflectDamageDo(int iNpc)
+{
+	BossReila npc = view_as<BossReila>(iNpc);
+
+	if(npc.m_flReflectStatusCD < GetGameTime(npc.index))
+	{
+		npc.m_flReflectInMode = GetGameTime(npc.index) + 2.3;
+		npc.m_flReflectStatusCD = GetGameTime(npc.index) + 10.0;
+		npc.m_flDamageTaken = 0.0;
+		if(npc.m_iChanged_WalkCycle != 2)
+		{
+			npc.AddActivityViaSequence("taunt09");
+			npc.SetPlaybackRate(0.1);
+			npc.SetCycle(0.776);
+			npc.StopPathing();
+			int LayerDo = npc.AddGesture("ACT_MP_ATTACK_STAND_GRENADE");
+			npc.SetLayerPlaybackRate(LayerDo, 0.0);
+			npc.SetLayerCycle(LayerDo, 0.0);
+			npc.m_iChanged_WalkCycle = 2;
+			npc.m_flSpeed = 0.0;
+		}
+		//500 base dmg
+	}
+
+	if(npc.m_flReflectInMode)
+	{
+		float TimeLeft = npc.m_flReflectInMode - GetGameTime(npc.index);
+		if(TimeLeft <= 1.2)
+		{
+			TimeLeft *= 1.5;
+			if(npc.m_iChanged_WalkCycle != 3)
+			{
+				EmitCustomToAll(g_nightmare_cannon_core_sound[GetRandomInt(0, sizeof(g_nightmare_cannon_core_sound) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 160);
+				EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+			
+				npc.m_iChanged_WalkCycle = 3;
+			}
+			if(TimeLeft >= 1.0)
+				TimeLeft = 1.0;
+
+			if(TimeLeft <= 0.0)
+				TimeLeft = 0.0;
+
+			TimeLeft -= 1.0;
+			TimeLeft *= -1.0;
+
+			float VecAngles[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", VecAngles);
+			Reila_DrawBigAssLaser(VecAngles, npc.index, TimeLeft * 2.0);
+		}
+		else
+		{
+			npc.PlayChargeMeleeHit();
+			float flPos[3], flAng[3];
+			npc.GetAttachment("effect_hand_r", flPos, flAng);
+			spawnRing_Vectors(flPos, 50.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 80, 32, 120, 200, 1, /*duration*/ 0.25, 2.0, 0.0, 1, 1.0);
+		}
+		
+		if(npc.m_flReflectInMode < GetGameTime(npc.index))
+		{
+			npc.m_flReflectInMode = false;
+		}	
+		return true;
+	}
+	return false;
+}
+
+
+
+
+void Reila_DrawBigAssLaser(float Angles[3], int client, float AngleDeviation = 1.0)
+{
+	BossReila npc = view_as<BossReila>(client);
+	Angles[1] -= (30.0 * AngleDeviation);
+	float vecForward[3];
+	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	float LaserFatness = 25.0;
+	int Colour[4];
+
+	float VectorForward = 5000.0; //a really high number.
+
+	float VecMe[3]; WorldSpaceCenter(client, VecMe);
+	Ruina_Laser_Logic Laser;
+	float Distance = 500.0;
+	Laser.client = client;
+	Laser.DoForwardTrace_Custom(Angles, VecMe, Distance);
+	Laser.Damage = 500.0;                //how much dmg should it do?        //100.0*RaidModeScaling
+	Laser.Bonus_Damage = 150.0;            //dmg vs things that should take bonus dmg.
+	Laser.damagetype = DMG_PLASMA;        //dmg type.
+	Laser.Radius = LaserFatness;                //how big the radius is / hull.
+	Laser.Deal_Damage();
+	Colour = {0,25,180, 125};
+	if(!IsValidEntity(npc.m_iWearable7))
+	{
+		npc.m_iWearable7 = ParticleEffectAt(Laser.End_Point, "raygun_projectile_blue_crit", 0.0);
+	}
+	else
+	{
+		TeleportEntity(npc.m_iWearable7, Laser.End_Point, NULL_VECTOR, NULL_VECTOR);
+	}
+	ReilaBeamEffect(Laser.Start_Point, Laser.End_Point, Colour, LaserFatness * 2.0);
+
+	Angles[1] += (60.0 * AngleDeviation);
+	
+	Laser.DoForwardTrace_Custom(Angles, VecMe, Distance);
+	Laser.Deal_Damage();
+	Colour = {120,25,0, 125};
+	if(!IsValidEntity(npc.m_iWearable9))
+	{
+		npc.m_iWearable9 = ParticleEffectAt(Laser.End_Point, "raygun_projectile_red_crit", 0.0);
+	}
+	else
+	{
+		TeleportEntity(npc.m_iWearable9, Laser.End_Point, NULL_VECTOR, NULL_VECTOR);
+	}
+	ReilaBeamEffect(Laser.Start_Point, Laser.End_Point, Colour, LaserFatness * 2.0);
+
+}
+
+
+static void ReilaBeamEffect(float startPoint[3], float endPoint[3], int color[4], float diameter)
+{
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer2, 3);
+	TE_SendToAll(0.0);
+//	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.8 * 1.28), ClampBeamWidth(diameter * 0.8 * 1.28), 0, 1.0, colorLayer3, 3);
+//	TE_SendToAll(0.0);
+// I have removed one TE as its way too many te's at once.
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 1.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	int glowColor[4];
+	SetColorRGBA(glowColor, color[0], color[1], color[2], color[3]);
+	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
+	TE_SendToAll(0.0);
 }
