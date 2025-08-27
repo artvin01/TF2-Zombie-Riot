@@ -588,6 +588,7 @@ public float Rogue_Encounter_PastLore()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Past Lore Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Past Lore Desc 2");
+	vote.Append[0] = 0;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
@@ -688,9 +689,19 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 		// Show 4 lines at a time
 		for(int i; i < length; i++)
 		{
-			if(i <= progress && i > (progress - 3))
+			if(i <= progress && i > (progress - 4))
 			{
-				panel.DrawText(Chapter1[i]);
+				switch(chapter)
+				{
+					case 0:
+						panel.DrawText(Chapter1[i]);
+					
+					case 1:
+						panel.DrawText(Chapter2[i]);
+					
+					case 2:
+						panel.DrawText(Chapter3[i]);
+				}
 			}
 			else
 			{
