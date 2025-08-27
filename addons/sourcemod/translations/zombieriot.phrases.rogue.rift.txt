@@ -1385,6 +1385,10 @@
 	{
 		"en"	"Collect the 8 heavy pages to win"
 	}
+	"Randomizer"
+	{
+		"en" "☠ Randomizer"
+	}
 	"Refragmented Page"
 	{
 		"en"	"Refragmented Page"
