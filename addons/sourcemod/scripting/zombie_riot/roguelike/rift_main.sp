@@ -8,7 +8,7 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
-static bool Keycard;
+//static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -710,13 +710,13 @@ public void Rogue_Rift1_Remove()
 
 public void Rogue_Rift1Good_Collect()
 {
-	Keycard = true;
+	//Keycard = true;
 	CPrintToChatAll("{pink}Reila{default}: I know where to use this.");
 }
 
 public void Rogue_Rift1Good_Remove()
 {
-	Keycard = false;
+	//Keycard = false;
 
 	if(Rogue_Started())
 	{
