@@ -278,7 +278,7 @@ void ApertureFuelerSelfDefense(ApertureFueler npc, float gameTime, int target, f
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
 					spawnRing_Vectors(vecMe, 150.0, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 255, 175, 0, 150, 1, 0.5, 6.0, 0.1, 1, 640.0);
 			
-					Explode_Logic_Custom(50.0, -1, npc.index, -1, vecMe, 150.0, _, 0.75, true, _, false, _, ApertureFueler_ExplodePost);
+					Explode_Logic_Custom(40.0, -1, npc.index, -1, vecMe, 150.0, _, 0.75, true, _, false, _, ApertureFueler_ExplodePost);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -314,7 +314,7 @@ public void ApertureFueler_ExplodePost(int attacker, int victim, float damage, i
 {
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
-		NPC_Ignite(victim, attacker, 2.0, -1, 5.50);
-		Custom_Knockback(attacker, victim, 500.0, true);
+		NPC_Ignite(victim, attacker, 2.0, -1, 4.ß);
+	//	Custom_Knockback(attacker, victim, 500.0, true);
 	}
 }
