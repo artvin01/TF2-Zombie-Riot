@@ -314,7 +314,7 @@ public void ApertureFueler_ExplodePost(int attacker, int victim, float damage, i
 {
 	if(!NpcStats_IsEnemySilenced(attacker))
 	{
-		NPC_Ignite(victim, attacker, 2.0, -1, 4.ß);
+		NPC_Ignite(victim, attacker, 2.0, -1, 4.0);
 	//	Custom_Knockback(attacker, victim, 500.0, true);
 	}
 }
