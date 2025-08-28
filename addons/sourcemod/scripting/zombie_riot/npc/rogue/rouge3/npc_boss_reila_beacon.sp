@@ -64,9 +64,9 @@ static void ClotPrecache()
 {
 	return;
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return ReilaBeacon(vecPos, vecAng, team, data);
+	return ReilaBeacon(vecPos, vecAng, team);
 }
 
 methodmap ReilaBeacon < CClotBody
@@ -98,7 +98,7 @@ methodmap ReilaBeacon < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 
-	public ReilaBeacon(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public ReilaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
 		ReilaBeacon npc = view_as<ReilaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.3", "99999", ally, .NpcTypeLogic = 1));
 		
