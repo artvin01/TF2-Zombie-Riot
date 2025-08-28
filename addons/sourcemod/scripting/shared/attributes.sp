@@ -51,6 +51,7 @@ enum
 	Attrib_Weapon_MinDmgMulti = 4048, 
 	//used currently for heavy particle rifle
 	//but will probably be used for other weapons to define max/min dmg depending on whatever the weapon specific plugin does with it.
+	Attrib_ElementalDefPerc = 4049,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

@@ -14,8 +14,26 @@ void BossSummonRandom_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+
+	
+	strcopy(data.Name, sizeof(data.Name), "Random Boss");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_random_vsh");
+	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = 0; 
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecacheVsh;
+	NPC_Add(data);
 }
 
+static void ClotPrecacheVsh()
+{
+	//precaches said npcs.
+	NPC_GetByPlugin("npc_gentlespy");
+	NPC_GetByPlugin("npc_hhh");
+	NPC_GetByPlugin("npc_christianbrutalsniper");
+}
 static void ClotPrecache()
 {
 	//precaches said npcs.
@@ -125,6 +143,10 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	{
 		NumberRand = GetRandomInt(1,26);
 	}
+	if(i_RaidGrantExtra[bosssummonbase] == 666)
+	{
+		NumberRand = GetRandomInt(27,29);
+	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
 	{
@@ -230,7 +252,6 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 12:
@@ -349,6 +370,18 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 1.1;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+		}
+		case 27:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 28:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 29:
+		{
+			PluginName = "npc_christianbrutalsniper";	
 		}
 	}
 	Format(enemy.Data, sizeof(enemy.Data), "%s",CharData);

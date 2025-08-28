@@ -167,20 +167,28 @@ methodmap ApertureResearcher < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		switch(GetRandomInt(0,2))
+		if(ally == TFTeam_Blue)
 		{
-			case 0:
+			CPrintToChatAll("{normal}Researcher{default}: 𝙹ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ↸╎ᒷᓭᒷ ᒷꖌᒷꖎ⍑ᔑ⎓ℸ ̣ᒷリ ꖌ∷ᒷᔑℸ ̣⚍∷ᒷリ!!!");
+		}
+		else
+		{
+			switch(GetRandomInt(0,2))
 			{
-				CPrintToChatAll("{normal}Researcher{default}: I really didn't want to end up in here!");
+				case 0:
+				{
+					CPrintToChatAll("{normal}Researcher{default}: I really didn't want to end up in here!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{normal}Researcher{default}: Why here?! Couldn't it have been any other place on this planet?!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{normal}Researcher{default}: Please don't harm me, I-...");
+				}
 			}
-			case 1:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: Why here?! Couldn't it have been any other place on this planet?!");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{normal}Researcher{default}: Please don't harm me, I-...");
-			}
+
 		}
 
 		TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
@@ -262,6 +270,8 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 		{
 			if(IsValidEnemy(npc.index, entitycount))
 				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
+			else if(IsValidAlly(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
 		}
 		ApplyStatusEffect(npc.index, npc.index, "Kinetic Surge", 20.0);
 	}
@@ -290,22 +300,28 @@ public void ApertureResearcher_NPCDeath(int entity)
 		npc.PlayTeleSound();
 	}
 
-	switch(GetRandomInt(0,2))
+	if(GetTeam(npc.index) == TFTeam_Blue)
 	{
-		case 0:
+		CPrintToChatAll("{normal}Researcher{default}: ⍊ᒷ∷↸ᔑᒲᒲℸ ̣, ↸╎ᒷ ⍑ᔑʖᒷリ ↸𝙹ᓵ⍑ ᓭᓵ⍑𝙹リ ∴ᔑᓭ ↸∷ᔑ⚍⎓!");
+	}
+	else
+	{
+		switch(GetRandomInt(0,2))
 		{
-			CPrintToChatAll("{normal}Researcher{default}: I'm out of here!");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{normal}Researcher{default}: Teleporter reconfigured, see you in never!");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{normal}Researcher{default}: Start the machine, start the machine!");
-		}
-	}	
-	
+			case 0:
+			{
+				CPrintToChatAll("{normal}Researcher{default}: I'm out of here!");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{normal}Researcher{default}: Teleporter reconfigured, see you in never!");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{normal}Researcher{default}: Start the machine, start the machine!");
+			}
+		}	
+	}
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))

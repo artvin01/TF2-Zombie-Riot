@@ -474,12 +474,22 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 {
 	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		return 3;
-	
+	float f3_VecAbs[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", f3_VecAbs);
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
-	for( int loop = 1; loop <= 100; loop++ ) 
+	for( int loop = 1; loop <= 150; loop++ ) 
 	{
 		float AproxRandomSpaceToWalkTo[3];
-		CNavArea RandomArea = PickRandomArea();	
+		CNavArea RandomArea;
+		
+		if(!Rogue_Mode())
+		{
+			RandomArea = PickRandomArea();	
+		}
+		else
+		{
+			RandomArea = GetRandomNearbyArea(f3_VecAbs, DomeRadiusGlobal());
+		}
 			
 		if(RandomArea == NULL_AREA) 
 			break; //No nav?

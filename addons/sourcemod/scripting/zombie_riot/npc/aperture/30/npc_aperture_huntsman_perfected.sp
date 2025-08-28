@@ -238,7 +238,7 @@ public void ApertureHuntsmanPerfected_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
 						
 						npc.PlayMeleeSound();
-						int projectile = npc.FireArrow(vPredictedPos, 100.0, 1200.0);
+						int projectile = npc.FireArrow(vPredictedPos, 80.0, 1200.0);
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.6;
 						SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 						SDKHook(projectile, SDKHook_StartTouch, ApertureHuntsmanPerfected_Particle_StartTouch);
@@ -324,7 +324,6 @@ public void ApertureHuntsmanPerfected_Particle_StartTouch(int entity, int target
 
 	
 		NPC_Ignite(target, owner, 4.0, -1, 25.0);
-		StartBleedingTimer(target, owner, 4.0, 25, -1, DMG_TRUEDAMAGE, 0);
 	}
 	RemoveEntity(entity);
 }

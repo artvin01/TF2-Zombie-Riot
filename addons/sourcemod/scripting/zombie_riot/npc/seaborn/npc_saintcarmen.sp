@@ -48,9 +48,9 @@ void SaintCarmen_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return SaintCarmen(vecPos, vecAng, team);
+	return SaintCarmen(vecPos, vecAng, team, data);
 }
 
 methodmap SaintCarmen < CClotBody
@@ -80,7 +80,7 @@ methodmap SaintCarmen < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public SaintCarmen(float vecPos[3], float vecAng[3], int ally)
+	public SaintCarmen(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SaintCarmen npc = view_as<SaintCarmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, false));
 		// 50000 x 1.0
@@ -118,6 +118,12 @@ methodmap SaintCarmen < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/short2014_deadhead/short2014_deadhead.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		bool final = StrContains(data, "noteamkill") != -1;
+		
+		if(final)
+		{
+			b_NpcIsTeamkiller[npc.index] = false;
+		}
 		
 		return npc;
 	}

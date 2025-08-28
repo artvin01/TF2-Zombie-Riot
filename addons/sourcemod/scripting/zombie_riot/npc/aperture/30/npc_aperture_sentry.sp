@@ -374,7 +374,7 @@ void ApertureSentrySelfDefense(ApertureSentry npc, float gameTime, int target)
 
 			if(IsValidEnemy(npc.index, traceTarget))
 			{
-				float damageDealt = 10.0;
+				float damageDealt = 5.0;
 				damageDealt *= npc.m_flWaveScale;
 				if(ShouldNpcDealBonusDamage(traceTarget))
 					damageDealt *= 3.0;
@@ -392,7 +392,7 @@ void ApertureSentrySelfDefense(ApertureSentry npc, float gameTime, int target)
 		npc.PlayRocketSound();
 		npc.AddGesture("ACT_RANGE_ATTACK2", false);
 		
-		float damageDealt = 60.0;
+		float damageDealt = 30.0;
 		damageDealt *= npc.m_flWaveScale;
 		if (ShouldNpcDealBonusDamage(target))
 			damageDealt *= 3.0;

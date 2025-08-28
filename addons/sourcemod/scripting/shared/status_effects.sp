@@ -207,6 +207,7 @@ void InitStatusEffects()
 	StatusEffects_Ritualist();
 	StatusEffects_Rogue3();
 	StatusEffects_SkullServants();
+	StatusEffects_GamemodeMadnessSZF();
 #endif
 }
 
@@ -2306,6 +2307,19 @@ void StatusEffects_Silence()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Blessing of Stars");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Death is comming.");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ɖ");
@@ -3439,7 +3453,7 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
-	
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ancient Melodies");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "➤");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -5417,17 +5431,17 @@ void StatusEffects_Explainelemental()
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ww");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.0;
 	data.MovementspeedModif			= -1.0;
 	data.ElementalLogic				= true;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.OnBuffStarted			= Warped_Start;
+	data.OnBuffStarted				= Warped_Start;
 	data.OnBuffEndOrDeleted			= Warped_End;
 	data.OnTakeDamage_DealFunc 		= Warped_DamageFunc;
 	data.TimerRepeatCall_Func 		= Warped_FuncTimer;
@@ -5473,8 +5487,18 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.m_flNextIdleSound = FAR_FUTURE;
 	float SoundLoudness = ratio;
-	if(SoundLoudness < 0.7)
-		SoundLoudness = 0.7;
+	if(entity <= MaxClients)
+	{
+		if(SoundLoudness > 0.3)
+			SoundLoudness = 0.3;
+	}
+	else
+	{
+
+		if(SoundLoudness < 0.7)
+			SoundLoudness = 0.7;
+	}
+		
 	EmitSoundToAll(g_IdleCreepSound[GetRandomInt(0, sizeof(g_IdleCreepSound) - 1)], entity, SNDCHAN_ITEM, NORMAL_ZOMBIE_SOUNDLEVEL, _, SoundLoudness, GetRandomInt(40, 45));
 	if(entity <= MaxClients)
 	{
@@ -5516,7 +5540,7 @@ static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_Mast
 	if(attacker <= MaxClients)
 		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
 	
-	return basedamage;
+	return 0.0;
 }
 static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -5818,3 +5842,52 @@ static void UmbralGrace_End(int victim, StatusEffect Apply_MasterStatusEffect, E
 }
 
 #endif
+
+
+
+void StatusEffects_GamemodeMadnessSZF()
+{
+	StatusEffect data;
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Damage Scaling");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.DamageTakenMulti 			= 0.1;
+	data.DamageDealMulti			= 0.1;
+	data.OnTakeDamage_TakenFunc 	= SZF_DamageScalingtaken;
+	data.OnTakeDamage_DealFunc 		= SZF_DamageScalingdeal;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+float SZF_DamageScalingtaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	//look at how many enemies are left alive, and then scale off tha
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(2);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	float resist = ValueDo;
+	if(resist >= 1.0)
+	{
+		resist = 1.0;
+	}
+	resist -= 1.0;
+	resist *= -1.0;
+	resist *= 10.0;
+	return (basedamage * resist);
+}
+
+float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(2);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	float resist = ValueDo;
+	return resist;
+}

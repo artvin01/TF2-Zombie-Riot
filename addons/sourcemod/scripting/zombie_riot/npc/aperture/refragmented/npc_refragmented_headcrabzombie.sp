@@ -109,6 +109,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	
 */
 
+static int NPCID;
+
 public void RefragmentedHeadcrabZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -131,7 +133,7 @@ public void RefragmentedHeadcrabZombie_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -335,8 +337,23 @@ public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 20000.0);
 					if(npc.DoSwingTrace(swingTrace, closest))
 					{
+						int limit = 5;
+						int count;
+						bool BlockSpawn = false;
+						for(int i; i < i_MaxcountNpcTotal; i++)
+						{
+							int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+							if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == NPCID && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index))
+							{
+								if(++count == limit)
+								{
+									BlockSpawn = true;
+									break;
+								}
+							}
+						}
 						npc.m_iOverlordComboAttack++;
-						if(npc.m_iOverlordComboAttack >= 5)
+						if(npc.m_iOverlordComboAttack >= 5 && !BlockSpawn)
 						{
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);

@@ -493,7 +493,7 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 
 static float VoidGateHurtVoid(int attacker, int victim, float &damage, int weapon)
 {
-	if((!b_NpcHasDied[victim] && (view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4)) || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
+	if((!b_NpcHasDied[victim] && (view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_UMBRAL || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4)) || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
 	{
 		damage = 0.0;
 	}

@@ -221,7 +221,7 @@ methodmap BobTheFirstFollower < CClotBody
 	
 	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
+		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN_BOB");
@@ -263,11 +263,17 @@ methodmap BobTheFirstFollower < CClotBody
 		if(Rogue_Mode())
 		{
 			// Cutscene Here
-			npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
-			npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
-		//	Rogue_SetProgressTime(10.0, false);
+			if(Rogue_Theme() == BlueParadox)
+			{
+				npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
+				npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
+			}
+			else
+			{
+				npc.Speech("Izan, i understand that you want to redeem yourself, but dont copy me.");
+				npc.SpeechDelay(10.0, "At the end, just make yourself disguinshed, youll have more trust and help.","...");
+			}
 		}
-
 		return npc;
 	}
 }

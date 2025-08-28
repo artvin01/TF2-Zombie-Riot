@@ -408,11 +408,26 @@ public void MedivalSonOfOsiris_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 }
 
-static void SonOfOsiris_Lightning_Effect(int entity = -1, int target = -1, float VecPos_entity[3] = {0.0,0.0,0.0}, float VecPos_target[3] = {0.0,0.0,0.0})
+void SonOfOsiris_Lightning_Effect(int entity = -1, int target = -1, float VecPos_entity[3] = {0.0,0.0,0.0}, float VecPos_target[3] = {0.0,0.0,0.0})
 {	
 	int r = 65; //Blue.
 	int g = 65;
 	int b = 255;
+
+	//shittiest coded known to man
+	bool ReilaMode = false;
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[entity] == Boss_ReilaID() && IsEntityAlive(other))
+		{
+			r = 125; //purple
+			g = 60;
+			b = 200;
+			ReilaMode = true;
+			break;
+		}
+	}
 	int laser;
 	if(entity != -1 && target != -1)
 	{
@@ -430,11 +445,16 @@ static void SonOfOsiris_Lightning_Effect(int entity = -1, int target = -1, float
 	{
 		laser = ConnectWithBeam(-1, -1, r, g, b, 3.0, 3.0, 2.35, LASERBEAM, VecPos_entity, VecPos_target);
 	}
-	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	SetEntityRenderFx(laser, RENDERFX_FADE_FAST);
+	if(ReilaMode)
+		CreateTimer(0.2, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	else
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
 }
 
 
-static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, bool alliednpc = false)
+void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, bool alliednpc = false)
 {
 	static float vecHit[3];
 	GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", vecHit);
@@ -547,7 +567,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	Zero(b_EntityHitByLightning); //delete this logic.
 }
 
-stock int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , float EntityLocation[3], bool ally = false)
+int SonOfOsiris_GetClosestTargetNotAffectedByLightning(int traceentity , float EntityLocation[3], bool ally = false)
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 

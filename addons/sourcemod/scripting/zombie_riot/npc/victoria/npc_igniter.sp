@@ -83,7 +83,7 @@ methodmap VictoriaIgniter < CClotBody
 
 	public VictoriaIgniter(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "3500", ally));
+		VictoriaIgniter npc = view_as<VictoriaIgniter>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "3500", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
