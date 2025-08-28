@@ -64,7 +64,7 @@ void AlmagestJkei_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
-int Almagest_Jkei()
+int Almagest_JkeiID()
 {
 	return NPCId;
 }
@@ -231,14 +231,14 @@ methodmap AlmagestJkei < CClotBody
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
-					f_AttackSpeedNpcIncrease[other] *= 0.9;
-					fl_Extra_Speed[other] 	*= 1.05;
-					fl_Extra_Damage[other] 	*= 1.1;
-					fl_TotalArmor[other] *= 0.9;
+					f_AttackSpeedNpcIncrease[other] *= 0.85;
+					fl_Extra_Speed[other] 	*= 1.1;
+					fl_Extra_Damage[other] 	*= 1.2;
+					fl_TotalArmor[other] *= 0.85;
 					i_OverlordComboAttack[other] = 2;
 					return view_as<AlmagestJkei>(-1);
 				}
@@ -249,53 +249,17 @@ methodmap AlmagestJkei < CClotBody
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
-				{
-					RemoveSpecificBuff(other, "Unstoppable Force");
-					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
-					f_AttackSpeedNpcIncrease[other] *= 0.9;
-					fl_Extra_Speed[other] 	*= 1.05;
-					fl_Extra_Damage[other] 	*= 1.1;
-					fl_TotalArmor[other] *= 0.9;
-					i_OverlordComboAttack[other] = 3;
-					return view_as<AlmagestJkei>(-1);
-				}
-			}
-		}
-		if(StrContains(data, "battle_stage_4") != -1)
-		{
-			for(int i; i < i_MaxcountNpcTotal; i++)
-			{
-				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
-				{
-					RemoveSpecificBuff(other, "Unstoppable Force");
-					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
-					f_AttackSpeedNpcIncrease[other] *= 0.9;
-					fl_Extra_Speed[other] 	*= 1.05;
-					fl_Extra_Damage[other] 	*= 1.2;
-					fl_TotalArmor[other] *= 0.9;
-					i_OverlordComboAttack[other] = 4;
-					return view_as<AlmagestJkei>(-1);
-				}
-			}
-		}
-		if(StrContains(data, "battle_stage_5") != -1)
-		{
-			for(int i; i < i_MaxcountNpcTotal; i++)
-			{
-				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == Almagest_Jkei() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
 					RemoveFromNpcAliveList(other);
 					AddNpcToAliveList(other, 0);
-					f_AttackSpeedNpcIncrease[other] *= 0.85;
-					fl_Extra_Speed[other] 	*= 1.05;
+					f_AttackSpeedNpcIncrease[other] *= 0.8;
+					fl_Extra_Speed[other] 	*= 1.1;
 					fl_Extra_Damage[other] 	*= 1.35;
-					fl_TotalArmor[other] *= 0.75;
-					i_OverlordComboAttack[other] = 5;
+					fl_TotalArmor[other] *= 0.7;
+					i_OverlordComboAttack[other] = 3;
 					return view_as<AlmagestJkei>(-1);
 				}
 			}
@@ -320,7 +284,7 @@ methodmap AlmagestJkei < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Nostaglica");
 			strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
 			Music_SetRaidMusic(music);
-			npc.m_iBattleStageAt = 5;
+			npc.m_iBattleStageAt = 3;
 		}
 		else
 		{
@@ -440,21 +404,17 @@ public Action AlmagestJkei_OnTakeDamage(int victim, int &attacker, int &inflicto
 	switch(npc.m_iBattleStageAt)
 	{
 		case 1:
-			MaxHealthRatioDamage = 0.85;
-		case 2:
 			MaxHealthRatioDamage = 0.75;
-		case 3:
-			MaxHealthRatioDamage = 0.50;
-		case 4:
+		case 2:
 			MaxHealthRatioDamage = 0.35;
-		case 5:
+		case 3:
 			MaxHealthRatioDamage = 0.0;
 	}
 
 	if(MaxHealthRatioDamage != 0.0 && !HasSpecificBuff(npc.index, "Unstoppable Force"))
 	{
 		float CurrentRatio = (float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) + damage) / float(ReturnEntityMaxHealth(npc.index));
-		if(CurrentRatio)
+		if(CurrentRatio <= MaxHealthRatioDamage)
 		{
 			CPrintToChatAll("{black}Jkei{crimson} gains a shield, his soldiers give him strength, kill them off.");
 			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.0);
@@ -530,7 +490,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-						Elemental_AddVoidDamage(target, npc.index, 200, true, true);
+						Elemental_AddVoidDamage(target, npc.index, 150, true, true);
 
 					}
 					npc.PlayMeleeHitSound();
@@ -618,7 +578,7 @@ void Jkei_CreateDrones(int iNpc)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
 
-	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.0025);
 
 	for(int i; i<MaxenemySpawnScaling; i++)
 	{
@@ -645,8 +605,10 @@ void Jkei_CreateDrones(int iNpc)
 			fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
 		}
 	}
-	
+	//not buildings,
+	b_NpcIgnoresbuildings[npc.index] = true;
 	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, 9999.9, _, _, true, RAIDBOSS_GLOBAL_ATTACKLIMIT,_,_,_,Jkei_SpawnMinionsToEnemy);
+	b_NpcIgnoresbuildings[npc.index] = false;
 }
 
 

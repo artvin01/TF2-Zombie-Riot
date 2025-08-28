@@ -261,8 +261,10 @@ void ApertureRepulsorV2SelfDefense(ApertureRepulsorV2 npc, float gameTime, int t
 					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
 
-					SDKHooks_TakeDamage(target, npc.index, npc.index, 60.0, DMG_BULLET, -1, _, vecHit);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_BULLET, -1, _, vecHit);
 					Custom_Knockback(npc.index, target, 800.0, true, true);
+					if(!HasSpecificBuff(target, "Solid Stance"))
+						ApplyStatusEffect(npc.index, target, "Solid Stance", 2.0);	
 				}
 				delete swingTrace;
 			}

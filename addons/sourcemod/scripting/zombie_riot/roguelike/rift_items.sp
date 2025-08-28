@@ -68,7 +68,7 @@ public void Rogue_GamemodeHistory_StageEnd(bool &victory)
 
 public void Rogue_PoisonWater_Ally(int entity, StringMap map)
 {
-	GiveMaxHealth(entity, map, 0.8);
+	RogueHelp_BodyHealth(entity, map, 0.8);
 }
 
 public void Rogue_PoisonWater_FloorChange(int &floor, int &stage)
@@ -109,7 +109,7 @@ public void Rogue_Mazeat1_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		MultiHealth(entity, 0.85);
+		RogueHelp_BodyHealth(entity, null, 0.85);
 		fl_Extra_Damage[entity] *= 0.85;
 	}
 }
@@ -122,11 +122,35 @@ public void Rogue_Mazeat2_Enemy(int entity)
 	}
 }
 
+public void Rogue_UmbralKeycardBuffAlly(int entity, StringMap map)
+{
+	if(!map)
+	{
+		if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
+		{
+
+			fl_Extra_Speed[entity] 				*= 1.1;
+			fl_Extra_Damage[entity] 			*= 1.2;
+			RogueHelp_BodyHealth(entity, null, 1.2);
+		}
+	}
+}
+
+public void Rogue_UmbralKeycardBuffEnemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
+	{
+
+		fl_Extra_Speed[entity] 				*= 1.1;
+		fl_Extra_Damage[entity] 			*= 1.2;
+		RogueHelp_BodyHealth(entity, null, 1.2);
+	}
+}
 public void Rogue_Mazeat3_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		MultiHealth(entity, 0.7);
+		RogueHelp_BodyHealth(entity, null, 0.7);
 		fl_Extra_Damage[entity] *= 0.7;
 
 		for(int i; i < Element_MAX; i++)
@@ -163,44 +187,12 @@ public void Rogue_Umbral6_Collect()
 
 public void Rogue_OldFan_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// Building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.5);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			npc.m_fGunBonusDamage *= 1.7;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusDamageBonus *= 1.7;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.7);
 }
 
 public void Rogue_OldFan_Weapon(int entity)
 {
-	// Damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.7);
-	
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, 1.7);
-	
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.7);
+	RogueHelp_WeaponDamage(entity, 1.7);
 }
 
 public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -237,7 +229,7 @@ public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflic
 	}
 }
 
-public void Rogue_Woodplate_Revive(int entity)
+public void Rogue_Woodplate_Revive(int &entity)
 {
 	HealEntityGlobal(entity, entity, ReturnEntityMaxHealth(entity) / 2.0, 1.0, 2.0, HEAL_ABSOLUTE);
 }
@@ -261,7 +253,7 @@ public void Rogue_MedicineSticks_WaveStart()
 	}
 }
 
-public void Rogue_FireRate40_Revive(int entity)
+public void Rogue_FireRate40_Revive(int &entity)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
@@ -280,7 +272,7 @@ public void Rogue_FireRate40_Revive(int entity)
 	}
 }
 
-public void Rogue_FireRate70_Revive(int entity)
+public void Rogue_FireRate70_Revive(int &entity)
 {
 	if(entity > 0 && entity <= MaxClients)
 	{
@@ -306,7 +298,8 @@ public void Rogue_Sculpture_Enemy(int entity)
 
 public void Rogue_PainfulHappy_Enemy(int entity)
 {
-	fl_Extra_Speed[entity] /= 1.1;
+	RogueHelp_BodyHealth(entity, null, 0.85);
+	fl_Extra_Speed[entity] /= 1.15;
 }
 
 public void Rogue_GravityDefying_Enemy(int entity)
@@ -341,7 +334,7 @@ public void Rogue_BansheeVeil_Enemy(int entity)
 
 public void Rogue_LittleCube_Ally(int entity, StringMap map)
 {
-	GiveMaxHealth(entity, map, Rogue_GetFloor() == 6 ? 1.8 : 1.1);
+	RogueHelp_BodyHealth(entity, map, Rogue_GetFloor() == 6 ? 2.0 : 1.25);
 }
 
 public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
@@ -360,7 +353,7 @@ public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
 
 		if(highestPlayer == entity)
 		{
-			GiveMaxHealth(entity, map, 1.5);
+			RogueHelp_BodyHealth(entity, map, 1.5);
 
 			static int lastTarget;
 			if(lastTarget != highestPlayer)
@@ -386,15 +379,7 @@ public void Rogue_FearlessBlade_Weapon(int entity, int client)
 
 	if(highestPlayer == client)
 	{
-		// Damage bonus
-		if(Attributes_Has(entity, 2))
-			Attributes_SetMulti(entity, 2, 1.5);
-		
-		if(Attributes_Has(entity, 8))
-			Attributes_SetMulti(entity, 8, 1.5);
-		
-		if(Attributes_Has(entity, 410))
-			Attributes_SetMulti(entity, 410, 1.5);
+		RogueHelp_WeaponDamage(entity, 1.5);
 	}
 }
 
@@ -404,26 +389,94 @@ public void Rogue_ChaosStar_TakeDamage(int victim, int &attacker, int &inflictor
 		damage *= 2.5;
 }
 
-static void GiveMaxHealth(int entity, StringMap map, float amount)
+public void Rogue_Yearning_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
+	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+}
 
-		// +X% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * amount);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		// +X% max health
-		int health = RoundFloat(ReturnEntityMaxHealth(entity) * amount);
+static bool EyeOfFortune;
+public void Rogue_EyeOfFortune_Collect()
+{
+	EyeOfFortune = true;
+	Rogue_AddIngots(5, true);
+}
 
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+void Rogue_Rift_DispatchReturn()
+{
+	if(EyeOfFortune)
+		Rogue_AddIngots(20);
+}
+
+public void Rogue_EyeOfFortune_Remove()
+{
+	EyeOfFortune = false;
+}
+
+static bool ThoughtsCatcher;
+public void Rogue_ThoughtsCatcher_Collect()
+{
+	ThoughtsCatcher = true;
+	Rogue_AddIngots(5, true);
+}
+
+void Rogue_Rift_GatewaySent()
+{
+	if(ThoughtsCatcher)
+		Rogue_AddIngots(20);
+}
+
+public void Rogue_ThoughtsCatcher_Remove()
+{
+	ThoughtsCatcher = false;
+}
+
+public void Rogue_AvariceScales_StageStart()
+{
+	if(Rogue_GetUmbralLevel() < 2)
+		Rogue_AddIngots(2);
+}
+
+static bool Paintbrush;
+public void Rogue_Paintbrush_Collect()
+{
+	Paintbrush = true;
+	Rogue_AddIngots(5, true);
+}
+
+void Rogue_Rift_UmbralChange(int &amount)
+{
+	if(Paintbrush && amount < 0)
+		amount++;
+}
+
+public void Rogue_Paintbrush_Remove()
+{
+	Paintbrush = false;
+}
+
+public void Rogue_SurvivorContract_Collect()
+{
+	Citizen_SpawnAtPoint("a");
+	Citizen_SpawnAtPoint("b");
+}
+
+public void Rogue_SurvivorParty_Collect()
+{
+	for(int i; i < 3; i++)
+	{
+		Citizen_SpawnAtPoint();
 	}
 }
 
+public void Rogue_SoulBindingBone_Ally(int entity, StringMap map)
+{
+	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+}
+
+public void Rogue_SoulBindingBone_Weapon(int entity)
+{
+	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.01));
+}
 
 public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
 {
@@ -433,13 +486,7 @@ public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		fl_Extra_Damage[entity] *= 1.25;
-		MultiHealth(entity, 1.25);
+		RogueHelp_BodyDamage(entity, null, 1.25);
+		RogueHelp_BodyHealth(entity, null, 1.25);
 	}
-}
-
-static void MultiHealth(int entity, float amount)
-{
-	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
-	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
 }

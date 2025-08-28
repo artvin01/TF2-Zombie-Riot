@@ -321,7 +321,7 @@ methodmap TwirlFollower < CClotBody
 	
 	public TwirlFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		TwirlFollower npc = view_as<TwirlFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally, true, true));
+		TwirlFollower npc = view_as<TwirlFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally, true, false));
 		
 		npc.m_iChanged_WalkCycle = 1;
 		i_NpcWeight[npc.index] = 4;
@@ -386,9 +386,17 @@ methodmap TwirlFollower < CClotBody
 		if(Rogue_Mode())
 		{
 			// Cutscene Here
-			npc.Speech("Thanks bob, ill need your help for this!");
-			npc.SpeechDelay(5.0, "This might actually be serious for once","...");
-			Rogue_SetProgressTime(10.0, false);
+			if(Rogue_Theme() == BlueParadox)
+			{
+				npc.Speech("Thanks bob, ill need your help for this!");
+				npc.SpeechDelay(5.0, "This might actually be serious for once","...");
+				Rogue_SetProgressTime(10.0, false);
+			}
+			else
+			{
+				npc.Speech("i'll acompany you for the rifts.");
+				npc.SpeechDelay(5.0, "I won't stay for long.","...");
+			}
 		/*
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{

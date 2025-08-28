@@ -6677,6 +6677,7 @@ static void ItemCost(int client, Item item, int &cost)
 	if(Rogue_Mode())
 	{
 		Rogue_Curse_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller));
+	//	Rogue_Rift_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller));
 	}
 }
 
@@ -6724,6 +6725,7 @@ static stock void ItemCostPap(const Item item, int &cost)
 			cost = RoundToNearest(float(cost) * 1.2); 
 		}
 		Rogue_Curse_PackPriceMulti(cost);
+	//	Rogue_Rift_PackPriceMulti(cost);
 	}
 }
 

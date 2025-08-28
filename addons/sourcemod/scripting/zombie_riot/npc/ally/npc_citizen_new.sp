@@ -2469,7 +2469,7 @@ int Citizen_Count()
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
 			//and temp rebels!
-			if(!npc.m_bHero && !TempRebel[i])
+			if(!npc.m_bHero && TempRebel[i])
 				count++;
 		}
 	}

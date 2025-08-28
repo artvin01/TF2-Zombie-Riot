@@ -376,32 +376,6 @@ static void GiveLife(int entity, StringMap map, int amount)
 	}
 }
 
-static void MultiHealth(int entity, float amount)
-{
-	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
-	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
-}
-
-static void GiveMaxHealth(int entity, StringMap map, float amount)
-{
-	if(map)	// Player
-	{
-		float value;
-
-		// +X% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * amount);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		// +X% max health
-		int health = RoundFloat(ReturnEntityMaxHealth(entity) * amount);
-
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
-	}
-}
-
 public void Rogue_Store1_Collect()
 {
 	int recover = 1;
@@ -520,7 +494,6 @@ public void Rogue_AttackDown1_Enemy(int entity)
 	fl_Extra_Damage[entity] /= 1.07;
 }
 
-
 public void Rogue_AttackDown2_Enemy(int entity)
 {
 	fl_Extra_Damage[entity] /= 1.12;
@@ -533,17 +506,17 @@ public void Rogue_AttackDown3_Enemy(int entity)
 
 public void Rogue_HealthDown1_Enemy(int entity)
 {
-	MultiHealth(entity, 0.9);
+	RogueHelp_BodyHealth(entity, null, 0.9);
 }
 
 public void Rogue_HealthDown2_Enemy(int entity)
 {
-	MultiHealth(entity, 0.85);
+	RogueHelp_BodyHealth(entity, null, 0.85);
 }
 
 public void Rogue_HealthDown3_Enemy(int entity)
 {
-	MultiHealth(entity, 0.8);
+	RogueHelp_BodyHealth(entity, null, 0.8);
 }
 
 public void Rogue_MeleeDamage1_Weapon(int entity)
@@ -584,17 +557,17 @@ public void Rogue_MageDamage2_Weapon(int entity)
 
 public void Rogue_Health1_Ally(int entity, StringMap map)
 {
-	GiveMaxHealth(entity, map, 1.2);
+	RogueHelp_BodyHealth(entity, map, 1.2);
 }
 
 public void Rogue_Health2_Ally(int entity, StringMap map)
 {
-	GiveMaxHealth(entity, map, 1.35);
+	RogueHelp_BodyHealth(entity, map, 1.35);
 }
 
 public void Rogue_Health3_Ally(int entity, StringMap map)
 {
-	GiveMaxHealth(entity, map, 1.5);
+	RogueHelp_BodyHealth(entity, map, 1.5);
 }
 
 public void Rogue_MeleeVuln1_Enemy(int entity)
@@ -661,14 +634,8 @@ public void Rogue_EternalNight_Collect()
 
 public void Rogue_EternalNight_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.25);
-	
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, 0.75);
-
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.25);
+	RogueHelp_WeaponDamage(entity, 1.25);
+	RogueHelp_WeaponAPSD(entity, 1.25);
 }
 
 public void Rogue_EternalNight_Remove()
@@ -712,7 +679,7 @@ public void Rogue_DeadTree_Collect()
 public void Rogue_DeadTree_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
-		GiveMaxHealth(entity, map, 0.75);
+		RogueHelp_BodyHealth(entity, map, 0.75);
 }
 
 public void Rogue_DeadTree_Remove()
@@ -763,7 +730,7 @@ public void Rogue_Fowlbeast_Ally(int entity, StringMap map)
 				if(owner > 0 && owner <= MaxClients)
 				{
 					fl_Extra_Damage[entity] *= 1.3;
-					MultiHealth(entity, 1.3);
+					RogueHelp_BodyHealth(entity, null, 1.3);
 
 					int weapon = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
 					if(weapon != -1)
@@ -875,85 +842,16 @@ public void Rogue_BobDuck_Collect()
 
 public void Rogue_BobDuck_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +25% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 1.25);
-
-		// +25% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.25);
-
-		// -10% damage vuln
-		value = 1.0;
-		map.GetValue("412", value);
-		map.SetValue("412", value * 0.9);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +25% damage bonus
-			npc.m_fGunBonusDamage *= 1.25;
-
-			// +15% fire rate
-			npc.m_fGunBonusFireRate *= 0.85;
-
-			// +15% reload speed
-			npc.m_fGunReload *= 0.85;
-
-			// +25% max health
-			int health = ReturnEntityMaxHealth(npc.index) * 5 / 4;
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +25% damage bonus
-				npc.BonusDamageBonus *= 1.25;
-
-				// +15% fire rate
-				npc.BonusFireRate /= 0.85;
-
-				// +25% max health
-				int health = ReturnEntityMaxHealth(npc.index) * 5 / 4;
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.25);
+	RogueHelp_BodyHealth(entity, map, 1.25);
+	RogueHelp_BodyAPSD(entity, map, 1.15);
+	RogueHelp_BodyRes(entity, map, 1.1);
 }
 
 public void Rogue_BobDuck_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 2, 1.25);
-
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, 0.85);
-	
-	if(Attributes_Has(entity, 97))
-		Attributes_SetMulti(entity, 97, 0.85);
-	
-	if(Attributes_Has(entity, 733))
-		Attributes_SetMulti(entity, 733, 0.85);
-	
-	Attributes_SetMulti(entity, 410, 1.25);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		Attributes_SetMulti(entity, 1, 1.25);
-	}
+	RogueHelp_WeaponDamage(entity, 1.25);
+	RogueHelp_WeaponAPSD(entity, 1.15);
 }
 
 public void Rogue_BobDuck_Remove()

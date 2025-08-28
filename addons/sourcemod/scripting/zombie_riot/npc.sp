@@ -1082,6 +1082,9 @@ void NPC_ConfigSetup()
 	RandomizerBaseHuntsman_OnMapStart_NPC();
 	RandomizerBaseSouthernHospitality_OnMapStart_NPC();
 	Randomizer_OnMapStart_NPC();
+	BossReila_OnMapStart_NPC();
+	ReilaBeacon_OnMapStart_NPC();
+	ReilaFollower_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -2360,3 +2363,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/randomizer/npc_randomizer_base_flamethrower.sp"
 #include "npc/rogue/rouge3/randomizer/npc_randomizer_base_huntsman.sp"
 #include "npc/rogue/rouge3/randomizer/npc_randomizer_base_southern_hospitality.sp"
+#include "npc/rogue/rouge3/npc_boss_reila.sp"
+#include "npc/rogue/rouge3/npc_boss_reila_beacon.sp"
+#include "npc/rogue/rouge3/npc_reila_follower.sp"

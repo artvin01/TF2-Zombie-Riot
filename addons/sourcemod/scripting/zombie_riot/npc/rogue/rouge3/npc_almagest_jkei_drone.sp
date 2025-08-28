@@ -169,7 +169,7 @@ methodmap JkeiDrone < CClotBody
 	
 	public JkeiDrone(float vecPos[3], float vecAng[3], int ally)
 	{
-		JkeiDrone npc = view_as<JkeiDrone>(CClotBody(vecPos, vecAng, "models/bots/demo/bot_sentry_buster.mdl", "0.65", "1000", ally));
+		JkeiDrone npc = view_as<JkeiDrone>(CClotBody(vecPos, vecAng, "models/bots/demo/bot_sentry_buster.mdl", "0.65", "1000", ally, .IgnoreBuildings = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -245,7 +245,7 @@ public void JkeiDrone_ClotThink(int iNPC)
 		if(npc.m_flKamikazeDoing < GetGameTime(npc.index))
 		{
 			npc.PlayIntroNukeBoom();
-			Explode_Logic_Custom(2000.0, npc.index, npc.index, -1, _, 200.0, _, _, true, 99);
+			Explode_Logic_Custom(2000.0, npc.index, npc.index, -1, _, 200.0, _, _, true, 99, false, 10.0);
 			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			TE_Particle("rd_robot_explosion", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
@@ -272,6 +272,7 @@ public void JkeiDrone_ClotThink(int iNPC)
 	if(!npc.m_flKamikazeDo && npcally.m_iDroneLevelAt != npc.m_iDroneLevelAt)
 	{
 		//kamikazte!!!
+		b_NpcIgnoresbuildings[npc.index] = false;
 		npc.StopPassiveSound();
 		npc.m_flKamikazeDo = 1.0;
 		npc.m_iTargetWalkTo = 0;
@@ -363,6 +364,8 @@ public void JkeiDrone_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		if(ShouldNpcDealBonusDamage(npc.m_iTarget))
+			b_NpcIgnoresbuildings[npc.index] = false;
 		npc.m_flSpeed = 380.0;
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
@@ -463,7 +466,7 @@ void JkeiDrone_DoLaser(int iNpc)
 						DealDamage *= 0.25;
 
 					SDKHooks_TakeDamage(victim, iNpc, iNpc, DealDamage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
-					Elemental_AddChaosDamage(victim, iNpc, RoundToNearest(DealDamage), true, true);
+					Elemental_AddChaosDamage(victim, iNpc, RoundToNearest(DealDamage * 0.5), true, true);
 				}
 			}
 		}

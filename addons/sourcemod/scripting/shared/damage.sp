@@ -256,7 +256,11 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
-
+	
+#if defined ZR || defined NOG
+		//true damage does NOT Ignore this.
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
+#endif
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 
 	int vehicle = Vehicle_Driver(victim);

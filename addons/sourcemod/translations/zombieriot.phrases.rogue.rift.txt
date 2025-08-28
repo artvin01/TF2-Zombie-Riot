@@ -270,7 +270,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
@@ -302,7 +302,7 @@
 	}
 	"Hand of Diffusion Desc"
 	{
-		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +375％"
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +240％"
 	}
 	"Hand of Rending"
 	{
@@ -484,15 +484,15 @@
 	{
 		"en"	"''Painful Happiness''"
 	}
-	"Painful Happiness"
+	"Painful Happiness Desc"
 	{
-		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy movement speed decreased by -10％"
+		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -15％"
 	}
 	"Gravity Defying Machine"
 	{
 		"en"	"Gravity Defying Machine"
 	}
-	"Gravity Defying Machine"
+	"Gravity Defying Machine Desc"
 	{
 		"en"	"Now, though they float in clouds.\n{green}Enemy weight decreased by -2"
 	}
@@ -518,7 +518,7 @@
 	}
 	"Little Cube Desc"
 	{
-		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +10％ max health, increased to +80％ when on a bizarre chapter"
+		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +25％ max health, increased to +100％ when on a bizarre chapter"
 	}
 	"Fearless Blade"
 	{
@@ -535,6 +535,70 @@
 	"Chaos Star Desc"
 	{
 		"en"	"A symbol of Chaos.\n{green}Enemies receive +150％ damage from True Damage"
+	}
+	"Unripe Yearning"
+	{
+		"en"	"Unripe Yearning"
+	}
+	"Unripe Yearning Desc"
+	{
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +1％ max health per Umbral Affinity"
+	}
+	"Eye of Fortune"
+	{
+		"en"	"Eye of Fortune"
+	}
+	"Eye of Fortune Desc"
+	{
+		"en"	"People began worshipping discs with a single embedded eye.\n{green}Obtain 5 Australium Ingots, obtain 20 Australium Ingots after Emergency Dispatch operation"
+	}
+	"Thoughts Catcher"
+	{
+		"en"	"Thoughts Catcher"
+	}
+	"Thoughts Catcher Desc"
+	{
+		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 2 Australium Ingots when consuming an item at a Gateway"
+	}
+	"Scales of Avarice"
+	{
+		"en"	"Scales of Avarice"
+	}
+	"Scales of Avarice Desc"
+	{
+		"en"	"Merchants offered money, treasure, and even their lives.\n{green}Obtain 2 Australium Ingots when entering a stage when Umbral Affinity is above 61"
+	}
+	"Personal Paintbrush"
+	{
+		"en"	"Personal Paintbrush"
+	}
+	"Personal Paintbrush Desc"
+	{
+		"en"	"A haunted brush that compels its owners to paint with their own blood.\n{green}Umbral Affinity increased by 1 whenever Umbral Affinity is reduced"
+	}
+	"Survivor Contract"
+	{
+		"en"	"Survivor Contract"
+	}
+	"Survivor Contract Desc"
+	{
+		"en"	"Satisfy them all to be the final survivor.\n{green}Barney and Alyx joins you"
+	}
+	"Survivor Party"
+	{
+		"en"	"Survivor Party"
+	}
+	"Survivor Party Desc"
+	{
+		"en"	"A very long contract, in which every term and condition is the result of experience.\n{green}3 Rebels joins you"
+	}
+	"Soul Binding Bone"
+	{
+		"en"	"Soul Binding Bone"
+	}
+	"Soul Binding Bone Desc"
+	{
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +1％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
@@ -735,7 +799,7 @@
 	}
 	"Wordless Deed Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 20 while held\n{purple}Obtain a cursed artifact when consumed"
 	}
 	"Keycard"
 	{
@@ -743,7 +807,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
@@ -765,6 +829,14 @@
 	"Gateway"
 	{
 		"en"	"Gateway"
+	}
+	"Reila Curtain Closer"
+	{
+		"en"	"Reila Curtain Closer"
+	}
+	"Almagest Intrusion"
+	{
+		"en"	"Almagest Intrusion"
 	}
 	"Rift Consume Encounter Title"
 	{
@@ -1320,6 +1392,10 @@
 	"Slender Fortress Desc"
 	{
 		"en"	"Collect the 8 heavy pages to win"
+	}
+	"Randomizer"
+	{
+		"en" "☠ Randomizer"
 	}
 	"Refragmented Page"
 	{

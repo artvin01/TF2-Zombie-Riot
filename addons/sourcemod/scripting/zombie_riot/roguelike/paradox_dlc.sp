@@ -105,15 +105,7 @@ public void Rogue_ReduceChaos2_Remove()
 
 public void Rogue_MercenaryInsurance_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value = 1.0;
-		float multi = Rogue_GetChaosLevel() > 2 ? 0.65 : 0.9;
-		// 10%/35% damage resist
-
-		map.GetValue("412", value);
-		map.SetValue("412", value * multi);
-	}
+	RogueHelp_BodyRes(entity, map, Rogue_GetChaosLevel() > 2 ? 1.35 : 1.1);
 }
 
 public void Rogue_LifeVest_Collect()
@@ -197,37 +189,12 @@ public void Rogue_Smoking_Collect()
 
 public void Rogue_Smoking_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			npc.m_fGunBonusReload *= 0.8;
-			npc.m_fGunBonusFireRate *= 0.8;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-				npc.BonusFireRate /= 0.8;
-		}
-	}
+	RogueHelp_BodyAPSD(entity, map, 1.2);
 }
 
 public void Rogue_Smoking_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, 0.8);
-	
-	if(Attributes_Has(entity, 97))
-		Attributes_SetMulti(entity, 97, 0.8);
-	
-	if(Attributes_Has(entity, 733))
-		Attributes_SetMulti(entity, 733, 0.8);
-	
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, (1.0 / 0.8));
+	RogueHelp_WeaponAPSD(entity, 1.2);
 }
 
 public void Rogue_Smoking_Remove()
