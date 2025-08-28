@@ -106,7 +106,7 @@ methodmap ReilaBeacon < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_flMeleeArmor = 2.5;
+		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 1.0;
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -186,6 +186,7 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 		}
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		TE_Particle("xms_snowburst_child01", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 5.0);
 		

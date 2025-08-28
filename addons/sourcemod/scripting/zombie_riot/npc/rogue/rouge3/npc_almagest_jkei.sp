@@ -618,7 +618,7 @@ void Jkei_SpawnMinionsToEnemy(int entity, int victim, float damage, int weapon)
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.0025);
 	int summon = NPC_CreateByName("npc_jkei_drone", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{
