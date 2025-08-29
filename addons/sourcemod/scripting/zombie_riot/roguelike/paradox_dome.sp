@@ -71,7 +71,7 @@ void Rogue_Dome_WaveStart(const float pos[3])
 	AlphaForwardData *= 200.0;
 	SetEntityRenderMode(iDome, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(iDome, DOME_RED, DOME_GREEN, DOME_BLUE, RoundToNearest(AlphaForwardData));
-//	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
+	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
 	CBaseEntity(iDome).AddEFlags(EFL_IN_SKYBOX);
 	SDKHook(iDome, SDKHook_SetTransmit, Dome_Transmit);
 //	b_IsEntityAlwaysTranmitted[iDome] = true;

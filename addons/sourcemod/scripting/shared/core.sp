@@ -1958,7 +1958,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving[client] = true;
 					f_DelayLookingAtHud[client] = GameTime + 0.5;
 					was_reviving_this[client] = target;
-					int speed = i_CurrentEquippedPerk[client] == 1 ? 12 : 6;
+					int speed = (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 12 : 6;
 					Rogue_ReviveSpeed(speed);
 					ticks = Citizen_ReviveTicks(target, speed, client);
 					
@@ -3459,7 +3459,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		f_DisableDyingTimer[target] = GameTime + 0.15;
 
 	int speed = 3;
-	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+	if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
 	{
 		speed = 12;
 	}
@@ -3555,7 +3555,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
-		if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+		if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
 		{
 			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);

@@ -19,6 +19,17 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
 #define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
 
+
+#define PERK_NONE						0
+#define PERK_REGENE						(1 << 0)
+#define PERK_OBSIDIAN					(1 << 1)
+#define PERK_MORNING_COFFEE				(1 << 2)
+#define PERK_HASTY_HOPS					(1 << 3)
+#define PERK_MARKSMAN_BEER				(1 << 4)
+#define PERK_TESLAR_MULE				(1 << 5)
+#define PERK_STOCKPILE_STOUT			(1 << 6)
+#define PERK_ENERGY_DRINK				(1 << 7)
+
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
 #define HEAL_SELFHEAL				(1 << 1) 

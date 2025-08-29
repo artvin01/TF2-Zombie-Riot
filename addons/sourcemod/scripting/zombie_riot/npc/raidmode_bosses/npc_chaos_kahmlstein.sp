@@ -320,7 +320,7 @@ methodmap ChaosKahmlstein < CClotBody
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 9999.0;
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 10.0;
-		f_MessengerSpeedUp[npc.index] = 1.0;
+		f_MessengerSpeedUp[npc.index] = 1.15;
 		i_SpeedUpTime[npc.index] = 0;
 		npc.g_TimesSummoned = 0;
 		
@@ -790,14 +790,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	else if(RaidModeTimeLeft < 130.0 && i_SpeedUpTime[npc.index] == 1)
 	{
 		i_SpeedUpTime[npc.index] = 2; 
-		f_MessengerSpeedUp[npc.index] *= 1.15;
+		f_MessengerSpeedUp[npc.index] *= 1.125;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even my dead grandma is more entertaining than this.");
 	}
 	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
 		i_SpeedUpTime[npc.index] = 3; 
-		f_MessengerSpeedUp[npc.index] *= 1.1;
+		f_MessengerSpeedUp[npc.index] *= 1.05;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} RAAAAAAH, I'M UNSTOPPABLE!!!.");
 	}

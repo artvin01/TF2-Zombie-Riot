@@ -91,6 +91,7 @@ enum struct E_StatusEffect
 	float DataForUse;
 	int WearableUse;
 	int VictimSave;
+	bool MarkedForDeletion;
 
 	void ApplyStatusEffect_Internal(int owner, int victim, bool HadBuff, int ArrayPosition)
 	{
@@ -1209,9 +1210,12 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, link_Apply_StatusEffect);
 		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
-		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime() && !Apply_StatusEffect.MarkedForDeletion)
 		{
-			Apply_StatusEffect.RemoveStatus();
+		//	Apply_StatusEffect.RemoveStatus();
+			Apply_StatusEffect.MarkedForDeletion = true;
+			ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			returnDo = true;
 		}
 		else
@@ -1219,8 +1223,6 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 			HasBuff = true;
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
 	
 	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC, FlagAttackspeedLogicInternal);
 	return returnDo;
@@ -5769,6 +5771,21 @@ void StatusEffects_Rogue3()
 	data.TimerRepeatCall_Func 		= UmbralGrace_Timer;
 	data.OnBuffStarted				= UmbralGrace_Start;
 	data.OnBuffEndOrDeleted			= UmbralGrace_End;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Brightening Light");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Br");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= true;
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 1.35);
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);

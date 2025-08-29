@@ -1563,6 +1563,22 @@
 	{
 		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
 	}
+	"Brightening Light"
+	{
+		"en"	"Brightening Light"
+	}
+	"Brightening Light Desc"
+	{
+		"en"	"Gain 35％ attack/reload speed & healrate."
+	}
+	"Brightening Lightness"
+	{
+		"en"	"Brightening Lightness"
+	}
+	"Brightening Lightness Desc"
+	{
+		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
+	}
 	"Kolum's View"
 	{
 		"en"	"Kolum's View"

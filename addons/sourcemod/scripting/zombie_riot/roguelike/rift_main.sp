@@ -152,7 +152,13 @@ public float Rogue_Encounter_RiftShop()
 	bool rare = Rogue_GetFloor() > 0;
 	bool easyMode = DifficultyLevel < 1;
 	bool found;
-
+	if(rare)
+	{
+		if(GetURandomInt() % 4)
+		{
+			rare = false;
+		}
+	}
 	if(!easyMode)
 	{
 		for(int client = 1; client <= MaxClients; client++)

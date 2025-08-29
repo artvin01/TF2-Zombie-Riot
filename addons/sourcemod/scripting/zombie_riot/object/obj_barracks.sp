@@ -1468,7 +1468,7 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		{
 			SupplyRateCalc *= 1.25;
 		}
-		if(i_CurrentEquippedPerk[client] == 7)
+		if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
 		{
 			SupplyRateCalc *= 1.15;
 		}

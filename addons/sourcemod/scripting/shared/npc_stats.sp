@@ -1474,7 +1474,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
 
-		if(i_CurrentEquippedPerk[this.index] == 4)
+		if(i_CurrentEquippedPerk[this.index] & PERK_HASTY_HOPS)
 		{
 			speed_for_return *= 1.25;
 		}
@@ -5930,7 +5930,7 @@ public void NpcBaseThink(int iNPC)
 	if(f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
-		if(i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
+		if((i_CurrentEquippedPerk[iNPC] & PERK_REGENE) || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 			

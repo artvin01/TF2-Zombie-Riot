@@ -424,6 +424,22 @@
 	{
 		"en"	"When it rains for several days on end.\n{green}Allies gain +70％ damage"
 	}
+	"Dream Catcher"
+	{
+		"en"	"Dream Catcher"
+	}
+	"Dream Catcher Desc"
+	{
+		"en"	"Incase you get a very nasty dream.\n{green}When losing a stage, it repeats the stage and grants a new item." 
+	}
+	"Dream Caught"
+	{
+		"en"	"Dream Caught"
+	}
+	"Dream Caught Desc"
+	{
+		"en"	"Aha!\n{green}When a new stage starts, gain full health, Revive times are cut in half, Enemies have -10％ damage"
+	}
 	"Scout's Scope"
 	{
 		"en"	"Scout's Scope"

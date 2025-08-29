@@ -716,7 +716,7 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.25;
 	}
-	if(i_CurrentEquippedPerk[client] == 8)
+	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
 		
 	return Cooldown;
@@ -5057,7 +5057,7 @@ void Store_ApplyAttribs(int client)
 	StringMap map = new StringMap();
 
 	int Extra_Juggernog_Hp = 0;
-	if(i_CurrentEquippedPerk[client] == 2)
+	if(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN)
 	{
 		Extra_Juggernog_Hp = 100;
 	}
@@ -5143,12 +5143,12 @@ void Store_ApplyAttribs(int client)
 		b_AlaxiosBuffItem[client] = false;
 	}
 	
-	if(i_CurrentEquippedPerk[client] == 4)
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 	{
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
 	
-	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
+	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
 	}
@@ -6160,21 +6160,21 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-		if(i_CurrentEquippedPerk[client] == 4)
+		if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
-		if(i_CurrentEquippedPerk[client] == 3)
+		if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
 		{
 			if(Attributes_Has(entity, 6))
 				Attributes_SetMulti(entity, 6, 0.85);
 		}
 
 		//DEADSHOT!
-		if(i_CurrentEquippedPerk[client] == 5)
+		if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
 		{	
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 103))
@@ -6185,7 +6185,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		}
 
 		//Regene Berry!
-		if(i_CurrentEquippedPerk[client] == 1)
+		if(i_CurrentEquippedPerk[client] & PERK_REGENE)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(Attributes_Has(entity, 8))
