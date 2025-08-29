@@ -1315,9 +1315,9 @@ public void OnPostThink(int client)
 				}
 				case Element_Warped:
 				{
-					red = 155 + abs(100 - (GetTime() % 200));
-					green = 155 + abs(100 - (RoundFloat(GetGameTime()) % 200));
-					blue = 155 + abs(100 - (RoundFloat(GetEngineTime()) % 200));
+					red = 55 + abs(200 - (GetTime() % 400));
+					green = 55 + abs(200 - (RoundFloat(GetGameTime()) % 400));
+					blue = 55 + abs(200 - (RoundFloat(GetEngineTime()) % 400));
 				}
 				//seaborn
 				default:
@@ -1404,7 +1404,7 @@ public void OnPostThink(int client)
 		else
 		{
 			if(Armor_DebuffType[armorEnt] == Element_Warped)
-				armor /= 2;
+				armor /= 4;
 			
 			Format(buffer, sizeof(buffer), "⛛ ", buffer);
 			for(int i=1; i<5; i++)

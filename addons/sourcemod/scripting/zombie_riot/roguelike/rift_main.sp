@@ -8,6 +8,7 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
+//static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -25,6 +26,18 @@ stock int Rogue_Rift_CurseLevel()
 	return DifficultyLevel;
 }
 
+/*
+void Rogue_Rift_StorePriceMulti(int &cost, bool greg)
+{
+	if(!greg)
+		cost = cost * 11 / 10;
+}
+void Rogue_Rift_PackPriceMulti(int &cost)
+{
+	if(Keycard)
+		cost = cost * 11 / 10;
+}
+*/
 public void Rogue_Curse_RiftSwarm(bool enable)
 {
 	CurseSwarm = enable;
@@ -358,16 +371,34 @@ static bool StartRiftVote(bool first)
 	ArrayList list = Rogue_CreateGenericVote(FinishRiftVote, "Rift Consume Encounter Title");
 	Vote vote;
 
-	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	strcopy(vote.Config, sizeof(vote.Config), "-1");
-	list.PushArray(vote);
+	int needToUseNow;
+	if(Rogue_GetFloor() == 4 && Rogue_HasNamedArtifact("Wordless Deed") && !Rogue_HasNamedArtifact("The Shadow"))
+		needToUseNow = ConsumeLimit == 1 ? 2 : 1;
+	
+	if(!needToUseNow)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+		strcopy(vote.Config, sizeof(vote.Config), "-1");
+		list.PushArray(vote);
+	}
+
+	int found;
+	if(needToUseNow == 2)	// Need to consume the item now!
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Wordless Deed");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		strcopy(vote.Config, sizeof(vote.Config), "Wordless Deed");
+		list.PushArray(vote);
+		found++;
+	}
 
 	ArrayList collection = Rogue_GetCurrentCollection();
 
-	int found;
 	if(collection)
 	{
+		vote.Locked = needToUseNow == 2;
+
 		Artifact artifact;
 		int length = collection.Length;
 
@@ -387,7 +418,7 @@ static bool StartRiftVote(bool first)
 					break;
 			}
 		}
-		/*
+		
 		if(found < 7)
 		{
 			// Misc items
@@ -407,7 +438,6 @@ static bool StartRiftVote(bool first)
 				}
 			}
 		}
-		*/
 	}
 
 	Rogue_StartGenericVote(found ? (first ? 30.0 : 15.0) : 3.0);
@@ -421,39 +451,53 @@ static void FinishRiftVote(const Vote vote)
 	{
 		case -1:
 		{
-			Rogue_SetProgressTime(5.0, false);
+			EndRiftVote();
 		}
 		default:
-		{
+		{	
+			Artifact artifact;
+			Rogue_GetNamedArtifact(vote.Config, artifact);
 			Rogue_RemoveNamedArtifact(vote.Config);
 
-			if(CurseCorrupt && (GetURandomInt() % 2))
+			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
 				Rogue_GiveNamedArtifact("Fractured");
 			}
 			else
 			{
-				switch(GetURandomInt() % 5)
+				switch(artifact.ShopCost)
 				{
-					case 0:
-						GiveShield(100);
-					
-					case 1:
-						GiveShield(150);
-					
-					case 2:
-						GiveShield(200);
-					
+					case 30:
+					{
+						GiveCash(10000);
+					}
+					case 24:
+					{
+						GiveCash(6000);
+					}
+					case 18:
+					{
+						GiveCash(4000);
+					}
+					case 12:
+					{
+						GiveCash(2000);
+					}
 					default:
-						GiveCash(1000);
+					{
+						if(!artifact.Multi)
+							GiveCash(2000);
+					}
 				}
 			}
+			
+			Rogue_Rift_GatewaySent();
 
 			ConsumeLimit--;
 
 			if(ConsumeLimit < 1)
 			{
-				Rogue_SetProgressTime(5.0, false);
+				EndRiftVote();
 			}
 			else
 			{
@@ -465,6 +509,34 @@ static void FinishRiftVote(const Vote vote)
 	}
 }
 
+static void EndRiftVote()
+{
+	if(Rogue_HasNamedArtifact("Twirl Guidance"))
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(other != -1 && i_NpcInternalId[other] == TwirlFollower_ID() && IsEntityAlive(other))
+			{
+				SmiteNpcToDeath(other);
+				break;
+			}
+		}
+
+		Rogue_SetProgressTime(10.0, false);
+
+		Rogue_RemoveNamedArtifact("Twirl Guidance");
+		CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
+		CPrintToChatAll("{purple}Twirl{snow} : Hey and if you die, i'll take care of everything, not joking.");
+		CPrintToChatAll("{black}Izan{default} : Bye.");
+		CPrintToChatAll("{white}Bob{default} : We'll be fine, we have the entirety of Irln invading, you can make sure our home is fine.");
+	}
+	else
+	{
+		Rogue_SetProgressTime(5.0, false);
+	}
+}
+
 static void GiveCash(int cash)
 {
 	CurrentCash += cash;
@@ -472,35 +544,15 @@ static void GiveCash(int cash)
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
 }
 
-static void GiveShield(int amount)
-{
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
-		{
-			int health = GetClientHealth(client);
-			if(health > 0)
-			{
-				ApplyHealEvent(client, amount, client);
-				SetEntityHealth(client, health + amount);
-			}
-		}
-	}
-
-	for(int i; i < i_MaxcountNpcTotal; i++)
-	{
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-		{
-			if(GetTeam(entity) == TFTeam_Red)
-				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
-		}
-	}
-}
-
 public void Rogue_RiftEasy_Collect()
 {
 	DifficultyLevel = 0;
+	
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+	
+	if(!Rogue_HasNamedArtifact("Twirl Guidance"))
+		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
 public void Rogue_RiftEasy_Enemy(int entity)
@@ -514,6 +566,12 @@ public void Rogue_RiftEasy_Enemy(int entity)
 public void Rogue_RiftNormal_Collect()
 {
 	DifficultyLevel = 1;
+	
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+	
+	if(!Rogue_HasNamedArtifact("Twirl Guidance"))
+		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
 public void Rogue_RiftNormal_Enemy(int entity)
@@ -529,6 +587,12 @@ public void Rogue_RiftHard_Collect()
 {
 	DifficultyLevel = 2;
 	Rogue_GiveNamedArtifact("Fractured");
+	
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+	
+	if(!Rogue_HasNamedArtifact("Twirl Guidance"))
+		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
 public void Rogue_RiftHard_Enemy(int entity)
@@ -556,7 +620,7 @@ public float Rogue_Encounter_Rift1()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING1"))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Reila's Scorn Keycard"))
 			{
 				found = true;
 				break;
@@ -622,7 +686,7 @@ public void Rogue_Reila_Remove()
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(other != -1 && /*i_NpcInternalId[other] == ReilaFollower_ID() && */IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == ReilaFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
@@ -632,7 +696,7 @@ public void Rogue_Reila_Remove()
 
 public void Rogue_Rift1_Collect()
 {
-	Rogue_AddUmbral(-30, true);
+	Rogue_AddUmbral(-20, true);
 }
 
 public void Rogue_Rift1_Remove()
@@ -640,17 +704,20 @@ public void Rogue_Rift1_Remove()
 	if(Rogue_Started())
 	{
 		Rogue_GiveNamedArtifact("Keycard");
-		Rogue_AddUmbral(30);
+		Rogue_AddUmbral(20);
 	}
 }
 
 public void Rogue_Rift1Good_Collect()
 {
-	Rogue_AddUmbral(-30, true);
+	//Keycard = true;
+	CPrintToChatAll("{pink}Reila{default}: I know where to use this.");
 }
 
 public void Rogue_Rift1Good_Remove()
 {
+	//Keycard = false;
+
 	if(Rogue_Started())
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -662,6 +729,7 @@ public void Rogue_Rift1Good_Remove()
 			}
 		}
 
+		CPrintToChatAll("{pink}Reila{default}: ...");
 		Rogue_RemoveNamedArtifact("Reila Assistance");
 		Rogue_GiveNamedArtifact("Torn Keycard");
 		Rogue_AddUmbral(-100, true);
@@ -731,9 +799,7 @@ public void Rogue_StoneFractured_Remove()
 		Rogue_GiveNamedArtifact("Rift of Fractured");
 
 		if(!Rogue_HasNamedArtifact("Bob's Assistance"))
-		{
 			Rogue_GiveNamedArtifact("Bob's Assistance", true);
-		}
 	}
 }
 
@@ -777,6 +843,9 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 public void Rogue_Rift2_Collect(int entity)
 {
 	Rogue_AddUmbral(-100, true);
+
+	if(!Rogue_HasNamedArtifact("Reila Assistance"))
+		Rogue_GiveNamedArtifact("Reila Assistance", true);
 }
 
 public void Rogue_Rift2_Enemy(int entity)

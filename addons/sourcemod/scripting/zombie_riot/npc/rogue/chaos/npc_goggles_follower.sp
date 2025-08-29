@@ -988,7 +988,7 @@ static void ClotFinalThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						float damage = 10000.0;
+						float damage = 5000.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damage *= 50.0;
 						
@@ -1014,7 +1014,7 @@ static void ClotFinalThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.15;
-				npc.m_flNextMeleeAttack = gameTime + 1.95;
+				npc.m_flNextMeleeAttack = gameTime + 0.95;
 			}
 		}
 

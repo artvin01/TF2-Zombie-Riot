@@ -3537,7 +3537,6 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		npc.m_bThisEntityIgnored = false;
 		TeleportEntity(target, pos, ang, NULL_VECTOR);
 		SetEntityCollisionGroup(target, 5);
-		Rogue_TriggerFunction(Artifact::FuncRevive, target);
 
 		if(WasClientReviving)
 			PrintCenterText(client, "");
@@ -3546,6 +3545,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		DoOverlay(target, "", 2);
 		SetEntityHealth(target, 50);
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
+		Rogue_TriggerFunction(Artifact::FuncRevive, target);
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{
