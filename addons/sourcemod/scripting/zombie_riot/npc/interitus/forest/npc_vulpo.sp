@@ -90,9 +90,9 @@ methodmap Vulpo < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		func_NPCDeath[npc.index] = ClotDeath;
+		func_NPCDeath[npc.index] = Vulpo_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCThink[npc.index] = Vulpo_ClotThink;
 		
 		npc.m_flSpeed = 260.0;
 		npc.m_flRangedArmor = 0.75;
@@ -116,7 +116,7 @@ methodmap Vulpo < CClotBody
 	}
 }
 
-static void ClotThink(int iNPC)
+public void Vulpo_ClotThink(int iNPC)
 {
 	Vulpo npc = view_as<Vulpo>(iNPC);
 
@@ -202,7 +202,7 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-static void ClotDeath(int entity)
+public void Vulpo_NPCDeath(int entity)
 {
 	Vulpo npc = view_as<Vulpo>(entity);
 	if(!npc.m_bGib)

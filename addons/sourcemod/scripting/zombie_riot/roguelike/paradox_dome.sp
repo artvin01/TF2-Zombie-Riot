@@ -5,13 +5,29 @@
 
 #define DOME_PROP_RADIUS 10000.0 // Don't change
 
-#define DOME_FADE_START_MULTIPLIER 0.85
+#define DOME_FADE_START_MULTIPLIER 0.9
 #define DOME_FADE_ALPHA_MAX 64
 
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"
 
 #define DOME_RADIUS	3000.0
+#define DOME_RADIUS_ROGUE3	2700.0
 
+float DomeRadiusGlobal()
+{
+	switch(Rogue_Theme())
+	{
+		case BlueParadox:
+		{
+			return DOME_RADIUS;
+		}
+		case ReilaRift:
+		{
+			return (DOME_RADIUS_ROGUE3);
+		}
+	}
+	return DOME_RADIUS;
+}
 static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
@@ -42,12 +58,13 @@ void Rogue_Dome_WaveStart(const float pos[3])
 	DispatchKeyValueVector(iDome, "origin", g_vecDomeCP);						//Set origin to CP
 	DispatchKeyValue(iDome, "model", "models/kirillian/brsphere_huge.mdl");	//Set model
 	DispatchKeyValue(iDome, "disableshadows", "1");							//Disable shadow
-	SetEntPropFloat(iDome, Prop_Send, "m_flModelScale", SquareRoot(DOME_RADIUS / DOME_PROP_RADIUS));	//Calculate model scale
+	SetEntPropFloat(iDome, Prop_Send, "m_flModelScale", SquareRoot(DomeRadiusGlobal() / DOME_PROP_RADIUS));	//Calculate model scale
 	
 	DispatchSpawn(iDome);
 	
 	SetEntityRenderMode(iDome, RENDER_NORMAL);
 	SetEntityRenderColor(iDome, 255, 255, 255, 255);
+	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
 	b_IsEntityAlwaysTranmitted[iDome] = true;
 	Hook_DHook_UpdateTransmitState(iDome);
 	
@@ -108,7 +125,7 @@ static void Dome_Frame_Shrink()
 			//<1.0 = inside dome
 			// 1.0 = at border of dome
 			//>1.0 = outside of dome
-			float flDistanceMultiplier = Dome_GetDistance(iClient) / (DOME_RADIUS * DOME_RADIUS);
+			float flDistanceMultiplier = Dome_GetDistance(iClient) / (DomeRadiusGlobal() * DomeRadiusGlobal());
 			
 			if (flDistanceMultiplier > 1.0)
 			{
@@ -146,7 +163,7 @@ static void Dome_Frame_Shrink()
 	{
 		if(b_ThisWasAnNpc[entityrand] && !b_NpcHasDied[entityrand] && !b_StaticNPC[entityrand])
 		{
-			float flDistanceMultiplier = Dome_GetDistance(entityrand) / (DOME_RADIUS * DOME_RADIUS);
+			float flDistanceMultiplier = Dome_GetDistance(entityrand) / (DomeRadiusGlobal() * DomeRadiusGlobal());
 			
 			if (flDistanceMultiplier > 1.0)
 			{
@@ -219,5 +236,5 @@ stock bool Dome_PointOutside(float pos[3])
 	if(!IsValidEntity(g_iDomeEntRef))
 		return false;
 	
-	return GetVectorDistance(pos, g_vecDomeCP, true) > (DOME_RADIUS * DOME_RADIUS);
+	return GetVectorDistance(pos, g_vecDomeCP, true) > (DomeRadiusGlobal() * DomeRadiusGlobal());
 }

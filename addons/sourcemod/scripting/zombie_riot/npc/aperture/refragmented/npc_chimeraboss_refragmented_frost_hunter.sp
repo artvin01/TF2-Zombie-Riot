@@ -156,6 +156,7 @@ methodmap RefragmentedWinterFrostHunter < CClotBody
 		b_CantCollidieAlly[npc.index] = true; 
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		npc.m_bDissapearOnDeath = true;
+		b_NpcIsInvulnerable[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -168,7 +169,6 @@ methodmap RefragmentedWinterFrostHunter < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(RefragmentedWinterFrostHunter_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(RefragmentedWinterFrostHunter_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(RefragmentedWinterFrostHunter_ClotThink);
-		
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 660.0;

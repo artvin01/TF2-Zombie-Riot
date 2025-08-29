@@ -162,6 +162,22 @@
 	{
 		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
 	}
+	"Ziberian Chocolate"
+	{
+		"en"	"Ziberian Chocolate"
+	}
+	"Ziberian Chocolate Desc"
+	{
+		"en"	"It's cold, amazing!\n{green}+1250 Cash, Allies gain +50 max health"
+	}
+	"Shadowing Coin"
+	{
+		"en"	"Shadowing Coin"
+	}
+	"Shadowing Coin Desc"
+	{
+		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}+1750 Cash."
+	}
 	"Special Suppressor"
 	{
 		"en"	"Special Suppressor"
@@ -177,6 +193,14 @@
 	"Stone Gargoyle Desc"
 	{
 		"en"	"Fits at the palm of your hand.\n{green}Allies gain +375 max health"
+	}
+	"I Sell Profen"
+	{
+		"en"	"I Sell Profen"
+	}
+	"I Sell Profen Desc"
+	{
+		"en"	"Enemies gain a headache.\n{green}Enemies take 25％ more headshot damage."
 	}
 	"Vampire's Bed"
 	{
@@ -457,6 +481,14 @@
 	"Empty Fowlbeast Desc"
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
+	}
+	"Minion Energizer"
+	{
+		"en"	"Minion Energizer"
+	}
+	"Minion Energizer Desc"
+	{
+		"en"	"{green}Npc Allies gain +25％ more damage and HP."
 	}
 	"Acahuallan Bowl"
 	{

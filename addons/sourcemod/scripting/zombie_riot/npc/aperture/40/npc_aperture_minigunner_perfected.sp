@@ -281,9 +281,9 @@ void ApertureMinigunnerPerfectedSelfDefense(ApertureMinigunnerPerfected npc)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 20.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.0;
+						damageDealt *= 4.0;
 						
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 				}

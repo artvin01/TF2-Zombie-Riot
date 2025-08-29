@@ -780,14 +780,14 @@ bool CHIMERA_timeBased(int iNPC)
 			if(npc.m_flDamageCharge < 0.0)
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}RANGED{default} IS CONSIDERED THE MOST DANGEROUS.");
-				npc.m_flRangedArmor = 0.5;
-				npc.m_flMeleeArmor = 1.65;
+				npc.m_flRangedArmor = 0.75;
+				npc.m_flMeleeArmor = 1.35;
 			}
 			else
 			{
 				CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: ADAPTING COMPLETED, {crimson}MELEE{default} IS CONSIDERED THE MOST DANGEROUS.");
-				npc.m_flRangedArmor = 1.65;
-				npc.m_flMeleeArmor = 0.5;
+				npc.m_flRangedArmor = 1.35;
+				npc.m_flMeleeArmor = 0.75;
 			}
 			if(npc.m_flBatteryLeftBlade)
 			{

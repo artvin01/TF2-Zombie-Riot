@@ -705,8 +705,8 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		}
 	}
 
-	if(target > 0 && Elemental_GoingCritical(target))
-		validAlly = false;
+//	if(target > 0 && Elemental_GoingCritical(target))
+//		validAlly = false;
 
 	if(validAlly)
 	{
@@ -742,7 +742,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		Elemental_AddChaosDamage(target, client, 10, _, true);
+	//	Elemental_AddChaosDamage(target, client, 10, _, true);
 		ApplyStatusEffect(client, target, "Flagellants Punishment", 10.0);
 
 		if(target > MaxClients)
