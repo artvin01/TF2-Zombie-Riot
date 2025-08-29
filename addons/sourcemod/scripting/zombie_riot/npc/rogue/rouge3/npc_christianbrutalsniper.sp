@@ -63,6 +63,10 @@ static const char g_SuperJumpSounds[][] = {
 	"vo/sniper_specialcompleted19.mp3"
 };
 
+static const char g_SpawnSounds[][] = {
+	"vo/sniper_specialweapon08.mp3",
+};
+
 static bool Melee_Kukri;
 static bool Melee_Shiv;
 static bool Melee_Bushwacka;
@@ -77,7 +81,8 @@ void ChristianBrutalSniper_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeSwitchSounds)); i++) { PrecacheSound(g_MeleeSwitchSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SuperJumpSounds)); i++) { PrecacheSound(g_SuperJumpSounds[i]); }
-	PrecacheModel("models/player/medic.mdl");
+	for (int i = 0; i < (sizeof(g_SpawnSounds)); i++) { PrecacheSound(g_SpawnSounds[i]); }
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Christian Brutal Sniper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_christianbrutalsniper");
@@ -122,6 +127,10 @@ methodmap ChristianBrutalSniper < CClotBody
 		
 	}
 	
+	public void PlaySpawnSound() 
+	{
+		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)]);
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -220,6 +229,8 @@ methodmap ChristianBrutalSniper < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		
+		npc.PlaySpawnSound();
 		
 		return npc;
 	}
@@ -452,50 +463,27 @@ void ChristianBrutalSniperSelfDefense(ChristianBrutalSniper npc, float gameTime,
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 5.0;
 
-
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-						if(Melee_Kukri)
+						
+						if (Melee_Kukri)
 						{
-							npc.PlayMeleeHitSound(); //Need to play melee sound manually in these booleans
+							KillFeed_SetKillIcon(npc.index, "club");
 							npc.m_iOverlordComboAttack++;
-							if(npc.m_iOverlordComboAttack >= 1)
-							{
-								f_AttackSpeedNpcIncrease[npc.index] = 0.80;
-							}
-							if(npc.m_iOverlordComboAttack >= 2)
-							{
-								f_AttackSpeedNpcIncrease[npc.index] = 0.60;
-							}
-							if(npc.m_iOverlordComboAttack >= 3)
-							{
-								f_AttackSpeedNpcIncrease[npc.index] = 0.40;
-							}
-							if(npc.m_iOverlordComboAttack >= 4)
-							{
-								f_AttackSpeedNpcIncrease[npc.index] = 0.20;
-							}
-							if(npc.m_iOverlordComboAttack >= 5)
-							{
-								f_AttackSpeedNpcIncrease[npc.index] = 0.05;
-							}
 						}
-						else
+						
+						if (Melee_Shiv)
 						{
-							f_AttackSpeedNpcIncrease[npc.index] = 1.0;
-						}
-
-						if(Melee_Shiv)
-						{
-							npc.PlayMeleeHitSound();	//Need to play melee sound manually in these booleans
+							KillFeed_SetKillIcon(npc.index, "tribalkukri");
 							StartBleedingTimer(target, npc.index, 10.0, 50, -1, DMG_TRUEDAMAGE, 0);
 						}
+							
 
-						if(Melee_Bushwacka)
+						if (Melee_Bushwacka)
 						{
-							npc.PlayMeleeHitSound();	//Need to play melee sound manually in these booleans
+							KillFeed_SetKillIcon(npc.index, "bushwacka");
 							ApplyStatusEffect(npc.index, target, "Archo's Posion", 5.0);
 						}
+							
 
 						// Hit sound
 						npc.PlayMeleeHitSound();
@@ -517,11 +505,25 @@ void ChristianBrutalSniperSelfDefense(ChristianBrutalSniper npc, float gameTime,
 				{
 					npc.m_iTarget = Enemy_I_See;
 					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					
+					float delayReduction = 1.0;
+					
+					if (Melee_Kukri)
+					{
+						delayReduction = 1.0 - (npc.m_iOverlordComboAttack * 0.1);
+						if (delayReduction <= 0.05)
+							delayReduction = 0.05;
+						
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", .SetGestureSpeed = 1.0 / delayReduction);
+					}
+					else
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					}
 
-					npc.m_flAttackHappens = gameTime + 0.25;
-					npc.m_flDoingAnimation = gameTime + 0.25;
-					npc.m_flNextMeleeAttack = gameTime + 1.0;
+					npc.m_flAttackHappens = gameTime + (0.25 * delayReduction);
+					npc.m_flDoingAnimation = gameTime + (0.25 * delayReduction);
+					npc.m_flNextMeleeAttack = gameTime + (1.0 * delayReduction);
 				}
 			}
 		}
@@ -539,37 +541,9 @@ void ChristianBrutalSniperSelfDefense(ChristianBrutalSniper npc, float gameTime,
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_MP_RUN_ITEM2");
 			npc.StartPathing();
-		}	
-
-		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-		{
-			if(IsValidEntity(EnemyLoop) && b_IsAProjectile[EnemyLoop] && GetTeam(npc.index) != GetTeam(EnemyLoop))
-			{
-				float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
 			
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
-				{
-					RemoveEntity(EnemyLoop);
-					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", false);
-					npc.PlayRangedSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					int projectile = npc.FireArrow(vecTarget, 750.0, 1200.0);
-					float ang_Look[3];
-					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
-					Initiate_HomingProjectile(projectile,
-					npc.index,
-					200.0,			// float lockonAngleMax,
-					100.0,				//float homingaSec,
-					false,				// bool LockOnlyOnce,
-					true,				// bool changeAngles,
-					ang_Look);// float AnglesInitiate[3]);
-					npc.m_iAttacksTillReload--;
-
-				}
-			}
-		}
+			KillFeed_SetKillIcon(npc.index, "huntsman");
+		}	
 
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 		{

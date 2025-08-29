@@ -268,30 +268,6 @@ int ApertureSpecialistPerfectedSelfDefense(ApertureSpecialistPerfected npc, floa
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.StartPathing();
-		}	
-
-		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-		{
-			if(IsValidEntity(EnemyLoop) && b_IsAProjectile[EnemyLoop] && GetTeam(npc.index) != GetTeam(EnemyLoop))
-			{
-				float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
-			
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.25))
-				{
-					RemoveEntity(EnemyLoop);
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-					npc.PlayRangedSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecTarget, false );
-					npc.m_iAttacksTillReload--;
-
-					return 0;
-				}
-			}
 		}
 
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.25))
