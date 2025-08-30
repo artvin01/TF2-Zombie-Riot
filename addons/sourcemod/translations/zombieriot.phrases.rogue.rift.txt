@@ -924,6 +924,26 @@
 	{
 		"en"	""
 	}
+	"Immensive Guilt"
+	{
+		"en"	"Immensive Guilt"
+	}
+	"Immensive Guilt Desc"
+	{
+		"en"	"{crimson}This is not good."
+	}
+	"Bob's Wrath"
+	{
+		"en"	"Bob's Wrath"
+	}
+	"Bob's Wrath Desc"
+	{
+		"en"	"{crimson}He's pissed."
+	}
+	"Crystalized Warped Subjects"
+	{
+		"en"	"Crystalized Warped Subjects"
+	}
 	"Bizarre History"
 	{
 		"en"	"Bizarre History"
@@ -1424,5 +1444,37 @@
 	"Refragmented Page"
 	{
 		"en"	"Refragmented Page"
+	}
+	"Crystalized Warped Subjects Title"
+	{
+		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
+	}
+	"Crystalized Warped Subjects Title Repeat"
+	{
+		"en"	"Your body deterioates..."
+	}
+	"Crystalized Warped Subjects Search More"
+	{
+		"en"	"Search the room for other things."
+	}
+	"Crystalized Warped Subjects Search More Desc"
+	{
+		"en"	"{yellow}Search the room for something else.{red}For the rest of the chapter, Allies lose 5％ Max Health"
+	}
+	"Crystalized Warped Subjects Search Cancel"
+	{
+		"en"	"Lets stop and take their gear."
+	}
+	"Crystalized Warped Subjects Search Cancel Desc"
+	{
+		"en"	"{green}Gain 7000 Cash and a random rare item."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
 	}
 }
