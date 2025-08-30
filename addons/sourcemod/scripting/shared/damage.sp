@@ -731,7 +731,7 @@ stock bool Damage_NPCAttacker(int &attacker,float &damage, int &damagetype)
 #if defined ZR
 	if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))) //if its not melee damage
 	{
-		if(i_CurrentEquippedPerk[attacker] && PERK_MARKSMAN_BEER)
+		if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 		{
 			damage *= 1.25;
 		}

@@ -304,7 +304,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday;
 					if(b_thisNpcIsARaid[victim])
 						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] && PERK_MARKSMAN_BEER)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
