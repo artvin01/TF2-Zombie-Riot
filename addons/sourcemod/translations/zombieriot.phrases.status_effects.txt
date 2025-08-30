@@ -1571,6 +1571,15 @@
 	{
 		"en"	"Gain 35％ attack/reload speed & healrate."
 	}
+	"Revival Stim"
+	{
+		"en"	"Revival Stim"
+	}
+	"Revival Stim Desc"
+	{
+		"en"	"Gain a 15％ Movementspeed Bonus."
+	}
+
 	"Brightening Lightness"
 	{
 		"en"	"Brightening Lightness"
@@ -1578,6 +1587,14 @@
 	"Brightening Lightness Desc"
 	{
 		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
+	}
+	"Revival Stim Packs"
+	{
+		"en"	"Revival Stim Packs"
+	}
+	"Revival Stim Packs Desc"
+	{
+		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upton being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
 	}
 	"Kolum's View"
 	{

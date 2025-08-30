@@ -47,11 +47,13 @@ enum struct StatusEffect
 	Function OnTakeDamage_PostVictim;
 	Function OnTakeDamage_PostAttacker;
 	Function OnBuffStarted;
+	Function OnBuffStoreRefresh;
 	Function OnBuffEndOrDeleted;
 
 	void Blank()
 	{
 		this.OnBuffStarted				= INVALID_FUNCTION;
+		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 		this.DamageTakenMulti 			= -1.0;
 		this.DamageDealMulti 			= -1.0;
@@ -4382,7 +4384,39 @@ void StatusEffects_StatusEffectListOnly()
 	StatusEffect_AddGlobal(data);
 }
 
+void StatusEffect_StoreRefresh(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+	
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	//No debuffs or status effects, skip.
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			Apply_StatusEffect.RemoveStatus();
+			i--;
+			length--;
+			continue;
+		}
+		if(Apply_MasterStatusEffect.OnBuffStoreRefresh != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffStoreRefresh)
+		{
+			Call_StartFunction(null, Apply_MasterStatusEffect.OnBuffStoreRefresh);
+			Call_PushCell(victim);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_Finish();
+		}
+	}
 
+	if(length < 1)
+		delete E_AL_StatusEffects[victim];
+}
 void StatusEffect_TimerCallDo(int victim)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -5790,6 +5824,21 @@ void StatusEffects_Rogue3()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Revival Stim");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "RS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= true;
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.15;
+	data.OnBuffStarted				= RevivalStim_Start;
+	data.OnBuffStoreRefresh			= RevivalStim_Start;
+	data.OnBuffEndOrDeleted			= RevivalStim_End;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	
 	data.Blank();
 	strcopy(data.BuffName, sizeof(data.BuffName), "Umbral Grace Debuff");
@@ -5907,4 +5956,23 @@ float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterS
 	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
 	float resist = ValueDo;
 	return resist;
+}
+
+
+
+static void RevivalStim_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 1.15);
+	SDKCall_SetSpeed(victim);
+}
+
+static void RevivalStim_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	Attributes_SetMulti(victim, 442, (1.0 / 1.15));
+	SDKCall_SetSpeed(victim);
 }

@@ -5292,7 +5292,7 @@ void Store_ApplyAttribs(int client)
 	
 	delete snapshot;
 	delete map;
-
+	StatusEffect_StoreRefresh(client);
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 
 	EnableSilvesterCosmetic(client);

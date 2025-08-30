@@ -422,7 +422,7 @@
 	}
 	"Old Fan Desc"
 	{
-		"en"	"When it rains for several days on end.\n{green}Allies gain +70％ damage"
+		"en"	"When it rains for several days on end.\n{green}Allies gain +50％ damage"
 	}
 	"Dream Catcher"
 	{
@@ -487,6 +487,14 @@
 	"Expidonsan Prime Membership Desc"
 	{
 		"en"	"Each Mercenary is entitled to one comprehensive physical and psychological assessment.\n{green}Players gain +70％ fire rate and reload speed for 10 seconds after being revived"
+	}
+	"The Whip of Punishment"
+	{
+		"en"	"The Whip of Punishment"
+	}
+	"The Whip of Punishment Desc"
+	{
+		"en"	"A whip that strikes fear.\n{green}Allies gain 10％ Movement Speed."
 	}
 	"Familiar Sculpture"
 	{

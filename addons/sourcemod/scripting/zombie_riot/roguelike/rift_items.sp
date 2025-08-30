@@ -202,12 +202,12 @@ public void Rogue_Umbral6_Collect()
 
 public void Rogue_OldFan_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.7);
+	RogueHelp_BodyDamage(entity, map, 1.5);
 }
 
 public void Rogue_OldFan_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.7);
+	RogueHelp_WeaponDamage(entity, 1.5);
 }
 
 public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -247,6 +247,21 @@ public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflic
 public void Rogue_Woodplate_Revive(int &entity)
 {
 	HealEntityGlobal(entity, entity, ReturnEntityMaxHealth(entity) / 2.0, 1.0, 2.0, HEAL_ABSOLUTE);
+}
+
+public void Rogue_Revival_Stim(int &entity)
+{
+	ApplyStatusEffect(entity, entity, "Revival Stim", 5.0);
+	if(!IsValidClient(entity))
+		return;
+	f_AntiStuckPhaseThrough[entity] = GetGameTime() + 5.0;
+	f_AntiStuckPhaseThroughFirstCheck[entity] = GetGameTime() + 5.0;
+	ApplyStatusEffect(entity, entity, "Intangible", 5.0);
+}
+
+public void Rogue_WhipOfPunishmentAlly(int entity, StringMap map)
+{
+	RogueHelp_BodySpeed(entity, map, 1.1);
 }
 
 public void Rogue_MedicineSticks_WaveStart()
