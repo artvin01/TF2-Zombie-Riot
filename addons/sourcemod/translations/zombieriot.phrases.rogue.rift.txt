@@ -25,6 +25,18 @@
 	{
 		"en"	"Leave it"
 	}
+	"A strange gateway opens up"
+	{
+		"en"	"A strange gateway opens up"
+	}
+	"Stay and fight it"
+	{
+		"en"	"Stay and fight it"
+	}
+	"Umbrals take notice of your actions"
+	{
+		"en"	"{crimson}Umbrals take notice of your actions"
+	}
 
 	"Rift of Swarms"
 	{
@@ -1445,6 +1457,11 @@
 	{
 		"en"	"Refragmented Page"
 	}
+	"Strange Gateway"
+	{
+		"en" "⚔ Strange Gateway"
+	}
+
 	"Crystalized Warped Subjects Title"
 	{
 		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
