@@ -1408,7 +1408,11 @@ void Rogue_NextProgress()
 						FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
 						CPrintToChatAll("%t", buffer);
 
-						EmitSoundToAll("ui/halloween_boss_player_becomes_it.wav");
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !IsFakeClient(client))
+								ClientCommand(client, "playgamesound ui/halloween_boss_player_becomes_it.wav");
+						}
 					}
 				}
 			}
