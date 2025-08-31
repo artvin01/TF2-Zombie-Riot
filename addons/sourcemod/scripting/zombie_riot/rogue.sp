@@ -1086,6 +1086,8 @@ void Rogue_BattleVictory()
 
 				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
 				{
+					time = Rogue_Rift_OptionalBonusBattle();
+					/*
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
 					{
@@ -1096,6 +1098,7 @@ void Rogue_BattleVictory()
 					{
 						time = Rogue_Rift_OptionalBonusBattle();
 					}
+					*/
 				}
 				
 				if((GetURandomInt() % 8) < BattleIngots)

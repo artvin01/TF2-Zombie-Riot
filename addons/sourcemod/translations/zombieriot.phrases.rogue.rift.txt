@@ -118,6 +118,14 @@
 	{
 		"en"	"{red}Enemies have a chance to be warpped"
 	}
+	"Void Outbreak"
+	{
+		"en"	"Void Outbreak"
+	}
+	"Void Outbreak Desc"
+	{
+		"en"	"{red}All enemies are voided and deal void damage."
+	}
 	"Gamemode Madness"
 	{
 		"en"	"Gamemode Madness"

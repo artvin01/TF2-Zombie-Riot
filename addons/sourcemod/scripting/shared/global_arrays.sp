@@ -809,7 +809,6 @@ enum
 }
 
 
-
 int i_TankAntiStuck[MAXENTITIES];
 int i_PlayMusicSound[MAXENTITIES];
 float fl_AlreadyStrippedMusic[MAXPLAYERS];

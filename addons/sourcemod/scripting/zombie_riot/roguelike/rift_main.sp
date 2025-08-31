@@ -779,6 +779,12 @@ public float Rogue_Encounter_WarpedBattle()
 	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
+public float Rogue_VoidOutbreak_Battle()
+{
+	Rogue_GiveNamedArtifact("Void Outbreak", true);
+	Rogue_SetBattleIngots(1 + (Rogue_GetFloor() / 2));
+	return 0.0;
+}
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
@@ -801,9 +807,19 @@ public void Rogue_RiftWarp_Enemy(int entity)
 	}
 }
 
+public void Rogue_VoidOutbreak_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+		ApplyStatusEffect(entity, entity, "Void Afflicted", 9999.9);
+}
+
 public void Rogue_RiftWarp_StageEnd()
 {
 	Rogue_RemoveNamedArtifact("Rift of Warp");
+}
+public void Rogue_VoidOutbreak_StageEnd()
+{
+	Rogue_RemoveNamedArtifact("Void Outbreak");
 }
 
 public void Rogue_StoneFractured_Collect()
