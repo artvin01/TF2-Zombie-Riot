@@ -460,10 +460,16 @@ static void FinishRiftVote(const Vote vote)
 			EndRiftVote();
 		}
 		default:
-		{	
+		{
+			bool angry = Rogue_GetUmbralLevel() == 4;
+			int affinity = Rogue_GetUmbral();
+
 			Artifact artifact;
 			Rogue_GetNamedArtifact(vote.Config, artifact);
 			Rogue_RemoveNamedArtifact(vote.Config);
+
+			if(angry)	// They threw away something that made it worse
+				angry = affinity > Rogue_GetUmbral();
 
 			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
@@ -499,17 +505,28 @@ static void FinishRiftVote(const Vote vote)
 			
 			Rogue_Rift_GatewaySent();
 
-			ConsumeLimit--;
-
-			if(ConsumeLimit < 1)
+			if(angry)
 			{
-				EndRiftVote();
+				CPrintToChatAll("%t", "Umbrals take notice of your actions");
+
+				Rogue_StartThisBattle(5.0);
+				Rogue_SetBattleIngots(1);
+				Rogue_SetRequiredBattle(true);
 			}
 			else
 			{
-				CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
-				bool found = StartRiftVote(false);
-				Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
+				ConsumeLimit--;
+
+				if(ConsumeLimit < 1)
+				{
+					EndRiftVote();
+				}
+				else
+				{
+					CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
+					bool found = StartRiftVote(false);
+					Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
+				}
 			}
 		}
 	}
@@ -892,4 +909,33 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	if(GiveRes)
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			damage *= 0.85;
+}
+
+stock float Rogue_Rift_OptionalBonusBattle()
+{
+	ArrayList list = Rogue_CreateGenericVote(FinishOptionalBonusBattle, "A strange gateway opens up");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Stay and fight it");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Better leave now");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(15.0);
+	return 20.0;
+}
+
+static void FinishOptionalBonusBattle(const Vote vote2, int index)
+{
+	if(index == 0)
+	{
+		Vote vote;
+		strcopy(vote.Config, sizeof(vote.Config), "Strange Gateway");	// Name of stage to look up
+		vote.Level = 2;
+		Rogue_Vote_NextStage(vote);
+	}
 }

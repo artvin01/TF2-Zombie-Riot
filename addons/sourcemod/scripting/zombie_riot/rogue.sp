@@ -1088,8 +1088,14 @@ void Rogue_BattleVictory()
 				{
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
+					{
 						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+					}
+					else if((GetURandomInt() % 4) == 0)
+					{
+						time = Rogue_Rift_OptionalBonusBattle();
+					}
 				}
 				
 				if((GetURandomInt() % 8) < BattleIngots)
@@ -1407,7 +1413,11 @@ void Rogue_NextProgress()
 						FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
 						CPrintToChatAll("%t", buffer);
 
-						EmitSoundToAll("ui/halloween_boss_player_becomes_it.wav");
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !IsFakeClient(client))
+								ClientCommand(client, "playgamesound ui/halloween_boss_player_becomes_it.wav");
+						}
 					}
 				}
 			}
@@ -1489,7 +1499,7 @@ void Rogue_NextProgress()
 					TeleportToSpawn();
 					
 					SetFloorMusic(floor, true);
-					SetNextStage(id, true, stage, 20.0);
+					SetNextStage(id, true, stage, 10.0);
 				}
 			}
 			else	// Normal Stage
