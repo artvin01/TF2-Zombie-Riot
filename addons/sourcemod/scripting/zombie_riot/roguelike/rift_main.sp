@@ -8,7 +8,7 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
-static bool Keycard;
+//static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -26,18 +26,18 @@ stock int Rogue_Rift_CurseLevel()
 	return DifficultyLevel;
 }
 
+/*
 void Rogue_Rift_StorePriceMulti(int &cost, bool greg)
 {
-	if(!greg && Keycard)
+	if(!greg)
 		cost = cost * 11 / 10;
 }
-
 void Rogue_Rift_PackPriceMulti(int &cost)
 {
 	if(Keycard)
 		cost = cost * 11 / 10;
 }
-
+*/
 public void Rogue_Curse_RiftSwarm(bool enable)
 {
 	CurseSwarm = enable;
@@ -152,7 +152,13 @@ public float Rogue_Encounter_RiftShop()
 	bool rare = Rogue_GetFloor() > 0;
 	bool easyMode = DifficultyLevel < 1;
 	bool found;
-
+	if(rare)
+	{
+		if(GetURandomInt() % 4)
+		{
+			rare = false;
+		}
+	}
 	if(!easyMode)
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -620,7 +626,7 @@ public float Rogue_Encounter_Rift1()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING1"))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Reila's Scorn Keycard"))
 			{
 				found = true;
 				break;
@@ -696,7 +702,7 @@ public void Rogue_Reila_Remove()
 
 public void Rogue_Rift1_Collect()
 {
-	Rogue_AddUmbral(-30, true);
+	Rogue_AddUmbral(-20, true);
 }
 
 public void Rogue_Rift1_Remove()
@@ -704,19 +710,19 @@ public void Rogue_Rift1_Remove()
 	if(Rogue_Started())
 	{
 		Rogue_GiveNamedArtifact("Keycard");
-		Rogue_AddUmbral(30);
+		Rogue_AddUmbral(20);
 	}
 }
 
 public void Rogue_Rift1Good_Collect()
 {
-	Keycard = true;
+	//Keycard = true;
 	CPrintToChatAll("{pink}Reila{default}: I know where to use this.");
 }
 
 public void Rogue_Rift1Good_Remove()
 {
-	Keycard = false;
+	//Keycard = false;
 
 	if(Rogue_Started())
 	{

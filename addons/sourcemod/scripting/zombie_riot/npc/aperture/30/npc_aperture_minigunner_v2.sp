@@ -275,7 +275,7 @@ void ApertureMinigunnerV2SelfDefense(ApertureMinigunnerV2 npc)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
+					float damageDealt = 16.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 						

@@ -270,7 +270,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
@@ -302,7 +302,7 @@
 	}
 	"Hand of Diffusion Desc"
 	{
-		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +375％"
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +240％"
 	}
 	"Hand of Rending"
 	{
@@ -422,7 +422,23 @@
 	}
 	"Old Fan Desc"
 	{
-		"en"	"When it rains for several days on end.\n{green}Allies gain +70％ damage"
+		"en"	"When it rains for several days on end.\n{green}Allies gain +50％ damage"
+	}
+	"Dream Catcher"
+	{
+		"en"	"Dream Catcher"
+	}
+	"Dream Catcher Desc"
+	{
+		"en"	"Incase you get a very nasty dream.\n{green}When losing a stage, it repeats the stage and grants a new item." 
+	}
+	"Dream Caught"
+	{
+		"en"	"Dream Caught"
+	}
+	"Dream Caught Desc"
+	{
+		"en"	"Aha!\n{green}When a new stage starts, gain full health, Revive times are cut in half, Enemies have -10％ damage"
 	}
 	"Scout's Scope"
 	{
@@ -472,6 +488,14 @@
 	{
 		"en"	"Each Mercenary is entitled to one comprehensive physical and psychological assessment.\n{green}Players gain +70％ fire rate and reload speed for 10 seconds after being revived"
 	}
+	"The Whip of Punishment"
+	{
+		"en"	"The Whip of Punishment"
+	}
+	"The Whip of Punishment Desc"
+	{
+		"en"	"A whip that strikes fear.\n{green}Allies gain 10％ Movement Speed."
+	}
 	"Familiar Sculpture"
 	{
 		"en"	"Familiar Sculpture"
@@ -518,7 +542,7 @@
 	}
 	"Little Cube Desc"
 	{
-		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +10％ max health, increased to +80％ when on a bizarre chapter"
+		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +25％ max health, increased to +100％ when on a bizarre chapter"
 	}
 	"Fearless Blade"
 	{
@@ -799,7 +823,7 @@
 	}
 	"Wordless Deed Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 20 while held\n{purple}Obtain a cursed artifact when consumed"
 	}
 	"Keycard"
 	{
@@ -807,7 +831,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
@@ -899,6 +923,26 @@
 	"Gamemode History Desc"
 	{
 		"en"	""
+	}
+	"Immensive Guilt"
+	{
+		"en"	"Immensive Guilt"
+	}
+	"Immensive Guilt Desc"
+	{
+		"en"	"{crimson}This is not good."
+	}
+	"Bob's Wrath"
+	{
+		"en"	"Bob's Wrath"
+	}
+	"Bob's Wrath Desc"
+	{
+		"en"	"{crimson}He's pissed."
+	}
+	"Crystalized Warped Subjects"
+	{
+		"en"	"Crystalized Warped Subjects"
 	}
 	"Bizarre History"
 	{
@@ -1400,5 +1444,37 @@
 	"Refragmented Page"
 	{
 		"en"	"Refragmented Page"
+	}
+	"Crystalized Warped Subjects Title"
+	{
+		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
+	}
+	"Crystalized Warped Subjects Title Repeat"
+	{
+		"en"	"Your body deterioates..."
+	}
+	"Crystalized Warped Subjects Search More"
+	{
+		"en"	"Search the room for other things."
+	}
+	"Crystalized Warped Subjects Search More Desc"
+	{
+		"en"	"{yellow}Search the room for something else.{red}For the rest of the chapter, Allies lose 5％ Max Health"
+	}
+	"Crystalized Warped Subjects Search Cancel"
+	{
+		"en"	"Lets stop and take their gear."
+	}
+	"Crystalized Warped Subjects Search Cancel Desc"
+	{
+		"en"	"{green}Gain 7000 Cash and a random rare item."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
 	}
 }

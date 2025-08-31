@@ -276,7 +276,7 @@ void ApertureMinigunnerSelfDefense(ApertureMinigunner npc)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 15.0;
+					float damageDealt = 12.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 
@@ -284,7 +284,7 @@ void ApertureMinigunnerSelfDefense(ApertureMinigunner npc)
 					if (!IsInvuln(target) && !i_IsABuilding[target] && !b_ThisWasAnNpc[target])
 					{
 						if(!HasSpecificBuff(target, "Fluid Movement"))
-						TF2_StunPlayer(target, 0.1, 0.5, TF_STUNFLAG_SLOWDOWN);
+							TF2_StunPlayer(target, 0.1, 0.5, TF_STUNFLAG_SLOWDOWN);
 					}
 				}
 			}

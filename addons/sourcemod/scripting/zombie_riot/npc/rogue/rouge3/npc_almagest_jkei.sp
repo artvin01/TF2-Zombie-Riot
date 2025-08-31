@@ -414,7 +414,7 @@ public Action AlmagestJkei_OnTakeDamage(int victim, int &attacker, int &inflicto
 	if(MaxHealthRatioDamage != 0.0 && !HasSpecificBuff(npc.index, "Unstoppable Force"))
 	{
 		float CurrentRatio = (float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) + damage) / float(ReturnEntityMaxHealth(npc.index));
-		if(CurrentRatio)
+		if(CurrentRatio <= MaxHealthRatioDamage)
 		{
 			CPrintToChatAll("{black}Jkei{crimson} gains a shield, his soldiers give him strength, kill them off.");
 			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.0);
@@ -578,7 +578,7 @@ void Jkei_CreateDrones(int iNpc)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
 
-	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.003);
 
 	for(int i; i<MaxenemySpawnScaling; i++)
 	{
@@ -618,7 +618,7 @@ void Jkei_SpawnMinionsToEnemy(int entity, int victim, float damage, int weapon)
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.003);
 	int summon = NPC_CreateByName("npc_jkei_drone", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{

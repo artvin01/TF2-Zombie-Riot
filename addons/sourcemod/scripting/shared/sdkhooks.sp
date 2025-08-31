@@ -12,6 +12,7 @@ static float f_LatestDamageRes[MAXPLAYERS];
 static float f_TimeSinceLastRegenStop[MAXPLAYERS];
 static bool b_GaveMarkForDeath[MAXPLAYERS];
 static float f_RecievedTruedamageHit[MAXPLAYERS];
+static char MaxAsignPerkNames[MAXPLAYERS][8];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
 //This will be used as a timer to fix this issue
@@ -1355,8 +1356,8 @@ public void OnPostThink(int client)
 
 		ArmorDisplayClient(client);
 
-		static char buffer[20]; //armor
-		static char buffer2[20];	//perks and stuff
+		static char buffer[24]; //armor
+		static char buffer2[24];	//perks and stuff
 		bool Armor_Regenerating = false;
 		static int ArmorRegenCounter[MAXPLAYERS];
 		if(armorEnt == client && f_ClientArmorRegen[client] > GetGameTime())
@@ -1463,16 +1464,16 @@ public void OnPostThink(int client)
 			//no mount or anything
 			Format(buffer2, sizeof(buffer2), "---");
 		}
-		if(i_CurrentEquippedPerk[client] >= 1)
+		if(i_CurrentEquippedPerk[client] != PERK_NONE)
 		{
 			Format(buffer2, sizeof(buffer2), "%s|", buffer2);
-			if(i_CurrentEquippedPerk[client] == 6)
+			if(i_CurrentEquippedPerk[client] & PERK_TESLAR_MULE)
 			{
 				float slowdown_amount = f_WidowsWineDebuffPlayerCooldown[client] - GameTime;
 				
 				if(slowdown_amount < 0.0)
 				{
-					Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2,PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
+					Format(buffer2, sizeof(buffer2), "%s%s", buffer2,MaxAsignPerkNames[client]);
 				}
 				else
 				{
@@ -1481,7 +1482,7 @@ public void OnPostThink(int client)
 			}
 			else
 			{
-				Format(buffer2, sizeof(buffer2), "%s%c%c", buffer2, PerkNames_two_Letter[i_CurrentEquippedPerk[client]][0], PerkNames_two_Letter[i_CurrentEquippedPerk[client]][1]);
+				Format(buffer2, sizeof(buffer2), "%s%s", buffer2,MaxAsignPerkNames[client]);
 			}
 		}
 		else
@@ -3442,7 +3443,7 @@ void ManaCalculationsBefore(int client)
 	max_mana[client] = ManaMaxExtra;
 	mana_regen[client] = ManaRegen;
 			
-	if(i_CurrentEquippedPerk[client] == 4)
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 	{
 		mana_regen[client] *= 1.35;
 	}
@@ -3537,4 +3538,36 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 		}
 	}
 
+}
+
+
+
+
+//this code is ass
+void UpdatePerkName(int client)
+{
+	char buffer[4];
+	if(i_CurrentEquippedPerk[client] == PERK_NONE)
+	{
+		Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s", PerkNames_two_Letter[0]);
+		return;
+	}
+	if(i_CurrentEquippedPerk[client] & PERK_REGENE)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[1],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[2],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[3],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[4],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[5],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_TESLAR_MULE)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[6],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[7],buffer);
+	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
+		Format(buffer, sizeof(buffer), "%s%s", PerkNames_two_Letter[8],buffer);
+
+	Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s",buffer);
 }

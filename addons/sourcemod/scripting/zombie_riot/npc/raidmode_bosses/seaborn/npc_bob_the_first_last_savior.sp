@@ -1970,6 +1970,8 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	int green = 255;
 	int blue = 255;
 	int Alpha = 255;
+	if(GetTeam(entity) == TFTeam_Red)
+		Alpha = 125;
 
 	int colorLayer4[4];
 	float diameter = float(BOB_MELEE_SIZE * 4);
@@ -2060,6 +2062,8 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	int green = 50;
 	int blue = 255;
 	int Alpha = 222;
+	if(GetTeam(entity) == TFTeam_Red)
+		Alpha = 100;
 	int colorLayer4[4];
 
 	float diameter = float(BOB_MELEE_SIZE * 4);

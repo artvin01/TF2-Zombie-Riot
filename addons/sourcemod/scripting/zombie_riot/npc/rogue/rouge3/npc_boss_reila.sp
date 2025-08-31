@@ -74,6 +74,7 @@ int Boss_ReilaID()
 }
 static void ClotPrecache()
 {
+	PrecacheSoundCustom("#zombiesurvival/rogue3/reila_battle_ost.mp3");
 	return;
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -152,6 +153,11 @@ methodmap BossReila < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
+	property float m_flDoLoseTalk
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	property int m_iBallsLeftToSpawn
 	{
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
@@ -217,22 +223,22 @@ methodmap BossReila < CClotBody
 
 		if(altEnding)
 		{
-			SetEntityRenderFx(npc.index, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.index, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable1, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable3, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable3, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable4, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable4, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable5, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable5, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable6, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable6, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
+			SetEntityRenderColor(npc.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
+			SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npc.m_iWearable3, RENDERFX_DISTORT);
+			SetEntityRenderColor(npc.m_iWearable3, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npc.m_iWearable4, RENDERFX_DISTORT);
+			SetEntityRenderColor(npc.m_iWearable4, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npc.m_iWearable5, RENDERFX_DISTORT);
+			SetEntityRenderColor(npc.m_iWearable5, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npc.m_iWearable6, RENDERFX_DISTORT);
+			SetEntityRenderColor(npc.m_iWearable6, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
 		
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Reila?");
 
-			CPrintToChatAll("{pink}Reila{default}: Who are you?!");
+			CPrintToChatAll("{pink}?????{default}: Who are you?!");
 		}
 		else if(badEnding)
 		{
@@ -243,10 +249,23 @@ methodmap BossReila < CClotBody
 		}
 		else
 		{
-			CPrintToChatAll("{pink}Reila{default}: A.");
+			CPrintToChatAll("{pink}Reila{default}: リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
 		}
-		
+		if(data[0] && !altEnding && !badEnding)
+			i_RaidGrantExtra[npc.index] = 1;
 		npc.m_flBossSpawnBeacon = 1.0;
+
+		if(StrContains(data, "force_final_battle") != -1)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/reila_battle_ost.mp3");
+			music.Time = 100;
+			music.Volume = 0.65;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Twin Souls");
+			strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
+			Music_SetRaidMusic(music);
+		}
 
 		return npc;
 	}
@@ -261,6 +280,10 @@ public void BossReila_ClotThink(int iNPC)
 		ApplyStatusEffect(iNPC, iNPC, "Ancient Melodies", 0.6);
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	if(Reila_LossAnimation(npc.index))
 	{
 		return;
 	}
@@ -316,6 +339,7 @@ public void BossReila_ClotThink(int iNPC)
 		npc.RemoveGesture("ACT_MP_ATTACK_STAND_GRENADE");
 		npc.m_iChanged_WalkCycle = 1;
 		npc.m_flSpeed = 330.0;
+		npc.m_bisWalking = true;
 		npc.StartPathing();
 	}
 	/*
@@ -363,6 +387,38 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 {
 	BossReila npc = view_as<BossReila>(victim);
 		
+	if(i_RaidGrantExtra[npc.index] == 1 && damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+	{
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				Music_Stop_All(client); //This is actually more expensive then i thought.
+				SetMusicTimer(client, GetTime() + 50);
+			}
+		}
+		Waves_ClearWave();
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entitynpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entitynpc))
+			{
+				if(entitynpc != npc.index  && IsEntityAlive(entitynpc) && GetTeam(npc.index) == GetTeam(entitynpc))
+				{
+					SmiteNpcToDeath(entitynpc);
+				}
+			}
+		}
+		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+		RaidBossActive = 0;
+		npc.m_flDoLoseTalk = GetGameTime() + 3.0;
+		i_RaidGrantExtra[npc.index] = 2;
+		npc.m_bisWalking = false;
+		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
+		CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
+		damage = 0.0;
+		return Plugin_Changed;
+	}
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -505,12 +561,12 @@ void ReilaCreateBeacon(int iNpc)
 
 		if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
 		{
-			SetEntityRenderFx(npc.index, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.index, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable1, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
-			SetEntityRenderFx(npc.m_iWearable2, RENDERFX_EXPLODE);
-			SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 255);
+			SetEntityRenderFx(npcsummon.index, RENDERFX_DISTORT);
+			SetEntityRenderColor(npcsummon.index, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npcsummon.m_iWearable1, RENDERFX_DISTORT);
+			SetEntityRenderColor(npcsummon.m_iWearable1, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
+			SetEntityRenderFx(npcsummon.m_iWearable2, RENDERFX_DISTORT);
+			SetEntityRenderColor(npcsummon.m_iWearable2, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
 		}
 	}
 }
@@ -564,6 +620,7 @@ bool ReilaReflectDamageDo(int iNpc)
 			npc.SetPlaybackRate(0.1);
 			npc.SetCycle(0.776);
 			npc.StopPathing();
+			npc.m_bisWalking = false;
 			int LayerDo = npc.AddGesture("ACT_MP_ATTACK_STAND_GRENADE");
 			npc.SetLayerPlaybackRate(LayerDo, 0.0);
 			npc.SetLayerCycle(LayerDo, 0.0);
@@ -879,3 +936,55 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	
 	TE_SendToAll();
 }
+
+
+
+bool Reila_LossAnimation(int iNpc)
+{
+	BossReila npc = view_as<BossReila>(iNpc);
+	if(npc.m_flDoLoseTalk)
+	{
+		if(npc.m_flDoLoseTalk < GetGameTime())
+		{
+			switch(i_RaidGrantExtra[npc.index])
+			{
+				case 2:
+				{
+					CPrintToChatAll("{pink}Reila {snow}she tries to talk but you understand nothing..");
+					CPrintToChatAll("{pink}Reila :{default} ∴╎ᒷᓭ𝙹 ⍊ᒷ∷ᓭ⚍ᓵ⍑ᓭℸ ̣ ↸⚍ ᒲ╎ᓵ⍑ ᔑ⚍⎓⨅⚍⍑ꖎℸ ̣ᒷリ??...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{pink}Reila :{default} ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ʖ╎ᓭℸ ̣ ↸⚍ üʖᒷ∷⍑ᔑ!¡ℸ ̣ ⍊𝙹リ Almagest? ↸⚍ ꖌᔑリリᓭℸ ̣ ᒲ╎ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ⍊ᒷ∷ᓭℸ ̣ᒷ⍑ᒷリ 𝙹↸ᒷ∷?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{black}Izan :{default} ... Great, languge barrier.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{black}Izan {snow} Shakes his head and points at his ears, then shrugs.");
+				}
+				case 6:
+				{
+					CPrintToChatAll("{snow}She hands over something, and asks to leave via gesture...");
+					npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
+				}
+				case 7:
+				{
+					CPrintToChatAll("{black}Izan {snow}Allows her to leave.");
+				}
+				case 8:
+				{
+					CPrintToChatAll("{black}Izan :{default} Now we have a whole other group to worry about.");
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+				}
+			}
+			i_RaidGrantExtra[npc.index]++;
+			npc.m_flDoLoseTalk = GetGameTime() + 2.0;
+		}
+		return true;
+	}
+	return false;
+}
+

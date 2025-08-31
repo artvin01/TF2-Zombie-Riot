@@ -97,10 +97,10 @@ enum struct Artifact
 		this.FuncTakeDamage = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
 		kv.GetString("func_floorchange", this.Name, 64);
-		this.FuncFloorChange = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		this.FuncFloorChange = 	this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
 		kv.GetString("func_revive", this.Name, 64);
-		this.FuncRevive = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		this.FuncRevive = 		this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		this.Name[0] = CharToUpper(this.Name[0]);
@@ -1152,18 +1152,24 @@ bool Rogue_BattleLost()
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
 	Rogue_Dome_WaveEnd();
-
-	if(victory || (BonusLives > 0 && !RequiredBattle))
+	if(victory || (BonusLives > 0 && (!RequiredBattle || RogueTheme == ReilaRift)))
 	{
 		if(!victory)
 		{
-			if(BonusLives > 1)
+			if(RogueTheme == ReilaRift)
 			{
-				CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+				CPrintToChatAll("{green}Your terrible nightmare ends....");
 			}
 			else
 			{
-				CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+				if(BonusLives > 1)
+				{
+					CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+				}
+				else
+				{
+					CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+				}
 			}
 		}
 
@@ -1175,25 +1181,18 @@ bool Rogue_BattleLost()
 				SetMusicTimer(client, GetTime() + 10);
 			}
 		}
-
+		
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
 		TeleportToSpawn();
 
-		Rogue_SetProgressTime(5.0, false, true);
-		
-		/*Floor floor;
-		Floors.GetArray(CurrentFloor, floor);
-
-		Stage stage;
-		if(CurrentType)
+		if(RogueTheme == ReilaRift)
 		{
-			floor.Finals.GetArray(CurrentStage, stage);
+			DreamCatcher_Active();
+			//todo: Retry the stage they died at.
+			CurrentCount--;
 		}
-		else
-		{
-			floor.Encounters.GetArray(CurrentStage, stage);
-		}*/
+		Rogue_SetProgressTime(5.0, false, true);
 
 		int chaos = RoundToFloor(BattleChaos);
 		if(chaos > 0)
@@ -2632,7 +2631,9 @@ void Rogue_ReviveSpeed(int &amount)
 {
 	Rogue_StoryTeller_ReviveSpeed(amount);
 	Rogue_Paradox_ReviveSpeed(amount);
+	Rogue_Rift_ReviveSpeed(amount);
 }
+
 
 void Rogue_PlayerDowned(int client)
 {
@@ -3414,6 +3415,7 @@ static void ClearStats()
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
 	Rogue_Whiteflower_Reset();
+	Rogue_Rift_Reset();
 }
 
 bool IS_MusicReleasingRadio()

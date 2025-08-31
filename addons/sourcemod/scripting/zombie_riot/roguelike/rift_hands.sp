@@ -48,16 +48,18 @@ public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflicto
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			float extra = GetEntProp(victim, Prop_Data, "m_iHealth") * 0.03;
+			float extra = float(GetEntProp(victim, Prop_Data, "m_iHealth")) * 0.03;
 
 			// Scale down with health scaling
 			if(b_thisNpcIsARaid[victim])
 			{
+				extra = float(GetEntProp(victim, Prop_Data, "m_iHealth")) * 0.01;
 				if(MultiGlobalHighHealthBoss)
 					extra /= MultiGlobalHighHealthBoss;
 			}
 			else if(b_thisNpcIsABoss[victim])
 			{
+				extra = float(GetEntProp(victim, Prop_Data, "m_iHealth")) * 0.01;
 				if(MultiGlobalHealthBoss)
 					extra /= MultiGlobalHealthBoss;
 			}
@@ -210,8 +212,8 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 				count++;
 		}
 
-		if(count > 25)
-			count = 25;
+		if(count > 16)
+			count = 16;
 
 		damage += damage * (count / 6.666667);
 	}

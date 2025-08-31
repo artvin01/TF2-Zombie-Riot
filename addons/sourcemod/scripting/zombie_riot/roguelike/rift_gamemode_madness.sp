@@ -202,7 +202,6 @@ public void Rogue_GamemodeMadnessSlender_Ally(int entity, StringMap map)
 		map.SetValue("107", value * 0.75);
 	}
 }
-
 public void Rogue_GamemodeMadnessSlender_Enemy(int entity)
 {
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 600.0);
@@ -218,6 +217,10 @@ public void Rogue_GamemodeMadness_EnemyRenameSZF(int entity)
 }
 public void Rogue_GamemodeMadness_EnemyRename(int entity)
 {
+	//dont touch buildings.
+	if(i_NpcIsABuilding[entity])
+		return;
+		
 	strcopy(c_NpcName[entity], sizeof(c_NpcName[]), g_RandomPlayerName[GetRandomInt(0, sizeof(g_RandomPlayerName) - 1)]);
 	b_NameNoTranslation[entity] = true;
 

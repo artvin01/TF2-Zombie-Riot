@@ -404,7 +404,7 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 			// Short Circuit
 			func_NPCThink[npc.index] = view_as<Function>(Vulpo_ClotThink);
 			func_NPCDeath[npc.index] = view_as<Function>(Vulpo_NPCDeath);
-			
+			fl_Extra_Damage[npc.index] *= 0.5;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
 			activity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		}

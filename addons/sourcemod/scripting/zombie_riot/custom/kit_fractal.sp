@@ -1267,7 +1267,7 @@ static Action Mana_Harvester_Tick(int client)
 	//we now have every valid target within range / within line of sight, comence the harvesting!
 	int color[4]; color = Kit_Color();
 
-	if(i_CurrentEquippedPerk[client] == 4)
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 		mana_cost = RoundToFloor(mana_cost * 1.33);
 
 	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
