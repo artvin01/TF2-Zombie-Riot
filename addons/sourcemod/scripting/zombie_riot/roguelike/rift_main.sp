@@ -811,6 +811,8 @@ public void Rogue_VoidOutbreak_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 		ApplyStatusEffect(entity, entity, "Void Afflicted", 9999.9);
+	else
+		ApplyStatusEffect(entity, entity, "Altered Functions", 9999.9);
 }
 
 public void Rogue_RiftWarp_StageEnd()
