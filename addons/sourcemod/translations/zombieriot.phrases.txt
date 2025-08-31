@@ -2233,8 +2233,7 @@
 	}	
 	"Which perk do you desire?"
 	{
-		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead."
-		"ko"		"원하는 퍽의 번호를 눌러 얻으세요.\n앉아있는 상태라면, 선택한 퍽을 얻는 대신 해당 퍽의 설명이 출력됩니다."
+		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead.\nSelect a perk you already own to get rid of it."
 	}	
 	"Reviving"
 	{
@@ -4931,5 +4930,9 @@
 	{
 		"en"	"Paranormal Activity"
 		"ko"	"초자연적 현상"
+	}
+	"Too many Perks"
+	{
+		"en"		"You have too many perks, get rid of one."
 	}
 }

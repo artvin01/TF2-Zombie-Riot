@@ -423,7 +423,23 @@
 	}
 	"Old Fan Desc"
 	{
-		"en"	"When it rains for several days on end.\n{green}Allies gain +70％ damage"
+		"en"	"When it rains for several days on end.\n{green}Allies gain +50％ damage"
+	}
+	"Dream Catcher"
+	{
+		"en"	"Dream Catcher"
+	}
+	"Dream Catcher Desc"
+	{
+		"en"	"Incase you get a very nasty dream.\n{green}When losing a stage, it repeats the stage and grants a new item." 
+	}
+	"Dream Caught"
+	{
+		"en"	"Dream Caught"
+	}
+	"Dream Caught Desc"
+	{
+		"en"	"Aha!\n{green}When a new stage starts, gain full health, Revive times are cut in half, Enemies have -10％ damage"
 	}
 	"Scout's Scope"
 	{
@@ -472,6 +488,14 @@
 	"Expidonsan Prime Membership Desc"
 	{
 		"en"	"Each Mercenary is entitled to one comprehensive physical and psychological assessment.\n{green}Players gain +70％ fire rate and reload speed for 10 seconds after being revived"
+	}
+	"The Whip of Punishment"
+	{
+		"en"	"The Whip of Punishment"
+	}
+	"The Whip of Punishment Desc"
+	{
+		"en"	"A whip that strikes fear.\n{green}Allies gain 10％ Movement Speed."
 	}
 	"Familiar Sculpture"
 	{
@@ -900,6 +924,26 @@
 	"Gamemode History Desc"
 	{
 		"en"	""
+	}
+	"Immensive Guilt"
+	{
+		"en"	"Immensive Guilt"
+	}
+	"Immensive Guilt Desc"
+	{
+		"en"	"{crimson}This is not good."
+	}
+	"Bob's Wrath"
+	{
+		"en"	"Bob's Wrath"
+	}
+	"Bob's Wrath Desc"
+	{
+		"en"	"{crimson}He's pissed."
+	}
+	"Crystalized Warped Subjects"
+	{
+		"en"	"Crystalized Warped Subjects"
 	}
 	"Bizarre History"
 	{
@@ -1401,5 +1445,37 @@
 	"Refragmented Page"
 	{
 		"en"	"Refragmented Page"
+	}
+	"Crystalized Warped Subjects Title"
+	{
+		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
+	}
+	"Crystalized Warped Subjects Title Repeat"
+	{
+		"en"	"Your body deterioates..."
+	}
+	"Crystalized Warped Subjects Search More"
+	{
+		"en"	"Search the room for other things."
+	}
+	"Crystalized Warped Subjects Search More Desc"
+	{
+		"en"	"{yellow}Search the room for something else.{red}For the rest of the chapter, Allies lose 5％ Max Health"
+	}
+	"Crystalized Warped Subjects Search Cancel"
+	{
+		"en"	"Lets stop and take their gear."
+	}
+	"Crystalized Warped Subjects Search Cancel Desc"
+	{
+		"en"	"{green}Gain 7000 Cash and a random rare item."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
 	}
 }

@@ -242,6 +242,7 @@ static void ClotThink(int iNPC)
 
 				MakePlayerGiveResponseVoice(target, 2); //dead!
 				i_CurrentEquippedPerk[target] = 0;
+				UpdatePerkName(target);
 				Grigori_Blessing[target] = 0;
 
 				SetEntityHealth(target, 50);

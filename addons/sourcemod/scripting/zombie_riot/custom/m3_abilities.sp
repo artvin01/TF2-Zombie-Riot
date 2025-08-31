@@ -615,7 +615,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 						if(dieingstate[target] > 0)
 						{
 							EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
-							if(i_CurrentEquippedPerk[client] == 1)
+							if(i_CurrentEquippedPerk[client] & PERK_REGENE)
 							{
 								SetEntityHealth(target,  GetClientHealth(target) + 12);
 								dieingstate[target] -= 20;
@@ -650,7 +650,7 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 					{
 						if(Citizen_IsIt(target) && Citizen_ThatIsDowned(target))
 						{
-							if(i_CurrentEquippedPerk[client] == 1)
+							if(i_CurrentEquippedPerk[client] & PERK_REGENE)
 							{
 								Citizen_ReviveTicks(target, 20, client, true);
 							}

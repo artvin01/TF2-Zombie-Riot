@@ -870,6 +870,14 @@
 		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
 		"ko"	"벗어나려고 애쓸수록 실에 더 꽁꽁 묶인다.\n{green}적이 기절한 상태라면, 낮은 마법 피해를 받습니다."
 	}
+	"Cold Water"
+	{
+		"en"	"Cold Water"
+	}
+	"Cold Water Desc"
+	{
+		"en"	"Good water, washes down any drinks.\n{green}You can equip a 2nd perk."
+	}
 	"Children's Puppet"
 	{
 		"en"	"Children's Puppet"

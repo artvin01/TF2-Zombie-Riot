@@ -285,7 +285,8 @@ public void CorruptedBarney_ClotThink(int iNPC)
 				Attributes_Set(client, 26, GetRandomFloat(2500.0, 5000.0));
 				f_damageAddedTogether[client] = float(GetURandomInt());
 				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
-				i_CurrentEquippedPerk[client] = GetRandomInt(1,6);
+				i_CurrentEquippedPerk[client] = 0;
+				UpdatePerkName(client);
 				i_AmountDowned[client] = GetRandomInt(-500000, 500000);
 				
 				KillFeed_Show(client, client, client, client, -1, 0, false);

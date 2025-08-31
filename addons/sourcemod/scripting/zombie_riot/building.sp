@@ -2142,22 +2142,22 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
-		if(i_CurrentEquippedPerk[entity] != 3 && i_CurrentEquippedPerk[client] == 3)
+		if(!(i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE) && (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE))
 		{
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
 		}
-		if(i_CurrentEquippedPerk[entity] == 3 && i_CurrentEquippedPerk[client] != 3)
+		if((i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE) && !(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE))
 		{
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.85;
 		}
-		if(i_CurrentEquippedPerk[entity] != 2 && i_CurrentEquippedPerk[client] == 2)
+		if((i_CurrentEquippedPerk[entity] & PERK_OBSIDIAN) && !(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN))
 		{
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
 
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.15));
 		}
-		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
+		if(!(i_CurrentEquippedPerk[entity] & PERK_OBSIDIAN) && (i_CurrentEquippedPerk[client] & PERK_OBSIDIAN))
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.15));

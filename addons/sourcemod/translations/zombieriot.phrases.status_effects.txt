@@ -1929,6 +1929,39 @@
 	{
 		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
 	}
+	"Brightening Light"
+	{
+		"en"	"Brightening Light"
+	}
+	"Brightening Light Desc"
+	{
+		"en"	"Gain 35％ attack/reload speed & healrate."
+	}
+	"Revival Stim"
+	{
+		"en"	"Revival Stim"
+	}
+	"Revival Stim Desc"
+	{
+		"en"	"Gain a 15％ Movementspeed Bonus."
+	}
+
+	"Brightening Lightness"
+	{
+		"en"	"Brightening Lightness"
+	}
+	"Brightening Lightness Desc"
+	{
+		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
+	}
+	"Revival Stim Packs"
+	{
+		"en"	"Revival Stim Packs"
+	}
+	"Revival Stim Packs Desc"
+	{
+		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upton being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
+	}
 	"Kolum's View"
 	{
 		"en"	"Kolum's View"
