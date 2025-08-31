@@ -322,6 +322,7 @@ public float Rogue_Encounter_Pool_Of_Clarity()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 1");
+	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 2");
