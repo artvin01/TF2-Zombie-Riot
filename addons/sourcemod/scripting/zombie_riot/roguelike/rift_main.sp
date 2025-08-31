@@ -282,6 +282,7 @@ static void FinishShopVote(const Vote vote)
 		{
 			Rogue_StartThisBattle(5.0);
 			Rogue_SetBattleIngots(1);
+			Rogue_SetRequiredBattle(true);
 			Rogue_GiveNamedArtifact("Despair");
 
 			int entity = -1;
