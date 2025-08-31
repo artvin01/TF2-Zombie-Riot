@@ -611,6 +611,7 @@ public void Rogue_Crystalized_Warped_Subjects_Repeat()
 		CreateTimer(4.0, Timer_AdvanceGulnLore, 1);
 		return;	
 	}
+	Rogue_GiveNamedArtifact("Bad Lab Air");
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Crystalized_Warped_Subjects_Vote, "Crystalized Warped Subjects Title Repeat");
 	Vote vote;
 

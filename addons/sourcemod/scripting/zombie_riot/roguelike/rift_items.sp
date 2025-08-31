@@ -85,11 +85,20 @@ public void Rogue_PoisonWater_Ally(int entity, StringMap map)
 {
 	RogueHelp_BodyHealth(entity, map, 0.8);
 }
+public void Rogue_BadLabAir_Ally(int entity, StringMap map)
+{
+	RogueHelp_BodyHealth(entity, map, 0.95);
+}
 
 public void Rogue_PoisonWater_FloorChange(int &floor, int &stage)
 {
 	if(floor > 1)
 		Rogue_RemoveNamedArtifact("Poisoned Water");
+}
+public void Rogue_BadLabAir_FloorChange(int &floor, int &stage)
+{
+	while(Rogue_HasNamedArtifact("Bad Lab Air"))
+		Rogue_RemoveNamedArtifact("Bad Lab Air");
 }
 
 public void Rogue_HolyBlessing_Collect()

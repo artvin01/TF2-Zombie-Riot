@@ -1042,6 +1042,14 @@
 	{
 		"en"	"Shouldn't have drank that.\n{red}Allies have -20％ max health, cured by visting a Gateway"
 	}
+	"Bad Lab Air"
+	{
+		"en"	"Bad Lab Air"
+	}
+	"Bad Lab Air Desc"
+	{
+		"en"	"Maybe shouldnt have stayed.\n{red}Allies have -5％ max health, cured upon next floor."
+	}
 	"Pool of Clarity Title"
 	{
 		"en"	"You find a pool surrounded by nothing by crystals, umbrals can be seen going to it and away."
