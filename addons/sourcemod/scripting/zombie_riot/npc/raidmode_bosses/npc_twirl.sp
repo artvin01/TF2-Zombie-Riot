@@ -4087,7 +4087,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	if(ruina_wings)
 	{
-		if(GetRandomFloat(0.0, 2.5) < 0.01)
+		if(GetRandomFloat(0.0, 3.0) < 0.01)
 		{
 			switch(MagiaWingsType(client))
 			{
