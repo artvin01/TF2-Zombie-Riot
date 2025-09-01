@@ -535,7 +535,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
+	{
 		i_CurrentEquippedPerk[client] = 0;
+		UpdatePerkName(client);
+	}
 		
 	i_HealthBeforeSuit[client] = 0;
 	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;

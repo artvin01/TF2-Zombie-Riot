@@ -536,6 +536,10 @@ static Action CheeseBubble_FirstCheck(Handle timer, int ref)
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	if(!IsValidEntity(weapon))
+	{
+		return Plugin_Stop;
+	}
 
 	float tickrate = 0.5 * Attributes_Get(weapon, 6, 1.0);
 

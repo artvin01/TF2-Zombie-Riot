@@ -152,7 +152,13 @@ public float Rogue_Encounter_RiftShop()
 	bool rare = Rogue_GetFloor() > 0;
 	bool easyMode = DifficultyLevel < 1;
 	bool found;
-
+	if(rare)
+	{
+		if(GetURandomInt() % 4)
+		{
+			rare = false;
+		}
+	}
 	if(!easyMode)
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -276,6 +282,7 @@ static void FinishShopVote(const Vote vote)
 		{
 			Rogue_StartThisBattle(5.0);
 			Rogue_SetBattleIngots(1);
+			Rogue_SetRequiredBattle(true);
 			Rogue_GiveNamedArtifact("Despair");
 
 			int entity = -1;
@@ -454,10 +461,16 @@ static void FinishRiftVote(const Vote vote)
 			EndRiftVote();
 		}
 		default:
-		{	
+		{
+			bool angry = Rogue_GetUmbralLevel() == 4;
+			int affinity = Rogue_GetUmbral();
+
 			Artifact artifact;
 			Rogue_GetNamedArtifact(vote.Config, artifact);
 			Rogue_RemoveNamedArtifact(vote.Config);
+
+			if(angry)	// They threw away something that made it worse
+				angry = affinity > Rogue_GetUmbral();
 
 			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
@@ -493,17 +506,28 @@ static void FinishRiftVote(const Vote vote)
 			
 			Rogue_Rift_GatewaySent();
 
-			ConsumeLimit--;
-
-			if(ConsumeLimit < 1)
+			if(angry)
 			{
-				EndRiftVote();
+				CPrintToChatAll("%t", "Umbrals take notice of your actions");
+
+				Rogue_StartThisBattle(5.0);
+				Rogue_SetBattleIngots(1);
+				Rogue_SetRequiredBattle(true);
 			}
 			else
 			{
-				CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
-				bool found = StartRiftVote(false);
-				Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
+				ConsumeLimit--;
+
+				if(ConsumeLimit < 1)
+				{
+					EndRiftVote();
+				}
+				else
+				{
+					CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
+					bool found = StartRiftVote(false);
+					Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
+				}
 			}
 		}
 	}
@@ -755,6 +779,12 @@ public float Rogue_Encounter_WarpedBattle()
 	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
+public float Rogue_VoidOutbreak_Battle()
+{
+	Rogue_GiveNamedArtifact("Void Outbreak", true);
+	Rogue_SetBattleIngots(1 + (Rogue_GetFloor() / 2));
+	return 0.0;
+}
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
@@ -777,9 +807,21 @@ public void Rogue_RiftWarp_Enemy(int entity)
 	}
 }
 
+public void Rogue_VoidOutbreak_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+		ApplyStatusEffect(entity, entity, "Void Afflicted", 9999.9);
+	else
+		ApplyStatusEffect(entity, entity, "Altered Functions", 9999.9);
+}
+
 public void Rogue_RiftWarp_StageEnd()
 {
 	Rogue_RemoveNamedArtifact("Rift of Warp");
+}
+public void Rogue_VoidOutbreak_StageEnd()
+{
+	Rogue_RemoveNamedArtifact("Void Outbreak");
 }
 
 public void Rogue_StoneFractured_Collect()
@@ -886,4 +928,33 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	if(GiveRes)
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			damage *= 0.85;
+}
+
+stock float Rogue_Rift_OptionalBonusBattle()
+{
+	ArrayList list = Rogue_CreateGenericVote(FinishOptionalBonusBattle, "A strange gateway opens up");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Stay and fight it");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Better leave now");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(15.0);
+	return 20.0;
+}
+
+static void FinishOptionalBonusBattle(const Vote vote2, int index)
+{
+	if(index == 0)
+	{
+		Vote vote;
+		strcopy(vote.Config, sizeof(vote.Config), "Strange Gateway");	// Name of stage to look up
+		vote.Level = 2;
+		Rogue_Vote_NextStage(vote);
+	}
 }

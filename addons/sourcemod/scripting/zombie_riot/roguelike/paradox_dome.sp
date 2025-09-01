@@ -41,7 +41,7 @@ static Handle g_hDomeTimerBleed = null;
 
 void Rogue_Dome_Mapstart()
 {
-	PrecacheModel("models/kirillian/zr_rogue_dome_1.mdl");
+	PrecacheModel("models/kirillian/zr_rogue_dome_2.mdl");
 	PrecacheSound(DOME_NEARBY_SOUND);
 	if(g_hDomeTimerBleed != null)
 		delete g_hDomeTimerBleed;
@@ -59,7 +59,7 @@ void Rogue_Dome_WaveStart(const float pos[3])
 		return;
 	
 	DispatchKeyValueVector(iDome, "origin", g_vecDomeCP);						//Set origin to CP
-	DispatchKeyValue(iDome, "model", "models/kirillian/zr_rogue_dome_1.mdl");	//Set model
+	DispatchKeyValue(iDome, "model", "models/kirillian/zr_rogue_dome_2.mdl");	//Set model
 	DispatchKeyValue(iDome, "disableshadows", "1");							//Disable shadow
 	SetEntPropFloat(iDome, Prop_Send, "m_flModelScale", SquareRoot(DomeRadiusGlobal() / DOME_PROP_RADIUS));	//Calculate model scale
 	
@@ -69,9 +69,14 @@ void Rogue_Dome_WaveStart(const float pos[3])
 
 	//NEVER CHANGE THIS
 	AlphaForwardData *= 200.0;
+
+
+	if(AlphaForwardData >= 254.0)
+		AlphaForwardData = 254.0;
+
 	SetEntityRenderMode(iDome, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(iDome, DOME_RED, DOME_GREEN, DOME_BLUE, RoundToNearest(AlphaForwardData));
-//	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
+	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
 	CBaseEntity(iDome).AddEFlags(EFL_IN_SKYBOX);
 	SDKHook(iDome, SDKHook_SetTransmit, Dome_Transmit);
 //	b_IsEntityAlwaysTranmitted[iDome] = true;
