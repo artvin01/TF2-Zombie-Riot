@@ -4087,14 +4087,14 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	if(ruina_wings)
 	{
-		if(GetRandomFloat(0.0, 1.0) < 0.01)
+		if(GetRandomFloat(0.0, 2.5) < 0.01)
 		{
 			switch(MagiaWingsType(client))
 			{
 				case WINGS_LANCELOT: 	Format(Text_Lines, sizeof(Text_Lines), "Pointy stick man. mr {gold}%N{snow} stole their wings.", client);
 				case WINGS_RULIANA: 	Format(Text_Lines, sizeof(Text_Lines), "Why. {gold}%N{snow}. Why do you have her wings?", client);
 				case WINGS_TWIRL: 		Format(Text_Lines, sizeof(Text_Lines), "Bruh {gold}%N{snow}. THOSE ARE MY WINGS", client);
-				case WINGS_HELIA: 		Format(Text_Lines, sizeof(Text_Lines), "Why, how, where, {gold}%N{snow} did you get Helia's Wings?", client);
+				//case WINGS_HELIA: 		Format(Text_Lines, sizeof(Text_Lines), "Why, how, where, {gold}%N{snow} did you get Helia's Wings?", client);
 				case WINGS_STELLA: 		Format(Text_Lines, sizeof(Text_Lines), "Stella? what, no, you're {gold}%N{snow}, what", client);
 				case WINGS_KARLAS: 		Format(Text_Lines, sizeof(Text_Lines), "Wait when did {crimson}Karlas{snow} start speak-. WAIT YOURE {gold}%N{snow}, A MERC, NOT HIM", client);
 			}
