@@ -1,8 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_MeleeHitSounds[][] =
-{
+static const char g_MeleeHitSounds[][] = {
 	"physics/body/body_medium_impact_hard1.wav",
 	"physics/body/body_medium_impact_hard2.wav",
 	"physics/body/body_medium_impact_hard3.wav",
@@ -11,10 +10,17 @@ static const char g_MeleeHitSounds[][] =
 	"physics/body/body_medium_impact_hard6.wav",
 };
 
-static const char g_MeleeAttackSounds[][] =
-{
+static const char g_MeleeAttackSounds[][] = {
 	"npc/vort/claw_swing1.wav",
 	"npc/vort/claw_swing2.wav",
+};
+
+static const char g_PickupSounds[][] = {
+	"items/gunpickup2.wav"
+};
+
+static const char g_ThrowSounds[][] =  {
+	"weapons/cleaver_throw.wav"
 };
 
 enum
@@ -23,12 +29,6 @@ enum
 	OMEGA_FOLLOWER_GRAB_STATE_HOLDING,
 	OMEGA_FOLLOWER_GRAB_STATE_TARGET_MISSING,
 	OMEGA_FOLLOWER_GRAB_STATE_JUST_THREW
-}
-
-enum
-{
-	OMEGA_FOLLOWER_THROW_TYPE_THROW,
-	OMEGA_FOLLOWER_THROW_TYPE_DROP
 }
 
 #define OMEGA_FOLLOWER_MAX_RANGE 300.0
@@ -41,8 +41,6 @@ void OmegaFollower_Setup()
 	strcopy(data.Name, sizeof(data.Name), "Omega");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_omega_follower");
 	strcopy(data.Icon, sizeof(data.Icon), "");
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -54,7 +52,10 @@ void OmegaFollower_Setup()
 
 static void ClotPrecache()
 {
-	
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_PickupSounds)); i++) { PrecacheSound(g_PickupSounds[i]); }
+	for (int i = 0; i < (sizeof(g_ThrowSounds)); i++) { PrecacheSound(g_ThrowSounds[i]); }
 }
 
 stock int OmegaFollower_ID()
@@ -90,6 +91,14 @@ methodmap OmegaFollower < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.3);
+	}
+	public void PlayPickupSound()
+	{
+		EmitSoundToAll(g_PickupSounds[GetRandomInt(0, sizeof(g_PickupSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayThrowSound()
+	{
+		EmitSoundToAll(g_ThrowSounds[GetRandomInt(0, sizeof(g_ThrowSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void SpeechTalk(int client)
 	{
@@ -346,8 +355,6 @@ static void ClotThink(int iNPC)
 			WorldSpaceCenter(npc.index, vecPos);
 			vecPos[2] -= 30.0;
 			
-			spawnRing_Vectors(vecPos, OMEGA_FOLLOWER_MAX_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 2.0, 2.0, 2.0, 2);
-			
 			// Let's find a medium-range enemy to throw our guy into, or any visible enemy within the max range if our criteria doesn't fit
 			int candidate = GetClosestTarget(npc.index, true, .CanSee = true, .ExtraValidityFunction = OmegaFollower_ClosestValidTarget);
 			if (candidate < 0)
@@ -360,7 +367,6 @@ static void ClotThink(int iNPC)
 			WorldSpaceCenter(candidate, vecTargetPos);
 			npc.FaceTowards(vecTargetPos, 20000.0);
 			
-			spawnRing_Vectors(vecTargetPos, 64.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, 255, 1, 0.11, 2.0, 2.0, 2);
 			npc.m_flGetClosestTargetTime = gameTime + 0.3;
 			
 			f3_NpcSavePos[npc.index] = vecTargetPos;
@@ -374,6 +380,12 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flNextGrab = gameTime + 5.0;
 				npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_NONE;
+				
+				int activity = npc.LookupActivity("ACT_BRAWLER_RUN");
+				if (activity > 0)
+					npc.StartActivity(activity);
+				
+				npc.SetPlaybackRate(1.0);
 				
 				npc.StartPathing();
 				npc.m_bisWalking = true;
@@ -558,6 +570,16 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	
 	npc.m_flSpeed = 0.0;
 	
+	//npc.SetActivity("ACT_BLADEDANCE_BUFF");
+	int activity = npc.LookupActivity("ACT_BLADEDANCE_BUFF");
+	if (activity > 0)
+		npc.StartActivity(activity);
+	
+	npc.SetCycle(0.6);
+	npc.SetPlaybackRate(0.0);
+	
+	npc.PlayPickupSound();
+	
 	npc.m_flStandStill = GetGameTime(npc.index) + 2.5;
 	return true;
 }
@@ -614,10 +636,7 @@ static void OmegaFollower_ThrowTarget(OmegaFollower npc)
 			weight = 4;
 		
 		ScaleVector(vecForce, 1.0 - ((weight - 1) * 0.33));
-		
 		AddVectors(vecPos, vecForce, vecTargetPos);
-		spawnRing_Vectors(vecTargetPos, 64.0 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 2.0, 2.0, 2.0, 2);
-		
 		TeleportEntity(target, vecPos);
 		
 		npc.FaceTowards(vecTargetPos, 20000.0);
@@ -630,6 +649,9 @@ static void OmegaFollower_ThrowTarget(OmegaFollower npc)
 		i_TankAntiStuck[target] = EntIndexToEntRef(npc.index);
 		b_DoNotUnStuck[target] = false;
 		b_NoGravity[target] = false;
+		
+		npc.AddGesture("ACT_MILITIA_ATTACK", .SetGestureSpeed = 2.0);
+		npc.PlayThrowSound();
 	}
 	
 	i_GrabbedThis[npc.index] = INVALID_ENT_REFERENCE;
@@ -649,7 +671,18 @@ static void OmegaFollower_AdjustGrabbedTarget(int iNPC)
 	float flAng[3]; // original
 
 	npc.GetAttachment("weapon_bone_2", flPos, flAng);
-	flPos[2] -= 30.0;
+	
+	float vecPos[3], vecMaxs[3];
+	GetEntPropVector(entity, Prop_Send, "m_vecMaxs", vecMaxs);
+	
+	float offset = vecMaxs[2] * 0.5;
+	flPos[2] -= offset;
+	
+	GetAbsOrigin(iNPC, vecPos);
+	
+	// If the expected origin of the target is lower than ours, they're either too big or we're too small! Adjust
+	if (flPos[2] - offset < vecPos[2])
+		flPos[2] = vecPos[2] + 20.0;
 	
 	TeleportEntity(entity, flPos, NULL_VECTOR, {0.0,0.0,0.0});
 }
@@ -690,34 +723,23 @@ static Action contact_throw_omega_entity(int client)
 						int thrower = i_TankThrewThis[client];
 						if (!IsIn_HitDetectionCooldown(client,entity,TankThrowLogic) && entity != client && thrower != entity && IsValidEnemy(thrower, entity))
 						{		
-							float damage = ReturnEntityMaxHealth(client) * 0.1;
-							if(damage > 25000.0)
-							{
-								damage = 25000.0;
-							}
+							float damageToEntityHit = ReturnEntityMaxHealth(entity) * 0.1;
+							float damageToEntityThrown = ReturnEntityMaxHealth(client) * 0.05;
 							
-							if(ShouldNpcDealBonusDamage(thrower))
-							{
-								damage *= 4.0;
-							}
+							if (damageToEntityHit > 25000.0)
+								damageToEntityHit = 25000.0;
 							
-							SDKHooks_TakeDamage(entity, thrower, thrower, damage, DMG_GENERIC, -1, NULL_VECTOR, targPos);
+							if (damageToEntityThrown > 25000.0)
+								damageToEntityThrown = 25000.0;
+							
+							if (ShouldNpcDealBonusDamage(entity))
+								damageToEntityHit *= 4.0;
+							
+							SDKHooks_TakeDamage(entity, thrower, thrower, damageToEntityHit, DMG_GENERIC, -1, NULL_VECTOR, targPos);
+							SDKHooks_TakeDamage(client, thrower, thrower, damageToEntityThrown, DMG_GENERIC, -1, NULL_VECTOR, targPos);
+							
 							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
 							Set_HitDetectionCooldown(client,entity,FAR_FUTURE,TankThrowLogic);
-							if(entity <= MaxClients)
-							{
-								float newVel[3];
-								
-								newVel[0] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[0]") * 2.0;
-								newVel[1] = GetEntPropFloat(entity, Prop_Send, "m_vecVelocity[1]") * 2.0;
-								newVel[2] = 500.0;
-												
-								for (int i = 0; i < 3; i++)
-								{
-									flVel[i] += newVel[i];
-								}				
-								TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, flVel); 
-							}
 						}
 					}
 				}
