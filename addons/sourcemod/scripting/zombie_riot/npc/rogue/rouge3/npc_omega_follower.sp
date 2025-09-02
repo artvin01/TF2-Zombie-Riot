@@ -32,6 +32,7 @@ enum
 }
 
 #define OMEGA_FOLLOWER_MAX_RANGE 300.0
+#define OMEGA_FOLLOWER_HOLD_TIME 1.5
 
 static int NPCId;
 
@@ -289,7 +290,7 @@ methodmap OmegaFollower < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
-		npc.m_flNextGrab = GetGameTime(npc.index) + 2.5;
+		npc.m_flNextGrab = GetGameTime(npc.index) + 10.0;
 		npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_NONE;
 		
 		npc.m_flSpeed = 310.0;
@@ -355,11 +356,7 @@ static void ClotThink(int iNPC)
 			WorldSpaceCenter(npc.index, vecPos);
 			vecPos[2] -= 30.0;
 			
-			// Let's find a medium-range enemy to throw our guy into, or any visible enemy within the max range if our criteria doesn't fit
 			int candidate = GetClosestTarget(npc.index, true, .CanSee = true, .ExtraValidityFunction = OmegaFollower_ClosestValidTarget);
-			if (candidate < 0)
-				 candidate = GetClosestTarget(npc.index, true, .CanSee = true, .ExtraValidityFunction = OmegaFollower_ClosestValidTarget);
-			
 			if (candidate < 0)
 				return;
 			
@@ -378,7 +375,7 @@ static void ClotThink(int iNPC)
 		{
 			if (npc.m_flNextGrab < gameTime)
 			{
-				npc.m_flNextGrab = gameTime + 5.0;
+				npc.m_flNextGrab = gameTime + 35.0;
 				npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_NONE;
 				
 				int activity = npc.LookupActivity("ACT_BRAWLER_RUN");
@@ -558,12 +555,12 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	i_GrabbedThis[npc.index] = EntIndexToEntRef(target);
 	b_DoNotUnStuck[target] = true;
 	npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_HOLDING;
-	npc.m_flNextGrab = GetGameTime(npc.index) + 2.0;
-	f_TankGrabbedStandStill[target] = GetGameTime(npc.index) + 2.0;
-	f_NoUnstuckVariousReasons[target] = GetGameTime(npc.index) + 2.0;
+	npc.m_flNextGrab = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
+	f_TankGrabbedStandStill[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
+	f_NoUnstuckVariousReasons[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
 	b_NoGravity[target] = true;
-	FreezeNpcInTime(target, 2.5, true);
-	ApplyStatusEffect(target, target, "Intangible", 2.5);
+	FreezeNpcInTime(target, OMEGA_FOLLOWER_HOLD_TIME + 0.5, true);
+	ApplyStatusEffect(target, target, "Intangible", OMEGA_FOLLOWER_HOLD_TIME + 0.5);
 	
 	npc.StopPathing();
 	npc.m_bisWalking = false;
@@ -580,7 +577,7 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	
 	npc.PlayPickupSound();
 	
-	npc.m_flStandStill = GetGameTime(npc.index) + 2.5;
+	npc.m_flStandStill = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME + 0.5;
 	return true;
 }
 
