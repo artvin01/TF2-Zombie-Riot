@@ -540,7 +540,7 @@ static void ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	
 	// Failsafe in case this guy somehow gets deleted while holding something
-	OmegaFollower_ThrowTarget(entity);
+//	OmegaFollower_ThrowTarget(npc);
 }
 
 static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
