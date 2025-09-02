@@ -777,6 +777,7 @@ float f_ClientDoDamageHud[MAXPLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXPLAYERS][2];
 float f3_NpcSavePos[MAXENTITIES][3];  
 float f_DelayComputingOfPath[MAXENTITIES];
+#define EXTRA_RAID_EXPLOSIVE_DAMAGE 1.3
 
 enum
 {

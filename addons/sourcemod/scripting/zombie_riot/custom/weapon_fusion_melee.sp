@@ -1052,8 +1052,8 @@ public void Siccerino_ability_m2(int client, int weapon, bool crit, int slot)
 		Ability_Apply_Cooldown(client, slot, 30.0); //Semi long cooldown, this is a strong buff.
 
 		EmitSoundToAll(SICCERINO_FAST_ATTACK_SOUND, client, SNDCHAN_STATIC, 90, _, 0.6);
-		ApplyTempAttrib(weapon, 1, 0.25, 5.0); //way higher damage.
-		ApplyTempAttrib(weapon, 6, 0.15, 5.0); //slower attack speed
+		ApplyTempAttrib(weapon, 1, 0.35, 5.0);
+		ApplyTempAttrib(weapon, 6, 0.15, 5.0);
 		i_MeleeAttackFrameDelay[weapon] = 0;
 		CreateTimer(5.0, Siccerino_revert_toNormal, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 	}
