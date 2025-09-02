@@ -1086,6 +1086,7 @@ void NPC_ConfigSetup()
 	ReilaBeacon_OnMapStart_NPC();
 	ReilaFollower_Setup();
 	Umbral_Automaton_OnMapStart_NPC();
+	OmegaFollower_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -2368,3 +2369,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_boss_reila_beacon.sp"
 #include "npc/rogue/rouge3/npc_reila_follower.sp"
 #include "npc/rogue/rouge3/npc_umbral_automaton.sp"
+#include "npc/rogue/rouge3/npc_omega_follower.sp"
