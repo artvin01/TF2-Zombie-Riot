@@ -1082,7 +1082,7 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 }
 
 
-#define SICCERINO_BONUS_DAMAGE_WALDCH 0.06
+#define SICCERINO_BONUS_DAMAGE_WALDCH 0.075
 #define SICCERINO_BONUS_DAMAGE_MAX_WALDCH 2.2
 #define SICCERINO_BONUS_DAMAGE_MAX_RAID_WALDCH 1.65
 
