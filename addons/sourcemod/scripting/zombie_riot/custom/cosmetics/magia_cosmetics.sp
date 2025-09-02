@@ -37,7 +37,7 @@ int MagiaWingsType(int client)
 		}
 		case WEAPON_GRAVATON_WAND, WEAPON_REIUJI_WAND: type = WINGS_RULIANA;
 		case WEAPON_ION_BEAM_PULSE: type = WINGS_STELLA;
-		case WEAPON_KRITZKRIEG: type = WINGS_HELIA;
+		//case WEAPON_KRITZKRIEG: type = WINGS_HELIA;
 	}
 	return type;
 
