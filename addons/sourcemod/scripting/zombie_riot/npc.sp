@@ -1067,6 +1067,7 @@ void NPC_ConfigSetup()
 	Vincent_OnMapStart_NPC();
 	Vincent_Beacon_OnMapStart_NPC();
 
+	//rogue 3
 	Umbral_Ltzens_OnMapStart_NPC();
 	Umbral_Refract_OnMapStart_NPC();
 	Umbral_Koulm_OnMapStart_NPC();
@@ -1087,6 +1088,7 @@ void NPC_ConfigSetup()
 	ReilaFollower_Setup();
 	Umbral_Automaton_OnMapStart_NPC();
 	OmegaFollower_Setup();
+	Shadow_FloweringDarkness_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -2370,3 +2372,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_reila_follower.sp"
 #include "npc/rogue/rouge3/npc_umbral_automaton.sp"
 #include "npc/rogue/rouge3/npc_omega_follower.sp"
+#include "npc/rogue/rouge3/npc_shadow_flowering_darkness.sp"
