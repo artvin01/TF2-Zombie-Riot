@@ -80,7 +80,7 @@ public void Rogue_StoneItem3_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -125,7 +125,7 @@ public void Rogue_StoneCheerful_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -151,7 +151,7 @@ public void Rogue_StoneNemesis_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}

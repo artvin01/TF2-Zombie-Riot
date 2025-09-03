@@ -1084,16 +1084,15 @@ void Rogue_BattleVictory()
 			{
 				Artifact artifact;
 
-				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
+				if(CurrentFloor < 5 && CurrentCount < 6 && !Rogue_Rift_NoStones())
 				{
-					
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
 					{
 						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
 					}
-					else if((GetURandomInt() % 4) == 0)
+					else if((GetURandomInt() % 4) == 0 && CurrentCount < 5)
 					{
 						time = Rogue_Rift_OptionalBonusBattle();
 					}
