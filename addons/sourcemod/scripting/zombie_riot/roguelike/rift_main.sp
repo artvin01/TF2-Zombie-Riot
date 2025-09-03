@@ -470,7 +470,7 @@ static void FinishRiftVote(const Vote vote)
 			Rogue_RemoveNamedArtifact(vote.Config);
 
 			if(angry)	// They threw away something that made it worse
-				angry = affinity > Rogue_GetUmbral();
+				angry = !affinity || (affinity > Rogue_GetUmbral());
 
 			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
@@ -855,10 +855,24 @@ public float Rogue_Encounter_Rift2()
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "We Are Fractured Desc 1");
+	switch(Rogue_GetFloor())
+	{
+		case 0, 1, 2:	// Floor 3
+		{
+			vote.Locked = true;
+			Format(vote.Append, sizeof(vote.Append), " (Too Difficult This Chapter)");
+		}
+		case 3:	// Floor 4
+		{
+			Format(vote.Append, sizeof(vote.Append), " (Hard Fight)");
+		}
+	}
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Locked = false;
+	vote.Append[0] = 0;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
@@ -877,6 +891,17 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 		}
 		case 1:
 		{
+			if(!Rogue_HasNamedArtifact("Fractured") && Rogue_GetFloor() < 3)
+			{
+				Rogue_GiveNamedArtifact("Fractured");
+			}
+			else
+			{
+				Artifact artifact;
+				if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+					Rogue_GiveNamedArtifact(artifact.Name);
+			}
+			
 			PrintToChatAll("%t", "We Are Fractured Lore 2");
 		}
 	}
