@@ -470,7 +470,7 @@ static void FinishRiftVote(const Vote vote)
 			Rogue_RemoveNamedArtifact(vote.Config);
 
 			if(angry)	// They threw away something that made it worse
-				angry = affinity > Rogue_GetUmbral();
+				angry = !affinity || (affinity > Rogue_GetUmbral());
 
 			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
