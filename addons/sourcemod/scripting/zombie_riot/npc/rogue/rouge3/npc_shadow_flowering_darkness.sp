@@ -51,7 +51,7 @@ static const char g_HealSound[][] = {
 };
 
 
-#define SHADOW_BUFF_RANGE 300.0
+#define SHADOW_BUFF_RANGE 200.0
 static int NPCId;
 
 public void Shadow_FloweringDarkness_OnMapStart_NPC()
@@ -73,7 +73,7 @@ public void Shadow_FloweringDarkness_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -263,7 +263,8 @@ methodmap Shadow_FloweringDarkness < CClotBody
 		bool raidbattle = StrContains(data, "raidbattle") != -1;
 		if(raidbattle)
 		{
-			RaidModeScaling = 1.5;
+			RaidModeScaling = 2.5;
+			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 
@@ -298,7 +299,18 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
-
+	
+	if(npc.m_flAuraBuffAllies)
+	{
+		if(npc.m_flAuraBuffAllies < gameTime)
+		{
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			Shadow_FloweringDarkness_ApplyBuffInLocation(VecSelfNpcabs, GetTeam(npc.index), npc.index);
+			float Range = SHADOW_BUFF_RANGE;
+			spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, /*duration*/ 0.35, 10.0, 1.0, 1);	
+			npc.m_flAuraBuffAllies = gameTime + 0.3;
+		}
+	}
 	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
@@ -327,18 +339,6 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 				
 		}
 		return;
-	}
-	if(npc.m_flAuraBuffAllies)
-	{
-		
-		if(npc.m_flAuraBuffAllies < gameTime)
-		{
-			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-			Shadow_FloweringDarkness_ApplyBuffInLocation(VecSelfNpcabs, GetTeam(npc.index), npc.index);
-			float Range = SHADOW_BUFF_RANGE;
-			spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 50, 200, 1, /*duration*/ 0.35, 3.0, 5.0, 1);	
-			npc.m_flAuraBuffAllies = gameTime + 0.3;
-		}
 	}
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
@@ -400,9 +400,13 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 		if(npc.m_flAirPushHappening < gameTime)
 		{
 			npc.m_flAirPushHappening = 0.0;
+			if(npc.m_flCloneSuicide)
+				npc.m_flDoAnimClone = GetGameTime() + 1.0;
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
+				
+
 				npc.PlayRangedAttackSecondarySound();
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				
