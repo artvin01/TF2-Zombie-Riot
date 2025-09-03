@@ -190,9 +190,13 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 	{
 		// Reduce damage taken as new players in extreme difficulties
-		if(Level[victim] < 10 && Database_IsCached(victim))
+		if(Level[victim] >= 0 && Level[victim] <= 10 && Database_IsCached(victim))
 		{
 			int rank = Waves_GetLevel();
+			if(rank < 5)
+				rank = 5;
+			if(rank > 100)
+				rank = 100;
 			if(rank > Level[victim])
 			{
 				// Up to 50 level difference for 50% res
