@@ -530,38 +530,40 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 	position[1] = startPosition[1];
 	position[2] = startPosition[2] + 3000.0;	
 	
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.15, 25.0, 25.0, 0, NORMAL_ZOMBIE_VOLUME, color, 3 );
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.25, 25.0, 25.0, 0, NORMAL_ZOMBIE_VOLUME, color, 3 );
 	TE_SendToAll();
 	position[2] -= 1490.0;
-	TE_SetupGlowSprite(startPosition, gGlow1, NORMAL_ZOMBIE_VOLUME, NORMAL_ZOMBIE_VOLUME, 255);
+	TE_SetupGlowSprite(startPosition, gGlow1, 0.25, NORMAL_ZOMBIE_VOLUME, 255);
 	TE_SendToAll();
 }
 
-	public void FatherGrigori_IonAttack(Handle &data)
+public void FatherGrigori_IonAttack(Handle &data)
+{
+	float startPosition[3];
+	float position[3];
+	startPosition[0] = ReadPackFloat(data);
+	startPosition[1] = ReadPackFloat(data);
+	startPosition[2] = ReadPackFloat(data);
+	float Iondistance = ReadPackCell(data);
+	float nphi = ReadPackFloat(data);
+	float Ionrange = ReadPackFloat(data);
+	float Iondamage = ReadPackFloat(data);
+	int client = EntRefToEntIndex(ReadPackCell(data));
+	
+	if(!IsValidEntity(client) || b_NpcHasDied[client])
 	{
-		float startPosition[3];
-		float position[3];
-		startPosition[0] = ReadPackFloat(data);
-		startPosition[1] = ReadPackFloat(data);
-		startPosition[2] = ReadPackFloat(data);
-		float Iondistance = ReadPackCell(data);
-		float nphi = ReadPackFloat(data);
-		float Ionrange = ReadPackFloat(data);
-		float Iondamage = ReadPackFloat(data);
-		int client = EntRefToEntIndex(ReadPackCell(data));
+		delete data;
+		return;
+	}
+	
+	spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.21, 12.0, 4.0, 3);	
+	if (Iondistance > 0)
+	{
+		EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 		
-		if(!IsValidEntity(client) || b_NpcHasDied[client])
+		// Stage 1
+		if(b_thisNpcIsABoss[client])
 		{
-			delete data;
-			return;
-		}
-		
-		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 150, 255, 255, 1, 0.2, 12.0, 4.0, 3);	
-		if (Iondistance > 0)
-		{
-			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-			
-			// Stage 1
 			float s=Sine(nphi/360*6.28)*Iondistance;
 			float c=Cosine(nphi/360*6.28)*Iondistance;
 			
@@ -626,85 +628,85 @@ public void FatherGrigori_DrawIonBeam(float startPosition[3], const int color[4]
 			position[0] -= s;
 			position[1] -= c;
 		//	FatherGrigori_DrawIonBeam(position, {0, 150, 255, 255});
-	
-			if (nphi >= 360)
-				nphi = 0.0;
-			else
-				nphi += 5.0;
 		}
-		Iondistance -= 5;
-
-		delete data;
-		
-		Handle nData = CreateDataPack();
-		WritePackFloat(nData, startPosition[0]);
-		WritePackFloat(nData, startPosition[1]);
-		WritePackFloat(nData, startPosition[2]);
-		WritePackCell(nData, Iondistance);
-		WritePackFloat(nData, nphi);
-		WritePackFloat(nData, Ionrange);
-		WritePackFloat(nData, Iondamage);
-		WritePackCell(nData, EntIndexToEntRef(client));
-		ResetPack(nData);
-		
-		if (Iondistance > -50)
-		CreateTimer(0.1, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
+		if (nphi >= 360)
+			nphi = 0.0;
 		else
+			nphi += 10.0;
+	}
+	Iondistance -= 10;
+
+	delete data;
+	
+	Handle nData = CreateDataPack();
+	WritePackFloat(nData, startPosition[0]);
+	WritePackFloat(nData, startPosition[1]);
+	WritePackFloat(nData, startPosition[2]);
+	WritePackCell(nData, Iondistance);
+	WritePackFloat(nData, nphi);
+	WritePackFloat(nData, Ionrange);
+	WritePackFloat(nData, Iondamage);
+	WritePackCell(nData, EntIndexToEntRef(client));
+	ResetPack(nData);
+	
+	if (Iondistance > -50)
+		CreateTimer(0.2, FatherGrigori_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
+	else
+	{
+		startPosition[2] += 25.0;
+		makeexplosion(client, startPosition, 150, 175);
+		startPosition[2] -= 25.0;
+		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
+		TE_SendToAll();
+		spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
+		position[0] = startPosition[0];
+		position[1] = startPosition[1];
+		position[2] += startPosition[2] + 900.0;
+		startPosition[2] += -200;
+		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 30.0, 30.0, 0, NORMAL_ZOMBIE_VOLUME, {255, 255, 255, 255}, 3);
+		TE_SendToAll();
+		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {200, 255, 255, 255}, 3);
+		TE_SendToAll();
+	//	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
+	//	TE_SendToAll();
+		TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {0, 255, 255, 255}, 3);
+		TE_SendToAll();
+
+		position[2] = startPosition[2] + 50.0;
+		//new Float:fDirection[3] = {-90.0,0.0,0.0};
+		//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
+
+		//env_shake(startPosition, 120.0, 10000.0, 15.0, 250.0);
+		
+		// Sound
+		EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
+
+		// Blend
+		//sendfademsg(0, 10, 200, FFADE_OUT, 255, 255, 255, 150);
+		
+		// Knockback
+/*		float vReturn[3];
+		float vClientPosition[3];
+		float dist;
+		for (int i = 1; i <= MaxClients; i++)
 		{
-			startPosition[2] += 25.0;
-			makeexplosion(client, startPosition, 150, 175);
-			startPosition[2] -= 25.0;
-			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
-			TE_SendToAll();
-			spawnRing_Vectors(startPosition, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.5, 20.0, 10.0, 3, Ionrange * 2.0);	
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[2] += startPosition[2] + 900.0;
-			startPosition[2] += -200;
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, NORMAL_ZOMBIE_VOLUME, {255, 255, 255, 255}, 3);
-			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {200, 255, 255, 255}, 3);
-			TE_SendToAll();
-		//	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
-		//	TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {0, 255, 255, 255}, 3);
-			TE_SendToAll();
-	
-			position[2] = startPosition[2] + 50.0;
-			//new Float:fDirection[3] = {-90.0,0.0,0.0};
-			//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
-	
-			//env_shake(startPosition, 120.0, 10000.0, 15.0, 250.0);
-			
-			// Sound
-			EmitSoundToAll("ambient/explosions/explode_9.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
-	
-			// Blend
-			//sendfademsg(0, 10, 200, FFADE_OUT, 255, 255, 255, 150);
-			
-			// Knockback
-	/*		float vReturn[3];
-			float vClientPosition[3];
-			float dist;
-			for (int i = 1; i <= MaxClients; i++)
-			{
-				if (IsClientConnected(i) && IsClientInGame(i) && IsPlayerAlive(i))
-				{	
-					GetClientEyePosition(i, vClientPosition);
-	
-					dist = GetVectorDistance(vClientPosition, position, false);
-					if (dist < Ionrange)
-					{
-						MakeVectorFromPoints(position, vClientPosition, vReturn);
-						NormalizeVector(vReturn, vReturn);
-						ScaleVector(vReturn, 10000.0 - dist*10);
-	
-						TeleportEntity(i, NULL_VECTOR, NULL_VECTOR, vReturn);
-					}
+			if (IsClientConnected(i) && IsClientInGame(i) && IsPlayerAlive(i))
+			{	
+				GetClientEyePosition(i, vClientPosition);
+
+				dist = GetVectorDistance(vClientPosition, position, false);
+				if (dist < Ionrange)
+				{
+					MakeVectorFromPoints(position, vClientPosition, vReturn);
+					NormalizeVector(vReturn, vReturn);
+					ScaleVector(vReturn, 10000.0 - dist*10);
+
+					TeleportEntity(i, NULL_VECTOR, NULL_VECTOR, vReturn);
 				}
 			}
-*/
 		}
+*/
+	}
 }
 
 public void FatherGrigori_IOC_Invoke(int ref, int enemy)
