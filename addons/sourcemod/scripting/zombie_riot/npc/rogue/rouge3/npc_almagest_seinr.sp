@@ -321,7 +321,7 @@ void AlmagestSeinrSelfDefense(AlmagestSeinr npc, float gameTime, int target, flo
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 5.5;
 
-					Elemental_AddWarpedDamage(target, npc.index, 400, true, true, true);
+					Elemental_AddWarpedDamage(target, npc.index, 800, true, true, true);
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

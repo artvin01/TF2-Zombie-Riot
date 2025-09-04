@@ -2177,6 +2177,10 @@
 	{
 		"en"	"Ignore her, take whats around."
 	}
+	"Astra Title Decline Desc"
+	{
+		"en"	"{green}Gain cash and Umbral Affinity."
+	}
 	"Broken Crest Title"
 	{
 		"en"	"You notice a broken crest on the floor, probably left behind after Lelouch perished."
@@ -2269,7 +2273,7 @@
 	{
 		"en"	"Do not touch"
 	}
-	"Incorruptable Tree Decline"
+	"Incorruptable Tree Decline Desc"
 	{
 		"en"	"{green}Gain Cash and gain Umbral Affinity."
 	}
@@ -2277,7 +2281,7 @@
 	{
 		"en"	"You feel its warmth, its strength..."
 	}
-	"Incorruptable Tree Decline Desc"
+	"Incorruptable Tree Decline Conlusion"
 	{
 		"en"	"You decide not to touch it, you see umbrals go to the tree to tend to it... they seemingly thank you?"
 	}

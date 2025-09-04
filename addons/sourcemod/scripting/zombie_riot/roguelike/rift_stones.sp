@@ -206,76 +206,22 @@ public void Rogue_Stone3_StageEnd()
 
 public void Rogue_StoneOutblood_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			npc.m_fGunBonusReload *= 0.935;
-			npc.m_fGunBonusFireRate *= 0.935;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusFireRate /= 0.935;
-			}
-		}
-	}
+	RogueHelp_BodyAPSD(entity, map, 1.07);
 }
 
 public void Rogue_StoneOutblood_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, 0.935);
-	
-	if(Attributes_Has(entity, 97))
-		Attributes_SetMulti(entity, 97, 0.935);
-	
-	if(Attributes_Has(entity, 733))
-		Attributes_SetMulti(entity, 733, 0.935);
-	
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, 1.07);
+	RogueHelp_WeaponAPSD(entity, 1.07);
 }
 
 public void Rogue_StoneFlames_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			npc.m_fGunBonusReload *= 0.875;
-			npc.m_fGunBonusFireRate *= 0.875;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusFireRate /= 0.875;
-			}
-		}
-	}
+	RogueHelp_BodyAPSD(entity, map, 1.14);
 }
 
 public void Rogue_StoneFlames_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, 0.875);
-	
-	if(Attributes_Has(entity, 97))
-		Attributes_SetMulti(entity, 97, 0.875);
-	
-	if(Attributes_Has(entity, 733))
-		Attributes_SetMulti(entity, 733, 0.875);
-	
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, 1.14);
+	RogueHelp_WeaponAPSD(entity, 1.14);
 }
 
 public void Rogue_StoneWitchcraft_Enemy(int entity)
@@ -292,178 +238,42 @@ public void Rogue_StoneWitchcraft_StageEnd()
 
 public void Rogue_StoneConsume_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +7.5% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 1.075);
-
-		// +7.5% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.075);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +7.5% max health
-			int health = RoundToCeil(ReturnEntityMaxHealth(npc.index) * 1.075);
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +7.5% max health
-				int health = RoundToCeil(ReturnEntityMaxHealth(npc.index) * 1.075);
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
+	RogueHelp_BodyHealth(entity, map, 1.075);
 }
 
 public void Rogue_StoneReclaim_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +15% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 1.15);
-
-		// +15% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.15);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +15% max health
-			int health = RoundToCeil(ReturnEntityMaxHealth(npc.index) * 1.15);
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +15% max health
-				int health = RoundToCeil(ReturnEntityMaxHealth(npc.index) * 1.15);
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
+	RogueHelp_BodyHealth(entity, map, 1.15);
 }
 
 public void Rogue_StonePillage_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			npc.m_fGunBonusDamage *= 1.05;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusDamageBonus *= 1.05;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.05);
 }
 
 public void Rogue_StonePillage_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.05);
-
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, 1.05);
-	
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.05);
+	RogueHelp_WeaponDamage(entity, 1.05);
 }
 
 public void Rogue_StoneInvasion_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			npc.m_fGunBonusDamage *= 1.1;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusDamageBonus *= 1.1;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.1);
 }
 
 public void Rogue_StoneInvasion_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.1);
-
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, 1.1);
-	
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.1);
+	RogueHelp_WeaponDamage(entity, 1.1);
 }
 
 public void Rogue_StoneRise_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-			npc.m_fGunBonusDamage *= 1.15;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				npc.BonusDamageBonus *= 1.15;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.15);
 }
 
 public void Rogue_StoneRise_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.15);
-
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, 1.15);
-	
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.15);
+	RogueHelp_WeaponDamage(entity, 1.15);
 }
 
 public void Rogue_StoneLost_Collect()

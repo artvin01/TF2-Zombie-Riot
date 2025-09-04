@@ -254,7 +254,7 @@ void ApertureDevastatorSelfDefense(ApertureDevastator npc, float gameTime, int t
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					float damage = 50.0, speed = 600.0;
+					float damage = 35.0, speed = 600.0;
 					npc.m_iAttacksTillReload--;
 					if(npc.m_iAttacksTillReload <= 0)
 					{

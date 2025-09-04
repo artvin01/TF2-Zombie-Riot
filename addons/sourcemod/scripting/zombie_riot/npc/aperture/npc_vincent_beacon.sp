@@ -20,7 +20,7 @@ static const char g_GiveArmor[][] = {
 	"physics/metal/metal_box_strain1.wav",
 };
 
-int NPCID;
+static int NPCID;
 void Vincent_Beacon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }

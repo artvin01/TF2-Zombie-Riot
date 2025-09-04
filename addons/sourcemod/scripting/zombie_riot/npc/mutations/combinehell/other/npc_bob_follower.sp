@@ -81,7 +81,7 @@ methodmap BobFollower < CClotBody
 	
 	public BobFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		BobFollower npc = view_as<BobFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
+		BobFollower npc = view_as<BobFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN_BOB");

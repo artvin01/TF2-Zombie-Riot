@@ -930,7 +930,7 @@
 	}
 	"Kunai Pap 4"
 	{
-		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy."
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy.\nDeals 35％ less dmg against raids, and its explosive has no bonus dmg against raids."
 	}
 	
 	"Fractured Ark Desc"
@@ -4097,23 +4097,27 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +35％ and attackspeed by +10％.\nGrants +25 HP on kill, +15％ overall resistance and +50％ projectile speed.\nReduces building cost by 25％ and increases heal rate by +25％."
+		"en" "+20％ Kit DMG | +5％ Kit Atkspd | +5 Kit HP on kill | +5％ Kit Overall Resist\n+25％ Repair Rate"
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +45％ and reload speed by +10％\nGrants +35％ max mana, increases repair rate by +50％ and building HP by +10％.\nReduces building cost by 25％ and increases heal rate by +35％."
+		"en" "+30％ Kit DMG | +10％ Kit Atkspd | +5 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +35％ Repair Rate | +5％ Buidling HP\n20％ less building cost."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +65％ and reload + attackspeed by +10％\nIncreases repair rate by +100％, building HP by +35％ and clipsize by +50％.\nReduces building cost by 25％ and increases heal rate by +35％."
+		"en" "+40％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +50％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+5％ Projectile Speed | 20％ less building cost."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +75％ and reload + attackspeed by +10％\n+35 HP on kill | +20％ Overall Resist | +25％ Max Mana | +100％ Repair Rate | +50％ Proj. Speed | +35％ Heal Rate"
+		"en" "+50％ Kit DMG | +15％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +100％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+10％ Projectile Speed | +5％ Projectile Range | 20％ less building cost."
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +100％ and reload + attackspeed by +10％\n+50 HP on kill | +25％ Overall Resistance | +25％ Max Mana | +125％ Repair Rate | +50％ Clip size"
+		"en" "+75％ Kit DMG | +15％ Kit Atkspd | +15 Kit HP on kill | +15％ Kit Overall Resist\n+10％ Max mana | +100％ Repair Rate | +10％ Buidling HP | +35％ Clip Size\n+15％ Projectile Speed | +10％ Projectile Range | 20％ less building cost."
+	}
+	"Kit Modernizer VI Desc"
+	{
+		"en" "+100％ Kit DMG | +20％ Kit Atkspd | +20 Kit HP on kill | +20％ Kit Overall Resist\n+10％ Max mana | +200％ Repair Rate | +10％ Buidling HP | +50％ Clip Size"
 	}
 	"Unit Reformator I Desc"
 	{
@@ -4133,7 +4137,7 @@
 	}
 	"Unit Reformator V Desc"
 	{
-		"en" "TRIPLES barrack unit and doubles barrack unit damage."
+		"en" "TRIPLES barrack unit HP and doubles barrack unit damage."
 	}
 	"Reinforce Desc"
 	{

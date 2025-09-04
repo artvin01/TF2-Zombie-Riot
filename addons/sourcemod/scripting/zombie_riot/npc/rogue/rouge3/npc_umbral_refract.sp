@@ -39,7 +39,7 @@ void Umbral_Refract_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Refract");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_refract");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "refract");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
@@ -78,6 +78,11 @@ methodmap Umbral_Refract < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flJumpCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	public void PlayIdleAlertSound() 
 	{
@@ -224,7 +229,7 @@ public void Umbral_Refract_ClotThink(int iNPC)
 	if(npc.m_flCauseDamage)
 	{
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float RadiusDamage = 65.0;
+		float RadiusDamage = 100.0;
 		spawnRing_Vectors(f3_NpcSavePos[npc.index], RadiusDamage*2.0, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.15, 8.0, 1.5, 1);
 		spawnRing_Vectors(f3_NpcSavePos[npc.index], RadiusDamage*2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.15, 8.0, 1.5, 1);
 		TE_SetupBeamPoints(VecSelfNpc, f3_NpcSavePos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.12, 5.0, 6.0, 0, 5.0, {255,50,50,255}, 3);
@@ -281,12 +286,13 @@ public Action Umbral_Refract_OnTakeDamage(int victim, int &attacker, int &inflic
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + (DEFAULT_HURTDELAY * 2.0);
-		npc.m_blPlayHurtAnimation = true;
-		if(npc.IsOnGround())
+		if(npc.IsOnGround() && npc.m_flJumpCD < GetGameTime(npc.index))
 		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + (DEFAULT_HURTDELAY * 2.0);
+			npc.m_blPlayHurtAnimation = true;
 			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", f3_NpcSavePos[victim]);
 			f3_NpcSavePos[victim][2] += 5.0;
+			npc.m_flJumpCD = GetGameTime(npc.index) + 3.0;
 		}
 		
 	}

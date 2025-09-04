@@ -39,7 +39,7 @@ void Umbral_Keitosis_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Keitosis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_keitosis");
-	strcopy(data.Icon, sizeof(data.Icon), "");
+	strcopy(data.Icon, sizeof(data.Icon), "keitosis");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
@@ -125,6 +125,8 @@ methodmap Umbral_Keitosis < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_UMBRAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Is_a_Medic[npc.index] = true;
+		ApplyStatusEffect(npc.index, npc.index, "Anti-Waves", 999.0);
 
 		if(!IsValidEntity(RaidBossActive))
 		{
@@ -289,8 +291,8 @@ public void Umbral_Keitosis_NPCDeath(int entity)
 				Zombies_Currently_Still_Ongoing++;
 			
 			NpcStats_CopyStats(npc.index, summon);
-			SetEntProp(summon, Prop_Data, "m_iHealth", MaxHealthGet);
-			SetEntProp(summon, Prop_Data, "m_iMaxHealth", MaxHealthGet);
+			SetEntProp(summon, Prop_Data, "m_iHealth", (MaxHealthGet) / 2);
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", (MaxHealthGet) / 2);
 			
 			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
 			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
@@ -342,9 +344,9 @@ void UmbralKeitosisAnimBreak(Umbral_Keitosis npc)
 		npc.PlayMeleeSound();
 	}
 	if(EntRefToEntIndex(RaidBossActive) == npc.index)
-		RaidModeScaling += 0.0025;
+		RaidModeScaling += 0.00125;
 
-	npc.m_flScalingDo += 0.0025;
+	npc.m_flScalingDo += 0.00125;
 	if(npc.m_flSpassOut < GetGameTime())
 	{
 		float Random = GetRandomFloat(0.4, 0.7);

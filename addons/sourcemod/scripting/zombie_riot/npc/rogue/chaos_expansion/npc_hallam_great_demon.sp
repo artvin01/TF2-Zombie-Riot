@@ -360,7 +360,6 @@ public void HallamGreatDemon_NPCDeath(int entity)
 
 void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int target, float distance, float Scaling)
 {
-
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)

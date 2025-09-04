@@ -1076,6 +1076,17 @@ void NPC_ConfigSetup()
 	Umbral_Spuud_OnMapStart_NPC();
 	Umbral_Keitosis_OnMapStart_NPC();
 	AlmagestSeinr_OnMapStart_NPC();
+	AlmagestJkei_OnMapStart_NPC();
+	JkeiDrone_OnMapStart_NPC();
+	RandomizerBaseFlamethrower_OnMapStart_NPC();
+	RandomizerBaseHuntsman_OnMapStart_NPC();
+	RandomizerBaseSouthernHospitality_OnMapStart_NPC();
+	Randomizer_OnMapStart_NPC();
+	BossReila_OnMapStart_NPC();
+	ReilaBeacon_OnMapStart_NPC();
+	ReilaFollower_Setup();
+	Umbral_Automaton_OnMapStart_NPC();
+	OmegaFollower_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -2348,3 +2359,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_spuud.sp"
 #include "npc/rogue/rouge3/npc_umbral_keitosis.sp"
 #include "npc/rogue/rouge3/npc_almagest_seinr.sp"
+#include "npc/rogue/rouge3/npc_almagest_jkei.sp"
+#include "npc/rogue/rouge3/npc_almagest_jkei_drone.sp"
+#include "npc/rogue/rouge3/npc_randomizer.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_flamethrower.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_huntsman.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_southern_hospitality.sp"
+#include "npc/rogue/rouge3/npc_boss_reila.sp"
+#include "npc/rogue/rouge3/npc_boss_reila_beacon.sp"
+#include "npc/rogue/rouge3/npc_reila_follower.sp"
+#include "npc/rogue/rouge3/npc_umbral_automaton.sp"
+#include "npc/rogue/rouge3/npc_omega_follower.sp"

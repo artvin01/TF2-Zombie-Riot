@@ -1474,7 +1474,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
 
-		if(i_CurrentEquippedPerk[this.index] == 4)
+		if(i_CurrentEquippedPerk[this.index] & PERK_HASTY_HOPS)
 		{
 			speed_for_return *= 1.25;
 		}
@@ -3977,7 +3977,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			if(IsWalkEvent(event))
 			{
-				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
+				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 			}
 		}
 		case STEPTYPE_SEABORN:
@@ -4794,6 +4794,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		else if(i_IsABuilding[enemy])
 		{
 #if defined ZR
+			if(b_NpcIgnoresbuildings[index])
+			{
+				return false;
+			}
 			if(RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
@@ -5926,7 +5930,7 @@ public void NpcBaseThink(int iNPC)
 	if(f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
-		if(i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
+		if((i_CurrentEquippedPerk[iNPC] & PERK_REGENE) || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 			
@@ -6528,7 +6532,7 @@ stock void Custom_Knockback(int attacker,
 				//Always launch up so people dont have to look up like a hawk.
 				vAngles[0] = -40.0;
 				if(OverrideLookAng[0] != 0.0)
-					vAngles[0] = OverrideLookAng[0];
+					vAngles = OverrideLookAng;
 			}
 			else
 			{
@@ -6548,6 +6552,8 @@ stock void Custom_Knockback(int attacker,
 		{
 			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles);
 			vAngles[0] = -45.0;
+			if(OverrideLookAng[0] != 0.0)
+				vAngles = OverrideLookAng;
 		}
 		
 		if(enemy <= MaxClients)	
@@ -8452,6 +8458,11 @@ stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
 	{
+		if(fl_GibVulnerablity[ally] >= 50000.0)
+		{
+			//they are dead or something else, mainly used for Crystilioasion wirthtout making it very expensive to check.
+			return false;
+		}
 		if(b_ThisEntityIgnored[ally])
 		{
 			return false;

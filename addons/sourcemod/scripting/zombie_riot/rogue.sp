@@ -54,6 +54,7 @@ enum struct Artifact
 	Function FuncStageEnd;
 	Function FuncTakeDamage;
 	Function FuncFloorChange;
+	Function FuncRevive;
 
 	void SetupKv(KeyValues kv)
 	{
@@ -96,7 +97,10 @@ enum struct Artifact
 		this.FuncTakeDamage = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 		
 		kv.GetString("func_floorchange", this.Name, 64);
-		this.FuncFloorChange = this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		this.FuncFloorChange = 	this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
+		
+		kv.GetString("func_revive", this.Name, 64);
+		this.FuncRevive = 		this.Name[0] ? GetFunctionByName(null, this.Name) : INVALID_FUNCTION;
 
 		kv.GetSectionName(this.Name, 64);
 		this.Name[0] = CharToUpper(this.Name[0]);
@@ -1082,10 +1086,17 @@ void Rogue_BattleVictory()
 
 				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
 				{
+					
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
+					{
 						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+					}
+					else if((GetURandomInt() % 4) == 0)
+					{
+						time = Rogue_Rift_OptionalBonusBattle();
+					}
 				}
 				
 				if((GetURandomInt() % 8) < BattleIngots)
@@ -1148,18 +1159,24 @@ bool Rogue_BattleLost()
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
 	Rogue_Dome_WaveEnd();
-
-	if(victory || (BonusLives > 0 && !RequiredBattle))
+	if(victory || (BonusLives > 0 && (!RequiredBattle || RogueTheme == ReilaRift)))
 	{
 		if(!victory)
 		{
-			if(BonusLives > 1)
+			if(RogueTheme == ReilaRift)
 			{
-				CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+				CPrintToChatAll("{green}Your terrible nightmare ends....");
 			}
 			else
 			{
-				CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+				if(BonusLives > 1)
+				{
+					CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+				}
+				else
+				{
+					CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+				}
 			}
 		}
 
@@ -1171,25 +1188,18 @@ bool Rogue_BattleLost()
 				SetMusicTimer(client, GetTime() + 10);
 			}
 		}
-
+		
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
 		TeleportToSpawn();
 
-		Rogue_SetProgressTime(5.0, false, true);
-		
-		/*Floor floor;
-		Floors.GetArray(CurrentFloor, floor);
-
-		Stage stage;
-		if(CurrentType)
+		if(RogueTheme == ReilaRift)
 		{
-			floor.Finals.GetArray(CurrentStage, stage);
+			DreamCatcher_Active();
+			//todo: Retry the stage they died at.
+			CurrentCount--;
 		}
-		else
-		{
-			floor.Encounters.GetArray(CurrentStage, stage);
-		}*/
+		Rogue_SetProgressTime(5.0, false, true);
 
 		int chaos = RoundToFloor(BattleChaos);
 		if(chaos > 0)
@@ -1377,9 +1387,9 @@ void Rogue_NextProgress()
 
 			if(RogueTheme == ReilaRift && CurseTime < 0 && CurseOne == -1)	// Reila Rogue starts curses anytime
 			{
-				int diff = Rogue_Rift_CurseLevel();
-				int rank = Rogue_GetUmbralLevel() + (diff - 1);
-				if(diff > 0 && rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
+				bool hard = Rogue_Rift_CurseLevel() > 1;
+				int rank = Rogue_GetUmbralLevel() + (hard ? 1 : 0);
+				if(rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
 				{
 					int length = Curses.Length;
 					if(length)
@@ -1404,7 +1414,11 @@ void Rogue_NextProgress()
 						FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
 						CPrintToChatAll("%t", buffer);
 
-						EmitSoundToAll("ui/halloween_boss_player_becomes_it.wav");
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !IsFakeClient(client))
+								ClientCommand(client, "playgamesound ui/halloween_boss_player_becomes_it.wav");
+						}
 					}
 				}
 			}
@@ -1415,6 +1429,27 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
+
+				if(CurrentCollection)
+				{
+					ArrayList list = CurrentCollection.Clone();
+
+					Artifact artifact;
+					int length = list.Length;
+					for(int i; i < length; i++)
+					{
+						Artifacts.GetArray(list.Get(i), artifact);
+						if(artifact.FuncFloorChange != INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, artifact.FuncFloorChange);
+							Call_PushCellRef(CurrentFloor);
+							Call_PushCellRef(CurrentCount);
+							Call_Finish();
+						}
+					}
+
+					delete list;
+				}
 				
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -1446,7 +1481,7 @@ void Rogue_NextProgress()
 				}
 				else
 				{
-					Rogue_SendToFloor(CurrentFloor, CurrentCount);
+					Rogue_SendToFloor(CurrentFloor, CurrentCount, _, false);
 				}
 			}
 			else if(CurrentCount == maxRooms)	// Final Stage
@@ -1465,7 +1500,7 @@ void Rogue_NextProgress()
 					TeleportToSpawn();
 					
 					SetFloorMusic(floor, true);
-					SetNextStage(id, true, stage, 20.0);
+					SetNextStage(id, true, stage, 10.0);
 				}
 			}
 			else	// Normal Stage
@@ -1593,7 +1628,7 @@ void Rogue_NextProgress()
 	Waves_UpdateMvMStats();
 }
 
-void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true)
+void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true, bool forwad = true)
 {
 	CurrentFloor = floorIndex;
 	CurrentCount = stageIndex;
@@ -1602,7 +1637,7 @@ void Rogue_SendToFloor(int floorIndex, int stageIndex = -1, bool cutscene = true
 	if(!cutscene)
 		return;
 
-	if(CurrentCollection)
+	if(CurrentCollection && forwad)
 	{
 		ArrayList list = CurrentCollection.Clone();
 
@@ -2603,7 +2638,9 @@ void Rogue_ReviveSpeed(int &amount)
 {
 	Rogue_StoryTeller_ReviveSpeed(amount);
 	Rogue_Paradox_ReviveSpeed(amount);
+	Rogue_Rift_ReviveSpeed(amount);
 }
+
 
 void Rogue_PlayerDowned(int client)
 {
@@ -2933,6 +2970,11 @@ stock int Rogue_GetChaosLevel()
 	return 0;
 }
 
+stock int Rogue_GetUmbral()
+{
+	return CurrentUmbral;
+}
+
 // 0 = Allys, 1 = Friendly, 2 = Netural, 3 = Enemy, 4 = Targeted
 stock int Rogue_GetUmbralLevel()
 {
@@ -2983,7 +3025,12 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 		return;
 	}
 
+	Rogue_Rift_UmbralChange(change);
+
 	CurrentUmbral += change;
+	
+	if(CurrentUmbral < 1)
+		CurrentUmbral = 0;
 
 	Waves_UpdateMvMStats();
 
@@ -3209,20 +3256,19 @@ bool Rogue_UpdateMvMStats()
 						{
 							if(CurrentUmbral > 0)
 							{
-								// TODO: Custom Icon
 								switch(Rogue_GetUmbralLevel())
 								{
 									case 0:	// Most Friendly
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_best", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 									
 									case 1, 2:
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_neutral", MVM_CLASS_FLAG_NORMAL, true);
 									
 									case 3:
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_bad", MVM_CLASS_FLAG_MINIBOSS, true);
 									
 									default:	// Most Hated
-										Waves_SetWaveClass(objective, i, CurrentUmbral, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+										Waves_SetWaveClass(objective, i, CurrentUmbral, "affinity_worst", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 								}
 
 								continue;
@@ -3376,6 +3422,7 @@ static void ClearStats()
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
 	Rogue_Whiteflower_Reset();
+	Rogue_Rift_Reset();
 }
 
 bool IS_MusicReleasingRadio()
@@ -3386,6 +3433,7 @@ bool IS_MusicReleasingRadio()
 //ROUGELIKE .sp
 //This is only needed for items that are more then just flat stat changes.
 
+#include "roguelike/helpers.sp"
 #include "roguelike/curses.sp"
 #include "roguelike/encounter_battles.sp"
 #include "roguelike/encounter_items.sp"

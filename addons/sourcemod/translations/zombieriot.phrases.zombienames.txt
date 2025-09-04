@@ -4952,7 +4952,23 @@
 	"Christian Brutal Sniper"
 	{
 		"en"	"Christian Brutal Sniper"
-  }
+	}
+	"Randomizer!"
+	{
+		"en"	"Randomizer"
+	}
+	"Randomizer Base Flamethrower"
+	{
+		"en"	"Randomizer Base Flamethrower"
+	}
+	"Randomizer Base Huntsman"
+	{
+		"en"	"Randomizer Base Huntsman"
+	}
+	"Randomizer Base Southern Hospitality"
+	{
+		"en"	"Randomizer Base Southern Hospitality"
+	}
 	"???"
 	{
 		"en" "???"
@@ -4988,6 +5004,25 @@
 	"Seinr"
 	{
 		"en"	"Seinr"
-    
+	}
+	"Jkei"
+	{
+		"en"	"Jkei"
+	}
+	"Jkei Drone"
+	{
+		"en"	"Jkei Drone"
+	}
+	"Reila"
+	{
+		"en" "Reila"
+	}
+	"Reila?"
+	{
+		"en" "R̷̛̝ě̸̖i̶̲̋l̶̛͚a̴̪͊?"
+	}
+	"Reila's Beacon"
+	{
+		"en" "The Construct"
 	}
 }
