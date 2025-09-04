@@ -135,9 +135,11 @@ static const char g_RandomPlayerName[][] =
 	" LeAlex14"
 };
 
+static ArrayList TemporaryRebelList;
 
 public float Rogue_Encounter_GamemodeMadnessBattle()
 {
+	Rogue_GamemodeMadness_TryToEnableURF();
 	Rogue_GiveNamedArtifact("Gamemode Madness", true);
 	Rogue_SetBattleIngots(10);
 	return 0.0;
@@ -145,6 +147,7 @@ public float Rogue_Encounter_GamemodeMadnessBattle()
 
 public float Rogue_Encounter_GamemodeMadnessBattle_SZF()
 {
+	Rogue_GamemodeMadness_TryToEnableURF();
 	CPrintToChatAll("%t", "SZF Damage Scaling Mode");
 	Rogue_GiveNamedArtifact("Gamemode Madness SZF", true);
 	Rogue_SetBattleIngots(10);
@@ -154,6 +157,15 @@ public float Rogue_Encounter_GamemodeMadnessBattle_SZF()
 public float Rogue_Encounter_GamemodeMadnessBattle_Slender()
 {
 	Rogue_GiveNamedArtifact("Gamemode Madness Slender", true);
+	return 0.0;
+}
+
+public float Rogue_Encounter_GamemodeMadnessBattle_ZombieRiot()
+{
+	Rogue_GamemodeMadness_TryToEnableURF();
+	Rogue_GiveNamedArtifact("Gamemode Madness Zombie Riot", true);
+	Rogue_SetBattleIngots(10);
+	RequestFrame(StartZombieRiotFrame);
 	return 0.0;
 }
 
@@ -167,6 +179,12 @@ public void Rogue_RiftWarp_GamemodeMadness()
 	
 	if(Rogue_HasNamedArtifact("Gamemode Madness Slender"))
 		Rogue_RemoveNamedArtifact("Gamemode Madness Slender");
+	
+	if(Rogue_HasNamedArtifact("Gamemode Madness Zombie Riot"))
+		Rogue_RemoveNamedArtifact("Gamemode Madness Zombie Riot");
+	
+	if(Rogue_HasNamedArtifact("Gamemode Madness URF"))
+		Rogue_RemoveNamedArtifact("Gamemode Madness URF");
 }
 
 public void Rogue_GamemodeMadnessSlender_StartStage()
@@ -207,6 +225,60 @@ public void Rogue_GamemodeMadnessSlender_Enemy(int entity)
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 600.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 1000.0);
 	b_ThisEntityIgnoredByOtherNpcsAggro[entity] = true;
+}
+
+public void StartZombieRiotFrame()
+{
+	if (!TemporaryRebelList)
+		TemporaryRebelList = new ArrayList();
+	else
+		TemporaryRebelList.Clear();
+	
+	int client;
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i))
+		{
+			client = i;
+			break;
+		}
+	}
+	
+	// Spawn in 20 renamed rebels
+	for (int i = 0; i < 20; i++)
+	{
+		int spawnNpc = Citizen_SpawnAtPoint("b", client);
+		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
+		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+	}
+
+	Rogue_Dome_WaveEnd();
+}
+
+public void Rogue_GamemodeMadnessZombieRiot_EndStage()
+{
+	Rogue_RiftWarp_GamemodeMadness();
+	Rogue_GiveNamedArtifact("Zombie Riot Badge", false);
+	
+	if (!TemporaryRebelList)
+		return;
+	
+	int length = TemporaryRebelList.Length;
+	for (int i = 0; i < length; i++)
+	{
+		int ref = TemporaryRebelList.Get(i);
+		int entity = EntRefToEntIndex(ref);
+		if (IsValidEntity(entity))
+			SmiteNpcToDeath(entity);
+	}
+	
+	delete TemporaryRebelList;
+}
+
+public void Rogue_GamemodeMadness_Item_ZombieRiotBadge()
+{
+	CurrentCash += 200;
+	GlobalExtraCash += 200;	
 }
 
 public void Rogue_GamemodeMadness_EnemyRenameSZF(int entity)
@@ -251,4 +323,48 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 		ApplyStatusEffect(entity, entity, "UBERCHARGED",	AfkTimer);
 	}
 	TeleportDiversioToRandLocation(entity,_,3000.0, 1500.0, .NeedLOSPlayer = true);
+}
+
+public void Rogue_GamemodeMadness_TryToEnableURF()
+{
+	if (GetURandomFloat() >= 0.2) // 20% to enable
+		return;
+	
+	Rogue_GiveNamedArtifact("Gamemode Madness URF", true);
+	CPrintToChatAll("%t", "Gamemode Madness URF Mode");
+	EmitGameSoundToAll("Powerup.PickUpSupernova");
+}
+
+public void Rogue_GamemodeMadnessURF_Enemy(int entity)
+{
+	ApplyStatusEffect(entity, entity, "Dimensional Turbulence", 99999.0);
+}
+
+public void Rogue_GamemodeMadnessURF_Ally(int entity, StringMap map)
+{
+	if (map) // Player
+	{
+		// Players don't get affected by movement speed buffs, so we apply a second one here
+		RogueHelp_BodySpeed(entity, map, 1.25);
+	}
+	
+	ApplyStatusEffect(entity, entity, "Ultra Rapid Fire", 99999.0);
+}
+
+public void Rogue_GamemodeMadnessURF_Remove()
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i))
+			RemoveSpecificBuff(i, "Ultra Rapid Fire");
+	}
+	
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if (entity != INVALID_ENT_REFERENCE)
+			RemoveSpecificBuff(i, "Ultra Rapid Fire");
+	}
+	
+	Rogue_Refresh_Remove();
 }
