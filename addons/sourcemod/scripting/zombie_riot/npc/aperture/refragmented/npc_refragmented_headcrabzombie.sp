@@ -355,6 +355,7 @@ public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 						npc.m_iOverlordComboAttack++;
 						if(npc.m_iOverlordComboAttack >= 5 && !BlockSpawn)
 						{
+							int health = ReturnEntityMaxHealth(npc.index);
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 							int spawn_index = NPC_CreateByName("npc_refragmented_headcrabzombie", -1, pos, ang, TFTeam_Blue);
@@ -362,8 +363,8 @@ public void RefragmentedHeadcrabZombie_ClotThink(int iNPC)
 							{
 								NpcStats_CopyStats(npc.index, spawn_index);
 								NpcAddedToZombiesLeftCurrently(spawn_index, true);
-								SetEntProp(spawn_index, Prop_Data, "m_iHealth", 1000);
-								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 1000);
+								SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+								SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
 							}
 							npc.m_iOverlordComboAttack = 0;
 						}
