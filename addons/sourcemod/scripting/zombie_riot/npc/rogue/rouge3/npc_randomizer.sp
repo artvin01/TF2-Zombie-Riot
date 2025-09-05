@@ -414,8 +414,9 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 			func_NPCThink[npc.index] = view_as<Function>(ApertureBuilder_ClotThink);
 			func_NPCDeath[npc.index] = view_as<Function>(ApertureBuilder_NPCDeath);
 			
-			TeleportDiversioToRandLocation(npc.index, true, 3000.0, 1000.0);
 			activity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+			
+			Is_a_Medic[npc.index] = true;
 		}
 	}
 	

@@ -4051,6 +4051,10 @@
 	{
 		"en"	"Enable Ammobox Count Perma"
 	}
+	"Citizen Cannot Interact"
+	{
+		"en"	"You cannot interact with this rebel."
+	}
 	"Class Vote Citizen Do"
 	{
 		"en"	"The rebel will pick whatever has the most player votes, from the top down."

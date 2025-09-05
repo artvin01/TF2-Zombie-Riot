@@ -158,6 +158,34 @@
 	{
 		"en"	""
 	}
+	"Gamemode Madness Zombie Riot"
+	{
+		"en"	"Gamemode Madness Zombie Riot"
+	}
+	"Gamemode Madness Zombie Riot Desc"
+	{
+		"en"	"Gamemode Madness Zombie Riot"
+	}
+	"Zombie Riot Badge"
+	{
+		"en"	"Zombie Riot Badge"
+	}
+	"Zombie Riot Badge Desc"
+	{
+		"en"	"You have finally defeated Nemal, unlocked this badge and reached {unique}Player Level 42{default}.\n{green}+200 Cash"
+	}
+	"Gamemode Madness URF Mode"
+	{
+		"en"	"{redsunfirst}An {unique}Ultra Rapid Fire Coin {redsunfirst}was flipped! {redsunsecond}Ultra Rapid Fire Mode {redsunfirst}will be active until the stage ends.\n{redsunsecond}Welcome to the future of Team Fortress 2."
+	}
+	"Gamemode Madness URF"
+	{
+		"en"	"Gamemode Madness URF"
+	}
+	"Gamemode Madness URF Desc"
+	{
+		"en"	"Gamemode Madness URF"
+	}
 	"Broken Crest"
 	{
 		"en"	"Broken Crest"
@@ -1492,6 +1520,10 @@
 	"Randomizer"
 	{
 		"en" "☠ Randomizer"
+	}
+	"Zombie Riot"
+	{
+		"en" "☠ Zombie Riot"
 	}
 	"Refragmented Page"
 	{

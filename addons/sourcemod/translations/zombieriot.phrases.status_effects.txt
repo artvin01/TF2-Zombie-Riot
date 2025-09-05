@@ -1620,4 +1620,12 @@
 	{
 		"en"	"Umbral koulm's have their vision on you."
 	}
+	"Ultra Rapid Fire"
+	{
+		"en"	"Ultra Rapid Fire"
+	}
+	"Ultra Rapid Fire Desc"
+	{
+		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
+	}
 }
