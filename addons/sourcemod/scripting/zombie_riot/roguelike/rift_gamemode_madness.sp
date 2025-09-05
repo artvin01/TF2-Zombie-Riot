@@ -244,12 +244,59 @@ public void StartZombieRiotFrame()
 		}
 	}
 	
+	int MedicRangedWeapons[] = {
+		Cit_Pistol,
+		Cit_SMG,
+		Cit_AR
+	};
+	
+	int DPSRangedWeapons[] = {
+		Cit_Shotgun,
+		Cit_SMG,
+		Cit_AR,
+		Cit_RPG
+	};
+	
 	// Spawn in 20 renamed rebels
 	for (int i = 0; i < 20; i++)
 	{
 		int spawnNpc = Citizen_SpawnAtPoint("", client);
-		Citizen_SetRandomRole(spawnNpc);
+		Citizen npc = view_as<Citizen>(spawnNpc);
 		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+		
+		// We select rebel types/roles ourselves because we want no builders and less medics than Citizen_SetRandomRole offers
+		int role, type;
+		
+		switch (i % 5)
+		{
+			case 0:
+			{
+				// 1 in 5 rebels will be medics
+				role = Cit_Medic;
+				type = MedicRangedWeapons[GetURandomInt() % sizeof(MedicRangedWeapons)];
+			}
+			
+			case 1:
+			{
+				// 1 in 5 rebels will be tanks
+				role = Cit_Fighter;
+				type = Cit_Melee;
+			}
+			
+			default:
+			{
+				// The rest will be DPS
+				role = Cit_Fighter;
+				type = DPSRangedWeapons[GetURandomInt() % sizeof(DPSRangedWeapons)];
+			}
+		}
+		
+		Citizen_UpdateStats(spawnNpc, type, role);
+		
+		RogueHelp_BodyHealth(spawnNpc, null, 3.0);
+		fl_Extra_Damage[spawnNpc] *= 2.0;
+		npc.m_bInteractable = false;
+		npc.m_bDissapearOnDeath = true;
 		
 		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
 	}

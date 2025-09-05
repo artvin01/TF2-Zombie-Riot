@@ -850,6 +850,7 @@ static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
 static float CommandCooldown[MAXENTITIES];
 static bool TempRebel[MAXENTITIES];
+static bool Interactable[MAXENTITIES];
 static int PlayerRenameWho[MAXPLAYERS];
 
 void Citizen_OnMapStart()
@@ -995,6 +996,7 @@ methodmap Citizen < CClotBody
 		i_BarricadeHasBeenDamaged[npc.index] = 0;
 		i_PlayerDamaged[npc.index] = 0;
 		TempRebel[npc.index] = temp;
+		npc.m_bInteractable = true;
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1166,6 +1168,11 @@ methodmap Citizen < CClotBody
 	{
 		public get()		{ return CanBuild[this.index]; }
 		public set(int value) 	{ CanBuild[this.index] = value; }
+	}
+	property bool m_bInteractable
+	{
+		public get()		{ return Interactable[this.index]; }
+		public set(bool value) 	{ Interactable[this.index] = value; }
 	}
 	property float m_flSpeed
 	{
@@ -1808,7 +1815,18 @@ static void CitizenMenu(int client, int page = 0)
 			"Damage Dealt", buffer,
 			"Healing Done", healing,
 			"Damage Tanked", tanked);
-
+	
+	if (!npc.m_bInteractable)
+	{
+		// You can't interact with this NPC, just show stats and nothing else
+		FormatEx(buffer, sizeof(buffer), "%t", "Citizen Cannot Interact");
+		
+		menu.ExitButton = true;
+		menu.AddItem("", buffer, ITEMDRAW_DISABLED); // Menu needs at least an option to show
+		menu.Display(client, MENU_TIME_FOREVER);
+		return;
+	}
+	
 	switch(page)
 	{
 		case 1:
