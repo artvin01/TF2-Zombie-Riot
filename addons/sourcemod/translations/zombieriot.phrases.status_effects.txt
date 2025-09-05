@@ -1626,6 +1626,6 @@
 	}
 	"Ultra Rapid Fire Desc"
 	{
-		"en"	"Increases attack/reload speed and healing rate by 40％ and movement speed by 25％.\n{red}Enemies gain Dimensional Turbulence instead."
+		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
 	}
 }
