@@ -247,9 +247,11 @@ public void StartZombieRiotFrame()
 	// Spawn in 20 renamed rebels
 	for (int i = 0; i < 20; i++)
 	{
-		int spawnNpc = Citizen_SpawnAtPoint("b", client);
-		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
+		int spawnNpc = Citizen_SpawnAtPoint("", client);
+		Citizen_SetRandomRole(spawnNpc);
 		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+		
+		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
 	}
 
 	Rogue_Dome_WaveEnd();
