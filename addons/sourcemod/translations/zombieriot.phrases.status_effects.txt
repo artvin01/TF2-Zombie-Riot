@@ -1929,6 +1929,14 @@
 	{
 		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
 	}
+	"Void Afflicted"
+	{
+		"en"	"Void Afflicted"
+	}
+	"Void Afflicted Desc"
+	{
+		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nRecieve 25％ less damage."
+	}
 	"Brightening Light"
 	{
 		"en"	"Brightening Light"

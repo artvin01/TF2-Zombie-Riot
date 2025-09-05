@@ -26,6 +26,18 @@
 	{
 		"en"	"Leave it"
 	}
+	"A strange gateway opens up"
+	{
+		"en"	"A strange gateway opens up"
+	}
+	"Stay and fight it"
+	{
+		"en"	"Stay and fight it"
+	}
+	"Umbrals take notice of your actions"
+	{
+		"en"	"{crimson}Umbrals take notice of your actions"
+	}
 
 	"Rift of Swarms"
 	{
@@ -106,6 +118,14 @@
 	"Rift of Warp Desc"
 	{
 		"en"	"{red}Enemies have a chance to be warpped"
+	}
+	"Void Outbreak"
+	{
+		"en"	"Void Outbreak"
+	}
+	"Void Outbreak Desc"
+	{
+		"en"	"{red}All enemies are voided and deal void damage."
 	}
 	"Gamemode Madness"
 	{
@@ -1023,6 +1043,14 @@
 	{
 		"en"	"Shouldn't have drank that.\n{red}Allies have -20％ max health, cured by visting a Gateway"
 	}
+	"Bad Lab Air"
+	{
+		"en"	"Bad Lab Air"
+	}
+	"Bad Lab Air Desc"
+	{
+		"en"	"Maybe shouldnt have stayed.\n{red}Allies have -5％ max health, cured upon next floor."
+	}
 	"Pool of Clarity Title"
 	{
 		"en"	"You find a pool surrounded by nothing by crystals, umbrals can be seen going to it and away."
@@ -1446,6 +1474,11 @@
 	{
 		"en"	"Refragmented Page"
 	}
+	"Strange Gateway"
+	{
+		"en" "⚔ Strange Gateway"
+	}
+
 	"Crystalized Warped Subjects Title"
 	{
 		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."

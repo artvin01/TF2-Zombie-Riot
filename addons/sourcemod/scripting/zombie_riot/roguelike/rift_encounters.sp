@@ -322,6 +322,7 @@ public float Rogue_Encounter_Pool_Of_Clarity()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 1");
+	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 2");
@@ -562,7 +563,7 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		}
 		case 11:
 		{
-			CPrintToChatAll("{grey}if, no, WHEN we meet again, ill make sure to hand you that cake recepe you loved so much from me okay?");
+			CPrintToChatAll("{grey}if, no, WHEN we meet again, ill make sure to hand you that cake recipe you loved so much from me okay?");
 		}
 		case 12:
 		{
@@ -611,6 +612,7 @@ public void Rogue_Crystalized_Warped_Subjects_Repeat()
 		CreateTimer(4.0, Timer_AdvanceGulnLore, 1);
 		return;	
 	}
+	Rogue_GiveNamedArtifact("Bad Lab Air");
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Crystalized_Warped_Subjects_Vote, "Crystalized Warped Subjects Title Repeat");
 	Vote vote;
 

@@ -52,6 +52,7 @@ enum struct StatusEffect
 
 	void Blank()
 	{
+		this.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
 		this.OnBuffStarted				= INVALID_FUNCTION;
 		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
@@ -5930,6 +5931,23 @@ void StatusEffects_Rogue3()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Void Afflicted");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ɣ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= VoidAffliction_Start;
+	data.OnBuffEndOrDeleted			= VoidAffliction_End;
+	data.OnTakeDamage_PostAttacker	= VoidAffliction_TakeDamageAttackerPost;
+	ShrinkingStatusEffectIndex = StatusEffect_AddGlobal(data);
 }
 
 
@@ -6054,4 +6072,36 @@ static void RevivalStim_End(int victim, StatusEffect Apply_MasterStatusEffect, E
 		return;
 	Attributes_SetMulti(victim, 442, (1.0 / 1.15));
 	SDKCall_SetSpeed(victim);
+}
+
+
+
+void VoidAffliction_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	CClotBody npc = view_as<CClotBody>(victim);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = float(npc.m_iBleedType);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	npc.m_iBleedType = BLEEDTYPE_VOID;
+	SetEntityRenderColor_NpcAll(victim, 1.25, 0.25, 1.25);
+}
+void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	npc.m_iBleedType = RoundToNearest(Apply_StatusEffect.DataForUse);
+	SetEntityRenderColor_NpcAll(victim, (1.0 / 1.25), (1.0 / 0.25), (1.0 / 1.25));
+}
+
+
+void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
 }

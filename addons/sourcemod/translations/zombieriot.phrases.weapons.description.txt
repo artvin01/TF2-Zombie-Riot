@@ -1052,8 +1052,7 @@
 	}
 	"Kunai Pap 4"
 	{
-		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy."
-		"ko"	"백스탭 속도가 느려지지만, 극도로 높은 피해를 입힘. 백스탭 성공시 더 많은 체력을 회복.\n매 15초마다, 백스탭 성공시 대상에게 루이나 핵을 발사할 수 있습니다."
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy.\nDeals 35％ less dmg against raids, and its explosive has no bonus dmg against raids."
 	}
 	
 	"Fractured Ark Desc"

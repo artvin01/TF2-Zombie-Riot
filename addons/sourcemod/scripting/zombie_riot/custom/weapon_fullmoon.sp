@@ -269,7 +269,7 @@ public void FullMoonM1(int client, int weapon, bool crit, int slot)
 		client, _, 80, _, 1.0);
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(client));
-		pack.WriteFloat(GetGameTime() + 0.12);	
+		pack.WriteFloat(GetGameTime() + 0.07);	
 		RequestFrame(FullMoonDoM1Effect, pack);
 	}
 }
@@ -285,7 +285,7 @@ void FullMoonDoM1Effect(DataPack pack)
 	}
 	float TimeUntillEnd = pack.ReadFloat();
 	float TimeUntillSnap = TimeUntillEnd - GetGameTime();
-	TimeUntillSnap *= 13.0;
+	TimeUntillSnap *= 20.0;
 	static float belowBossEyes[3];
 	belowBossEyes[0] = 0.0;
 	belowBossEyes[1] = 0.0;
@@ -319,7 +319,7 @@ void DrawGiantMoon(float Angles[3], int client, float belowBossEyes[3], float An
 	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
 	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;
 	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
-	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 3, LaserFatness, Colour);
+	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 4, LaserFatness, Colour);
 }
 
 public void FullMoonAbilityM2(int client, int weapon, bool crit, int slot)
