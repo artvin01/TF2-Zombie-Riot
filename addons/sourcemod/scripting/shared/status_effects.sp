@@ -3686,6 +3686,25 @@ void StatusEffects_FallenWarrior()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Terrified");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "҂");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.5;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Terrified_Start;
+	data.OnBuffStoreRefresh			= Terrified_Start;
+	data.OnBuffEndOrDeleted			= Terrified_End;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.5;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Altered Functions");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϡ");
@@ -5994,6 +6013,23 @@ float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterS
 	return resist;
 }
 
+
+static void Terrified_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.5);
+	SDKCall_SetSpeed(victim);
+}
+
+static void Terrified_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	Attributes_SetMulti(victim, 442, (1.0 / 0.5));
+	SDKCall_SetSpeed(victim);
+}
 
 
 static void RevivalStim_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)

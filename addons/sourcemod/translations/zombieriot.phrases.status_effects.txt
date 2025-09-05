@@ -731,6 +731,14 @@
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％."
 	}
+	"Terrified"
+	{
+		"en"	"Terrified"
+	}
+	"Terrified Desc"
+	{
+		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
+	}
 	"Altered Functions"
 	{
 		"en"	"Altered Functions"

@@ -1445,6 +1445,30 @@
 	{
 		"en" "⚠ Unknown Taskforce"
 	}
+	"Seaborn Enslaved"
+	{
+		"en" "⚔ Seaborn Enslaved"
+	}
+	"Seaborn Enslaved!"
+	{
+		"en" "⚠ Seaborn Enslaved"
+	}
+	"Voided Superior's"
+	{
+		"en" "⚔ Voided Superior's"
+	}
+	"Voided Superior's!"
+	{
+		"en" "⚠ Voided Superior's"
+	}
+	"Expert Warpers"
+	{
+		"en" "⚔ Expert Warpers"
+	}
+	"Expert Warpers!"
+	{
+		"en" "⚠ Expert Warpers"
+	}
 	"Beyond Recognition"
 	{
 		"en" "⚔ Beyond Recognition"
