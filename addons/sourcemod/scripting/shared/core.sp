@@ -1485,6 +1485,7 @@ public void OnClientPutInServer(int client)
 	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
+	f_ClientInvul[client] = 0.0;
 	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
