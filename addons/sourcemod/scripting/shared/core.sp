@@ -3457,7 +3457,10 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		was_reviving_this[client] = target;
 
 	if(!WasRevivingEntity)
-		f_DisableDyingTimer[target] = GameTime + 0.15;
+	{
+		if(f_DisableDyingTimer[target] != FAR_FUTURE)
+			f_DisableDyingTimer[target] = GameTime + 0.15;
+	}
 
 	int speed = 3;
 	if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
