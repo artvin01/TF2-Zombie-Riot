@@ -1090,6 +1090,7 @@ void NPC_ConfigSetup()
 	OmegaFollower_Setup();
 	Shadow_FloweringDarkness_OnMapStart_NPC();
 	Shadowing_Darkness_Boss_OnMapStart_NPC();
+	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1545,6 +1546,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/npc_cured_last_survivor.sp"
 #include "npc/ally/npc_citizen_new.sp"
 #include "npc/ally/npc_allied_sensal_afterimage.sp"
+#include "npc/ally/npc_allied_warped_crystal_visualiser.sp"
 #include "npc/ally/npc_allied_leper_visualiser.sp"
 #include "npc/ally/npc_allied_kahml_afterimage.sp"
 #include "npc/ally/npc_allied_kiyru_visualiser.sp"

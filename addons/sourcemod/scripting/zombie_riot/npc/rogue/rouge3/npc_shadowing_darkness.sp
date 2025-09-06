@@ -258,7 +258,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
-			npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
+		npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
 
 		
 
@@ -859,8 +859,8 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
 				flPos[2] += 600.0;
-				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200, -100) : GetRandomFloat(100, 200);
-				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200, -100) : GetRandomFloat(100, 200);
+				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100, 200.0);
+				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100, 200.0);
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 			}
