@@ -269,8 +269,8 @@ enum
 	Type_Victoria,
 	Type_Matrix,
 	Type_Mutation,
-	Type_Necropolain
-	Type_Aperture,
+	Type_Necropolain,
+	Type_Aperture
 }
 
 //int Bob_To_Player[MAXENTITIES];
