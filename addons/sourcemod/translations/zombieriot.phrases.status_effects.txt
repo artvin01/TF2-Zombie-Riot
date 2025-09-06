@@ -335,6 +335,14 @@
 	{
 		"en"	"Your HP cannot drop below 1 no matter what."
 	}
+	"Blessing of Stars"
+	{
+		"en"	"Blessing of Stars"
+	}
+	"Blessing of Stars Desc"
+	{
+		"en"	"Saves you from death, once."
+	}
 	"Death is comming."
 	{
 		"en"	"Death is comming."
@@ -1490,5 +1498,118 @@
 	"Paralysis Desc"
 	{
 		"en"	"-50％ attack speed and movement speed"
+	}
+	"Hypodermic Toxin Injection"
+	{
+		"en"	"Hypodermic Toxin Injection"
+	}
+	"Hypodermic Toxin Injection Desc"
+	{
+		"en"	"Increases damage taken by 20％"
+	}
+	"Cellular Breakdown"
+	{
+		"en"	"Cellular Breakdown"
+	}
+	"Cellular Breakdown Desc"
+	{
+		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％."
+	}
+	"Molecular Collapse"
+	{
+		"en"	"Molecular Collapse"
+	}
+	"Molecular Collapse Desc"
+	{
+		"en"	"Increases damage taken by 20％.\nDecreases attack speed by 20％.\nDecreases damage by 20％."
+	}
+	"Quantum Entanglement"
+	{
+		"en"	"Quantum Entanglement"
+	}
+	"Quantum Entanglement Desc"
+	{
+		"en"	"Reduces damage taken by 25％.\nIncreases attack speed by 25％.\nIncreases damage by 25％.\nIncreases NPC movement speed by 25％."
+	}
+	"Envenomed"
+	{
+		"en"	"Envenomed"
+	}
+	"Envenomed Desc"
+	{
+		"en"	"Brings your health down to 1, your health partially recovers overtime."
+	}
+	"Energizing Gel"
+	{
+		"en"	"Energizing Gel"
+	}
+	"Energizing Gel Desc"
+	{
+		"en"	"Reduces damage taken by 50％.\nIncreases NPC movement speed by 50％."
+	}
+	"Kinetic Surge"
+	{
+		"en"	"Kinetic Surge"
+	}
+	"Kinetic Surge Desc"
+	{
+		"en"	"Increases everyone's damage by 100％."
+	}
+	"Umbral Grace"
+	{
+		"en"	"Umbral Grace"
+	}
+	"Umbral Grace Desc"
+	{
+		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
+	}
+	"Void Afflicted"
+	{
+		"en"	"Void Afflicted"
+	}
+	"Void Afflicted Desc"
+	{
+		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nRecieve 25％ less damage."
+	}
+	"Brightening Light"
+	{
+		"en"	"Brightening Light"
+	}
+	"Brightening Light Desc"
+	{
+		"en"	"Gain 35％ attack/reload speed & healrate."
+	}
+	"Revival Stim"
+	{
+		"en"	"Revival Stim"
+	}
+	"Revival Stim Desc"
+	{
+		"en"	"Gain a 15％ Movementspeed Bonus."
+	}
+
+	"Brightening Lightness"
+	{
+		"en"	"Brightening Lightness"
+	}
+	"Brightening Lightness Desc"
+	{
+		"en"	"A bright light, is Ruina helping?\n{green}At stage start, creates a zone that buffs all allies within."
+	}
+	"Revival Stim Packs"
+	{
+		"en"	"Revival Stim Packs"
+	}
+	"Revival Stim Packs Desc"
+	{
+		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upton being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
+	}
+	"Kolum's View"
+	{
+		"en"	"Kolum's View"
+	}
+	"Kolum's View Desc"
+	{
+		"en"	"Umbral koulm's have their vision on you."
 	}
 }

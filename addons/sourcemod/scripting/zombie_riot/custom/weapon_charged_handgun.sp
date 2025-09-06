@@ -1026,6 +1026,7 @@ public Action Timer_Electric_Cutter_Think(Handle timer, int ref)
 	
 	if (!IsValidEdict(iCarrier) || iCarrier<=MaxClients)
 	{
+		
 		if(IsValidEdict(particle) && particle>MaxClients)
 		{
 			RemoveEntity(particle);

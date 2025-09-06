@@ -105,7 +105,7 @@ static void ClotThink(int iNPC)
 	
 	if(npc.Anger)
 	{
-		b_NpcIsInvulnerable[npc.index] = false;
+		RemoveSpecificBuff(npc.index, "Unstoppable Force");
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
 		SmiteNpcToDeath(npc.index);
 		return;
@@ -238,42 +238,39 @@ static void MajorSteam_DownedThink(int entity)
 
 static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(attacker > 0)
+	MajorSteam npc = view_as<MajorSteam>(victim);
+	
+	if(!npc.Anger && damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
-		MajorSteam npc = view_as<MajorSteam>(victim);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 3.0);
+
+		npc.Anger = true;
+		npc.PlayHurtSound();
+		npc.StopPathing();
+		npc.m_flNextThinkTime = GetGameTime() + 2.0;
+
+		func_NPCThink[npc.index] = MajorSteam_DownedThink;
 		
-		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
-			b_NpcIsInvulnerable[npc.index] = true;
-
-			npc.Anger = true;
-			npc.PlayHurtSound();
-			npc.StopPathing();
-			npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
-
-			func_NPCThink[npc.index] = MajorSteam_DownedThink;
-			
-			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-			spawnRing_Vectors(vecMe, 450.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
-			spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 450.0 * 2.0);
-			
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-			
-			damage = 0.0;
-			return Plugin_Handled;
-		}
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		spawnRing_Vectors(vecMe, 450.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1);
+		spawnRing_Vectors(vecMe, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 0, 212, 255, 1, 1.95, 5.0, 0.0, 1, 450.0 * 2.0);
 		
-		npc.m_flMeleeArmor += 0.001 / MultiGlobalEnemy;
-		npc.m_flRangedArmor += 0.001 / MultiGlobalEnemy;
-
-		if(npc.m_flMeleeArmor > 2.0)
-			npc.m_flMeleeArmor = 2.0;
-
-		if(npc.m_flRangedArmor > 2.0)
-			npc.m_flRangedArmor = 2.0;
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		
+		damage = 0.0;
+		return Plugin_Handled;
 	}
+	
+	npc.m_flMeleeArmor += 0.001 / MultiGlobalEnemy;
+	npc.m_flRangedArmor += 0.001 / MultiGlobalEnemy;
+
+	if(npc.m_flMeleeArmor > 2.0)
+		npc.m_flMeleeArmor = 2.0;
+
+	if(npc.m_flRangedArmor > 2.0)
+		npc.m_flRangedArmor = 2.0;
 
 	return Plugin_Changed;
 }

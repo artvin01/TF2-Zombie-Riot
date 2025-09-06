@@ -716,7 +716,7 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.25;
 	}
-	if(i_CurrentEquippedPerk[client] == 8)
+	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
 		
 	return Cooldown;
@@ -4686,7 +4686,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 
 							for(int i = 1; i < tags; i++)
 							{
-								TranslateItemName(client, buffers[i], _, buffers[0], sizeof(buffer[]));
+								TranslateItemName(client, buffers[i], _, buffers[0], sizeof(buffer));
 								Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
 							}
 
@@ -4699,7 +4699,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						TranslateItemName(client, ItemFaction[info.WeaponFaction1], _, buffer, sizeof(buffer));
 						if(info.WeaponFaction2)
 						{
-							TranslateItemName(client, ItemFaction[info.WeaponFaction2], _, buffers[0], sizeof(buffer[]));
+							TranslateItemName(client, ItemFaction[info.WeaponFaction2], _, buffers[0], sizeof(buffer));
 							Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[0]);
 						}
 
@@ -5057,7 +5057,7 @@ void Store_ApplyAttribs(int client)
 	StringMap map = new StringMap();
 
 	int Extra_Juggernog_Hp = 0;
-	if(i_CurrentEquippedPerk[client] == 2)
+	if(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN)
 	{
 		Extra_Juggernog_Hp = 100;
 	}
@@ -5076,6 +5076,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	map.SetValue("4049", 1.0);// Elemental Res
 
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
@@ -5142,12 +5143,12 @@ void Store_ApplyAttribs(int client)
 		b_AlaxiosBuffItem[client] = false;
 	}
 	
-	if(i_CurrentEquippedPerk[client] == 4)
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 	{
 		map.SetValue("178", 0.65); //Faster Weapon Switch
 	}
 	
-	if(i_CurrentEquippedPerk[client] == 3) //increase sentry damage! Not attack rate, could end ugly.
+	if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE) //increase sentry damage! Not attack rate, could end ugly.
 	{		
 		map.SetValue("287", 0.65);
 	}
@@ -5281,14 +5282,17 @@ void Store_ApplyAttribs(int client)
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		Attributes_SetMulti(client, 442, 0.65);
+		if(Rogue_Rift_VialityThing())
+			Attributes_SetMulti(client, 442, 0.85);
+		else
+			Attributes_SetMulti(client, 442, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
 	
 	delete snapshot;
 	delete map;
-
+	StatusEffect_StoreRefresh(client);
 	TF2_AddCondition(client, TFCond_Dazed, 0.001);
 
 	EnableSilvesterCosmetic(client);
@@ -6156,21 +6160,21 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-		if(i_CurrentEquippedPerk[client] == 4)
+		if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
 				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
-		if(i_CurrentEquippedPerk[client] == 3)
+		if(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
 		{
 			if(Attributes_Has(entity, 6))
 				Attributes_SetMulti(entity, 6, 0.85);
 		}
 
 		//DEADSHOT!
-		if(i_CurrentEquippedPerk[client] == 5)
+		if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
 		{	
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 103))
@@ -6181,7 +6185,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		}
 
 		//Regene Berry!
-		if(i_CurrentEquippedPerk[client] == 1)
+		if(i_CurrentEquippedPerk[client] & PERK_REGENE)
 		{
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(Attributes_Has(entity, 8))
@@ -6673,6 +6677,7 @@ static void ItemCost(int client, Item item, int &cost)
 	if(Rogue_Mode())
 	{
 		Rogue_Curse_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller));
+	//	Rogue_Rift_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller));
 	}
 }
 
@@ -6720,6 +6725,7 @@ static stock void ItemCostPap(const Item item, int &cost)
 			cost = RoundToNearest(float(cost) * 1.2); 
 		}
 		Rogue_Curse_PackPriceMulti(cost);
+	//	Rogue_Rift_PackPriceMulti(cost);
 	}
 }
 
@@ -7297,6 +7303,13 @@ void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
 
 bool Store_IsWeaponFaction(int client, int weapon, int faction)
 {
+	if(client <= 0)
+		return false;
+	if(weapon <= 0)
+		return false;
+	if(StoreWeapon[weapon] <= 0)
+		return false;
+		
 	static Item item;
 	StoreItems.GetArray(StoreWeapon[weapon], item);
 	if(!item.Owned[client])

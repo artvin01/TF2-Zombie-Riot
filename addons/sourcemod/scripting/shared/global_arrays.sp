@@ -19,6 +19,17 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
 #define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
 
+
+#define PERK_NONE						0
+#define PERK_REGENE						(1 << 0)
+#define PERK_OBSIDIAN					(1 << 1)
+#define PERK_MORNING_COFFEE				(1 << 2)
+#define PERK_HASTY_HOPS					(1 << 3)
+#define PERK_MARKSMAN_BEER				(1 << 4)
+#define PERK_TESLAR_MULE				(1 << 5)
+#define PERK_STOCKPILE_STOUT			(1 << 6)
+#define PERK_ENERGY_DRINK				(1 << 7)
+
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
 #define HEAL_SELFHEAL				(1 << 1) 
@@ -58,48 +69,6 @@ enum
 	Ammo_MAX
 };
 
-/*
-public const char ItemArchetype[][] =
-{
-	"",	// No archetype.	
-//PRIMARY SECONDARY
-	"Multi Pellet",		// 1
-	"Rapid Fire",		// 2
-	"Infinite Fire",	// 3
-	"None",		// 4
-	"Single Pellet",	// 5
-	"Far Range",		// 6
-	"Trap Master",		// 7 this can include builder weapons!
-	"Explosive Mind",	// 8 Most Explosive weapons
-//SUPPORT ITEMS
-	"Team Support",		// 9
-	"ArchDebuff",			// 10
-//MELEE'S
-	"Brawler",			// 11 most fist melee's
-	"Ambusher",			// 12 spy backstab weapons
-	"Combatant",		// 13 Longsword any melee that has no special abilities, mostly
-	"Aberration",		// 14 Melee weapons that summon things, currenly only fusion blade
-	"Duelist",			// 15 Melee weapons that exell at taking down/fighting single targets, see ark due to parry
-	"Lord",				// 16 Any melee that heavily has ranged attacks, see Lappland melee as the only one currently
-	"Crusher",			// 17 Any melee that has very good aoe, see judgement of ibera or final hammer pap
-
-	
-//MAGE WEAPONS
-	"Summoner",			// 18
-	"Chain Caster",		// 19
-	"Multi Caster",		// 20
-	"Base Caster",		// 21
-
-// CUSTOM
-	"Abyssal Hunter",	// 22
-	"Kazimierz",		// 23
-	"Bloodletter",	//24, Vampire Knives fast-attack path
-	"Bloody Butcher", //25, Vampire Knives cleaver path
-	"Mythic Caster",	// 26
-	"Psychic Warlord",	//27, Psychokinesis and Magnesis Staff, possibly more in the future
-	"Archetype Victoria" //28, Damn this is an Archetype for a Victorian weapon made by beep.
-};
-*/
 enum
 {
 	Faction_Expidonsa = 1,
@@ -168,7 +137,9 @@ public const char ItemArchetype[][] =
 	"Medical",	// 17 Healing focus
 	"Mechanic",	// 18 Building focus
 	"Buffer",	// 19 Buffing focus
-	"Debuffer"	// 20 Debuff focus
+	"Debuffer",	// 20 Debuff focus
+
+	"Fallen Warrior"// 21 Special
 };
 
 public const int RenderColors_RPG[][] =
@@ -806,6 +777,7 @@ float f_ClientDoDamageHud[MAXPLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXPLAYERS][2];
 float f3_NpcSavePos[MAXENTITIES][3];  
 float f_DelayComputingOfPath[MAXENTITIES];
+#define EXTRA_RAID_EXPLOSIVE_DAMAGE 1.3
 
 enum
 {
@@ -833,9 +805,9 @@ enum
 	BLEEDTYPE_XENO = 4,
 	BLEEDTYPE_SKELETON = 5,
 	BLEEDTYPE_SEABORN = 6,
-	BLEEDTYPE_VOID = 7
+	BLEEDTYPE_VOID = 7,
+	BLEEDTYPE_UMBRAL = 8
 }
-
 
 
 int i_TankAntiStuck[MAXENTITIES];

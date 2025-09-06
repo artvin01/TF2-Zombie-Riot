@@ -162,6 +162,22 @@
 	{
 		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
 	}
+	"Ziberian Chocolate"
+	{
+		"en"	"Ziberian Chocolate"
+	}
+	"Ziberian Chocolate Desc"
+	{
+		"en"	"It's cold, amazing!\n{green}+1250 Cash, Allies gain +50 max health"
+	}
+	"Shadowing Coin"
+	{
+		"en"	"Shadowing Coin"
+	}
+	"Shadowing Coin Desc"
+	{
+		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}+1750 Cash."
+	}
 	"Special Suppressor"
 	{
 		"en"	"Special Suppressor"
@@ -177,6 +193,14 @@
 	"Stone Gargoyle Desc"
 	{
 		"en"	"Fits at the palm of your hand.\n{green}Allies gain +375 max health"
+	}
+	"I Sell Profen"
+	{
+		"en"	"I Sell Profen"
+	}
+	"I Sell Profen Desc"
+	{
+		"en"	"Enemies gain a headache.\n{green}Enemies take 25％ more headshot damage."
 	}
 	"Vampire's Bed"
 	{
@@ -458,6 +482,14 @@
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
 	}
+	"Minion Energizer"
+	{
+		"en"	"Minion Energizer"
+	}
+	"Minion Energizer Desc"
+	{
+		"en"	"{green}Npc Allies gain +25％ more damage and HP."
+	}
 	"Acahuallan Bowl"
 	{
 		"en"	"Acahuallan Bowl"
@@ -673,6 +705,14 @@
 	"String Puppet Desc"
 	{
 		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
+	}
+	"Cold Water"
+	{
+		"en"	"Cold Water"
+	}
+	"Cold Water Desc"
+	{
+		"en"	"Good water, washes down any drinks.\n{green}You can equip a 2nd perk."
 	}
 	"Children's Puppet"
 	{
@@ -1634,9 +1674,9 @@
 	{
 		"en"	"The Magic Betrayed"
 	}
-	"The Courtain"
+	"The Curtain"
 	{
-		"en"	"The Courtain"
+		"en"	"The Curtain"
 	}
 	"The Great Demons Of Hallam"
 	{

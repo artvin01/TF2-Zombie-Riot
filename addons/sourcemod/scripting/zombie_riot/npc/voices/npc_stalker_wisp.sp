@@ -242,10 +242,12 @@ static void ClotThink(int iNPC)
 
 				MakePlayerGiveResponseVoice(target, 2); //dead!
 				i_CurrentEquippedPerk[target] = 0;
+				UpdatePerkName(target);
 				Grigori_Blessing[target] = 0;
 
 				SetEntityHealth(target, 50);
 				dieingstate[target] = 250;
+				f_DisableDyingTimer[target] = 0.0;
 				
 				Vehicle_Exit(target);
 				SDKHooks_UpdateMarkForDeath(target, true);

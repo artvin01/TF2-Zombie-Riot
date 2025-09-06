@@ -272,7 +272,18 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
-			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
+			bool result;
+
+			if(enemy.Spawn[0])
+			{
+				if(ExplodeStringFloat(enemy.Spawn, " ", pos, sizeof(pos)) == 3)
+					result = true;
+			}
+
+			if(!result)
+				result = Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee);
+
+			if(result)
 			{
 				if(enemy.Is_Boss >= 2)
 				{
@@ -361,12 +372,12 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 					}
 					
 
-					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
-					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
-					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
-					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
+					fl_Extra_MeleeArmor[entity_Spawner] 	*= enemy.ExtraMeleeRes;
+					fl_Extra_RangedArmor[entity_Spawner] 	*= enemy.ExtraRangedRes;
+					fl_Extra_Speed[entity_Spawner] 			*= enemy.ExtraSpeed;
+					fl_Extra_Damage[entity_Spawner] 		*= enemy.ExtraDamage;
 					if(enemy.ExtraThinkSpeed != 0.0 && enemy.ExtraThinkSpeed != 1.0)
-						f_AttackSpeedNpcIncrease[entity_Spawner]	= enemy.ExtraThinkSpeed;
+						f_AttackSpeedNpcIncrease[entity_Spawner]	*= enemy.ExtraThinkSpeed;
 						
 					if(enemy.ExtraSize != 1.0)
 					{
@@ -479,34 +490,37 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
 	bool KeepProtection = false;
-	if(Rogue_Theme() == 1 && !force)
+	if(!force)
 	{
-		if(f_DomeInsideTest[entity] > GetGameTime())
+		if(Rogue_Theme() == 1)
 		{
-			KeepProtection = true;
+			if(f_DomeInsideTest[entity] > GetGameTime())
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	float PosNpc[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
-	if(!KeepProtection)
-	{
-		if(IsPointOutsideMap(PosNpc))
+		float PosNpc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+		if(!KeepProtection)
 		{
-			KeepProtection = true;
+			if(IsPointOutsideMap(PosNpc))
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	if(!KeepProtection)
-	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
-		static float minn[3], maxx[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
-		if(IsBoxHazard(PosNpc, minn, maxx))
-			KeepProtection = true;
+		if(!KeepProtection)
+		{
+			if(i_InHurtZone[entity])
+				KeepProtection = true;
+		}
+		if(!KeepProtection)
+		{
+			static float minn[3], maxx[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+			if(IsBoxHazard(PosNpc, minn, maxx))
+				KeepProtection = true;
+		}
 	}
 
 
@@ -873,7 +887,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
 
-				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+				if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 				{
 					damage *= 1.25;
 				}
@@ -907,7 +921,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 					{
 						BombsToInject += 1;
 					}
@@ -1150,7 +1164,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Changed;
 		}
 	}
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
@@ -1282,6 +1296,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = false;
 	}
+	//force gibbing.
+	if(HasSpecificBuff(victim, "Warped Elemental End"))
+		npcBase.m_bGib = true;
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 24);
 	
@@ -1436,6 +1453,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
+	
+	if(SlayNpc && HasSpecificBuff(victim, "Blessing of Stars"))
+	{
+		HealEntityGlobal(victim, victim, float(ReturnEntityMaxHealth(victim) / 4), 1.0, 1.0, HEAL_ABSOLUTE);
+		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+		ApplyStatusEffect(victim, victim, "Unstoppable Force", 1.0);
+		RemoveSpecificBuff(victim, "Blessing of Stars");
+		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+		SlayNpc = false;
+	}
 	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1524,6 +1551,12 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_UMBRAL)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 			}

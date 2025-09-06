@@ -192,7 +192,8 @@ methodmap ChaosSwordsman < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		Elemental_AddChaosDamage(npc.index, npc.index, 1, false);		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

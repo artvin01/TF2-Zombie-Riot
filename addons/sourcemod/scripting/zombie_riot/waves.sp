@@ -2474,6 +2474,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(subgame)
 				{
+					if(FogEntity != INVALID_ENT_REFERENCE)
+					{
+						int entity = EntRefToEntIndex(FogEntity);
+						if(entity > MaxClients)
+							RemoveEntity(entity);
+						
+						FogEntity = INVALID_ENT_REFERENCE;
+					}
+					
 					if(Construction_Mode())
 					{
 						Construction_BattleVictory();
@@ -2612,7 +2621,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7) 
+				if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
 				{
 					Ammo_Count_Used[target] -= 1;
 				}
@@ -2628,7 +2637,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7)
+				if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
 				{
 					Ammo_Count_Used[target] -= 1;
 				}
@@ -3108,6 +3117,8 @@ void DoGlobalMultiScaling()
 	playercount *= GetScaledPlayerCountMulti(PlayersIngame);
 
 	float multi = playercount / 4.0;
+	
+	Rogue_Rift_MultiScale(multi);
 	
 	//normal bosses health
 	MultiGlobalHealthBoss = playercount * 0.2;
@@ -3829,6 +3840,17 @@ void WavesUpdateDifficultyName()
 
 void Waves_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
 {
+	if(Aperture_ShouldDoLastStand())
+	{
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		{
+			ApplyStatusEffect(client, client, "Chaos Infliction", 999.0);
+		}
+		else
+		{
+			RemoveSpecificBuff(client, "Chaos Infliction");
+		}
+	}
 	if(ModFuncAlly != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, ModFuncAlly);

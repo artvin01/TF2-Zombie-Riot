@@ -16,7 +16,6 @@ void Flametail_RoundStart()
 	Zero(DoubleHit);
 	KaziBuffed = false;
 }
-
 void ResetFlameTail()
 {
 	KaziBuffed = false;
@@ -32,6 +31,7 @@ void ResetFlameTail()
 		}
 	}
 }
+
 void Flametail_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FLAMETAIL)

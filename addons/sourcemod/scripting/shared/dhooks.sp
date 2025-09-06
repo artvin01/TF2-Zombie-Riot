@@ -781,6 +781,11 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	//Projectile_TeleportAndClip(entity);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner < 0)
+	{
+		//no owner..........
+		owner = entity;
+	}
 	float GrenadePos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	if (0 < owner  && owner <= MaxClients)
@@ -2184,12 +2189,6 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
-#if !defined RTS
-	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#endif
 #if defined ZR
 	else if (b_thisNpcHasAnOutline[entity] || !b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{

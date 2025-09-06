@@ -1389,6 +1389,8 @@ methodmap Citizen < CClotBody
 					HealEntityGlobal(client, client, float(ReturnEntityMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
 				
 				HealEntityGlobal(client ? client : this.index, this.index, ReturnEntityMaxHealth(this.index) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+				int ent = this.index;
+				Rogue_TriggerFunction(Artifact::FuncRevive, ent);
 
 				i_npcspawnprotection[this.index] = NPC_SPAWNPROT_UNSTUCK;
 				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(this.index), TIMER_FLAG_NO_MAPCHANGE);
@@ -1402,7 +1404,8 @@ methodmap Citizen < CClotBody
 
 			this.UpdateModel();
 			
-			IgnorePlayer[client] = false;
+			if(client > 0 && client <= MaxClients)
+				IgnorePlayer[client] = false;
 		}
 	}
 	public bool CanTalk()
@@ -1777,6 +1780,7 @@ static void CitizenMenu(int client, int page = 0)
 			npc.m_iSeakingObject = 0;
 		}
 	}
+	AnyMenuOpen[client] = 1.0;
 
 	SetGlobalTransTarget(client);
 
@@ -2016,6 +2020,8 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 			if(choice == MenuCancel_ExitBack)
 				CitizenMenu(client);
 		}
@@ -2463,7 +2469,7 @@ int Citizen_Count()
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
 			//and temp rebels!
-			if(!npc.m_bHero && !TempRebel[i])
+			if(!npc.m_bHero && TempRebel[i])
 				count++;
 		}
 	}

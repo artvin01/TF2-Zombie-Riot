@@ -253,7 +253,22 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMaxDist", 700.0);
 	b_NoHealthbar[iNpc] = true;
 	GiveNpcOutLineLastOrBoss(iNpc, false);
-	b_thisNpcHasAnOutline[iNpc] = true; 
+	b_thisNpcHasAnOutline[iNpc] = true;
+
+	/*
+	float SelfPosParanormal[3];
+	float AllyPosParanormal[3];
+	float flDistanceToTargetParanormal = GetVectorDistance(SelfPosParanormal, AllyPosParanormal, true);
+	if(flDistanceToTargetParanormal < (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 2.0;
+	}
+	if(flDistanceToTargetParanormal > (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 0.5;
+	}
+	*/
+
 }
 
 float ZRModifs_MaxSpawnsAlive()

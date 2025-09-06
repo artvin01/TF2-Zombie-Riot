@@ -42,12 +42,26 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 				"10"
 			*/
 
-			if(!Rogue_Paradox_IgnoreOdds())
+			bool ignoreOdds = Rogue_Paradox_IgnoreOdds();
+
+			if(Rogue_Theme() == ReilaRift)
+			{
+				switch(Rogue_GetUmbralLevel())
+				{
+					case 0, 4:
+						ignoreOdds = true;
+					
+					case 2:
+						return -1;
+				}
+			}
+
+			if(!ignoreOdds)
 			{
 				float rand = GetURandomFloat();
 				float value = StringToFloat(buffers[0]);
-				if(value >= 1.0)
-					rand *= 100.0;
+				if(value > 1.0)
+					rand /= 100.0;
 				
 				if(Construction_Mode())
 				{
@@ -77,7 +91,56 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	}
 
 	if(LastResult)
-		return NPC_CreateByName(buffers[1], client, vecPos, vecAng, team, buffers[2], true);
+	{
+		bool friendly = (Rogue_Theme() == ReilaRift) && (Rogue_GetUmbralLevel() < 2);
+
+		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
+
+		if(GetTeam(entity) == TFTeam_Red)
+		{
+			RequestFrame(Umbral_AdjustStats, EntIndexToEntRef(entity));
+			TeleportNpcToRandomPlayer(entity);
+		}
+		else
+		{
+			switch(Rogue_GetUmbralLevel())
+			{
+				case 4:
+				{
+					//if completly hated.
+					//no need to adjust HP scaling, so it can be done here.
+					fl_Extra_Damage[entity] *= 2.0;
+					fl_Extra_MeleeArmor[entity] *= 0.65;
+					fl_Extra_RangedArmor[entity] *= 0.65;
+				}
+			}
+		}
+
+		return entity;
+	}
 	
 	return -1;
+}
+static void Umbral_AdjustStats(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
+
+	fl_Extra_Damage[entity] *= 5.0;
+	MultiHealth(entity, 0.05);
+	int HealthGet = ReturnEntityMaxHealth(entity);
+	if(HealthGet >= 3000)
+	{
+		//give more dmg again!
+		fl_Extra_Damage[entity] *= 2.0;
+		SetEntProp(entity, Prop_Data, "m_iHealth", 3000);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 3000);
+	}
+}
+
+static void MultiHealth(int entity, float amount)
+{
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
 }

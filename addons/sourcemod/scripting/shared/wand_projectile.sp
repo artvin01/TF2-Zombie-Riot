@@ -129,11 +129,13 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 
 		//Make it entirely invis. Shouldnt even render these 8 polygons.
 	//	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		
 		if(hideprojectile)
 		{
-			SetEntityRenderMode(entity, RENDER_NONE); //Make it entirely invis.
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
 			SetEntityRenderColor(entity, 255, 255, 255, 0);
 		}
+		
 		Hook_DHook_UpdateTransmitState(entity);
 		
 		int particle = 0;
