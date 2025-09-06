@@ -1020,13 +1020,15 @@ void NPC_ConfigSetup()
 	GrimReaper_OnMapStart_NPC();
 	SupremeSpookmasterBones_OnMapStart_NPC();
 	SSBChair_OnMapStart_NPC();
+	#endif
 }
 
 void NPC_MapEnd()
 {
+	#if defined BONEZONE_BASE
 	SSB_DeleteAbilities();
 	SSBChair_DeleteAbilities();
-	//Aperture
+	#endif
 }
 
 int NPC_Add(NPCData data)
