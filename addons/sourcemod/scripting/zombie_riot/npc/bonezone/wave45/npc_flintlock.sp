@@ -684,7 +684,7 @@ public void Deadeye_AnimEvent(int entity, int event)
 			}
 		}
 	}
-    else if (b_FlintlockWindupPhase[npc.index])
+	else if (b_FlintlockWindupPhase[npc.index])
 	{
 		switch(event)
 		{

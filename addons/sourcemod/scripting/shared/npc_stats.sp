@@ -4166,11 +4166,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		VausMagicaRemoveShield(pThis, true);
 #endif
 
-	#if defined BONEZONE_BASE
-    delete g_BoneZoneBuffers[pThis];
-    b_SetBuffedSkeletonAnimation[pThis]    = false;
+#if defined BONEZONE_BASE
+	delete g_BoneZoneBuffers[pThis];
+	b_SetBuffedSkeletonAnimation[pThis]    = false;
 	b_SetNonBuffedSkeletonAnimation[pThis] = false;
-	#endif
+#endif
 
 
 #if !defined RTS
@@ -4380,49 +4380,6 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	}
 	return MRES_Ignored;
 }
-
-stock ArrayList GetAllNearbyAreas(float pos[3], float radius)
-{
-    ArrayList valid = CreateArray(255);
-
-    int iAreaCount = TheNavAreas.Length;
-    for (int i = 0; i < iAreaCount; i++)
-    {
-        CNavArea navi = TheNavAreas.Get(i);
-
-        if (navi == NULL_AREA)
-            break;    // No nav?
-
-        int NavAttribs = navi.GetAttributes();
-        if (NavAttribs & NAV_MESH_AVOID)
-        {
-            continue;
-        }
-
-        float navPos[3];
-        navi.GetCenter(navPos);
-
-        if (GetVectorDistance(pos, navPos) <= radius)
-            PushArrayCell(valid, navi);
-    }
-
-    return valid;
-}
-
-stock CNavArea GetRandomNearbyArea(float pos[3], float radius)
-{
-    ArrayList areas = GetAllNearbyAreas(pos, radius);
-    CNavArea navi;
-
-    if (GetArraySize(areas) > 0)
-    {
-        navi = GetArrayCell(areas, GetRandomInt(0, GetArraySize(areas) - 1));
-    }
-
-    delete areas;
-    return navi;
-}
-
 stock bool IsLengthGreaterThan(float vector[3], float length)
 {
 	return (SquareRoot(GetVectorLength(vector, false)) > length * length);

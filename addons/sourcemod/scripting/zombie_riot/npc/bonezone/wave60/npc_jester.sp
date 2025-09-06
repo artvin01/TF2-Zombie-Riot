@@ -802,7 +802,7 @@ public void Mondo_AnimEvent(int entity, int event)
 	if (!b_BonesBuffed[entity])
 		return;
 
-    switch(event)
+	switch(event)
 	{
 		case 1001:	//Attack sequence begins: Servant of Mondo tosses its bomb up into the air. Play HHHH grunt sound as well as necro-smasher swing sound for effect.
 		{
