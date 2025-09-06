@@ -51,6 +51,7 @@ static char g_BounceEnergOrb[][] = {
 	"weapons/physcannon/energy_bounce2.wav",
 };
 
+#define SHADOW_DEFAULT_SPEED	340.0
 public void Shadowing_Darkness_Boss_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -221,6 +222,16 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flRestoreDefaultWalk
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flPortalSummonGate
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 
 	public Shadowing_Darkness_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -247,6 +258,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
+			npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
 
 		
 
@@ -419,6 +431,16 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if(Shadowing_Darkness_UmbralGateSummoner(npc, gameTime))
+	{
+		return;
+	}
+
+
+	Shadowing_Darkness_DefaultMovement(npc, gameTime);
+
+	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -569,12 +591,11 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 		}
 	}
 }
-
 #define SD_PROJ_SPEED 1400.0
 bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float gameTime)
 {
 
-	if(npc.m_flSwordParticleAttackCD < gameTime)
+	if(npc.m_flSwordParticleAttackCD < gameTime && npc.m_iState == 0)
 	{
 		npc.m_flSwordParticleAttackCD = gameTime + 30.0;
 		npc.m_iState = 1;
@@ -606,14 +627,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 		{
 			//Reset back to normal, we are done.
 			npc.m_iState = 0;
-			if(npc.m_iChanged_WalkCycle != 3) 	
-			{
-				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 3;
-				npc.SetActivity("ACT_RUN");
-				npc.m_flSpeed = 0.0;
-				npc.StopPathing();
-			}
+			npc.m_flRestoreDefaultWalk = 1.0;
 		}
 		else if(TimeLeft <= 1.0)
 		{
@@ -755,4 +769,103 @@ stock void SD_ProjectileGiveSpeed(DataPack pack)
 	TeleportEntity(Projectile, NULL_VECTOR, NULL_VECTOR, VectorSpeed);
 	delete pack;
 
+}
+
+
+void Shadowing_Darkness_DefaultMovement(Shadowing_Darkness_Boss npc, float gameTime)
+{
+	if(!npc.m_flRestoreDefaultWalk)
+		return;
+		
+	if(npc.m_flRestoreDefaultWalk > gameTime)
+		return;
+
+	npc.m_bisWalking = true;
+	npc.m_iChanged_WalkCycle = 0;
+	npc.SetActivity("ACT_RUN");
+	npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
+	npc.StartPathing();
+}
+
+
+bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float gameTime)
+{
+	if(npc.m_flPortalSummonGate < gameTime && npc.m_iState == 0)
+	{
+		npc.m_flPortalSummonGate = gameTime + 60.0;
+		npc.m_iState = 2;	
+		npc.m_flDoingAnimation = gameTime + 2.0;
+		if(npc.m_iChanged_WalkCycle != 1) 	
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 1;
+			npc.SetActivity("ACT_RUN");
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+		}
+	}
+
+	if(npc.m_iState == 2)
+	{
+		float TimeLeft = npc.m_flDoingAnimation - gameTime;
+		if(TimeLeft <= 0.0)
+		{
+			//Reset back to normal, we are done.
+			npc.m_iState = 0;
+			npc.m_flRestoreDefaultWalk = 1.0;
+		}
+		else if(TimeLeft <= 1.0)
+		{
+			//do a big slice and summon portal entity
+			if(npc.m_iChanged_WalkCycle != 2) 	
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 2;
+				npc.SetActivity("ACT_RUN");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+				
+				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+				
+				int spawn_index = NPC_CreateByName("npc_shadow_umbral_gate", -1, pos, ang, GetTeam(npc.index));
+				if(spawn_index > MaxClients)
+				{
+					NpcStats_CopyStats(npc.index, spawn_index);
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 8));
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
+
+				}
+			}
+		}
+		else if(TimeLeft <= 2.0)
+		{
+			//do whatever after some time
+			if(npc.m_iChanged_WalkCycle != 2) 	
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 2;
+				npc.SetActivity("ACT_RUN");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+
+				//ability stuff
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+				float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf );
+				//as of now, just badly jump up and do a portal there
+				
+				static float flPos[3]; 
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
+				flPos[2] += 600.0;
+				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200, -100) : GetRandomFloat(100, 200);
+				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200, -100) : GetRandomFloat(100, 200);
+				npc.SetVelocity({0.0,0.0,0.0});
+				PluginBot_Jump(npc.index, flPos);
+			}
+		}
+		return true;
+	}
+	return false;
 }
