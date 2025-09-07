@@ -86,6 +86,8 @@ static const char g_ShotgunFiringSound[] = ")weapons/tf2_backshot_shotty_crit.wa
 
 static const char g_SpecialRangedAttackSound[] = "vo/mvm/norm/soldier_incoming01.mp3";
 
+static const char g_SelfLaunchingSound[] = ")weapons/rocket_pack_boosters_fire.wav";
+
 static int i_AirStrikeRocketModelIndex;
 static int i_TargetArray[RAIDBOSS_GLOBAL_ATTACKLIMIT];
 
@@ -169,6 +171,8 @@ static void ClotPrecache()
 	
 	PrecacheSound(g_DeployBeaconSound);
 	PrecacheSound(g_MeleeHitChargeSound);
+	
+	PrecacheSound(g_SelfLaunchingSound);
 	
 	i_AirStrikeRocketModelIndex = PrecacheModel("models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 	PrecacheModel("models/bots/soldier/bot_soldier.mdl");
@@ -305,6 +309,16 @@ methodmap ARIS < CClotBody
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 	}
 	
+	public void PlaySelfLaunchingSound()
+	{
+		EmitSoundToAll(g_SelfLaunchingSound, this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	
+	public void StopSelfLaunchingSound()
+	{
+		StopSound(this.index, SNDCHAN_AUTO, g_SelfLaunchingSound);
+	}
+	
 	property float m_flNextRocketBarrageMain
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -387,6 +401,24 @@ methodmap ARIS < CClotBody
 	{
 		public get()							{ return i_AttacksTillMegahit[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
+	
+	property int m_iDeathState
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flNextDeathState
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	
+	property float m_flLastDeathHeight
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	
 	public ARIS(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -503,6 +535,7 @@ methodmap ARIS < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		
 		npc.m_flSpeed = 300.0;
+		npc.m_bDissapearOnDeath = true;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -534,23 +567,8 @@ public void ARIS_ClotThink(int iNPC)
 		return;
 	}
 
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
-	{
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{rare}A.R.I.S.{default}: M15510N 5UCC355FUL, D3SP173 MY C4P481L1713S");
+	if (ARIS_LoseConditions(iNPC))
 		return;
-	}
-
-	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}A.R.I.S.{default}: 7H3 3N3M13S H4V3 F0RF317, M15510N 5UCC355FUL");
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		return;
-	}
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -840,16 +858,33 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 {
 	ARIS npc = view_as<ARIS>(victim);
 	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	if (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
 		ARIS_DestroyDroppedBeacon(npc);
 		ARIS_ClearAllProjectiles(npc);
 		
-		npc.StopPassiveSound();
-		npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		if (Aperture_ShouldDoLastStand())
+		{
+			// We're in Laboratories, the boss' think/death functions will be hijacked
+			npc.StopPassiveSound();
+			npc.m_iState = APERTURE_BOSS_ARIS; // This will store the boss's "type"
+			Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		}
+		else if (!npc.m_flNextDeathState)
+		{
+			// We're not in Laboratories, don't die immediately, we do an animation first
+			RaidModeTime += 10.0;
+			
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 99999.0);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);
+			
+			npc.m_flNextDeathState = 1.0;
+			
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+		}
 		
-		npc.m_flArmorCount = 0.0;
 		damage = 0.0;
 		return Plugin_Handled;
 	}
@@ -879,9 +914,11 @@ public void ARIS_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 
 	npc.StopPassiveSound();
-
 }
 
 static void ARIS_CalculateRocketAmount(ARIS npc)
@@ -1524,4 +1561,94 @@ static void ARIS_ClearAllProjectiles(ARIS npc)
 		
 		RemoveEntity(i);
 	}
+}
+
+static bool ARIS_LoseConditions(int iNPC)
+{
+	ARIS npc = view_as<ARIS>(iNPC);
+	if (npc.m_flNextDeathState)
+	{
+		if (npc.m_flNextDeathState > GetGameTime())
+			return true;
+		
+		switch (npc.m_iDeathState)
+		{
+			case 0:
+			{
+				npc.m_bisWalking = false;
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+				
+				npc.AddActivityViaSequence("taunt01");
+				npc.SetCycle(0.05);
+				npc.SetPlaybackRate(1.0);
+				npc.m_flNextDeathState = GetGameTime() + 1.7;
+			}
+			
+			case 1:
+			{
+				npc.AddActivityViaSequence("taunt01");
+				npc.SetCycle(0.66);
+				npc.SetPlaybackRate(0.0);
+				
+				float vecPos[3], vecAng[3], vecTargetPos[3];
+				npc.GetAttachment("flag", vecPos, vecAng);
+				vecPos[2] += 10.0;
+				npc.m_iWearable2 = ParticleEffectAt_Parent(vecPos, "rockettrail", npc.index);
+				
+				GetAbsOrigin(npc.index, vecTargetPos);
+				npc.m_flLastDeathHeight = vecTargetPos[2];
+				vecTargetPos[2] += 1000.0;
+				
+				b_NoGravity[npc.index] = true;
+				PluginBot_Jump(npc.index, vecTargetPos);
+				
+				npc.m_flNextDeathState = GetGameTime() + 0.1;
+				npc.PlaySelfLaunchingSound();
+			}
+			
+			case 20:
+			{
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+			
+			default: // 2-19 (lazy)
+			{
+				// Immediately kill ARIS if we hit a ceiling
+				float vecPos[3];
+				GetAbsOrigin(npc.index, vecPos);
+				if (vecPos[2] == npc.m_flLastDeathHeight)
+				{
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					return true;
+				}
+				
+				npc.m_flNextDeathState = GetGameTime() + 0.1;
+				npc.m_flLastDeathHeight = vecPos[2];
+			}
+		}
+		
+		npc.m_iDeathState++;
+		npc.Update();
+		return true;
+	}
+	
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		
+		CPrintToChatAll("{rare}A.R.I.S.{default}: M15510N 5UCC355FUL, D3SP173 MY C4P481L1713S");
+		return true;
+	}
+	
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{rare}A.R.I.S.{default}: 7H3 3N3M13S H4V3 F0RF317, M15510N 5UCC355FUL");
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return true;
+	}
+
+	return false;
 }

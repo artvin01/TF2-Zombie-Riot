@@ -27,6 +27,8 @@ enum
 }
 
 int i_ApertureBossesDead = APERTURE_BOSS_NONE;
+static float fl_PlayerDamage[MAXPLAYERS];
+static float fl_MaxDamagePerPlayer;
 
 #define APERTURE_LAST_STAND_TIMER_TOTAL 20.0
 #define APERTURE_LAST_STAND_TIMER_INVULN 5.0
@@ -248,6 +250,8 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	npc.m_bisWalking = false;
 	npc.StopPathing();
 	
+	npc.m_flArmorCount = 0.0;
+	
 	RaidModeScaling = 0.0;
 	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
 	if(CurrentModifOn() == 1)
@@ -259,7 +263,7 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	npc.m_flNextThinkTime = gameTime + APERTURE_LAST_STAND_TIMER_BEFORE_INVULN;
 	
 	func_NPCDeath[npc.index] = Aperture_Shared_LastStandSequence_NPCDeath;
-	func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+	func_NPCOnTakeDamage[npc.index] = Aperture_Shared_LastStandSequence_OnTakeDamage;
 	func_NPCThink[npc.index] = Aperture_Shared_LastStandSequence_ClotThink;
 	
 	npc.m_iAnimationState = APERTURE_LAST_STAND_STATE_STARTING;
@@ -269,12 +273,12 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 
 static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
 {
-	/*
-	SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(ReturnEntityMaxHealth(npc.index) * APERTURE_LAST_STAND_HEALTH_MULT));
-	SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
-	*/
+	int healthToSet = RoundToNearest(ReturnEntityMaxHealth(npc.index) * APERTURE_LAST_STAND_HEALTH_MULT);
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", healthToSet);
 	
-	SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToNearest(ReturnEntityMaxHealth(npc.index) * APERTURE_LAST_STAND_HEALTH_MULT));
+	fl_MaxDamagePerPlayer = (healthToSet * 2.0) / CountPlayersOnRed();
+	for (int i = 0; i < sizeof(fl_PlayerDamage); i++)
+		fl_PlayerDamage[i] = 0.0;
 	
 	EmitSoundToAll(g_ApertureSharedStunMainSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
 	
@@ -352,6 +356,31 @@ public void Aperture_Shared_LastStandSequence_ClotThink(int entity)
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 1.0;
+}
+
+public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if (attacker <= 0 || attacker > MaxClients)
+		return Plugin_Continue;
+	
+	// We're massively reducing damage if players dealt too much damage to bosses in the spare/kill sequence
+	const float damageReduction = 0.05;
+	
+	// They just reached the threshold, account for the remainder
+	if (fl_PlayerDamage[attacker] < fl_MaxDamagePerPlayer && fl_PlayerDamage[attacker] + damage > fl_MaxDamagePerPlayer)
+	{
+		float fullDamage = fl_MaxDamagePerPlayer - fl_PlayerDamage[attacker];
+		float remainder = (damage - fullDamage) * damageReduction;
+		damage = fullDamage + remainder;
+	}
+	else if (fl_PlayerDamage[attacker] >= fl_MaxDamagePerPlayer)
+	{
+		damage *= damageReduction;
+	}
+	
+	fl_PlayerDamage[attacker] += damage;
+	PrintToChatAll("%N dealt %.2f damage (%.0f/%.0f)", attacker, damage, fl_PlayerDamage[attacker], fl_MaxDamagePerPlayer);
+	return Plugin_Changed;
 }
 
 public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
