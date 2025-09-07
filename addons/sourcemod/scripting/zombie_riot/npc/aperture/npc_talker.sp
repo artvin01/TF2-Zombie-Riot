@@ -363,6 +363,10 @@ public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &at
 	if (attacker <= 0 || attacker > MaxClients)
 		return Plugin_Continue;
 	
+	// Don't bother on Chaos Intrusion
+	if (CurrentModifOn() == 1)
+		return Plugin_Continue;
+	
 	// We're massively reducing damage if players dealt too much damage to bosses in the spare/kill sequence
 	const float damageReduction = 0.05;
 	

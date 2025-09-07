@@ -873,8 +873,6 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		else if (!npc.m_flNextDeathState)
 		{
 			// We're not in Laboratories, don't die immediately, we do an animation first
-			RaidModeTime += 10.0;
-			
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 99999.0);
 			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);
