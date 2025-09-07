@@ -93,7 +93,7 @@ methodmap Umbral_Automaton < CClotBody
 	
 	public Umbral_Automaton(float vecPos[3], float vecAng[3], int ally)
 	{
-		Umbral_Automaton npc = view_as<Umbral_Automaton>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "4.0", "22500", ally,.isGiant = true/*, .CustomThreeDimensions = {55.0, 55.0, 300.0}*/));
+		Umbral_Automaton npc = view_as<Umbral_Automaton>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "4.0", "22500", ally,.isGiant = true, .CustomThreeDimensions = {55.0, 55.0, 300.0}));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -230,7 +230,7 @@ public void Umbral_Automaton_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Umbral_AutomatonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Umbral_AutomatonSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -292,7 +292,7 @@ public void Umbral_Automaton_NPCDeath(int entity)
 
 }
 
-void Umbral_AutomatonSelfDefense(Umbral_Automaton npc, float gameTime, int target, float distance)
+void Umbral_AutomatonSelfDefense(Umbral_Automaton npc, float gameTime, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

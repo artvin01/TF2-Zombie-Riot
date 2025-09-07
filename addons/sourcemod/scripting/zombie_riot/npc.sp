@@ -1089,6 +1089,8 @@ void NPC_ConfigSetup()
 	Umbral_Automaton_OnMapStart_NPC();
 	OmegaFollower_Setup();
 	Shadow_FloweringDarkness_OnMapStart_NPC();
+	Shadowing_Darkness_Boss_OnMapStart_NPC();
+	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1544,6 +1546,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/npc_cured_last_survivor.sp"
 #include "npc/ally/npc_citizen_new.sp"
 #include "npc/ally/npc_allied_sensal_afterimage.sp"
+#include "npc/ally/npc_allied_warped_crystal_visualiser.sp"
 #include "npc/ally/npc_allied_leper_visualiser.sp"
 #include "npc/ally/npc_allied_kahml_afterimage.sp"
 #include "npc/ally/npc_allied_kiyru_visualiser.sp"
@@ -2373,3 +2376,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_automaton.sp"
 #include "npc/rogue/rouge3/npc_omega_follower.sp"
 #include "npc/rogue/rouge3/npc_shadow_flowering_darkness.sp"
+#include "npc/rogue/rouge3/npc_shadowing_darkness.sp"

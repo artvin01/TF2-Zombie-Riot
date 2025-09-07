@@ -1286,6 +1286,13 @@ public void OnPostThink(int client)
 		{
 			switch(Armor_DebuffType[armorEnt])
 			{
+				//necrosis
+				case Element_Necrosis:
+				{
+					red = 255;
+					green = 50;
+					blue = 50;
+				}
 				//chaos
 				case Element_Chaos:
 				{

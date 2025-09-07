@@ -1415,9 +1415,13 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 					Armor_Charge[victim] += damage + 50;
 
 					i_AmountDowned[victim]--;
-					TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
+				//	TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
 					SDKHooks_TakeDamage(victim, attacker, attacker, 9999999.9, DMG_TRUEDAMAGE);
 					f_DisableDyingTimer[victim] = FAR_FUTURE;
+					Warped_ClientDoEffets(victim);
+					EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
 				}
 			}
 
@@ -1534,5 +1538,25 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			repair = 1;
 
 		SetEntProp(victim, Prop_Data, "m_iMaxHealth", repair);
+	}
+}
+
+
+static void Warped_ClientDoEffets(int client)
+{
+	float vabsAngles[3];
+	float vabsOrigin[3];
+	GetClientAbsOrigin(client, vabsOrigin);
+	GetClientEyeAngles(client, vabsAngles);
+	vabsAngles[0] = 0.0;
+
+	NPC_CreateByName("npc_allied_warped_crystal_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client), "");
+	SetVariantInt(1);
+	AcceptEntityInput(client, "SetForcedTauntCam");
+
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	}
 }
