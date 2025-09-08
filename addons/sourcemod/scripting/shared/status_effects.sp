@@ -3704,6 +3704,26 @@ void StatusEffects_FallenWarrior()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Unstable Umbral Rift");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "UR");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= UnstableUmbralRift_StartOnce;
+	data.OnBuffStoreRefresh			= UnstableUmbralRift_Start;
+	data.OnBuffEndOrDeleted			= UnstableUmbralRift_End;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.5;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Altered Functions");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ϡ");
@@ -6001,7 +6021,7 @@ static void Terrified_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!IsValidClient(victim))
 		return;
 		
-	Attributes_SetMulti(victim, 442, 0.5);
+	Attributes_SetMulti(victim, 442, 0.85);
 	SDKCall_SetSpeed(victim);
 }
 
@@ -6061,4 +6081,43 @@ void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_Sta
 void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
+}
+
+
+
+
+static void UnstableUmbralRift_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.85);
+	Attributes_SetMulti(victim, 610, 0.35);
+	Attributes_SetMulti(victim, 326, 1.5);
+	SDKCall_SetSpeed(victim);
+}
+
+
+static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.85);
+	Attributes_SetMulti(victim, 610, 0.35);
+	Attributes_SetMulti(victim, 326, 1.5);
+	i_Client_Gravity[victim] /= 5;
+	SDKCall_SetSpeed(victim);
+}
+
+static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, (1.0 / 0.85));
+	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
+	Attributes_SetMulti(victim, 326, (1.0 / 1.5));
+	i_Client_Gravity[victim] *= 5;
+	SDKCall_SetSpeed(victim);
 }

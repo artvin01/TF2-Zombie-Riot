@@ -1579,6 +1579,8 @@ public void OnClientDisconnect(int client)
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_LostFooting[client] = -1.0;
+	ReplicateClient_Gravity[client] = -1;
+	i_Client_Gravity[client] = 800; //incase
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
 	b_NetworkedCrouch[client] = false;

@@ -357,6 +357,7 @@ public void OnPreThinkPost(int client)
 	}
 	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 	Cvar_LoostFooting.FloatValue = f_Client_LostFriction[client];
+	sv_gravity.IntValue = i_Client_Gravity[client];
 }
 #endif	// ZR & RPG
 
@@ -466,12 +467,19 @@ public void OnPostThink(int client)
 		Cvar_clamp_back_speed.ReplicateToClient(client, IntToStringDo); //set down
 		ReplicateClient_BackwardsWalk[client] = f_Client_BackwardsWalkPenalty[client];
 	}
-	if(ReplicateClient_LostFooting[client] != ReplicateClient_LostFooting[client])
+	if(ReplicateClient_LostFooting[client] != f_Client_LostFriction[client])
 	{
 		char IntToStringDo[4];
 		FloatToString(f_Client_LostFriction[client], IntToStringDo, sizeof(IntToStringDo));
 		Cvar_LoostFooting.ReplicateToClient(client, IntToStringDo); //set down
 		ReplicateClient_LostFooting[client] = f_Client_LostFriction[client];
+	}
+	if(ReplicateClient_Gravity[client] != i_Client_Gravity[client])
+	{
+		char IntToStringDo[4];
+		IntToString(i_Client_Gravity[client], IntToStringDo, sizeof(IntToStringDo));
+		sv_gravity.ReplicateToClient(client, IntToStringDo); //set down
+		ReplicateClient_Gravity[client] = i_Client_Gravity[client];
 	}
 
 #if defined ZR
