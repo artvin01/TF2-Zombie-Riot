@@ -828,7 +828,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = NPC_CreateByName("npc_shadow_umbral_gate", -1, pos, ang, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_torn_umbral_gate", -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					NpcStats_CopyStats(npc.index, spawn_index);
@@ -858,9 +858,9 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				static float flPos[3]; 
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
-				flPos[2] += 600.0;
-				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100, 200.0);
-				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100, 200.0);
+				flPos[2] += 500.0;
+				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
+				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 			}

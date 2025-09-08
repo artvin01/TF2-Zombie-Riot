@@ -243,6 +243,7 @@ void OnMapStart_NPC_Base()
 	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_light");
 	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
+	g_particleImpactPortal = PrecacheParticleSystem("drg_cow_explosion_sparkles_blue");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -6997,6 +6998,10 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
 				}
 				SetEntityRenderColor(prop, 200, 0, 200, 255);
+			}
+			case BLEEDTYPE_PORTAL:
+			{
+				//none.
 			}
 		}	
 		if(ParticleSet != -1)

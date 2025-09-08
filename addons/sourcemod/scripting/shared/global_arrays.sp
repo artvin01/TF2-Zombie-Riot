@@ -172,6 +172,7 @@ float i_WasInResPowerup[MAXPLAYERS] = {0.0,0.0,0.0};
 
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
+ConVar sv_gravity; 
 ConVar sv_cheats;
 ConVar nav_edit;
 ConVar tf_scout_air_dash_count;
@@ -209,6 +210,7 @@ int i_IDependOnThisBuilding[MAXENTITIES];
 
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
+int g_particleImpactPortal;
 
 
 #if !defined RTS
@@ -307,6 +309,7 @@ float f_Client_BackwardsWalkPenalty[MAXPLAYERS]={0.7, ...};
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.9, ...};
 float f_Client_BackwardsWalkPenalty[MAXPLAYERS]={0.9, ...};
 #endif
+int i_Client_Gravity[MAXPLAYERS]={800, ...};
 
 float f_Client_LostFriction[MAXPLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
@@ -443,6 +446,7 @@ float f_PullStrength[MAXENTITIES];
 float ReplicateClient_Svairaccelerate[MAXPLAYERS];
 float ReplicateClient_BackwardsWalk[MAXPLAYERS];
 float ReplicateClient_LostFooting[MAXPLAYERS];
+int ReplicateClient_Gravity[MAXPLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXPLAYERS];
 int ReplicateClient_RollAngle[MAXPLAYERS];
 
@@ -806,7 +810,8 @@ enum
 	BLEEDTYPE_SKELETON = 5,
 	BLEEDTYPE_SEABORN = 6,
 	BLEEDTYPE_VOID = 7,
-	BLEEDTYPE_UMBRAL = 8
+	BLEEDTYPE_UMBRAL = 8,
+	BLEEDTYPE_PORTAL = 9
 }
 
 

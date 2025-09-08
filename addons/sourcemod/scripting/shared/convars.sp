@@ -127,6 +127,7 @@ void ConVar_PluginStart()
 
 	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	sv_gravity = ConVar_Add("sv_gravity", "800", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 	
 #if defined RPG	
