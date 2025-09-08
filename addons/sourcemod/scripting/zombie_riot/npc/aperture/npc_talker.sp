@@ -383,7 +383,6 @@ public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &at
 	}
 	
 	fl_PlayerDamage[attacker] += damage;
-	PrintToChatAll("%N dealt %.2f damage (%.0f/%.0f)", attacker, damage, fl_PlayerDamage[attacker], fl_MaxDamagePerPlayer);
 	return Plugin_Changed;
 }
 
