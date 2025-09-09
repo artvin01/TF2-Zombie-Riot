@@ -3133,7 +3133,6 @@ void Projectile_DealElementalDamage(int victim, int attacker, float Scale = 1.0)
 	}
 }
 
-
 stock void Explode_Logic_Custom(float damage,
 int client, //To get attributes from and to see what is my enemy!
 int entity,	//Entity that gets forwarded or traced from/Distance checked.
@@ -3385,7 +3384,7 @@ int inflictor = 0)
 			//against raids, any aoe ability should be better as they are usually alone or its only two.
 			if(b_thisNpcIsARaid[ClosestTarget])
 			{
-				damage_1 *= 1.3;
+				damage_1 *= EXTRA_RAID_EXPLOSIVE_DAMAGE;
 			}
 			damage_1 *= f_ExplodeDamageVulnerabilityNpc[ClosestTarget];
 			float GetBeforeDamage;

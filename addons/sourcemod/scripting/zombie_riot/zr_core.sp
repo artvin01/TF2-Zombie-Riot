@@ -1062,6 +1062,7 @@ void ZR_ClientPutInServer(int client)
 	f_Armor_BreakSoundDelay[client] = 0.0;
 	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
+	UpdatePerkName(client);
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
 	
@@ -2301,12 +2302,15 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		Armor_Max = 1000;
 										
 	else if(ArmorLevel == 200)
-		Armor_Max = 2000;
+		Armor_Max = 2000;	
+
+	else if(ArmorLevel == 250)
+		Armor_Max = 3000;
 		
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7)
+	if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2405,7 +2409,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk)
+	if((i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT) && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}

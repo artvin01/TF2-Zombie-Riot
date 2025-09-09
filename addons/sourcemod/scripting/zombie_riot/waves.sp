@@ -2474,6 +2474,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(subgame)
 				{
+					if(FogEntity != INVALID_ENT_REFERENCE)
+					{
+						int entity = EntRefToEntIndex(FogEntity);
+						if(entity > MaxClients)
+							RemoveEntity(entity);
+						
+						FogEntity = INVALID_ENT_REFERENCE;
+					}
+					
 					if(Construction_Mode())
 					{
 						Construction_BattleVictory();
@@ -2612,7 +2621,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7) 
+				if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
 				{
 					Ammo_Count_Used[target] -= 1;
 				}
@@ -2628,7 +2637,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
-				if(i_CurrentEquippedPerk[target] == 7)
+				if(i_CurrentEquippedPerk[target] & PERK_STOCKPILE_STOUT) 
 				{
 					Ammo_Count_Used[target] -= 1;
 				}

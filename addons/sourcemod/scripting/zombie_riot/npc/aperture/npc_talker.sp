@@ -184,15 +184,15 @@ public void Talker_ClotThink(int iNPC)
 		}
 		case 11:
 		{
-			NpcTalker_Wave35Talk(npc);
+			NpcTalker_Wave36Talk(npc);
 		}
 		case 12:
 		{
-			NpcTalker_Wave36Talk(npc);
+			NpcTalker_Wave37Talk(npc);
 		}
 		case 13:
 		{
-			NpcTalker_Wave37Talk(npc);
+			NpcTalker_Wave38Talk(npc);
 		}
 		
 	}
@@ -285,15 +285,15 @@ static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
 		GetAbsOrigin(npc.index, vecPos);
 		vecPos[2] += 160.0; // hardcoded lollium!
 		
+		// Can't translate npc names in annotations!
 		char message[128];
-		Aperture_GetDyingBoss(npc, message, 128);
 		if(CurrentModifOn() != 1)
 		{
-			Format(message, 128, "Choose to spare or kill %s!\nYou DO NOT have to kill it to proceed!", message);
+			FormatEx(message, 128, "Choose to spare or kill %s!\nYou DO NOT have to kill it to proceed!", c_NpcName[npc.index]);
 		}
 		else
 		{
-			Format(message, 128, "Kill %s.", message);
+			FormatEx(message, 128, "Kill %s.", c_NpcName[npc.index]);
 		}
 		
 		event.SetFloat("worldPosX", vecPos[0]);
@@ -401,18 +401,6 @@ public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
-}
-
-static void Aperture_GetDyingBoss(CClotBody npc, char[] buffer, int size)
-{
-	switch (npc.m_iState)
-	{
-		case APERTURE_BOSS_CAT: strcopy(buffer, size, "C.A.T.");
-		case APERTURE_BOSS_ARIS: strcopy(buffer, size, "A.R.I.S.");
-		case APERTURE_BOSS_CHIMERA: strcopy(buffer, size, "C.H.I.M.E.R.A.");
-		case APERTURE_BOSS_VINCENT: strcopy(buffer, size, "Vincent");
-		default: strcopy(buffer, size, "Unknown Boss");
-	}
 }
 
 bool Aperture_ShouldDoLastStand()
@@ -1441,7 +1429,7 @@ stock void NpcTalker_Wave31Talk(Talker npc)
 	}
 }
 
-stock void NpcTalker_Wave35Talk(Talker npc)
+stock void NpcTalker_Wave36Talk(Talker npc)
 {
 	if(npc.m_iRandomTalkNumber == -1)
 	{
@@ -1558,7 +1546,7 @@ stock void NpcTalker_Wave35Talk(Talker npc)
 }
 
 
-stock void NpcTalker_Wave36Talk(Talker npc)
+stock void NpcTalker_Wave37Talk(Talker npc)
 {
 	if(npc.m_iRandomTalkNumber == -1)
 	{
@@ -1638,7 +1626,7 @@ stock void NpcTalker_Wave36Talk(Talker npc)
 
 
 
-stock void NpcTalker_Wave37Talk(Talker npc)
+stock void NpcTalker_Wave38Talk(Talker npc)
 {
 	if(npc.m_iRandomTalkNumber == -1)
 	{

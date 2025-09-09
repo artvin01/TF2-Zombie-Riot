@@ -268,6 +268,8 @@ void ApertureRepulsorPerfectedSelfDefense(ApertureRepulsorPerfected npc, float g
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 80.0, DMG_BULLET, -1, _, vecHit);
 					Custom_Knockback(npc.index, target, 800.0, true, true);
 					Custom_Knockback(target, npc.index, 800.0, true, true);
+					if(!HasSpecificBuff(target, "Solid Stance"))
+						ApplyStatusEffect(npc.index, target, "Solid Stance", 2.0);	
 				}
 				delete swingTrace;
 			}

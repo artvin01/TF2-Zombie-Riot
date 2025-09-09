@@ -447,18 +447,5 @@ public void Rogue_FoodSwarmcaller_Ally(int entity, StringMap map)
 
 public void Rogue_Reefbreaker_Weapon(int entity)
 {
-	// +15% damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.15);
-	
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.15);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		if(Attributes_Has(entity, 1))
-			Attributes_SetMulti(entity, 1, 1.15);
-	}
+	RogueHelp_WeaponDamage(entity, 1.15);
 }

@@ -17,7 +17,8 @@ static const char g_IdleSound[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"npc/PoisonHeadcrab/headbite.wav"
+	"npc/headcrab_poison/ph_poisonbite1.wav",
+	"npc/headcrab_poison/ph_poisonbite2.wav"
 };
 
 static const char g_MeleeAttackSounds[][] = {

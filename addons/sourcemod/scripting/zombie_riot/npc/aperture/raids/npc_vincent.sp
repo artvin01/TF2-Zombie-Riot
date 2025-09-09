@@ -942,19 +942,24 @@ static bool Vincent_LoseConditions(int iNPC)
 				case 2:
 				{
 					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: I was hoping to keep the outside world safe with what was left behind here.", c_NpcName[npc.index]);
 				}
 				case 3:
 				{
 					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
 				}
 				case 4:
 				{
 					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
+					CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
 				}
 				case 5:
+				{
+					npc.m_flTalkRepeat = GetGameTime() + 3.0;
+					CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
+				}
+				case 6:
 				{
 					//ending
 					npc.m_bDissapearOnDeath = true;

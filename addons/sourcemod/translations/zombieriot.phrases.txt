@@ -2000,7 +2000,7 @@
 	}	
 	"Which perk do you desire?"
 	{
-		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead."
+		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead.\nSelect a perk you already own to get rid of it."
 	}	
 	"Reviving"
 	{
@@ -4281,5 +4281,9 @@
 	"Plasma Kit Warning"
 	{
 		"en"		"Your body slowly starts to break down...."
+	}
+	"Too many Perks"
+	{
+		"en"		"You have too many perks, get rid of one."
 	}
 }

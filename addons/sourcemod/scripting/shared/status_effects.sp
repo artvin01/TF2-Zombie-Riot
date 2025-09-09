@@ -47,11 +47,14 @@ enum struct StatusEffect
 	Function OnTakeDamage_PostVictim;
 	Function OnTakeDamage_PostAttacker;
 	Function OnBuffStarted;
+	Function OnBuffStoreRefresh;
 	Function OnBuffEndOrDeleted;
 
 	void Blank()
 	{
+		this.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
 		this.OnBuffStarted				= INVALID_FUNCTION;
+		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 		this.DamageTakenMulti 			= -1.0;
 		this.DamageDealMulti 			= -1.0;
@@ -91,6 +94,7 @@ enum struct E_StatusEffect
 	float DataForUse;
 	int WearableUse;
 	int VictimSave;
+	bool MarkedForDeletion;
 
 	void ApplyStatusEffect_Internal(int owner, int victim, bool HadBuff, int ArrayPosition)
 	{
@@ -207,6 +211,7 @@ void InitStatusEffects()
 	StatusEffects_Ritualist();
 	StatusEffects_Rogue3();
 	StatusEffects_SkullServants();
+	StatusEffects_GamemodeMadnessSZF();
 #endif
 }
 
@@ -1208,9 +1213,12 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 	{
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, link_Apply_StatusEffect);
 		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
-		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime() && !Apply_StatusEffect.MarkedForDeletion)
 		{
-			Apply_StatusEffect.RemoveStatus();
+		//	Apply_StatusEffect.RemoveStatus();
+			Apply_StatusEffect.MarkedForDeletion = true;
+			ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			returnDo = true;
 		}
 		else
@@ -1218,8 +1226,6 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 			HasBuff = true;
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
 	
 	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC, FlagAttackspeedLogicInternal);
 	return returnDo;
@@ -2296,6 +2302,19 @@ void StatusEffects_Silence()
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Infinite Will");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ł");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Blessing of Stars");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "S");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
@@ -3439,7 +3458,7 @@ void StatusEffects_SupportWeapons()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
-	
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ancient Melodies");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "➤");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -4366,7 +4385,39 @@ void StatusEffects_StatusEffectListOnly()
 	StatusEffect_AddGlobal(data);
 }
 
+void StatusEffect_StoreRefresh(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+	
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	//No debuffs or status effects, skip.
+	int length = E_AL_StatusEffects[victim].Length;
+	for(int i; i<length; i++)
+	{
+		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		{
+			Apply_StatusEffect.RemoveStatus();
+			i--;
+			length--;
+			continue;
+		}
+		if(Apply_MasterStatusEffect.OnBuffStoreRefresh != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffStoreRefresh)
+		{
+			Call_StartFunction(null, Apply_MasterStatusEffect.OnBuffStoreRefresh);
+			Call_PushCell(victim);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_Finish();
+		}
+	}
 
+	if(length < 1)
+		delete E_AL_StatusEffects[victim];
+}
 void StatusEffect_TimerCallDo(int victim)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -5417,17 +5468,17 @@ void StatusEffects_Explainelemental()
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Warped Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ʬ");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "ww");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.0;
 	data.MovementspeedModif			= -1.0;
 	data.ElementalLogic				= true;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.OnBuffStarted			= Warped_Start;
+	data.OnBuffStarted				= Warped_Start;
 	data.OnBuffEndOrDeleted			= Warped_End;
 	data.OnTakeDamage_DealFunc 		= Warped_DamageFunc;
 	data.TimerRepeatCall_Func 		= Warped_FuncTimer;
@@ -5473,8 +5524,18 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 	CClotBody npc = view_as<CClotBody>(entity);
 	npc.m_flNextIdleSound = FAR_FUTURE;
 	float SoundLoudness = ratio;
-	if(SoundLoudness < 0.7)
-		SoundLoudness = 0.7;
+	if(entity <= MaxClients)
+	{
+		if(SoundLoudness > 0.3)
+			SoundLoudness = 0.3;
+	}
+	else
+	{
+
+		if(SoundLoudness < 0.7)
+			SoundLoudness = 0.7;
+	}
+		
 	EmitSoundToAll(g_IdleCreepSound[GetRandomInt(0, sizeof(g_IdleCreepSound) - 1)], entity, SNDCHAN_ITEM, NORMAL_ZOMBIE_SOUNDLEVEL, _, SoundLoudness, GetRandomInt(40, 45));
 	if(entity <= MaxClients)
 	{
@@ -5516,7 +5577,7 @@ static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_Mast
 	if(attacker <= MaxClients)
 		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
 	
-	return basedamage;
+	return 0.0;
 }
 static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -5749,6 +5810,36 @@ void StatusEffects_Rogue3()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
+
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Brightening Light");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Br");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= true;
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.AttackspeedBuff			= (1.0 / 1.35);
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Revival Stim");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "RS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= true;
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.15;
+	data.OnBuffStarted				= RevivalStim_Start;
+	data.OnBuffStoreRefresh			= RevivalStim_Start;
+	data.OnBuffEndOrDeleted			= RevivalStim_End;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
 	
 	data.Blank();
 	strcopy(data.BuffName, sizeof(data.BuffName), "Umbral Grace Debuff");
@@ -5761,6 +5852,23 @@ void StatusEffects_Rogue3()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Void Afflicted");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ɣ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= VoidAffliction_Start;
+	data.OnBuffEndOrDeleted			= VoidAffliction_End;
+	data.OnTakeDamage_PostAttacker	= VoidAffliction_TakeDamageAttackerPost;
+	ShrinkingStatusEffectIndex = StatusEffect_AddGlobal(data);
 }
 
 
@@ -5818,3 +5926,103 @@ static void UmbralGrace_End(int victim, StatusEffect Apply_MasterStatusEffect, E
 }
 
 #endif
+
+
+
+void StatusEffects_GamemodeMadnessSZF()
+{
+	StatusEffect data;
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Damage Scaling");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.Positive 					= false;
+	data.DamageTakenMulti 			= 0.1;
+	data.DamageDealMulti			= 0.1;
+	data.OnTakeDamage_TakenFunc 	= SZF_DamageScalingtaken;
+	data.OnTakeDamage_DealFunc 		= SZF_DamageScalingdeal;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+}
+
+float SZF_DamageScalingtaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	//look at how many enemies are left alive, and then scale off tha
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(2);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	float resist = ValueDo;
+	if(resist >= 1.0)
+	{
+		resist = 1.0;
+	}
+	resist -= 1.0;
+	resist *= -1.0;
+	resist *= 10.0;
+	return (basedamage * resist);
+}
+
+float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	float ValueDo;
+	int AliveAssume = CountPlayersOnRed(2);
+	if(AliveAssume > 14)
+		AliveAssume = 14;
+	ValueDo = float(AliveAssume) / float(CountPlayersOnRed(0));
+	float resist = ValueDo;
+	return resist;
+}
+
+
+
+static void RevivalStim_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 1.15);
+	SDKCall_SetSpeed(victim);
+}
+
+static void RevivalStim_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	Attributes_SetMulti(victim, 442, (1.0 / 1.15));
+	SDKCall_SetSpeed(victim);
+}
+
+
+
+void VoidAffliction_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	CClotBody npc = view_as<CClotBody>(victim);
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = float(npc.m_iBleedType);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	npc.m_iBleedType = BLEEDTYPE_VOID;
+	SetEntityRenderColor_NpcAll(victim, 1.25, 0.25, 1.25);
+}
+void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	npc.m_iBleedType = RoundToNearest(Apply_StatusEffect.DataForUse);
+	SetEntityRenderColor_NpcAll(victim, (1.0 / 1.25), (1.0 / 0.25), (1.0 / 1.25));
+}
+
+
+void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
+}

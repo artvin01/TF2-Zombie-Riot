@@ -150,7 +150,7 @@ public void RefragmentedHeavy_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 
-	if(npc.m_flAbilityOrAttack0)
+	if(npc.m_flAbilityOrAttack0 && !Rogue_Mode())
 	{
 		if(npc.m_flAbilityOrAttack0 <= GetGameTime(npc.index))
 		{

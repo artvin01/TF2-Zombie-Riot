@@ -25,6 +25,18 @@
 	{
 		"en"	"Leave it"
 	}
+	"A strange gateway opens up"
+	{
+		"en"	"A strange gateway opens up"
+	}
+	"Stay and fight it"
+	{
+		"en"	"Stay and fight it"
+	}
+	"Umbrals take notice of your actions"
+	{
+		"en"	"{crimson}Umbrals take notice of your actions"
+	}
 
 	"Rift of Swarms"
 	{
@@ -106,24 +118,100 @@
 	{
 		"en"	"{red}Enemies have a chance to be warpped"
 	}
+	"Void Outbreak"
+	{
+		"en"	"Void Outbreak"
+	}
+	"Void Outbreak Desc"
+	{
+		"en"	"{red}All enemies are voided and deal void damage."
+	}
+	"Gamemode Madness"
+	{
+		"en"	"Gamemode Madness"
+	}
+	"Almagest Alien Tech"
+	{
+		"en"	"Almagest Alien Tech"
+	}
+	"Gamemode Madness Desc"
+	{
+		"en"	"Gamemode Madness"
+	}
+	"SZF Damage Scaling Mode"
+	{
+		"en"	"{crimson}Enabled SZF damage scaling."
+	}
+	"Gamemode Madness SZF"
+	{
+		"en"	"Gamemode Madness SZF"
+	}
+	"Gamemode Madness SZF Desc"
+	{
+		"en"	"Gamemode Madness SZF"
+	}
+	"Gamemode Madness Slender"
+	{
+		"en"	"Gamemode Madness Slender"
+	}
+	"Gamemode Madness Slender Desc"
+	{
+		"en"	""
+	}
+	"Broken Crest"
+	{
+		"en"	"Broken Crest"
+	}
+	"Free Treasure!!!"
+	{
+		"en"	"Free Treasure!!!"
+	}
+	"Rift of Fractured"
+	{
+		"en"	"Rift of Fractured"
+	}
+	"Rift of Fractured Desc"
+	{
+		"en"	"{yellow}Something is coming"
+	}
 
 	"Ruin"
 	{
 		"en"	"Ruin"
 	}
+	"Ruin Lore"
+	{
+		"en"	"We're at the ruined Ruinan islands, we need to find a way to stop the void, something else is coming through?"
+	}
 	"Whatever is Left"
 	{
-		"en"	"Whatever is Left"
+		"en"	"''Whatever is left of it...''"
+	}
+	"Whatever is Left Lore"
+	{
+		"en"	"The portal site, now ruined and in pieces, hope we can get this to help find a way."
 	}
 	"Behind The Curtains"
 	{
 		"en"	"Behind The Curtains"
 	}
+	"Behind The Curtains Lore"
+	{
+		"en"	"We're inside the Curtain, full of plains and crystals. Let's hope we can find what we're looking for, and keep that way out."
+	}
 	"More Research"
 	{
 		"en"	"More Research"
 	}
+	"More Research Lore"
+	{
+		"en"	"It's some kind of abandoned lab here. Something tells it wasn't always a wasteland here."
+	}
 	"Palace of the Void"
+	{
+		"en"	"Palace of the Void"
+	}
+	"Palace of the Void Lore"
 	{
 		"en"	"Palace of the Void"
 	}
@@ -138,7 +226,7 @@
 	}
 	"Rift Level 3 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +5％, start with Fractured voidstone, rift events can occur more often"
+		"en"	"{red}Enemy stats per chapter +10％, start with Fractured voidstone, rift events can occur more often"
 	}
 	"Rift Level 2"
 	{
@@ -146,7 +234,7 @@
 	}
 	"Rift Level 2 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +2％ {blue}and other possibilities"
+		"en"	"{red}Enemy stats per chapter +5％ {blue}and other possibilities"
 	}
 	"Rift Level 1"
 	{
@@ -202,7 +290,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
@@ -234,7 +322,7 @@
 	}
 	"Hand of Diffusion Desc"
 	{
-		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +375％"
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +240％"
 	}
 	"Hand of Rending"
 	{
@@ -300,6 +388,22 @@
 	{
 		"en"	"Protracted battles, a home of carnage.\n{green}''Mechanic'' weapons fully repairs buildings on hit"
 	}
+	"Vitality Injection"
+	{
+		"en"	"Vitality Injection"
+	}
+	"Vitality Injection Desc"
+	{
+		"en"	"When when dying, itll keep you alive a little longer.\n{green}You are faster while downed and live longer."
+	}
+	"Flash Vest"
+	{
+		"en"	"Flash Vest"
+	}
+	"Flash Vest Desc"
+	{
+		"en"	"Flash em!\n{green}When downed, stun all surrounding enemies by for 1.5 seconds."
+	}
 	"Reila Assistance"
 	{
 		"en"	"Reila's Assistance"
@@ -307,6 +411,238 @@
 	"Reila Assistance Desc"
 	{
 		"en"	"Reila joins you."
+	}
+	"Gift of Remembrance"
+	{
+		"en"	"Gift of Remembrance"
+	}
+	"Gift of Remembrance Desc"
+	{
+		"en"	"Water from Ruina that never loses its shimmer.\n{green}Umbral Affinity increased by 15"
+	}
+	"Bag of Stones"
+	{
+		"en"	"Bag of Stones"
+	}
+	"Bag of Stones Desc"
+	{
+		"en"	"Stones that possibly used to be alive are perfect for sitting inside bags.\n{yellow}Obtain 3 random voidstones"
+	}
+	"Magic Box"
+	{
+		"en"	"Magic Box"
+	}
+	"Magic Box Desc"
+	{
+		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
+	}
+	"Old Fan"
+	{
+		"en"	"Old Fan"
+	}
+	"Old Fan Desc"
+	{
+		"en"	"When it rains for several days on end.\n{green}Allies gain +50％ damage"
+	}
+	"Dream Catcher"
+	{
+		"en"	"Dream Catcher"
+	}
+	"Dream Catcher Desc"
+	{
+		"en"	"Incase you get a very nasty dream.\n{green}When losing a stage, it repeats the stage and grants a new item." 
+	}
+	"Dream Caught"
+	{
+		"en"	"Dream Caught"
+	}
+	"Dream Caught Desc"
+	{
+		"en"	"Aha!\n{green}When a new stage starts, gain full health, Revive times are cut in half, Enemies have -10％ damage"
+	}
+	"Scout's Scope"
+	{
+		"en"	"Scout's Scope"
+	}
+	"Scout's Scope Desc"
+	{
+		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +100％ the further the target is"
+	}
+	"Lakebed Aegis"
+	{
+		"en"	"Lakebed Aegis"
+	}
+	"Lakebed Aegis Desc"
+	{
+		"en"	"When it rains for several days on end.\n{green}Allies gain 500 barrier and +35％ damage resistance while current health is above max health"
+	}
+	"Living Woodplate"
+	{
+		"en"	"Living Woodplate"
+	}
+	"Living Woodplate Desc"
+	{
+		"en"	"The Umbrals know how trees will cling to survival.\n{green}Allies gain barrier equal to 50％ max health when revived"
+	}
+	"Medicine Sticks"
+	{
+		"en"	"Medicine Sticks"
+	}
+	"Medicine Sticks Desc"
+	{
+		"en"	"No this isn't weed you stoner.\n{green}Allies gain 2 shields when a wave starts"
+	}
+	"Expidonsan Access Card"
+	{
+		"en"	"Expidonsan Access Card"
+	}
+	"Expidonsan Access Card Desc"
+	{
+		"en"	"Each Mercenary is entitled to one physiotherapy session.\n{green}Players gain +40％ fire rate and reload speed for 10 seconds after being revived"
+	}
+	"Expidonsan Prime Membership"
+	{
+		"en"	"Expidonsan Prime Membership"
+	}
+	"Expidonsan Prime Membership Desc"
+	{
+		"en"	"Each Mercenary is entitled to one comprehensive physical and psychological assessment.\n{green}Players gain +70％ fire rate and reload speed for 10 seconds after being revived"
+	}
+	"The Whip of Punishment"
+	{
+		"en"	"The Whip of Punishment"
+	}
+	"The Whip of Punishment Desc"
+	{
+		"en"	"A whip that strikes fear.\n{green}Allies gain 10％ Movement Speed."
+	}
+	"Familiar Sculpture"
+	{
+		"en"	"Familiar Sculpture"
+	}
+	"Familiar Sculpture Desc"
+	{
+		"en"	"A familiar face but a different vibe.\n{green}Enemy attack speed decreased by -10％"
+	}
+	"Painful Happiness"
+	{
+		"en"	"''Painful Happiness''"
+	}
+	"Painful Happiness Desc"
+	{
+		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -15％"
+	}
+	"Gravity Defying Machine"
+	{
+		"en"	"Gravity Defying Machine"
+	}
+	"Gravity Defying Machine Desc"
+	{
+		"en"	"Now, though they float in clouds.\n{green}Enemy weight decreased by -2"
+	}
+	"Devilbane Banner"
+	{
+		"en"	"''Devilbane Banner''"
+	}
+	"Devilbane Banner Desc"
+	{
+		"en"	"Made by Al-Hallem mercenaries loyal to Iberia.\n{green}Weapon cooldown reduced by 2s when hitting an Umbral enemy"
+	}
+	"Great Banshee Veil"
+	{
+		"en"	"Great Banshee's Veil"
+	}
+	"Great Banshee Veil Desc"
+	{
+		"en"	"Impale the agonizing wails into the minds of every intruder.\n{green}Enemies receive +50％ elemental damage"
+	}
+	"Little Cube"
+	{
+		"en"	"Little Cube"
+	}
+	"Little Cube Desc"
+	{
+		"en"	"Zeina spent a lot of time fixing it up.\n{green}Allies receive +25％ max health, increased to +100％ when on a bizarre chapter"
+	}
+	"Fearless Blade"
+	{
+		"en"	"Fearless Blade"
+	}
+	"Fearless Blade Desc"
+	{
+		"en"	"Ziberia artilleries, Ruina casters, and Victorian Knights all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
+	}
+	"Chaos Star"
+	{
+		"en"	"''Chaos Star''"
+	}
+	"Chaos Star Desc"
+	{
+		"en"	"A symbol of Chaos.\n{green}Enemies receive +150％ damage from True Damage"
+	}
+	"Unripe Yearning"
+	{
+		"en"	"Unripe Yearning"
+	}
+	"Unripe Yearning Desc"
+	{
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +1％ max health per Umbral Affinity"
+	}
+	"Eye of Fortune"
+	{
+		"en"	"Eye of Fortune"
+	}
+	"Eye of Fortune Desc"
+	{
+		"en"	"People began worshipping discs with a single embedded eye.\n{green}Obtain 5 Australium Ingots, obtain 20 Australium Ingots after Emergency Dispatch operation"
+	}
+	"Thoughts Catcher"
+	{
+		"en"	"Thoughts Catcher"
+	}
+	"Thoughts Catcher Desc"
+	{
+		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 2 Australium Ingots when consuming an item at a Gateway"
+	}
+	"Scales of Avarice"
+	{
+		"en"	"Scales of Avarice"
+	}
+	"Scales of Avarice Desc"
+	{
+		"en"	"Merchants offered money, treasure, and even their lives.\n{green}Obtain 2 Australium Ingots when entering a stage when Umbral Affinity is above 61"
+	}
+	"Personal Paintbrush"
+	{
+		"en"	"Personal Paintbrush"
+	}
+	"Personal Paintbrush Desc"
+	{
+		"en"	"A haunted brush that compels its owners to paint with their own blood.\n{green}Umbral Affinity increased by 1 whenever Umbral Affinity is reduced"
+	}
+	"Survivor Contract"
+	{
+		"en"	"Survivor Contract"
+	}
+	"Survivor Contract Desc"
+	{
+		"en"	"Satisfy them all to be the final survivor.\n{green}Barney and Alyx joins you"
+	}
+	"Survivor Party"
+	{
+		"en"	"Survivor Party"
+	}
+	"Survivor Party Desc"
+	{
+		"en"	"A very long contract, in which every term and condition is the result of experience.\n{green}3 Rebels joins you"
+	}
+	"Soul Binding Bone"
+	{
+		"en"	"Soul Binding Bone"
+	}
+	"Soul Binding Bone Desc"
+	{
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +1％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
@@ -323,7 +659,7 @@
 	}
 	"Walled Gold Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain an uncommon artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 6 while held\n{purple}Obtain an uncommon artifact when consumed"
 	}
 	"Stored Instruments"
 	{
@@ -331,7 +667,7 @@
 	}
 	"Stored Instruments Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 9 while held\n{purple}Obtain a rare artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 12 while held\n{purple}Chance obtain a rare artifact when consumed"
 	}
 	"Empty Thoughts"
 	{
@@ -355,7 +691,7 @@
 	}
 	"Cheerful Banter Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Obtain a very rare artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 15 when obtained\n{purple}Chance obtain a rare artifact when consumed"
 	}
 	"Nemesis Blood"
 	{
@@ -363,7 +699,7 @@
 	}
 	"Nemesis Blood Desc"
 	{
-		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Obtain a rare artifact when consumed"
+		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Chance obtain a rare artifact when consumed"
 	}
 	"Sprouting Stem"
 	{
@@ -371,7 +707,7 @@
 	}
 	"Sprouting Stem Desc"
 	{
-		"en"	"{green}Umbral Affinity decreased by 5 when obtained"
+		"en"	"{green}Umbral Affinity reduced by 5 when obtained"
 	}
 	"Wild Grass by the Door"
 	{
@@ -395,7 +731,7 @@
 	}
 	"Outblood Desc"
 	{
-		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +7％ fire rate {red}but Umbral Affinity reduced by 2 after a battle"
 	}
 	"Flames"
 	{
@@ -403,7 +739,7 @@
 	}
 	"Flames Desc"
 	{
-		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity decreased by 3 after a battle"
+		"en"	"{green}Allies have +14％ fire rate {red}but Umbral Affinity reduced by 3 after a battle"
 	}
 	"Lost"
 	{
@@ -427,7 +763,7 @@
 	}
 	"Consume Desc"
 	{
-		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity decreased by 1 after a battle"
+		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity reduced by 1 after a battle"
 	}
 	"Reclaim"
 	{
@@ -435,7 +771,7 @@
 	}
 	"Reclaim Desc"
 	{
-		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity reduced by 2 after a battle"
 	}
 	"Pillage"
 	{
@@ -443,7 +779,7 @@
 	}
 	"Pillage Desc"
 	{
-		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity decreased by 1 after a battle"
+		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity reduced by 1 after a battle"
 	}
 	"Invasion"
 	{
@@ -451,7 +787,7 @@
 	}
 	"Invasion Desc"
 	{
-		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity decreased by 2 after a battle"
+		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity reduced by 2 after a battle"
 	}
 	"Rise and Fall"
 	{
@@ -459,7 +795,7 @@
 	}
 	"Rise and Fall Desc"
 	{
-		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity decreased by 3 after a battle"
+		"en"	"{green}Allies have +15％ damage {red}but Umbral Affinity reduced by 3 after a battle"
 	}
 	"Words"
 	{
@@ -499,7 +835,7 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity decreased by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
+		"en"	"{red}Umbral Affinity reduced by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
 	}
 	"Wordless Deed"
 	{
@@ -507,7 +843,7 @@
 	}
 	"Wordless Deed Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 30 while held\n{purple}Obtain a cursed artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 20 while held\n{purple}Obtain a cursed artifact when consumed"
 	}
 	"Keycard"
 	{
@@ -515,7 +851,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{red}Store items and pack-a-punch cost increased by 10％ while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
@@ -525,10 +861,26 @@
 	{
 		"en"	"{crimson}What did you do?"
 	}
+	"The Shadow"
+	{
+		"en"	"''Shadow''"
+	}
+	"The Shadow Desc"
+	{
+		"en"	"He was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop him.\n{red}Umbral are enraged, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+	}
 
 	"Gateway"
 	{
 		"en"	"Gateway"
+	}
+	"Reila Curtain Closer"
+	{
+		"en"	"Reila Curtain Closer"
+	}
+	"Almagest Intrusion"
+	{
+		"en"	"Almagest Intrusion"
 	}
 	"Rift Consume Encounter Title"
 	{
@@ -578,7 +930,7 @@
 	}
 	"Gamemode History Desc 2"
 	{
-		"en"	"{green}Obtain 6000 cash"
+		"en"	"{green}Obtain 10000 cash"
 	}
 	"Gamemode History Lore 2"
 	{
@@ -592,8 +944,570 @@
 	{
 		"en"	""
 	}
+	"Immensive Guilt"
+	{
+		"en"	"Immensive Guilt"
+	}
+	"Immensive Guilt Desc"
+	{
+		"en"	"{crimson}This is not good."
+	}
+	"Bob's Wrath"
+	{
+		"en"	"Bob's Wrath"
+	}
+	"Bob's Wrath Desc"
+	{
+		"en"	"{crimson}He's pissed."
+	}
+	"Crystalized Warped Subjects"
+	{
+		"en"	"Crystalized Warped Subjects"
+	}
 	"Bizarre History"
 	{
 		"en"	"Bizarre History"
+	}
+
+	"We Are Fractured"
+	{
+		"en"	"We Are Fractured"
+	}
+	"We Are Fractured Lore"
+	{
+		"en"	"The voidstone appears right out of a rift, followed by serveral more rifts around you."
+	}
+	"We Are Fractured Option 1"
+	{
+		"en"	"Take it and get ready for a fight"
+	}
+	"We Are Fractured Desc 1"
+	{
+		"en"	"{blue}Collect an artifact and start a battle"
+	}
+	"We Are Fractured Lore 1"
+	{
+		"en"	"You hope you haven't threw away that Fractured voidstone too early. Are you strong enough?"
+	}
+	"We Are Fractured Option 2"
+	{
+		"en"	"Leave while we still can"
+	}
+	"We Are Fractured Lore 2"
+	{
+		"en"	"You left right away, you feel as if the Fractured voidstone was behind this. Maybe we need to try it when we're ready to handle this."
+	}
+
+	"Poison Water"
+	{
+		"en"	"Poison Water"
+	}
+	"Poison Water Lore"
+	{
+		"en"	"Fresh water we can probably take, but is it safe to drink?"
+	}
+	"Poison Water Option 1"
+	{
+		"en"	"It's poisoned"
+	}
+	"Poison Water Desc 1"
+	{
+		"en"	"{green}Obtain 2000 cash"
+	}
+	"Poison Water Option 2"
+	{
+		"en"	"Take some water"
+	}
+	"Poison Water Desc 2"
+	{
+		"en"	"{green}Obtain an artifact, 2000 cash {red}but a chance to obtain a cursed artifact"
+	}
+	"Poison Water Lore 2a"
+	{
+		"en"	"Looks like it was safe."
+	}
+	"Poison Water Lore 2b"
+	{
+		"en"	"Don't feel so good."
+	}
+	"Lone Health"
+	{
+		"en"	"Lone Health"
+	}
+	"Poisoned Water"
+	{
+		"en"	"Poisoned Water"
+	}
+	"Poisoned Water Desc"
+	{
+		"en"	"Shouldn't have drank that.\n{red}Allies have -20％ max health, cured by visting a Gateway"
+	}
+	"Bad Lab Air"
+	{
+		"en"	"Bad Lab Air"
+	}
+	"Bad Lab Air Desc"
+	{
+		"en"	"Maybe shouldnt have stayed.\n{red}Allies have -5％ max health, cured upon next floor."
+	}
+	"Pool of Clarity Title"
+	{
+		"en"	"You find a pool surrounded by nothing by crystals, umbrals can be seen going to it and away."
+	}
+	"Pool of Clarity"
+	{
+		"en"	"Pool of Clarity"
+	}
+	"Pool of Clarity Lore"
+	{
+		"en"	"Pool of Clarity Lore"
+	}
+	"Pool of Clarity Option 1"
+	{
+		"en"	"Throw in some voidstones"
+	}
+	"Pool of Clarity Desc 1"
+	{
+		"en"	"Consume up to 2 voidstones"
+	}
+	"Pool of Clarity Lore 1"
+	{
+		"en"	"Pool of Clarity Lore 1"
+	}
+	"Pool of Clarity Option 2"
+	{
+		"en"	"Throw in some ingots with an artifact"
+	}
+	"Pool of Clarity Desc 2"
+	{
+		"en"	"Give up 10 Australium Inogts and an artifact for an item"
+	}
+	"Pool of Clarity Lore 2"
+	{
+		"en"	"What should we throw away?"
+	}
+	"Holy Blessing"
+	{
+		"en"	"Holy Blessing"
+	}
+	"Holy Blessing Desc"
+	{
+		"en"	"{green}Grigori's Blessing now heals up to full health"
+	}
+	
+	"Ruina'n Magic Factory"
+	{
+		"en"	"Ruina'n Magic Factory"
+	}
+	"Magic Factory Lore"
+	{
+		"en"	"Some sort of factory here we could find something useful here."
+	}
+	"Magic Factory Option 1"
+	{
+		"en"	"Take a look inside"
+	}
+	"Magic Factory Desc 1"
+	{
+		"en"	"{green}Obtain a rare artifact"
+	}
+	"Magic Factory Option 2"
+	{
+		"en"	"Go around back"
+	}
+	"Magic Factory Desc 2"
+	{
+		"en"	"{green}Obtain 2000 cash {yellow}and a random voidstone"
+	}
+
+	"Broken Gambing Machine"
+	{
+		"en"	"Broken Gambing Machine"
+	}
+	"Rouge3 Gamble Lore"
+	{
+		"en"	"A slot machine out in the curtain? Does it still work?"
+	}
+	"Rouge3 Gamble Option 1"
+	{
+		"en"	"Insert a coin"
+	}
+	"Rouge3 Gamble Desc 1"
+	{
+		"en"	"{red}Lose 4 Australium Ingots"
+	}
+	"Rouge3 Gamble Lore 1a"
+	{
+		"en"	"It hits a random assortment of items."
+	}
+	"Rouge3 Gamble Lore 1b"
+	{
+		"en"	"It hits 3 Cherries and pays out."
+	}
+	"Rouge3 Gamble Lore 1c"
+	{
+		"en"	"It hits 3 Bars and spits something out."
+	}
+	"Rouge3 Gamble Lore 1d"
+	{
+		"en"	"It hits 3 7s as you hear something break as it pays out, it refuses to work anymore."
+	}
+	"Rouge3 Gamble Lore 1e"
+	{
+		"en"	"It hits 3 Lemons as you hear scrapping as a voidstone spits out."
+	}
+
+	"Rouge3 Gamble Option 2"
+	{
+		"en"	"Leave it alone"
+	}
+	"Rouge3 Gamble Option 2a"
+	{
+		"en"	"{green}Gain 15 Umbral Affinity"
+	}
+	"Rouge3 Gamble Option 2b"
+	{
+		"en"	"Stop gambling"
+	}
+	"Rouge3 Gamble Lore 2"
+	{
+		"en"	"Don't bet on it."
+	}
+
+	"Safe House"
+	{
+		"en"	"Safe House"
+	}
+	"Past Lore Lore"
+	{
+		"en"	"Rest now, may I tell you a story?"
+	}
+	"Past Lore Option 1"
+	{
+		"en"	"Tell me a story of "
+	}
+	"Past Lore Desc 1"
+	{
+		"en"	"Read the story, {yellow}obtain an unknown artifact"
+	}
+	"Past Lore Option 2"
+	{
+		"en"	"Skip it"
+	}
+	"Past Lore Desc 2"
+	{
+		"en"	"Skip the story, {yellow}obtain an unknown artifact"
+	}
+	"Mazeat Saves"
+	{
+		"en"	"Mazeat Saves"
+	}
+	"Mazeat Saves Desc"
+	{
+		"en"	"Mazeat is a safe place.\n{green}Non-void enemies have -15％ health and damage"
+	}
+	"Mazeat Lives"
+	{
+		"en"	"Mazeat Lives"
+	}
+	"Mazeat Lives Desc"
+	{
+		"en"	"Mazeat is a place to live.\n{green}Non-void enemies have -10％ movement speed"
+	}
+	"Mazeat Falls"
+	{
+		"en"	"Mazeat Falls"
+	}
+	"Mazeat Falls Desc"
+	{
+		"en"	"Mazeat was.\n{green}Non-void enemies have -30％ health and damage and receive +100％ elemental damage"
+	}
+
+	"Cloned Subjects"
+	{
+		"en" "⚔ Cloned Subjects"
+	}
+	"Cloned Subjects!"
+	{
+		"en" "⚠ Cloned Subjects"
+	}
+	"Shipment Deliviered"
+	{
+		"en" "⚔ Shipment Deliviered"
+	}
+	"Shipment Deliviered!"
+	{
+		"en" "⚠ Shipment Deliviered"
+	}
+	"The Insane"
+	{
+		"en" "⚔ The Insane"
+	}
+	"The Insane!"
+	{
+		"en" "⚠ The Insane"
+	}
+	"Confused Ruanians"
+	{
+		"en" "⚔ Confused Ruanians"
+	}
+	"Confused Ruanians!"
+	{
+		"en" "⚠ Confused Ruanians"
+	}
+	"Sabotaging Electric's"
+	{
+		"en" "⚔ Sabotaging Electric's"
+	}
+	"Sabotaging Electric's!"
+	{
+		"en" "⚠ Sabotaging Electric's"
+	}
+	"Zombies Land"
+	{
+		"en" "⚔ Zombies Land"
+	}
+	"Zombies Land!"
+	{
+		"en" "⚠ Zombies Land"
+	}
+	"Underpaid Mercs"
+	{
+		"en" "⚔ Underpaid Mercs"
+	}
+	"Underpaid Mercs!"
+	{
+		"en" "⚠ Underpaid Mercs"
+	}
+	"Unknown Army"
+	{
+		"en" "⚔ Unknown Army"
+	}
+	"Unknown Army!"
+	{
+		"en" "⚠ Unknown Army"
+	}
+	"Desperate Voiders"
+	{
+		"en" "⚔ Desperate Voiders"
+	}
+	"Desperate Voiders!"
+	{
+		"en" "⚠ Desperate Voiders"
+	}
+	
+
+	"Looters Keepers"
+	{
+		"en" "⚔ Looters Keepers"
+	}
+	"Looters Keepers!"
+	{
+		"en" "⚠ Looters Keepers"
+	}
+	"Almagest Security?"
+	{
+		"en" "⚔ Almagest Security?"
+	}
+	"Almagest Security?!"
+	{
+		"en" "⚠ Almagest Security?"
+	}
+	"Automatic Defenses"
+	{
+		"en" "⚔ Automatic Defenses"
+	}
+	"Automatic Defenses!"
+	{
+		"en" "⚠ Automatic Defenses"
+	}
+	"Experimental Creatures"
+	{
+		"en" "⚔ Experimental Creatures"
+	}
+	"Experimental Creatures!"
+	{
+		"en" "⚠ Experimental Creatures"
+	}
+	"Lost Warriors"
+	{
+		"en" "⚔ Lost Warriors"
+	}
+	"Lost Warriors!"
+	{
+		"en" "⚠ Lost Warriors"
+	}
+	"Failed Mercs"
+	{
+		"en" "⚔ Failed Mercs"
+	}
+	"Failed Mercs!"
+	{
+		"en" "⚠ Failed Mercs"
+	}
+	"Void Entangled"
+	{
+		"en" "⚔ Void Entangled"
+	}
+	"Void Entangled!"
+	{
+		"en" "⚠ Void Entangled"
+	}
+	"Washed Expidonsans"
+	{
+		"en" "⚔ Washed Expidonsans"
+	}
+	"Washed Expidonsans!"
+	{
+		"en" "⚠ Washed Expidonsans"
+	}
+	"Umbral Disturbance"
+	{
+		"en" "☠ Umbral Disturbance"
+	}
+	"Almagest Desperation"
+	{
+		"en" "☠ Almagest Desperation"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚠ Slaves Controlled"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚠ Slaves Controlled"
+	}
+	"Slaves Controlled"
+	{
+		"en" "⚔ Slaves Controlled"
+	}
+	"Slaves Controlled!"
+	{
+		"en" "⚠ Slaves Controlled"
+	}
+	"Bladedance Surviors"
+	{
+		"en" "⚔ Bladedance Surviors"
+	}
+	"Bladedance Surviors!"
+	{
+		"en" "⚠ Bladedance Surviors"
+	}
+	"Rescued W.F. Soldiers"
+	{
+		"en" "⚔ Rescued W.F. Soldiers"
+	}
+	"Rescued W.F. Soldiers!"
+	{
+		"en" "⚠ Rescued W.F. Soldiers"
+	}
+	"Unknown Taskforce"
+	{
+		"en" "⚔ Unknown Taskforce"
+	}
+	"Unknown Taskforce!"
+	{
+		"en" "⚠ Unknown Taskforce"
+	}
+	"Beyond Recognition"
+	{
+		"en" "⚔ Beyond Recognition"
+	}
+	"Beyond Recognition!"
+	{
+		"en" "⚠ Beyond Recognition"
+	}
+	"Mind Equals Controlled"
+	{
+		"en" "⚔ Mind Equals Controlled"
+	}
+	"Mind Equals Controlled!"
+	{
+		"en" "⚠ Mind Equals Controlled"
+	}
+	"Top Voided Elites"
+	{
+		"en" "⚔ Top Voided Elites"
+	}
+	"Top Voided Elites!"
+	{
+		"en" "⚠ Top Voided Elites"
+	}
+	"Gun Game"
+	{
+		"en" "☠ Gun Game"
+	}
+	"Versus Saxton Hale"
+	{
+		"en" "☠ Versus Saxton Hale"
+	}
+	"Super Zombie Fortress"
+	{
+		"en" "☠ Super Zombie Fortress"
+	}
+	"Class Warfare"
+	{
+		"en" "☠ Class Warfare"
+	}
+	"Slender Fortress"
+	{
+		"en"	"☠ Slender Fortress"
+	}
+	"Slender Fortress Desc"
+	{
+		"en"	"Collect the 8 heavy pages to win"
+	}
+	"Randomizer"
+	{
+		"en" "☠ Randomizer"
+	}
+	"Refragmented Page"
+	{
+		"en"	"Refragmented Page"
+	}
+	"Strange Gateway"
+	{
+		"en" "⚔ Strange Gateway"
+	}
+
+	"Crystalized Warped Subjects Title"
+	{
+		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
+	}
+	"Crystalized Warped Subjects Title Repeat"
+	{
+		"en"	"Your body deterioates..."
+	}
+	"Crystalized Warped Subjects Search More"
+	{
+		"en"	"Search the room for other things."
+	}
+	"Crystalized Warped Subjects Search More Desc"
+	{
+		"en"	"{yellow}Search the room for something else.{red}For the rest of the chapter, Allies lose 5％ Max Health"
+	}
+	"Crystalized Warped Subjects Search Cancel"
+	{
+		"en"	"Lets stop and take their gear."
+	}
+	"Crystalized Warped Subjects Search Cancel Desc"
+	{
+		"en"	"{green}Gain 7000 Cash and a random rare item."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
+	}
+	"Crystalized Warped Subjects Guln"
+	{
+		"en"	"You find the body of... Guln."
 	}
 }

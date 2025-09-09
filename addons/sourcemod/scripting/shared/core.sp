@@ -1132,6 +1132,8 @@ public void OnMapStart()
 		}
 	}
 	ConVar_ToggleDo();
+	CAddColor("redsunfirst", 0xF78C56);
+	CAddColor("redsunsecond", 0xEEA953);
 }
 
 void DeleteShadowsOffZombieRiot()
@@ -1956,7 +1958,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving[client] = true;
 					f_DelayLookingAtHud[client] = GameTime + 0.5;
 					was_reviving_this[client] = target;
-					int speed = i_CurrentEquippedPerk[client] == 1 ? 12 : 6;
+					int speed = (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 12 : 6;
 					Rogue_ReviveSpeed(speed);
 					ticks = Citizen_ReviveTicks(target, speed, client);
 					
@@ -2468,6 +2470,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		f_AttackSpeedNpcIncrease[entity] 	= 1.0;
 		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR || defined RPG
 		KillFeed_EntityCreated(entity);
@@ -3456,7 +3459,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		f_DisableDyingTimer[target] = GameTime + 0.15;
 
 	int speed = 3;
-	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+	if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
 	{
 		speed = 12;
 	}
@@ -3542,6 +3545,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		DoOverlay(target, "", 2);
 		SetEntityHealth(target, 50);
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
+		Rogue_TriggerFunction(Artifact::FuncRevive, target);
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{
@@ -3551,7 +3555,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
-		if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+		if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
 		{
 			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);

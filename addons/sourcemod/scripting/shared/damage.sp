@@ -211,43 +211,40 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 
 	if(!CheckInHud())
 	{
-		switch(i_CurrentEquippedPerk[victim])
+		if(i_CurrentEquippedPerk[victim] & PERK_TESLAR_MULE)
 		{
-			case 6:
+			int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+			int flMaxHealth = SDKCall_GetMaxHealth(victim);
+		
+			if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
 			{
-				int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-				int flMaxHealth = SDKCall_GetMaxHealth(victim);
-			
-				if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
-				{
-					f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
-					
-					float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
-					
-					ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
-					
-					EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
+				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+				
+				float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
+				
+				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
+				
+				EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
 
-					if(!(damagetype & DMG_TRUEDAMAGE))
-						damage *= 0.25;
-						
-					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				if(!(damagetype & DMG_TRUEDAMAGE))
+					damage *= 0.25;
+					
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+					if (IsValidEntity(baseboss_index))
 					{
-						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-						if (IsValidEntity(baseboss_index))
+						if(!b_NpcHasDied[baseboss_index])
 						{
-							if(!b_NpcHasDied[baseboss_index])
+							if (GetTeam(victim)!=GetTeam(baseboss_index)) 
 							{
-								if (GetTeam(victim)!=GetTeam(baseboss_index)) 
+								float vecTarget[3]; WorldSpaceCenter(baseboss_index, vecTarget);
+								
+								float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
+								if(flDistanceToTarget < 90000)
 								{
-									float vecTarget[3]; WorldSpaceCenter(baseboss_index, vecTarget);
-									
-									float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
-									if(flDistanceToTarget < 90000)
-									{
-										ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-										ApplyStatusEffect(victim, baseboss_index, "Teslar Mule", FL_WIDOWS_WINE_DURATION);
-									}
+									ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
+									ApplyStatusEffect(victim, baseboss_index, "Teslar Mule", FL_WIDOWS_WINE_DURATION);
 								}
 							}
 						}
@@ -256,7 +253,11 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
-
+	
+#if defined ZR || defined NOG
+		//true damage does NOT Ignore this.
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
+#endif
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 
 	int vehicle = Vehicle_Driver(victim);
@@ -730,7 +731,7 @@ stock bool Damage_NPCAttacker(int &attacker,float &damage, int &damagetype)
 #if defined ZR
 	if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))) //if its not melee damage
 	{
-		if(i_CurrentEquippedPerk[attacker] == 5)
+		if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 		{
 			damage *= 1.25;
 		}
@@ -1397,7 +1398,7 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		{
 			float TotalMeleeRes = 1.0;
 #if defined ZR
-			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
+			if(!b_NpcHasDied[attacker] && (i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER))
 			{
 				TotalMeleeRes *= 1.25;
 			}
@@ -1418,7 +1419,7 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 		if(!trueArmorOnly)
 		{
 #if defined ZR
-			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
+			if(!b_NpcHasDied[attacker] && (i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER))
 			{
 				damage *= 1.25;
 			}
@@ -1458,7 +1459,7 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 #if defined ZR
 static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {
-	if(i_CurrentEquippedPerk[victim] == 6)
+	if((i_CurrentEquippedPerk[victim] & PERK_TESLAR_MULE))
 	{
 		if(f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
 		{
@@ -1641,7 +1642,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 
 					damage *= f_BackstabDmgMulti[weapon];		
 #if defined ZR
-					if(i_CurrentEquippedPerk[attacker] == 5) //Deadshot!
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //Deadshot!
 					{
 						damage *= 1.25;
 					}	
@@ -1727,7 +1728,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 			{
 				damage *= 1.35;
 			}
-			if(i_CurrentEquippedPerk[attacker] == 5) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
+			if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //Just give them 25% more damage if they do crits with the huntsman, includes buffbanner i guess
 			{
 				damage *= 1.25;
 			}
@@ -1888,7 +1889,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[victim] == 2 && !(damagetype & DMG_TRUEDAMAGE))
+	if((i_CurrentEquippedPerk[victim] & PERK_OBSIDIAN) && !(damagetype & DMG_TRUEDAMAGE))
 		damage *= 0.85;
 #endif
 }
@@ -1902,7 +1903,7 @@ stock void OnTakeDamageDamageBuffs(int &attacker, int &inflictor, float &damage,
 		{
 			if(!(damagetype & (DMG_CLUB|DMG_TRUEDAMAGE))) //if its not melee damage
 			{
-				if(i_CurrentEquippedPerk[inflictor] == 5)
+				if(i_CurrentEquippedPerk[inflictor] & PERK_MARKSMAN_BEER)
 				{
 					damage *= 1.25; //this should stack
 				}

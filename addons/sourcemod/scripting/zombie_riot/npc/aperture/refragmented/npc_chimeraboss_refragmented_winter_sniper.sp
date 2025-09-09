@@ -116,6 +116,7 @@ methodmap RefragmentedWinterSniper < CClotBody
 		b_CantCollidieAlly[npc.index] = true; 
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		npc.m_bDissapearOnDeath = true;
+		b_NpcIsInvulnerable[npc.index] = true;
 
 		if(npc.m_iChanged_WalkCycle != 1)
 		{

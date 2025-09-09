@@ -1966,6 +1966,14 @@
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 	}
+	"Iberian Inqusitors"
+	{
+		"en"		"Iberian Inqusitors"
+	}
+	"Half Voided Erirasus"
+	{
+		"en"		"Half Voided Erirasus"
+	}
 	"Pathshaper"
 	{
 		"en"		"Pathshaper"
@@ -2623,8 +2631,11 @@
 	}
 	"Fallen Warrior"
 	{
+		"en"	"Fallen Warrior"
+	}
+	"Guln the Fallen One"
+	{
 		"en"	"Guln the Fallen One"
-		"ru" 	"Павший Гулн"
 	}
 	"Ravaging Intellectual"
 	{
@@ -4929,5 +4940,89 @@
 	"Old forgotten expidonsan robot"
 	{
 		"en"	"Old forgotten expidonsan robot"
+	}
+	"Horseless Headless Horsemann"
+	{
+		"en"	"Horseless Headless Horsemann"
+	}
+	"Gentle Spy"
+	{
+		"en"	"Gentle Spy"
+	}
+	"Christian Brutal Sniper"
+	{
+		"en"	"Christian Brutal Sniper"
+	}
+	"Randomizer!"
+	{
+		"en"	"Randomizer"
+	}
+	"Randomizer Base Flamethrower"
+	{
+		"en"	"Randomizer Base Flamethrower"
+	}
+	"Randomizer Base Huntsman"
+	{
+		"en"	"Randomizer Base Huntsman"
+	}
+	"Randomizer Base Southern Hospitality"
+	{
+		"en"	"Randomizer Base Southern Hospitality"
+	}
+	"???"
+	{
+		"en" "???"
+	}
+	"Unknown Computer"
+	{
+		"en" "Unknown Computer"
+	}
+	"Umbral Ltzens"
+	{
+		"en"	"Ŭ̸̪m̷̰̅b̵̘͆r̵̹̈a̸̤͆l̵̤͆ ̶̗̏L̷͕͊t̴̞͝z̸̺͠e̸͈͝n̷̥͑s̸̞̅"
+	}
+	"Umbral Refract"
+	{
+		"en"	"U̵͎͌m̴̱̒b̷͈̈́r̵̘̊ã̶̺l̶̡͘ ̷͓̈́R̸͔̊e̷͈̍f̵̞͘r̸͉̍a̷͖͛c̵̱͊ţ̷͝"
+	}
+	"Umbral Koulm"
+	{
+		"en"	"Ű̷͈m̵͇̅b̴̬̑r̴͚̆a̵̩̒l̴͈͑ ̴͇̿K̴̼͊o̵̳͊ų̶̒l̷̰̉m̶̜͐"
+	}
+	"Umbral Keitosis"
+	{
+		"en"	"U̶̩̎m̷̦̎b̵͓̈r̷͔̋a̸͇̍l̸̘̓ ̸͖̔K̷͍̉e̸̤̓ĭ̶̥t̸̤́ǫ̵̌s̴͚̈́i̴̠̓s̷̓͜"
+	}
+	"Umbral Spuud"
+	{
+		"en"	"U̵͓̚m̶͉̀b̵̟͑r̴̳͌a̵͖̾l̸̢͆ ̵̳͒Ș̸͑p̸̳̅ù̷͖ȕ̸̝d̴͉͘"
+	}
+	"Almagest Researcher"
+	{
+		"en"	"Almagest Researcher"
+	}
+	"Seinr"
+	{
+		"en"	"Seinr"
+	}
+	"Jkei"
+	{
+		"en"	"Jkei"
+	}
+	"Jkei Drone"
+	{
+		"en"	"Jkei Drone"
+	}
+	"Reila"
+	{
+		"en" "Reila"
+	}
+	"Reila?"
+	{
+		"en" "R̷̛̝ě̸̖i̶̲̋l̶̛͚a̴̪͊?"
+	}
+	"Reila's Beacon"
+	{
+		"en" "The Construct"
 	}
 }

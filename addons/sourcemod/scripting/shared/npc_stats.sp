@@ -234,6 +234,8 @@ void OnMapStart_NPC_Base()
 	g_sModelIndexBloodDrop = PrecacheModel("sprites/bloodspray.vmt");
 	g_sModelIndexBloodSpray = PrecacheModel("sprites/blood.vmt");
 	PrecacheSound("weapons/bottle_break.wav");
+	PrecacheSound("npc/strider/striderx_pain8.wav");
+	PrecacheSound("npc/strider/striderx_pain5.wav");
 	
 	PrecacheDecal("sprites/blood.vmt", true);
 	PrecacheDecal("sprites/bloodspray.vmt", true);
@@ -489,6 +491,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 			locomotion.SetCallback(LocomotionCallback_ShouldCollideWith, ShouldCollide_NpcLoco);
 			locomotion.SetCallback(LocomotionCallback_IsEntityTraversable, IsEntityTraversable);
+			locomotion.SetCallback(LocomotionCallback_ClimbUpToLedge, TriesClimbingUpLedge);
 			npcstats.ZRHook_HandleAnimEvent(CBaseAnimating_HandleAnimEvent);
 			h_NpcSolidHookType[npc] = DHookRaw(g_hGetSolidMask, true, view_as<Address>(baseNPC.GetBody()));
 			SetEntProp(npc, Prop_Data, "m_bloodColor", -1); //Don't bleed
@@ -1471,7 +1474,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
 
-		if(i_CurrentEquippedPerk[this.index] == 4)
+		if(i_CurrentEquippedPerk[this.index] & PERK_HASTY_HOPS)
 		{
 			speed_for_return *= 1.25;
 		}
@@ -1529,7 +1532,19 @@ methodmap CClotBody < CBaseCombatCharacter
 			if(!Rogue_Mode())
 				return 400.0;
 			else
-				return 1200.0;
+			{
+				switch(Rogue_Theme())
+				{
+					case BlueParadox:
+					{
+						return 1200.0;
+					}
+					default:
+					{
+						return 400.0;
+					}
+				}
+			}
 		}
 #endif
 		
@@ -2208,14 +2223,14 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			if(!this.m_bPathing)
 			{
-				this.GetPathFollower().SetMinLookAheadDistance(100.0);
+				this.GetPathFollower().SetMinLookAheadDistance(50.0);
 				this.m_bPathing = true;
 			}
 			return;
 		}
 		if(!this.m_bPathing)
 		{
-			this.GetPathFollower().SetMinLookAheadDistance(100.0);	
+			this.GetPathFollower().SetMinLookAheadDistance(50.0);	
 		}
 		this.m_bPathing = true;
 	}
@@ -3484,6 +3499,7 @@ public void NPC_Base_InitGamedata()
 		.DefineFloatField("f_RegenDoLogic")
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
+		.DefineFloatField("f_JumpedRecently")
 		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc();
 	EntityFactory.Install();
@@ -3501,6 +3517,7 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+		.DefineFloatField("m_flElementRes", Element_MAX)
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -3960,7 +3977,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		{
 			if(IsWalkEvent(event))
 			{
-				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.8, npc.m_iStepNoiseType);
+				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 			}
 		}
 		case STEPTYPE_SEABORN:
@@ -4777,6 +4794,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		else if(i_IsABuilding[enemy])
 		{
 #if defined ZR
+			if(b_NpcIgnoresbuildings[index])
+			{
+				return false;
+			}
 			if(RaidbossIgnoreBuildingsLogic(2))
 			{
 				return false;
@@ -5854,7 +5875,19 @@ public void NpcBaseThink(int iNPC)
 		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
 		return;
 	}
-	
+	if(i_IsNpcType[npc.index] == NORMAL_NPC)
+	{
+		static float Vectorspeed[3];
+		npc.GetVelocity(Vectorspeed);
+		if(Vectorspeed[2] == 0.0 && !npc.IsOnGround())
+		{
+			float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
+			if(JumpFloat > GetGameTime())
+			{
+				StuckFixNpc_Ledge(npc);
+			}
+		}
+	}
 	if(b_KillHookHandleEvent[iNPC])
 	{
 		if(h_NpcHandleEventHook[iNPC] != 0)
@@ -5897,7 +5930,7 @@ public void NpcBaseThink(int iNPC)
 	if(f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
-		if(i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
+		if((i_CurrentEquippedPerk[iNPC] & PERK_REGENE) || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 			
@@ -6499,7 +6532,7 @@ stock void Custom_Knockback(int attacker,
 				//Always launch up so people dont have to look up like a hawk.
 				vAngles[0] = -40.0;
 				if(OverrideLookAng[0] != 0.0)
-					vAngles[0] = OverrideLookAng[0];
+					vAngles = OverrideLookAng;
 			}
 			else
 			{
@@ -6519,6 +6552,8 @@ stock void Custom_Knockback(int attacker,
 		{
 			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles);
 			vAngles[0] = -45.0;
+			if(OverrideLookAng[0] != 0.0)
+				vAngles = OverrideLookAng;
 		}
 		
 		if(enemy <= MaxClients)	
@@ -8423,6 +8458,11 @@ stock bool IsValidAlly(int index, int ally)
 {
 	if(IsValidEntity(ally))
 	{
+		if(fl_GibVulnerablity[ally] >= 50000.0)
+		{
+			//they are dead or something else, mainly used for Crystilioasion wirthtout making it very expensive to check.
+			return false;
+		}
 		if(b_ThisEntityIgnored[ally])
 		{
 			return false;
@@ -9917,6 +9957,61 @@ float GetRandomRetargetTime()
 	return GetRandomFloat(3.0, 4.0);
 }
 
+stock ArrayList GetAllNearbyAreas(float pos[3], float radius)
+{
+	ArrayList valid = CreateArray(255);
+
+	int iAreaCount = TheNavAreas.Length;
+	for (int i = 0; i < iAreaCount; i++)
+	{
+		CNavArea navi = TheNavAreas.Get(i);
+
+		if (navi == NULL_AREA)
+			break;    // No nav?
+
+		int NavAttribs = navi.GetAttributes();
+		if (NavAttribs & NAV_MESH_AVOID)
+		{
+			continue;
+		}
+
+		float navPos[3];
+		navi.GetCenter(navPos);
+
+		if (GetVectorDistance(pos, navPos, true) <= (radius * radius))
+			PushArrayCell(valid, navi);
+	}
+
+	return valid;
+}
+
+stock CNavArea GetRandomNearbyArea(float pos[3], float radius)
+{
+    CNavArea navi;
+    
+    static ArrayList areas;
+    static float vecLastKnownPos[3];
+    
+    if (areas)
+    {
+        if (!GetVectorDistance(pos, vecLastKnownPos) && areas.Length > 0)
+        {
+            navi = areas.Get(GetURandomInt() % areas.Length);
+            return navi;
+        }
+        
+        delete areas;
+    }
+    
+    areas = GetAllNearbyAreas(pos, radius);
+    
+    if (areas.Length > 0)
+        navi = areas.Get(GetURandomInt() % areas.Length);
+    
+    vecLastKnownPos = pos;
+    return navi;
+}
+
 void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
 	int entity = TouchedTarget;
@@ -9928,9 +10023,9 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 		{
 			int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
 			float DamageDeal = float(ReturnEntityMaxHealth(target));
-			DamageDeal *= 0.1;
-			if(DamageDeal <= 10.0)
-				DamageDeal = 10.0;
+			DamageDeal *= 0.01;
+			if(DamageDeal <= 5.0)
+				DamageDeal = 5.0;
 			if(ShouldNpcDealBonusDamage(target) || entity > MaxClients)
 			{
 				DamageFlags &= ~DMG_CRUSH;
@@ -11163,4 +11258,103 @@ void NpcStats_CopyStats(int Owner, int Child)
 
 	childnpc.m_iTowerdefense_Checkpoint = ownernpc.m_iTowerdefense_Checkpoint;
 	childnpc.m_iCheckpointTarget		= ownernpc.m_iCheckpointTarget;
+}
+
+
+// from https://github.com/TF2-DMB/CBaseNPC/blob/f2af3f7b74af2d20cf5f673565cb31a887835fb8/scripting/cbasenpc/actiontest/nb_test_scout.sp#L125
+//adjusted for various fixes.
+static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], const float fwd[3], int entity)
+{
+	float feet[3];
+	loco.GetFeet(feet);
+	
+	float MaxSpeedjump = loco.GetDesiredSpeed();
+	if(MaxSpeedjump <= 50.0)
+		MaxSpeedjump = 50.0;
+	if(MaxSpeedjump >= 150.0)
+		MaxSpeedjump = 150.0;
+	if (GetVectorDistance(feet, goal) > MaxSpeedjump)
+	{
+		return false;
+	}
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
+	loco.SetVelocity({0.0,0.0,0.0});
+	//but we reset the pos to make a perfect jump everytime.
+	CClotBody npc = view_as<CClotBody>(bot_entidx);
+	float GoalAm[3];
+	GoalAm = goal;
+	npc.FaceTowards(GoalAm, 20000.0);
+
+	//we save when they recently jumped.
+	SetEntPropFloat(bot_entidx, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
+	return loco.CallBaseFunction(goal, fwd, entity);
+}
+
+
+#define DEFAULT_ANTISTUCK_SPEED 100.0
+void StuckFixNpc_Ledge(CClotBody npc)
+{
+	static float flMyPos[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+	if(b_IsGiant[npc.index])
+	{
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else if(f3_CustomMinMaxBoundingBox[npc.index][1] != 0.0)
+	{
+		hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[npc.index][0];
+		hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[npc.index][1];
+		hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[npc.index][2];
+
+		hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[npc.index][0];
+		hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[npc.index][1];
+		hullcheckmins[2] = 0.0;	
+	}
+	else
+	{
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+	hullcheckmaxs[0] += 1.0;
+	hullcheckmaxs[1] += 1.0;
+	hullcheckmaxs[2] += 1.0;
+
+	hullcheckmins[0] -= 1.0;
+	hullcheckmins[1] -= 1.0;
+	hullcheckmins[2] -= 1.0;
+	CNavArea areaNavget;
+	Segment segment;
+	Segment segment2;
+	segment = npc.GetPathFollower().FirstSegment();
+	float VecPos[3];
+	if(segment != NULL_PATH_SEGMENT)
+	{
+		segment2 = npc.GetPathFollower().NextSegment(segment);
+		segment2 = npc.GetPathFollower().NextSegment(segment2);
+	}	
+	if(segment2 != NULL_PATH_SEGMENT)
+	{
+		areaNavget = segment2.area;
+		areaNavget.GetCenter(VecPos);
+	}
+	if(VecPos[2] != 0.0)
+	{
+		flMyPos[2] = VecPos[2];
+	}
+	float ang[3], Vectorspeed[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	Vectorspeed[2] = 150.0;
+	Vectorspeed[0] = -1.0 * (Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
+	Vectorspeed[1] = -1.0 * (Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
+	if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs, true))
+	{
+		Vectorspeed[0] *= -1.0;
+		Vectorspeed[1] *= -1.0;
+	}
+	npc.SetVelocity(Vectorspeed);
+	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
 }
