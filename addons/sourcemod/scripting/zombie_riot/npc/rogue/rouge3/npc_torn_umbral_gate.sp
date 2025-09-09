@@ -12,6 +12,9 @@ static char g_HurtSound[][] = {
 static char g_DeathSound[][] = {
 	"weapons/bombinomicon_explode1.wav",
 };
+static char g_SpawnSound[][] = {
+	"ui/killsound_electro.wav",
+};
 
 void TornUmbralGate_OnMapStart_NPC()
 {
@@ -30,6 +33,7 @@ void TornUmbralGate_OnMapStart_NPC()
 	gGlow2 = PrecacheModel("sprites/yellowglow1.vmt", true);
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_DeathSound));	i++) { PrecacheSound(g_DeathSound[i]);	}
+	for (int i = 0; i < (sizeof(g_SpawnSound));	i++) { PrecacheSound(g_SpawnSound[i]);	}
 }
 
 
@@ -47,11 +51,6 @@ methodmap TornUmbralGate < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
-	property float m_flRenderWhich
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
-	}
 	public void PlayHurtSound()
 	{
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
@@ -60,6 +59,11 @@ methodmap TornUmbralGate < CClotBody
 	{
 		EmitSoundToAll(g_DeathSound[GetRandomInt(0, sizeof(g_DeathSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		EmitSoundToAll(g_DeathSound[GetRandomInt(0, sizeof(g_DeathSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	}
+	public void PlaySummonSound()
+	{
+		EmitSoundToAll(g_SpawnSound[GetRandomInt(0, sizeof(g_SpawnSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 40);
+		EmitSoundToAll(g_SpawnSound[GetRandomInt(0, sizeof(g_SpawnSound) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 40);
 	}
 	public TornUmbralGate(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -83,6 +87,7 @@ methodmap TornUmbralGate < CClotBody
 		b_NoKnockbackFromSources[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_DoNotUnStuck[npc.index] = true;
+		npc.m_flGateSpawnEnemies = GetGameTime() + 2.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(TornUmbralGate_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(TornUmbralGate_ClotThink);
@@ -140,8 +145,48 @@ public void TornUmbralGate_ClotThink(int iNPC)
 	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, -200.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
 	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, -400.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
 		
-
+	
 	Torn_UmbralGate_ApplyBuffInLocation(VecSelfNpcabs);
+	if(npc.m_flGateSpawnEnemies < gameTime && MaxEnemiesAllowedSpawnNext(0) > (EnemyNpcAlive - EnemyNpcAliveStatic))
+	{
+		int MaxenemySpawnScaling = 2;
+		MaxenemySpawnScaling = RoundToNearest(float(MaxenemySpawnScaling) * MultiGlobalEnemy);
+
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 100.0;
+		npc.PlaySummonSound();
+		TE_Particle("powerup_supernova_explode_red", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
+		int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
+		MaxHealthGet /= 10;
+		for(int i; i<MaxenemySpawnScaling; i++)
+		{
+			int summon = NPC_CreateByName("npc_umbral_whiteflowers", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+			if(IsValidEntity(summon))
+			{
+				if(GetTeam(npc.index) != TFTeam_Red)
+					Zombies_Currently_Still_Ongoing++;
+				
+				SetEntProp(summon, Prop_Data, "m_iHealth", 		MaxHealthGet);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", MaxHealthGet);
+				
+				NpcStats_CopyStats(npc.index, summon);
+				fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
+				
+				float flPos[3];
+				flPos = pos;
+				flPos[2] += 300.0;
+				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(100.0, 200.0);
+				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-200.0, -100.0) : GetRandomFloat(200.0, 200.0);
+				npc.SetVelocity({0.0,0.0,0.0});
+				PluginBot_Jump(summon, flPos);
+			}
+		}
+		npc.m_flGateSpawnEnemies = gameTime + 15.0;
+	}
 }
 
 public void TornUmbralGate_NPCDeath(int entity)

@@ -1600,6 +1600,8 @@ public void OnPostThinkPost(int client)
 #endif	// ZR & RPG
 		f_UpdateModelIssues[client] = 0.0;
 	}
+	//HARDCODED GRAVITY VALUE.
+	sv_gravity.IntValue = 800;
 }
 #endif	// ZR & RPG
 

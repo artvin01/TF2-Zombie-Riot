@@ -1091,6 +1091,7 @@ void NPC_ConfigSetup()
 	Shadow_FloweringDarkness_OnMapStart_NPC();
 	Shadowing_Darkness_Boss_OnMapStart_NPC();
 	TornUmbralGate_OnMapStart_NPC();
+	Umbral_WF_OnMapStart_NPC();
 	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
 }
 
@@ -2379,3 +2380,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_shadow_flowering_darkness.sp"
 #include "npc/rogue/rouge3/npc_shadowing_darkness.sp"
 #include "npc/rogue/rouge3/npc_torn_umbral_gate.sp"
+#include "npc/rogue/rouge3/npc_umbral_whiteflower.sp"

@@ -4462,10 +4462,12 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 		npc.SetVelocity(vecJumpVel);
 		return true;
 	}
-	
+	/*
 	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
+		*/
+	float gravity = npc.GetBaseNPC().flGravity;
 
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = vecPos[2] - vecNPC[2];

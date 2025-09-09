@@ -1318,7 +1318,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				{
 					ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
 					b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
-					f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+					f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
 
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetPoseParameter_Easy("body_pitch", 0.0);
