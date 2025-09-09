@@ -368,7 +368,7 @@ public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &at
 		return Plugin_Continue;
 	
 	// We're massively reducing damage if players dealt too much damage to bosses in the spare/kill sequence
-	const float damageReduction = 0.05;
+	const float damageReduction = 0.025;
 	
 	// They just reached the threshold, account for the remainder
 	if (fl_PlayerDamage[attacker] < fl_MaxDamagePerPlayer && fl_PlayerDamage[attacker] + damage > fl_MaxDamagePerPlayer)
