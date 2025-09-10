@@ -139,13 +139,14 @@ public void TornUmbralGate_ClotThink(int iNPC)
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	VecSelfNpcabs[2] += 100.0;
 	TornUmbralGate_Visuals(npc);
-	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
-	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 200.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
-	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 400.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
-	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, -200.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
-	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, -400.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, /*duration*/ TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
+	/*
+	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
+	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 200.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
+	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 400.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
+	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, -200.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
+	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, -400.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
 		
-	
+	*/
 	Torn_UmbralGate_ApplyBuffInLocation(VecSelfNpcabs);
 	if(npc.m_flGateSpawnEnemies < gameTime && MaxEnemiesAllowedSpawnNext(0) > (EnemyNpcAlive - EnemyNpcAliveStatic))
 	{

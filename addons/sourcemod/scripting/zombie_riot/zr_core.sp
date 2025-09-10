@@ -729,6 +729,8 @@ void ZR_MapStart()
 	PrecacheSound("#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 	PrecacheSound("ui/chime_rd_2base_neg.wav");
 	PrecacheSound("ui/chime_rd_2base_pos.wav");
+	PrecacheSound("items/suitchargeno1.wav");
+	PrecacheSound("beams/beamstart5.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();

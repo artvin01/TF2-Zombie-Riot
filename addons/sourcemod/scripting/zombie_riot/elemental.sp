@@ -762,11 +762,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	if(victim <= MaxClients)
 	{
 		// Warped overrides
+		/*
 		if(Armor_Charge[victim] < 0 && Armor_DebuffType[victim] == Element_Warped)
 			return;
-		
+			This overrides warped, the rot consumes.
+		*/
 		Armor_DebuffType[victim] = Element_Necrosis;
-		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime() && Armor_Charge[victim] < 1)
+		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -784,8 +786,9 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				{
 					Armor_Charge[victim] = 0;
 					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
-					
-					StartBleedingTimer(victim, attacker, 100.0, 15, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					int health = ReturnEntityMaxHealth(victim);
+					health /= 25;
+					StartBleedingTimer(victim, attacker, health, 5, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 					Force_ExplainBuffToClient(victim, "Necrosis Elemental Damage");
 
 					int other, i;
@@ -794,10 +797,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 						Saga_ChargeReduction(victim, other, -15.0);
 					}
 				}
+				else
+				{
+					EmitSoundToClient(victim, "items/suitchargeno1.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 80);
+				}
 			}
-			
 			if(!Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound weapons/drg_pomson_drain_01.wav");
+				EmitSoundToClient(victim, "beams/beamstart5.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 60);
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs

@@ -3112,6 +3112,15 @@
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
 		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
 	}
+	
+	"Necrosis Elemental Damage"
+	{
+		"en"	"Necrosis Elemental Damage"
+	}
+	"Necrosis Elemental Damage Desc"
+	{
+		"en"	"Once full, You rot down to your components.\nYou bleed out 20％ of your max health as ranged damage.\nYou lose 15s cooldown on all your abilities."
+	}
 	"Nervous Impairment Elemental Damage"
 	{
 		"en"	"Nervous Impairment Elemental Damage"
