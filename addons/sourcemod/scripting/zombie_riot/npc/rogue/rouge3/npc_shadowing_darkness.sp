@@ -243,6 +243,12 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
 
+	property float m_flDespawnUmbralKoulms
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+
 	property int m_iShadowingLeftSlice
 	{
 		public get()							{ return i_OverlordComboAttack[this.index]; }
@@ -463,7 +469,26 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	}
 
 	Shadowing_Darkness_DefaultMovement(npc, gameTime);
-
+	if(npc.m_flDespawnUmbralKoulms < gameTime)
+	{
+		//delete all koulms
+		int inpcloop, a;
+		while((inpcloop = FindEntityByNPC(a)) != -1)
+		{
+			if(IsValidEntity(inpcloop) && i_NpcInternalId[inpcloop] == Umbral_Koulm_ID())
+			{
+				if(inpcloop != 0)
+				{
+					b_DissapearOnDeath[inpcloop] = true;
+					b_DoGibThisNpc[inpcloop] = true;
+					SmiteNpcToDeath(inpcloop);
+					SmiteNpcToDeath(inpcloop);
+					SmiteNpcToDeath(inpcloop);
+					SmiteNpcToDeath(inpcloop);
+				}
+			}
+		}
+	}
 	
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -682,7 +707,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 					 */
 					vecAnglesLoop[0] += (((-15.0 + ( loop * 3.75))) * 0.25);
 					vecAnglesLoop[1] += (-15.0 + ( loop * 3.75));
-					int projectile = npc.FireProjectile_SD(vecSelf, vecAnglesLoop,  280.0 , 0.0, "raygun_projectile_blue");
+					int projectile = npc.FireProjectile_SD(vecSelf, vecAnglesLoop,  280.0 , 0.0, "raygun_projectile_red");
 					SD_ProjectileToEnemy(projectile, vecTargetProj, vecAnglesLoop, VecSpeed, EndPos);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(projectile));
@@ -692,7 +717,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 					RequestFrames(SD_ProjectileGiveSpeed, (loop * 2), pack);
 					WorldSpaceCenter(projectile, vecSelf);
 
-					TE_SetupBeamPoints(vecSelf, EndPos, Shared_BEAM_Laser, 0, 0, 0, 1.5, 3.0, 3.0, 0, 0.0, {0,0,255,125}, 3);
+					TE_SetupBeamPoints(vecSelf, EndPos, Shared_BEAM_Laser, 0, 0, 0, 1.5, 3.0, 3.0, 0, 0.0, {255,65,65,125}, 3);
 					TE_SendToAll(0.0);
 					//override normal touch stuff
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -706,7 +731,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 	return false;
 }
 
-#define MAX_BOUNCES_SHADOWING_DARKNESS 4
+#define MAX_BOUNCES_SHADOWING_DARKNESS 3
 public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
@@ -744,7 +769,7 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 	SD_ProjectileToEnemy(entity, vecEnemy, VecAngles, VecSpeed, EndPos);
 	float vecSelf[3];
 	WorldSpaceCenter(entity, vecSelf);
-	TE_SetupBeamPoints(vecSelf, EndPos, Shared_BEAM_Laser, 0, 0, 0, 1.5, 3.0, 3.0, 0, 0.0, {0,0,255,125}, 3);
+	TE_SetupBeamPoints(vecSelf, EndPos, Shared_BEAM_Laser, 0, 0, 0, 1.5, 3.0, 3.0, 0, 0.0, {255,65,65,125}, 3);
 	TE_SendToAll(0.0);
 	TeleportEntity(entity, NULL_VECTOR, VecAngles, VecSpeed);
 	//valid target found, bounce to said target
@@ -903,7 +928,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 	{
 		npc.m_flUpperSlashCD = gameTime + 60.0;
 		npc.m_iState = 3;	
-		npc.m_flDoingAnimation = gameTime + 3.0;
+		npc.m_flDoingAnimation = gameTime + 2.3;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -946,7 +971,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 			b_NoGravity[npc.index] = false;
 			f3_NpcSavePos[npc.index][2] = -69.69;
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.8)
 		{
 			if(npc.m_iChanged_WalkCycle != 7) 	
 			{
@@ -960,7 +985,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					npc.StopPathing();
 
 					npc.m_iShadowingLeftSlice--;
-					npc.m_flDoingAnimation = gameTime + 2.1;
+					npc.m_flDoingAnimation = gameTime + 1.8;
 				}
 			}
 		}
@@ -975,7 +1000,10 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTargetWalkTo, 500.0, _,VecEnemy);
 					float DamageCalc = 400.0;
+					damageDealt *= RaidModeScaling;
+					//basically oneshots
 					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, true);
+					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, false);
 				}
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 6;
@@ -995,7 +1023,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				//do slice
 			}
 		}
-		else if(TimeLeft <= 1.35)
+		else if(TimeLeft <= 1.25)
 		{
 			if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true, true))
 			{
@@ -1018,7 +1046,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				npc.SetVelocity({0.0,0.0,-2000.0});
 			}
 		}
-		else if(TimeLeft <= 1.75)
+		else if(TimeLeft <= 1.5)
 		{
 			if(npc.m_iChanged_WalkCycle != 4) 	
 			{
@@ -1130,15 +1158,15 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		npc.m_flDespawnUmbralKoulms = gameTime + 10.0;
 		for(int loop=1; loop<=4; loop++)
 		{
-			int maxhealth;
 			int spawn_index = NPC_CreateByName("npc_umbral_koulm", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 8));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
 				fl_Extra_Damage[spawn_index] *= 5.0;
 				//10% dmg buff
 			}
@@ -1153,23 +1181,6 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		if(TimeLeft <= 0.0)
 		{
 			//Reset back to normal, we are done.
-			//delete all koulms
-			int inpcloop, a;
-			while((inpcloop = FindEntityByNPC(a)) != -1)
-			{
-				if(IsValidEntity(inpcloop) && i_NpcInternalId[inpcloop] == Umbral_Koulm_ID())
-				{
-					if(inpcloop != 0)
-					{
-						b_DissapearOnDeath[inpcloop] = true;
-						b_DoGibThisNpc[inpcloop] = true;
-						SmiteNpcToDeath(inpcloop);
-						SmiteNpcToDeath(inpcloop);
-						SmiteNpcToDeath(inpcloop);
-						SmiteNpcToDeath(inpcloop);
-					}
-				}
-			}
 			npc.m_iTargetWalkTo = 0;
 			npc.m_iState = 0;
 			npc.m_flRestoreDefaultWalk = 1.0;
@@ -1207,9 +1218,8 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		}
 		else 
 		{
-			PrintToChatAll("testing1");
 			float CircleSize = 800.0; //,max size
-			CircleSize /= (TimeLeft - 4.0);
+			CircleSize *= (TimeLeft - 3.0);
 			float AbsVecMe[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsVecMe);
 			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/combineball_trail_black_1.vmt", 125, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
@@ -1256,7 +1266,7 @@ public Action ShadowingDarkness_NecroPoolTimer(Handle timer, DataPack pack)
 		float VecMe[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecAbsOrigin", VecMe);
 		VecMe[2] += 5.0;
-		spawnRing_Vectors(VecMe, CircleSize * 2.0, 0.0, 0.0, 0.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+		spawnRing_Vectors(VecMe, CircleSize * 2.0, 0.0, 0.0, 0.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.51, 15.0, 0.0, 2);
 		Explode_Logic_Custom(0.0, 0, npc.index, -1, VecMe, CircleSize, 1.0, _, true, 99,_,_,_,Shadowing_GiveNecrosis);
 	
 		return Plugin_Continue;

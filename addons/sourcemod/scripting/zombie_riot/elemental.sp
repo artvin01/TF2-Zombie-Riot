@@ -788,7 +788,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
 					int health = ReturnEntityMaxHealth(victim);
 					health /= 25;
-					StartBleedingTimer(victim, attacker, health, 5, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					StartBleedingTimer(victim, attacker, float(health), 5, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 					Force_ExplainBuffToClient(victim, "Necrosis Elemental Damage");
 
 					int other, i;
