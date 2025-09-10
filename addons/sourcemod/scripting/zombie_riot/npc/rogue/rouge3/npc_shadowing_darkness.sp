@@ -232,6 +232,11 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+	property float m_flUpperSlashCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
 
 	public Shadowing_Darkness_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -433,6 +438,11 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	}
 
 	if(Shadowing_Darkness_UmbralGateSummoner(npc, gameTime))
+	{
+		return;
+	}
+
+	if(Shadowing_Darkness_UpperDash(npc, gameTime))
 	{
 		return;
 	}
@@ -842,10 +852,10 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 		else if(TimeLeft <= 2.0)
 		{
 			//do whatever after some time
-			if(npc.m_iChanged_WalkCycle != 2) 	
+			if(npc.m_iChanged_WalkCycle != 3) 	
 			{
 				npc.m_bisWalking = false;
-				npc.m_iChanged_WalkCycle = 2;
+				npc.m_iChanged_WalkCycle = 3;
 				npc.SetActivity("ACT_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
@@ -863,6 +873,164 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+
+
+bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
+{
+	if(npc.m_flUpperSlashCD < gameTime && npc.m_iState == 0)
+	{
+		npc.m_flUpperSlashCD = gameTime + 60.0;
+		npc.m_iState = 3;	
+		npc.m_flDoingAnimation = gameTime + 2.5;
+		if(npc.m_iChanged_WalkCycle != 1) 	
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 1;
+			npc.SetActivity("ACT_RUN");
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+		}
+		npc.m_iTargetWalkTo = npc.m_iTarget;
+	}
+
+	if(npc.m_iState == 3)
+	{
+		static float HullMaxs[3];
+		static float HullMins[3];
+		HullMaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		HullMins = view_as<float>( { -24.0, -24.0, 0.0 } );
+		if(f3_NpcSavePos[npc.index][2] != -69.69)
+		{
+			static float HullMaxs_Dmg[3];
+			static float HullMins_Dmg[3];
+			HullMaxs_Dmg = view_as<float>( { 80.0, 80.0, 150.0 } );
+			HullMins_Dmg = view_as<float>( { -80.0, -80.0, 0.0 } );
+			TE_DrawBox(-1, f3_NpcSavePos[npc.index], HullMins_Dmg, HullMaxs_Dmg, 0.15, view_as<int>({255, 0, 0, 255}));
+		}
+
+		float TimeLeft = npc.m_flDoingAnimation - gameTime;
+		if(TimeLeft <= 0.0)
+		{
+			//done with ability
+			RemoveSpecificBuff(npc.index, "Intangible");
+			f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
+			b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
+			//Reset back to normal, we are done.
+			npc.m_iTargetWalkTo = 0;
+			npc.m_iState = 0;
+			npc.m_flRestoreDefaultWalk = 1.0;
+			b_NoGravity[npc.index] = false;
+			f3_NpcSavePos[npc.index][2] = -69.69;
+		}
+		else if(TimeLeft <= 0.5)
+		{
+			if(npc.m_iChanged_WalkCycle != 5) 	
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 5;
+				npc.SetActivity("ACT_RUN");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+				b_NoGravity[npc.index] = false;
+				
+				f3_NpcSavePos[npc.index][2] = -69.69;
+				npc.SetVelocity({0.0,0.0,-2000.0});
+			}
+		}
+		else if(TimeLeft <= 1.5)
+		{
+			if(npc.m_iChanged_WalkCycle != 4) 	
+			{
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 4;
+				npc.SetActivity("ACT_RUN");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+
+				static float flPos[3]; 
+				GetEntPropVector(npc.m_iTargetWalkTo, Prop_Data, "m_vecAbsOrigin", flPos);
+				flPos[2] += 150.0;
+
+				f3_NpcSavePos[npc.index] = flPos;
+				f3_NpcSavePos[npc.index][2] -= 150.0;
+				ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+				b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
+				f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+
+				
+				int r = 255;
+				int g = 65;
+				int b = 65;
+				float diameter = 25.0;
+				int colorLayer4[4];
+				SetColorRGBA(colorLayer4, r, g, b, 233);
+				int colorLayer2[4];
+				float VecMe[3]; WorldSpaceCenter(npc.index, VecMe);
+
+				Npc_Teleport_Safe(npc.index, flPos, HullMins, HullMaxs, false, true, true);
+
+				b_NoGravity[npc.index] = true;
+				float VecMeNew[3]; WorldSpaceCenter(npc.index, VecMeNew);
+				
+				TE_SetupBeamPoints(VecMe, VecMeNew, g_Ruina_BEAM_Laser, 0, 0, 0, 0.75, ClampBeamWidth(diameter * 0.1 * 1.28), ClampBeamWidth(diameter * 0.1 * 1.28), 0, 1.0, colorLayer4, 3);
+				TE_SendToAll(0.0);
+				TE_SetupBeamPoints(VecMe, VecMeNew, g_Ruina_BEAM_Laser, 0, 0, 0, 0.5, ClampBeamWidth(diameter * 0.2 * 1.28), ClampBeamWidth(diameter * 0.2 * 1.28), 0, 1.0, colorLayer4, 3);
+				TE_SendToAll(0.0);
+				TE_SetupBeamPoints(VecMe, VecMeNew, g_Ruina_BEAM_Laser, 0, 0, 0, 0.3, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
+				TE_SendToAll(0.0);
+				TE_SetupBeamPoints(VecMe, VecMeNew, g_Ruina_BEAM_Laser, 0, 0, 0, 0.15, ClampBeamWidth(diameter * 0.4 * 1.28), ClampBeamWidth(diameter * 0.4 * 1.28), 0, 1.0, {255,255,255,233}, 3);
+				TE_SendToAll(0.0);
+				if(IsValidEntity(npc.m_iWearable5))
+				{
+					RemoveEntity(npc.m_iWearable5);
+				}
+			}
+		}
+		else if(TimeLeft <= 2.5)
+		{
+			//Point To Target
+			if(!IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true, true))
+			{
+				if(IsValidEntity(npc.m_iWearable5))
+				{
+					RemoveEntity(npc.m_iWearable5);
+				}
+				npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
+				//get the next valid enemy
+				npc.m_iChanged_WalkCycle = 0;
+				if(npc.m_iTargetWalkTo == -1)
+				{
+					//no valid target, end ability now
+					TimeLeft = 0.0;
+				}
+			}
+			if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true, true))
+			{
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
+			}
+
+			if(npc.m_iChanged_WalkCycle != 2) 	
+			{
+				if(IsValidEntity(npc.m_iWearable5))
+				{
+					RemoveEntity(npc.m_iWearable5);
+				}
+				npc.m_iWearable5 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "effect_hand_l");
+				
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 2;
+				npc.SetActivity("ACT_RUN");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+				
 			}
 		}
 		return true;

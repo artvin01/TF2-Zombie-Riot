@@ -6123,8 +6123,8 @@ static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterSt
 		
 	Attributes_SetMulti(victim, 442, 0.85);
 	Attributes_SetMulti(victim, 610, 0.35);
-	Attributes_SetMulti(victim, 326, 1.5);
-	i_Client_Gravity[victim] /= 5;
+	Attributes_SetMulti(victim, 326, 1.75);
+	i_Client_Gravity[victim] /= 2;
 	SDKCall_SetSpeed(victim);
 }
 
@@ -6135,7 +6135,7 @@ static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEf
 		
 	Attributes_SetMulti(victim, 442, (1.0 / 0.85));
 	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
-	Attributes_SetMulti(victim, 326, (1.0 / 1.5));
-	i_Client_Gravity[victim] *= 5;
+	Attributes_SetMulti(victim, 326, (1.0 / 1.75));
+	i_Client_Gravity[victim] *= 2;
 	SDKCall_SetSpeed(victim);
 }
