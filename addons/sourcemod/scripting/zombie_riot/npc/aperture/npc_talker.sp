@@ -360,15 +360,19 @@ public void Aperture_Shared_LastStandSequence_ClotThink(int entity)
 
 public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if (attacker <= 0 || attacker > MaxClients)
-		return Plugin_Continue;
-	
 	// Don't bother on Chaos Intrusion
 	if (CurrentModifOn() == 1)
 		return Plugin_Continue;
 	
 	// We're massively reducing damage if players dealt too much damage to bosses in the spare/kill sequence
 	const float damageReduction = 0.025;
+	
+	if (attacker <= 0 || attacker > MaxClients)
+	{
+		// If somehow, something that isn't a player attacked the boss, lower the damage at all times
+		damage *= damageReduction;
+		return Plugin_Changed;
+	}
 	
 	// They just reached the threshold, account for the remainder
 	if (fl_PlayerDamage[attacker] < fl_MaxDamagePerPlayer && fl_PlayerDamage[attacker] + damage > fl_MaxDamagePerPlayer)
