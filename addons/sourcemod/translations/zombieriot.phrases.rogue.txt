@@ -308,7 +308,7 @@
 	}
 	"Eccentric Lore"
 	{
-		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Combine, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
+		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Mazeaten, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
 		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
 	}
 	"Eccentric Option 1"
@@ -323,7 +323,7 @@
 	}
 	"Eccentric Lore 1a"
 	{
-		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
+		"en"	"''He's part of the line of Mazeat lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
 	}
 	"Eccentric Lore 1b"
 	{
@@ -359,7 +359,7 @@
 	}
 	"Eccentric Lore 1-2"
 	{
-		"en"	"''Ah, he's locked away. Your Combine friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
+		"en"	"''Ah, he's locked away. Your Mazeat friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
 		"ru"	"\"А, под замком. Ваш друг комбайн запер «Взбешённого клинка», как он это сделал, я до сих пор не знаю. Скажем так, он никогда не увидит дневной свет, пока он в клетке.\""
 	}
 	"Eccentric Option 1-3"
@@ -449,7 +449,7 @@
 	}
 	"Coffin of Evil Lore 1"
 	{
-		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
+		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Mazeaten climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
 		"ru"	"Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
 	}
 	"Coffin of Evil Option 2"
@@ -469,7 +469,7 @@
 	}
 	"Eye for an Eye Lore"
 	{
-		"en"	"A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
+		"en"	"A refined, well-dressed Mazeaten stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
 		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
 	}
 	"Eye for an Eye Option 1"
@@ -484,7 +484,7 @@
 	}
 	"Eye for an Eye Lore 1"
 	{
-		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
+		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Mazeaten promises to reward you."
 		"ru"	"Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
 	}
 	"Eye for an Eye Option 2"
@@ -514,7 +514,7 @@
 	}
 	"Eye for an Eye Lore 3"
 	{
-		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
+		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Mazeaten sighs and laments how his time will end on a tragic note."
 		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
 	}
 	"Xeno Shaft Title"
@@ -1660,7 +1660,7 @@
 	}
 	"Broken Combine Crown"
 	{
-		"en"	"Broken Combine Crown"
+		"en"	"Broken Mazeaten Crown"
 	}
 	"Broken Combine Crown Desc"
 	{
@@ -1680,7 +1680,7 @@
 	}
 	"Bob's Final Draft Desc"
 	{
-		"en"	"A report about a combine named "Bladedance". Status: Unknown. The rest of the report is torn off.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
+		"en"	"A report about a Mazeaten named ''Bladedance''. Status: Unknown. The rest of the report is torn off.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
 	}
 	"Hand of Sticks"
 	{
