@@ -53,6 +53,7 @@ enum struct StatusEffect
 	void Blank()
 	{
 		this.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+		this.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 		this.OnBuffStarted				= INVALID_FUNCTION;
 		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
@@ -3163,7 +3164,7 @@ void StatusEffects_Aperture()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti			= 0.15;
+	data.DamageTakenMulti			= 0.6;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
@@ -5921,6 +5922,23 @@ void StatusEffects_Rogue3()
 	data.OnBuffEndOrDeleted			= VoidAffliction_End;
 	data.OnTakeDamage_PostAttacker	= VoidAffliction_TakeDamageAttackerPost;
 	ShrinkingStatusEffectIndex = StatusEffect_AddGlobal(data);
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ultra Rapid Fire");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "URF");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.25;
+	data.AttackspeedBuff			= (1.0 / 1.4);
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 

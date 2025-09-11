@@ -75,6 +75,14 @@ static const char g_PassiveSound[][] = {
 	"mvm/giant_scout/giant_scout_loop.wav",
 };
 
+static const char g_DeathBeepSound[][] = {
+	"items/cart_explode_trigger.wav",
+};
+
+static const char g_DeathBoomSound[][] = {
+	"items/cart_explode.wav",
+};
+
 #define CAT_DEFAULT_SPEED 300.0
 
 #define CAT_ORB_SPAM_ABILITY_DURATION 3.0
@@ -131,6 +139,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_StunCat));   i++) { PrecacheSound(g_StunCat[i]);   }
 	for (int i = 0; i < (sizeof(g_StunCatEnd));   i++) { PrecacheSound(g_StunCatEnd[i]);   }
 	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathBeepSound));   i++) { PrecacheSound(g_DeathBeepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathBoomSound));   i++) { PrecacheSound(g_DeathBoomSound[i]);   }
 	
 	PrecacheSoundCustom("#zombiesurvival/aperture/cat.mp3");
 	PrecacheSound("mvm/mvm_tank_end.wav");
@@ -138,6 +148,7 @@ static void ClotPrecache()
 	PrecacheModel(CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
 	
 	PrecacheParticleSystem(CAT_SELF_DEGRADATION_ABILITY_EFFECT);
+	PrecacheParticleSystem("asplode_hoodoo");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -212,6 +223,14 @@ methodmap CAT < CClotBody
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 	}
+	public void PlayDeathBeepSound()
+	{
+		EmitSoundToAll(g_DeathBeepSound[GetRandomInt(0, sizeof(g_DeathBeepSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void PlayDeathBoomSound()
+	{
+		EmitSoundToAll(g_DeathBoomSound[GetRandomInt(0, sizeof(g_DeathBoomSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
 	
 	property float m_flNextOrbAbilityTime
 	{
@@ -253,6 +272,21 @@ methodmap CAT < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flMaxRaidTimer
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flDeathAnim
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property int m_iDeathState
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
+	}
 
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -277,7 +311,10 @@ methodmap CAT < CClotBody
 
 		npc.PlayPassiveSound();
 		
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		// This exists so we can re-use it during Life Reversal
+		npc.m_flMaxRaidTimer = 160.0;
+		
+		RaidModeTime = GetGameTime() + npc.m_flMaxRaidTimer;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -391,33 +428,13 @@ public void CAT_ClotThink(int iNPC)
 	CAT npc = view_as<CAT>(iNPC);
 	float gameTime = GetGameTime(iNPC);
 	
+	if (CAT_LoseConditions(iNPC))
+		return;
+	
 	if(CAT_timeBased(iNPC))
 		return;
 	if(npc.m_flNextDelayTime > gameTime)
 	{
-		return;
-	}
-
-	if(RaidModeTime >= GetGameTime() + 170.0)
-	{
-		RaidModeTime = GetGameTime() + 160.0;
-	}
-
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
-	{
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
-		return;
-	}
-
-	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
 
@@ -731,7 +748,7 @@ static void OrbSpam_Ability_End(CAT npc)
 {
 	float gameTime = GetGameTime(npc.index);
 	
-	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	npc.SetActivity("ACT_MP_RUN_MELEE");
 	npc.AddGesture("ACT_MP_STUN_END");
 	
 	npc.m_flSpeed = CAT_DEFAULT_SPEED;
@@ -821,7 +838,15 @@ bool CAT_timeBased(int iNPC)
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
 			npc.m_flLifeReversal = 0.0;
+			
+			RaidModeTime = GetGameTime() + npc.m_flMaxRaidTimer;
 		}
+		
+		// Gradually increase the timer back to the max
+		RaidModeTime += 0.3;
+		if (RaidModeTime > GetGameTime() + npc.m_flMaxRaidTimer)
+			RaidModeTime = GetGameTime() + npc.m_flMaxRaidTimer;
+		
 		return true;
 	}
 	return false;
@@ -907,7 +932,7 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	
 	npc.m_bisWalking = true;
 	
-	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	npc.SetActivity("ACT_MP_RUN_MELEE");
 	npc.SetPlaybackRate(1.0);
 	
 	npc.m_flSpeed = CAT_DEFAULT_SPEED;
@@ -992,13 +1017,26 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 	CAT npc = view_as<CAT>(victim);
 	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	if (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
 		CAT_ClearAllProjectiles(npc);
 		
-		npc.StopPassiveSound();
-		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		if (Aperture_ShouldDoLastStand())
+		{
+			// We're in Laboratories, the boss' think/death functions will be hijacked
+			npc.StopPassiveSound();
+			npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
+			Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		}
+		else if (!npc.m_flDeathAnim)
+		{
+			// We're not in Laboratories, don't die immediately, we do an animation first
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 99999.0);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);
+			
+			npc.m_flDeathAnim = 1.0;
+		}
 		
 		damage = 0.0;
 		return Plugin_Handled;
@@ -1021,7 +1059,6 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npc.SetActivity("ACT_MP_STUN_MIDDLE");
 			b_NpcIsInvulnerable[npc.index] = true;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 2.0, _, 10.0, HEAL_ABSOLUTE);
-			RaidModeTime += (170.0 + DEFAULT_UPDATE_DELAY_FLOAT);
 			damage = 0.0;
 			return Plugin_Handled;
 		}
@@ -1184,4 +1221,65 @@ static void CAT_ClearAllProjectiles(CAT npc)
 		
 		RemoveEntity(i);
 	}
+}
+
+static bool CAT_LoseConditions(int iNPC)
+{
+	CAT npc = view_as<CAT>(iNPC);
+	if (npc.m_flDeathAnim)
+	{
+		if (npc.m_flDeathAnim > GetGameTime())
+			return true;
+		
+		switch (npc.m_iDeathState)
+		{
+			case 0:
+			{
+				npc.AddGesture("ACT_MP_STUN_BEGIN", .SetGestureSpeed = 0.5);
+				npc.m_flSpeed = 0.0;
+				npc.PlayDeathBeepSound();
+				
+				if(IsValidEntity(npc.m_iWearable2))
+					RemoveEntity(npc.m_iWearable2);
+				
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
+				
+				npc.m_flDeathAnim = GetGameTime() + 1.0;
+			}
+			
+			case 1:
+			{
+				float vecPos[3];
+				WorldSpaceCenter(npc.index, vecPos);
+				ParticleEffectAt(vecPos, "asplode_hoodoo");
+				npc.PlayDeathBoomSound();
+				
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}
+		
+		npc.m_iDeathState++;
+		npc.Update();
+		return true;
+	}
+	
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		
+		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
+		return true;
+	}
+	
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return true;
+	}
+
+	return false;
 }
