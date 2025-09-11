@@ -293,6 +293,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
@@ -354,10 +355,16 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 
 		RaidModeScaling *= 0.7;
 		RaidModeScaling *= 1.85;
+		npc.m_flMeleeArmor = 1.25;	
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		Citizen_MiniBossSpawn();
+		npc.m_flSwordParticleAttackCD = GetGameTime() + 10.0;
+		npc.m_flPortalSummonGate = GetGameTime() + 25.0;
+		npc.m_flUpperSlashCD = GetGameTime() + 15.0;
+		npc.m_flCreateRingCD = GetGameTime() + 30.0;
+		npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
 
 		func_NPCDeath[npc.index] = Shadowing_Darkness_Boss_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Shadowing_Darkness_Boss_OnTakeDamage;
@@ -411,6 +418,14 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 
 	float gameTime = GetGameTime(npc.index);
 
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		//unspeakable is alive, nerf me
+		ApplyStatusEffect(iNPC, iNPC, "Terrified", 1.0);
+		ApplyStatusEffect(iNPC, iNPC, "Unstoppable Force", 1.0);
+		if(npc.m_flRestoreDefaultWalk != 1.0)
+			npc.m_flRestoreDefaultWalk = gameTime + 0.1;
+	}
 	//some npcs deservere full update time!
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -545,13 +560,57 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 	}
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) > Health)
+	if(RoundToCeil(damage) > Health && i_RaidGrantExtra[npc.index] == 1)
 	{	
-		if(i_RaidGrantExtra[npc.index] == 1)
-			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I am placeholder text, fix me.");	
+		
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		SetTeam(victim, 2);
+		//force red team
+		int spawn_index = NPC_CreateByName("npc_void_unspeakable", -1, pos, ang, 3, "shadowcutscene");
+		if(spawn_index > MaxClients)
+		{
+			NpcStats_CopyStats(npc.index, spawn_index);
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+			ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+			f_AttackSpeedNpcIncrease[spawn_index]	*= 2.0;
+			fl_Extra_Damage[spawn_index]	*= 0.1;
+
+		}
+		i_RaidGrantExtra[npc.index] = 2;
+		CPrintToChatAll("{purple}NO!!!!!!");
+		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Get this thing off me-.");
+		CPrintToChatAll("{black}Izan :{default} What the-");
+		FreezeNpcInTime(victim, 30.0, true);
 
 		return Plugin_Changed;
 	}
+	if(!npc.Anger)
+	{
+		if(Health <= (ReturnEntityMaxHealth(npc.index) / 2))
+		{	
+			npc.Anger = true;
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			int spawn_index = NPC_CreateByName("npc_void_unspeakable", -1, pos, ang, GetTeam(npc.index), "shadowbattle");
+			if(spawn_index > MaxClients)
+			{
+				NpcStats_CopyStats(npc.index, spawn_index);
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 3));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 3));
+				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+				npc.m_iTargetAlly = spawn_index;
+			}
+			if(npc.m_flSpeed != 0)
+				npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
+			CPrintToChatAll("{purple}YOU WILL NOT SEE THE END OF THIS DAY...");
+			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So i was right, i wasn't alone once i sat on that throne, parasite...");	
+		}
+	}
+	
 	return Plugin_Changed;
 }
 
@@ -656,9 +715,9 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 
 	if(npc.m_flSwordParticleAttackCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flSwordParticleAttackCD = gameTime + 30.0;
+		npc.m_flSwordParticleAttackCD = gameTime + 25.0;
 		npc.m_iState = 1;
-		npc.m_flDoingAnimation = gameTime + 2.0;
+		npc.m_flDoingAnimation = gameTime + 1.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -688,7 +747,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 			npc.m_iState = 0;
 			npc.m_flRestoreDefaultWalk = 1.0;
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.5)
 		{
 			//do whatever after some time
 			if(npc.m_iChanged_WalkCycle != 2) 	
@@ -839,12 +898,13 @@ void Shadowing_Darkness_DefaultMovement(Shadowing_Darkness_Boss npc, float gameT
 	if(npc.m_flRestoreDefaultWalk > gameTime)
 		return;
 
-	PrintToChatAll("Shadowing_Darkness_DefaultMovement");
 	npc.m_flRestoreDefaultWalk = 0.0;
 	npc.m_bisWalking = true;
 	npc.m_iChanged_WalkCycle = 0;
 	npc.SetActivity("ACT_WHITEFLOWER_RUN");
 	npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
+	if(IsValidEntity(npc.m_iTargetAlly))
+		npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
 	npc.StartPathing();
 }
 
@@ -853,9 +913,9 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 {
 	if(npc.m_flPortalSummonGate < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flPortalSummonGate = gameTime + 60.0;
+		npc.m_flPortalSummonGate = gameTime + 90.0;
 		npc.m_iState = 2;	
-		npc.m_flDoingAnimation = gameTime + 2.0;
+		npc.m_flDoingAnimation = gameTime + 1.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -875,7 +935,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 			npc.m_iState = 0;
 			npc.m_flRestoreDefaultWalk = 1.0;
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.5)
 		{
 			//do a big slice and summon portal entity
 			if(npc.m_iChanged_WalkCycle != 2) 	
@@ -900,7 +960,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				}
 			}
 		}
-		else if(TimeLeft <= 2.0)
+		else if(TimeLeft <= 1.5)
 		{
 			//do whatever after some time
 			if(npc.m_iChanged_WalkCycle != 3) 	
@@ -919,7 +979,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				static float flPos[3]; 
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
-				flPos[2] += 500.0;
+				flPos[2] += 350.0;
 				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
 				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
 				npc.SetVelocity({0.0,0.0,0.0});
@@ -936,7 +996,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 {
 	if(npc.m_flUpperSlashCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flUpperSlashCD = gameTime + 60.0;
+		npc.m_flUpperSlashCD = gameTime + 50.0;
 		npc.m_iState = 3;	
 		npc.m_flDoingAnimation = gameTime + 2.3;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1155,7 +1215,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 {
 	if(npc.m_flCreateRingCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flCreateRingCD = gameTime + 60.0;
+		npc.m_flCreateRingCD = gameTime + 50.0;
 		npc.m_iState = 4;	
 		npc.m_flDoingAnimation = gameTime + 3.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1296,7 +1356,7 @@ bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTi
 {
 	if(npc.m_flTeleportToStatueCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flTeleportToStatueCD = gameTime + 60.0;
+		npc.m_flTeleportToStatueCD = gameTime + 45.0;
 		npc.m_iState = 5;	
 		npc.m_flDoingAnimation = gameTime + 1.0;
 		if(npc.m_iChanged_WalkCycle != 1) 	
