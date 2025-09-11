@@ -357,117 +357,119 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_30";
 			}
+			/*
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
 			}
-			case 10:	
+			*/
+			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_chaos_kahmlstein");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 11:	
+			case 10:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
 				enemy.Health = RoundToFloor((7700000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
-			case 12:	
+			case 11:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 				enemy.Health = RoundToFloor((15000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.85);
 			}
-			case 13:
+			case 12:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_corruptedbarney");
 				enemy.Health = RoundToFloor((2000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 			}
-			case 14:
+			case 13:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_whiteflower_boss");
 				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraMeleeRes *= 3.0;
 				enemy.ExtraRangedRes *= 3.0;
 			}
-			case 15:
+			case 14:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_void_unspeakable");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "forth";
 			}
-			case 16:
+			case 15:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vhxis");
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 17:
+			case 16:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_nemal");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraDamage = 0.75;
 			}
-			case 18:
+			case 17:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_ruina_twirl");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 19:
+			case 18:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_thompson");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
 			}
-			case 20:
+			case 19:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_twins");
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
 				enemy.ExtraDamage = 0.75;
 			}
-			case 21:
+			case 20:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75; // johnson gets way too much damage in freeplay, reduce it
 			}
-			case 22:
+			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_smith");
 				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "raid_time";
 			}
-			case 23:
+			case 22:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 24:
+			case 23:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_wall");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 25:
+			case 24:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_harrison");
 				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 26:	
+			case 25:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_castellan");
 				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
-			case 27:
+			case 26:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_lelouch");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.75;
 			}
-			case 28:
+			case 27:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_omega_raid");
 				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
@@ -822,83 +824,86 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		{
 			CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
 		}
+		/*
+		FUCK YOU, YOU FUCKING DICK, ALWAYS BUGGING OUT, ANYTIME YOU SPAWN
 		case 9:	
 		{
 			CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}Are you a god?");
 		}
-		case 10:	
+		*/
+		case 9:	
 		{
 			CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
 		}
-		case 11:	
+		case 10:	
 		{
 			CPrintToChatAll("{green}Calmaticus! {gold}- {red}Aah, the good ol' days when the speed module had no limits...");
 		}
-		case 12:	
+		case 11:	
 		{
 			CPrintToChatAll("{green}MR. X! {gold}- {red}MISTER WHAT!?");
 		}
-		case 13:
+		case 12:
 		{
 			CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
 		}
-		case 14:
+		case 13:
 		{
 			CPrintToChatAll("{crimson}WHITEFLOWER! {gold}- {red}...minus his army, of course.");
 		}
-		case 15:
+		case 14:
 		{
 			CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Does he actually speak though?");
 		}
-		case 16:
+		case 15:
 		{
 			CPrintToChatAll("{purple}VHXIS! {gold}- {red}Fight against the void gatekeeper once more!");
 		}
-		case 17:
+		case 16:
 		{
 			CPrintToChatAll("{lightblue}NEMAL! {gold}- {red}and silvester, of course!");
 		}
-		case 18:
+		case 17:
 		{
 			CPrintToChatAll("{purple}TWIRL! {gold}- {red}Oh so you're strong? Fight her!");
 		}
-		case 19:
+		case 18:
 		{
 			CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
 		}
-		case 20:
+		case 19:
 		{
 			CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
 		}
-		case 21:
+		case 20:
 		{
 			CPrintToChatAll("{community}Agent... johnson. {crimson}ew.");
 		}
-		case 22:
+		case 21:
 		{
 			CPrintToChatAll("{darkgreen}Agent Smith. {crimson}*stink sound effect*");
 		}
-		case 23:
+		case 22:
 		{
 			CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}I wonder what that nitro fuel is made of...");
 		}
-		case 24:
+		case 23:
 		{
 			CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}Running around in circles just to hit a wall!");
 		}
-		case 25:
+		case 24:
 		{
 			CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}His rockets surely won't miss you!");
 		}
-		case 26:	
+		case 25:	
 		{
 			CPrintToChatAll("{blue}CASTELLAN! {gold}- {red}In the name of victoria, he won't allow you further in!");
 		}
-		case 27:
+		case 26:
 		{
 			CPrintToChatAll("{darkviolet}LELOUCH! {gold}- {red}The chaos-afflicted ruinian i've spoken about before...");
 		}
-		case 28:
+		case 27:
 		{
 			CPrintToChatAll("{gold}OMEGA! - {red}Waltzing straight to you.");
 		}
@@ -2154,7 +2159,7 @@ void Freeplay_SetupStart(bool extra = false)
 			case 19:
 			{
 				RandomStats += GetRandomInt(3, 6);
-				strcopy(message, sizeof(message), "{red}A random amount of random enemies will recieve randomized stats randomly!");
+				strcopy(message, sizeof(message), "{red}A random amount of random enemies will randomly recieve randomized stats randomly!");
 			}
 	
 			/// CREDIT SKULLS //
