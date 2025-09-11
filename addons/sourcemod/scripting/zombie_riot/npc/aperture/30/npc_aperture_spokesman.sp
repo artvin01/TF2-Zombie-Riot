@@ -126,6 +126,7 @@ methodmap ApertureSpokesman < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Is_a_Medic[npc.index] = true; //Don't let him get healed
 
 		func_NPCDeath[npc.index] = view_as<Function>(ApertureSpokesman_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ApertureSpokesman_OnTakeDamage);

@@ -160,7 +160,7 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 				{
 					if(!HasSpecificBuff(target, "Quantum Entanglement"))
 					{
-						ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 30.0);
+						ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 999.0);
 					}
 				}
 			}
