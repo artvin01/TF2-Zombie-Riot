@@ -79,9 +79,9 @@ static void ClotPrecache()
 {
 	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Umbral_WF(vecPos, vecAng, team, data);
+	return Umbral_WF(vecPos, vecAng, team);
 }
 
 methodmap Umbral_WF < CClotBody
@@ -151,7 +151,7 @@ methodmap Umbral_WF < CClotBody
 		public get()							{ return fl_GetClosestTargetNoResetTime[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GetClosestTargetNoResetTime[this.index] = TempValueForProperty; }
 	}
-	public Umbral_WF(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Umbral_WF(float vecPos[3], float vecAng[3], int ally)
 	{
 		Umbral_WF npc = view_as<Umbral_WF>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
