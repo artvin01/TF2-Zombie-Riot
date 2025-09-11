@@ -3559,7 +3559,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 
 
 
-
+#if defined ZR
 //this code is ass
 void UpdatePerkName(int client)
 {
@@ -3588,3 +3588,4 @@ void UpdatePerkName(int client)
 
 	Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s",buffer);
 }
+#endif

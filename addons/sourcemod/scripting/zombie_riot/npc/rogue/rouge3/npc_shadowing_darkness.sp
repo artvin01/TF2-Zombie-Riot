@@ -249,6 +249,12 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 
+	property float m_flTeleportToStatueCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+
 	property int m_iShadowingLeftSlice
 	{
 		public get()							{ return i_OverlordComboAttack[this.index]; }
@@ -464,6 +470,10 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	}
 
 	if(Shadowing_Darkness_CreateRing(npc, gameTime))
+	{
+		return;
+	}
+	if(Shadowing_Darkness_StatueTeleport(npc, gameTime))
 	{
 		return;
 	}
@@ -999,8 +1009,8 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					float VecEnemy[3];
 					WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTargetWalkTo, 500.0, _,VecEnemy);
-					float DamageCalc = 400.0;
-					damageDealt *= RaidModeScaling;
+					float DamageCalc = 150.0;
+					DamageCalc *= RaidModeScaling;
 					//basically oneshots
 					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, true);
 					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, false);
@@ -1147,7 +1157,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 	{
 		npc.m_flCreateRingCD = gameTime + 60.0;
 		npc.m_iState = 4;	
-		npc.m_flDoingAnimation = gameTime + 4.0;
+		npc.m_flDoingAnimation = gameTime + 3.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -1185,7 +1195,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 			npc.m_iState = 0;
 			npc.m_flRestoreDefaultWalk = 1.0;
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.5)
 		{
 			if(npc.m_iChanged_WalkCycle != 3) 	
 			{
@@ -1195,13 +1205,12 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 				npc.SetActivity("ACT_WHITEFLOWER_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
-				//change anim, expand circle
 			}
 		}
-		else if(TimeLeft <= 3.0)
+		else if(TimeLeft <= 2.5)
 		{
 			float CircleSize = 800.0; //,max size
-			CircleSize *= (1.0 / TimeLeft);
+			CircleSize *= ((((TimeLeft - 0.5) / 2.0) -1.0) * -1.0);
 			Explode_Logic_Custom(0.0, 0, npc.index, -1, _, CircleSize, 1.0, _, true, 99,_,_,_,Shadowing_MarkedTarget_For_Slashing);
 			float AbsVecMe[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsVecMe);
@@ -1222,7 +1231,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 			CircleSize *= (TimeLeft - 3.0);
 			float AbsVecMe[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsVecMe);
-			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/combineball_trail_black_1.vmt", 125, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laser.vmt", 125, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
 		}
 		return true;
 	}
@@ -1279,4 +1288,110 @@ public Action ShadowingDarkness_NecroPoolTimer(Handle timer, DataPack pack)
 		}
 		return Plugin_Stop;
 	}
+}
+
+
+
+bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTime)
+{
+	if(npc.m_flTeleportToStatueCD < gameTime && npc.m_iState == 0)
+	{
+		npc.m_flTeleportToStatueCD = gameTime + 60.0;
+		npc.m_iState = 5;	
+		npc.m_flDoingAnimation = gameTime + 1.0;
+		if(npc.m_iChanged_WalkCycle != 1) 	
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 1;
+			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+		}
+		
+		//delete all koulms
+		int victims;
+		int[] victim = new int[MaxClients];
+		int inpcloop, a;
+		while((inpcloop = FindEntityByNPC(a)) != -1)
+		{
+			if(IsValidEntity(inpcloop) && i_NpcInternalId[inpcloop] == Umbral_Automaton_ID())
+			{
+				victim[victims++] = inpcloop;
+			}
+		}
+		if(victims)
+		{
+			int winner = victim[GetURandomInt() % victims];
+			npc.m_iTargetWalkTo = winner;
+		}
+	}
+
+	if(npc.m_iState == 5)
+	{
+		float TimeLeft = npc.m_flDoingAnimation - gameTime;
+		if(TimeLeft <= 0.0)
+		{
+			//Reset back to normal, we are done.
+			if(IsValidEntity(npc.m_iTargetWalkTo))
+			{
+				static float flOldPos[3]; 
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flOldPos);
+				flOldPos[2] += 5.0;
+				int PoolAidsParticle = ParticleEffectAt(flOldPos, "utaunt_wiggletube_teamcolor_red", 0.0);
+				DataPack pack;
+				CreateDataTimer(0.5, ShadowingDarkness_NecroPoolTimer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+				pack.WriteCell(EntIndexToEntRef(npc.index));
+				pack.WriteCell(EntIndexToEntRef(PoolAidsParticle));
+				pack.WriteCell(npc.m_iAtCurrentIntervalOfNecroArea);
+
+				float pos[3]; GetEntPropVector(npc.m_iTargetWalkTo, Prop_Data, "m_vecAbsOrigin", pos);
+				float ang[3]; GetEntPropVector(npc.m_iTargetWalkTo, Prop_Data, "m_angRotation", ang);
+				//teleport To them and get a new target
+				npc.m_flGetClosestTargetTime = 0.0;
+				TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+				ApplyStatusEffect(npc.index, npc.m_iTargetWalkTo, "Caffinated", 10.0);
+			}
+			npc.m_iTargetWalkTo = 0;
+			npc.m_iState = 0;
+			npc.m_flRestoreDefaultWalk = 1.0;
+		}
+		else if(TimeLeft <= 1.0)
+		{
+			if(IsValidEntity(npc.m_iTargetWalkTo))
+			{
+				float VecThem[3];
+				float CircleSize = 90.0;
+				GetEntPropVector(npc.m_iTargetWalkTo, Prop_Data, "m_vecAbsOrigin", VecThem);
+				spawnRing_Vectors(VecThem, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+				spawnRing_Vectors(VecThem, CircleSize * 2.0, 0.0, 0.0, 55.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+				spawnRing_Vectors(VecThem, CircleSize * 2.0, 0.0, 0.0, 105.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+				
+				float VecMe[3];
+				CircleSize = 40.0;
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecMe);
+				spawnRing_Vectors(VecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+				spawnRing_Vectors(VecMe, CircleSize * 2.0, 0.0, 0.0, 35.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+				spawnRing_Vectors(VecMe, CircleSize * 2.0, 0.0, 0.0, 65.0, "materials/sprites/halo01.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+				
+				int r = 255;
+				int g = 125;
+				int b = 125;
+				float diameter = 15.0;
+				int colorLayer4[4];
+				SetColorRGBA(colorLayer4, r, g, b, 233);
+				VecThem[2] += 75.0;
+				VecMe[2] += 45.0;
+				TE_SetupBeamPoints(VecMe, VecThem, g_Ruina_BEAM_Laser, 0, 0, 0, 0.15, ClampBeamWidth(diameter * 0.1 * 1.28), ClampBeamWidth(diameter * 0.1 * 1.28), 0, 1.0, colorLayer4, 3);
+				TE_SendToAll(0.0);
+			}
+			else
+			{
+				npc.m_iTargetWalkTo = 0;
+				npc.m_flDoingAnimation = 0.0;
+				//cancel.
+			}
+		}
+		return true;
+	}
+	return false;
 }

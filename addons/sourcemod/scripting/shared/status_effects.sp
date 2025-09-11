@@ -5565,6 +5565,7 @@ static const char g_MarkSoundUmbral[][] = {
 };
 static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	float ratio = Elemental_DamageRatio(entity, Element_Warped);
 	if(ratio < 0.0)
 		ratio = 0.0;
@@ -5623,12 +5624,15 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	}
+#endif
 }
 static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
+#if defined ZR
 	if(attacker <= MaxClients)
 		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
 	
+#endif
 	return 0.0;
 }
 static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -6093,7 +6097,9 @@ void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_Sta
 
 void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+#if defined ZR
 	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
+#endif
 }
 
 

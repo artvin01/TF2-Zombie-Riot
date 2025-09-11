@@ -27,6 +27,13 @@ static const char g_MeleeHitSounds[][] = {
 };
 
 
+static int NPCId;
+
+int Umbral_Automaton_ID()
+{
+	return NPCId;
+}
+
 void Umbral_Automaton_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -42,7 +49,7 @@ void Umbral_Automaton_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 

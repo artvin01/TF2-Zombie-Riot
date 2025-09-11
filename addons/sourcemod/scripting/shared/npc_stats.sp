@@ -3501,7 +3501,9 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
 		.DefineFloatField("f_JumpedRecently")
+#if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
+#endif
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3518,7 +3520,9 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+#if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
+#endif
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
