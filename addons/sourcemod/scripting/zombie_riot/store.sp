@@ -716,6 +716,10 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.25;
 	}
+	if(HasSpecificBuff(client, "Ultra Rapid Fire"))
+	{
+		Cooldown *= 0.6;
+	}
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
 		
