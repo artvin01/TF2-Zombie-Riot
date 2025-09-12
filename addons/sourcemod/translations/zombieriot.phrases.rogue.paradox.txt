@@ -3,14 +3,13 @@
 	"Gained Chaos"
 	{
 		"#format"	"{1:d}"
-		"en"		"{red}Gained {1} Chaos Instability!"
-		"ru"		"{red}Получено {1} Хаосовой нестабильности!"
-		"ko"		"{red}혼돈의 고통이 {1} 증가했습니다!"
+		"en"		"{crimson}Gained {1} Chaos Infliction!"
+		"ru"		"{crimson}Получено {1} Хаосовой нестабильности!"
 	}
 	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
-		"en"		"{green}Lost {1} Chaos Instability!"
+		"en"		"{green}Lost {1} Chaos Infliction!"
 		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
 		"ko"		"{green}혼돈의 고통이 {1} 감소했습니다!"
 	}
@@ -22,7 +21,7 @@
 	}
 	"Heavy Rain Desc"
 	{
-		"en"	"{yellow}All units move 20％ slower, Seaborn units instead move 10％ faster"
+		"en"	"{yellow}All units gain -20％ movement speed, Seaborn units instead gain +10％ movement speed"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 		"ko"	"{yellow}모든 유닛의 이동 속도가 20％ 감소합니다. 시본은 대신 이동 속도가 10％ 증가합니다."
 	}
@@ -40,8 +39,7 @@
 	}
 	"Extreme Heat Desc"
 	{
-		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20％ faster"
-		"ko"	"{green}적의 생성 속도가 3배 더 느려집니다. {red}아군의 부활 속도가 1.25배 더 느려지며, 알할림 유닛은 대신 이동 속도가 20％ 증가합니다."
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is 25% slower and Al-Hallem units gain +20％ movement speed"
 	}
 	"Extreme Heat Lore"
 	{
@@ -55,8 +53,7 @@
 	}
 	"Heavy Wind Desc"
 	{
-		"en"	"{yellow}All projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
-		"ko"	"{yellow}모든 투사체의 속도가 33％ 감소합니다. 엑스피돈사 소속 투사체들은 대신 속도가 25％ 증가합니다."
+		"en"	"{yellow}ALL projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
 	}
 	"Heavy Wind Lore"
 	{
@@ -70,8 +67,7 @@
 	}
 	"Dense Frost Desc"
 	{
-		"en"	"{yellow}All units lose health over time (can not be reduced below 1) {red}except for Ziberia units"
-		"ko"	"{yellow}모든 유닛의 체력이 시간에 걸쳐 계속해서 감소합니다. (1 이하로는 감소하지 않음) {red}자이베리아 유닛들은 이 효과에서 제외됩니다."
+		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Ziberia units"
 	}
 	"Dense Frost Lore"
 	{
@@ -101,8 +97,7 @@
 	}
 	"Shadowing Darkness Desc"
 	{
-		"en"	"{red}Everyone gains 25％ attackspeed."
-		"ko"	"{red}적과 아군 전체의 공격 속도가 25％ 증가합니다."
+		"en"	"{red}EVERYONE gains +25％ attack speed."
 	}
 	"Shadowing Darkness Lore"
 	{
@@ -157,8 +152,7 @@
 	}
 	"Weapon Supplies Desc"
 	{
-		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
-		"ko"	"탄약이 없으면 전투조차 하지 못 할텐데.\n{green}추가 자금을 250 얻습니다. 탄약 보급을 30 얻습니다."
+		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 Cash and 30 ammo supplies"
 	}
 	"Bob's Assistance"
 	{
@@ -197,8 +191,7 @@
 	}
 	"Hot Water Kettle Desc"
 	{
-		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
-		"ko"	"라면 한 번 끓여먹어볼까?\n{green}추가 자금을 +1000 얻습니다. 모든 아군의 최대 체력이 +125 증가합니다."
+		"en"	"Want to make some noodles?\n{green}Allies gain +125 max health and 1000 Cash"
 	}
 	"Ziberian Chocolate"
 	{
@@ -206,7 +199,7 @@
 	}
 	"Ziberian Chocolate Desc"
 	{
-		"en"	"It's cold, amazing!\n{green}+1250 Cash, Allies gain +50 max health"
+		"en"	"It's cold, amazing!\n{green}Allies gain +50 max health and 1250 Cash"
 	}
 	"Shadowing Coin"
 	{
@@ -214,7 +207,7 @@
 	}
 	"Shadowing Coin Desc"
 	{
-		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}+1750 Cash."
+		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}Gain 1750 Cash."
 	}
 	"Special Suppressor"
 	{
@@ -271,8 +264,7 @@
 	}
 	"Banshee's Kiss Desc"
 	{
-		"en"	"A pretty necklace, who gonna wear it?\n{green}+8000 Cash"
-		"ko"	"예쁜 목걸이다. 누가 착용한걸까?\n{green}추가 자금을 +8000 얻습니다."
+		"en"	"A pretty necklace, who gonna wear it?\n{green}Gain 8000 Cash"
 	}
 	"Blood Diamond"
 	{
@@ -281,8 +273,7 @@
 	}
 	"Blood Diamond Desc"
 	{
-		"en"	"A pretty ring, who gonna wear it?\n{green}+25 Australium Ingots"
-		"ko"	"예쁜 핏빛 다이아몬드 반지다. 누가 착용한걸까?\n{green}오스트레일륨 주괴를 +25 얻습니다."
+		"en"	"A pretty ring, who gonna wear it?\n{green}Gain +25 Australium Ingots"
 	}
 	"Fissured Restraints"
 	{
@@ -291,8 +282,7 @@
 	}
 	"Fissured Restraints Desc"
 	{
-		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7％ damage"
-		"ko"	"이 튼튼한 끈으로 뭔가 무서운 걸 묶었을 것 같다... 이런...\n{green}모든 적들의 공격력이 -7％ 감소합니다."
+		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies deal -7％ damage"
 	}
 	"Abyssal Wyrdmask"
 	{
@@ -301,8 +291,7 @@
 	}
 	"Abyssal Wyrdmask Desc"
 	{
-		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12％ damage"
-		"ko"	"그 어떤 문화에도 속하지 않는 괴상한 가면.\n{green}모든 적들의 공격력이 -12％ 감소합니다."
+		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies deal -12％ damage"
 	}
 	"Godmother's Token"
 	{
@@ -311,8 +300,7 @@
 	}
 	"Godmother's Token Desc"
 	{
-		"en"	"A laurel of bones.\n{green}Enemies gain -17％ damage"
-		"ko"	"뼈로 만든 월계관.\n{green}모든 적들의 공격력이 -17％ 감소합니다."
+		"en"	"A laurel of bones.\n{green}Enemies deal -17％ damage"
 	}
 	"The Whisperer in Darknight"
 	{
@@ -351,8 +339,7 @@
 	}
 	"Emperor's Favor Desc"
 	{
-		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15％ damage"
-		"ko"	"편지 봉투를 개봉할 때 쓰는 날카로운 칼.\n{green}모든 플레이어의 근접 공격 피해량이 +15％ 증가합니다."
+		"en"	"A very sharp letter opener.\n{green}Players gain +15％ melee damage"
 	}
 	"Vieux Vanguard's Blade"
 	{
@@ -361,8 +348,7 @@
 	}
 	"Vieux Vanguard's Blade Desc"
 	{
-		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25％ damage"
-		"ko"	"심해 속 가디언들이 잃어버린 창이다.\n{green}모든 플레이어의 근접 공격 피해량이 +25％ 증가합니다."
+		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Players gain +25％ melee damage"
 	}
 	"Necklace of the Presence"
 	{
@@ -371,8 +357,7 @@
 	}
 	"Necklace of the Presence Desc"
 	{
-		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15％ damage"
-		"ko"	"신앙은 심장 10센티미터 위에 걸려있다.\n{green}모든 플레이어의 원거리 공격 피해량이 +15％ 증가합니다."
+		"en"	"Faith hangs ten centimeters above your heart.\n{green}Players gain +15％ ranged damage"
 	}
 	"Damaged Revolver Cylinder"
 	{
@@ -381,8 +366,7 @@
 	}
 	"Damaged Revolver Cylinder Desc"
 	{
-		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25％ damage"
-		"ko"	"그녀는 험난한 순간에도 간사한 자들에게 고개를 숙인 적이 없었다.\n{green}모든 플레이어의 원거리 공격 피해량이 +25％ 증가합니다."
+		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Players gain +25％ ranged damage"
 	}
 	"Royal Rapier"
 	{
@@ -391,8 +375,7 @@
 	}
 	"Royal Rapier Desc"
 	{
-		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15％ damage"
-		"ko"	"거의 장식용으로 사용하는 귀족 검.\n{green}모든 플레이어의 마법 공격 피해량이 +15％ 증가합니다."
+		"en"	"A highly decorative rapier for nobles.\n{green}Players gain +15％ mage damage"
 	}
 	"Silver Forks"
 	{
@@ -401,8 +384,7 @@
 	}
 	"Silver Forks Desc"
 	{
-		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25％ damage"
-		"ko"	"셰프는 누구도 식탁에서 실수하는 것을 용납할 수 없다.\n{green}모든 플레이어의 마법 공격 피해량이 +25％ 증가합니다."
+		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Players gain +25％ mage damage"
 	}
 	"Noxious Hemostatic Agent"
 	{
@@ -541,8 +523,7 @@
 	}
 	"Peek into the Eternal Night Desc"
 	{
-		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ firing speed {red}but -10 HP a second"
-		"ko"	"그녀가 북지를 향해 출발한 순간.\n{green}모든 플레이어의 피해량, 공격 속도 +25％. {red}초당 체력이 -10 감소합니다."
+		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ attack speed {red}but -10 HP a second"
 	}
 	"Dead Tree's Echo"
 	{
@@ -629,8 +610,7 @@
 	}
 	"Golden Chalice Desc"
 	{
-		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases based Australium Ingots amount"
-		"ko"	"성자, 기사, 독실한 신자를 막론하고 이걸 위해 미치지 않는 사람이 없다.\n{green}모든 아군의 공격 속도가 현재 보유한 오스트레일륨 주괴량에 비례하여 증가합니다."
+		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases for every Australium Ingot owned"
 	}
 	"Queen's Fellowship"
 	{
@@ -659,8 +639,7 @@
 	}
 	"Steam Sale Desc"
 	{
-		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50％ off"
-		"ko"	"[작은 게임 회사] 에서 [여기에 유저 이름 입력] 에게 게임을 홍보하기 위해 만들어진 것이다.\n{green}상점의 가격이 50％ 감소합니다."
+		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Rogue Shop items cost 50% less"
 	}
 	"Steal Grigori"
 	{
@@ -689,8 +668,7 @@
 	}
 	"Mark of a Thief Desc"
 	{
-		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
-		"ko"	"당신은 그리고리 신부에게서 물품을 훔치려 했다. 당신은 돌이킬 수 없게 되었다.\n{red}상점이 더 이상 등장하지 않습니다."
+		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shops will no longer appear for the rest of the adventure"
 	}
 	"Evil Within from Ruina's Great Crystal"
 	{
@@ -699,8 +677,7 @@
 	}
 	"Evil Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25％ more HP and 15％ more damage."
-		"en"	"당신은 불쌍한 루이나인이 가진 것을 전부 강탈했습니다... 당신 안의 악의 존재가  {crimson}누군가에게 힘을 실어주고 있습니다.{default}\n{crimson}모든 적의 최대 체력이 25％ 증가하고 공격력이 15％ 증가합니다."
+		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies gain +25% max health and +15% damage."
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
@@ -709,8 +686,7 @@
 	}
 	"Great Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15％ Less HP and 10％ less damage."
-		"ko"	"루이나인들이 매우 기쁘게 떠나가고, 트윌이 당신의 행동을 자랑스럽게 여기고 있다!\n{green}모든 적의 최대 체력이 15％ 감소하고 공격력이 10％ 감소합니다."
+		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies gain -15％ max health and -10％ damage."
 	}
 	"Ruinian Shop Help Out"
 	{
@@ -729,8 +705,7 @@
 	}
 	"Bob's Duck Desc"
 	{
-		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ firing speed, +15％ reload speed, +10％ damage resistance, Whoever the duck follows gains insane buffs"
-		"ko"	"밥이 가장 아끼는 애완오리, ''꽥꽥이'' 다.\n{green}오리가 따라다니는 아군의 최대 체력과 공격력이 +25％ 증가하고, 공격 속도와 재장전 속도가 +15％ 빨라지며 피해 저항력이 +10％ 증가합니다."
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
 	}
 	"Underground Scorch"
 	{
@@ -759,8 +734,7 @@
 	}
 	"Solidified Lamp Oil Desc"
 	{
-		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40％"
-		"ko"	"덩어리로 응고된 고체 등유로, 언제든지 꺼내 램프의 빛을 유지할 수 있다.\n{green}스테이지에서 얻는 혼돈의 고통이 40％ 감소합니다."
+		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Gain 40% less Chaos Infliction from stages"
 	}
 	"Sanctified Lamp Oil"
 	{
@@ -769,8 +743,7 @@
 	}
 	"Sanctified Lamp Oil Desc"
 	{
-		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60％"
-		"ko"	"재판소에서 가공한 뒤 재판관들에게 나누어 주는 등유.\n{green}스테이지에서 얻는 혼돈의 고통이 60％ 감소합니다."
+		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Gain 60% less Chaos Infliction from stages"
 	}
 	"Mercenary Insurance"
 	{
@@ -779,8 +752,7 @@
 	}
 	"Mercenary Insurance Desc"
 	{
-		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10％ less damage, increased to 35％ if Chaos Infliction is at least 60"
-		"ko"	"독립 용병에게 제공되는 특별 보험.\n모든 플레이어는 받는 피해가 10％ 감소. 혼돈의 고통이 60 이상일시, 35％ 로 증가."
+		"en"	"Special insurance offered to independent mercenaries.\n {green}Players take 10％ less damage, take 35％ less if Chaos Infliction is at least 60"
 	}
 	"Energy Life Vest"
 	{
@@ -818,8 +790,7 @@
 	}
 	"Pack of Smokes Desc"
 	{
-		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
-		"ko"	"{green}모든 아군의 공격 속도, 재장전 속도, 받는 치유량 +20％. {red}스테이지를 클리어할 때마다, 혼돈의 고통이 5 증가."
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ attack, reload, and healing speed {red}but gain 5 Chaos Infliction after every stage"
 	}
 	"Silver Seal Letter"
 	{
@@ -895,8 +866,7 @@
 	}
 	"Garlic Bread Desc"
 	{
-		"en"	"Yummy.\n{green}Enemies are debuffed for twice as long"
-		"ko"	"냠냠쩝쩝.\n{green}적에게 부여된 디버프의 지속 시간이 2배로 증가합니다."
+		"en"	"Yummy.\n{green}Debuffs last 2x longer on ememies"
 	}
 	"Flash Camera"
 	{
@@ -925,8 +895,7 @@
 	}
 	"Black Tulip Desc"
 	{
-		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60％, {red}resets after using a weapon ability"
-		"ko"	"{green}아군의 피해량과 치유량이 120초에 걸쳐 최대 60％까지 증가. {red}무기 능력 발동시, 이 효과가 초기화."
+		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60% over 120s, {red}resets after using a weapon ability"
 	}
 	"Castle Offspring"
 	{
@@ -935,8 +904,7 @@
 	}
 	"Castle Offspring Desc"
 	{
-		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60％, {red}resets when knocked down"
-		"ko"	"{green}아군의 최대 체력이 300초에 걸쳐 최대 60％까지 증가. {red}사망시 이 효과가 초기화."
+		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases up to +60% over 300s, {red}resets when knocked down"
 	}
 
 	"Waldch Assistance"
@@ -956,8 +924,7 @@
 	}
 	"Kahmlstein Guidance Desc"
 	{
-		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
-		"ko"	"캄르스타인의 휘하로 들어간다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 1초 감소합니다."
+		"en"	"You join Kahmlstein.\n{green}Ally weapon cooldowns are reduced by 1 second every 1.5 seconds"
 	}
 	"Twirl Guidance"
 	{
@@ -966,8 +933,7 @@
 	}
 	"Twirl Guidance Desc"
 	{
-		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15％ max mana and mana regen"
-		"ko"	"트윌의 휘하로 들어간다.\n{green}매 1.5초마다, 플레이어가 들고 있는 무기의 능력 쿨타임이 0.5초 감소하고, 마법 무기들의 최대 마나와 마나 재생량이 +15％ 증가합니다."
+		"en"	"You join Twirl.\n{green}Ally held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, gain +15% max mana and mana regen"
 	}
 	"Unauthorized Ruina Gem"
 	{
@@ -976,8 +942,7 @@
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
-		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 10 Chaos Affliction."
-		"ko"	"뭔가에 끌리는게 느껴진다.\n{green}스테이지당 한 번, 아군의 체력이 절반 이하가 되면, 그 아군의 체력이 전부 회복됩니다.\n{green}혼돈의 고통이 10 감소합니다."
+		"en"	"You can feel it pulling to something.\n{green}The first ally each stage to fall below half health gets healed to full.\n{green}Lose 10 Chaos Infliction."
 	}
 	"Terrible Nightmare"
 	{
@@ -1357,8 +1322,7 @@
 	}
 	"Lost Villager Desc 2"
 	{
-		"en"	"{green}Gain 3000 cash"
-		"ko"	"{green}자금을 3000 얻습니다"
+		"en"	"{green}Gain 3000 Cash"
 	}
 	"Lost Villager Lore 2"
 	{
@@ -1373,8 +1337,7 @@
 	}
 	"Lost Villager Desc 3"
 	{
-		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
-		"ko"	"{green}추가 자금을 2000 얻고, 오스트레일륨 주괴를 15 얻고, 무기 4 개를 회수합니다. {red}혼돈의 고통이 25 증가합니다."
+		"en"	"{green}Gain 2000 Cash, 15 Australium Ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
 	}
 	"Lost Villager Lore 3"
 	{
@@ -1489,8 +1452,7 @@
 	}
 	"Fortituous Opportunity Desc 2"
 	{
-		"en"	"{green}Gain 4 australium ingots"
-		"ko"	"{green}오스트레일륨 주괴를 4 얻습니다."
+		"en"	"{green}Gain 4 Australium Ingots"
 	}
 	"Fortituous Opportunity Lore 2"
 	{
@@ -1561,8 +1523,7 @@
 	}
 	"Emergency Dispatch Lore 2"
 	{
-		"en"	"You say you're going off to deal with chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
-		"ko"	"당신은 지금 혼돈을 처리하기 위해 떠나고 있다고 답한다. 그는 적어도 그 미래를 위한 행동에 대해 감사해하며, 당신에게 약간의 자금을 쥐어주고 달려나갔다."
+		"en"	"You say you're going off to deal with Chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
 	}
 	"Emergency Dispatch Return 1"
 	{
@@ -2103,7 +2064,6 @@
 	}
 	"Mazeat Lost Tech Desc 1b"
 	{
-		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
-		"ko"	"{green}특별한 아이템을 얻지만, {crimson}원치않은 주목을 받게 됩니다."
+		"en"	"{green}Obtain a Grant item, {crimson}but you might attract unwanted attention."
 	}
 }

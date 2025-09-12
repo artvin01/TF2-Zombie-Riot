@@ -590,11 +590,10 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"Cripples targets heavily, making them slower and take 40％ more damage."
-		"fr"		"Infirme les ennemis, les ralentissant et les font prendre 40％ plus de dégats."
-		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 40％ больше урона."
-		"chi"	    "严重致残目标，使他们变慢并受到40％的伤害。"
-		"ko"		"적중한 대상의 이동 속도를 둔화시키고 받는 피해를 40％ 증가시킴."
+		"en"		"Cripples targets heavily, making them slower and take more damage."
+		"fr"		"Infirme les ennemis, les ralentissant et les font prendre plus de dégats."
+		"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
+		"chi"       "严重致残目标，使他们变慢并受到的伤害。"
 	}
 	"Elite Sniper Pap 5"
 	{

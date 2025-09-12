@@ -4616,6 +4616,10 @@
 		"en"	"Enable Ammobox Count Perma"
 		"ko"	"탄약 상자의 남은 탄약 보급 횟수를 상시로 표기"
 	}
+	"Citizen Cannot Interact"
+	{
+		"en"	"You cannot interact with this rebel."
+	}
 	"Class Vote Citizen Do"
 	{
 		"en"	"The rebel will pick whatever has the most player votes, from the top down."

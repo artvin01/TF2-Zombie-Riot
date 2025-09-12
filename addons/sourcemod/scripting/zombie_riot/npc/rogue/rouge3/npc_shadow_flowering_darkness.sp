@@ -51,7 +51,10 @@ static const char g_HealSound[][] = {
 };
 
 
-public void Whiteflower_FloweringDarkness_OnMapStart_NPC()
+#define SHADOW_BUFF_RANGE 200.0
+static int NPCId;
+
+public void Shadow_FloweringDarkness_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -64,21 +67,21 @@ public void Whiteflower_FloweringDarkness_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "W.F. Flowering Darkness");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_whiteflower_flowering_darkness");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_shadow_flowering_darkness");
 	strcopy(data.Icon, sizeof(data.Icon), "flowering_darkness");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_WhiteflowerSpecial;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Whiteflower_FloweringDarkness(vecPos, vecAng, team, data);
+	return Shadow_FloweringDarkness(vecPos, vecAng, team, data);
 }
 
-methodmap Whiteflower_FloweringDarkness < CClotBody
+methodmap Shadow_FloweringDarkness < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -121,11 +124,11 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 			switch(GetRandomInt(0,2))
 			{
 				case 0:
-					NpcSpeechBubble(this.index, "Not on my hitlist, but regardless.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "I had enough of this!", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 				case 1:
-					NpcSpeechBubble(this.index, "In my way? Extra pay.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "I need to get to shadowing!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 				case 2:
-					NpcSpeechBubble(this.index, "I wonder how much is put on their head.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+					NpcSpeechBubble(this.index, "Out of my way!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			}
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
@@ -166,9 +169,14 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
-	public Whiteflower_FloweringDarkness(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	property float m_flAuraBuffAllies
 	{
-		Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	public Shadow_FloweringDarkness(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	{
+		Shadow_FloweringDarkness npc = view_as<Shadow_FloweringDarkness>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
@@ -192,11 +200,9 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 
-		
-
-		func_NPCDeath[npc.index] = Whiteflower_FloweringDarkness_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Whiteflower_FloweringDarkness_OnTakeDamage;
-		func_NPCThink[npc.index] = Whiteflower_FloweringDarkness_ClotThink;
+		func_NPCDeath[npc.index] = Shadow_FloweringDarkness_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Shadow_FloweringDarkness_OnTakeDamage;
+		func_NPCThink[npc.index] = Shadow_FloweringDarkness_ClotThink;
 		
 	
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
@@ -213,7 +219,6 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
 	
 		bool CloneDo = StrContains(data, "clone_ability") != -1;
 		if(CloneDo)
@@ -223,17 +228,42 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			npc.m_flCloneSuicide = GetGameTime() + 1.0;
+			npc.m_flCloneSuicide = GetGameTime() + 10.0;
 			npc.m_flDoAnimClone = GetGameTime() + 0.1;
+			npc.m_flAuraBuffAllies = 1.0;
+			npc.m_flCloneSpawnDo = FAR_FUTURE;
+			if(IsValidEntity(npc.index))
+			{
+				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.index, 0, 0, 0, 125);
+			}
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 125);
+			}
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 125);
+			}
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 125);
+			}
 		}
 		else
 		{
+			CPrintToChatAll("{black}Flowering Darkness{default} : You again... I'll make {crimson}sure{default} you're dead.");
 			npc.StartPathing();
+			npc.m_flCloneSpawnDo = GetGameTime() + 5.0;
+			npc.m_flNextAirPush = GetGameTime() + 3.0;
 		}
 		bool raidbattle = StrContains(data, "raidbattle") != -1;
 		if(raidbattle)
 		{
-			RaidModeScaling = 1.5;
+			RaidModeScaling = 2.5;
 			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -247,9 +277,9 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 }
 
 
-public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
+public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 {
-	Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(iNPC);
+	Shadow_FloweringDarkness npc = view_as<Shadow_FloweringDarkness>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -269,7 +299,18 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
-
+	
+	if(npc.m_flAuraBuffAllies)
+	{
+		if(npc.m_flAuraBuffAllies < gameTime)
+		{
+			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+			Shadow_FloweringDarkness_ApplyBuffInLocation(VecSelfNpcabs, GetTeam(npc.index), npc.index);
+			float Range = SHADOW_BUFF_RANGE;
+			spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, /*duration*/ 0.35, 10.0, 1.0, 1);	
+			npc.m_flAuraBuffAllies = gameTime + 0.3;
+		}
+	}
 	if(npc.m_flNextThinkTime > gameTime)
 	{
 		return;
@@ -293,22 +334,19 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 			
 			npc.m_flAirPushHappening = gameTime + 0.5;
 			npc.m_flDoingAnimation = gameTime + 0.5;
-			npc.m_flNextAirPush = gameTime + 3.0;
+			if(npc.m_flCloneSuicide)
+				npc.m_flNextAirPush = gameTime + 1.5;
 				
 		}
 		return;
 	}
-	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	if(!npc.m_flCloneSuicide)
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-		{
-			npc.m_iTarget = GetClosestTarget(npc.index);
-			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-		}
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
 	
@@ -362,9 +400,13 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 		if(npc.m_flAirPushHappening < gameTime)
 		{
 			npc.m_flAirPushHappening = 0.0;
+			if(npc.m_flCloneSuicide)
+				npc.m_flDoAnimClone = GetGameTime() + 1.0;
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
+				
+
 				npc.PlayRangedAttackSecondarySound();
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				
@@ -427,16 +469,6 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 		return;
 	}
 	
-	if(npc.m_iTarget <= 0)
-	{
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-		{
-			npc.m_flCloneSpawnDo = gameTime + 4.0;
-			npc.m_flNextAirPush = gameTime + 2.0;
-			//we can presume that they are fully healed and didnt attack anyone, its best to reseit their abilites to the default.
-		}
-	}
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3];
@@ -465,7 +497,7 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 			float SelfPos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", SelfPos);
 			npc.m_flCloneSpawnDo = gameTime + 4.0;
-			CreateCloneFake_FloweringDarkness(npc.index, npc.m_iTarget, SelfPos);
+			CreateCloneFake_ShadowFloweringDarkness(npc.index, npc.m_iTarget, SelfPos);
 		}
 
 		if(npc.m_flDoingAnimation > gameTime) //I am doing an animation or doing something else, default to doing nothing!
@@ -558,6 +590,8 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 					npc.m_flAirPushHappening = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.5;
 					npc.m_flNextAirPush = gameTime + 3.0;
+					if(npc.m_flCloneSuicide)
+						npc.m_flNextAirPush = gameTime + 1.5;
 				}
 			}
 		}
@@ -571,13 +605,13 @@ public void Whiteflower_FloweringDarkness_ClotThink(int iNPC)
 }
 
 
-public Action Whiteflower_FloweringDarkness_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Shadow_FloweringDarkness_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(victim);
+	Shadow_FloweringDarkness npc = view_as<Shadow_FloweringDarkness>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -589,9 +623,9 @@ public Action Whiteflower_FloweringDarkness_OnTakeDamage(int victim, int &attack
 	return Plugin_Changed;
 }
 
-public void Whiteflower_FloweringDarkness_NPCDeath(int entity)
+public void Shadow_FloweringDarkness_NPCDeath(int entity)
 {
-	Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(entity);
+	Shadow_FloweringDarkness npc = view_as<Shadow_FloweringDarkness>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
@@ -604,26 +638,57 @@ public void Whiteflower_FloweringDarkness_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 
-	if(i_RaidGrantExtra[npc.index])
+	if(!npc.m_bDissapearOnDeath && i_RaidGrantExtra[npc.index])
 	{
-		CPrintToChatAll("{crimson}어둠의 개화자가 그가 따르는 리더에게로 도주했습니다.\n그를 추적하십시오.");	
+		CPrintToChatAll("{black}Flowering Darkness{default} : ... Like boss like co-boss....");
+		CPrintToChatAll("{crimson}Flowering Darkness perishes... He drops a map, thats where shadowing darkness is.");	
 	}
 }
 
 
-void CreateCloneFake_FloweringDarkness(int entity, int enemySelect, float SelfPos[3])
+void CreateCloneFake_ShadowFloweringDarkness(int entity, int enemySelect, float SelfPos[3])
 {
 	int CloneSpawn;
 	
-	CloneSpawn = NPC_CreateByName("npc_whiteflower_flowering_darkness", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "clone_ability"); //can only be enemy
+	CloneSpawn = NPC_CreateByName("npc_shadow_flowering_darkness", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), "clone_ability"); //can only be enemy
 	if(IsValidEntity(CloneSpawn))
 	{
 		MakeObjectIntangeable(CloneSpawn);
 		b_DoNotUnStuck[CloneSpawn] = true;
 		b_NoKnockbackFromSources[CloneSpawn] = true;
 		b_ThisEntityIgnored[CloneSpawn] = true;
-		Whiteflower_FloweringDarkness npc = view_as<Whiteflower_FloweringDarkness>(CloneSpawn);
+		Shadow_FloweringDarkness npc = view_as<Shadow_FloweringDarkness>(CloneSpawn);
 		npc.m_iTarget = enemySelect;
 		npc.m_bDissapearOnDeath = true;
+	}
+}
+
+
+
+void Shadow_FloweringDarkness_ApplyBuffInLocation(float BannerPos[3], int Team, int iMe = 0)
+{
+	float targPos[3];
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) == Team)
+		{
+			GetClientAbsOrigin(ally, targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (SHADOW_BUFF_RANGE * SHADOW_BUFF_RANGE))
+			{
+				ApplyStatusEffect(ally, ally, "Infinite Will", 2.0);
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == Team && iMe != ally && i_NpcInternalId[ally] != NPCId)
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (SHADOW_BUFF_RANGE * SHADOW_BUFF_RANGE))
+			{
+				ApplyStatusEffect(ally, ally, "Infinite Will", 2.0);
+			}
+		}
 	}
 }

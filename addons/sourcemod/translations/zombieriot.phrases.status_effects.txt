@@ -905,6 +905,14 @@
 		"en"	"Decreased attack/reload speed & healrate by a 50％."
 		"ko"	"공격 속도, 재장전 속도, 치유 속도가 50％ 감소합니다."
 	}
+	"Terrified"
+	{
+		"en"	"Terrified"
+	}
+	"Terrified Desc"
+	{
+		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
+	}
 	"Altered Functions"
 	{
 		"en"	"Altered Functions"
@@ -1977,5 +1985,13 @@
 	"Kolum's View Desc"
 	{
 		"en"	"Umbral koulm's have their vision on you."
+	}
+	"Ultra Rapid Fire"
+	{
+		"en"	"Ultra Rapid Fire"
+	}
+	"Ultra Rapid Fire Desc"
+	{
+		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
 	}
 }

@@ -3712,6 +3712,7 @@
 		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
 		"ko"	"원소 피해 게이지가 꽉 차면, 당신은 고통을 버티지 못 해 끔찍한 소리를 지르며 분노를 터트립니다.\n당신 주변의 최대 3명의 팀원들에게 350의 트루 대미지.\n또한 피해를 받은 팀원들이 10초간 받는 피해가 40％ 증가."
 	}
+	
 	"Nervous Impairment Elemental Damage"
 	{
 		"en"	"Nervous Impairment Elemental Damage"
@@ -3755,8 +3756,7 @@
 	}
 	"Necrosis Elemental Damage Desc"
 	{
-		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
-		"ko"	"원소 피해 게이지가 꽉 차면, 몸이 썩어들어갑니다.\n출혈을 받고 능력의 쿨타임이 증가합니다. 7.5 초 지속."
+		"en"	"Once full, causes your body to rot.\nYou bleed out 20％ of your max health as ranged damage and increases ability cooldowns for 7.5 seconds."
 	}
 	"Warped Elemental Damage"
 	{

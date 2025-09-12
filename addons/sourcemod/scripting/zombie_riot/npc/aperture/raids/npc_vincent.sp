@@ -3,8 +3,6 @@
 
 static const char g_DeathSounds[][] = {
 	"vo/mvm/norm/heavy_mvm_paincrticialdeath01.mp3",
-	"vo/mvm/norm/heavy_mvm_paincrticialdeath02.mp3",
-	"vo/mvm/norm/heavy_mvm_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
@@ -61,6 +59,10 @@ static const char g_SuicideSound[][] = {
 };
 
 static const char g_OilModel[] = "models/props_farm/haypile001.mdl";
+static const char g_TeleportSound[] = "weapons/teleporter_send.wav";
+
+static const char g_AlarmSound[] = "pl_hoodoo/alarm_clock_alarm_3.wav";
+static const char g_ExplosionSound[] = "items/cart_explode.wav";
 
 #define VINCENT_OIL_MODEL_DEFAULT_RADIUS 140.0
 #define VINCENT_OIL_MODEL_SCALE 1.5
@@ -99,6 +101,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_VincentFireIgniteSound);
 	
 	PrecacheSound("mvm/giant_heavy/giant_heavy_entrance.wav");
+	PrecacheSound(g_AlarmSound);
+	PrecacheSound(g_ExplosionSound);
 	
 	PrecacheModel("models/bots/heavy/bot_heavy.mdl");
 	PrecacheModel(g_OilModel);
@@ -141,6 +145,11 @@ methodmap Vincent < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 80);
 	}
+	public void StopDeathSound() 
+	{
+		StopSound(this.index, SNDCHAN_VOICE, g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)]);
+	}
+	
 	public void PlayPrepareSlamSound() 
 	{
 		int Sound = GetRandomInt(0, sizeof(g_PrepareSlamThrow) - 1);
@@ -528,7 +537,7 @@ public void Vincent_ClotThink(int iNPC)
 			delay *= 0.5;
 		
 		Vincent_PourOilAbility(npc, 30.0, delay);
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(!npc.Anger)
 		{
 			switch(GetRandomInt(0,2))
 			{
@@ -707,15 +716,21 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	
 	if(!npc.Anger || (npc.m_flMegaEnrage && npc.m_flMegaEnrage < GetGameTime()))
 	{
-		if((RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) && Aperture_ShouldDoLastStand())
+		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 		{
 			if(!npc.m_flTalkRepeat)
 			{
-				ApplyStatusEffect(victim, victim, "Infinite Will", 99999.0);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+				
+				ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 99999.0);
+				ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);
+				
+				// We handle Laboratories stuff in LoseConditions for Vincent
 				npc.m_flTalkRepeat = 1.0;
-				damage = 0.0;
-				return Plugin_Continue;
 			}
+			
+			damage = 0.0;
+			return Plugin_Continue;
 		}
 	}
 	else if(npc.Anger)
@@ -841,136 +856,218 @@ static bool Vincent_LoseConditions(int iNPC)
 	{
 		if(npc.m_flTalkRepeat > GetGameTime())
 			return true;
+		
+		if (Aperture_ShouldDoLastStand())
+		{
+			if(npc.m_iChanged_WalkCycle != 10)
+			{
+				npc.m_iChanged_WalkCycle = 10;
+				npc.SetPoseParameter_Easy("body_pitch", 0.0);
+				npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+				if(HasSpecificBuff(npc.index, "Intangible"))
+				{
+					RemoveSpecificBuff(npc.index, "Intangible");
+					f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
+					b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
+				}
+				npc.AddActivityViaSequence("layer_tauntrussian_rubdown");
+				int AnimLayer = npc.AddGestureViaSequence("armslayer_throw_fire");
+				npc.SetLayerPlaybackRate(AnimLayer, (0.01));
+				npc.SetLayerCycle(AnimLayer, (0.0));
+				npc.SetCycle(0.5);
+				npc.SetPlaybackRate(0.0);
+			}
 			
-		if(npc.m_iChanged_WalkCycle != 10)
-		{
-			npc.m_iChanged_WalkCycle = 10;
-			npc.SetPoseParameter_Easy("body_pitch", 0.0);
-			npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
-			npc.m_flSpeed = 0.0;
-			npc.StopPathing();
-			if(HasSpecificBuff(npc.index, "Intangible"))
+			if(npc.Anger)
 			{
-				RemoveSpecificBuff(npc.index, "Intangible");
-				f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
-				b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
-			}
-			npc.AddActivityViaSequence("layer_tauntrussian_rubdown");
-			int AnimLayer = npc.AddGestureViaSequence("armslayer_throw_fire");
-			npc.SetLayerPlaybackRate(AnimLayer, (0.01));
-			npc.SetLayerCycle(AnimLayer, (0.0));
-			npc.SetCycle(0.5);
-			npc.SetPlaybackRate(0.0);
-		}
-		if(npc.Anger)
-		{
-			//Angry blah
-			switch(npc.m_iTalkState)
-			{
-				case 0:
+				//Angry blah
+				switch(npc.m_iTalkState)
 				{
-					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{crimson}: No...", c_NpcName[npc.index]);
-				}
-				case 1:
-				{
-					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{crimson}: I can't let you get away with this.", c_NpcName[npc.index]);
-				}
-				case 2:
-				{
-					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{crimson}: I WON'T let you get away with this!", c_NpcName[npc.index]);
-				}
-				case 3:
-				{
-					//yapping
-					npc.m_flTalkRepeat = GetGameTime() + 1.5;
-					float Loc[3];
-					GetAbsOrigin(npc.index, Loc);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
-					spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
-					CPrintToChatAll("{rare}%t{crimson}: I'M GONNA DELETE YOU!", c_NpcName[npc.index]);
-					Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Old forgotten expidonsan robot");
-				}
-				case 4:
-				{
-					//yapping
-					float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-					npc.m_flTalkRepeat = GetGameTime() + 0.0;
-					for(int client_check=1; client_check<=MaxClients; client_check++)
+					case 0:
 					{
-						if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-						{
-							UTIL_ScreenFade(client_check, 66, 99999, FFADE_OUT | FFADE_STAYOUT, 255, 255, 255, 255); //make the fade target everyone
-						}
+						//yapping
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{crimson}: No...", c_NpcName[npc.index]);
 					}
-					
-					CreateTimer(6.0, Timer_Vincent_FadeBackIn, TIMER_FLAG_NO_MAPCHANGE);
-					KillFeed_SetKillIcon(npc.index, "megaton");
-					Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 250.0, _, _, false, 1, false);
-					npc.PlaySuicideSound();
-				}
-				case 5:
-				{
-					//ending
-					Vincent_GrantItem(npc.index);
-					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					case 1:
+					{
+						//yapping
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{crimson}: I can't let you get away with this.", c_NpcName[npc.index]);
+					}
+					case 2:
+					{
+						//yapping
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{crimson}: I WON'T let you get away with this!", c_NpcName[npc.index]);
+					}
+					case 3:
+					{
+						//yapping
+						npc.m_flTalkRepeat = GetGameTime() + 1.5;
+						float Loc[3];
+						GetAbsOrigin(npc.index, Loc);
+						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+						spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 1.5, 8.0, 1.5, 1, 150.0*2.0);
+						CPrintToChatAll("{rare}%t{crimson}: I'M GONNA DELETE YOU!", c_NpcName[npc.index]);
+						Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Old forgotten expidonsan robot");
+					}
+					case 4:
+					{
+						//yapping
+						float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+						npc.m_flTalkRepeat = GetGameTime() + 0.0;
+						for(int client_check=1; client_check<=MaxClients; client_check++)
+						{
+							if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+							{
+								UTIL_ScreenFade(client_check, 66, 99999, FFADE_OUT | FFADE_STAYOUT, 255, 255, 255, 255); //make the fade target everyone
+							}
+						}
+						
+						CreateTimer(6.0, Timer_Vincent_FadeBackIn, TIMER_FLAG_NO_MAPCHANGE);
+						KillFeed_SetKillIcon(npc.index, "megaton");
+						Explode_Logic_Custom(10000.0, -1, npc.index, -1, vecMe, 250.0, _, _, false, 1, false);
+						npc.PlaySuicideSound();
+					}
+					case 5:
+					{
+						//ending
+						Vincent_GrantItem(npc.index);
+						RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					}
 				}
 			}
+			else
+			{
+				//not angry blah
+				switch(npc.m_iTalkState)
+				{
+					case 0:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{default}: Ah.", c_NpcName[npc.index]);
+					}
+					case 1:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{default}: It appears that I'm not strong enough to take you down.", c_NpcName[npc.index]);
+					}
+					case 2:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{default}: I was hoping to keep the outside world safe with what was left behind here.", c_NpcName[npc.index]);
+					}
+					case 3:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
+					}
+					case 4:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
+					}
+					case 5:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 3.0;
+						CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
+					}
+					case 6:
+					{
+						//ending
+						npc.m_bDissapearOnDeath = true;
+						Vincent_GrantItem(npc.index);
+						RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					}
+				}
+			}
+			npc.m_iTalkState++;
+			npc.Update();
+			return true;
 		}
 		else
 		{
-			//not angry blah
-			switch(npc.m_iTalkState)
+			if(npc.m_iChanged_WalkCycle != 10)
 			{
-				case 0:
+				npc.m_iChanged_WalkCycle = 10;
+				npc.RemoveGesture("ACT_MP_ATTACK_STAND_POSTFIRE");
+				npc.m_flSpeed = 0.0;
+				npc.StopPathing();
+				if(HasSpecificBuff(npc.index, "Intangible"))
 				{
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: Ah.", c_NpcName[npc.index]);
+					RemoveSpecificBuff(npc.index, "Intangible");
+					f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
+					b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
 				}
-				case 1:
+				
+				if (npc.Anger)
 				{
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: It appears that I'm not strong enough to take you down.", c_NpcName[npc.index]);
+					npc.AddActivityViaSequence("taunt_unleashed_rage_heavy");
+					npc.SetCycle(0.05);
+					npc.SetPlaybackRate(0.7);
 				}
-				case 2:
+				else
 				{
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: I was hoping to keep the outside world safe with what was left behind here.", c_NpcName[npc.index]);
-				}
-				case 3:
-				{
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: But if you're so persistent on taking this gear...", c_NpcName[npc.index]);
-				}
-				case 4:
-				{
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: I won't try to stop you anymore, knowing that my attempts will be futile.", c_NpcName[npc.index]);
-				}
-				case 5:
-				{
-					npc.m_flTalkRepeat = GetGameTime() + 3.0;
-					CPrintToChatAll("{rare}%t{default}: Take this with you, and don't let it fall into the wrong hands, alright?", c_NpcName[npc.index]);
-				}
-				case 6:
-				{
-					//ending
-					npc.m_bDissapearOnDeath = true;
-					Vincent_GrantItem(npc.index);
-					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					npc.AddActivityViaSequence("taunt_burstchester_heavy");
+					npc.SetCycle(0.05);
+					npc.SetPlaybackRate(2.0);
 				}
 			}
+			
+			if(npc.Anger)
+			{
+				switch(npc.m_iTalkState)
+				{
+					case 0:
+					{
+						npc.m_flTalkRepeat = GetGameTime() + 0.7;
+						npc.PlayDeathSound();
+						EmitSoundToAll(g_AlarmSound, npc.index, SNDCHAN_STATIC);
+					}
+					
+					case 1:
+					{
+						npc.StopDeathSound();
+						StopSound(npc.index, SNDCHAN_STATIC, g_AlarmSound);
+						float vecPos[3];
+						WorldSpaceCenter(npc.index, vecPos);
+						ParticleEffectAt(vecPos, "asplode_hoodoo");
+						EmitSoundToAll(g_ExplosionSound, npc.index, SNDCHAN_AUTO, 90, _, 1.0, 100);
+						RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					}
+				}
+			}
+			else
+			{
+				switch(npc.m_iTalkState)
+				{
+					case 0:
+					{
+						// there's nothing here because originally I was going to add dialogue, but I got tired
+						npc.m_flTalkRepeat = GetGameTime() + 1.7;
+					}
+					
+					case 1:
+					{
+						npc.m_bDissapearOnDeath = true;
+						
+						float vecPos[3];
+						GetAbsOrigin(npc.index, vecPos);
+						ParticleEffectAt(vecPos, "teleported_blue");
+						EmitSoundToAll(g_TeleportSound, npc.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, 90, BOSS_ZOMBIE_VOLUME, 85);
+						RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					}
+				}
+			}
+			
+			npc.m_iTalkState++;
+			return true;
 		}
-		npc.m_iTalkState++;
-		npc.Update();
-		return true;
 	}
 	//reuse for music.
 	if(npc.m_flOverrideMusicNow)
@@ -1318,7 +1415,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				{
 					ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
 					b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
-					f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
+					f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
 
 					npc.m_iChanged_WalkCycle = 5;
 					npc.SetPoseParameter_Easy("body_pitch", 0.0);
@@ -1494,7 +1591,7 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			Timeslam *= 0.75;
 			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 35.0;
 		}
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+		if(!npc.Anger)
 		{
 			switch(GetRandomInt(0,2))
 			{

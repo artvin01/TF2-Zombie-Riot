@@ -53,6 +53,7 @@ enum struct StatusEffect
 	void Blank()
 	{
 		this.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+		this.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 		this.OnBuffStarted				= INVALID_FUNCTION;
 		this.OnBuffStoreRefresh			= INVALID_FUNCTION;
 		this.OnBuffEndOrDeleted			= INVALID_FUNCTION;
@@ -3242,7 +3243,7 @@ void StatusEffects_Aperture()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti			= 0.2;
+	data.DamageTakenMulti			= 0.6;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
@@ -3757,6 +3758,45 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.5;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Terrified");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "҂");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 0.5;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= Terrified_Start;
+	data.OnBuffStoreRefresh			= Terrified_Start;
+	data.OnBuffEndOrDeleted			= Terrified_End;
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.AttackspeedBuff			= 1.5;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Unstable Umbral Rift");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "UR");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= UnstableUmbralRift_StartOnce;
+	data.OnBuffStoreRefresh			= UnstableUmbralRift_Start;
+	data.OnBuffEndOrDeleted			= UnstableUmbralRift_End;
 	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
 	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= 1.5;
@@ -5453,6 +5493,19 @@ void StatusEffects_Explainelemental()
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 
+	strcopy(data.BuffName, sizeof(data.BuffName), "Necrosis Elemental Damage");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+
 	strcopy(data.BuffName, sizeof(data.BuffName), "Corruption Elemental Damage");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), " ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
@@ -5592,6 +5645,7 @@ static const char g_MarkSoundUmbral[][] = {
 };
 static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	float ratio = Elemental_DamageRatio(entity, Element_Warped);
 	if(ratio < 0.0)
 		ratio = 0.0;
@@ -5650,12 +5704,15 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	}
+#endif
 }
 static float Warped_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
+#if defined ZR
 	if(attacker <= MaxClients)
 		return (basedamage * Elemental_DamageRatio(attacker, Element_Warped));
 	
+#endif
 	return 0.0;
 }
 static void Warped_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -5948,6 +6005,23 @@ void StatusEffects_Rogue3()
 	data.OnBuffEndOrDeleted			= VoidAffliction_End;
 	data.OnTakeDamage_PostAttacker	= VoidAffliction_TakeDamageAttackerPost;
 	ShrinkingStatusEffectIndex = StatusEffect_AddGlobal(data);
+	
+	data.Blank();
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ultra Rapid Fire");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "URF");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= 1.25;
+	data.AttackspeedBuff			= (1.0 / 1.4);
+	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 
@@ -6056,6 +6130,23 @@ float SZF_DamageScalingdeal(int attacker, int victim, StatusEffect Apply_MasterS
 }
 
 
+static void Terrified_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.85);
+	SDKCall_SetSpeed(victim);
+}
+
+static void Terrified_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	Attributes_SetMulti(victim, 442, (1.0 / 0.5));
+	SDKCall_SetSpeed(victim);
+}
+
 
 static void RevivalStim_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -6103,5 +6194,46 @@ void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_Sta
 
 void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
+#if defined ZR
 	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
+#endif
+}
+
+
+
+
+static void UnstableUmbralRift_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.85);
+	Attributes_SetMulti(victim, 610, 0.35);
+	Attributes_SetMulti(victim, 326, 1.5);
+	SDKCall_SetSpeed(victim);
+}
+
+
+static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, 0.85);
+	Attributes_SetMulti(victim, 610, 0.35);
+	Attributes_SetMulti(victim, 326, 1.75);
+	i_Client_Gravity[victim] /= 2;
+	SDKCall_SetSpeed(victim);
+}
+
+static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+		
+	Attributes_SetMulti(victim, 442, (1.0 / 0.85));
+	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
+	Attributes_SetMulti(victim, 326, (1.0 / 1.75));
+	i_Client_Gravity[victim] *= 2;
+	SDKCall_SetSpeed(victim);
 }

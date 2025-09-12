@@ -2443,7 +2443,8 @@ bool CurrentSliceIndexAviable[MAX_SLICES_ALLOWED];
 bool TargetsHitNemal[MAX_SLICES_ALLOWED][MAXENTITIES];
 int EntityBelongsToMasterIndex[MAXENTITIES];
 
-void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle, bool GiveDebuff = true)
+void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle, bool GiveDebuff = true,
+bool Vertical = false, bool ForcePredict = false)
 {
 	//This determines on what was hit beforehand, we cant have duplicates!
 	int EntityMasterMainIndex = -1;
@@ -2471,8 +2472,15 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	//First we get the angle between the two entities.
 	float vecSelf[3]; 	WorldSpaceCenter(iNpc, vecSelf );
 	float VecTarget[3]; WorldSpaceCenter(target, VecTarget );
+	if(Vertical)
+	{
+		GetEntPropVector(iNpc, Prop_Data, "m_vecAbsOrigin", vecSelf);
+		vecSelf[2] += 10.0;
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecTarget);
+		VecTarget[2] = vecSelf[2];
+	}
 
-	if(NpcStats_IberiaIsEnemyMarked(target))
+	if(NpcStats_IberiaIsEnemyMarked(target) || ForcePredict)
 	{
 		CClotBody npc = view_as<CClotBody>(iNpc);
 		//predict.
@@ -2506,10 +2514,20 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	
 	float tmp[3];
 	float actualBeamOffset[3];
-	tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
-	tmp[1] = -(fatness / 2.0);	//start off half way to the other side
-	tmp[1] += (AddedOffsetEachLoop / 2.0);
-	tmp[2] = 0.0;
+	if(!Vertical)
+	{
+		tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
+		tmp[1] = -(fatness / 2.0);	//start off half way to the other side
+		tmp[1] += (AddedOffsetEachLoop / 2.0);
+		tmp[2] = 0.0;
+	}
+	else
+	{
+		tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
+		tmp[2] = -(fatness / 2.0);	//start off half way to the other side
+		tmp[2] += (AddedOffsetEachLoop / 2.0);
+		tmp[1] = 0.0;	
+	}
 	VectorRotate(tmp, AngleFromSelf, actualBeamOffset);
 	actualBeamOffset[2] = 0.0;
 	vecSelf[0] += actualBeamOffset[0];
@@ -2529,22 +2547,45 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 			projectile= Wand_Projectile_Spawn(iNpc, speed, 0.0, damage, -1, -1, "", AngleFromSelf,_,OverridePosOfSpawned);
 			
 		EntityBelongsToMasterIndex[projectile] = EntityMasterMainIndex;
-
-		switch(SitatuionCalcDo)
+		
+		if(!Vertical)
 		{
-			case 3:
+			switch(SitatuionCalcDo)
 			{
-				tmp[0] = 0.0;
+				case 3:
+				{
+					tmp[0] = 0.0;
+				}
+				case 2:
+					tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
+				case 1:
+					tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
 			}
-			case 2:
-				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
-			case 1:
-				tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
+			tmp[1] = AddedOffsetEachLoop;
+			tmp[2] = 0.0;
 		}
-		tmp[1] = AddedOffsetEachLoop;
-		tmp[2] = 0.0;
+		else
+		{
+			
+			switch(SitatuionCalcDo)
+			{
+				case 3:
+				{
+					tmp[0] = 0.0;
+				}
+				case 2:
+					tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
+				case 1:
+					tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
+			}
+			tmp[2] = AddedOffsetEachLoop;
+			tmp[1] = 0.0;
+		}
 		VectorRotate(tmp, AngleFromSelf, actualBeamOffset);
-		actualBeamOffset[2] = 0.0;
+		if(!Vertical)
+		{
+			actualBeamOffset[2] = 0.0;
+		}
 		OverridePosOfSpawned[0] += actualBeamOffset[0];
 		OverridePosOfSpawned[1] += actualBeamOffset[1];
 		OverridePosOfSpawned[2] += actualBeamOffset[2];
@@ -2552,6 +2593,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		float LaserFatnessCalc;
 		float LaserFatnessCalcNext;
 		float DefaultFatnessLaser = 20.0;
+		if(Vertical)
+			DefaultFatnessLaser = 40.0;
+			
 		float PercentageRepeatDo;
 		{
 			//Do calcs for inbetweeners
@@ -2598,7 +2642,14 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		if(IsValidEntity(PreviousProjectile))
 		{
-			laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.0);
+			if(!Vertical)
+			{
+				laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.0);
+			}
+			else
+			{
+				laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.5, "materials/sprites/combineball_trail_black_1.vmt");
+			}
 		}
 		DataPack pack = new DataPack();
 		SetEntityMoveType(projectile, MOVETYPE_NOCLIP);

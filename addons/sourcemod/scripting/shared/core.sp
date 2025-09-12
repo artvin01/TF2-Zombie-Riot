@@ -1485,6 +1485,7 @@ public void OnClientPutInServer(int client)
 	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
+	f_ClientInvul[client] = 0.0;
 	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
@@ -1578,6 +1579,8 @@ public void OnClientDisconnect(int client)
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_LostFooting[client] = -1.0;
+	ReplicateClient_Gravity[client] = -1;
+	i_Client_Gravity[client] = 800; //incase
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
 	b_NetworkedCrouch[client] = false;
@@ -3456,7 +3459,10 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		was_reviving_this[client] = target;
 
 	if(!WasRevivingEntity)
-		f_DisableDyingTimer[target] = GameTime + 0.15;
+	{
+		if(f_DisableDyingTimer[target] != FAR_FUTURE)
+			f_DisableDyingTimer[target] = GameTime + 0.15;
+	}
 
 	int speed = 3;
 	if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
