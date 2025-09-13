@@ -50,6 +50,44 @@ static char g_BounceEnergOrb[][] = {
 	"weapons/physcannon/energy_bounce1.wav",
 	"weapons/physcannon/energy_bounce2.wav",
 };
+static char g_PrepareEnergyBounce[][] = {
+	"npc/vort/attack_charge.wav",
+};
+static char g_JumpUp[][] = {
+	"weapons/grenade_launcher1.wav",
+};
+static char g_SliceUpPortal[][] = {
+	"weapons/physcannon/energy_disintegrate4.wav",
+};
+static char g_PointAtEnemy[][] = {
+	"weapons/ar2/ar2_reload_rotate.wav",
+};
+static char g_TeleportAboveTarget[][] = {
+	"weapons/fx/nearmiss/bulletltor09.wav",
+};
+static char g_LandAndDoDamage[][] = {
+	"weapons/physcannon/energy_sing_explosion2.wav",
+};
+
+static char g_FireSlicer[][] = {
+	"npc/vort/attack_shoot.wav",
+};
+static char g_teleportToAlly[][] = {
+	"npc/assassin/ball_zap1.wav",
+};
+
+static const char g_ChargeCircleDo[][] =
+{
+	"weapons/vaccinator_charge_tier_01.wav",
+};
+static const char g_SummonUmbralsDo[][] =
+{
+	"player/souls_receive1.wav",
+};
+static const char g_CircleExpandDo[][] =
+{
+	"weapons/vaccinator_charge_tier_04.wav",
+};
 
 #define SHADOW_DEFAULT_SPEED	340.0
 public void Shadowing_Darkness_Boss_OnMapStart_NPC()
@@ -63,6 +101,17 @@ public void Shadowing_Darkness_Boss_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RocketSound));	i++) { PrecacheSound(g_RocketSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
+	for (int i = 0; i < (sizeof(g_PrepareEnergyBounce)); i++) { PrecacheSound(g_PrepareEnergyBounce[i]); }
+	for (int i = 0; i < (sizeof(g_JumpUp)); i++) { PrecacheSound(g_JumpUp[i]); }
+	for (int i = 0; i < (sizeof(g_SliceUpPortal)); i++) { PrecacheSound(g_SliceUpPortal[i]); }
+	for (int i = 0; i < (sizeof(g_PointAtEnemy)); i++) { PrecacheSound(g_PointAtEnemy[i]); }
+	for (int i = 0; i < (sizeof(g_TeleportAboveTarget)); i++) { PrecacheSound(g_TeleportAboveTarget[i]); }
+	for (int i = 0; i < (sizeof(g_LandAndDoDamage)); i++) { PrecacheSound(g_LandAndDoDamage[i]); }
+	for (int i = 0; i < (sizeof(g_FireSlicer)); i++) { PrecacheSound(g_FireSlicer[i]); }
+	for (int i = 0; i < (sizeof(g_ChargeCircleDo)); i++) { PrecacheSound(g_ChargeCircleDo[i]); }
+	for (int i = 0; i < (sizeof(g_SummonUmbralsDo)); i++) { PrecacheSound(g_SummonUmbralsDo[i]); }
+	for (int i = 0; i < (sizeof(g_CircleExpandDo)); i++) { PrecacheSound(g_CircleExpandDo[i]); }
+
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness, the ruler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_shadowing_darkness_boss");
@@ -148,6 +197,58 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 	public void PlayMeleeHitSound()
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
+	}
+	public void StopPrepareBounce()
+ 	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)]);
+	}
+	public void PlayPrepareBounce()
+ 	{
+		EmitSoundToAll(g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+	}
+	public void PlayJumpUp()
+ 	{
+		EmitSoundToAll(g_JumpUp[GetRandomInt(0, sizeof(g_JumpUp) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+	}
+	public void PlaySlicePortal()
+ 	{
+		EmitSoundToAll(g_SliceUpPortal[GetRandomInt(0, sizeof(g_SliceUpPortal) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,120);
+	}
+	public void PlayAimAtEnemy(int enemy)
+ 	{
+		EmitSoundToAll(g_PointAtEnemy[GetRandomInt(0, sizeof(g_PointAtEnemy) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_PointAtEnemy[GetRandomInt(0, sizeof(g_PointAtEnemy) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+		if(IsValidClient(enemy))
+			EmitSoundToClient(enemy, g_PointAtEnemy[GetRandomInt(0, sizeof(g_PointAtEnemy) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+	}
+	public void PlayTeleportAboveTarget()
+ 	{
+		EmitSoundToAll(g_TeleportAboveTarget[GetRandomInt(0, sizeof(g_TeleportAboveTarget) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,100);
+	}
+	public void PlayLandSound()
+ 	{
+		EmitSoundToAll(g_LandAndDoDamage[GetRandomInt(0, sizeof(g_LandAndDoDamage) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,90);
+	}
+	public void PlaySlicerDo()
+ 	{
+		EmitSoundToAll(g_FireSlicer[GetRandomInt(0, sizeof(g_FireSlicer) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,100);
+	}
+	public void PlayTeleportToAlly()
+ 	{
+		EmitSoundToAll(g_teleportToAlly[GetRandomInt(0, sizeof(g_teleportToAlly) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,80);
+	}
+	public void PlayChargeCircle()
+ 	{
+		EmitSoundToAll(g_ChargeCircleDo[GetRandomInt(0, sizeof(g_ChargeCircleDo) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.1,100);
+	}
+	public void PlaySummonUmbrals()
+ 	{
+		EmitSoundToAll(g_SummonUmbralsDo[GetRandomInt(0, sizeof(g_SummonUmbralsDo) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,90);
+	}
+	public void PlayCircleExpand()
+ 	{
+		EmitSoundToAll(g_CircleExpandDo[GetRandomInt(0, sizeof(g_CircleExpandDo) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME - 0.1,100);
 	}
 	
 	public int FireProjectile_SD(float vecSwingStart[3], float VecAnglesDo[3], float rocket_damage, float rocket_speed , const char[] rocket_particle = "")
@@ -265,6 +366,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
+	
 	public Shadowing_Darkness_Boss(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Shadowing_Darkness_Boss npc = view_as<Shadowing_Darkness_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "300", ally, false));
@@ -293,6 +395,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
@@ -351,13 +454,17 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-
-		RaidModeScaling *= 0.7;
-		RaidModeScaling *= 1.85;
+		
+		npc.m_flMeleeArmor = 1.25;	
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		Citizen_MiniBossSpawn();
+		npc.m_flSwordParticleAttackCD = GetGameTime() + 10.0;
+		npc.m_flPortalSummonGate = GetGameTime() + 25.0;
+		npc.m_flUpperSlashCD = GetGameTime() + 15.0;
+		npc.m_flCreateRingCD = GetGameTime() + 30.0;
+		npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
 
 		func_NPCDeath[npc.index] = Shadowing_Darkness_Boss_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Shadowing_Darkness_Boss_OnTakeDamage;
@@ -411,6 +518,14 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 
 	float gameTime = GetGameTime(npc.index);
 
+	if(IsValidEntity(npc.m_iTargetAlly))
+	{
+		//unspeakable is alive, nerf me
+		ApplyStatusEffect(iNPC, iNPC, "Terrified", 1.0);
+		ApplyStatusEffect(iNPC, iNPC, "Unstoppable Force", 1.0);
+		if(npc.m_flRestoreDefaultWalk != 1.0)
+			npc.m_flRestoreDefaultWalk = gameTime + 0.1;
+	}
 	//some npcs deservere full update time!
 	if(npc.m_flNextDelayTime > gameTime)
 	{
@@ -545,13 +660,57 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 	}
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(RoundToCeil(damage) > Health)
+	if(RoundToCeil(damage) > Health && i_RaidGrantExtra[npc.index] == 1)
 	{	
-		if(i_RaidGrantExtra[npc.index] == 1)
-			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I am placeholder text, fix me.");	
+		
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+		SetTeam(victim, 2);
+		//force red team
+		int spawn_index = NPC_CreateByName("npc_void_unspeakable", -1, pos, ang, 3, "shadowcutscene");
+		if(spawn_index > MaxClients)
+		{
+			NpcStats_CopyStats(npc.index, spawn_index);
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+			ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+			f_AttackSpeedNpcIncrease[spawn_index]	*= 2.0;
+			fl_Extra_Damage[spawn_index]	*= 0.1;
+
+		}
+		i_RaidGrantExtra[npc.index] = 2;
+		CPrintToChatAll("{purple}NO!!!!!!");
+		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Get this thing off me-.");
+		CPrintToChatAll("{black}Izan :{default} What the-");
+		FreezeNpcInTime(victim, 30.0, true);
 
 		return Plugin_Changed;
 	}
+	if(!npc.Anger)
+	{
+		if(Health <= (ReturnEntityMaxHealth(npc.index) / 2))
+		{	
+			npc.Anger = true;
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			int spawn_index = NPC_CreateByName("npc_void_unspeakable", -1, pos, ang, GetTeam(npc.index), "shadowbattle");
+			if(spawn_index > MaxClients)
+			{
+				NpcStats_CopyStats(npc.index, spawn_index);
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 3));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 3));
+				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+				npc.m_iTargetAlly = spawn_index;
+			}
+			if(npc.m_flSpeed != 0)
+				npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
+			CPrintToChatAll("{purple}YOU WILL NOT SEE THE END OF THIS DAY...");
+			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So i was right, i wasn't alone once i sat on that throne, parasite...");	
+		}
+	}
+	
 	return Plugin_Changed;
 }
 
@@ -656,9 +815,9 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 
 	if(npc.m_flSwordParticleAttackCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flSwordParticleAttackCD = gameTime + 30.0;
+		npc.m_flSwordParticleAttackCD = gameTime + 25.0;
 		npc.m_iState = 1;
-		npc.m_flDoingAnimation = gameTime + 2.0;
+		npc.m_flDoingAnimation = gameTime + 1.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -667,6 +826,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
+		npc.PlayPrepareBounce();
 	}
 
 	if(npc.m_iState == 1)
@@ -688,7 +848,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 			npc.m_iState = 0;
 			npc.m_flRestoreDefaultWalk = 1.0;
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.5)
 		{
 			//do whatever after some time
 			if(npc.m_iChanged_WalkCycle != 2) 	
@@ -698,6 +858,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 				npc.SetActivity("ACT_WHITEFLOWER_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
+				npc.StopPrepareBounce();
 
 				//ability stuff
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -839,12 +1000,13 @@ void Shadowing_Darkness_DefaultMovement(Shadowing_Darkness_Boss npc, float gameT
 	if(npc.m_flRestoreDefaultWalk > gameTime)
 		return;
 
-	PrintToChatAll("Shadowing_Darkness_DefaultMovement");
 	npc.m_flRestoreDefaultWalk = 0.0;
 	npc.m_bisWalking = true;
 	npc.m_iChanged_WalkCycle = 0;
 	npc.SetActivity("ACT_WHITEFLOWER_RUN");
 	npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
+	if(IsValidEntity(npc.m_iTargetAlly))
+		npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
 	npc.StartPathing();
 }
 
@@ -853,9 +1015,9 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 {
 	if(npc.m_flPortalSummonGate < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flPortalSummonGate = gameTime + 60.0;
+		npc.m_flPortalSummonGate = gameTime + 90.0;
 		npc.m_iState = 2;	
-		npc.m_flDoingAnimation = gameTime + 2.0;
+		npc.m_flDoingAnimation = gameTime + 1.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -875,7 +1037,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 			npc.m_iState = 0;
 			npc.m_flRestoreDefaultWalk = 1.0;
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.5)
 		{
 			//do a big slice and summon portal entity
 			if(npc.m_iChanged_WalkCycle != 2) 	
@@ -898,9 +1060,10 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
 
 				}
+				npc.PlaySlicePortal();
 			}
 		}
-		else if(TimeLeft <= 2.0)
+		else if(TimeLeft <= 1.5)
 		{
 			//do whatever after some time
 			if(npc.m_iChanged_WalkCycle != 3) 	
@@ -919,11 +1082,12 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				static float flPos[3]; 
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
-				flPos[2] += 500.0;
+				flPos[2] += 350.0;
 				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
 				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
+				npc.PlayJumpUp();
 			}
 		}
 		return true;
@@ -936,7 +1100,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 {
 	if(npc.m_flUpperSlashCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flUpperSlashCD = gameTime + 60.0;
+		npc.m_flUpperSlashCD = gameTime + 50.0;
 		npc.m_iState = 3;	
 		npc.m_flDoingAnimation = gameTime + 2.3;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -981,7 +1145,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 			b_NoGravity[npc.index] = false;
 			f3_NpcSavePos[npc.index][2] = -69.69;
 		}
-		else if(TimeLeft <= 0.8)
+		else if(TimeLeft <= 0.6)
 		{
 			if(npc.m_iChanged_WalkCycle != 7) 	
 			{
@@ -999,9 +1163,13 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				}
 			}
 		}
-		else if(TimeLeft <= 1.0)
+		else if(TimeLeft <= 0.75)
 		{
-			if(npc.m_iChanged_WalkCycle != 6) 	
+			if (!npc.IsOnGround())
+			{
+				npc.m_flDoingAnimation = gameTime + 1.15;
+			}
+			else if(npc.m_iChanged_WalkCycle != 6) 	
 			{
 				if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo, true, true))
 				{
@@ -1020,17 +1188,39 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				npc.SetActivity("ACT_WHITEFLOWER_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
-				
-				static float flPos[3]; 
-				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-				flPos[2] += 5.0;
-				int PoolAidsParticle = ParticleEffectAt(flPos, "utaunt_wiggletube_teamcolor_red", 0.0);
-				DataPack pack;
-				CreateDataTimer(0.5, ShadowingDarkness_NecroPoolTimer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-				pack.WriteCell(EntIndexToEntRef(npc.index));
-				pack.WriteCell(EntIndexToEntRef(PoolAidsParticle));
-				pack.WriteCell(npc.m_iAtCurrentIntervalOfNecroArea);
+
+				npc.PlaySlicerDo();
 				//do slice
+			}
+		}
+		else if(TimeLeft <= 1.0)
+		{	
+			if (!npc.IsOnGround())
+			{
+				npc.m_flDoingAnimation = gameTime + 1.15;
+			}
+			else
+			{
+				if(npc.m_iChanged_WalkCycle != 9) 	
+				{
+					npc.m_bisWalking = false;
+					npc.m_iChanged_WalkCycle = 9;
+					npc.SetActivity("ACT_WHITEFLOWER_RUN");
+					npc.m_flSpeed = 0.0;
+					npc.StopPathing();
+					
+					static float flPos[3]; 
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+					flPos[2] += 5.0;
+					int PoolAidsParticle = ParticleEffectAt(flPos, "utaunt_wiggletube_teamcolor_red", 0.0);
+					DataPack pack;
+					CreateDataTimer(0.5, ShadowingDarkness_NecroPoolTimer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+					pack.WriteCell(EntIndexToEntRef(npc.index));
+					pack.WriteCell(EntIndexToEntRef(PoolAidsParticle));
+					pack.WriteCell(npc.m_iAtCurrentIntervalOfNecroArea);	
+					npc.PlayLandSound();
+					//do slice
+				}
 			}
 		}
 		else if(TimeLeft <= 1.25)
@@ -1086,6 +1276,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				float VecMe[3]; WorldSpaceCenter(npc.index, VecMe);
 
 				Npc_Teleport_Safe(npc.index, flPos, HullMins, HullMaxs, false, true, true);
+				npc.PlayTeleportAboveTarget();
 
 				b_NoGravity[npc.index] = true;
 				float VecMeNew[3]; WorldSpaceCenter(npc.index, VecMeNew);
@@ -1135,7 +1326,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					RemoveEntity(npc.m_iWearable5);
 				}
 				npc.m_iWearable5 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "effect_hand_l");
-				
+				npc.PlayAimAtEnemy(npc.m_iTargetWalkTo);
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 2;
 				npc.SetActivity("ACT_WHITEFLOWER_RUN");
@@ -1155,7 +1346,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 {
 	if(npc.m_flCreateRingCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flCreateRingCD = gameTime + 60.0;
+		npc.m_flCreateRingCD = gameTime + 50.0;
 		npc.m_iState = 4;	
 		npc.m_flDoingAnimation = gameTime + 3.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1169,6 +1360,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		npc.m_flDespawnUmbralKoulms = gameTime + 10.0;
+		npc.PlaySummonUmbrals();
 		for(int loop=1; loop<=4; loop++)
 		{
 			int spawn_index = NPC_CreateByName("npc_umbral_koulm", -1, pos, ang, GetTeam(npc.index));
@@ -1215,6 +1407,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 			float AbsVecMe[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsVecMe);
 			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 3.0, 2);
+			npc.PlayCircleExpand();
 			if(npc.m_iChanged_WalkCycle != 2) 	
 			{
 				npc.m_bisWalking = false;
@@ -1227,6 +1420,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		}
 		else 
 		{
+			npc.PlayChargeCircle();
 			float CircleSize = 800.0; //,max size
 			CircleSize *= (TimeLeft - 3.0);
 			float AbsVecMe[3];
@@ -1296,7 +1490,7 @@ bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTi
 {
 	if(npc.m_flTeleportToStatueCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flTeleportToStatueCD = gameTime + 60.0;
+		npc.m_flTeleportToStatueCD = gameTime + 45.0;
 		npc.m_iState = 5;	
 		npc.m_flDoingAnimation = gameTime + 1.0;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1349,6 +1543,7 @@ bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTi
 				//teleport To them and get a new target
 				npc.m_flGetClosestTargetTime = 0.0;
 				TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+				npc.PlayTeleportToAlly();
 				ApplyStatusEffect(npc.index, npc.m_iTargetWalkTo, "Caffinated", 10.0);
 			}
 			npc.m_iTargetWalkTo = 0;

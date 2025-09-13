@@ -1886,7 +1886,7 @@ static void Vincent_PourOil(Vincent npc, float vecPos[3], float radius, float du
 	CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 }
 
-static void Timer_Vincent_FadeBackIn(Handle timer)
+void Timer_Vincent_FadeBackIn(Handle timer)
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{

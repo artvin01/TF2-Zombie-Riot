@@ -2,9 +2,6 @@
 #pragma newdecls required
 
 
-static char gGlow1;
-static char gGlow2;
-
 static char g_HurtSound[][] = {
 	"weapons/drg_pomson_drain_01.wav",
 };
@@ -16,6 +13,8 @@ static char g_SpawnSound[][] = {
 	"ui/killsound_electro.wav",
 };
 
+static char gGlow1;
+static char gGlow2;
 void TornUmbralGate_OnMapStart_NPC()
 {
 	NPCData data;
@@ -29,6 +28,9 @@ void TornUmbralGate_OnMapStart_NPC()
 	NPC_Add(data);
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
+	PrecacheModel("sprites/combineball_trail_black_1.vmt");
+	PrecacheModel("sprites/halo01.vmt");
+	PrecacheModel("sprites/lgtning.vmt");
 	gGlow1 = PrecacheModel("sprites/redglow1.vmt", true);
 	gGlow2 = PrecacheModel("sprites/yellowglow1.vmt", true);
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
@@ -76,6 +78,7 @@ methodmap TornUmbralGate < CClotBody
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flMeleeArmor = 2.0;	
 		
 		npc.m_iBleedType = BLEEDTYPE_PORTAL;
 		npc.m_iStepNoiseType = 0;	
@@ -94,6 +97,7 @@ methodmap TornUmbralGate < CClotBody
 		func_NPCOnTakeDamage[npc.index] = TornUmbralGate_OnTakeDamage;
 		EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8, 50);
 		EmitSoundToAll("weapons/physcannon/energy_sing_loop4.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8, 50);
+		TornUmbralGate_Visuals(npc);
 	
 		return npc;
 	}
@@ -138,7 +142,6 @@ public void TornUmbralGate_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.5;
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	VecSelfNpcabs[2] += 100.0;
-	TornUmbralGate_Visuals(npc);
 	/*
 	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 0.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
 	spawnRing_Vectors(VecSelfNpcabs, TORN_UMBRAL_GATEWAY * 2.0, 0.0, 0.0, 200.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 125, 1, TORN_UMBRAL_DURATION, 10.0, 1.0, 1);	
@@ -188,6 +191,28 @@ public void TornUmbralGate_ClotThink(int iNPC)
 		}
 		npc.m_flGateSpawnEnemies = gameTime + 15.0;
 	}
+
+	//effects
+	float pos[3]; 
+	if(IsValidEntity(i_ExpidonsaEnergyEffect[npc.index][1]))
+	{
+		GetEntPropVector(i_ExpidonsaEnergyEffect[npc.index][1], Prop_Data, "m_vecAbsOrigin", pos);
+		TE_SetupGlowSprite(pos, gGlow2, TORN_UMBRAL_DURATION, 2.0, 255);
+		TE_SendToAll();
+	}
+	if(IsValidEntity(i_ExpidonsaEnergyEffect[npc.index][4]))
+	{
+		GetEntPropVector(i_ExpidonsaEnergyEffect[npc.index][4], Prop_Data, "m_vecAbsOrigin", pos);
+		TE_SetupGlowSprite(pos, gGlow1, TORN_UMBRAL_DURATION, 1.0, 255);
+		TE_SendToAll();
+	}
+	if(IsValidEntity(i_ExpidonsaEnergyEffect[npc.index][5]))
+	{
+		GetEntPropVector(i_ExpidonsaEnergyEffect[npc.index][5], Prop_Data, "m_vecAbsOrigin", pos);
+		TE_SetupGlowSprite(pos, gGlow1, TORN_UMBRAL_DURATION, 1.0, 255);
+		TE_SendToAll();
+
+	}
 }
 
 public void TornUmbralGate_NPCDeath(int entity)
@@ -207,117 +232,96 @@ public void TornUmbralGate_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	//TornUmbralGate npc = view_as<TornUmbralGate>(entity);
 	//gone
+	ExpidonsaRemoveEffects(npc.index);
 }
 
 void TornUmbralGate_Visuals(TornUmbralGate npc)
 {
-
-	int RGBA[4] = {255,255,255, 255};
-	/*
-		its 200 units across big
-	*/
-	//Gate stuff
-	float vecSelf[3];
-	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", vecSelf);
-	float VecPos1[3],VecPos2[3];
-
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 25.0;
-	VecPos2[2] += 100.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_BEAM_Combine_Black, 0, 0, 0, TORN_UMBRAL_DURATION, 6.0, 40.0, 0, 2.0, RGBA, 3);
-	TE_SendToAll(0.0);
-
-
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 100.0;
-	VecPos2[2] += 175.0;
-	TE_SetupGlowSprite(VecPos1, gGlow2, TORN_UMBRAL_DURATION, 2.0, 255);
-	TE_SendToAll();
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_BEAM_Combine_Black, 0, 0, 0, TORN_UMBRAL_DURATION, 40.0, 6.0, 0, 2.0, RGBA, 3);
-	TE_SendToAll(0.0);
-
-	//outer eye layer
-	RGBA = {185,60,185, 255};
-
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 200.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] += 250.0;
-	TE_SetupGlowSprite(VecPos1, gGlow1, TORN_UMBRAL_DURATION, 1.0, 255);
-	TE_SendToAll();
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_BEAM_lightning, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 4.0, RGBA, 3);
-	TE_SendToAll(0.0);
 	
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 200.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] -= 250.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_BEAM_lightning, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 4.0, RGBA, 3);
-	TE_SendToAll(0.0);
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+		
+	//Main 2 eye's
+	//Middle eye part to connect to
+	int particle_2 = InfoTargetParentAt({0.0,0.0,100.0}, "", 0.0);
 
-	
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-//	VecPos1[2] += 200.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] += 250.0;
-	TE_SetupGlowSprite(VecPos1, gGlow1, TORN_UMBRAL_DURATION, 1.0, 255);
-	TE_SendToAll();
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_BEAM_lightning, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 4.0, RGBA, 3);
-	TE_SendToAll(0.0);
-	
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-//	VecPos1[2] += 200.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] -= 250.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_BEAM_lightning, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 4.0, RGBA, 3);
-	TE_SendToAll(0.0);
+	//up and down eye to connect
+	int particle_3 = InfoTargetParentAt({0.0,0.0,25.0}, "", 0.0);
+	int particle_4 = InfoTargetParentAt({0.0,0.0,175.0}, "", 0.0);
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 255, 255, 255, 40.0, 6.0, 2.0, "sprites/combineball_trail_black_1.vmt");
+	int Laser_2 = ConnectWithBeamClient(particle_2, particle_4, 255, 255, 255, 40.0, 6.0, 2.0, "sprites/combineball_trail_black_1.vmt");
 
 
-	
-	//inner eye layer
-	RGBA = {255,60,100, 255};
+	//inside eye part
+	int particle_5 = InfoTargetParentAt({0.0,0.0,10.0}, "", 0.0);
+	int particle_6 = InfoTargetParentAt({0.0,0.0,190.0}, "", 0.0);
 
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 190.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] += 90.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_HALO_Laser, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 1.0, RGBA, 3);
-	TE_SendToAll(0.0);
-	
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 190.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] -= 90.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_HALO_Laser, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 1.0, RGBA, 3);
-	TE_SendToAll(0.0);
+	//left and right
+	int particle_7 = InfoTargetParentAt({0.0,90.0,100.0}, "", 0.0);
+	int particle_8 = InfoTargetParentAt({0.0,-90.0,100.0}, "", 0.0);
+	int Laser_3 = ConnectWithBeamClient(particle_5, particle_7, 255, 60, 100, 12.0, 12.0, 1.0, "sprites/halo01.vmt");
+	int Laser_4 = ConnectWithBeamClient(particle_5, particle_8, 255, 60, 100, 12.0, 12.0, 1.0, "sprites/halo01.vmt");
+	int Laser_5 = ConnectWithBeamClient(particle_6, particle_7, 255, 60, 100, 12.0, 12.0, 1.0, "sprites/halo01.vmt");
+	int Laser_6 = ConnectWithBeamClient(particle_6, particle_8, 255, 60, 100, 12.0, 12.0, 1.0, "sprites/halo01.vmt");
 
+	//Outer eye part
+	//up and down
+	int particle_9 = InfoTargetParentAt({0.0,0.0,200.0}, "", 0.0);
+	int particle_10 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
+
+	//left and right
+	int particle_11 = InfoTargetParentAt({0.0,250.0,100.0}, "", 0.0);
+	int particle_12 = InfoTargetParentAt({0.0,-250.0,100.0}, "", 0.0);
+	int Laser_7 = ConnectWithBeamClient(particle_9, particle_11, 185, 60, 185, 12.0, 12.0, 4.0, "sprites/lgtning.vmt");
+	int Laser_8 = ConnectWithBeamClient(particle_9, particle_12, 185, 60, 185, 12.0, 12.0, 4.0, "sprites/lgtning.vmt");
+	int Laser_9 = ConnectWithBeamClient(particle_10, particle_11, 185, 60, 185, 12.0, 12.0, 4.0, "sprites/lgtning.vmt");
+	int Laser_10 = ConnectWithBeamClient(particle_10, particle_12, 185, 60, 185, 12.0, 12.0, 4.0, "sprites/lgtning.vmt");
+
+
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
 	
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 10.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] += 90.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_HALO_Laser, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 1.0, RGBA, 3);
-	TE_SendToAll(0.0);
-	
-	VecPos1 = vecSelf;
-	VecPos2 = vecSelf;
-	VecPos1[2] += 10.0;
-	VecPos2[2] += 100.0;
-	VecPos2[1] -= 90.0;
-	TE_SetupBeamPoints(VecPos1, VecPos2, g_Ruina_HALO_Laser, 0, 0, 0, TORN_UMBRAL_DURATION, 12.0, 12.0, 0, 1.0, RGBA, 3);
-	TE_SendToAll(0.0);
+	SetParent(particle_1, particle_6, "",_, true);
+	SetParent(particle_1, particle_7, "",_, true);
+	SetParent(particle_1, particle_8, "",_, true);
+	SetParent(particle_1, particle_9, "",_, true);
+	SetParent(particle_1, particle_10, "",_, true);
+	SetParent(particle_1, particle_11, "",_, true);
+	SetParent(particle_1, particle_12, "",_, true);
+
+	float flPos[3];
+	float flAng[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", flAng);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
 
 	
 
+	i_ExpidonsaEnergyEffect[npc.index][0] = EntIndexToEntRef(particle_1);
+	i_ExpidonsaEnergyEffect[npc.index][1] = EntIndexToEntRef(particle_2);
+	i_ExpidonsaEnergyEffect[npc.index][2] = EntIndexToEntRef(particle_3);
+	i_ExpidonsaEnergyEffect[npc.index][3] = EntIndexToEntRef(particle_4);
+	i_ExpidonsaEnergyEffect[npc.index][4] = EntIndexToEntRef(particle_5);	
+	i_ExpidonsaEnergyEffect[npc.index][5] = EntIndexToEntRef(particle_6);	
+	i_ExpidonsaEnergyEffect[npc.index][6] = EntIndexToEntRef(particle_7);	
+	i_ExpidonsaEnergyEffect[npc.index][7] = EntIndexToEntRef(particle_8);	
+	i_ExpidonsaEnergyEffect[npc.index][8] = EntIndexToEntRef(particle_9);	
+	i_ExpidonsaEnergyEffect[npc.index][9] = EntIndexToEntRef(particle_10);	
+	i_ExpidonsaEnergyEffect[npc.index][10] = EntIndexToEntRef(particle_11);	
+	i_ExpidonsaEnergyEffect[npc.index][11] = EntIndexToEntRef(particle_12);	
+	
+	i_ExpidonsaEnergyEffect[npc.index][12] = EntIndexToEntRef(Laser_1);	
+	i_ExpidonsaEnergyEffect[npc.index][13] = EntIndexToEntRef(Laser_2);	
+	i_ExpidonsaEnergyEffect[npc.index][14] = EntIndexToEntRef(Laser_3);	
+	i_ExpidonsaEnergyEffect[npc.index][15] = EntIndexToEntRef(Laser_4);	
+	i_ExpidonsaEnergyEffect[npc.index][16] = EntIndexToEntRef(Laser_5);	
+	i_ExpidonsaEnergyEffect[npc.index][17] = EntIndexToEntRef(Laser_6);	
+	i_ExpidonsaEnergyEffect[npc.index][18] = EntIndexToEntRef(Laser_7);	
+	i_ExpidonsaEnergyEffect[npc.index][19] = EntIndexToEntRef(Laser_8);	
+	i_ExpidonsaEnergyEffect[npc.index][20] = EntIndexToEntRef(Laser_9);	
+	i_ExpidonsaEnergyEffect[npc.index][21] = EntIndexToEntRef(Laser_10);	
 }
 
 

@@ -464,7 +464,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
+		if(Apply_StatusEffect.TimeUntillOver < GetGameTime() || Apply_StatusEffect.MarkedForDeletion)
 		{
 			Apply_StatusEffect.RemoveStatus();
 			i--;
@@ -530,6 +530,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	int CurrentPriority = Apply_MasterStatusEffect.SlotPriority;
 	if(CurrentSlotSaved > 0)
 	{
+		PrintToChatAll("testing");
 		//This debuff has slot logic, this means we should see which debuff is prioritised
 		if(E_AL_StatusEffects[victim])
 		{
@@ -607,12 +608,13 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 
 	if(owner > 0 && owner <= MaxClients && owner != victim)
 		ExplainBuffToClient(owner, Apply_MasterStatusEffect, true);
-
+	
 	int linked = Apply_MasterStatusEffect.LinkedStatusEffect;
 	if(linked > 0)
 	{
 		ApplyStatusEffect(owner, victim, "", Duration - 0.5, linked);
 	}
+	
 }
 
 void StatusEffect_UpdateAttackspeedAsap(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -1218,6 +1220,7 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 		{
 		//	Apply_StatusEffect.RemoveStatus();
 			Apply_StatusEffect.MarkedForDeletion = true;
+			Apply_StatusEffect.TimeUntillOver = 0.0;
 			ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 			returnDo = true;
@@ -2276,6 +2279,7 @@ void StatusEffects_Silence()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
+	data.ElementalLogic 			= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
