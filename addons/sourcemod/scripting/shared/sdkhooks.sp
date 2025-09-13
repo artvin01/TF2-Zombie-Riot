@@ -700,8 +700,7 @@ public void OnPostThink(int client)
 	{
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
-		static char buffer[255];
-		buffer[0] = 0;
+		char buffer[255];
 		float HudY = 0.95;
 		float HudX = -1.0;
 	
@@ -1516,8 +1515,7 @@ public void OnPostThink(int client)
 		//only for red.
 		if(GetTeam(client) == 2)
 		{
-			static char HudBuffer[256];
-			HudBuffer[0] = 0;
+			char HudBuffer[256];
 			if(!TeutonType[client])
 			{
 				int downsleft;
