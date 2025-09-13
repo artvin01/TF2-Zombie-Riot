@@ -142,8 +142,6 @@ methodmap RefragmentedWinterSniper < CClotBody
 		TE_SetupParticleEffect("utaunt_signalinterference_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
 		TE_WriteNum("m_bControlPoint1", npc.index);	
 		TE_SendToAll();
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -152,14 +150,12 @@ methodmap RefragmentedWinterSniper < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec17_coldfront_commander/dec17_coldfront_commander.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sbox2014_medic_wintergarb_gaiter/sbox2014_medic_wintergarb_gaiter.mdl");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 125, 200);
+		
+		SetEntityRenderColor(npc.index, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 125);
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

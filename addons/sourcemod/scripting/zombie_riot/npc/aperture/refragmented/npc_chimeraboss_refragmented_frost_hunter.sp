@@ -183,16 +183,12 @@ methodmap RefragmentedWinterFrostHunter < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/scout_gloves_leather_open/scout_gloves_leather_open.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/fall17_transparent_trousers/fall17_transparent_trousers.mdl");
-		SetEntityRenderMode(npc.index, RENDER_GLOW);
-		SetEntityRenderColor(npc.index, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 125, 200);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_GLOW);
-		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 125, 200);
+		
+		SetEntityRenderColor(npc.index, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 125);
+		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 125);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
