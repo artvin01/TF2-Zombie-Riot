@@ -530,7 +530,6 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	int CurrentPriority = Apply_MasterStatusEffect.SlotPriority;
 	if(CurrentSlotSaved > 0)
 	{
-		PrintToChatAll("testing");
 		//This debuff has slot logic, this means we should see which debuff is prioritised
 		if(E_AL_StatusEffects[victim])
 		{
