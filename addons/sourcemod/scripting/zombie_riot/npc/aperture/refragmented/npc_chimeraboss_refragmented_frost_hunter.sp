@@ -189,6 +189,7 @@ methodmap RefragmentedWinterFrostHunter < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 125);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 125);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 125);
+		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
