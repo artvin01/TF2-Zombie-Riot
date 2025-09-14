@@ -100,4 +100,8 @@
 	{
 		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Pack-a-punch them to increase the whole kit's stats!"
 	}
+	"Setup Chat Tip 26"
+	{
+		"en"	"Remember. {crimson}He watches."
+	}
 }
