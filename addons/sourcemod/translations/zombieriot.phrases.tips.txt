@@ -80,4 +80,24 @@
 	{
 		"en"	"Sometimes its better to buy upgrades if they are on sale instead of pack a punching your weapon!"
 	}
+	"Setup Chat Tip 21"
+	{
+		"en"	"Certain weapons can inflict debuffs on enemies and buff your allies, check the glossary of effects to learn what each does!"
+	}
+	"Setup Chat Tip 22"
+	{
+		"en"	"Adjust your weapon choice to the enemies that come, itll greatly help in defeating them!"
+	}
+	"Setup Chat Tip 23"
+	{
+		"en"	"Running low on armor as a melee player? You can use ammo boxes to give you a small amount of armor!"
+	}
+	"Setup Chat Tip 24"
+	{
+		"en"	"Running low on mana as a mage? You can use ammo boxes to give you mana, even overcharge your mana with ammo boxes!"
+	}
+	"Setup Chat Tip 25"
+	{
+		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Pack-a-punch them to increase the whole kit's stats!"
+	}
 }
