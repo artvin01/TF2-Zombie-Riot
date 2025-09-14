@@ -740,10 +740,11 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 				if(choosen != -1)
 				{
 					VotingMods.GetArray(choosen, vote);
-
+					
 					CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
 					if(vote.Desc[0])
 						PrintToChatAll("%t", vote.Desc);
+					ChatSetupTip();
 					EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 					EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 
@@ -1651,6 +1652,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
 				if(vote.Desc[0])
 					PrintToChatAll("%t", vote.Desc);
+
+				ChatSetupTip();
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
@@ -3678,6 +3681,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 		}
 		case 1:	// Ready Up
 		{
+			ChatSetupTip();
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
 			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);

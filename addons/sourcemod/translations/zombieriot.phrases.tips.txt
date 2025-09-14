@@ -1,0 +1,11 @@
+"Phrases"
+{
+	"Setup Chat Tip 1"
+	{
+		"en"	"Reviving teammates restores your health! ''Regene Berry'' doubles this effect!"
+	}
+	"Setup Chat Tip 2"
+	{
+		"en"	"tip 2"
+	}
+}
