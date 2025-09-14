@@ -1870,6 +1870,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					// Increase boss health
 					multiBoss *= MultiGlobalEnemyBoss;
 
+					//Give extra damage to bosses that scale like this, but only half as much.
+					wave.EnemyData.ExtraDamage = wave.EnemyData.ExtraDamage * (((MultiGlobalScalingBossExtra - 1.0) * 0.5) + 1.0);
 					// Decrease for every boss spawned
 					float decrease = float(count) / float(wave.Count);
 					if(decrease > 1.0)
@@ -3123,15 +3125,6 @@ void DoGlobalMultiScaling()
 	
 	Rogue_Rift_MultiScale(multi);
 	
-	//normal bosses health
-	MultiGlobalHealthBoss = playercount * 0.2;
-
-	if(MultiGlobalHealthBoss <= 1.0)
-	{
-		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
-		MultiGlobalHealthBoss = 1.0;
-	}
-	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 	if(MultiGlobalHighHealthBoss <= 0.8)
@@ -3141,12 +3134,36 @@ void DoGlobalMultiScaling()
 	}
 
 	//Enemy bosses AMOUNT
-	MultiGlobalEnemyBoss = playercount * 0.3; 
+	float cap = zr_maxsbosscaling_untillhp.FloatValue;
+	float BossMulti = playercount * 0.3; 
+
+	if(BossMulti > cap)
+	{
+		MultiGlobalScalingBossExtra = BossMulti / cap;
+		MultiGlobalEnemyBoss = cap;
+	}
+	else
+	{
+		MultiGlobalScalingBossExtra = 1.0;
+		MultiGlobalEnemyBoss = BossMulti;
+	}
+	
+	//normal bosses health
+	MultiGlobalHealthBoss = playercount * 0.2;
+
+	if(MultiGlobalHealthBoss <= 1.0)
+	{
+		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
+		MultiGlobalHealthBoss = 1.0;
+	}
+
+	//scale extra HP higher
+	MultiGlobalHealthBoss *= (((MultiGlobalScalingBossExtra - 1.0) * 0.75) + 1.0);
 
 	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
-	float cap = zr_maxscaling_untillhp.FloatValue;
+	cap = zr_maxscaling_untillhp.FloatValue;
 
 	if(multi > cap)
 	{
