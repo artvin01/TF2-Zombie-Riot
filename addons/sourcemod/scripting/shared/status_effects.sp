@@ -375,7 +375,7 @@ int StatusEffect_AddGlobal(StatusEffect data)
 	return AL_StatusEffects.PushArray(data);
 }
 
-stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
+stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1, bool UpdateAttackspeed = true)
 {
 	int index;
 	if(IndexID != -1)
@@ -389,6 +389,7 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		return;
 	}
 	E_StatusEffect Apply_StatusEffect;
+	StatusEffect Apply_MasterStatusEffect;
 
 	int ArrayPosition;
 	if(E_AL_StatusEffects[victim])
@@ -397,6 +398,9 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1)
 		if(ArrayPosition != -1)
 		{
 			E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+			AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+			if(UpdateAttackspeed)
+				StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 		}
 		
@@ -466,8 +470,10 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime() || Apply_StatusEffect.MarkedForDeletion)
 		{
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
-			i--;
+			i = 0;
+			//reloop
 			continue;
 		}
 		//They do not have a buffname, this means that it can break other things depending on this!
@@ -477,7 +483,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		}
 		if(!Apply_MasterStatusEffect.Positive && !RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
-			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 			i = 0;
 			//reloop
@@ -485,7 +491,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 		}
 		else if(Apply_MasterStatusEffect.Positive && RemoveGood && !Apply_MasterStatusEffect.ElementalLogic)
 		{
-			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 			i = 0;
 			//reloop
@@ -549,7 +555,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 					if(CurrentPriority > Apply_MasterStatusEffect.SlotPriority)
 					{
 						// New buff is high priority, remove this one, stop the loop
-						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+						StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 						Apply_StatusEffect.RemoveStatus();
 						i = 0;
 						//reloop
@@ -611,48 +617,25 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	int linked = Apply_MasterStatusEffect.LinkedStatusEffect;
 	if(linked > 0)
 	{
-		ApplyStatusEffect(owner, victim, "", Duration - 0.5, linked);
+		ApplyStatusEffect(owner, victim, "", 9999999.9, linked);
 	}
 	
 }
 
-void StatusEffect_UpdateAttackspeedAsap(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+void StatusEffect_UpdateAttackspeedAsap(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool HasBuff = true)
 {
 	if(Apply_MasterStatusEffect.AttackspeedBuff > 0.0)
 	{
 		//Instatly remove the sub,par buffs they had
 		//do twice due to npc buffs and such.
-		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffectNPC);
-		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect, HasBuff);
+		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffectNPC, false);
 		
-		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffect);
-		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect);
+		Status_Effects_AttackspeedBuffChange(victim, Apply_MasterStatusEffect, Apply_StatusEffect, HasBuff);
+		RemoveSpecificBuff(victim, "", Apply_MasterStatusEffect.LinkedStatusEffect, false);
 	}
 }
 
-//never usually needed
-stock void StatusEffect_Expired(int victim)
-{
-	if(!E_AL_StatusEffects[victim])
-		return;
-
-	//No debuffs or status effects, skip.
-	static E_StatusEffect Apply_StatusEffect;
-	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
-	{
-		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
-		{
-			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
-		}
-	}
-	//There are no buffs left, delete.
-	if(length < 1)
-		delete E_AL_StatusEffects[victim];
-}
 void StatusEffectReset(int victim, bool force)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -1166,9 +1149,8 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		delete E_AL_StatusEffects[victim];
 }
 
-bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool HasBuff = true)
 {
-	bool HasBuff = false;
 	bool returnDo = false;
 	float BuffAmount = 1.0;
 	//LinkedStatusEffect
@@ -1206,29 +1188,7 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 		//usually above 1.0 tho
 		BuffAmount = Apply_MasterStatusEffect.AttackspeedBuff;
 	}
-	static StatusEffect link_Apply_MasterStatusEffect;
-	static E_StatusEffect link_Apply_StatusEffect;
-	int ArrayPosition;
-	ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_MasterStatusEffect.LinkedStatusEffect , E_StatusEffect::BuffIndex);
-//	int SaveLinkId = Apply_MasterStatusEffect.LinkedStatusEffect;
-	if(ArrayPosition != -1)
-	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, link_Apply_StatusEffect);
-		AL_StatusEffects.GetArray(link_Apply_StatusEffect.BuffIndex, link_Apply_MasterStatusEffect);
-		if(link_Apply_StatusEffect.TimeUntillOver < GetGameTime() && !Apply_StatusEffect.MarkedForDeletion)
-		{
-		//	Apply_StatusEffect.RemoveStatus();
-			Apply_StatusEffect.MarkedForDeletion = true;
-			Apply_StatusEffect.TimeUntillOver = 0.0;
-			ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-			returnDo = true;
-		}
-		else
-		{
-			HasBuff = true;
-		}
-	}
+	
 	
 	Status_Effects_GrantAttackspeedBonus(victim, HasBuff, BuffAmount, Apply_MasterStatusEffect.LinkedStatusEffect, Apply_MasterStatusEffect.LinkedStatusEffectNPC, FlagAttackspeedLogicInternal);
 	return returnDo;
@@ -1262,7 +1222,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 		{
 			//They dont even have the buff.
 			if(!HasSpecificBuff(weapon, "", BuffCheckerID))
-			{	
+			{
 				//We want to give the buff
 				if(GrantBuff)
 				{
@@ -1331,7 +1291,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 							Attributes_SetMulti(weapon, 101, BuffOriginal);	// Projectile Range
 					}
 				
-					RemoveSpecificBuff(weapon, "", BuffCheckerID);
+					RemoveSpecificBuff(weapon, "", BuffCheckerID, false);
 				}
 				if(GrantBuff && BuffRevert != BuffOriginal)
 				{
@@ -1422,7 +1382,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 						f_AttackSpeedNpcIncrease[entity] *= 1.0 / (BuffRevert);
 					}
 				}
-				RemoveSpecificBuff(entity, "", BuffCheckerIDNPC);
+				RemoveSpecificBuff(entity, "", BuffCheckerIDNPC, false);
 			}
 			if(GrantBuff && BuffRevert != BuffOriginal)
 			{
@@ -4436,16 +4396,15 @@ void StatusEffect_StoreRefresh(int victim)
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
 	//No debuffs or status effects, skip.
-	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
+	for(int i; i<E_AL_StatusEffects[victim].Length; i++)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
+			i = 0;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.OnBuffStoreRefresh != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffStoreRefresh)
@@ -4458,8 +4417,6 @@ void StatusEffect_StoreRefresh(int victim)
 		}
 	}
 
-	if(length < 1)
-		delete E_AL_StatusEffects[victim];
 }
 void StatusEffect_TimerCallDo(int victim)
 {
@@ -4469,16 +4426,15 @@ void StatusEffect_TimerCallDo(int victim)
 	static StatusEffect Apply_MasterStatusEffect;
 	static E_StatusEffect Apply_StatusEffect;
 	//No debuffs or status effects, skip.
-	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
+	for(int i; i<E_AL_StatusEffects[victim].Length; i++)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver < GetGameTime())
 		{
+			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
-			i--;
-			length--;
+			i = 0;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.TimerRepeatCall_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.TimerRepeatCall_Func)
@@ -4491,7 +4447,7 @@ void StatusEffect_TimerCallDo(int victim)
 		}
 	}
 
-	if(length < 1)
+	if(E_AL_StatusEffects[victim].Length < 1)
 		delete E_AL_StatusEffects[victim];
 }
 void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage, int damagetype)

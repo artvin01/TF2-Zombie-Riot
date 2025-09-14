@@ -1040,6 +1040,7 @@ public void OnMapStart()
 //	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
+	Zero(f_TimerStatusEffectsDo);
 	Building_MapStart();
 #endif
 	
