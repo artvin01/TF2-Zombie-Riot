@@ -251,6 +251,7 @@ int i_WhatLevelForHudIsThisClientAt[MAXPLAYERS];
 
 float f_Data_InBattleHudDisableDelay[MAXPLAYERS];
 float f_InBattleDelay[MAXENTITIES];
+float f_TimerStatusEffectsDo[MAXENTITIES];
 
 int Healing_done_in_total[MAXENTITIES];
 int i_PlayerDamaged[MAXENTITIES];
@@ -898,5 +899,8 @@ float MultiGlobalHealthBoss = 0.25;
 
 float MultiGlobalHighHealthBoss = 0.34;
 //This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
+
+//Above a certain amount, bosses gain more damage and HP, but its capped at a certain amount of them just like normal enemies
+float MultiGlobalScalingBossExtra = 1.0;
 
 #endif

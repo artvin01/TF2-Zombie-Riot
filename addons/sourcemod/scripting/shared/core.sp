@@ -576,6 +576,7 @@ float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
 int i_TextEntity[MAXENTITIES][5];
 float f_TextEntityDelay[MAXENTITIES];
+float AntiSpamTipGive;
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
@@ -756,6 +757,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
+	LoadTranslations("zombieriot.phrases.tips");	
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
 	LoadTranslations("common.phrases");
@@ -964,6 +966,7 @@ void Core_PrecacheGlobalCustom()
 }
 public void OnMapStart()
 {
+	AntiSpamTipGive = 0.0;
 	PrecacheSound("weapons/knife_swing_crit.wav");
 	PrecacheSound("weapons/shotgun/shotgun_dbl_fire.wav");
 	PrecacheSound("npc/vort/attack_shoot.wav");
@@ -1037,6 +1040,7 @@ public void OnMapStart()
 //	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
+	Zero(f_TimerStatusEffectsDo);
 	Building_MapStart();
 #endif
 	

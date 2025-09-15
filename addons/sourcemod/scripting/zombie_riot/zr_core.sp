@@ -289,6 +289,7 @@ ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_maxscaling_untillhp;
+ConVar zr_maxsbosscaling_untillhp;
 ConVar zr_raidmultihp;
 ConVar zr_multi_maxenemiesalive_cap;
 ConVar zr_multi_scaling;
