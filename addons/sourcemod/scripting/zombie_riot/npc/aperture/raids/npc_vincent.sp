@@ -195,6 +195,15 @@ methodmap Vincent < CClotBody
 		EmitSoundToAll(g_SuicideSound[GetRandomInt(0, sizeof(g_SuicideSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 		EmitSoundToAll(g_SuicideSound[GetRandomInt(0, sizeof(g_SuicideSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 	}
+	public void PlayPassiveSound()
+	{
+		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void StopPassiveSound()
+	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+	}
 
 	property float m_flNextOilPouring
 	{
@@ -260,15 +269,12 @@ methodmap Vincent < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
-	public void PlayPassiveSound()
+	property bool m_bTimeUpMode
 	{
-		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
-	public void StopPassiveSound()
-	{
-		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
-		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
-	}
+	
 	public Vincent(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Vincent npc = view_as<Vincent>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl" /*"models/bots/heavy/bot_heavy.mdl"*/, "1.45", "700", ally, false, true, true, true));
@@ -351,7 +357,7 @@ methodmap Vincent < CClotBody
 		{
 			npc.Anger = true;
 		}
-		if(Aperture_IsBossDead(APERTURE_BOSS_CAT)  || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
+		if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS) || StrContains(data, "forcesad") != -1)
 		{
 			npc.m_flRangedArmor *= 0.9;
 			npc.m_flMeleeArmor *= 0.9;	
@@ -450,10 +456,52 @@ public void Vincent_ClotThink(int iNPC)
 				ApplyStatusEffect(npc.index, entitycount, "Nightmare Terror", 2.0);
 		}
 	}
+	
 	Vincent_AdjustGrabbedTarget(iNPC);
+	
 	if(Vincent_LoseConditions(iNPC))
 		return;
-
+	
+	if (IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	{
+		// time's up!
+		if (!npc.m_bTimeUpMode)
+		{
+			npc.m_bTimeUpMode = true;
+			npc.m_bDoingOilPouring = false;
+			npc.m_flNextOilPouring = FAR_FUTURE;
+			
+			if (!npc.m_flThrow_Happening)
+				npc.m_flThrow_Cooldown = gameTime + 0.5;
+			
+			npc.m_flRangedArmor = 0.25;
+			npc.m_flMeleeArmor = 0.375;
+			
+			if (Aperture_ShouldDoLastStand())
+			{
+				if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+				{
+					CPrintToChatAll("{rare}%t{default}: I'm sorry it has come to this. I'm afraid you shouldn't have taken that job...", c_NpcName[npc.index]);
+				}
+				else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+				{
+					CPrintToChatAll("{rare}%t{crimson}: You are DONE.", c_NpcName[npc.index]);
+				}
+				else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
+				{
+					CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+				}
+			}
+			else
+			{
+				if (npc.Anger)
+					CPrintToChatAll("{rare}%t{crimson}: You are DONE.", c_NpcName[npc.index]);
+				else
+					CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
+			}
+		}
+	}
+	
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 
@@ -1104,26 +1152,6 @@ static bool Vincent_LoseConditions(int iNPC)
 		}
 		return true;
 	}
-	else if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		//won timer
-		if(!Aperture_IsBossDead(APERTURE_BOSS_CAT) && !Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-		{
-			CPrintToChatAll("{rare}%t{default}: I'm sorry it had to end this way, you shouldn't have taken that job...", c_NpcName[npc.index]);
-		}
-		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) && Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-		{
-			CPrintToChatAll("{rare}%t{crimson}: You're done.", c_NpcName[npc.index]);
-		}
-		else if(Aperture_IsBossDead(APERTURE_BOSS_CAT) || Aperture_IsBossDead(APERTURE_BOSS_ARIS))
-		{
-			CPrintToChatAll("{rare}%t{default}: You can't keep running away forever.", c_NpcName[npc.index]);
-		}
-		return true;
-	}
 	
 	return false;
 }
@@ -1548,6 +1576,10 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				
 				float damage = 170.0;
 				damage *= RaidModeScaling;
+				
+				if (npc.m_bTimeUpMode)
+					damage *= 2.5;
+				
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
 				TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 				EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, ThrowPos);
@@ -1563,6 +1595,9 @@ bool Vincent_SlamThrow(int iNPC, int target)
 			npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.3;
 			npc.m_flRegainNormalWalk = GetGameTime(npc.index) + 0.3;
 			npc.m_iTargetWalkTo = 0;
+			
+			if (npc.m_bTimeUpMode)
+				npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 1.0;
 		}
 		return true;
 	}
@@ -1579,19 +1614,24 @@ bool Vincent_SlamThrow(int iNPC, int target)
 		npc.AddActivityViaSequence("layer_taunt_commending_clap_heavy");
 		npc.m_flSpeed = 0.0;
 		float Timeslam = VINCENT_PREPARESLAM_TIME;
+		float cooldown;
 		npc.SetCycle(0.75);
+		
 		if(!npc.Anger)
 		{
 			npc.SetPlaybackRate(0.4);
-			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 40.0;
+			cooldown = 40.0;
 		}
 		else
 		{
 			npc.SetPlaybackRate(0.4 * (1.0 / 0.75));
 			Timeslam *= 0.75;
-			npc.m_flThrow_Cooldown = GetGameTime(npc.index) + 35.0;
+			cooldown = 35.0;
 		}
-		if(!npc.Anger)
+		
+		npc.m_flThrow_Cooldown = GetGameTime(npc.index) + cooldown;
+		
+		if(!npc.Anger && !npc.m_bTimeUpMode)
 		{
 			switch(GetRandomInt(0,2))
 			{
