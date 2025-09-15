@@ -1245,6 +1245,14 @@ static bool CAT_LoseConditions(int iNPC)
 				if(IsValidEntity(npc.m_iWearable1))
 					RemoveEntity(npc.m_iWearable1);
 				
+				switch (GetURandomInt() % 2)
+				{
+					case 0:
+						CPrintToChatAll("{rare}C.A.T.{default}: OVERHEATING PROTOC-");
+					case 1:
+						CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DES-");
+				}
+				
 				npc.m_flDeathAnim = GetGameTime() + 1.0;
 			}
 			

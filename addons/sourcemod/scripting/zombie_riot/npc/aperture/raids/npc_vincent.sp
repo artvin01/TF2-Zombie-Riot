@@ -1096,7 +1096,29 @@ static bool Vincent_LoseConditions(int iNPC)
 				{
 					case 0:
 					{
-						// there's nothing here because originally I was going to add dialogue, but I got tired
+						char first[64], second[64];
+						switch (GetURandomInt() % 3)
+						{
+							case 0:
+								first = "Alright.";
+							case 1:
+								first = "Enough.";
+							case 2:
+								first = "Ah.";
+						}
+						
+						switch (GetURandomInt() % 3)
+						{
+							case 0:
+								second = "I'm taking my leave.";
+							case 1:
+								second = "That's my cue to go.";
+							case 2:
+								second = "You got the best of me this time.";
+						}
+						
+						CPrintToChatAll("{rare}%t{default}: %s %s", c_NpcName[npc.index], first, second);
+						
 						npc.m_flTalkRepeat = GetGameTime() + 1.7;
 					}
 					

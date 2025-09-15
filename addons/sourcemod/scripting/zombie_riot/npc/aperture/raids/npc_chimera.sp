@@ -906,6 +906,18 @@ bool CHIMERA_LoseConditions(int iNPC)
 				npc.StopPathing();
 				
 				npc.m_flDeathAnim = GetGameTime() + 1.5;
+				
+				switch (GetURandomInt() % 4)
+				{
+					case 0:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: IT RECOILS IN PAIN?");
+					case 1:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: I NEED A DISTRACTION. ERROR? ERROR? ERROR?");
+					case 2:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS PLACE IS TOO HOT FOR ME.");
+					case 3:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: I MIGHT NOT BE WELCOME HERE?");
+				}
 			}
 			
 			case 1:
