@@ -895,7 +895,23 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"He was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop him.\n{red}Umbral are enraged, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{red}Umbral are enraged, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+	}
+	"The Bladedance"
+	{
+		"en"	"''Bladedance''"
+	}
+	"The Bladedance Desc"
+	{
+		"en"	"Left to rot in the same fate, alone, but able to keep himself alive.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
+	}
+	"The Whiteflower"
+	{
+		"en"	"''Whiteflower''"
+	}
+	"The Whiteflower Desc"
+	{
+		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 	}
 
 	"Gateway"
@@ -1249,6 +1265,30 @@
 	"Mazeat Falls Desc"
 	{
 		"en"	"Mazeat was.\n{green}Non-void enemies have -30％ health and damage and receive +100％ elemental damage"
+	}
+	"Finale Encounter Lore"
+	{
+		"en"	"You gotten this far, from infections, outbreaks, riots, and chaos. Take a moment to remember the past."
+	}
+	"Finale Encounter Option 1"
+	{
+		"en"	"It's too much"
+	}
+	"Finale Encounter Desc 1"
+	{
+		"en"	"{green}This chapter grows longer"
+	}
+	"Finale Encounter Lore 1"
+	{
+		"en"	"In the end, we're human, in the world that makes us aliens."
+	}
+	"Finale Encounter Option 2"
+	{
+		"en"	"Remember ''them''"
+	}
+	"Finale Encounter Desc 2"
+	{
+		"en"	"{yellow}Obtain 2 unknown artifacts"
 	}
 
 	"Cloned Subjects"

@@ -346,7 +346,7 @@
 	}
 	"Eccentric Lore 1-1a"
 	{
-		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's her striking. Luckily it's small pranks to keep her amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
 	}
 	"Eccentric Lore 1-1b"
 	{
@@ -360,7 +360,6 @@
 	"Eccentric Lore 1-2"
 	{
 		"en"	"''Ah, he's locked away. Your Mazeat friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
-		"ru"	"\"А, под замком. Ваш друг комбайн запер «Взбешённого клинка», как он это сделал, я до сих пор не знаю. Скажем так, он никогда не увидит дневной свет, пока он в клетке.\""
 	}
 	"Eccentric Option 1-3"
 	{
@@ -369,8 +368,7 @@
 	}
 	"Eccentric Lore 1-3"
 	{
-		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
-		"ru"	"\"Ха-ха-ха, «Белый цветок» даже не представляет, как это провернуть. Особенно учитывая, что у других лордов другие планы. Однако в мире есть участок, где есть только природа, но туда легко вторгнуться.\""
+		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Betraying every other lord, only himself and 'Shadow' left together.''"
 	}
 	"Eccentric Option 1-4"
 	{
@@ -1597,7 +1595,7 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
+		"en"	"An artifact left behind by a lord.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
 	}
 	"Whiteflower"
 	{
@@ -1606,21 +1604,20 @@
 	}
 	"Whiteflower Desc"
 	{
-		"en"	"An artifact left behind by a Crimson Troupe member.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
+		"en"	"An artifact left behind by a lord.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 	}
 	"Shadow"
 	{
-		"en"	"Shadow"
+		"en"	"''Shadow''"
 		"ru"	"«Тень»"
 	}
 	"Shadow Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}NPC allies will use the same max health from players."
-		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{yellow}Персонажи-союзники будут иметь тот же макс. запас здоровья, что и игроки."
+		"en"	"An artifact left behind by a lord.\n{yellow}NPC allies will use the same max health from players."
 	}
 	"Right Eye of the Natator"
 	{
-		"en"	"Right Eye of the Natator"
+		"en"	"''Right Eye of the Natator''"
 		"ru"	"«Правый глаз нататора»"
 	}
 	"Right Eye of the Natator Desc"
@@ -1630,7 +1627,7 @@
 	}
 	"Left Eye of the Natator"
 	{
-		"en"	"Left Eye of the Natator"
+		"en"	"''Left Eye of the Natator''"
 		"ru"	"«Левый глаз нататора»"
 	}
 	"Left Eye of the Natator Desc"
@@ -1640,7 +1637,7 @@
 	}
 	"End of Times"
 	{
-		"en"	"End of Times"
+		"en"	"''End of Times''"
 		"ru"	"«Конец времён»"
 	}
 	"End of Times Desc"
