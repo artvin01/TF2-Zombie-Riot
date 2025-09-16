@@ -226,6 +226,7 @@ stock bool FindInfoTarget(const char[] name)
 	}
 	return false;
 }
+
 stock int FindInfoTargetInt(const char[] name)
 {
 	int entity = -1;

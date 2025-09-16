@@ -546,6 +546,11 @@ void ReilaCreateBeacon(int iNpc)
 	npc.m_flBossSpawnBeacon = 0.0;
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	int EndFound = FindInfoTargetInt("reila_beacon_spawner");
+	if(IsValidEntity(EndFound))
+	{
+		GetEntPropVector(EndFound, Prop_Data, "m_vecAbsOrigin", pos);
+	}
 	int summon = NPC_CreateByName("npc_beacon_reila", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{
