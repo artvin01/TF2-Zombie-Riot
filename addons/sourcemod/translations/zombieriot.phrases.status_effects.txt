@@ -1061,7 +1061,7 @@
 	}
 	"Bleed Desc"
 	{
-		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time.\nSome weapons deal true damage with this.\nStacks infinitly."
+		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time.\n.\nStacks infinitly."
 	}
 	"Burn"
 	{

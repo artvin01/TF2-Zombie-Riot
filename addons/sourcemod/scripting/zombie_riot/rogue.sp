@@ -2175,7 +2175,7 @@ static void StartStage(const Stage stage)
 		}
 		case ReilaRift:
 		{
-			if(CurrentFloor != 6)
+			if(CurrentFloor != 6 || CurrentFloor != 5 || CurrentFloor != 4)
 				Rogue_Dome_WaveStart(pos);
 		}
 	}
@@ -3018,9 +3018,15 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 {
 	int change = amount;
 	
-	if(CurrentUmbral < 1)
+	if(CurrentUmbral < 1 && !Rogue_Rift_BookOfNature())
 	{
 		CurrentUmbral = 0;
+		return;
+	}
+
+	if(Rogue_Rift_BookOfNature() && change <= 0)
+	{
+		CPrintToChatAll("%t", "Umbral Forgiveness");
 		return;
 	}
 

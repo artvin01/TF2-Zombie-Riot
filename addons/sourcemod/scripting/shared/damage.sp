@@ -1766,7 +1766,11 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	float CritChance = Attributes_GetOnPlayer(attacker, Attrib_CritChance, false,_, 0.0);
 	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
 	{
-		damage *= 2.0;
+		if(Rogue_Rift_BookOfWeakness())
+			damage *= 2.0;
+		else
+			damage *= 3.0;
+			
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}
 

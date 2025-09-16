@@ -12,6 +12,10 @@
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} Umbral Affinity"
 	}
+	"Umbral Forgiveness"
+	{
+		"en"		"{green}Umbrals Seemingly dont mind whatever you just did."
+	}
 	"Bad Umbral"
 	{
 		"#format"	"{1:d}"
@@ -895,7 +899,7 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{red}Umbral are enraged, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{red}Umbral are not pleased, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
 	}
 	"The Bladedance"
 	{
@@ -1606,4 +1610,41 @@
 	{
 		"en"	"You find the body of... Guln."
 	}
+	"Book of Nature"
+	{
+		"en"	"Book of Nature"
+	}
+	"Book of Nature Desc"
+	{
+		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore."
+	}
+	"Book of Nature Conclusion"
+	{
+		"en"	"You pick up the book that's off to the side, near some other peacefull related subjects."
+	}
+	"Book of Weakness"
+	{
+		"en"	"Book of Weakness"
+	}
+	"Book of Weakness Desc"
+	{
+		"en"	"A book explaining detailed weakpots of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
+	}
+	"Book of Weakness Conclusion"
+	{
+		"en"	"You pick up the book thats marked as ''important for mercs''"
+	}
+	"Book of Liver Optimisation Conclusion"
+	{
+		"en"	"A book thats covered in grime and slime, seemingly left to rot."
+	}
+	"Book of Liver Optimisation"
+	{
+		"en"	"Book of Liver Optimisation"
+	}
+	"Book of Liver Optimisation Desc"
+	{
+		"en"	"Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
+	}
+
 }

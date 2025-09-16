@@ -2303,4 +2303,8 @@
 	{
 		"en"	"It's Very Alluring.\n{green} Most cooldowns are reduced by 33％"
 	}
+	"Library Of Lixandria Title"
+	{
+		"en" "You see a giant library full of books, some stick out to you."
+	}
 }

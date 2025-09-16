@@ -918,3 +918,59 @@ static int StoryMenuH(Menu menu, MenuAction action, int param1, int param2)
 {
 	return 0;
 }
+
+
+
+
+
+
+public float Rogue_Encounter_Library_Of_Lixandria()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Encounter_Library_Of_Lixandria_Vote, "Library Of Lixandria Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Weakness");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Weakness Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Nature");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Nature Desc");
+	list.PushArray(vote);
+
+	bool ColdWaterItem = Rogue_HasNamedArtifact("Cold Water");
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Liver Optimisation");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Liver Optimisation Desc");
+	if(!ColdWaterItem)
+	{
+		vote.Locked = true;
+		FormatEx(vote.Append, sizeof(vote.Append), " (Need ''Cold Water'')");
+	}
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Encounter_Library_Of_Lixandria_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Book of Weakness Conlusion");
+			Rogue_GiveNamedArtifact("Book of Weakness");
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Book of Nature Conlusion");
+			Rogue_GiveNamedArtifact("Book of Nature");
+		}
+		case 2:
+		{
+			CPrintToChatAll("%t", "Book of Liver Optimisation Conlusion");
+			Rogue_GiveNamedArtifact("Book of Liver Optimisation");
+		}
+	}
+}

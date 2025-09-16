@@ -8,6 +8,8 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
+static bool BookOfNature;
+static bool BookOfWeakness;
 //static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
@@ -19,6 +21,14 @@ stock void Rogue_Rift_MultiScale(float &multi)
 stock bool Rogue_Rift_NoStones()
 {
 	return CurseEmpty;
+}
+stock bool Rogue_Rift_BookOfNature()
+{
+	return BookOfNature;
+}
+stock bool Rogue_Rift_BookOfWeakness()
+{
+	return BookOfWeakness;
 }
 
 stock int Rogue_Rift_CurseLevel()
@@ -909,10 +919,52 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 
 public void Rogue_Rift2_Collect(int entity)
 {
-	Rogue_AddUmbral(-100, true);
+	Rogue_AddUmbral(-25, true);
 
 	if(!Rogue_HasNamedArtifact("Reila Assistance"))
 		Rogue_GiveNamedArtifact("Reila Assistance", true);
+}
+
+public void Rogue_BookOfNature_Collect(int entity)
+{
+	Rogue_AddUmbral(40);
+	BookOfNature = true;
+}
+public void Rogue_BookOfNature_Remove(int entity)
+{
+	BookOfNature = false;
+}
+
+public void Rogue_BookOfWeakness_Collect(int entity)
+{
+	BookOfWeakness = true;
+}
+public void Rogue_BookOfWeakness_Remove(int entity)
+{
+
+	BookOfWeakness = false;
+}
+
+public void Rogue_BookOfWeakness_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		//give a flat 10% crit chance
+		float CurrentStats;
+		map.GetValue("4030", CurrentStats);
+		CurrentStats += 0.1;
+		map.SetValue("4030", CurrentStats);
+	}
+}
+public void Rogue_BookOfLiver_Ally(int entity, StringMap map)
+{
+	//give all perks at once
+	i_CurrentEquippedPerk[entity] = ((1 << 20) - 1);
+
+}
+public void Rogue_BookOfLiver_Remove(int entity)
+{
+	Zero(i_CurrentEquippedPerk);
 }
 
 public void Rogue_Rift2_Enemy(int entity)
