@@ -722,6 +722,41 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 	}
 }
 
+public float Rogue_Encounter_WhiteflowerBladedance()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_WhiteflowerBladedance, "Finale Encounter Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Finale Encounter Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Finale Encounter Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Finale Encounter Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Finale Encounter Desc 2");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_WhiteflowerBladedance(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Rogue_AddExtraStage(1);
+			PrintToChatAll("%t", "Finale Encounter Lore 1");
+		}
+		case 1:
+		{
+			GiveCash(5000);
+			Rogue_GiveNamedArtifact("The Bladedance");
+			Rogue_GiveNamedArtifact("The Whiteflower");
+		}
+	}
+}
+
 public float Rogue_Encounter_PastLore()
 {
 	int chapter = 1;
@@ -873,7 +908,7 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 
 		delete panel;
 
-		CreateTimer(5.0, Timer_AdvanceStory, progress + 1);
+		CreateTimer(6.0, Timer_AdvanceStory, progress + 1);
 		Rogue_SetProgressTime(15.0, false);
 	}
 
