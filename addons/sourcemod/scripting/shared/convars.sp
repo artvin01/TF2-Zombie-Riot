@@ -107,6 +107,8 @@ void ConVar_PluginStart()
 	
 	//default should be 0.5
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.2", "How long zombie spawn protection lasts for.");
+	
+	cvarTimeScale = FindConVar("host_timescale");
 #endif
 
 #if defined ZR || defined RTS	
@@ -121,10 +123,6 @@ void ConVar_PluginStart()
 
 	sv_cheats = ConVar_Add("sv_cheats", "0", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	nav_edit = FindConVar("nav_edit");
-
-#if defined ZR
-	cvarTimeScale = FindConVar("host_timescale");
-#endif
 
 	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
