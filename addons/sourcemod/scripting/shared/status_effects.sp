@@ -186,8 +186,8 @@ void InitStatusEffects()
 	StatusEffects_ElementalWand();
 	StatusEffects_FallenWarrior();
 	StatusEffects_CasinoDebuff();
-	StatusEffects_Aperture();
 #if defined ZR
+	StatusEffects_Aperture();
 	StatusEffects_Ruiania();
 #endif
 	StatusEffects_WeaponSpecific_VisualiseOnly();
@@ -2945,6 +2945,8 @@ float Hussar_Warscream_DamageDealFunc(int attacker, int victim, StatusEffect App
 	return damagereturn;
 }
 
+#if defined ZR
+
 #define TIMEWARP_BUFF_MULTIPLIER 1.5
 
 void StatusEffects_Aperture()
@@ -3309,6 +3311,8 @@ void TimeWarp_RemoveAll()
 	ResetReplications();
 	cvarTimeScale.SetFloat(1.0);
 }
+
+#endif // ZR
 
 void StatusEffects_SupportWeapons()
 {

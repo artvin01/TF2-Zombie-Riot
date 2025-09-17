@@ -282,6 +282,7 @@ bool Viewchanges_PlayerModelsAnims[] =
 	true,
 };
 
+ConVar cvarTimeScale;
 float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXPLAYERS];
 //Above is the actual damage to be dealing
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXPLAYERS];
@@ -509,8 +510,6 @@ int i_nm_body_client[MAXPLAYERS];
 int i_CurrentEquippedPerk[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXPLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
-
-ConVar cvarTimeScale;
 
 #if defined ZR 
 int i_SpecialGrigoriReplace;
