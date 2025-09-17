@@ -1600,7 +1600,12 @@ bool Vincent_SlamThrow(int iNPC, int target)
 				damage *= RaidModeScaling;
 				
 				if (npc.m_bTimeUpMode)
-					damage *= 2.5;
+				{
+					float overtime = GetGameTime() - RaidModeTime;
+					float extraDamageMultiplier = fmax(2.5, overtime * 0.33);
+						
+					damage *= extraDamageMultiplier;
+				}
 				
 				Explode_Logic_Custom(damage, 0, npc.index, -1, ThrowPos,VINCENT_THROW_AOE_RANGE, 1.0, _, true, 20);
 				TE_Particle("asplode_hoodoo", ThrowPos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
