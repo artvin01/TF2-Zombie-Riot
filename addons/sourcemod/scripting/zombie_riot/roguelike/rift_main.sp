@@ -859,22 +859,50 @@ public float Rogue_Encounter_Rift2()
 {
 	Rogue_SetBattleIngots(12);
 	Rogue_RemoveNamedArtifact("Rift of Fractured");
+	
+	bool easyMode = DifficultyLevel < 1;
+	bool found;
+
+	if(!easyMode)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING2"))
+			{
+				found = true;
+				break;
+			}
+		}
+	}
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rift2, "We Are Fractured Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "We Are Fractured Desc 1");
-	switch(Rogue_GetFloor())
+	if(easyMode)
 	{
-		case 0, 1, 2:	// Floor 3
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 2)");
+	}
+	else if(!found)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 2)");
+	}
+	else
+	{
+		switch(Rogue_GetFloor())
 		{
-			vote.Locked = true;
-			Format(vote.Append, sizeof(vote.Append), " (Too Difficult This Chapter)");
-		}
-		case 3:	// Floor 4
-		{
-			Format(vote.Append, sizeof(vote.Append), " (Hard Fight)");
+			case 0, 1, 2:	// Floor 3
+			{
+				vote.Locked = true;
+				Format(vote.Append, sizeof(vote.Append), " (Too Difficult This Chapter)");
+			}
+			case 3:	// Floor 4
+			{
+				Format(vote.Append, sizeof(vote.Append), " (Hard Fight)");
+			}
 		}
 	}
 	list.PushArray(vote);
