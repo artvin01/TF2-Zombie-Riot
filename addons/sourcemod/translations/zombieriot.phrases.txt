@@ -1132,6 +1132,11 @@
 		"nl"		"Niet Genoeg Messen[{1}], je krijgt uw volgende binnen de [{2}] seconden"
 		"chi" 		"没有刀可以使用[{1}]，请等待 [{2}] 秒后刷新！"
 	}
+	"Global Cooldown Bomb"
+	{
+		"#format"	"{1:.f}"
+		"en" 		"All your unique buildings are on a [{1}] second cooldown."
+	}
 	"Too Far Away"
 	{
 		"en" 		"You're too far away, get closer"

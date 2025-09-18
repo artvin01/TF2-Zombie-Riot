@@ -1600,6 +1600,7 @@ public void OnClientDisconnect(int client)
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	f_BuildingIsNotReady[client] = 0.0;
+	f_VintulumBombRecentlyUsed[client] = 0.0;
 	//Needed to reset attackspeed stuff
 #endif
 

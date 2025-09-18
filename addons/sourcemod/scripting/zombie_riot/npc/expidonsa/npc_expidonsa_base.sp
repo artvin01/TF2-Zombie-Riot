@@ -238,6 +238,9 @@ stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAllies
 	func_Expidonsa_Heal_After[HealingNpc] = Function_HealAfter;
 	DontAllowAllyHeal[HealingNpc] = AnyHeal;
 
+	if(Selfheal)
+		b_AllowSelfTarget[HealingNpc] = true;
+
 	b_NpcIsTeamkiller[HealingNpc] = true;
 	Explode_Logic_Custom(0.0,
 	HealingNpc,
@@ -252,6 +255,7 @@ stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAllies
 	false,
 	_,
 	Expidonsa_AllyHeal);
+	b_AllowSelfTarget[HealingNpc] = false;
 	b_NpcIsTeamkiller[HealingNpc] = false;
 }
 

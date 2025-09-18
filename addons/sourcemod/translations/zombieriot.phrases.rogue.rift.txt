@@ -668,13 +668,21 @@
 	{
 		"en"	"A very long contract, in which every term and condition is the result of experience.\n{green}3 Rebels joins you"
 	}
+	"Super Stims"
+	{
+		"en"	"Super Stims"
+	}
+	"Super Stims Desc"
+	{
+		"en"	"Freedom never sleeps!!\n{green}Morphine shots are upgraded:\nOn stage start, Instantly fully charge 1 stim.\nStims restore hp to full rapidly in a second. Getting hit during the heal maintains the healing. Healing lasts 3 seconds."
+	}
 	"Soul Binding Bone"
 	{
 		"en"	"Soul Binding Bone"
 	}
 	"Soul Binding Bone Desc"
 	{
-		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +1％ damage per Umbral Affinity"
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +0.5％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"

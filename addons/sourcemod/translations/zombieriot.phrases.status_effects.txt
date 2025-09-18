@@ -1061,7 +1061,7 @@
 	}
 	"Bleed Desc"
 	{
-		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time.\n.\nStacks infinitly."
+		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time, Stacks infinitly."
 	}
 	"Burn"
 	{
@@ -1610,7 +1610,7 @@
 	}
 	"Revival Stim Packs Desc"
 	{
-		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upton being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
+		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upon being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
 	}
 	"Kolum's View"
 	{

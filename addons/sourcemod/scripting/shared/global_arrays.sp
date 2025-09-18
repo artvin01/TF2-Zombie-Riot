@@ -290,6 +290,7 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXPLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 int i_PlayerToCustomBuilding[MAXENTITIES] = {0, ...};
 float f_BuildingIsNotReady[MAXPLAYERS] = {0.0, ...};
+float f_VintulumBombRecentlyUsed[MAXPLAYERS] = {0.0, ...};
 float f_AmmoConsumeExtra[MAXPLAYERS];
 #endif
 

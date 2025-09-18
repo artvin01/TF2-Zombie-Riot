@@ -8662,6 +8662,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Speed[entity] = 0.0;
 	fl_GravityMulti[entity] = 1.0;
 	i_Target[entity] = -1;
+	i_TargetAlly[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
 	fl_GetClosestTargetTimeTouch[entity] = 0.0;
 	b_DoNotChangeTargetTouchNpc[entity] = 0;

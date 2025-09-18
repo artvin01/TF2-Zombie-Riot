@@ -19,6 +19,7 @@ void Rogue_Rift_Reset()
 	DreamCaught = false;
 	DreamCatch = false;
 	ColdWater = false;
+	Rogue_SuperStims_Remove();
 	if(BrightnessZone)
 		delete BrightnessZone;
 }	
@@ -509,12 +510,12 @@ public void Rogue_SurvivorParty_Collect()
 
 public void Rogue_SoulBindingBone_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
 }
 
 public void Rogue_SoulBindingBone_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.005));
 }
 
 public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
@@ -679,4 +680,24 @@ void Brightening_Lightness_Place_InLocation(float BannerPos[3], int Team)
 			}
 		}
 	}
+}
+static bool StimPacks;
+
+public void Rogue_SuperStims_Collect()
+{
+	StimPacks = true;
+}
+
+public void Rogue_SuperStims_Remove()
+{
+	StimPacks = false;
+}
+public bool Rogue_SuperStimsOn()
+{
+	return StimPacks;
+}
+
+public void Rogue_SuperStims_StageStart()
+{
+	GiveMorphineToEveryone();
 }
