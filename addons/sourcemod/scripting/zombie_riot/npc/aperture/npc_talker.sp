@@ -62,6 +62,7 @@ void Talker_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	
+	i_ApertureBossesDead = APERTURE_BOSS_NONE;
 	i_LastStandBossRef = INVALID_ENT_REFERENCE;
 }
 
