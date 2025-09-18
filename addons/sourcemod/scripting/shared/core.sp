@@ -6,7 +6,9 @@
 #include <clientprefs>
 #include <dhooks>
 #if defined ZR || defined RPG
-#include <tf2items>
+#undef AUTOLOAD_EXTENSIONS
+#tryinclude <tf2items>
+#define AUTOLOAD_EXTENSIONS
 #include <tf_econ_data>
 #endif
 #if !defined RTS
