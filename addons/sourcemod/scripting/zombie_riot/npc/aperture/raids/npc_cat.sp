@@ -65,14 +65,25 @@ static const char g_BoomSounds[][] = {
 };
 
 static const char g_StunCat[][] = {
-	"mvm/mvm_tank_deploy.wav",
+	"replay/enterperformancemode.wav",
 };
 static const char g_StunCatEnd[][] = {
-	"mvm/mvm_tele_activate.wav",
+	"replay/exitperformancemode.wav",
+};
+static const char g_TimeWarpSound[][] = {
+	"misc/halloween/strongman_bell_01.wav",
 };
 
 static const char g_PassiveSound[][] = {
 	"mvm/giant_scout/giant_scout_loop.wav",
+};
+
+static const char g_DeathBeepSound[][] = {
+	"items/cart_explode_trigger.wav",
+};
+
+static const char g_DeathBoomSound[][] = {
+	"items/cart_explode.wav",
 };
 
 #define CAT_DEFAULT_SPEED 300.0
@@ -130,7 +141,10 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_BoomSounds));   i++) { PrecacheSound(g_BoomSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_StunCat));   i++) { PrecacheSound(g_StunCat[i]);   }
 	for (int i = 0; i < (sizeof(g_StunCatEnd));   i++) { PrecacheSound(g_StunCatEnd[i]);   }
+	for (int i = 0; i < (sizeof(g_TimeWarpSound));   i++) { PrecacheSound(g_TimeWarpSound[i]);   }
 	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathBeepSound));   i++) { PrecacheSound(g_DeathBeepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathBoomSound));   i++) { PrecacheSound(g_DeathBoomSound[i]);   }
 	
 	PrecacheSoundCustom("#zombiesurvival/aperture/cat.mp3");
 	PrecacheSound("mvm/mvm_tank_end.wav");
@@ -138,6 +152,8 @@ static void ClotPrecache()
 	PrecacheModel(CAT_ORB_SPAM_ABILITY_COLLISION_MODEL);
 	
 	PrecacheParticleSystem(CAT_SELF_DEGRADATION_ABILITY_EFFECT);
+	PrecacheParticleSystem("asplode_hoodoo");
+	PrecacheParticleSystem("powerup_supernova_explode_blue_spiral");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -197,11 +213,15 @@ methodmap CAT < CClotBody
 	}
 	public void PlayRevivalStart()
 	{
-		EmitSoundToAll(g_StunCat[GetRandomInt(0, sizeof(g_StunCat) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+		EmitSoundToAll(g_StunCat[GetRandomInt(0, sizeof(g_StunCat) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+		EmitSoundToAll(g_StunCat[GetRandomInt(0, sizeof(g_StunCat) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 	}
 	public void PlayRevivalEnd()
 	{
-		EmitSoundToAll(g_StunCatEnd[GetRandomInt(0, sizeof(g_StunCatEnd) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+		EmitSoundToAll(g_StunCatEnd[GetRandomInt(0, sizeof(g_StunCatEnd) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+		EmitSoundToAll(g_StunCatEnd[GetRandomInt(0, sizeof(g_StunCatEnd) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
+		
+		EmitSoundToAll(g_TimeWarpSound[GetRandomInt(0, sizeof(g_TimeWarpSound) - 1)], _, SNDCHAN_STATIC, SNDLEVEL_NONE);
 	}
 	public void PlayPassiveSound()
 	{
@@ -211,6 +231,14 @@ methodmap CAT < CClotBody
 	{
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
 		StopSound(this.index, SNDCHAN_STATIC, g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)]);
+	}
+	public void PlayDeathBeepSound()
+	{
+		EmitSoundToAll(g_DeathBeepSound[GetRandomInt(0, sizeof(g_DeathBeepSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
+	public void PlayDeathBoomSound()
+	{
+		EmitSoundToAll(g_DeathBoomSound[GetRandomInt(0, sizeof(g_DeathBoomSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
 	}
 	
 	property float m_flNextOrbAbilityTime
@@ -248,10 +276,25 @@ methodmap CAT < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
-	property float m_flLifeReversal
+	property float m_flBeginTimeWarp
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flRefreshTimeWarp
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flDeathAnim
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	property int m_iDeathState
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -277,7 +320,7 @@ methodmap CAT < CClotBody
 
 		npc.PlayPassiveSound();
 		
-		RaidModeTime = GetGameTime(npc.index) + 160.0;
+		RaidModeTime = GetGameTime() + 180.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
@@ -348,6 +391,7 @@ methodmap CAT < CClotBody
 		
 		npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_NONE;
 		npc.m_flNextOrbAbilityState = 0.0;
+		npc.m_flRefreshTimeWarp = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -391,33 +435,11 @@ public void CAT_ClotThink(int iNPC)
 	CAT npc = view_as<CAT>(iNPC);
 	float gameTime = GetGameTime(iNPC);
 	
-	if(CAT_timeBased(iNPC))
+	if (CAT_LoseConditions(iNPC))
 		return;
+	
 	if(npc.m_flNextDelayTime > gameTime)
 	{
-		return;
-	}
-
-	if(RaidModeTime >= GetGameTime() + 170.0)
-	{
-		RaidModeTime = GetGameTime() + 160.0;
-	}
-
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
-	{
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		
-		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
-		return;
-	}
-
-	//idk it never was in a bracket
-	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
-	{
-		ForcePlayerLoss();
-		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
-		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
 
@@ -446,6 +468,15 @@ public void CAT_ClotThink(int iNPC)
 	}
 	
 	int closest = npc.m_iTarget;
+	
+	if(CAT_timeBased(iNPC))
+		return;
+	
+	if (npc.m_flRefreshTimeWarp && npc.m_flRefreshTimeWarp < gameTime)
+	{
+		TimeWarp_ApplyAll(npc.index);
+		npc.m_flRefreshTimeWarp = gameTime + 2.0;
+	}
 	
 	// RANGED ABILITY: Orbs - Boss spins while firing homing orbs in a spiral pattern indiscriminately. The orbs deal contact damage and work as a projectile shield
 	if (npc.m_flNextOrbAbilityTime && npc.m_flNextOrbAbilityTime < gameTime && npc.m_iSelfDegradationAbilityState == CAT_SELF_DEGRADATION_ABILITY_STATE_NONE)
@@ -666,7 +697,7 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	
 	npc.AddActivityViaSequence("dieviolent");
 	npc.SetCycle(0.05);
-	npc.SetPlaybackRate(0.33);
+	npc.SetPlaybackRate(0.2);
 	
 	npc.m_flAttackHappens = gameTime + 999.0;
 	
@@ -731,7 +762,7 @@ static void OrbSpam_Ability_End(CAT npc)
 {
 	float gameTime = GetGameTime(npc.index);
 	
-	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	npc.SetActivity("ACT_MP_RUN_MELEE");
 	npc.AddGesture("ACT_MP_STUN_END");
 	
 	npc.m_flSpeed = CAT_DEFAULT_SPEED;
@@ -809,19 +840,36 @@ static void OrbSpam_Ability_Fire(CAT npc)
 bool CAT_timeBased(int iNPC)
 {
 	CAT npc = view_as<CAT>(iNPC);
-	if(npc.m_flLifeReversal)
+	if(npc.m_flBeginTimeWarp)
 	{
-		if(npc.m_flLifeReversal < GetGameTime())
+		if(npc.m_flBeginTimeWarp < GetGameTime())
 		{
 			b_NpcIsInvulnerable[npc.index] = false;
 			npc.PlayRevivalEnd();
-			fl_TotalArmor[npc.index] = 1.0;
 			npc.StartPathing();
 			npc.m_bisWalking = true;
+			npc.AddGesture("ACT_MP_STUN_END");
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			AcceptEntityInput(npc.m_iWearable1, "Enable");
-			npc.m_flLifeReversal = 0.0;
+			npc.m_flBeginTimeWarp = 0.0;
+			
+			CPrintToChatAll("{rare}C.A.T.{default}: ...ACTION SUCCESSFUL");
+			
+			float vecPos[3];
+			GetAbsOrigin(npc.index, vecPos);
+			ParticleEffectAt(vecPos, "powerup_supernova_explode_blue_spiral");
+			
+			npc.m_flRefreshTimeWarp = GetGameTime(npc.index);
+			
+			// Add some extra time, then accommodate for the buff
+			const float timescale = 1.5;
+			float newTime = ((RaidModeTime - GetGameTime()) + 20.0) * timescale;
+			RaidModeTime = GetGameTime() + newTime;
 		}
+		
+		// Pause the timer
+		RaidModeTime += (0.1 + DEFAULT_UPDATE_DELAY_FLOAT);
+		
 		return true;
 	}
 	return false;
@@ -879,7 +927,6 @@ static void SelfDegradation_Ability_Start(CAT npc)
 	npc.SetPlaybackRate(0.75);
 	npc.SetCycle(0.01);
 	
-	npc.m_flSpeed = 0.0;
 	npc.StopPathing();
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING;
@@ -907,10 +954,9 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	
 	npc.m_bisWalking = true;
 	
-	npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+	npc.SetActivity("ACT_MP_RUN_MELEE");
 	npc.SetPlaybackRate(1.0);
 	
-	npc.m_flSpeed = CAT_DEFAULT_SPEED;
 	npc.StartPathing();
 	
 	npc.PlayBoomSound();
@@ -935,8 +981,9 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE;
 	npc.m_flNextSelfDegradationAbilityState = gameTime + CAT_SELF_DEGRADATION_ABILITY_DURATION;
 	
-	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation", CAT_SELF_DEGRADATION_ABILITY_DURATION);
-	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation (Debuff)", CAT_SELF_DEGRADATION_ABILITY_DURATION);
+	// 999.0 so they don't desync with lower think speed. The buffs get removed when they're supposed to be gone
+	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation", 999.0);
+	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation (Debuff)", 999.0);
 
 	switch(GetRandomInt(0,2))
 	{
@@ -970,6 +1017,10 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 	
 	// If other attacks are ready, delay them a bit so they don't immediately activate
 	npc.m_flNextOrbAbilityTime = fmax(npc.m_flNextOrbAbilityTime, gameTime + GetRandomFloat(3.0, 5.0));
+	
+	// Remove the buffs in case this was called early
+	RemoveSpecificBuff(npc.index, "Self-Degradation");
+	RemoveSpecificBuff(npc.index, "Self-Degradation (Debuff)");
 
 	switch(GetRandomInt(0,2))
 	{
@@ -992,13 +1043,27 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 	CAT npc = view_as<CAT>(victim);
 	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	if (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
 		CAT_ClearAllProjectiles(npc);
+		TimeWarp_RemoveAll();
 		
-		npc.StopPassiveSound();
-		npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		if (Aperture_ShouldDoLastStand())
+		{
+			// We're in Laboratories, the boss' think/death functions will be hijacked
+			npc.StopPassiveSound();
+			npc.m_iState = APERTURE_BOSS_CAT; // This will store the boss's "type"
+			Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		}
+		else if (!npc.m_flDeathAnim)
+		{
+			// We're not in Laboratories, don't die immediately, we do an animation first
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 99999.0);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);
+			
+			npc.m_flDeathAnim = 1.0;
+		}
 		
 		damage = 0.0;
 		return Plugin_Handled;
@@ -1006,22 +1071,26 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if(!npc.Anger)
 	{
-		if((ReturnEntityMaxHealth(npc.index) / 4) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		if((ReturnEntityMaxHealth(npc.index) * 0.4) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 		{
 			npc.PlayRevivalStart();
-			CPrintToChatAll("{rare}C.A.T.{default}: INITIATING {unique}LIFE REVERSAL");
-			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
-			TE_Particle("teleported_mvm_bot_rings2", VecSelfNpcabs, _, _, npc.index, 1, 0);
+			npc.AddGesture("ACT_MP_STUN_BEGIN");
+			npc.SetActivity("ACT_MP_STUN_MIDDLE");
+			
+			CPrintToChatAll("{rare}C.A.T.{default}: ENABLING {unique}TIME WARP {default}MECHANISMS...");
+			
 			npc.Anger = true;
-			npc.m_flLifeReversal = GetGameTime(npc.index) + 10.0;
+			npc.m_flBeginTimeWarp = GetGameTime(npc.index) + 2.0;
+			
+			if (npc.m_iSelfDegradationAbilityState != CAT_SELF_DEGRADATION_ABILITY_STATE_NONE)
+				SelfDegradation_Ability_Deactivate(npc);
+			
 			AcceptEntityInput(npc.m_iWearable1, "Disable");
 			npc.StopPathing();
 			npc.m_bisWalking = false;
-			npc.AddGesture("ACT_MP_STUN_BEGIN");
-			npc.SetActivity("ACT_MP_STUN_MIDDLE");
+			
 			b_NpcIsInvulnerable[npc.index] = true;
-			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 2.0, _, 10.0, HEAL_ABSOLUTE);
-			RaidModeTime += (170.0 + DEFAULT_UPDATE_DELAY_FLOAT);
+			
 			damage = 0.0;
 			return Plugin_Handled;
 		}
@@ -1137,7 +1206,8 @@ public void CAT_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-		
+	
+	TimeWarp_RemoveAll();
 	npc.StopPassiveSound();
 }
 
@@ -1184,4 +1254,73 @@ static void CAT_ClearAllProjectiles(CAT npc)
 		
 		RemoveEntity(i);
 	}
+}
+
+static bool CAT_LoseConditions(int iNPC)
+{
+	CAT npc = view_as<CAT>(iNPC);
+	if (npc.m_flDeathAnim)
+	{
+		if (npc.m_flDeathAnim > GetGameTime())
+			return true;
+		
+		switch (npc.m_iDeathState)
+		{
+			case 0:
+			{
+				npc.AddGesture("ACT_MP_STUN_BEGIN", .SetGestureSpeed = 0.5);
+				npc.m_flSpeed = 0.0;
+				npc.PlayDeathBeepSound();
+				
+				if(IsValidEntity(npc.m_iWearable2))
+					RemoveEntity(npc.m_iWearable2);
+				
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
+				
+				switch (GetURandomInt() % 2)
+				{
+					case 0:
+						CPrintToChatAll("{rare}C.A.T.{default}: OVERHEATING PROTOC-");
+					case 1:
+						CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DES-");
+				}
+				
+				npc.m_flDeathAnim = GetGameTime() + 1.0;
+			}
+			
+			case 1:
+			{
+				float vecPos[3];
+				WorldSpaceCenter(npc.index, vecPos);
+				ParticleEffectAt(vecPos, "asplode_hoodoo");
+				npc.PlayDeathBoomSound();
+				
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}
+		
+		npc.m_iDeathState++;
+		npc.Update();
+		return true;
+	}
+	
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		
+		CPrintToChatAll("{rare}C.A.T.{default}: BY THE WORDS OF THE ONE AND ONLY GLORIOUS RACE; THERE CAN BE ONLY ONE");
+		return true;
+	}
+	
+	if(IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		CPrintToChatAll("{rare}C.A.T.{default}: SURRENDER YOUR WEAPONS AND COME WITH ME");
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return true;
+	}
+
+	return false;
 }

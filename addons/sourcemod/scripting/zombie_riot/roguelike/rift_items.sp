@@ -6,7 +6,23 @@ static int PreviousStage;
 static bool HolyBlessing;
 static bool VialityThing;
 static bool FlashVestThing;
+static bool DreamCaught;
+static bool DreamCatch;
+static bool ColdWater;
+static Handle BrightnessZone;
 
+void Rogue_Rift_Reset()
+{
+	HolyBlessing = false;
+	VialityThing = false;
+	FlashVestThing = false;
+	DreamCaught = false;
+	DreamCatch = false;
+	ColdWater = false;
+	Rogue_SuperStims_Remove();
+	if(BrightnessZone)
+		delete BrightnessZone;
+}	
 stock bool Rogue_Rift_HolyBlessing()
 {
 	return HolyBlessing;
@@ -70,11 +86,20 @@ public void Rogue_PoisonWater_Ally(int entity, StringMap map)
 {
 	RogueHelp_BodyHealth(entity, map, 0.8);
 }
+public void Rogue_BadLabAir_Ally(int entity, StringMap map)
+{
+	RogueHelp_BodyHealth(entity, map, 0.95);
+}
 
 public void Rogue_PoisonWater_FloorChange(int &floor, int &stage)
 {
 	if(floor > 1)
 		Rogue_RemoveNamedArtifact("Poisoned Water");
+}
+public void Rogue_BadLabAir_FloorChange(int &floor, int &stage)
+{
+	while(Rogue_HasNamedArtifact("Bad Lab Air"))
+		Rogue_RemoveNamedArtifact("Bad Lab Air");
 }
 
 public void Rogue_HolyBlessing_Collect()
@@ -187,12 +212,12 @@ public void Rogue_Umbral6_Collect()
 
 public void Rogue_OldFan_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.7);
+	RogueHelp_BodyDamage(entity, map, 1.5);
 }
 
 public void Rogue_OldFan_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.7);
+	RogueHelp_WeaponDamage(entity, 1.5);
 }
 
 public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -232,6 +257,21 @@ public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflic
 public void Rogue_Woodplate_Revive(int &entity)
 {
 	HealEntityGlobal(entity, entity, ReturnEntityMaxHealth(entity) / 2.0, 1.0, 2.0, HEAL_ABSOLUTE);
+}
+
+public void Rogue_Revival_Stim(int &entity)
+{
+	ApplyStatusEffect(entity, entity, "Revival Stim", 5.0);
+	if(!IsValidClient(entity))
+		return;
+	f_AntiStuckPhaseThrough[entity] = GetGameTime() + 5.0;
+	f_AntiStuckPhaseThroughFirstCheck[entity] = GetGameTime() + 5.0;
+	ApplyStatusEffect(entity, entity, "Intangible", 5.0);
+}
+
+public void Rogue_WhipOfPunishmentAlly(int entity, StringMap map)
+{
+	RogueHelp_BodySpeed(entity, map, 1.1);
 }
 
 public void Rogue_MedicineSticks_WaveStart()
@@ -470,12 +510,12 @@ public void Rogue_SurvivorParty_Collect()
 
 public void Rogue_SoulBindingBone_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
 }
 
 public void Rogue_SoulBindingBone_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.005));
 }
 
 public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
@@ -489,4 +529,175 @@ public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
 		RogueHelp_BodyDamage(entity, null, 1.25);
 		RogueHelp_BodyHealth(entity, null, 1.25);
 	}
+}
+
+public void DreamCaught_StageStart()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == 2)
+		{
+			HealEntityGlobal(client, client, float(ReturnEntityMaxHealth(client)), 1.0, 2.0, HEAL_ABSOLUTE);
+		}
+	}
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && !b_NpcIsInvulnerable[entity] && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
+		{
+			HealEntityGlobal(entity, entity, float(ReturnEntityMaxHealth(entity)), 1.0, 2.0, HEAL_ABSOLUTE);
+		}
+	}
+}
+public void DreamCaught_Collect()
+{
+	DreamCaught = true;
+}
+public void DreamCaught_Remove()
+{
+	DreamCaught = false;
+}
+public void DreamCaught_Enemy(int entity)
+{
+	fl_Extra_Damage[entity] *= 0.9;
+}
+void Rogue_Rift_ReviveSpeed(int &amount)
+{
+	if(DreamCaught)
+		amount = RoundToNearest(float(amount) * 2.0);
+}
+
+bool DreamCatcher_Active()
+{
+	if(!DreamCatch)
+		return false;
+	
+	Rogue_RemoveNamedArtifact("Dream Catcher");
+	Rogue_GiveNamedArtifact("Dream Caught");
+
+	return true;
+}
+
+public void DreamCatcher_Collect()
+{
+	Rogue_AddBonusLife(1);
+	DreamCatch = true;
+}
+public void DreamCatcher_Remove()
+{
+	DreamCatch = false;
+}
+
+
+public void Rogue_ColdWater_Collect()
+{
+	ColdWater = true;
+}
+
+public void Rogue_ColdWater_Remove()
+{
+	ColdWater = false;
+}
+
+bool Rogue_ColdWaterActive()
+{
+	return ColdWater;
+}
+
+
+public void Bightening_Lightness_End()
+{
+	if(BrightnessZone)
+		delete BrightnessZone;
+}
+public void Bightening_Lightness_Place()
+{
+	//dleay so everything else loads in.
+	CreateTimer(0.5, Timer_DelayCreate, _, _);
+}
+public Action Timer_DelayCreate(Handle timer)
+{
+	float VecPosSave[3];
+	VecPosSave[1] = 0.1;
+	if(BrightnessZone)
+		delete BrightnessZone;
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && GetTeam(client) == TFTeam_Red && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE)
+		{
+			TeleportDiversioToRandLocation(client,_,2700.0, 0.0, false, false, VecPosSave);
+		}
+	}
+	DataPack pack;
+	BrightnessZone = CreateDataTimer(0.1, Timer_Brightness_Buff, pack, TIMER_REPEAT);
+	for(int i; i < 3; i++)
+	{
+		pack.WriteFloat(VecPosSave[i]);
+	}
+	return Plugin_Continue;
+}
+
+#define BRIGHTENING_RANGE 400.0
+public Action Timer_Brightness_Buff(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	float VecSelfNpcabs[3];
+	for(int i; i < 3; i++)
+	{
+		VecSelfNpcabs[i] = pack.ReadFloat();
+	}
+
+	spawnRing_Vectors(VecSelfNpcabs, BRIGHTENING_RANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, /*duration*/ 0.11, 10.0, 0.1, 1);	
+	Brightening_Lightness_Place_InLocation(VecSelfNpcabs, 2);
+	return Plugin_Continue;
+}
+
+void Brightening_Lightness_Place_InLocation(float BannerPos[3], int Team)
+{
+	float targPos[3];
+	float Range = BRIGHTENING_RANGE;
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) == Team)
+		{
+			GetClientAbsOrigin(ally, targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (Range * Range))
+			{
+				ApplyStatusEffect(ally, ally, "Brightening Light", 2.0);
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == Team)
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (Range * Range))
+			{
+				ApplyStatusEffect(ally, ally, "Brightening Light", 2.0);
+			}
+		}
+	}
+}
+static bool StimPacks;
+
+public void Rogue_SuperStims_Collect()
+{
+	StimPacks = true;
+}
+
+public void Rogue_SuperStims_Remove()
+{
+	StimPacks = false;
+}
+public bool Rogue_SuperStimsOn()
+{
+	return StimPacks;
+}
+
+public void Rogue_SuperStims_StageStart()
+{
+	GiveMorphineToEveryone();
 }

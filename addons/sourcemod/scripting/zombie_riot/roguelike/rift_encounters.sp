@@ -322,6 +322,7 @@ public float Rogue_Encounter_Pool_Of_Clarity()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 1");
+	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 2");
@@ -470,7 +471,162 @@ public void Rogue_Vote_AlmagestTechnology_Vote(const Vote vote, int index)
 	Rogue_AddUmbral(-25, false);
 }
 
+public float Rogue_Crystalized_Warped_Subjects()
+{
 
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Crystalized_Warped_Subjects_Vote, "Crystalized Warped Subjects Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search Cancel");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search Cancel Desc");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search More");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search More Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(15.0);
+
+	return 25.0;
+}
+
+public void Rogue_Crystalized_Warped_Subjects_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			GiveCash(7000);
+			Artifact artifact;
+			if(Rogue_GetRandomArtifact(artifact, true) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+		}
+		case 1:
+		{
+			Rogue_Crystalized_Warped_Subjects_Repeat();
+		}
+	}
+}
+static Action Timer_AdvanceGulnLore(Handle timer, int progress)
+{
+	switch(progress)
+	{
+		case 1:
+		{
+			CPrintToChatAll("{white}Bob {default}: I... This is just... {crimson} Guln...");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{snow}Bob leans his head onto Guln's now crystalized head.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{snow}He clenches his fist as he reads a paper near his body.");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{snow}He Breaks apart the foundation holding the crystal body and picks him up.");
+		}
+		case 5:
+		{
+			CPrintToChatAll("{snow}He leaves the room.");
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+				{
+					SmiteNpcToDeath(other);
+					break;
+				}
+			}
+			Rogue_RemoveNamedArtifact("Bob's Assistance");
+		}
+		case 6:
+		{
+			CPrintToChatAll("{snow}You find a note reading:");
+		}
+		case 7:
+		{
+			CPrintToChatAll("{grey}Guln, were surrounded, i'm surrounded, the umbral forces are too much. We have to run, just RUN, ill hold them off.");
+		}
+		case 8:
+		{
+			CPrintToChatAll("{grey}Keep the ones i made for you close, they might save you, but i fear that were done for.");
+		}
+		case 9:
+		{
+			CPrintToChatAll("{grey}Remember how you avoided death twice now? Can you do that again? For me?");
+		}
+		case 10:
+		{
+			CPrintToChatAll("{grey}Yknow, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
+		}
+		case 11:
+		{
+			CPrintToChatAll("{grey}if, no, WHEN we meet again, ill make sure to hand you that cake recipe you loved so much from me okay?");
+		}
+		case 12:
+		{
+			CPrintToChatAll("{crimson}-Bladedance");
+		}
+		case 13:
+		{
+			CPrintToChatAll("{crimson}You leave the room with nothing obtained, aside from...");
+			
+			if(!Rogue_HasNamedArtifact("Immensive Guilt"))
+				Rogue_GiveNamedArtifact("Immensive Guilt", false, true);
+			GiveCash(4000);
+
+			return Plugin_Stop;
+		}
+	}
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client); //This is actually more expensive then i thought.
+			SetMusicTimer(client, GetTime() + 10);
+		}
+	}
+	Rogue_SetProgressTime(10.0, false);
+	CreateTimer(4.5, Timer_AdvanceGulnLore, progress + 1);
+	return Plugin_Continue;
+}
+public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
+{
+	if(Rogue_HasNamedArtifact("Immensive Guilt"))
+		Rogue_RemoveNamedArtifact("Immensive Guilt");
+	if(!Rogue_HasNamedArtifact("Bob's Wrath"))
+		Rogue_GiveNamedArtifact("Bob's Wrath", false, true);
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+
+	CPrintToChatAll("{snow}Bob returns.");
+	CPrintToChatAll("{white}Bob {default}: ...");
+}
+public void Rogue_Crystalized_Warped_Subjects_Repeat()
+{
+	if((GetURandomInt() % 4) == 0)
+	{
+		CPrintToChatAll("{snow}As you look through the bodies, you notice one that seems familiar to you...");
+		CreateTimer(4.0, Timer_AdvanceGulnLore, 1);
+		return;	
+	}
+	Rogue_GiveNamedArtifact("Bad Lab Air");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Crystalized_Warped_Subjects_Vote, "Crystalized Warped Subjects Title Repeat");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search Cancel");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search Cancel Desc");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search More");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search More Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(10.0);
+	Rogue_SetProgressTime(15.0, false);
+}
 public float Rogue_Encounter_Rogue3Gamble()
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rogue3Gamble, "Rouge3 Gamble Lore");
@@ -487,7 +643,6 @@ public float Rogue_Encounter_Rogue3Gamble()
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
-
 	return 25.0;
 }
 static void Rogue3Gamble(const char[] title)
@@ -563,6 +718,41 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 			char buffer[64];
 			FormatEx(buffer, sizeof(buffer), "Rouge3 Gamble Lore 1%c", title);
 			Rogue3Gamble(buffer);
+		}
+	}
+}
+
+public float Rogue_Encounter_WhiteflowerBladedance()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_WhiteflowerBladedance, "Finale Encounter Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Finale Encounter Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Finale Encounter Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Finale Encounter Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Finale Encounter Desc 2");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_WhiteflowerBladedance(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Rogue_AddExtraStage(1);
+			PrintToChatAll("%t", "Finale Encounter Lore 1");
+		}
+		case 1:
+		{
+			GiveCash(5000);
+			Rogue_GiveNamedArtifact("The Bladedance");
+			Rogue_GiveNamedArtifact("The Whiteflower");
 		}
 	}
 }
@@ -718,7 +908,7 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 
 		delete panel;
 
-		CreateTimer(5.0, Timer_AdvanceStory, progress + 1);
+		CreateTimer(6.0, Timer_AdvanceStory, progress + 1);
 		Rogue_SetProgressTime(15.0, false);
 	}
 
@@ -727,4 +917,60 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 static int StoryMenuH(Menu menu, MenuAction action, int param1, int param2)
 {
 	return 0;
+}
+
+
+
+
+
+
+public float Rogue_Encounter_Library_Of_Lixandria()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Encounter_Library_Of_Lixandria_Vote, "Library Of Lixandria Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Weakness");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Weakness Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Nature");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Nature Desc");
+	list.PushArray(vote);
+
+	bool ColdWaterItem = Rogue_HasNamedArtifact("Cold Water");
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Liver Optimisation");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Liver Optimisation Desc");
+	if(!ColdWaterItem)
+	{
+		vote.Locked = true;
+		FormatEx(vote.Append, sizeof(vote.Append), " (Need ''Cold Water'')");
+	}
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Encounter_Library_Of_Lixandria_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Book of Weakness Conlusion");
+			Rogue_GiveNamedArtifact("Book of Weakness");
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Book of Nature Conlusion");
+			Rogue_GiveNamedArtifact("Book of Nature");
+		}
+		case 2:
+		{
+			CPrintToChatAll("%t", "Book of Liver Optimisation Conlusion");
+			Rogue_GiveNamedArtifact("Book of Liver Optimisation");
+		}
+	}
 }

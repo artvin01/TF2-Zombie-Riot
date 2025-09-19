@@ -1132,6 +1132,11 @@
 		"nl"		"Niet Genoeg Messen[{1}], je krijgt uw volgende binnen de [{2}] seconden"
 		"chi" 		"没有刀可以使用[{1}]，请等待 [{2}] 秒后刷新！"
 	}
+	"Global Cooldown Bomb"
+	{
+		"#format"	"{1:.f}"
+		"en" 		"All your unique buildings are on a [{1}] second cooldown."
+	}
 	"Too Far Away"
 	{
 		"en" 		"You're too far away, get closer"
@@ -2000,7 +2005,7 @@
 	}	
 	"Which perk do you desire?"
 	{
-		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead."
+		"en"		"Click on a perk to get it.\nCrouch while clicking to see its description instead.\nSelect a perk you already own to get rid of it."
 	}	
 	"Reviving"
 	{
@@ -4051,6 +4056,10 @@
 	{
 		"en"	"Enable Ammobox Count Perma"
 	}
+	"Citizen Cannot Interact"
+	{
+		"en"	"You cannot interact with this rebel."
+	}
 	"Class Vote Citizen Do"
 	{
 		"en"	"The rebel will pick whatever has the most player votes, from the top down."
@@ -4281,5 +4290,9 @@
 	"Plasma Kit Warning"
 	{
 		"en"		"Your body slowly starts to break down...."
+	}
+	"Too many Perks"
+	{
+		"en"		"You have too many perks, get rid of one."
 	}
 }

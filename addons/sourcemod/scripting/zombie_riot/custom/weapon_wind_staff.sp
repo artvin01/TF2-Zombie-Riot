@@ -488,8 +488,18 @@ void RuinaNukeBackstabDo(int victim, int attacker,int weapon)
 	float damageSeperate = 65.0;
 	damageSeperate *= WeaponDamageAttributeMultipliers(weapon);
 	damageSeperate *= 2.0;
-	Explode_Logic_Custom(damageSeperate, attacker, weapon, weapon, posEnemySave); //Big fuckoff nuke
+	Explode_Logic_Custom(damageSeperate, attacker, weapon, weapon, posEnemySave, .FunctionToCallBeforeHit = RuinaDroneKnifeExplosionDamage); //Big fuckoff nuke
 	i_ExplosiveProjectileHexArray[weapon] = 0;
+}
+
+static float RuinaDroneKnifeExplosionDamage(int attacker, int victim, float &damage, int weapon)
+{
+	if(b_thisNpcIsARaid[victim])
+	{
+		//Remove raid damage bonus from this explosion.
+		damage /= EXTRA_RAID_EXPLOSIVE_DAMAGE;
+	}
+	return 0.0;
 }
 
 static Action NukeBackstabEffectDo(Handle timer, DataPack pack)

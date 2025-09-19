@@ -99,8 +99,8 @@ static float f_MessengerSpeedUp[MAXENTITIES];
 static int i_SpeedUpTime[MAXENTITIES];
 static bool b_khamlWeaponRage[MAXENTITIES];
 
-static int i_khamlCutscene[MAXENTITIES];
-static float f_khamlCutscene[MAXENTITIES];
+int i_khamlCutscene;
+float f_khamlCutscene;
 
 
 static float f_KahmlResTemp[MAXENTITIES];
@@ -320,7 +320,7 @@ methodmap ChaosKahmlstein < CClotBody
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 9999.0;
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 5.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 10.0;
-		f_MessengerSpeedUp[npc.index] = 1.0;
+		f_MessengerSpeedUp[npc.index] = 1.15;
 		i_SpeedUpTime[npc.index] = 0;
 		npc.g_TimesSummoned = 0;
 		
@@ -331,8 +331,8 @@ methodmap ChaosKahmlstein < CClotBody
 		
 		if(final)
 		{
-			f_khamlCutscene[npc.index] = GetGameTime() + 45.0;
-			i_khamlCutscene[npc.index] = 14;
+			f_khamlCutscene = GetGameTime() + 45.0;
+			i_khamlCutscene = 14;
 			i_RaidGrantExtra[npc.index] = 1;
 			b_NpcUnableToDie[npc.index] = true;
 		}
@@ -576,9 +576,9 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 		return;
 	}
 
-	if(i_RaidGrantExtra[npc.index] == 1 && i_khamlCutscene[npc.index] != 0)
+	if(i_RaidGrantExtra[npc.index] == 1 && i_khamlCutscene != 0)
 	{
-		if(i_khamlCutscene[npc.index] == 14)
+		if(i_khamlCutscene == 14)
 		{
 			bool foundEm = false;
 			float Pos[3];
@@ -605,7 +605,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				TeleportEntity(npc.index, Pos);
 				npc.StopPathing();
 				
-				i_khamlCutscene[npc.index] = 13;
+				i_khamlCutscene = 13;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have seen enough.. I knew I should've stepped in from the start. {crimson} You made a mistake of sending him out alone.");
 				MusicEnum music;
 				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/chaos_reigns_intro.mp3");
@@ -633,12 +633,12 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 				strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 				Music_SetRaidMusic(music);
-				i_khamlCutscene[npc.index] = 0;
+				i_khamlCutscene = 0;
 			}
 		}
-		float TimeLeft = f_khamlCutscene[npc.index] - GetGameTime();
+		float TimeLeft = f_khamlCutscene - GetGameTime();
 
-		switch(i_khamlCutscene[npc.index])
+		switch(i_khamlCutscene)
 		{
 			case 13:
 			{
@@ -653,7 +653,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 					strcopy(music.Name, sizeof(music.Name), "Chaos Reigns");
 					strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 					Music_SetRaidMusic(music, false);
-					i_khamlCutscene[npc.index] = 12;
+					i_khamlCutscene = 12;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: You. Come closer and look me in the face... {crimson} Or are you too scared?");
 				}
 			}
@@ -661,7 +661,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 37.0)
 				{
-					i_khamlCutscene[npc.index] = 11;
+					i_khamlCutscene = 11;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Brave against some cheap copy, but too scared of the real deal?");
 				}
 			}
@@ -669,7 +669,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 33.0)
 				{
-					i_khamlCutscene[npc.index] = 10;
+					i_khamlCutscene = 10;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: You killed my men, {crimson}YOU KILLED MY PUP{default}, BUT YOU ARE TOO SCARED OF ME?!");
 				}
 			}
@@ -677,7 +677,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 30.0)
 				{
-					i_khamlCutscene[npc.index] = 9;
+					i_khamlCutscene = 9;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will burn everything until there's nothing left, but ash. And from that ash...");
 				}
 			}
@@ -685,7 +685,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 26.0)
 				{
-					i_khamlCutscene[npc.index] = 8;
+					i_khamlCutscene = 8;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: A BRAND NEW FREE WORLD WILL BE BORN!! A WORLD WITH NO ONE TO COMMAND YOU AGAIN!");
 				}
 			}
@@ -693,7 +693,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 22.0)
 				{
-					i_khamlCutscene[npc.index] = 7;
+					i_khamlCutscene = 7;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: A WORLD RID OF THESE FUCKING PARASITES CALLED POLITICIANS! FREE FROM GOVERNMENTS!");
 				}
 			}
@@ -701,7 +701,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 18.0)
 				{
-					i_khamlCutscene[npc.index] = 6;
+					i_khamlCutscene = 6;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: AN IDEAL WORLD, A PARADISE!!! SO STOP RESISTING AND ACCEPT IT DAMMIT!!");
 				}
 			}
@@ -709,7 +709,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 12.0)
 				{
-					i_khamlCutscene[npc.index] = 5;
+					i_khamlCutscene = 5;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: ....no, this new world isn't going to welcome you anyway...");
 				}
 			}
@@ -717,7 +717,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 9.0)
 				{
-					i_khamlCutscene[npc.index] = 4;
+					i_khamlCutscene = 4;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Because you know what I hate the most, more than governments? {crimson}Violence against animals..");
 				}
 			}
@@ -725,7 +725,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 4.0)
 				{
-					i_khamlCutscene[npc.index] = 3;
+					i_khamlCutscene = 3;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: {crimson}You murdered these cats in cold blood. And now I'm going to do the same with you.");
 				}
 			}
@@ -733,7 +733,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 2.0)
 				{
-					i_khamlCutscene[npc.index] = 2;
+					i_khamlCutscene = 2;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: I will avenge you my dear companion, I will avenge everything.");
 				}
 			}
@@ -741,7 +741,7 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 			{
 				if(TimeLeft < 0.0)
 				{
-					i_khamlCutscene[npc.index] = 0;
+					i_khamlCutscene = 0;
 					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's begin.");
 					RaidBossActive = EntIndexToEntRef(npc.index);
 					RaidAllowsBuildings = false;
@@ -790,14 +790,14 @@ public void ChaosKahmlstein_ClotThink(int iNPC)
 	else if(RaidModeTimeLeft < 130.0 && i_SpeedUpTime[npc.index] == 1)
 	{
 		i_SpeedUpTime[npc.index] = 2; 
-		f_MessengerSpeedUp[npc.index] *= 1.15;
+		f_MessengerSpeedUp[npc.index] *= 1.125;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}: Even my dead grandma is more entertaining than this.");
 	}
 	else if(RaidModeTimeLeft < 70 && i_SpeedUpTime[npc.index] == 2)
 	{
 		i_SpeedUpTime[npc.index] = 3; 
-		f_MessengerSpeedUp[npc.index] *= 1.1;
+		f_MessengerSpeedUp[npc.index] *= 1.05;
 		if(i_RaidGrantExtra[npc.index] < 2)
 			CPrintToChatAll("{darkblue}Kahmlstein{default}:{crimson} RAAAAAAH, I'M UNSTOPPABLE!!!.");
 	}

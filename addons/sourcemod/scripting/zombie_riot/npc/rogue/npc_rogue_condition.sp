@@ -93,9 +93,16 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	if(LastResult)
 	{
 		bool friendly = (Rogue_Theme() == ReilaRift) && (Rogue_GetUmbralLevel() < 2);
-
+		
+		if(StrEqual("npc_umbral_automaton", buffers[1]))
+		{
+			if(friendly && (GetURandomInt() % 4) != 0)
+			{
+				friendly = false;
+			}	
+		}
 		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
-
+		
 		if(GetTeam(entity) == TFTeam_Red)
 		{
 			RequestFrame(Umbral_AdjustStats, EntIndexToEntRef(entity));
@@ -105,6 +112,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		{
 			switch(Rogue_GetUmbralLevel())
 			{
+				/*
+				See inside NPCs
 				case 4:
 				{
 					//if completly hated.
@@ -113,6 +122,16 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 					fl_Extra_MeleeArmor[entity] *= 0.65;
 					fl_Extra_RangedArmor[entity] *= 0.65;
 				}
+				See inside NPC
+				case 0:
+				{
+					if(UmbralAutomaton)
+					{
+						fl_Extra_Damage[entity] *= 0.5;
+						fl_Extra_Speed[entity] *= 0.5;
+					}
+				}
+				*/
 			}
 		}
 

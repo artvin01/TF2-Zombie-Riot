@@ -762,11 +762,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	if(victim <= MaxClients)
 	{
 		// Warped overrides
+		/*
 		if(Armor_Charge[victim] < 0 && Armor_DebuffType[victim] == Element_Warped)
 			return;
-		
+			This overrides warped, the rot consumes.
+		*/
 		Armor_DebuffType[victim] = Element_Necrosis;
-		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime() && Armor_Charge[victim] < 1)
+		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -783,9 +785,10 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Necrosis)))
 				{
 					Armor_Charge[victim] = 0;
-					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
-					
-					StartBleedingTimer(victim, attacker, 100.0, 15, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 1.0;
+					int health = ReturnEntityMaxHealth(victim);
+					health /= 25;
+					StartBleedingTimer(victim, attacker, float(health), 5, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 					Force_ExplainBuffToClient(victim, "Necrosis Elemental Damage");
 
 					int other, i;
@@ -794,10 +797,13 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 						Saga_ChargeReduction(victim, other, -15.0);
 					}
 				}
+				else
+				{
+					EmitSoundToClient(victim, "items/suitchargeno1.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 80);
+				}
 			}
-			
 			if(!Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound weapons/drg_pomson_drain_01.wav");
+				EmitSoundToClient(victim, "beams/beamstart5.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 60);
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
@@ -1415,9 +1421,13 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 					Armor_Charge[victim] += damage + 50;
 
 					i_AmountDowned[victim]--;
-					TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
+				//	TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
 					SDKHooks_TakeDamage(victim, attacker, attacker, 9999999.9, DMG_TRUEDAMAGE);
 					f_DisableDyingTimer[victim] = FAR_FUTURE;
+					Warped_ClientDoEffets(victim);
+					EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
 				}
 			}
 
@@ -1534,5 +1544,25 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			repair = 1;
 
 		SetEntProp(victim, Prop_Data, "m_iMaxHealth", repair);
+	}
+}
+
+
+static void Warped_ClientDoEffets(int client)
+{
+	float vabsAngles[3];
+	float vabsOrigin[3];
+	GetClientAbsOrigin(client, vabsOrigin);
+	GetClientEyeAngles(client, vabsAngles);
+	vabsAngles[0] = 0.0;
+
+	NPC_CreateByName("npc_allied_warped_crystal_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client), "");
+	SetVariantInt(1);
+	AcceptEntityInput(client, "SetForcedTauntCam");
+
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	}
 }

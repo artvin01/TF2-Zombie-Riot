@@ -65,7 +65,7 @@ int i_FailedTriesUnstuck[MAXENTITIES][2];
 //float f_MasterSequenceNpcPlayBackRate[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
-static int g_rocket_particle;
+int g_rocket_particle;
 int i_rocket_particle[MAXENTITIES];
 float fl_rocket_particle_dmg[MAXENTITIES];
 float fl_rocket_particle_radius[MAXENTITIES];
@@ -243,6 +243,7 @@ void OnMapStart_NPC_Base()
 	g_particleImpactMetal = PrecacheParticleSystem("bot_impact_light");
 	g_particleImpactFlesh = PrecacheParticleSystem("blood_impact_red_01");
 	g_particleImpactRubber = PrecacheParticleSystem("halloween_explosion_bits");
+	g_particleImpactPortal = PrecacheParticleSystem("drg_cow_explosion_sparkles_blue");
 	g_modelArrow = PrecacheModel("models/weapons/w_models/w_arrow.mdl");
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	Shared_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -1474,7 +1475,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(IS_MusicReleasingRadio() && GetTeam(this.index) != TFTeam_Red)
 			speed_for_return *= 0.9;
 
-		if(i_CurrentEquippedPerk[this.index] == 4)
+		if(i_CurrentEquippedPerk[this.index] & PERK_HASTY_HOPS)
 		{
 			speed_for_return *= 1.25;
 		}
@@ -3500,7 +3501,9 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
 		.DefineFloatField("f_JumpedRecently")
+#if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
+#endif
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3517,7 +3520,9 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_iTowerdefense_CheckpointAt")
 		.DefineIntField("m_iTowerdefense_Target")
 		.DefineFloatField("f_RegenDoLogic")
+#if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
+#endif
 	.EndDataMapDesc(); 
 	EntityFactory_Building.Install();
 }
@@ -4461,10 +4466,16 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 		npc.SetVelocity(vecJumpVel);
 		return true;
 	}
-	
+	/*
 	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
+		*/
+	float gravity = npc.GetBaseNPC().flGravity;
+	if(gravity <= 0.0)
+	{
+		gravity = 800.0; 
+	}
 
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = vecPos[2] - vecNPC[2];
@@ -5930,7 +5941,7 @@ public void NpcBaseThink(int iNPC)
 	if(f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
-		if(i_CurrentEquippedPerk[iNPC] == 1 || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
+		if((i_CurrentEquippedPerk[iNPC] & PERK_REGENE) || HasSpecificBuff(iNPC, "Regenerating Therapy") ||  NpcStats_WeakVoidBuff(iNPC)|| NpcStats_StrongVoidBuff(iNPC))
 		{
 			float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.01;
 			
@@ -6532,7 +6543,7 @@ stock void Custom_Knockback(int attacker,
 				//Always launch up so people dont have to look up like a hawk.
 				vAngles[0] = -40.0;
 				if(OverrideLookAng[0] != 0.0)
-					vAngles[0] = OverrideLookAng[0];
+					vAngles = OverrideLookAng;
 			}
 			else
 			{
@@ -6552,6 +6563,8 @@ stock void Custom_Knockback(int attacker,
 		{
 			GetEntPropVector(attacker, Prop_Data, "m_angRotation", vAngles);
 			vAngles[0] = -45.0;
+			if(OverrideLookAng[0] != 0.0)
+				vAngles = OverrideLookAng;
 		}
 		
 		if(enemy <= MaxClients)	
@@ -6995,6 +7008,10 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
 				}
 				SetEntityRenderColor(prop, 200, 0, 200, 255);
+			}
+			case BLEEDTYPE_PORTAL:
+			{
+				//none.
 			}
 		}	
 		if(ParticleSet != -1)
@@ -8645,6 +8662,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	fl_Speed[entity] = 0.0;
 	fl_GravityMulti[entity] = 1.0;
 	i_Target[entity] = -1;
+	i_TargetAlly[entity] = -1;
 	fl_GetClosestTargetTime[entity] = 0.0;
 	fl_GetClosestTargetTimeTouch[entity] = 0.0;
 	b_DoNotChangeTargetTouchNpc[entity] = 0;

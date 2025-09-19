@@ -12,6 +12,9 @@
 
 #define DOME_RADIUS	3000.0
 #define DOME_RADIUS_ROGUE3	2700.0
+#define DOME_RED 255
+#define DOME_GREEN 125
+#define DOME_BLUE 125
 
 float DomeRadiusGlobal()
 {
@@ -38,7 +41,7 @@ static Handle g_hDomeTimerBleed = null;
 
 void Rogue_Dome_Mapstart()
 {
-	PrecacheModel("models/kirillian/brsphere_huge.mdl");
+	PrecacheModel("models/kirillian/zr_rogue_dome_2.mdl");
 	PrecacheSound(DOME_NEARBY_SOUND);
 	if(g_hDomeTimerBleed != null)
 		delete g_hDomeTimerBleed;
@@ -56,17 +59,28 @@ void Rogue_Dome_WaveStart(const float pos[3])
 		return;
 	
 	DispatchKeyValueVector(iDome, "origin", g_vecDomeCP);						//Set origin to CP
-	DispatchKeyValue(iDome, "model", "models/kirillian/brsphere_huge.mdl");	//Set model
+	DispatchKeyValue(iDome, "model", "models/kirillian/zr_rogue_dome_2.mdl");	//Set model
 	DispatchKeyValue(iDome, "disableshadows", "1");							//Disable shadow
 	SetEntPropFloat(iDome, Prop_Send, "m_flModelScale", SquareRoot(DomeRadiusGlobal() / DOME_PROP_RADIUS));	//Calculate model scale
 	
 	DispatchSpawn(iDome);
-	
-	SetEntityRenderMode(iDome, RENDER_NORMAL);
-	SetEntityRenderColor(iDome, 255, 255, 255, 255);
+	float AlphaForwardData;
+	AlphaForwardData = SquareRoot(DomeRadiusGlobal() / DOME_PROP_RADIUS);
+
+	//NEVER CHANGE THIS
+	AlphaForwardData *= 200.0;
+
+
+	if(AlphaForwardData >= 254.0)
+		AlphaForwardData = 254.0;
+
+	SetEntityRenderMode(iDome, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(iDome, DOME_RED, DOME_GREEN, DOME_BLUE, RoundToNearest(AlphaForwardData));
 	SetEntityTransmitState(iDome, FL_EDICT_ALWAYS);
-	b_IsEntityAlwaysTranmitted[iDome] = true;
-	Hook_DHook_UpdateTransmitState(iDome);
+	CBaseEntity(iDome).AddEFlags(EFL_IN_SKYBOX);
+	SDKHook(iDome, SDKHook_SetTransmit, Dome_Transmit);
+//	b_IsEntityAlwaysTranmitted[iDome] = true;
+//	Hook_DHook_UpdateTransmitState(iDome);
 	
 	g_flDomeStart = GetGameTime();
 	g_flDomePreviousGameTime = g_flDomeStart;
@@ -80,6 +94,11 @@ void Rogue_Dome_WaveStart(const float pos[3])
 
 	RequestFrame(Dome_Frame_Shrink);
 }
+public Action Dome_Transmit(int entity, int client)
+{
+	return Plugin_Handled;
+}
+
 
 void Rogue_Dome_WaveEnd()
 {
@@ -155,7 +174,7 @@ static void Dome_Frame_Shrink()
 				else
 					flAlpha = (flDistanceMultiplier - DOME_FADE_START_MULTIPLIER) * (1.0/(1.0-DOME_FADE_START_MULTIPLIER)) * DOME_FADE_ALPHA_MAX;
 				
-				UTIL_ScreenFade(iClient, 2000, 0, 0x0001, 255, 255, 255, RoundToNearest(flAlpha));
+				UTIL_ScreenFade(iClient, 600, 0, 0x0001, DOME_RED, DOME_GREEN, DOME_BLUE, RoundToNearest(flAlpha));
 			}
 		}
 	}

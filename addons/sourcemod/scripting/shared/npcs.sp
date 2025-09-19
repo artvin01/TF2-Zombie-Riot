@@ -887,7 +887,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
 
-				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+				if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 				{
 					damage *= 1.25;
 				}
@@ -921,7 +921,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 					{
 						BombsToInject += 1;
 					}
@@ -1557,6 +1557,11 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_PORTAL)
+				{
+					TE_ParticleInt(g_particleImpactPortal, damagePosition);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 			}

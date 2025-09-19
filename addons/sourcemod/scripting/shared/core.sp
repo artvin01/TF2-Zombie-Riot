@@ -6,7 +6,9 @@
 #include <clientprefs>
 #include <dhooks>
 #if defined ZR || defined RPG
-#include <tf2items>
+#undef AUTOLOAD_EXTENSIONS
+#tryinclude <tf2items>
+#define AUTOLOAD_EXTENSIONS
 #include <tf_econ_data>
 #endif
 #if !defined RTS
@@ -576,6 +578,7 @@ float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
 int i_TextEntity[MAXENTITIES][5];
 float f_TextEntityDelay[MAXENTITIES];
+float AntiSpamTipGive;
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
@@ -756,6 +759,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
+	LoadTranslations("zombieriot.phrases.tips");	
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
 	LoadTranslations("common.phrases");
@@ -964,6 +968,7 @@ void Core_PrecacheGlobalCustom()
 }
 public void OnMapStart()
 {
+	AntiSpamTipGive = 0.0;
 	PrecacheSound("weapons/knife_swing_crit.wav");
 	PrecacheSound("weapons/shotgun/shotgun_dbl_fire.wav");
 	PrecacheSound("npc/vort/attack_shoot.wav");
@@ -1037,6 +1042,7 @@ public void OnMapStart()
 //	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
+	Zero(f_TimerStatusEffectsDo);
 	Building_MapStart();
 #endif
 	
@@ -1485,6 +1491,7 @@ public void OnClientPutInServer(int client)
 	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
+	f_ClientInvul[client] = 0.0;
 	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
@@ -1578,6 +1585,8 @@ public void OnClientDisconnect(int client)
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_LostFooting[client] = -1.0;
+	ReplicateClient_Gravity[client] = -1;
+	i_Client_Gravity[client] = 800; //incase
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
 	b_NetworkedCrouch[client] = false;
@@ -1593,6 +1602,7 @@ public void OnClientDisconnect(int client)
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	f_BuildingIsNotReady[client] = 0.0;
+	f_VintulumBombRecentlyUsed[client] = 0.0;
 	//Needed to reset attackspeed stuff
 #endif
 
@@ -1958,7 +1968,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					was_reviving[client] = true;
 					f_DelayLookingAtHud[client] = GameTime + 0.5;
 					was_reviving_this[client] = target;
-					int speed = i_CurrentEquippedPerk[client] == 1 ? 12 : 6;
+					int speed = (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 12 : 6;
 					Rogue_ReviveSpeed(speed);
 					ticks = Citizen_ReviveTicks(target, speed, client);
 					
@@ -3456,10 +3466,13 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		was_reviving_this[client] = target;
 
 	if(!WasRevivingEntity)
-		f_DisableDyingTimer[target] = GameTime + 0.15;
+	{
+		if(f_DisableDyingTimer[target] != FAR_FUTURE)
+			f_DisableDyingTimer[target] = GameTime + 0.15;
+	}
 
 	int speed = 3;
-	if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+	if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
 	{
 		speed = 12;
 	}
@@ -3555,7 +3568,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
-		if(WasClientReviving && i_CurrentEquippedPerk[client] == 1)
+		if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
 		{
 			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);

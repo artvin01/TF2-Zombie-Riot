@@ -3112,6 +3112,7 @@
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
 		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
 	}
+	
 	"Nervous Impairment Elemental Damage"
 	{
 		"en"	"Nervous Impairment Elemental Damage"
@@ -3148,7 +3149,7 @@
 	}
 	"Necrosis Elemental Damage Desc"
 	{
-		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+		"en"	"Once full, causes your body to rot.\nYou bleed out 20％ of your max health as ranged damage and increases ability cooldowns for 7.5 seconds."
 	}
 	"Warped Elemental Damage"
 	{
@@ -4977,6 +4978,10 @@
 	{
 		"en" "Unknown Computer"
 	}
+	"Library of Lixandria"
+	{
+		"en" "Library of Lixandria"
+	}
 	"Umbral Ltzens"
 	{
 		"en"	"Ŭ̸̪m̷̰̅b̵̘͆r̵̹̈a̸̤͆l̵̤͆ ̶̗̏L̷͕͊t̴̞͝z̸̺͠e̸͈͝n̷̥͑s̸̞̅"
@@ -5016,6 +5021,10 @@
 	"Reila"
 	{
 		"en" "Reila"
+	}
+	"Reila?"
+	{
+		"en" "R̷̛̝ě̸̖i̶̲̋l̶̛͚a̴̪͊?"
 	}
 	"Reila's Beacon"
 	{

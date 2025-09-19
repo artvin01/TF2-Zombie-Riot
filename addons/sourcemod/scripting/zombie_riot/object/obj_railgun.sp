@@ -127,8 +127,8 @@ public void BuildingRailgunShot(int client, int Railgun)
 	CreateDataTimer(0.75, RailgunFire, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(Railgun));
 	pack.WriteCell(EntIndexToEntRef(client));
-	CreateTimer(15.5, RailgunFire_DeleteSound, Railgun, TIMER_FLAG_NO_MAPCHANGE);
-	f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
+	CreateTimer(9.5, RailgunFire_DeleteSound, Railgun, TIMER_FLAG_NO_MAPCHANGE);
+	f_BuildingIsNotReady[client] = GetGameTime() + 10.0;
 }
 
 

@@ -3,13 +3,13 @@
 	"Gained Chaos"
 	{
 		"#format"	"{1:d}"
-		"en"		"{red}Gained {1} Chaos Instability!"
-		"ru"		"{red}Получено {1} Хаосовой нестабильности!"
+		"en"		"{crimson}Gained {1} Chaos Infliction!"
+		"ru"		"{crimson}Получено {1} Хаосовой нестабильности!"
 	}
 	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
-		"en"		"{green}Lost {1} Chaos Instability!"
+		"en"		"{green}Lost {1} Chaos Infliction!"
 		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
 	}
 	"Heavy Rain"
@@ -19,7 +19,7 @@
 	}
 	"Heavy Rain Desc"
 	{
-		"en"	"{yellow}All units move 20％ slower, Seaborn units instead move 10％ faster"
+		"en"	"{yellow}All units gain -20％ movement speed, Seaborn units instead gain +10％ movement speed"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 	}
 	"Heavy Rain Lore"
@@ -34,7 +34,7 @@
 	}
 	"Extreme Heat Desc"
 	{
-		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x1.25 slower and Al-Hallem units move 20％ faster"
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is 25% slower and Al-Hallem units gain +20％ movement speed"
 	}
 	"Extreme Heat Lore"
 	{
@@ -46,7 +46,7 @@
 	}
 	"Heavy Wind Desc"
 	{
-		"en"	"{yellow}All projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
+		"en"	"{yellow}ALL projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
 	}
 	"Heavy Wind Lore"
 	{
@@ -58,7 +58,7 @@
 	}
 	"Dense Frost Desc"
 	{
-		"en"	"{yellow}All units lose health over time (can not be reduced below 1) {red}except for Ziberia units"
+		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Ziberia units"
 	}
 	"Dense Frost Lore"
 	{
@@ -83,7 +83,7 @@
 	}
 	"Shadowing Darkness Desc"
 	{
-		"en"	"{red}Everyone gains 25％ attackspeed."
+		"en"	"{red}EVERYONE gains +25％ attack speed."
 	}
 	"Shadowing Darkness Lore"
 	{
@@ -128,7 +128,7 @@
 	}
 	"Weapon Supplies Desc"
 	{
-		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
+		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 Cash and 30 ammo supplies"
 	}
 	"Bob's Assistance"
 	{
@@ -160,7 +160,7 @@
 	}
 	"Hot Water Kettle Desc"
 	{
-		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
+		"en"	"Want to make some noodles?\n{green}Allies gain +125 max health and 1000 Cash"
 	}
 	"Ziberian Chocolate"
 	{
@@ -168,7 +168,7 @@
 	}
 	"Ziberian Chocolate Desc"
 	{
-		"en"	"It's cold, amazing!\n{green}+1250 Cash, Allies gain +50 max health"
+		"en"	"It's cold, amazing!\n{green}Allies gain +50 max health and 1250 Cash"
 	}
 	"Shadowing Coin"
 	{
@@ -176,7 +176,7 @@
 	}
 	"Shadowing Coin Desc"
 	{
-		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}+1750 Cash."
+		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}Gain 1750 Cash."
 	}
 	"Special Suppressor"
 	{
@@ -224,7 +224,7 @@
 	}
 	"Banshee's Kiss Desc"
 	{
-		"en"	"A pretty necklace, who gonna wear it?\n{green}+8000 Cash"
+		"en"	"A pretty necklace, who gonna wear it?\n{green}Gain 8000 Cash"
 	}
 	"Blood Diamond"
 	{
@@ -232,7 +232,7 @@
 	}
 	"Blood Diamond Desc"
 	{
-		"en"	"A pretty ring, who gonna wear it?\n{green}+25 Australium Ingots"
+		"en"	"A pretty ring, who gonna wear it?\n{green}Gain +25 Australium Ingots"
 	}
 	"Fissured Restraints"
 	{
@@ -240,7 +240,7 @@
 	}
 	"Fissured Restraints Desc"
 	{
-		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7％ damage"
+		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies deal -7％ damage"
 	}
 	"Abyssal Wyrdmask"
 	{
@@ -248,7 +248,7 @@
 	}
 	"Abyssal Wyrdmask Desc"
 	{
-		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12％ damage"
+		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies deal -12％ damage"
 	}
 	"Godmother's Token"
 	{
@@ -256,7 +256,7 @@
 	}
 	"Godmother's Token Desc"
 	{
-		"en"	"A laurel of bones.\n{green}Enemies gain -17％ damage"
+		"en"	"A laurel of bones.\n{green}Enemies deal -17％ damage"
 	}
 	"The Whisperer in Darknight"
 	{
@@ -288,7 +288,7 @@
 	}
 	"Emperor's Favor Desc"
 	{
-		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15％ damage"
+		"en"	"A very sharp letter opener.\n{green}Players gain +15％ melee damage"
 	}
 	"Vieux Vanguard's Blade"
 	{
@@ -296,7 +296,7 @@
 	}
 	"Vieux Vanguard's Blade Desc"
 	{
-		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25％ damage"
+		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Players gain +25％ melee damage"
 	}
 	"Necklace of the Presence"
 	{
@@ -304,7 +304,7 @@
 	}
 	"Necklace of the Presence Desc"
 	{
-		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15％ damage"
+		"en"	"Faith hangs ten centimeters above your heart.\n{green}Players gain +15％ ranged damage"
 	}
 	"Damaged Revolver Cylinder"
 	{
@@ -312,7 +312,7 @@
 	}
 	"Damaged Revolver Cylinder Desc"
 	{
-		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25％ damage"
+		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Players gain +25％ ranged damage"
 	}
 	"Royal Rapier"
 	{
@@ -320,7 +320,7 @@
 	}
 	"Royal Rapier Desc"
 	{
-		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15％ damage"
+		"en"	"A highly decorative rapier for nobles.\n{green}Players gain +15％ mage damage"
 	}
 	"Silver Forks"
 	{
@@ -328,7 +328,7 @@
 	}
 	"Silver Forks Desc"
 	{
-		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25％ damage"
+		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Players gain +25％ mage damage"
 	}
 	"Noxious Hemostatic Agent"
 	{
@@ -440,7 +440,7 @@
 	}
 	"Peek into the Eternal Night Desc"
 	{
-		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ firing speed {red}but -10 HP a second"
+		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ attack speed {red}but -10 HP a second"
 	}
 	"Dead Tree's Echo"
 	{
@@ -512,7 +512,7 @@
 	}
 	"Golden Chalice Desc"
 	{
-		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases based Australium Ingots amount"
+		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases for every Australium Ingot owned"
 	}
 	"Queen's Fellowship"
 	{
@@ -536,7 +536,7 @@
 	}
 	"Steam Sale Desc"
 	{
-		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50％ off"
+		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Rogue Shop items cost 50% less"
 	}
 	"Steal Grigori"
 	{
@@ -560,7 +560,7 @@
 	}
 	"Mark of a Thief Desc"
 	{
-		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
+		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shops will no longer appear for the rest of the adventure"
 	}
 	"Evil Within from Ruina's Great Crystal"
 	{
@@ -568,7 +568,7 @@
 	}
 	"Evil Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies have 25％ more HP and 15％ more damage."
+		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies gain +25% max health and +15% damage."
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
@@ -576,7 +576,7 @@
 	}
 	"Great Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies have has 15％ Less HP and 10％ less damage."
+		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies gain -15％ max health and -10％ damage."
 	}
 	"Ruinian Shop Help Out"
 	{
@@ -592,7 +592,7 @@
 	}
 	"Bob's Duck Desc"
 	{
-		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ firing speed, +15％ reload speed, +10％ damage resistance, Whoever the duck follows gains insane buffs"
+		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
 	}
 	"Underground Scorch"
 	{
@@ -616,7 +616,7 @@
 	}
 	"Solidified Lamp Oil Desc"
 	{
-		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Reduce Chaos Infliction gained from stages by 40％"
+		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Gain 40% less Chaos Infliction from stages"
 	}
 	"Sanctified Lamp Oil"
 	{
@@ -624,7 +624,7 @@
 	}
 	"Sanctified Lamp Oil Desc"
 	{
-		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Reduce Chaos Infliction gained from stages by 60％"
+		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Gain 60% less Chaos Infliction from stages"
 	}
 	"Mercenary Insurance"
 	{
@@ -632,7 +632,7 @@
 	}
 	"Mercenary Insurance Desc"
 	{
-		"en"	"Special insurance offered to independent mercenaries.\nPlayers take 10％ less damage, increased to 35％ if Chaos Infliction is at least 60"
+		"en"	"Special insurance offered to independent mercenaries.\n {green}Players take 10％ less damage, take 35％ less if Chaos Infliction is at least 60"
 	}
 	"Energy Life Vest"
 	{
@@ -664,7 +664,7 @@
 	}
 	"Pack of Smokes Desc"
 	{
-		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ firing, reload, and healing speed {red}but gain 5 Chaos Infliction after a stage"
+		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ attack, reload, and healing speed {red}but gain 5 Chaos Infliction after every stage"
 	}
 	"Silver Seal Letter"
 	{
@@ -706,6 +706,14 @@
 	{
 		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
 	}
+	"Cold Water"
+	{
+		"en"	"Cold Water"
+	}
+	"Cold Water Desc"
+	{
+		"en"	"Good water, washes down any drinks.\n{green}You can equip a 2nd perk."
+	}
 	"Children's Puppet"
 	{
 		"en"	"Children's Puppet"
@@ -720,7 +728,7 @@
 	}
 	"Garlic Bread Desc"
 	{
-		"en"	"Yummy.\n{green}Enemies are debuffed for twice as long"
+		"en"	"Yummy.\n{green}Debuffs last 2x longer on ememies"
 	}
 	"Flash Camera"
 	{
@@ -744,7 +752,7 @@
 	}
 	"Black Tulip Desc"
 	{
-		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases over 120 seconds, up to +60％, {red}resets after using a weapon ability"
+		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60% over 120s, {red}resets after using a weapon ability"
 	}
 	"Castle Offspring"
 	{
@@ -752,7 +760,7 @@
 	}
 	"Castle Offspring Desc"
 	{
-		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases over 300 seconds, up to +60％, {red}resets when knocked down"
+		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases up to +60% over 300s, {red}resets when knocked down"
 	}
 
 	"Waldch Assistance"
@@ -769,7 +777,7 @@
 	}
 	"Kahmlstein Guidance Desc"
 	{
-		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
+		"en"	"You join Kahmlstein.\n{green}Ally weapon cooldowns are reduced by 1 second every 1.5 seconds"
 	}
 	"Twirl Guidance"
 	{
@@ -777,7 +785,7 @@
 	}
 	"Twirl Guidance Desc"
 	{
-		"en"	"You join Twirl.\n{green}Player's held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, mage weapons also gain +15％ max mana and mana regen"
+		"en"	"You join Twirl.\n{green}Ally held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, gain +15% max mana and mana regen"
 	}
 	"Unauthorized Ruina Gem"
 	{
@@ -785,7 +793,7 @@
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
-		"en"	"You can feel it pulling to something.\n{green}Once per a stage, when an ally falls below half health, restore to full health\n{green}Cure 10 Chaos Affliction."
+		"en"	"You can feel it pulling to something.\n{green}The first ally each stage to fall below half health gets healed to full.\n{green}Lose 10 Chaos Infliction."
 	}
 	"Terrible Nightmare"
 	{
@@ -1091,7 +1099,7 @@
 	}
 	"Lost Villager Desc 2"
 	{
-		"en"	"{green}Gain 3000 cash"
+		"en"	"{green}Gain 3000 Cash"
 	}
 	"Lost Villager Lore 2"
 	{
@@ -1104,7 +1112,7 @@
 	}
 	"Lost Villager Desc 3"
 	{
-		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
+		"en"	"{green}Gain 2000 Cash, 15 Australium Ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
 	}
 	"Lost Villager Lore 3"
 	{
@@ -1198,7 +1206,7 @@
 	}
 	"Fortituous Opportunity Desc 2"
 	{
-		"en"	"{green}Gain 4 australium ingots"
+		"en"	"{green}Gain 4 Australium Ingots"
 	}
 	"Fortituous Opportunity Lore 2"
 	{
@@ -1257,7 +1265,7 @@
 	}
 	"Emergency Dispatch Lore 2"
 	{
-		"en"	"You say you're going off to deal with chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
+		"en"	"You say you're going off to deal with Chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
 	}
 	"Emergency Dispatch Return 1"
 	{
@@ -1692,6 +1700,6 @@
 	}
 	"Mazeat Lost Tech Desc 1b"
 	{
-		"en"	"{green}Obtain a Grant item, {crimson}but you might get unwanted attention."
+		"en"	"{green}Obtain a Grant item, {crimson}but you might attract unwanted attention."
 	}
 }

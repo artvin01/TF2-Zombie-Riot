@@ -14,7 +14,6 @@ static int i_current_pap_projectile[MAXENTITIES];
 #define IMPACT_WAND_PARTICLE_LANCE_BOOM2 "weapons/air_burster_explode2.wav"
 #define IMPACT_WAND_PARTICLE_LANCE_BOOM3 "weapons/air_burster_explode3.wav"
 
-static int g_rocket_particle;
 static char gExplosive1;
 
 public void Wand_Impact_Lance_Mapstart()
@@ -25,7 +24,6 @@ public void Wand_Impact_Lance_Mapstart()
 	PrecacheSound(IMPACT_WAND_PARTICLE_LANCE_BOOM1);
 	PrecacheSound(IMPACT_WAND_PARTICLE_LANCE_BOOM2);
 	PrecacheSound(IMPACT_WAND_PARTICLE_LANCE_BOOM3);
-	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 }
 
 public void Wand_Impact_Lance_Multi_Hit(int client, float &CustomMeleeRange, float &CustomMeleeWide)
