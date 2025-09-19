@@ -203,9 +203,13 @@ static bool ClotInteract(int client, int weapon, ObjectVintulumBomb npc)
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 	if (GetVectorDistance(eyePos, spawnLoc, true) >= (70.0 * 70.0))
 	{
-		SetDefaultHudPosition(Owner);
-		ShowSyncHudText(Owner,  SyncHud_Notifaction, "%T", "Too Far Away", Owner);
-		return false;
+		if(EntRefToEntIndex(Building_Mounted[Owner]) != npc.index) 
+		{
+			//if its the same, just allowe
+			SetDefaultHudPosition(Owner);
+			ShowSyncHudText(Owner,  SyncHud_Notifaction, "%T", "Too Far Away", Owner);
+			return false;
+		}
 	}
 	SPrintToChat(Owner, "%T", "Global Cooldown Bomb", Owner, 120.0);
 	f_VintulumBombRecentlyUsed[Owner] = GetGameTime() + 120.0;
