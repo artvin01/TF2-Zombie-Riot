@@ -796,8 +796,9 @@ bool Object_Interact(int client, int weapon, int obj)
 	{
 		// Player mounted
 		entity = EntRefToEntIndex(Building_Mounted[obj]);
-		if(entity == -1)
+		if(entity == -1 && BombIdVintulum() != i_NpcInternalId[obj])
 			return false;
+		//bomb should still think
 
 		MountedObjectInteracted = true;
 	}

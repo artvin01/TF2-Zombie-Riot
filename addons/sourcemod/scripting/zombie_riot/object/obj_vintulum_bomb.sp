@@ -46,6 +46,10 @@ void ObjectVintulumBomb_MapStart()
 	Building_Add(build);
 }
 
+int BombIdVintulum()
+{
+	return NPCId;
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
 	return ObjectVintulumBomb(client, vecPos, vecAng);
@@ -205,7 +209,8 @@ static bool ClotInteract(int client, int weapon, ObjectVintulumBomb npc)
 	{
 		if(EntRefToEntIndex(Building_Mounted[Owner]) != npc.index) 
 		{
-			//if its the same, just allowe
+			//if its the same, just allow
+			
 			SetDefaultHudPosition(Owner);
 			ShowSyncHudText(Owner,  SyncHud_Notifaction, "%T", "Too Far Away", Owner);
 			return false;
@@ -268,7 +273,7 @@ public bool ObjectGeneric_CanBuildBomb(int client, int &count, int &maxcount)
 	if(!client)
 		return false;
 
-	if(ObjectBombs_Buildings() >= 2)
+	if(ObjectBombs_Buildings() >= 3)
 	{
 		return false;
 	}
@@ -284,7 +289,7 @@ int ObjectBombs_Buildings()
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(NPCId == i_NpcInternalId[entity])
+		if(BombIdVintulum() == i_NpcInternalId[entity])
 			count++;
 	}
 
