@@ -195,7 +195,7 @@ enum
 	WINGS_KARLAS	= 64
 }
 
-#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_2_2.mdl"
+#define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_3_test1.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
