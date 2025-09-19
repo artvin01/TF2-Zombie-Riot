@@ -1254,6 +1254,11 @@
 		"chi" 		"没有刀可以使用[{1}]，请等待 [{2}] 秒后刷新！"
 		"ko" 		"나이프가 부족합니다[{1}]. 다음 나이프는 [{2}] 초 후에 보급됩니다."
 	}
+	"Global Cooldown Bomb"
+	{
+		"#format"	"{1:.f}"
+		"en" 		"All your unique buildings are on a [{1}] second cooldown."
+	}
 	"Too Far Away"
 	{
 		"en" 		"You're too far away, get closer"

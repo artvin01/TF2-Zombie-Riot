@@ -17,6 +17,14 @@ static bool b_ReinforceReady_soundonly[MAXPLAYERS];
 static int i_MaxRevivesAWave;
 static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
 
+void GiveMorphineToEveryone()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		MorphineCharge[client] = 1.0;
+	}
+}
+
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
 	"weapons/rescue_ranger_teleport_receive_02.wav"
@@ -268,11 +276,18 @@ public void MorphineShotLogic(int client)
 	EmitSoundToAll(SOUND_HEAL_BEAM, client, _, 70, _, 1.0, 70);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
-	HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
 	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
 	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
 	ApplyStatusEffect(client, client, "Intangible", 3.0);
 	MorphineCharge[client] = 0.0;
+	if(Rogue_SuperStimsOn())
+	{
+		HealEntityGlobal(client, client, MaxHealth * 3.0, 1.0, 3.0, HEAL_SELFHEAL);
+	}
+	else
+	{
+		HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
+	}
 }
 public void WeakDashLogic(int client)
 {

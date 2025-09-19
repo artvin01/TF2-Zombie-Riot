@@ -1347,7 +1347,6 @@ public void ARIS_ShootGun(ARIS npc)
 	{
 		float damage;
 		float armorFromThisTarget;
-
 		
 		int bullets = i_EnemyHitByThisManyBullets[target];
 		if (bullets)
@@ -1581,6 +1580,8 @@ static bool ARIS_LoseConditions(int iNPC)
 				npc.SetCycle(0.05);
 				npc.SetPlaybackRate(1.0);
 				npc.m_flNextDeathState = GetGameTime() + 1.7;
+				
+				CPrintToChatAll("{rare}A.R.I.S.{default}: 3N0UGH D4M463 5U5741N3D");
 			}
 			
 			case 1:
@@ -1603,6 +1604,18 @@ static bool ARIS_LoseConditions(int iNPC)
 				
 				npc.m_flNextDeathState = GetGameTime() + 0.1;
 				npc.PlaySelfLaunchingSound();
+				
+				switch (GetURandomInt() % 4)
+				{
+					case 0:
+						CPrintToChatAll("{rare}A.R.I.S.{default}: 3J3C71N6!");
+					case 1:
+						CPrintToChatAll("{rare}A.R.I.S.{default}: 480R71N6 M15510N!");
+					case 2:
+						CPrintToChatAll("{rare}A.R.I.S.{default}: R37URN1N6 70 P057!");
+					case 3:
+						CPrintToChatAll("{rare}A.R.I.S.{default}: 4R15 = 0U7!");
+				}
 			}
 			
 			case 20:

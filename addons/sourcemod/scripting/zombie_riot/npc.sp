@@ -85,6 +85,7 @@ void NPC_ConfigSetup()
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
 	ObjectTinkerGrill_MapStart();
+	ObjectVintulumBomb_MapStart();
 	// Buildings
 
 	// Constructs
@@ -1097,6 +1098,7 @@ void NPC_ConfigSetup()
 	TornUmbralGate_OnMapStart_NPC();
 	Umbral_WF_OnMapStart_NPC();
 	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
+	Umbral_Rouam_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1399,6 +1401,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/obj_ammobox.sp"
 #include "object/obj_tinker_anvil.sp"
 #include "object/obj_sentrygun.sp"
+#include "object/obj_vintulum_bomb.sp"
 #include "object/obj_mortar.sp"
 #include "object/obj_railgun.sp"
 #include "object/obj_village.sp"
@@ -2384,6 +2387,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_boss_reila_beacon.sp"
 #include "npc/rogue/rouge3/npc_reila_follower.sp"
 #include "npc/rogue/rouge3/npc_umbral_automaton.sp"
+#include "npc/rogue/rouge3/npc_umbral_rouam.sp"
 #include "npc/rogue/rouge3/npc_omega_follower.sp"
 #include "npc/rogue/rouge3/npc_shadow_flowering_darkness.sp"
 #include "npc/rogue/rouge3/npc_shadowing_darkness.sp"

@@ -151,6 +151,25 @@ methodmap Umbral_Automaton < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntityRenderColor(npc.m_iWearable2, 105, 82, 117, 255);
 		
+		if(ally != TFTeam_Red && Rogue_Mode())
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.5;
+				fl_Extra_Speed[npc.index] *= 0.5;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_Speed[npc.index] *= 1.1;
+				fl_Extra_MeleeArmor[npc.index] *= 0.85;
+				fl_Extra_RangedArmor[npc.index] *= 0.85;
+			}
+		}
 		
 		return npc;
 	}

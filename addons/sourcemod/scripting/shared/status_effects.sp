@@ -189,8 +189,8 @@ void InitStatusEffects()
 	StatusEffects_ElementalWand();
 	StatusEffects_FallenWarrior();
 	StatusEffects_CasinoDebuff();
-	StatusEffects_Aperture();
 #if defined ZR
+	StatusEffects_Aperture();
 	StatusEffects_Ruiania();
 #endif
 	StatusEffects_WeaponSpecific_VisualiseOnly();
@@ -3024,6 +3024,10 @@ float Hussar_Warscream_DamageDealFunc(int attacker, int victim, StatusEffect App
 	return damagereturn;
 }
 
+#if defined ZR
+
+#define TIMEWARP_BUFF_MULTIPLIER 1.5
+
 void StatusEffects_Aperture()
 {
 	StatusEffect data;
@@ -3202,6 +3206,25 @@ void StatusEffects_Aperture()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Time Warp");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⭮");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= (1.0 / TIMEWARP_BUFF_MULTIPLIER);
+	data.AttackspeedBuff			= TIMEWARP_BUFF_MULTIPLIER;
+	data.LinkedStatusEffect			= StatusEffect_AddBlank();
+	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	data.OnBuffStarted				= TimeWarp_Start;
+	data.OnBuffStoreRefresh			= TimeWarp_Start;
+	data.OnBuffEndOrDeleted			= TimeWarp_End;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Last Stand");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
@@ -3268,7 +3291,7 @@ void StatusEffects_Aperture()
 }
 
 
-void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+static void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!(b_ThisWasAnNpc[victim] || victim <= MaxClients))
 		return;
@@ -3285,12 +3308,90 @@ void QuantumEntanglementStart(int victim, StatusEffect Apply_MasterStatusEffect,
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 
-void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+static void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
 	RemoveEntity(Apply_StatusEffect.WearableUse);
 }
+
+static void TimeWarp_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	
+	Attributes_SetMulti(victim, 442, (1.0 / TIMEWARP_BUFF_MULTIPLIER));
+	SDKCall_SetSpeed(victim);
+}
+
+static void TimeWarp_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!IsValidClient(victim))
+		return;
+	
+	Attributes_SetMulti(victim, 442, TIMEWARP_BUFF_MULTIPLIER);
+	SDKCall_SetSpeed(victim);
+}
+
+void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && GetTeam(i) >= TFTeam_Red)
+		{
+			if (!IsFakeClient(i))
+			{
+				SendConVarValue(i, sv_cheats, "1");
+				Convars_FixClientsideIssues(i);
+			}
+			
+			ApplyStatusEffect(inflictor, i, "Time Warp", duration);
+		}
+	}
+	
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
+    {
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if (entity != INVALID_ENT_REFERENCE)
+		{
+			ApplyStatusEffect(inflictor, entity, "Time Warp", duration);
+		}
+	}
+	
+	ResetReplications();
+	cvarTimeScale.SetFloat(TIMEWARP_BUFF_MULTIPLIER);
+}
+
+void TimeWarp_RemoveAll()
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i))
+		{
+			if (!IsFakeClient(i))
+			{
+				SendConVarValue(i, sv_cheats, "0");
+				Convars_FixClientsideIssues(i);
+			}
+			
+			RemoveSpecificBuff(i, "Time Warp");
+		}
+	}
+	
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
+    {
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if (entity != INVALID_ENT_REFERENCE)
+		{
+			RemoveSpecificBuff(entity, "Time Warp");
+		}
+	}
+	
+	ResetReplications();
+	cvarTimeScale.SetFloat(1.0);
+}
+
+#endif // ZR
 
 void StatusEffects_SupportWeapons()
 {

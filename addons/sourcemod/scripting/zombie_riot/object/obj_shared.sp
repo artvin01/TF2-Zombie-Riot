@@ -597,6 +597,8 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 		return false;
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 		return false;
+	if(f_VintulumBombRecentlyUsed[client] > GetGameTime())
+		return false;
 
 	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
 }
@@ -794,8 +796,9 @@ bool Object_Interact(int client, int weapon, int obj)
 	{
 		// Player mounted
 		entity = EntRefToEntIndex(Building_Mounted[obj]);
-		if(entity == -1)
+		if(entity == -1 && BombIdVintulum() != i_NpcInternalId[obj])
 			return false;
+		//bomb should still think
 
 		MountedObjectInteracted = true;
 	}

@@ -544,8 +544,13 @@ void ReilaCreateBeacon(int iNpc)
 		return;
 
 	npc.m_flBossSpawnBeacon = 0.0;
-
+	
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	int EndFound = FindInfoTargetInt("reila_beacon_spawner");
+	if(IsValidEntity(EndFound))
+	{
+		GetEntPropVector(EndFound, Prop_Data, "m_vecAbsOrigin", pos);
+	}
 	int summon = NPC_CreateByName("npc_beacon_reila", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{
@@ -557,7 +562,8 @@ void ReilaCreateBeacon(int iNpc)
 		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
 		NpcStats_CopyStats(npc.index, summon);
-		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
+		if(!IsValidEntity(EndFound))
+			TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
 
 		if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
 		{

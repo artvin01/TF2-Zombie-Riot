@@ -3064,7 +3064,14 @@ void Zombie_Delay_Warning()
 				
 				if(Construction_Mode())
 					ForcePlayerLoss();
-				
+			}
+		}
+		case 6:
+		{
+			if(f_ZombieAntiDelaySpeedUp + 400.0 < GetGameTime())
+			{
+				i_ZombieAntiDelaySpeedUp = 7;
+				CPrintToChatAll("{crimson}You are probably abusing something, perish, go my uber swordsmen.");
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}

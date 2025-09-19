@@ -126,6 +126,8 @@ public void Shadowing_Darkness_Boss_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
+	PrecacheSoundCustom("#zombiesurvival/rogue3/shadowing_darkness.mp3");
+	PrecacheSoundCustom("#zombiesurvival/rogue3/shadowing_darkness_intro.mp3");
 
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -200,8 +202,8 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 	}
 	public void StopPrepareBounce()
  	{
-		StopSound(this.index, SNDCHAN_STATIC, g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)]);
-		StopSound(this.index, SNDCHAN_STATIC, g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)]);
+		StopSound(this.index, SNDCHAN_AUTO, g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)]);
+		StopSound(this.index, SNDCHAN_AUTO, g_PrepareEnergyBounce[GetRandomInt(0, sizeof(g_PrepareEnergyBounce) - 1)]);
 	}
 	public void PlayPrepareBounce()
  	{
@@ -378,7 +380,6 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
 
-		npc.SetActivity("ACT_WHITEFLOWER_RUN");
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = false;
@@ -395,9 +396,39 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		
 		if(final)
 		{
+			npc.SetActivity("ACT_WHITEFLOWER_IDLE");
+
+			npc.m_bisWalking = false;
+			RaidModeTime = 9999999.9;
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
+			f_khamlCutscene = GetGameTime() + 52.0;
+			i_khamlCutscene = 15;				
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness_intro.mp3");
+			music.Time = 52;
+			music.Volume = 1.65;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Burnt Light");
+			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
+			Music_SetRaidMusic(music);
+			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh its you lot, finally you actually prevailed.");
+			TeleportDiversioToRandLocation(npc.index, true, 2000.0, 0.0, false, true);
 		}
+		else
+		{
+			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			RaidModeTime = GetGameTime() + (300.0);
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
+			music.Time = 500;
+			music.Volume = 1.35;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Burnt Light");
+			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
+			Music_SetRaidMusic(music);
+		}
+
 
 		EmitSoundToAll("ambient/machines/teleport3.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("ambient/machines/teleport3.wav", _, _, _, _, 1.0);	
@@ -409,15 +440,6 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Shadowing Darkness The Ruler");
 			}
 		}
-		RaidModeTime = GetGameTime() + (300.0);
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
-		music.Time = 187;
-		music.Volume = 1.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Iberia's Last Stand");
-		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
-		Music_SetRaidMusic(music);
 
 		char buffers[3][64];
 		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -535,6 +557,10 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
+	if(Shadowing_Darkness_TalkStart(npc))
+	{
+		return;
+	}
 
 	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
 	{
@@ -684,6 +710,8 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Get this thing off me-.");
 		CPrintToChatAll("{black}Izan :{default} What the-");
 		FreezeNpcInTime(victim, 30.0, true);
+		damage = 0.0;
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 
 		return Plugin_Changed;
 	}
@@ -707,7 +735,10 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			if(npc.m_flSpeed != 0)
 				npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
 			CPrintToChatAll("{purple}YOU WILL NOT SEE THE END OF THIS DAY...");
-			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So i was right, i wasn't alone once i sat on that throne, parasite...");	
+			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So i was right, i wasn't alone once i sat on that throne, parasite...");
+			damage = 0.0;
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 2);	
+			return Plugin_Changed;
 		}
 	}
 	
@@ -741,6 +772,7 @@ public void Shadowing_Darkness_Boss_NPCDeath_After(int entity)
 	{
 		npc.PlayDeathSound();
 	}
+	npc.StopPrepareBounce();
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -1000,6 +1032,7 @@ void Shadowing_Darkness_DefaultMovement(Shadowing_Darkness_Boss npc, float gameT
 	if(npc.m_flRestoreDefaultWalk > gameTime)
 		return;
 
+	npc.StopPrepareBounce();
 	npc.m_flRestoreDefaultWalk = 0.0;
 	npc.m_bisWalking = true;
 	npc.m_iChanged_WalkCycle = 0;
@@ -1586,6 +1619,158 @@ bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTi
 				//cancel.
 			}
 		}
+		return true;
+	}
+	return false;
+}
+
+
+
+bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
+{
+	float TimeLeft = f_khamlCutscene - GetGameTime();
+
+	switch(i_khamlCutscene)
+	{
+		case 15:
+		{
+			if(TimeLeft < 50.0)
+			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
+				music.Time = 500;
+				music.Volume = 1.35;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Burnt Light");
+				strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
+				Music_SetRaidMusic(music, false);
+				i_khamlCutscene = 14;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh look how they have come to me...");
+			}
+		}
+		case 14:
+		{
+			if(TimeLeft < 47.0)
+			{
+				i_khamlCutscene = 13;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: How many umbrals did you piss off?");
+			}
+		}
+		case 13:
+		{
+			if(TimeLeft < 43.0)
+			{
+				i_khamlCutscene = 12;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as, for the void...");
+			}
+		}
+		case 12:
+		{
+			if(TimeLeft < 40.0)
+			{
+				i_khamlCutscene = 11;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: If you really think killing me will stop the voids, be my guest.");
+			}
+		}
+		case 11:
+		{
+			if(TimeLeft < 38.0)
+			{
+				i_khamlCutscene = 10;
+				CPrintToChatAll("{white}Bob{default}: You and whiteflower are the most nasty traitors i have seen.");
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, traitor? I didnt do anything.");
+			}
+		}
+		case 10:
+		{
+			if(TimeLeft < 34.0)
+			{
+				i_khamlCutscene = 9;
+				if(Rogue_HasNamedArtifact("Bob's Wrath"))
+					CPrintToChatAll("{white}Bob{crimson}: You killed Guln.");
+				else
+					CPrintToChatAll("{white}Bob{default}: I have yet to see where guln ended up.");
+			}
+		}
+		case 9:
+		{
+			if(TimeLeft < 30.0)
+			{
+				i_khamlCutscene = 8;
+				if(Rogue_HasNamedArtifact("Bob's Wrath"))
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Guln is dead..? ........");
+				else
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I dont know excatly what happend to guln, i have tried to find him myself.");
+			}
+		}
+		case 8:
+		{
+			if(TimeLeft < 25.0)
+			{
+				i_khamlCutscene = 7;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Whiteflower was not a bad person, however.... If you want to stop the void, youll have to get ahold of the umbrals and make them do their job.");
+			}
+		}
+		case 7:
+		{
+			if(TimeLeft < 23.0)
+			{
+				i_khamlCutscene = 6;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: This is what the throne does, to a limited degree, and im atop of it, but...");
+			}
+		}
+		case 6:
+		{
+			if(TimeLeft < 18.0)
+			{
+				i_khamlCutscene = 5;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ever since i sat upon it, i wanted to do something else.");
+			}
+		}
+		case 5:
+		{
+			if(TimeLeft < 13.0)
+			{
+				i_khamlCutscene = 4;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Izan... i remember when you wanted to be a fake bob, that was hillarious.");
+			}
+		}
+		case 4:
+		{
+			if(TimeLeft < 8.0)
+			{
+				i_khamlCutscene = 3;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Then ill be what unspeakable was, but reasonable, dont you think?");
+			}
+		}
+		case 3:
+		{
+			if(TimeLeft < 4.0)
+			{
+				i_khamlCutscene = 2;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Who am i kidding, unspeakable is dead, luckly.");
+			}
+		}
+		case 2:
+		{
+			if(TimeLeft < 0.0)
+			{
+				i_khamlCutscene = 0;
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Let's make sure that the vision will finally come true, all under one, together, and as a collective~");
+				RaidModeTime = GetGameTime() + (300.0);
+				npc.m_flSwordParticleAttackCD = GetGameTime() + 10.0;
+				npc.m_flPortalSummonGate = GetGameTime() + 25.0;
+				npc.m_flUpperSlashCD = GetGameTime() + 15.0;
+				npc.m_flCreateRingCD = GetGameTime() + 30.0;
+				npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
+				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.m_bisWalking = true;
+			}
+		}
+	}
+	if(TimeLeft > 0.0)
+	{
+		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 0.5);
 		return true;
 	}
 	return false;

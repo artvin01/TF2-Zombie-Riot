@@ -6,7 +6,9 @@
 #include <clientprefs>
 #include <dhooks>
 #if defined ZR || defined RPG
-#include <tf2items>
+#undef AUTOLOAD_EXTENSIONS
+#tryinclude <tf2items>
+#define AUTOLOAD_EXTENSIONS
 #include <tf_econ_data>
 #endif
 #if !defined RTS
@@ -1600,6 +1602,7 @@ public void OnClientDisconnect(int client)
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	f_BuildingIsNotReady[client] = 0.0;
+	f_VintulumBombRecentlyUsed[client] = 0.0;
 	//Needed to reset attackspeed stuff
 #endif
 

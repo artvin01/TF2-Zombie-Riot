@@ -989,6 +989,10 @@
 		"chi"		"步哨"
 		"ko"		"센트리 건"
 	}
+	"Vintulum Bomb"
+	{
+		"en"		"Vintulum Bomb"
+	}
 	"Mortar"
 	{
 		"en"		"Mortar"

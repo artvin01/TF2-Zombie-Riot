@@ -403,8 +403,7 @@
 	}
 	"Eccentric Lore 1-1a"
 	{
-		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
-		"ko"	"''아, '그림자' 말인가. 언제 나타날지 모르게 그림자 속을 맴도는 존재. 가끔 세상과 단절된 느낌이 들지? 그게 그가 널 슬쩍 건드린 증거야. 지금은 그저 심심풀이로 장난만 치고 있지만, 만약 진짜 모습을 드러내게 된다면... 모든 게 멈추고, 우린 그에게 집어삼켜지겠지.''"
+		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's her striking. Luckily it's small pranks to keep her amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
 	}
 	"Eccentric Lore 1-1b"
 	{
@@ -420,8 +419,6 @@
 	"Eccentric Lore 1-2"
 	{
 		"en"	"''Ah, he's locked away. Your Mazeat friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
-		"ru"	"\"А, под замком. Ваш друг комбайн запер «Взбешённого клинка», как он это сделал, я до сих пор не знаю. Скажем так, он никогда не увидит дневной свет, пока он в клетке.\""
-		"ko"	"''아, 그는 봉인 됐어. 네 콤바인 친구가 저 멀리에 '칼춤' 을 봉인했지. 그가 도대체 어떻게 한 건지는 아직도 이해가 안 가지만 말이지. 하지만 말이지, 그 봉인이 존재하는 한, 그는 결코 다시 세상의 빛을 보지 못할 거야.''"
 	}
 	"Eccentric Option 1-3"
 	{
@@ -431,9 +428,7 @@
 	}
 	"Eccentric Lore 1-3"
 	{
-		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
-		"ru"	"\"Ха-ха-ха, «Белый цветок» даже не представляет, как это провернуть. Особенно учитывая, что у других лордов другие планы. Однако в мире есть участок, где есть только природа, но туда легко вторгнуться.\""
-		"ko"	"''하하하, '배풍등은' 은 그 일을 어떻게 시작해야 할지 전혀 감도 못 잡고 있어. 다른 군주들까지 각자 자기 계획만을 위해 따로 놀고 있으니 상황은 더 복잡하지. 물론 세상 어딘가에는 자연만이 숨 쉬는 고요한 땅이 있긴 해. 다만, 그 지역은 너무 쉽게 침범당할 수 있는 곳이야.''"
+		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Betraying every other lord, only himself and 'Shadow' left together.''"
 	}
 	"Eccentric Option 1-4"
 	{
@@ -1916,7 +1911,7 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
+		"en"	"An artifact left behind by a lord.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
 	}
 	"Whiteflower"
 	{
@@ -1926,23 +1921,21 @@
 	}
 	"Whiteflower Desc"
 	{
-		"en"	"An artifact left behind by a Crimson Troupe member.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
+		"en"	"An artifact left behind by a lord.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 	}
 	"Shadow"
 	{
-		"en"	"Shadow"
+		"en"	"''Shadow''"
 		"ru"	"«Тень»"
 		"ko"	"''그림자''"
 	}
 	"Shadow Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}NPC allies will use the same max health from players."
-		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{yellow}Персонажи-союзники будут иметь тот же макс. запас здоровья, что и игроки."
-		"ko"	"''크림슨 극단'' 멤버의 유물.\n{yellow}모든 아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해집니다."
+		"en"	"An artifact left behind by a lord.\n{yellow}NPC allies will use the same max health from players."
 	}
 	"Right Eye of the Natator"
 	{
-		"en"	"Right Eye of the Natator"
+		"en"	"''Right Eye of the Natator''"
 		"ru"	"«Правый глаз нататора»"
 		"ko"	"''프릴리베의 오른 눈''"
 	}
@@ -1953,7 +1946,7 @@
 	}
 	"Left Eye of the Natator"
 	{
-		"en"	"Left Eye of the Natator"
+		"en"	"''Left Eye of the Natator''"
 		"ru"	"«Левый глаз нататора»"
 		"ko"	"''프릴리베의 왼 눈''"
 	}
@@ -1964,7 +1957,7 @@
 	}
 	"End of Times"
 	{
-		"en"	"End of Times"
+		"en"	"''End of Times''"
 		"ru"	"«Конец времён»"
 		"ko"	"''시간의 끝''"
 	}
@@ -2680,5 +2673,9 @@
 	"Almagest Technology Desc"
 	{
 		"en"	"It's Very Alluring.\n{green} Most cooldowns are reduced by 33％"
+	}
+	"Library Of Lixandria Title"
+	{
+		"en" "You see a giant library full of books, some stick out to you."
 	}
 }

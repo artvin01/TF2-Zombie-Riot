@@ -218,6 +218,25 @@ methodmap Umbral_WF < CClotBody
 		SetEntityRenderColor(npc.m_iWearable4, Rand_R, Rand_G, Rand_B, 125);
 		
 		npc.StartPathing();
+		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 0.85;
+				fl_Extra_MeleeArmor[npc.index] *= 1.25;
+				fl_Extra_RangedArmor[npc.index] *= 1.25;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+				fl_Extra_Damage[npc.index] *= 2.0;
+				fl_Extra_MeleeArmor[npc.index] *= 0.65;
+				fl_Extra_RangedArmor[npc.index] *= 0.65;
+			}
+		}
 		
 		return npc;
 	}
