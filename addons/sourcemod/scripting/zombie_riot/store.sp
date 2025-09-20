@@ -3477,7 +3477,10 @@ static void MenuPage(int client, int section)
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
+				if(Waves_Started())
+					Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
+				else
+					Format(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
 				menu.AddItem("-2", buffer);
 			}
 		}

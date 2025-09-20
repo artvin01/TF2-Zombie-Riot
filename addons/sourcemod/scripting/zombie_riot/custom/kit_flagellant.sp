@@ -163,7 +163,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 							ParticleRef[client] = EntIndexToEntRef(entity);
 						}
 					}
-					ApplyRapidSuturing(client);
+				//	ApplyRapidSuturing(client);
 					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
 					
 					if(LastMann)

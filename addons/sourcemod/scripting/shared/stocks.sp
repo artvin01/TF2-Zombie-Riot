@@ -1286,12 +1286,15 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-	if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != -1)
+	if(HasSpecificBuff(victim, "Thick Blood"))
 	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
+		if(effectoverride != 1)
+		{
+			BleedAmountCountStack[OriginalIndex] -= 1;
+			if(BleedAmountCountStack[OriginalIndex] < 0)
+				BleedAmountCountStack[OriginalIndex] = 0;
+			return Plugin_Stop;
+		}
 	}
 	float pos[3];
 	
