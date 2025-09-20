@@ -206,7 +206,7 @@ void Waves_MapStart()
 {
 	delete Rounds;
 	delete g_AllocPooledStringCache;
-	FogEntity = INVALID_ENT_REFERENCE;
+	CustomFogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	NoBarneySpawn = true;
@@ -232,7 +232,7 @@ int Waves_MapSeed()
 
 void Waves_PlayerSpawn(int client)
 {
-	if(FogEntity != INVALID_ENT_REFERENCE)
+	if(CustomFogEntity != INVALID_ENT_REFERENCE)
 	{
 		SetVariantString("rpg_fortress_envfog");
 		AcceptEntityInput(client, "SetFogController");
@@ -1342,13 +1342,13 @@ void Waves_RoundStart(bool event = false)
 			SkyNameRestore[0] = 0;
 		}
 
-		if(FogEntity != INVALID_ENT_REFERENCE)
+		if(CustomFogEntity != INVALID_ENT_REFERENCE)
 		{
-			int entity = EntRefToEntIndex(FogEntity);
+			int entity = EntRefToEntIndex(CustomFogEntity);
 			if(entity != INVALID_ENT_REFERENCE)
 				RemoveEntity(entity);
 			
-			FogEntity = INVALID_ENT_REFERENCE;
+			CustomFogEntity = INVALID_ENT_REFERENCE;
 		}
 	}
 	
@@ -2076,13 +2076,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			if(round.FogChange)
 			{
-				if(FogEntity != INVALID_ENT_REFERENCE)
+				if(CustomFogEntity != INVALID_ENT_REFERENCE)
 				{
-					int entity = EntRefToEntIndex(FogEntity);
+					int entity = EntRefToEntIndex(CustomFogEntity);
 					if(entity > MaxClients)
 						RemoveEntity(entity);
 					
-					FogEntity = INVALID_ENT_REFERENCE;
+					CustomFogEntity = INVALID_ENT_REFERENCE;
 				}
 				
 				int entity = CreateEntityByName("env_fog_controller");
@@ -2101,7 +2101,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					DispatchSpawn(entity);
 					AcceptEntityInput(entity, "TurnOn");
 
-					FogEntity = EntIndexToEntRef(entity);
+					CustomFogEntity = EntIndexToEntRef(entity);
 
 					for(int client = 1; client <= MaxClients; client++)
 					{
