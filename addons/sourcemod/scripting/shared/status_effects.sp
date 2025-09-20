@@ -5661,7 +5661,7 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 
 		Attributes_Set(entity, 125, (nerfHealth + sub));
 	}
-	else if(ratio > 0.0 && GetTeam(entity) != TFTeam_Red)
+	else if(ratio > 0.0/* && GetTeam(entity) != TFTeam_Red*/)
 	{
 		int attacker = entity;
 		

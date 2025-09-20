@@ -1473,7 +1473,11 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 
 			if(GetTeam(victim) == TFTeam_Red)
 			{
-				SmiteNpcToDeath(victim);
+				SDKHooks_TakeDamage(victim, attacker, attacker, float(ReturnEntityMaxHealth(victim)), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+				float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+				TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+				//do dmg once
 			}
 			else
 			{

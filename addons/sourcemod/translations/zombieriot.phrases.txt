@@ -4295,4 +4295,8 @@
 	{
 		"en"		"You have too many perks, get rid of one."
 	}
+	"You removed the current perk"
+	{
+		"en"		"You removed the current perk as you had it before when selecting it."
+	}
 }
