@@ -1,117 +1,108 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_2_5.mdl"	//current one on the server: _2_5
+$modelname "zombie_riot/weapons/ruina_models_2_6_test2.mdl"	//current one on the server: _2_5
 
-$bodygroup "ruina_bow_2"	//done
+$bodygroup "ruina_bow_2"		//Converted
 {
 	blank
 	studio "v2/ruina_bow_2.smd"
 }
-$bodygroup "hand_crest_v2"	//done
+$bodygroup "hand_crest_v2"		//Converted
 {
 	blank
 	studio "v2/hand_crest_v2.smd"
 }
-$bodygroup "lan_sword_v2"	//done
+$bodygroup "lan_sword_v2"		//Converted
 {
 	blank
 	studio "v2/lan_sword_v2.smd"
 }
-$bodygroup "eur_staff_v2"	//done
+$bodygroup "eur_staff_v2"		//Converted
 {
 	blank
 	studio "v2/eur_staff_v2.smd"
 }
-$bodygroup "ruina_blade_v2"	//done
+$bodygroup "ruina_blade_v2"		//Converted
 {
 	blank
 	studio "v2/ruina_blade_v2.smd"
 }
-$bodygroup "laser_cannon_v1"	//done
+$bodygroup "laser_cannon_v1"	//Converted
 {
 	blank
 	studio "v2/laser_cannon_v1.smd"
 }
-$bodygroup "dagger_v2"	//done
+$bodygroup "dagger_v2"			//Converted
 {
 	blank
 	studio "v2/dagger_v2.smd"
 }
-$bodygroup "healing_staff_2"	//done
+$bodygroup "healing_staff_2"	//Converted
 {
 	blank
 	studio "v2/healing_staff_2.smd"
 }
-$bodygroup "rei_launcher"		
+$bodygroup "rei_launcher"		//Converted
 {
 	blank
 	studio "v2/rei_launcher.smd"
 }
-$bodygroup "wings"			
+$bodygroup "unused"				//aaaa This needs to exist so the body group indexes don't get fucked inside the weapons.cfg
 {
 	blank
-	studio "v2/wings.smd"
+	studio "v2/hand_crest_v2.smd"
 }
-$bodygroup "lance_1"		
+$bodygroup "lance_1"			//Converted
 {
 	blank
 	studio "v2/lance_1.smd"
 }
-$bodygroup "lance_2"		
+$bodygroup "lance_2"			//Converted
 {
 	blank
 	studio "v2/lance_2.smd"
 }
-$bodygroup "lance_3"		
+$bodygroup "lance_3"			//Converted
 {
 	blank
 	studio "v2/lance_3.smd"
 }
-$bodygroup "lance_4"		
+$bodygroup "lance_4"			//Converted
 {
 	blank
 	studio "v2/lance_4.smd"
 }
-$bodygroup "hand_crest_v3"		
+$bodygroup "hand_crest_v3"		//Converted
 {
 	blank
 	studio "v2/hand_crest_v3.smd"
 }
-$bodygroup "sword_v3"		
+$bodygroup "sword_v3"			//Converted
 {
 	blank
 	studio "v2/sword_v3.smd"
 }
-$bodygroup "sword_v3_1"		
+$bodygroup "sword_v3_1"			//Converted
 {
 	blank
 	studio "v2/sword_v3_1.smd"
 }
-$bodygroup "sword_v4"		
+$bodygroup "sword_v4"			//Converted
 {
 	blank
 	studio "v2/sword_v4.smd"
 }
-$bodygroup "lan_sword_v3"		
+$bodygroup "lan_sword_v3"		//Converted
 {
 	blank
 	studio "v2/lan_sword_v3.smd"
 }
-$bodygroup "laser_cannon_v2"		//this was extremely painfull to make due to the normals being ass. likely due to my inexperience, but holy shit this was painfull
+$bodygroup "laser_cannon_v2"	//Converted
 {
 	blank
 	studio "v2/laser_cannon_v2.smd"
 }
-$bodygroup "wings_2"	
-{
-	blank
-	studio "v2/wings_2.smd"
-}
-
-
-
-
 
 $surfaceprop "metal"
 
@@ -129,6 +120,12 @@ $cdmaterials "models\props_skybox\"					//black							//legit just black
 $cdmaterials "models\props_doomsday\"				//australium_container_glass	//its like golden glass
 $cdmaterials "models\items\"						//crystal_ball_glass			//Emerald pulsating glass.
 $cdmaterials "passtime\neons\"						//neon_yellow_solid, neon_blue_solid
+
+$cdmaterials "models\props_mvm\"
+//painted_wood_01
+
+//../../../qc/ruina_qc/v2/
+
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0

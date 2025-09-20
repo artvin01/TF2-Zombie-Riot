@@ -213,7 +213,7 @@ enum	//it appears if I try to make it go above 14 it starts glitching out
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_5.mdl"
+#define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_6_test2.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -225,7 +225,7 @@ enum
 	RUINA_DAGGER_2			= 64,			//7
 	RUINA_HEALING_STAFF_2	= 128,			//8
 	RUINA_REI_LAUNCHER		= 256,			//9
-	RUINA_WINGS_1			= 512,			//10
+	RUINA_UNUSED_1			= 512,			//10	//need to leave it in so the index's are proper, agh. an open spot for replacement.
 	RUINA_IMPACT_LANCE_1	= 1024,			//11
 	RUINA_IMPACT_LANCE_2	= 2048,			//12
 	RUINA_IMPACT_LANCE_3	= 4096,			//13
@@ -235,8 +235,7 @@ enum
 	RUINA_ZANGETSU_2		= 65536,		//17
 	RUINA_BLADE_3			= 131072,		//18
 	RUINA_LAN_SWORD_3		= 262144,		//19
-	RUINA_LAZER_CANNON_2	= 524288,		//20
-	RUINA_WINGS_2			= 1048576		//21	going beyond this it legit cannot compile anymore, likely due to too many things
+	RUINA_LAZER_CANNON_2	= 524288		//20
 }
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_2.mdl"
 enum
