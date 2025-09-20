@@ -1372,7 +1372,7 @@ void Actor_EditorMenu(int client)
 		menu.AddItem("models/eli.mdl", "Eli");
 
 		menu.AddItem("models/gman.mdl", "G-Man");
-		menu.AddItem("models/monk.mdl", "Father");
+		menu.AddItem("models/zombie_riot/grigori/monk_custom.mdl", "Father");
 		menu.AddItem("models/kleiner.mdl", "Kleiner");
 		menu.AddItem("models/vortigaunt.mdl", "Vortigaunt");
 		menu.AddItem("models/humans/group01/male_07.mdl", "Male07");

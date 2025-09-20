@@ -2592,6 +2592,14 @@ void GiveBuildingMetalCostOnBuy(int entity, int cost)
 }
 void DeleteAndRefundBuilding(int client, int entity)
 {	
+	//dont do boom if primed
+	if(BombIdVintulum() == i_NpcInternalId[entity])
+	{
+		ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(entity);
+		if(npc.m_flBombExplodeTill)
+			return;
+	}
+
 	if(IsValidClient(client))
 	{
 		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");

@@ -221,7 +221,7 @@ methodmap XenoFatherGrigori < CClotBody
 	
 	public XenoFatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
+		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/grigori/monk_custom.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
