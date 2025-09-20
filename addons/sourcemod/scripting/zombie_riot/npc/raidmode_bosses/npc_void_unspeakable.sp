@@ -574,42 +574,9 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		fl_Extra_MeleeArmor[npc.index] *= 0.1;
 		fl_Extra_RangedArmor[npc.index] *= 0.1;
 		
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
+		int color[4] = { 50, 0, 50, 150 };
+		SetCustomFog(color, color, 200.0, 500.0, 0.99);
 		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "50 0 50 150");
-			DispatchKeyValue(entity, "fogcolor2", "50 0 50 150");
-			DispatchKeyValueFloat(entity, "fogstart", 200.0);
-			DispatchKeyValueFloat(entity, "fogend", 500.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.99);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
 		return;
 	}
 

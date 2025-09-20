@@ -763,7 +763,7 @@ void CHIMERA_CleanUp(int iNPC)
 {
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	npc.StopPassiveSound();
-	npc.StopStunSound(death);
+	npc.StopStunSound(true);
 	ClearCustomFog();
 }
 
