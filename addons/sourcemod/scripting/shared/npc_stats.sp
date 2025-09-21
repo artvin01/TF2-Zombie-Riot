@@ -9869,6 +9869,10 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	static float vel[3];
 	static float flMyPos[3];
 	npc.GetVelocity(vel);
+	//clamping so insane speeds dont translate through hitting the entire map.
+	fClamp(vel[0], -300.0, 300.0);
+	fClamp(vel[1], -300.0, 300.0);
+	fClamp(vel[2], -300.0, 300.0);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	static float hullcheckmins[3];

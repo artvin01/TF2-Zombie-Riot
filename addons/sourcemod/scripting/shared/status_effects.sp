@@ -60,8 +60,7 @@ enum struct StatusEffect
 		this.DamageTakenMulti 			= -1.0;
 		this.DamageDealMulti 			= -1.0;
 		this.MovementspeedModif 		= -1.0;
-		this.LinkedStatusEffect 		= 0;
-		this.LinkedStatusEffectNPC 		= 0;
+		this.AttackspeedBuff			= -1.0;
 		this.ElementalLogic 			= false;
 	}
 }
@@ -372,6 +371,27 @@ int StatusEffect_AddBlank()
 
 int StatusEffect_AddGlobal(StatusEffect data)
 {
+	if(data.AttackspeedBuff > 0.0)
+	{
+		/*
+		//check for linked.
+		if(!data.LinkedStatusEffect)
+		{
+			LogError("%s | NO LINKED BUFF FOR ATTACKSPEED.", data.BuffName);
+		}
+		if(!data.LinkedStatusEffectNPC)
+		{
+			LogError("%s | NO LINKED BUFF FOR ATTACKSPEED.", data.BuffName);
+		}
+		*/
+		data.LinkedStatusEffect 		= StatusEffect_AddBlank();
+		data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	}
+	else
+	{
+		data.LinkedStatusEffect 		= 0;
+		data.LinkedStatusEffectNPC 		= 0;
+	}
 	return AL_StatusEffects.PushArray(data);
 }
 
@@ -1780,11 +1800,11 @@ void StatusEffects_Enfeeble()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 0.5;	// -50% speed
 	data.AttackspeedBuff			= 1.5;	// -50% attack speed
-	data.Positive				= false;
-	data.ShouldScaleWithPlayerCount		= true;
-	data.Slot				= 0;
-	data.SlotPriority			= 0;
-	data.ElementalLogic			= true;
+	data.Positive					= false;
+	data.ShouldScaleWithPlayerCount	= true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.ElementalLogic				= true;
 	data.OnTakeDamage_DealFunc		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 }
@@ -1939,8 +1959,7 @@ void StatusEffects_Freeplay1()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 1.15);
 	StatusEffect_AddGlobal(data);
 	
@@ -2041,13 +2060,11 @@ void StatusEffects_Freeplay3()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 1.06);
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
+
 	data.AttackspeedBuff = 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Hurtle II");
@@ -2061,13 +2078,11 @@ void StatusEffects_Freeplay3()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 1.14);
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
+
 	data.AttackspeedBuff = 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Freeplay Hurtle III");
@@ -2081,13 +2096,11 @@ void StatusEffects_Freeplay3()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 8; //0 means ignored
 	data.SlotPriority				= 3; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 1.21);
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
+
 	data.AttackspeedBuff = 0.0;
 }
 
@@ -2137,8 +2150,7 @@ void StatusEffects_Prosperity()
 	data.AttackspeedBuff			= 1.035;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Slot						= 4;
 	data.SlotPriority				= 1;
 	StatusEffect_AddGlobal(data);
@@ -2153,8 +2165,7 @@ void StatusEffects_Prosperity()
 	data.AttackspeedBuff			= 1.07;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Slot						= 4;
 	data.SlotPriority				= 2;
 	StatusEffect_AddGlobal(data);
@@ -2169,8 +2180,7 @@ void StatusEffects_Prosperity()
 	data.AttackspeedBuff			= 1.14;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Slot						= 4;
 	data.SlotPriority				= 3;
 	StatusEffect_AddGlobal(data);
@@ -2220,15 +2230,12 @@ void StatusEffects_Silence()
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = true;
 	data.AttackspeedBuff			= 1.1;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	SilenceIndex = StatusEffect_AddGlobal(data);
 
 	data.AttackspeedBuff			= 0.0;
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
 	//Immunity to all Negative debuffs.
 	strcopy(data.BuffName, sizeof(data.BuffName), "Hardened Aura");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "֏");
@@ -2721,8 +2728,7 @@ void StatusEffects_Victoria()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= 0.5;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
@@ -2782,8 +2788,7 @@ void StatusEffects_Medieval()
 	data.DamageDealMulti			= 0.125;
 	data.MovementspeedModif			= 1.5;
 	data.AttackspeedBuff			= (1.0 / 1.25);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.OnBuffStarted				= GodlyMotivaitonGive;
 	data.OnBuffEndOrDeleted			= GodlyMotivaitonEnd;
 	data.Positive 					= true;
@@ -2823,8 +2828,7 @@ void StatusEffects_Medieval()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.AttackspeedBuff			= (1.0 / 1.1);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 	
@@ -2840,8 +2844,7 @@ void StatusEffects_Medieval()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.AttackspeedBuff			= (1.0 / 1.1);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 }
@@ -2894,8 +2897,7 @@ void StatusEffects_MERLT0N_BUFF()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= (1.0 / 1.25);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -2927,8 +2929,7 @@ void StatusEffects_SevenHeavySouls()
 	data.DamageDealMulti			= 0.5;
 	data.MovementspeedModif			= 1.5;
 	data.AttackspeedBuff			= 0.5;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
 	data.Slot						= 0; //0 means ignored
@@ -2973,8 +2974,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= 1.2;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -2989,8 +2989,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 0.8;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= 1.2;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3005,8 +3004,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 0.25;
 	data.MovementspeedModif			= 1.25;
 	data.AttackspeedBuff			= 0.75;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.OnBuffStarted				= QuantumEntanglementStart;
 	data.OnBuffEndOrDeleted			= QuantumEntanglementEnd;
 	data.Positive 					= true;
@@ -3017,6 +3015,7 @@ void StatusEffects_Aperture()
 	
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Energizing Gel");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "❁");
@@ -3025,9 +3024,6 @@ void StatusEffects_Aperture()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 1.5;
-	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3042,8 +3038,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3058,8 +3053,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= 0.5;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3074,8 +3068,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3103,8 +3096,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 1.0;
 	data.MovementspeedModif			= 1.25;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3119,8 +3111,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3135,8 +3126,6 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= (1.0 / TIMEWARP_BUFF_MULTIPLIER);
 	data.AttackspeedBuff			= TIMEWARP_BUFF_MULTIPLIER;
-	data.LinkedStatusEffect			= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.OnBuffStarted				= TimeWarp_Start;
 	data.OnBuffStoreRefresh			= TimeWarp_Start;
 	data.OnBuffEndOrDeleted			= TimeWarp_End;
@@ -3154,8 +3143,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3170,8 +3158,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3186,8 +3173,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= 0.3;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3202,8 +3188,7 @@ void StatusEffects_Aperture()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 1.15;
 	data.AttackspeedBuff			= -1.0;
-	data.LinkedStatusEffect			= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
@@ -3536,13 +3521,12 @@ void StatusEffects_SupportWeapons()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 1.2);
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
+	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Zealot's Random Drinks");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Z");
@@ -3583,8 +3567,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= 0.7;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
@@ -3605,8 +3588,7 @@ void StatusEffects_SupportWeapons()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= 0.952;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.OnTakeDamage_DealFunc 		= INVALID_FUNCTION;
@@ -3616,8 +3598,7 @@ void StatusEffects_SupportWeapons()
 	data.HudDisplay_Func 			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Empowering Domain Hidden");
@@ -3640,8 +3621,7 @@ void StatusEffects_SupportWeapons()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= 0.15;
 	data.MovementspeedModif			= -1.0;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -3743,8 +3723,7 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= 1.5;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
@@ -3762,8 +3741,7 @@ void StatusEffects_FallenWarrior()
 	data.OnBuffStarted				= Terrified_Start;
 	data.OnBuffStoreRefresh			= Terrified_Start;
 	data.OnBuffEndOrDeleted			= Terrified_End;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= 1.5;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
@@ -3782,8 +3760,7 @@ void StatusEffects_FallenWarrior()
 	data.OnBuffStarted				= UnstableUmbralRift_StartOnce;
 	data.OnBuffStoreRefresh			= UnstableUmbralRift_Start;
 	data.OnBuffEndOrDeleted			= UnstableUmbralRift_End;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= 1.5;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
@@ -3799,8 +3776,7 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.OnTakeDamage_PostAttacker	= Altered_FunctionsBuffSpread;
 	data.AttackspeedBuff			= (1.0 / 1.5);
 	data.Slot						= 0; //0 means ignored
@@ -3816,8 +3792,7 @@ void StatusEffects_FallenWarrior()
 	data.MovementspeedModif			= 0.5;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
 	data.AttackspeedBuff			= 1.5;
 	data.Slot						= 0; //0 means ignored
@@ -4246,15 +4221,13 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
+	
 	data.AttackspeedBuff			= (1.0 / 2.0);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Mystery Beer");
@@ -4266,8 +4239,6 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.2);
 	data.Slot						= 11; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
@@ -4284,16 +4255,13 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.Slot						= 11; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Osmosis'ity");
@@ -4384,22 +4352,17 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Village Radar");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌒");
 	data.Positive 					= true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.1);
 	data.FlagAttackspeedLogic 		= (BUFF_ATTACKSPEED_BUFF_DISABLE | BUFF_PROJECTILE_SPEED | BUFF_PROJECTILE_RANGE);
 	StatusEffect_AddGlobal(data);
 
 	data.FlagAttackspeedLogic		= 0;
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Jungle Drums");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌭");
 	data.Positive 					= true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.025);
 	StatusEffect_AddGlobal(data);
 
@@ -4414,8 +4377,6 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Homeland Defense");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍣");
 	data.Positive 					= true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 16;
 	data.SlotPriority				= 2;
 	data.AttackspeedBuff			= (1.0 / 1.24);
@@ -4424,8 +4385,6 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Arms");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⍤");
 	data.Positive 					= true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 16; //0 means ignored
 	data.SlotPriority				= 1; //if its higher, then the lower version is entirely ignored.
 	data.AttackspeedBuff			= (1.0 / 1.12);
@@ -4437,14 +4396,11 @@ void StatusEffects_StatusEffectListOnly()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Light");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "i");
 	data.Positive 					= true;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.1);
 	StatusEffect_AddGlobal(data);
 	
 	data.FlagAttackspeedLogic		= 0;
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Victoria Nuke");
@@ -4634,15 +4590,12 @@ void StatusEffects_PurnellKitBuffs()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1 / 1.2);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 
 	//20% more Damage
@@ -4924,8 +4877,6 @@ void StatusEffects_Construction()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	//-0.5
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 	
@@ -4941,8 +4892,6 @@ void StatusEffects_Construction()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	//-0.5
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.1);
 	StatusEffect_AddGlobal(data);
 
@@ -4959,8 +4908,6 @@ void StatusEffects_Construction()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	//-0.5
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 
@@ -4976,13 +4923,10 @@ void StatusEffects_Construction()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	//-0.5
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 	
-	data.LinkedStatusEffect 		= 0;
-	data.LinkedStatusEffectNPC 		= 0;
+
 	data.AttackspeedBuff			= 0.0;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Starting Grace");
@@ -5075,8 +5019,6 @@ void StatusEffects_Construction()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.2);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
@@ -5323,13 +5265,10 @@ void StatusEffects_Plasm()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.AttackspeedBuff			= (1.0 / 1.3);
 	StatusEffect_AddGlobal(data);
 
-	data.LinkedStatusEffect = 0;
-	data.LinkedStatusEffectNPC = 0;
+
 	data.AttackspeedBuff = 0.0;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Plasmic Layering I");
@@ -5423,8 +5362,6 @@ void StatusEffects_Modifiers()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 1.2;
 	data.AttackspeedBuff			= (1.0 / 2.0);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false; //lol why was it on yes
 	data.Slot						= 0; //0 means ignored
@@ -5843,8 +5780,6 @@ void StatusEffects_XenoLab()
 	data.DamageDealMulti			= 0.25;
 	data.MovementspeedModif			= 1.15;
 	data.AttackspeedBuff			= (1.0 / 1.25);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -5859,8 +5794,6 @@ void StatusEffects_XenoLab()
 	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= (1.0 / 1.05);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
@@ -5894,8 +5827,6 @@ void StatusEffects_Rogue3()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Fisticuffs");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= false;
 	data.Slot					= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
@@ -5936,8 +5867,6 @@ void StatusEffects_Rogue3()
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
 	data.AttackspeedBuff			= (1.0 / 1.35);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -5964,8 +5893,6 @@ void StatusEffects_Rogue3()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.Positive 					= false;
 	data.AttackspeedBuff			= 1.5;
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -5996,8 +5923,6 @@ void StatusEffects_Rogue3()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= 1.25;
 	data.AttackspeedBuff			= (1.0 / 1.4);
-	data.LinkedStatusEffect 		= StatusEffect_AddBlank();
-	data.LinkedStatusEffectNPC 		= StatusEffect_AddBlank();
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
