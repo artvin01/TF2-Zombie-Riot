@@ -171,7 +171,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_227.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_228.mdl"
 
 //model uses self made IK rigs, to not break the top stuff.
 #define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
