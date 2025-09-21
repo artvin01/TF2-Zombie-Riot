@@ -1792,6 +1792,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	
+#if defined ZR
 	if(HasSpecificBuff(victim, "Envenomed"))
 	{
 		bool venom = true;
@@ -1805,6 +1806,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			Force_ExplainBuffToClient(victim, "Envenomed");
 		}
 	}
+#endif
 	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))

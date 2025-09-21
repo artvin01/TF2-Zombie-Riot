@@ -9330,7 +9330,12 @@ public void KillNpc(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity)) //Dont do this in a think pls.
 	{
+#if defined RPG
+		NPC_Despawn(entity);
+#endif
+#if defined ZR
 		SmiteNpcToDeath(entity);
+#endif
 	}
 }
 
