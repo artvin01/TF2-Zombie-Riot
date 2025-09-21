@@ -1012,6 +1012,26 @@ void Force_ExplainBuffToClient(int client, const char[] name, bool IgnoreCooldow
 	AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
 	ExplainBuffToClient(client, Apply_MasterStatusEffect, false, index, IgnoreCooldown);
 }
+
+bool WasAlreadyExplainedToClient(int client, const char[] name)
+{
+	int index;
+	index = AL_StatusEffects.FindString(name, StatusEffect::BuffName);
+	if(index == -1)
+	{
+		CPrintToChatAll("{crimson} A DEV FUCKED UP!!!!!!!!! Name %s GET AN ADMIN RIGHT NOWWWWWWWWWWWWWW!^!!!!!!!!!!!!!!!!!!one111 (more then 0)",name);
+		LogError("Force_ExplainBuffToClient A DEV FUCKED UP!!!!!!!!! Name %s",name);
+		return false;
+	}
+	StatusEffect Apply_MasterStatusEffect;
+	AL_StatusEffects.GetArray(index, Apply_MasterStatusEffect);
+	if(index == -1)
+	{
+		index = AL_StatusEffects.FindString(Apply_MasterStatusEffect.BuffName, StatusEffect::BuffName);
+		return DisplayBuffHintToClient[client][index];
+	}
+	return false;
+}
 void ExplainBuffToClient(int client, StatusEffect Apply_MasterStatusEffect, bool AppliedOntoOthers = false, int index = -1, bool IgnoreCooldown = false)
 {
 	//Bad client

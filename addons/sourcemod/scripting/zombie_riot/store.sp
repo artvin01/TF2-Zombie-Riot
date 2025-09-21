@@ -10,6 +10,7 @@ enum
 	PAP_DESC_PREVIEW
 }
 
+
 enum struct ItemInfo
 {
 	int Cost;
@@ -4319,6 +4320,17 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 
 public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 {
+	//Profiler profiler = new Profiler();
+//	profiler.Start();
+	int returndo = Store_MenuItemInt(menu, action, client, choice);
+//	profiler.Stop();
+//	PrintToChatAll("Profiler: %f", profiler.Time);
+//	delete profiler;
+
+	return returndo;
+}
+public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choice)
+{
 	switch(action)
 	{
 		case MenuAction_End:
@@ -4494,8 +4506,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							}
 							
 							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
-							{
-								Store_ApplyAttribs(client);
+							{	
+								Store_ApplyAttribs(client);								
 								Store_GiveAll(client, GetClientHealth(client));
 							}
 						}
@@ -5320,6 +5332,16 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+//	Profiler profiler = new Profiler();
+//	profiler.Start();		
+	Store_GiveAllInternal(client, health, removeWeapons);		
+//	profiler.Stop();	
+//	PrintToChatAll("Profiler testing: %f", profiler.Time);
+//	delete profiler;
+}
+
+void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
+{
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
@@ -5356,12 +5378,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	else if(StoreItems)
 	{
-		Store_RemoveSpecificItem(client, "Irene's Handcannon");
-		Store_RemoveSpecificItem(client, "Teutonic Longsword");
+		Store_RemoveSpecificItem(client, "Teutonic Longsword", false);
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 	//OverridePlayerModel(client);
-
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
 	{
@@ -5369,7 +5389,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		{
 			static char classname[36];
 			GetEntityClassname(i, classname, sizeof(classname));
-			if(!StrContains(classname, "tf_projectile_pipe_remote"))
+			if(StrEqual(classname, "tf_projectile_pipe_remote"))
 			{
 				if(!IsEntitySpike(i))
 				{
@@ -5382,7 +5402,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			}
 		}
 	}
-
+	
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	ClientSaveRageMeterStatus(client);
@@ -5391,7 +5411,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		TF2_RemoveAllWeapons(client);
-	}
+	}	
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
@@ -5411,14 +5431,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
-	/*
-	bool Was_phasing = false;
 	
-	if(b_PhaseThroughBuildingsPerma[client] == 2)
-	{
-		Was_phasing = true;
-	}
-	*/
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
@@ -5440,7 +5453,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
-		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 
@@ -5456,14 +5468,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 				if(info.Classname[0])
 				{
-					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
-					{
-						if(hasPDA)
-							continue;
-						
-						hasPDA = true;
-					}
-
 					Store_GiveItem(client, i, use, found);
 					if(++count > 6)
 					{
@@ -5477,86 +5481,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		if(!found)
 			Store_GiveItem(client, -1, use);
 	}
-	
+		
 	CheckMultiSlots(client);
-	
-//	Spawn_Buildable(client);
-//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer, true, false);
-	/*
-	if(entity > MaxClients)
-	{
-		TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
-	}
-
-	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
-	{
-		b_NemesisHeart[client] = true;
-	}
-	else
-	{
-		b_NemesisHeart[client] = false;
-	}
-	if(Items_HasNamedItem(client, "Xeno Virus Vial"))
-	{
-		b_XenoVial[client] = true;
-	}
-	else
-	{
-		b_XenoVial[client] = false;
-	}
-	if(Items_HasNamedItem(client, "Overlords Final Wish"))
-	{
-		b_OverlordsFinalWish[client] = true;
-	}
-	else
-	{
-		b_OverlordsFinalWish[client] = false;
-	}
-	
-	if(Items_HasNamedItem(client, "Bob's true fear"))
-	{
-		b_BobsTrueFear[client] = true;
-	}
-	else
-	{
-		b_BobsTrueFear[client] = false;
-	}
-
-	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
-	{
-		b_TwirlHairpins[client] = true;
-	}
-	else
-	{
-		b_TwirlHairpins[client] = false;
-	}
-
-	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
-	{
-		b_KahmlLastWish[client] = true;
-	}
-	else
-	{
-		b_KahmlLastWish[client] = false;
-	}
-	if(Items_HasNamedItem(client, "Opened Void Portal"))
-	{
-		b_VoidPortalOpened[client] = true;
-	}
-	else
-	{
-		b_VoidPortalOpened[client] = false;
-	}
-	
-	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
-	{
-		b_AvangardCoreB[client] = true;
-	}
-	else
-	{
-		b_AvangardCoreB[client] = false;
-	}
-	*/
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
@@ -5715,24 +5641,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					HidePlayerWeaponModel(client, entity, true);
 
-					//new item bought, make sure to update the current order and stuff of weapon changing client
-					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
-
-
-					/*
-					LogMessage("Weapon Spawned!");
-					LogMessage("Name of client %N and index %i",client,client);
-					LogMessage("info.Classname: %s",info.Classname);
-					LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
-					char AttributePrint[255];
-					for(int i=0; i<info.Attribs; i++)
-					{
-						Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, info.Attrib[i]);	
-						Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, info.Value[i]);	
-					}
-					LogMessage("attributes: ''%s''",AttributePrint);
-					LogMessage("info.Attribs: %i",info.Attribs);
-					*/
 				}
 				else
 				{
@@ -6364,7 +6272,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 	return -1;
 }
 
-void Store_RemoveSpecificItem(int client, const char[] name)
+void Store_RemoveSpecificItem(int client, const char[] name, bool UpdateSlots = false)
 {
 	if(!StoreItems)
 		return;
@@ -6384,7 +6292,8 @@ void Store_RemoveSpecificItem(int client, const char[] name)
 			StoreItems.SetArray(i, item);
 			
 		//	int entity = Store_GiveItem(client, i, item.Equipped[client]);
-			CheckMultiSlots(client);
+			if(UpdateSlots)
+				CheckMultiSlots(client);
 			return;
 		}
 	}
