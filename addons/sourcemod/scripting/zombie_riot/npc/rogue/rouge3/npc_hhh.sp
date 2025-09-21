@@ -285,43 +285,9 @@ methodmap HHH < CClotBody
 		npc.m_flSpeed = 300.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
-
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
-
-		//Ourple Fog
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "155 0 155 50");
-			DispatchKeyValue(entity, "fogcolor2", "155 0 155 50");
-			DispatchKeyValueFloat(entity, "fogstart", 400.0);
-			DispatchKeyValueFloat(entity, "fogend", 1000.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.90);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
+		
+		int color[4] = { 155, 0, 155, 50 };
+		SetCustomFog(color, color, 400.0, 100.0, 0.9);
 		
 		npc.PlaySpawnSound();
 		
@@ -664,14 +630,7 @@ public void HHH_NPCDeath(int entity)
 	}
 
 	//Remove fog on death
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int fogentity = EntRefToEntIndex(FogEntity);
-		if(fogentity > MaxClients)
-			RemoveEntity(fogentity);
-
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog();
 
 	//Remove laser on death
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)

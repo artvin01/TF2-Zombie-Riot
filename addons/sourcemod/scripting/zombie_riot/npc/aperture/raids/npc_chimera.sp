@@ -466,43 +466,10 @@ methodmap CHIMERA < CClotBody
 		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_flSpawnAnnotation = GetGameTime() + 0.5;
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
 		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "100 100 200 50");
-			DispatchKeyValue(entity, "fogcolor2", "100 100 200 50");
-			DispatchKeyValueFloat(entity, "fogstart", 400.0);
-			DispatchKeyValueFloat(entity, "fogend", 1000.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.65);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
-
+		int color[4] = { 100, 100, 200, 50 };
+		SetCustomFog(color, color, 400.0, 1000.0, 0.65, true);
+		
 		return npc;
 	}
 }
@@ -797,14 +764,7 @@ void CHIMERA_CleanUp(int iNPC)
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	npc.StopPassiveSound();
 	npc.StopStunSound(true);
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog();
 }
 
 bool CHIMERA_timeBased(int iNPC)
