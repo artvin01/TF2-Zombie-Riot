@@ -505,6 +505,7 @@ enum struct Item
 	bool NPCWeaponAlways;
 	int GiftId;
 	bool GregBlockSell;
+	bool StaleCost;
 	int GregOnlySell;
 	bool RogueAlwaysSell;
 	
@@ -1122,6 +1123,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		item.MaxScaled = kv.GetNum("max_times_scale");
 		item.Slot = kv.GetNum("slot", -1);
 		item.GregBlockSell = view_as<bool>(kv.GetNum("greg_block_sell"));
+		item.StaleCost = view_as<bool>(kv.GetNum("stale_cost"));
 		item.GregOnlySell = kv.GetNum("greg_only_sell");
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
 		item.NPCWeaponAlways = item.NPCWeapon > 9;
@@ -2746,6 +2748,11 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 			item.NPCSeller = false;
 			item.NPCSeller_WaveStart = 0;
 			StoreItems.SetArray(i, item);
+			continue;
+		}
+		//NEVER GO ON SALE, ALWAYS SAME COST.
+		if(!unlock && item.StaleCost)
+		{
 			continue;
 		}
 		if(item.GregOnlySell == 2 && (!(StoreFlags & ZR_STORE_RESET)))
@@ -6618,62 +6625,67 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 	static ItemInfo info;
 	item.GetItemInfo(0, info);
-	if(StarterCashMode[client])
+	//NEVER GO ON SALE, ALWAYS SAME COST.
+	if(!item.StaleCost)
 	{
-		if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
+		if(StarterCashMode[client])
 		{
-			cost = RoundToCeil(float(cost) * 0.35);
-		}
-		else 
-		{
-			cost = RoundToCeil(float(cost) * 0.7);	//keep normal discount for waves that have other starting cash.
-		}
-		return;
-	}
-	
-	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
-	
-	//make sure anything thats additive is on the top, so sales actually help!!
-	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
-	{
-		if(b_SpecialGrigoriStore && !item.BoughtBefore[client])
-		{
-			//during maps where he alaways sells, always sell!
-			//If the client bought this weapon before, do not offer the discount anymore.
-			if(item.NPCSeller_WaveStart > 0 || item.NPCSeller)
+			if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
 			{
-				cost = RoundToCeil(float(cost) * item.NPCSeller_Discount);
+				cost = RoundToCeil(float(cost) * 0.35);
 			}
-			
-			if(item.NPCSeller)
-				GregSale = true;
+			else 
+			{
+				cost = RoundToCeil(float(cost) * 0.7);	//keep normal discount for waves that have other starting cash.
+			}
+			return;
 		}
-	}
-	
-	//allow greg sales here.
-	if(Setup && !GregSale)
-	{
-		cost = RoundToCeil(float(cost) * 0.9);
-	}
-	/*
-	if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
-	{
-		switch(CurrentPlayers)
+		
+		//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+		
+		//make sure anything thats additive is on the top, so sales actually help!!
+		if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 		{
-			case 0:
-				CheckAlivePlayers();
-			
-			case 1:
-				cost = RoundToNearest(float(cost) * 0.9);
-			
-			case 2:
-				cost = RoundToNearest(float(cost) * 0.92);
-			
-			case 3:
-				cost = RoundToNearest(float(cost) * 0.95);
+			if(b_SpecialGrigoriStore && !item.BoughtBefore[client])
+			{
+				//during maps where he alaways sells, always sell!
+				//If the client bought this weapon before, do not offer the discount anymore.
+				if(item.NPCSeller_WaveStart > 0 || item.NPCSeller)
+				{
+					cost = RoundToCeil(float(cost) * item.NPCSeller_Discount);
+				}
+				
+				if(item.NPCSeller)
+					GregSale = true;
+			}
 		}
+		
+		//allow greg sales here.
+		if(Setup && !GregSale)
+		{
+			cost = RoundToCeil(float(cost) * 0.9);
+		}
+		/*
+		if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
+		{
+			switch(CurrentPlayers)
+			{
+				case 0:
+					CheckAlivePlayers();
+				
+				case 1:
+					cost = RoundToNearest(float(cost) * 0.9);
+				
+				case 2:
+					cost = RoundToNearest(float(cost) * 0.92);
+				
+				case 3:
+					cost = RoundToNearest(float(cost) * 0.95);
+			}
+		}
+		*/
+			
 	}
-	*/
 	
 	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!
 	if(item.MaxCost > 0 && cost > item.MaxCost)
