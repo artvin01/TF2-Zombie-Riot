@@ -6626,9 +6626,9 @@ static void ItemCost(int client, Item item, int &cost)
 	static ItemInfo info;
 	item.GetItemInfo(0, info);
 	//NEVER GO ON SALE, ALWAYS SAME COST.
-	if(!item.StaleCost)
+	if(StarterCashMode[client])
 	{
-		if(StarterCashMode[client])
+		if(!item.StaleCost)
 		{
 			if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
 			{
@@ -6638,9 +6638,16 @@ static void ItemCost(int client, Item item, int &cost)
 			{
 				cost = RoundToCeil(float(cost) * 0.7);	//keep normal discount for waves that have other starting cash.
 			}
-			return;
 		}
+		else
+		{
+			cost = RoundToCeil(float(cost) * 0.7);
+		}
+		return;
+	}
 		
+	if(!item.StaleCost)
+	{
 		//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
 		
 		//make sure anything thats additive is on the top, so sales actually help!!
