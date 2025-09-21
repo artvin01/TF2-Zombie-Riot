@@ -1335,6 +1335,10 @@
 	{
 		"en" "⚠ Confused Ruanians"
 	}
+	"The Umbral Commander"
+	{
+		"en" "☠ The Umbral Commander"
+	}
 	"Sabotaging Electric's"
 	{
 		"en" "⚔ Sabotaging Electric's"

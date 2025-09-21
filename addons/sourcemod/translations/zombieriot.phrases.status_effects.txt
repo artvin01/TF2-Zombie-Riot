@@ -739,6 +739,14 @@
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
 	}
+	"Unstable Umbral Rift"
+	{
+		"en"	"Unstable Umbral Rift"
+	}
+	"Unstable Umbral Rift Desc"
+	{
+		"en"	"Only affects players, Reduces gravity and movementspeed, causes you to lose aircontroll aswell."
+	}
 	"Altered Functions"
 	{
 		"en"	"Altered Functions"
@@ -1577,7 +1585,7 @@
 	}
 	"Umbral Grace Desc"
 	{
-		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
+		"en"	"Gain 25％ damage reduction, 15％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 15％ attackspeed/Healrate."
 	}
 	"Void Afflicted"
 	{

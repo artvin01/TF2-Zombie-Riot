@@ -3761,7 +3761,7 @@ void StatusEffects_FallenWarrior()
 	data.OnBuffStoreRefresh			= UnstableUmbralRift_Start;
 	data.OnBuffEndOrDeleted			= UnstableUmbralRift_End;
 	
-	data.AttackspeedBuff			= 1.5;
+	data.AttackspeedBuff			= 0.0;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -5850,7 +5850,7 @@ void StatusEffects_Rogue3()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.Positive 					= true;
 	data.DamageTakenMulti 			= 0.75;
-	data.DamageDealMulti			= 0.5;
+	data.DamageDealMulti			= 0.85;
 	data.TimerRepeatCall_Func 		= UmbralGrace_Timer;
 	data.OnBuffStarted				= UmbralGrace_Start;
 	data.OnBuffEndOrDeleted			= UmbralGrace_End;
@@ -5892,7 +5892,7 @@ void StatusEffects_Rogue3()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.Positive 					= false;
-	data.AttackspeedBuff			= 1.5;
+	data.AttackspeedBuff			= 1.15;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -5938,7 +5938,7 @@ void UmbralGrace_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_Stat
 		if(Armor_Charge[entity] >= 0)
 			return;
 
-		GiveArmorViaPercentage(entity, 0.05, 1.0, _, true);
+		GiveArmorViaPercentage(entity, 0.025, 1.0, _, true);
 	}
 	else
 	{
@@ -5948,7 +5948,7 @@ void UmbralGrace_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_Stat
 		
 		for(int i; i < Element_MAX; i++) // Remove all elementals except Plasma 
 		{
-			Elemental_RemoveDamage(entity, i, RoundToNearest(float(Elemental_TriggerDamage(entity, i)) * 0.05));
+			Elemental_RemoveDamage(entity, i, RoundToNearest(float(Elemental_TriggerDamage(entity, i)) * 0.025));
 		}
 	}
 }

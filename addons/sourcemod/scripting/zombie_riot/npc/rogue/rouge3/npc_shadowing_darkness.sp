@@ -113,7 +113,7 @@ public void Shadowing_Darkness_Boss_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_CircleExpandDo)); i++) { PrecacheSound(g_CircleExpandDo[i]); }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness, the ruler");
+	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness, The Ruler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_shadowing_darkness_boss");
 	strcopy(data.Icon, sizeof(data.Icon), "shadowing_darkness");
 	data.IconCustom = true;
