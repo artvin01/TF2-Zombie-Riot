@@ -2515,6 +2515,14 @@
 	{
 		"en"	"Hitman"
 	}
+	"Cloned Hitman"
+	{
+		"en" "Cloned Hitman"
+	}
+	"Specialist Elite"
+	{
+		"en" "Specialist Elite"
+	}
 	"Mad Doctor"
 	{
 		"en"	"Mad Doctor"

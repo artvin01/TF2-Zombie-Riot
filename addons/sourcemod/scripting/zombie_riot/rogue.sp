@@ -1084,13 +1084,19 @@ void Rogue_BattleVictory()
 			{
 				Artifact artifact;
 
-				if(CurrentFloor < 5 && CurrentCount < 6 && !Rogue_Rift_NoStones())
+				if(CurrentFloor < 5 && CurrentCount < 6)
 				{
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
 					{
-						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
-							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+						bool Allow = true;
+						if(Rogue_Rift_NoStones() && (GetURandomInt() % 4 == 0))
+						{
+							Allow = false;
+						}
+						if(Allow)
+							if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+								time = Rogue_Rift_OptionalVoteItem(artifact.Name);
 					}
 					else if((GetURandomInt() % 4) == 0 && CurrentCount < 5)
 					{
@@ -2175,7 +2181,11 @@ static void StartStage(const Stage stage)
 		}
 		case ReilaRift:
 		{
-			if(CurrentFloor != 6 || CurrentFloor != 5 || CurrentFloor != 4)
+			bool AllowDome = true;
+			if(CurrentFloor == 6 || CurrentFloor == 5 || CurrentFloor == 4)
+				AllowDome = false;
+				
+			if(AllowDome)	
 				Rogue_Dome_WaveStart(pos);
 		}
 	}

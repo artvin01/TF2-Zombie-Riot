@@ -559,8 +559,8 @@ void ReilaCreateBeacon(int iNpc)
 			Zombies_Currently_Still_Ongoing++;
 
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/3);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/3);
 		NpcStats_CopyStats(npc.index, summon);
 		if(!IsValidEntity(EndFound))
 			TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);

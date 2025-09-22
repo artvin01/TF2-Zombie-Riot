@@ -147,12 +147,13 @@ static void Umbral_AdjustStats(int ref)
 		return;
 
 	fl_Extra_Damage[entity] *= 5.0;
+	fl_Extra_Speed[entity] *= 0.7;
 	MultiHealth(entity, 0.05);
 	int HealthGet = ReturnEntityMaxHealth(entity);
 	if(HealthGet >= 3000)
 	{
 		//give more dmg again!
-		fl_Extra_Damage[entity] *= 2.0;
+		fl_Extra_Damage[entity] *= 7.0;
 		SetEntProp(entity, Prop_Data, "m_iHealth", 3000);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 3000);
 	}

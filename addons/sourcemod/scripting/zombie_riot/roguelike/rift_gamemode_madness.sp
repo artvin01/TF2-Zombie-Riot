@@ -263,6 +263,8 @@ public void StartZombieRiotFrame()
 		int spawnNpc = Citizen_SpawnAtPoint("", client);
 		Citizen npc = view_as<Citizen>(spawnNpc);
 		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+		fl_Extra_Damage[spawnNpc] *= 5.0;
+		//5x dmg
 		
 		// We select rebel types/roles ourselves because we want no builders and less medics than Citizen_SetRandomRole offers
 		int role, type;
@@ -300,7 +302,8 @@ public void StartZombieRiotFrame()
 		
 		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
 	}
-
+	//update scalig now
+	DoGlobalMultiScaling();
 	Rogue_Dome_WaveEnd();
 }
 
@@ -376,7 +379,7 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 
 public void Rogue_GamemodeMadness_TryToEnableURF()
 {
-	if (GetURandomFloat() >= 0.2) // 20% to enable
+	if (GetURandomFloat() >= 0.1) // 10% to enable
 		return;
 	
 	Rogue_GiveNamedArtifact("Gamemode Madness URF", true);

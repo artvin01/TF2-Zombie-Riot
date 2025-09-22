@@ -1316,16 +1316,6 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-	DoGlobalMultiScaling();
-	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
-	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
-	int entity, i;
-	while(TF2U_GetWearable(client, entity, i))
-	{
-		SetTeam(entity, 2);
-		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
-	}
-	CheckAlivePlayers(_, _, true);
 	return Plugin_Handled;
 }
 

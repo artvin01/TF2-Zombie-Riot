@@ -1350,8 +1350,8 @@
 	}
 	"Bob's Exchange Money Desc"
 	{
-		"en"	"Someone must have left it behind.\n- {green}Gain 12 Australium Ingots."
-		"ru"	"Должно быть, забыл их.\n- Получите 12 слитков австралия."
+		"en"	"Someone must have left it behind.\n- {green}Gain 16 Australium Ingots."
+		"ru"	"Должно быть, забыл их.\n- Получите 16 слитков австралия."
 	}
 	"Music Releasing Radio"
 	{
@@ -1469,7 +1469,7 @@
 	}
 	"Hand Written Letter Desc"
 	{
-		"en"	"A written letter containing vulgar language and self aggrandizing imagery.\n- {green}Gain 750 Cash and deal +2% damage."
+		"en"	"A written letter containing vulgar language and self aggrandizing imagery.\n- {green}Gain 750 Cash and deal +2％ damage."
 		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2％ больше урона."
 	}
 	"Crude Flute"
@@ -1489,7 +1489,7 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1% damage."
+		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 	}
 	"Golden Coin"
@@ -1513,8 +1513,7 @@
 	}
 	"Spanish Specialised Gunpowder"
 	{
-		"en"	"Spanish Specialised Gunpowder"
-		"ru"	"Испанский специальный порох"
+		"en"	"Iberia Specialised Gunpowder"
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
@@ -1725,7 +1724,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33% attack speed."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33％ attack speed."
 	}
 	"Hand of Revenge"
 	{
@@ -1773,7 +1772,7 @@
 	}
 	"Soul of Bloons Tower Defense Desc"
 	{
-		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20% damage for every person with a unique bloons weapon"
+		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20％ damage for every person with a unique bloons weapon"
 	}
 	"Soul of Yakuza"
 	{
@@ -1937,7 +1936,7 @@
 	}
 	"Brandguider Brunch Desc"
 	{
-		"en"	"{green}Nethersea Brand deals -50% damage"
+		"en"	"{green}Nethersea Brand deals -50％ damage"
 	}
 	"Spewer Spewers"
 	{

@@ -381,18 +381,17 @@ public void HHH_ClotThink(int iNPC)
 					{
 						teleported = true;
 						TeleportDiversioToRandLocation(entitycount,_,1750.0, 1250.0);
-						npc.PlayTeleSound();
 					}
 					else if (IsValidAlly(npc.index, entitycount)) //Check for NPCs
 					{
 						teleported = true;
 						TeleportDiversioToRandLocation(entitycount,_,1750.0, 1250.0);
-						npc.PlayTeleSound();
 					}
 					
 					if (teleported && entitycount <= MaxClients)
 						EmitSoundToClient(entitycount, "misc/halloween/spell_teleport.wav");
 				}
+				npc.PlayTeleSound();
 				
 				npc.StartPathing();
 				npc.SetActivity("ACT_MP_RUN_ITEM1");

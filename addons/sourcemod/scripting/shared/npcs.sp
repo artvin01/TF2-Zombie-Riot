@@ -342,6 +342,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
 						TeleportNpcToRandomPlayer(entity_Spawner);
+						RemoveSpawnProtectionLogic(entity_Spawner, true);
 					}
 					
 					if(enemy.Is_Boss > 0)
