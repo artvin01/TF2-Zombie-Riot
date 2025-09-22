@@ -626,13 +626,13 @@ static void Umbral_WF_KickTouched(int entity, int enemy)
 	{
 		f_AntiStuckPhaseThrough[enemy] = GetGameTime() + 1.0;
 		ApplyStatusEffect(enemy, enemy, "Intangible", 1.0);
-		Custom_Knockback(entity, enemy, 1500.0, true, true);
+		Custom_Knockback(entity, enemy, 750.0, true, true);
 		TF2_AddCondition(enemy, TFCond_LostFooting, 0.5);
 		TF2_AddCondition(enemy, TFCond_AirCurrent, 0.5);
 	}
 	else
 	{
-		Custom_Knockback(entity, enemy, 800.0, true, true);
+		Custom_Knockback(entity, enemy, 400.0, true, true);
 	}
 }
 

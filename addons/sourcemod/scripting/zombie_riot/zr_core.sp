@@ -1708,6 +1708,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
+				Rogue_TriggerFunction(Artifact::FuncRevive, client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{

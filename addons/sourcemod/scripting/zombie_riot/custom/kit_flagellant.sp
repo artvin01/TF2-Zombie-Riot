@@ -928,6 +928,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		healing -= health;
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
+		Rogue_TriggerFunction(Artifact::FuncRevive, client);
 
 		int round = Waves_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);

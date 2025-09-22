@@ -1274,7 +1274,7 @@
 	}
 	"Health Pickup Desc"
 	{
-		"en" 	"{green}Extra Health powerup spawns at the start of a stage."
+		"en" 	"{green}Extra Health and ammo powerups spawns at the start of a stage."
 	}
 	"Support Squad"
 	{
@@ -2148,7 +2148,7 @@
 	}
 	"Lone Health Accept Desc"
 	{
-		"en"	"{green}Gain a health powerup on stage start."
+		"en"	"{green}Gain a health and ammo powerup on stage start."
 	}
 	"Lone Health Decline"
 	{

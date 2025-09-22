@@ -246,7 +246,8 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 	}
 	public void PlaySummonUmbrals()
  	{
-		EmitSoundToAll(g_SummonUmbralsDo[GetRandomInt(0, sizeof(g_SummonUmbralsDo) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,90);
+		EmitSoundToAll(g_SummonUmbralsDo[GetRandomInt(0, sizeof(g_SummonUmbralsDo) - 1)], this.index, SNDCHAN_AUTO, _, _, BOSS_ZOMBIE_VOLUME,90);
+		EmitSoundToAll(g_SummonUmbralsDo[GetRandomInt(0, sizeof(g_SummonUmbralsDo) - 1)], this.index, SNDCHAN_AUTO, _, _, BOSS_ZOMBIE_VOLUME,90);
 	}
 	public void PlayCircleExpand()
  	{
@@ -421,7 +422,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			RaidModeTime = GetGameTime() + (300.0);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
-			music.Time = 500;
+			music.Time = 210;
 			music.Volume = 1.35;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Burnt Light");
@@ -752,8 +753,6 @@ public void Shadowing_Darkness_Boss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	if(i_RaidGrantExtra[npc.index] == 1)
-		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I am placeholder text, fix me.");	
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -811,7 +810,7 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					//they will give Necrosis damage.
-					Elemental_AddNecrosisDamage(target, npc.index, RoundToCeil(damageDealt * 0.5));
+					Elemental_AddNecrosisDamage(victim, entity, RoundToCeil(RaidModeScaling * 10.0));
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -1393,6 +1392,10 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		npc.m_flDespawnUmbralKoulms = gameTime + 10.0;
+		static float flOldPos[3]; 
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flOldPos);
+		flOldPos[2] += 5.0;
+		int PoolAidsParticle = ParticleEffectAt(flOldPos, "utaunt_poweraura_teamcolor_red", 3.5);
 		npc.PlaySummonUmbrals();
 		for(int loop=1; loop<=4; loop++)
 		{
@@ -1476,9 +1479,7 @@ float Shadowing_MarkedTarget_For_Slashing(int entity, int victim, float damage, 
 
 float Shadowing_GiveNecrosis(int entity, int victim, float damage, int weapon)
 {
-	float damageDealt = 5.0;
-	damageDealt *= RaidModeScaling;
-	Elemental_AddNecrosisDamage(victim, entity, RoundToCeil(damageDealt));
+	Elemental_AddNecrosisDamage(victim, entity, RoundToCeil(RaidModeScaling * 10.0));
 	return damage;
 }
 
@@ -1495,6 +1496,8 @@ public Action ShadowingDarkness_NecroPoolTimer(Handle timer, DataPack pack)
 		Shadowing_Darkness_Boss npc = view_as<Shadowing_Darkness_Boss>(Originator);
 		if(npc.m_iAtCurrentIntervalOfNecroArea != Currentat)
 		{
+			if(IsValidEntity(Particle))
+				RemoveEntity(Particle);
 			return Plugin_Stop;
 		}
 
@@ -1510,9 +1513,8 @@ public Action ShadowingDarkness_NecroPoolTimer(Handle timer, DataPack pack)
 	else
 	{
 		if(IsValidEntity(Particle))
-		{
 			RemoveEntity(Particle);
-		}
+		
 		return Plugin_Stop;
 	}
 }

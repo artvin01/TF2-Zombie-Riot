@@ -1148,7 +1148,7 @@
 	}
 	"Holy Blessing Desc"
 	{
-		"en"	"{green}Grigori's Blessing now heals up to full health"
+		"en"	"{green}Grigori's Blessing now heals up to full health and heals 2x as much."
 	}
 	
 	"Ruina'n Magic Factory"

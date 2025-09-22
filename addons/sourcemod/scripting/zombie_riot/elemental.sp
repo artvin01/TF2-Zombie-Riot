@@ -1429,7 +1429,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Warped)))
 				{
-					Armor_Charge[victim] = Elemental_TriggerDamage(victim, Element_Warped) / 2;
+					Armor_Charge[victim] = -(Elemental_TriggerDamage(victim, Element_Warped) / 2);
 
 					i_AmountDowned[victim]--;
 				//	TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
