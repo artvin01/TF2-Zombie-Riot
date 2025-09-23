@@ -128,9 +128,9 @@ methodmap AlmagestJkei < CClotBody
 	}
 	public void SetJkeiSpeed(float speed) 
 	{
-		if(HasSpecificBuff(client, "Unstoppable Force"))
+		if(HasSpecificBuff(this.index, "Unstoppable Force"))
 			speed *= 0.75;
-		npc.m_flSpeed = speed;
+		this.m_flSpeed = speed;
 	}
 	property float m_flSummonCircularDudes
 	{
@@ -242,7 +242,7 @@ methodmap AlmagestJkei < CClotBody
 					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
-					if(npc.m_flMegaSlashDoing)
+					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
 						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
 					f_AttackSpeedNpcIncrease[other] *= 0.85;
@@ -264,7 +264,7 @@ methodmap AlmagestJkei < CClotBody
 					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
-					if(npc.m_flMegaSlashDoing)
+					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
 						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
 					RemoveFromNpcAliveList(other);
