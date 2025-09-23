@@ -1395,7 +1395,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		static float flOldPos[3]; 
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flOldPos);
 		flOldPos[2] += 5.0;
-		int PoolAidsParticle = ParticleEffectAt(flOldPos, "utaunt_poweraura_teamcolor_red", 3.5);
+		ParticleEffectAt(flOldPos, "utaunt_poweraura_teamcolor_red", 3.5);
 		npc.PlaySummonUmbrals();
 		for(int loop=1; loop<=4; loop++)
 		{
