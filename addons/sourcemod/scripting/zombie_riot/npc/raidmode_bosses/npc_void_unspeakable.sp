@@ -51,10 +51,13 @@ static const char g_TeleportSound[][] = {
 	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
+static const char g_SuicideSound[][] = {
+	"ambient/explosions/citadel_end_explosion1.wav",
+};
+
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 static int NpcID;
-bool BossrushLogic = false;
 
 int VoidUnspeakableNpcID()
 {
@@ -83,6 +86,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_TeleportSound)); i++) { PrecacheSound(g_TeleportSound[i]); }
+	for (int i = 0; i < (sizeof(g_SuicideSound));   i++) { PrecacheSound(g_SuicideSound[i]);   }
 	PrecacheSoundCustom("#zombiesurvival/void_wave/center_of_the_void_1.mp3");
 }
 
@@ -129,6 +133,11 @@ methodmap VoidUnspeakable < CClotBody
 	public void PlayTeleportSound() 
 	{
 		EmitSoundToAll(g_TeleportSound[GetRandomInt(0, sizeof(g_TeleportSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlaySuicideSound() 
+	{
+		EmitSoundToAll(g_SuicideSound[GetRandomInt(0, sizeof(g_SuicideSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_SuicideSound[GetRandomInt(0, sizeof(g_SuicideSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
 	}
 	property float m_flVoidUnspeakableQuake
 	{
@@ -224,6 +233,18 @@ methodmap VoidUnspeakable < CClotBody
 			WaveSetting = 4;
 			SizeChar = "1.5";
 		}
+		else if(StrContains(data, "shadowbattle") != -1)
+		{
+			//outside of wave stuff.
+			WaveSetting = 6;
+			SizeChar = "1.5";
+		}
+		else if(StrContains(data, "shadowcutscene") != -1)
+		{
+			//outside of wave stuff.z
+			WaveSetting = 7;
+			SizeChar = "1.5";
+		}
 		else if(StrContains(data, "final_item") != -1)
 		{
 			WaveSetting = 5;
@@ -234,15 +255,20 @@ methodmap VoidUnspeakable < CClotBody
 		VoidUnspeakable npc = view_as<VoidUnspeakable>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", SizeChar, "25000", ally, false, true));
 		
 		i_RaidGrantExtra[npc.index] = WaveSetting;
-		if(WaveSetting == 5)
+		if(WaveSetting == 6 || WaveSetting == 7)
 		{
+			npc.m_bDissapearOnDeath = true;
+		}
+		if(WaveSetting == 5 || WaveSetting == 7)
+		{
+			//lazy identifier lol
+			if(WaveSetting == 7)
+			{
+				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+			}
 			b_NpcUnableToDie[npc.index] = true;
 		}
-		BossrushLogic = false;
-		if(StrContains(data, "bossrush") != -1)
-		{
-			BossrushLogic = true;
-		}
+		
 		RemoveAllDamageAddition();
 		npc.m_flDeathAnimation = 0.0;
 		i_NpcWeight[npc.index] = 4;
@@ -279,125 +305,91 @@ methodmap VoidUnspeakable < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-	
-		//if(!cutscene)
-		{
-			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/void_wave/center_of_the_void_1.mp3");
-			music.Time = 175;
-			music.Volume = 1.35;
-			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "Center Of The Void");
-			strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
-			Music_SetRaidMusic(music);
-		}
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
 
-		for(int client_check=1; client_check<=MaxClients; client_check++)
+		if(i_RaidGrantExtra[npc.index] != 6 && i_RaidGrantExtra[npc.index] != 7)
 		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			//if(!cutscene)
 			{
-				LookAtTarget(client_check, npc.index);
-				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Run while you can.");
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/void_wave/center_of_the_void_1.mp3");
+				music.Time = 175;
+				music.Volume = 1.35;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Center Of The Void");
+				strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
+				Music_SetRaidMusic(music);
 			}
-		}
+			
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					LookAtTarget(client_check, npc.index);
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "item_armor", 1, "%t", "Run while you can.");
+				}
+			}
+			RaidModeTime = GetGameTime(npc.index) + 200.0;
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+			float value;
+			char buffers[3][64];
+			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+			//the very first and 2nd char are SC for scaling
+			if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+			{
+				//remove SC
+				ReplaceString(buffers[0], 64, "sc", "");
+				value = StringToFloat(buffers[0]);
+				RaidModeScaling = value;
+			}
+			else
+			{	
+				RaidModeScaling = float(Waves_GetRoundScale()+1);
+				value = float(Waves_GetRoundScale()+1);
+			}
 
-		RaidModeTime = GetGameTime(npc.index) + 200.0;
-		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = false;
+			if(RaidModeScaling < 35)
+			{
+				RaidModeScaling *= 0.25; //abit low, inreacing
+			}
+			else
+			{
+				RaidModeScaling *= 0.5;
+			}
+			float amount_of_people = ZRStocks_PlayerScalingDynamic();
+			npc.m_iPlayerScaledStart = CountPlayersOnRed();
+			if(amount_of_people > 12.0)
+			{
+				amount_of_people = 12.0;
+			}
+			amount_of_people *= 0.12;
+			
+			if(amount_of_people < 1.0)
+				amount_of_people = 1.0;
+
+			RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
+			
+			if(value > 25.0 && value < 35.0)
+			{
+				RaidModeScaling *= 0.85;
+			}
+			else if(value > 35.0)
+			{
+				RaidModeTime = GetGameTime(npc.index) + 220.0;
+				RaidModeScaling *= 0.85;
+			}
+			
+			int color[4] = { 25, 0, 25, 50 };
+			SetCustomFog(color, color, 400.0, 1000.0, 0.85);
+		}
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
+
+
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_flMeleeArmor = 1.25;	
 
-		float value;
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		//the very first and 2nd char are SC for scaling
-		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
-		{
-			//remove SC
-			ReplaceString(buffers[0], 64, "sc", "");
-			value = StringToFloat(buffers[0]);
-			RaidModeScaling = value;
-		}
-		else
-		{	
-			RaidModeScaling = float(Waves_GetRoundScale()+1);
-			value = float(Waves_GetRoundScale()+1);
-		}
-
-		if(RaidModeScaling < 35)
-		{
-			RaidModeScaling *= 0.25; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.5;
-		}
-		
-		float amount_of_people = ZRStocks_PlayerScalingDynamic();
-		npc.m_iPlayerScaledStart = CountPlayersOnRed();
-		if(amount_of_people > 12.0)
-		{
-			amount_of_people = 12.0;
-		}
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
-
-		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
-		
-		if(value > 25.0 && value < 35.0)
-		{
-			RaidModeScaling *= 0.85;
-		}
-		else if(value > 35.0)
-		{
-			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.85;
-		}
-
-		if(!BossrushLogic)
-		{
-			if(FogEntity != INVALID_ENT_REFERENCE)
-			{
-				int entity = EntRefToEntIndex(FogEntity);
-				if(entity > MaxClients)
-					RemoveEntity(entity);
-				
-				FogEntity = INVALID_ENT_REFERENCE;
-			}
-			
-			int entity = CreateEntityByName("env_fog_controller");
-			if(entity != -1)
-			{
-				DispatchKeyValue(entity, "fogblend", "2");
-				DispatchKeyValue(entity, "fogcolor", "25 0 25 50");
-				DispatchKeyValue(entity, "fogcolor2", "25 0 25 50");
-				DispatchKeyValueFloat(entity, "fogstart", 400.0);
-				DispatchKeyValueFloat(entity, "fogend", 1000.0);
-				DispatchKeyValueFloat(entity, "fogmaxdensity", 0.85);
-
-				DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-				DispatchKeyValue(entity, "fogenable", "1");
-				DispatchKeyValue(entity, "spawnflags", "1");
-				DispatchSpawn(entity);
-				AcceptEntityInput(entity, "TurnOn");
-
-				FogEntity = EntIndexToEntRef(entity);
-
-				for(int client1 = 1; client1 <= MaxClients; client1++)
-				{
-					if(IsClientInGame(client1))
-					{
-						SetVariantString("rpg_fortress_envfog");
-						AcceptEntityInput(client1, "SetFogController");
-					}
-				}
-			}
-		}
 		skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		switch(WaveSetting)
@@ -480,7 +472,7 @@ methodmap VoidUnspeakable < CClotBody
 				SetEntityRenderColor(npc.m_iWearable7, 200, 0, 200, 255);
 				SetEntityRenderColor(npc.m_iWearable8, 200, 0, 200, 255);
 			}
-			case 4,5:
+			case 4,5,6,7:
 			{
 				npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/demo/hw2013_demo_cape/hw2013_demo_cape.mdl");
 				
@@ -517,7 +509,15 @@ methodmap VoidUnspeakable < CClotBody
 		}
 		
 		SetEntityRenderColor(npc.index,		 200, 0, 200, 255);
-		
+		if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+		{
+			RaidModeTime = FAR_FUTURE;
+			//its in phase 2.
+			i_RaidGrantExtra[npc.index] = 10;
+			npc.m_flDeathAnimation = GetGameTime(npc.index) + 45.0;
+			//emergency slay if it bricks somehow.
+			RequestFrames(KillNpc,3000, EntIndexToEntRef(npc.index));
+		}
 		return npc;
 	}
 }
@@ -574,42 +574,9 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		fl_Extra_MeleeArmor[npc.index] *= 0.1;
 		fl_Extra_RangedArmor[npc.index] *= 0.1;
 		
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
+		int color[4] = { 50, 0, 50, 150 };
+		SetCustomFog(color, color, 200.0, 500.0, 0.99);
 		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "50 0 50 150");
-			DispatchKeyValue(entity, "fogcolor2", "50 0 50 150");
-			DispatchKeyValueFloat(entity, "fogstart", 200.0);
-			DispatchKeyValueFloat(entity, "fogend", 500.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.99);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
 		return;
 	}
 
@@ -857,8 +824,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 		flMaxhealth *= 0.001;
 		
-		int CurrentPlayersAlive = CountPlayersOnRed(1);
-		float HpScalingDecrease = float(CurrentPlayersAlive) / float(npc.m_iPlayerScaledStart);
+		float HpScalingDecrease = NpcDoHealthRegenScaling(npc.index);
 		flMaxhealth *= HpScalingDecrease;
 		if(i_RaidGrantExtra[npc.index] >= 4)
 			flMaxhealth *= 1.25;
@@ -1029,16 +995,9 @@ public void VoidUnspeakable_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(!BossrushLogic)
+	if(i_RaidGrantExtra[npc.index] != 6 && i_RaidGrantExtra[npc.index] != 7)
 	{
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity1 = EntRefToEntIndex(FogEntity);
-			if(entity1 > MaxClients)
-				RemoveEntity(entity1);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
+		ClearCustomFog();
 	}
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
@@ -1046,6 +1005,11 @@ public void VoidUnspeakable_NPCDeath(int entity)
 		{
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 		}				
+	}
+	if(i_RaidGrantExtra[npc.index] == 6)
+	{
+		CPrintToChatAll("{purple}NEED TO RETURN TO THEM...");
+		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ngh... The voices in my head cant even leave me.");	
 	}
 		
 	if(IsValidEntity(npc.m_iWearable8))
@@ -1263,11 +1227,14 @@ public void VoidUnspeakableWin(int entity)
 
 void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 {
-	float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-	flMaxhealth *= 0.01;
-	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
-	//rapid self heal to indicate power!
-	RaidModeScaling += GetRandomFloat(0.8, 2.2);
+	if(!b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+	{
+		float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+		flMaxhealth *= 0.01;
+		HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
+		//rapid self heal to indicate power!
+		RaidModeScaling += GetRandomFloat(0.8, 2.2);
+	}
 	if(npc.m_iChanged_WalkCycle != 8)
 	{
 		npc.m_bisWalking = false;
@@ -1295,24 +1262,108 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 			npc.FaceTowards(vecTarget, 15000.0);
 		}
 		npc.m_flDeathAnimationCD = gameTime + 1.5;
+		if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+			npc.m_flDeathAnimationCD = gameTime + 3.5;
 
-		switch(i_RaidGrantExtra[npc.index])
+		if(!b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
 		{
-			case 11:
+			switch(i_RaidGrantExtra[npc.index])
 			{
-				CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
+				case 11:
+				{
+					CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
+				}
+				case 12:
+				{
+					CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
+				}
+				case 13:
+				{
+					CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
+				}
+				case 14:
+				{
+					CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
+				}
 			}
-			case 12:
+		}
+		else
+		{
+			switch(i_RaidGrantExtra[npc.index])
 			{
-				CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
-			}
-			case 13:
-			{
-				CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
-			}
-			case 14:
-			{
-				CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
+				case 11:
+				{
+					CPrintToChatAll("{purple}I HAVE HAD IT, IM KILLING EVERYONE HERE");
+					CPrintToChatAll("{black}Izan :{default} Its holding me, no..!");
+				}
+				case 12:
+				{
+					CPrintToChatAll("{purple}SHADOW, YOU, THE ANNOYING LITTLE FOOL CALLING HIMSELF IZAN");
+					CPrintToChatAll("{black}Izan :{default} ....");
+				}
+				case 13:
+				{
+					CPrintToChatAll("{purple}I DONT CARE IF I DIE, THIS IS FOR THE GREATER VOID, TO NOT BECOME UMBRALS, TO NOT BECOME NATURE");
+					CPrintToChatAll("{black}Izan :{default} Chaos was-");
+				}
+				case 14:
+				{
+					CPrintToChatAll("{purple}YOU ALL MUST DIE TO PREVENT THE VOID FROM FALLING");
+					CPrintToChatAll("{black}Izan :{default} Created by-");
+				}
+				case 15:
+				{
+					CPrintToChatAll("{white}Bob{default}: TAKE MY HAND NOW!");
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Wait!! Take me too...");	
+				}
+				case 16:
+				{
+					CPrintToChatAll("{black}Izan :{default} Exp-");
+					CPrintToChatAll("{white}Bob uses the item that Bladedance gave him a long time ago, and thus unbannished us out of the realm, shadowing darkness and izan couldnt reach us in time.");
+					
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					for(int client_check=1; client_check<=MaxClients; client_check++)
+					{
+						if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+						{
+							UTIL_ScreenFade(client_check, 66, 99999, FFADE_OUT | FFADE_STAYOUT, 255, 255, 255, 255); //make the fade target everyone
+						}
+					}
+					CreateTimer(6.0, Timer_Vincent_FadeBackIn, TIMER_FLAG_NO_MAPCHANGE);
+					int inpcloop, a;
+					while((inpcloop = FindEntityByNPC(a)) != -1)
+					{
+						if(IsValidEntity(inpcloop) && !b_ThisEntityIgnored[inpcloop])
+						{
+							b_DissapearOnDeath[inpcloop] = true;
+							b_DoGibThisNpc[inpcloop] = true;
+							SmiteNpcToDeath(inpcloop);
+							SmiteNpcToDeath(inpcloop);
+							SmiteNpcToDeath(inpcloop);
+							SmiteNpcToDeath(inpcloop);
+						}
+					}
+					npc.PlaySuicideSound();
+					for(int i=1 ; i <= MaxClients ; i++)
+					{
+						if(IsValidClient(i) && Rogue_Mode())
+						{
+							//safe spot?
+							TeleportEntity(i, {-667.0, 3292.0 , 286.0}, NULL_VECTOR, NULL_VECTOR);
+						}
+					}
+					for(int i; i < i_MaxcountNpcTotal; i++)
+					{
+						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+						if(IsValidEntity(entity))
+						{
+							if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red && Rogue_Mode())
+							{
+								TeleportEntity(entity, {-667.0, 3292.0 , 286.0}, NULL_VECTOR, NULL_VECTOR);
+							}
+						}
+					}
+				}
 			}
 		}
 		i_RaidGrantExtra[npc.index]++;

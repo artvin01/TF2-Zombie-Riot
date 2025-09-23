@@ -1,0 +1,107 @@
+"Phrases"
+{
+	"Setup Chat Tip 1"
+	{
+		"en"	"Reviving teammates restores your health! ''Regene Berry'' doubles this effect!"
+	}
+	"Setup Chat Tip 2"
+	{
+		"en"	"You can cure yourself of Elemental Damage with armor gain!"
+	}
+	"Setup Chat Tip 3"
+	{
+		"en"	"When getting armor, use Stockpile Stout tempomarily to gain overarmor, then switch back for free Extra armor!"
+	}
+	"Setup Chat Tip 4"
+	{
+		"en"	"If you have the money to spare, remember to purchase Extra Gear to give a boost to yourself or your team."
+	}
+	"Setup Chat Tip 5"
+	{
+		"en"	"Touching most enemies will make them focus on attacking you!"
+	}
+	"Setup Chat Tip 6"
+	{
+		"en"	"You deal significantly less damage while downed. Prioritize getting to safety over fighting."
+	}
+	"Setup Chat Tip 7"
+	{
+		"en"	"Try to lure enemies away from the base to relief pressure of your barricades!"
+	}
+	"Setup Chat Tip 8"
+	{
+		"en"	"You gain money and ammosupplies from allies using your buildings, build atleast one!"
+	}
+	"Setup Chat Tip 9"
+	{
+		"en"	"You unlock and can equip Level Perks as you level up, which offer changes to suit your playstyle, take a look and experiment!"
+	}
+	"Setup Chat Tip 10"
+	{
+		"en"	"Confused about the Skill Tree? Don't worry about it too much, look at it once you understand the gamemode better." 
+	}
+	"Setup Chat Tip 11"
+	{
+		"en"	"Paps are usually more worth it then upgrades!"
+	}
+	"Setup Chat Tip 12"
+	{
+		"en"	"Sales might be good but if the situation requires for it, buy upgrades now!"
+	}
+	"Setup Chat Tip 13"
+	{
+		"en"	"You can talk to the rebel to asign them roles for if your team doesnt want to play them!"
+	}
+	"Setup Chat Tip 14"
+	{
+		"en"	"As a melee your damage is not as valueable as the distraction of enemies aggro!"
+	}
+	"Setup Chat Tip 15"
+	{
+		"en"	"Multiclassing isnt ideal unless youre sure on what youre doing!"
+	}
+	"Setup Chat Tip 16"
+	{
+		"en"	"All bullet shooting guns can headshot, dealing extra damage, be rewarded for your accuracy!"
+	}
+	"Setup Chat Tip 17"
+	{
+		"en"	"Balance your weapon upgrades with passive upgrades, no use dealing more damage if you can barely take any!"
+	}
+	"Setup Chat Tip 18"
+	{
+		"en"	"Armor tables help you take less damage, so make sure you have some armor before going into battle!"
+	}
+	"Setup Chat Tip 19"
+	{
+		"en"	"You may not be a healer, but you can still put down a food fridge to give a little extra health, every HP matters!"
+	}
+	"Setup Chat Tip 20"
+	{
+		"en"	"Sometimes its better to buy upgrades if they are on sale instead of pack a punching your weapon!"
+	}
+	"Setup Chat Tip 21"
+	{
+		"en"	"Certain weapons can inflict debuffs on enemies and buff your allies, check the glossary of effects to learn what each does!"
+	}
+	"Setup Chat Tip 22"
+	{
+		"en"	"Adjust your weapon choice to the enemies that come, itll greatly help in defeating them!"
+	}
+	"Setup Chat Tip 23"
+	{
+		"en"	"Running low on armor as a melee player? You can use ammo boxes to give you a small amount of armor!"
+	}
+	"Setup Chat Tip 24"
+	{
+		"en"	"Running low on mana as a mage? You can use ammo boxes to give you mana, even overcharge your mana with ammo boxes!"
+	}
+	"Setup Chat Tip 25"
+	{
+		"en"	"Weapon kits give you a unique playstyle, without having to buy class upgrades. Pack-a-punch them to increase the whole kit's stats!"
+	}
+	"Setup Chat Tip 26"
+	{
+		"en"	"Remember. {crimson}He watches."
+	}
+}

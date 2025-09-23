@@ -74,6 +74,7 @@ void ConVar_PluginStart()
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
 	zr_maxscaling_untillhp = CreateConVar("zr_maxscaling_untillhp", "3.4", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
+	zr_maxsbosscaling_untillhp = CreateConVar("zr_maxbossscaling_untillhp", "4.0", "Max enemy boss count multipler, will scale by health and damage onwards", _, true, 0.5);
 	zr_multi_scaling = CreateConVar("zr_multi_scaling", "1.0", "Multiply the current scaling");
 	zr_multi_maxenemiesalive_cap = CreateConVar("zr_multi_maxenemiesalive_cap", "1.0", "Multiply the current max enemies allowed");
 	zr_raidmultihp = CreateConVar("zr_raidmultihp", "1.0", "Multiply any boss HP that acts as a raid or megaboss, usefull for certain maps.");
@@ -127,6 +128,7 @@ void ConVar_PluginStart()
 
 	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	sv_gravity = ConVar_Add("sv_gravity", "800", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 	
 #if defined RPG	

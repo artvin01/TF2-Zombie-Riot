@@ -180,8 +180,8 @@ public void BuildingMortarAction(int client, int mortar)
 	GetEntPropVector(mortar, Prop_Send, "m_vecOrigin", pos_obj);
 	pos_obj[2] += 100.0;
 	CClotBody npcstats = view_as<CClotBody>(mortar);
-	npcstats.m_flAttackHappens = GetGameTime() + 15.0;
-	f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
+	npcstats.m_flAttackHappens = GetGameTime() + 10.0;
+	f_BuildingIsNotReady[client] = GetGameTime() + 10.0;
 	ParticleEffectAt(pos_obj, "skull_island_embers", 2.0);
 }
 

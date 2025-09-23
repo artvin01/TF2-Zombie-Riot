@@ -419,7 +419,7 @@ void SonOfOsiris_Lightning_Effect(int entity = -1, int target = -1, float VecPos
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(other != -1 && i_NpcInternalId[entity] == Boss_ReilaID() && IsEntityAlive(other))
+		if(IsValidEntity(other) && i_NpcInternalId[entity] == Boss_ReilaID())
 		{
 			r = 125; //purple
 			g = 60;

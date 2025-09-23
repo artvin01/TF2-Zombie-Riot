@@ -17,14 +17,22 @@ static const char g_HurtSounds[][] = {
 
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/fist_swing_crit.wav",
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/fist_hit_world1.wav",
-	"weapons/fist_hit_world2.wav",
+	"weapons/halloween_boss/knight_axe_miss.wav",
 };
 
+
+static int NPCId;
+
+int Umbral_Automaton_ID()
+{
+	return NPCId;
+}
 
 void Umbral_Automaton_OnMapStart_NPC()
 {
@@ -36,13 +44,14 @@ void Umbral_Automaton_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Umbral Automaton");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_umbral_automaton");
-	strcopy(data.Icon, sizeof(data.Icon), "Automaton");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
+
 
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -63,16 +72,30 @@ methodmap Umbral_Automaton < CClotBody
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
 	}
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 50);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 60);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 60);
+	}
+	property float m_flEnemyDead
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flEnemyStandStill
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
 	public Umbral_Automaton(float vecPos[3], float vecAng[3], int ally)
@@ -99,6 +122,12 @@ methodmap Umbral_Automaton < CClotBody
 		func_NPCAnimEvent[npc.index] = view_as<Function>(Umbral_Automaton_AnimEvent);
 		f_NpcTurnPenalty[npc.index] = 0.35;
 		npc.StartPathing();
+
+		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+		Is_a_Medic[npc.index] = true;
+		npc.m_bStaticNPC = true;
+		AddNpcToAliveList(npc.index, 1);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -106,29 +135,71 @@ methodmap Umbral_Automaton < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		//dont allow self making
 		
+		i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
 		npc.m_flSpeed = 120.0;
 
-		SetEntityRenderColor(npc.index, 0, 0, 0, 255);
+		SetEntityRenderColor(npc.index, 105, 82, 117, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		SetEntityRenderColor(npc.m_iWearable1, 0, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 105, 82, 117, 255);
 
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 105, 82, 117, 255);
 		
+		if(ally != TFTeam_Red && Rogue_Mode())
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.5;
+				fl_Extra_Speed[npc.index] *= 0.5;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_Speed[npc.index] *= 1.1;
+				fl_Extra_MeleeArmor[npc.index] *= 0.85;
+				fl_Extra_RangedArmor[npc.index] *= 0.85;
+			}
+		}
 		
 		return npc;
 	}
 }
 
+stock bool Umbral_AutomatonHealAlly(int entity, int victim, float &healingammount)
+{
+	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
+		return true;
+
+	ApplyStatusEffect(entity, victim, "Very Defensive Backup", 2.0);
+	ApplyStatusEffect(entity, victim, "War Cry", 2.0);
+	return false;
+}
 public void Umbral_Automaton_ClotThink(int iNPC)
 {
 	Umbral_Automaton npc = view_as<Umbral_Automaton>(iNPC);
+	if(npc.m_flEnemyDead)
+	{
+		if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+		{
+			return;
+		}
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.3;
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float Range = 400.0;
+		spawnRing_Vectors(pos, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, /*duration*/ 0.35, 10.0, 1.0, 1);	
+		ExpidonsaGroupHeal(npc.index, Range, 99, 0.0, 1.0, false, Umbral_AutomatonHealAlly);
+		return;
+	}
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	Explode_Logic_Custom(0.0, 0, npc.index, -1, pos ,UMBRAL_AUTOMATON_STEPRANGE * 1.5, 1.0, _, true, .FunctionToCallBeforeHit = UmbralAutomaton_VisionBlurr);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -138,6 +209,16 @@ public void Umbral_Automaton_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	if(npc.m_flEnemyStandStill)
+	{
+		npc.m_flSpeed = 0.0;
+		if(npc.m_flEnemyStandStill < GetGameTime(npc.index))
+		{
+			npc.StartPathing();
+			npc.m_flEnemyStandStill = 0.0;
+			npc.m_flSpeed = 120.0;
+		}
+	}
 	if(npc.m_blPlayHurtAnimation)
 	{
 	//	npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -151,6 +232,8 @@ public void Umbral_Automaton_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
+	Explode_Logic_Custom(0.0, 0, npc.index, -1, pos ,UMBRAL_AUTOMATON_STEPRANGE, 1.0, _, true, .FunctionToCallBeforeHit = UmbralAutomaton_Terrified);
+	spawnRing_Vectors(pos, UMBRAL_AUTOMATON_STEPRANGE * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 0, 0, 200, 1, /*duration*/ 0.11, 15.0, 3.0, 1);	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -173,7 +256,7 @@ public void Umbral_Automaton_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		Umbral_AutomatonSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		Umbral_AutomatonSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 	}
 	else
 	{
@@ -193,6 +276,16 @@ public Action Umbral_Automaton_OnTakeDamage(int victim, int &attacker, int &infl
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + (DEFAULT_HURTDELAY * 0.5);
 		npc.m_blPlayHurtAnimation = true;
+	}
+	if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	{
+		npc.m_iBleedType = 0;
+		npc.m_flEnemyDead = 1.0;
+		npc.SetPlaybackRate(0.0);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 1);
+		damage = 0.0;
+		return Plugin_Changed;
 	}
 	
 	return Plugin_Changed;
@@ -225,40 +318,40 @@ public void Umbral_Automaton_NPCDeath(int entity)
 
 }
 
-void Umbral_AutomatonSelfDefense(Umbral_Automaton npc, float gameTime, int target, float distance)
+void Umbral_AutomatonSelfDefense(Umbral_Automaton npc, float gameTime, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
+		
+		float vecSwingStart[3];
+
+		GetAbsOrigin(npc.index, vecSwingStart);
+		vecSwingStart[2] += 5.0;
+		float vecForward[3], vecRight[3], vecTarget[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecForward); 	
+		GetAngleVectors(vecForward, vecForward, vecRight, vecTarget);
+			
+		float vecSwingEnd[3];
+		vecSwingEnd[0] = vecSwingStart[0] + vecForward[0] * 150.0;
+		vecSwingEnd[1] = vecSwingStart[1] + vecForward[1] * 150.0;
+		vecSwingEnd[2] = vecSwingStart[2] + vecForward[2] * 150.0;
+		float Range = 250.0;
+		spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 255, 255, 200, 1, /*duration*/ 0.11, 20.0, 1.0, 1);	
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			
-			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
-			{	
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
-				{
-					float damageDealt = 140.0;
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
-			}
-			delete swingTrace;
+			TE_Particle("Explosion_ShockWave_01", vecSwingEnd, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			TE_Particle("grenade_smoke_cycle", vecSwingEnd, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			TE_Particle("hammer_bell_ring_shockwave", vecSwingEnd, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			npc.PlayMeleeHitSound();
+			CreateEarthquake(vecSwingEnd, 2.0, Range * 2.2, 35.0, 255.0);
+			Explode_Logic_Custom(15000.0, 0, npc.index, -1, vecSwingEnd ,Range, 1.0, _, true);
 		}
 	}
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
 		{
 			int Enemy_I_See;
 								
@@ -266,12 +359,17 @@ void Umbral_AutomatonSelfDefense(Umbral_Automaton npc, float gameTime, int targe
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
+				npc.StopPathing();
+				npc.m_flSpeed = 0.0;
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.5);
-				npc.m_flAttackHappens = gameTime + 0.2;
-				npc.m_flDoingAnimation = gameTime + 0.2;
-				npc.m_flNextMeleeAttack = gameTime + 0.75;
+				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE",_,_,_,0.25);
+				npc.m_flAttackHappens = gameTime + 1.5;
+				npc.m_flDoingAnimation = gameTime + 1.5;
+				npc.m_flNextMeleeAttack = gameTime + 10.5;
+				npc.m_flEnemyStandStill = gameTime + 3.5;
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 			}
 		}
 	}
@@ -290,7 +388,7 @@ void Umbral_Automaton_AnimEvent(int entity, int event)
 		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
 		npc.PlayStepSound(g_TankStepSound[GetRandomInt(0, sizeof(g_TankStepSound) - 1)], 1.0, STEPSOUND_GIANT, true);
 		CreateEarthquake(pos, 1.0, UMBRAL_AUTOMATON_STEPRANGE * 2.2, 16.0, 255.0);
-		Explode_Logic_Custom(400.0, 0, npc.index, -1, pos ,UMBRAL_AUTOMATON_STEPRANGE, 1.0, _, true, .FunctionToCallOnHit = UmbralAutomaton_KnockbackDo);
+		Explode_Logic_Custom(1500.0, 0, npc.index, -1, pos ,UMBRAL_AUTOMATON_STEPRANGE, 1.0, _, true, .FunctionToCallOnHit = UmbralAutomaton_KnockbackDo);
 	}
 }
 /*
@@ -335,5 +433,11 @@ float UmbralAutomaton_VisionBlurr(int attacker, int victim, float &damage, int w
 		flDistanceToTarget = 1.0;
 	flDistanceToTarget *= 200.0;
 	UTIL_ScreenFade(victim, 600, 0, 0x0001, 0, 0, 0, RoundToNearest(flDistanceToTarget));
+	return 0.0;
+}
+float UmbralAutomaton_Terrified(int attacker, int victim, float &damage, int weapon)
+{
+	ApplyStatusEffect(attacker, victim, "Terrified", 1.0);
+
 	return 0.0;
 }

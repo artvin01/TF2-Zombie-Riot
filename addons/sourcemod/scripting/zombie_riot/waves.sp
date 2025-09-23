@@ -206,7 +206,7 @@ void Waves_MapStart()
 {
 	delete Rounds;
 	delete g_AllocPooledStringCache;
-	FogEntity = INVALID_ENT_REFERENCE;
+	CustomFogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	NoBarneySpawn = true;
@@ -232,7 +232,7 @@ int Waves_MapSeed()
 
 void Waves_PlayerSpawn(int client)
 {
-	if(FogEntity != INVALID_ENT_REFERENCE)
+	if(CustomFogEntity != INVALID_ENT_REFERENCE)
 	{
 		SetVariantString("rpg_fortress_envfog");
 		AcceptEntityInput(client, "SetFogController");
@@ -740,10 +740,11 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 				if(choosen != -1)
 				{
 					VotingMods.GetArray(choosen, vote);
-
+					
 					CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
 					if(vote.Desc[0])
 						PrintToChatAll("%t", vote.Desc);
+					ChatSetupTip();
 					EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 					EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 
@@ -1341,13 +1342,13 @@ void Waves_RoundStart(bool event = false)
 			SkyNameRestore[0] = 0;
 		}
 
-		if(FogEntity != INVALID_ENT_REFERENCE)
+		if(CustomFogEntity != INVALID_ENT_REFERENCE)
 		{
-			int entity = EntRefToEntIndex(FogEntity);
+			int entity = EntRefToEntIndex(CustomFogEntity);
 			if(entity != INVALID_ENT_REFERENCE)
 				RemoveEntity(entity);
 			
-			FogEntity = INVALID_ENT_REFERENCE;
+			CustomFogEntity = INVALID_ENT_REFERENCE;
 		}
 	}
 	
@@ -1651,6 +1652,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
 				if(vote.Desc[0])
 					PrintToChatAll("%t", vote.Desc);
+
+				ChatSetupTip();
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
@@ -1867,6 +1870,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					// Increase boss health
 					multiBoss *= MultiGlobalEnemyBoss;
 
+					//Give extra damage to bosses that scale like this, but only half as much.
+					wave.EnemyData.ExtraDamage = wave.EnemyData.ExtraDamage * (((MultiGlobalScalingBossExtra - 1.0) * 0.5) + 1.0);
 					// Decrease for every boss spawned
 					float decrease = float(count) / float(wave.Count);
 					if(decrease > 1.0)
@@ -2071,13 +2076,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			if(round.FogChange)
 			{
-				if(FogEntity != INVALID_ENT_REFERENCE)
+				if(CustomFogEntity != INVALID_ENT_REFERENCE)
 				{
-					int entity = EntRefToEntIndex(FogEntity);
+					int entity = EntRefToEntIndex(CustomFogEntity);
 					if(entity > MaxClients)
 						RemoveEntity(entity);
 					
-					FogEntity = INVALID_ENT_REFERENCE;
+					CustomFogEntity = INVALID_ENT_REFERENCE;
 				}
 				
 				int entity = CreateEntityByName("env_fog_controller");
@@ -2096,7 +2101,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					DispatchSpawn(entity);
 					AcceptEntityInput(entity, "TurnOn");
 
-					FogEntity = EntIndexToEntRef(entity);
+					CustomFogEntity = EntIndexToEntRef(entity);
 
 					for(int client = 1; client <= MaxClients; client++)
 					{
@@ -2474,13 +2479,13 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(subgame)
 				{
-					if(FogEntity != INVALID_ENT_REFERENCE)
+					if(CustomFogEntity != INVALID_ENT_REFERENCE)
 					{
-						int entity = EntRefToEntIndex(FogEntity);
+						int entity = EntRefToEntIndex(CustomFogEntity);
 						if(entity > MaxClients)
 							RemoveEntity(entity);
 						
-						FogEntity = INVALID_ENT_REFERENCE;
+						CustomFogEntity = INVALID_ENT_REFERENCE;
 					}
 					
 					if(Construction_Mode())
@@ -3034,7 +3039,14 @@ void Zombie_Delay_Warning()
 				
 				if(Construction_Mode())
 					ForcePlayerLoss();
-				
+			}
+		}
+		case 6:
+		{
+			if(f_ZombieAntiDelaySpeedUp + 400.0 < GetGameTime())
+			{
+				i_ZombieAntiDelaySpeedUp = 7;
+				CPrintToChatAll("{crimson}You are probably abusing something, perish, go my uber swordsmen.");
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}
@@ -3120,15 +3132,6 @@ void DoGlobalMultiScaling()
 	
 	Rogue_Rift_MultiScale(multi);
 	
-	//normal bosses health
-	MultiGlobalHealthBoss = playercount * 0.2;
-
-	if(MultiGlobalHealthBoss <= 1.0)
-	{
-		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
-		MultiGlobalHealthBoss = 1.0;
-	}
-	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 	if(MultiGlobalHighHealthBoss <= 0.8)
@@ -3138,12 +3141,36 @@ void DoGlobalMultiScaling()
 	}
 
 	//Enemy bosses AMOUNT
-	MultiGlobalEnemyBoss = playercount * 0.3; 
+	float cap = zr_maxsbosscaling_untillhp.FloatValue;
+	float BossMulti = playercount * 0.3; 
+
+	if(BossMulti > cap)
+	{
+		MultiGlobalScalingBossExtra = BossMulti / cap;
+		MultiGlobalEnemyBoss = cap;
+	}
+	else
+	{
+		MultiGlobalScalingBossExtra = 1.0;
+		MultiGlobalEnemyBoss = BossMulti;
+	}
+	
+	//normal bosses health
+	MultiGlobalHealthBoss = playercount * 0.2;
+
+	if(MultiGlobalHealthBoss <= 1.0)
+	{
+		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
+		MultiGlobalHealthBoss = 1.0;
+	}
+
+	//scale extra HP higher
+	MultiGlobalHealthBoss *= (((MultiGlobalScalingBossExtra - 1.0) * 0.75) + 1.0);
 
 	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
-	float cap = zr_maxscaling_untillhp.FloatValue;
+	cap = zr_maxscaling_untillhp.FloatValue;
 
 	if(multi > cap)
 	{
@@ -3678,6 +3705,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 		}
 		case 1:	// Ready Up
 		{
+			ChatSetupTip();
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
 			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);

@@ -706,7 +706,7 @@ methodmap CuredFatherGrigori < CClotBody
 		char SizeDo[256];
 
 		if(i_SpecialGrigoriReplace == 0)
-			FormatEx(ModelDo, sizeof(ModelDo), "models/monk.mdl");
+			FormatEx(ModelDo, sizeof(ModelDo), "models/zombie_riot/grigori/monk_custom.mdl");
 		else
 			FormatEx(ModelDo, sizeof(ModelDo), "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl");
 			

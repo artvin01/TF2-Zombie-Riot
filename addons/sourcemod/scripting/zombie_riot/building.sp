@@ -1948,30 +1948,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			//rid of warning.
 			firstbuild = false;
 		}
-		/*
-		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
-		{
-			GlassBuilder[entity] = true;
-			SetBuildingMaxHealth(entity, 0.25, false, true);
-		}
-		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
-		{
-			GlassBuilder[entity] = false;
-			SetBuildingMaxHealth(entity, 0.25, false, true ,true);
-		}
-		if(!HasMechanic[entity] && b_HasMechanic[client])
-		{
-			HasMechanic[entity] = true;
-			SetBuildingMaxHealth(entity, 1.15, false, firstbuild);
-		}
-		if(HasMechanic[entity] && !b_HasMechanic[client])
-		{
-			HasMechanic[entity] = false;
-			SetBuildingMaxHealth(entity, 1.15, true, false);
-		}
-		*/
-		//When we buy upgrades, we want to update this.
-		//the above code due to that isnt needed anymore.
 		float multi = Object_GetMaxHealthMulti(client);
 		float CurrentMulti = Attributes_Get(entity, 286, 1.0);
 		float IsAlreadyDowngraded = Attributes_Get(entity, Attrib_BuildingOnly_PreventUpgrade, 0.0);
@@ -2592,6 +2568,14 @@ void GiveBuildingMetalCostOnBuy(int entity, int cost)
 }
 void DeleteAndRefundBuilding(int client, int entity)
 {	
+	//dont do boom if primed
+	if(BombIdVintulum() == i_NpcInternalId[entity])
+	{
+		ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(entity);
+		if(npc.m_flBombExplodeTill)
+			return;
+	}
+
 	if(IsValidClient(client))
 	{
 		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");

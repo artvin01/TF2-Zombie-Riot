@@ -190,9 +190,13 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 	{
 		// Reduce damage taken as new players in extreme difficulties
-		if(Level[victim] < 10 && Database_IsCached(victim))
+		if(Level[victim] >= 0 && Level[victim] <= 10 && Database_IsCached(victim))
 		{
 			int rank = Waves_GetLevel();
+			if(rank < 5)
+				rank = 5;
+			if(rank > 100)
+				rank = 100;
 			if(rank > Level[victim])
 			{
 				// Up to 50 level difference for 50% res
@@ -1762,7 +1766,11 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	float CritChance = Attributes_GetOnPlayer(attacker, Attrib_CritChance, false,_, 0.0);
 	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
 	{
-		damage *= 2.0;
+		if(Rogue_Rift_BookOfWeakness())
+			damage *= 2.0;
+		else
+			damage *= 3.0;
+			
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}
 

@@ -17,6 +17,8 @@ static float fl_KamikazeSpawnDelay;
 static float fl_KamikazeSpawnRateDelay;
 static float fl_KamikazeSpawnDuration;
 static bool b_KamikazeEvent;
+static int i_TimesFailedToTeleport;
+
 void BeheadedKamiKaze_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_Spawn));	   i++) { PrecacheSoundCustom(g_Spawn[i]);	   }
@@ -128,12 +130,20 @@ methodmap BeheadedKamiKaze < CClotBody
 				pack.WriteCell(EntIndexToEntRef(npc.index));
 				RequestFrame(SpawnBeheadedKamikaze, pack);
 				b_KamikazeEvent = true;
+				i_TimesFailedToTeleport = 0;
 			}
 
 			fl_KamikazeInitiate = GetGameTime() + 15.0;
 			
-			if(!TeleportDiversioToRandLocation(npc.index,_,2500.0, 1250.0))
+			bool teleported;
+			if (!b_KamikazeEvent || i_TimesFailedToTeleport < 10)
+				teleported = TeleportDiversioToRandLocation(npc.index, _, 2500.0, 1250.0) == 1;
+			
+			if (!teleported)
 			{
+				if (b_KamikazeEvent)
+					i_TimesFailedToTeleport++;
+				
 				//incase their random spawn code fails, they'll spawn here.
 				int Spawner_entity = GetRandomActiveSpawner();
 				if(IsValidEntity(Spawner_entity))
@@ -144,8 +154,7 @@ methodmap BeheadedKamiKaze < CClotBody
 					GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 					TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
 				}
-			}
-					
+			}	
 		}
 
 		npc.PlaySpawnSound();

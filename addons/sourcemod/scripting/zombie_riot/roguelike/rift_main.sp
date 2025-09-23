@@ -8,6 +8,8 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
+static bool BookOfNature;
+static bool BookOfWeakness;
 //static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
@@ -19,6 +21,14 @@ stock void Rogue_Rift_MultiScale(float &multi)
 stock bool Rogue_Rift_NoStones()
 {
 	return CurseEmpty;
+}
+stock bool Rogue_Rift_BookOfNature()
+{
+	return BookOfNature;
+}
+stock bool Rogue_Rift_BookOfWeakness()
+{
+	return BookOfWeakness;
 }
 
 stock int Rogue_Rift_CurseLevel()
@@ -470,7 +480,7 @@ static void FinishRiftVote(const Vote vote)
 			Rogue_RemoveNamedArtifact(vote.Config);
 
 			if(angry)	// They threw away something that made it worse
-				angry = affinity > Rogue_GetUmbral();
+				angry = !affinity || (affinity > Rogue_GetUmbral());
 
 			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
 			{
@@ -849,16 +859,58 @@ public float Rogue_Encounter_Rift2()
 {
 	Rogue_SetBattleIngots(12);
 	Rogue_RemoveNamedArtifact("Rift of Fractured");
+	
+	bool easyMode = DifficultyLevel < 1;
+	bool found;
+
+	if(!easyMode)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING2"))
+			{
+				found = true;
+				break;
+			}
+		}
+	}
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rift2, "We Are Fractured Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "We Are Fractured Desc 1");
+	if(easyMode)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 2)");
+	}
+	else if(!found)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 2)");
+	}
+	else
+	{
+		switch(Rogue_GetFloor())
+		{
+			case 0, 1, 2:	// Floor 3
+			{
+				vote.Locked = true;
+				Format(vote.Append, sizeof(vote.Append), " (Too Difficult This Chapter)");
+			}
+			case 3:	// Floor 4
+			{
+				Format(vote.Append, sizeof(vote.Append), " (Hard Fight)");
+			}
+		}
+	}
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Locked = false;
+	vote.Append[0] = 0;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
@@ -877,6 +929,17 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 		}
 		case 1:
 		{
+			if(!Rogue_HasNamedArtifact("Fractured") && Rogue_GetFloor() < 3)
+			{
+				Rogue_GiveNamedArtifact("Fractured");
+			}
+			else
+			{
+				Artifact artifact;
+				if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+					Rogue_GiveNamedArtifact(artifact.Name);
+			}
+			
 			PrintToChatAll("%t", "We Are Fractured Lore 2");
 		}
 	}
@@ -884,10 +947,52 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 
 public void Rogue_Rift2_Collect(int entity)
 {
-	Rogue_AddUmbral(-100, true);
+	Rogue_AddUmbral(-25, true);
 
 	if(!Rogue_HasNamedArtifact("Reila Assistance"))
 		Rogue_GiveNamedArtifact("Reila Assistance", true);
+}
+
+public void Rogue_BookOfNature_Collect(int entity)
+{
+	Rogue_AddUmbral(40);
+	BookOfNature = true;
+}
+public void Rogue_BookOfNature_Remove(int entity)
+{
+	BookOfNature = false;
+}
+
+public void Rogue_BookOfWeakness_Collect(int entity)
+{
+	BookOfWeakness = true;
+}
+public void Rogue_BookOfWeakness_Remove(int entity)
+{
+
+	BookOfWeakness = false;
+}
+
+public void Rogue_BookOfWeakness_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		//give a flat 10% crit chance
+		float CurrentStats;
+		map.GetValue("4030", CurrentStats);
+		CurrentStats += 0.1;
+		map.SetValue("4030", CurrentStats);
+	}
+}
+public void Rogue_BookOfLiver_Ally(int entity, StringMap map)
+{
+	//give all perks at once
+	i_CurrentEquippedPerk[entity] = ((1 << 20) - 1);
+
+}
+public void Rogue_BookOfLiver_Remove(int entity)
+{
+	Zero(i_CurrentEquippedPerk);
 }
 
 public void Rogue_Rift2_Enemy(int entity)

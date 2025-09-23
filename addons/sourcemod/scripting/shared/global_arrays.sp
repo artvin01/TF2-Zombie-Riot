@@ -172,6 +172,7 @@ float i_WasInResPowerup[MAXPLAYERS] = {0.0,0.0,0.0};
 
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
+ConVar sv_gravity; 
 ConVar sv_cheats;
 ConVar nav_edit;
 ConVar tf_scout_air_dash_count;
@@ -209,6 +210,7 @@ int i_IDependOnThisBuilding[MAXENTITIES];
 
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
+int g_particleImpactPortal;
 
 
 #if !defined RTS
@@ -245,6 +247,7 @@ int i_WhatLevelForHudIsThisClientAt[MAXPLAYERS];
 
 float f_Data_InBattleHudDisableDelay[MAXPLAYERS];
 float f_InBattleDelay[MAXENTITIES];
+float f_TimerStatusEffectsDo[MAXENTITIES];
 
 int Healing_done_in_total[MAXENTITIES];
 int i_PlayerDamaged[MAXENTITIES];
@@ -264,7 +267,8 @@ bool b_EnableCountedDowns[MAXPLAYERS];
 bool b_EnableClutterSetting[MAXPLAYERS];
 bool b_EnableNumeralArmor[MAXPLAYERS];
 int i_CustomModelOverrideIndex[MAXPLAYERS];
-int FogEntity = INVALID_ENT_REFERENCE;
+int CustomFogEntity = INVALID_ENT_REFERENCE;
+int MapFogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXPLAYERS];
 float f_InBattleHudDisableDelay[MAXPLAYERS];
 int CurrentAmmo[MAXPLAYERS][Ammo_MAX];
@@ -287,6 +291,7 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXPLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 int i_PlayerToCustomBuilding[MAXENTITIES] = {0, ...};
 float f_BuildingIsNotReady[MAXPLAYERS] = {0.0, ...};
+float f_VintulumBombRecentlyUsed[MAXPLAYERS] = {0.0, ...};
 float f_AmmoConsumeExtra[MAXPLAYERS];
 #endif
 
@@ -307,6 +312,7 @@ float f_Client_BackwardsWalkPenalty[MAXPLAYERS]={0.7, ...};
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.9, ...};
 float f_Client_BackwardsWalkPenalty[MAXPLAYERS]={0.9, ...};
 #endif
+int i_Client_Gravity[MAXPLAYERS]={800, ...};
 
 float f_Client_LostFriction[MAXPLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
@@ -443,6 +449,7 @@ float f_PullStrength[MAXENTITIES];
 float ReplicateClient_Svairaccelerate[MAXPLAYERS];
 float ReplicateClient_BackwardsWalk[MAXPLAYERS];
 float ReplicateClient_LostFooting[MAXPLAYERS];
+int ReplicateClient_Gravity[MAXPLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXPLAYERS];
 int ReplicateClient_RollAngle[MAXPLAYERS];
 
@@ -806,7 +813,8 @@ enum
 	BLEEDTYPE_SKELETON = 5,
 	BLEEDTYPE_SEABORN = 6,
 	BLEEDTYPE_VOID = 7,
-	BLEEDTYPE_UMBRAL = 8
+	BLEEDTYPE_UMBRAL = 8,
+	BLEEDTYPE_PORTAL = 9
 }
 
 
@@ -889,5 +897,8 @@ float MultiGlobalHealthBoss = 0.25;
 
 float MultiGlobalHighHealthBoss = 0.34;
 //This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
+
+//Above a certain amount, bosses gain more damage and HP, but its capped at a certain amount of them just like normal enemies
+float MultiGlobalScalingBossExtra = 1.0;
 
 #endif

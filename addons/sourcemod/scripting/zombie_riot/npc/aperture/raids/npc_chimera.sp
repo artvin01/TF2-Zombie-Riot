@@ -90,6 +90,16 @@ static const char g_chimeraSuperSlash[][] =
 	"weapons/vaccinator_charge_tier_03.wav",
 	"weapons/vaccinator_charge_tier_04.wav",
 };
+
+static const char g_DeathSpawnTeleSound[][] =
+{
+	"misc/halloween/spell_teleport.wav",
+};
+static const char g_DeathUseTeleSound[][] =
+{
+	")ui/mm_scoreboardpanel_slide.wav",
+};
+
 void CHIMERA_OnMapStart_NPC()
 {
 	
@@ -127,9 +137,13 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RefractedSniperSpawn));   i++) { PrecacheSound(g_RefractedSniperSpawn[i]);   }
 	for (int i = 0; i < (sizeof(g_AdaptabiliyStart));   i++) { PrecacheSound(g_AdaptabiliyStart[i]);   }
 	for (int i = 0; i < (sizeof(g_chimeraSuperSlash));   i++) { PrecacheSound(g_chimeraSuperSlash[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathSpawnTeleSound));   i++) { PrecacheSound(g_DeathSpawnTeleSound[i]);   }
+	for (int i = 0; i < (sizeof(g_DeathUseTeleSound));   i++) { PrecacheSound(g_DeathUseTeleSound[i]);   }
 	PrecacheSound("weapons/physcannon/energy_sing_flyby1.wav");
 	PrecacheSound("npc/env_headcrabcanister/explosion.wav.wav");
 	
+	PrecacheParticleSystem("eyeboss_tp_vortex");
+	PrecacheParticleSystem("eyeboss_tp_normal");
 }
 
 
@@ -243,7 +257,17 @@ methodmap CHIMERA < CClotBody
 	{
 		EmitSoundToAll(g_AdaptabiliyEnd[GetRandomInt(0, sizeof(g_AdaptabiliyEnd) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
 	}
-
+	public void PlayDeathSpawnTeleSound()
+	{
+		EmitSoundToAll(g_DeathSpawnTeleSound[GetRandomInt(0, sizeof(g_DeathSpawnTeleSound) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+		EmitSoundToAll(g_DeathSpawnTeleSound[GetRandomInt(0, sizeof(g_DeathSpawnTeleSound) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+	}
+	public void PlayDeathUseTeleSound()
+	{
+		EmitSoundToAll(g_DeathUseTeleSound[GetRandomInt(0, sizeof(g_DeathUseTeleSound) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+		EmitSoundToAll(g_DeathUseTeleSound[GetRandomInt(0, sizeof(g_DeathUseTeleSound) - 1)], this.index, SNDCHAN_STATIC, 100, _, 1.0, 100);
+	}
+	
 	property float m_flBatteryLeftBlade
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -294,6 +318,16 @@ methodmap CHIMERA < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
+	property float m_flDeathAnim
+	{
+		public get()							{ return fl_NextRangedSpecialAttackHappens[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextRangedSpecialAttackHappens[this.index] = TempValueForProperty; }
+	}
+	property int m_iDeathState
+	{
+		public get()							{ return i_MedkitAnnoyance[this.index]; }
+		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
 	
 	public CHIMERA(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -394,6 +428,7 @@ methodmap CHIMERA < CClotBody
 		npc.m_iNpcStepVariation = -1;
 		
 		npc.m_flSpeed = 330.0;
+		npc.m_bDissapearOnDeath = true;
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -431,43 +466,10 @@ methodmap CHIMERA < CClotBody
 		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_flSpawnAnnotation = GetGameTime() + 0.5;
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
 		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "100 100 200 50");
-			DispatchKeyValue(entity, "fogcolor2", "100 100 200 50");
-			DispatchKeyValueFloat(entity, "fogstart", 400.0);
-			DispatchKeyValueFloat(entity, "fogend", 1000.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.65);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
-
+		int color[4] = { 100, 100, 200, 50 };
+		SetCustomFog(color, color, 400.0, 1000.0, 0.65, true);
+		
 		return npc;
 	}
 }
@@ -661,17 +663,30 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 {
 	CHIMERA npc = view_as<CHIMERA>(victim);
 	
-	if (damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && Aperture_ShouldDoLastStand())
+	if (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
 	{
-		npc.m_iState = APERTURE_BOSS_CHIMERA; // This will store the boss's "type"
-		fl_TotalArmor[npc.index] = 1.0;
-		npc.m_flRangedArmor = 1.0;
-		npc.m_flMeleeArmor = 1.0;
-		Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		CHIMERA_CleanUp(npc.index);
+		
+		if (Aperture_ShouldDoLastStand())
+		{
+			// We're in Laboratories, the boss' think/death functions will be hijacked
+			npc.m_iState = APERTURE_BOSS_CHIMERA; // This will store the boss's "type"
+			fl_TotalArmor[npc.index] = 1.0;
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;
+			Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+		}
+		else if (!npc.m_flDeathAnim)
+		{
+			// We're not in Laboratories, don't die immediately, we do an animation first
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 99999.0);
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 99999.0);
+			
+			npc.m_flDeathAnim = 1.0;
+		}
 		
 		damage = 0.0;
-		
-		CHIMERA_CleanUp(npc.index, false);
 		return Plugin_Handled;
 	}
 	
@@ -741,22 +756,15 @@ public void CHIMERA_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	
-	CHIMERA_CleanUp(npc.index, true);
+	CHIMERA_CleanUp(npc.index);
 }
 
-void CHIMERA_CleanUp(int iNPC, bool death)
+void CHIMERA_CleanUp(int iNPC)
 {
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	npc.StopPassiveSound();
-	npc.StopStunSound(death);
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	npc.StopStunSound(true);
+	ClearCustomFog();
 }
 
 bool CHIMERA_timeBased(int iNPC)
@@ -837,6 +845,57 @@ bool CHIMERA_timeBased(int iNPC)
 bool CHIMERA_LoseConditions(int iNPC)
 {
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
+	if (npc.m_flDeathAnim)
+	{
+		if (npc.m_flDeathAnim > GetGameTime())
+			return true;
+		
+		switch (npc.m_iDeathState)
+		{
+			case 0:
+			{
+				float vecPos[3];
+				WorldSpaceCenter(npc.index, vecPos);
+				ParticleEffectAt(vecPos, "eyeboss_tp_vortex", 1.5);
+				
+				npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+				npc.PlayDeathSpawnTeleSound();
+				
+				npc.m_flSpeed = 0.0;
+				npc.m_bisWalking = false;
+				npc.StopPathing();
+				
+				npc.m_flDeathAnim = GetGameTime() + 1.5;
+				
+				switch (GetURandomInt() % 4)
+				{
+					case 0:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: IT RECOILS IN PAIN?");
+					case 1:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: I NEED A DISTRACTION. ERROR? ERROR? ERROR?");
+					case 2:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS PLACE IS TOO HOT FOR ME.");
+					case 3:
+						CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: I MIGHT NOT BE WELCOME HERE?");
+				}
+			}
+			
+			case 1:
+			{
+				float vecPos[3];
+				WorldSpaceCenter(npc.index, vecPos);
+				ParticleEffectAt(vecPos, "eyeboss_tp_normal");
+				npc.PlayDeathUseTeleSound();
+				
+				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			}
+		}
+		
+		npc.m_iDeathState++;
+		npc.Update();
+		return true;
+	}
+	
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -1190,7 +1249,7 @@ bool CHIMERA_SuperSlash(int iNPC)
 				float VectorStart[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VectorStart);
 				f3_NpcSavePos[npc.index] = vecTarget;
 				npc.FaceTowards(vecTarget, 20000.0);
-				float damage = 50.0;
+				float damage = 40.0;
 				damage *= RaidModeScaling;
 				if(npc.m_flBatteryLeftBlade)
 				{

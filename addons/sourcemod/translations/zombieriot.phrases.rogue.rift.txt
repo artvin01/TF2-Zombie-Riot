@@ -12,6 +12,10 @@
 		"#format"	"{1:d}"
 		"en"		"{green}Gained {1} Umbral Affinity"
 	}
+	"Umbral Forgiveness"
+	{
+		"en"		"{green}Umbrals Seemingly dont mind whatever you just did."
+	}
 	"Bad Umbral"
 	{
 		"#format"	"{1:d}"
@@ -157,6 +161,34 @@
 	"Gamemode Madness Slender Desc"
 	{
 		"en"	""
+	}
+	"Gamemode Madness Zombie Riot"
+	{
+		"en"	"Gamemode Madness Zombie Riot"
+	}
+	"Gamemode Madness Zombie Riot Desc"
+	{
+		"en"	"Gamemode Madness Zombie Riot"
+	}
+	"Zombie Riot Badge"
+	{
+		"en"	"Zombie Riot Badge"
+	}
+	"Zombie Riot Badge Desc"
+	{
+		"en"	"You have finally defeated Nemal, unlocked this badge and reached {unique}Player Level 42{default}.\n{green}+200 Cash"
+	}
+	"Gamemode Madness URF Mode"
+	{
+		"en"	"{redsunfirst}An {unique}Ultra Rapid Fire Coin {redsunfirst}was flipped! {redsunsecond}Ultra Rapid Fire Mode {redsunfirst}will be active until the stage ends.\n{redsunsecond}Welcome to the future of Team Fortress 2."
+	}
+	"Gamemode Madness URF"
+	{
+		"en"	"Gamemode Madness URF"
+	}
+	"Gamemode Madness URF Desc"
+	{
+		"en"	"Gamemode Madness URF"
 	}
 	"Broken Crest"
 	{
@@ -636,13 +668,21 @@
 	{
 		"en"	"A very long contract, in which every term and condition is the result of experience.\n{green}3 Rebels joins you"
 	}
+	"Super Stims"
+	{
+		"en"	"Super Stims"
+	}
+	"Super Stims Desc"
+	{
+		"en"	"Freedom never sleeps!!\n{green}Morphine shots are upgraded:\nOn stage start, Instantly fully charge 1 stim.\nStims restore hp to full rapidly in a second. Getting hit during the heal maintains the healing. Healing lasts 3 seconds."
+	}
 	"Soul Binding Bone"
 	{
 		"en"	"Soul Binding Bone"
 	}
 	"Soul Binding Bone Desc"
 	{
-		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +1％ damage per Umbral Affinity"
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +0.5％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
@@ -867,7 +907,23 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"He was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop him.\n{red}Umbral are enraged, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{red}Umbral are not pleased, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+	}
+	"The Bladedance"
+	{
+		"en"	"''Bladedance''"
+	}
+	"The Bladedance Desc"
+	{
+		"en"	"Left to rot in the same fate, alone, but able to keep himself alive.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
+	}
+	"The Whiteflower"
+	{
+		"en"	"''Whiteflower''"
+	}
+	"The Whiteflower Desc"
+	{
+		"en"	"Egotist. Betrayer. Seeker. Loner. Ruler. Goodnight, Irln.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 	}
 
 	"Gateway"
@@ -1222,6 +1278,30 @@
 	{
 		"en"	"Mazeat was.\n{green}Non-void enemies have -30％ health and damage and receive +100％ elemental damage"
 	}
+	"Finale Encounter Lore"
+	{
+		"en"	"You gotten this far, from infections, outbreaks, riots, and chaos. Take a moment to remember the past."
+	}
+	"Finale Encounter Option 1"
+	{
+		"en"	"It's too much"
+	}
+	"Finale Encounter Desc 1"
+	{
+		"en"	"{green}This chapter grows longer"
+	}
+	"Finale Encounter Lore 1"
+	{
+		"en"	"In the end, we're human, in the world that makes us aliens."
+	}
+	"Finale Encounter Option 2"
+	{
+		"en"	"Remember ''them''"
+	}
+	"Finale Encounter Desc 2"
+	{
+		"en"	"{yellow}Obtain 2 unknown artifacts"
+	}
 
 	"Cloned Subjects"
 	{
@@ -1254,6 +1334,10 @@
 	"Confused Ruanians!"
 	{
 		"en" "⚠ Confused Ruanians"
+	}
+	"The Umbral Commander"
+	{
+		"en" "☠ The Umbral Commander"
 	}
 	"Sabotaging Electric's"
 	{
@@ -1417,6 +1501,30 @@
 	{
 		"en" "⚠ Unknown Taskforce"
 	}
+	"Seaborn Enslaved"
+	{
+		"en" "⚔ Seaborn Enslaved"
+	}
+	"Seaborn Enslaved!"
+	{
+		"en" "⚠ Seaborn Enslaved"
+	}
+	"Voided Superior's"
+	{
+		"en" "⚔ Voided Superior's"
+	}
+	"Voided Superior's!"
+	{
+		"en" "⚠ Voided Superior's"
+	}
+	"Expert Warpers"
+	{
+		"en" "⚔ Expert Warpers"
+	}
+	"Expert Warpers!"
+	{
+		"en" "⚠ Expert Warpers"
+	}
 	"Beyond Recognition"
 	{
 		"en" "⚔ Beyond Recognition"
@@ -1469,6 +1577,10 @@
 	{
 		"en" "☠ Randomizer"
 	}
+	"Zombie Riot"
+	{
+		"en" "☠ Zombie Riot"
+	}
 	"Refragmented Page"
 	{
 		"en"	"Refragmented Page"
@@ -1510,4 +1622,41 @@
 	{
 		"en"	"You find the body of... Guln."
 	}
+	"Book of Nature"
+	{
+		"en"	"Book of Nature"
+	}
+	"Book of Nature Desc"
+	{
+		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore."
+	}
+	"Book of Nature Conclusion"
+	{
+		"en"	"You pick up the book that's off to the side, near some other peacefull related subjects."
+	}
+	"Book of Weakness"
+	{
+		"en"	"Book of Weakness"
+	}
+	"Book of Weakness Desc"
+	{
+		"en"	"A book explaining detailed weakpots of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
+	}
+	"Book of Weakness Conclusion"
+	{
+		"en"	"You pick up the book thats marked as ''important for mercs''"
+	}
+	"Book of Liver Optimisation Conclusion"
+	{
+		"en"	"A book thats covered in grime and slime, seemingly left to rot."
+	}
+	"Book of Liver Optimisation"
+	{
+		"en"	"Book of Liver Optimisation"
+	}
+	"Book of Liver Optimisation Desc"
+	{
+		"en"	"Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
+	}
+
 }

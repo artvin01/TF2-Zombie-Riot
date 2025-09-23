@@ -1084,16 +1084,15 @@ void Rogue_BattleVictory()
 			{
 				Artifact artifact;
 
-				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
+				if(CurrentFloor < 5 && CurrentCount < 6 && !Rogue_Rift_NoStones())
 				{
-					
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
 					{
 						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
 							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
 					}
-					else if((GetURandomInt() % 4) == 0)
+					else if((GetURandomInt() % 4) == 0 && CurrentCount < 5)
 					{
 						time = Rogue_Rift_OptionalBonusBattle();
 					}
@@ -2176,7 +2175,7 @@ static void StartStage(const Stage stage)
 		}
 		case ReilaRift:
 		{
-			if(CurrentFloor != 6)
+			if(CurrentFloor != 6 || CurrentFloor != 5 || CurrentFloor != 4)
 				Rogue_Dome_WaveStart(pos);
 		}
 	}
@@ -3019,9 +3018,15 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 {
 	int change = amount;
 	
-	if(CurrentUmbral < 1)
+	if(CurrentUmbral < 1 && !Rogue_Rift_BookOfNature())
 	{
 		CurrentUmbral = 0;
+		return;
+	}
+
+	if(Rogue_Rift_BookOfNature() && change <= 0)
+	{
+		CPrintToChatAll("%t", "Umbral Forgiveness");
 		return;
 	}
 

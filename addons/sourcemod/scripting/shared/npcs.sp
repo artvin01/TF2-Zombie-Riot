@@ -1559,6 +1559,11 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_PORTAL)
+				{
+					TE_ParticleInt(g_particleImpactPortal, damagePosition);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
 			}
 		}
 	}
