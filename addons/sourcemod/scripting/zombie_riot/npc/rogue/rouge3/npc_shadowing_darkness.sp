@@ -810,7 +810,7 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					//they will give Necrosis damage.
-					Elemental_AddNecrosisDamage(victim, npc.index, RoundToCeil(RaidModeScaling * 10.0));
+					Elemental_AddNecrosisDamage(target, npc.index, RoundToCeil(RaidModeScaling * 10.0));
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
