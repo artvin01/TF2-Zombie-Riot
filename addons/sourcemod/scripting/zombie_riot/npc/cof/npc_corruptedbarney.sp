@@ -248,7 +248,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		RaidModeScaling = float(GetURandomInt());
 		fl_TotalArmor[npc.index] = GetRandomFloat(0.25, 0.3);
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
-		i_NpcWeight[npc.index] = GetRandomInt(1,5)
+		i_NpcWeight[npc.index] = GetRandomInt(1,5);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
