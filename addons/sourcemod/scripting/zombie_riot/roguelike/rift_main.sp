@@ -74,15 +74,15 @@ public void Rogue_RiftEmpty_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID || view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL || GetEntPropFloat(entity, Prop_Data, "m_flElementRes", Element_Void) > 0.4)
 	{
-		fl_Extra_Damage[entity] *= 1.25;
-		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.3));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 1.3));
+		fl_Extra_Damage[entity] *= 1.1;
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 1.15));
 	}
 	else
 	{
-		fl_Extra_Damage[entity] *= 0.9;
-		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.85));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 0.85));
+		fl_Extra_Damage[entity] *= 0.95;
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.9));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 0.9));
 	}
 }
 
@@ -173,7 +173,7 @@ public float Rogue_Encounter_RiftShop()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING2"))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Jkei's Broken Entry Chip"))
 			{
 				found = true;
 				break;
@@ -482,7 +482,7 @@ static void FinishRiftVote(const Vote vote)
 			if(angry)	// They threw away something that made it worse
 				angry = !affinity || (affinity > Rogue_GetUmbral());
 
-			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
+			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 4))
 			{
 				Rogue_GiveNamedArtifact("Fractured");
 			}
@@ -610,7 +610,9 @@ public void Rogue_RiftNormal_Collect()
 
 public void Rogue_RiftNormal_Enemy(int entity)
 {
-	float stats = Pow(1.05, float(Rogue_GetFloor() + 1));
+	if(Rogue_GetFloor() == 6)
+		return;
+	float stats = Pow(1.02, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -631,7 +633,9 @@ public void Rogue_RiftHard_Collect()
 
 public void Rogue_RiftHard_Enemy(int entity)
 {
-	float stats = Pow(1.1, float(Rogue_GetFloor() + 1));
+	if(Rogue_GetFloor() == 6)
+		return;
+	float stats = Pow(1.04, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -798,6 +802,9 @@ public float Rogue_VoidOutbreak_Battle()
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
+	//dont warp umbrals at all.
 	if((GetURandomInt() % 4) == 0)
 	{
 		int seed1 = 2 + (WarpSeed % 3);
@@ -867,7 +874,7 @@ public float Rogue_Encounter_Rift2()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING2"))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Jkei's Broken Entry Chip"))
 			{
 				found = true;
 				break;
@@ -1060,6 +1067,7 @@ static void FinishOptionalBonusBattle(const Vote vote2, int index)
 		Vote vote;
 		strcopy(vote.Config, sizeof(vote.Config), "Strange Gateway");	// Name of stage to look up
 		vote.Level = 2;
+		Rogue_AddExtraStage(1);
 		Rogue_Vote_NextStage(vote);
 	}
 }

@@ -5210,7 +5210,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1)))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -5230,7 +5230,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -6032,7 +6032,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 									}
 								}
-								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
 								}
@@ -6064,7 +6064,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 									}
 								}
-								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
 								}
