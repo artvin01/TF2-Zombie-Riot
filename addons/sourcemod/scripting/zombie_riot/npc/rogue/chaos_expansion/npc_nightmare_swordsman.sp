@@ -300,7 +300,7 @@ methodmap NightmareSwordsman < CClotBody
 		float flPos[3], flAng[3];
 				
 			
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 
 		npc.GetAttachment("eyes", flPos, flAng);
 		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {0.0,0.0,0.0});

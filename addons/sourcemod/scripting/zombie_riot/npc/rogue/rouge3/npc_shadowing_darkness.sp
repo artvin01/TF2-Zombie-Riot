@@ -374,9 +374,9 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 	{
 		Shadowing_Darkness_Boss npc = view_as<Shadowing_Darkness_Boss>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "300", ally, false));
 
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");			
-		i_NpcWeight[npc.index] = 5;
+		SetVariantInt(16);
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
+		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");
@@ -397,7 +397,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		
 		if(final)
 		{
-			npc.SetActivity("ACT_WHITEFLOWER_IDLE");
+			npc.SetActivity("ACT_SHADOW_IDLE_START");
 
 			npc.m_bisWalking = false;
 			RaidModeTime = 9999999.9;
@@ -418,7 +418,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		}
 		else
 		{
-			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.SetActivity("ACT_SHADOW_RUN");
 			RaidModeTime = GetGameTime() + (300.0);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
@@ -497,24 +497,6 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 
 		func_NPCFuncWin[npc.index] = view_as<Function>(Shadowing_DarknessWinLine);
-		
-	
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl");
-		SetVariantString("1.1");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/sbox2014_knight_helmet/sbox2014_knight_helmet_spy.mdl");
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/hw2013_demo_cape/hw2013_demo_cape.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		npc.StartPathing();
 		AlreadySaidWin = false;
@@ -832,7 +814,17 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_WHITEFLOWER_ATTACK_RIGHT",_,_,_,2.5);
+				switch(GetRandomInt(0,1))
+				{
+					case 1:
+					{
+						npc.AddGesture("ACT_SHADOW_ATTACK_1",_,_,_,2.0);
+					}
+					case 2:
+					{
+						npc.AddGesture("ACT_SHADOW_ATTACK_2",_,_,_,2.0);
+					}
+				}
 				npc.m_flAttackHappens = gameTime + 0.1;
 				npc.m_flDoingAnimation = gameTime + 0.1;
 				npc.m_flNextMeleeAttack = gameTime + 0.3;
@@ -853,7 +845,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.SetActivity("ACT_SHADOW_PROJECTILE");
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -886,7 +878,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			//	npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 				npc.StopPrepareBounce();
@@ -1035,7 +1027,7 @@ void Shadowing_Darkness_DefaultMovement(Shadowing_Darkness_Boss npc, float gameT
 	npc.m_flRestoreDefaultWalk = 0.0;
 	npc.m_bisWalking = true;
 	npc.m_iChanged_WalkCycle = 0;
-	npc.SetActivity("ACT_WHITEFLOWER_RUN");
+	npc.SetActivity("ACT_SHADOW_RUN");
 	npc.m_flSpeed = SHADOW_DEFAULT_SPEED;
 	if(IsValidEntity(npc.m_iTargetAlly))
 		npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
@@ -1054,7 +1046,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.SetActivity("ACT_SHADOW_EYE");
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1076,7 +1068,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			//	npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 				
@@ -1102,7 +1094,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 3;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			//	npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 
@@ -1139,7 +1131,8 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.SetActivity("ACT_SHADOW_POINT");
+			npc.SetPlaybackRate(0.65);
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1186,7 +1179,8 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					npc.m_bisWalking = false;
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 7;
-					npc.SetActivity("ACT_WHITEFLOWER_RUN");
+					npc.SetActivity("ACT_SHADOW_POINT");
+					npc.SetPlaybackRate(1.1);
 					npc.m_flSpeed = 0.0;
 					npc.StopPathing();
 
@@ -1217,7 +1211,9 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				}
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 6;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.SetActivity("ACT_SHADOW_PROJECTILE");
+				npc.SetCycle(0.3);
+				npc.SetPlaybackRate(1.3);
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 
@@ -1237,7 +1233,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				{
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 9;
-					npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				//	npc.SetActivity("ACT_SHADOW_RUN");
 					npc.m_flSpeed = 0.0;
 					npc.StopPathing();
 					
@@ -1269,7 +1265,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 5;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.SetActivity("ACT_SHADOW_IDLE");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 				b_NoGravity[npc.index] = false;
@@ -1284,7 +1280,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.SetActivity("ACT_SHADOW_IDLE");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 
@@ -1357,11 +1353,11 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				{
 					RemoveEntity(npc.m_iWearable5);
 				}
-				npc.m_iWearable5 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "effect_hand_l");
+				npc.m_iWearable5 = ConnectWithBeam(npc.index, npc.m_iTargetWalkTo, 255, 0, 0, 5.0, 1.0, 0.0, LASERBEAM, .attachment1 = "point_particle");
 				npc.PlayAimAtEnemy(npc.m_iTargetWalkTo);
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			//	npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 				
@@ -1385,7 +1381,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.SetActivity("ACT_SHADOW_CIRCLE_START");
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1430,7 +1426,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 				//failed, cancel.
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 3;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.SetActivity("ACT_SHADOW_CIRCLE_END");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 			}
@@ -1448,7 +1444,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 2;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.SetActivity("ACT_SHADOW_CIRCLE_LOOP");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 				//change anim, expand circle
@@ -1532,7 +1528,7 @@ bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTi
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_WHITEFLOWER_RUN");
+			npc.SetActivity("ACT_SHADOW_IDLE_VOICE");
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1751,6 +1747,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 2;
 				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Who am i kidding, unspeakable is dead, luckly.");
+				npc.SetActivity("ACT_SHADOW_IDLE_START_TRANSITION");
 			}
 		}
 		case 2:
@@ -1765,7 +1762,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				npc.m_flUpperSlashCD = GetGameTime() + 15.0;
 				npc.m_flCreateRingCD = GetGameTime() + 30.0;
 				npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
-				npc.SetActivity("ACT_WHITEFLOWER_RUN");
+				npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_bisWalking = true;
 			}
 		}

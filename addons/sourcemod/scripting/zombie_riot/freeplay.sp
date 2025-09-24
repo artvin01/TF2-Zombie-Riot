@@ -976,7 +976,7 @@ void Freeplay_SpawnEnemy(int entity)
 				{
 					b_StaticNPC[entity] = true;
 					AddNpcToAliveList(entity, 1);
-					b_NoHealthbar[entity] = true; //Makes it so they never have an outline
+					b_NoHealthbar[entity] = 1; //Makes it so they never have an outline
 					GiveNpcOutLineLastOrBoss(entity, false);
 					b_thisNpcHasAnOutline[entity] = true;
 				}

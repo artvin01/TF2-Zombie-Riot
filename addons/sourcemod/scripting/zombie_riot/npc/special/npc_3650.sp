@@ -204,7 +204,7 @@ methodmap ThirtySixFifty < CClotBody
 		npc.m_iTarget = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.5;
-		b_NoHealthbar[npc.index] = false;
+		b_NoHealthbar[npc.index] = 0;
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		b_thisNpcHasAnOutline[npc.index] = true; 
 

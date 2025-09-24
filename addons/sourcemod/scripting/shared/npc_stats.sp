@@ -6412,6 +6412,7 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 }
 void UnstuckStuckNpc(CClotBody npc)
 {
+	PrintToChatAll("test1");
 	static float vec3Origin[3];
 	npc.SetVelocity(vec3Origin);
 #if defined ZR

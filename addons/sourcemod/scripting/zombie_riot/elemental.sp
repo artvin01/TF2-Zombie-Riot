@@ -1504,7 +1504,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				FreezeNpcInTime(victim, 999.9, true);
 				SetEntityRenderColor(victim, 25, 25, 25, 255);
 				AddNpcToAliveList(victim, 1);
-				b_NoHealthbar[victim] = true;
+				b_NoHealthbar[victim] = 1;
 				ApplyStatusEffect(victim, victim, "Warped Elemental End", 999.9);
 				ApplyStatusEffect(victim, victim, "Clear Head", 999999.0);	//cant be stunned again
 				
