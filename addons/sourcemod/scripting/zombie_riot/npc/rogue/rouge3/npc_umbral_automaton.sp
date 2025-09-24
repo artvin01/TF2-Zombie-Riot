@@ -173,7 +173,7 @@ methodmap Umbral_Automaton < CClotBody
 				npc.m_flSpeed = 100.0;
 			else
 				npc.m_flSpeed = 150.0;
-				
+
 			npc.m_flRandomWakeupTime = 0.0;
 			if(IsGiantDo)
 			{
@@ -187,6 +187,7 @@ methodmap Umbral_Automaton < CClotBody
 		}
 		else
 		{
+			RemoveSpawnProtectionLogic(npc.index, true);
 			UmbralAutomaton_MakeInvulnerable(npc.index, false);
 			//giant version only has 1
 			if(IsGiantDo)
@@ -352,6 +353,10 @@ public void Umbral_Automaton_ClotThink(int iNPC)
 			}
 			npc.m_bisWalking = true;
 			npc.m_flRandomWakeupTimeFinish = 0.0;
+			if(b_IsGiant[npc.index])
+				npc.m_flSpeed = 100.0;
+			else
+				npc.m_flSpeed = 150.0;
 		}
 		return;
 	}
