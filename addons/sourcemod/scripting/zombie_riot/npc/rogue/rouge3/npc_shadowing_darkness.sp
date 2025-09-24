@@ -358,6 +358,11 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flSpawnStatueUmbrals
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 
 	property int m_iShadowingLeftSlice
 	{
@@ -405,6 +410,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 			f_khamlCutscene = GetGameTime() + 52.0;
+			npc.m_flSpawnStatueUmbrals = GetGameTime() + 52.0;
 			i_khamlCutscene = 15;				
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness_intro.mp3");
@@ -420,7 +426,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		else
 		{
 			npc.SetActivity("ACT_SHADOW_RUN");
-			RaidModeTime = GetGameTime() + (300.0);
+			RaidModeTime = GetGameTime() + (350.0);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
 			music.Time = 210;
@@ -429,6 +435,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Burnt Light");
 			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
 			Music_SetRaidMusic(music);
+			npc.m_flSpawnStatueUmbrals = 1.0;
 		}
 
 
@@ -544,6 +551,16 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	if(Shadowing_Darkness_TalkStart(npc))
 	{
 		return;
+	}
+
+	if(npc.m_flSpawnStatueUmbrals)
+	{
+		if(npc.m_flSpawnStatueUmbrals < GetGameTime(npc.index))
+		{
+			ShadowingDarkness_SpawnStatues(npc);
+			ShadowingDarkness_SpawnStatues(npc);
+			npc.m_flSpawnStatueUmbrals = 0.0;
+		}
 	}
 
 	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
@@ -705,6 +722,41 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 		damage = 0.0;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 
+		
+		//delete all koulms
+		int inpcloop, a;
+		while((inpcloop = FindEntityByNPC(a)) != -1)
+		{
+			if(IsValidEntity(inpcloop) && i_NpcInternalId[inpcloop] == Umbral_Koulm_ID())
+			{
+				if(inpcloop != 0)
+				{
+					b_DissapearOnDeath[inpcloop] = true;
+					b_DoGibThisNpc[inpcloop] = true;
+					SmiteNpcToDeath(inpcloop);
+					SmiteNpcToDeath(inpcloop);
+					SmiteNpcToDeath(inpcloop);
+					SmiteNpcToDeath(inpcloop);
+				}
+			}
+		}
+		//delete all koulms
+		int inpcloop1, a1;
+		while((inpcloop1 = FindEntityByNPC(a1)) != -1)
+		{
+			if(IsValidEntity(inpcloop1) && i_NpcInternalId[inpcloop1] == Umbral_Automaton_ID())
+			{
+				if(inpcloop1 != 0)
+				{
+					b_DissapearOnDeath[inpcloop1] = true;
+					b_DoGibThisNpc[inpcloop1] = true;
+					SmiteNpcToDeath(inpcloop1);
+					SmiteNpcToDeath(inpcloop1);
+					SmiteNpcToDeath(inpcloop1);
+					SmiteNpcToDeath(inpcloop1);
+				}
+			}
+		}
 		return Plugin_Changed;
 	}
 	if(!npc.Anger)
@@ -745,6 +797,40 @@ public void Shadowing_Darkness_Boss_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 		
+	//delete all koulms
+	int inpcloop, a;
+	while((inpcloop = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(inpcloop) && i_NpcInternalId[inpcloop] == Umbral_Koulm_ID())
+		{
+			if(inpcloop != 0)
+			{
+				b_DissapearOnDeath[inpcloop] = true;
+				b_DoGibThisNpc[inpcloop] = true;
+				SmiteNpcToDeath(inpcloop);
+				SmiteNpcToDeath(inpcloop);
+				SmiteNpcToDeath(inpcloop);
+				SmiteNpcToDeath(inpcloop);
+			}
+		}
+	}
+	//delete all koulms
+	int inpcloop1, a1;
+	while((inpcloop1 = FindEntityByNPC(a1)) != -1)
+	{
+		if(IsValidEntity(inpcloop1) && i_NpcInternalId[inpcloop1] == Umbral_Automaton_ID())
+		{
+			if(inpcloop1 != 0)
+			{
+				b_DissapearOnDeath[inpcloop1] = true;
+				b_DoGibThisNpc[inpcloop1] = true;
+				SmiteNpcToDeath(inpcloop1);
+				SmiteNpcToDeath(inpcloop1);
+				SmiteNpcToDeath(inpcloop1);
+				SmiteNpcToDeath(inpcloop1);
+			}
+		}
+	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -1786,7 +1872,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 0;
 				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Let's make sure that the vision will finally come true, all under one, together, and as a collective~");
-				RaidModeTime = GetGameTime() + (300.0);
+				RaidModeTime = GetGameTime() + (350.0);
 				npc.m_flSwordParticleAttackCD = GetGameTime() + 10.0;
 				npc.m_flPortalSummonGate = GetGameTime() + 25.0;
 				npc.m_flUpperSlashCD = GetGameTime() + 15.0;
@@ -1804,4 +1890,21 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 		return true;
 	}
 	return false;
+}
+
+
+void ShadowingDarkness_SpawnStatues(Shadowing_Darkness_Boss npc)
+{
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	int summon = NPC_CreateByName("npc_umbral_automaton", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "giant");
+	if(IsValidEntity(summon))
+	{
+		if(GetTeam(npc.index) != TFTeam_Red)
+			Zombies_Currently_Still_Ongoing++;
+
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/2);
+		NpcStats_CopyStats(npc.index, summon);
+		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
+	}
 }
