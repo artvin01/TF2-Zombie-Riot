@@ -178,9 +178,9 @@ methodmap Umbral_Ltzens < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 2.0;
-				fl_Extra_MeleeArmor[npc.index] *= 0.65;
-				fl_Extra_RangedArmor[npc.index] *= 0.65;
+				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_MeleeArmor[npc.index] *= 0.75;
+				fl_Extra_RangedArmor[npc.index] *= 0.75;
 			}
 		}
 		return npc;

@@ -398,6 +398,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		if(final)
 		{
 			npc.SetActivity("ACT_SHADOW_IDLE_START");
+			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 			npc.m_bisWalking = false;
 			RaidModeTime = 9999999.9;
@@ -688,6 +689,14 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			fl_Extra_Damage[spawn_index]	*= 0.1;
 
 		}
+		if(npc.m_iChanged_WalkCycle != 99) 	
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 99;
+			npc.SetActivity("ACT_SHADOW_IDLE_VOICE");
+			npc.m_flSpeed = 0.0;
+			npc.StopPathing();
+		}
 		i_RaidGrantExtra[npc.index] = 2;
 		CPrintToChatAll("{purple}NO!!!!!!");
 		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Get this thing off me-.");
@@ -814,7 +823,7 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				switch(GetRandomInt(0,1))
+				switch(GetRandomInt(1,2))
 				{
 					case 1:
 					{
@@ -845,7 +854,17 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 		{
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_SHADOW_PROJECTILE");
+			switch(GetRandomInt(1,2))
+			{
+				case 1:
+				{
+					npc.AddGesture("ACT_SHADOW_SWIPE_LEFT",_,_,_,1.0);
+				}
+				case 2:
+				{
+					npc.AddGesture("ACT_SHADOW_SWIPE_RIGHT",_,_,_,1.0);
+				}
+			}
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1047,6 +1066,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_SHADOW_EYE");
+			npc.SetPlaybackRate(1.5);
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1132,7 +1152,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_SHADOW_POINT");
-			npc.SetPlaybackRate(0.65);
+			npc.SetPlaybackRate(0.95);
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
 		}
@@ -1180,10 +1200,11 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 7;
 					npc.SetActivity("ACT_SHADOW_POINT");
-					npc.SetPlaybackRate(1.1);
+					npc.SetCycle(0.45);
+					npc.SetPlaybackRate(1.2);
 					npc.m_flSpeed = 0.0;
 					npc.StopPathing();
-
+				
 					npc.m_iShadowingLeftSlice--;
 					npc.m_flDoingAnimation = gameTime + 1.8;
 				}
@@ -1211,7 +1232,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				}
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 6;
-				npc.SetActivity("ACT_SHADOW_PROJECTILE");
+			//	npc.SetActivity("ACT_SHADOW_PROJECTILE");
 				npc.SetCycle(0.3);
 				npc.SetPlaybackRate(1.3);
 				npc.m_flSpeed = 0.0;
@@ -1233,7 +1254,9 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				{
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 9;
-				//	npc.SetActivity("ACT_SHADOW_RUN");
+					npc.SetActivity("ACT_SHADOW_PROJECTILE");
+					npc.SetCycle(0.3);
+					npc.SetPlaybackRate(1.5);
 					npc.m_flSpeed = 0.0;
 					npc.StopPathing();
 					
@@ -1280,7 +1303,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 			{
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 4;
-				npc.SetActivity("ACT_SHADOW_IDLE");
+				npc.SetActivity("ACT_SHADOW_UPPERCUT");
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 
@@ -1747,10 +1770,17 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 2;
 				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Who am i kidding, unspeakable is dead, luckly.");
-				npc.SetActivity("ACT_SHADOW_IDLE_START_TRANSITION");
 			}
 		}
 		case 2:
+		{
+			if(TimeLeft < 1.5)
+			{
+				i_khamlCutscene = 1;
+				npc.SetActivity("ACT_SHADOW_IDLE_START_TRANSITION");
+			}
+		}
+		case 1:
 		{
 			if(TimeLeft < 0.0)
 			{
@@ -1764,6 +1794,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
 				npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_bisWalking = true;
+				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 			}
 		}
 	}

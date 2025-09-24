@@ -43,16 +43,25 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			*/
 
 			bool ignoreOdds = Rogue_Paradox_IgnoreOdds();
+			bool PassOddsForcer = false;
+			if(StrEqual("npc_umbral_rouam", buffers[1]))
+				PassOddsForcer = true;
 
-			if(Rogue_Theme() == ReilaRift)
+			if(StrEqual("npc_umbral_automaton", buffers[1]))
+				PassOddsForcer = true;
+
+			if(!PassOddsForcer)
 			{
-				switch(Rogue_GetUmbralLevel())
+				if(Rogue_Theme() == ReilaRift)
 				{
-					case 0, 4:
-						ignoreOdds = true;
-					
-					case 2:
-						return -1;
+					switch(Rogue_GetUmbralLevel())
+					{
+						case 0, 4:
+							ignoreOdds = true;
+						
+						case 2:
+							return -1;
+					}
 				}
 			}
 
@@ -96,6 +105,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		
 		if(StrEqual("npc_umbral_automaton", buffers[1]))
 		{
+			//automatons can never be friendly
 			if(friendly && (GetURandomInt() % 4) != 0)
 			{
 				friendly = false;

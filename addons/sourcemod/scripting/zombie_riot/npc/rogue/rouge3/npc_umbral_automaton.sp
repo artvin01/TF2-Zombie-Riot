@@ -153,7 +153,6 @@ methodmap Umbral_Automaton < CClotBody
 			FoundstatueToReplace = true;
 			GetEntPropVector(EntityFound, Prop_Data, "m_vecAbsOrigin", vecPos);
 			GetEntPropVector(EntityFound, Prop_Data, "m_angRotation", vecAng);
-			UmbralAutomaton_MakeInvulnerable(npc.index, false);
 		}
 		if(!IsGiantDo)
 		{
@@ -167,8 +166,14 @@ methodmap Umbral_Automaton < CClotBody
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_flSpeed = 0.0;
 		if(!FoundstatueToReplace)
 		{
+			if(b_IsGiant[npc.index])
+				npc.m_flSpeed = 100.0;
+			else
+				npc.m_flSpeed = 150.0;
+				
 			npc.m_flRandomWakeupTime = 0.0;
 			if(IsGiantDo)
 			{
@@ -182,6 +187,7 @@ methodmap Umbral_Automaton < CClotBody
 		}
 		else
 		{
+			UmbralAutomaton_MakeInvulnerable(npc.index, false);
 			//giant version only has 1
 			if(IsGiantDo)
 			{
@@ -254,7 +260,6 @@ methodmap Umbral_Automaton < CClotBody
 		//dont allow self making
 		
 		i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
-		npc.m_flSpeed = 120.0;
 
 		SetEntityRenderColor(npc.index, 105, 82, 117, 255);
 		
@@ -388,11 +393,11 @@ public void Umbral_Automaton_ClotThink(int iNPC)
 			npc.m_flEnemyStandStill = 0.0;
 			if(b_IsGiant[npc.index])
 			{
-				npc.m_flSpeed = 120.0;
+				npc.m_flSpeed = 100.0;
 			}
 			else
 			{
-				npc.m_flSpeed = 190.0;
+				npc.m_flSpeed = 150.0;
 			}
 		}
 	}
@@ -564,7 +569,7 @@ void Umbral_AutomatonSelfDefense(Umbral_Automaton npc, float gameTime, float dis
 				npc.m_flSpeed = 0.0;
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE",_,_,_,0.25);
+				npc.AddGesture("ACT_SHADOW_STATUE_BIG_ATTACK",_,_,_,1.0);
 				npc.m_flAttackHappens = gameTime + 1.5;
 				npc.m_flDoingAnimation = gameTime + 1.5;
 				npc.m_flNextMeleeAttack = gameTime + 10.5;
@@ -666,6 +671,7 @@ void UmbralAutomaton_MakeInvulnerable(int statue, bool Wakeup)
 		RemoveSpecificBuff(statue, "Fluid Movement");
 		RemoveSpecificBuff(statue, "Solid Stance");
 		RemoveSpecificBuff(statue, "Clear Head");
+		LogStackTrace("test1");
 		return;
 	}
 	b_ThisEntityIgnored[statue] = true;
@@ -678,6 +684,7 @@ void UmbralAutomaton_MakeInvulnerable(int statue, bool Wakeup)
 	ApplyStatusEffect(statue, statue, "Fluid Movement", 999999.0);	
 	ApplyStatusEffect(statue, statue, "Solid Stance", 999999.0);	
 	ApplyStatusEffect(statue, statue, "Clear Head", 999999.0);	
+	LogStackTrace("test2");
 }
 
 
