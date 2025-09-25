@@ -882,12 +882,12 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 				//Shw will not an AOE melee swing, it would be too much.
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 45.0;
+					float damageDealt = 65.0;
 					damageDealt *= RaidModeScaling;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					//they will give Necrosis damage.
-					Elemental_AddNecrosisDamage(target, npc.index, RoundToCeil(RaidModeScaling * 10.0));
+					Elemental_AddNecrosisDamage(target, npc.index, RoundToCeil(RaidModeScaling * 15.0));
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -913,16 +913,16 @@ void Shadowing_Darkness_SelfDefense(Shadowing_Darkness_Boss npc, float gameTime,
 				{
 					case 1:
 					{
-						npc.AddGesture("ACT_SHADOW_ATTACK_1",_,_,_,2.0);
+						npc.AddGesture("ACT_SHADOW_ATTACK_1",_,_,_,1.0);
 					}
 					case 2:
 					{
-						npc.AddGesture("ACT_SHADOW_ATTACK_2",_,_,_,2.0);
+						npc.AddGesture("ACT_SHADOW_ATTACK_2",_,_,_,1.0);
 					}
 				}
-				npc.m_flAttackHappens = gameTime + 0.1;
-				npc.m_flDoingAnimation = gameTime + 0.1;
-				npc.m_flNextMeleeAttack = gameTime + 0.3;
+				npc.m_flAttackHappens = gameTime + 0.2;
+				npc.m_flDoingAnimation = gameTime + 0.2;
+				npc.m_flNextMeleeAttack = gameTime + 0.6;
 			}
 		}
 	}
@@ -1319,8 +1319,8 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 6;
 			//	npc.SetActivity("ACT_SHADOW_PROJECTILE");
-				npc.SetCycle(0.3);
-				npc.SetPlaybackRate(1.3);
+			//	npc.SetCycle(0.3);
+			//	npc.SetPlaybackRate(1.3);
 				npc.m_flSpeed = 0.0;
 				npc.StopPathing();
 
@@ -1351,7 +1351,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					flPos[2] += 5.0;
 					int PoolAidsParticle = ParticleEffectAt(flPos, "utaunt_wiggletube_teamcolor_red", 0.0);
 					DataPack pack;
-					CreateDataTimer(0.5, ShadowingDarkness_NecroPoolTimer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+					CreateDataTimer(0.25, ShadowingDarkness_NecroPoolTimer, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 					pack.WriteCell(EntIndexToEntRef(npc.index));
 					pack.WriteCell(EntIndexToEntRef(PoolAidsParticle));
 					pack.WriteCell(npc.m_iAtCurrentIntervalOfNecroArea);	
@@ -1485,7 +1485,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 	{
 		npc.m_flCreateRingCD = gameTime + 50.0;
 		npc.m_iState = 4;	
-		npc.m_flDoingAnimation = gameTime + 3.5;
+		npc.m_flDoingAnimation = gameTime + 4.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
 		{
 			npc.m_bisWalking = false;
@@ -1500,7 +1500,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 		static float flOldPos[3]; 
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flOldPos);
 		flOldPos[2] += 5.0;
-		ParticleEffectAt(flOldPos, "utaunt_poweraura_teamcolor_red", 3.5);
+		ParticleEffectAt(flOldPos, "utaunt_poweraura_teamcolor_red", 4.5);
 		npc.PlaySummonUmbrals();
 		for(int loop=1; loop<=4; loop++)
 		{
@@ -1547,7 +1547,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 			Explode_Logic_Custom(0.0, 0, npc.index, -1, _, CircleSize, 1.0, _, true, 99,_,_,_,Shadowing_MarkedTarget_For_Slashing);
 			float AbsVecMe[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsVecMe);
-			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 125, 125, 255, 1, 0.15, 15.0, 3.0, 2);
+			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/combineball_trail_black_1.vmt", 255, 125, 125, 255, 1, 0.15, 30.0, 3.0, 2);
 			npc.PlayCircleExpand();
 			if(npc.m_iChanged_WalkCycle != 2) 	
 			{
@@ -1566,7 +1566,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 			CircleSize *= (TimeLeft - 3.0);
 			float AbsVecMe[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", AbsVecMe);
-			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laser.vmt", 125, 125, 125, 255, 1, 0.15, 15.0, 0.0, 2);
+			spawnRing_Vectors(AbsVecMe, CircleSize * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laser.vmt", 125, 125, 125, 255, 1, 0.15, 30.0, 0.0, 2);
 		}
 		return true;
 	}
@@ -1584,7 +1584,7 @@ float Shadowing_MarkedTarget_For_Slashing(int entity, int victim, float damage, 
 
 float Shadowing_GiveNecrosis(int entity, int victim, float damage, int weapon)
 {
-	Elemental_AddNecrosisDamage(victim, entity, RoundToCeil(RaidModeScaling * 10.0));
+	Elemental_AddNecrosisDamage(victim, entity, RoundToCeil(RaidModeScaling * 15.0));
 	return damage;
 }
 
@@ -1745,7 +1745,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				MusicEnum music;
 				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
-				music.Time = 500;
+				music.Time = 210;
 				music.Volume = 1.35;
 				music.Custom = true;
 				strcopy(music.Name, sizeof(music.Name), "Burnt Light");
@@ -1905,6 +1905,6 @@ void ShadowingDarkness_SpawnStatues(Shadowing_Darkness_Boss npc)
 		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/2);
 		NpcStats_CopyStats(npc.index, summon);
-		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
+		TeleportDiversioToRandLocation(summon,_,3000.0, 500.0);
 	}
 }

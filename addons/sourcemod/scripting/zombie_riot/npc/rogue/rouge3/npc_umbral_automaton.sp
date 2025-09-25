@@ -676,7 +676,6 @@ void UmbralAutomaton_MakeInvulnerable(int statue, bool Wakeup)
 		RemoveSpecificBuff(statue, "Fluid Movement");
 		RemoveSpecificBuff(statue, "Solid Stance");
 		RemoveSpecificBuff(statue, "Clear Head");
-		LogStackTrace("test1");
 		return;
 	}
 	b_ThisEntityIgnored[statue] = true;
@@ -689,7 +688,6 @@ void UmbralAutomaton_MakeInvulnerable(int statue, bool Wakeup)
 	ApplyStatusEffect(statue, statue, "Fluid Movement", 999999.0);	
 	ApplyStatusEffect(statue, statue, "Solid Stance", 999999.0);	
 	ApplyStatusEffect(statue, statue, "Clear Head", 999999.0);	
-	LogStackTrace("test2");
 }
 
 

@@ -444,6 +444,14 @@
 	{
 		"en"	"Reila joins you."
 	}
+	"Umbral Hate"
+	{
+		"en"	"Umbral Hate"
+	}
+	"Umbral Hate Desc"
+	{
+		"en"	"{crimson}You have seriously pissed off the Umbrals, they are enraged and always appear now, you cannot gain umbral affinity anymore."
+	}
 	"Gift of Remembrance"
 	{
 		"en"	"Gift of Remembrance"
@@ -618,7 +626,7 @@
 	}
 	"Unripe Yearning Desc"
 	{
-		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +0.5％ max health per Umbral Affinity"
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +0.4％ max health per Umbral Affinity"
 	}
 	"Eye of Fortune"
 	{
@@ -682,7 +690,7 @@
 	}
 	"Soul Binding Bone Desc"
 	{
-		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +0.5％ damage per Umbral Affinity"
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +0.4％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
@@ -1632,7 +1640,7 @@
 	}
 	"Book of Nature Desc"
 	{
-		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore."
+		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
 	}
 	"Book of Nature Conclusion"
 	{

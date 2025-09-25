@@ -431,7 +431,7 @@ public void Rogue_ChaosStar_TakeDamage(int victim, int &attacker, int &inflictor
 
 public void Rogue_Yearning_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
+	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 static bool EyeOfFortune;
@@ -510,12 +510,12 @@ public void Rogue_SurvivorParty_Collect()
 
 public void Rogue_SoulBindingBone_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
+	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 public void Rogue_SoulBindingBone_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.005));
+	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)

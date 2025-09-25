@@ -962,6 +962,8 @@ public void Rogue_Rift2_Collect(int entity)
 
 public void Rogue_BookOfNature_Collect(int entity)
 {
+	if(Rogue_HasNamedArtifact("Umbral Hate"))
+		Rogue_RemoveNamedArtifact("Umbral Hate");
 	Rogue_AddUmbral(40);
 	BookOfNature = true;
 }
