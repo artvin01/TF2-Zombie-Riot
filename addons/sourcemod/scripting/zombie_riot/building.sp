@@ -139,7 +139,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	{
 		//This building doesnt affect the limit.
 		Native_OnGivenCash(owner, Cash);
-		CashRecievedNonWave[owner] += Cash;
+		CashReceivedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}
 	if(AmmoSupply <= 0.0)
@@ -1972,10 +1972,10 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
 			float healthMult = 1.0;
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER) && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_TOWER))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER) && !(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_TOWER))
 			{
 				healthMult *= 1.3;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_TOWER;
 				/*
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
 				if(IsValidEntity(prop1))
@@ -1987,35 +1987,35 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				*/
 			}
 
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
 			{
 				healthMult *= 1.15;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_GUARD_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_GUARD_TOWER;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)))
 			{
 				healthMult *= 1.15;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)))
 			{
 				healthMult *= 1.15;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)&& (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)&& (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON)))
 			{
 				healthMult *= 1.3;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST)))
 			{
 				healthMult *= 1.4;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE)))
 			{
 				healthMult *= 1.6;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
 			}
 			if(healthMult > 1.0)
 			{
@@ -2130,9 +2130,9 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.15));
 		}
-		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityReceivedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 		{
-			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
+			i_EntityReceivedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.1));
 		}

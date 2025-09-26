@@ -75,7 +75,7 @@ public Action Flametail_Timer1(Handle timer, int client)
 		{
 			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") && AllowMaxCashgainWaveCustom(client))
 			{
-				CashRecievedNonWave[client]++;
+				CashReceivedNonWave[client]++;
 				CashSpent[client]--;
 				AddCustomCashMadeThisWave(client, 1);
 			}
@@ -157,7 +157,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			cash = RoundFloat(cash * ResourceRegenMulti);
-			CashRecievedNonWave[client] += cash;
+			CashReceivedNonWave[client] += cash;
 			CashSpent[client] -= cash;
 			AddCustomCashMadeThisWave(client, cash);
 		}

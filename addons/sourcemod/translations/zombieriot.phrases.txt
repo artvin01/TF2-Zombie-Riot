@@ -1207,38 +1207,38 @@
 		"ru" 		"Переработка пуаре"
 	}
 
-	"Regene Berry Recieved"
+	"Regene Berry Received"
 	{
 		"en" 		"Regene Berry! 2x Revive speed and 15％ more healing speed and 2x Health on revive"
 		"fr" 		"RÉSURRECTION RAPIDE! 2x vitesse de résurrection, taux de soins +15％, 2x soins pour les resucitations"
 		"pt"		"RÁPIDA RESSUREIÇÃO! 2x velocidade de ressureição e cura 15％ a mais e x2 mais vida ao reviver"
 		"ru" 		"РЕАНИМАТОР! 2x скорость оживления и на 15％ быстрее скорость лечения и 2x здоровье при оживлении"
 	}
-	"Obsidian Oaf Recieved"
+	"Obsidian Oaf Received"
 	{
 		"en" 		"Obsidian Oaf! 15％ Damage resistance and +100HP"
 	}
-	"Morning Coffee Recieved"
+	"Morning Coffee Received"
 	{
 		"en" 		"Morning Coffee! 17％ Extra attack speed and Building Damage"
 	}	
-	"Hasty Hops Recieved"
+	"Hasty Hops Received"
 	{
 		"en" 		"Hasty Hops! 1.42x Extra reload, switchspeed and Mana regen"
 	}
-	"Marksman Beer Recieved"
+	"Marksman Beer Received"
 	{
 		"en" 		"Marksman Beer! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
 	}
-	"Teslar Mule Recieved"
+	"Teslar Mule Received"
 	{
 		"en" 		"Teslar Mule! Rechargeable protection that debuffs zombies and blocks 75％ of the damage if activated.\nDebuffed enemies are slowed down heavily and take 30％ more damage."
 	}
-	"Stockpile Stout Recieved"
+	"Stockpile Stout Received"
 	{
 		"en" 		"Stockpile Stout! 33％ More ammo from all non shop sources, and 50％ more max armor and armor gain.\nYou gain 2x the Ammo Supplies."
 	}
-	"Energy Drink Recieved"
+	"Energy Drink Received"
 	{
 		"en" 		"Energy Drink! Gain a 15％ cooldown reduction for Weapons & Extra Gear!"
 	}

@@ -11,7 +11,7 @@ static float f_EntityOutOfNav[MAXPLAYERS];
 static float f_LatestDamageRes[MAXPLAYERS];
 static float f_TimeSinceLastRegenStop[MAXPLAYERS];
 static bool b_GaveMarkForDeath[MAXPLAYERS];
-static float f_RecievedTruedamageHit[MAXPLAYERS];
+static float f_ReceivedTruedamageHit[MAXPLAYERS];
 static char MaxAsignPerkNames[MAXPLAYERS][8];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
@@ -37,7 +37,7 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
-	Zero(f_RecievedTruedamageHit);
+	Zero(f_ReceivedTruedamageHit);
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
@@ -1958,9 +1958,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			if(f_RecievedTruedamageHit[victim] < GetGameTime())
+			if(f_ReceivedTruedamageHit[victim] < GetGameTime())
 			{
-				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+				f_ReceivedTruedamageHit[victim] = GetGameTime() + 0.5;
 				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 			}
 		}

@@ -604,7 +604,7 @@ void Store_OnCached(int client)
 		{
 			Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
 			//Building_GiveRewardsUse(0, client, amount);
-			CashRecievedNonWave[client] += amount;
+			CashReceivedNonWave[client] += amount;
 			CashSpent[client] -= amount;
 			CashSpentLoadout[client] -= amount;
 		}
@@ -616,7 +616,7 @@ void Store_OnCached(int client)
 		{
 			Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
 			//Building_GiveRewardsUse(0, client, 50);
-			CashRecievedNonWave[client] += 50;
+			CashReceivedNonWave[client] += 50;
 			CashSpent[client] -= 50;
 			CashSpentLoadout[client] -= 50;
 		}
@@ -3375,7 +3375,7 @@ static void MenuPage(int client, int section)
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
-			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashRecievedNonWave[client]);
+			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
 		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -3411,7 +3411,7 @@ static void MenuPage(int client, int section)
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
-			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashRecievedNonWave[client]);
+			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
 		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -6708,18 +6708,18 @@ void GiveCredits(int client, int credits, bool building)
 		int CreditsGive = credits / 2;
 		CashSpentGivePostSetup[client] += CreditsGive;
 		CashSpent[client] -= CreditsGive;
-		CashRecievedNonWave[client] += CreditsGive;
+		CashReceivedNonWave[client] += CreditsGive;
 	}
 	else
 	{
 		CashSpent[client] -= credits;
-		CashRecievedNonWave[client] += credits;
+		CashReceivedNonWave[client] += credits;
 	}
 }
 
 void GrantCreditsBack(int client)
 {
-	CashRecievedNonWave[client] += CashSpentGivePostSetup[client];
+	CashReceivedNonWave[client] += CashSpentGivePostSetup[client];
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;

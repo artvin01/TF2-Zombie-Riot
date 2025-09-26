@@ -1104,6 +1104,9 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 		}
 	}
 
+	if(type > 1)
+		list.Sort(Sort_Random, Sort_Integer);
+
 	float pos2[3];
 	float distance = FAR_FUTURE;
 	int length = list.Length;
@@ -1129,6 +1132,9 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 			distance = dist;
+
+			if(type > 1)
+				break;
 		}
 	}
 
@@ -1891,5 +1897,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-
-
+#include "roguelike/construction_construction.sp"
