@@ -1670,7 +1670,6 @@
 	{
 		"en"	"Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
 	}
-
 	"Hold Out Normal"
 	{
 		"en"	"Standard"
@@ -1702,5 +1701,17 @@
 	"Hold Out Hard Creep Desc"
 	{
 		"en"	"Biters.\n{red}Harder base position, rare enemies have a higher chance of appearing, applies Chaos Intrusion difficulty"
+	}
+	"Omega and Vhxis Title"
+	{
+		"en"	"You spot two people in the distance that appear to be eerily familiar to you, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"
+	}
+	"Omega's Assistance"
+	{
+		"en"	"Omega's Assistance"
+	}
+	"Vhxis' Assistance"
+	{
+		"en"	"Vhxis' Assistance"
 	}
 }

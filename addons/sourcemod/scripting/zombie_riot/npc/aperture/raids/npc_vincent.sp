@@ -587,7 +587,7 @@ public void Vincent_ClotThink(int iNPC)
 		Vincent_PourOilAbility(npc, 30.0, delay);
 		if(!npc.Anger)
 		{
-			switch(GetRandomInt(0,2))
+			switch(GetRandomInt(0,4))
 			{
 				case 0:
 					CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
@@ -595,6 +595,10 @@ public void Vincent_ClotThink(int iNPC)
 					CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
 				case 2:
 					CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+				case 3:
+					CPrintToChatAll("{rare}%t{default}: Fire in the hole.", c_NpcName[npc.index]);
+				case 4:
+					CPrintToChatAll("{rare}%t{default}: Lighting it up.", c_NpcName[npc.index]);
 			}
 		}
 	}
