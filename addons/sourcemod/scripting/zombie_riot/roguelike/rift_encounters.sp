@@ -1020,7 +1020,7 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 		case 1:
 		{
 			CPrintToChatAll("%t", "Omega and Vhxis Decline Conlusion");
-			GiveCash(5000);
+			GiveCash(8000);
 		}
 	}
 }
