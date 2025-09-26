@@ -132,16 +132,16 @@ public void Rogue_FlashVest_Remove()
 
 public void Rogue_Mazeat1_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.85);
-		fl_Extra_Damage[entity] *= 0.85;
+		RogueHelp_BodyHealth(entity, null, 0.9);
+		fl_Extra_Damage[entity] *= 0.9;
 	}
 }
 
 public void Rogue_Mazeat2_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
 		fl_Extra_Speed[entity] *= 0.9;
 	}
@@ -173,10 +173,10 @@ public void Rogue_UmbralKeycardBuffEnemy(int entity)
 }
 public void Rogue_Mazeat3_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.7);
-		fl_Extra_Damage[entity] *= 0.7;
+		RogueHelp_BodyHealth(entity, null, 0.65);
+		fl_Extra_Damage[entity] *= 0.65;
 
 		for(int i; i < Element_MAX; i++)
 		{
@@ -247,7 +247,7 @@ public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflicto
 
 public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
-	if(GetTeam(victim) == TFTeam_Red && !(damagetype & DMG_TRUEDAMAGE))
+	if(GetTeam(victim) == TFTeam_Red && (!(damagetype & DMG_TRUEDAMAGE)))
 	{
 		if(GetEntProp(victim, Prop_Data, "m_iHealth") > ReturnEntityMaxHealth(victim))
 			damage *= 0.65;
@@ -431,7 +431,7 @@ public void Rogue_ChaosStar_TakeDamage(int victim, int &attacker, int &inflictor
 
 public void Rogue_Yearning_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
 }
 
 static bool EyeOfFortune;

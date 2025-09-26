@@ -218,13 +218,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		
 	}
-	/*
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	*/
+	
 	if(i_npcspawnprotection[npc.index] <= NPC_SPAWNPROT_INIT)
 		npc.m_flSpeedIncreaceMeter *= 0.9975;
 
@@ -238,11 +232,18 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 	{
 		npc.m_flMeleeArmor = 1.0;
 	}
+	
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	
 	UmbralSpuudAnimBreak(npc);
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GetGameTime() + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

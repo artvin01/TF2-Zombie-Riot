@@ -34,7 +34,7 @@
 	}
 	"Extreme Heat Desc"
 	{
-		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is 25% slower and Al-Hallem units gain +20％ movement speed"
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is 25％ slower and Al-Hallem units gain +20％ movement speed"
 	}
 	"Extreme Heat Lore"
 	{
@@ -464,7 +464,7 @@
 	}
 	"Clairvoyant's Reveal Desc"
 	{
-		"en"	"There is no direction you can head to avoid misfortune.\n{green}Allies gain +25% max health {yellow}but max health is randomly swapped"
+		"en"	"There is no direction you can head to avoid misfortune.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped"
 	}
 	"Finshell Shield"
 	{
@@ -536,7 +536,7 @@
 	}
 	"Steam Sale Desc"
 	{
-		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Rogue Shop items cost 50% less"
+		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Rogue Shop items cost 50％ less"
 	}
 	"Steal Grigori"
 	{
@@ -568,7 +568,7 @@
 	}
 	"Evil Within from Ruina's Great Crystal Desc"
 	{
-		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies gain +25% max health and +15% damage."
+		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies gain +25％ max health and +15％ damage."
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
@@ -616,7 +616,7 @@
 	}
 	"Solidified Lamp Oil Desc"
 	{
-		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Gain 40% less Chaos Infliction from stages"
+		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Gain 40％ less Chaos Infliction from stages"
 	}
 	"Sanctified Lamp Oil"
 	{
@@ -624,7 +624,7 @@
 	}
 	"Sanctified Lamp Oil Desc"
 	{
-		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Gain 60% less Chaos Infliction from stages"
+		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Gain 60％ less Chaos Infliction from stages"
 	}
 	"Mercenary Insurance"
 	{
@@ -752,7 +752,7 @@
 	}
 	"Black Tulip Desc"
 	{
-		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60% over 120s, {red}resets after using a weapon ability"
+		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60％ over 120s, {red}resets after using a weapon ability"
 	}
 	"Castle Offspring"
 	{
@@ -760,7 +760,7 @@
 	}
 	"Castle Offspring Desc"
 	{
-		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases up to +60% over 300s, {red}resets when knocked down"
+		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases up to +60％ over 300s, {red}resets when knocked down"
 	}
 
 	"Waldch Assistance"
@@ -785,7 +785,7 @@
 	}
 	"Twirl Guidance Desc"
 	{
-		"en"	"You join Twirl.\n{green}Ally held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, gain +15% max mana and mana regen"
+		"en"	"You join Twirl.\n{green}Ally held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, gain +15％ max mana and mana regen"
 	}
 	"Unauthorized Ruina Gem"
 	{

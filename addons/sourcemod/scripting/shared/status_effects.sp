@@ -3785,6 +3785,7 @@ void StatusEffects_FallenWarrior()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	data.Blank();
 
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Altered Functions");
@@ -6061,7 +6062,7 @@ static void Terrified_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!IsValidClient(victim))
 		return;
 		
-	Attributes_SetMulti(victim, 442, 0.85);
+	Attributes_SetMulti(victim, 442, 0.5);
 	SDKCall_SetSpeed(victim);
 }
 

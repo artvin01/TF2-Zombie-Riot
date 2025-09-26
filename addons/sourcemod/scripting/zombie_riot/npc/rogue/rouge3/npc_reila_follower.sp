@@ -118,7 +118,7 @@ methodmap ReilaFollower < CClotBody
 			Cosmetics
 		*/
 
-		int skin = 1;
+		int skin = 0;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec23_boarders_beanie_style2/dec23_boarders_beanie_style2_engineer.mdl");

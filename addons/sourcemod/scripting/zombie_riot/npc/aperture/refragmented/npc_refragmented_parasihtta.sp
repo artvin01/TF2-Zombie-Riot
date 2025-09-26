@@ -220,8 +220,17 @@ public void Parasihtta_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 0.0, DMG_CLUB, -1, _, vecHit);
-						ApplyStatusEffect(npc.index, target, "Envenomed", 10.0);
-						if(i_IsABuilding[target])
+						if(!HasSpecificBuff(target, "Envenomed"))
+						{
+							ApplyStatusEffect(npc.index, target, "Envenomed", 10.0);
+							if(target <= MaxClients)
+							{
+								Force_ExplainBuffToClient(target, "Envenomed");
+								SetEntProp(target, Prop_Data, "m_iHealth", 1);
+								HealEntityGlobal(target, target, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
+							}
+						}
+						if (i_IsABuilding[target])
 						{
 							//use void a subtitute, it just reduces repair HP alot.
 							Elemental_AddVoidDamage(target, npc.index, 2000, false, false);

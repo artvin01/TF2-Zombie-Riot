@@ -630,6 +630,8 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
 						
+					if(Rogue_Rift_HolyBlessing())
+						MaxHealth *= 2.0;
 					HealEntityGlobal(client, client, MaxHealth / 100.0, Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					
 					float attrib = Attributes_Get(client, Attrib_BlessingBuff, 1.0);
@@ -1792,21 +1794,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	
-#if defined ZR
-	if(HasSpecificBuff(victim, "Envenomed"))
-	{
-		bool venom = true;
-		if(venom)
-		{
-			venom = false;
-			GetEntProp(victim, Prop_Send, "m_iHealth");
-			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
-			HealEntityGlobal(victim, victim, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
-			RemoveSpecificBuff(victim, "Envenomed");
-			Force_ExplainBuffToClient(victim, "Envenomed");
-		}
-	}
-#endif
 	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
@@ -3000,6 +2987,10 @@ float ArmorPlayerReduction(int victim)
 		case 200:
 		{
 			return 0.9;
+		}
+		case 250:
+		{
+			return 0.88;
 		}
 		default:
 		{

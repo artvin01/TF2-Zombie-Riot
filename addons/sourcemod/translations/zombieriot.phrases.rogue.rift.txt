@@ -60,7 +60,7 @@
 	}
 	"Rift of Emptiness Desc"
 	{
-		"en"	"{red}Voidstones no longer drop from battles"
+		"en"	"{red}Voidstones have a much lower dropchance."
 	}
 	"Rift of Emptiness Lore"
 	{
@@ -72,7 +72,7 @@
 	}
 	"Rift of Darkness Desc"
 	{
-		"en"	"{red}Void enemies gain +35％ health and +25％ damage {green}but all other enemies lose -15％ health and -10％ damage"
+		"en"	"{red}Void & Umbral enemies gain +15％ health and +10％ damage {green}but all other enemies lose -10％ health and -5％ damage"
 	}
 	"Rift of Darkness Lore"
 	{
@@ -258,7 +258,7 @@
 	}
 	"Rift Level 3 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +10％, start with Fractured voidstone, rift events can occur more often"
+		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often"
 	}
 	"Rift Level 2"
 	{
@@ -266,7 +266,7 @@
 	}
 	"Rift Level 2 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +5％ {blue}and other possibilities"
+		"en"	"{red}Enemy stats per chapter +2％ {blue}and other possibilities"
 	}
 	"Rift Level 1"
 	{
@@ -322,7 +322,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 3x base damage only. {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
@@ -466,7 +466,7 @@
 	}
 	"Magic Box Desc"
 	{
-		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
+		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 12"
 	}
 	"Old Fan"
 	{
@@ -618,7 +618,7 @@
 	}
 	"Unripe Yearning Desc"
 	{
-		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +1％ max health per Umbral Affinity"
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +0.5％ max health per Umbral Affinity"
 	}
 	"Eye of Fortune"
 	{
@@ -1148,7 +1148,7 @@
 	}
 	"Holy Blessing Desc"
 	{
-		"en"	"{green}Grigori's Blessing now heals up to full health"
+		"en"	"{green}Grigori's Blessing now heals up to full health and heals 2x as much."
 	}
 	
 	"Ruina'n Magic Factory"
@@ -1260,7 +1260,7 @@
 	}
 	"Mazeat Saves Desc"
 	{
-		"en"	"Mazeat is a safe place.\n{green}Non-void enemies have -15％ health and damage"
+		"en"	"Mazeat is a safe place.\n{green}Non-Umbrals enemies have -10％ health and damage"
 	}
 	"Mazeat Lives"
 	{
@@ -1268,7 +1268,7 @@
 	}
 	"Mazeat Lives Desc"
 	{
-		"en"	"Mazeat is a place to live.\n{green}Non-void enemies have -10％ movement speed"
+		"en"	"Mazeat is a place to live.\n{green}Non-Umbrals enemies have -10％ movement speed"
 	}
 	"Mazeat Falls"
 	{
@@ -1276,7 +1276,7 @@
 	}
 	"Mazeat Falls Desc"
 	{
-		"en"	"Mazeat was.\n{green}Non-void enemies have -30％ health and damage and receive +100％ elemental damage"
+		"en"	"Mazeat was.\n{green}Non-Umbrals enemies have -35％ health and damage and receive +100％ elemental damage"
 	}
 	"Finale Encounter Lore"
 	{
@@ -1588,6 +1588,10 @@
 	"Strange Gateway"
 	{
 		"en" "⚔ Strange Gateway"
+	}
+	"Hitman III!"
+	{
+		"en" "⚠ Hitman III"
 	}
 
 	"Crystalized Warped Subjects Title"

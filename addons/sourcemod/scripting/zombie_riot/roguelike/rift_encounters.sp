@@ -217,6 +217,7 @@ public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 		{
 			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
 			Rogue_GiveNamedArtifact("Mantle of Stars");
+			Rogue_AddUmbral(5, false);
 			Rogue_AddIngots(-12);
 		}
 		case 1:
@@ -959,17 +960,17 @@ public void Rogue_Encounter_Library_Of_Lixandria_Vote(const Vote vote, int index
 	{
 		case 0:
 		{
-			CPrintToChatAll("%t", "Book of Weakness Conlusion");
+			CPrintToChatAll("%t", "Book of Weakness Conclusion");
 			Rogue_GiveNamedArtifact("Book of Weakness");
 		}
 		case 1:
 		{
-			CPrintToChatAll("%t", "Book of Nature Conlusion");
+			CPrintToChatAll("%t", "Book of Nature Conclusion");
 			Rogue_GiveNamedArtifact("Book of Nature");
 		}
 		case 2:
 		{
-			CPrintToChatAll("%t", "Book of Liver Optimisation Conlusion");
+			CPrintToChatAll("%t", "Book of Liver Optimisation Conclusion");
 			Rogue_GiveNamedArtifact("Book of Liver Optimisation");
 		}
 	}
