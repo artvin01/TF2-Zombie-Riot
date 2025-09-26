@@ -1897,4 +1897,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-#include "roguelike/construction_construction.sp"
+//#include "roguelike/construction_construction.sp"
