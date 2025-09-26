@@ -570,7 +570,7 @@
 	}
 	"Painful Happiness Desc"
 	{
-		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -15％"
+		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -9％"
 	}
 	"Gravity Defying Machine"
 	{

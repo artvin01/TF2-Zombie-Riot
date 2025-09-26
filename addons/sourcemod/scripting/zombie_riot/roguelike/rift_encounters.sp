@@ -24,6 +24,11 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 	{
 		case 0:
 		{
+			int Disable = ReturnFoundEntityViaName("computer_off_stage");
+			if(IsValidEntity(Disable))
+				AcceptEntityInput(Disable, "Disable");
+
+			CreateTimer(15.0, Timer_Rogue_DisableScreenAgain);
 			Rogue_GiveNamedArtifact("Gamemode History", true);
 			GiveCash(5000);
 		}
@@ -34,7 +39,13 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 		}
 	}
 }
-
+static Action Timer_Rogue_DisableScreenAgain(Handle timer, int progress)
+{
+	int Disable = ReturnFoundEntityViaName("computer_off_stage");
+	if(IsValidEntity(Disable))
+		AcceptEntityInput(Disable, "Enable");
+	return Plugin_Stop;
+}
 public float Rogue_Encounter_PoisonWater()
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_PoisonWater, "Poison Water Lore");

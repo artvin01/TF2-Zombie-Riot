@@ -699,9 +699,8 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 		{
 			NpcStats_CopyStats(npc.index, spawn_index);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 10));
-			ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", 1000000000);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 1000000000);
 			f_AttackSpeedNpcIncrease[spawn_index]	*= 2.0;
 			fl_Extra_Damage[spawn_index]	*= 0.1;
 
@@ -758,6 +757,24 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			}
 		}
 		return Plugin_Changed;
+	}
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
+	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	{
+		npc.g_TimesSummoned++;
+		ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 5.0);
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 5.0);
+		switch(GetRandomInt(1,3))
+		{
+			case 1:
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Umbrals, Assist me!");
+			case 2:
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Need some resis against them...");
+			case 3:
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Umbral armor should prevent this.");
+		}
 	}
 	if(!npc.Anger)
 	{

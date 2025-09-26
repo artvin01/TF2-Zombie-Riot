@@ -338,8 +338,8 @@ public void Rogue_Sculpture_Enemy(int entity)
 
 public void Rogue_PainfulHappy_Enemy(int entity)
 {
-	RogueHelp_BodyHealth(entity, null, 0.85);
-	fl_Extra_Speed[entity] /= 1.15;
+	RogueHelp_BodyHealth(entity, null, 0.91);
+	fl_Extra_Speed[entity] /= 1.09;
 }
 
 public void Rogue_GravityDefying_Enemy(int entity)
