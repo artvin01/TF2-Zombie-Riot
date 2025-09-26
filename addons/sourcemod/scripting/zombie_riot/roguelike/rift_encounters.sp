@@ -975,3 +975,41 @@ public void Rogue_Encounter_Library_Of_Lixandria_Vote(const Vote vote, int index
 		}
 	}
 }
+
+public float Rogue_Encounter_OmegaVhxis()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_OmegaVhxis_Vote, "Omega and Vhxis Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Omega and Vhxis Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Omega and Vhxis Accept Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Omega and Vhxis Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Omega and Vhxis Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Omega and Vhxis Accept Conlusion");
+			Rogue_GiveNamedArtifact("Omega's Assistance");
+			Rogue_GiveNamedArtifact("Vhxis' Assistance");
+			Rogue_StartThisBattle(5.0);
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Omega and Vhxis Decline Conlusion");
+			GiveCash(5000);
+		}
+	}
+}

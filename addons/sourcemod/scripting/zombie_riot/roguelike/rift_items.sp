@@ -701,3 +701,49 @@ public void Rogue_SuperStims_StageStart()
 {
 	GiveMorphineToEveryone();
 }
+
+public void Rogue_Omega_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_omega_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+
+public void Rogue_Vhxis_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_vhxis_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}

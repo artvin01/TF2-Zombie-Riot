@@ -999,7 +999,7 @@ bool CHIMERA_RefractedSniper(int iNPC)
 			NPC_CreateByName("npc_refragmented_winter_sniper", -1, pos, ang, GetTeam(npc.index), buffers);
 		}
 	}
-	switch(GetRandomInt(0,2))
+	switch(GetRandomInt(0,4))
 	{
 		case 0:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: BREWING UP A STORM");
@@ -1007,6 +1007,10 @@ bool CHIMERA_RefractedSniper(int iNPC)
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: KEEP RUNNING, THAT'LL HELP");
 		case 2:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LET'S COOL THINGS DOWN");
+		case 3:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: FOOLISH MORTALS, YOU THINK YOU CAN STOP ME?");
+		case 4:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: DIE ALREADY, I'M GIVING IT ALL ALREADY!");
 	}
 	if(npc.m_flSpawnSnipers == 1.0)
 		npc.m_flSpawnSnipers = GetGameTime(npc.index) + 10.0;
@@ -1022,7 +1026,7 @@ bool CHIMERA_RefractSpawners(int iNPC)
 		return false;
 
 	
-	switch(GetRandomInt(0,2))
+	switch(GetRandomInt(0,3))
 	{
 		case 0:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LOOK OUT, I'M RIGHT BEHIND YOU");
@@ -1030,6 +1034,11 @@ bool CHIMERA_RefractSpawners(int iNPC)
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU STOP RUNNING AND I'LL STOP FIRING, THAT SEEMS FAIR");
 		case 2:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS WOULD GO A LOT FASTER IF YOU'D STAY STILL");
+		case 3:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: DON'T RUN! DON'T RUN!");
+		case 4:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU'RE JUST DELAYING THE INEVITABLE");
+
 	}
 	npc.PlayRefractedAbilityBall();
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);

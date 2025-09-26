@@ -232,11 +232,16 @@ public void Parasihtta_ClotThink(int iNPC)
 						}
 						if (i_IsABuilding[target])
 						{
-							//use void a subtirute, it just reduces repair HP alot.
+							//use void a subtitute, it just reduces repair HP alot.
 							Elemental_AddVoidDamage(target, npc.index, 2000, false, false);
 						}
-						
-						if (!i_IsABuilding[target] && !b_ThisWasAnNpc[target])
+						if(b_ThisWasAnNpc[target])
+						{
+							//for some fucking reason these fucking npcs don't wanna get fucking affected by the fucking envenomed buff that I fucking made, fuck them.
+							GetEntProp(target, Prop_Data, "m_iHealth");
+							SetEntProp(target, Prop_Data, "m_iHealth", 1);
+						}
+						if(!i_IsABuilding[target] && !b_ThisWasAnNpc[target])
 						{
 							TF2_AddCondition(target, TFCond_LostFooting, 5.0);
 							TF2_AddCondition(target, TFCond_MarkedForDeathSilent, 10.0);

@@ -2306,4 +2306,32 @@
 	{
 		"en" "You see a giant library full of books, some stick out to you."
 	}
+"Omega and Vhxis Title"
+	{
+		"en"	"You spot two people in the distance that appear to be eerily familiar, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"
+	}
+	"Omega and Vhxis Accept"
+	{
+		"en"	"We should help them, maybe we'll get something in return?"
+	}
+	"Omega and Vhxis Decline"
+	{
+		"en"	"We can't afford to waste any time."
+	}
+	"Omega and Vhxis Accept Desc"
+	{
+		"en"	"{green}Gain 2 powerful allies."
+	}
+	"Omega and Vhxis Decline Desc"
+	{
+		"en"	"{green}Gain Cash."
+	}
+	"Omega and Vhxis Accept Conlusion"
+	{
+		"en"	"Omega and Vhxis join your side...or are you rather joining them?"
+	}
+	"Omega and Vhxis Decline Conlusion"
+	{
+		"en"	"You leave them be, they can handle themselves. You find some loose change."
+	}
 }
