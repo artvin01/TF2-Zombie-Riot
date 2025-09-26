@@ -6476,8 +6476,8 @@ stock void Custom_Knockback(int attacker,
 	bool override = false,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
-	 bool RecieveInfo = false,
-	 float RecievePullInfo[3] = {0.0,0.0,0.0},
+	 bool ReceiveInfo = false,
+	 float ReceivePullInfo[3] = {0.0,0.0,0.0},
 	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
 	if(HasSpecificBuff(enemy, "Solid Stance"))
@@ -6620,9 +6620,9 @@ stock void Custom_Knockback(int attacker,
 
 		ScaleVector(vDirection, knockback);
 
-		RecievePullInfo = vDirection;
+		ReceivePullInfo = vDirection;
 		
-		if(RecieveInfo)
+		if(ReceiveInfo)
 		{
 			return;
 		}

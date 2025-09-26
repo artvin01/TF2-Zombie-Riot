@@ -626,7 +626,7 @@
 	}
 	"Unripe Yearning Desc"
 	{
-		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +0.4％ max health per Umbral Affinity"
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies receive +0.4％ max health per Umbral Affinity"
 	}
 	"Eye of Fortune"
 	{
@@ -690,7 +690,7 @@
 	}
 	"Soul Binding Bone Desc"
 	{
-		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +0.4％ damage per Umbral Affinity"
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies receive +0.4％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
@@ -1671,4 +1671,36 @@
 		"en"	"Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
 	}
 
+	"Hold Out Normal"
+	{
+		"en"	"Standard"
+	}
+	"Hold Out Normal Desc"
+	{
+		"en"	"The rifts keep coming, stand out ground. Mercenaries are already heading out, we're the second line of defense."
+	}
+	"Hold Out Creep"
+	{
+		"en"	"Void Creep"
+	}
+	"Hold Out Creep Desc"
+	{
+		"en"	"Our base doesn't look so good, but it's what we got.\n{red}Harder base position"
+	}
+	"Hold Out Hard"
+	{
+		"en"	"Chaos Intrusion"
+	}
+	"Hold Out Hard Desc"
+	{
+		"en"	"They keep coming.\n{red}Rare enemies have a higher chance of appearing and applies Chaos Intrusion difficulty"
+	}
+	"Hold Out Hard Creep"
+	{
+		"en"	"Death World"
+	}
+	"Hold Out Hard Creep Desc"
+	{
+		"en"	"Biters.\n{red}Harder base position, rare enemies have a higher chance of appearing, applies Chaos Intrusion difficulty"
+	}
 }

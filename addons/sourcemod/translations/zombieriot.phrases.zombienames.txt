@@ -3008,7 +3008,7 @@
 	}
 	"Heavy Perisher Desc"
 	{
-		"en"	"Grows with each hit recieved."
+		"en"	"Grows with each hit received."
 	}
 	"Void Mini-Gatekeeper"
 	{
@@ -3040,7 +3040,7 @@
 	}
 	"Total Growth Desc"
 	{
-		"en"	"Grows with each hit it recieves."
+		"en"	"Grows with each hit it receives."
 	}
 	"Void's Offspring"
 	{
@@ -3128,7 +3128,7 @@
 	}
 	"Nervous Impairment Elemental Damage Desc"
 	{
-		"en"	"Once full, Your nervous system breaks down.\nYou recieve 500 truedamage and are heavily slowed for 5 seconds."
+		"en"	"Once full, Your nervous system breaks down.\nYou receive 500 truedamage and are heavily slowed for 5 seconds."
 		"es"	"Cuando se llena, tu sistema nervioso se pone... nervioso, y falla.\nRecibes 500 de daño verdadero y te ralentizas mucho por 5 segundos."
 	}
 	"Corruption Elemental Damage"
@@ -4375,7 +4375,7 @@
 	}
 	"Plasmic Elemental Damage Desc"
 	{
-		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and receive more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
 		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
 	"Aperture"

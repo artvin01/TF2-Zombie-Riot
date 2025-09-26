@@ -71,7 +71,7 @@ static bool ClotInteract(int client, int weapon, ObjectTradingStation npc)
 		Select weapon you wanna give: (Uses sell value + 30% so its basically equal, includes paps)
 		This also allow selling if you want to at a higher value, but itll take longer, choosing to sell will only add an extra 10% of value
 
-		Select weapon you want to recieve, if its not within price range, youll have to pay extra
+		Select weapon you want to receive, if its not within price range, youll have to pay extra
 		after 3-5 waves, you can choose to get the new weapon and give up your old one
 		If grigori sells it on sale, then you get some money back
 	*/
