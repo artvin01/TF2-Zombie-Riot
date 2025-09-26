@@ -724,7 +724,18 @@ public void Rogue_Omega_Collect()
 		}
 	}
 }
-
+public void Rogue_Omega_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+}
 public void Rogue_Vhxis_Collect()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
@@ -743,6 +754,18 @@ public void Rogue_Vhxis_Collect()
 			float flPos[3];
 			GetClientAbsOrigin(client_summon, flPos);
 			NPC_CreateByName("npc_vhxis_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+public void Rogue_Vhxis_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
 			break;
 		}
 	}

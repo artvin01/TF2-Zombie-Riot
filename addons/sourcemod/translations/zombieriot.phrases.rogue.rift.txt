@@ -1024,6 +1024,10 @@
 	{
 		"en"	"{crimson}He's pissed."
 	}
+	"Familiar Faces"
+	{
+		"en"	"Familiar Faces"
+	}
 	"Crystalized Warped Subjects"
 	{
 		"en"	"Crystalized Warped Subjects"
@@ -1710,8 +1714,16 @@
 	{
 		"en"	"Omega's Assistance"
 	}
+	"Omega's Assistance Desc"
+	{
+		"en"	"{yellow} ''Huh.''"
+	}
 	"Vhxis' Assistance"
 	{
 		"en"	"Vhxis' Assistance"
+	}
+	"Vhxis' Assistance Desc" 
+	{
+		"en"	"{purple} ''You again?''"
 	}
 }
