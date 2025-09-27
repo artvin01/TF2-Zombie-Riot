@@ -55,7 +55,7 @@ void AlmagestSeinr_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seinr");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_seinr");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "seinr");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
