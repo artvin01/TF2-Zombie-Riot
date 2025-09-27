@@ -256,6 +256,12 @@ public void GiveCash_Base3()
 	GlobalExtraCash += 3000;
 	CPrintToChatAll("%t", "Gained Material", 3000, "Cash");
 }
+public void GiveCash_Base4()
+{
+	CurrentCash += 5000;
+	GlobalExtraCash += 5000;
+	CPrintToChatAll("%t", "Gained Material", 5000, "Cash");
+}
 static void SpawnRebel(const char[] data = "")
 {
 	float pos[3], ang[3];
