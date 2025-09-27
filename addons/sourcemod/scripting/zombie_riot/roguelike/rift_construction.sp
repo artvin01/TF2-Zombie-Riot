@@ -93,3 +93,27 @@ public void Construction_RiftHard_Remove()
 	Modifier_Remove_ChaosIntrusion();
 	Construction_HardMode_Remove();
 }
+
+public void Construction_RiftAllies_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && IsEntityAlive(other))
+		{
+			if(i_NpcInternalId[other] == TwirlFollower_ID() || i_NpcInternalId[other] == SensalFollower_ID())
+				SmiteNpcToDeath(other);
+		}
+	}
+
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_twirl_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			NPC_CreateByName("npc_sensal_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}

@@ -1706,6 +1706,35 @@
 	{
 		"en"	"Biters.\n{red}Harder base position, rare enemies have a higher chance of appearing, applies Chaos Intrusion difficulty"
 	}
+	"Hold Out Survive"
+	{
+		"en"	"Hang in there! The mercenaries are coming back!"
+	}
+	"Expidonsa Barracks"
+	{
+		"en"	"Expidonsa Barracks"
+	}
+	"Expidonsa Barracks Desc"
+	{
+		"en"	"A construct that summons Expidonsa allies."
+	}
+	"Ruina Barracks"
+	{
+		"en"	"Ruina Barracks"
+	}
+	"Ruina Barracks Desc"
+	{
+		"en"	"A construct that summons Ruina allies."
+	}
+	"Ally Assistance"
+	{
+		"en"	"Ally Assistance"
+	}
+	"Ally Assistance Desc"
+	{
+		"en"	"Unlocks a new construct and new allies will join you."
+	}
+
 	"Omega and Vhxis Title"
 	{
 		"en"	"You spot two people in the distance that appear to be eerily familiar to you, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"

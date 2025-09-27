@@ -749,7 +749,7 @@ static Action Timer_StartAttackWave(Handle timer)
 		bonusRisk = GetRiskAttackInfo(CurrentRisk, attack);
 	}
 
-	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding(), bonusRisk);
+	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, Construction_GetBaseBuilding(), bonusRisk);
 
 	if(CurrentAttacks > MaxAttacks)
 	{
@@ -1048,7 +1048,7 @@ bool Construction_BlockSpawner(const char[] name)
 	return CurrentSpawnName[0] && !StrEqual(CurrentSpawnName, name, false);
 }
 
-static int GetBaseBuilding()
+int Construction_GetBaseBuilding()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
@@ -1062,7 +1062,7 @@ static int GetBaseBuilding()
 
 static int RiskBonusFromDistance(const float pos[3])
 {
-	int entity = GetBaseBuilding();
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0;
 	
@@ -1555,7 +1555,7 @@ public float InterMusic_ConstructBase(int client)
 	if(LastMann)
 		return 1.0;
 	
-	int entity = GetBaseBuilding();
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0.0;
 	
