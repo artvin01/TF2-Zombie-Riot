@@ -55,9 +55,9 @@ void AlmagestJkei_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Jkei");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_jkei");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "jkei");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
