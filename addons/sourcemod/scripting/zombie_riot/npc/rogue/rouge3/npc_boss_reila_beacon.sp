@@ -51,7 +51,7 @@ void ReilaBeacon_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila's Beacon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beacon_reila");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "reilaconstruct");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
