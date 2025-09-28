@@ -225,6 +225,10 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 
 public void Rogue_Hand2Lord_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if((damagetype & DMG_BLAST))
+	{
+		return;
+	}
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Lord)
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED) && !(GetURandomInt() % 4))
