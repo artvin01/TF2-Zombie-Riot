@@ -468,7 +468,7 @@ methodmap CHIMERA < CClotBody
 		npc.m_flSpawnAnnotation = GetGameTime() + 0.5;
 		
 		int color[4] = { 100, 100, 200, 50 };
-		SetCustomFog(color, color, 400.0, 1000.0, 0.65, true);
+		SetCustomFog(FogType_NPC, color, color, 400.0, 1000.0, 0.65, true);
 		
 		return npc;
 	}
@@ -764,7 +764,7 @@ void CHIMERA_CleanUp(int iNPC)
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	npc.StopPassiveSound();
 	npc.StopStunSound(true);
-	ClearCustomFog();
+	ClearCustomFog(FogType_NPC);
 }
 
 bool CHIMERA_timeBased(int iNPC)
