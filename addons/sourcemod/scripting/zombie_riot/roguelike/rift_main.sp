@@ -1027,7 +1027,8 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	bool GiveRes = false;
 	if(victim <= MaxClients)
 	{
-		if(Armor_Charge[victim] < 1)
+		//less then 0
+		if(Armor_Charge[victim] < 0)
 		{
 			GiveRes = true;
 		}
