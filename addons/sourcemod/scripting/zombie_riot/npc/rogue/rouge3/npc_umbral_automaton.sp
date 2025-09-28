@@ -144,6 +144,13 @@ methodmap Umbral_Automaton < CClotBody
 	public Umbral_Automaton(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool IsGiantDo = StrContains(data, "giant") != -1;
+		bool InstantWakeup = false;
+		//hard coded im lazy
+		if(StrContains(data, "giant_shadow_statue_4") != -1)
+			InstantWakeup = true;
+		else if(StrContains(data, "giant_shadow_statue_3") != -1)
+			InstantWakeup = true;
+
 		bool FoundstatueToReplace = false;
 		
 		int EntityFound = ReturnFoundEntityViaName(data);
@@ -192,8 +199,28 @@ methodmap Umbral_Automaton < CClotBody
 			//giant version only has 1
 			if(IsGiantDo)
 			{
-				npc.m_iWhichWakeupDo = 2;
-				npc.SetActivity("ACT_SHADOW_STATUE_2");
+				int WakeupWhich;
+				if(StrContains(data, "wakeup_1") != -1)
+				{
+					WakeupWhich = 1;
+					npc.SetActivity("ACT_SHADOW_STATUE_1");
+				}
+				else if(StrContains(data, "wakeup_3") != -1)
+				{
+					WakeupWhich = 3;
+					npc.SetActivity("ACT_SHADOW_STATUE_3");
+				}
+				else if(StrContains(data, "wakeup_4") != -1)
+				{
+					WakeupWhich = 4;
+					npc.SetActivity("ACT_SHADOW_STATUE_4");
+				}
+				else
+				{
+					WakeupWhich = 2;
+					npc.SetActivity("ACT_SHADOW_STATUE_2");
+				}
+				npc.m_iWhichWakeupDo = WakeupWhich;
 			}
 			else
 			{
@@ -217,6 +244,8 @@ methodmap Umbral_Automaton < CClotBody
 
 			}
 			npc.m_flRandomWakeupTime = GetGameTime() + GetRandomFloat(5.0, 15.0);
+			if(InstantWakeup)
+				npc.m_flRandomWakeupTime = GetGameTime() + 0.1;
 			DataPack pack;
 			CreateDataTimer(npc.m_flRandomWakeupTime - GetGameTime(), Automaton_DisableBrushAndProp, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteString(data);

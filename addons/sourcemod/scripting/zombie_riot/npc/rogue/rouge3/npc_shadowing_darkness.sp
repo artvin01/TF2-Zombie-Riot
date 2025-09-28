@@ -421,7 +421,6 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
 			Music_SetRaidMusic(music);
 			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh its you lot, finally you actually prevailed.");
-			TeleportDiversioToRandLocation(npc.index, true, 2000.0, 0.0, false, true);
 		}
 		else
 		{
@@ -557,8 +556,8 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	{
 		if(npc.m_flSpawnStatueUmbrals < GetGameTime(npc.index))
 		{
-			ShadowingDarkness_SpawnStatues(npc);
-			ShadowingDarkness_SpawnStatues(npc);
+			ShadowingDarkness_SpawnStatues(npc, "giant_shadow_statue_4");
+			ShadowingDarkness_SpawnStatues(npc, "giant_shadow_statue_3");
 			npc.m_flSpawnStatueUmbrals = 0.0;
 		}
 	}
@@ -764,7 +763,7 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 	{
 		npc.g_TimesSummoned++;
 		ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 5.0);
-		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 5.0);
+	//	ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 5.0);
 		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 5.0);
 		switch(GetRandomInt(1,3))
 		{
@@ -1881,6 +1880,9 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 1;
 				npc.SetActivity("ACT_SHADOW_IDLE_START_TRANSITION");
+				npc.m_flSpawnStatueUmbrals = 0.0;
+				ShadowingDarkness_SpawnStatues(npc, "giant_shadow_statue_4");
+				ShadowingDarkness_SpawnStatues(npc, "giant_shadow_statue_3");
 			}
 		}
 		case 1:
@@ -1910,10 +1912,10 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 }
 
 
-void ShadowingDarkness_SpawnStatues(Shadowing_Darkness_Boss npc)
+void ShadowingDarkness_SpawnStatues(Shadowing_Darkness_Boss npc, const char[] data)
 {
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	int summon = NPC_CreateByName("npc_umbral_automaton", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), "giant");
+	int summon = NPC_CreateByName("npc_umbral_automaton", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index), data);
 	if(IsValidEntity(summon))
 	{
 		if(GetTeam(npc.index) != TFTeam_Red)
@@ -1922,6 +1924,7 @@ void ShadowingDarkness_SpawnStatues(Shadowing_Darkness_Boss npc)
 		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/2);
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/2);
 		NpcStats_CopyStats(npc.index, summon);
-		TeleportDiversioToRandLocation(summon,_,3000.0, 500.0);
+		if(!data[0])
+			TeleportDiversioToRandLocation(summon,_,3000.0, 500.0);
 	}
 }

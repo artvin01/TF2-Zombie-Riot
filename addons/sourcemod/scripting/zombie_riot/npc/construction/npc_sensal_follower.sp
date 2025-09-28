@@ -204,7 +204,7 @@ static void ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, 1500.0, .fldistancelimitAllyNPC = 1500.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, false, 1500.0, .fldistancelimitAllyNPC = 1500.0);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
 		ally = Construction_GetBaseBuilding();
