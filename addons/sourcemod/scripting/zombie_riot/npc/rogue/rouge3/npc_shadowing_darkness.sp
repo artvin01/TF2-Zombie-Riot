@@ -1828,11 +1828,15 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 38.0)
 			{
 				if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				{
 					CPrintToChatAll("{white}Bob{allies} & {gold}Omega{default}: Traitors.");
 					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, a traitor? I didn't do anything.");
+				}
 				else
+				{
 					CPrintToChatAll("{white}Bob{default}: You and whiteflower are the most nasty traitors I have seen.");
 					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, a traitor? I didn't do anything.");
+				}
 				i_khamlCutscene = 10;
 			}
 		}
@@ -1886,7 +1890,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 					CPrintToChatAll("{purple}Vhxis{default}: Well, unless she wants to step down from the throne willingly, I think we'll have to take her out anyway.");
 					CPrintToChatAll("{purple}Vhxis{default}: I'm sure this place will be better off with someone actually competent on the throne.");
 				}
-					else
+				else
 					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ever since i sat upon it, i wanted to do something else.");
 				i_khamlCutscene = 5;
 			}
