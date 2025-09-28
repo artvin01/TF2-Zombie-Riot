@@ -1489,13 +1489,13 @@
 	{
 		"en" "⚠ Slaves Controlled"
 	}
-	"Bladedance Surviors"
+	"Bladedance survivors"
 	{
-		"en" "⚔ Bladedance Surviors"
+		"en" "⚔ Bladedance survivors"
 	}
-	"Bladedance Surviors!"
+	"Bladedance survivors!"
 	{
-		"en" "⚠ Bladedance Surviors"
+		"en" "⚠ Bladedance survivors"
 	}
 	"Rescued W.F. Soldiers"
 	{
