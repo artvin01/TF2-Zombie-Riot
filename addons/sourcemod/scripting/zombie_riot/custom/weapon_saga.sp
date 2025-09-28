@@ -167,7 +167,7 @@ public Action Saga_Timer1(Handle timer, int client)
 					amount = 1; //dont give shit.
 				*/
 				
-				CashRecievedNonWave[client] += amount;
+				CashReceivedNonWave[client] += amount;
 				CashSpent[client] -= amount;
 				AddCustomCashMadeThisWave(client, amount);
 			}
@@ -272,7 +272,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			int cash = RoundFloat(6.0 * ResourceRegenMulti);
-			CashRecievedNonWave[client] += cash;
+			CashReceivedNonWave[client] += cash;
 			CashSpent[client] -= cash;
 			AddCustomCashMadeThisWave(client, cash);
 		}

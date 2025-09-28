@@ -263,6 +263,8 @@ public void StartZombieRiotFrame()
 		int spawnNpc = Citizen_SpawnAtPoint("", client);
 		Citizen npc = view_as<Citizen>(spawnNpc);
 		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+		fl_Extra_Damage[spawnNpc] *= 2.5;
+		//5x dmg
 		
 		// We select rebel types/roles ourselves because we want no builders and less medics than Citizen_SetRandomRole offers
 		int role, type;

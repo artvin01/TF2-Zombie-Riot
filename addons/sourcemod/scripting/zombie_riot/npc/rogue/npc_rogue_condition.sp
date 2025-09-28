@@ -106,10 +106,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		if(StrEqual("npc_umbral_automaton", buffers[1]))
 		{
 			//automatons can never be friendly
-			if(friendly && (GetURandomInt() % 4) != 0)
-			{
-				friendly = false;
-			}	
+			friendly = false;
 		}
 		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
 		

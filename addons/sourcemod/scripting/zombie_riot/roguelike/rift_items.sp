@@ -338,8 +338,8 @@ public void Rogue_Sculpture_Enemy(int entity)
 
 public void Rogue_PainfulHappy_Enemy(int entity)
 {
-	RogueHelp_BodyHealth(entity, null, 0.85);
-	fl_Extra_Speed[entity] /= 1.15;
+	RogueHelp_BodyHealth(entity, null, 0.91);
+	fl_Extra_Speed[entity] /= 1.09;
 }
 
 public void Rogue_GravityDefying_Enemy(int entity)
@@ -399,7 +399,7 @@ public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
 			if(lastTarget != highestPlayer)
 			{
 				lastTarget = highestPlayer;
-				CPrintToChatAll("{red}%N {crimson}recieved +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
+				CPrintToChatAll("{red}%N {crimson}received +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
 			}
 		}
 	}
@@ -462,7 +462,7 @@ public void Rogue_ThoughtsCatcher_Collect()
 void Rogue_Rift_GatewaySent()
 {
 	if(ThoughtsCatcher)
-		Rogue_AddIngots(20);
+		Rogue_AddIngots(3);
 }
 
 public void Rogue_ThoughtsCatcher_Remove()
@@ -700,4 +700,73 @@ public bool Rogue_SuperStimsOn()
 public void Rogue_SuperStims_StageStart()
 {
 	GiveMorphineToEveryone();
+}
+
+public void Rogue_Omega_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_omega_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+public void Rogue_Omega_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+}
+public void Rogue_Vhxis_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_vhxis_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+public void Rogue_Vhxis_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
 }
