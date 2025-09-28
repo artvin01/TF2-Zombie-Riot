@@ -1099,6 +1099,7 @@ void NPC_ConfigSetup()
 	Umbral_Rouam_OnMapStart_NPC();
 	WinTimer_MapStart();
 	SensalFollower_Setup();
+	OverlordFollower_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -2393,3 +2394,4 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/rouge3/npc_umbral_whiteflower.sp"
 #include "npc/construction/logic_win_timer.sp"
 #include "npc/construction/npc_sensal_follower.sp"
+#include "npc/construction/npc_overlord_follower.sp"
