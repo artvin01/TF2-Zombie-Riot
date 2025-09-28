@@ -1013,3 +1013,66 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 		}
 	}
 }
+static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
+{
+	switch(GetRandomInt(0,1))
+	{
+		case 0:
+		{
+			switch(progress)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Alright Vhxis, let's kick some ass, I'm surprised that these goons still associate themselves with that traitor.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Of course, of course... wait a minute, traitor? What traitor?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Omega{default}: You know, Whiteflower, the jackass? His whole big deal being his army?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: That name doesn't ring a bell, we should probably deal with these guys first and get to the throne. You can tell me more once all of this blows over.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Not a bad idea. It's a long story anyway.");
+					return Plugin_Stop;
+				}
+			}
+		}
+		case 1:
+		{
+			switch(progress)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Damn, where do these guys keep on coming from?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{gold}Omega{default}: I know right? I think I underestimated the amount of people that would devote their lives to Whiteflower.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: To...who? That name doesn't seem familiar to me.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Shit, you don't know who Whiteflower is? I should tell you more once we take care of business at the throne. We're a little bit preoccupied right now.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Right you are.");
+					return Plugin_Stop;
+				}
+			}
+		}
+	}
+	Rogue_SetProgressTime(10.0, false);
+	CreateTimer(4.5, Timer_OmegaVhxisYapping, progress + 2);
+	return Plugin_Continue;
+}
