@@ -179,6 +179,12 @@ methodmap VhxisFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+	
 	
 	public VhxisFollower(float vecPos[3], float vecAng[3],int ally)
 	{
@@ -205,7 +211,6 @@ methodmap VhxisFollower < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
 		npc.m_flVoidLaserPulseCooldown = GetGameTime() + 10.0;
@@ -276,6 +281,20 @@ static void ClotThink(int iNPC)
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;
+
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 		i_Target[npc.index] = -1;
