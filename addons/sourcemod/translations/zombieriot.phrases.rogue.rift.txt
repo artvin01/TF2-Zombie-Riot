@@ -811,7 +811,7 @@
 	}
 	"Witchcraft Desc"
 	{
-		"en"	"{green}Umbral Affinity increased by 2 after a battle {red}but enemies have +10％ health and damage while held"
+		"en"	"{green}Umbral Affinity increased by 3 after a battle {red}but enemies have +10％ health and damage while held"
 	}
 	"Consume"
 	{
