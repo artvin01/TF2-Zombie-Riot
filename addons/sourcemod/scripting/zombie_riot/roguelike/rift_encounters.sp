@@ -1005,6 +1005,7 @@ public float Rogue_Encounter_OmegaVhxis()
 	return 25.0;
 }
 
+static int OmegaYappingVhxisGroupChat;
 
 public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 {
@@ -1016,6 +1017,8 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 			Rogue_GiveNamedArtifact("Omega's Assistance");
 			Rogue_GiveNamedArtifact("Vhxis' Assistance");
 			Rogue_StartThisBattle(5.0);
+			OmegaYappingVhxisGroupChat = GetRandomInt(0,1);
+			CreateTimer(5.0, Timer_OmegaVhxisYapping, progress + 1);
 		}
 		case 1:
 		{
@@ -1026,7 +1029,7 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 }
 static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 {
-	switch(GetRandomInt(0,1))
+	switch(OmegaYappingVhxisGroupChat)
 	{
 		case 0:
 		{
@@ -1083,7 +1086,6 @@ static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 			}
 		}
 	}
-	Rogue_SetProgressTime(10.0, false);
-	CreateTimer(4.5, Timer_OmegaVhxisYapping, progress + 2);
+	CreateTimer(6.5, Timer_OmegaVhxisYapping, progress + 1);
 	return Plugin_Continue;
 }
