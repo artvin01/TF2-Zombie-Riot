@@ -952,12 +952,16 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 	}
 }
 
+
 public void Rogue_Rift2_Collect(int entity)
 {
-	Rogue_AddUmbral(-25, true);
+	Rogue_AddUmbral(-15, false);
 
+	/*
 	if(!Rogue_HasNamedArtifact("Reila Assistance"))
 		Rogue_GiveNamedArtifact("Reila Assistance", true);
+	*/
+	
 }
 
 public void Rogue_BookOfNature_Collect(int entity)
