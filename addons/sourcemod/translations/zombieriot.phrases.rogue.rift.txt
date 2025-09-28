@@ -474,7 +474,7 @@
 	}
 	"Magic Box Desc"
 	{
-		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 12"
+		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
 	}
 	"Old Fan"
 	{
