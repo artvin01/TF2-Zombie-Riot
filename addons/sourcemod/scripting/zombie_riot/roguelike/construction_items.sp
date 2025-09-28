@@ -228,6 +228,12 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	return Plugin_Continue;
 }
 
+public void Construction_Barney_Collect()
+{
+	Citizen_SpawnAtPoint("b");
+	SpawnRebel();
+}
+
 public void Construction_Rebel_Collect()
 {
 	SpawnRebel();

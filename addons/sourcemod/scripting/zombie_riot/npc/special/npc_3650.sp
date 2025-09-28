@@ -221,28 +221,31 @@ methodmap ThirtySixFifty < CClotBody
 		npc.StartPathing();
 		
 		Citizen_MiniBossSpawn();
-
-		switch(GetRandomInt(0,4))
+		
+		if(!Rogue_Mode())
 		{
-			case 0:
+			switch(GetRandomInt(0,4))
 			{
-				CPrintToChatAll("{white}3650{default}: You, zombie guy, follow me.");
-			}
-			case 1:
-			{
-				CPrintToChatAll("{white}3650{default}: I'm more elite than you are, come on.");
-			}
-			case 2:
-			{
-				CPrintToChatAll("{white}3650{default}: You guys can't tell, but I have a mean poker face.");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{white}3650{default}: THEY have medics, why don't WE have medics?");
-			}
-			case 4:
-			{
-				CPrintToChatAll("{white}3650{default}: At least I still have meatshields.");
+				case 0:
+				{
+					CPrintToChatAll("{white}3650{default}: You, zombie guy, follow me.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{white}3650{default}: I'm more elite than you are, come on.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{white}3650{default}: You guys can't tell, but I have a mean poker face.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{white}3650{default}: THEY have medics, why don't WE have medics?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{white}3650{default}: At least I still have meatshields.");
+				}
 			}
 		}
 		return npc;
@@ -258,15 +261,17 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	int time = GetTime();
-	if(i_PlayMusicSound[npc.index] < time)
+	if(!Rogue_Mode())
 	{
-		// This doesn't auto loop
-		EmitCustomToAll("#zombie_riot/omega/calculated.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100); //song that plays duh
+		int time = GetTime();
+		if(i_PlayMusicSound[npc.index] < time)
+		{
+			// This doesn't auto loop
+			EmitCustomToAll("#zombie_riot/omega/calculated.mp3", npc.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 100); //song that plays duh
 
-		i_PlayMusicSound[npc.index] = GetTime() + 43; //loops the song perfectly
+			i_PlayMusicSound[npc.index] = GetTime() + 43; //loops the song perfectly
+		}
 	}
-
 	if(npc.m_flAbilityOrAttack0 < gameTime)
 	{
 		npc.m_flAbilityOrAttack0 = gameTime + 0.25;

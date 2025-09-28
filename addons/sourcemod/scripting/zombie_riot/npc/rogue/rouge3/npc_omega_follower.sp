@@ -269,6 +269,11 @@ methodmap OmegaFollower < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	public OmegaFollower(float vecPos[3], float vecAng[3],int ally)
 	{
@@ -300,6 +305,10 @@ methodmap OmegaFollower < CClotBody
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
+		if(Rogue_HasNamedArtifact("Bob's Wrath"))
+		{
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+		}
 		
 		i_GrabbedThis[npc.index] = INVALID_ENT_REFERENCE;
 
@@ -332,6 +341,19 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 	switch (npc.m_iGrabState)
 	{
 		case OMEGA_FOLLOWER_GRAB_STATE_HOLDING:
@@ -559,8 +581,8 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	b_DoNotUnStuck[target] = true;
 	npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_HOLDING;
 	npc.m_flNextGrab = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
-	f_TankGrabbedStandStill[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
-	f_NoUnstuckVariousReasons[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
+	f_TankGrabbedStandStill[target] = GetGameTime() + OMEGA_FOLLOWER_HOLD_TIME;
+	f_NoUnstuckVariousReasons[target] = GetGameTime() + OMEGA_FOLLOWER_HOLD_TIME;
 	b_NoGravity[target] = true;
 	FreezeNpcInTime(target, OMEGA_FOLLOWER_HOLD_TIME + 0.5, true);
 	ApplyStatusEffect(target, target, "Intangible", OMEGA_FOLLOWER_HOLD_TIME + 0.5);
@@ -723,20 +745,20 @@ static Action contact_throw_omega_entity(int client)
 						int thrower = i_TankThrewThis[client];
 						if (!IsIn_HitDetectionCooldown(client,entity,TankThrowLogic) && entity != client && thrower != entity && IsValidEnemy(thrower, entity))
 						{		
-							float damageToEntityHit = ReturnEntityMaxHealth(entity) * 0.1;
-							float damageToEntityThrown = ReturnEntityMaxHealth(client) * 0.05;
+							float damageToEntityHit = ReturnEntityMaxHealth(entity) * 0.01;
+							float damageToEntityThrown = ReturnEntityMaxHealth(client) * 0.005;
 							
-							if (damageToEntityHit > 25000.0)
-								damageToEntityHit = 25000.0;
+							if (damageToEntityHit > 250.0)
+								damageToEntityHit = 250.0;
 							
-							if (damageToEntityThrown > 25000.0)
-								damageToEntityThrown = 25000.0;
+							if (damageToEntityThrown > 250.0)
+								damageToEntityThrown = 250.0;
 							
 							if (ShouldNpcDealBonusDamage(entity))
 								damageToEntityHit *= 4.0;
 							
-							SDKHooks_TakeDamage(entity, thrower, thrower, damageToEntityHit, DMG_GENERIC, -1, NULL_VECTOR, targPos);
-							SDKHooks_TakeDamage(client, thrower, thrower, damageToEntityThrown, DMG_GENERIC, -1, NULL_VECTOR, targPos);
+							SDKHooks_TakeDamage(entity, thrower, thrower, damageToEntityHit, DMG_CLUB, -1, NULL_VECTOR, targPos);
+							SDKHooks_TakeDamage(client, thrower, thrower, damageToEntityThrown, DMG_CLUB, -1, NULL_VECTOR, targPos);
 							
 							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
 							Set_HitDetectionCooldown(client,entity,FAR_FUTURE,TankThrowLogic);

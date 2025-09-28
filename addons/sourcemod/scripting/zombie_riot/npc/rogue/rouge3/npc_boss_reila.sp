@@ -428,7 +428,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		{	
 			npc.Anger = true;
 			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 10.0);
-			ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 10.0);
+		//	ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 10.0);
 			ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 10.0);
 			CPrintToChatAll("{pink}Reila {snow}gets enveloped in an Umbral Aura...");
 		}

@@ -113,6 +113,7 @@ public void Construction_RiftAllies_Collect()
 			GetClientAbsOrigin(client_summon, flPos);
 			NPC_CreateByName("npc_twirl_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 			NPC_CreateByName("npc_sensal_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			NPC_CreateByName("npc_overlord_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 			break;
 		}
 	}

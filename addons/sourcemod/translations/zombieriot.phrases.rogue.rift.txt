@@ -48,11 +48,19 @@
 	}
 	"Rift of Swarms Desc"
 	{
-		"en"	"{red}Increases the amount of enemies by +20％"
+		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 	}
 	"Rift of Swarms Lore"
 	{
 		"en"	"A rift opens as it spews out more enemies in your path."
+	}
+	"Rift of Swarming"
+	{
+		"en"	"Rift of Swarming"
+	}
+	"Rift of Swarming Desc"
+	{
+		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 	}
 	"Rift of Emptiness"
 	{
@@ -108,7 +116,7 @@
 	}
 	"Rift of Malice Desc"
 	{
-		"en"	"{red}Entering battles reduces Umbral Affinity by 3."
+		"en"	"{red}Entering battles reduces Umbral Affinity by 2."
 	}
 	"Rift of Malice Lore"
 	{
@@ -290,7 +298,7 @@
 	}
 	"Hand of Rumble Desc"
 	{
-		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal full explosion damage to all targets and no target limit"
+		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal their damage again after 3 seconds as blast damage."
 	}
 	"Hand of Choker"
 	{
@@ -474,7 +482,7 @@
 	}
 	"Magic Box Desc"
 	{
-		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 12"
+		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
 	}
 	"Old Fan"
 	{
@@ -506,7 +514,7 @@
 	}
 	"Scout's Scope Desc"
 	{
-		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +100％ the further the target is"
+		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +50％ the further the target is"
 	}
 	"Lakebed Aegis"
 	{
@@ -642,7 +650,7 @@
 	}
 	"Thoughts Catcher Desc"
 	{
-		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 2 Australium Ingots when consuming an item at a Gateway"
+		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 3 Australium Ingots when consuming an item at a Gateway"
 	}
 	"Scales of Avarice"
 	{
@@ -803,7 +811,7 @@
 	}
 	"Witchcraft Desc"
 	{
-		"en"	"{green}Umbral Affinity increased by 2 after a battle {red}but enemies have +10％ health and damage while held"
+		"en"	"{green}Umbral Affinity increased by 3 after a battle {red}but enemies have +10％ health and damage while held"
 	}
 	"Consume"
 	{
@@ -883,7 +891,7 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
+		"en"	"{red}Umbral Affinity reduced by 5 while holding\n{purple}A special encounter can appear when consumed"
 	}
 	"Wordless Deed"
 	{
@@ -899,7 +907,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
@@ -1489,13 +1497,13 @@
 	{
 		"en" "⚠ Slaves Controlled"
 	}
-	"Bladedance Surviors"
+	"Bladedance survivors"
 	{
-		"en" "⚔ Bladedance Surviors"
+		"en" "⚔ Bladedance survivors"
 	}
-	"Bladedance Surviors!"
+	"Bladedance survivors!"
 	{
-		"en" "⚠ Bladedance Surviors"
+		"en" "⚠ Bladedance survivors"
 	}
 	"Rescued W.F. Soldiers"
 	{

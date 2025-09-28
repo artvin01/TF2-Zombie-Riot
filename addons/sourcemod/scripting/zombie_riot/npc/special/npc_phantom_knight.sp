@@ -583,6 +583,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
 								GiveNpcOutLineLastOrBoss(view_as<int>(fake_spawned), true);
 							}
+							
+							strcopy(c_NpcName[fake_spawned], sizeof(c_NpcName[]), c_NpcName[npc.index]);
 							NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
@@ -594,6 +596,11 @@ public void PhantomKnight_ClotThink(int iNPC)
 							SetEntProp(view_as<int>(fake_spawned), Prop_Data, "m_iMaxHealth", maxhealth);
 
 							//clones have 10% of his health
+							fl_Extra_MeleeArmor[fake_spawned] 		= fl_Extra_MeleeArmor[npc.index];
+							fl_Extra_RangedArmor[fake_spawned] 		= fl_Extra_MeleeArmor[npc.index];
+							fl_Extra_Speed[fake_spawned] 			= fl_Extra_MeleeArmor[npc.index];
+							fl_Extra_Damage[fake_spawned] 			= fl_Extra_MeleeArmor[npc.index];
+							f_AttackSpeedNpcIncrease[fake_spawned] 	= fl_Extra_MeleeArmor[npc.index];
 
 							i_PhantomsSpawned[npc.index] += 1; //Add one more.
 						}

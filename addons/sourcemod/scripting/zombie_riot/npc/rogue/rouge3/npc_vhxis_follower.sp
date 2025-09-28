@@ -106,7 +106,7 @@ methodmap VhxisFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 22)
+		switch(GetURandomInt() % 9)
 		{
 			case 0:
 			{
@@ -115,103 +115,43 @@ methodmap VhxisFollower < CClotBody
 			}
 			case 1:
 			{
-				this.Speech("I wonder if Bladedance will ever forgive me", "...");
+				this.Speech("I don't hold grudges.");
+				this.SpeechDelay(5.0, "Though if you didn't attack me, we wouldn't be in this mess right now.");
 			}
 			case 2:
 			{
-				this.Speech("I know what you did to guln.");
-				this.SpeechDelay(5.0,"I know it was in his wish.");
-				this.SpeechDelay(10.0,"That doesnt mean ill be any less forgiving for it.");
+				this.Speech("Twirl huh...");
+				this.SpeechDelay(5.0,"There's a reason I have this headset on, alright.");
 			}
 			case 3:
 			{
-				this.Speech("People view me as a hero, i view myself as being curious.");
+				this.Speech("Omega is a surprisingly loyal guy, despite his military records.");
 			}
 			case 4:
 			{
-				this.Speech("I have no idea why Whiteflower did what he did.");
-				this.SpeechDelay(5.0,"Regardless, it is unforgiveable.");
+				this.Speech("You ever tried to harness the void?");
+				this.SpeechDelay(5.0,"You're not ready for what awaits you.");
 			}
 			case 5:
 			{
-				this.Speech("How my friendgroup met? Mazeat.");
+				this.Speech("Chaos doesn't scare me.");
 			}
 			case 6:
 			{
-				this.Speech("You want my sword? No chance.");
+				this.Speech("You know what really grinds my gears?");
+				this.SpeechDelay(5.0,"People who talk too much.");
 			}
 			case 7:
 			{
-				this.Speech("Ever since the seaborn stuff happend, you all have been alot more reasonable.");
-				this.SpeechDelay(5.0,"Could be PTSD.");
+				this.Speech("With how vile Unspeakable looks, I'm surprised it's not called Abomination instead.");
 			}
 			case 8:
 			{
-				this.Speech("Even if everything is going to hell, This is the right path.");
+				this.Speech("I miss my Void Ixufans.");
 			}
 			case 9:
 			{
-				this.Speech("Overtime i can feel everything relaxing abit, The only common big enemy is the void.");
-				this.SpeechDelay(5.0, "... or whatever that is..");
-			}
-			case 10:
-			{
-				this.Speech("Chaos, i still dont know if its made by someone, or a force of nature.");
-				this.SpeechDelay(5.0, "Time will tell what it is..");
-			}
-			case 11:
-			{
-				this.Speech("What freaks me out?");
-				this.SpeechDelay(5.0, "Ever lost your best friend to another friend?");
-				this.SpeechDelay(10.0, "That.");
-			}
-			case 12:
-			{
-				this.Speech("Im not emotionless.");
-				this.SpeechDelay(5.0, "I just dont show it to everyone i meet.");
-			}
-			case 13:
-			{
-				this.Speech("Twirl, the only one to think alike me.");
-				this.SpeechDelay(5.0, "If it were opposite day.");
-			}
-			case 14:
-			{
-				this.Speech("How i made clones in our battle?");
-				this.SpeechDelay(5.0, "I didnt, i just moved around.");
-				this.SpeechDelay(10.0, "Don't give it too much thought.");
-			}
-			case 15:
-			{
-				this.Speech("Think you'd stand a chance against me and bladedance?");
-			}
-			case 16:
-			{
-				this.Speech("My favorite drink?");
-				this.SpeechDelay(5.0, "Banana Juice.");
-			}
-			case 17:
-			{
-				this.Speech("Omega? Well, after that stunt he pulled in Nova Prospekt, I trust him.");
-			}
-			case 18:
-			{
-				this.Speech("You think i'd be sorry for attacking you?");
-				this.SpeechDelay(5.0, "You should be sorry for being so god damn careless with the seaborn.");
-			}
-			case 19:
-			{
-				this.Speech("If you ever think i'll trust that second bob faker, ill laugh.");
-				this.SpeechDelay(9.0, "He acts like an expidonsan.");
-			}
-			case 20:
-			{
-				this.Speech("I wonder what Guln would think of whiteflowers death","...");
-				this.SpeechDelay(8.0, "He'd be probably very upset.");
-			}
-			case 21:
-			{
-				this.Speech("Cherrish your friends as much as you can, while they are still here.");
+				this.Speech("Too many people try to make a name for themselves, just act like yourself.");
 			}
 		}
 		
@@ -239,6 +179,12 @@ methodmap VhxisFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+	
 	
 	public VhxisFollower(float vecPos[3], float vecAng[3],int ally)
 	{
@@ -265,7 +211,6 @@ methodmap VhxisFollower < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
 		npc.m_flVoidLaserPulseCooldown = GetGameTime() + 10.0;
@@ -336,6 +281,20 @@ static void ClotThink(int iNPC)
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;
+
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
 		i_Target[npc.index] = -1;

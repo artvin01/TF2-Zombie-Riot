@@ -526,10 +526,14 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		case 1:
 		{
 			CPrintToChatAll("{white}Bob {default}: I... This is just... {crimson} Guln...");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: Guln... shit.");
 		}
 		case 2:
 		{
 			CPrintToChatAll("{snow}Bob leans his head onto Guln's now crystalized head.");
+			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default}: He was a naive boy, but this... this was unprecedented.");
 		}
 		case 3:
 		{
@@ -538,6 +542,8 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		case 4:
 		{
 			CPrintToChatAll("{snow}He Breaks apart the foundation holding the crystal body and picks him up.");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: What's on that paper, Bob?");
 		}
 		case 5:
 		{
@@ -552,18 +558,23 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 				}
 			}
 			Rogue_RemoveNamedArtifact("Bob's Assistance");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: Bob, where are you going?");
 		}
 		case 6:
 		{
-			CPrintToChatAll("{snow}You find a note reading:");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} find a note reading:");
+			else
+				CPrintToChatAll("{snow}You find a note reading:");
 		}
 		case 7:
 		{
-			CPrintToChatAll("{grey}Guln, were surrounded, i'm surrounded, the umbral forces are too much. We have to run, just RUN, ill hold them off.");
+			CPrintToChatAll("{grey}Guln, we're surrounded, I'm surrounded, the umbral forces are too much. We have to run, just RUN, I'll hold them off.");
 		}
 		case 8:
 		{
-			CPrintToChatAll("{grey}Keep the ones i made for you close, they might save you, but i fear that were done for.");
+			CPrintToChatAll("{grey}Keep the ones I made for you close, they might save you, but I fear that we're done for.");
 		}
 		case 9:
 		{
@@ -571,15 +582,17 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		}
 		case 10:
 		{
-			CPrintToChatAll("{grey}Yknow, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
+			CPrintToChatAll("{grey}Y'know, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
 		}
 		case 11:
 		{
-			CPrintToChatAll("{grey}if, no, WHEN we meet again, ill make sure to hand you that cake recipe you loved so much from me okay?");
+			CPrintToChatAll("{grey}if, no, WHEN we meet again, I'll make sure to hand you that cake recipe you loved so much from me okay?");
 		}
 		case 12:
 		{
 			CPrintToChatAll("{crimson}-Bladedance");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} seem visibly agitated.");
 		}
 		case 13:
 		{
@@ -615,6 +628,11 @@ public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
 
 	CPrintToChatAll("{snow}Bob returns.");
 	CPrintToChatAll("{white}Bob {default}: ...");
+	if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+	{
+		CPrintToChatAll("{gold}Omega{default}: We will avenge Guln.");
+		CPrintToChatAll("{purple}Vhxis{default}: The three of us must prevail, for our comrade.");
+	}
 }
 public void Rogue_Crystalized_Warped_Subjects_Repeat()
 {
@@ -1005,6 +1023,7 @@ public float Rogue_Encounter_OmegaVhxis()
 	return 25.0;
 }
 
+static int OmegaYappingVhxisGroupChat;
 
 public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 {
@@ -1016,6 +1035,8 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 			Rogue_GiveNamedArtifact("Omega's Assistance");
 			Rogue_GiveNamedArtifact("Vhxis' Assistance");
 			Rogue_StartThisBattle(5.0);
+			OmegaYappingVhxisGroupChat = GetRandomInt(0,1);
+			CreateTimer(5.0, Timer_OmegaVhxisYapping, 1);
 		}
 		case 1:
 		{
@@ -1023,4 +1044,66 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 			GiveCash(8000);
 		}
 	}
+}
+static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
+{
+	switch(OmegaYappingVhxisGroupChat)
+	{
+		case 0:
+		{
+			switch(progress)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Alright Vhxis, let's kick some ass, I'm surprised that these goons still associate themselves with that traitor.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Of course, of course... wait a minute, traitor? What traitor?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Omega{default}: You know, Whiteflower, the jackass? His whole big deal being his army?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: That name doesn't ring a bell, we should probably deal with these guys first and get to the throne. You can tell me more once all of this blows over.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Not a bad idea. It's a long story anyway.");
+					return Plugin_Stop;
+				}
+			}
+		}
+		case 1:
+		{
+			switch(progress)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Damn, where do these guys keep on coming from?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{gold}Omega{default}: I know right? I think I underestimated the amount of people that would devote their lives to Whiteflower.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: To...who? That name doesn't seem familiar to me.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Shit, you don't know who Whiteflower is? I should tell you more once we take care of business at the throne. We're a little bit preoccupied right now.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Right you are.");
+					return Plugin_Stop;
+				}
+			}
+		}
+	}
+	CreateTimer(6.5, Timer_OmegaVhxisYapping, progress + 1);
+	return Plugin_Continue;
 }

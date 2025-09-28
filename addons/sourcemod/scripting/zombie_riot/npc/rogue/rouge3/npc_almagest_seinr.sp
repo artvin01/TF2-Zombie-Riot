@@ -192,6 +192,7 @@ public void AlmagestSeinr_ClotThink(int iNPC)
 		{
 			npc.m_flSpeed = 340.0;
 			fl_RangedArmor[npc.index] = 1.0;
+			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
 			RemoveEntity(npc.m_iWearable5);
 		}
 	}
