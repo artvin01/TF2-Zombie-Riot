@@ -521,7 +521,7 @@ public void Shadowing_DarknessWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh dont worry, i wont kill you\nI'll make sure that you understand what beauty this place is.");	
+	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh dont worry, I wont kill you\nI'll make sure that you understand what beauty this place is.");	
 }
 
 public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
@@ -716,6 +716,10 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 		CPrintToChatAll("{purple}NO!!!!!!");
 		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Get this thing off me-.");
 		CPrintToChatAll("{black}Izan :{default} What the-");
+		if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+			CPrintToChatAll("{purple}Vhxis{default}: DON'T YOU DARE TO THINK ABOUT DOING IT!");
+		if(Rogue_HasNamedArtifact("Omega's Assistance"))
+			CPrintToChatAll("{gold}Omega{default}: How in the hell do we stop that damn thing!?");
 		FreezeNpcInTime(victim, 30.0, true);
 		damage = 0.0;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
@@ -796,6 +800,11 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 				npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
 			CPrintToChatAll("{purple}YOU WILL NOT SEE THE END OF THIS DAY...");
 			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So i was right, i wasn't alone once i sat on that throne, parasite...");
+			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default}: You god damn vermin, I thought I had seen the last of you!");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: What in the world is THAT?");
+			
 			damage = 0.0;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 2);	
 			return Plugin_Changed;
@@ -1783,25 +1792,48 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 		{
 			if(TimeLeft < 43.0)
 			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						if(Rogue_HasNamedArtifact("Omega's Assistance"))
+							CPrintToChatAll("{gold}Omega{default}: None of your business.");
+						else
+							CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as for the void...");
+					}
+					case 1:
+					{
+						if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+							CPrintToChatAll("{purple}Vhxis{default}: %i."), GetRandomInt(0, 100);
+						else
+							CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as for the void...");
+					}
+				}
 				i_khamlCutscene = 12;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as, for the void...");
 			}
 		}
 		case 12:
 		{
 			if(TimeLeft < 40.0)
 			{
+				if(Rogue_HasNamedArtifact("Omega's Assistance"))
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: That was a rhetorical question...regardless, killing me won't stop the voids.");
+				else
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: If you really think killing me will stop the voids, be my guest.");
 				i_khamlCutscene = 11;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: If you really think killing me will stop the voids, be my guest.");
 			}
 		}
 		case 11:
 		{
 			if(TimeLeft < 38.0)
 			{
+				if(Rogue_HasNamedArtifact("Omega's Assistance"))
+					CPrintToChatAll("{white}Bob{allies} & {gold}Omega{default}: Traitors.");
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, a traitor? I didn't do anything.");
+				else
+					CPrintToChatAll("{white}Bob{default}: You and whiteflower are the most nasty traitors I have seen.");
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, a traitor? I didn't do anything.");
 				i_khamlCutscene = 10;
-				CPrintToChatAll("{white}Bob{default}: You and whiteflower are the most nasty traitors i have seen.");
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, traitor? I didnt do anything.");
 			}
 		}
 		case 10:
@@ -1812,7 +1844,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				if(Rogue_HasNamedArtifact("Bob's Wrath"))
 					CPrintToChatAll("{white}Bob{crimson}: You killed Guln.");
 				else
-					CPrintToChatAll("{white}Bob{default}: I have yet to see where guln ended up.");
+					CPrintToChatAll("{white}Bob{default}: I have yet to see where Guln ended up.");
 			}
 		}
 		case 9:
@@ -1823,7 +1855,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				if(Rogue_HasNamedArtifact("Bob's Wrath"))
 					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Guln is dead..? ........");
 				else
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I dont know excatly what happend to guln, i have tried to find him myself.");
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I don't know excatly what happend to Guln, I have tried to find him myself.");
 			}
 		}
 		case 8:
@@ -1831,31 +1863,43 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 25.0)
 			{
 				i_khamlCutscene = 7;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Whiteflower was not a bad person, however.... If you want to stop the void, youll have to get ahold of the umbrals and make them do their job.");
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Whiteflower was not a bad person, however.... If you want to stop the void, you'll have to get ahold of the umbrals and make them do their job.");
 			}
 		}
 		case 7:
 		{
 			if(TimeLeft < 23.0)
 			{
+				if(Rogue_HasNamedArtifact("Omega's Assistance"))
+					CPrintToChatAll("{gold}Omega{default}: Whiteflower, not a bad person? You are deluded. You have to be taken out.");
+				else
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: This is what the throne does, to a limited degree, and im atop of it, but...");
 				i_khamlCutscene = 6;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: This is what the throne does, to a limited degree, and im atop of it, but...");
 			}
 		}
 		case 6:
 		{
 			if(TimeLeft < 18.0)
 			{
+				if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Well, unless she wants to step down from the throne willingly, I think we'll have to take her out anyway.");
+					CPrintToChatAll("{purple}Vhxis{default}: I'm sure this place will be better off with someone actually competent on the throne.");
+				}
+					else
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ever since i sat upon it, i wanted to do something else.");
 				i_khamlCutscene = 5;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ever since i sat upon it, i wanted to do something else.");
 			}
 		}
 		case 5:
 		{
 			if(TimeLeft < 13.0)
 			{
+				if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh please, we all know I won't let anyone be the new heir to the throne.");
+				else
+					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Izan... i remember when you wanted to be a fake bob, that was hillarious.");
 				i_khamlCutscene = 4;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Izan... i remember when you wanted to be a fake bob, that was hillarious.");
 			}
 		}
 		case 4:
@@ -1863,7 +1907,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 8.0)
 			{
 				i_khamlCutscene = 3;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Then ill be what unspeakable was, but reasonable, dont you think?");
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Then I'll be what unspeakable was, but reasonable, don't you think?");
 			}
 		}
 		case 3:
@@ -1871,7 +1915,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 4.0)
 			{
 				i_khamlCutscene = 2;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Who am i kidding, unspeakable is dead, luckly.");
+				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Who am I kidding, unspeakable is dead, luckily.");
 			}
 		}
 		case 2:
