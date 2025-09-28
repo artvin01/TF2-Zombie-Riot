@@ -48,11 +48,19 @@
 	}
 	"Rift of Swarms Desc"
 	{
-		"en"	"{red}Increases the amount of enemies by +20％"
+		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 	}
 	"Rift of Swarms Lore"
 	{
 		"en"	"A rift opens as it spews out more enemies in your path."
+	}
+	"Rift of Swarming"
+	{
+		"en"	"Rift of Swarming"
+	}
+	"Rift of Swarming Desc"
+	{
+		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 	}
 	"Rift of Emptiness"
 	{
@@ -108,7 +116,7 @@
 	}
 	"Rift of Malice Desc"
 	{
-		"en"	"{red}Entering battles reduces Umbral Affinity by 3."
+		"en"	"{red}Entering battles reduces Umbral Affinity by 2."
 	}
 	"Rift of Malice Lore"
 	{
@@ -290,7 +298,7 @@
 	}
 	"Hand of Rumble Desc"
 	{
-		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal full explosion damage to all targets and no target limit"
+		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal their damage again after 3 seconds as blast damage."
 	}
 	"Hand of Choker"
 	{
@@ -883,7 +891,7 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
+		"en"	"{red}Umbral Affinity reduced by 5 while holding\n{purple}A special encounter can appear when consumed"
 	}
 	"Wordless Deed"
 	{

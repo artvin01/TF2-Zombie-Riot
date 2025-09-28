@@ -581,8 +581,8 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	b_DoNotUnStuck[target] = true;
 	npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_HOLDING;
 	npc.m_flNextGrab = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
-	f_TankGrabbedStandStill[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
-	f_NoUnstuckVariousReasons[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
+	f_TankGrabbedStandStill[target] = GetGameTime() + OMEGA_FOLLOWER_HOLD_TIME;
+	f_NoUnstuckVariousReasons[target] = GetGameTime() + OMEGA_FOLLOWER_HOLD_TIME;
 	b_NoGravity[target] = true;
 	FreezeNpcInTime(target, OMEGA_FOLLOWER_HOLD_TIME + 0.5, true);
 	ApplyStatusEffect(target, target, "Intangible", OMEGA_FOLLOWER_HOLD_TIME + 0.5);
