@@ -506,7 +506,7 @@
 	}
 	"Scout's Scope Desc"
 	{
-		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +100％ the further the target is"
+		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +50％ the further the target is"
 	}
 	"Lakebed Aegis"
 	{

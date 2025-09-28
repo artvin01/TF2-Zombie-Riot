@@ -230,7 +230,7 @@ public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflicto
 			GetEntPropVector(victim, Prop_Data, "m_vecOrigin", pos1);
 			GetEntPropVector(attacker, Prop_Data, "m_vecOrigin", pos2);
 
-			static const float MaxDist = 1000000.0;
+			static const float MaxDist = 2250000.0;
 
 			float distance = GetVectorDistance(pos1, pos2, true);
 			if(distance > MaxDist)
@@ -240,7 +240,7 @@ public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflicto
 					DisplayCritAboveNpc(victim, attacker, true, _, _, true);
 			}
 			
-			damage += damage * (distance / MaxDist);
+			damage += damage * ((distance * 0.5) / MaxDist);
 		}
 	}
 }

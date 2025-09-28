@@ -271,7 +271,7 @@ methodmap BobTheFirstFollower < CClotBody
 		npc.m_bScalesWithWaves = true;
 		if(Rogue_HasNamedArtifact("Bob's Wrath"))
 		{
-			fl_Extra_Damage[npc.index] *= 6.0;
+			fl_Extra_Damage[npc.index] *= 4.0;
 			fl_Extra_Speed[npc.index] *= 1.3;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 			npc.Anger = true;
