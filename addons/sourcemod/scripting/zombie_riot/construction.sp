@@ -578,7 +578,6 @@ void Construction_Start()
 	}
 
 	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
-	Citizen_SpawnAtPoint("b");
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
