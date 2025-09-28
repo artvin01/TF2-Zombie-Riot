@@ -1018,7 +1018,7 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 			Rogue_GiveNamedArtifact("Vhxis' Assistance");
 			Rogue_StartThisBattle(5.0);
 			OmegaYappingVhxisGroupChat = GetRandomInt(0,1);
-			CreateTimer(5.0, Timer_OmegaVhxisYapping, progress + 1);
+			CreateTimer(5.0, Timer_OmegaVhxisYapping, 1);
 		}
 		case 1:
 		{

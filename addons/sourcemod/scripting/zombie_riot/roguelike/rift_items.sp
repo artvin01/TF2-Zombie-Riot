@@ -462,7 +462,7 @@ public void Rogue_ThoughtsCatcher_Collect()
 void Rogue_Rift_GatewaySent()
 {
 	if(ThoughtsCatcher)
-		Rogue_AddIngots(20);
+		Rogue_AddIngots(3);
 }
 
 public void Rogue_ThoughtsCatcher_Remove()

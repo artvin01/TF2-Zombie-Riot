@@ -642,7 +642,7 @@
 	}
 	"Thoughts Catcher Desc"
 	{
-		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 2 Australium Ingots when consuming an item at a Gateway"
+		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 3 Australium Ingots when consuming an item at a Gateway"
 	}
 	"Scales of Avarice"
 	{
