@@ -269,6 +269,11 @@ methodmap OmegaFollower < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	public OmegaFollower(float vecPos[3], float vecAng[3],int ally)
 	{
@@ -300,6 +305,10 @@ methodmap OmegaFollower < CClotBody
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
+		if(Rogue_HasNamedArtifact("Bob's Wrath"))
+		{
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+		}
 		
 		i_GrabbedThis[npc.index] = INVALID_ENT_REFERENCE;
 
@@ -332,6 +341,19 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 	switch (npc.m_iGrabState)
 	{
 		case OMEGA_FOLLOWER_GRAB_STATE_HOLDING:

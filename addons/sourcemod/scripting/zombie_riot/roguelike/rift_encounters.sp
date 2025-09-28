@@ -628,6 +628,8 @@ public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
 
 	CPrintToChatAll("{snow}Bob returns.");
 	CPrintToChatAll("{white}Bob {default}: ...");
+	CPrintToChatAll("{gold}Omega{default}: We will avenge Guln.");
+	CPrintToChatAll("{purple}Vhxis{default}: The three of us must prevail, for our comrade.");
 }
 public void Rogue_Crystalized_Warped_Subjects_Repeat()
 {
