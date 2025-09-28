@@ -51,13 +51,21 @@ void Rogue_Rift_PackPriceMulti(int &cost)
 public void Rogue_Curse_RiftSwarm(bool enable)
 {
 	CurseSwarm = enable;
-	Rogue_GiveNamedArtifact("Rift of Swarming", true);
+	if(enable)
+	{
+		if(!Rogue_HasNamedArtifact("Rift of Swarming"))
+			Rogue_GiveNamedArtifact("Rift of Swarming", true);
+	}
+	else
+	{
+		if(Rogue_HasNamedArtifact("Rift of Swarming"))
+			Rogue_RemoveNamedArtifact("Rift of Swarming");
+	}
 }
 
 public void Rogue_Curse_RiftEmpty(bool enable)
 {
 	CurseEmpty = enable;
-	Rogue_GiveNamedArtifact("Rift of Swarming", true);
 }
 
 public void Rogue_Curse_RiftDarkness(bool enable)
@@ -824,7 +832,8 @@ public void Rogue_RiftWarp_Enemy(int entity)
 			{
 				fl_Extra_MeleeArmor[entity] /= 3.0;
 				fl_Extra_RangedArmor[entity] /= 3.0;
-				fl_Extra_Speed[entity] *= 1.2;
+				fl_Extra_Speed[entity] *= 1.1;
+				fl_Extra_Damage[entity] *= 1.1;
 			}
 		}
 	}

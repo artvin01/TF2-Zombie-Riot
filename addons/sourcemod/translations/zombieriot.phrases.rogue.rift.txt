@@ -907,7 +907,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
