@@ -115,7 +115,7 @@ public void Shadowing_Darkness_Boss_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Shadowing Darkness, The Ruler");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_shadowing_darkness_boss");
-	strcopy(data.Icon, sizeof(data.Icon), "shadowing_darkness");
+	strcopy(data.Icon, sizeof(data.Icon), "shadowingdarkness");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = 0;
