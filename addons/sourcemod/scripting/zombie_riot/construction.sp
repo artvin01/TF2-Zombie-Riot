@@ -193,7 +193,6 @@ void Construction_MapStart()
 
 void Construction_SetupVote(KeyValues kv)
 {
-	mp_disable_respawn_times.BoolValue = false;
 	PrecacheMvMIconCustom("classic_defend", false);
 
 	InConstMode = true;
@@ -506,11 +505,10 @@ void Construction_Start()
 		}
 	}
 
-
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
-
+	mp_disable_respawn_times.BoolValue = false;
 
 	int length = ResourceList.Length;
 	if(length)
@@ -849,6 +847,9 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 	AttackRef = EntIndexToEntRef(target);
 	AttackHardcore = bonuses;
 
+	if(type > 1)
+		mp_disable_respawn_times = true;
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
 	KeyValues kv = new KeyValues("Waves");
@@ -869,6 +870,8 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
+		mp_disable_respawn_times.BoolValue = false;
+		
 		int cash = 300;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
