@@ -1608,7 +1608,7 @@
 
 	"Crystalized Warped Subjects Title"
 	{
-		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
+		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesn't seem wise, you feel at unease."
 	}
 	"Crystalized Warped Subjects Title Repeat"
 	{
@@ -1656,7 +1656,7 @@
 	}
 	"Book of Weakness Desc"
 	{
-		"en"	"A book explaining detailed weakpots of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
+		"en"	"A book explaining detailed weakpoints of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
 	}
 	"Book of Weakness Conclusion"
 	{
