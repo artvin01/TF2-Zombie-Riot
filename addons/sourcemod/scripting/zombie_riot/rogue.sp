@@ -169,6 +169,15 @@ enum struct Stage
 				LogError("\"%s\" wave set does not exist", this.WaveSet);
 				this.WaveSet[0] = 0;
 			}
+			else
+			{
+				KeyValues wavekv = new KeyValues("Waves");
+
+				wavekv.ImportFromFile(buffer);
+				Waves_CacheWaves(wavekv, true);
+
+				delete wavekv;
+			}
 		}
 
 		kv.GetString("key", this.ArtifactKey, 64);
