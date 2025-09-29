@@ -193,6 +193,7 @@ void Construction_MapStart()
 
 void Construction_SetupVote(KeyValues kv)
 {
+	mp_disable_respawn_times.BoolValue = false;
 	PrecacheMvMIconCustom("classic_defend", false);
 
 	InConstMode = true;

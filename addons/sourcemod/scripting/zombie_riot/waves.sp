@@ -560,6 +560,8 @@ void Waves_MapEnd()
 
 void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 {
+	mp_disable_respawn_times.BoolValue = true;
+
 	if(!modifierOnly)
 	{
 		Cooldown = 0.0;

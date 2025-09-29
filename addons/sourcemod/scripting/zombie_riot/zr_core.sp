@@ -372,6 +372,7 @@ float Armor_regen_delay[MAXPLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 //ConVar CvarSvRollagle; // sv_rollangle
+ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
