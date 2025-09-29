@@ -26,14 +26,14 @@ public void Rogue_HandSupport_Weapon(int weapon)
 	if(i_WeaponArchetype[weapon] == Archetype_Medical || i_WeaponArchetype[weapon] == Archetype_Buffer)
 	{
 		// +10 hp regen
-		Attributes_SetAdd(weapon, 57, 10.0);
+		Attributes_SetAdd(weapon, 57, 25.0);
 	}
 }
 
 public void Rogue_Item_HealingSalve(int weapon)
 {
-	// +1 hp regen
-	Attributes_SetAdd(weapon, 57, 1.0);
+	// +10 hp regen
+	Attributes_SetAdd(weapon, 57, 10.0);
 }
 public void Rogue_HandFlame_Weapon(int entity)
 {

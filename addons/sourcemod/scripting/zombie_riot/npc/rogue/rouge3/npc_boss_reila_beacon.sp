@@ -51,7 +51,7 @@ void ReilaBeacon_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila's Beacon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beacon_reila");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "reilaconstruct");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
@@ -181,7 +181,6 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 		{
 			f_AttackSpeedNpcIncrease[npc.m_iTargetAlly] *= 0.9;
 			fl_Extra_Speed[npc.m_iTargetAlly] 			*= 1.05;
-			fl_Extra_Damage[npc.m_iTargetAlly] 			*= 1.25;
 			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Very Defensive Backup", 0.6);
 			RaidModeScaling *= 1.25;
 		}

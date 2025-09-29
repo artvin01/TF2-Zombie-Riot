@@ -241,7 +241,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 		
 	if((GetEntityFlags(client) & FL_DUCKING))
 	{
-		CPrintToChat(client, "{green} %T", PerkNames_Recieved[PrintChatid], client);
+		CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
 		ClotInteract(client, -1, npc);
 		return;
@@ -303,5 +303,5 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 	Barracks_UpdateAllEntityUpgrades(client);
-	CPrintToChat(client, "{green} %T", PerkNames_Recieved[PrintChatid], client);
+	CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
 }

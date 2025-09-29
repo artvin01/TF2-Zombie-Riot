@@ -386,7 +386,13 @@ methodmap TwirlFollower < CClotBody
 		if(Rogue_Mode())
 		{
 			// Cutscene Here
-			if(Rogue_Theme() == BlueParadox)
+			if(Construction_Mode())
+			{
+				npc.Speech("We need to hold out here.");
+				npc.SpeechDelay(5.0, "The mercs already went into the Curtain.");
+				npc.SpeechDelay(10.0, "Hopefully they can stop this from the inside.");
+			}
+			else if(Rogue_Theme() == BlueParadox)
 			{
 				npc.Speech("Thanks bob, ill need your help for this!");
 				npc.SpeechDelay(5.0, "This might actually be serious for once","...");
@@ -397,18 +403,6 @@ methodmap TwirlFollower < CClotBody
 				npc.Speech("i'll acompany you for the rifts.");
 				npc.SpeechDelay(5.0, "I won't stay for long.","...");
 			}
-		/*
-			for(int i; i < i_MaxcountNpcTotal; i++)
-			{
-				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-				if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
-				{
-					view_as<CClotBody>(other).m_bDissapearOnDeath = true;
-					SmiteNpcToDeath(other);
-					break;
-				}
-			}
-		*/
 		}
 		return npc;
 	}

@@ -3045,7 +3045,12 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 	CurrentUmbral += change;
 	
 	if(CurrentUmbral < 1)
+	{
+		
+		if(!Rogue_HasNamedArtifact("Umbral Hate"))
+			Rogue_GiveNamedArtifact("Umbral Hate");
 		CurrentUmbral = 0;
+	}
 
 	Waves_UpdateMvMStats();
 

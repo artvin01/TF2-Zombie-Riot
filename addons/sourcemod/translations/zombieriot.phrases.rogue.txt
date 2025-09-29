@@ -1409,8 +1409,7 @@
 	}
 	"Healing Salve Desc"
 	{
-		"en"	"Some salve for your wounds.\n- {green}+1 health regen."
-		"ru"	"Немного мази для ваших ран.\n- +1 к восстановлению здоровья."
+		"en"	"Some salve for your wounds.\n- {green}+10 health regen."
 	}
 	"Steel Razor"
 	{
@@ -1700,7 +1699,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons gain +10 health regen."
+		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons gain +25 health regen."
 	}
 	"Hand of Trapmaster"
 	{

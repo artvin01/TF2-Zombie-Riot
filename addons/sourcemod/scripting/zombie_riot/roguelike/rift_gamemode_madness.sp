@@ -263,7 +263,7 @@ public void StartZombieRiotFrame()
 		int spawnNpc = Citizen_SpawnAtPoint("", client);
 		Citizen npc = view_as<Citizen>(spawnNpc);
 		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
-		fl_Extra_Damage[spawnNpc] *= 5.0;
+		fl_Extra_Damage[spawnNpc] *= 2.5;
 		//5x dmg
 		
 		// We select rebel types/roles ourselves because we want no builders and less medics than Citizen_SetRandomRole offers
@@ -359,10 +359,10 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 	 StrEqual(c_NpcName[entity], " ♫ SENSAL ♫", false) ||
 	  StrEqual(c_NpcName[entity], " Haxton", false))
 	{
-		fl_Extra_Speed[entity] 				*= 1.55;
-		fl_Extra_Damage[entity] 			*= 2.5;
-		f_AttackSpeedNpcIncrease[entity] 	*= 0.4;
-		RogueHelp_BodyHealth(entity, null, 				   3.0);
+		fl_Extra_Speed[entity] 				*= 1.35;
+		fl_Extra_Damage[entity] 			*= 2.0;
+		f_AttackSpeedNpcIncrease[entity] 	*= 0.6;
+		RogueHelp_BodyHealth(entity, null, 				   2.0);
 	}
 	else
 	{

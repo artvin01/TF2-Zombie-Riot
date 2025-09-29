@@ -723,20 +723,20 @@ static Action contact_throw_omega_entity(int client)
 						int thrower = i_TankThrewThis[client];
 						if (!IsIn_HitDetectionCooldown(client,entity,TankThrowLogic) && entity != client && thrower != entity && IsValidEnemy(thrower, entity))
 						{		
-							float damageToEntityHit = ReturnEntityMaxHealth(entity) * 0.1;
-							float damageToEntityThrown = ReturnEntityMaxHealth(client) * 0.05;
+							float damageToEntityHit = ReturnEntityMaxHealth(entity) * 0.01;
+							float damageToEntityThrown = ReturnEntityMaxHealth(client) * 0.005;
 							
-							if (damageToEntityHit > 25000.0)
-								damageToEntityHit = 25000.0;
+							if (damageToEntityHit > 250.0)
+								damageToEntityHit = 250.0;
 							
-							if (damageToEntityThrown > 25000.0)
-								damageToEntityThrown = 25000.0;
+							if (damageToEntityThrown > 250.0)
+								damageToEntityThrown = 250.0;
 							
 							if (ShouldNpcDealBonusDamage(entity))
 								damageToEntityHit *= 4.0;
 							
-							SDKHooks_TakeDamage(entity, thrower, thrower, damageToEntityHit, DMG_GENERIC, -1, NULL_VECTOR, targPos);
-							SDKHooks_TakeDamage(client, thrower, thrower, damageToEntityThrown, DMG_GENERIC, -1, NULL_VECTOR, targPos);
+							SDKHooks_TakeDamage(entity, thrower, thrower, damageToEntityHit, DMG_CLUB, -1, NULL_VECTOR, targPos);
+							SDKHooks_TakeDamage(client, thrower, thrower, damageToEntityThrown, DMG_CLUB, -1, NULL_VECTOR, targPos);
 							
 							EmitSoundToAll("weapons/physcannon/energy_disintegrate5.wav", entity, SNDCHAN_STATIC, 80, _, 0.8);
 							Set_HitDetectionCooldown(client,entity,FAR_FUTURE,TankThrowLogic);

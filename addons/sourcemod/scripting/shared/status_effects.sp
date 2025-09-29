@@ -1382,7 +1382,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
 				{
 #if defined ZR
-					//They have never recieved a buff yet.
+					//They have never received a buff yet.
 					if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 					{
 						view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;
@@ -1409,7 +1409,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
 				{
 #if defined ZR				
-					//They have never recieved a buff yet.
+					//They have never received a buff yet.
 					if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 					{
 						view_as<Citizen>(entity).m_fGunFirerate *= 1.0 / (BuffRevert);
@@ -1433,7 +1433,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 				if(!(FlagAttackspeedLogicInternal & BUFF_ATTACKSPEED_BUFF_DISABLE))
 				{
 #if defined ZR
-					//They have never recieved a buff yet.
+					//They have never received a buff yet.
 					if(Citizen_IsIt(entity) || view_as<BarrackBody>(entity).OwnerUserId)
 					{
 						view_as<Citizen>(entity).m_fGunFirerate *= BuffOriginal;

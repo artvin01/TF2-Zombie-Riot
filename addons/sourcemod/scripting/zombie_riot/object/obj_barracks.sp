@@ -30,8 +30,8 @@ int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
 
 //defined inside obj_shared
 //int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
-int i_EntityRecievedUpgrades[MAXENTITIES];
-bool i_BuildingRecievedHordings[MAXENTITIES];
+int i_EntityReceivedUpgrades[MAXENTITIES];
+bool i_BuildingReceivedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
 
 //Barracks smith things:
@@ -1284,12 +1284,12 @@ void Barracks_BuildingThink(int entity)
 			int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(Building_hordings))
 			{
-				if(!i_BuildingRecievedHordings[Building_hordings]) 
+				if(!i_BuildingReceivedHordings[Building_hordings]) 
 				{
 					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hOwnerEntity") == client/* && Building_Constructed[Building_hordings]*/)
 					{
 						SetBuildingMaxHealth(Building_hordings, 1.25, false, true);
-						i_BuildingRecievedHordings[Building_hordings] = true;					
+						i_BuildingReceivedHordings[Building_hordings] = true;					
 					}
 				}
 			}
@@ -1298,11 +1298,11 @@ void Barracks_BuildingThink(int entity)
 	BarrackVillager player = view_as<BarrackVillager>(client);
 	if(IsValidEntity(player.m_iTowerLinked))
 	{
-		if(!i_BuildingRecievedHordings[player.m_iTowerLinked]) 
+		if(!i_BuildingReceivedHordings[player.m_iTowerLinked]) 
 		{
 			SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) * 1.25));
 			SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) * 1.25));
-			i_BuildingRecievedHordings[player.m_iTowerLinked] = true;
+			i_BuildingReceivedHordings[player.m_iTowerLinked] = true;
 		}			
 	}
 }	
@@ -1320,12 +1320,12 @@ void BuildingHordingsRemoval(int entity)
 				int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 				if(IsValidEntity(Building_hordings))
 				{
-					if(i_BuildingRecievedHordings[Building_hordings])
+					if(i_BuildingReceivedHordings[Building_hordings])
 					{
 						if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hOwnerEntity") == owner)
 						{
 							SetBuildingMaxHealth(Building_hordings, 1.25, true, false);
-							i_BuildingRecievedHordings[Building_hordings] = false;					
+							i_BuildingReceivedHordings[Building_hordings] = false;					
 						}
 					}
 				}
@@ -1334,11 +1334,11 @@ void BuildingHordingsRemoval(int entity)
 		BarrackVillager player = view_as<BarrackVillager>(owner);
 		if(IsValidEntity(player.m_iTowerLinked))
 		{
-			if(i_BuildingRecievedHordings[player.m_iTowerLinked]) 
+			if(i_BuildingReceivedHordings[player.m_iTowerLinked]) 
 			{
 				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) / 1.25));
 				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) / 1.25));
-				i_BuildingRecievedHordings[player.m_iTowerLinked] = false;
+				i_BuildingReceivedHordings[player.m_iTowerLinked] = false;
 			}			
 		}
 	}

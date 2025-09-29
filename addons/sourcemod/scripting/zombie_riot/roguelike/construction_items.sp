@@ -228,6 +228,12 @@ static Action Timer_DialogueNewEnd(Handle timer, int part)
 	return Plugin_Continue;
 }
 
+public void Construction_Barney_Collect()
+{
+	Citizen_SpawnAtPoint("b");
+	SpawnRebel();
+}
+
 public void Construction_Rebel_Collect()
 {
 	SpawnRebel();
@@ -255,6 +261,12 @@ public void GiveCash_Base3()
 	CurrentCash += 3000;
 	GlobalExtraCash += 3000;
 	CPrintToChatAll("%t", "Gained Material", 3000, "Cash");
+}
+public void GiveCash_Base4()
+{
+	CurrentCash += 5000;
+	GlobalExtraCash += 5000;
+	CPrintToChatAll("%t", "Gained Material", 5000, "Cash");
 }
 static void SpawnRebel(const char[] data = "")
 {

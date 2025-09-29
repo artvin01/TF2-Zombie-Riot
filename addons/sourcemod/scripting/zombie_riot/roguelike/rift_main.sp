@@ -952,16 +952,22 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 	}
 }
 
+
 public void Rogue_Rift2_Collect(int entity)
 {
-	Rogue_AddUmbral(-25, true);
+	Rogue_AddUmbral(-15, false);
 
+	/*
 	if(!Rogue_HasNamedArtifact("Reila Assistance"))
 		Rogue_GiveNamedArtifact("Reila Assistance", true);
+	*/
+	
 }
 
 public void Rogue_BookOfNature_Collect(int entity)
 {
+	if(Rogue_HasNamedArtifact("Umbral Hate"))
+		Rogue_RemoveNamedArtifact("Umbral Hate");
 	Rogue_AddUmbral(40);
 	BookOfNature = true;
 }
@@ -1025,7 +1031,8 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	bool GiveRes = false;
 	if(victim <= MaxClients)
 	{
-		if(Armor_Charge[victim] < 1)
+		//less then 0
+		if(Armor_Charge[victim] < 0)
 		{
 			GiveRes = true;
 		}

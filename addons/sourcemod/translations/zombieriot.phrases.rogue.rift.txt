@@ -444,6 +444,14 @@
 	{
 		"en"	"Reila joins you."
 	}
+	"Umbral Hate"
+	{
+		"en"	"Umbral Hate"
+	}
+	"Umbral Hate Desc"
+	{
+		"en"	"{crimson}You have seriously pissed off the Umbrals, they are enraged and always appear now, you cannot gain umbral affinity anymore."
+	}
 	"Gift of Remembrance"
 	{
 		"en"	"Gift of Remembrance"
@@ -466,7 +474,7 @@
 	}
 	"Magic Box Desc"
 	{
-		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 12"
+		"en"	"This ordinary looking box devours souls.\n{green}Obtain 4 Australium Ingots and Umbral Affinity increased by 6"
 	}
 	"Old Fan"
 	{
@@ -562,7 +570,7 @@
 	}
 	"Painful Happiness Desc"
 	{
-		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -15％"
+		"en"	"He enters the unknown, his weight is gone.\n{green}Enemy health and movement speed decreased by -9％"
 	}
 	"Gravity Defying Machine"
 	{
@@ -618,7 +626,7 @@
 	}
 	"Unripe Yearning Desc"
 	{
-		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies recieve +0.5％ max health per Umbral Affinity"
+		"en"	"These incomplete thoughts cling to their creators.\n{green}Allies receive +0.4％ max health per Umbral Affinity"
 	}
 	"Eye of Fortune"
 	{
@@ -634,7 +642,7 @@
 	}
 	"Thoughts Catcher Desc"
 	{
-		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 2 Australium Ingots when consuming an item at a Gateway"
+		"en"	"Sorting truth from falsehood takes time, and some ideas will invariably scatter.\n{green}Obtain 3 Australium Ingots when consuming an item at a Gateway"
 	}
 	"Scales of Avarice"
 	{
@@ -682,7 +690,7 @@
 	}
 	"Soul Binding Bone Desc"
 	{
-		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies recieve +0.5％ damage per Umbral Affinity"
+		"en"	"The elder Ruinan made a cage with his own bones to seal his kin within.\n{green}Allies receive +0.4％ damage per Umbral Affinity"
 	}
 
 	"Pots In The Ground"
@@ -1015,6 +1023,10 @@
 	"Bob's Wrath Desc"
 	{
 		"en"	"{crimson}He's pissed."
+	}
+	"Familiar Faces"
+	{
+		"en"	"Familiar Faces"
 	}
 	"Crystalized Warped Subjects"
 	{
@@ -1477,13 +1489,13 @@
 	{
 		"en" "⚠ Slaves Controlled"
 	}
-	"Bladedance Surviors"
+	"Bladedance survivors"
 	{
-		"en" "⚔ Bladedance Surviors"
+		"en" "⚔ Bladedance survivors"
 	}
-	"Bladedance Surviors!"
+	"Bladedance survivors!"
 	{
-		"en" "⚠ Bladedance Surviors"
+		"en" "⚠ Bladedance survivors"
 	}
 	"Rescued W.F. Soldiers"
 	{
@@ -1632,7 +1644,7 @@
 	}
 	"Book of Nature Desc"
 	{
-		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore."
+		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
 	}
 	"Book of Nature Conclusion"
 	{
@@ -1662,6 +1674,67 @@
 	{
 		"en"	"Experiencing cold water made your brace the book of true evils.\n{green}Gain all perks at once."
 	}
+	"Hold Out Normal"
+	{
+		"en"	"Standard"
+	}
+	"Hold Out Normal Desc"
+	{
+		"en"	"The rifts keep coming, stand out ground. Mercenaries are already heading out, we're the second line of defense."
+	}
+	"Hold Out Creep"
+	{
+		"en"	"Void Creep"
+	}
+	"Hold Out Creep Desc"
+	{
+		"en"	"Our base doesn't look so good, but it's what we got.\n{red}Harder base position"
+	}
+	"Hold Out Hard"
+	{
+		"en"	"Chaos Intrusion"
+	}
+	"Hold Out Hard Desc"
+	{
+		"en"	"They keep coming.\n{red}Rare enemies have a higher chance of appearing and applies Chaos Intrusion difficulty"
+	}
+	"Hold Out Hard Creep"
+	{
+		"en"	"Death World"
+	}
+	"Hold Out Hard Creep Desc"
+	{
+		"en"	"Biters.\n{red}Harder base position, rare enemies have a higher chance of appearing, applies Chaos Intrusion difficulty"
+	}
+	"Hold Out Survive"
+	{
+		"en"	"Hang in there! The mercenaries are coming back!"
+	}
+	"Expidonsa Barracks"
+	{
+		"en"	"Expidonsa Barracks"
+	}
+	"Expidonsa Barracks Desc"
+	{
+		"en"	"A construct that summons Expidonsa allies."
+	}
+	"Ruina Barracks"
+	{
+		"en"	"Ruina Barracks"
+	}
+	"Ruina Barracks Desc"
+	{
+		"en"	"A construct that summons Ruina allies."
+	}
+	"Ally Assistance"
+	{
+		"en"	"Ally Assistance"
+	}
+	"Ally Assistance Desc"
+	{
+		"en"	"Unlocks a new construct and new allies will join you."
+	}
+
 	"Omega and Vhxis Title"
 	{
 		"en"	"You spot two people in the distance that appear to be eerily familiar to you, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"
@@ -1670,8 +1743,16 @@
 	{
 		"en"	"Omega's Assistance"
 	}
+	"Omega's Assistance Desc"
+	{
+		"en"	"{yellow} ''Huh.''"
+	}
 	"Vhxis' Assistance"
 	{
 		"en"	"Vhxis' Assistance"
+	}
+	"Vhxis' Assistance Desc" 
+	{
+		"en"	"{purple} ''You again?''"
 	}
 }

@@ -24,6 +24,11 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 	{
 		case 0:
 		{
+			int Disable = ReturnFoundEntityViaName("computer_off_stage");
+			if(IsValidEntity(Disable))
+				AcceptEntityInput(Disable, "Disable");
+
+			CreateTimer(15.0, Timer_Rogue_DisableScreenAgain);
 			Rogue_GiveNamedArtifact("Gamemode History", true);
 			GiveCash(5000);
 		}
@@ -34,7 +39,13 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 		}
 	}
 }
-
+static Action Timer_Rogue_DisableScreenAgain(Handle timer, int progress)
+{
+	int Disable = ReturnFoundEntityViaName("computer_off_stage");
+	if(IsValidEntity(Disable))
+		AcceptEntityInput(Disable, "Enable");
+	return Plugin_Stop;
+}
 public float Rogue_Encounter_PoisonWater()
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_PoisonWater, "Poison Water Lore");
@@ -994,6 +1005,7 @@ public float Rogue_Encounter_OmegaVhxis()
 	return 25.0;
 }
 
+static int OmegaYappingVhxisGroupChat;
 
 public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 {
@@ -1005,17 +1017,19 @@ public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
 			Rogue_GiveNamedArtifact("Omega's Assistance");
 			Rogue_GiveNamedArtifact("Vhxis' Assistance");
 			Rogue_StartThisBattle(5.0);
+			OmegaYappingVhxisGroupChat = GetRandomInt(0,1);
+			CreateTimer(5.0, Timer_OmegaVhxisYapping, 1);
 		}
 		case 1:
 		{
 			CPrintToChatAll("%t", "Omega and Vhxis Decline Conlusion");
-			GiveCash(5000);
+			GiveCash(8000);
 		}
 	}
 }
 static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 {
-	switch(GetRandomInt(0,1))
+	switch(OmegaYappingVhxisGroupChat)
 	{
 		case 0:
 		{
@@ -1072,7 +1086,6 @@ static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
 			}
 		}
 	}
-	Rogue_SetProgressTime(10.0, false);
-	CreateTimer(4.5, Timer_OmegaVhxisYapping, progress + 2);
+	CreateTimer(6.5, Timer_OmegaVhxisYapping, progress + 1);
 	return Plugin_Continue;
 }

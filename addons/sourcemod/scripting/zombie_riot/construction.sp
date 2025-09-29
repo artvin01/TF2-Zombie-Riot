@@ -578,7 +578,6 @@ void Construction_Start()
 	}
 
 	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
-	Citizen_SpawnAtPoint("b");
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -749,7 +748,7 @@ static Action Timer_StartAttackWave(Handle timer)
 		bonusRisk = GetRiskAttackInfo(CurrentRisk, attack);
 	}
 
-	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding(), bonusRisk);
+	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, Construction_GetBaseBuilding(), bonusRisk);
 
 	if(CurrentAttacks > MaxAttacks)
 	{
@@ -1048,7 +1047,7 @@ bool Construction_BlockSpawner(const char[] name)
 	return CurrentSpawnName[0] && !StrEqual(CurrentSpawnName, name, false);
 }
 
-static int GetBaseBuilding()
+int Construction_GetBaseBuilding()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
@@ -1062,7 +1061,7 @@ static int GetBaseBuilding()
 
 static int RiskBonusFromDistance(const float pos[3])
 {
-	int entity = GetBaseBuilding();
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0;
 	
@@ -1104,6 +1103,9 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 		}
 	}
 
+	if(type > 1)
+		list.Sort(Sort_Random, Sort_Integer);
+
 	float pos2[3];
 	float distance = FAR_FUTURE;
 	int length = list.Length;
@@ -1129,6 +1131,9 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 			distance = dist;
+
+			if(type > 1)
+				break;
 		}
 	}
 
@@ -1549,7 +1554,7 @@ public float InterMusic_ConstructBase(int client)
 	if(LastMann)
 		return 1.0;
 	
-	int entity = GetBaseBuilding();
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0.0;
 	
@@ -1891,5 +1896,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-
-
+//#include "roguelike/construction_construction.sp"

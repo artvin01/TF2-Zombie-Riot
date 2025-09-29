@@ -195,7 +195,7 @@ methodmap GentleSpy < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "{redsunsecond}I Monster");
 		Music_SetRaidMusic(music);
 
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		npc.m_iAttacksTillReload = 0;

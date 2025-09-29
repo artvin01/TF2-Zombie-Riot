@@ -1114,7 +1114,7 @@ stock void NpcTalker_Wave15Talk(Talker npc)
 				}
 			}
 		}
-		case 3:
+		case 5:
 		{
 			switch(i_TalkDelayCheck)
 			{

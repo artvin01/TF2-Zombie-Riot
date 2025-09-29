@@ -25,6 +25,7 @@ enum struct Enemy
 	char Spawn[64];
 	float ExtraThinkSpeed;
 	char CustomName[64];
+	int Priority;
 }
 
 enum struct MiniBoss
@@ -100,7 +101,7 @@ enum struct Vote
 	bool Locked;
 }
 
-static ArrayList Enemies;
+static ArrayList Enemies[2];
 static ArrayList Rounds;
 static ArrayList Voting;
 static ArrayList VotingMods;
@@ -1179,6 +1180,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
 						enemy.ExtraThinkSpeed = kv.GetFloat("extra_thinkspeed", 1.0);
 						wave.DangerLevel = kv.GetNum("danger_level");
+						enemy.Priority = kv.GetNum("priority");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
@@ -1720,8 +1722,8 @@ public Action Waves_EndVote(Handle timer, float time)
 
 void Waves_ClearWaves()
 {
-	delete Enemies;
-	Enemies = new ArrayList(sizeof(Enemy));
+	delete Enemies[0];
+	delete Enemies[1];
 }
 
 void Waves_Progress(bool donotAdvanceRound = false)
@@ -2789,7 +2791,7 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 
 bool Waves_IsEmpty()
 {
-	if(!Enemies || !Enemies.Length)
+	if((!Enemies[0] || !Enemies[0].Length) && (!Enemies[1] || !Enemies[1].Length))
 		return true;
 	
 	return false;
@@ -2797,37 +2799,53 @@ bool Waves_IsEmpty()
 
 bool Waves_GetNextEnemy(Enemy enemy)
 {
-	if(!Enemies)
-		return false;
-	
-	int length = Enemies.Length;
-	if(!length)
-		return false;
-	
-	Enemies.GetArray(length - 1, enemy);
-	Enemies.Erase(length - 1);
-	return true;
+	for(int i = sizeof(Enemies) - 1; i >= 0; i--)
+	{
+		if(!Enemies[i])
+			continue;
+		
+		int length = Enemies[i].Length;
+		if(!length)
+			continue;
+		
+		Enemies[i].GetArray(length - 1, enemy);
+		Enemies[i].Erase(length - 1);
+		return true;
+	}
+
+	return false;
 }
 
-void Waves_AddNextEnemy(const Enemy enemy, bool random = false)
+void Waves_AddNextEnemy(const Enemy enemy, bool random = false, int prio = -1)
 {
-	if(Enemies)
+	int slot = prio;
+	if(slot < 0)
 	{
-		if(random)
-		{
-			int index = Enemies.Length;
-			if(index > 1)
-			{
-				index = GetURandomInt() % index;
-
-				Enemies.ShiftUp(index);
-				Enemies.SetArray(index, enemy);
-				return;
-			}
-		}
-		
-		Enemies.PushArray(enemy);
+		slot = enemy.Priority;
+		if(slot < 0)
+			slot = 0;
 	}
+
+	if(slot >= sizeof(Enemies))
+		slot = sizeof(Enemies) - 1;
+	
+	if(!Enemies[slot])
+		Enemies[slot] = new ArrayList(sizeof(Enemy));
+	
+	if(random)
+	{
+		int index = Enemies[slot].Length;
+		if(index > 1)
+		{
+			index = GetURandomInt() % index;
+
+			Enemies[slot].ShiftUp(index);
+			Enemies[slot].SetArray(index, enemy);
+			return;
+		}
+	}
+	
+	Enemies[slot].PushArray(enemy);
 }
 
 void Waves_ClearWave()
@@ -2846,8 +2864,11 @@ void Waves_ClearWave()
 
 void Waves_ClearWaveCurrentSpawningEnemies()
 {
-	if(Enemies)
-		Zombies_Currently_Still_Ongoing -= Enemies.Length;
+	if(Enemies[0])
+		Zombies_Currently_Still_Ongoing -= Enemies[0].Length;
+	
+	if(Enemies[1])
+		Zombies_Currently_Still_Ongoing -= Enemies[1].Length;
 	
 	Waves_ClearWaves();
 }
@@ -3416,13 +3437,13 @@ static void UpdateMvMStatsFrame()
 		}
 	}
 
-	if(Enemies)
+	if(Enemies[0])
 	{
 		static Enemy enemy;
-		int length = Enemies.Length;
+		int length = Enemies[0].Length;
 		for(int a; a < length; a++)
 		{
-			Enemies.GetArray(a, enemy);
+			Enemies[0].GetArray(a, enemy);
 			cashLeft += enemy.Credits;
 			activecount++;
 

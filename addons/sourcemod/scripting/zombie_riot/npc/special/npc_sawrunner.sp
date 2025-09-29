@@ -167,7 +167,7 @@ methodmap SawRunner < CClotBody
 		
 		npc.StartPathing();
 		b_HideHealth[npc.index] = true;
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 		//counts as a static npc, means it wont count towards NPC limit.
 		AddNpcToAliveList(npc.index, 1);
 		

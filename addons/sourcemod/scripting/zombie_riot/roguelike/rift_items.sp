@@ -338,8 +338,8 @@ public void Rogue_Sculpture_Enemy(int entity)
 
 public void Rogue_PainfulHappy_Enemy(int entity)
 {
-	RogueHelp_BodyHealth(entity, null, 0.85);
-	fl_Extra_Speed[entity] /= 1.15;
+	RogueHelp_BodyHealth(entity, null, 0.91);
+	fl_Extra_Speed[entity] /= 1.09;
 }
 
 public void Rogue_GravityDefying_Enemy(int entity)
@@ -399,7 +399,7 @@ public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
 			if(lastTarget != highestPlayer)
 			{
 				lastTarget = highestPlayer;
-				CPrintToChatAll("{red}%N {crimson}recieved +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
+				CPrintToChatAll("{red}%N {crimson}received +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
 			}
 		}
 	}
@@ -431,7 +431,7 @@ public void Rogue_ChaosStar_TakeDamage(int victim, int &attacker, int &inflictor
 
 public void Rogue_Yearning_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
+	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 static bool EyeOfFortune;
@@ -462,7 +462,7 @@ public void Rogue_ThoughtsCatcher_Collect()
 void Rogue_Rift_GatewaySent()
 {
 	if(ThoughtsCatcher)
-		Rogue_AddIngots(20);
+		Rogue_AddIngots(3);
 }
 
 public void Rogue_ThoughtsCatcher_Remove()
@@ -510,12 +510,12 @@ public void Rogue_SurvivorParty_Collect()
 
 public void Rogue_SoulBindingBone_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.005));
+	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 public void Rogue_SoulBindingBone_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.005));
+	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
@@ -724,7 +724,18 @@ public void Rogue_Omega_Collect()
 		}
 	}
 }
-
+public void Rogue_Omega_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+}
 public void Rogue_Vhxis_Collect()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
@@ -743,6 +754,18 @@ public void Rogue_Vhxis_Collect()
 			float flPos[3];
 			GetClientAbsOrigin(client_summon, flPos);
 			NPC_CreateByName("npc_vhxis_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+public void Rogue_Vhxis_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
 			break;
 		}
 	}
