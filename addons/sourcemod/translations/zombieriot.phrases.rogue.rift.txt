@@ -618,7 +618,7 @@
 	}
 	"Fearless Blade Desc"
 	{
-		"en"	"Ziberia artilleries, Ruina casters, and Victorian Knights all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
+		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 	}
 	"Chaos Star"
 	{
