@@ -63,7 +63,7 @@ static const char g_GhostSounds[][] = {
 
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
-static float CustomMinMaxBoundingBoxDimensions[3] = { 42.0, 42.0, 144.0 };
+static float CustomMinMaxBoundingBoxDimensions[3] = { 42.0, 42.0, 82.0 }; // Same height as players but fatter
 
 void HHH_OnMapStart_NPC()
 {
@@ -123,6 +123,12 @@ methodmap HHH < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+	
+	property float m_flSpawnMessageTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
 	
 	property bool m_bIsGhost
@@ -202,6 +208,7 @@ methodmap HHH < CClotBody
 	}
 	public void PlayGhostSound() 
 	{
+		StopSound(this.index, SNDCHAN_STATIC, g_PreGhostSounds[0]);
 		EmitSoundToAll(g_GhostSounds[GetRandomInt(0, sizeof(g_GhostSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 75);
 	}
 	public void FixCollisionBox()
@@ -274,6 +281,7 @@ methodmap HHH < CClotBody
 		npc.m_bIsGhost = false;
 		npc.m_bIsTeleporting = false;
 		npc.m_iChanged_WalkCycle = 0;
+		npc.m_flSpawnMessageTime = gameTime + 0.5;
 		npc.m_flNextTeleport = gameTime + 15.0; //Teleport Prepare
 		npc.m_flNextGhostMode = gameTime + 35.0; //Ghost Form
 		
@@ -287,7 +295,7 @@ methodmap HHH < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
 		
 		int color[4] = { 155, 0, 155, 50 };
-		SetCustomFog(color, color, 400.0, 100.0, 0.9);
+		SetCustomFog(FogType_NPC, color, color, 400.0, 100.0, 0.9);
 		
 		npc.PlaySpawnSound();
 		
@@ -324,7 +332,7 @@ public void HHH_ClotThink(int iNPC)
 	if (npc.m_flNextFuckingDEATH)
 	{
 		if (npc.m_flNextFuckingDEATH < gameTime)
-			SmiteNpcToDeath(npc.index);
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		
 		return;
 	}
@@ -333,6 +341,12 @@ public void HHH_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
+	}
+	
+	if (npc.m_flSpawnMessageTime && npc.m_flSpawnMessageTime < gameTime)
+	{
+		npc.m_flSpawnMessageTime = 0.0;
+		VSHJokeSpawnMessage(npc.index, "Horseless Headless Horsemann");
 	}
 	
 	// Prepare for Teleport
@@ -629,7 +643,7 @@ public void HHH_NPCDeath(int entity)
 	}
 
 	//Remove fog on death
-	ClearCustomFog();
+	ClearCustomFog(FogType_NPC);
 
 	//Remove laser on death
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
@@ -703,5 +717,20 @@ void HHHSelfDefense(HHH npc, float gameTime, int target, float distance)
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
+	}
+}
+
+void VSHJokeSpawnMessage(int iNPC, const char[] boss)
+{
+	char message[128], prettyHealth[32];
+	int health = ReturnEntityMaxHealth(iNPC);
+	IntToString(health, prettyHealth, sizeof(prettyHealth));
+	ThousandString(prettyHealth, sizeof(prettyHealth));
+	FormatEx(message, sizeof(message), "%s has spawned as %s with %s health!", c_NpcName[iNPC], boss, prettyHealth);
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client) && !IsFakeClient(client))
+			ShowGameText(client, "leaderboard_streak", 0, message);
 	}
 }

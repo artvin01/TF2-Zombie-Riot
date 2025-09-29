@@ -228,7 +228,7 @@ methodmap LostKnight < CClotBody
 		}
 		
 		int color[4] = { 10, 10, 10, 255 };
-		SetCustomFog(color, color, 10.0, 125.0, 0.825);
+		SetCustomFog(FogType_NPC, color, color, 10.0, 125.0, 0.825);
 
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
@@ -462,7 +462,7 @@ public void LostKnight_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 
-	ClearCustomFog();
+	ClearCustomFog(FogType_NPC);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
