@@ -521,7 +521,7 @@ public void Shadowing_DarknessWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh dont worry, I won't kill you\nI'll make sure that you understand what beauty this place is.");	
+	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh don't worry, I won't kill you\nI'll make sure that you understand what beauty this place is.");	
 }
 
 public void Shadowing_Darkness_Boss_ClotThink(int iNPC)

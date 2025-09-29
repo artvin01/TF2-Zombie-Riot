@@ -14,7 +14,7 @@
 	}
 	"Umbral Forgiveness"
 	{
-		"en"		"{green}Umbrals Seemingly dont mind whatever you just did."
+		"en"		"{green}Umbrals Seemingly don't mind whatever you just did."
 	}
 	"Bad Umbral"
 	{
