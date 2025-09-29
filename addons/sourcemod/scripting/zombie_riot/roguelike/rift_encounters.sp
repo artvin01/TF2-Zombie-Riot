@@ -659,6 +659,9 @@ public void Rogue_Crystalized_Warped_Subjects_Repeat()
 }
 public float Rogue_Encounter_Rogue3Gamble()
 {
+	int Disable = ReturnFoundEntityViaName("gambling_machine");
+	if(IsValidEntity(Disable))
+		AcceptEntityInput(Disable, "Enable");
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rogue3Gamble, "Rouge3 Gamble Lore");
 	Vote vote;
 
@@ -701,6 +704,9 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 				Rogue_AddUmbral(15);
 			
 			PrintToChatAll("%t", "Rouge3 Gamble Lore 2");
+			int Disable = ReturnFoundEntityViaName("gambling_machine");
+			if(IsValidEntity(Disable))
+				AcceptEntityInput(Disable, "Disable");
 		}
 		case 1:
 		{
@@ -736,6 +742,10 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 				{
 					Rogue_AddIngots(26);
 					PrintToChatAll("%t", "Rouge3 Gamble Lore 1d");
+					
+					int Disable = ReturnFoundEntityViaName("gambling_machine");
+					if(IsValidEntity(Disable))
+						AcceptEntityInput(Disable, "Disable");
 					return;
 				}
 				default:

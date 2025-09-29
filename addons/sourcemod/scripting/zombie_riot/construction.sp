@@ -848,7 +848,7 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 	AttackHardcore = bonuses;
 
 	if(type > 1)
-		mp_disable_respawn_times = true;
+		mp_disable_respawn_times.BoolValue = true;
 
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
