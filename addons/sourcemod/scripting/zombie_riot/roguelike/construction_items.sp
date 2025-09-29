@@ -116,6 +116,12 @@ public void Construction_HA_Ally(int entity, StringMap map)
 	RogueHelp_BodyAPSD(entity, map, 0.95);
 }
 
+// Health++
+public void Construction_H0_Ally(int entity, StringMap map)
+{
+	RogueHelp_BodyHealth(entity, map, 1.1);
+}
+
 // Speed+
 public void Construction_S_Ally(int entity, StringMap map)
 {
@@ -139,6 +145,10 @@ public void Construction_SH_Ally(int entity, StringMap map)
 public void Construction_D_Ally(int entity, StringMap map)
 {
 	RogueHelp_BodyDamage(entity, map, 1.05);
+}
+public void Construction_D0_Ally(int entity, StringMap map)
+{
+	RogueHelp_BodyDamage(entity, map, 1.1);
 }
 public void Construction_D_Weapon(int entity)
 {
@@ -267,6 +277,12 @@ public void GiveCash_Base4()
 	CurrentCash += 5000;
 	GlobalExtraCash += 5000;
 	CPrintToChatAll("%t", "Gained Material", 5000, "Cash");
+}
+public void GiveCash_2000()
+{
+	CurrentCash += 2000;
+	GlobalExtraCash += 2000;
+	CPrintToChatAll("%t", "Gained Material", 2000, "Cash");
 }
 static void SpawnRebel(const char[] data = "")
 {

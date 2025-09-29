@@ -101,7 +101,7 @@ public void Construction_RiftAllies_Collect()
 		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(other != -1 && IsEntityAlive(other))
 		{
-			if(i_NpcInternalId[other] == TwirlFollower_ID() || i_NpcInternalId[other] == SensalFollower_ID())
+			if(i_NpcInternalId[other] == TwirlFollower_ID() || i_NpcInternalId[other] == SensalFollower_ID() || i_NpcInternalId[other] == OverlordFollower_ID())
 				SmiteNpcToDeath(other);
 		}
 	}

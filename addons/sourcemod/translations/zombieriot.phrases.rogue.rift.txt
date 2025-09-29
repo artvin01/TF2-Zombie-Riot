@@ -821,6 +821,14 @@
 	{
 		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity reduced by 1 after a battle"
 	}
+	"Consume Voidstone"
+	{
+		"en"	"'Consume' Voidstone"
+	}
+	"Consume Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +5％ max health"
+	}
 	"Reclaim"
 	{
 		"en"	"Reclaim ◈"
@@ -828,6 +836,14 @@
 	"Reclaim Desc"
 	{
 		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity reduced by 2 after a battle"
+	}
+	"Reclaim Voidstone"
+	{
+		"en"	"'Reclaim' Voidstone"
+	}
+	"Reclaim Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +10％ max health"
 	}
 	"Pillage"
 	{
@@ -837,6 +853,14 @@
 	{
 		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity reduced by 1 after a battle"
 	}
+	"Pillage Voidstone"
+	{
+		"en"	"'Pillage' Voidstone"
+	}
+	"Pillage Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +5％ damage"
+	}
 	"Invasion"
 	{
 		"en"	"Invasion ◈"
@@ -844,6 +868,14 @@
 	"Invasion Desc"
 	{
 		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity reduced by 2 after a battle"
+	}
+	"Invasion Voidstone"
+	{
+		"en"	"'Invasion' Voidstone"
+	}
+	"Invasion Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +10％ damage"
 	}
 	"Rise and Fall"
 	{
@@ -861,6 +893,14 @@
 	{
 		"en"	"{green}Umbral Affinity increased by 6 while held\n{purple}Obtain 2000 cash when consumed"
 	}
+	"Words Voidstone"
+	{
+		"en"	"'Words' Voidstone"
+	}
+	"Words Voidstone Desc"
+	{
+		"en"	"{green}Obtain 2000 cash"
+	}
 	"Assembly"
 	{
 		"en"	"Assembly ◈"
@@ -868,6 +908,14 @@
 	"Assembly Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 3000 cash when consumed"
+	}
+	"Assembly Voidstone"
+	{
+		"en"	"'Assembly' Voidstone"
+	}
+	"Assembly Voidstone Desc"
+	{
+		"en"	"{green}Obtain 3000 cash when consumed"
 	}
 	"Catastrophe"
 	{
@@ -891,7 +939,7 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 5 while holding\n{purple}A special encounter can appear when consumed"
+		"en"	"{red}Umbral Affinity reduced by 5 while holding\n{purple}A special encounter will appear when entering the final chapter when consumed"
 	}
 	"Wordless Deed"
 	{
@@ -1741,6 +1789,14 @@
 	"Ally Assistance Desc"
 	{
 		"en"	"Unlocks a new construct and new allies will join you."
+	}
+	"Crystal Polisher"
+	{
+		"en"	"Crystal Polisher"
+	}
+	"Crystal Polisher Desc"
+	{
+		"en"	"A construct that processes crystals into voidstones."
 	}
 
 	"Omega and Vhxis Title"
