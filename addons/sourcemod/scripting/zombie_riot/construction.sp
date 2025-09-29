@@ -1059,8 +1059,9 @@ int Construction_GetBaseBuilding()
 	return -1;
 }
 
-static int RiskBonusFromDistance(const float pos[3])
+static stock int RiskBonusFromDistance(const float pos[3])
 {
+/*
 	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0;
@@ -1069,10 +1070,9 @@ static int RiskBonusFromDistance(const float pos[3])
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
 
 	if(GetVectorDistance(pos, pos2, true) > 100000000.0)	// 10000 HU
-		return 0;
-//		return 1;
+		return 1;
 
-//keep it at 0	
+keep it at 0*/
 	return 0;
 	//return RoundFloat(GetVectorDistance(pos, pos2, true) / 400000000.0 * float(HighestRisk));
 }

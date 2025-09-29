@@ -106,6 +106,7 @@ void NPC_ConfigSetup()
 	ObjectDispenser_MapStart();
 	ObjectFurniture_MapStart();
 	ObjectHelper_MapStart();
+	ObjectVoidstone_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -1428,6 +1429,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_furniture.sp"
 #include "object/construction/obj_const_supply.sp"
 #include "object/construction/obj_const_helper.sp"
+#include "object/construction/obj_const_voidstone.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
