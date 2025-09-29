@@ -48,11 +48,19 @@
 	}
 	"Rift of Swarms Desc"
 	{
-		"en"	"{red}Increases the amount of enemies by +20％"
+		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 	}
 	"Rift of Swarms Lore"
 	{
 		"en"	"A rift opens as it spews out more enemies in your path."
+	}
+	"Rift of Swarming"
+	{
+		"en"	"Rift of Swarming"
+	}
+	"Rift of Swarming Desc"
+	{
+		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
 	}
 	"Rift of Emptiness"
 	{
@@ -108,7 +116,7 @@
 	}
 	"Rift of Malice Desc"
 	{
-		"en"	"{red}Entering battles reduces Umbral Affinity by 3."
+		"en"	"{red}Entering battles reduces Umbral Affinity by 2."
 	}
 	"Rift of Malice Lore"
 	{
@@ -290,7 +298,7 @@
 	}
 	"Hand of Rumble Desc"
 	{
-		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal full explosion damage to all targets and no target limit"
+		"en"	"Strikes land true, the earth trembles.\n{green}''Artillery'' weapons deal their damage again after 3 seconds as blast damage."
 	}
 	"Hand of Choker"
 	{
@@ -506,7 +514,7 @@
 	}
 	"Scout's Scope Desc"
 	{
-		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +100％ the further the target is"
+		"en"	"Lock on, aim, fire, and destroy the enemy's will to resist.\n{green}Ally damage dealt increases by up to +50％ the further the target is"
 	}
 	"Lakebed Aegis"
 	{
@@ -610,7 +618,7 @@
 	}
 	"Fearless Blade Desc"
 	{
-		"en"	"Ziberia artilleries, Ruina casters, and Victorian Knights all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
+		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 	}
 	"Chaos Star"
 	{
@@ -803,7 +811,7 @@
 	}
 	"Witchcraft Desc"
 	{
-		"en"	"{green}Umbral Affinity increased by 2 after a battle {red}but enemies have +10％ health and damage while held"
+		"en"	"{green}Umbral Affinity increased by 3 after a battle {red}but enemies have +10％ health and damage while held"
 	}
 	"Consume"
 	{
@@ -813,6 +821,14 @@
 	{
 		"en"	"{green}Allies have +8％ max health {red}but Umbral Affinity reduced by 1 after a battle"
 	}
+	"Consume Voidstone"
+	{
+		"en"	"'Consume' Voidstone"
+	}
+	"Consume Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +5％ max health"
+	}
 	"Reclaim"
 	{
 		"en"	"Reclaim ◈"
@@ -820,6 +836,14 @@
 	"Reclaim Desc"
 	{
 		"en"	"{green}Allies have +15％ max health {red}but Umbral Affinity reduced by 2 after a battle"
+	}
+	"Reclaim Voidstone"
+	{
+		"en"	"'Reclaim' Voidstone"
+	}
+	"Reclaim Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +10％ max health"
 	}
 	"Pillage"
 	{
@@ -829,6 +853,14 @@
 	{
 		"en"	"{green}Allies have +5％ damage {red}but Umbral Affinity reduced by 1 after a battle"
 	}
+	"Pillage Voidstone"
+	{
+		"en"	"'Pillage' Voidstone"
+	}
+	"Pillage Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +5％ damage"
+	}
 	"Invasion"
 	{
 		"en"	"Invasion ◈"
@@ -836,6 +868,14 @@
 	"Invasion Desc"
 	{
 		"en"	"{green}Allies have +10％ damage {red}but Umbral Affinity reduced by 2 after a battle"
+	}
+	"Invasion Voidstone"
+	{
+		"en"	"'Invasion' Voidstone"
+	}
+	"Invasion Voidstone Desc"
+	{
+		"en"	"{green}Allies receive +10％ damage"
 	}
 	"Rise and Fall"
 	{
@@ -853,6 +893,14 @@
 	{
 		"en"	"{green}Umbral Affinity increased by 6 while held\n{purple}Obtain 2000 cash when consumed"
 	}
+	"Words Voidstone"
+	{
+		"en"	"'Words' Voidstone"
+	}
+	"Words Voidstone Desc"
+	{
+		"en"	"{green}Obtain 2000 cash"
+	}
 	"Assembly"
 	{
 		"en"	"Assembly ◈"
@@ -860,6 +908,14 @@
 	"Assembly Desc"
 	{
 		"en"	"{green}Umbral Affinity increased by 9 while held\n{purple}Obtain 3000 cash when consumed"
+	}
+	"Assembly Voidstone"
+	{
+		"en"	"'Assembly' Voidstone"
+	}
+	"Assembly Voidstone Desc"
+	{
+		"en"	"{green}Obtain 3000 cash when consumed"
 	}
 	"Catastrophe"
 	{
@@ -883,7 +939,7 @@
 	}
 	"Fractured Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 5 while obtained and reaching a new chapter\n{purple}A special encounter can appear when consumed"
+		"en"	"{red}Umbral Affinity reduced by 5 while holding\n{purple}A special encounter will appear when entering the final chapter when consumed"
 	}
 	"Wordless Deed"
 	{
@@ -899,7 +955,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{yellow}All Umbrals Gain 10％ speed, 20％ damage and 20％ health while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 20％ damage and 20％ health while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
@@ -1733,6 +1789,14 @@
 	"Ally Assistance Desc"
 	{
 		"en"	"Unlocks a new construct and new allies will join you."
+	}
+	"Crystal Polisher"
+	{
+		"en"	"Crystal Polisher"
+	}
+	"Crystal Polisher Desc"
+	{
+		"en"	"A construct that processes crystals into voidstones."
 	}
 
 	"Omega and Vhxis Title"

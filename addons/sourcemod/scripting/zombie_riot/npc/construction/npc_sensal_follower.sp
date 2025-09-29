@@ -121,7 +121,7 @@ methodmap SensalFollower < CClotBody
 		
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 0);
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 		npc.m_bDissapearOnDeath = true;
 
@@ -133,10 +133,10 @@ methodmap SensalFollower < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		npc.Anger = true;
+		npc.Anger = false;
 		npc.m_bScalesWithWaves = true;
 
-		int skin = 0;
+		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 	//	Weapon

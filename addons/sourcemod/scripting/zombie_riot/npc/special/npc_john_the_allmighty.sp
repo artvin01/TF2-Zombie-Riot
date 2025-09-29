@@ -166,7 +166,7 @@ methodmap JohnTheAllmighty < CClotBody
 		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;
 		
 		int color[4] = { 15, 15, 15, 240 };
-		SetCustomFog(color, color, 205.0, 400.0, 0.992);
+		SetCustomFog(FogType_NPC, color, color, 205.0, 400.0, 0.992);
 
 		switch(GetRandomInt(1, 4))
 		{
@@ -347,7 +347,7 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-	ClearCustomFog();
+	ClearCustomFog(FogType_NPC);
 }
 
 void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float distance)

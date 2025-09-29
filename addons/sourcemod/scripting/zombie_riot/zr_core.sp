@@ -372,6 +372,7 @@ float Armor_regen_delay[MAXPLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 //ConVar CvarSvRollagle; // sv_rollangle
+ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
@@ -938,6 +939,11 @@ void ZR_MapStart()
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
 	RoundStartTime = FAR_FUTURE;
+	
+	for (int i = 0; i < FogType_COUNT; i++)
+		CustomFogEntity[i] = INVALID_ENT_REFERENCE;
+	
+	MapFogEntity = INVALID_ENT_REFERENCE;
 }
 
 public void OnMapInit()
@@ -3120,21 +3126,14 @@ public Action Command_SetTeamCustom(int client, int args)
 	return Plugin_Handled;
 }
 
-void SetCustomFog(int color1[4], int color2[4], float start, float end, float maxDensity, bool overwriteOtherCustomFog = false)
+void SetCustomFog(int fogType, int color1[4], int color2[4], float start, float end, float maxDensity, int blend = 2, bool overwriteOtherCustomFog = false)
 {
-	if (!overwriteOtherCustomFog && IsValidEntity(CustomFogEntity))
+	if (!overwriteOtherCustomFog && IsValidEntity(CustomFogEntity[fogType]))
 		return;
 	
-	if (CustomFogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity = EntRefToEntIndex(CustomFogEntity);
-		if (entity > MaxClients)
-			RemoveEntity(entity);
-		
-		CustomFogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog(fogType);
 	
-	if (MapFogEntity == INVALID_ENT_REFERENCE)
+	if (!IsValidEntity(MapFogEntity))
 	{
 		int fog = INVALID_ENT_REFERENCE;
 		int mapFog = INVALID_ENT_REFERENCE;
@@ -3142,6 +3141,11 @@ void SetCustomFog(int color1[4], int color2[4], float start, float end, float ma
 		while ((fog = FindEntityByClassname(fog, "env_fog_controller")) != INVALID_ENT_REFERENCE)
 		{
 			// Store the last known fog
+			char buffer[64];
+			GetEntPropString(fog, Prop_Data, "m_iName", buffer, sizeof(buffer));
+			if (StrContains(buffer, "rpg_fortress_envfog") == 0)
+				continue;
+			
 			mapFog = fog;
 			count++;
 		}
@@ -3166,12 +3170,21 @@ void SetCustomFog(int color1[4], int color2[4], float start, float end, float ma
 					continue;
 				
 				int controller = GetEntPropEnt(client, Prop_Send, "m_PlayerFog.m_hCtrl");
+				if (controller == EntRefToEntIndex(ActiveFogEntity))
+				{
+					// Players are using a custom fog so this is pointless. gg
+					lastController = INVALID_ENT_REFERENCE;
+					break;
+				}
+				
 				if (lastController != INVALID_ENT_REFERENCE && lastController != controller)
 				{
 					// Players have different controllers. Give up. It's over
 					lastController = INVALID_ENT_REFERENCE;
 					break;
 				}
+				
+				lastController = controller;
 			}
 			
 			MapFogEntity = lastController;
@@ -3181,8 +3194,10 @@ void SetCustomFog(int color1[4], int color2[4], float start, float end, float ma
 	int entity = CreateEntityByName("env_fog_controller");
 	if (entity != INVALID_ENT_REFERENCE)
 	{
-		char buffer[32];
-		DispatchKeyValue(entity, "fogblend", "2");
+		char buffer[64];
+		
+		FormatEx(buffer, sizeof(buffer), "rpg_fortress_envfog_%d", entity);
+		DispatchKeyValue(entity, "targetname", buffer);
 		
 		FormatEx(buffer, sizeof(buffer), "%d %d %d %d", color1[0], color1[1], color1[2], color1[3]);
 		DispatchKeyValue(entity, "fogcolor", buffer);
@@ -3193,62 +3208,89 @@ void SetCustomFog(int color1[4], int color2[4], float start, float end, float ma
 		DispatchKeyValueFloat(entity, "fogstart", start);
 		DispatchKeyValueFloat(entity, "fogend", end);
 		DispatchKeyValueFloat(entity, "fogmaxdensity", maxDensity);
-
-		DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
+		
+		DispatchKeyValueInt(entity, "fogblend", blend);
+		
 		DispatchKeyValue(entity, "fogenable", "1");
 		DispatchKeyValue(entity, "spawnflags", "1");
 		DispatchKeyValue(entity, "fogRadial", "1");
 		DispatchSpawn(entity);
 		AcceptEntityInput(entity, "TurnOn");
 
-		CustomFogEntity = EntIndexToEntRef(entity);
+		CustomFogEntity[fogType] = EntIndexToEntRef(entity);
+		UpdateCustomFog();
+	}
+}
 
-		for (int client = 1; client <= MaxClients; client++)
+void ClearCustomFog(int fogType)
+{
+	int entity = EntRefToEntIndex(CustomFogEntity[fogType]);
+	if (IsValidEntity(entity))
+		RemoveEntity(entity);
+	
+	CustomFogEntity[fogType] = INVALID_ENT_REFERENCE;
+	UpdateCustomFog();
+}
+
+void UpdateCustomFog()
+{
+	int fogToUse = INVALID_ENT_REFERENCE;
+	if (IsValidEntity(CustomFogEntity[FogType_NPC]))
+	{
+		fogToUse = CustomFogEntity[FogType_NPC];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(CustomFogEntity[FogType_Wave]))
+	{
+		fogToUse = CustomFogEntity[FogType_Wave];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(MapFogEntity))
+	{
+		fogToUse = MapFogEntity;
+		
+		// This is cleared because it's only used when necessary (maps might have multiple entities)
+		MapFogEntity = INVALID_ENT_REFERENCE;
+		ActiveFogEntity = INVALID_ENT_REFERENCE;
+	}
+	else
+	{
+		ActiveFogEntity = INVALID_ENT_REFERENCE;
+	}
+	
+	if (fogToUse == INVALID_ENT_REFERENCE)
+		return;
+	
+	int entity = EntRefToEntIndex(fogToUse);
+	char buffer[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+	if (buffer[0] == '\0')
+	{
+		// Give the controller a name if it has none. If it has no name, there's no point in changing it back
+		buffer = "mapfog";
+		SetEntPropString(entity, Prop_Data, "m_iName", buffer);
+	}
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client))
 		{
-			if (IsClientInGame(client))
-			{
-				SetVariantString("rpg_fortress_envfog");
-				AcceptEntityInput(client, "SetFogController");
-			}
+			SetVariantString(buffer);
+			AcceptEntityInput(client, "SetFogController");
 		}
 	}
 }
 
-void ClearCustomFog()
+void ShowCustomFogToClient(int client)
 {
-	if (CustomFogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity = EntRefToEntIndex(CustomFogEntity);
-		if (entity > MaxClients)
-			RemoveEntity(entity);
-		
-		CustomFogEntity = INVALID_ENT_REFERENCE;
-	}
+	if (!IsValidEntity(ActiveFogEntity))
+		return;
 	
-	if (MapFogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity = EntRefToEntIndex(MapFogEntity);
-		if (entity > MaxClients)
-		{
-			char buffer[64];
-			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-			if (buffer[0] == '\0')
-			{
-				// Give the controller a name if it has none. If it has no name, there's no point in changing it back
-				buffer = "mapfog";
-				SetEntPropString(entity, Prop_Data, "m_iName", buffer);
-			}
-			
-			for (int client = 1; client <= MaxClients; client++)
-			{
-				if (IsClientInGame(client))
-				{
-					SetVariantString(buffer);
-					AcceptEntityInput(client, "SetFogController");
-				}
-			}
-		}
-		
-		MapFogEntity = INVALID_ENT_REFERENCE;
-	}
+	// This is used on late joins for specific clients, use UpdateCustomFog to update globally
+	int entity = EntRefToEntIndex(ActiveFogEntity);
+	char buffer[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer)); // By this point, this should always have a name
+	
+	SetVariantString(buffer);
+	AcceptEntityInput(client, "SetFogController");
 }

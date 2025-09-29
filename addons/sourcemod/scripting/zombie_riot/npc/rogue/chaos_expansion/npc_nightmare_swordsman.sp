@@ -258,7 +258,7 @@ methodmap NightmareSwordsman < CClotBody
 		npc.m_flBackupDespawnEmergency = GetGameTime() + TimeUntillOver;
 		
 		int color[4] = { 15, 15, 15, 255 };
-		SetCustomFog(color, color, 305.0, 500.0, 1.0);
+		SetCustomFog(FogType_NPC, color, color, 305.0, 500.0, 1.0);
 		
 		for(int client1 = 1; client1 <= MaxClients; client1++)
 		{
@@ -667,7 +667,7 @@ public void NightmareSwordsman_NPCDeath(int entity)
 	if(EntIndexToEntRef(entity) == RaidBossActive)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 
-	ClearCustomFog();
+	ClearCustomFog(FogType_NPC);
 }
 
 

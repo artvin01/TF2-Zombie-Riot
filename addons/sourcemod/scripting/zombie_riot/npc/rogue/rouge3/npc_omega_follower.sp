@@ -269,6 +269,11 @@ methodmap OmegaFollower < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	public OmegaFollower(float vecPos[3], float vecAng[3],int ally)
 	{
@@ -300,6 +305,10 @@ methodmap OmegaFollower < CClotBody
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
+		if(Rogue_HasNamedArtifact("Bob's Wrath"))
+		{
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+		}
 		
 		i_GrabbedThis[npc.index] = INVALID_ENT_REFERENCE;
 
@@ -332,6 +341,19 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 	switch (npc.m_iGrabState)
 	{
 		case OMEGA_FOLLOWER_GRAB_STATE_HOLDING:
@@ -555,15 +577,18 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	if (i_NpcIsABuilding[target])
 		return false;
 	
+	float duration = OMEGA_FOLLOWER_HOLD_TIME / f_AttackSpeedNpcIncrease[npc.index];
+	
 	i_GrabbedThis[npc.index] = EntIndexToEntRef(target);
-	b_DoNotUnStuck[target] = true;
 	npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_HOLDING;
-	npc.m_flNextGrab = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
-	f_TankGrabbedStandStill[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
-	f_NoUnstuckVariousReasons[target] = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME;
+	npc.m_flNextGrab = GetGameTime(npc.index) + duration;
+	
+	f_TankGrabbedStandStill[target] = FAR_FUTURE;
+	f_NoUnstuckVariousReasons[target] = FAR_FUTURE;
+	b_DoNotUnStuck[target] = true;
 	b_NoGravity[target] = true;
-	FreezeNpcInTime(target, OMEGA_FOLLOWER_HOLD_TIME + 0.5, true);
-	ApplyStatusEffect(target, target, "Intangible", OMEGA_FOLLOWER_HOLD_TIME + 0.5);
+	FreezeNpcInTime(target, duration + 0.5, true);
+	ApplyStatusEffect(target, target, "Intangible", duration + 0.5);
 	
 	npc.StopPathing();
 	npc.m_bisWalking = false;
@@ -580,7 +605,7 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	
 	npc.PlayPickupSound();
 	
-	npc.m_flStandStill = GetGameTime(npc.index) + OMEGA_FOLLOWER_HOLD_TIME + 0.5;
+	npc.m_flStandStill = GetGameTime(npc.index) + duration + 0.5;
 	return true;
 }
 
@@ -646,6 +671,8 @@ static void OmegaFollower_ThrowTarget(OmegaFollower npc)
 		
 		f3_NpcSavePos[npc.index] = view_as<float>({ 0.0, 0.0, 0.0 });
 		
+		f_TankGrabbedStandStill[target] = 0.0;
+		f_NoUnstuckVariousReasons[target] = 0.0;
 		i_TankAntiStuck[target] = EntIndexToEntRef(npc.index);
 		b_DoNotUnStuck[target] = false;
 		b_NoGravity[target] = false;

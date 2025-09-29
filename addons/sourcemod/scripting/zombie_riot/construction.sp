@@ -505,11 +505,10 @@ void Construction_Start()
 		}
 	}
 
-
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
-
+	mp_disable_respawn_times.BoolValue = false;
 
 	int length = ResourceList.Length;
 	if(length)
@@ -848,6 +847,9 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 	AttackRef = EntIndexToEntRef(target);
 	AttackHardcore = bonuses;
 
+	if(type > 1)
+		mp_disable_respawn_times.BoolValue = true;
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
 	KeyValues kv = new KeyValues("Waves");
@@ -868,6 +870,8 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
+		mp_disable_respawn_times.BoolValue = false;
+		
 		int cash = 300;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
@@ -1058,9 +1062,10 @@ int Construction_GetBaseBuilding()
 
 	return -1;
 }
-
-static int RiskBonusFromDistance(const float pos[3])
+/*
+static stock int RiskBonusFromDistance(const float pos[3])
 {
+
 	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0;
@@ -1069,14 +1074,14 @@ static int RiskBonusFromDistance(const float pos[3])
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
 
 	if(GetVectorDistance(pos, pos2, true) > 100000000.0)	// 10000 HU
-		return 0;
-//		return 1;
+		return 1;
 
-//keep it at 0	
+keep it at 0
 	return 0;
 	//return RoundFloat(GetVectorDistance(pos, pos2, true) / 400000000.0 * float(HighestRisk));
 }
 
+*/
 static bool UpdateValidSpawners(const float pos1[3], int type)
 {
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos1, 1000.0);
@@ -1387,7 +1392,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 					
 					float pos[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
-					int risk = CurrentRisk + RiskBonusFromDistance(pos);
+					int risk = CurrentRisk/* + RiskBonusFromDistance(pos)*/;
 
 					AttackInfo attack;
 					if(!StartAttack(attack, 1, npc.index, GetRiskAttackInfo(risk, attack)))

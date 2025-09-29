@@ -51,6 +51,16 @@ void Rogue_Rift_PackPriceMulti(int &cost)
 public void Rogue_Curse_RiftSwarm(bool enable)
 {
 	CurseSwarm = enable;
+	if(enable)
+	{
+		if(!Rogue_HasNamedArtifact("Rift of Swarming"))
+			Rogue_GiveNamedArtifact("Rift of Swarming", true);
+	}
+	else
+	{
+		if(Rogue_HasNamedArtifact("Rift of Swarming"))
+			Rogue_RemoveNamedArtifact("Rift of Swarming");
+	}
 }
 
 public void Rogue_Curse_RiftEmpty(bool enable)
@@ -98,6 +108,10 @@ public void Rogue_Curse_RiftExpansion(bool enable)
 	}
 }
 
+public void Rogue_RiftOfSwarming_StageStart()
+{
+	Rogue_AddUmbral(2);
+}
 public void Rogue_RiftExpansion_StageStart()
 {
 	float pos[3], ang[3];
@@ -149,7 +163,7 @@ public void Rogue_Curse_RiftMalice(bool enable)
 
 public void Rogue_RiftMalice_StageStart()
 {
-	Rogue_AddUmbral(-3);
+	Rogue_AddUmbral(-2);
 }
 
 public float Rogue_Encounter_RiftShop()
@@ -818,7 +832,8 @@ public void Rogue_RiftWarp_Enemy(int entity)
 			{
 				fl_Extra_MeleeArmor[entity] /= 3.0;
 				fl_Extra_RangedArmor[entity] /= 3.0;
-				fl_Extra_Speed[entity] *= 1.2;
+				fl_Extra_Speed[entity] *= 1.1;
+				fl_Extra_Damage[entity] *= 1.1;
 			}
 		}
 	}
@@ -853,6 +868,7 @@ public void Rogue_StoneFractured_FloorChange()
 
 public void Rogue_StoneFractured_Remove()
 {
+	Rogue_AddUmbral(5, true);
 	if(!Rogue_HasNamedArtifact("Rift of Fractured") && !Rogue_HasNamedArtifact("The Shadow"))
 	{
 		Rogue_GiveNamedArtifact("Rift of Fractured");

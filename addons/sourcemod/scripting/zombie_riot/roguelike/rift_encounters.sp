@@ -526,10 +526,14 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		case 1:
 		{
 			CPrintToChatAll("{white}Bob {default}: I... This is just... {crimson} Guln...");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: Guln... shit.");
 		}
 		case 2:
 		{
 			CPrintToChatAll("{snow}Bob leans his head onto Guln's now crystalized head.");
+			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default}: He was a naive boy, but this... this was unprecedented.");
 		}
 		case 3:
 		{
@@ -538,6 +542,8 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		case 4:
 		{
 			CPrintToChatAll("{snow}He Breaks apart the foundation holding the crystal body and picks him up.");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: What's on that paper, Bob?");
 		}
 		case 5:
 		{
@@ -552,18 +558,23 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 				}
 			}
 			Rogue_RemoveNamedArtifact("Bob's Assistance");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: Bob, where are you going?");
 		}
 		case 6:
 		{
-			CPrintToChatAll("{snow}You find a note reading:");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} find a note reading:");
+			else
+				CPrintToChatAll("{snow}You find a note reading:");
 		}
 		case 7:
 		{
-			CPrintToChatAll("{grey}Guln, were surrounded, i'm surrounded, the umbral forces are too much. We have to run, just RUN, ill hold them off.");
+			CPrintToChatAll("{grey}Guln, we're surrounded, I'm surrounded, the umbral forces are too much. We have to run, just RUN, I'll hold them off.");
 		}
 		case 8:
 		{
-			CPrintToChatAll("{grey}Keep the ones i made for you close, they might save you, but i fear that were done for.");
+			CPrintToChatAll("{grey}Keep the ones I made for you close, they might save you, but I fear that we're done for.");
 		}
 		case 9:
 		{
@@ -571,15 +582,17 @@ static Action Timer_AdvanceGulnLore(Handle timer, int progress)
 		}
 		case 10:
 		{
-			CPrintToChatAll("{grey}Yknow, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
+			CPrintToChatAll("{grey}Y'know, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
 		}
 		case 11:
 		{
-			CPrintToChatAll("{grey}if, no, WHEN we meet again, ill make sure to hand you that cake recipe you loved so much from me okay?");
+			CPrintToChatAll("{grey}if, no, WHEN we meet again, I'll make sure to hand you that cake recipe you loved so much from me okay?");
 		}
 		case 12:
 		{
 			CPrintToChatAll("{crimson}-Bladedance");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} seem visibly agitated.");
 		}
 		case 13:
 		{
@@ -615,6 +628,11 @@ public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
 
 	CPrintToChatAll("{snow}Bob returns.");
 	CPrintToChatAll("{white}Bob {default}: ...");
+	if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+	{
+		CPrintToChatAll("{gold}Omega{default}: We will avenge Guln.");
+		CPrintToChatAll("{purple}Vhxis{default}: The three of us must prevail, for our comrade.");
+	}
 }
 public void Rogue_Crystalized_Warped_Subjects_Repeat()
 {
@@ -641,6 +659,9 @@ public void Rogue_Crystalized_Warped_Subjects_Repeat()
 }
 public float Rogue_Encounter_Rogue3Gamble()
 {
+	int Disable = ReturnFoundEntityViaName("gambling_machine");
+	if(IsValidEntity(Disable))
+		AcceptEntityInput(Disable, "Enable");
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rogue3Gamble, "Rouge3 Gamble Lore");
 	Vote vote;
 
@@ -683,6 +704,9 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 				Rogue_AddUmbral(15);
 			
 			PrintToChatAll("%t", "Rouge3 Gamble Lore 2");
+			int Disable = ReturnFoundEntityViaName("gambling_machine");
+			if(IsValidEntity(Disable))
+				AcceptEntityInput(Disable, "Disable");
 		}
 		case 1:
 		{
@@ -718,6 +742,10 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 				{
 					Rogue_AddIngots(26);
 					PrintToChatAll("%t", "Rouge3 Gamble Lore 1d");
+					
+					int Disable = ReturnFoundEntityViaName("gambling_machine");
+					if(IsValidEntity(Disable))
+						AcceptEntityInput(Disable, "Disable");
 					return;
 				}
 				default:

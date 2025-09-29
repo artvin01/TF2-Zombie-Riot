@@ -110,15 +110,47 @@ static void RogueHand2RapidFrame(DataPack pack)
 	delete pack;
 }
 
-public void Rogue_Hand2Artillery_Weapon(int entity)
+bool DontTriggerArtillery = false;
+public void Rogue_Hand2Artillery_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
-	if(i_WeaponArchetype[entity] == Archetype_Artillery)
+	if(DontTriggerArtillery)
+		return;
+	
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Artillery)
 	{
-		Attributes_Set(entity, Attrib_MaxEnemiesHitExplode, 100.0);
-		Attributes_Set(entity, Attrib_ExplosionFalloff, 1.0);
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			DataPack pack;
+			CreateDataTimer(3.0, Rogue_Hand2Atillery_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(attacker));
+			pack.WriteCell(EntIndexToEntRef(victim));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteFloat(damage);
+		}
 	}
 }
 
+static Action Rogue_Hand2Atillery_Timer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int attacker = EntRefToEntIndex(pack.ReadCell());
+	int victim = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	float damageDeal = pack.ReadFloat();
+	if(IsClientInGame(attacker) && IsPlayerAlive(attacker) && IsEntityAlive(victim))
+	{
+		int WeaponDo = -1;
+		if(IsValidEntity(weapon))
+			WeaponDo = weapon;
+		DontTriggerArtillery = true;
+		float chargerPos[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		SDKHooks_TakeDamage(victim, attacker, attacker, damageDeal , DMG_BLAST, WeaponDo, NULL_VECTOR, chargerPos);
+		DontTriggerArtillery = false;
+	}
+
+	return Plugin_Stop;
+}
 public void Rogue_Hand2Defender_Enemy(int entity)
 {
 	ApplyStatusEffect(entity, entity, "Fisticuffs", 999.9);
@@ -225,6 +257,10 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 
 public void Rogue_Hand2Lord_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if((damagetype & DMG_BLAST))
+	{
+		return;
+	}
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Lord)
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED) && !(GetURandomInt() % 4))

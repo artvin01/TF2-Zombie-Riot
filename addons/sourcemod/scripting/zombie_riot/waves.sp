@@ -81,9 +81,9 @@ enum struct Round
 	
 	char Skyname[64];
 	bool FogChange;
-	char FogBlend[32];
-	char FogColor1[32];
-	char FogColor2[32];
+	int FogBlend;
+	int FogColor1[4];
+	int FogColor2[4];
 	float FogStart;
 	float FogEnd;
 	float FogDesnity;
@@ -207,7 +207,6 @@ void Waves_MapStart()
 {
 	delete Rounds;
 	delete g_AllocPooledStringCache;
-	CustomFogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	NoBarneySpawn = true;
@@ -233,11 +232,7 @@ int Waves_MapSeed()
 
 void Waves_PlayerSpawn(int client)
 {
-	if(CustomFogEntity != INVALID_ENT_REFERENCE)
-	{
-		SetVariantString("rpg_fortress_envfog");
-		AcceptEntityInput(client, "SetFogController");
-	}
+	ShowCustomFogToClient(client);
 }
 
 float MinibossScalingReturn()
@@ -565,6 +560,8 @@ void Waves_MapEnd()
 
 void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 {
+	mp_disable_respawn_times.BoolValue = true;
+
 	if(!modifierOnly)
 	{
 		Cooldown = 0.0;
@@ -1123,12 +1120,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.FogChange = view_as<bool>(kv.GetNum("fogenable"));
 		if(round.FogChange)
 		{
-			kv.GetString("fogblend", round.FogBlend, sizeof(round.FogBlend));
-			kv.GetString("fogcolor", round.FogColor1, sizeof(round.FogColor1));
-			kv.GetString("fogcolor2", round.FogColor2, sizeof(round.FogColor2));
+			kv.GetColor("fogcolor", round.FogColor1[0], round.FogColor1[1], round.FogColor1[2], round.FogColor1[3]);
+			kv.GetColor("fogcolor2", round.FogColor2[0], round.FogColor2[1], round.FogColor2[2], round.FogColor2[3]);
 			round.FogStart = kv.GetFloat("fogstart");
 			round.FogEnd = kv.GetFloat("fogend");
 			round.FogDesnity = kv.GetFloat("fogmaxdensity");
+			round.FogBlend = kv.GetNum("fogblend");
 		}
 
 		int nonBosses;
@@ -1344,14 +1341,7 @@ void Waves_RoundStart(bool event = false)
 			SkyNameRestore[0] = 0;
 		}
 
-		if(CustomFogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(CustomFogEntity);
-			if(entity != INVALID_ENT_REFERENCE)
-				RemoveEntity(entity);
-			
-			CustomFogEntity = INVALID_ENT_REFERENCE;
-		}
+		ClearCustomFog(FogType_Wave);
 	}
 	
 	Waves_ClearWaves();
@@ -2077,44 +2067,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				Waves_SetSkyName(round.Skyname);
 
 			if(round.FogChange)
-			{
-				if(CustomFogEntity != INVALID_ENT_REFERENCE)
-				{
-					int entity = EntRefToEntIndex(CustomFogEntity);
-					if(entity > MaxClients)
-						RemoveEntity(entity);
-					
-					CustomFogEntity = INVALID_ENT_REFERENCE;
-				}
-				
-				int entity = CreateEntityByName("env_fog_controller");
-				if(entity != -1)
-				{
-					DispatchKeyValue(entity, "fogblend", round.FogBlend);
-					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
-					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
-					DispatchKeyValueFloat(entity, "fogstart", round.FogStart);
-					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
-					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
-
-					DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-					DispatchKeyValue(entity, "fogenable", "1");
-					DispatchKeyValue(entity, "spawnflags", "1");
-					DispatchSpawn(entity);
-					AcceptEntityInput(entity, "TurnOn");
-
-					CustomFogEntity = EntIndexToEntRef(entity);
-
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if(IsClientInGame(client))
-						{
-							SetVariantString("rpg_fortress_envfog");
-							AcceptEntityInput(client, "SetFogController");
-						}
-					}
-				}
-			}
+				SetCustomFog(FogType_Wave, round.FogColor1, round.FogColor2, round.FogStart, round.FogEnd, round.FogDesnity, round.FogBlend, true);
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
@@ -2481,14 +2434,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(subgame)
 				{
-					if(CustomFogEntity != INVALID_ENT_REFERENCE)
-					{
-						int entity = EntRefToEntIndex(CustomFogEntity);
-						if(entity > MaxClients)
-							RemoveEntity(entity);
-						
-						CustomFogEntity = INVALID_ENT_REFERENCE;
-					}
+					ClearCustomFog(FogType_Wave);
 					
 					if(Construction_Mode())
 					{
@@ -2964,17 +2910,12 @@ void WaveEndLogicExtra()
 		if(IsValidClient(client))
 		{
 			b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
-
-			/*
-			if(Items_HasNamedItem(client, "Bob's Curing Hand"))
+			if(Rogue_Theme() == ReilaRift)
 			{
-				b_BobsCuringHand[client] = true;
+				//give 2x the shit
+				b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
+				b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 			}
-			else
-			{
-				b_BobsCuringHand[client] = false;
-			}
-			*/
 		}
 	}
 }

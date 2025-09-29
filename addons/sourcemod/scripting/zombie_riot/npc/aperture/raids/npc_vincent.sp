@@ -869,7 +869,7 @@ public void Vincent_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	npc.StopPassiveSound();
 	
-	ClearCustomFog();
+	ClearCustomFog(FogType_NPC);
 }
 
 static void Vincent_GrantItem(int entity)
@@ -1639,20 +1639,34 @@ bool Vincent_SlamThrow(int iNPC, int target)
 		npc.m_flSpeed = 0.0;
 		float Timeslam = VINCENT_PREPARESLAM_TIME;
 		float cooldown;
+		float playbackRate = 0.4;
 		npc.SetCycle(0.75);
 		
 		if(!npc.Anger)
 		{
-			npc.SetPlaybackRate(0.4);
 			cooldown = 40.0;
 		}
 		else
 		{
-			npc.SetPlaybackRate(0.4 * (1.0 / 0.75));
+			
+			playbackRate *= (1.0 / 0.75);
 			Timeslam *= 0.75;
 			cooldown = 35.0;
 		}
 		
+		if (npc.m_bTimeUpMode)
+		{
+			// it gets faster the longer it's taking!
+			float overtime = GetGameTime() - RaidModeTime;
+			float extraMultiplier = fmax(0.15, (1.0 / fmax(1.5, overtime * 0.15)));
+			
+			playbackRate *= (1.0 / extraMultiplier);
+			Timeslam *= extraMultiplier;
+		}
+		
+		// let's not break anything
+		npc.SetPlaybackRate(fmin(2.0, playbackRate));
+			
 		npc.m_flThrow_Cooldown = GetGameTime(npc.index) + cooldown;
 		
 		if(!npc.Anger && !npc.m_bTimeUpMode)
@@ -1824,7 +1838,7 @@ void Vincent_SpawnFog(int iNPC)
 		maxDensity = 0.5;
 	}
 	
-	SetCustomFog(color, color, 400.0, 1000.0, maxDensity);
+	SetCustomFog(FogType_NPC, color, color, 400.0, 1000.0, maxDensity);
 }
 
 static void Vincent_PourOilAbility(Vincent npc, float duration, float delayToIgnite)

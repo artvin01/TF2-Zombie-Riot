@@ -381,7 +381,7 @@ methodmap VoidUnspeakable < CClotBody
 			}
 			
 			int color[4] = { 25, 0, 25, 50 };
-			SetCustomFog(color, color, 400.0, 1000.0, 0.85);
+			SetCustomFog(FogType_NPC, color, color, 400.0, 1000.0, 0.85);
 		}
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0, 80);	
@@ -575,7 +575,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		fl_Extra_RangedArmor[npc.index] *= 0.1;
 		
 		int color[4] = { 50, 0, 50, 150 };
-		SetCustomFog(color, color, 200.0, 500.0, 0.99);
+		SetCustomFog(FogType_NPC, color, color, 200.0, 500.0, 0.99);
 		
 		return;
 	}
@@ -997,7 +997,7 @@ public void VoidUnspeakable_NPCDeath(int entity)
 
 	if(i_RaidGrantExtra[npc.index] != 6 && i_RaidGrantExtra[npc.index] != 7)
 	{
-		ClearCustomFog();
+		ClearCustomFog(FogType_NPC);
 	}
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
