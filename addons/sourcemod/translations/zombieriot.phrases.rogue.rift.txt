@@ -1648,7 +1648,7 @@
 	}
 	"Book of Nature Conclusion"
 	{
-		"en"	"You pick up the book that's off to the side, near some other peacefull related subjects."
+		"en"	"You pick up the book that's off to the side, near some other peaceful related subjects."
 	}
 	"Book of Weakness"
 	{
