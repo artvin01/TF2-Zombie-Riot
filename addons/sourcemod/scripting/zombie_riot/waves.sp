@@ -2970,16 +2970,6 @@ void WaveEndLogicExtra()
 				b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 				b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 			}
-			/*
-			if(Items_HasNamedItem(client, "Bob's Curing Hand"))
-			{
-				b_BobsCuringHand[client] = true;
-			}
-			else
-			{
-				b_BobsCuringHand[client] = false;
-			}
-			*/
 		}
 	}
 }
