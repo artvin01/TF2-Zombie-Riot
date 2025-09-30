@@ -259,7 +259,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 		}
 	}
 	
-	if(i_CurrentEquippedPerk[client] & what_perk)
+	if(Rogue_ColdWaterActive() && i_CurrentEquippedPerk[client] & what_perk)
 	{
 		i_CurrentEquippedPerk[client] &= ~what_perk;
 		i_CurrentEquippedPerkPreviously[client] &= ~what_perk;
