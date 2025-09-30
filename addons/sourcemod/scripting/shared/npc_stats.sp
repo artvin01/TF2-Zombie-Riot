@@ -4890,7 +4890,17 @@ stock int GetClosestTarget(int entity,
 	//we will only override any non get vector distances, becuase those are pathing
 	//anything using get vector distance means that its a ranged attack, so we leave it alone.
 
+	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #if defined ZR
+
+	//in rogue you can get allies, but they shouldnt get any enemies during setups.
+	if(Rogue_Mode())
+	{
+		if(Rogue_InSetup() && SearcherNpcTeam == TFTeam_Red)
+		{
+			return -1;
+		}
+	}
 	bool IsTowerdefense = false;
 //	if(!UseVectorDistance) 
 	{
@@ -4906,7 +4916,6 @@ stock int GetClosestTarget(int entity,
 		return npc.m_iTarget;
 	}
 #endif
-	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 
 	if(EntityLocation[2] == 0.0)
 	{

@@ -874,6 +874,8 @@ void Rogue_RoundEnd()
 	BattleChaos = 0.0;
 	Offline = true;
 	Rogue_BlueParadox_Reset();
+	Zero(i_CurrentEquippedPerk);
+	Zero(i_CurrentEquippedPerkPreviously);
 
 	if(CurrentCollection)
 	{
@@ -1202,6 +1204,7 @@ bool Rogue_BattleLost()
 				SetMusicTimer(client, GetTime() + 10);
 			}
 		}
+		Zero(i_AmountDowned);
 		
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();

@@ -1399,6 +1399,8 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		if(victim == -1)
 			return;
 	}
+	if(!IsValidEntity(attacker))
+		return;
 	//umbrals are immune
 	CClotBody npc = view_as<CClotBody>(victim);
 	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
