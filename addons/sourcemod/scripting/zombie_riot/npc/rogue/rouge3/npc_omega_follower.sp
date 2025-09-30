@@ -277,7 +277,7 @@ methodmap OmegaFollower < CClotBody
 	
 	public OmegaFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		OmegaFollower npc = view_as<OmegaFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
+		OmegaFollower npc = view_as<OmegaFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_BRAWLER_RUN");

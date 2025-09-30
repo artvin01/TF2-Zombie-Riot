@@ -602,8 +602,8 @@ void VoidFollowerVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 	delete trace;
 	Vhxis npc = view_as<Vhxis>(entity);
 	npc.PlayVoidLaserSoundInit();
-	float CloseDamage = 45.0 * RaidModeScaling;
-	float FarDamage = 40.0 * RaidModeScaling;
+	float CloseDamage = 45.0;
+	float FarDamage = 40.0;
 	float MaxDistance = 2000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
