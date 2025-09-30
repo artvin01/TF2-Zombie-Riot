@@ -420,7 +420,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Burnt Light");
 			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
 			Music_SetRaidMusic(music);
-			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh its you lot, finally you actually prevailed.");
+			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh it's you lot, finally you actually prevailed.");
 		}
 		else
 		{
@@ -521,7 +521,7 @@ public void Shadowing_DarknessWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh dont worry, I wont kill you\nI'll make sure that you understand what beauty this place is.");	
+	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh don't worry, I won't kill you\nI'll make sure that you understand what beauty this place is.");	
 }
 
 public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
@@ -791,9 +791,9 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 3));
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 3));
-				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 4));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 4));
+				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 5.0);
 				npc.m_iTargetAlly = spawn_index;
 			}
 			if(npc.m_flSpeed != 0)

@@ -287,8 +287,10 @@ public void Rogue_MedicineSticks_WaveStart()
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) == TFTeam_Red)
+			if(GetTeam(entity) == TFTeam_Red && !b_NpcIsInvulnerable[entity])
+			{
 				VausMagicaGiveShield(entity, 2);
+			}
 		}
 	}
 }

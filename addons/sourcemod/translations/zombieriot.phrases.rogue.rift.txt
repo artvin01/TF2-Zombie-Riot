@@ -14,7 +14,7 @@
 	}
 	"Umbral Forgiveness"
 	{
-		"en"		"{green}Umbrals Seemingly dont mind whatever you just did."
+		"en"		"{green}Umbrals Seemingly don't mind whatever you just did."
 	}
 	"Bad Umbral"
 	{
@@ -1664,7 +1664,7 @@
 
 	"Crystalized Warped Subjects Title"
 	{
-		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesnt seem wise, you feel at unease."
+		"en"	"You find a room full of crystalized bodies, their gear being put to the side...\nStaying here doesn't seem wise, you feel at unease."
 	}
 	"Crystalized Warped Subjects Title Repeat"
 	{
@@ -1704,7 +1704,7 @@
 	}
 	"Book of Nature Conclusion"
 	{
-		"en"	"You pick up the book that's off to the side, near some other peacefull related subjects."
+		"en"	"You pick up the book that's off to the side, near some other peaceful related subjects."
 	}
 	"Book of Weakness"
 	{
@@ -1712,7 +1712,7 @@
 	}
 	"Book of Weakness Desc"
 	{
-		"en"	"A book explaining detailed weakpots of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
+		"en"	"A book explaining detailed weakpoints of most creatures.\n{green}+10％ Crit chance, crits deal 3x dmg instead of 2x."
 	}
 	"Book of Weakness Conclusion"
 	{
