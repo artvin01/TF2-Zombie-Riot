@@ -353,7 +353,7 @@ public void Rogue_GravityDefying_Enemy(int entity)
 
 public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
-	if(view_as<CClotBody>(victim.m_iBleedType != BLEEDTYPE_UMBRAL))
+	if(view_as<CClotBody>(victim).m_iBleedType != BLEEDTYPE_UMBRAL)
 		return;
 	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
 	{
