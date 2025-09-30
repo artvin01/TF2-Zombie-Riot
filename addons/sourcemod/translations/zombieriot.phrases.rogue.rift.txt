@@ -1344,7 +1344,7 @@
 	}
 	"Mazeat Falls Desc"
 	{
-		"en"	"Mazeat was.\n{green}Non-Umbrals enemies have -35％ health and damage and receive +100％ elemental damage"
+		"en"	"Mazeat was.\n{green}Non-Umbrals enemies have -25％ health and damage and receive +100％ elemental damage"
 	}
 	"Finale Encounter Lore"
 	{
