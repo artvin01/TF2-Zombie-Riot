@@ -1149,7 +1149,6 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 	}
 
 	delete list;
-	delete iterator;
 
 	if(distance != FAR_FUTURE)
 	{
@@ -1908,4 +1907,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-//#include "roguelike/construction_construction.sp"
+#include "roguelike/rift_construction.sp"
