@@ -163,7 +163,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 							ParticleRef[client] = EntIndexToEntRef(entity);
 						}
 					}
-					ApplyRapidSuturing(client);
+				//	ApplyRapidSuturing(client);
 					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
 					
 					if(LastMann)
@@ -928,6 +928,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		healing -= health;
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
+		Rogue_TriggerFunction(Artifact::FuncRevive, client);
 
 		int round = Waves_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);

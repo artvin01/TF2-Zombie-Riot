@@ -142,6 +142,9 @@ void OctaneKick_Logic(int iNPC)
 	vel[1] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[1]");
 	vel[2] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[2]");
 	
+	fClamp(vel[0], -300.0, 300.0);
+	fClamp(vel[1], -300.0, 300.0);
+	fClamp(vel[2], -300.0, 300.0);
 	static float hullcheckmaxs[3];
 	static float hullcheckmins[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);

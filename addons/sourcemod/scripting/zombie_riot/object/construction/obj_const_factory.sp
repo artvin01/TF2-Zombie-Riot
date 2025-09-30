@@ -4,7 +4,7 @@
 static const char Vehicles[][] =
 {
 	"vehicle_ambulance",
-//	"vehicle_bus",
+	"vehicle_bus",
 	"vehicle_camper",
 	"vehicle_dumptruck_empty",
 	"vehicle_landrover",
@@ -190,13 +190,10 @@ static int OssuniaCost()
 			return 0;
 		
 		case 1:
-			return 10;
+			return 30;
 		
 		case 2:
-			return 999999; //Dont allow more then 2
-		
-		case 3:
-			return 999999;
+			return 60;
 	}
 
 	return 999;

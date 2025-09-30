@@ -1560,7 +1560,7 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 	pack.Reset();
 	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
 	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
+	if(IsValidEntity(enemy) && IsValidEntity(npc.index))
 	{
 		float vecTarget[3]; WorldSpaceCenter(enemy, vecTarget);
 		float vecSelf[3];

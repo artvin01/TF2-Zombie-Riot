@@ -163,6 +163,26 @@ methodmap Umbral_Ltzens < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_horror_shawl/hwn2022_horror_shawl.mdl");
 		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 65);
+
+		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 0.85;
+				fl_Extra_MeleeArmor[npc.index] *= 1.25;
+				fl_Extra_RangedArmor[npc.index] *= 1.25;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_MeleeArmor[npc.index] *= 0.75;
+				fl_Extra_RangedArmor[npc.index] *= 0.75;
+			}
+		}
 		return npc;
 	}
 }
@@ -309,7 +329,7 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 200.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -332,10 +352,10 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
-				npc.m_flAttackHappens = gameTime + 0.1;
-				npc.m_flDoingAnimation = gameTime + 0.1;
-				npc.m_flNextMeleeAttack = gameTime + 0.3;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.0);
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.4;
 			}
 		}
 	}

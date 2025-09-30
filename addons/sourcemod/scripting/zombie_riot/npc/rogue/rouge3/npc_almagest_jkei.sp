@@ -55,9 +55,9 @@ void AlmagestJkei_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Jkei");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_jkei");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "jkei");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
@@ -125,6 +125,12 @@ methodmap AlmagestJkei < CClotBody
 	{
 		EmitSoundToAll(g_JkeiChargeMeleeDo[GetRandomInt(0, sizeof(g_JkeiChargeMeleeDo) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
+	}
+	public void SetJkeiSpeed(float speed) 
+	{
+		if(HasSpecificBuff(this.index, "Unstoppable Force"))
+			speed *= 0.75;
+		this.m_flSpeed = speed;
 	}
 	property float m_flSummonCircularDudes
 	{
@@ -233,7 +239,11 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
+					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
+					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
+					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
+						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
 					f_AttackSpeedNpcIncrease[other] *= 0.85;
 					fl_Extra_Speed[other] 	*= 1.1;
@@ -251,7 +261,11 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
+					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
+					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
+					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
+						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
 					RemoveFromNpcAliveList(other);
 					AddNpcToAliveList(other, 0);
@@ -310,7 +324,7 @@ methodmap AlmagestJkei < CClotBody
 			RaidModeScaling = 0.0;
 		}
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
+		npc.SetJkeiSpeed(330.0);
 		
 		
 		int skin = 1;
@@ -418,6 +432,10 @@ public Action AlmagestJkei_OnTakeDamage(int victim, int &attacker, int &inflicto
 		{
 			CPrintToChatAll("{black}Jkei{crimson} gains a shield, his soldiers give him strength, kill them off.");
 			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.0);
+			fl_Extra_Damage[npc.index] 	*= 0.75;
+			view_as<AlmagestJkei>(npc.index).SetJkeiSpeed(330.0);
+			if(npc.m_flMegaSlashDoing)
+				view_as<AlmagestJkei>(npc.index).SetJkeiSpeed(150.0);
 			damage = 0.0;
 			//set to hp
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * MaxHealthRatioDamage));
@@ -498,7 +516,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 			}
 			delete swingTrace;
 			npc.m_flMegaSlashNext = 0.0;
-			npc.m_flSpeed = 330.0;
+			npc.SetJkeiSpeed(330.0);
 		}
 	}
 	if(npc.m_flMegaSlashDoing)
@@ -542,7 +560,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 1.25;
 					npc.m_flNextMeleeAttack = gameTime + 1.75;
 					npc.m_flMegaSlashCD = gameTime + 6.5;
-					npc.m_flSpeed = 150.0;
+					npc.SetJkeiSpeed(150.0);
 				}
 				else
 				{
@@ -578,7 +596,7 @@ void Jkei_CreateDrones(int iNpc)
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
 
-	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.0025);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.003);
 
 	for(int i; i<MaxenemySpawnScaling; i++)
 	{
@@ -618,7 +636,7 @@ void Jkei_SpawnMinionsToEnemy(int entity, int victim, float damage, int weapon)
 	int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
 
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.05);
+	MaxHealthGet = RoundToNearest(float(MaxHealthGet) * 0.003);
 	int summon = NPC_CreateByName("npc_jkei_drone", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{

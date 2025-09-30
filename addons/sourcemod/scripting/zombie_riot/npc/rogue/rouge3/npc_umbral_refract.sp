@@ -164,6 +164,26 @@ methodmap Umbral_Refract < CClotBody
 		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
 		
+		
+		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 0.85;
+				fl_Extra_MeleeArmor[npc.index] *= 1.25;
+				fl_Extra_RangedArmor[npc.index] *= 1.25;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_MeleeArmor[npc.index] *= 0.75;
+				fl_Extra_RangedArmor[npc.index] *= 0.75;
+			}
+		}
 		return npc;
 	}
 }

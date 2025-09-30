@@ -30,8 +30,8 @@ int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
 
 //defined inside obj_shared
 //int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
-int i_EntityRecievedUpgrades[MAXENTITIES];
-bool i_BuildingRecievedHordings[MAXENTITIES];
+int i_EntityReceivedUpgrades[MAXENTITIES];
+bool i_BuildingReceivedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
 
 //Barracks smith things:
@@ -354,6 +354,9 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 }
 void BarracksCheckItems(int client)
 {
+	if(!WasAlreadyExplainedToClient(client, "Barracks Building Explain"))
+		return;
+
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
 	i_NormalBarracks_HexBarracksUpgrades_2[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 2");
 	WoodAmount[client] = float(Store_HasNamedItem(client, "Barracks Wood"));
@@ -1281,12 +1284,12 @@ void Barracks_BuildingThink(int entity)
 			int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 			if(IsValidEntity(Building_hordings))
 			{
-				if(!i_BuildingRecievedHordings[Building_hordings]) 
+				if(!i_BuildingReceivedHordings[Building_hordings]) 
 				{
 					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hOwnerEntity") == client/* && Building_Constructed[Building_hordings]*/)
 					{
 						SetBuildingMaxHealth(Building_hordings, 1.25, false, true);
-						i_BuildingRecievedHordings[Building_hordings] = true;					
+						i_BuildingReceivedHordings[Building_hordings] = true;					
 					}
 				}
 			}
@@ -1295,11 +1298,11 @@ void Barracks_BuildingThink(int entity)
 	BarrackVillager player = view_as<BarrackVillager>(client);
 	if(IsValidEntity(player.m_iTowerLinked))
 	{
-		if(!i_BuildingRecievedHordings[player.m_iTowerLinked]) 
+		if(!i_BuildingReceivedHordings[player.m_iTowerLinked]) 
 		{
 			SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) * 1.25));
 			SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) * 1.25));
-			i_BuildingRecievedHordings[player.m_iTowerLinked] = true;
+			i_BuildingReceivedHordings[player.m_iTowerLinked] = true;
 		}			
 	}
 }	
@@ -1317,12 +1320,12 @@ void BuildingHordingsRemoval(int entity)
 				int Building_hordings = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
 				if(IsValidEntity(Building_hordings))
 				{
-					if(i_BuildingRecievedHordings[Building_hordings])
+					if(i_BuildingReceivedHordings[Building_hordings])
 					{
 						if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hOwnerEntity") == owner)
 						{
 							SetBuildingMaxHealth(Building_hordings, 1.25, true, false);
-							i_BuildingRecievedHordings[Building_hordings] = false;					
+							i_BuildingReceivedHordings[Building_hordings] = false;					
 						}
 					}
 				}
@@ -1331,11 +1334,11 @@ void BuildingHordingsRemoval(int entity)
 		BarrackVillager player = view_as<BarrackVillager>(owner);
 		if(IsValidEntity(player.m_iTowerLinked))
 		{
-			if(i_BuildingRecievedHordings[player.m_iTowerLinked]) 
+			if(i_BuildingReceivedHordings[player.m_iTowerLinked]) 
 			{
 				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iHealth")) / 1.25));
 				SetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(player.m_iTowerLinked, Prop_Data, "m_iMaxHealth")) / 1.25));
-				i_BuildingRecievedHordings[player.m_iTowerLinked] = false;
+				i_BuildingReceivedHordings[player.m_iTowerLinked] = false;
 			}			
 		}
 	}
@@ -1360,6 +1363,9 @@ int Building_GetFollowerCommand(int owner)
 
 void BarracksSaveResources(int client)
 {
+	if(!WasAlreadyExplainedToClient(client, "Barracks Building Explain"))
+		return;
+
 	Store_SetNamedItem(client, "Barracks Wood", RoundToCeil(WoodAmount[client]));
 	Store_SetNamedItem(client, "Barracks Food", RoundToCeil(FoodAmount[client]));
 	Store_SetNamedItem(client, "Barracks Gold", RoundToCeil(GoldAmount[client]));
@@ -1369,39 +1375,30 @@ void CheckSummonerUpgrades(int client)
 {
 	SupplyRate[client] = 2;
 
-	if(Store_HasNamedItem(client, "Construction Novice"))
-		SupplyRate[client]++;
-	
-	if(Store_HasNamedItem(client, "Construction Apprentice"))
-		SupplyRate[client] += 2;
-	
-	if(Store_HasNamedItem(client, "Engineering Repair Handling book"))
-		SupplyRate[client] += 4;
-	
-	if(Store_HasNamedItem(client, "Alien Repair Handling book"))
-		SupplyRate[client] += 6;
-	
-	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
-		SupplyRate[client] += 10;
-	
-	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
-		SupplyRate[client] += 10;
+	SupplyRate[client] += RoundToNearest(Attributes_Get(client, Attrib_BarracksSupplyRate, 0.0));
 
-	if(Store_HasNamedItem(client, "Dubious Cheesy Ideas"))	// does this even work?
-		SupplyRate[client] += 35;
-
-	if(Store_HasNamedItem(client, "Messed Up Cheesy Brain")) // and this even?
-		SupplyRate[client] += 35;
-
-	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
+	FinalBuilder[client] = view_as<bool>(Attributes_Get(client, Attrib_FinalBuilder, 0.0));
 	MedievalUnlock[client] = true;/*Items_HasNamedItem(client, "Medieval Crown");*/
 
 	if(!MedievalUnlock[client])
 		MedievalUnlock[client] = view_as<bool>(CivType[client]);
 
-	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
-	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
-	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Dubious Cheesy Ideas"));
+	GlassBuilder[client] = view_as<bool>(Attributes_Get(client, Attrib_GlassBuilder, 0.0));
+	int AttributeIs = RoundToNearest(Attributes_Get(client, Attrib_WildingenBuilder, 0.0));
+	WildingenBuilder[client] = false;
+	WildingenBuilder2[client] = false;
+	switch(AttributeIs)
+	{
+		case 1:
+		{
+			WildingenBuilder[client] = true;
+		}
+		case 2:
+		{
+			WildingenBuilder[client] = true;
+			WildingenBuilder2[client] = true;
+		}
+	}
 }
 #define MAXRESOURCECAP 2000.0
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
@@ -1468,7 +1465,7 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		{
 			SupplyRateCalc *= 1.25;
 		}
-		if(i_CurrentEquippedPerk[client] == 7)
+		if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
 		{
 			SupplyRateCalc *= 1.15;
 		}

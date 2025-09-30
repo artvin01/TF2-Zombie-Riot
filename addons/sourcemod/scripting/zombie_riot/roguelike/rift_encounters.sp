@@ -24,6 +24,11 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 	{
 		case 0:
 		{
+			int Disable = ReturnFoundEntityViaName("computer_off_stage");
+			if(IsValidEntity(Disable))
+				AcceptEntityInput(Disable, "Disable");
+
+			CreateTimer(15.0, Timer_Rogue_DisableScreenAgain);
 			Rogue_GiveNamedArtifact("Gamemode History", true);
 			GiveCash(5000);
 		}
@@ -34,7 +39,13 @@ public void Rogue_Vote_GamemodeHistory(const Vote vote, int index)
 		}
 	}
 }
-
+static Action Timer_Rogue_DisableScreenAgain(Handle timer, int progress)
+{
+	int Disable = ReturnFoundEntityViaName("computer_off_stage");
+	if(IsValidEntity(Disable))
+		AcceptEntityInput(Disable, "Enable");
+	return Plugin_Stop;
+}
 public float Rogue_Encounter_PoisonWater()
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_PoisonWater, "Poison Water Lore");
@@ -217,6 +228,7 @@ public void Rogue_Vote_Astra_Vote(const Vote vote, int index)
 		{
 			CPrintToChatAll("%t", "Astra Title Accept Conlusion");
 			Rogue_GiveNamedArtifact("Mantle of Stars");
+			Rogue_AddUmbral(5, false);
 			Rogue_AddIngots(-12);
 		}
 		case 1:
@@ -322,6 +334,7 @@ public float Rogue_Encounter_Pool_Of_Clarity()
 
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 1");
+	list.PushArray(vote);
 	
 	strcopy(vote.Name, sizeof(vote.Name), "Pool of Clarity Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Pool of Clarity Desc 2");
@@ -470,9 +483,185 @@ public void Rogue_Vote_AlmagestTechnology_Vote(const Vote vote, int index)
 	Rogue_AddUmbral(-25, false);
 }
 
+public float Rogue_Crystalized_Warped_Subjects()
+{
 
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Crystalized_Warped_Subjects_Vote, "Crystalized Warped Subjects Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search Cancel");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search Cancel Desc");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search More");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search More Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(15.0);
+
+	return 25.0;
+}
+
+public void Rogue_Crystalized_Warped_Subjects_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			GiveCash(7000);
+			Artifact artifact;
+			if(Rogue_GetRandomArtifact(artifact, true) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+		}
+		case 1:
+		{
+			Rogue_Crystalized_Warped_Subjects_Repeat();
+		}
+	}
+}
+static Action Timer_AdvanceGulnLore(Handle timer, int progress)
+{
+	switch(progress)
+	{
+		case 1:
+		{
+			CPrintToChatAll("{white}Bob {default}: I... This is just... {crimson} Guln...");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: Guln... shit.");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{snow}Bob leans his head onto Guln's now crystalized head.");
+			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default}: He was a naive boy, but this... this was unprecedented.");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{snow}He clenches his fist as he reads a paper near his body.");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{snow}He Breaks apart the foundation holding the crystal body and picks him up.");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: What's on that paper, Bob?");
+		}
+		case 5:
+		{
+			CPrintToChatAll("{snow}He leaves the room.");
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == BobTheFirstFollower_ID() && IsEntityAlive(other))
+				{
+					SmiteNpcToDeath(other);
+					break;
+				}
+			}
+			Rogue_RemoveNamedArtifact("Bob's Assistance");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{gold}Omega{default}: Bob, where are you going?");
+		}
+		case 6:
+		{
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} find a note reading:");
+			else
+				CPrintToChatAll("{snow}You find a note reading:");
+		}
+		case 7:
+		{
+			CPrintToChatAll("{grey}Guln, we're surrounded, I'm surrounded, the umbral forces are too much. We have to run, just RUN, I'll hold them off.");
+		}
+		case 8:
+		{
+			CPrintToChatAll("{grey}Keep the ones I made for you close, they might save you, but I fear that we're done for.");
+		}
+		case 9:
+		{
+			CPrintToChatAll("{grey}Remember how you avoided death twice now? Can you do that again? For me?");
+		}
+		case 10:
+		{
+			CPrintToChatAll("{grey}Y'know, don't die on Bob and all, don't get angry, stay positive as usual yeah?");
+		}
+		case 11:
+		{
+			CPrintToChatAll("{grey}if, no, WHEN we meet again, I'll make sure to hand you that cake recipe you loved so much from me okay?");
+		}
+		case 12:
+		{
+			CPrintToChatAll("{crimson}-Bladedance");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+				CPrintToChatAll("{purple}Vhxis{default} and {gold}Omega{default} seem visibly agitated.");
+		}
+		case 13:
+		{
+			CPrintToChatAll("{crimson}You leave the room with nothing obtained, aside from...");
+			
+			if(!Rogue_HasNamedArtifact("Immensive Guilt"))
+				Rogue_GiveNamedArtifact("Immensive Guilt", false, true);
+			GiveCash(4000);
+
+			return Plugin_Stop;
+		}
+	}
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client); //This is actually more expensive then i thought.
+			SetMusicTimer(client, GetTime() + 10);
+		}
+	}
+	Rogue_SetProgressTime(10.0, false);
+	CreateTimer(4.5, Timer_AdvanceGulnLore, progress + 1);
+	return Plugin_Continue;
+}
+public void Rogue_ImmensiveGuilt_FloorChange(int &floor, int &stage)
+{
+	if(Rogue_HasNamedArtifact("Immensive Guilt"))
+		Rogue_RemoveNamedArtifact("Immensive Guilt");
+	if(!Rogue_HasNamedArtifact("Bob's Wrath"))
+		Rogue_GiveNamedArtifact("Bob's Wrath", false, true);
+	if(!Rogue_HasNamedArtifact("Bob's Assistance"))
+		Rogue_GiveNamedArtifact("Bob's Assistance", true, true);
+
+	CPrintToChatAll("{snow}Bob returns.");
+	CPrintToChatAll("{white}Bob {default}: ...");
+	if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+	{
+		CPrintToChatAll("{gold}Omega{default}: We will avenge Guln.");
+		CPrintToChatAll("{purple}Vhxis{default}: The three of us must prevail, for our comrade.");
+	}
+}
+public void Rogue_Crystalized_Warped_Subjects_Repeat()
+{
+	if((GetURandomInt() % 4) == 0)
+	{
+		CPrintToChatAll("{snow}As you look through the bodies, you notice one that seems familiar to you...");
+		CreateTimer(4.0, Timer_AdvanceGulnLore, 1);
+		return;	
+	}
+	Rogue_GiveNamedArtifact("Bad Lab Air");
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Crystalized_Warped_Subjects_Vote, "Crystalized Warped Subjects Title Repeat");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search Cancel");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search Cancel Desc");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Crystalized Warped Subjects Search More");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Crystalized Warped Subjects Search More Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(10.0);
+	Rogue_SetProgressTime(15.0, false);
+}
 public float Rogue_Encounter_Rogue3Gamble()
 {
+	int Disable = ReturnFoundEntityViaName("gambling_machine");
+	if(IsValidEntity(Disable))
+		AcceptEntityInput(Disable, "Enable");
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rogue3Gamble, "Rouge3 Gamble Lore");
 	Vote vote;
 
@@ -487,7 +676,6 @@ public float Rogue_Encounter_Rogue3Gamble()
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
-
 	return 25.0;
 }
 static void Rogue3Gamble(const char[] title)
@@ -516,6 +704,9 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 				Rogue_AddUmbral(15);
 			
 			PrintToChatAll("%t", "Rouge3 Gamble Lore 2");
+			int Disable = ReturnFoundEntityViaName("gambling_machine");
+			if(IsValidEntity(Disable))
+				AcceptEntityInput(Disable, "Disable");
 		}
 		case 1:
 		{
@@ -551,6 +742,10 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 				{
 					Rogue_AddIngots(26);
 					PrintToChatAll("%t", "Rouge3 Gamble Lore 1d");
+					
+					int Disable = ReturnFoundEntityViaName("gambling_machine");
+					if(IsValidEntity(Disable))
+						AcceptEntityInput(Disable, "Disable");
 					return;
 				}
 				default:
@@ -563,6 +758,41 @@ public void Rogue_Vote_Rogue3Gamble(const Vote vote, int index)
 			char buffer[64];
 			FormatEx(buffer, sizeof(buffer), "Rouge3 Gamble Lore 1%c", title);
 			Rogue3Gamble(buffer);
+		}
+	}
+}
+
+public float Rogue_Encounter_WhiteflowerBladedance()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_WhiteflowerBladedance, "Finale Encounter Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Finale Encounter Option 1");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Finale Encounter Desc 1");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Finale Encounter Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Finale Encounter Desc 2");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+public void Rogue_Vote_WhiteflowerBladedance(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Rogue_AddExtraStage(1);
+			PrintToChatAll("%t", "Finale Encounter Lore 1");
+		}
+		case 1:
+		{
+			GiveCash(5000);
+			Rogue_GiveNamedArtifact("The Bladedance");
+			Rogue_GiveNamedArtifact("The Whiteflower");
 		}
 	}
 }
@@ -718,7 +948,7 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 
 		delete panel;
 
-		CreateTimer(5.0, Timer_AdvanceStory, progress + 1);
+		CreateTimer(6.0, Timer_AdvanceStory, progress + 1);
 		Rogue_SetProgressTime(15.0, false);
 	}
 
@@ -727,4 +957,163 @@ static Action Timer_AdvanceStory(Handle timer, int progress)
 static int StoryMenuH(Menu menu, MenuAction action, int param1, int param2)
 {
 	return 0;
+}
+
+
+
+
+
+
+public float Rogue_Encounter_Library_Of_Lixandria()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Encounter_Library_Of_Lixandria_Vote, "Library Of Lixandria Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Weakness");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Weakness Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Nature");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Nature Desc");
+	list.PushArray(vote);
+
+	bool ColdWaterItem = Rogue_HasNamedArtifact("Cold Water");
+	strcopy(vote.Name, sizeof(vote.Name), "Book of Liver Optimisation");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Book of Liver Optimisation Desc");
+	if(!ColdWaterItem)
+	{
+		vote.Locked = true;
+		FormatEx(vote.Append, sizeof(vote.Append), " (Need ''Cold Water'')");
+	}
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+
+public void Rogue_Encounter_Library_Of_Lixandria_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Book of Weakness Conclusion");
+			Rogue_GiveNamedArtifact("Book of Weakness");
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Book of Nature Conclusion");
+			Rogue_GiveNamedArtifact("Book of Nature");
+		}
+		case 2:
+		{
+			CPrintToChatAll("%t", "Book of Liver Optimisation Conclusion");
+			Rogue_GiveNamedArtifact("Book of Liver Optimisation");
+		}
+	}
+}
+
+public float Rogue_Encounter_OmegaVhxis()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_OmegaVhxis_Vote, "Omega and Vhxis Title");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Omega and Vhxis Accept");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Omega and Vhxis Accept Desc");
+	list.PushArray(vote);
+	
+	strcopy(vote.Name, sizeof(vote.Name), "Omega and Vhxis Decline");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Omega and Vhxis Decline Desc");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
+
+static int OmegaYappingVhxisGroupChat;
+
+public void Rogue_Vote_OmegaVhxis_Vote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			CPrintToChatAll("%t", "Omega and Vhxis Accept Conlusion");
+			Rogue_GiveNamedArtifact("Omega's Assistance");
+			Rogue_GiveNamedArtifact("Vhxis' Assistance");
+			Rogue_StartThisBattle(5.0);
+			OmegaYappingVhxisGroupChat = GetRandomInt(0,1);
+			CreateTimer(5.0, Timer_OmegaVhxisYapping, 1);
+		}
+		case 1:
+		{
+			CPrintToChatAll("%t", "Omega and Vhxis Decline Conlusion");
+			GiveCash(8000);
+		}
+	}
+}
+static Action Timer_OmegaVhxisYapping(Handle timer, int progress)
+{
+	switch(OmegaYappingVhxisGroupChat)
+	{
+		case 0:
+		{
+			switch(progress)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Alright Vhxis, let's kick some ass, I'm surprised that these goons still associate themselves with that traitor.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Of course, of course... wait a minute, traitor? What traitor?");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}Omega{default}: You know, Whiteflower, the jackass? His whole big deal being his army?");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: That name doesn't ring a bell, we should probably deal with these guys first and get to the throne. You can tell me more once all of this blows over.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Not a bad idea. It's a long story anyway.");
+					return Plugin_Stop;
+				}
+			}
+		}
+		case 1:
+		{
+			switch(progress)
+			{
+				case 1:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Damn, where do these guys keep on coming from?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{gold}Omega{default}: I know right? I think I underestimated the amount of people that would devote their lives to Whiteflower.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: To...who? That name doesn't seem familiar to me.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{gold}Omega{default}: Shit, you don't know who Whiteflower is? I should tell you more once we take care of business at the throne. We're a little bit preoccupied right now.");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{purple}Vhxis{default}: Right you are.");
+					return Plugin_Stop;
+				}
+			}
+		}
+	}
+	CreateTimer(6.5, Timer_OmegaVhxisYapping, progress + 1);
+	return Plugin_Continue;
 }

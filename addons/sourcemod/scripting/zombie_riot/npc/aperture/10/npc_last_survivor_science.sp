@@ -122,7 +122,7 @@ public void FatherGrigoriScience_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/monk.mdl");
+	PrecacheModel("models/zombie_riot/grigori/monk_custom.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -234,7 +234,7 @@ methodmap FatherGrigoriScience < CClotBody
 	
 	public FatherGrigoriScience(float vecPos[3], float vecAng[3], int ally)
 	{
-		FatherGrigoriScience npc = view_as<FatherGrigoriScience>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
+		FatherGrigoriScience npc = view_as<FatherGrigoriScience>(CClotBody(vecPos, vecAng, "models/zombie_riot/grigori/monk_custom.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -609,10 +609,10 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 	position[1] = startPosition[1];
 	position[2] = startPosition[2] + 3000.0;	
 	
-	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.15, 25.0, 25.0, 0, NORMAL_ZOMBIE_VOLUME, color, 3 );
+	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 0.25, 25.0, 25.0, 0, NORMAL_ZOMBIE_VOLUME, color, 3 );
 	TE_SendToAll();
 	position[2] -= 1490.0;
-	TE_SetupGlowSprite(startPosition, gGlow1, NORMAL_ZOMBIE_VOLUME, NORMAL_ZOMBIE_VOLUME, 255);
+	TE_SetupGlowSprite(startPosition, gGlow1, 0.25, NORMAL_ZOMBIE_VOLUME, 255);
 	TE_SendToAll();
 }
 
@@ -635,83 +635,86 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 			return;
 		}
 		
-		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 10, 255, 10, 255, 1, 0.2, 12.0, 4.0, 3);	
+		spawnRing_Vectors(startPosition, Ionrange * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 10, 255, 10, 255, 1, 0.25, 12.0, 4.0, 3);	
 		if (Iondistance > 0)
 		{
 			EmitSoundToAll("ambient/energy/weld1.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, startPosition);
 			
-			// Stage 1
-			float s=Sine(nphi/360*6.28)*Iondistance;
-			float c=Cosine(nphi/360*6.28)*Iondistance;
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[2] = startPosition[2];
-			
-			position[0] += s;
-			position[1] += c;
-		//	FatherGrigoriScience_DrawIonBeam(position, {0, 10, 255, 10});
-	
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] -= s;
-			position[1] -= c;
-			FatherGrigoriScience_DrawIonBeam(position, {10, 255, 10, 255});
-			
-			// Stage 2
-			s=Sine((nphi+45.0)/360*6.28)*Iondistance;
-			c=Cosine((nphi+45.0)/360*6.28)*Iondistance;
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] += s;
-			position[1] += c;
-			FatherGrigoriScience_DrawIonBeam(position, {10, 255, 10, 255});
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] -= s;
-			position[1] -= c;
-		//	FatherGrigoriScience_DrawIonBeam(position, {0, 10, 255, 10});
-			
-			// Stage 3
-			s=Sine((nphi+90.0)/360*6.28)*Iondistance;
-			c=Cosine((nphi+90.0)/360*6.28)*Iondistance;
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] += s;
-			position[1] += c;
-		//	FatherGrigoriScience_DrawIonBeam(position,{0, 10, 255, 10});
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] -= s;
-			position[1] -= c;
-			FatherGrigoriScience_DrawIonBeam(position,{10, 255, 10, 255});
-			
-			// Stage 3
-			s=Sine((nphi+135.0)/360*6.28)*Iondistance;
-			c=Cosine((nphi+135.0)/360*6.28)*Iondistance;
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] += s;
-			position[1] += c;
-			FatherGrigoriScience_DrawIonBeam(position, {10, 255, 10, 255});
-			
-			position[0] = startPosition[0];
-			position[1] = startPosition[1];
-			position[0] -= s;
-			position[1] -= c;
-		//	FatherGrigoriScience_DrawIonBeam(position, {0, 10, 255, 10});
-	
+			if(b_thisNpcIsABoss[client])
+			{
+				// Stage 1
+				float s=Sine(nphi/360*6.28)*Iondistance;
+				float c=Cosine(nphi/360*6.28)*Iondistance;
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[2] = startPosition[2];
+				
+				position[0] += s;
+				position[1] += c;
+			//	FatherGrigoriScience_DrawIonBeam(position, {0, 10, 255, 10});
+		
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] -= s;
+				position[1] -= c;
+				FatherGrigoriScience_DrawIonBeam(position, {10, 255, 10, 255});
+				
+				// Stage 2
+				s=Sine((nphi+45.0)/360*6.28)*Iondistance;
+				c=Cosine((nphi+45.0)/360*6.28)*Iondistance;
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] += s;
+				position[1] += c;
+				FatherGrigoriScience_DrawIonBeam(position, {10, 255, 10, 255});
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] -= s;
+				position[1] -= c;
+			//	FatherGrigoriScience_DrawIonBeam(position, {0, 10, 255, 10});
+				
+				// Stage 3
+				s=Sine((nphi+90.0)/360*6.28)*Iondistance;
+				c=Cosine((nphi+90.0)/360*6.28)*Iondistance;
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] += s;
+				position[1] += c;
+			//	FatherGrigoriScience_DrawIonBeam(position,{0, 10, 255, 10});
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] -= s;
+				position[1] -= c;
+				FatherGrigoriScience_DrawIonBeam(position,{10, 255, 10, 255});
+				
+				// Stage 3
+				s=Sine((nphi+135.0)/360*6.28)*Iondistance;
+				c=Cosine((nphi+135.0)/360*6.28)*Iondistance;
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] += s;
+				position[1] += c;
+				FatherGrigoriScience_DrawIonBeam(position, {10, 255, 10, 255});
+				
+				position[0] = startPosition[0];
+				position[1] = startPosition[1];
+				position[0] -= s;
+				position[1] -= c;
+			//	FatherGrigoriScience_DrawIonBeam(position, {0, 10, 255, 10});
+			}
+		
 			if (nphi >= 360)
 				nphi = 0.0;
 			else
-				nphi += 5.0;
+				nphi += 10.0;
 		}
-		Iondistance -= 5;
+		Iondistance -= 10;
 
 		delete data;
 		
@@ -727,7 +730,7 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 		ResetPack(nData);
 		
 		if (Iondistance > -50)
-		CreateTimer(0.1, FatherGrigoriScience_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.2, FatherGrigoriScience_DrawIon, nData, TIMER_FLAG_NO_MAPCHANGE);
 		else
 		{
 			startPosition[2] += 25.0;
@@ -740,13 +743,13 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 			position[1] = startPosition[1];
 			position[2] += startPosition[2] + 900.0;
 			startPosition[2] += -200;
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 30.0, 30.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
 			TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
 			TE_SendToAll();
 		//	TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, NORMAL_ZOMBIE_VOLUME, {100, 255, 255, 255}, 3);
 		//	TE_SendToAll();
-			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
+			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
 			TE_SendToAll();
 			position[2] = startPosition[2] + 50.0;
 			ExpidonsaGroupHeal(client, Ionrange, 500, 1000.0, 1.25, true, .LOS = false,.VecDoAt = position);	

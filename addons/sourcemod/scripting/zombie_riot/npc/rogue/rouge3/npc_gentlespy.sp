@@ -49,6 +49,11 @@ static const char g_RangedAttackSounds[][] = {
 	"weapons/ambassador_shoot.wav"
 };
 
+static const char g_SpawnSounds[][] = {
+	"vo/spy_cloakedspy01.mp3",
+	"vo/spy_mvm_resurrect01.mp3"
+};
+
 static bool cloaked;
 static bool PlaySound;
 
@@ -62,6 +67,7 @@ void GentleSpy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackBackstabSounds)); i++) { PrecacheSound(g_MeleeAttackBackstabSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RageSounds)); i++) { PrecacheSound(g_RageSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_SpawnSounds)); i++) { PrecacheSound(g_SpawnSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Gentle Spy");
@@ -89,6 +95,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 methodmap GentleSpy < CClotBody
 {
+	property float m_flSpawnMessageTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -110,6 +122,10 @@ methodmap GentleSpy < CClotBody
 		
 	}
 	
+	public void PlaySpawnSound() 
+	{
+		EmitSoundToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)]);
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -185,7 +201,7 @@ methodmap GentleSpy < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "{redsunsecond}I Monster");
 		Music_SetRaidMusic(music);
 
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		npc.m_iAttacksTillReload = 0;
@@ -195,6 +211,8 @@ methodmap GentleSpy < CClotBody
 		npc.m_flAbilityOrAttack2 = GetGameTime(npc.index) + 12.0; //Play warning sound
 		npc.m_flAbilityOrAttack3 = GetGameTime(npc.index) + 13.0; //Go for the stab
 		
+		npc.m_flSpawnMessageTime = GetGameTime(npc.index) + 0.5;
+		
 		cloaked = false;
 		
 		npc.StartPathing();
@@ -202,21 +220,15 @@ methodmap GentleSpy < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-	
-
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/spy/spy_hat.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
+		
+		npc.PlaySpawnSound();
 		
 		return npc;
 	}
@@ -244,7 +256,13 @@ public void GentleSpy_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	
+	if (npc.m_flSpawnMessageTime && npc.m_flSpawnMessageTime < GetGameTime(npc.index))
+	{
+		npc.m_flSpawnMessageTime = 0.0;
+		VSHJokeSpawnMessage(npc.index, "Gentle Spy");
+	}
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -322,11 +340,11 @@ public void GentleSpy_ClotThink(int iNPC)
 		if(npc.m_flAbilityOrAttack3 < GetGameTime(npc.index))
 		{
 			SetEntityCollisionGroup(npc.index, 24);
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 			npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 7.0;	//Go invis
 			npc.m_flAbilityOrAttack1 = GetGameTime(npc.index) + 10.0; //Teleport behind someone
@@ -522,7 +540,8 @@ void GentleSpySelfDefense(GentleSpy npc, float gameTime, int target, float dista
 						{
 							damageDealt *= 0.5;
 						}
-
+						
+						KillFeed_SetKillIcon(npc.index, BackstabDone ? "backstab" : "eternal_reward");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 						// Hit sound
@@ -546,31 +565,10 @@ void GentleSpySelfDefense(GentleSpy npc, float gameTime, int target, float dista
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.StartPathing();
-		}	
-
-		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
-		{
-			if(IsValidEntity(EnemyLoop) && b_IsAProjectile[EnemyLoop] && GetTeam(npc.index) != GetTeam(EnemyLoop))
-			{
-				float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
 			
-				float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-				float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.25))
-				{
-					RemoveEntity(EnemyLoop);
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-					npc.PlayRangedSound();
-					npc.FaceTowards(vecTarget, 20000.0);
-					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecTarget, false );
-					npc.m_iAttacksTillReload--;
-
-				}
-			}
-		}
-
+			KillFeed_SetKillIcon(npc.index, "ambassador");
+		}	
+		
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.50))
 		{
 			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))

@@ -269,7 +269,7 @@ methodmap StalkerCombine < StalkerShared
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 
 		i_InvincibleParticle[npc.index] = EntIndexToEntRef(npc.EquipItem("head", "models/empty.mdl"));
 

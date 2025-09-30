@@ -256,7 +256,7 @@ public Action flip_extra(Handle timer, int client)
 			damage_multiplier[entity] *= 2.0;
 			damage_multiplier[entity] *= 1.4;
 			
-			if(i_CurrentEquippedPerk[client] == 5)
+			if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
 			{
 				damage_multiplier[entity] *= 1.25;
 			}

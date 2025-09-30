@@ -230,7 +230,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Resupplies_Supplied[client] = 0;
 			i_BarricadeHasBeenDamaged[client] = 0;
 			i_PlayerDamaged[client] = 0;
-			CashRecievedNonWave[client] = 0;
+			CashReceivedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
 			Armor_Charge[client] = 0;
@@ -535,7 +535,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
+	{
 		i_CurrentEquippedPerk[client] = 0;
+		UpdatePerkName(client);
+	}
 		
 	i_HealthBeforeSuit[client] = 0;
 	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
@@ -703,3 +706,39 @@ public Action TeutonViewOnly(int teuton, int client)
 	
 }
 #endif
+
+
+/*
+
+	Translations are:
+	"Setup Chat Tip 1"
+*/
+void ChatSetupTip()
+{
+	if(AntiSpamTipGive > GetGameTime())
+	{
+		return;
+	}
+	AntiSpamTipGive = GetGameTime() + 30.0;
+	CreateTimer(GetRandomFloat(10.0, 15.0), ChatSetupTipTimer, _, TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+}
+
+
+public Action ChatSetupTipTimer(Handle TimerHandle)
+{
+	char TipText[255];
+	static int MaxEntries;
+	if(!MaxEntries)
+	{
+		MaxEntries++;
+		Format(TipText, sizeof(TipText), "Setup Chat Tip %i", MaxEntries);
+		while(TranslationPhraseExists(TipText))
+		{
+			MaxEntries++;
+			Format(TipText, sizeof(TipText), "Setup Chat Tip %i", MaxEntries);
+		}
+	}
+	Format(TipText, sizeof(TipText), "Setup Chat Tip %i", GetRandomInt(1,MaxEntries- 1));
+	SPrintToChatAll("{green}TIP:{snow} %t",TipText);
+	return Plugin_Stop;
+}

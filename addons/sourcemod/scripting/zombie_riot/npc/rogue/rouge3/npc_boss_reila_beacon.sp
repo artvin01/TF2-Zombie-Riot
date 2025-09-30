@@ -51,7 +51,7 @@ void ReilaBeacon_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila's Beacon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beacon_reila");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "reilaconstruct");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
@@ -106,7 +106,7 @@ methodmap ReilaBeacon < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_flMeleeArmor = 2.5;
+		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 1.0;
 
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -115,6 +115,7 @@ methodmap ReilaBeacon < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.SetPlaybackRate(1.435);	
 		npc.m_flSpawnAnnotation = GetGameTime() + 0.5;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
@@ -180,14 +181,14 @@ public Action ReilaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor
 		{
 			f_AttackSpeedNpcIncrease[npc.m_iTargetAlly] *= 0.9;
 			fl_Extra_Speed[npc.m_iTargetAlly] 			*= 1.05;
-			fl_Extra_Damage[npc.m_iTargetAlly] 			*= 1.25;
 			ApplyStatusEffect(npc.m_iTargetAlly, npc.m_iTargetAlly, "Very Defensive Backup", 0.6);
 			RaidModeScaling *= 1.25;
 		}
 		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		TE_Particle("xms_snowburst_child01", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
-		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 5.0);
+		EmitSoundToAll("mvm/mvm_bought_in.wav", _, _, SNDLEVEL_RAIDSIREN, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+		ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 10.0);
 		
 		CPrintToChatAll("{green}You gain more time before the Curtain closes...{crimson} However, both {pink}Reila{crimson} and the Construct become stronger.");
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));

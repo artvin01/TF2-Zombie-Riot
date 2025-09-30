@@ -94,7 +94,7 @@ methodmap FogOrbHeavy < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 225.0;
-		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
+		b_NoHealthbar[npc.index] = 1; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		

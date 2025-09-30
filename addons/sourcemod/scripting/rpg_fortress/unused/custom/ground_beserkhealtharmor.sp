@@ -119,11 +119,11 @@ float BeserkHealthArmor_OnTakeDamage(int victim, float damage)
 					
 		if(damage * 0.9 >= f_DamageToAbsorb[victim])
 		{
-			float damage_recieved_after_calc;
-			damage_recieved_after_calc = damage - f_DamageToAbsorb[victim];
-			f_HealthToRegain[victim] += damage - damage_recieved_after_calc;
+			float damage_received_after_calc;
+			damage_received_after_calc = damage - f_DamageToAbsorb[victim];
+			f_HealthToRegain[victim] += damage - damage_received_after_calc;
 			f_DamageToAbsorb[victim] = 0.0;
-			damage = damage_recieved_after_calc;
+			damage = damage_received_after_calc;
 			EmitSoundToAll("physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25);
 			Beserk_EndAbility(victim);
 			b_BeserkActive[victim] = false;

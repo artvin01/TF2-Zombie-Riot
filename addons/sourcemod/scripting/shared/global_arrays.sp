@@ -19,6 +19,17 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_CANNOTGIB_REGARDLESS			(1 << 11)
 #define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
 
+
+#define PERK_NONE						0
+#define PERK_REGENE						(1 << 0)
+#define PERK_OBSIDIAN					(1 << 1)
+#define PERK_MORNING_COFFEE				(1 << 2)
+#define PERK_HASTY_HOPS					(1 << 3)
+#define PERK_MARKSMAN_BEER				(1 << 4)
+#define PERK_TESLAR_MULE				(1 << 5)
+#define PERK_STOCKPILE_STOUT			(1 << 6)
+#define PERK_ENERGY_DRINK				(1 << 7)
+
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
 #define HEAL_SELFHEAL				(1 << 1) 
@@ -161,6 +172,7 @@ float i_WasInResPowerup[MAXPLAYERS] = {0.0,0.0,0.0};
 
 ConVar Cvar_clamp_back_speed; //tf_clamp_back_speed
 ConVar Cvar_LoostFooting; //tf_movement_lost_footing_friction
+ConVar sv_gravity; 
 ConVar sv_cheats;
 ConVar nav_edit;
 ConVar tf_scout_air_dash_count;
@@ -198,6 +210,7 @@ int i_IDependOnThisBuilding[MAXENTITIES];
 
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
+int g_particleImpactPortal;
 
 
 #if !defined RTS
@@ -234,6 +247,7 @@ int i_WhatLevelForHudIsThisClientAt[MAXPLAYERS];
 
 float f_Data_InBattleHudDisableDelay[MAXPLAYERS];
 float f_InBattleDelay[MAXENTITIES];
+float f_TimerStatusEffectsDo[MAXENTITIES];
 
 int Healing_done_in_total[MAXENTITIES];
 int i_PlayerDamaged[MAXENTITIES];
@@ -253,7 +267,6 @@ bool b_EnableCountedDowns[MAXPLAYERS];
 bool b_EnableClutterSetting[MAXPLAYERS];
 bool b_EnableNumeralArmor[MAXPLAYERS];
 int i_CustomModelOverrideIndex[MAXPLAYERS];
-int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXPLAYERS];
 float f_InBattleHudDisableDelay[MAXPLAYERS];
 int CurrentAmmo[MAXPLAYERS][Ammo_MAX];
@@ -276,6 +289,7 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXPLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 int i_PlayerToCustomBuilding[MAXENTITIES] = {0, ...};
 float f_BuildingIsNotReady[MAXPLAYERS] = {0.0, ...};
+float f_VintulumBombRecentlyUsed[MAXPLAYERS] = {0.0, ...};
 float f_AmmoConsumeExtra[MAXPLAYERS];
 #endif
 
@@ -296,6 +310,7 @@ float f_Client_BackwardsWalkPenalty[MAXPLAYERS]={0.7, ...};
 float f_Weapon_BackwardsWalkPenalty[MAXENTITIES]={0.9, ...};
 float f_Client_BackwardsWalkPenalty[MAXPLAYERS]={0.9, ...};
 #endif
+int i_Client_Gravity[MAXPLAYERS]={800, ...};
 
 float f_Client_LostFriction[MAXPLAYERS]={0.1, ...};
 int i_SemiAutoWeapon[MAXENTITIES];
@@ -432,6 +447,7 @@ float f_PullStrength[MAXENTITIES];
 float ReplicateClient_Svairaccelerate[MAXPLAYERS];
 float ReplicateClient_BackwardsWalk[MAXPLAYERS];
 float ReplicateClient_LostFooting[MAXPLAYERS];
+int ReplicateClient_Gravity[MAXPLAYERS];
 int ReplicateClient_Tfsolidobjects[MAXPLAYERS];
 int ReplicateClient_RollAngle[MAXPLAYERS];
 
@@ -766,6 +782,7 @@ float f_ClientDoDamageHud[MAXPLAYERS][2];
 float f_ClientDoDamageHud_Hurt[MAXPLAYERS][2];
 float f3_NpcSavePos[MAXENTITIES][3];  
 float f_DelayComputingOfPath[MAXENTITIES];
+#define EXTRA_RAID_EXPLOSIVE_DAMAGE 1.3
 
 enum
 {
@@ -794,9 +811,9 @@ enum
 	BLEEDTYPE_SKELETON = 5,
 	BLEEDTYPE_SEABORN = 6,
 	BLEEDTYPE_VOID = 7,
-	BLEEDTYPE_UMBRAL = 8
+	BLEEDTYPE_UMBRAL = 8,
+	BLEEDTYPE_PORTAL = 9
 }
-
 
 
 int i_TankAntiStuck[MAXENTITIES];
@@ -879,4 +896,18 @@ float MultiGlobalHealthBoss = 0.25;
 float MultiGlobalHighHealthBoss = 0.34;
 //This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
 
+//Above a certain amount, bosses gain more damage and HP, but its capped at a certain amount of them just like normal enemies
+float MultiGlobalScalingBossExtra = 1.0;
+
+enum
+{
+	FogType_Wave,
+	FogType_NPC,
+	
+	FogType_COUNT
+}
+
+int CustomFogEntity[FogType_COUNT];	// Array of fog controller entity refs set by the gamemode that exist, but might not be active
+int MapFogEntity;					// Entity ref of the fog controller used by the map, that is currently unused because a custom fog is taking priority
+int ActiveFogEntity;				// Entity ref of the fog controller that is currently active, mostly used for late joins
 #endif

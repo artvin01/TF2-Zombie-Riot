@@ -433,7 +433,7 @@ static Action VictoriaAssaulter_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 
 	return Plugin_Changed;
-	}
+}
 
 static void VictoriaAssaulter_NPCDeath(int entity)
 {

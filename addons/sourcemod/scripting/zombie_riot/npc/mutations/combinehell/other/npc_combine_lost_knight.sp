@@ -226,42 +226,9 @@ methodmap LostKnight < CClotBody
 				}
 			}
 		}
-
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
-
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "10 10 10 255");
-			DispatchKeyValue(entity, "fogcolor2", "10 10 10 255");
-			DispatchKeyValueFloat(entity, "fogstart", 10.0);
-			DispatchKeyValueFloat(entity, "fogend", 125.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.825);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-			
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
+		
+		int color[4] = { 10, 10, 10, 255 };
+		SetCustomFog(FogType_NPC, color, color, 10.0, 125.0, 0.825);
 
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
@@ -495,14 +462,7 @@ public void LostKnight_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog(FogType_NPC);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

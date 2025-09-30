@@ -39,7 +39,7 @@
 	"Lost Ingots"
 	{
 		"#format"	"{1:d}"
-		"en"		"{red}Lost {1} Australium Ingots!"
+		"en"		"{crimson}Lost {1} Australium Ingots!"
 	}
 	"Gained Shield"
 	{
@@ -285,8 +285,8 @@
 	}
 	"Theatrical Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {red}but lose 10 ammo supplies"
-		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 10 боеприпасов"
+		"en"	"{yellow}Receive an unknown artifact {crimson}but lose 10 ammo supplies"
+		"ru"	"{yellow}Получить неизвестный артефакт{crimson}, но потерять 10 боеприпасов"
 	}
 	"Theatrical Lore 1a"
 	{
@@ -308,7 +308,7 @@
 	}
 	"Eccentric Lore"
 	{
-		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Combine, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
+		"en"	"''I know who it is that you seek, outsider,'' says a slender, stooped woman with a strange laugh.\n''You don't understand that Mazeaten, do you? You seem to trust him, though.''\nThe strange woman looks at you through her helmet and scarf.\n''I can tell you all about his past. Are you interested?''\nShe reaches out her shriveled hands, seemingly asking for something."
 		"ru"	"«Я знаю, кого ты ищешь, чужак,» - говорит стройная, сутулая женщина со странным смехом.\n«Ты не понимаешь этого комбайна, не так ли? Но, похоже, вы ему доверяете.»\nСтранная женщина смотрит на вас через шлем и шарф.\n«Я могу рассказать вам всё о его прошлом. Вы заинтересованы?»\nОна протягивает свои сморщенные руки, как бы прося о чём-то."
 	}
 	"Eccentric Option 1"
@@ -318,12 +318,12 @@
 	}
 	"Eccentric Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
-		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 4 слитков австралия"
+		"en"	"{yellow}Receive an unknown artifact {crimson}but lose 4 Australium Ingots"
+		"ru"	"{yellow}Получить неизвестный артефакт{crimson}, но потерять 4 слитков австралия"
 	}
 	"Eccentric Lore 1a"
 	{
-		"en"	"''He's part of the line of Combine lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
+		"en"	"''He's part of the line of Mazeat lords, powerful and defending a cause they believe in. Other lords see different from him. 'Shadow' sees in putting darkness over the world, ending it like a payload."
 	}
 	"Eccentric Lore 1b"
 	{
@@ -346,7 +346,7 @@
 	}
 	"Eccentric Lore 1-1a"
 	{
-		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's him striking. Luckily it's small pranks to keep him amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
+		"en"	"''Ah, 'Shadow.' Lurks in the shadows, never knowing when to strike. If you ever feel like you disconnected from the world, that's her striking. Luckily it's small pranks to keep her amused for now. When he does come out, let's just say it's as we vanished, shut down.''"
 	}
 	"Eccentric Lore 1-1b"
 	{
@@ -359,8 +359,7 @@
 	}
 	"Eccentric Lore 1-2"
 	{
-		"en"	"''Ah, he's locked away. Your Combine friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
-		"ru"	"\"А, под замком. Ваш друг комбайн запер «Взбешённого клинка», как он это сделал, я до сих пор не знаю. Скажем так, он никогда не увидит дневной свет, пока он в клетке.\""
+		"en"	"''Ah, he's locked away. Your Mazeat friend locked 'Bladedance' away, how he did it is still questions me. Let's just say he'll never see the light of day as long the cage remains.''"
 	}
 	"Eccentric Option 1-3"
 	{
@@ -369,8 +368,7 @@
 	}
 	"Eccentric Lore 1-3"
 	{
-		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Especially with the other lords having other plans. There is however a section of the world where only nature roams, but easily invaded.''"
-		"ru"	"\"Ха-ха-ха, «Белый цветок» даже не представляет, как это провернуть. Особенно учитывая, что у других лордов другие планы. Однако в мире есть участок, где есть только природа, но туда легко вторгнуться.\""
+		"en"	"''Hahaha, 'Whiteflower' has no idea how to even pull it off. Betraying every other lord, only himself and 'Shadow' left together.''"
 	}
 	"Eccentric Option 1-4"
 	{
@@ -444,12 +442,12 @@
 	}
 	"Coffin of Evil Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {red}but lose 30 ammo supplies"
-		"ru"	"{yellow}Получить неизвестный артефакт{red}, но потерять 30 боеприпасов"
+		"en"	"{yellow}Receive an unknown artifact {crimson}but lose 30 ammo supplies"
+		"ru"	"{yellow}Получить неизвестный артефакт{crimson}, но потерять 30 боеприпасов"
 	}
 	"Coffin of Evil Lore 1"
 	{
-		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Combine climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
+		"en"	"The coffin was nailed shut. Your only way to free its occupant is to pry it open. An attractive-looking Mazeaten climbs out of the coffin. Kindness is always rewarded, and he gives you a gift as thanks."
 		"ru"	"Гроб был заколочен. Единственный способ освободить его обитателя - вскрыть его. Из гроба вылезает привлекательного вида комбайн. Доброта всегда вознаграждается, и в благодарность он дарит вам подарок."
 	}
 	"Coffin of Evil Option 2"
@@ -469,7 +467,7 @@
 	}
 	"Eye for an Eye Lore"
 	{
-		"en"	"A refined, well-dressed Combine stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
+		"en"	"A refined, well-dressed Mazeaten stands before you.\nHe politely asks if you know of an innocent man who was once wrongfully punished because of him.\nYou ask him to elaborate and learn that, because of a mistake he made, the Medievalists all mistook his friend for a Witch and locked him here.\nThe man promises a sizable reward if you lend him your help."
 		"ru"	"Перед вами стоит изысканный, хорошо одетый комбайн.\nОн вежливо спрашивает, не знаете ли вы о невинном человеке, который когда-то был несправедливо наказан из-за него.\nВы просите его рассказать подробнее и узнаёте, что из-за ошибки, которую он совершил, все медиевисты приняли его друга за ведьму и заперли его здесь.\nМужчина обещает крупную награду, если вы окажете ему помощь."
 	}
 	"Eye for an Eye Option 1"
@@ -484,7 +482,7 @@
 	}
 	"Eye for an Eye Lore 1"
 	{
-		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Combine promises to reward you."
+		"en"	"You tell him his friend has already been freed. The news is most encouraging, and the Mazeaten promises to reward you."
 		"ru"	"Вы говорите ему, что его друг уже освобождён. Новость обнадёживает, и комбайн обещает вознаградить вас."
 	}
 	"Eye for an Eye Option 2"
@@ -494,8 +492,8 @@
 	}
 	"Eye for an Eye Desc 2"
 	{
-		"en"	"{green}Gain 3000 cash {red}but lose 20 ammo supplies"
-		"ru"	"{green}Получить 3 000 кредитов{red}, но потерять 20 боеприпасов"
+		"en"	"{green}Gain 3000 cash {crimson}but lose 20 ammo supplies"
+		"ru"	"{green}Получить 3 000 кредитов{crimson}, но потерять 20 боеприпасов"
 	}
 	"Eye for an Eye Lore 2"
 	{
@@ -514,7 +512,7 @@
 	}
 	"Eye for an Eye Lore 3"
 	{
-		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Combine sighs and laments how his time will end on a tragic note."
+		"en"	"You must always be vigilant in a place like this. Noticing that you remain indifferent to his words, the Mazeaten sighs and laments how his time will end on a tragic note."
 		"ru"	"В таком месте всегда нужно быть бдительным. Заметив, что вы остались равнодушны к его словам, комбайн вздыхает и сетует на то, что его время закончится на трагической ноте."
 	}
 	"Xeno Shaft Title"
@@ -650,7 +648,7 @@
 	}
 	"Broken Bridge Desc 1"
 	{
-		"en"	"{yellow}Receive an unknown artifact {red}but lose 4 Australium Ingots"
+		"en"	"{yellow}Receive an unknown artifact {crimson}but lose 4 Australium Ingots"
 	}
 	"Broken Bridge Lore 1"
 	{
@@ -1176,7 +1174,7 @@
 	}
 	"Bewildered Desc"
 	{
-		"en"	"{green}More stages to pick from {yellow}but the chapter is now longer."
+		"en"	"{green}More stages to pick from {yellow}and the current floor is longer."
 	}
 	"Bewildered Lore"
 	{
@@ -1188,7 +1186,7 @@
 	}
 	"Sensitive Desc"
 	{
-		"en"	"{red}Players take +25％ more damage {green}but heal +100％ more."
+		"en"	"{crimson}Players take +25％ more damage {green}but heal +100％ more."
 	}
 	"Sensitive Lore"
 	{
@@ -1200,7 +1198,7 @@
 	}
 	"Obsessed Desc"
 	{
-		"en"	"{green}Gain 3 extra Australium Ingots after every battle{red}but all Australium Ingots collected this chapter aren't kept for the next."
+		"en"	"{green}Gain 3 extra Australium Ingots after every combat{crimson}but all Australium Ingots gained on this floor aren't kept for the next."
 	}
 	"Obsessed Lore"
 	{
@@ -1212,7 +1210,7 @@
 	}
 	"Solitary Desc"
 	{
-		"en"	"{red}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
+		"en"	"{crimson}Store items cost 10％ more {green}but Pack-a-Punch upgrades cost 10％ less."
 	}
 	"Solitary Lore"
 	{
@@ -1224,7 +1222,7 @@
 	}
 	"Blind Desc"
 	{
-		"en"	"{green}Gain an extra Australium Ingot each stage but {red}you can not see the name of stages in votes."
+		"en"	"{green}Gain an extra Australium Ingot each stage{crimson} but you cannot see the names of stages in votes."
 	}
 	"Blind Lore"
 	{
@@ -1247,7 +1245,7 @@
 	}
 	"Pure Greed Desc"
 	{
-		"en"	"On this floor you will gain +25％ australium ingots, but all enemies will deal +25％ more damage."
+		"en"	"On this floor you will gain +25％ Australium Ingots, but all enemies will deal +25％ more damage."
 		"ru"	"На этом этаже вы получите +25％ слитков австралия, но все враги будут наносить на +25％ больше урона."
 	}
 	
@@ -1276,7 +1274,7 @@
 	}
 	"Health Pickup Desc"
 	{
-		"en" 	"{green}Extra Health powerup spawns at the start of a stage."
+		"en" 	"{green}Extra Health and ammo powerups spawns at the start of a stage."
 	}
 	"Support Squad"
 	{
@@ -1295,7 +1293,7 @@
 	}
 	"Spearhead Squad Desc"
 	{
-		"en"	"{green}All Allies gain +15％ damage bonus and +50 max health"
+		"en"	"{green}Allies deal +15％ damage and gain +50 max health"
 	}
 	"Research Squad"
 	{
@@ -1304,7 +1302,7 @@
 	}
 	"Research Squad Desc"
 	{
-		"en"	"{green}Store items are 10％ off while not in combat"
+		"en"	"{green}Store items are 10％ off outside of combat"
 		"ru"	"{green}Скидка на товары в магазине 10％ вне боя"
 	}
 	"First Class Squad"
@@ -1323,7 +1321,7 @@
 	}
 	"Provoked Anger Desc"
 	{
-		"en"	"Anger is usually provoked, this anger can be useful.\n- Every time you are hurt, gain +5％ extra damage for your holding weapon for 5 seconds."
+		"en"	"Provocation leads to anger, Anger leads to strength.\n- {green}Whenever you take damage, gain +5％ damage for your weapon for 5 seconds."
 		"ru"	"Гнев обычно провоцируется, этот гнев может быть полезен.\n- Каждый раз, когда вас ранят, получайте +5％ доп. урона для вашего оружия в руках на 5 сек."
 	}
 	"Grigori's Coin Purse"
@@ -1333,7 +1331,7 @@
 	}
 	"Grigori's Coin Purse Desc"
 	{
-		"en"	"Alot of money, yet never too much.\n- Gain More attackspeed and healspeed the more australium ingots you own."
+		"en"	"A lot of money, yet never too much.\n- {green}Ally attack speed increases slightly for every Australium Ingot owned."
 		"ru"	"Много денег, но никогда не бывает слишком много.\n- Увеличивайте скорость атаки и скорость лечения тем больше, чем больше слитков австралиума вы имеете."
 	}
 	"Malfunctioning Shield"
@@ -1343,7 +1341,7 @@
 	}
 	"Malfunctioning Shield Desc"
 	{
-		"en"	"A broken shield that is still useable.\n- Every 10 seconds gain a shield that blocks once instance of damage entirely.\n- Also applies that shield upon entering a new battle."
+		"en"	"A barely functioning Expisondan shield.\n- {green}Every 10 seconds, gain a shield that blocks one instance of damage."
 	}
 	"Bob's Exchange Money"
 	{
@@ -1352,8 +1350,8 @@
 	}
 	"Bob's Exchange Money Desc"
 	{
-		"en"	"Must have left it behind.\n- Gain 12 australium ingots."
-		"ru"	"Должно быть, забыл их.\n- Получите 12 слитков австралия."
+		"en"	"Someone must have left it behind.\n- {green}Gain 16 Australium Ingots."
+		"ru"	"Должно быть, забыл их.\n- Получите 16 слитков австралия."
 	}
 	"Music Releasing Radio"
 	{
@@ -1362,7 +1360,7 @@
 	}
 	"Music Releasing Radio Desc"
 	{
-		"en"	"It releases music, it cant be stopped it seems.\n- All enemies will be 10％ slower."
+		"en"	"It plays a soothing, everlasting melody.\n- {green}All enemies gain -10％ movement speed."
 		"ru"	"Оно выпускает музыку, и его невозможно остановить.\n- Все враги станут медленнее на 10％."
 	}
 	"Wrath Of Itallians"
@@ -1372,7 +1370,7 @@
 	}
 	"Wrath Of Itallians Desc"
 	{
-		"en"	"Its Spaghetti thats covered in chocolate.\n- Anytime a weapon ability is activated, that weapon will deal 2x dmg for 1 second."
+		"en"	"Spaghetti covered in chocolate...disgusting.\n- {green}Upon using a weapon ability, deal double damage for 1 second."
 		"ru"	"Это спагетти, покрытые шоколадом.\n- Каждый раз, когда активируется способность оружия, это оружие будет наносить 2x урона в течение 1 сек."
 	}
 	"Hand Of The Elder Mages"
@@ -1382,7 +1380,7 @@
 	}
 	"Hand Of The Elder Mages Desc"
 	{
-		"en"	"It is a miniature statue of a broken hand.\n- All ''Splash Magic'' and ''Drone Magic'' weapons on hit get 2 seconds of reduced cooldown."
+		"en"	"It is a miniature statue of a broken hand.\n- {green}All ''Splash Magic'' and ''Drone Magic'' weapons reduce their ability cooldown by 2s on hit."
 	}
 	"Bracelets of Agility"
 	{
@@ -1391,7 +1389,7 @@
 	}
 	"Bracelets of Agility Desc"
 	{
-		"en"	"Light and agile, from the far reaches of kazimierz.\n- Gain a 10％ dodge chance."
+		"en"	"Light and agile, from the far reaches of Kazimierz.\n- {green}Gain a 10％ dodge chance."
 		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10％ шанс уклонения."
 	}
 	"Elastic Flying Cape"
@@ -1401,7 +1399,7 @@
 	}
 	"Elastic Flying Cape Desc"
 	{
-		"en"	"A cape that surrounds you and gives extra senses.\n- Gain a 10％ dodge chance against ranged attacks."
+		"en"	"A cape that enhances your senses to unnatural levels.\n- {green}Gain 10％ dodge chance against ranged attacks."
 		"ru"	"Плащ, который окружает вас и даёт дополнительные чувства.\n- Получите 10％ шанс уклонения от атак дальнего боя."
 	}
 	"Healing Salve"
@@ -1411,8 +1409,7 @@
 	}
 	"Healing Salve Desc"
 	{
-		"en"	"Some salve for your wounds.\n- +1hp regen."
-		"ru"	"Немного мази для ваших ран.\n- +1 к восстановлению здоровья."
+		"en"	"Some salve for your wounds.\n- {green}+10 health regen."
 	}
 	"Steel Razor"
 	{
@@ -1421,7 +1418,7 @@
 	}
 	"Steel Razor Desc"
 	{
-		"en"	"Sharp and pointy.\n- +15％ more melee damage."
+		"en"	"Sharp and pointy.\n- {green}Players gain +15％ melee damage."
 		"ru"	"Острый, заточенный.\n- +15％ к урону в ближнем бою."
 	}
 	"Healthy Essence"
@@ -1431,7 +1428,7 @@
 	}
 	"Healthy Essence Desc"
 	{
-		"en"	"Being near it makes you feel better.\n- +25％ more healing from most sources."
+		"en"	"Being near it makes you feel better.\n- {green}Players receive +25％ more healing from most sources."
 		"ru"	"Находясь рядом с этим, вы чувствуете себя лучше.\n- +25％ к лечению от большинства источников."
 	}
 	"Chicken Nugget Box"
@@ -1441,7 +1438,7 @@
 	}
 	"Chicken Nugget Box Desc"
 	{
-		"en"	"Still good and tasty as ever.\n- +15％ more health."
+		"en"	"Still good and tasty as ever. Yummers.\n- {green}Players gain +15％ max health."
 		"ru"	"Всё так же хорошо и вкусно.\n- +15％ к здоровью."
 	}
 	"Fizzy Drink"
@@ -1451,7 +1448,7 @@
 	}
 	"Fizzy Drink Desc"
 	{
-		"en"	"Be careful when you open it, its shook.\n- All enemies will gib no matter what."
+		"en"	"A fizzy drink primed to explode at any second.\n- {green}All enemies will gib no matter what."
 		"ru"	"Будьте осторожны, когда открываете его, он шипит.\n- Все враги будут разлетаться на кусочки, несмотря ни на что."
 	}
 	"Hover Glider"
@@ -1461,7 +1458,7 @@
 	}
 	"Hover Glider Desc"
 	{
-		"en"	"A device from old german technology.\n- You deal 30％ more damage while being in the air or in mid swim."
+		"en"	"An ancient device of Expisondan origin.\n- {green}Players deal +30％ damage while airborne or swimming."
 		"ru"	"Устройство из старой немецкой технологии.\n- Вы наносите на 30％ больше урона, находясь в воздухе или во время плавания."
 	}
 	"Hand Written Letter"
@@ -1471,7 +1468,7 @@
 	}
 	"Hand Written Letter Desc"
 	{
-		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Cash, 2％ more damage."
+		"en"	"A written letter containing vulgar language and self aggrandizing imagery.\n- {green}Gain 750 Cash and deal +2％ damage."
 		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2％ больше урона."
 	}
 	"Crude Flute"
@@ -1481,7 +1478,7 @@
 	}
 	"Crude Flute Desc"
 	{
-		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3％ MaxHealth."
+		"en"	"An antique flute that brings slight fortune to those who wield it.\n- {green}Gain 500 Cash and +3％ max health."
 		"ru"	"Музыкальный инструмент, хорошо расслабляет, необходим в подобных ситуациях.\n- +500 кредитов, +3％ макс. запас здоровья."
 	}
 	"Scrapped Wallet"
@@ -1491,7 +1488,7 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Cash and 1％ more damage."
+		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 	}
 	"Golden Coin"
@@ -1501,7 +1498,7 @@
 	}
 	"Golden Coin Desc"
 	{
-		"en"	"A Valueable golden coin from old greek.\n- +2000 Cash and +10 Australium ingots."
+		"en"	"A coin picturing Grigori in his youth.\n- {green}Gain 2000 Cash and 10 Australium Ingots."
 		"ru"	"Ценная золотая монета из старой Греции.\n- +2000 кредитов и +10 слитков австралия."
 	}
 	"Nickel Injected Pack"
@@ -1511,16 +1508,15 @@
 	}
 	"Nickel Injected Pack Desc"
 	{
-		"en"	"A high tech pack with alot of drugs to boosten your strength and gear.\n- Deal 35％ more damage at max health, the less health you have, the less damage you deal untill the bonus is gone."
+		"en"	"A high-tech pack that adapts to the owner's health.\n- {green}Players gain +35％ damage at max health, the damage bonus goes away as your health gets lower."
 	}
 	"Spanish Specialised Gunpowder"
 	{
-		"en"	"Spanish Specialised Gunpowder"
-		"ru"	"Испанский специальный порох"
+		"en"	"Iberia Specialised Gunpowder"
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
-		"en"	"Gunpower created in spain, and made specifically for spanish troops.\n- +15％ more ranged damage."
+		"en"	"Gunpower created in Iberia, and made specifically for Iberian Inquisitors.\n- {green}Players gain +15％ ranged and mage damage."
 		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15％ к урону в дальнем бою."
 	}
 	"Supply Depot"
@@ -1530,7 +1526,7 @@
 	}
 	"Supply Depot Desc"
 	{
-		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +2 maximum allies."
+		"en"	"Authorization approved. Increasing Barracks funding.\n{green}Barracks gain +2 units and +1 supplies."
 		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +2 к максимуму союзников."
 	}
 	"Al-Hallam's Fortress Blueprints"
@@ -1539,7 +1535,7 @@
 	}
 	"Al-Hallam's Fortress Blueprints Desc"
 	{
-		"en"	"''Seems almost mythological...''\n{green}+2 supply for Barracks, +4 maximum allies."
+		"en"	"Following the blueprints greatly increases the efficiency of your Barracks.\n{green}Barracks gain +4 units and +2 supplies."
 	}
 	"Gambesons"
 	{
@@ -1548,7 +1544,7 @@
 	}
 	"Gambesons Desc"
 	{
-		"en"	"A medieval armor plate, the balance seems off.\n{green}Barrack Units receive a flat 10 damage reduction."
+		"en"	"A medieval-grade armor plate.\n{green}Barracks units gain a flat 10 damage taken reduction."
 		"ru"	"Средневековая броня, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 10 ед."
 	}
 	"Neosteal Plating"
@@ -1558,7 +1554,7 @@
 	}
 	"Neosteal Plating Desc"
 	{
-		"en"	"A space building armor plate, the balance seems off.\n{green}Barrack Units receive a flat 20 damage reduction."
+		"en"	"A space-grade armor plate.\n{green}Barrack units gain a flat 20 damage taken reduction."
 		"ru"	"Космическая броня строения, баланс кажется нарушенным.\n{green}Войска из казарм получают плоское снижение урона на 20 ед."
 	}
 	"Thumb Ring"
@@ -1568,27 +1564,27 @@
 	}
 	"Thumb Ring Desc"
 	{
-		"en"	"Medieval technology that somehow made you 100％ accurate (to standing targets).\n{green}Ally bow-line and crossbow-line fire and reload 33％ faster."
+		"en"	"A medieval ring used to aim and hit faraway (stationary) targets.\n{green}Player bow-line and crossbow-line weapons Shoot and reload 33％ faster."
 		"ru"	"Средневековая технология, которая каким-то образом сделала вас на 100％ метким (в стоящие цели).\n{green}Все луки и арбалеты стреляют и перезаряжаются на 33％ быстрее."
 	}
 	"Blademace"
 	{
-		"en"	"''Blademace''"
+		"en"	"Blademace"
 		"ru"	"«Булава с лезвием»"
 	}
 	"Blademace Desc"
 	{
-		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20％ damage bonus, +20％ max health, +2％ damage resistance {red}but -10％ movement speed{yellow}."
+		"en"	"A sword lodged in a stone. Was someone bored enough to do this?\n{green}All Allies gain +20％ damage, +20％ max health, +2％ damage resistance {crimson}but gain -10％ movement speed."
 	}
 	"Brokenblade"
 	{
-		"en"	"''Brokenblade''"
+		"en"	"Brokenblade"
 		"ru"	"«Сломанный клинок»"
 	}
 	"Brokenblade Desc"
 	{
-		"en"	"A broken sword. It's usable... probably...\n{green}Players and Rebels revive speed is doubled {red}but -20％ max health{yellow}."
-		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{red}, но -20％ макс. запаса здоровья{yellow}."
+		"en"	"A broken sword. It's usable... probably...\n{green}All allies gain 2x revive speed {crimson}but gain -20％ max health."
+		"ru"	"Сломанный меч. Его можно использовать... возможно...\n{green}Скорость возрождения игроков и повстанцев удвоена{crimson}, но -20％ макс. запаса здоровья{yellow}."
 	}
 	"Bladedance"
 	{
@@ -1597,7 +1593,7 @@
 	}
 	"Bladedance Desc"
 	{
-		"en"	"An artifact left behind by a casino onwer.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus, and +100％ Healing Rate."
+		"en"	"An artifact left behind by a lord.\n{green}One player at a time will gain +100％ max health, +100％ damage and +100％ heal rate."
 	}
 	"Whiteflower"
 	{
@@ -1606,7 +1602,7 @@
 	}
 	"Whiteflower Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped"
+		"en"	"An artifact left behind by a lord.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped between players"
 	}
 	"Shadow"
 	{
@@ -1615,8 +1611,7 @@
 	}
 	"Shadow Desc"
 	{
-		"en"	"An artifact left behind by a ''Crimson Troupe'' member.\n{yellow}Non-player allies will use the same max health from players."
-		"ru"	"Артефакт, оставленный членом «Багровой труппы».\n{yellow}Персонажи-союзники будут иметь тот же макс. запас здоровья, что и игроки."
+		"en"	"An artifact left behind by a lord.\n{yellow}NPC allies will use the same max health from players."
 	}
 	"Right Eye of the Natator"
 	{
@@ -1625,8 +1620,8 @@
 	}
 	"Right Eye of the Natator Desc"
 	{
-		"en"	"One half of the Gaulish empress's crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {red}but -5％ melee damage{yellow}."
-		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{red}, но -5％ урона в ближнем бою{yellow}."
+		"en"	"One half of the Gaulish empress' crown is now housed in the Royal Museum of Londinium.\n{green}Enemies take +20％ ranged damage {crimson}but -5％ melee damage."
+		"ru"	"Одна половина короны галльской императрицы сейчас хранится в Королевском музее Лондиниума.\n{green}Враги получают на +20％ больше урона в дальнем бою{crimson}, но -5％ урона в ближнем бою{yellow}."
 	}
 	"Left Eye of the Natator"
 	{
@@ -1635,8 +1630,8 @@
 	}
 	"Left Eye of the Natator Desc"
 	{
-		"en"	"One half of the Gaulish empress's crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {red}but -5％ ranged damage{yellow}."
-		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{red}, но -5％ урона в дальнем бою{yellow}."
+		"en"	"One half of the Gaulish empress' crown is now stored housed in the Leithanien Queen Library.\n{green}Enemies take +20％ melee damage {crimson}but -5％ ranged damage."
+		"ru"	"Одна половина короны галльской императрицы сейчас хранится в библиотеке королевы Лейтаниена.\n{green}Враги получают на +20％ больше урона в ближнем бою{crimson}, но -5％ урона в дальнем бою{yellow}."
 	}
 	"End of Times"
 	{
@@ -1655,16 +1650,16 @@
 	}
 	"Proof of Friendship Desc"
 	{
-		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from battles, doubled on Elite battles."
+		"en"	"When they extend to others their exalted friendship, they do not allow it to be sullied.\n{green}+1 Australium Ingot drop from combats, doubled on Elite combats."
 		"ru"	"Когда они распространяют на других свою дружбу, они не позволяют ей быть запятнанной.\n{green}+1 слиток австралиума выпадает из сражений, удваивается в элитных сражениях."
 	}
 	"Broken Combine Crown"
 	{
-		"en"	"Broken Combine Crown"
+		"en"	"Broken Mazeaten Crown"
 	}
 	"Broken Combine Crown Desc"
 	{
-		"en"	"A crown rusted, wet, and broken sharp edges. You feel you seen this before.\n{red}All Allies receive -5％ max health {blue}and the ending is changed."
+		"en"	"A rusty, pointy crown. You feel like you've seen it before.\n{crimson}All Allies gain -5％ max health {blue}and the ending is changed."
 	}
 	"Bob's Reseach Papers"
 	{
@@ -1672,7 +1667,7 @@
 	}
 	"Bob's Reseach Papers Desc"
 	{
-		"en"	"A list of names written like test subjects, you feel unease, like something is watching you read it.\n{red}Players receive -10％ movement speed."
+		"en"	"A list of test subjects, half of them redacted. You feel like someone is watching you read it.\n{crimson}Players gain -10％ movement speed."
 	}
 	"Bob's Final Draft"
 	{
@@ -1680,7 +1675,7 @@
 	}
 	"Bob's Final Draft Desc"
 	{
-		"en"	"You read a written report on a combine named Bladedance, it's unfinished, rushed. Something bad was lose.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
+		"en"	"A report about a Mazeaten named ''Bladedance''. Status: Unknown. The rest of the report is torn off.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
 	}
 	"Hand of Sticks"
 	{
@@ -1688,7 +1683,7 @@
 	}
 	"Hand of Sticks Desc"
 	{
-		"en"	"Real close and personal.\n{green}''Charger'' and ''Debuffer'' weapons gain +35％ melee damage resistance and gain 0.5 seconds of speed boost on hit."
+		"en"	"Real close and personal.\n{green}''Charger'' and ''Debuffer'' weapons gain +35％ melee damage resistance and 0.5 seconds of speed boost on hit."
 	}
 	"Hand of Quake"
 	{
@@ -1696,7 +1691,7 @@
 	}
 	"Hand of Quake Desc"
 	{
-		"en"	"Where's the rocket jumping?\n{green}''Artillery'' and ''Mechanic'' weapons weapons grant +150％ jump height and 50％ more damage."
+		"en"	"Where's the rocket jumping?\n{green}''Artillery'' and ''Mechanic'' weapons gain +150％ jump height and deal +50％ damage."
 	}
 	"Hand of Travel"
 	{
@@ -1704,7 +1699,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons weapons grant +10 health regen."
+		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons gain +25 health regen."
 	}
 	"Hand of Trapmaster"
 	{
@@ -1720,7 +1715,7 @@
 	}
 	"Hand of Geek Desc"
 	{
-		"en"	"You want my drugs?\n{green}''Tactician'' and ''Deadeye'' weapons grant +3 health on hit and 35％ Ranged Damage Resistance."
+		"en"	"You want my drugs?\n{green}''Tactician'' and ''Deadeye'' weapons gain +3 health on hit and 35％ Ranged Damage Resistance."
 	}
 	"Hand of Suprise"
 	{
@@ -1728,7 +1723,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and attack 33％ faster."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33％ attack speed."
 	}
 	"Hand of Revenge"
 	{
@@ -1736,7 +1731,7 @@
 	}
 	"Hand of Revenge Desc"
 	{
-		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Combatant'' weapons gain +150％ damage bonus while below half health."
+		"en"	"Better not touch me then.\n{green}''Duelist'' and ''Combatant'' weapons gain +150％ damage while below half health."
 	}
 	"Hand of Stock"
 	{
@@ -1744,7 +1739,7 @@
 	}
 	"Hand of Stock Desc"
 	{
-		"en"	"Investing in the marketplace.\n{green}''Rapid Magic'' and ''Power Magic'' weapons grant +100％ max mana and regen and attack +100％ faster."
+		"en"	"Investing in the marketplace.\n{green}''Rapid Magic'' and ''Power Magic'' weapons gain +100％ max mana, mana regen and attack speed."
 	}
 	"Hand of the Elite"
 	{
@@ -1752,7 +1747,7 @@
 	}
 	"Hand of the Elite Desc"
 	{
-		"en"	"Such elegance.\n{green}''Lord'' and ''Defender'' weapons gain +75％ damage bonus while over half health"
+		"en"	"Such elegance.\n{green}''Lord'' and ''Defender'' weapons gain +75％ damage while over half health"
 	}
 	"Soul of Boss vs Boss"
 	{
@@ -1760,7 +1755,7 @@
 	}
 	"Soul of Boss vs Boss Desc"
 	{
-		"en"	"Every creation starts from somewhere.\n{green}Specific themed weapons gain +100％ jump height"
+		"en"	"Every creation starts from somewhere.\n{green}Boss vs Boss themed weapons gain +100％ jump height"
 	}
 	"Soul of Arknights"
 	{
@@ -1768,7 +1763,7 @@
 	}
 	"Soul of Arknights Desc"
 	{
-		"en"	"Is this your final choice?\n{green}Specific themed weapons remove the down limit"
+		"en"	"Is this your final choice?\n{green}Arknights themed weapons remove the down limit"
 	}
 	"Soul of Bloons Tower Defense"
 	{
@@ -1776,7 +1771,7 @@
 	}
 	"Soul of Bloons Tower Defense Desc"
 	{
-		"en"	"Better build that temple.\n{green}Specific themed weapons grant +20％ damage to each other, stacking"
+		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20％ damage for every person with a unique bloons weapon"
 	}
 	"Soul of Yakuza"
 	{
@@ -1784,7 +1779,7 @@
 	}
 	"Soul of Yakuza Desc"
 	{
-		"en"	"10 years.\n{green}Specific themed weapons allow their special stance to always gain HEAT"
+		"en"	"10 years.\n{green}Yakuza themed weapons allow their special stance to always gain HEAT"
 	}
 	"Soul of Darkest Dungeon"
 	{
@@ -1792,7 +1787,7 @@
 	}
 	"Soul of Darkest Dungeon Desc"
 	{
-		"en"	"Face the light or be consumed.\n{green}Specific themed weapons have a chance to prevent dying and instead remain at one health"
+		"en"	"Face the light or be consumed.\n{green}Darkest Dungeon themed weapons gain a chance to prevent fatal damage"
 	}
 	"Soul of Terraria"
 	{
@@ -1800,7 +1795,7 @@
 	}
 	"Soul of Terraria Desc"
 	{
-		"en"	"And there will be mods.\n{green}Specific themed weapons grant 1000 HP every so often"
+		"en"	"And there will be mods.\n{green}Terraria themed weapons gain 1000 HP every so often"
 	}
 	"Xeno Anti-Vial"
 	{
@@ -1832,7 +1827,7 @@
 	}
 	"Bob's Orders Desc"
 	{
-		"en"	"Eliminate Whiteflower.\n{green}All Allies receive +15％ damage bonus and +20％ movement speed {blue}and the ending is changed."
+		"en"	"Eliminate Whiteflower.\n{green}All Allies gain +15％ damage and +20％ movement speed {blue}and the ending is changed."
 	}
 	"But Nobody Is Here"
 	{
@@ -1860,7 +1855,7 @@
 	}
 	"Cursed Relic Desc"
 	{
-		"en"	"From the back of the bin in the shop.\n{green}Players gain +8％ firing speed {red}most of the time"
+		"en"	"From the back of the bin in the shop.\n{green}Players gain +8％ attack speed {crimson}most of the time"
 	}
 	"Australium Printer"
 	{
@@ -1868,7 +1863,7 @@
 	}
 	"Australium Printer Desc"
 	{
-		"en"	"Convert that australium into shop money!\n{yellow}Australium Ingots are converted into 200 Cash each"
+		"en"	"Convert that Australium into Cash!\n{yellow}Convert All Australium Ingots into 200 Cash each"
 	}
 	"Elite Voucher"
 	{
@@ -1876,7 +1871,7 @@
 	}
 	"Elite Voucher Desc"
 	{
-		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a store discount"
+		"en"	"It's hard to find these things, use it well.\n{green}Recover a high-grade weapon with a discount"
 	}
 	"Rotten Bone"
 	{
@@ -1900,7 +1895,7 @@
 	}
 	"Copper Ore Desc"
 	{
-		"en"	"Copper.\n{green}Weapons fire +35％ bullets per shot {red}but stops working when Iron Ore is collected"
+		"en"	"Copper.\n{green}Weapons gain +35％ bullets per shot {crimson}but stops working when Iron Ore is obtained"
 	}
 	"Iron Ore"
 	{
@@ -1908,7 +1903,7 @@
 	}
 	"Iron Ore Desc"
 	{
-		"en"	"Iron.\n{green}Weapon projectiles gain +35％ projectile speed and range {red}but stops working when Copper Ore is collected"
+		"en"	"Iron.\n{green}Weapon projectiles gain +35％ speed and range {crimson}but stops working when Copper Ore is obtained"
 	}
 	"Empty Plate"
 	{
@@ -1924,7 +1919,7 @@
 	}
 	"Founder Fondue Desc"
 	{
-		"en"	"{green}Players take 10 less elemental damage"
+		"en"	"{green}Players gain 10 flat elemental damage taken reduction"
 	}
 	"Predator Pancakes"
 	{
@@ -1940,7 +1935,7 @@
 	}
 	"Brandguider Brunch Desc"
 	{
-		"en"	"{green}Players take 50％ less nethersea brand damage"
+		"en"	"{green}Nethersea Brand deals -50％ damage"
 	}
 	"Spewer Spewers"
 	{
@@ -2142,10 +2137,9 @@
 	{
 		"en" "⚠ True Survival Zombies"
 	}
-	
 	"Lone Health Title"
 	{
-		"en"	"You see a healthpack, alone, just sitting by the tree..."
+		"en"	"You see a healthpack, alone, just laying by the tree..."
 	}
 	"Lone Health Accept"
 	{
@@ -2153,25 +2147,23 @@
 	}
 	"Lone Health Accept Desc"
 	{
-		"en"	"{green}Gain a health powerup on stage start."
+		"en"	"{green}Gain a health and ammo powerup on stage start."
 	}
 	"Lone Health Decline"
 	{
 		"en"	"Don't touch it, it seems way too suspicious."
 	}
-
-	
 	"Astra Title"
 	{
-		"en"	"You see a dragon girl, she seems to scuffle around for resources in this area."
+		"en"	"You see a dragon girl, she seems busy scuffling around for resources in this area."
 	}
 	"Astra Title Accept"
 	{
-		"en"	"Offer her some australium ingots."
+		"en"	"Offer her some Australium Ingots."
 	}
 	"Astra Title Accept Desc"
 	{
-		"en"	"{green}Obtain a grand item and umbral affinity."
+		"en"	"{green}Obtain a grand item and Umbral Affinity."
 	}
 	"Astra Title Decline"
 	{
@@ -2179,7 +2171,7 @@
 	}
 	"Astra Title Decline Desc"
 	{
-		"en"	"{green}Gain cash and Umbral Affinity."
+		"en"	"{green}Gain Cash and Umbral Affinity."
 	}
 	"Broken Crest Title"
 	{
@@ -2187,33 +2179,31 @@
 	}
 	"Broken Crest Accept"
 	{
-		"en"	"Take the crest, seems usefull."
+		"en"	"Take the crest, seems useful."
 	}
 	"Broken Crest Decline"
 	{
 		"en"	"Don't risk it, who knows whats in it."
 	}
-	
 	"Broken Crest Accept Desc"
 	{
 		"en"	"{green}Receive the crest and {crimson}lose Umbral Affinity."
 	}
 	"Broken Crest Decline Desc"
 	{
-		"en"	"{green}Gain cash and Umbral Affinity."
+		"en"	"{green}Gain Cash and Umbral Affinity."
 	}
 	"Broken Crest Accept Conlusion"
 	{
-		"en"	"You pick it up, it feels heavy...{crimson}youre being judged."
+		"en"	"You pick it up, it feels heavy...{crimson}you're being judged."
 	}
 	"Broken Crest Decline Conlusion"
 	{
-		"en"	"You disregard it... The big broken crystal blesses you with a vision, as you follow it, you find cash!"
+		"en"	"You disregarded it... The big broken crystal blesses you with a vision and as you follow it, you find cash!"
 	}
-	
 	"Lone Health Decline Desc"
 	{
-		"en"	"{green}Gain cash, raise Umbral Affinity."
+		"en"	"{green}Gain Cash and Umbral Affinity."
 	}
 	"Mantle of Stars"
 	{
@@ -2229,7 +2219,7 @@
 	}
 	"Lelouch's Broken Crest Desc"
 	{
-		"en"	"{green}Players gain an extra level of armor.\n{default}It feels very immoral to own this, if twirl saw you with it, she'd be dissapointed."
+		"en"	"{green}Players gain an extra level of armor.\n{default}It feels very immoral to own this, if Twirl saw you with it, she'd be dissapointed."
 	}
 	"Incorruptable Leaf"
 	{
@@ -2237,7 +2227,7 @@
 	}
 	"Incorruptable Leaf Desc"
 	{
-		"en"	"{green}Players gain 30％ elemental resistance, when under elemental debuffs, gain 15％ Overall Resistance.\n{default}Very soothing, very calming."
+		"en"	"{green}Players gain 30％ Elemental Resistance, when under elemental debuffs, gain 15％ Resistance.\n{default}Very soothing, very calming."
 	}
 	"Strange Visitor"
 	{
@@ -2245,18 +2235,16 @@
 	}
 	"Astra Title Accept Conlusion"
 	{
-		"en"	"{brown}Astra{default} : Oh! Thank you so much! Have this as a thanks, something experimental i made."
+		"en"	"{brown}Astra{default} : Oh! Thank you so much! Have this as a thanks, something experimental I made."
 	}
 	"Astra Title Decline Conlusion"
 	{
 		"en"	"You ignore her, she doesnt notice you, or ignores you back..."
 	}
-
 	"Incorruptable Tree Title"
 	{
-		"en" "You find a tree, seemingly untouched by the void and umbrals."
+		"en" "You find a tree, seemingly untouched by the Void and Umbrals."
 	}
-
 	"Incorruptable Tree"
 	{
 		"en"	"Incorruptable Tree"
@@ -2275,7 +2263,7 @@
 	}
 	"Incorruptable Tree Decline Desc"
 	{
-		"en"	"{green}Gain Cash and gain Umbral Affinity."
+		"en"	"{green}Gain Cash and Umbral Affinity."
 	}
 	"Incorruptable Tree Accept Conlusion"
 	{
@@ -2283,11 +2271,11 @@
 	}
 	"Incorruptable Tree Decline Conlusion"
 	{
-		"en"	"You decide not to touch it, you see umbrals go to the tree to tend to it... they seemingly thank you?"
+		"en"	"You decide not to touch it, you see Umbrals tending to the tree, they seemingly thank you?"
 	}
 	"Free Treasure Ahead!"
 	{
-		"en"	"A pile of unprotected, not guraded, very vulnerable chests lay around."
+		"en"	"A pile of free unguarded booty. Ripe for plundering"
 	}
 	"Free Treasure Ahead! Accept"
 	{
@@ -2295,11 +2283,11 @@
 	}
 	"Free Treasure Ahead! Decline"
 	{
-		"en"	"I rather like being alive."
+		"en"	"It's obviously a trap."
 	}
 	"Almagest Technology Title"
 	{
-		"en"	"You see a piece of abandoned tech, its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring. Its very aluring."
+		"en"	"You see a piece of abandoned tech, its very alluring....... so......pretty.... almost makes you want to TAKEITRIGHTNOWGONOTHINGISSTOPPINGYOUMAKEITYOURS"
 	}
 	"Almagest Technology Accept"
 	{
@@ -2307,10 +2295,42 @@
 	}
 	"Almagest Technology"
 	{
-		"en"	"''Almagest Technology''"
+		"en"	"Almagest Technology"
 	}
 	"Almagest Technology Desc"
 	{
-		"en"	"It's Very Aluring.\n{green} Most cooldowns are reduced by 33％"
+		"en"	"It's Very Alluring.\n{green} Most cooldowns are reduced by 33％"
+	}
+	"Library Of Lixandria Title"
+	{
+		"en" "You see a giant library full of books, some stick out to you."
+	}
+"Omega and Vhxis Title"
+	{
+		"en"	"You spot two people in the distance that appear to be eerily familiar, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"
+	}
+	"Omega and Vhxis Accept"
+	{
+		"en"	"We should help them, maybe we'll get something in return?"
+	}
+	"Omega and Vhxis Decline"
+	{
+		"en"	"We can't afford to waste any time."
+	}
+	"Omega and Vhxis Accept Desc"
+	{
+		"en"	"{green}Gain 2 powerful allies."
+	}
+	"Omega and Vhxis Decline Desc"
+	{
+		"en"	"{green}Gain Cash."
+	}
+	"Omega and Vhxis Accept Conlusion"
+	{
+		"en"	"Omega and Vhxis join your side...or are you rather joining them?"
+	}
+	"Omega and Vhxis Decline Conlusion"
+	{
+		"en"	"You leave them be, they can handle themselves. You find some loose change."
 	}
 }

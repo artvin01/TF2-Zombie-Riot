@@ -64,6 +64,10 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_castellan");
 	NPC_GetByPlugin("npc_lelouch");
 	NPC_GetByPlugin("npc_omega_raid");
+	NPC_GetByPlugin("npc_cat");
+	NPC_GetByPlugin("npc_aris");
+	NPC_GetByPlugin("npc_chimera");
+	NPC_GetByPlugin("npc_vincent");
 }
 
 bool SameBossDisallow[64];
@@ -141,11 +145,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	SameBossDisallow[0] = true;
 	while(SameBossDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,26);
+		NumberRand = GetRandomInt(1,30);
 	}
 	if(i_RaidGrantExtra[bosssummonbase] == 666)
 	{
-		NumberRand = GetRandomInt(27,29);
+		NumberRand = GetRandomInt(31,33);
 	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
@@ -357,13 +361,6 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
-		case 26:
-		{
-			PluginName = "npc_lelouch";	
-			
-			enemy.ExtraDamage *= 0.85;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 0.85); 
-		}
 		case 25:
 		{
 			PluginName = "npc_omega_raid";	
@@ -371,15 +368,50 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			enemy.ExtraDamage *= 1.1;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
+		case 26:
+		{
+			PluginName = "npc_lelouch";	
+			
+			enemy.ExtraDamage *= 0.85;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.85); 
+		}
 		case 27:
 		{
-			PluginName = "npc_gentlespy";	
+			PluginName = "npc_cat";	
+			
+			enemy.ExtraDamage *= 1.25;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 28:
 		{
-			PluginName = "npc_hhh";	
+			PluginName = "npc_aris";	
+			
+			enemy.ExtraDamage *= 1.2;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.15); 
 		}
 		case 29:
+		{
+			PluginName = "npc_chimera";	
+			
+			enemy.ExtraDamage *= 1.1;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
+		}
+		case 30:
+		{
+			PluginName = "npc_vincent";	
+			
+			enemy.ExtraDamage *= 1.1;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+		}
+		case 31:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 32:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 33:
 		{
 			PluginName = "npc_christianbrutalsniper";	
 		}

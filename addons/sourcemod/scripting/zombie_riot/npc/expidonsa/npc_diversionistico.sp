@@ -489,6 +489,8 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		else
 		{
 			RandomArea = GetRandomNearbyArea(f3_VecAbs, DomeRadiusGlobal());
+			NeedLOSPlayer = true;
+			//it sucks but its needed so nothing breaks.
 		}
 			
 		if(RandomArea == NULL_AREA) 

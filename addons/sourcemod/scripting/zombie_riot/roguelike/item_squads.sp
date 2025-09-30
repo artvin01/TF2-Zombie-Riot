@@ -14,6 +14,7 @@ public void Rogue_Leader_Collect()
 public void Rogue_Leader_Collect_Lite()
 {
 	b_LeaderSquad = true;
+	b_GatheringSquad = true;
 }
 
 public void Rogue_Gathering_Collect()

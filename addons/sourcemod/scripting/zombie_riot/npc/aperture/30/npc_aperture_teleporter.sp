@@ -160,7 +160,11 @@ public void ApertureTeleporter_ClotThink(ApertureTeleporter npc, int iNPC)
 				{
 					if(!HasSpecificBuff(target, "Quantum Entanglement"))
 					{
-						ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 30.0);
+						//so raids arent perma buffed
+						if(b_thisNpcIsARaid[target])
+							ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 5.0);
+						else
+							ApplyStatusEffect(npc.index, target, "Quantum Entanglement", 999.0);
 					}
 				}
 			}

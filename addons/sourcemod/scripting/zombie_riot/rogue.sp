@@ -169,6 +169,15 @@ enum struct Stage
 				LogError("\"%s\" wave set does not exist", this.WaveSet);
 				this.WaveSet[0] = 0;
 			}
+			else
+			{
+				KeyValues wavekv = new KeyValues("Waves");
+
+				wavekv.ImportFromFile(buffer);
+				Waves_CacheWaves(wavekv, true);
+
+				delete wavekv;
+			}
 		}
 
 		kv.GetString("key", this.ArtifactKey, 64);
@@ -865,6 +874,8 @@ void Rogue_RoundEnd()
 	BattleChaos = 0.0;
 	Offline = true;
 	Rogue_BlueParadox_Reset();
+	Zero(i_CurrentEquippedPerk);
+	Zero(i_CurrentEquippedPerkPreviously);
 
 	if(CurrentCollection)
 	{
@@ -1084,12 +1095,24 @@ void Rogue_BattleVictory()
 			{
 				Artifact artifact;
 
-				if(CurrentFloor < 5 && CurrentCount < 4 && !Rogue_Rift_NoStones())
+				if(CurrentFloor < 5 && CurrentCount < 6)
 				{
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
-						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
-							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+					{
+						bool Allow = true;
+						if(Rogue_Rift_NoStones() && (GetURandomInt() % 4 == 0))
+						{
+							Allow = false;
+						}
+						if(Allow)
+							if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+								time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+					}
+					else if((GetURandomInt() % 4) == 0 && CurrentCount < 5)
+					{
+						time = Rogue_Rift_OptionalBonusBattle();
+					}
 				}
 				
 				if((GetURandomInt() % 8) < BattleIngots)
@@ -1152,18 +1175,24 @@ bool Rogue_BattleLost()
 	Rogue_TriggerFunction(Artifact::FuncStageEnd, victory);
 
 	Rogue_Dome_WaveEnd();
-
-	if(victory || (BonusLives > 0 && !RequiredBattle))
+	if(victory || (BonusLives > 0 && (!RequiredBattle || RogueTheme == ReilaRift)))
 	{
 		if(!victory)
 		{
-			if(BonusLives > 1)
+			if(RogueTheme == ReilaRift)
 			{
-				CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+				CPrintToChatAll("{green}Your terrible nightmare ends....");
 			}
 			else
 			{
-				CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+				if(BonusLives > 1)
+				{
+					CPrintToChatAll("{green}You lost the battle but continued the adventure, {yellow}another retry is ready.");
+				}
+				else
+				{
+					CPrintToChatAll("{green}You lost the battle but continued the adventure, {red}this is your last chance!");
+				}
 			}
 		}
 
@@ -1175,25 +1204,19 @@ bool Rogue_BattleLost()
 				SetMusicTimer(client, GetTime() + 10);
 			}
 		}
-
+		Zero(i_AmountDowned);
+		
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
 		TeleportToSpawn();
 
-		Rogue_SetProgressTime(5.0, false, true);
-		
-		/*Floor floor;
-		Floors.GetArray(CurrentFloor, floor);
-
-		Stage stage;
-		if(CurrentType)
+		if(RogueTheme == ReilaRift)
 		{
-			floor.Finals.GetArray(CurrentStage, stage);
+			DreamCatcher_Active();
+			//todo: Retry the stage they died at.
+			CurrentCount--;
 		}
-		else
-		{
-			floor.Encounters.GetArray(CurrentStage, stage);
-		}*/
+		Rogue_SetProgressTime(5.0, false, true);
 
 		int chaos = RoundToFloor(BattleChaos);
 		if(chaos > 0)
@@ -1408,7 +1431,11 @@ void Rogue_NextProgress()
 						FormatEx(buffer, sizeof(buffer), "%s Lore", curse.Name);
 						CPrintToChatAll("%t", buffer);
 
-						EmitSoundToAll("ui/halloween_boss_player_becomes_it.wav");
+						for(int client = 1; client <= MaxClients; client++)
+						{
+							if(IsClientInGame(client) && !IsFakeClient(client))
+								ClientCommand(client, "playgamesound ui/halloween_boss_player_becomes_it.wav");
+						}
 					}
 				}
 			}
@@ -1490,7 +1517,7 @@ void Rogue_NextProgress()
 					TeleportToSpawn();
 					
 					SetFloorMusic(floor, true);
-					SetNextStage(id, true, stage, 20.0);
+					SetNextStage(id, true, stage, 10.0);
 				}
 			}
 			else	// Normal Stage
@@ -2166,7 +2193,11 @@ static void StartStage(const Stage stage)
 		}
 		case ReilaRift:
 		{
-			if(CurrentFloor != 6)
+			bool AllowDome = true;
+			if(CurrentFloor == 6 || CurrentFloor == 5 || CurrentFloor == 4)
+				AllowDome = false;
+				
+			if(AllowDome)	
 				Rogue_Dome_WaveStart(pos);
 		}
 	}
@@ -2628,7 +2659,9 @@ void Rogue_ReviveSpeed(int &amount)
 {
 	Rogue_StoryTeller_ReviveSpeed(amount);
 	Rogue_Paradox_ReviveSpeed(amount);
+	Rogue_Rift_ReviveSpeed(amount);
 }
+
 
 void Rogue_PlayerDowned(int client)
 {
@@ -3007,9 +3040,15 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 {
 	int change = amount;
 	
-	if(CurrentUmbral < 1)
+	if(CurrentUmbral < 1 && !Rogue_Rift_BookOfNature())
 	{
 		CurrentUmbral = 0;
+		return;
+	}
+
+	if(Rogue_Rift_BookOfNature() && change <= 0)
+	{
+		CPrintToChatAll("%t", "Umbral Forgiveness");
 		return;
 	}
 
@@ -3018,7 +3057,12 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 	CurrentUmbral += change;
 	
 	if(CurrentUmbral < 1)
+	{
+		
+		if(!Rogue_HasNamedArtifact("Umbral Hate"))
+			Rogue_GiveNamedArtifact("Umbral Hate");
 		CurrentUmbral = 0;
+	}
 
 	Waves_UpdateMvMStats();
 
@@ -3410,6 +3454,7 @@ static void ClearStats()
 	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
 	Rogue_Whiteflower_Reset();
+	Rogue_Rift_Reset();
 }
 
 bool IS_MusicReleasingRadio()

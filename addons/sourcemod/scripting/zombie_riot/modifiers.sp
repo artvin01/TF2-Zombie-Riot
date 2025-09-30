@@ -251,7 +251,7 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	SetEntityRenderColor(iNpc, 0, 0, 0, 150);
 	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMinDist", 600.0);
 	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMaxDist", 700.0);
-	b_NoHealthbar[iNpc] = true;
+	b_NoHealthbar[iNpc] = 1;
 	GiveNpcOutLineLastOrBoss(iNpc, false);
 	b_thisNpcHasAnOutline[iNpc] = true;
 

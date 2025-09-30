@@ -177,6 +177,26 @@ methodmap Umbral_Spuud < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec23_sleuth_suit_style4/dec23_sleuth_suit_style4.mdl");
 		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
+		
+		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 0.85;
+				fl_Extra_MeleeArmor[npc.index] *= 1.25;
+				fl_Extra_RangedArmor[npc.index] *= 1.25;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+				fl_Extra_Damage[npc.index] *= 1.5;
+				fl_Extra_MeleeArmor[npc.index] *= 0.75;
+				fl_Extra_RangedArmor[npc.index] *= 0.75;
+			}
+		}
 		return npc;
 	}
 }
@@ -198,13 +218,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		
 	}
-	/*
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	*/
+	
 	if(i_npcspawnprotection[npc.index] <= NPC_SPAWNPROT_INIT)
 		npc.m_flSpeedIncreaceMeter *= 0.9975;
 
@@ -218,11 +232,18 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 	{
 		npc.m_flMeleeArmor = 1.0;
 	}
+	
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	
 	UmbralSpuudAnimBreak(npc);
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GetGameTime() + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

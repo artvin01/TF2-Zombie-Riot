@@ -8,6 +8,8 @@ static int ConsumeLimit;
 static bool CurseSwarm;
 static bool CurseEmpty;
 static bool CurseCorrupt;
+static bool BookOfNature;
+static bool BookOfWeakness;
 //static bool Keycard;
 
 stock void Rogue_Rift_MultiScale(float &multi)
@@ -19,6 +21,14 @@ stock void Rogue_Rift_MultiScale(float &multi)
 stock bool Rogue_Rift_NoStones()
 {
 	return CurseEmpty;
+}
+stock bool Rogue_Rift_BookOfNature()
+{
+	return BookOfNature;
+}
+stock bool Rogue_Rift_BookOfWeakness()
+{
+	return BookOfWeakness;
 }
 
 stock int Rogue_Rift_CurseLevel()
@@ -41,6 +51,16 @@ void Rogue_Rift_PackPriceMulti(int &cost)
 public void Rogue_Curse_RiftSwarm(bool enable)
 {
 	CurseSwarm = enable;
+	if(enable)
+	{
+		if(!Rogue_HasNamedArtifact("Rift of Swarming"))
+			Rogue_GiveNamedArtifact("Rift of Swarming", true);
+	}
+	else
+	{
+		if(Rogue_HasNamedArtifact("Rift of Swarming"))
+			Rogue_RemoveNamedArtifact("Rift of Swarming");
+	}
 }
 
 public void Rogue_Curse_RiftEmpty(bool enable)
@@ -64,15 +84,15 @@ public void Rogue_RiftEmpty_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID || view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL || GetEntPropFloat(entity, Prop_Data, "m_flElementRes", Element_Void) > 0.4)
 	{
-		fl_Extra_Damage[entity] *= 1.25;
-		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.3));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 1.3));
+		fl_Extra_Damage[entity] *= 1.1;
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 1.15));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 1.15));
 	}
 	else
 	{
-		fl_Extra_Damage[entity] *= 0.9;
-		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.85));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 0.85));
+		fl_Extra_Damage[entity] *= 0.95;
+		SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * 0.9));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * 0.9));
 	}
 }
 
@@ -88,6 +108,10 @@ public void Rogue_Curse_RiftExpansion(bool enable)
 	}
 }
 
+public void Rogue_RiftOfSwarming_StageStart()
+{
+	Rogue_AddUmbral(2);
+}
 public void Rogue_RiftExpansion_StageStart()
 {
 	float pos[3], ang[3];
@@ -139,7 +163,7 @@ public void Rogue_Curse_RiftMalice(bool enable)
 
 public void Rogue_RiftMalice_StageStart()
 {
-	Rogue_AddUmbral(-3);
+	Rogue_AddUmbral(-2);
 }
 
 public float Rogue_Encounter_RiftShop()
@@ -152,12 +176,18 @@ public float Rogue_Encounter_RiftShop()
 	bool rare = Rogue_GetFloor() > 0;
 	bool easyMode = DifficultyLevel < 1;
 	bool found;
-
+	if(rare)
+	{
+		if(GetURandomInt() % 4)
+		{
+			rare = false;
+		}
+	}
 	if(!easyMode)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "ROGUE3_ENDING2"))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Jkei's Broken Entry Chip"))
 			{
 				found = true;
 				break;
@@ -276,6 +306,7 @@ static void FinishShopVote(const Vote vote)
 		{
 			Rogue_StartThisBattle(5.0);
 			Rogue_SetBattleIngots(1);
+			Rogue_SetRequiredBattle(true);
 			Rogue_GiveNamedArtifact("Despair");
 
 			int entity = -1;
@@ -454,12 +485,18 @@ static void FinishRiftVote(const Vote vote)
 			EndRiftVote();
 		}
 		default:
-		{	
+		{
+			bool angry = Rogue_GetUmbralLevel() == 4;
+			int affinity = Rogue_GetUmbral();
+
 			Artifact artifact;
 			Rogue_GetNamedArtifact(vote.Config, artifact);
 			Rogue_RemoveNamedArtifact(vote.Config);
 
-			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 2))
+			if(angry)	// They threw away something that made it worse
+				angry = !affinity || (affinity > Rogue_GetUmbral());
+
+			if(!StrEqual(vote.Config, "Wordless Deed") && CurseCorrupt && (GetURandomInt() % 4))
 			{
 				Rogue_GiveNamedArtifact("Fractured");
 			}
@@ -493,17 +530,28 @@ static void FinishRiftVote(const Vote vote)
 			
 			Rogue_Rift_GatewaySent();
 
-			ConsumeLimit--;
-
-			if(ConsumeLimit < 1)
+			if(angry)
 			{
-				EndRiftVote();
+				CPrintToChatAll("%t", "Umbrals take notice of your actions");
+
+				Rogue_StartThisBattle(5.0);
+				Rogue_SetBattleIngots(1);
+				Rogue_SetRequiredBattle(true);
 			}
 			else
 			{
-				CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
-				bool found = StartRiftVote(false);
-				Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
+				ConsumeLimit--;
+
+				if(ConsumeLimit < 1)
+				{
+					EndRiftVote();
+				}
+				else
+				{
+					CPrintToChatAll("%t", "Consumes Left", ConsumeLimit);
+					bool found = StartRiftVote(false);
+					Rogue_SetProgressTime(found ? 20.0 : 5.0, false);
+				}
 			}
 		}
 	}
@@ -576,7 +624,9 @@ public void Rogue_RiftNormal_Collect()
 
 public void Rogue_RiftNormal_Enemy(int entity)
 {
-	float stats = Pow(1.05, float(Rogue_GetFloor() + 1));
+	if(Rogue_GetFloor() == 6)
+		return;
+	float stats = Pow(1.02, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -597,7 +647,9 @@ public void Rogue_RiftHard_Collect()
 
 public void Rogue_RiftHard_Enemy(int entity)
 {
-	float stats = Pow(1.1, float(Rogue_GetFloor() + 1));
+	if(Rogue_GetFloor() == 6)
+		return;
+	float stats = Pow(1.04, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
@@ -755,9 +807,18 @@ public float Rogue_Encounter_WarpedBattle()
 	Rogue_SetBattleIngots(4 + (Rogue_GetFloor() / 2));
 	return 0.0;
 }
+public float Rogue_VoidOutbreak_Battle()
+{
+	Rogue_GiveNamedArtifact("Void Outbreak", true);
+	Rogue_SetBattleIngots(1 + (Rogue_GetFloor() / 2));
+	return 0.0;
+}
 
 public void Rogue_RiftWarp_Enemy(int entity)
 {
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
+	//dont warp umbrals at all.
 	if((GetURandomInt() % 4) == 0)
 	{
 		int seed1 = 2 + (WarpSeed % 3);
@@ -771,15 +832,28 @@ public void Rogue_RiftWarp_Enemy(int entity)
 			{
 				fl_Extra_MeleeArmor[entity] /= 3.0;
 				fl_Extra_RangedArmor[entity] /= 3.0;
-				fl_Extra_Speed[entity] *= 1.2;
+				fl_Extra_Speed[entity] *= 1.1;
+				fl_Extra_Damage[entity] *= 1.1;
 			}
 		}
 	}
 }
 
+public void Rogue_VoidOutbreak_Enemy(int entity)
+{
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+		ApplyStatusEffect(entity, entity, "Void Afflicted", 9999.9);
+	else
+		ApplyStatusEffect(entity, entity, "Altered Functions", 9999.9);
+}
+
 public void Rogue_RiftWarp_StageEnd()
 {
 	Rogue_RemoveNamedArtifact("Rift of Warp");
+}
+public void Rogue_VoidOutbreak_StageEnd()
+{
+	Rogue_RemoveNamedArtifact("Void Outbreak");
 }
 
 public void Rogue_StoneFractured_Collect()
@@ -794,6 +868,7 @@ public void Rogue_StoneFractured_FloorChange()
 
 public void Rogue_StoneFractured_Remove()
 {
+	Rogue_AddUmbral(5, true);
 	if(!Rogue_HasNamedArtifact("Rift of Fractured") && !Rogue_HasNamedArtifact("The Shadow"))
 	{
 		Rogue_GiveNamedArtifact("Rift of Fractured");
@@ -807,16 +882,58 @@ public float Rogue_Encounter_Rift2()
 {
 	Rogue_SetBattleIngots(12);
 	Rogue_RemoveNamedArtifact("Rift of Fractured");
+	
+	bool easyMode = DifficultyLevel < 1;
+	bool found;
+
+	if(!easyMode)
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, "Jkei's Broken Entry Chip"))
+			{
+				found = true;
+				break;
+			}
+		}
+	}
 
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Rift2, "We Are Fractured Lore");
 	Vote vote;
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 1");
 	strcopy(vote.Desc, sizeof(vote.Desc), "We Are Fractured Desc 1");
+	if(easyMode)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Rift Level 2)");
+	}
+	else if(!found)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Win Ending 2)");
+	}
+	else
+	{
+		switch(Rogue_GetFloor())
+		{
+			case 0, 1, 2:	// Floor 3
+			{
+				vote.Locked = true;
+				Format(vote.Append, sizeof(vote.Append), " (Too Difficult This Chapter)");
+			}
+			case 3:	// Floor 4
+			{
+				Format(vote.Append, sizeof(vote.Append), " (Hard Fight)");
+			}
+		}
+	}
 	list.PushArray(vote);
 
 	strcopy(vote.Name, sizeof(vote.Name), "We Are Fractured Option 2");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Locked = false;
+	vote.Append[0] = 0;
 	list.PushArray(vote);
 
 	Rogue_StartGenericVote(20.0);
@@ -835,17 +952,76 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 		}
 		case 1:
 		{
+			if(!Rogue_HasNamedArtifact("Fractured") && Rogue_GetFloor() < 3)
+			{
+				Rogue_GiveNamedArtifact("Fractured");
+			}
+			else
+			{
+				Artifact artifact;
+				if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+					Rogue_GiveNamedArtifact(artifact.Name);
+			}
+			
 			PrintToChatAll("%t", "We Are Fractured Lore 2");
 		}
 	}
 }
 
+
 public void Rogue_Rift2_Collect(int entity)
 {
-	Rogue_AddUmbral(-100, true);
+	Rogue_AddUmbral(-15, false);
 
+	/*
 	if(!Rogue_HasNamedArtifact("Reila Assistance"))
 		Rogue_GiveNamedArtifact("Reila Assistance", true);
+	*/
+	
+}
+
+public void Rogue_BookOfNature_Collect(int entity)
+{
+	if(Rogue_HasNamedArtifact("Umbral Hate"))
+		Rogue_RemoveNamedArtifact("Umbral Hate");
+	Rogue_AddUmbral(40);
+	BookOfNature = true;
+}
+public void Rogue_BookOfNature_Remove(int entity)
+{
+	BookOfNature = false;
+}
+
+public void Rogue_BookOfWeakness_Collect(int entity)
+{
+	BookOfWeakness = true;
+}
+public void Rogue_BookOfWeakness_Remove(int entity)
+{
+
+	BookOfWeakness = false;
+}
+
+public void Rogue_BookOfWeakness_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		//give a flat 10% crit chance
+		float CurrentStats;
+		map.GetValue("4030", CurrentStats);
+		CurrentStats += 0.1;
+		map.SetValue("4030", CurrentStats);
+	}
+}
+public void Rogue_BookOfLiver_Ally(int entity, StringMap map)
+{
+	//give all perks at once
+	i_CurrentEquippedPerk[entity] = ((1 << 20) - 1);
+
+}
+public void Rogue_BookOfLiver_Remove(int entity)
+{
+	Zero(i_CurrentEquippedPerk);
 }
 
 public void Rogue_Rift2_Enemy(int entity)
@@ -871,7 +1047,8 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	bool GiveRes = false;
 	if(victim <= MaxClients)
 	{
-		if(Armor_Charge[victim] < 1)
+		//less then 0
+		if(Armor_Charge[victim] < 0)
 		{
 			GiveRes = true;
 		}
@@ -886,4 +1063,34 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	if(GiveRes)
 		if(!(damagetype & DMG_TRUEDAMAGE))
 			damage *= 0.85;
+}
+
+stock float Rogue_Rift_OptionalBonusBattle()
+{
+	ArrayList list = Rogue_CreateGenericVote(FinishOptionalBonusBattle, "A strange gateway opens up");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Stay and fight it");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Better leave now");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(15.0);
+	return 20.0;
+}
+
+static void FinishOptionalBonusBattle(const Vote vote2, int index)
+{
+	if(index == 0)
+	{
+		Vote vote;
+		strcopy(vote.Config, sizeof(vote.Config), "Strange Gateway");	// Name of stage to look up
+		vote.Level = 2;
+		Rogue_AddExtraStage(1);
+		Rogue_Vote_NextStage(vote);
+	}
 }
