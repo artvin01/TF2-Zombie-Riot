@@ -353,6 +353,8 @@ public void Rogue_GravityDefying_Enemy(int entity)
 
 public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(view_as<CClotBody>(victim.m_iBleedType != BLEEDTYPE_UMBRAL))
+		return;
 	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
