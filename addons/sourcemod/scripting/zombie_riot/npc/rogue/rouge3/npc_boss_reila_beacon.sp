@@ -54,7 +54,7 @@ void ReilaBeacon_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "reilaconstruct");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
