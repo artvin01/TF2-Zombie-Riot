@@ -1700,7 +1700,7 @@
 	}
 	"Book of Nature Desc"
 	{
-		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
+		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 20, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
 	}
 	"Book of Nature Conclusion"
 	{

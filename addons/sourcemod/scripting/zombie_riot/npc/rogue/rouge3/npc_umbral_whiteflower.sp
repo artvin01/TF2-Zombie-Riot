@@ -614,7 +614,7 @@ static void Umbral_WF_KickTouched(int entity, int enemy)
 	float targPos[3];
 	WorldSpaceCenter(enemy, targPos);
 	float damage = 60.0;
-	damage *= 0.50;
+	damage *= 0.4;
 	damage *= RaidModeScaling;
 	SDKHooks_TakeDamage(enemy, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, targPos);
 	ParticleEffectAt(targPos, "skull_island_embers", 2.0);
