@@ -420,7 +420,7 @@ void Construction_StartSetup()
 	{
 		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
 	}
-
+/*
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -445,6 +445,7 @@ void Construction_StartSetup()
 	}
 
 	delete list;
+	*/
 }
 
 void Construction_RoundEnd()
