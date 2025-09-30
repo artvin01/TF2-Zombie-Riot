@@ -67,7 +67,7 @@ public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflicto
 			{
 				extra /= MultiGlobalHealth;
 			}
-			if((damage * 2.0) >= extra)
+			if((extra > (damage * 2.0)))
 			{
 				extra = damage * 2.0;
 			}
