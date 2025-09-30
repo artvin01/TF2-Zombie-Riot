@@ -67,9 +67,9 @@ public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflicto
 			{
 				extra /= MultiGlobalHealth;
 			}
-			if((extra > (damage * 2.0)))
+			if((extra > (damage)))
 			{
-				extra = damage * 2.0;
+				extra = damage;
 			}
 
 			StartBleedingTimer(victim, attacker, extra, 1, weapon, DMG_PLASMA, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED, 1);
