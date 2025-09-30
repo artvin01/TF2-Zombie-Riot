@@ -145,7 +145,7 @@ void DeleteStatusEffectsFromAll()
 {
 	for(int c = 0; c < MAXENTITIES; c++)
 	{
-		delete E_AL_StatusEffects[c];
+		StatusEffectReset(c, true);
 	}
 }
 void InitStatusEffects()
@@ -6111,6 +6111,9 @@ void VoidAffliction_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	//not an npc, ignore.
+	if(!IsValidEntity(victim))
+		return;
+		
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
@@ -6144,24 +6147,24 @@ static void UnstableUmbralRift_Start(int victim, StatusEffect Apply_MasterStatus
 
 static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+	i_Client_Gravity[victim] /= 2;
 	if(!IsValidClient(victim))
 		return;
 		
 	Attributes_SetMulti(victim, 442, 0.85);
 	Attributes_SetMulti(victim, 610, 0.35);
 	Attributes_SetMulti(victim, 326, 1.75);
-	i_Client_Gravity[victim] /= 2;
 	SDKCall_SetSpeed(victim);
 }
 
 static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+	i_Client_Gravity[victim] *= 2;
 	if(!IsValidClient(victim))
 		return;
 		
 	Attributes_SetMulti(victim, 442, (1.0 / 0.85));
 	Attributes_SetMulti(victim, 610, (1.0 / 0.35));
 	Attributes_SetMulti(victim, 326, (1.0 / 1.75));
-	i_Client_Gravity[victim] *= 2;
 	SDKCall_SetSpeed(victim);
 }
