@@ -1,0 +1,229 @@
+"Phrases"
+{
+	"birdeye_Talk_01-1"
+	{
+		"en"	"Enemy contact"
+	}
+	"birdeye_Talk_01-2"
+	{
+		"en"	"Enemy Front"
+	}
+	"birdeye_Talk_01-3"
+	{
+		"en"	"I see a Target"
+	}
+	"birdeye_Talk_01-4"
+	{
+		"en"	"Bad guy Front"
+	}
+	"birdeye_Talk_01-5"
+	{
+		"en"	"Pipe, Harb I need some fire support here"
+	}
+	"birdeye_Talk_02-1"
+	{
+		"en"	"Pipe down."
+	}
+	"birdeye_Talk_02-2"
+	{
+		"en"	"Rest in peace bro."
+	}
+	"birdeye_Talk_03-1"
+	{
+		"en"	"Harbringer down."
+	}
+	"birdeye_Talk_03-2"
+	{
+		"en"	"Harb. Harb! Fuck!"
+	}
+	"birdeye_Talk_04-1"
+	{
+		"en"	"FUCK THAT!"
+	}
+	"birdeye_Talk_04-2"
+	{
+		"en"	"Dieeeeeeeeeeeeee!!!"
+	}
+	"birdeye_Talk_04-3"
+	{
+		"en"	"Aaaahhhhhhhhh!!!"
+	}
+	"birdeye_Talk_05-1"
+	{
+		"en"	"Eliminated."
+	}
+	"birdeye_Talk_05-2"
+	{
+		"en"	"Target down."
+	}
+	"birdeye_Talk_06-1"
+	{
+		"en"	"Changing position."
+	}
+	"birdeye_Talk_06-2"
+	{
+		"en"	"Rearranging position."
+	}
+	"birdeye_Talk_07-1"
+	{
+		"en"	"Teleporter down!"
+	}
+	"birdeye_Talk_07-2"
+	{
+		"en"	"Teleporter is broken"
+	}
+	"birdeye_Talk_07-3"
+	{
+		"en"	"Oh come on!!!"
+	}
+	"birdeye_Talk_08-1"
+	{
+		"en"	"We’re back, and got some new tricks"
+	}
+
+	"bigpipe_Talk_01-1"
+	{
+		"en"	"Contact!"
+	}
+	"bigpipe_Talk_01-2"
+	{
+		"en"	"Open fire!"
+	}
+	"bigpipe_Talk_01-3"
+	{
+		"en"	"Enemy's Front!"
+	}
+	"bigpipe_Talk_01-4"
+	{
+		"en"	"I got visual."
+	}
+	"bigpipe_Talk_01-5"
+	{
+		"en"	"Enemies ahead!"
+	}
+	"bigpipe_Talk_02-1"
+	{
+		"en"	"They got eye!"
+	}
+	"bigpipe_Talk_02-2"
+	{
+		"en"	"Fuck Bird eyes down!"
+	}
+	"bigpipe_Talk_02-3"
+	{
+		"en"	"Shit! eyes Dead!"
+	}
+	"bigpipe_Talk_03-1"
+	{
+		"en"	"Harb got Killed"
+	}
+	"bigpipe_Talk_03-2"
+	{
+		"en"	"Hey Harb Respond!"
+	}
+	"bigpipe_Talk_03-3"
+	{
+		"en"	"Harbringer is down"
+	}
+	"bigpipe_Talk_04-1"
+	{
+		"en"	"Cover me i need to heal"
+	}
+	"bigpipe_Talk_04-2"
+	{
+		"en"	"I need to treat myself"
+	}
+	"bigpipe_Talk_05-1"
+	{
+		"en"	"Yeah!"
+	}
+	"bigpipe_Talk_05-2"
+	{
+		"en"	"Another round of Ale for me"
+	}
+	"bigpipe_Talk_05-3"
+	{
+		"en"	"One Down"
+	}
+	"bigpipe_Talk_06-1"
+	{
+		"en"	"We won’t go easy this time. Let’s rock"
+	}
+
+	"harbringer_Talk_01-1"
+	{
+		"en"	"We got a cluster Fuck here"
+	}
+	"harbringer_Talk_01-2"
+	{
+		"en"	"Let's Fuck them up"
+	}
+	"harbringer_Talk_01-3"
+	{
+		"en"	"I see them"
+	}
+	"harbringer_Talk_01-4"
+	{
+		"en"	"Contact!"
+	}
+	"harbringer_Talk_02-1"
+	{
+		"en"	"Bird eye is killed"
+	}
+	"harbringer_Talk_02-2"
+	{
+		"en"	"They got Bird eye"
+	}
+	"harbringer_Talk_02-3"
+	{
+		"en"	"Bird eye Respond!"
+	}
+	"harbringer_Talk_03-1"
+	{
+		"en"	"Fuck they killed Pipe"
+	}
+	"harbringer_Talk_03-2"
+	{
+		"en"	"Pipe is Dead"
+	}
+	"harbringer_Talk_03-3"
+	{
+		"en"	"Pipe is Down"
+	}
+	"harbringer_Talk_04-1"
+	{
+		"en"	"Report to Base Ops"
+	}
+	"harbringer_Talk_04-2"
+	{
+		"en"	"Hostiles are Eliminated"
+	}
+	"harbringer_Talk_04-3"
+	{
+		"en"	"Loving this dead silence"
+	}
+	"harbringer_Talk_04-4"
+	{
+		"en"	"It's a kill"
+	}
+	"harbringer_Talk_05-1"
+	{
+		"en"	"Deploying armor grenade"
+	}
+	"harbringer_Talk_05-2"
+	{
+		"en"	"Deploying Armor repair kit"
+	}
+	"harbringer_Talk_06-1"
+	{
+		"en"	"Frag Out!"
+	}
+	"harbringer_Talk_06-2"
+	{
+		"en"	"Throwing"
+	}
+	"harbringer_Talk_07-1"
+	{
+		"en"	"Mercenaries don’t give up easily, and we are pissed."
+	}
+}

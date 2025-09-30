@@ -13,7 +13,7 @@ static const char g_DeathSounds[][] = {
 	")vo/engineer_negativevocalization09.mp3",
 	")vo/engineer_negativevocalization10.mp3",
 	")vo/engineer_negativevocalization11.mp3",
-	")vo/engineer_negativevocalization12.mp3",
+	")vo/engineer_negativevocalization12.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -24,20 +24,12 @@ static const char g_HurtSounds[][] = {
 	"vo/engineer_painsharp05.mp3",
 	"vo/engineer_painsharp06.mp3",
 	"vo/engineer_painsharp07.mp3",
-	"vo/engineer_painsharp08.mp3",
+	"vo/engineer_painsharp08.mp3"
 };
 static const char g_IdleAlertedSounds[][] = {
 	"vo/engineer_mvm_mannhattan_gate_atk01.mp3",
 	"vo/engineer_mvm_mannhattan_gate_atk02.mp3",
-	"vo/engineer_mvm_mannhattan_gate_atk03.mp3",
-};
-
-static const char g_RangedAttackSounds[][] = {
-	"weapons/frontier_justice_shoot.wav",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"vo/engineer_mvm_mannhattan_gate_atk03.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -45,21 +37,17 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_03.wav",
 	"weapons/cleaver_hit_05.wav",
 	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"weapons/cleaver_hit_07.wav"
 };
 
-static const char g_suitup[][] = {
-	"mvm/mvm_tank_start.wav",
-};
+static const char g_RangedAttackSounds[] = "weapons/frontier_justice_shoot.wav";
+
+static const char g_MeleeAttackSounds[] = "weapons/machete_swing.wav";
+
+static const char g_suitup[] = "mvm/mvm_tank_start.wav";
+
 void Aviator_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_suitup)); i++) { PrecacheSound(g_suitup[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victoria Aviator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aviator");
@@ -67,8 +55,21 @@ void Aviator_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSound(g_RangedAttackSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound(g_suitup);
+	PrecacheModel("models/player/engineer.mdl");
 }
 
 static int I_cant_do_this_all_day[MAXENTITIES];
@@ -80,12 +81,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 methodmap Aviator < CClotBody
 {
-	property int i_GunMode
-	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
-	}
-	
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -93,9 +88,7 @@ methodmap Aviator < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -104,34 +97,33 @@ methodmap Aviator < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
+		EmitSoundToAll(g_RangedAttackSounds, this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	public void PlaySuitUpSound() 
 	{
-		EmitSoundToAll(g_suitup[GetRandomInt(0, sizeof(g_suitup) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_suitup[GetRandomInt(0, sizeof(g_suitup) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_suitup, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_suitup, this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-
+	
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
 	
 	public Aviator(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -205,7 +197,7 @@ methodmap Aviator < CClotBody
 	}
 }
 
-public void Aviator_ClotThink(int iNPC)
+static void Aviator_ClotThink(int iNPC)
 {
 	Aviator npc = view_as<Aviator>(iNPC);
 	float gametime = GetGameTime(npc.index);
@@ -334,7 +326,7 @@ public void Aviator_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Aviator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Aviator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Aviator npc = view_as<Aviator>(victim);
 		
@@ -350,7 +342,7 @@ public Action Aviator_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Aviator_NPCDeath(int entity)
+static void Aviator_NPCDeath(int entity)
 {
 	Aviator npc = view_as<Aviator>(entity);
 	if(!npc.m_bGib)
@@ -372,7 +364,7 @@ public void Aviator_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void AviatorAnimationChange(Aviator npc)
+static void AviatorAnimationChange(Aviator npc)
 {
 	if(npc.m_iChanged_WalkCycle == 0)
 		npc.m_iChanged_WalkCycle = -1;
@@ -380,7 +372,7 @@ void AviatorAnimationChange(Aviator npc)
 	{
 		case 1: //primary
 		{
-			if (npc.IsOnGround())
+			if(npc.IsOnGround())
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
@@ -440,7 +432,7 @@ void AviatorAnimationChange(Aviator npc)
 
 }
 
-int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
+static int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -462,10 +454,9 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 					float damageDealt = 100.0; //Extreme melee damage
 					if(ShouldNpcDealBonusDamage(target_hit))
 						damageDealt *= 10.0; //basically oneshots buildings or atleast deals heavy damage
-						
+
 					SDKHooks_TakeDamage(target_hit, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);									
-							
-				
+
 					npc.PlayMeleeHitSound();
 					if(target_hit <= MaxClients)
 						if(!HasSpecificBuff(target, "Fluid Movement"))
@@ -562,7 +553,7 @@ int AviatorSelfDefense(Aviator npc, float gameTime, int target, float distance)
 }
 
 
-void ResetAviatorWeapon(Aviator npc, int weapon_Type)
+static void ResetAviatorWeapon(Aviator npc, int weapon_Type)
 {
 	if(IsValidEntity(npc.m_iWearable1))
 	{
@@ -572,12 +563,14 @@ void ResetAviatorWeapon(Aviator npc, int weapon_Type)
 	{
 		case 1:
 		{
+			KillFeed_SetKillIcon(npc.index, "frontier_kill");
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_frontierjustice/c_frontierjustice_xmas.mdl");
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		}
 		case 0:
 		{
+			KillFeed_SetKillIcon(npc.index, "sledgehammer");
 			npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
 			SetVariantString("0.8");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");

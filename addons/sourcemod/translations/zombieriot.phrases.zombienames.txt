@@ -3795,7 +3795,6 @@
 		"en"	"Trooper Mechafist"
 		"ko"	"트루퍼 메카피스트"
 	}
-
 	"Assaulter"
 	{
 		"en"	"Trooper Assaulter"
@@ -3815,6 +3814,11 @@
 	{
 		"en"	"Trooper  Mortar"
 		"ko"	"트루퍼 박격포병"
+	}
+	"Victorian Artillerist"
+	{
+		"en"	"Trooper Artillerist"
+		"ko"	"트루퍼 자주포병"
 	}
 	"Bomb Cart"
 	{

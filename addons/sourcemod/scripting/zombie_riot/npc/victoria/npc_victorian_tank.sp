@@ -277,6 +277,7 @@ static void ClotDeath(int entity)
 				AddNpcToAliveList(other, 1);
 		}
 	}
+	health = RoundToCeil(ReturnEntityMaxHealth(npc.index) / 8.5);
 	for(int i; i < 2; i++)
 	{
 		int other = NPC_CreateByName("npc_pulverizer", -1, pos, ang, team);

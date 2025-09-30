@@ -7,7 +7,7 @@ static const char g_DeathSounds[][] = {
 	")vo/soldier_negativevocalization03.mp3",
 	")vo/soldier_negativevocalization04.mp3",
 	")vo/soldier_negativevocalization05.mp3",
-	")vo/soldier_negativevocalization06.mp3",
+	")vo/soldier_negativevocalization06.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -27,26 +27,15 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/soldier_taunts20.mp3",
 	"vo/taunts/soldier_taunts21.mp3",
 	"vo/taunts/soldier_taunts18.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_03.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_03.mp3"
 };
 
-static const char g_ReloadSound[][] = {
-	"weapons/ar2/npc_ar2_reload.wav",
-};
+static const char g_ReloadSound[] = "weapons/ar2/npc_ar2_reload.wav";
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/rocket_shoot.wav",
-};
-
+static const char g_RangeAttackSounds[] = "weapons/rocket_shoot.wav";
 
 void VictorianBallista_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_ReloadSound)); i++) { PrecacheSound(g_ReloadSound[i]); }
-	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ballista");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ballista");
@@ -54,8 +43,19 @@ void VictorianBallista_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Interitus;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheSound(g_ReloadSound);
+	PrecacheModel("models/player/soldier.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -72,34 +72,28 @@ methodmap VictorianBallista < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	public void PlayReloadSound() 
-	{
-		EmitSoundToAll(g_ReloadSound[GetRandomInt(0, sizeof(g_ReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.3, 80);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, 80, _, 0.3, 80);
 	}
-
+	public void PlayReloadSound() 
+	{
+		EmitSoundToAll(g_ReloadSound, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	
 	public VictorianBallista(float vecPos[3], float vecAng[3], int ally)
 	{
 		VictorianBallista npc = view_as<VictorianBallista>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
@@ -113,7 +107,6 @@ methodmap VictorianBallista < CClotBody
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
 		func_NPCDeath[npc.index] = view_as<Function>(VictorianBallista_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianBallista_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VictorianBallista_ClotThink);
@@ -125,8 +118,8 @@ methodmap VictorianBallista < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_iOverlordComboAttack = 3;
 		
-		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "passtime_pass");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -162,7 +155,7 @@ methodmap VictorianBallista < CClotBody
 	}
 }
 
-public void VictorianBallista_ClotThink(int iNPC)
+static void VictorianBallista_ClotThink(int iNPC)
 {
 	VictorianBallista npc = view_as<VictorianBallista>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -251,7 +244,7 @@ public void VictorianBallista_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictorianBallista_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictorianBallista_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictorianBallista npc = view_as<VictorianBallista>(victim);
 		
@@ -267,14 +260,13 @@ public Action VictorianBallista_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void VictorianBallista_NPCDeath(int entity)
+static void VictorianBallista_NPCDeath(int entity)
 {
 	VictorianBallista npc = view_as<VictorianBallista>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-		
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
@@ -289,7 +281,7 @@ public void VictorianBallista_NPCDeath(int entity)
 
 }
 
-void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
+static void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 {
 	int target;
 	//some Ranged units will behave differently.
@@ -331,13 +323,13 @@ void VictorianBallistaSelfDefense(VictorianBallista npc, float gameTime)
 				{	
 					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
 					npc.m_iOverlordComboAttack --;
-					npc.PlayMeleeSound();
+					npc.PlayRangeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					Handle swingTrace;
 					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						npc.PlayMeleeSound();
+						npc.PlayRangeSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge
 						float projectile_speed = 900.0;

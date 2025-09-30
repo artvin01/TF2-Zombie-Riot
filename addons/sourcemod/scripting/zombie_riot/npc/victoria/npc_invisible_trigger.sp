@@ -179,3 +179,80 @@ static void Invisible_TRIGGER_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 }
+
+public void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans)
+{
+	for(int Player=1; Player<=MaxClients; Player++)
+	{
+		if(!IsValidClient(Player))
+			continue;
+		if(!NoTrans)
+		{
+			SetGlobalTransTarget(Player);
+			CPrintToChat(Player, "%s%t{default}: %t", namecolor, name, text);
+		}
+		else
+			CPrintToChat(Player, "%s%s{default}: %s", namecolor, name, text);
+	}
+}
+
+public void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans, bool requestframe)
+{
+	if(entity==-1||!IsValidEntity(entity))return;
+	if(requestframe)
+	{
+		DataPack pack = new DataPack();
+		RequestFrame(NPCPritToChat_Delay, pack);
+		pack.WriteCell(entity);
+		pack.WriteString(namecolor);
+		pack.WriteString(text);
+		pack.WriteCell(view_as<int>(NoTrans));
+	}
+	else
+	{
+		for(int Player=1; Player<=MaxClients; Player++)
+		{
+			if(!IsValidClient(Player))
+				continue;
+			SetGlobalTransTarget(Player);
+			char NameReturn[255];
+			if(!b_NameNoTranslation[entity] && !NoTrans)
+				Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+			else
+				Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+			
+			if(!NoTrans)
+				CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text);
+			else
+				CPrintToChat(Player, "%s%s{default}: %s", namecolor, NameReturn, text);
+		}
+	}
+}
+
+static void NPCPritToChat_Delay(DataPack pack)
+{
+	pack.Reset();
+	int entity = pack.ReadCell();
+	char namecolor[16];
+	char text[512];
+	pack.ReadString(namecolor, sizeof(namecolor));
+	pack.ReadString(text, sizeof(text));
+	bool NoTrans = view_as<bool>(pack.ReadCell());
+	for(int Player=1; Player<=MaxClients; Player++)
+	{
+		if(!IsValidClient(Player))
+			continue;
+		SetGlobalTransTarget(Player);
+		char NameReturn[255];
+		if(!b_NameNoTranslation[entity] && !NoTrans)
+			Format(NameReturn, sizeof(NameReturn), "%t", c_NpcName[entity]);
+		else
+			Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
+		
+		if(!NoTrans)
+			CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text);
+		else
+			CPrintToChat(Player, "%s%s{default}: %s", namecolor, NameReturn, text);
+	}
+	delete pack;
+}

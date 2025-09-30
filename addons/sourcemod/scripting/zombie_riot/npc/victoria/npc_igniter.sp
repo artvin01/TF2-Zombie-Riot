@@ -1,10 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	")vo/pyro_negativevocalization01.mp3",
-};
-
 static const char g_HurtSounds[][] = {
 	"vo/pyro_painsharp01.mp3",
 	"vo/pyro_painsharp02.mp3",
@@ -20,18 +16,12 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/taunts/pyro_taunts03.mp3",
 };
 
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/flaregun_shoot.wav",
-};
+static const char g_DeathSounds[] = ")vo/pyro_negativevocalization01.mp3";
 
+static const char g_RangeAttackSounds[] = "weapons/flaregun_shoot.wav";
 
 void VictorianIgniter_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Victorian Igniter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_igniter");
@@ -39,8 +29,18 @@ void VictorianIgniter_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_RangeAttackSounds);
+	PrecacheModel("models/player/pyro.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -57,9 +57,7 @@ methodmap VictoriaIgniter < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
-	
 	public void PlayHurtSound() 
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -68,17 +66,14 @@ methodmap VictoriaIgniter < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
 	}
-	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_DeathSounds, this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 
 	public VictoriaIgniter(float vecPos[3], float vecAng[3], int ally)
@@ -92,9 +87,7 @@ methodmap VictoriaIgniter < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		SetVariantInt(5);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	
-		
-		
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -107,11 +100,11 @@ methodmap VictoriaIgniter < CClotBody
 		func_NPCThink[npc.index] = VictoriaIgniter_ClotThink;
 		
 		//IDLE
+		KillFeed_SetKillIcon(npc.index, "flaregun");
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 220.0;
-		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -129,7 +122,7 @@ methodmap VictoriaIgniter < CClotBody
 	}
 }
 
-public void VictoriaIgniter_ClotThink(int iNPC)
+static void VictoriaIgniter_ClotThink(int iNPC)
 {
 	VictoriaIgniter npc = view_as<VictoriaIgniter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -174,7 +167,7 @@ public void VictoriaIgniter_ClotThink(int iNPC)
 		{
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
-		VictoriaIgniterSelfDefense(npc,GetGameTime(npc.index)); 
+		VictoriaIgniterSelfDefense(npc,GetGameTime(npc.index),flDistanceToTarget); 
 	}
 	else
 	{
@@ -184,7 +177,7 @@ public void VictoriaIgniter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	VictoriaIgniter npc = view_as<VictoriaIgniter>(victim);
 		
@@ -200,7 +193,7 @@ public Action VictoriaIgniter_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void VictoriaIgniter_NPCDeath(int entity)
+static void VictoriaIgniter_NPCDeath(int entity)
 {
 	VictoriaIgniter npc = view_as<VictoriaIgniter>(entity);
 	if(!npc.m_bGib)
@@ -220,13 +213,9 @@ public void VictoriaIgniter_NPCDeath(int entity)
 
 }
 
-void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime)
+static void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime, float distance)
 {
-	int target;
-	//some Ranged units will behave differently.
-	//not this one.
-	target = npc.m_iTarget;
-	if(!IsValidEnemy(npc.index,target))
+	if(!IsValidEnemy(npc.index,npc.m_iTarget))
 	{
 		if(npc.m_iChanged_WalkCycle != 4)
 		{
@@ -238,11 +227,8 @@ void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime)
 		}
 		return;
 	}
-	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-
-	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 					
@@ -258,11 +244,11 @@ void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime)
 			}	
 			if(gameTime > npc.m_flNextMeleeAttack)
 			{
-				if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+				if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 				{	
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.25;
 					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1", false);
-					npc.PlayMeleeSound();
+					npc.PlayRangeSound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					int projectile = npc.FireParticleRocket(vecTarget, 20.0, 1000.0, 200.0, "drg_cow_rockettrail_fire_charged_blue", true);
 					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -299,7 +285,7 @@ void VictoriaIgniterSelfDefense(VictoriaIgniter npc, float gameTime)
 	}
 }
 
-public void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
+static void VictoriaIgniter_Rocket_Particle_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{

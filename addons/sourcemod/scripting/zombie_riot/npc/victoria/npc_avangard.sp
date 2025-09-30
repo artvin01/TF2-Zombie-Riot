@@ -9,17 +9,12 @@ static const char g_HurtSounds[][] = {
 	"weapons/sentry_damage1.wav",
 	"weapons/sentry_damage2.wav",
 	"weapons/sentry_damage3.wav",
-	"weapons/sentry_damage4.wav",
+	"weapons/sentry_damage4.wav"
 };
 static int NPCId;
 
 void VictorianOfflineAvangard_MapStart()
 {
-	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSound(g_DeathSounds);
-	PrecacheSound(g_ActivationSounds);
-	PrecacheSound(g_MeleeAttackSounds);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
@@ -27,8 +22,18 @@ void VictorianOfflineAvangard_MapStart()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Victoria;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSound(g_DeathSounds);
+	PrecacheSound(g_ActivationSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheModel("models/bots/soldier_boss/bot_soldier_boss.mdl");
 }
 
 int VictorianAvangard_ID()
@@ -53,7 +58,7 @@ methodmap VictorianOfflineAvangard < CClotBody
 	}
 	public void PlayActivationSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
+		EmitSoundToAll(g_ActivationSounds, this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, _);
 	}
 	public void PlayHurtSound() 
 	{

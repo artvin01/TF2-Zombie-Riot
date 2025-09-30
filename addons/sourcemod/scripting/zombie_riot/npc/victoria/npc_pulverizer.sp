@@ -106,7 +106,7 @@ methodmap VictorianPulverizer < CClotBody
 	
 	public VictorianPulverizer(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPulverizer npc = view_as<VictorianPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "30000", ally));
+		VictorianPulverizer npc = view_as<VictorianPulverizer>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "27000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

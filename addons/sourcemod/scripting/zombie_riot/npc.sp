@@ -643,6 +643,7 @@ void NPC_ConfigSetup()
 	VictoriaScorcher_OnMapStart_NPC();
 	VictoriaMowdown_OnMapStart_NPC();
 	VictoriaMortar_OnMapStart_NPC();
+	VictoriaArtillerist_OnMapStart_NPC();
 	VictoriaBreachcart_MapStart();
 	VictoriaBombcart_Precache();
 	VictoriaBigpipe_OnMapStart_NPC();
@@ -2078,6 +2079,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 
 //Victoria
+//special
+#include "npc/victoria/npc_invisible_trigger.sp"
 //Wave 1~10
 #include "npc/victoria/npc_batter.sp"
 #include "npc/victoria/npc_charger.sp"
@@ -2112,6 +2115,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/victoria/npc_assaulter.sp"
 #include "npc/victoria/npc_antiarmor_infantry.sp"
 #include "npc/victoria/npc_mortar.sp"
+#include "npc/victoria/npc_victorian_artillerist.sp"
 #include "npc/victoria/npc_bombcart.sp"
 #include "npc/victoria/npc_breachcart.sp"
 #include "npc/victoria/npc_birdeye.sp"
@@ -2141,8 +2145,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/victoria/npc_the_wall.sp"
 #include "npc/raidmode_bosses/victoria/npc_harrison.sp"
 #include "npc/raidmode_bosses/victoria/npc_castellan.sp"
-//special
-#include "npc/victoria/npc_invisible_trigger.sp"
 
 //Matrix Enemies
 #include "npc/matrix/15/npc_agentalan.sp"

@@ -186,29 +186,26 @@ public void VictorianSignaller_ClotThink(int iNPC)
 
 	gameTime = GetGameTime() + 0.5;
 
-	if(!NpcStats_IsEnemySilenced(npc.index))
+	int team = GetTeam(npc.index);
+	if(team == 2)
 	{
-		int team = GetTeam(npc.index);
-		if(team == 2)
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			for(int client = 1; client <= MaxClients; client++)
+			if(IsClientInGame(client) && IsEntityAlive(client))
 			{
-				if(IsClientInGame(client) && IsEntityAlive(client))
-				{
-					ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
-				}
+				ApplyStatusEffect(npc.index, client, "Call To Victoria", 2.0);
 			}
 		}
+	}
 
-		for(int i; i < i_MaxcountNpcTotal; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			if(GetTeam(entity) == team)
 			{
-				if(GetTeam(entity) == team)
-				{
-					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
-				}
+				ApplyStatusEffect(npc.index, entity, "Call To Victoria", 0.5);
 			}
 		}
 	}
