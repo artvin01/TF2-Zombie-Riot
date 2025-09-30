@@ -322,7 +322,7 @@
 	}
 	"Hand of Spark Desc"
 	{
-		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +10％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
+		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
 	}
 	"Hand of Buckler"
 	{
