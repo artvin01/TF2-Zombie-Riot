@@ -233,7 +233,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Resupplies_Supplied[client] = 0;
 			i_BarricadeHasBeenDamaged[client] = 0;
 			i_PlayerDamaged[client] = 0;
-			CashRecievedNonWave[client] = 0;
+			CashReceivedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
 			Armor_Charge[client] = 0;

@@ -98,7 +98,7 @@ methodmap ARISBeacon < CClotBody
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		npc.m_bDissapearOnDeath = true;
 		b_HideHealth[npc.index] = true;
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 
 
 		//these are default settings! please redefine these when spawning!

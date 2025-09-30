@@ -11,7 +11,7 @@ static float f_EntityOutOfNav[MAXPLAYERS];
 static float f_LatestDamageRes[MAXPLAYERS];
 static float f_TimeSinceLastRegenStop[MAXPLAYERS];
 static bool b_GaveMarkForDeath[MAXPLAYERS];
-static float f_RecievedTruedamageHit[MAXPLAYERS];
+static float f_ReceivedTruedamageHit[MAXPLAYERS];
 static char MaxAsignPerkNames[MAXPLAYERS][8];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
@@ -37,7 +37,7 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
-	Zero(f_RecievedTruedamageHit);
+	Zero(f_ReceivedTruedamageHit);
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
@@ -630,6 +630,8 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
 						
+					if(Rogue_Rift_HolyBlessing())
+						MaxHealth *= 2.0;
 					HealEntityGlobal(client, client, MaxHealth / 100.0, Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					
 					float attrib = Attributes_Get(client, Attrib_BlessingBuff, 1.0);
@@ -639,6 +641,8 @@ public void OnPostThink(int client)
 						if(attrib >= 1.0)
 						{
 							attrib -= 1.0; //1.0 is default
+							if(Rogue_Rift_HolyBlessing())
+								MaxHealth *= 0.5;
 							HealEntityGlobal(client, client, (MaxHealth * attrib), Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					//		DefaultRegenArmor += attrib;
 						}
@@ -1792,19 +1796,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	
-	if(HasSpecificBuff(victim, "Envenomed"))
-	{
-		bool venom = true;
-		if(venom)
-		{
-			venom = false;
-			GetEntProp(victim, Prop_Send, "m_iHealth");
-			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
-			HealEntityGlobal(victim, victim, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
-			RemoveSpecificBuff(victim, "Envenomed");
-			Force_ExplainBuffToClient(victim, "Envenomed");
-		}
-	}
 	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
@@ -1969,9 +1960,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			if(f_RecievedTruedamageHit[victim] < GetGameTime())
+			if(f_ReceivedTruedamageHit[victim] < GetGameTime())
 			{
-				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+				f_ReceivedTruedamageHit[victim] = GetGameTime() + 0.5;
 				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 			}
 		}
@@ -2998,6 +2989,10 @@ float ArmorPlayerReduction(int victim)
 		case 200:
 		{
 			return 0.9;
+		}
+		case 250:
+		{
+			return 0.88;
 		}
 		default:
 		{

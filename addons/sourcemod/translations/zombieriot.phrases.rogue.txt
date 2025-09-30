@@ -1532,7 +1532,7 @@
 	}
 	"Health Pickup Desc"
 	{
-		"en" 	"{green}Extra Health powerup spawns at the start of a stage."
+		"en" 	"{green}Extra Health and ammo powerups spawns at the start of a stage."
 	}
 	"Support Squad"
 	{
@@ -1621,9 +1621,8 @@
 	}
 	"Bob's Exchange Money Desc"
 	{
-		"en"	"Someone must have left it behind.\n- {green}Gain 12 Australium Ingots."
-		"ru"	"Должно быть, забыл их.\n- Получите 12 слитков австралия."
-		"ko"	"아무래도 그가 두고 간 게 확실하다.\n- 오스트레일륨 주괴를 12 얻습니다."
+		"en"	"Someone must have left it behind.\n- {green}Gain 16 Australium Ingots."
+		"ru"	"Должно быть, забыл их.\n- Получите 16 слитков австралия."
 	}
 	"Music Releasing Radio"
 	{
@@ -1691,9 +1690,7 @@
 	}
 	"Healing Salve Desc"
 	{
-		"en"	"Some salve for your wounds.\n- {green}+1 health regen."
-		"ru"	"Немного мази для ваших ран.\n- +1 к восстановлению здоровья."
-		"ko"	"당신의 상처에 바를 수 있는 약간의 연고.\n- 초당 체력 회복량이 +1 증가합니다."
+		"en"	"Some salve for your wounds.\n- {green}+10 health regen."
 	}
 	"Steel Razor"
 	{
@@ -1763,7 +1760,7 @@
 	}
 	"Hand Written Letter Desc"
 	{
-		"en"	"A written letter containing vulgar language and self aggrandizing imagery.\n- {green}Gain 750 Cash and deal +2% damage."
+		"en"	"A written letter containing vulgar language and self aggrandizing imagery.\n- {green}Gain 750 Cash and deal +2％ damage."
 		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2％ больше урона."
 		"ko"	"떨어져있는 편지. 프랑스어로 적혀있는 것 같으며, 당신에게 보낸 것이 아니다. \n- 추가 자금을 +750 얻습니다. 공격 피해량이 2％ 증가합니다."
 	}
@@ -1787,7 +1784,7 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1% damage."
+		"en"	"Old ziberian wallet, has some pictures inside and some leftover cash.\n- {green}Gain 500 Cash and deal +1％ damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1％ больше урона."
 		"ko"	"오래된 러시아 지갑. 안에는 약간의 자금과 사진 몇 장이 들어있다.\n- 추가 자금을 +500 얻습니다. 공격 피해량이 1％ 증가합니다."
 	}
@@ -1815,9 +1812,7 @@
 	}
 	"Spanish Specialised Gunpowder"
 	{
-		"en"	"Spanish Specialised Gunpowder"
-		"ru"	"Испанский специальный порох"
-		"ko"	"스페인 특수 화약"
+		"en"	"Iberia Specialised Gunpowder"
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
@@ -2030,7 +2025,7 @@
 	}
 	"Hand of Travel Desc"
 	{
-		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons gain +10 health regen."
+		"en"	"Gotta set out.\n{green}''Medical'' and ''Buffer'' weapons gain +25 health regen."
 	}
 	"Hand of Trapmaster"
 	{
@@ -2058,7 +2053,7 @@
 	}
 	"Hand of Suprise Desc"
 	{
-		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33% attack speed."
+		"en"	"Boo.\n{green}''Ambusher'' and ''Crusher'' weapons inflict 5 seconds of bleed on hit and gain +33％ attack speed."
 	}
 	"Hand of Revenge"
 	{
@@ -2112,7 +2107,7 @@
 	}
 	"Soul of Bloons Tower Defense Desc"
 	{
-		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20% damage for every person with a unique bloons weapon"
+		"en"	"Better build that temple.\n{green}Bloons Tower Defense themed weapons gain +20％ damage for every person with a unique bloons weapon"
 	}
 	"Soul of Yakuza"
 	{
@@ -2303,7 +2298,7 @@
 	}
 	"Brandguider Brunch Desc"
 	{
-		"en"	"{green}Nethersea Brand deals -50% damage"
+		"en"	"{green}Nethersea Brand deals -50％ damage"
 	}
 	"Spewer Spewers"
 	{
@@ -2520,7 +2515,7 @@
 	}
 	"Lone Health Accept Desc"
 	{
-		"en"	"{green}Gain a health powerup on stage start."
+		"en"	"{green}Gain a health and ammo powerup on stage start."
 	}
 	"Lone Health Decline"
 	{
@@ -2677,5 +2672,33 @@
 	"Library Of Lixandria Title"
 	{
 		"en" "You see a giant library full of books, some stick out to you."
+	}
+"Omega and Vhxis Title"
+	{
+		"en"	"You spot two people in the distance that appear to be eerily familiar, they seem to be fighting off a massive horde of W.F soldiers.\nThey don't seem to be having trouble, but maybe we could help them regardless?"
+	}
+	"Omega and Vhxis Accept"
+	{
+		"en"	"We should help them, maybe we'll get something in return?"
+	}
+	"Omega and Vhxis Decline"
+	{
+		"en"	"We can't afford to waste any time."
+	}
+	"Omega and Vhxis Accept Desc"
+	{
+		"en"	"{green}Gain 2 powerful allies."
+	}
+	"Omega and Vhxis Decline Desc"
+	{
+		"en"	"{green}Gain Cash."
+	}
+	"Omega and Vhxis Accept Conlusion"
+	{
+		"en"	"Omega and Vhxis join your side...or are you rather joining them?"
+	}
+	"Omega and Vhxis Decline Conlusion"
+	{
+		"en"	"You leave them be, they can handle themselves. You find some loose change."
 	}
 }

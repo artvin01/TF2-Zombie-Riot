@@ -4890,7 +4890,17 @@ stock int GetClosestTarget(int entity,
 	//we will only override any non get vector distances, becuase those are pathing
 	//anything using get vector distance means that its a ranged attack, so we leave it alone.
 
+	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #if defined ZR
+
+	//in rogue you can get allies, but they shouldnt get any enemies during setups.
+	if(Rogue_Mode())
+	{
+		if(Rogue_InSetup() && SearcherNpcTeam == TFTeam_Red)
+		{
+			return -1;
+		}
+	}
 	bool IsTowerdefense = false;
 //	if(!UseVectorDistance) 
 	{
@@ -4906,7 +4916,6 @@ stock int GetClosestTarget(int entity,
 		return npc.m_iTarget;
 	}
 #endif
-	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 
 	if(EntityLocation[2] == 0.0)
 	{
@@ -6254,13 +6263,84 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 		}
 		return;
 	}
-	if (!b_DoNotUnStuck[iNPC])
+	if (b_DoNotUnStuck[iNPC])
+		return;
+	if(i_FailedTriesUnstuck[iNPC][0] == 0)
 	{
-		if(i_FailedTriesUnstuck[iNPC][0] == 0)
+		if(f_UnstuckTimerCheck[iNPC][0] < GetGameTime())
 		{
-			if(f_UnstuckTimerCheck[iNPC][0] < GetGameTime())
+			f_UnstuckTimerCheck[iNPC][0] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
+			//every 3 seconds we shall do an emenergency check
+		}
+		else
+		{
+			return;
+		}
+	}
+	else
+	{
+		if(!(i_FailedTriesUnstuck[iNPC][0] % 10))
+		{
+			i_FailedTriesUnstuck[iNPC][0] += 1;
+			return;
+		}
+	}
+
+	static float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	flMyPos[2] += 35.0;
+	CNavArea area = TheNavMesh.GetNavArea(flMyPos, 200.0);
+	int PassCheck = 0;
+	if(area != NULL_AREA)
+	{
+		/*
+		int NavAttribs = area.GetAttributes();
+		if(NavAttribs & NAV_MESH_DONT_HIDE)
+		{
+			PassCheck = 2;
+		}
+		//This is for plaers only.
+		*/
+	}
+	else
+	{
+		PassCheck = 1;
+	}
+	if(PassCheck)
+	{
+		i_FailedTriesUnstuck[iNPC][0] += 1;
+		if(i_FailedTriesUnstuck[iNPC][0] < (TickrateModifyInt * 5)) //we will wait about 5 seconds
+		{
+			return;
+		}
+		i_FailedTriesUnstuck[iNPC][0] = 0;
+		flMyPos[2] -= 35.0;
+		area = TheNavMesh.GetNearestNavArea(flMyPos, false, 55.0, false, true);
+		if(area != NULL_AREA && PassCheck == 1)
+		{
+			return;
+		}
+		UnstuckStuckNpc(npc);
+	}
+	else
+	{
+		i_FailedTriesUnstuck[iNPC][0] = 0;
+	}
+}
+public void NpcStuckInSomething(CClotBody npc, int iNPC)
+{
+	if (b_DoNotUnStuck[iNPC])
+		return;
+	if(f_DoNotUnstuckDuration[iNPC] > GetGameTime())
+		return;
+
+	if(i_FailedTriesUnstuck[iNPC][1] == 0)
+	{
+		if (npc.IsOnGround())
+		{
+			if(f_UnstuckTimerCheck[iNPC][1] < GetGameTime())
 			{
-				f_UnstuckTimerCheck[iNPC][0] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
+				f_UnstuckTimerCheck[iNPC][1] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
 				//every 3 seconds we shall do an emenergency check
 			}
 			else
@@ -6268,147 +6348,77 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 				return;
 			}
 		}
-		else
+	}
+	else
+	{
+		if(!(i_FailedTriesUnstuck[iNPC][1] % 10))
 		{
-			if(!(i_FailedTriesUnstuck[iNPC][0] % 10))
-			{
-				i_FailedTriesUnstuck[iNPC][0] += 1;
-				return;
-			}
-		}
-
-		static float flMyPos[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-		flMyPos[2] += 35.0;
-		CNavArea area = TheNavMesh.GetNavArea(flMyPos, 200.0);
-		int PassCheck = 0;
-		if(area != NULL_AREA)
-		{
-			/*
-			int NavAttribs = area.GetAttributes();
-			if(NavAttribs & NAV_MESH_DONT_HIDE)
-			{
-				PassCheck = 2;
-			}
-			//This is for plaers only.
-			*/
-		}
-		else
-		{
-			PassCheck = 1;
-		}
-		if(PassCheck)
-		{
-			i_FailedTriesUnstuck[iNPC][0] += 1;
-			if(i_FailedTriesUnstuck[iNPC][0] < (TickrateModifyInt * 5)) //we will wait about 5 seconds
-			{
-				return;
-			}
-			i_FailedTriesUnstuck[iNPC][0] = 0;
-			flMyPos[2] -= 35.0;
-			area = TheNavMesh.GetNearestNavArea(flMyPos, false, 55.0, false, true);
-			if(area != NULL_AREA && PassCheck == 1)
-			{
-				return;
-			}
-			UnstuckStuckNpc(npc);
-		}
-		else
-		{
-			i_FailedTriesUnstuck[iNPC][0] = 0;
+			i_FailedTriesUnstuck[iNPC][1] += 1;
+			return;
 		}
 	}
-}
-public void NpcStuckInSomething(CClotBody npc, int iNPC)
-{
-	if (!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
+	static float flMyPos[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+	
+	f_UnstuckTimerCheck[iNPC][1] = GetGameTime() + GetRandomFloat(2.8, 3.5);  //they were in the air regardless, add time.
+	static float hullcheckmaxs[3];
+	static float hullcheckmins[3];
+	if(b_IsGiant[iNPC])
 	{
-		if(i_FailedTriesUnstuck[iNPC][1] == 0)
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
+	{
+		hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
+
+		hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmins[2] = 0.0;	
+	}
+	else
+	{
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+	hullcheckmins[2] += 17.0;
+	if (npc.IsOnGround()) //npcs can slightly clip if on ground due to giants massive height for example.
+	{
+		hullcheckmaxs[2] *= 0.5;
+	}
+	else
+	{
+		//Floating point imprecision.
+		hullcheckmaxs[0] += 1.0;
+		hullcheckmaxs[1] += 1.0;
+		hullcheckmaxs[2] += 1.0;
+
+		hullcheckmins[0] -= 1.0;
+		hullcheckmins[1] -= 1.0;
+		hullcheckmins[2] -= 1.0;			
+	}
+
+	if(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
+	{
+		if(!Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
 		{
-			if (npc.IsOnGround())
+			i_FailedTriesUnstuck[iNPC][1] += 1;
+			if(i_FailedTriesUnstuck[iNPC][1] < TickrateModifyInt) //we will wait about a second
 			{
-				if(f_UnstuckTimerCheck[iNPC][1] < GetGameTime())
-				{
-					f_UnstuckTimerCheck[iNPC][1] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
-					//every 3 seconds we shall do an emenergency check
-				}
-				else
-				{
-					return;
-				}
-			}
-		}
-		else
-		{
-			if(!(i_FailedTriesUnstuck[iNPC][1] % 10))
-			{
-				i_FailedTriesUnstuck[iNPC][1] += 1;
 				return;
 			}
-		}
-		static float flMyPos[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-		
-		f_UnstuckTimerCheck[iNPC][1] = GetGameTime() + GetRandomFloat(2.8, 3.5);  //they were in the air regardless, add time.
-		static float hullcheckmaxs[3];
-		static float hullcheckmins[3];
-		if(b_IsGiant[iNPC])
-		{
-		 	hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-			hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
-		}
-		else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
-		{
-			hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
-			hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
-			hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
-
-			hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
-			hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
-			hullcheckmins[2] = 0.0;	
-		}
-		else
-		{
-			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
-		}
-		hullcheckmins[2] += 17.0;
-		if (npc.IsOnGround()) //npcs can slightly clip if on ground due to giants massive height for example.
-		{
-			hullcheckmaxs[2] *= 0.5;
-		}
-		else
-		{
-			//Floating point imprecision.
-			hullcheckmaxs[0] += 1.0;
-			hullcheckmaxs[1] += 1.0;
-			hullcheckmaxs[2] += 1.0;
-
-			hullcheckmins[0] -= 1.0;
-			hullcheckmins[1] -= 1.0;
-			hullcheckmins[2] -= 1.0;			
-		}
-
-		if(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
-		{
-			if(!Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
-			{
-				i_FailedTriesUnstuck[iNPC][1] += 1;
-				if(i_FailedTriesUnstuck[iNPC][1] < TickrateModifyInt) //we will wait about a second
-				{
-					return;
-				}
-				i_FailedTriesUnstuck[iNPC][1] = 0;
-				//they are still stuck after so many tries and a second, teleport to safe location
-				//delete velocity.
-				UnstuckStuckNpc(npc);
-			}
-		}
-		else
-		{
 			i_FailedTriesUnstuck[iNPC][1] = 0;
+			//they are still stuck after so many tries and a second, teleport to safe location
+			//delete velocity.
+			UnstuckStuckNpc(npc);
 		}
-	}	
+	}
+	else
+	{
+		i_FailedTriesUnstuck[iNPC][1] = 0;
+	}
 }
 void UnstuckStuckNpc(CClotBody npc)
 {
@@ -6475,8 +6485,8 @@ stock void Custom_Knockback(int attacker,
 	bool override = false,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
-	 bool RecieveInfo = false,
-	 float RecievePullInfo[3] = {0.0,0.0,0.0},
+	 bool ReceiveInfo = false,
+	 float ReceivePullInfo[3] = {0.0,0.0,0.0},
 	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
 	if(HasSpecificBuff(enemy, "Solid Stance"))
@@ -6619,9 +6629,9 @@ stock void Custom_Knockback(int attacker,
 
 		ScaleVector(vDirection, knockback);
 
-		RecievePullInfo = vDirection;
+		ReceivePullInfo = vDirection;
 		
-		if(RecieveInfo)
+		if(ReceiveInfo)
 		{
 			return;
 		}
@@ -9330,7 +9340,12 @@ public void KillNpc(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity)) //Dont do this in a think pls.
 	{
+#if defined RPG
+		NPC_Despawn(entity);
+#endif
+#if defined ZR
 		SmiteNpcToDeath(entity);
+#endif
 	}
 }
 
@@ -9869,6 +9884,10 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 	static float vel[3];
 	static float flMyPos[3];
 	npc.GetVelocity(vel);
+	//clamping so insane speeds dont translate through hitting the entire map.
+	fClamp(vel[0], -300.0, 300.0);
+	fClamp(vel[1], -300.0, 300.0);
+	fClamp(vel[2], -300.0, 300.0);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	static float hullcheckmins[3];

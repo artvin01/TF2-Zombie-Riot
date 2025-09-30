@@ -162,7 +162,7 @@ public void TornUmbralGate_ClotThink(int iNPC)
 		TE_Particle("powerup_supernova_explode_red", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 		int MaxHealthGet = ReturnEntityMaxHealth(npc.index);
-		MaxHealthGet /= 10;
+		MaxHealthGet /= 20;
 		for(int i; i<MaxenemySpawnScaling; i++)
 		{
 			int summon = NPC_CreateByName("npc_umbral_whiteflowers", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));

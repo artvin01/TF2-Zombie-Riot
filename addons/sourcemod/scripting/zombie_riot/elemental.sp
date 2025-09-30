@@ -196,8 +196,7 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
 	
-	CClotBody npc = view_as<CClotBody>(entity);
-	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL || HasSpecificBuff(entity, "Warped Elemental End"))
+	if(HasSpecificBuff(entity, "Warped Elemental End"))
 	{	
 		//impossible to elementalise.
 		amount = 999999999;
@@ -405,6 +404,11 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			return;
 	}
 	
+	//umbrals are immune
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
+
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -537,7 +541,10 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		if(victim == -1)
 			return;
 	}
-	
+	//umbrals are immune
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -787,14 +794,14 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 					Armor_Charge[victim] = 0;
 					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 1.0;
 					int health = ReturnEntityMaxHealth(victim);
-					health /= 25;
-					StartBleedingTimer(victim, attacker, float(health), 5, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					health /= 20;
+					StartBleedingTimer(victim, attacker, float(health), 5, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 					Force_ExplainBuffToClient(victim, "Necrosis Elemental Damage");
 
 					int other, i;
 					while(TF2_GetItem(victim, other, i))
 					{
-						Saga_ChargeReduction(victim, other, -15.0);
+						Saga_ChargeReduction(victim, other, -3.0);
 					}
 				}
 				else
@@ -1392,6 +1399,12 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		if(victim == -1)
 			return;
 	}
+	if(!IsValidEntity(attacker))
+		return;
+	//umbrals are immune
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
 	
 	int damage = trueDmg ? damagebase : RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
@@ -1418,12 +1431,13 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				Armor_Charge[victim] -= damage;
 				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Warped)))
 				{
-					Armor_Charge[victim] += damage + 50;
+					Armor_Charge[victim] = -(Elemental_TriggerDamage(victim, Element_Warped) / 2);
 
 					i_AmountDowned[victim]--;
 				//	TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
 					SDKHooks_TakeDamage(victim, attacker, attacker, 9999999.9, DMG_TRUEDAMAGE);
 					f_DisableDyingTimer[victim] = FAR_FUTURE;
+					dieingstate[victim] = RoundToNearest(float(dieingstate[victim]) * 1.25);
 					Warped_ClientDoEffets(victim);
 					EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
@@ -1473,7 +1487,11 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 
 			if(GetTeam(victim) == TFTeam_Red)
 			{
-				SmiteNpcToDeath(victim);
+				SDKHooks_TakeDamage(victim, attacker, attacker, float(ReturnEntityMaxHealth(victim)), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+				float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+				TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+				//do dmg once
 			}
 			else
 			{
@@ -1488,11 +1506,10 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				FreezeNpcInTime(victim, 999.9, true);
 				SetEntityRenderColor(victim, 25, 25, 25, 255);
 				AddNpcToAliveList(victim, 1);
-				b_NoHealthbar[victim] = true;
+				b_NoHealthbar[victim] = 1;
 				ApplyStatusEffect(victim, victim, "Warped Elemental End", 999.9);
 				ApplyStatusEffect(victim, victim, "Clear Head", 999999.0);	//cant be stunned again
 				
-				CClotBody npc = view_as<CClotBody>(victim);
 				npc.m_bDissapearOnDeath = true;
 				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal");
 				if (!IsValidEntity(npc.m_iFreezeWearable))

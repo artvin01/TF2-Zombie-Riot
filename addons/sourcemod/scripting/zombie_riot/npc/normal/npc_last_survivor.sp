@@ -112,7 +112,7 @@ public void FatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/monk.mdl");
+	PrecacheModel("models/zombie_riot/grigori/monk_custom.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -217,7 +217,7 @@ methodmap FatherGrigori < CClotBody
 	
 	public FatherGrigori(float vecPos[3], float vecAng[3], int ally)
 	{
-		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
+		FatherGrigori npc = view_as<FatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/grigori/monk_custom.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		

@@ -714,7 +714,7 @@
 	}
 	"Sawrunner Desc"
 	{
-		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nRecieves 2x headshot damage."
+		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nReceives 2x headshot damage."
 		"ru"		"Монстр из Cry of Fear, сделан из чистого страха и дипресии,Будет бежать за тобой и только тобой.Ксено инфекция воздействует на него делая его ещё больше неустойчивым...\nПолучат двойной урон при выстреле в голову."
 		"ko" 		"Cry of fear 게임에서 넘어온 괴물입니다. 순수한 공포와 우울함으로 만들어졌으며, 오직 당신만을 쫓을 것입니다. 제노 감염원이 그에게 영향을 끼쳐서, 그를 더욱 불규칙한 존재로 만들고 있습니다.\n이 적에게 주는 헤드샷 피해량이 2배 증가합니다."
 	}
@@ -2219,7 +2219,7 @@
 	}
 	"Sakratan Desc" 
 	{
-		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to recieve 25％ more damage for 10 seconds."
+		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to receive 25％ more damage for 10 seconds."
 		"ru"	"Наносит Хаос коррозию,Который взрывает вас,нанося 250 Чистого урона вам и всем союзинкам вокруг вас.\nЭто также ослабляет всех задетых союзников что они получают 25％ больше урона на 10 секунд."
 		"ko"	"공격 적중시, 당신에게 혼돈 원소 피해를 부여합니다. 이 원소 피해 게이지가 완전히 꽉 찼다면, 폭발하면서 대상과 대상 주변의 모든 팀원들이 250의 트루 대미지를 받습니다.\n이 폭발에 피격된 대상은 10초간 받는 모든 피해가 30％ 증가합니다."
 	}
@@ -2231,7 +2231,7 @@
 	}
 	"Rajul Desc" 
 	{
-		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff."
+		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff."
 		"ru"	"Когда получает урон,В зависимости от урона вылечит 3 союзников вокруг себя.\nЕсли она получат достаточно Оверхила, получат усиление навсегда."
 		"ko"	"피해를 받을 때마다, 주변의 아군 3명의 체력을 회복시킵니다. (과치료 가능)\n치료 대상이 충분한 과치료 수치를 지녔다면, 대상에게 영구적으로 지속되는 버프를 부여합니다."
 	}
@@ -2285,7 +2285,7 @@
 	}
 	"Arctic Mage Desc" 
 	{
-		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
+		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
 		"ru"	"Когда получают урон,в зависимости от урона вылечат 3 союзинка в радиусе вокруг него.\nЕсли они получат достаточно оверхила,они получат бафф навсегда.\nИногда Даёт себе щиты при атаке,И даёт щиты союзинкам.\nНаносит огромный хаос урон."
 		"ko"	"피해를 받을 때마다, 주변의 아군 3명의 체력을 회복시킵니다. (과치료 가능)\n대상이 충분한 과치료 수치를 지녔다면, 대상에게 영구적으로 지속되는 버프를 부여합니다.\n때때로 피격시 자신 또는 주변 아군에게 보호막을 부여합니다.\n적중시, 대상에게 매우 높은 혼돈 원소 피해를 부여합니다."
 	}
@@ -2333,7 +2333,7 @@
 	}
 	"Abomination Desc"
 	{
-		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it recieves will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
+		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it receives will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
 		"ru"	"Наночит огромный урон со временем,наносит хаос урон и поджигает тебя.\nКаждая полученная атака даёт сопротивление полученному урона,но ослабивает к противоположному типу урона.\n(заглушение) отключает часть с получением сопротивлений."
 		"ko"	"시간이 지날수록 대상에게 엄청난 피해를 주고 혼돈 원소 피해를 부여하며 대상을 불태웁니다.\n공격을 받을 때마다, 마지막으로 받은 공격의 피해 유형을 기억하여, 그 피해 유형에 대한 저항력을 얻지만 다른 피해 유형에는 취약해지게 됩니다.\n(침묵 효과로) 피해 저항력을 증가시키는 효과를 제거할 수 있습니다."
 	}

@@ -297,10 +297,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				}						
 				if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
 				{
-					int damage_recieved_after_calc;
-					damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
+					int damage_received_after_calc;
+					damage_received_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
 					Armor_Charge[armorEnt] = 0;
-					damage = float(damage_recieved_after_calc);
+					damage = float(damage_received_after_calc);
 
 					//armor is broken!
 					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
@@ -1724,6 +1724,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
 		{		
+			damage *= f_HeadshotDamageMultiNpc[victim];
 			damage *= 1.35;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 			damagetype &= ~DMG_CRIT;

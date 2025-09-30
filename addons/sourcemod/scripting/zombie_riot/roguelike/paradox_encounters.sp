@@ -910,12 +910,12 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 
 			TF2_RespawnPlayer(client1);
 			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
-			CashRecievedNonWave[client1] += (2000 * floor) + 2000;
+			CashReceivedNonWave[client1] += (2000 * floor) + 2000;
 			CashSpent[client1] -= (2000 * floor) + 2000;
 
 			TF2_RespawnPlayer(client2);
 			CPrintToChat(client2, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
-			CashRecievedNonWave[client2] += ((2000 * floor) + 2000);
+			CashReceivedNonWave[client2] += ((2000 * floor) + 2000);
 			CashSpent[client2] -= ((2000 * floor) + 2000);
 		}
 		else if(client1)
@@ -924,7 +924,7 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 
 			TF2_RespawnPlayer(client1);
 			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
-			CashRecievedNonWave[client1] += ((2000 * floor) + 2000);
+			CashReceivedNonWave[client1] += ((2000 * floor) + 2000);
 			CashSpent[client1] -= ((2000 * floor) + 2000);
 		}
 		else

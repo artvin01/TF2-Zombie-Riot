@@ -59,9 +59,9 @@ void BossReila_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Reila");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_boss_reila");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "reila");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
@@ -421,6 +421,18 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	}
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	if(!npc.Anger)
+	{
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") <= (ReturnEntityMaxHealth(npc.index) / 2))
+		{	
+			npc.Anger = true;
+			ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 10.0);
+		//	ApplyStatusEffect(npc.index, npc.index, "Umbral Grace Debuff", 10.0);
+			ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 10.0);
+			CPrintToChatAll("{pink}Reila {snow}gets enveloped in an Umbral Aura...");
+		}
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -559,8 +571,8 @@ void ReilaCreateBeacon(int iNpc)
 			Zombies_Currently_Still_Ongoing++;
 
 		npcsummon.m_iTargetAlly = iNpc;
-		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/4);
-		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/4);
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/3);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/3);
 		NpcStats_CopyStats(npc.index, summon);
 		if(!IsValidEntity(EndFound))
 			TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);

@@ -10,6 +10,7 @@ enum
 	PAP_DESC_PREVIEW
 }
 
+
 enum struct ItemInfo
 {
 	int Cost;
@@ -505,6 +506,7 @@ enum struct Item
 	bool NPCWeaponAlways;
 	int GiftId;
 	bool GregBlockSell;
+	bool StaleCost;
 	int GregOnlySell;
 	bool RogueAlwaysSell;
 	
@@ -608,7 +610,7 @@ void Store_OnCached(int client)
 		{
 			Store_SetNamedItem(client, "ZR Contest Nominator [???] Cash", 1);
 			//Building_GiveRewardsUse(0, client, amount);
-			CashRecievedNonWave[client] += amount;
+			CashReceivedNonWave[client] += amount;
 			CashSpent[client] -= amount;
 			CashSpentLoadout[client] -= amount;
 		}
@@ -620,7 +622,7 @@ void Store_OnCached(int client)
 		{
 			Store_SetNamedItem(client, "ZR Content Creator [???] Cash", 1);
 			//Building_GiveRewardsUse(0, client, 50);
-			CashRecievedNonWave[client] += 50;
+			CashReceivedNonWave[client] += 50;
 			CashSpent[client] -= 50;
 			CashSpentLoadout[client] -= 50;
 		}
@@ -1128,6 +1130,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		item.MaxScaled = kv.GetNum("max_times_scale");
 		item.Slot = kv.GetNum("slot", -1);
 		item.GregBlockSell = view_as<bool>(kv.GetNum("greg_block_sell"));
+		item.StaleCost = view_as<bool>(kv.GetNum("stale_cost"));
 		item.GregOnlySell = kv.GetNum("greg_only_sell");
 		item.NPCWeapon = kv.GetNum("npc_type", -1);
 		item.NPCWeaponAlways = item.NPCWeapon > 9;
@@ -2750,6 +2753,11 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 			StoreItems.SetArray(i, item);
 			continue;
 		}
+		//NEVER GO ON SALE, ALWAYS SAME COST.
+		if(!unlock && item.StaleCost)
+		{
+			continue;
+		}
 		if(item.GregOnlySell == 2 && (!(StoreFlags & ZR_STORE_RESET)))
 		{
 			//We always sell this if unbought
@@ -3369,7 +3377,7 @@ static void MenuPage(int client, int section)
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
-			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashRecievedNonWave[client]);
+			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
 		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -3405,7 +3413,7 @@ static void MenuPage(int client, int section)
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
-			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashRecievedNonWave[client]);
+			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
 		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -3479,7 +3487,10 @@ static void MenuPage(int client, int section)
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
+				if(Waves_Started())
+					Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
+				else
+					Format(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
 				menu.AddItem("-2", buffer);
 			}
 		}
@@ -4311,6 +4322,17 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 
 public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 {
+	//Profiler profiler = new Profiler();
+//	profiler.Start();
+	int returndo = Store_MenuItemInt(menu, action, client, choice);
+//	profiler.Stop();
+//	PrintToChatAll("Profiler: %f", profiler.Time);
+//	delete profiler;
+
+	return returndo;
+}
+public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choice)
+{
 	switch(action)
 	{
 		case MenuAction_End:
@@ -4486,8 +4508,8 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							}
 							
 							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
-							{
-								Store_ApplyAttribs(client);
+							{	
+								Store_ApplyAttribs(client);								
 								Store_GiveAll(client, GetClientHealth(client));
 							}
 						}
@@ -5190,7 +5212,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1)))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -5210,7 +5232,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -5312,6 +5334,16 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+//	Profiler profiler = new Profiler();
+//	profiler.Start();		
+	Store_GiveAllInternal(client, health, removeWeapons);		
+//	profiler.Stop();	
+//	PrintToChatAll("Profiler testing: %f", profiler.Time);
+//	delete profiler;
+}
+
+void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
+{
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
@@ -5348,12 +5380,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	else if(StoreItems)
 	{
-		Store_RemoveSpecificItem(client, "Irene's Handcannon");
-		Store_RemoveSpecificItem(client, "Teutonic Longsword");
+		Store_RemoveSpecificItem(client, "Teutonic Longsword", false);
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 	//OverridePlayerModel(client);
-
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
 	{
@@ -5361,7 +5391,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		{
 			static char classname[36];
 			GetEntityClassname(i, classname, sizeof(classname));
-			if(!StrContains(classname, "tf_projectile_pipe_remote"))
+			if(StrEqual(classname, "tf_projectile_pipe_remote"))
 			{
 				if(!IsEntitySpike(i))
 				{
@@ -5374,7 +5404,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			}
 		}
 	}
-
+	
 	//There is no easy way to preserve uber through with multiple mediguns
 	//solution: save via index
 	ClientSaveRageMeterStatus(client);
@@ -5383,7 +5413,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		TF2_RemoveAllWeapons(client);
-	}
+	}	
 	/*
 	i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(SpawnWeapon_Special(client, "tf_weapon_pda_engineer_destroy", 26, 100, 5, "671 ; 1"));
 	*/
@@ -5403,14 +5433,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
-	/*
-	bool Was_phasing = false;
 	
-	if(b_PhaseThroughBuildingsPerma[client] == 2)
-	{
-		Was_phasing = true;
-	}
-	*/
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
@@ -5432,7 +5455,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
-		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 
@@ -5448,14 +5470,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 				if(info.Classname[0])
 				{
-					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
-					{
-						if(hasPDA)
-							continue;
-						
-						hasPDA = true;
-					}
-
 					Store_GiveItem(client, i, use, found);
 					if(++count > 6)
 					{
@@ -5469,86 +5483,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		if(!found)
 			Store_GiveItem(client, -1, use);
 	}
-	
+		
 	CheckMultiSlots(client);
-	
-//	Spawn_Buildable(client);
-//	TF2_SetPlayerClass_ZR(client, TFClass_Engineer, true, false);
-	/*
-	if(entity > MaxClients)
-	{
-		TF2_SetPlayerClass_ZR(client, TFClass_Engineer);
-	}
-
-	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
-	{
-		b_NemesisHeart[client] = true;
-	}
-	else
-	{
-		b_NemesisHeart[client] = false;
-	}
-	if(Items_HasNamedItem(client, "Xeno Virus Vial"))
-	{
-		b_XenoVial[client] = true;
-	}
-	else
-	{
-		b_XenoVial[client] = false;
-	}
-	if(Items_HasNamedItem(client, "Overlords Final Wish"))
-	{
-		b_OverlordsFinalWish[client] = true;
-	}
-	else
-	{
-		b_OverlordsFinalWish[client] = false;
-	}
-	
-	if(Items_HasNamedItem(client, "Bob's true fear"))
-	{
-		b_BobsTrueFear[client] = true;
-	}
-	else
-	{
-		b_BobsTrueFear[client] = false;
-	}
-
-	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
-	{
-		b_TwirlHairpins[client] = true;
-	}
-	else
-	{
-		b_TwirlHairpins[client] = false;
-	}
-
-	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
-	{
-		b_KahmlLastWish[client] = true;
-	}
-	else
-	{
-		b_KahmlLastWish[client] = false;
-	}
-	if(Items_HasNamedItem(client, "Opened Void Portal"))
-	{
-		b_VoidPortalOpened[client] = true;
-	}
-	else
-	{
-		b_VoidPortalOpened[client] = false;
-	}
-	
-	if(Items_HasNamedItem(client, "Avangard's Processing Core-B"))
-	{
-		b_AvangardCoreB[client] = true;
-	}
-	else
-	{
-		b_AvangardCoreB[client] = false;
-	}
-	*/
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
@@ -5707,24 +5643,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					}
 					HidePlayerWeaponModel(client, entity, true);
 
-					//new item bought, make sure to update the current order and stuff of weapon changing client
-					//TODO bug: Buy 1 melee weapon, then another, you cant switch between the two unless you swsitch once via h
-
-
-					/*
-					LogMessage("Weapon Spawned!");
-					LogMessage("Name of client %N and index %i",client,client);
-					LogMessage("info.Classname: %s",info.Classname);
-					LogMessage("GiveWeaponIndex: %i",GiveWeaponIndex);
-					char AttributePrint[255];
-					for(int i=0; i<info.Attribs; i++)
-					{
-						Format(AttributePrint,sizeof(AttributePrint),"%s %i ;",AttributePrint, info.Attrib[i]);	
-						Format(AttributePrint,sizeof(AttributePrint),"%s %.1f ;",AttributePrint, info.Value[i]);	
-					}
-					LogMessage("attributes: ''%s''",AttributePrint);
-					LogMessage("info.Attribs: %i",info.Attribs);
-					*/
 				}
 				else
 				{
@@ -6116,7 +6034,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 									}
 								}
-								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
 								}
@@ -6148,7 +6066,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 											Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 									}
 								}
-								else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+								else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 								{
 									Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
 								}
@@ -6356,7 +6274,7 @@ int Store_GiveSpecificItem(int client, const char[] name)
 	return -1;
 }
 
-void Store_RemoveSpecificItem(int client, const char[] name)
+void Store_RemoveSpecificItem(int client, const char[] name, bool UpdateSlots = false)
 {
 	if(!StoreItems)
 		return;
@@ -6376,7 +6294,8 @@ void Store_RemoveSpecificItem(int client, const char[] name)
 			StoreItems.SetArray(i, item);
 			
 		//	int entity = Store_GiveItem(client, i, item.Equipped[client]);
-			CheckMultiSlots(client);
+			if(UpdateSlots)
+				CheckMultiSlots(client);
 			return;
 		}
 	}
@@ -6617,62 +6536,74 @@ static void ItemCost(int client, Item item, int &cost)
 	}
 	static ItemInfo info;
 	item.GetItemInfo(0, info);
+	//NEVER GO ON SALE, ALWAYS SAME COST.
 	if(StarterCashMode[client])
 	{
-		if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
+		if(!item.StaleCost)
 		{
-			cost = RoundToCeil(float(cost) * 0.35);
+			if(StartCash < 750 && (cost <= 1000 || info.Cost_Unlock <= 1000)) //give super discount for normal waves
+			{
+				cost = RoundToCeil(float(cost) * 0.35);
+			}
+			else 
+			{
+				cost = RoundToCeil(float(cost) * 0.7);	//keep normal discount for waves that have other starting cash.
+			}
 		}
-		else 
+		else
 		{
-			cost = RoundToCeil(float(cost) * 0.7);	//keep normal discount for waves that have other starting cash.
+			cost = RoundToCeil(float(cost) * 0.7);
 		}
 		return;
 	}
-	
-	//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
-	
-	//make sure anything thats additive is on the top, so sales actually help!!
-	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
+		
+	if(!item.StaleCost)
 	{
-		if(b_SpecialGrigoriStore && !item.BoughtBefore[client])
+		//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+		
+		//make sure anything thats additive is on the top, so sales actually help!!
+		if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 		{
-			//during maps where he alaways sells, always sell!
-			//If the client bought this weapon before, do not offer the discount anymore.
-			if(item.NPCSeller_WaveStart > 0 || item.NPCSeller)
+			if(b_SpecialGrigoriStore && !item.BoughtBefore[client])
 			{
-				cost = RoundToCeil(float(cost) * item.NPCSeller_Discount);
+				//during maps where he alaways sells, always sell!
+				//If the client bought this weapon before, do not offer the discount anymore.
+				if(item.NPCSeller_WaveStart > 0 || item.NPCSeller)
+				{
+					cost = RoundToCeil(float(cost) * item.NPCSeller_Discount);
+				}
+				
+				if(item.NPCSeller)
+					GregSale = true;
 			}
-			
-			if(item.NPCSeller)
-				GregSale = true;
 		}
-	}
-	
-	//allow greg sales here.
-	if(Setup && !GregSale)
-	{
-		cost = RoundToCeil(float(cost) * 0.9);
-	}
-	/*
-	if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
-	{
-		switch(CurrentPlayers)
+		
+		//allow greg sales here.
+		if(Setup && !GregSale)
 		{
-			case 0:
-				CheckAlivePlayers();
-			
-			case 1:
-				cost = RoundToNearest(float(cost) * 0.9);
-			
-			case 2:
-				cost = RoundToNearest(float(cost) * 0.92);
-			
-			case 3:
-				cost = RoundToNearest(float(cost) * 0.95);
+			cost = RoundToCeil(float(cost) * 0.9);
 		}
+		/*
+		if(!Rogue_Mode() && (CurrentRound != 0 || CurrentWave != -1) && cost)
+		{
+			switch(CurrentPlayers)
+			{
+				case 0:
+					CheckAlivePlayers();
+				
+				case 1:
+					cost = RoundToNearest(float(cost) * 0.9);
+				
+				case 2:
+					cost = RoundToNearest(float(cost) * 0.92);
+				
+				case 3:
+					cost = RoundToNearest(float(cost) * 0.95);
+			}
+		}
+		*/
+			
 	}
-	*/
 	
 	//Keep this here, both of these make sure that the item doesnt go into infinite cost, and so it doesnt go below the sell value, no inf money bug!
 	if(item.MaxCost > 0 && cost > item.MaxCost)
@@ -6779,18 +6710,18 @@ void GiveCredits(int client, int credits, bool building)
 		int CreditsGive = credits / 2;
 		CashSpentGivePostSetup[client] += CreditsGive;
 		CashSpent[client] -= CreditsGive;
-		CashRecievedNonWave[client] += CreditsGive;
+		CashReceivedNonWave[client] += CreditsGive;
 	}
 	else
 	{
 		CashSpent[client] -= credits;
-		CashRecievedNonWave[client] += credits;
+		CashReceivedNonWave[client] += credits;
 	}
 }
 
 void GrantCreditsBack(int client)
 {
-	CashRecievedNonWave[client] += CashSpentGivePostSetup[client];
+	CashReceivedNonWave[client] += CashSpentGivePostSetup[client];
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;

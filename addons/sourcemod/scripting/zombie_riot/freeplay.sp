@@ -976,7 +976,7 @@ void Freeplay_SpawnEnemy(int entity)
 				{
 					b_StaticNPC[entity] = true;
 					AddNpcToAliveList(entity, 1);
-					b_NoHealthbar[entity] = true; //Makes it so they never have an outline
+					b_NoHealthbar[entity] = 1; //Makes it so they never have an outline
 					GiveNpcOutLineLastOrBoss(entity, false);
 					b_thisNpcHasAnOutline[entity] = true;
 				}
@@ -1571,7 +1571,7 @@ void Freeplay_SetupStart(bool extra = false)
 		else
 		{
 			RandomStats += GetRandomInt(8, 16);
-			CPrintToChatAll("{red}%d random enemies will recieve randomized stats! You'll never know when.", RandomStats);
+			CPrintToChatAll("{red}%d random enemies will receive randomized stats! You'll never know when.", RandomStats);
 		}
 
 		if(GetRandomInt(1, 2) > 1)
@@ -2159,7 +2159,7 @@ void Freeplay_SetupStart(bool extra = false)
 			case 19:
 			{
 				RandomStats += GetRandomInt(3, 6);
-				strcopy(message, sizeof(message), "{red}A random amount of random enemies will randomly recieve randomized stats randomly!");
+				strcopy(message, sizeof(message), "{red}A random amount of random enemies will randomly receive randomized stats randomly!");
 			}
 	
 			/// CREDIT SKULLS //

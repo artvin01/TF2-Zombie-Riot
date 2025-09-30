@@ -296,6 +296,11 @@ methodmap CAT < CClotBody
 		public get()							{ return i_MedkitAnnoyance[this.index]; }
 		public set(int TempValueForProperty) 	{ i_MedkitAnnoyance[this.index] = TempValueForProperty; }
 	}
+	property bool m_bDontTalkOnNextAbility
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
 
 	public CAT(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -545,14 +550,14 @@ public void CAT_ClotThink(int iNPC)
 		{
 			case CAT_SELF_DEGRADATION_ABILITY_STATE_NONE:
 			{
-				SelfDegradation_Ability_Start(npc);
+				SelfDegradation_Ability_Start(npc, !npc.m_bDontTalkOnNextAbility);
 				return;
 			}
 			
 			case CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING:
 			{
 				if (npc.m_flNextSelfDegradationAbilityState < gameTime)
-					SelfDegradation_Ability_Activate(npc);
+					SelfDegradation_Ability_Activate(npc, !npc.m_bDontTalkOnNextAbility);
 				
 				return;
 			}
@@ -704,13 +709,17 @@ static void OrbSpam_Ability_ReadyUp(CAT npc)
 	npc.PlayBoomSound();
 	npc.PlayOrbBarrageAlertSound();
 	
+	ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 999.0);
+	
 	if (IsValidEntity(npc.m_iWearable1))
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
 	
 	float vecPos[3];
 	GetAbsOrigin(npc.index, vecPos);
 	vecPos[2] += 20.0;
-	spawnRing_Vectors(vecPos, 250 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, 1.5, 5.0, 0.0, 1, 0.0);
+	
+	float duration = 1.5 / f_AttackSpeedNpcIncrease[npc.index];
+	spawnRing_Vectors(vecPos, 250 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 104, 207, 255, 255, 1, duration, 5.0, 0.0, 1, 0.0);
 	
 	npc.m_iOrbAbilityState = CAT_ORB_SPAM_ABILITY_STATE_READYING_UP;
 	npc.m_flNextOrbAbilityState = gameTime + 1.5;
@@ -758,7 +767,7 @@ static void OrbSpam_Ability_CoolOff(CAT npc)
 	npc.m_flNextOrbAbilityState = gameTime + 2.0;
 }
 
-static void OrbSpam_Ability_End(CAT npc)
+static void OrbSpam_Ability_End(CAT npc, bool yap = true)
 {
 	float gameTime = GetGameTime(npc.index);
 	
@@ -779,20 +788,25 @@ static void OrbSpam_Ability_End(CAT npc)
 	
 	// If other attacks are ready, delay them a bit so they don't immediately activate
 	npc.m_flNextSelfDegradationAbilityTime = fmax(npc.m_flNextSelfDegradationAbilityTime, gameTime + GetRandomFloat(5.0, 10.0));
-
-	switch(GetRandomInt(0,2))
+	
+	RemoveSpecificBuff(npc.index, "Very Defensive Backup");
+	
+	if (yap)
 	{
-		case 0:
+		switch(GetRandomInt(0,2))
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+			case 0:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE RADIATOR IS {azure}COOLING-OFF");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLE DISPERSAL {azure}ACCOMPLISHED");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: PARTICLES ARE {crimson}GONE{default}... {azure}FOR NOW");
+			}
 		}
 	}
 }
@@ -842,7 +856,7 @@ bool CAT_timeBased(int iNPC)
 	CAT npc = view_as<CAT>(iNPC);
 	if(npc.m_flBeginTimeWarp)
 	{
-		if(npc.m_flBeginTimeWarp < GetGameTime())
+		if(npc.m_flBeginTimeWarp < GetGameTime(npc.index))
 		{
 			b_NpcIsInvulnerable[npc.index] = false;
 			npc.PlayRevivalEnd();
@@ -863,8 +877,13 @@ bool CAT_timeBased(int iNPC)
 			
 			// Add some extra time, then accommodate for the buff
 			const float timescale = 1.5;
-			float newTime = ((RaidModeTime - GetGameTime()) + 20.0) * timescale;
+			float newTime = ((RaidModeTime - GetGameTime())) * timescale;
 			RaidModeTime = GetGameTime() + newTime;
+			
+			// Immediately activate self degradation, and delay orb spam
+			npc.m_bDontTalkOnNextAbility = true;
+			npc.m_flNextSelfDegradationAbilityTime = GetGameTime(npc.index) + 0.5;
+			npc.m_flNextOrbAbilityTime = GetGameTime(npc.index) + 14.0;
 		}
 		
 		// Pause the timer
@@ -917,7 +936,7 @@ void Cat_Rocket_Particle_Think(int entity)
 	CBaseCombatCharacter(entity).SetNextThink(gameTime + 0.1);
 }
 
-static void SelfDegradation_Ability_Start(CAT npc)
+static void SelfDegradation_Ability_Start(CAT npc, bool yap = true)
 {
 	float gameTime = GetGameTime(npc.index);
 	
@@ -931,24 +950,28 @@ static void SelfDegradation_Ability_Start(CAT npc)
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVATING;
 	npc.m_flNextSelfDegradationAbilityState = gameTime + 1.5;
-	switch(GetRandomInt(0,2))
+	
+	if (yap)
 	{
-		case 0:
+		switch(GetRandomInt(0,2))
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DEGRADATION");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IN PROCESS...");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SWITCHING TO SELF-DEGRADATION MODE");
+			case 0:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: INITIATING SELF-DEGRADATION");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IN PROCESS...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SWITCHING TO SELF-DEGRADATION MODE");
+			}
 		}
 	}
 }
 
-static void SelfDegradation_Ability_Activate(CAT npc)
+static void SelfDegradation_Ability_Activate(CAT npc, bool yap = true)
 {
 	float gameTime = GetGameTime(npc.index);
 	
@@ -980,29 +1003,33 @@ static void SelfDegradation_Ability_Activate(CAT npc)
 	
 	npc.m_iSelfDegradationAbilityState = CAT_SELF_DEGRADATION_ABILITY_STATE_ACTIVE;
 	npc.m_flNextSelfDegradationAbilityState = gameTime + CAT_SELF_DEGRADATION_ABILITY_DURATION;
+	npc.m_bDontTalkOnNextAbility = false;
 	
 	// 999.0 so they don't desync with lower think speed. The buffs get removed when they're supposed to be gone
 	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation", 999.0);
 	ApplyStatusEffect(npc.index, npc.index, "Self-Degradation (Debuff)", 999.0);
-
-	switch(GetRandomInt(0,2))
+	
+	if (yap)
 	{
-		case 0:
+		switch(GetRandomInt(0,2))
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {unique}ACTIVATED");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+			case 0:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {unique}ONLINE");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {unique}ACTIVATED");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION POWER UP, {unique}COMPLETE");
+			}
 		}
 	}
 }
 
-static void SelfDegradation_Ability_Deactivate(CAT npc)
+static void SelfDegradation_Ability_Deactivate(CAT npc, bool yap = true)
 {
 	float gameTime = GetGameTime(npc.index);
 	
@@ -1021,22 +1048,26 @@ static void SelfDegradation_Ability_Deactivate(CAT npc)
 	// Remove the buffs in case this was called early
 	RemoveSpecificBuff(npc.index, "Self-Degradation");
 	RemoveSpecificBuff(npc.index, "Self-Degradation (Debuff)");
-
-	switch(GetRandomInt(0,2))
+	
+	if (yap)
 	{
-		case 0:
+		switch(GetRandomInt(0,2))
 		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
-		}
-		case 1:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
-		}
-		case 2:
-		{
-			CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
+			case 0:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION MODE IS {crimson}OFFLINE");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION: {crimson}DEACTIVATED");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{rare}C.A.T.{default}: SELF-DEGRADATION IS {crimson}SHUTTING DOWN");
+			}
 		}
 	}
+	
 }
 
 public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1071,7 +1102,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 	if(!npc.Anger)
 	{
-		if((ReturnEntityMaxHealth(npc.index) * 0.4) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+		if((ReturnEntityMaxHealth(npc.index) / 2) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 		{
 			npc.PlayRevivalStart();
 			npc.AddGesture("ACT_MP_STUN_BEGIN");
@@ -1083,7 +1114,10 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npc.m_flBeginTimeWarp = GetGameTime(npc.index) + 2.0;
 			
 			if (npc.m_iSelfDegradationAbilityState != CAT_SELF_DEGRADATION_ABILITY_STATE_NONE)
-				SelfDegradation_Ability_Deactivate(npc);
+				SelfDegradation_Ability_Deactivate(npc, false);
+			
+			if (npc.m_iOrbAbilityState != CAT_ORB_SPAM_ABILITY_STATE_NONE)
+				OrbSpam_Ability_End(npc, false);
 			
 			AcceptEntityInput(npc.m_iWearable1, "Disable");
 			npc.StopPathing();

@@ -39,6 +39,15 @@ public void Weapon_Wand_LightningPap2(int client, int weapon, bool &result, int 
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Ability has cooldown", client, Ability_CD);	
 		return;
 	}
+	int mana_cost = Smite_Cost;
+	if(mana_cost > Current_Mana[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		return;
+	}
 	Weapon_Wand_LightningSpell_Internal(client, weapon, result, slot, true);
 	Weapon_Wand_LightningPap(client, weapon, result, slot);
 

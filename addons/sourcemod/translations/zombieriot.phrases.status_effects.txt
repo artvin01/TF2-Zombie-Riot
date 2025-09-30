@@ -913,6 +913,14 @@
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
 	}
+	"Unstable Umbral Rift"
+	{
+		"en"	"Unstable Umbral Rift"
+	}
+	"Unstable Umbral Rift Desc"
+	{
+		"en"	"Only affects players, Reduces gravity and movementspeed, causes you to lose aircontroll aswell."
+	}
 	"Altered Functions"
 	{
 		"en"	"Altered Functions"
@@ -1732,8 +1740,7 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
-		"ko"	"다음 공격의 피해량이 증가하고 극도로 높은 플라즈마 원소 피해를 부여합니다.\n사용 능력이 더욱 강화됩니다. (팩펀 개선 레벨에 따라 더 증가)\n적중시 버프가 제거되고 해당 사용 능력의 쿨타임을 다시 기다려야합니다."
+		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility receives more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 	}
 	"Plasmic Layering I"
 	{
@@ -1942,7 +1949,7 @@
 	}
 	"Umbral Grace Desc"
 	{
-		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
+		"en"	"Gain 25％ damage reduction, 15％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 15％ attackspeed/Healrate."
 	}
 	"Void Afflicted"
 	{
@@ -1950,7 +1957,7 @@
 	}
 	"Void Afflicted Desc"
 	{
-		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nRecieve 25％ less damage."
+		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nReceive 25％ less damage."
 	}
 	"Brightening Light"
 	{

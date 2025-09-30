@@ -234,6 +234,11 @@ methodmap BobTheFirstFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally)
 	{
@@ -266,7 +271,7 @@ methodmap BobTheFirstFollower < CClotBody
 		npc.m_bScalesWithWaves = true;
 		if(Rogue_HasNamedArtifact("Bob's Wrath"))
 		{
-			fl_Extra_Damage[npc.index] *= 6.0;
+			fl_Extra_Damage[npc.index] *= 4.0;
 			fl_Extra_Speed[npc.index] *= 1.3;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 			npc.Anger = true;
@@ -318,6 +323,21 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				fl_Extra_Damage[npc.index] *= 6.0;
+				fl_Extra_Speed[npc.index] *= 1.3;
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;

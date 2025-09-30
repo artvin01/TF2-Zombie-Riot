@@ -180,7 +180,7 @@ methodmap Astriana < CClotBody
 	
 	public Astriana(float vecPos[3], float vecAng[3], int ally)
 	{
-		Astriana npc = view_as<Astriana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally, _,_,true));
+		Astriana npc = view_as<Astriana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally, _,true));
 		
 		i_NpcWeight[npc.index] = 1;
 		

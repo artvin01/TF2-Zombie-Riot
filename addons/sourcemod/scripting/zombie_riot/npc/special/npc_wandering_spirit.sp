@@ -103,7 +103,7 @@ methodmap WanderingSpirit < CClotBody
 		if(GetRandomInt(1,10) == 1)
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Wandering Spitit");
 
-		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
+		b_NoHealthbar[npc.index] = 1; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; 
 		

@@ -580,7 +580,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 						{
 							Attributes_Set(entity, weapon.Forge[i], weapon.Value[i]);
 						}
-						else if(TF2Econ_GetAttributeDefinitionString(weapon.Forge[i], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1)
+						else if(Attribute_IntAttribute(weapon.Forge[i]) || (TF2Econ_GetAttributeDefinitionString(weapon.Forge[i], "description_format", tinker.Name, sizeof(tinker.Name)) && StrContains(tinker.Name, "additive") != -1))
 						{
 							Attributes_SetAdd(entity, weapon.Forge[i], weapon.Value[i]);
 						}

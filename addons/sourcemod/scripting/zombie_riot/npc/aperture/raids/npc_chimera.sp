@@ -466,43 +466,10 @@ methodmap CHIMERA < CClotBody
 		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_flSpawnAnnotation = GetGameTime() + 0.5;
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
 		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "100 100 200 50");
-			DispatchKeyValue(entity, "fogcolor2", "100 100 200 50");
-			DispatchKeyValueFloat(entity, "fogstart", 400.0);
-			DispatchKeyValueFloat(entity, "fogend", 1000.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.65);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
-
+		int color[4] = { 100, 100, 200, 50 };
+		SetCustomFog(FogType_NPC, color, color, 400.0, 1000.0, 0.65, true);
+		
 		return npc;
 	}
 }
@@ -797,14 +764,7 @@ void CHIMERA_CleanUp(int iNPC)
 	CHIMERA npc = view_as<CHIMERA>(iNPC);
 	npc.StopPassiveSound();
 	npc.StopStunSound(true);
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog(FogType_NPC);
 }
 
 bool CHIMERA_timeBased(int iNPC)
@@ -1039,7 +999,7 @@ bool CHIMERA_RefractedSniper(int iNPC)
 			NPC_CreateByName("npc_refragmented_winter_sniper", -1, pos, ang, GetTeam(npc.index), buffers);
 		}
 	}
-	switch(GetRandomInt(0,2))
+	switch(GetRandomInt(0,4))
 	{
 		case 0:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: BREWING UP A STORM");
@@ -1047,6 +1007,10 @@ bool CHIMERA_RefractedSniper(int iNPC)
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: KEEP RUNNING, THAT'LL HELP");
 		case 2:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LET'S COOL THINGS DOWN");
+		case 3:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: FOOLISH MORTALS, YOU THINK YOU CAN STOP ME?");
+		case 4:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: DIE ALREADY, I'M GIVING IT ALL ALREADY!");
 	}
 	if(npc.m_flSpawnSnipers == 1.0)
 		npc.m_flSpawnSnipers = GetGameTime(npc.index) + 10.0;
@@ -1062,7 +1026,7 @@ bool CHIMERA_RefractSpawners(int iNPC)
 		return false;
 
 	
-	switch(GetRandomInt(0,2))
+	switch(GetRandomInt(0,3))
 	{
 		case 0:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: LOOK OUT, I'M RIGHT BEHIND YOU");
@@ -1070,6 +1034,11 @@ bool CHIMERA_RefractSpawners(int iNPC)
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU STOP RUNNING AND I'LL STOP FIRING, THAT SEEMS FAIR");
 		case 2:
 			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: THIS WOULD GO A LOT FASTER IF YOU'D STAY STILL");
+		case 3:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: DON'T RUN! DON'T RUN!");
+		case 4:
+			CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.{default}: YOU'RE JUST DELAYING THE INEVITABLE");
+
 	}
 	npc.PlayRefractedAbilityBall();
 	UnderTides npcGetInfo = view_as<UnderTides>(npc.index);

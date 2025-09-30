@@ -169,6 +169,15 @@ enum struct Stage
 				LogError("\"%s\" wave set does not exist", this.WaveSet);
 				this.WaveSet[0] = 0;
 			}
+			else
+			{
+				KeyValues wavekv = new KeyValues("Waves");
+
+				wavekv.ImportFromFile(buffer);
+				Waves_CacheWaves(wavekv, true);
+
+				delete wavekv;
+			}
 		}
 
 		kv.GetString("key", this.ArtifactKey, 64);
@@ -865,6 +874,8 @@ void Rogue_RoundEnd()
 	BattleChaos = 0.0;
 	Offline = true;
 	Rogue_BlueParadox_Reset();
+	Zero(i_CurrentEquippedPerk);
+	Zero(i_CurrentEquippedPerkPreviously);
 
 	if(CurrentCollection)
 	{
@@ -1084,13 +1095,19 @@ void Rogue_BattleVictory()
 			{
 				Artifact artifact;
 
-				if(CurrentFloor < 5 && CurrentCount < 6 && !Rogue_Rift_NoStones())
+				if(CurrentFloor < 5 && CurrentCount < 6)
 				{
 					//75% chance
 					if((GetURandomInt() % 4) != 0)
 					{
-						if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
-							time = Rogue_Rift_OptionalVoteItem(artifact.Name);
+						bool Allow = true;
+						if(Rogue_Rift_NoStones() && (GetURandomInt() % 4 == 0))
+						{
+							Allow = false;
+						}
+						if(Allow)
+							if(Rogue_GetRandomArtifact(artifact, true, 6) != -1)
+								time = Rogue_Rift_OptionalVoteItem(artifact.Name);
 					}
 					else if((GetURandomInt() % 4) == 0 && CurrentCount < 5)
 					{
@@ -1187,6 +1204,7 @@ bool Rogue_BattleLost()
 				SetMusicTimer(client, GetTime() + 10);
 			}
 		}
+		Zero(i_AmountDowned);
 		
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
@@ -2175,7 +2193,11 @@ static void StartStage(const Stage stage)
 		}
 		case ReilaRift:
 		{
-			if(CurrentFloor != 6 || CurrentFloor != 5 || CurrentFloor != 4)
+			bool AllowDome = true;
+			if(CurrentFloor == 6 || CurrentFloor == 5 || CurrentFloor == 4)
+				AllowDome = false;
+				
+			if(AllowDome)	
 				Rogue_Dome_WaveStart(pos);
 		}
 	}
@@ -3035,7 +3057,12 @@ stock void Rogue_AddUmbral(int amount, bool silent = false)
 	CurrentUmbral += change;
 	
 	if(CurrentUmbral < 1)
+	{
+		
+		if(!Rogue_HasNamedArtifact("Umbral Hate"))
+			Rogue_GiveNamedArtifact("Umbral Hate");
 		CurrentUmbral = 0;
+	}
 
 	Waves_UpdateMvMStats();
 
