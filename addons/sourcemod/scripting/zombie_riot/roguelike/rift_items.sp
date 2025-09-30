@@ -351,13 +351,23 @@ public void Rogue_GravityDefying_Enemy(int entity)
 		i_NpcWeight[entity] = 0;
 }
 
+float f_DevilbaneAntiSpam[MAXENTITIES];
 public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(weapon == -1)
+		return;
+	if(view_as<CClotBody>(victim).m_iBleedType != BLEEDTYPE_UMBRAL)
+		return;
+	//dont give twice a frame!
+	if(f_DevilbaneAntiSpam[weapon] == GetGameTime())
+		return;
+		
 	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Saga_ChargeReduction(attacker, weapon, 2.0);
+			f_DevilbaneAntiSpam[weapon] = GetGameTime();
 		}
 	}
 }

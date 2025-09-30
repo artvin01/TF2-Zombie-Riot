@@ -67,9 +67,9 @@ public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflicto
 			{
 				extra /= MultiGlobalHealth;
 			}
-			if((damage * 3.0) >= extra)
+			if((damage * 2.0) >= extra)
 			{
-				extra = damage * 3.0;
+				extra = damage * 2.0;
 			}
 
 			StartBleedingTimer(victim, attacker, extra, 1, weapon, DMG_PLASMA, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED, 1);
@@ -221,10 +221,10 @@ public void Rogue_Hand2Hunter_TakeDamage(int victim, int &attacker, int &inflict
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hunter)
 	{
 		float time = GetGameTime() - Hand2HunterLastTime[attacker];
-		if(time > 50.0)
-			time = 50.0;
+		if(time > 25.0)
+			time = 25.0;
 		
-		damage += damage * (time / 10.0);
+		damage += damage * (time / 5.0);
 		
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			RequestFrame(RogueHand2HunterReset, attacker);

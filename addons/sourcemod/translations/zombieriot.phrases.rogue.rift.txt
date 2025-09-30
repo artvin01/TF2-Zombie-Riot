@@ -323,7 +323,7 @@
 	}
 	"Hand of Spark Desc"
 	{
-		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +10％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
+		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
 	}
 	"Hand of Buckler"
 	{
@@ -331,7 +331,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 3x base damage only. {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 2x base damage only. {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
