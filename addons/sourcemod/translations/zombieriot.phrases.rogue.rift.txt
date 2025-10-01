@@ -418,7 +418,7 @@
 	}
 	"Hand of Pulverization Desc"
 	{
-		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +10％ fire rate for a short duration when dealing damage to each enemy"
+		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +5％ fire rate for a short duration when dealing damage to each enemy"
 	}
 	"Hand of Revenging"
 	{

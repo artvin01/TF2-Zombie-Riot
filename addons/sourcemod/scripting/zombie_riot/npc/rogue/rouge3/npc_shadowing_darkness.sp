@@ -1023,6 +1023,8 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 				GetVectorAngles(vecAngles, vecAngles);
 				float vecTargetProj[3]; //empty
 				npc.PlayRangedAttackSecondarySound();
+				float DamageCalc = 40.0;
+				DamageCalc *= RaidModeScaling;
 				for(int loop; loop < 8 ;loop ++)
 				{
 					vecAnglesLoop = vecAngles;
@@ -1032,7 +1034,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 					 */
 					vecAnglesLoop[0] += (((-15.0 + ( loop * 3.75))) * 0.25);
 					vecAnglesLoop[1] += (-15.0 + ( loop * 3.75));
-					int projectile = npc.FireProjectile_SD(vecSelf, vecAnglesLoop,  280.0 , 0.0, "raygun_projectile_red");
+					int projectile = npc.FireProjectile_SD(vecSelf, vecAnglesLoop,  DamageCalc , 0.0, "raygun_projectile_red");
 					SD_ProjectileToEnemy(projectile, vecTargetProj, vecAnglesLoop, VecSpeed, EndPos);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(projectile));
@@ -1632,7 +1634,7 @@ public Action ShadowingDarkness_NecroPoolTimer(Handle timer, DataPack pack)
 			return Plugin_Stop;
 		}
 
-		float CircleSize = 150.0;
+		float CircleSize = 250.0;
 		float VecMe[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecAbsOrigin", VecMe);
 		VecMe[2] += 5.0;
