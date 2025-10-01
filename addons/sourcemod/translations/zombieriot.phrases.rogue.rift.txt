@@ -987,7 +987,7 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{red}Umbral are not pleased, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{blue}and we're going deeper."
 	}
 	"The Bladedance"
 	{
@@ -1372,7 +1372,7 @@
 	}
 	"Finale Encounter Desc 1"
 	{
-		"en"	"{green}This chapter grows longer"
+		"en"	"{yellow}This encounter never existed. You get the encounter refunded."
 	}
 	"Finale Encounter Lore 1"
 	{
@@ -1384,7 +1384,7 @@
 	}
 	"Finale Encounter Desc 2"
 	{
-		"en"	"{yellow}Obtain 2 unknown artifacts"
+		"en"	"{yellow}Obtain 3 unknown artifacts"
 	}
 
 	"Cloned Subjects"

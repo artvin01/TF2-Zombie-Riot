@@ -791,6 +791,7 @@ public void Rogue_Vote_WhiteflowerBladedance(const Vote vote, int index)
 		case 1:
 		{
 			GiveCash(5000);
+			Rogue_GiveNamedArtifact("The Shadow");
 			Rogue_GiveNamedArtifact("The Bladedance");
 			Rogue_GiveNamedArtifact("The Whiteflower");
 		}
