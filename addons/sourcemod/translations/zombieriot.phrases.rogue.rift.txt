@@ -267,7 +267,23 @@
 	}
 	"Rift Level 3 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often"
+		"en"	"{red}Enemy stats per chapter +2％, start with Fractured voidstone, rift events can occur more often, Umbrals do not like you."
+	}
+	"Rift Level 5"
+	{
+		"en"	"Rift Level 5"
+	}
+	"Rift Level 5 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +10％, start with Fractured voidstone, rift events can occur more often, You are just a grunt, beating bossrush was not enough to prepare you."
+	}
+	"Rift Level 4"
+	{
+		"en"	"Rift Level 4"
+	}
+	"Rift Level 4 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often, You have no hope."
 	}
 	"Rift Level 2"
 	{
@@ -275,7 +291,7 @@
 	}
 	"Rift Level 2 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +2％ {blue}and other possibilities"
+		"en"	"{yellow}No Stat Changes {blue}and other possibilities"
 	}
 	"Rift Level 1"
 	{
@@ -283,7 +299,7 @@
 	}
 	"Rift Level 1 Desc"
 	{
-		"en"	"Lelouch opened a rift to the Curtain. The Void is leaking in through the cracks. It's only been a few weeks, we need to stop this, together with Bob The First and Twirl."
+		"en"	"Lelouch opened a rift to the Curtain. The Void is leaking in through the cracks. It's only been a few weeks, we need to stop this, together with Bob The First and Twirl.\n{green}Enemy stats nerfed by -10％"
 	}
 	"Hand of Predation"
 	{
