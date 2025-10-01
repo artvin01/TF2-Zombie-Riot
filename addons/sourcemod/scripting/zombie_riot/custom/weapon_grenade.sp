@@ -254,6 +254,310 @@ static Action Give_Back_Pipebomb(Handle cut_timer, int client)
 	return Plugin_Handled;
 }
 
+public void Weapon_ShotgunGrenadeLauncher_Custom(int client, int weapon, bool crit, int slot)
+{
+	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+	int CurrentClip = GetEntData(weapon, iAmmoTable, 4);
+
+	float Ratio= float(CurrentClip) / 4.0;
+
+	SetEntData(weapon, iAmmoTable, 1);
+	SetEntProp(weapon, Prop_Send, "m_iClip1", 1);
+
+	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
+	{
+		static float anglesB[3];
+		GetClientEyeAngles(client, anglesB);
+		static float velocity[3];
+		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+		float knockback = -200.0 * Ratio;
+		
+		float TempRatio = Ratio;
+		if(TempRatio > 1.0)
+			TempRatio = 1.0;
+
+		ScaleVector(velocity, knockback);
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+			velocity[2] = fmax(velocity[2], 300.0 * TempRatio);
+		else
+			velocity[2] += 100.0 * TempRatio; // a little boost to alleviate arcing issues
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (int i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	float SoundRatio = 0.5 * Ratio;
+	if(SoundRatio > 1.0)
+		SoundRatio = 1.0;
+
+	EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+	EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+	float ShakeRatio = Ratio;
+	if(ShakeRatio > 1.3)
+		ShakeRatio = 1.3;
+	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
+
+	float speed = 1500.0;
+	float damage = 100.0;
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+		
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+		
+	float extra_accuracy = 5.0;
+	
+	extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
+		
+	int team = GetClientTeam(client);
+	int LoopShot=0;
+	for(int repeat = 1; repeat <= CurrentClip; repeat++)
+	{
+		int entity = CreateEntityByName("tf_projectile_pipe");
+		if(IsValidEntity(entity))
+		{
+			static float pos[3], ang[3], vel_2[3];
+			GetClientEyeAngles(client, ang);
+			GetClientEyePosition(client, pos);	
+			LoopShot++;
+			switch(LoopShot)
+			{
+				case 1:
+				{
+					ang[0] += -extra_accuracy;
+					ang[1] += extra_accuracy;
+				}
+				case 2:
+				{
+					ang[0] += extra_accuracy;
+					ang[1] += extra_accuracy;
+				}
+				case 3:
+				{
+					ang[0] += extra_accuracy;
+					ang[1] += -extra_accuracy;
+				}
+				case 4:
+				{
+					ang[0] += -extra_accuracy;
+					ang[1] += -extra_accuracy;
+					extra_accuracy+=0.05;
+					LoopShot=0;
+				}
+			}
+
+			ang[0] -= 8.0;
+
+			vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+			vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+			vel_2[2] = Sine(DegToRad(ang[0]))*speed;
+			vel_2[2] *= -1;
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
+			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
+			for(int i; i<4; i++)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+			}
+			
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+
+			DispatchSpawn(entity);
+			TeleportEntity(entity, pos, ang, vel_2);
+			IsCustomTfGrenadeProjectile(entity, damage);
+		}
+	}
+}
+
+public void Weapon_ShotgunGrenadeLauncher_Custom_Loude(int client, int weapon, bool crit, int slot)
+{
+	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+	int CurrentClip = GetEntData(weapon, iAmmoTable, 4);
+
+	float Ratio= float(CurrentClip) / 10.0;
+
+	SetEntData(weapon, iAmmoTable, 1);
+	SetEntProp(weapon, Prop_Send, "m_iClip1", 1);
+
+	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
+	{
+		static float anglesB[3];
+		GetClientEyeAngles(client, anglesB);
+		static float velocity[3];
+		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+		
+		float knockback = -275.0 * Ratio;
+
+		float TempRatio = Ratio;
+		if(TempRatio > 1.0)
+			TempRatio = 1.0;
+
+		ScaleVector(velocity, knockback);
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+			velocity[2] = fmax(velocity[2], 300.0 * TempRatio);
+		else
+			velocity[2] += 100.0 * TempRatio; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (int i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	float SoundRatio = 0.5 * Ratio;
+	if(SoundRatio > 1.0)
+		SoundRatio = 1.0;
+	EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	EmitSoundToAll("mvm/giant_demoman/giant_demoman_grenade_shoot.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	float ShakeRatio = Ratio;
+	if(ShakeRatio > 1.3)
+		ShakeRatio = 1.3;
+	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
+
+	float speed = 1500.0;
+	float damage = 100.0;
+
+	damage *= Attributes_Get(weapon, 1, 1.0);
+
+	damage *= Attributes_Get(weapon, 2, 1.0);
+		
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	
+	speed *= Attributes_Get(weapon, 475, 1.0);
+		
+	float extra_accuracy = 3.5;
+	
+	extra_accuracy *= Attributes_Get(weapon, 106, 1.0);
+		
+	int team = GetClientTeam(client);
+	int LoopShot=0;
+	for (int repeat = 1; repeat <= CurrentClip; repeat++)
+	{
+		int entity = CreateEntityByName("tf_projectile_pipe");
+		if(IsValidEntity(entity))
+		{
+			static float pos[3], ang[3], vel_2[3];
+			GetClientEyeAngles(client, ang);
+			GetClientEyePosition(client, pos);	
+			LoopShot++;
+			switch(LoopShot)
+			{
+				case 1:
+				{
+					ang[0] += -extra_accuracy;
+					ang[1] += extra_accuracy;
+				}
+				case 2:
+				{
+					ang[0] += extra_accuracy;
+					ang[1] += extra_accuracy;
+				}
+				case 3:
+				{
+					ang[0] += extra_accuracy;
+					ang[1] += -extra_accuracy;
+				}
+				case 4:
+				{
+					ang[0] += -extra_accuracy;
+					ang[1] += -extra_accuracy;
+				}
+				case 5:
+				{
+					ang[0] += -extra_accuracy;
+					ang[1] += extra_accuracy * 2.0;
+				}
+				case 6:
+				{
+					ang[0] += extra_accuracy;
+					ang[1] += extra_accuracy * 2.0;
+				}
+				case 7:
+				{
+					ang[0] += extra_accuracy;
+					ang[1] += -(extra_accuracy * 2.0);
+				}
+				case 8:
+				{
+					ang[0] += -extra_accuracy;
+					ang[1] += -(extra_accuracy * 2.0);
+				}
+				case 9:
+				{
+					ang[0] += extra_accuracy;
+				}
+				case 10:
+				{
+					ang[0] += -extra_accuracy;
+					extra_accuracy+=0.05;
+					LoopShot=0;
+				}
+			}
+
+			ang[0] -= 8.0;
+
+			vel_2[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*speed;
+			vel_2[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*speed;
+			vel_2[2] = Sine(DegToRad(ang[0]))*speed;
+			vel_2[2] *= -1;
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+			SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);
+			SetEntProp(entity, Prop_Send, "m_nSkin", (team-2));
+			SetEntPropFloat(entity, Prop_Send, "m_flDamage", 0.0); 
+			SetEntPropEnt(entity, Prop_Send, "m_hThrower", client);
+			SetEntPropEnt(entity, Prop_Send, "m_hOriginalLauncher",weapon);
+			for(int i; i<4; i++)
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_ProjectileModel, _, i);
+			}
+			
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "TeamNum", -1, -1, 0);
+			SetVariantInt(team);
+			AcceptEntityInput(entity, "SetTeam", -1, -1, 0); 
+			
+			SetEntPropEnt(entity, Prop_Send, "m_hLauncher", weapon);
+
+			DispatchSpawn(entity);
+			TeleportEntity(entity, pos, ang, vel_2);
+			IsCustomTfGrenadeProjectile(entity, damage);
+		}
+	}
+}
+
 public void Weapon_ShotgunGrenadeLauncher(int client, int weapon, bool crit, int slot)
 {
 	if(weapon >= MaxClients)
