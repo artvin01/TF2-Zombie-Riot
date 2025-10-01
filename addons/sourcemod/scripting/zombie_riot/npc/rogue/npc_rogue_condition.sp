@@ -114,7 +114,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			if(DontSpawnFriendly)
 			{
 				DontSpawnFriendly = false;
-				return;
+				return -1;
 			}
 			else
 			{
