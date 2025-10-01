@@ -1508,7 +1508,7 @@
 	}
 	"Nickel Injected Pack Desc"
 	{
-		"en"	"A high-tech pack that adapts to the owner's health.\n- {green}Players gain +35％ damage at max health, the damage bonus goes away as your health gets lower."
+		"en"	"A high-tech pack that adapts to the owner's health.\n- {green}Players gain +25％ damage at max health, the damage bonus goes away as your health gets lower."
 	}
 	"Spanish Specialised Gunpowder"
 	{

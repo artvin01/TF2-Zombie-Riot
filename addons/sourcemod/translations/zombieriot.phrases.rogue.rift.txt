@@ -378,7 +378,7 @@
 	}
 	"Hand of Diffusion Desc"
 	{
-		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +240％"
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +120％"
 	}
 	"Hand of Rending"
 	{

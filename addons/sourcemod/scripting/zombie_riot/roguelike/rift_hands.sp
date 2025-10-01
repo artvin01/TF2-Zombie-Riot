@@ -248,8 +248,8 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 				count++;
 		}
 
-		if(count > 16)
-			count = 16;
+		if(count > 8)
+			count = 8;
 
 		damage += damage * (count / 6.666667);
 	}
