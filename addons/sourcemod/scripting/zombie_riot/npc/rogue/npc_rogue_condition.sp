@@ -166,26 +166,15 @@ static void Umbral_AdjustStats(int ref)
 	if(!IsValidEntity(entity))
 		return;
 
-<<<<<<< Updated upstream
-	fl_Extra_Damage[entity] *= 5.0;
-=======
 	fl_Extra_Damage[entity] *= 8.0;
->>>>>>> Stashed changes
 	fl_Extra_Speed[entity] *= 0.7;
 	MultiHealth(entity, 0.025);
 	int HealthGet = ReturnEntityMaxHealth(entity);
 	if(HealthGet >= 6000)
 	{
-		//give more dmg again!
-<<<<<<< Updated upstream
-		fl_Extra_Damage[entity] *= 7.0;
-		SetEntProp(entity, Prop_Data, "m_iHealth", 3000);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 3000);
-=======
 		fl_Extra_Damage[entity] *= 3.0;
 		SetEntProp(entity, Prop_Data, "m_iHealth", 6000);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 6000);
->>>>>>> Stashed changes
 	}
 }
 
