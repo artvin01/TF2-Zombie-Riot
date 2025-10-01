@@ -292,14 +292,12 @@ static void StartShopVote(bool first)
 		}
 		int cost = sale ? (artifact.ShopCost * 7 / 10) : artifact.ShopCost;
 
-		if(ingots >= cost)
-		{
-			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
-			Format(vote.Append, sizeof(vote.Append), " △%d%s", cost, sale ? " {$}" : "");
-			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
-			IntToString(i, vote.Config, sizeof(vote.Config));
-			list.PushArray(vote);
-		}
+		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+		Format(vote.Append, sizeof(vote.Append), " △%d%s", cost, sale ? " {$}" : "");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		IntToString(i, vote.Config, sizeof(vote.Config));
+		vote.Locked = ingots < cost;
+		list.PushArray(vote);
 	}
 
 	if(length)
