@@ -85,6 +85,7 @@ void NPC_ConfigSetup()
 	ObjectTinkerBrew_MapStart();
 	ObjectRevenant_Setup();
 	ObjectTinkerGrill_MapStart();
+	ObjectVintulumBomb_MapStart();
 	// Buildings
 
 	// Constructs
@@ -104,6 +105,8 @@ void NPC_ConfigSetup()
 	ObjectStunGun_MapStart();
 	ObjectDispenser_MapStart();
 	ObjectFurniture_MapStart();
+	ObjectHelper_MapStart();
+	ObjectVoidstone_MapStart();
 	// Constructs
 
 	// Vehicles
@@ -995,6 +998,113 @@ void NPC_ConfigSetup()
 	Diversionistico_Elitus_OnMapStart_NPC();
 	Construction_Raid_Zilius_OnMapStart();
 	ZeinaPrisoner_OnMapStart_NPC();
+
+	//Aperture
+	ApertureCombatant_OnMapStart_NPC();
+	ApertureShotgunner_OnMapStart_NPC();
+	ApertureDevastator_OnMapStart_NPC();
+	ApertureHuntsman_OnMapStart_NPC();
+	ApertureJumper_OnMapStart_NPC();
+	AperturePhaser_OnMapStart_NPC();
+	ApertureSniper_OnMapStart_NPC();
+	ApertureRepulsor_OnMapStart_NPC();
+	ApertureMinigunner_OnMapStart_NPC();
+	ApertureSpecialist_OnMapStart_NPC();
+	ApertureSupporter_OnMapStart_NPC();
+	ApertureCombatantV2_OnMapStart_NPC();
+	ApertureShotgunnerV2_OnMapStart_NPC();
+	ApertureHuntsmanV2_OnMapStart_NPC();
+	ApertureJumperV2_OnMapStart_NPC();
+	AperturePhaserV2_OnMapStart_NPC();
+	ApertureSniperV2_OnMapStart_NPC();
+	ApertureSpecialistV2_OnMapStart_NPC();
+	ApertureDemolisherV2_OnMapStart_NPC();
+	ApertureDevastatorV2_OnMapStart_NPC();
+	ApertureMinigunnerV2_OnMapStart_NPC();
+	ApertureRepulsorV2_OnMapStart_NPC();
+	ApertureSupporterV2_OnMapStart_NPC();
+	ApertureCombatantPerfected_OnMapStart_NPC();
+	ApertureShotgunnerPerfected_OnMapStart_NPC();
+	ApertureHuntsmanPerfected_OnMapStart_NPC();
+	ApertureSniperPerfected_OnMapStart_NPC();
+	AperturePhaserPerfected_OnMapStart_NPC();
+	ApertureJumperPerfected_OnMapStart_NPC();
+	ApertureSpecialistPerfected_OnMapStart_NPC();
+	ApertureDemolisherPerfected_OnMapStart_NPC();
+	ApertureDevastatorPerfected_OnMapStart_NPC();
+	ApertureMinigunnerPerfected_OnMapStart_NPC();
+	ApertureRepulsorPerfected_OnMapStart_NPC();
+	ApertureSupporterPerfected_OnMapStart_NPC();
+	ApertureBuilder_OnMapStart_NPC();
+	ApertureSentry_OnMapStart_NPC();
+	ApertureDispenser_OnMapStart_NPC();
+	ApertureTeleporter_OnMapStart_NPC();
+	ApertureDemolisher_OnMapStart_NPC();
+	ApertureContainer_OnMapStart_NPC();
+	ApertureTraveller_OnMapStart_NPC();
+	PortalGate_OnMapStart_NPC();
+	FatherGrigoriScience_OnMapStart_NPC();
+	ApertureExterminator_OnMapStart_NPC();
+	ApertureSpokesman_OnMapStart_NPC();
+	ApertureResearcher_OnMapStart_NPC();
+	RefragmentedHeadcrabZombie_OnMapStart_NPC();
+	RefragmentedFastZombie_OnMapStart_NPC();
+	RefragmentedPoisonZombie_OnMapStart_NPC();
+	Refragmented_Combine_Police_Pistol_OnMapStart_NPC();
+	RefragmentedCombinePoliceSmg_OnMapStart_NPC();
+	RefragmentedCombineSoldierAr2_OnMapStart_NPC();
+	RefragmentedCombineElite_OnMapStart_NPC();
+	RefragmentedHeavy_OnMapStart_NPC();
+	RefragmentedMedic_OnMapStart_NPC();
+	RefragmentedSpy_OnMapStart_NPC();
+	Parasihtta_OnMapStart_NPC();
+	Talker_OnMapStart_NPC();
+	Hostis_OnMapStart_NPC();
+	Defectio_OnMapStart_NPC();
+	ApertureCollector_OnMapStart_NPC();
+	ApertureFueler_OnMapStart_NPC();
+	ApertureHalter_OnMapStart_NPC();
+	ApertureSuppressor_OnMapStart_NPC();
+	CAT_OnMapStart_NPC();
+	ARIS_OnMapStart_NPC();
+	ARISBeacon_OnMapStart_NPC();
+	CHIMERA_OnMapStart_NPC();
+	RefragmentedWinterSniper_OnMapStart_NPC();
+	RefragmentedWinterFrostHunter_OnMapStart_NPC();
+	Vincent_OnMapStart_NPC();
+	Vincent_Beacon_OnMapStart_NPC();
+
+	//rogue 3
+	Umbral_Ltzens_OnMapStart_NPC();
+	Umbral_Refract_OnMapStart_NPC();
+	Umbral_Koulm_OnMapStart_NPC();
+	HHH_OnMapStart_NPC();
+	GentleSpy_OnMapStart_NPC();
+	ChristianBrutalSniper_OnMapStart_NPC();
+	Umbral_Spuud_OnMapStart_NPC();
+	Umbral_Keitosis_OnMapStart_NPC();
+	AlmagestSeinr_OnMapStart_NPC();
+	AlmagestJkei_OnMapStart_NPC();
+	JkeiDrone_OnMapStart_NPC();
+	RandomizerBaseFlamethrower_OnMapStart_NPC();
+	RandomizerBaseHuntsman_OnMapStart_NPC();
+	RandomizerBaseSouthernHospitality_OnMapStart_NPC();
+	Randomizer_OnMapStart_NPC();
+	BossReila_OnMapStart_NPC();
+	ReilaBeacon_OnMapStart_NPC();
+	ReilaFollower_Setup();
+	Umbral_Automaton_OnMapStart_NPC();
+	OmegaFollower_Setup();
+	VhxisFollower_Setup();
+	Shadow_FloweringDarkness_OnMapStart_NPC();
+	Shadowing_Darkness_Boss_OnMapStart_NPC();
+	TornUmbralGate_OnMapStart_NPC();
+	Umbral_WF_OnMapStart_NPC();
+	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
+	Umbral_Rouam_OnMapStart_NPC();
+	WinTimer_MapStart();
+	SensalFollower_Setup();
+	OverlordFollower_Setup();
 }
 
 int NPC_Add(NPCData data)
@@ -1297,6 +1407,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/obj_ammobox.sp"
 #include "object/obj_tinker_anvil.sp"
 #include "object/obj_sentrygun.sp"
+#include "object/obj_vintulum_bomb.sp"
 #include "object/obj_mortar.sp"
 #include "object/obj_railgun.sp"
 #include "object/obj_village.sp"
@@ -1321,6 +1432,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/construction/obj_const_dispenser.sp"
 #include "object/construction/obj_const_furniture.sp"
 #include "object/construction/obj_const_supply.sp"
+#include "object/construction/obj_const_helper.sp"
+#include "object/construction/obj_const_voidstone.sp"
 
 // VEHICLES
 #include "../shared/vehicles/vehicle_shared.sp"
@@ -1450,6 +1563,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/ally/npc_cured_last_survivor.sp"
 #include "npc/ally/npc_citizen_new.sp"
 #include "npc/ally/npc_allied_sensal_afterimage.sp"
+#include "npc/ally/npc_allied_warped_crystal_visualiser.sp"
 #include "npc/ally/npc_allied_leper_visualiser.sp"
 #include "npc/ally/npc_allied_kahml_afterimage.sp"
 #include "npc/ally/npc_allied_kiyru_visualiser.sp"
@@ -2186,3 +2300,108 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_zilius.sp"
 #include "npc/construction/enemies/npc_zeina_prison.sp"
 #include "npc/construction/enemies/npc_zeina_freed.sp"
+
+//Aperture
+#include "npc/aperture/10/npc_aperture_combatant.sp"
+#include "npc/aperture/10/npc_aperture_shotgunner.sp"
+#include "npc/aperture/10/npc_aperture_jumper.sp"
+#include "npc/aperture/10/npc_aperture_phaser.sp"
+#include "npc/aperture/10/npc_aperture_specialist.sp"
+#include "npc/aperture/10/npc_aperture_sniper.sp"
+#include "npc/aperture/10/npc_aperture_huntsman.sp"
+#include "npc/aperture/10/npc_last_survivor_science.sp"
+#include "npc/aperture/20/npc_aperture_combatant_v2.sp"
+#include "npc/aperture/20/npc_aperture_huntsman_v2.sp"
+#include "npc/aperture/20/npc_aperture_jumper_v2.sp"
+#include "npc/aperture/20/npc_aperture_phaser_v2.sp"
+#include "npc/aperture/20/npc_aperture_shotgunner_v2.sp"
+#include "npc/aperture/20/npc_aperture_sniper_v2.sp"
+#include "npc/aperture/20/npc_aperture_specialist_v2.sp"
+#include "npc/aperture/20/npc_aperture_supporter.sp"
+#include "npc/aperture/20/npc_aperture_devastator.sp"
+#include "npc/aperture/20/npc_aperture_demolisher.sp"
+#include "npc/aperture/20/npc_aperture_minigunner.sp"
+#include "npc/aperture/20/npc_aperture_repulsor.sp"
+#include "npc/aperture/20/npc_aperture_exterminator.sp"
+#include "npc/aperture/30/npc_aperture_combatant_perfected.sp"
+#include "npc/aperture/30/npc_aperture_shotgunner_perfected.sp"
+#include "npc/aperture/30/npc_aperture_huntsman_perfected.sp"
+#include "npc/aperture/30/npc_aperture_phaser_perfected.sp"
+#include "npc/aperture/30/npc_aperture_sniper_perfected.sp"
+#include "npc/aperture/30/npc_aperture_specialist_perfected.sp"
+#include "npc/aperture/30/npc_aperture_jumper_perfected.sp"
+#include "npc/aperture/30/npc_aperture_demolisher_v2.sp"
+#include "npc/aperture/30/npc_aperture_devastator_v2.sp"
+#include "npc/aperture/30/npc_aperture_minigunner_v2.sp"
+#include "npc/aperture/30/npc_aperture_repulsor_v2.sp"
+#include "npc/aperture/30/npc_aperture_supporter_v2.sp"
+#include "npc/aperture/30/npc_aperture_builder.sp"
+#include "npc/aperture/30/npc_aperture_sentry.sp"
+#include "npc/aperture/30/npc_aperture_dispenser.sp"
+#include "npc/aperture/30/npc_aperture_teleporter.sp"
+#include "npc/aperture/30/npc_aperture_container.sp"
+#include "npc/aperture/30/npc_aperture_spokesman.sp"
+#include "npc/aperture/40/npc_aperture_traveller.sp"
+#include "npc/aperture/40/npc_aperture_demolisher_perfected.sp"
+#include "npc/aperture/40/npc_aperture_devastator_perfected.sp"
+#include "npc/aperture/40/npc_aperture_minigunner_perfected.sp"
+#include "npc/aperture/40/npc_aperture_repulsor_perfected.sp"
+#include "npc/aperture/40/npc_aperture_supporter_perfected.sp"
+#include "npc/aperture/40/npc_aperture_researcher.sp"
+#include "npc/aperture/refragmented/npc_refragmented_headcrabzombie.sp"
+#include "npc/aperture/refragmented/npc_refragmented_fastzombie.sp"
+#include "npc/aperture/refragmented/npc_refragmented_poisonzombie.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_police_pistol.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_police_smg.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_soldier_ar2.sp"
+#include "npc/aperture/refragmented/npc_refragmented_combine_soldier_elite.sp"
+#include "npc/aperture/refragmented/npc_refragmented_heavy.sp"
+#include "npc/aperture/refragmented/npc_refragmented_medic.sp"
+#include "npc/aperture/refragmented/npc_refragmented_spy.sp"
+#include "npc/aperture/refragmented/npc_refragmented_parasihtta.sp"
+#include "npc/aperture/refragmented/npc_refragmented_hostis.sp"
+#include "npc/aperture/refragmented/npc_refragmented_defectio.sp"
+#include "npc/aperture/npc_portalgate.sp"
+#include "npc/aperture/npc_talker.sp"
+#include "npc/aperture/giants/npc_aperture_collector.sp"
+#include "npc/aperture/giants/npc_aperture_fueler.sp"
+#include "npc/aperture/giants/npc_aperture_halter.sp"
+#include "npc/aperture/giants/npc_aperture_suppressor.sp"
+#include "npc/aperture/raids/npc_cat.sp"
+#include "npc/aperture/raids/npc_aris.sp"
+#include "npc/aperture/npc_aris_makeshift_beacon.sp"
+#include "npc/aperture/raids/npc_chimera.sp"
+#include "npc/aperture/refragmented/npc_chimeraboss_refragmented_winter_sniper.sp"
+#include "npc/aperture/refragmented/npc_chimeraboss_refragmented_frost_hunter.sp"
+#include "npc/aperture/raids/npc_vincent.sp"
+#include "npc/aperture/npc_vincent_beacon.sp"
+
+#include "npc/rogue/rouge3/npc_umbral_ltzens.sp"
+#include "npc/rogue/rouge3/npc_umbral_refract.sp"
+#include "npc/rogue/rouge3/npc_umbral_koulm.sp"
+#include "npc/rogue/rouge3/npc_hhh.sp"
+#include "npc/rogue/rouge3/npc_gentlespy.sp"
+#include "npc/rogue/rouge3/npc_christianbrutalsniper.sp"
+#include "npc/rogue/rouge3/npc_umbral_spuud.sp"
+#include "npc/rogue/rouge3/npc_umbral_keitosis.sp"
+#include "npc/rogue/rouge3/npc_almagest_seinr.sp"
+#include "npc/rogue/rouge3/npc_almagest_jkei.sp"
+#include "npc/rogue/rouge3/npc_almagest_jkei_drone.sp"
+#include "npc/rogue/rouge3/npc_randomizer.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_flamethrower.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_huntsman.sp"
+#include "npc/rogue/rouge3/randomizer/npc_randomizer_base_southern_hospitality.sp"
+#include "npc/rogue/rouge3/npc_boss_reila.sp"
+#include "npc/rogue/rouge3/npc_boss_reila_beacon.sp"
+#include "npc/rogue/rouge3/npc_reila_follower.sp"
+#include "npc/rogue/rouge3/npc_umbral_automaton.sp"
+#include "npc/rogue/rouge3/npc_umbral_rouam.sp"
+#include "npc/rogue/rouge3/npc_omega_follower.sp"
+#include "npc/rogue/rouge3/npc_vhxis_follower.sp"
+#include "npc/rogue/rouge3/npc_shadow_flowering_darkness.sp"
+#include "npc/rogue/rouge3/npc_shadowing_darkness.sp"
+#include "npc/rogue/rouge3/npc_torn_umbral_gate.sp"
+#include "npc/rogue/rouge3/npc_umbral_whiteflower.sp"
+#include "npc/construction/logic_win_timer.sp"
+#include "npc/construction/npc_sensal_follower.sp"
+#include "npc/construction/npc_overlord_follower.sp"

@@ -272,7 +272,18 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning, int RND)
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
-			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
+			bool result;
+
+			if(enemy.Spawn[0])
+			{
+				if(ExplodeStringFloat(enemy.Spawn, " ", pos, sizeof(pos)) == 3)
+					result = true;
+			}
+
+			if(!result)
+				result = Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee);
+
+			if(result)
 			{
 				if(enemy.Is_Boss >= 2)
 				{
@@ -293,7 +304,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning, int RND)
 					}
 					else if(enemy.Is_Outlined == 2)
 					{
-						b_NoHealthbar[entity_Spawner] = true;
+						b_NoHealthbar[entity_Spawner] = 1;
 					}
 					
 					if(enemy.Is_Immune_To_Nuke)
@@ -331,6 +342,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning, int RND)
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
 						TeleportNpcToRandomPlayer(entity_Spawner);
+						RemoveSpawnProtectionLogic(entity_Spawner, true);
 					}
 					
 					if(enemy.Is_Boss > 0)
@@ -361,12 +373,12 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning, int RND)
 					}
 					
 
-					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
-					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
-					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
-					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
+					fl_Extra_MeleeArmor[entity_Spawner] 	*= enemy.ExtraMeleeRes;
+					fl_Extra_RangedArmor[entity_Spawner] 	*= enemy.ExtraRangedRes;
+					fl_Extra_Speed[entity_Spawner] 			*= enemy.ExtraSpeed;
+					fl_Extra_Damage[entity_Spawner] 		*= enemy.ExtraDamage;
 					if(enemy.ExtraThinkSpeed != 0.0 && enemy.ExtraThinkSpeed != 1.0)
-						f_AttackSpeedNpcIncrease[entity_Spawner]	= enemy.ExtraThinkSpeed;
+						f_AttackSpeedNpcIncrease[entity_Spawner]	*= enemy.ExtraThinkSpeed;
 						
 					if(enemy.ExtraSize != 1.0)
 					{
@@ -479,39 +491,37 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
 	bool KeepProtection = false;
-	if(Rogue_Theme() == 1 && !force)
+	if(!force)
 	{
-		if(f_DomeInsideTest[entity] > GetGameTime())
+		if(Rogue_Theme() == 1)
 		{
-			KeepProtection = true;
+			if(f_DomeInsideTest[entity] > GetGameTime())
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	float PosNpc[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
-	if(!KeepProtection)
-	{
-		if(IsPointOutsideMap(PosNpc))
+		float PosNpc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+		if(!KeepProtection)
 		{
-			KeepProtection = true;
+			if(IsPointOutsideMap(PosNpc))
+			{
+				KeepProtection = true;
+			}
 		}
-	}
-	if(!KeepProtection)
-	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
-		if(i_InHurtZone[entity])
-			KeepProtection = true;
-	}
-	if(!KeepProtection)
-	{
-		static float minn[3], maxx[3];
-		GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
-		GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
-		if(IsBoxHazard(PosNpc, minn, maxx))
-			KeepProtection = true;
+		if(!KeepProtection)
+		{
+			if(i_InHurtZone[entity])
+				KeepProtection = true;
+		}
+		if(!KeepProtection)
+		{
+			static float minn[3], maxx[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+			if(IsBoxHazard(PosNpc, minn, maxx))
+				KeepProtection = true;
+		}
 	}
 
 
@@ -739,7 +749,15 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
 				value *= 5.0;
-			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				
+			int DamageTypes = DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE;
+
+			if(GetTeam(entity) != TFTeam_Red)
+			{
+				DamageTypes &= ~DMG_TRUEDAMAGE;
+				DamageTypes |= DMG_BULLET;
+			}
+			SDKHooks_TakeDamage(entity, attacker, attacker, value, DamageTypes, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 			
 			//Setting burn dmg to slash cus i want it to work with melee!!!
 			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
@@ -870,7 +888,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
 
-				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+				if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 				{
 					damage *= 1.25;
 				}
@@ -904,7 +922,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 					{
 						BombsToInject += 1;
 					}
@@ -1147,7 +1165,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Changed;
 		}
 	}
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
@@ -1279,6 +1297,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = false;
 	}
+	//force gibbing.
+	if(HasSpecificBuff(victim, "Warped Elemental End"))
+		npcBase.m_bGib = true;
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 24);
 	
@@ -1433,6 +1454,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
+	
+	if(SlayNpc && HasSpecificBuff(victim, "Blessing of Stars"))
+	{
+		HealEntityGlobal(victim, victim, float(ReturnEntityMaxHealth(victim) / 4), 1.0, 1.0, HEAL_ABSOLUTE);
+		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+		ApplyStatusEffect(victim, victim, "Unstoppable Force", 1.0);
+		RemoveSpecificBuff(victim, "Blessing of Stars");
+		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+		SlayNpc = false;
+	}
 	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1521,6 +1552,17 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_UMBRAL)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_PORTAL)
+				{
+					TE_ParticleInt(g_particleImpactPortal, damagePosition);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 			}
@@ -1620,6 +1662,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 
 	if(!c_NpcName[victim][0])
 		return true;
+
+	if(b_NoHealthbar[victim] == 2)
+	{
+		//hide entirely.
+		return true;
+	}
 
 #if defined ZR
 	bool raidboss_active = false;
@@ -2117,6 +2165,8 @@ stock void ResetDamageHud(int client)
 
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, bool DontForward = false, bool ResetClientCooldown = false, bool RaidHudForce = false)
 {
+	if(b_ThisEntityIgnored[victim])
+		return;
 	if(attacker <= MaxClients)
 	{
 		b_DisplayDamageHud[attacker][0] = true;

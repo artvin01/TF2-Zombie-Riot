@@ -276,7 +276,8 @@ methodmap TrueFusionWarrior < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;	
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);	
 		
 		npc.m_bThisNpcIsABoss = true;
 		

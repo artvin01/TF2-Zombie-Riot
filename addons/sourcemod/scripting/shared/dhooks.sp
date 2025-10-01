@@ -781,6 +781,11 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	//Projectile_TeleportAndClip(entity);
 	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner < 0)
+	{
+		//no owner..........
+		owner = entity;
+	}
 	float GrenadePos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", GrenadePos);
 	if (0 < owner  && owner <= MaxClients)
@@ -2115,25 +2120,6 @@ public Action TimerSetBannerExtraDuration(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 #endif	// ZR
-/*
-( INextBot *bot, const Vector &goalPos, const Vector &forward, const Vector &left )
-*/
-
-/*
-public MRESReturn DHookGiveDefaultItems_Pre(int client, Handle hParams) 
-{
-	PrintToChatAll("%f DHookGiveDefaultItems_Pre::%d", GetEngineTime(), CurrentClass[client]);
-	//TF2_SetPlayerClass_ZR(client, CurrentClass[client]);
-	return MRES_Ignored;
-}
-
-public MRESReturn DHookGiveDefaultItems_Post(int client, Handle hParams) 
-{
-	PrintToChatAll("%f DHookGiveDefaultItems_Post::%d", GetEngineTime(), WeaponClass[client]);
-	//TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
-	return MRES_Ignored;
-}
-*/
 
 #if !defined RTS
 public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
@@ -2203,12 +2189,6 @@ public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) 
 	{
 		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
 	}
-#if !defined RTS
-	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#endif
 #if defined ZR
 	else if (b_thisNpcHasAnOutline[entity] || !b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
 	{

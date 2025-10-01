@@ -108,7 +108,7 @@ methodmap VIPBuilding < BarrackBody
 	{
 		if(data[0])
 			ExplodeStringFloat(data, " ", vecPos, sizeof(vecPos));
-
+		
 		int EndFound = FindInfoTargetInt("zr_checkpoint_final");
 		if(IsValidEntity(EndFound))
 		{

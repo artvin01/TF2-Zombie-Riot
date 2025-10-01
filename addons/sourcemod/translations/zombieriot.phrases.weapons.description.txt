@@ -10,217 +10,107 @@
 		"en"	"Describe This Weapon"
 		"ko"	"이 무기의 설명"
 	}
-	"Multi Pellet"
+	"Artillery"
 	{
-		"en"		"Archetype: Multi Pellet"
-		"fr"		"Archetype: Multi-plombs"
-		"ru"		"Архетип: Мультивыстрел"
-		"chi"		"类型：霰弹"
-		"ko"		"유형: 산탄"
+		"en"	"Artillery"
 	}
-	"Rapid Fire"
+	"Deadeye"
 	{
-		"en"		"Archetype: Rapid Fire"
-		"fr"		"Archetype: Tirs Rapides"
-		"ru"		"Архетип: Быстрый огонь"
-		"chi"		"类型：连发"
-		"ko"		"유형: 연발"
+		"en"	"Deadeye"
 	}
-	"Single Pellet"
+	"Charger"
 	{
-		"en"		"Archetype: Single Pellet"
-		"fr"		"Archetype: Chevrotine"
-		"ru"		"Архетип: Одиночный выстрел"
-		"chi"		"类型：单发"
-		"ko"		"유형: 단발"
+		"en"	"Charger"
 	}
-	"Infinite Fire"
+	"Tactician"
 	{
-		"en"		"Archetype: Infinite Fire"
-		"fr"		"Archetype: Tir Infini"
-		"ru"		"Архетип: Бесконечный огонь"
-		"chi"		"类型：火力压制"
-		"ko"		"유형: 풀 오토"
+		"en"	"Tactician"
 	}
-	"Trap Master"
+	"Hunter"
 	{
-		"en"		"Archetype: Trap Master"
-		"fr"		"Archetype: Maître des Pièges"
-		"ru"		"Архетип: Ловчий"
-		"chi"		"类型：陷阱大师"
-		"ko"		"유형: 함정술사"
+		"en"	"Hunter"
 	}
-	"Far Range"
+	"Drone Magic"
 	{
-		"en"		"Archetype: Far Range"
-		"fr"		"Archetype: Longue Portée"
-		"ru"		"Архетип: Дальняя дальность"
-		"chi"		"类型：远程"
-		"ko"		"유형: 장거리"
+		"en"	"Drone Magic"
 	}
-	"Explosive Mind"
+	"Splash Magic"
 	{
-		"en"		"Archetype: Explosive Mind"
-		"fr"		"Archetype: Maître des Explosions"
-		"ru"		"Архетип: Взрывной разум"
-		"chi"		"类型：爆炸"
-		"ko"		"유형: 폭발형"
+		"en"	"Splash Magic"
 	}
-	"Team Support"
+	"Rapid Magic"
 	{
-		"en"		"Archetype: Team Support"
-		"fr"		"Archetype: Bon Coéquipier"
-		"ru"		"Архетип: Командная поддержка"
-		"chi"		"类型：辅助"
-		"ko"		"유형: 아군 지원"
+		"en"	"Rapid Magic"
 	}
-	"ArchDebuff"
+	"Power Magic"
 	{
-		"en"		"Archetype: Debuff"
-		"fr"		"Archetype: Affaiblisseur"
-		"ru"		"Архетип: Ослабление"
-		"chi"		"类型：Debuff"
-		"ko"		"유형: 디버퍼"
+		"en"	"Power Magic"
 	}
-	"Brawler"
+	"Hexing Magic"
 	{
-		"en"		"Archetype: Brawler"
-		"fr"		"Archetype: Bagarreur"
-		"ru"		"Архетип: Потасовщик"
-		"chi"		"类型：战士"
-		"ko"		"유형: 싸움꾼"
+		"en"	"Hexing Magic"
 	}
 	"Ambusher"
 	{
-		"en"		"Archetype: Ambusher"
-		"fr"		"Archetype: Embusqueur"
-		"ru"		"Архетип: Засадник"
-		"chi"		"类型：偷袭"
-		"ko"		"유형: 매복자"
-	}
-	"Combatant"
-	{
-		"en"		"Archetype: Combatant"
-		"fr"		"Archetype: Combatant"
-		"ru"		"Архетип: Боец"
-		"chi"		"类型：斗士"
-		"ko"		"유형: 투사"
-	}
-	"Aberration"
-	{
-		"en"		"Archetype: Aberration"
-		"fr"		"Archetype: Aberration"
-		"ru"		"Архетип: Аберрация"
-		"chi"		"类型：异类"
-		"ko"		"유형: 변이"
+		"en"	"Ambusher"
 	}
 	"Duelist"
 	{
-		"en"		"Archetype: Duelist"
-		"fr"		"Archetype: Dueliste"
-		"ru"		"Архетип: Дуэлянт"
-		"chi"		"类型：决斗士"
-		"ko"		"유형: 결전자"
+		"en"	"Duelist"
+	}
+	"Defender"
+	{
+		"en"	"Defender"
 	}
 	"Lord"
 	{
-		"en"		"Archetype: Lord"
-		"fr"		"Archetype: Roi"
-		"ru"		"Архетип: Лорд"
-		"chi"		"类型：领主"
-		"ko"		"유형: 로드"
+		"en"	"Lord"
 	}
 	"Crusher"
 	{
-		"en"		"Archetype: Crusher"
-		"fr"		"Archetype: Broyeur"
-		"ru"		"Архетип: Дробитель"
-		"chi"		"类型：碾压"
-		"ko"		"유형: 대검사"
+		"en"	"Crusher"
 	}
-	"Summoner"
+	"Combatant"
 	{
-		"en"		"Archetype: Summoner"
-		"fr"		"Archetype: Convoqueur"
-		"ru"		"Архетип: Призыватель"
-		"chi"		"类型：召唤师"
-		"ko"		"유형: 소환사"
+		"en"	"Combatant"
 	}
-	"Chain Caster"
+	"Medical"
 	{
-		"en"		"Archetype: Chain Caster"
-		"fr"		"Archetype: Sortilèges Successifs"
-		"ru"		"Архетип: Маг цепей"
-		"chi"		"类型：连环法师"
-		"ko"		"유형: 체인 캐스터"
+		"en"	"Medical"
 	}
-	"Multi Caster"
+	"Mechanic"
 	{
-		"en"		"Archetype: Multi Caster"
-		"fr"		"Archetype: Multi-sortilèges"
-		"ru"		"Архетип: Мульти маг"
-		"chi"		"类型：多重法师"
-		"ko"		"유형: 멀티 캐스터"
+		"en"	"Mechanic"
 	}
-	"Base Caster"
+	"Buffer"
 	{
-		"en"		"Archetype: Base Caster"
-		"fr"		"Archetype: Sortilèges Amateurs"
-		"ru"		"Архетип: Базовый маг"
-		"ko"		"유형: 기본 캐스터"
+		"en"	"Buffer"
 	}
-	"Mythic Caster"
+	"Debuffer"
 	{
-		"en"		"Archetype: Mythic Caster"
-		"fr"		"Archetype: Sortilèges Mythiques"
-		"chi"		"类型：至尊法师"
-		"ru"		"Архетип: Мифический маг"
-		"ko"		"유형: 미스틱 캐스터"
+		"en"	"Debuffer"
 	}
-	"Psychic Warlord"
+	"Expidonsa"
 	{
-		"en"		"Archetype: Psychic Warlord"
-		"ru"		"Архетип: психический полководец"
-		"ko"		"유형: 사이킥 워로드"
-	}
-	"Abyssal Hunter"
-	{
-		"en"		"Archetype: Abyssal Hunter"
-		"fr"		"Archetype: Chasseur des Abîmes"
-		"ru"		"Архетип: Охотник Бездны"
-		"chi"		"类型：深海猎人"
-		"ko"		"유형: 어비설 헌터스"
+		"en"	"Expidonsa"
 	}
 	"Kazimierz"
 	{
-		"en"		"Archetype: Kazimierz"
-		"ru"		"Архетип: Казимерз"
-		"fr"		"Archetype: Kazimierz"
-		"chi"		"类型：卡齐米日"
-		"ko"		"유형: 카시미어"
+		"en"	"Kazimierz"
 	}
-	"Bloodletter"
+	"Victoria"
 	{
-		"en"		"Archetype: Bloodletter"
-		"ru"		"Арехтип: Кровопускатель"
-		"fr"		"Archetype: Hémorragie"
-		"chi"		"类型：放血者"
-		"ko"		"유형: 블러드레터"
+		"en"	"Victoria"
 	}
-	"Bloody Butcher"
+	"Psychic Warlord"
 	{
-		"en"		"Archetype: Bloody Butcher"
-		"ru"		"Архетип: Кровавый Мясник"
-		"fr"		"Archetype: Boucher Dégorgeur"
-		"chi"		"类型：血腥屠夫"
-		"ko"		"유형: 피의 도살자"
+		"en"	"Psychic Warlord"
 	}
-	"Archetype Victoria"
+	"Seaborn"
 	{
-		"en"		"Archetype: Victoria"
-		"ko"		"유형: 빅토리아"
+		"en"	"Seaborn"
 	}
-
+	
 	"Common Pap Damage Attack Speed Firearm Desc"
 	{
 		"en"		"Increased damage and attackspeed"
@@ -569,10 +459,9 @@
 	
 	"Marksman Rifle Pap 1"
 	{
-		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.\nArchetype changes to ''Explosive Mind''"
-		"fr"		"Dégats et cadence de tir améliorés, balles deviennent explosives.\nArchetype devient «Maître des Explosions»"
-		"ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные.\nАрхетип меняется на «Взрывной разум»"
-		"ko"		"피해량, 공격 속도 증가 및 이제 적중시 폭발하는 히트스캔형 폭발탄을 사격.\n무기의 유형이 ''폭발형''으로 변경."
+		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.'"
+		"fr"		"Dégats et cadence de tir améliorés, balles deviennent explosives."
+	    "ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные."
 	}
 	
 	"Quad Launcher Desc"
@@ -701,11 +590,10 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"Cripples targets heavily, making them slower and take 40％ more damage."
-		"fr"		"Infirme les ennemis, les ralentissant et les font prendre 40％ plus de dégats."
-		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 40％ больше урона."
-		"chi"	    "严重致残目标，使他们变慢并受到40％的伤害。"
-		"ko"		"적중한 대상의 이동 속도를 둔화시키고 받는 피해를 40％ 증가시킴."
+		"en"		"Cripples targets heavily, making them slower and take more damage."
+		"fr"		"Infirme les ennemis, les ralentissant et les font prendre plus de dégats."
+		"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
+		"chi"       "严重致残目标，使他们变慢并受到的伤害。"
 	}
 	"Elite Sniper Pap 5"
 	{
@@ -861,10 +749,9 @@
 	}
 	"SMG Pap 4"
 	{
-		"en"	"+DMG, infinite clip.\nArchetype changes to ''Infinite Fire''"
-		"fr"	"Dégats améliorés. Rechargeur infini.\nArchetype devient «Tir Infini»"
-		"ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы.\nАрхетип меняется на «Бесконечный огонь»"
-		"ko"	"피해량 증가 및 장탄수가 무한이 됩니다.\n무기의 유형이 ''풀 오토''로 변경."
+		"en"	"+DMG, infinite clip."
+		"fr"	"Dégats améliorés. Rechargeur infini.
+	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы."
 	}
 	"SMG Pap 5"
 	{
@@ -1043,11 +930,9 @@
 	}
 	"Knife Pap 2"
 	{
-		"en"	"No Backstab, Increased damage, gain additional Short Effects via [M1].\nArchetype changes to ''Combatant''"
-		"fr"	"Dégats améliorés. Enlève le poignardage. Recevez des effets avec M1.\nArchetype devient «Combatant»"
-		"ru"	"Нет удара в спину, увеличенный урон, получение доп. коротких эффектов на [М1].\nАрхетип меняется на «Комбатант»"
-		"chi"   "增加少量的背刺伤害，增加普攻伤害，通过攻击获得额外的短效果"
-		"ko"	"백스탭 기능 삭제. 대신 공격시 짧은 시간동안 여러 종류의 버프 획득.\n무기의 유형이 ''투사''로 변경됩니다."
+		"en"	"No Backstab, Increased damage, gain additional Short Effects via [M1]."
+		"fr"	"Dégats améliorés. Enlève le poignardage. Recevez des effets avec M1."
+		"ru"	"Нет удара в спину, увеличенный урон, получение доп. коротких эффектов на [М1]."
 	}
 	"Knife Pap 3"
 	{
@@ -1081,10 +966,9 @@
 	}
 	"Hammer Pap 2"
 	{
-		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\n1.15x dmg against bosses and 2x dmg against raids.\nArchetype changes to ''Crusher''"
-		"fr"	"Dégats améliorés, cadence des attaques plus lente.\nVos coups causent des explosions.\n1.15x dégats contre les Boss, 2x dégats contre les Raids.\nArchetype devient «Broyeur»"
-		"chi"	"增加伤害，降低攻速。\n你的攻击强到任何击中的东西会都会炸开！\n对精英怪造成*1.15伤害，对boss造成*2伤害。\n类型更为''碾压者''。"
-		"ko"	"피해량 증가, 대신 공격 속도 감소.\n적중시, 폭발이 발생.\n보스에게 주는 피해량 +1.15배.(레이드에서는 2배 증가)\n무기의 유형이 ''분쇄자''로 변경됩니다."
+		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\n1.15x dmg against bosses and 2x dmg against raids."
+		"fr"	"Dégats améliorés, cadence des attaques plus lente.\nVos coups causent des explosions.\n1.15x dégats contre les Boss, 2x dégats contre les Raids."
+		"chi"	"增加伤害，降低攻速。\n你的攻击强到任何击中的东西会都会炸开！\n对精英怪造成*1.15伤害，对boss造成*2伤害"
 	}
 	"Hammer Pap 3"
 	{
@@ -1167,8 +1051,7 @@
 	}
 	"Kunai Pap 4"
 	{
-		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy."
-		"ko"	"백스탭 속도가 느려지지만, 극도로 높은 피해를 입힘. 백스탭 성공시 더 많은 체력을 회복.\n매 15초마다, 백스탭 성공시 대상에게 루이나 핵을 발사할 수 있습니다."
+		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy.\nDeals 35％ less dmg against raids, and its explosive has no bonus dmg against raids."
 	}
 	
 	"Fractured Ark Desc"
@@ -1194,24 +1077,22 @@
 	}
 	"Fractured Ark Pap 3"
 	{
-		"en"	"Increased damage and firerate\nAbilities change.\nSilences enemies, fires ranged attacks.\nAbility: 2x dmg + AOE silence.\nAbility gets charges on hit, Melee hits give 2x charge.\nProjectiles deal ranged damage, and less damage.\nArchetype changes to ''Lord''"
-		"ko"	"전체적인 능력 변경.\n기본 공격이 적에게 침묵 디버프를 부여하는 원거리 공격이 됩니다.\n사용 능력 : 2배의 피해를 주고 광역 침묵을 부여.\n게이지는 근접 공격이 적중하면 2배로 증가.\n투사체는 원거리 피해 속성이지만, 피해량이 낮음.\n무기의 유형이 ''로드''로 변경."
+		"en"	"Increased damage and firerate\nAbilities change.\nSilences enemies, fires ranged attacks.\nAbility: 2x dmg + AOE silence.\nAbility gets charges on hit, Melee hits give 2x charge.\nProjectiles deal ranged damage, and less damage."
 	}
 	"Fractured Ark Pap 4"
 	{
-		"en"	"Increased damage\nAbilities change.\nRanged Attack and slower firerate.\nAbility changes to pull, dealing high dmg.\nYou count as a seaborn while wielding this weapon.\nRanged projectile deals less damage then melee and deals ranged damage.\nArchetype changes to ''Abyssal Hunter''"
-		"ko"	"전체적인 능력 변경.\n공격 속도가 감소하지만 원거리 공격이 됨.\n사용 능력 : 피해를 주고 대상을 자신에게로 끌어당김.\n이 무기를 들고 있으면 시본으로 취급됨.\n투사체는 원거리 피해 속성이지만, 근접 공격보다 피해량이 낮음.\n무기의 유형이 ''어비설 헌터스''로 변경."
+		"en"	"Increased damage\nAbilities change.\nRanged Attack and slower firerate.\nAbility changes to pull, dealing high dmg.\nFaction changed to Seaborn.\nRanged projectile deals less damage then melee and deals ranged damage."
 	}
 	"Fractured Ark Pap 5"
 	{
-		"en"	"All Abyssal Hunter weapons gain 7.5％ damage resistance from Seaborn enemies and gain 1.5％ max health per second.\nAbility now charges faster and deals 180％ of damage.\nMain attack has longer projectile lifetime."
+		"en"	"All Seaborn faction weapons gain 7.5％ damage resistance from Seaborn enemies and gain 1.5％ max health per second.\nAbility now charges faster and deals 180％ of damage.\nMain attack has longer projectile lifetime."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 7.5％ contre les ennemis Seaborn et reçoivent des soins de 1.5％ max santé par seconde.\nAbilité se recharge plus rapidement et inflige 180％ des dégats.\nVos projectiles durent plus longtemps."
 		"chi"	"所有''深海猎人''武器对所有海嗣获得7.5％伤害抗性，每秒恢复1.5％最高血上限。\n技能冷却降低，造成180％伤害。\n正常攻击的投射物有更长的生命期。"
 		"ko"	"모든 어비설 헌터스 무기가 시본 계열 적에게서 받는 피해가 7.5％ 감소 및 초당 최대 체력의 1.5％ 만큼 체력 회복.\n게이지가 더 빨리 차오르며 기본 공격 피해량의 180％에 해당하는 피해를 줌.\n평타의 발사되는 투사체의 지속 시간 증가."
 	}
 	"Fractured Ark Pap 6"
 	{
-		"en"	"All Abyssal Hunter weapons now gain 12.5％ damage resistance from Seaborn enemies and gain 2.5％ max health per second.\nAbility now holds a third charge and deals 190％ of damage.\nAttacks deal bonus damage to lightweight enemies."
+		"en"	"All Seaborn faction weapons now gain 12.5％ damage resistance from Seaborn enemies and gain 2.5％ max health per second.\nAbility now holds a third charge and deals 190％ of damage.\nAttacks deal bonus damage to lightweight enemies."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 12.5％ contre les ennemis Seaborn et reçoivent des soins de 2.5％ max santé par seconde.\nAbilité à une troisième charge et inflige 190％ des dégats.\nDégats améliorés contre les ennemis légers."
 		"chi"	"所有''深海猎人''武器对所有海嗣获得12.5％伤害抗性，每秒恢复2.5％最高血上限。\n技能现有三次充能，造成190％伤害。\n所有攻击对轻型敌人造成更多伤害。"
 		"ko"	"모든 어비설 헌터스 무기가 시본 계열 적에게서 받는 피해가 12.5％ 감소 및 초당 최대 체력의 2.5％ 만큼 체력 회복.\n이제 능력을 최대 3칸까지 저장할 수 있으며, 사용시 1칸을 소모하고 기본 공격 피해량의 190％에 해당하는 피해를 줌.\n모든 공격이 무게가 가벼운 대상에게 추가 피해."
@@ -1225,7 +1106,7 @@
 	}
 	"Fractured Ark Pap 8"
 	{
-		"en"	"All Abyssal Hunter weapons now gain 15％ damage resistance from all enemies and gain 3.5％ max health per second.\nAbility now deals ranged damage proportional to the distance the enemy was pulled."
+		"en"	"All Seaborn faction weapons now gain 15％ damage resistance from all enemies and gain 3.5％ max health per second.\nAbility now deals ranged damage proportional to the distance the enemy was pulled."
 		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 15％ contre les ennemis Seaborn et reçoivent des soins de 3.5％ max santé par seconde.\nDégats contre les ennemis attirés s'améliorent en fonction de la distance de laquelle ils sont attirés."
 		"chi"	"所有''深渊猎人''武器对所有海嗣获得15.0％伤害抗性，每秒恢复3.5％最高血上限。\n技能现有三次充能，造成190％伤害。\n技能伤害根据距离增加。"
 		"ko"	"모든 어비설 헌터 무기가 시본 계열 적군에게서 받는 피해가 15％ 감소 및 초당 최대 체력의 3.5％ 만큼 체력을 회복합니다.\n이제 능력은 적이 끌려온 거리에 비례하여 원거리 피해를 입힘."
@@ -1461,8 +1342,7 @@
 
 	"Lightning Staff Pap 3"
 	{
-		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nProjectile speed/Range affect manacost.\nArchetype changes to ''Chain Caster''"
-		"ko"	"피해량이 크게 증가하지만 공격 속도 감소.\n능력 변경:\n번개 강타를 연속 2번 사용 가능.\n적중한 대상 주변 적들에게 번개가 튕기며 이동 속도를 둔화시키지만, 공격 속도가 3배 더 감소.\n주변에 적이 없다면, 피해량 +10％ 및 능력 쿨타임 -10％.\n투사체 속도와 사거리 속성은 대신 이 무기의 마나 소모량을 감소시킴.\n무기의 유형이 ''체인 캐스터''로 변경."
+		"en"	"Massively increased Damage but much slower attackspeed.\nYour ability changes:\n2x charged Lightning Storm.\nYour attack chains but you attack 3x slower, each attack will slow the enemies.\nWhen no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\nProjectile speed/Range affect manacost."
 	}
 	
 	"Beam Wand Desc"
@@ -2037,8 +1917,8 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage.\nGain armor per enemy hit upto half of your armor."
-		"ko"	"레이드 보스에게 주는 피해량 +1.15배\n들고 있을시, 추가 피해 저항력 획득.\n화상 디버프가 트루 대미지를 입힘.(모든 무기 공통)\n적중시, 아머를 회복하여 최대 아머의 절반까지 회복."
+		"en"	"Deals 1.15x the damage against raidbosses.\nYou have extra resistances while equipped.\nBurns enemies.\nGain armor per enemy hit upto half of your armor."
+		"ko"	"레이드 보스에게 주는 피해량 +1.15배\n들고 있을시, 추가 피해 저항력 획득.\n화상 디버프 부여.\n적중시, 아머를 회복하여 최대 아머의 절반까지 회복."
 	}
 	"Doctor Certificate Desc"
 	{
@@ -2329,8 +2209,7 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"M2 ability changes.\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration'' AND ''Kazimierz''.\nSilvester must have been there..."
-		"ko"	"M2 능력 변경.\n자신의 앞에 검을 생성하여 피해를 줌.\n범위 내의 모든 적을 기절.\n특별한 버프를 얻습니다.\n생성된 검에게 어그로가 끌린 적을 공격하면, 대상에게 주는 피해량이 2배로 증가.\n무기의 유형이 ''변이''와 ''카시미어''로 변경.\n실베스터가 여기 있는게 확실하군요..."
+		"en"	"M2 ability changes.\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nFaction ''Kazimierz'' is added.\nSilvester must have been there..."
 	}
 
 	
@@ -2366,7 +2245,7 @@
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash.\nM2 throws a secondary potion with it's own attack delay."
 		"fr"	"Lancez des potions qui font la plupart des dégats par le saignement.\nPeut frapper jusqu'a 5 cibles, et ignore la plupart des résistances.\nAppuyez sur M2 pour lancer une potion secondaire, avec rechargement."
 		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
 		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
@@ -2586,10 +2465,9 @@
 	}
 	"Fish Melee Desc"
 	{
-		"en" 	"Heals allies slowly around you and gives them a 10％ dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25％ dmg buff to all allies for 15 sec.\nYou count as a seaborn while wielding this weapon."
-		"fr" 	"Soigne les alliés proches et améliore leur dégats par 10％.\nAttaquez pour soigner directement vos alliés.\nAppuyez sur M2 pour améliorer les dégats de tous vos alliés par 25％, pour 15 secondes.\nCet arme s'améliore avec les améliorations Medigun.\nVous êtes un Seaborn pendant que vous tenez cet arme."
-		"chi"	"缓慢治疗你附近的队友，提供+10％伤害buff。\n随着医疗枪升级。\nM1提供更多治疗，M2提供15秒的+25％伤害buff。\n手持物品时，你将被判定为海嗣。"
-		"ko" 	"주변 아군의 체력을 서서히 회복시키고, 피해량 10％ 증가 버프 부여.\n메디건 개선의 영향을 받음.\nM1로 아군의 체력을 추가로 회복.\nM2 사용시 모든 아군의 피해량을 15초간 25％ 증가시킴.\n무기를 들고 있으면 시본으로 취급됩니다."
+		"en" 	"Heals allies slowly around you and gives them a 10％ dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25％ dmg buff to all allies for 15 sec."
+		"fr" 	"Soigne les alliés proches et améliore leur dégats par 10％.\nAttaquez pour soigner directement vos alliés.\nAppuyez sur M2 pour améliorer les dégats de tous vos alliés par 25％, pour 15 secondes.\nCet arme s'améliore avec les améliorations Medigun."
+		"chi"	"缓慢治疗你附近的队友，提供+10％伤害buff。\n随着医疗枪升级。\nM1提供更多治疗，M2提供15秒的+25％伤害buff。"
 	}
 	"Fish Melee Desc 2"
 	{
@@ -2615,8 +2493,7 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"Attacks slower but hits two targets at once.\nDamage Increased.\nYou count as a seaborn while wielding this weapon.\nArchetype changes to ''Abyssal Hunter''"
-		"ko"	"공격 속도가 감소하지만, 한 번에 2명의 적을 타격하게 됨.\n이 무기를 들고 있으면 시본으로 취급됩니다.\n무기의 유형이 ''어비설 헌터''로 변경됩니다."
+		"en"	"Attacks slower but hits two targets at once.\nDamage Increased.\nFaction changed to Seaborn."
 	}
 	"Specter Pap 2a"
 	{
@@ -2641,7 +2518,7 @@
 	}
 	"Specter Pap 4"
 	{
-		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt\nAll Abyssal Hunter weapons gain +200 max health."
+		"en"	"Increased damage and gains the ability to self revive if enough damage is dealt\nAll Seaborn faction weapons gain +200 max health."
 		"fr"	"Dégats améliorés. Vous vous ressuscitera vous-même si vous avez infligé assez de dégats.\nTout porteur d'arme Chasseur des Abîmes reçoivent +200 santé maximum."
 		"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
 		"chi"   "增加伤害，造成足够伤害后可复活自己。\n所有''深海猎人''武器+200血量上限"
@@ -2662,11 +2539,10 @@
 	}
 	"Yamato_Desc"
 	{
-		"en"	"Each time you deal damage you gain ''Motivation'', its used as an energy source your abilities\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10％ melee dmg resist\nArchetype changes to ''Duelist''"
-		"fr"	"Obtenez de la «Motivation» pour chaque ennemi frappé, pour utiliser pour vos abilités:\nR: Change entre «Épées Convoquées» et «Épées Spirales»\nM2: Lance les épées vers les ennemis\n-10％ résistance contre les dégats corps-à-corps\nArchetype devient «Dueliste»"
-		"ru"	"Каждый раз, когда вы нанос. урон, вы получ. «Мотивацию», которая исп. как источник энергии для ваших способн.\nR: Перекл. между «Вызванными мечами» и «Спиральными мечами»\nУдерж. ПКМ, чтобы выстрелить вызванными мечами во врагов!\nВы теряете 10％ сопротивления к повреждениям в ближнем бою\nАрхетип меняется на «Дуэлист»"
-		"chi"	"造成伤害获得''帕瓦''，你的技能将会消耗''帕瓦''。\nR:切换模式[召唤剑|剑之环]\n按住M2发射召唤出的剑\n失去前有的10％近战抗性。\n类更为''斗士''"
-		"ko"	"피해를 줄 때마다, 능력 사용에 필요한 ''활기'' 획득.\nR: ''검 소환'' 모드 또는 ''나선 검'' 모드로 전환.\nM2를 꾹 눌러 소환된 검을 적에게 전부 발사함!\n근접 저항력 10％ 감소.\n무기의 유형이 ''결전자''로 변경됩니다."
+		"en"	"Each time you deal damage you gain ''Motivation'', its used as an energy source your abilities\nR: Switch Between ''Summoned Swords'' and ''Spiral Swords''\nHold Mouse 2 to fire your summoned swords at your enemies!\nYou do lose the 10％ melee dmg resist"
+		"fr"	"Obtenez de la «Motivation» pour chaque ennemi frappé, pour utiliser pour vos abilités:\nR: Change entre «Épées Convoquées» et «Épées Spirales»\nM2: Lance les épées vers les ennemis\n-10％ résistance contre les dégats corps-à-corps"
+		"ru"	"Каждый раз, когда вы нанос. урон, вы получ. «Мотивацию», которая исп. как источник энергии для ваших способн.\nR: Перекл. между «Вызванными мечами» и «Спиральными мечами»\nУдерж. ПКМ, чтобы выстрелить вызванными мечами во врагов!\nВы теряете 10％ сопротивления к повреждениям в ближнем бою"
+		"chi"	"造成伤害获得''帕瓦''，你的技能将会消耗''帕瓦''。\nR:切换模式[召唤剑|剑之环]\n按住M2发射召唤出的剑\n失去前有的10％近战抗性。"
 	}
 	"Preaching Sword Desc"
 	{
@@ -2699,10 +2575,9 @@
 	}
 	"Preaching Sword Pap 4"
 	{
-		"en"	"Entirely changes weapon.\nYou are weak if above half health.\nIf below half health you gain massive power.\nYou recieve 50％ Healing.\nCharge with M2 gain heavy resistances during charge.\nArchetype changes to ''Duelist''."
-		"fr"	"Remplace l'arme complètement.\nFaible si vous avez plus que moitié santé.\nTrès puissant si vous avez mois que moitié santé.\n-50％ soins.\nChargez avec M2, recevez de la résistance pendant la charge.\nArchetype devient «Dueliste»"
-		"chi"	"武器改动：\n高于50％血时你很弱。\n低于50％血时获得大量buff。\n获得50％治疗\n按住M2获得大量抗性buff。\n类更为''斗士''"
-		"ko"	"무기가 완전히 변경됨.\n현재 체력이 절반 이상이라면 매우 약해짐.\n하지만 현재 체력이 절반 이하일시 매우 강해짐.\n받는 체력 회복량이 50％ 증가.\nM2을 꾹 누르고 있으면 저항력이 크게 증가.\n무기의 유형이 ''결전자''로 변경."
+		"en"	"Entirely changes weapon.\nYou are weak if above half health.\nIf below half health you gain massive power.\nYou receive 50％ Healing.\nCharge with M2 gain heavy resistances during charge."
+		"fr"	"Remplace l'arme complètement.\nFaible si vous avez plus que moitié santé.\nTrès puissant si vous avez mois que moitié santé.\n-50％ soins.\nChargez avec M2, recevez de la résistance pendant la charge."
+		"chi"	"武器改动：\n高于50％血时你很弱。\n低于50％血时获得大量buff。\n获得50％治疗\n按住M2获得大量抗性buff"
 	}
 	"Spike Layer Pap 1"
 	{
@@ -3031,10 +2906,9 @@
 	}
 	"Punishment Desc"
 	{
-		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 15％\nArchetype changes to ''Crusher''"
-		"fr"	"Un bouclier et arme. Bloquer fais des dégats à plusiers ennemis à la fois.\nRang de défense: 15％\nArchetype devient «Broyeur»"
-		"chi"	"你要矛还是盾？还是矛盾？\n盾反造成aoe。\n''防御评分：15％''\n类更为''碾压者''"
-		"ko"	"무기이자 방패입니다. 패링이 광역 공격이 됨.\n방어 등급: 15％\n무기의 유형이 ''분쇄자''로 변경됩니다."
+		"en"	"A weapon and a shield, given form - Parrying becomes AOE.\nDefence rating: 15％"
+		"fr"	"Un bouclier et arme. Bloquer fais des dégats à plusiers ennemis à la fois.\nRang de défense: 15％"
+		"chi"	"你要矛还是盾？还是矛盾？\n盾反造成aoe。\n''防御评分：15％''"
 	}
 	"Cudgel Desc"
 	{
@@ -3069,9 +2943,9 @@
 	}
 	"The Standchen Desc AltPap"
 	{
-		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage (true damage)."
+		"en"	"Increased Damage\nAttacks deal Necrosis elemental damage."
 		"fr"	"Attaques ont un effet élémental Necrôse"
-		"ko"	"피해량 증가.\n적중시, 대상에게 쇠약 원소 피해를 부여. (트루 대미지)"
+		"ko"	"피해량 증가.\n적중시, 대상에게 쇠약 원소 피해를 부여."
 	}
 	"The Standchen Desc AltPap 2"
 	{
@@ -3402,8 +3276,7 @@
 	}
 	"Leper Sword Desc Pap 6"
 	{
-		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack recieved."
-		"ko"	"전체 능력치 증가 및 평온의 회복량이 66％로 증가.\n왕의 분노 상태일때, 공격 받을때마다 증가하는 피해량 수치가 더욱 증가."
+		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack received."
 	}
 	"Leper Sword Desc Pap 7"
 	{
@@ -3596,7 +3469,7 @@
 	}
 	"Angelic Shotgonnus Desc"
 	{
-		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 75％.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
+		"en"	"A shotgun from Expidonsa.\nMost healing you receive is cut by 75％.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
 		"fr"	"Vous vous soignez pour chaque ennemi frappé,\nces soins peuvent vous donner du santé bonus.\nVous recevez 75％ de tous soins donnés à vous.Vous ferez un double-attaque tous les 4 attaques.\nAbilité améliore vos dégats et la fréquence de double-attaques."
 		"chi"	"外界的霰弹枪\n大部分治疗-85％。\n可击中多名敌人，带穿透。\n每4发司是双击。\n自疗可以超量。\n技能保证双击，增加伤害。\n有随机暴击。"
 		"ko"	"받는 치유 효과가 최대 75％로 감소합니다.\n다수의 적을 타격할 수 있으며, 적중시 체력 회복.(이 효과로 과치료 획득 가능)\n매 4번째 공격은 2연 공격이 됨.\n능력 사용시 2연 공격이 되며 피해량 증가."
@@ -3957,10 +3830,9 @@
 	}
 	"Messenger Launcher Desc"
 	{
-		"en" "You feel the power of the Chaos that once consumed the Messenger in your hands\n You lose the ability to deal aoe. Press M2 to change fire mode \n Fire Blaster: Ignites \n Chaos Blaster: short cryo debuff \n Chaos deals more damage on hit.\n Archetype changed into rapid fire"
-		"fr" "Appuyez M2 pour changer votre mode.\nMode Feu : Enflamme les ennemis\nMode Glace : Gèle les ennemis.\nArchetype devient «Tirs Rapides»\nVous sentez le Chaos qui a enrobé le Messager dans vos mains."
-		"chi"	"你能感受到混沌之力正在吞噬你。\n你无法造成aoe。\nM2切换模式\n地狱火：点燃敌人\n混沌发射器：短暂冰冻效果\n混沌造成更多伤害。\n类更为''连发''"
-		"ko" "광역 타격 능력을 잃음. M2로 발사체의 능력 변경 \n 화염 증진: 화상 부여 \n 혼돈 증진: 냉동 부여 \n 더 많은 혼돈 피해를 부여\n 무기의 유형이 ''풀 오토''로 변경됨"
+		"en" "You feel the power of the Chaos that once consumed the Messenger in your hands\n You lose the ability to deal aoe. Press M2 to change fire mode \n Fire Blaster: Ignites \n Chaos Blaster: short cryo debuff \n Chaos deals more damage on hit."
+		"fr" "Appuyez M2 pour changer votre mode.\nMode Feu : Enflamme les ennemis\nMode Glace : Gèle les ennemis.\nVous sentez le Chaos qui a enrobé le Messager dans vos mains."
+		"chi"	"你能感受到混沌之力正在吞噬你。\n你无法造成aoe。\nM2切换模式\n地狱火：点燃敌人\n混沌发射器：短暂冰冻效果\n混沌造成更多伤害"
 	}
 	"Messenger Launcher PAP Desc"
 	{
@@ -4118,8 +3990,7 @@
 	}
 	"VictorianLauncher Desc Extra"
 	{
-		"en"	"Increases the Explosion Radius of 'Archetype: Victoria' by +10％."
-		"ko"	"무기의 유형이 ''빅토리아''인 다른 무기의 폭발 범위가 +10％ 증가."
+		"en"	"Increases the Explosion Radius of 'Victoria' faction by +10％."
 	}
 	"VictorianLauncher 5 Perk Desc"
 	{
@@ -4353,7 +4224,7 @@
 	}
 	"Vows of the Sea Pap"
 	{
-		"en"	"Hits three targets at once, increases healing and health.\nAll Abyssal Hunter weapons gain massive health and damage increase."
+		"en"	"Hits three targets at once, increases healing and health.\nAll Seaborn faction weapons gain massive health and damage increase."
 		"fr"	"Santé et soins améliorée. Frappe trois ennemis à la fois.\nTout arme «Chasseur des Abîmes» reçoivent des dégats et santé améliorés."
 		"chi"	"同时击中三个目标，增加治疗量和血量。\n所有''深渊猎人''武器获得大量血量/伤害提升。"
 		"ko"	"한 번에 3명의 대상을 타격할 수 있으며, 최대 체력과 체력 회복량이 증가합니다.\n모든 어비설 헌터 무기들에게 최대 체력 증가와 피해량 증가 옵션을 부여합니다."
@@ -4574,8 +4445,7 @@
 	}
 	"Abyssal Greatsword desc"
 	{
-		"en"	"Verys slow attacking weapon\nAll abyssal hunter weapons will receive 10％ damage bonus"
-		"ko"	"공격 속도가 매우 느린 무기입니다.\n모든 어비설 헌터스 무기의 피해량이 10％ 증가합니다."
+		"en"	"Verys slow attacking weapon\nAll Seaborn faction weapons will receive 10％ damage bonus"
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
@@ -4599,7 +4469,7 @@
 	}
 	"Whistle Stop Desc"
 	{
-		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals True Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
+		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals Ranged Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
 		"ko"	"공격이 쇠약 원소 피해를 입힘.\n확률로 추가 투사체를 발사하여, 이동 속도를 둔화시키고 원소 피해가 부여된 대상에게 추가 피해를 입힘.\n능력은 주변 범위 내의 체력이 낮은 적을 처형하며, 무한정으로 지속됨."
 	}
 	"Ancestor Launcher Desc"
@@ -4644,8 +4514,7 @@
 	}
 	"CastleBreaker Desc Extra"
 	{
-		"en"	"Increases the Damage of 'Archetype: Victoria' by +10％."
-		"ko"	"유형이 ''빅토리아''인 무기들의 피해량이 +10％ 증가."
+		"en"	"Increases the Damage of 'Victoria' faction by +10％."
 	}
 	"Zealot Dash Denie Spam"
 	{
@@ -4889,28 +4758,27 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "A passive upgrade that only works on KITS.\nIncreases kit damage by +35％ and attackspeed by +10％.\nGrants +25 HP on kill, +15％ overall resistance and +50％ projectile speed.\nReduces building cost by 25％ and increases heal rate by +25％."
-		"ko" "키트에게만 적용되는 패시브 개선.\n키트의 피해량 +35％ 및 공격 속도 +10％.\n처치시 체력 +25 회복, 모든 피해 저항력 +15％, 투사체 속도 +50％.\n구조물 금속 소모량 -25％, 치유 속도 +25％."
+		"en" "+20％ Kit DMG | +5％ Kit Atkspd | +5 Kit HP on kill | +5％ Kit Overall Resist\n+25％ Repair Rate"
 	}
 	"Kit Modernizer II Desc"
 	{
-		"en" "Increases kit damage by +45％ and reload speed by +10％\nGrants +35％ max mana, increases repair rate by +50％ and building HP by +10％.\nReduces building cost by 25％ and increases heal rate by +35％."
-		"ko" "키트의 피해량 +45％ 및 재장전 속도 +10％.\n최대 마나 +35％, 수리 효율 +50％, 구조물 체력 +10％.\n구조물 금속 소모량 -25％, 치유 속도 +35％."
+		"en" "+30％ Kit DMG | +10％ Kit Atkspd | +5 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +35％ Repair Rate | +5％ Buidling HP\n20％ less building cost."
 	}
 	"Kit Modernizer III Desc"
 	{
-		"en" "Increases kit damage by +65％ and reload + attackspeed by +10％\nIncreases repair rate by +100％, building HP by +35％ and clipsize by +50％.\nReduces building cost by 25％ and increases heal rate by +35％."
-		"ko" "키트의 피해량 +65％ 및 재장전,공격 속도 +10％.\n수리 효율 +100％, 구조물 체력 +35％, 장탄수 +50％.\n구조물 금속 소모량 -25％, 치유 속도 +35％."
+		"en" "+40％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +50％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+5％ Projectile Speed | 20％ less building cost."
 	}
 	"Kit Modernizer IV Desc"
 	{
-		"en" "Increases kit damage by +75％ and reload + attackspeed by +10％\n+35 HP on kill | +20％ Overall Resist | +25％ Max Mana | +100％ Repair Rate | +50％ Proj. Speed | +35％ Heal Rate"
-		"ko" "키트의 피해량 +75％ 및 재장전,공격 속도 +10％.\n처치시 체력 +35 회복, 모든 피해 저항력 +20％, 최대 마나 +25％.\n 수리 효율 +100％, 투사체 속도 +50％, 치유 속도 +35％."
+		"en" "+50％ Kit DMG | +15％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +100％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+10％ Projectile Speed | +5％ Projectile Range | 20％ less building cost."
 	}
 	"Kit Modernizer V Desc"
 	{
-		"en" "Increases kit damage by +100％ and reload + attackspeed by +10％\n+50 HP on kill | +25％ Overall Resistance | +25％ Max Mana | +125％ Repair Rate | +50％ Clip size"
-		"ko" "키트의 피해량 +100％ 및 재장전,공격 속도 +10％.\n처치시 체력 +50 회복, 모든 피해 저항력 +25％, 최대 마나 +25％.\n 수리 효율 +125％, 장탄수 +50％."
+		"en" "+75％ Kit DMG | +15％ Kit Atkspd | +15 Kit HP on kill | +15％ Kit Overall Resist\n+10％ Max mana | +100％ Repair Rate | +10％ Buidling HP | +35％ Clip Size\n+15％ Projectile Speed | +10％ Projectile Range | 20％ less building cost."
+	}
+	"Kit Modernizer VI Desc"
+	{
+		"en" "+100％ Kit DMG | +20％ Kit Atkspd | +20 Kit HP on kill | +20％ Kit Overall Resist\n+10％ Max mana | +200％ Repair Rate | +10％ Buidling HP | +50％ Clip Size"
 	}
 	"Unit Reformator I Desc"
 	{
@@ -4934,8 +4802,7 @@
 	}
 	"Unit Reformator V Desc"
 	{
-		"en" "TRIPLES barrack unit and doubles barrack unit damage."
-		"ko" "배럭 유닛들의 최대 체력이 3배로 증가하고, 유닛들의 공격 피해량이 2배로 증가합니다."
+		"en" "TRIPLES barrack unit HP and doubles barrack unit damage."
 	}
 	"Reinforce Desc"
 	{
@@ -5036,8 +4903,7 @@
 	}
 	"Plasma Bubble Desc"
 	{
-		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
-		"ko"	"완전히 충전되면 캡슐을 발사함.\n이 캡슐이 무언가에 접촉하면 거대한 플라즈마 거품으로 팽창.\n이 거품 안의 모든 적들은 지속적인 플라즈마 원소 피해를 받고, 아군은 받은 원소 피해가 회복됨."
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble receive constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
 	}
 	"Plasma Bubble Pap Any Desc"
 	{
@@ -5046,13 +4912,11 @@
 	}
 	"Plasma Bubble Pap 3 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering I."
-		"ko"	"플라즈마 원소 피해 부여량 및 아군의 원소 피해 제거량 증가.\n거품의 지속 시간 및 충전 요구량 감소.\n거품 범위 내의 모든 아군에게 플라즈마 단층 I 버프 부여."
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering I."
 	}
 	"Plasma Bubble Pap 5 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering II instead of I."
-		"ko"	"플라즈마 원소 피해 부여량 및 아군의 원소 피해 제거량 증가.\n거품의 지속 시간 및 충전 요구량 감소.\n거품 범위 내의 모든 아군에게 플라즈마 단층 II 버프 부여."
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering II instead of I."
 	}
 	"Plasma Bubble Pap 7 or 8 Desc"
 	{

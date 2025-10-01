@@ -90,7 +90,7 @@ methodmap VengefullSpirit < CClotBody
 		if(Decicion == 2)
 			Decicion = TeleportDiversioToRandLocation(npc.index, _, 1250.0, 0.0);
 
-		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
+		b_NoHealthbar[npc.index] = 1; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; 
 		

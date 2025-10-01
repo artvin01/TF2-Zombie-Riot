@@ -45,16 +45,6 @@ static char g_RangedReloadSound[][] = {
 
 void AgentThompson_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheSound("#zombiesurvival/matrix/furiousangels.mp3");
-	PrecacheSound("weapons/physgun_off.wav");
-	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Thompson");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_thompson");
@@ -63,9 +53,24 @@ void AgentThompson_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Matrix;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	PrecacheSoundCustom("#zombiesurvival/matrix/furiousangels.mp3");
+	PrecacheSound("weapons/physgun_off.wav");
+	PrecacheModel("models/player/heavy.mdl");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -197,7 +202,7 @@ methodmap AgentThompson < CClotBody
 		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/furiousangels.mp3");
 		music.Time = 161;
 		music.Volume = 1.7;
-		music.Custom = false;
+		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Furious Angels (Instrumental)");
 		strcopy(music.Artist, sizeof(music.Artist), "Rob Dougan");
 		Music_SetRaidMusic(music);

@@ -36,7 +36,9 @@ static const char Categories[][] =
 	"Whiteflower Specials",
 	"Victoria",
 	"Matrix",
+	"Aperture",
 	"Mutations",
+	"Curtain Occupants",
 };
 
 enum struct GiftItem
@@ -862,10 +864,12 @@ public void GiftJumpAwayYou(int Gift, int client)
 	
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", vecNPC);
-		
+		/*
 	float gravity = GetEntPropFloat(Gift, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
+		*/
+	float gravity = 800.0;
 		
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = Jump_1_frame_Client[2] - vecNPC[2];

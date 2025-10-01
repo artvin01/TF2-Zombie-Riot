@@ -16,6 +16,7 @@ static bool TeleToU[MAXENTITIES];
 static bool Grigori_Refresh=false;
 static bool Grigori_RefreshTwo=false;
 static int GrigoriMaxSellsItems=-1;
+static bool CGBreak;
 
 void CyberGrindGM_OnMapStart_NPC()
 {
@@ -54,7 +55,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 
 void ResetCyberGrindGMLogic()
 {
-	CyberVote = false;
+	CyberVote=false;
+	CGBreak=true;
 }
 
 methodmap CyberGrindGM < CClotBody
@@ -575,6 +577,7 @@ methodmap CyberGrindGM < CClotBody
 			npc.m_flNextRangedAttack = GetGameTime() + 1.0;
 			CyberGrind_Difficulty = 0;
 			TeleToU[npc.index] = true;
+			CGBreak=false;
 		
 			int skin = 1;
 			SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -626,7 +629,8 @@ methodmap CyberGrindGM < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(CyberGrindGM_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(CyberGrindGM_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(CyberGrindGM_ClotThink);
-		
+		func_NPCFuncWin[npc.index] = view_as<Function>(CyberGrindGM_Exit);
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -998,6 +1002,17 @@ static void CyberGrindGM_ClotThink(int iNPC)
 			RaidMode_SetupVote();
 		}
 	}
+	
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		delete Voting;
+		CyberVote=true;
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
+		SmiteNpcToDeath(npc.index);
+	}
 
 	if(CyberGrind_Difficulty>0)
 	{
@@ -1094,6 +1109,7 @@ static void CyberGrindGM_NPCDeath(int entity)
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
+	CGBreak=true;
 
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
@@ -1261,7 +1277,7 @@ static int RaidMode_CallVoteH(Menu menu, MenuAction action, int client, int choi
 
 static Action RaidMode_VoteDisplayTimer(Handle timer)
 {
-	if(!Voting)
+	if(!Voting || CGBreak)
 		return Plugin_Stop;
 	
 	RaidMode_DisplayHintVote();
@@ -1352,6 +1368,9 @@ static void RaidMode_RoundStart()
 
 static Action RaidMode_EndVote(Handle timer, float time)
 {
+	if(CGBreak)
+		return Plugin_Stop;	
+
 	if(Voting)
 	{
 		int length = Voting.Length;
@@ -1449,6 +1468,11 @@ static Action RaidMode_EndVote(Handle timer, float time)
 		}
 	}
 	return Plugin_Continue;
+}
+
+public void CyberGrindGM_Exit(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 
 static void CyberGrindGM_Talk(const char[] text, bool NoName=false)

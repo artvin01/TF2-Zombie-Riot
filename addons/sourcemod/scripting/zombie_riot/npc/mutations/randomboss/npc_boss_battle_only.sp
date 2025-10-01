@@ -14,8 +14,26 @@ void BossSummonRandom_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
+
+	
+	strcopy(data.Name, sizeof(data.Name), "Random Boss");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_random_vsh");
+	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = 0; 
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecacheVsh;
+	NPC_Add(data);
 }
 
+static void ClotPrecacheVsh()
+{
+	//precaches said npcs.
+	NPC_GetByPlugin("npc_gentlespy");
+	NPC_GetByPlugin("npc_hhh");
+	NPC_GetByPlugin("npc_christianbrutalsniper");
+}
 static void ClotPrecache()
 {
 	//precaches said npcs.
@@ -46,6 +64,10 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_castellan");
 	NPC_GetByPlugin("npc_lelouch");
 	NPC_GetByPlugin("npc_omega_raid");
+	NPC_GetByPlugin("npc_cat");
+	NPC_GetByPlugin("npc_aris");
+	NPC_GetByPlugin("npc_chimera");
+	NPC_GetByPlugin("npc_vincent");
 }
 
 bool SameBossDisallow[64];
@@ -123,7 +145,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	SameBossDisallow[0] = true;
 	while(SameBossDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,26);
+		NumberRand = GetRandomInt(1,30);
+	}
+	if(i_RaidGrantExtra[bosssummonbase] == 666)
+	{
+		NumberRand = GetRandomInt(31,33);
 	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
@@ -230,7 +256,6 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 			//he doesnt really scale? i dont know what to do.
 		}
 		case 12:
@@ -336,6 +361,13 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			enemy.ExtraDamage *= 0.9;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
 		}
+		case 25:
+		{
+			PluginName = "npc_omega_raid";	
+			
+			enemy.ExtraDamage *= 1.1;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+		}
 		case 26:
 		{
 			PluginName = "npc_lelouch";	
@@ -343,12 +375,45 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			enemy.ExtraDamage *= 0.85;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 0.85); 
 		}
-		case 25:
+		case 27:
 		{
-			PluginName = "npc_omega_raid";	
+			PluginName = "npc_cat";	
+			
+			enemy.ExtraDamage *= 1.25;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
+		}
+		case 28:
+		{
+			PluginName = "npc_aris";	
+			
+			enemy.ExtraDamage *= 1.2;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.15); 
+		}
+		case 29:
+		{
+			PluginName = "npc_chimera";	
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
+		}
+		case 30:
+		{
+			PluginName = "npc_vincent";	
+			
+			enemy.ExtraDamage *= 1.1;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
+		}
+		case 31:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 32:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 33:
+		{
+			PluginName = "npc_christianbrutalsniper";	
 		}
 	}
 	Format(enemy.Data, sizeof(enemy.Data), "%s",CharData);

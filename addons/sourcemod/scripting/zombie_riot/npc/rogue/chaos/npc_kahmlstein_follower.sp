@@ -393,7 +393,7 @@ static void ClotThink(int iNPC)
 							SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 1.0);
 							SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 1.0);
 						}
-						b_NoHealthbar[npc.index] = true;
+						b_NoHealthbar[npc.index] = 1;
 						if(IsValidEntity(npc.m_iTeamGlow))
 							RemoveEntity(npc.m_iTeamGlow);
 						switch(GetRandomInt(0,3))
@@ -427,7 +427,7 @@ static void ClotThink(int iNPC)
 	}
 	if(npc.m_flIsAwayOrSomething)
 	{
-		b_NoHealthbar[npc.index] = false;
+		b_NoHealthbar[npc.index] = 0;
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
 		if(IsValidEntity(npc.m_iWearable1))
@@ -674,7 +674,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				}
 				if(npc.m_flIsAwayOrSomething)
 				{
-					b_NoHealthbar[npc.index] = false;
+					b_NoHealthbar[npc.index] = 0;
 					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 					SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 0.0);
 					if(IsValidEntity(npc.m_iWearable1))

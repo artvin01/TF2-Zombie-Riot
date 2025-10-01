@@ -16,12 +16,6 @@ void Flametail_RoundStart()
 	Zero(DoubleHit);
 	KaziBuffed = false;
 }
-
-bool IsWeaponKazimierz(int weapon)
-{
-	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
-}
-
 void ResetFlameTail()
 {
 	KaziBuffed = false;
@@ -37,6 +31,7 @@ void ResetFlameTail()
 		}
 	}
 }
+
 void Flametail_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FLAMETAIL)
@@ -62,7 +57,7 @@ void Flametail_Enable(int client, int weapon)
 			}
 		}
 	}
-	if(IsWeaponKazimierz(weapon))	// Abyssal Hunter
+	if(Store_IsWeaponFaction(client, weapon, Faction_Kazimierz))
 	{
 		if(KaziBuffed)
 		{
@@ -80,7 +75,7 @@ public Action Flametail_Timer1(Handle timer, int client)
 		{
 			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") && AllowMaxCashgainWaveCustom(client))
 			{
-				CashRecievedNonWave[client]++;
+				CashReceivedNonWave[client]++;
 				CashSpent[client]--;
 				AddCustomCashMadeThisWave(client, 1);
 			}
@@ -162,7 +157,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			cash = RoundFloat(cash * ResourceRegenMulti);
-			CashRecievedNonWave[client] += cash;
+			CashReceivedNonWave[client] += cash;
 			CashSpent[client] -= cash;
 			AddCustomCashMadeThisWave(client, cash);
 		}

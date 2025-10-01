@@ -850,6 +850,7 @@ static int CanBuild[MAXENTITIES];
 static int PendingGesture[MAXENTITIES];
 static float CommandCooldown[MAXENTITIES];
 static bool TempRebel[MAXENTITIES];
+static bool Interactable[MAXENTITIES];
 static int PlayerRenameWho[MAXPLAYERS];
 
 void Citizen_OnMapStart()
@@ -995,6 +996,7 @@ methodmap Citizen < CClotBody
 		i_BarricadeHasBeenDamaged[npc.index] = 0;
 		i_PlayerDamaged[npc.index] = 0;
 		TempRebel[npc.index] = temp;
+		npc.m_bInteractable = true;
 		
 		npc.m_iAttacksTillReload = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -1166,6 +1168,11 @@ methodmap Citizen < CClotBody
 	{
 		public get()		{ return CanBuild[this.index]; }
 		public set(int value) 	{ CanBuild[this.index] = value; }
+	}
+	property bool m_bInteractable
+	{
+		public get()		{ return Interactable[this.index]; }
+		public set(bool value) 	{ Interactable[this.index] = value; }
 	}
 	property float m_flSpeed
 	{
@@ -1389,6 +1396,8 @@ methodmap Citizen < CClotBody
 					HealEntityGlobal(client, client, float(ReturnEntityMaxHealth(client)) * 0.1, 1.0, 1.0, HEAL_ABSOLUTE);
 				
 				HealEntityGlobal(client ? client : this.index, this.index, ReturnEntityMaxHealth(this.index) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+				int ent = this.index;
+				Rogue_TriggerFunction(Artifact::FuncRevive, ent);
 
 				i_npcspawnprotection[this.index] = NPC_SPAWNPROT_UNSTUCK;
 				CreateTimer(2.0, Remove_Spawn_Protection, EntIndexToEntRef(this.index), TIMER_FLAG_NO_MAPCHANGE);
@@ -1402,7 +1411,8 @@ methodmap Citizen < CClotBody
 
 			this.UpdateModel();
 			
-			IgnorePlayer[client] = false;
+			if(client > 0 && client <= MaxClients)
+				IgnorePlayer[client] = false;
 		}
 	}
 	public bool CanTalk()
@@ -1777,6 +1787,7 @@ static void CitizenMenu(int client, int page = 0)
 			npc.m_iSeakingObject = 0;
 		}
 	}
+	AnyMenuOpen[client] = 1.0;
 
 	SetGlobalTransTarget(client);
 
@@ -1804,7 +1815,18 @@ static void CitizenMenu(int client, int page = 0)
 			"Damage Dealt", buffer,
 			"Healing Done", healing,
 			"Damage Tanked", tanked);
-
+	
+	if (!npc.m_bInteractable)
+	{
+		// You can't interact with this NPC, just show stats and nothing else
+		FormatEx(buffer, sizeof(buffer), "%t", "Citizen Cannot Interact");
+		
+		menu.ExitButton = true;
+		menu.AddItem("", buffer, ITEMDRAW_DISABLED); // Menu needs at least an option to show
+		menu.Display(client, MENU_TIME_FOREVER);
+		return;
+	}
+	
 	switch(page)
 	{
 		case 1:
@@ -2016,6 +2038,8 @@ static int CitizenMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 			if(choice == MenuCancel_ExitBack)
 				CitizenMenu(client);
 		}
@@ -2463,7 +2487,7 @@ int Citizen_Count()
 			Citizen npc = view_as<Citizen>(i);
 			//BARNEY NO SCALE BAD !!!!!!!!!!!!!!!!!!!!!! (and alyx ig)
 			//and temp rebels!
-			if(!npc.m_bHero && !TempRebel[i])
+			if(!npc.m_bHero && TempRebel[i])
 				count++;
 		}
 	}

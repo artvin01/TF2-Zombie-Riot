@@ -62,7 +62,7 @@ methodmap Wisp < StalkerShared
 		npc.Anger = true;
 		npc.m_iChaseAnger = 1000;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
-		b_NoHealthbar[npc.index] = true; //Block outlines
+		b_NoHealthbar[npc.index] = 1; //Block outlines
 		f_TextEntityDelay[npc.index] = FAR_FUTURE; //Block invuln shield model
 
 		int entity = CreateEntityByName("light_dynamic");
@@ -242,10 +242,12 @@ static void ClotThink(int iNPC)
 
 				MakePlayerGiveResponseVoice(target, 2); //dead!
 				i_CurrentEquippedPerk[target] = 0;
+				UpdatePerkName(target);
 				Grigori_Blessing[target] = 0;
 
 				SetEntityHealth(target, 50);
 				dieingstate[target] = 250;
+				f_DisableDyingTimer[target] = 0.0;
 				
 				Vehicle_Exit(target);
 				SDKHooks_UpdateMarkForDeath(target, true);

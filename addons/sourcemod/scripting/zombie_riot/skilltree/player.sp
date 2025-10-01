@@ -86,13 +86,13 @@ public void SkillPlayer_ExtraDamageBuilding(int client, StringMap map, int amoun
 	PlayerMulti(map, "287", float(amount) * 0.001);
 }
 
-public void SkillPlayer_RecieveExtraHealing(int client, StringMap map, int amount)
+public void SkillPlayer_ReceiveExtraHealing(int client, StringMap map, int amount)
 {
 	// 0.1 every skill up
 	PlayerMulti(map, "526", float(amount) * 0.001);
 }
 
-public void SkillPlayer_RecieveExtraHealingHigh(int client, StringMap map, int amount)
+public void SkillPlayer_ReceiveExtraHealingHigh(int client, StringMap map, int amount)
 {
 	// 0.5 every skill up
 	PlayerMulti(map, "526", float(amount) * 0.005);

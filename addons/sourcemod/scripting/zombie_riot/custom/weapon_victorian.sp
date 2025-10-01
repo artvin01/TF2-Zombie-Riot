@@ -79,21 +79,18 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 		{
-			switch(i_CurrentEquippedPerk[client])
+			if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
 			{
-				case 5:
+				if(!Victoria_PerkDeadShot[client])
 				{
-					if(!Victoria_PerkDeadShot[client])
-					{
-						Victoria_PerkDeadShot[client]=true;
-						SetGlobalTransTarget(client);
-						PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
-					}
+					Victoria_PerkDeadShot[client]=true;
+					SetGlobalTransTarget(client);
+					PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
 				}
-				default:
-				{
-					Victoria_PerkDeadShot[client]=false;
-				}
+			}
+			else
+			{
+				Victoria_PerkDeadShot[client]=false;
 			}
 			delete h_TimerVictorianLauncher[client];
 			h_TimerVictorianLauncher[client] = null;
@@ -105,28 +102,25 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	}
 	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 	{
-		switch(i_CurrentEquippedPerk[client])
+		if(i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
 		{
-			case 5:
+			if(!Victoria_PerkDeadShot[client])
 			{
-				if(!Victoria_PerkDeadShot[client])
-				{
-					Victoria_PerkDeadShot[client]=true;
-					SetGlobalTransTarget(client);
-					PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
-				}
+				Victoria_PerkDeadShot[client]=true;
+				SetGlobalTransTarget(client);
+				PrintToChat(client, "%t", "VictorianLauncher 5 Perk Desc");
 			}
-			default:
-			{
-				Victoria_PerkDeadShot[client]=false;
-			}
+		}
+		else
+		{
+			Victoria_PerkDeadShot[client]=false;
 		}
 		DataPack pack;
 		h_TimerVictorianLauncher[client] = CreateDataTimer(0.1, Timer_VictoriaLauncher, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
-	if(i_WeaponArchetype[weapon] == 28)	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

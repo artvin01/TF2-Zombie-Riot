@@ -465,10 +465,10 @@ public float Player_OnTakeDamage_Zealot(int victim, float &damage, int attacker,
 		EmitSoundToClient(victim, SAMURAI_SWORD_PARRY, victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));				
 		if(damage * ZR_ARMOR_DAMAGE_REDUCTION >= f_StaminaLeftZealot[victim])
 		{
-			float damage_recieved_after_calc;
-			damage_recieved_after_calc = damage - f_StaminaLeftZealot[victim];
+			float damage_received_after_calc;
+			damage_received_after_calc = damage - f_StaminaLeftZealot[victim];
 			f_StaminaLeftZealot[victim] = 0.0;
-			damage = damage_recieved_after_calc;
+			damage = damage_received_after_calc;
 		}
 		else
 		{

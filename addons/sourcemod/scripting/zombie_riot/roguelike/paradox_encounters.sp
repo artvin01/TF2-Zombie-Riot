@@ -116,7 +116,7 @@ public void Rogue_Vote_Clairvoyance(const Vote vote, int index)
 			PrintToChatAll("%t", "Clairvoyance Lore 4");
 
 			Artifact artifact;
-			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+			if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
 		}
 		default:
@@ -130,7 +130,7 @@ public void Rogue_Vote_Clairvoyance(const Vote vote, int index)
 				PrintToChatAll("%t", "Clairvoyance Lore 3a");
 
 				Artifact artifact;
-				if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+				if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 					Rogue_GiveNamedArtifact(artifact.Name);
 				
 			}
@@ -203,7 +203,7 @@ public void Rogue_Vote_Printer(const Vote vote, int index)
 		PrintToChatAll("%t", "Printer Lore 2");
 
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
@@ -225,7 +225,7 @@ public float Rogue_Encounter_WishFulfilled()
 			vote.Config[0] = 0;
 			list.PushArray(vote);
 		}
-		else if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		else if(Rogue_GetRandomArtifact(artifact, true) != -1)
 		{
 			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -247,7 +247,7 @@ public void Rogue_Vote_WishFulfilled(const Vote vote, int index)
 	else
 	{
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
@@ -666,7 +666,7 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 					Rogue_AddIngots(-4);
 
 					Artifact artifact;
-					if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+					if(Rogue_GetRandomArtifact(artifact, true) != -1)
 						Rogue_GiveNamedArtifact(artifact.Name);
 					
 					title = 'c';
@@ -756,7 +756,7 @@ public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
 		Rogue_RemoveNamedArtifact(vote.Config);
 		
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 	else
@@ -796,8 +796,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1a");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1a");
 		strcopy(vote.Append, sizeof(vote.Append), " Bob The Second");
-		vote.Config[0] = -1;
-		vote.Config[1] = -1;
+		strcopy(vote.Config, sizeof(vote.Config), "-1 -1");
 		list.PushArray(vote);
 	}
 	else
@@ -816,14 +815,12 @@ public float Rogue_Encounter_EmergencyDispatch()
 			if(count > (6 + (i*3)))
 			{
 				Format(vote.Append, sizeof(vote.Append), " %N and %N", client1, client2);
-				vote.Config[0] = GetClientUserId(client1);
-				vote.Config[1] = GetClientUserId(client2);
+				FormatEx(vote.Config, sizeof(vote.Config), "%d %d", GetClientUserId(client1), GetClientUserId(client2));
 			}
 			else
 			{
 				Format(vote.Append, sizeof(vote.Append), " %N", client1);
-				vote.Config[0] = GetClientUserId(client1);
-				vote.Config[1] = -1;
+				FormatEx(vote.Config, sizeof(vote.Config), "%d -1", GetClientUserId(client1));
 			}
 
 			list.PushArray(vote);
@@ -838,8 +835,11 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 {
 	if(index)
 	{
-		int client1 = GetClientOfUserId(vote.Config[0]);
-		int client2 = GetClientOfUserId(vote.Config[1]);
+		int clients[2];
+		ExplodeStringInt(vote.Config, " ", clients, sizeof(clients));
+
+		int client1 = GetClientOfUserId(clients[0]);
+		int client2 = GetClientOfUserId(clients[1]);
 
 		if(!client1 && client2)
 		{
@@ -910,12 +910,12 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 
 			TF2_RespawnPlayer(client1);
 			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
-			CashRecievedNonWave[client1] += (2000 * floor) + 2000;
+			CashReceivedNonWave[client1] += (2000 * floor) + 2000;
 			CashSpent[client1] -= (2000 * floor) + 2000;
 
 			TF2_RespawnPlayer(client2);
 			CPrintToChat(client2, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
-			CashRecievedNonWave[client2] += ((2000 * floor) + 2000);
+			CashReceivedNonWave[client2] += ((2000 * floor) + 2000);
 			CashSpent[client2] -= ((2000 * floor) + 2000);
 		}
 		else if(client1)
@@ -924,7 +924,7 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 
 			TF2_RespawnPlayer(client1);
 			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
-			CashRecievedNonWave[client1] += ((2000 * floor) + 2000);
+			CashReceivedNonWave[client1] += ((2000 * floor) + 2000);
 			CashSpent[client1] -= ((2000 * floor) + 2000);
 		}
 		else
@@ -933,6 +933,8 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 
 			Rogue_AddIngots(5);
 		}
+		
+		Rogue_Rift_DispatchReturn();
 	}
 }
 public void Rogue_BlueParadox_Reset()
@@ -1006,7 +1008,7 @@ public void Rogue_Vote_MazeatLostTech(const Vote vote, int index)
 		{
 			GiveCash(5000);
 			Artifact artifact;
-			if(Rogue_GetRandomArtfiact(artifact, false, 24) != -1)
+			if(Rogue_GetRandomArtifact(artifact, false, 24) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
 		}
 		case 1:

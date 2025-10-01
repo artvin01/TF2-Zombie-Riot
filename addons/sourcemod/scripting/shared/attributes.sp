@@ -51,6 +51,12 @@ enum
 	Attrib_Weapon_MinDmgMulti = 4048, 
 	//used currently for heavy particle rifle
 	//but will probably be used for other weapons to define max/min dmg depending on whatever the weapon specific plugin does with it.
+	Attrib_ElementalDefPerc = 4049,
+
+	Attrib_BarracksSupplyRate = 4050,
+	Attrib_FinalBuilder = 4051,
+	Attrib_GlassBuilder = 4052,
+	Attrib_WildingenBuilder = 4053,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -83,7 +89,7 @@ bool Attribute_IntAttribute(int attribute)
 {
 	switch(attribute)
 	{
-		case 834, 866, 867:
+		case 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
 			return true;
 	}
 

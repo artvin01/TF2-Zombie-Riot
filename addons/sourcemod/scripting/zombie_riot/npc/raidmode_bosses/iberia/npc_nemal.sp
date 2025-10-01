@@ -334,9 +334,8 @@ methodmap Nemal < CClotBody
 	public void PlayMineLayed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MineLayed) - 1);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	public void PlayShootSoundNemalSnipe() 
 	{
@@ -363,6 +362,7 @@ methodmap Nemal < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_iNemalComboAttack = 0;
@@ -1229,7 +1229,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
-					flMaxhealth *= NpcDoHealthRegenScaling();
+					flMaxhealth *= NpcDoHealthRegenScaling(npc.index);
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -2443,7 +2443,8 @@ bool CurrentSliceIndexAviable[MAX_SLICES_ALLOWED];
 bool TargetsHitNemal[MAX_SLICES_ALLOWED][MAXENTITIES];
 int EntityBelongsToMasterIndex[MAXENTITIES];
 
-void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle, bool GiveDebuff = true)
+void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle, bool GiveDebuff = true,
+bool Vertical = false, bool ForcePredict = false)
 {
 	//This determines on what was hit beforehand, we cant have duplicates!
 	int EntityMasterMainIndex = -1;
@@ -2471,8 +2472,15 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	//First we get the angle between the two entities.
 	float vecSelf[3]; 	WorldSpaceCenter(iNpc, vecSelf );
 	float VecTarget[3]; WorldSpaceCenter(target, VecTarget );
+	if(Vertical)
+	{
+		GetEntPropVector(iNpc, Prop_Data, "m_vecAbsOrigin", vecSelf);
+		vecSelf[2] += 10.0;
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecTarget);
+		VecTarget[2] = vecSelf[2];
+	}
 
-	if(NpcStats_IberiaIsEnemyMarked(target))
+	if(NpcStats_IberiaIsEnemyMarked(target) || ForcePredict)
 	{
 		CClotBody npc = view_as<CClotBody>(iNpc);
 		//predict.
@@ -2506,10 +2514,20 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	
 	float tmp[3];
 	float actualBeamOffset[3];
-	tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
-	tmp[1] = -(fatness / 2.0);	//start off half way to the other side
-	tmp[1] += (AddedOffsetEachLoop / 2.0);
-	tmp[2] = 0.0;
+	if(!Vertical)
+	{
+		tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
+		tmp[1] = -(fatness / 2.0);	//start off half way to the other side
+		tmp[1] += (AddedOffsetEachLoop / 2.0);
+		tmp[2] = 0.0;
+	}
+	else
+	{
+		tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
+		tmp[2] = -(fatness / 2.0);	//start off half way to the other side
+		tmp[2] += (AddedOffsetEachLoop / 2.0);
+		tmp[1] = 0.0;	
+	}
 	VectorRotate(tmp, AngleFromSelf, actualBeamOffset);
 	actualBeamOffset[2] = 0.0;
 	vecSelf[0] += actualBeamOffset[0];
@@ -2529,22 +2547,45 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 			projectile= Wand_Projectile_Spawn(iNpc, speed, 0.0, damage, -1, -1, "", AngleFromSelf,_,OverridePosOfSpawned);
 			
 		EntityBelongsToMasterIndex[projectile] = EntityMasterMainIndex;
-
-		switch(SitatuionCalcDo)
+		
+		if(!Vertical)
 		{
-			case 3:
+			switch(SitatuionCalcDo)
 			{
-				tmp[0] = 0.0;
+				case 3:
+				{
+					tmp[0] = 0.0;
+				}
+				case 2:
+					tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
+				case 1:
+					tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
 			}
-			case 2:
-				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
-			case 1:
-				tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
+			tmp[1] = AddedOffsetEachLoop;
+			tmp[2] = 0.0;
 		}
-		tmp[1] = AddedOffsetEachLoop;
-		tmp[2] = 0.0;
+		else
+		{
+			
+			switch(SitatuionCalcDo)
+			{
+				case 3:
+				{
+					tmp[0] = 0.0;
+				}
+				case 2:
+					tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
+				case 1:
+					tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
+			}
+			tmp[2] = AddedOffsetEachLoop;
+			tmp[1] = 0.0;
+		}
 		VectorRotate(tmp, AngleFromSelf, actualBeamOffset);
-		actualBeamOffset[2] = 0.0;
+		if(!Vertical)
+		{
+			actualBeamOffset[2] = 0.0;
+		}
 		OverridePosOfSpawned[0] += actualBeamOffset[0];
 		OverridePosOfSpawned[1] += actualBeamOffset[1];
 		OverridePosOfSpawned[2] += actualBeamOffset[2];
@@ -2552,6 +2593,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		float LaserFatnessCalc;
 		float LaserFatnessCalcNext;
 		float DefaultFatnessLaser = 20.0;
+		if(Vertical)
+			DefaultFatnessLaser = 40.0;
+			
 		float PercentageRepeatDo;
 		{
 			//Do calcs for inbetweeners
@@ -2598,7 +2642,14 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		if(IsValidEntity(PreviousProjectile))
 		{
-			laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.0);
+			if(!Vertical)
+			{
+				laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.0);
+			}
+			else
+			{
+				laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.5, "materials/sprites/combineball_trail_black_1.vmt");
+			}
 		}
 		DataPack pack = new DataPack();
 		SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
@@ -2832,7 +2883,10 @@ void NemalPlaceAirMinesInternal(int iNpc, float damage, float TimeUntillArm, flo
 	LocationOfMine[2] += 5.0;
 	float SaveOldLoc[3];
 	SaveOldLoc = LocationOfMine;
-
+	
+	TE_SetupBeamPoints(pos_npc, LocationOfMine, Shared_BEAM_Laser, 0, 0, 0, 0.5, 10.0, 10.0, 5, 5.0, {255,50,50,255}, 3);
+	TE_SendToAll(0.0);
+						
 	DataPack pack2;
 	CreateDataTimer(0.25, Timer_NemalMineLogic, pack2, TIMER_REPEAT);
 	pack2.WriteCell(EntIndexToEntRef(iNpc));
@@ -2892,18 +2946,18 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	if(TimeUntillArm > GetGameTime())
 	{
 		if(Friendly)
-			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 125, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 0.3, 2.0, 2.0, 2);
 		else
-			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.3, 2.0, 2.0, 2);
 		//Do not do damage calculations yet.
 		return Plugin_Continue; 
 	}
 	DetonateCurrentMine = false;
 	
 	if(Friendly)
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 0.3, 5.0, 8.0, 2);
 	else
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.3, 5.0, 8.0, 2);
 		
 	if(Friendly)
 		Explode_Logic_Custom(0.0, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploderFriendly);

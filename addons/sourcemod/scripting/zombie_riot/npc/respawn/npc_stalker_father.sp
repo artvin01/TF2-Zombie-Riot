@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-
-
 void StalkerFather_MapStart()
 {
 	PrecacheSound("#music/radio1.mp3");
@@ -19,9 +17,9 @@ void StalkerFather_MapStart()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return StalkerFather(vecPos, vecAng, team);
+	return StalkerFather(vecPos, vecAng, team, data);
 }
 
 methodmap StalkerFather < StalkerShared
@@ -36,7 +34,7 @@ methodmap StalkerFather < StalkerShared
 		i_PlayMusicSound[this.index] = GetTime() + 39;
 	}
 	
-	public StalkerFather(float vecPos[3], float vecAng[3], int ally)
+	public StalkerFather(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		StalkerFather npc = view_as<StalkerFather>(CClotBody(vecPos, vecAng, "models/zombie/monk_combine.mdl", "1.15", "66666", ally));
 		
@@ -65,7 +63,7 @@ methodmap StalkerFather < StalkerShared
 
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		//b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
 		Zero(fl_AlreadyStrippedMusic);
 
@@ -76,6 +74,7 @@ methodmap StalkerFather < StalkerShared
 		npc.m_iChaseAnger = 0;
 		npc.m_bChaseAnger = false;
 		npc.m_iChaseVisable = 0;
+		npc.Anger = view_as<bool>(StringToInt(data));
 		return npc;
 	}
 }
@@ -88,19 +87,19 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup()/* && Waves_GetRoundScale() > 19*/)
+	if(!Waves_InSetup() && !npc.Anger && Waves_GetRoundScale() > 19)
 	{
-		if(b_NpcIsInvulnerable[npc.index])
+		if(b_thisNpcHasAnOutline[npc.index])
 		{
 			// Vulnerable pass Wave 30
 			GiveNpcOutLineLastOrBoss(npc.index, true);
-			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
+			//b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		}
 	}
-	else if(!b_NpcIsInvulnerable[npc.index])
+	else if(!b_thisNpcHasAnOutline[npc.index])
 	{
 		GiveNpcOutLineLastOrBoss(npc.index, false);
-		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		//b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 	}
 
 	if(Waves_InSetup())
@@ -353,19 +352,22 @@ void StalkerFather_NPCDeath(int entity)
 		StopSound(npc.index, SNDCHAN_STATIC, "#music/radio1.mp3");
 	}
 
-	for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
+	if(!npc.Anger)
 	{
-		if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
+		for(int client_Grigori=1; client_Grigori<=MaxClients; client_Grigori++)
 		{
-			ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
-			SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
-			SetGlobalTransTarget(client_Grigori);
-			ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");
+			if(IsClientInGame(client_Grigori) && GetClientTeam(client_Grigori)==2)
+			{
+				ClientCommand(client_Grigori, "playgamesound vo/ravenholm/yard_greetings.wav");
+				SetHudTextParams(-1.0, -1.0, 3.01, 34, 139, 34, 255);
+				SetGlobalTransTarget(client_Grigori);
+				ShowSyncHudText(client_Grigori,  SyncHud_Notifaction, "%t", "Father Grigori Spawn");
+			}
 		}
-	}
-	Spawn_Cured_Grigori();
+		Spawn_Cured_Grigori();
 
-	CreateTimer(70.0, StalkerFather_Timer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		CreateTimer(70.0, StalkerFather_Timer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	}
 }
 
 public Action StalkerFather_Timer(Handle timer)

@@ -989,6 +989,10 @@
 		"chi"		"步哨"
 		"ko"		"센트리 건"
 	}
+	"Vintulum Bomb"
+	{
+		"en"		"Vintulum Bomb"
+	}
 	"Mortar"
 	{
 		"en"		"Mortar"
@@ -3917,6 +3921,10 @@
 		"en" "Kit Modernizer V"
 		"ko" "키트 현대화 V"
 	}
+	"Kit Modernizer VI"
+	{
+		"en" "Kit Modernizer VI"
+	}
 	"Unit Reformator I"
 	{
 		"en" "Unit Reformator I"
@@ -4213,8 +4221,7 @@
 	}
 	"Flask of Abyssal Hunter Desc"
 	{
-		"en"	"Weapon becomes Abyssal hunter archetype"
-		"ko"	"무기의 유형이 어비설 헌터로 변경됨"
+		"en"	"Adds the Seaborn faction"
 	}
 	"Flask of Kazimierz"
 	{
@@ -4223,7 +4230,6 @@
 	}
 	"Flask of Kazimierz Desc"
 	{
-		"en"	"Weapon becomes Kazimierz archetype"
-		"ko"	"무기의 유형이 카시미어로 변경됨"
+		"en"	"Adds the Kazimierz faction"
 	}
 }

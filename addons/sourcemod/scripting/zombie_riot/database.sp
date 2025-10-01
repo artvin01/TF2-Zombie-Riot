@@ -368,6 +368,41 @@ public void MapChooser_OnPreMapEnd()
 	}
 }
 
+void Database_SaveXpAndItems(int client)
+{
+	if(Cached[client])
+	{
+		int id = GetSteamAccountID(client);
+		if(id)
+		{
+			Transaction tr = new Transaction();
+			
+			char buffer[512];
+			FormatEx(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_MISC ... " SET "
+			... "xp = %d, "
+			... "streak = %d, "
+			... "scrap = %d "
+			... "WHERE steamid = %d;",
+			XP[client],
+			PlayStreak[client],
+			Scrap[client],
+			id);
+			tr.AddQuery(buffer);
+			
+			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+			tr.AddQuery(buffer);
+			
+			int level, flags;
+			for(int i; Items_GetNextItem(client, i, level, flags); i++)
+			{
+				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				tr.AddQuery(buffer);
+			}
+
+			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+		}
+	}
+}
 void DataBase_ClientDisconnect(int client)
 {
 	if(Cached[client])

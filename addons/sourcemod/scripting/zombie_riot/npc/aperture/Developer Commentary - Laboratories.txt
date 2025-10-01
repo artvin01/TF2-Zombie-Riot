@@ -1,0 +1,71 @@
+Laboratories, man, where would I even begin.
+Well first and foremost, a big thank you to everyone who helped me in developing this waveset, it's a huge step up compared
+to anything else I've developed for Zombie Riot, it feels really good to have something out there with quality and integrity.
+In no particular order;
+MetaBee & Lucella, for providing certain enemy ideas, they were simple but really good.
+UnknownFish, for providing some help when I was programming certain NPCs, and I needed help understanding what I did wrong.
+wo & Artvin, for being the backbones of this waveset, without their help, this waveset would have taken at least an extra year to develop, and certain NPCs wouldn't be as shiny without their touch-ups.
+Once again, thank you for all of the contributions, whether big or small, they still helped with the development of this waveset.
+
+Now, where do I start?
+
+[INITIAL IDEA] The initial concept of this waveset...came to me when I was out on a walk, listening to music on shuffle mode.
+I have completely forgotten that I had Portal music downloaded on my phone, it has definitely been there for a long while.
+The track in question was from a Portal mod called "Portal Stories: Mel", the track being titled "System Corruption".
+This one song inspired me to make an entirely new waveset just by coming up with the final raid.
+This means that I kind of worked from top to bottom, rather than bottom to top, like you usually would...at least for the most part.
+
+[NPC DESIGNS] In current era Zombie Riot, you might find it difficult to impress long-time players when it comes to making a waveset.
+Some of the enemies took me a few minutes to think of, some took hours, but a good chunk of them were still thought of in a Team Fortress 2 way.
+To name an example: Engineers; These fellas are pretty threatening if they catch you off-guard with their nest, especially when they can transport their allies in such a reliable way.
+Having something exactly like that in Zombie Riot would force players to get out of their base just to hunt these engineers down, however we needed to have an incentive for people to actually go out of their way to kill the engineers.
+I made a buff just for enemies that teleport through the teleporter, and wo, Artvin and I agreed that the buildings, as well as the engineer himself should be static enemies, so if you don't take him out in time, you could be facing off against 6 sentries.
+
+[MORE TO BUILDER] The first version of the builder was very jank, none of the buildings had animations, the buildings slightly floated above the ground, and there was no MvM beam to indicate the rough area for where the builders were.
+Thanks to wo, the buildings look miles better, by having actual animations, adding rockets to the sentry, and making everything look dynamic.
+I added the MvM beam when we were getting close to release, I think having it is good.
+
+[PORTAL GATE] Just like the Builder, I wanted something else on top of that to get people out of the base, this becomes more apparent at Wave 30+ 
+(Love you Parasihtta). The initial concept of the Portal Gate was however drastically different, with it being called a "Temporal Anomaly".
+It was a huge downgrade compared to what the Portal Gate has, the Temporal Anomaly used to just spew out beefed up enemies from other wavesets, even Interitus.
+Artvin didn't like the timey-wimey implications, and his critique on re-using enemies from other wavesets that didn't change anything was fair as well.
+We thought long and hard, the first idea was to call it a "Hologram Maker" or something along those lines, making the NPC a lot more lore friendly.
+Unfortunately this wouldn't work out, the facility is decades old, so having holograms of things that haven't even existed back then wouldn't make much sense.
+Eventually, I thought back to a conversation I had in a discord call with a friend of mine, and I finally got a spark of inspiration.
+The inspiration came from Garry's Mod's Zombie Survival, whether that's good or bad.
+
+[REFRAGMENTED ENEMIES] These were probably the most fun enemies to work on, given their unique gimmick.
+Certain enemies have barely noticable effects, others have very noticable effects, and I like that, you can't figure out all of the enemies right away.
+The one thing that really sells me their vibe is the unusual effect that I gave them, it fits very nicely with what I had in mind.
+Setting the effect up was pretty simple, however I had to rewrite the code a few days before release because of fire particles. God damn Source jank.
+
+[TRIBUTES] You may or may not have noticed that this is the first time where Grigori has made a return after a long while.
+I wanted to have some nods from other wavesets just as a way of paying respect, and having Grigori come back (whilst still making sense lore-wise) was the perfect way of doing that.
+
+[ROBOT RAIDS] I wanted to take a step back from what you'd expect from most conventional raids, sure, you have Blitzkrieg, but he has very little lore, or at least little compared to what I could give these guys.
+Every wave boss was meant to be a robot as well, but I feel like that would've gotten boring, so I scrapped that idea.
+
+[TALKER] I wanted to take a different approach in storytelling in this waveset, instead of having to learn the raid's personality in their battle, you would learn the raid's personality through-out the waves. Of course, this was no easy task, it was hard to get the pacing right when you've got 40 waves to work with, and you most probably only want dialogue to appear only every 5 waves, so it'd go somewhere along the lines of wave 1 --> wave 5 --> wave 10.
+Sounds easy on paper, but in execution it's pretty tough to get right, and that's just thinking about where to write dialogue, actually writing the dialogue itself can be pretty challenging as well.
+I needed to find a softspot for Vincent finally deciding to step in, and finally get you out of the labs himself.
+As he takes more time, he learns more about who you are, and what your occupation is, he doesn't want to fight you, but he knows he has to because you won't back off, since you're being paid for what you do.
+Having a talker npc also made me realize that branching paths would be something brand new and cool that would allow for multiple playthroughs of the same waveset to feel refreshing.
+There are 4 different paths you can take, if you want to see what they are, look inside of the talker file, or alternatively, go play the waveset :)
+
+[BRANCHING PATHS] Talking about different paths, I had to come up with the perfect place for Vincent to finally put his foot down and kick your ass for killing his friends. Having the wave 30 raid not be affiliated with the labs helped a lot, since that would mean that I can make his dialogue cut off at wave 20, after you kill ARIS, and it would make sense why he's so strong on the last wave, because he had time to prepare.
+
+[C.A.T.] Vincent's friend, even though he has no self-consciousness like Vincent does, he's just doing his job, keeping trespassers out of the lab,
+I wanted to fill people in about how the labs may not seem like what they actually are, and having the first raid be called "CAT" did the job perfectly.
+(It's an acronym for Control Against Trespassers, Vincent tells you this, you better have read that dialogue)
+One scrapped ability that I wanted to unscrap right before release was his damage absorption, you'd have a visual and auditory cue showing that CAT is starting to absorb damage, if you damaged him at any point during this ability, depending on the health lost, he would gain a permanent (or temporary) damage boost, 5% health lost = 10% extra damage, something along those lines.
+I wasn't sure how this ability would be exactly balanced, so I scrapped it and switched it for the much simpler "Self-Degradation" ability.
+
+[MORE SCRAPPED RAID ABILITIES] Technically counts as scrapped, CAT's Life Reversal was actually meant to be used by CHIMERA initially, however Artvin gave him an entirely different and unique gimmick where the raid gets weaker as the time goes on, so having this ability on CHIMERA wouldn't make sense anymore.
+
+Everlasting-Timelessness is an ability that has never been implemented to any raid, what would it do? Every time that someone would have gotten downed, the raid timer would decrease by 3 seconds. To prevent griefing or new players from making a raid impossible to win, it would only decrease with 1 down per player, rather than 3 downs per player.
+
+Vincent's scrapped abilities are interesting, my initial conceptualization of him was to have him be slow but hit hard, and that's exactly how he is, just with different abilities.
+His Pinball ability would have been interesting, although wo raised a valid concern that you could just go up a slope and you'd never get hit.
+The Pinball ability would have had Vincent actually curl up into a ball, and start rapidly smashing against walls to ricochet himself around the map, again, countered entirely by slopes existing.
+That ability was eventually scrapped and Artvin came up with a better ability, the slam dunk, which you can still dodge, it's just that you can't go into one part of the map and never get detected, something that the Pinball would have issues with.
+Ray from above would have been a single target beam that would chase down any player relentlessly for at least a good 10-15 seconds, there's no real concrete reason as to why it wasn't included, aside from the fact that it just wouldn't fit Vincent much.

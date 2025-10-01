@@ -79,6 +79,7 @@ int GetRandomSeedFallenWarrior()
 	return GetRandomSeedEachWave;
 }
 
+static int NPCId;
 
 void FallenWarrior_OnMapStart()
 {
@@ -95,16 +96,20 @@ void FallenWarrior_OnMapStart()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel("models/player/soldier.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Fallen Warrior");
+	strcopy(data.Name, sizeof(data.Name), "Guln the Fallen One");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
+stock int FallenWarrior_ID()
+{
+	return NPCId;
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
@@ -189,6 +194,7 @@ methodmap FallenWarrior < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Elemental_AddChaosDamage(npc.index, npc.index, 1, false);
 
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)

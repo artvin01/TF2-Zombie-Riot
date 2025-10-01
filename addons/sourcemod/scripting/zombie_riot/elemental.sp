@@ -12,6 +12,7 @@ enum				// Types
 	Element_Corruption,	// 6
 	Element_Burger,		// 7
 	Element_Plasma,		// 8
+	Element_Warped,		// 9
 
 	Element_MAX
 }
@@ -26,7 +27,8 @@ static const char ElementName[][] =
 	"OS",
 	"CO",
 	"FOOD",
-	"PL"
+	"PL",
+	"WW"
 };
 
 static float LastTime[MAXENTITIES];
@@ -101,10 +103,22 @@ stock void Elemental_RemoveDamage(int entity, int type, int amount)
 	}
 }
 
+// 0.0 to 1.0 based on how far the damage is to trigger
+stock float Elemental_DamageRatio(int entity, int type)
+{
+	if(entity > MaxClients)
+		return float(ElementDamage[entity][type]) / float(Elemental_TriggerDamage(entity, type));
+	
+	if(Armor_Charge[entity] >= 0 || Armor_DebuffType[entity] != type)
+		return 0.0;
+	
+	return float(-Armor_Charge[entity]) / float(Elemental_TriggerDamage(entity, type));
+}
+
 int Elemental_TriggerDamage(int entity, int type)
 {
 	if(entity <= MaxClients)
-		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
+		return MaxArmorCalculation(Armor_Level[entity], entity, type == Element_Warped ? 4.0 : 1.0);
 	
 	float divide = 3.0;
 
@@ -141,10 +155,14 @@ int Elemental_TriggerDamage(int entity, int type)
 				divide = 3.0;
 			}
 		}
+		case Element_Warped:
+		{
+			divide = 0.5;
+		}
 	}
 
 	if(Citizen_IsIt(entity))
-		return view_as<Citizen>(entity).m_iGunValue / 20;
+		return view_as<Citizen>(entity).m_iGunValue / (type == Element_Warped ? 5 : 20);
 	
 	switch(type)
 	{
@@ -178,6 +196,11 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
 	
+	if(HasSpecificBuff(entity, "Warped Elemental End"))
+	{	
+		//impossible to elementalise.
+		amount = 999999999;
+	}	
 	return amount;
 }
 
@@ -253,7 +276,11 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	if(victim <= MaxClients && victim > 0)
 	{
-		Armor_DebuffType[victim] = 1;
+		// Warped overrides
+		if(Armor_Charge[victim] < 0 && Armor_DebuffType[victim] == Element_Warped)
+			return;
+		
+		Armor_DebuffType[victim] = Element_Nervous;
 		if(f_ArmorCurrosionImmunity[victim][Element_Nervous] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
@@ -263,11 +290,12 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
 				Armor_Charge[victim] -= damage;
-				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Nervous)))
 				{
 					Armor_Charge[victim] = 0;
 					f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
@@ -286,6 +314,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Nervous));
+		if(damage < 1)
+			return;
+
 		if(f_ArmorCurrosionImmunity[victim][Element_Nervous]  < GetGameTime())
 		{
 			int trigger;
@@ -372,6 +404,11 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			return;
 	}
 	
+	//umbrals are immune
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
+
 	if(b_NpcIsInvulnerable[victim])
 		return;
 
@@ -382,7 +419,14 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	if(victim <= MaxClients)
 	{
-		Armor_DebuffType[victim] = 2;
+		// Warped overrides
+		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Void || Armor_DebuffType[victim] == Element_Warped))
+		{
+			Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
+			return;
+		}
+		
+		Armor_DebuffType[victim] = Element_Chaos;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Chaos]  < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
@@ -392,11 +436,12 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
 				Armor_Charge[victim] -= damage;
-				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Chaos)))
 				{
 					Armor_Charge[victim] = 0;
 					float ProjectileLoc[3];
@@ -432,6 +477,20 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
+		if(damage < 1)
+			return;
+		
+		if(attacker > MaxClients/* || Rogue_Mode()*/ || ElementDamage[victim][Element_Warped] > 0)
+		{
+			// Element mixing into Warped
+			if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4 || ElementDamage[victim][Element_Void] > 0 || ElementDamage[victim][Element_Warped] > 0)
+			{
+				Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
+				return;
+			}
+		}
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Chaos] < GetGameTime())
 		{
 			int trigger;
@@ -482,7 +541,10 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		if(victim == -1)
 			return;
 	}
-	
+	//umbrals are immune
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
 	if(b_NpcIsInvulnerable[victim])
 		return;
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
@@ -491,25 +553,30 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
 
-	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || (victim <= MaxClients && ClientPossesesVoidBlade(victim)))
-	{
-		if(victim <= MaxClients && Armor_Charge[victim] > 0)
-		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < 0)
-			{
-				Armor_Charge[victim] = 0;
-			}
-			ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
-		}
-
-		return;
-	}
-	//cant void other voids!
-
 	if(victim <= MaxClients)
 	{
-		Armor_DebuffType[victim] = 3;
+		// Warped overrides
+		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Chaos || Armor_DebuffType[victim] == Element_Warped))
+		{
+			Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
+			return;
+		}
+		
+		if(ClientPossesesVoidBlade(victim))
+		{
+			if(Armor_Charge[victim] > 0)
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < 0)
+				{
+					Armor_Charge[victim] = 0;
+				}
+				ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
+			}
+			return;
+		}
+		
+		Armor_DebuffType[victim] = Element_Void;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Void] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
@@ -519,11 +586,12 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
 				Armor_Charge[victim] -= damage;
-				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Void)))
 				{
 					Armor_Charge[victim] = 0;
 					float ProjectileLoc[3];
@@ -544,6 +612,23 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
+			return;
+		
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void));
+		if(damage < 1)
+			return;
+
+		if(attacker > MaxClients/* || Rogue_Mode()*/ || ElementDamage[victim][Element_Warped] > 0)
+		{
+			// Element mixing into Warped
+			if(ElementDamage[victim][Element_Chaos] > 0 || ElementDamage[victim][Element_Warped] > 0)
+			{
+				Elemental_AddWarpedDamage(victim, attacker, damagebase, sound, ignoreArmor);
+				return;
+			}
+		}
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Void] < GetGameTime())
 		{
 			int trigger;
@@ -634,6 +719,10 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Cyro));
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Cyro] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Cyro);
@@ -679,8 +768,14 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 
 	if(victim <= MaxClients)
 	{
-		Armor_DebuffType[victim] = 4;
-		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime() && Armor_Charge[victim] < 1)
+		// Warped overrides
+		/*
+		if(Armor_Charge[victim] < 0 && Armor_DebuffType[victim] == Element_Warped)
+			return;
+			This overrides warped, the rot consumes.
+		*/
+		Armor_DebuffType[victim] = Element_Necrosis;
+		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
@@ -689,32 +784,41 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 			else
 			{
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
 				Armor_Charge[victim] -= damage;
-				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Necrosis)))
 				{
 					Armor_Charge[victim] = 0;
-					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 7.5;
-					
-					StartBleedingTimer(victim, attacker, 100.0, 15, weapon, DMG_PLASMA, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+					f_ArmorCurrosionImmunity[victim][Element_Necrosis] = GetGameTime() + 1.0;
+					int health = ReturnEntityMaxHealth(victim);
+					health /= 20;
+					StartBleedingTimer(victim, attacker, float(health), 5, weapon, DMG_TRUEDAMAGE, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 					Force_ExplainBuffToClient(victim, "Necrosis Elemental Damage");
 
 					int other, i;
 					while(TF2_GetItem(victim, other, i))
 					{
-						Saga_ChargeReduction(victim, other, -15.0);
+						Saga_ChargeReduction(victim, other, -3.0);
 					}
 				}
+				else
+				{
+					EmitSoundToClient(victim, "items/suitchargeno1.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 80);
+				}
 			}
-			
 			if(!Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound weapons/drg_pomson_drain_01.wav");
+				EmitSoundToClient(victim, "beams/beamstart5.wav", victim, SNDCHAN_STATIC, _, _, 1.0, 60);
 		}
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Necrosis));
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Necrosis] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Necrosis);
@@ -793,6 +897,10 @@ void Elemental_AddOsmosisDamage(int victim, int attacker, int damagebase)
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Osmosis));
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Osmosis] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Osmosis);
@@ -874,7 +982,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 			damage = RoundToNearest(float(damage) * 1.2);
 		}
 		*/
-		Armor_DebuffType[victim] = 4;
+		Armor_DebuffType[victim] = Element_Corruption;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
@@ -884,13 +992,16 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 			else
 			{
 				Armor_Charge[victim] -= damage;
-				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Corruption)))
 				{
 					Armor_Charge[victim] = 0;
 					
 					int count = RoundToCeil(2.0 * MultiGlobalEnemy);
 					Matrix_Spawning(attacker, count);
 
+					float MatrixLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", MatrixLoc);
+					spawnRing_Vectors(MatrixLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 54, 77, 43, 255, 1, 1.0, 5.0, 8.0, 1, 125.0 * 2.0);
 					EmitSoundToAll("ambient/energy/weld1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 					f_ArmorCurrosionImmunity[victim][Element_Corruption] = GetGameTime() + 5.0;
 					Force_ExplainBuffToClient(victim, "Corruption Elemental Damage");
@@ -903,6 +1014,10 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	else if(!b_NpcHasDied[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Corruption));
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Corruption] < GetGameTime())
 		{
 			int trigger;
@@ -1059,6 +1174,10 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger));
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Burger] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Burger);
@@ -1105,7 +1224,11 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	if(victim <= MaxClients) // VS Players
 	{
-		Armor_DebuffType[victim] = 5;
+		// Warped overrides
+		if(Armor_Charge[victim] < 0 && Armor_DebuffType[victim] == Element_Warped)
+			return;
+		
+		Armor_DebuffType[victim] = Element_Plasma;
 		if((f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1))
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
@@ -1117,11 +1240,12 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				int newdmg = RoundToNearest(float(damage) * Cheese_GetPenalty(victim));
 				damage = newdmg;
 				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
 				if(damage < 1)
 					damage = 1;
 				
 				Armor_Charge[victim] -= damage;
-				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Plasma)))
 				{
 					float position[3];
 					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
@@ -1166,6 +1290,10 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	else if(!b_NpcHasDied[victim])	// VS NPCs
 	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Plasma));
+		if(damage < 1)
+			return;
+		
 		if(f_ArmorCurrosionImmunity[victim][Element_Plasma] < GetGameTime())
 		{
 			int trigger = Elemental_TriggerDamage(victim, Element_Plasma);
@@ -1260,5 +1388,198 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				
 			SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 		}
+	}
+}
+
+void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false, bool trueDmg = false)
+{
+	if(i_IsVehicle[victim])
+	{
+		victim = Vehicle_Driver(victim);
+		if(victim == -1)
+			return;
+	}
+	if(!IsValidEntity(attacker))
+		return;
+	//umbrals are immune
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_iBleedType == BLEEDTYPE_UMBRAL)
+		return;
+	
+	int damage = trueDmg ? damagebase : RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(NpcStats_ElementalAmp(victim))
+		damage = RoundToNearest(float(damage) * 1.3);
+	
+	if(victim <= MaxClients)
+	{
+		bool fresh = (Armor_DebuffType[victim] != Element_Warped || Armor_Charge[victim] >= 0);
+
+		Armor_DebuffType[victim] = Element_Warped;
+		if(ignoreArmor || Armor_Charge[victim] < 1)
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				damage -= RoundToNearest(Attributes_GetOnPlayer(victim, Attrib_ElementalDef, false));
+				damage = RoundToNearest(float(damage) * Attributes_GetOnPlayer(victim, Attrib_ElementalDefPerc, true));
+				if(damage < 1)
+					damage = 1;
+				
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-Elemental_TriggerDamage(victim, Element_Warped)))
+				{
+					Armor_Charge[victim] = -(Elemental_TriggerDamage(victim, Element_Warped) / 2);
+
+					i_AmountDowned[victim]--;
+				//	TF2_StunPlayer(victim, 99.0, 1.0, TF_STUNFLAG_BONKSTUCK);
+					SDKHooks_TakeDamage(victim, attacker, attacker, 9999999.9, DMG_TRUEDAMAGE);
+					f_DisableDyingTimer[victim] = FAR_FUTURE;
+					dieingstate[victim] = RoundToNearest(float(dieingstate[victim]) * 1.25);
+					Warped_ClientDoEffets(victim);
+					EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+				}
+			}
+
+			if(Armor_Charge[victim] >= 0)
+			{
+				fresh = false;
+			}
+			else
+			{
+				ApplyStatusEffect(attacker, victim, "Warped Elemental Damage", 999.9);
+			}
+			
+			if(sound || fresh)
+			{
+				if(fresh)
+					EmitSoundToClient(victim, "npc/strider/striderx_pain8.wav", victim, SNDCHAN_STATIC, _, _, 0.65);
+				else
+					EmitSoundToClient(victim, "npc/strider/striderx_pain5.wav", victim, SNDCHAN_STATIC, _, _, 0.65);
+			}
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
+	{
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Chaos));
+		if(damage < 1)
+			return;
+		
+		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Warped));
+		if(damage < 1)
+			return;
+		
+		int trigger = Elemental_TriggerDamage(victim, Element_Warped);
+
+		LastTime[victim] = GetGameTime();
+		LastElement[victim] = Element_Warped;
+		ElementDamage[victim][Element_Warped] += damage + ElementDamage[victim][Element_Chaos] + ElementDamage[victim][Element_Void];
+		ElementDamage[victim][Element_Chaos] = 0;
+		ElementDamage[victim][Element_Void] = 0;
+
+		if(ElementDamage[victim][Element_Warped] > trigger)
+		{
+			ElementDamage[victim][Element_Warped] = 0;
+
+			if(GetTeam(victim) == TFTeam_Red)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, float(ReturnEntityMaxHealth(victim)), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+				float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+				TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+				//do dmg once
+			}
+			else
+			{
+				fl_Extra_MeleeArmor[victim] *= 6.0;
+				fl_Extra_RangedArmor[victim] *= 6.0;
+				fl_GibVulnerablity[victim] = 5000000.0;
+				SetEntProp(victim, Prop_Data, "m_iMaxHealth", 1);
+				//any TOUCH will gib them.
+				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
+				float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+				TE_Particle("xmas_ornament_glitter_alt", WorldSpaceVec, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+				FreezeNpcInTime(victim, 999.9, true);
+				SetEntityRenderColor(victim, 25, 25, 25, 255);
+				AddNpcToAliveList(victim, 1);
+				b_NoHealthbar[victim] = 1;
+				ApplyStatusEffect(victim, victim, "Warped Elemental End", 999.9);
+				ApplyStatusEffect(victim, victim, "Clear Head", 999999.0);	//cant be stunned again
+				
+				npc.m_bDissapearOnDeath = true;
+				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal");
+				if (!IsValidEntity(npc.m_iFreezeWearable))
+				{
+					float offsetToHeight = 40.0;
+					if(b_IsGiant[victim])
+						offsetToHeight = 55.0;
+
+					npc.m_iFreezeWearable = npc.EquipItemSeperate("models/props_moonbase/moon_gravel_crystal_blue.mdl",_,_,_,offsetToHeight);
+					if(b_IsGiant[victim])
+						SetVariantString("3.1");
+					else
+						SetVariantString("2.5");
+					AcceptEntityInput(npc.m_iFreezeWearable, "SetModelScale");
+					SetEntityRenderColor(npc.m_iFreezeWearable, 25, 25, 25, 255);
+				}
+			}
+		}
+		else
+		{
+			ApplyStatusEffect(attacker, victim, "Warped Elemental Damage", 999.9);
+		}
+
+		if(attacker && attacker <= MaxClients)
+			ApplyElementalEvent(victim, attacker, damage);
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		int repair = GetEntProp(victim, Prop_Data, "m_iRepair") - (damage / 2);
+		if(repair < 0)
+			repair = 0;
+
+		SetEntProp(victim, Prop_Data, "m_iRepair", repair);
+
+		repair = GetEntProp(victim, Prop_Data, "m_iRepairMax") - (damage / 2);
+		if(repair < 1)
+			repair = 1;
+
+		SetEntProp(victim, Prop_Data, "m_iRepairMax", repair);
+
+		repair = GetEntProp(victim, Prop_Data, "m_iHealth") - (damage / 2);
+		if(repair < 1)
+			repair = 1;
+
+		SetEntProp(victim, Prop_Data, "m_iHealth", repair);
+
+		repair = GetEntProp(victim, Prop_Data, "m_iMaxHealth") - (damage / 2);
+		if(repair < 1)
+			repair = 1;
+
+		SetEntProp(victim, Prop_Data, "m_iMaxHealth", repair);
+	}
+}
+
+
+static void Warped_ClientDoEffets(int client)
+{
+	float vabsAngles[3];
+	float vabsOrigin[3];
+	GetClientAbsOrigin(client, vabsOrigin);
+	GetClientEyeAngles(client, vabsAngles);
+	vabsAngles[0] = 0.0;
+
+	NPC_CreateByName("npc_allied_warped_crystal_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client), "");
+	SetVariantInt(1);
+	AcceptEntityInput(client, "SetForcedTauntCam");
+
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	}
 }

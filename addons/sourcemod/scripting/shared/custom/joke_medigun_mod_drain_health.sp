@@ -235,32 +235,32 @@ public void Medigun_ClearAll()
 }
 #define UBERCHARGE_BUFFDURATION 1.0
 
-public void GiveMedigunBuffUber(int medigun, int owner, int reciever)
+public void GiveMedigunBuffUber(int medigun, int owner, int receiver)
 {
-	NPCStats_RemoveAllDebuffs(reciever, UBERCHARGE_BUFFDURATION);
+	NPCStats_RemoveAllDebuffs(receiver, UBERCHARGE_BUFFDURATION);
 	switch(i_CustomWeaponEquipLogic[medigun])
 	{
 		case WEAPON_KRITZKRIEG:
 		{
-			if(IsValidClient(reciever))
+			if(IsValidClient(receiver))
 			{
 				
 #if defined ZR
-				Kritzkrieg_Magical(reciever, 0.05, true);
+				Kritzkrieg_Magical(receiver, 0.05, true);
 #endif
-				TF2_AddCondition(reciever, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
 			}
-			ApplyStatusEffect(owner, reciever, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
+			ApplyStatusEffect(owner, receiver, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
 		}
 		default:
 		{
-			if(IsValidClient(reciever))
+			if(IsValidClient(receiver))
 			{
-				TF2_AddCondition(reciever, TFCond_UberBulletResist, UBERCHARGE_BUFFDURATION);
-				TF2_AddCondition(reciever, TFCond_UberBlastResist, UBERCHARGE_BUFFDURATION);
-				TF2_AddCondition(reciever, TFCond_UberFireResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_UberBulletResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_UberBlastResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_UberFireResist, UBERCHARGE_BUFFDURATION);
 			}
-			ApplyStatusEffect(owner, reciever, "UBERCHARGED", UBERCHARGE_BUFFDURATION);
+			ApplyStatusEffect(owner, receiver, "UBERCHARGED", UBERCHARGE_BUFFDURATION);
 		}
 	}
 }
@@ -416,6 +416,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							flMaxHealth = 1.25;
 						}
+						
 						flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
 #if defined ZR
 						if(What_type_Heal == 6.0)

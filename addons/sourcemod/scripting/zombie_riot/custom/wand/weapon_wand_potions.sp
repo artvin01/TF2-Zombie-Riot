@@ -330,7 +330,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 32.0, 5, weapon, DMG_BULLET);
 }
 
 
@@ -548,7 +548,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
 	
-	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_BULLET);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
 	{
@@ -563,7 +563,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 			int health = GetEntProp(enemy, Prop_Data, "m_iHealth");
 			
 			int bonus = health - RoundFloat(health * ratio);
-			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_TRUEDAMAGE, weapon);
+			SDKHooks_TakeDamage(enemy, owner, entity, float(bonus), DMG_BULLET, weapon);
 		}
 	}
 	else
@@ -751,11 +751,11 @@ public void WandPotion_PotionLead(int entity, int enemy, float damage_Dontuse, i
 
 	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_BULLET);
 	}
 	else
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_BULLET);
 	}
 }
 
@@ -813,11 +813,11 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 
 	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_BULLET);
 	}
 	else
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_TRUEDAMAGE);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_BULLET);
 	}
 	ApplyStatusEffect(owner, enemy, "Golden Curse", 1.5);
 }

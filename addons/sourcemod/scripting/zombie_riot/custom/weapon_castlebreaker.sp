@@ -197,7 +197,7 @@ void CastleBreakerCashOnKill(int client)
 		if(CastleBreaker_WeaponPap[client]>=2)
 			cashgain += 1.0;
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);
-		CashRecievedNonWave[client] += cash;
+		CashReceivedNonWave[client] += cash;
 		CashSpent[client] -= cash;
 		CashGainLimitWavePer_CastleBreaker[client] += cash;
 	}
@@ -259,7 +259,7 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 		}
 		
 	}
-	if(i_WeaponArchetype[weapon] == 28)	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

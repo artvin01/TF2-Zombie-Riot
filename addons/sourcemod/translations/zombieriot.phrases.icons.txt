@@ -98,6 +98,10 @@
 		"en" 		"Whiteflower the traitor and betrayer arrived."
 		"ko" 		"배신자, 배풍등이 등장했습니다."
 	}
+	"Shadowing Darkness The Ruler"
+	{
+		"en" 		"Shadowing Darkness the throne taker and ruler of the Umbrals."
+	}
 	"The Purge Arrived"
 	{
 		"en" 		"The Purge has accumulated chaos."

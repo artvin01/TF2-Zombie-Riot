@@ -306,6 +306,7 @@ methodmap Silvester < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_iSilvesterComboAttack = 0;

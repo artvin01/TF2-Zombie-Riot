@@ -62,17 +62,17 @@ public const char PerkNames[][] =
 	"Energy Drink"
 };
 
-public const char PerkNames_Recieved[][] =
+public const char PerkNames_Received[][] =
 {
 	"No Perk",
-	"Regene Berry Recieved",
-	"Obsidian Oaf Recieved",
-	"Morning Coffee Recieved",
-	"Hasty Hops Recieved",
-	"Marksman Beer Recieved",
-	"Teslar Mule Recieved",
-	"Stockpile Stout Recieved",
-	"Energy Drink Recieved"
+	"Regene Berry Received",
+	"Obsidian Oaf Received",
+	"Morning Coffee Received",
+	"Hasty Hops Received",
+	"Marksman Beer Received",
+	"Teslar Mule Received",
+	"Stockpile Stout Received",
+	"Energy Drink Received"
 };
 
 public const char PerkNames_two_Letter[][] =
@@ -268,7 +268,9 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Mutation
+	Type_Aperture,
+	Type_Mutation,
+	Type_Curtain
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -288,6 +290,7 @@ ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_maxscaling_untillhp;
+ConVar zr_maxsbosscaling_untillhp;
 ConVar zr_raidmultihp;
 ConVar zr_multi_maxenemiesalive_cap;
 ConVar zr_multi_scaling;
@@ -370,6 +373,7 @@ float Armor_regen_delay[MAXPLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 //ConVar CvarSvRollagle; // sv_rollangle
+ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
@@ -380,7 +384,7 @@ int CashSpentGivePostSetup[MAXPLAYERS];
 bool CashSpentGivePostSetupWarning[MAXPLAYERS];
 int CashSpentTotal[MAXPLAYERS];
 int CashSpentLoadout[MAXPLAYERS];
-int CashRecievedNonWave[MAXPLAYERS];
+int CashReceivedNonWave[MAXPLAYERS];
 bool StarterCashMode[MAXPLAYERS] = {true, ...};
 int Scrap[MAXPLAYERS];
 int PlayStreak[MAXPLAYERS];
@@ -420,20 +424,6 @@ bool WaitingInQueue[MAXPLAYERS];
 float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
-
-float MultiGlobalEnemy = 0.25;
-float MultiGlobalEnemyBoss = 0.25;
-//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
-//isnt affected when selecting Modificators.
-//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
-float MultiGlobalHealth = 1.0;
-//See above
-
-float MultiGlobalHealthBoss = 0.25;
-//This is normal boss scaling, this scales ontop of enemies spawning
-
-float MultiGlobalHighHealthBoss = 0.34;
-//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
 
 float f_WasRecentlyRevivedViaNonWave[MAXPLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
@@ -743,6 +733,8 @@ void ZR_MapStart()
 	PrecacheSound("#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 	PrecacheSound("ui/chime_rd_2base_neg.wav");
 	PrecacheSound("ui/chime_rd_2base_pos.wav");
+	PrecacheSound("items/suitchargeno1.wav");
+	PrecacheSound("beams/beamstart5.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
@@ -949,6 +941,11 @@ void ZR_MapStart()
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
 	RoundStartTime = FAR_FUTURE;
+	
+	for (int i = 0; i < FogType_COUNT; i++)
+		CustomFogEntity[i] = INVALID_ENT_REFERENCE;
+	
+	MapFogEntity = INVALID_ENT_REFERENCE;
 }
 
 public void OnMapInit()
@@ -1065,7 +1062,7 @@ void ZR_ClientPutInServer(int client)
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
-	CashRecievedNonWave[client] = 0;
+	CashReceivedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
 	i_PlayerDamaged[client] = 0;
@@ -1076,10 +1073,9 @@ void ZR_ClientPutInServer(int client)
 	f_Armor_BreakSoundDelay[client] = 0.0;
 	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
+	UpdatePerkName(client);
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	if(Waves_Started())
-		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
 	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
@@ -1121,7 +1117,7 @@ void ZR_ClientDisconnect(int client)
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
-	CashRecievedNonWave[client] = 0;
+	CashReceivedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	Armor_Charge[client] = 0;
 	PlayerPoints[client] = 0;
@@ -1328,16 +1324,6 @@ public Action CommandDebugHudTest(int client, int args)
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-	DoGlobalMultiScaling();
-	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
-	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
-	int entity, i;
-	while(TF2U_GetWearable(client, entity, i))
-	{
-		SetTeam(entity, 2);
-		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
-	}
-	CheckAlivePlayers(_, _, true);
 	return Plugin_Handled;
 }
 
@@ -1679,7 +1665,7 @@ public void OnClientAuthorized(int client)
 			cash += StartCash / 2;
 		
 		CashSpent[client] = -cash;
-		CashRecievedNonWave[client] = cash;
+		CashReceivedNonWave[client] = cash;
 	}
 }
 
@@ -1730,6 +1716,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
+				Rogue_TriggerFunction(Artifact::FuncRevive, client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2317,12 +2304,15 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		Armor_Max = 1000;
 										
 	else if(ArmorLevel == 200)
-		Armor_Max = 2000;
+		Armor_Max = 2000;	
+
+	else if(ArmorLevel == 250)
+		Armor_Max = 3000;
 		
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7)
+	if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2421,7 +2411,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk)
+	if((i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT) && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
@@ -3138,4 +3128,173 @@ public Action Command_SetTeamCustom(int client, int args)
 	}
 	
 	return Plugin_Handled;
+}
+
+void SetCustomFog(int fogType, int color1[4], int color2[4], float start, float end, float maxDensity, int blend = 2, bool overwriteOtherCustomFog = false)
+{
+	if (!overwriteOtherCustomFog && IsValidEntity(CustomFogEntity[fogType]))
+		return;
+	
+	ClearCustomFog(fogType);
+	
+	if (!IsValidEntity(MapFogEntity))
+	{
+		int fog = INVALID_ENT_REFERENCE;
+		int mapFog = INVALID_ENT_REFERENCE;
+		int count;
+		while ((fog = FindEntityByClassname(fog, "env_fog_controller")) != INVALID_ENT_REFERENCE)
+		{
+			// Store the last known fog
+			char buffer[64];
+			GetEntPropString(fog, Prop_Data, "m_iName", buffer, sizeof(buffer));
+			if (StrContains(buffer, "rpg_fortress_envfog") == 0)
+				continue;
+			
+			mapFog = fog;
+			count++;
+		}
+		
+		if (count == 0)
+		{
+			// Map has no fog
+			MapFogEntity = INVALID_ENT_REFERENCE;
+		}
+		else if (count == 1)
+		{
+			// We only found 1 env_fog_controller, this has to be the map's
+			MapFogEntity = mapFog;
+		}
+		else
+		{
+			// Multiple fog controllers! If every single player has the same fog controller, we'll assume this is the one we want to store
+			int lastController = INVALID_ENT_REFERENCE;
+			for (int client = 1; client <= MaxClients; client++)
+			{
+				if (!IsClientInGame(client) || IsFakeClient(client))
+					continue;
+				
+				int controller = GetEntPropEnt(client, Prop_Send, "m_PlayerFog.m_hCtrl");
+				if (controller == EntRefToEntIndex(ActiveFogEntity))
+				{
+					// Players are using a custom fog so this is pointless. gg
+					lastController = INVALID_ENT_REFERENCE;
+					break;
+				}
+				
+				if (lastController != INVALID_ENT_REFERENCE && lastController != controller)
+				{
+					// Players have different controllers. Give up. It's over
+					lastController = INVALID_ENT_REFERENCE;
+					break;
+				}
+				
+				lastController = controller;
+			}
+			
+			MapFogEntity = lastController;
+		}
+	}
+	
+	int entity = CreateEntityByName("env_fog_controller");
+	if (entity != INVALID_ENT_REFERENCE)
+	{
+		char buffer[64];
+		
+		FormatEx(buffer, sizeof(buffer), "rpg_fortress_envfog_%d", entity);
+		DispatchKeyValue(entity, "targetname", buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%d %d %d %d", color1[0], color1[1], color1[2], color1[3]);
+		DispatchKeyValue(entity, "fogcolor", buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%d %d %d %d", color2[0], color2[1], color2[2], color2[3]);
+		DispatchKeyValue(entity, "fogcolor2", buffer);
+		
+		DispatchKeyValueFloat(entity, "fogstart", start);
+		DispatchKeyValueFloat(entity, "fogend", end);
+		DispatchKeyValueFloat(entity, "fogmaxdensity", maxDensity);
+		
+		DispatchKeyValueInt(entity, "fogblend", blend);
+		
+		DispatchKeyValue(entity, "fogenable", "1");
+		DispatchKeyValue(entity, "spawnflags", "1");
+		DispatchKeyValue(entity, "fogRadial", "1");
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "TurnOn");
+
+		CustomFogEntity[fogType] = EntIndexToEntRef(entity);
+		UpdateCustomFog();
+	}
+}
+
+void ClearCustomFog(int fogType)
+{
+	int entity = EntRefToEntIndex(CustomFogEntity[fogType]);
+	if (IsValidEntity(entity))
+		RemoveEntity(entity);
+	
+	CustomFogEntity[fogType] = INVALID_ENT_REFERENCE;
+	UpdateCustomFog();
+}
+
+void UpdateCustomFog()
+{
+	int fogToUse = INVALID_ENT_REFERENCE;
+	if (IsValidEntity(CustomFogEntity[FogType_NPC]))
+	{
+		fogToUse = CustomFogEntity[FogType_NPC];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(CustomFogEntity[FogType_Wave]))
+	{
+		fogToUse = CustomFogEntity[FogType_Wave];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(MapFogEntity))
+	{
+		fogToUse = MapFogEntity;
+		
+		// This is cleared because it's only used when necessary (maps might have multiple entities)
+		MapFogEntity = INVALID_ENT_REFERENCE;
+		ActiveFogEntity = INVALID_ENT_REFERENCE;
+	}
+	else
+	{
+		ActiveFogEntity = INVALID_ENT_REFERENCE;
+	}
+	
+	if (fogToUse == INVALID_ENT_REFERENCE)
+		return;
+	
+	int entity = EntRefToEntIndex(fogToUse);
+	char buffer[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+	if (buffer[0] == '\0')
+	{
+		// Give the controller a name if it has none. If it has no name, there's no point in changing it back
+		buffer = "mapfog";
+		SetEntPropString(entity, Prop_Data, "m_iName", buffer);
+	}
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client))
+		{
+			SetVariantString(buffer);
+			AcceptEntityInput(client, "SetFogController");
+		}
+	}
+}
+
+void ShowCustomFogToClient(int client)
+{
+	if (!IsValidEntity(ActiveFogEntity))
+		return;
+	
+	// This is used on late joins for specific clients, use UpdateCustomFog to update globally
+	int entity = EntRefToEntIndex(ActiveFogEntity);
+	char buffer[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer)); // By this point, this should always have a name
+	
+	SetVariantString(buffer);
+	AcceptEntityInput(client, "SetFogController");
 }

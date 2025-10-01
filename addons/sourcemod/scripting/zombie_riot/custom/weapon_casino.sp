@@ -302,9 +302,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(i_Dollars_Ammount[attacker] < MaxCash)
 				{
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday;
-					if(b_thisNpcIsARaid[victim])
-						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] == 5)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
@@ -320,9 +318,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(i_Dollars_Ammount[attacker] < MaxCash)
 				{
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 2 * Payday;
-					if(b_thisNpcIsARaid[victim])
-						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 2* Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] == 5)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
@@ -338,9 +334,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(i_Dollars_Ammount[attacker] < MaxCash)
 				{
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 3 * Payday;
-					if(b_thisNpcIsARaid[victim])
-						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 3* Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] == 5)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
@@ -641,6 +635,26 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 	int pap = i_Current_Pap[client];
 
 	RecurringNumbers(client); //function :)
+	int Number = RecurringNumbers(client);
+	int MaxCash;
+	switch(Payday_timer[client])
+	{
+		case INVALID_HANDLE: 
+		{
+			MaxCash = CASINO_MAX_DOLLARS;
+		}
+		default: 
+		{
+			MaxCash = (CASINO_MAX_DOLLARS + (pap + 1) * 25);
+		}
+	}
+	if(i_Dollars_Ammount[client] >= (MaxCash * 2))
+	{
+		if(Number == 14 && RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
+		{
+			Number = 99;
+		}
+	}
 	switch(RecurringNumbers(client)) //5000000000000x better than else if spam
 	{
 		case 1: //minor damage
@@ -1198,7 +1212,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				case 0:
 				{
 					if(RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
-						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 100;
+						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1000;
 					else
 						Store_WeaponUpgradeByOnePap(client, weapon);
 						
@@ -1209,7 +1223,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				case 1:
 				{
 					if(RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
-						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 100;
+						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1000;
 					else
 						Store_WeaponUpgradeByOnePap(client, weapon);
 
@@ -1220,7 +1234,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				case 2:
 				{
 					if(RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
-						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 100;
+						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1000;
 					else
 						Store_WeaponUpgradeByOnePap(client, weapon);
 
@@ -1231,7 +1245,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				case 3:
 				{
 					if(RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
-						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 100;
+						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1000;
 					else
 						Store_WeaponUpgradeByOnePap(client, weapon);
 
@@ -1253,7 +1267,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 				case 4:
 				{
 					if(RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
-						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 100;
+						i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * 1000;
 					else
 						Store_WeaponUpgradeByOnePap(client, weapon);
 
@@ -1270,20 +1284,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * RNG * Payday;
 		}
 	}
-	int MaxCash;
-	switch(Payday_timer[client])
-	{
-		case INVALID_HANDLE: 
-		{
-			MaxCash = CASINO_MAX_DOLLARS;
-		}
-		default: 
-		{
-			MaxCash = (CASINO_MAX_DOLLARS + (pap + 1) * 25);
-		}
-	}
-	if(i_Dollars_Ammount[client] >= MaxCash)
-		i_Dollars_Ammount[client] = MaxCash;
+
 }
 
 ///FUCK YOU TF2 HUDS///

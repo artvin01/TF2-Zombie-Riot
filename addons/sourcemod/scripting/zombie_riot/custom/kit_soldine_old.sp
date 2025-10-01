@@ -4,7 +4,6 @@
 static Handle MarketTimer[MAXPLAYERS] = {null, ...};
 static float MarketHUDDelay[MAXPLAYERS];
 static int Market_WeaponPap[MAXPLAYERS];
-static int Market_Perk[MAXPLAYERS];
 static int i_MarketParticleOne[MAXPLAYERS];
 static int i_MarketParticleTwo[MAXPLAYERS];
 static int i_RocketJump_AirboneTime[MAXPLAYERS];
@@ -66,7 +65,6 @@ public void Wkit_Soldin_OnMapStart()
 {
 	PrecachedMusic = false;
 	Zero(Market_WeaponPap);
-	Zero(Market_Perk);
 	Zero(MarketHUDDelay);
 }
 
@@ -82,7 +80,6 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 				PrecachedMusic = true;
 			}
 			Market_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
-			Market_Perk[client]=i_CurrentEquippedPerk[client];
 			int getweapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 			if(IsValidEntity(getweapon))
 			{
@@ -108,7 +105,6 @@ public void Wkit_Soldin_Enable(int client, int weapon) // Enable management, han
 			PrecachedMusic = true;
 		}
 		Market_WeaponPap[client] = RoundToFloor(Attributes_Get(weapon, 391, 0.0));
-		Market_Perk[client]=i_CurrentEquippedPerk[client];
 		int getweapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary);
 		if(IsValidEntity(getweapon))
 		{

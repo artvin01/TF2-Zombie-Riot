@@ -400,7 +400,7 @@ public void KevinMery_ClotThink(int iNPC)
 		{
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
-				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2");
 
 				float vecDirShooting[3], vecRight[3], vecUp[3];
 				float vecSpread = 0.1;
@@ -552,7 +552,7 @@ static void KevinMery_SelfDefense(KevinMery npc, float gameTime, int target, flo
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");//He will SMACK you
-				npc.m_flAttackHappens = gameTime + 0.1;
+				npc.m_flAttackHappens = gameTime + 0.2;
 				float attack = 1.0;
 				npc.m_flNextMeleeAttack = gameTime + attack;
 			}
@@ -599,7 +599,7 @@ static void KevinMery_WeaponSwaps(KevinMery npc, int number = 1)
 		{
 			if(npc.m_iChanged_WalkCycle != 4)
 			{
-				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
+				int iActivity_melee = npc.LookupActivity("ACT_MP_RUN_ITEM2");
 				if(iActivity_melee > 0) npc.StartActivity(iActivity_melee);
 				AcceptEntityInput(npc.m_iWearable2, "Enable");
 				AcceptEntityInput(npc.m_iWearable1, "Disable");

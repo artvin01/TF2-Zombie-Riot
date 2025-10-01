@@ -328,7 +328,7 @@ void VictoriaHarbringerSelfDefense(VictoriaHarbringer npc, float gameTime)
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 20.0;
+							float damageDealt = 30.0;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 

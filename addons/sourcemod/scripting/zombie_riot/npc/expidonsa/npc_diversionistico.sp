@@ -152,6 +152,7 @@ methodmap Diversionistico < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		
 
 		func_NPCDeath[npc.index] = Diversionistico_NPCDeath;
@@ -469,16 +470,28 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false, bool NeedLOSPlayer = false)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false, bool NeedLOSPlayer = false, float VectorSave[3] = {0.0,0.0,0.0})
 {
 	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		return 3;
-	
+	float f3_VecAbs[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", f3_VecAbs);
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
-	for( int loop = 1; loop <= 100; loop++ ) 
+	for( int loop = 1; loop <= 150; loop++ ) 
 	{
 		float AproxRandomSpaceToWalkTo[3];
-		CNavArea RandomArea = PickRandomArea();	
+		CNavArea RandomArea;
+		
+		if(!Rogue_Mode())
+		{
+			RandomArea = PickRandomArea();	
+		}
+		else
+		{
+			RandomArea = GetRandomNearbyArea(f3_VecAbs, DomeRadiusGlobal());
+			NeedLOSPlayer = true;
+			//it sucks but its needed so nothing breaks.
+		}
 			
 		if(RandomArea == NULL_AREA) 
 			break; //No nav?
@@ -490,6 +503,11 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		}
 
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
+
+		//for rouge2 and 3
+		if(Dome_PointOutside(AproxRandomSpaceToWalkTo))
+			continue;
+
 		bool DoNotTeleport = false;
 		int WasTooFarAway = 0;
 		int PlayersCount = 0;
@@ -565,7 +583,10 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		}
 		
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
-		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+		if(VectorSave[1] == 0.0)
+			TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+
+		VectorSave = AproxRandomSpaceToWalkTo;
 		RemoveSpawnProtectionLogic(npc.index, true);
 		return 1;
 	}

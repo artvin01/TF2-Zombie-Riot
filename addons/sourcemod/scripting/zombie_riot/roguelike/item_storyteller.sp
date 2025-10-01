@@ -30,70 +30,15 @@ void Rogue_StoryTeller_ReviveSpeed(int &amount)
 
 public void Rogue_Blademace_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +20% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 1.2);
-
-		// -10% movement speed
-		value = 1.0;
-		map.GetValue("107", value);
-		map.SetValue("107", value * 0.9);
-
-		// +20% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.2);
-
-		// -2% damage vuln
-		value = 1.0;
-		map.GetValue("412", value);
-		map.SetValue("412", value * 0.98);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +20% damage bonus
-			npc.m_fGunBonusDamage *= 1.2;
-
-			// +20% max health
-			int health = ReturnEntityMaxHealth(npc.index) * 6 / 5;
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +20% damage bonus
-				npc.BonusDamageBonus *= 1.2;
-
-				// +20% max health
-				int health = ReturnEntityMaxHealth(npc.index) * 6 / 5;
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
+	RogueHelp_BodyHealth(entity, map, 1.2);
+	RogueHelp_BodySpeed(entity, map, 0.9);
+	RogueHelp_BodyRes(entity, map, 1.02);
+	RogueHelp_BodyDamage(entity, map, 1.2);
 }
 
 public void Rogue_Blademace_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 2, 1.2);
-	Attributes_SetMulti(entity, 410, 1.2);
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		Attributes_SetMulti(entity, 1, 1.2);
-	}
+	RogueHelp_WeaponDamage(entity, 1.2);
 }
 
 public void Rogue_Brokenblade_Collect()
@@ -207,7 +152,7 @@ static Action Timer_BladedancerTimer(Handle timer)
 	}
 	if(IsValidClient(BladeDancer))
 	{
-		CPrintToChatAll("{red}%N {crimson}recieved +100％ max health and +100％ damage bonus and +100％ heal rate.", BladeDancer);
+		CPrintToChatAll("{red}%N {crimson}received +100％ max health and +100％ damage bonus and +100％ heal rate.", BladeDancer);
 	}
 	return Plugin_Continue;
 }
@@ -324,98 +269,21 @@ public void Rogue_ProofOfFriendship_Collect()
 
 public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// -5% max health
-		map.GetValue("26", value);
-		map.SetValue("26", value * 0.95);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// -5% max health
-			int health = ReturnEntityMaxHealth(npc.index) * 19 / 20;
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// -5% max health
-				int health = ReturnEntityMaxHealth(npc.index) * 19 / 20;
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
+	RogueHelp_BodyHealth(entity, map, 0.95);
 }
 
 public void Rogue_BobResearch_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// -10% movement speed
-		value = 1.0;
-		map.GetValue("107", value);
-		map.SetValue("107", value * 0.9);
-	}
+	RogueHelp_BodySpeed(entity, map, 0.9);
 }
 
 public void Rogue_BobFinal_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value;
-
-		// +20% movement speed
-		value = 1.0;
-		map.GetValue("107", value);
-		map.SetValue("107", value * 1.2);
-
-		// +15% building damage
-		value = 1.0;
-		map.GetValue("287", value);
-		map.SetValue("287", value * 1.15);
-	}
-	else if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			// +15% damage bonus
-			npc.m_fGunBonusDamage *= 1.15;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-			{
-				// +15% damage bonus
-				npc.BonusDamageBonus *= 1.15;
-			}
-		}
-	}
+	RogueHelp_BodyDamage(entity, map, 1.15);
+	RogueHelp_BodySpeed(entity, map, 1.2);
 }
 
 public void Rogue_BobFinal_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 2, 1.15);
-	Attributes_SetMulti(entity, 410, 1.15);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		Attributes_SetMulti(entity, 1, 1.15);
-	}
+	RogueHelp_WeaponDamage(entity, 1.15);
 }

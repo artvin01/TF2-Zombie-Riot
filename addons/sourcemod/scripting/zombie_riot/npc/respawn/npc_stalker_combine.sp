@@ -269,6 +269,9 @@ methodmap StalkerCombine < StalkerShared
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
+		b_NoHealthbar[npc.index] = 1;
+
+		i_InvincibleParticle[npc.index] = EntIndexToEntRef(npc.EquipItem("head", "models/empty.mdl"));
 
 		i_PlayMusicSound[npc.index] = 0;
 		npc.m_iChaseAnger = 0;
@@ -327,7 +330,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		// Only find targets we can look at, ignore buildings while not pissed
-		npc.m_iTarget = GetClosestTarget(npc.index, !npc.m_bChaseAnger, _, true, _, _, _, true, FAR_FUTURE);
+		npc.m_iTarget = GetClosestTarget(npc.index, !npc.m_bChaseAnger, 2000.0, true, _, _, _, true, FAR_FUTURE);
 		npc.m_flGetClosestTargetTime = gameTime + (npc.m_iTarget ? 2.5 : 0.5);
 
 		// Hunt down the Father

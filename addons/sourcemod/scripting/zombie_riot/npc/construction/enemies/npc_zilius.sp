@@ -435,7 +435,8 @@ methodmap Construction_Raid_Zilius < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
-		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);		
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_bThisNpcIsABoss = true;
@@ -1435,6 +1436,9 @@ void Zilius_KickLogic(int iNPC)
 	static float vel[3];
 	static float flMyPos[3];
 	npc.GetVelocity(vel);
+	fClamp(vel[0], -300.0, 300.0);
+	fClamp(vel[1], -300.0, 300.0);
+	fClamp(vel[2], -300.0, 300.0);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	static float hullcheckmins[3];
