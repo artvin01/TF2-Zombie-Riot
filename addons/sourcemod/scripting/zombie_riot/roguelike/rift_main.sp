@@ -11,6 +11,7 @@ static bool CurseCorrupt;
 static bool BookOfNature;
 static bool BookOfWeakness;
 //static bool Keycard;
+char c_SupersaleThisItem[64];
 
 stock void Rogue_Rift_MultiScale(float &multi)
 {
@@ -166,15 +167,13 @@ public void Rogue_RiftMalice_StageStart()
 	Rogue_AddUmbral(-2);
 }
 
-static bool FirstSuperSale;
 public float Rogue_Encounter_RiftShop()
 {
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
-	FirstSuperSale = true;
 
 	Artifact artifact;
-
+	c_SupersaleThisItem[0] = 0;
 	bool rare = Rogue_GetFloor() > 0;
 	bool easyMode = DifficultyLevel < 1;
 	bool found;
@@ -209,14 +208,6 @@ public float Rogue_Encounter_RiftShop()
 	if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 		ShopListing.PushArray(artifact);
 
-	if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
-		ShopListing.PushArray(artifact);
-
-	if(rare)
-	{
-		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
-			ShopListing.PushArray(artifact);
-	}
 	//if already have fractured, show 12 cost item.
 	else if(!Rogue_HasNamedArtifact("Fractured") && !Rogue_HasNamedArtifact("We Are Fractured"))
 	{
@@ -233,6 +224,15 @@ public float Rogue_Encounter_RiftShop()
 	else
 	{
 		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
+			ShopListing.PushArray(artifact);
+	}
+
+	if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		ShopListing.PushArray(artifact);
+
+	if(rare)
+	{
+		if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -266,28 +266,27 @@ static void StartShopVote(bool first)
 
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
-	int SupersaleThisItem = GetRandomInt(0, length);
+	int SupersaleThisItem = -1;
+	if(first)
+	{
+		c_SupersaleThisItem[0] = 0;
+		if(SupersaleThisItem)
+			SupersaleThisItem = GetRandomInt(0, length);
+	}
 	for(int i; i < length; i++)
 	{
 		ShopListing.GetArray(i, artifact);
 
-		bool sale = FirstSuperSale;
-		if(artifact.ShopCost <= 6)
+		
+		bool sale = false;
+		if(SupersaleThisItem == i || StrEqual(artifact.Name, c_SupersaleThisItem[0], false))
+		{
+			Format(c_SupersaleThisItem, sizeof(c_SupersaleThisItem), "%s", artifact.Name);
+			sale = true;
+		}	
+		else
 		{
 			sale = false;
-		}
-		if(sale)
-		{
-			if(SupersaleThisItem != i)
-			{
-				sale = false;
-			}	
-			else
-			{
-				sale = true;
-				FirstSuperSale = false;
-			}
-
 		}
 		int cost = sale ? (artifact.ShopCost * 7 / 10) : artifact.ShopCost;
 
@@ -366,7 +365,14 @@ static void FinishShopVote(const Vote vote)
 
 			Rogue_ParadoxGeneric_ShopCost(cost);
 			
-			Rogue_AddIngots(-cost, true);
+			if(StrEqual(artifact.Name, c_SupersaleThisItem, false))
+			{
+				Rogue_AddIngots(-cost * 7 / 10, true);
+			}
+			else
+			{
+				Rogue_AddIngots(-cost, true);
+			}
 
 			StartShopVote(false);
 			Rogue_SetProgressTime(20.0, false);
