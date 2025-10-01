@@ -603,13 +603,6 @@ public void Rogue_RiftEasy_Collect()
 		Rogue_GiveNamedArtifact("Twirl Guidance", true, true);
 }
 
-public void Rogue_RiftEasy_Enemy(int entity)
-{
-	fl_Extra_Speed[entity] *= 0.8;
-	fl_Extra_MeleeArmor[entity] *= 1.35;
-	fl_Extra_RangedArmor[entity] *= 1.35;
-	fl_Extra_Damage[entity] *= 0.65;
-}
 
 public void Rogue_RiftNormal_Collect()
 {
@@ -654,11 +647,11 @@ public void Rogue_RiftHard_Enemy(int entity)
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
 }
 
-public void Rogue_RiftVeryHard_Enemy(int entity)
+public void Rogue_RiftStupidHard_Enemy(int entity)
 {
 	if(Rogue_GetFloor() == 6)
 		return;
-	float stats = Pow(1.04, float(Rogue_GetFloor() + 1));
+	float stats = Pow(1.1, float(Rogue_GetFloor() + 1));
 
 	fl_Extra_Damage[entity] *= stats;
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
