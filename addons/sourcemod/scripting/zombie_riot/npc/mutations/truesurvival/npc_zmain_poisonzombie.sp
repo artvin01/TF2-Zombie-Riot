@@ -38,7 +38,7 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
-static float fl_KamikazeInitiate;
+//static float fl_KamikazeInitiate;
 public void ZMainPoisonZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -59,7 +59,7 @@ public void ZMainPoisonZombie_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	fl_KamikazeInitiate = 0.0;
+//	fl_KamikazeInitiate = 0.0;
 	NPC_Add(data);
 }
 
@@ -158,6 +158,7 @@ methodmap ZMainPoisonZombie < CClotBody
 
 		npc.m_flWaveScale = wave;
 
+		/*
 		if(ally == TFTeam_Blue)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
@@ -184,7 +185,7 @@ methodmap ZMainPoisonZombie < CClotBody
 			}
 			fl_KamikazeInitiate = GetGameTime() + 15.0;	
 		}
-
+*/
 		func_NPCDeath[npc.index] = ZMainPoisonZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainPoisonZombie_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
