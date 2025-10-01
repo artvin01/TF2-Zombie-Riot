@@ -330,7 +330,7 @@
 	}
 	"Hand of Choker Desc"
 	{
-		"en"	"With your last strength, break open a last bit of hope for yourself.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot"
+		"en"	"With your last strength, break open a last bit of hope for yourself.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot, {yellow}Doesnt work against raids."
 	}
 	"Hand of Snatcher"
 	{

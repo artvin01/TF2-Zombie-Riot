@@ -172,6 +172,12 @@ public void Rogue_Hand2Defender_TakeDamage(int victim, int &attacker, int &infli
 
 public void Rogue_Hand2Deadeye_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(b_thisNpcIsARaid[victim])
+		return;
+
+	if(EntRefToEntIndex(RaidBossActive) == victim)	
+		return;
+		
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Deadeye)
 	{
 		if(i_HasBeenHeadShotted[victim] && view_as<CClotBody>(victim).m_iHealthBar < 1 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
