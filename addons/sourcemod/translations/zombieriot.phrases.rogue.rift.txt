@@ -995,7 +995,7 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{yellow}NPC allies will use the same max health from players."
 	}
 	"The Bladedance"
 	{
