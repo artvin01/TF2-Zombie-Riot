@@ -1406,7 +1406,7 @@ void Rogue_NextProgress()
 			{
 				bool hard = Rogue_Rift_CurseLevel() > 1;
 				int rank = Rogue_GetUmbralLevel() + (hard ? 1 : 0);
-				if(rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
+				if(rank > 0 && (rank > 4 || (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime)))
 				{
 					int length = Curses.Length;
 					if(length)
