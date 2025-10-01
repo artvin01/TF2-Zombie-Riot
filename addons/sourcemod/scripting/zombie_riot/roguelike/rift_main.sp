@@ -994,6 +994,7 @@ public void Rogue_Vote_Rift2(const Vote vote, int index)
 			Rogue_StartThisBattle(5.0);
 			Rogue_AddUmbral(-15, false);
 			PrintToChatAll("%t", "We Are Fractured Lore 1");
+			Rogue_GiveNamedArtifact("Map around the Castle");
 		}
 		case 1:
 		{

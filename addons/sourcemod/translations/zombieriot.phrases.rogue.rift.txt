@@ -214,6 +214,14 @@
 	{
 		"en"	"{yellow}Something is coming"
 	}
+	"Map around the Castle"
+	{
+		"en"	"Map around the Castle"
+	}
+	"Map around the Castle Desc"
+	{
+		"en"	"{red}lose 15 Umbral Affinity {blue}The way opened."
+	}
 
 	"Ruin"
 	{
