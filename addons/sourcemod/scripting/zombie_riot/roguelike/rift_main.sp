@@ -208,23 +208,26 @@ public float Rogue_Encounter_RiftShop()
 	if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 		ShopListing.PushArray(artifact);
 
-	//if already have fractured, show 12 cost item.
-	else if(!Rogue_HasNamedArtifact("Fractured") && !Rogue_HasNamedArtifact("We Are Fractured"))
+	if(!Rogue_HasNamedArtifact("Rift Level 1"))
 	{
-		if(found && Rogue_GetNamedArtifact("Fractured", artifact))
+		//if already have fractured, show 12 cost item IF we are NOT on rift level 1
+		if(!Rogue_HasNamedArtifact("Fractured") && !Rogue_HasNamedArtifact("We Are Fractured"))
 		{
-			ShopListing.PushArray(artifact);
+			if(found && Rogue_GetNamedArtifact("Fractured", artifact))
+			{
+				ShopListing.PushArray(artifact);
+			}
+			else
+			{
+				if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
+					ShopListing.PushArray(artifact);
+			}
 		}
 		else
 		{
 			if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 				ShopListing.PushArray(artifact);
 		}
-	}
-	else
-	{
-		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
-			ShopListing.PushArray(artifact);
 	}
 
 	if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)

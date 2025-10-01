@@ -298,7 +298,7 @@
 	}
 	"Rift Level 1 Desc"
 	{
-		"en"	"Lelouch opened a rift to the Curtain. The Void is leaking in through the cracks. It's only been a few weeks, we need to stop this, together with Bob The First and Twirl.\n{green}Enemy stats nerfed by -10％"
+		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 	}
 	"Hand of Predation"
 	{
