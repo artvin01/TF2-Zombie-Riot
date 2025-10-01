@@ -166,10 +166,12 @@ public void Rogue_RiftMalice_StageStart()
 	Rogue_AddUmbral(-2);
 }
 
+static bool FirstSuperSale;
 public float Rogue_Encounter_RiftShop()
 {
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
+	FirstSuperSale = true;
 
 	Artifact artifact;
 
@@ -264,11 +266,29 @@ static void StartShopVote(bool first)
 
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
+	int SupersaleThisItem = GetRandomInt(0, length);
 	for(int i; i < length; i++)
 	{
 		ShopListing.GetArray(i, artifact);
 
-		bool sale = FirstSuperSale && !i;
+		bool sale = FirstSuperSale;
+		if(artifact.ShopCost <= 6)
+		{
+			sale = false;
+		}
+		if(sale)
+		{
+			if(SupersaleThisItem != i)
+			{
+				sale = false;
+			}	
+			else
+			{
+				sale = true;
+				FirstSuperSale = false;
+			}
+
+		}
 		int cost = sale ? (artifact.ShopCost * 7 / 10) : artifact.ShopCost;
 
 		if(ingots >= cost)
