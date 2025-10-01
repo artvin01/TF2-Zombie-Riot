@@ -192,9 +192,10 @@ methodmap Umbral_Spuud < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.5;
-				fl_Extra_MeleeArmor[npc.index] *= 0.75;
-				fl_Extra_RangedArmor[npc.index] *= 0.75;
+				fl_Extra_Damage[npc.index] *= 1.65;
+				fl_Extra_MeleeArmor[npc.index] *= 0.5;
+				fl_Extra_RangedArmor[npc.index] *= 0.5;
+				fl_Extra_Speed[npc.index] *= 1.05;
 			}
 		}
 		return npc;
@@ -227,7 +228,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.m_flSpeedIncreaceMeter = 0.1;
 	}
 	npc.m_flMeleeArmor = (1.0 / npc.m_flSpeedIncreaceMeter);
-	npc.m_flMeleeArmor -= 5.0;
+	npc.m_flMeleeArmor -= 8.0;
 	if(npc.m_flMeleeArmor <= 1.0)
 	{
 		npc.m_flMeleeArmor = 1.0;
