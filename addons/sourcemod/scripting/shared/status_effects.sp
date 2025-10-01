@@ -3972,6 +3972,18 @@ void RuinaBatteryHud_Func(int attacker, int victim, StatusEffect Apply_MasterSta
 	}
 }
 
+
+void VintulumBombHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	float TimeDisplay = Apply_StatusEffect.TimeUntillOver - GetGameTime();
+	if(TimeDisplay <= 0.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "");
+		return;
+	}
+	Format(HudToDisplay, SizeOfChar, "[V %.1fs]", Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
+
 stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -4298,6 +4310,22 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= OsmosisHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vintulum Bomb EMP");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= VintulumBombHud_Func;
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 }
 

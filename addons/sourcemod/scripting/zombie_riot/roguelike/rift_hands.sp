@@ -15,7 +15,7 @@ void Rogue_Hand2_AbilityUse(int client, int weapon)
 
 	if(Hand2Rapid && i_WeaponArchetype[weapon] == Archetype_Rapid)
 	{
-		DataPack pack;
+		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		RequestFrame(RogueHand2RapidFrame, pack);

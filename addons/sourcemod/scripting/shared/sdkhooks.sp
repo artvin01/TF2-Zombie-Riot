@@ -1455,10 +1455,15 @@ public void OnPostThink(int client)
 			int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
 			Cooldowntocheck -= GetGameTime();
+			//add 1 second so it doesnt just show 0
 
 			if(Cooldowntocheck < 0.0)
 			{
 				Cooldowntocheck = 0.0;
+			}
+			else
+			{
+				Cooldowntocheck += 0.999;
 			}
 
 			char npc_classname[7];
