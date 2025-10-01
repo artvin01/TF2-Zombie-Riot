@@ -397,7 +397,7 @@ static void ClotThink(int iNPC)
 		{
 			if (npc.m_flNextGrab < gameTime)
 			{
-				npc.m_flNextGrab = gameTime + 35.0;
+				npc.m_flNextGrab = gameTime + 30.0;
 				npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_NONE;
 				
 				int activity = npc.LookupActivity("ACT_BRAWLER_RUN");
