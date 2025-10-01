@@ -42,6 +42,9 @@ static const char g_PassiveSound[][] = {
 	"mvm/giant_heavy/giant_heavy_loop.wav",
 };
 
+static const char g_MeleeAttackBackstabSounds[][] = {
+	"player/spy_shield_break.wav",
+};
 
 void AlmagestSeinr_OnMapStart_NPC()
 {
@@ -51,6 +54,7 @@ void AlmagestSeinr_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_PassiveSound));   i++) { PrecacheSound(g_PassiveSound[i]);   }
+	for (int i = 0; i < (sizeof(g_MeleeAttackBackstabSounds)); i++) { PrecacheSound(g_MeleeAttackBackstabSounds[i]); }
 	PrecacheModel("models/bots/heavy_boss/bot_heavy_boss.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Seinr");
@@ -110,10 +114,20 @@ methodmap AlmagestSeinr < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
+	public void PlayMeleeBackstabSound()
+	{
+		EmitSoundToAll(g_MeleeAttackBackstabSounds[GetRandomInt(0, sizeof(g_MeleeAttackBackstabSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_PassiveSound[GetRandomInt(0, sizeof(g_PassiveSound) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0, 100);
+	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
+	}
+	property float m_flHealCooldownDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
 	
@@ -147,7 +161,7 @@ methodmap AlmagestSeinr < CClotBody
 		}
 		npc.StartPathing();
 		npc.m_flSpeed = 200.0;
-		fl_RangedArmor[npc.index] = 0.35;
+		fl_RangedArmor[npc.index] = 0.75;
 		
 		
 		int skin = 1;
@@ -194,6 +208,13 @@ public void AlmagestSeinr_ClotThink(int iNPC)
 			fl_RangedArmor[npc.index] = 1.0;
 			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 999.0);
 			RemoveEntity(npc.m_iWearable5);
+			ExpidonsaGroupHeal(npc.index, 5000.0, 99, 0.0, 1.0, false,Seinr_DontHealSameIndex_ArmorBroken, _, false, false);
+			Alamgest_SeinirBuff_Indicator_ArmorBroken(npc.index, 3000.0);
+			FreezeNpcInTime(npc.index, 2.0, true);
+			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 2.0);
+			ApplyStatusEffect(npc.index, npc.index, "Tonic Affliction", 5.0);
+			ApplyStatusEffect(npc.index, npc.index, "Tonic Affliction Hide", 5.0);
+			npc.PlayMeleeBackstabSound();
 		}
 	}
 
@@ -210,6 +231,15 @@ public void AlmagestSeinr_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(npc.m_flArmorCount > 0.0)
+	{	
+		if(npc.m_flHealCooldownDo < GetGameTime(npc.index))
+		{
+			npc.m_flHealCooldownDo = GetGameTime(npc.index) + 0.5;
+			ExpidonsaGroupHeal(npc.index, 5000.0, 99, 0.0, 1.0, false,Seinr_DontHealSameIndex, _, false, false);
+			Alamgest_SeinirBuff_Indicator(npc.index, 1000.0);
+		}
+	}
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -355,4 +385,41 @@ void AlmagestSeinrSelfDefense(AlmagestSeinr npc, float gameTime, int target, flo
 			}
 		}
 	}
+}
+
+
+void Alamgest_SeinirBuff_Indicator(int entity, float range)
+{
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, 0.3, 10.0, 1.0, 3, range * 2.0);	
+}
+
+stock bool Seinr_DontHealSameIndex(int entity, int victim, float &healingammount)
+{
+	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
+		return true;
+
+	ApplyStatusEffect(entity, victim, "Very Defensive Backup", 0.6);	
+	ApplyStatusEffect(entity, victim, "Freeze", 0.6);	
+	return false;
+}
+
+void Alamgest_SeinirBuff_Indicator_ArmorBroken(int entity, float range)
+{
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 0, 255, 200, 1, 0.3, 10.0, 1.0, 3, range * 2.0);	
+}
+
+stock bool Seinr_DontHealSameIndex_ArmorBroken(int entity, int victim, float &healingammount)
+{
+	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
+		return true;
+
+	FreezeNpcInTime(victim, 2.0, true);
+	ApplyStatusEffect(entity, victim, "Unstoppable Force", 2.0);
+	ApplyStatusEffect(entity, victim, "Tonic Affliction", 5.0);
+	ApplyStatusEffect(entity, victim, "Tonic Affliction Hide", 5.0);
+	return false;
 }
