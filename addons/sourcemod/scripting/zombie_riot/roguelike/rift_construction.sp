@@ -96,6 +96,8 @@ public void Construction_RiftHard_Remove()
 
 public void Construction_RiftAllies_Collect()
 {
+	float flPos[3];
+	
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);

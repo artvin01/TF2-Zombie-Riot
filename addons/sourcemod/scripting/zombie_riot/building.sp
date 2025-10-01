@@ -217,6 +217,7 @@ int Building_Add(BuildingInfo info)
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
 	MenuSection[client] = -1;
+	MenuPage[client] = 0;
 	//reset to main menu for easier quick access
 	delete MenuTimer[client];
 	BuildingMenu(client);
@@ -263,8 +264,18 @@ static int GetCost(int client, BuildingInfo info, float multi)
 
 static void BuildingMenu(int client)
 {
-	if(MenuTimer[client] || !HasWrench(client))
+	if(MenuTimer[client])
 		return;
+	if(!HasWrench(client))
+	{
+		HideMenuInstantly(client);
+		//show a blank page to instantly hide it
+		CancelClientMenu(client);
+		ClientCommand(client, "slot10");
+		ResetStoreMenuLogic(client);
+		return;
+		//no wrench, die
+	}
 	
 	int metal = GetAmmo(client, Ammo_Metal);
 	int cash = CurrentCash - CashSpent[client];
@@ -284,7 +295,6 @@ static void BuildingMenu(int client)
 
 	Menu menu = new Menu(BuildingMenuH);
 	SetGlobalTransTarget(client);
-	AnyMenuOpen[client] = 1.0;
 
 	char buffer1[196], buffer2[64], buffer3[196];
 	if(MenuSection[client] == -1)
@@ -487,6 +497,8 @@ static void BuildingMenu(int client)
 
 	if(menu.Display(client, 2))
 		MenuTimer[client] = CreateTimer(0.5, Timer_RefreshMenu, client);
+
+	AnyMenuOpen[client] = 1.0;
 }
 
 static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)

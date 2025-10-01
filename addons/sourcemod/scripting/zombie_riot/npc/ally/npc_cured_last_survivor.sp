@@ -990,6 +990,10 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		return;
 	}
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(Owner))
+	{
+		Owner = npc.index;
+	}
 						
 	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
