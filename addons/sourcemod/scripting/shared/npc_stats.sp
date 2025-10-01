@@ -4747,6 +4747,9 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			
 			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{
+				if(b_ThisWasAnNpc[index])
+					return;
+				
 				if(GetTeam(enemy) == TFTeam_Stalkers)
 				{
 					if(GetTeam(index) != TFTeam_Red)

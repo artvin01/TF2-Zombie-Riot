@@ -4,7 +4,7 @@
 static float LastGameTime;
 static char LastData[96];
 static bool LastResult;
-
+static bool DontSpawnFriendly;
 void RogueCondition_Setup()
 {
 	NPCData data;
@@ -16,6 +16,7 @@ void RogueCondition_Setup()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	DontSpawnFriendly = false;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -108,6 +109,18 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			//automatons can never be friendly
 			friendly = false;
 		}
+		if(friendly)
+		{
+			if(DontSpawnFriendly)
+			{
+				DontSpawnFriendly = false;
+				return;
+			}
+			else
+			{
+				DontSpawnFriendly = true;
+			}
+		}
 		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
 		
 		if(GetTeam(entity) == TFTeam_Red)
@@ -153,16 +166,26 @@ static void Umbral_AdjustStats(int ref)
 	if(!IsValidEntity(entity))
 		return;
 
+<<<<<<< Updated upstream
 	fl_Extra_Damage[entity] *= 5.0;
+=======
+	fl_Extra_Damage[entity] *= 8.0;
+>>>>>>> Stashed changes
 	fl_Extra_Speed[entity] *= 0.7;
-	MultiHealth(entity, 0.05);
+	MultiHealth(entity, 0.025);
 	int HealthGet = ReturnEntityMaxHealth(entity);
-	if(HealthGet >= 3000)
+	if(HealthGet >= 6000)
 	{
 		//give more dmg again!
+<<<<<<< Updated upstream
 		fl_Extra_Damage[entity] *= 7.0;
 		SetEntProp(entity, Prop_Data, "m_iHealth", 3000);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 3000);
+=======
+		fl_Extra_Damage[entity] *= 3.0;
+		SetEntProp(entity, Prop_Data, "m_iHealth", 6000);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 6000);
+>>>>>>> Stashed changes
 	}
 }
 
