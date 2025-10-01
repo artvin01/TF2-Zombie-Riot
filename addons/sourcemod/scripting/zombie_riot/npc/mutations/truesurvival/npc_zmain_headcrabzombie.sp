@@ -172,7 +172,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
-
+		/*
 		if(ally == TFTeam_Blue)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
@@ -200,6 +200,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 			}
 			fl_KamikazeInitiate = GetGameTime() + 15.0;	
 		}
+		*/
 
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;

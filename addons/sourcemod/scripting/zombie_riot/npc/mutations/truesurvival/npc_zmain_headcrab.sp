@@ -122,6 +122,7 @@ methodmap ZMainHeadcrab < CClotBody
 
 		npc.m_flWaveScale = wave;
 
+		/*
 		if(ally == TFTeam_Blue)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
@@ -148,6 +149,7 @@ methodmap ZMainHeadcrab < CClotBody
 			}
 			fl_KamikazeInitiate = GetGameTime() + 15.0;	
 		}
+*/
 
 		func_NPCDeath[npc.index] = ZMainHeadcrab_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrab_ClotThink;
