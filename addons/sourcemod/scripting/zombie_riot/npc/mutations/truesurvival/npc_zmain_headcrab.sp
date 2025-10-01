@@ -27,7 +27,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"npc/headcrab/attack3.wav"
 };
 
-static float fl_KamikazeInitiate;
+//static float fl_KamikazeInitiate;
 public void ZMainHeadcrab_OnMapStart_NPC()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -46,7 +46,7 @@ public void ZMainHeadcrab_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	fl_KamikazeInitiate = 0.0;
+//	fl_KamikazeInitiate = 0.0;
 	NPC_Add(data);
 }
 

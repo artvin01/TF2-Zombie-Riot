@@ -38,7 +38,7 @@ static char g_MeleeMissSounds[][] = {
 	"npc/fast_zombie/claw_miss2.wav",
 };
 
-static float fl_KamikazeInitiate;
+//static float fl_KamikazeInitiate;
 public void ZMainPoisonZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -59,7 +59,7 @@ public void ZMainPoisonZombie_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
-	fl_KamikazeInitiate = 0.0;
+//	fl_KamikazeInitiate = 0.0;
 	NPC_Add(data);
 }
 

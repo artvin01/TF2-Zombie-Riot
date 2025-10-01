@@ -66,8 +66,8 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		MaterialOssunia npc = view_as<MaterialOssunia>(victim);
-		bool angery = npc.Anger;
+	//	MaterialOssunia npc = view_as<MaterialOssunia>(victim);
+//		bool angery = npc.Anger;
 		if(Construction_OnTakeDamage("ossunia", 0, victim, attacker, damage, damagetype))
 		{
 			/*

@@ -56,7 +56,7 @@ static char g_MeleeMissSounds[][] = {
 
 static int NPCId;
 static int RemainingZmainsSpawn;
-static float fl_KamikazeInitiate;
+//static float fl_KamikazeInitiate;
 public void ZMainHeadcrabZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -78,7 +78,7 @@ public void ZMainHeadcrabZombie_OnMapStart_NPC()
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
-	fl_KamikazeInitiate = 0.0;
+//	fl_KamikazeInitiate = 0.0;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -439,7 +439,7 @@ public void ZMainHeadcrabZombie_NPCDeath(int entity)
 
 
 
-void SpawnZmainsAFew(int nulldata)
+stock void SpawnZmainsAFew(int nulldata)
 {
 	if(Waves_InSetup())
 	{
