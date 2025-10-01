@@ -273,8 +273,7 @@ static void StartShopVote(bool first)
 	if(first)
 	{
 		c_SupersaleThisItem[0] = 0;
-		if(SupersaleThisItem)
-			SupersaleThisItem = GetRandomInt(0, length);
+		SupersaleThisItem = GetRandomInt(0, length);
 	}
 	for(int i; i < length; i++)
 	{
