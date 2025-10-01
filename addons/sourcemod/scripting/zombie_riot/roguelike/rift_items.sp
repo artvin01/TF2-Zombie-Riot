@@ -175,8 +175,8 @@ public void Rogue_Mazeat3_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.65);
-		fl_Extra_Damage[entity] *= 0.65;
+		RogueHelp_BodyHealth(entity, null, 0.75);
+		fl_Extra_Damage[entity] *= 0.75;
 
 		for(int i; i < Element_MAX; i++)
 		{

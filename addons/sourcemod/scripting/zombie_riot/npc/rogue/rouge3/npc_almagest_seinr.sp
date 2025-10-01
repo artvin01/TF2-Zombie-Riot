@@ -58,7 +58,7 @@ void AlmagestSeinr_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "seinr");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

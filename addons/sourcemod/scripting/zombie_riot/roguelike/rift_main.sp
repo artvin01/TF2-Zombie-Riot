@@ -984,7 +984,7 @@ public void Rogue_BookOfNature_Collect(int entity)
 {
 	if(Rogue_HasNamedArtifact("Umbral Hate"))
 		Rogue_RemoveNamedArtifact("Umbral Hate");
-	Rogue_AddUmbral(40);
+	Rogue_AddUmbral(20);
 	BookOfNature = true;
 }
 public void Rogue_BookOfNature_Remove(int entity)

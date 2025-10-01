@@ -73,7 +73,7 @@ void Umbral_Spuud_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spuud");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

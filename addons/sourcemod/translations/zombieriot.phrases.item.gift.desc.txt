@@ -136,6 +136,10 @@
 		"en"		"Mutations"
 		"ko"		"변이체들"
 	}
+	"Curtain Occupants"
+	{
+		"en"		"Curtain Occupants"
+	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
