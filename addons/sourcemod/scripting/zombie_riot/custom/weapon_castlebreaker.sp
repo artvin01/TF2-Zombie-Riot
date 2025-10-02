@@ -197,7 +197,7 @@ void CastleBreakerCashOnKill(int client)
 		if(CastleBreaker_WeaponPap[client]>=2)
 			cashgain += 1.0;
 		int cash = RoundFloat(cashgain * ResourceRegenMulti);
-		CashRecievedNonWave[client] += cash;
+		CashReceivedNonWave[client] += cash;
 		CashSpent[client] -= cash;
 		CashGainLimitWavePer_CastleBreaker[client] += cash;
 	}

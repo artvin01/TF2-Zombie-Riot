@@ -42,7 +42,7 @@ void ApertureHuntsmanPerfected_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Perfected Aperture Huntsman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_huntsman_perfected");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Aperture;
@@ -129,14 +129,11 @@ methodmap ApertureHuntsmanPerfected < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bow/c_bow.mdl");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/sniper/hardhat.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.40");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/spr17_hawk_eyed_hunter/spr17_hawk_eyed_hunter.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		IgniteTargetEffect(npc.m_iWearable1);
 		
 		func_NPCDeath[npc.index] = ApertureHuntsmanPerfected_NPCDeath;

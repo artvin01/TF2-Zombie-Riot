@@ -175,7 +175,8 @@ public void AlliedWarpedCrystal_Visualiser_ClotThink(int iNPC)
 		LeperReturnToNormal(Owner, -1, 0);
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		f_PreventMovementClient[Owner] = 0.0;
-		Store_ApplyAttribs(Owner); //update.
+		Store_ApplyAttribs(Owner);
+		Store_GiveAll(Owner, GetClientHealth(Owner));
 	}
 }
 

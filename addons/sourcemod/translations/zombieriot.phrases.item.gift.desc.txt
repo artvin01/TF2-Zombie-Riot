@@ -117,6 +117,10 @@
 	{
 		"en"		"Mutations"
 	}
+	"Curtain Occupants"
+	{
+		"en"		"Curtain Occupants"
+	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
@@ -603,7 +607,7 @@
 	}
 	"Sawrunner Desc"
 	{
-		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nRecieves 2x headshot damage."
+		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nReceives 2x headshot damage."
 		"ru"		"Монстр из Cry of Fear, сделан из чистого страха и дипресии,Будет бежать за тобой и только тобой.Ксено инфекция воздействует на него делая его ещё больше неустойчивым...\nПолучат двойной урон при выстреле в голову."
 	}
 	"True Fusion Warrior Desc"
@@ -1854,7 +1858,7 @@
 	}
 	"Sakratan Desc" 
 	{
-		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to recieve 25％ more damage for 10 seconds."
+		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to receive 25％ more damage for 10 seconds."
 		"ru"	"Наносит Хаос коррозию,Который взрывает вас,нанося 250 Чистого урона вам и всем союзинкам вокруг вас.\nЭто также ослабляет всех задетых союзников что они получают 25％ больше урона на 10 секунд."
 	}
 	"Yadeam Desc" 
@@ -1864,7 +1868,7 @@
 	}
 	"Rajul Desc" 
 	{
-		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff."
+		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff."
 		"ru"	"Когда получает урон,В зависимости от урона вылечит 3 союзников вокруг себя.\nЕсли она получат достаточно Оверхила, получат усиление навсегда."
 	}
 	"Qanaas Desc" 
@@ -1909,7 +1913,7 @@
 	}
 	"Arctic Mage Desc" 
 	{
-		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they recieve enough overheal, they will recieve a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
+		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
 		"ru"	"Когда получают урон,в зависимости от урона вылечат 3 союзинка в радиусе вокруг него.\nЕсли они получат достаточно оверхила,они получат бафф навсегда.\nИногда Даёт себе щиты при атаке,И даёт щиты союзинкам.\nНаносит огромный хаос урон."
 	}
 	"Frost Hunter Desc" 
@@ -1949,7 +1953,7 @@
 	}
 	"Abomination Desc"
 	{
-		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it recieves will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
+		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it receives will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
 		"ru"	"Наночит огромный урон со временем,наносит хаос урон и поджигает тебя.\nКаждая полученная атака даёт сопротивление полученному урона,но ослабивает к противоположному типу урона.\n(заглушение) отключает часть с получением сопротивлений."
 	}
 	"Anarchist Enforcer Desc"

@@ -304,7 +304,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 					}
 					else if(enemy.Is_Outlined == 2)
 					{
-						b_NoHealthbar[entity_Spawner] = true;
+						b_NoHealthbar[entity_Spawner] = 1;
 					}
 					
 					if(enemy.Is_Immune_To_Nuke)
@@ -342,6 +342,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
 						TeleportNpcToRandomPlayer(entity_Spawner);
+						RemoveSpawnProtectionLogic(entity_Spawner, true);
 					}
 					
 					if(enemy.Is_Boss > 0)
@@ -1662,6 +1663,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	if(!c_NpcName[victim][0])
 		return true;
 
+	if(b_NoHealthbar[victim] == 2)
+	{
+		//hide entirely.
+		return true;
+	}
+
 #if defined ZR
 	bool raidboss_active = false;
 	int raid_entity = EntRefToEntIndex(RaidBossActive);
@@ -2158,6 +2165,8 @@ stock void ResetDamageHud(int client)
 
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, bool DontForward = false, bool ResetClientCooldown = false, bool RaidHudForce = false)
 {
+	if(b_ThisEntityIgnored[victim])
+		return;
 	if(attacker <= MaxClients)
 	{
 		b_DisplayDamageHud[attacker][0] = true;

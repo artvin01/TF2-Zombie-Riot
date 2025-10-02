@@ -44,7 +44,7 @@ void Umbral_Ltzens_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "ltzens");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -178,9 +178,10 @@ methodmap Umbral_Ltzens < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 2.0;
-				fl_Extra_MeleeArmor[npc.index] *= 0.65;
-				fl_Extra_RangedArmor[npc.index] *= 0.65;
+				fl_Extra_Damage[npc.index] *= 1.65;
+				fl_Extra_MeleeArmor[npc.index] *= 0.5;
+				fl_Extra_RangedArmor[npc.index] *= 0.5;
+				fl_Extra_Speed[npc.index] *= 1.05;
 			}
 		}
 		return npc;
@@ -329,7 +330,7 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 200.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -352,10 +353,10 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_WHITEFLOWER_ATTACK_RIGHT", _,_,_,1.0);
-				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flDoingAnimation = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.85;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.0);
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.4;
 			}
 		}
 	}

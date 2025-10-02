@@ -300,7 +300,8 @@ public void StartZombieRiotFrame()
 		
 		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
 	}
-
+	//update scalig now
+	DoGlobalMultiScaling();
 	Rogue_Dome_WaveEnd();
 }
 
@@ -356,10 +357,10 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 	 StrEqual(c_NpcName[entity], " ♫ SENSAL ♫", false) ||
 	  StrEqual(c_NpcName[entity], " Haxton", false))
 	{
-		fl_Extra_Speed[entity] 				*= 1.55;
-		fl_Extra_Damage[entity] 			*= 2.5;
-		f_AttackSpeedNpcIncrease[entity] 	*= 0.4;
-		RogueHelp_BodyHealth(entity, null, 				   3.0);
+		fl_Extra_Speed[entity] 				*= 1.35;
+		fl_Extra_Damage[entity] 			*= 2.0;
+		f_AttackSpeedNpcIncrease[entity] 	*= 0.6;
+		RogueHelp_BodyHealth(entity, null, 				   2.0);
 	}
 	else
 	{
@@ -376,7 +377,7 @@ public void Rogue_GamemodeMadness_EnemyRename(int entity)
 
 public void Rogue_GamemodeMadness_TryToEnableURF()
 {
-	if (GetURandomFloat() >= 0.2) // 20% to enable
+	if (GetURandomFloat() >= 0.1) // 10% to enable
 		return;
 	
 	Rogue_GiveNamedArtifact("Gamemode Madness URF", true);

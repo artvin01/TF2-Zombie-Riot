@@ -221,6 +221,7 @@ static bool ClotInteract(int client, int weapon, ObjectVintulumBomb npc)
 		CooldownGive *= 0.5;
 	SPrintToChat(Owner, "%T", "Global Cooldown Bomb", Owner, CooldownGive);
 	f_VintulumBombRecentlyUsed[Owner] = GetGameTime() + CooldownGive;
+	ApplyStatusEffect(Owner, Owner, "Vintulum Bomb EMP", CooldownGive);
 	npc.m_PointAt = 1;
 	npc.m_flBombExplodeTill = GetGameTime() + 5.0;
 	npc.PlayActivateSound();

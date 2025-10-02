@@ -796,9 +796,8 @@ bool Object_Interact(int client, int weapon, int obj)
 	{
 		// Player mounted
 		entity = EntRefToEntIndex(Building_Mounted[obj]);
-		if(entity == -1 && BombIdVintulum() != i_NpcInternalId[obj])
+		if(entity == -1)
 			return false;
-		//bomb should still think
 
 		MountedObjectInteracted = true;
 	}
@@ -1125,9 +1124,12 @@ public void ObjBaseThink(int building)
 		}
 	}
 
-	//do not think if you are being carried.
-	if(BuildingIsBeingCarried(building))
-		return;
+	//do not think if you are being carried, unless bomb.
+	if(BombIdVintulum() != i_NpcInternalId[building])
+	{
+		if(BuildingIsBeingCarried(building))
+			return;
+	}
 
 	ObjectGeneric_ClotThink(objstats);
 }

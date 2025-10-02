@@ -42,7 +42,7 @@ void Umbral_Refract_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "refract");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -179,9 +179,10 @@ methodmap Umbral_Refract < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 2.0;
-				fl_Extra_MeleeArmor[npc.index] *= 0.65;
-				fl_Extra_RangedArmor[npc.index] *= 0.65;
+				fl_Extra_Damage[npc.index] *= 1.65;
+				fl_Extra_MeleeArmor[npc.index] *= 0.5;
+				fl_Extra_RangedArmor[npc.index] *= 0.5;
+				fl_Extra_Speed[npc.index] *= 1.05;
 			}
 		}
 		return npc;

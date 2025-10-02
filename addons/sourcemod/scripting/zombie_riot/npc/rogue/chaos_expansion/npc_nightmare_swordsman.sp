@@ -256,42 +256,10 @@ methodmap NightmareSwordsman < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		b_thisNpcIsABoss[npc.index] = true;
 		npc.m_flBackupDespawnEmergency = GetGameTime() + TimeUntillOver;
-
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
-
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "15 15 15 255");
-			DispatchKeyValue(entity, "fogcolor2", "15 15 15 255");
-			DispatchKeyValueFloat(entity, "fogstart", 305.0);
-			DispatchKeyValueFloat(entity, "fogend", 500.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 1.0);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-			
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
+		
+		int color[4] = { 15, 15, 15, 255 };
+		SetCustomFog(FogType_NPC, color, color, 305.0, 500.0, 1.0);
+		
 		for(int client1 = 1; client1 <= MaxClients; client1++)
 		{
 			if(IsClientInGame(client1))
@@ -332,7 +300,7 @@ methodmap NightmareSwordsman < CClotBody
 		float flPos[3], flAng[3];
 				
 			
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 
 		npc.GetAttachment("eyes", flPos, flAng);
 		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "eyes", {0.0,0.0,0.0});
@@ -699,14 +667,7 @@ public void NightmareSwordsman_NPCDeath(int entity)
 	if(EntIndexToEntRef(entity) == RaidBossActive)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int fogentity = EntRefToEntIndex(FogEntity);
-		if(fogentity > MaxClients)
-			RemoveEntity(fogentity);
-
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog(FogType_NPC);
 }
 
 

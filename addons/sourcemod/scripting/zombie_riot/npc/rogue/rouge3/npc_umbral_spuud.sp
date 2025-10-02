@@ -73,7 +73,7 @@ void Umbral_Spuud_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spuud");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -192,9 +192,10 @@ methodmap Umbral_Spuud < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 2.0;
-				fl_Extra_MeleeArmor[npc.index] *= 0.65;
-				fl_Extra_RangedArmor[npc.index] *= 0.65;
+				fl_Extra_Damage[npc.index] *= 1.65;
+				fl_Extra_MeleeArmor[npc.index] *= 0.5;
+				fl_Extra_RangedArmor[npc.index] *= 0.5;
+				fl_Extra_Speed[npc.index] *= 1.05;
 			}
 		}
 		return npc;
@@ -218,13 +219,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		
 	}
-	/*
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	*/
+	
 	if(i_npcspawnprotection[npc.index] <= NPC_SPAWNPROT_INIT)
 		npc.m_flSpeedIncreaceMeter *= 0.9975;
 
@@ -233,16 +228,23 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.m_flSpeedIncreaceMeter = 0.1;
 	}
 	npc.m_flMeleeArmor = (1.0 / npc.m_flSpeedIncreaceMeter);
-	npc.m_flMeleeArmor -= 5.0;
+	npc.m_flMeleeArmor -= 8.0;
 	if(npc.m_flMeleeArmor <= 1.0)
 	{
 		npc.m_flMeleeArmor = 1.0;
 	}
+	
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	
 	UmbralSpuudAnimBreak(npc);
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GetGameTime())
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GetGameTime() + GetRandomRetargetTime();
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

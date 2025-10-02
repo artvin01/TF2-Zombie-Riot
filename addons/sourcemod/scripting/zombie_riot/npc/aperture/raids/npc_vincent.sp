@@ -436,7 +436,7 @@ methodmap Vincent < CClotBody
 		
 		SetVariantColor(view_as<int>({200, 200, 50, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-
+		
 		Vincent_SpawnFog(npc.index);
 
 		return npc;
@@ -587,7 +587,7 @@ public void Vincent_ClotThink(int iNPC)
 		Vincent_PourOilAbility(npc, 30.0, delay);
 		if(!npc.Anger)
 		{
-			switch(GetRandomInt(0,2))
+			switch(GetRandomInt(0,4))
 			{
 				case 0:
 					CPrintToChatAll("{rare}%t{default}: Someone turn the heat up.", c_NpcName[npc.index]);
@@ -595,6 +595,10 @@ public void Vincent_ClotThink(int iNPC)
 					CPrintToChatAll("{rare}%t{default}: Is it just me or are you engulfed in flames?", c_NpcName[npc.index]);
 				case 2:
 					CPrintToChatAll("{rare}%t{default}: Spreading the inferno.", c_NpcName[npc.index]);
+				case 3:
+					CPrintToChatAll("{rare}%t{default}: Fire in the hole.", c_NpcName[npc.index]);
+				case 4:
+					CPrintToChatAll("{rare}%t{default}: Lighting it up.", c_NpcName[npc.index]);
 			}
 		}
 	}
@@ -864,15 +868,8 @@ public void Vincent_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	npc.StopPassiveSound();
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
-
+	
+	ClearCustomFog(FogType_NPC);
 }
 
 static void Vincent_GrantItem(int entity)
@@ -1642,20 +1639,34 @@ bool Vincent_SlamThrow(int iNPC, int target)
 		npc.m_flSpeed = 0.0;
 		float Timeslam = VINCENT_PREPARESLAM_TIME;
 		float cooldown;
+		float playbackRate = 0.4;
 		npc.SetCycle(0.75);
 		
 		if(!npc.Anger)
 		{
-			npc.SetPlaybackRate(0.4);
 			cooldown = 40.0;
 		}
 		else
 		{
-			npc.SetPlaybackRate(0.4 * (1.0 / 0.75));
+			
+			playbackRate *= (1.0 / 0.75);
 			Timeslam *= 0.75;
 			cooldown = 35.0;
 		}
 		
+		if (npc.m_bTimeUpMode)
+		{
+			// it gets faster the longer it's taking!
+			float overtime = GetGameTime() - RaidModeTime;
+			float extraMultiplier = fmax(0.15, (1.0 / fmax(1.5, overtime * 0.15)));
+			
+			playbackRate *= (1.0 / extraMultiplier);
+			Timeslam *= extraMultiplier;
+		}
+		
+		// let's not break anything
+		npc.SetPlaybackRate(fmin(2.0, playbackRate));
+			
 		npc.m_flThrow_Cooldown = GetGameTime(npc.index) + cooldown;
 		
 		if(!npc.Anger && !npc.m_bTimeUpMode)
@@ -1812,51 +1823,22 @@ stock int Vincent_GetClosestBeacon(int entity, float EntityLocation[3], float li
 void Vincent_SpawnFog(int iNPC)
 {
 	Vincent npc = view_as<Vincent>(iNPC);
-	if(FogEntity != INVALID_ENT_REFERENCE)
+	
+	int color[4];
+	float maxDensity;
+	
+	if (npc.Anger)
 	{
-		int entity = EntRefToEntIndex(FogEntity);
-		if(entity > MaxClients)
-			RemoveEntity(entity);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
+		color = { 255, 100, 100, 50 };
+		maxDensity = 0.5;
+	}
+	else
+	{
+		color = { 75, 75, 255, 25 };
+		maxDensity = 0.5;
 	}
 	
-	int entity = CreateEntityByName("env_fog_controller");
-	if(entity != -1)
-	{
-		DispatchKeyValue(entity, "fogblend", "2");
-		if(npc.Anger)
-		{
-			DispatchKeyValue(entity, "fogcolor", "255 100 100 50");
-			DispatchKeyValue(entity, "fogcolor2", "255 100 100 50");
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.5);
-		}
-		else
-		{
-			DispatchKeyValue(entity, "fogcolor", "75 75 255 25");
-			DispatchKeyValue(entity, "fogcolor2", "75 75 255 25");
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.35);
-		}
-		DispatchKeyValueFloat(entity, "fogstart", 400.0);
-		DispatchKeyValueFloat(entity, "fogend", 1000.0);
-
-		DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-		DispatchKeyValue(entity, "fogenable", "1");
-		DispatchKeyValue(entity, "spawnflags", "1");
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "TurnOn");
-
-		FogEntity = EntIndexToEntRef(entity);
-
-		for(int client1 = 1; client1 <= MaxClients; client1++)
-		{
-			if(IsClientInGame(client1))
-			{
-				SetVariantString("rpg_fortress_envfog");
-				AcceptEntityInput(client1, "SetFogController");
-			}
-		}
-	}
+	SetCustomFog(FogType_NPC, color, color, 400.0, 1000.0, maxDensity);
 }
 
 static void Vincent_PourOilAbility(Vincent npc, float duration, float delayToIgnite)

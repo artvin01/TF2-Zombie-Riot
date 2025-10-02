@@ -54,10 +54,10 @@ void JkeiDrone_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Jkei Drone");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_jkei_drone");
-	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "jkeidrone");
+	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

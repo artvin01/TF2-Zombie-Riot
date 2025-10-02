@@ -267,7 +267,6 @@ bool b_EnableCountedDowns[MAXPLAYERS];
 bool b_EnableClutterSetting[MAXPLAYERS];
 bool b_EnableNumeralArmor[MAXPLAYERS];
 int i_CustomModelOverrideIndex[MAXPLAYERS];
-int FogEntity = INVALID_ENT_REFERENCE;
 int PlayerPoints[MAXPLAYERS];
 float f_InBattleHudDisableDelay[MAXPLAYERS];
 int CurrentAmmo[MAXPLAYERS][Ammo_MAX];
@@ -900,4 +899,15 @@ float MultiGlobalHighHealthBoss = 0.34;
 //Above a certain amount, bosses gain more damage and HP, but its capped at a certain amount of them just like normal enemies
 float MultiGlobalScalingBossExtra = 1.0;
 
+enum
+{
+	FogType_Wave,
+	FogType_NPC,
+	
+	FogType_COUNT
+}
+
+int CustomFogEntity[FogType_COUNT];	// Array of fog controller entity refs set by the gamemode that exist, but might not be active
+int MapFogEntity;					// Entity ref of the fog controller used by the map, that is currently unused because a custom fog is taking priority
+int ActiveFogEntity;				// Entity ref of the fog controller that is currently active, mostly used for late joins
 #endif

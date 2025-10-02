@@ -15,7 +15,7 @@ void Rogue_Hand2_AbilityUse(int client, int weapon)
 
 	if(Hand2Rapid && i_WeaponArchetype[weapon] == Archetype_Rapid)
 	{
-		DataPack pack;
+		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		RequestFrame(RogueHand2RapidFrame, pack);
@@ -67,6 +67,10 @@ public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflicto
 			{
 				extra /= MultiGlobalHealth;
 			}
+			if((extra > (damage)))
+			{
+				extra = damage;
+			}
 
 			StartBleedingTimer(victim, attacker, extra, 1, weapon, DMG_PLASMA, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED, 1);
 		}
@@ -106,15 +110,47 @@ static void RogueHand2RapidFrame(DataPack pack)
 	delete pack;
 }
 
-public void Rogue_Hand2Artillery_Weapon(int entity)
+bool DontTriggerArtillery = false;
+public void Rogue_Hand2Artillery_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
-	if(i_WeaponArchetype[entity] == Archetype_Artillery)
+	if(DontTriggerArtillery)
+		return;
+	
+	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Artillery)
 	{
-		Attributes_Set(entity, Attrib_MaxEnemiesHitExplode, 100.0);
-		Attributes_Set(entity, Attrib_ExplosionFalloff, 1.0);
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			DataPack pack;
+			CreateDataTimer(3.0, Rogue_Hand2Atillery_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(attacker));
+			pack.WriteCell(EntIndexToEntRef(victim));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteFloat(damage);
+		}
 	}
 }
 
+static Action Rogue_Hand2Atillery_Timer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int attacker = EntRefToEntIndex(pack.ReadCell());
+	int victim = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	float damageDeal = pack.ReadFloat();
+	if(IsClientInGame(attacker) && IsPlayerAlive(attacker) && IsEntityAlive(victim))
+	{
+		int WeaponDo = -1;
+		if(IsValidEntity(weapon))
+			WeaponDo = weapon;
+		DontTriggerArtillery = true;
+		float chargerPos[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		SDKHooks_TakeDamage(victim, attacker, attacker, damageDeal , DMG_BLAST, WeaponDo, NULL_VECTOR, chargerPos);
+		DontTriggerArtillery = false;
+	}
+
+	return Plugin_Stop;
+}
 public void Rogue_Hand2Defender_Enemy(int entity)
 {
 	ApplyStatusEffect(entity, entity, "Fisticuffs", 999.9);
@@ -136,6 +172,12 @@ public void Rogue_Hand2Defender_TakeDamage(int victim, int &attacker, int &infli
 
 public void Rogue_Hand2Deadeye_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(b_thisNpcIsARaid[victim])
+		return;
+
+	if(EntRefToEntIndex(RaidBossActive) == victim)	
+		return;
+		
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Deadeye)
 	{
 		if(i_HasBeenHeadShotted[victim] && view_as<CClotBody>(victim).m_iHealthBar < 1 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -185,10 +227,10 @@ public void Rogue_Hand2Hunter_TakeDamage(int victim, int &attacker, int &inflict
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hunter)
 	{
 		float time = GetGameTime() - Hand2HunterLastTime[attacker];
-		if(time > 50.0)
-			time = 50.0;
+		if(time > 25.0)
+			time = 25.0;
 		
-		damage += damage * (time / 10.0);
+		damage += damage * (time / 5.0);
 		
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			RequestFrame(RogueHand2HunterReset, attacker);
@@ -212,8 +254,8 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 				count++;
 		}
 
-		if(count > 16)
-			count = 16;
+		if(count > 8)
+			count = 8;
 
 		damage += damage * (count / 6.666667);
 	}
@@ -221,6 +263,10 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 
 public void Rogue_Hand2Lord_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if((damagetype & DMG_BLAST))
+	{
+		return;
+	}
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Lord)
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED) && !(GetURandomInt() % 4))
@@ -260,7 +306,7 @@ public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflic
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float firerate = Attributes_Get(weapon, 6);
-			ApplyTempAttrib(weapon, 6, 0.935, firerate * 2.0);
+			ApplyTempAttrib(weapon, 6, 0.952, firerate * 1.65);
 		}
 	}
 }

@@ -80,7 +80,7 @@ void RapierEndDuelOnKill(int client,int victim)
 				i_CashLimit[client]++;
 				if(i_CashLimit[client] < 11)
 				{
-					CashRecievedNonWave[client] += 25;
+					CashReceivedNonWave[client] += 25;
 					CashSpent[client] -= 25;
 				}
 			}
@@ -90,7 +90,7 @@ void RapierEndDuelOnKill(int client,int victim)
 				i_CashLimit[client]++;
 				if(i_CashLimit[client] < 11)
 				{
-					CashRecievedNonWave[client] += 50;
+					CashReceivedNonWave[client] += 50;
 					CashSpent[client] -= 50;
 				}
 			}

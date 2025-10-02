@@ -106,6 +106,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 methodmap ChristianBrutalSniper < CClotBody
 {
+	property float m_flSpawnMessageTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -212,6 +218,8 @@ methodmap ChristianBrutalSniper < CClotBody
 		npc.m_flAbilityOrAttack3 = GetGameTime(npc.index) + GetRandomFloat(15.0, 25.0); 	//Switch to bow randomly
 		npc.m_flAbilityOrAttack5 = GetGameTime(npc.index) + GetRandomFloat(20.0, 30.0); 	//Superjump
 		
+		npc.m_flSpawnMessageTime = GetGameTime(npc.index) + 0.5;
+		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -258,7 +266,13 @@ public void ChristianBrutalSniper_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	
+	if (npc.m_flSpawnMessageTime && npc.m_flSpawnMessageTime < GetGameTime(npc.index))
+	{
+		npc.m_flSpawnMessageTime = 0.0;
+		VSHJokeSpawnMessage(npc.index, "Christian Brutal Sniper");
+	}
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
