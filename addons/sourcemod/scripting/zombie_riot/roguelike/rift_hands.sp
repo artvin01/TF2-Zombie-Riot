@@ -172,6 +172,12 @@ public void Rogue_Hand2Defender_TakeDamage(int victim, int &attacker, int &infli
 
 public void Rogue_Hand2Deadeye_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(b_thisNpcIsARaid[victim])
+		return;
+
+	if(EntRefToEntIndex(RaidBossActive) == victim)	
+		return;
+		
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Deadeye)
 	{
 		if(i_HasBeenHeadShotted[victim] && view_as<CClotBody>(victim).m_iHealthBar < 1 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -248,8 +254,8 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 				count++;
 		}
 
-		if(count > 16)
-			count = 16;
+		if(count > 8)
+			count = 8;
 
 		damage += damage * (count / 6.666667);
 	}
@@ -300,7 +306,7 @@ public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflic
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float firerate = Attributes_Get(weapon, 6);
-			ApplyTempAttrib(weapon, 6, 0.935, firerate * 2.0);
+			ApplyTempAttrib(weapon, 6, 0.952, firerate * 1.65);
 		}
 	}
 }

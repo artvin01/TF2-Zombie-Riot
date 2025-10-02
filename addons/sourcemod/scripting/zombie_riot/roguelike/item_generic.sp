@@ -239,7 +239,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 			{
 				damageMulti = 1.0;
 			}
-			damageMulti += 0.35;
+			damageMulti += 0.25;
 
 			if(damageMulti > 1.0)
 			{
