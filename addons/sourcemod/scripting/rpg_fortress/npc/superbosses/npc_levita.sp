@@ -177,7 +177,7 @@ methodmap Levita < CClotBody
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 
-		SetVariantInt(RUINA_WINGS_4);
+		SetVariantInt(RUINA_UNUSED_2);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(RUINA_TWIRL_CREST_4);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");

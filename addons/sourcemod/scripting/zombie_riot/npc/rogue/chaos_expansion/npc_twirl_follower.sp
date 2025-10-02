@@ -353,7 +353,7 @@ methodmap TwirlFollower < CClotBody
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
-		npc.m_iWearable2 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
+		npc.m_iWearable2 = npc.EquipItem("head", WINGS_MODELS_1);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl", _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl", _, skin);
@@ -364,7 +364,7 @@ methodmap TwirlFollower < CClotBody
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		
 		npc.m_fbGunout = true;
-		SetVariantInt(RUINA_WINGS_4);
+		SetVariantInt(WINGS_TWIRL);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");

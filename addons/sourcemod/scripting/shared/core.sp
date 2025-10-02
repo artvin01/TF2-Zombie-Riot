@@ -237,11 +237,11 @@ enum
 	RUINA_LAN_SWORD_3		= 262144,		//19
 	RUINA_LAZER_CANNON_2	= 524288		//20
 }
-#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_2.mdl"
+#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_3_test1.mdl"
 enum
 {
-	RUINA_WINGS_4			= 1,			//1
-	RUINA_WINGS_3			= 2,			//2
+	RUINA_UNUSED_2			= 1,			//1
+	RUINA_UNUSED_3			= 2,			//2
 	RUINA_MAGIA_TOWER_1		= 4,			//3
 	RUINA_MAGIA_TOWER_2		= 8,			//4
 	RUINA_MAGIA_TOWER_3		= 16,			//5

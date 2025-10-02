@@ -1,35 +1,35 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_3_2.mdl"	//current one on the server: null
+$modelname "zombie_riot/weapons/ruina_models_3_3_test1.mdl"	//current one on the server: null
 
 
-$bodygroup "wings_4"	
+$bodygroup "unused_2"	
 {
 	blank
-	studio "v3/wings_4.smd"
+	studio "v2/hand_crest_v2.smd"
 }
-$bodygroup "wings_3"	
+$bodygroup "unused_3"	
 {
 	blank
-	studio "v3/wings_3.smd"
+	studio "v2/hand_crest_v2.smd"
 }
-$bodygroup "tower_1"	
+$bodygroup "tower_1"		//Converted
 {
 	blank
 	studio "v3/tower_1.smd"
 }
-$bodygroup "tower_2"	
+$bodygroup "tower_2"		//Converted
 {
 	blank
 	studio "v3/tower_2.smd"
 }
-$bodygroup "tower_3"	
+$bodygroup "tower_3"		//Converted
 {
 	blank
 	studio "v3/tower_3.smd"
 }
-$bodygroup "tower_4"	
+$bodygroup "tower_4"		//Converted
 {
 	blank
 	studio "v3/tower_4.smd"
@@ -80,9 +80,6 @@ $bodygroup "ruina_bow_3"
 	studio "v3/ruina_bow_3.smd"
 }
 
-
-
-
 $surfaceprop "metal"
 
 $contents "solid"
@@ -119,6 +116,9 @@ $cdmaterials "models\props_moonbase\"
 //asteroid01			//can certainly work as a replacement for glow inner for large things.
 //moon_gravel_crystal
 
+$cdmaterials "models\props_mvm\"
+//painted_wood_01
+
 $cdmaterials "models\props_halloween\"
 //unlit_black		//is black
 
@@ -128,10 +128,7 @@ $cbox 0 0 0 0 0 0
 
 $bbox -1.784 -1.784 -2.533 1.77 1.773 29.017
 
-//Good to know I can use these to create special points for vector getting to connect beams or TE or for effects
-
 $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
-#definebone "root"	"" 0 0 0 0 0 0 0 0 0 0 0 0
 
 
 $sequence "idle" {
