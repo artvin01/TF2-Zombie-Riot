@@ -6175,7 +6175,8 @@ static void UnstableUmbralRift_Start(int victim, StatusEffect Apply_MasterStatus
 
 static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	i_Client_Gravity[victim] /= 2;
+	if(victim <= MaxClients)
+		i_Client_Gravity[victim] /= 2;
 	if(!IsValidClient(victim))
 		return;
 		
@@ -6187,7 +6188,8 @@ static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterSt
 
 static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	i_Client_Gravity[victim] *= 2;
+	if(victim <= MaxClients)
+		i_Client_Gravity[victim] *= 2;
 	if(!IsValidClient(victim))
 		return;
 		

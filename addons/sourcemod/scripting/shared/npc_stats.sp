@@ -1527,6 +1527,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			return 1.0;
 		}
+		if(GetEntPropFloat(this.index, Prop_Data, "f_ClimbingAm") > GetGameTime())
+		{
+			if(!this.IsOnGround())
+				return 0.0;
+		}
+		else
+		{
+			SetEntProp(this.index, Prop_Data, "i_Climbinfractions", 0);
+		}
 #if defined ZR
 		if(i_npcspawnprotection[this.index] == NPC_SPAWNPROT_ON)
 		{
@@ -3501,6 +3510,8 @@ public void NPC_Base_InitGamedata()
 		.DefineIntField("m_imove_scale")
 		.DefineIntField("m_imove_yaw")
 		.DefineFloatField("f_JumpedRecently")
+		.DefineIntField("i_Climbinfractions")
+		.DefineFloatField("f_ClimbingAm")
 #if defined ZR
 		.DefineFloatField("m_flElementRes", Element_MAX)
 #endif
@@ -5907,7 +5918,7 @@ public void NpcBaseThink(int iNPC)
 			float JumpFloat = GetEntPropFloat(iNPC, Prop_Data, "f_JumpedRecently");
 			if(JumpFloat > GetGameTime())
 			{
-				StuckFixNpc_Ledge(npc);
+				StuckFixNpc_Ledge(npc,_, 1);
 			}
 		}
 	}
@@ -11307,11 +11318,17 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 	loco.GetFeet(feet);
 	
 	float MaxSpeedjump = loco.GetDesiredSpeed();
+	if(MaxSpeedjump == 0.0) //if standing still
+	{
+		MaxSpeedjump = 150.0;
+	}
 	if(MaxSpeedjump <= 100.0)
 		MaxSpeedjump = 100.0;
-	if(MaxSpeedjump >= 200.0)
-		MaxSpeedjump = 200.0;
-	if (GetVectorDistance(feet, goal) > MaxSpeedjump)
+	if(MaxSpeedjump >= 150.0)
+		MaxSpeedjump = 150.0;
+	float GoalAm[3];
+	GoalAm = goal;
+	if (GetVectorDistance(feet, GoalAm) > MaxSpeedjump)
 	{
 		return false;
 	}
@@ -11319,18 +11336,39 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 	loco.SetVelocity({0.0,0.0,0.0});
 	//but we reset the pos to make a perfect jump everytime.
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
-	float GoalAm[3];
-	GoalAm = goal;
 	npc.FaceTowards(GoalAm, 20000.0);
-
 	//we save when they recently jumped.
-	SetEntPropFloat(bot_entidx, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
+	float JumpFloat = GetEntPropFloat(bot_entidx, Prop_Data, "f_JumpedRecently");
+	JumpFloat -= 0.3;
+	if(JumpFloat > GetGameTime())
+	{
+		//fix now
+		if(GetEntProp(bot_entidx, Prop_Data, "i_Climbinfractions") >= 4)
+		{
+		//	SetEntPropFloat(bot_entidx, Prop_Data, "f_JumpedRecently", 0.0);
+			//took too long, teleport.
+			StuckFixNpc_Ledge(npc, true, 1);
+			return false;
+		}
+		else
+		{
+			float Difference = GoalAm[2] - feet[2];
+			if(Difference <= 0.0)
+				Difference *= -1.0;
+
+			Difference *= 15.0;
+			StuckFixNpc_Ledge(npc, false, 2, Difference);
+			SetEntPropFloat(bot_entidx, Prop_Data, "f_ClimbingAm", GetGameTime() + 1.0);
+			SetEntProp(bot_entidx, Prop_Data, "i_Climbinfractions", GetEntProp(bot_entidx, Prop_Data, "i_Climbinfractions") + 1);
+			return loco.CallBaseFunction(goal, fwd, entity);
+		}
+	}
+	SetEntPropFloat(bot_entidx, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.65);
 	return loco.CallBaseFunction(goal, fwd, entity);
 }
 
-
 #define DEFAULT_ANTISTUCK_SPEED 100.0
-void StuckFixNpc_Ledge(CClotBody npc)
+void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward = 0, float GiveSpeedUp = 250.0)
 {
 	static float flMyPos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
@@ -11385,13 +11423,28 @@ void StuckFixNpc_Ledge(CClotBody npc)
 	}
 	float ang[3], Vectorspeed[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-	Vectorspeed[2] = 150.0;
-	Vectorspeed[0] = -1.0 * (Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
-	Vectorspeed[1] = -1.0 * (Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
-	if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs, true))
+	Vectorspeed[2] = GiveSpeedUp;
+	if(LaunchForward)
 	{
-		Vectorspeed[0] *= -1.0;
-		Vectorspeed[1] *= -1.0;
+		Vectorspeed[0] = -1.0 * (Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
+		Vectorspeed[1] = -1.0 * (Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*DEFAULT_ANTISTUCK_SPEED);
+		if(LaunchForward == 2)
+		{
+			Vectorspeed[0] *= -1.0;
+			Vectorspeed[1] *= -1.0;
+		}
+	}
+	if(TeleportDo)
+	{
+		if(Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs, true))
+		{
+			Vectorspeed[0] *= -1.0;
+			Vectorspeed[1] *= -1.0;
+		}
+	}
+	else
+	{
+		npc.Jump();
 	}
 	npc.SetVelocity(Vectorspeed);
 	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
