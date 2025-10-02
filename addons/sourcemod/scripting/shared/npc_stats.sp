@@ -11356,8 +11356,8 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 			if(Difference <= 0.0)
 				Difference *= -1.0;
 
-			Difference *= 6.0;
-			StuckFixNpc_Ledge(npc, false, 0, Difference);
+			Difference *= 15.0;
+			StuckFixNpc_Ledge(npc, false, 2, Difference);
 			SetEntPropFloat(bot_entidx, Prop_Data, "f_ClimbingAm", GetGameTime() + 1.0);
 			SetEntProp(bot_entidx, Prop_Data, "i_Climbinfractions", GetEntProp(bot_entidx, Prop_Data, "i_Climbinfractions") + 1);
 			return loco.CallBaseFunction(goal, fwd, entity);
@@ -11442,7 +11442,10 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 			Vectorspeed[1] *= -1.0;
 		}
 	}
-	npc.Jump();
+	else
+	{
+		npc.Jump();
+	}
 	npc.SetVelocity(Vectorspeed);
 	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
 }
