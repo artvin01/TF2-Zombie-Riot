@@ -154,8 +154,8 @@ methodmap OmegaFollower < CClotBody
 			case 7:
 			{
 				this.Speech("I've never given it this much thought before, why do I even indulge in these fights?");
-				this.SpeechDelay(7.0,"Maybe it's for the death-defying scenarios. Maybe it's for the adrenaline.");
-				this.SpeechDelay(12.0,"Or maybe, it's just to be a show-off.");
+				this.SpeechDelay(10.0,"Maybe it's for the death-defying scenarios. Maybe it's for the adrenaline.");
+				this.SpeechDelay(17.0,"Or maybe, it's just to be a show-off.");
 			}
 			case 8:
 			{
@@ -165,12 +165,12 @@ methodmap OmegaFollower < CClotBody
 			case 9:
 			{
 				this.Speech("I'm waiting for all of this to blow over so I can go back to uh...");
-				this.SpeechDelay(5.0, "Huh...what did I even do before all of this chaos nonsense?");
+				this.SpeechDelay(7.0, "Huh...what did I even do before all of this chaos nonsense?");
 			}
 			case 10:
 			{
 				this.Speech("With our current circumstances, I recommend sleeping with an open eye.");
-				this.SpeechDelay(5.0, "It's quite good for your psyche.");
+				this.SpeechDelay(7.0, "It's quite good for your psyche.");
 			}
 			case 11:
 			{
@@ -201,17 +201,17 @@ methodmap OmegaFollower < CClotBody
 			case 16:
 			{
 				this.Speech("Sometimes I like to listen to music and pretend that the people I'm fighting are hearing that exact same music as well.");
-				this.SpeechDelay(5.0, "Can you imagine how sick that would be?");
+				this.SpeechDelay(7.0, "Can you imagine how sick that would be?");
 			}
 			case 17:
 			{
 				this.Speech("You seen those Omega symbols all over the place?");
-				this.SpeechDelay(5.0, "No problem.");
+				this.SpeechDelay(7.0, "No problem.");
 			}
 			case 18:
 			{
 				this.Speech("It's pretty impressive how a bald guy is able to own so many good wares.");
-				this.SpeechDelay(5.0, "Pricey though.");
+				this.SpeechDelay(7.0, "Pricey though.");
 			}
 			case 19:
 			{
@@ -307,7 +307,7 @@ methodmap OmegaFollower < CClotBody
 		npc.m_bScalesWithWaves = true;
 		if(Rogue_HasNamedArtifact("Bob's Wrath"))
 		{
-			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.50;
 		}
 		
 		i_GrabbedThis[npc.index] = INVALID_ENT_REFERENCE;
@@ -348,7 +348,7 @@ static void ClotThink(int iNPC)
 		{
 			if(Rogue_HasNamedArtifact("Bob's Wrath"))
 			{
-				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.50;
 				npc.Anger = true;
 				npc.m_flCheckItemDo = FAR_FUTURE;
 			}
