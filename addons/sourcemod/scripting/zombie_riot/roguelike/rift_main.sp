@@ -291,6 +291,7 @@ static void StartShopVote(bool first)
 			sale = false;
 		}
 		int cost = sale ? (artifact.ShopCost * 7 / 10) : artifact.ShopCost;
+		Rogue_ParadoxGeneric_ShopCost(cost);
 
 		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 		Format(vote.Append, sizeof(vote.Append), " △%d%s", cost, sale ? " {$}" : "");

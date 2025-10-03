@@ -1836,7 +1836,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 					case 1:
 					{
 						if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
-							CPrintToChatAll("{purple}Vhxis{default}: %i."), GetRandomInt(0, 100);
+							CPrintToChatAll("{purple}Vhxis{default}: %i.", GetRandomInt(0, 100));
 						else
 							CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as for the void...");
 					}
