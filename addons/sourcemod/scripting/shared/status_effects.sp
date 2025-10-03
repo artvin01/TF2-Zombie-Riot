@@ -4346,13 +4346,16 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 
 void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	float TimeDisplay = Hand2HunterLastTime_Return(victim) - GetGameTime();
-	if(TimeDisplay <= 0.0)
+	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
+	if(owner <= 0)
+		return;
+	float TimeDisplay = GetGameTime() - Hand2HunterLastTime_Return(owner);
+	if(TimeDisplay >= 25.0)
 	{
 		Format(HudToDisplay, SizeOfChar, "[HS]");
 		return;
 	}
-	Format(HudToDisplay, SizeOfChar, "[HS %.1fs]", Hand2HunterLastTime_Return(victim) - GetGameTime());
+	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0);
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)

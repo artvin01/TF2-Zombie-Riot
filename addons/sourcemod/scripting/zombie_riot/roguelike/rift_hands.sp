@@ -293,12 +293,12 @@ public void Rogue_Hand2Hunter_TakeDamage(int victim, int &attacker, int &inflict
 {
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hunter)
 	{
-		float time = GetGameTime() - Hand2HunterLastTime[attacker];
+		float time = GetGameTime() - Hand2HunterLastTime_Return(attacker);
 		if(time < 25.0)
 		{
 			return;
 		}
-		
+		time = 25.0;
 		damage += damage * (time / 5.0);
 		
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -375,6 +375,7 @@ public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflic
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float firerate = Attributes_Get(weapon, 6);
+			firerate *= Attributes_Get(weapon, 5, 1.0);
 			ApplyTempAttrib(weapon, 6, 0.952, firerate * 1.65);
 		}
 	}
