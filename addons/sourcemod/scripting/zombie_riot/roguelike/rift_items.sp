@@ -175,8 +175,8 @@ public void Rogue_Mazeat3_Enemy(int entity)
 {
 	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.65);
-		fl_Extra_Damage[entity] *= 0.65;
+		RogueHelp_BodyHealth(entity, null, 0.75);
+		fl_Extra_Damage[entity] *= 0.75;
 
 		for(int i; i < Element_MAX; i++)
 		{
@@ -287,8 +287,10 @@ public void Rogue_MedicineSticks_WaveStart()
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) == TFTeam_Red)
+			if(GetTeam(entity) == TFTeam_Red && !b_NpcIsInvulnerable[entity])
+			{
 				VausMagicaGiveShield(entity, 2);
+			}
 		}
 	}
 }
@@ -349,13 +351,23 @@ public void Rogue_GravityDefying_Enemy(int entity)
 		i_NpcWeight[entity] = 0;
 }
 
+float f_DevilbaneAntiSpam[MAXENTITIES];
 public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(weapon == -1)
+		return;
+	if(view_as<CClotBody>(victim).m_iBleedType != BLEEDTYPE_UMBRAL)
+		return;
+	//dont give twice a frame!
+	if(f_DevilbaneAntiSpam[weapon] == GetGameTime())
+		return;
+		
 	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Saga_ChargeReduction(attacker, weapon, 2.0);
+			f_DevilbaneAntiSpam[weapon] = GetGameTime();
 		}
 	}
 }

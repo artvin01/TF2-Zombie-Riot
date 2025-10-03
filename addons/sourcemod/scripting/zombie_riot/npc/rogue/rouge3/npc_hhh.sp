@@ -282,8 +282,8 @@ methodmap HHH < CClotBody
 		npc.m_bIsTeleporting = false;
 		npc.m_iChanged_WalkCycle = 0;
 		npc.m_flSpawnMessageTime = gameTime + 0.5;
-		npc.m_flNextTeleport = gameTime + 15.0; //Teleport Prepare
-		npc.m_flNextGhostMode = gameTime + 35.0; //Ghost Form
+		npc.m_flNextTeleport = gameTime + 5.0; //Teleport Prepare
+		npc.m_flNextGhostMode = gameTime + 10.0; //Ghost Form
 		
 		KillFeed_SetKillIcon(npc.index, "headtaker");
 		

@@ -15,7 +15,7 @@ void Rogue_Hand2_AbilityUse(int client, int weapon)
 
 	if(Hand2Rapid && i_WeaponArchetype[weapon] == Archetype_Rapid)
 	{
-		DataPack pack;
+		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		RequestFrame(RogueHand2RapidFrame, pack);
@@ -67,9 +67,9 @@ public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflicto
 			{
 				extra /= MultiGlobalHealth;
 			}
-			if((damage * 3.0) >= extra)
+			if((extra > (damage)))
 			{
-				extra = damage * 3.0;
+				extra = damage;
 			}
 
 			StartBleedingTimer(victim, attacker, extra, 1, weapon, DMG_PLASMA, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED, 1);
@@ -221,10 +221,10 @@ public void Rogue_Hand2Hunter_TakeDamage(int victim, int &attacker, int &inflict
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hunter)
 	{
 		float time = GetGameTime() - Hand2HunterLastTime[attacker];
-		if(time > 50.0)
-			time = 50.0;
+		if(time > 25.0)
+			time = 25.0;
 		
-		damage += damage * (time / 10.0);
+		damage += damage * (time / 5.0);
 		
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			RequestFrame(RogueHand2HunterReset, attacker);
@@ -248,8 +248,8 @@ public void Rogue_Hand2Drone_TakeDamage(int victim, int &attacker, int &inflicto
 				count++;
 		}
 
-		if(count > 16)
-			count = 16;
+		if(count > 8)
+			count = 8;
 
 		damage += damage * (count / 6.666667);
 	}
@@ -300,7 +300,7 @@ public void Rogue_Hand2Crusher_TakeDamage(int victim, int &attacker, int &inflic
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			float firerate = Attributes_Get(weapon, 6);
-			ApplyTempAttrib(weapon, 6, 0.935, firerate * 2.0);
+			ApplyTempAttrib(weapon, 6, 0.952, firerate * 1.65);
 		}
 	}
 }

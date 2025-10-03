@@ -4747,6 +4747,9 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			
 			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{
+				if(b_ThisWasAnNpc[index])
+					return false;
+				
 				if(GetTeam(enemy) == TFTeam_Stalkers)
 				{
 					if(GetTeam(index) != TFTeam_Red)
@@ -4890,7 +4893,17 @@ stock int GetClosestTarget(int entity,
 	//we will only override any non get vector distances, becuase those are pathing
 	//anything using get vector distance means that its a ranged attack, so we leave it alone.
 
+	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #if defined ZR
+
+	//in rogue you can get allies, but they shouldnt get any enemies during setups.
+	if(Rogue_Mode())
+	{
+		if(Rogue_InSetup() && SearcherNpcTeam == TFTeam_Red)
+		{
+			return -1;
+		}
+	}
 	bool IsTowerdefense = false;
 //	if(!UseVectorDistance) 
 	{
@@ -4906,7 +4919,6 @@ stock int GetClosestTarget(int entity,
 		return npc.m_iTarget;
 	}
 #endif
-	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 
 	if(EntityLocation[2] == 0.0)
 	{
@@ -11295,10 +11307,10 @@ static bool TriesClimbingUpLedge(CBaseNPC_Locomotion loco, const float goal[3], 
 	loco.GetFeet(feet);
 	
 	float MaxSpeedjump = loco.GetDesiredSpeed();
-	if(MaxSpeedjump <= 50.0)
-		MaxSpeedjump = 50.0;
-	if(MaxSpeedjump >= 150.0)
-		MaxSpeedjump = 150.0;
+	if(MaxSpeedjump <= 100.0)
+		MaxSpeedjump = 100.0;
+	if(MaxSpeedjump >= 200.0)
+		MaxSpeedjump = 200.0;
 	if (GetVectorDistance(feet, goal) > MaxSpeedjump)
 	{
 		return false;

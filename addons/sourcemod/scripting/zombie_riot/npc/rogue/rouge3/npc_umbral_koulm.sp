@@ -46,7 +46,7 @@ void Umbral_Koulm_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "koulm");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }

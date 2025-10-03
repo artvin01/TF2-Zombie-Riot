@@ -44,7 +44,7 @@ void Umbral_Rouam_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "rouam");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -241,7 +241,7 @@ public void Umbral_Rouam_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	if(npc.m_flAutoEnrage < GetGameTime(npc.index))
+	if(npc.m_flAutoEnrage && npc.m_flAutoEnrage < GetGameTime(npc.index))
 	{
 		npc.EnrageUmbral();
 		npc.m_flAutoEnrage = 0.0;

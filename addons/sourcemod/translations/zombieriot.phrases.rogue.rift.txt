@@ -214,6 +214,14 @@
 	{
 		"en"	"{yellow}Something is coming"
 	}
+	"Map around the Castle"
+	{
+		"en"	"Map around the Castle"
+	}
+	"Map around the Castle Desc"
+	{
+		"en"	"{red}lose 15 Umbral Affinity {blue}The way opened."
+	}
 
 	"Ruin"
 	{
@@ -266,7 +274,23 @@
 	}
 	"Rift Level 3 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often"
+		"en"	"{red}Enemy stats per chapter +2％, start with Fractured voidstone, rift events can occur more often, Umbrals do not like you."
+	}
+	"Rift Level 5"
+	{
+		"en"	"Rift Level 5"
+	}
+	"Rift Level 5 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +10％, start with Fractured voidstone, rift events can occur more often, You are just a grunt, beating bossrush was not enough to prepare you."
+	}
+	"Rift Level 4"
+	{
+		"en"	"Rift Level 4"
+	}
+	"Rift Level 4 Desc"
+	{
+		"en"	"{red}Enemy stats per chapter +4％, start with Fractured voidstone, rift events can occur more often, You have no hope."
 	}
 	"Rift Level 2"
 	{
@@ -274,7 +298,7 @@
 	}
 	"Rift Level 2 Desc"
 	{
-		"en"	"{red}Enemy stats per chapter +2％ {blue}and other possibilities"
+		"en"	"{yellow}No Stat Changes {blue}and other possibilities"
 	}
 	"Rift Level 1"
 	{
@@ -282,7 +306,7 @@
 	}
 	"Rift Level 1 Desc"
 	{
-		"en"	"Lelouch opened a rift to the Curtain. The Void is leaking in through the cracks. It's only been a few weeks, we need to stop this, together with Bob The First and Twirl."
+		"en"	"Lelouch opened a rift to the Curtain. It's only been a few weeks, we need to stop this, together with Bob and Twirl.\n{green}Enemy stats nerfed by -10％\n{red}Grigori will have 1 less item to sell."
 	}
 	"Hand of Predation"
 	{
@@ -322,7 +346,7 @@
 	}
 	"Hand of Spark Desc"
 	{
-		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +10％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
+		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
 	}
 	"Hand of Buckler"
 	{
@@ -330,7 +354,7 @@
 	}
 	"Hand of Buckler Desc"
 	{
-		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 3x base damage only. {green}magic damage based on the enemy's current health"
+		"en"	"Drop by drop, bit by bit. It is unstoppable.\n{green}''Hexing Magic'' weapons deal 3％ (1％ against bosses) {yellow}(affected by scaling) and upto 2x base damage only. {green}magic damage based on the enemy's current health"
 	}
 	"Hand of Undulation"
 	{
@@ -362,7 +386,7 @@
 	}
 	"Hand of Diffusion Desc"
 	{
-		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +240％"
+		"en"	"Is it a will of the many, or the many for the few.\n{green}''Drone Magic'' weapons gain +15％ damage every active projectile, up to +120％"
 	}
 	"Hand of Rending"
 	{
@@ -402,7 +426,7 @@
 	}
 	"Hand of Pulverization Desc"
 	{
-		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +10％ fire rate for a short duration when dealing damage to each enemy"
+		"en"	"Your goal isn't just to hit the bullseye over and over.\n{green}''Crusher'' weapons gains +5％ fire rate for a short duration when dealing damage to each enemy"
 	}
 	"Hand of Revenging"
 	{
@@ -971,7 +995,7 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{red}Umbral are not pleased, {yellow}non-player allies will use the same max health from players, {blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{blue}and we're going deeper."
 	}
 	"The Bladedance"
 	{
@@ -1344,7 +1368,7 @@
 	}
 	"Mazeat Falls Desc"
 	{
-		"en"	"Mazeat was.\n{green}Non-Umbrals enemies have -35％ health and damage and receive +100％ elemental damage"
+		"en"	"Mazeat was.\n{green}Non-Umbrals enemies have -25％ health and damage and receive +100％ elemental damage"
 	}
 	"Finale Encounter Lore"
 	{
@@ -1356,7 +1380,7 @@
 	}
 	"Finale Encounter Desc 1"
 	{
-		"en"	"{green}This chapter grows longer"
+		"en"	"{yellow}This encounter never existed. You get the encounter refunded."
 	}
 	"Finale Encounter Lore 1"
 	{
@@ -1368,7 +1392,7 @@
 	}
 	"Finale Encounter Desc 2"
 	{
-		"en"	"{yellow}Obtain 2 unknown artifacts"
+		"en"	"{yellow}Obtain 3 unknown artifacts"
 	}
 
 	"Cloned Subjects"
@@ -1700,7 +1724,7 @@
 	}
 	"Book of Nature Desc"
 	{
-		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 40, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
+		"en"	"A book explaining how the Umbrals act, even if basic.\n{green}Umbral Affinity increased by 10, cannot lose Umbral Affinity anymore, ''Umbral Hate'' is ignored, you can gain umbral affinity again."
 	}
 	"Book of Nature Conclusion"
 	{

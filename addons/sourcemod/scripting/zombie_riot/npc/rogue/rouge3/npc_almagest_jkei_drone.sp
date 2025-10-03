@@ -57,7 +57,7 @@ void JkeiDrone_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "jkeidrone");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

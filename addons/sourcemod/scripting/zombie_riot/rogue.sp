@@ -874,6 +874,8 @@ void Rogue_RoundEnd()
 	BattleChaos = 0.0;
 	Offline = true;
 	Rogue_BlueParadox_Reset();
+	Zero(i_CurrentEquippedPerk);
+	Zero(i_CurrentEquippedPerkPreviously);
 
 	if(CurrentCollection)
 	{
@@ -1202,6 +1204,7 @@ bool Rogue_BattleLost()
 				SetMusicTimer(client, GetTime() + 10);
 			}
 		}
+		Zero(i_AmountDowned);
 		
 		Waves_RoundEnd();
 		Store_RogueEndFightReset();
@@ -1403,7 +1406,7 @@ void Rogue_NextProgress()
 			{
 				bool hard = Rogue_Rift_CurseLevel() > 1;
 				int rank = Rogue_GetUmbralLevel() + (hard ? 1 : 0);
-				if(rank > 0 && (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime))
+				if(rank > 0 && (rank > 4 || (GetURandomInt() % (15 - (rank * 3))) < (-CurseTime)))
 				{
 					int length = Curses.Length;
 					if(length)

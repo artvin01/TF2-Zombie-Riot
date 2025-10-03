@@ -420,7 +420,7 @@ void Construction_StartSetup()
 	{
 		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
 	}
-
+/*
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -445,6 +445,7 @@ void Construction_StartSetup()
 	}
 
 	delete list;
+	*/
 }
 
 void Construction_RoundEnd()
@@ -1120,20 +1121,25 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 
 		float dist = 0.0;
 
-		if(type < 2)
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
-			dist = GetVectorDistance(pos1, pos2, true);
-			if(dist > distance)
-				continue;
-		}
-
 		CNavArea startArea = TheNavMesh.GetNavAreaEntity(entity, view_as<GetNavAreaFlags_t>(0), 1000.0);
 		if(startArea == NULL_AREA)
 			continue;
 		
 		if(TheNavMesh.BuildPath(startArea, goalArea, pos1))
 		{
+			if(type < 2)
+			{
+				dist = goalArea.GetTotalCost();
+				if(dist == 0.0)
+				{
+					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
+					dist = GetVectorDistance(pos1, pos2, true);
+				}
+				
+				if(dist > distance)
+					continue;
+			}
+
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 			distance = dist;
 
@@ -1901,4 +1907,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-//#include "roguelike/construction_construction.sp"
+#include "roguelike/rift_construction.sp"

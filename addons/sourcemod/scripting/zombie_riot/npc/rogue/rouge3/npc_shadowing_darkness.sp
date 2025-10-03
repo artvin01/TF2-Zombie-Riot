@@ -485,6 +485,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
+		RaidModeScaling *= 0.85;
 		npc.m_flMeleeArmor = 1.25;	
 
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -791,9 +792,9 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			{
 				NpcStats_CopyStats(npc.index, spawn_index);
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 3));
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 3));
-				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 10.0);
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 4));
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 4));
+				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 5.0);
 				npc.m_iTargetAlly = spawn_index;
 			}
 			if(npc.m_flSpeed != 0)
@@ -1022,6 +1023,8 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 				GetVectorAngles(vecAngles, vecAngles);
 				float vecTargetProj[3]; //empty
 				npc.PlayRangedAttackSecondarySound();
+				float DamageCalc = 40.0;
+				DamageCalc *= RaidModeScaling;
 				for(int loop; loop < 8 ;loop ++)
 				{
 					vecAnglesLoop = vecAngles;
@@ -1031,7 +1034,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 					 */
 					vecAnglesLoop[0] += (((-15.0 + ( loop * 3.75))) * 0.25);
 					vecAnglesLoop[1] += (-15.0 + ( loop * 3.75));
-					int projectile = npc.FireProjectile_SD(vecSelf, vecAnglesLoop,  280.0 , 0.0, "raygun_projectile_red");
+					int projectile = npc.FireProjectile_SD(vecSelf, vecAnglesLoop,  DamageCalc , 0.0, "raygun_projectile_red");
 					SD_ProjectileToEnemy(projectile, vecTargetProj, vecAnglesLoop, VecSpeed, EndPos);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(projectile));
@@ -1335,7 +1338,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					float VecEnemy[3];
 					WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTargetWalkTo, 500.0, _,VecEnemy);
-					float DamageCalc = 150.0;
+					float DamageCalc = 100.0;
 					DamageCalc *= RaidModeScaling;
 					//basically oneshots
 					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, true);
@@ -1535,7 +1538,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 8));
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
-				fl_Extra_Damage[spawn_index] *= 5.0;
+				fl_Extra_Damage[spawn_index] *= 1.5;
 				//10% dmg buff
 			}
 		}
@@ -1631,7 +1634,7 @@ public Action ShadowingDarkness_NecroPoolTimer(Handle timer, DataPack pack)
 			return Plugin_Stop;
 		}
 
-		float CircleSize = 150.0;
+		float CircleSize = 250.0;
 		float VecMe[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecAbsOrigin", VecMe);
 		VecMe[2] += 5.0;
@@ -1768,14 +1771,6 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 		{
 			if(TimeLeft < 50.0)
 			{
-				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
-				music.Time = 210;
-				music.Volume = 1.35;
-				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Burnt Light");
-				strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
-				Music_SetRaidMusic(music, false);
 				i_khamlCutscene = 14;
 				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh look how they have come to me...");
 			}
@@ -1784,6 +1779,14 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 		{
 			if(TimeLeft < 47.0)
 			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");
+				music.Time = 210;
+				music.Volume = 1.35;
+				music.Custom = true;
+				strcopy(music.Name, sizeof(music.Name), "Burnt Light");
+				strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
+				Music_SetRaidMusic(music, false);
 				i_khamlCutscene = 13;
 				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: How many umbrals did you piss off?");
 			}
