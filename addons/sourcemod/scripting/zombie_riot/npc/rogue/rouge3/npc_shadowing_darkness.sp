@@ -444,6 +444,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
 			Music_SetRaidMusic(music);
 			npc.m_flSpawnStatueUmbrals = 1.0;
+			ApplyStatusEffect(npc.index, npc.index, "Extreamly Defensive Backup", 10.0);
 		}
 
 
@@ -1980,6 +1981,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_bisWalking = true;
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
+				ApplyStatusEffect(npc.index, npc.index, "Extreamly Defensive Backup", 10.0);
 			}
 		}
 	}
@@ -2015,7 +2017,7 @@ public void ShadowingDarkness_Projectile_StartTouch(int entity, int target)
 {
 	if(target > 0 && target < MAXENTITIES)	//did we hit something???
 	{
-		if(IsIn_HitDetectionCooldown(entity,target))
+		if(IsIn_HitDetectionCooldown(entity,target, ShadowingSlicer))
 			return;
 		Set_HitDetectionCooldown(entity,target, GetGameTime() + 0.2, ShadowingSlicer);
 

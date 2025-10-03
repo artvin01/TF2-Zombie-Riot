@@ -615,6 +615,14 @@
 	{
 		"en"	"Decreases damage taken by 50％"
 	}
+	"Extreamly Defensive Backup"
+	{
+		"en"	"Extreamly Defensive Backup"
+	}
+	"Extreamly Defensive Backup Desc"
+	{
+		"en"	"Decreases damage taken by 90％"
+	}
 	"UBERCHARGED"
 	{
 		"en"	"UBERCHARGED"
