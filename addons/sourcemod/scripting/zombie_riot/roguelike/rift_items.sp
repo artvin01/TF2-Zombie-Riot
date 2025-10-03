@@ -212,12 +212,12 @@ public void Rogue_Umbral6_Collect()
 
 public void Rogue_OldFan_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.5);
+	RogueHelp_BodyDamage(entity, map, 1.4);
 }
 
 public void Rogue_OldFan_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.5);
+	RogueHelp_WeaponDamage(entity, 1.4);
 }
 
 public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)

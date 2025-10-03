@@ -311,12 +311,21 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 
+
 			if(h_NpcSolidHookType[entity] != 0)
 				DHookRemoveHookID(h_NpcSolidHookType[entity]);
 			h_NpcSolidHookType[entity] = 0;
-			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
-		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			SDKHook(entity, SDKHook_StartTouch, Rocket_Particle_StartTouch);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); 
+			SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
+			SDKHook(entity, SDKHook_StartTouch, Wand_Base_StartTouch);
+
+
+			//extras:
+			
+			SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
+			SDKHook(entity, SDKHook_Think, ProjectileBaseThink);
+			SDKHook(entity, SDKHook_ThinkPost, ProjectileBaseThinkPost);
+			WandProjectile_ApplyFunctionToEntity(entity, Shadowing_Darkness_ReflectProjectiles);
 			return entity;
 		}
 		return -1;
@@ -1046,9 +1055,6 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 
 					TE_SetupBeamPoints(vecSelf, EndPos, Shared_BEAM_Laser, 0, 0, 0, 1.5, 3.0, 3.0, 0, 0.0, {255,65,65,125}, 3);
 					TE_SendToAll(0.0);
-					//override normal touch stuff
-					SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-					SDKHook(projectile, SDKHook_StartTouch, Shadowing_Darkness_ReflectProjectiles);		
 
 				}
 			}
@@ -1067,14 +1073,27 @@ public void Shadowing_Darkness_ReflectProjectiles(int entity, int target)
 	{
 		owner = 0;
 	}
-	if(npc.m_iState >= MAX_BOUNCES_SHADOWING_DARKNESS || IsValidEnemy(entity, target, true, true))
+	if(npc.m_iState >= MAX_BOUNCES_SHADOWING_DARKNESS)
 	{
-		//valid target, do damage!
-		Rocket_Particle_StartTouch(entity, target);
-		SDKUnhook(entity, SDKHook_StartTouch, Shadowing_Darkness_ReflectProjectiles);		
+		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
 		return;
 	}
+	if(IsValidEnemy(entity, target, true, true))
+	{
+		ShadowingDarkness_Projectile_StartTouch(entity, target);	
+		return;
+	}
+	else
+	{
+		if(target != 0)
+			return;
+	}
 	npc.m_iState++;
+	EntityKilled_HitDetectionCooldown(entity, ShadowingSlicer);
 	float pos[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	TE_Particle("mvm_soldier_shockwave", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
@@ -1183,6 +1202,9 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 			npc.SetPlaybackRate(1.5);
 			npc.m_flSpeed = 0.0;
 			npc.StopPathing();
+			ApplyStatusEffect(npc.index, npc.index, "Intangible", 999999.0);
+			b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
+			f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE; //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
 		}
 	}
 
@@ -1217,6 +1239,13 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 8));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
 
+				}
+				
+				if(HasSpecificBuff(npc.index, "Intangible"))
+				{
+					RemoveSpecificBuff(npc.index, "Intangible");
+					f_CheckIfStuckPlayerDelay[npc.index] = 0.0;
+					b_ThisEntityIgnoredBeingCarried[npc.index] = false; 
 				}
 				npc.PlaySlicePortal();
 			}
@@ -1977,5 +2006,44 @@ void ShadowingDarkness_SpawnStatues(Shadowing_Darkness_Boss npc, const char[] da
 		NpcStats_CopyStats(npc.index, summon);
 		if(!data[0])
 			TeleportDiversioToRandLocation(summon,_,3000.0, 500.0);
+	}
+}
+
+
+
+public void ShadowingDarkness_Projectile_StartTouch(int entity, int target)
+{
+	if(target > 0 && target < MAXENTITIES)	//did we hit something???
+	{
+		if(IsIn_HitDetectionCooldown(entity,target))
+			return;
+		Set_HitDetectionCooldown(entity,target, GetGameTime() + 0.2, ShadowingSlicer);
+
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+		
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = owner;
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		float DamageDeal = fl_rocket_particle_dmg[entity];
+		if(ShouldNpcDealBonusDamage(target))
+			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
+
+		int DamageTypes;
+		DamageTypes |= DMG_PREVENT_PHYSICS_FORCE;
+
+		DamageTypes |= DMG_BULLET;
+	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], _, SNDCHAN_AUTO, 80, _,1.0, 150,_,ProjectileLoc);
+		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DamageTypes, -1);	//acts like a kinetic rocket
 	}
 }

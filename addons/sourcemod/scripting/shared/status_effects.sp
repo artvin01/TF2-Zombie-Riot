@@ -4327,6 +4327,32 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= VintulumBombHud_Func;
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Hand of Spark");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "HS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= HandOfSparkHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+}
+
+void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	float TimeDisplay = Hand2HunterLastTime_Return(victim) - GetGameTime();
+	if(TimeDisplay <= 0.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[HS]");
+		return;
+	}
+	Format(HudToDisplay, SizeOfChar, "[HS %.1fs]", Hand2HunterLastTime_Return(victim) - GetGameTime());
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)

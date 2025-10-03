@@ -1,18 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool Hand2Charger;
-static bool Hand2Rapid;
+//static bool Hand2Rapid;
 static float Hand2HunterLastTime[MAXPLAYERS];
 static Handle Hand2Medical[MAXPLAYERS];
 
+float Hand2HunterLastTime_Return(int entity)
+{
+	return Hand2HunterLastTime[entity];
+}
+/*
 void Rogue_Hand2_AbilityUse(int client, int weapon)
 {
-	if(Hand2Charger && i_WeaponArchetype[weapon] == Archetype_Charger)
-	{
-		Attributes_SetMulti(weapon, 6, 0.935);
-	}
-
 	if(Hand2Rapid && i_WeaponArchetype[weapon] == Archetype_Rapid)
 	{
 		DataPack pack = new DataPack();
@@ -21,27 +20,47 @@ void Rogue_Hand2_AbilityUse(int client, int weapon)
 		RequestFrame(RogueHand2RapidFrame, pack);
 	}
 }
-
-public void Rogue_Hand2Charger_Collect()
+*/
+public void Rogue_Hand2Charger_AllyWeapon(int entity)
 {
-	Hand2Charger = true;
+	if(i_WeaponArchetype[entity] == Archetype_Charger)
+	{
+		// +25% melee and ranged resistance
+		Attributes_SetMulti(entity, 206, 0.75);
+		Attributes_SetMulti(entity, 205, 0.75);
+	}
 }
 
-public void Rogue_Hand2Charger_Remove()
+public void Rogue_Hand2Charger_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
-	Hand2Charger = false;
-}
+	if(weapon == -1)
+	{
+		return;
+	}
+	if(i_WeaponArchetype[weapon] != Archetype_Charger)
+		return;
 
-public void Rogue_Hand2Rapid_Collect()
-{
-	Hand2Rapid = true;
-}
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
 
-public void Rogue_Hand2Rapid_Remove()
-{
-	Hand2Rapid = false;
-}
+	float pos1[3], pos2[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecOrigin", pos1);
+	GetEntPropVector(attacker, Prop_Data, "m_vecOrigin", pos2);
 
+	static const float MaxDist = (40000.0);
+
+	float distance = GetVectorDistance(pos1, pos2, true);
+	if(MaxDist < distance)
+	{
+		return;
+	}
+	if(attacker && attacker <= MaxClients)
+	{
+		DisplayCritAboveNpc(victim, attacker, true, _, _, true);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
+	}
+	damage *= 1.5;
+}
 public void Rogue_Hand2Hexer_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hexing)
@@ -84,7 +103,7 @@ public void Rogue_Hand2Duelist_TakeDamage(int victim, int &attacker, int &inflic
 		damagetype = DMG_TRUEDAMAGE;
 	}
 }
-
+/*
 static void RogueHand2RapidFrame(DataPack pack)
 {
 	pack.Reset();
@@ -109,6 +128,7 @@ static void RogueHand2RapidFrame(DataPack pack)
 
 	delete pack;
 }
+*/
 
 bool DontTriggerArtillery = false;
 public void Rogue_Hand2Artillery_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -172,17 +192,29 @@ public void Rogue_Hand2Defender_TakeDamage(int victim, int &attacker, int &infli
 
 public void Rogue_Hand2Deadeye_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(weapon == -1)
+		return;
+	if(i_WeaponArchetype[weapon] != Archetype_Deadeye)
+		return;
+	
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
+	if(!i_HasBeenHeadShotted[victim])
+		return;
+	//give more dmg
+	damage *= 1.5;
 	if(b_thisNpcIsARaid[victim])
 		return;
-
 	if(EntRefToEntIndex(RaidBossActive) == victim)	
 		return;
 		
-	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Deadeye)
+	if(attacker <= MaxClients)
 	{
-		if(i_HasBeenHeadShotted[victim] && view_as<CClotBody>(victim).m_iHealthBar < 1 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		if(view_as<CClotBody>(victim).m_iHealthBar < 1)
 		{
 			int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+			health = RoundToNearest
+			(float(health) - damage);
 			int maxhealth = ReturnEntityMaxHealth(victim);
 			
 			if(health < (maxhealth / 5))
@@ -198,7 +230,7 @@ public void Rogue_Hand2Ambusher_Weapon(int entity)
 {
 	if(i_WeaponArchetype[entity] == Archetype_Ambusher)
 	{
-		Attributes_Set(entity, 6, 0.45);
+		Attributes_Set(entity, 6, (1.0 / 1.9));
 	}
 }
 
@@ -211,24 +243,61 @@ public void Rogue_Hand2Power_Weapon(int entity)
 	}
 }
 
-public void Rogue_Hand2Tactician_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+public void Rogue_Hand2Tactician_Weapon(int entity)
 {
-	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Tactician)
+	if(i_WeaponArchetype[entity] == Archetype_Tactician)
 	{
-		if(i_HasBeenHeadShotted[victim] && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-		{
-			Building_GiveRewardsUse(attacker, attacker, 2);
-		}
+		// almost fully accurate
+		Attributes_SetMulti(entity, 106, 0.1);
 	}
 }
 
+public void Rogue_Hand2TacticianBuffAlly(int entity, StringMap map)
+{
+	if(!map)	// Player
+		return;
+	float value = 0.0;
+	map.GetValue("4034", value);
+	map.SetValue("4034", value + 5000.0);
+}
+
+public void Rogue_Hand2Tactician_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
+{
+	if(weapon == -1)
+		return;
+	if(i_WeaponArchetype[weapon] != Archetype_Tactician)
+		return;
+	
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
+	if(!i_HasBeenHeadShotted[victim])
+		return;
+
+	if(attacker > MaxClients)
+		return;
+	
+	Building_GiveRewardsUse(attacker, attacker, 8);
+	TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
+	if(Attributes_Has(weapon, 106))
+		Attributes_SetMulti(weapon, 106, 0.1);
+}
+
+public void Rogue_Hand2Hunter_Weapon(int entity)
+{
+	if(i_WeaponArchetype[entity] == Archetype_Hunter)
+	{
+		ApplyStatusEffect(entity, entity, "Hand of Spark", 999.9);
+	}
+}
 public void Rogue_Hand2Hunter_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
 	if(attacker <= MaxClients && weapon != -1 && i_WeaponArchetype[weapon] == Archetype_Hunter)
 	{
 		float time = GetGameTime() - Hand2HunterLastTime[attacker];
-		if(time > 25.0)
-			time = 25.0;
+		if(time < 25.0)
+		{
+			return;
+		}
 		
 		damage += damage * (time / 5.0);
 		
