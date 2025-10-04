@@ -501,11 +501,11 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		Citizen_MiniBossSpawn();
-		npc.m_flSwordParticleAttackCD = GetGameTime() + 10.0;
-		npc.m_flPortalSummonGate = GetGameTime() + 25.0;
+		npc.m_flSwordParticleAttackCD = GetGameTime() + 5.0;
 		npc.m_flUpperSlashCD = GetGameTime() + 15.0;
-		npc.m_flCreateRingCD = GetGameTime() + 30.0;
-		npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
+		npc.m_flPortalSummonGate = GetGameTime() + 20.0;
+		npc.m_flCreateRingCD = GetGameTime() + 25.0;
+		npc.m_flTeleportToStatueCD = GetGameTime() + 8.0;
 
 		func_NPCDeath[npc.index] = Shadowing_Darkness_Boss_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Shadowing_Darkness_Boss_OnTakeDamage;
@@ -969,7 +969,7 @@ bool Shadowing_Darkness_SwordParticleAttack(Shadowing_Darkness_Boss npc, float g
 
 	if(npc.m_flSwordParticleAttackCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flSwordParticleAttackCD = gameTime + 25.0;
+		npc.m_flSwordParticleAttackCD = gameTime + 15.0;
 		npc.m_iState = 1;
 		npc.m_flDoingAnimation = gameTime + 1.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1192,7 +1192,7 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 {
 	if(npc.m_flPortalSummonGate < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flPortalSummonGate = gameTime + 90.0;
+		npc.m_flPortalSummonGate = gameTime + 60.0;
 		npc.m_iState = 2;	
 		npc.m_flDoingAnimation = gameTime + 1.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1288,7 +1288,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 {
 	if(npc.m_flUpperSlashCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flUpperSlashCD = gameTime + 50.0;
+		npc.m_flUpperSlashCD = gameTime + 35.0;
 		npc.m_iState = 3;	
 		npc.m_flDoingAnimation = gameTime + 2.3;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1541,7 +1541,7 @@ bool Shadowing_Darkness_CreateRing(Shadowing_Darkness_Boss npc, float gameTime)
 {
 	if(npc.m_flCreateRingCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flCreateRingCD = gameTime + 50.0;
+		npc.m_flCreateRingCD = gameTime + 40.0;
 		npc.m_iState = 4;	
 		npc.m_flDoingAnimation = gameTime + 4.5;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1688,7 +1688,7 @@ bool Shadowing_Darkness_StatueTeleport(Shadowing_Darkness_Boss npc, float gameTi
 {
 	if(npc.m_flTeleportToStatueCD < gameTime && npc.m_iState == 0)
 	{
-		npc.m_flTeleportToStatueCD = gameTime + 45.0;
+		npc.m_flTeleportToStatueCD = gameTime + 25.0;
 		npc.m_iState = 5;	
 		npc.m_flDoingAnimation = gameTime + 1.0;
 		if(npc.m_iChanged_WalkCycle != 1) 	
@@ -1973,11 +1973,11 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				i_khamlCutscene = 0;
 				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Let's make sure that the vision will finally come true, all under one, together, and as a collective~");
 				RaidModeTime = GetGameTime() + (350.0);
-				npc.m_flSwordParticleAttackCD = GetGameTime() + 10.0;
-				npc.m_flPortalSummonGate = GetGameTime() + 25.0;
+				npc.m_flSwordParticleAttackCD = GetGameTime() + 5.0;
 				npc.m_flUpperSlashCD = GetGameTime() + 15.0;
-				npc.m_flCreateRingCD = GetGameTime() + 30.0;
-				npc.m_flTeleportToStatueCD = GetGameTime() + 25.0;
+				npc.m_flPortalSummonGate = GetGameTime() + 20.0;
+				npc.m_flCreateRingCD = GetGameTime() + 25.0;
+				npc.m_flTeleportToStatueCD = GetGameTime() + 8.0;
 				npc.SetActivity("ACT_SHADOW_RUN");
 				npc.m_bisWalking = true;
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;

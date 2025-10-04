@@ -620,7 +620,7 @@ void ReilaSpawnBalls(int iNpc, float vecTarget[3])
 	if(npc.m_flSpawnBallsCD < GetGameTime(npc.index))
 	{
 		npc.m_iBallsLeftToSpawn = 4;
-		npc.m_flSpawnBallsCD = GetGameTime(npc.index) + 25.0;
+		npc.m_flSpawnBallsCD = GetGameTime(npc.index) + 15.0;
 	}
 }
 bool ReilaReflectDamageDo(int iNpc)
