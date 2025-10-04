@@ -165,7 +165,7 @@ methodmap Umbral_Ltzens < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 65);
 
 		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{

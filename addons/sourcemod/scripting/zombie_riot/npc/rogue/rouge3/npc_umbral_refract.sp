@@ -166,7 +166,7 @@ methodmap Umbral_Refract < CClotBody
 		
 
 		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{

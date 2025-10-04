@@ -179,7 +179,7 @@ methodmap Umbral_Spuud < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
 		
 		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{

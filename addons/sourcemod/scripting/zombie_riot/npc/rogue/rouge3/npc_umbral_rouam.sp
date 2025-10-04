@@ -197,7 +197,7 @@ methodmap Umbral_Rouam < CClotBody
 		npc.m_flSpeed = 330.0;
 		fl_TotalArmor[npc.index] = 0.25;
 		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{
