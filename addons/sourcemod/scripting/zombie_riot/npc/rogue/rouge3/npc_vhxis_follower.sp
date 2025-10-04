@@ -355,7 +355,6 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						IncreaseEntityDamageTakenBy(target, 0.02, 3.0, true);
 					}
 				}
 
@@ -619,7 +618,6 @@ void VoidFollowerVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 				damage *= 3.0;
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);
-			IncreaseEntityDamageTakenBy(victim, 0.15, 10.0, true);
 		}
 	}
 	delete pack;

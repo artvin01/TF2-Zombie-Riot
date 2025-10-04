@@ -250,7 +250,15 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 	{
 		return false;
 	}
-	int target = Target_Hit_Wand_Detection(iExclude, entity);
+	int target = entity;
+	if(GetTeam(iExclude) == TFTeam_Red)
+		target = Target_Hit_Wand_Detection(iExclude, entity);
+	else
+	{
+		if(!IsValidEnemy(iExclude, target, true, true))
+			target = 0;
+	}
+		
 	if(target > 0)
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
@@ -289,7 +297,9 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 
 public void Wand_Base_StartTouch(int entity, int other)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int target = other;
+	if(GetTeam(entity) == TFTeam_Red)
+		target = Target_Hit_Wand_Detection(entity, other);
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{

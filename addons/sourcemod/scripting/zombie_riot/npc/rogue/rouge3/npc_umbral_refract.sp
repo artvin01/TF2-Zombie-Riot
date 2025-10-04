@@ -164,8 +164,9 @@ methodmap Umbral_Refract < CClotBody
 		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable2, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 125);
 		
-		
-		if(ally != TFTeam_Red && Rogue_Mode() && Rogue_GetUmbralLevel() == 0)
+
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
+		if(ally != TFTeam_Red && Rogue_Mode())
 		{
 			if(Rogue_GetUmbralLevel() == 0)
 			{
@@ -183,6 +184,41 @@ methodmap Umbral_Refract < CClotBody
 				fl_Extra_MeleeArmor[npc.index] *= 0.5;
 				fl_Extra_RangedArmor[npc.index] *= 0.5;
 				fl_Extra_Speed[npc.index] *= 1.05;
+				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 7.0);
+			}
+
+			switch(Rogue_GetFloor() + 1)
+			{
+				//floor 3
+				//10% dmg, 20% res
+				//think 10% faster
+				case 3:
+				{
+					fl_Extra_Damage[npc.index] *= 1.1;
+					fl_Extra_MeleeArmor[npc.index] *= 0.8;
+					fl_Extra_RangedArmor[npc.index] *= 0.8;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
+				}
+				//floor 4-5
+				// 25% more dmg, 50% more res
+				//think 25% faster
+				case 4,5:
+				{
+					fl_Extra_Damage[npc.index] *= 1.25;
+					fl_Extra_MeleeArmor[npc.index] *= 0.5;
+					fl_Extra_RangedArmor[npc.index] *= 0.5;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.25);
+				}
+				//floor 6
+				// 35% more dmg, 60% more res
+				//think 30% faster
+				case 6:
+				{
+					fl_Extra_Damage[npc.index] *= 1.35;
+					fl_Extra_MeleeArmor[npc.index] *= 0.4;
+					fl_Extra_RangedArmor[npc.index] *= 0.4;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.30);
+				}
 			}
 		}
 		return npc;
