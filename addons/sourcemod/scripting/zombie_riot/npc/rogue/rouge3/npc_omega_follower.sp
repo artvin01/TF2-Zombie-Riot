@@ -580,7 +580,7 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	
 	npc.m_iOverlordComboAttack = 0;
 	float duration = OMEGA_FOLLOWER_HOLD_TIME / f_AttackSpeedNpcIncrease[npc.index];
-	if(b_thisNpcIsARaid[victim] || EntRefToEntIndex(RaidBossActive) == victim)
+	if(b_thisNpcIsARaid[target] || EntRefToEntIndex(RaidBossActive) == target)
 	{
 		npc.m_iOverlordComboAttack = 1;
 		duration *= 0.35;
