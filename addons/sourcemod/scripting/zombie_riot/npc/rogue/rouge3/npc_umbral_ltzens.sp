@@ -197,15 +197,25 @@ methodmap Umbral_Ltzens < CClotBody
 					fl_Extra_RangedArmor[npc.index] *= 0.8;
 					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
 				}
-				//floor 4 and above
+				//floor 4-5
 				// 25% more dmg, 50% more res
 				//think 25% faster
-				case 4,5,6:
+				case 4,5:
 				{
 					fl_Extra_Damage[npc.index] *= 1.25;
 					fl_Extra_MeleeArmor[npc.index] *= 0.5;
 					fl_Extra_RangedArmor[npc.index] *= 0.5;
 					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.25);
+				}
+				//floor 6
+				// 35% more dmg, 60% more res
+				//think 30% faster
+				case 6:
+				{
+					fl_Extra_Damage[npc.index] *= 1.35;
+					fl_Extra_MeleeArmor[npc.index] *= 0.4;
+					fl_Extra_RangedArmor[npc.index] *= 0.4;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.30);
 				}
 			}
 		}
