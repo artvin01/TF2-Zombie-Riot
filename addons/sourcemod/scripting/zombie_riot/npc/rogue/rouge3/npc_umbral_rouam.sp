@@ -403,8 +403,6 @@ void Umbral_RouamSelfDefense(Umbral_Rouam npc, float gameTime, int target, float
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 300.0;
-					if(GetTeam(target) != TFTeam_Red)
-						damageDealt *= 50.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
