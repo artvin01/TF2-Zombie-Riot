@@ -107,9 +107,16 @@ void ApertureBuilder_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_aperture_sentry");
+	NPC_GetByPlugin("npc_aperture_dispenser");
+	NPC_GetByPlugin("npc_aperture_teleporter");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

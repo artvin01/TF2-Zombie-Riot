@@ -142,6 +142,8 @@ public void Blitzkrieg_OnMapStart()
 
 void PrecacheBlitzMusic()
 {
+	NPC_GetByPlugin("npc_alt_donnerkrieg");
+	NPC_GetByPlugin("npc_alt_schwertkrieg");
 	if(b_musicprecached)
 		return;
 	

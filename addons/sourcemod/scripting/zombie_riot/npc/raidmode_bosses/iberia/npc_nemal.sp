@@ -141,6 +141,7 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
 	PrecacheSoundCustom("#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
+	NPC_GetByPlugin("npc_raid_silvester");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
