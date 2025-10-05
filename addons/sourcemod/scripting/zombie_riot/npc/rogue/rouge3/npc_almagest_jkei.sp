@@ -239,14 +239,15 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
-					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
+					if(HasSpecificBuff(other, "Unstoppable Force"))
+						fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
 					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
 						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
 					f_AttackSpeedNpcIncrease[other] *= 0.85;
-					fl_Extra_Speed[other] 	*= 1.1;
+				//	fl_Extra_Speed[other] 	*= 1.05;
 					fl_Extra_Damage[other] 	*= 1.2;
 					fl_TotalArmor[other] *= 0.85;
 					i_OverlordComboAttack[other] = 2;
@@ -261,7 +262,8 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
-					fl_Extra_Damage[other] 	*= (1.0 / 0.75);
+					if(!HasSpecificBuff(other, "Unstoppable Force"))
+						fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
 					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
 					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
@@ -270,8 +272,8 @@ methodmap AlmagestJkei < CClotBody
 					RemoveFromNpcAliveList(other);
 					AddNpcToAliveList(other, 0);
 					f_AttackSpeedNpcIncrease[other] *= 0.8;
-					fl_Extra_Speed[other] 	*= 1.1;
-					fl_Extra_Damage[other] 	*= 1.35;
+				//s	fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.25;
 					fl_TotalArmor[other] *= 0.7;
 					i_OverlordComboAttack[other] = 3;
 					return view_as<AlmagestJkei>(-1);

@@ -1237,8 +1237,8 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				{
 					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 8));
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 10));
 
 				}
 				
@@ -1368,7 +1368,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					float VecEnemy[3];
 					WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTargetWalkTo, 500.0, _,VecEnemy);
-					float DamageCalc = 100.0;
+					float DamageCalc = 50.0;
 					DamageCalc *= RaidModeScaling;
 					//basically oneshots
 					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, true);
