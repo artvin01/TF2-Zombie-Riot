@@ -98,6 +98,9 @@ methodmap TornUmbralGate < CClotBody
 		b_DoNotUnStuck[npc.index] = true;
 		npc.m_flGateSpawnEnemies = GetGameTime() + 2.0;
 
+		//This gate is fyling, we cant really have npcs target this one
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
+
 		func_NPCDeath[npc.index] = view_as<Function>(TornUmbralGate_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(TornUmbralGate_ClotThink);
 		func_NPCOnTakeDamage[npc.index] = TornUmbralGate_OnTakeDamage;
