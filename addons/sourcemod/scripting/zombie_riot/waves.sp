@@ -939,9 +939,12 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 void Waves_CacheWaves(KeyValues kv, bool npcs)
 {
 	MusicEnum music;
+	music.SetupKv("music_setup", kv);
+	
 	kv.GotoFirstSubKey();
 	do
 	{
+		music.SetupKv("music_1", kv);
 		music.SetupKv("music_1", kv);
 		music.SetupKv("music_2", kv);
 		music.SetupKv("music_setup", kv);

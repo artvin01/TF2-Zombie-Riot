@@ -25,6 +25,7 @@ void TornUmbralGate_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = 0; 
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 	PrecacheModel("models/zombie_riot/btd/bloons_hitbox.mdl");
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
@@ -39,6 +40,11 @@ void TornUmbralGate_OnMapStart_NPC()
 }
 
 
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_umbral_whiteflowers");
+
+}
 
 #define TORN_UMBRAL_GATEWAY 600.0
 #define TORN_UMBRAL_DURATION 1.04
