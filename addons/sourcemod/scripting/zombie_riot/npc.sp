@@ -33,6 +33,7 @@ enum struct NPCData
 	char Icon[32];
 	bool IconCustom;
 	Function Precache;
+	Function Precache_data;
 
 	// Don't touch below
 	bool Precached;
