@@ -168,7 +168,7 @@ static void Umbral_AdjustStats(int ref)
 
 	fl_Extra_Damage[entity] *= 7.0;
 	fl_Extra_Speed[entity] *= 0.7;
-	MultiHealth(entity, 0.035);
+	MultiHealth(entity, 0.0175);
 	int HealthGet = ReturnEntityMaxHealth(entity);
 	if(HealthGet >= 4000)
 	{
