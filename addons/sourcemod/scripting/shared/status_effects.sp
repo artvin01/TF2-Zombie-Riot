@@ -3138,7 +3138,7 @@ void StatusEffects_Aperture()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Time Warp");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mind Warp");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⭮");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -3271,7 +3271,7 @@ void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
 				Convars_FixClientsideIssues(i);
 			}
 			
-			ApplyStatusEffect(inflictor, i, "Time Warp", duration);
+			ApplyStatusEffect(inflictor, i, "Mind Warp", duration);
 		}
 	}
 	
@@ -3280,7 +3280,7 @@ void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if (entity != INVALID_ENT_REFERENCE)
 		{
-			ApplyStatusEffect(inflictor, entity, "Time Warp", duration);
+			ApplyStatusEffect(inflictor, entity, "Mind Warp", duration);
 		}
 	}
 	
@@ -3300,7 +3300,7 @@ void TimeWarp_RemoveAll()
 				Convars_FixClientsideIssues(i);
 			}
 			
-			RemoveSpecificBuff(i, "Time Warp");
+			RemoveSpecificBuff(i, "Mind Warp");
 		}
 	}
 	
@@ -3309,7 +3309,7 @@ void TimeWarp_RemoveAll()
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if (entity != INVALID_ENT_REFERENCE)
 		{
-			RemoveSpecificBuff(entity, "Time Warp");
+			RemoveSpecificBuff(entity, "Mind Warp");
 		}
 	}
 	

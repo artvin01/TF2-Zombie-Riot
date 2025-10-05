@@ -579,6 +579,8 @@ static void FinishRiftVote(const Vote vote)
 				Rogue_StartThisBattle(5.0);
 				Rogue_SetBattleIngots(1);
 				Rogue_SetRequiredBattle(true);
+				EndRiftVote(true);
+				
 			}
 			else
 			{
@@ -599,9 +601,9 @@ static void FinishRiftVote(const Vote vote)
 	}
 }
 
-static void EndRiftVote()
+static void EndRiftVote(bool WasRacist = false)
 {
-	if(Rogue_HasNamedArtifact("Twirl Guidance"))
+	if(Rogue_HasNamedArtifact("Twirl Guidance") || WasRacist)
 	{
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
@@ -612,14 +614,15 @@ static void EndRiftVote()
 				break;
 			}
 		}
-
-		Rogue_SetProgressTime(10.0, false);
-
-		Rogue_RemoveNamedArtifact("Twirl Guidance");
-		CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
-		CPrintToChatAll("{purple}Twirl{snow} : Hey and if you die, i'll take care of everything, not joking.");
-		CPrintToChatAll("{black}Izan{default} : Bye.");
-		CPrintToChatAll("{white}Bob{default} : We'll be fine, we have the entirety of Irln invading, you can make sure our home is fine.");
+		if(!WasRacist)
+			Rogue_SetProgressTime(10.0, false);
+		if(Rogue_HasNamedArtifact("Twirl Guidance"))
+		{
+			Rogue_RemoveNamedArtifact("Twirl Guidance");
+			CPrintToChatAll("{purple}Twirl{snow} : I'm sorry, i have to stay behind, i don't want my higherups to end like lelouch, i'm sure youll be fine without me.");	// Add Twirl leave dialogue
+			CPrintToChatAll("{black}Izan{default} : Bye.");
+			CPrintToChatAll("{white}Bob{default} : We'll be fine, we have the entirety of Irln invading, you can make sure our home is fine.");
+		}
 	}
 	else
 	{
@@ -665,6 +668,7 @@ public void Rogue_RiftEasy_Enemy(int entity)
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
 }
+
 
 public void Rogue_RiftHard_Collect()
 {
@@ -792,7 +796,10 @@ public void Rogue_Reila_Remove()
 
 public void Rogue_Rift1_Collect()
 {
-	Rogue_AddUmbral(-20, true);
+	Artifact artifact;
+	if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
+		Rogue_GiveNamedArtifact(artifact.Name);
+	Rogue_AddUmbral(-15, true);
 }
 
 public void Rogue_Rift1_Remove()
@@ -800,7 +807,7 @@ public void Rogue_Rift1_Remove()
 	if(Rogue_Started())
 	{
 		Rogue_GiveNamedArtifact("Keycard");
-		Rogue_AddUmbral(20);
+		Rogue_AddUmbral(15);
 	}
 }
 

@@ -180,11 +180,11 @@ methodmap Umbral_Refract < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.65;
-				fl_Extra_MeleeArmor[npc.index] *= 0.5;
-				fl_Extra_RangedArmor[npc.index] *= 0.5;
+				fl_Extra_Damage[npc.index] *= 1.35;
+				fl_Extra_MeleeArmor[npc.index] *= 0.7;
+				fl_Extra_RangedArmor[npc.index] *= 0.7;
 				fl_Extra_Speed[npc.index] *= 1.05;
-				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 7.0);
+				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 4.0);
 			}
 
 			switch(Rogue_GetFloor() + 1)
@@ -199,25 +199,19 @@ methodmap Umbral_Refract < CClotBody
 					fl_Extra_RangedArmor[npc.index] *= 0.8;
 					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
 				}
-				//floor 4-5
-				// 25% more dmg, 50% more res
-				//think 25% faster
 				case 4,5:
+				{
+					fl_Extra_Damage[npc.index] *= 1.15;
+					fl_Extra_MeleeArmor[npc.index] *= 0.65;
+					fl_Extra_RangedArmor[npc.index] *= 0.65;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
+				}
+				case 6:
 				{
 					fl_Extra_Damage[npc.index] *= 1.25;
 					fl_Extra_MeleeArmor[npc.index] *= 0.5;
 					fl_Extra_RangedArmor[npc.index] *= 0.5;
 					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.25);
-				}
-				//floor 6
-				// 35% more dmg, 60% more res
-				//think 30% faster
-				case 6:
-				{
-					fl_Extra_Damage[npc.index] *= 1.35;
-					fl_Extra_MeleeArmor[npc.index] *= 0.4;
-					fl_Extra_RangedArmor[npc.index] *= 0.4;
-					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.30);
 				}
 			}
 		}

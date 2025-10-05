@@ -1563,11 +1563,11 @@
 	{
 		"en"	"Reduces damage taken by 25％.\nIncreases attack speed by 25％.\nIncreases damage by 25％.\nIncreases NPC movement speed by 25％."
 	}
-	"Time Warp"
+	"Mind Warp"
 	{
-		"en"	"Time Warp"
+		"en"	"Mind Warp"
 	}
-	"Time Warp Desc"
+	"Mind Warp Desc"
 	{
 		"en"	"Reduces attack/reload/movement speed and healing rate, but increases timescale by 50％.\n{default}Affects everyone and everything."
 	}
