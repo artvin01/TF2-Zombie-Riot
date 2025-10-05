@@ -155,9 +155,9 @@ public void Rogue_UmbralKeycardBuffAlly(int entity, StringMap map)
 		{
 
 		//	fl_Extra_Speed[entity] 				*= 1.1;
-			fl_Extra_Damage[entity] 			*= 1.15;
-			fl_Extra_MeleeArmor[entity]			*= 0.85;
-			fl_Extra_RangedArmor[entity] 		*= 0.85;
+			fl_Extra_Damage[entity] 			*= 1.1;
+			fl_Extra_MeleeArmor[entity]			*= 0.9;
+			fl_Extra_RangedArmor[entity] 		*= 0.9;
 		}
 	}
 }
