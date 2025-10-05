@@ -180,9 +180,9 @@ methodmap Umbral_Refract < CClotBody
 			{
 				//if completly hated.
 				//no need to adjust HP scaling, so it can be done here.
-				fl_Extra_Damage[npc.index] *= 1.35;
-				fl_Extra_MeleeArmor[npc.index] *= 0.7;
-				fl_Extra_RangedArmor[npc.index] *= 0.7;
+				fl_Extra_Damage[npc.index] *= 1.25;
+				fl_Extra_MeleeArmor[npc.index] *= 0.75;
+				fl_Extra_RangedArmor[npc.index] *= 0.75;
 				fl_Extra_Speed[npc.index] *= 1.05;
 				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 4.0);
 			}
@@ -194,24 +194,24 @@ methodmap Umbral_Refract < CClotBody
 				//think 10% faster
 				case 3:
 				{
-					fl_Extra_Damage[npc.index] *= 1.1;
+					fl_Extra_Damage[npc.index] *= 1.05;
 					fl_Extra_MeleeArmor[npc.index] *= 0.8;
 					fl_Extra_RangedArmor[npc.index] *= 0.8;
 					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
 				}
 				case 4,5:
 				{
-					fl_Extra_Damage[npc.index] *= 1.15;
-					fl_Extra_MeleeArmor[npc.index] *= 0.65;
-					fl_Extra_RangedArmor[npc.index] *= 0.65;
-					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
+					fl_Extra_Damage[npc.index] *= 1.10;
+					fl_Extra_MeleeArmor[npc.index] *= 0.7;
+					fl_Extra_RangedArmor[npc.index] *= 0.7;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.15);
 				}
 				case 6:
 				{
-					fl_Extra_Damage[npc.index] *= 1.25;
+					fl_Extra_Damage[npc.index] *= 1.20;
 					fl_Extra_MeleeArmor[npc.index] *= 0.5;
 					fl_Extra_RangedArmor[npc.index] *= 0.5;
-					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.25);
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
 				}
 			}
 		}
@@ -398,7 +398,7 @@ void Umbral_RefractSelfDefense(Umbral_Refract npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 140.0;
+					float damageDealt = 120.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
