@@ -33,6 +33,7 @@ enum struct NPCData
 	char Icon[32];
 	bool IconCustom;
 	Function Precache;
+	Function Precache_data;
 
 	// Don't touch below
 	bool Precached;
@@ -1152,20 +1153,31 @@ stock void NPC_GetById(int id, NPCData data)
 	NPCList.GetArray(id, data);
 }
 
-stock int NPC_GetByPlugin(const char[] name, NPCData data = {})
+stock int NPC_GetByPlugin(const char[] name, NPCData data = {}, const char[] chardata = "")
 {
 	int index = NPCList.FindString(name, NPCData::Plugin);
 	if(index != -1)
 	{
 		NPCList.GetArray(index, data);
 		PrecacheNPC(index, data);
+		PrecacheNPC_WithData(index, data, chardata);
 	}
 	
 	return index;
 }
 
+static void PrecacheNPC_WithData(int i, NPCData data, const char[] chardata)
+{
+	if(data.Precache_data && data.Precache_data != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, data.Precache_data);
+		Call_PushString(chardata);
+		Call_Finish();
+	}
+}
 static void PrecacheNPC(int i, NPCData data)
 {
+	
 	if(!data.Precached)
 	{
 		if(data.Icon[0] && data.IconCustom)

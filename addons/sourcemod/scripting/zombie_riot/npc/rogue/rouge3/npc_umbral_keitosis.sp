@@ -44,7 +44,14 @@ void Umbral_Keitosis_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+static void ClotPrecache()
+{
+	//precaches said npcs.
+	NPC_GetByPlugin("npc_umbral_ltzens");
+	NPC_GetByPlugin("npc_umbral_refract");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)

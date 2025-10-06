@@ -939,9 +939,12 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 void Waves_CacheWaves(KeyValues kv, bool npcs)
 {
 	MusicEnum music;
+	music.SetupKv("music_setup", kv);
+	
 	kv.GotoFirstSubKey();
 	do
 	{
+		music.SetupKv("music_1", kv);
 		music.SetupKv("music_1", kv);
 		music.SetupKv("music_2", kv);
 		music.SetupKv("music_setup", kv);
@@ -959,9 +962,11 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 			{
 				if(kv.GetSectionName(music.Path, sizeof(music.Path)) && StrContains(music.Path, "music") != 0)
 				{
+					char DataSave[255];
 					kv.GetString("plugin", music.Path, sizeof(music.Path));
+					kv.GetString("data", DataSave, sizeof(DataSave));
 					if(music.Path[0])
-						NPC_GetByPlugin(music.Path);
+						NPC_GetByPlugin(music.Path,_, DataSave);
 				}
 			} while(kv.GotoNextKey());
 			
@@ -1182,7 +1187,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
 						kv.GetString("custom_name", enemy.CustomName, sizeof(enemy.CustomName));
-
 						if(!enemy.Credits)
 							nonBosses++;
 						

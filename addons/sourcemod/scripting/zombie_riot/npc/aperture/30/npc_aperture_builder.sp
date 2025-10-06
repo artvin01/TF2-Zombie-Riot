@@ -114,7 +114,7 @@ static void ClotPrecache()
 	PrecacheModel("models/player/items/engineer/hardhat.mdl");
 	
 	PrecacheSound("music/mvm_class_select.wav");
-	
+  
 	// Precache sub-NPCs
 	NPC_GetByPlugin("npc_aperture_sentry");
 	NPC_GetByPlugin("npc_aperture_dispenser");

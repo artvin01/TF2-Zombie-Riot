@@ -67,7 +67,6 @@ void BossReila_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
 }
-
 int Boss_ReilaID()
 {
 	return NPCId;
@@ -75,7 +74,7 @@ int Boss_ReilaID()
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/reila_battle_ost.mp3");
-	return;
+	NPC_GetByPlugin("reila_beacon_spawner");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {

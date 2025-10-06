@@ -6196,6 +6196,9 @@ void VoidAffliction_End(int victim, StatusEffect Apply_MasterStatusEffect, E_Sta
 void VoidAffliction_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 #if defined ZR
+	if(attacker == victim)
+		return;
+		
 	Elemental_AddVoidDamage(victim, attacker, RoundToNearest(damage * 3.0), true, true);
 #endif
 }

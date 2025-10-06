@@ -71,6 +71,7 @@ int Almagest_JkeiID()
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
+	NPC_GetByPlugin("npc_jkei_drone");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {

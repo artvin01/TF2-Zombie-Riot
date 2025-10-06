@@ -128,6 +128,10 @@ static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/shadowing_darkness.mp3");
 	PrecacheSoundCustom("#zombiesurvival/rogue3/shadowing_darkness_intro.mp3");
+	NPC_GetByPlugin("npc_umbral_koulm");
+	NPC_GetByPlugin("npc_void_unspeakable");
+	NPC_GetByPlugin("npc_torn_umbral_gate");
+	NPC_GetByPlugin("npc_umbral_automaton");
 
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
