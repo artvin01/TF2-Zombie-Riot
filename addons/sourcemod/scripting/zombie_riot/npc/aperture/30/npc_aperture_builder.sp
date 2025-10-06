@@ -80,25 +80,8 @@ static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
 void ApertureBuilder_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_BuildingSentrySounds)); i++) { PrecacheSound(g_BuildingSentrySounds[i]); }
-	for (int i = 0; i < (sizeof(g_BuildingDispenserSounds)); i++) { PrecacheSound(g_BuildingDispenserSounds[i]); }
-	for (int i = 0; i < (sizeof(g_BuildingTeleporterSounds)); i++) { PrecacheSound(g_BuildingTeleporterSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	AntiSoundSpam = 0.0;
 	
-	PrecacheSound(g_BuildingBuiltSound);
-	PrecacheSound(g_OutOfMyWaySound);
-	
-	PrecacheModel("models/player/engineer.mdl");
-	PrecacheModel("models/weapons/c_models/c_wrench/c_wrench.mdl");
-	PrecacheModel("models/weapons/c_models/c_toolbox/c_toolbox.mdl");
-	PrecacheModel("models/player/items/engineer/hardhat.mdl");
-	
-	PrecacheSound("music/mvm_class_select.wav");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Aperture Builder");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_builder");
@@ -113,6 +96,26 @@ void ApertureBuilder_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildingSentrySounds)); i++) { PrecacheSound(g_BuildingSentrySounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildingDispenserSounds)); i++) { PrecacheSound(g_BuildingDispenserSounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildingTeleporterSounds)); i++) { PrecacheSound(g_BuildingTeleporterSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	
+	PrecacheSound(g_BuildingBuiltSound);
+	PrecacheSound(g_OutOfMyWaySound);
+	
+	PrecacheModel("models/player/engineer.mdl");
+	PrecacheModel("models/weapons/c_models/c_wrench/c_wrench.mdl");
+	PrecacheModel("models/weapons/c_models/c_toolbox/c_toolbox.mdl");
+	PrecacheModel("models/player/items/engineer/hardhat.mdl");
+	
+	PrecacheSound("music/mvm_class_select.wav");
+  
+	// Precache sub-NPCs
 	NPC_GetByPlugin("npc_aperture_sentry");
 	NPC_GetByPlugin("npc_aperture_dispenser");
 	NPC_GetByPlugin("npc_aperture_teleporter");
