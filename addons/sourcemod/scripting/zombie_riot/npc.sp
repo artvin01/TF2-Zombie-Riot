@@ -1160,13 +1160,13 @@ stock int NPC_GetByPlugin(const char[] name, NPCData data = {}, const char[] cha
 	{
 		NPCList.GetArray(index, data);
 		PrecacheNPC(index, data);
-		PrecacheNPC_WithData(index, data, chardata);
+		PrecacheNPC_WithData(data, chardata);
 	}
 	
 	return index;
 }
 
-static void PrecacheNPC_WithData(int i, NPCData data, const char[] chardata)
+static void PrecacheNPC_WithData(NPCData data, const char[] chardata)
 {
 	if(data.Precache_data && data.Precache_data != INVALID_FUNCTION)
 	{

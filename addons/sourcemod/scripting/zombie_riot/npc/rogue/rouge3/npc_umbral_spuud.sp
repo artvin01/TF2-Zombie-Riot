@@ -257,7 +257,7 @@ public void Umbral_Spuud_ClotThink(int iNPC)
 		npc.m_flSpeedIncreaceMeter = 0.1;
 	}
 	npc.m_flMeleeArmor = (1.0 / npc.m_flSpeedIncreaceMeter);
-	npc.m_flMeleeArmor -= 8.0;
+	npc.m_flMeleeArmor -= 7.35;
 	if(npc.m_flMeleeArmor <= 1.0)
 	{
 		npc.m_flMeleeArmor = 1.0;
@@ -366,7 +366,7 @@ void Umbral_SpuudSelfDefense(Umbral_Spuud npc, float gameTime, int target, float
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 40.0;
+					float damageDealt = 30.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound

@@ -289,7 +289,7 @@ public void Umbral_Refract_ClotThink(int iNPC)
 		{
 			spawnRing_Vectors(f3_NpcSavePos[npc.index], 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.15, 8.0, 1.5, 1, RadiusDamage*2.0);
 			spawnRing_Vectors(f3_NpcSavePos[npc.index], 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.15, 8.0, 1.5, 1, RadiusDamage*2.0);
-			Explode_Logic_Custom(150.0, 0, npc.index, -1, f3_NpcSavePos[npc.index],RadiusDamage, 1.0, _, true);
+			Explode_Logic_Custom(100.0, 0, npc.index, -1, f3_NpcSavePos[npc.index],RadiusDamage, 1.0, _, true);
 			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], -1, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, 60, -1, f3_NpcSavePos[npc.index]);
 			EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], -1, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 1.0, 60, -1, f3_NpcSavePos[npc.index]);
 			npc.m_flCauseDamage = 0.0;
@@ -421,9 +421,9 @@ void Umbral_RefractSelfDefense(Umbral_Refract npc, float gameTime, int target, f
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.5);
-				npc.m_flAttackHappens = gameTime + 0.2;
-				npc.m_flDoingAnimation = gameTime + 0.2;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.25);
+				npc.m_flAttackHappens = gameTime + 0.3;
+				npc.m_flDoingAnimation = gameTime + 0.3;
 				npc.m_flNextMeleeAttack = gameTime + 0.75;
 			}
 		}

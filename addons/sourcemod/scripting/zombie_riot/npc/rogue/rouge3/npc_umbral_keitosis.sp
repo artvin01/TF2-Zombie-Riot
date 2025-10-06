@@ -306,6 +306,21 @@ public void Umbral_Keitosis_NPCDeath(int entity)
 			fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
 			fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
 		}
+		summon = NPC_CreateByName("npc_umbral_spuud", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+		if(IsValidEntity(summon))
+		{
+			if(GetTeam(npc.index) != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			NpcStats_CopyStats(npc.index, summon);
+			SetEntProp(summon, Prop_Data, "m_iHealth", (MaxHealthGet) / 3);
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", (MaxHealthGet) / 3);
+			
+			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
+		}
 	}
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 		
