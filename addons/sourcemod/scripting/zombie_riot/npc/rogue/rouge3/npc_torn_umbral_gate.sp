@@ -79,7 +79,7 @@ methodmap TornUmbralGate < CClotBody
 		
 		i_NpcWeight[npc.index] = 999;
 
-		//not visible hitbox
+		//not visible hitbox, error doesnt matter.
 		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 0);
 
