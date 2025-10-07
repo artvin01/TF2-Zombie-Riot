@@ -128,6 +128,10 @@ static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/shadowing_darkness.mp3");
 	PrecacheSoundCustom("#zombiesurvival/rogue3/shadowing_darkness_intro.mp3");
+	NPC_GetByPlugin("npc_umbral_koulm");
+	NPC_GetByPlugin("npc_void_unspeakable");
+	NPC_GetByPlugin("npc_torn_umbral_gate");
+	NPC_GetByPlugin("npc_umbral_automaton");
 
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -1237,8 +1241,8 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				{
 					NpcStats_CopyStats(npc.index, spawn_index);
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 8));
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 8));
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 10));
 
 				}
 				
@@ -1270,9 +1274,9 @@ bool Shadowing_Darkness_UmbralGateSummoner(Shadowing_Darkness_Boss npc, float ga
 				static float flPos[3]; 
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 				ParticleEffectAt(flPos, "taunt_flip_land_red", 0.25);
-				flPos[2] += 350.0;
-				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
-				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-400.0, -300.0) : GetRandomFloat(300.0, 400.0);
+				flPos[2] += 300.0;
+				flPos[0] += GetRandomInt(0,1) ? GetRandomFloat(-450.0, -250.0) : GetRandomFloat(250.0, 350.0);
+				flPos[1] += GetRandomInt(0,1) ? GetRandomFloat(-450.0, -250.0) : GetRandomFloat(250.0, 350.0);
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 				npc.PlayJumpUp();
@@ -1368,7 +1372,7 @@ bool Shadowing_Darkness_UpperDash(Shadowing_Darkness_Boss npc, float gameTime)
 					float VecEnemy[3];
 					WorldSpaceCenter(npc.m_iTargetWalkTo, VecEnemy);
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTargetWalkTo, 500.0, _,VecEnemy);
-					float DamageCalc = 100.0;
+					float DamageCalc = 50.0;
 					DamageCalc *= RaidModeScaling;
 					//basically oneshots
 					NemalAirSlice(npc.index,npc.m_iTargetWalkTo, DamageCalc, 255, 125, 125, 300.0, 8, 1200.0, "raygun_projectile_red", false, true, true);

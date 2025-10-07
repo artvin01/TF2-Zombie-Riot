@@ -1216,6 +1216,8 @@ bool Rogue_BattleLost()
 			//todo: Retry the stage they died at.
 			CurrentCount--;
 		}
+		ReviveAll();
+		ResetAbilitiesWaveEnd();
 		Rogue_SetProgressTime(5.0, false, true);
 
 		int chaos = RoundToFloor(BattleChaos);

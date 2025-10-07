@@ -1108,7 +1108,7 @@ public Action CAT_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npc.AddGesture("ACT_MP_STUN_BEGIN");
 			npc.SetActivity("ACT_MP_STUN_MIDDLE");
 			
-			CPrintToChatAll("{rare}C.A.T.{default}: ENABLING {unique}TIME WARP {default}MECHANISMS...");
+			CPrintToChatAll("{rare}C.A.T.{default}: ENABLING {unique}MIND WARP {default}MECHANISMS...");
 			
 			npc.Anger = true;
 			npc.m_flBeginTimeWarp = GetGameTime(npc.index) + 2.0;

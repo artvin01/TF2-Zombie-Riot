@@ -44,7 +44,14 @@ void Umbral_Keitosis_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+static void ClotPrecache()
+{
+	//precaches said npcs.
+	NPC_GetByPlugin("npc_umbral_ltzens");
+	NPC_GetByPlugin("npc_umbral_refract");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -293,6 +300,21 @@ public void Umbral_Keitosis_NPCDeath(int entity)
 			NpcStats_CopyStats(npc.index, summon);
 			SetEntProp(summon, Prop_Data, "m_iHealth", (MaxHealthGet) / 2);
 			SetEntProp(summon, Prop_Data, "m_iMaxHealth", (MaxHealthGet) / 2);
+			
+			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[summon] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[summon] = fl_Extra_Damage[npc.index];
+		}
+		summon = NPC_CreateByName("npc_umbral_spuud", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+		if(IsValidEntity(summon))
+		{
+			if(GetTeam(npc.index) != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			NpcStats_CopyStats(npc.index, summon);
+			SetEntProp(summon, Prop_Data, "m_iHealth", (MaxHealthGet) / 3);
+			SetEntProp(summon, Prop_Data, "m_iMaxHealth", (MaxHealthGet) / 3);
 			
 			fl_Extra_MeleeArmor[summon] = fl_Extra_MeleeArmor[npc.index];
 			fl_Extra_RangedArmor[summon] = fl_Extra_RangedArmor[npc.index];

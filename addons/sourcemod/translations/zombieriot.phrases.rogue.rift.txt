@@ -972,7 +972,7 @@
 	}
 	"Wordless Deed Desc"
 	{
-		"en"	"{red}Umbral Affinity reduced by 20 while held\n{purple}Obtain a cursed artifact when consumed"
+		"en"	"{red}Umbral Affinity reduced by 15 while held\n{purple}Obtain a cursed artifact when consumed"
 	}
 	"Keycard"
 	{
@@ -980,7 +980,7 @@
 	}
 	"Keycard Desc"
 	{
-		"en"	"{yellow}All Umbrals Gain 20％ damage and 20％ health while held {blue}and a new way inside"
+		"en"	"{yellow}All Umbrals Gain 10％ damage and 10％ resistance while held {blue}and a new way inside"
 	}
 	"Torn Keycard"
 	{
@@ -1054,7 +1054,7 @@
 	}
 	"Rift Ending 1 Desc 2"
 	{
-		"en"	"{yellow}Reila will acompany you."
+		"en"	"{yellow}Reila will acompany you.{green}Receive an common artifact."
 	}
 
 	"Gamemode History Lore"

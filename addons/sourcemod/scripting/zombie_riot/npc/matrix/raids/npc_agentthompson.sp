@@ -59,7 +59,6 @@ void AgentThompson_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -70,6 +69,8 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/matrix/furiousangels.mp3");
 	PrecacheSound("weapons/physgun_off.wav");
 	PrecacheModel("models/player/heavy.mdl");
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

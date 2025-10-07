@@ -149,6 +149,8 @@ int RaidBoss_Blitzkrieg_ID()
 
 void PrecacheBlitzMusic()
 {
+	NPC_GetByPlugin("npc_alt_donnerkrieg");
+	NPC_GetByPlugin("npc_alt_schwertkrieg");
 	if(b_musicprecached)
 		return;
 	

@@ -1060,7 +1060,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 }
 
-static char g_Agent_Summons[][] =
+static const char g_Agent_Summons[][] =
 {
 	//wave 1-19 | 0-6
 	"npc_agent_john",
@@ -1157,6 +1157,18 @@ static void Matrix_Spawning(int entity, int count)
 		Waves_AddNextEnemy(enemy);
 	}
 	Zombies_Currently_Still_Ongoing += count;
+}
+
+void Matrix_Shared_CorruptionPrecache()
+{
+	if (g_PrecachedMatrixNPCs)
+		return;
+	
+	g_PrecachedMatrixNPCs = true;
+	
+	// This needs to be added to precache for every enemy that deals matrix corruption damage, so downloads of summons still go through properly when they show up in non-Raid Rush gamemodes
+	for (int i = 0; i < sizeof(g_Agent_Summons); i++)
+		NPC_GetByPlugin(g_Agent_Summons[i]);
 }
 
 void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)

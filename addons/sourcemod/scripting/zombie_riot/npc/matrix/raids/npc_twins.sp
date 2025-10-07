@@ -65,7 +65,6 @@ void Twin1_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -75,6 +74,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	PrecacheSoundCustom("#zombiesurvival/matrix/doubletrouble.mp3");
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 
 
