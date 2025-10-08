@@ -70,7 +70,7 @@
 	}
 	"Vote for the next stage"
 	{
-		"en"	"Vote for the next stage:"
+		"en"	"Vote for the next stage.\nChoosing an option shows a preview."
 		"pt"	"Vote na próxima etapa:"
 		"ru"	"Голосование за следующий этап:"
 	}
@@ -177,13 +177,13 @@
 	}
 	"Shop Encounter Title"
 	{
-		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
+		"en"	"You stumble upon a shop and find an old man selling goods, do you take up his offers?\nChoosing an item shows what it does."
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 	}
 	"Shop Encounter Title Ruina"
 	{
-		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apperantly."
+		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apparently.\nChoosing an item shows what it does."
 	}
 	"Shop Encounter Title Ruina Evil"
 	{
@@ -675,31 +675,31 @@
 	}
 	"Electric Tower"
 	{
-		"en"	"Electric Tower"
-		"ru"	"Электробашня"
+		"en"	"⚔ Electric Tower"
+		"ru"	"⚔ Электробашня"
 	}
 	"Electric Tower!"
 	{
-		"en"	"Electric Tower ⚠"
+		"en"	"⚠ Electric Tower"
 	}
 	"Tower Madness"
 	{
-		"en"	"Tower Madness"
-		"ru"	"Безумие башни"
+		"en"	"⚔ Tower Madness"
+		"ru"	"⚔ Безумие башни"
 	}
 	"Tower Madness!"
 	{
-		"en"	"Tower Madness ⚠"
+		"en"	"⚠ Tower Madness"
 	}
 	"Caged Beast"
 	{
-		"en"	"Caged Beast"
-		"ru"	"Зверь в клетке"
+		"en"	"⚔ Caged Beast"
+		"ru"	"⚔ Зверь в клетке"
 	}
 	"Elevated Presence"
 	{
-		"en"	"Elevated Presence"
-		"ru"	"Существенное присутствие"
+		"en"	"⚔ Elevated Presence"
+		"ru"	"⚔ Существенное присутствие"
 	}
 	"Shop"
 	{
@@ -729,26 +729,26 @@
 	}
 	"Water Fountain"
 	{
-		"en"	"Water Fountain"
-		"ru"	"Водный фонтан"
+		"en"	"⚔ Water Fountain"
+		"ru"	"⚔ Водный фонтан"
 	}
 	"Water Fountain!"
 	{
-		"en"	"Water Fountain ⚠"
+		"en"	"⚠ Water Fountain"
 	}
 	"Abandoned Graveyard"
 	{
-		"en"	"Abandoned Graveyard"
-		"ru"	"Заброшенное кладбище"
+		"en"	"⚔ Abandoned Graveyard"
+		"ru"	"⚔ Заброшенное кладбище"
 	}
 	"Abandoned Graveyard!"
 	{
-		"en"	"Abandoned Graveyard ⚠"
+		"en"	"⚠ Abandoned Graveyard"
 	}
 	"Pure Desert"
 	{
-		"en"	"Pure Desert"
-		"ru"	"Чистая пустыня"
+		"en"	"⚔ Pure Desert"
+		"ru"	"⚔ Чистая пустыня"
 	}
 	"The Sword in the Stone"
 	{
@@ -791,75 +791,75 @@
 	}
 	"Wake Up Call"
 	{
-		"en"	"Wake Up Call"
-		"ru"	"Тревожный звонок"
+		"en"	"⚔ Wake Up Call"
+		"ru"	"⚔ Тревожный звонок"
 	}
 	"Wake Up Call!"
 	{
-		"en"	"Wake Up Call ⚠"
-		"ru"	"Тревожный звонок ⚠"
+		"en"	"⚠ Wake Up Call"
+		"ru"	"⚠ Тревожный звонок"
 	}
 	"Shoot The Messager"
 	{
-		"en"	"Shoot The Messenger"
-		"ru"	"Застрелить посланника"
+		"en"	"⚔ Shoot The Messenger"
+		"ru"	"⚔ Застрелить посланника"
 	}
 	"Shoot The Messager!"
 	{
-		"en"	"Shoot The Messenger ⚠"
-		"ru"	"Застрелить посланника ⚠"
+		"en"	"⚠ Shoot The Messenger"
+		"ru"	"⚠ Застрелить посланника"
 	}
 	"Flanking Tactics"
 	{
-		"en"	"Flanking Tactics"
-		"ru"	"Тактика обхода с флангов"
+		"en"	"⚔ Flanking Tactics"
+		"ru"	"⚔ Тактика обхода с флангов"
 	}
 	"Flanking Tactics!"
 	{
-		"en"	"Flanking Tactics ⚠"
-		"ru"	"Тактика обхода с флангов ⚠"
+		"en"	"⚠ Flanking Tactics"
+		"ru"	"⚠ Тактика обхода с флангов"
 	}
 	"Phone Service"
 	{
-		"en"	"Phone Service"
-		"ru"	"Телефонная связь"
+		"en"	"⚔ Phone Service"
+		"ru"	"⚔ Телефонная связь"
 	}
 	"Phone Service!"
 	{
-		"en"	"Phone Service ⚠"
-		"ru"	"Телефонная связь ⚠"
+		"en"	"⚠ Phone Service"
+		"ru"	"⚠ Телефонная связь"
 	}
 	"Scouting Party"
 	{
-		"en"	"Scouting Party"
+		"en"	"⚔ Scouting Party"
 	}
 	"Scouting Party!"
 	{
-		"en"	"Scouting Party ⚠"
+		"en"	"⚠ Scouting Party"
 	}
 	"Speed Demons"
 	{
-		"en"	"Speed Demons"
+		"en"	"⚔ Speed Demons"
 	}
 	"Speed Demons!"
 	{
-		"en"	"Speed Demons ⚠"
+		"en"	"⚠ Speed Demons"
 	}
 	"Dried Kelp"
 	{
-		"en"	"Dried Kelp"
+		"en"	"⚔ Dried Kelp"
 	}
 	"Dried Kelp!"
 	{
-		"en"	"Dried Kelp ⚠"
+		"en"	"⚠ Dried Kelp"
 	}
 	"Fueled By Gold"
 	{
-		"en"	"Fueled By Gold"
+		"en"	"⚔ Fueled By Gold"
 	}
 	"Fueled By Gold!"
 	{
-		"en"	"Fueled By Gold ⚠"
+		"en"	"⚠ Fueled By Gold"
 	}
 	"Eye for an Eye"
 	{
@@ -868,239 +868,239 @@
 	}
 	"Fight to the Death"
 	{
-		"en"	"Fight to the Death"
+		"en"	"⚔ Fight to the Death"
 	}
 	"Fight to the Death!"
 	{
-		"en"	"Fight to the Death ⚠"
+		"en"	"⚠ Fight to the Death"
 	}
 	"Shooting Range"
 	{
-		"en"	"Shooting Range"
+		"en"	"⚔ Shooting Range"
 	}
 	"Shooting Range!"
 	{
-		"en"	"Shooting Range ⚠"
+		"en"	"⚠ Shooting Range"
 	}
 	"Car Battery"
 	{
-		"en"	"Car Battery"
+		"en"	"⚔ Car Battery"
 	}
 	"Car Battery!"
 	{
-		"en"	"Car Battery ⚠"
+		"en"	"⚠ Car Battery"
 	}
 	"A Date with Arrows"
 	{
-		"en"	"A Date with Arrows"
+		"en"	"⚔ A Date with Arrows"
 	}
 	"A Date with Arrows!"
 	{
-		"en"	"A Date with Arrows ⚠"
+		"en"	"⚠ A Date with Arrows"
 	}
 	"Not So Finale"
 	{
-		"en"	"Not So Finale"
+		"en"	"⚔ Not So Finale"
 	}
 	"Not So Finale!"
 	{
-		"en"	"Not So Finale ⚠"
+		"en"	"⚠ Not So Finale"
 	}
 	"Gift Delivery"
 	{
-		"en"	"Gift Delivery"
+		"en"	"⚔ Gift Delivery"
 	}
 	"Gift Delivery!"
 	{
-		"en"	"Gift Delivery ⚠"
+		"en"	"⚠ Gift Delivery"
 	}
 	"Viscera Cleanup"
 	{
-		"en"	"Viscera Cleanup"
+		"en"	"⚔ Viscera Cleanup"
 	}
 	"Viscera Cleanup!"
 	{
-		"en"	"Viscera Cleanup ⚠"
+		"en"	"⚠ Viscera Cleanup"
 	}
 	"Forgot My Passport"
 	{
-		"en"	"Forgot My Passport"
+		"en"	"⚔ Forgot My Passport"
 	}
 	"Forgot My Passport!"
 	{
-		"en"	"Forgot My Passport ⚠"
+		"en"	"⚠ Forgot My Passport"
 	}
 	"Castle Age"
 	{
-		"en"	"Castle Age"
+		"en"	"⚔ Castle Age"
 	}
 	"Castle Age!"
 	{
-		"en"	"Castle Age ⚠"
+		"en"	"⚠ Castle Age"
 	}
 	"Terrifying Legends"
 	{
-		"en"	"Terrifying Legends ☠"
+		"en"	"☠ Terrifying Legends"
 	}
 	"Dungeon Rematch"
 	{
-		"en"	"Dungeon Rematch ☠"
+		"en"	"☠ Dungeon Rematch"
 	}
 	"On Your Guard"
 	{
-		"en"	"On Your Guard"
+		"en"	"⚔ On Your Guard"
 	}
 	"On Your Guard!"
 	{
-		"en"	"On Your Guard ⚠"
+		"en"	"⚠ On Your Guard"
 	}
 	"Darkest Dungeon"
 	{
-		"en"	"Darkest Dungeon"
+		"en"	"⚔ Darkest Dungeon"
 	}
 	"Darkest Dungeon!"
 	{
-		"en"	"Darkest Dungeon ⚠"
+		"en"	"⚠ Darkest Dungeon"
 	}
 	"The Hitman"
 	{
-		"en"	"The Hitman"
+		"en"	"⚔ The Hitman"
 	}
 	"The Hitman!"
 	{
-		"en"	"The Hitman ⚠"
+		"en"	"⚠ The Hitman"
 	}
 	"Under Tides"
 	{
-		"en"	"Under Tides"
+		"en"	"⚔ Under Tides"
 	}
 	"Under Tides!"
 	{
-		"en"	"Under Tides ⚠"
+		"en"	"⚠ Under Tides"
 	}
 	"Fish Bait"
 	{
-		"en"	"Fish Bait"
+		"en"	"⚔ Fish Bait"
 	}
 	"Fish Bait!"
 	{
-		"en"	"Fish Bait ⚠"
+		"en"	"⚠ Fish Bait"
 	}
 	"Need For Speed"
 	{
-		"en"	"Need For Speed"
+		"en"	"⚔ Need For Speed"
 	}
 	"Need For Speed!"
 	{
-		"en"	"Need For Speed ⚠"
+		"en"	"⚠ Need For Speed"
 	}
 	"Deep Rock Heist"
 	{
-		"en"	"Deep Rock Heist"
+		"en"	"⚔ Deep Rock Heist"
 	}
 	"Deep Rock Heist!"
 	{
-		"en"	"Deep Rock Heist ⚠"
+		"en"	"⚠ Deep Rock Heist"
 	}
 	"Teutons"
 	{
-		"en"	"Teutons"
+		"en"	"⚔ Teutons"
 	}
 	"Teutons!"
 	{
-		"en"	"Teutons ⚠"
+		"en"	"⚠ Teutons"
 	}
 	"Blitz"
 	{
-		"en"	"Blitz"
+		"en"	"⚔ Blitz"
 	}
 	"Blitz!"
 	{
-		"en"	"Blitz ⚠"
+		"en"	"⚠ Blitz"
 	}
 	"Heroic Age"
 	{
-		"en"	"Heroic Age"
+		"en"	"⚔ Heroic Age"
 	}
 	"Heroic Age!"
 	{
-		"en"	"Heroic Age ⚠"
+		"en"	"⚠ Heroic Age"
 	}
 	"Undead Warriors"
 	{
-		"en"	"Undead Warriors"
+		"en"	"⚔ Undead Warriors"
 	}
 	"Undead Warriors!"
 	{
-		"en"	"Undead Warriors ⚠"
+		"en"	"⚠ Undead Warriors"
 	}
 	"Gray Robots"
 	{
-		"en"	"Gray Robots"
+		"en"	"⚔ Gray Robots"
 	}
 	"Gray Robots!"
 	{
-		"en"	"Gray Robots ⚠"
+		"en"	"⚠ Gray Robots"
 	}
 	"Xeno Monsters"
 	{
-		"en"	"Xeno Monsters"
+		"en"	"⚔ Xeno Monsters"
 	}
 	"Xeno Monsters!"
 	{
-		"en"	"Xeno Monsters ⚠"
+		"en"	"⚠ Xeno Monsters"
 	}
 	"Ambush"
 	{
-		"en"	"Ambush"
+		"en"	"⚔ Ambush"
 	}
 	"Ambush!"
 	{
-		"en"	"Ambush ⚠"
+		"en"	"⚠ Ambush"
 	}
 	"Steel Workers"
 	{
-		"en"	"Steel Workers"
+		"en"	"⚔ Steel Workers"
 	}
 	"Steel Workers!"
 	{
-		"en"	"Steel Workers ⚠"
+		"en"	"⚠ Steel Workers"
 	}
 	"Infighting"
 	{
-		"en"	"Infighting"
+		"en"	"⚔ Infighting"
 	}
 	"Infighting!"
 	{
-		"en"	"Infighting ⚠"
+		"en"	"⚠ Infighting"
 	}
 	"Simple Yet Deadly"
 	{
-		"en"	"Simple Yet Deadly"
+		"en"	"⚔ Simple Yet Deadly"
 	}
 	"Simple Yet Deadly!"
 	{
-		"en"	"Simple Yet Deadly ⚠"
+		"en"	"⚠ Simple Yet Deadly"
 	}
 	"Patient Zero"
 	{
-		"en"	"Patient Zero ☠"
+		"en"	"☠ Patient Zero"
 	}
 	"Highest Rule"
 	{
-		"en"	"Highest Rule ☠"
+		"en"	"☠ Highest Rule"
 	}
 	"Familiar Yet Not!"
 	{
-		"en"	"Familiar Yet Not ⚠"
+		"en"	"⚠ Familiar Yet Not"
 	}
 	"Future Or Not!"
 	{
-		"en"	"Future Or Not ⚠"
+		"en"	"⚠ Future Or Not"
 	}
 	"Bob's Fear"
 	{
-		"en"	"Bob's Fear ☠"
+		"en"	"☠ Bob's Fear"
 	}
 	"Lost Crown and Sword"
 	{
@@ -1124,47 +1124,47 @@
 	}
 	"Home Sick"
 	{
-		"en"	"Home Sick"
+		"en"	"⚔ Home Sick"
 	}
 	"Home Sick!"
 	{
-		"en"	"Home Sick ⚠"
+		"en"	"⚠ Home Sick"
 	}
 	"A Lost War"
 	{
-		"en"	"A Lost War"
+		"en"	"⚔ A Lost War"
 	}
 	"A Lost War!"
 	{
-		"en"	"A Lost War ⚠"
+		"en"	"⚠ A Lost War"
 	}
 	"Falling Hazard"
 	{
-		"en"	"Falling Hazard"
+		"en"	"⚔ Falling Hazard"
 	}
 	"Falling Hazard!"
 	{
-		"en"	"Falling Hazard ⚠"
+		"en"	"⚠ Falling Hazard"
 	}
 	"Whiteflower Mercenaries"
 	{
-		"en"	"Whiteflower Mercenaries ☠"
+		"en"	"☠ Whiteflower Mercenaries"
 	}
 	"City Hall"
 	{
-		"en"	"City Hall"
+		"en"	"⚔ City Hall"
 	}
 	"City Hall!"
 	{
-		"en"	"City Hall ⚠"
+		"en"	"⚠ City Hall"
 	}
 	"Prompting Engineer"
 	{
-		"en"	"Prompting Engineer ⚠"
+		"en"	"⚠ Prompting Engineer"
 	}
 	"At Strength"
 	{
-		"en"	"At Strength ⚠"
+		"en"	"⚠ At Strength"
 	}
 
 	// Curses
