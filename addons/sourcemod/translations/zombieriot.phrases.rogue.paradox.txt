@@ -1284,263 +1284,263 @@
 
 	"Bad Water"
 	{
-		"en"	"Bad Water"
+		"en"	"⚔ Bad Water"
 	}
 	"Bad Water!"
 	{
-		"en"	"Bad Water ⚠"
+		"en"	"⚠ Bad Water"
 	}
 	"Town Center"
 	{
-		"en"	"Town Center"
+		"en"	"⚔ Town Center"
 	}
 	"Town Center!"
 	{
-		"en"	"Town Center ⚠"
+		"en"	"⚠Town Center"
 	}
 	"Demon Box"
 	{
-		"en"	"Demon Box"
+		"en"	"⚔ Demon Box"
 	}
 	"Demon Box!"
 	{
-		"en"	"Demon Box ⚠"
+		"en"	"⚠ Demon Box"
 	}
 	"Scout Rush"
 	{
-		"en"	"Scout Rush"
+		"en"	"⚔ Scout Rush"
 	}
 	"Scout Rush!"
 	{
-		"en"	"Scout Rush ⚠"
+		"en"	"⚠ Scout Rush"
 	}
 	"False Information"
 	{
-		"en"	"False Information"
+		"en"	"⚔ False Information"
 	}
 	"False Information!"
 	{
-		"en"	"False Information ⚠"
+		"en"	"⚠ False Information"
 	}
 	"Jumping Jacks"
 	{
-		"en"	"Jumping Jacks"
+		"en"	"⚔ Jumping Jacks"
 	}
 	"Jumping Jacks!"
 	{
-		"en"	"Jumping Jacks ⚠"
+		"en"	"⚠ Jumping Jacks"
 	}
 	"Lost Empires"
 	{
-		"en"	"Lost Empires"
+		"en"	"⚔ Lost Empires"
 	}
 	"Lost Empires!"
 	{
-		"en"	"Lost Empires ⚠"
+		"en"	"⚠ Lost Empires"
 	}
 	"Supplies"
 	{
-		"en"	"Supplies"
+		"en"	"⚔ Supplies"
 	}
 	"Supplies!"
 	{
-		"en"	"Supplies ⚠"
+		"en"	"⚠ Supplies"
 	}
 	"No Swimming"
 	{
-		"en"	"No Swimming"
+		"en"	"⚔ No Swimming"
 	}
 	"No Swimming!"
 	{
-		"en"	"No Swimming ⚠"
+		"en"	"⚠ No Swimming"
 	}
 	"All Hallem"
 	{
-		"en"	"All Hallem"
+		"en"	"⚔ All Hallem"
 	}
 	"All Hallem!"
 	{
-		"en"	"All Hallem ⚠"
+		"en"	"⚠ All Hallem"
 	}
 	"Camel Riders"
 	{
-		"en"	"Camel Riders"
+		"en"	"⚔ Camel Riders"
 	}
 	"Camel Riders!"
 	{
-		"en"	"Camel Riders ⚠"
+		"en"	"⚠ Camel Riders"
 	}
 	"Secret Hunter"
 	{
-		"en"	"Secret Hunter"
+		"en"	"⚔ Secret Hunter"
 	}
 	"Secret Hunter!"
 	{
-		"en"	"Secret Hunter ⚠"
+		"en"	"⚠ Secret Hunter"
 	}
 	"Whiteflower Avenger's"
 	{
-		"en"	"Whiteflower Avenger's"
+		"en"	"⚔ Whiteflower Avenger's"
 	}
 	"Whiteflower Avenger's!"
 	{
-		"en"	"Whiteflower Avenger's ⚠"
+		"en"	"⚠ Whiteflower Avenger's"
 	}
 	"Barricade"
 	{
-		"en"	"Barricade"
+		"en"	"⚔ Barricade"
 	}
 	"Barricade!"
 	{
-		"en"	"Barricade ⚠"
+		"en"	"⚠ Barricade"
 	}
 	"Into The Shed"
 	{
-		"en"	"Into The Shed"
+		"en"	"⚔ Into The Shed"
 	}
 	"Into The Shed!"
 	{
-		"en"	"Into The Shed ⚠"
+		"en"	"⚠ Into The Shed"
 	}
 	"The Abomination"
 	{
-		"en"	"The Abomination"
+		"en"	"⚔ The Abomination"
 	}
 	"The Abomination!"
 	{
-		"en"	"The Abomination ⚠"
+		"en"	"⚠ The Abomination"
 	}
 	"Up To The Roof"
 	{
-		"en"	"Up To The Roof"
+		"en"	"⚔ Up To The Roof"
 	}
 	"Up To The Roof!"
 	{
-		"en"	"Up To The Roof ⚠"
+		"en"	"⚠ Up To The Roof"
 	}
 	"Rock Collection"
 	{
-		"en"	"Rock Collection"
+		"en"	"⚔ Rock Collection"
 	}
 	"Rock Collection!"
 	{
-		"en"	"Rock Collection ⚠"
+		"en"	"⚠ Rock Collection"
 	}
 	"Hitman II"
 	{
-		"en"	"Hitman II"
+		"en"	"⚔ Hitman II"
 	}
 	"Hitman II!"
 	{
-		"en"	"Hitman II ⚠"
+		"en"	"⚠ Hitman II"
 	}
 	"Pre-Heated Oven"
 	{
-		"en"	"Pre-Heated Oven"
+		"en"	"⚔ Pre-Heated Oven"
 	}
 	"Pre-Heated Oven!"
 	{
-		"en"	"Pre-Heated Oven ⚠"
+		"en"	"⚠ Pre-Heated Oven"
 	}
 	"Pre-Heated Oven?"
 	{
-		"en"	"Pre-Heated Oven ☠"
+		"en"	"☠ Pre-Heated Oven"
 	}
 	"Yummer"
 	{
-		"en"	"Yummer"
+		"en"	"⚔ Yummer"
 	}
 	"Yummer!"
 	{
-		"en"	"Yummer ⚠"
+		"en"	"⚠ Yummer"
 	}
 	"Yummer?"
 	{
-		"en"	"Yummer ☠"
+		"en"	"☠ Yummer"
 	}
 	"Heavy Forest"
 	{
-		"en"	"Heavy Forest"
+		"en"	"⚔ Heavy Forest"
 	}
 	"Heavy Forest!"
 	{
-		"en"	"Heavy Forest ⚠"
+		"en"	"⚠ Heavy Forest"
 	}
 	"Heavy Forest?"
 	{
-		"en"	"Heavy Forest ☠"
+		"en"	"☠ Heavy Forest"
 	}
 	"Frostbite"
 	{
-		"en"	"Frostbite"
+		"en"	"⚔ Frostbite"
 	}
 	"Frostbite!"
 	{
-		"en"	"Frostbite ⚠"
+		"en"	"⚠ Frostbite"
 	}
 	"Frostbite?"
 	{
-		"en"	"Frostbite ☠"
+		"en"	"☠ Frostbite"
 	}
 	"Heavy Jacket"
 	{
-		"en"	"Heavy Jacket"
+		"en"	"⚔ Heavy Jacket"
 	}
 	"Heavy Jacket!"
 	{
-		"en"	"Heavy Jacket ⚠"
+		"en"	"⚠ Heavy Jacket"
 	}
 	"Heavy Jacket?"
 	{
-		"en"	"Heavy Jacket ☠"
+		"en"	"☠ Heavy Jacket"
 	}
 	"Freezer Water"
 	{
-		"en"	"Freezer Water"
+		"en"	"⚔ Freezer Water"
 	}
 	"Freezer Water!"
 	{
-		"en"	"Freezer Water ⚠"
+		"en"	"⚠ Freezer Water"
 	}
 	"Freezer Water?"
 	{
-		"en"	"Freezer Water ☠"
+		"en"	"☠ Freezer Water"
 	}
 	"Home of the North"
 	{
-		"en"	"Home of the North"
+		"en"	"⚔ Home of the North"
 	}
 	"Home of the North!"
 	{
-		"en"	"Home of the North ⚠"
+		"en"	"⚠ Home of the North"
 	}
 	"Home of the North?"
 	{
-		"en"	"Home of the North ☠"
+		"en"	"☠ Home of the North"
 	}
 	"Das Concrete"
 	{
-		"en"	"Das Concrete"
+		"en"	"⚔ Das Concrete"
 	}
 	"Das Concrete!"
 	{
-		"en"	"Das Concrete ⚠"
+		"en"	"⚠ Das Concrete"
 	}
 	"Machine Works"
 	{
-		"en"	"Machine Works"
+		"en"	"⚔ Machine Works"
 	}
 	"Machine Works!"
 	{
-		"en"	"Machine Works ⚠"
+		"en"	"⚠ Machine Works"
 	}
 	"All In Chaos"
 	{
-		"en"	"All In Chaos"
+		"en"	"⚔ All In Chaos"
 	}
 	"All In Chaos!"
 	{
-		"en"	"All In Chaos ⚠"
+		"en"	"⚠ All In Chaos"
 	}
 	"Silk Cradle"
 	{
@@ -1580,79 +1580,79 @@
 	}
 	"Clashing Colors"
 	{
-		"en"	"Clashing Colors ⚠"
+		"en"	"⚠ Clashing Colors"
 	}
 	"Age Cheats"
 	{
-		"en"	"Age Cheats ⚠"
+		"en"	"⚠ Age Cheats"
 	}
 	"The Old The New"
 	{
-		"en"	"The Old, The New ⚠"
+		"en"	"⚠ The Old, The New"
 	}
 	"Not so Missunderstood"
 	{
-		"en"	"Not so Missunderstood"
+		"en"	"⚔ Not so Misunderstood"
 	}
 	"Not so Missunderstood!"
 	{
-		"en"	"Not so Missunderstood ⚠"
+		"en"	"⚠ Not so Misunderstood"
 	}
 	"Broken Defenses"
 	{
-		"en"	"Broken Defenses"
+		"en"	"⚔ Broken Defenses"
 	}
 	"Broken Defenses!"
 	{
-		"en"	"Broken Defenses ⚠"
+		"en"	"⚠ Broken Defenses"
 	}
 	"Godly army Under Chaos"
 	{
-		"en"	"Godly army Under Chaos"
+		"en"	"⚔ Godly Army Under Chaos"
 	}
 	"Godly army Under Chaos!"
 	{
-		"en"	"Godly army Under Chaos ⚠"
+		"en"	"⚠ Godly Army Under Chaos"
 	}
 	"Forsaken Tribe"
 	{
-		"en"	"Forsaken Tribe"
+		"en"	"⚔ Forsaken Tribe"
 	}
 	"Forsaken Tribe!"
 	{
-		"en"	"Forsaken Tribe ⚠"
+		"en"	"⚠ Forsaken Tribe"
 	}
 	"Roaming Chaos Demons"
 	{
-		"en"	"Roaming Chaos Demons"
+		"en"	"⚔ Roaming Chaos Demons"
 	}
 	"Roaming Chaos Demons!"
 	{
-		"en"	"Roaming Chaos Demons ⚠"
+		"en"	"⚠ Roaming Chaos Demons"
 	}
 	"Antagonising Iberians"
 	{
-		"en"	"Antagonising Iberians"
+		"en"	"⚔ Antagonising Iberians"
 	}
 	"Antagonising Iberians!"
 	{
-		"en"	"Antagonising Iberians ⚠"
+		"en"	"⚠ Antagonising Iberians"
 	}
 	"Lost Zombies"
 	{
-		"en"	"Lost Zombies"
+		"en"	"⚔ Lost Zombies"
 	}
 	"Lost Zombies!"
 	{
-		"en"	"Lost Zombies ⚠"
+		"en"	"⚠ Lost Zombies"
 	}
 	"Mercs against Mercs"
 	{
-		"en"	"Mercs against Mercs"
+		"en"	"⚔ Mercs Against Mercs"
 	}
 	"Mercs against Mercs!"
 	{
-		"en"	"Mercs against Mercs ⚠"
+		"en"	"⚠ Mercs Against Mercs"
 	}
 	"Ruania"
 	{
