@@ -748,7 +748,7 @@
 	"Pure Desert"
 	{
 		"en"	"⚔ Pure Desert"
-		"ru"	"Чистая пустыня"
+		"ru"	"⚔ Чистая пустыня"
 	}
 	"The Sword in the Stone"
 	{
