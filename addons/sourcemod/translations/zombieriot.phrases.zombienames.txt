@@ -5110,4 +5110,8 @@
 	{
 		"en" "'Samivilinn', the Resolution of the Very North"
 	}
+	"'Voidivilinn', the Resolution of the Very South"
+	{
+		"en" "'Voidivilinn', the Resolution of the Very South"
+	}
 }
