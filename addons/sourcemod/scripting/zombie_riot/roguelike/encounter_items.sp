@@ -95,18 +95,20 @@ public void Rogue_Vote_ShopEncounter(const Vote vote)
 	{
 		Artifact artifact;
 		ShopListing.GetArray(index, artifact);
-		ShopListing.Erase(index);
-
-		Rogue_GiveNamedArtifact(artifact.Name);
+		int cost = artifact.ShopCost;
 
 		if(FirstSuperSale && index == 0)
 		{
 			FirstSuperSale = false;
-			Rogue_AddIngots(-artifact.ShopCost * 7 / 10, true);
+			cost = cost * 7 / 10;
 		}
-		else
+		
+		//Silent voting prevention
+		if(cost <= Rogue_GetIngots())
 		{
-			Rogue_AddIngots(-artifact.ShopCost, true);
+			Rogue_GiveNamedArtifact(artifact.Name);
+			Rogue_AddIngots(-cost, true);
+			ShopListing.Erase(index);
 		}
 
 		StartShopVote();

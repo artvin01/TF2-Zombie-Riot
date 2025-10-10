@@ -214,10 +214,10 @@ public void Rogue_GamemodeMadnessSlender_Ally(int entity, StringMap map)
 	{
 		float value;
 
-		// -25% movement speed
+		// -50% movement speed
 		value = 1.0;
 		map.GetValue("107", value);
-		map.SetValue("107", value * 0.75);
+		map.SetValue("107", value * 0.5);
 	}
 }
 public void Rogue_GamemodeMadnessSlender_Enemy(int entity)

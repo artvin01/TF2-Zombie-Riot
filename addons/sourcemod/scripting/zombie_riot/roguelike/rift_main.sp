@@ -358,21 +358,21 @@ static void FinishShopVote(const Vote vote)
 		default:
 		{
 			ShopListing.GetArray(index, artifact);
-			ShopListing.Erase(index);
 
-			Rogue_GiveNamedArtifact(artifact.Name);
 
 			int cost = artifact.ShopCost;
 
 			Rogue_ParadoxGeneric_ShopCost(cost);
-			
+
 			if(StrEqual(artifact.Name, c_SupersaleThisItem, false))
+				cost = cost * 7 / 10;
+			
+			//Silent voting prevention
+			if(cost <= Rogue_GetIngots())
 			{
-				Rogue_AddIngots(-cost * 7 / 10, true);
-			}
-			else
-			{
+				Rogue_GiveNamedArtifact(artifact.Name);
 				Rogue_AddIngots(-cost, true);
+				ShopListing.Erase(index);
 			}
 
 			StartShopVote(false);

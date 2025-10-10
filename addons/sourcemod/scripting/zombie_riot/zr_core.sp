@@ -2180,7 +2180,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 		if(!rogue)
 		{
-			ForcePlayerLoss();
+			ForcePlayerLoss(false);
 		}
 
 		if(killed)
@@ -3037,8 +3037,24 @@ void ForcePlayerWin(bool fakeout = false)
 	}
 }
 
-void ForcePlayerLoss()
+void ForcePlayerLoss(bool WasRaid = true)
 {
+	if(WasRaid)
+	{
+		if(Rogue_Mode())
+		{
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client)==2 && IsPlayerAlive(client))
+				{
+					ForcePlayerSuicide(client);
+				}
+			}
+			//KILL all players instead
+			return;
+		}
+	}
 	MVMHud_Disable();
 	ZR_NpcTauntWin();
 	ZR_NpcTauntWinClear();
