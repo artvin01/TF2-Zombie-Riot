@@ -279,16 +279,38 @@ public void Rogue_Hand2Tactician_TakeDamage(int victim, int &attacker, int &infl
 	
 	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return;
-	if(!i_HasBeenHeadShotted[victim])
-		return;
 
 	if(attacker > MaxClients)
 		return;
+	bool EnemyWasHitscanned = false;
+	if(f_TraceAttackWasTriggeredSameFrame[victim] != GetGameTime())
+		EnemyWasHitscanned = false;
 	
-	Building_GiveRewardsUse(attacker, attacker, 8);
-	TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
-	if(Attributes_Has(weapon, 106))
-		Attributes_SetMulti(weapon, 106, 0.1);
+	if(!EnemyWasHitscanned)
+	{
+		//what?? bows??
+		if(i_HasBeenHeadShotted[victim])
+			EnemyWasHitscanned = true;
+	}
+	else
+	{
+		//was hitscanned, did we hit a haadshot, if not fail.
+		if(!i_HasBeenHeadShotted[victim])
+			return;
+	}
+
+		
+	if(EnemyWasHitscanned)
+	{
+		Building_GiveRewardsUse(attacker, attacker, 8);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 2.0);
+	}
+	else
+	{
+
+		Building_GiveRewardsUse(attacker, attacker, 4);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
+	}
 }
 
 public void Rogue_Hand2Hunter_Weapon(int entity)

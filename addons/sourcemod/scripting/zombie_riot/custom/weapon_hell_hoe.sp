@@ -772,13 +772,13 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 				ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
 				Ability_Apply_Cooldown(client, slot, 1.0);
 				if(dieingstate[client] == 0)
-					HealEntityGlobal(client, client,-(clientMaxHp * 0.1), 1.0, 0.5);
+					HealEntityGlobal(client, client,-(float(clientMaxHp) * 0.1), 1.0, 0.5);
 				int playerMaxHp = ReturnEntityMaxHealth(HealAlly);
 				if (playerMaxHp<clientMaxHp)
 					playerMaxHp=clientMaxHp;
 
 				if(HealAlly >= MaxClients || dieingstate[HealAlly] == 0)
-					HealEntityGlobal(client, HealAlly, playerMaxHp * 0.1, 1.0, 0.5);
+					HealEntityGlobal(client, HealAlly, float(playerMaxHp) * 0.1, 1.0, 0.5);
 			}
 			else
 			{
