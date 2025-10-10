@@ -58,6 +58,9 @@ void ConVar_PluginStart()
 #endif
 
 	ConVar_Add("mp_friendlyfire", "1.0");
+	ConVar_Add("mp_flashlight", "0.0"); 
+	//disable flashlight as it looks buggy and causes fps issues
+	//you need to set a setting beforehand to make it work, so its really bad.
 
 #if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");
