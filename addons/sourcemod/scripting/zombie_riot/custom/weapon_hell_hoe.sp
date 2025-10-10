@@ -789,12 +789,12 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 		}
 		else if (health > clientMaxHp*0.20)
 		{
-			health-=RoundFloat(clientMaxHp*0.2);
+			health-=RoundFloat(float(clientMaxHp)*0.2);
 			SetEntProp(client, Prop_Data, "m_iHealth", health);
 
 			float flClientPos[3];
 			GetEntPropVector(client, Prop_Send, "m_vecOrigin", flClientPos);
-			Explode_Logic_Custom(float(clientMaxHp)*0.05*float(clientMaxHp-health), client, client, -1, flClientPos, NIGHTMARE_RADIUS, _, _, false, 10);
+			Explode_Logic_Custom(float(clientMaxHp)*0.06*float(clientMaxHp-health), client, client, -1, flClientPos, NIGHTMARE_RADIUS, _, _, false, 10);
 			ClientCommand(client, "playgamesound weapons/grappling_hook_impact_flesh.wav");
 			spawnRing_Vectors(flPos, /*RANGE*/ NIGHTMARE_RADIUS * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 125, 125, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5);
 			Ability_Apply_Cooldown(client, slot, 12.0);
