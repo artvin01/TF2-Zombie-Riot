@@ -217,9 +217,12 @@ void WeaponRedBlade_OnTakeDamage(int attacker, int victim, float &damage)
 	if(HALFORNO[victim])
 	{
 		damage *= 0.8;
-		if(b_thisNpcIsARaid[attacker])
+		if(!CheckInHud())
 		{
-			damage *= 1.15;
+			if(b_thisNpcIsARaid[attacker])
+			{
+				damage *= 1.15;
+			}
 		}
 	}
 }
