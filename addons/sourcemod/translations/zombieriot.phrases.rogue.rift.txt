@@ -338,7 +338,7 @@
 	}
 	"Hand of Snatcher Desc"
 	{
-		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain)"
+		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain up to a limit for cash gain) If the weapon cant headshot, same effects apply but weaker."
 	}
 	"Hand of Spark"
 	{
