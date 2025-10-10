@@ -258,12 +258,9 @@ methodmap TheMessenger < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
-		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		BlockLoseSay = false;
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 15.0;
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 25.0;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 10.0;
 		f_MessengerSpeedUp[npc.index] = 1.0;
 		npc.g_TimesSummoned = 0;
 		
