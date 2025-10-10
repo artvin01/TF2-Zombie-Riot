@@ -136,6 +136,7 @@ void RedBladeHudShow(int client)
 {
 	if(f_RedBladeChargeDuration[client] > GetGameTime())
 	{
+		/*
 		int ChargeEnemy = EntRefToEntIndex(i_RedBladeNpcToCharge[client]);
 		if(IsValidEnemy(client, ChargeEnemy, true))
 		{
@@ -144,7 +145,8 @@ void RedBladeHudShow(int client)
 				LookAtTarget(client, ChargeEnemy);
 			}
 		}
-		else if(!TF2_IsPlayerInCondition(client, TFCond_Charging))
+		*/
+		if(!TF2_IsPlayerInCondition(client, TFCond_Charging))
 		{
 			f_RedBladeChargeDuration[client] = 0.0;
 		}
