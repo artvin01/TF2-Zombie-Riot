@@ -812,6 +812,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					GiveProgressDelay(15.0);
 					Waves_ForceSetup(15.0);
 
+					//dont respawn during setup.
+					PreventRespawnsAll = GetGameTime() + 10.0;
+
 					if(found)
 					{
 						npc.m_flNextThinkTime = gameTime + 0.25;
@@ -836,6 +839,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.5, SetTimeBack);
 						i_RaidGrantExtra[npc.index] = 49;
+						PreventRespawnsAll = GetGameTime() + 2.0;
 					}
 				}
 			}

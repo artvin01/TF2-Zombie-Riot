@@ -8,6 +8,7 @@ enum struct RawHooks
 	int Post;
 }
 
+float PreventRespawnsAll;
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXPLAYERS];
 Handle g_DhookWantsLagCompensationOnEntity;
@@ -1517,6 +1518,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(!Dungeon_CanClientRespawn(client))
 		return MRES_Supercede;
+
+	if(PreventRespawnsAll > GetGameTime())
+	{
+		return MRES_Supercede;
+	}
 #endif
 
 #if defined ZR
@@ -1880,6 +1886,7 @@ int BannerWearableModelIndex[3];
 bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
+	PreventRespawnsAll = 0.0;
 #if defined ZR
 	if(g_DHookTakeDmgPlayer) 
 	{
