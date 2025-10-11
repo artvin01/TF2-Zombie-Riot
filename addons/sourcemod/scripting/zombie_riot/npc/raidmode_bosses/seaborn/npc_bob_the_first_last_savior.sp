@@ -773,6 +773,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{white}Bob the First{default}: I will remove what does not belong to you...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
+					CreateTimer(12.0, SafetyFixBobDo, EntIndexToEntRef(npc.index));
 				}
 				case 50:
 				{
@@ -2217,4 +2218,19 @@ public void Raidmode_BobFirst_Win(int entity)
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
+}
+
+
+
+public Action SafetyFixBobDo(Handle timer, int refbob)
+{
+	if(!IsValidEntity(refbob))
+	{
+		return Plugin_Handled;
+	}
+	int Entity = EntRefToEntIndex(refbob);
+	if(i_RaidGrantExtra[Entity] <= 50)
+		i_RaidGrantExtra[Entity] = 50;
+	PreventRespawnsAll = GetGameTime() + 0.0;
+	return Plugin_Handled;
 }
