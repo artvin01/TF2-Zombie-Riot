@@ -284,6 +284,8 @@ public Action AlmagestSeinr_OnTakeDamage(int victim, int &attacker, int &inflict
 	//	npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
 	if(npc.m_flArmorCount > 0.0)
 	{
 		ApplyStatusEffect(npc.index, attacker, "Freeze", 2.0);
