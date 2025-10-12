@@ -198,7 +198,7 @@ public void AlmagestSeinr_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	GrantEntityArmor(iNPC, true, 0.5, 0.25, 0);
+	GrantEntityArmor(iNPC, true, 0.35, 0.25, 0);
 	
 	if(npc.m_flArmorCount <= 0.0)
 	{	
@@ -285,7 +285,7 @@ public Action AlmagestSeinr_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.m_blPlayHurtAnimation = true;
 	}
 	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
-		return;
+		return Plugin_Continue;
 	if(npc.m_flArmorCount > 0.0)
 	{
 		ApplyStatusEffect(npc.index, attacker, "Freeze", 2.0);

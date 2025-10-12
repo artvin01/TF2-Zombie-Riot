@@ -8,7 +8,6 @@ enum struct RawHooks
 	int Post;
 }
 
-float PreventRespawnsAll;
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXPLAYERS];
 Handle g_DhookWantsLagCompensationOnEntity;
@@ -1518,13 +1517,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	if(!Dungeon_CanClientRespawn(client))
 		return MRES_Supercede;
+#endif
 
 	if(PreventRespawnsAll > GetGameTime())
 	{
 		return MRES_Supercede;
 	}
-#endif
-
 #if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
