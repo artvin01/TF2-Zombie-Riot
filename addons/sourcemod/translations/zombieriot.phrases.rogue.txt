@@ -80,7 +80,7 @@
 	}
 	"Vote for the next stage"
 	{
-		"en"	"Vote for the next stage:"
+		"en"	"Vote for the next stage.\nChoosing an option shows a preview."
 		"pt"	"Vote na próxima etapa:"
 		"ru"	"Голосование за следующий этап:"
 		"ko"	"다음 스테이지를 투표하세요:"
@@ -203,15 +203,14 @@
 	}
 	"Shop Encounter Title"
 	{
-		"en"	"You stumble upon a shop to find an old man selling goods, do you take up his offers?"
+		"en"	"You stumble upon a shop and find an old man selling goods, do you take up his offers?\nChoosing an item shows what it does."
 		"pt"	"Você se depara com uma loja com um senhorzinho vendendo coisas, você aceita sua oferta?"
 		"ru"	"Наткнувшись на магазин, вы видите старика, продающего товары, примете ли вы его предложение?"
 		"ko"	"당신은 우연히 가게에 들어갔더니, 물건을 파는 노인이 보였다. 그의 거래 제안을 받아들일까?"
 	}
 	"Shop Encounter Title Ruina"
 	{
-		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apperantly."
-		"ko"	"당신은 숨어있는 루이나인을 발견했다. 그들은 당신에게 여기서 빨리 탈출하고 싶다고 하며, 약간의 자금을 주면 보답을 해주겠다고 한다."
+		"en"	"You find a Ruinian who's hiding, they say they have some things to give you for cash, needed to escape from here apparently.\nChoosing an item shows what it does."
 	}
 	"Shop Encounter Title Ruina Evil"
 	{
@@ -798,37 +797,31 @@
 	}
 	"Electric Tower"
 	{
-		"en"	"Electric Tower"
-		"ru"	"Электробашня"
-		"ko"	"송전탑"
+		"en"	"⚔ Electric Tower"
+		"ru"	"⚔ Электробашня"
 	}
 	"Electric Tower!"
 	{
-		"en"	"Electric Tower ⚠"
-		"ko"	"송전탑 ⚠"
+		"en"	"⚠ Electric Tower"
 	}
 	"Tower Madness"
 	{
-		"en"	"Tower Madness"
-		"ru"	"Безумие башни"
-		"ko"	"광란의 탑"
+		"en"	"⚔ Tower Madness"
+		"ru"	"⚔ Безумие башни"
 	}
 	"Tower Madness!"
 	{
-		"en"	"Tower Madness ⚠"
-		"ko"	"광란의 탑 ⚠"
+		"en"	"⚠ Tower Madness"
 	}
 	"Caged Beast"
 	{
-		"en"	"Caged Beast"
-		"ru"	"Зверь в клетке"
-		"ko"	"철장에 갇힌 짐승"
+		"en"	"⚔ Caged Beast"
+		"ru"	"⚔ Зверь в клетке"
 	}
 	"Elevated Presence"
 	{
-		"en"	"Elevated Presence"
-		"ru"	"Существенное присутствие"
-		"ko"	"높아진 존재감"
+		"en"	"⚔ Elevated Presence"
+		"ru"	"⚔ Существенное присутствие"
 	}
 	"Shop"
 	{
@@ -864,31 +857,26 @@
 	}
 	"Water Fountain"
 	{
-		"en"	"Water Fountain"
-		"ru"	"Водный фонтан"
-		"ko"	"물분수"
+		"en"	"⚔ Water Fountain"
+		"ru"	"⚔ Водный фонтан"
 	}
 	"Water Fountain!"
 	{
-		"en"	"Water Fountain ⚠"
-		"ko"	"물분수 ⚠"
+		"en"	"⚠ Water Fountain"
 	}
 	"Abandoned Graveyard"
 	{
-		"en"	"Abandoned Graveyard"
-		"ru"	"Заброшенное кладбище"
-		"ko"	"폐허가 된 묘지"
+		"en"	"⚔ Abandoned Graveyard"
+		"ru"	"⚔ Заброшенное кладбище"
 	}
 	"Abandoned Graveyard!"
 	{
-		"en"	"Abandoned Graveyard ⚠"
-		"ko"	"폐허가 된 묘지 ⚠"
+		"en"	"⚠ Abandoned Graveyard"
 	}
 	"Pure Desert"
 	{
-		"en"	"Pure Desert"
-		"ru"	"Чистая пустыня"
-		"ko"	"정제된 사막"
+		"en"	"⚔ Pure Desert"
+		"ru"	"⚔ Чистая пустыня"
 	}
 	"The Sword in the Stone"
 	{
@@ -939,91 +927,75 @@
 	}
 	"Wake Up Call"
 	{
-		"en"	"Wake Up Call"
-		"ru"	"Тревожный звонок"
-		"ko"	"경각의 알람"
+		"en"	"⚔ Wake Up Call"
+		"ru"	"⚔ Тревожный звонок"
 	}
 	"Wake Up Call!"
 	{
-		"en"	"Wake Up Call ⚠"
-		"ru"	"Тревожный звонок ⚠"
-		"ko"	"경각의 알람 ⚠"
+		"en"	"⚠ Wake Up Call"
+		"ru"	"⚠ Тревожный звонок"
 	}
 	"Shoot The Messager"
 	{
-		"en"	"Shoot The Messenger"
-		"ru"	"Застрелить посланника"
-		"ko"	"엉뚱한 남탓"
+		"en"	"⚔ Shoot The Messenger"
+		"ru"	"⚔ Застрелить посланника"
 	}
 	"Shoot The Messager!"
 	{
-		"en"	"Shoot The Messenger ⚠"
-		"ru"	"Застрелить посланника ⚠"
-		"ko"	"엉뚱한 남탓 ⚠"
+		"en"	"⚠ Shoot The Messenger"
+		"ru"	"⚠ Застрелить посланника"
 	}
 	"Flanking Tactics"
 	{
-		"en"	"Flanking Tactics"
-		"ru"	"Тактика обхода с флангов"
-		"ko"	"측면 공격"
+		"en"	"⚔ Flanking Tactics"
+		"ru"	"⚔ Тактика обхода с флангов"
 	}
 	"Flanking Tactics!"
 	{
-		"en"	"Flanking Tactics ⚠"
-		"ru"	"Тактика обхода с флангов ⚠"
-		"ko"	"측면 공격 ⚠"
+		"en"	"⚠ Flanking Tactics"
+		"ru"	"⚠ Тактика обхода с флангов"
 	}
 	"Phone Service"
 	{
-		"en"	"Phone Service"
-		"ru"	"Телефонная связь"
-		"ko"	"폰 서비스"
+		"en"	"⚔ Phone Service"
+		"ru"	"⚔ Телефонная связь"
 	}
 	"Phone Service!"
 	{
-		"en"	"Phone Service ⚠"
-		"ru"	"Телефонная связь ⚠"
-		"ko"	"폰 서비스 ⚠"
+		"en"	"⚠ Phone Service"
+		"ru"	"⚠ Телефонная связь"
 	}
 	"Scouting Party"
 	{
-		"en"	"Scouting Party"
-		"ko"	"정찰대 무리"
+		"en"	"⚔ Scouting Party"
 	}
 	"Scouting Party!"
 	{
-		"en"	"Scouting Party ⚠"
-		"ko"	"정찰대 무리 ⚠"
+		"en"	"⚠ Scouting Party"
 	}
 	"Speed Demons"
 	{
-		"en"	"Speed Demons"
-		"ko"	"스피드광"
+		"en"	"⚔ Speed Demons"
 	}
 	"Speed Demons!"
 	{
-		"en"	"Speed Demons ⚠"
-		"ko"	"스피드광 ⚠"
+		"en"	"⚠ Speed Demons"
 	}
 	"Dried Kelp"
 	{
-		"en"	"Dried Kelp"
-		"ko"	"말린 켈프"
+		"en"	"⚔ Dried Kelp"
 	}
 	"Dried Kelp!"
 	{
-		"en"	"Dried Kelp ⚠"
-		"ko"	"말린 켈프 ⚠"
+		"en"	"⚠ Dried Kelp"
 	}
 	"Fueled By Gold"
 	{
-		"en"	"Fueled By Gold"
-		"ko"	"금을 연료로 쓰는 것"
+		"en"	"⚔ Fueled By Gold"
 	}
 	"Fueled By Gold!"
 	{
-		"en"	"Fueled By Gold ⚠"
-		"ko"	"금을 연료로 쓰는 것 ⚠"
+		"en"	"⚠ Fueled By Gold"
 	}
 	"Eye for an Eye"
 	{
@@ -1033,298 +1005,239 @@
 	}
 	"Fight to the Death"
 	{
-		"en"	"Fight to the Death"
-		"ko"	"사력을 다한 전투"
+		"en"	"⚔ Fight to the Death"
 	}
 	"Fight to the Death!"
 	{
-		"en"	"Fight to the Death ⚠"
-		"ko"	"사력을 다한 전투 ⚠"
+		"en"	"⚠ Fight to the Death"
 	}
 	"Shooting Range"
 	{
-		"en"	"Shooting Range"
-		"ko"	"사격장"
+		"en"	"⚔ Shooting Range"
 	}
 	"Shooting Range!"
 	{
-		"en"	"Shooting Range ⚠"
-		"ko"	"사격장 ⚠"
+		"en"	"⚠ Shooting Range"
 	}
 	"Car Battery"
 	{
-		"en"	"Car Battery"
-		"ko"	"자동차 배터리"
+		"en"	"⚔ Car Battery"
 	}
 	"Car Battery!"
 	{
-		"en"	"Car Battery ⚠"
-		"ko"	"자동차 배터리 ⚠"
+		"en"	"⚠ Car Battery"
 	}
 	"A Date with Arrows"
 	{
-		"en"	"A Date with Arrows"
-		"ko"	"화살들과 함께"
+		"en"	"⚔ A Date with Arrows"
 	}
 	"A Date with Arrows!"
 	{
-		"en"	"A Date with Arrows ⚠"
-		"ko"	"화살들과 함께 ⚠"
+		"en"	"⚠ A Date with Arrows"
 	}
 	"Not So Finale"
 	{
-		"en"	"Not So Finale"
-		"ko"	"예상 외의 피날레"
+		"en"	"⚔ Not So Finale"
 	}
 	"Not So Finale!"
 	{
-		"en"	"Not So Finale ⚠"
-		"ko"	"예상 외의 피날레 ⚠"
+		"en"	"⚠ Not So Finale"
 	}
 	"Gift Delivery"
 	{
-		"en"	"Gift Delivery"
-		"ko"	"위문품 전달"
+		"en"	"⚔ Gift Delivery"
 	}
 	"Gift Delivery!"
 	{
-		"en"	"Gift Delivery ⚠"
-		"ko"	"위문품 전달 ⚠"
+		"en"	"⚠ Gift Delivery"
 	}
 	"Viscera Cleanup"
 	{
-		"en"	"Viscera Cleanup"
-		"ko"	"내장 청소"
+		"en"	"⚔ Viscera Cleanup"
 	}
 	"Viscera Cleanup!"
 	{
-		"en"	"Viscera Cleanup ⚠"
-		"ko"	"내장 청소 ⚠"
+		"en"	"⚠ Viscera Cleanup"
 	}
 	"Forgot My Passport"
 	{
-		"en"	"Forgot My Passport"
-		"ko"	"깜빡 잊은 여권"
+		"en"	"⚔ Forgot My Passport"
 	}
 	"Forgot My Passport!"
 	{
-		"en"	"Forgot My Passport ⚠"
-		"ko"	"깜빡 잊은 여권 ⚠"
+		"en"	"⚠ Forgot My Passport"
 	}
 	"Castle Age"
 	{
-		"en"	"Castle Age"
-		"ko"	"성주 시대"
+		"en"	"⚔ Castle Age"
 	}
 	"Castle Age!"
 	{
-		"en"	"Castle Age ⚠"
-		"ko"	"성주 시대 ⚠"
+		"en"	"⚠ Castle Age"
 	}
 	"Terrifying Legends"
 	{
-		"en"	"Terrifying Legends ☠"
-		"ko"	"공포의 전설 ☠"
+		"en"	"☠ Terrifying Legends"
 	}
 	"Dungeon Rematch"
 	{
-		"en"	"Dungeon Rematch ☠"
-		"ko"	"던전 속 재전 ☠"
+		"en"	"☠ Dungeon Rematch"
 	}
 	"On Your Guard"
 	{
-		"en"	"On Your Guard"
-		"ko"	"경계 태세 유지"
+		"en"	"⚔ On Your Guard"
 	}
 	"On Your Guard!"
 	{
-		"en"	"On Your Guard ⚠"
-		"ko"	"경계 태세 유지 ⚠"
+		"en"	"⚠ On Your Guard"
 	}
 	"Darkest Dungeon"
 	{
-		"en"	"Darkest Dungeon"
-		"ko"	"다키스트 던전"
+		"en"	"⚔ Darkest Dungeon"
 	}
 	"Darkest Dungeon!"
 	{
-		"en"	"Darkest Dungeon ⚠"
-		"ko"	"다키스트 던전 ⚠"
+		"en"	"⚠ Darkest Dungeon"
 	}
 	"The Hitman"
 	{
-		"en"	"The Hitman"
-		"ko"	"히트맨"
+		"en"	"⚔ The Hitman"
 	}
 	"The Hitman!"
 	{
-		"en"	"The Hitman ⚠"
-		"ko"	"히트맨 ⚠"
+		"en"	"⚠ The Hitman"
 	}
 	"Under Tides"
 	{
-		"en"	"Under Tides"
-		"ko"	"언더 타이즈"
+		"en"	"⚔ Under Tides"
 	}
 	"Under Tides!"
 	{
-		"en"	"Under Tides ⚠"
-		"ko"	"언더 타이즈 ⚠"
+		"en"	"⚠ Under Tides"
 	}
 	"Fish Bait"
 	{
-		"en"	"Fish Bait"
-		"ko"	"낚시용 미끼"
+		"en"	"⚔ Fish Bait"
 	}
 	"Fish Bait!"
 	{
-		"en"	"Fish Bait ⚠"
-		"ko"	"낚시용 미끼 ⚠"
+		"en"	"⚠ Fish Bait"
 	}
 	"Need For Speed"
 	{
-		"en"	"Need For Speed"
-		"ko"	"니드 포 스피드"
+		"en"	"⚔ Need For Speed"
 	}
 	"Need For Speed!"
 	{
-		"en"	"Need For Speed ⚠"
-		"ko"	"니드 포 스피드 ⚠"
+		"en"	"⚠ Need For Speed"
 	}
 	"Deep Rock Heist"
 	{
-		"en"	"Deep Rock Heist"
-		"ko"	"딥 락 헤이스트"
+		"en"	"⚔ Deep Rock Heist"
 	}
 	"Deep Rock Heist!"
 	{
-		"en"	"Deep Rock Heist ⚠"
-		"ko"	"딥 락 헤이스트 ⚠"
+		"en"	"⚠ Deep Rock Heist"
 	}
 	"Teutons"
 	{
-		"en"	"Teutons"
-		"ko"	"튜튼족"
+		"en"	"⚔ Teutons"
 	}
 	"Teutons!"
 	{
-		"en"	"Teutons ⚠"
-		"ko"	"튜튼족 ⚠"
+		"en"	"⚠ Teutons"
 	}
 	"Blitz"
 	{
-		"en"	"Blitz"
-		"ko"	"블리츠"
+		"en"	"⚔ Blitz"
 	}
 	"Blitz!"
 	{
-		"en"	"Blitz ⚠"
-		"ko"	"블리츠 ⚠"
+		"en"	"⚠ Blitz"
 	}
 	"Heroic Age"
 	{
-		"en"	"Heroic Age"
-		"ko"	"영웅의 시대"
+		"en"	"⚔ Heroic Age"
 	}
 	"Heroic Age!"
 	{
-		"en"	"Heroic Age ⚠"
-		"ko"	"영웅의 시대 ⚠"
+		"en"	"⚠ Heroic Age"
 	}
 	"Undead Warriors"
 	{
-		"en"	"Undead Warriors"
-		"ko"	"불멸의 전사들"
+		"en"	"⚔ Undead Warriors"
 	}
 	"Undead Warriors!"
 	{
-		"en"	"Undead Warriors ⚠"
-		"ko"	"불멸의 전사들 ⚠"
+		"en"	"⚠ Undead Warriors"
 	}
 	"Gray Robots"
 	{
-		"en"	"Gray Robots"
-		"ko"	"잿빛 로봇들"
+		"en"	"⚔ Gray Robots"
 	}
 	"Gray Robots!"
 	{
-		"en"	"Gray Robots ⚠"
-		"ko"	"잿빛 로봇들 ⚠"
+		"en"	"⚠ Gray Robots"
 	}
 	"Xeno Monsters"
 	{
-		"en"	"Xeno Monsters"
-		"ko"	"제노 괴수들"
+		"en"	"⚔ Xeno Monsters"
 	}
 	"Xeno Monsters!"
 	{
-		"en"	"Xeno Monsters ⚠"
-		"ko"	"제노 괴수들 ⚠"
+		"en"	"⚠ Xeno Monsters"
 	}
 	"Ambush"
 	{
-		"en"	"Ambush"
-		"ko"	"매복"
+		"en"	"⚔ Ambush"
 	}
 	"Ambush!"
 	{
-		"en"	"Ambush ⚠"
-		"ko"	"매복 ⚠"
+		"en"	"⚠ Ambush"
 	}
 	"Steel Workers"
 	{
-		"en"	"Steel Workers"
-		"ko"	"강철 노동자"
+		"en"	"⚔ Steel Workers"
 	}
 	"Steel Workers!"
 	{
-		"en"	"Steel Workers ⚠"
-		"ko"	"강철 노동자 ⚠"
+		"en"	"⚠ Steel Workers"
 	}
 	"Infighting"
 	{
-		"en"	"Infighting"
-		"ko"	"인파이팅"
+		"en"	"⚔ Infighting"
 	}
 	"Infighting!"
 	{
-		"en"	"Infighting ⚠"
-		"ko"	"인파이팅 ⚠"
+		"en"	"⚠ Infighting"
 	}
 	"Simple Yet Deadly"
 	{
-		"en"	"Simple Yet Deadly"
-		"ko"	"간단하지만 치명적인 것"
+		"en"	"⚔ Simple Yet Deadly"
 	}
 	"Simple Yet Deadly!"
 	{
-		"en"	"Simple Yet Deadly ⚠"
-		"ko"	"간단하지만 치명적인 것 ⚠"
+		"en"	"⚠ Simple Yet Deadly"
 	}
 	"Patient Zero"
 	{
-		"en"	"Patient Zero ☠"
-		"ko"	"최초의 감염자 ☠"
+		"en"	"☠ Patient Zero"
 	}
 	"Highest Rule"
 	{
-		"en"	"Highest Rule ☠"
-		"ko"	"최고위 규칙 ☠"
+		"en"	"☠ Highest Rule"
 	}
 	"Familiar Yet Not!"
 	{
-		"en"	"Familiar Yet Not ⚠"
-		"ko"	"친숙하면서도 그렇지 않은 것 ⚠"
+		"en"	"⚠ Familiar Yet Not"
 	}
 	"Future Or Not!"
 	{
-		"en"	"Future Or Not ⚠"
-		"ko"	"미래가 아니면 죽음을 ⚠"
+		"en"	"⚠ Future Or Not"
 	}
 	"Bob's Fear"
 	{
-		"en"	"Bob's Fear ☠"
-		"ko"	"밥의 공포 ☠"
+		"en"	"☠ Bob's Fear"
 	}
 	"Lost Crown and Sword"
 	{
@@ -1353,58 +1266,47 @@
 	}
 	"Home Sick"
 	{
-		"en"	"Home Sick"
-		"ko"	"향수병"
+		"en"	"⚔ Home Sick"
 	}
 	"Home Sick!"
 	{
-		"en"	"Home Sick ⚠"
-		"ko"	"향수병 ⚠"
+		"en"	"⚠ Home Sick"
 	}
 	"A Lost War"
 	{
-		"en"	"A Lost War"
-		"ko"	"잃어버린 전쟁"
+		"en"	"⚔ A Lost War"
 	}
 	"A Lost War!"
 	{
-		"en"	"A Lost War ⚠"
-		"ko"	"잃어버린 전쟁 ⚠"
+		"en"	"⚠ A Lost War"
 	}
 	"Falling Hazard"
 	{
-		"en"	"Falling Hazard"
-		"ko"	"추락 위험"
+		"en"	"⚔ Falling Hazard"
 	}
 	"Falling Hazard!"
 	{
-		"en"	"Falling Hazard ⚠"
-		"ko"	"추락 위험 ⚠"
+		"en"	"⚠ Falling Hazard"
 	}
 	"Whiteflower Mercenaries"
 	{
-		"en"	"Whiteflower Mercenaries ☠"
-		"ko"	"배풍등의 용병들 ☠"
+		"en"	"☠ Whiteflower Mercenaries"
 	}
 	"City Hall"
 	{
-		"en"	"City Hall"
-		"ko"	"도시 센터"
+		"en"	"⚔ City Hall"
 	}
 	"City Hall!"
 	{
-		"en"	"City Hall ⚠"
-		"ko"	"도시 센터 ⚠"
+		"en"	"⚠ City Hall"
 	}
 	"Prompting Engineer"
 	{
-		"en"	"Prompting Engineer ⚠"
-		"ko"	"프롬프팅 엔지니어 ⚠"
+		"en"	"⚠ Prompting Engineer"
 	}
 	"At Strength"
 	{
-		"en"	"At Strength ⚠"
-		"ko"	"사람이 모이는 곳 ⚠"
+		"en"	"⚠ At Strength"
 	}
 
 	// Curses

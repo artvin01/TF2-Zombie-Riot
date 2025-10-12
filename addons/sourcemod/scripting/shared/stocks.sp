@@ -5879,3 +5879,18 @@ stock void SetEntityRenderColor_NpcAll(int entity, float r, float g, float b)
 		}
 	}
 }
+
+
+bool AntiCommandAbuse_MenuFix(Menu menu, MenuAction action, int choice)
+{
+	if(action != MenuAction_Select)
+		return false;
+		
+	int flags;
+	static char buffer[64];
+	menu.GetItem(choice, buffer, sizeof(buffer), flags);
+	if(flags & ITEMDRAW_DISABLED)
+		return true;
+
+	return false;
+}

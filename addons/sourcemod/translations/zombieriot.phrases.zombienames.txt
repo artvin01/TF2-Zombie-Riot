@@ -5952,4 +5952,12 @@
 	{
 		"en" "Device built by Reila to close the rifts, \nalbeit at the cost of trapping the activator inside. \nResets when enough HP is lost, granting additional raid time and resistance to itself and Reila."
 	}
+	"'Samivilinn', the Resolution of the Very North"
+	{
+		"en" "'Samivilinn', the Resolution of the Very North"
+	}
+	"'Voidivilinn', the Resolution of the Very South"
+	{
+		"en" "'Voidivilinn', the Resolution of the Very South"
+	}
 }

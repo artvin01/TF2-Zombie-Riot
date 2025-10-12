@@ -464,6 +464,8 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		}
 	}
 
+	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
 	gameTime = GetGameTime();
 	if(!NpcStats_IsEnemyFrozen(attacker, 1) && !NpcStats_IsEnemyFrozen(attacker, 2) && !NpcStats_IsEnemyFrozen(attacker, 3))
 	{

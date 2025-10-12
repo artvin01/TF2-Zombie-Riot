@@ -1544,328 +1544,263 @@
 
 	"Bad Water"
 	{
-		"en"	"Bad Water"
-		"ko"	"나쁜 물"
+		"en"	"⚔ Bad Water"
 	}
 	"Bad Water!"
 	{
-		"en"	"Bad Water ⚠"
-		"ko"	"나쁜 물 ⚠"
+		"en"	"⚠ Bad Water"
 	}
 	"Town Center"
 	{
-		"en"	"Town Center"
-		"ko"	"마을 회관"
+		"en"	"⚔ Town Center"
 	}
 	"Town Center!"
 	{
-		"en"	"Town Center ⚠"
-		"ko"	"마을 회관 ⚠"
+		"en"	"⚠Town Center"
 	}
 	"Demon Box"
 	{
-		"en"	"Demon Box"
-		"ko"	"악령상자"
+		"en"	"⚔ Demon Box"
 	}
 	"Demon Box!"
 	{
-		"en"	"Demon Box ⚠"
-		"ko"	"악령상자 ⚠"
+		"en"	"⚠ Demon Box"
 	}
 	"Scout Rush"
 	{
-		"en"	"Scout Rush"
-		"ko"	"스카웃 러시"
+		"en"	"⚔ Scout Rush"
 	}
 	"Scout Rush!"
 	{
-		"en"	"Scout Rush ⚠"
-		"ko"	"스카웃 러시 ⚠"
+		"en"	"⚠ Scout Rush"
 	}
 	"False Information"
 	{
-		"en"	"False Information"
-		"ko"	"가짜 정보"
+		"en"	"⚔ False Information"
 	}
 	"False Information!"
 	{
-		"en"	"False Information ⚠"
-		"ko"	"가짜 정보 ⚠"
+		"en"	"⚠ False Information"
 	}
 	"Jumping Jacks"
 	{
-		"en"	"Jumping Jacks"
-		"ko"	"팔 벌려 뛰기"
+		"en"	"⚔ Jumping Jacks"
 	}
 	"Jumping Jacks!"
 	{
-		"en"	"Jumping Jacks ⚠"
-		"ko"	"팔 벌려 뛰기 ⚠"
+		"en"	"⚠ Jumping Jacks"
 	}
 	"Lost Empires"
 	{
-		"en"	"Lost Empires"
-		"ko"	"잃어버린 제국"
+		"en"	"⚔ Lost Empires"
 	}
 	"Lost Empires!"
 	{
-		"en"	"Lost Empires ⚠"
-		"ko"	"잃어버린 제국 ⚠"
+		"en"	"⚠ Lost Empires"
 	}
 	"Supplies"
 	{
-		"en"	"Supplies"
-		"ko"	"보급"
+		"en"	"⚔ Supplies"
 	}
 	"Supplies!"
 	{
-		"en"	"Supplies ⚠"
-		"ko"	"보급 ⚠"
+		"en"	"⚠ Supplies"
 	}
 	"No Swimming"
 	{
-		"en"	"No Swimming"
-		"ko"	"수영 금지"
+		"en"	"⚔ No Swimming"
 	}
 	"No Swimming!"
 	{
-		"en"	"No Swimming ⚠"
-		"ko"	"수영 금지 ⚠"
+		"en"	"⚠ No Swimming"
 	}
 	"All Hallem"
 	{
-		"en"	"All Hallem"
-		"ko"	"알할림"
+		"en"	"⚔ All Hallem"
 	}
 	"All Hallem!"
 	{
-		"en"	"All Hallem ⚠"
-		"ko"	"알할림 ⚠"
+		"en"	"⚠ All Hallem"
 	}
 	"Camel Riders"
 	{
-		"en"	"Camel Riders"
-		"ko"	"낙타 기수들"
+		"en"	"⚔ Camel Riders"
 	}
 	"Camel Riders!"
 	{
-		"en"	"Camel Riders ⚠"
-		"ko"	"낙타 기수들 ⚠"
+		"en"	"⚠ Camel Riders"
 	}
 	"Secret Hunter"
 	{
-		"en"	"Secret Hunter"
-		"ko"	"비밀 사냥꾼"
+		"en"	"⚔ Secret Hunter"
 	}
 	"Secret Hunter!"
 	{
-		"en"	"Secret Hunter ⚠"
-		"ko"	"비밀 사냥꾼 ⚠"
+		"en"	"⚠ Secret Hunter"
 	}
 	"Whiteflower Avenger's"
 	{
-		"en"	"Whiteflower Avenger's"
-		"ko"	"배풍등의 복수자 무리"
+		"en"	"⚔ Whiteflower Avenger's"
 	}
 	"Whiteflower Avenger's!"
 	{
-		"en"	"Whiteflower Avenger's ⚠"
-		"ko"	"배풍등의 복수자 무리 ⚠"
+		"en"	"⚠ Whiteflower Avenger's"
 	}
 	"Barricade"
 	{
-		"en"	"Barricade"
-		"ko"	"바리케이드"
+		"en"	"⚔ Barricade"
 	}
 	"Barricade!"
 	{
-		"en"	"Barricade ⚠"
-		"ko"	"바리케이드 ⚠"
+		"en"	"⚠ Barricade"
 	}
 	"Into The Shed"
 	{
-		"en"	"Into The Shed"
-		"ko"	"창고 속으로"
+		"en"	"⚔ Into The Shed"
 	}
 	"Into The Shed!"
 	{
-		"en"	"Into The Shed ⚠"
-		"ko"	"창고 속으로 ⚠"
+		"en"	"⚠ Into The Shed"
 	}
 	"The Abomination"
 	{
-		"en"	"The Abomination"
-		"ko"	"흉물"
+		"en"	"⚔ The Abomination"
 	}
 	"The Abomination!"
 	{
-		"en"	"The Abomination ⚠"
-		"ko"	"흉물 ⚠"
+		"en"	"⚠ The Abomination"
 	}
 	"Up To The Roof"
 	{
-		"en"	"Up To The Roof"
-		"ko"	"지붕 위로"
+		"en"	"⚔ Up To The Roof"
 	}
 	"Up To The Roof!"
 	{
-		"en"	"Up To The Roof ⚠"
-		"ko"	"지붕 위로"
+		"en"	"⚠ Up To The Roof"
 	}
 	"Rock Collection"
 	{
-		"en"	"Rock Collection"
-		"ko"	"돌 모음집"
+		"en"	"⚔ Rock Collection"
 	}
 	"Rock Collection!"
 	{
-		"en"	"Rock Collection ⚠"
-		"ko"	"돌 모음집 ⚠"
+		"en"	"⚠ Rock Collection"
 	}
 	"Hitman II"
 	{
-		"en"	"Hitman II"
-		"ko"	"히트맨 II"
+		"en"	"⚔ Hitman II"
 	}
 	"Hitman II!"
 	{
-		"en"	"Hitman II ⚠"
-		"ko"	"히트맨 II ⚠"
+		"en"	"⚠ Hitman II"
 	}
 	"Pre-Heated Oven"
 	{
-		"en"	"Pre-Heated Oven"
-		"ko"	"예열된 오븐"
+		"en"	"⚔ Pre-Heated Oven"
 	}
 	"Pre-Heated Oven!"
 	{
-		"en"	"Pre-Heated Oven ⚠"
-		"ko"	"예열된 오븐 ⚠"
+		"en"	"⚠ Pre-Heated Oven"
 	}
 	"Pre-Heated Oven?"
 	{
-		"en"	"Pre-Heated Oven ☠"
-		"ko"	"예열된 오븐 ☠"
+		"en"	"☠ Pre-Heated Oven"
 	}
 	"Yummer"
 	{
-		"en"	"Yummer"
-		"ko"	"쩝쩝이"
+		"en"	"⚔ Yummer"
 	}
 	"Yummer!"
 	{
-		"en"	"Yummer ⚠"
-		"ko"	"쩝쩝이 ⚠"
+		"en"	"⚠ Yummer"
 	}
 	"Yummer?"
 	{
-		"en"	"Yummer ☠"
-		"ko"	"쩝쩝이 ☠"
+		"en"	"☠ Yummer"
 	}
 	"Heavy Forest"
 	{
-		"en"	"Heavy Forest"
-		"ko"	"삼림"
+		"en"	"⚔ Heavy Forest"
 	}
 	"Heavy Forest!"
 	{
-		"en"	"Heavy Forest ⚠"
-		"ko"	"삼림 ⚠"
+		"en"	"⚠ Heavy Forest"
 	}
 	"Heavy Forest?"
 	{
-		"en"	"Heavy Forest ☠"
-		"ko"	"삼림 ☠"
+		"en"	"☠ Heavy Forest"
 	}
 	"Frostbite"
 	{
-		"en"	"Frostbite"
-		"ko"	"동상"
+		"en"	"⚔ Frostbite"
 	}
 	"Frostbite!"
 	{
-		"en"	"Frostbite ⚠"
-		"ko"	"동상 ⚠"
+		"en"	"⚠ Frostbite"
 	}
 	"Frostbite?"
 	{
-		"en"	"Frostbite ☠"
-		"ko"	"동상 ☠"
+		"en"	"☠ Frostbite"
 	}
 	"Heavy Jacket"
 	{
-		"en"	"Heavy Jacket"
-		"ko"	"중갑옷 재킷"
+		"en"	"⚔ Heavy Jacket"
 	}
 	"Heavy Jacket!"
 	{
-		"en"	"Heavy Jacket ⚠"
-		"ko"	"중갑옷 재킷 ⚠"
+		"en"	"⚠ Heavy Jacket"
 	}
 	"Heavy Jacket?"
 	{
-		"en"	"Heavy Jacket ☠"
-		"ko"	"중갑옷 재킷 ☠"
+		"en"	"☠ Heavy Jacket"
 	}
 	"Freezer Water"
 	{
-		"en"	"Freezer Water"
-		"ko"	"냉동수 ☠"
+		"en"	"⚔ Freezer Water"
 	}
 	"Freezer Water!"
 	{
-		"en"	"Freezer Water ⚠"
-		"ko"	"냉동수 ⚠"
+		"en"	"⚠ Freezer Water"
 	}
 	"Freezer Water?"
 	{
-		"en"	"Freezer Water ☠"
-		"ko"	"냉동수 ☠"
+		"en"	"☠ Freezer Water"
 	}
 	"Home of the North"
 	{
-		"en"	"Home of the North"
-		"ko"	"북쪽의 집"
+		"en"	"⚔ Home of the North"
 	}
 	"Home of the North!"
 	{
-		"en"	"Home of the North ⚠"
-		"ko"	"북쪽의 집 ⚠"
+		"en"	"⚠ Home of the North"
 	}
 	"Home of the North?"
 	{
-		"en"	"Home of the North ☠"
-		"ko"	"북쪽의 집 ☠"
+		"en"	"☠ Home of the North"
 	}
 	"Das Concrete"
 	{
-		"en"	"Das Concrete"
-		"ko"	"공구리"
+		"en"	"⚔ Das Concrete"
 	}
 	"Das Concrete!"
 	{
-		"en"	"Das Concrete ⚠"
-		"ko"	"공구리 ⚠"
+		"en"	"⚠ Das Concrete"
 	}
 	"Machine Works"
 	{
-		"en"	"Machine Works"
-		"ko"	"기계의 일"
+		"en"	"⚔ Machine Works"
 	}
 	"Machine Works!"
 	{
-		"en"	"Machine Works ⚠"
-		"ko"	"기계의 일 ⚠"
+		"en"	"⚠ Machine Works"
 	}
 	"All In Chaos"
 	{
-		"en"	"All In Chaos"
-		"ko"	"모두 혼돈 안에 있다"
+		"en"	"⚔ All In Chaos"
 	}
 	"All In Chaos!"
 	{
-		"en"	"All In Chaos ⚠"
-		"ko"	"모두 혼돈 안에 있다 ⚠"
+		"en"	"⚠ All In Chaos"
 	}
 	"Silk Cradle"
 	{
@@ -1914,98 +1849,79 @@
 	}
 	"Clashing Colors"
 	{
-		"en"	"Clashing Colors ⚠"
-		"ko"	"불쾌한 색상 ⚠"
+		"en"	"⚠ Clashing Colors"
 	}
 	"Age Cheats"
 	{
-		"en"	"Age Cheats ⚠"
-		"ko"	"나이 사기 ⚠"
+		"en"	"⚠ Age Cheats"
 	}
 	"The Old The New"
 	{
-		"en"	"The Old, The New ⚠"
-		"ko"	"오래된 놈, 젊은 놈 ⚠"
+		"en"	"⚠ The Old, The New"
 	}
 	"Not so Missunderstood"
 	{
-		"en"	"Not so Missunderstood"
-		"ko"	"오해하지 말 것"
+		"en"	"⚔ Not so Misunderstood"
 	}
 	"Not so Missunderstood!"
 	{
-		"en"	"Not so Missunderstood ⚠"
-		"ko"	"오해하지 말 것 ⚠"
+		"en"	"⚠ Not so Misunderstood"
 	}
 	"Broken Defenses"
 	{
-		"en"	"Broken Defenses"
-		"ko"	"붕괴된 방어선"
+		"en"	"⚔ Broken Defenses"
 	}
 	"Broken Defenses!"
 	{
-		"en"	"Broken Defenses ⚠"
-		"ko"	"붕괴된 방어선 ⚠"
+		"en"	"⚠ Broken Defenses"
 	}
 	"Godly army Under Chaos"
 	{
-		"en"	"Godly army Under Chaos"
-		"ko"	"혼돈 속의 신성한 군대"
+		"en"	"⚔ Godly Army Under Chaos"
 	}
 	"Godly army Under Chaos!"
 	{
-		"en"	"Godly army Under Chaos ⚠"
-		"ko"	"혼돈 속의 신성한 군대 ⚠"
+		"en"	"⚠ Godly Army Under Chaos"
 	}
 	"Forsaken Tribe"
 	{
-		"en"	"Forsaken Tribe"
-		"ko"	"버림받은 부족"
+		"en"	"⚔ Forsaken Tribe"
 	}
 	"Forsaken Tribe!"
 	{
-		"en"	"Forsaken Tribe ⚠"
-		"ko"	"버림받은 부족 ⚠"
+		"en"	"⚠ Forsaken Tribe"
 	}
 	"Roaming Chaos Demons"
 	{
-		"en"	"Roaming Chaos Demons"
-		"ko"	"로밍 카오스"
+		"en"	"⚔ Roaming Chaos Demons"
 	}
 	"Roaming Chaos Demons!"
 	{
-		"en"	"Roaming Chaos Demons ⚠"
-		"ko"	"로밍 카오스 ⚠"
+		"en"	"⚠ Roaming Chaos Demons"
 	}
 	"Antagonising Iberians"
 	{
-		"en"	"Antagonising Iberians"
-		"ko"	"악당 이베리아인"
+		"en"	"⚔ Antagonising Iberians"
 	}
 	"Antagonising Iberians!"
 	{
-		"en"	"Antagonising Iberians ⚠"
-		"ko"	"악당 이베리아인 ⚠"
+		"en"	"⚠ Antagonising Iberians"
 	}
 	"Lost Zombies"
 	{
-		"en"	"Lost Zombies"
-		"ko"	"길 잃은 좀비들"
+		"en"	"⚔ Lost Zombies"
 	}
 	"Lost Zombies!"
 	{
-		"en"	"Lost Zombies ⚠"
-		"ko"	"길 잃은 좀비들 ⚠"
+		"en"	"⚠ Lost Zombies"
 	}
 	"Mercs against Mercs"
 	{
-		"en"	"Mercs against Mercs"
-		"ko"	"용병 VS 용병"
+		"en"	"⚔ Mercs Against Mercs"
 	}
 	"Mercs against Mercs!"
 	{
-		"en"	"Mercs against Mercs ⚠"
-		"ko"	"용병 VS 용병 ⚠"
+		"en"	"⚠ Mercs Against Mercs"
 	}
 	"Ruania"
 	{

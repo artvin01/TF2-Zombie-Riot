@@ -773,6 +773,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{white}밥 1세{default}: 너의 것이 아닌 그 감염은 내가 제거해주면 될 것 같군.");
 					npc.m_flNextThinkTime = gameTime + 3.0;
+					CreateTimer(12.0, SafetyFixBobDo, EntIndexToEntRef(npc.index));
 				}
 				case 50:
 				{
@@ -812,6 +813,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					GiveProgressDelay(15.0);
 					Waves_ForceSetup(15.0);
 
+					//dont respawn during setup.
+					PreventRespawnsAll = GetGameTime() + 10.0;
+
 					if(found)
 					{
 						npc.m_flNextThinkTime = gameTime + 0.25;
@@ -836,6 +840,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.5, SetTimeBack);
 						i_RaidGrantExtra[npc.index] = 49;
+						PreventRespawnsAll = GetGameTime() + 2.0;
 					}
 				}
 			}
@@ -2213,4 +2218,19 @@ public void Raidmode_BobFirst_Win(int entity)
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}밥 1세{default}: 심해의 위협은 이제 완전히 사라졌다. 드디어 평화가 찾아오겠군...");
+}
+
+
+
+public Action SafetyFixBobDo(Handle timer, int refbob)
+{
+	if(!IsValidEntity(refbob))
+	{
+		return Plugin_Handled;
+	}
+	int Entity = EntRefToEntIndex(refbob);
+	if(i_RaidGrantExtra[Entity] <= 50)
+		i_RaidGrantExtra[Entity] = 50;
+	PreventRespawnsAll = GetGameTime() + 0.0;
+	return Plugin_Handled;
 }

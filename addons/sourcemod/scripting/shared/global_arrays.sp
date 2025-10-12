@@ -5,6 +5,8 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //Use what already exists in tf2 please, only add stuff here if it needs extra spacing like ice damage and so on
 //I dont want to use DMG_SHOCK for example due to its extra ugly effect thats annoying!
 
+float PreventRespawnsAll;
+
 #define ZR_DAMAGE_NONE							0		  	//Nothing special.
 #define ZR_DAMAGE_ICE							(1 << 1)
 #define ZR_DAMAGE_LASER_NO_BLAST				(1 << 2)

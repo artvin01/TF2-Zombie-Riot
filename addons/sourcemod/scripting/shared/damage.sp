@@ -1138,8 +1138,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_RED_BLADE:
 		{
-			if(!CheckInHud())
-				WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{

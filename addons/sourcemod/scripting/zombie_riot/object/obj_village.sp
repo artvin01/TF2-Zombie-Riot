@@ -176,6 +176,9 @@ public Action Timer_VillageThink(Handle timer, int ref)
 
 void BuildingApplyDebuffyToEnemiesInRange(int client, float range, bool mounted)
 {
+	int Building = Object_GetSentryBuilding(client);
+	if(!IsValidEntity(Building))
+		return;
 	static float pos2[3];
 	if(mounted)
 	{
@@ -183,7 +186,7 @@ void BuildingApplyDebuffyToEnemiesInRange(int client, float range, bool mounted)
 	}
 	else
 	{
-		GetEntPropVector(Object_GetSentryBuilding(client), Prop_Data, "m_vecAbsOrigin", pos2);
+		GetEntPropVector(Building, Prop_Data, "m_vecAbsOrigin", pos2);
 	}
 
 	b_NpcIsTeamkiller[client] = true;

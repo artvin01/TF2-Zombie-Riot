@@ -635,7 +635,7 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 	}
 
 	Shadowing_Darkness_DefaultMovement(npc, gameTime);
-	if(npc.m_flDespawnUmbralKoulms < gameTime)
+	if(npc.m_flDespawnUmbralKoulms && npc.m_flDespawnUmbralKoulms < gameTime)
 	{
 		//delete all koulms
 		int inpcloop, a;
@@ -643,17 +643,12 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 		{
 			if(IsValidEntity(inpcloop) && i_NpcInternalId[inpcloop] == Umbral_Koulm_ID())
 			{
-				if(inpcloop != 0)
-				{
-					b_DissapearOnDeath[inpcloop] = true;
-					b_DoGibThisNpc[inpcloop] = true;
-					SmiteNpcToDeath(inpcloop);
-					SmiteNpcToDeath(inpcloop);
-					SmiteNpcToDeath(inpcloop);
-					SmiteNpcToDeath(inpcloop);
-				}
+				b_DissapearOnDeath[inpcloop] = true;
+				b_DoGibThisNpc[inpcloop] = true;
+				SmiteNpcToDeath(inpcloop);
 			}
 		}
+		npc.m_flDespawnUmbralKoulms = 0.0;
 	}
 	
 	
@@ -751,9 +746,6 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 					b_DissapearOnDeath[inpcloop] = true;
 					b_DoGibThisNpc[inpcloop] = true;
 					SmiteNpcToDeath(inpcloop);
-					SmiteNpcToDeath(inpcloop);
-					SmiteNpcToDeath(inpcloop);
-					SmiteNpcToDeath(inpcloop);
 				}
 			}
 		}
@@ -767,9 +759,6 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 				{
 					b_DissapearOnDeath[inpcloop1] = true;
 					b_DoGibThisNpc[inpcloop1] = true;
-					SmiteNpcToDeath(inpcloop1);
-					SmiteNpcToDeath(inpcloop1);
-					SmiteNpcToDeath(inpcloop1);
 					SmiteNpcToDeath(inpcloop1);
 				}
 			}
@@ -848,9 +837,6 @@ public void Shadowing_Darkness_Boss_NPCDeath(int entity)
 				b_DissapearOnDeath[inpcloop] = true;
 				b_DoGibThisNpc[inpcloop] = true;
 				SmiteNpcToDeath(inpcloop);
-				SmiteNpcToDeath(inpcloop);
-				SmiteNpcToDeath(inpcloop);
-				SmiteNpcToDeath(inpcloop);
 			}
 		}
 	}
@@ -864,9 +850,6 @@ public void Shadowing_Darkness_Boss_NPCDeath(int entity)
 			{
 				b_DissapearOnDeath[inpcloop1] = true;
 				b_DoGibThisNpc[inpcloop1] = true;
-				SmiteNpcToDeath(inpcloop1);
-				SmiteNpcToDeath(inpcloop1);
-				SmiteNpcToDeath(inpcloop1);
 				SmiteNpcToDeath(inpcloop1);
 			}
 		}

@@ -2734,8 +2734,8 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 	//If we are in unlock mode, i.e. rogue2, then we want to have a minimim cash amount.
 	if(unlock)
 	{
-		if(GrigoriCashLogic < 5000)
-			GrigoriCashLogic = 5000;
+		if(GrigoriCashLogic < 3700)
+			GrigoriCashLogic = 3700;
 	}
 
 	
@@ -2830,7 +2830,7 @@ void Store_RandomizeNPCStore(int StoreFlags, int addItem = 0, float override = -
 					if(!item.NPCSeller && !item.RogueAlwaysSell)
 					{
 						item.GetItemInfo(0, info);
-						if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 4))
+						if(info.Cost > 0 && info.Cost_Unlock < (GrigoriCashLogic / 3))
 							indexes[amount++] = i;
 					}
 					//if we assume a sale like this is happening, thenwe must reset all previously sold items!
@@ -3743,7 +3743,7 @@ static void MenuPage(int client, int section)
 					}
 					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell && !CvarInfiniteCash.BoolValue)
 					{
-						Format(buffer, sizeof(buffer), "%s [↓]", info.Custom_Name);
+						Format(buffer, sizeof(buffer), "%s [↑]", info.Custom_Name);
 					}
 					else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
@@ -4411,7 +4411,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecOrigin);
 						VecOrigin[2] += 45.0;
 
-						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, info.UnboxRarity -1); //since they are one lower
+						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, view_as<ZRGiftRarity>(info.UnboxRarity -1)); //since they are one lower
 						
 						if(!CvarInfiniteCash.BoolValue)
 						{

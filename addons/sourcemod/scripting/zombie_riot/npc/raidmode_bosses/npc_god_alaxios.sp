@@ -420,9 +420,9 @@ methodmap GodAlaxios < CClotBody
 		
 		npc.Anger = false;
 
-		npc.m_flAlaxiosBuffEffect = GetGameTime() + 25.0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
-		npc.m_flNextRangedAttack = GetGameTime() + 15.0;
+		npc.m_flAlaxiosBuffEffect = GetGameTime() + 7.0;
+		npc.m_flRangedSpecialDelay = GetGameTime() + 5.0;
+		npc.m_flNextRangedAttack = GetGameTime() + 8.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
 		npc.g_TimesSummoned = 0;
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;

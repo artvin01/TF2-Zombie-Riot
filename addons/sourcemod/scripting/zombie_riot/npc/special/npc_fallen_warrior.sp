@@ -220,7 +220,7 @@ methodmap FallenWarrior < CClotBody
 		
 		int skin = 1;
 		float size = 1.2;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_nightbane_brim/hwn2022_nightbane_brim.mdl", "", 2, 1.3);
 

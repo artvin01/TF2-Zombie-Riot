@@ -1921,6 +1921,12 @@ static bool CallGenericVote(int client)
 
 public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int choice)
 {
+	if(AntiCommandAbuse_MenuFix(menu, action, choice))
+	{
+		delete menu;
+		return 0;
+	}
+
 	switch(action)
 	{
 		case MenuAction_End:

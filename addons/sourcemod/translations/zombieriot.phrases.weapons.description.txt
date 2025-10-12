@@ -2575,7 +2575,7 @@
 	}
 	"Preaching Sword Pap 4"
 	{
-		"en"	"Entirely changes weapon.\nYou are weak if above half health.\nIf below half health you gain massive power.\nYou receive 50％ Healing.\nCharge with M2 gain heavy resistances during charge."
+		"en"	"Entirely changes weapon.\nYou are not as strong if above half health.\nIf below half health you gain massive power.\nYou receive 50％ Healing.\nCharge with M2 gain heavy resistances during charge."
 		"fr"	"Remplace l'arme complètement.\nFaible si vous avez plus que moitié santé.\nTrès puissant si vous avez mois que moitié santé.\n-50％ soins.\nChargez avec M2, recevez de la résistance pendant la charge."
 		"chi"	"武器改动：\n高于50％血时你很弱。\n低于50％血时获得大量buff。\n获得50％治疗\n按住M2获得大量抗性buff"
 	}
