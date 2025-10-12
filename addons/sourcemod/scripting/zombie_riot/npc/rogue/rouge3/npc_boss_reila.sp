@@ -250,7 +250,7 @@ methodmap BossReila < CClotBody
 		{
 			CPrintToChatAll("{pink}Reila{default}: リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
 		}
-		if(data[0] && !altEnding && !badEnding)
+		if(data[0] && !altEnding && !badEnding && !Rogue_HasNamedArtifact("Ascension Stack"))
 			i_RaidGrantExtra[npc.index] = 1;
 		npc.m_flBossSpawnBeacon = 1.0;
 
@@ -386,7 +386,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 {
 	BossReila npc = view_as<BossReila>(victim);
 		
-	if(i_RaidGrantExtra[npc.index] == 1 && damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+	if(Rogue_Mode() && damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -408,15 +408,23 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				}
 			}
 		}
-		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
-		RaidBossActive = 0;
-		npc.m_flDoLoseTalk = GetGameTime() + 3.0;
-		i_RaidGrantExtra[npc.index] = 2;
-		npc.m_bisWalking = false;
-		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
-		CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
-		damage = 0.0;
-		return Plugin_Changed;
+		if(i_RaidGrantExtra[npc.index] == 1)
+		{
+			npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+			RaidBossActive = 0;
+			npc.m_flDoLoseTalk = GetGameTime() + 3.0;
+			i_RaidGrantExtra[npc.index] = 2;
+			npc.m_bisWalking = false;
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
+			CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+		else
+		{
+			damage *= 4.0;
+			return Plugin_Changed;
+		}
 	}
 	if(attacker <= 0)
 		return Plugin_Continue;

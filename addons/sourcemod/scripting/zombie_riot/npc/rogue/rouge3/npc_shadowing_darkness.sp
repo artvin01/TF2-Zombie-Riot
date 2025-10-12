@@ -413,6 +413,9 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 
 		bool final = StrContains(data, "final_item") != -1;
 		
+		if(!Rogue_HasNamedArtifact("Ascension Stack"))
+			final = false;
+		
 		if(final)
 		{
 			npc.SetActivity("ACT_SHADOW_IDLE_START");

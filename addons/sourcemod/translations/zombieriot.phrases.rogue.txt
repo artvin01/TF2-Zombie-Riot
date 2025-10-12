@@ -41,6 +41,18 @@
 		"#format"	"{1:d}"
 		"en"		"{crimson}Lost {1} Australium Ingots!"
 	}
+	"Freeplay Rogue Ask"
+	{		
+		"en"		"You defeated the final boss!\nWould you like to have a rematch?"
+	}
+	"Ascension Stack"
+	{
+		"en"		"Ascension Stack"
+	}
+	"Ascension Stack Desc"
+	{
+		"en"		"{red}Enemies receive +30％ health and damage"
+	}
 	"Gained Shield"
 	{
 		"#format"	"{1:d}"

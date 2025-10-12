@@ -309,6 +309,9 @@ static int RogueTheme;
 static int CurrentFloor;
 static int CurrentCount;
 static int CurrentStage;
+static int LastFightFloor;
+static int LastFightCount;
+static int LastFightStage;
 static bool CurrentType;
 static ArrayList CurrentExclude;
 static ArrayList CurrentCollection;
@@ -1496,7 +1499,31 @@ void Rogue_NextProgress()
 
 				if(victory)	// All the floors are done
 				{
-					ForcePlayerWin();
+					if(!EnableSilentMode)
+					{
+						ResetReplications();
+						cvarTimeScale.SetFloat(0.1);
+						CreateTimer(0.5, SetTimeBack);
+						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+						
+						delete Voting;
+						Voting = new ArrayList(sizeof(Vote));
+						VoteFunc = Rogue_FreeplayVote;
+						strcopy(VoteTitle, sizeof(VoteTitle), "Freeplay Rogue Ask");
+
+						Vote vote;
+						strcopy(vote.Name, sizeof(vote.Name), "Yes");
+						Voting.PushArray(vote);
+						
+						strcopy(vote.Name, sizeof(vote.Name), "No");
+						Voting.PushArray(vote);
+						
+						Rogue_StartGenericVote(30.0);
+					}
+					else
+					{
+						ForcePlayerWin();
+					}
 				}
 				else
 				{
@@ -2042,6 +2069,10 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
+	LastFightFloor = CurrentFloor;
+	LastFightCount = CurrentCount;
+	LastFightStage = CurrentStage;
+
 	Rogue_TriggerFunction(Artifact::FuncStageStart);
 	if(!stage.IntroMusic.Path[0])
 	{
@@ -3468,6 +3499,34 @@ static void ClearStats()
 bool IS_MusicReleasingRadio()
 {
 	return b_MusicReleasingRadio;
+}
+
+static void Rogue_FreeplayVote(const Vote vote, int index)
+{
+	switch(index)
+	{
+		case 0:
+		{
+			Rogue_GiveNamedArtifact("Ascension Stack");
+
+			Artifact artifact;
+			if(Rogue_GetRandomArtifact(artifact, true) != -1)
+				Rogue_GiveNamedArtifact(artifact.Name);
+
+			CurrentFloor = LastFightFloor;
+			CurrentCount = LastFightCount - 1;
+
+			Stage stage;
+			Floors.GetArray(LastFightStage, stage);
+
+			TeleportToSpawn();
+			SetNextStage(LastFightStage, true, stage, 20.0);
+		}
+		case 1:
+		{
+			ForcePlayerWin();
+		}
+	}
 }
 
 //ROUGELIKE .sp

@@ -2959,6 +2959,9 @@ static void NPC_Death(int entity)
 		//it isn't rouge mode? don't do anything else
 		if(!Rogue_Mode())
 			return;
+		
+		if(!Rogue_HasNamedArtifact("Ascension Stack"))
+			return;
 
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
