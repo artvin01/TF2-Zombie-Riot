@@ -22,6 +22,10 @@
 		"en"	"{yellow}All units gain -20％ movement speed, Seaborn units instead gain +10％ movement speed"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 	}
+	"Gate to the Curtain"
+	{
+		"en"	"Gate to the Curtain"
+	}
 	"Heavy Rain Lore"
 	{
 		"en"	"It begins to rain heavily, you can feel it's weight."
