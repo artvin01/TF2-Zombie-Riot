@@ -1519,6 +1519,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 #endif
 
+	if(PreventRespawnsAll > GetGameTime())
+	{
+		return MRES_Supercede;
+	}
 #if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
@@ -1880,6 +1884,7 @@ int BannerWearableModelIndex[3];
 bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
+	PreventRespawnsAll = 0.0;
 #if defined ZR
 	if(g_DHookTakeDmgPlayer) 
 	{
