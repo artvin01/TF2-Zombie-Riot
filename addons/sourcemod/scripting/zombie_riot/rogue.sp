@@ -3515,10 +3515,11 @@ static void Rogue_FreeplayVote(const Vote vote, int index)
 		case 0:
 		{
 			Rogue_GiveNamedArtifact("Ascension Stack");
-
+			/*
 			Artifact artifact;
 			if(Rogue_GetRandomArtifact(artifact, true) != -1)
 				Rogue_GiveNamedArtifact(artifact.Name);
+			*/
 
 			CurrentFloor = LastFightFloor;
 			CurrentCount = LastFightCount - 1;
