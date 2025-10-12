@@ -745,10 +745,10 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						XP[i] += XpToGive;
 						Native_ZR_OnGetXP(i, XpToGive, 0);
 						GiveXP(i, 0);
-						Native_ZR_OnGiftCollected(ClosestTarget, Rarity);
 					}
 				}
 			}
+			Native_ZR_OnGiftCollected(ClosestTarget, Rarity);
 			if (IsValidEntity(glow))
 			{
 				RemoveEntity(glow);
