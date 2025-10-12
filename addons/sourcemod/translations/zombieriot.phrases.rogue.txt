@@ -51,7 +51,7 @@
 	}
 	"Ascension Stack Desc"
 	{
-		"en"		"{red}Enemies receive +30％ health and damage"
+		"en"		"{red}Enemies receive +30％ health and +20％ damage"
 	}
 	"Gained Shield"
 	{

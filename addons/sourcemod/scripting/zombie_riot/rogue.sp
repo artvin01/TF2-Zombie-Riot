@@ -1502,6 +1502,13 @@ void Rogue_NextProgress()
 					if(!EnableSilentMode)
 					{
 						ResetReplications();
+						for(int i=1; i<=MaxClients; i++)
+						{
+							if(IsClientInGame(i) && !IsFakeClient(i))
+							{
+								SendConVarValue(i, sv_cheats, "1");
+							}
+						}
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.5, SetTimeBack);
 						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);

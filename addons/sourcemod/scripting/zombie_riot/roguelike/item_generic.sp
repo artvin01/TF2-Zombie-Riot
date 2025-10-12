@@ -402,5 +402,5 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 public void Rogue_AscensionStack_Enemy(int entity)
 {
 	RogueHelp_BodyHealth(entity, null, 1.3);
-	RogueHelp_BodyDamage(entity, null, 1.3);
+	RogueHelp_BodyDamage(entity, null, 1.2);
 }

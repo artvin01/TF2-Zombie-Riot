@@ -969,6 +969,7 @@ bool Reila_LossAnimation(int iNpc)
 	BossReila npc = view_as<BossReila>(iNpc);
 	if(npc.m_flDoLoseTalk)
 	{
+		GiveProgressDelay(4.0);
 		if(npc.m_flDoLoseTalk < GetGameTime())
 		{
 			switch(i_RaidGrantExtra[npc.index])
@@ -1006,7 +1007,7 @@ bool Reila_LossAnimation(int iNpc)
 				}
 			}
 			i_RaidGrantExtra[npc.index]++;
-			npc.m_flDoLoseTalk = GetGameTime() + 2.0;
+			npc.m_flDoLoseTalk = GetGameTime() + 3.0;
 		}
 		return true;
 	}
