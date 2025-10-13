@@ -47,6 +47,7 @@ enum struct OwnedItem
 
 static ArrayList GiftItems;
 static ArrayList OwnedItems;
+static ArrayList PreviousItems;
 static int CategoryPage[MAXPLAYERS];
 
 static int g_BeamIndex = -1;
@@ -57,6 +58,7 @@ static bool b_ForceSpawnNextTime;
 void Items_PluginStart()
 {
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
+	PreviousItems = new ArrayList(sizeof(OwnedItem));
 	RegAdminCmd("zr_give_item", Items_GiveCmd, ADMFLAG_RCON);
 	RegAdminCmd("zr_give_allitems", Items_GiveAllCmd, ADMFLAG_RCON);
 	RegAdminCmd("zr_remove_allitems", Items_RemoveAllCmd, ADMFLAG_RCON);
@@ -110,6 +112,11 @@ void Items_ClearArray(int client)
 	{
 		OwnedItems.Erase(id);
 	}
+
+	while((id = PreviousItems.FindValue(client, OwnedItem::Client)) != -1)
+	{
+		PreviousItems.Erase(id);
+	}
 }
 
 void Items_AddArray(int client, int level, int flags)
@@ -121,18 +128,45 @@ void Items_AddArray(int client, int level, int flags)
 		owned.Level = level;
 		owned.Flags = flags;
 		OwnedItems.PushArray(owned);
+		PreviousItems.PushArray(owned);
 	}
 }
 
-bool Items_GetNextItem(int client, int &i, int &level, int &flags)
+bool Items_GetNextItem(int client, int &i, int &level, int &flags, bool &newEntry)
 {
-	int length = OwnedItems.Length;
-	for(; i < length; i++)
+	int length1 = OwnedItems.Length;
+	int length2 = PreviousItems.Length;
+	for(; i < length1; i++)
 	{
 		static OwnedItem owned;
 		OwnedItems.GetArray(i, owned);
-		if(owned.Client == client && level >= 0)
+		if(owned.Client == client)
 		{
+			newEntry = true;
+			bool same;
+
+			for(int b; b < length2; b++)
+			{
+				static OwnedItem previous;
+				OwnedItems.GetArray(b, previous);
+				if(previous.Client == client && previous.Level == owned.Level)
+				{
+					if(previous.Flags == owned.Flags)
+					{
+						same = true;
+					}
+					else
+					{
+						newEntry = false;
+					}
+
+					break;
+				}
+			}
+
+			if(same)
+				continue;
+
 			level = owned.Level;
 			flags = owned.Flags;
 			return true;
