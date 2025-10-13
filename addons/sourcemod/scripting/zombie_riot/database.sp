@@ -555,6 +555,17 @@ void DataBase_ClientDisconnect(int client)
 	delete Loadouts[client];
 }
 
+void Database_ResetSkillTree()
+{
+	Transaction tr = new Transaction();
+
+	char buffer[256];
+	Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+	tr.AddQuery(buffer);
+
+	Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+}
+
 void Database_SaveLoadout(int client, const char[] name)
 {
 	if(Global)

@@ -523,7 +523,10 @@ static int ResetSkillH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Select:
 		{
 			if(!choice)
+			{
+				Database_ResetSkillTree(client);
 				SkillTree_ClearClient(client);
+			}
 			
 			MainMenu(client);
 		}
