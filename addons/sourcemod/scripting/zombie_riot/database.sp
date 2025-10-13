@@ -561,12 +561,13 @@ void DataBase_ClientDisconnect(int client)
 	delete Loadouts[client];
 }
 
-void Database_ResetSkillTree()
+void Database_ResetSkillTree(int client)
 {
 	Transaction tr = new Transaction();
 
+	int id = GetSteamAccountID(client);
 	char buffer[256];
-	Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
+	Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
 	tr.AddQuery(buffer);
 
 	Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
