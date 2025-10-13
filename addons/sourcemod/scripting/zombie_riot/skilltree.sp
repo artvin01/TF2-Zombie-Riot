@@ -40,6 +40,7 @@ enum struct Skill
 	void SetupKV(KeyValues kv)
 	{
 		kv.GetString("name", this.Name, 32);
+		this.Name[0] = CharToUpper(this.Name[0]);
 		if(!TranslationPhraseExists(this.Name))
 		{
 			LogError("\"%s\" translation does not exist", this.Name);
