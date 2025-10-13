@@ -1183,6 +1183,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraThinkSpeed = kv.GetFloat("extra_thinkspeed", 1.0);
 						wave.DangerLevel = kv.GetNum("danger_level");
 						int PrioLevel = 0;
+						enemy.Priority = 0;
 						if(kv.GetNum("is_boss") > 0)
 						{
 							//if its a boss, it should always have priority no matter what
@@ -2834,6 +2835,9 @@ void Waves_ClearWaveCurrentSpawningEnemies()
 	if(Enemies[1])
 		Zombies_Currently_Still_Ongoing -= Enemies[1].Length;
 	
+	if(Enemies[2])
+		Zombies_Currently_Still_Ongoing -= Enemies[2].Length;
+	
 	Waves_ClearWaves();
 }
 
@@ -3395,14 +3399,16 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 	}
-
-	if(Enemies[0])
+	
+	for(int i = sizeof(Enemies) - 1; i >= 0; i--)
 	{
+		if(!Enemies[i])
+			continue;
 		static Enemy enemy;
-		int length = Enemies[0].Length;
+		int length = Enemies[i].Length;
 		for(int a; a < length; a++)
 		{
-			Enemies[0].GetArray(a, enemy);
+			Enemies[i].GetArray(a, enemy);
 			cashLeft += enemy.Credits;
 			activecount++;
 

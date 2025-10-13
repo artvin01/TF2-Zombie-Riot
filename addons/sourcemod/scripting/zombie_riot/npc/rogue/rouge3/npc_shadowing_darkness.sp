@@ -413,7 +413,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 
 		bool final = StrContains(data, "final_item") != -1;
 		
-		if(!Rogue_HasNamedArtifact("Ascension Stack"))
+		if(Rogue_HasNamedArtifact("Ascension Stack"))
 			final = false;
 		
 		if(final)
@@ -1972,6 +1972,8 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				npc.m_bisWalking = true;
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
 				ApplyStatusEffect(npc.index, npc.index, "Extreamly Defensive Backup", 10.0);
+				ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 5.0);
+				ApplyStatusEffect(npc.index, npc.index, "War Cry", 5.0);
 			}
 		}
 	}

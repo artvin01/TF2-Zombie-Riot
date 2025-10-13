@@ -2960,7 +2960,7 @@ static void NPC_Death(int entity)
 		if(!Rogue_Mode())
 			return;
 		
-		if(!Rogue_HasNamedArtifact("Ascension Stack"))
+		if(Rogue_HasNamedArtifact("Ascension Stack"))
 			return;
 
 		float flPos[3]; // original

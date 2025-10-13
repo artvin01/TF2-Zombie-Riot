@@ -277,7 +277,7 @@ methodmap Vhxis < CClotBody
 	
 		bool final = StrContains(data, "final_item") != -1;
 
-		if(!Rogue_HasNamedArtifact("Ascension Stack"))
+		if(Rogue_HasNamedArtifact("Ascension Stack"))
 			final = false;
 		
 		if(final)
