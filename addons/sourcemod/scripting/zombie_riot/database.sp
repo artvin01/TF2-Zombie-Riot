@@ -18,6 +18,8 @@ static Database Local;
 static Database Global;
 static bool Cached[MAXPLAYERS];
 
+float TimePassed;
+float TimePassedsave;
 void Database_PluginStart()
 {
 	char error[512];
@@ -411,6 +413,7 @@ void Database_SaveXpAndItems(int client)
 }
 void DataBase_ClientDisconnect(int client)
 {
+	TimePassedsave = GetEngineTime();
 	if(Cached[client])
 	{
 		Cached[client] = false;
@@ -529,10 +532,12 @@ void DataBase_ClientDisconnect(int client)
 
 				tr.AddQuery(buffer);
 			}
-
+			
+			int LoopCountGet;
 			char name[32];
 			for(int i; SkillTree_GetNext(client, i, name, flags, newEntry); i++)
 			{
+				LoopCountGet++;
 				if(newEntry)
 				{
 					Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
@@ -544,8 +549,9 @@ void DataBase_ClientDisconnect(int client)
 				
 				tr.AddQuery(buffer);
 			}
+			PrintToServer(" LoopCountGet %i",LoopCountGet);
 
-			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
+			Global.Execute(tr, Database_SuccessSaveDebug, Database_Fail, DBPrio_High);
 
 			Items_ClearArray(client);
 			SkillTree_ClearClient(client);
@@ -974,4 +980,10 @@ public void Database_TSConvert(Database db, any userid, int numQueries, DBResult
 public void Database_TSSuccess(Database db, any userid, int numQueries, DBResultSet[] results, any[] queryData)
 {
 	PrintToServer("Finished..!");
+}
+
+
+public void Database_SuccessSaveDebug(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
+{
+	PrintToServer("Database_SuccessSaveDebug %f", GetEngineTime() - TimePassedsave);
 }
