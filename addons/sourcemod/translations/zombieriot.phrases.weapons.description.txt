@@ -3188,9 +3188,7 @@
 	}
 	"Crossbow Pap 1"
 	{
-		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot."
-		"fr"	"Arme devient un arbalète avec une cadence de tir rapide. Arme se recharge en une fois.\nAppuyez sur M2 pour tirer un tir de baliste large."
-		"chi"	"武器变为弩，一次性填装弹夹，高射速。M2更为一个强大的弩炮。"
+		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot.\nAmmo consumption is reduced."
 	}
 	"Crossbow Pap 2"
 	{
