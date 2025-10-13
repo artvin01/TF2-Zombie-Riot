@@ -18,9 +18,6 @@ static Database Local;
 static Database Global;
 static bool Cached[MAXPLAYERS];
 
-float TimePassed;
-float TimePassedsave;
-
 void Database_PluginStart()
 {
 	char error[512];
@@ -33,7 +30,6 @@ void Database_PluginStart()
 	Database db = SQLite_UseDatabase(DATABASE_LOCAL, error, sizeof(error));
 	Database_LocalConnected(db, error);
 	
-	TimePassed = GetEngineTime();
 	if(SQL_CheckConfig(DATABASE_GLOBAL))
 	{
 		Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
@@ -71,7 +67,6 @@ public void Database_LocalSetup(Database db, any data, int numQueries, DBResultS
 
 public void Database_GlobalSetup(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
 {
-	PrintToChatAll("Database_GlobalSetup %f",GetEngineTime() - TimePassed);
 	Global = data;
 	if(Local)
 	{
@@ -104,7 +99,6 @@ void Database_ClientPostAdminCheck(int client)
 
 public void Database_GlobalConnected(Database db, const char[] error, any data)
 {
-	PrintToChatAll("Database_GlobalConnected %f",GetEngineTime() - TimePassed);
 	if(db)
 	{
 		Transaction tr = new Transaction();
@@ -184,7 +178,6 @@ void Database_GlobalSetInt(int client, const char[] table, const char[] type, in
 
 static void GlobalClientAuthorized(int id, int userid)
 {
-	PrintToChatAll("GlobalClientAuthorized userid %i, %f",userid, GetEngineTime() - TimePassed);
 	if(Global)
 	{
 		Transaction tr = new Transaction();
@@ -211,7 +204,6 @@ static void GlobalClientAuthorized(int id, int userid)
 
 public void Database_GlobalClientSetup(Database db, int userid, int numQueries, DBResultSet[] results, any[] queryData)
 {
-	PrintToChatAll("Database_GlobalClientSetup userid %i, %f",userid, GetEngineTime() - TimePassed);
 	int client = GetClientOfUserId(userid);
 	if(client && !Cached[client])
 	{
@@ -419,7 +411,6 @@ void Database_SaveXpAndItems(int client)
 }
 void DataBase_ClientDisconnect(int client)
 {
-	TimePassedsave = GetEngineTime();
 	if(Cached[client])
 	{
 		Cached[client] = false;
@@ -540,16 +531,21 @@ void DataBase_ClientDisconnect(int client)
 			}
 
 			char name[32];
-			for(int i; SkillTree_GetNext(client, i, name, flags); i++)
+			for(int i; SkillTree_GetNext(client, i, name, flags, newEntry); i++)
 			{
-				LoopCountGet++;
-				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
+				if(newEntry)
+				{
+					Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
+				}
+				else
+				{
+					Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SKILLTREE ... " SET flags = %d WHERE steamid = %d AND name = '%s';", flags, id, name);
+				}
+				
 				tr.AddQuery(buffer);
 			}
-			PrintToServer(" LoopCountGet %i",LoopCountGet);
-			
 
-			Global.Execute(tr, Database_SuccessSaveDebug, Database_Fail, DBPrio_High);
+			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
 
 			Items_ClearArray(client);
 			SkillTree_ClearClient(client);
@@ -859,12 +855,6 @@ void Database_SaveGameData(int client)
 
 public void Database_Success(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
 {
-
-}
-
-public void Database_SuccessSaveDebug(Database db, any data, int numQueries, DBResultSet[] results, any[] queryData)
-{
-	PrintToServer("Database_SuccessSaveDebug %f", GetEngineTime() - TimePassedsave);
 }
 
 public void Database_Fail(Database db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
