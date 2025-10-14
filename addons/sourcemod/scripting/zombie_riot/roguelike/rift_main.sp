@@ -692,6 +692,17 @@ public void Rogue_RiftHard_Enemy(int entity)
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
 }
+public void Rogue_RiftVeryHard_Enemy(int entity)
+{
+	if(Rogue_GetFloor() == 6)
+		return;
+		
+	float stats = Pow(1.04, float(Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
 
 public void Rogue_RiftStupidHard_Enemy(int entity)
 {
