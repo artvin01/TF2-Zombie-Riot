@@ -3951,7 +3951,8 @@
 	}
 	"0h No it's Not Fair"
 	{
-		"en"	"0h No it's Not Fair"
+		"en"	"=Failed name="
+		"ko"	"=Failed name="
 	}
 	"Agent John"
 	{

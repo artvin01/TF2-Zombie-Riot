@@ -482,34 +482,52 @@
 	"Squad Leader"
 	{
 		"en"	"Squad Leader"
+		"ko"	"분대장"
 	}
 	"Squad Leader Desc"
 	{
 		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
+		"ko"	"받는 피해량 -10％, 피해량 +10％\nNpc 이동속도 +33％"
 	}
 	"Caffinated"
 	{
 		"en"	"Caffinated"
+		"ko"	"카페인"
 	}
 	"Caffinated Desc"
 	{
-		"en"	"Boosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"en"	"Boosts damage dealt by 33％\nBoosts Attack Speed by 33％\nBoosts NPC'S Movementspeed by 50％, See Caffinated Drain for more info as it a combined effect..."
+		"ko"	"피해량 +33％, 공속 +33％\nNpc 이동속도 +50％\n효과가 지속되는 동안 카페인 드레인 효과가 적용됨"
 	}
 	"Caffinated Drain"
 	{
 		"en"	"Caffinated Drain"
+		"ko"	"카페인 드레인"
 	}
 	"Caffinated Drain Desc"
 	{
 		"en"	"Increas damage taken by 25％"
+		"ko"	"받는 피해 +25％"
 	}
 	"Call To Victoria"
 	{
 		"en"	"Call To Victoria"
+		"ko"	"빅토리아의 부름"
 	}
 	"Call To Victoria Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+		"ko"	"받는 피해량 -20％, 피해량 +20％\nNpc 이동속도 +15％\n해당 버프를 받은 빅토리아 적들은 추가 능력을 얻습니다."
+	}
+	"Taurine"
+	{
+		"en"	"Taurine"
+		"ko"	"타우린"
+	}
+	"Taurine Desc"
+	{
+		"en"	"Boosts damage dealt by 20％\nBoosts Attack Speed by 20％"
+		"ko"	"피해량 +20％, 공속 +20％"
 	}
 	"False Therapy"
 	{
