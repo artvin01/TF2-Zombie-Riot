@@ -3685,7 +3685,8 @@ float AdaptiveMedigun_MeleeFunc(int attacker, int victim, StatusEffect Apply_Mas
 {
 	if(damagetype & (DMG_CLUB)) // if its melee
 	{
-		return 0.85;
+		if(!(damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+			return 0.85;
 	}
 	
 	return 1.0;

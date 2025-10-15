@@ -350,15 +350,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							case 0:
 							{
-								ApplyStatusEffect(owner, owner, "Healing Adaptiveness All", 0.15);
-								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness All", 0.15);
-							}
-							case 1:
-							{
 								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Melee", 0.15);
 								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Melee", 0.15);
 							}
-							case 2:
+							case 1:
 							{
 								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Ranged", 0.15);
 								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Ranged", 0.15);
@@ -495,13 +490,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							PrintHintText(owner,"[HEALING MODE]\nMode: General");
-						}
-						case 1:
-						{
 							PrintHintText(owner,"[HEALING MODE]\nMode: Melee");
 						}
-						case 2:
+						case 1:
 						{
 							PrintHintText(owner,"[HEALING MODE]\nMode: Ranged");
 						}
@@ -668,7 +659,7 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 	}
 	ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
 	MedigunModeSet[client]++;
-	if(MedigunModeSet[client] > 2)
+	if(MedigunModeSet[client] > 1)
 	{
 		MedigunModeSet[client] = 0;
 	}
