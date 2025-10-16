@@ -931,11 +931,11 @@
 	{
 		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
 	}
-	"Vintulum Bomb EMP"
+	"Vuntulum Bomb EMP"
 	{
-		"en"	"Vintulum Bomb EMP"
+		"en"	"Vuntulum Bomb EMP"
 	}
-	"Vintulum Bomb EMP Desc"
+	"Vuntulum Bomb EMP Desc"
 	{
 		"en"	"Cant make any Unique buildings while this is active."
 	}

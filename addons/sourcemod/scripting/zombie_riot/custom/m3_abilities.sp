@@ -39,6 +39,16 @@ int MaxRevivesReturn()
 {
 	return i_MaxRevivesAWave;
 }
+
+int MaxRevivesAllowed()
+{
+	int ReviveAllowMax;
+	ReviveAllowMax = RoundToNearest(float(CountPlayersOnRed(0, true)) * 0.2);
+	if(ReviveAllowMax <= 3)
+		ReviveAllowMax = 3;
+
+	return ReviveAllowMax;
+}
 static const char g_ReinforceReadySounds[] = "mvm/mvm_bought_in.wav";
 
 static char gExplosive1;
@@ -779,6 +789,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	{
 		weapon = Purnell_Existant(client);
 	}
+	if(Is_Cheesed_Up(client))
+	{
+		weapon = ReturnWeapon_PlasmaKit(client)
+	}
 	if(IsValidEntity(weapon))
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -812,6 +826,15 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				
 				Base_HealingMaxPoints=RoundToCeil(800.0 * Healing_Amount);
 			}
+			case WEAPON_CHEESY_MELEE:
+			{
+				Healing_Amount=Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+				//it starts at -1.0, so it should go upto 1.0.
+				if(Healing_Amount<1.0)
+					Healing_Amount=1.0;
+
+				Base_HealingMaxPoints=RoundToCeil(15000.0 * Healing_Amount);
+			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
 		}
@@ -836,7 +859,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 
 		if(!b_ReinforceReady_soundonly[client])
 		{
-			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.8, _, _, _, _, false);
+			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.5, _, _, _, _, false);
 			CPrintToChat(client, "{green}You can now call in reinforcements.");
 			b_ReinforceReady_soundonly[client]=true;
 		}
@@ -887,7 +910,7 @@ public void Reinforce(int client, bool NoCD)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Need Healing Point");
 				return;
 			}
-			if(i_MaxRevivesAWave >= 3)
+			if(i_MaxRevivesAWave >= MaxRevivesAllowed())
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);

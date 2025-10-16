@@ -27,7 +27,7 @@ void ObjectVintulumBomb_MapStart()
 	PrecacheSoundArray(g_ExplosionRightBefore);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Vintulum Bomb");
+	strcopy(data.Name, sizeof(data.Name), "Vuntulum Bomb");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_vintulum_bomb");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -221,7 +221,7 @@ static bool ClotInteract(int client, int weapon, ObjectVintulumBomb npc)
 		CooldownGive *= 0.5;
 	SPrintToChat(Owner, "%T", "Global Cooldown Bomb", Owner, CooldownGive);
 	f_VintulumBombRecentlyUsed[Owner] = GetGameTime() + CooldownGive;
-	ApplyStatusEffect(Owner, Owner, "Vintulum Bomb EMP", CooldownGive);
+	ApplyStatusEffect(Owner, Owner, "Vuntulum Bomb EMP", CooldownGive);
 	npc.m_PointAt = 1;
 	npc.m_flBombExplodeTill = GetGameTime() + 5.0;
 	npc.PlayActivateSound();

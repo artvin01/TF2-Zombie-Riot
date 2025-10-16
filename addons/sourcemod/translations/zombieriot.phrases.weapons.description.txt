@@ -3203,7 +3203,7 @@
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades."
+		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades.\nCures elemental damage 4x as fast."
 		"es"	"Curar a aliados con la medigun ahora restaurara tu armadura y la de tu paciente.\nAumenta con mejoras medicas."
 	}
 	"Medigun Desc Pap 3"

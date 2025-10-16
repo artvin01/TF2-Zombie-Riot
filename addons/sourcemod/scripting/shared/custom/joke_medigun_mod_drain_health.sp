@@ -429,7 +429,22 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 								Healing_GiveArmor *= 0.33;
 							}	
 							if(healTarget <= MaxClients)
+							{
+								bool JustCuredArmor = false;
+								if(Armor_Charge[healTarget] < 0)
+								{
+								//if under currosion. heal more
+									JustCuredArmor = true;
+									Healing_GiveArmor *= 4.0;
+								}
 								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true,_,owner);
+
+								if(JustCuredArmor && Armor_Charge[healTarget] > 0)
+								{
+									Armor_Charge[healTarget] = 0;
+								}
+
+							}
 							else
 							{
 								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
@@ -445,7 +460,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							{
 								Healing_GiveArmor *= 0.25;
 							}
+							bool JustCuredArmor = false;
+							if(Armor_Charge[owner] < 0)
+							{
+								//if under currosion. heal more
+								JustCuredArmor = true;
+								Healing_GiveArmor *= 4.0;
+							}
 							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true,_,owner);
+							
+							if(JustCuredArmor && Armor_Charge[owner] > 0)
+							{
+								Armor_Charge[owner] = 0;
+							}
 						}
 #endif
 

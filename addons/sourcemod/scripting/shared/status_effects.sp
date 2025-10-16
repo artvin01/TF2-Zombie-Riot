@@ -4327,7 +4327,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Vintulum Bomb EMP");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
