@@ -923,7 +923,7 @@ public void Weapon_Kit_Cheddinator_FireInternal(DataPack DataDo)
 			, _, 1.0 * f_WeaponVolumeStiller[weapon]);
 	}
 
-	float damage = 93.75;
+	float damage = 100.0;
 	damage *= WeaponDamageAttributeMultipliers(weapon);
 		
 	float speed = 1100.0;
@@ -1122,6 +1122,7 @@ static bool TraceUsers(int entity, int contentsMask, int client)
 	}
 	return false;
 }
+
 
 
 
