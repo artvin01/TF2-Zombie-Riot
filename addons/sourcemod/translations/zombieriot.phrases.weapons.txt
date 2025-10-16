@@ -897,9 +897,9 @@
 		"fr"		"Mitrailleuse"
 		"chi"		"步哨"
 	}
-	"Vintulum Bomb"
+	"Vuntulum Bomb"
 	{
-		"en"		"Vintulum Bomb"
+		"en"		"Vuntulum Bomb"
 	}
 	"Mortar"
 	{

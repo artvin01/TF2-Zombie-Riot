@@ -155,6 +155,10 @@ void Cheese_OnNPCDeath(int i)
 	Cheese_Buildup_Penalty[i] = 1.0;
 }
 
+int ReturnWeapon_PlasmaKit(int client)
+{
+	return EntRefToEntIndex(iref_WeaponConnect[client][0]);
+}
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)

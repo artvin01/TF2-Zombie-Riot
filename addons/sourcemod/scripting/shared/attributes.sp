@@ -89,7 +89,7 @@ bool Attribute_IntAttribute(int attribute)
 {
 	switch(attribute)
 	{
-		case 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
+		case 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
 			return true;
 	}
 
@@ -174,12 +174,14 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 		if(Attribute_ServerSide(attrib))
 			return false;
 	}
-	
+	/*
+	why?
 	if(Attribute_IntAttribute(attrib))
 	{
 		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
 		return true;
 	}
+	*/
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;

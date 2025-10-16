@@ -1324,6 +1324,14 @@
 		"ru"	"Стартовое оружие строителя, чтобы они могли наносить урон."
 		"chi"   "工程师的初始武器"
 	}
+	"Nail Gun Desc pap 1"
+	{
+		"en"	"High firerate, low damage dealing SMG."
+	}
+	"Nail Gun Desc pap 2"
+	{
+		"en"	"Low firerate, high damage dealing Shotgun."
+	}
 	
 	"Expidonsan Repair Device Desc"
 	{
@@ -3198,12 +3206,12 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"Changes the medigun to grant different mode types, boosting melee/ranged resistance or both.\nDamage mode is now changed via CTRL/Crouch + RELOAD now."
+		"en"	"Changes the medigun to grant different mode types, boosting melee or ranged resistance.\nDamage mode is now changed via CTRL/Crouch + RELOAD now."
 		"es"	"Cambia la medigun para dar distintos modos, aumentando la resistencia cuerpo a cuerpo, a distancia, o ambas.\nCambiar de modo ahora requiere siempre que utilizes CTRL/Agacharse + RELOAD."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades."
+		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades.\nCures elemental damage 4x as fast."
 		"es"	"Curar a aliados con la medigun ahora restaurara tu armadura y la de tu paciente.\nAumenta con mejoras medicas."
 	}
 	"Medigun Desc Pap 3"

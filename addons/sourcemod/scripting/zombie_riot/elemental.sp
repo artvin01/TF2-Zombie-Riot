@@ -1323,6 +1323,9 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float rangedpenalty = (b_thisNpcIsARaid[victim] ? 0.65 : 0.5);
 				float duration = (melee ? 2.0 : (b_thisNpcIsARaid[victim] ? 4.0 : 8.0));
 				float healing = 20.0; // bleh
+				float Range = 200.0;
+				healing *= 0.75;
+				Range *= 1.25;
 
 				if(!b_NpcHasDied[attacker])
 				{
@@ -1346,7 +1349,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				}
 				Cheese_SetPenalty(victim, (melee ? meleepenalty : rangedpenalty));
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 0.5, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, Range, 0.5, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
