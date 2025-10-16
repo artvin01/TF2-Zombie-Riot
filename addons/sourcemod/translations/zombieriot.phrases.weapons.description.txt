@@ -529,10 +529,10 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"Cripples targets heavily, making them slower and take 40％ more damage."
-		"fr"		"Infirme les ennemis, les ralentissant et les font prendre 40％ plus de dégats."
-		"ru"		"Сильно калечит цели, делая их медленнее и нанося на 40％ больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到40％的伤害。"
+		"en"		"Cripples targets heavily, making them slower and take more damage."
+		"fr"		"Infirme les ennemis, les ralentissant et les font prendre plus de dégats."
+		"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
+		"chi"       "严重致残目标，使他们变慢并受到的伤害。"
 	}
 	"Elite Sniper Pap 5"
 	{
@@ -2255,7 +2255,7 @@
 	}
 	"Preaching Sword Pap 4"
 	{
-		"en"	"Entirely changes weapon.\nYou are weak if above half health.\nIf below half health you gain massive power.\nYou recieve 50％ Healing.\nCharge with M2 gain heavy resistances during charge."
+		"en"	"Entirely changes weapon.\nYou are not as strong if above half health.\nIf below half health you gain massive power.\nYou receive 50％ Healing.\nCharge with M2 gain heavy resistances during charge."
 		"fr"	"Remplace l'arme complètement.\nFaible si vous avez plus que moitié santé.\nTrès puissant si vous avez mois que moitié santé.\n-50％ soins.\nChargez avec M2, recevez de la résistance pendant la charge."
 		"chi"	"武器改动：\n高于50％血时你很弱。\n低于50％血时获得大量buff。\n获得50％治疗\n按住M2获得大量抗性buff"
 	}
@@ -2853,7 +2853,7 @@
 	}
 	"Leper Sword Desc Pap 6"
 	{
-		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack recieved."
+		"en"	"Increase all stats, Solemity heals for 66%.\nWrath gives more damage per attack received."
 	}
 	"Leper Sword Desc Pap 7"
 	{
@@ -3018,7 +3018,7 @@
 	}
 	"Angelic Shotgonnus Desc"
 	{
-		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 75％.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
+		"en"	"A shotgun from Expidonsa.\nMost healing you receive is cut by 75％.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
 		"fr"	"Vous vous soignez pour chaque ennemi frappé,\nces soins peuvent vous donner du santé bonus.\nVous recevez 75％ de tous soins donnés à vous.Vous ferez un double-attaque tous les 4 attaques.\nAbilité améliore vos dégats et la fréquence de double-attaques."
 		"chi"	"外界的霰弹枪\n大部分治疗-85％。\n可击中多名敌人，带穿透。\n每4发司是双击。\n自疗可以超量。\n技能保证双击，增加伤害。\n有随机暴击。"
 	}
@@ -3188,9 +3188,7 @@
 	}
 	"Crossbow Pap 1"
 	{
-		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot."
-		"fr"	"Arme devient un arbalète avec une cadence de tir rapide. Arme se recharge en une fois.\nAppuyez sur M2 pour tirer un tir de baliste large."
-		"chi"	"武器变为弩，一次性填装弹夹，高射速。M2更为一个强大的弩炮。"
+		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot.\nAmmo consumption is reduced."
 	}
 	"Crossbow Pap 2"
 	{
@@ -4204,7 +4202,7 @@
 	}
 	"Plasma Bubble Desc"
 	{
-		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble recieve constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
+		"en"	"A techno-cannon that, when fully charged, shoots out a capsule\nwhich expands to a big plasmatic bubble upon contact with anything.\nEnemies inside this bubble receive constant Plasmic Elemental damage.\nAllies inside this bubble are healed off Elemental damage."
 	}
 	"Plasma Bubble Pap Any Desc"
 	{
@@ -4212,11 +4210,11 @@
 	}
 	"Plasma Bubble Pap 3 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering I."
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering I."
 	}
 	"Plasma Bubble Pap 5 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now recieve Plasmic Layering II instead of I."
+		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering II instead of I."
 	}
 	"Plasma Bubble Pap 7 or 8 Desc"
 	{

@@ -22,7 +22,6 @@ static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
 static bool b_ruina_npc[MAXENTITIES];
 
-static int g_rocket_particle;
 //static char gGlow1;	//blue
 
 float fl_rally_timer[MAXENTITIES];
@@ -245,8 +244,6 @@ void Ruina_Ai_Core_Mapstart()
 	PrecacheSound(RUINA_ASTRIA_TELEPORT_SOUND);
 
 	PrecacheModel(RUINA_POINT_MODEL);
-
-	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 

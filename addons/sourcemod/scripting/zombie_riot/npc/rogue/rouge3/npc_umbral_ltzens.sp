@@ -44,7 +44,7 @@ void Umbral_Ltzens_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "ltzens");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -163,6 +163,56 @@ methodmap Umbral_Ltzens < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/heavy/hwn2022_horror_shawl/hwn2022_horror_shawl.mdl");
 		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
 		SetEntityRenderColor(npc.m_iWearable1, GetRandomInt(25, 35), GetRandomInt(25, 35), GetRandomInt(25, 35), 65);
+
+		ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 2.0);
+		if(ally != TFTeam_Red && Rogue_Mode())
+		{
+			if(Rogue_GetUmbralLevel() == 0)
+			{
+				//when friendly and they still spawn as enemies, nerf.
+				fl_Extra_Damage[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 0.85;
+				fl_Extra_MeleeArmor[npc.index] *= 1.25;
+				fl_Extra_RangedArmor[npc.index] *= 1.25;
+			}
+			else if(Rogue_GetUmbralLevel() == 4)
+			{
+				//if completly hated.
+				//no need to adjust HP scaling, so it can be done here.
+			//	fl_Extra_Damage[npc.index] *= 1.35;
+				fl_Extra_MeleeArmor[npc.index] *= 0.75;
+				fl_Extra_RangedArmor[npc.index] *= 0.75;
+				fl_Extra_Speed[npc.index] *= 1.05;
+				ApplyStatusEffect(npc.index, npc.index, "Umbral Grace", 5.0);
+			}
+			switch(Rogue_GetFloor() + 1)
+			{
+				//floor 3
+				//10% dmg, 20% res
+				//think 10% faster
+				case 3:
+				{
+			//		fl_Extra_Damage[npc.index] *= 1.1;
+					fl_Extra_MeleeArmor[npc.index] *= 0.8;
+					fl_Extra_RangedArmor[npc.index] *= 0.8;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.1);
+				}
+				case 4,5:
+				{
+			//		fl_Extra_Damage[npc.index] *= 1.15;
+					fl_Extra_MeleeArmor[npc.index] *= 0.7;
+					fl_Extra_RangedArmor[npc.index] *= 0.7;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.15);
+				}
+				case 6:
+				{
+			//		fl_Extra_Damage[npc.index] *= 1.25;
+					fl_Extra_MeleeArmor[npc.index] *= 0.5;
+					fl_Extra_RangedArmor[npc.index] *= 0.5;
+					f_AttackSpeedNpcIncrease[npc.index]	*= (1.0 / 1.20);
+				}
+			}
+		}
 		return npc;
 	}
 }
@@ -309,7 +359,7 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 150.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -332,10 +382,10 @@ void Umbral_LtzensSelfDefense(Umbral_Ltzens npc, float gameTime, int target, flo
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
-				npc.m_flAttackHappens = gameTime + 0.1;
-				npc.m_flDoingAnimation = gameTime + 0.1;
-				npc.m_flNextMeleeAttack = gameTime + 0.3;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.0);
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flDoingAnimation = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 0.4;
 			}
 		}
 	}

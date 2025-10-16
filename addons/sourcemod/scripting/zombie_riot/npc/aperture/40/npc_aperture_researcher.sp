@@ -110,6 +110,11 @@ methodmap ApertureResearcher < CClotBody
 	public void PlayTeleSound() {
 		EmitSoundToAll(g_TeleDeathSound[GetRandomInt(0, sizeof(g_TeleDeathSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	property float m_flRecheckIfAlliesDead
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	
 	public ApertureResearcher(float vecPos[3], float vecAng[3], int ally)
@@ -140,7 +145,9 @@ methodmap ApertureResearcher < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 150.0;
 		npc.m_bDissapearOnDeath = true;
+		npc.Anger = false;
 
+		//Makes him a "super"
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -188,7 +195,6 @@ methodmap ApertureResearcher < CClotBody
 					CPrintToChatAll("{normal}Researcher{default}: Please don't harm me, I-...");
 				}
 			}
-
 		}
 
 		TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
@@ -225,6 +231,32 @@ public void ApertureResearcher_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
+
+	//Too lazy to implemt atm
+	/*
+	//Check if allies dead for text
+	if(npc.m_flRecheckIfAlliesDead < GetGameTime())
+	{
+		if(!IsValidEntity(npc.index))
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{normal}Researcher{default}: Well, given your history, I wasn't expecting you to be so helpful! I'm out of here!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{normal}Researcher{default}: Your contributions to Expidonsa will not go unnoticed! I'm out!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{normal}Researcher{default}: That was a close call, thanks for staying neutral! Teleporter, start!");
+				}
+			}
+		}
+	}
+	*/
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -330,6 +362,16 @@ public void ApertureResearcher_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	
+
+	//Researcher "died", fuck you, no more buff
+	for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+	{
+		if(IsValidEnemy(npc.index, entitycount))
+			RemoveSpecificBuff(entitycount, "Kinetic Surge");
+		else if(IsValidAlly(npc.index, entitycount))
+			RemoveSpecificBuff(entitycount, "Kinetic Surge");
+	}
 
 }
 

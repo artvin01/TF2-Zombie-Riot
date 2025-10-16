@@ -706,7 +706,7 @@ methodmap CuredFatherGrigori < CClotBody
 		char SizeDo[256];
 
 		if(i_SpecialGrigoriReplace == 0)
-			FormatEx(ModelDo, sizeof(ModelDo), "models/monk.mdl");
+			FormatEx(ModelDo, sizeof(ModelDo), "models/zombie_riot/grigori/monk_custom.mdl");
 		else
 			FormatEx(ModelDo, sizeof(ModelDo), "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl");
 			
@@ -990,6 +990,10 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		return;
 	}
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(Owner))
+	{
+		Owner = npc.index;
+	}
 						
 	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{

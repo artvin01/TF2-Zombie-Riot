@@ -2515,6 +2515,14 @@
 	{
 		"en"	"Hitman"
 	}
+	"Cloned Hitman"
+	{
+		"en" "Cloned Hitman"
+	}
+	"Specialist Elite"
+	{
+		"en" "Specialist Elite"
+	}
 	"Mad Doctor"
 	{
 		"en"	"Mad Doctor"
@@ -3000,7 +3008,7 @@
 	}
 	"Heavy Perisher Desc"
 	{
-		"en"	"Grows with each hit recieved."
+		"en"	"Grows with each hit received."
 	}
 	"Void Mini-Gatekeeper"
 	{
@@ -3032,7 +3040,7 @@
 	}
 	"Total Growth Desc"
 	{
-		"en"	"Grows with each hit it recieves."
+		"en"	"Grows with each hit it receives."
 	}
 	"Void's Offspring"
 	{
@@ -3112,6 +3120,7 @@
 		"en"	"Once full, Causes you to enrage in insufferable talk and lash out.\nYou deal 350 truedamage to all allies.\nAlso gives 40％ Vulnerability for 10 seconds.\nHits only upto 3 additional allies."
 		"es"	"Cuando se llena, te enrabias en un habla insufrible y te arremetes a lo que sea.\nHaces 350 de daño verdadero en area a tus aliados.\nDurante 10 segundos, recibiras +40%% de daño."
 	}
+	
 	"Nervous Impairment Elemental Damage"
 	{
 		"en"	"Nervous Impairment Elemental Damage"
@@ -3119,7 +3128,7 @@
 	}
 	"Nervous Impairment Elemental Damage Desc"
 	{
-		"en"	"Once full, Your nervous system breaks down.\nYou recieve 500 truedamage and are heavily slowed for 5 seconds."
+		"en"	"Once full, Your nervous system breaks down.\nYou receive 500 truedamage and are heavily slowed for 5 seconds."
 		"es"	"Cuando se llena, tu sistema nervioso se pone... nervioso, y falla.\nRecibes 500 de daño verdadero y te ralentizas mucho por 5 segundos."
 	}
 	"Corruption Elemental Damage"
@@ -3148,7 +3157,7 @@
 	}
 	"Necrosis Elemental Damage Desc"
 	{
-		"en"	"Once full, causes your body to rot.\nInflicts bleed and increases ability cooldowns for 7.5 seconds."
+		"en"	"Once full, causes your body to rot.\nYou bleed out 20％ of your max health as ranged damage and increases ability cooldowns for 7.5 seconds."
 	}
 	"Warped Elemental Damage"
 	{
@@ -4366,7 +4375,7 @@
 	}
 	"Plasmic Elemental Damage Desc"
 	{
-		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and recieve more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
+		"en"	"Once full, your body's plasma will break down, weakening your body.\n(PLAYERS ONLY) You take 10％ of your max health as true damage and receive more damage temporarily.\nYou trigger an AoE effect that heals nearby enemies."
 		"es"	"Cuando se llena, el plasma de tu cuerpo se rompera, debilitandote.\n(SOLO JUGADORES) Recibes un 10％ de tu vida maxima como daño verdadero y te vuelves mas vulnerable temporalmente.\nActivas un efecto de curacion en area que cura a enemigos cercanos."
 	}
 	"Aperture"
@@ -4977,25 +4986,77 @@
 	{
 		"en" "Unknown Computer"
 	}
+	"Library of Lixandria"
+	{
+		"en" "Library of Lixandria"
+	}
 	"Umbral Ltzens"
 	{
-		"en"	"Ŭ̸̪m̷̰̅b̵̘͆r̵̹̈a̸̤͆l̵̤͆ ̶̗̏L̷͕͊t̴̞͝z̸̺͠e̸͈͝n̷̥͑s̸̞̅"
+		"en"	"U̸m̷̰̅br̵a̸̤͆l̵͆ ̶̗̏L̷͕͊tz̸e̸͈͝ns̸̞̅"
+	}
+	"Umbral Ltzens Desc"
+	{
+		"en"	"An erratic Umbral, capable of defying the laws of physics. \nMoves in short bursts, as if it were lagging."
 	}
 	"Umbral Refract"
 	{
-		"en"	"U̵͎͌m̴̱̒b̷͈̈́r̵̘̊ã̶̺l̶̡͘ ̷͓̈́R̸͔̊e̷͈̍f̵̞͘r̸͉̍a̷͖͛c̵̱͊ţ̷͝"
+		"en"	"U̵͌m̴b̷r̵ã̶̺l̶̡͘ ̷͓̈́R̸e̷f̵̞͘ra̷͖͛c̵͊ţ̷͝"
+	}
+	"Umbral Refract Desc"
+	{
+		"en"	"A fierce Umbral, ready to fight to the bitter end. \nWhen hurt, leaps and fires an exploding laser at the attacker."
 	}
 	"Umbral Koulm"
 	{
-		"en"	"Ű̷͈m̵͇̅b̴̬̑r̴͚̆a̵̩̒l̴͈͑ ̴͇̿K̴̼͊o̵̳͊ų̶̒l̷̰̉m̶̜͐"
+		"en"	"U̷m̵b̴̬̑r̴a̵̩̒l̴͈͑ ̴̿K̴o̵ų̶̒l̷̰̉m̶"
+	}
+	"Umbral Koulm Desc"
+	{
+		"en"	"An enigmatic Umbral, you can't tell if they're fighting for or against you. \nGrants Umbral Grace and Elemental Curing to anything within its AOE, \nbut becomes enraged when losing enough HP."
 	}
 	"Umbral Keitosis"
 	{
-		"en"	"U̶̩̎m̷̦̎b̵͓̈r̷͔̋a̸͇̍l̸̘̓ ̸͖̔K̷͍̉e̸̤̓ĭ̶̥t̸̤́ǫ̵̌s̴͚̈́i̴̠̓s̷̓͜"
+		"en"	"U̶m̷̦̎b̵͓̈r̷a̸l̸ ̸͖̔K̷e̸i̶t̸ǫ̵̌s̴i̴̠̓s̷"
+	}
+	"Umbral Keitosis Desc"
+	{
+		"en"	"An unstable Umbral, capable of splitting itself apart. \nGains Power over time, and creates summons upon death. \nSummon stats are increased based on Power, and self destructs upon reaching max Power."
 	}
 	"Umbral Spuud"
 	{
-		"en"	"U̵͓̚m̶͉̀b̵̟͑r̴̳͌a̵͖̾l̸̢͆ ̵̳͒Ș̸͑p̸̳̅ù̷͖ȕ̸̝d̴͉͘"
+		"en"	"U̵͓̚m̶b̵̟͑r̴̳͌a̵l̸ ̵̳͒Ș̸͑p̸u̷u̸d̴"
+	}
+	"Umbral Spuud Desc"
+	{
+		"en"	"An incredibly fast Umbral, capable of moving past the speed of light. \nGains additional speed and vulnerability the longer its alive."
+	}
+	"Umbral Automaton"
+	{
+		"en"	"U̸mb̷͕͘rȃ̴̡l̸̽ ̷̨͑Au̶t̶̽o̸m̸at̸o̸n̴"
+	}
+	"Umbral W.F."
+	{
+		"en"	"U̴̡̕m̶̒b̵͗r̷̂á̴̪l̸̐ ̷̯̽Ẅ̸.̶̾F̶̭̃.̷͗"
+	}
+	"Umbral Rouam"
+	{
+		"en"	"U̷̖͑m̴b̷̖̿r̵a̴̛͈l̶̬̚ ̴̺̎R̶o̶ȕ̴̙a̵̡͑m̷"
+	}
+	"Umbral Rouam Desc"
+	{
+		"en"	"An easily irritable Umbral, provoke them at your own risk. \nStarts passive, becoming enraged when hurt."
+	}
+	"Torn Umbral Gate"
+	{
+		"en"	"Torn Umbral Gate"
+	}
+	"Shadowing Darkness, The Ruler"
+	{
+		"en"	"Shadowing Darkness, The Ruler"
+	}
+	"Shadowing Darkness, The Ruler Desc"
+	{
+		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs."
 	}
 	"Almagest Researcher"
 	{
@@ -5005,17 +5066,33 @@
 	{
 		"en"	"Seinr"
 	}
+	"Seinr Desc"
+	{
+		"en"	"Almagest researcher who entered his own mech suit in a desperate attempt \nto avoid becoming warped. It didn't work out too well... \nDeals warping damage and has armor that reduces ally speed while active. \nGains speed once armor is lost."
+	}
 	"Jkei"
 	{
 		"en"	"Jkei"
+	}
+	"Jkei Desc"
+	{
+		"en"	"Ruthless leader of the Almagest squad sent into the Curtain. \nTheir motives remain unclear. \nDeals void damage, and summons drones to deal chaos damage. \nAfter losing a certain amount of HP, becomes invulernerable until the current wave is defeated."
 	}
 	"Jkei Drone"
 	{
 		"en"	"Jkei Drone"
 	}
+	"Jkei Drone Desc"
+	{
+		"en"	"Construct used by Jkei in battle. \nDeals chaos damage, and after a delay, \nruns towards an ally and self destructs."
+	}
 	"Reila"
 	{
 		"en" "Reila"
+	}
+	"Reila Desc"
+	{
+		"en" "Former Almagest researcher, now trying to \nclose the rifts and contain the Void at all costs. \nControls the Construct while active, and permanently gains resistance whenever it is reset"
 	}
 	"Reila?"
 	{
@@ -5024,5 +5101,17 @@
 	"Reila's Beacon"
 	{
 		"en" "The Construct"
+	}
+	"Reila's Beacon Desc"
+	{
+		"en" "Device built by Reila to close the rifts, \nalbeit at the cost of trapping the activator inside. \nResets when enough HP is lost, granting additional raid time and resistance to itself and Reila."
+	}
+	"'Samivilinn', the Resolution of the Very North"
+	{
+		"en" "'Samivilinn', the Resolution of the Very North"
+	}
+	"'Voidivilinn', the Resolution of the Very South"
+	{
+		"en" "'Voidivilinn', the Resolution of the Very South"
 	}
 }

@@ -6,7 +6,9 @@
 #include <clientprefs>
 #include <dhooks>
 #if defined ZR || defined RPG
-#include <tf2items>
+#undef AUTOLOAD_EXTENSIONS
+#tryinclude <tf2items>
+#define AUTOLOAD_EXTENSIONS
 #include <tf_econ_data>
 #endif
 #if !defined RTS
@@ -169,10 +171,10 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #include "global_arrays.sp"
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_227.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_228.mdl"
 
 //model uses self made IK rigs, to not break the top stuff.
-#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_11.mdl"
+#define COMBINE_CUSTOM_2_MODEL 		"models/zombie_riot/combine_attachment_police_secondmodel_18.mdl"
 
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_51.mdl"
 /*
@@ -422,7 +424,7 @@ float h_BonusDmgToSpecialArrow[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 bool b_IsEntityNeverTranmitted[MAXENTITIES];
-bool b_NoHealthbar[MAXENTITIES];
+int b_NoHealthbar[MAXENTITIES];
 
 float f_AprilFoolsSetStuff[MAXENTITIES];
 //Arrays for npcs!
@@ -576,6 +578,7 @@ float fl_Duration[MAXENTITIES];
 int i_OverlordComboAttack[MAXENTITIES];
 int i_TextEntity[MAXENTITIES][5];
 float f_TextEntityDelay[MAXENTITIES];
+float AntiSpamTipGive;
 
 int i_Activity[MAXENTITIES];
 int i_PoseMoveX[MAXENTITIES];
@@ -756,6 +759,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
+	LoadTranslations("zombieriot.phrases.tips");	
 	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
 	LoadTranslations("common.phrases");
@@ -964,6 +968,7 @@ void Core_PrecacheGlobalCustom()
 }
 public void OnMapStart()
 {
+	AntiSpamTipGive = 0.0;
 	PrecacheSound("weapons/knife_swing_crit.wav");
 	PrecacheSound("weapons/shotgun/shotgun_dbl_fire.wav");
 	PrecacheSound("npc/vort/attack_shoot.wav");
@@ -1037,6 +1042,7 @@ public void OnMapStart()
 //	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
+	Zero(f_TimerStatusEffectsDo);
 	Building_MapStart();
 #endif
 	
@@ -1485,6 +1491,7 @@ public void OnClientPutInServer(int client)
 	b_GivePlayerHint[client] = false;
 	f_ClientConnectTime[client] = GetGameTime() + 30.0;
 	//do cooldown upon connection.
+	f_ClientInvul[client] = 0.0;
 	f_RoleplayTalkLimit[client] = 0.0;
 #if !defined NOG
 	DHook_HookClient(client);
@@ -1578,6 +1585,8 @@ public void OnClientDisconnect(int client)
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;
 	ReplicateClient_LostFooting[client] = -1.0;
+	ReplicateClient_Gravity[client] = -1;
+	i_Client_Gravity[client] = 800; //incase
 	ReplicateClient_Tfsolidobjects[client] = -1;
 	ReplicateClient_RollAngle[client] = -1;
 	b_NetworkedCrouch[client] = false;
@@ -1593,6 +1602,7 @@ public void OnClientDisconnect(int client)
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
 	f_BuildingIsNotReady[client] = 0.0;
+	f_VintulumBombRecentlyUsed[client] = 0.0;
 	//Needed to reset attackspeed stuff
 #endif
 
@@ -2399,7 +2409,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Is_a_Medic[entity] = false;
 		b_IsEntityAlwaysTranmitted[entity] = false;
 		b_IsEntityNeverTranmitted[entity] = false;
-		b_NoHealthbar[entity] = false;
+		b_NoHealthbar[entity] = 0;
 		
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
@@ -3456,7 +3466,10 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		was_reviving_this[client] = target;
 
 	if(!WasRevivingEntity)
-		f_DisableDyingTimer[target] = GameTime + 0.15;
+	{
+		if(f_DisableDyingTimer[target] != FAR_FUTURE)
+			f_DisableDyingTimer[target] = GameTime + 0.15;
+	}
 
 	int speed = 3;
 	if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))

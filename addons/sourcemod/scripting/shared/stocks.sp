@@ -226,6 +226,7 @@ stock bool FindInfoTarget(const char[] name)
 	}
 	return false;
 }
+
 stock int FindInfoTargetInt(const char[] name)
 {
 	int entity = -1;
@@ -1285,12 +1286,15 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 			BleedAmountCountStack[OriginalIndex] = 0;
 		return Plugin_Stop;
 	}
-	if(HasSpecificBuff(victim, "Thick Blood") && effectoverride != -1)
+	if(HasSpecificBuff(victim, "Thick Blood"))
 	{
-		BleedAmountCountStack[OriginalIndex] -= 1;
-		if(BleedAmountCountStack[OriginalIndex] < 0)
-			BleedAmountCountStack[OriginalIndex] = 0;
-		return Plugin_Stop;
+		if(effectoverride != 1)
+		{
+			BleedAmountCountStack[OriginalIndex] -= 1;
+			if(BleedAmountCountStack[OriginalIndex] < 0)
+				BleedAmountCountStack[OriginalIndex] = 0;
+			return Plugin_Stop;
+		}
 	}
 	float pos[3];
 	
@@ -1333,13 +1337,13 @@ stock void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
 {
 	SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_TRUEDAMAGE, -1);
 }
-stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
+stock int HealEntityGlobal(int healer, int receiver, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
-	if(HasSpecificBuff(reciever, "Anti-Waves"))
+	if(HasSpecificBuff(receiver, "Anti-Waves"))
 	{
 		//Ignore all healing that isnt absolute
 		if(!(flag_extrarules & (HEAL_ABSOLUTE)))
@@ -1352,8 +1356,8 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		//the heal total is negative, this means this is trated as true damage.
 	}
 #if defined ZR
-	if(reciever <= MaxClients)
-		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+	if(receiver <= MaxClients)
+		if(isPlayerMad(receiver) && !(flag_extrarules & (HEAL_SELFHEAL)))
 			return 0;
 #endif
 
@@ -1364,40 +1368,40 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 1.5;
 		}
-		if(b_HealthyEssence && GetTeam(reciever) == TFTeam_Red)
+		if(b_HealthyEssence && GetTeam(receiver) == TFTeam_Red)
 			HealTotal *= 1.25;
 			
-		if(HasSpecificBuff(reciever, "Growth Blocker"))
+		if(HasSpecificBuff(receiver, "Growth Blocker"))
 		{
 			HealTotal *= 0.85;
 		}
-		if(HasSpecificBuff(reciever, "Burn"))
+		if(HasSpecificBuff(receiver, "Burn"))
 			HealTotal *= 0.75;
 
-		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
+		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(receiver) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
 		}
 
-		if(Classic_Mode() && GetTeam(reciever) == TFTeam_Red)
+		if(Classic_Mode() && GetTeam(receiver) == TFTeam_Red)
 			HealTotal *= 0.5;
 #endif
 
 #if !defined RTS
 		//Extra healing bonuses or penalty for all healing except absolute
-		if(reciever <= MaxClients)
-			HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
+		if(receiver <= MaxClients)
+			HealTotal *= Attributes_GetOnPlayer(receiver, 526, true, false);
 
 		//healing bonus or penalty non self heal
 		if(!(flag_extrarules & (HEAL_SELFHEAL)))
 		{
-			if(reciever <= MaxClients)
-				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
+			if(receiver <= MaxClients)
+				HealTotal *= Attributes_GetOnPlayer(receiver, 734, true, false);
 		}
 #endif
 	}
 #if defined ZR
-	if(healer != reciever && HealOverThisDuration != 0.0)
+	if(healer != receiver && HealOverThisDuration != 0.0)
 	{
 		Healing_done_in_total[healer] += RoundToNearest(HealTotal);
 	}
@@ -1405,17 +1409,17 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	if(HealOverThisDuration == 0.0)
 	{
 		int HealingDoneInt;
-		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+		HealingDoneInt = HealEntityViaFloat(receiver, HealTotal, Maxhealth, MaxHealPermitted);
 		if(HealingDoneInt > 0)
 		{
 #if defined ZR
-			if(healer != reciever)
+			if(healer != receiver)
 			{
 				Healing_done_in_total[healer] += HealingDoneInt;
 				if(healer <= MaxClients)
 				{
 					//dont get it from healing buildings
-					if(!i_IsABuilding[reciever])
+					if(!i_IsABuilding[receiver])
 					{
 						AddHealthToUbersaw(healer, HealingDoneInt, 0.0);
 						HealPointToReinforce(healer, HealingDoneInt, 0.0);
@@ -1426,7 +1430,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #endif
 //only apply heal event if its not a passive self heal
 			if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
-				ApplyHealEvent(reciever, HealingDoneInt, healer);
+				ApplyHealEvent(receiver, HealingDoneInt, healer);
 		}
 		return HealingDoneInt;
 	}
@@ -1440,7 +1444,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			pack.WriteCell(EntIndexToEntRef(healer));
 		else
 			pack.WriteCell(0);
-		pack.WriteCell(EntIndexToEntRef(reciever));
+		pack.WriteCell(EntIndexToEntRef(receiver));
 		pack.WriteFloat(HealTotal / HealTotalTimer);
 		pack.WriteCell(Maxhealth);
 		pack.WriteCell(RoundToNearest(HealTotalTimer));		
@@ -2797,7 +2801,7 @@ stock void GetVectorAnglesTwoPoints(const float startPos[3], const float endPos[
 	GetVectorAngles(tmpVec, angles);
 }
 
-stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
+stock void TE_DrawBox(int client = -1, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	//Trace top down
 	/*
@@ -2869,10 +2873,17 @@ stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], floa
 //	return true;
 }
 
-void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
+void TE_SendBeam(int client = -1, float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	TE_SetupBeamPoints(m_vecMins, m_vecMaxs, g_iLaserMaterial_Trace, g_iHaloMaterial_Trace, 0, 0, flDur, 1.0, 1.0, 1, 0.0, color, 0);
-	TE_SendToClient(client);
+	if(client == -1)
+	{
+		TE_SendToAll();
+	}
+	else
+	{
+		TE_SendToClient(client);
+	}
 }
 
 
@@ -5273,7 +5284,10 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
-	f_AllowInstabuildRegardless = GetGameTime() + time;
+	
+	if(!Construction_Mode())
+		f_AllowInstabuildRegardless = GetGameTime() + time;
+
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
@@ -5682,6 +5696,7 @@ enum
 	IgniteClientside = 2,
 	Osmosisdebuff = 3,
 	TankThrowLogic = 4,
+	ShadowingSlicer = 5,
 	
 }
 
@@ -5863,4 +5878,19 @@ stock void SetEntityRenderColor_NpcAll(int entity, float r, float g, float b)
 			Update_SetEntityRenderColor(WearableEntityIndex);
 		}
 	}
+}
+
+
+bool AntiCommandAbuse_MenuFix(Menu menu, MenuAction action, int choice)
+{
+	if(action != MenuAction_Select)
+		return false;
+		
+	int flags;
+	static char buffer[64];
+	menu.GetItem(choice, buffer, sizeof(buffer), flags);
+	if(flags & ITEMDRAW_DISABLED)
+		return true;
+
+	return false;
 }

@@ -104,9 +104,9 @@ methodmap BobTheFirstFollower < CClotBody
 		{
 			case 0:
 			{
-				this.Speech("I have been studying many places across irln ever since whiteflower was killed.");
-				this.SpeechDelay(5.0, "I found many things i liked.");
-				this.SpeechDelay(10.0, "And many i did not.");
+				this.Speech("I have been studying many places across Irln ever since Whiteflower was killed.");
+				this.SpeechDelay(5.0, "I found many things I liked.");
+				this.SpeechDelay(10.0, "And many I did not.");
 			}
 			case 1:
 			{
@@ -114,13 +114,13 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 2:
 			{
-				this.Speech("I know what you did to guln.");
+				this.Speech("I know what you did to Guln.");
 				this.SpeechDelay(5.0,"I know it was in his wish.");
-				this.SpeechDelay(10.0,"That doesnt mean ill be any less forgiving for it.");
+				this.SpeechDelay(10.0,"That doesnt mean I'll be any less forgiving for it.");
 			}
 			case 3:
 			{
-				this.Speech("People view me as a hero, i view myself as being curious.");
+				this.Speech("People view me as a hero, I view myself as being curious.");
 			}
 			case 4:
 			{
@@ -137,7 +137,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 7:
 			{
-				this.Speech("Ever since the seaborn stuff happend, you all have been alot more reasonable.");
+				this.Speech("Ever since the seaborn stuff happened, you all have been a lot more reasonable.");
 				this.SpeechDelay(5.0,"Could be PTSD.");
 			}
 			case 8:
@@ -146,12 +146,12 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 9:
 			{
-				this.Speech("Overtime i can feel everything relaxing abit, The only common big enemy is the void.");
+				this.Speech("Overtime I can feel everything relaxing a bit, The only common big enemy is the void.");
 				this.SpeechDelay(5.0, "... or whatever that is..");
 			}
 			case 10:
 			{
-				this.Speech("Chaos, i still dont know if its made by someone, or a force of nature.");
+				this.Speech("Chaos, I still dont know if its made by someone, or a force of nature.");
 				this.SpeechDelay(5.0, "Time will tell what it is..");
 			}
 			case 11:
@@ -162,7 +162,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 12:
 			{
-				this.Speech("Im not emotionless.");
+				this.Speech("I'm not emotionless.");
 				this.SpeechDelay(5.0, "I just dont show it to everyone i meet.");
 			}
 			case 13:
@@ -172,8 +172,8 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 14:
 			{
-				this.Speech("How i made clones in our battle?");
-				this.SpeechDelay(5.0, "I didnt, i just moved around.");
+				this.Speech("How I made clones in our battle?");
+				this.SpeechDelay(5.0, "I didnt, I just moved around.");
 				this.SpeechDelay(10.0, "Don't give it too much thought.");
 			}
 			case 15:
@@ -191,12 +191,12 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 18:
 			{
-				this.Speech("You think i'd be sorry for attacking you?");
+				this.Speech("You think I'd be sorry for attacking you?");
 				this.SpeechDelay(5.0, "You should be sorry for being so god damn careless with the seaborn.");
 			}
 			case 19:
 			{
-				this.Speech("If you ever think i'll trust that second bob faker, ill laugh.");
+				this.Speech("If you ever think I'll trust that second bob faker, I'll laugh.");
 				this.SpeechDelay(9.0, "He acts like an expidonsan.");
 			}
 			case 20:
@@ -206,7 +206,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 21:
 			{
-				this.Speech("Cherrish your friends as much as you can, while they are still here.");
+				this.Speech("Cherish your friends as much as you can, while they are still here.");
 			}
 		}
 		
@@ -233,6 +233,11 @@ methodmap BobTheFirstFollower < CClotBody
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	
 	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally)
@@ -266,7 +271,7 @@ methodmap BobTheFirstFollower < CClotBody
 		npc.m_bScalesWithWaves = true;
 		if(Rogue_HasNamedArtifact("Bob's Wrath"))
 		{
-			fl_Extra_Damage[npc.index] *= 6.0;
+			fl_Extra_Damage[npc.index] *= 4.0;
 			fl_Extra_Speed[npc.index] *= 1.3;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 			npc.Anger = true;
@@ -318,6 +323,21 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				fl_Extra_Damage[npc.index] *= 6.0;
+				fl_Extra_Speed[npc.index] *= 1.3;
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;

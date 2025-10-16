@@ -204,7 +204,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 							client,
 							80.0,		// float lockonAngleMax,
 							20.0,		// float homingaSec,
-							true,		// bool LockOnlyOnce,
+							false,		// bool LockOnlyOnce,
 							true,		// bool changeAngles,
 							ang_Look,	// float AnglesInitiate[3]);
 							target);

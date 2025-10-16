@@ -1519,6 +1519,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 #endif
 
+	if(PreventRespawnsAll > GetGameTime())
+	{
+		return MRES_Supercede;
+	}
 #if defined ZR
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
@@ -1880,6 +1884,7 @@ int BannerWearableModelIndex[3];
 bool DidEventHandleChange = false;
 void DHooks_MapStart()
 {
+	PreventRespawnsAll = 0.0;
 #if defined ZR
 	if(g_DHookTakeDmgPlayer) 
 	{
@@ -2239,7 +2244,8 @@ public MRESReturn DhookBlockCrossbowPre(int entity)
 	if(b_FixInfiniteAmmoBugOnly[entity])
 	{
 		int AmmoType = GetAmmoType_WeaponPrimary(entity);
-		if(AmmoType >= 1)
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(GetAmmo(owner, AmmoType) >= 1)
 			return MRES_Ignored;
 			//they have more then 1 ammo? Allow reloading.
 	}
