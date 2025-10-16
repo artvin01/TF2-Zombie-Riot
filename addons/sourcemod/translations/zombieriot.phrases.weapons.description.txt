@@ -4194,19 +4194,19 @@
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
+		"en" 	"Increases overall stats and attackspeed.\nUnlocks the Plasm-ubblinator secondary weapon.\nGrants small health regeneration which increases with paps."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
+		"en" 	"Increases overall stats and attackspeed, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
-		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown."
+		"en" 	"increases overall stats and attackspeed.\nReduces Lethal Injection's cooldown."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
-		"en" 	"Increases overall stats."
+		"en" 	"Increases overall stats and attackspeed."
 	}
 	"Plasma Bubble Desc"
 	{
@@ -4218,15 +4218,15 @@
 	}
 	"Plasma Bubble Pap 3 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering I."
+		"en"	"Increases its range, Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering I."
 	}
 	"Plasma Bubble Pap 5 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering II instead of I."
+		"en"	"Increases its range, Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering II instead of I."
 	}
 	"Plasma Bubble Pap 7 or 8 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
+		"en"	"Increases its range, Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
 	}
 	"Plasminator Desc"
 	{
