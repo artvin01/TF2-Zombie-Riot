@@ -644,7 +644,6 @@ float MedigunGetUberDuration(int owner)
 {
 	//so it starts at 1.0
 	float Attribute = Attributes_GetOnPlayer(owner, 314, true, true) + 3.0;
-	
 	switch(Attribute)
 	{
 		case 1.0:
