@@ -791,7 +791,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	}
 	if(Is_Cheesed_Up(client))
 	{
-		weapon = ReturnWeapon_PlasmaKit(client)
+		weapon = ReturnWeapon_PlasmaKit(client);
 	}
 	if(IsValidEntity(weapon))
 	{
@@ -846,8 +846,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 		Base_HealingMaxPoints = 3000;
 		
 
+	//make it easier by 10%
+	Base_HealingMaxPoints = RoundToNearest(float(Base_HealingMaxPoints) * 0.9);
 
-	if(autoscale != 0.0) 
+	if(autoscale != 0.0)
 		f_ReinforceTillMax[client] += autoscale;
 	else
 		f_ReinforceTillMax[client] += (float(healthvalue) / float(Base_HealingMaxPoints));

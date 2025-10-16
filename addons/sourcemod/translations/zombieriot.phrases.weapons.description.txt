@@ -1324,6 +1324,14 @@
 		"ru"	"Стартовое оружие строителя, чтобы они могли наносить урон."
 		"chi"   "工程师的初始武器"
 	}
+	"Nail Gun Desc pap 1"
+	{
+		"en"	"High firerate, low damage dealing SMG."
+	}
+	"Nail Gun Desc pap 2"
+	{
+		"en"	"Low firerate, high damage dealing Shotgun."
+	}
 	
 	"Expidonsan Repair Device Desc"
 	{
