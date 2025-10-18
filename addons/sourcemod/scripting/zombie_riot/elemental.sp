@@ -1335,7 +1335,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					if(IsValidEntity(weapon))
 					{
-						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+						healing *= Attributes_GetOnPlayer(attacker, 8, true);
 						if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
 						{
 							meleepenalty = 0.95;
@@ -1387,7 +1387,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					if(IsValidEntity(weapon))
 					{
-						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+						healing *= Attributes_GetOnPlayer(attacker, 8, true);
 					}
 				}
 				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 1.0, 2, GetTeam(attacker));
