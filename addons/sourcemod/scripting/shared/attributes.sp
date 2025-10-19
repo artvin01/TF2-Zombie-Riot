@@ -189,7 +189,7 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 	
 	if(Attribute_IntAttribute(attrib) && !Attribute_DontSaveAsIntAttribute(attrib))
 	{
-		TF2Attrib_SetByDefIndex(entity, attrib, float((RoundFloat(value))));
+		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
 		return true;
 	}
 	
