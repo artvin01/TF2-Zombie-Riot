@@ -927,10 +927,7 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	{
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 		i_HasBeenBackstabbed[victim] = false;
-		if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
-		{
-			i_HasBeenHeadShotted[victim] = false;
-		}
+	//	i_HasBeenHeadShotted[victim] = false;
 		
 	}
 		

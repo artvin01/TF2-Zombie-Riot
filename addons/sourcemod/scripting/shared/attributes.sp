@@ -96,6 +96,18 @@ bool Attribute_IntAttribute(int attribute)
 	return false;
 }
 
+bool Attribute_DontSaveAsIntAttribute(int attribute)
+{
+	switch(attribute)
+	{
+		//this attrib is a float, but saves as an int, for stuff thats additional, not multi.
+		case 314:
+			return true;
+	}
+
+	return false;
+}
+
 /*
 	There are attributes that are used only for ZR that dont actually exist
 	there are described here:
@@ -174,14 +186,13 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 		if(Attribute_ServerSide(attrib))
 			return false;
 	}
-	/*
-	why?
-	if(Attribute_IntAttribute(attrib))
+	
+	if(Attribute_IntAttribute(attrib) && !Attribute_DontSaveAsIntAttribute(attrib))
 	{
 		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
 		return true;
 	}
-	*/
+	
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;

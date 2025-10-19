@@ -10079,7 +10079,8 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 			{
 				DamageFlags &= ~DMG_CRUSH;
 			}
-			SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DamageFlags, -1, _);
+			HealEntityGlobal(target, target, DamageDeal, 99.0, 0.0, HEAL_ABSOLUTE | HEAL_PASSIVE_NO_NOTIF);
+			SDKHooks_TakeDamage(target, entity, entity, 1.0, DamageFlags, -1, _);
 		}
 	}
 #endif

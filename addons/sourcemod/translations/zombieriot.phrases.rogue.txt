@@ -2345,4 +2345,8 @@
 	{
 		"en"	"You leave them be, they can handle themselves. You find some loose change."
 	}
+	"Barracks Disabled Rogue"
+	{
+		"en" "Barracks are disabled, so you instead get a random item of equal value, the barracks item that got obtained will do nothing."
+	}
 }
