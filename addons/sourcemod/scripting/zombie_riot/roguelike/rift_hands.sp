@@ -283,20 +283,20 @@ public void Rogue_Hand2Tactician_TakeDamage(int victim, int &attacker, int &infl
 	if(attacker > MaxClients)
 		return;
 	bool EnemyWasHitscanned = false;
-	if(f_TraceAttackWasTriggeredSameFrame[victim] != GetGameTime())
-		EnemyWasHitscanned = false;
+	if(f_TraceAttackWasTriggeredSameFrame[victim] == GetGameTime())
+		EnemyWasHitscanned = true;
 	
-	if(!EnemyWasHitscanned)
+	if(EnemyWasHitscanned)
+	{
+		//was hitscanned, did we hit a headshot, if not fail.
+		if(!i_HasBeenHeadShotted[victim])
+			return;
+	}
+	else
 	{
 		//what?? bows??
 		if(i_HasBeenHeadShotted[victim])
 			EnemyWasHitscanned = true;
-	}
-	else
-	{
-		//was hitscanned, did we hit a haadshot, if not fail.
-		if(!i_HasBeenHeadShotted[victim])
-			return;
 	}
 
 		

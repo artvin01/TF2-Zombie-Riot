@@ -204,6 +204,9 @@ methodmap OverlordRogue < CClotBody
 		bool final = StrContains(data, "final_item") != -1;
 		bool final2 = StrContains(data, "music_do") != -1;
 		
+		if(Rogue_HasNamedArtifact("Ascension Stack"))
+			final = false;
+		
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;

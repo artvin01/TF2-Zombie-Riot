@@ -1137,7 +1137,7 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 {
 	strcopy(tinker.Name, sizeof(tinker.Name), "치유 과충전");
 	tinker.Attrib[0] = 8; //more heal rate
-	tinker.Attrib[1] = 10; //Less uber rate
+	tinker.Attrib[1] = 9; //Less uber rate
 	tinker.Attrib[2] = 4002; //Less Overheal
 	float MoreHealRateLuck = (0.1 * (tinker.Luck[0]));
 	float LessUberRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
@@ -1149,19 +1149,19 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 		{
 			tinker.Value[0] = 1.15 + MoreHealRateLuck;
 			tinker.Value[1] = 0.95 - LessUberRateLuck;
-			tinker.Value[2] = 0.95 - LessOverhealRateLuck;
+			tinker.Value[2] = 0.96 - LessOverhealRateLuck;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.25 + MoreHealRateLuck;
 			tinker.Value[1] = 0.92 - LessUberRateLuck;
-			tinker.Value[2] = 0.92 - LessOverhealRateLuck;
+			tinker.Value[2] = 0.95 - LessOverhealRateLuck;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + MoreHealRateLuck;
 			tinker.Value[1] = 0.88 - LessUberRateLuck;
-			tinker.Value[2] = 0.88 - LessOverhealRateLuck;
+			tinker.Value[2] = 0.9 - LessOverhealRateLuck;
 		}
 	}
 }
@@ -1198,7 +1198,7 @@ static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 {
 	strcopy(tinker.Name, sizeof(tinker.Name), "순수한 우버맨");
 	tinker.Attrib[0] = 8;
-	tinker.Attrib[1] = 10;
+	tinker.Attrib[1] = 9;
 	float LessHealRate = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
 	float MoreUberRate = (0.1 * (tinker.Luck[1]));
 
@@ -1207,17 +1207,17 @@ static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 		case 0:
 		{
 			tinker.Value[0] = 0.9 - LessHealRate;
-			tinker.Value[1] = 1.15 + MoreUberRate;
+			tinker.Value[1] = 1.1 + MoreUberRate;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 0.85 - LessHealRate;
-			tinker.Value[1] = 1.2 + MoreUberRate;
+			tinker.Value[1] = 1.15 + MoreUberRate;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 0.8 - LessHealRate;
-			tinker.Value[1] = 1.3 + MoreUberRate;
+			tinker.Value[1] = 1.25 + MoreUberRate;
 		}
 	}
 }

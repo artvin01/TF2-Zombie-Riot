@@ -47,6 +47,18 @@
 		"#format"	"{1:d}"
 		"en"		"{crimson}Lost {1} Australium Ingots!"
 	}
+	"Freeplay Rogue Ask"
+	{		
+		"en"		"You defeated the final boss!\nWould you like to have a rematch?"
+	}
+	"Ascension Stack"
+	{
+		"en"		"Ascension Stack"
+	}
+	"Ascension Stack Desc"
+	{
+		"en"		"{red}Enemies receive +30％ health and +20％ damage"
+	}
 	"Gained Shield"
 	{
 		"#format"	"{1:d}"
@@ -2602,5 +2614,9 @@
 	"Omega and Vhxis Decline Conlusion"
 	{
 		"en"	"You leave them be, they can handle themselves. You find some loose change."
+	}
+	"Barracks Disabled Rogue"
+	{
+		"en" "Barracks are disabled, so you instead get a random item of equal value, the barracks item that got obtained will do nothing."
 	}
 }

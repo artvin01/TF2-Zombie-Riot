@@ -1147,11 +1147,11 @@
 		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
 		"ko"	"적중시, 능력의 쿨타임이 2초 감소합니다. 이 효과는 공격자 1명당 1번만 발동합니다."
 	}
-	"Vintulum Bomb EMP"
+	"Vuntulum Bomb EMP"
 	{
-		"en"	"Vintulum Bomb EMP"
+		"en"	"Vuntulum Bomb EMP"
 	}
-	"Vintulum Bomb EMP Desc"
+	"Vuntulum Bomb EMP Desc"
 	{
 		"en"	"Cant make any Unique buildings while this is active."
 	}

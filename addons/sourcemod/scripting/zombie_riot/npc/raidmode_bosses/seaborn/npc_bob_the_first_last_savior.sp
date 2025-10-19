@@ -1032,6 +1032,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 3;
 					npc.m_flAttackHappens = gameTime + 0.899;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.9);
 				}
 			}
 			case 3:	// COMBO1 - Frame 54
@@ -1042,6 +1043,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 1.555;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.6);
 				}
 			}
 			case 4:	// COMBO2 - Frame 32
@@ -1052,6 +1054,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 5;
 					npc.m_flAttackHappens = gameTime + 0.833;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.9);
 				}
 			}
 			case 5:	// COMBO2 - Frame 52
@@ -1062,6 +1065,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 6;
 					npc.m_flAttackHappens = gameTime + 0.833;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.9);
 				}
 			}
 			case 6:	// COMBO2 - Frame 73
@@ -1072,6 +1076,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 1.083;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.1);
 				}
 			}
 			case 8:	// DEPLOY_MANHACK - Frame 32
@@ -1080,6 +1085,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 0.333;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.4);
 
 					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(175.0, 225.0), 150.0, "utaunt_glitter_teamcolor_blue", true);
 					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
@@ -1436,6 +1442,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.916;
 								
 								BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+								ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.0);
 							}
 							case 1:
 							{
@@ -1445,6 +1452,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.5;
 								
 								BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+								ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.6);
 							}
 							case 2:
 							{
@@ -1456,6 +1464,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									npc.m_flAttackHappens = gameTime + 3.25;
 									
 									BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+									ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.3);
 								}
 								else
 								{
@@ -1469,6 +1478,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 											npc.m_flAttackHappens = gameTime + 0.916;
 											
 											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+											ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.0);
 										}
 										case 1:
 										{
@@ -1478,6 +1488,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 											npc.m_flAttackHappens = gameTime + 0.5;
 											
 											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+											ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.6);
 										}
 									}
 								}

@@ -103,7 +103,7 @@ enum struct Vote
 	bool Locked;
 }
 
-static ArrayList Enemies[2];
+static ArrayList Enemies[3];
 static ArrayList Rounds;
 static ArrayList Voting;
 static ArrayList VotingMods;
@@ -1198,7 +1198,19 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
 						enemy.ExtraThinkSpeed = kv.GetFloat("extra_thinkspeed", 1.0);
 						wave.DangerLevel = kv.GetNum("danger_level");
-						enemy.Priority = kv.GetNum("priority");
+						int PrioLevel = 0;
+						enemy.Priority = 0;
+						if(kv.GetNum("is_boss") > 0)
+						{
+							//if its a boss, it should always have priority no matter what
+							enemy.Priority = 1;
+						}
+						PrioLevel = kv.GetNum("priority", -1);
+						if(PrioLevel >= 0)
+						{
+							//incase you want to override priorities
+							enemy.Priority = PrioLevel;
+						}
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
@@ -1734,6 +1746,7 @@ void Waves_ClearWaves()
 {
 	delete Enemies[0];
 	delete Enemies[1];
+	delete Enemies[2];
 }
 
 void Waves_Progress(bool donotAdvanceRound = false)
@@ -2766,7 +2779,9 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 
 bool Waves_IsEmpty()
 {
-	if((!Enemies[0] || !Enemies[0].Length) && (!Enemies[1] || !Enemies[1].Length))
+	if((!Enemies[0] || !Enemies[0].Length)
+	 && (!Enemies[1] || !Enemies[1].Length)
+	  && (!Enemies[2] || !Enemies[2].Length))
 		return true;
 	
 	return false;
@@ -2844,6 +2859,9 @@ void Waves_ClearWaveCurrentSpawningEnemies()
 	
 	if(Enemies[1])
 		Zombies_Currently_Still_Ongoing -= Enemies[1].Length;
+	
+	if(Enemies[2])
+		Zombies_Currently_Still_Ongoing -= Enemies[2].Length;
 	
 	Waves_ClearWaves();
 }
@@ -3406,14 +3424,16 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 	}
-
-	if(Enemies[0])
+	
+	for(int i = sizeof(Enemies) - 1; i >= 0; i--)
 	{
+		if(!Enemies[i])
+			continue;
 		static Enemy enemy;
-		int length = Enemies[0].Length;
+		int length = Enemies[i].Length;
 		for(int a; a < length; a++)
 		{
-			Enemies[0].GetArray(a, enemy);
+			Enemies[i].GetArray(a, enemy);
 			cashLeft += enemy.Credits;
 			activecount++;
 

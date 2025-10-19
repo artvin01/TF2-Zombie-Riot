@@ -977,7 +977,7 @@ static float Brew_034(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 	strcopy(name, sizeof(name), "Potion of Engineering");
 	attrib[0] = 8;
 	value[0] = 1.2;
-	attrib[1] = 10;
+	attrib[1] = 9;
 	value[1] = 1.1;
 	attrib[2] = 95;
 	value[2] = 1.25;

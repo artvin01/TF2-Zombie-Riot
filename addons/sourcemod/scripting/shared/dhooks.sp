@@ -2244,7 +2244,8 @@ public MRESReturn DhookBlockCrossbowPre(int entity)
 	if(b_FixInfiniteAmmoBugOnly[entity])
 	{
 		int AmmoType = GetAmmoType_WeaponPrimary(entity);
-		if(AmmoType >= 1)
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(GetAmmo(owner, AmmoType) >= 1)
 			return MRES_Ignored;
 			//they have more then 1 ammo? Allow reloading.
 	}

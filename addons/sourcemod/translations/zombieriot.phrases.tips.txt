@@ -120,25 +120,4 @@
 	{
 		"en"	"Raidbosses completely ignore buildings, try not to stay in the same place for too long!"
 	}
-	//remove these once rogue3 is out!!!
-	"Setup Chat Tip 31"
-	{
-		"en"	"{darkgray}I am still here. {default}Whiteflower, {darkgray}where are you..?"
-	}
-	"Setup Chat Tip 32"
-	{
-		"en"	"{purple}YOU ARE NO LONGER THE ONE IN CONTROL HERE"
-	}
-	"Setup Chat Tip 33"
-	{
-		"en"	"Standing tall in the center of {purple}the Curtain, the Void's palace lies."
-	}
-	"Setup Chat Tip 34"
-	{
-		"en"	"Legends say whoever held the {darkgray}Throne {default}within would gain power over {purple}the Curtain itself."
-	}
-	"Setup Chat Tip 35"
-	{
-		"en"	"The corpses were fully crystallized. Must have been from the {darkblue}Chaos {default}and {purple}Void {default}mixing..."
-	}
 }

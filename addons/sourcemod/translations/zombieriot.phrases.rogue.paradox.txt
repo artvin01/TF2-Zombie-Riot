@@ -25,6 +25,10 @@
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 		"ko"	"{yellow}모든 유닛의 이동 속도가 20％ 감소합니다. 시본은 대신 이동 속도가 10％ 증가합니다."
 	}
+	"Gate to the Curtain"
+	{
+		"en"	"Gate to the Curtain"
+	}
 	"Heavy Rain Lore"
 	{
 		"en"	"It begins to rain heavily, you can feel it's weight."

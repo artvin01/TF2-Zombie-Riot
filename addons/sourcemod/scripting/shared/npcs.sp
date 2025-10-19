@@ -1318,7 +1318,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
 	{
-		i_HasBeenHeadShotted[victim] = false;
 		return;
 	}
 		

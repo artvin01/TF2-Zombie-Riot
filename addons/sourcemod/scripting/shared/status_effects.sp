@@ -3764,7 +3764,8 @@ float AdaptiveMedigun_MeleeFunc(int attacker, int victim, StatusEffect Apply_Mas
 {
 	if(damagetype & (DMG_CLUB)) // if its melee
 	{
-		return 0.85;
+		if(!(damagetype & DMG_TRUEDAMAGE)) //dont block true damage lol
+			return 0.85;
 	}
 	
 	return 1.0;
@@ -4405,7 +4406,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
 
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Vintulum Bomb EMP");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vuntulum Bomb EMP");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "V");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused

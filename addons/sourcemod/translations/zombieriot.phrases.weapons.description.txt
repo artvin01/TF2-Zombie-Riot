@@ -1503,6 +1503,14 @@
 		"chi"   "工程师的初始武器"
 		"ko"	"빌더의 가장 기본적인 공격용 무기입니다."
 	}
+	"Nail Gun Desc pap 1"
+	{
+		"en"	"High firerate, low damage dealing SMG."
+	}
+	"Nail Gun Desc pap 2"
+	{
+		"en"	"Low firerate, high damage dealing Shotgun."
+	}
 	
 	"Expidonsan Repair Device Desc"
 	{
@@ -3674,10 +3682,7 @@
 	}
 	"Crossbow Pap 1"
 	{
-		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot."
-		"fr"	"Arme devient un arbalète avec une cadence de tir rapide. Arme se recharge en une fois.\nAppuyez sur M2 pour tirer un tir de baliste large."
-		"chi"	"武器变为弩，一次性填装弹夹，高射速。M2更为一个强大的弩炮。"
-		"ko"	"무기가 석궁으로 변경됩니다. 공격 속도가 매우 빠르며 한 번에 모든 장탄을 재장전합니다.\n우클릭(M2) 사용시 매우 큰 노포를 사격합니다."
+		"en"	"Weapon changes into a crossbow, reloads entire clip at once and fires rapidly.\nYour m2 shoots a huge balista shot.\nAmmo consumption is reduced."
 	}
 	"Crossbow Pap 2"
 	{
@@ -3688,13 +3693,13 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"Changes the medigun to grant different mode types, boosting melee/ranged resistance or both.\nDamage mode is now changed via CTRL/Crouch + RELOAD now."
+		"en"	"Changes the medigun to grant different mode types, boosting melee or ranged resistance.\nDamage mode is now changed via CTRL/Crouch + RELOAD now."
 		"es"	"Cambia la medigun para dar distintos modos, aumentando la resistencia cuerpo a cuerpo, a distancia, o ambas.\nCambiar de modo ahora requiere siempre que utilizes CTRL/Agacharse + RELOAD."
 		"ko"	"메디건의 모드를 전환하여, 근접/원거리 피해 저항력을 부여하거나, 둘 다 부여 가능.\n이제 공격 모드로 전환하려면 앉기 + 재장전 키를 동시에 눌러야합니다."
 	}
 	"Medigun Desc Pap 2"
 	{
-		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades."
+		"en"	"Medigun now regenerates YOUR and your patient's armor while healing.\nScales with medigun upgrades.\nCures elemental damage 4x as fast."
 		"es"	"Curar a aliados con la medigun ahora restaurara tu armadura y la de tu paciente.\nAumenta con mejoras medicas."
 		"ko"	"이제 치유 대상과 당신의 아머를 회복시킴.\n회복량은 메딕 개선의 영향을 받음."
 	}
@@ -4883,23 +4888,19 @@
 	}
 	"Plasma Inject Pap 1 Desc"
 	{
-		"en" 	"Increases overall stats.\nUnlocks the Plasm-ubblinator secondary weapon."
-		"ko" 	"모든 능력치 증가.\n끓는 플라즈마 분사기 보조 무기 획득."
+		"en" 	"Increases overall stats and attackspeed.\nUnlocks the Plasm-ubblinator secondary weapon.\nGrants small health regeneration which increases with paps."
 	}
 	"Plasma Inject Pap 2 Desc"
 	{
-		"en" 	"Increases overall stats, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
-		"ko" 	"능력치 증가. 새로운 능력 해금 : 치사 주사\n다음 공격 적중시 추가 피해를 주고 매우 높은 플라즈마 원소 피해를 부여."
+		"en" 	"Increases overall stats and attackspeed, Unlocks Lethal Injection [M2]:\nYour next hit will inflict increased damage and MASSIVE Plasmic Elemental damage."
 	}
 	"Plasma Inject Pap 3 Desc"
 	{
-		"en" 	"increases overall stats.\nReduces Lethal Injection's cooldown."
-		"ko" 	"능력치 증가. \n치사 주사의 쿨타임이 감소."
+		"en" 	"increases overall stats and attackspeed.\nReduces Lethal Injection's cooldown."
 	}
 	"Plasma Kit Pap Rest Desc"
 	{
-		"en" 	"Increases overall stats."
-		"ko" 	"능력치 증가."
+		"en" 	"Increases overall stats and attackspeed."
 	}
 	"Plasma Bubble Desc"
 	{
@@ -4912,16 +4913,15 @@
 	}
 	"Plasma Bubble Pap 3 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering I."
+		"en"	"Increases its range, Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering I."
 	}
 	"Plasma Bubble Pap 5 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering II instead of I."
+		"en"	"Increases its range, Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble, and increases the bubble duration slightly.\nAllies inside the bubble now receive Plasmic Layering II instead of I."
 	}
 	"Plasma Bubble Pap 7 or 8 Desc"
 	{
-		"en"	"Increases its Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
-		"ko"	"플라즈마 원소 피해 부여량 및 아군의 원소 피해 제거량 증가.\n거품의 지속 시간 및 충전 요구량 감소."
+		"en"	"Increases its range, Plasmic Elemental damage and Elemental damage removal.\nReduces the required charge for a bubble."
 	}
 	"Plasminator Desc"
 	{

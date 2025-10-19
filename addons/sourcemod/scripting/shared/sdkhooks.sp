@@ -1039,7 +1039,7 @@ public void OnPostThink(int client)
 			if(b_Reinforce[client])
 			{
 				had_An_ability = true;
-				if(MaxRevivesReturn() >= 3)
+				if(MaxRevivesReturn() >= MaxRevivesAllowed())
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
 				}

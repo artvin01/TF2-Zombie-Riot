@@ -234,7 +234,7 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl", "", 2, size);
 
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
 
 		SetEntityRenderColor(npc.m_iWearable1, 175, 100, 100, 255);

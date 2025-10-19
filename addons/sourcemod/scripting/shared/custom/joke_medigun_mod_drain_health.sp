@@ -350,15 +350,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							case 0:
 							{
-								ApplyStatusEffect(owner, owner, "Healing Adaptiveness All", 0.15);
-								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness All", 0.15);
-							}
-							case 1:
-							{
 								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Melee", 0.15);
 								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Melee", 0.15);
 							}
-							case 2:
+							case 1:
 							{
 								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Ranged", 0.15);
 								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Ranged", 0.15);
@@ -434,7 +429,22 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 								Healing_GiveArmor *= 0.33;
 							}	
 							if(healTarget <= MaxClients)
+							{
+								bool JustCuredArmor = false;
+								if(Armor_Charge[healTarget] < 0)
+								{
+								//if under currosion. heal more
+									JustCuredArmor = true;
+									Healing_GiveArmor *= 4.0;
+								}
 								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true,_,owner);
+
+								if(JustCuredArmor && Armor_Charge[healTarget] > 0)
+								{
+									Armor_Charge[healTarget] = 0;
+								}
+
+							}
 							else
 							{
 								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
@@ -450,7 +460,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							{
 								Healing_GiveArmor *= 0.25;
 							}
+							bool JustCuredArmor = false;
+							if(Armor_Charge[owner] < 0)
+							{
+								//if under currosion. heal more
+								JustCuredArmor = true;
+								Healing_GiveArmor *= 4.0;
+							}
 							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true,_,owner);
+							
+							if(JustCuredArmor && Armor_Charge[owner] > 0)
+							{
+								Armor_Charge[owner] = 0;
+							}
 						}
 #endif
 
@@ -495,13 +517,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							PrintHintText(owner,"[HEALING MODE]\nMode: General");
-						}
-						case 1:
-						{
 							PrintHintText(owner,"[HEALING MODE]\nMode: Melee");
 						}
-						case 2:
+						case 1:
 						{
 							PrintHintText(owner,"[HEALING MODE]\nMode: Ranged");
 						}
@@ -626,7 +644,6 @@ float MedigunGetUberDuration(int owner)
 {
 	//so it starts at 1.0
 	float Attribute = Attributes_GetOnPlayer(owner, 314, true, true) + 3.0;
-	
 	switch(Attribute)
 	{
 		case 1.0:
@@ -668,7 +685,7 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 	}
 	ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
 	MedigunModeSet[client]++;
-	if(MedigunModeSet[client] > 2)
+	if(MedigunModeSet[client] > 1)
 	{
 		MedigunModeSet[client] = 0;
 	}

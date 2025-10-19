@@ -692,6 +692,17 @@ public void Rogue_RiftHard_Enemy(int entity)
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
 }
+public void Rogue_RiftVeryHard_Enemy(int entity)
+{
+	if(Rogue_GetFloor() == 6)
+		return;
+		
+	float stats = Pow(1.04, float(Rogue_GetFloor() + 1));
+
+	fl_Extra_Damage[entity] *= stats;
+	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * stats));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * stats));
+}
 
 public void Rogue_RiftStupidHard_Enemy(int entity)
 {
@@ -1033,10 +1044,10 @@ public void Rogue_Rift2_Collect(int entity)
 */
 public void Rogue_BookOfNature_Collect(int entity)
 {
+	BookOfNature = true;
 	if(Rogue_HasNamedArtifact("Umbral Hate"))
 		Rogue_RemoveNamedArtifact("Umbral Hate");
 	Rogue_AddUmbral(10);
-	BookOfNature = true;
 }
 public void Rogue_BookOfNature_Remove(int entity)
 {

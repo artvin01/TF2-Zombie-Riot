@@ -1323,6 +1323,9 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				float rangedpenalty = (b_thisNpcIsARaid[victim] ? 0.65 : 0.5);
 				float duration = (melee ? 2.0 : (b_thisNpcIsARaid[victim] ? 4.0 : 8.0));
 				float healing = 20.0; // bleh
+				float Range = 200.0;
+				healing *= 0.75;
+				Range *= 1.25;
 
 				if(!b_NpcHasDied[attacker])
 				{
@@ -1332,10 +1335,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					if(IsValidEntity(weapon))
 					{
-						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
-							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
-
-						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+						healing *= Attributes_GetOnPlayer(attacker, 8, true);
 						if(HasSpecificBuff(attacker, "Plasmatic Rampage"))
 						{
 							meleepenalty = 0.95;
@@ -1344,13 +1344,20 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						}
 					}
 				}
+
+				if(b_thisNpcIsARaid[victim])
+				{
+					healing *= 1.35;
+					Range += (Range *= 0.25);
+				}
+
 				Cheese_SetPenalty(victim, (melee ? meleepenalty : rangedpenalty));
 				f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + duration;
-				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 0.5, 2, GetTeam(attacker));
+				PlasmicElemental_HealNearby(attacker, healing, position, Range, 0.5, 2, GetTeam(attacker));
 				position[2] += 10.0;
 				for(int i = 0; i < 2; i++)
 				{
-					Cheese_BeamEffect(position, 10.0, 250.0, 0.2, 3.0);
+					Cheese_BeamEffect(position, 10.0, Range, 0.2, 3.0);
 					position[2] += 32.5;
 				}
 				Cheese_PlaySplat(victim);
@@ -1380,10 +1387,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				{
 					if(IsValidEntity(weapon))
 					{
-						if(Attributes_Get(weapon, Attrib_PapNumber, 0.0) > 0)
-							healing *= Attributes_Get(weapon, Attrib_PapNumber, 0.0);
-
-						healing *= Attributes_GetOnWeapon(attacker, weapon, 8, true);
+						healing *= Attributes_GetOnPlayer(attacker, 8, true);
 					}
 				}
 				PlasmicElemental_HealNearby(attacker, healing, position, 200.0, 1.0, 2, GetTeam(attacker));
