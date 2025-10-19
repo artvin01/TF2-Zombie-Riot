@@ -57,6 +57,10 @@ static bool b_ForceSpawnNextTime;
 
 void Items_PluginStart()
 {
+	for(int i=0; i<=MaxClients; i++)
+	{
+		CategoryPage[i] = -2;
+	}
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
 	PreviousItems = new ArrayList(sizeof(OwnedItem));
 	RegAdminCmd("zr_give_item", Items_GiveCmd, ADMFLAG_RCON);
@@ -449,6 +453,33 @@ char[] Items_GetNameOfId(int id)
 	return item.Name;
 }
 
+public bool Encyclopedia_SayCommand(int client)
+{
+	if(CategoryPage[client] == -2)
+		return false;
+	char buffer[16];
+	GetCmdArgString(buffer, sizeof(buffer));
+	ReplaceString(buffer, sizeof(buffer), "\"", "");
+	Format(c_WeaponUseAbilitiesHud[client], sizeof(c_WeaponUseAbilitiesHud[]), "%s", buffer);
+	Items_EncyclopediaMenu(client);
+	return true;
+}
+
+char[] Encyclopedia_CurrentFilter(int client)
+{
+	char buffer[64];
+	//reusing c_WeaponUseAbilitiesHud cus it only affects weapons
+	if(!c_WeaponUseAbilitiesHud[client][0])
+	{
+		Format(buffer, sizeof(buffer), "%T", "Encyclopedia Type", client);
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "%T %s", "Encyclopedia Filtered", client, c_WeaponUseAbilitiesHud[client]);
+	}
+	return buffer;
+}
+
 void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 {
 	Menu menu = new Menu(Items_EncyclopediaMenuH);
@@ -466,19 +497,8 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		{
 			Format(buffer, sizeof(buffer), "%t", buffer);
 
-			/*if(Database_IsCached(client))
-			{
-				menu.SetTitle("%t\n \n%s\n%t\n ", data.Name, buffer, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
-			}
-			else*/
-			{
-				menu.SetTitle("%t\n \n%s\n ", data.Name, buffer);
-			}
+			menu.SetTitle("%t\n \n%s\n ", data.Name, buffer);
 		}
-		/*else if(Database_IsCached(client))
-		{
-			menu.SetTitle("%t\n \n%t\n ", data.Name, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
-		}*/
 		else
 		{
 			menu.SetTitle("%t\n ", data.Name);
@@ -499,6 +519,13 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		int length = NPC_GetCount();
 		for(int i; i < length; i++)
 		{
+			if(c_WeaponUseAbilitiesHud[client][0])
+			{
+				if(StrContains(data.Name, c_WeaponUseAbilitiesHud[client], false) == -1)
+				{
+					continue;
+				}
+			}
 			NPC_GetById(i, data);
 			if(data.Plugin[0] && data.Category == CategoryPage[client])
 			{
@@ -514,8 +541,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 			}
 		}
 
-		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]], CategoryPage[client] ? "Zombie Kills" : "Allied Summons", kills);
-		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]]);
+		menu.SetTitle("%t\n%t\n \n%s\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Encyclopedia_CurrentFilter(client), Categories[CategoryPage[client]]);
 
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, (pos / 7 * 7), MENU_TIME_FOREVER);
@@ -525,25 +551,40 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		if(CategoryPage[client] < 0)
 			CategoryPage[client] = 0;
 		
-		/*int kills;
-		int length = OwnedItems.Length;
-		for(int i; i < length; i++)
-		{
-			static OwnedItem owned;
-			OwnedItems.GetArray(i, owned);
-			if(owned.Client == client && owned.Level < 0)
-				kills += owned.Flags;
-		}*/
 
-		//menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", "Zombie Kills", kills);
-		menu.SetTitle("%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia");
+		menu.SetTitle("%t\n%t\n%s\n ", "TF2: Zombie Riot", "Encyclopedia", Encyclopedia_CurrentFilter(client));
 
-		char data[16], buffer[64];
+		char chdata[16], buffer[64];
 		for(int i; i < sizeof(Categories); i++)
 		{
-			IntToString(i, data, sizeof(data));
+			if(c_WeaponUseAbilitiesHud[client][0])
+			{
+				NPCData data;
+				int length = NPC_GetCount();
+				bool FoundOne = false;
+				for(int i2; i2 < length; i2++)
+				{
+					NPC_GetById(i2, data);
+					if(data.Plugin[0] && data.Category == CategoryPage[client])
+					{
+						if(StrContains(data.Name, c_WeaponUseAbilitiesHud[client], false) != -1)
+						{
+							continue;
+						}
+						else
+						{
+							FoundOne = true;
+						}
+					}
+				}
+				if(!FoundOne)
+				{
+					continue;
+				}
+			}
+			IntToString(i, chdata, sizeof(chdata));
 			FormatEx(buffer, sizeof(buffer), "%t", Categories[i]);
-			menu.AddItem(data, buffer);
+			menu.AddItem(chdata, buffer);
 		}
 
 		menu.ExitBackButton = true;
@@ -560,7 +601,10 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 		{
 			delete menu;
 			if(IsValidClient(client))
+			{
 				AnyMenuOpen[client] = 0.0;
+				CategoryPage[client] = -2;
+			}
 		}
 		case MenuAction_Cancel:
 		{
@@ -569,6 +613,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			{
 				if(CategoryPage[client] == -1)
 				{
+					CategoryPage[client] = -2;
 					Store_Menu(client);
 				}
 				else
@@ -586,7 +631,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			}
 			else
 			{
-				CategoryPage[client] = -1;
+				CategoryPage[client] = -2;
 			}
 		}
 		case MenuAction_Select:

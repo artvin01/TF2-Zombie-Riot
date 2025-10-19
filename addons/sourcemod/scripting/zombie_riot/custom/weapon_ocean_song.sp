@@ -135,11 +135,9 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	i_Particle_4[owner] = EntIndexToEntRef(particle2);
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
 
-	char szCtrlParti[128];
-	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
-	DispatchKeyValue(particle, "targetname", szCtrlParti);
+	SetEntPropEnt(particle2, Prop_Send, "m_hControlPointEnts", particle, 0);
+	SetEntProp(particle2, Prop_Send, "m_iControlPointParents", particle, _, 0);
 
-	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
 	ActivateEntity(particle2);
 //	ActivateEntity(particle);
 	AcceptEntityInput(particle2, "start");
@@ -259,12 +257,9 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
 
 
+	SetEntPropEnt(particle2, Prop_Send, "m_hControlPointEnts", particle2, 0);
+	SetEntProp(particle2, Prop_Send, "m_iControlPointParents", particle2, _, 0);
 
-	char szCtrlParti[128];
-	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
-	DispatchKeyValue(particle2, "targetname", szCtrlParti);
-
-	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
 	ActivateEntity(particle2);
 	ActivateEntity(particle);
 	AcceptEntityInput(particle2, "start");

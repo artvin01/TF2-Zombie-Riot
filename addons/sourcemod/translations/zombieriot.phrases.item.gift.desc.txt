@@ -1589,8 +1589,7 @@
 	}
 	"Protecta Desc"
 	{
-		"en"	"A better defenda, Altough on death will also heal allies"
-		"ru"	"Улучшенный защитник,хотя может вылечить при смерти(можно заглушить)"
+		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell."
 	}
 	"Sniponeer Desc"
 	{
@@ -1624,8 +1623,7 @@
 	}
 	"Guardus Desc"
 	{
-		"en"	"A robotic giant with the same abiltiies as the protecta."
-		"ru"	"Гигантский робот с теми же способностями что и защитник."
+		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell.\nMuch stronger."
 	}
 	"Vaus Techicus Desc"
 	{

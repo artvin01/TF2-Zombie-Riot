@@ -1489,6 +1489,14 @@
 		"nl"		"Encyclopedie"
 		"chi"       "百科全书"
 	}
+	"Encyclopedia Type"
+	{
+		"en"		"Type the name of the enemy in chat to filter"
+	}
+	"Encyclopedia Filtered"
+	{
+		"en"		"Filtered Name:"
+	}
 	"Claim this building"
 	{
 		"en"		" while holding a wrench on the building to claim it."

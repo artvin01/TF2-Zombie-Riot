@@ -4937,25 +4937,7 @@ public int Store_LoadoutItem(Menu menu, MenuAction action, int client, int choic
 
 public bool Store_SayCommand(int client)
 {
-	/*
-	if(Level[client] < 5)
-	{
-		char buffer1[64], buffer2[256];
-		GetCmdArgString(buffer1, sizeof(buffer1));
-		strcopy(buffer2, sizeof(buffer2), "Basic Wand");
-		if(StrContains(buffer1, buffer2, false) != -1 || StrContains(buffer1, TranslateItemDescription(client, buffer2, ""), false) != -1)
-		{
-			XP[client] = LevelToXp(5);
-			Level[client] = 0; //Just incase.
-			Native_ZR_OnGetXP(client, XP[client], 1);
-			GiveXP(client, 0);
 
-			CancelClientMenu(client);
-			TutorialEndFully(client);
-			return true;
-		}
-	}
-	*/
 	if(!InLoadoutMenu[client])
 		return false;
 	

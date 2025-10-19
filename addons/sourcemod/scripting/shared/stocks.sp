@@ -1019,9 +1019,8 @@ stock int TF2_CreateGlow(int iEnt, bool RenderModeAllow = false)
 	char oldEntName[64];
 	GetEntPropString(iEnt, Prop_Data, "m_iName", oldEntName, sizeof(oldEntName));
 
-	char strName[126], strClass[64];
-	GetEntityClassname(iEnt, strClass, sizeof(strClass));
-	Format(strName, sizeof(strName), "%s%i", strClass, iEnt);
+	char strName[126];
+	Format(strName, sizeof(strName), "TF2_CreateGlowSetParentDoLogicThing");
 	DispatchKeyValue(iEnt, "targetname", strName);
 	
 	int ent = CreateEntityByName("tf_glow");
@@ -3677,13 +3676,6 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 	int entIndex = CreateEntityByName("env_spritetrail");
 	if (entIndex > 0 && IsValidEntity(entIndex))
 	{
-		char strTargetName[MAX_NAME_LENGTH];
-
-		DispatchKeyValue(entity, "targetname", strTargetName);
-		Format(strTargetName,sizeof(strTargetName),"trail%d",EntIndexToEntRef(entity));
-		DispatchKeyValue(entity, "targetname", strTargetName);
-		DispatchKeyValue(entIndex, "parentname", strTargetName);
-		
 
 		DispatchKeyValue(entIndex, "spritename", trail);
 		SetEntPropFloat(entIndex, Prop_Send, "m_flTextureRes", 1.0);
@@ -3703,8 +3695,7 @@ int Trail_Attach(int entity, char[] trail, int alpha, float lifetime=1.0, float 
 		float f_origin[3];
 		GetAbsOrigin(entity, f_origin);
 		TeleportEntity(entIndex, f_origin, NULL_VECTOR, NULL_VECTOR);
-		SetVariantString(strTargetName);
-		SetParent(entity, entIndex, "", _, false);
+		SetParent(entity, entIndex);
 		return entIndex;
 	}	
 	return -1;
@@ -5659,12 +5650,9 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	offsets[1] = endYOff;
 	offsets[2] = endZOff;
 	SetParent(endEnt, particle2, endPoint, offsets, true);
-
-	char szCtrlParti[128];
-	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
-	DispatchKeyValue(particle, "targetname", szCtrlParti);
-
-	DispatchKeyValue(particle2, "cpoint1", szCtrlParti);
+	
+	SetEntPropEnt(particle2, Prop_Send, "m_hControlPointEnts", particle, 0);
+	SetEntProp(particle2, Prop_Send, "m_iControlPointParents", particle, _, 0);
 
 	ActivateEntity(particle2);
 	AcceptEntityInput(particle2, "start");

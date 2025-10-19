@@ -777,7 +777,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		case 8:
 			Format(buffer, sizeof(buffer), "%sHealing Rate", buffer);
 		
-		case 10:
+		case 10, 9:
 			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
 		
 		case 16:
