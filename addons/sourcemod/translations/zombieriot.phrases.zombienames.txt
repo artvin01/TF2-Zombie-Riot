@@ -697,6 +697,11 @@
 		"en" 		"Silvester's Past Afterimage"
 		"es"		"Ilusion de Silvester"
 	}
+	"car"
+	{
+		"en" 		"car"
+		"es"		"auto"
+	}
 	"Medic Charger"
 	{
 		"en" 		"Medic Charger"
