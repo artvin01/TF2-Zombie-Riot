@@ -22,6 +22,16 @@ enum ZRLifeState
 	LifeState_Spectator,
 }
 
+enum ZRGiftRarity
+{
+	None = -1,
+	Common,
+	Uncommon,
+	Rare,
+	Legend,
+	Mythic
+}
+
 /**
  * Applies effects as if an NPC died
  * Old native from early zombie riot subplugins
@@ -254,6 +264,16 @@ forward void ZR_OnWaveEnd(int waves, int maxwaves, int realmaxwaves);
  */
 forward void ZR_OnSpecialModeProgress(int CurrentFloor, int MaxFloor);
 
+/**
+ * Whenever a gift is collected
+ * 
+ * @param Collector	 What client collected
+ * @param Rarity	 What rarity was it
+ * 
+ * @return	
+ */
+forward void ZR_OnGiftCollected(int Collector, ZRGiftRarity Rarity)
+
 stock int XpToLevel(int xp)
 {
 	return RoundToFloor(Pow(xp / 200.0, 0.5));
@@ -285,6 +305,7 @@ public void __pl_zombie_riot_SetNTVOptional()
 	MarkNativeAsOptional("ZR_GiveNamedItem");
 	MarkNativeAsOptional("ZR_GetAliveStatus");
 	MarkNativeAsOptional("ZR_OnWinTeam");
+	MarkNativeAsOptional("ZR_OnGiftCollected");
 	MarkNativeAsOptional("ZR_GetSpecialMode");
 	MarkNativeAsOptional("ZR_OnGetXP");
 	MarkNativeAsOptional("ZR_SetXpAndLevel");
