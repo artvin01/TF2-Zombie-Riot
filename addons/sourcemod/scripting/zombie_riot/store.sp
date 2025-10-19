@@ -4409,7 +4409,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecOrigin);
 						VecOrigin[2] += 45.0;
 
-						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, view_as<ZRGiftRarity>(info.UnboxRarity -1)); //since they are one lower
+						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, info.UnboxRarity -1); //since they are one lower
 						
 						if(!CvarInfiniteCash.BoolValue)
 						{

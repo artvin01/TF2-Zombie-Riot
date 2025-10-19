@@ -13,7 +13,6 @@ static GlobalForward OnXpChanged;
 static GlobalForward CanRenameNpc;
 static GlobalForward OnWaveEnd;
 static GlobalForward OnSpecialModeProgress;
-static GlobalForward OnGiftCollected;
 
 void Natives_PluginLoad()
 {
@@ -35,7 +34,6 @@ void Natives_PluginLoad()
 	OnRevivingPlayer = new GlobalForward("ZR_OnRevivingPlayer", ET_Ignore, Param_Cell, Param_Cell);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
-	OnGiftCollected = new GlobalForward("ZR_OnGiftCollected", ET_Ignore, Param_Cell, Param_Cell);
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	CanRenameNpc = new GlobalForward("ZR_CanRenameNPCs", ET_Single, Param_Cell);
 	OnWaveEnd = new GlobalForward("ZR_OnWaveEnd", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
@@ -64,14 +62,6 @@ void Native_ZR_OnWinTeam(int team)
 {
 	Call_StartForward(OnTeamWin);
 	Call_PushCell(view_as<TFTeam>(team));
-	Call_Finish();
-}
-
-void Native_ZR_OnGiftCollected(int collector, ZRGiftRarity rarity)
-{
-	Call_StartForward(OnGiftCollected);
-	Call_PushCell(collector);
-	Call_PushCell(rarity);
 	Call_Finish();
 }
 
