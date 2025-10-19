@@ -25,6 +25,7 @@ enum struct Enemy
 	char Spawn[64];
 	float ExtraThinkSpeed;
 	char CustomName[64];
+	int Priority;
 }
 
 enum struct MiniBoss
@@ -80,9 +81,9 @@ enum struct Round
 	
 	char Skyname[64];
 	bool FogChange;
-	char FogBlend[32];
-	char FogColor1[32];
-	char FogColor2[32];
+	int FogBlend;
+	int FogColor1[4];
+	int FogColor2[4];
 	float FogStart;
 	float FogEnd;
 	float FogDesnity;
@@ -100,7 +101,7 @@ enum struct Vote
 	bool Locked;
 }
 
-static ArrayList Enemies;
+static ArrayList Enemies[3];
 static ArrayList Rounds;
 static ArrayList Voting;
 static ArrayList VotingMods;
@@ -206,7 +207,6 @@ void Waves_MapStart()
 {
 	delete Rounds;
 	delete g_AllocPooledStringCache;
-	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
 	FakeMaxWaves = 0;
 	NoBarneySpawn = true;
@@ -232,11 +232,7 @@ int Waves_MapSeed()
 
 void Waves_PlayerSpawn(int client)
 {
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		SetVariantString("rpg_fortress_envfog");
-		AcceptEntityInput(client, "SetFogController");
-	}
+	ShowCustomFogToClient(client);
 }
 
 float MinibossScalingReturn()
@@ -564,6 +560,8 @@ void Waves_MapEnd()
 
 void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 {
+	mp_disable_respawn_times.BoolValue = true;
+
 	if(!modifierOnly)
 	{
 		Cooldown = 0.0;
@@ -740,10 +738,11 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 				if(choosen != -1)
 				{
 					VotingMods.GetArray(choosen, vote);
-
+					
 					CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
 					if(vote.Desc[0])
 						PrintToChatAll("%t", vote.Desc);
+					ChatSetupTip();
 					EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 					EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 
@@ -940,9 +939,12 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 void Waves_CacheWaves(KeyValues kv, bool npcs)
 {
 	MusicEnum music;
+	music.SetupKv("music_setup", kv);
+	
 	kv.GotoFirstSubKey();
 	do
 	{
+		music.SetupKv("music_1", kv);
 		music.SetupKv("music_1", kv);
 		music.SetupKv("music_2", kv);
 		music.SetupKv("music_setup", kv);
@@ -960,9 +962,11 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 			{
 				if(kv.GetSectionName(music.Path, sizeof(music.Path)) && StrContains(music.Path, "music") != 0)
 				{
+					char DataSave[255];
 					kv.GetString("plugin", music.Path, sizeof(music.Path));
+					kv.GetString("data", DataSave, sizeof(DataSave));
 					if(music.Path[0])
-						NPC_GetByPlugin(music.Path);
+						NPC_GetByPlugin(music.Path,_, DataSave);
 				}
 			} while(kv.GotoNextKey());
 			
@@ -1121,12 +1125,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.FogChange = view_as<bool>(kv.GetNum("fogenable"));
 		if(round.FogChange)
 		{
-			kv.GetString("fogblend", round.FogBlend, sizeof(round.FogBlend));
-			kv.GetString("fogcolor", round.FogColor1, sizeof(round.FogColor1));
-			kv.GetString("fogcolor2", round.FogColor2, sizeof(round.FogColor2));
+			kv.GetColor("fogcolor", round.FogColor1[0], round.FogColor1[1], round.FogColor1[2], round.FogColor1[3]);
+			kv.GetColor("fogcolor2", round.FogColor2[0], round.FogColor2[1], round.FogColor2[2], round.FogColor2[3]);
 			round.FogStart = kv.GetFloat("fogstart");
 			round.FogEnd = kv.GetFloat("fogend");
 			round.FogDesnity = kv.GetFloat("fogmaxdensity");
+			round.FogBlend = kv.GetNum("fogblend");
 		}
 
 		int nonBosses;
@@ -1178,11 +1182,23 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
 						enemy.ExtraThinkSpeed = kv.GetFloat("extra_thinkspeed", 1.0);
 						wave.DangerLevel = kv.GetNum("danger_level");
+						int PrioLevel = 0;
+						enemy.Priority = 0;
+						if(kv.GetNum("is_boss") > 0)
+						{
+							//if its a boss, it should always have priority no matter what
+							enemy.Priority = 1;
+						}
+						PrioLevel = kv.GetNum("priority", -1);
+						if(PrioLevel >= 0)
+						{
+							//incase you want to override priorities
+							enemy.Priority = PrioLevel;
+						}
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
 						kv.GetString("custom_name", enemy.CustomName, sizeof(enemy.CustomName));
-
 						if(!enemy.Credits)
 							nonBosses++;
 						
@@ -1341,14 +1357,7 @@ void Waves_RoundStart(bool event = false)
 			SkyNameRestore[0] = 0;
 		}
 
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity != INVALID_ENT_REFERENCE)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
+		ClearCustomFog(FogType_Wave);
 	}
 	
 	Waves_ClearWaves();
@@ -1651,6 +1660,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				CPrintToChatAll("{crimson}%t: %s", "Modifier set to", vote.Name);
 				if(vote.Desc[0])
 					PrintToChatAll("%t", vote.Desc);
+
+				ChatSetupTip();
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
@@ -1717,8 +1728,9 @@ public Action Waves_EndVote(Handle timer, float time)
 
 void Waves_ClearWaves()
 {
-	delete Enemies;
-	Enemies = new ArrayList(sizeof(Enemy));
+	delete Enemies[0];
+	delete Enemies[1];
+	delete Enemies[2];
 }
 
 void Waves_Progress(bool donotAdvanceRound = false)
@@ -1867,6 +1879,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					// Increase boss health
 					multiBoss *= MultiGlobalEnemyBoss;
 
+					//Give extra damage to bosses that scale like this, but only half as much.
+					wave.EnemyData.ExtraDamage = wave.EnemyData.ExtraDamage * (((MultiGlobalScalingBossExtra - 1.0) * 0.5) + 1.0);
 					// Decrease for every boss spawned
 					float decrease = float(count) / float(wave.Count);
 					if(decrease > 1.0)
@@ -2070,44 +2084,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				Waves_SetSkyName(round.Skyname);
 
 			if(round.FogChange)
-			{
-				if(FogEntity != INVALID_ENT_REFERENCE)
-				{
-					int entity = EntRefToEntIndex(FogEntity);
-					if(entity > MaxClients)
-						RemoveEntity(entity);
-					
-					FogEntity = INVALID_ENT_REFERENCE;
-				}
-				
-				int entity = CreateEntityByName("env_fog_controller");
-				if(entity != -1)
-				{
-					DispatchKeyValue(entity, "fogblend", round.FogBlend);
-					DispatchKeyValue(entity, "fogcolor", round.FogColor1);
-					DispatchKeyValue(entity, "fogcolor2", round.FogColor2);
-					DispatchKeyValueFloat(entity, "fogstart", round.FogStart);
-					DispatchKeyValueFloat(entity, "fogend", round.FogEnd);
-					DispatchKeyValueFloat(entity, "fogmaxdensity", round.FogDesnity);
-
-					DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-					DispatchKeyValue(entity, "fogenable", "1");
-					DispatchKeyValue(entity, "spawnflags", "1");
-					DispatchSpawn(entity);
-					AcceptEntityInput(entity, "TurnOn");
-
-					FogEntity = EntIndexToEntRef(entity);
-
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if(IsClientInGame(client))
-						{
-							SetVariantString("rpg_fortress_envfog");
-							AcceptEntityInput(client, "SetFogController");
-						}
-					}
-				}
-			}
+				SetCustomFog(FogType_Wave, round.FogColor1, round.FogColor2, round.FogStart, round.FogEnd, round.FogDesnity, round.FogBlend, true);
 			
 			//Loop through all the still alive enemies that are indexed!
 			int Zombies_alive_still = 0;
@@ -2474,14 +2451,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				if(subgame)
 				{
-					if(FogEntity != INVALID_ENT_REFERENCE)
-					{
-						int entity = EntRefToEntIndex(FogEntity);
-						if(entity > MaxClients)
-							RemoveEntity(entity);
-						
-						FogEntity = INVALID_ENT_REFERENCE;
-					}
+					ClearCustomFog(FogType_Wave);
 					
 					if(Construction_Mode())
 					{
@@ -2784,7 +2754,9 @@ public int Waves_FreeplayVote(Menu menu, MenuAction action, int item, int param2
 
 bool Waves_IsEmpty()
 {
-	if(!Enemies || !Enemies.Length)
+	if((!Enemies[0] || !Enemies[0].Length)
+	 && (!Enemies[1] || !Enemies[1].Length)
+	  && (!Enemies[2] || !Enemies[2].Length))
 		return true;
 	
 	return false;
@@ -2792,37 +2764,53 @@ bool Waves_IsEmpty()
 
 bool Waves_GetNextEnemy(Enemy enemy)
 {
-	if(!Enemies)
-		return false;
-	
-	int length = Enemies.Length;
-	if(!length)
-		return false;
-	
-	Enemies.GetArray(length - 1, enemy);
-	Enemies.Erase(length - 1);
-	return true;
+	for(int i = sizeof(Enemies) - 1; i >= 0; i--)
+	{
+		if(!Enemies[i])
+			continue;
+		
+		int length = Enemies[i].Length;
+		if(!length)
+			continue;
+		
+		Enemies[i].GetArray(length - 1, enemy);
+		Enemies[i].Erase(length - 1);
+		return true;
+	}
+
+	return false;
 }
 
-void Waves_AddNextEnemy(const Enemy enemy, bool random = false)
+void Waves_AddNextEnemy(const Enemy enemy, bool random = false, int prio = -1)
 {
-	if(Enemies)
+	int slot = prio;
+	if(slot < 0)
 	{
-		if(random)
-		{
-			int index = Enemies.Length;
-			if(index > 1)
-			{
-				index = GetURandomInt() % index;
-
-				Enemies.ShiftUp(index);
-				Enemies.SetArray(index, enemy);
-				return;
-			}
-		}
-		
-		Enemies.PushArray(enemy);
+		slot = enemy.Priority;
+		if(slot < 0)
+			slot = 0;
 	}
+
+	if(slot >= sizeof(Enemies))
+		slot = sizeof(Enemies) - 1;
+	
+	if(!Enemies[slot])
+		Enemies[slot] = new ArrayList(sizeof(Enemy));
+	
+	if(random)
+	{
+		int index = Enemies[slot].Length;
+		if(index > 1)
+		{
+			index = GetURandomInt() % index;
+
+			Enemies[slot].ShiftUp(index);
+			Enemies[slot].SetArray(index, enemy);
+			return;
+		}
+	}
+	
+	Enemies[slot].PushArray(enemy);
 }
 
 void Waves_ClearWave()
@@ -2841,8 +2829,14 @@ void Waves_ClearWave()
 
 void Waves_ClearWaveCurrentSpawningEnemies()
 {
-	if(Enemies)
-		Zombies_Currently_Still_Ongoing -= Enemies.Length;
+	if(Enemies[0])
+		Zombies_Currently_Still_Ongoing -= Enemies[0].Length;
+	
+	if(Enemies[1])
+		Zombies_Currently_Still_Ongoing -= Enemies[1].Length;
+	
+	if(Enemies[2])
+		Zombies_Currently_Still_Ongoing -= Enemies[2].Length;
 	
 	Waves_ClearWaves();
 }
@@ -2938,17 +2932,12 @@ void WaveEndLogicExtra()
 		if(IsValidClient(client))
 		{
 			b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
-
-			/*
-			if(Items_HasNamedItem(client, "Bob's Curing Hand"))
+			if(Rogue_Theme() == ReilaRift)
 			{
-				b_BobsCuringHand[client] = true;
+				//give 2x the shit
+				b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
+				b_BobsCuringHand_Revived[client] += GetRandomInt(1,2);
 			}
-			else
-			{
-				b_BobsCuringHand[client] = false;
-			}
-			*/
 		}
 	}
 }
@@ -3034,7 +3023,14 @@ void Zombie_Delay_Warning()
 				
 				if(Construction_Mode())
 					ForcePlayerLoss();
-				
+			}
+		}
+		case 6:
+		{
+			if(f_ZombieAntiDelaySpeedUp + 400.0 < GetGameTime())
+			{
+				i_ZombieAntiDelaySpeedUp = 7;
+				CPrintToChatAll("{crimson}You are probably abusing something, perish, go my uber swordsmen.");
 				if(!Rogue_Mode())
 					AntiDelaySpawnEnemies(999999999, 5, true);
 			}
@@ -3120,15 +3116,6 @@ void DoGlobalMultiScaling()
 	
 	Rogue_Rift_MultiScale(multi);
 	
-	//normal bosses health
-	MultiGlobalHealthBoss = playercount * 0.2;
-
-	if(MultiGlobalHealthBoss <= 1.0)
-	{
-		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
-		MultiGlobalHealthBoss = 1.0;
-	}
-	
 	//raids or super bosses health
 	MultiGlobalHighHealthBoss = playercount * 0.34;
 	if(MultiGlobalHighHealthBoss <= 0.8)
@@ -3138,12 +3125,36 @@ void DoGlobalMultiScaling()
 	}
 
 	//Enemy bosses AMOUNT
-	MultiGlobalEnemyBoss = playercount * 0.3; 
+	float cap = zr_maxsbosscaling_untillhp.FloatValue;
+	float BossMulti = playercount * 0.3; 
+
+	if(BossMulti > cap)
+	{
+		MultiGlobalScalingBossExtra = BossMulti / cap;
+		MultiGlobalEnemyBoss = cap;
+	}
+	else
+	{
+		MultiGlobalScalingBossExtra = 1.0;
+		MultiGlobalEnemyBoss = BossMulti;
+	}
+	
+	//normal bosses health
+	MultiGlobalHealthBoss = playercount * 0.2;
+
+	if(MultiGlobalHealthBoss <= 1.0)
+	{
+		//Enemy bosses AMOUNT affects HP too, so keeping  this on 1.0 is good.
+		MultiGlobalHealthBoss = 1.0;
+	}
+
+	//scale extra HP higher
+	MultiGlobalHealthBoss *= (((MultiGlobalScalingBossExtra - 1.0) * 0.75) + 1.0);
 
 	//certain maps need this, if they are too big and raids have issues etc.
 	MultiGlobalHighHealthBoss *= zr_raidmultihp.FloatValue;
 
-	float cap = zr_maxscaling_untillhp.FloatValue;
+	cap = zr_maxscaling_untillhp.FloatValue;
 
 	if(multi > cap)
 	{
@@ -3388,14 +3399,16 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 	}
-
-	if(Enemies)
+	
+	for(int i = sizeof(Enemies) - 1; i >= 0; i--)
 	{
+		if(!Enemies[i])
+			continue;
 		static Enemy enemy;
-		int length = Enemies.Length;
+		int length = Enemies[i].Length;
 		for(int a; a < length; a++)
 		{
-			Enemies.GetArray(a, enemy);
+			Enemies[i].GetArray(a, enemy);
 			cashLeft += enemy.Credits;
 			activecount++;
 
@@ -3678,6 +3691,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 		}
 		case 1:	// Ready Up
 		{
+			ChatSetupTip();
 			GameRules_SetProp("m_bInWaitingForPlayers", true);
 			GameRules_SetProp("m_bInSetup", true);
 			GameRules_SetProp("m_iRoundState", RoundState_BetweenRounds);

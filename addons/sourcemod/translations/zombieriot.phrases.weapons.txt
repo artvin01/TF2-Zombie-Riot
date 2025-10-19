@@ -897,6 +897,10 @@
 		"fr"		"Mitrailleuse"
 		"chi"		"步哨"
 	}
+	"Vuntulum Bomb"
+	{
+		"en"		"Vuntulum Bomb"
+	}
 	"Mortar"
 	{
 		"en"		"Mortar"

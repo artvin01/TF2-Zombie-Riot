@@ -5,15 +5,6 @@
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
-enum
-{
-	Rarity_None = -1,
-	Rarity_Common = 0,
-	Rarity_Uncommon = 1,
-	Rarity_Rare = 2,
-	Rarity_Legend = 3,
-	Rarity_Mythic = 4
-}
 
 static const char Categories[][] =
 {
@@ -38,6 +29,7 @@ static const char Categories[][] =
 	"Matrix",
 	"Aperture",
 	"Mutations",
+	"Curtain Occupants",
 	"Necropolains"
 };
 
@@ -56,16 +48,18 @@ enum struct OwnedItem
 
 static ArrayList GiftItems;
 static ArrayList OwnedItems;
+static ArrayList PreviousItems;
 static int CategoryPage[MAXPLAYERS];
 
 static int g_BeamIndex = -1;
-static int i_RarityType[MAXENTITIES];
+static ZRGiftRarity i_RarityType[MAXENTITIES];
 static float f_IncreaseChanceManually = 1.0;
 static bool b_ForceSpawnNextTime;
 
 void Items_PluginStart()
 {
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
+	PreviousItems = new ArrayList(sizeof(OwnedItem));
 	RegAdminCmd("zr_give_item", Items_GiveCmd, ADMFLAG_RCON);
 	RegAdminCmd("zr_give_allitems", Items_GiveAllCmd, ADMFLAG_RCON);
 	RegAdminCmd("zr_remove_allitems", Items_RemoveAllCmd, ADMFLAG_RCON);
@@ -90,14 +84,14 @@ void Items_SetupConfig()
 		int index = StringToInt(item.Name);
 
 		item.Name[0] = 0;
-		item.Rarity = Rarity_None;
+		item.Rarity = -1;
 		while(GiftItems.Length < index)
 		{
 			GiftItems.PushArray(item);
 		}
 
 		kv.GetString("name", item.Name, sizeof(item.Name));
-		item.Rarity = kv.GetNum("rarity", Rarity_None);
+		item.Rarity = kv.GetNum("rarity", -1);
 		if(GiftItems.Length == index)
 		{
 			GiftItems.PushArray(item);
@@ -119,6 +113,11 @@ void Items_ClearArray(int client)
 	{
 		OwnedItems.Erase(id);
 	}
+
+	while((id = PreviousItems.FindValue(client, OwnedItem::Client)) != -1)
+	{
+		PreviousItems.Erase(id);
+	}
 }
 
 void Items_AddArray(int client, int level, int flags)
@@ -130,18 +129,45 @@ void Items_AddArray(int client, int level, int flags)
 		owned.Level = level;
 		owned.Flags = flags;
 		OwnedItems.PushArray(owned);
+		PreviousItems.PushArray(owned);
 	}
 }
 
-bool Items_GetNextItem(int client, int &i, int &level, int &flags)
+bool Items_GetNextItem(int client, int &i, int &level, int &flags, bool &newEntry)
 {
-	int length = OwnedItems.Length;
-	for(; i < length; i++)
+	int length1 = OwnedItems.Length;
+	int length2 = PreviousItems.Length;
+	for(; i < length1; i++)
 	{
 		static OwnedItem owned;
 		OwnedItems.GetArray(i, owned);
-		if(owned.Client == client && level >= 0)
+		if(owned.Client == client)
 		{
+			newEntry = true;
+			bool same;
+
+			for(int b; b < length2; b++)
+			{
+				static OwnedItem previous;
+				OwnedItems.GetArray(b, previous);
+				if(previous.Client == client && previous.Level == owned.Level)
+				{
+					if(previous.Flags == owned.Flags)
+					{
+						same = true;
+					}
+					else
+					{
+						newEntry = false;
+					}
+
+					break;
+				}
+			}
+
+			if(same)
+				continue;
+
 			level = owned.Level;
 			flags = owned.Flags;
 			return true;
@@ -609,7 +635,7 @@ void Gift_DropChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 20.0;
-				int rarity = RollRandom(); //Random for each clie
+				ZRGiftRarity rarity = RollRandom(); //Random for each clie
 				if(!IsPointHazard(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTime = false;
@@ -628,21 +654,21 @@ void Gift_DropChance(int entity)
 	}
 }
 
-static int RollRandom()
+static ZRGiftRarity RollRandom()
 {
 	if(!(GetURandomInt() % 150))
-		return Rarity_Mythic;
+		return Mythic;
 	
 	if(!(GetURandomInt() % 35))
-		return Rarity_Legend;
+		return Legend;
 	
 	if(!(GetURandomInt() % 15))
-		return Rarity_Rare;
+		return Rare;
 	
 	if(!(GetURandomInt() % 3))
-		return Rarity_Uncommon;
+		return Uncommon;
 	
-	return Rarity_Common;
+	return Common;
 }
 
 public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
@@ -650,7 +676,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int glow = EntRefToEntIndex(pack.ReadCell());
-	int Rarity = pack.ReadCell();
+	ZRGiftRarity Rarity = pack.ReadCell();
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		float powerup_pos[3];
@@ -661,25 +687,26 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			float DelayTime = 2.0;
 			switch(Rarity)
 			{
-				case Rarity_Common:
+				case Common:
 					DelayTime = 2.0;
-				case Rarity_Uncommon:
+				case Uncommon:
 					DelayTime = 1.5;
-				case Rarity_Rare:
+				case Rare:
 					DelayTime = 1.0;
-				case Rarity_Legend:
+				case Legend:
 					DelayTime = 0.65;
-				case Rarity_Mythic:
+				case Mythic:
 					DelayTime = 0.35;
 			}
 			f_RingDelayGift[entity] = GetGameTime() + DelayTime;
 			EmitSoundToAll(SOUND_BEEP, entity, _, 90, _, 1.0);
 			int color[4];
 			
-			color[0] = RenderColors_RPG[i_RarityType[entity]][0];
-			color[1] = RenderColors_RPG[i_RarityType[entity]][1];
-			color[2] = RenderColors_RPG[i_RarityType[entity]][2];
-			color[3] = RenderColors_RPG[i_RarityType[entity]][3];
+			int ColorGiveRarity = view_as<int>(i_RarityType[entity]);
+			color[0] = RenderColors_RPG[ColorGiveRarity][0];
+			color[1] = RenderColors_RPG[ColorGiveRarity][1];
+			color[2] = RenderColors_RPG[ColorGiveRarity][2];
+			color[3] = RenderColors_RPG[ColorGiveRarity][3];
 	
 			TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
 			TE_SendToAll();
@@ -729,15 +756,15 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						int MultiExtra = 1;
 						switch(Rarity)
 						{
-							case Rarity_Common:
+							case Common:
 								MultiExtra = 1;
-							case Rarity_Uncommon:
+							case Uncommon:
 								MultiExtra = 2;
-							case Rarity_Rare:
+							case Rare:
 								MultiExtra = 5;
-							case Rarity_Legend:
+							case Legend:
 								MultiExtra = 10;
-							case Rarity_Mythic:
+							case Mythic:
 								MultiExtra = 40;
 						}
 						//xp to give?
@@ -756,6 +783,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					}
 				}
 			}
+			Native_ZR_OnGiftCollected(ClosestTarget, Rarity);
 			if (IsValidEntity(glow))
 			{
 				RemoveEntity(glow);
@@ -775,7 +803,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int rarity)
+stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, ZRGiftRarity rarity)
 {
 	int m_iGift = CreateEntityByName("prop_physics_override")
 	if(m_iGift != -1)
@@ -800,11 +828,11 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		int glow = TF2_CreateGlow(m_iGift);
 		
 		int color[4];
-		
-		color[0] = RenderColors_RPG[i_RarityType[m_iGift]][0];
-		color[1] = RenderColors_RPG[i_RarityType[m_iGift]][1];
-		color[2] = RenderColors_RPG[i_RarityType[m_iGift]][2];
-		color[3] = RenderColors_RPG[i_RarityType[m_iGift]][3];
+		int ColorGiveRarity = view_as<int>(rarity);
+		color[0] = RenderColors_RPG[ColorGiveRarity][0];
+		color[1] = RenderColors_RPG[ColorGiveRarity][1];
+		color[2] = RenderColors_RPG[ColorGiveRarity][2];
+		color[3] = RenderColors_RPG[ColorGiveRarity][3];
 		
 		SetVariantColor(view_as<int>(color));
 		AcceptEntityInput(glow, "SetGlowColor");
@@ -864,10 +892,12 @@ public void GiftJumpAwayYou(int Gift, int client)
 	
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", vecNPC);
-		
+		/*
 	float gravity = GetEntPropFloat(Gift, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
+		*/
+	float gravity = 800.0;
 		
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = Jump_1_frame_Client[2] - vecNPC[2];

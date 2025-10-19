@@ -17,6 +17,14 @@ static bool b_ReinforceReady_soundonly[MAXPLAYERS];
 static int i_MaxRevivesAWave;
 static float MorphineCharge[MAXPLAYERS+1]={0.0, ...};
 
+void GiveMorphineToEveryone()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		MorphineCharge[client] = 1.0;
+	}
+}
+
 static const char g_TeleSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
 	"weapons/rescue_ranger_teleport_receive_02.wav"
@@ -30,6 +38,16 @@ static const char g_ReinforceSounds[][] = {
 int MaxRevivesReturn()
 {
 	return i_MaxRevivesAWave;
+}
+
+int MaxRevivesAllowed()
+{
+	int ReviveAllowMax;
+	ReviveAllowMax = RoundToNearest(float(CountPlayersOnRed(0, true)) * 0.2);
+	if(ReviveAllowMax <= 3)
+		ReviveAllowMax = 3;
+
+	return ReviveAllowMax;
 }
 static const char g_ReinforceReadySounds[] = "mvm/mvm_bought_in.wav";
 
@@ -268,11 +286,18 @@ public void MorphineShotLogic(int client)
 	EmitSoundToAll(SOUND_HEAL_BEAM, client, _, 70, _, 1.0, 70);
 	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 3.0);
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
-	HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
 	f_AntiStuckPhaseThrough[client] = GetGameTime() + 3.0 + 0.5;
 	f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 3.0 + 0.5;
 	ApplyStatusEffect(client, client, "Intangible", 3.0);
 	MorphineCharge[client] = 0.0;
+	if(Rogue_SuperStimsOn())
+	{
+		HealEntityGlobal(client, client, MaxHealth * 3.0, 1.0, 3.0, HEAL_SELFHEAL);
+	}
+	else
+	{
+		HealEntityGlobal(client, client, MaxHealth * 0.15, 0.5, 3.0, HEAL_SELFHEAL);
+	}
 }
 public void WeakDashLogic(int client)
 {
@@ -764,6 +789,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	{
 		weapon = Purnell_Existant(client);
 	}
+	if(Is_Cheesed_Up(client))
+	{
+		weapon = ReturnWeapon_PlasmaKit(client);
+	}
 	if(IsValidEntity(weapon))
 	{
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -797,6 +826,15 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				
 				Base_HealingMaxPoints=RoundToCeil(800.0 * Healing_Amount);
 			}
+			case WEAPON_CHEESY_MELEE:
+			{
+				Healing_Amount=Attributes_Get(weapon, Attrib_PapNumber, 0.0);
+				//it starts at -1.0, so it should go upto 1.0.
+				if(Healing_Amount<1.0)
+					Healing_Amount=1.0;
+
+				Base_HealingMaxPoints=RoundToCeil(15000.0 * Healing_Amount);
+			}
 			default:
 				Base_HealingMaxPoints=RoundToCeil(1900.0 * Healing_Amount);
 		}
@@ -808,8 +846,10 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 		Base_HealingMaxPoints = 3000;
 		
 
+	//make it easier by 10%
+	Base_HealingMaxPoints = RoundToNearest(float(Base_HealingMaxPoints) * 0.9);
 
-	if(autoscale != 0.0) 
+	if(autoscale != 0.0)
 		f_ReinforceTillMax[client] += autoscale;
 	else
 		f_ReinforceTillMax[client] += (float(healthvalue) / float(Base_HealingMaxPoints));
@@ -821,7 +861,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 
 		if(!b_ReinforceReady_soundonly[client])
 		{
-			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.8, _, _, _, _, false);
+			EmitSoundToClient(client, g_ReinforceSounds[GetRandomInt(0, sizeof(g_ReinforceSounds) - 1)], _, _, _, _, 0.5, _, _, _, _, false);
 			CPrintToChat(client, "{green}You can now call in reinforcements.");
 			b_ReinforceReady_soundonly[client]=true;
 		}
@@ -872,7 +912,7 @@ public void Reinforce(int client, bool NoCD)
 				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Need Healing Point");
 				return;
 			}
-			if(i_MaxRevivesAWave >= 3)
+			if(i_MaxRevivesAWave >= MaxRevivesAllowed())
 			{
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);

@@ -80,7 +80,7 @@ public void Rogue_StoneItem3_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -117,7 +117,7 @@ public void Rogue_StoneSprout_Remove()
 
 public void Rogue_StoneCheerful_Collect()
 {
-	Rogue_AddUmbral(-12, true);
+	Rogue_AddUmbral(-15, true);
 }
 
 public void Rogue_StoneCheerful_Remove()
@@ -125,7 +125,7 @@ public void Rogue_StoneCheerful_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -151,7 +151,7 @@ public void Rogue_StoneNemesis_Remove()
 	if(Rogue_Started())
 	{
 		Artifact artifact;
-		if((GetURandomInt() % 2) && Rogue_GetRandomArtifact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 		{
 			Rogue_GiveNamedArtifact(artifact.Name);
 		}
@@ -233,7 +233,7 @@ public void Rogue_StoneWitchcraft_Enemy(int entity)
 
 public void Rogue_StoneWitchcraft_StageEnd()
 {
-	Rogue_AddUmbral(2);
+	Rogue_AddUmbral(3);
 }
 
 public void Rogue_StoneConsume_Ally(int entity, StringMap map)

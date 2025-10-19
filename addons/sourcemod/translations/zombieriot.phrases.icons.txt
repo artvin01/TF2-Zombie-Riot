@@ -84,6 +84,10 @@
 	{
 		"en" 		"Whiteflower the traitor and betrayer arrived."
 	}
+	"Shadowing Darkness The Ruler"
+	{
+		"en" 		"Shadowing Darkness the throne taker and ruler of the Umbrals."
+	}
 	"The Purge Arrived"
 	{
 		"en" 		"The Purge has accumulated chaos."

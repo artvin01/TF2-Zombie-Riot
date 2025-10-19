@@ -234,6 +234,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		if(raidbattle)
 		{
 			RaidModeScaling = 1.5;
+			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 

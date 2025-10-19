@@ -64,7 +64,13 @@ void MedivalVillager_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_medival_building");
 }
 
 int MedivalVillager_ID()

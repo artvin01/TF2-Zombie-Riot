@@ -597,6 +597,8 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 		return false;
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 		return false;
+	if(f_VintulumBombRecentlyUsed[client] > GetGameTime())
+		return false;
 
 	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
 }
@@ -1122,9 +1124,12 @@ public void ObjBaseThink(int building)
 		}
 	}
 
-	//do not think if you are being carried.
-	if(BuildingIsBeingCarried(building))
-		return;
+	//do not think if you are being carried, unless bomb.
+	if(BombIdVintulum() != i_NpcInternalId[building])
+	{
+		if(BuildingIsBeingCarried(building))
+			return;
+	}
 
 	ObjectGeneric_ClotThink(objstats);
 }

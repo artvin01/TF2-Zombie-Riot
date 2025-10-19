@@ -4,7 +4,7 @@
 static float LastGameTime;
 static char LastData[96];
 static bool LastResult;
-
+static bool DontSpawnFriendly;
 void RogueCondition_Setup()
 {
 	NPCData data;
@@ -15,9 +15,28 @@ void RogueCondition_Setup()
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
+//	data.Precache = ClotPrecache;
+	data.Precache_data = ClotPrecache_data;
 	NPC_Add(data);
+	DontSpawnFriendly = false;
 }
 
+static void ClotPrecache_data(const char[] data)
+{
+	static char buffers[3][64];
+
+	bool same = StrEqual(data, LastData);
+	if(!same)
+	{
+		strcopy(LastData, sizeof(LastData), data);
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	}
+	if(buffers[0][0] == '.' || IsCharNumeric(buffers[0][0]))
+	{
+		NPC_GetByPlugin(buffers[1]);
+	}
+	//used so it precaches whatever it wants to spawn in.
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	static char buffers[3][64];
@@ -43,16 +62,25 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			*/
 
 			bool ignoreOdds = Rogue_Paradox_IgnoreOdds();
+			bool PassOddsForcer = false;
+			if(StrEqual("npc_umbral_rouam", buffers[1]))
+				PassOddsForcer = true;
 
-			if(Rogue_Theme() == ReilaRift)
+			if(StrEqual("npc_umbral_automaton", buffers[1]))
+				PassOddsForcer = true;
+
+			if(!PassOddsForcer)
 			{
-				switch(Rogue_GetUmbralLevel())
+				if(Rogue_Theme() == ReilaRift)
 				{
-					case 0, 4:
-						ignoreOdds = true;
-					
-					case 2:
-						return -1;
+					switch(Rogue_GetUmbralLevel())
+					{
+						case 0, 4:
+							ignoreOdds = true;
+						
+						case 2:
+							return -1;
+					}
 				}
 			}
 
@@ -93,9 +121,26 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	if(LastResult)
 	{
 		bool friendly = (Rogue_Theme() == ReilaRift) && (Rogue_GetUmbralLevel() < 2);
-
+		
+		if(StrEqual("npc_umbral_automaton", buffers[1]))
+		{
+			//automatons can never be friendly
+			friendly = false;
+		}
+		if(friendly)
+		{
+			if(DontSpawnFriendly)
+			{
+				DontSpawnFriendly = false;
+				return -1;
+			}
+			else
+			{
+				DontSpawnFriendly = true;
+			}
+		}
 		int entity = NPC_CreateByName(buffers[1], client, vecPos, vecAng, friendly ? TFTeam_Red : team, buffers[2], true);
-
+		
 		if(GetTeam(entity) == TFTeam_Red)
 		{
 			RequestFrame(Umbral_AdjustStats, EntIndexToEntRef(entity));
@@ -105,6 +150,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 		{
 			switch(Rogue_GetUmbralLevel())
 			{
+				/*
+				See inside NPCs
 				case 4:
 				{
 					//if completly hated.
@@ -113,6 +160,16 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 					fl_Extra_MeleeArmor[entity] *= 0.65;
 					fl_Extra_RangedArmor[entity] *= 0.65;
 				}
+				See inside NPC
+				case 0:
+				{
+					if(UmbralAutomaton)
+					{
+						fl_Extra_Damage[entity] *= 0.5;
+						fl_Extra_Speed[entity] *= 0.5;
+					}
+				}
+				*/
 			}
 		}
 
@@ -127,15 +184,15 @@ static void Umbral_AdjustStats(int ref)
 	if(!IsValidEntity(entity))
 		return;
 
-	fl_Extra_Damage[entity] *= 5.0;
-	MultiHealth(entity, 0.05);
+	fl_Extra_Damage[entity] *= 7.0;
+	fl_Extra_Speed[entity] *= 0.7;
+	MultiHealth(entity, 0.0175);
 	int HealthGet = ReturnEntityMaxHealth(entity);
-	if(HealthGet >= 3000)
+	if(HealthGet >= 4000)
 	{
-		//give more dmg again!
 		fl_Extra_Damage[entity] *= 2.0;
-		SetEntProp(entity, Prop_Data, "m_iHealth", 3000);
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 3000);
+		SetEntProp(entity, Prop_Data, "m_iHealth", 4000);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 4000);
 	}
 }
 

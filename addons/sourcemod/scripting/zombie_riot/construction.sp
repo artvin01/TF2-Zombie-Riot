@@ -420,7 +420,7 @@ void Construction_StartSetup()
 	{
 		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
 	}
-
+/*
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -445,6 +445,7 @@ void Construction_StartSetup()
 	}
 
 	delete list;
+	*/
 }
 
 void Construction_RoundEnd()
@@ -505,11 +506,10 @@ void Construction_Start()
 		}
 	}
 
-
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
-
+	mp_disable_respawn_times.BoolValue = false;
 
 	int length = ResourceList.Length;
 	if(length)
@@ -578,7 +578,6 @@ void Construction_Start()
 	}
 
 	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
-	Citizen_SpawnAtPoint("b");
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -749,7 +748,7 @@ static Action Timer_StartAttackWave(Handle timer)
 		bonusRisk = GetRiskAttackInfo(CurrentRisk, attack);
 	}
 
-	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding(), bonusRisk);
+	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, Construction_GetBaseBuilding(), bonusRisk);
 
 	if(CurrentAttacks > MaxAttacks)
 	{
@@ -849,6 +848,9 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 	AttackRef = EntIndexToEntRef(target);
 	AttackHardcore = bonuses;
 
+	if(type > 1)
+		mp_disable_respawn_times.BoolValue = true;
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
 	KeyValues kv = new KeyValues("Waves");
@@ -869,6 +871,8 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
+		mp_disable_respawn_times.BoolValue = false;
+		
 		int cash = 300;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
@@ -1048,7 +1052,7 @@ bool Construction_BlockSpawner(const char[] name)
 	return CurrentSpawnName[0] && !StrEqual(CurrentSpawnName, name, false);
 }
 
-static int GetBaseBuilding()
+int Construction_GetBaseBuilding()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
@@ -1059,10 +1063,11 @@ static int GetBaseBuilding()
 
 	return -1;
 }
-
-static int RiskBonusFromDistance(const float pos[3])
+/*
+static stock int RiskBonusFromDistance(const float pos[3])
 {
-	int entity = GetBaseBuilding();
+
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0;
 	
@@ -1070,14 +1075,14 @@ static int RiskBonusFromDistance(const float pos[3])
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
 
 	if(GetVectorDistance(pos, pos2, true) > 100000000.0)	// 10000 HU
-		return 0;
-//		return 1;
+		return 1;
 
-//keep it at 0	
+keep it at 0
 	return 0;
 	//return RoundFloat(GetVectorDistance(pos, pos2, true) / 400000000.0 * float(HighestRisk));
 }
 
+*/
 static bool UpdateValidSpawners(const float pos1[3], int type)
 {
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos1, 1000.0);
@@ -1104,6 +1109,9 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 		}
 	}
 
+	if(type > 1)
+		list.Sort(Sort_Random, Sort_Integer);
+
 	float pos2[3];
 	float distance = FAR_FUTURE;
 	int length = list.Length;
@@ -1113,22 +1121,30 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 
 		float dist = 0.0;
 
-		if(type < 2)
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
-			dist = GetVectorDistance(pos1, pos2, true);
-			if(dist > distance)
-				continue;
-		}
-
 		CNavArea startArea = TheNavMesh.GetNavAreaEntity(entity, view_as<GetNavAreaFlags_t>(0), 1000.0);
 		if(startArea == NULL_AREA)
 			continue;
 		
 		if(TheNavMesh.BuildPath(startArea, goalArea, pos1))
 		{
+			if(type < 2)
+			{
+				dist = goalArea.GetTotalCost();
+				if(dist == 0.0)
+				{
+					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
+					dist = GetVectorDistance(pos1, pos2, true);
+				}
+				
+				if(dist > distance)
+					continue;
+			}
+
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 			distance = dist;
+
+			if(type > 1)
+				break;
 		}
 	}
 
@@ -1382,7 +1398,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 					
 					float pos[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
-					int risk = CurrentRisk + RiskBonusFromDistance(pos);
+					int risk = CurrentRisk/* + RiskBonusFromDistance(pos)*/;
 
 					AttackInfo attack;
 					if(!StartAttack(attack, 1, npc.index, GetRiskAttackInfo(risk, attack)))
@@ -1549,7 +1565,7 @@ public float InterMusic_ConstructBase(int client)
 	if(LastMann)
 		return 1.0;
 	
-	int entity = GetBaseBuilding();
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0.0;
 	
@@ -1891,5 +1907,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-
-
+#include "roguelike/rift_construction.sp"

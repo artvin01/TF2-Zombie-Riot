@@ -16,6 +16,7 @@ void ReilaFollower_Setup()
 	NPCId = NPC_Add(data);
 }
 
+
 int ReilaFollower_ID()
 {
 	return NPCId;
@@ -50,10 +51,142 @@ methodmap ReilaFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 53)
+		switch(GetURandomInt() % 26)
 		{
 			case 0:
 			{
+				this.Speech("Good thing I was able to get this speech translator working.");
+				this.SpeechDelay(5.0, "Our language is quite... unique.");
+			}
+			case 1:
+			{
+				this.Speech("About what happened before... sorry for attacking you guys.");
+				this.SpeechDelay(7.0, "I was too stubborn to see the consequences of what I was trying to do.");
+				this.SpeechDelay(12.0, "Oh, and the language barrier definitely didn't help.");
+			}
+			case 2:
+			{
+				this.Speech("I never got to see if my construct actually worked.");
+				this.SpeechDelay(5.0, "Although that's probably for the best...");
+			}
+			case 3:
+			{
+				this.Speech("The Almagest Corporation...");
+				this.SpeechDelay(5.0, "They're obsessed with this place, and harnessing the power of the Void by any means.");
+				this.SpeechDelay(12.0, "I have no idea what use they'd have for such a power, but whatever it is, it can't be good.");
+			}
+			case 4:
+			{
+				this.Speech("I used to work for Almagest as a researcher.");
+				this.SpeechDelay(5.0, "Without my work, they never would've had the means to get here...");
+				this.SpeechDelay(10.0, "I should've realized what they were up to sooner...");
+			}
+			case 5:
+			{
+				this.Speech("I ran as soon as I realized Almagest were trying to harness the Void.");
+				this.SpeechDelay(5.0, "To try and exploit a power like that... what a foolish endeavor.");
+				this.SpeechDelay(10.0, "But I won't allow them. I'm going to stop them, no matter what.");
+			}
+			case 6:
+			{
+				this.Speech("A split dimension, and the bridge between dimensions being the birthplace of Void...");
+				this.SpeechDelay(9.0, "Trust me, I was just as surprised as you lot once I found out.");
+			}
+			case 7:
+			{
+				this.Speech("You want to know more about my world..?");
+				this.SpeechDelay(5.0, "To be quite honest, it isn't a whole lot better than the plight your world's in.");
+			}
+			case 8:
+			{
+				this.Speech("Just a band of mercenaries risking their lives to set things right, huh?");
+				this.SpeechDelay(7.0, "Or... is there something else you're looking for inside this forsaken place?");
+			}
+			case 9:
+			{
+				this.Speech("What happened to my arm and face?");
+				this.SpeechDelay(5.0, "I don't really like to talk about it...");
+			}
+			case 10:
+			{
+				this.Speech("Call me a robot again and I'll manually rewire your brain.");
+			}
+			case 11:
+			{
+				this.Speech("Beep boop.");
+			}
+			case 12:
+			{
+				this.Speech("Those Voidstones... they're the purest form of Void we've ever seen.");
+				this.SpeechDelay(7.0, "Make sure you use them wisely.");
+			}
+			case 13:
+			{
+				this.Speech("The one leading Almagest into the Curtain... his name is Jkei.");
+				this.SpeechDelay(5.0, "He's a cold-blooded warrior, and he won't give in until his job is complete.");
+				this.SpeechDelay(12.0, "Do not underestimate his strength.");
+			}
+			case 14:
+			{
+				this.Speech("The Umbrals aren't mindless. They demonstrate some aspect of free will.");
+				this.SpeechDelay(7.0, "Although, something is forcing them to blind hostility...");
+				this.SpeechDelay(12.0, "Whatever it is, we need to put an end to it.");
+			}
+			case 15:
+			{
+				this.Speech("A being made of impure Void invaded your world?");
+				this.SpeechDelay(5.0, "So even before the rifts opened, the Void fought to set itself free...");
+			}
+			case 16:
+			{
+				this.Speech("Almagest tried to set up a lab within the Curtain's outskirts.");
+				this.SpeechDelay(7.0, "It ended up abandoned, it's personnel either having died or ran away.");
+			}
+			case 17:
+			{
+				this.Speech("Jkei and his forces stationed themselves within the depths of the palace.");
+				this.SpeechDelay(7.0, "Seems like they already found the source of this place's power...");
+			}
+			case 18:
+			{
+				this.Speech("Bob... he seems like he's been through a lot.");
+				this.SpeechDelay(5.0, "I admire his will to continue fighting.");
+			}
+			case 19:
+			{
+				this.Speech("Twirl has certainly demonstrated her mastery in magic.");
+				this.SpeechDelay(5.0, "Although... don't you think she should be taking things a bit more seriously?");
+			}
+			case 20:
+			{
+				this.Speech("The one you call Vhxis, he has some control over Void...");
+				this.SpeechDelay(5.0, "What a terrifying power, let's be glad he's on our side.");
+				this.SpeechDelay(12.0, "...wait, you're saying you've FOUGHT him before!?");
+			}
+			case 21:
+			{
+				this.Speech("The one you call Whiteflower, he seems to be behind a lot of the troubles your group ends up in.");
+				this.SpeechDelay(9.0, "Let's hope his influence didn't spread to the Curtain...");
+			}
+			case 22:
+			{
+				this.Speech("I'd like to see more of your world someday.");
+				this.SpeechDelay(5.0, "All the different places and cultures... it's a nice change of pace.");
+			}
+			case 23:
+			{
+				this.Speech("My cybernetic arm is equipped with dozens of different weapons.");
+				this.SpeechDelay(5.0, "Trust me, I can hold my own here.");
+			}
+			case 24:
+			{
+				this.Speech("My favorite drink..?");
+				this.SpeechDelay(5.0, "Strawberry lemonade.");
+			}
+			case 25:
+			{
+				this.Speech("That bald man with a shotgun...");
+				this.SpeechDelay(5.0, "How'd he manage to get inside the Curtain unharmed AND set up a store?");
 			}
 		}
 		
@@ -64,11 +197,27 @@ methodmap ReilaFollower < CClotBody
 		if((this.m_flNextIdleSound + 14.0) > GetGameTime(this.index))
 			return;
 		
-		switch(GetURandomInt() % 6)
+		switch(GetURandomInt() % 5)
 		{
 			case 0:
 			{
-				
+				this.Speech("Get up. We still need to set things right.");	
+			}
+			case 1:
+			{
+				this.Speech("I won't let it end like this.");	
+			}
+			case 2:
+			{
+				this.Speech("You beat me, I'm sure you can manage these guys.");	
+			}
+			case 3:
+			{
+				this.Speech("It's not over yet, come on.");	
+			}
+			case 4:
+			{
+				this.Speech("For our sake I hope that was just warm-up.");	
 			}
 		}
 
@@ -85,7 +234,7 @@ methodmap ReilaFollower < CClotBody
 	public void Speech(const char[] speechtext, const char[] endingtextscroll = "")
 	{
 		static int color[4] = {255, 200, 255, 255};
-		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,120.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,100.0}, endingtextscroll);
 	}
 	
 	public ReilaFollower(float vecPos[3], float vecAng[3])
@@ -118,7 +267,7 @@ methodmap ReilaFollower < CClotBody
 			Cosmetics
 		*/
 
-		int skin = 1;
+		int skin = 0;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec23_boarders_beanie_style2/dec23_boarders_beanie_style2_engineer.mdl");

@@ -738,15 +738,15 @@ static void MerchantStart(int client, int slot)
 			{
 				case Nothing_Debuff:
 				{
-					CPrintToChat(client, "{green}Martial Artist, You recieved Debuff on hit!{default}");
+					CPrintToChat(client, "{green}Martial Artist, You received Debuff on hit!{default}");
 				}
 				case Nothing_Damage:
 				{
-					CPrintToChat(client, "{green}Martial Artist, You recieved Attackspeed!{default}");
+					CPrintToChat(client, "{green}Martial Artist, You received Attackspeed!{default}");
 				}
 				case Nothing_Res:
 				{
-					CPrintToChat(client, "{green}Martial Artist, You recieved Heavy Melee Resistance!{default}");
+					CPrintToChat(client, "{green}Martial Artist, You received Heavy Melee Resistance!{default}");
 				}
 			}
 					

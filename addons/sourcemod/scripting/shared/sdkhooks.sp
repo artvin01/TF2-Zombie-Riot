@@ -11,7 +11,7 @@ static float f_EntityOutOfNav[MAXPLAYERS];
 static float f_LatestDamageRes[MAXPLAYERS];
 static float f_TimeSinceLastRegenStop[MAXPLAYERS];
 static bool b_GaveMarkForDeath[MAXPLAYERS];
-static float f_RecievedTruedamageHit[MAXPLAYERS];
+static float f_ReceivedTruedamageHit[MAXPLAYERS];
 static char MaxAsignPerkNames[MAXPLAYERS][8];
 
 //With high ping our method to change weapons with a click of a button or whtaever breaks.
@@ -37,7 +37,7 @@ void SDKHooks_ClearAll()
 	{
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
-	Zero(f_RecievedTruedamageHit);
+	Zero(f_ReceivedTruedamageHit);
 	Zero(f_EntityHazardCheckDelay);
 	Zero(f_EntityOutOfNav);
 	
@@ -357,6 +357,7 @@ public void OnPreThinkPost(int client)
 	}
 	Cvar_clamp_back_speed.FloatValue = f_Client_BackwardsWalkPenalty[client];
 	Cvar_LoostFooting.FloatValue = f_Client_LostFriction[client];
+	sv_gravity.IntValue = i_Client_Gravity[client];
 }
 #endif	// ZR & RPG
 
@@ -466,12 +467,19 @@ public void OnPostThink(int client)
 		Cvar_clamp_back_speed.ReplicateToClient(client, IntToStringDo); //set down
 		ReplicateClient_BackwardsWalk[client] = f_Client_BackwardsWalkPenalty[client];
 	}
-	if(ReplicateClient_LostFooting[client] != ReplicateClient_LostFooting[client])
+	if(ReplicateClient_LostFooting[client] != f_Client_LostFriction[client])
 	{
 		char IntToStringDo[4];
 		FloatToString(f_Client_LostFriction[client], IntToStringDo, sizeof(IntToStringDo));
 		Cvar_LoostFooting.ReplicateToClient(client, IntToStringDo); //set down
 		ReplicateClient_LostFooting[client] = f_Client_LostFriction[client];
+	}
+	if(ReplicateClient_Gravity[client] != i_Client_Gravity[client])
+	{
+		char IntToStringDo[4];
+		IntToString(i_Client_Gravity[client], IntToStringDo, sizeof(IntToStringDo));
+		sv_gravity.ReplicateToClient(client, IntToStringDo); //set down
+		ReplicateClient_Gravity[client] = i_Client_Gravity[client];
 	}
 
 #if defined ZR
@@ -597,11 +605,11 @@ public void OnPostThink(int client)
 		has_mage_weapon[client] = true;	//now force the mana hud even if your not a mage. this only applies to non mages if you got overmana, and the only way you can get overmana without a mage weapon is if you got hit by ruina's debuff.
 	}
 
-	if(f_InBattleDelay[client] < GetGameTime())
+	if(f_TimerStatusEffectsDo[client] < GetGameTime())
 	{
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
-		f_InBattleDelay[client] = GetGameTime() + 0.4;
+		f_TimerStatusEffectsDo[client] = GetGameTime() + 0.4;
 	}
 	if(Rogue_CanRegen() && Armor_regen_delay[client] < GameTime)
 	{
@@ -622,6 +630,8 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000.0)
 						MaxHealth = 3000.0;
 						
+					if(Rogue_Rift_HolyBlessing())
+						MaxHealth *= 2.0;
 					HealEntityGlobal(client, client, MaxHealth / 100.0, Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					
 					float attrib = Attributes_Get(client, Attrib_BlessingBuff, 1.0);
@@ -631,6 +641,8 @@ public void OnPostThink(int client)
 						if(attrib >= 1.0)
 						{
 							attrib -= 1.0; //1.0 is default
+							if(Rogue_Rift_HolyBlessing())
+								MaxHealth *= 0.5;
 							HealEntityGlobal(client, client, (MaxHealth * attrib), Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					//		DefaultRegenArmor += attrib;
 						}
@@ -692,8 +704,7 @@ public void OnPostThink(int client)
 	{
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
-		static char buffer[255];
-		buffer[0] = 0;
+		char buffer[255];
 		float HudY = 0.95;
 		float HudX = -1.0;
 	
@@ -1028,7 +1039,7 @@ public void OnPostThink(int client)
 			if(b_Reinforce[client])
 			{
 				had_An_ability = true;
-				if(MaxRevivesReturn() >= 3)
+				if(MaxRevivesReturn() >= MaxRevivesAllowed())
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
 				}
@@ -1286,6 +1297,13 @@ public void OnPostThink(int client)
 		{
 			switch(Armor_DebuffType[armorEnt])
 			{
+				//necrosis
+				case Element_Necrosis:
+				{
+					red = 255;
+					green = 50;
+					blue = 50;
+				}
 				//chaos
 				case Element_Chaos:
 				{
@@ -1437,10 +1455,15 @@ public void OnPostThink(int client)
 			int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
 			Cooldowntocheck -= GetGameTime();
+			//add 1 second so it doesnt just show 0
 
 			if(Cooldowntocheck < 0.0)
 			{
 				Cooldowntocheck = 0.0;
+			}
+			else
+			{
+				Cooldowntocheck += 0.999;
 			}
 
 			char npc_classname[7];
@@ -1501,8 +1524,7 @@ public void OnPostThink(int client)
 		//only for red.
 		if(GetTeam(client) == 2)
 		{
-			static char HudBuffer[256];
-			HudBuffer[0] = 0;
+			char HudBuffer[256];
 			if(!TeutonType[client])
 			{
 				int downsleft;
@@ -1585,6 +1607,8 @@ public void OnPostThinkPost(int client)
 #endif	// ZR & RPG
 		f_UpdateModelIssues[client] = 0.0;
 	}
+	//HARDCODED GRAVITY VALUE.
+	sv_gravity.IntValue = 800;
 }
 #endif	// ZR & RPG
 
@@ -1777,19 +1801,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	
-	if(HasSpecificBuff(victim, "Envenomed"))
-	{
-		bool venom = true;
-		if(venom)
-		{
-			venom = false;
-			GetEntProp(victim, Prop_Send, "m_iHealth");
-			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
-			HealEntityGlobal(victim, victim, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
-			RemoveSpecificBuff(victim, "Envenomed");
-			Force_ExplainBuffToClient(victim, "Envenomed");
-		}
-	}
 	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
@@ -1954,9 +1965,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
-			if(f_RecievedTruedamageHit[victim] < GetGameTime())
+			if(f_ReceivedTruedamageHit[victim] < GetGameTime())
 			{
-				f_RecievedTruedamageHit[victim] = GetGameTime() + 0.5;
+				f_ReceivedTruedamageHit[victim] = GetGameTime() + 0.5;
 				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
 			}
 		}
@@ -2984,6 +2995,10 @@ float ArmorPlayerReduction(int victim)
 		{
 			return 0.9;
 		}
+		case 250:
+		{
+			return 0.88;
+		}
 		default:
 		{
 			return 1.0;
@@ -3542,7 +3557,7 @@ void CorrectClientsideMultiweapon(int client, int Mode)
 
 
 
-
+#if defined ZR
 //this code is ass
 void UpdatePerkName(int client)
 {
@@ -3571,3 +3586,4 @@ void UpdatePerkName(int client)
 
 	Format(MaxAsignPerkNames[client], sizeof(MaxAsignPerkNames[]), "%s",buffer);
 }
+#endif

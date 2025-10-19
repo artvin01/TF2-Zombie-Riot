@@ -55,10 +55,10 @@ void AlmagestJkei_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Jkei");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_almagest_jkei");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy");
+	strcopy(data.Icon, sizeof(data.Icon), "jkei");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -71,6 +71,7 @@ int Almagest_JkeiID()
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
+	NPC_GetByPlugin("npc_jkei_drone");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -125,6 +126,12 @@ methodmap AlmagestJkei < CClotBody
 	{
 		EmitSoundToAll(g_JkeiChargeMeleeDo[GetRandomInt(0, sizeof(g_JkeiChargeMeleeDo) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
+	}
+	public void SetJkeiSpeed(float speed) 
+	{
+		if(HasSpecificBuff(this.index, "Unstoppable Force"))
+			speed *= 0.75;
+		this.m_flSpeed = speed;
 	}
 	property float m_flSummonCircularDudes
 	{
@@ -233,10 +240,15 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
+					if(HasSpecificBuff(other, "Unstoppable Force"))
+						fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
+					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
+					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
+						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength.");
 					f_AttackSpeedNpcIncrease[other] *= 0.85;
-					fl_Extra_Speed[other] 	*= 1.1;
+				//	fl_Extra_Speed[other] 	*= 1.05;
 					fl_Extra_Damage[other] 	*= 1.2;
 					fl_TotalArmor[other] *= 0.85;
 					i_OverlordComboAttack[other] = 2;
@@ -251,13 +263,18 @@ methodmap AlmagestJkei < CClotBody
 				int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == Almagest_JkeiID() && IsEntityAlive(other))
 				{
+					if(!HasSpecificBuff(other, "Unstoppable Force"))
+						fl_Extra_Damage[other] 	*= (1.0 / 0.75);
 					RemoveSpecificBuff(other, "Unstoppable Force");
+					view_as<AlmagestJkei>(other).SetJkeiSpeed(330.0);
+					if(view_as<AlmagestJkei>(other).m_flMegaSlashDoing)
+						view_as<AlmagestJkei>(other).SetJkeiSpeed(150.0);
 					CPrintToChatAll("{black}Jkei{crimson} gains more strength, Now's the time to kill him off!");
 					RemoveFromNpcAliveList(other);
 					AddNpcToAliveList(other, 0);
 					f_AttackSpeedNpcIncrease[other] *= 0.8;
-					fl_Extra_Speed[other] 	*= 1.1;
-					fl_Extra_Damage[other] 	*= 1.35;
+				//s	fl_Extra_Speed[other] 	*= 1.05;
+					fl_Extra_Damage[other] 	*= 1.25;
 					fl_TotalArmor[other] *= 0.7;
 					i_OverlordComboAttack[other] = 3;
 					return view_as<AlmagestJkei>(-1);
@@ -310,7 +327,7 @@ methodmap AlmagestJkei < CClotBody
 			RaidModeScaling = 0.0;
 		}
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
+		npc.SetJkeiSpeed(330.0);
 		
 		
 		int skin = 1;
@@ -418,6 +435,10 @@ public Action AlmagestJkei_OnTakeDamage(int victim, int &attacker, int &inflicto
 		{
 			CPrintToChatAll("{black}Jkei{crimson} gains a shield, his soldiers give him strength, kill them off.");
 			ApplyStatusEffect(npc.index, npc.index, "Unstoppable Force", 9999.0);
+			fl_Extra_Damage[npc.index] 	*= 0.75;
+			view_as<AlmagestJkei>(npc.index).SetJkeiSpeed(330.0);
+			if(npc.m_flMegaSlashDoing)
+				view_as<AlmagestJkei>(npc.index).SetJkeiSpeed(150.0);
 			damage = 0.0;
 			//set to hp
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * MaxHealthRatioDamage));
@@ -498,7 +519,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 			}
 			delete swingTrace;
 			npc.m_flMegaSlashNext = 0.0;
-			npc.m_flSpeed = 330.0;
+			npc.SetJkeiSpeed(330.0);
 		}
 	}
 	if(npc.m_flMegaSlashDoing)
@@ -542,7 +563,7 @@ void AlmagestJkeiSelfDefense(AlmagestJkei npc, float gameTime, int target, float
 					npc.m_flDoingAnimation = gameTime + 1.25;
 					npc.m_flNextMeleeAttack = gameTime + 1.75;
 					npc.m_flMegaSlashCD = gameTime + 6.5;
-					npc.m_flSpeed = 150.0;
+					npc.SetJkeiSpeed(150.0);
 				}
 				else
 				{

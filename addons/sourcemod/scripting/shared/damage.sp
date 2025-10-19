@@ -190,9 +190,13 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 	{
 		// Reduce damage taken as new players in extreme difficulties
-		if(Level[victim] < 10 && Database_IsCached(victim))
+		if(Level[victim] >= 0 && Level[victim] <= 10 && Database_IsCached(victim))
 		{
 			int rank = Waves_GetLevel();
+			if(rank < 5)
+				rank = 5;
+			if(rank > 100)
+				rank = 100;
 			if(rank > Level[victim])
 			{
 				// Up to 50 level difference for 50% res
@@ -293,10 +297,10 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				}						
 				if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
 				{
-					int damage_recieved_after_calc;
-					damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
+					int damage_received_after_calc;
+					damage_received_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
 					Armor_Charge[armorEnt] = 0;
-					damage = float(damage_recieved_after_calc);
+					damage = float(damage_received_after_calc);
 
 					//armor is broken!
 					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
@@ -923,10 +927,7 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	{
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 		i_HasBeenBackstabbed[victim] = false;
-		if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
-		{
-			i_HasBeenHeadShotted[victim] = false;
-		}
+	//	i_HasBeenHeadShotted[victim] = false;
 		
 	}
 		
@@ -1134,8 +1135,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_RED_BLADE:
 		{
-			if(!CheckInHud())
-				WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{
@@ -1720,6 +1720,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
 		{		
+			damage *= f_HeadshotDamageMultiNpc[victim];
 			damage *= 1.35;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 			damagetype &= ~DMG_CRIT;
@@ -1762,7 +1763,11 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	float CritChance = Attributes_GetOnPlayer(attacker, Attrib_CritChance, false,_, 0.0);
 	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
 	{
-		damage *= 2.0;
+		if(Rogue_Rift_BookOfWeakness())
+			damage *= 2.0;
+		else
+			damage *= 3.0;
+			
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}
 

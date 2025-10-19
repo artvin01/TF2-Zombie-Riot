@@ -158,6 +158,8 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 	if(bestIndex == -1 && name[0])	// Fallback to case checks for spawn names
 	{
+		bool construction = Construction_Mode();
+		
 		for(int i; i < length; i++)
 		{
 			SpawnerList.GetArray(i, spawn);
@@ -168,7 +170,12 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(!spawn.BaseBoss)
 			{
 				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
-					continue;
+				{
+					if(bestIndex != -1 || !construction)
+						continue;
+					
+					// Construction mode allows named disabled spawn points
+				}
 
 				if(spawn.MaxWavesAllowed != 999)
 				{
@@ -186,6 +193,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				}
 				nonBossSpawners++;
 			}
+
 			//get atleast 1 spawnpont?
 			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 			{

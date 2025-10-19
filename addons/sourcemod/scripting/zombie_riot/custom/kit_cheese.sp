@@ -31,7 +31,7 @@ Doesn't fire normally, instead it only fires after charging its ability.
 You can charge it dealing hits to enemies. Melee hits charge the ability x3 as fast.
 Plasmatized Bubble (M1/M2 Ability), upon activation:
 - Shoots a gravity-affected projectile that, upon landing, creates an AoE zone that grows,
-enemies inside this AoE zone recieve a high amount of Plasmic Elemental Damage, 
+enemies inside this AoE zone receive a high amount of Plasmic Elemental Damage, 
 which scales based off the weapon's damage attribs.
 - Allies inside this bubble are cured from elemental damage, for a percent based on the owner's pap level.
 - This bubble checks for targets every 0.5s, but the tickrate also scales with attackspeed.
@@ -54,6 +54,8 @@ PaP Upgrades (all of them increase overall stats):
 5 - Ditto.
 
 6th, 7th and 8th paps increase ALL stats and almost all ability stats overall.
+
+this description is brah
 */
 
 #define SOUND_LETHAL_ABILITY 	"items/powerup_pickup_reflect.wav"
@@ -77,8 +79,9 @@ static int iref_WeaponConnect[MAXPLAYERS+1][3];
 
 static float Cheese_Buildup_Penalty[MAXENTITIES] = { 1.0, ... };
 
-static int Cheese_Bubble_MaxHits[9]  = {150, 150, 140, 130, 120, 110, 100, 90, 80}; // Plasmatized Bubble's max charge
-static float Cheese_Bubble_ElementalDmg = 100.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
+static int Cheese_Bubble_MaxHits[9]  = {125, 120, 115, 110, 105, 100, 90, 80, 75}; // Plasmatized Bubble's max charge
+static float Cheese_Bubble_Range[9]  = {225.0, 225.0, 225.0, 235.0, 245.0, 255.0, 265.0, 275.0, 275.0}; // Plasmatized Bubble's max range
+static float Cheese_Bubble_ElementalDmg = 125.0; // Plasmatized Bubble's base plasmic elemental damage, multiplied by the weapon's damage attrib
 static float Cheese_Lethal_Cooldown[9]  = {25.0, 25.0, 25.0, 22.5, 20.0, 17.5, 15.0, 15.0, 10.0}; // Lethal Injection's cooldown
 static float Cheese_Lethal_DmgBoost[9] = {2.25, 2.25, 2.25, 2.25, 2.3, 2.35, 2.4, 2.45, 2.5}; // Lethal Injection's damage bonus
 static float Cheese_Lethal_ElementalBoost[9] = {5.0, 5.0, 5.0, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5}; // Lethal Injection's elemental damage bonus
@@ -152,6 +155,10 @@ void Cheese_OnNPCDeath(int i)
 	Cheese_Buildup_Penalty[i] = 1.0;
 }
 
+int ReturnWeapon_PlasmaKit(int client)
+{
+	return EntRefToEntIndex(iref_WeaponConnect[client][0]);
+}
 void Cheese_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_CHEESY_PRIMARY)
@@ -208,8 +215,8 @@ public Action Cheese_EffectTimer(Handle timer, DataPack DataDo)
 	 	if(!HasSpecificBuff(client, "Plasmatic Rampage"))
 			ApplyStatusEffect(client, client, "Plasmatic Rampage", 999.0);
 
-		HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.01), 0.25, 0.0, HEAL_SELFHEAL);
-		Elemental_AddPlasmicDamage(client, client, 25, EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
+		HealEntityGlobal(client, client, (float(ReturnEntityMaxHealth(client)) * 0.02), 0.25, 0.0, HEAL_SELFHEAL);
+		Elemental_AddPlasmicDamage(client, client, RoundToNearest(float(MaxArmorCalculation(Armor_Level[client], client, 1.0)) * 0.01), EntRefToEntIndex(iref_WeaponConnect[client][0]), true);
 	}
 	else
 	{
@@ -372,7 +379,7 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 			Ability_Apply_Cooldown(attacker, 2, thecooldown);
 			EmitSoundToClient(attacker, SOUND_LETHAL_ABILITY);
 		}
-		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.25), weapon);
+		Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(cheesedmg * 1.0), weapon);
 	}
 
 	return damage;
@@ -549,29 +556,26 @@ static Action CheeseBubble_FirstCheck(Handle timer, int ref)
 
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
-	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0);
+	Explode_Logic_Custom(0.0, owner, owner, weapon, position, Cheese_Bubble_Range[Cheese_PapLevel[owner]], _, _, _, _, false, _, Cheese_Bubble_InflictLogic);
+	PlasmicBubble_HealElementalAllies(owner, (0.075 * scale), 1.0, position, Cheese_Bubble_Range[Cheese_PapLevel[owner]]);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
 	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
 
-	// MAN
+	float actualrange = Cheese_Bubble_Range[Cheese_PapLevel[owner]] * 2.0;
 	position[2] -= 50.0;
-	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	Cheese_BeamEffect(position, actualrange * 0.888, (actualrange * 0.888) - 5.0, tickrate, 7.5, true, owner, 3.0);
 	position[2] -= 50.0;
-	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	Cheese_BeamEffect(position, actualrange * 0.666, (actualrange * 0.666) - 5.0, tickrate, 7.5, true, owner, 2.0);
 	position[2] -= 50.0;
-	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
-	position[2] -= 50.0;
-//	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
-	position[2] += 250.0;
-	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	Cheese_BeamEffect(position, actualrange * 0.333, (actualrange * 0.333) - 5.0, tickrate, 7.5, true, owner, 1.0);
+	position[2] += 200.0;
+	Cheese_BeamEffect(position, actualrange * 0.888, (actualrange * 0.888) - 5.0, tickrate, 7.5, true, owner, 3.0);
 	position[2] += 50.0;
-	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	Cheese_BeamEffect(position, actualrange * 0.666, (actualrange * 0.666) - 5.0, tickrate, 7.5, true, owner, 2.0);
 	position[2] += 50.0;
-	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
-//	position[2] += 50.0;
-//	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
+	Cheese_BeamEffect(position, actualrange * 0.333, (actualrange * 0.333) - 5.0, tickrate, 7.5, true, owner, 1.0);
+
 	float tickrateSend = tickrate;
 	tickrateSend += 0.1;
 	DataPack pack;
@@ -610,29 +614,25 @@ static Action CheeseBubble_CheckLoop(Handle timer, DataPack pack)
 
 	float position[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-	Explode_Logic_Custom(0.0, owner, owner, weapon, position, 225.0, _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
-	PlasmicBubble_HealElementalAllies(owner, (0.06 * scale), 1.0, position, 225.0);
+	Explode_Logic_Custom(0.0, owner, owner, weapon, position, Cheese_Bubble_Range[Cheese_PapLevel[owner]], _, _, _, 16, false, _, Cheese_Bubble_InflictLogic);
+	PlasmicBubble_HealElementalAllies(owner, (0.075 * scale), 1.0, position, Cheese_Bubble_Range[Cheese_PapLevel[owner]]);
 	position[2] += 10.0;
 //	Cheese_BeamEffect(position, _, 450.0, tickrate, 7.5, true, owner);
-	Cheese_BeamEffect(position, 450.0, 445.0, tickrate, 7.5, _, _, 4.0);
+	Cheese_BeamEffect(position, Cheese_Bubble_Range[Cheese_PapLevel[owner]] * 2.0, (Cheese_Bubble_Range[Cheese_PapLevel[owner]] * 2.0) - 5.0, tickrate, 7.5, _, _, 4.0);
 
-	// MAN
+	float actualrange = Cheese_Bubble_Range[Cheese_PapLevel[owner]] * 2.0;
 	position[2] -= 50.0;
-	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	Cheese_BeamEffect(position, actualrange * 0.888, (actualrange * 0.888) - 5.0, tickrate, 7.5, true, owner, 3.0);
 	position[2] -= 50.0;
-	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	Cheese_BeamEffect(position, actualrange * 0.666, (actualrange * 0.666) - 5.0, tickrate, 7.5, true, owner, 2.0);
 	position[2] -= 50.0;
-	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
-	position[2] -= 50.0;
-//	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
-	position[2] += 250.0;
-	Cheese_BeamEffect(position, 400.0, 395.0, tickrate, 7.5, true, owner, 3.0);
+	Cheese_BeamEffect(position, actualrange * 0.333, (actualrange * 0.333) - 5.0, tickrate, 7.5, true, owner, 1.0);
+	position[2] += 200.0;
+	Cheese_BeamEffect(position, actualrange * 0.888, (actualrange * 0.888) - 5.0, tickrate, 7.5, true, owner, 3.0);
 	position[2] += 50.0;
-	Cheese_BeamEffect(position, 300.0, 295.0, tickrate, 7.5, true, owner, 2.0);
+	Cheese_BeamEffect(position, actualrange * 0.666, (actualrange * 0.666) - 5.0, tickrate, 7.5, true, owner, 2.0);
 	position[2] += 50.0;
-	Cheese_BeamEffect(position, 150.0, 145.0, tickrate, 7.5, true, owner, 1.0);
-//	position[2] += 50.0;
-//	Cheese_BeamEffect(position, 50.0, 45.0, tickrate, 7.5, true, owner, 0.0);
+	Cheese_BeamEffect(position, actualrange * 0.333, (actualrange * 0.333) - 5.0, tickrate, 7.5, true, owner, 1.0);
 
 	return Plugin_Continue;
 }
@@ -927,7 +927,7 @@ public void Weapon_Kit_Cheddinator_FireInternal(DataPack DataDo)
 			, _, 1.0 * f_WeaponVolumeStiller[weapon]);
 	}
 
-	float damage = 125.0;
+	float damage = 100.0;
 	damage *= WeaponDamageAttributeMultipliers(weapon);
 		
 	float speed = 1100.0;
@@ -1126,6 +1126,9 @@ static bool TraceUsers(int entity, int contentsMask, int client)
 	}
 	return false;
 }
+
+
+
 
 
 

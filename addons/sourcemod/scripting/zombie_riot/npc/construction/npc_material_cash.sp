@@ -53,7 +53,7 @@ methodmap MaterialCash < CClotBody
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 
 		return npc;
 	}

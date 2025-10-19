@@ -270,10 +270,10 @@ public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &infl
 	}
 
 	return Plugin_Changed;
-	}
+}
 
-	public void VictoriaAssulter_NPCDeath(int entity)
-	{
+public void VictoriaAssulter_NPCDeath(int entity)
+{
 	VictoriaAssulter npc = view_as<VictoriaAssulter>(entity);
 	if(!npc.m_bGib)
 	{

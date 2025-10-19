@@ -95,6 +95,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 methodmap GentleSpy < CClotBody
 {
+	property float m_flSpawnMessageTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -195,7 +201,7 @@ methodmap GentleSpy < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "{redsunsecond}I Monster");
 		Music_SetRaidMusic(music);
 
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		npc.m_iAttacksTillReload = 0;
@@ -205,6 +211,8 @@ methodmap GentleSpy < CClotBody
 		npc.m_flAbilityOrAttack2 = GetGameTime(npc.index) + 12.0; //Play warning sound
 		npc.m_flAbilityOrAttack3 = GetGameTime(npc.index) + 13.0; //Go for the stab
 		
+		npc.m_flSpawnMessageTime = GetGameTime(npc.index) + 0.5;
+		
 		cloaked = false;
 		
 		npc.StartPathing();
@@ -212,8 +220,7 @@ methodmap GentleSpy < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-	
-
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/spy/spy_hat.mdl");
@@ -249,7 +256,13 @@ public void GentleSpy_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	
+	if (npc.m_flSpawnMessageTime && npc.m_flSpawnMessageTime < GetGameTime(npc.index))
+	{
+		npc.m_flSpawnMessageTime = 0.0;
+		VSHJokeSpawnMessage(npc.index, "Gentle Spy");
+	}
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);

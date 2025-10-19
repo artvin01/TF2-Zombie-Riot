@@ -19,6 +19,7 @@ void Rogue_Rift_Reset()
 	DreamCaught = false;
 	DreamCatch = false;
 	ColdWater = false;
+	Rogue_SuperStims_Remove();
 	if(BrightnessZone)
 		delete BrightnessZone;
 }	
@@ -131,16 +132,16 @@ public void Rogue_FlashVest_Remove()
 
 public void Rogue_Mazeat1_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.85);
-		fl_Extra_Damage[entity] *= 0.85;
+		RogueHelp_BodyHealth(entity, null, 0.9);
+		fl_Extra_Damage[entity] *= 0.9;
 	}
 }
 
 public void Rogue_Mazeat2_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
 		fl_Extra_Speed[entity] *= 0.9;
 	}
@@ -153,9 +154,10 @@ public void Rogue_UmbralKeycardBuffAlly(int entity, StringMap map)
 		if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
 		{
 
-			fl_Extra_Speed[entity] 				*= 1.1;
-			fl_Extra_Damage[entity] 			*= 1.2;
-			RogueHelp_BodyHealth(entity, null, 1.2);
+		//	fl_Extra_Speed[entity] 				*= 1.1;
+			fl_Extra_Damage[entity] 			*= 1.1;
+			fl_Extra_MeleeArmor[entity]			*= 0.9;
+			fl_Extra_RangedArmor[entity] 		*= 0.9;
 		}
 	}
 }
@@ -165,17 +167,18 @@ public void Rogue_UmbralKeycardBuffEnemy(int entity)
 	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_UMBRAL)
 	{
 
-		fl_Extra_Speed[entity] 				*= 1.1;
-		fl_Extra_Damage[entity] 			*= 1.2;
-		RogueHelp_BodyHealth(entity, null, 1.2);
+	//	fl_Extra_Speed[entity] 				*= 1.1;
+		fl_Extra_Damage[entity] 			*= 1.1;
+		fl_Extra_MeleeArmor[entity]			*= 0.9;
+		fl_Extra_RangedArmor[entity] 		*= 0.9;
 	}
 }
 public void Rogue_Mazeat3_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_VOID && view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
+	if(view_as<CClotBody>(entity).m_iBleedType != BLEEDTYPE_UMBRAL)
 	{
-		RogueHelp_BodyHealth(entity, null, 0.7);
-		fl_Extra_Damage[entity] *= 0.7;
+		RogueHelp_BodyHealth(entity, null, 0.75);
+		fl_Extra_Damage[entity] *= 0.75;
 
 		for(int i; i < Element_MAX; i++)
 		{
@@ -211,12 +214,12 @@ public void Rogue_Umbral6_Collect()
 
 public void Rogue_OldFan_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.5);
+	RogueHelp_BodyDamage(entity, map, 1.4);
 }
 
 public void Rogue_OldFan_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.5);
+	RogueHelp_WeaponDamage(entity, 1.4);
 }
 
 public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
@@ -229,7 +232,7 @@ public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflicto
 			GetEntPropVector(victim, Prop_Data, "m_vecOrigin", pos1);
 			GetEntPropVector(attacker, Prop_Data, "m_vecOrigin", pos2);
 
-			static const float MaxDist = 1000000.0;
+			static const float MaxDist = 2250000.0;
 
 			float distance = GetVectorDistance(pos1, pos2, true);
 			if(distance > MaxDist)
@@ -239,14 +242,14 @@ public void Rogue_ScoutScope_TakeDamage(int victim, int &attacker, int &inflicto
 					DisplayCritAboveNpc(victim, attacker, true, _, _, true);
 			}
 			
-			damage += damage * (distance / MaxDist);
+			damage += damage * ((distance * 0.5) / MaxDist);
 		}
 	}
 }
 
 public void Rogue_LakebedAegis_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
-	if(GetTeam(victim) == TFTeam_Red && !(damagetype & DMG_TRUEDAMAGE))
+	if(GetTeam(victim) == TFTeam_Red && (!(damagetype & DMG_TRUEDAMAGE)))
 	{
 		if(GetEntProp(victim, Prop_Data, "m_iHealth") > ReturnEntityMaxHealth(victim))
 			damage *= 0.65;
@@ -286,8 +289,10 @@ public void Rogue_MedicineSticks_WaveStart()
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
-			if(GetTeam(entity) == TFTeam_Red)
+			if(GetTeam(entity) == TFTeam_Red && !b_NpcIsInvulnerable[entity])
+			{
 				VausMagicaGiveShield(entity, 2);
+			}
 		}
 	}
 }
@@ -337,8 +342,8 @@ public void Rogue_Sculpture_Enemy(int entity)
 
 public void Rogue_PainfulHappy_Enemy(int entity)
 {
-	RogueHelp_BodyHealth(entity, null, 0.85);
-	fl_Extra_Speed[entity] /= 1.15;
+	RogueHelp_BodyHealth(entity, null, 0.91);
+	fl_Extra_Speed[entity] /= 1.09;
 }
 
 public void Rogue_GravityDefying_Enemy(int entity)
@@ -348,13 +353,23 @@ public void Rogue_GravityDefying_Enemy(int entity)
 		i_NpcWeight[entity] = 0;
 }
 
+float f_DevilbaneAntiSpam[MAXENTITIES];
 public void Rogue_Devilbane_TakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {
+	if(weapon == -1)
+		return;
+	if(view_as<CClotBody>(victim).m_iBleedType != BLEEDTYPE_UMBRAL)
+		return;
+	//dont give twice a frame!
+	if(f_DevilbaneAntiSpam[weapon] == GetGameTime())
+		return;
+		
 	if(attacker > 0 && attacker <= MaxClients && IsValidEntity(weapon))
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Saga_ChargeReduction(attacker, weapon, 2.0);
+			f_DevilbaneAntiSpam[weapon] = GetGameTime();
 		}
 	}
 }
@@ -398,7 +413,7 @@ public void Rogue_FearlessBlade_Ally(int entity, StringMap map)
 			if(lastTarget != highestPlayer)
 			{
 				lastTarget = highestPlayer;
-				CPrintToChatAll("{red}%N {crimson}recieved +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
+				CPrintToChatAll("{red}%N {crimson}received +50％ max health and +50％ damage bonus and +50％ heal rate.", highestPlayer);
 			}
 		}
 	}
@@ -430,7 +445,7 @@ public void Rogue_ChaosStar_TakeDamage(int victim, int &attacker, int &inflictor
 
 public void Rogue_Yearning_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_BodyHealth(entity, map, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 static bool EyeOfFortune;
@@ -461,7 +476,7 @@ public void Rogue_ThoughtsCatcher_Collect()
 void Rogue_Rift_GatewaySent()
 {
 	if(ThoughtsCatcher)
-		Rogue_AddIngots(20);
+		Rogue_AddIngots(3);
 }
 
 public void Rogue_ThoughtsCatcher_Remove()
@@ -509,12 +524,12 @@ public void Rogue_SurvivorParty_Collect()
 
 public void Rogue_SoulBindingBone_Ally(int entity, StringMap map)
 {
-	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_BodyDamage(entity, map, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 public void Rogue_SoulBindingBone_Weapon(int entity)
 {
-	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.01));
+	RogueHelp_WeaponDamage(entity, 1.0 + (Rogue_GetUmbral() * 0.004));
 }
 
 public void Rogue_Minion_Energizer_Ally(int entity, StringMap map)
@@ -677,6 +692,95 @@ void Brightening_Lightness_Place_InLocation(float BannerPos[3], int Team)
 			{
 				ApplyStatusEffect(ally, ally, "Brightening Light", 2.0);
 			}
+		}
+	}
+}
+static bool StimPacks;
+
+public void Rogue_SuperStims_Collect()
+{
+	StimPacks = true;
+}
+
+public void Rogue_SuperStims_Remove()
+{
+	StimPacks = false;
+}
+public bool Rogue_SuperStimsOn()
+{
+	return StimPacks;
+}
+
+public void Rogue_SuperStims_StageStart()
+{
+	GiveMorphineToEveryone();
+}
+
+public void Rogue_Omega_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_omega_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+public void Rogue_Omega_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == OmegaFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+}
+public void Rogue_Vhxis_Collect()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			float flPos[3];
+			GetClientAbsOrigin(client_summon, flPos);
+			NPC_CreateByName("npc_vhxis_follower", client_summon, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+			break;
+		}
+	}
+}
+public void Rogue_Vhxis_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == VhxisFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
 		}
 	}
 }

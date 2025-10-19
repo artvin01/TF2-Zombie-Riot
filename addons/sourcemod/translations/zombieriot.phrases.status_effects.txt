@@ -615,6 +615,14 @@
 	{
 		"en"	"Decreases damage taken by 50％"
 	}
+	"Extreamly Defensive Backup"
+	{
+		"en"	"Extreamly Defensive Backup"
+	}
+	"Extreamly Defensive Backup Desc"
+	{
+		"en"	"Decreases damage taken by 90％"
+	}
 	"UBERCHARGED"
 	{
 		"en"	"UBERCHARGED"
@@ -730,6 +738,22 @@
 	"Heavy Presence Desc"
 	{
 		"en"	"Decreased attack/reload speed & healrate by a 50％."
+	}
+	"Terrified"
+	{
+		"en"	"Terrified"
+	}
+	"Terrified Desc"
+	{
+		"en"	"Decreased attack/reload speed & healrate by a 50％.\nDecrased Movementspeed of players and npcs 50％."
+	}
+	"Unstable Umbral Rift"
+	{
+		"en"	"Unstable Umbral Rift"
+	}
+	"Unstable Umbral Rift Desc"
+	{
+		"en"	"Only affects players, Reduces gravity and movementspeed, causes you to lose aircontroll aswell."
 	}
 	"Altered Functions"
 	{
@@ -907,6 +931,14 @@
 	{
 		"en"	"On hit, Reduces ability cooldown by 2 seconds, can only happen once per attacker."
 	}
+	"Vuntulum Bomb EMP"
+	{
+		"en"	"Vuntulum Bomb EMP"
+	}
+	"Vuntulum Bomb EMP Desc"
+	{
+		"en"	"Cant make any Unique buildings while this is active."
+	}
 	"Ruina Battery Charge"
 	{
 		"en"	"Ruina Battery Charge"
@@ -1053,7 +1085,7 @@
 	}
 	"Bleed Desc"
 	{
-		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time.\nSome weapons deal true damage with this.\nStacks infinitly."
+		"en"	"Deals Melee, or ranged damage, all dependant on the weapon that it comes from over time, Stacks infinitly."
 	}
 	"Burn"
 	{
@@ -1392,7 +1424,7 @@
 	}
 	"Plasmatized Lethalitation Desc"
 	{
-		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility recieves more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
+		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility receives more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 	}
 	"Plasmic Layering I"
 	{
@@ -1531,6 +1563,14 @@
 	{
 		"en"	"Reduces damage taken by 25％.\nIncreases attack speed by 25％.\nIncreases damage by 25％.\nIncreases NPC movement speed by 25％."
 	}
+	"Mind Warp"
+	{
+		"en"	"Mind Warp"
+	}
+	"Mind Warp Desc"
+	{
+		"en"	"Reduces attack/reload/movement speed and healing rate, but increases timescale by 50％.\n{default}Affects everyone and everything."
+	}
 	"Envenomed"
 	{
 		"en"	"Envenomed"
@@ -1561,7 +1601,7 @@
 	}
 	"Umbral Grace Desc"
 	{
-		"en"	"Gain 25％ damage reduction, 50％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 50％ attackspeed/Healrate."
+		"en"	"Gain 25％ damage reduction, 15％ extra damage.\nYou slowly cure of elemental damage.\n{crimson}but lose 15％ attackspeed/Healrate."
 	}
 	"Void Afflicted"
 	{
@@ -1569,7 +1609,7 @@
 	}
 	"Void Afflicted Desc"
 	{
-		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nRecieve 25％ less damage."
+		"en"	"You become a void afflicted creature.\nYou act as if you were a void enemy.\nYou afflict 300％ of your end damage as void elemental damage.\nReceive 25％ less damage."
 	}
 	"Brightening Light"
 	{
@@ -1602,7 +1642,7 @@
 	}
 	"Revival Stim Packs Desc"
 	{
-		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upton being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
+		"en"	"Must be what Whiteflower used for his soldiers.\n{green}Upon being revived, gain a 15％ Movementspeed Bonus, and phase through enemies for 5 seconds."
 	}
 	"Kolum's View"
 	{
@@ -1611,5 +1651,13 @@
 	"Kolum's View Desc"
 	{
 		"en"	"Umbral koulm's have their vision on you."
+	}
+	"Ultra Rapid Fire"
+	{
+		"en"	"Ultra Rapid Fire"
+	}
+	"Ultra Rapid Fire Desc"
+	{
+		"en"	"Increases attack/reload speed, healing rate and reduces cooldowns by 40％. Increases movement speed by 25％.\n{crimson}Enemies gain Dimensional Turbulence instead."
 	}
 }

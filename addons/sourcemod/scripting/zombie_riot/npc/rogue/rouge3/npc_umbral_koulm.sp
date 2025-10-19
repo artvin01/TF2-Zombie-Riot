@@ -46,7 +46,7 @@ void Umbral_Koulm_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "koulm");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Mutation;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
@@ -240,7 +240,7 @@ public Action Umbral_Koulm_OnTakeDamage(int victim, int &attacker, int &inflicto
 
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int CurrentHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	if(float(maxhealth) * 0.95 > float(CurrentHealth))
+	if(float(maxhealth) * 0.975 > float(CurrentHealth))
 	{
 		ApplyStatusEffect(victim, attacker, "Kolum's View", 7.5);
 	}

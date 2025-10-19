@@ -78,6 +78,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_SlamSounds);
 	PrecacheModel("models/player/spy.mdl");
 	PrecacheSoundCustom("#zombiesurvival/matrix/navras.mp3");
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -596,7 +598,7 @@ static void Johnsons_SelfDefense(AgentJohnson npc, float gameTime, int target, f
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 				KillFeed_SetKillIcon(npc.index, "pistol");
 
-				float damage = 10.0;
+				float damage = 8.0;
 				damage *= RaidModeScaling;
 
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "dxhr_sniper_rail_blue");

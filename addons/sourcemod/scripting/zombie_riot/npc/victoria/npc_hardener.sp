@@ -296,7 +296,7 @@ public void VictorianHardener_ClotThink(int iNPC)
 
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 80), 1.0);
 
-				GrantEntityArmor(PrimaryThreatIndex, false, 1.5, 0.75, 0, float(MaxHealth / 400));
+				GrantEntityArmor(PrimaryThreatIndex, false, 0.5, 0.75, 0, float(MaxHealth / 400));
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				

@@ -52,6 +52,11 @@ enum
 	//used currently for heavy particle rifle
 	//but will probably be used for other weapons to define max/min dmg depending on whatever the weapon specific plugin does with it.
 	Attrib_ElementalDefPerc = 4049,
+
+	Attrib_BarracksSupplyRate = 4050,
+	Attrib_FinalBuilder = 4051,
+	Attrib_GlassBuilder = 4052,
+	Attrib_WildingenBuilder = 4053,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -84,7 +89,19 @@ bool Attribute_IntAttribute(int attribute)
 {
 	switch(attribute)
 	{
-		case 834, 866, 867:
+		case 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
+			return true;
+	}
+
+	return false;
+}
+
+bool Attribute_DontSaveAsIntAttribute(int attribute)
+{
+	switch(attribute)
+	{
+		//this attrib is a float, but saves as an int, for stuff thats additional, not multi.
+		case 314:
 			return true;
 	}
 
@@ -170,11 +187,12 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 			return false;
 	}
 	
-	if(Attribute_IntAttribute(attrib))
+	if(Attribute_IntAttribute(attrib) && !Attribute_DontSaveAsIntAttribute(attrib))
 	{
 		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
 		return true;
 	}
+	
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;

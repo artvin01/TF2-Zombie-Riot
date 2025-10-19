@@ -331,9 +331,9 @@ methodmap BarrackBody < CClotBody
 	public BarrackBody(int client, float vecPos[3], float vecAng[3],
 	 const char[] health, const char[] modelpath = COMBINE_CUSTOM_MODEL,
 	  int steptype = STEPTYPE_COMBINE_METRO, const char[] size_of_npc = "0.575",
-	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool IsInvuln = false, int NpcTypeLogicdo = 0)
+	   float ExtraOffset = 0.0, const char[] ParticleModelPath = "models/pickups/pickup_powerup_supernova.mdl", bool isInvuln = false, int NpcTypeLogicdo = 0)
 	{
-		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, IsInvuln, .Ally_Collideeachother = !IsInvuln, .NpcTypeLogic = NpcTypeLogicdo));
+		BarrackBody npc = view_as<BarrackBody>(CClotBody(vecPos, vecAng, modelpath, size_of_npc, health, TFTeam_Red, isInvuln, .Ally_Collideeachother = !isInvuln, .NpcTypeLogic = NpcTypeLogicdo));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -361,12 +361,12 @@ methodmap BarrackBody < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
-		b_NpcIsInvulnerable[npc.index] = IsInvuln;
+		b_NpcIsInvulnerable[npc.index] = isInvuln;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
-		if(!IsInvuln)
+		if(!isInvuln)
 		{
 			if(IsValidEntity(npc.m_iTeamGlow))
 			{
