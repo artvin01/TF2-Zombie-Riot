@@ -692,6 +692,10 @@
 	{
 		"en" 		"Infected Silvester"
 	}
+	"Infected Silvester Desc"
+	{
+		"en" 		"An Expidonsan warrior, infected. He Gets stronger everytime he comes back.\nCan you cure him?\nHis ground slam (can be silenced)."
+	}
 	"Silvester's Past Afterimage"
 	{
 		"en" 		"Silvester's Past Afterimage"
@@ -1514,9 +1518,19 @@
 		"pt"		"Espada Quase Radiante"
 		"ru"		"Сияющий меч Нерл"
 	}
+	"Nearl Radiant Sword"
+	{
+		"en"		"Nearl Radiant Sword"
+		"pt"		"Espada Quase Radiante"
+		"ru"		"Сияющий меч Нерл"
+	}
 	"W.F. Subject"
 	{
 		"en"		"W.F. Subject"
+	}
+	"W.F. Subject Desc"
+	{
+		"en"		"Immortal, run."
 	}
 	"Corrupted Father Grigori"
 	{
@@ -2381,6 +2395,10 @@
 		"en"	"Beheaded Kamikaze"
 		"ru" 	"Безголовый Камикадзе"
 	}
+	"Beheaded Kamikaze Desc"
+	{
+		"en"	"Blows up when touching you or dying, kills own allies aswell.\nSpawns randomly around the map."
+	}
 	"?????????????"
 	{
 		"en"	"?????????????"
@@ -2602,6 +2620,10 @@
 		"es"	"Bob, el Segundo"
 		"ru" 	"Боб Второй"
 	}
+	"Bob the Second Desc"
+	{
+		"en"	"Your Payroll.\nHe helps you out if youre below 4 players.\nHis real name is revealed later on in the story..."
+	}
 	"Wildingen Hitman"
 	{
 		"en"	"Wildingen Hitman"
@@ -2649,6 +2671,10 @@
 	"Guln the Fallen One"
 	{
 		"en"	"Guln the Fallen One"
+	}
+	"Guln the Fallen One Desc"
+	{
+		"en"	"Casts an aura of attack reduction.\nWhen dying, this stays for 1 more wave.\nOnce half health, deals more damage and ignites you."
 	}
 	"Ravaging Intellectual"
 	{
@@ -3932,20 +3958,36 @@
 		"en"	"Atomizer"
 		"ko"	"인수분해"
 	}
+	"Victoria Atomizer Desc"
+	{
+		"en"	"The lower his health is, the more damage and faster he is."
+	}
 	"Victoria Huscarls"
 	{
 		"en"	"Huscarls"
 		"ko"	"허스칼"
+	}
+	"Victoria Huscarls Desc"
+	{
+		"en"	"Adapts to damages done to him. Ranged or melee, doesnt matter."
 	}
 	"Victoria Harrison"
 	{
 		"en"	"Harrison"
 		"ko"	"해리슨"
 	}
+	"Victoria Harrison Desc"
+	{
+		"en"	"No resistance, but is full offense."
+	}
 	"Victoria Castellan"
 	{
 		"en"	"Castellan"
 		"ko"	"카스텔란"
+	}
+	"Victoria Castellan Desc"
+	{
+		"en"	"The final army leader.\nEvery once a while summons airstrikes onto 1 target.\nAirstrikes happen aswell when he hits you too much with his melee."
 	}
 	"Agent John"
 	{
@@ -4231,6 +4273,10 @@
 	"Spiritrunner"
 	{
 		"en"	"Spiritrunner"
+	}
+	"Spiritrunner Desc"
+	{
+		"en"	"A mix of a sawrunner and a spirit.\nHalf invis and deals true damage."
 	}
 	"Todd Howard"
 	{
@@ -4930,9 +4976,17 @@
 	{
 		"en"	"Refragmented Winter Sniper"
 	}
+	"Refragmented Winter Sniper Desc"
+	{
+		"en"	"Will attack one target only and focus them down.\nDies after some time.\nIf he hits you while under cryo, he debuffs you harder."
+	}
 	"Refragmented Frost Hunter"
 	{
 		"en"	"Refragmented Frost Hunter"
+	}
+	"Refragmented Frost Hunter Desc"
+	{
+		"en"	"Will attack one target only and focus them down.\nDies after some time.\nVery fast and high damage, but dissapears once he hits you once."
 	}
 	"Vincent"
 	{
@@ -4949,6 +5003,10 @@
 	"Vincent Beacon"
 	{
 		"en"	"Vincent Beacon"
+	}
+	"Vincent Beacon Desc"
+	{
+		"en"	"Buffs Vincent in its range, and outside after leaving it a bit aswell."
 	}
 	"Old forgotten expidonsan robot"
 	{
@@ -5060,7 +5118,7 @@
 	}
 	"Shadowing Darkness, The Ruler Desc"
 	{
-		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs."
+		"en"	"Ruler of the Umbrals. Keeper of the Purgatory Throne. Culprit behind the Void outbreaks. \nTrapped inside the Curtain, she lost her mind long ago. \nShe must be stopped at all costs.\nShe gives necrosis on most of her abilities."
 	}
 	"Almagest Researcher"
 	{

@@ -10,7 +10,7 @@ void BossSummonRandom_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = 0; 
+	data.Category = Type_Hidden; 
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -21,7 +21,7 @@ void BossSummonRandom_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = 0; 
+	data.Category = Type_Hidden; 
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecacheVsh;
 	NPC_Add(data);

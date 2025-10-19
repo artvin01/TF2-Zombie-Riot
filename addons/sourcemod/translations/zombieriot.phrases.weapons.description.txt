@@ -2159,10 +2159,7 @@
 	}
 	"Thorns Desc"
 	{
-		"en"	"Takes 2 supply, high damage, health, and range."
-		"fr"	"Prend 2 ressources pour former. Bons dégats, santé et portée."
-		"ru"	"Требует 2 ед. припасов, высокий урон, прочность и дальность."
-		"chi"	"占用三个单位，高伤害，高血量，可远程。"
+		"en"	"Takes 2 supply, high damage, health, and range.\nAfter attacking enough, gains a tempomary overall stat boost.\nIf its twice, it stays permanently."
 	}
 	"Fish Melee Desc"
 	{

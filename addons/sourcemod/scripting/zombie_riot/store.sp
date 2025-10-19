@@ -4143,6 +4143,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					}
 					case -13:
 					{
+						c_WeaponUseAbilitiesHud[client][0] = 0;
 						Items_EncyclopediaMenu(client);
 					}
 					case -100:

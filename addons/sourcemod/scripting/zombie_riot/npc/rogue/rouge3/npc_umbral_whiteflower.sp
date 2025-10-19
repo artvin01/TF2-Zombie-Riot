@@ -66,7 +66,7 @@ public void Umbral_WF_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "whiteflower");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = 0;
+	data.Category = Type_Curtain;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);

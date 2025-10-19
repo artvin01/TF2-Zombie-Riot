@@ -2521,6 +2521,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
+			//stringpool_fix crash.
+			SetEntProp(entity, Prop_Data, "m_bForcePurgeFixedupStrings", true);
 		}
 		else if(!StrContains(classname, "tf_player_manager"))
 		{

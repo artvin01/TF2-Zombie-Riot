@@ -123,203 +123,163 @@
 	}
 	"Headcrab Zombie Desc"
 	{
-		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
-		"fr" 		"Le zombie le plus commun. Rien de spécial."
-		"ru"		"Обычный зомби без особых способностей.Самый часто встречаемый вид зараженных"
+		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around.\n-No special Effects."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"Stronger version of the normal Headcrab Zombie."
-		"ru"		"Усиленная версия обычного зомби."
+		"en" 		"Stronger version of the normal Headcrab Zombie.\n-No special Effects."
 	}
 	"Fast Zombie Desc"
 	{
-		"en" 		"A very fast zombie that can also jump at you.\nTheir damage is low but they quickly pile up."
-		"ru"		"Очень быстрый зомби который может прыгнуть на вас.\nИх урон слабый но они быстро накапливаются"
+		"en" 		"A very fast zombie.\n-Jumps at you when in view."
 	}
 	"Fortified Fast Zombie Desc"
 	{
-		"en" 		"Stronger version of the normal Fast Zombie."
-		"ru"		"Усиленная версия обычного быстрого зомби."
+		"en" 		"Stronger version of the normal Fast Zombie.\n-Jumps at you when in view."
 	}
 	"Torsoless Headcrab Zombie Desc"
 	{
-		"en" 		"A Zombie with his legs cut off, sentries cant hit him.\nTheir health and damage is lower then the normal counterpart."
-		"ru"		"Зомби без ног,турели не могут его атаковать.\nИх здоровье и урон ниже что у обычных зомби."
+		"en" 		"A Zombie with his legs cut off, sentries cant hit him.\nTheir health and damage is lower then the normal counterpart.\n-No special Effects."
 	}
 	"Poison Zombie Desc"
 	{
-		"en" 		"A Slow Zombie with alot of damage and health.\nHitting their head is quite easy."
-		"ru"		"Медленный зомби с большим уроном и запасом здоровья.\nСтрелять им по головам довольно легко."
+		"en" 		"A Slow Zombie with alot of damage and health.\nHitting their head is quite easy.\n-No special Effects."
 	}
 	"Fortified Poison Zombie Desc"
 	{
-		"en" 		"Stronger version of the normal Poison Zombie."
-		"ru"		"Усиленная вресия ядовитого зомби."
+		"en" 		"Stronger version of the normal Poison Zombie.\n-No special Effects."
 	}
 	"Fortified Giant Poison Zombie Desc"
 	{
-		"en" 		"Giants that are extreamly slow but very heavy hitting, moreso then later waved ones."
-		"ru"		"Гиганты которые очень медленные но очень больно бьют, Появляются в поздних волнах."
+		"en" 		"Giants that are extreamly slow but very heavy hitting.\n-No special Effects."
 	}
 	"Father Grigori Desc"
 	{
-		"en" 		"Father Grigori from Ravenholm seems to have succumb to the zombie sideeffects.\nHe will shoot bullets and summon Lasers of holy light upon himself.\nOccasionally will throw out grandes towards you.He Enrages once he reaches half health."
-		"ru"		"Отец Григорий из Равенхолма похоже подался к эффектам зомби инфекции.\nОн будет стрелять пулями и призывать Лазеры Святого Света на себе.\nИногда будет кидать гранаты в вашу сторону.Он разозлится когда его здороьве опуститься до половины."
+		"en" 		"Father Grigori from Ravenholm seems to have succumb to the zombie sideeffects.\n-Has a ranged attack\n-Summons lighting strikes on himself\n-On half health: more stats."
 	}
 	"Metro Cop Desc"
 	{
-		"en" 		"Metro cops that have become zombies, they can shoot but also hit you with their bat."
-		"ru"		"Метро копы которые стали зомби, они могут стрелять и бить вас с помощью их биты."
+		"en" 		"W.F. Cops roaming around.\n-Has a ranged attack and reloads."
 	}
 	"Metro Raider Desc"
 	{
-		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this zombie."
-		"ru"		"Рейдеры не могут ударить вас в рукопашную,И поэтому будут стрелять вас с билзкой дистанции.\nСопротивление ближнему урону не помогут от этого зомби."
+		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this enemy.\n-Has a ranged attack."
 	}
 	"W.F. Rifler Desc"
 	{
-		"en" 		"Losing most of his cognitive function he is barely able to use his rifle.\nHe will still shoot you from time to time."
-		"ru"		"Потеряв большую часть его разума он еле как может использовать его винтовку.\nОн все ещё будет стрелять в вас время от времени."
+		"en" 		"A rifler on a mission to kill any who apose W.F.\n-Has a ranged attack and reloads."
 	}
 	"W.F. Shotgunner Desc"
 	{
-		"en" 		"Very fast and shooting zombies, any melee class will be eliminated quickly as their bullets dont get resisted by melee resistance."
-		"ru"		"Очень быстрый и стреляющий зомби, Любой ближний класс будет убит быстро так как их пули не поддаются сопративлению ближнего боя."
+		"en" 		"-Deals only Ranged damage\n-Very Fast"
 	}
 	"W.F. Swordsman Desc"
 	{
-		"en" 		"Combine imbued with Knightly powers, although still infected.\nThier pulse attack gives them bonus resistances for a short time."
-		"ru"		"Комбайн пропитанный рыцарскими силами, хотя все ещё заражённый.\nИх атака Пульсом даёт им дополнительное сопротивление урону на небольшой промежуток времени."
+		"en" 		"Combine imbued with Knightly powers.\n-Performs pulse attack, gives resistance during usage."
 	}
 	"W.F. Elite Desc"
 	{
-		"en" 		"Combine Elites were able to slightly resist the cognitive deterioation.\nThey shoot and also fire combine energy balls.\nOverall a better Combine Rifler."
-		"ru"		"Элитные комбайны были способны немного сопротивлятся потери разума.\mОни будут стрелять и запускать Энергетические шары в вас.\nВ целом улучшенный комбайн стерлок."
+		"en" 		"Elites trained to elimitate.\n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
 	}
 	"W.F. Giant Swordsman Desc"
 	{
-		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\nPulse attack resistance still applies."
-		"ru"		"Гигантский комбайн рыцарь генетически улучшен что бы быть более устойчивым.\nСопротивление урону от атаки пульсом все ещё применяется (Моежт быть заглушено)."
+		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\n-Performs pulse attack, gives resistance during usage."
 	}
 	"W.F. DDT Desc"
 	{
-		"en" 		"Robot Build by the combine against the infection, sadly they also got infected.\nThey are very fast and hit rapidly.\nThey are the melee versions of the Combine shotgunners."
-		"ru"		"Робот построенный комбайнами против инфекции,к сожелению они тоже были заражены.\nОни очень быстрые и бьют часто.\nОни являються версией комбайна с доробовиком но в ближнем бою."
+		"en" 		"Robot Build by W.F. against all.\n-Very Fast"
 	}
 	"W.F. Golden Collos Desc"
 	{
-		"en" 		"Combines tried using ancient rome magic to summon strong allies, thus the golden collos was born.\nPulse attack resistance still applies."
-		"ru"		"Комбайны попытались использовать древнию римскую магию что бы призвать сильных союзников, так и появились Золотые Коллосы.\nСопротивление от атаки пульсом так же применяться(может быть заглушено)."
+		"en" 		"W.f. Collos giants, failed to imitate constructs.\n-Performs pulse attack, gives resistance during usage."
 	}
 	"W.F. Overlord Desc"
 	{
-		"en" 		"He leads Whiteflower's Army over the world.\nResistance on pulse attack and rage."
+		"en" 		"One of many ''overlords''\n-Performs pulse attack, gives resistance during usage.\n-Rages with cooldown: Damage, attackspeed, resistance."
 	}
 	"Scout Assaulter Desc"
 	{
-		"en" 		"Zombified Scout who is fast and attacks quickly too."
-		"ru"		"Зомбифицированный разведчик который быстри и бьёт быстро тоже."
+		"en" 		"Zombified Scout who is fast and attacks quickly too.\n-Very Fast"
 	}
 	"Engineer Deconstructor Desc"
 	{
-		"en" 		"This zombie will deal heavy bonus damage to any building."
-		"ru"		"Этот зомби будет наносить очень много дополнительного урона постройкам."
+		"en" 		"This zombie will deal heavy bonus damage to any building.\n-High damage to buildings"
 	}
 	"Heavy Brawler Desc"
 	{
-		"en" 		"Heavy's are boosted in power by the infection.\nTheir pure power is incredible."
-		"ru"		"Пулемётчики усилены в силе из-за инфекции.\nИх Физичиская сила невероятна."
+		"en" 		"Heavy's are boosted in power by the infection.\nTheir pure power is incredible.\n-No Special Abilities."
 	}
 	"Flying Armor Desc"
 	{
-		"en" 		"Mysterious flying magical armor from combine rome experiments. Somehow even this got infected.\nDuplicates on death ."
-		"ru"		"Мистический летающая магическая броня от Римских эксперементов комбайнов. как-то даже это заразилось.\nДублируется при смерти(Может быть заглушено)."
+		"en" 		"Mysterious flying magical armor.\n-On death, splits into smaller pieces."
 	}
 	"Tiny Flying Armor Desc"
 	{
-		"en" 		"Magical armor's even split into smaller ones when dying. Any slow attacking weapon will be practically useless here."
-		"ru"		"Магическая броня Даже Разделяется на меньшие версии себя когда умирает.Любое медленное атакующие оружие будет почти бесполезным против них."
+		"en" 		"Magical armor's even split into smaller ones when dying.\n-No Special Abilities."
 	}
 	"Kamikaze Demo Desc"
 	{
-		"en" 		"Very Fast, Very high damage, but low health zombies, take them out before they rid your buildings and you to shreds.\nExplodes on death."
-		"ru"		"Очень быстрые,Очень высокий урон,но мало здоровья,Убейте их до того как они доберутся до вас и ваших построек.\nВзрыв после смерти (Может быть заглушено)."
+		"en" 		"Very Fast, Very high damage, but low health zombies\n-On death, explodes."
 	}
 	"Medic Supporter Desc"
 	{
-		"en" 		"This medic will heal any zombie near it, killing the healing target will enrage the medic.\nIts better to kill the medic beforehand, enraged ones are very powerful."
-		"ru"		"Этот медик будет лечить (может быть заткнуто) Любого зомби рядом с ним,Убийство цель лечения разозлит медика.\nБудет лучше убить медика первым,Разозленные медики очень сильные."
+		"en" 		"This medic will heal any zombie near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
 	}
 	"Giant Heavy Brawler Desc"
 	{
-		"en" 		"Giant Versions from Merasmus's experiments, sadly they were infected aswell.\n Merasmus was able to escape before he got infected..."
-		"ru"		"Гигантская версия от эксперементов Маразмуса, К сожелению и они были заражены.\n Маразмус смог сбежать до того как стал зараженым..."
+		"en" 		"Giant Brawlers, Massive meat to attack.\n-No Special Abilities."
 	}
 	"Spy Facestabber Desc"
 	{
-		"en" 		"These spies wont even try to backstab you and outright go for your forehead."
-		"ru"		"Эти шпионы не будут даже пытатся ударить вас в спину и сразу пойдут в лоб."
+		"en" 		"These spies wont even try to backstab you and outright go for your forehead.\n-No Special Abilities"
 	}
 	"Soldier Rocketeer Desc"
 	{
-		"en" 		"These soldiers seem to have retained the ability to shoot.\nProbably thanks to them already being idiots."
-		"ru"		"Эти солдаты похоже сохранили способность стрелять.\nВозможно благодоря тому что они уже были идиотами."
+		"en" 		"These soldiers seem to have retained the ability to shoot.\n-Has a ranged attack."
 	}
 	"Soldier Minion Desc"
 	{
 		"en" 		"Tiny minions from the boss, they are weak alone but in high numbers they will instakill everything."
-		"ru"		"Маленькие миньоны от босса, Они слабы одни но в больших количествах они очень опасны для всех."
 	}
 	"Soldier Giant Summoner Desc"
 	{
-		"en" 		"This is another boss Zombie, He spawns rockets and shoots them at you.\nEverytime he is hurt below another 10 Percent health he spawns 2 minions (can be silenced but once unsilenced, will release all summons at once)."
-		"ru"		"Это ещё один босс зомби,Он призывает ракеты и стреляет ими по вам.\nКаждый раз когда его здоровье теряет 10 процентов от максимального призывает 2 миньона(можно заглушить но как только Выйдет из заглушения выпустит всех миньонов сразу)."
+		"en" 		"This is another boss Zombie, He spawns rockets and shoots them at you.\n-When hurt enough at threshholds, summons minions.\n-If he cant summon, gains temp resistance instead."
 	}
 	"Spy Thief Desc"
 	{
-		"en" 		"The infection seems to be boosting the powers of spies specifically."
-		"ru"		"Инфекция похоже конкретно усиливает силу шпионов."
+		"en" 		"The infection seems to be boosting the powers of spies specifically.\n-No Special Abilities."
 	}
 	"Spy Trickstabber Desc"
 	{
-		"en" 		"They backstab you no matter what. You cannot outturn the backstabbing."
-		"ru"		"Они наносят удар в спину ни смотря ни на что.Вы не можете избежать удара в спину."
+		"en" 		"They backstab you no matter what. You cannot outturn the backstabbing.\n-More Range."
 	}
 	"Half Cloaked Spy Desc"
 	{
-		"en" 		"The infection broke the cloak and thus transformed them into skeletons as the rest is invis.\nThey will shoot you once and then go in for the melee."
-		"ru"		"Инфекция сломалаих часы-невидимки и трансформировалоих в скелетов остальные части тела невидмы.\nОни будут стрелять вас один раз и потом начнут бить вас в рукопашную."
+		"en" 		"The infection broke the cloak and thus transformed them into skeletons as the rest is invis.\n-Half invis\n-Shoots only once."
 	}
 	"Sniper Main Desc"
 	{
-		"en" 		"These snipers lost their function to snipe you.\nThey will spam you down via smg's instead, when losing enough health they will bring out their melee.\nThis melee deals heavy damage."
-		"ru"		"Эти снайперы Потеряли возможность стрелять из снайперской винтовки.\Они будут стрелять вас из СМГ,когда теряют достаточно здоровья достанут оружие ближнего боя(Может быть заткнуто).\nЭто оружие ближнего боя наносит большой урон."
+		"en" 		"These snipers lost their function to snipe you.\n-Ranged attack untill enraged\n-Enrages when half health."
 	}
 	"Demoknight Main Desc"
 	{
-		"en" 		"They will jump just like fast zombies and deal heavy damage ontop of that.\nIf they fail to jump then they will have fast amounts of speed."
-		"ru"		"Они будут прыгать на вас как быстрые зомби и наносить большой урон.\nЕсли они не смогут прыгнуть они очень быстро побегут."
+		"en" 		"A knight with a habit of jumping.\n-Jumps at you when far away."
 	}
 	"Battle Medic Main Desc"
 	{
-		"en" 		"The Strongest Zombie that exists without any Modifications.\nMedics pure rage caused this with the infection."
-		"ru"		"Сильнеший зомби который существует без модификаций.\nЧистая ярость медика и инфекция стало причиной их силы."
+		"en" 		"The Strongest Zombie that exists without any Modifications.\nMedics pure rage caused this with the infection.\n-No special abilities"
 	}	
 	"Giant Pyro Main Desc"
 	{
-		"en" 		"Giant pyro's made by merasmus, the thought was flamethrower wielding zombie erasers.\nThis backfired. Literally."
-		"ru"		"Гигантский Пиро сделанный Маразмусом,это была мысль о зомби с огнеметами.\nЭто привело к обртаным результатам."
+		"en" 		"Giant Menaces high of all stats..\n-No special abilities"
 	}
 	"W.F. Deutsch Ritter Desc"
 	{
-		"en" 		"An extreamly powerfull and tanky Combine german soldier. Its better to just run at this point."
-		"ru"		"Очень сильный и устойчивый Немецский Комбайн.В таком случае лучше бежать."
+		"en" 		"An extreamly powerfull and tanky w.f. Soldier.\n-High stats, low movement."
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65％ of the damage.\nDeadringer gives 90％ resistance (resistsance can be silenced)."
-		"ru"		"Спаймейны из альтернативной временной линии.\nУ него есть звон смерти но может атаковать через него.\nСтреляет в вас и когда потеряет половину здоровья пули превращаются в ракеты.\nКаждый 3ий удар наносит дополнительный урон и оталкивает.\nКогда теряет половину здоровья он будет получать только 65% от урона.\nЗвон смерти даёт 90% сопротивлению урону (сопротивление к урону может быть заглушено)."
+		"en" 		"Infectios cancers all around.\nWhen hit, activates deadringer and gives Extreamly high res in duration.\nWhen Above half health:\n-Has a ranged bullet attack\nWhen below half health:\n-Ranged rocket attack, deals more damage, is faster, gains resistances."
 	}
 		
 	//XENO
@@ -537,12 +497,11 @@
 	}
 	"Revived DDT Desc"
 	{
-		"en" 		"You were able to reanimate these contraptions."
-		"ru"		"Вы смогли реанимировать эти хитроумные приспособления."
+		"en" 		"A robot following orders.\nAttacks enemeis that are marked."
 	}
 	"Spookmaster Boner Desc"
 	{
-		"en" 		"The boner and his funny honk."
+		"en" 		"The boner and his funny honk.\nAttacks enemeis that are marked."
 		"ru"		"скелет и его смешной гудок."
 	}
 	"Cured Father Grigori Desc"
@@ -609,11 +568,6 @@
 	{
 		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nReceives 2x headshot damage."
 		"ru"		"Монстр из Cry of Fear, сделан из чистого страха и дипресии,Будет бежать за тобой и только тобой.Ксено инфекция воздействует на него делая его ещё больше неустойчивым...\nПолучат двойной урон при выстреле в голову."
-	}
-	"True Fusion Warrior Desc"
-	{
-		"en" 		"A Superpowered Warrior with the abilities of many arts. He Gets stronger everytime he comes back. His halo is his powersource, headshots are neccecary, he is very tanky.\nCan you cure him?\nHis ground slam (can be silenced)."
-		"ru"		"Суперсильный Воин со способностями многих видов. Он становится сильнее каждый раз когда возвращается.Его нимб это его источник силы, Выстрелы в голову необходимы, Он очень устойчивый.\nСможете ли вы его вылечить?\nЕго удар о землю (можно заглушить)."
 	}
 	"Medic Charger Desc"
 	{
@@ -697,8 +651,7 @@
 	}
 	"Rebel Desc"
 	{
-		"en" 		"Survivor of zombies and outlaw of combines. Assist them and they will assist you."
-		"ru"		"Выживший и вне законный комбайн. Помоги ему и он поможет тебе."
+		"en" 		"Survivor of zombies and outlaw of all. Assist them and they will assist you.\nInteract with them to give them orders.\nTheir damage scales with your cash."
 	}
 	"Eagle Scout Desc"
 	{
@@ -1349,8 +1302,7 @@
 	}
 	"Citizen Desc"
 	{
-		"en"		"NEED DESC"
-		"ru"		"Нужно Описание"
+		"en"		"Helpless.\nSave them or else theyll get infected.\nMaking not a single one die will make the last knight spare you, if you dont hurt him too much.\nThey run towards the closest player."
 	}
 	"Barracks Railgunner Desc"
 	{
@@ -1666,8 +1618,7 @@
 	}
 	"Overlord The Last Desc"
 	{
-		"en"	"You took it all from him, now he returns a favor."
-		"ru"	"Вы забрали всё что у него было и он возвращает должок."
+		"en"	"He thinks youre for his crown aswell...\nHis fire is global range and has a LOS check.\nStands when appearing for a while."
 	}
 	"Bladedance The Betrayed Desc"
 	{
@@ -2036,7 +1987,7 @@
 	}
 	"Stella Desc"
 	{
-		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower and lowers the ''corrosion'' index by 1)"
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower)"
 		"ru"		"Настоящие имя ''Доннеркрига''\nЕё заклинания намного сильнее и ''чище'' по сравнению с её поробащённой формой\nВместе с этим она владеет наиболее современную Руиновскую моду и защитное снаряжение\nТолько смотри, чтобы она не теребила тебя за уши...\n(Заглушение:Делает скорость и скорость поворота 10％ медленее и снижает индекс ''корозии'' на 1)"
 	}
 	"Karlas Desc"
