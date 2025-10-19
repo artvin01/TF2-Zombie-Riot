@@ -81,6 +81,7 @@ bool BarracksBlockItem(int cost)
 	if(EnableSilentMode)
 	{
 		SPrintToChatAll("%t", "Barracks Disabled Rogue");
+		Artifact artifact;
 		if(Rogue_GetRandomArtifact(artifact, true, cost) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 
