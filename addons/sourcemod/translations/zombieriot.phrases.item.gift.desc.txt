@@ -1111,7 +1111,7 @@
 	}
 	"Tidelinked Archon Desc"
 	{
-		"en"		"—Sea Terror. Even AEgir technology has a role to play in the evolution of we many.\n- Attacks inflict Nervous Impairment\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
+		"en"		"Sea Terror. Even Alaxios's technology has a role to play in the evolution of we many.\n- Attacks inflict Nervous Impairment\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 	}
 	"Scientific Witchery Desc"
 	{
