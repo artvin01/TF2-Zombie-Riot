@@ -1548,7 +1548,7 @@
 	}
 	"Xeno Acclaimed Swordsman Desc"
 	{
-		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+		"en"	"Whiteflower’s most prestigious swordman, infected by the xeno virus. \n-When first hit, will take no damage for a few seconds. \n-Performs a barrage of pulse attack, gives resistance during usage."
 	}
 	"Wandering Spirit Desc"
 	{
