@@ -5,6 +5,10 @@
 		"en" 		"Example Text!"
 		"pt"		"Texto de Exemplo."
 	}
+	"Current Enemies Alive"
+	{
+		"en" 		"Current Enemies Alive"
+	}
 	"Allies"
 	{
 		"en" 		"Allies"

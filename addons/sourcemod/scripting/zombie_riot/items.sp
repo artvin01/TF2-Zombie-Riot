@@ -8,6 +8,7 @@
 
 static const char Categories[][] =
 {
+	"Current Enemies Alive",
 	"Allies",
 	"Special Enemies",
 	"Raid Bosses",
@@ -517,6 +518,32 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		NPCData data;
 		int length = NPC_GetCount();
 		menu.AddItem("None", "", ITEMDRAW_DISABLED);
+		if(CategoryPage[client] == Type_DONOTUSE)
+		{
+			ArrayList NpcsSavedList = new ArrayList();
+			int entity = -1;
+			int a;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(IsValidEntity(entity))
+				{
+					if(NpcsSavedList.FindValue(i_NpcInternalId[entity]) != -1)
+						continue;
+					NPC_GetById(i_NpcInternalId[entity], data);
+					if(data.Plugin[0])
+					{
+						if(i_NpcInternalId[entity] == page)
+							pos = menu.ItemCount;
+
+						IntToString(i_NpcInternalId[entity], data.Plugin, sizeof(data.Plugin));
+						Format(data.Name, sizeof(data.Name), "%t", data.Name);
+						menu.AddItem(data.Plugin, data.Name);
+						NpcsSavedList.Push(i_NpcInternalId[entity]);
+					}
+				}
+			}
+			delete NpcsSavedList;
+		}
 		for(int i; i < length; i++)
 		{
 			NPC_GetById(i, data);
@@ -565,7 +592,13 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 		char chdata[16], buffer[64];
 		bool FoundOneMinimum = false;
-		for(int i; i < sizeof(Categories); i++)
+		
+		//always display
+		IntToString(Type_DONOTUSE, chdata, sizeof(chdata));
+		FormatEx(buffer, sizeof(buffer), "%t", Categories[Type_DONOTUSE]);
+		menu.AddItem(chdata, buffer);
+
+		for(int i = Type_Ally; i < sizeof(Categories); i++)
 		{
 			if(c_WeaponUseAbilitiesHud[client][0])
 			{
