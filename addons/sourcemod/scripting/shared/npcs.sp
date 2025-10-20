@@ -2172,7 +2172,6 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		return;
 	if(attacker <= MaxClients)
 	{
-		b_DisplayDamageHud[attacker][0] = true;
 
 		//If a raid hud update happens, it should prefer to update it incase you attack something in the same frame or whaatever.
 		if(RaidHudForce)
@@ -2182,6 +2181,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		}
 		else
 		{
+			b_DisplayDamageHud[attacker][0] = true;
 			i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
 		}
 

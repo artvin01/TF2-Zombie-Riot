@@ -629,7 +629,8 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 				if(CategoryPage[client] == -1)
 				{
 					CategoryPage[client] = -2;
-					Store_Menu(client);
+					if(GetClientTeam(client) == 2)
+						Store_Menu(client);
 				}
 				else
 				{
