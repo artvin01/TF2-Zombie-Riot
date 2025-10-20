@@ -546,7 +546,6 @@ void DataBase_ClientDisconnect(int client)
 				
 				tr.AddQuery(buffer);
 			}
-			PrintToServer(" LoopCountGet %i",LoopCountGet);
 
 			Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
 
