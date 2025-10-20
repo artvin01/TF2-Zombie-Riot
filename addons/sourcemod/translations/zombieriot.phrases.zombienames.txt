@@ -3647,6 +3647,10 @@
 	{
 		"en"	"W.F. Acclaimed Swordsman"
 	}	
+	"W.F. Acclaimed Swordsman Desc"
+	{
+		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attack, gives resistance during usage."
+	}
 	"W.F. Ekas Piloteer"
 	{
 		"en"	"W.F. Ekas Piloteer"
