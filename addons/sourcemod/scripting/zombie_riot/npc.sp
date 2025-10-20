@@ -34,6 +34,7 @@ enum struct NPCData
 	bool IconCustom;
 	Function Precache;
 	Function Precache_data;
+	Function WikiFunc;
 
 	// Don't touch below
 	bool Precached;
