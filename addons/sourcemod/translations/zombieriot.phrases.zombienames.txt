@@ -3643,6 +3643,10 @@
 	{
 		"en"	"W.F. Flowering Darkness"
 	}	
+	"W.F. Flowering Darkness Desc"
+	{
+		"en"	"Whiteflower's second in command. \n-Fires 3 magic bolts, with 2 of them having homing. \n-Spawns afterimages that shoot the 3 magic bolts."
+	}
 	"W.F. Acclaimed Swordsman"
 	{
 		"en"	"W.F. Acclaimed Swordsman"
@@ -3658,7 +3662,11 @@
 	"W.F. Extreme Knight Giant"
 	{
 		"en"	"W.F. Extreme Knight Giant"
-	}	
+	}
+"W.F. Extreme Knight Giant Desc"
+	{
+		"en"	"A extremely powerfull knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts, that retarget if missed."
+	}
 	"W.F. Raging Blader"
 	{
 		"en"	"W.F. Raging Blader"
