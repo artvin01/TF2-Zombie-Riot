@@ -1895,15 +1895,35 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		holding[client] |= IN_SCORE;
 		
 #if defined ZR
-		if(dieingstate[client] == 0 && GetClientTeam(client) == 2)
+		if(GetClientTeam(client) == 2)
 		{
-			if(WaitingInQueue[client])
+			if(dieingstate[client] == 0)
 			{
-				Queue_Menu(client);
+				if(WaitingInQueue[client])
+				{
+					Queue_Menu(client);
+				}
+				else
+				{
+					Store_Menu(client);
+				}
+			}
+		}
+		else
+		{
+			
+			if(LastStoreMenu[client] || AnyMenuOpen[client])
+			{
+				HideMenuInstantly(client);
+				//show a blank page to instantly hide it
+				CancelClientMenu(client);
+				ClientCommand(client, "slot10");
+				ResetStoreMenuLogic(client);
 			}
 			else
 			{
-				Store_Menu(client);
+				c_WeaponUseAbilitiesHud[client][0] = 0;
+				Items_EncyclopediaMenu(client);
 			}
 		}
 #endif
@@ -2521,6 +2541,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
+			//stringpool_fix crash.
+			SetEntProp(entity, Prop_Data, "m_bForcePurgeFixedupStrings", true);
 		}
 		else if(!StrContains(classname, "tf_player_manager"))
 		{

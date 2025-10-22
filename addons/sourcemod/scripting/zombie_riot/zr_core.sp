@@ -249,7 +249,8 @@ enum
 enum
 {
 	Type_Hidden = -1,
-	Type_Ally = 0,
+	Type_DONOTUSE = 0,
+	Type_Ally = 1,
 	Type_Special,
 	Type_Raid,
 	Type_Common,

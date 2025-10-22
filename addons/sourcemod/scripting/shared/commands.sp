@@ -304,6 +304,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 {
 	
 #if defined ZR
+	if(Encyclopedia_SayCommand(client))
+		return Plugin_Handled;
+
 	if(Store_SayCommand(client))
 		return Plugin_Handled;
 		

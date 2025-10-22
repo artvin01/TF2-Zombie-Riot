@@ -292,11 +292,11 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								attack *= 2.5;
 							
-							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.1, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.5, DMG_CLUB);
 							npc.PlayMeleeHitSound();
 
 							if(npc.m_bCarrier)
-								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.2));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.15));
 						}
 					}
 
@@ -306,7 +306,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 				if(failed)
 				{
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
-					int entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
+					int entity = npc.FireArrow(vecTarget, attack * 0.75, 1200.0, "models/weapons/w_bugbait.mdl");
 					
 					if(entity != -1)
 					{
@@ -321,7 +321,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 
 						if(npc.m_bCarrier)
-							i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.1);
+							i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.075);
 					}
 				}
 			}

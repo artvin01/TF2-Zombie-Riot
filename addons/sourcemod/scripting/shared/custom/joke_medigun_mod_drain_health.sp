@@ -628,11 +628,6 @@ stock int CreateParticleOnBackPack(const char[] sParticle, int client)
 	SetVariantString("flag");
 	AcceptEntityInput(entity, "SetParentAttachment", entity, entity, 0);
 	
-	char t_Name[128];
-	Format(t_Name, sizeof(t_Name), "target%i", client);
-	
-	DispatchKeyValue(entity, "targetname", t_Name);
-	
 	DispatchSpawn(entity);
 	ActivateEntity(entity);
 	AcceptEntityInput(entity, "start");

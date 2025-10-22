@@ -47,6 +47,7 @@ void Barracks_Combine_Chaos_Containment_Unit_Precache()
 	strcopy(data.Name, sizeof(data.Name), "Barracks Chaos Containment Unit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_chaos_containment_unit");
 	data.Func = ClotSummon;
+	data.Category = Type_Ally;
 	NPC_Add(data);
 }
 
