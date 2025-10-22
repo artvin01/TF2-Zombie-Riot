@@ -872,7 +872,7 @@
 	}
 	"Xeno Infected Lab Doctor Desc"
 	{
-		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Each hit they take increases their resitance, up to a limit."
 	}
 	"Archer"
 	{
@@ -4364,7 +4364,7 @@
 	}
 	"Eirasus Desc"
 	{
-		"en"	"Simular to an Erasus.\nSpawns with shields.\nGains the 'Angered expidonsan' buff once its shield breaks."
+		"en"	"Simular to an Erasus.\n-Spawns with shields.\n-Gains the 'Angered expidonsan' buff once its shield breaks."
 	}
 	"Haltera"
 	{
@@ -4372,7 +4372,7 @@
 	}
 	"Haltera Desc"
 	{
-		"en"	"Simular to a Guardus\nOnce below half HP, loses their hat and gains 2x attackspeed but loses half their damage\nTheir healing is unchanged..."
+		"en"	"Simular to a Guardus\n-Once below half HP, gains 2x attackspeed but loses half their damage, healing is unchanged"
 	}
 	"Flaigus"
 	{
@@ -4380,7 +4380,7 @@
 	}
 	"Flaigus Desc"
 	{
-		"en"	"Simular to an Dual-Rea.\nSpawns with shields.\nWill Fly towards you once every so often."
+		"en"	"Simular to an Dual-Rea.\n-Spawns with shields.\n-Will Fly towards you once every so often."
 	}
 	"Biggun Assisa"
 	{
@@ -4388,7 +4388,7 @@
 	}
 	"Biggun Assisa Desc"
 	{
-		"en"	"Simular to a Minigun Assisa\nOnce armor is broken once, their lose their hat and will gain double damage."
+		"en"	"Simular to a Minigun Assisa\n-Once armor is broken once, their lose their hat and will gain double damage."
 	}
 	"Hia Expidonsan Rejuvinator"
 	{
@@ -4396,7 +4396,7 @@
 	}
 	"Hia Expidonsan Rejuvinator Desc"
 	{
-		"en"	"Very fast medic that spawns with shields.\nWhen shield is broken, their lose alot of their speed.\nWhen they heal an ally they give the 'Rejuvinator' Buff."
+		"en"	"Very fast medic that spawns with shields.\n-When shield is broken, their lose alot of their speed.\n-When they heal an ally they give the 'Rejuvinator' Buff."
 	}
 	"Cuttus Siccino"
 	{
@@ -4412,7 +4412,7 @@
 	}
 	"Armsa Manu Desc"
 	{
-		"en"	"Simular to Rifal manu.\nEvery 10th shot deals 10x the damage."
+		"en"	"Simular to Rifal manu.\n-Every 10th shot deals 10x the damage."
 	}
 	"Speedus Absolutos"
 	{
