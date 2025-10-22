@@ -4,10 +4,12 @@
 	{
 		"en" 		"Example Text!"
 		"pt"		"Texto de Exemplo."
+		"it"		"Testo di esempio!"
 	}
 	"Current Enemies Alive"
 	{
 		"en" 		"Current Enemies Alive"
+		"it"		"Nemici attuali vivi"
 	}
 	"Allies"
 	{
@@ -15,260 +17,319 @@
 		"fr" 		"Alliés"
 		"pt"		"Aliados"
 		"ru"            "Союзники"
+		"it"		"Alleati"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
 		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
+		"it"		"Boss dell'incursione"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
 		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
+		"it"		"Nemici speciali"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
 		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
+		"it"		"Infezione comune"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
 		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
+		"it"		"Blitz controllato"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
 		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
+		"it"		"Infezione Xeno"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
 		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
+		"it"		"Impero medievale"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
 		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
+		"it"		"Infezione di Seaborn"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
 		"fr" 		"Bloons"
 		"pt"		"Balões"
+		"it"		"Bloons"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
 		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
+		"it"		"Cry of Fear"
 	}
 	"Voided Subjects"
 	{
 		"en" 		"Voided Subjects"
 		"fr" 		"Disciples du Void"
+		"it"		"Soggetti non registrati"
 	}
 	"Ruina"
 	{
 		"en" 		"Ruina"
+		"it"		"Ruina"
 	}
 	"Iberia Expidonsa Alliance"
 	{
 		"en" 		"Iberia Expidonsa Alliance"
+		"it"		"Alleanza Iberia Expidonsa"
 	}
 	"Whiteflower Specials"
 	{
 		"en" 		"Whiteflower Specials"
+		"it"		"Offerte di fiori bianchi"
 	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
 		"fr" 		"Alliance du Chaos"
+		"it"		"Caos Allience"
 	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"
 		"pt"		"Expidonsa"
+		"it"		"Expidonsa"
 	}
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
 		"fr"		"Alliés de Interitus"
+		"it"		"Alleanze interitus"
 	}
 	"Mutations"
 	{
 		"en"		"Mutations"
+		"it"		"Mutazioni"
 	}
 	"Curtain Occupants"
 	{
 		"en"		"Curtain Occupants"
+		"it"		"Occupanti della tenda"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around.\n-No special Effects."
+		"it"		"Normale Zombie che non ha nulla di speciale. Ma questo è il più comune tra quelli che si vedono in giro.\n-Nessun effetto speciale."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Headcrab Zombie.\n-No special Effects."
+		"it"		"Versione più robusta del normale Headcrab Zombie.\n-Nessun effetto speciale."
 	}
 	"Fast Zombie Desc"
 	{
 		"en" 		"A very fast zombie.\n-Jumps at you when in view."
+		"it"		"Uno zombie molto veloce.\n-Salta verso di voi quando siete in vista."
 	}
 	"Fortified Fast Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Fast Zombie.\n-Jumps at you when in view."
+		"it"		"Versione più forte del normale Zombie veloce.\n-Salta verso di voi quando siete in vista."
 	}
 	"Torsoless Headcrab Zombie Desc"
 	{
 		"en" 		"A Zombie with his legs cut off, sentries cant hit him.\nTheir health and damage is lower then the normal counterpart.\n-No special Effects."
+		"it"		"Uno zombie con le gambe tagliate, le sentinelle non possono colpirlo.\nLa loro salute e i danni sono inferiori alla controparte normale.\n-Nessun effetto speciale."
 	}
 	"Poison Zombie Desc"
 	{
 		"en" 		"A Slow Zombie with alot of damage and health.\nHitting their head is quite easy.\n-No special Effects."
+		"it"		"Uno zombie lento con molti danni e salute. colpire la testa è abbastanza facile. nessun effetto speciale."
 	}
 	"Fortified Poison Zombie Desc"
 	{
 		"en" 		"Stronger version of the normal Poison Zombie.\n-No special Effects."
+		"it"		"Versione più forte del normale Zombie velenoso.\n-Nessun effetto speciale."
 	}
 	"Fortified Giant Poison Zombie Desc"
 	{
 		"en" 		"Giants that are extreamly slow but very heavy hitting.\n-No special Effects."
+		"it"		"Giganti estremamente lenti ma che colpiscono molto pesantemente.\n-Nessun effetto speciale."
 	}
 	"Father Grigori Desc"
 	{
 		"en" 		"Father Grigori from Ravenholm seems to have succumb to the zombie sideeffects.\n-Has a ranged attack\n-Summons lighting strikes on himself\n-On half health: more stats."
+		"it"		"Padre Grigori di Ravenholm sembra aver ceduto agli effetti collaterali degli zombi.\n-Ha un attacco a distanza\n-Somministra colpi di luce su di sé\n-A metà salute: più statistiche."
 	}
 	"Metro Cop Desc"
 	{
 		"en" 		"W.F. Cops roaming around.\n-Has a ranged attack and reloads."
+		"it"		"Poliziotti W.F. in giro.\n-Ha un attacco a distanza e ricarica."
 	}
 	"Metro Raider Desc"
 	{
 		"en" 		"Raiders are unable to melee you, thus will only shoot at close range.\nMelee resistances will not help against this enemy.\n-Has a ranged attack."
+		"it"		"Gli incursori non sono in grado di attaccare in mischia, quindi sparano solo a distanza ravvicinata.\nLe resistenze in mischia non sono utili contro questo nemico.\nHa un attacco a distanza."
 	}
 	"W.F. Rifler Desc"
 	{
 		"en" 		"A rifler on a mission to kill any who apose W.F.\n-Has a ranged attack and reloads."
+		"it"		"Un fuciliere in missione per uccidere chiunque si opponga al W.F.\n Ha un attacco a distanza e può ricaricare."
 	}
 	"W.F. Shotgunner Desc"
 	{
 		"en" 		"-Deals only Ranged damage\n-Very Fast"
+		"it"		"-Infligge solo danni a distanza\n-Molto veloce"
 	}
 	"W.F. Swordsman Desc"
 	{
 		"en" 		"Combine imbued with Knightly powers.\n-Performs pulse attack, gives resistance during usage."
+		"it"		"Combinazione impregnata di poteri cavallereschi.\n-Performa l'attacco a impulsi, conferisce resistenza durante l'uso."
 	}
 	"W.F. Elite Desc"
 	{
 		"en" 		"Elites trained to elimitate.\n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
+		"it"		"Elite addestrate all'eliminazione.\n-Ha un attacco a distanza e ricarica.\n-Spara proiettili esplosivi."
 	}
 	"W.F. Giant Swordsman Desc"
 	{
 		"en" 		"Giant Swordsman genetically enhanced to be more resistable.\n-Performs pulse attack, gives resistance during usage."
+		"it"		"Spadaccino gigante geneticamente migliorato per essere più resistente.\n-Esegue attacchi a impulsi, conferisce resistenza durante l'uso."
 	}
 	"W.F. DDT Desc"
 	{
 		"en" 		"Robot Build by W.F. against all.\n-Very Fast"
+		"it"		"Robot costruito da W.F. contro tutti.\nMolto veloce"
 	}
 	"W.F. Golden Collos Desc"
 	{
 		"en" 		"W.f. Collos giants, failed to imitate constructs.\n-Performs pulse attack, gives resistance during usage."
+		"it"		"W.f. Giganti di Collos, non è riuscito a imitare i costrutti.\n-Performa l'attacco a impulsi, conferisce resistenza durante l'uso."
 	}
 	"W.F. Overlord Desc"
 	{
 		"en" 		"One of many ''overlords''\n-Performs pulse attack, gives resistance during usage.\n-Rages with cooldown: Damage, attackspeed, resistance."
+		"it"		"Uno dei tanti ''overlord'' \n-Performa un attacco a impulsi, conferisce resistenza durante l'uso.\n-Ragisce con cooldown: Danno, velocità d'attacco, resistenza."
 	}
 	"Scout Assaulter Desc"
 	{
 		"en" 		"Zombified Scout who is fast and attacks quickly too.\n-Very Fast"
+		"it"		"Scout zombificato che è veloce e attacca anche rapidamente.\nMolto veloce"
 	}
 	"Engineer Deconstructor Desc"
 	{
 		"en" 		"This zombie will deal heavy bonus damage to any building.\n-High damage to buildings"
+		"it"		"Questo zombie infligge ingenti danni bonus a qualsiasi edificio.\n-Alto danno agli edifici"
 	}
 	"Heavy Brawler Desc"
 	{
 		"en" 		"Heavy's are boosted in power by the infection.\nTheir pure power is incredible.\n-No Special Abilities."
+		"it"		"I Pesanti sono potenziati dall'infezione.\nLa loro potenza pura è incredibile.\nNessuna abilità speciale."
 	}
 	"Flying Armor Desc"
 	{
 		"en" 		"Mysterious flying magical armor.\n-On death, splits into smaller pieces."
+		"it"		"Misteriosa armatura magica volante.\nAlla morte, si divide in pezzi più piccoli."
 	}
 	"Tiny Flying Armor Desc"
 	{
 		"en" 		"Magical armor's even split into smaller ones when dying.\n-No Special Abilities."
+		"it"		"Le armature magiche si dividono addirittura in altre più piccole quando muoiono.\n-Nessuna abilità speciale."
 	}
 	"Kamikaze Demo Desc"
 	{
 		"en" 		"Very Fast, Very high damage, but low health zombies\n-On death, explodes."
+		"it"		"Molto veloce, danno molto elevato, ma salute bassa zombie, morte immediata, esplode."
 	}
 	"Medic Supporter Desc"
 	{
 		"en" 		"This medic will heal any zombie near it.\n-Touching medic enrages it\n-Enrages on Patient death.\n-Enrage: No longer heals, instead attacks.\n-Heals one ally when not enraged."
+		"it"		"Questo medico guarisce qualsiasi zombi nelle sue vicinanze.\n-Toccando il medico si infuria.\n-Si infuria alla morte del paziente.\n-Rabbia: Non guarisce più, ma attacca.\n-Si cura un alleato quando non è infuriato."
 	}
 	"Giant Heavy Brawler Desc"
 	{
 		"en" 		"Giant Brawlers, Massive meat to attack.\n-No Special Abilities."
+		"it"		"Giganti attaccabrighe, carne massiccia da attaccare.\n-Nessuna abilità speciale."
 	}
 	"Spy Facestabber Desc"
 	{
 		"en" 		"These spies wont even try to backstab you and outright go for your forehead.\n-No Special Abilities"
+		"it"		"Queste spie non cercheranno nemmeno di pugnalarvi alle spalle e punteranno direttamente alla vostra fronte.\n-Nessuna abilità speciale"
 	}
 	"Soldier Rocketeer Desc"
 	{
 		"en" 		"These soldiers seem to have retained the ability to shoot.\n-Has a ranged attack."
+		"it"		"Questi soldati sembrano aver mantenuto la capacità di sparare.\n-Ha un attacco a distanza."
 	}
 	"Soldier Minion Desc"
 	{
 		"en" 		"Tiny minions from the boss, they are weak alone but in high numbers they will instakill everything."
+		"it"		"Minuscoli servitori del boss, da soli sono deboli ma in numero elevato instakillano tutto."
 	}
 	"Soldier Giant Summoner Desc"
 	{
 		"en" 		"This is another boss Zombie, He spawns rockets and shoots them at you.\n-When hurt enough at threshholds, summons minions.\n-If he cant summon, gains temp resistance instead."
+		"it"		"Si tratta di un altro boss Zombie, che genera razzi e li spara contro di voi.\n-Se viene ferito a sufficienza alle soglie, evoca i servitori.\n-Se non può evocare, guadagna invece resistenza alla tempesta."
 	}
 	"Spy Thief Desc"
 	{
 		"en" 		"The infection seems to be boosting the powers of spies specifically.\n-No Special Abilities."
+		"it"		"L'infezione sembra potenziare i poteri delle spie in particolare.\n-Nessuna abilità speciale."
 	}
 	"Spy Trickstabber Desc"
 	{
 		"en" 		"They backstab you no matter what. You cannot outturn the backstabbing.\n-More Range."
+		"it"		"Ti pugnalano alle spalle in ogni caso. Non si può superare la pugnalata alle spalle.\n-Maggior raggio d'azione."
 	}
 	"Half Cloaked Spy Desc"
 	{
 		"en" 		"The infection broke the cloak and thus transformed them into skeletons as the rest is invis.\n-Half invis\n-Shoots only once."
+		"it"		"L'infezione ha rotto il mantello e li ha trasformati in scheletri, mentre il resto è invisibile.\nSpara solo una volta."
 	}
 	"Sniper Main Desc"
 	{
 		"en" 		"These snipers lost their function to snipe you.\n-Ranged attack untill enraged\n-Enrages when half health."
+		"it"		"Questi cecchini hanno perso la loro funzione di cecchino.\n-Attacco a distanza fino a quando non sono infuriati\n-Enfragia a metà salute."
 	}
 	"Demoknight Main Desc"
 	{
 		"en" 		"A knight with a habit of jumping.\n-Jumps at you when far away."
+		"it"		"Un cavaliere con l'abitudine di saltare.\n-Salta verso di voi quando siete lontani."
 	}
 	"Battle Medic Main Desc"
 	{
 		"en" 		"The Strongest Zombie that exists without any Modifications.\nMedics pure rage caused this with the infection.\n-No special abilities"
+		"it"		"Lo Zombie più forte che esista senza alcuna modifica.\nLa pura rabbia dei medici ha causato questo con l'infezione.\nNessuna abilità speciale"
 	}	
 	"Giant Pyro Main Desc"
 	{
 		"en" 		"Giant Menaces high of all stats..\n-No special abilities"
+		"it"		"Minacce giganti alte di tutte le statistiche..\n-Nessuna abilità speciale"
 	}
 	"W.F. Deutsch Ritter Desc"
 	{
 		"en" 		"An extreamly powerfull and tanky w.f. Soldier.\n-High stats, low movement."
+		"it"		"Un soldato w.f. estremamente potente e tanky.\nStatistiche elevate, movimento ridotto."
 	}
 	"X10 Spy Main Desc"
 	{
 		"en" 		"Infections cancers all around.\nWhen hit, activates deadringer and gives Extreamly high res in duration.\nWhen Above half health:\n-Has a ranged bullet attack\nWhen below half health:\n-Ranged rocket attack, deals more damage, is faster, gains resistances."
+		"it"		"Infezioni e tumori ovunque.\nQuando viene colpito, attiva il deadringer e conferisce una res estremamente elevata in termini di durata.\nQuando supera la metà della salute: ha un attacco a distanza con proiettile.\nQuando è al di sotto della metà della salute:\nha un attacco a distanza con razzo, infligge più danni, è più veloce e guadagna resistenze."
 	}
 		
 	//XENO
@@ -276,1786 +337,2231 @@
 	"Xeno Headcrab Zombie Desc"
 	{
 		"en" 		"This zombie will reach very high speeds once hurt."
+		"it"		"Una volta ferito, questo zombie raggiunge velocità molto elevate."
 
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
 		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater."
+		"it"		"Gli esseri Fortificati hanno una versione mutata dell'infezione xeno, che rende le loro capacità ancora più grandi."
 	}
 	"Xeno Fast Zombie Desc"
 	{
 		"en" 		"The first hit deals no damage at all. No matter how high."
+		"it"		"Il primo colpo non infligge alcun danno. Non importa quanto sia alto."
 	}
 	"Xeno Fortified Fast Zombie Desc"
 	{
 		"en" 		"Stronger version of the Xeno Fast Zombie"
+		"it"		"Versione più forte dello Xeno Zombie Veloce"
 	}
 	"Xeno Torsoless Headcrab Zombie Desc"
 	{
 		"en" 		"Still unable to be attacked by sentries relieably."
+		"it"		"Ancora incapace di essere attaccato dalle sentinelle in modo affidabile."
 	}
 	"Xeno Poison Zombie Desc"
 	{
 		"en" 		"Once hurt, they will gain massive resistances (resistance can be silenced) for 3 seconds, it can recharge so kill them quick."
+		"it"		"Una volta feriti, guadagneranno resistenze massicce (le resistenze possono essere silenziate) per 3 secondi, ma possono ricaricarsi, quindi uccideteli in fretta."
 	}
 	"Xeno Fortified Poison Zombie Desc"
 	{
 	    "en" 		"Stronger version of the Xeno Poison Zombie"
 	    "ru" 		"Более сильный вариант Ксено ядовитого зомби"	    	    
+	    "it"		"Versione più forte dello zombie velenoso Xeno"
 	}
 	"Xeno Fortified Giant Poison Zombie Desc"
 	{
 		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger."
  		"ru" 		"Сохранили способности ''нормального''и более сильные чем он"
+		"it"		"Ha mantenuto le abilità "normali", oltre a essere più forte."
 	}
 	"Xeno Father Grigori Desc"
 	{
 		"en" 		"Xeno infection altered Grigori's powers and made him able to summon his lightbeams directly on you.\nHe ditched his grenade and shoots his rockets way faster."
+		"it"		"L'infezione Xeno ha alterato i poteri di Grigori e lo ha reso in grado di evocare i suoi raggi di luce direttamente su di voi.\nHa abbandonato la granata e spara i suoi razzi molto più velocemente."
 	}
 	"Xeno Metro Cop Desc"
 	{
 		"en" 		"Attacking these zombies will cause them to heavily anger and gain fast speeds."
+		"it"		"Attaccando questi zombie, questi si arrabbiano pesantemente e acquistano velocità."
 	}
 	"Xeno Metro Raider Desc"
 	{
 		"en" 		"When hurt, they will attack 10x as fast, shredding everything."
+		"it"		"Quando sono feriti, attaccano con una velocità 10 volte superiore, distruggendo tutto."
 	}
 	"Xeno Rifler Desc"
 	{
 		"en" 		"All their abilities have been enhanced by the Xeno infection."
+		"it"		"Tutte le loro capacità sono state potenziate dall'infezione Xeno."
 	}
 	"Xeno Shotgunner Desc"
 	{
 		"en" 		"Faster and more deadly Shotgunners, they also attack 2x as fast as normal."
+		"it"		"Più veloci e più letali, gli Shotgunner attaccano anche due volte più velocemente del normale."
 	}
 	"Xeno Swordsman Desc"
 	{
 		"en" 		"The xeno infection even was able to infect roman powers.\nPulse attack resistance still applies."
+		"it"		"L'infezione da xeno è stata in grado di infettare persino i poteri romani."
 	}
 	"Xeno Elite Desc"
 	{
 		"en" 		"Xeno infection didnt seem to alter much in this one."
+		"it"		"L'infezione da Xeno non sembra essere cambiata molto in questo caso."
 	}
 	"Xeno Giant Swordsman Desc"
 	{
 		"en" 		"The xeno infection caused these roman ancients to be able to run and attack way faster!.\nPulse attack resistance still applies."
+		"it"		"L'infezione da xeno ha fatto sì che questi antichi romani fossero in grado di correre e attaccare molto più velocemente!\nLa resistenza agli attacchi a impulsi è ancora valida."
 	}
 	"Xeno DDT Desc"
 	{
 		"en" 		"They gained cloak abilities, once hurt they will go almost invis for a short time."
+		"it"		"Hanno acquisito l'abilità di occultamento: una volta feriti, diventano quasi invisibili per un breve periodo."
 	}
 	"Xeno Golden Collos Desc"
 	{
 		"en" 		"Even statues of pure gold can be infected by the Xeno Radiation.\nPulse attack resistance still applies."
+		"it"		"Anche le statue d'oro puro possono essere infettate dalle radiazioni Xeno.\nLa resistenza agli attacchi a impulsi è ancora valida."
 	}
 	"Xeno Overlord Desc"
 	{
 		"en" 		"The overlord got faster, his pulse attack combos you in the air and glitches you around, and he rages 2x as fast.\nPulse attack resistance still applies.\n Rage reisstance is high."
+		"it"		"L'Overlord è diventato più veloce, il suo attacco a impulsi ti combina in aria e ti manda in tilt, e si infuria due volte più velocemente.\nLa resistenza all'attacco a impulsi è ancora valida.La resistenza alla rabbia è alta."
 	}
 	"Xeno Scout Assaulter Desc"
 	{
 		"en" 		"Hurting these will cause scouts to go at insane speeds."
+		"it"		"Se si danneggiano questi elementi, gli esploratori vanno a velocità folli."
 	}
 	"Xeno Engineer Deconstructor Desc"
 	{
 		"en" 		"Their damage towards buildings got increased by 3x times or more."
+		"it"		"I loro danni agli edifici sono aumentati di 3 volte o più."
 	}
 	"Xeno Heavy Brawler Desc"
 	{
 		"en" 		"These heavies gain even stronger muscles due to the xeno radiation."
+		"it"		"Questi pesanti acquisiscono muscoli ancora più forti a causa delle radiazioni xeno."
 	}
 	"Xeno Flying Armor Desc"
 	{
 		"en" 		"Their splitting abilities have doubled, they now will spawn 2 minions instead of one."
+		"it"		"Le loro abilità di divisione sono raddoppiate, ora generano 2 servitori invece di uno."
 	}
 	"Xeno Tiny Flying Armor Desc"
 	{
 		"en" 		"Just stronger versions of the normal."
+		"it"		"Solo versioni più forti di quelle normali."
 	}
 	"Xeno Kamikaze Demo Desc"
 	{
 		"en" 		"Do not let these mutants touch your barricades.\nAt all.\nExplodes on death."
+		"it"		"Non permettete che questi mutanti tocchino le vostre barricate.\nEsplode quando muore."
 	}
 	"Xeno Medic Supporter Desc"
 	{
 		"en" 		"They heal twice as fast due to xeno compatability."
+		"it"		"Guariscono due volte più velocemente grazie alla compatibilità con gli xeno."
 	}
 	"Xeno Giant Heavy Brawler Desc"
 	{
 		"en" 		"The giants have heavily mutated, when dying they will split into the smaller ones."
+		"it"		"I giganti sono fortemente mutati e quando muoiono si dividono in quelli più piccoli."
 	}
 	"Xeno Spy Facestabber Desc"
 	{
 		"en" 		"Spy facestabbers are unaffected mostly."
+		"it"		"I facestabber spia sono per lo più inalterati."
 	}
 	"Xeno Soldier Rocketeer Desc"
 	{
 		"en" 		"They shoot faster and have more health.\nThey predict your movement aswell."
+		"it"		"Sparano più velocemente e hanno più salute.\nPrevedono anche i tuoi movimenti."
 	}
 	"Xeno Soldier Minion Desc"
 	{
 		"en" 		"Smol soldier :)"
+		"it"		"Soldato Smol :)"
 	}
 	"Xeno Soldier Giant Summoner Desc"
 	{
 		"en" 		"Shoots rockets every second it can, prepare for a barrage of rockets comming your way.\n(can be silenced but once unsilenced, will release all summons at once)"
+		"it"		"Spara razzi ogni secondo che può, preparatevi a una raffica di razzi in arrivo.\n(può essere silenziato ma una volta non silenziato, rilascerà tutte le evocazioni in una volta sola)"
 	}
 	"Xeno Spy Thief Desc"
 	{
 		"en" 		"Xeno infection seems to have little effect on spy enemies, why so?"
+		"it"		"L'infezione Xeno sembra avere poco effetto sui nemici spia, perché?"
 	}
 	"Xeno Spy Trickstabber Desc"
 	{
 		"en" 		"Again almost no change.\nThis is suspicious."
+		"it"		"Anche in questo caso quasi nessun cambiamento.\nQuesto è sospetto."
 	}
 	"Xeno Half Cloaked Spy Desc"
 	{
 		"en" 		"Not even recolour, do spies have a special interaction with the xeno virus?"
+		"it"		"Nemmeno ricolorare, le spie hanno un'interazione speciale con il virus xeno?"
 	}
 	"Xeno Sniper Main Desc"
 	{
 		"en" 		"Hurting them at all causes them to instantly wield their melee."
+		"it"		"Se li si ferisce in qualche modo, si brandiscono istantaneamente le loro armi da mischia."
 	}
 	"Xeno Demoknight Main Desc"
 	{
 		"en" 		"They Jump twice as much and hurt twice as hard."
+		"it"		"Saltano il doppio e fanno male il doppio."
 	}
 	"Xeno Battle Medic Main Desc"
 	{
 		"en" 		"Absolute crazed battle monsters. Once hurt they will go at RAPID speeds and attack VERY fast.\nIf not carefull, they will wipe you out in mere moments."
+		"it"		"Mostri da battaglia assolutamente impazziti. Una volta feriti, vanno a velocità RAPIDA e attaccano MOLTO velocemente.\nSe non si fa attenzione, vi spazzeranno via in pochi istanti."
 	}
 	"Xeno Giant Pyro Main Desc"
 	{
 		"en" 		"Stronger, faster, hits harder."
+		"it"		"Più forte, più veloce, colpisce più forte."
 	}
 	"Xeno Deutsch Ritter Desc"
 	{
 		"en" 		"Infected, the german Knights become even more powerfull."
+		"it"		"Infettati, i Cavalieri tedeschi diventano ancora più potenti."
 	}
 	"Xeno X10 Spy Main Desc"
 	{
 		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
+		"it"		"Si tratta del primo Merc infettato dal virus xeno? Questo spiegherebbe perché le spie non ne sono affette.\nGuarisce su deadringer, non subisce danni mentre è deadringer (la resistenza può essere silenziata)"
 	}
 	"Nazi Panzer Desc"
 	{
 		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
+		"it"		"Panzer Soldat nazisti di Origins, sembra che si siano teletrasportati qui tramite gli esperimenti del teletrasporto 115, non sono influenzati dall'infezione xeno."
 	}
 	"Bob the Overgod of gods and destroyer of multiverses Desc"
 	{
 		"en" 		"The Highest of the highest. Be glad that he is on your side."
+		"it"		"Il più alto dei più alti. Siate felici che sia dalla vostra parte."
 	}
 	"Revived DDT Desc"
 	{
 		"en" 		"A robot following orders.\nAttacks enemeis that are marked."
+		"it"		"Un robot che esegue gli ordini.\nAttacca i nemici che sono contrassegnati."
 	}
 	"Spookmaster Boner Desc"
 	{
 		"en" 		"The boner and his funny honk.\nAttacks enemeis that are marked."
+		"it"		"L'erezione e il suo buffo clacson.\nAttacca i nemici che sono contrassegnati."
 	}
 	"Cured Father Grigori Desc"
 	{
 		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20％ off."
+		"it"		"Hai gestito la guarigione di Grigori dal virus. Ti assisterà in battaglia.\nDurante i tempi di configurazione venderà armi a caso con uno sconto di 20％."
 	}
 	"Cured Purnell Desc"
 	{
 		"en"		"He was always on your side."
+		"it"		"Era sempre dalla vostra parte."
 	}
 	"W.F. Mage Desc"
 	{
 		"en" 		"Combines that have the ability to wield magic.\nThe infection seems to alter their mindset..."
+		"it"		"Combinazioni che hanno la capacità di esercitare la magia.\nL'infezione sembra alterare la loro mentalità..."
 	}
 	"Bloon Desc"
 	{
 		"en" 		"Default Bloon, pop it."
+		"it"		"Bloon predefinito, schioppettate."
 	}
 	"Massive Ornery Air Blimp Desc"
 	{
 		"en" 		"A Moab with high health."
+		"it"		"Un Moab con salute elevata."
 	}
 	"Brutal Floating Behemoth Desc"
 	{
 		"en" 		"BFB, splits into multiple MOABS."
+		"it"		"BFB, si divide in più MOABS."
 	}
 	"Zeppelin of Mighty Gargantuaness Desc"
 	{
 		"en" 		"ZOMG, huge and devastates buildings, but slow."
+		"it"		"ZOMG, enorme e devasta gli edifici, ma lento."
 	}
 	"Dark Dirigible Titan Desc"
 	{
 		"en" 		"a DDT. Invis and having heavy resistances to most damage types."
+		"it"		"un DDT. Invis e con forti resistenze alla maggior parte dei tipi di danno."
 	}
 	"Big Airship of Doom Desc"
 	{
 		"en" 		"The Biggest of all Blimps! (for now...)"
+		"it"		"Il più grande di tutti i dirigibili! (per ora...)"
 	}
 	"Golden Bloon Desc"
 	{
 		"en" 		"Its gold, money!"
+		"it"		"È oro, denaro!"
 	}
 	"Bloonarius Desc"
 	{
 		"en" 		"High reistance and bloon spawning, more bloons at once = more resistance."	//change desc
+		"it"		"Alta resistenza e generazione di palloncini, più palloncini contemporaneamente = maggiore resistenza."
 	}
 	"Medic Apprentice Mage Desc"
 	{
 		"en" 		"A medic with magical capeabilities."
+		"it"		"Un medico con capacità magiche."
 	}
 	"Sawrunner Desc"
 	{
 		"en" 		"The monter from cry of fear, made from pure fear and depression, will go after you. and only you. The xeno infection is having an effect on him, making him even more erratic...\nReceives 2x headshot damage."
+		"it"		"Il monter di cry of fear, fatto di pura paura e depressione, si accanisce su di te. e solo su di te. L'infezione xeno sta avendo effetto su di lui, rendendolo ancora più irregolare...\nRiceve 2x danni da colpo alla testa."
 	}
 	"Medic Charger Desc"
 	{
 		"en" 		"A charging jumping Strong Medic Warrior."
+		"it"		"Un Guerriero Medico forte che carica e salta."
 	}
 	"Medic Berserker Desc"
 	{
 		"en" 		"They seem to feed off of blood. \nThe lower health he has, the deadlier he becomes."
+		"it"		"Sembra che si nutrano di sangue. \nPiù la salute è bassa, più diventa letale."
 	}
 	"Militia Desc"
 	{
 		"en" 		"From the dark ages, a soldier with basic gear."
+		"it"		"Dai tempi bui, un soldato con l'equipaggiamento di base."
 	}
 	"Archer Desc"
 	{
 		"en" 		"A simple archer, capeable of fiering arrows at you."
+		"it"		"Un semplice arciere, capace di scagliare frecce contro di voi."
 	}
 	"Man-At-Arms Desc"
 	{
 		"en" 		"An Upgraded militia, with better gear."
+		"it"		"Una milizia potenziata, con un equipaggiamento migliore."
 	}
 	"Skirmisher Desc"
 	{
 		"en" 		"A throwing spearmen, has insane ranged resistance, better attack it with melee."
+		"it"		"Una lancia da lancio ha una resistenza a distanza pazzesca, meglio attaccarla in mischia."
 	}
 	"Long Swordsman Desc"
 	{
 		"en" 		"Further upgrades for milita"
+		"it"		"Ulteriori aggiornamenti per le forze armate"
 	}
 	"Twohanded Swordsman Desc"
 	{
 		"en" 		"Further upgrades for milita"
+		"it"		"Ulteriori aggiornamenti per le forze armate"
 	}
 	"Crossbow Man Desc"
 	{
 		"en" 		"Predicts your movement with his arrows"
+		"it"		"Prevede i vostri movimenti con le sue frecce"
 	}
 	"Spearman Desc"
 	{
 		"en" 		"A fast, fast attacking, high range, but low health and damage enemy. They can quickly storm, surround and kill you.\nDeals 2x damage to enemies that have a building mounted."
+		"it"		"Un nemico veloce, che attacca rapidamente, con un raggio d'azione elevato, ma con salute e danni bassi.\nPuò rapidamente assalirvi, circondarvi e uccidervi.\nDanno 2x ai nemici che hanno un edificio montato."
 	}
 	"Hand Cannoneer Desc"
 	{
 		"en" 		"Deals high damage but cant predict you"
+		"it"		"Infligge un danno elevato ma non può prevederlo"
 	}
 	"Elite Skirmisher Desc"
 	{
 		"en" 		"An elite variant of the skirmisher, even more deadly!"
+		"it"		"Una variante d'élite dello skirmisher, ancora più letale!"
 	}
 	"Blitzkrieg Desc"
 	{
 		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport and dash during moonlight (can be silenced).\nDo not fight him in any expidonsan areas..."
+		"it"		"Un essere supremo dei razzi, in grado di produrre danni estremamente elevati, si dice anche che possieda un esercito personale. Possiede vite multiple, di solito il corpo a corpo è una condanna a morte.\nTeleporta e sfreccia al chiaro di luna (può essere silenziato).\nNon combattetelo in nessuna area expidonsan..."
 	}
 	"Hyper Blitzkrieg Desc"
 	{
 		"en"		"Blitzkrieg but at full power."
+		"it"		"Blitzkrieg ma alla massima potenza."
 	}
 	"Pikeman Desc"
 	{
 		"en" 		"Stronger Spearman, deals 2x dmg to enemies that mounted a building"
+		"it"		"Lancia più forte, infligge 2 volte i danni ai nemici che hanno montato un edificio"
 	}
 	"Medic Supperior Mage Desc"
 	{
 		"en" 		"A medic mage who decided to pay attention in magic class\nBeing close to this mage may not be healthy...\nUses a close range energy burst\nAnd uses a close range magic ion burst"
+		"it"		"Un mago medico che ha deciso di prestare attenzione durante la lezione di magia...\nEssere vicini a questo mago potrebbe non essere salutare...\nUsa un'esplosione di energia a distanza ravvicinata e usa un'esplosione di ioni magici a distanza ravvicinata.."
 	}
 	"Rebel Desc"
 	{
 		"en" 		"Survivor of zombies and outlaw of all. Assist them and they will assist you.\nInteract with them to give them orders.\nTheir damage scales with your cash."
+		"it"		"Sopravvissuto agli zombi e fuorilegge di tutti. Aiutali e loro ti aiuteranno.\nInteragisci con loro per impartire ordini.\nIl loro danno varia in base al tuo denaro."
 	}
 	"Eagle Scout Desc"
 	{
 		"en" 		"A fast aglie scout, similair to an eagle.\nWeak to melee and resistant to ranged attacks."
+		"it"		"Un esploratore veloce, simile a un'aquila.\nDebole in mischia e resistente agli attacchi a distanza."
 	}
 	"Samurai Desc"
 	{
 		"en" 		"A combine who adopted an acient way of battle, highly deadly.\nWill deal 25％ extra damage to any non, melee player, and get angered if attacked by anything non melee."
+		"it"		"Un combine che ha adottato un antico modo di combattere, altamente letale. infligge 25％ danni extra a qualsiasi giocatore non in mischia e si arrabbia se attaccato da qualsiasi cosa non in mischia."
 	}
 	"The Addiction Desc"
 	{
 		"en" 		"Kill zombies before him, otherwise he will gain major power, in nightmare this doesnt matter, youre in for a fight."
+		"it"		"Uccidete gli zombie prima di lui, altrimenti acquisirà un potere maggiore, in Incubo questo non ha importanza, vi aspetta una battaglia."
 	}
 	"Doctor Purnell Desc"
 	{
 		"en" 		"Shoots and melees you, if he melees he will reload 1 bullet, he will buff allied zombies one at a time forever."
+		"it"		"Ti spara e ti mena, se mena ricaricherà 1 proiettile, bufferà gli zombi alleati uno alla volta per sempre."
 	}
 	"Book Simon Desc"
 	{
 		"en" 		"Do not let him escape, do not let him down you."
+		"it"		"Non lasciatelo scappare, non lasciate che vi abbatta."
 	}
 	"Sewmo Desc"
 	{
 		"en" 		"Tanky, attacks with its tongue, therefore it has extra melee range."
+		"it"		"Tanky, attacca con la lingua, quindi ha una portata extra in mischia."
 	}
 	"Faster Desc"
 	{
 		"en" 		"Dangerous when groupped with other Faster(s), its bleed stacks."
+		"it"		"Pericoloso quando è in gruppo con altri Faster, il suo sanguinamento si impila."
 	}
 	"Psycho Desc"
 	{
 		"en" 		"Fast and deadly if not taken care of fast enough."
+		"it"		"Veloce e letale se non viene curata abbastanza velocemente."
 	}
 	"Suicider Desc"
 	{
 		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
+		"it"		"È spaventosamente preciso con la sua pistola, ma se ci si avvicina troppo si uccide da solo."
 	}
 	"Crazy Lady Desc"
 	{
 		"en" 		"Prevents you from running away, don't let it stab you."
+		"it"		"Impedisce di scappare, non si lascia pugnalare."
 	}
 	"Corrupted Barney Desc"
 	{
 		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚"
+		"it"		"S̸̺̓o̶̻̕ṅ̵̥ö̵͈ ̷͝ͅȉ̵̧ò̷͖ ̷̞̏G̵̮̕ô̸̻r̵̄ͅḓ̸̚ö̷͍́n̴̹͠,̵͍̀ ̵͐ͅd̸̬̃i̵͕̎ ̶͚͒B̴̰̓ḷ̷̀ã̶͔ć̶̝k̴̡̃ ̸̲͘M̵͔̾e̷̬̽s̵͙̕â̵̹͔"
 	}
 	"Baby Desc"
 	{
 		"en"		"Kills itself upon contact, deals massive amounts of damage upon doing so."
+		"it"		"Si uccide al contatto e infligge ingenti danni."
 	}
 	"Children Desc"
 	{
 		"en"		"Just like real life children, it'll surely annoy the hell out of you with its very long duration of bleed."
+		"it"		"Proprio come i bambini della vita reale, vi darà sicuramente fastidio con la sua lunghissima durata di sanguinamento."
 	}
 	"Stranger Desc"
 	{
 		"en"		"Attacks you map-wide."
+		"it"		"Ti attacca in tutta la mappa."
 	}
 	"Taller Desc"
 	{
 		"en"		"Very slow, but packs a punch."
+		"it"		"Molto lenta, ma potente."
 	}
 	"Xeno Malfunctioning Robot Desc"
 	{
 		"en"		"A Xeno Robot that overheats after hitting enough targets. Overheat releases a shockwave that deals massive AoE damage. Figment of Simon's Mind."
+		"it"		"Uno Xeno Robot che si surriscalda dopo aver colpito un numero sufficiente di bersagli. Il surriscaldamento rilascia un'onda d'urto che infligge ingenti danni AoE. Un'immagine della mente di Simon."
 	}
 	"Kahmlstein Desc"
 	{
 		"en"		"A far distant battler, he doesnt care about chaos, he just wants to fight, you cant kill him, hell fake his death and just go away as he is bored."
+		"it"		"Un combattente lontano, non gli interessa il caos, vuole solo combattere, non puoi ucciderlo, al limite fingere la sua morte e andarsene, perché si annoia."
 	}
 	"Chaos Kahmlstein Desc"
 	{
 		"en"		"Afflicted by chaos to make his reasoning uncontrollable.\nHe hates you for killing expidonsans.\nDont let the fight take too long as he gets faster over time.\n(Silence) makes his melee not glide you around, it also makes his projectiles deal less chaos, also reduces resistances he gets when going below a health threshhold."
+		"it"		"Afflitto dal caos che rende il suo ragionamento incontrollabile.\nNon vi odia perché uccidete gli expidonsan.\nNon lasciate che il combattimento duri troppo a lungo perché diventa più veloce con il passare del tempo.\n(Silenzio) fa sì che il suo corpo a corpo non vi scivoli intorno, inoltre fa sì che i suoi proiettili infliggano meno caos, riduce anche le resistenze che ottiene quando scende sotto una soglia di salute."
 
 	}
 	"L4D2 Tank Desc"
 	{
 		"en"		"A tank from L4D2, he can throw barricades, people and even his own fellow npc's to kill you.\nBut he can hurt his own teammates."
+		"it"		"Un tank di L4D2, può lanciare barricate, persone e persino i suoi stessi compagni npc per uccidervi."
 	}
 	"Holy Knight Desc"
 	{
 		"en"		"A derivitive of the Deutch ritters\nThese knights decided to study magic while also studying to become a knight"
+		"it"		"Questi cavalieri decisero di studiare la magia mentre studiavano per diventare cavalieri"
 	}
 	"Sniper Railgunner Desc"
 	{
 		"en"		"A sniper who pesters you from a far\nThe coward, he runs away too\nShoots a charged attack after a few shots."
+		"it"		"Un cecchino che ti infastidisce da lontano...\nIl codardo, scappa anche lui...\nSpara un attacco caricato dopo pochi colpi."
 	}
 	"Soldier Barrager Desc"
 	{
 		"en"		"A Soldier who is somewhat inteligent\nHe runs away when his clip is empty and has the ability to load multiple rockets"
+		"it"		"Un Soldato un po' intelligente scappa quando il suo caricatore è vuoto e ha la capacità di caricare più razzi"
 	}
 	"Capped Ram Desc"
 	{
 		"en"		"takes 0.01％ dmg from ranged attacks and does high damage to barricades."
+		"it"		"subisce 0,01％ danni dagli attacchi a distanza e danneggia fortemente le barricate."
 	}
 	"The Shit Slapper Desc"
 	{
 		"en"		"An unusually large torsoless zombie\nits been nick-named ''The Shit Slapper'' by people who have encountered it"
+		"it"		"Uno zombie insolitamente grande e senza busto è stato soprannominato ''Lo schiaccianoci'' dalle persone che lo hanno incontrato"
 	}
 	"Basic Bones Desc"
 	{
 		"en"		"Weakest of the spook master gang."
+		"it"		"Il più debole della banda dei maestri del terrore."
 	}
 	"Mecha Engineer Desc"
 	{
 		"en"		"A rouge mechanical engineer, a part of the ''Last Hope'' project"
+		"it"		"Un ingegnere meccanico in incognito, che fa parte del progetto ''Ultima Speranza'' "
 	}
 	"Mecha Heavy Desc"
 	{
 		"en"		"A rouge mechanical heavy, a part of the ''Last Hope'' project"
+		"it"		"Un pesante meccanico rouge, parte del progetto ''Last Hope'' "
 	}
 	"Mecha Giant Heavy Desc"
 	{
 		"en"		"A rouge giant mechanical heavy, a part of the ''Last Hope'' project"
+		"it"		"Un gigantesco gigante meccanico pesante, parte del progetto ''Ultima Speranza'' "
 	}
 	"Mecha Giant Pyro Desc"
 	{
 		"en"		"A rouge giant mechanical pyro, a part of the ''Last Hope'' project"
+		"it"		"Un rouge gigante piro meccanico, parte del progetto ''Ultima Speranza'' "
 	}
 	"Mecha Scout Desc"
 	{
 		"en"		"A rouge mechanical scout, a part of the ''Last Hope'' project"
+		"it"		"Un esploratore meccanico rouge, parte del progetto ''Ultima Speranza'' "
 	}
 	"Donnerkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Fractal Beam Emitter''\nIt is advised to not touch it.."
+		"it"		"Costretto a servire da Blitzkrieg, possiede un potente ''Emettitore di raggi frattali''.\nSi consiglia di non toccarlo."
 	}
 	"Schwertkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\nHe poses the ability to teleport long distances\nHighly dangerous up close."
+		"it"		"Costretto alla servitù dalla Blitzkrieg.\nHa perso completamente la sua individualità."
 	}
 	"Phantom Knight Desc"
 	{
 		"en"		"A phantom knight, he is slow, he has the ability to teleport behind you, he can make clones of himself which are weaker compared to the main host. Highly dangerous up close."
+		"it"		"Un cavaliere fantasma, è lento, ha la capacità di teletrasportarsi alle spalle, può creare cloni di se stesso che sono più deboli rispetto all'ospite principale. Molto pericoloso da vicino."
 	}
 	"Medic Constructor Desc"
 	{
 		"en"		"A rouge mechanical medic constructor, a part of the ''Last Hope'' project\nHeals allies."
+		"it"		"Un costruttore meccanico medico rouge, parte del progetto ''Ultima Speranza''.\nCura alleati."
 	}
 	"Gambler Desc"
 	{
 		"en"	"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Pablo Gonzales Desc"
 	{
 		"en"	"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Doktor Medick Desc"
 	{
 		"en"	"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Eternal Kaptain Heavy Desc"
 	{
 		"en"	"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Booty Executioner Desc"
 	{
 		"en"	"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Sandvich Slayer Desc"
 	{
 		"en"	"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Kahmlstein Desc"
 	{
 		"en"		"Bunker Kahmlstein"
+		"it"		"Bunker Kahmlstein"
 	}
 	"Zerofuse Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Bot Soldier Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Bot Sniper Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Skeleton Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Small Skeleton Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Skeleton King Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Bunker Headless Horseman Desc"
 	{
 		"en"		"Currently WIP"
+		"it"		"Attualmente WIP"
 	}
 	"Medieval Scout Desc"
 	{
 		"en"		"Very quick and ranged reistant."
+		"it"		"Molto veloce e resistente alla distanza."
 	}
 	"Medieval Villager Desc"
 	{
 		"en"		"A villager who somehow made it into modern times, he builds a village that constantly spawns warrior's akin to its own era."
+		"it"		"Un abitante del villaggio che in qualche modo è riuscito ad arrivare ai tempi moderni, costruisce un villaggio che genera costantemente guerrieri affini alla sua epoca."
 	}
 	"Building Desc"
 	{
 		"en"		"A building built by the villager, somehow this building containts an infinite amount of enemies inside, it also has the ability to shoot anyone near it"
+		"it"		"Un edificio costruito dall'abitante del villaggio, che in qualche modo contiene una quantità infinita di nemici al suo interno, e ha anche la capacità di sparare a chiunque gli si avvicini"
 	}
 	"Medieval Construct Desc"
 	{
 		"en"		"A giant Mythical creature, it will consume buildings at rapid paces and heal itself off them."
+		"it"		"Una gigantesca creatura mitica, che consuma edifici a passi rapidi e si cura da sola."
 	}
 	"Champion Desc"
 	{
 		"en"		"Strongest of the milita lines, usually used for elite fighting arenas."
+		"it"		"La più forte delle linee militari, solitamente utilizzata per le arene di combattimento d'élite."
 	}
 	"Light Cavalry Desc"
 	{
 		"en"		"Upgraded Ridden Scout."
+		"it"		"Scout aggiornata e provata."
 	}
 	"Hussar Desc"
 	{
 		"en"		"Buffs allies around it, and protects allies, take out asap.\nBuffs give 10％ more dmg and resistance."
+		"it"		"Buffs agli alleati intorno a lui e protegge gli alleati, da eliminare il prima possibile.\nDa un buff di danno e delle resistenze del 10%."
 	}
 	"Knight Desc"
 	{
 		"en"		"Has high health but is slower then average cav."
+		"it"		"Ha una salute elevata ma è più lento della media dei cav."
 	}
 	"Obuch Desc"
 	{
 		"en"		"Attacks faster the more he attacks the same enemy."
+		"it"		"Attacca più velocemente quanto più attacca lo stesso nemico."
 	}
 	"Monk Desc"
 	{
 		"en"		"Heals allies instantly in his damage radius instantly to full."
+		"it"		"Cura istantaneamente gli alleati nel suo raggio di danno fino al massimo."
 	}
 	"Cavalary Desc"
 	{
 		"en"		"A more tough knight."
+		"it"		"Un cavaliere più resistente."
 	}
 	"Paladin Desc"
 	{
 		"en"		"A more tough Cavalary."
+		"it"		"Un cavaliere più resistente."
 	}
 	"Crossbow Giant Desc"
 	{
 		"en"		"Deals extreme damage and attackspeed, but is very slow."
+		"it"		"Infligge danni estremi e velocità d'attacco, ma è molto lento."
 	}
 	"Swordsman Giant Desc"
 	{
 		"en"		"Deals extreme damage and attackspeed, but is very slow.\nResistant to melee, do not melee."
+		"it"		"Infligge danni estremi e velocità d'attacco, ma è molto lenta.\nResistente al corpo a corpo, non va in mischia."
 	}
 	"Mounted Archer Desc"
 	{
 		"en"		"an archer on a horse, fast and hard to run from."
+		"it"		"un arciere a cavallo, veloce e difficile da contrastare."
 	}
 	"Eagle Warrior Desc"
 	{
 		"en"		"High speed, and range resistant."
+		"it"		"Alta velocità e resistenza alla portata."
 	}
 	"Giant Eagle Warrior Desc"
 	{
 		"en"		"Giant version of eagle warriors, they have high knockback."
+		"it"		"Versione gigante dei guerrieri aquila, hanno un elevato knockback."
 	}
 	"Son Of Osiris Desc"
 	{
 		"en"		"Is immune to most debuffs and weaknesses.\nChain lighting will damage all allies around you, the more it chains, the more damage it deals."
+		"it"		"È immune alla maggior parte dei debuff e delle debolezze.\nL'illuminazione a catena danneggia tutti gli alleati intorno a te, più si incatena, più danni infligge."
 	}
 	"Achilles Desc"
 	{
 		"en"		"Launches a high damaging spear that deals immensive damage to buildings\nHe attacks rapidly and can jump aswell."
+		"it"		"Lancia una lancia ad alto potere lesivo che infligge danni immensi agli edifici.\nAttacca rapidamente e può anche saltare."
 	}
 	"Medieval Arbalest Desc"
 	{
 		"en"		"Short range, faster attacking high damage archers."
+		"it"		"Arcieri a corto raggio, che attaccano più velocemente e con danni elevati."
 	}
 	"Medieval Brawler Desc"
 	{
 		"en"		"Shows up shortly, deals high fast melee punches."
+		"it"		"Appare a breve, sferra pugni veloci in mischia."
 	}
 	"Medieval Longbowmen Desc"
 	{
 		"en"		"Longrange, high damage archers."
+		"it"		"Arcieri a lungo raggio e ad alto danno."
 	}
 	"Medieval Halberdier Desc"
 	{
 		"en"		"Final upgrade line to the spearmen."
+		"it"		"Linea di potenziamento finale per gli sparvieri."
 	}
 	"Medieval Elite Longbowmen Desc"
 	{
 		"en"		"Upgraded longbowmen."
+		"it"		"Arcieri lunghi potenziati."
 	}
 	"Trebuchet Desc"
 	{
 		"en"		"Deals extreme damage to buildings and players, but is unmoving.\nDo not let it hit its attacks, it will instantly devistate anything."
+		"it"		"Infligge danni estremi a edifici e giocatori, ma non si muove.\nNon lasciate che colpisca i suoi attacchi, devasterà istantaneamente qualsiasi cosa."
 	}
 	"Ikunagae Desc"
 	{
 		"en"		"High amounts of abilities to throw magic bolts, beware."
+		"it"		"Elevata quantità di abilità di lancio di proiettili magici, attenzione."
 	}
 	"Mecha Soldier Barrager Desc"
 	{
 		"en"		"Loads a bunch of rockets and then attacks you."
+		"it"		"Carica un mucchio di razzi e poi vi attacca."
 	}
 	"Nearl Radiant Sword Desc"
 	{
 		"en"		"A distracting sword for enemies to hurt it, when enemies attack it, any fusion max pap blade will deal 2x dmg to them."
+		"it"		"Una spada che distrae i nemici per ferirli, quando i nemici la attaccano, qualsiasi fusione della lama max pap gli infligge 2x dmg."
 	}
 	"Whiteflower Subject Desc"
 	{
 		"en"		"Unknown creature, caused by something, giving it immunity to damage.\nCan only attack by seeing you and more so hates monks."
+		"it"		"Creatura sconosciuta, causata da qualcosa che le conferisce immunità ai danni.Può attaccare solo vedendovi e odia maggiormente i monaci."
 	}
 	"Corrupted Father Grigori Desc"
 	{
 		"en"		"A different kind of infection on Father Grigori. Silent man.\nCan only attack by attacking or blocking him and loses immunity with the fall an Overlord."
+		"it"		"Un diverso tipo di infezione su Padre Grigori. Può attaccare solo attaccandolo o bloccandolo e perde l'immunità con la caduta di un Signore Supremo."
 	}
 	"Machina Waldch Desc"
 	{
 		"en"		"Switches between going a charger melee with limited seeing range.\nAnd a standing still infinite range sniper.\nPrehaps stopping him before he wanders away might yield diffrent result?"
+		"it"		"Passa da un caricatore in mischia con raggio d'azione limitato a un cecchino a raggio d'azione infinito da fermo.\nForse fermarlo prima che si allontani potrebbe dare risultati diversi?"
 	}
 	"Silvester Desc"
 	{
 		"en"		"The superpowered warrior returns but something is up. You cured him yes?\nHe brought along a friend this time to help.\nLaser resistance (can be silenced)."
+		"it"		"Il guerriero con superpoteri ritorna, ma c'è qualcosa che non va. Questa volta ha portato con sé un amico per aiutarlo. Resistenza al laser (può essere silenziata)."
 	}
 	"Waldch Desc"
 	{
 		"en"		"A friend to Silvester and a gunslinger to various weapons and support tools.\nWhat are they doing fighting you?\nSniper attack prediction (can be silenced)."
+		"it"		"Un amico per Silvester e un pistolero per varie armi e strumenti di supporto.\nCosa fanno contro di te? \nPrevisione dell'attacco del cecchino (può essere silenziato)."
 	}
 	"Angeled Silvester Desc"
 	{
 		"en"		"A higher tier form of Silvester, what is this, magic or technology?\nWhere does he come from?"
+		"it"		"Una forma di Silvester di livello superiore, cos'è, magia o tecnologia?\n Da dove viene?"
 	}
 	"Calmaticus Desc"
 	{
 		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"it"		"Il creatore dell'infezione Xeno.\nHanno cercato di avvertirti, non hai ascoltato.\nLa sua resistenza alla fase rigenerativa (può essere silenziata a metà)."
 	}
 	"Shell Sea Runner Desc"
 	{
 		"en"		"A Sea Terror that grew four limbs, but lacks an internal skeleton.\nIt seems to have once hunted quadrupeds on land.\n- Elite variant gains increased health, damage, and speed"
+		"it"		"Un Terrore del Mare a cui sono cresciuti quattro arti, ma a cui manca uno scheletro interno.\nSembra che un tempo cacciasse quadrupedi sulla terraferma.La variante Elite guadagna salute, danni e velocità aumentati"
 	}
 	"Deep Sea Slider Desc"
 	{
 		"en"		"A Sea Terror that crawled onto the shore.\nIt brandishes its tough appendages menacingly.\n- Attacks inflict Nervous Impairment\n- Elite variant gains increased health and damage"
+		"it"		"Un Terrore del Mare che è strisciato sulla riva.\n- Brandisce minacciosamente le sue dure appendici.\n- Gli attacchi infliggono menomazioni nervose.\n- La variante Elite guadagna salute e danni aumentati"
 	}
 	"Ridge Sea Spitter Desc"
 	{
 		"en"		"A mysterious Sea Terror.\nIn the sea, it can spit at even greater speeds, fast enough to destroy reefs.\n- Uses a ranged attack\n- Elite variant gains increased health and damage"
+		"it"		"Un misterioso Terrore del Mare.\n In mare, può sputare a velocità ancora maggiori, tanto da distruggere le barriere coralline"
 	}
 	"Basin Sea Reaper Desc"
 	{
 		"en"		"A Sea Terror that emits ear-splitting screeches.\nShould its nourishment be interrupted, it will immediately counterattack any nearby threats, until all other signs of life have ceased.\n- Starts in Standby state\n- Does not attack in Standby state\n- When injured, enters Combat state\n- When in Combat state, inflicts Nervous Impairment in an AOE\n- When in Combat state, loses health over time\n- Elite variant gains increased health and damage"
+		"it"		"Se il suo nutrimento viene interrotto, contrattacca immediatamente qualsiasi minaccia nelle vicinanze, fino a quando non cessano tutti gli altri segni di vita.\n- Inizia in stato di Standby\n- Non attacca in stato di Standby\n- Quando è ferito, entra in stato di Combattimento\n- Quando è in stato di Combattimento, infligge Menomazione nervosa in un AOE\n- Quando è in stato di Combattimento, perde salute nel tempo\n- La variante Elite guadagna salute e danni aumentati"
 	}
 	"Pocket Sea Crawler Desc"
 	{
 		"en"		"A Sea Terror imbued with impurities.\nThe density of its body tissue surpasses that of some alloys.\nVictims stabbed by it will feel as if they have been set alight.\n- Does not attack\n- Deals damage and inflicts Nervous Impairment in an AOE when a certain amount of health is lost\n- Elite variant gains increased health and damage"
+		"it"		"Un Terrore del Mare impregnato di impurità.\nLa densità del suo tessuto corporeo supera quella di alcune leghe.\nLe vittime trafitte da lui si sentiranno come se fossero state incendiate.\n- Non attacca.\n- Infligge danni e infligge Disturbo Nervoso in un AOE quando si perde una certa quantità di salute.\n- La variante Elite guadagna salute e danni maggiori"
 	}
 	"Primal Sea Piercer Desc"
 	{
 		"en"		"A Sea Terror that grew a solid organ.\nThe other parts of its body seem to be forming impregnable outer spikes.\n- Attacks deal True damage\n- Elite variant gains increased health and damage"
+		"it"		"Un Terrore del Mare a cui è cresciuto un organo solido.Le altre parti del suo corpo sembrano formare spuntoni esterni inespugnabili.Gli attacchi infliggono danni reali.La variante Elite guadagna salute e danni aumentati"
 	}
 	"The First To Talk Desc"
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nSeaborn.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
+		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nSeaborn.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
 	}
 	"Sal Viento Bishop Quintus Desc"
 	{
 		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Iberia.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
+		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Iberia devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
 	}
 	"Armorless Union Knight Desc"
 	{
 		"en"		"An infected from Kazimierz.\n- Periodically resists melee damage"
+		"it"		"Un infetto di Kazimierz.\n- Resiste periodicamente ai danni in mischia"
 	}
 	"Roar Knightclub Trainee Desc"
 	{
 		"en"		"Wearing the high-performance, lightweight armor provided by Roar Guards.\n- Uses a ranged attack\n- Spawns with a shield provides flat damage reduction, lasting for a duration"
+		"it"		"Indossa l'armatura leggera e ad alte prestazioni fornita dalle Roar Guards.\n- Utilizza un attacco a distanza\n- Nasce con uno scudo che fornisce una riduzione piatta dei danni, che dura per un certo periodo di tempo"
 	}
 	"Bloodboil Knightclub Trainee Desc"
 	{
 		"en"		"The Bloodboil Knights have long been known for their ferocity and aggression.\n- Gains stacking increased damage and attack speed when their ally has died within range"
+		"it"		"I Cavalieri di Bloodboil sono noti da tempo per la loro ferocia e aggressività.\n- Guadagna danni e velocità d'attacco aumentati in modo impilabile quando un loro alleato muore nel raggio d'azione"
 	}
 	"Armorless Union Cleanup Squad Desc"
 	{
 		"en"		"Invis from afar and deal immensive damage."
+		"it"		"Invis da lontano e infligge danni immensi."
 	}
 	"Armorless Union Assassin Desc"
 	{
 		"en"		"They have adopted some kind of bounty system and are often very thorough in their tasks.\n- Uses a ranged attack\n- Has camouflage\n- Deals increased damage when no targets in close range"
+		"it"		"Hanno adottato una sorta di sistema di taglie e sono spesso molto scrupolosi nei loro compiti.\n- Utilizza un attacco a distanza\n- Ha una mimetizzazione\n- Infligge danni maggiori quando non ci sono bersagli a distanza ravvicinata"
 	}
 	"The Endspeaker, Will of We Many Desc"
 	{
 		"en"		"The tiny Seaborn that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.\nThe revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.\n- Uses attacks based on current form\n- When changing form, consumes the closest remain, killing targets and consumes nearby remains\n- Elite variant gains increased health, damage, and consumes an addtional remain"
+		"it"		"Il piccolo Seaborn che perseguitava la potente Stultifera, il sangue dei suoi genitori un tempo sparso sulle acque dell'oceano.\nLa rivelazione non giunge alle orecchie dei bambini, il destino della loro specie continua silenziosamente a scorrere.\n- Utilizza attacchi basati sulla forma attuale.\n- Quando cambia forma, consuma il resto più vicino, uccidendo i bersagli e consumando i resti vicini.\n- La variante Elite guadagna salute e danni maggiori e consuma un resto aggiuntivo"
 	}
 	"Nethersea Founder Desc"
 	{
 		"en"		"A Sea Terror that has inexplicably grown a chitinous skull.\nThere is no corresponding organ to be found beneath it.\n- Attacks inflict Nervous Impairment\n- Resists ranged damage\n- On death, spawns Nethersea Brands when touching the ground\n- Elite variant gains increased health and damage\n- When consumed by Endspeaker, provides ranged damage resistance"
+		"it"		"Un Terrore del Mare a cui è inspiegabilmente cresciuto un cranio chitinoso.\nNon c'è nessun organo corrispondente sotto di esso.\n- Gli attacchi infliggono menomazioni nervose\n- Resiste ai danni a distanza\n- Alla morte, genera Marchi di Nethersea quando tocca il terreno\n- La variante Elite guadagna salute e danni aumentati\n- Quando viene consumato da Endspeaker, fornisce resistenza ai danni a distanza"
 	}
 	"Nethersea Predator Desc"
 	{
 		"en"		"A Sea Terror that has learned to use its chitinous skull to deal physical attacks, storing scraps of food in its body comprised of countless tiny creatures.\n- Attacks inflict Nervous Impairment\n- While on Nethersea Brands, has a chance to dodge attacks when not stunned\n- While on Nethersea Brands, ignores and bypasses buildings\n- Elite variant gains increased health, damage, and dodge chance\n- When consumed by Endspeaker, provides a chance to dodge attacks"
+		"it"		"Un Terrore del Mare che ha imparato a usare il suo cranio chitinoso per sferrare attacchi fisici, immagazzinando nel suo corpo frammenti di cibo composti da innumerevoli minuscole creature.\n- Gli attacchi infliggono menomazioni nervose.\n- Mentre si trova sui Marchi di Nethersea, ha una possibilità di schivare gli attacchi quando non è stordito.\n- Mentre si trova sui Marchi di Nethersea, ignora e aggira gli edifici.\n- La variante Elite guadagna un aumento della salute, dei danni e della possibilità di schivare.\n- Quando viene consumato dall'Endspeaker, fornisce una possibilità di schivare gli attacchi"
 	}
 	"Nethersea Brandguider Desc"
 	{
 		"en"		"A new type of Sea Terror formed from a colony that was about to decay and die.\nIn order to effectively utilize the last bit of nutrients in their bodies, all they need to do is smear themselves across the ground.\n- When below half health, spawns Nethersea Brands and gains melee damage resistance\n- Elite variant gains increased health and damage\n- When consumed by Endspeaker, provides melee damage resistance when below half health"
+		"it"		"Un nuovo tipo di Terrore marino formatosi da una colonia che stava per decadere e morire.\n- Per utilizzare efficacemente l'ultima parte di nutrimento nei loro corpi, tutto ciò che devono fare è spalmarsi sul terreno.\n- Quando la salute è inferiore a metà, genera Marchi di Nethersea e guadagna resistenza ai danni in mischia.\n- La variante Elite guadagna salute e danni aumentati.\n- Quando viene consumato da Endspeaker, fornisce resistenza ai danni in mischia quando la salute è inferiore a metà"
 	}
 	"Nethersea Spewer Desc"
 	{
 		"en"		"Possesses a hard, chitinous shell that it uses to protect itself, possibly capable of sporulation or a similar function.\nA commonly seen Sea Terror where the nethersea brand proliferates.\n- Uses a ranged attack, up to 3 targets\n- Attacks inflict Nervous Impairment\n- Can attack targets on Nethersea Brands at any range\n- Elite variant gains increased health and damage\n- When consumed by Endspeaker, provides AOE to ranged attacks"
+		"it"		"Possiede un guscio duro e chitinoso che usa per proteggersi, forse in grado di sporulare o di svolgere una funzione simile.\nUn terrore marino comunemente visto dove il marchio nethersea prolifera.\n- Utilizza un attacco a distanza, fino a 3 bersagli\n- Gli attacchi infliggono menomazioni nervose\n- Può attaccare bersagli su marchi nethersea a qualsiasi distanza\n- La variante Elite guadagna salute e danni maggiori\n- Quando viene consumato dall'Endspeaker, fornisce AOE agli attacchi a distanza"
 	}
 	"Nethersea Swarmcaller Desc"
 	{
 		"en"		"A rare Sea Terror, able to manipulate the tiny creatures in the air and on the ground to eat away at their surroundings even in the absence of the nethersea brand.\nThey seem to call the brand itself to life, hence their name.\n- Does not attack\n- Deals damage and inflicts Nervous Impairment in an AOE\n- Immune to slow effects\n- Elite variant gains increased health and damage\n- When consumed by Endspeaker, provides immunity to slow effects and resistance to debuffs"
+		"it"		"Un raro Terrore del Mare, in grado di manipolare le minuscole creature nell'aria e sul terreno per divorare l'ambiente circostante anche in assenza del marchio del nethersea.\nSembrano richiamare in vita il marchio stesso, da cui il loro nome.\n- Non attacca\n- Infligge danni e infligge Menomazione Nervosa in un AOE\n- Immune agli effetti di rallentamento\n- La variante d'élite ottiene un aumento della salute e dei danni\n- Quando viene consumato dall'Endspeaker, conferisce immunità agli effetti di rallentamento e resistenza ai debuff"
 	}
 	"Nethersea Reefbreaker Desc"
 	{
 		"en"		"An extremely aggressive individual born from the nethersea brand, capable of inflicting tremendous damage to its surrounding environment for its kin to transform.\nLifeforms not considered kin fall under this category.\n- Uses melee and ranged attacks\n- Gains increased damage, stacking every attack, effect decays over time\n- While on Nethersea Brands, gains camouflage\n- Elite variant gains increased health and damage\n- When consumed by Endspeaker, provides increased damage for every attack, decays over time"
+		"it"		"Un individuo estremamente aggressivo nato dal marchio Nethersea, in grado di infliggere danni enormi all'ambiente circostante per la trasformazione dei suoi parenti.\nLe forme di vita non considerate parenti rientrano in questa categoria.\n- Utilizza attacchi in mischia e a distanza.\n- Guadagna danni aumentati, impilabili ad ogni attacco, l'effetto decade nel tempo.\n- Mentre si trova sui marchi Nethersea, guadagna mimetizzazione.\n- La variante Elite guadagna salute e danni aumentati.\n- Quando viene consumato dall'Endspeaker, fornisce danni aumentati ad ogni attacco, che decadono nel tempo"
 	}
 	"Thorns Desc"
 	{
 		"en"		"Last hope against the deep sea.\nHas an ability when attacking enough, regens out of battle."
+		"it"		"Ultima speranza contro gli abissi marini.\nHa un'abilità che, quando attacca a sufficienza, si rigenera fuori dalla battaglia."
 	}
 	"God Alaxios Desc"
 	{
 		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (Silence decreases battle cry buff on himself in half)."
+		"it"		"Evoca il suo esercito, ogni volta che torna guadagna abilità extra.\nUccidi il suo esercito prima di lui, altrimenti si rianimerà e ne genererà altri.\nPuò buffare i suoi alleati con un buff dopo l'ondata 30 (il Silenzio riduce a metà il buff del Grido di battaglia su se stesso)."
 	}
 	"Seaborn Scout Desc"
 	{
 		"en"		"Seaborn infects those, they may still appear human.\n- Attacks inflict Nervous Impairment"
+		"it"		"Seaborn infetta queste persone, che possono ancora apparire umane.\nGli attacchi di Seaborn infliggono danni nervosi"
 	}
 	"Seaborn Soldier Desc"
 	{
 		"en"		"To those, they spread onto others, continuing the chain.\n- Attacks inflict Nervous Impairment\n- On a kill, gains increased damage, speed, restores health, and spawns additional clones"
+		"it"		"Gli attacchi infliggono una menomazione nervosa"
 	}
 	"Seaborn Pyro Desc"
 	{
 		"en"		"Even if it means death upon those infected.\n- Attacks inflict afterburn\n- On death, deals AOE damage and inflict afterburn"
+		"it"		"Anche se ciò significa la morte di coloro che sono stati infettati.\n- Gli attacchi infliggono postumi.\n- Alla morte, infligge danni AOE e infligge postumi"
 	}
 	"Seaborn Demoman Desc"
 	{
 		"en"		"But through death shall it live on, through the sea.\n- Attacks kill self\n- On death, deals AOE damage and inflict Nervous Impairment"
+		"it"		"Ma attraverso la morte continuerà a vivere, attraverso il mare.\n- Gli attacchi uccidono l'auto- Alla morte, infligge danni AOE e infligge menomazioni nervose"
 	}
 	"Seaborn Heavy Desc"
 	{
 		"en"		"We adapt to what comes, sharing the knowledge.\n- Attacks inflict Nervous Impairment\n- Gains resistance to the damage type taken, but loses resistance to other the damage type"
+		"it"		"Ci adattiamo a ciò che viene, condividendo la conoscenza.\n- Gli attacchi infliggono menomazioni nervose \n- Si guadagna resistenza al tipo di danno subito, ma si perde resistenza ad altri tipi di danno"
 	}
 	"Seaborn Engineer Desc"
 	{
 		"en"		"Not even man kind's technology can surpass We Many.\n- Attacks inflict Nervous Impairment\n- On spawn after a delay, targets a random building and disables it, constantly reduces repairable health, otherwise deals Nervous Impairment"
+		"it"		"Nemmeno la tecnologia della specie umana può superare Noi Molti.\n- Gli attacchi infliggono menomazioni nervose.\n- Allo spawn dopo un ritardo, prende di mira un edificio a caso e lo disabilita, riduce costantemente la salute riparabile, altrimenti infligge menomazioni nervose"
 	}
 	"Seaborn Medic Desc"
 	{
 		"en"		"We Many makes us strong, together as one.\n- Does not attack and follows it's allies\n- Increases damage and resistance of it's current target\n- Increases damage of all it's allies"
+		"it"		"We Many makes us strong, together as one.\n- Non attacca e segue i suoi alleati\n- Aumenta i danni e la resistenza del suo bersaglio attuale\n- Aumenta i danni di tutti i suoi alleati"
 	}
 	"Seaborn Sniper Desc"
 	{
 		"en"		"Through weaking dread on man, We Many will stand.\n- Attacks inflict a debuff, increasing damage taken"
+		"it"		"Attraverso il terrore che logora l'uomo, Noi Molti resisteremo.\nGli attacchi infliggono un debuff, aumentando i danni subiti"
 	}
 	"Seaborn Spy Desc"
 	{
 		"en"		"From the deep sea, We Many will rise.\n- Gains camouflage after several seconds without attacking\n- Deals increased damage when camouflaged"
+		"it"		"Dagli abissi marini, Noi Molti risorgeremo.\n- Acquisisce la mimetizzazione dopo diversi secondi senza attaccare\n- Infligge danni maggiori quando è mimetizzato"
 	}
 	"Citizen Desc"
 	{
 		"en"		"Helpless.\n- Allied, does not attack, follows an allied player\n- On death, spawns Nethersea Brands and a random enemy\n- Retreats during a setup period"
+		"it"		"Impotente.\n- Alleato, non attacca, segue un giocatore alleato\n- Alla morte, genera Marchi di Nethersea e un nemico casuale\n- Si ritira durante un periodo di configurazione"
 	}
 	"Barracks Railgunner Desc"
 	{
 		"en"		"Heavy damage on attack, far ranged ally"
+		"it"		"Danno pesante all'attacco, alleato a distanza"
 	}
 	"Barracks Basic Mage Desc"
 	{
 		"en"		"Basic unit to blast the enemy with"
+		"it"		"Unità di base con cui far esplodere il nemico"
 	}
 	"Barracks Intermediate Mage Desc"
 	{
 		"en"		"Stronger basic mage"
+		"it"		"Mago di base più forte"
 	}
 	"Barracks Ikunagae Desc"
 	{
 		"en"		"Ikunagae made ally, now he will magic bolt the enemy to death instead."
+		"it"		"Ikunagae si è alleato, ora invece farà saltare in aria il nemico con la magia."
 	}
 	"Barracks SchwertKrieg Desc"
 	{
 		"en"		"the only human-like indivdual from blitz's army,from expidonsa, now fighting with you together."
+		"it"		"L'unico individuo di tipo umano dell'esercito di Blitz, proveniente da Expidonsa, che ora combatte insieme a voi."
 	}
 	"Barracks Donnerkrieg Desc"
 	{
 		"en"		"the only human-like indivdual from blitz's army, from ruina, now fighting with you together."
+		"it"		"L'unico individuo di tipo umano dell'esercito di Blitz, proveniente da Ruina, che ora combatte insieme a voi."
 	}
 	"Barracks Holy Knight Desc"
 	{
 		"en"		"Extreme strength and has magic abilities."
+		"it"		"Forza estrema e capacità magiche."
 	}
 	"Barracks Mecha Barrager Desc"
 	{
 		"en"		"Good ambush or barricade defense."
+		"it"		"Buona difesa da imboscate o barricate."
 	}
 	"Barracks Barrager Desc"
 	{
 		"en"		"Good ambush or barricade defense."
+		"it"		"Buona difesa da imboscate o barricate."
 	}
 	"Barracks Berserker Desc"
 	{
 		"en"		"Strong swarm unit to rush enemies with."
+		"it"		"Un'unità sciame forte con cui attaccare i nemici."
 	}
 	"Barracks Crossbow Medic Desc"
 	{
 		"en"		"Far ranged ally, unused unit from blitz's army, why was it unused?"
+		"it"		"Alleato a distanza, unità inutilizzata dell'esercito di Blitz, perché era inutilizzata?"
 	}
 	"The Last Knight Desc"
 	{
 		"en"		"The basis of a well-known folk tale in Kazimierz.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, increased speed, attacks now deal contact damage, ignores buildings"
+		"it"		"Il passato è morto sulla terra, e né il presente né il futuro hanno alcun significato.\nSolo l'oceano, uccidi l'oceano.\n- Prende di mira il nemico e gli alleati.\n- Subire danni infligge un debuff all'attaccante, riducendo la velocità d'attacco.\n- Infligge danni maggiori ai bersagli con un numero sufficiente di stack di debuff.\n- Cambia forma quando è al di sotto di 1/5 della salute, aumenta la velocità, gli attacchi ora infliggono danni da contatto, ignora gli edifici"
 	}
 	"Saint Carmen Desc"
 	{
 		"en"		"The last surviving Saint of Iberia, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
+		"it"		"La sua longevità ha avuto un prezzo, ma ricorda il suo dovere e i suoi nemici, nonostante abbia perso la ragione.\n- Bersaglia il nemico e gli alleati\n- Gli attacchi fanno levitare il bersaglio e infliggono un colpo extra di danno Vero"
 	}
 	"Pathshaper Desc"
 	{
 		"en"		"Seaborn tasked with exploring evolutionary pathways, its fractals mapping out dead ends so that we many can stay on the right path.\n- Spawns a Pathshaper Fractal after several attacks and damage taken\n- On death, kills all Pathshaper Fractals."
+		"it"		"Seaborn ha il compito di esplorare i percorsi evolutivi, i suoi frattali mappano i vicoli ciechi in modo che noi tutti possiamo rimanere sulla strada giusta.\n- Genera un Frattale Pathshaper dopo diversi attacchi e danni subiti\n- Alla morte, uccide tutti i Frattali Pathshaper."
 	}
 	"Pathshaper Fractal Desc"
 	{
 		"en"		"Fractals left behind by the Seaborn Pathshaper.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Pathshaper Fractal after several attacks\n- Loses health over time"
+		"it"		"I frattali lasciati dal Pathshaper Seaborn.\nLe illusioni alla fine devono svanire.\nIl percorso non è chiaro.\nCercare, cercare.\n- Genera un frattale Pathshaper dopo diversi attacchi.\n- Perde salute con il tempo"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"Immensive strength thanks to your castle."
+		"it"		"Forza immensa grazie al vostro castello."
 	}
 	"Barracks Villager Desc"
 	{
 		"en"		"Builds a tower, repairs, and gatheres resoruces."
+		"it"		"Costruisce una torre, ripara e raccoglie le risorse."
 	}
 	"Barracks Building Desc"
 	{
 		"en"		"A tower on your side."
+		"it"		"Una torre al vostro fianco."
 	}
 	"Tidelinked Bishop Desc"
 	{
 		"en"		"A bishop that has partially mutated.\nIt is partly human, partly—\nUses a ranged attack\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
+		"it"		"Quando la sua ''altra metà'' è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
 	}
 	"Tidelinked Archon Desc"
 	{
 		"en"		"Sea Terror. Even Alaxios's technology has a role to play in the evolution of we many.\n- Attacks inflict Nervous Impairment\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
+		"it"		"Terrore marino. Persino la tecnologia di Alaxios ha un ruolo da svolgere nell'evoluzione di noi tutti.\n- Gli attacchi infliggono menomazioni nervose.\n- Quando la sua altra metà è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
 	}
 	"Scientific Witchery Desc"
 	{
 		"en"	"Experiemental, created by donner and schwert to assist you."
+		"it"	"Esperienziale, creato da donner e schwert per assistervi."
 	}
 	"Ishar'mla, Heart of Corruption Desc"
 	{
 		"en"		"It speaks for we many.\n- Starts in Healer form\n- When in Healer form, follows it's allies and attacks heal up to 2 targets\n- Gains power over time and enters Leviathan form when full, increased while on Nethersea Brands\n- Gains power rapidly when falling below half health for the first time\n- When in Leviathan form, attacks targets 6 locations, dealing AOE True damage, and destorys blocking buildings\n- Reverts forms when Leviathan form, spawns Nethesea Brands and heals self"
+		"it"		"Parla a nome di tutti noi.\n- Inizia in forma di Guaritore \n- Quando è in forma di Guaritore, segue gli alleati e i suoi attacchi curano fino a 2 bersagli \n- Guadagna energia nel tempo ed entra in forma di Leviatano quando è pieno, aumentata quando si trova nelle Marche di Nethersea \n- Guadagna energia rapidamente quando scende sotto la metà della salute per la prima volta \n- Quando è in forma di Leviatano, attacca 6 bersagli, infliggendo danni veri AOE e distruggendo gli edifici che bloccano \n- Ritorna in forma di Leviatano, genera le Marche di Nethesea e si cura da solo \n- Si trasforma in forma di Leviatano, genera le Marche di Nethesea e si cura da solo"
 	}
 	"Seaborn Guard Desc"
 	{
 		"en"		"They infect, swarming us like hell. What can we do now?\n- Deals increased damage every 3rd attack"
+		"it"		"Ci infettano e ci bombardano come un inferno. Che cosa possiamo fare ora?"
 	}
 	"Seaborn Defender Desc"
 	{
 		"en"		"I feel... so weak...\n- Resists a specific damage type"
+		"it"		"Mi sento... così debole... \n- Resiste a un tipo di danno specifico"
 	}
 	"Seaborn Vanguard Desc"
 	{
 		"en"		"We must stick together, or is it that what he wants.\n- Provides increased movement speed to all enemies while alive, stacks with others"
+		"it"		"Dobbiamo restare uniti, o è questo che vuole.\n- Fornisce un aumento della velocità di movimento a tutti i nemici mentre è in vita, cumulabile con gli altri"
 	}
 	"Seaborn Caster Desc"
 	{
 		"en"		"No, no. I can't be them, I can't!\n- Uses a ranged attack\n- Deals AOE True damage"
+		"it"		"No, no. Non posso essere loro, non posso! \n- Utilizza un attacco a distanza \n- Infligge danni veri AOE"
 	}
 	"Seaborn Specialist Desc"
 	{
 		"en"		"I'm not infected, I'm not seaborn! Please god!\n- Spawns at it's ally with the lowest health ratio, if successful, grants self buff"
+		"it"		"Non sono infetto, non sono un Seaborn! Per favore, Dio!\n- Spawna sull'alleato con il rapporto di salute più basso, se ha successo, concede un auto-buffo"
 	}
 	"Seaborn Supporter Desc"
 	{
 		"en"		"I'm not We Many, I'm not We Many, We Many, We Many...\n...\n...\nSea... the sea of we many...\n- Uses a ranged attack\n- Deals True damage\n- Periodically spawns Nourished Runner drones"
+		"it"		"Non sono We Many, non sono We Many, We Many, We Many...\n...\n...\nSea...the sea of we many...\n- Utilizza un attacco a distanza\n- Infligge danni veri\n- Genera periodicamente droni Runner nutriti"
 	}
 	"Theocracy Desc"
 	{
 		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multiple targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
+		"it"		"Uno pseudo cavaliere magico, la prima metà di se stesso.\nBatteria: I colpi in mischia dell'Npc acquisiscono la capacità di colpire più bersagli, ma ogni bersaglio subisce la stessa quantità di danni.Inoltre, i danni vengono ridotti per i bersagli colpiti dalle ''corde''\nMaster: Comanda gli npc di mischia"
 	}
 	"Benera Desc"
 	{
 		"en" 		"An expidonsan with a shotgun."
+		"it"		"Un expidonsan con un fucile da caccia."
 	}
 	"Pental Desc"
 	{
 		"en" 		"a lightsaber, its dangerous."
+		"it"		"una spada laser, è pericoloso."
 	}
 	"Defanda Desc"
 	{
 		"en" 		"A heavy tank, heals all allied around itself when hitting an enemy."
+		"it"		"Un tank pesante, che cura tutti gli alleati intorno a sé quando colpisce un nemico."
 	}
 	"Selfam Ire Desc"
 	{
 		"en" 		"Gains high speeds upon getting close to an enemy."
+		"it"		"Raggiunge una velocità elevata quando si avvicina a un nemico."
 	}
 	"Vaus Magica Desc"
 	{
 		"en" 		"Grants a shield to all allied around it."
+		"it"		"Conferisce uno scudo a tutti gli alleati intorno ad esso."
 	}
 	"Pistoleer Desc"
 	{
 		"en" 		"A easily dodgeable laser, but not so easily dodgeable with everything else going on."
+		"it"		"Un laser facilmente schivabile, ma non così facilmente schivabile con tutto il resto."
 	}
 	"Diversionistico Desc"
 	{
 		"en" 		"An enemy that comes from time to time, Will try to backstab you. (Backstabbing can be silenced)"
+		"it"		"Un nemico che si presenta di tanto in tanto, cercherà di pugnalarvi alle spalle. (Le pugnalate alle spalle possono essere messe a tacere)"
 	}
 	"Adiantum Desc"
 	{
 		"en"	"The other half of Theocracy, doesn't have a battery\nWields a powerfull ion barrage, with a heafty cooldown\nMaster: Ranged npc's follow his orders."
+		"it"	"L'altra metà di Teocrazia, non ha una batteria, ma brandisce un potente sbarramento di ioni, con un pesante cooldown: Gli Npc a distanza seguono i suoi ordini."
 	}
 	"Lanius Desc"
 	{
 		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are neccecary no matter the culture...\nBattery: boosts the speed of friendly melee units"
+		"it"	"Un semplice guerriero dei Ruaniani\nSorprendentemente, anche se preferiscono la magia, sembra che i guerrieri siano necessari a prescindere dalla cultura...\nBatteria: aumenta la velocità delle unità amiche in mischia"
 	}
 	"Magia Desc"
 	{
 		"en"	"A Basic Mage of the Ruanians\nHolds a magic crest\nBattery: boosts the speed of friendly ranged units"
+		"it"	"Un Mago di base dei Ruaniani\nTiene una cresta magica\nBatteria: aumenta la velocità delle unità amiche a distanza"
 	}
 	"Heavy Punuel Desc"
 	{
 		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
+		"it"	"Un nemico pesantemente corazzato, una volta che l'armatura si rompe, acquisisce un'elevata velocità.\nMelee infligge il doppio dei danni all'armatura."
 	}
 	"Sergeant Ideal Desc"
 	{
 		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
+		"it"	"Un sergente che proteggerà i suoi commilitoni a costo della propria vita. Il suo scudo proteggerà qualsiasi alleato intorno a sé e subirà i danni al suo posto."
 	}
 	"VIP Building, The Objective Desc"
 	{
 		"en"	"Tower defense objective, defend it, if it dies you lose!"
+		"it"	"Obiettivo di difesa della torre, difenderla, se muore si perde!"
 	}
 	"Rifal Manu Desc"
 	{
 		"en"	"A rifle holder, it deals high ranged damage."
+		"it"	"Porta fucile, infligge danni elevati a distanza."
 	}
 	"Siccerino Desc"
 	{
 		"en"	"A trained pental."
+		"it"	"Un pentaleghista addestrato."
 	}
 	"Soldine Prototype Desc"
 	{
 		"en"	"A prototype made by sensal on the way to you.\nShoots rockets slowly."
+		"it"	"Un prototipo realizzato da sensal sulla strada per voi.\nSpara razzi lentamente."
 	}
 	"Soldine Desc"
 	{
 		"en"	"Re-created by Sensal on his way to you.\nCan rocketjump\nFires rockets\nCan melee attack with a cooldown, this melee deals heavy damage."
+		"it"	"Ricreato da Sensal mentre si reca da voi.\nPuò saltare con i razzi\nPuò attaccare in mischia con un cooldown, questa mischia infligge danni ingenti."
 	}
 	"Protecta Desc"
 	{
 		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell."
+		"it"	"Un tank pesante, che guarisce tutti gli alleati intorno a sé quando colpisce un nemico.\nGuarisce anche in caso di morte."
 	}
 	"Sniponeer Desc"
 	{
 		"en"	"A far ranged and better version of the pistoleers' their delay upon hurting is also less."
-		"en"	"Дальнобольний и улучшенный вариант пистолетчиков' их задержка перед выстрелом так же уменьшена."
+		"ru"	"Дальнобольний и улучшенный вариант пистолетчиков' их задержка перед выстрелом так же уменьшена."
+		"it"	"Una versione migliore e a distanza dei pistoleri, il cui ritardo nel ferire è minore."
 	}
 	"Ega Bunar Desc"
 	{
 		"en"	"An enemy with heavy armor, although when it breaks they lose all their speed.\nMelee deals 2x as much damage to the armor."
+		"it"	"Un nemico con un'armatura pesante, anche se quando si rompe perde tutta la sua velocità.\nMelee infligge il doppio dei danni all'armatura."
 	}
 	"Enega Kapus Desc"
 	{
 		"en"	"A cyborg with a heavy shield that destoys most projectiles and bullets and has heavy ranged resistance.\n(once silenced, the shield breaks and never returns)"
+		"it"	"Un cyborg con uno scudo pesante che distrugge la maggior parte dei proiettili e delle pallottole e ha una forte resistenza a distanza"
 	}
 	"Captino Agentus Desc"
 	{
 		"en"	"A captain of the scouting party, he teleports and backstabs, once teleporting he will call reinforcements inform of diversionisticos.\n(Backstab can be silenced)"
+		"it"	"Capitano del gruppo di esplorazione, si teletrasporta e fa il backstab, una volta teletrasportato chiamerà i rinforzi informando i diversionisticos"
 	}
 	"Sensal Desc"
 	{
 		"en"	"The leader of the scouting group and a friend of silvester and Waldch, he is here for what you did.\nEach new time he returns he gains new abilities and gets stronger.\nHe summons scythes that home onto you, summons portals which summon sythes, fires a laser onto all enemies in range aswell.\nGets a shield which is the same as the vaus magica shield upon using any ability.\nSlide on hit (can be silenced)"
+		"it"	"Il capo del gruppo di esploratori e amico di Silvester e Waldch, è qui per quello che avete fatto.Ogni volta che torna guadagna nuove abilità e diventa più forte.\nEvoca falci che si dirigono verso di voi, evoca portali che richiamano falci, spara un laser su tutti i nemici nel raggio d'azione.\nOttiene uno scudo che è lo stesso dello scudo di vaus magica quando usa una qualsiasi abilità.Scivola su un colpo (può essere silenziato)"
 	}
 	"Dual Rea Desc"
 	{
 		"en"	"an elite version of the pentals."
+		"it"	"una versione d'élite dei pental."
 	}
 	"Guardus Desc"
 	{
 		"en" 	"A heavy tank, heals all allied around itself when hitting an enemy.\nHeals on death aswell.\nMuch stronger."
+		"it"	"Un tank pesante, guarisce tutti gli alleati intorno a sé quando colpisce un nemico.\nGuarisce anche in caso di morte.Molto più forte."
 	}
 	"Vaus Techicus Desc"
 	{
 		"en"	"A better version of the vaus magica's, grants more shield stacks."
+		"it"	"Una versione migliore del vaus magica, concede più stack di scudo."
 	}
 	"Minigun Assisa Desc"
 	{
 		"en"	"A minigun maniac, he will shred anything."
+		"it"	"Maniaco delle minigun, fa a pezzi qualsiasi cosa."
 	}
 	"Ignitus Desc"
 	{
 		"en"	"A giant that ignites upon attacking."
+		"it"	"Un gigante che si incendia all'attacco."
 	}
 	"Helena Desc"
 	{
 		"en"	"A field medic that enrages when its patient dies, or you get too close to it."
+		"it"	"Un medico da campo che si infuria quando il suo paziente muore o ci si avvicina troppo."
 	}
 	"Erasus Desc"
 	{
 		"en"	"The best of the best of pantals."
+		"it"	"Il meglio del meglio dei pantali."
 	}
 	"Giant Tankus Desc"
 	{
 		"en"	"A absolute giant of a tank."
+		"it"	"Un gigante assoluto di un carro armato."
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
 		"en"	"Sub leader of the scouting party.\nHas heavy damage and high health,once losing half his health he gains immensive speed and armor, break the armor to get rid of the effects.\nMelee deals 1.4x as much damage to the armor."
+		"it"	"Ha danni pesanti e salute elevata, una volta persa metà della salute guadagna velocità immensiva e armatura, rompere l'armatura per eliminarne gli effetti."
 	}
 	"Speedus Adivus Desc"
 	{
 		"en"	"A high speed saber-ist."
+		"it"	"Un saber-ista ad alta velocità."
 	}
 	"Overlord The Last Desc"
 	{
 		"en"	"He thinks youre for his crown aswell...\nHis fire is global range and has a LOS check.\nStands when appearing for a while."
+		"it"	"Pensa che anche tu sia per la sua corona...\nIl suo fuoco ha un raggio d'azione globale e ha un controllo di LOS."
 	}
 	"Bladedance The Betrayed Desc"
 	{
 		"en"	"What can be as strong as Bob?"
+		"it"	"Cosa può essere forte come Bob?"
 	}
 	"Helia Desc"
 	{
 		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
+		"it"		"Questo PNG rimane a distanza dal combattimento principale.\nTutti i PNG che si trovano nel suo raggio d'azione vengono curati in modo passivo\nBatteria: cura un gruppo di PNG a prescindere dal raggio d'azione"
 	}
 	"Astria Desc"
 	{
 		"en"		"A slow npc that boosts the speed of nearby melee npc's\nBattery: When battery is nearly charged npc's rally around this npc, once fully charged he teleports them to the masters target\nMaster: Commands Melee Npc's..."
+		"it"		"Un PNG lento che aumenta la velocità dei PNG da mischia vicini: Quando la batteria è quasi carica, gli Npc si radunano intorno a questo Npc, una volta completamente carica, li teletrasporta all'obiettivo del padrone: Comanda gli Npc da mischia..."
 	}
 	"Aether Desc"
 	{
 		"en"		"A long ranged sniper that casts spells from a far.\nThis npc likes to group up with other long range support npc's"
+		"it"		"Un cecchino a lungo raggio che lancia incantesimi da lontano.\nQuesto npc ama raggrupparsi con altri npc di supporto a lungo raggio"
 	}
 	"Europa Desc"
 	{
 		"en"		"This npc sits from a far summoning brainless drones\nBattery: Summons itself\nMaster: Low priority, commands ranged npc's"
+		"it"		"Questo npc siede da lontano evocando droni senza cervello\nBatteria: evoca se stesso\nMaestra: Priorità bassa, comanda gli npc a distanza"
 	}
 	"Ruina Drone Decs"
 	{
 		"en"		"A very bog standard melee spy, has no gimicks or trickery\nSlave: Melee"
+		"it"		"Una spia da mischia molto banale, senza espedienti o trucchi: Mischia"
 	}
 	"Ruriana Desc"
 	{
 		"en"		"A more powerful Lanius, additionally lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10％ of the npc's health"
+		"it"		"Un Lanius più potente, inoltre non ha la capacità di teletrasportarsi da solo e non ha l'abilità di buffare la velocità.\nTuttavia, i danni subiti negli ultimi 5 secondi vengono convertiti in guarigione AOE con un rapporto di 2 dmg per 1 guarigione"
 	}
 	"Valiant Desc"
 	{
 		"en"		"An engineer that builds Magia anchors, apart from that, not very special"
+		"it"		"Un ingegnere che costruisce ancore Magia, a parte questo, non molto speciale"
 	}	
 	"Magia Anchor Desc"
 	{
 		"en"		"A magia anchor, spawns drones\nOnce a tower has been active for long enough something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
+		"it"		"Un'ancora magica, genera droni...\nQuando una torre è attiva per un periodo abbastanza lungo, si genera qualcosa di pericoloso...\nQueste ancore servono come versione ridotta delle ancore di teletrasporto e, per questo motivo, sono a senso unico"
 	}
 	"Stellar Weaver Desc"
 	{
 		"en"		"A powerfull tool of Ruina\nCreated to guard teleportation anchors that lead to the main city's Teleportation Hub"
+		"it"		"Un potente strumento di Ruina\nCreato per sorvegliare le ancore di teletrasporto che conducono all'Hub di teletrasporto della città principale"
 	}
 	"Daedalus Desc"
 	{
 		"en"	"Gives a shield to nearbly ruina alies"
+		"it"	"Dà uno scudo alle alie quasi rovinabili"
 	}
 	"Malius Desc"
 	{
 		"en"	"Has the ability to boost nearby npc's battery\nIts best to take these out first..."
+		"it"	"Ha la capacità di potenziare la batteria degli npc vicini...\n È meglio eliminarli prima..."
 	}
 	"Laz Desc"
 	{
 		"en"	"A magical laser wielding mage\nIts laser acts moreso like a rocket with slight homing\nRemember that when trying to dodge!"
+		"it"	"Il laser magico di un mago agisce più che altro come un razzo con un leggero homing"
 	}
 	"Laniun Desc"	//Need descs
 	{
 		"en"	"A stronger variant of Lanius\nHowever, anything inbetween where it teleported takes a bit of damage."
+		"it"	"Una variante più forte di Lanius,\n ma tutto ciò che si trova nel mezzo del teletrasporto subisce un po' di danni."
 	}
 	"Magnium Desc"
 	{
 		"en"	"A stronger magia\nIt casts spell's slower, but can cast 2 of them in a short burst before needing to recharged\nin addition, it has a special magic homing ICBM, very dangerous"
+		"it"	"Una magia più forte lancia incantesimi più lentamente, ma può lanciarne 2 in una breve raffica prima di doverli ricaricare,\n inoltre, ha uno speciale missile balistico magico, molto pericoloso"
 	}
 	"Heliara Desc"
 	{
 		"en"	"A stronger Helia"
+		"it"	"Una Helia più forte"
 	}
 	"Astriana Desc"
 	{
 		"en"	"Stronger variant"
+		"it"	"Variante più forte"
 	}
 	"Europis Desc"
 	{
 		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nIt also weilds a pizza cutter as its magic weapon!"
+		"it"	"Un'Europa più forte, in grado di evocare Laz e Magia oltre ai suoi droni a caso,\n e di usare un tagliapizza come arma magica!"
 	}
 	"Draedon Desc"
 	{
 		"en"	"A stronger Daedalus\nthats it, oh also it holds a magic gun instead of a magic dumpster device"
+		"it"	"Un Dedalus più forte, che tiene anche una pistola magica invece di un cassonetto magico"
 	}
 	"Aetheria Desc"
 	{
 		"en"	"Now wields a bow."
+		"it"	"Ora brandisce un arco."
 	}
 	"Maliana Desc"
 	{
 		"en"	"While it is standing still it creates an aura that makes nearby Ruina npc's batteries charge faster\nAdvisable to take these out first..."
+		"it"	"Mentre è fermo, crea un'aura che fa caricare\n più velocemente le batterie degli npc Ruina nelle vicinanze."
 	}
 	"Ruianus Desc"
 	{
 		"en"	"Stronger Variant"
+		"it"	"Variante più forte"
 	}
 	"Lazius Desc"
 	{
 		"en"	"A stronger Laz, additionally it has the ability to fire an EVEN STRONGER laser!!! As its battery."
+		"it"	"Un Laz più forte, inoltre ha la capacità di sparare un laser ancora più forte!!! Come la sua batteria."
 	}
 	"Dronian Desc"
 	{
 		"en"	"He will shank you with his dagger."
+		"it"	"Vi colpirà con il suo pugnale."
 	}
 	"Archosauria Desc"
 	{
 		"en"	"A hunter sniper with silent and deadly toxicants.\n- Uses a ranged attack\n- Attacks inflict Chaos elemental damage\n- Attacks inflict a debuff that increases damage taken\n- In Red Moon, increases elemental damage and debuff duration"
+		"it"	"Un cecchino cacciatore con tossici silenziosi e letali.\n- Utilizza un attacco a distanza\n- Gli attacchi infliggono danni elementali al Caos\n- Gli attacchi infliggono un debuff che aumenta i danni subiti\n- In Luna Rossa, aumenta i danni elementali e la durata del debuff"
 	}
 	"Aslan Desc"
 	{
 		"en"	"A fast scout that can pin players in place.\n- Attacks inflict a debuff that decreases movement speed\n- In Red Moon, attacks instead stun the target"
+		"it"	"Un esploratore veloce che può bloccare i giocatori in posizione.\n- Gli attacchi infliggono un debuff che diminuisce la velocità di movimento\n- In Luna Rossa, gli attacchi invece stordiscono il bersaglio"
 	}
 	"Perro Desc"
 	{
 		"en"	"A soldier that gets faster and deals more damage with less health.\n- Increases damage and speed as health decreases, up to x4\n- In Red Moon, cap is increased to x8"
+		"it"	"Un soldato che diventa più veloce e infligge più danni con meno salute.\n- Aumenta i danni e la velocità al diminuire della salute, fino a x4\n- In Red Moon, il limite è aumentato a x8"
 	}
 	"Caprinae Desc"
 	{
 		"en"	"A magical demoman that summons clones of itself.\n- Does not attack\n- Periodically summons a clone of self and increases movement speed\n- On death, deals AOE damage\n- In Red Moon, increased damage, speed, and resistance"
+		"it"	"Un demone magico che evoca cloni di se stesso.\n- Non attacca.\n- Evoca periodicamente un clone di se stesso e aumenta la velocità di movimento.\n- Alla morte, infligge danni AOE.\n- In Luna Rossa, aumenta i danni, la velocità e la resistenza"
 	}
 	"Liberi Desc"
 	{
 		"en"	"A medic that provides invulnerability to an ally.\n- Does not attack and follows it's allies\n- Grants invulnerability, shields, damage, attack speed, and resistance to it's nearby allies\n- Heals target allies over max health, granting permanent buffs when over x1.5 health\n- In Red Moon, increased buff duration and movement speed"
+		"it"	"Un medico che fornisce invulnerabilità a un alleato.\n- Non attacca e segue i suoi alleati.\n- Concede invulnerabilità, scudi, danni, velocità d'attacco e resistenza agli alleati vicini.\n- Cura gli alleati bersaglio oltre la salute massima, concedendo buff permanenti quando supera la salute x1,5.\n- In Luna Rossa, aumenta la durata dei buff e la velocità di movimento"
 	}
 	"Ursus Desc"
 	{
 		"en"	"A heavy with hits that debuff a large amount of Chaos.\n- Attacks inflict Chaos elemental damage\n- In Red Moon, increased elemental damage and damage against buildings"
+		"it"	"Un pesante con colpi che causano un forte debuff di Caos.\n- Gli attacchi infliggono danni elementali da Caos\n- In Luna Rossa, aumentano i danni elementali e i danni contro gli edifici"
 	}
 	"Aegir Desc"
 	{
 		"en"	"A pyro that deals a large amount of extra damage to targets under the effects of Chaos or Jarate.\n- Deals increased damage targets with elemental damage or certain debuffs\n- In Red Moon, this trait is increased"
+		"it"	"Un piroide che infligge una grande quantità di danni extra ai bersagli sotto l'effetto di Caos o Jarate.\n- Infligge danni maggiori ai bersagli con danni elementali o con determinati debuff\n- In Luna Rossa, questo tratto è aumentato"
 	}
 	"Cautus Desc"
 	{
 		"en"	"A spy that jumps around often.\n- Periodically jumps at targets\n- Able to backstab, dealing increased damage\n- In Red Moon, attacks always backstab"
+		"it"	"Una spia che salta spesso in giro.\n- Salta periodicamente verso gli obiettivi\n- In grado di eseguire backstab, infliggendo danni maggiori\n- In Red Moon, attacca sempre backstab"
 	}
 	"Vulpo Desc"
 	{
 		"en"	"A engineer that fires ranged attacks with high damage bonus against buildings.\n- Uses a ranged attack\n- In Red Moon, deals increased damage to buildings"
+		"it"	"Un ingegnere che sferra attacchi a distanza con un elevato bonus di danni contro gli edifici.\n- Utilizza un attacco a distanza\n- In Luna Rossa, infligge danni maggiori agli edifici"
 	}
 	"Major Steam Desc"
 	{
 		"en"	"A giant steampunk soldier which reloads while not firing.\nAble to fire when it has enough rounds and can't change target while firing.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Chaos elemental damage\n- Has resistances that decrease when damage is taken\n- On death, deals AOE damage and summons a Vulpo\nIn Red Moon, increased elemental damage and projectile speed"
+		"it"	"Un gigantesco soldato steampunk che ricarica quando non spara.\n- Può sparare quando ha abbastanza colpi e non può cambiare bersaglio mentre spara.\n- Utilizza un attacco a distanza e ricarica.\n- Immune agli effetti di rallentamento, stordimento e spostamento.\n- Gli attacchi sono AOE e infliggono danni elementali del Caos.\n- Ha resistenze che diminuiscono quando si subiscono danni.\n- Alla morte, infligge danni AOE ed evoca un Vulpo.\nIn Red Moon, aumenta i danni elementali e la velocità dei proiettili"
 	}
 	"Ahim Desc" 
 	{
 		"en"	"Throws a cleaver when close enough, then engages in melee combat."
+		"it"	"Lancia una mannaia quando è abbastanza vicino, poi ingaggia un combattimento in mischia."
 	}
 	"Inabdil Desc" 
 	{
 		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
+		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
 	}
 	"Khazaan Desc" 
 	{
 		"en"	"Each 3rd melee attack that hits will give him 50％ more resistance upto 75％ at max."
+		"it"	"Ogni terzo attacco in mischia che colpisce gli conferisce 50％ in più di resistenza, fino a 75％ al massimo."
 	}
 	"Sakratan Desc" 
 	{
 		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to receive 25％ more damage for 10 seconds."
+		"it"	"Infligge il debuff Caos, che vi fa esplodere, infliggendo 250 danni reali a tutti i nemici che vi circondano.\nQuesto fa sì che tutti gli alleati colpiti ricevano 25％ danni in più per 10 secondi."
 	}
 	"Yadeam Desc" 
 	{
 		"en"	"Heals all allies around themselves except eachother.\nThrows explosive piss."
+		"it"	"Guarisce tutti gli alleati intorno a sé, tranne l'altro.\nLancia piscio esplosivo."
 	}
 	"Rajul Desc" 
 	{
 		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff."
+		"it"	"Quando subisce danni, a seconda dei danni subiti curerà 3 alleati intorno a sé.\nSe ricevono abbastanza overheal, riceveranno un buff permanente."
 	}
 	"Qanaas Desc" 
 	{
 		"en"	"A sniper that spawns randomly around the map.\nTheir aim isnt good so dodging is easy.\nDeals immensive damage to barricades."
+		"it"	"Un cecchino che si riproduce a caso in giro per la mappa.\nLa loro mira non è buona, quindi schivare è facile.\nDanno immenso alle barricate."
 	}
 	"Atilla Desc" 
 	{
 		"en"	"Deals low damage but inflicts bleed."
+		"it"	"Infligge pochi danni ma infligge emorragie."
 	}
 	"Ancient Demon Desc" 
 	{
 		"en"	"Each time an enemy dies around them they gain HP, damage, resistance and a speed buff.\nThis also spawns a weaker smaller version of them randmly around the map.\nBuffs stack infinitly.\nDeals chaos damage."
+		"it"	"Ogni volta che un nemico muore intorno a loro, guadagnano HP, danni, resistenza e un potenziamento della velocità.\nQuesto genera anche una versione più debole e più piccola di loro in giro per la mappa.\nI potenziamenti si accumulano all'infinito.\nDanneggia il caos."
 	}
 	"Winter Sniper Desc" 
 	{
 		"en"	"A stronger Ziberian sniper which deals massive chaos damage."
+		"it"	"Un cecchino ziberiano più forte che infligge ingenti danni da caos."
 	}
 	"Ziberian Miner Desc" 
 	{
 		"en"	"Deals massive building damage."
+		"it"	"Infligge ingenti danni agli edifici."
 	}
 	"Snowey Gunner Desc" 
 	{
 		"en"	"Tries to kite you, and has great health and ranged damage."
+		"it"	"Tenta di fare kite e ha un'ottima salute e danni a distanza."
 	}
 	"Freezing Cleaner Desc" 
 	{
 		"en"	"attacks immensively fast and deals AOE damage, deals huge chaos damage."
+		"it"	"Attacca in modo immensamente veloce e infligge danni AOE, infligge ingenti danni da caos."
 	}
 	"Airborn Explorer Desc" 
 	{
 		"en"	"Can jump and while midair they gain 3x damage, 3x range, and take 2x ranged damage."
+		"it"	"Può saltare e a mezz'aria guadagna 3x danni, 3x gittata e subisce 2x danni a distanza."
 	}
 	"Arctic Mage Desc" 
 	{
 		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
+		"it"	"Quando subisce danni, a seconda dei danni subiti, guarisce 3 alleati intorno a sé.Se ricevono abbastanza overheal, riceveranno un buff permanente.A volte si scuote con uno scudo quando viene colpito, e scuote anche gli alleati quando vengono colpiti.Subisce ingenti danni da caos."
 	}
 	"Frost Hunter Desc" 
 	{
 		"en"	"Fires 2 shots before going in with their melee."
+		"it"	"Spara 2 colpi prima di entrare in mischia."
 	}
 	"Skin Hunter Desc" 
 	{
 		"en"	"Heals all allies around them except eachother, throws knives."
+		"it"	"Guarisce tutti gli alleati intorno a sé, tranne l'altro, e lancia coltelli."
 	}
 	"Irritated Person Desc" 
 	{
 		"en"	"Each 3rd attack gives a small resistance buff upto 75％.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemeis."
+		"it"	"Ogni terzo attacco conferisce un piccolo buff di resistenza fino a 75％.\nPiù viene ferito, più danni subisce, ma diventa anche più veloce e infligge più danni.\nSalta verso di voi, ma se si perde abbastanza salute, farà invece un ground pound che danneggia tutti gli avversari."
 	}
 	"Ransacker Desc" 
 	{
 		"en"	"Throws a cleaver and then goes in for melee."
+		"it"	"Lancia una mannaia e poi entra in mischia."
 	}
 	"Runover Desc" 
 	{
 		"en"	"Ramps up speed over time, at max speed it gains massive damage and resistance, and its sword glows gold, when it melee's, missing or not itll lose this bonus, deals chaos damage if charged."
+		"it"	"Aumenta la velocità nel tempo, alla massima velocità guadagna danni e resistenza massicci, e la sua spada si illumina d'oro, quando si scontra in mischia, mancando o meno, perde questo bonus, infligge danni da caos se carica."
 	}
 	"Hitman Desc" 
 	{
 		"en"	"Deals immensive damage to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50％ less ranged damage."
+		"it"	"Infligge danni immensi a tutto. è estremamente veloce e schiva ogni 2 attacchi.\n ha pochi HP e subisce 2,5 volte i danni in mischia ma 50％ in meno quelli a distanza."
 	}
 	"Mad Doctor Desc"
 	{
 		"en"	"attacks very very fast and each 3rd attack gives it resistance and a big attack cooldown to itself.\nEach ATTACK not based on damage heals allies around themselves simular to rajul or arctic mage."
+		"it"	"attacca molto velocemente e ogni terzo attacco gli conferisce resistenza e un grande cooldown d'attacco.\nOgni ATTACCO non basato sul danno cura gli alleati intorno a sé, similmente a rajul o al mago artico."
 	}
 	"Abomination Desc"
 	{
 		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it receives will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
+		"it"	"Infligge danni immensi nel tempo, infligge danni da caos e brucia.\nOgni attacco che riceve gli conferisce resistenza al tipo di danno che ha ricevuto e vulnerabilità all'altro.\nIl silenzio fa sì che la parte di guadagno di resistenza non avvenga."
 	}
 	"Anarchist Enforcer Desc"
 	{
 		"en"	"A sniper that deals huge damgae and gives bleed."
+		"it"	"Un cecchino che infligge danni ingenti e dà sanguinamento."
 	}
 	"Braindead Desc"
 	{
 		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time." 
+		"it"	"Spara 10 colpi molto velocemente con danni elevati e poi ricarica a lungo."
 	}
 	"Behemoth Desc"
 	{
 		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
+		"it"	"Ha una salute molto elevata e danni da caos. è completamente immune ai colpi alla testa."
 	}
 	"Absolute Incinirator Desc"
 	{
 		"en"	"An enemy that kites you and also burns you with his ''shotgun''."
+		"it"	"Un nemico che vi fa da kiter e vi brucia anche con il suo ''fucile''."
 	}
 	"The Messenger Desc"
 	{
 		"en"	"Kahmlsteins forced right hand man, he really wants his attention.\nApart of the no goverment group called Interitus.\nWave 15: Deals fire and bleed damage.\nWave 30: deals massive chaos damage.\nEach time he does his 4 ball attack he gains permanent power and resistance.\nEach time he shows his hand sign he will teleport.\n(Silence) Reduces chaos damage he deals."
+		"it"	"Kahmlsteins è il suo braccio destro forzato, vuole davvero la sua attenzione.\nFa parte del gruppo di non governanti chiamato Interitus.\nOnde 15: infligge danni da fuoco e da emorragia.\nOnde 30: infligge ingenti danni da caos.\nOgni volta che esegue il suo attacco con 4 sfere guadagna potere e resistenza permanenti.\nOgni volta che mostra il suo segno della mano si teletrasporta.\n(Silenzio) Riduce i danni da caos che infligge."
 	}
 	"The Purge Desc"
 	{
 		"en"	"A machine to help the efforts of the Interitus group.\nHas a great arsenal of weapons.\nHeals when low enough and gains massive power everytime he has his fists out.\nFinish the fight fast before he becomes too strong.\n(Silence)Decreases his healing abit"
+		"it"	"Una macchina per aiutare gli sforzi del gruppo Interitus.\nHa un grande arsenale di armi.\nGuarisce quando è abbastanza basso e guadagna una potenza enorme ogni volta che tira fuori i pugni.\nFinisce il combattimento velocemente prima che diventi troppo forte.\n(Silenzio)Diminuisce la sua guarigione"
 	} 
 	"Rouge Expidonsan Doctor Desc"
 	{
 		"en"	"An Rouge Expidonsan Doctor who refused to stay with his people, he hates them, he hates everyone.\nSimular to doctor pernell, he buffs allies."
+		"it"	"Un medico Rouge Expidonsan che si è rifiutato di stare con la sua gente, li odia, odia tutti.\nSimile al dottor pernell, buffa gli alleati."
 	}
 	"Fallen Warrior Desc"
 	{
 		"en"	"An elite Combine knight who was sent to battlement to deal with Chaos. \nHe fought for day and night, but he couldn't beat endless waves of chaos affliceted army. \n He now became one of the troops who spread chaos. \n He gains more speed, strength, and resistance when below half health, He slows down attackspeed when near his aura, stays on death."
+		"it"	"Un cavaliere d'élite del Combine che è stato mandato in trincea per affrontare il Caos. \nHa combattuto giorno e notte, ma non è riuscito a sconfiggere le ondate infinite dell'esercito afflitto dal Caos. \nÈ diventato una delle truppe che diffondono il caos. \nGuadagna più velocità, forza e resistenza quando è al di sotto della metà della salute, rallenta la velocità d'attacco quando è vicino alla sua aura e rimane alla morte."
 	}
 	"Xeno Acclaimed Swordsman Desc"
 	{
 		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+		"it"	"Non subisce danni dopo aver subito danni, infligge danni ingenti e prepara un assalto di attacchi a impulsi."
 	}
 	"Wandering Spirit Desc"
 	{
 		"en"	"Spirit that couldnt move on, free it.\nDeals Massive damage, heals on attack, if it hits 4 players it splits apart."
+		"it"	"Lo spirito che non riusciva ad andare avanti, liberalo.\nDanneggia pesantemente, guarisce all'attacco, se colpisce 4 giocatori si divide."
 	}
 	"Ouroboros Ekas Desc"
 	{
 		"en"	"Buffs all enemies on the field massively, if its the last one alive, it gains 5x speed, 2x res."
+		"it"	"Buffs tutti i nemici sul campo in modo massiccio, se è l'ultimo in vita, guadagna 5x velocità, 2x res."
 	}
 	"Xeno Patient Few Desc"
 	{
 		"en"	"Oneshots any player that isnt ubered.\nDeals massive damage to cades.\nWhen hurt, gains a short burst of speed."
+		"it"	"Spara a qualsiasi giocatore che non sia uberizzato.\nDanneggia pesantemente i cadetti.\nQuando viene ferito, guadagna una breve raffica di velocità."
 	}
 	"Xeno Early Infected Desc"
 	{
 		"en"	"Very fast but loses its speed once hit."
+		"it"	"Molto veloce, ma perde la sua velocità una volta colpito."
 	}
 	"Vivithorn Desc"
 	{
 		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+		"it"	"Attivatore della fonte di infezione xeno.\nPuò sfrecciare, uno ti afferra e ti spezza il collo, l'altro colpisce a ripetizione ma nemici diversi in un AOE.\n(SIlenza) perde la scivolata al colpo"
 	}
 	"Lex Desc"
 	{
 		"en"	"The first half of Lexiana"
+		"it"	"Il primo tempo di Lexiana"
 	}
 	"Iana Desc"
 	{
 		"en"	"The second half of Lexiana"
+		"it"	"Il secondo tempo di Lexiana"
 	}
 	"Stella Desc"
 	{
 		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: makes crystall speed and turn rate 10％ slower)"
+		"it"		"Il suo vero nome è ''Donnerkrieg'' \nI suoi incantesimi sono molto più raffinati e ''puri'' rispetto a quelli del suo stato di schiavitù \nInoltre indossa la moda più recente di Ruanian e un equipaggiamento protettivo \nBasta non farsi punzecchiare dalle sue orecchie...\n(Silenzio: rallenta la velocità del cristallo e la velocità di rotazione di 10％)"
 	}
 	"Karlas Desc"
 	{
 		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger, he gains the ability to manipulate multiple swords around himself\nThese swords have a duration, every time Karlas preforms a strike, these swords ''regenerate''"
+		"it"		"Il vero nome di ''Schwertkrieg''\nNon solo il suo colpo di teletrasporto diventa più forte, ma ottiene anche la capacità di manipolare più spade intorno a sé\NQueste spade hanno una durata, ogni volta che Karlas esegue un colpo, queste spade si ''rigenerano''"
 	}
 	"Magianas Desc"
 	{
 		"en"	"A stronger Variant"
+		"it"	"Una variante più forte"
 	}
 	"Loonaris Desc"
 	{
 		"en"	"A stronger Variant"
+		"it"	"Una variante più forte"
 	}
 	"Heliaris Desc"
 	{
 		"en"	"A stronger Variant"
+		"it"	"Una variante più forte"
 	}
 	"Astrianis Desc"
 	{
 		"en"	"A stronger Variant"
+		"it"	"Una variante più forte"
 	}
 	"Eurainis Desc"
 	{
 		"en"	"Stronger variant, alongside that it creates a powerfull buff field after duplicating itself"
+		"it"	"Variante più forte, insieme al fatto che crea un potente campo di buff dopo essersi duplicato"
 	}
 	"Draeonis Desc"
 	{
 		"en"	"Stronger variant"
+		"it"	"Variante più forte"
 	}
 	"Aetherium Desc"
 	{
 		"en"	"A stronger variant, its battery allows it to fire a powerfull laser.\nCaution is advised"
+		"it"	"Una variante più potente, la cui batteria permette di sparare un potente laser.\nSi raccomanda la massima attenzione"
 	}
 	"Malianium Desc"
 	{
 		"en"	"Stronger variant"
+		"it"	"Variante più forte"
 	}
 	"Rulius Desc"
 	{
 		"en"	"Alongside what the previous one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
+		"it"	"Questa variante può sparare ogni 20 secondi un'onda fantasmatica, meglio evitarla.\n È possibile saltare attraverso l'onda se si è in tempo!"
 	}
 	"Lazines Desc"
 	{
 		"en"	"A stronger variant"
+		"it"	"Una variante più forte"
 	}
 	"Dronis Desc"
 	{
 		"en"	"A stronger variant"
+		"it"	"Una variante più forte"
 	}
 	"Ruliana Desc"
 	{
 		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 50% hp, she will start to suck up nearby ally hp to heal herself"
+		"it"	"Una volta che l'energia raggiunge il 100% e ci sono più di 4 bersagli nella linea di vista, spara diversi missili intercontinentali che fanno un male cane.\n Quando scende sotto il 50% degli hp, inizia a risucchiare gli hp degli alleati vicini per curarsi"
 	}
 	"Mana Overload"
 	{
 		"en"	"Mana Overload"
+		"it"	"Sovraccarico di mana"
 	}
 	"Master System"
 	{
 		"en"	"Master System"
+		"it"	"Sistema Master"
 	}
 	"Mana Overload Desc"
 	{
 		"en"	"Certain npc's can add mana to you. once you have over 2x you max mana, you are slowed and then an ion cannon is fired onto your location\nThe damage of this ion cannon scales on how much max mana you have. it also deals true damage\nit has a timeout period of where it can't be reapplied.\nNon mages overmana decays far faster then players who are mages"
+		"it"	"Una volta che hai superato il doppio del tuo mana massimo, vieni rallentato e poi un cannone a ioni viene sparato sulla tua posizione.\n Il danno di questo cannone a ioni scala sulla quantità di mana massimo che hai"
 	}
 	"Master System Desc"
 	{
 		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\nMakes them rally to the master"
+		"it"	"Alcuni npc sono ''Maestri'', questi npc possono comandare agli npc di livello inferiore di attaccare gli stessi bersagli che hanno loro"
 	}
 	"Chaos Intrusion"
 	{
 		"en"	"Chaos Intrusion"
+		"it"	"Intrusione del caos"
 	}
 	"Chaos Intrusion Desc"
 	{
 		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
+		"it"	"Sei arrivato troppo tardi, il caos ha avuto tutto il suo effetto... Le onde generano 25％ più nemici, generano 20％ più velocemente e 10％ più zombi sono vivi in una volta sola."
 	}
 	"Standard"
 	{
 		"en"	"Standard"
+		"it"	"Standard"
 	}
 	"Standard Desc"
 	{
 		"en"	"Play as intended!"
+		"it"	"Giocare come si deve!"
 	}
 	"Old Times"
 	{
 		"en"	"Old Times"
+		"it"	"Vecchi tempi"
 	}
 	"Old Times Desc"
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +25％ dmg, +25％ dmg to cades, +60％ HP, +6％ faster, attack 33％ faster.\n1 down, enemies heal 50％ more."
+		"it"	"Esperienza ZR su come ci si sente ad essere un novellino.\n35％ più nemici, spawn 33％ più veloce, 15％ più sono vivi in una volta.\nFanno +25％ dmg, +25％ dmg ai cad, +60％ HP, +6％ più veloce, attacco 33％ più veloce.\n1 down, i nemici guariscono 50％ in più."
 	}
 	"Turbulance"
 	{
 		"en"	"Turbulance"
+		"it"	"Turbolenza"
 	}
 	"Turbulance Desc"
 	{
 		"en"	"Play the game under extreme Speed.\nEveryone gets the ''Dimensional Turbulance'' Buff."
+		"it"	"Giocare in condizioni di estrema velocità.\nTutti ottengono il buff ''Turbolenza dimensionale''."
 	}
 	"Secondary Mercs"
 	{
 		"en"	"Secondary Mercs"
+		"it"	"Mercenari secondari"
 	}
 	"Secondary Mercs Desc"
 	{
 		"en"	"First batch of mercs failed already.\n35％ more enemies, spawn 33％ faster, 15％ more are alive at once.\nThey deal +15％ dmg, +25％ dmg to cades, have 50％ + HP, +4％ faster.\nEnemies heal 50％ more."
+		"it"	"Il primo gruppo di mercenari ha già fallito.\n 35 nemici in più, si riproducono 33％ più velocemente, 15％ in più sono vivi contemporaneamente. infliggono +15％ dmg, +25％ dmg ai cad, hanno 50％ + HP, +4％ più velocemente. i nemici guariscono 50％ in più."
 	}
 	"Paranormal Activity"
 	{
 		"en"	"Paranormal Activity"
+		"it"	"Attività paranormale"
 	}
 	"Paranormal Activity Desc"
 	{
 		"en"	"You killed them all, and now, you will pay the price.\nEvery enemy is a spirit, and they deal 5％ extra damage."
+		"it"	"Li hai uccisi tutti e ora ne pagherai il prezzo. Ogni nemico è uno spirito e infligge 5％ danni extra."
 	}
 	"BUSTING"
 	{
 		"en"	"BUSTING"
+		"it"	"SPACCARE"
 	}
 	"BUSTING Desc"
 	{
 		"en"	"Bustin' makes me feel good"
+		"it"	"Spaccare mi fa sentire bene"
 	}
 	"Sphynx Desc"
 	{
 		"en"		"Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies."
+		"it"		"Si dice che questa bestia sia stata creata nel Laboratorio abbandonato. Emette gas nocivi e guarisce gli zombie."
 	}
 	"Petrisis' Baron Desc"
 	{
 		"en"		"It's neverending hunger works very well against barricades. The ability to regenerate health per barricade hit makes it very dangerous. Not very effective against humans."
+		"it"		"La sua fame infinita funziona molto bene contro le barricate. La capacità di rigenerare la salute per ogni colpo alla barricata lo rende molto pericoloso. Non è molto efficace contro gli umani."
 	}
 	"Nightmare Desc"
 	{
 		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person."
+		"it"		"Più forte degli zombie di tutti i giorni sotto quasi tutti i punti di vista, l'Incubo è una forza da non sottovalutare. Un solo colpo dei suoi artigli è sufficiente per abbattere quasi ogni persona."
 	}
 	"Headcrab Desc"
 	{
 		"en"		"A 'crab' that tries to latch onto your head, very fast and annoying."
+		"it"		"Un 'granchio' che cerca di aggrapparsi alla testa, molto veloce e fastidioso."
 	}
 	"Poison Headcrab Desc"
 	{
 		"en"		"Yet another crab that tries to latch onto your head, inflicts bleed on hit."
+		"it"		"L'ennesimo granchio che cerca di aggrapparsi alla tua testa, infligge un'emorragia quando viene colpito."
 	}
 	"Z-Main Headcrab Desc"
 	{
 		"en"		"Zmaining is full time job now."
+		"it"		"Zmaining è ormai un lavoro a tempo pieno."
 	}
 	"Z-Main Poison Zombie"
 	{
 		"en"		"AOUEGH - Poison Zombie"
+		"it"		"AOUEGH - Veleno Zombie"
 	}
 	"3650 Desc"
 	{
 		"en"		"Possesses an arsenal of weapons, won't trust anyone who gets in his way."
+		"it"		"Possiede un arsenale di armi, non si fida di chi lo ostacola."
 	}
 	"Barracks Iberian Runner Desc"
 	{
 		"en"	"Fast basic unit which has very light armor"
+		"it"	"Unità di base veloce con armatura molto leggera"
 	}
 	"Barracks Iberian Gunner Desc"
 	{
 		"en"		"Basic Ranged unit which can shoot while moving. Has very slow speed"
+		"it"		"Unità di base a distanza che può sparare mentre si muove. Ha una velocità molto bassa"
 	}
 	"Barracks Iberian Tanker Desc"
 	{
 		"en"		"A stronger unit with basic armor"
+		"it"		"Un'unità più forte con armatura di base"
 	}	
 	"Barracks Iberian Rocketeer Desc"
 	{
 		"en"		"Ranged unit which fires strong Rocket. It cannot predict"
+		"it"		"Unità a distanza che spara forti razzi. Non può prevedere"
 	}	
 	"Barracks Iberian Healer Desc"
 	{
 		"en"		"A melee unit that has basic armor and can heal allies on attack and death"
+		"it"		"Un'unità da mischia dotata di armatura di base e in grado di curare gli alleati in caso di attacco e morte"
 	}
 	"Barracks Iberian Healtanker Desc" 
 	{
 		"en"		"Stong melee unit that has heavy armor and can heal allies on attack and death"
+		"it"		"Unità da mischia forte, dotata di armatura pesante e in grado di curare gli alleati in caso di attacco e morte"
 	}	
 	"Barracks Iberia Boomstick Desc"
 	{
 		"en"		"Slow but strong hitting ranged unit"
+		"it"		"Unità a distanza lenta ma che colpisce con forza"
 	}
 	"Barracks Iberian Guards Desc"
 	{
 		"en"		"Tanky melee units that could gain armor on hit"
+		"it"		"Unità da mischia che possono guadagnare armatura in caso di colpo"
 	}
 	"Barracks Iberian Elite Gunner Desc"
 	{
 		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
+		"it"		"Un'unità a distanza che spara 6 colpi molto rapidamente e si ricarica"
 	}	
 	"Barracks Iberian Commando Desc"
 	{
 		"en"		"A slow but strong gunner, has an explosive surprise to anybody daring to approach him"
+		"it"		"Un artigliere lento ma forte, ha una sorpresa esplosiva per chiunque osi avvicinarsi a lui"
 	}
 	"Barracks Iberia Headhunter Desc"
 	{
 		"en"		"Melee assassin unit with a rapid fire attack, deals more damage to enemies below 50％ hp"
+		"it"		"Unità assassina da mischia con attacco a fuoco rapido, infligge più danni ai nemici con meno di 50％ hp"
 	}	
 	"Barracks Iberia Inquisitor Lynsen Desc"
 	{
 		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors"
+		"it"		"Uno dei migliori inquisitori addestrati da Irene, in grado di marcare i nemici e di far piovere morte su di loro, lavora bene con gli altri inquisitori"
 	}	
 	"Barracks Iberian Lighthouse Guardian Desc"
 	{
 		"en"		"Super unit that takes 2 slot, when he has armor he heals and buff allies, when he loses the armor he uses a shotgun for high dmg at the cost of supporting"
+		"it"		"Super unità che occupa 2 slot, quando ha l'armatura cura e buffa gli alleati, quando perde l'armatura usa un fucile a pompa per un alto numero di dmg al costo del supporto"
 	}
 	"Agent John Desc"
 	{
 		"en"		"Generic Agent."
+		"it"		"Agente generico."
 	}
 	"Agent James Desc"
 	{
 		"en"		"Slightly less generic.\nHas a gun.\nApplies Corruption debuff."
+		"it"		"Un po' meno generico.\nHa una pistola.\nApplica il debuff Corruzione."
 	}
 	"Agent Alexander Desc"
 	{
 		"en"		"Gets stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Diventa tanto più forte quanto più bassa è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Alan Desc"
 	{
 		"en"		"This agent gets buffed if you're too close to his proximity.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Questo agente viene potenziato se si è troppo vicini a lui.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Chase Desc"
 	{
 		"en"		"Starts off extremely slow, but gains velocity overtime, uncapped.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Inizia con estrema lentezza, ma acquista velocità con il passare del tempo, senza limiti.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Dave Desc"
 	{
 		"en"		"Has the ability to reflect incoming attacks, gains insane resistance under reflect.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Ha la capacità di riflettere gli attacchi in arrivo, guadagna una resistenza folle sotto la riflessione.\nHa una pistola.\nApplica il Debuff di Corruzione."
 	}
 	"Agent Graham Desc"
 	{
 		"en"		"Applies insane Corruption Debuff.\nHas a gun."
+		"it"		"Applica il Debuff Corruzione folle.\nHa una pistola."
 	}
 	"Agent Steve Desc"
 	{
 		"en"		"Attacks faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Attacca più velocemente quanto minore è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Eric Desc"
 	{
 		"en"		"Gets even stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Diventa tanto più forte quanto più bassa è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Jack Desc"
 	{
 		"en"		"Attacks even faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Attacca tanto più velocemente quanto minore è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Jim Desc"
 	{
 		"en"		"Stronger variant of Agent James."
+		"it"		"Variante più forte dell'Agente James."
 	}
 	"Agent Josh Desc"
 	{
 		"en"		"Stronger variant of Agent John."
+		"it"		"Variante più forte dell'agente John."
 	}
 	"Agent Kenneth Desc"
 	{
 		"en"		"Starts off somewhat slow, gains velocity faster than Agent Chase.\nHas a gun.\nApplies Corruption Debuff."
+		"it"		"Inizia in modo un po' lento, ma guadagna velocità più velocemente dell'Agente Chase.\nHa una pistola.\nApplica il Debuff di Corruzione."
 	}
 	"Agent Paul Desc"
 	{
 		"en"		"Stronger variant of Agent Alan.\nHas bigger proximity and more buffs."
+		"it"		"Variante più forte dell'Agente Alan.\nHa una maggiore vicinanza e più buff."
 	}
 	"Agent Tyler Desc"
 	{
 		"en"		"Stronger variant of Agent Graham."
+		"it"		"Variante più forte dell'agente Graham."
 	}
 	"Agent Wayne Desc"
 	{
 		"en"		"Stronger variant of Agent Dave.\nReflect lasts longer and has a shorter cooldown."
+		"it"		"Variante più forte dell'Agente Dave.\nRiflect dura più a lungo e ha un cooldown più breve."
 	}
 	"Merovingian Desc"
 	{
 		"en"		"Generally nearly the same as other Spy Agents.\nHitting a barricade will cause him to create a temporary spawn point on it."
+		"it"		"Colpisce una barricata per creare un punto di spawn temporaneo su di essa."
 	}
 	"Agent Ben Desc"
 	{
 		"en"		"Stronger variant of Agent Jack."
+		"it"		"Variante più forte dell'Agente Jack."
 	}
 	"Agent Chad Desc"
 	{
 		"en"		"Stronger variant of Agent Paul.\nHas an even bigger proximity and even more buffs."
+		"it"		"Variante più forte dell'Agente Paul.\nHa una vicinanza ancora maggiore e ancora più buff."
 	}
 	"Agent Chris Desc"
 	{
 		"en"		"Stronger variant of Agent Jim."
+		"it"		"Variante più forte dell'Agente Jim."
 	}
 	"Agent Dick Desc"
 	{
 		"en"		"Stronger variant of Agent Eric."
+		"it"		"Variante più forte dell'agente Eric."
 	}
 	"Agent Ian Desc"
 	{
 		"en"		"Stronger variant of Agent Wayne."
+		"it"		"Variante più forte dell'agente Wayne."
 	}
 	"Agent Jackson Desc"
 	{
 		"en"		"Independent Agent. Acts as a spawn point for the other agents."
+		"it"		"Agente indipendente. Funge da punto di raccolta per gli altri agenti."
 	}
 	"Agent Mike Desc"
 	{
 		"en"		"Stronger variant of Agent Tyler."
+		"it"		"Variante più forte dell'agente Tyler."
 	}
 	"Agent Sam Desc"
 	{
 		"en"		"Stronger variant of Agent Josh."
+		"it"		"Variante più forte dell'agente Josh."
 	}
 	"Agent Zack Desc"
 	{
 		"en"		"Stronger variant of Agent Kenneth."
+		"it"		"Variante più forte dell'agente Kenneth."
 	}
 	"Agent Connor Desc"
 	{
 		"en"		"Strongest variant of Spy Agents."
+		"it"		"La variante più forte di Agenti spia."
 	}
 	"Agent Henry Desc"
 	{
 		"en"		"Strongest variant of Medic Agents.\nGets almost every buff and has a huge proximity radius."
+		"it"		"La variante più forte degli Agenti Medico.\nRiceve quasi tutti i buff e ha un raggio di prossimità enorme."
 	}
 	"Agent Jeremy Desc"
 	{
 		"en"		"Strongest variant of Pyro Agents.\nHas enormous Corruption Debuff."
+		"it"		"La variante più forte degli Agenti Piro.\n ha un enorme Debuff di Corruzione."
 	}
 	"Agent Jones Desc"
 	{
 		"en"		"Independent Agent.\nHas a continuous pull around him, don't get pinned."
+		"it"		"Agente indipendente.\nHa un'attrazione continua intorno a sé, non si fa bloccare."
 	}
 	"Agent Kurt Desc"
 	{
 		"en"		"Strongest variant of Soldier Agents."
+		"it"		"Variante più forte degli Agenti Soldato."
 	}
 	"Agent Logan Desc"
 	{
 		"en"		"Strongest variant of Engineer Agents."
+		"it"		"La variante più forte degli agenti ingegneri."
 	}
 	"Agent Ross Desc"
 	{
 		"en"		"Strongest variant of Sniper Agents."
+		"it"		"La variante più forte di Sniper Agents."
 	}
 	"Agent Spencer Desc"
 	{
 		"en"		"Strongest variant of Heavy Agents."
+		"it"		"Variante più forte degli Agenti Pesanti."
 	}
 	"Agent Todd Desc"
 	{
 		"en"		"Strongest variant of Scout Agents."
+		"it"		"Variante più forte degli Agenti Scout."
 	}
 	"Agent Thompson Desc"
 	{
 		"en"		"Independent Agent.\nAppears to have the ability to teleport behind the enemy on hit."
+		"it"		"Agente indipendente.sembra avere la capacità di teletrasportarsi dietro il nemico quando viene colpito."
 	}
 	"Agent Johnson Desc"
 	{
 		"en"		"Independent Agent.\nAdapts very fast to the type of damage he takes.\nBetter have a balanced team of melee and ranged users."
+		"it"		"Agente indipendente.\nSi adatta molto velocemente al tipo di danno che subisce.\n Meglio avere una squadra equilibrata di utenti in mischia e a distanza."
 	}
 	"Twin No. Desc"
 	{
 		"en"		"We are getting aggravated.\nYes we are.\nThey share the same characteristics and skill sets.\nBetter focus on one of them to prevent them from fully healing back."
+		"it"		"Ci stiamo aggravando. Sì, è vero. Condividono le stesse caratteristiche e le stesse abilità. È meglio concentrarsi su uno di loro per evitare che guariscano completamente."
 	}
 	"Agent Smith Desc"
 	{
 		"en"		"It is purpose that defines us.\nInitially appears as a normal boss which can multiply for up to 64 times.\nAppears later on once more, with the ability to infect players and turn them into clones, better cure them fast!"
+		"it"		"All'inizio appare come un normale boss che può moltiplicarsi fino a 64 volte.\n In seguito appare ancora una volta, con la capacità di infettare i giocatori e trasformarli in cloni, meglio curarli in fretta!"
 	}
 	"Hijacked Red Pill Desc"
 	{
 		"en"		"Much more powerful than any regular Agents, humans are stronger than AI after-all..."
+		"it"		"Molto più potenti di qualsiasi normale Agente, gli umani sono più forti dell'IA, dopotutto..."
 	}
 	"Seaborn Metro Cop Desc"
 	{
 		"en"		"Their combat has been enhanced by the Seaborn infection.\nFires bullets extremely fast."
+		"it"		"Il loro combattimento è stato potenziato dall'infezione dei Seaborn."
 	}
 	"Seaborn Metro Raider Desc"
 	{
 		"en"		"Looks like these guys did not forget their SMG grenades."
+		"it"		"Sembra che questi ragazzi non abbiano dimenticato le loro granate SMG."
 	}
 	"Seaborn W.F. Rifler Desc"
 	{
 		"en"		"Throws a grenade, has increased firing speed."
+		"it"		"Lancia una granata, con velocità di fuoco aumentata."
 	}
 	"Seaborn W.F. Elite Desc"
 	{
 		"en"		"Increased Energy Ball Fire Rate."
+		"it"		"Aumento della velocità di fuoco delle sfere di energia."
 	}
 	"Seaborn W.F. Shotgunner Desc"
 	{
 		"en"		"Will shove you if you get too close."
+		"it"		"Ti spinge se ti avvicini troppo."
 	}
 	"Voided Metro Cop Desc"
 	{
 		"en"		"Increased ammo capacity, applies the Cripple debuff with his stunstick."
+		"it"		"Aumenta la capacità delle munizioni, applica il debuff 'Cripple' con il suo stunstick."
 	}
 	"Voided Metro Raider Desc"
 	{
 		"en"		"Increased range. Inflicts Void with bullets."
+		"it"		"Aumento del raggio d'azione. Infligge il Vuoto con i proiettili."
 	}
 	"Voided W.F. Rifler Desc"
 	{
 		"en"		"One reload, and afterwards they keep firing infinitely. Don't ask them where the ammo comes from."
+		"it"		"Una sola ricarica e poi continuano a sparare all'infinito. Non chiedete loro da dove vengono le munizioni."
 	}
 	"Voided W.F. Elite Desc"
 	{
 		"en"		"Fires 3 Energy Balls one after another with increased damage."
+		"it"		"Spara 3 sfere di energia una dopo l'altra con un aumento dei danni."
 	}
 	"Voided W.F. Shotgunner Desc"
 	{
 		"en"		"Lunges at you to close the distance."
+		"it"		"Si affonda verso di voi per colmare la distanza."
 	}
 	"Hunter Desc"
 	{
 		"en"		"A dog-like creature that isn't very friendly to Mercenaries.\nWill occasionally charge, gaining 50 percent resistance while actively charging.\nWill occasionally fire flechettes.\nEvery 5th hit, it'll skewer whatever is in its way, dealing extra damage and inflicting bleed."
+		"it"		"Una creatura simile a un cane che non è molto amichevole con i Mercenari.\nSi carica occasionalmente, guadagnando il 50% di resistenza mentre si carica attivamente.\nSi spara di tanto in tanto delle flechette.\nOgni 5° colpo, infilza qualsiasi cosa si trovi sulla sua strada, infliggendo danni extra e sanguinamento."
 	}
 	"Merlton Desc"
 	{
 		"en"		"A robot that gained powers from the Seaborn infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
+		"it"		"Un robot che ha acquisito i poteri dell'infezione Seaborn. Sembra che non ne sia stato corrotto.\nApplica il "MERLT0N-BUFF" ai nemici.\n Evoca copie di se stesso, anche se in forma più piccola.\n Diventa furioso se non ha più nessuno da accudire."
 	}
 	"Lost Knight Desc"
 	{
 		"en"		"This Knight does not belong here.\nA thick fog enters the room with the Knight.\nThe Knight applies 3 permanent buffs on every enemy.\nBetter not leave him as the last one alive..."
+		"it"		"Questo Cavaliere non appartiene a questo luogo.\n Una fitta nebbia entra nella stanza con il Cavaliere.\n Il Cavaliere applica 3 buff permanenti a ogni nemico.\nMeglio non lasciarlo come ultimo vivo..."
 	}
 	"Omega Desc"
 	{
 		"en"		"He has come to save Bob from Whiteflower's Soldiers.\nThe unfortunate part? He thinks you're a part of them.\nDespite performing hand-to-hand combat, he still keeps his trusty Rocket Launcher with him.\nAfter enough hits, his hands will start generating enough energy to perform a powerful attack."
+		"it"		"È venuto a salvare Bob dai Soldati di Whiteflower.\nLa parte spiacevole? Crede che tu faccia parte di loro.\nNonostante sia in grado di combattere corpo a corpo, tiene sempre con sé il suo fidato Lanciarazzi.\nDopo un numero sufficiente di colpi, le sue mani inizieranno a generare energia sufficiente per sferrare un potente attacco."
 	}
 	"Major Voided Desc"
 	{
 		"en"	"A taken over giant machine by the Void.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Void elemental damage\n- On death, deals AOE damage and summons Speechless"
+		"it"	"Utilizza un attacco a distanza e una ricarica.\n Immune agli effetti di rallentamento, stordimento e spostamento.\n Gli attacchi sono AOE e infliggono danni elementali del Vuoto. Alla morte, infligge danni AOE ed evoca Speechless"
 	}
 	"Disturbed Umbral Desc"
 	{
 		"en"	"Alerted by the rip in the curtain, they come to stop the ''invasors''...\nThese creatures are completely crazed, doing various things when harmed.\n(Silence) Reduces its attackspeed greatly."
+		"it"	"Allertati dallo strappo nella tenda, vengono a fermare gli ''invasori''...\nQueste creature sono completamente impazzite, e fanno varie cose quando vengono danneggiate.\n(Silenzio) Riduce notevolmente la velocità di attacco."
 	}
 	"Immutable Heavy Desc"
 	{
 		"en"	"A bigger, stronger enemy from the Curtain.\nSo far, many encounters with it resulted in catastrophic failures, few chances of survival.\nDon't let it hit anything, and beware of its ranged attacks.\n(Silence) Blocks debuff immunity."
+		"it"	"Un nemico più grande e più forte della Tenda. Finora, molti incontri con lui si sono risolti in fallimenti catastrofici, con poche possibilità di sopravvivenza. Non lasciare che colpisca nulla e fai attenzione ai suoi attacchi a distanza."
 	}
 	"Vanishing Matter Desc"
 	{
 		"en"	"It begs for the pain to stop...\nIt slowly vanishes overtime. As it attacks, it vanishes faster.\nSeems to have some sort of barrier that prevents it from being instantly killed...\n(Silence) Reduces its enraged attackspeed greatly."
+		"it"	"Implora che il dolore cessi...\n svanisce lentamente nel tempo. Quando attacca, scompare più velocemente.\n Sembra avere una sorta di barriera che gli impedisce di essere ucciso all'istante...(Silenzio) Riduce notevolmente la velocità di attacco della sua rabbia."
 	}
 	"Annoying Spirit Desc"
 	{
 		"en"	"An invincible, annoying spirit.\nPretty much a product of Koshi's weird mind.\nThis spirit is not threatening at all, in fact he doesn't even deal damage.\nHe just... screams."
+		"it"	"Uno spirito invincibile e fastidioso.\nPrettamente un prodotto della strana mente di Koshi.\nQuesto spirito non è affatto minaccioso, infatti non infligge nemmeno danni.\nSi limita a... urlare."
 	}
 	"Darkened Heavy Desc"
 	{
 		"en"	"Taken by an unknown force, it was converted into an obscure, dark entity.\nDamaging it outside its aura causes it to heal.\n''The darkness is coming. You need to run.''"
+		"it"	"Preso da una forza sconosciuta, è stato trasformato in un'entità oscura e tenebrosa.\nDanneggiandolo al di fuori della sua aura, guarisce.\nL'oscurità sta arrivando. Devi scappare"
 	}
 	"Intense Training"
 	{
 		"en"	"Intense Training"
+		"it"	"Allenamento intenso"
 	}
 	"Intense Training Desc"
 	{
 		"en"	"You decide to push yourself further.\nIncludes all the effects of the Chaos Intrusion modifier!\nSpeeds up enemy health and damage scaling by a low amount each wave.\nIncreases enemy buff durations by 20%% and setups add +1 skull."
+		"it"	"Decidi di spingerti oltre.\nComprende tutti gli effetti del modificatore Intrusione del Caos! \nAccelera la salute dei nemici e la scalatura dei danni di una quantità ridotta a ogni ondata.\nAumenta la durata dei buff nemici del 20% e le configurazioni aggiungono +1 teschio."
 	}
 	"Muscle Refiner"
 	{
 		"en"	"Muscle Refiner"
+		"it"	"Raffinatore muscolare"
 	}
 	"Muscle Refiner Desc"
 	{
 		"en"	"You'll give it your all!!\nIncludes all the effects of the Secondary Mercs modifier!\nSpeeds up enemy health and damage scaling by a medium amount each wave.\nIncreases enemy buff durations by 40%% and setups add +2 skulls."
+		"it"	"Darai il massimo!!!\nComprende tutti gli effetti del modificatore Mercs secondari!!!\nAccresce la salute dei nemici e la scalata dei danni di una quantità media ad ogni ondata.\nAumenta la durata dei buff nemici del 40% e le configurazioni aggiungono +2 teschi."
 	}
 	"Soul-Squeezer"
 	{
 		"en"	"Soul-Squeezer"
+		"it"	"Spremiagrumi dell'anima"
 	}
 	"Soul-Squeezer Desc"
 	{
 		"en"	"One must imagine the Simulation being infinite.\nIncludes all the effects of the OLD TIMES modifier!\nSpeeds up enemy health and damage scaling by a big amount each wave.\nDOUBLES enemy buff durations and setups add +3 skulls."
+		"it"	"Bisogna immaginare che la Simulazione sia infinita.\nComprende tutti gli effetti del modificatore VECCHI TEMPI! \nAccelera la salute dei nemici e la scalatura dei danni di una grande quantità ad ogni ondata.\nDoppia la durata dei buff dei nemici e le configurazioni aggiungono +3 teschi."
 	}
 	"Crystallized Horror Desc" // WIP
 	{
 		"en" 	"A being made out of chaos and void combined..."
+		"it"	"Un essere fatto di caos e vuoto combinato..."
 	}
 }
