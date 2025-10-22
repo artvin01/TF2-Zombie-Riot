@@ -3663,7 +3663,7 @@
 	{
 		"en"	"W.F. Extreme Knight Giant"
 	}
-"W.F. Extreme Knight Giant Desc"
+	"W.F. Extreme Knight Giant Desc"
 	{
 		"en"	"A extremely powerfull knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts, that retarget if missed."
 	}
@@ -3674,6 +3674,10 @@
 	"Whiteflower The Traitor"
 	{
 		"en"	"Whiteflower The Traitor"
+	}	
+	"Whiteflower The Traitor Desc"
+	{
+		"en"	"-Drops gernades that heal allies and hurts enemies in it range."
 	}	
 	"Ouroboros Ekas"
 	{
