@@ -4364,7 +4364,7 @@
 	}
 	"Eirasus Desc"
 	{
-		"en"	"Simular to an Erasus.\n-Spawns with shields.\n-Gains the 'Angered expidonsan' buff once its shield breaks."
+		"en"	"Similar to an Erasus.\n-Spawns with shields.\n-Gains the 'Angered expidonsan' buff once its shield breaks."
 	}
 	"Haltera"
 	{
@@ -4372,7 +4372,7 @@
 	}
 	"Haltera Desc"
 	{
-		"en"	"Simular to a Guardus\n-Once below half HP, gains 2x attackspeed but loses half their damage, healing is unchanged"
+		"en"	"Similar to a Guardus\n-Once below half HP, gains 2x attackspeed but loses half their damage, healing is unchanged"
 	}
 	"Flaigus"
 	{
@@ -4380,7 +4380,7 @@
 	}
 	"Flaigus Desc"
 	{
-		"en"	"Simular to an Dual-Rea.\n-Spawns with shields.\n-Will Fly towards you once every so often."
+		"en"	"Similar to an Dual-Rea. \n-Spawns with shields.\n-Will Fly towards you once every so often."
 	}
 	"Biggun Assisa"
 	{
@@ -4388,7 +4388,7 @@
 	}
 	"Biggun Assisa Desc"
 	{
-		"en"	"Simular to a Minigun Assisa\n-Once armor is broken once, their lose their hat and will gain double damage."
+		"en"	"Similar to a Minigun Assisa\n-Once armor is broken once, their lose their hat and will gain double damage."
 	}
 	"Hia Expidonsan Rejuvinator"
 	{
@@ -4404,7 +4404,7 @@
 	}
 	"Cuttus Siccino Desc"
 	{
-		"en"	"Very fast attacking, very low damage dealing enemy.\nGives infinite stacking vulnerability."
+		"en"	"A medic with a pair of energy siccors. \n-Very fast attacking. \n-Gives infinite stacking vulnerability."
 	}
 	"Armsa Manu"
 	{
@@ -4412,7 +4412,7 @@
 	}
 	"Armsa Manu Desc"
 	{
-		"en"	"Simular to Rifal manu.\n-Every 10th shot deals 10x the damage."
+		"en"	"Similar to Rifal manu.\n-Every 10th shot deals 10x the damage."
 	}
 	"Speedus Absolutos"
 	{
@@ -4420,7 +4420,7 @@
 	}
 	"Speedus Absolutos Desc"
 	{
-		"en"	"Will survive certain death for 0.5 seconds.\nOnce it Reaches 1 hp, it will teleport behind the attacker."
+		"en"	"A extremely speedy scout. \n-Will survive certain death for 0.5 seconds. \n-Once it Reaches 1 hp, it will teleport behind the attacker."
 	}
 	"Vaus Shaldus"
 	{
@@ -4428,7 +4428,7 @@
 	}
 	"Vaus Shaldus Desc"
 	{
-		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
+		"en"	"Similar to Vaus Techicus.\n-Follows an ally and gives them a shield, taking the ally's speed and becoming 10% faster."
 	}
 	"Instinct's Summon"
 	{
