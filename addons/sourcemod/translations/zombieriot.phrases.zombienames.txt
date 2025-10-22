@@ -3253,7 +3253,7 @@
 	}
 	"Chaos Mage Desc"
 	{
-		"en"	"Its mind fell.\nDeals heavy chaos damage, revives once."
+		"en"	"A mage who has been taken control of by chaos. \n-Deals only ranged damage. \n-Attacks inflict chaos elemental damage. \n-revives once."
 	}
 	"Chaos Supporter"
 	{
@@ -3261,7 +3261,7 @@
 	}
 	"Chaos Supporter Desc"
 	{
-		"en"	"Its mind fell.\nDeals heavy chaos damage, Heals all allies around itself."
+		"en"	" A supporter of chaos, now fully controlled by it. \n-Deals only ranged damage. \n-Attacks inflict chaos elemental damage. \n-Heals all allies around itself."
 	}
 	"Chaos Insane"
 	{
@@ -3269,7 +3269,7 @@
 	}
 	"Chaos Insane Desc"
 	{
-		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+		"en"	"Someone who’s gone insane due to the influence of chaos.\n-Causes Earthquakes underneath enemies."
 	}
 	"Chaos Swordsman"
 	{
@@ -3277,7 +3277,7 @@
 	}
 	"Chaos Swordsman Desc"
 	{
-		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+		"en"	"Whiteflower’s most prestigious swordman, now afflicted by chaos. \n-Performs a barrage of pulse attacks, gaining resistance during usage, and teleporting behind any player hit."
 	}
 	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 	{
