@@ -1452,7 +1452,7 @@
 	}
 	"Atilla Desc" 
 	{
-		"en"	"Deals low damage but inflicts bleed."
+		"en"	"A spy that deals low damage but inflicts bleed. \n-Attacks afflict bleed on hit."
 	}
 	"Ancient Demon Desc" 
 	{
