@@ -1524,7 +1524,7 @@
 	}
 	"Behemoth Desc"
 	{
-		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
+		"en"	"Has very high health and chaos damage.\n-Is entirely immune to headshots."
 	}
 	"Absolute Incinirator Desc"
 	{
@@ -1964,7 +1964,7 @@
 	}
 	"Seaborn W.F. Elite Desc"
 	{
-		"en"		"A W.F. Elite corrupted by the sea. Increased Energy Ball Fire Rate."
+		"en"		"A W.F. Elite corrupted by the sea. \n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
 	}
 	"Seaborn W.F. Shotgunner Desc"
 	{
@@ -1972,11 +1972,11 @@
 	}
 	"Voided Metro Cop Desc"
 	{
-		"en"		"A Metro Cop controled by the void. \n-Has a ranged attack and reloads. \n-Stunstick applies cripple debuff
+		"en"		"A Metro Cop controled by the void. \n-Has a ranged attack and reloads. \n-Stunstick applies cripple debuff"
 	}
 	"Voided Metro Raider Desc"
 	{
-		"en"		"A Metro Raider controled by the void. \nMelee resistances will not help against this enemy.\n-Has a ranged attack.\n-Attacks inflict void with each shoot
+		"en"		"A Metro Raider controled by the void. \nMelee resistances will not help against this enemy.\n-Has a ranged attack.\n-Attacks inflict void elemental damage"
 	}
 	"Voided W.F. Rifler Desc"
 	{
@@ -1984,7 +1984,7 @@
 	}
 	"Voided W.F. Elite Desc"
 	{
-		"en"		"A W.F. Elite controled by the void. Fires 3 Energy Balls one after another with increased damage."
+		"en"		"A W.F. Elite controled by the void.\n-Has a ranged attack and reloads. \n-Shoots 3 explosive projectiles one after another."
 	}
 	"Voided W.F. Shotgunner Desc"
 	{
@@ -2022,7 +2022,7 @@
 	{
 		"en"	"It begs for the pain to stop...\nIt slowly vanishes overtime. As it attacks, it vanishes faster.\nSeems to have some sort of barrier that prevents it from being instantly killed...\n(Silence) Reduces its enraged attackspeed greatly."
 	}
-	"Annoying Spirit Desc"
+	"Annoying Spirit Desc" 
 	{
 		"en"	"An invincible, annoying spirit.\nPretty much a product of Koshi's weird mind.\nThis spirit is not threatening at all, in fact he doesn't even deal damage.\nHe just... screams."
 	}
