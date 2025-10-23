@@ -153,7 +153,7 @@ bool Items_GetNextItem(int client, int &i, int &level, int &flags, bool &newEntr
 			for(int b; b < length2; b++)
 			{
 				static OwnedItem previous;
-				OwnedItems.GetArray(b, previous);
+				PreviousItems.GetArray(b, previous);
 				if(previous.Client == client && previous.Level == owned.Level)
 				{
 					if(previous.Flags == owned.Flags)
