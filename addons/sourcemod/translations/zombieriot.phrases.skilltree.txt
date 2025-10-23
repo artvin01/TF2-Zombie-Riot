@@ -5,354 +5,439 @@
 	{
 		"en"	"Skill Tree"
 		"es"	"Arbol de Habilidades"
+		"it"	"Albero delle abilità"
 	}
 	"Skill Points"
 	{
 		"#format"	"{1:d}"
 		"en"	"Skill Points: {1}"
 		"es"	"Puntos de Habilidad: {1}"
+		"it"	"Punti abilità: {1}"
 	}
 	"Browse Skill Tree Explain"
 	{
 		"en"	"\n---This menu overrides your movement! Close to move again!---\n"
 		"es"	"\n---Este menu te impide moverte! Cierralo para moverte!---\n"
+		"it"	"\n---Questo menù annulla i vostri movimenti! Chiudere per muoversi di nuovo!---\n"
 	}
 	"Browse Skill Tree Explain Full"
 	{
 		"en"	"You move in the skilltree with your movement keys.\nUpgrade skills by jumping.\nYou need to invest into enough skillpoints to unlock new paths.\nYou cannot move during this!"
 		"es"	"Te mueves en el arbol con tus teclas de movimiento.\nMejora tus habilidades saltando.\nNecesitas invertir suficientes puntos para desbloquear nuevos caminos.\nNo puedes moverte durante esto!"
+		"it"	"Ci si muove nell'albero delle abilità con i tasti di movimento.\nAumenta le abilità saltando.\nDevi investire in un numero sufficiente di punti abilità per sbloccare nuovi percorsi.\nNon puoi muoverti durante tutto ciò!"
 	}
 	"Browse Skill Tree"
 	{
 		"en"	"Browse Skill Tree"
 		"es"	"Revisar el Arbol"
+		"it"	"Sfoglia l'albero delle abilità"
 	}
 	"Reset Skill Tree"
 	{
 		"en"	"Reset Skill Tree"
 		"es"	"Reiniciar el Arbol"
+		"it"	"Azzera l'albero delle abilità"
 	}
 	"Reset Skill Tree Confirm"
 	{
 		"en"	"Are you sure you wish to reset your skill tree?\nThis can not be undone."
 		"es"	"Seguro que quieres reiniciar tu Arbol de Habilidades?\nEsto no se puede deshacer."
+		"it"	"Sei sicuro di voler reimpostare l'albero delle abilità? Non può essere annullato."
 	}
 	"Unlock Skill"
 	{
 		"en"	"Unlock Skill"
 		"es"	"Desbloquear Habilidad"
+		"it"	"Sblocca abilità"
 	}
 	"Fully Upgraded"
 	{
 		"en"	"Fully Upgraded"
 		"es"	"Al Maximo"
+		"it"	"Completamente massimizzato"
 	}
 	"Upgrade Skill"
 	{
 		"en"	"Upgrade Skill"
 		"es"	"Mejorar Habilidad"
+		"it"	"Potenzia Abilità"
 	}
 	"Unlocked"
 	{
 		"en"	"Unlocked"
 		"es"	"Desbloqueado"
+		"it"	"Sbloccato"
 	}
 	"Luck Up 1"
 	{
 		"en" 		"Luck Up"
 		"es"		"Suerte+"
+		"it"		"Fortuna Aumentata"
 	}
 	"Luck Up 1 Desc"
 	{
 		"en" 		"Gain an additional +0.005％ chance to crit an enemy for 2x damage on any damage instance."
 		"es"		"Ganas una chance adicional de +0.005%% para hacer el doble de daño en un enemigo."
+		"it"		"Guadagni una possibilità aggiuntiva di +0,005％ di crittare un nemico per un danno doppio in qualsiasi istanza di danno."
 	}
 	"Weapon Damage All 1"
 	{
 		"en" 		"Weapon Damage"
+		"it"		"Danno da arma da fuoco"
 	}
 	"Weapon Damage All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.05％ damage buff to all weapons."
+		"it"		"Ottieni un buff moltiplicativo di +0,05％ danni a tutte le armi."
 	}
 	"Weapon Damage All 1 High"
 	{
 		"en" 		"Weapon Damage High"
+		"it"		"Danno da arma alto"
 	}
 	"Weapon Damage All 1 High Desc"
 	{
 		"en" 		"Gain a multiplicative +0.2％ damage buff to all weapons."
+		"it"		"Ottieni un buff moltiplicativo di +0,2％ danni a tutte le armi."
 	}
 	"Attackspeed & Reload All 1"
 	{
 		"en" 		"Attack & Reloadspeed"
+		"it"		"Attacco e velocità di ricarica"
 	}
 	"Attackspeed & Reload All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.05％ attackspeed & reload buff to all weapons."
+		"it"		"Guadagni un buff moltiplicativo di +0,05％ alla velocità d'attacco e alla ricarica di tutte le armi."
 	}
 	"Attackspeed & Reload All 1 High"
 	{
 		"en" 		"Attack & Reloadspeed"
+		"it"		"Attacco e velocità di ricarica"
 	}
 	"Attackspeed & Reload All 1 High Desc"
 	{
 		"en" 		"Gain a multiplicative +0.2％ attackspeed & reload buff to all weapons."
+		"it"		"Guadagni un buff moltiplicativo di +0,2％ alla velocità d'attacco e alla ricarica di tutte le armi."
 	}
 	"Health Up 1"
 	{
 		"en" 		"Health Up"
+		"it"		"Salute Aumentata"
 	}
 	"Health Up 1 Desc"
 	{
 		"en" 		"Gain a +1 HP"
+		"it"		"Guadagni +1 HP"
 	}
 	"Health Up 1 High"
 	{
 		"en" 		"Health Up"
+		"it"		"Salute Aumentata"
 	}
 	"Health Up 1 High Desc"
 	{
 		"en" 		"Gain a +5 HP"
+		"it"		"Guadagni +5 HP"
 	}
 	"Health Up 1 Infinite"
 	{
 		"en" 		"Health Up"
+		"it"		"Salute Aumentata"
 	}
 	"Health Up 1 Infinite Desc"
 	{
 		"en" 		"Gain a +0.1 HP, this can be used infinitly, and thus is not efficient use in skillpoints."
+		"it"		"Guadagni +0,1 HP, può essere usato all'infinito e quindi non è un uso efficiente dei punti abilità."
 	}
 	"Resist 1"
 	{
 		"en" 		"Total Resistance"
+		"it"		"Resistenza totale"
 	}
 	"Resist 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.05％ Resistance to all sources"
+		"it"		"Guadagni una resistenza moltiplicativa di +0,05％ a tutte le fonti"
 	}
 	"Cash Up 1"
 	{
 		"en" 		"Extra Cash"
+		"it"		"Contanti extra"
 	}
 	"Cash Up 1 Desc"
 	{
 		"en" 		"Gain +2 Extra Cash"
+		"it"		"Guadagniri +2 contanti extra"
 	}
 	"Cash Up 1 Infinite"
 	{
 		"en" 		"Extra Cash Infinite"
+		"it"		"Extra Cash Infinito"
 	}
 	"Cash Up 1 Infinite Desc"
 	{
 		"en" 		"Gain +0.2 Extra Cash, this can be used infinitly, and thus is not efficient use in skillpoints."
+		"it"		"Guadagni +0,2 contanti extra, può essere usato all'infinito e quindi non è un uso efficiente dei punti abilità."
 	}
 	"Cash Up 1 High"
 	{
 		"en" 		"Extra Cash"
+		"it"		"Contanti extra"
 	}
 	"Cash Up 1 High Desc"
 	{
 		"en" 		"Gain +20 Extra Cash"
+		"it"		"Guadagni +20 contanti extra"
 	}
 	"Reload All 1"
 	{
 		"en" 		"Reloadspeed"
+		"it"		"Velocità di Ricarica"
 	}
 	"Reload All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.025％ reload buff to all weapons."
+		"it"		"Guadagni un buff moltiplicativo di +0,025％ per la ricarica di tutte le armi."
 	}
 	"Attackspeed All 1"
 	{
 		"en" 		"Attack Speed"
+		"it"		"Velocità di attacco"
 	}
 	"Attackspeed All 1 Desc"
 	{
 		"en" 		"Gain a multiplicative +0.02％ Attackspeed buff to all weapons."
+		"it"		"Ottieni un buff moltiplicativo di +0,02％ Velocità d'attacco per tutte le armi."
 	}
 	"FusionBuffDo"
 	{
 		"en" 		"Fusion Warrior Buff"
+		"it"		"Buff Guerriero Fusion"
 	}
 	"FusionBuffDo Desc"
 	{
 		"en" 		"Gain a multiplicative +0.25％ Extra Damage and multiplicative +0.5％ Resistance."
+		"it"		"Guadagni un moltiplicativo +0,25％ di Danno extra e un moltiplicativo +0,5％ di Resistenza."
 	}
 	"Kahmlstein Buff"
 	{
 		"en" 		"Kahmlstein Buff"
+		"it"		"Buff di Kahmlstein"
 	}
 	"Kahmlstein Buff Desc"
 	{
 		"en" 		"Gain a multiplicative +1％ Extra Damage."
+		"it"		"Guadagni un moltiplicativo +1％ di danno extra."
 	}
 	"Cash Up Barney 1"
 	{
 		"en" 		"Sellable Chainsaw"
+		"it"		"Motosega vendibile"
 	}
 	"Cash Up Barney 1 Desc"
 	{
 		"en" 		"Gain a +30 extra cash."
+		"it"		"Guadagni +30 in contanti."
 	}
 	"Sensal Buff Do"
 	{
 		"en" 		"Expidonsan Battery Buff"
+		"it"		"Buff Batteria Expidonsan"
 	}
 	"Sensal Buff Do Desc"
 	{
 		"en" 		"Gain a multiplicative +0.35％ Extra Damage and multiplicative +1.0％ Resistance."
+		"it"		"Guadagni un moltiplicativo +0,35％ di Danno extra e un moltiplicativo +1,0％ di Resistenza."
 	}
 	"Alaxios Godly Powerup"
 	{
 		"en" 		"Alaxios' Full Buff"
+		"it"		"Buff completo di Alaxios"
 	}
 	"Alaxios Godly Powerup Desc"
 	{
 		"en" 		"Gain a multiplicative +1.0％ Resistance and 15 HP."
+		"it"		"Guadagni una resistenza moltiplicativa di +1,0％ e 15 HP."
 	}
 	"Bob's Healing Hand"
 	{
 		"en" 		"Bob's Healing Hand Buff"
+		"it"		"Mano curativa di Bob"
 	}
 	"Bob's Healing Hand Desc"
 	{
 		"en" 		"Gain 25 HP.\nAn additional +0.05％ luck and 1％ building HP and reduces revive time by 5 out of 250"
+		"it"		"Guadagni 25 HP.\nUn ulteriore +0,05％ di fortuna e 1％ di HP dell'edificio e riduce il tempo di rianimazione di 5 su 250"
 	}
 	"Blitzkrieg Buff"
 	{
 		"en" 		"Blitzkrieg Buff"
+		"it"		"Buff Blitzkrieg"
 	}
 	"Blitzkrieg Buff Desc"
 	{
 		"en" 		"Gain a multiplicative +0.5％ Attackspeed and reload speed bonus."
+		"it"		"Guadagni un bonus moltiplicativo di +0,5％ alla velocità di attacco e di ricarica."
 	}
 	"Waldch's Blue Goggles"
 	{
 		"en" 		"Waldch's Blue Goggles"
+		"it"		"Occhiali blu di Waldch"
 	}
 	"Waldch's Blue Goggles Desc"
 	{
 		"en" 		"Gain a multiplicative +1.5％ Reload speed bonus."
+		"it"		"Guadagni un bonus moltiplicativo di +1,5％ alla velocità di ricarica."
 	}
 	"Iberia's Last Hope Up"
 	{
 		"en" 		"Iberia's Last Hope Sparkle"
+		"it"		"L'ultima speranza di Iberia scintilla"
 	}
 	"Iberia's Last Hope Up Desc"
 	{
 		"en" 		"Gain a multiplicative +1.0％ Attackspeed speed bonus."
+		"it"		"Guadagni un bonus moltiplicativo di +1,0％ alla velocità di attacco."
 	}
 	"Calmaticus Heart Up"
 	{
 		"en" 		"Calmaticus Heart Up"
+		"it"		"Cuore Calmatico Aumentato"
 	}
 	"Calmaticus Heart Up Desc"
 	{
 		"en" 		"Gain an extra 0.25 Hp regen a second."
+		"it"		"Guadagni una rigenerazione extra di 0,25 cavalli al secondo."
 	}
 	"Xeno Vial Up"
 	{
 		"en" 		"Xeno Vial Up"
+		"it"		"Fiala Xeno Aumentata"
 	}
 	"Xeno Vial Up Desc"
 	{
 		"en" 		"Gain an extra 0.25 Hp regen a second."
+		"it"		"Guadagni una rigenerazione extra di 0,25 cavalli al secondo."
 	}
 	"Building Hp Up 1"
 	{
 		"en" 		"Building Hp Up"
+		"it"		"Hp Costruzione Aumentati"
 	}
 	"Building Hp Up 1 Desc"
 	{
 		"en" 		"Your buildings gain a multiplicative +0.1％ HP"
+		"it"		"Le tue costruzioni guadagnano un +0,1％ HP moltiplicativo"
 	}
 	"Building Repair Up 1"
 	{
 		"en" 		"Building Repair Speed Up"
+		"it"		"Accelerazione della riparazione degli costruzioni"
 	}
 	"Building Repair Up 1 Desc"
 	{
 		"en" 		"Your Repairspeed gains a multiplicative +0.1％ speed"
+		"it"		"La velocità di riparazione guadagna un +0,1％ moltiplicativo"
 	}
 	"Building Extra Damage Up 1"
 	{
 		"en" 		"Building Damage Up"
+		"it"		"Danni delle costruzioni Aumentati"
 	}
 	"Building Extra Damage Up 1 Desc"
 	{
 		"en" 		"Your buildings gain a multiplicative +0.1％ Damage"
+		"it"		"Le costruzioni guadagnano un moltiplicativo di +0,1％ Danni"
 	}
 	"Twirl Hairpin 1"
 	{
 		"en" 		"Twirls Magical Hairpin"
+		"it"		"Forcina magica di Twirls"
 	}
 	"Twirl Hairpin 1 Desc"
 	{
 		"en" 		"Gain 0.5％ Extra mana Regen"
+		"it"		"Guadagni 0,5％ Rigenerazione di mana extra"
 	}
 	"Iberia Training"
 	{
 		"en" 		"Nemals Special Help"
+		"it"		"Aiuto speciale di Nemals"
 	}
 	"Iberia Training Desc"
 	{
 		"en" 		"Gain a multiplicative +1％ Attackspeed and reload speed bonus."
+		"it"		"Guadagni un bonus moltiplicativo di +1％ alla velocità di attacco e di ricarica."
 	}
 	"Extra Healing Up"
 	{
 		"en" 		"Extra Healing Up"
+		"it"		"Guarigione extra Aumentato"
 	}
 	"Extra Healing Up Desc"
 	{
 		"en" 		"Gain a multiplicative +0.1％ Extra Healing from all sources."
+		"it"		"Guadagni un +0,1％ moltiplicativo di guarigione extra da tutte le fonti."
 	}
 	"Extra Healing Up High"
 	{
 		"en" 		"Extra Healing Up High"
+		"it"		"Guarigione extra Aumentato"
 	}
 	"Extra Healing Up High Desc"
 	{
 		"en" 		"Gain a multiplicative +0.5％ Extra Healing from all sources."
+		"it"		"Guadagni un +0,5％ moltiplicativo di guarigione extra da tutte le fonti."
 	}
 	"ReviveTime Reduce"
 	{
 		"en" 		"Revive Time Down"
+		"it"		"Tempo di rivivificazione Diminuito"
 	}
 	"ReviveTime Reduce Desc"
 	{
 		"en" 		"Reduce your revive time by 1 out of 250"
+		"it"		"Riduce il tempo di rianimazione di 1 su 250"
 	}
 	"ReviveTime Reduce High"
 	{
 		"en" 		"Revive Time Down High"
+		"it"		"Tempo di rianimazione abbassato"
 	}
 	"ReviveTime Reduce High Desc"
 	{
 		"en" 		"Reduce your revive time by 5 out of 250"
+		"it"		"Riduce il tempo di rianimazione di 5 su 250"
 	}
 	"Extra Cash Building Up"
 	{
 		"en"	"Extra Cash Building Up"
+		"it"	"Accumulo di denaro extra Aumentato"
 	}
 	"Extra Cash Building Up Desc"
 	{
 		"en"	"increase your max cap of building extra cash from 5000 by 100"
+		"it"	"aumenta di 100 unità il tetto massimo di accumulo di denaro extra da 5000"
 	}
 	"Extra Cash Building Up High"
 	{
 		"en"	"Extra Cash Building UpHigh"
+		"it"	"Contanti extra per costruire Aumentato"
 	}
 	"Extra Cash Building Up High Desc"
 	{
 		"en"	"increase your max cap of building extra cash from 5000 by 500"
+		"it"	"aumenta il tetto massimo di accumulo di denaro extra da 5000 a 500"
 	}
 	"Ingot Up 1"
 	{
 		"en"	"Ingot Up"
+		"it"	"Lingotto Aumentato"
 	}
 	"Ingot Up 1 Desc"
 	{
 		"en"	"Gain 1 extra australium ingot in the roguelike, only he highest skill of a player on the server counts."
+		"it"	"Guadagni 1 lingotto di australium in più nel roguelike, conta solo l'abilità più alta di un giocatore sul server."
 	}
 }
