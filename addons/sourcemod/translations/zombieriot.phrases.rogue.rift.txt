@@ -59,7 +59,7 @@
 	"Rift of Swarms Desc"
 	{
 		"en"	"{red}Increases the amount of enemies by +20％ {green} Gain 2 Umbral Affinity each battle."
-		"it"	{red}Aumenta la quantità di nemici di +20％ {green} Guadagni 2 Affinità Umbrale ad ogni battaglia."
+		"it"	"{red}Aumenta la quantità di nemici di +20％ {green} Guadagni 2 Affinità Umbrale ad ogni battaglia."
 	}
 	"Rift of Swarms Lore"
 	{
@@ -84,7 +84,7 @@
 	"Rift of Emptiness Desc"
 	{
 		"en"	"{red}Voidstones have a much lower dropchance."
-		"it"	{red}Le pietre voide hanno una probabilità di caduta molto più bassa."
+		"it"	"{red}Le pietre voide hanno una probabilità di caduta molto più bassa."
 	}
 	"Rift of Emptiness Lore"
 	{
@@ -391,7 +391,7 @@
 	"Hand of Predation Desc"
 	{
 		"en"	"Herds stir, flesh rend asunder.\n{green}''Charger'' weapons gain +50％ more damage if you are close enough to the enemy and a speed bonus for 1 second, +25％ resistance overall"
-		"it"	"{green}Le armi "Charger" guadagnano +50％ danni in più se si è abbastanza vicini al nemico e un bonus di velocità per 1 secondo, +25％ resistenza complessiva"
+		"it"	"{green}Le armi ''Charger'' guadagnano +50％ danni in più se si è abbastanza vicini al nemico e un bonus di velocità per 1 secondo, +25％ resistenza complessiva"
 	}
 	"Hand of Rumble"
 	{
@@ -511,7 +511,7 @@
 	"Hand of Superspeed Desc"
 	{
 		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +90％ fire rate"
-		"it"	"{green}Le armi "Ambusher" guadagnano una cadenza di fuoco di +90％"
+		"it"	"{green}Le armi ''Ambusher'' guadagnano una cadenza di fuoco di +90％"
 	}
 	"Hand of Fireworks"
 	{
@@ -521,7 +521,7 @@
 	"Hand of Fireworks Desc"
 	{
 		"en"	"Bang! Boom! A pleasant surprise.\n{green}''Lord'' weapons have a 25％ chance on dealing damage to fire an extra projectile that deals double damage and explodes"
-		"it"	"Bang! Boom! Una piacevole sorpresa.{green}Le armi "Signore" hanno una probabilità del 25％ di sparare un proiettile extra che infligge danni doppi ed esplode"
+		"it"	"Bang! Boom! Una piacevole sorpresa.{green}Le armi ''Signore'' hanno una probabilità del 25％ di sparare un proiettile extra che infligge danni doppi ed esplode"
 	}
 	"Hand of Pulverization"
 	{

@@ -2072,7 +2072,7 @@
 	"Hand of Quake Desc"
 	{
 		"en"	"Where's the rocket jumping?\n{green}''Artillery'' and ''Mechanic'' weapons gain +150％ jump height and deal +50％ damage."
-		"it"	"Dov'è il salto del razzo? \n{green}Le armi "Artiglieria" e "Meccanica" guadagnano +150％ di altezza di salto e infliggono +50％ di danni."
+		"it"	"Dov'è il salto del razzo? \n{green}Le armi ''Artiglieria'' e '''Meccanica'' guadagnano +150％ di altezza di salto e infliggono +50％ di danni."
 	}
 	"Hand of Travel"
 	{

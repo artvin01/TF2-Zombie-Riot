@@ -487,7 +487,7 @@
 		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.'"
 		"fr"		"Dégats et cadence de tir améliorés, balles deviennent explosives."
 	    "ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные."
-		"it"		"Aumento dei danni e della velocità d'attacco, i proiettili si trasformano in hitcan esplosivi""
+		"it"		"Aumento dei danni e della velocità d'attacco, i proiettili si trasformano in hitcan esplosivi"
 	}
 	
 	"Quad Launcher Desc"
@@ -4222,7 +4222,7 @@
 	{
 		"en"	"A melee unit with hit-and-run tactics. His initial attack does a lot more damage with a cooldown."
 		"fr"	"Une unité de mêlée avec des tactiques de délit de fuite. Son attaque initiale fait beaucoup plus de dégâts avec un temps de recharge."
-		"it"	"Unità da mischia con tattica "mordi e fuggi". Il suo attacco iniziale provoca molti più danni con un cooldown."
+		"it"	"Unità da mischia con tattica ''mordi e fuggi''. Il suo attacco iniziale provoca molti più danni con un cooldown."
 	}
 	"Barracks Metro Raider Desc"
 	{

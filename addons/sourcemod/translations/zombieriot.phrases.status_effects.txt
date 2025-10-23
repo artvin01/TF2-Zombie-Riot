@@ -121,7 +121,7 @@
 	"Weakening Compound"
 	{
 		"en"	"Weakening Compound"
-		"it"	´"Composto indebolente"
+		"it"	"Composto indebolente"
 	}
 	"Weakening Compound Desc"
 	{

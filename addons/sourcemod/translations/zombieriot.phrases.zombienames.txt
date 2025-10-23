@@ -2858,7 +2858,7 @@
 		"en"	"??? the First"
 		"es"	"???, el Primero"
 		"ru" 	"??? Первый"
-		"it"	""??? il Primo"
+		"it"	"??? il Primo"
 	}
 	"Bob the First"
 	{

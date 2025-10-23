@@ -375,7 +375,7 @@
 	{
 		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger."
  		"ru" 		"Сохранили способности ''нормального''и более сильные чем он"
-		"it"		"Ha mantenuto le abilità "normali", oltre a essere più forte."
+		"it"		"Ha mantenuto le abilità ''normali'', oltre a essere più forte."
 	}
 	"Xeno Father Grigori Desc"
 	{
@@ -484,8 +484,8 @@
 	}
 	"Xeno Soldier Minion Desc"
 	{
-		"en" 		"Smol soldier :)"
-		"it"		"Soldato Smol :)"
+		"en" 		"Xeno Soldier Minion"
+		"it"		"Xeno Soldier Minion"
 	}
 	"Xeno Soldier Giant Summoner Desc"
 	{
@@ -2524,7 +2524,7 @@
 	"Merlton Desc"
 	{
 		"en"		"A robot that gained powers from the Seaborn infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
-		"it"		"Un robot che ha acquisito i poteri dell'infezione Seaborn. Sembra che non ne sia stato corrotto.\nApplica il "MERLT0N-BUFF" ai nemici.\n Evoca copie di se stesso, anche se in forma più piccola.\n Diventa furioso se non ha più nessuno da accudire."
+		"it"		"Un robot che ha acquisito i poteri dell'infezione Seaborn. Sembra che non ne sia stato corrotto.\nApplica il ''MERLT0N-BUFF'' ai nemici.\n Evoca copie di se stesso, anche se in forma più piccola.\n Diventa furioso se non ha più nessuno da accudire."
 	}
 	"Lost Knight Desc"
 	{

@@ -613,7 +613,7 @@
 	"Minion Energizer Desc"
 	{
 		"en"	"{green}Npc Allies gain +25％ more damage and HP."
-		"it"	{green}Gli alleati dei PNC guadagnano +25％ danni e HP in più."
+		"it"	"{green}Gli alleati dei PNC guadagnano +25％ danni e HP in più."
 	}
 	"Acahuallan Bowl"
 	{
