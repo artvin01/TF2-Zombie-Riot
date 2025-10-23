@@ -872,7 +872,7 @@
 	}
 	"Xeno Infected Lab Doctor Desc"
 	{
-		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\nThe lower their HP is the more resitance they obtain when they think.\nStun them to avoid this affect, or oneshot them."
+		"en" 	"A doctor trying to cure the xeno virus in the lab, failed and got infected himself.\n-Each hit they take increases their resitance, up to a limit."
 	}
 	"Archer"
 	{
@@ -3253,7 +3253,7 @@
 	}
 	"Chaos Mage Desc"
 	{
-		"en"	"Its mind fell.\nDeals heavy chaos damage, revives once."
+		"en"	"A mage who has been taken control of by chaos. \n-Deals only ranged damage. \n-Attacks inflict chaos elemental damage. \n-revives once."
 	}
 	"Chaos Supporter"
 	{
@@ -3261,7 +3261,7 @@
 	}
 	"Chaos Supporter Desc"
 	{
-		"en"	"Its mind fell.\nDeals heavy chaos damage, Heals all allies around itself."
+		"en"	" A supporter of chaos, now fully controlled by it. \n-Deals only ranged damage. \n-Attacks inflict chaos elemental damage. \n-Heals all allies around itself."
 	}
 	"Chaos Insane"
 	{
@@ -3269,7 +3269,7 @@
 	}
 	"Chaos Insane Desc"
 	{
-		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+		"en"	"Someone who’s gone insane due to the influence of chaos.\n-Causes Earthquakes underneath enemies."
 	}
 	"Chaos Swordsman"
 	{
@@ -3277,7 +3277,7 @@
 	}
 	"Chaos Swordsman Desc"
 	{
-		"en"	"Its mind fell.\nCauses rapid pulse attacks that, when hitting, teleports them behind you."
+		"en"	"Whiteflower’s most prestigious swordman, now afflicted by chaos. \n-Performs a barrage of pulse attacks, gaining resistance during usage, and teleporting behind any player hit."
 	}
 	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 	{
@@ -3643,10 +3643,18 @@
 	{
 		"en"	"W.F. Flowering Darkness"
 	}	
+	"W.F. Flowering Darkness Desc"
+	{
+		"en"	"Whiteflower's second in command. \n-Fires 3 magic bolts, with 2 of them having homing. \n-Spawns afterimages that shoot the 3 magic bolts."
+	}
 	"W.F. Acclaimed Swordsman"
 	{
 		"en"	"W.F. Acclaimed Swordsman"
 	}	
+	"W.F. Acclaimed Swordsman Desc"
+	{
+		"en"	"Whiteflower’s most prestigious swordman. \n-Performs a barrage of pulse attack, gives resistance during usage."
+	}
 	"W.F. Ekas Piloteer"
 	{
 		"en"	"W.F. Ekas Piloteer"
@@ -3654,7 +3662,11 @@
 	"W.F. Extreme Knight Giant"
 	{
 		"en"	"W.F. Extreme Knight Giant"
-	}	
+	}
+	"W.F. Extreme Knight Giant Desc"
+	{
+		"en"	"A extremely powerfull knight, enhanced into a giant, under Whiteflower's command. \n-Performs a barrage of magic bolts, that retarget if missed."
+	}
 	"W.F. Raging Blader"
 	{
 		"en"	"W.F. Raging Blader"
@@ -3662,6 +3674,10 @@
 	"Whiteflower The Traitor"
 	{
 		"en"	"Whiteflower The Traitor"
+	}	
+	"Whiteflower The Traitor Desc"
+	{
+		"en"	"-Drops gernades that heal allies and hurts enemies in it range."
 	}	
 	"Ouroboros Ekas"
 	{
@@ -4348,7 +4364,7 @@
 	}
 	"Eirasus Desc"
 	{
-		"en"	"Simular to an Erasus.\nSpawns with shields.\nGains the 'Angered expidonsan' buff once its shield breaks."
+		"en"	"Similar to an Erasus.\n-Spawns with shields.\n-Gains the 'Angered expidonsan' buff once its shield breaks."
 	}
 	"Haltera"
 	{
@@ -4356,7 +4372,7 @@
 	}
 	"Haltera Desc"
 	{
-		"en"	"Simular to a Guardus\nOnce below half HP, loses their hat and gains 2x attackspeed but loses half their damage\nTheir healing is unchanged..."
+		"en"	"Similar to a Guardus\n-Once below half HP, gains 2x attackspeed but loses half their damage, healing is unchanged"
 	}
 	"Flaigus"
 	{
@@ -4364,7 +4380,7 @@
 	}
 	"Flaigus Desc"
 	{
-		"en"	"Simular to an Dual-Rea.\nSpawns with shields.\nWill Fly towards you once every so often."
+		"en"	"Similar to an Dual-Rea. \n-Spawns with shields.\n-Will Fly towards you once every so often."
 	}
 	"Biggun Assisa"
 	{
@@ -4372,7 +4388,7 @@
 	}
 	"Biggun Assisa Desc"
 	{
-		"en"	"Simular to a Minigun Assisa\nOnce armor is broken once, their lose their hat and will gain double damage."
+		"en"	"Similar to a Minigun Assisa\n-Once armor is broken once, their lose their hat and will gain double damage."
 	}
 	"Hia Expidonsan Rejuvinator"
 	{
@@ -4380,7 +4396,7 @@
 	}
 	"Hia Expidonsan Rejuvinator Desc"
 	{
-		"en"	"Very fast medic that spawns with shields.\nWhen shield is broken, their lose alot of their speed.\nWhen they heal an ally they give the 'Rejuvinator' Buff."
+		"en"	"Very fast medic that spawns with shields.\n-When shield is broken, their lose alot of their speed.\n-When they heal an ally they give the 'Rejuvinator' Buff."
 	}
 	"Cuttus Siccino"
 	{
@@ -4388,7 +4404,7 @@
 	}
 	"Cuttus Siccino Desc"
 	{
-		"en"	"Very fast attacking, very low damage dealing enemy.\nGives infinite stacking vulnerability."
+		"en"	"A medic with a pair of energy siccors. \n-Very fast attacking. \n-Gives infinite stacking vulnerability."
 	}
 	"Armsa Manu"
 	{
@@ -4396,7 +4412,7 @@
 	}
 	"Armsa Manu Desc"
 	{
-		"en"	"Simular to Rifal manu.\nEvery 10th shot deals 10x the damage."
+		"en"	"Similar to Rifal manu.\n-Every 10th shot deals 10x the damage."
 	}
 	"Speedus Absolutos"
 	{
@@ -4404,7 +4420,7 @@
 	}
 	"Speedus Absolutos Desc"
 	{
-		"en"	"Will survive certain death for 0.5 seconds.\nOnce it Reaches 1 hp, it will teleport behind the attacker."
+		"en"	"A extremely speedy scout. \n-Will survive certain death for 0.5 seconds. \n-Once it Reaches 1 hp, it will teleport behind the attacker."
 	}
 	"Vaus Shaldus"
 	{
@@ -4412,7 +4428,7 @@
 	}
 	"Vaus Shaldus Desc"
 	{
-		"en"	"Simular to Vaus Techicus.\nFollows an ally when it wants to give a shield, it will take the allies speed and be faster by them by 10%"
+		"en"	"Similar to Vaus Techicus.\n-Follows an ally and gives them a shield, taking the ally's speed and becoming 10% faster."
 	}
 	"Instinct's Summon"
 	{

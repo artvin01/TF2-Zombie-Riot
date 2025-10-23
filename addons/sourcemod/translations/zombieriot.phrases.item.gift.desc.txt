@@ -1452,7 +1452,7 @@
 	}
 	"Atilla Desc" 
 	{
-		"en"	"Deals low damage but inflicts bleed."
+		"en"	"A spy that deals low damage but inflicts bleed. \n-Attacks afflict bleed on hit."
 	}
 	"Ancient Demon Desc" 
 	{
@@ -1524,7 +1524,7 @@
 	}
 	"Behemoth Desc"
 	{
-		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
+		"en"	"Has very high health and chaos damage.\n-Is entirely immune to headshots."
 	}
 	"Absolute Incinirator Desc"
 	{
@@ -1548,7 +1548,7 @@
 	}
 	"Xeno Acclaimed Swordsman Desc"
 	{
-		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+		"en"	"Whiteflower’s most prestigious swordman, now infected by the xeno virus. \n-When first hit, will take no damage for a few seconds. \n-Performs a barrage of pulse attack, gives resistance during usage."
 	}
 	"Wandering Spirit Desc"
 	{
@@ -1952,43 +1952,43 @@
 	}
 	"Seaborn Metro Cop Desc"
 	{
-		"en"		"Their combat has been enhanced by the Seaborn infection.\nFires bullets extremely fast."
+		"en"		"A Metro Cop corrupted by the sea. \n-Has a ranged attack and reloads."
 	}
 	"Seaborn Metro Raider Desc"
 	{
-		"en"		"Looks like these guys did not forget their SMG grenades."
+		"en"		"A Metro Raider corrupted by the sea. \nMelee resistances will not help against this enemy.\n-Has a ranged attack. \n-Throws a gernade when close enough."
 	}
 	"Seaborn W.F. Rifler Desc"
 	{
-		"en"		"Throws a grenade, has increased firing speed."
+		"en"		"A W.F. Rifler corrupted by the sea. \n-Has a ranged attack and reloads. \n-Throws a gernade when close enough."
 	}
 	"Seaborn W.F. Elite Desc"
 	{
-		"en"		"Increased Energy Ball Fire Rate."
+		"en"		"A W.F. Elite corrupted by the sea. \n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
 	}
 	"Seaborn W.F. Shotgunner Desc"
 	{
-		"en"		"Will shove you if you get too close."
+		"en"		"A W.F. Shotgunner corrupted by the sea. Deals Ranged damage \n-Shoves you away if your to close. \n-Very Fast"
 	}
 	"Voided Metro Cop Desc"
 	{
-		"en"		"Increased ammo capacity, applies the Cripple debuff with his stunstick."
+		"en"		"A Metro Cop controled by the void. \n-Has a ranged attack and reloads. \n-Stunstick applies cripple debuff"
 	}
 	"Voided Metro Raider Desc"
 	{
-		"en"		"Increased range. Inflicts Void with bullets."
+		"en"		"A Metro Raider controled by the void. \nMelee resistances will not help against this enemy.\n-Has a ranged attack.\n-Attacks inflict void elemental damage"
 	}
 	"Voided W.F. Rifler Desc"
 	{
-		"en"		"One reload, and afterwards they keep firing infinitely. Don't ask them where the ammo comes from."
+		"en"		"A W.F. Rifler controled by the void. \n-Has a ranged attack. \n-Once they reload once they wont have to again."
 	}
 	"Voided W.F. Elite Desc"
 	{
-		"en"		"Fires 3 Energy Balls one after another with increased damage."
+		"en"		"A W.F. Elite controled by the void.\n-Has a ranged attack and reloads. \n-Shoots 3 explosive projectiles one after another."
 	}
 	"Voided W.F. Shotgunner Desc"
 	{
-		"en"		"Lunges at you to close the distance."
+		"en"		"A W.F. Shotgunner controled by the void. Deals only Ranged damage. \n-Lunges at you to close the distance. \n-Very Fast"
 	}
 	"Hunter Desc"
 	{
@@ -2022,7 +2022,7 @@
 	{
 		"en"	"It begs for the pain to stop...\nIt slowly vanishes overtime. As it attacks, it vanishes faster.\nSeems to have some sort of barrier that prevents it from being instantly killed...\n(Silence) Reduces its enraged attackspeed greatly."
 	}
-	"Annoying Spirit Desc"
+	"Annoying Spirit Desc" 
 	{
 		"en"	"An invincible, annoying spirit.\nPretty much a product of Koshi's weird mind.\nThis spirit is not threatening at all, in fact he doesn't even deal damage.\nHe just... screams."
 	}
