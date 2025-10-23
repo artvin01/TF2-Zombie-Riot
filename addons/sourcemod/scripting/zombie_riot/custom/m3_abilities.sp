@@ -1097,9 +1097,6 @@ public void BuilderMenu(int client)
 									
 		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
 		menu.AddItem("-4", buffer);
-
-		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
-		menu.AddItem("-5", buffer);
 		
 									
 		menu.ExitButton = true;
