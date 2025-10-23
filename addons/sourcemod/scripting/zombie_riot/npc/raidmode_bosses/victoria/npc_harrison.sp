@@ -467,8 +467,8 @@ methodmap Harrison < CClotBody
 				music.Time = 92;
 				music.Volume = 1.0;
 				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "RAGE");
-				strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+				strcopy(music.Name, sizeof(music.Name), "What Lies Unseen - Arena FIght - Wave 3");
+				strcopy(music.Artist, sizeof(music.Artist), "Serious Sam 4: Reborn mod");
 				Music_SetRaidMusic(music);
 			}
 			
