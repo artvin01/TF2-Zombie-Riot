@@ -39,7 +39,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 	}
 	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "900",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "900",COMBINE_CUSTOM_2_MODEL,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -49,7 +49,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 
 		npc.m_flSpeed = 225.0;
 		
-		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -162,7 +162,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		
 				}
 				npc.PlayRangedSound();
-				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+				npc.AddGesture("ACT_BLADEDANCE_ATTACK_LEFT");
 				fl_singularbarrage[npc.index] = GetGameTime(npc.index) + 0.1;
 				b_barrage[npc.index] = true;
 				if (i_barrage[npc.index] >= 1)	//Stays here incase you want this multi shoot to act like a barrage
@@ -185,7 +185,10 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+						if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+							npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
+						else
+							npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
 						npc.m_flAttackHappens = GameTime+0.4 * npc.BonusFireRate;
 						npc.m_flAttackHappens_bullshit = GameTime+0.54 * npc.BonusFireRate;
 						npc.m_flAttackHappenswillhappen = true;
@@ -225,7 +228,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_NEW_WALK", "ACT_TEUTON_NEW_WALK");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_IDLE_NEW", "ACT_TEUTON_WALK_NEW");
 	}
 }
 

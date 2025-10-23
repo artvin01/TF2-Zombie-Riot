@@ -322,8 +322,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		{
 			FakeClientCommand(client, "menuselect 0");
 			SDKHook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
-			SetEntityRenderMode(client, RENDER_NORMAL);
-			SetEntityRenderColor(client, 255, 255, 255, 255);
+			SetEntityRenderMode(client, RENDER_NONE);
+		//	SetEntityRenderColor(client, 255, 255, 255, 0);
 			
 			int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
@@ -335,7 +335,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			
 			TF2Attrib_RemoveAll(client);
 			Attributes_Set(client, 68, -1.0);
-			SetVariantString(COMBINE_CUSTOM_MODEL);
+			SetVariantString(COMBINE_CUSTOM_2_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 			
 #if defined ZR
@@ -345,8 +345,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
-		//	SetEntProp(client, Prop_Send, "m_nBody", 1);
-			SetVariantInt(1);
+			SetVariantInt(0);
 			AcceptEntityInput(client, "SetBodyGroup");
 			//apply model correctly.
 
@@ -368,17 +367,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		Attributes_Set(weapon_index, 6, 1.2);
 	   		Attributes_Set(weapon_index, 412, 0.0);
 			
-		//	if(b_VoidPortalOpened[client])
-			{
-	   			Attributes_Set(weapon_index, 443, 1.25);
-	   			Attributes_Set(weapon_index, 442, 1.25);
-			}
-			/*
-			else
-			{
-	   			Attributes_Set(weapon_index, 442, 1.1);
-			}
-			*/
+	   		Attributes_Set(weapon_index, 443, 1.25);
+	   		Attributes_Set(weapon_index, 442, 1.25);
+
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
@@ -386,17 +377,26 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntityCollisionGroup(client, 1);
 	   		SetEntityCollisionGroup(weapon_index, 1);
 	   		
-	   		int wearable;
+			if(!view_as<bool>(Store_HasNamedItem(client, "Shadow's Letter")))
+			{
+				int wearable;
+				
+				wearable = GiveWearable(client, 30727);
+				
+				SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 0.9);
+				
+				wearable = GiveWearable(client, 30969);
+				
+				SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
+	   			SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
+			}
+			else
+			{
+				
+	   			SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.01);
+				f_WeaponSizeOverride[weapon_index] = 0.01;
+			}
 	   		
-	   		wearable = GiveWearable(client, 30727);
-	   		
-	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 0.9);
-	   		
-	   		wearable = GiveWearable(client, 30969);
-	   		
-	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
-	   		
-	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
 			SDKCall_GiveCorrectAmmoCount(client);

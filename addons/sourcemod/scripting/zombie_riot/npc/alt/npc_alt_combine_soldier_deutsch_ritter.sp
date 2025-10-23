@@ -164,12 +164,12 @@ methodmap Alt_CombineDeutsch < CClotBody
 	
 	public Alt_CombineDeutsch(float vecPos[3], float vecAng[3], int ally)
 	{
-		Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
+		Alt_CombineDeutsch npc = view_as<Alt_CombineDeutsch>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "90000", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		i_NpcWeight[npc.index] = 2;
 		
-		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
 		if(iActivity > 0) npc.StartActivity(iActivity);	
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -246,7 +246,7 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.AddGesture("ACT_HURT", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -352,7 +352,7 @@ static void Internal_ClotThink(int iNPC)
 	
 			}
 			npc.PlayRangedSound();
-			npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+			npc.AddGesture("ACT_BLADEDANCE_ATTACK_LEFT");
 			fl_singularbarrage[npc.index] = GetGameTime(npc.index) + 0.1;
 			b_barrage[npc.index] = true;
 			if (i_barrage[npc.index] >= 1)	//Stays here incase you want this multi shoot to act like a barrage
@@ -374,7 +374,10 @@ static void Internal_ClotThink(int iNPC)
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+					if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+						npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
+					else
+						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
 					npc.PlayMeleeSound();
 					npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;

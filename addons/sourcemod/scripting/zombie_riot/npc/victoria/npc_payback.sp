@@ -106,12 +106,12 @@ methodmap VictorianPayback < CClotBody
 	
 	public VictorianPayback(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.5", "8000", ally, false, true));
+		VictorianPayback npc = view_as<VictorianPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.5", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		SetVariantInt(16);
@@ -372,7 +372,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 		{
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_CUSTOM_RUN_SAMURAI");
+			npc.SetActivity("ACT_TEUTON_WALK_NEW_XENO");
 			npc.StartPathing();
 			npc.m_flSpeed = 350.0;
 		}
@@ -383,7 +383,7 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 		{
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 3;
-			npc.SetActivity("ACT_TEUTON_NEW_WALK");
+			npc.SetActivity("ACT_TEUTON_WALK_NEW");
 			npc.StartPathing();
 			npc.m_flSpeed = 250.0;
 		}
@@ -403,8 +403,10 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 				{
 					npc.m_iTarget = Enemy_I_See;
 					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MELEE_BOB");
-					
+					if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+						npc.AddGesture("ACT_TEUTON_ATTACK_NEW_XENO", _,_,_, 1.1);
+					else
+						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW_XENO", _,_,_, 1.1);
 							
 					npc.m_flAttackHappens = gameTime + 0.15;
 					npc.m_flNextMeleeAttack = gameTime + 0.5;
@@ -416,7 +418,10 @@ void VictorianPaybackSelfDefense(VictorianPayback npc, float gameTime, int targe
 				{
 					npc.m_iTarget = Enemy_I_See;
 					npc.PlayMeleeSound();
-					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+					if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+						npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
+					else
+						npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
 					
 							
 					npc.m_flAttackHappens = gameTime + 0.15;

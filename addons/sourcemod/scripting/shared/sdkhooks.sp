@@ -2894,6 +2894,10 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 
 void UpdatePlayerFakeModel(int client)
 {
+	if(TeutonType[client] != TEUTON_NONE)
+	{
+		return;
+	}
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	
