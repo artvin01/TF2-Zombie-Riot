@@ -82,7 +82,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 		SetEntityRenderColor(npc.m_iWearable4, 50, 125, 150, 255);
 		
 		int skin = 1;	//1=blue, 0=red
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);

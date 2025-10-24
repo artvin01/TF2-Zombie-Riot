@@ -140,7 +140,7 @@ methodmap VictorianPayback < CClotBody
 		
 		
 		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
 		SetVariantString("1.1");
