@@ -103,6 +103,10 @@ static void ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	if(npc.Anger)
+	{
+		gameTime = GetGameTime();
+	}
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
@@ -239,7 +243,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		npc.Anger = true;
 		npc.PlayHurtSound();
 		npc.StopPathing();
-		npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
+		npc.m_flNextThinkTime = GetGameTime() + 2.0;
 
 		func_NPCThink[npc.index] = MajorVoided_DownedThink;
 		
