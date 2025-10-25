@@ -822,7 +822,7 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 						if(GetTeam(client) == correct_team)
 						{
 							ApplyStatusEffect(client, client, "Plasma Heal Prevent", 1.0);
-							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
+							HealEntityGlobal(client, client, trueamount, 1.0, healtime, HEAL_NO_RULES);
 						}
 					}
 				}
