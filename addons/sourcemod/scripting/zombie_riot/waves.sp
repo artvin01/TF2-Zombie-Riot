@@ -662,7 +662,7 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 					bool CacheNpcs = false;
 					if(!FileNetworkLib_Installed())
 						CacheNpcs = true;
-					if(CvarFileNetworkDisable.IntValue > 1)
+					if(CvarFileNetworkDisable.IntValue >= FILENETWORK_ICONONLY)
 						CacheNpcs = true;
 					Waves_CacheWaves(wavekv, CacheNpcs);
 					delete wavekv;

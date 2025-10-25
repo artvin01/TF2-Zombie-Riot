@@ -1774,6 +1774,14 @@
 		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility receives more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
 		"it"	"Il tuo prossimo colpo infliggerà più danni e infliggerà un Danno Elementale Plasmico MASSICCIO.\nL'abilità riceve più potenziamenti in base al livello del pap.\n{red}Il buff viene rimosso e l'abilità viene messa in cooldown dopo aver messo a segno un colpo."
 	}
+	"Plasma Heal Prevent"
+	{
+		"en"	"Plasma Heal Prevent"
+	}
+	"Plasma Heal Prevent Desc"
+	{
+		"en"	"Prevents Heal from plasma kit so its not stackable"
+	}
 	"Plasmic Layering I"
 	{
 		"en"	"Plasmic Layering I"

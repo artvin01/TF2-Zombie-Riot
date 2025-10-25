@@ -104,6 +104,14 @@ ConVar CvarAutoSelectWave;
 ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;
 
+enum
+{
+	FILENETWORK_ENABLED = 0,
+	FILENETWORK_ICONONLY = 1,
+	FILENETWORK_DISABLED = 2,
+
+}
+
 ConVar CvarDisableThink;
 //ConVar CvarMaxBotsForKillfeed;
 ConVar CvarRerouteToIp;

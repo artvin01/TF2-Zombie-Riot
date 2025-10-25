@@ -1188,7 +1188,7 @@ static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 		case 2:
 		{
 			tinker.Value[0] = 0.95 - LessHealRateLuck;
-			tinker.Value[1] = 1.15 + MoreOverhealLuck;
+			tinker.Value[1] = 1.20 + MoreOverhealLuck;
 		}
 	}
 }

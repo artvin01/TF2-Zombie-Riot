@@ -829,7 +829,7 @@ bool CHIMERA_timeBased(int iNPC)
 	}
 	if(npc.m_flStunDuration)
 	{
-		if(npc.m_flStunDuration < GetGameTime())
+		if(npc.m_flStunDuration < GetGameTime(npc.index))
 		{
 			npc.m_flStunDuration = 0.0;
 			npc.StartPathing();

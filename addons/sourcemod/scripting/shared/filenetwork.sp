@@ -105,7 +105,7 @@ stock bool FileNetwork_Enabled()
 {
 #if defined _filenetwork_included
 	if(FileNetworkLib)
-		return CvarFileNetworkDisable.IntValue < 1;
+		return (CvarFileNetworkDisable.IntValue == FILENETWORK_ENABLED);
 #endif
 	return false;
 }
@@ -308,7 +308,7 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 		PrintToServer("PrecacheSoundCustom::TooLate '%s'", sound);
 
 #if defined _filenetwork_included
-	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0))
+	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue != FILENETWORK_ENABLED))
 #else
 	if(InServerSetup)
 #endif
@@ -347,7 +347,7 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
 
 #if defined _filenetwork_included
-		if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 1))
+		if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > FILENETWORK_ICONONLY))
 #else
 		if(InServerSetup)
 #endif
@@ -365,7 +365,7 @@ stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 
 #if defined _filenetwork_included
-	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > 1))
+	if(InServerSetup && (!FileNetworkLib || CvarFileNetworkDisable.IntValue > FILENETWORK_ICONONLY))
 #else
 	if(InServerSetup)
 #endif
@@ -878,7 +878,7 @@ stock void EmitCustomToAll(const char[] sound, int entity = SOUND_FROM_PLAYER, i
 
 stock void EmitCustom(const int[] clients, int numClients, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
-	if(DownloadList.FindString(sound) != -1 || CvarFileNetworkDisable.IntValue >= 1)
+	if(DownloadList.FindString(sound) != -1 || CvarFileNetworkDisable.IntValue >= FILENETWORK_ICONONLY)
 	{
 		float volume2 = volume;
 		int count = RoundToCeil(volume);
@@ -965,7 +965,7 @@ stock bool IsFileInDownloads(const char[] file)
 stock void SendSingleFileToClient(int client, const char[] download, Function func)
 {
 #if defined _filenetwork_included
-	if(!FileNetworkLib || CvarFileNetworkDisable.IntValue > 0)
+	if(!FileNetworkLib || CvarFileNetworkDisable.IntValue > FILENETWORK_ENABLED)
 		return;
 	
 	DataPack pack = new DataPack();
