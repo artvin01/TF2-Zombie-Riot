@@ -313,7 +313,7 @@ static void ClotDeath(int entity)
 		if(b_StaticNPC[other])
 			AddNpcToAliveList(other, 1);
 		NpcStats_CopyStats(npc.index, other);
-		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime(other) + 4.0;
+		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime() + 4.0;
 	}
 
 	if(IsValidEntity(npc.m_iWearable1))
