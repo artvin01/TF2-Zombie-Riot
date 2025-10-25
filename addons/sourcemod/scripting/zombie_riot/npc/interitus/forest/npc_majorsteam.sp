@@ -100,9 +100,15 @@ static void ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(npc.Anger)
+	if(!npc.Anger)
 	{
-		gameTime = GetGameTime();
+		if(npc.m_flNextThinkTime > gameTime)
+			return;
+	}
+	else
+	{
+		if(npc.m_flNextThinkTime > GetGameTime())
+			return;
 	}
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
