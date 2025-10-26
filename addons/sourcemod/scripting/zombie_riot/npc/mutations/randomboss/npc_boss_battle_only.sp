@@ -409,27 +409,28 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		case 31:
 		{
 			PluginName = "npc_boss_reila";	
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
 			
-			enemy.ExtraDamage *= 1.25;
+			enemy.ExtraDamage *= 1.05;
 			//no umbrals so buff hard
-			enemy.Health = RoundToNearest(float(enemy.Health) * 2.35); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
 		}
 		case 32:
 		{
 			PluginName = "npc_almagest_jkei";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
 			
-			enemy.ExtraDamage *= 1.35;
+			enemy.ExtraDamage *= 1.1;
 			enemy.ExtraThinkSpeed *= 0.9;
 			//no minions, so buff
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.75); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
 		}
 		case 33:
 		{
 			PluginName = "npc_shadowing_darkness_boss";	
 			
 			enemy.ExtraDamage *= 0.8;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 3.5); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 2.15); 
 		}
 		case 34:
 		{

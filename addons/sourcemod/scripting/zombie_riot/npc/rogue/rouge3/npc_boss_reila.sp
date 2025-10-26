@@ -256,6 +256,7 @@ methodmap BossReila < CClotBody
 
 		if(StrContains(data, "force_final_battle") != -1)
 		{
+			i_RaidGrantExtra[npc.index] = 2;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/reila_battle_ost.mp3");
 			music.Time = 100;
@@ -264,6 +265,10 @@ methodmap BossReila < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Twin Souls");
 			strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
 			Music_SetRaidMusic(music);
+		}
+		if(StrContains(data, "force_final_battle") != -1)
+		{
+			RaidAllowsBuildings = false;
 		}
 
 		return npc;
@@ -461,7 +466,7 @@ public void BossReila_NPCDeath(int entity)
 {
 	BossReila npc = view_as<BossReila>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+	if(GameRules_GetRoundState() == RoundState_ZombieRiot && i_RaidGrantExtra[entity] != 2)
 	{
 		Waves_ClearWave();
 		for(int i; i < i_MaxcountNpcTotal; i++)

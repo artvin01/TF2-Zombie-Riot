@@ -326,6 +326,10 @@ methodmap AlmagestJkei < CClotBody
 			RaidAllowsBuildings = true;
 			RaidModeScaling = 0.0;
 		}
+		if(StrContains(data, "force_final_battle") != -1)
+		{
+			RaidAllowsBuildings = false;
+		}
 		npc.StartPathing();
 		npc.SetJkeiSpeed(330.0);
 		
