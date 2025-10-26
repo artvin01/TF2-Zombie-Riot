@@ -68,6 +68,9 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_aris");
 	NPC_GetByPlugin("npc_chimera");
 	NPC_GetByPlugin("npc_vincent");
+	NPC_GetByPlugin("npc_boss_reila");
+	NPC_GetByPlugin("npc_almagest_jkei");
+	NPC_GetByPlugin("npc_shadowing_darkness_boss");
 }
 
 bool SameBossDisallow[64];
@@ -145,11 +148,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	SameBossDisallow[0] = true;
 	while(SameBossDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,30);
+		NumberRand = GetRandomInt(1,33);
 	}
 	if(i_RaidGrantExtra[bosssummonbase] == 666)
 	{
-		NumberRand = GetRandomInt(31,33);
+		NumberRand = GetRandomInt(34,36);
 	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
@@ -405,13 +408,38 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		}
 		case 31:
 		{
-			PluginName = "npc_gentlespy";	
+			PluginName = "npc_boss_reila";	
+			
+			enemy.ExtraDamage *= 1.25;
+			//no umbrals so buff hard
+			enemy.Health = RoundToNearest(float(enemy.Health) * 2.35); 
 		}
 		case 32:
 		{
-			PluginName = "npc_hhh";	
+			PluginName = "npc_almagest_jkei";	
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
+			
+			enemy.ExtraDamage *= 1.35;
+			enemy.ExtraThinkSpeed *= 0.9;
+			//no minions, so buff
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.75); 
 		}
 		case 33:
+		{
+			PluginName = "npc_shadowing_darkness_boss";	
+			
+			enemy.ExtraDamage *= 0.8;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 3.5); 
+		}
+		case 34:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 35:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 36:
 		{
 			PluginName = "npc_christianbrutalsniper";	
 		}
