@@ -293,6 +293,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.7;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 2.5); 
+			if(CurrentModifActive == TURBOLENCES)
+			{
+				enemy.ExtraDamage *= 0.65;
+				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
+			}
 		}
 		case 16:
 		{
@@ -429,8 +434,13 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_shadowing_darkness_boss";	
 			
-			enemy.ExtraDamage *= 0.8;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 2.15); 
+			enemy.ExtraDamage *= 0.5;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
+			if(CurrentModifActive == TURBOLENCES)
+			{
+				enemy.ExtraDamage *= 0.65;
+				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
+			}
 		}
 		case 34:
 		{
