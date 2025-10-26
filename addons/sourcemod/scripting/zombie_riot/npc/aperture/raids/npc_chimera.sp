@@ -718,7 +718,7 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 			TE_Particle("teleported_mvm_bot", VecSelfNpcabs, _, _, npc.index, 1, 0);
 			npc.Anger = true;
-			npc.m_flChargeVulnPhase = GetGameTime(npc.index) + 10.0;
+			npc.m_flChargeVulnPhase = GetGameTime() + 10.0;
 			npc.StopPathing();
 			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
