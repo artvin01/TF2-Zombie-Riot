@@ -235,7 +235,7 @@ static void Internal_ClotThink(int iNPC)
 	float GameTime = GetGameTime(npc.index);
 	if(EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//donnerkrieg handles the timer if its the same index
 	{
-		if(RaidModeTime < GameTime)
+		if(RaidModeTime < GetGameTime())
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
