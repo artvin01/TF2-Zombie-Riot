@@ -293,7 +293,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.7;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 2.5); 
-			if(CurrentModifOn() == 4)
+			if(CurrentModifOn() == 4) // TURBOLENCES
 			{
 				enemy.ExtraDamage *= 0.65;
 				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
@@ -436,7 +436,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.5;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
-			if(CurrentModifOn() == 4)
+			if(CurrentModifOn() == 4) // TURBOLENCES
 			{
 				enemy.ExtraDamage *= 0.65;
 				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 

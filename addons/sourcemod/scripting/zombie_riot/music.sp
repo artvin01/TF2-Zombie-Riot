@@ -571,6 +571,7 @@ void Music_EndLastmann(bool Reinforce=false)
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/cheese_lastman.mp3", 2.0);
 					}
 					SetMusicTimer(client, 0);
+					MusicLastmann.StopMusic(client);
 					StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 					
 				}
@@ -629,7 +630,8 @@ void Music_RoundEnd(int victim, bool music = true)
 			Music_Stop_All(client);
 
 			if(music)
-				EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				if(!MusicLoss.PlayMusic(client))
+					EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			
 			SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", victim);
 		}
@@ -724,6 +726,7 @@ void Music_Stop_All(int client)
 	}
 	//dont call so often! causes lag!
 	
+	MusicLastmann.StopMusic(client);
 	MusicString1.StopMusic(client);
 	MusicString2.StopMusic(client);
 	RaidMusicSpecial1.StopMusic(client);
@@ -1022,8 +1025,11 @@ void Music_Update(int client)
 				}
 				default:
 				{	
-					EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-					SetMusicTimer(client, GetTime() + 120);	
+					if(!MusicLastmann.PlayMusic(client))
+					{
+						EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						SetMusicTimer(client, GetTime() + 120);	
+					}
 				}
 			}
 		}

@@ -940,6 +940,9 @@ void Waves_CacheWaves(KeyValues kv, bool npcs)
 {
 	MusicEnum music;
 	music.SetupKv("music_setup", kv);
+	music.SetupKv("music_lastman", kv);
+	music.SetupKv("music_win", kv);
+	music.SetupKv("music_loss", kv);
 	
 	kv.GotoFirstSubKey();
 	do
@@ -1078,6 +1081,11 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			}
 		}
 	}
+	
+	MusicLastmann.SetupKv("music_lastman", kv);
+	MusicWin.SetupKv("music_win", kv);
+	MusicLoss.SetupKv("music_loss", kv);
+
 	
 	Enemy enemy;
 	Wave wave;
