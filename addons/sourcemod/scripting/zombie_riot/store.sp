@@ -1238,6 +1238,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 	if(!IsValidClient(client))
 		return;
 		
+	CheckClientLateJoin(client);
 	if(index > 0)
 	{
 		PapPreviewMode[client] = Preview;
@@ -3075,6 +3076,33 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 	}
 }*/
 
+void CheckClientLateJoin(int client)
+{
+	if(!b_AntiLateSpawn_Allow[client])
+	{
+		//they joined late, make sure they buy something.
+
+		int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.6);
+		if(CashUsedMust >= 40000)
+		{
+			//if they spend atleast 40k, allow at all times, this is beacuse there are sometimes wavesets
+			//or meme modes that give like a googleplex cash
+			CashUsedMust = 40000;
+		}
+
+		//enough cash was thrown away.
+		if(CashSpent[client] >= CashUsedMust)
+		{
+			b_AntiLateSpawn_Allow[client] = true;
+			//allow them to play.
+			if(!Waves_Started())
+				DHook_RespawnPlayer(client);
+			else if(Waves_InSetup())
+				DHook_RespawnPlayer(client);
+
+		}
+	}
+}
 static void MenuPage(int client, int section)
 {
 	if(dieingstate[client] > 0) //They shall not enter the store if they are downed.
@@ -3094,26 +3122,7 @@ static void MenuPage(int client, int section)
 		CashSpent[client] = 0;
 		starterPlayer = false;
 	}
-
-	if(!b_AntiLateSpawn_Allow[client])
-	{
-		//they joined late, make sure they buy something.
-
-		int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.6);
-		if(CashUsedMust >= 40000)
-		{
-			//if they spend atleast 40k, allow at all times, this is beacuse there are sometimes wavesets
-			//or meme modes that give like a googleplex cash
-			CashUsedMust = 40000;
-		}
-
-		//enough cash was thrown away.
-		if(CashSpent[client] >= CashUsedMust)
-		{
-			b_AntiLateSpawn_Allow[client] = true;
-			//allow them to play.
-		}
-	}
+	CheckClientLateJoin(client);
 	
 	if(CurrentMenuItem[client] != section)
 	{
@@ -5422,7 +5431,8 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 
 	if(removeWeapons)
 	{
-		b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
+		if(TeutonType[client] == TEUTON_NONE)
+			b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 		TF2_RegeneratePlayer(client);
 		Manual_Impulse_101(client, health);
 		return;

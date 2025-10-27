@@ -1061,6 +1061,7 @@ public Action GlobalTimer(Handle timer)
 
 void ZR_ClientPutInServer(int client)
 {
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 3)
