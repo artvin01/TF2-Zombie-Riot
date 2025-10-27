@@ -17,6 +17,10 @@
 		"en"		"TAB OPEN STORE MENU"
 		"it"		"PREMI IL TASTO TAB PER APRIRE IL MENU DEL NEGOZIO"
 	}
+	"Last Alive Alone"
+	{
+		"en"		"You are on your last breath."
+	}
 	"Last Alive"
 	{
 		"en"		"You are the Last Human Alive.\nSurvive the current wave to revive all your allies."

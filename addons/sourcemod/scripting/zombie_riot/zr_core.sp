@@ -1896,7 +1896,7 @@ void CheckLastMannStanding(int killed)
 		LastMann_BeforeLastman = true;
 	}
 }
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, int CheckForLastManAlone = 0)
 {
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
@@ -1970,9 +1970,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	*/
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 	{
-		PlayersLeftNotDowned = 99;
-		LastMann_BeforeLastman = false;
-		LastMann = false;
+		//if its above 700, it just assumes we triggered lastman
+		if(i_AmountDowned[CheckForLastManAlone] < 700)
+		{
+			PlayersLeftNotDowned = 99;
+			LastMann_BeforeLastman = false;
+			LastMann = false;
+		}
 	}
 
 	if(PlayersLeftNotDowned == 1)
@@ -2153,9 +2157,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						applied_lastmann_buffs_once = true;
 						
 						SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
-						ShowHudText(client, -1, "%T", "Last Alive", client);
+						if(b_IsAloneOnServer)
+							ShowHudText(client, -1, "%T", "Last Alive Alone", client);
+						else
+							ShowHudText(client, -1, "%T", "Last Alive", client);
+
 						int MaxHealth;
 						MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+						if(b_IsAloneOnServer)
+							MaxHealth /= 2;
+							
 						if(i_HealthBeforeSuit[client] == 0)
 						{
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
@@ -2163,6 +2174,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						//if in quantum suit, dont.
 
 						int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+						if(b_IsAloneOnServer)
+							Armor_Max /= 2;
 
 						Armor_Charge[client] = Armor_Max;
 						GiveCompleteInvul(client, 3.0);

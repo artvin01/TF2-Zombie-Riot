@@ -2091,17 +2091,6 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			GiveCompleteInvul(victim, 0.1);
 			return Plugin_Handled;
 		}
-		//the client was the last man on the server, or alone, give them spawn protection
-		//dont do this if they are under specter saw revival
-		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
-		{
-			damage = 0.0;
-			GiveCompleteInvul(victim, 2.0);
-			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
-			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
-			return Plugin_Handled;
-		}
 		//if they were supposed to die, but had protection from the marchant kit, do this instead.
 		else if(Merchant_OnLethalDamage(attacker, victim))
 		{
@@ -2110,6 +2099,27 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			return Plugin_Handled;
+		}
+		//the client was the last man on the server, or alone, give them spawn protection
+		//dont do this if they are under specter saw revival
+		else if(b_IsAloneOnServer && !applied_lastmann_buffs_once)
+		{
+			//lastman for being alone!
+			//force lastman if alone, give inf downs to indicate DEATH.
+			i_AmountDowned[victim] = 999;
+			//magic number 999 is used to detect if lastman happend
+			CheckAlivePlayers(0,_,_,victim);
+			damage = 0.0;
+			return Plugin_Handled;
+		}
+		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
+		{
+			damage = 0.0;
+			GiveCompleteInvul(victim, 2.0);
+			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
 			return Plugin_Handled;
 		}
 		//all checks passed, now go into here
