@@ -74,6 +74,10 @@
 		"es"		"Vista Previa"
 		"it"		"Modalità anteprima"
 	}
+	"Late Join Pap Menu"
+	{
+		"en"		"Late Join Pap Menu\nThis menu fades once you are eligable to play."
+	}
 	"Credits"
 	{
 		"#format"	"{1:d}"
@@ -4828,6 +4832,10 @@
 	{
 		"en"		"You're in the Starter Store!\nBuy the weapons and gear you need with a high discount!\nOnce done, exit the store to access your earned cash!\nPress [TAB] and exit the store with [1]!"
 		"it"		"Sei nel Negozio Iniziale! \nAcquista le armi e l'equipaggiamento di cui hai bisogno con un forte sconto! \nUna volta finito, esci dal negozio per accedere ai soldi guadagnati! \nPremi [TAB] e esci dal negozio con [1]!"
+	}
+	"Latejoin Hint"
+	{
+		"en"		"You joined into a round that was on-going.\nBuy enough equipment to be able to play.\nIn here you have access to the PAP remotely in your menu once you bought the weapon."
 	}
 	"Getting favorite loadout"
 	{

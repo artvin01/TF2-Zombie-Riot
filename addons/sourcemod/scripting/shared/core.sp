@@ -3041,6 +3041,8 @@ public void CheckIfAloneOnServer()
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client))
 #endif
 		{
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			players += 1;
 #if defined ZR 
 			player_alone = client;

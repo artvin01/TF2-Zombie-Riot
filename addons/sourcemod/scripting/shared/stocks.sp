@@ -3075,6 +3075,8 @@ float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false
 	float ScaleReturn = 0.01;
 	for(int client=1; client<=MaxClients; client++)
 	{
+		if(!b_AntiLateSpawn_Allow[client])
+			continue;
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 		{ 
 			if(!IgnoreLevelLimit && Database_IsCached(client) && Level[client] <= 20)

@@ -109,6 +109,17 @@ void DoTutorialStep(int client, bool obeycooldown)
 			}
 			return;
 		}
+		if(!b_AntiLateSpawn_Allow[client])
+		{
+			if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
+			{
+				CDDisplayHint_LoadoutStore[client] = GetGameTime() + 1.0;
+				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
+				ShowSyncHudText(client, SyncHud, "%T", "Latejoin Hint", client);
+				//try!
+			}
+			return;
+		}
 	}
 
 	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)

@@ -1802,7 +1802,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				if(Is_a_boss == 2)
 				{
-					if(LastMann)
+					if(LastMann && !b_IsAloneOnServer)
 					{
 						SPrintToChatAll("You were given extra 45 seconds to prepare for the raidboss... Get ready.");
 						GiveProgressDelay(45.0);

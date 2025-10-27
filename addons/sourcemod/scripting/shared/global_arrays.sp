@@ -512,6 +512,7 @@ int i_nm_body_client[MAXPLAYERS];
 int i_CurrentEquippedPerk[MAXENTITIES];
 float f_DelayAttackspeedAnimation[MAXPLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
+bool b_AntiLateSpawn_Allow[MAXPLAYERS + 1];
 
 #if defined ZR 
 int i_SpecialGrigoriReplace;
@@ -534,8 +535,6 @@ bool b_HasMechanic[MAXPLAYERS];
 int i_MaxSupportBuildingsLimit[MAXPLAYERS];
 bool b_AggreviatedSilence[MAXPLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
-//bool b_BobsCuringHand[MAXPLAYERS];
-//bool b_XenoVial[MAXPLAYERS];
 int b_BobsCuringHand_Revived[MAXPLAYERS];
 bool b_StickyExtraGrenades[MAXPLAYERS];
 bool FinalBuilder[MAXENTITIES];
@@ -546,13 +545,6 @@ bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
 float f_ClientArmorRegen[MAXENTITIES];
-//bool b_NemesisHeart[MAXPLAYERS];
-//bool b_OverlordsFinalWish[MAXPLAYERS];
-//bool b_BobsTrueFear[MAXPLAYERS];
-//bool b_TwirlHairpins[MAXPLAYERS];
-//bool b_KahmlLastWish[MAXPLAYERS];
-//bool b_VoidPortalOpened[MAXPLAYERS];
-//bool b_AvangardCoreB[MAXPLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES][Element_MAX];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 float mana_regen[MAXPLAYERS];
@@ -574,8 +566,6 @@ Handle g_hRecalculatePlayerBodygroups;
 float f_WandDamage[MAXENTITIES]; //
 int i_WandWeapon[MAXENTITIES]; //
 int i_WandParticle[MAXENTITIES]; //Only one allowed, dont use more. ever. ever ever. lag max otherwise.
-//float Check_Standstill_Delay[MAXPLAYERS];
-//bool Check_Standstill_Applied[MAXPLAYERS];
 
 float max_mana[MAXPLAYERS];
 

@@ -624,6 +624,8 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			if(IsClientInGame(client))
 			{
 				DoOverlay(client, "", 2);

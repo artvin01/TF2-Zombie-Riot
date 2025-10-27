@@ -937,6 +937,8 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(TeutonType[client_check] == TEUTON_NONE)
 				continue;
+			if(!b_AntiLateSpawn_Allow[client_check])
+				continue;
 			if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 				continue;
 			if(!b_HasBeenHereSinceStartOfWave[client_check])
@@ -2051,6 +2053,8 @@ stock int GetRandomDeathPlayer(int client)
 		if(TeutonType[client_check] == TEUTON_NONE)
 			continue;
 
+		if(!b_AntiLateSpawn_Allow[client_check])
+			continue;
 		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 			continue;
 
