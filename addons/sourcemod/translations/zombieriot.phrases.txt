@@ -4835,7 +4835,11 @@
 	}
 	"Latejoin Hint"
 	{
-		"en"		"You joined into a round that was on-going.\nBuy enough equipment to be able to play.\nIn here you have access to the PAP remotely in your menu once you bought the weapon."
+		"en"		"You joined a round that was on-going.\nBuy enough equipment to be able to play.\nYou have access to the PAP in your store once you bought the weapon.\nSales are ignored, but you got a little cash boost."
+	}
+	"No Attack Info"
+	{
+		"en"		"You can't attack during this wave because you aren't contributing to NPC scaling."
 	}
 	"Getting favorite loadout"
 	{

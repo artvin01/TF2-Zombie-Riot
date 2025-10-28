@@ -347,6 +347,11 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
 			SetVariantInt(0);
 			AcceptEntityInput(client, "SetBodyGroup");
+			if(!b_HasBeenHereSinceStartOfWave[client])
+			{
+				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", FAR_FUTURE);
+				SetEntPropFloat(weapon_index, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+			}
 			//apply model correctly.
 
 

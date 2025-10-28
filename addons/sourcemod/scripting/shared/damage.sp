@@ -1519,6 +1519,11 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 		{
 			ExtraDamageDealt *= 0.5;
 			damage *= ExtraDamageDealt;
+			if(!b_HasBeenHereSinceStartOfWave[attacker])
+			{
+				damage = 0.0;
+				return true;
+			}
 		}
 	}
 	if(IsValidEntity(inflictor))

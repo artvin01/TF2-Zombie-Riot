@@ -6621,6 +6621,11 @@ static void ItemCost(int client, Item item, int &cost)
 		}
 		return;
 	}
+	if(!b_AntiLateSpawn_Allow[client])
+	{
+		//if they are joining late, give them no sales.
+		return;
+	}
 		
 	if(!item.StaleCost)
 	{
