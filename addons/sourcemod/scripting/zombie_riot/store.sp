@@ -1480,6 +1480,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						owner = EntRefToEntIndex(values[2]);
 						if(IsValidClient(owner))
 							Building_GiveRewardsUse(client, owner, 150, true, 4.0, true);
+							
+						CheckClientLateJoin(client);
 					}
 				}
 				
