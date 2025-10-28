@@ -1457,6 +1457,9 @@ void DHook_RespawnPlayer(int client)
 	IsRespawning = true;
 	TF2_RespawnPlayer(client);
 	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
+	//if they are no teuton, make sure they are set in for scaling
+	if(TeutonType[client] == TEUTON_NONE)
+		b_HasBeenHereSinceStartOfWave[client] = true;
 	IsRespawning = false;
 }
 #endif
