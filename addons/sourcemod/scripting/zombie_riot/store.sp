@@ -3084,7 +3084,7 @@ void CheckClientLateJoin(int client)
 	{
 		//they joined late, make sure they buy something.
 
-		int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.6);
+		int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.5);
 		if(CashUsedMust >= 40000)
 		{
 			//if they spend atleast 40k, allow at all times, this is beacuse there are sometimes wavesets
@@ -3093,7 +3093,7 @@ void CheckClientLateJoin(int client)
 		}
 
 		//enough cash was thrown away.
-		if(CashSpent[client] >= CashUsedMust)
+		if(CashSpentTotal[client] >= CashUsedMust)
 		{
 			b_AntiLateSpawn_Allow[client] = true;
 			//allow them to play.
