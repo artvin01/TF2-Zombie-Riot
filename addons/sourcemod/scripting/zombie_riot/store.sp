@@ -5410,7 +5410,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 
 void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 {
-	b_HasBeenHereSinceStartOfWave[client] = false;
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
@@ -5433,8 +5432,6 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 
 	if(removeWeapons)
 	{
-		if(TeutonType[client] == TEUTON_NONE)
-			b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 		TF2_RegeneratePlayer(client);
 		Manual_Impulse_101(client, health);
 		return;
@@ -5449,7 +5446,6 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	{
 		Store_RemoveSpecificItem(client, "Teutonic Longsword", false);
 	}
-	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
 	//OverridePlayerModel(client);
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 

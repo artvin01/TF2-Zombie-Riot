@@ -1292,7 +1292,6 @@ public Action Command_AFK(int client, int args)
 	{
 		ForcePlayerSuicide(client);
 		UnequipDispenser(client, true);
-		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
@@ -2631,14 +2630,19 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);
+			if(raidspawned)
+				if(!b_HasBeenHereSinceStartOfWave[client])
+					continue;
+					
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			if(GetClientTeam(client)==2)
 			{
-				if(!b_AntiLateSpawn_Allow[client])
-					continue;
 					
 				if(TeutonType[client] != TEUTON_WAITING)
 				{
-					b_HasBeenHereSinceStartOfWave[client] = true;
+					if(!raidspawned)
+						b_HasBeenHereSinceStartOfWave[client] = true;
 				}
 				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
 				{
