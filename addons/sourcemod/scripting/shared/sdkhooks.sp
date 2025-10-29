@@ -715,7 +715,11 @@ public void OnPostThink(int client)
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
 
-		if(!BetWar_ShowStatus(client))
+		if(BetWar_ShowStatus(client))
+		{
+			Mana_Hud_Delay[client] = GameTime + 0.1;
+		}
+		else
 		{
 			char buffer[255];
 			float HudY = 0.95;
