@@ -4251,6 +4251,8 @@ void Waves_TrySpawnBarney()
 		return;
 	if(NoBarneySpawn)
 		return;
+	if(BetWar_Mode())
+		return;
 		
 	//check for barney.
 	int a, entity;

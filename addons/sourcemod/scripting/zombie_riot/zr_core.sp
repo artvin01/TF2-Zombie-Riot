@@ -2645,11 +2645,9 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				continue;
 			if(GetClientTeam(client)==2)
 			{
-					
 				if(TeutonType[client] != TEUTON_WAITING)
 				{
-					if(!raidspawned)
-						b_HasBeenHereSinceStartOfWave[client] = true;
+					b_HasBeenHereSinceStartOfWave[client] = true;
 				}
 				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
 				{
