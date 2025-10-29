@@ -843,7 +843,7 @@ static void SetupBetWaves()
 		
 		wave.EnemyData.Team = team ? 4 : 3;
 		strcopy(wave.EnemyData.Spawn, 64, BetTeamSpawn[team]);
-		wave.EnemyData.ExtraDamage *= 7.0;
+		wave.EnemyData.ExtraDamage *= 3.0;
 
 		if(wave.EnemyData.CustomName[0])
 		{
