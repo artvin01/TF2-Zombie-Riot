@@ -2593,6 +2593,10 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		CheckClientLateJoin(client, false);
+		bool ClientWasInWave = false;
+		if(b_HasBeenHereSinceStartOfWave[client])
+			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
@@ -2631,7 +2635,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 			DoOverlay(client, "", 2);
 			if(raidspawned)
-				if(!b_HasBeenHereSinceStartOfWave[client])
+				if(!ClientWasInWave)
 					continue;
 					
 			if(!b_AntiLateSpawn_Allow[client])
