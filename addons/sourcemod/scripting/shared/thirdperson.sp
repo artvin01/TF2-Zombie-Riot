@@ -106,7 +106,7 @@ public Action Timer_EnableFp_Force(Handle timer, int client)
 public Action Timer_EnableTp_Force(Handle timer, int client)
 {
 	if(BetWar_Mode())
-		return;
+		return Plugin_Stop;
 /*
 #if defined ZR
 	if(IsValidEntity(Building_Mounted[client]))
@@ -137,7 +137,7 @@ public Action Timer_EnableTp(Handle timer, any userid)
 #endif
 */
 		if(BetWar_Mode())
-			return;
+			return Plugin_Stop;
 		SetVariantInt(1);													// Enable TP camera
 		AcceptEntityInput(client, "SetForcedTauntCam");
 	}
@@ -152,7 +152,7 @@ public Action Command_TpOn(int client, int args)
 	}
 #if defined ZR
 	if(BetWar_Mode())
-		return;
+		return Plugin_Handled;
 /*
 	if(IsValidEntity(Building_Mounted[client]))
 	{
@@ -223,7 +223,7 @@ public Action Timer_ChangePersonModel(Handle timer, any userid)
 	if (client && IsClientInGame(client) && IsPlayerAlive(client))				// Perhaps their ent could take the input if they are dead.
 	{
 		if(BetWar_Mode())
-			return;
+			return Plugin_Stop;
 		if (thirdperson[client])													   // If they arn't alive, they won't have the cam set, it'll spam.
 		{
 			SetVariantInt(1);
