@@ -2895,7 +2895,7 @@ int Waves_GetRoundScale()
 		return Rogue_GetRound();
 	
 	if(BetWar_Mode())
-		return 10;
+		return 5;
 
 	if(Waves_InFreeplay())
 	{

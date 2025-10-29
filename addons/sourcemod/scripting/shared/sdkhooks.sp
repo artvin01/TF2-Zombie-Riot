@@ -2476,6 +2476,17 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 */
+	
+	if(BetWar_Mode())
+	{
+		if(entity <= MaxClients && entity > 0)
+		{
+			if(StrContains(sample, "vo", true) != -1)
+			{
+				return Plugin_Handled;
+			}
+		}
+	}
 #endif
 
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
