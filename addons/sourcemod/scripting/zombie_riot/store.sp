@@ -3084,7 +3084,7 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 	}
 }*/
 
-void CheckClientLateJoin(int client, bool RespawnClient = false)
+void CheckClientLateJoin(int client, bool RespawnClient = true)
 {
 	if(b_AntiLateSpawn_Allow[client])
 		return;
