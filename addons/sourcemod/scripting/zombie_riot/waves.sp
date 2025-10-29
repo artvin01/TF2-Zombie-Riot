@@ -2894,6 +2894,9 @@ int Waves_GetRoundScale()
 	if(Rogue_Mode())
 		return Rogue_GetRound();
 	
+	if(BetWar_Mode())
+		return 10;
+
 	if(Waves_InFreeplay())
 	{
 		int RoundGive = CurrentRound;
@@ -3003,7 +3006,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup() || WarBet_Mode())
+	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
