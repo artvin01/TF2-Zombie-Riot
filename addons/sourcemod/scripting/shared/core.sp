@@ -3071,6 +3071,8 @@ public void CheckIfAloneOnServer()
 	}
 
 #if defined ZR 
+	if(BetWar_Mode())
+		return;
 	if (players < 4 && players > 0)
 	{
 		if (Bob_Exists)

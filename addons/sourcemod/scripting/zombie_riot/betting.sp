@@ -559,7 +559,7 @@ void BetWar_Progress(int winner = -1)
 							if(VotedAllIn[client])
 								gain[client] *= 2;
 							
-							CPrintToChatAll("{green}%t", "Cash Gained This Wave", gain[client]);
+							CPrintToChat(client,"{green}%t", "Cash Gained This Wave", gain[client]);
 							ClientCommand(client, "playgamesound ui/duel_challenge_accepted_with_restriction.wav");
 						}
 						else
@@ -568,7 +568,7 @@ void BetWar_Progress(int winner = -1)
 							if(VotedAllIn[client])
 								gain[client] = -BetMoney[client];
 							
-							CPrintToChatAll("{red}Lost %d cash this wave!", -gain[client]);
+							CPrintToChat(client,"{red}Lost %d cash this wave!", -gain[client]);
 							ClientCommand(client, "playgamesound ui/duel_challenge_rejected_with_restriction.wav");
 						}
 						
