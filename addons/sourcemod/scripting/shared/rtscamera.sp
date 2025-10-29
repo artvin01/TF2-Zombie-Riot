@@ -907,43 +907,48 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		SetEntPropVector(camera, Prop_Data, "m_vecVelocity", cameraVel);
 	}
 
-	if(pressed[Key_Escape])
-	{
-#if defined RTS
-		if(NextMoveType[client] || BuildMode[client])
-		{
-			NextMoveType[client] = 0;
-			BuildMode[client] = 0;
-			RTSMenu_Update(client);
-		}
-#else
-		if(NextMoveType[client])
-		{
-			NextMoveType[client] = 0;
-		}
+#if defined ZR
+	if(!BetWar_Mode())
 #endif
-		else
-		{
-			ClearSelected(client);
-		}
-	}
-	else if(pressed[Key_Delete] && Selected[client])
 	{
-		int length = Selected[client].Length;
-		for(int i; i < length; i++)
+		if(pressed[Key_Escape])
 		{
-			int entity = EntRefToEntIndex(Selected[client].Get(i));
-
 #if defined RTS
-			if(entity != -1 && RTS_CanControl(client, entity))
-#else
-			if(entity != -1)
-#endif
-
+			if(NextMoveType[client] || BuildMode[client])
 			{
-				SmiteNpcToDeath(entity);
-				if(!holding[Key_Ctrl])
-					break;
+				NextMoveType[client] = 0;
+				BuildMode[client] = 0;
+				RTSMenu_Update(client);
+			}
+#else
+			if(NextMoveType[client])
+			{
+				NextMoveType[client] = 0;
+			}
+#endif
+			else
+			{
+				ClearSelected(client);
+			}
+		}
+		else if(pressed[Key_Delete] && Selected[client])
+		{
+			int length = Selected[client].Length;
+			for(int i; i < length; i++)
+			{
+				int entity = EntRefToEntIndex(Selected[client].Get(i));
+
+#if defined RTS
+				if(entity != -1 && RTS_CanControl(client, entity))
+#else
+				if(entity != -1)
+#endif
+
+				{
+					SmiteNpcToDeath(entity);
+					if(!holding[Key_Ctrl])
+						break;
+				}
 			}
 		}
 	}
