@@ -124,7 +124,7 @@ bool BetWar_CallVote(int client, bool force = false)	// Waves_CallVote
 			for(int i; i < length; i++)
 			{
 				Format(vote.Config, sizeof(vote.Config), "%s%s (ALL IN)", vote.Name, vote.Append);
-				menu.AddItem(vote.Name, vote.Config, BetMoney[client] > 99 || ((VotedFor[client] == i + 1) && VotedAllIn[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				menu.AddItem(vote.Name, vote.Config, BetMoney[client] < 100 || ((VotedFor[client] == i + 1) && VotedAllIn[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
 		}
 		
