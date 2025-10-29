@@ -484,6 +484,7 @@ void BetWar_Progress(int winner = -1)
 						FreezeNpcInTime(entity, 10.0, true);
 					}
 				}
+				WaveStart_SubWaveStart();
 
 				if(spawnNew)
 				{
