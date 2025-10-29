@@ -686,6 +686,7 @@ static Action BetWar_RemoveNPCs(Handle timer)
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
+			b_NoKillFeed[entity] = true;
 			SmiteNpcToDeath(entity);
 			found = true;
 		}
