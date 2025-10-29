@@ -123,6 +123,8 @@ bool BetWar_CallVote(int client, bool force = false)	// Waves_CallVote
 		{
 			for(int i; i < length; i++)
 			{
+				Voting.GetArray(i, vote);
+
 				Format(vote.Config, sizeof(vote.Config), "%s%s (ALL IN)", vote.Name, vote.Append);
 				menu.AddItem(vote.Name, vote.Config, BetMoney[client] < 100 || ((VotedFor[client] == i + 1) && VotedAllIn[client]) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			}
@@ -621,6 +623,7 @@ void BetWar_Progress(int winner = -1)
 
 			SortCustom1D(client, count, BetWarSorting);
 
+			bool alive;
 			int matchPlace, matchCash;
 
 			for(int i; i < count; i++)
@@ -633,6 +636,7 @@ void BetWar_Progress(int winner = -1)
 
 				if(BetMoney[client[i]] > 99)
 				{
+					alive = true;
 					Format(buffer, sizeof(buffer), "#%d %N (%s%d) %d", matchPlace, client[i], gain[client[i]] < 0 ? "" : "+", gain[client[i]], BetMoney[client[i]]);
 				}
 				else
@@ -650,7 +654,7 @@ void BetWar_Progress(int winner = -1)
 
 			delete panel;
 
-			if(matchCash < 100)
+			if(!alive)
 			{
 				ForcePlayerLoss(false);
 			}
