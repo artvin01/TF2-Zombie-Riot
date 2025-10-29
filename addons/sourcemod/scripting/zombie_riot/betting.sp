@@ -749,11 +749,11 @@ bool BetWar_ShowStatus(int client)
 					Vote vote;
 
 					Voting.GetArray(0, vote);
-					SetHudTextParams(0.2, -1.0, 0.11, 55, 55, 255, 255, 0, 0.0, 0.0, 0.0);
+					SetHudTextParams(0.15, -1.0, 0.11, 55, 55, 255, 255, 0, 0.0, 0.0, 0.0);
 					ShowSyncHudText(client, SyncHud_WandMana, vote.Config);
 
 					Voting.GetArray(1, vote);
-					SetHudTextParams(0.8, -1.0, 0.11, 255, 55, 55, 255, 0, 0.0, 0.0, 0.0);
+					SetHudTextParams(0.65, -1.0, 0.11, 255, 55, 55, 255, 0, 0.0, 0.0, 0.0);
 					ShowSyncHudText(client, SyncHud_ArmorCounter, vote.Config);
 				}
 			}
@@ -771,10 +771,10 @@ bool BetWar_ShowStatus(int client)
 					}
 				}
 
-				SetHudTextParams(0.2, -1.0, 0.11, 55, 55, 255, 255, 0, 0.0, 0.0, 0.0);
+				SetHudTextParams(0.0, -1.0, 0.11, 55, 55, 255, 255, 0, 0.0, 0.0, 0.0);
 				ShowSyncHudText(client, SyncHud_WandMana, buffer[0]);
 
-				SetHudTextParams(0.8, -1.0, 0.11, 255, 55, 55, 255, 0, 0.0, 0.0, 0.0);
+				SetHudTextParams(1.0, -1.0, 0.11, 255, 55, 55, 255, 0, 0.0, 0.0, 0.0);
 				ShowSyncHudText(client, SyncHud_ArmorCounter, buffer[1]);
 			}
 		}
