@@ -2806,7 +2806,6 @@ bool Waves_GetNextEnemy(Enemy enemy)
 		
 		Enemies[i].GetArray(length - 1, enemy);
 		Enemies[i].Erase(length - 1);
-		PrintToChatAll(enemy.Spawn);
 		return true;
 	}
 
