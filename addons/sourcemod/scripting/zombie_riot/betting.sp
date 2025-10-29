@@ -838,6 +838,9 @@ static void SetupBetWaves()
 		if(count < 1)
 			count = 1;
 		
+		if(wave.Count < 1)
+			wave.EnemyData.Health = RoundFloat(wave.EnemyData.Health * multi);
+		
 		wave.EnemyData.Team = team ? 4 : 3;
 		strcopy(wave.EnemyData.Spawn, 64, BetTeamSpawn[team]);
 		wave.EnemyData.ExtraDamage *= 7.0;
