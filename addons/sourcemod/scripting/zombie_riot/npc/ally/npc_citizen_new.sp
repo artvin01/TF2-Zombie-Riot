@@ -1573,6 +1573,8 @@ stock void Citizen_PlayerReplacement(int client)
 		return;
 	if(Waves_InSetup())
 		return;
+	if(BetWar_Mode())
+		return;
 	//were they alive?
 	if(TeutonType[client] != TEUTON_NONE)
 		return;
