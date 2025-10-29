@@ -777,6 +777,7 @@ static void SetupBetWaves()
 	int length = round.Waves.Length;
 
 	float totalBudget = 1.2 + ((CurrentBetRound == 9 ? 2.0 : GetRandomFloat(1.0, 2.0)) * (CurrentBetRound * 0.25));
+	totalBudget *= 2.0;
 	float totalCount = 1.0 + (CurrentBetRound / 4.4);
 	if(totalCount > 2.9)
 		totalCount = 2.9;

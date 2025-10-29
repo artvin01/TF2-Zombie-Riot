@@ -1270,6 +1270,8 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 			}
 			Waves_UpdateMvMStats();
 		}
+		if(BetWar_Mode())
+			b_ShowNpcHealthbar[entity] = true;
 	}
 
 	return entity;
