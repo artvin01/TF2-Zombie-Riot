@@ -94,7 +94,7 @@ void Tutorial_MakeClientNotMove(int client)
 
 void DoTutorialStep(int client, bool obeycooldown)
 {
-	if(GetClientTeam(client) != 2)
+	if(GetClientTeam(client) != 2 || BetWar_Mode())
 		return;
 		
 	TutorialShort_ExplainOres(client);

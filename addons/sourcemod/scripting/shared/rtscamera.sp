@@ -130,11 +130,11 @@ static const char DefaultCmd[Key_MAX][] =
 	"b 2",
 	"b 1",
 	"b 16",
-#if defined RTS
+//#if defined RTS
 	"+use_action_slot_item",
-#else
-	"<unbound>",
-#endif
+//#else
+//	"<unbound>",
+//#endif
 	"dropitem",
 
 	"b 25",
@@ -147,24 +147,24 @@ static const char DefaultCmd[Key_MAX][] =
 
 	"lastinv",
 	"b 3",
-#if defined RTS
+//#if defined RTS
 	"voicemenu",
-#else
-	"<unbound>",
-#endif
+//#else
+//	"<unbound>",
+//#endif
 	"b 13",
 	"i 201",
 
 	"b 9",
 	"b 4",
 	"b 10",
-#if defined RTS
+//#if defined RTS
 	"+inspect",
 	"+taunt"
-#else
-	"<unbound>",
-	"<unbound>"
-#endif
+//#else
+//	"<unbound>",
+//	"<unbound>"
+//#endif
 };
 
 static const char ButtonCmd[IN_MAX][] =
@@ -258,7 +258,7 @@ void RTSCamera_PluginStart()
 	RegConsoleCmd("sm_rts", RTSCamera_CommandMenu, "RTS Camera Menu");
 	RegConsoleCmd("sm_rtstoggle", RTSCamera_CommandToggle, "Toggle RTS Camera");
 
-	PrecacheModel(FLAG_MODEL);
+	LoadTranslations("realtime.phrases");
 
 	for(int i; i <= MAXENTITIES; i++)
 	{
@@ -300,6 +300,7 @@ void RTSCamera_ClientDisconnect(int client)
 void RTSCamera_MapStart()
 {
 	PrecacheModel(LaserModel);
+	PrecacheModel(FLAG_MODEL);
 }
 
 void RTSCamera_ClientCookiesCached(int client)
@@ -334,6 +335,13 @@ public Action RTSCamera_CommandToggle(int client, int args)
 {
 	if(client)
 	{
+#if defined ZR
+		if(BetWar_Mode())
+		{
+			ReplyToCommand(client, "RTS Camera is always enabled in Betting Wars gamemode");
+			return Plugin_Handled;
+		}
+#endif
 		ToggleRTS(client);
 	}
 	return Plugin_Handled;
@@ -354,8 +362,13 @@ void RTSCamera_ShowMenu(int client, int page)
 
 			menu.SetTitle("%t\n ", "Real-Time Camera");
 
-			FormatEx(buffer, sizeof(buffer), "%t (/rtstoggle)\n ", RTSEnabled[client] ? "Disable Camera" : "Enable Camera");
-			menu.AddItem("0", buffer);
+#if defined ZR
+			if(!BetWar_Mode())
+#endif
+			{
+				FormatEx(buffer, sizeof(buffer), "%t (/rtstoggle)\n ", RTSEnabled[client] ? "Disable Camera" : "Enable Camera");
+				menu.AddItem("0", buffer);
+			}
 
 			FormatEx(buffer, sizeof(buffer), "%t", "Mouse Settings");
 			menu.AddItem("1", buffer, cached ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -432,6 +445,8 @@ void RTSCamera_ShowMenu(int client, int page)
 		case 9:
 		{
 			menu.SetTitle("%t\n%t\n ", "Real-Time Camera", "Bind Settings");
+
+			menu.AddItem("999", "Reset Key Bindings");
 
 			for(int i; i < Key_MAX; i++)
 			{
@@ -629,6 +644,16 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					SaveMouseCookie(client);
 					option = 5;
 				}
+				case 999:
+				{
+					for(int i; i < sizeof(KeyBinds[]); i++)
+					{
+						strcopy(KeyBinds[client][i], sizeof(KeyBinds[][]), DefaultCmd[i]);
+					}
+
+					SaveKeybinds(client);
+					option = 9;
+				}
 				default:
 				{
 					if(option > 999)
@@ -650,13 +675,16 @@ bool RTSCamera_InCamera(int client)
 
 void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], int weapon, const int rawMouse[2])
 {
-	if(!RTSEnabled[client] || !CanBeInCamera(client))
+	if(!IsRTSEnabled(client) || !CanBeInCamera(client))
 	{
 		if(RTSCamera_InCamera(client))
 			DisableCamera(client);
 		
 		if(BindingKey[client] != -1)
-			ProcessInputs(client, buttons, impulse, vel, weapon);
+		{
+			bool pressed[Key_MAX], previous[Key_MAX], holding[Key_MAX];
+			ProcessInputs(client, buttons, impulse, vel, weapon, pressed, previous, holding);
+		}
 		
 		return;
 	}
@@ -1011,7 +1039,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	{
 		if(!holding[Key_Ctrl])
 			ClearSelected(client);
-	/*	
+	
 #if defined ZR
 		char npc_classname[60];
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
@@ -1024,7 +1052,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 					SelectUnit(client, entity);
 			}
 		}
-#endif*/
+#endif
 	}
 
 	// Cursor point and rectangle selection through a stationary viewport
@@ -1441,8 +1469,10 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					if(!success)
 						RTS_PlaySound(entity, client, Sound_Move);
 					
-/*#elseif defined ZR
-
+#elseif defined ZR
+					if(BetWar_Mode())	// No control in Betting Wars
+						continue;
+					
 					f3_SpawnPosition[entity] = vecMovePos;
 
 					switch(NextMoveType[client])
@@ -1458,32 +1488,31 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 						
 						case Move_Patrol:
 							view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
-					}*/
+					}
 #endif
 
 					success = true;
 				}
 			}
 			
-#if defined ZR
-			switch(NextMoveType[client])
-			{
-				case Move_Normal:
-					ClientCommand(client, "playgamesound coach/coach_go_here.wav");
-				
-				case Move_Attack:
-					ClientCommand(client, "playgamesound coach/coach_attack_here.wav");
-				
-				case Move_HoldPos:
-					ClientCommand(client, "playgamesound coach/coach_defend_here.wav");
-				
-				case Move_Patrol:
-					ClientCommand(client, "playgamesound coach/coach_look_here.wav");
-			}
-#endif
-
 			if(success)
 			{
+#if defined ZR
+				switch(NextMoveType[client])
+				{
+					case Move_Normal:
+						ClientCommand(client, "playgamesound coach/coach_go_here.wav");
+					
+					case Move_Attack:
+						ClientCommand(client, "playgamesound coach/coach_attack_here.wav");
+					
+					case Move_HoldPos:
+						ClientCommand(client, "playgamesound coach/coach_defend_here.wav");
+					
+					case Move_Patrol:
+						ClientCommand(client, "playgamesound coach/coach_look_here.wav");
+				}
+#endif
 				float PingRange[3]; 
 				PingRange = vecMovePos;
 				PingRange[2] += 5.0;
@@ -1707,9 +1736,19 @@ static void EnableCamera(int client)
 	SetEntityMoveType(camera, MOVETYPE_NOCLIP);
 
 	float pos[3];
+	GetClientEyePosition(client, pos);
+
+#if defined ZR
+	if(BetWar_Mode())
+	{
+		float z = BetWar_Camera();
+		if(z != -1.0)
+			pos[2] = z;
+	}
+#endif
+
 	pos[2] += 300.0;
 	MinZoom[client] = pos[2];
-	GetClientEyePosition(client, pos);
 	TeleportEntity(focus, pos);
 
 	CameraDistance[client] = MinZoom[client] * -2.0;
@@ -1723,8 +1762,13 @@ static void EnableCamera(int client)
 	SetEntityFlags(client, GetEntityFlags(client)|FL_FROZEN|FL_ATCONTROLS);
 	AcceptEntityInput(view, "Enable", client, view);
 
+#if defined ZR
+	if(BetWar_Mode())
+		SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_HEALTH|HIDEHUD_BUILDING_STATUS|HIDEHUD_CLOAK_AND_FEIGN);
+#endif
+
 #if defined RTS
-	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_HEALTH);
+	SetEntProp(client, Prop_Send, "m_iHideHUD", HIDEHUD_HEALTH|HIDEHUD_BUILDING_STATUS|HIDEHUD_CLOAK_AND_FEIGN);
 #endif
 	
 	//If these below is even needed
@@ -1774,6 +1818,15 @@ static void DisableCamera(int client)
 #endif
 }
 
+static bool IsRTSEnabled(int client)
+{
+#if defined ZR
+	if(BetWar_Mode() && IsPlayerAlive(client))
+		return true;
+#endif
+	return RTSEnabled[client];
+}
+
 static void ToggleRTS(int client)
 {
 	if(RTSEnabled[client])
@@ -1817,7 +1870,7 @@ static void SaveMouseCookie(int client)
 	}
 }
 
-stock bool ProcessInputs(int client, int buttons, int impulse, const float vel[3], int weapon, bool pressed[Key_MAX] = {}, bool previous[Key_MAX] = {}, bool holding[Key_MAX] = {})
+stock bool ProcessInputs(int client, int buttons, int impulse, const float vel[3], int weapon, bool pressed[Key_MAX], bool previous[Key_MAX], bool holding[Key_MAX])
 {
 	if(BindingKey[client] != -1)
 	{
@@ -2138,15 +2191,18 @@ static stock bool IsSelectableUnitEntity(int client, int entity)
 		{
 			return true;
 		}
-/*#elseif defined ZR
+#elseif defined ZR
 		if(!b_NpcHasDied[entity])
 		{
+			if(BetWar_Mode())
+				return true;
+			
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
 				return true;
 			}
-		}*/
+		}
 #endif
 	}
 
@@ -2188,12 +2244,26 @@ static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 			
 			return true;
 		}
-/*#elseif defined ZR
-		BarrackBody npc = view_as<BarrackBody>(entity);
-		if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+#elseif defined ZR
+		if(!b_NpcHasDied[entity])
 		{
-			return true;
-		}*/
+			if(BetWar_Mode())
+				return true;
+			
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			{
+				if(!villagers)
+				{
+					char npc_classname[32];
+					NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+					if(StrEqual(npc_classname, "npc_barrack_villager"))
+						continue;
+				}
+
+				return true;
+			}
+		}
 #endif
 	}
 

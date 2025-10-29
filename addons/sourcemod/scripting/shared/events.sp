@@ -250,6 +250,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	Construction_RoundEnd();
+	BetWar_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)

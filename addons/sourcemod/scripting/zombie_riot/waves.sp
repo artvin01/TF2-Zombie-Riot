@@ -276,7 +276,11 @@ bool Waves_InVote()
 
 public Action Waves_RevoteCmd(int client, int args)
 {
-	if(Rogue_Mode() || Construction_Mode())
+	if(BetWar_Mode())
+	{
+		BetWar_RevoteCmd(client);
+	}
+	else if(Rogue_Mode() || Construction_Mode())
 	{
 		Rogue_RevoteCmd(client);
 	}
@@ -295,6 +299,9 @@ public Action Waves_RevoteCmd(int client, int args)
 
 bool Waves_CallVote(int client, int force = 0)
 {
+	if(BetWar_Mode())
+		return BetWar_CallVote(client);
+	
 	if(Rogue_Mode() || Construction_Mode())
 		return Rogue_CallVote(client);
 	
@@ -590,6 +597,18 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 	
 	if(!modifierOnly)
 		StartCash = kv.GetNum("cash", 700);
+
+	// Betting Wars Gamemode
+	if(map && kv.GetNum("bettingwars"))
+	{
+		if(!modifierOnly)
+			BetWar_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
+		return;
+	}
 
 	// Construction Gamemode
 	if(map && kv.GetNum("construction"))
@@ -1375,7 +1394,7 @@ void Waves_RoundStart(bool event = false)
 
 	Kit_Fractal_ResetRound();
 	
-	if(Construction_Mode() || Rogue_Mode())
+	if(Construction_Mode() || Rogue_Mode() || BetWar_Mode())
 	{
 		
 	}
@@ -1449,7 +1468,11 @@ void Waves_RoundStart(bool event = false)
 	if(CvarInfiniteCash.BoolValue)
 		CurrentCash = 999999;
 
-	if(Construction_Mode())
+	if(BetWar_Mode())
+	{
+		BetWar_StartSetup();
+	}
+	else if(Construction_Mode())
 	{
 		Construction_StartSetup();
 	}
@@ -1749,7 +1772,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		GameRules_GetRoundState() == RoundState_BetweenRounds ? 0 : 1,
 		Cooldown > GetGameTime() ? 0 : 1);*/
 	
-	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime())
+	if(InSetup || !Rounds || CvarNoRoundStart.BoolValue || GameRules_GetRoundState() == RoundState_BetweenRounds || Cooldown > GetGameTime() || BetWar_Mode())
 		return;
 
 	Cooldown = GetGameTime();
@@ -2783,6 +2806,7 @@ bool Waves_GetNextEnemy(Enemy enemy)
 		
 		Enemies[i].GetArray(length - 1, enemy);
 		Enemies[i].Erase(length - 1);
+		PrintToChatAll(enemy.Spawn);
 		return true;
 	}
 
@@ -2851,6 +2875,9 @@ void Waves_ClearWaveCurrentSpawningEnemies()
 
 bool Waves_Started()
 {
+	if(BetWar_Mode())
+		return BetWar_Started();
+	
 	if(Construction_Mode())
 		return Construction_Started();
 	
@@ -3174,6 +3201,7 @@ void DoGlobalMultiScaling()
 		MultiGlobalHealth = 1.0;
 		MultiGlobalEnemy = multi;
 	}
+
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
 	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
@@ -3271,6 +3299,9 @@ static void UpdateMvMStatsFrame()
 	//profiler.Start();
 
 	UpdateFramed = false;
+
+	if(BetWar_UpdateMvMStats())
+		return;
 
 	if(Construction_UpdateMvMStats())
 		return;
@@ -4239,6 +4270,11 @@ void Waves_TrySpawnBarney()
 	Citizen_SpawnAtPoint(_);
 	CPrintToChatAll("{gray}Barney{default}: Hey buddy, looks like you need a hand!");
 	CPrintToChatAll("{gray}Barney{default}: Talk to my friend here if you want him to do anything in specific.");
+}
+
+ArrayList Waves_GetRoundsArrayList()
+{
+	return Rounds;
 }
 
 #include "modifiers.sp"

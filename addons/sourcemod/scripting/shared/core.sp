@@ -688,6 +688,10 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "npccamera.sp"
 #endif
 
+#if defined ZR
+#include "rtscamera.sp"
+#endif
+
 #include "baseboss_lagcompensation.sp"
 #include "configs.sp"
 #include "damage.sp"
@@ -928,6 +932,10 @@ public void OnPluginEnd()
 	}
 
 	
+#if defined RTS_CAMERA
+	RTSCamera_PluginEnd();
+#endif
+
 #if defined RPG
 	RPG_PluginEnd();
 #endif
@@ -1732,6 +1740,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Tutorial_MakeClientNotMove(client);
 
 	if(SkillTree_PlayerRunCmd(client, buttons, vel))
+		return Plugin_Changed;
+	
+	if(BetWar_PlayerRunCmd(client, buttons, vel))
 		return Plugin_Changed;
 #endif
 

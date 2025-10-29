@@ -4906,6 +4906,13 @@ stock int GetClosestTarget(int entity,
 
 	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #if defined ZR
+	if(BetWar_Mode())
+	{
+		IgnorePlayers = true;
+		onlyPlayers = false;
+		fldistancelimitAllyNPC = 99999.9;
+		UseVectorDistance = true;
+	}
 
 	//in rogue you can get allies, but they shouldnt get any enemies during setups.
 	if(Rogue_Mode())

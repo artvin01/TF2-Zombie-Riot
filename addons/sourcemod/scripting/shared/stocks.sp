@@ -3071,6 +3071,9 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 //alot is  borrowed from CountPlayersOnRed
 float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false, bool IgnoreLevelLimit = false)
 {
+	if(BetWar_Mode())
+		return 4.0;
+	
 	//dont be 0
 	float ScaleReturn = 0.01;
 	for(int client=1; client<=MaxClients; client++)

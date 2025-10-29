@@ -260,7 +260,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			tr.AddQuery(buffer);
 		}
 
-		Tutorial_ClientSetup(client, tutorial);
+		if(!BetWar_Mode())
+			Tutorial_ClientSetup(client, tutorial);
 		
 		if(results[2].FetchRow())
 		{

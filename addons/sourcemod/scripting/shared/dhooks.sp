@@ -1494,9 +1494,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(IsFakeClient(client))
 	{
 #if !defined RTS
-		int team = KillFeed_GetBotTeam(client);
-		if(GetClientTeam(client) != team)
-			SetTeam(client, team);
+		if(GetClientTeam(client) != 3)
+			SetTeam(client, 3);
 #endif
 		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
@@ -1527,7 +1526,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Construction_InSetup())
+	if(Construction_InSetup() || BetWar_Mode())
 	{
 		TeutonType[client] = TEUTON_NONE;
 	}
@@ -1569,7 +1568,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	if(Construction_Mode())
+	if(Construction_Mode() || BetWar_Mode())
 		return MRES_Ignored;
 #endif
 	
