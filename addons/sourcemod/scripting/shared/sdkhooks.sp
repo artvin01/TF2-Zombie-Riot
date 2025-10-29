@@ -2481,10 +2481,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		if(entity <= MaxClients && entity > 0)
 		{
-			if(StrContains(sample, "vo", true) != -1)
-			{
-				return Plugin_Handled;
-			}
+			return Plugin_Handled;
 		}
 	}
 #endif
