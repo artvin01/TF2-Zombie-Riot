@@ -267,7 +267,6 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	}
 	
 	int closest = npc.m_iTarget;
-	
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);

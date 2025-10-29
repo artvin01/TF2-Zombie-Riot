@@ -38,6 +38,7 @@
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
+
 #define TFTeam_Stalkers 		5
 
 #define TF2_GetClientTeam	PleaseUse_GetTeam

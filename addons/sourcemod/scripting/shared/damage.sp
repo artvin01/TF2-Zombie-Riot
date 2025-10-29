@@ -385,6 +385,23 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	
 #if defined ZR
 
+	if(BetWar_Mode())
+	{
+		if(!CheckInHud() && (damagetype & DMG_CLUB))
+		{
+			float vecVictim[3]; WorldSpaceCenter(victim,vecVictim);
+			float VecAttacker[3]; WorldSpaceCenter(attacker, VecAttacker);
+			
+			float flDistanceToTarget = GetVectorDistance(vecVictim, VecAttacker, true);
+			if(flDistanceToTarget < (150.0 * 150.0))
+			{
+				//knockback
+				Custom_Knockback(attacker, victim, 350.0);
+				//little immunity!
+				ApplyStatusEffect(victim, victim, "Solid Stance", 0.5);	
+			}
+		}
+	}
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
 		if(!CheckInHud())

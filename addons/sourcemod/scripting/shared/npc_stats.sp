@@ -4893,7 +4893,7 @@ stock int GetClosestTarget(int entity,
 	 float EntityLocation[3] = {0.0,0.0,0.0},
 	  bool CanSee = false,
 	   float fldistancelimitAllyNPC = 450.0,
-	   bool IgnorePlayers = false,
+	   bool IgnorePlayers = false, //also assumes npcs, only buildings are attacked
 	   bool UseVectorDistance = false,
   		float MinimumDistance = 0.0,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
@@ -4908,7 +4908,7 @@ stock int GetClosestTarget(int entity,
 #if defined ZR
 	if(BetWar_Mode())
 	{
-		IgnorePlayers = true;
+		IgnorePlayers = false;
 		onlyPlayers = false;
 		fldistancelimitAllyNPC = 99999.9;
 		UseVectorDistance = true;
@@ -4957,7 +4957,12 @@ stock int GetClosestTarget(int entity,
 	//This code: if the npc is not on player team, make them attack players.
 	//This doesnt work if they ignore players or tower defense mode is enabled.
 #if defined ZR
-	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers)
+	bool ForceIgnorePlayers = false;
+	if(BetWar_Mode())
+	{
+		ForceIgnorePlayers = true;
+	}
+	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers && !ForceIgnorePlayers)
 #else
 	if(!IgnorePlayers)
 #endif
