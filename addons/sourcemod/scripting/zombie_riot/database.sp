@@ -346,6 +346,9 @@ public void Loadout_DatabaseLoadFavorite(int client)
 	if(!Loadouts[client])
 		return;
 
+	if(BetWar_Mode())
+		return;
+		
 	int LengthIAm = Loadouts[client].Length;
 	char BufferString[255];
 	for(int i; i < LengthIAm; i++)
