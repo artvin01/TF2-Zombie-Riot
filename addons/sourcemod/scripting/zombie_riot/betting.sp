@@ -479,7 +479,7 @@ void BetWar_Progress(int winner = -1)
 					if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 					{
 						spawnNew = false;
-						FreezeNpcInTime(entity, 20.0, true);
+						FreezeNpcInTime(entity, 5.0, true);
 					}
 				}
 
@@ -487,7 +487,7 @@ void BetWar_Progress(int winner = -1)
 				{
 					SetupBetWaves();
 
-					VoteEndTime = GetGameTime() + 23.0;
+					VoteEndTime = GetGameTime() + 8.0;
 
 					delete ProgressTimer;
 					ProgressTimer = CreateTimer(3.0, BetWar_ProgressTimer, _, TIMER_FLAG_NO_MAPCHANGE);
@@ -495,7 +495,7 @@ void BetWar_Progress(int winner = -1)
 				else
 				{
 					Zero(VotedFor);
-					VoteEndTime = GetGameTime() + 20.0;
+					VoteEndTime = GetGameTime() + 5.0;
 					f_DelaySpawnsForVariousReasons = VoteEndTime;
 					delete WinMenuPanel;
 					
@@ -840,7 +840,7 @@ static void SetupBetWaves()
 		
 		wave.EnemyData.Team = team ? 4 : 3;
 		strcopy(wave.EnemyData.Spawn, 64, BetTeamSpawn[team]);
-		wave.EnemyData.ExtraDamage *= 10.0;
+		wave.EnemyData.ExtraDamage *= 7.0;
 
 		if(wave.EnemyData.CustomName[0])
 		{
