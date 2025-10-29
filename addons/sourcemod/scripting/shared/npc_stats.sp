@@ -5749,6 +5749,8 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 
 public Action Timer_CheckStuckOutsideMap(Handle cut_timer, int ref)
 {
+	if(BetWar_Mode())
+		return;
 	int entity = EntRefToEntIndex(ref);
 	if (IsValidEntity(entity))
 	{
@@ -6251,6 +6253,8 @@ stock void TeleportNpcToRandomPlayer(int iNPC)
 {
 	//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 #if defined ZR
+	if(BetWar_Mode())
+		return;
 	int target = 0;
 	for(int i=1; i<=MaxClients; i++)
 	{
@@ -6451,6 +6455,8 @@ void UnstuckStuckNpc(CClotBody npc)
 	static float vec3Origin[3];
 	npc.SetVelocity(vec3Origin);
 #if defined ZR
+	if(BetWar_Mode())
+		return;
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		//This was an enemy.
