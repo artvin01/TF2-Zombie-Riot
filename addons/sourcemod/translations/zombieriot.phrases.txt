@@ -1889,6 +1889,7 @@
 		"chi"       "按下R键拿起这个武器"
 		"it"		"Raccogliete quest'arma con RICARICA!"
 	}
+
 	"You Died Teuton"
 	{
 		"en" 		"You died!\nHelp your team by attacking the enemies.\nYou cant die in this state and will respawn next wave."
@@ -4835,11 +4836,11 @@
 	}
 	"Latejoin Hint"
 	{
-		"en"		"You joined a round that was on-going.\nBuy enough equipment to be able to play.\nYou have access to the PAP in your store once you bought the weapon.\nSales are ignored, but you got a little cash boost."
+		"en"		"You joined a round in process.\nBuy equipment's to be able to play.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but you got a little cash boost."
 	}
 	"No Attack Info"
 	{
-		"en"		"You can't attack during this wave because you aren't contributing to NPC scaling."
+		"en"		"You can't attack during the wave currently."
 	}
 	"Getting favorite loadout"
 	{

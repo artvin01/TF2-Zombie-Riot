@@ -1558,7 +1558,11 @@ public void OnClientPutInServer(int client)
 	if(ForceNiko)
 		OverridePlayerModel(client, NIKO_2, true);
 	if(!Waves_Started() || Waves_InSetup())
+	{
 		DoGlobalMultiScaling();
+		if(b_AntiLateSpawn_Allow[client])
+			b_HasBeenHereSinceStartOfWave[client] = true;
+	}
 #endif
 	MedigunPutInServerclient(client);
 }
