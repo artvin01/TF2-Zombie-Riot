@@ -825,6 +825,7 @@ static void SetupBetWaves()
 		{
 			if(fails < (wave.Count > 1 ? 20 : 10))
 			{
+				i--;
 				fails++;
 				continue;
 			}
