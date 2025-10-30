@@ -2481,7 +2481,12 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		if(entity <= MaxClients && entity > 0)
 		{
-			return Plugin_Handled;
+			if(StrContains(sample, "#", true) != -1)
+			{
+				//if its music, dont do anything.
+			}
+			else
+				return Plugin_Handled;
 		}
 	}
 #endif

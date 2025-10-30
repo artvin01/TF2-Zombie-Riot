@@ -722,7 +722,7 @@ static int BetWarBlankPanel(Menu menu, MenuAction action, int param1, int param2
 	return 0;
 }
 
-bool BetWar_HideCursor(int client)
+bool BetWar_HideCursor()
 {
 	if(BetWar_Mode())
 	{
@@ -799,8 +799,8 @@ static void SetupBetWaves()
 	float totalBudget = 1.2 + ((CurrentBetRound == 9 ? 2.0 : GetRandomFloat(1.0, 2.0)) * (CurrentBetRound * 0.25));
 	totalBudget *= 2.0;
 	float totalCount = 1.0 + (CurrentBetRound / 4.4);
-	if(totalCount > 2.9)
-		totalCount = 2.9;
+	if(totalCount > 2.3)
+		totalCount = 2.3;
 	
 	float teamBudget[2];
 	int teamCount[2];
