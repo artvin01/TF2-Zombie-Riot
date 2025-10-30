@@ -1292,7 +1292,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	RenderWaypoints(client);
 
 #if defined ZR
-	if(BetWar_HideCursor(client))
+	if(BetWar_HideCursor())
 		return;
 #endif
 
