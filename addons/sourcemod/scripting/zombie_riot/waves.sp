@@ -1843,7 +1843,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 				Music_EndLastmann();
 				RespawnCheckCitizen();
-				ReviveAll(true);
+				//if its setboss 4, itll force respawn everyone.
+				if(Is_a_boss == 4)
+					ReviveAll();
+				else
+					ReviveAll(true);
+
 				CheckAlivePlayers();
 				WaveEndLogicExtra();
 			}
