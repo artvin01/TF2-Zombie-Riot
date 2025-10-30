@@ -1285,11 +1285,13 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		}
 		else if(!holding[Key_LeftClick])	// Not cancel with Left-Click
 		{
-			MoveSelectedUnits(client, cursorPos, HoveringOver[client]);
+			MoveSelectedUnits(client, cursorPos/*, HoveringOver[client]*/);
 		}
 	}
 
+#if defined RTS
 	RenderWaypoints(client);
+#endif
 
 #if defined ZR
 	if(BetWar_HideCursor())
@@ -1445,7 +1447,7 @@ static void HighlightSelectedUnits(int client)
 	}
 }
 
-static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int target)
+static stock void MoveSelectedUnits(int client, const float vecMovePos[3])
 {
 	if(Selected[client])
 	{
@@ -1551,10 +1553,10 @@ static void RemoveSelectBeams(int owner)
 	}
 }
 
+#if defined RTS
 // Call this only after validating Selected[]
 static stock void RenderWaypoints(int client)
 {
-#if defined RTS
 	if(Selected[client])
 	{
 		int entity = EntRefToEntIndex(Selected[client].Get(0));
@@ -1640,8 +1642,8 @@ static stock void RenderWaypoints(int client)
 
 		FlagRef[client][i] = INVALID_ENT_REFERENCE;
 	}
-#endif
 }
+#endif
 
 /*
 static stock void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
