@@ -2583,7 +2583,7 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2682,13 +2682,13 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!raidspawned)
+					if(!raidspawned && !ForceFullHealth)
 					{
 						SetEntityHealth(client, 50);
 						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 					}
 				}
-				if(raidspawned)
+				if(raidspawned || ForceFullHealth)
 				{
 					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
 					{

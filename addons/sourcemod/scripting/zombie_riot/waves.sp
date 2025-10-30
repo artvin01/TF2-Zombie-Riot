@@ -1845,7 +1845,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				RespawnCheckCitizen();
 				//if its setboss 4, itll force respawn everyone.
 				if(Is_a_boss == 4)
-					ReviveAll();
+					ReviveAll(_,_,true);
 				else
 					ReviveAll(true);
 
