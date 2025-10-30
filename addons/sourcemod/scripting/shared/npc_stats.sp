@@ -10467,6 +10467,7 @@ void AddNpcToAliveList(int iNpc, int which)
 		}
 		if(!b_EnemyNpcWasIndexed[iNpc][1])
 		{
+			b_DoNotGiveWaveDelay[iNpc] = true; //dont delay spawns if static
 			b_EnemyNpcWasIndexed[iNpc][1] = true;
 			EnemyNpcAliveStatic += 1;
 		}
