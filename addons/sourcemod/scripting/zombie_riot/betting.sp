@@ -722,7 +722,7 @@ static int BetWarBlankPanel(Menu menu, MenuAction action, int param1, int param2
 	return 0;
 }
 
-bool BetWar_HideCursor(int client)
+bool BetWar_HideCursor()
 {
 	if(BetWar_Mode())
 	{
