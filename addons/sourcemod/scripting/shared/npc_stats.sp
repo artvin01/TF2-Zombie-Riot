@@ -9783,8 +9783,31 @@ public void Npc_BossHealthBar(CClotBody npc)
 		}
 	}
 	HealthColour[3] = 255;
-
-	DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+	
+	if(!BetWar_Mode())
+	{
+		DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+	}
+	else
+	{
+		switch(GetTeam(npc.index))
+		{
+			case 4:
+			{
+				HealthColour[0] = 255;
+				HealthColour[1] = 0;
+				HealthColour[2] = 0;
+			}
+			case 3:
+			{
+				HealthColour[0] = 0;
+				HealthColour[1] = 0;
+				HealthColour[2] = 255;
+			}
+			default:
+				DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+		}
+	}
 
 	if(IsValidEntity(npc.m_iTextEntity5))
 	{
