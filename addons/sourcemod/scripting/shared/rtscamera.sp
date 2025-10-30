@@ -1815,7 +1815,9 @@ static void DisableCamera(int client)
 
 	RemoveSelectBeams(client);
 	ClearSelected(client);
+#if defined RTS
 	RenderWaypoints(client);
+#endif
 	HoveringOver[client] = -1;
 
 	//SetEntProp(client, Prop_Send, "m_iFOV", LastFOV[client]);
