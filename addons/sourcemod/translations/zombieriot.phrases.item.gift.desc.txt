@@ -739,22 +739,22 @@
 	}
 	"Faster Desc"
 	{
-		"en" 		"Dangerous when groupped with other Faster(s), its bleed stacks."
+		"en" 		"A mutilated woman with blade-like appendages for her arms and legs. \n-Applies bleed on hit"
 		"it"		"Pericoloso quando è in gruppo con altri Faster, il suo sanguinamento si impila."
 	}
 	"Psycho Desc"
 	{
-		"en" 		"Fast and deadly if not taken care of fast enough."
+		"en" 		"A man who moves quickly and wields an axe. \n-Very fast"
 		"it"		"Veloce e letale se non viene curata abbastanza velocemente."
 	}
 	"Suicider Desc"
 	{
-		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
+		"en" 		"A man on the brink of committing suicide. \n-Deals only ranged damage. \n-Predict their shots. \n-If gotten close to, kills themself, deal damage to nearby enemies"
 		"it"		"È spaventosamente preciso con la sua pistola, ma se ci si avvicina troppo si uccide da solo."
 	}
 	"Crazy Lady Desc"
 	{
-		"en" 		"Prevents you from running away, don't let it stab you."
+		"en" 		"A crazed lady who attacks you with a knife. \n-Attacks inflict a debuff that decreases movement speed."
 		"it"		"Impedisce di scappare, non si lascia pugnalare."
 	}
 	"Corrupted Barney Desc"
@@ -764,22 +764,22 @@
 	}
 	"Baby Desc"
 	{
-		"en"		"Kills itself upon contact, deals massive amounts of damage upon doing so."
+		"en"		"An annoying little baby. \n-Kills itself on contact, dealing damage"
 		"it"		"Si uccide al contatto e infligge ingenti danni."
 	}
 	"Children Desc"
 	{
-		"en"		"Just like real life children, it'll surely annoy the hell out of you with its very long duration of bleed."
+		"en"		"Just like real-life children, they are annoying as hell. \n-Applies bleed on hit."
 		"it"		"Proprio come i bambini della vita reale, vi darà sicuramente fastidio con la sua lunghissima durata di sanguinamento."
 	}
 	"Stranger Desc"
 	{
-		"en"		"Attacks you map-wide."
+		"en"		"A man with a book for a head. \n-Deals only ranged damage. \n-Has infinite range."
 		"it"		"Ti attacca in tutta la mappa."
 	}
 	"Taller Desc"
 	{
-		"en"		"Very slow, but packs a punch."
+		"en"		"A giant, distorted, man. \n-Attacks launch target back and fully stuns them for a few seconds."
 		"it"		"Molto lenta, ma potente."
 	}
 	"Xeno Malfunctioning Robot Desc"
@@ -1771,7 +1771,7 @@
 	}
 	"Ahim Desc" 
 	{
-		"en"	"Throws a cleaver when close enough, then engages in melee combat."
+		"en"	"A scout that has a cleaver to throw at enemies. \n-Has a ranged attack. n\-Throws a cleaver at the first enemy that's in their range."
 		"it"	"Lancia una mannaia quando è abbastanza vicino, poi ingaggia un combattimento in mischia."
 	}
 	"Inabdil Desc" 
