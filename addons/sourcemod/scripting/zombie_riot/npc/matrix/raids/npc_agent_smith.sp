@@ -1709,7 +1709,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The only race happening here is the race against time, Mr.{green}%N{darkgreen}? Time is ticking.", client); //gravina (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The only race happening here is the race against time, Mr.{green}%N{darkgreen}. Time is ticking.", client); //gravina (1)
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}The Matrix is {unique}driven{darkgreen} by humans, Mr.{green}%N{darkgreen}. Why not join the cause?", client); //gravina (2)
 			}
