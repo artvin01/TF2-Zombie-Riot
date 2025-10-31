@@ -307,7 +307,7 @@ methodmap OmegaFollower < CClotBody
 		npc.m_bScalesWithWaves = true;
 		if(Rogue_HasNamedArtifact("Bob's Wrath"))
 		{
-			f_AttackSpeedNpcIncrease[npc.index] *= 0.50;
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 		}
 		
 		i_GrabbedThis[npc.index] = INVALID_ENT_REFERENCE;
@@ -348,7 +348,7 @@ static void ClotThink(int iNPC)
 		{
 			if(Rogue_HasNamedArtifact("Bob's Wrath"))
 			{
-				f_AttackSpeedNpcIncrease[npc.index] *= 0.50;
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
 				npc.Anger = true;
 				npc.m_flCheckItemDo = FAR_FUTURE;
 			}
