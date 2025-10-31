@@ -1648,7 +1648,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}There are plenty of arcade cabinets in the Matrix, Mrs.{green}%N{darkgreen}. Even the ones that are considered bad by human standards.", client); //infinite (1)
+					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}There are plenty of arcade cabinets in the Matrix, %s{green}%N{darkgreen}. Even the ones that are considered bad by human standards.", GetURandomInt() % 2 ? "Mr." : "Mrs.", client); //infinite (1)
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{green}%N, The Fake Hero{darkgreen}, that rolls off the tongue nicely, doesn't it?", client); //infinite (2)
 
