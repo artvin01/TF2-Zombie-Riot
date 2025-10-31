@@ -199,7 +199,16 @@ public void Rogue_Hand2Deadeye_TakeDamage(int victim, int &attacker, int &inflic
 	
 	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return;
-	if(!i_HasBeenHeadShotted[victim])
+
+	//bow fix
+	if(b_IsABow[weapon])
+	{
+		if(!(damagetype & DMG_CRIT))
+		{
+			return;
+		}
+	}
+	else if(!i_HasBeenHeadShotted[victim])
 		return;
 	//give more dmg
 	damage *= 1.5;
@@ -270,16 +279,38 @@ public void Rogue_Hand2Tactician_TakeDamage(int victim, int &attacker, int &infl
 	
 	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return;
-	if(!i_HasBeenHeadShotted[victim])
-		return;
 
 	if(attacker > MaxClients)
 		return;
+	bool EnemyWasHitscanned = false;
+	if(f_TraceAttackWasTriggeredSameFrame[victim] == GetGameTime())
+		EnemyWasHitscanned = true;
 	
-	Building_GiveRewardsUse(attacker, attacker, 8);
-	TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
-	if(Attributes_Has(weapon, 106))
-		Attributes_SetMulti(weapon, 106, 0.1);
+	if(EnemyWasHitscanned)
+	{
+		//was hitscanned, did we hit a headshot, if not fail.
+		if(!i_HasBeenHeadShotted[victim])
+			return;
+	}
+	else
+	{
+		//what?? bows??
+		if(i_HasBeenHeadShotted[victim])
+			EnemyWasHitscanned = true;
+	}
+
+		
+	if(EnemyWasHitscanned)
+	{
+		Building_GiveRewardsUse(attacker, attacker, 8);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 2.0);
+	}
+	else
+	{
+
+		Building_GiveRewardsUse(attacker, attacker, 4);
+		TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 1.0);
+	}
 }
 
 public void Rogue_Hand2Hunter_Weapon(int entity)
@@ -432,7 +463,6 @@ public void Rogue_Hand2Medical_Weapon(int weapon, int client)
 		DataPack pack;
 		Hand2Medical[client] = CreateDataTimer(0.2, RogueHand2MedicalTimer, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
-		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
 
@@ -442,22 +472,20 @@ static Action RogueHand2MedicalTimer(Handle timer, DataPack pack)
 	int client = pack.ReadCell();
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 	{
-		int weapon = EntRefToEntIndex(pack.ReadCell());
-		if(weapon != -1)
+		int WeaponActive = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(WeaponActive != -1)
 		{
-			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			if(i_WeaponArchetype[WeaponActive] == Archetype_Medical)
 			{
 				spawnRing(client, 800.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 155, 100, 125, 1, 0.25, 6.0, 6.1, 1, _, true);
 				
 				float damage = Attributes_GetOnPlayer(client, 8, true, true);
-				damage *= Attributes_Get(weapon, 8, 1.0);
+				damage *= Attributes_Get(WeaponActive, 8, 1.0);
 
-				Explode_Logic_Custom(damage * 65.0, client, client, weapon, _, 400.0);
+				Explode_Logic_Custom(damage * 65.0, client, client, WeaponActive, _, 400.0);
 			}
-
-			return Plugin_Continue;
 		}
-		
+		return Plugin_Continue;
 	}
 
 	Hand2Medical[client] = null;

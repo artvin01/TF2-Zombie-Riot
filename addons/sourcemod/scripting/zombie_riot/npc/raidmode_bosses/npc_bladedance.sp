@@ -146,6 +146,9 @@ methodmap RaidbossBladedance < CClotBody
 		
 		bool final = StrContains(data, "final_item") != -1;
 		
+		if(Rogue_HasNamedArtifact("Ascension Stack"))
+			final = false;
+		
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
@@ -485,7 +488,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 				}
 			}
 		}
-		ForcePlayerWin();
+		Waves_ClearWaves();
 	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

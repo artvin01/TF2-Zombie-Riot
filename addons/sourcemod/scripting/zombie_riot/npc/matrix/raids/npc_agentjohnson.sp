@@ -78,6 +78,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_SlamSounds);
 	PrecacheModel("models/player/spy.mdl");
 	PrecacheSoundCustom("#zombiesurvival/matrix/navras.mp3");
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

@@ -40,6 +40,7 @@ enum struct Skill
 	void SetupKV(KeyValues kv)
 	{
 		kv.GetString("name", this.Name, 32);
+		this.Name[0] = CharToUpper(this.Name[0]);
 		if(!TranslationPhraseExists(this.Name))
 		{
 			LogError("\"%s\" translation does not exist", this.Name);
@@ -67,6 +68,7 @@ static MusicEnum CustomMusic;
 static StringMap SkillList;
 static StringMapSnapshot SkillListSnap;
 static StringMap SkillCount[MAXPLAYERS];
+static StringMap SkillCountPrevious[MAXPLAYERS];
 static StringMapSnapshot SkillCountSnap[MAXPLAYERS];
 static char Selected[MAXPLAYERS][32];
 static bool InMenu[MAXPLAYERS];
@@ -157,6 +159,7 @@ void SkillTree_ClearClient(int client)
 {
 	delete SkillCountSnap[client];
 	delete SkillCount[client];
+	delete SkillCountPrevious[client];
 	PointsSpent[client] = 0;
 	Selected[client][0] = 0;
 }
@@ -166,13 +169,17 @@ void SkillTree_AddNext(int client, const char[] id, int amount)
 	if(!SkillCount[client])
 		SkillCount[client] = new StringMap();
 	
+	if(!SkillCountPrevious[client])
+		SkillCountPrevious[client] = new StringMap();
+	
 	SkillCount[client].SetValue(id, amount);
+	SkillCountPrevious[client].SetValue(id, amount);
 	PointsSpent[client] = -1;
 
 	delete SkillCountSnap[client];
 }
 
-bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
+bool SkillTree_GetNext(int client, int &i, char id[32], int &amount, bool &newEntry)
 {
 	if(SkillCount[client])
 	{
@@ -180,10 +187,25 @@ bool SkillTree_GetNext(int client, int &i, char id[32], int &amount)
 			SkillCountSnap[client] = SkillCount[client].Snapshot();
 		
 		int length = SkillCountSnap[client].Length;
-		if(i < length)
+		for(; i < length; i++)
 		{
 			SkillCountSnap[client].GetKey(i, id, sizeof(id));
 			SkillCount[client].GetValue(id, amount);
+
+			if(SkillCountPrevious[client] && SkillCountPrevious[client].ContainsKey(id))
+			{
+				// Same value, don't update it
+				int compare;
+				if(SkillCountPrevious[client].GetValue(id, compare) && compare == amount)
+					continue;
+
+				newEntry = false;
+			}
+			else
+			{
+				newEntry = true;
+			}
+
 			return true;
 		}
 	}
@@ -502,7 +524,10 @@ static int ResetSkillH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_Select:
 		{
 			if(!choice)
+			{
+				Database_ResetSkillTree(client);
 				SkillTree_ClearClient(client);
+			}
 			
 			MainMenu(client);
 		}

@@ -385,6 +385,23 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	
 #if defined ZR
 
+	if(BetWar_Mode())
+	{
+		if(!CheckInHud() && (damagetype & DMG_CLUB))
+		{
+			float vecVictim[3]; WorldSpaceCenter(victim,vecVictim);
+			float VecAttacker[3]; WorldSpaceCenter(attacker, VecAttacker);
+			
+			float flDistanceToTarget = GetVectorDistance(vecVictim, VecAttacker, true);
+			if(flDistanceToTarget < (150.0 * 150.0))
+			{
+				//knockback
+				Custom_Knockback(attacker, victim, 350.0);
+				//little immunity!
+				ApplyStatusEffect(victim, victim, "Solid Stance", 0.5);	
+			}
+		}
+	}
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
 		if(!CheckInHud())
@@ -927,10 +944,7 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	{
 		f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 		i_HasBeenBackstabbed[victim] = false;
-		if(f_TraceAttackWasTriggeredSameFrame[victim] != GameTime)
-		{
-			i_HasBeenHeadShotted[victim] = false;
-		}
+	//	i_HasBeenHeadShotted[victim] = false;
 		
 	}
 		
@@ -1138,8 +1152,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_RED_BLADE:
 		{
-			if(!CheckInHud())
-				WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
+			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
 		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{
@@ -1523,6 +1536,11 @@ stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int &inflic
 		{
 			ExtraDamageDealt *= 0.5;
 			damage *= ExtraDamageDealt;
+			if(!b_HasBeenHereSinceStartOfWave[attacker])
+			{
+				damage = 0.0;
+				return true;
+			}
 		}
 	}
 	if(IsValidEntity(inflictor))

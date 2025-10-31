@@ -3,9 +3,11 @@
 	"Loom"
 	{
 		"en" 	"Loom"
+		"it" 	"Telaio"
 	}
 	"Loom Desc"
 	{
 		"en" 	"Loom Desc"
+		"it" 	"Descrizione Telaio"
 	}
 }

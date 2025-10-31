@@ -340,7 +340,7 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 	{
 		damage = 0.0;
 	}
-	else if(RoundToFloor(damage) >= GetEntProp(victim, Prop_Data, "m_iHealth"))
+	else if(view_as<CClotBody>(victim).m_iHealthBar < 1 && RoundToFloor(damage) >= GetEntProp(victim, Prop_Data, "m_iHealth"))
 	{
 		damage = float(GetEntProp(victim, Prop_Data, "m_iHealth") - 1);
 

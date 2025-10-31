@@ -260,7 +260,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			tr.AddQuery(buffer);
 		}
 
-		Tutorial_ClientSetup(client, tutorial);
+		if(!BetWar_Mode())
+			Tutorial_ClientSetup(client, tutorial);
 		
 		if(results[2].FetchRow())
 		{
@@ -345,6 +346,9 @@ public void Loadout_DatabaseLoadFavorite(int client)
 	if(!Loadouts[client])
 		return;
 
+	if(BetWar_Mode())
+		return;
+		
 	int LengthIAm = Loadouts[client].Length;
 	char BufferString[255];
 	for(int i; i < LengthIAm; i++)
@@ -389,13 +393,19 @@ void Database_SaveXpAndItems(int client)
 			id);
 			tr.AddQuery(buffer);
 			
-			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
-			tr.AddQuery(buffer);
-			
+			bool newEntry;
 			int level, flags;
-			for(int i; Items_GetNextItem(client, i, level, flags); i++)
+			for(int i; Items_GetNextItem(client, i, level, flags, newEntry); i++)
 			{
-				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				if(newEntry)
+				{
+					Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				}
+				else
+				{
+					Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_GIFTITEM ... " SET flags = %d WHERE steamid = %d AND level = %d;", flags, id, level);
+				}
+
 				tr.AddQuery(buffer);
 			}
 
@@ -508,23 +518,36 @@ void DataBase_ClientDisconnect(int client)
 
 			tr.AddQuery(buffer);
 
-			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_GIFTITEM ... " WHERE steamid = %d;", id);
-			tr.AddQuery(buffer);
-			
+			bool newEntry;
 			int level, flags;
-			for(int i; Items_GetNextItem(client, i, level, flags); i++)
+			for(int i; Items_GetNextItem(client, i, level, flags, newEntry); i++)
 			{
-				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				if(newEntry)
+				{
+					Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_GIFTITEM ... " (steamid, level, flags) VALUES ('%d', '%d', '%d')", id, level, flags);
+				}
+				else
+				{
+					Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_GIFTITEM ... " SET flags = %d WHERE steamid = %d AND level = %d;", flags, id, level);
+				}
+
 				tr.AddQuery(buffer);
 			}
-
-			Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
-			tr.AddQuery(buffer);
 			
+			int LoopCountGet;
 			char name[32];
-			for(int i; SkillTree_GetNext(client, i, name, flags); i++)
+			for(int i; SkillTree_GetNext(client, i, name, flags, newEntry); i++)
 			{
-				Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
+				LoopCountGet++;
+				if(newEntry)
+				{
+					Global.Format(buffer, sizeof(buffer), "INSERT INTO " ... DATATABLE_SKILLTREE ... " (steamid, name, flags) VALUES ('%d', '%s', '%d')", id, name, flags);
+				}
+				else
+				{
+					Global.Format(buffer, sizeof(buffer), "UPDATE " ... DATATABLE_SKILLTREE ... " SET flags = %d WHERE steamid = %d AND name = '%s';", flags, id, name);
+				}
+				
 				tr.AddQuery(buffer);
 			}
 
@@ -536,6 +559,18 @@ void DataBase_ClientDisconnect(int client)
 	}
 
 	delete Loadouts[client];
+}
+
+void Database_ResetSkillTree(int client)
+{
+	Transaction tr = new Transaction();
+
+	int id = GetSteamAccountID(client);
+	char buffer[256];
+	Global.Format(buffer, sizeof(buffer), "DELETE FROM " ... DATATABLE_SKILLTREE ... " WHERE steamid = %d;", id);
+	tr.AddQuery(buffer);
+
+	Global.Execute(tr, Database_Success, Database_Fail, DBPrio_High);
 }
 
 void Database_SaveLoadout(int client, const char[] name)

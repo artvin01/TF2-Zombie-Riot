@@ -752,7 +752,7 @@ public void FatherGrigoriScience_DrawIonBeam(float startPosition[3], const int c
 			TE_SetupBeamPoints(startPosition, position, gLaser1, 0, 0, 0, 1.0, 100.0, 100.0, 0, NORMAL_ZOMBIE_VOLUME, {10, 255, 10, 255}, 3);
 			TE_SendToAll();
 			position[2] = startPosition[2] + 50.0;
-			ExpidonsaGroupHeal(client, Ionrange, 500, 1000.0, 1.25, true, .LOS = false,.VecDoAt = position);	
+			ExpidonsaGroupHeal(client, Ionrange, 500, 5000.0, 1.25, true, .LOS = false,.VecDoAt = position);	
 			//new Float:fDirection[3] = {-90.0,0.0,0.0};
 			//env_shooter(fDirection, 25.0, 0.1, fDirection, 800.0, 120.0, 120.0, position, "models/props_wasteland/rockgranite03b.mdl");
 	

@@ -4893,7 +4893,7 @@ stock int GetClosestTarget(int entity,
 	 float EntityLocation[3] = {0.0,0.0,0.0},
 	  bool CanSee = false,
 	   float fldistancelimitAllyNPC = 450.0,
-	   bool IgnorePlayers = false,
+	   bool IgnorePlayers = false, //also assumes npcs, only buildings are attacked
 	   bool UseVectorDistance = false,
   		float MinimumDistance = 0.0,
   		Function ExtraValidityFunction = INVALID_FUNCTION)
@@ -4906,6 +4906,13 @@ stock int GetClosestTarget(int entity,
 
 	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #if defined ZR
+	if(BetWar_Mode())
+	{
+		IgnorePlayers = false;
+		onlyPlayers = false;
+		fldistancelimitAllyNPC = 99999.9;
+		UseVectorDistance = true;
+	}
 
 	//in rogue you can get allies, but they shouldnt get any enemies during setups.
 	if(Rogue_Mode())
@@ -4950,7 +4957,12 @@ stock int GetClosestTarget(int entity,
 	//This code: if the npc is not on player team, make them attack players.
 	//This doesnt work if they ignore players or tower defense mode is enabled.
 #if defined ZR
-	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers)
+	bool ForceIgnorePlayers = false;
+	if(BetWar_Mode())
+	{
+		ForceIgnorePlayers = true;
+	}
+	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers && !ForceIgnorePlayers)
 #else
 	if(!IgnorePlayers)
 #endif
@@ -9771,8 +9783,31 @@ public void Npc_BossHealthBar(CClotBody npc)
 		}
 	}
 	HealthColour[3] = 255;
-
-	DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+	
+	if(!BetWar_Mode())
+	{
+		DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+	}
+	else
+	{
+		switch(GetTeam(npc.index))
+		{
+			case 4:
+			{
+				HealthColour[0] = 255;
+				HealthColour[1] = 0;
+				HealthColour[2] = 0;
+			}
+			case 3:
+			{
+				HealthColour[0] = 0;
+				HealthColour[1] = 0;
+				HealthColour[2] = 255;
+			}
+			default:
+				DisplayRGBHealthValue(Health, MaxHealth, HealthColour[0], HealthColour[1],HealthColour[2]);
+		}
+	}
 
 	if(IsValidEntity(npc.m_iTextEntity5))
 	{
@@ -10079,7 +10114,8 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 			{
 				DamageFlags &= ~DMG_CRUSH;
 			}
-			SDKHooks_TakeDamage(target, entity, entity, DamageDeal, DamageFlags, -1, _);
+			HealEntityGlobal(target, target, -DamageDeal, 99.0, 0.0, HEAL_ABSOLUTE | HEAL_PASSIVE_NO_NOTIF);
+			SDKHooks_TakeDamage(target, entity, entity, 1.0, DamageFlags, -1, _);
 		}
 	}
 #endif
@@ -10431,6 +10467,7 @@ void AddNpcToAliveList(int iNpc, int which)
 		}
 		if(!b_EnemyNpcWasIndexed[iNpc][1])
 		{
+			b_DoNotGiveWaveDelay[iNpc] = true; //dont delay spawns if static
 			b_EnemyNpcWasIndexed[iNpc][1] = true;
 			EnemyNpcAliveStatic += 1;
 		}

@@ -16,6 +16,7 @@ void ReilaFollower_Setup()
 	NPCId = NPC_Add(data);
 }
 
+
 int ReilaFollower_ID()
 {
 	return NPCId;

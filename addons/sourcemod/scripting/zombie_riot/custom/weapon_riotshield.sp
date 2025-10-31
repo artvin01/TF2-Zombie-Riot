@@ -14,12 +14,14 @@ static int ViewmodelRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int WearableRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int RIOT_EnemiesHit[MAX_TARGETS_HIT_RIOT];
 static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
+static float f_AbiltiyCooldownHidden[MAXPLAYERS+1]={0.0, ...};
 
 #define SOUND_RIOTSHIELD_ACTIVATION "weapons/air_burster_explode1.wav"
 
 void Weapon_RiotShield_Map_Precache()
 {
 	Zero(f_AniSoundSpam);
+	Zero(f_AbiltiyCooldownHidden);
 	PrecacheSound(SOUND_RIOTSHIELD_ACTIVATION);
 	ShieldModel = PrecacheModel("models/player/items/sniper/knife_shield.mdl");
 }
@@ -41,6 +43,10 @@ public void Weapon_RiotShield_M2_Alt(int client, int weapon, bool crit, int slot
 
 static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 {
+	if(f_AbiltiyCooldownHidden[client] > GetGameTime())
+	{
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		static float hullMin[3]; hullMin = view_as<float>({-RIOT_MAX_BOUNDS, -RIOT_MAX_BOUNDS, -RIOT_MAX_BOUNDS});
@@ -124,6 +130,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 			{
 				ApplyTempAttrib(weapon, 6, 0.25, 3.0); //Make them attack WAY faster.
 			}
+			f_AbiltiyCooldownHidden[client] = GetGameTime() + 5.0;
 
 			EmitSoundToAll(SOUND_RIOTSHIELD_ACTIVATION, client, SNDCHAN_STATIC, 80, _, 0.9);
 

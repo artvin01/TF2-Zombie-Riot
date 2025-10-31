@@ -10,7 +10,7 @@ void BossSummonRandom_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = 0; 
+	data.Category = Type_Hidden; 
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -21,7 +21,7 @@ void BossSummonRandom_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = 0; 
+	data.Category = Type_Hidden; 
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecacheVsh;
 	NPC_Add(data);
@@ -68,6 +68,9 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_aris");
 	NPC_GetByPlugin("npc_chimera");
 	NPC_GetByPlugin("npc_vincent");
+	NPC_GetByPlugin("npc_boss_reila");
+	NPC_GetByPlugin("npc_almagest_jkei");
+	NPC_GetByPlugin("npc_shadowing_darkness_boss");
 }
 
 bool SameBossDisallow[64];
@@ -145,11 +148,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	SameBossDisallow[0] = true;
 	while(SameBossDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,30);
+		NumberRand = GetRandomInt(1,33);
 	}
 	if(i_RaidGrantExtra[bosssummonbase] == 666)
 	{
-		NumberRand = GetRandomInt(31,33);
+		NumberRand = GetRandomInt(34,36);
 	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
@@ -290,6 +293,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.7;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 2.5); 
+			if(CurrentModifOn() == 4) // TURBOLENCES
+			{
+				enemy.ExtraDamage *= 0.65;
+				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
+			}
 		}
 		case 16:
 		{
@@ -405,13 +413,44 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		}
 		case 31:
 		{
-			PluginName = "npc_gentlespy";	
+			PluginName = "npc_boss_reila";	
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
+			
+			enemy.ExtraDamage *= 1.05;
+			//no umbrals so buff hard
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
 		}
 		case 32:
 		{
-			PluginName = "npc_hhh";	
+			PluginName = "npc_almagest_jkei";	
+			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
+			
+			enemy.ExtraDamage *= 1.1;
+			enemy.ExtraThinkSpeed *= 0.9;
+			//no minions, so buff
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.5); 
 		}
 		case 33:
+		{
+			PluginName = "npc_shadowing_darkness_boss";	
+			
+			enemy.ExtraDamage *= 0.5;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
+			if(CurrentModifOn() == 4) // TURBOLENCES
+			{
+				enemy.ExtraDamage *= 0.65;
+				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
+			}
+		}
+		case 34:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 35:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 36:
 		{
 			PluginName = "npc_christianbrutalsniper";	
 		}

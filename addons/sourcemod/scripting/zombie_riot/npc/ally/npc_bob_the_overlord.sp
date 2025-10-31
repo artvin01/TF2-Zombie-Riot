@@ -446,7 +446,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			int PrimaryThreatIndex = npc.m_iTarget;
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					
-			float Vecself[3]; WorldSpaceCenter(client, Vecself);	
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
 			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself, true);
 			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{

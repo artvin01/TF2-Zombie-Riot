@@ -56,7 +56,7 @@ void RefragmentedWinterFrostHunter_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "scout_fan");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = 0;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);

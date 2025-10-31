@@ -75,7 +75,7 @@ stock void RogueHelp_BodyAPSD(int entity, StringMap map, float amount)
 
 		value = 1.0;
 		map.GetValue("343", value);
-		map.SetValue("343", value * amount);
+		map.SetValue("343", value / amount);
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{

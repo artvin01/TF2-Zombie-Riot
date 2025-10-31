@@ -15,10 +15,28 @@ void RogueCondition_Setup()
 	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
+//	data.Precache = ClotPrecache;
+	data.Precache_data = ClotPrecache_data;
 	NPC_Add(data);
 	DontSpawnFriendly = false;
 }
 
+static void ClotPrecache_data(const char[] data)
+{
+	static char buffers[3][64];
+
+	bool same = StrEqual(data, LastData);
+	if(!same)
+	{
+		strcopy(LastData, sizeof(LastData), data);
+		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	}
+	if(buffers[0][0] == '.' || IsCharNumeric(buffers[0][0]))
+	{
+		NPC_GetByPlugin(buffers[1]);
+	}
+	//used so it precaches whatever it wants to spawn in.
+}
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	static char buffers[3][64];
@@ -168,7 +186,7 @@ static void Umbral_AdjustStats(int ref)
 
 	fl_Extra_Damage[entity] *= 7.0;
 	fl_Extra_Speed[entity] *= 0.7;
-	MultiHealth(entity, 0.035);
+	MultiHealth(entity, 0.0175);
 	int HealthGet = ReturnEntityMaxHealth(entity);
 	if(HealthGet >= 4000)
 	{

@@ -80,6 +80,22 @@ static int i_BuildingRefs[MAXENTITIES][APT_BUILDER_BUILDING_COUNT];
 
 void ApertureBuilder_OnMapStart_NPC()
 {
+	AntiSoundSpam = 0.0;
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aperture Builder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_builder");
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Aperture;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -88,7 +104,6 @@ void ApertureBuilder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_BuildingTeleporterSounds)); i++) { PrecacheSound(g_BuildingTeleporterSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	AntiSoundSpam = 0.0;
 	
 	PrecacheSound(g_BuildingBuiltSound);
 	PrecacheSound(g_OutOfMyWaySound);
@@ -99,17 +114,12 @@ void ApertureBuilder_OnMapStart_NPC()
 	PrecacheModel("models/player/items/engineer/hardhat.mdl");
 	
 	PrecacheSound("music/mvm_class_select.wav");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Aperture Builder");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_aperture_builder");
-	strcopy(data.Icon, sizeof(data.Icon), "engineer");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Aperture;
-	data.Func = ClotSummon;
-	NPC_Add(data);
+  
+	// Precache sub-NPCs
+	NPC_GetByPlugin("npc_aperture_sentry");
+	NPC_GetByPlugin("npc_aperture_dispenser");
+	NPC_GetByPlugin("npc_aperture_teleporter");
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

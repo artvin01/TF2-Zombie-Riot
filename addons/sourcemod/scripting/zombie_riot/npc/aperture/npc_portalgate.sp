@@ -7,19 +7,58 @@ static const char g_TeleportSounds[][] = {
 
 void PortalGate_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_TeleportSounds));	   i++) { PrecacheSound(g_TeleportSounds[i]);	   }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Portal Gate");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_portal_gate");
 	strcopy(data.Icon, sizeof(data.Icon), "void_gate");
-	PrecacheSound("weapons/teleporter_receive.wav");
+	
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Aperture; 
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_TeleportSounds));	   i++) { PrecacheSound(g_TeleportSounds[i]);	   }
+	PrecacheSound("weapons/teleporter_receive.wav");
+	
+	// Precache sub-NPCs
+	NPC_GetByPlugin("npc_poisonzombie");
+	NPC_GetByPlugin("npc_medival_archer");
+	NPC_GetByPlugin("npc_selfam_ire");
+	NPC_GetByPlugin("npc_searunner");
+	NPC_GetByPlugin("npc_victorian");
+	NPC_GetByPlugin("npc_refragmented_headcrabzombie");
+	NPC_GetByPlugin("npc_refragmented_fastzombie");
+	NPC_GetByPlugin("npc_refragmented_poisonzombie");
+	NPC_GetByPlugin("npc_last_survivor");
+	NPC_GetByPlugin("npc_medival_construct");
+	NPC_GetByPlugin("npc_vaus_magica");
+	NPC_GetByPlugin("npc_firsttotalk");
+	NPC_GetByPlugin("npc_speedus_initus");
+	NPC_GetByPlugin("npc_refragmented_combine_police_pistol");
+	NPC_GetByPlugin("npc_refragmented_combine_soldier_ar2");
+	NPC_GetByPlugin("npc_refragmented_combine_soldier_elite");
+	NPC_GetByPlugin("npc_combine_soldier_giant_swordsman");
+	NPC_GetByPlugin("npc_medival_crossbow_giant");
+	NPC_GetByPlugin("npc_siccerino");
+	NPC_GetByPlugin("npc_seaborn_heavy");
+	NPC_GetByPlugin("npc_sea_xploder");
+	NPC_GetByPlugin("npc_refragmented_heavy");
+	NPC_GetByPlugin("npc_refragmented_medic");
+	NPC_GetByPlugin("npc_refragmented_spy");
+	NPC_GetByPlugin("npc_combine_soldier_deutsch_ritter");
+	NPC_GetByPlugin("npc_medival_samurai");
+	NPC_GetByPlugin("npc_ignitus");
+	NPC_GetByPlugin("npc_netherseaspewer");
+	NPC_GetByPlugin("npc_pulverizer");
+	NPC_GetByPlugin("npc_refragmented_parasihtta");
+	NPC_GetByPlugin("npc_refragmented_defectio");
+	NPC_GetByPlugin("npc_refragmented_hostis");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {

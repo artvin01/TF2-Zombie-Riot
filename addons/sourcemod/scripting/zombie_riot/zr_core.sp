@@ -249,7 +249,8 @@ enum
 enum
 {
 	Type_Hidden = -1,
-	Type_Ally = 0,
+	Type_DONOTUSE = 0,
+	Type_Ally = 1,
 	Type_Special,
 	Type_Raid,
 	Type_Common,
@@ -335,6 +336,9 @@ float Resistance_for_building_High[MAXENTITIES];
 MusicEnum MusicString1;
 MusicEnum MusicString2;
 MusicEnum MusicSetup1;
+MusicEnum MusicLastmann;
+MusicEnum MusicWin;
+MusicEnum MusicLoss;
 MusicEnum RaidMusicSpecial1;
 MusicEnum BGMusicSpecial1;
 //custom wave music.
@@ -481,6 +485,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "steamworks.sp"
 #include "zsclassic.sp"
 #include "construction.sp"
+#include "betting.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -705,6 +710,7 @@ void ZR_PluginStart()
 	SteamWorks_PluginStart();
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
+	BetWar_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -724,7 +730,13 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	MusicString1.Clear();
+	MusicString2.Clear();
 	MusicSetup1.Clear();
+	MusicLastmann.Clear();
+	MusicWin.Clear();
+	MusicLoss.Clear();
+	RaidMusicSpecial1.Clear();
 	PrecacheSound("ui/hitsound_electro1.wav");
 	PrecacheSound("ui/hitsound_electro2.wav");
 	PrecacheSound("ui/hitsound_electro3.wav");
@@ -742,6 +754,7 @@ void ZR_MapStart()
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
+	BetWar_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -1051,6 +1064,7 @@ public Action GlobalTimer(Handle timer)
 
 void ZR_ClientPutInServer(int client)
 {
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 3)
@@ -1088,6 +1102,12 @@ void ZR_ClientPutInServer(int client)
 		}
 	}
 	CheckAllClientPrefs(client);
+
+	//if someone joints mid waves, make them buy atleast 70% of the cash before being allowed to play.
+	if(!Waves_Started())
+		b_AntiLateSpawn_Allow[client] = true;
+	else
+		b_AntiLateSpawn_Allow[client] = false;
 }
 
 void ZR_ClientDisconnect(int client)
@@ -1275,7 +1295,6 @@ public Action Command_AFK(int client, int args)
 	{
 		ForcePlayerSuicide(client);
 		UnequipDispenser(client, true);
-		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
@@ -1886,7 +1905,7 @@ void CheckLastMannStanding(int killed)
 		LastMann_BeforeLastman = true;
 	}
 }
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, int CheckForLastManAlone = 0)
 {
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
@@ -1898,6 +1917,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 			{
+				if(!b_AntiLateSpawn_Allow[client])
+					continue;
 				CurrentPlayers++;
 			}
 		}
@@ -1918,6 +1939,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 		{
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			CurrentPlayers++;
 			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
@@ -1960,9 +1983,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	*/
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 	{
-		PlayersLeftNotDowned = 99;
-		LastMann_BeforeLastman = false;
-		LastMann = false;
+		//if its above 700, it just assumes we triggered lastman
+		if(i_AmountDowned[CheckForLastManAlone] < 700)
+		{
+			PlayersLeftNotDowned = 99;
+			LastMann_BeforeLastman = false;
+			LastMann = false;
+		}
 	}
 
 	if(PlayersLeftNotDowned == 1)
@@ -1985,6 +2012,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			Died[client] = false;
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 			{
+				if(!b_AntiLateSpawn_Allow[client])
+					continue;
 				if((killed != client || Hurtviasdkhook != client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
 				{
 					Died[client] = true;
@@ -2143,9 +2172,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						applied_lastmann_buffs_once = true;
 						
 						SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
-						ShowHudText(client, -1, "%T", "Last Alive", client);
+						if(b_IsAloneOnServer)
+							ShowHudText(client, -1, "%T", "Last Alive Alone", client);
+						else
+							ShowHudText(client, -1, "%T", "Last Alive", client);
+
 						int MaxHealth;
 						MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+						if(b_IsAloneOnServer)
+							MaxHealth /= 2;
+							
 						if(i_HealthBeforeSuit[client] == 0)
 						{
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
@@ -2153,6 +2189,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						//if in quantum suit, dont.
 
 						int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+						if(b_IsAloneOnServer)
+							Armor_Max /= 2;
 
 						Armor_Charge[client] = Armor_Max;
 						GiveCompleteInvul(client, 3.0);
@@ -2180,7 +2218,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 		if(!rogue)
 		{
-			ForcePlayerLoss();
+			ForcePlayerLoss(false);
 		}
 
 		if(killed)
@@ -2545,7 +2583,7 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2558,6 +2596,10 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		CheckClientLateJoin(client, false);
+		bool ClientWasInWave = false;
+		if(b_HasBeenHereSinceStartOfWave[client])
+			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
@@ -2595,6 +2637,12 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);
+			if(raidspawned)
+				if(!ClientWasInWave)
+					continue;
+					
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			if(GetClientTeam(client)==2)
 			{
 				if(TeutonType[client] != TEUTON_WAITING)
@@ -2634,13 +2682,13 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!raidspawned)
+					if(!raidspawned && !ForceFullHealth)
 					{
 						SetEntityHealth(client, 50);
 						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 					}
 				}
-				if(raidspawned)
+				if(raidspawned || ForceFullHealth)
 				{
 					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
 					{
@@ -3001,6 +3049,7 @@ bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 
 void ForcePlayerWin(bool fakeout = false)
 {
+	bool PlayNormalMusic = false;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
@@ -3009,6 +3058,8 @@ void ForcePlayerWin(bool fakeout = false)
 			SetMusicTimer(client, GetTime() + 33);
 			SendConVarValue(client, sv_cheats, "1");
 			Convars_FixClientsideIssues(client);
+			if(MusicWin.PlayMusic(client))
+				PlayNormalMusic = false;
 		}
 	}
 	if(!fakeout)
@@ -3016,16 +3067,19 @@ void ForcePlayerWin(bool fakeout = false)
 
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
-	
-	MusicString1.Clear();
-	MusicString2.Clear();
-	MusicSetup1.Clear();
-	RaidMusicSpecial1.Clear();
+	if(PlayNormalMusic)
+		EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
-	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
 	if(!fakeout)
 	{
+		MusicString1.Clear();
+		MusicString2.Clear();
+		MusicSetup1.Clear();
+		MusicLastmann.Clear();
+		MusicWin.Clear();
+		MusicLoss.Clear();
+		RaidMusicSpecial1.Clear();
 		MVMHud_Disable();
 		int entity = CreateEntityByName("game_round_win"); 
 		DispatchKeyValue(entity, "force_map_reset", "1");
@@ -3037,8 +3091,24 @@ void ForcePlayerWin(bool fakeout = false)
 	}
 }
 
-void ForcePlayerLoss()
+void ForcePlayerLoss(bool WasRaid = true)
 {
+	if(WasRaid)
+	{
+		if(Rogue_Mode())
+		{
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client)==2 && IsPlayerAlive(client))
+				{
+					ForcePlayerSuicide(client);
+				}
+			}
+			//KILL all players instead
+			return;
+		}
+	}
 	MVMHud_Disable();
 	ZR_NpcTauntWin();
 	ZR_NpcTauntWinClear();
@@ -3050,6 +3120,14 @@ void ForcePlayerLoss()
 	Music_RoundEnd(entity);
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	Native_ZR_OnWinTeam(TFTeam_Blue);
+	
+	MusicString1.Clear();
+	MusicString2.Clear();
+	MusicSetup1.Clear();
+	MusicLastmann.Clear();
+	MusicWin.Clear();
+	MusicLoss.Clear();
+	RaidMusicSpecial1.Clear();
 }
 
 

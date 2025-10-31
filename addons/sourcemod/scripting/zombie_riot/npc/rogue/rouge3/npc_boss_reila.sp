@@ -67,7 +67,6 @@ void BossReila_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
 }
-
 int Boss_ReilaID()
 {
 	return NPCId;
@@ -75,7 +74,7 @@ int Boss_ReilaID()
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#zombiesurvival/rogue3/reila_battle_ost.mp3");
-	return;
+	NPC_GetByPlugin("reila_beacon_spawner");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -190,7 +189,7 @@ methodmap BossReila < CClotBody
 		npc.m_flSpawnBallsCD = GetGameTime() + 5.0;
 		npc.m_flSpawnBallsDoingCD = 0.0;
 		
-
+		
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -251,12 +250,18 @@ methodmap BossReila < CClotBody
 		{
 			CPrintToChatAll("{pink}Reila{default}: リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
 		}
-		if(data[0] && !altEnding && !badEnding)
+		if(data[0] && !altEnding && !badEnding && !Rogue_HasNamedArtifact("Ascension Stack"))
 			i_RaidGrantExtra[npc.index] = 1;
 		npc.m_flBossSpawnBeacon = 1.0;
 
 		if(StrContains(data, "force_final_battle") != -1)
 		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 60.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 1.0;
+			
+			i_RaidGrantExtra[npc.index] = 2;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/reila_battle_ost.mp3");
 			music.Time = 100;
@@ -265,6 +270,10 @@ methodmap BossReila < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Twin Souls");
 			strcopy(music.Artist, sizeof(music.Artist), "I HATE MODELS");
 			Music_SetRaidMusic(music);
+		}
+		if(StrContains(data, "force_final_battle") != -1)
+		{
+			RaidAllowsBuildings = false;
 		}
 
 		return npc;
@@ -387,7 +396,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 {
 	BossReila npc = view_as<BossReila>(victim);
 		
-	if(i_RaidGrantExtra[npc.index] == 1 && damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))
+	if(Rogue_Mode() && damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -409,15 +418,23 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 				}
 			}
 		}
-		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
-		RaidBossActive = 0;
-		npc.m_flDoLoseTalk = GetGameTime() + 3.0;
-		i_RaidGrantExtra[npc.index] = 2;
-		npc.m_bisWalking = false;
-		ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
-		CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
-		damage = 0.0;
-		return Plugin_Changed;
+		if(i_RaidGrantExtra[npc.index] == 1)
+		{
+			npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
+			RaidBossActive = 0;
+			npc.m_flDoLoseTalk = GetGameTime() + 3.0;
+			i_RaidGrantExtra[npc.index] = 2;
+			npc.m_bisWalking = false;
+			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
+			CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
+			damage = 0.0;
+			return Plugin_Changed;
+		}
+		else
+		{
+			damage *= 4.0;
+			return Plugin_Changed;
+		}
 	}
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -454,7 +471,7 @@ public void BossReila_NPCDeath(int entity)
 {
 	BossReila npc = view_as<BossReila>(entity);
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
+	if(GameRules_GetRoundState() == RoundState_ZombieRiot && i_RaidGrantExtra[entity] != 2)
 	{
 		Waves_ClearWave();
 		for(int i; i < i_MaxcountNpcTotal; i++)
@@ -962,6 +979,7 @@ bool Reila_LossAnimation(int iNpc)
 	BossReila npc = view_as<BossReila>(iNpc);
 	if(npc.m_flDoLoseTalk)
 	{
+		GiveProgressDelay(4.0);
 		if(npc.m_flDoLoseTalk < GetGameTime())
 		{
 			switch(i_RaidGrantExtra[npc.index])
@@ -999,7 +1017,7 @@ bool Reila_LossAnimation(int iNpc)
 				}
 			}
 			i_RaidGrantExtra[npc.index]++;
-			npc.m_flDoLoseTalk = GetGameTime() + 2.0;
+			npc.m_flDoLoseTalk = GetGameTime() + 3.0;
 		}
 		return true;
 	}

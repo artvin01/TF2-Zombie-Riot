@@ -59,6 +59,8 @@ static int i_TalkDelayCheck;
 
 public void AgentSmith_OnMapStart_NPC()
 {
+	g_PrecachedMatrixNPCs = false;
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Smith");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_smith");
@@ -70,6 +72,7 @@ public void AgentSmith_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	smith_id = NPC_Add(data);
 }
+
 static void ClotPrecache()
 {
 	PrecacheModel("models/zombie_riot/matrix/smith30.mdl");
@@ -85,6 +88,8 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

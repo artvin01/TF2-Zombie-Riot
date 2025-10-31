@@ -293,8 +293,9 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 
 	if(attacker > MaxClients)
 	{
-		if(GetTeam(attacker) != TFTeam_Red)
-			damage *= 10.0;
+		if(!BetWar_Mode())
+			if(GetTeam(attacker) != TFTeam_Red)
+				damage *= 10.0;
 	}
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) 
 	{
