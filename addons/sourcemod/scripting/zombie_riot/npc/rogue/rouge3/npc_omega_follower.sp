@@ -398,6 +398,10 @@ static void ClotThink(int iNPC)
 			if (npc.m_flNextGrab < gameTime)
 			{
 				npc.m_flNextGrab = gameTime + 30.0;
+				if(npc.m_iOverlordComboAttack == 0)
+				{
+					npc.m_flNextGrab = gameTime + 10.0;
+				}
 				npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_NONE;
 				
 				int activity = npc.LookupActivity("ACT_BRAWLER_RUN");
@@ -469,7 +473,6 @@ static void ClotThink(int iNPC)
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						npc.m_iOverlordComboAttack++;
 						float damage = 5500.0;
 						if(npc.m_bScalesWithWaves)
 						{
@@ -480,8 +483,6 @@ static void ClotThink(int iNPC)
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-						IncreaseEntityDamageTakenBy(target, 0.02, 3.0, true);
-
 					}
 				}
 
@@ -577,7 +578,13 @@ static bool OmegaFollower_TryToGrabTarget(OmegaFollower npc, int target)
 	if (i_NpcIsABuilding[target])
 		return false;
 	
+	npc.m_iOverlordComboAttack = 0;
 	float duration = OMEGA_FOLLOWER_HOLD_TIME / f_AttackSpeedNpcIncrease[npc.index];
+	if(b_thisNpcIsARaid[target] || EntRefToEntIndex(RaidBossActive) == target)
+	{
+		npc.m_iOverlordComboAttack = 1;
+		duration *= 0.35;
+	}
 	
 	i_GrabbedThis[npc.index] = EntIndexToEntRef(target);
 	npc.m_iGrabState = OMEGA_FOLLOWER_GRAB_STATE_HOLDING;
@@ -625,6 +632,12 @@ static void OmegaFollower_ThrowTarget(OmegaFollower npc)
 	
 		npc.GetAttachment("weapon_bone_2", flPos, flAng);
 		TeleportEntity(target, flPos, NULL_VECTOR, {0.0,0.0,0.0});
+		float damage = 10000.0;
+		if(npc.m_bScalesWithWaves)
+		{
+			damage = 80.0;
+		}
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 			
 		SDKCall_SetLocalOrigin(target, flPos);
 		

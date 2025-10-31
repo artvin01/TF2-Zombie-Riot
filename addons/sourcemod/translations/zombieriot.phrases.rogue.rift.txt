@@ -314,7 +314,7 @@
 	}
 	"Hand of Predation Desc"
 	{
-		"en"	"Herds stir, flesh rend asunder.\n{green}''Charger'' weapons gain +7％ fire rate when using an ability {yellow}(resets on stage end or revive)"
+		"en"	"Herds stir, flesh rend asunder.\n{green}''Charger'' weapons gain +50％ more damage if you are close enough to the enemy and a speed bonus for 1 second, +25％ resistance overall"
 	}
 	"Hand of Rumble"
 	{
@@ -330,7 +330,7 @@
 	}
 	"Hand of Choker Desc"
 	{
-		"en"	"With your last strength, break open a last bit of hope for yourself.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot"
+		"en"	"Take their heads, take their soul.\n{green}''Deadeye'' weapons will instantly kill enemies below 20％ of max health on a headshot, deal +50％ dmg on headshot, {yellow}instakill Doesnt work against raids."
 	}
 	"Hand of Snatcher"
 	{
@@ -338,7 +338,7 @@
 	}
 	"Hand of Snatcher Desc"
 	{
-		"en"	"Whatever it is you do not have, snatch it away from your enemy. There is no need to hesitate.\n{green}''Tactician'' weapons gain extra cash on a headshot {yellow}(up to a limit)"
+		"en"	"Be a hitman of your dreams.\n{green}''Tactician'' weapons gain infinite accuracy, extra cash & speedbonus on a headshot {yellow}(up to a limit for cash gain)"
 	}
 	"Hand of Spark"
 	{
@@ -346,7 +346,7 @@
 	}
 	"Hand of Spark Desc"
 	{
-		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage)"
+		"en"	"Patience is key. Plan ahead for the future.\n{green}''Hunter'' weapons gain +20％ damage every second, up to +500％ {yellow}(resets upon dealing damage, but doesnt activate till fully charged)"
 	}
 	"Hand of Buckler"
 	{
@@ -410,7 +410,7 @@
 	}
 	"Hand of Superspeed Desc"
 	{
-		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +120％ fire rate"
+		"en"	"You swing your hand, leaving not even an afterimage.\n{green}''Ambusher'' weapons gain +90％ fire rate"
 	}
 	"Hand of Fireworks"
 	{
@@ -514,7 +514,7 @@
 	}
 	"Old Fan Desc"
 	{
-		"en"	"When it rains for several days on end.\n{green}Allies gain +50％ damage"
+		"en"	"When it rains for several days on end.\n{green}Allies gain +40％ damage"
 	}
 	"Dream Catcher"
 	{
@@ -995,7 +995,7 @@
 	}
 	"The Shadow Desc"
 	{
-		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{blue}and we're going deeper."
+		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{yellow}NPC allies will use the same max health from players."
 	}
 	"The Bladedance"
 	{

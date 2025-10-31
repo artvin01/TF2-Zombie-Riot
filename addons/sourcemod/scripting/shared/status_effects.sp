@@ -3400,6 +3400,19 @@ void StatusEffects_SupportWeapons()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Extreamly Defensive Backup");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⛨⛨⛨");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.1;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Healing Resolve");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⌅");
@@ -4327,6 +4340,35 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= VintulumBombHud_Func;
 	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Hand of Spark");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "HS");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func			= HandOfSparkHud_Func;
+	OsmosisDebuffIndex = StatusEffect_AddGlobal(data);
+}
+
+void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
+	if(owner <= 0)
+		return;
+	float TimeDisplay = GetGameTime() - Hand2HunterLastTime_Return(owner);
+	if(TimeDisplay >= 25.0)
+	{
+		Format(HudToDisplay, SizeOfChar, "[HS]");
+		return;
+	}
+	Format(HudToDisplay, SizeOfChar, "[HS %.0f％]", TimeDisplay * 4.0);
 }
 
 stock bool NpcStats_KazimierzDodge(int victim)
@@ -6175,7 +6217,8 @@ static void UnstableUmbralRift_Start(int victim, StatusEffect Apply_MasterStatus
 
 static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	i_Client_Gravity[victim] /= 2;
+	if(victim <= MaxClients)
+		i_Client_Gravity[victim] /= 2;
 	if(!IsValidClient(victim))
 		return;
 		
@@ -6187,7 +6230,8 @@ static void UnstableUmbralRift_StartOnce(int victim, StatusEffect Apply_MasterSt
 
 static void UnstableUmbralRift_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	i_Client_Gravity[victim] *= 2;
+	if(victim <= MaxClients)
+		i_Client_Gravity[victim] *= 2;
 	if(!IsValidClient(victim))
 		return;
 		

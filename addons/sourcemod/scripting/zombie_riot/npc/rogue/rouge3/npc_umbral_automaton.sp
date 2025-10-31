@@ -817,7 +817,7 @@ void Umbral_Automaton_Melee_Small(Umbral_Automaton npc, float gameTime, float di
 	}
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 0.85))
 		{
 			int Enemy_I_See;
 								
