@@ -929,13 +929,15 @@ public void Reinforce(int client, bool NoCD)
 		int MaxCashScale = CurrentCash;
 		if(MaxCashScale > 60000)
 			MaxCashScale = 60000;
-			
+		
 		bool DeadPlayer;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(!IsValidClient(client_check))
 				continue;
 			if(TeutonType[client_check] == TEUTON_NONE)
+				continue;
+			if(!b_AntiLateSpawn_Allow[client_check])
 				continue;
 			if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 				continue;
@@ -954,6 +956,7 @@ public void Reinforce(int client, bool NoCD)
 
 			DeadPlayer=true;
 		}
+
 		if(!DeadPlayer)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -1096,9 +1099,6 @@ public void BuilderMenu(int client)
 									
 		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
 		menu.AddItem("-4", buffer);
-
-	//	FormatEx(buffer, sizeof(buffer), "%t", "Display top 5");
-	//	menu.AddItem("-5", buffer);
 		
 									
 		menu.ExitButton = true;
@@ -1908,14 +1908,13 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		float Down[3]={90.0,0.0,0.0};
 		DispatchKeyValueVector(PropMove, "origin", fPos);
 		DispatchKeyValueVector(PropMove, "movedir", Down);
+		DispatchKeyValue(PropMove, "targetname", PropNeam_patch);
 		DispatchKeyValue(PropMove, "movedir", "90 0 0");
 		DispatchKeyValue(PropMove, "modelscale", "3");
 		Format(buffer, sizeof(buffer), "%.2f", 5000.0);
 		DispatchKeyValue(PropMove, "movedistance", buffer);
 		Format(buffer, sizeof(buffer), "%.2f", PropSpeed);
 		DispatchKeyValue(PropMove, "speed", buffer);
-		FormatEx(buffer, sizeof(buffer), "%s_Drop_%d", PropNeam_patch, client);
-		DispatchKeyValue(PropMove, "targetname", buffer);
 		DispatchKeyValue(PropMove, "startsound", "none");
 		DispatchKeyValue(PropMove, "stopsound", "none");
 		TeleportEntity(PropMove, fPos, NULL_VECTOR, NULL_VECTOR);
@@ -1926,16 +1925,10 @@ stock int Drop_Prop(int client, float fPos[3], float PropSpeed=1200.0, const cha
 		{
 			DispatchKeyValue(Prop, "model", worldmodel_patch);
 			DispatchKeyValue(Prop, "angles", "-90 0 0");
-			DispatchKeyValue(Prop, "parentname", buffer);
 			DispatchKeyValue(Prop, "solid", "0");
-			FormatEx(buffer, sizeof(buffer), "%s_%d", PropNeam_patch, client);
-			DispatchKeyValue(Prop, "targetname", buffer);
 			TeleportEntity(Prop, fPos, NULL_VECTOR, NULL_VECTOR);
 			DispatchSpawn(Prop);
-			
-			FormatEx(buffer, sizeof(buffer), "%s_Drop_%d", PropNeam_patch, client);
-			SetVariantString(buffer);
-			AcceptEntityInput(Prop, "SetParent");
+			SetParent(PropMove, Prop);
 		}
 		AcceptEntityInput(PropMove, "Open");
 		SetEntPropEnt(PropMove, Prop_Data, "m_hOwnerEntity", client);
@@ -2060,6 +2053,8 @@ stock int GetRandomDeathPlayer(int client)
 		if(TeutonType[client_check] == TEUTON_NONE)
 			continue;
 
+		if(!b_AntiLateSpawn_Allow[client_check])
+			continue;
 		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
 			continue;
 

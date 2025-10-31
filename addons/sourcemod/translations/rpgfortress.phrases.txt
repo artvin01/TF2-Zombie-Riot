@@ -5,24 +5,24 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"Capacity: [{1}]"
-		"ko" 		"용량: [{1}]"
+		"it" 		"Capacità: [{1}]"
 	}
 	"Zombie In Battle Logic Setting"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"In Battle Time: [{1}]"
-		"ko"		"전투 시간: [{1}]"
+		"it" 		"Tempo in Battaglia: [{1}]"
 	}
 	"Show Ragdoll Hint Message"
 	{
 		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
 		"es"		"Por favor, asigna un valor MAYOR a 0 a ''g_ragdoll_fadespeed'' en la consola! Si no haces esto, arriesgas tu TF2 a que se cierre inesperadamente!"
-		"ko"		"절대 콘솔창에서 ''g_ragdoll_fadespeed''를 0으로 설정하지 마세요! 반드시 0보다 높은 숫자여야합니다!(600이 기본, 1도 충분) 수치가 0이라면, 오류때문에 게임이 강제로 종료됩니다!"
+		"it"		"Imposta ''g_ragdoll_fadespeed'' su un valore diverso da 0 nella console! Qualsiasi valore superiore a 0 va bene (1 è sufficiente, 600 è il valore predefinito)! Se non lo fai, il gioco andrà in crash!"
 	}
 	"Show Ragdoll Teeth Message"
 	{
 		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
 		"es"		"Por favor, asigna el valor de ''r_teeth'' a 0 en la consola! Debido a la actualizacion 64-bit, algunos modelos antiguos mostraran errores si esto esta habilitado!"
-		"ko"		"콘솔창에 ''r_teeth'' 를 반드시 0으로 설정하세요! 64비트 업데이트 때문에, 오래된 모델들은 이게 0이 아닐시 오류가 발생합니다!"
+		"it"		"Imposta ''r_teeth'' su 0 nella console! A causa dell'aggiornamento a 64 bit, alcuni modelli più vecchi potrebbero presentare dei malfunzionamenti se questa opzione è abilitata!"
 	}
 }

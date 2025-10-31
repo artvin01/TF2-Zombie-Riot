@@ -388,6 +388,7 @@ methodmap Vincent < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "CREATION OF HATRED");
 			strcopy(music.Artist, sizeof(music.Artist), "Exedious");
 			Music_SetRaidMusic(music);
+			RaidModeTime = GetGameTime() + 220.0;
 		}
 		else
 		{
@@ -1736,7 +1737,7 @@ void VincentSpawnBeacons(int iNPC)
 	float distancelimit = VINCENT_MINIMUM_RANGE_BEACONS;
 	if(npc.Anger)
 	{
-		distancelimit *= 0.75;
+		distancelimit *= 0.9;
 	}
 	float pos[3];
 	float ang[3];

@@ -27,7 +27,7 @@ methodmap BarrackTeuton < BarrackBody
 {
 	public BarrackTeuton(int client, float vecPos[3], float vecAng[3])
 	{
-		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		BarrackTeuton npc = view_as<BarrackTeuton>(BarrackBody(client, vecPos, vecAng, "1300",COMBINE_CUSTOM_2_MODEL,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -81,7 +81,10 @@ public void BarrackTeuton_ClotThink(int iNPC)
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+						if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+							npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
+						else
+							npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
@@ -125,7 +128,7 @@ public void BarrackTeuton_ClotThink(int iNPC)
 			}
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_NEW_IDLE", "ACT_TEUTON_NEW_WALK");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_IDLE_NEW", "ACT_TEUTON_WALK_NEW");
 	}
 }
 

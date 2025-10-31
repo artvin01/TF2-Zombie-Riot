@@ -3,11 +3,11 @@
 	"Loom"
 	{
 		"en" 	"Loom"
-		"ko" 	"베틀"
+		"it" 	"Telaio"
 	}
 	"Loom Desc"
 	{
 		"en" 	"Loom Desc"
-		"ko" 	"베틀 설명"
+		"it" 	"Descrizione Telaio"
 	}
 }

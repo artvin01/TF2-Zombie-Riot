@@ -766,6 +766,8 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 				GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", npcpos);
 				if(GetVectorDistance(npcpos, position, false) <= distance)
 				{
+					if(HasSpecificBuff(npc, "Plasma Heal Prevent"))
+						continue;
 					if(multhp)
 						trueamount = float(ReturnEntityMaxHealth(npc)) * amount;
 					else
@@ -773,12 +775,18 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 					if(healer != -1)
 					{
 						if(GetTeam(npc) == GetTeam(healer))
-							HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+						{
+							ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
+							HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
+						}
 					}
 					else
 					{
 						if(GetTeam(npc) == correct_team)
-							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+						{
+							ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
+							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
+						}
 					}
 				}
 			}
@@ -795,6 +803,8 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 				GetClientAbsOrigin(client, clientpos);
 				if(GetVectorDistance(clientpos, position, false) <= distance)
 				{
+					if(HasSpecificBuff(client, "Plasma Heal Prevent"))
+						continue;
 					if(multhp)
 						trueamount = float(ReturnEntityMaxHealth(client)) * amount;
 					else
@@ -802,12 +812,18 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 					if(healer != -1)
 					{
 						if(GetTeam(client) == GetTeam(healer))
-							HealEntityGlobal(healer, client, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+						{
+							ApplyStatusEffect(client, client, "Plasma Heal Prevent", 1.0);
+							HealEntityGlobal(healer, client, trueamount, 1.0, healtime, HEAL_NO_RULES);
+						}
 					}
 					else
 					{
 						if(GetTeam(client) == correct_team)
-							HealEntityGlobal(client, client, trueamount, 1.0, healtime, HEAL_SELFHEAL);
+						{
+							ApplyStatusEffect(client, client, "Plasma Heal Prevent", 1.0);
+							HealEntityGlobal(client, client, trueamount, 1.0, healtime, HEAL_NO_RULES);
+						}
 					}
 				}
 			}

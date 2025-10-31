@@ -777,8 +777,8 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		case 8:
 			Format(buffer, sizeof(buffer), "%s 치유 속도", buffer);
 		
-		case 10:
-			Format(buffer, sizeof(buffer), "%s 우버 충전 속도", buffer);
+		case 10, 9:
+			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
 		
 		case 16:
 			Format(buffer, sizeof(buffer), "%s 적중시 회복", buffer);
@@ -1188,7 +1188,7 @@ static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 		case 2:
 		{
 			tinker.Value[0] = 0.95 - LessHealRateLuck;
-			tinker.Value[1] = 1.15 + MoreOverhealLuck;
+			tinker.Value[1] = 1.20 + MoreOverhealLuck;
 		}
 	}
 }

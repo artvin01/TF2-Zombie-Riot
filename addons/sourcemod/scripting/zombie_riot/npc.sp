@@ -34,6 +34,7 @@ enum struct NPCData
 	bool IconCustom;
 	Function Precache;
 	Function Precache_data;
+	Function WikiFunc;
 
 	// Don't touch below
 	bool Precached;
@@ -1273,6 +1274,8 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 			}
 			Waves_UpdateMvMStats();
 		}
+		if(BetWar_Mode())
+			b_ShowNpcHealthbar[entity] = true;
 	}
 
 	return entity;

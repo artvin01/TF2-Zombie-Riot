@@ -4,12 +4,14 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"{crimson}Gained {1} Chaos Infliction!"
+		"it"		"{crimson}Ottenuto {1} un'inflizione del Caos! Inflizione del Caos!"
 		"ru"		"{crimson}Получено {1} Хаосовой нестабильности!"
 	}
 	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
 		"en"		"{green}Lost {1} Chaos Infliction!"
+		"it"		"{green}Perso {1} Inflizione del Caos!"
 		"ru"		"{green}Потеряно {1} Хаосовой нестабильности!"
 		"ko"		"{green}혼돈의 고통이 {1} 감소했습니다!"
 	}
@@ -17,1972 +19,2112 @@
 	{
 		"en"	"Heavy Rain"
 		"ru"	"Тяжелый дождь"
-		"ko"	"폭우"
+		"it"	"Pioggia battente"
 	}
 	"Heavy Rain Desc"
 	{
 		"en"	"{yellow}All units gain -20％ movement speed, Seaborn units instead gain +10％ movement speed"
+		"it"	"{yellow}Tutte le unità guadagnano -20％ di velocità di movimento, le unità Seaborn invece guadagnano +10％ di velocità di movimento"
 		"ru"	"{yellow}Все юниты двигають медленее на 20％,Морерождённые двигаются на 10％ быстрее"
 		"ko"	"{yellow}모든 유닛의 이동 속도가 20％ 감소합니다. 시본은 대신 이동 속도가 10％ 증가합니다."
 	}
 	"Gate to the Curtain"
 	{
 		"en"	"Gate to the Curtain"
+		"it"	"Porta del sipario"
 	}
 	"Heavy Rain Lore"
 	{
 		"en"	"It begins to rain heavily, you can feel it's weight."
 		"ru"	"Начался ливень,Ты можешь почуствовать его тяжесть"
-		"ko"	"폭우가 쏟아지기 시작하고, 당신은 그 무게를 느낄 수 있다."
+		"it"	"Inizia a piovere a dirotto, si sente il suo peso."
 	}
 	"Extreme Heat"
 	{
 		"en"	"Extreme Heat"
 		"ru"	"Экстремальная жара"
-		"ko"	"극심한 더위"
+		"it"	"Calore estremo"
 	}
 	"Extreme Heat Desc"
 	{
 		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is 25％ slower and Al-Hallem units gain +20％ movement speed"
+		"it"	"{green}I nemici si riproducono x3 più lentamente {red}ma la velocità di rianimazione degli alleati è 25％ più lenta e le unità Al-Hallem guadagnano +20％ velocità di movimento"
 	}
 	"Extreme Heat Lore"
 	{
 		"en"	"You feel the dreaded heat as your skin burns a bit."
-		"ko"	"피부가 약간 타는 듯한 끔찍한 열기가 느껴진다."
+		"it"	"Si sente il temuto calore e la pelle brucia un po'."
 	}
 	"Heavy Wind"
 	{
 		"en"	"Heavy Wind"
-		"ko"	"강풍"
+		"it"	"Vento forte"
 	}
 	"Heavy Wind Desc"
 	{
 		"en"	"{yellow}ALL projectiles move 33％ slower, Expidonsan projectiles instead move 25％ faster"
+		"it"	"{yellow}TUTTI i proiettili si muovono 33％ più lentamente, i proiettili di Expidonsan invece si muovono 25％ più velocemente"
 	}
 	"Heavy Wind Lore"
 	{
 		"en"	"You can barely keep moving forward with this heavy draft."
-		"ko"	"이렇게나 매서운 바람이 불면 앞으로 나아가기 힘들다."
+		"it"	"Si riesce a malapena ad andare avanti con questo spiffero pesante."
 	}
 	"Dense Frost"
 	{
 		"en"	"Dense Frost"
-		"ko"	"짙은 서리"
+		"it"	"Gelo denso"
 	}
 	"Dense Frost Desc"
 	{
 		"en"	"{yellow}EVERYONE takes continous non-fatal damage {red}except for Ziberia units"
+		"it"	"{yellow}TUTTI subiscono danni continui e non mortali {red}ad eccezione delle unità di Ziberia"
 	}
 	"Dense Frost Lore"
 	{
 		"en"	"The frost covers everything you have, including you."
-		"ko"	"이 서리가 당신을 포함한 모든 것을 뒤덮고 있다."
+		"it"	"Il gelo copre tutto ciò che avete, compreso voi."
 	}
 	"Red Moon"
 	{
 		"en"	"Red Moon"
-		"ko"	"붉은 달"
+		"it"	"Luna Rossa"
 	}
 	"Red Moon Desc"
 	{
 		"en"	"{red}Wildingen units have their special traits enchanced"
-		"ko"	"{red}와일딩겐 유닛들의 특수 능력이 강화됩니다."
+		"it"	"{red}Le unità Wildingen hanno i loro tratti speciali incantati"
 	}
 	"Red Moon Lore"
 	{
 		"en"	"Everything turns red as you see the bright red moon above."
-		"ko"	"머리 위에 붉은 달이 떠있으면 모든 것도 붉게 보이게 된다."
+		"it"	"Tutto diventa rosso quando si vede la luna rossa e brillante sopra di noi."
 	}
 	
 	"Shadowing Darkness"
 	{
 		"en"	"Shadowing Darkness"
-		"ko"	"그림자의 어둠"
+		"it"	"L'ombra delle tenebre"
 	}
 	"Shadowing Darkness Desc"
 	{
 		"en"	"{red}EVERYONE gains +25％ attack speed."
+		"it"	"{red}TUTTI guadagnano +25％ velocità d'attacco."
 	}
 	"Shadowing Darkness Lore"
 	{
 		"en"	"They kept talking about him, yet he isnt here... who is this? It fills you with anxiety."
-		"ko"	"다른 자들이 계속해서 '그'에 대해 이야기한다. 그가 없음에도 불구하고 말이다. 도대체 그는 누구일까? 괜히 불안해지고 만다."
+		"it"	"Continuavano a parlare di lui, ma non c'era... Chi è? La cosa ti riempie di ansia."
 	}
 
 	"Compass and Map"
 	{
 		"en"	"Compass and Map"
-		"ko"	"나침반과 지도"
+		"it"	"Bussola e mappa"
 	}
 	"Compass and Map Desc"
 	{
 		"en"	"Go the right way, nothing more.\n{green}Enemies move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{green}Gain 75％ less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
-		"ko"	"올바른 길로 이끌어준다. 그게 전부다.\n{green}모든 적들의 이동 속도가 20％ 감소하고, 적들의 피해 저항력이 35％ 감소하며, 공격 피해량이 35％ 감소합니다.\n{green}혼돈의 고통 획득량이 75％ 감소합니다.\n{crimson}이 소장품을 보유하면 다른 엔딩을 볼 수 없게 됩니다."
+		"it"	"{green}I nemici si muovono 20％ più lentamente, subiscono 35％ danni in più e infliggono 35％ danni in meno\n{green}Ottieni 75％ inflizioni del Caos in meno\n{crimson}Impedisce di ottenere finali alternativi."
 	}
 	"Healing Supplies"
 	{
 		"en"	"Healing Supplies"
-		"ko"	"회복 물자 보급"
+		"it"	"Materiali per la guarigione"
 	}
 	"Healing Supplies Desc"
 	{
 		"en"	"To always be careful of the unknown.\n{green}Restores last stand effect"
-		"ko"	"항상 알 수 없는 위협을 대비해둬야한다.\n{green}최후의 1인 효과가 다시 활성화됩니다."
+		"it"	"Per stare sempre attenti all'ignoto.\n{green}Ripristina l'effetto dell'ultimo stand"
 	}
 	"Camping Supplies"
 	{
 		"en"	"Camping Supplies"
-		"ko"	"야영 물자 보급"
+		"it"	"Forniture per il campeggio"
 	}
 	"Camping Supplies Desc"
 	{
 		"en"	"Stay longer so we can search more.\n{yellow}Adds an extra stage to every floor"
-		"ko"	"이 곳에 오래 있어야 우리가 더 많은 곳을 탐색할 수 있다.\n{yellow}매 층마다 추가 스테이지가 열립니다."
+		"it"	"Rimani più a lungo così possiamo cercare di più.\n{yellow}Aggiunge una tappa in più ad ogni piano"
 	}
 	"Trading Supplies"
 	{
 		"en"	"Trading Supplies"
-		"ko"	"추가 자금 보급"
+		"it"	"Forniture commerciali"
 	}
 	"Trading Supplies Desc"
 	{
 		"en"	"Bring some cash for trading later.\n{green}Gain 20 Australium Ingots"
-		"ko"	"결국 돈이 있어야 교환을 자주 할 수 있기 마련이다.\n{green}오스트레일륨 주괴를 20 얻습니다."
+		"it"	"Porta con te un po' di denaro per il commercio più tardi.\n{green} Guadagni 20 lingotti di australium"
 	}
 	"Weapon Supplies"
 	{
 		"en"	"Weapon Supplies"
-		"ko"	"무기 보급"
+		"it"	"Forniture di armi"
 	}
 	"Weapon Supplies Desc"
 	{
 		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 Cash and 30 ammo supplies"
+		"it"	"Assicuratevi che non finiscano le munizioni.\n{green}Acquistare 250 contanti e 30 scorte di munizioni"
 	}
 	"Bob's Assistance"
 	{
 		"en"	"Bob's Assistance"
-		"ko"	"밥의 협력"
+		"it"	"Assistenza di Bob"
 	}
 	"Bob's Assistance Desc"
 	{
 		"en"	"Bob joins you and steers you beyond this.\n{red}Enemies gain +1％ health and damage for every 5 Chaos Infliction and every chapter {blue}and open up something"
-		"ko"	"{red}챕터를 클리어하거나 쌓인 혼돈의 고통 수치 5 마다, 모든 적의 체력과 공격력이 +1％ 증가합니다. {blue}무언가가 해금됩니다..."
+		"it"	"{red}I nemici guadagnano +1％ salute e danni per ogni 5 Inflizioni del Caos e per ogni capitolo {blue} e aprono qualcosa"
 	}
 	"Small Comic Book"
 	{
 		"en"	"Small Comic Book"
-		"ko"	"소형 만화책"
+		"it"	"Piccolo fumetto"
 	}
 	"Small Comic Book Desc"
 	{
 		"en"	"A comic that explains how Xeno came to be, you may know who made this.\n{green}Allies gain 2000 barrier"
-		"ko"	"제노가 어떻게 생겨났는지 설명하는 만화. 누가 만들었는지 알 것 같다.\n{green}모든 아군에게 내구도 2000의 배리어를 부여합니다."
+		"it"	"Un fumetto che spiega come è nato Xeno, forse conoscete chi l'ha realizzato.\n{green}Gli alleati guadagnano 2000 barriere"
 	}
 	"Large Comic Book"
 	{
 		"en"	"Large Comic Book"
-		"ko"	"대형 만화책"
+		"it"	"Fumetto grande"
 	}
 	"Large Comic Book Desc"
 	{
 		"en"	"It's a bit heavy, the written date is in the future.\n{green}Allies gain 3000 barrier"
-		"ko"	"날짜를 보아하니 미래에서 건너온 책인것 같다. 조금 무겁다.\n{green}모든 아군에게 내구도 3000의 배리어를 부여합니다."
+		"it"	"È un po' pesante, la data scritta è nel futuro.\n{green}Gli alleati guadagnano 3000 barriere"
 	}
 	"Hot Water Kettle"
 	{
 		"en"	"Hot Water Kettle"
-		"ko"	"전기주전자"
+		"it"	"Bollitore per acqua calda"
 	}
 	"Hot Water Kettle Desc"
 	{
 		"en"	"Want to make some noodles?\n{green}Allies gain +125 max health and 1000 Cash"
+		"it"	"Vuoi fare un po' di pasta?{green} Gli alleati guadagnano +125 salute massima e 1000 contanti"
 	}
 	"Ziberian Chocolate"
 	{
 		"en"	"Ziberian Chocolate"
+		"it"	"Cioccolato Ziberiano"
 	}
 	"Ziberian Chocolate Desc"
 	{
 		"en"	"It's cold, amazing!\n{green}Allies gain +50 max health and 1250 Cash"
+		"it"	"È freddo, fantastico! Gli alleati guadagnano +50 salute massima e 1250 contanti"
 	}
 	"Shadowing Coin"
 	{
 		"en"	"Shadowing Coin"
+		"it"	"Moneta d'ombra"
 	}
 	"Shadowing Coin Desc"
 	{
 		"en"	"Marked with a face from someone, looks like Whiteflower?\n{green}Gain 1750 Cash."
+		"it"	"Contrassegnato con una faccia da qualcuno, sembra Whiteflower?{green} Guadagni 1750 contanti."
 	}
 	"Special Suppressor"
 	{
 		"en"	"Special Suppressor"
-		"ko"	"특수 저지 장치"
+		"it"	"Soppressore speciale"
 	}
 	"Special Suppressor Desc"
 	{
 		"en"	"Something used in the past to deal with Xeno.\n{green}Allies gain +250 max health"
-		"ko"	"과거에 제노를 상대하는데 사용되었던 물건인 것 같다.\n{green}모든 아군의 최대 체력이 +250 증가합니다."
+		"it"	"Qualcosa di usato in passato per affrontare gli Xeno.\n{green}Gli alleati guadagnano +250 di salute massima"
 	}
 	"Stone Gargoyle"
 	{
 		"en"	"Stone Gargoyle"
-		"ko"	"석상귀 조각상"
+		"it"	"Gargoyle di pietra"
 	}
 	"Stone Gargoyle Desc"
 	{
 		"en"	"Fits at the palm of your hand.\n{green}Allies gain +375 max health"
-		"ko"	"손바닥만한 조각상.\n{green}모든 아군의 최대 체력이 +375 증가합니다."
+		"it"	"Sta nel palmo della mano.\n{green}Gli alleati guadagnano +375 salute massima"
 	}
 	"I Sell Profen"
 	{
 		"en"	"I Sell Profen"
+		"it"	"Vendo Profen"
 	}
 	"I Sell Profen Desc"
 	{
 		"en"	"Enemies gain a headache.\n{green}Enemies take 25％ more headshot damage."
+		"it"	"I nemici subiscono un mal di testa.\n{green}I nemici subiscono 25％ danni in più da colpo alla testa."
 	}
 	"Vampire's Bed"
 	{
 		"en"	"Vampire's Bed"
-		"ko"	"뱀파이어의 침대"
+		"it"	"Il letto del vampiro"
 	}
 	"Vampire's Bed Desc"
 	{
 		"en"	"Just be glad it's empty.\n{green}Allies gain +500 max health"
-		"ko"	"비어있어서 다행이다.\n{green}모든 아군의 최대 체력이 +500 증가합니다."
+		"it"		"Siate felici che sia vuoto.\n{green}Gli alleati guadagnano +500 di salute massima"
 	}
 	"Proof of Longevity"
 	{
 		"en"	"Proof of Longevity"
-		"ko"	"영생의 상징"
+		"it"	"Prova di longevità"
 	}
 	"Proof of Longevity Desc"
 	{
 		"en"	"A tree branch that has withered and flourished.\n{green}Allies gain +750 max health"
-		"ko"	"한쪽은 시들지만, 한쪽은 자라고 있는 나뭇가지.\n{green}모든 아군의 최대 체력이 +750 증가합니다."
+		"it"	"Un ramo d'albero che è appassito e fiorito.\n{green}Gli alleati guadagnano +750 di salute massima"
 	}
 	"Banshee's Kiss"
 	{
 		"en"	"Banshee's Kiss"
-		"ko"	"밴시의 입맞춤"
+		"it"	"Il bacio della Banshee"
 	}
 	"Banshee's Kiss Desc"
 	{
 		"en"	"A pretty necklace, who gonna wear it?\n{green}Gain 8000 Cash"
+		"it"	"Una bella collana, chi la indosserà?{green}Guadagni 8000 Cash"
 	}
 	"Blood Diamond"
 	{
 		"en"	"Blood Diamond"
-		"ko"	"블러드 다이아몬드"
+		"it"	"Diamante di sangue"
 	}
 	"Blood Diamond Desc"
 	{
 		"en"	"A pretty ring, who gonna wear it?\n{green}Gain +25 Australium Ingots"
+		"it"	"Un bell'anello, chi lo indosserà?{green}Guadagno +25 lingotti di australium"
 	}
 	"Fissured Restraints"
 	{
 		"en"	"Fissured Restraints"
-		"ko"	"갈라진 속박의 끈"
+		"it"	"Vincoli fessurati"
 	}
 	"Fissured Restraints Desc"
 	{
 		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies deal -7％ damage"
+		"it"	"Sembra che questa robusta fascia sia stata usata un tempo per trattenere qualcosa di terrificante... \n{green}I nemici infliggono -7％ danni"
 	}
 	"Abyssal Wyrdmask"
 	{
 		"en"	"Abyssal Wyrdmask"
-		"ko"	"기이한 가면"
+		"it"	"Maschera Wyrd abissale"
 	}
 	"Abyssal Wyrdmask Desc"
 	{
 		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies deal -12％ damage"
+		"it"	"Una maschera eldritch che non appartiene a nessuna cultura a te nota.\n{green}I nemici infliggono -12％ danni"
 	}
 	"Godmother's Token"
 	{
 		"en"	"Godmother's Token"
-		"ko"	"대모의 증표"
+		"it"	"Gettone della madrina"
 	}
 	"Godmother's Token Desc"
 	{
 		"en"	"A laurel of bones.\n{green}Enemies deal -17％ damage"
+		"it"	"Un alloro di ossa.\n{green}I nemici infliggono -17％ danni"
 	}
 	"The Whisperer in Darknight"
 	{
 		"en"	"''The Whisperer in Darknight''"
-		"ko"	"''검은 밤의 속삭임''"
+		"it"	"Il sussurratore di Darknight"
 	}
 	"The Whisperer in Darknight Desc"
 	{
 		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10％ max health"
-		"ko"	"검은 색 레코드, 만.지.지.마.시.오.\n{green}모든 적들의 최대 체력이 -10％ 감소합니다."
+		"it"	"Un vinile nero. FARE. NON. TOCCARE. I nemici guadagnano -10％ di salute massima"
 	}
 	"Gold-Plated Dice"
 	{
 		"en"	"Gold-Plated Dice"
-		"ko"	"금박 장식 주사위"
+		"it"	"Dadi placcati oro"
 	}
 	"Gold-Plated Dice Desc"
 	{
 		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15％ max health"
-		"ko"	"금박 장식이 되어 있는 주사위로, 한 면에만 생존을 상징하는 표식이 새겨져 있고, 나머지 19개 면에는...\n{green}모든 적들의 최대 체력이 -15％ 감소합니다."
+		"it"	"Il dado placcato d'oro ha un lato che rappresenta la vita. Per quanto riguarda gli altri diciannove lati... \n{green}I nemici guadagnano -15％ di salute massima"
 	}
 	"The Profound Silence"
 	{
 		"en"	"''The Profound Silence''"
-		"ko"	"''고요함''"
+		"it"	"Il profondo silenzio"
 	}
 	"The Profound Silence Desc"
 	{
 		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20％ max health"
-		"ko"	"이베리아 역사상 가장 컸던 재앙을 그린 작품.\n{green}모든 적들의 최대 체력이 -20％ 감소합니다."
+		"it"	"Un dipinto che raffigura il più grande disastro della storia iberica.\n{green}I nemici guadagnano -20％ di salute massima"
 	}
 	"Emperor's Favor"
 	{
 		"en"	"Emperor's Favor"
-		"ko"	"황제의 은총"
+		"it"	"Il favore dell'imperatore"
 	}
 	"Emperor's Favor Desc"
 	{
 		"en"	"A very sharp letter opener.\n{green}Players gain +15％ melee damage"
+		"it"	"Un tagliacarte molto affilato.\n{green}I giocatori ottengono +15％ danni in mischia"
 	}
 	"Vieux Vanguard's Blade"
 	{
 		"en"	"Vieux Vanguard's Blade"
-		"ko"	"올드 가디언의 창"
+		"it"	"Lama della Vecchia Avanguardia"
 	}
 	"Vieux Vanguard's Blade Desc"
 	{
 		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Players gain +25％ melee damage"
+		"it"	"Una lama perduta per le avanguardie delle profondità marine.\n{green}I giocatori guadagnano +25％ danni in mischia"
 	}
 	"Necklace of the Presence"
 	{
 		"en"	"Necklace of the Presence"
-		"ko"	"헌신의 목걸이"
+		"it"	"Collana della Presenza"
 	}
 	"Necklace of the Presence Desc"
 	{
 		"en"	"Faith hangs ten centimeters above your heart.\n{green}Players gain +15％ ranged damage"
+		"it"	"La fede è appesa a dieci centimetri sopra il tuo cuore.{green}I giocatori guadagnano +15％ danni a distanza"
 	}
 	"Damaged Revolver Cylinder"
 	{
 		"en"	"Damaged Revolver Cylinder"
-		"ko"	"망가진 리볼버 탄창"
+		"it"	"Cilindro di revolver danneggiato"
 	}
 	"Damaged Revolver Cylinder Desc"
 	{
 		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Players gain +25％ ranged damage"
+		"it"	"Non ha mai capitolato, anche dopo aver sopportato innumerevoli prove e tribolazioni.\n{green}I giocatori ottengono +25％ danni a distanza"
 	}
 	"Royal Rapier"
 	{
 		"en"	"Royal Rapier"
-		"ko"	"귀족 레이피어"
+		"it"	"Rapier reale"
 	}
 	"Royal Rapier Desc"
 	{
 		"en"	"A highly decorative rapier for nobles.\n{green}Players gain +15％ mage damage"
+		"it"	"Una spada altamente decorativa per i nobili.{green}I giocatori ottengono +15％ danni da mago"
 	}
 	"Silver Forks"
 	{
 		"en"	"Silver Forks"
-		"ko"	"은식기"
+		"it"	"Forchette d'argento"
 	}
 	"Silver Forks Desc"
 	{
 		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Players gain +25％ mage damage"
+		"it"	"Il Capo non tollererà alcun errore sul tavolo.{green}I giocatori guadagnano +25％ danni da mago"
 	}
 	"Noxious Hemostatic Agent"
 	{
 		"en"	"Noxious Hemostatic Agent"
-		"ko"	"악취 나는 지혈제"
+		"it"	"Agente emostatico nocivo"
 	}
 	"Noxious Hemostatic Agent Desc"
 	{
 		"en"	"Don't ask what's in it.\n{green}Allies gain +20％ max health"
-		"ko"	"안에 무엇이 들어있는지는 묻지 마라.\n{green}모든 아군의 최대 체력이 +20％ 증가합니다."
+		"it"	"Non chiedere cosa c'è dentro.{green}Gli alleati guadagnano +20％ salute massima"
 	}
 	"First Aid Kit"
 	{
 		"en"	"First Aid Kit"
-		"ko"	"구급약품"
+		"it"	"Kit di primo soccorso"
 	}
 	"First Aid Kit Desc"
 	{
 		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35％ max health"
-		"ko"	"지금 들고 있는 구급 상자 무기와 뭐가 다르냐고 묻는다면, 그 누구도 모른다.\n{green}모든 아군의 최대 체력이 +35％ 증가합니다."
+		"it"	"Cosa c'è di diverso rispetto all'arma impugnata? Non lo so.{green}Gli alleati guadagnano +35％ salute massima"
 	}
 	"Unknown Instrument"
 	{
 		"en"	"Unknown Instrument"
-		"ko"	"정체불명의 기기"
+		"it"	"Strumento sconosciuto"
 	}
 	"Unknown Instrument Desc"
 	{
 		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50％ max health"
-		"ko"	"무엇인지 묻지 마. 다 너를 위해서야.\n{green}모든 아군의 최대 체력이 +50％ 증가합니다."
+		"it"	"Non chiedere. È per il tuo bene.{green}Gli alleati guadagnano +50％ salute massima"
 	}
 	"Rusted Razor"
 	{
 		"en"	"Rusted Razor"
-		"ko"	"녹슨 면도날"
+		"it"	"Rasoio arrugginito"
 	}
 	"Rusted Razor Desc"
 	{
 		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15％ melee vulnerability"
-		"ko"	"이것에 살이 베였다면 그다음 무슨 일이 일어날지 감이 올 거다.\n{green}모든 적들이 받는 근접 피해가 +15％ 증가합니다."
+		"it"	"Se ti tagli con questo, sai cosa succederà.\n{green}I nemici guadagnano +15％ vulnerabilità in mischia"
 	}
 	"Carriage Driver's Whip"
 	{
 		"en"	"Carriage Driver's Whip"
-		"ko"	"마부의 채찍"
+		"it"	"Frusta da carrozzaio"
 	}
 	"Carriage Driver's Whip Desc"
 	{
 		"en"	"As the troupe's carriage driver, he has no name and no past.\n{green}Enemies gain +25％ melee vulnerability"
-		"ko"	"극단의 마부로서 그는 이름도 과거도 없다.\n{green}모든 적들이 받는 근접 피해가 +25％ 증가합니다."
+		"it"	"Come autista di carrozze della compagnia, non ha nome né passato.\n{green}I nemici guadagnano +25％ vulnerabilità in mischia"
 	}
 	"Avenger"
 	{
 		"en"	"''Avenger''"
-		"ko"	"''어벤져''"
+		"it"	"''Vendicatore''"
 	}
 	"Avenger Desc"
 	{
 		"en"	"Looks like a pocket knife in a pouch.\n{green}Enemies gain +35％ melee vulnerability"
-		"ko"	"작은 주머니 안의 휴대용 칼인것 같다.\n{green}모든 적들이 받는 근접 피해가 +35％ 증가합니다."
+		"it"	"Sembra un coltello tascabile in un astuccio.\n{green}I nemici guadagnano +35％ vulnerabilità in mischia"
 	}
 	"Standard Anti-Riot Instrument"
 	{
 		"en"	"Standard Anti-Riot Instrument"
-		"ko"	"제식 저항 도구"
+		"it"	"Strumento anti-sommossa standard"
 	}
 	"Standard Anti-Riot Instrument Desc"
 	{
 		"en"	"For general zombie usage.\n{green}Enemies gain +15％ ranged vulnerability"
-		"ko"	"좀비 저지를 위한 일반적인 도구.\n{green}모든 적들이 받는 원거리 공격 피해가 +15％ 증가합니다."
+		"it"	"Per l'uso generale degli zombie.\n{green}I nemici guadagnano +15％ vulnerabilità a distanza"
 	}
 	"Emperor's Collection"
 	{
 		"en"	"Emperor's Collection"
-		"ko"	"황제의 소장품"
+		"it"	"Collezione dell'Imperatore"
 	}
 	"Emperor's Collection Desc"
 	{
 		"en"	"A rock collection, what for?\n{green}Enemies gain +25％ ranged vulnerability"
-		"ko"	"돌을 소장품으로 모아놓은 것 같다. 뭘 위해서?\n{green}모든 적들이 받는 원거리 공격 피해가 +25％ 증가합니다."
+		"it"	"Una collezione di rocce, a cosa serve?{green}I nemici guadagnano +25％ vulnerabilità a distanza"
 	}
 	"Brilliant Lament"
 	{
 		"en"	"''Brilliant Lament''"
-		"ko"	"''찬란한 눈물''"
+		"it"	"''Lamento brillante''"
 	}
 	"Brilliant Lament Desc"
 	{
 		"en"	"His blood yet flows. He has never left this place.\n{green}Enemies gain +35％ ranged vulnerability"
-		"ko"	"그의 피는 아직도 흐른다. 그는 단 한 번도 여기를 떠난 적이 없다.\n{green}모든 적들이 받는 원거리 공격 피해가 +35％ 증가합니다."
+		"it"	"Il suo sangue scorre ancora. Non ha mai lasciato questo luogo.\n{green}I nemici guadagnano +35％ vulnerabilità a distanza"
 	}
 	"Live Rose"
 	{
 		"en"	"Live Rose"
-		"ko"	"살아 있는 장미"
+		"it"	"Rosa viva"
 	}
 	"Live Rose Desc"
 	{
 		"en"	"Is it you who nourish her, or is it her who protects you?\n{green}Players receive +20％ more health from healing"
-		"ko"	"과연 당신이 보살피고 있는가, 아니면 장미가 당신을 지키고 있는가?\n{green}모든 플레이어가 받는 체력 회복량이 +20％ 증가합니다."
+		"it"	"Sei tu che la nutri o è lei che ti protegge?{green}I giocatori ricevono +20％ più salute dalla guarigione"
 	}
 	"White Flower Crown"
 	{
 		"en"	"White Flower Crown"
-		"ko"	"창백해진 화관"
+		"it"	"Corona di fiori bianchi"
 	}
 	"White Flower Crown Desc"
 	{
 		"en"	"A floral veil used in Vampire rituals.\n{green}Players receive +30％ more health from healing"
-		"ko"	"뱀파이어가 의식을 치를 때 사용하던 화관 베일.\n{green}모든 플레이어가 받는 체력 회복량이 +30％ 증가합니다."
+		"it"	"Un velo floreale usato nei rituali dei vampiri. \n{green}I giocatori ricevono +30％ di salute in più dalle cure"
 	}
 	"Dancer's Bracelets"
 	{
 		"en"	"Dancer's Bracelets"
-		"ko"	"댄서의 팔찌"
+		"it"	"Bracciali da ballerina"
 	}
 	"Dancer's Bracelets Desc"
 	{
 		"en"	"The audience breaks to an applause as the well-trained dancers waltz around the traps on stage.\n{green}Allies gain 10％ dodge chance"
-		"ko"	"훈련된 댄서들이 무대에서 춤추며 함정을 피하자, 관객들은 박수갈채를 보냈다.\n{green}모든 아군의 공격 회피 확률이 10％ 증가합니다."
+		"it"	"Il pubblico scoppia in un applauso mentre i ballerini ben addestrati ballano il valzer intorno alle trappole sul palco.\n{green}Gli alleati guadagnano 10％ possibilità di schivare"
 	}
 	"Peek into the Eternal Night"
 	{
 		"en"	"''Peek into the Eternal Night''"
-		"ko"	"''영원한 밤의 염탐''"
+		"it"	"''Sbirciare nella Notte Eterna''"
 	}
 	"Mazeat Lost Technology"
 	{
 		"en"	"''Mazeat Lost Technology''"
-		"ko"	"''마제트의 소실된 기술력''"
+		"it"	"''Tecnologia perduta Mazeat''"
 	}
 	"Mazeat Lost Technology Desc"
 	{
 		"en"	"Seems to only work tempomarily.\n{green} Most cooldowns are reduced by 33％"
-		"ko"	"일시적으로만 작동하는 것 같다.\n{green} 대부분의 쿨타임이 33％ 감소합니다."
+		"it"	"Sembra funzionare solo temporaneamente.{green}La maggior parte dei cooldown sono ridotti del 33％"
 	}
 	"Peek into the Eternal Night Desc"
 	{
 		"en"	"The moment she turns around to head north.\n{green}Players gain +25％ damage, +25％ attack speed {red}but -10 HP a second"
+		"it"	"Nel momento in cui si gira per dirigersi a nord,{green}i giocatori ottengono +25％ danni, +25％ velocità d'attacco {red} ma -10 HP al secondo"
 	}
 	"Dead Tree's Echo"
 	{
 		"en"	"''Dead Tree's Echo''"
-		"ko"	"''고목의 메아리''"
+		"it"	"''Eco dell'albero morto''"
 	}
 	"Dead Tree's Echo Desc"
 	{
 		"en"	"Drum to call their ancestors' souls.\n{green}Players gain +20 HP a second {red}but -25％ max health"
-		"ko"	"북을 두드려 조상의 영혼을 부른다.\n{green}모든 플레이어의 초당 체력 회복량이 +20 증가합니다. {red}최대 체력이 -25％ 감소합니다."
+		"it"	"{green}I giocatori guadagnano +20 HP al secondo, {red} ma -25％ salute massima"
 	}
 	"Frozen Whetstone"
 	{
 		"en"	"Frozen Whetstone"
-		"ko"	"얼음 숫돌"
+		"it"	"Pietra di grano ghiacciata"
 	}
 	"Frozen Whetstone Desc"
 	{
 		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100％ max health and +100％ damage bonus"
-		"ko"	"표면이 얼음처럼 매끈하다.\n{green}한 번에 한 플레이어만 최대 체력과 공격력이 +100％ 증가합니다."
+		"it"	"La superficie della pietra è liscia come il ghiaccio.\n{green}Un giocatore alla volta riceverà +100％ di salute massima e +100％ di bonus ai danni"
 	}
 	"Clairvoyant's Reveal"
 	{
 		"en"	"Clairvoyant's Reveal"
-		"ko"	"예견자의 표시"
+		"it"	"Rivelazione del chiaroveggente"
 	}
 	"Clairvoyant's Reveal Desc"
 	{
 		"en"	"There is no direction you can head to avoid misfortune.\n{green}Allies gain +25％ max health {yellow}but max health is randomly swapped"
+		"it"	"{green}Gli alleati guadagnano +25％ salute massima {yellow} ma la salute massima viene scambiata a caso"
 	}
 	"Finshell Shield"
 	{
 		"en"	"Finshell Shield"
-		"ko"	"린수비늘 방패"
+		"it"	"Guscio della pinna"
 	}
 	"Finshell Shield Desc"
 	{
 		"en"	"The stacks of distant trauma cannot surpass the layers of protection built by the body.\n{green}Allies gain a shield that blocks one instance of damage every 10 seconds"
-		"ko"	"멀리서 온 겹겹의 상처도 몸으로 쌓은 철통방어를 넘지 못한다.\n{green}모든 아군은 매 10 초마다, 받은 피해를 1회 무효화시키는 보호막이 생성됩니다."
+		"it"	"Le pile di traumi a distanza non possono superare gli strati di protezione costruiti dal corpo.\n{green}Gli alleati ottengono uno scudo che blocca un'istanza di danno ogni 10 secondi"
 	}
 	"Empty Fowlbeast"
 	{
 		"en"	"Empty Fowlbeast"
-		"ko"	"공각 파울비스트"
+		"it"	"Bestia vuota"
 	}
 	"Empty Fowlbeast Desc"
 	{
 		"en"	"{green}Limited lifetime allies (non citizen and non barracks) gain +30％ max health and +30％ damage, the owner gains +60％ damage for 10 seconds when summoned."
-		"ko"	"{green}'배럭 유닛과 반시민을 제외한' 일정 시간 이후 소멸하는 소환물의 최대 체력과 공격력이 +30％ 증가하고, 해당 유닛을 소환한 주인은 소환시 10초 동안 공격력이 +60％ 증가합니다."
+		"it"	"{green}Gli alleati a vita limitata (non cittadini e non caserma) guadagnano +30％ salute massima e +30％ danni, il proprietario guadagna +60％ danni per 10 secondi quando viene evocato."
 	}
 	"Minion Energizer"
 	{
 		"en"	"Minion Energizer"
+		"it"	"Minion Energizer"
 	}
 	"Minion Energizer Desc"
 	{
 		"en"	"{green}Npc Allies gain +25％ more damage and HP."
+		"it"	"{green}Gli alleati dei PNC guadagnano +25％ danni e HP in più."
 	}
 	"Acahuallan Bowl"
 	{
 		"en"	"Acahuallan Bowl"
-		"ko"	"아카후알라 그릇"
+		"it"	"Ciotola Acahuallan"
 	}
 	"Acahuallan Bowl Desc"
 	{
 		"en"	"Fruit is one of the locals' staples, often eaten fresh right off the tree.\n{green}Allies gain 1500 barrier"
-		"ko"	"과일은 현지인들의 주식 중 하나이며, 과일을 따고 현장에서 바로 먹는 것도 흔하게 있는 일이다.\n{green}모든 아군에게 내구도 1500의 배리어를 부여합니다."
+		"it"	"La frutta è uno dei prodotti di base della gente del posto, spesso mangiata fresca appena colta dall'albero.{green}1500 di scudo."
 	}
 	"Defender-2"
 	{
 		"en"	"Defender-2"
-		"ko"	"디펜더-2"
+		"it"	"Difensore-2"
 	}
 	"Defender-2 Desc"
 	{
 		"en"	"A mass-produced defensive-type drone.\n{green}Allies gain 2500 barrier"
-		"ko"	"이건 양산형 방어용 드론이다.\n{green}모든 아군에게 내구도 2500의 배리어를 부여합니다."
+		"it"	"Un drone di tipo difensivo prodotto in massa.\n{green}Gli alleati guadagnano 2500 barriera"
 	}
 	"Golden Chalice"
 	{
 		"en"	"Golden Chalice"
-		"ko"	"황금 술의 성배"
+		"it"	"Calice d'oro"
 	}
 	"Golden Chalice Desc"
 	{
 		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases for every Australium Ingot owned"
+		"it"	"Santi, cavalieri e pietisti. Sono tutti pazzi.\n{green}La velocità d'attacco di Ally aumenta per ogni lingotto di Australium posseduto"
 	}
 	"Queen's Fellowship"
 	{
 		"en"	"Queen's Fellowship"
-		"ko"	"여왕의 수호 반지"
+		"it"	"Borsa di studio della Regina"
 	}
 	"Queen's Fellowship Desc"
 	{
 		"en"	"...preparing for the calamity that would come to be known as the Profound Silence.\n{green}Ally health is converted into barrier with an additional 500"
-		"ko"	"앞으로 있을 '고요함'이라는 재난을 위한 것이다.\n{green}모든 아군의 체력은 추가로 500의 내구도를 보유한 배리어로 전환됩니다."
+		"it"	"...preparandosi per la calamità che sarebbe stata conosciuta come il Profondo Silenzio.\n{green}La salute di alleati viene convertita in barriera con un supplemento di 500"
 	}
 	"Ancient Tree Fruit"
 	{
 		"en"	"Ancient Tree Fruit"
-		"ko"	"옛 땅의 나무 열매"
+		"it"	"Frutti di alberi antichi"
 	}
 	"Ancient Tree Fruit Desc"
 	{
 		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts"
-		"ko"	"나무가 자라 열매를 맺으면 최초의 열매 네 개를 딴다.\n{green}무작위 소장품 3 개를 얻습니다."
+		"it"	"Quando l'albero produce frutti, vengono presi i primi quattro.\n{green}Ottenere 3 artefatti casuali"
 	}
 	"Steam Sale"
 	{
 		"en"	"Steam Sale"
-		"ko"	"스팀 세일"
+		"it"	"Vendita a vapore"
 	}
 	"Steam Sale Desc"
 	{
 		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Rogue Shop items cost 50％ less"
+		"it"	"Promosso da [PICCOLA IMPRESA INDIE] per [INSERIRE L'UTENTE QUI].\n{green}Gli articoli del Negozio Rogue costano il 50％ in meno"
 	}
 	"Steal Grigori"
 	{
 		"en"	"Take them from Father Grigori"
-		"ko"	"그리고리 신부의 물품을 강탈 시도"
+		"it"	"Prendeteli da padre Grigori"
 	}
 	"Steal Grigori Desc"
 	{
 		"en"	"Fight Father Grigori for the chance to take all his items without pay"
-		"ko"	"그리고리 신부와 전투합니다. 확률로 이 상점의 물품을 자금 소모 없이 전부 획득합니다."
+		"it"	"Combattete contro Padre Grigori per avere la possibilità di prendere tutti i suoi oggetti senza pagare"
 	}
 	"Steal Ruinian"
 	{
 		"en"	"Take them from the Ruinian"
-		"ko"	"루이나인의 물품을 전부 강탈"
+		"it"	"Prendeteli dal Ruinian"
 	}
 	"Steal Ruinian Desc"
 	{
 		"en"	"Steal all their precious items!\n{crimson}But twirl might not like that."
-		"ko"	"그가 판매하는 모든 물품을 전부 획득합니다!\n{crimson}하지만 트윌이 당신의 행동을 혐오할 것입니다."
+		"it"	"Ruba tutti i loro oggetti preziosi!{crimson}Ma a Twirl potrebbe non piacere."
 	}
 	"Mark of a Thief"
 	{
 		"en"	"Mark of a Thief"
-		"ko"	"도둑의 낙인"
+		"it"	"Marchio del ladro"
 	}
 	"Mark of a Thief Desc"
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shops will no longer appear for the rest of the adventure"
+		"it"	"Hai cercato di rubare a Padre Grigori, non tornerai.\n{red}Le botteghe non appariranno più per il resto dell'avventura"
 	}
 	"Evil Within from Ruina's Great Crystal"
 	{
 		"en"	"Evil Within from Ruina's Great Crystal"
-		"ko"	"루이나의 대 수정구에서 나온 악의 존재"
+		"it"	"Evil Within dal Grande Cristallo di Ruina"
 	}
 	"Evil Within from Ruina's Great Crystal Desc"
 	{
 		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies gain +25％ max health and +15％ damage."
+		"it"	"Hai rubato ai poveri ruiniani... Il male che è in te sembra dare potere a qualcuno.{crimson}I nemici guadagnano +25％ salute massima e +15％ danni."
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
 		"en"	"Great Within from Ruina's Great Crystal"
-		"ko"	"루이나의 대 수정구에서 나온 위대한 존재"
+		"it"	"Grande all'interno del Grande Cristallo di Ruina"
 	}
 	"Great Within from Ruina's Great Crystal Desc"
 	{
 		"en"	"The Ruinian Leaves happily, Twirl aproves of your actions!\n{green}Enemies gain -15％ max health and -10％ damage."
+		"it"	"Il Ruinian Leaves felice, Twirl approva le tue azioni!\n{green}I nemici guadagnano -15％ di salute massima e -10％ di danni."
 	}
 	"Ruinian Shop Help Out"
 	{
 		"en"	"Give Money to the Ruinian"
-		"ko"	"루이나인에게 자금을 주기"
+		"it"	"Dare soldi ai ruiniani"
 	}
 	"Ruinian Shop Help Out Desc"
 	{
 		"en"	"Give the Ruinian a certain amount of cash {green} and obtain Twirls Favor."
-		"ko"	"루이나인에게 일정량의 자금을 줍니다. {green} 트윌의 호감을 얻습니다."
+		"it"	"Dare al Ruinian una certa somma di denaro {green} e ottenere il Favore di Twirls."
 	}
 	"Bob's Duck"
 	{
 		"en"	"Bob's Duck"
-		"ko"	"밥의 오리"
+		"it"	"L'anatra di Bob"
 	}
 	"Bob's Duck Desc"
 	{
 		"en"	"Bob's Beloved pet duck, ''Dubby''.\n{green}Allies gain +25％ damage bonus, +25％ max health, +15％ attack speed, +15％ reload speed, +10％ damage resistance. The Duck will also greatly strengthen one player at a time"
+		"it"	"L'amato animale domestico di Bob, ''Dubby''.\n{green}Gli alleati guadagnano +25％ bonus ai danni, +25％ salute massima, +15％ velocità di attacco, +15％ velocità di ricarica, +10％ resistenza ai danni. L'Anatra rafforzerà notevolmente anche un giocatore alla volta"
 	}
 	"Underground Scorch"
 	{
 		"en"	"Underground Scorch"
-		"ko"	"땅속의 화흔"
+		"it"	"Bruciatura sotterranea"
 	}
 	"Underground Scorch Desc"
 	{
 		"en"	"The people of the sea are unconcerned with what happens on land...\n{green}Reduce Chaos Infliction by 6 if a stage is completed without gaining more then 5 Chaos Infliction"
-		"ko"	"{green}스테이지 클리어시, 전투에서 획득한 혼돈의 고통이 6 이하라면, 혼돈의 고통이 5 감소합니다."
+		"it"	"La gente del mare non si preoccupa di ciò che accade sulla terraferma...{green}Riduci l'Inflizione del Caos di 6 se una fase viene completata senza ottenere più di 5 Inflizioni del Caos"
 	}
 	"Great Machinations"
 	{
 		"en"	"Great Machinations"
-		"ko"	"태양 주조기"
+		"it"	"Grandi macchinazioni"
 	}
 	"Great Machinations Desc"
 	{
 		"en"	"Do not envy the sun on the surface. We can do better.\n{green}Reduce Chaos Infliction by 9 if a stage is completed without gaining more then 5 Chaos Infliction."
-		"ko"	"{green}스테이지 클리어시, 전투에서 획득한 혼돈의 고통이 9 이하라면, 혼돈의 고통이 5 감소합니다."
+		"it"	"Non invidiate il sole in superficie. Possiamo fare di meglio.\n{green}Riduci l'Inflizione del Caos di 9 se uno stage viene completato senza ottenere più di 5 Inflizioni del Caos."
 	}
 	"Solidified Lamp Oil"
 	{
 		"en"	"Solidified Lamp Oil"
-		"ko"	"응고된 등유"
+		"it"	"Olio per lampade solidificato"
 	}
 	"Solidified Lamp Oil Desc"
 	{
 		"en"	"Solidified oil that can be added to a lamp to keep it burning bright.\n{green}Gain 40％ less Chaos Infliction from stages"
+		"it"	"Olio solidificato che può essere aggiunto a una lampada per mantenerla accesa{green}Guadagni 40％ in meno di Inflizioni del Caos dagli stadi"
 	}
 	"Sanctified Lamp Oil"
 	{
 		"en"	"Sanctified Lamp Oil"
-		"ko"	"숭고하고 신성한 등유"
+		"it"	"Olio per lampade santificate"
 	}
 	"Sanctified Lamp Oil Desc"
 	{
 		"en"	"Processed lamp oil that the Inquisition issues to its Inquisitors.\n{green}Gain 60％ less Chaos Infliction from stages"
+		"it"	"Olio di lampada lavorato che l'Inquisizione rilascia ai suoi Inquisitori.{green}Guadagni 60％ in meno di Inflizioni del Caos dalle fasi"
 	}
 	"Mercenary Insurance"
 	{
 		"en"	"Mercenary Insurance"
-		"ko"	"용병 보험"
+		"it"	"Assicurazione Mercenaria"
 	}
 	"Mercenary Insurance Desc"
 	{
 		"en"	"Special insurance offered to independent mercenaries.\n {green}Players take 10％ less damage, take 35％ less if Chaos Infliction is at least 60"
+		"it"	"{green}I giocatori subiscono 10％ di danni in meno, 35％ in meno se l'Inflizione del Caos è almeno pari a 60"
 	}
 	"Energy Life Vest"
 	{
 		"en"	"Energy Life Vest"
-		"ko"	"전동 구명 조끼"
+		"it"	"Gilet Energy Life"
 	}
 	"Energy Life Vest Desc"
 	{
 		"en"	"A powered life vest to keep you safe, why does it run on power?\n{yellow}1 Australium Ingots are consumed to reduce 1 Chaos Infliction"
-		"ko"	"당신의 안전을 지켜주는 전동 구명 조끼. 왜 전기로 작동할까?\n{yellow}오스트레일륨 주괴를 1 소모하여 혼돈의 고통을 1 감소시킵니다."
+		"it"	"Un giubbotto di salvataggio alimentato per tenerti al sicuro, perché è alimentato? 1 lingotti di australium vengono consumati per ridurre 1 inflizione del Caos"
 	}
 	"The Scraper"
 	{
-		"en"	"고철 폐기 기계"
+		"en"	"The Scraper"
+		"it"	"Il raschietto"
 	}
 	"The Scraper Desc"
 	{
 		"en"	"Grind the rest for some useful scrap.\n{yellow}Recovered weapon are instead converted into 2 Australium Ingots"
-		"ko"	"비교적 쓸모없는 것들을 쓸모있는 것으로 바꿀 수 있을 것이다.\n{yellow}회수한 무기들은 대신 오스트레일륨 2개로 전환됩니다."
+		"it"	"Le armi recuperate vengono invece convertite in 2 lingotti di australium"
 	}
 	"Suspicious Shrimp Plate"
 	{
 		"en"	"Suspicious Shrimp Plate"
-		"ko"	"수상한 새우 접시"
+		"it"	"Piatto di gamberi sospetti"
 	}
 	"Suspicious Shrimp Plate Desc"
 	{
 		"en"	"Apparently it applies to copied personalities.\n{red}Machina Waldch appears until defeated"
-		"ko"	"아무래도 복제된 개체에게도 적용되는 사항 같다.\n{red}마키나 월드치가 등장하며, 처치될 때까지 사라지지 않습니다."
+		"it"	"Sembra che si applichi alle personalità copiate.\n{red}Machina Waldch appare fino a quando non viene sconfitta"
 	}
 	"Pack of Smokes"
 	{
 		"en"	"Pack of Smokes"
-		"ko"	"담배 한 갑"
+		"it"		"Pacchetto di sigarette"
 	}
 	"Pack of Smokes Desc"
 	{
 		"en"	"Hell yeah, I have the power of god.\n{green}Allies gain +20％ attack, reload, and healing speed {red}but gain 5 Chaos Infliction after every stage"
+		"it"	"{green}Gli alleati guadagnano +20％ velocità di attacco, di ricarica e di guarigione {red} ma guadagnano 5 Inflizioni del Caos dopo ogni fase"
 	}
 	"Silver Seal Letter"
 	{
 		"en"	"Silver Seal Letter"
-		"ko"	"은색 인장 편지"
+		"it"	"Lettera con sigillo d'argento"
 	}
 	"Silver Seal Letter Desc"
 	{
 		"en"	"You made a deal with an old man. If the time comes, it's now.\n{green}Recover a random weapon that has no cost to buy or upgrade."
-		"ko"	"당신은 한 노인과 거래했다. 때가 온다면, 지금이다.\n{green}구매나 개선에 비용이 들지 않는 무작위 무기 하나를 회수합니다."
+		"it"	"Hai fatto un patto con un vecchio. Se arriva il momento, è adesso.\n{green}Recupera un'arma casuale che non ha costi di acquisto o di potenziamento."
 	}
 	"Ancient Vuntulum Silver Coin"
 	{
 		"en"	"Ancient Vuntulum Silver Coin"
-		"ko"	"고대의 분툴룸 은화"
+		"it"	"Moneta d'argento antica Vuntulum"
 	}
 	"Ancient Vuntulum Silver Coin Desc"
 	{
 		"en"	"It is in very good shape, making it highly valuable as a collector's item.\n{green}Weapon ability cooldowns are reduced by 15s when a wave starts"
-		"ko"	"잘 보관되어 소장 가치가 높다.\n{green}웨이브가 시작될 때마다, 무기의 능력 쿨타임이 15초 감소한 채로 시작합니다."
+		"it"	"È in ottimo stato, il che lo rende un oggetto da collezione di grande valore.\n{green}Il cooldown dell'abilità dell'arma si riduce di 15 s quando inizia un'ondata"
 	}
 	"Bank of Vunt Check"
 	{
 		"en"	"Bank of Vunt Check"
-		"ko"	"분툴룸 은행 수표"
+		"it"	"Assegno della Banca di Vunt"
 	}
 	"Bank of Vunt Check Desc"
 	{
 		"en"	"An extravagant checkbook plated in gold and silver.\n{green}Weapon ability cooldowns are reduced by 25s when a wave starts"
-		"ko"	"금과 은이 박힌 엄청 고급스러운 수표장.\n{green}웨이브가 시작될 때마다, 무기의 능력 쿨타임이 25초 감소한 채로 시작합니다."
+		"it"	"Un libretto degli assegni stravagante placcato d'oro e d'argento.\n{green}Il cooldown delle abilità delle armi viene ridotto di 25 s quando inizia un'ondata"
 	}
 	"Second Economic Reform Act"
 	{
 		"en"	"Second Economic Reform Act"
-		"ko"	"제2경제개혁법"
+		"it"	"Seconda legge di riforma economica"
 	}
 	"Second Economic Reform Act Desc"
 	{
 		"en"	"With this bill as the starting point, Vuntulum formally began its path to become a hegemonic empire.\n{green}Weapon ability cooldowns are reduced by 50s when a wave starts"
+		"it"	"Con questo disegno di legge come punto di partenza, Vuntulum iniziò formalmente il suo percorso per diventare un impero egemonico.\n{green}I cooldown delle abilità delle armi vengono ridotti di 50s quando inizia un'ondata"
 	}
 	"String Puppet"
 	{
 		"en"	"String Puppet"
-		"ko"	"마리오네트"
+		"it"	"Marionetta a filo"
 	}
 	"String Puppet Desc"
 	{
 		"en"	"The more you struggle and try to break free, the tighter the strings get.\n{green}Enemies take Light mage damage every second while stunned"
-		"ko"	"벗어나려고 애쓸수록 실에 더 꽁꽁 묶인다.\n{green}적이 기절한 상태라면, 낮은 마법 피해를 받습니다."
+		"it"	"Più lotti e cerchi di liberarti, più le corde si stringono.\n{green}I nemici subiscono danni da Mago Leggero ogni secondo mentre sono storditi"
 	}
 	"Cold Water"
 	{
 		"en"	"Cold Water"
+		"it"	"Acqua fredda"
 	}
 	"Cold Water Desc"
 	{
 		"en"	"Good water, washes down any drinks.\n{green}You can equip a 2nd perk."
+		"it"	"Acqua buona, lava qualsiasi bevanda.\n{green}Puoi equipaggiare una seconda abilità."
 	}
 	"Children's Puppet"
 	{
 		"en"	"Children's Puppet"
-		"ko"	"동심 저격 인형"
+		"it"	"Marionette per bambini"
 	}
 	"Children's Puppet Desc"
 	{
 		"en"	"A simple puppet made by Iberian children using trinkets found on the seacoast.\n{green}Enemies take Heavy mage damage every second while stunned"
-		"ko"	"이베리아 아이들이 바닷가의 이상한 물건으로 만든 초라한 인형.\n{green}적이 기절한 상태라면, 높은 마법 피해를 받습니다"
+		"it"	"Una semplice marionetta realizzata dai bambini iberici con i ninnoli trovati sulla costa.\n{green}I nemici subiscono danni pesanti da mago ogni secondo mentre sono storditi"
 	}
 	"Garlic Bread"
 	{
 		"en"	"Garlic Bread"
-		"ko"	"마늘빵"
+		"it"	"Pane all'aglio"
 	}
 	"Garlic Bread Desc"
 	{
 		"en"	"Yummy.\n{green}Debuffs last 2x longer on ememies"
+		"it"	"Yummy.\n{green}I danni durano 2 volte di più sugli emuli"
 	}
 	"Flash Camera"
 	{
 		"en"	"Flash Camera"
-		"ko"	"하이플래시 카메라"
+		"it"	"Fotocamera flash"
 	}
 	"Flash Camera Desc"
 	{
 		"en"	"Every photo shot by this camera is washed out in white.\n{green}Enemies are stunned for x1.25 longer"
-		"ko"	"촬영한 필름을 현상해 보니 사진은 온통 하얗게 번졌다.\n{green}적에게 부여된 기절의 지속 시간이 1.25배 증가합니다."
+		"it"	"Ogni foto scattata da questa fotocamera è sbiadita in bianco.\n{green}I nemici sono storditi per x1,25 tempo"
 	}
 	"Therapy Tape"
 	{
 		"en"	"Therapy Tape"
-		"ko"	"정신 치료 테이프"
+		"it"	"Nastro terapeutico"
 	}
 	"Therapy Tape Desc"
 	{
 		"en"	"He tried to stop you from listening.\n{green}Enemies are stunned for x1.35 longer"
-		"ko"	"그가 당신이 듣는 걸 여러 번 반대했던 것이다.\n{green}적에게 부여된 기절의 지속 시간이 1.35배 증가합니다."
+		"it"	"Ha cercato di impedirti di ascoltare.\n{green}I nemici sono storditi per x1,35 tempo in più"
 	}
 	"Black Tulip"
 	{
 		"en"	"Black Tulip"
-		"ko"	"블랙 튤립"
+		"it"	"Tulipano nero"
 	}
 	"Black Tulip Desc"
 	{
 		"en"	"The Silence crushed the Iberians, so she wishes to speak up.\n{green}Ally damage and healing increases up to +60％ over 120s, {red}resets after using a weapon ability"
+		"it"	"Il Silenzio ha schiacciato gli iberici, quindi desidera parlare.\n{green}Il danno e la guarigione dell'alleato aumentano fino a +60％ in 120s, {red}si ripristina dopo aver usato un'abilità dell'arma"
 	}
 	"Castle Offspring"
 	{
 		"en"	"Castle's Offspring"
-		"ko"	"고성의 후손"
+		"it"	"La prole del castello"
 	}
 	"Castle Offspring Desc"
 	{
 		"en"	"With enough time, this box will become a whole new stage.\n{green}Ally max health increases up to +60％ over 300s, {red}resets when knocked down"
+		"it"	"Con il tempo necessario, questa scatola diventerà uno stadio completamente nuovo.\n{green}La salute massima aumenta fino a +60％ nell'arco di 300s, {red}si ripristina quando viene abbattuta"
 	}
 
 	"Waldch Assistance"
 	{
 		"en"	"Waldch's Assistance"
-		"ko"	"월드치의 협력"
+		"it"	"Assistenza Waldch"
 	}
 	"Waldch Assistance Desc"
 	{
 		"en"	"Waldch joins you."
-		"ko"	"월드치가 당신과 함께한다."
+		"it"	"Waldch si unisce a voi."
 	}
 	"Kahmlstein Guidance"
 	{
 		"en"	"Kahmlstein's Guidance"
-		"ko"	"캄르스타인의 안내"
+		"it"	"Guida di Kahmlstein"
 	}
 	"Kahmlstein Guidance Desc"
 	{
 		"en"	"You join Kahmlstein.\n{green}Ally weapon cooldowns are reduced by 1 second every 1.5 seconds"
+		"it"	"Ti unisci a Kahmlstein.\n{green}Il cooldown delle armi leggere si riduce di 1 secondo ogni 1,5 secondi"
 	}
 	"Twirl Guidance"
 	{
 		"en"	"Twirl's Guidance"
-		"ko"	"트윌의 안내"
+		"it"	"Guida di Twirl"
 	}
 	"Twirl Guidance Desc"
 	{
 		"en"	"You join Twirl.\n{green}Ally held weapon cooldowns are reduced by 0.5 second every 1.5 seconds, gain +15％ max mana and mana regen"
+		"it"	"Ti unisci a Twirl.\n{green}Il cooldown delle armi impugnate si riduce di 0,5 secondi ogni 1,5 secondi, guadagni +15％ mana massimo e rigenerazione del mana"
 	}
 	"Unauthorized Ruina Gem"
 	{
 		"en"	"Unauthorized Ruina Gem"
-		"ko"	"비허가 루이나 보석"
+		"it"	"Gemma Ruina non autorizzata"
 	}
 	"Unauthorized Ruina Gem Desc"
 	{
 		"en"	"You can feel it pulling to something.\n{green}The first ally each stage to fall below half health gets healed to full.\n{green}Lose 10 Chaos Infliction."
+		"it"	"{green}Il primo alleato di ogni fase che scende sotto la metà della salute viene guarito completamente.Perdere 10 Inflizioni del Caos."
 	}
 	"Terrible Nightmare"
 	{
 		"en"	"Terrible Nightmare"
-		"ko"	"끔찍한 악몽"
+		"it"	"Un incubo terribile"
 	}
 	"Missing Mountains"
 	{
 		"en"	"Missing Mountains"
-		"ko"	"보이지 않는 산"
+		"it"	"Montagne mancanti"
 	}
 	"Missing Mountains Lore"
 	{
 		"en"	"Just as you are about to make a misstep, someone pulls you backward.\nThe mountains' shadows overlap, and a distorted darkness creeps across your eyes.\nIn the face of your trepidation, the fortuneteller-looking woman asks you to draw a card."
-		"ko"	"당신이 봉변을 당하려는 찰나, 누군가가 당신을 붙잡았다. \n산맥의 그림자가 서로 교차하고 겹쳤으며, 일그러진 어둠이 당신들의 눈앞을 기어 지나갔다.\n당혹해하는 당신에게 점술가 차림을 한 여성이 카드를 한 장 뽑아보라고 권했다."
+		"it"	"Proprio quando state per fare un passo falso, qualcuno vi tira indietro.\nLe ombre delle montagne si sovrappongono e un'oscurità distorta si insinua nei vostri occhi.\n Di fronte alla vostra trepidazione, la donna dall'aspetto di indovina vi chiede di pescare una carta."
 	}
 	"Missing Mountains Option 1"
 	{
 		"en"	"Pick the tarot card on the left"
-		"ko"	"왼쪽의 카드를 선택"
+		"it"	"Scegliete la carta dei tarocchi a sinistra"
 	}
 	"Missing Mountains Lore 1"
 	{
 		"en"	"''Don't be afraid of your own fate... and don't fear turning away from it either.''"
-		"ko"	"''운명을 두려워 마세요…… 운명을 등지는 것도 두려워하지 마세요.''"
+		"it"	"''Non abbiate paura del vostro destino... e non temete nemmeno di allontanarvi da esso''"
 	}
 	"Missing Mountains Option 2"
 	{
 		"en"	"Pick the tarot card on the right"
-		"ko"	"오른쪽 카드를 선택"
+		"it"	"Scegliete la carta dei tarocchi a destra"
 	}
 	"Missing Mountains Lore 2"
 	{
 		"en"	"''Be at ease, the object he left behind is untainted.''"
-		"ko"	"''안심하세요, 그가 남긴 이 물건은 오염되지 않았습니다.''"
+		"it"	"''State tranquilli, l'oggetto che ha lasciato è incontaminato''"
 	}
 	"Missing Mountains Option 3"
 	{
 		"en"	"Pick the discarded tarot card by her hand"
-		"ko"	"그녀가 버린 카드를 선택"
+		"it"	"Scegliere la carta dei tarocchi scartata dalla sua mano"
 	}
 	"Missing Mountains Desc 3"
 	{
 		"en"	"{green}Gain 14 Australium Ingots"
-		"ko"	"{green}오스트레일륨 주괴를 14 얻습니다."
+		"it"	"{green}Ottieni 14 lingotti di australium"
 	}
 	"Missing Mountains Lore 3a"
 	{
 		"en"	"You can't clearly see her expression. Is it regret... or relief? She removes the purse on her, claiming that it is ''something useless I've lost to you.''"
-		"ko"	"당신은 그녀의 표정을 알 수 없었다. 안타까움인가? 아니면 석연함? 그녀는 '승부에서 진 무용지물'이라며 당신에게 몸에 지녔던 돈주머니를 건네주었다."
+		"it"	"Non si riesce a vedere chiaramente la sua espressione. È rammarico... o sollievo? Si toglie la borsetta che ha addosso, affermando che si tratta di ''qualcosa di inutile che ho perso per te''"
 	}
 	"Missing Mountains Lore 3b"
 	{
 		"en"	"You can't clearly see her expression. Is it regret... or relief? She only replies, ''Your mind is no longer clear.''"
-		"ko"	"당신은 그녀의 표정을 알 수 없었다. 안타까움인가? 아니면 석연함? 그녀는 그저, ''당신의 마음은 이제 깨끗하지 않군요.''라고만 답한다."
+		"it"	"Non si riesce a vedere chiaramente la sua espressione. È un rimpianto... o un sollievo? Lei risponde solo: ''La tua mente non è più lucida''"
 	}
 	"Clairvoyance"
 	{
 		"en"	"Clairvoyance's Direction"
-		"ko"	"예견이 향하는 곳"
+		"it"	"Direzione della chiaroveggenza"
 	}
 	"Clairvoyance Lore"
 	{
 		"en"	"The blizzard on the uninhabited icefield makes it impossible to see anything,\nand you and your team fight the extreme cold as you try your best to keep up with the mysterious procession in black.\nWhere are these Wildingens headed to?"
-		"ko"	"인적이 없는 빙원의 눈보라는 눈도 뜨기 힘들 정도로 거세다.\n당신과 탐사대는 극한의 추위 속에서 전력을 다해 그 신비한 검은 무리를 따라가고 있었다.\n그런데 이 와일딩겐들은 대체 어디로 향하고 있는 걸까?"
+		"it"	"La bufera di neve sul campo di ghiaccio disabitato rende impossibile vedere qualsiasi cosa, e tu e la tua squadra combattete contro il freddo estremo mentre cercate di fare del vostro meglio per tenere il passo con la misteriosa processione in nero.\nDove sono diretti questi Wildingen?"
 	}
 	"Clairvoyance Option 1"
 	{
 		"en"	"Tell me about the ''Tool''"
-		"ko"	"''도구''를 알려줘"
+		"it"	"Parlami dello ''Strumento''"
 	}
 	"Clairvoyance Lore 1"
 	{
 		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
-		"ko"	"그들은 한숨을 쉬며 아무 말 없이 계속 북쪽으로 향했다. 아무도 당신의 질문에 대답하지 않았고, 오직 한 사람만이 당신 곁을 지나칠 때 손에 무언가를 쥐여 주었다."
+		"it"	"Sospirano e marciano verso nord, nessuno di loro risponde alla tua domanda, tranne quello che ti porge qualcosa mentre passa."
 	}
 	"Clairvoyance Option 2"
 	{
 		"en"	"Tell me about the ''Path''"
-		"ko"	"''경로''를 알려줘"
+		"it"	"Parlami del ''Sentiero''"
 	}
 	"Clairvoyance Lore 2"
 	{
 		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
-		"ko"	"그들은 한숨을 쉬며 아무 말 없이 계속 북쪽으로 향했다. 아무도 당신의 질문에 대답하지 않았고, 오직 한 사람만이 당신 곁을 지나칠 때 손에 무언가를 쥐여 주었다."
+		"it"	"Sospirano e marciano verso nord, nessuno di loro risponde alla tua domanda, tranne quello che ti porge qualcosa mentre passa."
 	}
 	"Clairvoyance Option 3"
 	{
 		"en"	"Perhaps we can help each other out"
-		"ko"	"협력하는 게 어떨지"
+		"it"	"Forse possiamo aiutarci a vicenda"
 	}
 	"Clairvoyance Lore 3a"
 	{
 		"en"	"The bird-like Wildingens gradually walk further and further away. It seems none of them believe that you can be of any help to them. But you find something by the bonfire embers they left behind."
-		"ko"	"이 새와 같은 와일딩겐들은 점점 멀어져 갔고, 누구도 당신이 그들을 도울 수 있으리라 믿지 않았다. 당신은 더 이상 그들을 따라잡지 못했으나, 그들이 잠깐 쉬었다 간 곳에서 남겨진 물건 하나를 발견했다."
+		"it"	"I Wildingen, simili a uccelli, si allontanano sempre di più. Sembra che nessuno di loro creda che voi possiate aiutarli. Ma voi trovate qualcosa tra le braci del falò che si sono lasciati alle spalle."
 	}
 	"Clairvoyance Lore 3b"
 	{
 		"en"	"The Wildingens see the chaos in your mind and gradually walk further and further away, leaving nothing behind for you."
-		"ko"	"와일딩겐들은 당신의 마음 속에 있는 혼돈을 느끼고는 점점 멀어져 간다. 그 후 당신 외엔 아무것도 남아있지 않았다."
+		"it"	"I Wildingen vedono il caos nella vostra mente e si allontanano gradualmente, senza lasciarsi nulla alle spalle."
 	}
 	"Clairvoyance Option 4"
 	{
 		"en"	"Tell me about the ''Wildingen''"
-		"ko"	"''와일딩겐''들에 대해 알려줘"
+		"it"	"Mi parli del ''Wildingen''"
 	}
 	"Clairvoyance Lore 4"
 	{
 		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
-		"ko"	"아무도 당신의 질문에 대답하지 않았고, 오직 한 사람만이 당신 곁을 지나칠 때 조용히 경고했다. ''와일딩겐이라는건 소멸했습니다. 이젠 여기에 불포 말고는 아무것도 남지 않았어요.''"
+		"it"	"I Wildingen non rispondono, ma uno sussurra un avvertimento al loro passaggio: Wildingen non c'è più. Non c'è più nulla qui vulpo"
 	}
 	"Printer"
 	{
 		"en"	"The Printer"
-		"ko"	"프린터"
+		"it"	"La stampante"
 	}
 	"Printer Lore"
 	{
 		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
-		"ko"	"당신은 특이한 사무실용 프린터를 발견했는데, 프린터 곳곳에는 위험 표시 라벨이 붙어 있었다.\n자세히 보니, 프린터가 물리적인 물품을 복제할 수 있다고 적혀있다.\n상태가 안 좋아보이지만, 우리의 것으로 한 번 시도해볼까?"
+		"it"	"Trovate un'insolita stampante da ufficio, con etichette di pericolo dappertutto.\nDa vicino il testo dice che la stampante può duplicare oggetti fisici.\nSembra in cattive condizioni, dovremmo provarla con una delle nostre?"
 	}
 	"Printer Lore 1a"
 	{
 		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as you quickly grab what's left. Your original item and a duplicate."
-		"ko"	"프린터에 넣으니 시끄러운 끽끽거리는 소리가 나기 시작한다. 남은 것을 재빨리 집어 드는 순간 기계에 불이 붙는다. 당신이 넣었던 물품이 하나 더 복제되었다."
+		"it"	"Lo si inserisce nella stampante che inizia a emettere forti rumori stridenti. La macchina prende fuoco, mentre voi prendete rapidamente ciò che è rimasto. L'oggetto originale e un duplicato."
 	}
 	"Printer Lore 1b"
 	{
 		"#format"	"{1:t}"
 		"en"		"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap, {yellow}{1}{default} is gone."
-		"ko"		"프린터에 넣으니 시끄러운 끽끽거리는 소리가 나기 시작한다. 기계를 계속 지켜보는 도중, 갑자기 기계에 불이 붙는다. 불이 연소된 이후, 쓸모없는 폐기 조각들만 남아있었다. {yellow}{1}{default} 은(는) 소멸되었다..."
+		"it"		"Lo inserisci nella stampante che inizia a emettere forti rumori stridenti. La macchina prende fuoco mentre la vostra mente vi costringe a guardare. Quando l'incendio si spegne, rimangono solo i rottami, {yellow}{1}{default} è sparito."
 	}
 	"Printer Option 2"
 	{
 		"en"	"Rather not use this"
-		"ko"	"쓰지 않는게 나아보여"
+		"it"	"Piuttosto non utilizzare questo"
 	}
 	"Printer Lore 2"
 	{
 		"en"	"You notice there was an artifact left behind by the printer. You take it and leave the printer alone, better not take chances."
-		"ko"	"자세히 보니 당신은 프린터 뒤쪽에 소장품 하나가 놓여 있는것을 발견한다. 그걸 가져가고 프린터는 건드리지 않은채 떠났다. 위험을 감수하지 않는 게 좋겠지."
+		"it"	"Si nota la presenza di un manufatto lasciato dalla stampante. Lo prendete e lasciate la stampante da sola, meglio non correre rischi."
 	}
 	"Wish Fulfilled"
 	{
 		"en"	"Wish Fulfilled"
-		"ko"	"소원 성취"
+		"it"	"Desiderio esaudito"
 	}
 	"Wish Fulfilled Lore"
 	{
 		"en"	"You find a pile of boxes, a single guard stands there.\n''Pick one, no more.''"
-		"ko"	"당신 앞에는 엄청난 수의 상자가 쌓여있었고, 그것을 경비병 하나가 지키고 있었다.\n''하나만 가져가라.''"
+		"it"	"Trovate una pila di scatole, una sola guardia è lì in piedi\n''Prendine solo uno.''"
 	}
 	"Prophecy"
 	{
 		"en"	"Prophecy"
-		"ko"	"예언"
+		"it"	"Profezia"
 	}
 	"Prophecy Lore 1"
 	{
 		"en"	"Chaos looms over, but you're not alone. Somebody approaches."
-		"ko"	"혼돈이 다가오지만, 당신은 혼자가 아닙니다. 누군가 다가옵니다..."
+		"it"	"Il caos incombe, ma non siete soli. Qualcuno si avvicina."
 	}
 	"Prophecy Option 1a"
 	{
 		"en"	"Better run"
-		"ko"	"도주한다"
+		"it"	"Una corsa migliore"
 	}
 	"Prophecy Desc 1a"
 	{
 		"en"	"{green}Lose 15 Chaos Infliction"
-		"ko"	"{green}혼돈의 고통이 15 감소합니다."
+		"it"	"{green}Perdere 15 Inflizioni del Caos"
 	}
 	"Prophecy Lore 1a"
 	{
 		"en"	"Don't take the chance, it can overwhelm."
-		"ko"	"위험을 왜 감수해야할까? 압도당할 수도 있는데."
+		"it"	"Non correre il rischio di essere sopraffatto."
 	}
 	"Prophecy Option 1b"
 	{
 		"en"	"It's Waldch"
-		"ko"	"저건 월드치야"
+		"it"	"E' Waldch"
 	}
 	"Prophecy Desc 1b"
 	{
 		"en"	"{yellow}Waldch will acompany you {blue}and the ending is changed."
-		"ko"	"{yellow}월드치가 당신과 함께 하며 {blue}게임 엔딩이 변경됩니다."
+		"it"	"{yellow}Waldch vi accompagnerà {blue} e il finale è cambiato."
 	}
 	"Prophecy Lore 1b"
 	{
 		"en"	"You seek what he seeks now."
-		"ko"	"현재 당신과 그는 찾고 있는 목표가 같다."
+		"it"	"Voi cercate quello che lui cerca ora."
 	}
 	"Prophecy Option 1c"
 	{
 		"en"	"It's Twirl"
-		"ko"	"저건 트윌이야"
+		"it"	"È Twirl"
 	}
 	"Prophecy Desc 1c"
 	{
 		"en"	"{green}Twirl will acompany you {blue}and the ending is changed."
-		"ko"	"{green}트윌이 당신과 함께 하며 {blue}게임 엔딩이 변경됩니다."
+		"it"	"{green}Il turbine ti accompagnerà {blue} e il finale è cambiato."
 	}
 	"Prophecy Lore 1c"
 	{
 		"en"	"You seek what she seeks now."
-		"ko"	"현재 당신과 그녀는 찾고 있는 목표가 같다."
+		"it"	"Voi cercate quello che lei cerca ora."
 	}
 	"Prophecy Lore 2"
 	{
 		"en"	"Chaos still looms over. You feel knowledge in your head."
-		"ko"	"혼돈은 여전히 드리워져 있다. 당신의 머릿속에 지식이 깃드는 것을 느낀다."
+		"it"	"Il caos incombe ancora. Sentite la conoscenza nella vostra testa."
 	}
 	"Prophecy Option 2a"
 	{
 		"en"	"Better ignore"
-		"ko"	"빨리 잊어버리자"
+		"it"	"Meglio ignorare"
 	}
 	"Prophecy Desc 2a"
 	{
 		"en"	"{green}Lose 20 Chaos Infliction"
-		"ko"	"{green}혼돈의 고통이 20 감소합니다."
+		"it"	"{green}Perdere 20 Inflizioni del Caos"
 	}
 	"Prophecy Lore 2a"
 	{
 		"en"	"Ignore the thoughts given, it's insanity."
-		"ko"	"이 생각을 빨리 잊어버려야한다. 분명히 이건 지식이 아닌 광기다."
+		"it"	"Ignorare i pensieri dati, è una follia."
 	}
 	"Prophecy Option 2b"
 	{
 		"en"	"Knowledge of Weapons"
-		"ko"	"무기에 대한 지식"
+		"it"	"Conoscenza delle armi"
 	}
 	"Prophecy Desc 2b"
 	{
 		"en"	"{green}Recover 10 weapons {red}but gain 20 Chaos Infliction"
-		"ko"	"{green}무기 10개를 회수합니다. {red}혼돈의 고통이 20 증가합니다."
+		"it"	"{green}Recupera 10 armi {red} ma guadagni 20 Inflizioni del Caos"
 	}
 	"Prophecy Lore 2b"
 	{
 		"en"	"You know what to do. Retrieve what you need. Spread your damage."
-		"ko"	"당신은 이제 뭘 해야 할지 알고 있다. 필요한 걸 되찾고, 피해를 흩뿌리는 것이다."
+		"it"	"Sapete cosa fare. Recuperate ciò che vi serve. Distribuite i danni."
 	}
 	"Prophecy Option 2c"
 	{
 		"en"	"Knowledge of Chaos"
-		"ko"	"혼돈에 대한 지식"
+		"it"	"Conoscenza del Caos"
 	}
 	"Prophecy Desc 2c"
 	{
 		"en"	"{green}Gain 4000 cash {red}but gain 20 Chaos Infliction"
-		"ko"	"{green}추가 자금을 4000 얻습니다. {red}혼돈의 고통이 20 증가합니다."
+		"it"	"{green}Guadagni 4000 contanti {red} ma guadagni 20 Inflizioni del Caos"
 	}
 	"Prophecy Lore 2c"
 	{
 		"en"	"Know your enemy. If it's even your enemy anymore."
-		"ko"	"적을 먼저 알아야한다. 그게 더 이상 적이 아닐지라도."
+		"it"	"Conoscere il proprio nemico. Se è ancora il tuo nemico."
 	}
 	"Prophecy Lore 3"
 	{
 		"en"	"Kahmlstein appears, he asks you to assist him. Not chaos, something worse."
-		"ko"	"캄르스타인이 나타나서는, 당신에게 자신을 도우라고 요청한다. 혼돈이 아니라, 더 끔찍한게 나왔다."
+		"it"	"Kahmlstein appare e vi chiede di assisterlo. Non è il caos, è qualcosa di peggio."
 	}
 	"Prophecy Option 3a"
 	{
 		"en"	"Not the time"
-		"ko"	"지금은 때가 아니야"
+		"it"	"Non è il momento"
 	}
 	"Prophecy Desc 3a"
 	{
 		"en"	"{green}Lose 20 Chaos Infliction"
-		"ko"	"{green}혼돈의 고통이 20 감소합니다."
+		"it"	"{green}Perdere 20 Inflizioni del Caos"
 	}
 	"Prophecy Lore 3a"
 	{
 		"en"	"Now is not the time. After we're done here."
-		"ko"	"지금 당장은 때가 아니다. 이 곳의 일을 먼저 끝마쳐야 한다."
+		"it"	"Non è il momento. Quando avremo finito qui."
 	}
 	"Prophecy Option 3b"
 	{
 		"en"	"Assist him"
-		"ko"	"그를 돕는다"
+		"it"	"Assistetelo"
 	}
 	"Prophecy Desc 3b"
 	{
 		"en"	"{blue}Something happens..."
-		"ko"	"{blue}무언가가 일어납니다..."
+		"it"	"{blue}Succede qualcosa..."
 	}
 	"Prophecy Lore 4"
 	{
 		"en"	"Twirl offers something..."
-		"ko"	"트윌이 무언가를 건네준다..."
+		"it"	"Twirl offre qualcosa..."
 	}
 	"Prophecy Lore 4a"
 	{
 		"en"	"{snow}Twirl hands you a gem she made herself, how neat! Probably shouldnt give it away, gift is a gift afterall."
-		"ko"	"{snow}트윌이 나타나서는, 그녀가 손수 만든 보석을 당신에게 건네준다. 이 보석은 정말 멋지다! 다시 돌려주면 안 될것 같다. 선물은 선물이니까."
+		"it"	"{snow}Twirl ti porge un gioiello che ha fatto lei stessa, che bello! Probabilmente non dovrebbe darlo via, dopotutto un regalo è un regalo."
 	}
 	"Lost Villager"
 	{
 		"en"	"Lost Villager"
-		"ko"	"길 잃은 주민"
+		"it"	"Abitante perduto"
 	}
 	"Lost Villager Lore"
 	{
 		"en"	"A Medieval villager wonders, seeming lost. He carries a full backpack as he comes up to ask if you have any food."
-		"ko"	"중세 주민이 길을 잃은 듯, 주변을 어수선하게 돌아다니고 있다. 그는 가득 찬 배낭을 메고 당신에게 다가와 혹시 식량이 부족하진 않냐며 묻는다."
+		"it"	"Un abitante del villaggio medievale si aggira, sembrando smarrito. Porta uno zaino pieno e si avvicina per chiedere se avete del cibo."
 	}
 
 	"Lost Villager Option 1"
 	{
 		"en"	"Sure thing"
-		"ko"	"식량을 주세요"
+		"it"	"Certo che sì"
 	}
 	"Lost Villager Desc 1"
 	{
 		"en"	"{yellow}Receive something unknown"
-		"ko"	"{yellow}특별한 무언가를 얻습니다."
+		"it"	"{yellow}Ricevere qualcosa di sconosciuto"
 	}
 	"Lost Villager Lore 1"
 	{
 		"en"	"''Thank you, your very much kind, would you like something of mine?''"
-		"ko"	"''당신의 친절에 정말 감사드리오, 그럼 내가 가진 식량을 나눠드리겠소.''"
+		"it"	"Grazie, sei molto gentile, vuoi qualcosa di mio?"
 	}
 
 	"Lost Villager Option 1a"
 	{
 		"en"	"Some wood"
-		"ko"	"나무를 주세요"
+		"it"	"Alcuni tipi di legno"
 	}
 	"Lost Villager Desc 1a"
 	{
 		"en"	"{green}Recover 10 weapons"
-		"ko"	"{green}무기 10 개를 회수합니다."
+		"it"	"{green}Recupera 10 armi"
 	}
 	"Lost Villager Lore 1a"
 	{
 		"en"	"You take some wood, useful for some making some weapons."
-		"ko"	"당신은 그에게서 나무를 받았다. 이것들은 무기 제작에 유용할 것이다."
+		"it"	"Prendete del legno, utile per costruire delle armi."
 	}
 
 	"Lost Villager Option 1b"
 	{
 		"en"	"Some stone"
-		"ko"	"돌을 주세요"
+		"it"	"Alcune pietre"
 	}
 	"Lost Villager Desc 1b"
 	{
 		"en"	"{green}Gain 20 Australium Ingots"
-		"ko"	"{green}오스트레일륨 주괴를 20 얻습니다."
+		"it"	"{green}Guadagnate 20 lingotti di australium"
 	}
 	"Lost Villager Lore 1b"
 	{
 		"en"	"You take some stone, could be sold to the market."
-		"ko"	"당신은 그에게서 돌을 받았다. 이것들은 상점에서 판매할 수 있을 것이다."
+		"it"	"Prendi qualche pietra, che potrebbe essere venduta al mercato."
 	}
 
 	"Lost Villager Option 1c"
 	{
 		"en"	"Nothing else"
-		"ko"	"아무 것도 필요 없음"
+		"it"	"Nient'altro"
 	}
 	"Lost Villager Desc 1c"
 	{
 		"en"	"{green}Lose 20 Chaos Infliction"
-		"ko"	"{green}혼돈의 고통이 20 감소합니다"
+		"it"	"{green}Perdete 20 Inflizioni del Caos"
 	}
 	"Lost Villager Lore 1c"
 	{
 		"en"	"You ask for nothing. A peace of mind. He wanders off."
-		"ko"	"당신은 아무것도 필요하지 않다고 대답합니다. 마음에 평화가 찾아오고, 그는 다시 방황합니다."
+		"it"	"Non chiedete nulla. La pace della mente. Si allontana."
 	}
 	
 	"Lost Villager Option 2"
 	{
 		"en"	"Nothing to spare"
-		"ko"	"돈을 주세요"
+		"it"	"Non c'è niente da risparmiare"
 	}
 	"Lost Villager Desc 2"
 	{
 		"en"	"{green}Gain 3000 Cash"
+		"it"	"{green}Guadagni 3000 contanti"
 	}
 	"Lost Villager Lore 2"
 	{
 		"en"	"You tell him you don't have any to spare, he understands, hands you a piece of gold, and carries on."
-		"ko"	"당신은 그에게 자금이 없다며 말했고, 그는 이해하고는 당신의 손의 금덩이를 쥐어준 뒤 계속 나아갔습니다."
+		"it"	"Gli dici che non hai niente da parte, lui capisce, ti dà un pezzo d'oro e continua."
 	}
 
 	"Lost Villager Option 3"
 	{
 		"en"	"Rob him"
-		"ko"	"훔친다"
+		"it"	"Derubarlo"
 	}
 	"Lost Villager Desc 3"
 	{
 		"en"	"{green}Gain 2000 Cash, 15 Australium Ingots, and recover 4 weapons {red}but gain 25 Chaos Infliction"
+		"it"	"{green}Guadagni 2000 contanti, 15 lingotti di australium e recuperi 4 armi {red} ma guadagni 25 Inflizioni del Caos"
 	}
 	"Lost Villager Lore 3"
 	{
 		"en"	"You beat him up with your fear of other Villager's buildings. You steal his supplies while at it."
-		"ko"	"당신은 그가 지금까지 건설해둔 건물들이 마음에 들지 않아 그를 공격해 때려눕혔다. 그러는 동안 그의 물자를 훔쳤다."
+		"it"	"Lo picchiate con la vostra paura degli edifici degli altri abitanti del villaggio. Nel frattempo, gli rubi le provviste."
 	}
 
 	"Downtime Recreation"
 	{
 		"en"	"Downtime Recreation"
-		"ko"	"흥미진진"
+		"it"	"Tempo di inattività ricreativo"
 	}
 	"Downtime Recreation Lore"
 	{
 		"en"	"A slot machine out in the middle of the woods.\nUnguarded and covered in moss."
-		"ko"	"숲 한가운데에 있는 슬롯 머신을 발견했다.\n무방비 상태로 이끼로 뒤덮여 있다."
+		"it"	"Un slot machine in mezzo al bosco, non sorvegliata e coperta di muschio."
 	}
 
 	"Downtime Recreation Option 1"
 	{
 		"en"	"Insert a coin"
-		"ko"	"코인을 투입한다"
+		"it"	"Inserisci una moneta"
 	}
 	"Downtime Recreation Desc 1"
 	{
 		"en"	"{red}Lose 4 Australium Ingots"
-		"ko"	"{red}오스트레일륨 주괴를 4 잃습니다."
+		"it"	"{red}Perdi 4 lingotti di australium"
 	}
 	"Downtime Recreation Lore 1a"
 	{
 		"en"	"It hits a random assortment of items."
-		"ko"	"무작위로 다양한 요소들이 맞춰져가고 있다."
+		"it"	"Colpisce un assortimento casuale di articoli."
 	}
 	"Downtime Recreation Lore 1b"
 	{
 		"en"	"It hits 3 Cherries and pays out."
-		"ko"	"체리 3개가 나왔고 자금이 나왔다."
+		"it"	"Colpisce 3 ciliegie e paga."
 	}
 	"Downtime Recreation Lore 1c"
 	{
 		"en"	"It hits 3 Bars and spits something out."
-		"ko"	"주괴 3개가 나왔고 무언가가 기계 안에서 튀어나왔다."
+		"it"	"Raggiunge le 3 barre e sputa fuori qualcosa."
 	}
 	"Downtime Recreation Lore 1d"
 	{
 		"en"	"It hits 3 7s as you hear something break as it pays out, it refuses to work anymore."
-		"ko"	"숫자 7이 3개가 나왔고, 자금이 나오면서 무언가가 부서지는 소리가 났다. 이제 더 이상 작동하지 않는다."
+		"it"	"Raggiunge 3 7 mentre si sente qualcosa che si rompe mentre paga, si rifiuta di funzionare ancora."
 	}
 	"Downtime Recreation Lore 1e"
 	{
 		"en"	"It hits 3 Lemons as you hear clanging as a weapon spits out."
-		"ko"	"레몬 3개가 나왔고 짤그랑대는 소리와 함께 무기가 튀어나왔다."
+		"it"	"Colpisce 3 limoni e si sente il rumore di un'arma che viene sputata fuori."
 	}
 
 	"Downtime Recreation Option 2"
 	{
 		"en"	"Leave it alone"
-		"ko"	"떠난다"
+		"it"	"Lascia stare"
 	}
 	"Downtime Recreation Option 2b"
 	{
 		"en"	"Stop gambling"
-		"ko"	"안 해"
+		"it"	"Smettere di giocare d'azzardo"
 	}
 	"Downtime Recreation Desc 2"
 	{
 		"en"	"{green}Gain 4000 Cash"
-		"ko"	"{green}자금을 4000 얻습니다."
+		"it"	"{green}Guadagni 4000 contanti"
 	}
 	"Downtime Recreation Lore 2"
 	{
 		"en"	"Don't bet on it."
-		"ko"	"도박을 하고 싶진 않다."
+		"it"	"Non scommetteteci."
 	}
 
 	"Downtime Recreation Option 3"
 	{
 		"en"	"Break it"
-		"ko"	"부숴버린다"
+		"it"	"Rompilo"
 	}
 	"Downtime Recreation Desc 3"
 	{
 		"en"	"{green}Gain 30 Australium Ingots {red}but gain 15 Chaos Infliction"
-		"ko"	"{green}오스트레일륨 주괴를 30 얻습니다. {red}혼돈의 고통이 15 증가합니다."
+		"it"	"{green}Guadagi 30 lingotti di australium {red} ma guadagni 15 inflizioni del caos"
 	}
 	"Downtime Recreation Lore 3"
 	{
 		"en"	"You hit as it breaks, you retrieve what you can find."
-		"ko"	"당신은 이것이 파괴될 때까지 두들겼고, 곧 파괴되면서 그 안에 있던 것들을 챙겼다."
+		"it"	"Lo colpisci quando si rompe, recuperi quello che si riesce a trovare."
 	}
 
 	"Fortituous Opportunity"
 	{
 		"en"	"Fortituous Opportunity"
-		"ko"	"상부상조"
+		"it"	"Un'opportunità preziosa"
 	}
 	"Fortituous Opportunity Lore"
 	{
 		"en"	"A wandering merchant appears, asking if you wish\nto sell anything in exchange for something else."
-		"ko"	"떠돌이 상인이 나타나며, 당신에게 다른 것과 교환하여 팔고 싶은 물건이\n있는지 묻는다."
+		"it"	"Appare un mercante errante che chiede se si desidera vendere qualcosa in cambio di qualcos'altro."
 	}
 	"Fortituous Opportunity Lore 1"
 	{
 		"#format"	"{1:t}"
 		"en"		"You exchange your {yellow}{1}{default} and in return, he gives you something else."
-		"ko"		"당신의 {yellow}{1}{default} 을(를) 교환했고, 그는 당신에게 다른 것을 주었다."
+		"it"		"Scambiate il vostro {yellow}{1}{default} e in cambio lui vi dà qualcos'altro."
 	}
 	"Fortituous Opportunity Option 2"
 	{
 		"en"	"Move along"
-		"ko"	"계속 이동"
+		"it"	"Procedi"
 	}
 	"Fortituous Opportunity Desc 2"
 	{
 		"en"	"{green}Gain 4 Australium Ingots"
+		"it"	"{green}Guadagni 4 lingotti di australium"
 	}
 	"Fortituous Opportunity Lore 2"
 	{
 		"en"	"There's nothing to give. He drops some ingots and moves along."
-		"ko"	"그에게 주고 싶은 것은 없다. 그가 사라지면서 약간의 주괴를 떨어뜨렸다."
+		"it"	"Non c'è nulla da dare. Lascia cadere alcuni lingotti e si sposta."
 	}
 
 	"Emergency Dispatch"
 	{
 		"en"	"Emergency Dispatch"
-		"ko"	"긴급 파견"
+		"it"	"Dispaccio di emergenza"
 	}
 	"Emergency Dispatch Lore"
 	{
 		"en"	"You find a Wildingen, seemingly in worry.\nHe asks you if you can spare someone to help his family.\nTheir village is under attack."
-		"ko"	"당신은 곤란해하는 와일딩겐을 발견했다.\n그는 당신에게 자신의 가족을 도와줄 사람이 있냐며 묻는다.\n그들의 마을이 공격받고 있다고 한다."
+		"it"	"Trovi un Wildingen, apparentemente preoccupato.\n Vi chiede se potete risparmiare qualcuno per aiutare la sua famiglia.\n Il loro villaggio è sotto attacco."
 	}
 	"Emergency Dispatch Option 1"
 	{
 		"en"	"Send"
-		"ko"	"도와줄 사람을 파견한다"
+		"it"	"Invia"
 	}
 	"Emergency Dispatch Option 1a"
 	{
 		"en"	"Send"
-		"ko"	"파견한다"
+		"it"	"Invia"
 	}
 	"Emergency Dispatch Desc 1a"
 	{
 		"en"	"{red}Send Bob The Second to help."
-		"ko"	"{red}밥 2세를 파견해 도와준다."
+		"it"	"{red}Mandate Bob il Secondo ad aiutarci."
 	}
 	"Emergency Dispatch Option 1b"
 	{
 		"en"	"Send "
-		"ko"	"이 사람을 파견한다: "
+		"it"	"Invia"
 	}
 	"Emergency Dispatch Desc 1b"
 	{
 		"en"	"{red}Send these players to help. {default}They will be forced away and will return upon reaching the next chapter."
-		"ko"	"{red}이 플레이어들을 긴급 파견시킵니다. {default}이 플레이어들은 다음 챕터가 시작되기 전까지는 돌아올 수 없습니다."
+		"it"	"{red}Invia questi giocatori in aiuto. {default}Saranno costretti ad allontanarsi e torneranno al prossimo capitolo."
 	}
 	"Emergency Dispatch Lore 1a"
 	{
 		"#format"	"{1:N}"
 		"en"		"You send {red}{1} {default}to go with him. They head off into the distance."
-		"ko"		"당신은 {red}{1} {default}에게 그들을 도와달라고 요청했다. 그들은 저 멀리 사라졌다."
+		"it"		"Mandate {red}{1} {default}ad andare con lui. Si dirigono in lontananza."
 	}
 	"Emergency Dispatch Lore 1b"
 	{
 		"#format"	"{1:N},{2:N}"
-		"en"		"당신은 {red}{1} {default}과 {red}{2} {default}에게 그들을 도와달라고 요청했다. 그들은 저 멀리 사라졌다."
+		"en"		"You send {red}{1} {default}and {red}{2} {default}to go with him. They head off into the distance."
+		"it"		"Invii {red}{1} {default}e {red}{2} {default}ad andare con lui. Si dirigono in lontananza."
 	}
 	"Emergency Dispatch Lore 1c"
 	{
 		"en"	"You ask Bob The Second to go with him. They head off into the distance."
-		"ko"	"당신은 밥 2세에게 그들을 도와달라고 요청했다. 그들은 저 멀리 사라졌다."
+		"it"	"Chiedi a Bob Secondo di andare con lui. Si dirigono in lontananza."
 	}
 	"Emergency Dispatch Option 2"
 	{
 		"en"	"We cannot spare"
-		"ko"	"우리도 여유가 없다"
+		"it"	"Non possiamo risparmiare"
 	}
 	"Emergency Dispatch Desc 2"
 	{
 		"en"	"{yellow}Receive something unknown"
-		"ko"	"{yellow}특별한 무언가를 얻습니다"
+		"it"	"{yellow}Ricevi qualcosa di sconosciuto"
 	}
 	"Emergency Dispatch Lore 2"
 	{
 		"en"	"You say you're going off to deal with Chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
+		"it"	"Dite che state andando ad affrontare il Caos stesso. Lui almeno ti ringrazia per aver risolto il futuro. Ti consegna del denaro e scappa via."
 	}
 	"Emergency Dispatch Return 1"
 	{
 		"#format"	"{1:N}"
 		"en"		"{red}{1} {default}have returned, and with some money."
-		"ko"		"{red}{1} {default}가 약간의 자금을 가지고 돌아왔습니다."
+		"it"		"{red}{1} {default}sono tornati, e con del denaro."
 	}
 	"Emergency Dispatch Return 2"
 	{
 		"#format"	"{1:N},{2:N}"
 		"en"		"{red}{1} {default}and {red}{2} {default}have returned, and with some money."
-		"ko"		"{red}{1} {default}와 {red}{2} {default}가 약간의 자금을 가지고 돌아왔습니다."
+		"it"		"{red}{1} {default}e {red}{2} {default} sono tornati, e con del denaro."
 	}
 	"Emergency Dispatch Return 3"
 	{
 		"en"	"Bob The Second returns with some money in hand."
-		"ko"	"밥 2세가 약간의 자금을 가지고 돌아왔습니다."
+		"it"	"Bob The Second torna con dei soldi in mano."
 	}
 
 	"Bad Water"
 	{
 		"en"	"⚔ Bad Water"
+		"it"	"⚔ Acqua cattiva"
 	}
 	"Bad Water!"
 	{
 		"en"	"⚠ Bad Water"
+		"it"	"⚠ Acqua cattiva"
 	}
 	"Town Center"
 	{
 		"en"	"⚔ Town Center"
+		"it"	"⚔ centro città"
 	}
 	"Town Center!"
 	{
 		"en"	"⚠Town Center"
+		"it"	"centro città"
 	}
 	"Demon Box"
 	{
 		"en"	"⚔ Demon Box"
+		"it"	"⚔ Scatola dei demoni"
 	}
 	"Demon Box!"
 	{
 		"en"	"⚠ Demon Box"
+		"it"	"⚠ Scatola dei demoni"
 	}
 	"Scout Rush"
 	{
 		"en"	"⚔ Scout Rush"
+		"it"	"⚔ Scout Rush"
 	}
 	"Scout Rush!"
 	{
 		"en"	"⚠ Scout Rush"
+		"it"	"⚠ Scout Rush"
 	}
 	"False Information"
 	{
 		"en"	"⚔ False Information"
+		"it"	"⚔ Informazioni false"
 	}
 	"False Information!"
 	{
 		"en"	"⚠ False Information"
+		"it"	"⚠ informazioni false"
 	}
 	"Jumping Jacks"
 	{
 		"en"	"⚔ Jumping Jacks"
+		"it"	"⚔ Jumping Jacks"
 	}
 	"Jumping Jacks!"
 	{
 		"en"	"⚠ Jumping Jacks"
+		"it"	"⚠ Jumping Jacks"
 	}
 	"Lost Empires"
 	{
 		"en"	"⚔ Lost Empires"
+		"it"	"⚔ imperi perduti"
 	}
 	"Lost Empires!"
 	{
 		"en"	"⚠ Lost Empires"
+		"it"	"⚠ imperi perduti"
 	}
 	"Supplies"
 	{
 		"en"	"⚔ Supplies"
+		"it"	"⚔ Forniture"
 	}
 	"Supplies!"
 	{
 		"en"	"⚠ Supplies"
+		"it"	"⚠ Forniture"
 	}
 	"No Swimming"
 	{
 		"en"	"⚔ No Swimming"
+		"it"	"⚔ Vietato Nuotare"
 	}
 	"No Swimming!"
 	{
 		"en"	"⚠ No Swimming"
+		"it"	"⚠ Vietato Nuotare"
 	}
 	"All Hallem"
 	{
 		"en"	"⚔ All Hallem"
+		"it"	"⚔ Tutto Hallem"
 	}
 	"All Hallem!"
 	{
 		"en"	"⚠ All Hallem"
+		"it"	"⚠ Tutto Hallem"
 	}
 	"Camel Riders"
 	{
 		"en"	"⚔ Camel Riders"
+		"it"	"⚔ cavalieri di cammelli"
 	}
 	"Camel Riders!"
 	{
 		"en"	"⚠ Camel Riders"
+		"it"	"⚠ cavalieri di cammelli"
 	}
 	"Secret Hunter"
 	{
 		"en"	"⚔ Secret Hunter"
+		"it"	"⚔ cacciatore segreto"
 	}
 	"Secret Hunter!"
 	{
 		"en"	"⚠ Secret Hunter"
+		"it"	"⚠ cacciatore segreto"
 	}
 	"Whiteflower Avenger's"
 	{
 		"en"	"⚔ Whiteflower Avenger's"
+		"it"	"⚔ Biancofiore del vendicatore"
 	}
 	"Whiteflower Avenger's!"
 	{
 		"en"	"⚠ Whiteflower Avenger's"
+		"it"	"⚠ Fiore bianco del vendicatore"
 	}
 	"Barricade"
 	{
 		"en"	"⚔ Barricade"
+		"it"	"⚔ Barricata"
 	}
 	"Barricade!"
 	{
 		"en"	"⚠ Barricade"
+		"it"	"⚠ Barricata"
 	}
 	"Into The Shed"
 	{
 		"en"	"⚔ Into The Shed"
+		"it"	"⚔ Nel capannone"
 	}
 	"Into The Shed!"
 	{
 		"en"	"⚠ Into The Shed"
+		"it"	"⚠ Nel capannone"
 	}
 	"The Abomination"
 	{
 		"en"	"⚔ The Abomination"
+		"it"	"l'abominio"
 	}
 	"The Abomination!"
 	{
 		"en"	"⚠ The Abomination"
+		"it"	"⚠ l'abominio"
 	}
 	"Up To The Roof"
 	{
 		"en"	"⚔ Up To The Roof"
+		"it"	"⚔ Fino al tetto"
 	}
 	"Up To The Roof!"
 	{
 		"en"	"⚠ Up To The Roof"
+		"it"	"⚠ Fino al tetto"
 	}
 	"Rock Collection"
 	{
 		"en"	"⚔ Rock Collection"
+		"it"	"⚔ Collezione Rock"
 	}
 	"Rock Collection!"
 	{
 		"en"	"⚠ Rock Collection"
+		"it"	"⚠ Collezione rock"
 	}
 	"Hitman II"
 	{
 		"en"	"⚔ Hitman II"
+		"it"	"⚠ hitman II"
 	}
 	"Hitman II!"
 	{
 		"en"	"⚠ Hitman II"
+		"it"	"⚠ hitman II"
 	}
 	"Pre-Heated Oven"
 	{
 		"en"	"⚔ Pre-Heated Oven"
+		"it"	"⚔ Forno preriscaldato"
 	}
 	"Pre-Heated Oven!"
 	{
 		"en"	"⚠ Pre-Heated Oven"
+		"it"	"⚠ Forno preriscaldato"
 	}
 	"Pre-Heated Oven?"
 	{
 		"en"	"☠ Pre-Heated Oven"
+		"it"	"☠ Forno preriscaldato"
 	}
 	"Yummer"
 	{
 		"en"	"⚔ Yummer"
+		"it"	"⚔gnammer"
 	}
 	"Yummer!"
 	{
 		"en"	"⚠ Yummer"
+		"it"	"⚠ Gnammer"
 	}
 	"Yummer?"
 	{
 		"en"	"☠ Yummer"
+		"it"	"☠ gnammer"
 	}
 	"Heavy Forest"
 	{
 		"en"	"⚔ Heavy Forest"
+		"it"	"⚔ foresta pesante"
 	}
 	"Heavy Forest!"
 	{
 		"en"	"⚠ Heavy Forest"
+		"it"	"⚠ Foresta pesante"
 	}
 	"Heavy Forest?"
 	{
 		"en"	"☠ Heavy Forest"
+		"it"	"☠ foresta pesante"
 	}
 	"Frostbite"
 	{
 		"en"	"⚔ Frostbite"
+		"it"	"⚔ Morso di gelo"
 	}
 	"Frostbite!"
 	{
 		"en"	"⚠ Frostbite"
+		"it"	"⚠ Morso di gelo"
 	}
 	"Frostbite?"
 	{
 		"en"	"☠ Frostbite"
+		"it"	"☠ Morso di gelo"
 	}
 	"Heavy Jacket"
 	{
 		"en"	"⚔ Heavy Jacket"
+		"it"	"⚔ giacca pesante"
 	}
 	"Heavy Jacket!"
 	{
 		"en"	"⚠ Heavy Jacket"
+		"it"	"⚠ giacca pesante"
 	}
 	"Heavy Jacket?"
 	{
 		"en"	"☠ Heavy Jacket"
+		"it"	"☠ giacca pesante"
 	}
 	"Freezer Water"
 	{
 		"en"	"⚔ Freezer Water"
+		"it"	"⚔ Acqua di congelamento"
 	}
 	"Freezer Water!"
 	{
 		"en"	"⚠ Freezer Water"
+		"it"	"⚠ Acqua di congelamento"
 	}
 	"Freezer Water?"
 	{
 		"en"	"☠ Freezer Water"
+		"it"	"☠ Acqua di congelamento"
 	}
 	"Home of the North"
 	{
 		"en"	"⚔ Home of the North"
+		"it"	"⚔ Casa del Nord"
 	}
 	"Home of the North!"
 	{
 		"en"	"⚠ Home of the North"
+		"it"	"⚠ Casa del Nord"
 	}
 	"Home of the North?"
 	{
 		"en"	"☠ Home of the North"
+		"it"	"☠ Casa del Nord"
 	}
 	"Das Concrete"
 	{
 		"en"	"⚔ Das Concrete"
+		"it"	"⚔ Das Concrete"
 	}
 	"Das Concrete!"
 	{
 		"en"	"⚠ Das Concrete"
+		"it"	"⚠ Das Concrete"
 	}
 	"Machine Works"
 	{
 		"en"	"⚔ Machine Works"
+		"it"	"⚔ Lavori a macchina"
 	}
 	"Machine Works!"
 	{
 		"en"	"⚠ Machine Works"
+		"it"	"⚠ Lavori di macchina"
 	}
 	"All In Chaos"
 	{
 		"en"	"⚔ All In Chaos"
+		"it"	"⚔ Tutto nel caos"
 	}
 	"All In Chaos!"
 	{
 		"en"	"⚠ All In Chaos"
+		"it"	"⚠ Tutto nel caos"
 	}
 	"Silk Cradle"
 	{
 		"en"	"Silk Cradle"
-		"ko"	"실크 요람"
+		"it"	"Culla di seta"
 	}
 	"Anchordeep"
 	{
 		"en"	"Anchordeep"
-		"ko"	"앵커딥"
+		"it"	"Anchordeep"
 	}
 	"Underground"
 	{
 		"en"	"Underground"
-		"ko"	"지하"
+		"it"	"Metropolitana"
 	}
 	"Anura"
 	{
 		"en"	"Anura"
-		"ko"	"개구리"
+		"it"	"Anura"
 	}
 	"Darkwood"
 	{
 		"en"	"Darkwood"
-		"ko"	"다크우드"
+		"it"	"Darkwood"
 	}
 	"Last of Interitus"
 	{
 		"en"	"Last of Interitus"
-		"ko"	"라스트 오브 인테리투어스"
+		"it"	"L'ultimo di Interitus"
 	}
 	"Escapee 1"
 	{
 		"en"	"Escapee"
-		"ko"	"탈출"
+		"it"	"Fuggitivo"
 	}
 	"Escapee"
 	{
 		"en"	"Escapee"
-		"ko"	"탈출"
+		"it"	"Fuggiasco"
 	}
 	"Escapee Lore"
 	{
 		"en"	"There's something on the other side of this.\nWe just need to escape."
-		"ko"	"이 곳 반대편에 무언가가 있다.\n우린 빨리 탈출해야한다."
+		"it"	"C'è qualcosa dall'altra parte. Dobbiamo solo scappare."
 	}
 	"Clashing Colors"
 	{
 		"en"	"⚠ Clashing Colors"
+		"it"	"⚠ colori contrastanti"
 	}
 	"Age Cheats"
 	{
 		"en"	"⚠ Age Cheats"
+		"it"	"trucchi per l'età"
 	}
 	"The Old The New"
 	{
 		"en"	"⚠ The Old, The New"
+		"it"	"⚠ Il vecchio, il nuovo"
 	}
 	"Not so Missunderstood"
 	{
 		"en"	"⚔ Not so Misunderstood"
+		"it"	"⚔ Non così incompreso"
 	}
 	"Not so Missunderstood!"
 	{
 		"en"	"⚠ Not so Misunderstood"
+		"it"	"⚠ Non così incompresi"
 	}
 	"Broken Defenses"
 	{
 		"en"	"⚔ Broken Defenses"
+		"it"	"⚔ Difese rotte"
 	}
 	"Broken Defenses!"
 	{
 		"en"	"⚠ Broken Defenses"
+		"it"	"⚠ difese rotte"
 	}
 	"Godly army Under Chaos"
 	{
 		"en"	"⚔ Godly Army Under Chaos"
+		"it"	"⚔ Esercito divino sotto il caos"
 	}
 	"Godly army Under Chaos!"
 	{
 		"en"	"⚠ Godly Army Under Chaos"
+		"it"	"⚠ Esercito divino sotto il caos"
 	}
 	"Forsaken Tribe"
 	{
 		"en"	"⚔ Forsaken Tribe"
+		"it"	"⚔ tribù Abbandonata"
 	}
 	"Forsaken Tribe!"
 	{
 		"en"	"⚠ Forsaken Tribe"
+		"it"	"⚠ Tribù abbandonata"
 	}
 	"Roaming Chaos Demons"
 	{
 		"en"	"⚔ Roaming Chaos Demons"
+		"it"	"⚔ demoni del Caos vaganti"
 	}
 	"Roaming Chaos Demons!"
 	{
 		"en"	"⚠ Roaming Chaos Demons"
+		"it"	"⚠ demoni del caos vaganti"
 	}
 	"Antagonising Iberians"
 	{
 		"en"	"⚔ Antagonising Iberians"
+		"it"	"⚔ Antagonisti degli iberici"
 	}
 	"Antagonising Iberians!"
 	{
 		"en"	"⚠ Antagonising Iberians"
+		"it"	"⚠ Antagonisti degli iberici"
 	}
 	"Lost Zombies"
 	{
 		"en"	"⚔ Lost Zombies"
+		"it"	"⚔ zombi perduti"
 	}
 	"Lost Zombies!"
 	{
 		"en"	"⚠ Lost Zombies"
+		"it"	"⚠ zombi perduti"
 	}
 	"Mercs against Mercs"
 	{
 		"en"	"⚔ Mercs Against Mercs"
+		"it"	"⚔ Mercs contro Mercs"
 	}
 	"Mercs against Mercs!"
 	{
 		"en"	"⚠ Mercs Against Mercs"
+		"it"	"⚠ Mercs contro Mercs"
 	}
 	"Ruania"
 	{
 		"en"	"Ruania"
-		"ko"	"루이나인"
+		"it"	"Ruania"
 	}
 	"Chaos Ruinian"
 	{
 		"en"	"Chaos Ruinian"
-		"ko"	"혼돈의 루이나인"
+		"it"	"Caos ruiniano"
 	}
 	"The Irritated Soldiers"
 	{
 		"en"	"The Irritated Soldiers"
-		"ko"	"화난 병사들"
+		"it"	"I soldati irritati"
 	}
 	"Hiding Ruinian"
 	{
 		"en"	"Hiding Ruinian"
-		"ko"	"숨은 루이나인"
+		"it"	"Nascondi Ruinian"
 	}
 	"The Magic Betrayed"
 	{
 		"en"	"The Magic Betrayed"
-		"ko"	"배신당한 마법"
+		"it"	"La magia tradita"
 	}
 	"The Curtain"
 	{
 		"en"	"The Curtain"
+		"it"	"Il sipario"
 	}
 	"The Great Demons Of Hallam"
 	{
 		"en"	"The Great Demons Of Hallam"
-		"en"	"알할림의 대악마"
+		"it"	"I grandi demoni di Hallam"
 	}
 	"Mazeat Lost Tech Lore"
 	{
 		"en"	"You stumble upon a great artifact guarded by mechanisms..."
-		"ko"	"당신은 무언가 알 수 없는 기계로 보호받고 있는 소장품을 발견한다..."
+		"it"	"Vi imbattete in un grande artefatto custodito da meccanismi..."
 	}
 	"Mazeat Lost Tech Option 1a"
 	{
 		"en"	"Take Something else"
-		"ko"	"다른 걸 가져간다"
+		"it"	"Prendi qualcos'altro"
 	}
 	"Mazeat Lost Tech Desc 1a"
 	{
 		"en"	"Take whats inside the closet instead, cant risk it.\n{green}Obtain money and a high value item."
-		"ko"	"저것 대신 그 주변의 서랍 안에 있는 물건을 챙겼다. 위험을 감수하고 싶진 않다.\n{green}고밸류 아이템과 추가 자금을 얻습니다."
+		"it"	"Prendete invece quello che c'è nell'armadio, non potete rischiare.\n{green}Ottenere denaro e un oggetto di alto valore."
 	}
 	"Mazeat Lost Tech Option 1b"
 	{
 		"en"	"Take The Price"
-		"ko"	"강제로 가져간다"
+		"it"	"Accetti il prezzo"
 	}
 	"Mazeat Lost Tech Desc 1b"
 	{
 		"en"	"{green}Obtain a Grant item, {crimson}but you might attract unwanted attention."
+		"it"	"{green}Ottieni un oggetto Grant, {crimson}ma potreste attirare attenzioni indesiderate."
 	}
 }

@@ -9,48 +9,49 @@
 	{
 		"en" 	"Militia"
 		"ru" 	"Милита"
-		"ko" 	"시민군"
+		"it" 	"Milizia"
 	}
 	"Militia Desc"
 	{
 		"en" 	"Militia Desc :3"
 		"ru" 	"Описание Милиты :3"
-		"ko" 	"시민군 설명 :3"
+		"it" 	"Descrizione Milizia :3"
 	}
 	"Villager"
 	{
 		"en"	"Villager"
 		"ru" 	"Житель"
-		"ko"	"주민"
+		"it" 	"Abitante del villaggio"
 	}
 	"Villager Desc"
 	{
 		"en"	"Villager Desc"
 		"ru" 	"Описание Жителя"
-		"ko"	"주민 설명"
+		"it" 	"Descrizione Abitante"
 	}
 	"Dead Tree"
 	{
 		"en"	"Dead Tree"
 		"ru" 	"Мёртвоё дерево"
-		"ko"	"죽은 나무"
+		"it" 	"Descrizione Albero morto"
 	}
 	"Dead Tree Desc"
 	{
 		"en"	"Provides some wood"
 		"ru" 	"Даёт немного древесины"
-		"ko"	"나무를 제공합니다."
+		"it" 	"Descrizione Albero morto"
 	}
 	"Town Center"
 	{
 		"en"	"Town Center"
 		"ru" 	"Центр города"
-		"ko"	"마을 회관"
+		"it" 	"Descrizione Centro Città"
+		
 	}
 	"Town Center Desc"
 	{
 		"en"	"Town Center Desc"
 		"ru" 	"Описание центра города"
-		"ko"	"마을 회관 설명"
+		"it" 	"Descrizione Centro Città"
 	}
 }

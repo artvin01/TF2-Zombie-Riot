@@ -3,7 +3,7 @@
 	"nothing"
 	{
 		"en" 		"Example Text!"
-		"ko" 		"예시 텍스트!"
+		"it"		"Esempio di Testo!"
 	}
 	"Headcrab Zombie"
 	{
@@ -11,12 +11,12 @@
 		"es"		"Zombi Cangrejo"
 		"ru" 		"Зомби"
 		"fr" 		"Zombie"
-		"ko" 		"헤드크랩 좀비"
+		"it"		"Zombie Headcrab"
 	}
 	"Z-Main"
 	{
 		"en" 		"Z-Main"
-		"ko" 		"Z-Main"
+		"it"		"Z-Main"
 	}
 	"Metro Cop"
 	{
@@ -24,14 +24,14 @@
 		"es"		"Policia del Metro"
 		"ru" 		"Метро Коп"
 		"fr"		"Métro-police"
-		"ko"		"시민 보호 기동대"
+		"it"		"Polizia della Metro"
 	}
 	"Sensal"
 	{
 		"en"		"Sensal"
 		"ru" 		"Сенсал"
 		"fr"		"Sensal"
-		"ko"		"센살"
+		"it"		"Sensal"
 	}
 	"Bob The First"
 	{
@@ -39,7 +39,7 @@
 		"es"		"Bob, el Primero"
 		"ru" 		"боб первый"
 		"fr"		"Bob I"
-		"ko"		"밥 1세"
+		"it"		"Bob il Primo"
 	}
 	"??????? First"
 	{
@@ -47,7 +47,7 @@
 		"es"		"??????? Primero"
 		"ru" 		"??????? Первый"
 		"fr"		"??????? I"
-		"ko"		"? 1세"
+		"it"		"??????? Primo"
 	}
 	"??? the First"
 	{
@@ -55,14 +55,14 @@
 		"es"		"???, el Primero"
 		"ru" 		"??? Первый"
 		"fr"		"??? I"
-		"ko"		"? ?세"
+		"it"		"??? il Primo"
 	}
 	"Chaos Kahmlstein"
 	{
 		"en"		"Chaos Kahmlstein"
 		"ru" 		"Хаос Кахмлстейн"
 		"fr"		"Kahmlstein Chaos"
-		"ko"		"카오스 캄르스타인"
+		"it"		"Caos Kahmlstein"
 	}
 	"Donnerkrieg"
 	{
@@ -71,7 +71,7 @@
 		"pt"		"Donnerkrieg"
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
-		"ko"		"도너크리그"
+		"it"		"Donnerkrieg"
 	}
 	"Schwertkrieg"
 	{
@@ -80,6 +80,6 @@
 		"pt"		"Schwertkrieg"
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
-		"ko"		"슈베르트크리그"
+		"it"		"Schwertkrieg"
 	}
 }

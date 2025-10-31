@@ -30,7 +30,7 @@ void RefragmentedWinterSniper_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = 0;
+	data.Category = Type_Aperture;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);

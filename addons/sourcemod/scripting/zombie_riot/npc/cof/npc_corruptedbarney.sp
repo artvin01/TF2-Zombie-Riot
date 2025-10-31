@@ -288,7 +288,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
 				i_CurrentEquippedPerk[client] = 0;
 				UpdatePerkName(client);
-				i_AmountDowned[client] = GetRandomInt(-500000, 500000);
+				i_AmountDowned[client] = GetRandomInt(-50, 50);
 				
 				KillFeed_Show(client, client, client, client, -1, 0, false);
 				if(i_RaidGrantExtra[npc.index] == 1)

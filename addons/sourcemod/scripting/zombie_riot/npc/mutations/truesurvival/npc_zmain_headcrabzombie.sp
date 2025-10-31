@@ -75,7 +75,7 @@ public void ZMainHeadcrabZombie_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 //	fl_KamikazeInitiate = 0.0;

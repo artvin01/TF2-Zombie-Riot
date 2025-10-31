@@ -100,6 +100,16 @@ static void ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	if(!npc.Anger)
+	{
+		if(npc.m_flNextThinkTime > gameTime)
+			return;
+	}
+	else
+	{
+		if(npc.m_flNextThinkTime > GetGameTime())
+			return;
+	}
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
@@ -313,7 +323,7 @@ static void ClotDeath(int entity)
 		if(b_StaticNPC[other])
 			AddNpcToAliveList(other, 1);
 		NpcStats_CopyStats(npc.index, other);
-		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime(other) + 4.0;
+		view_as<CClotBody>(other).m_flNextThinkTime = GetGameTime() + 4.0;
 	}
 
 	if(IsValidEntity(npc.m_iWearable1))
