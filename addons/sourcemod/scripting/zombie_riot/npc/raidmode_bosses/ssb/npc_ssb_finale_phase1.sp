@@ -48,7 +48,7 @@ static float Waver_Cooldown[4] = { 12.0, 11.0, 10.0, 9.0 };					//Cooldown betwe
 #define BOMBARDMENT_NAME	"Necrotic Bombardment"
 static float Bombardment_Radius[4] = { 180.0, 220.0, 260.0, 300.0 };		//Blast radius.
 static float Bombardment_Delay[4] = { 2.0, 1.9, 1.8, 1.66 };				//Time until the blast hits.
-static float Bombardment_DMG[4]	= { 200.0, 400.0, 800.0, 1600.0 };			//Damage dealt by the blast.
+static float Bombardment_DMG[4]	= { 300.0, 600.0, 1200.0, 2400.0 };			//Damage dealt by the blast.
 static float Bombardment_EntityMult[4] = { 5.0, 10.0, 15.0, 20.0 };			//Amount to multiply damage dealt to entities.
 static float Bombardment_Falloff_MultiHit[4] = { 0.66, 0.7, 0.75, 0.8 };	//Amount to multiply damage per target hit.
 static float Bombardment_Falloff_Radius[4] = { 0.5, 0.66, 0.75, 0.8 };		//Maximum distance-based falloff.
@@ -63,7 +63,7 @@ static float HellRing_Velocity[4] = { 265.0, 300.0, 350.0, 400.0 };			//Skull ve
 static float HellRing_HomingDelay[4] = { 1.0, 0.75, 0.5, 0.25 };			//Delay after firing before skulls gain homing properties.
 static float HellRing_HomingAngle[4] = { 60.0, 70.0, 80.0, 90.0 };			//Skulls' maximum homing angle.
 static float HellRing_HomingPerSecond[4] = { 9.0, 9.5, 10.0, 10.5 };		//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
-static float HellRing_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };				//Skull base damage.
+static float HellRing_DMG[4] = { 120.0, 180.0, 320.0, 500.0 };				//Skull base damage.
 static float HellRing_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };				//Amount to multiply damage dealt by skulls to entities.
 static float HellRing_Radius[4] = { 50.0, 50.0, 50.0, 50.0 };				//Skull explosion radius.
 static float HellRing_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };		//Skull falloff, based on radius.
@@ -93,7 +93,7 @@ static float Teleport_GlobalCD[4] = { 2.0, 1.5, 1.0, 0.0 };						//Global cooldo
 #define CATASTROPHE_NAME	"Necrotic Catastrophe"
 static float Catastrophe_IntroSpeed[4] = { 1.0, 1.25, 1.25, 1.5 };			//Intro speed multiplier. Higher values make the intro animation play faster, which means the beam starts charging up sooner.
 static float Catastrophe_Delay[4] = { 1.25, 1.15, 1.075, 1.0 };				//Time until the laser is fired after SSB begins charging.
-static float Catastrophe_DMG[4] = { 4800.0, 12000.0, 30000.0, 75000.0 };	//Damage dealt by the laser.
+static float Catastrophe_DMG[4] = { 10000.0, 20000.0, 40000.0, 80000.0 };	//Damage dealt by the laser.
 static float Catastrophe_EntityMult[4] = { 10.0, 15.0, 17.5, 20.0 };		//Amount to multiply damage dealt by the laser to entities.
 static float Catastrophe_Width[4] = { 475.0, 550.0, 600.0, 650.0 };			//Laser width, in hammer units.
 static float Catastrophe_YawSpeed[4];//TODO: = { X, X, X, X };				//Yaw speed applied to SSB's carrier skeleton while this ability is active, if he has a carrier.
@@ -104,14 +104,14 @@ static float Catastrophe_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global coold
 static float Absorption_IntroSpeed[4] = { 1.0, 1.1, 1.2, 1.35 };			//Intro speed multiplier. Higher values make the intro animation play faster, which means SSB will begin to absorb souls sooner.
 static float Absorption_Duration[4] = { 12.0, 14.0, 16.0, 18.0 };			//Duration of the absorption phase.
 static float Absorption_Speed[4] = { 90.0, 120.0, 150.0, 180.0 };			//SSB's movement speed during the absorption phase.
-static float Absorption_DMG[4] = { 30.0, 35.0, 40.0, 50.0 };				//Damage dealt per 0.1s to enemies within the radius.
+static float Absorption_DMG[4] = { 60.0, 70.0, 80.0, 100.0 };				//Damage dealt per 0.1s to enemies within the radius.
 static float Absorption_EntityMult[4] = { 5.0, 7.5, 10.0, 12.5 };			//Amount to multiply damage dealt to entities.
 static float Absorption_Radius[4] = { 600.0, 650.0, 700.0, 750.0 };			//Effect radius.
 static float Absorption_TeleRadius[4] = { 400.0, 375.0, 350.0, 350.0 };		//Max distance from his victim to which SSB will teleport before using this ability. Lower = he teleports closer and then uses this.
 static float Absorption_PullStrength[4] = { 400.0, 450.0, 500.0, 550.0 };			//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
 static float Absorption_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The minimum percentage of the pull force to use, depending on how far the target is. It's recommended to be at least a *little* bit above 0.0, because otherwise the knockback from the damage will outweigh the pull if you're far enough away and actually *push* you, making escape easier.
-static float Absorption_HealRatio[4] = { 2.0, 3.0, 4.0, 5.0 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
-static float Absorption_HealRatio_Allies[4] = { 1.0, 1.5, 2.0, 2.5 };				//Amount to heal all of SSB's allies per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
+static float Absorption_HealRatio[4] = { 1.0, 1.5, 2.0, 2.5 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
+static float Absorption_HealRatio_Allies[4] = { 1.0, 1.25, 1.5, 1.75 };				//Amount to heal all of SSB's allies per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
 static float Absorption_Cooldown[4] = { 30.0, 25.0, 20.0, 15.0 };			//Ability cooldown.
 static float Absorption_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global cooldown.
 
