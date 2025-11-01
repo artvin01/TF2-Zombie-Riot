@@ -180,7 +180,7 @@ methodmap Shadow_FloweringDarkness < CClotBody
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "sword");

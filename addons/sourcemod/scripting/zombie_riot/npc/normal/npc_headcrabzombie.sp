@@ -131,12 +131,22 @@ public void HeadcrabZombie_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Common;
 	data.Func = ClotSummon;
+	data.WikiFunc = ClotWiki;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return HeadcrabZombie(vecPos, vecAng, team);
+}
+
+static any ClotWiki(int client, float vecPos[3], float vecAng[3])
+{
+	CClotBody entity/*= CClotBody.WikiProp(client, vecPos, vecAng, "models/zombie/classic.mdl", "1.15")*/;
+
+	entity.SetActivity("ACT_WALK");
+	
+	return entity;
 }
 
 methodmap HeadcrabZombie < CClotBody
@@ -257,7 +267,6 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	}
 	
 	int closest = npc.m_iTarget;
-	
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);

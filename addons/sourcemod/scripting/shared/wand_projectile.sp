@@ -487,7 +487,7 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 	int entity = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity))
 	{
-		DispatchKeyValue(entity, "targetname", "ApplyCustomModelToWandProjectile");
+		DispatchKeyValue(entity, "targetname", "rpg_fortress");
 		DispatchKeyValue(entity, "model", modelstringname);
 		
 		

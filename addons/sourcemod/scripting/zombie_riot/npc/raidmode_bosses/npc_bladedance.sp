@@ -488,7 +488,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 				}
 			}
 		}
-		ForcePlayerWin();
+		Waves_ClearWaves();
 	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

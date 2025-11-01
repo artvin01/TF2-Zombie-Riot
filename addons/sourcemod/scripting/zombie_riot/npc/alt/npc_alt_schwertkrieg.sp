@@ -219,7 +219,7 @@ static void Internal_ClotThink(int iNPC)
 	
 	if(EntRefToEntIndex(RaidBossActive)==npc.index && i_RaidGrantExtra[npc.index] == 1)	//schwertkrieg handles the timer if its the same index
 	{
-		if(RaidModeTime < GameTime)
+		if(RaidModeTime < GetGameTime())
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;

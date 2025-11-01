@@ -5,20 +5,24 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"Capacity: [{1}]"
+		"it" 		"Capacità: [{1}]"
 	}
 	"Zombie In Battle Logic Setting"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"In Battle Time: [{1}]"
+		"it" 		"Tempo in Battaglia: [{1}]"
 	}
 	"Show Ragdoll Hint Message"
 	{
 		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
 		"es"		"Por favor, asigna un valor MAYOR a 0 a ''g_ragdoll_fadespeed'' en la consola! Si no haces esto, arriesgas tu TF2 a que se cierre inesperadamente!"
+		"it"		"Imposta ''g_ragdoll_fadespeed'' su un valore diverso da 0 nella console! Qualsiasi valore superiore a 0 va bene (1 è sufficiente, 600 è il valore predefinito)! Se non lo fai, il gioco andrà in crash!"
 	}
 	"Show Ragdoll Teeth Message"
 	{
 		"en"		"Please set, set ''r_teeth'' to 0, in the console! Due to the 64x bit update some older models will glitch out if this is enabled!"
 		"es"		"Por favor, asigna el valor de ''r_teeth'' a 0 en la consola! Debido a la actualizacion 64-bit, algunos modelos antiguos mostraran errores si esto esta habilitado!"
+		"it"		"Imposta ''r_teeth'' su 0 nella console! A causa dell'aggiornamento a 64 bit, alcuni modelli più vecchi potrebbero presentare dei malfunzionamenti se questa opzione è abilitata!"
 	}
 }

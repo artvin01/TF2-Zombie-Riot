@@ -7,7 +7,7 @@ static bool BlockNext[MAXPLAYERS];
 
 void Commands_PluginStart()
 {
-	AddCommandListener(OnNavCommand);
+	//AddCommandListener(OnNavCommand);
 	AddCommandListener(OnAutoTeam, "autoteam");
 	AddCommandListener(OnAutoTeam, "jointeam");
 	AddCommandListener(OnBuildCmd, "build");
@@ -147,7 +147,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 #endif
 	return Plugin_Continue;
 }
-
+/*
 public Action OnNavCommand(int client, const char[] command, int args)
 {
 	if(!client && !StrContains(command, "nav", false))
@@ -156,7 +156,7 @@ public Action OnNavCommand(int client, const char[] command, int args)
 	}
 	return Plugin_Continue;
 }
-
+*/
 #if defined ZR
 public Action OnJoinClass(int client, const char[] command, int args)
 {
@@ -304,6 +304,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 {
 	
 #if defined ZR
+	if(Encyclopedia_SayCommand(client))
+		return Plugin_Handled;
+
 	if(Store_SayCommand(client))
 		return Plugin_Handled;
 		

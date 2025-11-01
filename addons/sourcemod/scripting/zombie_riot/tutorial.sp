@@ -6,11 +6,13 @@ int i_TutorialStep[MAXPLAYERS];
 bool b_GrantFreeItemsOnce[MAXPLAYERS];
 
 static Handle SyncHud;
+static Handle SyncHud2;
 float CDDisplayHint_LoadoutStore[MAXPLAYERS];
 
 void Tutorial_PluginStart()
 {
 	SyncHud = CreateHudSynchronizer();
+	SyncHud2 = CreateHudSynchronizer();
 }
 void Tutorial_MapStart()
 {
@@ -92,22 +94,43 @@ void Tutorial_MakeClientNotMove(int client)
 
 void DoTutorialStep(int client, bool obeycooldown)
 {
-	if(GetClientTeam(client) != 2)
+	if(GetClientTeam(client) != 2 || BetWar_Mode())
 		return;
 		
 	TutorialShort_ExplainOres(client);
 	if(i_TutorialStep[client] >= 4 || i_TutorialStep[client] == 0)
 	{
-		if(StarterCashMode[client])
+		if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
 		{
-			if(CDDisplayHint_LoadoutStore[client] < GetGameTime())
+			bool ReturnEnd;
+			CDDisplayHint_LoadoutStore[client] = GetGameTime() + 1.0;
+			char bufferExtra[255];
+			if(!b_HasBeenHereSinceStartOfWave[client] && TeutonType[client] != TEUTON_NONE)
 			{
-				CDDisplayHint_LoadoutStore[client] = GetGameTime() + 1.0;
-				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
-				ShowSyncHudText(client, SyncHud, "%T", "Loadout In Store", client);
-				//try!
+				Format(bufferExtra, sizeof(bufferExtra), "%T", "No Attack Info", client);
 			}
-			return;
+			if(StarterCashMode[client])
+			{
+				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
+				ShowSyncHudText(client, SyncHud, "%T\n", "Loadout In Store", client);
+				//try!
+				ReturnEnd = true;
+			}
+			else if(!b_AntiLateSpawn_Allow[client])
+			{
+				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
+				ShowSyncHudText(client, SyncHud, "%T\n", "Latejoin Hint", client);
+				//try!
+				ReturnEnd = true;
+			}
+			if(bufferExtra[0])
+			{
+				SetHudTextParams(-1.0, 0.6, 1.1, 255, 255, 255, 255);
+				ShowSyncHudText(client, SyncHud2, "%s", bufferExtra);
+				ReturnEnd = true;
+			}
+			if(ReturnEnd)
+				return;
 		}
 	}
 

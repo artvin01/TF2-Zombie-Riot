@@ -156,6 +156,7 @@ public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
+	
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	if (thirdperson[client])
 	{

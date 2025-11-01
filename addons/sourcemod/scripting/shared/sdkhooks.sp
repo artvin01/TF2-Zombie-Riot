@@ -103,6 +103,7 @@ public void SDKHook_ScoreThink(int entity)
 	static int offset_Cash = -1;
 	static int offset_Healing = -1;
 	static int offset_Class = -1;
+	static int offset_Team = -1;
 
 	#if defined ZR
 	static int offset_Alive = -1;
@@ -129,6 +130,10 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Class == -1) 
 		offset_Class = FindSendPropInfo("CTFPlayerResource", "m_iPlayerClass");
 
+	//Class
+	if(offset_Team == -1) 
+		offset_Team = FindSendPropInfo("CTFPlayerResource", "m_iTeam");
+
 	#if defined ZR
 	//Alive
 	if(offset_Alive == -1) 
@@ -139,6 +144,7 @@ public void SDKHook_ScoreThink(int entity)
 
 	int[] CashCurrentlyOwned = new int[MaxClients+1];
 	int[] class = new int[MaxClients+1];
+	int[] team = new int[MaxClients+1];
 	for(int client=1; client<=MaxClients; client++)
 	{
 	#if defined ZR
@@ -149,6 +155,9 @@ public void SDKHook_ScoreThink(int entity)
 	#endif
 
 		class[client] = i_PlayerModelOverrideIndexWearable[client] >= 0 ? 0 : view_as<int>(CurrentClass[client]);
+		
+		if(IsClientInGame(client))
+			team[client] = IsFakeClient(client) ? KillFeed_GetBotTeam(client) : GetClientTeam(client);
 	}
 
 	//healing done
@@ -167,6 +176,7 @@ public void SDKHook_ScoreThink(int entity)
 	SetEntDataArray(entity, offset_Healing, Healing_done_in_total, MaxClients + 1);
 	SetEntDataArray(entity, offset_Cash, CashCurrentlyOwned, MaxClients + 1);
 	SetEntDataArray(entity, offset_Class, class, MaxClients + 1);
+	SetEntDataArray(entity, offset_Team, team, MaxClients + 1);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -704,558 +714,566 @@ public void OnPostThink(int client)
 	{
 		OnlyOneAtATime = true;
 		SetGlobalTransTarget(client);
-		char buffer[255];
-		float HudY = 0.95;
-		float HudX = -1.0;
-	
-		HudX += f_WeaponHudOffsetY[client];
-		HudY += f_WeaponHudOffsetX[client];
 
-		Mana_Hud_Delay[client] = GameTime + 0.4;
-		static bool had_An_ability;
-#if defined RPG
-		RPGRegenerateResource(client, false,true);
-#endif
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		
-		if(IsValidEntity(weapon))
+		if(BetWar_ShowStatus(client))
 		{
-			AllowWeaponFireAfterEmpty(client, weapon);
-			static float cooldown_time;
-			had_An_ability = false;
-			static bool IsReady;
-			IsReady = false;
-
-			had_An_ability = false;
-			
-			if(c_WeaponUseAbilitiesHud[weapon][0])
-			{
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}
-				had_An_ability = true;
-					
-				Format(buffer, sizeof(buffer), "%s %s", c_WeaponUseAbilitiesHud[weapon], buffer);
-				IsReady = false;
-			}
-			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
-			{
-				cooldown_time = Ability_Check_Cooldown(client, 1);
-
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}
-				had_An_ability = true;
-				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
-				{
-					IsReady = true;
-					cooldown_time = 0.0;
-				}
-					
-				if(IsReady)
-				{
-					Format(buffer, sizeof(buffer), "[M1] %s", buffer);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "M1 : %.1f %s", cooldown_time, buffer);
-				}
-				IsReady = false;
-			}
-			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M2)
-			{
-				cooldown_time = Ability_Check_Cooldown(client, 2);
-				
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}
-				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
-				{
-					IsReady = true;
-					cooldown_time = 0.0;
-				}
-					
-				if(IsReady)
-				{
-					Format(buffer, sizeof(buffer), "[M2] %s", buffer);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "M2 : %.1f %s", cooldown_time, buffer);
-				}
-				had_An_ability = true;
-				IsReady = false;
-				
-			}
-			if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_R)
-			{
-				cooldown_time = Ability_Check_Cooldown(client, 3);
-				
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}	
-				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
-				{
-					IsReady = true;
-					cooldown_time = 0.0;
-				}
-					
-				if(IsReady)
-				{
-					Format(buffer, sizeof(buffer), "[R] %s", buffer);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "R : %.1f %s", cooldown_time, buffer);
-				}
-				had_An_ability = true;
-				IsReady = false;
-			}
-#if defined ZR
-			if(GetAbilitySlotCount(client) > 0)
-			{
-				cooldown_time = GetAbilityCooldownM3(client);
-					
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}	
-				
-				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
-				{	
-					IsReady = true;
-					cooldown_time = 0.0;
-				}
-					
-				if(IsReady)
-				{
-					Format(buffer, sizeof(buffer), "[M3] %s", buffer);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "M3 : %.1f %s", cooldown_time, buffer);
-				}
-				
-				had_An_ability = true;
-				IsReady = false;
-					
-			}
-			
-			if(IsValidEntity(i_PlayerToCustomBuilding[client]))
-			{
-				cooldown_time = f_BuildingIsNotReady[client] - GameTime;
-					
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}	
-				if(cooldown_time < 0.0 || cooldown_time > 99999.9)
-				{
-					IsReady = true;
-					cooldown_time = 0.0;
-				}
-					
-				if(IsReady)
-				{
-					Format(buffer, sizeof(buffer), "[E] %s", buffer);
-				}
-				else
-				{
-					Format(buffer, sizeof(buffer), "E : %.1f %s", cooldown_time, buffer);
-				}
-				IsReady = false;
-				had_An_ability = true;
-			}
-			
-			if(Store_ActiveCanMulti(client))
-			{
-				if(had_An_ability)
-				{
-					Format(buffer, sizeof(buffer), "| %s", buffer);
-				}	
-				if(!b_GivePlayerHint[client])
-				{
-					SPrintToChat(client, "%t","Hint Change Multislot");
-					b_GivePlayerHint[client] = true;
-				}
-				Format(buffer, sizeof(buffer), "[Multi Slot] %s", buffer);
-				IsReady = false;
-				had_An_ability = true;
-			}
-#endif
-			
-			if(had_An_ability)
-			{
-				HudY -= 0.035;
-				Format(buffer, sizeof(buffer), "%s\n", buffer);
-			}
-			float percentage_melee = 100.0;
-			float percentage_ranged = 100.0;
-			int i_TheWorld = 0;
-			int testvalue = 1;
-			float testvalue1[3];
-			CheckInHudEnable(1);
-			int DmgType = DMG_CLUB;
-			Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_melee, DmgType, weapon, testvalue1, testvalue1,testvalue);
-			DmgType = DMG_BULLET;
-			Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, weapon, testvalue1, testvalue1,testvalue);
-			CheckInHudEnable(0);
-
-			had_An_ability = false;
-			if(percentage_melee <= 0.0 && percentage_ranged <= 0.0)
-			{
-				FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
-				had_An_ability = true;
-			}
-			else
-			{
-				if(percentage_melee != 100.0 && percentage_melee > 0.0)
-				{
-					static char NumberAdd[32];
-					had_An_ability = true;
-					if(percentage_melee < 10.0)
-					{
-						Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
-					}
-					else
-					{
-						Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
-					}
-					
-					if(f_ClientDoDamageHud_Hurt[client][0] > GetGameTime())
-						Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
-
-					Format(buffer, sizeof(buffer), "%s%s", buffer, NumberAdd);
-				}
-				
-				if(percentage_ranged != 100.0 && percentage_ranged > 0.0)
-				{
-					static char NumberAdd[32];
-					if(had_An_ability)
-					{
-						if(percentage_ranged < 10.0)
-						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f％", percentage_ranged);
-						}
-						else
-						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f％", percentage_ranged);
-						}
-					}
-					else
-					{
-						if(percentage_ranged < 10.0)
-						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f％", percentage_ranged);
-						}
-						else
-						{
-							FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f％", percentage_ranged);
-						}
-					}
-
-					had_An_ability = true;
-					if(f_ClientDoDamageHud_Hurt[client][1] > GetGameTime())
-						Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
-
-					Format(buffer, sizeof(buffer), "%s%s", buffer, NumberAdd);
-					Format(buffer, sizeof(buffer), "%s]", buffer);
-				}
-				else
-				{
-					if(had_An_ability)
-						FormatEx(buffer, sizeof(buffer), "%s]", buffer);
-				}
-			}
-			
-#if defined RPG
-			//Form res
-			float percentage = 1.0;
-			float value = Attributes_GetOnPlayer(client, Attrib_FormRes, true, true, 0.0);
-			if(value)
-				percentage *= value;
-
-			if(percentage != 1.0 && percentage > 0.0)
-			{
-				percentage = 1.0 / percentage;
-				FormatEx(buffer, sizeof(buffer), "%s[HP x%.1f]", buffer, percentage);
-				had_An_ability = true;
-			}
-#endif
-			if(had_An_ability)
-			{
-				HudY -= 0.035;
-				Format(buffer, sizeof(buffer), "%s\n", buffer);
-			}
-			had_An_ability = false;
-#if defined ZR
-			switch(ClientHasBannersWithCD(client))
-			{
-				case BuffBanner,Battilons,AncientBanner:
-				{
-					had_An_ability = true;
-					if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
-					{
-						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.1fs]", buffer, f_BannerAproxDur[client] - GetGameTime());
-					}
-					else
-					{
-						FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f％]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
-					}
-				}
-			}
-			if(ClientHasUseableGrenadeOrDrink(client))
-			{
-				had_An_ability = true;
-				if(GetGameTime() > GrenadeApplyCooldownReturn(client))
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
-				}
-				else
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
-				}
-			}
-			if(Purnell_Existant(client))
-			{
-				had_An_ability = true;
-				int Reolver = EntRefToEntIndex(Purnell_ReturnRevolver(client));
-				if(IsValidEntity(Reolver))
-				{
-					int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
-					int ammo = GetEntData(Reolver, iAmmoTable, 4);//Get ammo clip
-					FormatEx(buffer, sizeof(buffer), "%s [%i/%i]", buffer,ammo,Purnell_RevolverFull(Reolver));
-				}
-			}
-			if(SuperUbersaw_Existant(client))
-			{
-				had_An_ability = true;
-				FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f％]",buffer, SuperUbersawPercentage(client) * 100.0);
-			}
-			if(b_Reinforce[client])
-			{
-				had_An_ability = true;
-				if(MaxRevivesReturn() >= MaxRevivesAllowed())
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
-				}
-				else
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f％]",buffer, ReinforcePoint(client) * 100.0);
-				}
-			}
-			if(GetAbilitySlotCount(client) == 8)
-			{
-				had_An_ability = true;
-				if(MorphineMaxed(client))
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [Ḿ MAX]",buffer);
-				}
-				else
-				{
-					FormatEx(buffer, sizeof(buffer), "%s [Ḿ %0.f％]",buffer, MorphineChargeFunc(client) * 100.0);
-				}
-			}
-#endif
-#if defined RPG
-			if(ChronoShiftReady(client))
-			{
-				if(ChronoShiftReady(client) == 2)
-				{
-					had_An_ability = true;
-					Format(buffer, sizeof(buffer), "%s [◈]", buffer);
-				}
-				else
-				{
-					had_An_ability = true;
-					Format(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, ChornoShiftCooldown(client));
-				}
-			}
-#endif
-		}
-		int red = 200;
-		int green = 200;
-		int blue = 200;
-		int Alpha = 255;
-
-#if defined ZR
-		if(has_mage_weapon[client])
-#endif
-		{
-			red = 255;
-			green = 0;
-			blue = 255;
-			if(had_An_ability)
-			{
-				HudY -= 0.035;
-				Format(buffer, sizeof(buffer), "%s\n", buffer);
-			}
-#if defined ZR
-			if(Current_Mana[client] < max_mana[client])
-			{
-				red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
-				blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
-				red = 255 - red;
-				if(red > 255)
-					red = 255;
-
-				if(blue > 200) //dont want full blue. bad.
-					blue = 200;
-					
-				if(red < 0)
-					red = 0;
-					
-				if(blue < 0)
-					blue = 0;		
-			}
-			else
-			{
-				red 	= 200;
-				green 	= 200;
-				blue	= 200;
-
-				float OverMana_Ratio = Current_Mana[client]/max_mana[client];
-
-				if(OverMana_Ratio > 1.05)
-				{
-					if(OverMana_Ratio < 2.0)
-					{
-						red = RoundToFloor(127*OverMana_Ratio); 
-						green = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
-						blue = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
-
-						if(red>255)
-							red=255;
-
-						if(green<0)
-							green=0;
-						
-						if(blue<0)
-							blue=0;
-					}
-					else	//Player is DANGEROUSLY close to getting targeted by a ruina ion due to overmana!
-					{
-						red 	= 255;
-						green 	= 0;
-						blue	= 0;
-					}
-				}
-
-			}
-#endif
-
-			bool InfMana = false;
-			if(HasSpecificBuff(client, "Dimensional Turbulence"))
-				InfMana = true;
-
-			if(!InfMana)
-			{
-				for(int i=1; i<21; i++)
-				{
-					if(Current_Mana[client] >= max_mana[client]*(i*0.05))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
-					}
-					else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
-					}
-					else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
-					}
-				}
-			}
-				
-			SetGlobalTransTarget(client);
-#if defined ZR
-			if(!InfMana)
-				Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
-			else
-				Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana Inf", buffer);
-#elseif defined RPG
-			static Form form;
-			Races_GetClientInfo(client, _, form);
-
-			// form.Name
-			red = 200;
-			green = 200;
-			blue = 255;
-			Alpha = 255;
-			if(i_TransformationLevel[client] > 0)
-			{
-				red = form.Form_RGBA[0];
-				green = form.Form_RGBA[1];
-				blue = form.Form_RGBA[2];
-				Alpha = form.Form_RGBA[3];
-			}
-			
-			static char c_CurrentMana[64];
-			IntToString(Current_Mana[client],c_CurrentMana, sizeof(c_CurrentMana));
-
-			int offset = Current_Mana[client] < 0 ? 1 : 0;
-			ThousandString(c_CurrentMana[offset], sizeof(c_CurrentMana) - offset);
-
-			if(form.Name[0])
-			{
-				static char NameOverride[64];
-				NameOverride = form.Name;
-				if(form.Func_FormNameOverride != INVALID_FUNCTION && form.Func_FormNameOverride) //somehow errors with 0, i dont know, whatever.
-				{
-					Call_StartFunction(null, form.Func_FormNameOverride);
-					Call_PushCell(client);
-					Call_PushStringEx(NameOverride, sizeof(NameOverride), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
-					Call_Finish();
-				}
-				Format(buffer, sizeof(buffer), "%s: %s\n%s", NameOverride, c_CurrentMana, buffer);
-
-			}
-			else
-				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
-#endif
-		}
-		//BUFFS!
-		static char Debuff_Adder_left[64];
-		static char Debuff_Adder_right[64];
-		static char Debuff_Adder[64];
-		EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
-
-		if(Debuff_Adder_left[0])
-		{
-			strcopy(Debuff_Adder, sizeof(Debuff_Adder), Debuff_Adder_left);
-
-			if(Debuff_Adder_right[0])
-			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
-			}
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
+			Mana_Hud_Delay[client] = GameTime + 0.1;
 		}
 		else
 		{
-			strcopy(Debuff_Adder, sizeof(Debuff_Adder), Debuff_Adder_right);
-		}
+			char buffer[255];
+			float HudY = 0.95;
+			float HudX = -1.0;
+		
+			HudX += f_WeaponHudOffsetY[client];
+			HudY += f_WeaponHudOffsetX[client];
 
-		if(Debuff_Adder[0])
-		{
-			Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
-			HudY += -0.0345; //correct offset
-		}
-#if defined ZR
-		if(!SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
-#else
-		if(buffer[0])
-#endif
-		{
-			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, Alpha);
-			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
+			Mana_Hud_Delay[client] = GameTime + 0.4;
+			static bool had_An_ability;
+	#if defined RPG
+			RPGRegenerateResource(client, false,true);
+	#endif
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			
+			if(IsValidEntity(weapon))
+			{
+				AllowWeaponFireAfterEmpty(client, weapon);
+				static float cooldown_time;
+				had_An_ability = false;
+				static bool IsReady;
+				IsReady = false;
+
+				had_An_ability = false;
+				
+				if(c_WeaponUseAbilitiesHud[weapon][0])
+				{
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}
+					had_An_ability = true;
+						
+					Format(buffer, sizeof(buffer), "%s %s", c_WeaponUseAbilitiesHud[weapon], buffer);
+					IsReady = false;
+				}
+				if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M1)
+				{
+					cooldown_time = Ability_Check_Cooldown(client, 1);
+
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}
+					had_An_ability = true;
+					if(cooldown_time < 0.0 || cooldown_time > 99999.9)
+					{
+						IsReady = true;
+						cooldown_time = 0.0;
+					}
+						
+					if(IsReady)
+					{
+						Format(buffer, sizeof(buffer), "[M1] %s", buffer);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "M1 : %.1f %s", cooldown_time, buffer);
+					}
+					IsReady = false;
+				}
+				if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_M2)
+				{
+					cooldown_time = Ability_Check_Cooldown(client, 2);
+					
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}
+					if(cooldown_time < 0.0 || cooldown_time > 99999.9)
+					{
+						IsReady = true;
+						cooldown_time = 0.0;
+					}
+						
+					if(IsReady)
+					{
+						Format(buffer, sizeof(buffer), "[M2] %s", buffer);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "M2 : %.1f %s", cooldown_time, buffer);
+					}
+					had_An_ability = true;
+					IsReady = false;
+					
+				}
+				if(i_Hex_WeaponUsesTheseAbilities[weapon] & ABILITY_R)
+				{
+					cooldown_time = Ability_Check_Cooldown(client, 3);
+					
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}	
+					if(cooldown_time < 0.0 || cooldown_time > 99999.9)
+					{
+						IsReady = true;
+						cooldown_time = 0.0;
+					}
+						
+					if(IsReady)
+					{
+						Format(buffer, sizeof(buffer), "[R] %s", buffer);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "R : %.1f %s", cooldown_time, buffer);
+					}
+					had_An_ability = true;
+					IsReady = false;
+				}
+	#if defined ZR
+				if(GetAbilitySlotCount(client) > 0)
+				{
+					cooldown_time = GetAbilityCooldownM3(client);
+						
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}	
+					
+					if(cooldown_time < 0.0 || cooldown_time > 99999.9)
+					{	
+						IsReady = true;
+						cooldown_time = 0.0;
+					}
+						
+					if(IsReady)
+					{
+						Format(buffer, sizeof(buffer), "[M3] %s", buffer);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "M3 : %.1f %s", cooldown_time, buffer);
+					}
+					
+					had_An_ability = true;
+					IsReady = false;
+						
+				}
+				
+				if(IsValidEntity(i_PlayerToCustomBuilding[client]))
+				{
+					cooldown_time = f_BuildingIsNotReady[client] - GameTime;
+						
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}	
+					if(cooldown_time < 0.0 || cooldown_time > 99999.9)
+					{
+						IsReady = true;
+						cooldown_time = 0.0;
+					}
+						
+					if(IsReady)
+					{
+						Format(buffer, sizeof(buffer), "[E] %s", buffer);
+					}
+					else
+					{
+						Format(buffer, sizeof(buffer), "E : %.1f %s", cooldown_time, buffer);
+					}
+					IsReady = false;
+					had_An_ability = true;
+				}
+				
+				if(Store_ActiveCanMulti(client))
+				{
+					if(had_An_ability)
+					{
+						Format(buffer, sizeof(buffer), "| %s", buffer);
+					}	
+					if(!b_GivePlayerHint[client])
+					{
+						SPrintToChat(client, "%t","Hint Change Multislot");
+						b_GivePlayerHint[client] = true;
+					}
+					Format(buffer, sizeof(buffer), "[Multi Slot] %s", buffer);
+					IsReady = false;
+					had_An_ability = true;
+				}
+	#endif
+				
+				if(had_An_ability)
+				{
+					HudY -= 0.035;
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
+				float percentage_melee = 100.0;
+				float percentage_ranged = 100.0;
+				int i_TheWorld = 0;
+				int testvalue = 1;
+				float testvalue1[3];
+				CheckInHudEnable(1);
+				int DmgType = DMG_CLUB;
+				Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_melee, DmgType, weapon, testvalue1, testvalue1,testvalue);
+				DmgType = DMG_BULLET;
+				Player_OnTakeDamage(client, i_TheWorld, i_TheWorld, percentage_ranged, DmgType, weapon, testvalue1, testvalue1,testvalue);
+				CheckInHudEnable(0);
+
+				had_An_ability = false;
+				if(percentage_melee <= 0.0 && percentage_ranged <= 0.0)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s %t",buffer, "Invulnerable Npc");
+					had_An_ability = true;
+				}
+				else
+				{
+					if(percentage_melee != 100.0 && percentage_melee > 0.0)
+					{
+						static char NumberAdd[32];
+						had_An_ability = true;
+						if(percentage_melee < 10.0)
+						{
+							Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
+						}
+						else
+						{
+							Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
+						}
+						
+						if(f_ClientDoDamageHud_Hurt[client][0] > GetGameTime())
+							Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
+
+						Format(buffer, sizeof(buffer), "%s%s", buffer, NumberAdd);
+					}
+					
+					if(percentage_ranged != 100.0 && percentage_ranged > 0.0)
+					{
+						static char NumberAdd[32];
+						if(had_An_ability)
+						{
+							if(percentage_ranged < 10.0)
+							{
+								FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.2f％", percentage_ranged);
+							}
+							else
+							{
+								FormatEx(NumberAdd, sizeof(NumberAdd), "|➶%.0f％", percentage_ranged);
+							}
+						}
+						else
+						{
+							if(percentage_ranged < 10.0)
+							{
+								FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.2f％", percentage_ranged);
+							}
+							else
+							{
+								FormatEx(NumberAdd, sizeof(NumberAdd), "[➶%.0f％", percentage_ranged);
+							}
+						}
+
+						had_An_ability = true;
+						if(f_ClientDoDamageHud_Hurt[client][1] > GetGameTime())
+							Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
+
+						Format(buffer, sizeof(buffer), "%s%s", buffer, NumberAdd);
+						Format(buffer, sizeof(buffer), "%s]", buffer);
+					}
+					else
+					{
+						if(had_An_ability)
+							FormatEx(buffer, sizeof(buffer), "%s]", buffer);
+					}
+				}
+				
+	#if defined RPG
+				//Form res
+				float percentage = 1.0;
+				float value = Attributes_GetOnPlayer(client, Attrib_FormRes, true, true, 0.0);
+				if(value)
+					percentage *= value;
+
+				if(percentage != 1.0 && percentage > 0.0)
+				{
+					percentage = 1.0 / percentage;
+					FormatEx(buffer, sizeof(buffer), "%s[HP x%.1f]", buffer, percentage);
+					had_An_ability = true;
+				}
+	#endif
+				if(had_An_ability)
+				{
+					HudY -= 0.035;
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
+				had_An_ability = false;
+	#if defined ZR
+				switch(ClientHasBannersWithCD(client))
+				{
+					case BuffBanner,Battilons,AncientBanner:
+					{
+						had_An_ability = true;
+						if(GetEntProp(client, Prop_Send, "m_bRageDraining"))
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [⚐ %.1fs]", buffer, f_BannerAproxDur[client] - GetGameTime());
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [⚐ %.0f％]", buffer, GetEntPropFloat(client, Prop_Send, "m_flRageMeter"));
+						}
+					}
+				}
+				if(ClientHasUseableGrenadeOrDrink(client))
+				{
+					had_An_ability = true;
+					if(GetGameTime() > GrenadeApplyCooldownReturn(client))
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [◈]", buffer);
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, GrenadeApplyCooldownReturn(client) - GetGameTime());
+					}
+				}
+				if(Purnell_Existant(client))
+				{
+					had_An_ability = true;
+					int Reolver = EntRefToEntIndex(Purnell_ReturnRevolver(client));
+					if(IsValidEntity(Reolver))
+					{
+						int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+						int ammo = GetEntData(Reolver, iAmmoTable, 4);//Get ammo clip
+						FormatEx(buffer, sizeof(buffer), "%s [%i/%i]", buffer,ammo,Purnell_RevolverFull(Reolver));
+					}
+				}
+				if(SuperUbersaw_Existant(client))
+				{
+					had_An_ability = true;
+					FormatEx(buffer, sizeof(buffer), "%s [ÜS %0.f％]",buffer, SuperUbersawPercentage(client) * 100.0);
+				}
+				if(b_Reinforce[client])
+				{
+					had_An_ability = true;
+					if(MaxRevivesReturn() >= MaxRevivesAllowed())
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [▼ MAX]",buffer);
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [▼ %0.f％]",buffer, ReinforcePoint(client) * 100.0);
+					}
+				}
+				if(GetAbilitySlotCount(client) == 8)
+				{
+					had_An_ability = true;
+					if(MorphineMaxed(client))
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [Ḿ MAX]",buffer);
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [Ḿ %0.f％]",buffer, MorphineChargeFunc(client) * 100.0);
+					}
+				}
+	#endif
+	#if defined RPG
+				if(ChronoShiftReady(client))
+				{
+					if(ChronoShiftReady(client) == 2)
+					{
+						had_An_ability = true;
+						Format(buffer, sizeof(buffer), "%s [◈]", buffer);
+					}
+					else
+					{
+						had_An_ability = true;
+						Format(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, ChornoShiftCooldown(client));
+					}
+				}
+	#endif
+			}
+			int red = 200;
+			int green = 200;
+			int blue = 200;
+			int Alpha = 255;
+
+	#if defined ZR
+			if(has_mage_weapon[client])
+	#endif
+			{
+				red = 255;
+				green = 0;
+				blue = 255;
+				if(had_An_ability)
+				{
+					HudY -= 0.035;
+					Format(buffer, sizeof(buffer), "%s\n", buffer);
+				}
+	#if defined ZR
+				if(Current_Mana[client] < max_mana[client])
+				{
+					red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
+					blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
+					red = 255 - red;
+					if(red > 255)
+						red = 255;
+
+					if(blue > 200) //dont want full blue. bad.
+						blue = 200;
+						
+					if(red < 0)
+						red = 0;
+						
+					if(blue < 0)
+						blue = 0;		
+				}
+				else
+				{
+					red 	= 200;
+					green 	= 200;
+					blue	= 200;
+
+					float OverMana_Ratio = Current_Mana[client]/max_mana[client];
+
+					if(OverMana_Ratio > 1.05)
+					{
+						if(OverMana_Ratio < 2.0)
+						{
+							red = RoundToFloor(127*OverMana_Ratio); 
+							green = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
+							blue = 255 - RoundToFloor(255*(OverMana_Ratio-1.0));
+
+							if(red>255)
+								red=255;
+
+							if(green<0)
+								green=0;
+							
+							if(blue<0)
+								blue=0;
+						}
+						else	//Player is DANGEROUSLY close to getting targeted by a ruina ion due to overmana!
+						{
+							red 	= 255;
+							green 	= 0;
+							blue	= 0;
+						}
+					}
+
+				}
+	#endif
+
+				bool InfMana = false;
+				if(HasSpecificBuff(client, "Dimensional Turbulence"))
+					InfMana = true;
+
+				if(!InfMana)
+				{
+					for(int i=1; i<21; i++)
+					{
+						if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+						{
+							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+						}
+						else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+						{
+							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+						}
+						else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+						{
+							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+						}
+						else
+						{
+							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+						}
+					}
+				}
+					
+				SetGlobalTransTarget(client);
+	#if defined ZR
+				if(!InfMana)
+					Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+				else
+					Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana Inf", buffer);
+	#elseif defined RPG
+				static Form form;
+				Races_GetClientInfo(client, _, form);
+
+				// form.Name
+				red = 200;
+				green = 200;
+				blue = 255;
+				Alpha = 255;
+				if(i_TransformationLevel[client] > 0)
+				{
+					red = form.Form_RGBA[0];
+					green = form.Form_RGBA[1];
+					blue = form.Form_RGBA[2];
+					Alpha = form.Form_RGBA[3];
+				}
+				
+				static char c_CurrentMana[64];
+				IntToString(Current_Mana[client],c_CurrentMana, sizeof(c_CurrentMana));
+
+				int offset = Current_Mana[client] < 0 ? 1 : 0;
+				ThousandString(c_CurrentMana[offset], sizeof(c_CurrentMana) - offset);
+
+				if(form.Name[0])
+				{
+					static char NameOverride[64];
+					NameOverride = form.Name;
+					if(form.Func_FormNameOverride != INVALID_FUNCTION && form.Func_FormNameOverride) //somehow errors with 0, i dont know, whatever.
+					{
+						Call_StartFunction(null, form.Func_FormNameOverride);
+						Call_PushCell(client);
+						Call_PushStringEx(NameOverride, sizeof(NameOverride), SM_PARAM_STRING_COPY, SM_PARAM_COPYBACK);
+						Call_Finish();
+					}
+					Format(buffer, sizeof(buffer), "%s: %s\n%s", NameOverride, c_CurrentMana, buffer);
+
+				}
+				else
+					Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
+	#endif
+			}
+			//BUFFS!
+			static char Debuff_Adder_left[64];
+			static char Debuff_Adder_right[64];
+			static char Debuff_Adder[64];
+			EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right, sizeof(Debuff_Adder));
+
+			if(Debuff_Adder_left[0])
+			{
+				strcopy(Debuff_Adder, sizeof(Debuff_Adder), Debuff_Adder_left);
+
+				if(Debuff_Adder_right[0])
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
+				}
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
+			}
+			else
+			{
+				strcopy(Debuff_Adder, sizeof(Debuff_Adder), Debuff_Adder_right);
+			}
+
+			if(Debuff_Adder[0])
+			{
+				Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
+				HudY += -0.0345; //correct offset
+			}
+	#if defined ZR
+			if(!SkillTree_InMenu(client) && !Rogue_ShowStatus(client) && buffer[0])
+	#else
+			if(buffer[0])
+	#endif
+			{
+				SetHudTextParams(HudX, HudY, 0.81, red, green, blue, Alpha);
+				ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
+			}
 		}
 	}
 
@@ -1514,7 +1532,7 @@ public void OnPostThink(int client)
 		}
 		
 #if defined ZR
-		if(!SkillTree_InMenu(client) && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
+		if(!SkillTree_InMenu(client) && !BetWar_Mode() && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
 #endif
 		{
 			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
@@ -1552,8 +1570,11 @@ public void OnPostThink(int client)
 			}
 			else if (TeutonType[client] == TEUTON_DEAD)
 			{
-				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
-				);
+				if(b_HasBeenHereSinceStartOfWave[client])
+				{
+					Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Died Teuton"
+					);
+				}
 
 			}
 			else
@@ -2091,17 +2112,6 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			GiveCompleteInvul(victim, 0.1);
 			return Plugin_Handled;
 		}
-		//the client was the last man on the server, or alone, give them spawn protection
-		//dont do this if they are under specter saw revival
-		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
-		{
-			damage = 0.0;
-			GiveCompleteInvul(victim, 2.0);
-			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
-			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
-			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
-			return Plugin_Handled;
-		}
 		//if they were supposed to die, but had protection from the marchant kit, do this instead.
 		else if(Merchant_OnLethalDamage(attacker, victim))
 		{
@@ -2110,6 +2120,27 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			return Plugin_Handled;
+		}
+		//the client was the last man on the server, or alone, give them spawn protection
+		//dont do this if they are under specter saw revival
+		else if(b_IsAloneOnServer && !applied_lastmann_buffs_once)
+		{
+			//lastman for being alone!
+			//force lastman if alone, give inf downs to indicate DEATH.
+			i_AmountDowned[victim] = 999;
+			//magic number 999 is used to detect if lastman happend
+			CheckAlivePlayers(0,_,_,victim);
+			damage = 0.0;
+			return Plugin_Handled;
+		}
+		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
+		{
+			damage = 0.0;
+			GiveCompleteInvul(victim, 2.0);
+			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
 			return Plugin_Handled;
 		}
 		//all checks passed, now go into here
@@ -2445,6 +2476,19 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		}
 	}
 */
+	
+	if(BetWar_Mode())
+	{
+		if(entity <= MaxClients && entity > 0)
+		{
+			if(StrContains(sample, "#", true) != -1)
+			{
+				//if its music, dont do anything.
+			}
+			else
+				return Plugin_Handled;
+		}
+	}
 #endif
 
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
@@ -2894,6 +2938,10 @@ void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
 
 void UpdatePlayerFakeModel(int client)
 {
+	if(TeutonType[client] != TEUTON_NONE)
+	{
+		return;
+	}
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	

@@ -10,6 +10,7 @@
 		"pt"	"Bob o 2°"
 		"nl"	"Bob De Tweede"
 		"chi"	"鲍勃二代"
+		"it"	"Bob II"
 	}
 	"Bob The Second:"
 	{
@@ -21,6 +22,7 @@
 		"pt"	"Bob o 2°:"
 		"nl"	"Bob De Tweede:"
 		"chi"	"鲍勃二代:"
+		"it"	"Bob II:"
 	}
 	"Pistol Ammo"
 	{
@@ -32,6 +34,7 @@
 		"pt"	"Munição da Pistola"
 		"nl"	"Pistool Ammunitie"
 		"chi"	"手枪弹药"
+		"it"	"Munizioni della Pistola"
 	}
 	"Bob The Second is not friendly and follows you!"
 	{
@@ -43,6 +46,7 @@
 		"pt"	"Bob o 2° não é amigável e te segue!"
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je!"
 		"chi"	"鲍勃二代是友好的，并会跟着你！"
+		"it"	"Bob Il Secondo non è amichevole e ti segue!"
 	}
 	"Use voice Commands to command him!"
 	{
@@ -54,6 +58,7 @@
 		"pt"	"Use comandos de voz para o comandar!"
 		"nl"	"Gebruik Stemcommando's om commando's te geven aan hem!"
 		"chi"	"使用语音指令来命令鲍勃"
+		"it"	"Usa i comandi vocali per dargli ordini!"
 	}
 	"Bob The Second is friendly and follows you!"
 	{
@@ -65,6 +70,7 @@
 		"pt"	"Bob o 2° é amigável e te segue!"
 		"nl"	"Bob De Tweede is vriendelijk en volgt je!"
 		"chi"	"鲍勃二代不是友好的，但会跟着你！"
+		"it"	"Bob Il Secondo è amichevole e ti segue!"
 	}
 	"Bob The Second is not friendly and doesn't follow you!"
 	{
@@ -76,6 +82,7 @@
 		"pt"	"Bob o 2° não é amigável e não te segue!"
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet!"
 		"chi"	"鲍勃二代不是友好的，也不会跟着你！"
+		"it"	"Bob Il Secondo non è amichevole e non ti segue!"
 	}
 	"Bob The Second is friendly and doesn't follow you!"
 	{
@@ -87,6 +94,7 @@
 		"pt"	"Bob o 2° é amigável e não te segue!"
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet!"
 		"chi"	"鲍勃二代是友好的，但不会跟着你！"
+		"it"	"Bob Il Secondo è amichevole e non ti segue!"
 	}
 	"Bob The Second is not friendly and follows you! BUT stands still."
 	{
@@ -98,6 +106,7 @@
 		"pt"	"Bob o 2° não é amigável e te segue! MAS está parado."
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je! MAAR staat stil."
 		"chi"	"鲍勃二代不是友好的，会跟着你，并且坚守此地！"
+		"it"	"Bob Il Secondo non è amichevole e ti segue! MA rimane fermo."
 	}
 	"Bob The Second is friendly and follows you! BUT stands still"
 	{
@@ -109,6 +118,7 @@
 		"pt"	"Bob o 2° é amigável e te segue! MAS está parado."
 		"nl"	"Bob De Tweede is vriendelijk en volgt je! MAAR staat stil."
 		"chi"	"鲍勃二代是友好的，会跟着你，并且坚守此地！"
+		"it"	"Bob Il Secondo non è amichevole e ti segue! MA rimane fermo."
 	}
 	"Bob The Second is not friendly and doesn't follow you! BUT stands still"
 	{
@@ -120,6 +130,7 @@
 		"pt"	"Bob o 2° não é amigável e não te segue! MAS está parado."
 		"nl"	"Bob De Tweede is niet vriendelijk en volgt je niet! MAAR staat stil."
 		"chi"	"鲍勃二代不是友好的，不会跟着你，但会坚守此地！"
+		"it"	"Bob Il Secondo non è amichevole e non ti segue! MA rimane fermo."
 	}
 	"Bob The Second is friendly and doesn't follow you! BUT stands still"
 	{
@@ -131,6 +142,7 @@
 		"pt"	"Bob o 2° é amigável e não te segue! MAS está parado."
 		"nl"	"Bob De Tweede is vriendelijk en volgt je niet! MAAR staat stil."
 		"chi"	"鲍勃二代是友好的，不会跟着你，但会坚守此地！"
+		"it"	"Bob Il Secondo è amichevole e non ti segue! MA rimane fermo."
 	}
 
 
@@ -144,6 +156,7 @@
 		"pt"	"Eu peguei eles!"
 		"nl"	"Ik heb ze!"
 		"chi"   "解决了！"
+		"it"	"Li ho presi!"
 	}
 	"Take This!"
 	{
@@ -155,6 +168,7 @@
 		"pt"	"Toma essa!"
 		"nl"	"Pak aan!"
 		"chi"   "接招！"
+		"it"	"Prendi questo!"
 	}
 	"I'll stand beside you, sir!"
 	{
@@ -166,6 +180,7 @@
 		"pt"	"Estarei bem ao seu lado, senhor!"
 		"nl"	"Ik sta naast je, heer!"
 		"chi"   "放心，我会在你身边的！"
+		"it"	"Sarò al suo fianco, signore!"
 	}
 	"I'll guard you, sir!"
 	{
@@ -177,6 +192,7 @@
 		"pt"	"Eu irei protege-lo, senhor!"
 		"nl"	"Ik bescherm je, heer!"
 		"chi"   "我会保护你的，先生!"
+		"it"	"La proteggerò, signore!"
 	}
 	"I'm pretty bored..."
 	{
@@ -188,6 +204,7 @@
 		"pt"	"Tem nada pra fazer..."
 		"nl"	"Ik verveel me..."
 		"chi"   "好无聊..."
+		"it"	"Sono piuttosto annoiato..."
 	}
 	"Reloading near you, sir!"
 	{
@@ -199,6 +216,7 @@
 		"pt"	"Recarregando próximo a você, senhor!"
 		"nl"	"Ik herlaad dicht bij je, heer!"
 		"chi"   "装弹中!"
+		"it"	"Ricarica in corso, signore!"
 	}
 	"I hope your day is going well!"
 	{
@@ -210,6 +228,7 @@
 		"pt"	"Eu espero que seu dia esteja indo bem!"
 		"nl"	"Ik hoop dat uw dag goed aan het verlopen is!"
 		"chi"   "祝你今天过得愉快!"
+		"it"	"Spero che la tua giornata stia andando bene!"
 	}
 	"Sometimes i wonder why this war exists."
 	{
@@ -221,6 +240,7 @@
 		"pt"	"As vezes me pergunto porque essa guerra existe."
 		"nl"	"Soms vraag ik me af waarom deze oorlog bestaat."
 		"chi"   "有时我想知道这场战争的意义。"
+		"it"	"A volte mi chiedo perché esista questa guerra."
 	}
 	"Just saying, never give up!"
 	{
@@ -232,6 +252,7 @@
 		"pt"	"So pra constar, nunca desista!"
 		"nl"	"Ik zeg maar, geef niet op!"
 		"chi"   "永不放弃!"
+		"it"	"Dico solo questo: non mollare mai!"
 	}
 	"Could i borrow your gun perhaps?"
 	{
@@ -243,6 +264,7 @@
 		"pt"	"Talvez você poderia me emprestar sua arma?"
 		"nl"	"Mag ik je wapen lenen misschien?"
 		"chi"   "我能借下你的枪吗?"
+		"it"	"Potrei prendere in prestito la tua pistola, per favore?"
 	}
 	"Im pretty confident in my abilities!"
 	{
@@ -254,6 +276,7 @@
 		"pt"	"Estou bem confiante sobre minhas habilidades!"
 		"nl"	"Ik ben redelijk zelfzeker van mijn vaardigheden!"
 		"chi"   "我对自己的能力很有信心!"
+		"it"	"Sono piuttosto fiducioso nelle mie capacità!"
 	}
 	"Pick up that can."
 	{
@@ -265,6 +288,7 @@
 		"pt"	"Pegue aquela latinha."
 		"nl"	"Pak dat blik op."
 		"chi"   "捡起那个罐子。"
+		"it"	"Prendi quella lattina."
 	}
 	"On my way, sir!"
 	{
@@ -276,6 +300,7 @@
 		"pt"	"Estou indo, senhor!"
 		"nl"	"Ik kom eraan, heer!"
 		"chi"   "马上来!"
+		"it"	"Sto arrivando, signore!"
 	}
 	"Im watching there, dont worry!"
 	{
@@ -287,6 +312,7 @@
 		"pt"	"Eu estou olhando ali, não se preucupe!"
 		"nl"	"Ik wacht hier, geen zorgen!"
 		"chi"   "我正在看呢，别担心!"
+		"it"	"Sto guardando lì, non preoccuparti!"
 	}
 	"Spy? I'm keeping my eye there."
 	{
@@ -298,6 +324,7 @@
 		"pt"	"Spy? Eu vou prestar atenção ali."
 		"nl"	"Spion? Ik hou mijn ogen daar wel op."
 		"chi"   "间谍?我会盯着那里的!"
+		"it"	"Spia? Terrò d'occhio la situazione."
 	}
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
@@ -308,7 +335,7 @@
 		"pl"    "Działko tutaj? Lepiej poczekać aż koledzy z drużyny się zaangażują, więc popatrzę."
 		"pt"	"Sentinela Aqui? É melhor esperar o resto dos aliados antes de entrar em combate então ficarei de olho."
 		"nl"	"Schildwacht hier? Het is beter om te wachten tot teamgenoten aanvallen, dus ik kijk wel."
-		
+		"it"	"Sentinella qui? È meglio aspettare che i compagni di squadra entrino in azione, quindi mi guarderò intorno."
 	}
 	"I cant build a teleporter, sorry."
 	{
@@ -320,6 +347,7 @@
 		"pt"	"Eu não consigo construir um teletransportador, desculpe."
 		"nl"	"Ik kan geen teleporter plaatsen, sorry."
 		"chi"   "我不会造传送器，抱歉..."
+		"it"	"Non posso costruire un teletrasporto, mi dispiace."
 	}
 	"I cant build a dispenser, sorry."
 	{
@@ -331,6 +359,7 @@
 		"pt"	"Eu não consigo construir uma distribuidora, desculpe."
 		"nl"	"Ik kan geen dispenser plaatsen, sorry."
 		"chi"   "对不起，我不能造一个补给器。"
+		"it"	"Non posso costruire un distributore, mi dispiace."
 	}
 	"I cant build a sentry, sorry."
 	{
@@ -342,6 +371,7 @@
 		"pt"	"Eu não consigo construir uma sentinela, desculpe."
 		"nl"	"Ik kan geen schildwacht plaatsen, sorry."
 		"chi"   "对不起，我不能造一个炮台....."
+		"it"	"Non posso costruire una sentinella, mi dispiace."
 	}
 	"I can't give you ubercharge..."
 	{
@@ -353,6 +383,7 @@
 		"pt"	"Eu não posso te ubercarregar..."
 		"nl"	"Ik kan geen Uberlading aan je geven..."
 		"chi"   "我给不了你ubercharge...."
+		"it"	"Non posso darti l'ubercarica..."
 	}
 	"Standing right here!"
 	{
@@ -364,6 +395,7 @@
 		"pat"	"Ficarei bem aqui!"
 		"nl"	"Ik sta hier wel!"
 		"chi"   "就站在这里!"
+		"it"	"Sono proprio qui!"
 	}
 	"I'm on my move again!"
 	{
@@ -375,6 +407,7 @@
 		"pt"	"Estou a caminho de novo!"
 		"nl"	"Ik ga weer bewegen!"
 		"chi"   "我要行动了!"
+		"it"	"Sono di nuovo in movimento!"
 	}
 	"I am coming !"
 	{
@@ -386,6 +419,7 @@
 		"pt"	"Estou indo!"
 		"nl"	"Ik kom!"
 		"chi"   "我来了!"
+		"it"	"Sto arrivando!"
 	}
 	"I'm already here!"
 	{
@@ -397,6 +431,7 @@
 		"pt"	"Eu já estou aqui!"
 		"nl"	"Ik ben hier al!"
 		"chi"   "我已经在这里了!"
+		"it"	"Sono già qui!"
 	}
 	"Follow? Sure!"
 	{
@@ -408,6 +443,7 @@
 		"pt"	"Seguir? claro!"
 		"nl"	"Volgen? Zeker!"
 		"chi"   "跟随你？好的！"
+		"it"	"Seguirti? Certo!"
 	}
 	"My left or yours?"
 	{
@@ -419,6 +455,7 @@
 		"pt"	"Minha esquerda ou a sua?"
 		"nl"	"Mijn linkse of de jouwe?"
 		"chi"   "我的左手还是你的左手?"
+		"it"	"La mia sinistra o la tua?"
 	}
 	"My right or yours?"
 	{
@@ -430,6 +467,7 @@
 		"pt"	"Minha direita ou a sua?"
 		"nl"	"Mijn rechtse of de jouwe?"
 		"chi"   "我的y右手还是你的右手?"
+		"it"	"Il mio destro o il tuo?"
 	}
 	"Cheers to you too, like a drink, get it?"
 	{
@@ -441,6 +479,7 @@
 		"pt"	"Saúde pra você tambem, como uma bebida, entendeu?"
 		"nl"	"Proost voor je ook, zoals een drankje, snap je het?"
 		"chi"   "干杯,你也喜欢喝一杯,明白了吗?"
+		"it"	"Salute anche a te, come un brindisi, capito?"
 	}
 	"Ah come on, lighten your mood!"
 	{
@@ -452,6 +491,7 @@
 		"pt"	"Ah vamos lá, anime-se!"
 		"nl"	"Oh kom aan dan, licht wat op!"
 		"chi"   "啊，来吧，放松一下心情!"
+		"it"	"Dai, rilassati un po'!"
 	}
 	"Positivity is the way to go!"
 	{
@@ -463,6 +503,7 @@
 		"pt"	"Positividade, muito bem!"
 		"nl"	"Positief denken is de manier om voort te gaan!"
 		"chi"   "积极向上才是正确的方向!"
+		"it"	"La positività è la strada da seguire!"
 	}
 	"Why negative? Nothing to worry about!"
 	{
@@ -474,6 +515,7 @@
 		"pt"	"Por que da negatividade? Não há nada a se preucupar!"
 		"nl"	"Waarom negatief? Er is niets om je zorgen over te maken!"
 		"chi"   "为什么emo?没什么好担心的!"
+		"it"	"Perché negativo? Non c'è nulla di cui preoccuparsi!"
 	}
 	"Not Follow? Sure!"
 	{
@@ -485,6 +527,7 @@
 		"pt"	"Não seguir? claro!"
 		"nl"	"Niet volgen? Zeker!"
 		"chi"   "不跟着你？好的！"
+		"it"	"Non seguire? Certo!"
 	}
 	"I'll hurt no one!"
 	{
@@ -496,6 +539,7 @@
 		"pt"	"Não machucarei ninguém!"
 		"nl"	"Ik doe niemand pijn!"
 		"chi"   "我不会伤害任何人!"
+		"it"	"Non farò del male a nessuno!"
 	}
 	"I'll attack once more!"
 	{
@@ -507,6 +551,7 @@
 		"pt"	"Atacarei mais uma vez!"
 		"nl"	"Ik val nogmaals aan!"
 		"chi"   "我会再次攻击!"
+		"it"	"Attaccherò ancora una volta!"
 	}
 	"I try my best to aim well!"
 	{
@@ -518,6 +563,7 @@
 		"pt"	"Eu dou meu melhor pra mirar!"
 		"nl"	"Ik probeer mijn best om te mikken!"
 		"chi"   "我尽我所能瞄准!"
+		"it"	"Faccio del mio meglio per mirare bene!"
 	}
 	"You are doing a good job aswell!"
 	{
@@ -528,6 +574,7 @@
 		"pl"    "Ty też dobrze sobie radzisz!"
 		"nl"	"Je doet ook uw best!"
 		"chi"   "你也做得很好!"
+		"it"	"Anche tu stai facendo un ottimo lavoro!"
 	}
 	"Here, have this medkit!"
 	{
@@ -539,6 +586,7 @@
 		"pt"	"Aqui, pegue este kit médico!"
 		"nl"	"Hier, een Medikit!"
 		"chi"   "给，拿着这个医疗包!"
+		"it"	"Tieni, prendi questo kit di pronto soccorso!"
 	}
 	"Sorry, i dont have a medkit on me..."
 	{
@@ -550,6 +598,7 @@
 		"pt"	"Desculpe, não tenho um kit médico..."
 		"nl"	"Sorry, ik heb geen medikit bij me..."
 		"chi"   "对不起，我身上没带医疗包......"
+		"it"	"Mi dispiace, non ho un kit di pronto soccorso con me"
 	}
 	"Sorry, i dont have a medkit on me, please wait."
 	{
@@ -561,6 +610,7 @@
 		"pt"	"Desculpe, não tenho um kit médico comigo, espere por favor."
 		"nl"	"Sorry, ik heb geen medikit bij me, wacht alstublieft."
 		"chi"   "对不起，我身上没带医疗包...请稍等"
+		"it"	"Mi dispiace, non ho un kit di pronto soccorso con me, attendi."
 	}
 	"I do not have a medkit."
 	{
@@ -572,6 +622,7 @@
 		"pt"	"Eu não contenho um kit médico."
 		"nl"	"Ik heb geen medikit."
 		"chi"   "我没有医疗包。"
+		"it"	"Non ho un kit di pronto soccorso."
 	}
 	"I dont have a medkit, have patience."
 	{
@@ -583,6 +634,7 @@
 		"pt"	"Eu não tenho um kit médico, tenha paciência."
 		"nl"	"Ik heb geen medikit, heb geduld."
 		"chi"   "我没有医疗箱，耐心点。"
+		"it"	"Non ho un kit medico, abbi pazienza."
 	}
 	"I told you i do not have a medikit!!!"
 	{
@@ -594,6 +646,7 @@
 		"pt"	"Eu ja disse que eu não tenho um kit médico!!!"
 		"nl"	"Ik zeg je toch dat ik geen medikit heb!!!"
 		"chi"   "我告诉过你我没有医疗包!!"
+		"it"	"Ti ho detto che non ho un kit di pronto soccorso!!!"
 	}
 	"Youre too far away!"
 	{
@@ -605,6 +658,7 @@
 		"pt"	"Você está muito longe!"
 		"nl"	"Je bent te ver weg!"
 		"chi"   "你离得太远了!"
+		"it"	"Sei troppo lontano!"
 	}
 	"This can't be..."
 	{
@@ -616,6 +670,7 @@
 		"pt"	"Não pode ser!..."
 		"nl"	"Dit kan niet waar zijn..."
 		"chi"   "怎么会这样..."
+		"it"	"Non può essere..."
 	}
 	"I will protect you!"
 	{
@@ -627,6 +682,7 @@
 		"pt"	"Eu irei protege-lo!"
 		"nl"	"Ik bescherm je!"
 		"chi"   "我会保护你的!"
+		"it"	"Ti proteggerò!"
 	}
 	"You told me to be friendly."
 	{
@@ -638,6 +694,7 @@
 		"pt"	"Você me disse para ser amigável. Então não atacarei eles. Mas eu irei os manter em mente..."
 		"nl"	"Je vertelde mij om vriendelijk te zijn. Ik val ze niet aan maar ik hou ze wel in mijn achterhoofd..."
 		"chi"   "你告诉过我要友好的。所以我不会攻击他们。但我会记住他们……"
+		"it"	"Mi hai detto di essere gentile."
 	}
 	"I'm glad to help!"
 	{
@@ -647,5 +704,6 @@
 		"pt"	"Fico feliz em ajudar!"
 		"nl"	"Ik ben blij om te helpen!"
 		"chi"   "我很乐意帮忙!"
+		"it"	"Sono felice di aiutarti!"
 	}
 }

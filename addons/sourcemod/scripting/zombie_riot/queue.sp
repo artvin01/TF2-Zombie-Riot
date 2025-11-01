@@ -130,8 +130,8 @@ void Queue_Menu(int client)
 		menu.AddItem("", buffer, ITEMDRAW_SPACER);
 	}
 	
-	menu.AddItem("sm_encyclopedia", "Encyclopedia");
 	/*
+	menu.AddItem("sm_encyclopedia", "Encyclopedia");
 	zr_tagblacklist.GetString(buffer, sizeof(buffer));
 	if(StrContains(buffer, "nominigames", false) == -1)
 	{
@@ -207,6 +207,7 @@ public int Queue_MenuH(Menu menu, MenuAction action, int client, int choice)
 				}
 				case 3:
 				{
+					c_WeaponUseAbilitiesHud[client][0] = 0;
 					Items_EncyclopediaMenu(client);
 				}
 				default:
