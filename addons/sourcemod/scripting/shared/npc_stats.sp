@@ -264,7 +264,7 @@ float ReturnEntityAttackspeed(int iNpc)
 //I moved these up here so they can be precached, because the server crashes if a skeleton is gibbed and these aren't precached:
 static char m_cGibModelSkeleton[][] = {
     "models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl",
-    "models/bots/skeleton_sniper/skelton_sniper_gib_leg_l.mdl",
+    "models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
     "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
 };
 
@@ -364,9 +364,10 @@ void OnMapStart_NPC_Base()
 	PrecacheModel(MODEL_SSB);
 	PrecacheSound(SND_TRANSFORM);
 	PrecacheSound(SND_GIB_SKELETON);
-	for (int i = 0; i < (sizeof(m_cGibModelSkeleton)); i++)
+
+	for (int i = 0; i < sizeof(m_cGibModelSkeleton); i++)
 	{
-		PrecacheModel(m_cGibModelSkeleton[i]);
+		PrecacheModel(m_cGibModelSkeleton[i], true);
 	}
 	#endif
 }
@@ -7325,6 +7326,8 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 
 		if(npc.m_iBleedType == BLEEDTYPE_METAL)
 			DispatchKeyValue(prop, "model", m_cGibModelMetal[GibLoop]);
+		else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
+			DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
 		else
 			DispatchKeyValue(prop, "model", m_cGibModelDefault[GibLoop]);
 
@@ -7413,10 +7416,10 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
 				SetEntityRenderColor(prop, 0, 255, 0, 255);
 			}
-			case BLEEDTYPE_SKELETON:
+			/*case BLEEDTYPE_SKELETON:
 			{
-				//insert.
-			}
+				Skeletons don't bleed, so I'm leaving this blank.
+			}*/
 			case BLEEDTYPE_SEABORN:
 			{
 				if(!EnableSilentMode)
