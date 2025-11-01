@@ -430,8 +430,8 @@ char g_TankStepSound[][] = {
 
 #define BONEZONE_MODEL		"models/zombie_riot/the_bone_zone/basic_bones.mdl"
 #define BONEZONE_MODEL_BOSS	"models/zombie_riot/the_bone_zone/boss_bones.mdl"
-#define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
-#define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
+#define MODEL_SSB   		"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
+#define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
 #define SND_TRANSFORM		")vo/halloween_boss/knight_alert.mp3"
 #define PARTICLE_TRANSFORM	"ghost_appearation"
 #define SND_GIB_SKELETON	")misc/halloween/skeleton_break.wav"
