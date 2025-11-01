@@ -9826,7 +9826,9 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 		//this is too little, do not bother
 		return;
 	}
-
+	bool DontSetFrozenState = false;
+	if(f_TimeFrozenStill[npc])
+		DontSetFrozenState = true;
 	f_StunExtraGametimeDuration[npc] += (Duration_Stun_Post - TimeSinceLastStunSubtract);
 	fl_NextDelayTime[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
 	f_TimeFrozenStill[npc] = GameTime + Duration_Stun_Post - f_StunExtraGametimeDuration[npc];
@@ -9841,6 +9843,9 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 
 	Npc_DebuffWorldTextUpdate(view_as<CClotBody>(npc));
 
+	if(DontSetFrozenState)
+		return;
+	//already stunned......
 	f_LayerSpeedFrozeRestore[npc] = view_as<CClotBody>(npc).GetPlaybackRate();
 	view_as<CClotBody>(npc).SetPlaybackRate(0.0, true);
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();

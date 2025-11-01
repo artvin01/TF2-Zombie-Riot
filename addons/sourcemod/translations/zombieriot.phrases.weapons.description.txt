@@ -2330,8 +2330,7 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, and metallic enemies suffer x2 the damage from bleeding."
-		"it"	"Aumenta la velocità di fuoco e i nemici metallici subiscono x2 danni da sanguinamento."
+		"en"	"Increases fire rate, further papping gives debuffs."
 	}
 	"Alchemist Potion Pap 4"
 	{
@@ -3763,9 +3762,7 @@
 	}
 	"Medigun Desc Pap 3"
 	{
-		"en"	"Your uber will now instantly restore your armor, and will greatly increase your patient's efficiency.\n(Mana regeneration, Extra attackspeed and damage boost)"
-		"es"	"Tu uber ahora restaurara completamente la armadura, y incrementara mayormente la eficiencia de tu paciente.\n(Regeneracion de mana, velocidad de ataque extra y daño extra)"
-		"it"	"Il tuo Uber ora ripristinerà istantaneamente la tua armatura e aumenterà notevolmente l'efficienza del tuo paziente.\n(Rigenerazione del mana, velocità d'attacco e danno extra)"
+		"en"	"Your uber will now instantly restore you and your patients armor upon use once, gives attackspeed, damage, and mana as a buff\nReduces uberduration by 1 second."
 	}
 	"Flash Grenade Desc"
 	{
