@@ -129,14 +129,6 @@
 	{
 		"en"		"SSB is here to- wait, why is he in a chair?"
 	}
-	"SSB Spawn"
-	{
-		"en"		"SSB is here to wreak havoc!"
-	}
-	"SSB Spawn Finale"
-	{
-		"en"		"SSB is here to- wait, why is he in a chair?"
-	}
 	"You have alerted the horde..."
 	{
 		"en" 		"You have alerted the horde..."
