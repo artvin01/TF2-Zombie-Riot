@@ -2221,7 +2221,7 @@
 	}	
 	"Barracks Iberia Inquisitor Lynsen Desc"
 	{
-		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors"
+		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors."
 		"it"		"Uno dei migliori inquisitori addestrati da Irene, in grado di marcare i nemici e di far piovere morte su di loro, lavora bene con gli altri inquisitori"
 	}	
 	"Barracks Iberian Lighthouse Guardian Desc"
@@ -2231,82 +2231,82 @@
 	}
 	"Agent John Desc"
 	{
-		"en"		"Generic Agent."
+		"en"		"The most basic of agents. \n-No special Effects."
 		"it"		"Agente generico."
-	}
+	} 
 	"Agent James Desc"
 	{
-		"en"		"Slightly less generic.\nHas a gun.\nApplies Corruption debuff."
+		"en"		"A less basic agent, but doesn't have anything special. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Un po' meno generico.\nHa una pistola.\nApplica il debuff Corruzione."
 	}
 	"Agent Alexander Desc"
 	{
-		"en"		"Gets stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"A agent that gets stronger the lower his health is. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Diventa tanto più forte quanto più bassa è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Alan Desc"
 	{
-		"en"		"This agent gets buffed if you're too close to his proximity.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"This agent gets buffed if you're too close to his proximity. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"Questo agente viene potenziato se si è troppo vicini a lui.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Chase Desc"
 	{
-		"en"		"Starts off extremely slow, but gains velocity overtime, uncapped.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"This agent starts extremely slow, but gains velocity over time, uncapped. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"Inizia con estrema lentezza, ma acquista velocità con il passare del tempo, senza limiti.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Dave Desc"
 	{
-		"en"		"Has the ability to reflect incoming attacks, gains insane resistance under reflect.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"He has the ability to reflect incoming attacks, gaining insane resistance under reflect. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Ha la capacità di riflettere gli attacchi in arrivo, guadagna una resistenza folle sotto la riflessione.\nHa una pistola.\nApplica il Debuff di Corruzione."
 	}
 	"Agent Graham Desc"
 	{
-		"en"		"Applies insane Corruption Debuff.\nHas a gun."
+		"en"		"Applies insane Corruption Debuff. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Applica il Debuff Corruzione folle.\nHa una pistola."
 	}
 	"Agent Steve Desc"
 	{
-		"en"		"Attacks faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Attacks faster the less health he has. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"Attacca più velocemente quanto minore è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Eric Desc"
 	{
-		"en"		"Gets even stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Stronger variant of Agent Alexander. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Diventa tanto più forte quanto più bassa è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Jack Desc"
 	{
-		"en"		"Attacks even faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Stronger variant of Agent Steve. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"Attacca tanto più velocemente quanto minore è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Jim Desc"
 	{
-		"en"		"Stronger variant of Agent James."
+		"en"		"Stronger variant of Agent James. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'Agente James."
 	}
 	"Agent Josh Desc"
 	{
-		"en"		"Stronger variant of Agent John."
+		"en"		"Stronger variant of Agent John. \n-No special Effects."
 		"it"		"Variante più forte dell'agente John."
 	}
 	"Agent Kenneth Desc"
 	{
-		"en"		"Starts off somewhat slow, gains velocity faster than Agent Chase.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Stronger variant of Agent Chase. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"Inizia in modo un po' lento, ma guadagna velocità più velocemente dell'Agente Chase.\nHa una pistola.\nApplica il Debuff di Corruzione."
 	}
 	"Agent Paul Desc"
 	{
-		"en"		"Stronger variant of Agent Alan.\nHas bigger proximity and more buffs."
+		"en"		"Stronger variant of Agent Alan. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"Variante più forte dell'Agente Alan.\nHa una maggiore vicinanza e più buff."
 	}
 	"Agent Tyler Desc"
 	{
-		"en"		"Stronger variant of Agent Graham."
+		"en"		"Stronger variant of Agent Graham. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'agente Graham."
 	}
 	"Agent Wayne Desc"
 	{
-		"en"		"Stronger variant of Agent Dave.\nReflect lasts longer and has a shorter cooldown."
+		"en"		"Stronger variant of Agent Dave. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Variante più forte dell'Agente Dave.\nRiflect dura più a lungo e ha un cooldown più breve."
 	}
 	"Merovingian Desc"
@@ -2316,27 +2316,27 @@
 	}
 	"Agent Ben Desc"
 	{
-		"en"		"Stronger variant of Agent Jack."
+		"en"		"Stronger variant of Agent Jack. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"Variante più forte dell'Agente Jack."
 	}
 	"Agent Chad Desc"
 	{
-		"en"		"Stronger variant of Agent Paul.\nHas an even bigger proximity and even more buffs."
+		"en"		"Stronger variant of Agent Paul. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"Variante più forte dell'Agente Paul.\nHa una vicinanza ancora maggiore e ancora più buff."
 	}
 	"Agent Chris Desc"
 	{
-		"en"		"Stronger variant of Agent Jim."
+		"en"		"Stronger variant of Agent Jim. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'Agente Jim."
 	}
 	"Agent Dick Desc"
 	{
-		"en"		"Stronger variant of Agent Eric."
+		"en"		"Stronger variant of Agent Eric. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Variante più forte dell'agente Eric."
 	}
 	"Agent Ian Desc"
 	{
-		"en"		"Stronger variant of Agent Wayne."
+		"en"		"Stronger variant of Agent Wayne. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Variante più forte dell'agente Wayne."
 	}
 	"Agent Jackson Desc"
@@ -2346,32 +2346,32 @@
 	}
 	"Agent Mike Desc"
 	{
-		"en"		"Stronger variant of Agent Tyler."
+		"en"		"Stronger variant of Agent Tyler. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'agente Tyler."
 	}
 	"Agent Sam Desc"
 	{
-		"en"		"Stronger variant of Agent Josh."
+		"en"		"Stronger variant of Agent Josh. \n-No special Effects."
 		"it"		"Variante più forte dell'agente Josh."
 	}
 	"Agent Zack Desc"
 	{
-		"en"		"Stronger variant of Agent Kenneth."
+		"en"		"Stronger variant of Agent Kenneth. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"Variante più forte dell'agente Kenneth."
 	}
 	"Agent Connor Desc"
 	{
-		"en"		"Strongest variant of Spy Agents."
+		"en"		"Strongest variant of Agent Chris. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"La variante più forte di Agenti spia."
 	}
 	"Agent Henry Desc"
 	{
-		"en"		"Strongest variant of Medic Agents.\nGets almost every buff and has a huge proximity radius."
+		"en"		"Strongest variant of Agents Chad. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"La variante più forte degli Agenti Medico.\nRiceve quasi tutti i buff e ha un raggio di prossimità enorme."
 	}
 	"Agent Jeremy Desc"
 	{
-		"en"		"Strongest variant of Pyro Agents.\nHas enormous Corruption Debuff."
+		"en"		"Strongest variant of Agent Mike. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"La variante più forte degli Agenti Piro.\n ha un enorme Debuff di Corruzione."
 	}
 	"Agent Jones Desc"
@@ -2381,27 +2381,27 @@
 	}
 	"Agent Kurt Desc"
 	{
-		"en"		"Strongest variant of Soldier Agents."
+		"en"		"Strongest variant of Agent Dick. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Variante più forte degli Agenti Soldato."
 	}
 	"Agent Logan Desc"
 	{
-		"en"		"Strongest variant of Engineer Agents."
+		"en"		"Strongest variant of Agent Zach. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"La variante più forte degli agenti ingegneri."
 	}
 	"Agent Ross Desc"
 	{
-		"en"		"Strongest variant of Sniper Agents."
+		"en"		"Strongest variant of Agent Ben. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"La variante più forte di Sniper Agents."
 	}
 	"Agent Spencer Desc"
 	{
-		"en"		"Strongest variant of Heavy Agents."
+		"en"		"Strongest variant of Agent Ian. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Variante più forte degli Agenti Pesanti."
 	}
 	"Agent Todd Desc"
 	{
-		"en"		"Strongest variant of Scout Agents."
+		"en"		"Strongest variant of Agent Sam. \n-No special Effects."
 		"it"		"Variante più forte degli Agenti Scout."
 	}
 	"Agent Thompson Desc"
