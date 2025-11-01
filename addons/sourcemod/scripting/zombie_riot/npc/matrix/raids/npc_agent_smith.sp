@@ -1694,7 +1694,7 @@ static void Smith_Weapon_Lines(AgentSmith npc, int client)
 					Format(Text_Lines, sizeof(Text_Lines), "{darkgreen}We're all purists here in the Matrix, Mr.{green}%N{darkgreen}.", client); //tomaarten (2)
 			}
 		}
-		case 53859678: //WINDFLOW
+		case 248098217: //WINDFLOW
 		{
 			switch(GetRandomInt(0,1))
 			{
