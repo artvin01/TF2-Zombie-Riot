@@ -47,7 +47,7 @@ void Reset_stats_PHLOG_Singular(int client) //This is on disconnect/connect
 	i_PHLOGHitsDone[client] = 0;
 }
 
-#define MAX_TARGETS_FLAME 5
+#define MAX_TARGETS_FLAME 4
 
 static int BEAM_BuildingHit[MAX_TARGETS_FLAME];
 static float BEAM_Targets_Hit[MAXPLAYERS];

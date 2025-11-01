@@ -330,7 +330,7 @@
 	
 	"Leone 12 Gauge Super Desc"
 	{
-		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerful but harder to use since its single fire nature and poor accuracy"
+		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerful but harder to use since its single fire nature and poor accuracy\nProvides an extra 10％ Resistance to all sources while active."
 		"fr"		"Fusil à pompe semi-automatique, vous ne pouvez pas maintenir la détente pour tirer.\nDégats sont améliorés en échange d'une déviation plus grande."
 		"ru"		"Полуавт. дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, стреляет одиночными выстрелами и имеет низкую точность."
 		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
@@ -419,6 +419,14 @@
 		"it"		"Aumento dei danni e della velocità d'attacco, proiettile extra per colpo."
 	}
 	
+	"Annabelle Desc"
+	{
+		"en"		"Provides an extra 10％ Resistance to all sources while active."
+	}
+	"Double Barrel Shotgun Desc"
+	{
+		"en"		"Provides an extra 10％ Resistance to all sources while active."
+	}
 	"Double Barrel Shotgun Pap 1"
 	{
 		"en"		"Increased damage and slightly faster attackspeed and reload speed"
