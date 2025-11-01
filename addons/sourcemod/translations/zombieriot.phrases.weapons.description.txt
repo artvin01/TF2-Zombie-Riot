@@ -2330,8 +2330,7 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, and metallic enemies suffer x2 the damage from bleeding."
-		"it"	"Aumenta la velocità di fuoco e i nemici metallici subiscono x2 danni da sanguinamento."
+		"en"	"Increases fire rate, further papping gives debuffs."
 	}
 	"Alchemist Potion Pap 4"
 	{

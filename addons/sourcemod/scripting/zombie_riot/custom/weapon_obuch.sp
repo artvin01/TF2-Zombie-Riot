@@ -44,17 +44,15 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		{
 			attacks_made[attacker] = 3;
 		}
-		if (attacks_made[attacker] <= 3)
-		{
-			attacks_made[attacker] = 3;
-		}
 		Attributes_Set(weapon, 5, RampagerAttackSpeed(attacks_made[attacker]));
 		f_ModifThirdPersonAttackspeed[weapon] = (1.0 / RampagerAttackSpeed(attacks_made[attacker]));
+		float ExtraCooldownGive = Attributes_Get(weapon, 6, 1.0);
+		ExtraCooldownGive *= (1.0 / 1.5);
 		if(Handle_on[attacker])
 		{
 			delete Revert_Weapon_Back_Timer[attacker];
 		}
-		Revert_Weapon_Back_Timer[attacker] = CreateTimer(3.0, Reset_weapon_Obuch, attacker, TIMER_FLAG_NO_MAPCHANGE);
+		Revert_Weapon_Back_Timer[attacker] = CreateTimer(3.0 * ExtraCooldownGive, Reset_weapon_Obuch, attacker, TIMER_FLAG_NO_MAPCHANGE);
 		Handle_on[attacker] = true;
 	}
 	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", attacker, SNDCHAN_STATIC, 80, _, 0.9, 120);
