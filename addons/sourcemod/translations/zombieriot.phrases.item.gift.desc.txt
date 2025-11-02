@@ -1120,7 +1120,7 @@
 	}
 	"Calmaticus Desc"
 	{
-		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"en"		"The originator of the Xeno infection. Silvester and Waldch tried to warn you, but you didn't listen. \n-Melee attack hits multiple times and launches the target at the end. \n-Causes infection blast below every enemy, in LoS, after performing or ending any attack. \n-If hit by the infection blast, you are afflicted with a heavy bleed. \n-Occasionally, he'll charge towards the closest enemy, picking them up, and ripping them apart. He'll then throw them into the sky. \n-Has a minigun that shoots explosive bullets. \n-Once he hits 25% of his HP, he will drop to the floor and regen 50% of his total HP back over 20 seconds. During this, he gains 70% damage resistance."
 		"it"		"Il creatore dell'infezione Xeno.\nHanno cercato di avvertirti, non hai ascoltato.\nLa sua resistenza alla fase rigenerativa (può essere silenziata a metà)."
 	}
 	"Shell Sea Runner Desc"
@@ -1951,7 +1951,7 @@
 	}
 	"Vivithorn Desc"
 	{
-		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+		"en"	"Activator of the xeno infection source. He won't let you stop him from infecting the world with the Xeno infection. \n-Melee attack hits multiple times and launches the target at the end. \n-start slowly sprinting towards the closest enemy, gaining speed until he grabs someone. HE will pick them up and snap their neck. Dropping them onto the floor afterward, and being stunned for a few seconds \n-Occasionally charges to the closest enemy, ramming into them. This will deal damage on contact and knockback."
 		"it"	"Attivatore della fonte di infezione xeno.\nPuò sfrecciare, uno ti afferra e ti spezza il collo, l'altro colpisce a ripetizione ma nemici diversi in un AOE.\n(SIlenza) perde la scivolata al colpo"
 	}
 	"Lex Desc"
