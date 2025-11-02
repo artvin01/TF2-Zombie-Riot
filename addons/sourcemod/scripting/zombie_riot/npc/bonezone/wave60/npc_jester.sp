@@ -915,11 +915,15 @@ void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3],
 		
 		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 1 : 0);
 		RequestFrame(Mondo_Spin, EntIndexToEntRef(entity));
+
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		
 		if (buffed)
 		{
 			SDKHook(entity, SDKHook_Touch, Mondo_Touch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
 			DispatchKeyValueFloat(entity, "modelscale", 3.0);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, (MondoDeathBomb ? BONES_MONDO_GRAVITY_DEATH : BONES_MONDO_GRAVITY));
@@ -931,7 +935,7 @@ void Jester_ShootProjectile(JesterBones npc, float bombPos[3], float bombAng[3],
 		else
 		{
 			SDKHook(entity, SDKHook_Touch, Jester_Touch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Mondo_DontExplode);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, BONES_JESTER_GRAVITY);
 

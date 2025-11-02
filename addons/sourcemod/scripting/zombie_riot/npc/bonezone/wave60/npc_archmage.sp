@@ -595,16 +595,21 @@ public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float v
 		SetEntityCollisionGroup(entity, 24);
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
+
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		
 		if (b_BonesBuffed[npc.index])
 		{
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_Explode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_Explode);
 			Archmage_AttachParticle(entity, PARTICLE_ARCHMAGE_FIREBALL_BUFFED, _, "");
 		}
 		else
 		{
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
+
 			SDKHook(entity, SDKHook_Touch, Archmage_FireballTouch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Archmage_DontExplode);
 			Archmage_AttachParticle(entity, PARTICLE_ARCHMAGE_FIREBALL, _, "");
 			CreateTimer(BONES_ARCHMAGE_PROJECTILE_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}

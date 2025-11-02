@@ -1034,7 +1034,11 @@ void Captain_ShootProjectile(Captain npc, float vicLoc[3], float startPos[3], fl
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
 		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
 		SDKHook(entity, SDKHook_Touch, Captain_BombHit);
 		ParticleEffectAt_Parent(startPos, PARTICLE_PEARLS_TRAIL, entity, "attach_fuse");
 		SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);

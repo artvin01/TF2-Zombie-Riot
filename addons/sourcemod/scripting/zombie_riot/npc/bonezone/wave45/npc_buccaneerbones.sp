@@ -846,10 +846,14 @@ void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, b
 		
 		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 1 : 0);
 		
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+
 		if (b_BonesBuffed[npc.index])
 		{
 			SDKHook(entity, SDKHook_Touch, Buccaneer_BigBallTouch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
 			DispatchKeyValueFloat(entity, "modelscale", 1.75);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, BUFFED_GRAVITY);
@@ -863,7 +867,7 @@ void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, b
 		else
 		{
 			SDKHook(entity, SDKHook_Touch, Buccaneer_CannonballTouch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Buccaneer_DontExplode);
 			SetEntityMoveType(entity, MOVETYPE_FLYGRAVITY);
 			SetEntityGravity(entity, BUCCANEER_GRAVITY);
 			EmitSoundToAll(SOUND_CANNONBALL_SHOOT, entity);

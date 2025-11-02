@@ -991,7 +991,10 @@ void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3]
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
 		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
+		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
 
 		if (!molotov)
 		{

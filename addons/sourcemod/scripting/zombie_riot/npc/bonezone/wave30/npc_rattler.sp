@@ -581,16 +581,20 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 		SetEntityCollisionGroup(entity, 24);
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
+
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		
 		if (b_BonesBuffed[npc.index])
 		{
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_Explode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_Explode);
 			Rattler_AttachParticle(entity, PARTICLE_RATTLER_FIREBALL_BUFFED, _, "");
 		}
 		else
 		{
 			SDKHook(entity, SDKHook_Touch, Rattler_FireballTouch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
 			Rattler_AttachParticle(entity, PARTICLE_RATTLER_FIREBALL, _, "");
 			CreateTimer(RATTLER_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}

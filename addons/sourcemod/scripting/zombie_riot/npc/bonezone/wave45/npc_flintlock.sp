@@ -584,16 +584,20 @@ public void Flintlock_ShootProjectile(FlintlockBones npc, float vicLoc[3], float
 		SetEntityCollisionGroup(entity, 24);
 		Set_Projectile_Collision(entity);
 		See_Projectile_Team_Player(entity);
+
+		if (h_NpcSolidHookType[entity] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[entity]);
+		h_NpcSolidHookType[entity] = 0;
 		
 		if (b_BonesBuffed[npc.index])
 		{
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Flintlock_Explode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Flintlock_Explode);
 			Flintlock_AttachParticle(entity, PARTICLE_FLINTLOCK_FIREBALL_BUFFED, _, "");
 		}
 		else
 		{
 			SDKHook(entity, SDKHook_Touch, Flintlock_FireballTouch);
-			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Flintlock_DontExplode);
+			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
 			Flintlock_AttachParticle(entity, PARTICLE_FLINTLOCK_FIREBALL, _, "");
 			CreateTimer(FLINTLOCK_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
