@@ -321,7 +321,12 @@ methodmap FlintlockBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		FlintlockBones npc = view_as<FlintlockBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE, buffed && !randomlyBuffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, ally, false));
+		FlintlockBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<FlintlockBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, BONEZONE_MODEL, _, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE));
+		else
+			npc = view_as<FlintlockBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE, buffed && !randomlyBuffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

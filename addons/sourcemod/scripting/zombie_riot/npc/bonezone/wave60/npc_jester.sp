@@ -361,7 +361,12 @@ methodmap JesterBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		JesterBones npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed && !randomlyBuffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
+		JesterBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<JesterBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, BONEZONE_MODEL, _, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE));
+		else
+			npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed && !randomlyBuffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

@@ -525,6 +525,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		"npc_ruina_astrianious",
 		"npc_ruina_dronianis"
 	};
+
 	static int npc_health[] = {
 		50000,	//"npc_ruina_magianius",
 		75000,	//"npc_ruina_loonarionus"
@@ -539,8 +540,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		150000	//"npc_ruina_dronianis"
 	};
 
-	//Temporarily commented out because it throws a compiler error. Tell Deivid before making a PR for The Bone Zone.
-	//Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);
+	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);
 
 	i_current_cycle[npc.index] = GetRandomInt(0, sizeof(npc_names)-1);
 

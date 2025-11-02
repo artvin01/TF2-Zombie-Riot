@@ -320,7 +320,12 @@ methodmap RattlerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		RattlerBones npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed && !randomlyBuffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
+		RattlerBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<RattlerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, BONEZONE_MODEL, _, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE));
+		else
+			npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed && !randomlyBuffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

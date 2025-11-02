@@ -1770,7 +1770,7 @@ bool Tartarus_Ring_SlotUsed[RING_MAX] = { false, ... };
 
 methodmap Tartarus_Ring __nullable__
 {
-	public Tartarus_Ring(float pos[3], int phase, SupremeSpookmasterBones owner)
+	public Tartarus_Ring(float pos[3], int phase)
 	{
 		int index = 0;
 		while (Tartarus_Ring_SlotUsed[index] && index < RING_MAX - 1)
@@ -1892,7 +1892,7 @@ public void SpellCard_RingOfTartarus(SupremeSpookmasterBones ssb, int target)
 
 public void Ring_CreateRing(float pos[3], int phase, SupremeSpookmasterBones ssb)
 {
-	Tartarus_Ring ring = new Tartarus_Ring(pos, SSB_WavePhase, ssb);
+	Tartarus_Ring ring = new Tartarus_Ring(pos, SSB_WavePhase);
 
 	ring.Owner = ssb.index;
 	ring.Radius = Ring_Radius[phase];
@@ -3955,7 +3955,11 @@ methodmap SupremeSpookmasterBones < CClotBody
 	
 	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(CClotBody(vecPos, vecAng, MODEL_SSB, BONES_SUPREME_SCALE, BONES_SUPREME_HP, ally, false, true, true, true));
+		SupremeSpookmasterBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<SupremeSpookmasterBones>(BarrackBody(client, vecPos, vecAng, BONES_SUPREME_HP, MODEL_SSB, _, "BONES_SUPREME_SCALE"));
+		else
+			npc = view_as<SupremeSpookmasterBones>(CClotBody(vecPos, vecAng, MODEL_SSB, BONES_SUPREME_SCALE, BONES_SUPREME_HP, ally));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

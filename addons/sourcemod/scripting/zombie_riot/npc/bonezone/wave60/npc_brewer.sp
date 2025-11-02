@@ -190,7 +190,11 @@ methodmap AlchemistBones < CClotBody
 	
 	public AlchemistBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		AlchemistBones npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
+		AlchemistBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<AlchemistBones>(BarrackBody(client, vecPos, vecAng, BONES_ALCHEMIST_HP, BONEZONE_MODEL, _, BONES_ALCHEMIST_SCALE));
+		else
+			npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
 		
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);

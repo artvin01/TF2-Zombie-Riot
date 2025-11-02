@@ -501,7 +501,11 @@ methodmap Godfather < CClotBody
 
 	public Godfather(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		Godfather npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, GODFATHER_SCALE, GODFATHER_HP, ally));
+		Godfather npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<Godfather>(BarrackBody(client, vecPos, vecAng, GODFATHER_HP, BONEZONE_MODEL_BOSS, _, GODFATHER_SCALE));
+		else
+			npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, GODFATHER_SCALE, GODFATHER_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;

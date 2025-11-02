@@ -188,7 +188,11 @@ methodmap PeasantBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		PeasantBones npc = view_as<PeasantBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_PEASANT_SCALE, BONES_PEASANT_HP, ally, false));
+		PeasantBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<PeasantBones>(BarrackBody(client, vecPos, vecAng, BONES_PEASANT_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_PEASANT_SCALE));
+		else
+			npc = view_as<PeasantBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_PEASANT_SCALE, BONES_PEASANT_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 

@@ -213,7 +213,12 @@ methodmap BigBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed && !randomlyBuffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
+		BigBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<BigBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE));
+		else
+			npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed && !randomlyBuffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

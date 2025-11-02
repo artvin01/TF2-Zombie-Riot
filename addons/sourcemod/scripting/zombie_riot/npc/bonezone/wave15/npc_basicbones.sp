@@ -201,7 +201,12 @@ methodmap BasicBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		BasicBones npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BASIC_SCALE_BUFFED : BONES_BASIC_SCALE, buffed && !randomlyBuffed ? BONES_BASIC_HP_BUFFED : BONES_BASIC_HP, ally, false));
+		BasicBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<BasicBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BASIC_HP_BUFFED : BONES_BASIC_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, buffed ? BONES_BASIC_SCALE_BUFFED : BONES_BASIC_SCALE));
+		else
+			npc = view_as<BasicBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BASIC_SCALE_BUFFED : BONES_BASIC_SCALE, buffed && !randomlyBuffed ? BONES_BASIC_HP_BUFFED : BONES_BASIC_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

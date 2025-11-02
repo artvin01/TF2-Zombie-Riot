@@ -306,7 +306,12 @@ methodmap BuccaneerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 		
-		BuccaneerBones npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed && !randomlyBuffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
+		BuccaneerBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<BuccaneerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", _, buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE));
+		else
+			npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed && !randomlyBuffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

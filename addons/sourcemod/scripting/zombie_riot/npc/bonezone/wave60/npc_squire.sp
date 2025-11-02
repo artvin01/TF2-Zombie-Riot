@@ -281,7 +281,12 @@ methodmap SquireBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		SquireBones npc = view_as<SquireBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SQUIRE_SCALE_BUFFED : BONES_SQUIRE_SCALE, buffed && !randomlyBuffed ? BONES_SQUIRE_HP_BUFFED : BONES_SQUIRE_HP, ally, false));
+		SquireBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<SquireBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_SQUIRE_HP_BUFFED : BONES_SQUIRE_HP, BONEZONE_MODEL, _, buffed ? BONES_SQUIRE_SCALE_BUFFED : BONES_SQUIRE_SCALE));
+		else
+			npc = view_as<SquireBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SQUIRE_SCALE_BUFFED : BONES_SQUIRE_SCALE, buffed && !randomlyBuffed ? BONES_SQUIRE_HP_BUFFED : BONES_SQUIRE_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

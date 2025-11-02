@@ -291,7 +291,12 @@ methodmap SluggerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		SluggerBones npc = view_as<SluggerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE, buffed && !randomlyBuffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, ally, false));
+		SluggerBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<SluggerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, BONEZONE_MODEL, _, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE));
+		else
+			npc = view_as<SluggerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE, buffed && !randomlyBuffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

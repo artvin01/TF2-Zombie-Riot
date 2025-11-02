@@ -237,7 +237,12 @@ methodmap BrittleBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
+		BrittleBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<BrittleBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_BRITTLE_SCALE));
+		else
+			npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

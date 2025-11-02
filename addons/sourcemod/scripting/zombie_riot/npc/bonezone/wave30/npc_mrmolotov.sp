@@ -178,7 +178,11 @@ methodmap MolotovBones < CClotBody
 	
 	public MolotovBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		MolotovBones npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
+		MolotovBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<MolotovBones>(BarrackBody(client, vecPos, vecAng, BONES_MOLOTOV_HP, BONEZONE_MODEL, _, BONES_MOLOTOV_SCALE));
+		else
+			npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
 		
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);

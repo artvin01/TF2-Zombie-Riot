@@ -289,7 +289,7 @@ methodmap Lordread < CClotBody
 		return true;
 	}
 	
-	public void Guillotine(int target, float targPos[3])
+	public void Guillotine(float targPos[3])
 	{
 		this.FaceTowards(targPos, 15000.0);
 
@@ -395,7 +395,11 @@ methodmap Lordread < CClotBody
 
 	public Lordread(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		Lordread npc = view_as<Lordread>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, LORDREAD_SCALE, LORDREAD_HP, ally));
+		Lordread npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<Lordread>(BarrackBody(client, vecPos, vecAng, LORDREAD_HP, BONEZONE_MODEL_BOSS, _, LORDREAD_SCALE));
+		else
+			npc = view_as<Lordread>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, LORDREAD_SCALE, LORDREAD_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;
@@ -590,7 +594,7 @@ public void Lordread_ClotThink(int iNPC)
 		if (npc.CanUseGuillotine(flDistanceToTarget))
 		{
 			npc.FaceTowards(vecTarget, 15000.0);
-			npc.Guillotine(closest, vecTarget);
+			npc.Guillotine(vecTarget);
 		}
 	}
 	else

@@ -284,7 +284,12 @@ methodmap NecromancerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed && !randomlyBuffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
+		NecromancerBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<NecromancerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, BONEZONE_MODEL, _, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE));
+		else
+			npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed && !randomlyBuffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
+
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

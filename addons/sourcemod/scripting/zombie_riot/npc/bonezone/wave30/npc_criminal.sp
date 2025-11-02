@@ -187,8 +187,12 @@ methodmap CriminalBones < CClotBody
 			
 			buffed = (GetRandomFloat() <= chance);
 		}
-			
-		CriminalBones npc = view_as<CriminalBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_CRIMINAL_SCALE, BONES_CRIMINAL_HP, ally, false));
+
+		CriminalBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<CriminalBones>(BarrackBody(client, vecPos, vecAng, BONES_CRIMINAL_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_CRIMINAL_SCALE));
+		else
+			npc = view_as<CriminalBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_CRIMINAL_SCALE, BONES_CRIMINAL_HP, ally, false));
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);

@@ -190,7 +190,11 @@ methodmap AleraiserBones < CClotBody
 	
 	public AleraiserBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{	
-		AleraiserBones npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
+		AleraiserBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<AleraiserBones>(BarrackBody(client, vecPos, vecAng, BONES_ALERAISER_HP, BONEZONE_MODEL, _, BONES_ALERAISER_SCALE));
+		else
+			npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
 		
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);

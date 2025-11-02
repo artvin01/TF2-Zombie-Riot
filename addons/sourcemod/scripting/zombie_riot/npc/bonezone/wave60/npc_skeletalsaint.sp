@@ -312,7 +312,12 @@ methodmap SaintBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed && !randomlyBuffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
+		SaintBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<SaintBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, BONEZONE_MODEL, _, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE));
+		else
+			npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed && !randomlyBuffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
+		
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

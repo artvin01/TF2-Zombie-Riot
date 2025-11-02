@@ -289,7 +289,12 @@ methodmap ArchmageBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		ArchmageBones npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed && !randomlyBuffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
+		ArchmageBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<ArchmageBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, BONEZONE_MODEL, _, buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE));
+		else
+			npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed && !randomlyBuffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
+			
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
 

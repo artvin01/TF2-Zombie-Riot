@@ -150,7 +150,11 @@ methodmap GrimReaper < CClotBody
 
 	public GrimReaper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		GrimReaper npc = view_as<GrimReaper>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, "1.2", GetReaperHealth(), ally));
+		GrimReaper npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<GrimReaper>(BarrackBody(client, vecPos, vecAng, GetReaperHealth(), BONEZONE_MODEL, _, "1.2"));
+		else
+			npc = view_as<GrimReaper>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, "1.2", GetReaperHealth(), ally));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

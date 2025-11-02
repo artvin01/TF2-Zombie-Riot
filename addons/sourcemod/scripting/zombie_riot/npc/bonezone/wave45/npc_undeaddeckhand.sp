@@ -188,7 +188,11 @@ methodmap DeckhandBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		DeckhandBones npc = view_as<DeckhandBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_DECKHAND_SCALE, BONES_DECKHAND_HP, ally, false));
+		DeckhandBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<DeckhandBones>(BarrackBody(client, vecPos, vecAng, BONES_DECKHAND_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_DECKHAND_SCALE));
+		else
+			npc = view_as<DeckhandBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_DECKHAND_SCALE, BONES_DECKHAND_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 

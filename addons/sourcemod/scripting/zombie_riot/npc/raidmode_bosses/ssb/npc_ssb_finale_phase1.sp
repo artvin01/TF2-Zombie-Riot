@@ -1290,8 +1290,8 @@ void Absorption_ActivePhase(DataPack pack)
 		Explode_Logic_Custom(Absorption_DMG[tier], ssb.index, ssb.index, 0, userPos, Absorption_Radius[tier], 1.0, 1.0, isBlue, 9999, _, Absorption_EntityMult[tier], Absorption_OnHit);
 		if (Absorption_Hits > 0)
 		{
-			TFTeam team = view_as<TFTeam>(GetEntProp(ssb.index, Prop_Send, "m_iTeamNum"));
-			TE_SetupParticleEffect((team == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, ssb.index);
+			int team = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum");
+			TE_SetupParticleEffect((team == 2 ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, ssb.index);
 			TE_WriteNum("m_bControlPoint1", ssb.index);	
 			TE_SendToAll();
 		}
@@ -1381,8 +1381,8 @@ void SSBChair_HealEntity(int target, int amount, bool particle = true)
 
 	if (particle)
 	{
-		TFTeam team = view_as<TFTeam>(GetEntProp(target, Prop_Send, "m_iTeamNum"));
-		TE_SetupParticleEffect((team == TFTeam_Red ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, target);
+		int team = GetEntProp(target, Prop_Send, "m_iTeamNum");
+		TE_SetupParticleEffect((team == 2 ? PARTICLE_HEALBURST_RED : PARTICLE_HEALBURST_BLUE), PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToAll();
 	}
@@ -1765,7 +1765,11 @@ methodmap SSBChair < CClotBody
 
 	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{	
-		SSBChair npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
+		SSBChair npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<SSBChair>(BarrackBody(client, vecPos, vecAng, SSB_CHAIR_HP, MODEL_SSB, _, SSB_CHAIR_SCALE));
+		else
+			npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
 
 		if (StrEqual(data, ""))
 			Chair_Tier[npc.index] = 0;
