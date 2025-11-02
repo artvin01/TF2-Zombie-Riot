@@ -1473,7 +1473,7 @@ public void Barrage_Launch(int ent, int target, int phase)
 public void SSB_DeleteIfOwnerDisappears(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntIsEntityAlivety(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
