@@ -525,6 +525,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		"npc_ruina_astrianious",
 		"npc_ruina_dronianis"
 	};
+
 	static int npc_health[] = {
 		50000,	//"npc_ruina_magianius",
 		75000,	//"npc_ruina_loonarionus"

@@ -1,14 +1,17 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BEEFY_SPEED = 220.0;
-static float BONES_BEEFY_SPEED_BUFFED = 280.0;
+static float BONES_BEEFY_SPEED = 180.0;
+static float BONES_BEEFY_SPEED_BUFFED = 220.0;
+static float BEEFY_NATURAL_BUFF_CHANCE = 0.0;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BEEFY_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BEEFY_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-#define BONES_BEEFY_HP			"800"
-#define BONES_BEEFY_HP_BUFFED	"1600"
+#define BONES_BEEFY_HP			"1000"
+#define BONES_BEEFY_HP_BUFFED	"2000"
 
-static float BONES_BEEFY_PLAYERDAMAGE = 80.0;
-static float BONES_BEEFY_PLAYERDAMAGE_BUFFED = 120.0;
+static float BONES_BEEFY_PLAYERDAMAGE = 60.0;
+static float BONES_BEEFY_PLAYERDAMAGE_BUFFED = 90.0;
 
 static float BONES_BEEFY_BUILDINGDAMAGE = 90.0;
 static float BONES_BEEFY_BUILDINGDAMAGE_BUFFED = 120.0;
@@ -17,14 +20,18 @@ static float BONES_BEEFY_ATTACKINTERVAL = 1.8;
 static float BONES_BEEFY_ATTACKINTERVAL_BUFFED = 1.2;
 
 #define BONES_BEEFY_SCALE		"1.2"
+#define BONES_BEEFY_SCALE_BUFFED		"1.4"
 #define BONES_BEEFY_SKIN			"0"
+#define BONES_BEEFY_SKIN_BUFFED		"0"
+
+#define BONES_BEEFY_BUFFPARTICLE		"utaunt_wispy_parent_p"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
 
 static char g_HurtSounds[][] = {
-	"npc/fast_zombie/wake1.wav",
+	")zombie_riot/the_bone_zone/skeleton_hurt.mp3",
 };
 
 static char g_IdleSounds[][] = {
@@ -62,8 +69,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-static bool b_BonesBuffed[MAXENTITIES];
-
 public void BeefyBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -79,6 +84,36 @@ public void BeefyBones_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Beefy Bones");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beefybones");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Necropolain;
+	data.Func = Summon_Normal;
+	NPC_Add(data);
+
+	NPCData data_buffed;
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Buffed Beefy Bones");
+	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_beefybones_buffed");
+	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "pyro");
+	data_buffed.IconCustom = false;
+	data_buffed.Flags = 0;
+	data_buffed.Category = Type_Necropolain;
+	data_buffed.Func = Summon_Buffed;
+	NPC_Add(data_buffed);
+}
+
+static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BeefyBones(client, vecPos, vecAng, ally, false);
+}
+
+static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BeefyBones(client, vecPos, vecAng, ally, true);
 }
 
 methodmap BeefyBones < CClotBody
@@ -97,7 +132,7 @@ methodmap BeefyBones < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(80, 110));
 		
 	}
 	
@@ -137,14 +172,69 @@ methodmap BeefyBones < CClotBody
 	
 	public BeefyBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
-		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BEEFY_SCALE, buffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
-		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BEEFYBONES : BONEZONE_BEEFYBONES;
+		bool randomlyBuffed = false;
+		if (!buffed)
+		{
+			float chance = BEEFY_NATURAL_BUFF_CHANCE;
+			if (BEEFY_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 1; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / BEEFY_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * BEEFY_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+			randomlyBuffed = buffed;
+		}
+			
+		BeefyBones npc;
+		if (client > 0 && IsValidClient(client))
+			npc = view_as<BeefyBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE));
+		else
+			npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE, buffed && !randomlyBuffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
+
+		if (randomlyBuffed)
+			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
+
 		b_BonesBuffed[npc.index] = buffed;
+
+		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_BEEFY_HP);
+		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_BEEFY_HP_BUFFED);
+
+		npc.m_flBoneZoneNonBuffedScale = StringToFloat(BONES_BEEFY_SCALE);
+		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_BEEFY_SCALE_BUFFED);
+		npc.m_flBoneZoneNonBuffedSpeed = BONES_BEEFY_SPEED;
+		npc.m_flBoneZoneBuffedSpeed = BONES_BEEFY_SPEED_BUFFED;
+
+		strcopy(c_BoneZoneBuffedName[npc.index], sizeof(c_BoneZoneBuffedName[]), "Buffed Beefy Bones");
+		strcopy(c_BoneZoneNonBuffedName[npc.index], sizeof(c_BoneZoneNonBuffedName[]), "Beefy Bones");
+		npc.BoneZone_UpdateName();
+
+		b_IsSkeleton[npc.index] = true;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(BeefyBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(BeefyBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(BeefyBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(BeefyBones_ClotThink);
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_wispy_parent_p", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(BONES_BEEFY_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -155,7 +245,7 @@ methodmap BeefyBones < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
-		DispatchKeyValue(npc.index, "skin", BONES_BEEFY_SKIN);
+		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BEEFY_SKIN_BUFFED : BONES_BEEFY_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -165,8 +255,6 @@ methodmap BeefyBones < CClotBody
 		
 		npc.m_flSpeed = (buffed ? BONES_BEEFY_SPEED_BUFFED : BONES_BEEFY_SPEED);
 		
-		SDKHook(npc.index, SDKHook_Think, BeefyBones_ClotThink);
-		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -175,7 +263,40 @@ methodmap BeefyBones < CClotBody
 	}
 }
 
+public void BeefyBones_SetBuffed(int index, bool buffed)
+{
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		
+		//Apply buffed stats:
+		DispatchKeyValue(index, "skin", BONES_BEEFY_SKIN_BUFFED);
+		
+		//Apply buffed particle:
+		TE_SetupParticleEffect(BONES_BEEFY_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
+		TE_WriteNum("m_bControlPoint1", index);	
+		TE_SendToAll();
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		
+		//Remove buffed stats:
+		DispatchKeyValue(index, "skin", BONES_BEEFY_SKIN);
+		
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_BEEFY_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
+	}
+}
 
+//TODO 
+//Rewrite
 public void BeefyBones_ClotThink(int iNPC)
 {
 	BeefyBones npc = view_as<BeefyBones>(iNPC);
@@ -227,15 +348,17 @@ public void BeefyBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
+		float vecTarget[3], vecother[3]; 
+		WorldSpaceCenter(closest, vecTarget);
+		WorldSpaceCenter(npc.index, vecother);
 			
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
 	//		PrintToChatAll("cutoff");
 			npc.SetGoalVector(vPredictedPos);
 		}
@@ -246,7 +369,7 @@ public void BeefyBones_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
@@ -335,7 +458,9 @@ public void BeefyBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BeefyBones_ClotThink);
+	
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
