@@ -69,6 +69,7 @@ static char g_GibSounds[][] = {
 static bool b_AlchemistGoneBerserk[2049] = { false, ... };
 static bool b_AlchemistBerserkSequence[2049] = { false, ... };
 static bool b_AlchemistThrowing[2049] = { false, ... };
+static float f_AlchemistCanGoBerserkAt[2049] = { 0.0, ... };
 
 #define PARTICLE_ALCHEMIST_BOTTLE_SMASH	"spell_pumpkin_mirv_goop_blue"
 #define PARTICLE_ALCHEMIST_BOTTLE_TRAIL	"peejar_trail_blu"
@@ -201,6 +202,7 @@ methodmap AlchemistBones < CClotBody
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AlchemistGoneBerserk[npc.index] = false;
 		b_AlchemistBerserkSequence[npc.index] = false;
+		f_AlchemistCanGoBerserkAt[npc.index] = GetGameTime() + 1.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(AlchemistBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AlchemistBones_OnTakeDamage);
@@ -255,7 +257,7 @@ public int Alchemist_GetTarget(AlchemistBones npc)
 			closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNotAHealer));
 		
 		//Check 4: We were not able to find ANY valid allies to heal, go berserk.
-		if (closest <= 0)
+		if (closest <= 0 && GetGameTime() >= f_AlchemistCanGoBerserkAt[npc.index])
 		{
 			int iActivity = npc.LookupActivity("ACT_ALCHEMIST_BREAK_BOTTLE");
 			if(iActivity > 0) npc.StartActivity(iActivity);

@@ -119,6 +119,7 @@ static int Priest_OldHealTarget[MAXENTITIES];
 static int Priest_HealingParticle[MAXENTITIES];
 static bool Priest_IsHealing[MAXENTITIES];
 static float Priest_LoopHealingGesture[MAXENTITIES];
+static float Priest_CanGoBerserkAt[MAXENTITIES];
 
 #define SOUND_CAST_ACTIVATED		")weapons/physcannon/superphys_launch2.wav"
 #define SOUND_CAST_ACTIVATED_BUFFED	")misc/halloween_eyeball/book_exit.wav"
@@ -323,6 +324,7 @@ methodmap SaintBones < CClotBody
 		npc.m_flBoneZoneBuffedScale = StringToFloat(BONES_SAINT_SCALE_BUFFED);
 		npc.m_flBoneZoneNonBuffedSpeed = BONES_SAINT_SPEED;
 		npc.m_flBoneZoneBuffedSpeed = BONES_SAINT_SPEED_BUFFED;
+		Priest_CanGoBerserkAt[npc.index] = GetGameTime() + 1.0;
 
 		b_DoNotChangeTargetTouchNpc[npc.index] = true;
 
@@ -850,8 +852,11 @@ public int Priest_GetTarget(CClotBody npc)
 	//Check 4: We were not able to find ANY valid allies to heal, start zapping survivors.	
 	if (closest <= 0)
 	{
-		b_DoNotChangeTargetTouchNpc[npc.index] = false;
-		closest = GetClosestTarget(npc.index);
+		if (GetGameTime() >= Priest_CanGoBerserkAt[npc.index])
+		{
+			b_DoNotChangeTargetTouchNpc[npc.index] = false;
+			closest = GetClosestTarget(npc.index);
+		}
 	}
 	//Check 5: If we are already healing something, compare its priority level to the new target's to determine whether or not we should switch our heal target.
 	else if (closest > 0 && Priest_IsHealing[npc.index] && IsValidEntity(npc.m_iTarget))

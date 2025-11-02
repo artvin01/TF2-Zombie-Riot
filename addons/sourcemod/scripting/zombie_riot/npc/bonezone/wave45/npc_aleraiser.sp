@@ -69,6 +69,7 @@ static char g_GibSounds[][] = {
 static bool b_AleraiserGoneBerserk[2049] = { false, ... };
 static bool b_AleraiserBerserkSequence[2049] = { false, ... };
 static bool b_AleraiserThrowing[2049] = { false, ... };
+static float f_AleraiserCanGoBerserkAt[2049] = { 0.0, ... };
 
 #define PARTICLE_ALERAISER_BOTTLE_SMASH	"spell_skeleton_goop_green"
 #define PARTICLE_ALERAISER_BOTTLE_TRAIL	"peejar_trail_blu"
@@ -201,6 +202,7 @@ methodmap AleraiserBones < CClotBody
 		npc.m_bBoneZoneNaturallyBuffed = true;
 		b_AleraiserGoneBerserk[npc.index] = false;
 		b_AleraiserBerserkSequence[npc.index] = false;
+		f_AleraiserCanGoBerserkAt[npc.index] = GetGameTime() + 1.0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(AleraiserBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(AleraiserBones_OnTakeDamage);
@@ -257,7 +259,7 @@ public int Aleraiser_GetTarget(AleraiserBones npc)
 			closest = GetClosestAlly(npc.index, _, _, view_as<Function>(Priest_IsNotAHealer));
 		
 		//Check 4: We were not able to find ANY valid allies to heal, go berserk.
-		if (closest <= 0)
+		if (closest <= 0 && GetGameTime() >= f_AleraiserCanGoBerserkAt[npc.index])
 		{
 			int iActivity = npc.LookupActivity("ACT_ALERAISER_BREAK_BOTTLE");
 			if(iActivity > 0) npc.StartActivity(iActivity);

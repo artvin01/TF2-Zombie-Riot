@@ -7327,7 +7327,10 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		if(npc.m_iBleedType == BLEEDTYPE_METAL)
 			DispatchKeyValue(prop, "model", m_cGibModelMetal[GibLoop]);
 		else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
+		{
 			DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
+			SetEntProp(prop, Prop_Send, "m_nSkin", GetEntProp(npc.index, Prop_Send, "m_nSkin", 1));
+		}
 		else
 			DispatchKeyValue(prop, "model", m_cGibModelDefault[GibLoop]);
 
