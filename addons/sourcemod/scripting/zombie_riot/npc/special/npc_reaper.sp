@@ -531,7 +531,7 @@ void Reaper_AttackLogic(DataPack pack)
 
 					if (target == npc.m_iTarget)
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, GRIMREAPER_ATTACK_DAMAGE_TARGET, DMG_DROWN, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, GRIMREAPER_ATTACK_DAMAGE_TARGET, DMG_CLUB|DMG_TRUEDAMAGE, -1, _, vecHit);
 						EmitSoundToAll(SND_REAPER_ATTACK_KILL, target, _, 120, _, _, GetRandomInt(40, 60));
 					}
 					else
