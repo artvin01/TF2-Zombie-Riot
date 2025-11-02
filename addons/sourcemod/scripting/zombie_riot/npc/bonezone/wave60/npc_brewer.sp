@@ -114,7 +114,7 @@ public void AlchemistBones_OnMapStart_NPC()
 
 static any Summon_Alchemist(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AlchemistBones(client, vecPos, vecAng, ally);
+	return AlchemistBones(vecPos, vecAng, ally);
 }
 
 methodmap AlchemistBones < CClotBody
@@ -188,13 +188,9 @@ methodmap AlchemistBones < CClotBody
 		#endif
 	}
 	
-	public AlchemistBones(int client, float vecPos[3], float vecAng[3], int ally)
+	public AlchemistBones(float vecPos[3], float vecAng[3], int ally)
 	{	
-		AlchemistBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<AlchemistBones>(BarrackBody(client, vecPos, vecAng, BONES_ALCHEMIST_HP, BONEZONE_MODEL, _, BONES_ALCHEMIST_SCALE));
-		else
-			npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
+		AlchemistBones npc = view_as<AlchemistBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALCHEMIST_SCALE, BONES_ALCHEMIST_HP, ally, false));
 		
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALCHEMIST_HP);
@@ -446,10 +442,12 @@ public void AlchemistBones_ClotThink(int iNPC)
 				float vPredictedPos[3]; 
 				PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
 				npc.SetGoalVector(vPredictedPos);
+				npc.StartPathing();
 			}
 			else
 			{
 				npc.SetGoalEntity(closest);
+				npc.StartPathing();
 			}
 
 			if (flDistanceToTarget <= ALCHEMIST_MELEE_START_RANGE && npc.m_flNextMeleeAttack <= GetGameTime(npc.index) && !npc.m_flAttackHappenswillhappen)

@@ -114,7 +114,7 @@ public void AleraiserBones_OnMapStart_NPC()
 
 static any Summon_Aleraiser(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return AleraiserBones(client, vecPos, vecAng, ally);
+	return AleraiserBones(vecPos, vecAng, ally);
 }
 
 methodmap AleraiserBones < CClotBody
@@ -188,13 +188,9 @@ methodmap AleraiserBones < CClotBody
 		#endif
 	}
 	
-	public AleraiserBones(int client, float vecPos[3], float vecAng[3], int ally)
+	public AleraiserBones(float vecPos[3], float vecAng[3], int ally)
 	{	
-		AleraiserBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<AleraiserBones>(BarrackBody(client, vecPos, vecAng, BONES_ALERAISER_HP, BONEZONE_MODEL, _, BONES_ALERAISER_SCALE));
-		else
-			npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
+		AleraiserBones npc = view_as<AleraiserBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_ALERAISER_SCALE, BONES_ALERAISER_HP, ally, false));
 		
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_ALERAISER_HP);
@@ -449,10 +445,12 @@ public void AleraiserBones_ClotThink(int iNPC)
 				float vPredictedPos[3]; 
 				PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
 				npc.SetGoalVector(vPredictedPos);
+				npc.StartPathing();
 			}
 			else
 			{
 				npc.SetGoalEntity(closest);
+				npc.StartPathing();
 			}
 
 			if (flDistanceToTarget <= ALERAISER_MELEE_START_RANGE && npc.m_flNextMeleeAttack <= GetGameTime(npc.index) && !npc.m_flAttackHappenswillhappen)

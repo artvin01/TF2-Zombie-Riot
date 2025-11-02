@@ -102,7 +102,7 @@ public void MolotovBones_OnMapStart_NPC()
 
 static any Summon_Molotov(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return MolotovBones(client, vecPos, vecAng, ally);
+	return MolotovBones(vecPos, vecAng, ally);
 }
 
 methodmap MolotovBones < CClotBody
@@ -176,13 +176,9 @@ methodmap MolotovBones < CClotBody
 		#endif
 	}
 	
-	public MolotovBones(int client, float vecPos[3], float vecAng[3], int ally)
+	public MolotovBones(float vecPos[3], float vecAng[3], int ally)
 	{	
-		MolotovBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<MolotovBones>(BarrackBody(client, vecPos, vecAng, BONES_MOLOTOV_HP, BONEZONE_MODEL, _, BONES_MOLOTOV_SCALE));
-		else
-			npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
+		MolotovBones npc = view_as<MolotovBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, BONES_MOLOTOV_SCALE, BONES_MOLOTOV_HP, ally, false));
 		
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_MOLOTOV_HP);

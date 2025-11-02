@@ -79,9 +79,9 @@ public void PeasantBones_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
+static any Summon_Normal(float vecPos[3], float vecAng[3], int ally)
 {
-	return PeasantBones(client, vecPos, vecAng, ally, false);
+	return PeasantBones(vecPos, vecAng, ally, false);
 }
 
 methodmap PeasantBones < CClotBody
@@ -159,7 +159,7 @@ methodmap PeasantBones < CClotBody
 	
 	
 	
-	public PeasantBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public PeasantBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -188,11 +188,7 @@ methodmap PeasantBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		PeasantBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<PeasantBones>(BarrackBody(client, vecPos, vecAng, BONES_PEASANT_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_PEASANT_SCALE));
-		else
-			npc = view_as<PeasantBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_PEASANT_SCALE, BONES_PEASANT_HP, ally, false));
+		PeasantBones npc = view_as<PeasantBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_PEASANT_SCALE, BONES_PEASANT_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 
@@ -275,15 +271,15 @@ public void Peasant_Transform(int ref)
 	{
 		case 1:
 		{
-			spawned = JesterBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= PEASANT_TRANSFORM_BUFFCHANCE).index;
+			spawned = JesterBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= PEASANT_TRANSFORM_BUFFCHANCE).index;
 		}
 		case 2:
 		{
-			spawned = SquireBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= PEASANT_TRANSFORM_BUFFCHANCE).index;
+			spawned = SquireBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= PEASANT_TRANSFORM_BUFFCHANCE).index;
 		}
 		default:
 		{
-			spawned = ArchmageBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= PEASANT_TRANSFORM_BUFFCHANCE).index;
+			spawned = ArchmageBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= PEASANT_TRANSFORM_BUFFCHANCE).index;
 		}
 	}
 

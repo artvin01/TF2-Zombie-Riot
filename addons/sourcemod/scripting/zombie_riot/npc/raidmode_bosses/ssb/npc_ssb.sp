@@ -418,7 +418,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 
 static any Summon_SSB(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SupremeSpookmasterBones(client, vecPos, vecAng, ally);
+	return SupremeSpookmasterBones(vecPos, vecAng, ally);
 }
 
 //The following just stores/restores the target NPC's speed, friction, and acceleration for temporary changes.
@@ -2745,7 +2745,6 @@ methodmap Summoner_Minion __nullable__
 
 			Call_StartFunction(null, this.SummonFunction);
 
-			Call_PushCell(ssb.index);
 			Call_PushArray(pos, 3);
 			Call_PushArray(randAng, 3);
 			Call_PushCell(GetTeam(ssb.index));
@@ -2879,17 +2878,17 @@ public Action Summoner_Spawn(Handle timer, DataPack pack)
 
 public int Summon_BasicBones(int owner, float pos[3], float ang[3], int team, bool buffed)
 {
-	return BasicBones(owner, pos, ang, team, buffed).index;
+	return BasicBones(pos, ang, team, buffed).index;
 }
 
-public int Summon_BeefyBones(int owner, float pos[3], float ang[3], int team, bool buffed)
+public int Summon_BeefyBones(float pos[3], float ang[3], int team, bool buffed)
 {
-	return BeefyBones(owner, pos, ang, team, buffed).index;
+	return BeefyBones(pos, ang, team, buffed).index;
 }
 
-public int Summon_BrittleBones(int owner, float pos[3], float ang[3], int team, bool buffed)
+public int Summon_BrittleBones(float pos[3], float ang[3], int team, bool buffed)
 {
-	return BrittleBones(owner, pos, ang, team, buffed).index;
+	return BrittleBones(pos, ang, team, buffed).index;
 }
 
 public Action Summon_End(Handle end, int ref)
@@ -3955,13 +3954,9 @@ methodmap SupremeSpookmasterBones < CClotBody
 		return index;
 	}
 	
-	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], int ally)
+	public SupremeSpookmasterBones(float vecPos[3], float vecAng[3], int ally)
 	{
-		SupremeSpookmasterBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<SupremeSpookmasterBones>(BarrackBody(client, vecPos, vecAng, BONES_SUPREME_HP, MODEL_SSB, _, "BONES_SUPREME_SCALE"));
-		else
-			npc = view_as<SupremeSpookmasterBones>(CClotBody(vecPos, vecAng, MODEL_SSB, BONES_SUPREME_SCALE, BONES_SUPREME_HP, ally));
+		SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(CClotBody(vecPos, vecAng, MODEL_SSB, BONES_SUPREME_SCALE, BONES_SUPREME_HP, ally));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

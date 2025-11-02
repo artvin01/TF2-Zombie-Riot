@@ -294,7 +294,7 @@ public void SSBChair_OnMapStart_NPC()
 
 static any Summon_SSBChair(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return SSBChair(client, vecPos, vecAng, ally, data);
+	return SSBChair(vecPos, vecAng, ally, data);
 }
 
 #define SSBCHAIR_MAX_ABILITIES 99999
@@ -1763,13 +1763,9 @@ methodmap SSBChair < CClotBody
 		public set(float value) { f_NextTeleport[this.index] = value; }
 	}
 
-	public SSBChair(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SSBChair(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{	
-		SSBChair npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<SSBChair>(BarrackBody(client, vecPos, vecAng, SSB_CHAIR_HP, MODEL_SSB, _, SSB_CHAIR_SCALE));
-		else
-			npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
+		SSBChair npc = view_as<SSBChair>(CClotBody(vecPos, vecAng, MODEL_SSB, SSB_CHAIR_SCALE, SSB_CHAIR_HP, ally));
 
 		if (StrEqual(data, ""))
 			Chair_Tier[npc.index] = 0;

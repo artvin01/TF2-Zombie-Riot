@@ -185,12 +185,12 @@ public void RattlerBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return RattlerBones(client, vecPos, vecAng, ally, false);
+	return RattlerBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return RattlerBones(client, vecPos, vecAng, ally, true);
+	return RattlerBones(vecPos, vecAng, ally, true);
 }
 
 static bool b_HitmanCharging[MAXENTITIES] = { false, ... };
@@ -289,7 +289,7 @@ methodmap RattlerBones < CClotBody
 		return i_RattlerAmmo[this.index] > 0;
 	}
 	
-	public RattlerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public RattlerBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -320,11 +320,7 @@ methodmap RattlerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		RattlerBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<RattlerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, BONEZONE_MODEL, _, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE));
-		else
-			npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed && !randomlyBuffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
+		RattlerBones npc = view_as<RattlerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_RATTLER_BUFFED_SCALE : BONES_RATTLER_SCALE, buffed && !randomlyBuffed ? BONES_RATTLER_HP_BUFFED : BONES_RATTLER_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
@@ -600,7 +596,7 @@ public void Rattler_ShootProjectile(RattlerBones npc, float vicLoc[3], float vel
 		{
 			SDKHook(entity, SDKHook_Touch, Rattler_FireballTouch);
 			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rattler_DontExplode);
-			Rattler_AttachParticle(entity, PARTICLE_RATTLER_FIREBALL, _, "");
+			Trail_Attach(entity, GetTeam(npc.index) == 2 ? ARROW_TRAIL_RED : ARROW_TRAIL, 255, 0.5, 11.0, _, 5);
 			CreateTimer(RATTLER_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}

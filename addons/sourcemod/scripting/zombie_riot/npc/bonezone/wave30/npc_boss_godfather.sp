@@ -207,7 +207,7 @@ public void Godfather_OnMapStart_NPC()
 
 static any Summon_Godfather(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Godfather(client, vecPos, vecAng, ally);
+	return Godfather(vecPos, vecAng, ally);
 }
 
 static float f_NextOffer[MAXENTITIES] = { 0.0, ... };
@@ -499,13 +499,9 @@ methodmap Godfather < CClotBody
 		this.SetArmAim(left, param);
 	}
 
-	public Godfather(int client, float vecPos[3], float vecAng[3], int ally)
+	public Godfather(float vecPos[3], float vecAng[3], int ally)
 	{	
-		Godfather npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<Godfather>(BarrackBody(client, vecPos, vecAng, GODFATHER_HP, BONEZONE_MODEL_BOSS, _, GODFATHER_SCALE));
-		else
-			npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, GODFATHER_SCALE, GODFATHER_HP, ally));
+		Godfather npc = view_as<Godfather>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, GODFATHER_SCALE, GODFATHER_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;
@@ -1003,7 +999,7 @@ void Godfather_ShootProjectile(Godfather npc, float vicLoc[3], float startPos[3]
 		if (!molotov)
 		{
 			SDKHook(entity, SDKHook_Touch, Godfather_ProjectileHit);
-			ParticleEffectAt_Parent(startPos, PARTICLE_GODFATHER_PROJECTILE, entity);
+			Trail_Attach(entity, GetTeam(npc.index) == 2 ? ARROW_TRAIL_RED : ARROW_TRAIL, 255, 0.5, 11.0, _, 5);
 			CreateTimer(Friends_Lifespan, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		else

@@ -145,12 +145,12 @@ public void BrittleBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BrittleBones(client, vecPos, vecAng, ally, false);
+	return BrittleBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BrittleBones(client, vecPos, vecAng, ally, true);
+	return BrittleBones(vecPos, vecAng, ally, true);
 }
 
 methodmap BrittleBones < CClotBody
@@ -206,7 +206,7 @@ methodmap BrittleBones < CClotBody
 	
 	
 	
-	public BrittleBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public BrittleBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -237,11 +237,7 @@ methodmap BrittleBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		BrittleBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<BrittleBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_BRITTLE_SCALE));
-		else
-			npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
+		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed && !randomlyBuffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);

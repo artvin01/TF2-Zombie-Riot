@@ -139,12 +139,12 @@ public void SluggerBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SluggerBones(client, vecPos, vecAng, ally, false);
+	return SluggerBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SluggerBones(client, vecPos, vecAng, ally, true);
+	return SluggerBones(vecPos, vecAng, ally, true);
 }
 
 methodmap SluggerBones < CClotBody
@@ -260,7 +260,7 @@ methodmap SluggerBones < CClotBody
 		#endif
 	}
 	
-	public SluggerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public SluggerBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -291,11 +291,7 @@ methodmap SluggerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		SluggerBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<SluggerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, BONEZONE_MODEL, _, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE));
-		else
-			npc = view_as<SluggerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE, buffed && !randomlyBuffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, ally, false));
+		SluggerBones npc = view_as<SluggerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SLUGGER_SCALE_BUFFED : BONES_SLUGGER_SCALE, buffed && !randomlyBuffed ? BONES_SLUGGER_HP_BUFFED : BONES_SLUGGER_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);

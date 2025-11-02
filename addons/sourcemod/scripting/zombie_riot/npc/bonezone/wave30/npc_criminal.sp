@@ -81,7 +81,7 @@ public void CriminalBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return CriminalBones(client, vecPos, vecAng, ally, false);
+	return CriminalBones(vecPos, vecAng, ally, false);
 }
 
 methodmap CriminalBones < CClotBody
@@ -159,7 +159,7 @@ methodmap CriminalBones < CClotBody
 	
 	
 	
-	public CriminalBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public CriminalBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -188,11 +188,7 @@ methodmap CriminalBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 
-		CriminalBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<CriminalBones>(BarrackBody(client, vecPos, vecAng, BONES_CRIMINAL_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_CRIMINAL_SCALE));
-		else
-			npc = view_as<CriminalBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_CRIMINAL_SCALE, BONES_CRIMINAL_HP, ally, false));
+		CriminalBones npc = view_as<CriminalBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_CRIMINAL_SCALE, BONES_CRIMINAL_HP, ally, false));
 
 		npc.m_iBoneZoneNonBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
 		npc.m_iBoneZoneBuffedMaxHealth = StringToInt(BONES_CRIMINAL_HP);
@@ -272,15 +268,15 @@ public void Criminal_Transform(int ref)
 	{
 		case 1:
 		{
-			spawned = RattlerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
+			spawned = RattlerBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
 		}
 		case 2:
 		{
-			spawned = MolotovBones(npc.index, pos, ang, GetTeam(npc.index)).index;
+			spawned = MolotovBones(pos, ang, GetTeam(npc.index)).index;
 		}
 		default:
 		{
-			spawned = SluggerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
+			spawned = SluggerBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= CRIMINAL_TRANSFORM_BUFFCHANCE).index;
 		}
 	}
 

@@ -168,12 +168,12 @@ public void NecromancerBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return NecromancerBones(client, vecPos, vecAng, ally, false);
+	return NecromancerBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return NecromancerBones(client, vecPos, vecAng, ally, true);
+	return NecromancerBones(vecPos, vecAng, ally, true);
 }
 
 methodmap NecromancerBones < CClotBody
@@ -253,7 +253,7 @@ methodmap NecromancerBones < CClotBody
 	
 	
 	
-	public NecromancerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public NecromancerBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -284,11 +284,7 @@ methodmap NecromancerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		NecromancerBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<NecromancerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, BONEZONE_MODEL, _, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE));
-		else
-			npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed && !randomlyBuffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
+		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed && !randomlyBuffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
@@ -569,7 +565,7 @@ public void Necromancer_Summon(NecromancerBones npc)
 		randAng[1] = GetRandomFloat(0.0, 360.0);
 		
 		//TODO: MAYBE let necromancers summon fodder skeletons from *all* skeleton types? Would require some max health tomfoolery though.
-		entity = PeasantBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
+		entity = PeasantBones(Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
 		Necromancer_AssignSummonStats(entity, npc, 1.0);
 
 		//The following switch statement can be uncommented and expanded to allow Necromancers to summon more types of NPCs.

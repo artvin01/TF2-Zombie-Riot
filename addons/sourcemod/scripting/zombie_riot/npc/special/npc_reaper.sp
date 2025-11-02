@@ -5,7 +5,7 @@ static int GRIMREAPER_BASE_HEALTH = 80;			//Base max health given per player on 
 static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE30 = 1.2;
 static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE45 = 1.3;
 static float GRIMREAPER_HEALTH_EXPONENT_LATEGAME = 1.4;
-static float GRIMREAPER_HEALTH_MULTIPLIER = 3.33;	//Amount to multiply max health after all other calculations.
+static float GRIMREAPER_HEALTH_MULTIPLIER = 2.45;	//Amount to multiply max health after all other calculations.
 static float GRIMREAPER_HEALTH_DIVIDER = 2.0;	//Amount to divide max health after all other calculations.
 
 //The Grim Reaper is very slow, but the further its target is, the faster it becomes.
@@ -28,6 +28,7 @@ static float GRIMREAPER_ATTACK_TIME	= 0.375;				//Time after the attack animatio
 static float GRIMREAPER_ATTACK_SPEED = 1.0;					//Attack animation speed multiplier. This affects interval and hit time.
 static float GRIMREAPER_ATTACK_MIN_AXE_RAISE = 0.95;		//Minimum percentage the axe must be raised in order to attack.
 static int GRIMREAPER_ATTACK_MAXTARGETS = 12;				//Maximum targets hit at once by the attack.
+static float GRIMREAPER_ATTACK_AFTER_TELEPORT = 1.5;		//Duration to prevent the Reaper from attacking after it teleports.
 
 static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper raises/lowers its axe per frame. Example: 0.01 means it raises its axe 1% every frame.
 
@@ -38,6 +39,7 @@ static float GRIMREAPER_TELEPORT_INTERVAL = 0.2;		//Every X% of its max HP the R
 
 static float f_AxeRaiseValue[2049] = { 0.0, ... };
 static float f_DamageSinceLastTeleport[2049] = { 0.0, ... };
+static float f_ReaperCanAttackAt[2049] = { 0.0, ... };
 static bool b_AboutToAttack[2049] = { false, ... };
 static bool b_Attacking[2049] = { false, ...};
 
@@ -96,7 +98,7 @@ void GrimReaper_OnMapStart_NPC()
 
 static any SummonGrimReaper(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GrimReaper(client, vecPos, vecAng, ally);
+	return GrimReaper(vecPos, vecAng, ally);
 }
 
 methodmap GrimReaper < CClotBody
@@ -148,13 +150,9 @@ methodmap GrimReaper < CClotBody
 		this.SetAxeRaisePose(current);
 	}
 
-	public GrimReaper(int client, float vecPos[3], float vecAng[3], int ally)
+	public GrimReaper(float vecPos[3], float vecAng[3], int ally)
 	{
-		GrimReaper npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<GrimReaper>(BarrackBody(client, vecPos, vecAng, GetReaperHealth(), BONEZONE_MODEL, _, "1.2"));
-		else
-			npc = view_as<GrimReaper>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, "1.2", GetReaperHealth(), ally));
+		GrimReaper npc = view_as<GrimReaper>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, "1.2", GetReaperHealth(), ally));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -212,6 +210,7 @@ methodmap GrimReaper < CClotBody
 		b_Attacking[npc.index] = false;
 		b_NpcIgnoresbuildings[npc.index] = true;
 		f_DamageSinceLastTeleport[npc.index] = 0.0;
+		f_ReaperCanAttackAt[npc.index] = 0.0;
 
 		RequestFrame(Reaper_AdjustAxePose, EntIndexToEntRef(npc.index));
 		npc.SetAxeRaisePose(0.0);
@@ -277,7 +276,7 @@ public void Reaper_AdjustAxePose(int ref)
 
 	GrimReaper npc = view_as<GrimReaper>(ent);
 
-	if (!b_Attacking[ent] && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack)
+	if (!b_Attacking[ent] && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack && GetGameTime(npc.index) >= f_ReaperCanAttackAt[npc.index])
 	{
 		if (!IsValidEnemy(npc.index, npc.m_iTarget))
 			npc.MoveToAxeRaisePose(GRIMREAPER_AXE_RAISE_SPEED, 0.0);
@@ -386,9 +385,10 @@ static void Reaper_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	}
 
 	f_DamageSinceLastTeleport[npc.index] += damage;
-	if (f_DamageSinceLastTeleport[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * GRIMREAPER_TELEPORT_INTERVAL))
+	if (f_DamageSinceLastTeleport[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * GRIMREAPER_TELEPORT_INTERVAL) && !NpcStats_IsEnemySilenced(npc.index))
 	{
 		f_DamageSinceLastTeleport[npc.index] = 0.0;
+		f_ReaperCanAttackAt[npc.index] = GetGameTime(npc.index) + GRIMREAPER_ATTACK_AFTER_TELEPORT;
 
 		float pos[3];
 		WorldSpaceCenter(npc.index, pos);
@@ -573,11 +573,11 @@ static char[] GetReaperHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(Waves_GetRound()+1 < 30)
+	if(Waves_GetRound()+1 < 20)
 	{
 		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE30));
 	}
-	else if(Waves_GetRound()+1 < 45)
+	else if(Waves_GetRound()+1 < 30)
 	{
 		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE45));
 	}

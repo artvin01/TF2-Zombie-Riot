@@ -179,7 +179,7 @@ public void Lordread_StopLoop(Lordread npc)
 
 static any Summon_Lordread(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Lordread(client, vecPos, vecAng, ally);
+	return Lordread(vecPos, vecAng, ally);
 }
 
 methodmap Lordread < CClotBody
@@ -393,13 +393,9 @@ methodmap Lordread < CClotBody
 		}
 	}
 
-	public Lordread(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lordread(float vecPos[3], float vecAng[3], int ally)
 	{	
-		Lordread npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<Lordread>(BarrackBody(client, vecPos, vecAng, LORDREAD_HP, BONEZONE_MODEL_BOSS, _, LORDREAD_SCALE));
-		else
-			npc = view_as<Lordread>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, LORDREAD_SCALE, LORDREAD_HP, ally));
+		Lordread npc = view_as<Lordread>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, LORDREAD_SCALE, LORDREAD_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;
@@ -747,27 +743,27 @@ public Action Lordread_LightningStrike(Handle timely, DataPack pack)
 		{
 			case 1:
 			{
-				entity = PeasantBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
+				entity = PeasantBones(pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 2:
 			{
-				entity = ArchmageBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
+				entity = ArchmageBones(pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 3:
 			{
-				entity = AlchemistBones(npc.index, pos, randAng, GetTeam(npc.index)).index;
+				entity = AlchemistBones(pos, randAng, GetTeam(npc.index)).index;
 			}
 			case 4:
 			{
-				entity = JesterBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
+				entity = JesterBones(pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 5:
 			{
-				entity = SaintBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
+				entity = SaintBones(pos, randAng, GetTeam(npc.index), false).index;
 			}
 			case 6:
 			{
-				entity = SquireBones(npc.index, pos, randAng, GetTeam(npc.index), false).index;
+				entity = SquireBones(pos, randAng, GetTeam(npc.index), false).index;
 			}
 		}
 
