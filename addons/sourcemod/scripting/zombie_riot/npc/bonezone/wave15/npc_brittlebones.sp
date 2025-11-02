@@ -3,8 +3,8 @@
 
 static float BONES_BRITTLE_SPEED = 440.0;
 static float BONES_BRITTLE_SPEED_BUFFED = 520.0;
-static float BRITTLE_NATURAL_BUFF_CHANCE = 0.15;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BRITTLE_NATURAL_BUFF_CHANCE = 0.0;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BRITTLE_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 #define BONES_BRITTLE_HP			"100"

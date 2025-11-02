@@ -14,8 +14,8 @@
 
 static float BONES_BASIC_SPEED = 200.0;
 static float BONES_BASIC_SPEED_BUFFED = 240.0;
-static float BASIC_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float BASIC_NATURAL_BUFF_LEVEL_MODIFIER = 0.2;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BASIC_NATURAL_BUFF_CHANCE = 0.0;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BASIC_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BASIC_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 static float BONES_BASIC_PLAYERDAMAGE = 30.0;

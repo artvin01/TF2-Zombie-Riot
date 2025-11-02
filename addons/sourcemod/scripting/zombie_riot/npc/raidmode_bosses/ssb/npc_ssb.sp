@@ -4228,11 +4228,11 @@ int SSB_CreateProjectile(SupremeSpookmasterBones owner, char model[255], float p
 		TeleportEntity(prop, pos, ang, propVel);
 		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
 		
-		if (h_NpcSolidHookType[entity] != 0)
-			DHookRemoveHookID(h_NpcSolidHookType[entity]);
-		h_NpcSolidHookType[entity] = 0;
+		if (h_NpcSolidHookType[prop] != 0)
+			DHookRemoveHookID(h_NpcSolidHookType[prop]);
+		h_NpcSolidHookType[prop] = 0;
 
-		h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+		h_NpcSolidHookType[prop] = g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
 
 		RequestFrame(SSB_DeleteIfOwnerDisappears, EntIndexToEntRef(prop));
 		

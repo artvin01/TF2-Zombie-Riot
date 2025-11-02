@@ -38,8 +38,8 @@ static float DEADEYE_FALLOFF_RADIUS = 0.66;	//Maximum damage falloff, based on r
 static float DEADEYE_CHARGE_TIME = 4.0;		//Time it takes for Hollow Hitmen to charge a shot.
 static float DEADEYE_ENTITYMULT = 4.0;		//Damage multiplier for buildings.
 
-static float FLINTLOCK_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
-static float FLINTLOCK_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float FLINTLOCK_NATURAL_BUFF_CHANCE = 0.0;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float FLINTLOCK_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float FLINTLOCK_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
 static float BONES_FLINTLOCK_ATTACKINTERVAL = 0.75;
