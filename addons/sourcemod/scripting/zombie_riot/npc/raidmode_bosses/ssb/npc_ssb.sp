@@ -124,11 +124,11 @@ static char g_SSBBigHit_Sounds[][] = {
 	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_bighit3.mp3"
 };
 
-static char g_SSBBigHit_Captions[][] = {
+/*static char g_SSBBigHit_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}:OH FUCK YOU, YOU PIECE OF SHIT!",
 	"{haunted}Supreme Spookmaster Bones{default}:OOOHHH, I HATE THAT ATTACK!",
 	"{haunted}Supreme Spookmaster Bones{default}:OH, YOU SON OF A FUCKING BITCH!"
-};
+};*/
 
 static char g_SSBPull_Sounds[][] = {
 	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_deathmagnetic_warning_1.mp3",
@@ -219,13 +219,13 @@ static char g_SSBKill_Sounds[][] = {
     "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_kill5.mp3"
 };
 
-static char g_SSBKill_Captions[][] = {
+/*static char g_SSBKill_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: He will never walk again.",
 	"{haunted}Supreme Spookmaster Bones{default}: Oh! Oh, I broke his fucking leg!",
 	"{haunted}Supreme Spookmaster Bones{default}: Oh my God, he-he's a dead man.",
     "{haunted}Supreme Spookmaster Bones{default}: HA HA HA HAAAA! Suck it.",
     "{haunted}Supreme Spookmaster Bones{default}: He's so useless!"
-};
+};*/
 
 static char g_SSBNecroBlast_Sounds[][] = {
 	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_1.mp3",
@@ -281,20 +281,20 @@ static char g_SSBLoss_Sounds[][] = {
     "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_win3.mp3"
 };
 
-static char g_SSBLoss_Captions[][] = {
+/*static char g_SSBLoss_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: {red}Life sucks, and then you fucking die.{default}",
 	"{haunted}Supreme Spookmaster Bones{default}: {red}Good job, guys. Good job.{default}",
     "{haunted}Supreme Spookmaster Bones{default}: {red}Mmhmhahahahahahahahahahahaaaa... AAAAAAHAHAHAHAHAHAHAHA!{default}"
-};
+};*/
 
 static char g_SSBLossEasterEgg_Sounds[][] = {
 	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_win_waytoolong.mp3"
 };
 
-static char g_SSBLossEasterEgg_Captions[][] = {
+/*static char g_SSBLossEasterEgg_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: {red}YO, SHIT FOR BRAINS! What GOD DAMN color is this? HUH?! YOU FUCKING BLIND MOTHERFUCKER!{default}",
     "{red}Who the FUCK do you think you are? Coming here and shitting in MY mailbox, playing MY God damn video games? You're gonna learn about colors, you dumb FORESKIN.{default}"
-};
+};*/
 
 /*static char g_SSBSupremeSlayerIntro_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: ...",
@@ -303,7 +303,7 @@ static char g_SSBLossEasterEgg_Captions[][] = {
 	"{unusual}Get ready to receive some unholy spirit.{default}"
 };*/
 
-static char g_SSBFinaleIntro_Captions[][] = {
+/*static char g_SSBFinaleIntro_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: Well, I'd be lying if I said this hasn't been a fun time.",
 	"I'd also be lying if I said you've all done anything less than a {unusual}superb{default} job making it this far. {green}Good job!{default}",
 	"Honestly, I thought you'd all have been long dead by now.",
@@ -333,7 +333,7 @@ static char g_SSBVictorySpeech_Captions[][] = {
 	"{green}Here. {default}Call this number if you ever need help, and I'll {teal}send up some of my guys to help.{default}",
 	"You'd better put a stop to this infection, though. After all, if I see you in my queue before this zombie apocalypse is over...",
 	"{crimson}You're going to have a very bad time in the afterlife."
-};
+};*/
 
 public void SupremeSpookmasterBones_OnMapStart_NPC()
 {
@@ -2034,6 +2034,8 @@ public Action Skull_Launch(Handle timer, int ref)
 		WritePackCell(pack, SSB_WavePhase);
 		WritePackFloat(pack, GetGameTime() + Skull_SpawnDelay[SSB_WavePhase]);
 	}
+
+	return Plugin_Continue;
 }
 
 public void Skull_WaitForSpawn(DataPack pack)

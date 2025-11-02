@@ -96,7 +96,7 @@ static float Catastrophe_Delay[4] = { 1.25, 1.15, 1.075, 1.0 };				//Time until 
 static float Catastrophe_DMG[4] = { 10000.0, 20000.0, 40000.0, 80000.0 };	//Damage dealt by the laser.
 static float Catastrophe_EntityMult[4] = { 10.0, 15.0, 17.5, 20.0 };		//Amount to multiply damage dealt by the laser to entities.
 static float Catastrophe_Width[4] = { 475.0, 550.0, 600.0, 650.0 };			//Laser width, in hammer units.
-static float Catastrophe_YawSpeed[4];//TODO: = { X, X, X, X };				//Yaw speed applied to SSB's carrier skeleton while this ability is active, if he has a carrier.
+//static float Catastrophe_YawSpeed[4];//TODO: = { X, X, X, X };				//Yaw speed applied to SSB's carrier skeleton while this ability is active, if he has a carrier.
 static float Catastrophe_Cooldown[4] = { 30.0, 25.0, 20.0, 15.0 };			//Ability cooldown.
 static float Catastrophe_GlobalCD[4] = { 5.0, 4.0, 3.0, 2.0 };				//Global cooldown.
 
