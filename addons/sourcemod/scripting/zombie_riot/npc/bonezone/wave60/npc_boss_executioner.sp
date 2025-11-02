@@ -549,7 +549,7 @@ public void Lordread_ClotThink(int iNPC)
 
 				if (GetGameTime(npc.index) >= Lordread_NextSpeen[npc.index])
 				{
-					Explode_Logic_Custom(Tempest_DMG, npc.index, npc.index, -1, pos, Tempest_Radius, 0.0, 0.0, isBlue, 9999, _, Tempest_EntityMult, Lordread_PlayHitSound);
+					Explode_Logic_Custom(Tempest_DMG, npc.index, npc.index, -1, pos, Tempest_Radius, 1.0, 1.0, isBlue, 9999, _, Tempest_EntityMult, Lordread_PlayHitSound);
 					Lordread_NextSpeen[npc.index] = GetGameTime(npc.index) + Tempest_Interval;
 
 					spawnRing_Vectors(pos, Tempest_SuckRadius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 120, 120, 255, 1, 0.33, 4.0, 1.0, 1, 0.1);
