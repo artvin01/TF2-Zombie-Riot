@@ -259,7 +259,7 @@ public void Peasant_SetBuffed(int index, bool buffed)
 public void Peasant_Transform(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	PeasantBones npc = view_as<PeasantBones>(ent);

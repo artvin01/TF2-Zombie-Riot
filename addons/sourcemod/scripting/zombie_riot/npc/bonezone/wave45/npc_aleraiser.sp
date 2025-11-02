@@ -489,7 +489,7 @@ public void Aleraiser_MeleeLogic(DataPack pack)
 	float hitTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	AleraiserBones npc = view_as<AleraiserBones>(ent);
@@ -553,7 +553,7 @@ public void Aleraiser_ThrowBottle(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	if (b_AleraiserGoneBerserk[ent])

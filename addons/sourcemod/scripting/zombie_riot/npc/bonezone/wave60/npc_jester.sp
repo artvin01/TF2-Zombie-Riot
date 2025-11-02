@@ -999,7 +999,7 @@ public void Mondo_Spin(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
 	
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 		
 	float ang[3];

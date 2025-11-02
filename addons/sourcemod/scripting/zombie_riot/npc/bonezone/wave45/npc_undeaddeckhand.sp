@@ -258,7 +258,7 @@ public void Deckhand_SetBuffed(int index, bool buffed)
 public void Deckhand_Transform(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	DeckhandBones npc = view_as<DeckhandBones>(ent);
