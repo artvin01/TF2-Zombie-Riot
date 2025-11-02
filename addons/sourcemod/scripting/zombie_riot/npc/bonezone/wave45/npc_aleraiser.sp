@@ -298,7 +298,7 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	AleraiserBones npc = view_as<AleraiserBones>(ent);

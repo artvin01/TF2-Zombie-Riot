@@ -348,7 +348,7 @@ public void Molotov_ThrowBottle(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	MolotovBones npc = view_as<MolotovBones>(ent);
