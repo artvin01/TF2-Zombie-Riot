@@ -842,7 +842,7 @@ public void Anchor_PredictEndPoint(float pos[3], float ang[3], float DistanceTra
 	}
 }
 
-public bool Anchor_Filter(any entity, any contentsMask)
+public bool Anchor_Filter(any entity, any contentsMask, int data)
 {
 	//int owner = GetEntPropEnt(Anchor_FilterUser, Prop_Send, "m_hOwnerEntity");
 
