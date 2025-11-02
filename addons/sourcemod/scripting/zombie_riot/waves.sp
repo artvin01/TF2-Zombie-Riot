@@ -241,6 +241,8 @@ float MinibossScalingReturn()
 		return 1.0;
 	if(Construction_Mode())
 		return 1.0;
+	if(BetWar_Mode())
+		return 1.0;
 
 	return MinibossScalingHandle;
 }
