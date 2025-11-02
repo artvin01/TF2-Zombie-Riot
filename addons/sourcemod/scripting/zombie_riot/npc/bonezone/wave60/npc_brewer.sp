@@ -296,7 +296,7 @@ public void Alchemist_BerserkSequence(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	AlchemistBones npc = view_as<AlchemistBones>(ent);
