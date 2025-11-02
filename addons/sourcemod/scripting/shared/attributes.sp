@@ -57,6 +57,7 @@ enum
 	Attrib_FinalBuilder = 4051,
 	Attrib_GlassBuilder = 4052,
 	Attrib_WildingenBuilder = 4053,
+	Attrib_TauntRangeValue = 4054,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

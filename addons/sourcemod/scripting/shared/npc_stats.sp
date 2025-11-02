@@ -5323,13 +5323,35 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 
 			for(int i; i < MAXENTITIES; i++)
 			{
-				if(GetClosestTarget_EnemiesToCollect[i] <= 0)
+				int target = GetClosestTarget_EnemiesToCollect[i];
+				if(target <= 0)
 					break;
 				
 				if(targetNav[i] != closeNav)	// In this close nav
 					continue;
 
 				float dist = GetVectorDistance(targetPos[i], EntityLocation, true);
+				//if they are in the taunt range, subtract into negatives.
+				float TauntRange;
+				if(target <= MaxClients)
+				{
+					int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+					if(IsValidEntity(weapon)) //Must also hold melee out 
+						TauntRange = Attributes_Get(weapon, Attrib_TauntRangeValue, 0.0);
+				}
+				else
+				{
+					TauntRange = Attributes_Get(target, Attrib_TauntRangeValue, 0.0);
+				}
+				if(TauntRange != 0.0)
+				{
+					//taunting enemy in rnage, give much higher proprity
+					TauntRange *= TauntRange;
+					if(TauntRange > dist)
+					{
+						dist *= 0.00001;
+					}
+				}
 				if(dist > closeDist)	// Closest entity
 					continue;
 
@@ -5347,7 +5369,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 				// TODO: Make a better distance check so it doesn't stall out if a solo NPC is in the closest nav
 
 				closeDist = dist;
-				ClosestTarget = GetClosestTarget_EnemiesToCollect[i];
+				ClosestTarget = target;
 			}
 		}
 	}
@@ -5379,6 +5401,26 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			GetEntPropVector( target, Prop_Data, "m_vecOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
 			float distanceVector = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 
+			float TauntRange;
+			if(target <= MaxClients)
+			{
+				int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+				if(IsValidEntity(weapon)) //Must also hold melee out 
+					TauntRange = Attributes_Get(weapon, Attrib_TauntRangeValue, 0.0);
+			}
+			else
+			{
+				TauntRange = Attributes_Get(target, Attrib_TauntRangeValue, 0.0);
+			}
+			if(TauntRange != 0.0)
+			{
+				//taunting enemy in rnage, give much higher proprity
+				TauntRange *= TauntRange;
+				if(TauntRange > distanceVector)
+				{
+					distanceVector *= 0.00001;
+				}
+			}
 			/*
 				1: player
 				2: player enemy npc
@@ -9450,7 +9492,8 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 
 	if(DontSetFrozenState)
 		return;
-	//already stunned......
+	//already stunned, dont get their stunned animation states.
+	
 	f_LayerSpeedFrozeRestore[npc] = view_as<CClotBody>(npc).GetPlaybackRate();
 	view_as<CClotBody>(npc).SetPlaybackRate(0.0, true);
 	int layerCount = CBaseAnimatingOverlay(npc).GetNumAnimOverlays();
