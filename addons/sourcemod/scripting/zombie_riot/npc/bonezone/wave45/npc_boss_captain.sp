@@ -875,7 +875,7 @@ public void Captain_ScanForAnchorCollision(int ref)
 	Anchor_PredictEndPoint(pos, vel, DistanceTraveled, EndPoint);
 
 	Anchor_FilterUser = entity;
-	Handle trace = TR_TraceRayFilterEx(pos, EndPoint, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Anchor_Filter);
+	Handle trace = TR_TraceRayFilterEx(pos, EndPoint, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Anchor_Filter, entity);
 
 	if (TR_DidHit(trace))
 	{
@@ -928,7 +928,7 @@ public void Captain_ScanForAnchorCollision(int ref)
 								
 						Anchor_PredictEndPoint(pos, tempVel, DistanceTraveled, EndPoint);
 								
-						trace = TR_TraceRayFilterEx(pos, EndPoint, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Anchor_Filter);
+						trace = TR_TraceRayFilterEx(pos, EndPoint, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Anchor_Filter, entity);
 
 						if (TR_DidHit(trace))
 						{
