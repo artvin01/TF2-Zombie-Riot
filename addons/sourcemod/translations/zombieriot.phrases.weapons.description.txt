@@ -2723,8 +2723,7 @@
 	}
 	"Mlynar Sword Desc"
 	{
-		"en"	"Gain 30％ damage & 50％ less knockback, 10％ slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies & being hurt.\nWeapon has no damage."
-		"it"	"Guadagna 30％ danni e 50％ meno knockback, 10％ più lento.\nNon può attaccare, riflette il danno sui nemici in base al danno inflitto (infligge danno reale)\nIl danno si accumula stando fermi, stando vicini ai nemici e subendo danni.\nL'arma non infligge danni."
+		"en"	"Gain 30％ damage & 50％ less knockback, 10％ slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies & being hurt.\nYou taunt enemies, making them more likely to target you."
 	}
 	"Mlynar Sword Desc pap"
 	{

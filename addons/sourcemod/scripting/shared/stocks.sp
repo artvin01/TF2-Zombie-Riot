@@ -3207,7 +3207,17 @@ int inflictor = 0)
 	}
 	else //only nerf blue npc radius!
 	{
-		explosionRadius *= 0.90;
+		//explosionRadius *= 0.90;
+		float RangeBefore = explosionRadius;
+		explosionRadius -= 20.0;
+		//we dont want to use a % amount as it scales really stupidly high at high distances.
+
+		//we will instead use a flat reduction, this is half a player model of width, give or take, meaning if they stand inside the circle indicator
+		//somewhat halfway it shouldnt hit them,
+		
+		if(explosionRadius <= 80.0)
+			explosionRadius = RangeBefore;
+		//80 as a minimum distance here seems like a good number.
 		if(explosion_range_dmg_falloff != EXPLOSION_RANGE_FALLOFF)
 		{
 			explosion_range_dmg_falloff = 0.8;
@@ -3327,6 +3337,14 @@ int inflictor = 0)
 		maxtargetshit = 20; //we do not care.
 	}
 	
+	bool AdditionalDistanceCheck = false;
+	if(explosionRadius >= 850.0)
+	{
+		AdditionalDistanceCheck = true;
+		//at such high ranges, AOE checks in tf2 become very inaccurate and become more of a box, this was noticed with twirl's
+		//Fracture attack, it became so big that it started acting less like a circle, this aims to add a distance check ontop of the circle trace
+		//it may not be fully accurate anymore, but its the best we can do.
+	}
 	int length = HitEntitiesSphereExplosionTrace.Length;
 	for (int i = 0; i < length; i++)
 	{
@@ -3335,6 +3353,16 @@ int inflictor = 0)
 		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
 		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
 		//Save their distances.
+		if(AdditionalDistanceCheck)
+		{
+			if(distance[entity_traced] > (explosionRadius * explosionRadius))
+			{
+				//the distance that was calculated was bigger then the distance check, remove.
+				HitEntitiesSphereExplosionTrace.Erase(i);
+				length--;
+				continue;
+			}
+		}
 	}
 	
 	//do another check, this time we only need the amount of entities we actually hit.
