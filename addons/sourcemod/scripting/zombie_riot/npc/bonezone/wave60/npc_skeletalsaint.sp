@@ -1061,7 +1061,16 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				npc.SetGoalVector(optimalPos, true);
+				
+				if (GetDistanceToGround(optimalPos) <= 200.0)
+				{
+					npc.SetGoalVector(optimalPos, true);
+					npc.StartPathing();
+				}
+				else
+				{
+					npc.StopPathing();
+				}
 			}
 			else if (flDistanceToTarget > Priest_EnemyHover_MaxDist)
 			{

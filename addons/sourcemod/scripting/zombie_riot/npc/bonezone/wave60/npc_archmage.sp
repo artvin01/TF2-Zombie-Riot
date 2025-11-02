@@ -776,7 +776,16 @@ public void ArchmageBones_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				npc.SetGoalVector(optimalPos, true);
+				
+				if (GetDistanceToGround(optimalPos) <= 200.0)
+				{
+					npc.SetGoalVector(optimalPos, true);
+					npc.StartPathing();
+				}
+				else
+				{
+					npc.StopPathing();
+				}
 			}
 			else if (flDistanceToTarget > ARCHMAGE_HOVER_MAXDIST)
 			{

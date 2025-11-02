@@ -69,7 +69,7 @@ static float f_RattlerFireballDMG[2049] = { 0.0, ... };
 #define SND_HITMAN_FIRE						")weapons/diamond_back_03_crit.wav"
 #define SND_HITMAN_FIRE_2					")misc/halloween/spell_fireball_cast.wav"
 
-#define PARTICLE_RATTLER_FIREBALL			"nailtrails_medic_red_crit"
+#define PARTICLE_RATTLER_FIREBALL			"raygun_projectile_red"
 #define PARTICLE_RATTLER_FIREBALL_BUFFED	"spell_fireball_small_blue"
 #define PARTICLE_RATTLER_BARREL				"sentry_rocket_8"
 #define PARTICLE_FIREBALL_HIT				"flaregun_destroyed"
@@ -992,7 +992,16 @@ public void RattlerBones_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				npc.SetGoalVector(optimalPos, true);
+
+				if (GetDistanceToGround(optimalPos) <= 200.0)
+				{
+					npc.SetGoalVector(optimalPos, true);
+					npc.StartPathing();
+				}
+				else
+				{
+					npc.StopPathing();
+				}
 			}
 			else
 			{

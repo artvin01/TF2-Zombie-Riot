@@ -715,8 +715,16 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 		if (flDistanceToTarget <= BUCCANEER_TOO_CLOSE)
 		{
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-			npc.SetGoalVector(optimalPos, true);
-			npc.StartPathing();
+
+			if (GetDistanceToGround(optimalPos) <= 200.0)
+			{
+				npc.SetGoalVector(optimalPos, true);
+				npc.StartPathing();
+			}
+			else
+			{
+				npc.StopPathing();
+			}
 		}
 		else if (flDistanceToTarget >= BUCCANEER_TOO_FAR)
 		{

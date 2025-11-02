@@ -151,7 +151,7 @@ static char g_GibSounds[][] = {
 #define PARTICLE_OFFER_RECEIVED		"spell_batball_impact_blue_3"
 #define PARTICLE_GODFATHER_MUZZLE	"muzzle_pistol"
 #define PARTICLE_GODFATHER_GUNS_HIT	"flaregun_destroyed"
-#define PARTICLE_GODFATHER_PROJECTILE	"nailtrails_medic_red_crit"
+#define PARTICLE_GODFATHER_PROJECTILE	"raygun_projectile_red"
 #define PARTICLE_GODFATHER_MOLOTOV_EXPLODE	"heavy_ring_of_fire"
 #define PARTICLE_GODFATHER_MOLOTOV			"fuse_sparks"
 

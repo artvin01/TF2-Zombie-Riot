@@ -137,7 +137,7 @@ static const char g_KillSounds[][] = {
 
 #define PARTICLE_LORDREAD_LIGHTNING_STRIKE_SUMMON	"skull_island_explosion"
 #define PARTICLE_LORDREAD_LIGHTNING_STRIKE			"drg_cow_explosioncore_charged"
-#define PARTICLE_TEMPEST_TRAIL						"nailtrails_medic_red_crit"
+#define PARTICLE_TEMPEST_TRAIL						"raygun_projectile_red"
 
 public void Lordread_OnMapStart_NPC()
 {

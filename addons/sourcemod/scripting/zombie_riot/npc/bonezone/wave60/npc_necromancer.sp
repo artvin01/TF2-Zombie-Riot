@@ -663,7 +663,16 @@ public void NecromancerBones_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				npc.SetGoalVector(optimalPos, true);
+				
+				if (GetDistanceToGround(optimalPos) <= 200.0)
+				{
+					npc.SetGoalVector(optimalPos, true);
+					npc.StartPathing();
+				}
+				else
+				{
+					npc.StopPathing();
+				}
 			}
 			else if (flDistanceToTarget > Necromancer_Hover_MaxDist)
 			{

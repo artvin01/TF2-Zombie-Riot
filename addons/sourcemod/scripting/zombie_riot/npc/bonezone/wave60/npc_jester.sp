@@ -732,7 +732,16 @@ public void JesterBones_ClotThink(int iNPC)
 
 				float optimalPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				npc.SetGoalVector(optimalPos, true);
+
+				if (GetDistanceToGround(optimalPos) <= 200.0)
+				{
+					npc.SetGoalVector(optimalPos, true);
+					npc.StartPathing();
+				}
+				else
+				{
+					npc.StopPathing();
+				}
 			}
 			else if (flDistanceToTarget <= (!b_BonesBuffed[npc.index] ? BONES_JESTER_OPTIMAL_RANGE : BONES_MONDO_OPTIMAL_RANGE))
 			{

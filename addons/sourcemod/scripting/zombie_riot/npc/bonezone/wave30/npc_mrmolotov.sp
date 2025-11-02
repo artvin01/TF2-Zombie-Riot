@@ -285,7 +285,14 @@ public void MolotovBones_ClotThink(int iNPC)
 				{
 					npc.StartPathing();
 					BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, vecTarget);
-					npc.SetGoalVector(vecTarget, true);
+
+					if (GetDistanceToGround(vecTarget) <= 200.0)	//Don't run off cliffs
+					{
+						npc.SetGoalVector(vecTarget, true);
+						npc.StartPathing();
+					}
+					else
+						npc.StopPathing();
 				}
 				else if (flDistanceToTarget <= MOLOTOV_STOP_RANGE)
 				{

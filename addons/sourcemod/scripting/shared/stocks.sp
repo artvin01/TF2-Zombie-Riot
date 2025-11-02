@@ -5987,3 +5987,17 @@ bool AntiCommandAbuse_MenuFix(Menu menu, MenuAction action, int choice)
 
 	return false;
 }
+
+public float GetDistanceToGround(float pos[3])
+{
+	float angles[3], otherLoc[3];
+	angles[0] = 90.0;
+	angles[1] = 0.0;
+	angles[2] = 0.0;
+	
+	Handle trace = TR_TraceRayFilterEx(pos, angles, MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
+	TR_GetEndPosition(otherLoc, trace);
+	delete trace;
+	
+	return GetVectorDistance(pos, otherLoc);
+}

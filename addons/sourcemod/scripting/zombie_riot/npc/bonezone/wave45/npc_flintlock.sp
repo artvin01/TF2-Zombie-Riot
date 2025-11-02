@@ -71,7 +71,7 @@ static float f_FlintlockFireballDMG[2049] = { 0.0, ... };
 #define SND_DEADEYE_FIRE_2					")misc/halloween/spell_fireball_cast.wav"
 #define SND_FLINTLOCK_MOVE_GUN				")player/cyoa_pda_draw.wav"
 
-#define PARTICLE_FLINTLOCK_FIREBALL			"nailtrails_medic_red_crit"
+#define PARTICLE_FLINTLOCK_FIREBALL			"raygun_projectile_red"
 #define PARTICLE_FLINTLOCK_FIREBALL_BUFFED	"spell_fireball_small_blue"
 #define PARTICLE_FLINTLOCK_BARREL				"sentry_rocket_8"
 #define PARTICLE_FLINTLOCK_MUZZLE				"muzzle_pistol"
@@ -1034,7 +1034,16 @@ public void FlintlockBones_ClotThink(int iNPC)
 			{
 				npc.StartPathing();
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, closest, _, optimalPos);
-				npc.SetGoalVector(optimalPos, true);
+
+				if (GetDistanceToGround(optimalPos) <= 200.0)
+				{
+					npc.SetGoalVector(optimalPos, true);
+					npc.StartPathing();
+				}
+				else
+				{
+					npc.StopPathing();
+				}
 			}
 			else
 			{
