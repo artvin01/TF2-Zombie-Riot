@@ -335,7 +335,8 @@ public void Aleraiser_BerserkSequence(DataPack pack)
 	if (gt >= endTime)
 	{
 		int iActivity = npc.LookupActivity("ACT_ALERAISER_RUN_BROKEN_BOTTLE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		if(iActivity > 0) 
+			npc.StartActivity(iActivity);
 
 		npc.m_iTarget = Aleraiser_GetTarget(npc);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
@@ -488,7 +489,7 @@ public void Aleraiser_MeleeLogic(DataPack pack)
 	float hitTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	AleraiserBones npc = view_as<AleraiserBones>(ent);
@@ -552,7 +553,7 @@ public void Aleraiser_ThrowBottle(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	if (b_AleraiserGoneBerserk[ent])

@@ -1349,7 +1349,7 @@ public void Barrage_WaitForFreeze(DataPack pack)
 
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	float gt = GetGameTime();
@@ -1383,7 +1383,7 @@ public void Barrage_WaitForLaunch(DataPack pack)
 
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	float gt = GetGameTime();
@@ -1421,7 +1421,7 @@ public void Barrage_SearchForTarget(DataPack pack)
 
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	int target = GetClosestTarget(ent, true, _, _, _, _, _, true);
@@ -1473,7 +1473,7 @@ public void Barrage_Launch(int ent, int target, int phase)
 public void SSB_DeleteIfOwnerDisappears(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
@@ -1527,7 +1527,7 @@ public void Death_Check(DataPack pack)
 
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
@@ -2551,7 +2551,7 @@ public void NecroBlast_Fire(SupremeSpookmasterBones ssb, int phase)
 public void NecroBlast_FunnySpin(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
@@ -2969,7 +2969,7 @@ public void Spin_IntroLogic(DataPack pack)
 
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
@@ -3198,7 +3198,7 @@ public void Hell_IntroLogic(DataPack pack)
 
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);

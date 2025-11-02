@@ -256,7 +256,7 @@ public void Criminal_SetBuffed(int index, bool buffed)
 public void Criminal_Transform(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	CriminalBones npc = view_as<CriminalBones>(ent);

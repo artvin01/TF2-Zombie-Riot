@@ -272,7 +272,7 @@ static void Reaper_AttachEyeParticles(int entity, bool aboutToAttack = false)
 public void Reaper_AdjustAxePose(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	GrimReaper npc = view_as<GrimReaper>(ent);
@@ -403,7 +403,7 @@ static void Reaper_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 void Reaper_Teleport(int ref)
 {
 	int ent = EntRefToEntIndex(ref);
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	TeleportDiversioToRandLocation(ent);
@@ -487,7 +487,7 @@ void Reaper_AttackLogic(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	GrimReaper npc = view_as<GrimReaper>(ent);

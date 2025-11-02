@@ -486,7 +486,7 @@ public void Alchemist_MeleeLogic(DataPack pack)
 	float hitTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	AlchemistBones npc = view_as<AlchemistBones>(ent);
@@ -550,7 +550,7 @@ public void Alchemist_ThrowBottle(DataPack pack)
 	float endTime = ReadPackFloat(pack);
 	delete pack;
 
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 
 	if (b_AlchemistGoneBerserk[ent])

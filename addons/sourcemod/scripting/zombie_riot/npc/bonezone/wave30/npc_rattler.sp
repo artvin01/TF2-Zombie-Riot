@@ -690,7 +690,7 @@ public void Hitman_AnimEvent(int entity, int event)
 			}
 		}
 	}
-    else if (b_RattlerWindupPhase[npc.index])
+	else if (b_RattlerWindupPhase[npc.index])
 	{
 		switch(event)
 		{
