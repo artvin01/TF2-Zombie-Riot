@@ -781,6 +781,10 @@ public void Captain_AnimEvent(int entity, int event)
 			DispatchKeyValueFloat(anchor, "modelscale", 0.01);
 			if (IsValidEntity(anchor))
 			{
+				if (h_NpcSolidHookType[anchor] != 0)
+					DHookRemoveHookID(h_NpcSolidHookType[anchor]);
+				h_NpcSolidHookType[anchor] = 0;
+
 				SetEntityGravity(anchor, Keelhaul_Gravity); 	
 				ArcToLocationViaSpeedProjectile(pos, targPos, vel, 2.0, 1.0);
 				SetEntityMoveType(anchor, MOVETYPE_FLYGRAVITY);
@@ -806,7 +810,7 @@ public void Captain_AnimEvent(int entity, int event)
 					Anchor_Prop[anchor] = EntIndexToEntRef(prop);
 				}
 
-				g_DHookRocketExplode.HookEntity(Hook_Pre, anchor, Captain_AnchorCollide);
+				h_NpcSolidHookType[anchor] = g_DHookRocketExplode.HookEntity(Hook_Pre, anchor, Captain_AnchorCollide);
 				RequestFrame(Captain_ScanForAnchorCollision, EntIndexToEntRef(anchor));
 				Anchor_Bounces[anchor] = Keelhaul_Bounces;
 				//Trail_Attach

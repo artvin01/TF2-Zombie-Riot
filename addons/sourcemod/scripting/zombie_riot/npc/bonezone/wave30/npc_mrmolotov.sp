@@ -378,21 +378,28 @@ public void Molotov_ThrowBottle(DataPack pack)
 		}
 
 		int bottle = npc.FireRocket(vPredictedPos, 0.0, MOLOTOV_THROW_VELOCITY);
-		SetEntityGravity(bottle, MOLOTOV_GRAVITY); 	
-		ArcToLocationViaSpeedProjectile(pos, vPredictedPos, SpeedReturn, 1.0, 1.0);
-		SetEntityMoveType(bottle, MOVETYPE_FLYGRAVITY);
-		TeleportEntity(bottle, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
-
-		SetEntityModel(bottle, MODEL_MOLOTOV_BOTTLE);
-		ParticleEffectAt_Parent(pos, PARTICLE_MOLOTOV_BOTTLE_TRAIL, bottle);
-		g_DHookRocketExplode.HookEntity(Hook_Pre, bottle, Molotov_BottleCollide);
-
-		for (int i = 0; i < 3; i++)
+		if (IsValidEntity(bottle))
 		{
-			ang[i] = GetRandomFloat(0.0, 360.0);
-		}
+			if (h_NpcSolidHookType[bottle] != 0)
+				DHookRemoveHookID(h_NpcSolidHookType[bottle]);
+			h_NpcSolidHookType[bottle] = 0;
 
-		TeleportEntity(bottle, _, ang);
+			SetEntityGravity(bottle, MOLOTOV_GRAVITY); 	
+			ArcToLocationViaSpeedProjectile(pos, vPredictedPos, SpeedReturn, 1.0, 1.0);
+			SetEntityMoveType(bottle, MOVETYPE_FLYGRAVITY);
+			TeleportEntity(bottle, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+
+			SetEntityModel(bottle, MODEL_MOLOTOV_BOTTLE);
+			ParticleEffectAt_Parent(pos, PARTICLE_MOLOTOV_BOTTLE_TRAIL, bottle);
+			h_NpcSolidHookType[bottle] = g_DHookRocketExplode.HookEntity(Hook_Pre, bottle, Molotov_BottleCollide);
+
+			for (int i = 0; i < 3; i++)
+			{
+				ang[i] = GetRandomFloat(0.0, 360.0);
+			}
+
+			TeleportEntity(bottle, _, ang);
+		}
 
 		throwTime = 9999999.0;
 	}
