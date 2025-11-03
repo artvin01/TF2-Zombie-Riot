@@ -342,7 +342,7 @@
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater."
+		"en" 		"The Xeno infection treats these the same as their unfortified version, since they are the same type of zombie. \n-When first hit, gains a speed boost for a short period.
 		"it"		"Gli esseri Fortificati hanno una versione mutata dell'infezione xeno, che rende le loro capacità ancora più grandi."
 	}
 	"Xeno Fast Zombie Desc"
