@@ -193,7 +193,7 @@ public void Captain_OnMapStart_NPC()
 
 static any Summon_Captain(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Captain(client, vecPos, vecAng, ally);
+	return Captain(vecPos, vecAng, ally);
 }
 
 methodmap Captain < CClotBody
@@ -374,13 +374,9 @@ methodmap Captain < CClotBody
 		}
 	}
 
-	public Captain(int client, float vecPos[3], float vecAng[3], int ally)
+	public Captain(float vecPos[3], float vecAng[3], int ally)
 	{	
-		Captain npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<Captain>(BarrackBody(client, vecPos, vecAng, CAPTAIN_HP, BONEZONE_MODEL_BOSS, _, CAPTAIN_SCALE));
-		else
-			npc = view_as<Captain>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, CAPTAIN_SCALE, CAPTAIN_HP, ally));
+		Captain npc = view_as<Captain>(CClotBody(vecPos, vecAng, BONEZONE_MODEL_BOSS, CAPTAIN_SCALE, CAPTAIN_HP, ally));
 
 		b_BonesBuffed[npc.index] = false;
 		npc.m_bBoneZoneNaturallyBuffed = true;

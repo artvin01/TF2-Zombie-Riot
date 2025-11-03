@@ -189,12 +189,12 @@ public void JesterBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return JesterBones(client, vecPos, vecAng, ally, false);
+	return JesterBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return JesterBones(client, vecPos, vecAng, ally, true);
+	return JesterBones(vecPos, vecAng, ally, true);
 }
 
 methodmap JesterBones < CClotBody
@@ -330,7 +330,7 @@ methodmap JesterBones < CClotBody
 		EmitSoundToAll(g_WitchLaughs[GetRandomInt(0, sizeof(g_WitchLaughs) - 1)], this.index, SNDCHAN_VOICE, _, _, _, GetRandomInt(80, 110));
 	}
 	
-	public JesterBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public JesterBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -361,11 +361,7 @@ methodmap JesterBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		JesterBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<JesterBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, BONEZONE_MODEL, _, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE));
-		else
-			npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed && !randomlyBuffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
+		JesterBones npc = view_as<JesterBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_JESTER_SCALE_BUFFED : BONES_JESTER_SCALE, buffed && !randomlyBuffed ? BONES_JESTER_HP_BUFFED : BONES_JESTER_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);

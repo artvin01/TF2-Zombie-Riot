@@ -81,7 +81,7 @@ public void DeckhandBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return DeckhandBones(client, vecPos, vecAng, ally, false);
+	return DeckhandBones(vecPos, vecAng, ally, false);
 }
 
 methodmap DeckhandBones < CClotBody
@@ -159,7 +159,7 @@ methodmap DeckhandBones < CClotBody
 	
 	
 	
-	public DeckhandBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public DeckhandBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -188,11 +188,7 @@ methodmap DeckhandBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		DeckhandBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<DeckhandBones>(BarrackBody(client, vecPos, vecAng, BONES_DECKHAND_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, BONES_DECKHAND_SCALE));
-		else
-			npc = view_as<DeckhandBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_DECKHAND_SCALE, BONES_DECKHAND_HP, ally, false));
+		DeckhandBones npc = view_as<DeckhandBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_DECKHAND_SCALE, BONES_DECKHAND_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 
@@ -274,15 +270,15 @@ public void Deckhand_Transform(int ref)
 	{
 		case 1:
 		{
-			spawned = BuccaneerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
+			spawned = BuccaneerBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
 		}
 		case 2:
 		{
-			spawned = FlintlockBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
+			spawned = FlintlockBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
 		}
 		default:
 		{
-			spawned = PirateBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
+			spawned = PirateBones(pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
 		}
 	}
 

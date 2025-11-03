@@ -129,12 +129,12 @@ public void PirateBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return PirateBones(client, vecPos, vecAng, ally, false);
+	return PirateBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return PirateBones(client, vecPos, vecAng, ally, true);
+	return PirateBones(vecPos, vecAng, ally, true);
 }
 
 methodmap PirateBones < CClotBody
@@ -229,7 +229,7 @@ methodmap PirateBones < CClotBody
 		#endif
 	}
 	
-	public PirateBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public PirateBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -260,11 +260,7 @@ methodmap PirateBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		PirateBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<PirateBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, BONEZONE_MODEL, _, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE));
-		else
-			npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed && !randomlyBuffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
+		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed && !randomlyBuffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);

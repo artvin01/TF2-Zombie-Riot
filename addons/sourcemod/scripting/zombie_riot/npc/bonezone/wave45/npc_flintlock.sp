@@ -186,12 +186,12 @@ public void FlintlockBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return FlintlockBones(client, vecPos, vecAng, ally, false);
+	return FlintlockBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return FlintlockBones(client, vecPos, vecAng, ally, true);
+	return FlintlockBones(vecPos, vecAng, ally, true);
 }
 
 static bool b_DeadeyeCharging[MAXENTITIES] = { false, ... };
@@ -290,7 +290,7 @@ methodmap FlintlockBones < CClotBody
 		return i_FlintlockAmmo[this.index] > 0;
 	}
 	
-	public FlintlockBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public FlintlockBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -321,11 +321,7 @@ methodmap FlintlockBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		FlintlockBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<FlintlockBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, BONEZONE_MODEL, _, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE));
-		else
-			npc = view_as<FlintlockBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE, buffed && !randomlyBuffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, ally, false));
+		FlintlockBones npc = view_as<FlintlockBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_FLINTLOCK_BUFFED_SCALE : BONES_FLINTLOCK_SCALE, buffed && !randomlyBuffed ? BONES_FLINTLOCK_HP_BUFFED : BONES_FLINTLOCK_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
@@ -603,7 +599,7 @@ public void Flintlock_ShootProjectile(FlintlockBones npc, float vicLoc[3], float
 		{
 			SDKHook(entity, SDKHook_Touch, Flintlock_FireballTouch);
 			h_NpcSolidHookType[entity] = g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Rocket_Particle_DHook_RocketExplodePre); //*yawn*
-			Flintlock_AttachParticle(entity, PARTICLE_FLINTLOCK_FIREBALL, _, "");
+			Trail_Attach(entity, GetTeam(npc.index) == 2 ? ARROW_TRAIL_RED : ARROW_TRAIL, 255, 0.5, 11.0, _, 5);
 			CreateTimer(FLINTLOCK_LIFESPAN, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}

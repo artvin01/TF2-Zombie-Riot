@@ -188,12 +188,12 @@ public void BuccaneerBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BuccaneerBones(client, vecPos, vecAng, ally, false);
+	return BuccaneerBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BuccaneerBones(client, vecPos, vecAng, ally, true);
+	return BuccaneerBones(vecPos, vecAng, ally, true);
 }
 
 methodmap BuccaneerBones < CClotBody
@@ -275,7 +275,7 @@ methodmap BuccaneerBones < CClotBody
 	
 	
 	
-	public BuccaneerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public BuccaneerBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -306,11 +306,7 @@ methodmap BuccaneerBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 		
-		BuccaneerBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<BuccaneerBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", _, buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE));
-		else
-			npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed && !randomlyBuffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
+		BuccaneerBones npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? BONEZONE_MODEL : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed && !randomlyBuffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);

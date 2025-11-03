@@ -118,12 +118,12 @@ public void BigBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BigBones(client, vecPos, vecAng, ally, false);
+	return BigBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BigBones(client, vecPos, vecAng, ally, true);
+	return BigBones(vecPos, vecAng, ally, true);
 }
 
 bool BigBones_Bursting[2049] = { false, ... };
@@ -182,7 +182,7 @@ methodmap BigBones < CClotBody
 	
 	
 	
-	public BigBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public BigBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -213,11 +213,7 @@ methodmap BigBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		BigBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<BigBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE));
-		else
-			npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed && !randomlyBuffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
+		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed && !randomlyBuffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
@@ -535,11 +531,11 @@ public Action BigBones_Burst(Handle burst, int ref)
 		switch (GetRandomInt(0, 2))
 		{
 			case 0:
-				minion = BasicBones(npc.index, pos, ang, GetTeam(npc.index), buffed).index;
+				minion = BasicBones(pos, ang, GetTeam(npc.index), buffed).index;
 			case 1:
-				minion = BeefyBones(npc.index, pos, ang, GetTeam(npc.index), buffed).index;
+				minion = BeefyBones(pos, ang, GetTeam(npc.index), buffed).index;
 			default:
-				minion = BrittleBones(npc.index, pos, ang, GetTeam(npc.index), buffed).index;
+				minion = BrittleBones(pos, ang, GetTeam(npc.index), buffed).index;
 		}
 		
 		if (IsValidEntity(minion))

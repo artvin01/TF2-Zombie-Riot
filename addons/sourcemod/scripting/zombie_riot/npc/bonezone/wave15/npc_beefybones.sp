@@ -108,12 +108,12 @@ public void BeefyBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BeefyBones(client, vecPos, vecAng, ally, false);
+	return BeefyBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return BeefyBones(client, vecPos, vecAng, ally, true);
+	return BeefyBones(vecPos, vecAng, ally, true);
 }
 
 methodmap BeefyBones < CClotBody
@@ -170,7 +170,7 @@ methodmap BeefyBones < CClotBody
 	
 	
 	
-	public BeefyBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public BeefyBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 		if (!buffed)
@@ -201,11 +201,7 @@ methodmap BeefyBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		BeefyBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<BeefyBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, "models/bots/skeleton_sniper/skeleton_sniper.mdl", _, buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE));
-		else
-			npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE, buffed && !randomlyBuffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
+		BeefyBones npc = view_as<BeefyBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BEEFY_SCALE_BUFFED : BONES_BEEFY_SCALE, buffed && !randomlyBuffed ? BONES_BEEFY_HP_BUFFED : BONES_BEEFY_HP, ally, false));
 
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);

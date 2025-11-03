@@ -192,12 +192,12 @@ public void SaintBones_OnMapStart_NPC()
 
 static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SaintBones(client, vecPos, vecAng, ally, false);
+	return SaintBones(vecPos, vecAng, ally, false);
 }
 
 static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SaintBones(client, vecPos, vecAng, ally, true);
+	return SaintBones(vecPos, vecAng, ally, true);
 }
 
 methodmap SaintBones < CClotBody
@@ -280,7 +280,7 @@ methodmap SaintBones < CClotBody
 		EmitSoundToAll(SOUND_CAST, this.index, _, _, _, _, GetRandomInt(80, 120));
 	}
 	
-	public SaintBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
+	public SaintBones(float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		bool randomlyBuffed = false;
 
@@ -312,11 +312,7 @@ methodmap SaintBones < CClotBody
 			randomlyBuffed = buffed;
 		}
 			
-		SaintBones npc;
-		if (client > 0 && IsValidClient(client))
-			npc = view_as<SaintBones>(BarrackBody(client, vecPos, vecAng, buffed && !randomlyBuffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, BONEZONE_MODEL, _, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE));
-		else
-			npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed && !randomlyBuffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
+		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, BONEZONE_MODEL, buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed && !randomlyBuffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
 		
 		if (randomlyBuffed)
 			RequestFrame(BoneZone_SetRandomBuffedHP, npc);
