@@ -119,7 +119,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 			else if(!b_AntiLateSpawn_Allow[client])
 			{
 				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
-				ShowSyncHudText(client, SyncHud, "%T\n", "Latejoin Hint", client);
+				ShowSyncHudText(client, SyncHud, "%T\n", "Latejoin Hint", client, PassClientBoughtLateGame(client));
 				//try!
 				ReturnEnd = true;
 			}
