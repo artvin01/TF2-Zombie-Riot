@@ -336,7 +336,7 @@
 
 	"Xeno Headcrab Zombie Desc"
 	{
-		"en" 		"This zombie will reach very high speeds once hurt."
+		"en" 		"The Xeno infection made these zombies not like getting hit. \n-When first hit, gains a speed boost for a short period."
 		"it"		"Una volta ferito, questo zombie raggiunge velocità molto elevate."
 
 	}
@@ -1951,7 +1951,7 @@
 	}
 	"Vivithorn Desc"
 	{
-		"en"	"Activator of the xeno infection source. He won't let you stop him from infecting the world with the Xeno infection. \n-Melee attack hits multiple times and launches the target at the end. \n-start slowly sprinting towards the closest enemy, gaining speed until he grabs someone. HE will pick them up and snap their neck. Dropping them onto the floor afterward, and being stunned for a few seconds \n-Occasionally charges to the closest enemy, ramming into them. This will deal damage on contact and knockback."
+		"en"	"Activator of the xeno infection source. He won't let you stop him from infecting the world with the Xeno infection. \n-Melee attack hits multiple times and launches the target at the end. \n-Able to start sprinting towards the closest enemy, starting slow and gaining speed until he grabs someone. He will pick them up and snap their neck. Dropping them onto the floor afterward, and stunning them for a few seconds \n-Occasionally charges to the closest enemy, ramming into them. This will deal damage and knockback on contact. At the end of this, he will be dazed for a few seconds."
 		"it"	"Attivatore della fonte di infezione xeno.\nPuò sfrecciare, uno ti afferra e ti spezza il collo, l'altro colpisce a ripetizione ma nemici diversi in un AOE.\n(SIlenza) perde la scivolata al colpo"
 	}
 	"Lex Desc"
@@ -2537,7 +2537,7 @@
 	}
 	"Major Voided Desc"
 	{
-		"en"	"A taken over giant machine by the Void.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Void elemental damage\n- On death, deals AOE damage and summons Speechless"
+		"en"	"A taken over giant machine by the Void.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Void elemental damage\n- Gains resistance when damage is taken\n- On death, deals AOE damage and summons Speechless"
 		"it"	"Utilizza un attacco a distanza e una ricarica.\n Immune agli effetti di rallentamento, stordimento e spostamento.\n Gli attacchi sono AOE e infliggono danni elementali del Vuoto. Alla morte, infligge danni AOE ed evoca Speechless"
 	}
 	"Disturbed Umbral Desc"
