@@ -182,7 +182,7 @@ methodmap GrimReaper < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		Reaper_CalculateSpeed(npc);
-		npc.m_bCamo = true;
+		//npc.m_bCamo = true;
 
 		npc.m_flMeleeArmor = REAPER_MELEE_MULTIPLIER; 
 		npc.m_flRangedArmor = REAPER_RANGED_MULTIPLIER;
