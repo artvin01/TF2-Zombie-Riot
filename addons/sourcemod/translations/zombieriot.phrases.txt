@@ -4849,7 +4849,7 @@
 	"Latejoin Hint"
 	{
 		"#format"	"{1:d}"
-		"en"		"You joined a round in process.\nBuy Equipment and use [{1:d}] more Cash to qualify.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but got extra cash."
+		"en"		"You joined a round in progress.\nBuy Equipment and use [{1:d}] more Cash to qualify.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but got extra cash."
 	}
 	"No Attack Info"
 	{
