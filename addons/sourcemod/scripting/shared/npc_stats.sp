@@ -12092,6 +12092,7 @@ Action NPCStats_Timer_HandlePaintedWearables(Handle timer)
 		// None of the cosmetics using this color are valid, we can erase this color from the list
 		if (!foundValidEntity)
 		{
+			RemoveEntity(wearableColor.wearableRef);
 			delete wearableColor.entities;
 			h_ColoredWearables.Erase(i);
 		}
