@@ -11948,6 +11948,83 @@ enum struct ArraylistColours
 }
 */
 
+/*
+https://steamcommunity.com/sharedfiles/filedetails/?id=1911160067
+
+Here is a table of RGB integer values for the paints in TF2:
+Indubitably Green
+7511618
+Zepheniah's Greed
+4345659
+Noble Hatter's Violet
+5322826
+Color No. 216-190-216
+14204632
+A deep Commitment to Purple
+8208497
+Mann Co. Orange
+13595446
+Muskelmannbraun
+10843461
+Peculiarly Drab Tincture
+12955537
+Radigan Conagher Brown
+6901050
+Ye Olde Rustic Colour
+8154199
+Australium Gold
+15185211
+Aged Moustache Grey
+8289918
+An Extraordinary Abundance of Tinge
+15132390
+A Distinctive Lack of Hue
+1315860
+Pink as Hell
+16738740
+A Color Similar to Slate
+3100495
+Drably Olive
+8421376
+The Bitter Taste of Defeat and Lime
+3329330
+The Color of a Gentlemann's Business Pants
+15787660
+Dark Salmon Injustice
+15308410
+Mann's Mint
+12377523
+After Eight
+2960676
+Team Spirit (RED)
+12073019
+Team Spirit (BLU)
+5801378
+Operator's Overalls (RED)
+4732984
+Operator's Overalls (BLU)
+3686984
+Waterlogged Lab Coat (RED)
+11049612
+Waterlogged Lab Coat (BLU)
+8626083
+Balaclavas are Forever (RED)
+3874595
+Balaclavas are Forever (BLU)
+1581885
+The Value of Teamwork (RED)
+8400928
+The Value of Teamwork (BLU)
+2452877
+Cream Spirit (RED)
+12807213
+Cream Spirit (BLU)
+12091445
+An Air of Debonair (RED)
+6637376
+An Air of Debonair (BLU)
+2636109
+*/
 void NpcColourCosmetic_ViaPaint(int entity, int color)
 {
 	int Wearable = CreateEntityByName("tf_wearable");
