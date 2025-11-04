@@ -11934,6 +11934,7 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 }
 
 
+/*
 ArrayList h_Arraylist_Colour;
 enum struct ArraylistColours
 {
@@ -11945,6 +11946,7 @@ enum struct ArraylistColours
   	ArrayList EntRefs;
 	//save all ent'refs that use this colour, if none remain, kill the colour and its stuff.
 }
+*/
 
 void NpcColourCosmetic_ViaPaint(int entity, int color)
 {
