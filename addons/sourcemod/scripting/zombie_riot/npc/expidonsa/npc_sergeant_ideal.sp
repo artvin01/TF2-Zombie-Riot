@@ -212,8 +212,6 @@ methodmap SergeantIdeal < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 7511618);
-
 		if(npc.g_TimesSummoned == 0)
 		{
 			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
