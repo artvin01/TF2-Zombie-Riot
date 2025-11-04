@@ -342,7 +342,7 @@
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"The Xeno infection treats these the same as their unfortified version, since they are the same type of zombie. \n-When first hit, gains a speed boost for a short period.
+		"en" 		"The Xeno infection treats them the same as their unfortified variant, since they are the same type of zombie. \n-When first hit, gains a speed boost for a short period.
 		"it"		"Gli esseri Fortificati hanno una versione mutata dell'infezione xeno, che rende le loro capacità ancora più grandi."
 	}
 	"Xeno Fast Zombie Desc"
@@ -352,7 +352,7 @@
 	}
 	"Xeno Fortified Fast Zombie Desc"
 	{
-		"en" 		"Stronger version of the Xeno Fast Zombie"
+		"en" 		"The Xeno infection treats them the same as their unfortified variant"
 		"it"		"Versione più forte dello Xeno Zombie Veloce"
 	}
 	"Xeno Torsoless Headcrab Zombie Desc"
@@ -362,18 +362,18 @@
 	}
 	"Xeno Poison Zombie Desc"
 	{
-		"en" 		"Once hurt, they will gain massive resistances (resistance can be silenced) for 3 seconds, it can recharge so kill them quick."
+		"en" 		"The Xeno infection make these guys extra tanky when threatened. \n-When first hit, gains heavy resistances for 3 seconds. This ability can recharge."
 		"it"		"Una volta feriti, guadagneranno resistenze massicce (le resistenze possono essere silenziate) per 3 secondi, ma possono ricaricarsi, quindi uccideteli in fretta."
 	}
 	"Xeno Fortified Poison Zombie Desc"
 	{
-	    "en" 		"Stronger version of the Xeno Poison Zombie"
+	    "en" 		"Fortified version of the Xeno Poison Zombie. \n-When first hit, gains heavy resistances for 3 seconds. This ability can recharge."
 	    "ru" 		"Более сильный вариант Ксено ядовитого зомби"	    	    
 	    "it"		"Versione più forte dello zombie velenoso Xeno"
 	}
 	"Xeno Fortified Giant Poison Zombie Desc"
 	{
-		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger."
+		"en" 		"Giant version of the Xeno Fortified Poison Zombie. \n-When first hit, gains heavy resistances for 3 seconds. This ability can recharge."
  		"ru" 		"Сохранили способности ''нормального''и более сильные чем он"
 		"it"		"Ha mantenuto le abilità ''normali'', oltre a essere più forte."
 	}
