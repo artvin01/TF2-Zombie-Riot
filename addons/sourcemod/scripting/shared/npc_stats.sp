@@ -11951,6 +11951,10 @@ enum struct ArraylistColours
 /*
 https://steamcommunity.com/sharedfiles/filedetails/?id=1911160067
 
+Website for own RGB stuff:
+https://www.webfx.com/web-design/color-picker/?colorcode=E7B53B
+http://www.shodor.org/stella2java/rgbint.html
+
 Here is a table of RGB integer values for the paints in TF2:
 Indubitably Green
 7511618
@@ -12025,11 +12029,11 @@ An Air of Debonair (RED)
 An Air of Debonair (BLU)
 2636109
 */
-void NpcColourCosmetic_ViaPaint(int entity, int color)
+int NpcColourCosmetic_ViaPaint(int entity, int color)
 {
 	int Wearable = CreateEntityByName("tf_wearable");
 	if(Wearable == -1)
-		return;
+		return -1;
 
 	
 	SetEntProp(Wearable, Prop_Send, "m_bInitialized", true);
@@ -12040,5 +12044,5 @@ void NpcColourCosmetic_ViaPaint(int entity, int color)
 	SetEdictFlags(Wearable, GetEdictFlags(Wearable) | FL_EDICT_ALWAYS);
 	b_IsEntityAlwaysTranmitted[Wearable] = true;
 	
-	return;
+	return Wearable;
 }

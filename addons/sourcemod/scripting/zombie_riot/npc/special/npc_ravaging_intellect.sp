@@ -193,16 +193,6 @@ methodmap RavagingIntellect < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
-	property int g_ColorintAt
-	{
-		public get()							{ return i_TimesSummoned[this.index]; }
-		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
-	}
-	property bool b_ColorDirection
-	{
-		public get()							{ return b_FUCKYOU[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
-	}
 	
 	public RavagingIntellect(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -246,13 +236,17 @@ methodmap RavagingIntellect < CClotBody
 		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.StartPathing();
-		npc.b_ColorDirection = true;
-		npc.g_ColorintAt = 125;
+		int PaintWearable;
+		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 5801378);
+		TF2Attrib_SetByName(PaintWearable, "SPELL: set item tint RGB", float(3));
+		SetTeam(PaintWearable, 3);
+		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 5801378);
+		TF2Attrib_SetByName(PaintWearable, "SPELL: set item tint RGB", float(3));
+		SetTeam(PaintWearable, 3);
+		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 5801378);
+		TF2Attrib_SetByName(PaintWearable, "SPELL: set item tint RGB", float(3));
+		SetTeam(PaintWearable, 3);
 
-		SetEntityRenderColor(npc.m_iWearable1, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
-		SetEntityRenderColor(npc.m_iWearable2, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
-		SetEntityRenderColor(npc.m_iWearable3, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
-		SetEntityRenderColor(npc.m_iWearable4, npc.g_ColorintAt, npc.g_ColorintAt, 200, 255);
 
 		npc.m_flSpeed = 330.0;
 		bool final = StrContains(data, "spawn_fake") != -1;
@@ -377,34 +371,16 @@ public void RavagingIntellect_ClotThink(int iNPC)
 			AlphaDo = 95;
 		}
 	}
-	if(npc.b_ColorDirection)
-	{
-		npc.g_ColorintAt += 1;
-		if(npc.g_ColorintAt >= 255)
-		{
-			npc.g_ColorintAt = 255;
-			npc.b_ColorDirection = false;
-		}
-	}
-	else
-	{
-		npc.g_ColorintAt -= 1;
-		if(npc.g_ColorintAt <= 125)
-		{
-			npc.g_ColorintAt = 125;
-			npc.b_ColorDirection = true;
-		}
-	}
 	
-
+	SetEntityRenderColor(npc.index, 255, 255, 255, AlphaDo);
 	if(IsValidEntity(npc.m_iWearable1))
-		SetEntityRenderColor(npc.m_iWearable1, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, AlphaDo);
 	if(IsValidEntity(npc.m_iWearable2))
-		SetEntityRenderColor(npc.m_iWearable2, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, AlphaDo);
 	if(IsValidEntity(npc.m_iWearable3))
-		SetEntityRenderColor(npc.m_iWearable3, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+		SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, AlphaDo);
 	if(IsValidEntity(npc.m_iWearable4))
-		SetEntityRenderColor(npc.m_iWearable4, npc.g_ColorintAt, npc.g_ColorintAt, 200, AlphaDo);
+		SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, AlphaDo);
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{

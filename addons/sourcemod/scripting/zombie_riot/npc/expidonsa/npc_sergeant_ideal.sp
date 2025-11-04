@@ -211,8 +211,7 @@ methodmap SergeantIdeal < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec15_patriot_peak/dec15_patriot_peak_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		
-		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 7511618);
+
 
 		if(npc.g_TimesSummoned == 0)
 		{
