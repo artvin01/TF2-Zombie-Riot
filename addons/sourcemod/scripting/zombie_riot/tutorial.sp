@@ -94,7 +94,7 @@ void Tutorial_MakeClientNotMove(int client)
 
 void DoTutorialStep(int client, bool obeycooldown)
 {
-	if(GetClientTeam(client) != 2)
+	if(GetClientTeam(client) != 2 || BetWar_Mode())
 		return;
 		
 	TutorialShort_ExplainOres(client);
@@ -119,7 +119,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 			else if(!b_AntiLateSpawn_Allow[client])
 			{
 				SetHudTextParams(-1.0, 0.7, 1.1, 255, 255, 255, 255);
-				ShowSyncHudText(client, SyncHud, "%T\n", "Latejoin Hint", client);
+				ShowSyncHudText(client, SyncHud, "%T\n", "Latejoin Hint", client, PassClientBoughtLateGame(client));
 				//try!
 				ReturnEnd = true;
 			}

@@ -79,7 +79,7 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 		//above 14, dont spawn more, it just is not worth the extra lag it gives.
 		
 		//max is 14 players.
-		if(ScalingEnemies >= 14.0)
+		if(ScalingEnemies >= 14.0 || BetWar_Mode())
 			ScalingEnemies = 14.0;
 
 		ScalingEnemies *= zr_multi_scaling.FloatValue;
@@ -453,17 +453,21 @@ public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
 			{
 				donotprogress = true;
+				/*
 				if(EnemyNpcAliveStatic >= 1)
 				{
 					donotprogress = false;
 				}
+				*/
 			}
 			else
 			{
+				/*
 				if(EnemyNpcAliveStatic >= 1)
 				{
 					donotprogress = false;
 				}
+				*/
 			}
 			if(f_DelayNextWaveStartAdvancing < GetGameTime())
 			{

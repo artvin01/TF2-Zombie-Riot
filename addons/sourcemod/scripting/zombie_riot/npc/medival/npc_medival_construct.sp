@@ -205,6 +205,7 @@ methodmap MedivalConstruct < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable1, 16766720);
 		
 		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 

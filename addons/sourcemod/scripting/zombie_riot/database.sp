@@ -260,7 +260,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			tr.AddQuery(buffer);
 		}
 
-		Tutorial_ClientSetup(client, tutorial);
+		if(!BetWar_Mode())
+			Tutorial_ClientSetup(client, tutorial);
 		
 		if(results[2].FetchRow())
 		{
@@ -345,6 +346,9 @@ public void Loadout_DatabaseLoadFavorite(int client)
 	if(!Loadouts[client])
 		return;
 
+	if(BetWar_Mode())
+		return;
+		
 	int LengthIAm = Loadouts[client].Length;
 	char BufferString[255];
 	for(int i; i < LengthIAm; i++)

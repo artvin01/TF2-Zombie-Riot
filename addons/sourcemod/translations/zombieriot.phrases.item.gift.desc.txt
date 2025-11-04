@@ -121,6 +121,10 @@
 		"fr"		"Alliés de Interitus"
 		"it"		"Alleanze interitus"
 	}
+	"Necropolains"
+	{
+		"en"		"Necropolains"
+	}
 	"Mutations"
 	{
 		"en"		"Mutations"
@@ -2228,6 +2232,170 @@
 	{
 		"en"		"Super unit that takes 2 slot, when he has armor he heals and buff allies, when he loses the armor he uses a shotgun for high dmg at the cost of supporting"
 		"it"		"Super unità che occupa 2 slot, quando ha l'armatura cura e buffa gli alleati, quando perde l'armatura usa un fucile a pompa per un alto numero di dmg al costo del supporto"
+	}
+	"Basic Bones Desc"
+	{
+		"en"		"An average resident of Necropolis, who decided to join the Necropolain Armed Forces as an excuse to see the mortal realm one last time."
+	}
+	"Buffed Basic Bones Desc"
+	{
+		"en"		"A Basic Bones who has been augmented with necrotic energy. He's bigger, faster, and stronger, too."
+	}
+	"Beefy Bones Desc"
+	{
+		"en"		"Most Beefy Bones are deceased weightlifters, whose strength carried over into the afterlife.\nThey've always hated cardio, though, so they aren't very fast."
+	}
+	"Buffed Beefy Bones Desc"
+	{
+		"en"		"Even in death, they find ways to get stronger! They still hate cardio, though."
+	}
+	"Brittle Bones Desc"
+	{
+		"en"		"Best not to ponder why this Necropolain is so small. Even better not to consider why there are so many..."
+	}
+	"Buffed Brittle Bones Desc"
+	{
+		"en"		"Just when you thought they couldn't get faster..."
+	}
+	"Big Bones Desc"
+	{
+		"en"		"When he was alive, people would always laugh when he told them he was ''big boned''. Well, who's laughing now?"
+	}
+	"Buffed Big Bones Desc"
+	{
+		"en"		"• Explodes into a horde of weaker skeletons on death.\n \n\nThis is not actually one giant skeleton, but a shambling bone titan composed of several smaller skeletons working together."
+	}
+	"Calcium Criminal Desc"
+	{
+		"en"		"• Permanently transforms into a random Mob skeleton when buffed.\n \n\nOrganized crime nearly always ends in a terrible death. Just ask this guy, he didn't even last a week!"
+	}
+	"Mr. Molotov Desc"
+	{
+		"en"		"• Throws molotovs, which explode and light targets on fire.\n• Deals huge building damage.\n \n\nWhen the police came knocking to take down the mob's bootlegging operation, a lot of mobsters thought it would be clever\nto turn their illegal booze into impromptu illegal explosives. If the fire or smoke didn't get them, the mob themselves would for wasting their product."
+	}
+	"Rattler Desc"
+	{
+		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nDon't tell them they would have lived if they didn't waste all the ammo in their shootout with the cops."
+	}
+	"Hollow Hitman Desc"
+	{
+		"en"		"• Walks to the nearest target, then stops and fires an extremely powerful explosive bullet.\n• Projectiles predict their target's location.\n• Retreats after firing.\n \n\nThe mob hired a lot of these guys, and it was rare for them to live. Sometimes they'd botch their hit, but usually they'd succeed...\n...Only to be silenced by another hitman immediately after. It was a very vicious cycle."
+	}
+	"Bone Breaker Desc"
+	{
+		"en"		"• Transforms into Spinal Slugger when buffed.\n \n\nIs there any instrument of blunt violence which suits the mob better than a baseball bat?\nThey're threatening, they're effective, they're easy to use, and they're cheap!\nThat's what these guys think, at least."
+	}
+	"Spinal Slugger Desc"
+	{
+		"en"		"For as much as they love their bats, you'd expect Spinal Sluggers to have at least SOME love for baseball.\nTurns out, most of them don't even know what baseball is.\n''Baseball is a game?,'' asks one astonished Slugger, ''I thought that was the name of the company that makes these things.''"
+	}
+	"Godfather Grimme Desc"
+	{
+		"en"		"• Can fire both SMGs independently at different targets.\n• Can order a hit on a specific enemy, forcing all nearby NPC allies to target that enemy.\n• Has a heavy kick which deals knockback, and a dirty kick which stuns the target.\n \n\nOne of the Four Great Rulers of Necropolis.\nSome of his mobsters ran with him during their mortal lives, others joined him in Necropolis, all are loyal."
+	}
+	"Aleraiser Desc"
+	{
+		"en"		"• Tosses bottles of ale at allies, which explode, healing nearby allies with a chance to permanently buff them.\n• Enters a psychotic rampage when no non-healer allies are alive.\n \n\nThere's not a whole lot in this world that a pirate loves more than ale.\nEven in death, with no organs or tastebuds, they've found a way to enjoy it!"
+	}
+	"Brigadier Bones Desc"
+	{
+		"en"		"• Transforms into Boner Bomber when buffed.\n• Fires explosive cannonballs from a distance.\n• Will retreat if enemies get too close.\n• Deals huge damage to buildings.\n \n\nDespite the ''crazy barbarian'' image he projects in battle, Faux-Beard is a shockingly talented inventor.\nIt takes ingenuity to make a literal handcannon that can be wielded by a skeleton WITHOUT blowing them to bits."
+	}
+	"Boner Bomber Desc"
+	{
+		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Periodically fires a DEVASTATING giant cannonball.\n• Inflicts catastrophic building damage.\n• Will run you over.\n \n\nWhen one of his lads asked for a cannon capable of self-locomotion, Faux-Beard thought his crew were finally going insane due to scurvy.\nNever one to back down from a challenge, though, he built it, and it is a nightmare in battle."
+	}
+	"Buccaneer Bones Desc"
+	{
+		"en"		"• Transforms into Calcium Corsair when buffed.\n \n\nWhat they lack in trained swordsmanship, pirates more than make up for in boldness.\nThis typically results in the pirate's death in combat, but you can bet Faux-Beard's crew always took some of those filthy landlubbers down with them."
+	}
+	"Calcium Corsair Desc"
+	{
+		"en"		"• Enters a rampage when below half health, increasing speed, damage, and attack speed.\n \n\nEvery once in a while, one of Faux-Beard's lads would live through tens of battles. Even without professional training, it's impossible to see so much\ncombat without ever getting better at it. To these special few, dual-wielding swords comes as second-nature."
+	}
+	"Swashbuckler Skelebones Desc"
+	{
+		"en"		"• Transforms into Deadeye when buffed.\n• Approaches their target, then stops and unloads their entire clip when close enough.\n• Fires a shotgun blast of projectiles.\n• Retreats when out of ammo.\n \n\nNo pirate gang would be complete without flintlock!\nFaux-Beard's deranged crew tend to overload their guns.\n''More balls means more kills,'' they say, ''it's not that hard to understand.''"
+	}
+	"Deadeye Desc"
+	{
+		"en"		"• Approaches their target, then stops and fires a powerful explosive projectile when near.\n• Predicts their target's movement when firing.\n• Retreats after firing.\n \n\nSome of the marksmen in Faux-Beard's crew had the sense to actually LISTEN when he told them not to overload their guns.\nShockingly, these few tend to be far more accurate than the rest of the crew."
+	}
+	"Undead Deckhand Desc"
+	{
+		"en"		"• Permanently transforms into a random pirate skeleton when buffed.\n \n\nWhenever someone would surrender to Faux-Beard's crew in combat, they would be spared, then immediately recruited.\nThese poor fools would typically spend the rest of their very short futures assigned to cleaning the poop deck\nbefore dying in combat, never given any equipment until proving their loyalty in battle."
+	}
+	"Captain Faux-Beard, Terror of the Dead Sea Desc"
+	{
+		"en"		"• Can slam his anchor down, dealing huge damage within a short radius.\n• Can rapidly fire cannonballs.\n• Can throw his anchor, which bounces several times, dealing AOE damage and knockback.\n• Can rally his troops, healing and buffing them.\n \n\nOne of the Four Great Rulers of Necropolis.\nAs talented in the workshop as he is on the battlefield, Faux-Beard built his ship by himself."
+	}
+	"Spelleton Desc"
+	{
+		"en"		"• Transforms into Alakablaster when buffed.\n• Casts small fireballs from a distance.\n• Backs off if enemies get too close.\n \n\nNecropolis is an inherently magical society which simply could not exist without magic.\nMany Necropolains dedicate their afterlives to worshipping and researching this magic.\nThese guys are newbies, but they're on the right track!"
+	}
+	"Alakablaster Desc"
+	{
+		"en"		"• Charges up and casts a powerful explosive fireball.\n• Predicts their target's movement.\n• Backs off if enemies get too close.\n \n\nEven the most powerful sorcerers need to die some day, no matter how hard they try to avoid it.\nIn fact, most of them do! Why else would magic potions improve health?\nThese sorts of people are typically laughed at when they inevitably arrive in Necropolis."
+	}
+	"Bone Brewer Desc"
+	{
+		"en"		"• Tosses potions at nearby allies, which heal them with a small chance to permanently buff them.\n• Enters a psychotic rampage when all non-healer allies are dead.\n \n\nAlchemy is a difficult field, which draws people in with promises of gold, then crushes them under the weight of its complexity.\nSometimes, though, it just outright kills them when they accidentally make toxic gas. Whoops!"
+	}
+	"Fearsome Fool Desc"
+	{
+		"en"		"• Transforms into Servant of Mondo when buffed.\n• Juggles two bombs, which it will throw at the same target once it is holding both of them.\n• Deals huge building damage.\n \n\nNot all kings have the patience to recognize ''Jester's Privilege''.\nIn fact, none of them do if you ask one of these guys!\nThey don't mind, though. The afterlife has given them plenty of time to master juggling."
+	}
+	"Servant of Mondo Desc"
+	{
+		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Carries an enormous bomb, which it occasionally launches at its target.\n• Inflicts cataclysmic damage to EVERYTHING, especially buildings.\n \n\nOne of the blessed few who has been awarded a divine glimpse of the ancient elder god who awaits his turn with this world: MONDO.\nAt least, that's what he claims. Cultists believe in some crazy things these days..."
+	}
+	"Novice Necromancer Desc"
+	{
+		"en"		"• Transforms into Bringer of Bones when buffed.\n• Periodically casts necrotic energy from the sky, which summons Unpleasant Peasants.\n• Can only have 4 Peasants at once.\n \n\nDue to how Necropolis works, the art of necromancy, as is commonly understood, is impossible.\nIn reality, what we view as necromancy is merely a manifestation of one's arcane energy in the form of a living puppet."
+	}
+	"Bringer of Bones Desc"
+	{
+		"en"		"• Periodically casts necrotic energy from the sky, which summons Unpleasant Peasants.\n• Can only have 8 Peasants at once.\n \n\nSometimes, an Alakablaster will get bored of casting conventional spells, and will seek more bizarre ways to utilize their magical power.\nOr, they'll just be really, really lonely. Either way, they turn to necromancy."
+	}
+	"Unpleasant Peasant Desc"
+	{
+		"en"		"• Permanently transforms into a random medieval skeleton when buffed.\n \n\nThe humble peasant, a hard worker who loves his crops, loves his family, hates the plague, simple as."
+	}
+	"Blighted Bones Desc"
+	{
+		"en"		"• Transforms into Skeletal Saint when buffed.\n• Chooses a target ally and continually heals them.\n• Target is buffed while being healed.\n• Permanently goes crazy and starts casting spells at enemies when no non-healer allies are alive.\n \n\nThe plague killed a lot of people, and these guys saw it as a great opportunity for research.\nNow there's another plague killing a lot more people..."
+	}
+	"Profaned Priest Desc"
+	{
+		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Heals and buffs all allies within a large radius.\n• When all non-healer allies have died, starts chasing enemies and summoning devastating necrotic airstrikes.\n \n\nMany dedicated their lives to worshipping religion. They seldom agreed on which religion was ''the right one'',\nbut if they agreed on anything, none were expecting to show up in Necropolis after they died."
+	}
+	"Skeletal Squire Desc"
+	{
+		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep. Did it work out for him?\nWell, he's in the Necropolis Armed Forces now, so take a wild guess."
+	}
+	"Knightmare Desc"
+	{
+		"en"		"• Enters a rampage when below half health, increasing speed, damage, and attack speed.\n \n\nWhen a knight dies, he takes his nobility to the grave. And then he takes it to Necropolis, where he brags about it. Constantly.\nKnightmares are not very popular."
+	}
+	"Lordread, Royal Executioner of Necropolis Desc"
+	{
+		"en"		"• Melee attack is guaranteed to down you, and will halve your downed HP.\n• Will periodically spin wildly, dealing rapid damage and drawing enemies in.\n• When at low health, can call upon a storm of lightning which summons allies.\n \n\nOne of the Four Great Rulers of Necropolis.\nA master warlock wielding a 600-kilogram axe.\nLordread is responsible for destroying Necropolains infected by Chaos."
+	}
+	"The Reaper Desc"
+	{
+		"en"		"• Deals catastrophic damage with his melee attack, which can hit multiple targets.\n• Will teleport near a random player at certain damage thresholds.\n• Ignores buildings, and becomes faster the further away his target is.\n \n\nOne of the Four Great Rulers of Necropolis.\nUnlike his fellow Rulers, The Reaper refused SSB's offer to lead his own army.\nHe must be REALLY confident..."
+	}
+	"Supreme Spookmaster Bones Desc"
+	{
+		"en"		"The ruler of Necropolis, Eternal City of the Dead.\nSSB is seen by his subjects as a fair, noble, and affable ruler... so why is he trying so hard to kill the mercenaries?\nYou almost entirely wiped out the Xeno infection and have been fighting to keep the world safe.\nIf anything, SSB should be thanking you! Something seems wrong...\nHas a strange but friendly rivalry with Sensal."
+	}
+	"Supreme Spookmaster Bones, Magistrate of the Dead Desc"
+	{
+		"en"		"• Summons an army every time he loses 1/4 of his max HP.\n• Invulnerable while an army is active.\n \n\nWhenever someone dies, they show up in a long queue, stripped of their skin and turned into a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
+	}
+	"Supreme Spookmaster Bones, Eternal Master of the Damned Desc"
+	{
+		"en"		"SSB's job as ruler of the dead is really important, sure, but it gets really boring after the first couple million years.\nPoor guy doesn't even get holidays off; it's not like people magically stop dying on Christmas, after all.\nHe puts in all of this hard work to make Necropolis a good place, but the same few mortals keep coming back to life somehow.\nWhat a slap in the face! No wonder he snapped."
 	}
 	"Agent John Desc"
 	{

@@ -154,7 +154,7 @@ stock int ParticleEffectAt(float position[3], const char[] effectName, float dur
 	return particle;
 }
 
-stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0})
+stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iParent, const char[] szAttachment = "", float vOffsets[3] = {0.0,0.0,0.0}, bool start = true)
 {
 	int particle = CreateEntityByName("info_particle_system");
 
@@ -173,11 +173,13 @@ stock int ParticleEffectAt_Parent(float position[3], char[] effectName, int iPar
 		{
 			b_IsEntityAlwaysTranmitted[particle] = true;
 		}
-		DispatchSpawn(particle);
+
+		if (start)
+			DispatchSpawn(particle);
 
 		SetParent(iParent, particle, szAttachment, vOffsets);
 
-		if(effectName[0])
+		if(effectName[0] && start)
 		{
 			ActivateEntity(particle);
 			AcceptEntityInput(particle, "start");
@@ -3071,6 +3073,9 @@ int CountPlayersOnRed(int alive = 0, bool saved = false)
 //alot is  borrowed from CountPlayersOnRed
 float ZRStocks_PlayerScalingDynamic(float rebels = 0.5, bool IgnoreMulti = false, bool IgnoreLevelLimit = false)
 {
+	if(BetWar_Mode())
+		return 4.0;
+	
 	//dont be 0
 	float ScaleReturn = 0.01;
 	for(int client=1; client<=MaxClients; client++)
@@ -3202,7 +3207,17 @@ int inflictor = 0)
 	}
 	else //only nerf blue npc radius!
 	{
-		explosionRadius *= 0.90;
+		//explosionRadius *= 0.90;
+		float RangeBefore = explosionRadius;
+		explosionRadius -= 20.0;
+		//we dont want to use a % amount as it scales really stupidly high at high distances.
+
+		//we will instead use a flat reduction, this is half a player model of width, give or take, meaning if they stand inside the circle indicator
+		//somewhat halfway it shouldnt hit them,
+		
+		if(explosionRadius <= 80.0)
+			explosionRadius = RangeBefore;
+		//80 as a minimum distance here seems like a good number.
 		if(explosion_range_dmg_falloff != EXPLOSION_RANGE_FALLOFF)
 		{
 			explosion_range_dmg_falloff = 0.8;
@@ -3322,6 +3337,14 @@ int inflictor = 0)
 		maxtargetshit = 20; //we do not care.
 	}
 	
+	bool AdditionalDistanceCheck = false;
+	if(explosionRadius >= 850.0)
+	{
+		AdditionalDistanceCheck = true;
+		//at such high ranges, AOE checks in tf2 become very inaccurate and become more of a box, this was noticed with twirl's
+		//Fracture attack, it became so big that it started acting less like a circle, this aims to add a distance check ontop of the circle trace
+		//it may not be fully accurate anymore, but its the best we can do.
+	}
 	int length = HitEntitiesSphereExplosionTrace.Length;
 	for (int i = 0; i < length; i++)
 	{
@@ -3330,6 +3353,16 @@ int inflictor = 0)
 		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
 		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
 		//Save their distances.
+		if(AdditionalDistanceCheck)
+		{
+			if(distance[entity_traced] > (explosionRadius * explosionRadius))
+			{
+				//the distance that was calculated was bigger then the distance check, remove.
+				HitEntitiesSphereExplosionTrace.Erase(i);
+				length--;
+				continue;
+			}
+		}
 	}
 	
 	//do another check, this time we only need the amount of entities we actually hit.
@@ -5620,12 +5653,12 @@ stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
  * Spawns a 2-point particle (IE medigun beam, dispenser beam, etc) and connects it through 2 entities.
  * 
  * @param startEnt		The entity to start from.
- * @param startPoint	The point to attach the starting entity to.
+ * @param startPoint	The point to attach the starting entity to. Can be left blank to use WorldSpaceCenter.
  * @param startXOff		Starting point X-axis offset.
  * @param startYOff		Starting point Y-axis offset.
  * @param startZOff		Starting point Z-axis offset.
  * @param endEnt		The entity to end at.
- * @param endPoint		The point to attach the end entity to.
+ * @param endPoint		The point to attach the end entity to. Can be left blank to use WorldSpaceCenter.
  * @param endXOff		Ending point X-axis offset.
  * @param endYOff		Ending point Y-axis offset.
  * @param endZOff		Ending point Z-axis offset.
@@ -5635,14 +5668,28 @@ stock float MaxNumBuffValue(float start, float max = 1.0, float valuenerf)
  * @param duration		The duration of the effect. <= 0.0: infinite.
  */
 #if defined ZR
-stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], float startXOff, float startYOff, float startZOff, int endEnt, char endPoint[255], float endXOff, float endYOff, float endZOff, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
+stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255] = "", float startXOff = 0.0, float startYOff = 0.0, float startZOff = 0.0, int endEnt = -1, char endPoint[255] = "", float endXOff = 0.0, float endYOff = 0.0, float endZOff = 0.0, char effect[255], int &returnStart, int &returnEnd, float duration = 0.0)
 {
-	float startPos[3], endPos[3];
-	WorldSpaceCenter(startEnt, startPos);
-	WorldSpaceCenter(endEnt, endPos);
+	float startPos[3], endPos[3], trash[3];
+	if (!StrEqual(startPoint, ""))
+		GetAttachment(startEnt, startPoint, startPos, trash);
+	else
+		WorldSpaceCenter(startEnt, startPos);
 
-	int particle = ParticleEffectAtOcean(startPos, effect, duration, false);
-	int particle2 = ParticleEffectAtOcean(endPos, effect, duration, false);
+	if (!StrEqual(endPoint, ""))
+		GetAttachment(endEnt, endPoint, endPos, trash);
+	else
+		WorldSpaceCenter(endEnt, endPos);
+
+	//int particle = ParticleEffectAtOcean(startPos, effect, duration, false);
+	//int particle2 = ParticleEffectAtOcean(endPos, effect, duration, false);
+	int particle = ParticleEffectAt_Parent(startPos, effect, startEnt, startPoint, _, false);
+	int particle2 = ParticleEffectAt_Parent(endPos, effect, endEnt, endPoint, _, false);
+	if (duration > 0.0)
+	{
+		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+	}
 
 	float offsets[3];
 	offsets[0] = startXOff;
@@ -5664,6 +5711,88 @@ stock void AttachParticle_ControlPoints(int startEnt, char startPoint[255], floa
 	returnStart = particle;
 	returnEnd = particle2;
 }
+
+stock void GetPointFromAngles(float startLoc[3], float angles[3], float distance, float output[3], TraceEntityFilter filter, int traceFlags)
+{
+	float endLoc[3];
+	
+	TR_TraceRayFilter(startLoc, angles, traceFlags, RayType_Infinite, filter);
+	TR_GetEndPosition(endLoc);
+	constrainDistance(startLoc, endLoc, GetVectorDistance(startLoc, endLoc), distance);
+	output = endLoc;
+}
+
+stock void SpawnBeam_Vectors(float StartLoc[3], float EndLoc[3], float beamTiming, int r, int g, int b, int a, int modelIndex, float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, int target = -1)
+{
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = a;
+	
+	TE_SetupBeamPoints(StartLoc, EndLoc, modelIndex, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
+	
+	if (!IsValidClient(target))
+	{
+		TE_SendToAll();
+	}
+	else
+	{
+		TE_SendToClient(target);
+	}
+}
+
+/**
+ * Spawns the given effect multiple times in a ring surrounding the starting position.
+ */
+stock void SpawnParticlesInRing(float startPos[3], float radius, const char[] effect, int count, float duration = 0.2)
+{
+	for (float i = 0.0; i < 360.0; i += (360.0 / float(count)))
+	{
+		float spawnAng[3], endPos[3], Direction[3];
+		spawnAng[0] = 0.0;
+		spawnAng[1] = i;
+		spawnAng[2] = 0.0;
+
+		GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, radius);
+		AddVectors(startPos, Direction, endPos);
+
+		ParticleEffectAt(endPos, effect, duration);
+	}
+}
+
+/**
+ * Spawns the given effect multiple times in a ring surrounding the starting position, and returns all of the particles spawned by this in an ArrayList.
+ */
+stock ArrayList SpawnParticlesInRing_Return(float startPos[3], float radius, const char[] effect, int count, float duration = 2.0, bool ListShouldBeRefsAndNotIndexes = false)
+{
+	ArrayList returnValue = new ArrayList(255);
+
+	for (float i = 0.0; i < 360.0; i += (360.0 / float(count)))
+	{
+		float spawnAng[3], endPos[3], Direction[3];
+		spawnAng[0] = 0.0;
+		spawnAng[1] = i;
+		spawnAng[2] = 0.0;
+
+		GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, radius);
+		AddVectors(startPos, Direction, endPos);
+
+		int particle = ParticleEffectAt(endPos, effect, duration);
+		if (IsValidEntity(particle))
+		{
+			if (ListShouldBeRefsAndNotIndexes)
+				PushArrayCell(returnValue, EntIndexToEntRef(particle));
+			else
+				PushArrayCell(returnValue, particle);
+		}
+	}
+
+	return returnValue;
+}
+
 #endif
 
 stock int FindEntityByNPC(int &i)
@@ -5885,4 +6014,18 @@ bool AntiCommandAbuse_MenuFix(Menu menu, MenuAction action, int choice)
 		return true;
 
 	return false;
+}
+
+public float GetDistanceToGround(float pos[3])
+{
+	float angles[3], otherLoc[3];
+	angles[0] = 90.0;
+	angles[1] = 0.0;
+	angles[2] = 0.0;
+	
+	Handle trace = TR_TraceRayFilterEx(pos, angles, MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
+	TR_GetEndPosition(otherLoc, trace);
+	delete trace;
+	
+	return GetVectorDistance(pos, otherLoc);
 }

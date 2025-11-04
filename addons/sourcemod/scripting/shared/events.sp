@@ -251,6 +251,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	Construction_RoundEnd();
+	BetWar_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
@@ -307,6 +308,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 	  	//DEFAULTS
 		
+		if(!b_AntiLateSpawn_Allow[client])
+			if(TeutonType[client] == TEUTON_NONE)
+				TeutonType[client] = TEUTON_DEAD;
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 

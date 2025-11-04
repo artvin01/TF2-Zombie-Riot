@@ -189,7 +189,7 @@ methodmap BossReila < CClotBody
 		npc.m_flSpawnBallsCD = GetGameTime() + 5.0;
 		npc.m_flSpawnBallsDoingCD = 0.0;
 		
-
+		
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -256,6 +256,11 @@ methodmap BossReila < CClotBody
 
 		if(StrContains(data, "force_final_battle") != -1)
 		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 60.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 1.0;
+			
 			i_RaidGrantExtra[npc.index] = 2;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/reila_battle_ost.mp3");

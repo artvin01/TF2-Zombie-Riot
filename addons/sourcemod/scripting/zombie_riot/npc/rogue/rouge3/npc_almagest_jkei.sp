@@ -293,6 +293,10 @@ methodmap AlmagestJkei < CClotBody
 		
 		if(StrContains(data, "force_final_battle") != -1)
 		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidModeTime = GetGameTime(npc.index) + 9000.0;
+			RaidAllowsBuildings = true;
+			RaidModeScaling = 0.0;
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/rogue3_almagestboss.mp3");
 			music.Time = 101;

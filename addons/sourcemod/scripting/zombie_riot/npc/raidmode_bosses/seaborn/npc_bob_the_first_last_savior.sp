@@ -1504,6 +1504,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.PlayRangedSound();
 						npc.StopPathing();
 						npc.m_bisWalking = false;
+						npc.m_iAnimationState = -1; //reset anim state so they can replay the anim if it was played before
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 8;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1517,6 +1518,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.StopPathing();
 						npc.PlaySkyShieldSound();
 						npc.m_bisWalking = false;
+						npc.m_iAnimationState = -1; //reset anim state so they can replay the anim if it was played before
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 10;
 						npc.m_flAttackHappens = gameTime + 1.0;

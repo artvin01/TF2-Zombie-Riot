@@ -1488,7 +1488,10 @@ static void Apply_Sickness(int iNPC, int Target)
 	//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, end_point);
 
 	float Thickness = 6.0;
-	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, color, 1, 0);
+	int Tempcolor[4];
+	Tempcolor = color;
+	Tempcolor [3] = 80;
+	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, Tempcolor, 1, 0);
 	TE_SendToAll();
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, color, 1, 0);
 	TE_SendToAll();
@@ -1551,7 +1554,10 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	float dmg 		= data.ReadFloat();
 
 	float Thickness = 6.0;
-	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
+	int Tempcolor[4];
+	Tempcolor = color;
+	Tempcolor [3] = 80;
+	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.25, Thickness, 0.75, Tempcolor, 1, 0);
 	TE_SendToAll();
 
 	
@@ -1676,7 +1682,7 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 		Ruina_AOE_Add_Mana_Sickness(end_point, iNPC, Radius, Sickness_Multi, Sickness_flat,Override);
 
 	float Thickness = 6.0;
-	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
+	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.25, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
 
 
@@ -1688,9 +1694,9 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 		
 	int laser;
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
-	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
-	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
 	int particle = ParticleEffectAt(Sky_Loc, "kartimpacttrail", 1.0);
 	SetEdictFlags(particle, (GetEdictFlags(particle) | FL_EDICT_ALWAYS));	

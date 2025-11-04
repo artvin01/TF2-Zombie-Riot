@@ -3978,6 +3978,170 @@
 		"en"	"Fallen. to the void."
 		"it"	"Caduto. nel vuoto."
 	}
+	"Basic Bones"
+	{
+		"en"	"Basic Bones"
+	}
+	"Buffed Basic Bones"
+	{
+		"en"	"Buffed Basic Bones"
+	}
+	"Beefy Bones"
+	{
+		"en"	"Beefy Bones"
+	}
+	"Buffed Beefy Bones"
+	{
+		"en"	"Buffed Beefy Bones"
+	}
+	"Big Bones"
+	{
+		"en"	"Big Bones"
+	}
+	"Buffed Big Bones"
+	{
+		"en"	"Buffed Big Bones"
+	}
+	"Brittle Bones"
+	{
+		"en"	"Brittle Bones"
+	}
+	"Buffed Brittle Bones"
+	{
+		"en"	"Buffed Brittle Bones"
+	}
+	"Spelleton"
+	{
+		"en"	"Spelleton"
+	}
+	"Alakablaster"
+	{
+		"en"	"Alakablaster"
+	}
+	"Profaned Priest"
+	{
+		"en"	"Profaned Priest"
+	}
+	"Blighted Bones"
+	{
+		"en"	"Blighted Bones"
+	}
+	"Novice Necromancer"
+	{
+		"en"	"Novice Necromancer"
+	}
+	"Bringer of Bones"
+	{
+		"en"	"Bringer of Bones"
+	}
+	"Brigadier Bones"
+	{
+		"en"	"Brigadier Bones"
+	}
+	"Boner Bomber"
+	{
+		"en"	"Boner Bomber"
+	}
+	"Buccaneer Bones"
+	{
+		"en"	"Buccaneer Bones"
+	}
+	"Calcium Corsair"
+	{
+		"en"	"Calcium Corsair"
+	}
+	"Undead Deckhand"
+	{
+		"en"	"Undead Deckhand"
+	}
+	"Aleraiser"
+	{
+		"en"	"Aleraiser"
+	}
+	"Bone Brewer"
+	{
+		"en"	"Bone Brewer"
+	}
+	"Unpleasant Peasant"
+	{
+		"en"	"Unpleasant Peasant"
+	}
+	"Skeletal Squire"
+	{
+		"en"	"Skeletal Squire"
+	}
+	"Knightmare"
+	{
+		"en"	"Knightmare"
+	}
+	"Fearsome Fool"
+	{
+		"en"	"Fearsome Fool"
+	}
+	"Servant of Mondo"
+	{
+		"en"	"Servant of Mondo"
+	}
+	"Mr. Molotov"
+	{
+		"en"	"Mr. Molotov"
+	}
+	"Rattler"
+	{
+		"en"	"Rattler"
+	}
+	"Hollow Hitman"
+	{
+		"en"	"Hollow Hitman"
+	}
+	"Bone Breaker"
+	{
+		"en"	"Bone Breaker"
+	}
+	"Spinal Slugger"
+	{
+		"en"	"Spinal Slugger"
+	}
+	"Calcium Criminal"
+	{
+		"en"	"Calcium Criminal"
+	}
+	"Swashbuckler Skelebones"
+	{
+		"en"	"Swashbuckler Skelebones"
+	}
+	"Deadeye"
+	{
+		"en"	"Deadeye"
+	}
+	"The Reaper"
+	{
+		"en"	"The Reaper"
+	}
+	"Godfather Grimme"
+	{
+		"en"	"Godfather Grimme, Kingpin of Calcium"
+	}
+	"Captain Faux-Beard, Terror of the Dead Sea"
+	{
+		"en"	"Captain Faux-Beard, Terror of the Dead Sea"
+	}
+	"Lordread, Royal Executioner of Necropolis"
+	{
+		"en"	"Lordread, Royal Executioner of Necropolis"
+	}
+	"Supreme Spookmaster Bones"
+	{
+		"en"	"Supreme Spookmaster Bones"
+	}
+	"Supreme Spookmaster Bones, Magistrate of the Dead"
+	{
+		"en"	"Supreme Spookmaster Bones, Magistrate of the Dead"
+	}
+	"Supreme Spookmaster Bones, Eternal Master of the Damned"
+	{
+		"en"	"Supreme Spookmaster Bones, Eternal Master of the Damned"
+	}
 	"Sphynx"
 	{
 		"en" 		"Sphynx"

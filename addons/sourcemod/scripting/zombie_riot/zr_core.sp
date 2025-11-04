@@ -269,9 +269,10 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Aperture,
 	Type_Mutation,
-	Type_Curtain
+	Type_Aperture,
+	Type_Curtain,
+	Type_Necropolain
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -485,6 +486,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "steamworks.sp"
 #include "zsclassic.sp"
 #include "construction.sp"
+#include "betting.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -709,6 +711,7 @@ void ZR_PluginStart()
 	SteamWorks_PluginStart();
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
+	BetWar_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -752,6 +755,7 @@ void ZR_MapStart()
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
+	BetWar_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -2580,7 +2584,7 @@ void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false)
 {
 	//only set false here
 	if(!setmusicfalse)
@@ -2593,6 +2597,10 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		CheckClientLateJoin(client, false);
+		bool ClientWasInWave = false;
+		if(b_HasBeenHereSinceStartOfWave[client])
+			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
@@ -2631,18 +2639,16 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 
 			DoOverlay(client, "", 2);
 			if(raidspawned)
-				if(!b_HasBeenHereSinceStartOfWave[client])
+				if(!ClientWasInWave)
 					continue;
 					
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
 			if(GetClientTeam(client)==2)
 			{
-					
 				if(TeutonType[client] != TEUTON_WAITING)
 				{
-					if(!raidspawned)
-						b_HasBeenHereSinceStartOfWave[client] = true;
+					b_HasBeenHereSinceStartOfWave[client] = true;
 				}
 				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
 				{
@@ -2677,13 +2683,13 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!raidspawned)
+					if(!raidspawned && !ForceFullHealth)
 					{
 						SetEntityHealth(client, 50);
 						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 					}
 				}
-				if(raidspawned)
+				if(raidspawned || ForceFullHealth)
 				{
 					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
 					{

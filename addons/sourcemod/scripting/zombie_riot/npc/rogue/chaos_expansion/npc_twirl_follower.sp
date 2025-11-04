@@ -362,6 +362,7 @@ methodmap TwirlFollower < CClotBody
 		float flPos[3], flAng[3];
 		npc.GetAttachment("head", flPos, flAng);	
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 16777215);
 		
 		npc.m_fbGunout = true;
 		SetVariantInt(RUINA_WINGS_4);

@@ -3028,6 +3028,12 @@ void Store_Menu(int client)
 	}
 	else if(StoreItems && !IsVoteInProgress() && !Waves_CallVote(client))
 	{
+		if(BetWar_Mode())
+		{
+			RTSCamera_ShowMenu(client, 0);
+			return;
+		}
+
 		NPCOnly[client] = 0;
 		
 		if(ClientTutorialStep(client) == 1)
@@ -3078,32 +3084,40 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 	}
 }*/
 
-void CheckClientLateJoin(int client)
+
+int PassClientBoughtLateGame(int client)
 {
-	if(!b_AntiLateSpawn_Allow[client])
+
+	int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.5);
+	if(CashUsedMust >= 40000)
 	{
-		//they joined late, make sure they buy something.
-
-		int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.5);
-		if(CashUsedMust >= 40000)
-		{
-			//if they spend atleast 40k, allow at all times, this is beacuse there are sometimes wavesets
-			//or meme modes that give like a googleplex cash
-			CashUsedMust = 40000;
-		}
-
-		//enough cash was thrown away.
-		if(CashSpentTotal[client] >= CashUsedMust)
-		{
-			b_AntiLateSpawn_Allow[client] = true;
-			//allow them to play.
-			if(!Waves_Started())
-				DHook_RespawnPlayer(client);
-			else if(Waves_InSetup())
-				DHook_RespawnPlayer(client);
-
-		}
+		//if they spend atleast 40k, allow at all times, this is beacuse there are sometimes wavesets
+		//or meme modes that give like a googleplex cash
+		CashUsedMust = 40000;
 	}
+
+	//enough cash was thrown away.
+	return (CashUsedMust - CashSpentTotal[client]);
+}
+
+void CheckClientLateJoin(int client, bool RespawnClient = true)
+{
+	if(b_AntiLateSpawn_Allow[client])
+		return;
+	//they joined late, make sure they buy something.
+
+	if(PassClientBoughtLateGame(client) > 0)
+		return;
+	b_AntiLateSpawn_Allow[client] = true;
+	//allow them to play.
+	if(!RespawnClient)
+		return;
+		
+	if(!Waves_Started())
+		DHook_RespawnPlayer(client);
+	else if(Waves_InSetup())
+		DHook_RespawnPlayer(client);
+
 }
 static void MenuPage(int client, int section)
 {
