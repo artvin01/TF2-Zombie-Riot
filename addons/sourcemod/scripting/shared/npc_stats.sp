@@ -88,6 +88,15 @@ Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 Function FuncShowInteractHud[MAXENTITIES];
 
+enum struct WearableColor
+{
+	int color;
+	int wearableRef;
+	ArrayList entities;
+}
+
+ArrayList h_ColoredWearables;
+
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 #define NPC_DEFAULT_YAWRATE 225.0
@@ -267,6 +276,12 @@ static char m_cGibModelSkeleton[][] = {
     "models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
     "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
 };
+
+void NPCStats_PluginStart()
+{
+	h_ColoredWearables = new ArrayList(sizeof(WearableColor));
+	CreateTimer(5.0, NPCStats_Timer_HandlePaintedWearables, _, TIMER_REPEAT);
+}
 
 void OnMapStart_NPC_Base()
 {
@@ -11933,21 +11948,6 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
 }
 
-
-/*
-ArrayList h_Arraylist_Colour;
-enum struct ArraylistColours
-{
-	int ColourHex;
-	//save the colour that we want to use
-	int RefWearable;
-	//save the wearable ID, incase we already have said colour
-
-  	ArrayList EntRefs;
-	//save all ent'refs that use this colour, if none remain, kill the colour and its stuff.
-}
-*/
-
 /*
 https://steamcommunity.com/sharedfiles/filedetails/?id=1911160067
 
@@ -12029,20 +12029,74 @@ An Air of Debonair (RED)
 An Air of Debonair (BLU)
 2636109
 */
-int NpcColourCosmetic_ViaPaint(int entity, int color)
+int NpcColourCosmetic_ViaPaint(int entity, int color, bool halloweenSpell = false)
 {
+	// To paint NPC cosmetics a certain color, we need an econ entity painted this color, then make the econ entity own the NPC cosmetic entity
+	// To avoid creating many edicts, only create one econ entity per color, then reuse it in case other cosmetics use the same color
+	
+	WearableColor wearableColor;
+	int index = h_ColoredWearables.FindValue(color);
+	if (index != -1)
+	{
+		// Found an econ entity using this color, reuse it
+		h_ColoredWearables.GetArray(index, wearableColor);
+		
+		SetEntityOwner(entity, wearableColor.wearableRef);
+		wearableColor.entities.Push(EntIndexToEntRef(entity));
+		return wearableColor.wearableRef;
+	}
+	
+	// We have yet to use this color, create an econ entity for this
 	int Wearable = CreateEntityByName("tf_wearable");
 	if(Wearable == -1)
 		return -1;
-
 	
 	SetEntProp(Wearable, Prop_Send, "m_bInitialized", true);
-	TF2Attrib_SetByName(Wearable, "set item tint RGB", float(color));
+	TF2Attrib_SetByName(Wearable, halloweenSpell ? "SPELL: set item tint RGB" : "set item tint RGB", float(color));
+	SetEntityOwner(entity, Wearable);
 	DispatchSpawn(Wearable);
-	ActivateEntity(Wearable);
-	SetEntityOwner(entity, Wearable);	
+	ActivateEntity(Wearable);	
 	SetEdictFlags(Wearable, GetEdictFlags(Wearable) | FL_EDICT_ALWAYS);
 	b_IsEntityAlwaysTranmitted[Wearable] = true;
 	
+	wearableColor.color = color;
+	wearableColor.wearableRef = EntIndexToEntRef(Wearable);
+	
+	wearableColor.entities = new ArrayList();
+	wearableColor.entities.Push(EntIndexToEntRef(entity));
+	
+	h_ColoredWearables.PushArray(wearableColor);
+	
 	return Wearable;
+}
+
+Action NPCStats_Timer_HandlePaintedWearables(Handle timer)
+{
+	// Check if each color is still being used by a cosmetic
+	for (int i = h_ColoredWearables.Length - 1; i >= 0; i--)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		
+		bool foundValidEntity;
+		
+		// This color is still being used, but are the cosmetics in here still valid?
+		for (int j = wearableColor.entities.Length - 1; j >= 0; j--)
+		{
+			if (IsValidEntity(wearableColor.entities.Get(j)))
+				foundValidEntity = true;
+			else
+				wearableColor.entities.Erase(j);
+		}
+		
+		// None of the cosmetics using this color are valid, we can erase this color from the list
+		if (!foundValidEntity)
+		{
+			RemoveEntity(wearableColor.wearableRef);
+			delete wearableColor.entities;
+			h_ColoredWearables.Erase(i);
+		}
+	}
+	
+	return Plugin_Continue;
 }

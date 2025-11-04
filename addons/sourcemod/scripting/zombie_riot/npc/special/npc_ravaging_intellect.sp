@@ -61,7 +61,7 @@ static const char g_PlayTeleportAlly[][] =
 	"weapons/teleporter_send.wav",
 };
 
-#define RAVANGING_INTELLECT_PAINT 5801377
+#define RAVANGING_INTELLECT_PAINT 3 // 3 = Spectral Spectrum
 
 static float MarkAreaForBuff[3];
 static float MarkAreaForTeleport[3];
@@ -237,15 +237,14 @@ methodmap RavagingIntellect < CClotBody
 		npc.m_flWaveScale *= MinibossScalingReturn();
 
 		npc.StartPathing();
+		
+		// The spectral spectrum spell paint's team colors depend on the cosmetic's team
 		int PaintWearable;
-		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable2, RAVANGING_INTELLECT_PAINT);
-		TF2Attrib_SetByName(PaintWearable, "SPELL: set item tint RGB", float(3));
+		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable2, RAVANGING_INTELLECT_PAINT, true);
 		SetTeam(PaintWearable, 3);
-		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable3, RAVANGING_INTELLECT_PAINT);
-		TF2Attrib_SetByName(PaintWearable, "SPELL: set item tint RGB", float(3));
+		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable3, RAVANGING_INTELLECT_PAINT, true);
 		SetTeam(PaintWearable, 3);
-		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable4, RAVANGING_INTELLECT_PAINT);
-		TF2Attrib_SetByName(PaintWearable, "SPELL: set item tint RGB", float(3));
+		PaintWearable = NpcColourCosmetic_ViaPaint(npc.m_iWearable4, RAVANGING_INTELLECT_PAINT, true);
 		SetTeam(PaintWearable, 3);
 
 
