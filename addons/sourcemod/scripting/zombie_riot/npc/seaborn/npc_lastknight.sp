@@ -365,7 +365,7 @@ public void LastKnight_ClotThink(int iNPC)
 		{
 			if(npc.m_iPhase == 2)
 			{
-				if(distance < 8000.0)
+				if(distance < 10000.0)
 				{
 					int target = Can_I_See_Enemy_Only(npc.index, npc.m_iTarget);
 					if(IsValidEntity(target))
@@ -496,6 +496,11 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			char buffer[36];
 			if(GetEntityClassname(weapon, buffer, sizeof(buffer)) && !StrContains(buffer, "tf_weap"))
 				ApplyTempAttrib(weapon, 6, 1.2, npc.m_iPhase ? 2.0 : 1.0);
+		}
+		else if(attacker > MaxClients)
+		{
+			if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
+				Cryo_FreezeZombie(npc.index, attacker, npc.m_iPhase ? 1 : 0);
 		}
 	}
 	else if(attacker > MaxClients)

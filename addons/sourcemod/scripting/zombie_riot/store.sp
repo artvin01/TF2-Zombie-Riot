@@ -3086,11 +3086,9 @@ void Store_OpenGiftStore(int client, int entity, int price, bool barney)
 	}
 }*/
 
-void CheckClientLateJoin(int client, bool RespawnClient = true)
+
+int PassClientBoughtLateGame(int client)
 {
-	if(b_AntiLateSpawn_Allow[client])
-		return;
-	//they joined late, make sure they buy something.
 
 	int CashUsedMust = RoundToNearest(float(CurrentCash) * 0.5);
 	if(CashUsedMust >= 40000)
@@ -3101,9 +3099,17 @@ void CheckClientLateJoin(int client, bool RespawnClient = true)
 	}
 
 	//enough cash was thrown away.
-	if(CashSpentTotal[client] < CashUsedMust)
-		return;
+	return (CashUsedMust - CashSpentTotal[client]);
+}
 
+void CheckClientLateJoin(int client, bool RespawnClient = true)
+{
+	if(b_AntiLateSpawn_Allow[client])
+		return;
+	//they joined late, make sure they buy something.
+
+	if(PassClientBoughtLateGame(client) > 0)
+		return;
 	b_AntiLateSpawn_Allow[client] = true;
 	//allow them to play.
 	if(!RespawnClient)

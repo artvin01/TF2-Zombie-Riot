@@ -780,7 +780,7 @@ public void Skull_MoveToTargetPosition(int ent, int client)
 	if (ent <= MaxClients || ent > 2048)
 		return;
 	
-	if (!IsValidEntity(ent))
+	if (!IsEntityAlive(ent))
 		return;
 	
 	float DroneLoc[3], Velocity[3], Angles[3];

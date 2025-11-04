@@ -269,9 +269,10 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Aperture,
 	Type_Mutation,
-	Type_Curtain
+	Type_Aperture,
+	Type_Curtain,
+	Type_Necropolain
 }
 
 //int Bob_To_Player[MAXENTITIES];

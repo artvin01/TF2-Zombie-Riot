@@ -1022,6 +1022,10 @@
 		"en"		"Behind you."
 		"it"		"Dietro di voi."
 	}
+	"SSB Teleport Warning"
+	{
+		"en"		"YOU'RE BONED!"
+	}
 	"Rusty Ability Blocked"
 	{
 		"en"		"You can't do that right now!"
@@ -4140,6 +4144,14 @@
 		"chi"	"准备迎接一场全面的战争。记得先处理掉他的军队！"
 		"it"	"Ordine Lore: (4) Combatti contro di lui e il suo esercito che si riproduce rapidamente, uccidi l'esercito per primo ogni volta che si presenta!"
 	}
+	"Bone Zone Desc"
+	{
+		"en"	"The armies of Necropolis are attacking, send them back to the underworld before they buff themselves!"
+	}
+	"SSB Desc"
+	{
+		"en"	"The God of the Dead has finally lost it, and now he wants to eradicate all life on Earth so that he never has to work again - stop him!"
+	}
 	"Expidonsa Desc"
 	{
 		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"
@@ -4839,7 +4851,8 @@
 	}
 	"Latejoin Hint"
 	{
-		"en"		"You joined a round in process.\nBuy equipment's to be able to play.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but you got a little cash boost."
+		"#format"	"{1:d}"
+		"en"		"You joined a round in progress.\nBuy Equipment and use [{1:d}] more Cash to qualify.\nYou have access to upgrade your current weapons in your store.\nSales are ignored, but got extra cash."
 	}
 	"No Attack Info"
 	{

@@ -311,6 +311,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 	  	//DEFAULTS
 		
+		if(!b_AntiLateSpawn_Allow[client])
+			if(TeutonType[client] == TEUTON_NONE)
+				TeutonType[client] = TEUTON_DEAD;
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 

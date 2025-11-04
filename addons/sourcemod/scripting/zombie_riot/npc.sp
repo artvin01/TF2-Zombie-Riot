@@ -254,11 +254,7 @@ void NPC_ConfigSetup()
 	
 	Soldier_Barrager_OnMapStart_NPC();
 	The_Shit_Slapper_OnMapStart_NPC();
-	/*
-	BasicBones_OnMapStart_NPC();
-	BeefyBones_OnMapStart_NPC();
-	BrittleBones_OnMapStart_NPC();
-	BigBones_OnMapStart_NPC();*/
+	
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
 	AlliedKiryuVisualiserAbility_OnMapStart_NPC();
 	AlliedRitualistAbility_OnMapStart_NPC();
@@ -827,6 +823,7 @@ void NPC_ConfigSetup()
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
+
 	FinalHunter_Setup();
 	KahmlsteinFollower_Setup();
 	Vhxis_OnMapStart_NPC();
@@ -1001,6 +998,7 @@ void NPC_ConfigSetup()
 	Construction_Raid_Zilius_OnMapStart();
 	ZeinaPrisoner_OnMapStart_NPC();
 
+
 	//Aperture
 	ApertureCombatant_OnMapStart_NPC();
 	ApertureShotgunner_OnMapStart_NPC();
@@ -1097,6 +1095,47 @@ void NPC_ConfigSetup()
 	ReilaFollower_Setup();
 	Umbral_Automaton_OnMapStart_NPC();
 	OmegaFollower_Setup();
+	
+	#if defined BONEZONE_BASE
+	BasicBones_OnMapStart_NPC();
+	BeefyBones_OnMapStart_NPC();
+	BrittleBones_OnMapStart_NPC();
+	BigBones_OnMapStart_NPC();
+
+	CriminalBones_OnMapStart_NPC();
+	SluggerBones_OnMapStart_NPC();
+	RattlerBones_OnMapStart_NPC();
+	MolotovBones_OnMapStart_NPC();
+	Godfather_OnMapStart_NPC();
+
+	DeckhandBones_OnMapStart_NPC();
+	PirateBones_OnMapStart_NPC();
+	FlintlockBones_OnMapStart_NPC();
+	BuccaneerBones_OnMapStart_NPC();
+	AleraiserBones_OnMapStart_NPC();
+	Captain_OnMapStart_NPC();
+
+	PeasantBones_OnMapStart_NPC();
+	SquireBones_OnMapStart_NPC();
+	ArchmageBones_OnMapStart_NPC();
+	JesterBones_OnMapStart_NPC();
+	NecromancerBones_OnMapStart_NPC();
+	SaintBones_OnMapStart_NPC();
+	AlchemistBones_OnMapStart_NPC();
+	Lordread_OnMapStart_NPC();
+
+	GrimReaper_OnMapStart_NPC();
+	SupremeSpookmasterBones_OnMapStart_NPC();
+	SSBChair_OnMapStart_NPC();
+	#endif
+}
+
+void NPC_MapEnd()
+{
+	#if defined BONEZONE_BASE
+	SSB_DeleteAbilities();
+	SSBChair_DeleteAbilities();
+	#endif
 	VhxisFollower_Setup();
 	Shadow_FloweringDarkness_OnMapStart_NPC();
 	Shadowing_Darkness_Boss_OnMapStart_NPC();
@@ -2034,6 +2073,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/npc_rogue_condition.sp"
 #include "npc/rogue/chaos/npc_goggles_follower.sp"
 #include "npc/rogue/chaos/npc_thehunter.sp"
+
 #include "npc/rogue/chaos/npc_finalhunter.sp"
 #include "npc/rogue/chaos/npc_kahmlstein_follower.sp"
 #include "npc/rogue/chaos/npc_chaos_mage.sp"
@@ -2053,6 +2093,40 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/rogue/chaos_expansion/npc_hallam_great_demon.sp"
 #include "npc/rogue/chaos_expansion/npc_Ihanal_demon_whisperer.sp"
 #include "npc/rogue/chaos_expansion/npc_majorvoided.sp"
+
+
+#if defined BONEZONE_BASE
+#include "npc/bonezone/wave15/npc_basicbones.sp"
+#include "npc/bonezone/wave15/npc_beefybones.sp"
+#include "npc/bonezone/wave15/npc_brittlebones.sp"
+#include "npc/bonezone/wave15/npc_bigbones.sp"
+//////
+#include "npc/bonezone/wave30/npc_mrmolotov.sp"
+#include "npc/bonezone/wave30/npc_rattler.sp"
+#include "npc/bonezone/wave30/npc_slugger.sp"
+#include "npc/bonezone/wave30/npc_criminal.sp"
+#include "npc/bonezone/wave30/npc_boss_godfather.sp"
+//////
+#include "npc/bonezone/wave45/npc_buccaneerbones.sp"
+#include "npc/bonezone/wave45/npc_calciumcorsair.sp"
+#include "npc/bonezone/wave45/npc_undeaddeckhand.sp"
+#include "npc/bonezone/wave45/npc_aleraiser.sp"
+#include "npc/bonezone/wave45/npc_flintlock.sp"
+#include "npc/bonezone/wave45/npc_boss_captain.sp"
+//////
+#include "npc/bonezone/wave60/npc_archmage.sp"
+#include "npc/bonezone/wave60/npc_necromancer.sp"
+#include "npc/bonezone/wave60/npc_skeletalsaint.sp"
+#include "npc/bonezone/wave60/npc_brewer.sp"
+#include "npc/bonezone/wave60/npc_squire.sp"
+#include "npc/bonezone/wave60/npc_jester.sp"
+#include "npc/bonezone/wave60/npc_peasant.sp"
+#include "npc/bonezone/wave60/npc_boss_executioner.sp"
+//////
+#include "npc/raidmode_bosses/ssb/npc_ssb.sp"
+#include "npc/raidmode_bosses/ssb/npc_ssb_finale_phase1.sp" 
+#include "npc/special/npc_reaper.sp"
+#endif
 
 #include "npc/mutations/truesurvival/npc_nightmare.sp"
 #include "npc/mutations/truesurvival/npc_petrisisbaron.sp"

@@ -1874,6 +1874,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			Range += 10.0;
 			
 			makeexplosion(entity, SpawnParticlePos, RoundToCeil(damage), RoundToCeil(Range),_,_,false);
+		
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{
