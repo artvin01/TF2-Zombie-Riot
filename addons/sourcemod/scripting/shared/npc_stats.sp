@@ -11934,16 +11934,18 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 }
 
 
-/*
+ArrayList h_Arraylist_Colour;
+enum struct ArraylistColours
+{
+	int ColourHex;
+	//save the colour that we want to use
+	int RefWearable;
+	//save the wearable ID, incase we already have said colour
 
-"local paint = 15132390" ...
-"wearable <- Entities.CreateByClassname(\"tf_wearable\")" ...
-"wearable.KeyValueFromString(\"classname\", \"painter\") // do not preserve" ...
-"NetProps.SetPropBool(wearable, \"m_AttributeManager.m_Item.m_bInitialized\", true)" ...
-"wearable.AddAttribute(\"set item tint RGB\", paint, -1)" ...
-"wearable.DispatchSpawn()" ...
-"wearable.EnableDraw()"
-*/
+  	ArrayList EntRefs;
+	//save all ent'refs that use this colour, if none remain, kill the colour and its stuff.
+}
+
 int NpcColourCosmetic_ViaPaint(int entity, int color)
 {
 	int Wearable = CreateEntityByName("tf_wearable");
@@ -11956,6 +11958,8 @@ int NpcColourCosmetic_ViaPaint(int entity, int color)
 	DispatchSpawn(Wearable);
 	ActivateEntity(Wearable);
 	SetEntityOwner(entity, Wearable);	
+	SetEdictFlags(Wearable, GetEdictFlags(Wearable) | FL_EDICT_ALWAYS);
+	b_IsEntityAlwaysTranmitted[Wearable] = true;
 	
 	return Wearable;
 }
