@@ -347,7 +347,7 @@
 	}
 	"Xeno Fast Zombie Desc"
 	{
-		"en" 		"The first hit deals no damage at all. No matter how high."
+		"en" 		"Somehow, the Xeno infection is able to completely block a hit. But only 1. \n-When first hit, it takes no damage from the attack."
 		"it"		"Il primo colpo non infligge alcun danno. Non importa quanto sia alto."
 	}
 	"Xeno Fortified Fast Zombie Desc"
@@ -357,7 +357,7 @@
 	}
 	"Xeno Torsoless Headcrab Zombie Desc"
 	{
-		"en" 		"Still unable to be attacked by sentries relieably."
+		"en" 		"Just the same as the uninfected version but a little faster. \nTheir health and damage is lower then the normal counterpart.\n-No special Effects."
 		"it"		"Ancora incapace di essere attaccato dalle sentinelle in modo affidabile."
 	}
 	"Xeno Poison Zombie Desc"
