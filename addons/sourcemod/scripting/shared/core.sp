@@ -840,6 +840,7 @@ public void OnPluginStart()
 	SDKCall_Setup();
 	ConVar_PluginStart();
 	NPC_PluginStart();
+	NPCStats_PluginStart();
 	SDKHook_PluginStart();
 	OnPluginStart_LagComp();
 	NPC_Base_InitGamedata();

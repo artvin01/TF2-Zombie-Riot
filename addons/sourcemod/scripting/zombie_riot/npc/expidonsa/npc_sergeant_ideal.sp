@@ -212,6 +212,7 @@ methodmap SergeantIdeal < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 7511618);
 
 		if(npc.g_TimesSummoned == 0)
 		{
