@@ -464,6 +464,7 @@ methodmap GodAlaxios < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 16777215);
 
 		if(i_RaidGrantExtra[npc.index] == ALAXIOS_SEA_INFECTED)
 		{
