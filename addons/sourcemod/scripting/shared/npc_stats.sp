@@ -11946,11 +11946,11 @@ enum struct ArraylistColours
 	//save all ent'refs that use this colour, if none remain, kill the colour and its stuff.
 }
 
-int NpcColourCosmetic_ViaPaint(int entity, int color)
+void NpcColourCosmetic_ViaPaint(int entity, int color)
 {
 	int Wearable = CreateEntityByName("tf_wearable");
 	if(Wearable == -1)
-		return -1;
+		return;
 
 	
 	SetEntProp(Wearable, Prop_Send, "m_bInitialized", true);
@@ -11961,5 +11961,5 @@ int NpcColourCosmetic_ViaPaint(int entity, int color)
 	SetEdictFlags(Wearable, GetEdictFlags(Wearable) | FL_EDICT_ALWAYS);
 	b_IsEntityAlwaysTranmitted[Wearable] = true;
 	
-	return Wearable;
+	return;
 }
