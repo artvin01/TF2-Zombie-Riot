@@ -12035,15 +12035,25 @@ int NpcColourCosmetic_ViaPaint(int entity, int color, bool halloweenSpell = fals
 	// To avoid creating many edicts, only create one econ entity per color, then reuse it in case other cosmetics use the same color
 	
 	WearableColor wearableColor;
+	wearableColor.wearableRef = INVALID_ENT_REFERENCE;
+	
 	int index = h_ColoredWearables.FindValue(color);
 	if (index != -1)
 	{
-		// Found an econ entity using this color, reuse it
 		h_ColoredWearables.GetArray(index, wearableColor);
-		
-		SetEntityOwner(entity, wearableColor.wearableRef);
-		wearableColor.entities.Push(EntIndexToEntRef(entity));
-		return wearableColor.wearableRef;
+		if (IsValidEntity(wearableColor.wearableRef))
+		{
+			// Found an econ entity using this color, reuse it
+			SetEntityOwner(entity, wearableColor.wearableRef);
+			wearableColor.entities.Push(EntIndexToEntRef(entity));
+			return wearableColor.wearableRef;
+		}
+		else
+		{
+			// This can happen if the wearable was deleted by something out of our control
+			// and the color handler hasn't been updated yet
+			return -1;
+		}
 	}
 	
 	// We have yet to use this color, create an econ entity for this
@@ -12072,6 +12082,12 @@ int NpcColourCosmetic_ViaPaint(int entity, int color, bool halloweenSpell = fals
 
 Action NPCStats_Timer_HandlePaintedWearables(Handle timer)
 {
+	NPCStats_HandlePaintedWearables();
+	return Plugin_Continue;
+}
+
+void NPCStats_HandlePaintedWearables()
+{
 	// Check if each color is still being used by a cosmetic
 	for (int i = h_ColoredWearables.Length - 1; i >= 0; i--)
 	{
@@ -12092,11 +12108,11 @@ Action NPCStats_Timer_HandlePaintedWearables(Handle timer)
 		// None of the cosmetics using this color are valid, we can erase this color from the list
 		if (!foundValidEntity)
 		{
-			RemoveEntity(wearableColor.wearableRef);
+			if (IsValidEntity(wearableColor.wearableRef))
+				RemoveEntity(wearableColor.wearableRef);
+			
 			delete wearableColor.entities;
 			h_ColoredWearables.Erase(i);
 		}
 	}
-	
-	return Plugin_Continue;
 }
