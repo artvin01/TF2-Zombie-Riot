@@ -11932,3 +11932,30 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 	npc.SetVelocity(Vectorspeed);
 	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
 }
+
+
+/*
+
+"local paint = 15132390" ...
+"wearable <- Entities.CreateByClassname(\"tf_wearable\")" ...
+"wearable.KeyValueFromString(\"classname\", \"painter\") // do not preserve" ...
+"NetProps.SetPropBool(wearable, \"m_AttributeManager.m_Item.m_bInitialized\", true)" ...
+"wearable.AddAttribute(\"set item tint RGB\", paint, -1)" ...
+"wearable.DispatchSpawn()" ...
+"wearable.EnableDraw()"
+*/
+int NpcColourCosmetic_ViaPaint(int entity, int color)
+{
+	int Wearable = CreateEntityByName("tf_wearable");
+	if(Wearable == -1)
+		return -1;
+
+	
+	SetEntProp(Wearable, Prop_Send, "m_bInitialized", true);
+	TF2Attrib_SetByName(Wearable, "set item tint RGB", float(color));
+	DispatchSpawn(Wearable);
+	ActivateEntity(Wearable);
+	SetEntityOwner(entity, Wearable);	
+	
+	return Wearable;
+}

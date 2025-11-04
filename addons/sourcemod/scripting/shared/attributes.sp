@@ -102,7 +102,7 @@ bool Attribute_DontSaveAsIntAttribute(int attribute)
 	switch(attribute)
 	{
 		//this attrib is a float, but saves as an int, for stuff thats additional, not multi.
-		case 314:
+		case 314, 142:
 			return true;
 	}
 
