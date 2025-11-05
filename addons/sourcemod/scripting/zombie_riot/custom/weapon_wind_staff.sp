@@ -396,7 +396,7 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 		Duration_Tornado[iCarrier] = GetGameTime() + 1.0;
 		flCarrierPos[2] += 5.0;
 		
-		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);
+		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 1.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);
 		TE_SendToAll(0.0);
 		
 		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
