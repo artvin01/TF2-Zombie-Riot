@@ -2275,7 +2275,7 @@
 	}
 	"Rattler Desc"
 	{
-		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nDon't tell them they would have lived if they didn't waste all the ammo in their shootout with the cops."
+		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nThey would have lived if they didn't waste all the ammo in their shootout with the cops."
 	}
 	"Hollow Hitman Desc"
 	{
@@ -2287,7 +2287,7 @@
 	}
 	"Spinal Slugger Desc"
 	{
-		"en"		"For as much as they love their bats, you'd expect Spinal Sluggers to have at least SOME love for baseball.\nTurns out, most of them don't even know what baseball is.\n''Baseball is a game?,'' asks one astonished Slugger, ''I thought that was the name of the company that makes these things.''"
+		"en"		"• Enters a rampage when below 35%% health, increasing speed, damage, and attack speed.\n \n\nFor as much as they love their bats, you'd expect Spinal Sluggers to have at least SOME love for baseball.\nTurns out, most of them don't even know what baseball is.\n''Baseball is a game?,'' asks one astonished Slugger, ''I thought that was the name of the company that makes these things.''"
 	}
 	"Godfather Grimme Desc"
 	{
@@ -2355,7 +2355,7 @@
 	}
 	"Bringer of Bones Desc"
 	{
-		"en"		"• Periodically casts necrotic energy from the sky, which summons Unpleasant Peasants.\n• Can only have 8 Peasants at once.\n \n\nSometimes, an Alakablaster will get bored of casting conventional spells, and will seek more bizarre ways to utilize their magical power.\nOr, they'll just be really, really lonely. Either way, they turn to necromancy."
+		"en"		"• Periodically casts necrotic energy from the sky, which summons random medieval skeletons.\n• Can only have 8 summons active at once.\n \n\nSometimes, an Alakablaster will get bored of casting conventional spells, and will seek more bizarre ways to utilize their magical power.\nOr, they'll just be really, really lonely. Either way, they turn to necromancy."
 	}
 	"Unpleasant Peasant Desc"
 	{
@@ -2367,11 +2367,11 @@
 	}
 	"Profaned Priest Desc"
 	{
-		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Heals and buffs all allies within a large radius.\n• When all non-healer allies have died, starts chasing enemies and summoning devastating necrotic airstrikes.\n \n\nMany dedicated their lives to worshipping religion. They seldom agreed on which religion was ''the right one'',\nbut if they agreed on anything, none were expecting to show up in Necropolis after they died."
+		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Heals and buffs all allies within a large radius.\n• When all non-healer allies have died, starts chasing enemies and summoning devastating necrotic airstrikes.\n \n\nMany dedicated their lives to worshipping religion. They seldom agreed on which religion was ''the right one'',\nbut if they agreed on anything, none were expecting the afterlife to be Necropolis."
 	}
 	"Skeletal Squire Desc"
 	{
-		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep. Did it work out for him?\nWell, he's in the Necropolis Armed Forces now, so take a wild guess."
+		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep. Did it work out for him?\nHe's a resident of Necropolis now, so take a wild guess."
 	}
 	"Knightmare Desc"
 	{
