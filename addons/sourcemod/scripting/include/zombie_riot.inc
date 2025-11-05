@@ -11,6 +11,7 @@ enum ZRSpecialMode
 	Mode_Rogue1,
 	Mode_Rogue2,
 	Mode_Rogue3,
+	Mode_BetWars,
 	Mode_Construction,
 }
 
