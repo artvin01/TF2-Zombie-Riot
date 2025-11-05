@@ -2275,7 +2275,7 @@
 	}
 	"Rattler Desc"
 	{
-		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nThey would have lived if they didn't waste all the ammo in their shootout with the cops."
+		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nThey would have lived if they didn't waste all of their ammo in their shootout with the cops."
 	}
 	"Hollow Hitman Desc"
 	{
@@ -2379,7 +2379,7 @@
 	}
 	"Lordread, Royal Executioner of Necropolis Desc"
 	{
-		"en"		"• Melee attack is guaranteed to down you, and will halve your downed HP.\n• Will periodically spin wildly, dealing rapid damage and drawing enemies in.\n• When at low health, can call upon a storm of lightning which summons allies.\n \n\nOne of the Four Great Rulers of Necropolis.\nA master warlock wielding a 600-kilogram axe.\nLordread is responsible for destroying Necropolains infected by Chaos."
+		"en"		"• Melee attack one-shots, and will halve your downed HP.\n• Can spin wildly, dealing rapid damage and drawing enemies in.\n• When at low health, will call upon lightning which summons allies.\n \n\nIn life, Lordread was a beloved warrior king, known for his skills as a master warlock.\nAs one of the Four Great Rulers of Necropolis, he is responsible for slaying those infected by Chaos."
 	}
 	"The Reaper Desc"
 	{
@@ -2391,11 +2391,11 @@
 	}
 	"Supreme Spookmaster Bones, Magistrate of the Dead Desc"
 	{
-		"en"		"• Summons an army every time he loses 1/4 of his max HP.\n• Invulnerable while an army is active.\n \n\nWhenever someone dies, they show up in a long queue, stripped of their skin and turned into a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
+		"en"		"• Summons up to 4 tombstones every time he loses 25%% of his max HP.\n• Tombstones summon skeletons, and provide invulnerability to SSB.\n\n \n\nWhen someone dies, they show up in a long queue as a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
 	}
 	"Supreme Spookmaster Bones, Eternal Master of the Damned Desc"
 	{
-		"en"		"SSB's job as ruler of the dead is really important, sure, but it gets really boring after the first couple million years.\nPoor guy doesn't even get holidays off; it's not like people magically stop dying on Christmas, after all.\nHe puts in all of this hard work to make Necropolis a good place, but the same few mortals keep coming back to life somehow.\nWhat a slap in the face! No wonder he snapped."
+		"en"		"SSB's job as ruler and judge of the dead is really important, sure, but it gets really boring after the first couple million years.\nPoor guy doesn't even get holidays off...\nHe puts in all of this hard work to make Necropolis a good place, but the same few medievalist mortals keep coming back to life somehow.\nWhat a slap in the face! No wonder he snapped."
 	}
 	"Agent John Desc"
 	{
