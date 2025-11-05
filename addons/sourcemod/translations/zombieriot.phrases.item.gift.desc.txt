@@ -1875,7 +1875,7 @@
 	}
 	"Hitman Desc" 
 	{
-		"en"	"A speedy spy that's a "glass-cannon" type of enemy. \n-VERY fast. \n-Dodges every second attack. "
+		"en"	"A speedy spy that's a ''glass-cannon'' type of enemy. \n-VERY fast. \n-Dodges every second attack. "
 		"it"	"Infligge danni immensi a tutto. è estremamente veloce e schiva ogni 2 attacchi.\n ha pochi HP e subisce 2,5 volte i danni in mischia ma 50％ in meno quelli a distanza."
 	}
 	"Mad Doctor Desc"
