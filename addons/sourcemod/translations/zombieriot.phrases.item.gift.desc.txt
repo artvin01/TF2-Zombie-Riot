@@ -2383,7 +2383,7 @@
 	}
 	"The Reaper Desc"
 	{
-		"en"		"• Deals catastrophic damage with his melee attack, which can hit multiple targets.\n• Will teleport near a random player at certain damage thresholds.\n• Ignores buildings, and becomes faster the further away his target is.\n \n\nOne of the Four Great Rulers of Necropolis.\nUnlike his fellow Rulers, The Reaper refused SSB's offer to lead his own army.\nHe must be REALLY confident..."
+		"en"		"• Melee deals catastrophic damage and can hit multiple targets.\n• Teleports at certain HP thresholds.\n• Becomes faster the further away his target is.\n• Takes bonus damage from his target, but is resistant to all else.\n• Ignores buildings.\n \n\nUnlike the other 3 Great Rulers of Necropolis, The Reaper refused SSB's offer to lead his own army.\nHe must be REALLY confident... or really lazy."
 	}
 	"Supreme Spookmaster Bones Desc"
 	{

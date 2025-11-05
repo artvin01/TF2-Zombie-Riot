@@ -2,10 +2,10 @@
 #pragma newdecls required
 
 static int GRIMREAPER_BASE_HEALTH = 80;			//Base max health given per player on RED.
-static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE30 = 1.15;
-static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE45 = 1.25;
+static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE20 = 1.125;
+static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE30 = 1.225;
 static float GRIMREAPER_HEALTH_EXPONENT_LATEGAME = 1.3;
-static float GRIMREAPER_HEALTH_MULTIPLIER = 2.45;	//Amount to multiply max health after all other calculations.
+static float GRIMREAPER_HEALTH_MULTIPLIER = 2.5;	//Amount to multiply max health after all other calculations.
 static float GRIMREAPER_HEALTH_DIVIDER = 2.0;	//Amount to divide max health after all other calculations.
 
 //The Grim Reaper is very slow, but the further its target is, the faster it becomes.
@@ -32,8 +32,8 @@ static float GRIMREAPER_ATTACK_AFTER_TELEPORT = 1.5;		//Duration to prevent the 
 
 static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper raises/lowers its axe per frame. Example: 0.01 means it raises its axe 1% every frame.
 
-static float REAPER_RANGED_MULTIPLIER = 0.75;		//Amount to multiply damage taken by the Reaper from ranged attacks.
-static float REAPER_MELEE_MULTIPLIER = 0.75;		//Amount to multiply damage taken by the Reaper from ranged attacks.
+static float REAPER_RANGED_MULTIPLIER = 1.0;		//Amount to multiply damage taken by the Reaper from ranged attacks.
+static float REAPER_MELEE_MULTIPLIER = 1.0;		//Amount to multiply damage taken by the Reaper from ranged attacks.
 
 static float GRIMREAPER_TELEPORT_INTERVAL = 0.32;		//Every X% of its max HP the Reaper loses, it will teleport to a random enemy.
 
@@ -619,11 +619,11 @@ static char[] GetReaperHealth()
 	
 	if(Waves_GetRound()+1 < 20)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE30));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE20));
 	}
 	else if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE45));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE30));
 	}
 	else
 	{

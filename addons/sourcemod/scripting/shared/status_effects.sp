@@ -5409,7 +5409,7 @@ void StatusEffects_Challenger()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Challenger");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "༒︎");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "🗡");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
