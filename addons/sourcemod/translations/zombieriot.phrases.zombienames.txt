@@ -3939,6 +3939,10 @@
 		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
 		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
 	}
+	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
+	{
+		"en" "The merc's worst n1ghtmare. \n-Very fast. \n-Pulse attack one shots. \n-Melee attacks one shot. \n-The nightmare won't last forever."
+	}
 	"Chaos Mercenaries"
 	{
 		"en"	"Chaos Mercenaries"
@@ -3951,7 +3955,7 @@
 	}
 	"Chaos Knight? Desc"
 	{
-		"en"	"a very sick knight, who knows what he could do if not for his sickness.\nDeals heavy chaos damage, Very slow but strong attacks.\nCan go into a defensive state and heal up abit.\nAfter some time, recives a coughting fit, attack it during it, or heal up."
+		"en"	"a very sick knight, who knows what he could do if not for his sickness. \n-Attacks deal chaos affliction. \n-Can go into a defensive state and heal up a bit. \n-After some time, receives a coughing fit"
 		"it"	"un cavaliere molto malato, chissà cosa potrebbe fare se non fosse per la sua malattia.\nSubisce pesanti danni da caos, attacchi molto lenti ma forti.\nPuò entrare in uno stato difensivo e guarire un po'.\nDopo un po' di tempo, recupera una crisi di astinenza, attaccando durante la stessa o guarendo."
 	}
 	"Chaos Injured Cultist"
