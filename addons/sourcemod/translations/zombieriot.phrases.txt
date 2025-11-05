@@ -1025,6 +1025,14 @@
 	{
 		"en"		"YOU'RE BONED!"
 	}
+	"Reaper Target Warning"
+	{
+		"en"		"DEATH IS IMMINENT..."
+	}
+	"Reaper Bored Alert"
+	{
+		"en"		"Death is no longer after you..."
+	}
 	"Rusty Ability Blocked"
 	{
 		"en"		"You can't do that right now!"
