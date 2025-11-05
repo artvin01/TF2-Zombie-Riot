@@ -340,44 +340,44 @@
 
 	"Xeno Headcrab Zombie Desc"
 	{
-		"en" 		"This zombie will reach very high speeds once hurt."
+		"en" 		"The Xeno infection made these zombies not like getting hit. \n-When first hit, gains a speed boost for a short period."
 		"it"		"Una volta ferito, questo zombie raggiunge velocità molto elevate."
 
 	}
 	"Xeno Fortified Headcrab Zombie Desc"
 	{
-		"en" 		"Fortified Ones have a mutated version of the xeno infection, causing their abilities to be even greater."
+		"en" 		"The Xeno infection treats them the same as their unfortified variant, since they are the same type of zombie. \n-When first hit, gains a speed boost for a short period.
 		"it"		"Gli esseri Fortificati hanno una versione mutata dell'infezione xeno, che rende le loro capacità ancora più grandi."
 	}
 	"Xeno Fast Zombie Desc"
 	{
-		"en" 		"The first hit deals no damage at all. No matter how high."
+		"en" 		"Somehow, the Xeno infection is able to completely block a hit. But only 1. \n-When first hit, it takes no damage from the attack."
 		"it"		"Il primo colpo non infligge alcun danno. Non importa quanto sia alto."
 	}
 	"Xeno Fortified Fast Zombie Desc"
 	{
-		"en" 		"Stronger version of the Xeno Fast Zombie"
+		"en" 		"The Xeno infection treats them the same as their unfortified variant"
 		"it"		"Versione più forte dello Xeno Zombie Veloce"
 	}
 	"Xeno Torsoless Headcrab Zombie Desc"
 	{
-		"en" 		"Still unable to be attacked by sentries relieably."
+		"en" 		"Just the same as the uninfected version but a little faster. \nTheir health and damage is lower then the normal counterpart.\n-No special Effects."
 		"it"		"Ancora incapace di essere attaccato dalle sentinelle in modo affidabile."
 	}
 	"Xeno Poison Zombie Desc"
 	{
-		"en" 		"Once hurt, they will gain massive resistances (resistance can be silenced) for 3 seconds, it can recharge so kill them quick."
+		"en" 		"The Xeno infection make these guys extra tanky when threatened. \n-When first hit, gains heavy resistances for 3 seconds. This ability can recharge."
 		"it"		"Una volta feriti, guadagneranno resistenze massicce (le resistenze possono essere silenziate) per 3 secondi, ma possono ricaricarsi, quindi uccideteli in fretta."
 	}
 	"Xeno Fortified Poison Zombie Desc"
 	{
-	    "en" 		"Stronger version of the Xeno Poison Zombie"
+	    "en" 		"Fortified version of the Xeno Poison Zombie. \n-When first hit, gains heavy resistances for 3 seconds. This ability can recharge."
 	    "ru" 		"Более сильный вариант Ксено ядовитого зомби"	    	    
 	    "it"		"Versione più forte dello zombie velenoso Xeno"
 	}
 	"Xeno Fortified Giant Poison Zombie Desc"
 	{
-		"en" 		"Retained the ''normal'' ones abilities ontop of being stronger."
+		"en" 		"Giant version of the Xeno Fortified Poison Zombie. \n-When first hit, gains heavy resistances for 3 seconds. This ability can recharge."
  		"ru" 		"Сохранили способности ''нормального''и более сильные чем он"
 		"it"		"Ha mantenuto le abilità ''normali'', oltre a essere più forte."
 	}
@@ -743,22 +743,22 @@
 	}
 	"Faster Desc"
 	{
-		"en" 		"Dangerous when groupped with other Faster(s), its bleed stacks."
+		"en" 		"A mutilated woman with blade-like appendages for her arms and legs. \n-Applies bleed on hit"
 		"it"		"Pericoloso quando è in gruppo con altri Faster, il suo sanguinamento si impila."
 	}
 	"Psycho Desc"
 	{
-		"en" 		"Fast and deadly if not taken care of fast enough."
+		"en" 		"A man who moves quickly and wields an axe. \n-Very fast"
 		"it"		"Veloce e letale se non viene curata abbastanza velocemente."
 	}
 	"Suicider Desc"
 	{
-		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
+		"en" 		"A man on the brink of committing suicide. \n-Deals only ranged damage. \n-Predict their shots. \n-If gotten close to, kills themself, deal damage to nearby enemies"
 		"it"		"È spaventosamente preciso con la sua pistola, ma se ci si avvicina troppo si uccide da solo."
 	}
 	"Crazy Lady Desc"
 	{
-		"en" 		"Prevents you from running away, don't let it stab you."
+		"en" 		"A crazed lady who attacks you with a knife. \n-Attacks inflict a debuff that decreases movement speed."
 		"it"		"Impedisce di scappare, non si lascia pugnalare."
 	}
 	"Corrupted Barney Desc"
@@ -768,22 +768,22 @@
 	}
 	"Baby Desc"
 	{
-		"en"		"Kills itself upon contact, deals massive amounts of damage upon doing so."
+		"en"		"An annoying little baby. \n-Kills itself on contact, dealing damage"
 		"it"		"Si uccide al contatto e infligge ingenti danni."
 	}
 	"Children Desc"
 	{
-		"en"		"Just like real life children, it'll surely annoy the hell out of you with its very long duration of bleed."
+		"en"		"Just like real-life children, they are annoying as hell. \n-Applies bleed on hit."
 		"it"		"Proprio come i bambini della vita reale, vi darà sicuramente fastidio con la sua lunghissima durata di sanguinamento."
 	}
 	"Stranger Desc"
 	{
-		"en"		"Attacks you map-wide."
+		"en"		"A man with a book for a head. \n-Deals only ranged damage. \n-Has infinite range."
 		"it"		"Ti attacca in tutta la mappa."
 	}
 	"Taller Desc"
 	{
-		"en"		"Very slow, but packs a punch."
+		"en"		"A giant, distorted, man. \n-Attacks launch target back and fully stuns them for a few seconds."
 		"it"		"Molto lenta, ma potente."
 	}
 	"Xeno Malfunctioning Robot Desc"
@@ -1124,7 +1124,7 @@
 	}
 	"Calmaticus Desc"
 	{
-		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"en"		"The originator of the Xeno infection. Silvester and Waldch tried to warn you, but you didn't listen. \n-Melee attack hits multiple times and launches the target at the end. \n-Causes infection blast below every enemy, in LoS, after performing or ending any attack. \n-If hit by the infection blast, you are afflicted with a heavy bleed. \n-Occasionally, he'll charge towards the closest enemy, picking them up, and ripping them apart. He'll then throw them into the sky. \n-Has a minigun that shoots explosive bullets. \n-Once he hits 25% of his HP, he will drop to the floor and regen 50% of his total HP back over 20 seconds. During this, he gains 70% damage resistance."
 		"it"		"Il creatore dell'infezione Xeno.\nHanno cercato di avvertirti, non hai ascoltato.\nLa sua resistenza alla fase rigenerativa (può essere silenziata a metà)."
 	}
 	"Shell Sea Runner Desc"
@@ -1775,7 +1775,7 @@
 	}
 	"Ahim Desc" 
 	{
-		"en"	"Throws a cleaver when close enough, then engages in melee combat."
+		"en"	"A scout that has a cleaver to throw at enemies. \n-Has a ranged attack. n\-Throws a cleaver at the first enemy that's in their range."
 		"it"	"Lancia una mannaia quando è abbastanza vicino, poi ingaggia un combattimento in mischia."
 	}
 	"Inabdil Desc" 
@@ -1790,12 +1790,12 @@
 	}
 	"Sakratan Desc" 
 	{
-		"en"	"Inflicts the chaos debuff, which makes you explode, dealing 250 true damage to everoyne around you.\nThis also causes all affected allies to receive 25％ more damage for 10 seconds."
+		"en"	"A demo with hits that apply chaos. \n- Attacks inflict Chaos elemental damage. "
 		"it"	"Infligge il debuff Caos, che vi fa esplodere, infliggendo 250 danni reali a tutti i nemici che vi circondano.\nQuesto fa sì che tutti gli alleati colpiti ricevano 25％ danni in più per 10 secondi."
 	}
 	"Yadeam Desc" 
 	{
-		"en"	"Heals all allies around themselves except eachother.\nThrows explosive piss."
+		"en"	"A sniper that heals his allies. \n-Heals all allies around himself. \n-Throws explosive jars of piss in a straight line at enemies."
 		"it"	"Guarisce tutti gli alleati intorno a sé, tranne l'altro.\nLancia piscio esplosivo."
 	}
 	"Rajul Desc" 
@@ -1825,7 +1825,7 @@
 	}
 	"Ziberian Miner Desc" 
 	{
-		"en"	"Deals massive building damage."
+		"en"	"A engineer back from the mines to destroy your buildings. \n-Attacks deal bonus damage to buildings. \n-First attack deals 2x damage."
 		"it"	"Infligge ingenti danni agli edifici."
 	}
 	"Snowey Gunner Desc" 
@@ -1835,7 +1835,7 @@
 	}
 	"Freezing Cleaner Desc" 
 	{
-		"en"	"attacks immensively fast and deals AOE damage, deals huge chaos damage."
+		"en"	"A pyro that, instead of using a flamethrower, uses a cryothrower. \n-Deals only ranged damage. \n-Attacks apply Chaos elemental damage"
 		"it"	"Attacca in modo immensamente veloce e infligge danni AOE, infligge ingenti danni da caos."
 	}
 	"Airborn Explorer Desc" 
@@ -1845,17 +1845,17 @@
 	}
 	"Arctic Mage Desc" 
 	{
-		"en"	"When taking damage, depending onthe damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
+		"en"	"When taking damage, depending on the damage he will heal 3 allies around himself.\nIf they receive enough overheal, they will receive a permanent buff.\nGives himself a shield sometimes on hit, and shields allies on hit aswell.\nDeals huge chaos damage."
 		"it"	"Quando subisce danni, a seconda dei danni subiti, guarisce 3 alleati intorno a sé.Se ricevono abbastanza overheal, riceveranno un buff permanente.A volte si scuote con uno scudo quando viene colpito, e scuote anche gli alleati quando vengono colpiti.Subisce ingenti danni da caos."
 	}
 	"Frost Hunter Desc" 
 	{
-		"en"	"Fires 2 shots before going in with their melee."
+		"en"	"A scout that finally uses his scattergun, shortly. \n-Deals ranged damage. \n-Takes 2 scattergun shots at the nearest enemy."
 		"it"	"Spara 2 colpi prima di entrare in mischia."
 	}
 	"Skin Hunter Desc" 
 	{
-		"en"	"Heals all allies around them except eachother, throws knives."
+		"en"	"A sniper that gains the interest of skinning his enemies. \n-Heals all allies around himself. \n-Heals all allies around himself. \n-Deals only ranged damage. \n-Throws knives at enemies."
 		"it"	"Guarisce tutti gli alleati intorno a sé, tranne l'altro, e lancia coltelli."
 	}
 	"Irritated Person Desc" 
@@ -1865,7 +1865,7 @@
 	}
 	"Ransacker Desc" 
 	{
-		"en"	"Throws a cleaver and then goes in for melee."
+		"en"	"Just a stronger version of Ahim. \n-Has a ranged attack. n\-Throws a cleaver at the first enemy that's in their range."
 		"it"	"Lancia una mannaia e poi entra in mischia."
 	}
 	"Runover Desc" 
@@ -1875,7 +1875,7 @@
 	}
 	"Hitman Desc" 
 	{
-		"en"	"Deals immensive damage to everything.\nIs extreamly fast and dodges every 2nd attack.\nHas low HP and takes 2.5x melee damage but takes 50％ less ranged damage."
+		"en"	"A speedy spy that's a ''glass-cannon'' type of enemy. \n-VERY fast. \n-Dodges every second attack. "
 		"it"	"Infligge danni immensi a tutto. è estremamente veloce e schiva ogni 2 attacchi.\n ha pochi HP e subisce 2,5 volte i danni in mischia ma 50％ in meno quelli a distanza."
 	}
 	"Mad Doctor Desc"
@@ -1885,7 +1885,7 @@
 	}
 	"Abomination Desc"
 	{
-		"en"	"Deals immensive damage overtime, deals chaos damage and burns you.\nEach attack it receives will grant it resistance towards the damage type it got, and vulnerability to the other.\n(Silence) causes the resistance gain part to not happen."
+		"en"	"A pyro disfigured, and now afflicted by chaos, is a force to be reckoned with. \n-Periodically leaps at enemies. \n-Gains resistance to the damage type taken, but loses resistance to the other damage type. \n-Attacks apply Chaos elemental damage."
 		"it"	"Infligge danni immensi nel tempo, infligge danni da caos e brucia.\nOgni attacco che riceve gli conferisce resistenza al tipo di danno che ha ricevuto e vulnerabilità all'altro.\nIl silenzio fa sì che la parte di guadagno di resistenza non avvenga."
 	}
 	"Anarchist Enforcer Desc"
@@ -1900,9 +1900,8 @@
 	}
 	"Behemoth Desc"
 	{
-
 		"it"	"Ha una salute molto elevata e danni da caos. è completamente immune ai colpi alla testa."
-		"en"	"Has very high health and chaos damage.\n-Is entirely immune to headshots."
+		"en"	"A heavy, the size of a giant, with strong headgear. \n-Attacks apply Chaos elemental damage. \n-Takes 0 headshot damage."
 	}
 	"Absolute Incinirator Desc"
 	{
@@ -1956,7 +1955,7 @@
 	}
 	"Vivithorn Desc"
 	{
-		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE.\n(SIlence) loses slide on hit"
+		"en"	"Activator of the xeno infection source. He won't let you stop him from infecting the world with the Xeno infection. \n-Melee attack hits multiple times and launches the target at the end. \n-Able to start sprinting towards the closest enemy, starting slow and gaining speed until he grabs someone. He will pick them up and snap their neck. Dropping them onto the floor afterward, and stunning them for a few seconds \n-Occasionally charges to the closest enemy, ramming into them. This will deal damage and knockback on contact. At the end of this, he will be dazed for a few seconds."
 		"it"	"Attivatore della fonte di infezione xeno.\nPuò sfrecciare, uno ti afferra e ti spezza il collo, l'altro colpisce a ripetizione ma nemici diversi in un AOE.\n(SIlenza) perde la scivolata al colpo"
 	}
 	"Lex Desc"
@@ -2226,7 +2225,7 @@
 	}	
 	"Barracks Iberia Inquisitor Lynsen Desc"
 	{
-		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors"
+		"en"		"One of the best inquisitors trained by Irene, able to mark enemies and rain death upon them, works well with other inquisitors."
 		"it"		"Uno dei migliori inquisitori addestrati da Irene, in grado di marcare i nemici e di far piovere morte su di loro, lavora bene con gli altri inquisitori"
 	}	
 	"Barracks Iberian Lighthouse Guardian Desc"
@@ -2400,82 +2399,82 @@
 	}
 	"Agent John Desc"
 	{
-		"en"		"Generic Agent."
+		"en"		"The most basic of agents. \n-No special Effects."
 		"it"		"Agente generico."
-	}
+	} 
 	"Agent James Desc"
 	{
-		"en"		"Slightly less generic.\nHas a gun.\nApplies Corruption debuff."
+		"en"		"A less basic agent, but doesn't have anything special. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Un po' meno generico.\nHa una pistola.\nApplica il debuff Corruzione."
 	}
 	"Agent Alexander Desc"
 	{
-		"en"		"Gets stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"A agent that gets stronger the lower his health is. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Diventa tanto più forte quanto più bassa è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Alan Desc"
 	{
-		"en"		"This agent gets buffed if you're too close to his proximity.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"This agent gets buffed if you're too close to his proximity. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"Questo agente viene potenziato se si è troppo vicini a lui.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Chase Desc"
 	{
-		"en"		"Starts off extremely slow, but gains velocity overtime, uncapped.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"This agent starts extremely slow, but gains velocity over time, uncapped. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"Inizia con estrema lentezza, ma acquista velocità con il passare del tempo, senza limiti.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Dave Desc"
 	{
-		"en"		"Has the ability to reflect incoming attacks, gains insane resistance under reflect.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"He has the ability to reflect incoming attacks, gaining insane resistance under reflect. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Ha la capacità di riflettere gli attacchi in arrivo, guadagna una resistenza folle sotto la riflessione.\nHa una pistola.\nApplica il Debuff di Corruzione."
 	}
 	"Agent Graham Desc"
 	{
-		"en"		"Applies insane Corruption Debuff.\nHas a gun."
+		"en"		"Applies insane Corruption Debuff. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Applica il Debuff Corruzione folle.\nHa una pistola."
 	}
 	"Agent Steve Desc"
 	{
-		"en"		"Attacks faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Attacks faster the less health he has. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"Attacca più velocemente quanto minore è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Eric Desc"
 	{
-		"en"		"Gets even stronger the lower his health is.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Stronger variant of Agent Alexander. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Diventa tanto più forte quanto più bassa è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Jack Desc"
 	{
-		"en"		"Attacks even faster the less health he has.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Stronger variant of Agent Steve. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"Attacca tanto più velocemente quanto minore è la sua salute.\nHa una pistola.\nApplica il Debuff Corruzione."
 	}
 	"Agent Jim Desc"
 	{
-		"en"		"Stronger variant of Agent James."
+		"en"		"Stronger variant of Agent James. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'Agente James."
 	}
 	"Agent Josh Desc"
 	{
-		"en"		"Stronger variant of Agent John."
+		"en"		"Stronger variant of Agent John. \n-No special Effects."
 		"it"		"Variante più forte dell'agente John."
 	}
 	"Agent Kenneth Desc"
 	{
-		"en"		"Starts off somewhat slow, gains velocity faster than Agent Chase.\nHas a gun.\nApplies Corruption Debuff."
+		"en"		"Stronger variant of Agent Chase. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"Inizia in modo un po' lento, ma guadagna velocità più velocemente dell'Agente Chase.\nHa una pistola.\nApplica il Debuff di Corruzione."
 	}
 	"Agent Paul Desc"
 	{
-		"en"		"Stronger variant of Agent Alan.\nHas bigger proximity and more buffs."
+		"en"		"Stronger variant of Agent Alan. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"Variante più forte dell'Agente Alan.\nHa una maggiore vicinanza e più buff."
 	}
 	"Agent Tyler Desc"
 	{
-		"en"		"Stronger variant of Agent Graham."
+		"en"		"Stronger variant of Agent Graham. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'agente Graham."
 	}
 	"Agent Wayne Desc"
 	{
-		"en"		"Stronger variant of Agent Dave.\nReflect lasts longer and has a shorter cooldown."
+		"en"		"Stronger variant of Agent Dave. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Variante più forte dell'Agente Dave.\nRiflect dura più a lungo e ha un cooldown più breve."
 	}
 	"Merovingian Desc"
@@ -2485,27 +2484,27 @@
 	}
 	"Agent Ben Desc"
 	{
-		"en"		"Stronger variant of Agent Jack."
+		"en"		"Stronger variant of Agent Jack. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"Variante più forte dell'Agente Jack."
 	}
 	"Agent Chad Desc"
 	{
-		"en"		"Stronger variant of Agent Paul.\nHas an even bigger proximity and even more buffs."
+		"en"		"Stronger variant of Agent Paul. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"Variante più forte dell'Agente Paul.\nHa una vicinanza ancora maggiore e ancora più buff."
 	}
 	"Agent Chris Desc"
 	{
-		"en"		"Stronger variant of Agent Jim."
+		"en"		"Stronger variant of Agent Jim. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'Agente Jim."
 	}
 	"Agent Dick Desc"
 	{
-		"en"		"Stronger variant of Agent Eric."
+		"en"		"Stronger variant of Agent Eric. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Variante più forte dell'agente Eric."
 	}
 	"Agent Ian Desc"
 	{
-		"en"		"Stronger variant of Agent Wayne."
+		"en"		"Stronger variant of Agent Wayne. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Variante più forte dell'agente Wayne."
 	}
 	"Agent Jackson Desc"
@@ -2515,32 +2514,32 @@
 	}
 	"Agent Mike Desc"
 	{
-		"en"		"Stronger variant of Agent Tyler."
+		"en"		"Stronger variant of Agent Tyler. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"Variante più forte dell'agente Tyler."
 	}
 	"Agent Sam Desc"
 	{
-		"en"		"Stronger variant of Agent Josh."
+		"en"		"Stronger variant of Agent Josh. \n-No special Effects."
 		"it"		"Variante più forte dell'agente Josh."
 	}
 	"Agent Zack Desc"
 	{
-		"en"		"Stronger variant of Agent Kenneth."
+		"en"		"Stronger variant of Agent Kenneth. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"Variante più forte dell'agente Kenneth."
 	}
 	"Agent Connor Desc"
 	{
-		"en"		"Strongest variant of Spy Agents."
+		"en"		"Strongest variant of Agent Chris. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"La variante più forte di Agenti spia."
 	}
 	"Agent Henry Desc"
 	{
-		"en"		"Strongest variant of Medic Agents.\nGets almost every buff and has a huge proximity radius."
+		"en"		"Strongest variant of Agents Chad. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Buffs himself if enemies are near him."
 		"it"		"La variante più forte degli Agenti Medico.\nRiceve quasi tutti i buff e ha un raggio di prossimità enorme."
 	}
 	"Agent Jeremy Desc"
 	{
-		"en"		"Strongest variant of Pyro Agents.\nHas enormous Corruption Debuff."
+		"en"		"Strongest variant of Agent Mike. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff."
 		"it"		"La variante più forte degli Agenti Piro.\n ha un enorme Debuff di Corruzione."
 	}
 	"Agent Jones Desc"
@@ -2550,27 +2549,27 @@
 	}
 	"Agent Kurt Desc"
 	{
-		"en"		"Strongest variant of Soldier Agents."
+		"en"		"Strongest variant of Agent Dick. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the more damage he deals."
 		"it"		"Variante più forte degli Agenti Soldato."
 	}
 	"Agent Logan Desc"
 	{
-		"en"		"Strongest variant of Engineer Agents."
+		"en"		"Strongest variant of Agent Zach. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Gains more movement speed over time."
 		"it"		"La variante più forte degli agenti ingegneri."
 	}
 	"Agent Ross Desc"
 	{
-		"en"		"Strongest variant of Sniper Agents."
+		"en"		"Strongest variant of Agent Ben. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-The more he is hurt, the faster he attacks."
 		"it"		"La variante più forte di Sniper Agents."
 	}
 	"Agent Spencer Desc"
 	{
-		"en"		"Strongest variant of Heavy Agents."
+		"en"		"Strongest variant of Agent Ian. \n-Has a ranged attack. \n-Attacks inflict Corruption Debuff. \n-Able to go into a reflecting state, turning himself green, and reflects damage taken back to the attacker."
 		"it"		"Variante più forte degli Agenti Pesanti."
 	}
 	"Agent Todd Desc"
 	{
-		"en"		"Strongest variant of Scout Agents."
+		"en"		"Strongest variant of Agent Sam. \n-No special Effects."
 		"it"		"Variante più forte degli Agenti Scout."
 	}
 	"Agent Thompson Desc"
@@ -2706,7 +2705,7 @@
 	}
 	"Major Voided Desc"
 	{
-		"en"	"A taken over giant machine by the Void.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Void elemental damage\n- On death, deals AOE damage and summons Speechless"
+		"en"	"A taken over giant machine by the Void.\n- Uses a ranged attack and reloads\n- Immune to slow, stun, and shift effects\n- Attacks deal AOE and inflict Void elemental damage\n- Gains resistance when damage is taken\n- On death, deals AOE damage and summons Speechless"
 		"it"	"Utilizza un attacco a distanza e una ricarica.\n Immune agli effetti di rallentamento, stordimento e spostamento.\n Gli attacchi sono AOE e infliggono danni elementali del Vuoto. Alla morte, infligge danni AOE ed evoca Speechless"
 	}
 	"Disturbed Umbral Desc"
