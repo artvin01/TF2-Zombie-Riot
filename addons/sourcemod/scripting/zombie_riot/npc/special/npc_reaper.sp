@@ -13,6 +13,7 @@ static float GRIMREAPER_BASE_SPEED = 600.0;			//The Grim Reaper's highest possib
 static float GRIMREAPER_SPEED_MAX_DISTANCE = 600.0;	//Distance at which the Grim Reaper's speed begins to decrease.
 static float GRIMREAPER_SPEED_MIN_DISTANCE = 60.0;	//Distance at which the Grim Reaper's speed is decreased the most.
 static float GRIMREAPER_SPEED_LOSS = 450.0;			//The maximum amount of speed the Grim Reaper can lose based on proximity to its target.
+static float GRIMREAPER_SPEED_ATTACKING = 60.0;		//The Reaper's move speed while it swings its axe.
 
 //The Grim Reaper charges up a devastating melee attack as it approaches its target. 
 //This attack has extended range and a wide hitbox, and can hit multiple enemies at once.
@@ -29,7 +30,7 @@ static float GRIMREAPER_ATTACK_SPEED = 1.0;					//Attack animation speed multipl
 static float GRIMREAPER_ATTACK_MIN_AXE_RAISE = 0.95;		//Minimum percentage the axe must be raised in order to attack.
 static int GRIMREAPER_ATTACK_MAXTARGETS = 12;				//Maximum targets hit at once by the attack.
 static float GRIMREAPER_ATTACK_AFTER_TELEPORT = 1.5;		//Duration to prevent the Reaper from attacking after it teleports.
-static float GRIMREAPER_WHIFF_STUN_DURATION = 8.0;			//Duration to stun The Reaper if it somehow misses its intended target when it swings.
+static float GRIMREAPER_WHIFF_STUN_DURATION = 4.0;			//Duration to stun The Reaper if it somehow misses its intended target when it swings.
 
 static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper raises/lowers its axe per frame. Example: 0.01 means it raises its axe 1% every frame.
 
@@ -57,7 +58,7 @@ static bool b_Attacking[2049] = { false, ...};
 #define SND_REAPER_ATTACK_HIT		")weapons/halloween_boss/knight_axe_hit.wav"
 #define SND_REAPER_ATTACK_KILL		")misc/halloween/strongman_bell_01.wav"
 #define SND_REAPER_SAFE_FOR_NOW		")misc/halloween_eyeball/vortex_eyeball_moved.wav"
-#define SND_REAPER_TRICKED			")misc/achievement_earned.wav"
+#define SND_REAPER_TRICKED			")player/pl_impact_stun_range.wav"
 
 static const char g_DeathSounds[][] = {
 	"ambient_mp3/halloween/male_scream_07.mp3",
@@ -227,30 +228,37 @@ methodmap GrimReaper < CClotBody
 
 static void Reaper_CalculateSpeed(GrimReaper npc)
 {
-	int target = npc.m_iTarget;
-	if (!IsValidEntity(target))
+	if (b_Attacking[npc.index])
 	{
-		npc.m_flSpeed = GRIMREAPER_BASE_SPEED;
+		npc.m_flSpeed = GRIMREAPER_SPEED_ATTACKING;
 	}
 	else
 	{
-		float pos[3], targPos[3];
-		WorldSpaceCenter(npc.index, pos);
-		WorldSpaceCenter(target, targPos);
-		float dist = GetVectorDistance(pos, targPos);
-
-		if (dist > GRIMREAPER_SPEED_MAX_DISTANCE)
+		int target = npc.m_iTarget;
+		if (!IsValidEntity(target))
 		{
 			npc.m_flSpeed = GRIMREAPER_BASE_SPEED;
 		}
-		else if (dist < GRIMREAPER_SPEED_MIN_DISTANCE)
-		{
-			npc.m_flSpeed = GRIMREAPER_BASE_SPEED - GRIMREAPER_SPEED_LOSS;
-		}
 		else
 		{
-			float multiplier = 1.0 - ((dist - GRIMREAPER_SPEED_MIN_DISTANCE) / (GRIMREAPER_SPEED_MAX_DISTANCE - GRIMREAPER_SPEED_MIN_DISTANCE));
-			npc.m_flSpeed = GRIMREAPER_BASE_SPEED - (multiplier * GRIMREAPER_SPEED_LOSS);
+			float pos[3], targPos[3];
+			WorldSpaceCenter(npc.index, pos);
+			WorldSpaceCenter(target, targPos);
+			float dist = GetVectorDistance(pos, targPos);
+
+			if (dist > GRIMREAPER_SPEED_MAX_DISTANCE)
+			{
+				npc.m_flSpeed = GRIMREAPER_BASE_SPEED;
+			}
+			else if (dist < GRIMREAPER_SPEED_MIN_DISTANCE)
+			{
+				npc.m_flSpeed = GRIMREAPER_BASE_SPEED - GRIMREAPER_SPEED_LOSS;
+			}
+			else
+			{
+				float multiplier = 1.0 - ((dist - GRIMREAPER_SPEED_MIN_DISTANCE) / (GRIMREAPER_SPEED_MAX_DISTANCE - GRIMREAPER_SPEED_MIN_DISTANCE));
+				npc.m_flSpeed = GRIMREAPER_BASE_SPEED - (multiplier * GRIMREAPER_SPEED_LOSS);
+			}
 		}
 	}
 }
