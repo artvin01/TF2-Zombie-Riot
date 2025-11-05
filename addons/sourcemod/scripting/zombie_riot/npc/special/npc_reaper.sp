@@ -17,9 +17,9 @@ static float GRIMREAPER_SPEED_LOSS = 450.0;			//The maximum amount of speed the 
 //The Grim Reaper charges up a devastating melee attack as it approaches its target. 
 //This attack has extended range and a wide hitbox, and can hit multiple enemies at once.
 //It deals heavy damage to everything it hits, as well as bonus damage against the Reaper's intended target (meant to instakill the intended target).
-static float GRIMREAPER_ATTACK_RANGE = 140.0;				//The range of the attack.
-static float GRIMREAPER_ATTACK_WIDTH = 120.0;				//The width of the attack.
-static float GRIMREAPER_ATTACK_DISTANCE = 120.0;			//Distance at which the Grim Reaper will unleash its attack if it is ready.
+static float GRIMREAPER_ATTACK_RANGE = 120.0;				//The range of the attack.
+static float GRIMREAPER_ATTACK_WIDTH = 100.0;				//The width of the attack.
+static float GRIMREAPER_ATTACK_DISTANCE = 100.0;			//Distance at which the Grim Reaper will unleash its attack if it is ready.
 static float GRIMREAPER_ATTACK_DAMAGE_TARGET = 99999999.0;	//Damage dealt to the attack's intended target.
 static float GRIMREAPER_ATTACK_DAMAGE = 500.0;				//Damage dealt to everyone else who is hit by the attack.
 static float GRIMREAPER_ATTACK_CHARGE_BEGIN = 600.0;		//Distance at which the Grim Reaper begins to raise its axe (this is purely cosmetic).
@@ -29,6 +29,7 @@ static float GRIMREAPER_ATTACK_SPEED = 1.0;					//Attack animation speed multipl
 static float GRIMREAPER_ATTACK_MIN_AXE_RAISE = 0.95;		//Minimum percentage the axe must be raised in order to attack.
 static int GRIMREAPER_ATTACK_MAXTARGETS = 12;				//Maximum targets hit at once by the attack.
 static float GRIMREAPER_ATTACK_AFTER_TELEPORT = 1.5;		//Duration to prevent the Reaper from attacking after it teleports.
+static float GRIMREAPER_WHIFF_STUN_DURATION = 8.0;			//Duration to stun The Reaper if it somehow misses its intended target when it swings.
 
 static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper raises/lowers its axe per frame. Example: 0.01 means it raises its axe 1% every frame.
 
@@ -56,6 +57,7 @@ static bool b_Attacking[2049] = { false, ...};
 #define SND_REAPER_ATTACK_HIT		")weapons/halloween_boss/knight_axe_hit.wav"
 #define SND_REAPER_ATTACK_KILL		")misc/halloween/strongman_bell_01.wav"
 #define SND_REAPER_SAFE_FOR_NOW		")misc/halloween_eyeball/vortex_eyeball_moved.wav"
+#define SND_REAPER_TRICKED			")misc/achievement_earned.wav"
 
 static const char g_DeathSounds[][] = {
 	"ambient_mp3/halloween/male_scream_07.mp3",
@@ -86,6 +88,7 @@ void GrimReaper_OnMapStart_NPC()
 	PrecacheSound(SND_REAPER_ATTACK_KILL);
 	PrecacheSound(SND_REAPER_ATTACK_IMMINENT);
 	PrecacheSound(SND_REAPER_SAFE_FOR_NOW);
+	PrecacheSound(SND_REAPER_TRICKED);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Reaper");
@@ -563,6 +566,7 @@ void Reaper_AttackLogic(DataPack pack)
 		npc.DoSwingTrace(swingTrace, npc.m_iTarget, swingMaxs, swingMins, _, 1, 1, GRIMREAPER_ATTACK_MAXTARGETS);
 		delete swingTrace;
 
+		bool hitTarget = false;
 		for (int i = 1; i <= GRIMREAPER_ATTACK_MAXTARGETS; i++)
 		{
 			if (i_EntitiesHitAoeSwing_NpcSwing[i] > 0)
@@ -577,6 +581,7 @@ void Reaper_AttackLogic(DataPack pack)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, GRIMREAPER_ATTACK_DAMAGE_TARGET, DMG_CLUB|DMG_TRUEDAMAGE, -1, _, vecHit);
 						EmitSoundToAll(SND_REAPER_ATTACK_KILL, target, _, 120, _, _, GetRandomInt(40, 60));
+						hitTarget = true;
 					}
 					else
 					{
@@ -586,6 +591,26 @@ void Reaper_AttackLogic(DataPack pack)
 					EmitSoundToAll(SND_REAPER_ATTACK_HIT, target, _, 120, _, _, GetRandomInt(80, 100));
 				}
 			} 
+		}
+
+		if (!hitTarget)
+		{
+			if (IsValidClient(npc.m_iTarget))
+			{
+				float HudY = -1.0;
+				float HudX = -1.0;
+				SetHudTextParams(HudX, HudY, 2.0, 120, 255, 200, 255);
+				SetGlobalTransTarget(npc.m_iTarget);
+				ShowSyncHudText(npc.m_iTarget,  SyncHud_Notifaction, "%t", "Reaper Tricked Alert");
+
+				EmitSoundToClient(npc.m_iTarget, SND_REAPER_TRICKED);
+			}
+
+			npc.m_iTarget = -1;
+
+			ApplyStatusEffect(npc.index, npc.index, "Stunned", GRIMREAPER_WHIFF_STUN_DURATION);
+			EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
+			EmitSoundToAll(SND_REAPER_TRICKED, npc.index);
 		}
 
 		damageAt = 9999999.0;
