@@ -242,13 +242,7 @@ public any Native_GetSpecialMode(Handle plugin, int numParams)
 		{
 			return Mode_Rogue2;
 		}
-		else if(Rogue_Theme() == 2)
-		{
-			return Mode_Rogue3;
-		}
 	}
-	if(BetWar_Mode())
-		return Mode_BetWars;
 	
 	return Mode_Standard;	
 }
