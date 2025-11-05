@@ -1105,7 +1105,7 @@ void ZR_ClientPutInServer(int client)
 	CheckAllClientPrefs(client);
 
 	//if someone joints mid waves, make them buy atleast 70% of the cash before being allowed to play.
-	if(!Waves_Started())
+	if(!Waves_Started() && !BetWar_Mode() && !Rogue_Mode() && !Construction_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
 	else
 		b_AntiLateSpawn_Allow[client] = false;
