@@ -17,7 +17,7 @@ static float GRIMREAPER_SPEED_LOSS = 450.0;			//The maximum amount of speed the 
 //The Grim Reaper charges up a devastating melee attack as it approaches its target. 
 //This attack has extended range and a wide hitbox, and can hit multiple enemies at once.
 //It deals heavy damage to everything it hits, as well as bonus damage against the Reaper's intended target (meant to instakill the intended target).
-static float GRIMREAPER_ATTACK_RANGE = 120.0;				//The range of the attack.
+static float GRIMREAPER_ATTACK_RANGE = 140.0;				//The range of the attack.
 static float GRIMREAPER_ATTACK_WIDTH = 100.0;				//The width of the attack.
 static float GRIMREAPER_ATTACK_DISTANCE = 100.0;			//Distance at which the Grim Reaper will unleash its attack if it is ready.
 static float GRIMREAPER_ATTACK_DAMAGE_TARGET = 99999999.0;	//Damage dealt to the attack's intended target.
@@ -566,7 +566,7 @@ void Reaper_AttackLogic(DataPack pack)
 		npc.DoSwingTrace(swingTrace, npc.m_iTarget, swingMaxs, swingMins, _, 1, 1, GRIMREAPER_ATTACK_MAXTARGETS);
 		delete swingTrace;
 
-		bool hitTarget = false;
+		bool hitTarget = !IsValidClient(npc.m_iTarget);		//Count as true by default if the target is not a player, that way The Reaper can't stun himself if he misses an NPC.
 		for (int i = 1; i <= GRIMREAPER_ATTACK_MAXTARGETS; i++)
 		{
 			if (i_EntitiesHitAoeSwing_NpcSwing[i] > 0)
