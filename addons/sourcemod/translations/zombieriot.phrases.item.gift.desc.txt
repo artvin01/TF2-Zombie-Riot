@@ -2371,7 +2371,7 @@
 	}
 	"Skeletal Squire Desc"
 	{
-		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep. Did it work out for him?\nHe's a resident of Necropolis now, so take a wild guess."
+		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep.\nDid it work out for him? He's a resident of Necropolis now, so take a wild guess."
 	}
 	"Knightmare Desc"
 	{
