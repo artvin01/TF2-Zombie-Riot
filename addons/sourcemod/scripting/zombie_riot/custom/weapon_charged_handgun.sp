@@ -144,7 +144,7 @@ public void Weapon_IEM_Launcher_PAP_Star(int client, int weapon, bool crit, int 
 		else 
 		{
 			float flMultiplier = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime"); // 4.0 is the default one
-			if (!FireWeaponTry_IEM(client, 200, flMultiplier, -0.05))
+			if (!FireWeaponTry_IEM(client, 100, flMultiplier, -0.05))
 			{
 				return;
 			}
