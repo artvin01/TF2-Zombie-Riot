@@ -862,6 +862,7 @@ methodmap Stella < CClotBody
 		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 		//9 is used by a special item.
 		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 16777215);
 
 		SetVariantInt(RUINA_STELLA_CREST);
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");

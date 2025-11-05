@@ -379,8 +379,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					int ElementalDamage = RoundToNearest(200.0 * Scaling);
-					float damageDealt = 550.0 * Scaling;
+					int ElementalDamage = RoundToNearest(150.0 * Scaling);
+					float damageDealt = 400.0 * Scaling;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
@@ -412,8 +412,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				npc.FaceTowards(vPredictedPos, 15000.0);
 				
 				npc.PlayRangedSound();
-				int ElementalDamage = RoundToNearest(350.0 * Scaling);
-				float damageDealt = 350.0 * Scaling;
+				int ElementalDamage = RoundToNearest(150.0 * Scaling);
+				float damageDealt = 250.0 * Scaling;
 
 				int entity = npc.FireArrow(vPredictedPos, damageDealt, projectile_speed, "models/props_halloween/eyeball_projectile.mdl");
 				i_ChaosArrowAmount[entity] = ElementalDamage;

@@ -1387,6 +1387,7 @@ public void ARIS_ShootGun(ARIS npc)
 				// Array netprop, but we only need element 0 anyway
 				SetEntPropEnt(particle, Prop_Send, "m_hControlPointEnts", npc.m_iWearable1, 0);
 				SetEntProp(particle, Prop_Send, "m_iControlPointParents", npc.m_iWearable1, _, 0);
+				CreateMediArmorBeam(target, npc.index);
 			}
 		}
 	}
@@ -1662,4 +1663,43 @@ static bool ARIS_LoseConditions(int iNPC)
 	}
 
 	return false;
+}
+
+
+
+void CreateMediArmorBeam(int ToEntity, int FromEntity)
+{
+	float vecTarget[3];
+	WorldSpaceCenter(FromEntity, vecTarget);
+	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_machinery", 0.0, false);
+	
+	SetParent(FromEntity, particle, "", _, true);
+
+	CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+	
+	WorldSpaceCenter(ToEntity, vecTarget);
+
+	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_machinery", 0.0, false);
+
+	SetParent(ToEntity, particle2, "", _, true);
+
+	CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(1.0, Timer_StopEmitting, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+
+	SetEntPropEnt(particle2, Prop_Send, "m_hControlPointEnts", particle, 0);
+	SetEntProp(particle2, Prop_Send, "m_iControlPointParents", particle, _, 0);
+
+	ActivateEntity(particle2);
+	AcceptEntityInput(particle2, "start");
+}
+
+public Action Timer_StopEmitting(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		ActivateEntity(entity);
+		AcceptEntityInput(entity, "stop");
+	}
+	return Plugin_Stop;
 }

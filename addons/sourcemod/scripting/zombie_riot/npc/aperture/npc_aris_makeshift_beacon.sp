@@ -254,7 +254,27 @@ void ARISBeacon_GiveArmor(int entity, int victim, float &healingammount)
 		case ARIS_MELEE_RESISTANCE: ApplyStatusEffect(entity, victim, "A.R.I.S. ARMOR MODE", 0.6);
 		case ARIS_MELEE_DAMAGE: ApplyStatusEffect(entity, victim, "A.R.I.S. DAMAGE MODE", 0.6);
 		case ARIS_MELEE_SPEED: ApplyStatusEffect(entity, victim, "A.R.I.S. SPEED MODE", 0.6);
+
 	}
+	
+	int red = 100;
+	int green = 255;
+	int blue = 100;
+	int Alpha = 125;
+
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	float diameter = 100.0;
+	float vecPos[3];
+	WorldSpaceCenter(entity, vecPos);
+	float vecAlly[3];
+	WorldSpaceCenter(victim, vecAlly);
+	TE_SetupBeamPoints(vecPos, vecAlly, Shared_BEAM_Laser, 0, 0, 0, 0.25, ClampBeamWidth(diameter * 0.9), ClampBeamWidth(diameter * 0.9), 0, 3.0, colorLayer1, 0);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(vecPos, vecAlly, Shared_BEAM_Laser, 0, 0, 0, 0.25, ClampBeamWidth(diameter * 0.7), ClampBeamWidth(diameter * 0.7), 0, 6.0, colorLayer4, 0);
+	TE_SendToAll(0.0);
 }
 
 public Action ARISBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

@@ -1092,6 +1092,17 @@ void NPC_ConfigSetup()
 	Umbral_Automaton_OnMapStart_NPC();
 	OmegaFollower_Setup();
 	
+	VhxisFollower_Setup();
+	Shadow_FloweringDarkness_OnMapStart_NPC();
+	Shadowing_Darkness_Boss_OnMapStart_NPC();
+	TornUmbralGate_OnMapStart_NPC();
+	Umbral_WF_OnMapStart_NPC();
+	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
+	Umbral_Rouam_OnMapStart_NPC();
+	WinTimer_MapStart();
+	SensalFollower_Setup();
+	OverlordFollower_Setup();
+	
 	#if defined BONEZONE_BASE
 	BasicBones_OnMapStart_NPC();
 	BeefyBones_OnMapStart_NPC();
@@ -1132,16 +1143,6 @@ void NPC_MapEnd()
 	SSB_DeleteAbilities();
 	SSBChair_DeleteAbilities();
 	#endif
-	VhxisFollower_Setup();
-	Shadow_FloweringDarkness_OnMapStart_NPC();
-	Shadowing_Darkness_Boss_OnMapStart_NPC();
-	TornUmbralGate_OnMapStart_NPC();
-	Umbral_WF_OnMapStart_NPC();
-	AlliedWarpedCrystal_Visualiser_OnMapStart_NPC();
-	Umbral_Rouam_OnMapStart_NPC();
-	WinTimer_MapStart();
-	SensalFollower_Setup();
-	OverlordFollower_Setup();
 }
 
 int NPC_Add(NPCData data)

@@ -88,6 +88,15 @@ Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 Function FuncShowInteractHud[MAXENTITIES];
 
+enum struct WearableColor
+{
+	int color;
+	int wearableRef;
+	ArrayList entities;
+}
+
+ArrayList h_ColoredWearables;
+
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 #define NPC_DEFAULT_YAWRATE 225.0
@@ -267,6 +276,12 @@ static char m_cGibModelSkeleton[][] = {
     "models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
     "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
 };
+
+void NPCStats_PluginStart()
+{
+	h_ColoredWearables = new ArrayList(sizeof(WearableColor));
+	CreateTimer(5.0, NPCStats_Timer_HandlePaintedWearables, _, TIMER_REPEAT);
+}
 
 void OnMapStart_NPC_Base()
 {
@@ -11931,4 +11946,173 @@ void StuckFixNpc_Ledge(CClotBody npc, bool TeleportDo = true, int LaunchForward 
 	}
 	npc.SetVelocity(Vectorspeed);
 	SetEntPropFloat(npc.index, Prop_Data, "f_JumpedRecently", GetGameTime() + 0.5);
+}
+
+/*
+https://steamcommunity.com/sharedfiles/filedetails/?id=1911160067
+
+Website for own RGB stuff:
+https://www.webfx.com/web-design/color-picker/?colorcode=E7B53B
+http://www.shodor.org/stella2java/rgbint.html
+
+Here is a table of RGB integer values for the paints in TF2:
+Indubitably Green
+7511618
+Zepheniah's Greed
+4345659
+Noble Hatter's Violet
+5322826
+Color No. 216-190-216
+14204632
+A deep Commitment to Purple
+8208497
+Mann Co. Orange
+13595446
+Muskelmannbraun
+10843461
+Peculiarly Drab Tincture
+12955537
+Radigan Conagher Brown
+6901050
+Ye Olde Rustic Colour
+8154199
+Australium Gold
+15185211
+Aged Moustache Grey
+8289918
+An Extraordinary Abundance of Tinge
+15132390
+A Distinctive Lack of Hue
+1315860
+Pink as Hell
+16738740
+A Color Similar to Slate
+3100495
+Drably Olive
+8421376
+The Bitter Taste of Defeat and Lime
+3329330
+The Color of a Gentlemann's Business Pants
+15787660
+Dark Salmon Injustice
+15308410
+Mann's Mint
+12377523
+After Eight
+2960676
+Team Spirit (RED)
+12073019
+Team Spirit (BLU)
+5801378
+Operator's Overalls (RED)
+4732984
+Operator's Overalls (BLU)
+3686984
+Waterlogged Lab Coat (RED)
+11049612
+Waterlogged Lab Coat (BLU)
+8626083
+Balaclavas are Forever (RED)
+3874595
+Balaclavas are Forever (BLU)
+1581885
+The Value of Teamwork (RED)
+8400928
+The Value of Teamwork (BLU)
+2452877
+Cream Spirit (RED)
+12807213
+Cream Spirit (BLU)
+12091445
+An Air of Debonair (RED)
+6637376
+An Air of Debonair (BLU)
+2636109
+*/
+int NpcColourCosmetic_ViaPaint(int entity, int color, bool halloweenSpell = false)
+{
+	// To paint NPC cosmetics a certain color, we need an econ entity painted this color, then make the econ entity own the NPC cosmetic entity
+	// To avoid creating many edicts, only create one econ entity per color, then reuse it in case other cosmetics use the same color
+	
+	WearableColor wearableColor;
+	wearableColor.wearableRef = INVALID_ENT_REFERENCE;
+	
+	int index = h_ColoredWearables.FindValue(color);
+	if (index != -1)
+	{
+		h_ColoredWearables.GetArray(index, wearableColor);
+		if (IsValidEntity(wearableColor.wearableRef))
+		{
+			// Found an econ entity using this color, reuse it
+			SetEntityOwner(entity, wearableColor.wearableRef);
+			wearableColor.entities.Push(EntIndexToEntRef(entity));
+			return wearableColor.wearableRef;
+		}
+		else
+		{
+			// This can happen if the wearable was deleted by something out of our control
+			// and the color handler hasn't been updated yet
+			return -1;
+		}
+	}
+	
+	// We have yet to use this color, create an econ entity for this
+	int Wearable = CreateEntityByName("tf_wearable");
+	if(Wearable == -1)
+		return -1;
+	
+	SetEntProp(Wearable, Prop_Send, "m_bInitialized", true);
+	TF2Attrib_SetByName(Wearable, halloweenSpell ? "SPELL: set item tint RGB" : "set item tint RGB", float(color));
+	SetEntityOwner(entity, Wearable);
+	DispatchSpawn(Wearable);
+	ActivateEntity(Wearable);	
+	SetEdictFlags(Wearable, GetEdictFlags(Wearable) | FL_EDICT_ALWAYS);
+	b_IsEntityAlwaysTranmitted[Wearable] = true;
+	
+	wearableColor.color = color;
+	wearableColor.wearableRef = EntIndexToEntRef(Wearable);
+	
+	wearableColor.entities = new ArrayList();
+	wearableColor.entities.Push(EntIndexToEntRef(entity));
+	
+	h_ColoredWearables.PushArray(wearableColor);
+	
+	return Wearable;
+}
+
+Action NPCStats_Timer_HandlePaintedWearables(Handle timer)
+{
+	NPCStats_HandlePaintedWearables();
+	return Plugin_Continue;
+}
+
+void NPCStats_HandlePaintedWearables()
+{
+	// Check if each color is still being used by a cosmetic
+	for (int i = h_ColoredWearables.Length - 1; i >= 0; i--)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		
+		bool foundValidEntity;
+		
+		// This color is still being used, but are the cosmetics in here still valid?
+		for (int j = wearableColor.entities.Length - 1; j >= 0; j--)
+		{
+			if (IsValidEntity(wearableColor.entities.Get(j)))
+				foundValidEntity = true;
+			else
+				wearableColor.entities.Erase(j);
+		}
+		
+		// None of the cosmetics using this color are valid, we can erase this color from the list
+		if (!foundValidEntity)
+		{
+			if (IsValidEntity(wearableColor.wearableRef))
+				RemoveEntity(wearableColor.wearableRef);
+			
+			delete wearableColor.entities;
+			h_ColoredWearables.Erase(i);
+		}
+	}
 }
