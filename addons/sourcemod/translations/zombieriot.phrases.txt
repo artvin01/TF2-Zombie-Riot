@@ -4935,4 +4935,13 @@
 		"en"		"You removed the current perk as you had it before when selecting it."
 		"it"		"Quando lo si seleziona, si rimuove l'abilità corrente che si aveva in precedenza."
 	}
+	"Reiuji Not Enough Mana"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Not Enough Mana To use MultiShot You need {1} Mana!\nReverting to base wand!"
+	}
+	"No Targets Detected"
+	{
+		"en"	"No Targets Detected"
+	}
 }

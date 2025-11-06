@@ -2205,7 +2205,7 @@ static Action Projectile_ParticleCannonThink(int entity)
 }
 //since homing only sets speeds every 0.1s and this is a every tick operation, in some instances the projectile will have uneven acceleration, and even won't accelerate fully.
 //as such, we need to also manually set the speed real time every tick.
-static void SetProjectileSpeed(int projectile, float speed, float angles[3])
+void SetProjectileSpeed(int projectile, float speed, float angles[3])
 {
 	float forward_direction[3];
 	GetAngleVectors(angles, forward_direction, NULL_VECTOR, NULL_VECTOR);
