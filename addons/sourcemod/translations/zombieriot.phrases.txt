@@ -1035,7 +1035,7 @@
 	}
 	"Reaper Tricked Alert"
 	{
-		"en"		"You've tricked death!"
+		"en"		"You've cheated death!"
 	}
 	"Rusty Ability Blocked"
 	{

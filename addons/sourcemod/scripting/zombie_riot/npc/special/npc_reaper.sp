@@ -26,11 +26,11 @@ static float GRIMREAPER_ATTACK_DAMAGE = 500.0;				//Damage dealt to everyone els
 static float GRIMREAPER_ATTACK_CHARGE_BEGIN = 600.0;		//Distance at which the Grim Reaper begins to raise its axe (this is purely cosmetic).
 static float GRIMREAPER_ATTACK_INTERVAL = 2.0;				//Time between attacks. Note that 1.0 is always added to this, because that is the duration of the attack animation.
 static float GRIMREAPER_ATTACK_TIME	= 0.375;				//Time after the attack animation begins at which the attack will deal damage.
-static float GRIMREAPER_ATTACK_SPEED = 1.0;					//Attack animation speed multiplier. This affects interval and hit time.
+static float GRIMREAPER_ATTACK_SPEED = 0.875;				//Attack animation speed multiplier. This affects interval and hit time.
 static float GRIMREAPER_ATTACK_MIN_AXE_RAISE = 0.95;		//Minimum percentage the axe must be raised in order to attack.
 static int GRIMREAPER_ATTACK_MAXTARGETS = 12;				//Maximum targets hit at once by the attack.
 static float GRIMREAPER_ATTACK_AFTER_TELEPORT = 1.5;		//Duration to prevent the Reaper from attacking after it teleports.
-static float GRIMREAPER_WHIFF_STUN_DURATION = 4.0;			//Duration to stun The Reaper if it somehow misses its intended target when it swings.
+static float GRIMREAPER_WHIFF_STUN_DURATION = 8.0;			//Duration to stun The Reaper if it somehow misses its intended target when it swings.
 
 static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper raises/lowers its axe per frame. Example: 0.01 means it raises its axe 1% every frame.
 
@@ -42,8 +42,10 @@ static float GRIMREAPER_TELEPORT_INTERVAL = 0.32;		//Every X% of its max HP the 
 static float f_AxeRaiseValue[2049] = { 0.0, ... };
 static float f_DamageSinceLastTeleport[2049] = { 0.0, ... };
 static float f_ReaperCanAttackAt[2049] = { 0.0, ... };
+static float f_ReaperStunned[2049] = { 0.0, ... };
 static bool b_AboutToAttack[2049] = { false, ... };
 static bool b_Attacking[2049] = { false, ...};
+static bool b_ReaperNeedsSpecialEyes[2049] = { false, ...};
 
 #define GRIMREAPER_AURA					"utaunt_cremation_black_parent"
 #define GRIMREAPER_EYES					"raygun_projectile_blue"
@@ -51,6 +53,7 @@ static bool b_Attacking[2049] = { false, ...};
 #define GRIMREAPER_DEATH				"skull_island_explosion"
 #define GRIMREAPER_TELEPORT_START		"eyeboss_tp_player"
 #define GRIMREAPER_TELEPORT_END			"ghost_appearation"
+#define GRIMREAPER_STUNNED				"merasmus_dazed"
 
 #define SND_REAPER_LOOP				")ambient/halloween/underground_wind_lp_03.wav"
 #define SND_REAPER_SWING			")misc/halloween/strongman_fast_whoosh_01.wav"
@@ -170,6 +173,7 @@ methodmap GrimReaper < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
+		f_ReaperStunned[npc.index] = 0.0;
 		
 		npc.m_iBleedType = STEPTYPE_NONE;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -215,6 +219,7 @@ methodmap GrimReaper < CClotBody
 		b_AboutToAttack[npc.index] = false;
 		b_Attacking[npc.index] = false;
 		b_NpcIgnoresbuildings[npc.index] = true;
+		b_ReaperNeedsSpecialEyes[npc.index] = false;
 		f_DamageSinceLastTeleport[npc.index] = 0.0;
 		f_ReaperCanAttackAt[npc.index] = 0.0;
 		ApplyStatusEffect(npc.index, npc.index, "Challenger", 99999999.0);
@@ -265,6 +270,9 @@ static void Reaper_CalculateSpeed(GrimReaper npc)
 
 static void Reaper_AttachEyeParticles(int entity, bool aboutToAttack = false)
 {
+	if (GetGameTime(entity) <= f_ReaperStunned[entity])
+		return;
+
 	GrimReaper npc = view_as<GrimReaper>(entity);
 
 	if (IsValidEntity(npc.m_iWearable1))
@@ -290,7 +298,7 @@ public void Reaper_AdjustAxePose(int ref)
 
 	GrimReaper npc = view_as<GrimReaper>(ent);
 
-	if (!b_Attacking[ent] && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack && GetGameTime(npc.index) >= f_ReaperCanAttackAt[npc.index])
+	if (!b_Attacking[ent] && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack && GetGameTime(npc.index) >= f_ReaperCanAttackAt[npc.index] && GetGameTime(npc.index) > f_ReaperStunned[npc.index])
 	{
 		if (!IsValidEnemy(npc.index, npc.m_iTarget))
 			npc.MoveToAxeRaisePose(GRIMREAPER_AXE_RAISE_SPEED, 0.0);
@@ -373,6 +381,7 @@ static void Reaper_SetTarget(GrimReaper npc, int targetOverride = -1)
 	}
 
 	npc.m_iTarget = target;
+	npc.StartPathing();
 }
 
 static void Reaper_Think(int iNPC)
@@ -382,12 +391,25 @@ static void Reaper_Think(int iNPC)
 	{
 		return;
 	}
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
+	}
+
+	if (GetGameTime(npc.index) <= f_ReaperStunned[npc.index])
+	{
+		npc.StopPathing();
+		return;
+	}
+
+	if (b_ReaperNeedsSpecialEyes[npc.index])
+	{
+		Reaper_AttachEyeParticles(npc.index);
+		b_ReaperNeedsSpecialEyes[npc.index] = false;
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
@@ -440,7 +462,7 @@ static void Reaper_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	}
 
 	f_DamageSinceLastTeleport[npc.index] += damage;
-	if (f_DamageSinceLastTeleport[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * GRIMREAPER_TELEPORT_INTERVAL) && !NpcStats_IsEnemySilenced(npc.index))
+	if (f_DamageSinceLastTeleport[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * GRIMREAPER_TELEPORT_INTERVAL) && GetGameTime(npc.index) >= f_ReaperStunned[npc.index] && !HasSpecificBuff(npc.index, "Stunned"))
 	{
 		f_DamageSinceLastTeleport[npc.index] = 0.0;
 		f_ReaperCanAttackAt[npc.index] = GetGameTime(npc.index) + GRIMREAPER_ATTACK_AFTER_TELEPORT;
@@ -614,11 +636,23 @@ void Reaper_AttackLogic(DataPack pack)
 				EmitSoundToClient(npc.m_iTarget, SND_REAPER_TRICKED);
 			}
 
-			npc.m_iTarget = -1;
+			if (IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
 
-			ApplyStatusEffect(npc.index, npc.index, "Stunned", GRIMREAPER_WHIFF_STUN_DURATION);
+			if (IsValidEntity(npc.m_iWearable2))
+				RemoveEntity(npc.m_iWearable2);
+
+			f_ReaperStunned[npc.index] = GetGameTime(npc.index) + GRIMREAPER_WHIFF_STUN_DURATION;
+			b_ReaperNeedsSpecialEyes[npc.index] = true;
 			EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
 			EmitSoundToAll(SND_REAPER_TRICKED, npc.index);
+
+			float pos[3];
+			npc.GetAbsOrigin(pos);
+			pos[2] += 90.0;
+			int particle = ParticleEffectAt_Parent(pos, GRIMREAPER_STUNNED, npc.index, "root");
+			if (IsValidEntity(particle))
+				CreateTimer(GRIMREAPER_WHIFF_STUN_DURATION, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		damageAt = 9999999.0;

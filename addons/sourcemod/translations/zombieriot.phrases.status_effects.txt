@@ -1775,7 +1775,7 @@
 	}
 	"Challenger Desc"
 	{
-		"en"	"NPCs only: takes {green}double{default} damage from its current target, but all other damage taken is {red}halved{default}."
+		"en"	"NPCs only: takes double damage from its current target, but all other damage taken is halved."
 	}
 	"Plasmatized Lethalitation Desc"
 	{
