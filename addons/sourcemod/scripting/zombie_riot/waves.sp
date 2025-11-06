@@ -3605,8 +3605,18 @@ static void UpdateMvMStatsFrame()
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
+		static int maxCount;
+		if(!maxCount)
+		{
+			int size1, size2;
+			WaveSizeLimit(size1, size2);
+			maxCount = size1 + size2;
+		}
+
+		PrintToChatAll("UpdateMvMStatsFrame::%d", maxCount);
+
 		a = 0;
-		for(int b; b < 24; )
+		for(int b; b < maxCount; )
 		{
 			// Out of enemies, blank out rest
 			if(a >= sizeof(id))
@@ -3624,7 +3634,7 @@ static void UpdateMvMStatsFrame()
 			}
 
 			// Rest of enemies to fill the meter
-			if(b == 23)
+			if(b == (maxCount - 1))
 			{
 				int leftovers = count[a];
 
@@ -3860,7 +3870,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 	}
 }
 
-void Waves_SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
+static int WaveSizeLimit(int &asize1 = 0, int &asize2 = 0, int &aname1 = 0, int &aname2 = 0)
 {
 	static int size1, size2, name1, name2;
 
@@ -3875,6 +3885,19 @@ void Waves_SetWaveClass(int objective, int index, int count = 0, const char[] ic
 	
 	if(!name2)
 		name2 = GetEntSendPropOffs(objective, "m_iszMannVsMachineWaveClassNames2", true);
+	
+	asize1 = size1;
+	asize2 = size2;
+	aname1 = name1;
+	aname2 = name2;
+}
+
+void Waves_SetWaveClass(int objective, int index, int count = 0, const char[] icon = "", int flags = 0, bool active = false)
+{
+	static int size1, size2, name1, name2;
+
+	if(!size1)
+		WaveSizeLimit(size1, size2, name1, name2);
 
 	if(index < size1)
 	{
