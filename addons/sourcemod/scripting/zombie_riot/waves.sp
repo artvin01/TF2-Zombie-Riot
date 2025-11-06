@@ -3617,7 +3617,7 @@ static void UpdateMvMStatsFrame()
 			}
 
 			// No enemy slotted here
-			if(!id[a] || !active[a])
+			if(!id[a] || !count[a])
 			{
 				a++;
 				continue;
