@@ -3622,6 +3622,21 @@ static void UpdateMvMStatsFrame()
 				a++;
 				continue;
 			}
+
+			// Rest of enemies to fill the meter
+			if(b == 23)
+			{
+				int count = count[a];
+
+				for(a++; a < sizeof(id); a++)
+				{
+					if(id[a])
+						count++;
+				}
+
+				Waves_SetWaveClass(objective, b, count, icon[a], flags[a], active[a]);
+				break;
+			}
 			
 			// Add enemy here
 			Waves_SetWaveClass(objective, b, count[a], icon[a], flags[a], active[a]);
