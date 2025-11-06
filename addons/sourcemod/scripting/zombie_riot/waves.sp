@@ -3631,7 +3631,7 @@ static void UpdateMvMStatsFrame()
 				for(a++; a < sizeof(id); a++)
 				{
 					if(id[a])
-						leftovers++;
+						leftovers += count[a];
 				}
 
 				Waves_SetWaveClass(objective, b, leftovers, icon[a], flags[a], active[a]);
