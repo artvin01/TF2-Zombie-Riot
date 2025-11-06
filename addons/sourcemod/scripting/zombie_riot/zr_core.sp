@@ -1109,6 +1109,9 @@ void ZR_ClientPutInServer(int client)
 		b_AntiLateSpawn_Allow[client] = true;
 	else
 		b_AntiLateSpawn_Allow[client] = false;
+
+	if(BetWar_Mode())
+		b_AntiLateSpawn_Allow[client] = true;
 }
 
 void ZR_ClientDisconnect(int client)
