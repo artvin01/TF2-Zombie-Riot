@@ -362,7 +362,7 @@ bool Waves_CallVote(int client, int force = 0)
 						MenuDo = ITEMDRAW_DEFAULT;
 					if(Level[client] >= 1)
 						MenuDo = ITEMDRAW_DEFAULT;
-					menu.AddItem(vote.Config, vote.Name);
+					menu.AddItem(vote.Config, vote.Name, MenuDo);
 				}
 			}
 		}
