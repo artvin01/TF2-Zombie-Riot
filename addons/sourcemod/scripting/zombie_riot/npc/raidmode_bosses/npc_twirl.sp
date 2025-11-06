@@ -280,17 +280,31 @@ methodmap Twirl < CClotBody
 
 		int laser;
 		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
-
-		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		if(IsValidEntity(laser))
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			
 		int loop_for = 4;
+
+		Predicted_Pos[2] +=100.0;
+
+		//float ring_min = Radius * 0.25;
+		//float ring_max = Radius * 0.75;
 		float Add_Height = 500.0/loop_for;
 		for(int i=0 ; i < loop_for ; i++)
 		{
+			float radius_ratio = 1.0 - (float(i)/float(loop_for));
+			if(radius_ratio<= 0.0)
+				radius_ratio = 0.001;
 			Predicted_Pos[2]+=Add_Height;
-			TE_SetupBeamRingPoint(Predicted_Pos, (Radius*2.0)/(i+1), 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, Tempcolor, 1, 0);
+			//float AdjustRadius = ring_min + (ring_max - ring_min) * radius_ratio;
+
+			//float AdjustRadius = Radius * (Pow(2.0, (Logarithm(radius_ratio))));
+
+			float AdjustRadius = Radius / (i + 2);
+			
+			TE_SetupBeamRingPoint(Predicted_Pos, AdjustRadius * 2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, Tempcolor, 1, 0);
 			TE_SendToAll();
 		}
-		
 	}
 	public bool Add_Combo(int amt)
 	{
@@ -2220,6 +2234,7 @@ static float Modify_Damage(int Target, float damage)
 
 	return damage;
 }
+static float fl_cosmic_gaze_animation_ratio;
 static float fl_cosmic_gaze_range = 1500.0;
 static float fl_cosmic_gaze_radius = 750.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
@@ -2255,14 +2270,15 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
-	float Windup = 2.0;
+	float Windup = 2.0;	//2.0
 	float Duration;
 	float Baseline = 1.75;
 
-	float Ratio = (Baseline/Windup);
+	float anim_ratio = (Baseline/Windup);
 
-	float anim_ratio = Ratio;
-	Duration = 1.3 * (Windup/Baseline);
+	Duration = 1.3 * anim_ratio;
+
+	fl_cosmic_gaze_animation_ratio = anim_ratio;
 
 	npc.m_bisWalking = false; 
 	npc.m_flDoingAnimation = GameTime + Duration + Windup + 0.2;
@@ -2353,7 +2369,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	{
 		if(!npc.m_bAnimationSet)
 		{
-			npc.SetPlaybackRate(0.25);
+			npc.SetPlaybackRate(0.25 * fl_cosmic_gaze_animation_ratio);
 
 			EmitSoundToAll(g_DefaultLaserLaunchSound[GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			EmitSoundToAll(g_DefaultLaserLaunchSound[GetRandomInt(0, sizeof(g_DefaultLaserLaunchSound) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
@@ -2463,7 +2479,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		else if(npc.m_flCosmicGazeDurationOffset != FAR_FUTURE)
 		{
 			npc.m_flCosmicGazeDurationOffset = FAR_FUTURE;
-			npc.SetPlaybackRate(1.36*0.72);
+			npc.SetPlaybackRate(1.36 * fl_cosmic_gaze_animation_ratio);
 
 			Ruina_Laser_Logic Laser;
 			Laser.client = npc.index;
@@ -3430,7 +3446,7 @@ static Action IonicFracture_Think(int iNPC)
 			Laser.DoForwardTrace_Custom(Angles, Origin, fl_ionic_fracture_range);
 
 			float distance = GetVectorDistance(Laser.Start_Point, Laser.End_Point);	//get the distance from start to end loc, adjust for what distance we want
-			float speed = distance / fl_ionic_fracture_charge_time;	//then adjust speed acordingly.
+			float speed = (distance / fl_ionic_fracture_charge_time) / ReturnEntityAttackspeed(npc.index);	//then adjust speed acordingly.
 			Projectile.speed = speed;
 			Projectile.Angles = Angles;
 			int projectile = Projectile.Launch_Projectile(FuncTwirlIonicFractalProjectileTouch);
@@ -3613,7 +3629,7 @@ static Action IonicFracture_ProjectileThink(int entity)
 			float Angles[3];
 			MakeVectorFromPoints(ProjectileLoc, Origin, Angles);
 			GetVectorAngles(Angles, Angles);
-			float speed = Distance / (fl_ionic_fracture_det_timer);
+			float speed = Distance / (fl_ionic_fracture_det_timer) / ReturnEntityAttackspeed(npc.index);
 			SetProjectileSpeed(entity, speed, Angles);
 			fl_BEAM_ChargeUpTime[entity] = 2.0;
 		}
