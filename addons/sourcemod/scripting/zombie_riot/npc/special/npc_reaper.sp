@@ -37,7 +37,7 @@ static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper
 static float REAPER_RANGED_MULTIPLIER = 1.0;		//Amount to multiply damage taken by the Reaper from ranged attacks.
 static float REAPER_MELEE_MULTIPLIER = 1.0;		//Amount to multiply damage taken by the Reaper from ranged attacks.
 
-static float GRIMREAPER_TELEPORT_INTERVAL = 0.32;		//Every X% of its max HP the Reaper loses, it will teleport to a random enemy.
+static float GRIMREAPER_TELEPORT_INTERVAL = 0.3;		//Every X% of its max HP the Reaper loses, it will teleport to a random enemy.
 
 static float f_AxeRaiseValue[2049] = { 0.0, ... };
 static float f_DamageSinceLastTeleport[2049] = { 0.0, ... };
