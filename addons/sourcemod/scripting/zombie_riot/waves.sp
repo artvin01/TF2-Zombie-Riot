@@ -3626,15 +3626,15 @@ static void UpdateMvMStatsFrame()
 			// Rest of enemies to fill the meter
 			if(b == 23)
 			{
-				int count = count[a];
+				int leftovers = count[a];
 
 				for(a++; a < sizeof(id); a++)
 				{
 					if(id[a])
-						count++;
+						leftovers++;
 				}
 
-				Waves_SetWaveClass(objective, b, count, icon[a], flags[a], active[a]);
+				Waves_SetWaveClass(objective, b, leftovers, icon[a], flags[a], active[a]);
 				break;
 			}
 			
