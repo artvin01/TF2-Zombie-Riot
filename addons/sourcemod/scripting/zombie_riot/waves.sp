@@ -3609,7 +3609,7 @@ static void UpdateMvMStatsFrame()
 		if(!maxCount)
 		{
 			int size1, size2;
-			WaveSizeLimit(size1, size2);
+			WaveSizeLimit(objective, size1, size2);
 			maxCount = size1 + size2;
 		}
 
@@ -3870,7 +3870,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 	}
 }
 
-static int WaveSizeLimit(int &asize1 = 0, int &asize2 = 0, int &aname1 = 0, int &aname2 = 0)
+static int WaveSizeLimit(int objective, int &asize1 = 0, int &asize2 = 0, int &aname1 = 0, int &aname2 = 0)
 {
 	static int size1, size2, name1, name2;
 
@@ -3897,7 +3897,7 @@ void Waves_SetWaveClass(int objective, int index, int count = 0, const char[] ic
 	static int size1, size2, name1, name2;
 
 	if(!size1)
-		WaveSizeLimit(size1, size2, name1, name2);
+		WaveSizeLimit(objective, size1, size2, name1, name2);
 
 	if(index < size1)
 	{
