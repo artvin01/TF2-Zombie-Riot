@@ -179,6 +179,20 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		return;
 	}
 
+	if (Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;	
+	}				
+
 	int pap = i_pap(weapon);
 
 	if(fl_barrage_charge[client] < fl_barrage_maxcharge[pap] && !CvarInfiniteCash.BoolValue)
@@ -189,6 +203,10 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
 		return;
 	}
+
+	Rogue_OnAbilityUse(client, weapon);
+	Ability_Apply_Cooldown(client, slot, 10.0);
+
 
 	int loop_for = i_max_barage[pap];
 	float tolerance_angle = fl_barrage_angles[pap];
@@ -324,12 +342,13 @@ public void Reiuji_Wand_AmmoMode(int client, int weapon, bool crit, int slot)
 void Reiuji_Wand_AmmomodeInternal(int client, int weapon, bool Toggle = false)
 {
 	int pap = i_pap(weapon);
+
 	if(i_ammo[client] > 0 && b_BarrageModeOn[client])
 	{
 		if(!Toggle)
 		{
-			i_ammo[client]--;
 			fl_ammo_timer[client] = GetGameTime() + fl_ammogain_timerbase[pap]*1.25;
+			i_ammo[client]--;
 		}
 
 		if(i_ammo[client] > 0)
@@ -340,6 +359,15 @@ void Reiuji_Wand_AmmomodeInternal(int client, int weapon, bool Toggle = false)
 	else 
 	{
 		Attributes_Set(weapon, 5, 1.0);
+		if(!Toggle)
+		{
+			float Offset = 0.35;
+			float GameTime = GetGameTime();
+			if(fl_ammo_timer[client] < GameTime + Offset)
+			{
+				fl_ammo_timer[client] = GameTime + Offset;
+			}
+		}
 	}
 }
 public void Reiuji_Wand_Primary_Attack(int client, int weapon, bool crit, int slot)
