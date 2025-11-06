@@ -20,7 +20,7 @@ void Randomizer_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Randomizer!");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_randomizer");
 	strcopy(data.Icon, sizeof(data.Icon), "unknown");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Mutation;
 	data.Func = ClotSummon;

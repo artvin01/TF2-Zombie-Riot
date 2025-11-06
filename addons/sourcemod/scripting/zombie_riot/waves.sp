@@ -3642,7 +3642,7 @@ static void UpdateMvMStatsFrame()
 						leftovers += count[a];
 				}
 
-				Waves_SetWaveClass(objective, b, leftovers, "critical", MVM_CLASS_FLAG_NORMAL, false);
+				Waves_SetWaveClass(objective, b, leftovers, "unknown", MVM_CLASS_FLAG_NORMAL, false);
 				break;
 			}
 			
@@ -3868,7 +3868,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 	}
 }
 
-static int WaveSizeLimit(int objective, int &asize1 = 0, int &asize2 = 0, int &aname1 = 0, int &aname2 = 0)
+static void WaveSizeLimit(int objective, int &asize1 = 0, int &asize2 = 0, int &aname1 = 0, int &aname2 = 0)
 {
 	static int size1, size2, name1, name2;
 
