@@ -3613,8 +3613,6 @@ static void UpdateMvMStatsFrame()
 			maxCount = size1 + size2;
 		}
 
-		PrintToChatAll("UpdateMvMStatsFrame::%d", maxCount);
-
 		a = 0;
 		for(int b; b < maxCount; )
 		{
@@ -3644,7 +3642,7 @@ static void UpdateMvMStatsFrame()
 						leftovers += count[a];
 				}
 
-				Waves_SetWaveClass(objective, b, leftovers, icon[a], flags[a], active[a]);
+				Waves_SetWaveClass(objective, b, leftovers, "critical", MVM_CLASS_FLAG_NORMAL, false);
 				break;
 			}
 			
