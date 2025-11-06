@@ -2275,7 +2275,7 @@
 	}
 	"Rattler Desc"
 	{
-		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nDon't tell them they would have lived if they didn't waste all the ammo in their shootout with the cops."
+		"en"		"• Transforms into Hollow Hitman when buffed.\n• Runs to the nearest target, then stops and unloads his entire clip on them when close enough.\n• Runs away to reload once out of ammo.\n \n\n''Sure, sure, my aim MIGHT be bad,'' says one Rattler, ''but does it REALLY matter when I have so many bullets?''\nThey would have lived if they didn't waste all of their ammo in their shootout with the cops."
 	}
 	"Hollow Hitman Desc"
 	{
@@ -2287,7 +2287,7 @@
 	}
 	"Spinal Slugger Desc"
 	{
-		"en"		"For as much as they love their bats, you'd expect Spinal Sluggers to have at least SOME love for baseball.\nTurns out, most of them don't even know what baseball is.\n''Baseball is a game?,'' asks one astonished Slugger, ''I thought that was the name of the company that makes these things.''"
+		"en"		"• Enters a rampage when below 35%% health, increasing speed, damage, and attack speed.\n \n\nFor as much as they love their bats, you'd expect Spinal Sluggers to have at least SOME love for baseball.\nTurns out, most of them don't even know what baseball is.\n''Baseball is a game?,'' asks one astonished Slugger, ''I thought that was the name of the company that makes these things.''"
 	}
 	"Godfather Grimme Desc"
 	{
@@ -2355,7 +2355,7 @@
 	}
 	"Bringer of Bones Desc"
 	{
-		"en"		"• Periodically casts necrotic energy from the sky, which summons Unpleasant Peasants.\n• Can only have 8 Peasants at once.\n \n\nSometimes, an Alakablaster will get bored of casting conventional spells, and will seek more bizarre ways to utilize their magical power.\nOr, they'll just be really, really lonely. Either way, they turn to necromancy."
+		"en"		"• Periodically casts necrotic energy from the sky, which summons random medieval skeletons.\n• Can only have 8 summons active at once.\n \n\nSometimes, an Alakablaster will get bored of casting conventional spells, and will seek more bizarre ways to utilize their magical power.\nOr, they'll just be really, really lonely. Either way, they turn to necromancy."
 	}
 	"Unpleasant Peasant Desc"
 	{
@@ -2367,11 +2367,11 @@
 	}
 	"Profaned Priest Desc"
 	{
-		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Heals and buffs all allies within a large radius.\n• When all non-healer allies have died, starts chasing enemies and summoning devastating necrotic airstrikes.\n \n\nMany dedicated their lives to worshipping religion. They seldom agreed on which religion was ''the right one'',\nbut if they agreed on anything, none were expecting to show up in Necropolis after they died."
+		"en"		"• EXTREMELY DANGEROUS UNIT!\n• Heals and buffs all allies within a large radius.\n• When all non-healer allies have died, starts chasing enemies and summoning devastating necrotic airstrikes.\n \n\nMany dedicated their lives to worshipping religion. They seldom agreed on which religion was ''the right one'',\nbut if they agreed on anything, none were expecting the afterlife to be Necropolis."
 	}
 	"Skeletal Squire Desc"
 	{
-		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep. Did it work out for him?\nWell, he's in the Necropolis Armed Forces now, so take a wild guess."
+		"en"		"• Transforms into Knightmare when buffed.\n \n\nThe common riff-raff of medieval armies: the noble squire.\nIs he great with his sword? Nope. Is he only there because being a peasant sucks? Yep.\nDid it work out for him? He's a resident of Necropolis now, so take a wild guess."
 	}
 	"Knightmare Desc"
 	{
@@ -2379,11 +2379,11 @@
 	}
 	"Lordread, Royal Executioner of Necropolis Desc"
 	{
-		"en"		"• Melee attack is guaranteed to down you, and will halve your downed HP.\n• Will periodically spin wildly, dealing rapid damage and drawing enemies in.\n• When at low health, can call upon a storm of lightning which summons allies.\n \n\nOne of the Four Great Rulers of Necropolis.\nA master warlock wielding a 600-kilogram axe.\nLordread is responsible for destroying Necropolains infected by Chaos."
+		"en"		"• Melee attack one-shots, and will halve your downed HP.\n• Can spin wildly, dealing rapid damage and drawing enemies in.\n• When at low health, will call upon lightning which summons allies.\n \n\nIn life, Lordread was a beloved warrior king, known for his skills as a master warlock.\nAs one of the Four Great Rulers of Necropolis, he is responsible for slaying those infected by Chaos."
 	}
 	"The Reaper Desc"
 	{
-		"en"		"• Deals catastrophic damage with his melee attack, which can hit multiple targets.\n• Will teleport near a random player at certain damage thresholds.\n• Ignores buildings, and becomes faster the further away his target is.\n \n\nOne of the Four Great Rulers of Necropolis.\nUnlike his fellow Rulers, The Reaper refused SSB's offer to lead his own army.\nHe must be REALLY confident..."
+		"en"		"• Melee deals huge damage and can hit multiple targets.\n• Teleports at certain HP thresholds.\n• Becomes faster the further away his target is.\n• Takes bonus damage from his target, but is resistant to all else.\n• Is stunned if his target dodges a melee swing.\n \n\nUnlike the other Great Rulers of Necropolis, The Reaper does not lead an army.\nHe must be REALLY confident... or really lazy."
 	}
 	"Supreme Spookmaster Bones Desc"
 	{
@@ -2391,11 +2391,11 @@
 	}
 	"Supreme Spookmaster Bones, Magistrate of the Dead Desc"
 	{
-		"en"		"• Summons an army every time he loses 1/4 of his max HP.\n• Invulnerable while an army is active.\n \n\nWhenever someone dies, they show up in a long queue, stripped of their skin and turned into a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
+		"en"		"• Summons up to 4 tombstones every time he loses 25%% of his max HP.\n• Tombstones summon skeletons, and provide invulnerability to SSB.\n\n \n\nWhen someone dies, they show up in a long queue as a skeleton.\nAt the front of this queue, SSB judges the recently-deceased, deciding whether they should be allowed\ninto Necropolis or turned away, doomed to wander purgatory alone for eternity."
 	}
 	"Supreme Spookmaster Bones, Eternal Master of the Damned Desc"
 	{
-		"en"		"SSB's job as ruler of the dead is really important, sure, but it gets really boring after the first couple million years.\nPoor guy doesn't even get holidays off; it's not like people magically stop dying on Christmas, after all.\nHe puts in all of this hard work to make Necropolis a good place, but the same few mortals keep coming back to life somehow.\nWhat a slap in the face! No wonder he snapped."
+		"en"		"SSB's job as ruler and judge of the dead is really important, sure, but it gets really boring after the first couple million years.\nPoor guy doesn't even get holidays off...\nHe puts in all of this hard work to make Necropolis a good place, but the same few medievalist mortals keep coming back to life somehow.\nWhat a slap in the face! No wonder he snapped."
 	}
 	"Agent John Desc"
 	{
