@@ -2594,8 +2594,8 @@ static Action Delayed_Explosion(Handle Timer, DataPack data)
 			TE_SendToAll(0.0);
 		}
 	}
-
-	Explode_Logic_Custom(Modify_Damage(-1, 60.0), iNPC, iNPC, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+	//the ability itself doesn't deal much damage, but what it does is it gives the target hit the telsar debuff.
+	Explode_Logic_Custom(Modify_Damage(-1, 60.0), iNPC, iNPC, -1, Loc, Radius, _, _, true, _, false, _, _, Cosmic_Gaze_Boom_OnHit);
 
 	return Plugin_Stop;
 }
@@ -2629,6 +2629,10 @@ static Action Timer_Repeat_Sound(Handle Timer, DataPack data)
 }
 static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int weapon)
 {
+	Twirl npc = view_as<Twirl>(entity);
+	
+	ApplyStatusEffect(npc.index, victim, "Teslar Shock", (npc.Anger ? 7.5 : 5.0));
+
 	if(IsValidClient(victim))
 		Client_Shake(victim, 0, 7.5, 7.5, 3.0);
 }
