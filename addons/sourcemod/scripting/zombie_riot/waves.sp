@@ -660,6 +660,7 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 		}
 
 		Voting = new ArrayList(sizeof(Vote));
+		int limit = CvarVoteLimit.IntValue;
 		
 		if(kv.GotoFirstSubKey())
 		{
@@ -675,7 +676,7 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 				Voting.PushArray(vote);
 
 				// If we're downloading via downloadstable, add every vote option to that
-				if(!autoSelect && !FileNetwork_Enabled())
+				if(!autoSelect && limit < 1 && !FileNetwork_Enabled())
 				{
 					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
 					KeyValues wavekv = new KeyValues("Waves");
@@ -694,10 +695,37 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 			kv.GoBack();
 		}
 
+		if(limit > 0)
+		{
+			for(int length = Voting.Length; length > limit; length--)
+			{
+				Voting.Erase(MapSeed % length);
+			}
+
+			if(!autoSelect && !FileNetwork_Enabled())
+			{
+				for(int i; i < limit; i++)
+				{
+					Voting.GetArray(i, vote);
+					
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+					KeyValues wavekv = new KeyValues("Waves");
+					wavekv.ImportFromFile(buffer);
+					bool CacheNpcs = false;
+					if(!FileNetworkLib_Installed())
+						CacheNpcs = true;
+					if(CvarFileNetworkDisable.IntValue >= FILENETWORK_ICONONLY)
+						CacheNpcs = true;
+					Waves_CacheWaves(wavekv, CacheNpcs);
+					delete wavekv;
+				}
+			}
+		}
+
 		kv.GoBack();
 	}
 
-	if(autoSelect == modifierOnly && kv.JumpToKey("Modifiers"))
+	if(CvarAutoSelectDiff.BoolValue == modifierOnly && kv.JumpToKey("Modifiers"))
 	{
 		if(kv.GotoFirstSubKey())
 		{
@@ -3324,11 +3352,11 @@ static void UpdateMvMStatsFrame()
 	float cashLeft, totalCash;
 
 	int activecount, totalcount;
-	int id[24];
-	int count[24];
-	int flags[24];
-	bool active[24];
-	static char icon[24][32];
+	int id[48];
+	int count[48];
+	int flags[48];
+	bool active[48];
+	static char icon[48][32];
 
 	if(Classic_Mode() && ProgressTimerEndAt)
 	{
@@ -3577,17 +3605,28 @@ static void UpdateMvMStatsFrame()
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
-		for(int i; i < sizeof(id); i++)
+		a = 0;
+		for(int b; b < 24; )
 		{
-			if(id[i])
+			// Out of enemies, blank out rest
+			if(a >= sizeof(id))
 			{
-				//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
-				Waves_SetWaveClass(objective, i, count[i], icon[i], flags[i], active[i]);
+				Waves_SetWaveClass(objective, b);
+				b++;
+				continue;
 			}
-			else
+
+			// No enemy slotted here
+			if(!id[a] || !active[a])
 			{
-				Waves_SetWaveClass(objective, i);
+				a++;
+				continue;
 			}
+			
+			// Add enemy here
+			Waves_SetWaveClass(objective, b, count[a], icon[a], flags[a], active[a]);
+			a++;
+			b++;
 		}
 	}
 
