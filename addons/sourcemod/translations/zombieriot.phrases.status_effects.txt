@@ -1769,6 +1769,14 @@
 		"en"	"Plasmatized Lethalitation"
 		"it"	"Letalità plasmata"
 	}
+	"Challenger"
+	{
+		"en"	"Challenger"
+	}
+	"Challenger Desc"
+	{
+		"en"	"NPCs only: takes double damage from its current target, but all other damage taken is halved."
+	}
 	"Plasmatized Lethalitation Desc"
 	{
 		"en" 	"Your next hit will deal more damage, and inflict MASSIVE Plasmic Elemental Damage.\nAbility receives more boosts based on pap level.\n{red}Buff is removed and the ability is put on cooldown after landing a hit."
