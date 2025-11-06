@@ -357,12 +357,12 @@ bool Waves_CallVote(int client, int force = 0)
 					if(levels)
 						Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
 
-					int MenuDo = ITEMDRAW_DISABLED;
-					if(!vote.Level)
-						MenuDo = ITEMDRAW_DEFAULT;
-					if(Level[client] >= 1)
-						MenuDo = ITEMDRAW_DEFAULT;
-					menu.AddItem(vote.Config, vote.Name, MenuDo);
+					//int MenuDo = ITEMDRAW_DISABLED;
+					//if(!vote.Level)
+					//	MenuDo = ITEMDRAW_DEFAULT;
+					//if(Level[client] >= 1)
+					//	MenuDo = ITEMDRAW_DEFAULT;
+					menu.AddItem(vote.Config, vote.Name);
 				}
 			}
 		}
