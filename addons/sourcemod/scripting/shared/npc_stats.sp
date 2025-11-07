@@ -7298,7 +7298,7 @@ static char m_cGibModelMetal[][] =
 	"models/gibs/scanner_gib01.mdl",
 	"models/gibs/metal_gib2.mdl"
 };
-void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
+void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
 	if(npc.m_iBleedType == 0)
@@ -7316,6 +7316,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		Limit_Gibs = true;
 	}
 	if(EnableSilentMode)
+		Limit_Gibs = true;
+
+	if(forcesilentMode)
 		Limit_Gibs = true;
 
 	if(npc.m_iBleedType == BLEEDTYPE_METAL)
