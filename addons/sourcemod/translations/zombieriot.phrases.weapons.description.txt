@@ -942,18 +942,18 @@
 	}
 	"Hammer Pap 3"
 	{
-		"en"	"Massively Increased damage"
+		"en"	"-Massively Increased damage"
 		"it"	"Aumento massiccio dei danni"
 	}
 	"Hammer Pap 4"
 	{
-		"en"	"Slightly faster swinging speed and increased damage.\nSwing speed will go up the more you hit the enemies"
+		"en"	"-Increased Attackspeed\n-Incrased damage\n-Attackspeed buffed on each hit upto a limit\n-Attackspeed buff fades if not hitting."
 		"it"	"Velocità di oscillazione leggermente più veloce e danni maggiori.\nLa velocità di oscillazione aumenterà quanto più si colpiscono i nemici"
 	}
 	
 	"Fire Axe Desc"
 	{
-		"en"	"You deal 50％ more damage to burning enemies."
+		"en"	"-Deals 50％ more damage to burning enemies."
 		"fr"	"50％ plus de dégats contre les ennemis en feu."
 		"ru"	"Вы наносите на 50％ больше урона горящим врагам."
 		"chi"   "你对燃烧的敌人造成的伤害提高50％。"
@@ -961,7 +961,7 @@
 	}
 	"Fire Axe Pap 1"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence des attaques améliorés"
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
@@ -969,18 +969,18 @@
 	}
 	"Fire Axe Pap 2"
 	{
-		"en"	"Increased damage and attackspeed\nWith M2 you ignite upto 5 targets around you.\nAfterburn damage bonus is now 20％ instead of 50％."
+		"en"	"-Increased damage\n-Increased attackspeed\n-M2 ignites 5 enemeis around you\n-Burn damage bonus reduced to 20％"
 		"it"	"Aumento dei danni e della velocità d'attacco Con M2 puoi incendiare fino a 5 bersagli intorno a te.\nIl bonus ai danni da postcombustione è ora di 20％ invece di 50％."
 	}
 	"Fire Axe Pap 3"
 	{
-		"en"	"Increased damage and attackspeed\nYour M2 now also shoots a fireball."
+		"en"	"-Increased damage\n-Increased attackspeed\n-M2 shoots a fireball aswell"
 		"it"	"Aumento dei danni e della velocità d'attacco\nLa tua M2 ora spara anche una palla di fuoco."
 	}
 	
 	"Survivalist Blade Desc"
 	{
-		"en"	"Can throw knifes with m2"
+		"en"	"-Throws knives that deal your damage on m2\n-Knives regenerate overtime"
 		"fr"	"Lancez des couteaux avec M2"
 		"ru"	"Может метать ножи при помощи М2."
 		"chi"   "按下M2投掷飞刀"
@@ -988,14 +988,14 @@
 	}
 	"Survivalist Blade Pap 1"
 	{
-		"en"	"Increased damage and attackspeed\nKnifes regen faster."
+		"en"	"-Increased damage\n-Increased attackspeed\n-Knives regenerate faster"
 		"fr"	"Dégats et cadence des attaques améliorés.\nRecevez des couteaux plus fréquemment."
 		"chi"   "增加伤害和攻击速度。\n加快飞刀恢复速度。"
 		"it"	"Aumento dei danni e della velocità d'attacco."
 	}
 	"Survivalist Blade Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, R Gives you rage which hurts you for 20％ of your maxhealth (cant kill you)\nbut you gain a 30％ faster attackspeed and 35％ damage resistance buff.\nDuring Rage you also have infinite throwable knives."
+		"en"	"-Increased damage\n-Increased attackspeed\n-R Buffs you with more damage and resistancebut sacrafices 20％ of your maxhealth(cant kill you)\n-During buff Ability, have infinite knives."
 		"fr"	"Dégats et cadence des attaques améliorés. Appuyez R pour échanger 20％ santé pour une Rage.\nLa Rage vous donne +30％ cadence des attaques et +35％ de résistance contre les dégats.\nLa Rage vous donne aussi infini couteaux."
 		"ru"	"Увелич. урона и скорости атаки, R - ярость, которая ранит вас на 20％ от вашего макс. здоровья (не может убить вас)\nно вы получаете эфф. 30％ быстрой скорости атаки и 35％ сопротивления урону.\nВо время ярости у вас также есть бесконечные метательные ножи."
 		"chi"   "增加伤害和攻击速度，R给你20％最大生命值的伤害加成(不会杀死你)\n但你获得30％的攻击速度和35%的抗伤buff。在愤怒期间，你也有无限的投掷刀。"
@@ -1003,12 +1003,12 @@
 	}
 	"Kunai Desc"
 	{
-		"en"	"Backstab gives health, no matter if it kills or not.\nKills reward 2x heal, Raids heal 2x the hp, against raids backstabs deal 2x dmg overall.\nLoses damage for healing."
+		"en"	"-Reduced damage\n-Backstabs grant health\n-Kills grant more health on backstab\n-Raids give 2x health on backstab"
 		"it"	"Il backstab dà salute, indipendentemente dal fatto che uccida o meno.\nLe uccisioni ricompensano 2x la guarigione, i raid guariscono 2x gli hp, contro i raid i backstab infliggono 2x dmg complessivi.\nPerde danni per guarire."
 	}
 	"Kunai Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, backstabbing gives more health"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Heals more on backstab."
 		"fr"	"Dégats et cadence des attaques améliorés. Le poignardage donne plus de santé."
 		"ru"	"Увеличенный урон и скорость атаки, нанесение ударов в спину даёт больше здоровья."
 		"chi"   "增加伤害和攻击速度，背后捅伤增加生命值"
@@ -1016,12 +1016,12 @@
 	}
 	"Kunai Pap 2"
 	{
-		"en"	"Increased damage and attackspeed, backstabbing gives more health, backstabs have no cooldown.\nBackstabs are easier to hit."
+		"en"	"-Increased damage\n-Increased attackspeed\n-Heals more on backstab.\n-Backstabs have no cooldown.\n-Easier to hit backstabs"
 		"it"	"Danno e velocità d'attacco aumentati, le pugnalate alle spalle danno più salute, le pugnalate alle spalle non hanno cooldown.\nLe pugnalate alle spalle sono più facili da colpire."
 	}
 	"Kunai Pap 4"
 	{
-		"en" 	"You backstab slower, but gain immensive damage! Heal much more after backstabbing.\nEvery 15 seconds you can launch a ruina nuke by backstabbing an enemy.\nDeals 35％ less dmg against raids, and its explosive has no bonus dmg against raids."
+		"en"	"-Slower backstab attackspeed\n-Massively increased backstab damage\n-Massively increased heal on backstab\n-On backstab, cause a nuke on enemy"
 		"it"	"Si pugnala più lentamente, ma si guadagna danno immenso!\nOgni 15 secondi puoi lanciare una ruina nuke pugnalando alle spalle un nemico."
 	}
 	
