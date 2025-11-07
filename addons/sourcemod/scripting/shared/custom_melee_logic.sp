@@ -815,7 +815,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 						}
 						case WEAPON_KIT_BLITZKRIEG_CORE:
 						{
-							Blitzkrieg_Kit_OnHitEffect(client);
+							Blitzkrieg_Kit_OnHitEffect(client, i_EntitiesHitAoeSwing[counter]);
 						}
 						case WEAPON_FULLMOON:
 						{

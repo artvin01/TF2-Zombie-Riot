@@ -671,7 +671,7 @@ public void Fantasia_Mouse1(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", RoundToFloor(fl_current_crystal_amt[client]), RoundToFloor(FRACTAL_KIT_FANTASIA_COST));
 		return;
 	}
 	int mana_cost;
@@ -950,7 +950,7 @@ public void Kit_Fractal_OverDrive(int client, int weapon, bool &result, int slot
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", RoundToFloor(fl_current_crystal_amt[client]), RoundToFloor(FRACTAL_KIT_PASSIVE_OVERDRIVE_COST * 2.0));
 		return;
 	}
 
@@ -970,7 +970,7 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", RoundToFloor(fl_current_crystal_amt[client]), RoundToFloor(FRACTAL_KIT_STARFALL_COST));
 		return;
 	}
 	if(fl_starfall_CD[client] > GameTime)
@@ -2054,7 +2054,7 @@ static bool Player_Laser_BEAM_TraceUsers(int entity, int contentsMask, int clien
 	}
 	return false;
 }
-stock bool RayCastTraceEnemies(int entity, int contentsMask, int client)
+public bool RayCastTraceEnemies(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
@@ -2076,7 +2076,7 @@ stock bool RayCastTraceEnemies(int entity, int contentsMask, int client)
 	}
 	return !entity;
 }
-stock bool RayCastTraceEverything(int entity, int contentsMask, int client)
+public bool RayCastTraceEverything(int entity, int contentsMask, int client)
 {
 	if (IsValidEntity(entity))
 	{
