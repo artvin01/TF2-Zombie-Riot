@@ -290,7 +290,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 				SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 				HitsLeft[entity] = BOOMERRANG_ABOUTTORETURN;
 				EntityKilled_HitDetectionCooldown(entity, Boomerang);
-				CreateTimer(0.2, Timer_ReturnToOwner, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);	
+				CreateTimer(0.1, Timer_ReturnToOwner, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);	
 			}
 			else
 			{
@@ -321,7 +321,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 			SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 			HitsLeft[entity] = BOOMERRANG_ABOUTTORETURN;
 			EntityKilled_HitDetectionCooldown(entity, Boomerang);
-			CreateTimer(0.2, Timer_ReturnToOwner, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);	
+			CreateTimer(0.1, Timer_ReturnToOwner, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);	
 		}
 		//set it back to true once done so it can get us again.
 		b_NpcIsTeamkiller[entity] = true;
@@ -356,7 +356,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 		HitsLeft[entity] = BOOMERRANG_ABOUTTORETURN;
 		EntityKilled_HitDetectionCooldown(entity, Boomerang);
-		CreateTimer(0.2, Timer_ReturnToOwner, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);	
+		CreateTimer(0.1, Timer_ReturnToOwner, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);	
 	}
 
 	b_NpcIsTeamkiller[entity] = true;
@@ -396,7 +396,7 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	speed *= Attributes_Get(weapon, 104, 1.0);
 
 	if(extraability == 1)
-		speed *= 0.5;
+		speed *= 0.4;
 	float time = 2500.0 / speed;
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
@@ -440,7 +440,7 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 
 	if(extraability == 1)
 	{
-		CreateTimer(0.2, Timer_ActivateHoming, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);	
+		CreateTimer(0.1, Timer_ActivateHoming, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);	
 	}
 	b_NpcIsTeamkiller[projectile] = true; //allows self hitting
 	Times_Damage_Got_Reduced[projectile] = 0;
