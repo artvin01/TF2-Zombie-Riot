@@ -399,7 +399,8 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					EmitSoundToAll(AMMO_SOUND, _, SNDCHAN_STATIC, 100, _);
+					if(!Rogue_Mode())
+						EmitSoundToAll(AMMO_SOUND, _, SNDCHAN_STATIC, 100, _);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
@@ -538,25 +539,20 @@ public Action Timer_Detect_Player_Near_Health(Handle timer, any entid)
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
-					EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _,0.65);
+					if(!Rogue_Mode())
+						EmitSoundToAll(HEALTH_SOUND, _, SNDCHAN_STATIC, 100, _,0.65);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
 						{
-							int MaxHealth = SDKCall_GetMaxHealth(client_Hud);
-							int flHealth = GetEntProp(client_Hud, Prop_Send, "m_iHealth");
 							
-							flHealth += MaxHealth / 2;
-
-							SetEntProp(client_Hud, Prop_Send, "m_iHealth", flHealth);
-							ApplyHealEvent(client_Hud, MaxHealth / 2);	// Show healing number
-
-							if(flHealth > MaxHealth * 2)
+							if(dieingstate[client_Hud] == 0 && TeutonType[client_Hud] == TEUTON_NONE)
 							{
-								SetEntProp(client_Hud, Prop_Send, "m_iHealth", MaxHealth * 2);
-							}
+								int MaxHealth = SDKCall_GetMaxHealth(client_Hud);
+								HealEntityGlobal(client_Hud, client_Hud, float(MaxHealth / 2), 1.0, 0.0, HEAL_ABSOLUTE);
 
-							//This gives 35% armor
+								//This gives 35% armor
+							}
 							GiveArmorViaPercentage(client_Hud, 0.35, 1.0);
 
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);

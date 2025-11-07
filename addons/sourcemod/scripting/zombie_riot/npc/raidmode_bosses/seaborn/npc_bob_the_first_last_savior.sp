@@ -773,6 +773,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{white}Bob the First{default}: I will remove what does not belong to you...");
 					npc.m_flNextThinkTime = gameTime + 3.0;
+					CreateTimer(12.0, SafetyFixBobDo, EntIndexToEntRef(npc.index));
 				}
 				case 50:
 				{
@@ -812,6 +813,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					GiveProgressDelay(15.0);
 					Waves_ForceSetup(15.0);
 
+					//dont respawn during setup.
+					PreventRespawnsAll = GetGameTime() + 10.0;
+
 					if(found)
 					{
 						npc.m_flNextThinkTime = gameTime + 0.25;
@@ -836,6 +840,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						cvarTimeScale.SetFloat(0.1);
 						CreateTimer(0.5, SetTimeBack);
 						i_RaidGrantExtra[npc.index] = 49;
+						PreventRespawnsAll = GetGameTime() + 2.0;
 					}
 				}
 			}
@@ -854,7 +859,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 
 		GiveOneRevive();
-		RaidModeTime += 140.0;
+		RaidModeTime += 60.0;
 
 		npc.m_flRangedArmor = 0.9;
 		npc.m_flMeleeArmor = 1.125;
@@ -994,7 +999,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			}
 			
 			GiveOneRevive();
-			RaidModeTime += 260.0;
+			RaidModeTime += 200.0;
 
 			npc.Anger = true;
 			npc.m_bisWalking = false;
@@ -1027,6 +1032,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 3;
 					npc.m_flAttackHappens = gameTime + 0.899;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.9);
 				}
 			}
 			case 3:	// COMBO1 - Frame 54
@@ -1037,6 +1043,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 1.555;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.6);
 				}
 			}
 			case 4:	// COMBO2 - Frame 32
@@ -1047,6 +1054,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 5;
 					npc.m_flAttackHappens = gameTime + 0.833;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.9);
 				}
 			}
 			case 5:	// COMBO2 - Frame 52
@@ -1057,6 +1065,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 6;
 					npc.m_flAttackHappens = gameTime + 0.833;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.9);
 				}
 			}
 			case 6:	// COMBO2 - Frame 73
@@ -1067,6 +1076,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 1.083;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.1);
 				}
 			}
 			case 8:	// DEPLOY_MANHACK - Frame 32
@@ -1075,6 +1085,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					npc.m_iAttackType = 0;
 					npc.m_flAttackHappens = gameTime + 0.333;
+					ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.4);
 
 					int projectile = npc.FireParticleRocket(vecTarget, 3000.0, GetRandomFloat(175.0, 225.0), 150.0, "utaunt_glitter_teamcolor_blue", true);
 					npc.DispatchParticleEffect(npc.index, "rd_robot_explosion_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
@@ -1160,7 +1171,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								float vecHit[3];
 								WorldSpaceCenter(target, vecHit);
 
-								SDKHooks_TakeDamage(target, npc.index, npc.index, 250.0, DMG_CLUB, -1, _, vecHit);	
+								SDKHooks_TakeDamage(target, npc.index, npc.index, 350.0, DMG_CLUB, -1, _, vecHit);	
 								
 								bool Knocked = false;
 
@@ -1176,18 +1187,18 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 									}									
 									else
 									{
-										float VulnerabilityToGive = 0.10;
+										float VulnerabilityToGive = 0.20;
 										if(npc.m_bFakeClone)
-											VulnerabilityToGive = 0.05;
+											VulnerabilityToGive = 0.10;
 										IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 									}	
 	
 								}
 								else
 								{
-									float VulnerabilityToGive = 0.10;
+									float VulnerabilityToGive = 0.20;
 									if(npc.m_bFakeClone)
-										VulnerabilityToGive = 0.05;
+										VulnerabilityToGive = 0.10;
 
 									IncreaseEntityDamageTakenBy(target, VulnerabilityToGive, 10.0, true);
 								}	
@@ -1219,16 +1230,19 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					WritePackCell(data, 95.0); // Distance
 					WritePackFloat(data, 0.0); // nphi
 					WritePackFloat(data, 250.0); // Range
-					WritePackFloat(data, 1000.0); // Damge
+					WritePackFloat(data, 1500.0); // Damge
 					WritePackCell(data, ref);
 					ResetPack(data);
 					TrueFusionwarrior_IonAttack(data);
-
-					for(int client = 1; client <= MaxClients; client++)
+					
+					int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
+					UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
+					GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, false);
+					for(int i; i < sizeof(enemy_2); i++)
 					{
-						if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+						if(enemy_2[i])
 						{
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecTarget);
+							GetEntPropVector(enemy_2[i], Prop_Data, "m_vecAbsOrigin", vecTarget);
 							
 							data = CreateDataPack();
 							WritePackFloat(data, vecTarget[0]);
@@ -1237,7 +1251,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							WritePackCell(data, 160.0); // Distance
 							WritePackFloat(data, 0.0); // nphi
 							WritePackFloat(data, 250.0); // Range
-							WritePackFloat(data, 1000.0); // Damge
+							WritePackFloat(data, 2500.0); // Damge
 							WritePackCell(data, ref);
 							ResetPack(data);
 							TrueFusionwarrior_IonAttack(data);
@@ -1428,6 +1442,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.916;
 								
 								BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+								ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.0);
 							}
 							case 1:
 							{
@@ -1437,14 +1452,46 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.5;
 								
 								BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+								ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.6);
 							}
 							case 2:
 							{
-								npc.m_bisWalking = false;
-								npc.SetActivity("ACT_COMBO3_BOBPRIME");
-								npc.m_flAttackHappens = gameTime + 3.25;
-								
-								BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+								if(npc.m_bFakeClone)
+								{
+									//main bob shouldnt do this long windup kick, takes too long...
+									npc.m_bisWalking = false;
+									npc.SetActivity("ACT_COMBO3_BOBPRIME");
+									npc.m_flAttackHappens = gameTime + 3.25;
+									
+									BobInitiatePunch(npc.index, vecTarget, vecMe, 2.125, 8000.0, true);
+									ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 3.3);
+								}
+								else
+								{
+									switch(GetURandomInt() % 2)
+									{
+										case 0:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO1_BOBPRIME");
+											npc.m_iAttackType = 2;
+											npc.m_flAttackHappens = gameTime + 0.916;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.916, 2000.0, true);
+											ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 1.0);
+										}
+										case 1:
+										{
+											npc.m_bisWalking = false;
+											npc.SetActivity("ACT_COMBO2_BOBPRIME");
+											npc.m_iAttackType = 4;
+											npc.m_flAttackHappens = gameTime + 0.5;
+											
+											BobInitiatePunch(npc.index, vecTarget, vecMe, 0.5, 2000.0, false);
+											ApplyStatusEffect(npc.index, npc.index, "Defensive Backup", 0.6);
+										}
+									}
+								}
 							}
 						}
 
@@ -1457,6 +1504,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.PlayRangedSound();
 						npc.StopPathing();
 						npc.m_bisWalking = false;
+						npc.m_iAnimationState = -1; //reset anim state so they can replay the anim if it was played before
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 8;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1470,6 +1518,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.StopPathing();
 						npc.PlaySkyShieldSound();
 						npc.m_bisWalking = false;
+						npc.m_iAnimationState = -1; //reset anim state so they can replay the anim if it was played before
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 10;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1581,82 +1630,12 @@ void GiveOneRevive(bool ignorelimit = false)
 	{
 		if(IsClientInGame(client))
 		{
-			int glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
-			if(glowentity > MaxClients)
-				RemoveEntity(glowentity);
-			
-			glowentity = EntRefToEntIndex(i_DyingParticleIndication[client][1]);
-			if(glowentity > MaxClients)
-				RemoveEntity(glowentity);
-			
-			if(IsPlayerAlive(client))
-			{
-				SetEntityMoveType(client, MOVETYPE_WALK);
-				SDKCall_SetSpeed(client);
-				int entity, i;
-				while(TF2U_GetWearable(client, entity, i))
-				{
-					if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
-						continue;
-
-					SetEntityRenderMode(entity, RENDER_NORMAL);
-					SetEntityRenderColor(entity, 255, 255, 255, 255);
-				}
-			}
-			
-			ForcePlayerCrouch(client, false);
-			//just make visible.
-			SetEntityRenderMode(client, RENDER_NORMAL);
-			SetEntityRenderColor(client, 255, 255, 255, 255);
-			
 			i_AmountDowned[client]--;
 			if(!ignorelimit && i_AmountDowned[client] < 0)
 				i_AmountDowned[client] = 0;
-			
-			DoOverlay(client, "", 2);
-			if(GetClientTeam(client) == 2)
-			{
-				if((!IsPlayerAlive(client) || TeutonType[client] == TEUTON_DEAD))
-				{
-					DHook_RespawnPlayer(client);
-					GiveCompleteInvul(client, 2.0);
-				}
-				else if(dieingstate[client] > 0)
-				{
-					GiveCompleteInvul(client, 2.0);
-
-					if(b_LeftForDead[client])
-					{
-						dieingstate[client] = -8; //-8 for incode reasons, check dieing timer.
-					}
-					else
-					{
-						dieingstate[client] = 0;
-					}
-
-					Store_ApplyAttribs(client);
-					SDKCall_SetSpeed(client);
-
-					int entity, i;
-					while(TF2U_GetWearable(client, entity, i))
-					{
-						if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
-							continue;
-
-						SetEntityRenderMode(entity, RENDER_NORMAL);
-						SetEntityRenderColor(entity, 255, 255, 255, 255);
-					}
-
-					SetEntityRenderMode(client, RENDER_NORMAL);
-					SetEntityRenderColor(client, 255, 255, 255, 255);
-					SetEntityCollisionGroup(client, 5);
-
-					SetEntityHealth(client, 50);
-					RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
-				}
-			}
 		}
 	}
+	/*
 
 	int a, entity;
 	while((entity = FindEntityByNPC(a)) != -1)
@@ -1671,50 +1650,51 @@ void GiveOneRevive(bool ignorelimit = false)
 
 	CheckAlivePlayers();
 	WaveEndLogicExtra();
+	*/
 }
 
 static void SetupMidWave(int entity)
 {
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 1500);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(7.0 * MultiGlobalEnemy), 5000);
-	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(2.0 * MultiGlobalEnemy), RoundToCeil(10000.0 * MultiGlobalHighHealthBoss),1 );
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(7.5 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(3.5 * MultiGlobalEnemy), 5000);
+	AddBobEnemy(entity, "npc_combine_soldier_collos_swordsman", "First Golden Collos", RoundToCeil(1.0 * MultiGlobalEnemy), RoundToCeil(10000.0 * MultiGlobalHighHealthBoss),1 );
 
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(10.0 * MultiGlobalEnemy), 5000);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 5000);
 
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(15.0 * MultiGlobalEnemy), 1500);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(7.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(10.0 * MultiGlobalEnemy), 5000);
-
-	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(10.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(10.0 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(7.5 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(3.5 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 5000);
 
 	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
 	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(5.0 * MultiGlobalEnemy), 1250);
-	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(5.0 * MultiGlobalEnemy), 1100);
-	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 1500);
-	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(5.0 * MultiGlobalEnemy), 5000);
 	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(5.0 * MultiGlobalEnemy), 1000);
-	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(5.0 * MultiGlobalEnemy), 1100);
-	AddBobEnemy(entity, "npc_combine_police_smg", _, RoundToCeil(5.0 * MultiGlobalEnemy), 700);
-	AddBobEnemy(entity, "npc_combine_police_pistol", _, RoundToCeil(5.0 * MultiGlobalEnemy), 550);
+
+	AddBobEnemy(entity, "npc_combine_soldier_elite", "First Elite", RoundToCeil(2.5 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman_ddt", "First DDT", RoundToCeil(2.5 * MultiGlobalEnemy), 1250);
+	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(2.5 * MultiGlobalEnemy), 1100);
+	AddBobEnemy(entity, "npc_combine_soldier_swordsman", "First Swordsman", RoundToCeil(2.5 * MultiGlobalEnemy), 1500);
+	AddBobEnemy(entity, "npc_combine_soldier_giant_swordsman", "First Giant Swordsman", RoundToCeil(2.5 * MultiGlobalEnemy), 5000);
+	AddBobEnemy(entity, "npc_combine_soldier_shotgun", "First Shotgunner", RoundToCeil(2.5 * MultiGlobalEnemy), 1000);
+	AddBobEnemy(entity, "npc_combine_soldier_ar2", "First Rifler", RoundToCeil(2.5 * MultiGlobalEnemy), 1100);
+	AddBobEnemy(entity, "npc_combine_police_smg", _, RoundToCeil(2.5 * MultiGlobalEnemy), 700);
+	AddBobEnemy(entity, "npc_combine_police_pistol", _, RoundToCeil(2.5 * MultiGlobalEnemy), 550);
 }
 
 static void AddBobEnemy(int bobindx, const char[] plugin, const char[] name = "", int count, int health = 0, int boss = 0)
 {
 	Enemy enemy;
 
+	health *= 8;
 	enemy.Index = NPC_GetByPlugin(plugin);
-	enemy.Is_Boss = boss;
-	enemy.Is_Health_Scaled = 1;
-	enemy.ExtraMeleeRes = 0.03;
-	enemy.ExtraRangedRes = 0.03;
-	enemy.ExtraSpeed = 1.5;
-	enemy.ExtraDamage = 4.0;
+	enemy.Is_Boss = view_as<int>(boss);
+	enemy.ExtraMeleeRes = 0.175;
+	enemy.ExtraRangedRes = 0.175;
+	enemy.ExtraSpeed = 1.3;
+	enemy.ExtraDamage = 3.8;
 	enemy.ExtraSize = 1.0;
 	if(health != 0)
 	{
@@ -1987,7 +1967,8 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt) * ReturnEntityAttackspeed(entity));
+
+	TimeUntillHit = (TimeUntillHit * ReturnEntityAttackspeed(entity));
 
 	float vecForward[3], Angles[3];
 
@@ -2007,6 +1988,8 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	int green = 255;
 	int blue = 255;
 	int Alpha = 255;
+	if(GetTeam(entity) == TFTeam_Red)
+		Alpha = 125;
 
 	int colorLayer4[4];
 	float diameter = float(BOB_MELEE_SIZE * 4);
@@ -2051,7 +2034,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 		GetBeamDrawStartPoint_Stock(entity, VectorStartEdit,OffsetFromMiddle, AnglesEdit);
 
 		SetColorRGBA(glowColor, red, green, blue, Alpha);
-		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit * ReturnEntityAttackspeed(entity), ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
+		TE_SetupBeamPoints(VectorStartEdit, VectorTarget_2, Shared_BEAM_Laser, 0, 0, 0, TimeUntillHit, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 0.0, glowColor, 0);
 		TE_SendToAll(0.0);
 	}
 	
@@ -2066,7 +2049,9 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	pack.WriteFloat(VectorStart[2]);
 	pack.WriteFloat(damage);
 	pack.WriteCell(kick);
-	RequestFrames(BobInitiatePunch_DamagePart, FramesUntillHit, pack);
+	// 66.6 assumes normal tickrate.
+	int i_FrameCount = RoundToNearest(TimeUntillHit * 66.6);
+	RequestFrames(BobInitiatePunch_DamagePart, i_FrameCount, pack);
 }
 
 void BobInitiatePunch_DamagePart(DataPack pack)
@@ -2095,6 +2080,8 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	int green = 50;
 	int blue = 255;
 	int Alpha = 222;
+	if(GetTeam(entity) == TFTeam_Red)
+		Alpha = 100;
 	int colorLayer4[4];
 
 	float diameter = float(BOB_MELEE_SIZE * 4);
@@ -2244,4 +2231,19 @@ public void Raidmode_BobFirst_Win(int entity)
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	CPrintToChatAll("{white}Bob the First{default}: Deep sea threat cleaned, finally at peace...");
+}
+
+
+
+public Action SafetyFixBobDo(Handle timer, int refbob)
+{
+	if(!IsValidEntity(refbob))
+	{
+		return Plugin_Handled;
+	}
+	int Entity = EntRefToEntIndex(refbob);
+	if(i_RaidGrantExtra[Entity] <= 50)
+		i_RaidGrantExtra[Entity] = 50;
+	PreventRespawnsAll = GetGameTime() + 0.0;
+	return Plugin_Handled;
 }

@@ -56,7 +56,7 @@ methodmap MaterialOssunia < CClotBody
 		func_NPCThink[npc.index] = Construction_ClotThink;
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
-		b_NoHealthbar[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 
 		return npc;
 	}
@@ -66,10 +66,11 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		MaterialOssunia npc = view_as<MaterialOssunia>(victim);
-		bool angery = npc.Anger;
+//		MaterialOssunia npc = view_as<MaterialOssunia>(victim);
+	//	bool angery = npc.Anger;
 		if(Construction_OnTakeDamage("ossunia", 0, victim, attacker, damage, damagetype))
 		{
+			/*
 			if(angery)
 			{
 				float pos[3];
@@ -91,6 +92,7 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 					break;
 				}
 			}
+			*/
 		}
 	}
 }

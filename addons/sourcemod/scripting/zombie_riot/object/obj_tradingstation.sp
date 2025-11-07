@@ -71,16 +71,12 @@ static bool ClotInteract(int client, int weapon, ObjectTradingStation npc)
 		Select weapon you wanna give: (Uses sell value + 30% so its basically equal, includes paps)
 		This also allow selling if you want to at a higher value, but itll take longer, choosing to sell will only add an extra 10% of value
 
-		Select weapon you want to recieve, if its not within price range, youll have to pay extra
+		Select weapon you want to receive, if its not within price range, youll have to pay extra
 		after 3-5 waves, you can choose to get the new weapon and give up your old one
 		If grigori sells it on sale, then you get some money back
 	*/
 	FormatEx(buffer, sizeof(buffer), "%t", "Open Exchange Menu");
 	menu2.AddItem("-1", buffer);
-
-//	FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
-//	menu2.AddItem("-2", buffer);
-	
 						
 	menu2.Display(client, MENU_TIME_FOREVER);
 	return true;
@@ -112,7 +108,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 1);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_REGENE);
 				}
 			}
 			else if(id == -4)
@@ -122,7 +118,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 2);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_OBSIDIAN);
 				}
 			}
 			else if(id == -5)
@@ -132,7 +128,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 3);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_MORNING_COFFEE);
 				}
 			}
 			else if(id == -6)
@@ -142,7 +138,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 4);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_HASTY_HOPS);
 				}
 			}
 			else if(id == -7)
@@ -152,7 +148,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 5);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_MARKSMAN_BEER);
 				}
 			}
 			else if(id == -8)
@@ -162,7 +158,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 6);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_TESLAR_MULE);
 				}
 			}
 			else if(id == -9)
@@ -172,7 +168,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 7);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_STOCKPILE_STOUT);
 				}
 			}
 		}

@@ -72,6 +72,32 @@ public void Modifier_Remove_ParanormalActivity()
 }
 
 
+public void Modifier_RecolourAlly_SecondaryMercs(int client, StringMap map)
+{
+	if(client > MaxClients)
+		return;
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 3);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
+	}	
+	RequestFrame(OvverideTeamcolour, GetClientUserId(client));
+}
+
+static void OvverideTeamcolour(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(!client)
+		return;
+		
+	int entity, i;
+	while(TF2U_GetWearable(client, entity, i))
+	{
+		SetTeam(entity, 3);
+		SetEntProp(entity, Prop_Send, "m_nSkin", 1);
+	}	
+}
 public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 {
 	fl_Extra_Damage[iNpc] *= 1.12;
@@ -225,9 +251,24 @@ public void ZRModifs_ParanormalActivityNPC(int iNpc)
 	SetEntityRenderColor(iNpc, 0, 0, 0, 150);
 	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMinDist", 600.0);
 	SetEntPropFloat(iNpc, Prop_Send, "m_fadeMaxDist", 700.0);
-	b_NoHealthbar[iNpc] = true;
+	b_NoHealthbar[iNpc] = 1;
 	GiveNpcOutLineLastOrBoss(iNpc, false);
-	b_thisNpcHasAnOutline[iNpc] = true; 
+	b_thisNpcHasAnOutline[iNpc] = true;
+
+	/*
+	float SelfPosParanormal[3];
+	float AllyPosParanormal[3];
+	float flDistanceToTargetParanormal = GetVectorDistance(SelfPosParanormal, AllyPosParanormal, true);
+	if(flDistanceToTargetParanormal < (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 2.0;
+	}
+	if(flDistanceToTargetParanormal > (100.0 * 100.0))
+	{
+		fl_Extra_Speed[iNpc] *= 0.5;
+	}
+	*/
+
 }
 
 float ZRModifs_MaxSpawnsAlive()
@@ -250,9 +291,19 @@ float ZRModifs_SpawnSpeedModif()
 {
 	float value = Classic_Mode() ? 3.0 : 1.0;
 
-	if(VIPBuilding_Active())
+	if(!Classic_Mode())
 	{
-		value *= float(EnemyNpcAlive) / float(MaxEnemiesAllowedSpawnNext());
+		value *= ((float(EnemyNpcAlive - EnemyNpcAliveStatic) / float(MaxEnemiesAllowedSpawnNext())) * 2.25);
+		if(!VIPBuilding_Active())
+		{
+			value *= 0.75;
+		}
+		if(Construction_Mode())
+		{
+			value *= 0.65;
+			//spawn much faster in construction.
+		}
+		//just spawn much faster.
 	}
 
 	switch(CurrentModifActive)
@@ -266,7 +317,6 @@ float ZRModifs_SpawnSpeedModif()
 			value *= 0.75;
 		}
 	}
-
 	return value;
 }
 

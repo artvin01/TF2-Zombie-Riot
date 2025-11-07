@@ -62,6 +62,16 @@ static Action BobTheFirstFollower_SpeechTimer(Handle timer, DataPack pack)
 
 methodmap BobTheFirstFollower < CClotBody
 {
+	property int m_iAttackType
+	{
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property float m_flKickComboCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -84,13 +94,19 @@ methodmap BobTheFirstFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
+		if(Rogue_HasNamedArtifact("Bob's Wrath"))
+		{
+			this.Speech("", "...");
+			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(36.0, 48.0);
+			return;
+		}
 		switch(GetURandomInt() % 22)
 		{
 			case 0:
 			{
-				this.Speech("I have been studying many places across irln ever since whiteflower was killed.");
-				this.SpeechDelay(5.0, "I found many things i liked.");
-				this.SpeechDelay(10.0, "And many i did not.");
+				this.Speech("I have been studying many places across Irln ever since Whiteflower was killed.");
+				this.SpeechDelay(5.0, "I found many things I liked.");
+				this.SpeechDelay(10.0, "And many I did not.");
 			}
 			case 1:
 			{
@@ -98,13 +114,13 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 2:
 			{
-				this.Speech("I know what you did to guln.");
+				this.Speech("I know what you did to Guln.");
 				this.SpeechDelay(5.0,"I know it was in his wish.");
-				this.SpeechDelay(10.0,"That doesnt mean ill be any less forgiving for it.");
+				this.SpeechDelay(10.0,"That doesnt mean I'll be any less forgiving for it.");
 			}
 			case 3:
 			{
-				this.Speech("People view me as a hero, i view myself as being curious.");
+				this.Speech("People view me as a hero, I view myself as being curious.");
 			}
 			case 4:
 			{
@@ -121,7 +137,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 7:
 			{
-				this.Speech("Ever since the seaborn stuff happend, you all have been alot more reasonable.");
+				this.Speech("Ever since the seaborn stuff happened, you all have been a lot more reasonable.");
 				this.SpeechDelay(5.0,"Could be PTSD.");
 			}
 			case 8:
@@ -130,12 +146,12 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 9:
 			{
-				this.Speech("Overtime i can feel everything relaxing abit, The only common big enemy is the void.");
+				this.Speech("Overtime I can feel everything relaxing a bit, The only common big enemy is the void.");
 				this.SpeechDelay(5.0, "... or whatever that is..");
 			}
 			case 10:
 			{
-				this.Speech("Chaos, i still dont know if its made by someone, or a force of nature.");
+				this.Speech("Chaos, I still dont know if its made by someone, or a force of nature.");
 				this.SpeechDelay(5.0, "Time will tell what it is..");
 			}
 			case 11:
@@ -146,7 +162,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 12:
 			{
-				this.Speech("Im not emotionless.");
+				this.Speech("I'm not emotionless.");
 				this.SpeechDelay(5.0, "I just dont show it to everyone i meet.");
 			}
 			case 13:
@@ -156,8 +172,9 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 14:
 			{
-				this.Speech("How i made clones in our battle?");
-				this.SpeechDelay(5.0, "I didnt, i just moved around.");
+				this.Speech("How I made clones in our battle?");
+				this.SpeechDelay(5.0, "I didnt, I just moved around.");
+				this.SpeechDelay(10.0, "Don't give it too much thought.");
 			}
 			case 15:
 			{
@@ -174,12 +191,12 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 18:
 			{
-				this.Speech("You think i'd be sorry for attacking you?");
+				this.Speech("You think I'd be sorry for attacking you?");
 				this.SpeechDelay(5.0, "You should be sorry for being so god damn careless with the seaborn.");
 			}
 			case 19:
 			{
-				this.Speech("If you ever think i'll trust that second bob faker, ill laugh.");
+				this.Speech("If you ever think I'll trust that second bob faker, I'll laugh.");
 				this.SpeechDelay(9.0, "He acts like an expidonsan.");
 			}
 			case 20:
@@ -189,7 +206,7 @@ methodmap BobTheFirstFollower < CClotBody
 			}
 			case 21:
 			{
-				this.Speech("Cherrish your friends as much as you can, while they are still here.");
+				this.Speech("Cherish your friends as much as you can, while they are still here.");
 			}
 		}
 		
@@ -217,10 +234,15 @@ methodmap BobTheFirstFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
+	property float m_flCheckItemDo
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
 	
 	public BobTheFirstFollower(float vecPos[3], float vecAng[3],int ally)
 	{
-		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, true));
+		BobTheFirstFollower npc = view_as<BobTheFirstFollower>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "50000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_RUN_BOB");
@@ -247,6 +269,13 @@ methodmap BobTheFirstFollower < CClotBody
 		npc.Anger = false;
 		npc.m_flDeathAnimation = 0.0;
 		npc.m_bScalesWithWaves = true;
+		if(Rogue_HasNamedArtifact("Bob's Wrath"))
+		{
+			fl_Extra_Damage[npc.index] *= 4.0;
+			fl_Extra_Speed[npc.index] *= 1.3;
+			f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+			npc.Anger = true;
+		}
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "blue_goggles");
 		
@@ -259,14 +288,20 @@ methodmap BobTheFirstFollower < CClotBody
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 
-		if(Rogue_Mode())
+		if(!Rogue_HasNamedArtifact("Bob's Wrath") && Rogue_Mode())
 		{
 			// Cutscene Here
-			npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
-			npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
-			Rogue_SetProgressTime(10.0, false);
+			if(Rogue_Theme() == BlueParadox)
+			{
+				npc.Speech("Remember Chaos? That is serious. Come with me. Now.");
+				npc.SpeechDelay(5.0, "''Bob the Second'' can come with us too, though i wouldnt trust him much.");
+			}
+			else
+			{
+				npc.Speech("Izan, i understand that you want to redeem yourself, but dont copy me.");
+				npc.SpeechDelay(10.0, "At the end, just make yourself disguinshed, youll have more trust and help.","...");
+			}
 		}
-
 		return npc;
 	}
 }
@@ -288,6 +323,21 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
+	if(npc.m_flCheckItemDo <  gameTime)
+	{
+		npc.m_flCheckItemDo = gameTime + 5.0;
+		if(!npc.Anger)
+		{
+			if(Rogue_HasNamedArtifact("Bob's Wrath"))
+			{
+				fl_Extra_Damage[npc.index] *= 6.0;
+				fl_Extra_Speed[npc.index] *= 1.3;
+				f_AttackSpeedNpcIncrease[npc.index] *= 0.75;
+				npc.Anger = true;
+				npc.m_flCheckItemDo = FAR_FUTURE;
+			}
+		}
+	}
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;
@@ -327,8 +377,17 @@ static void ClotThink(int iNPC)
 		{
 			npc.StartPathing();
 		}
-		
-		if(npc.m_flAttackHappens)
+		if(npc.m_iAttackType == -1 && npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
+			{
+				npc.SetActivity("ACT_RUN_BOB");
+				npc.m_bisWalking = true;
+				npc.StartPathing();
+				npc.m_iAttackType = 0;
+			}
+		}
+		else if(npc.m_flAttackHappens)
 		{
 			if(npc.m_flAttackHappens < gameTime)
 			{
@@ -358,23 +417,133 @@ static void ClotThink(int iNPC)
 				delete swingTrace;
 			}
 		}
-		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		else if(npc.m_iAttackType > 0)
 		{
-			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
+			float damage = 5500.0;
+			if(npc.m_bScalesWithWaves)
 			{
-				npc.m_iTarget = target;
-				npc.m_flGetClosestTargetTime = gameTime + 1.0;
-
-				npc.AddGesture("ACT_MELEE_BOB");
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.15;
-				npc.m_flNextMeleeAttack = gameTime + 0.35;
+				damage = 150.0;
+			}
+			switch(npc.m_iAttackType)
+			{
+				case 2:	// COMBO1 - Frame 44
+				{
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.999, damage * 2.0, true);
+						
+						npc.m_iAttackType = 3;
+						npc.m_flAttackHappens = gameTime + 0.899;
+					}
+				}
+				case 3:	// COMBO1 - Frame 54
+				{
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.5, damage, false);
+						
+						npc.m_iAttackType = -1;
+						npc.m_flAttackHappens = gameTime + 1.555;
+					}
+				}
+				case 4:	// COMBO2 - Frame 32
+				{
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.833, damage, false);
+						
+						npc.m_iAttackType = 5;
+						npc.m_flAttackHappens = gameTime + 0.833;
+					}
+				}
+				case 5:	// COMBO2 - Frame 52
+				{
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.833, damage, false);
+						
+						npc.m_iAttackType = 6;
+						npc.m_flAttackHappens = gameTime + 0.833;
+					}
+				}
+				case 6:	// COMBO2 - Frame 73
+				{
+					if(npc.m_flAttackHappens < gameTime)
+					{
+						BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.875, damage, true);
+						
+						npc.m_iAttackType = -1;
+						npc.m_flAttackHappens = gameTime + 1.083;
+					}
+				}
 			}
 		}
+		else if(npc.Anger && npc.m_flNextMeleeAttack < gameTime && npc.m_flKickComboCooldown < gameTime)
+		{
+			//do big slap attack
+			float damage = 5500.0;
+			if(npc.m_bScalesWithWaves)
+			{
+				damage = 150.0;
+			}
+			npc.m_flKickComboCooldown = gameTime + 15.0;
+			switch(GetURandomInt() % 3)
+			{
+				case 0:
+				{
+					npc.StopPathing();
+					npc.m_bisWalking = false;
+					npc.SetActivity("ACT_COMBO1_BOBPRIME");
+					npc.m_iAttackType = 2;
+					npc.m_flAttackHappens = gameTime + 0.916;
+					
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.916, damage, true);
+				}
+				case 1:
+				{
+					npc.StopPathing();
+					npc.m_bisWalking = false;
+					npc.SetActivity("ACT_COMBO2_BOBPRIME");
+					npc.m_iAttackType = 4;
+					npc.m_flAttackHappens = gameTime + 0.5;
+					
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 0.5, damage, false);
+				}
+				case 2:
+				{
+					npc.StopPathing();
+					npc.m_bisWalking = false;
+					npc.SetActivity("ACT_COMBO3_BOBPRIME");
+					npc.m_flAttackHappens = gameTime + 3.25;
+					npc.m_iAttackType = -1;
+					
+					BobInitiatePunch(npc.index, vecTarget, VecSelfNpc, 2.125, damage * 3.0, true);
+				}
+			}
+		}
+		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED)
+		{
+			if(npc.m_flNextMeleeAttack < gameTime)
+			{
+				target = Can_I_See_Enemy(npc.index, target);
+				if(IsValidEnemy(npc.index, target))
+				{
+					npc.m_iTarget = target;
+					npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-		npc.SetActivity("ACT_RUN_BOB");
+					npc.AddGesture("ACT_MELEE_BOB");
+					npc.PlayMeleeSound();
+					
+					npc.m_flAttackHappens = gameTime + 0.15;
+					npc.m_flNextMeleeAttack = gameTime + 0.35;
+				}
+			}
+		} 
+		
+		if(npc.m_iAttackType == 0)
+		{
+			npc.SetActivity("ACT_RUN_BOB");
+		}
 	}
 	else
 	{

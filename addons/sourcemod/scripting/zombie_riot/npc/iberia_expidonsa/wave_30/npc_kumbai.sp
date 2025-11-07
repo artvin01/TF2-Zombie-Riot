@@ -303,7 +303,7 @@ int IberiaKumbaiSelfDefense(IberiaKumbai npc, float gameTime, int target, float 
 						npc.m_iAttacksTillReload --;
 						if(NpcStats_IberiaIsEnemyMarked(target))
 						{
-							npc.m_flNextMeleeAttack = gameTime + 0.4;
+							npc.m_flNextMeleeAttack = gameTime + 0.25;
 						}
 
 						if(IsValidEnemy(npc.index, target))

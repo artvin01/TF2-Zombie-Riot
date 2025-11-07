@@ -93,27 +93,32 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	Menu menu2 = new Menu(Building_ConfirmMountedAction);
 	menu2.SetTitle("%t", "Which perk do you desire?");
 		
-	FormatEx(buffer, sizeof(buffer), "%t", "Recycle Poire");
+	FormatEx(buffer, sizeof(buffer), "%t", "Stockpile Stout");
 	menu2.AddItem("-9", buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%t", "Widows Wine");
+	FormatEx(buffer, sizeof(buffer), "%t", "Teslar Mule");
 	menu2.AddItem("-8", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Deadshot Daiquiri");
+	FormatEx(buffer, sizeof(buffer), "%t", "Marksman Beer");
 	menu2.AddItem("-7", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Speed Cola");
+	FormatEx(buffer, sizeof(buffer), "%t", "Hasty Hops");
 	menu2.AddItem("-6", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Double Tap");
+	FormatEx(buffer, sizeof(buffer), "%t", "Morning Coffee");
 	menu2.AddItem("-5", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Juggernog");
+	FormatEx(buffer, sizeof(buffer), "%t", "Obsidian Oaf");
 	menu2.AddItem("-4", buffer);
 	
-	FormatEx(buffer, sizeof(buffer), "%t", "Quick Revive");
+	FormatEx(buffer, sizeof(buffer), "%t", "Regene Berry");
 	menu2.AddItem("-3", buffer);
+
+	FormatEx(buffer, sizeof(buffer), "%t", "Energy Drink");
+	menu2.AddItem("-10", buffer);
 						
+	menu2.Pagination = 0;
+	menu2.ExitButton = true;
 	menu2.Display(client, MENU_TIME_FOREVER);
 	
 	return true;
@@ -129,7 +134,8 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 		}
 		case MenuAction_Cancel:
 		{
-			ResetStoreMenuLogic(client);
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
@@ -140,7 +146,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 			if((GetURandomInt() % 4) == 0 && Rogue_HasNamedArtifact("System Malfunction"))
 			{
-				id = GetRandomInt(-9, -4);
+				id = GetRandomInt(-10, -4);
 			}
 
 			if(id == -3)
@@ -150,7 +156,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 1);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_REGENE, 1);
 				}
 			}
 			else if(id == -4)
@@ -160,7 +166,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 2);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_OBSIDIAN, 2);
 				}
 			}
 			else if(id == -5)
@@ -170,7 +176,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 3);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_MORNING_COFFEE, 3);
 				}
 			}
 			else if(id == -6)
@@ -180,7 +186,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 4);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_HASTY_HOPS, 4);
 				}
 			}
 			else if(id == -7)
@@ -190,7 +196,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 5);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_MARKSMAN_BEER ,5);
 				}
 			}
 			else if(id == -8)
@@ -200,7 +206,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 6);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_TESLAR_MULE ,6);
 				}
 			}
 			else if(id == -9)
@@ -210,7 +216,17 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				{
 					int owner = -1;
 					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-					Do_Perk_Machine_Logic(owner, client, entity, 7);
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_STOCKPILE_STOUT,7);
+				}
+			}
+			else if(id == -10)
+			{
+				int entity = EntRefToEntIndexFast(i_MachineJustClickedOn[client]);
+				if(IsValidEntity(entity))
+				{
+					int owner = -1;
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+					Do_Perk_Machine_Logic(owner, client, entity, PERK_ENERGY_DRINK, 8);
 				}
 			}
 		}
@@ -218,25 +234,58 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 	return 0;
 }
 
-static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
+static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int PrintChatid)
 {
 	if(owner == -1)
 		return;
 		
 	if((GetEntityFlags(client) & FL_DUCKING))
 	{
-		SetGlobalTransTarget(client);
-		CPrintToChat(client, "{green} %t", PerkNames_Recieved[what_perk]);
+		CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
 		ClotInteract(client, -1, npc);
 		return;
 	}
+
+	int PerksOn = 0;
+	if(Rogue_ColdWaterActive())
+	{
+		for(int loopCheck = 0; loopCheck < 16; loopCheck++)
+		{
+			if(i_CurrentEquippedPerk[client] & (1 << loopCheck))
+			{
+				PerksOn++;
+			}
+		}
+	}
+	
+	if(Rogue_ColdWaterActive() && i_CurrentEquippedPerk[client] & what_perk)
+	{
+		i_CurrentEquippedPerk[client] &= ~what_perk;
+		i_CurrentEquippedPerkPreviously[client] &= ~what_perk;
+		CPrintToChat(client, "{crimson} %T", "You removed the current perk", client);
+	}
+	else
+	{
+		if(PerksOn >= 2)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			CPrintToChat(client, "{crimson} %T", "Too many Perks", client);
+			return;
+		}
+		if(!Rogue_ColdWaterActive())
+		{
+			i_CurrentEquippedPerk[client] = 0;
+			i_CurrentEquippedPerkPreviously[client] = 0;
+		}
+		i_CurrentEquippedPerk[client] |= what_perk;
+		i_CurrentEquippedPerkPreviously[client] |= what_perk;
+
+	}
+	UpdatePerkName(client);
+	
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
-	
-	i_CurrentEquippedPerk[client] = what_perk;
-	i_CurrentEquippedPerkPreviously[client] = what_perk;
-	
 	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 
 	float pos[3];
@@ -251,9 +300,8 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	SetEntPropVector(particle, Prop_Send, "m_angRotation", angles);
 	Perk_Machine_Sickness[client] = GetGameTime() + 2.0;
 	SetDefaultHudPosition(client, _, _, _, 5.0);
-	SetGlobalTransTarget(client);
-	ShowSyncHudText(client,  SyncHud_Notifaction, "%t", PerkNames_Recieved[i_CurrentEquippedPerk[client]]);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 	Barracks_UpdateAllEntityUpgrades(client);
+	CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
 }

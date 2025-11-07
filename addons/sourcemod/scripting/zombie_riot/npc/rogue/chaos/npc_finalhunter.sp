@@ -278,11 +278,10 @@ static void ClotThink(int iNPC)
 					if(ScalingDo <= 0.75)
 						ScalingDo = 0.75;
 
-					health -= (maxhealth / RoundToNearest(60.0 / ScalingDo) / 2);
+					health -= (maxhealth / RoundToNearest(60.0 / ScalingDo) / 4);
 
 					if(health < 1)
 					{
-						// 300 seconds to kill Goggles
 						SmiteNpcToDeath(target);
 
 						RaidBossActive = EntIndexToEntRef(npc.index);
@@ -346,7 +345,7 @@ static void ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 4.95;
+				npc.m_flNextMeleeAttack = gameTime + 2.45;
 			}
 			else
 			{

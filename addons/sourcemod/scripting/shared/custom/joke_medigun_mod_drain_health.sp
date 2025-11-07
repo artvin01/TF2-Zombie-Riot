@@ -235,32 +235,32 @@ public void Medigun_ClearAll()
 }
 #define UBERCHARGE_BUFFDURATION 1.0
 
-public void GiveMedigunBuffUber(int medigun, int owner, int reciever)
+public void GiveMedigunBuffUber(int medigun, int owner, int receiver)
 {
-	NPCStats_RemoveAllDebuffs(reciever, UBERCHARGE_BUFFDURATION);
+	NPCStats_RemoveAllDebuffs(receiver, UBERCHARGE_BUFFDURATION);
 	switch(i_CustomWeaponEquipLogic[medigun])
 	{
 		case WEAPON_KRITZKRIEG:
 		{
-			if(IsValidClient(reciever))
+			if(IsValidClient(receiver))
 			{
 				
 #if defined ZR
-				Kritzkrieg_Magical(reciever, 0.05, true);
+				Kritzkrieg_Magical(receiver, 0.05, true);
 #endif
-				TF2_AddCondition(reciever, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_Kritzkrieged, UBERCHARGE_BUFFDURATION);
 			}
-			ApplyStatusEffect(owner, reciever, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
+			ApplyStatusEffect(owner, receiver, "Weapon Overclock", UBERCHARGE_BUFFDURATION);
 		}
 		default:
 		{
-			if(IsValidClient(reciever))
+			if(IsValidClient(receiver))
 			{
-				TF2_AddCondition(reciever, TFCond_UberBulletResist, UBERCHARGE_BUFFDURATION);
-				TF2_AddCondition(reciever, TFCond_UberBlastResist, UBERCHARGE_BUFFDURATION);
-				TF2_AddCondition(reciever, TFCond_UberFireResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_UberBulletResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_UberBlastResist, UBERCHARGE_BUFFDURATION);
+				TF2_AddCondition(receiver, TFCond_UberFireResist, UBERCHARGE_BUFFDURATION);
 			}
-			ApplyStatusEffect(owner, reciever, "UBERCHARGED", UBERCHARGE_BUFFDURATION);
+			ApplyStatusEffect(owner, receiver, "UBERCHARGED", UBERCHARGE_BUFFDURATION);
 		}
 	}
 }
@@ -350,15 +350,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							case 0:
 							{
-								ApplyStatusEffect(owner, owner, "Healing Adaptiveness All", 0.15);
-								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness All", 0.15);
-							}
-							case 1:
-							{
 								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Melee", 0.15);
 								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Melee", 0.15);
 							}
-							case 2:
+							case 1:
 							{
 								ApplyStatusEffect(owner, owner, "Healing Adaptiveness Ranged", 0.15);
 								ApplyStatusEffect(owner, healTarget, "Healing Adaptiveness Ranged", 0.15);
@@ -416,6 +411,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							flMaxHealth = 1.25;
 						}
+						
 						flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
 #if defined ZR
 						if(What_type_Heal == 6.0)
@@ -433,7 +429,22 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 								Healing_GiveArmor *= 0.33;
 							}	
 							if(healTarget <= MaxClients)
+							{
+								bool JustCuredArmor = false;
+								if(Armor_Charge[healTarget] < 0)
+								{
+								//if under currosion. heal more
+									JustCuredArmor = true;
+									Healing_GiveArmor *= 4.0;
+								}
 								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true,_,owner);
+
+								if(JustCuredArmor && Armor_Charge[healTarget] > 0)
+								{
+									Armor_Charge[healTarget] = 0;
+								}
+
+							}
 							else
 							{
 								GrantEntityArmor(healTarget, false, 0.25, 0.25, 0,
@@ -449,7 +460,19 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							{
 								Healing_GiveArmor *= 0.25;
 							}
+							bool JustCuredArmor = false;
+							if(Armor_Charge[owner] < 0)
+							{
+								//if under currosion. heal more
+								JustCuredArmor = true;
+								Healing_GiveArmor *= 4.0;
+							}
 							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true,_,owner);
+							
+							if(JustCuredArmor && Armor_Charge[owner] > 0)
+							{
+								Armor_Charge[owner] = 0;
+							}
 						}
 #endif
 
@@ -494,13 +517,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						case 0:
 						{
-							PrintHintText(owner,"[HEALING MODE]\nMode: General");
-						}
-						case 1:
-						{
 							PrintHintText(owner,"[HEALING MODE]\nMode: Melee");
 						}
-						case 2:
+						case 1:
 						{
 							PrintHintText(owner,"[HEALING MODE]\nMode: Ranged");
 						}
@@ -609,11 +628,6 @@ stock int CreateParticleOnBackPack(const char[] sParticle, int client)
 	SetVariantString("flag");
 	AcceptEntityInput(entity, "SetParentAttachment", entity, entity, 0);
 	
-	char t_Name[128];
-	Format(t_Name, sizeof(t_Name), "target%i", client);
-	
-	DispatchKeyValue(entity, "targetname", t_Name);
-	
 	DispatchSpawn(entity);
 	ActivateEntity(entity);
 	AcceptEntityInput(entity, "start");
@@ -625,7 +639,6 @@ float MedigunGetUberDuration(int owner)
 {
 	//so it starts at 1.0
 	float Attribute = Attributes_GetOnPlayer(owner, 314, true, true) + 3.0;
-	
 	switch(Attribute)
 	{
 		case 1.0:
@@ -667,7 +680,7 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 	}
 	ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
 	MedigunModeSet[client]++;
-	if(MedigunModeSet[client] > 2)
+	if(MedigunModeSet[client] > 1)
 	{
 		MedigunModeSet[client] = 0;
 	}

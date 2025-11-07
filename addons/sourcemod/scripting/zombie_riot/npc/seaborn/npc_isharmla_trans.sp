@@ -111,7 +111,6 @@ methodmap IsharmlaTrans < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
 		f_ExtraOffsetNpcHudAbove[npc.index] = 35.0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 55, 55, 255, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bigaxe/c_bigaxe.mdl");
@@ -171,6 +170,16 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 					GetEntPropVector(npc.m_iTarget, Prop_Send, "m_vecOrigin", pos);
 					pos[2] += 25.0;
 					IsharmlaEffect(npc.index, pos);
+					int enemy[6];
+					UnderTides npc1 = view_as<UnderTides>(iNPC);
+					GetHighDefTargets(npc1, enemy, sizeof(enemy));
+					for(int i; i < sizeof(enemy); i++)
+					{
+						if(enemy[i])
+						{
+							IsharMlarWaterAttack_Invoke(npc.index, enemy[i]);
+						}
+					}
 				}
 				else
 				{
@@ -203,6 +212,9 @@ public void IsharmlaTrans_ClotThink(int iNPC)
 					npc.m_iTarget = target;
 					npc.m_flGetClosestTargetTime = gameTime + 1.0;
 					npc.m_flNextMeleeAttack = gameTime + 4.45;
+					if(ShouldNpcDealBonusDamage(target))
+						npc.m_flNextMeleeAttack = gameTime + 2.5;
+
 					npc.PlayMeleeSound();
 
 					npc.AddGesture(ShouldNpcDealBonusDamage(target) ? "ACT_MP_GESTURE_VC_FINGERPOINT_MELEE" : "ACT_MP_GESTURE_VC_FISTPUMP_MELEE");

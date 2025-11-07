@@ -258,12 +258,9 @@ methodmap TheMessenger < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.i_GunMode = 0;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
-		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
-		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		BlockLoseSay = false;
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 15.0;
-		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 25.0;
+		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 10.0;
 		f_MessengerSpeedUp[npc.index] = 1.0;
 		npc.g_TimesSummoned = 0;
 		
@@ -1156,14 +1153,16 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 							{
 								float Proj_Damage = 22.0 * RaidModeScaling;
 								Proj_Damage *= 0.1;
-								NPC_Ignite(targetTrace, npc.index,Proj_Damage, -1, 2.5);
+								NPC_Ignite(targetTrace, npc.index,2.5, -1, Proj_Damage);
 							}
 							else
 							{
+								
 								int ChaosDamage = 150;
 								if(NpcStats_IsEnemySilenced(npc.index))
 									ChaosDamage = 140;
 
+								ApplyStatusEffect(npc.index, targetTrace, "Near Zero", 3.5);
 								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
 
@@ -1249,7 +1248,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 
 		if(i_RaidGrantExtra[owner] <= 2)
 		{
-			NPC_Ignite(target, owner,DamageDeal * 0.1, -1, 2.5);
+			NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.1);
 		}
 		else
 		{
@@ -1264,6 +1263,8 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 				ChaosDamage = 60;
 				if(NpcStats_IsEnemySilenced(owner))
 					ChaosDamage = 50;
+					
+				ApplyStatusEffect(owner, target, "Near Zero", 3.5);
 			}
 
 			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);

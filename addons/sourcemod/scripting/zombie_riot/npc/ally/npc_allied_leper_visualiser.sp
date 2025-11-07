@@ -12,7 +12,7 @@ void AlliedLeperVisualiserAbility_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Ally;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -88,7 +88,6 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 						}
-						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 255);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}

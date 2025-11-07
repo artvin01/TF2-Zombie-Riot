@@ -177,7 +177,7 @@ static void Initiate_Animation(int client, int weapon)
 	WeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(IsValidEntity(WeaponModel))
 	{
-		SetEntityRenderMode(WeaponModel, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderMode(WeaponModel, RENDER_NONE); //Make it entirely invis.
 		SetEntityRenderColor(WeaponModel, 255, 255, 255, 1);
 	}
 
@@ -299,7 +299,7 @@ static void Fire_Beam(int client, int weapon, bool update)
 		WeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 		if(IsValidEntity(WeaponModel))
 		{
-			SetEntityRenderMode(WeaponModel, RENDER_TRANSCOLOR); //Make it entirely invsible.
+			SetEntityRenderMode(WeaponModel, RENDER_NONE); //Make it entirely invsible.
 			SetEntityRenderColor(WeaponModel, 255, 255, 255, 1);
 		}
 
@@ -329,12 +329,13 @@ static void Fire_Beam(int client, int weapon, bool update)
 	float Angles[3];
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-
+	
+	float flPitch = 0.0;
 	int iPitch = npc.LookupPoseParameter("body_pitch");
-	if(iPitch < 0)
-		return;
-
-	float flPitch = npc.GetPoseParameter(iPitch);
+	if(iPitch >= 0)
+	{
+		flPitch = npc.GetPoseParameter(iPitch);
+	}
 	flPitch *=-1.0;
 	if(flPitch>25.0)	//limit the pitch. by a lot
 		flPitch=25.0;
@@ -534,7 +535,7 @@ static void Kill_Animation(int client)
 	WeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(IsValidEntity(WeaponModel))
 	{
-		SetEntityRenderMode(WeaponModel, RENDER_TRANSCOLOR); //Make it entirely visible.
+		SetEntityRenderMode(WeaponModel, RENDER_NORMAL); //Make it entirely visible.
 		SetEntityRenderColor(WeaponModel, 255, 255, 255, 255);
 	}
 
@@ -1266,7 +1267,7 @@ static Action Mana_Harvester_Tick(int client)
 	//we now have every valid target within range / within line of sight, comence the harvesting!
 	int color[4]; color = Kit_Color();
 
-	if(i_CurrentEquippedPerk[client] == 4)
+	if(i_CurrentEquippedPerk[client] & PERK_HASTY_HOPS)
 		mana_cost = RoundToFloor(mana_cost * 1.33);
 
 	for(int i=0 ; i < FRACTAL_HARVESTER_MAX_AMT ; i++)
@@ -1655,10 +1656,7 @@ static void Fractal_Weapon_LastMannHandle(int weapon, int attribute, float value
 #define FRACTAL_SHIELD_YAW 45.0
 float Player_OnTakeDamage_Fractal(int victim, float &damage, float damagePosition[3], int attacker)
 {
-	//if cannon is active, base 20% dmg resist.
-	if(b_cannon_animation_active[victim])
-		damage *= 0.8;
-	else
+	if(!b_cannon_animation_active[victim])
 		return damage;
 
 	if(CheckInHud())

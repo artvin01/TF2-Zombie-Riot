@@ -25,6 +25,8 @@ enum
 	Attrib_FormRes = 4028,
 	Attrib_OverrideExplodeDmgRadiusFalloff = 4029,
 	Attrib_CritChance = 4030,
+	// 4031
+	// 4032
 	Attrib_ReviveTimeCut = 4033,
 	Attrib_ExtendExtraCashGain = 4034,
 	Attrib_ReduceMedifluidCost = 4035,
@@ -44,6 +46,18 @@ enum
 	Attrib_BuildingStatus_PreventAbuse = 4046, 
 	//used for anti abuse.
 	//specifally so you cant make ranged units lategame and sell all other units and just keep those alive forever.
+
+	Attrib_Weapon_MaxDmgMulti = 4047, 
+	Attrib_Weapon_MinDmgMulti = 4048, 
+	//used currently for heavy particle rifle
+	//but will probably be used for other weapons to define max/min dmg depending on whatever the weapon specific plugin does with it.
+	Attrib_ElementalDefPerc = 4049,
+
+	Attrib_BarracksSupplyRate = 4050,
+	Attrib_FinalBuilder = 4051,
+	Attrib_GlassBuilder = 4052,
+	Attrib_WildingenBuilder = 4053,
+	Attrib_TauntRangeValue = 4054,
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
@@ -59,7 +73,7 @@ bool Attribute_ServerSide(int attribute)
 
 		Various attributes that are not needed as actual attributes.
 		*/
-		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93,8:
+		case 526,733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93,8, 734:
 		{
 			return true;
 		}
@@ -76,7 +90,19 @@ bool Attribute_IntAttribute(int attribute)
 {
 	switch(attribute)
 	{
-		case 834, 866, 867:
+		case 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
+			return true;
+	}
+
+	return false;
+}
+
+bool Attribute_DontSaveAsIntAttribute(int attribute)
+{
+	switch(attribute)
+	{
+		//this attrib is a float, but saves as an int, for stuff thats additional, not multi.
+		case 314, 142:
 			return true;
 	}
 
@@ -162,11 +188,12 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 			return false;
 	}
 	
-	if(Attribute_IntAttribute(attrib))
+	if(Attribute_IntAttribute(attrib) && !Attribute_DontSaveAsIntAttribute(attrib))
 	{
 		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
 		return true;
 	}
+	
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;
@@ -633,25 +660,6 @@ float Attributes_GetOnWeapon(int client, int entity, int index, bool multi = tru
 		defaul = defaultstat;
 	}
 	float result = Attributes_Get(client, index, defaul);
-
-	/*
-	int wearable = MaxClients + 1;
-	while(TF2_GetWearable(client, wearable))
-	{
-		float value = Attributes_Get(wearable, index, defaul);
-		if(value != defaul)
-		{
-			if(multi)
-			{
-				result *= value;
-			}
-			else
-			{
-				result += value;
-			}
-		}
-	}
-	*/
 	
 	if(entity > MaxClients)
 	{

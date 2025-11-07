@@ -80,6 +80,8 @@ methodmap FogOrbHeavy < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -92,7 +94,7 @@ methodmap FogOrbHeavy < CClotBody
 		
 		npc.StartPathing();
 		npc.m_flSpeed = 225.0;
-		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
+		b_NoHealthbar[npc.index] = 1; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
 		b_thisNpcHasAnOutline[npc.index] = true;
 		

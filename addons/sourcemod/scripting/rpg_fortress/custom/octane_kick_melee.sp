@@ -134,38 +134,49 @@ void OctaneKick_ClientPrethink(int client)
 //Borrowed from npc_combine_whiteflower , WhiteflowerKickLogic()
 void OctaneKick_Logic(int iNPC)
 {
-	
+	CClotBody npc = view_as<CClotBody>(iNPC);
 	static float flMyPos[3];
-	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	float vecUp[3];
-	float vecForward[3];
-	float vecRight[3];
-
-	GetVectors(iNPC, vecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = flMyPos[0] + vecForward[0] * (25.0);
-	vecSwingEnd[1] = flMyPos[1] + vecForward[1] * (25.0);
-	vecSwingEnd[2] = flMyPos[2];
-				
-
+	float vel[3];
+	
+	vel[0] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[0]");
+	vel[1] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[1]");
+	vel[2] = GetEntPropFloat(iNPC, Prop_Send, "m_vecVelocity[2]");
+	
+	fClamp(vel[0], -300.0, 300.0);
+	fClamp(vel[1], -300.0, 300.0);
+	fClamp(vel[2], -300.0, 300.0);
 	static float hullcheckmaxs[3];
 	static float hullcheckmins[3];
-	hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
-	hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
-	//Fat kick!
-	hullcheckmaxs[0] *= 2.5;
-	hullcheckmaxs[1] *= 2.5;
-	hullcheckmaxs[2] *= 2.5;
+	if(b_IsGiant[iNPC])
+	{
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+	}
+	else if(f3_CustomMinMaxBoundingBox[iNPC][1] != 0.0)
+	{
+		hullcheckmaxs[0] = f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmaxs[1] = f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmaxs[2] = f3_CustomMinMaxBoundingBox[iNPC][2];
 
-	hullcheckmins[0] *= 2.5;
-	hullcheckmins[1] *= 2.5;
-	hullcheckmins[2] *= 2.5;
+		hullcheckmins[0] = -f3_CustomMinMaxBoundingBox[iNPC][0];
+		hullcheckmins[1] = -f3_CustomMinMaxBoundingBox[iNPC][1];
+		hullcheckmins[2] = 0.0;	
+	}
+	else
+	{
+		hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
+		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
+	}
+	
+	static float flPosEnd[3];
+	flPosEnd = flMyPos;
+	ScaleVector(vel, 0.1);
+	AddVectors(flMyPos, vel, flPosEnd);
 	
 	ResetTouchedentityResolve();
-	
-	ResolvePlayerCollisions_Npc_Internal(vecSwingEnd, hullcheckmins, hullcheckmaxs, iNPC);
+	ResolvePlayerCollisions_Npc_Internal(flMyPos, flPosEnd, hullcheckmins, hullcheckmaxs, iNPC);
 
 	for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 	{

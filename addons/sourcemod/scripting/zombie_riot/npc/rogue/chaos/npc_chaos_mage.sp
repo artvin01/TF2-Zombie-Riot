@@ -115,6 +115,7 @@ methodmap ChaosMage < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Elemental_AddChaosDamage(npc.index, npc.index, 1, false);
 
 		func_NPCDeath[npc.index] = view_as<Function>(ChaosMage_NPCDeath);
 		func_NPCOnTakeDamagePost[npc.index] = view_as<Function>(ChaosMage_OnTakeDamage);
@@ -136,9 +137,7 @@ methodmap ChaosMage < CClotBody
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 		
 		float flPos[3], flAng[3];
@@ -299,7 +298,6 @@ void ChaosMageSelfDefense(ChaosMage npc, float gameTime, int target, float dista
 				if(IsValidEntity(f_ArrowTrailParticle[entity]))
 					RemoveEntity(f_ArrowTrailParticle[entity]);
 				
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(entity, 200, 0, 200, 255);
 				
 				WorldSpaceCenter(entity, vecTarget);

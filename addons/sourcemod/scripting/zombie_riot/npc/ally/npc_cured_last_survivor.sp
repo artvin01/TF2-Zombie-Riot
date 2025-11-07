@@ -706,7 +706,7 @@ methodmap CuredFatherGrigori < CClotBody
 		char SizeDo[256];
 
 		if(i_SpecialGrigoriReplace == 0)
-			FormatEx(ModelDo, sizeof(ModelDo), "models/monk.mdl");
+			FormatEx(ModelDo, sizeof(ModelDo), "models/zombie_riot/grigori/monk_custom.mdl");
 		else
 			FormatEx(ModelDo, sizeof(ModelDo), "models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl");
 			
@@ -990,6 +990,10 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 		return;
 	}
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(Owner))
+	{
+		Owner = npc.index;
+	}
 						
 	if((BoughtGregHelp || CurrentPlayers <= 4) && IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -1282,19 +1286,20 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 						npc.FaceTowards(WorldSpaceVec2, 500.0);
 						WorldSpaceVec2[2] += 30.0;
 						int iPitch = npc.LookupPoseParameter("body_pitch");
-						if(iPitch < 0)
-							return;		
+						if(iPitch >= 0)
+						{
+							//Body pitch
+							float v[3], ang[3];
+							SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
+							NormalizeVector(v, v);
+							GetVectorAngles(v, ang); 
+							
+							float flPitch = npc.GetPoseParameter(iPitch);
+							
+						//	ang[0] = clamp(ang[0], -44.0, 89.0);
+							npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+						}
 					
-						//Body pitch
-						float v[3], ang[3];
-						SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
-						NormalizeVector(v, v);
-						GetVectorAngles(v, ang); 
-						
-						float flPitch = npc.GetPoseParameter(iPitch);
-						
-					//	ang[0] = clamp(ang[0], -44.0, 89.0);
-						npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 					}
 				}
 			}

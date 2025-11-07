@@ -22,16 +22,22 @@ float Rogue_Barracks_FlatArmor()
 
 public void Rogue_SupplyDepot_Collect()
 {
-	SupplyBonus++;
+	if(BarracksBlockItem(12))
+		return;
+	SupplyBonus += 1;
 }
 
 public void Rogue_AlHallam_Fortress_Collect()
 {
+	if(BarracksBlockItem(24))
+		return;
 	SupplyBonus += 2;
 }
 
 public void Rogue_Gambesons_Collect()
 {
+	if(BarracksBlockItem(12))
+		return;
 	FlatArmor += 10.0;
 }
 
@@ -42,25 +48,14 @@ public void Rogue_Gambesons_Remove()
 
 public void Rogue_Neosteel_Collect()
 {
+	if(BarracksBlockItem(18))
+		return;
 	FlatArmor += 20.0;
 }
 
 public void Rogue_Neosteel_Remove()
 {
 	FlatArmor -= 10.0;
-}
-
-public void Rogue_ThumbRing_Ally(int entity, StringMap map)
-{
-	if(!b_NpcHasDied[entity] && view_as<BarrackBody>(entity).OwnerUserId)
-	{
-		char buffer[32];
-		NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-		if(StrContains(buffer, "archer") != -1 || StrContains(buffer, "bow") != -1 || StrContains(buffer, "arbelast") != -1)
-		{
-			view_as<BarrackBody>(entity).BonusFireRate *= 0.75;
-		}
-	}
 }
 
 public void Rogue_ThumbRing_Weapon(int entity)
@@ -78,4 +73,19 @@ public void Rogue_ThumbRing_Weapon(int entity)
 			Attributes_Set(entity, 97, Attributes_Get(entity, 97, 1.0) * 0.75);
 		}
 	}
+}
+
+
+bool BarracksBlockItem(int cost)
+{
+	if(EnableSilentMode)
+	{
+		SPrintToChatAll("%t", "Barracks Disabled Rogue");
+		Artifact artifact;
+		if(Rogue_GetRandomArtifact(artifact, true, cost) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
+
+		return true;
+	}
+	return false;
 }

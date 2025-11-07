@@ -189,8 +189,6 @@ methodmap MedivalPikeman < CClotBody
 		func_NPCOnTakeDamage[npc.index] = MedivalPikeman_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalPikeman_ClotThink;
 	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 335.0;

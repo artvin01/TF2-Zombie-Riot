@@ -684,7 +684,7 @@ methodmap Stella < CClotBody
 		
 		c_NpcName[npc.index] = "Stella";
 
-		//data: test , force15, force30, force45, force60, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
+		//data: test , force10, force20, force30, force40, hell, solo, triple_enemies, nomusic, anger, twirl, bob, normonly
 
 		b_test_mode[npc.index] = StrContains(data, "test") != -1;
 
@@ -739,7 +739,7 @@ methodmap Stella < CClotBody
 		f_CheckIfStuckPlayerDelay[npc.index] = FAR_FUTURE, //She CANT stuck you, so dont make players not unstuck in cant bve stuck ? what ?
 		b_ThisEntityIgnoredBeingCarried[npc.index] = true; //cant be targeted AND wont do npc collsiions
 		
-		RaidModeTime = GetGameTime() + 250.0;
+		RaidModeTime = GetGameTime() + 220.0;
 		
 	
 		char buffers[3][64];
@@ -776,6 +776,8 @@ methodmap Stella < CClotBody
 			amount_of_people = 1.0;
 
 		RaidModeScaling *= amount_of_people;
+		RaidModeScaling *= 1.25;
+		//needed buff as their damage is really low
 			
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -860,6 +862,7 @@ methodmap Stella < CClotBody
 		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 		//9 is used by a special item.
 		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 16777215);
 
 		SetVariantInt(RUINA_STELLA_CREST);
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
@@ -1340,6 +1343,7 @@ static bool Lunar_Grace(Stella npc)
 	struct_Lunar_Grace_Data[npc.index].AnimSet = false;
 
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 6.0;
 	Laser.client = npc.index;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float Angles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
@@ -1893,6 +1897,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 	float Start_Loc[3];	
 
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 20.0;
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Basic(-1.0);
 	float endPoint[3]; endPoint = Laser.End_Point;
@@ -1950,7 +1955,7 @@ public Action Stella_Nightmare_Tick(int iNPC)
 			if(update)	//like the main laser, the damage is dealt 10 times a second
 			{
 				Karl_Laser.Damage = Modify_Damage(25.0);
-				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*6.0;
+				Karl_Laser.Bonus_Damage = Modify_Damage(25.0)*0.1;
 				Karl_Laser.damagetype = DMG_PLASMA;
 				Karl_Laser.Deal_Damage();
 			}
@@ -2313,6 +2318,7 @@ static bool Is_Target_Infront(Stella npc, float Radius)
 	float Range = fl_Normal_Laser_Range(npc);
 	Laser.DoForwardTrace_Basic(Range);
 	Laser.Radius = Radius;
+	Laser.Bonus_Damage = 6.0;
 	Laser.Detect_Entities(On_LaserHit);	//by default it only filters out enemies
 
 	return b_hit_something;
@@ -2517,7 +2523,7 @@ public Action Normal_Laser_Think(int iNPC)	//A short burst of a laser.
 		//the 0.75 is min dmg it will reach at ability end.
 		Laser.Damage = Dmg;
 		Laser.Radius = radius;
-		Laser.Bonus_Damage = Dmg*6.0;
+		Laser.Bonus_Damage = Dmg*4.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage();
 
@@ -2586,6 +2592,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 {
 	Ruina_Laser_Logic Laser;
+	Laser.Bonus_Damage = 6.0;
 	Laser.client = attacker;
 	Laser.Start_Point = pos_npc;
 
@@ -2614,6 +2621,7 @@ static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int
 	Ruina_Laser_Logic Laser;
 	Laser.client = attacker;
 	Laser.Start_Point = pos_npc;
+	Laser.Bonus_Damage = 6.0;
 
 	float vecAngles[3];
 	//get the enemy gamer's location.

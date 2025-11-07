@@ -114,10 +114,10 @@ public void Rogue_SoulArknights_Weapon(int entity, int client)
 	
 	char buffer[64];
 	Store_GetItemName(StoreWeapon[entity], client, buffer, sizeof(buffer), false);
-	if(i_WeaponArchetype[entity] == 22 ||
-		i_WeaponArchetype[entity] == 23 ||
+	if(Store_IsWeaponFaction(client, entity, Faction_Seaborn) ||
+		Store_IsWeaponFaction(client, entity, Faction_Kazimierz) ||
+		Store_IsWeaponFaction(client, entity, Faction_Victoria) ||
 		StrContains(buffer, "The Enforcer", false) != -1 ||
-		StrContains(buffer, "Victorian Launcher", false) != -1 ||
 		StrContains(buffer, "Riot Gun", false) != -1 ||
 		StrContains(buffer, "Angelica Shotgonnus", false) != -1 ||
 		StrContains(buffer, "Полумесяц", false) != -1 ||
@@ -447,18 +447,5 @@ public void Rogue_FoodSwarmcaller_Ally(int entity, StringMap map)
 
 public void Rogue_Reefbreaker_Weapon(int entity)
 {
-	// +15% damage bonus
-	if(Attributes_Has(entity, 2))
-		Attributes_SetMulti(entity, 2, 1.15);
-	
-	if(Attributes_Has(entity, 410))
-		Attributes_SetMulti(entity, 410, 1.15);
-
-	char buffer[36];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
-	if(StrEqual(buffer, "tf_weapon_medigun"))
-	{
-		if(Attributes_Has(entity, 1))
-			Attributes_SetMulti(entity, 1, 1.15);
-	}
+	RogueHelp_WeaponDamage(entity, 1.15);
 }

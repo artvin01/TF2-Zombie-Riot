@@ -46,14 +46,6 @@ static char g_RangedReloadSound[][] = {
 
 void AgentIanFreeplay_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Ian");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freeplay_agent_ian");
@@ -62,7 +54,21 @@ void AgentIanFreeplay_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Matrix;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	
+	Matrix_Shared_CorruptionPrecache();
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -450,13 +456,13 @@ static void AgentIanFreeplay_Reflect_Enable(AgentIanFreeplay npc)
 static void AgentIanFreeplay_Reflect_Disable(AgentIanFreeplay npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;

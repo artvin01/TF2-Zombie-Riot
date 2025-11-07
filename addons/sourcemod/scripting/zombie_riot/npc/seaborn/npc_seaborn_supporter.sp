@@ -116,9 +116,7 @@ methodmap SeabornSupporter < CClotBody
 		}
 		else
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
 		}
 

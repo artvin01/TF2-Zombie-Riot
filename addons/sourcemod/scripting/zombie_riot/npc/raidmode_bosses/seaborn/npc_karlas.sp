@@ -73,7 +73,7 @@ static bool b_tripple_raid[MAXENTITIES];
 
 #define KARLAS_LIGHT_MODEL "models/effects/vol_light256x512.mdl"
 
-#define KARLAS_TELEPORT_STRIKE_RADIUS 750.0
+#define KARLAS_TELEPORT_STRIKE_RADIUS 550.0
 
 static float fl_npc_basespeed;
 
@@ -503,6 +503,7 @@ methodmap Karlas < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 
 		b_angered_twice[npc.index]=false;
 		fl_teleport_strike_recharge[npc.index] = GetGameTime()+25.0;
@@ -518,8 +519,8 @@ methodmap Karlas < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
-		if(RaidModeTime < GetGameTime() + 250.0)
-			RaidModeTime = GetGameTime() + 250.0;
+		if(RaidModeTime < GetGameTime() + 200.0)
+			RaidModeTime = GetGameTime() + 200.0;
 
 		npc.m_flNextChargeSpecialAttack = 0.0;	//used for transformation Logic
 		b_swords_created[npc.index]=false;
@@ -882,6 +883,7 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.PlayIdleAlertSound();
 }
+
 static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceToTarget)
 {
 	int Ally = npc.Ally;
@@ -900,7 +902,7 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 	int KarlasMaxHealth = ReturnEntityMaxHealth(npc.index);
 	int KarlasHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
-	if(KarlasHealth > (KarlasMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 4))
+	if(KarlasHealth > (KarlasMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 3))
 	{
 		float vecAlly[3];
 		float vecMe[3];
@@ -914,8 +916,9 @@ static bool Healing_Logic(Karlas npc, int PrimaryThreatIndex, float flDistanceTo
 		{
 			NpcSpeechBubble(npc.index, "..!", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			CPrintToChatAll("{crimson}Karlas{snow}: ..!");
-			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
+			CPrintToChatAll("{crimson}Karlas Heals Stella, and provides himself with some adrenaline...");
+			HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 7)), 1.0, 0.0, HEAL_ABSOLUTE);
+			ApplyStatusEffect(npc.index, npc.index, "Ancient Melodies", 5.0);
 
 			spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/laserbeam.vmt", 4.0, 6.2, _, 2.0, vecAlly, vecMe);	
 			spawnBeam(0.8, 50, 50, 255, 50, "materials/sprites/lgtning.vmt", 4.0, 5.2, _, 2.0, vecAlly, vecMe);	
@@ -1476,6 +1479,8 @@ static void Karlas_Aggresive_Behavior(Karlas npc, int PrimaryThreatIndex, float 
 							}
 							Custom_Knockback(npc.index, target, Knockback_Deal, true);
 						}
+						if(ShouldNpcDealBonusDamage(target))
+							meleedmg *= 20.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, meleedmg, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();	
 					
@@ -1875,18 +1880,13 @@ static void Karlas_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, floa
 
 static void Karlas_Teleport_Boom(Karlas npc, float Location[3])
 {
-	float Boom_Time = 5.0;
+	float Boom_Time = 4.0;
 
 	Karlas_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Location);
 
-	float radius = KARLAS_TELEPORT_STRIKE_RADIUS;
-	if(npc.Anger)
-		radius *= 1.25;	
 	int color[4];
 	Ruina_Color(color, i_current_wave[npc.index]);
 	color[3] = 175;
-
-	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, g_Ruina_Laser_BEAM, g_Ruina_Laser_BEAM, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
 
 	Handle pack;
 	CreateDataTimer(Boom_Time, Karlas_Boom, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -1938,9 +1938,12 @@ static Action Karlas_Ring_Loops(Handle Loop, DataPack pack)
 
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, 0.0, g_Ruina_BEAM_lightning, g_Ruina_HALO_Laser, 0, 66, 1.0, 30.0, 0.1, color, 1, 0);
 	TE_SendToAll();
-
+	/*
 	TE_SetupBeamRingPoint(spawnLoc, radius*2.0, (radius*2.0) + 0.1, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 	TE_SendToAll();
+	*/
+	color[3] = 100;
+	DrawCircleTE(spawnLoc, 8, radius, color, 1.0, 10.0);
 
 	Handle pack2;
 	CreateDataTimer(1.0, Karlas_Ring_Loops, pack2, TIMER_FLAG_NO_MAPCHANGE);
@@ -2000,7 +2003,7 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 
 	TE_SetupBeamRingPoint(spawnLoc, 1.0, radius*2.0, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, 1.0, 20.0, 1.0, color, 1, 0);
 	TE_SendToAll();
-	
+
 	float start = 75.0;
 	float end = 75.0;
 	TE_SetupBeamPoints(spawnLoc, sky_loc, g_Ruina_BEAM_Diamond, 0, 0, 0, 1.0, start, end, 0, 1.0, color, 3);
@@ -2039,6 +2042,43 @@ static Action Karlas_Boom(Handle Smite_Logic, DataPack pack)
 
 	return Plugin_Stop;
 	
+}
+void DrawCircleTE(float SpawnLoc[3], int Accuracy, float radius, int color[4], float duration, float width)
+{
+	//Default place
+	static float RadiusAltered;
+	static float SpawnLocAltered[3];
+
+	float Step_Height = radius / Accuracy;
+
+	TE_SetupBeamRingPoint(SpawnLoc, radius*2.0, radius*2.0 + 0.1, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, duration, width, 1.0, color, 1, 0);
+	TE_SendToAll();
+
+	//janky method of getting the distances we need
+	SpawnLocAltered = SpawnLoc;
+	SpawnLocAltered[2] += Step_Height*Accuracy;
+	for(int i=0 ; i < Accuracy ; i++)
+	{
+		float tempAngles[3], Direction[3], endLoc[3];
+		tempAngles[2] = ((90.0/Accuracy)*float(i));
+	
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+		ScaleVector(Direction, radius);
+		AddVectors(SpawnLoc, Direction, endLoc);
+	
+		RadiusAltered = GetVectorDistance(SpawnLocAltered, endLoc);
+
+		TE_SetupBeamRingPoint(SpawnLocAltered, RadiusAltered*2.0, RadiusAltered*2.0 + 0.1, g_Ruina_Laser_BEAM, g_Ruina_HALO_Laser, 0, 1, duration, width, 1.0, color, 1, 0);
+		TE_SendToAll();
+		/*
+		TE_SetupBeamPoints(SpawnLoc, endLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 10.0, 7.0*2.0, 7.0*2.0, 0, 0.1, {255,0,0,255}, 3);
+		TE_SendToAll();
+
+		TE_SetupBeamPoints(SpawnLocAltered, endLoc, g_Ruina_BEAM_Laser, 0, 0, 0, 10.0, 7.0*2.0, 7.0*2.0, 0, 0.1, {0,0,255,255}, 3);
+		TE_SendToAll();
+		*/
+		SpawnLocAltered[2]-=Step_Height;
+	}
 }
 static bool Karlas_Teleport(int iNPC, float vecTarget[3], float Min_Range)
 {
@@ -2257,14 +2297,20 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	int health;
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int KarlasMaxHealth = ReturnEntityMaxHealth(victim);
+	if(health < (KarlasMaxHealth / 2) && !npc.m_fbRangedSpecialOn)
+	{
+		npc.m_fbRangedSpecialOn = true;
+		CPrintToChatAll("{crimson}Karlas's Healing tank breaks once he lost half his health, he can no longer heal stella...");
+	}
 	if(RoundToCeil(damage) >= health && !npc.m_flInvulnerability && i_current_wave[npc.index] > 10)
 	{
-
 		ApplyStatusEffect(victim, victim, "Infinite Will", 15.0);
 		ApplyStatusEffect(victim, victim, "Hardened Aura", 15.0);
 		int ally = npc.Ally;
 		if(IsValidEntity(ally))
 		{
+			ApplyStatusEffect(ally, ally, "Extreme Anxiety", 999.0);
 			switch(GetRandomInt(0, 1))
 			{
 				case 0: CPrintToChatAll("{crimson}Karlas{snow}: *heavy breathing*");
@@ -2659,6 +2705,7 @@ static void Internal_NPCDeath(int entity)
 		{
 			if(!b_bobwave[npc.index])
 			{
+				ApplyStatusEffect(stella.index, stella.index, "Extreme Anxiety", 999.0);
 				switch(GetRandomInt(1,3))
 				{
 					case 1: Stella_Lines(stella,"Hmph, Guess I'll handle this alone");

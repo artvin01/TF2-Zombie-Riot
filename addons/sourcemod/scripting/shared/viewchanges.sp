@@ -124,7 +124,7 @@ void ViewChange_MapStart()
 	Zero(b_AntiSameFrameUpdate);
 
 #if defined ZR
-	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
+	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_2_MODEL, true);
 #endif
 
 	int entity = -1;
@@ -196,6 +196,17 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 	}
 }
 
+#if defined ZR
+static void GetTeamOverride(int &team)
+{
+	if(CurrentModifOn() == SECONDARY_MERCS)
+		team = 3;
+	
+	if(Construction_Mode() && (Rogue_HasNamedArtifact("Hold Out Normal") || Rogue_HasNamedArtifact("Hold Out Creep")))
+		team = 3;
+}
+#endif
+
 void ViewChange_PlayerModel(int client)
 {
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -216,6 +227,7 @@ void ViewChange_PlayerModel(int client)
 	int entity = CreateEntityByName("tf_wearable");
 	if(entity != -1)	// playermodel
 	{
+		int SetSkin = team - 2;
 #if defined ZR
 		i_CustomModelOverrideIndex[client] = -1;
 		
@@ -280,7 +292,15 @@ void ViewChange_PlayerModel(int client)
 		else
 		{
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", TeutonModelIndex);
-			SetEntProp(entity, Prop_Send, "m_nBody", 9);
+			if(view_as<bool>(Store_HasNamedItem(client, "Shadow's Letter")))
+			{
+				SetEntProp(entity, Prop_Send, "m_nBody", 16);
+				SetSkin = 1;
+			}
+			else
+			{
+				SetEntProp(entity, Prop_Send, "m_nBody", 1);
+			}
 		}
 #else
 		UpdatePlayerFakeModel(client);
@@ -289,8 +309,11 @@ void ViewChange_PlayerModel(int client)
 #endif
 		
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+#if defined ZR
+		GetTeamOverride(team);
+#endif
 		SetTeam(entity, team);
-		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(client, Prop_Send, "m_nSkin"));
+		SetEntProp(entity, Prop_Send, "m_nSkin", SetSkin);
 		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
 		SetEntityCollisionGroup(entity, 11);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
@@ -425,14 +448,15 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				}
 			}
 
-			// entity here is m_hViewModel
-			/*	
-				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
-			*/
-			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
-			//SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
+			
+			int team = GetClientTeam(client);
+#if defined ZR
+			GetTeamOverride(team);
+#endif
+			SetTeam(entity, team);
+			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 			int model = GetEntProp(active, Prop_Send, "m_iWorldModelIndex");
 			
 			entity = CreateViewmodel(client, model, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : model, active, true);
@@ -465,7 +489,6 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			entity = CreateEntityByName("tf_wearable");
 			if(entity != -1)	// Weapon worldmodel
 			{
-				int team = GetClientTeam(client);
 				if(i_WeaponModelIndexOverride[active] > 0)
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
 				else
@@ -495,6 +518,9 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				ImportSkinAttribs(entity, active);
 
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+#if defined ZR
+				GetTeamOverride(team);
+#endif
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
 				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
@@ -539,7 +565,15 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 				if(IsValidEntity(ViewmodelPlayerModel))
 				{
-					SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 9);
+					if(view_as<bool>(Store_HasNamedItem(client, "Shadow's Letter")))
+					{
+						SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 16);
+						SetTeam(ViewmodelPlayerModel, 0);
+					}
+					else
+					{
+						SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 1);
+					}
 				}
 			}
 #else
@@ -592,6 +626,10 @@ void MedicAdjustModel(int client)
 	if(!IsValidEntity(ViewmodelPlayerModel))
 		return;
 		
+	if(TeutonType[client] != TEUTON_NONE)
+	{
+		return;
+	}
 	if(i_PlayerModelOverrideIndexWearable[client] >= 0)
 	{
 		return;
@@ -737,11 +775,11 @@ static void ImportSkinAttribs(int wearable, int weapon)
 
 void HidePlayerWeaponModel(int client, int entity, bool OnlyHide = false)
 {
-	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
-	SetEntityRenderColor(entity, 0, 0, 0, 0);
+	SetEntityRenderMode(entity, RENDER_NONE);
+//	SetEntityRenderColor(entity, 0, 0, 0, 0);
 //	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
-//	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
-	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.001);
+//	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
 	if(OnlyHide)

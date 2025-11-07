@@ -422,8 +422,8 @@ methodmap Castellan < CClotBody
 			music.Time = 154;
 			music.Volume = 2.0;
 			music.Custom = true;
-			strcopy(music.Name, sizeof(music.Name), "06Graveyard_Arena3");
-			strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+			strcopy(music.Name, sizeof(music.Name), "Deep Dive - Arena Fight");
+			strcopy(music.Artist, sizeof(music.Artist), "Serious Sam 4: Reborn mod");
 			Music_SetRaidMusic(music);
 		}
 
@@ -437,7 +437,6 @@ methodmap Castellan < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 255, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/soldier/fdu.mdl");
@@ -447,7 +446,6 @@ methodmap Castellan < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/sept2014_lone_survivor/sept2014_lone_survivor.mdl");
@@ -461,13 +459,11 @@ methodmap Castellan < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
 
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2022_safety_stripes/hwn2022_safety_stripes.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 255);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -539,60 +535,60 @@ static void Internal_ClotThink(int iNPC)
 			if(IsValidEntity(i_InvincibleParticle[npc.index]))
 			{
 				particle = EntRefToEntIndex(i_InvincibleParticle[npc.index]);
-				SetEntityRenderMode(particle, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(particle, RENDER_NONE);
 				SetEntityRenderColor(particle, 255, 255, 255, 1);
 				SetEntPropFloat(particle, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(particle, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NONE);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 1.0);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
 			if(IsValidEntity(npc.m_iWearable2))
 			{
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable2, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 1);
 				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
 			if(IsValidEntity(npc.m_iWearable3))
 			{
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 1);
 				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
 			if(IsValidEntity(npc.m_iWearable4))
 			{
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 1);
 				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
 			if(IsValidEntity(npc.m_iWearable5))
 			{
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 1);
 				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
 			if(IsValidEntity(npc.m_iWearable6))
 			{
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 1);
 				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
 			if(IsValidEntity(npc.m_iWearable7))
 			{
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 1);
 				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 1.0);
 			}
 			if(IsValidEntity(npc.m_iWearable8))
 			{
-				SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable8, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 1);
 				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 1.0);
 				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 1.0);
@@ -615,7 +611,7 @@ static void Internal_ClotThink(int iNPC)
 						i_InvincibleParticlePrev[Shield] = 0;
 					}
 				}
-				else if(i_npcspawnprotection[npc.index] == 1)
+				else if(i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
 				{
 					if(i_InvincibleParticlePrev[Shield] != 1)
 					{
@@ -626,55 +622,55 @@ static void Internal_ClotThink(int iNPC)
 				SetEntPropFloat(Shield, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(Shield, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 30000.0);
 			SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 30000.0);
 			if(IsValidEntity(npc.m_iWearable2))
 			{
-				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
 			if(IsValidEntity(npc.m_iWearable3))
 			{
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
 				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable3, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
 			if(IsValidEntity(npc.m_iWearable4))
 			{
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable4, 50, 50, 50, 255);
 				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
 			if(IsValidEntity(npc.m_iWearable5))
 			{
-				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
 				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable5, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
 			if(IsValidEntity(npc.m_iWearable6))
 			{
-				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
 				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable6, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
 			if(IsValidEntity(npc.m_iWearable7))
 			{
-				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
 				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 30000.0);
 			}
 			if(IsValidEntity(npc.m_iWearable8))
 			{
-				SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable8, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable8, 50, 50, 50, 255);
 				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMinDist", 30000.0);
 				SetEntPropFloat(npc.m_iWearable8, Prop_Send, "m_fadeMaxDist", 30000.0);
@@ -1551,6 +1547,8 @@ static int CastellanSelfDefense(Castellan npc, float gameTime, int target, float
 								WorldSpaceCenter(targetTrace, vecHit);
 
 								float damage = 40.0;
+								if(ShouldNpcDealBonusDamage(target))
+									damage *= 7.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									

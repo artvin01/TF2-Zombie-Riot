@@ -16,7 +16,6 @@ static float f_MlynarDmgMultiAgressiveClose[MAXPLAYERS] = {1.0, ...};
 static float f_MlynarDmgMultiHurt[MAXPLAYERS] = {1.0, ...};
 static float f_MlynarAbilityActiveTime[MAXPLAYERS];
 static bool b_MlynarResetStats[MAXPLAYERS];
-int HitEntitiesSphereMlynar[MAXENTITIES];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXPLAYERS];
 static float f_MlynarReflectCooldown[MAXPLAYERS][MAXENTITIES];
@@ -162,6 +161,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 		ang2[1] = fixAngle(ang2[1]);
 		
 		float damage = 250.0;
+		damage *= 0.9;
 		
 		damage *= Attributes_Get(weapon, 1, 1.0);
 		damage *= Attributes_Get(weapon, 2, 1.0);

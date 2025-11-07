@@ -182,7 +182,10 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 		SetVariantString("1.0");
 
 	AcceptEntityInput(Shield, "SetModelScale");
-	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
+	if(alpha == 255)
+		SetEntityRenderMode(Shield, RENDER_NORMAL);
+	else
+		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
 	SetEntityRenderFx(Shield, RENDERFX_NONE);
 	if(npc.m_iBleedType == BLEEDTYPE_VOID)
@@ -224,7 +227,8 @@ Function func_Expidonsa_Heal_After[MAXENTITIES] = {INVALID_FUNCTION, ...};
 Function func_Expidonsa_Heal_Before[MAXENTITIES] = {INVALID_FUNCTION, ...};
 bool DontAllowAllyHeal[MAXENTITIES];
 stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed, float HealingAmmount,
- float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION, bool AnyHeal = false)
+ float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION ,
+  Function Function_HealAfter = INVALID_FUNCTION, bool AnyHeal = false, bool LOS = true, float VecDoAt[3] = { 0.0,0.0,0.0})
 {
 	b_Expidonsa_Selfheal[HealingNpc] = Selfheal;
 	i_Expidonsa_HealingCount[HealingNpc] = MaxAlliesHealed;
@@ -234,20 +238,24 @@ stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAllies
 	func_Expidonsa_Heal_After[HealingNpc] = Function_HealAfter;
 	DontAllowAllyHeal[HealingNpc] = AnyHeal;
 
+	if(Selfheal)
+		b_AllowSelfTarget[HealingNpc] = true;
+
 	b_NpcIsTeamkiller[HealingNpc] = true;
 	Explode_Logic_Custom(0.0,
 	HealingNpc,
 	HealingNpc,
 	-1,
-	_,
+	VecDoAt,
 	RangeDistance,
 	_,
 	_,
-	true,
+	LOS,
 	99,
 	false,
 	_,
 	Expidonsa_AllyHeal);
+	b_AllowSelfTarget[HealingNpc] = false;
 	b_NpcIsTeamkiller[HealingNpc] = false;
 }
 

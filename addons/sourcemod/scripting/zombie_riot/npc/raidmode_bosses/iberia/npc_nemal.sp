@@ -141,6 +141,7 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
 	PrecacheSoundCustom("#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
+	NPC_GetByPlugin("npc_raid_silvester");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -334,9 +335,8 @@ methodmap Nemal < CClotBody
 	public void PlayMineLayed() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_MineLayed) - 1);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
-		EmitSoundToAll(g_MineLayed[sound], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME, 120);
+		EmitSoundToAll(g_MineLayed[sound], _, SNDCHAN_STATIC, _, _, BOSS_ZOMBIE_VOLUME, 120);
 	}
 	public void PlayShootSoundNemalSnipe() 
 	{
@@ -363,6 +363,7 @@ methodmap Nemal < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_iNemalComboAttack = 0;
@@ -554,7 +555,7 @@ methodmap Nemal < CClotBody
 			value = float(Waves_GetRoundScale()+1);
 		}
 
-		if(RaidModeScaling < 30)
+		if(RaidModeScaling < 35)
 		{
 			RaidModeScaling *= 0.25; //abit low, inreacing
 		}
@@ -563,7 +564,7 @@ methodmap Nemal < CClotBody
 			RaidModeScaling *= 0.5;
 		}
 
-		if(value > 30)
+		if(value > 35)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.7;
@@ -809,19 +810,20 @@ static void Internal_ClotThink(int iNPC)
 			SetGoalVectorIndex = NemalSelfDefenseRage(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
-						
-		//Body pitch
-		float v[3], ang[3];
-		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
-		SubtractVectors(SelfVec, vecTarget, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		if(iPitch >= 0)
+		{	
+			//Body pitch
+			float v[3], ang[3];
+			float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
+			SubtractVectors(SelfVec, vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+				
+		}	
 
 		switch(SetGoalVectorIndex)
 		{
@@ -1229,7 +1231,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 					{
 						flMaxhealth *= 0.75;
 					}
-					flMaxhealth *= NpcDoHealthRegenScaling();
+					flMaxhealth *= NpcDoHealthRegenScaling(npc.index);
 					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
@@ -1902,7 +1904,8 @@ bool NemalSnipingShots(Nemal npc)
 			if(npc.m_flAttackHappens - 0.35 > GetGameTime(npc.index))
 			{
 				UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
-				int enemy_2[MAXENTITIES];
+				int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
+				//itll work wierdly but its needed.
 				GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), true, false, npc.m_iWearable8);
 				for(int i; i < sizeof(enemy_2); i++)
 				{
@@ -2442,7 +2445,8 @@ bool CurrentSliceIndexAviable[MAX_SLICES_ALLOWED];
 bool TargetsHitNemal[MAX_SLICES_ALLOWED][MAXENTITIES];
 int EntityBelongsToMasterIndex[MAXENTITIES];
 
-void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle)
+void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int blue, float fatness, int MaxJoints, float speed, char[] Particle, bool GiveDebuff = true,
+bool Vertical = false, bool ForcePredict = false)
 {
 	//This determines on what was hit beforehand, we cant have duplicates!
 	int EntityMasterMainIndex = -1;
@@ -2470,8 +2474,15 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	//First we get the angle between the two entities.
 	float vecSelf[3]; 	WorldSpaceCenter(iNpc, vecSelf );
 	float VecTarget[3]; WorldSpaceCenter(target, VecTarget );
+	if(Vertical)
+	{
+		GetEntPropVector(iNpc, Prop_Data, "m_vecAbsOrigin", vecSelf);
+		vecSelf[2] += 10.0;
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecTarget);
+		VecTarget[2] = vecSelf[2];
+	}
 
-	if(NpcStats_IberiaIsEnemyMarked(target))
+	if(NpcStats_IberiaIsEnemyMarked(target) || ForcePredict)
 	{
 		CClotBody npc = view_as<CClotBody>(iNpc);
 		//predict.
@@ -2505,10 +2516,20 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 	
 	float tmp[3];
 	float actualBeamOffset[3];
-	tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
-	tmp[1] = -(fatness / 2.0);	//start off half way to the other side
-	tmp[1] += (AddedOffsetEachLoop / 2.0);
-	tmp[2] = 0.0;
+	if(!Vertical)
+	{
+		tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
+		tmp[1] = -(fatness / 2.0);	//start off half way to the other side
+		tmp[1] += (AddedOffsetEachLoop / 2.0);
+		tmp[2] = 0.0;
+	}
+	else
+	{
+		tmp[0] = -(FatnessHalf / 2.0); //Go backwards abit too
+		tmp[2] = -(fatness / 2.0);	//start off half way to the other side
+		tmp[2] += (AddedOffsetEachLoop / 2.0);
+		tmp[1] = 0.0;	
+	}
 	VectorRotate(tmp, AngleFromSelf, actualBeamOffset);
 	actualBeamOffset[2] = 0.0;
 	vecSelf[0] += actualBeamOffset[0];
@@ -2528,22 +2549,45 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 			projectile= Wand_Projectile_Spawn(iNpc, speed, 0.0, damage, -1, -1, "", AngleFromSelf,_,OverridePosOfSpawned);
 			
 		EntityBelongsToMasterIndex[projectile] = EntityMasterMainIndex;
-
-		switch(SitatuionCalcDo)
+		
+		if(!Vertical)
 		{
-			case 3:
+			switch(SitatuionCalcDo)
 			{
-				tmp[0] = 0.0;
+				case 3:
+				{
+					tmp[0] = 0.0;
+				}
+				case 2:
+					tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
+				case 1:
+					tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
 			}
-			case 2:
-				tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
-			case 1:
-				tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
+			tmp[1] = AddedOffsetEachLoop;
+			tmp[2] = 0.0;
 		}
-		tmp[1] = AddedOffsetEachLoop;
-		tmp[2] = 0.0;
+		else
+		{
+			
+			switch(SitatuionCalcDo)
+			{
+				case 3:
+				{
+					tmp[0] = 0.0;
+				}
+				case 2:
+					tmp[0] = -AddedOffsetEachLoopBack; //start off half way to the other side
+				case 1:
+					tmp[0] = AddedOffsetEachLoopBack; //start off half way to the other side
+			}
+			tmp[2] = AddedOffsetEachLoop;
+			tmp[1] = 0.0;
+		}
 		VectorRotate(tmp, AngleFromSelf, actualBeamOffset);
-		actualBeamOffset[2] = 0.0;
+		if(!Vertical)
+		{
+			actualBeamOffset[2] = 0.0;
+		}
 		OverridePosOfSpawned[0] += actualBeamOffset[0];
 		OverridePosOfSpawned[1] += actualBeamOffset[1];
 		OverridePosOfSpawned[2] += actualBeamOffset[2];
@@ -2551,6 +2595,9 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		float LaserFatnessCalc;
 		float LaserFatnessCalcNext;
 		float DefaultFatnessLaser = 20.0;
+		if(Vertical)
+			DefaultFatnessLaser = 40.0;
+			
 		float PercentageRepeatDo;
 		{
 			//Do calcs for inbetweeners
@@ -2597,7 +2644,14 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		
 		if(IsValidEntity(PreviousProjectile))
 		{
-			laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.0);
+			if(!Vertical)
+			{
+				laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.0);
+			}
+			else
+			{
+				laser = ConnectWithBeam(projectile, PreviousProjectile, red, green, blue, LaserFatnessCalcNext, LaserFatnessCalc, 1.5, "materials/sprites/combineball_trail_black_1.vmt");
+			}
 		}
 		DataPack pack = new DataPack();
 		SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
@@ -2616,6 +2670,7 @@ void NemalAirSlice(int iNpc, int target, float damage,int red, int green, int bl
 		pack2.WriteFloat(OverridePosOfSpawned[1]);
 		pack2.WriteFloat(OverridePosOfSpawned[2]);
 		pack2.WriteCell(EntityMasterMainIndex);
+		pack2.WriteCell(GiveDebuff);
 		
 	}
 }
@@ -2669,6 +2724,7 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 	OldPositionGet[1] = pack.ReadFloat();
 	OldPositionGet[2] = pack.ReadFloat();
 	int EntityMasterMainIndex = pack.ReadCell();
+	int GiveDebuff = pack.ReadCell();
 	if(IsValidEntity(Projectile))
 	{
 		//Get new abs origin
@@ -2679,6 +2735,7 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 		Zero(DoDamageActiveHereNemal);
 		Handle trace = TR_TraceHullFilterEx(OldPositionGet, NewPos, hullMin, hullMax, 1073741824, BEAM_TraceUsers, Projectile);
 		delete trace;
+		pack.Position--;
 		pack.Position--;
 		pack.Position--;
 		pack.Position--;
@@ -2711,8 +2768,8 @@ public Action Timer_NemalProjectileHitDetect(Handle timer, DataPack pack)
 					{
 						SDKHooks_TakeDamage(Loop, OwnerEntity, OwnerEntity, f_WandDamage[Projectile] * 0.5, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 					}
-				
-					ApplyStatusEffect(OwnerEntity, Loop, "Teslar Shock", 5.0);
+					if(GiveDebuff)
+						ApplyStatusEffect(OwnerEntity, Loop, "Teslar Shock", 5.0);
 				}
 			}
 		}
@@ -2746,7 +2803,7 @@ bool NemalMarkAreas(Nemal npc)
 	{
 		if(npc.m_flNemalPlaceAirMines < GetGameTime(npc.index))
 		{
-			NemalPlaceAirMines(npc.index, 35.0 * RaidModeScaling, 1.5, 15.0, 70.0);
+			NemalPlaceAirMines(npc.index, 85.0 * RaidModeScaling, 1.5, 15.0, 70.0);
 			npc.i_GunMode = 0;
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flNemalPlaceAirMines = 0.0;	
@@ -2773,80 +2830,104 @@ void NemalPlaceAirMines(int iNpc, float damage, float TimeUntillArm, float MaxDu
 {
 	//Find 10 random locations on a map, or 5, undecided.
 
-	float LocationOfMine[3];
-	Nemal npc = view_as<Nemal>(iNpc);
-	
 	float pos_npc[3];
-	float PosEnemy[3];
 	WorldSpaceCenter(iNpc, pos_npc);
-	for(int LoopTarget = 1; LoopTarget < MAXENTITIES; LoopTarget ++)
+	
+	//players only
+	int enemy_2[RAIDBOSS_GLOBAL_ATTACKLIMIT];
+	UnderTides npcGetInfo = view_as<UnderTides>(iNpc);
+	GetHighDefTargets(npcGetInfo, enemy_2, sizeof(enemy_2), false, 1);
+	for(int i; i < sizeof(enemy_2); i++)
 	{
-		if(!IsValidEnemy(iNpc, LoopTarget))
-			continue;
-
-		
-		if(b_ThisWasAnNpc[LoopTarget])
+		if(enemy_2[i])
 		{
-			if(!Can_I_See_Enemy_Only(iNpc, LoopTarget))
-			{
-				continue;
-			}
+			int LoopTarget = enemy_2[i];
+			NemalPlaceAirMinesInternal(iNpc, damage, TimeUntillArm, MaxDuration, Size, LoopTarget, pos_npc);
 		}
-
-		WorldSpaceCenter(LoopTarget, PosEnemy);
-		float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
-		float SpeedToPredict = flDistanceToTarget * 3.0;
-		PredictSubjectPositionForProjectiles(npc, LoopTarget, SpeedToPredict, _,LocationOfMine);
-		LocationOfMine[2] += 1.0;
-		
-		Handle ToGroundTrace = TR_TraceRayFilterEx(LocationOfMine, view_as<float>( { 90.0, 0.0, 0.0 } ), MASK_SOLID, RayType_Infinite, TraceRayHitWorldOnly, iNpc);
-		TR_GetEndPosition(LocationOfMine, ToGroundTrace);
-		delete ToGroundTrace;
-		LocationOfMine[2] += 5.0;
-		float SaveOldLoc[3];
-		SaveOldLoc = LocationOfMine;
-
-		DataPack pack2;
-		CreateDataTimer(0.25, Timer_NemalMineLogic, pack2, TIMER_REPEAT);
-		pack2.WriteCell(EntIndexToEntRef(iNpc));
-		pack2.WriteCell(0); //0 means EVIL
-		pack2.WriteFloat(LocationOfMine[0]);
-		pack2.WriteFloat(LocationOfMine[1]);
-		pack2.WriteFloat(LocationOfMine[2]);
-		pack2.WriteFloat(damage);
-		pack2.WriteFloat(Size);
-		pack2.WriteFloat(TimeUntillArm + GetGameTime());
-		pack2.WriteFloat(MaxDuration + GetGameTime());
-
-		
-		flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
-		SpeedToPredict = flDistanceToTarget * 1.0;
-		PredictSubjectPositionForProjectiles(npc, LoopTarget, SpeedToPredict, _,LocationOfMine);
-		LocationOfMine[2] += 1.0;
-		
-		ToGroundTrace = TR_TraceRayFilterEx(LocationOfMine, view_as<float>( { 90.0, 0.0, 0.0 } ), MASK_SOLID, RayType_Infinite, TraceRayHitWorldOnly, iNpc);
-		TR_GetEndPosition(LocationOfMine, ToGroundTrace);
-		delete ToGroundTrace;
-		LocationOfMine[2] += 5.0;
-		flDistanceToTarget = GetVectorDistance(SaveOldLoc, LocationOfMine, true);
-		//the mines are too close together, dont spawn friendly.
-		if(flDistanceToTarget < (50.0 * 50.0))
-			continue;
-		
-		DataPack pack3;
-		CreateDataTimer(0.25, Timer_NemalMineLogic, pack3, TIMER_REPEAT);
-		pack3.WriteCell(EntIndexToEntRef(iNpc));
-		pack3.WriteCell(1); //1 means GOOD.
-		pack3.WriteFloat(LocationOfMine[0]);
-		pack3.WriteFloat(LocationOfMine[1]);
-		pack3.WriteFloat(LocationOfMine[2]);
-		pack3.WriteFloat(damage);
-		pack3.WriteFloat(Size);
-		pack3.WriteFloat(TimeUntillArm + GetGameTime());
-		pack3.WriteFloat((MaxDuration * 1.5) + GetGameTime());
+	}
+	
+	//npcs only, do less.
+	int enemy_3[RAIDBOSS_GLOBAL_ATTACKLIMIT / 2];
+	GetHighDefTargets(npcGetInfo, enemy_3, sizeof(enemy_3), true, 2);
+	for(int i; i < sizeof(enemy_3); i++)
+	{
+		if(enemy_3[i])
+		{
+			int LoopTarget = enemy_3[i];
+			NemalPlaceAirMinesInternal(iNpc, damage, TimeUntillArm, MaxDuration, Size, LoopTarget, pos_npc);
+		}
 	}
 }
 
+void NemalPlaceAirMinesInternal(int iNpc, float damage, float TimeUntillArm, float MaxDuration, float Size, int LoopTarget, float pos_npc[3])
+{
+	float LocationOfMine[3];
+	
+	float PosEnemy[3];
+	Nemal npc = view_as<Nemal>(iNpc);
+	if(b_ThisWasAnNpc[LoopTarget])
+	{
+		if(!Can_I_See_Enemy_Only(iNpc, LoopTarget))
+		{
+			return;
+		}
+	}
+
+	WorldSpaceCenter(LoopTarget, PosEnemy);
+	float flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
+	float SpeedToPredict = flDistanceToTarget * 3.0;
+	PredictSubjectPositionForProjectiles(npc, LoopTarget, SpeedToPredict, _,LocationOfMine);
+	LocationOfMine[2] += 1.0;
+	
+	Handle ToGroundTrace = TR_TraceRayFilterEx(LocationOfMine, view_as<float>( { 90.0, 0.0, 0.0 } ), MASK_SOLID, RayType_Infinite, TraceRayHitWorldOnly, iNpc);
+	TR_GetEndPosition(LocationOfMine, ToGroundTrace);
+	delete ToGroundTrace;
+	LocationOfMine[2] += 5.0;
+	float SaveOldLoc[3];
+	SaveOldLoc = LocationOfMine;
+	
+	TE_SetupBeamPoints(pos_npc, LocationOfMine, Shared_BEAM_Laser, 0, 0, 0, 0.5, 10.0, 10.0, 5, 5.0, {255,50,50,255}, 3);
+	TE_SendToAll(0.0);
+						
+	DataPack pack2;
+	CreateDataTimer(0.25, Timer_NemalMineLogic, pack2, TIMER_REPEAT);
+	pack2.WriteCell(EntIndexToEntRef(iNpc));
+	pack2.WriteCell(0); //0 means EVIL
+	pack2.WriteFloat(LocationOfMine[0]);
+	pack2.WriteFloat(LocationOfMine[1]);
+	pack2.WriteFloat(LocationOfMine[2]);
+	pack2.WriteFloat(damage);
+	pack2.WriteFloat(Size);
+	pack2.WriteFloat(TimeUntillArm + GetGameTime());
+	pack2.WriteFloat(MaxDuration + GetGameTime());
+
+	
+	flDistanceToTarget = GetVectorDistance(pos_npc, PosEnemy);
+	SpeedToPredict = flDistanceToTarget * 1.0;
+	PredictSubjectPositionForProjectiles(npc, LoopTarget, SpeedToPredict, _,LocationOfMine);
+	LocationOfMine[2] += 1.0;
+	
+	ToGroundTrace = TR_TraceRayFilterEx(LocationOfMine, view_as<float>( { 90.0, 0.0, 0.0 } ), MASK_SOLID, RayType_Infinite, TraceRayHitWorldOnly, iNpc);
+	TR_GetEndPosition(LocationOfMine, ToGroundTrace);
+	delete ToGroundTrace;
+	LocationOfMine[2] += 5.0;
+	flDistanceToTarget = GetVectorDistance(SaveOldLoc, LocationOfMine, true);
+	//the mines are too close together, dont spawn friendly.
+	if(flDistanceToTarget < (50.0 * 50.0))
+		return;
+	
+	DataPack pack3;
+	CreateDataTimer(0.25, Timer_NemalMineLogic, pack3, TIMER_REPEAT);
+	pack3.WriteCell(EntIndexToEntRef(iNpc));
+	pack3.WriteCell(1); //1 means GOOD.
+	pack3.WriteFloat(LocationOfMine[0]);
+	pack3.WriteFloat(LocationOfMine[1]);
+	pack3.WriteFloat(LocationOfMine[2]);
+	pack3.WriteFloat(damage);
+	pack3.WriteFloat(Size);
+	pack3.WriteFloat(TimeUntillArm + GetGameTime());
+	pack3.WriteFloat((MaxDuration * 2.5) + GetGameTime());
+}
 bool DetonateCurrentMine;
 public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 {
@@ -2867,18 +2948,18 @@ public Action Timer_NemalMineLogic(Handle timer, DataPack pack)
 	if(TimeUntillArm > GetGameTime())
 	{
 		if(Friendly)
-			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 125, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 0.3, 2.0, 2.0, 2);
 		else
-			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, 0.3, 2.0, 2.0, 2);
+			spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.3, 2.0, 2.0, 2);
 		//Do not do damage calculations yet.
 		return Plugin_Continue; 
 	}
 	DetonateCurrentMine = false;
 	
 	if(Friendly)
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 100, 255, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 50, 255, 50, 255, 1, 0.3, 5.0, 8.0, 2);
 	else
-		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 100, 100, 200, 1, 0.3, 5.0, 8.0, 2);
+		spawnRing_Vectors(MinePositionGet, Size * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 255, 1, 0.3, 5.0, 8.0, 2);
 		
 	if(Friendly)
 		Explode_Logic_Custom(0.0, 0, MasterNpc, -1, MinePositionGet, Size, 1.0, _, true, 20,_,_,_,NemalMineExploderFriendly);
@@ -2951,7 +3032,7 @@ float NemalMineExploder(int entity, int victim, float damage, int weapon)
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
-		damage *= 1.45;
+		damage *= 2.5;
 	}
 	if(b_ThisWasAnNpc[victim])
 		PluginBot_Jump(victim, {0.0,0.0,1000.0});
@@ -2981,7 +3062,7 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 
 		maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 			
-		maxhealth -= (maxhealth / 4);
+		maxhealth = RoundToNearest(float(maxhealth) * 0.63);
 
 		int spawn_index;
 		switch(i_RaidGrantExtra[entity])
@@ -3014,6 +3095,8 @@ void Nemal_SpawnAllyDuoRaid(int ref)
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
 			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
+			fl_Extra_Damage[spawn_index] *= 1.1;
+			//10% dmg buff
 		}
 	}
 }

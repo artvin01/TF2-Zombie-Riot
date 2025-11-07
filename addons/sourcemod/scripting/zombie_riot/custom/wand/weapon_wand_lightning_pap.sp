@@ -25,6 +25,33 @@ public void Lighting_Wand_Pap_ClearAll()
 	Zero(ability_cooldown);
 }
 
+public void Weapon_Wand_LightningPap2(int client, int weapon, bool &result, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+	
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Ability has cooldown", client, Ability_CD);	
+		return;
+	}
+	int mana_cost = Smite_Cost;
+	if(mana_cost > Current_Mana[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		return;
+	}
+	Weapon_Wand_LightningSpell_Internal(client, weapon, result, slot, true);
+	Weapon_Wand_LightningPap(client, weapon, result, slot);
+
+}
 public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int slot)
 {
 	if(weapon >= MaxClients)

@@ -375,7 +375,7 @@ methodmap Atomizer < CClotBody
 			{	
 				RaidModeScaling = float(Waves_GetRoundScale()+1);
 			}
-			if(RaidModeScaling < 30)
+			if(RaidModeScaling < 35)
 			{
 				RaidModeScaling *= 0.25; //abit low, inreacing
 			}
@@ -419,7 +419,6 @@ methodmap Atomizer < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/scout/sum19_bottle_cap/sum19_bottle_cap.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector/hwn2019_fuel_injector.mdl");
@@ -1461,6 +1460,8 @@ int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float distance
 								}
 								if(DrinkPOWERUP[npc.index])
 									damage*=1.25;
+								if(ShouldNpcDealBonusDamage(target))
+									damage *= 7.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									
@@ -1592,7 +1593,7 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		if(!IsInvuln(target))
+		if(target <= MaxClients && !IsInvuln(target))
 			if(!HasSpecificBuff(target, "Fluid Movement"))
 				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
 

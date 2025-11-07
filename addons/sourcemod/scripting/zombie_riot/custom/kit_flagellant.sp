@@ -163,7 +163,7 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 							ParticleRef[client] = EntIndexToEntRef(entity);
 						}
 					}
-					ApplyRapidSuturing(client);
+				//	ApplyRapidSuturing(client);
 					ApplyStatusEffect(client, client, "Thick Blood", 0.6);
 					
 					if(LastMann)
@@ -629,7 +629,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
-		Explode_Logic_Custom(600.0 * multi, client, client, secondary, pos, _, _, _, false, 3, false, _, Flagellant_AcidHitPost);
+		Explode_Logic_Custom(600.0 * multi, client, client, secondary, pos, _, _, _, false, 4, false, _, Flagellant_AcidHitPost);
 		pos[2] += 5.0;
 		ParticleEffectAt(pos, "bombinomicon_burningdebris", 0.5);
 
@@ -705,8 +705,8 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		}
 	}
 
-	if(target > 0 && Elemental_GoingCritical(target))
-		validAlly = false;
+//	if(target > 0 && Elemental_GoingCritical(target))
+//		validAlly = false;
 
 	if(validAlly)
 	{
@@ -742,7 +742,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		Elemental_AddChaosDamage(target, client, 10, _, true);
+	//	Elemental_AddChaosDamage(target, client, 10, _, true);
 		ApplyStatusEffect(client, target, "Flagellants Punishment", 10.0);
 
 		if(target > MaxClients)
@@ -928,6 +928,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		healing -= health;
 		SetEntityHealth(client, health);
 		ClientCommand(client, "playgamesound misc/halloween/strongman_bell_01.wav");
+		Rogue_TriggerFunction(Artifact::FuncRevive, client);
 
 		int round = Waves_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);

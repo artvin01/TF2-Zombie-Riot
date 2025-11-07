@@ -4,659 +4,852 @@
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {green}Gained {1} {2}!"
+		"it"		"{orange}(Costrutto) {green}ha guadagnato {1} {2}!"
 	}
 	"Used Material"
 	{
 		"#format"	"{1:d},{2:t}"
 		"en"		"{orange}(Construct) {red}Used {1} {2}!"
+		"it"		"{orange}(Costrutto) {red}ha usato {1} {2}!"
 	}
 	"Battle Finished"
 	{
 		"en"		"{orange}(Construct) The battle is over!"
+		"it"		"{orange}(Costrutto) La battaglia è finita!"
 	}
 	"Cash"
 	{
 		"en"		"Cash"
+		"it"		"Contanti"
 	}
 	"Resource Attack Started"
 	{
 		"#format"	"{1:N},{2:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}started gathering {orange}{2} {default}and is being attacked!"
+		"it"		"{orange}(Costrutto) {red}{1} {default}ha iniziato a raccogliere {orange}{2} {default}ed è sotto attacco!"
 	}
 	"Gifts Spawned"
 	{
 		"#format"	"{1:d}"
 		"en"		"{orange}(Construct) {green}{1} {default}raid remains have appeared!"
+		"it"		"{orange}(Costrutto) {green}{1} {default}Sono apparsi i resti del raid!"
 	}
 	"No Gifts Spawn"
 	{
 		"en"		"{orange}(Construct) {red}No raid remains appeared, too many exist already..."
+		"it"		"{orange}(Costrutto) {red}Non sono rimasti raid, ce ne sono già troppi..."
 	}
 	"Found a gift remain"
 	{
 		"#format"	"{1:N}"
 		"en"		"{orange}(Construct) {red}{1} {green}found and obtained raid remains!"
+		"it"		"{orange}(Costrutto) {red}{1} {green}ha trovato e ottenuti i resti del raid!"
 	}
 	"Found a gift remain No Attacker"
 	{
 		"en"		"{orange}(Construct) {green}Someone found and obtained raid remains!"
+		"it"		"{orange}(Costrutto) {green}Qualcuno ha trovato e recuperato i resti del raid!"
 	}
 	"Player Used 1 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}to make"
+		"it"		"{orange}(Costrutto) {red}{1} {default}ha utilizzato {orange}{2} {3} {default}per realizzare"
 	}
 	"Player Used 2 to"
 	{
 		"#format"	"{1:N},{2:d},{3:t},{4:d},{5:t}"
 		"en"		"{orange}(Construct) {red}{1} {default}has used {orange}{2} {3} {default}and {orange}{4} {5} {default}to make"
+		"it"		"{orange}(Costrutto) {red}{1} {default}ha utilizzato {orange}{2} {3} {default}e {orange}{4} {5} {default}per realizzare"
 	}
 	"Player Start Research"
 	{
 		"#format"	"{1:N},{2:s}"
 		"en"		"{orange}(Construct) {red}{1} {default}has started to research {orange}{2}"
+		"it"		"{orange}(Costrutto) {red}{1} {default}ha iniziato a ricercare {orange}{2}"
 	}
 	"Finish Research Desc"
 	{
 		"#format"	"{1:s},{2:t}"
 		"en"		"{orange}(Construct) {default}Finished researching {orange}{1}{default}: {2}"
+		"it"		"{orange}(Costrutto) {default}Ricerca completata {orange}{1}{default}: {2}"
+	}
+	"Crouch and select to view description Alone"
+	{
+		"en"	"Crouch and select to view description"
+		"it"	"Accovacciati e seleziona per visualizzare la descrizione"
 	}
 	"Crouch and select to view description"
 	{
-		"en"	"Crouch and select to view description"
+		"en"	"Crouch and select to view description\nTwo players need to want 1 research to start it, indicated by [✓]"
+		"it"	"Accovacciati e seleziona per visualizzare la descrizione\nDue giocatori devono volere 1 ricerca per avviarla, indicata da [✓]"
+	}
+	"Player Must Agree"
+	{
+		"en"	"One more player must vote for this upgrade to begin."
+		"it"	"È necessario che un altro giocatore voti a favore affinché questo potenziamento abbia inizio."
 	}
 	"Claim Research"
 	{
 		"en"	"Claim Research"
+		"it"	"Reclama Ricerca"
 	}
 	"Claim Research Time"
 	{
 		"#format"	"{1:d}"
 		"en"	"Claim Research: {1}s"
+		"it"	"Reclama Ricerca: {1}s"
+	}
+	"Mine Resources"
+	{
+		"en"	"Mine resources with your use key [T or R], tap it once!\nOn left menu you must confirm!\nStay near them to mine them over time!"
+		"it"	"Estrai le risorse con il tasto di utilizzo [T o R], toccalo una volta!\nNel menu a sinistra devi confermare!\nRimani vicino a loro per estrarle nel tempo!"
 	}
 	"Start Mining"
 	{
 		"#format"	"{1:s}"
+		"en"	"Start mining {1}?\n A raid might spawn nearby.\nYou need atleast one other player to mine with you to start."
+		"it"	"Iniziare a minare {1}?\n Potrebbe spawnarsi un raid nelle vicinanze.\nPer iniziare è necessario avere almeno un altro giocatore con cui minare."
+	}
+	"Start Mining Alone"
+	{
+		"#format"	"{1:s}"
 		"en"	"Start mining {1}?\n A raid might spawn nearby."
+		"it"	"Iniziare a minare {1}?\n Potrebbe spawnare un raid nelle vicinanze."
 	}
 	"Broken Server"
 	{
 		"en"	"Broken Server"
+		"it"	"Server Rotto"
 	}
 	"Left Remains Of Raids"
 	{
 		"en"	"Left Remains Of Raids"
+		"it"	"Resti delle incursioni"
 	}
 	"Material wood"
 	{
 		"en"	"Wood"
+		"it"	"Legno"
 	}
 	"Material stone"
 	{
 		"en"	"Stone"
+		"it"	"Pietra"
 	}
 	"Material iron"
 	{
 		"en"	"Iron Ore"
+		"it"	"Minerale di ferro"
 	}
 	"Material bofazem"
 	{
 		"en"	"Bottled Bofazem"
+		"it"	"Bofazem in bottiglia"
 	}
 	"Material copper"
 	{
 		"en"	"Copper Ore"
+		"it"	"Minerale di rame"
 	}
 	"Material crystal"
 	{
 		"en"	"Gem Crystal"
+		"it"	"Cristallo di gemma"
 	}
 	"Material jalan"
 	{
 		"en"	"Jalan Ore"
+		"it"	"Minerale Jalan"
 	}
 	"Material ossunia"
 	{
 		"en"	"Ossunia Ore"
+		"it"	"Minerale Ossunia"
 	}
 	"Material water"
 	{
 		"en"	"Fresh Water"
+		"it"	"Acqua fresca"
 	}
 	"Material wizuh"
 	{
 		"en"	"Wizuh Ore"
+		"it"	"Minerale Wizuh"
 	}
 	"Material cash"
 	{
 		"en"	"Cash"
+		"it"	"Contanti"
 	}
 	"Pickaxes and a Map"
 	{
 		"en"	"Pickaxes and a Map"
+		"it"	"Picconi e una Mappa"
 	}
 	"Pickaxes and a Map Desc"
 	{
 		"en"	"We asked for a guide, all we got this.\n{green}Enemies and Ore Deposits move 20％ slower, take 35％ more damage, and deal 35％ less damage\n{crimson}Prevents gaining alternative endings."
+		"it"	"Abbiamo chiesto una guida, ma abbiamo ottenuto solo questo. \n{green}I nemici e i giacimenti di minerale si muovono più lentamente del 20%, subiscono il 35% di danni in più e infliggono il 35% di danni in meno. \n{crimson}Impedisce di ottenere finali alternativi."
+	}
+	"Roaming Silently"
+	{
+		"en"	"Roaming Silently"
+		"it"	"Vagando silenziosamente"
+	}
+	"Roaming Silently Desc"
+	{
+		"en"	"We just decided to make a base here after what happend at that broken ruina island, to prepare, nothing more."
+		"it"	"Abbiamo semplicemente deciso di stabilire una base qui dopo quello che è successo sull'isola di Ruina, per prepararci, niente di più."
 	}
 	"Loud Firepower"
 	{
 		"en"	"Loud Firepower"
+		"it"	"Potenza di fuoco elevata"
 	}
 	"Loud Firepower Desc"
 	{
-		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}but Stalker enemies roam the area."
+		"en"	"Released a bit too much pollution and attracted some attention...\n{green}Start with 50 Wizuh, allies gain +10％ fire rate, {red}Enemies gain +15％ damage."
+		"it"	"Ha rilasciato un po' troppa inquinamento e ha attirato un po' di attenzione...\n{green}Inizia con 50 Wizuh, gli alleati ottengono +10% alla velocità di fuoco, {red}i nemici ottengono +15% ai danni."
 	}
 	"Heavy Equippment"
 	{
 		"en"	"Heavy Equippment"
+		"it"	"Attrezzature pesanti"
 	}
 	"Heavy Equippment Desc"
 	{
 		"en"	"Our engineers say we need to follow ''guidelines'' to make our stuff safe.\n{green}Start with 50 Jalan, allies gain +125 max health, {red}but Ore Deposits and enemy buildings gain +15％ max health."
+		"it"	"I nostri ingegneri dicono che dobbiamo seguire delle linee guida per rendere sicuri i nostri prodotti. {green}Inizia con 50 Jalan, gli alleati ottengono +125 salute massima, {red}ma i giacimenti minerari e gli edifici nemici ottengono +15% salute massima."
 	}
 	"Vehicle Production"
 	{
 		"en"	"Vehicle Production"
+		"it"	"Produzione di veicoli"
 	}
 	"Vehicle Production Desc"
 	{
 		"en"	"The car is all ready for you, right off the crane.\n{green}Start with 50 Ossunia, 15 Iron, Base Level I and Vehicle Factory research, {red}but rare enemies appear more often."
+		"it"	"L'auto è pronta per te, appena scesa dalla gru.\n{green}Inizia con 50 Ossunia, 15 Ferro, Livello Base I e ricerca Fabbrica Veicoli, {red}ma i nemici rari compaiono più spesso"
 	}
 	"Void Blueprints"
 	{
 		"en"	"Void Blueprints"
+		"it"	"Progetti nulli"
 	}
 	"Void Blueprints Desc"
 	{
 		"en"	"I don't think we should be following these blueprints.\n{red}Rare enemies have a higher chance of appearing.\nEnemies deal 15％ More damage and have 10％ more health."
+		"it"	"Non credo che dovremmo seguire questi progetti.\n{red}I nemici rari hanno una maggiore probabilità di apparire.\nI nemici infliggono il 15% di danni in più e hanno il 10% di salute in più."
 	}
 	"Ambulance"
 	{
 		"en"	"Ambulance"
+		"it"	"Ambulanza"
 	}
 	"Ambulance Desc"
 	{
 		"en"	"A vehicle that can hold up to 8 players. Able to pick up downed players and revive them. Heals all passengers, scaling with the driver's Medic upgrades."
+		"it"	"Un veicolo che può trasportare fino a 8 giocatori. È in grado di raccogliere i giocatori abbattuti e rianimarli. Cura tutti i passeggeri, in base ai potenziamenti Medic del conducente."
 	}
 	"Bus"
 	{
 		"en"	"Bus"
+		"it"	"Bus"
 	}
 	"Bus Desc"
 	{
 		"en"	"A vehicle that can hold up to 24 players."
+		"it"	"Un veicolo che può trasportare fino a 24 giocatori."
 	}
 	"Camper Van"
 	{
 		"en"	"Camper Van"
+		"it"	"Camper"
 	}
 	"Camper Van Desc"
 	{
 		"en"	"A vehicle that can hold up to 4 players. Able to collect ammo from the an ammo box in the back."
+		"it"	"Un veicolo che può trasportare fino a 4 giocatori. In grado di raccogliere munizioni da una scatola di munizioni situata nella parte posteriore."
 	}
 	"Dump Truck"
 	{
 		"en"	"Dump Truck"
+		"it"	"Dumper"
 	}
 	"Dump Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Has increased max armor."
+		"it"	"Un veicolo che può trasportare fino a 6 giocatori. Ha una corazza massima potenziata."
 	}
 	"Landrover"
 	{
 		"en"	"Landrover"
+		"it"	"Landrover"
 	}
 	"Landrover Desc"
 	{
 		"en"	"A vehicle that can hold up to 3 players. Has increased driving speed."
+		"it"	"Un veicolo che può trasportare fino a 3 giocatori. Ha una maggiore velocità di guida."
 	}
 	"Pickup Truck"
 	{
 		"en"	"Pickup Truck"
+		"it"	"Pick-up"
 	}
 	"Pickup Truck Desc"
 	{
 		"en"	"A vehicle that can hold up to 6 players. Prioritizes outside seating."
+		"it"	"Un veicolo che può ospitare fino a 6 giocatori. Dà la priorità ai posti a sedere esterni."
 	}
 	"Research Station"
 	{
 		"en"	"Research Station"
+		"it"	"Stazione di ricerca"
 	}
 	"Research Station Desc"
 	{
 		"en"	"A construct that can spend materials to research equippment and buildings."
+		"it"	"Una struttura che può spendere materiali per ricercare attrezzature ed edifici."
 	}
 	"Vehicle Factory"
 	{
 		"en"	"Vehicle Factory"
+		"it"	"Fabbrica di veicoli"
 	}
 	"Vehicle Factory Desc"
 	{
 		"en"	"A construct that can spend materials to build vehicles."
+		"it"	"Un costrutto in grado di utilizzare materiali per costruire veicoli."
 	}
 	"Cooking Stove"
 	{
 		"en"	"Cooking Stove"
+		"it"	"Fornello da cucina"
 	}
 	"Cooking Stove Desc"
 	{
 		"en"	"A construct that can spend materials to cook various meals to buff allies."
+		"it"	"Una struttura che può utilizzare materiali per cucinare vari piatti e potenziare gli alleati."
 	}
 	"Giant Lighthouse"
 	{
 		"en" 		"Giant Lighthouse"
+		"it"		"Faro gigante"
 	}
 	"Giant Lighthouse Desc"
 	{
 		"en" 		"Allies gain +30％ attack speed in its radius."
+		"it"		"Gli alleati ottengono +30% di velocità d'attacco nel suo raggio d'azione."
 	}
 	"Water Pump"
 	{
 		"en"	"Water Pump"
+		"it"	"Pompa dell'acqua"
 	}
 	"Water Pump Desc"
 	{
 		"en"	"A construct that generates water but needs to be manually collected when finished."
+		"it"	"Un dispositivo che genera acqua ma che deve essere raccolta manualmente una volta terminato il processo."
 	}
 	"Base Level I"
 	{
 		"en"	"Base Level I"
+		"it"	"Livello Base I"
 	}
 	"Base Level I Desc"
 	{
 		"en"	"Unlocks more upgrades and allows building constructs."
+		"it"	"Sblocca ulteriori potenziamenti e consente la costruzione di edifici."
 	}
 	"Base Level II"
 	{
 		"en"	"Base Level II"
+		"it"	"Livello Base II"
 	}
 	"Base Level II Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
+		"it"	"Sblocca ulteriori potenziamenti, aumenta le caratteristiche dei costrutti e aumenta il limite dei costrutti."
 	}
 	"Base Level III"
 	{
 		"en"	"Base Level III"
+		"it"	"Livello Base III"
 	}
 	"Base Level III Desc"
 	{
 		"en"	"Unlocks more upgrades, increases construct traits, increases construct limit."
+		"it"	"Sblocca ulteriori potenziamenti, aumenta le caratteristiche dei costrutti e aumenta il limite dei costrutti."
 	}
 	"Enchanced Water Pump"
 	{
 		"en"	"Enchanced Water Pump"
+		"it"	"Pompa dell'acqua potenziata"
 	}
 	"Enchanced Water Pump Desc"
 	{
 		"en"	"Increases water gained from Water Pump by x2.0."
+		"it"	"Aumenta di 2 volte l'acqua ottenuta dalla pompa dell'acqua."
 	}
 	"Minting Station"
 	{
 		"en"	"Minting Station"
+		"it"	"Stazione di conio"
 	}
 	"Minting Station Desc"
 	{
 		"en"	"A construct that uses crystals to gain cash."
+		"it"	"Un sistema che usa i cristalli per fare soldi."
 	}
 	"Sawmill Factory"
 	{
 		"en"	"Sawmill Factory"
+		"it"	"Segheria"
 	}
 	"Sawmill Factory Desc"
 	{
 		"en"	"A construct that generates wood but needs to be manually collected when finished."
+		"it"	"Una struttura che genera legno ma che deve essere raccolta manualmente una volta terminata."
 	}
 	"Enchanced Sawmill Factory"
 	{
 		"en"	"Enchanced Sawmill Factory"
+		"it"	"Segheria potenziata"
 	}
 	"Enchanced Sawmill Factory Desc"
 	{
 		"en"	"Increases wood gained from Sawmill Factory by x2.0."
+		"it"	"Aumenta il legno ottenuto dalla segheria di x2,0 volte."
 	}
 	"Stonework Factory"
 	{
 		"en"	"Stonework Factory"
+		"it"	"Fabbrica di pietra"
 	}
 	"Stonework Factory Desc"
 	{
 		"en"	"A construct that generates stone but needs to be manually collected when finished."
+		"it"	"Un costrutto che genera pietra ma che deve essere raccolto manualmente una volta terminato."
 	}
 	"Enchanced Stonework Factory"
 	{
 		"en"	"Enchanced Stonework Factory"
+		"it"	"Fabbrica di pietra migliorata"
 	}
 	"Enchanced Stonework Factory Desc"
 	{
 		"en"	"Increases stone gained from Stonework Factory by x2.0."
+		"it"	"Aumenta di 2 volte la quantità di pietra ottenuta dalla Fabbrica di pietra."
 	}
 	"Small Construct Wall"
 	{
 		"en"	"Small Construct Wall"
+		"it"	"Piccolo muro di costruzione"
 	}
 	"Small Construct Wall Desc"
 	{
 		"en"	"A construct that has a large health pool for tanking."
+		"it"	"Un costrutto che ha una grande riserva di salute per tankare."
 	}
 	"Large Construct Wall"
 	{
 		"en"	"Large Construct Wall"
+		"it"	"Grande muro di costruzione"
 	}
 	"Large Construct Wall Desc"
 	{
 		"en"	"A construct that has an even large health pool but consumes 2 slots."
+		"it"	"Un costrutto che ha una riserva di salute ancora maggiore ma occupa 2 slot."
 	}
 	"Extreme Construct Wall"
 	{
 		"en"	"Extreme Construct Wall"
+		"it"	"Muro di costruzione estremo"
 	}
 	"Extreme Construct Wall Desc"
 	{
 		"en"	"A construct that has an extremely large health pool but consumes 3 slots."
+		"it"	"Un costrutto che ha una riserva di salute estremamente ampia ma occupa 3 slot."
 	}
 	"Atomic Soda"
 	{
 		"en"	"Atomic Soda"
+		"it"	"Soda atomica"
 	}
 	"Atomic Soda Desc"
 	{
 		"en"	"Don't ask Scout where it's from.\n{green}Players gain +1％ movement speed"
+		"it"	"Non chiedere a Scout da dove proviene.\n{green}I giocatori ottengono +1% di velocità di movimento"
 	}
 	"Critical Water"
 	{
 		"en"	"Critical Water"
+		"it"	"Acqua Critica"
 	}
 	"Critical Water Desc"
 	{
 		"en"	"With a new flavor.\n{green}Allies gain +5％ damage bonus"
+		"it"	"Con un nuovo sapore.\n{green}Gli alleati ottengono un bonus al danno pari al +5%."
 	}
 	"Questionable Milk"
 	{
 		"en"	"Questionable Milk"
+		"it"	"Latte di dubbia provenienza"
 	}
 	"Questionable Milk Desc"
 	{
 		"en"	"Now tell me, do think cows exist.\n{green}Allies gain +5％ max health"
+		"it"	"Ora dimmi, pensi che le mucche esistano? Gli alleati ottengono +5% di salute massima."
 	}
 	"Festive Atomic Soda"
 	{
 		"en"	"Festive Atomic Soda"
+		"it"	"Soda atomica festiva"
 	}
 	"Festive Atomic Soda Desc"
 	{
 		"en"	"Extra spicy.\n{green}Players gain +2％ movement speed {red}but -5％ max health"
+		"it"	"Extra piccante.\n{green}I giocatori ottengono +2% di velocità di movimento {red}ma -5% di salute massima"
 	}
 	"Bread in Milk"
 	{
 		"en"	"Bread in Milk"
+		"it"	"Pane nel latte"
 	}
 	"Bread in Milk Desc"
 	{
 		"en"	"I guess it makes it soggy?\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+		"it"	"Immagino che lo renda molliccio?\n{green}Gli alleati ottengono +10% di salute massima {red}ma -1% di velocità di movimento"
 	}
 	"Steamed Mackerel"
 	{
 		"en"	"Steamed Mackerel"
+		"it"	"Sgombro al vapore"
 	}
 	"Steamed Mackerel Desc"
 	{
 		"en"	"Isn't it just cooked then?\n{green}Allies gain +5％ attack speed"
+		"it"	"Non è semplicemente cotto allora?\n{green}Gli alleati ottengono +5% di velocità d'attacco"
 	}
 	"BBQ Mackerel"
 	{
 		"en"	"BBQ Mackerel"
+		"it"	"Sgombro alla griglia"
 	}
 	"BBQ Mackerel Desc"
 	{
 		"en"	"Ocean to grill to sauce to my mouth.\n{green}Allies gain +10％ attack speed {red}but -5％ max health"
+		"it"	"Dall'oceano alla griglia, alla salsa, alla mia bocca.\n{green}Gli alleati ottengono +10% di velocità d'attacco {red}ma -5% di salute massima"
 	}
 	"Beer Bottle"
 	{
 		"en"	"Beer Bottle"
+		"it"	"Bottiglia di birra"
 	}
 	"Beer Bottle Desc"
 	{
 		"en"	"I need beer.\n{green}Allies gain +10％ damage bonus {red}but -1％ movement speed"
+		"it"	"Ho bisogno di birra.\n{green}Gli alleati ottengono un bonus al danno del +10％ {red}ma una velocità di movimento ridotta dell'1％"
 	}
 	"The Sandvich"
 	{
 		"en"	"The Sandvich"
+		"it"	"Il Sandvich"
 	}
 	"The Sandvich Desc"
 	{
 		"en"	"A classic heavy snack.\n{green}Allies gain +5％ max health"
+		"it"	"Uno spuntino classico e sostanzioso.\n{green}Gli alleati ottengono +5% di salute massima"
 	}
 	"The Dalokohs Bar"
 	{
 		"en"	"The Dalokohs Bar"
+		"it"	"Barretta Dalokohs "
 	}
 	"The Dalokohs Bar Desc"
 	{
 		"en"	"A classic heavy desert.\n{green}Allies gain +5％ max health"
+		"it"	"Un classico deserto pesante.\n{green}Gli alleati ottengono +5% di salute massima"
 	}
 	"The Buffalo Steak Sandvich"
 	{
 		"en"	"The Buffalo Steak Sandvich"
+		"it"	"Sandvich alla Bistecca di Bufalo"
 	}
 	"The Buffalo Steak Sandvich Desc"
 	{
 		"en"	"A classic heavy, uh...\n{green}Allies gain +5％ damage bonus"
+		"it"	"Un classico pesante, ehm...\n{green}Gli alleati ottengono un bonus al danno del +5%."
 	}
 	"The Fishcake"
 	{
 		"en"	"The Fishcake"
+		"it"	"Torta di pesce"
 	}
 	"The Fishcake Desc"
 	{
 		"en"	"Kind of like fish paste?\n{green}Allies gain +10％ max health {red}but -5％ attack speed"
+		"it"	"Un po' come la pasta di pesce?\n{green}Gli alleati ottengono +10% di salute massima {red}ma -5% di velocità d'attacco"
 	}
 	"The Robo-Sandvich"
 	{
 		"en"	"The Robo-Sandvich"
+		"it"	"Robo-Sandvich"
 	}
 	"The Robo-Sandvich Desc"
 	{
 		"en"	"Ok now this is just silly.\n{green}Allies gain +10％ max health {red}but -1％ movement speed"
+		"it"	"Ok, questo è proprio ridicolo. Gli alleati ottengono +10% di salute massima, ma -1% di velocità di movimento."
 	}
 	"The Festive Sandvich"
 	{
 		"en"	"The Festive Sandvich"
+		"it"	"Sandvich Festivo"
 	}
 	"The Festive Sandvich Desc"
 	{
 		"en"	"Do we unwrap this or?\n{green}Allies gain +10％ max health {red}but -5％ damage bonus"
+		"it"	"Lo scartiamo o no?\n{green}Gli alleati ottengono +10% di salute massima {red}ma -5% di bonus ai danni"
 	}
 	"The Second Banana"
 	{
 		"en"	"The Second Banana"
+		"it"	"Seconda Banana"
 	}
 	"The Second Banana Desc"
 	{
 		"en"	"Don't think of it.\n{green}Allies gain +1％ movement speed"
+		"it"	"Non pensarci. \n{green}Gli alleati ottengono +1% di velocità di movimento."
 	}
 	"Expidonsa Tech Chip"
 	{
 		"en"	"Expidonsa Tech Chip"
+		"it"	"Chip Expidonsa Tech"
 	}
 	"Expidonsa Tech Chip Desc"
 	{
 		"en"	"Expidonsa technology, but something seems rather off about it.\n{yellow}Unlocks research Expidonsa Tech Chip Install"
+		"it"	"Tecnologia Expidonsa, ma c'è qualcosa che non mi convince.{yellow}Sblocca la ricerca Installazione chip tecnologico Expidonsa"
 	}
 	"Rogue Expi Start 1"
 	{
 		"en"	"These Expidonsans don't seem to be on your side..?"
+		"it"	"Questi Expidonsani non sembrano essere dalla tua parte..."
 	}
 	"Rogue Expi Start 2"
 	{
 		"en"	"I don't think this is a test anymore..."
+		"it"	"Non credo che questo sia più un test..."
 	}
 	"Expidonsa Tech Chip Install"
 	{
 		"en"	"Expidonsa Tech Chip Install"
+		"it"	"Installazione chip Expidonsa Tech"
 	}
 	"Expidonsa Tech Chip Install Desc"
 	{
 		"en"	"Should we install the Expidonsa Tech Chip into our system?"
+		"it"	"Dovremmo installare il chip Expidonsa Tech nel nostro sistema?"
 	}
 	"System Malfunction"
 	{
 		"en"	"System Malfunction"
+		"it"	"Malfunzionamento del sistema"
 	}
 	"System Malfunction Desc"
 	{
 		"en"	"Oh. dear.\n{red}Construct traits have a chance to fail {blue}and rogue expidonsans are after you."
+		"it"	"Oh, cielo. \n{red}I tratti costruttivi possono fallire {blue}e gli expidonsans ribelli ti stanno dando la caccia."
 	}
 	"Rebel Calling I"
 	{
 		"en"	"Rebel Calling I"
+		"it"	"Chiamata ribelle I"
 	}
 	"Rebel Calling I Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"it"	"Un altro ribelle apparirà sulla mappa."
 	}
 	"Rebel Calling II"
 	{
 		"en"	"Rebel Calling II"
+		"it"	"Chiamata ribelle II"
 	}
 	"Rebel Calling II Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"it"	"Un altro ribelle apparirà sulla mappa."
 	}
 	"Rebel Calling III"
 	{
 		"en"	"Rebel Calling III"
+		"it"	"Chiamata ribelle III"
 	}
 	"Rebel Calling III Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"it"	"Un altro ribelle apparirà sulla mappa."
 	}
 	"Rebel Calling IV"
 	{
 		"en"	"Rebel Calling IV"
+		"it"	"Chiamata ribelle IV"
 	}
 	"Rebel Calling IV Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"it"	"Un altro ribelle apparirà sulla mappa."
 	}
 	"Rebel Calling V"
 	{
 		"en"	"Rebel Calling V"
+		"it"	"Chiamata ribelle V"
 	}
 	"Rebel Calling V Desc"
 	{
 		"en"	"An additional rebel will appear on the map."
+		"it"	"Un altro ribelle apparirà sulla mappa."
 	}
 	"Heavy Calliber"
 	{
 		"en"	"Heavy Caliber"
+		"it"	"Calibro pesante"
 	}
 	"Heavy Calliber Desc"
 	{
 		"en"	"A construct that attacks using long-range high-damage rounds."
+		"it"	"Un costrutto che attacca utilizzando proiettili a lunga gittata e ad alto danno."
 	}
 	"Minigun Turret"
 	{
 		"en"	"Minigun Turret"
+		"it"	"Torretta minigun"
 	}
 	"Minigun Turret Desc"
 	{
 		"en"	"A construct that attacks using short-range rapid firing rounds."
+		"it"	"Un costrutto che attacca utilizzando proiettili a fuoco rapido a corto raggio."
 	}
 	"Teslar's Medusa"
 	{
 		"en"	"Teslar's Medusa"
+		"it"	"Medusa di Teslar"
 	}
 	"Teslar's Medusa Desc"
 	{
 		"en"	"A construct that attacks using short-range lightning that chains, slows, and debuffs enemies."
+		"it"	"Un costrutto che attacca usando fulmini a corto raggio che incatenano, rallentano e debuffano i nemici."
 	}
 	"Flagship Calling"
 	{
 		"en"	"Flagship Calling"
+		"it"	"Chiamata di punta"
 	}
 	"Flagship Calling Desc"
 	{
 		"en"	"Increase Movementspeed by 10％\nGain the ''Ziberian Flagship Weaponry''."
+		"it"	"Aumenta la velocità di movimento del 10%\nOttieni l'arma Chiamata di punta Ziberiana."
 	}
 	"Tranquilizer Turret"
 	{
 		"en"	"Tranquilizer Turret"
+		"it"	"Torretta tranquillante"
 	}
 	"Tranquilizer Turret Desc"
 	{
 		"en"	"A construct that attacks using non-damaging stunning rounds."
+		"it"	"Un costrutto che attacca utilizzando proiettili stordenti non dannosi."
 	}
 	"The Dispenser"
 	{
 		"en"	"The Dispenser"
+		"it"	"Il distributore"
 	}
 	"The Dispenser Desc"
 	{
 		"en"	"A construct that heals nearby allies."
+		"it"	"Una struttura che cura gli alleati vicini."
 	}
 	"Decorative Furniture"
 	{
 		"en"	"Decorative Furniture"
+		"it"	"Mobile decorativi"
 	}
 	"Decorative Furniture Desc"
 	{
 		"en"	"Unlocks a set of decorative furniture, for morale."
+		"it"	"Sblocca una serie di mobili decorativi, per il morale."
 	}
 	"Decorative Lamp"
 	{
 		"en"	"Decorative Lamp"
+		"it"	"Lampada decorativa"
 	}
 	"Decorative Lamp Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
 	}
 	"Decorative Shelf"
 	{
 		"en"	"Decorative Shelf"
+		"it"	"Mensola decorativa"
 	}
 	"Decorative Shelf Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
 	}
 	"Decorative Desk"
 	{
 		"en"	"Decorative Desk"
+		"it"	"Scrivania decorativa"
 	}
 	"Decorative Desk Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
 	}
 	"Decorative Couch"
 	{
 		"en"	"Decorative Couch"
+		"it"	"Divano decorativo"
 	}
 	"Decorative Couch Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
 	}
 	"Decorative Chair"
 	{
 		"en"	"Decorative Chair"
+		"it"	"Sedia Decorativa"
 	}
 	"Decorative Chair Desc"
 	{
 		"en"	"A construct that improves morale and the desire to defend."
+		"it"	"Un costrutto che migliora il morale e la voglia di difendersi."
 	}
 	"Command Center"
 	{
 		"en"	"Command Center"
+		"it"	"Centro di Comando"
 	}
 	"Command Center Desc"
 	{
 		"en"	"Unlocks constructs used for the Barracks."
+		"it"	"Sblocca le costruzioni utilizzate per la Caserma."
 	}
 	"Barracks House"
 	{
 		"en"	"Barracks House"
+		"it"	"Casa della caserma"
 	}
 	"Barracks House Desc"
 	{
 		"en"	"A construct that provides +1 Barracks supply and +1 maximum allies."
+		"it"	"Una struttura che fornisce +1 rifornimento alla caserma e +1 alleati massimi."
 	}
 }

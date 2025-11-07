@@ -129,7 +129,7 @@ methodmap Iberia_AntiSeaRobot < CClotBody
 		
 		if(npc.g_TimesSummoned == 0)
 		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-120.0, true);
 			SetVariantString("2.5");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		}
@@ -147,7 +147,7 @@ public void Iberia_AntiSeaRobot_ClotThink(int iNPC)
 	{
 		if(!IsValidEntity(npc.m_iWearable6))
 		{
-			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0,true);
+			npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-120.0,true);
 			SetVariantString("2.5");
 			AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 			SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
@@ -225,7 +225,7 @@ public Action Iberia_AntiSeaRobot_OnTakeDamage(int victim, int &attacker, int &i
 
 	float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget > (250.0 * 250.0))
+	if(flDistanceToTarget > (275.0 * 275.0))
 	{
 		damage = 0.0;
 		return Plugin_Handled;
@@ -286,9 +286,9 @@ void Iberia_AntiSeaRobotSelfDefense(Iberia_AntiSeaRobot npc, float gameTime, int
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 350.0;
+					float damageDealt = 300.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 15.5;
+						damageDealt *= 12.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
@@ -318,7 +318,7 @@ void Iberia_AntiSeaRobotSelfDefense(Iberia_AntiSeaRobot npc, float gameTime, int
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 				if(NpcStats_IberiaIsEnemyMarked(npc.m_iTarget))
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
+					npc.m_flNextMeleeAttack = gameTime + 0.35;
 			}
 		}
 	}

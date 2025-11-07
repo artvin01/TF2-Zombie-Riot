@@ -33,7 +33,7 @@ static void OnKritzkriegDeployed(Event event, const char[] name, bool dontBroadc
 	}
 	GiveMedigunBuffUber(medigun, client, client);
 	int target = GetHealingTarget(client);
-	if(IsValidEntity(target))
+	if(IsValidAlly(client, target))
 	{
 		GiveMedigunBuffUber(medigun, client, target);
 	}

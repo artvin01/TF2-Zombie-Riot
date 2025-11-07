@@ -49,7 +49,6 @@ void ConVar_PluginStart()
 	ConVar_Add("sv_hudhint_sound", "0.0"); //Removes the wind sound when calling hint hunds
 #if defined ZR
 	ConVar_Add("mp_tournament", "1"); //NEEDS to be 1 , or else mvm logic seems to break in ZR.
-	ConVar_Add("mp_disable_respawn_times", "1.0"); 
 	ConVar_Add("tf_mvm_defenders_team_size", "99");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 #endif
@@ -58,10 +57,10 @@ void ConVar_PluginStart()
 	ConVar_Add("mp_waitingforplayers_time", "0.0");
 #endif
 
-//	mp_friendlyfire = ConVar_Add("mp_friendlyfire", "1.0");
-#if defined RPG
 	ConVar_Add("mp_friendlyfire", "1.0");
-#endif
+	ConVar_Add("mp_flashlight", "0.0"); 
+	//disable flashlight as it looks buggy and causes fps issues
+	//you need to set a setting beforehand to make it work, so its really bad.
 
 #if defined ZR
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "-1", "How many players can play at once?");
@@ -74,10 +73,10 @@ void ConVar_PluginStart()
 	zr_tagwhitehard = CreateConVar("zr_tagwhitehard", "1", "If whitelist requires a tag instead of allowing");
 	zr_minibossconfig = CreateConVar("zr_minibossconfig", "miniboss", "Mini Boss config zr/ .cfg already included");
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
-	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
 	zr_maxscaling_untillhp = CreateConVar("zr_maxscaling_untillhp", "3.4", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
+	zr_maxsbosscaling_untillhp = CreateConVar("zr_maxbossscaling_untillhp", "4.0", "Max enemy boss count multipler, will scale by health and damage onwards", _, true, 0.5);
 	zr_multi_scaling = CreateConVar("zr_multi_scaling", "1.0", "Multiply the current scaling");
 	zr_multi_maxenemiesalive_cap = CreateConVar("zr_multi_maxenemiesalive_cap", "1.0", "Multiply the current max enemies allowed");
 	zr_raidmultihp = CreateConVar("zr_raidmultihp", "1.0", "Multiply any boss HP that acts as a raid or megaboss, usefull for certain maps.");
@@ -91,6 +90,8 @@ void ConVar_PluginStart()
 	CvarRogueSpecialLogic = CreateConVar("zr_roguespeciallogic", "0", "Incase your server wants to remove some restrictions off the roguemode.");
 	CvarLeveling = CreateConVar("zr_playerlevels", "1", "If player levels are enabled");
 	CvarAutoSelectWave = CreateConVar("zr_autoselectwave", "0", "If to automatically set a wave on map start instead of running a vote");
+	CvarAutoSelectDiff = CreateConVar("zr_autoselectdiff", "0", "If to automatically set a difficulty on map start instead of running a vote");
+	CvarVoteLimit = CreateConVar("zr_wavevotelimit", "0", "Max amount of options to put in waveset voting, 0 to disable");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
@@ -98,6 +99,8 @@ void ConVar_PluginStart()
 	HookConVarChange(zr_voteconfig, WavesCvarChanged);
 	HookConVarChange(zr_minibossconfig, WavesCvarChanged);
 	HookConVarChange(CvarAutoSelectWave, WavesCvarChanged);
+	HookConVarChange(CvarAutoSelectDiff, WavesCvarChanged);
+	HookConVarChange(CvarVoteLimit, WavesCvarChanged);
 	HookConVarChange(zr_ignoremapconfig, DownloadCvarChanged);
 	HookConVarChange(zr_downloadconfig, DownloadCvarChanged);
 #endif
@@ -108,8 +111,8 @@ void ConVar_PluginStart()
 	CvarRPGInfiniteLevelAndAmmo = CreateConVar("rpg_debug_store", "0", "Debug", FCVAR_DONTRECORD);
 	CvarCustomModels = CreateConVar("zr_custommodels", "1", "If custom player models are enabled");
 	
-	//default should be 0.1
-	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.1", "How long zombie spawn protection lasts for.");
+	//default should be 0.5
+	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "0.2", "How long zombie spawn protection lasts for.");
 #endif
 
 #if defined ZR || defined RTS	
@@ -127,10 +130,12 @@ void ConVar_PluginStart()
 
 #if defined ZR
 	cvarTimeScale = FindConVar("host_timescale");
+	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
 #endif
 
 	Cvar_clamp_back_speed = ConVar_Add("tf_clamp_back_speed", "0.7", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	Cvar_LoostFooting = ConVar_Add("tf_movement_lost_footing_friction", "0.1", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
+	sv_gravity = ConVar_Add("sv_gravity", "800", false, (FCVAR_NOTIFY | FCVAR_REPLICATED | FCVAR_CHEAT));
 	ConVar_Add("sv_tags", "", false, (FCVAR_NOTIFY));
 	
 #if defined RPG	

@@ -59,7 +59,7 @@ public void XenoScout_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Scout Assulter");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Scout Assaulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_scout_grave");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
 	data.IconCustom = false;
@@ -346,12 +346,12 @@ public Action XenoScout_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		{
 			npc.bXenoInfectedSpecialHurt = true;
 			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
 			
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
 			npc.m_flSpeed = 400.0;
 			CreateTimer(2.0, XenoScout_Revert_Poison_Zombie_Resistance, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE);
@@ -375,16 +375,16 @@ public Action XenoScout_Revert_Poison_Zombie_Resistance(Handle timer, int ref)
 	{
 		XenoScout npc = view_as<XenoScout>(zombie);
 		npc.m_flSpeed = 300.0;
-		SetEntityRenderMode(zombie, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(zombie, RENDER_NORMAL);
 		SetEntityRenderColor(zombie, 150, 255, 150, 255);
 		if(IsValidEntity(npc.m_iWearable2))
 		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable2, 150, 255, 150, 255);
 		}
 		if(IsValidEntity(npc.m_iWearable1))
 		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			SetEntityRenderColor(npc.m_iWearable1, 150, 255, 150, 255);
 		}
 	}

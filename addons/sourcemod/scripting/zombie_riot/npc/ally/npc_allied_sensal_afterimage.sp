@@ -20,7 +20,7 @@ void AlliedSensalAbility_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Ally;
+	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -372,11 +372,11 @@ void SensalCauseKnockback(int attacker, int victim, float RatioExtra = 1.0, bool
 	{
 		case 0:
 		{
-			knockback *= 1.25;
+			knockback *= 0.75;
 		}
 		case 2:
 		{
-			knockback *= 0.75;
+			knockback *= 0.65;
 		}
 		case 3:
 		{

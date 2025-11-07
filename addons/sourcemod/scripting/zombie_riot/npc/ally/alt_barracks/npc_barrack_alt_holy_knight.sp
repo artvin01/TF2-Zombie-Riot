@@ -39,7 +39,7 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 	}
 	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3])
 	{
-		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "900",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "900",COMBINE_CUSTOM_2_MODEL,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
 		
@@ -49,11 +49,10 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 
 		npc.m_flSpeed = 225.0;
 		
-		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 150, 175, 255, 255);
 
 		npc.m_iState = 0;
@@ -78,15 +77,12 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 100, 150, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 50, 125, 150, 255);
 		
 		int skin = 1;	//1=blue, 0=red
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+	//	SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -119,7 +115,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 			
 			if(fl_barragetimer[npc.index] <= GetGameTime(npc.index) && fl_singularbarrage[npc.index] <= GetGameTime(npc.index))
 			{	
-				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_NONE);
 				SetEntityRenderColor(npc.m_iWearable3, 1, 1, 1, 1);
 
 				i_barrage[npc.index]++;
@@ -166,12 +162,12 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		
 				}
 				npc.PlayRangedSound();
-				npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+				npc.AddGesture("ACT_BLADEDANCE_ATTACK_LEFT");
 				fl_singularbarrage[npc.index] = GetGameTime(npc.index) + 0.1;
 				b_barrage[npc.index] = true;
 				if (i_barrage[npc.index] >= 1)	//Stays here incase you want this multi shoot to act like a barrage
 				{
-					SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+					SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 					SetEntityRenderColor(npc.m_iWearable3, 255, 1, 1, 255);
 					i_barrage[npc.index] = 0;
 					fl_barragetimer[npc.index] = GameTime + 10.0 * npc.BonusFireRate;
@@ -189,7 +185,10 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+						if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+							npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
+						else
+							npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
 						npc.m_flAttackHappens = GameTime+0.4 * npc.BonusFireRate;
 						npc.m_flAttackHappens_bullshit = GameTime+0.54 * npc.BonusFireRate;
 						npc.m_flAttackHappenswillhappen = true;
@@ -229,7 +228,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_NEW_WALK", "ACT_TEUTON_NEW_WALK");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_TEUTON_IDLE_NEW", "ACT_TEUTON_WALK_NEW");
 	}
 }
 

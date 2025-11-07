@@ -1556,6 +1556,7 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 					static float vOrigin[3], vAngles[3], tOrigin[3];
 					WorldSpaceCenter(npc.index, vOrigin);
 					ParticleEffectAt(vOrigin, "mvm_soldier_shockwave", 1.0);
+					
 					vAngles[0]=90.0;
 					EntityLookPoint(npc.index, vAngles, vOrigin, tOrigin);
 					CreateEarthquake(tOrigin, 0.5, 350.0, 16.0, 255.0);
@@ -1643,6 +1644,8 @@ int HuscarlsSelfDefense(Huscarls npc, float gameTime, int target, float distance
 								CreateEarthquake(VecEnemy, 0.5, 350.0, 16.0, 255.0);
 								PlayPOWERSound = true;
 							}
+							if(ShouldNpcDealBonusDamage(target))
+								damage *= 7.0;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 							bool Knocked = false;

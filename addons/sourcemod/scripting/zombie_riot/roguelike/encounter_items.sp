@@ -13,13 +13,13 @@ public float Rogue_Encounter_Shop()
 
 	if(GetURandomInt() % 5)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, -1) != -1)
 		{
 			FirstSuperSale = true;
 			ShopListing.PushArray(artifact);
 		}
 	}
-	else if(Rogue_GetRandomArtfiact(artifact, true, 30) != -1)
+	else if(Rogue_GetRandomArtifact(artifact, true, 30) != -1)
 	{
 		ShopListing.PushArray(artifact);
 	}
@@ -28,25 +28,25 @@ public float Rogue_Encounter_Shop()
 
 	if(ingots > 7)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 8) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 8) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 11)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 17)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
 	if(ingots > 23)
 	{
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1)
 			ShopListing.PushArray(artifact);
 	}
 
@@ -95,18 +95,20 @@ public void Rogue_Vote_ShopEncounter(const Vote vote)
 	{
 		Artifact artifact;
 		ShopListing.GetArray(index, artifact);
-		ShopListing.Erase(index);
-
-		Rogue_GiveNamedArtifact(artifact.Name);
+		int cost = artifact.ShopCost;
 
 		if(FirstSuperSale && index == 0)
 		{
 			FirstSuperSale = false;
-			Rogue_AddIngots(-artifact.ShopCost * 7 / 10, true);
+			cost = cost * 7 / 10;
 		}
-		else
+		
+		//Silent voting prevention
+		if(cost <= Rogue_GetIngots())
 		{
-			Rogue_AddIngots(-artifact.ShopCost, true);
+			Rogue_GiveNamedArtifact(artifact.Name);
+			Rogue_AddIngots(-cost, true);
+			ShopListing.Erase(index);
 		}
 
 		StartShopVote();
@@ -124,7 +126,7 @@ public float Rogue_Encounter_Boons()
 	Vote vote;
 
 	Artifact artifact;
-	int index = Rogue_GetRandomArtfiact(artifact, true);
+	int index = Rogue_GetRandomArtifact(artifact, true);
 	if(index != -1)
 	{
 		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
@@ -133,7 +135,7 @@ public float Rogue_Encounter_Boons()
 		list.PushArray(vote);
 	}
 
-	index = Rogue_GetRandomArtfiact(artifact, true);
+	index = Rogue_GetRandomArtifact(artifact, true);
 	if(index != -1)
 	{
 		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
@@ -353,7 +355,7 @@ public float Rogue_Encounter_ForcefieldChest()
 	list.PushArray(vote);
 
 	Artifact artifact;
-	if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+	if(Rogue_GetRandomArtifact(artifact, true, 12) != -1)
 	{
 		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
 		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
@@ -373,7 +375,7 @@ public void Rogue_Vote_ForcefieldChest(const Vote vote, int index)
 	else
 	{
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }
@@ -644,7 +646,7 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 		Rogue_AddIngots(-3);
 		
 		Artifact artifact;
-		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1 || Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
+		if(Rogue_GetRandomArtifact(artifact, true, 24) != -1 || Rogue_GetRandomArtifact(artifact, true, 18) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }

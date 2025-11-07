@@ -83,7 +83,7 @@ void VictoriaAssulter_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/sniper.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Assulter");
+	strcopy(data.Name, sizeof(data.Name), "Assaulter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_assaulter");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_assaulter");
 	data.IconCustom = true;
@@ -270,10 +270,10 @@ public Action VictoriaAssulter_OnTakeDamage(int victim, int &attacker, int &infl
 	}
 
 	return Plugin_Changed;
-	}
+}
 
-	public void VictoriaAssulter_NPCDeath(int entity)
-	{
+public void VictoriaAssulter_NPCDeath(int entity)
+{
 	VictoriaAssulter npc = view_as<VictoriaAssulter>(entity);
 	if(!npc.m_bGib)
 	{

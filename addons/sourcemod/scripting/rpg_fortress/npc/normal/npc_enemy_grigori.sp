@@ -125,7 +125,7 @@ public void EnemyFatherGrigori_OnMapStart_NPC()
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
-	PrecacheModel("models/monk.mdl");
+	PrecacheModel("models/zombie_riot/grigori/monk_custom.mdl");
 	PrecacheSound("ambient/explosions/explode_9.wav",true);
 	PrecacheSound("ambient/energy/weld1.wav",true);
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
@@ -226,7 +226,7 @@ methodmap EnemyFatherGrigori < CClotBody
 	}
 	public EnemyFatherGrigori(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "300", ally, false,_,_,_,_));
+		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/grigori/monk_custom.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "shotgun_soldier");
@@ -327,7 +327,6 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		if(npc.m_flJumpCooldown < gameTime)
 		{
 			npc.m_flJumpCooldown = 0.0;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);		
 		}
 	}
@@ -821,7 +820,6 @@ public void EnemyFatherGrigori_OnTakeDamagePost(int victim, int attacker, int in
 		npc.PlayAngerSound();
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 30.0;
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0; //Take way less damage for 5 seconds.
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 	}

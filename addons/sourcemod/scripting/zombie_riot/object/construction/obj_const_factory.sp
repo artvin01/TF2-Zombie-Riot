@@ -4,7 +4,7 @@
 static const char Vehicles[][] =
 {
 	"vehicle_ambulance",
-//	"vehicle_bus",
+	"vehicle_bus",
 	"vehicle_camper",
 	"vehicle_dumptruck_empty",
 	"vehicle_landrover",
@@ -168,7 +168,7 @@ static void ThisBuildingMenu(int client)
 	Menu menu = new Menu(ThisBuildingMenuH);
 
 	char buffer2[512];
-	Format(buffer2, sizeof(buffer2), "%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description");
+	Format(buffer2, sizeof(buffer2), "%t\n%d / %d %t\n%d / %d %t\n \n%t", "Vehicle Factory", iron, IronCost, "Material iron", ossunia, ossuniaCost, "Material ossunia", "Crouch and select to view description Alone");
 	menu.SetTitle(buffer2);
 
 	char buffer[64];
@@ -190,13 +190,10 @@ static int OssuniaCost()
 			return 0;
 		
 		case 1:
-			return 10;
+			return 30;
 		
 		case 2:
-			return 999999; //Dont allow more then 2
-		
-		case 3:
-			return 999999;
+			return 60;
 	}
 
 	return 999;

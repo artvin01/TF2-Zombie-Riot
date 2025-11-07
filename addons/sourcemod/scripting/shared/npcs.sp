@@ -48,12 +48,12 @@ void NPC_PluginStart()
 }
 
 #if defined ZR
-public void NPC_SpawnNext(bool panzer, bool panzer_warning)
+public bool NPC_SpawnNext(bool panzer, bool panzer_warning)
 {
 	float GameTime = GetGameTime();
 	if(f_DelaySpawnsForVariousReasons > GameTime)
 	{
-		return;
+		return false;
 	}
 	int limit = 0;
 	
@@ -79,7 +79,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		//above 14, dont spawn more, it just is not worth the extra lag it gives.
 		
 		//max is 14 players.
-		if(ScalingEnemies >= 14.0)
+		if(ScalingEnemies >= 14.0 || BetWar_Mode())
 			ScalingEnemies = 14.0;
 
 		ScalingEnemies *= zr_multi_scaling.FloatValue;
@@ -130,7 +130,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 	
 	if(!b_GameOnGoing) //no spawn if the round is over
 	{
-		return;
+		return false;
 	}
 	
 	if(!AllowSpecialSpawns)
@@ -174,13 +174,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		//emercency stop. 
 		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 		{
-			return;
+			return false;
 		}
 	}
 
 	if(!Spawns_CanSpawnNext())
 	{
-		return;
+		return false;
 	}
 	
 	float pos[3], ang[3];
@@ -259,6 +259,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			pack.WriteCell(boss.Index);
 			pack.WriteCell(deathforcepowerup);
 			pack.WriteFloat(boss.HealthMulti);
+			return true;
 		}
 		else
 		{
@@ -271,7 +272,18 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		if(Waves_GetNextEnemy(enemy))
 		{
 			int SpawnSettingsSee = 0;
-			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
+			bool result;
+
+			if(enemy.Spawn[0])
+			{
+				if(ExplodeStringFloat(enemy.Spawn, " ", pos, sizeof(pos)) == 3)
+					result = true;
+			}
+
+			if(!result)
+				result = Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee);
+
+			if(result)
 			{
 				if(enemy.Is_Boss >= 2)
 				{
@@ -292,7 +304,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					}
 					else if(enemy.Is_Outlined == 2)
 					{
-						b_NoHealthbar[entity_Spawner] = true;
+						b_NoHealthbar[entity_Spawner] = 1;
 					}
 					
 					if(enemy.Is_Immune_To_Nuke)
@@ -330,6 +342,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
 						TeleportNpcToRandomPlayer(entity_Spawner);
+						RemoveSpawnProtectionLogic(entity_Spawner, true);
 					}
 					
 					if(enemy.Is_Boss > 0)
@@ -360,17 +373,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					}
 					
 
-					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
-					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
-					fl_Extra_Speed[entity_Spawner] 			= enemy.ExtraSpeed;
-					fl_Extra_Damage[entity_Spawner] 		= enemy.ExtraDamage;
+					fl_Extra_MeleeArmor[entity_Spawner] 	*= enemy.ExtraMeleeRes;
+					fl_Extra_RangedArmor[entity_Spawner] 	*= enemy.ExtraRangedRes;
+					fl_Extra_Speed[entity_Spawner] 			*= enemy.ExtraSpeed;
+					fl_Extra_Damage[entity_Spawner] 		*= enemy.ExtraDamage;
 					if(enemy.ExtraThinkSpeed != 0.0 && enemy.ExtraThinkSpeed != 1.0)
-						f_AttackSpeedNpcIncrease[entity_Spawner]	= enemy.ExtraThinkSpeed;
+						f_AttackSpeedNpcIncrease[entity_Spawner]	*= enemy.ExtraThinkSpeed;
 						
-					if(!b_thisNpcIsARaid[entity_Spawner] && XenoExtraLogic(true))
-					{
-						fl_Extra_Damage[entity_Spawner] *= 1.1;
-					}
 					if(enemy.ExtraSize != 1.0)
 					{
 						float scale = GetEntPropFloat(entity_Spawner, Prop_Send, "m_flModelScale");
@@ -386,10 +395,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
+					if(!DisableSpawnProtection && zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == NPC_SPAWNPROT_INIT)
 					{
-				
-						i_npcspawnprotection[entity_Spawner] = 1;
+						
+						i_npcspawnprotection[entity_Spawner] = NPC_SPAWNPROT_ON;
 						
 						/*
 						CClotBody npc = view_as<CClotBody>(entity_Spawner);
@@ -427,6 +436,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 
 					if(Waves_InFreeplay())
 						Freeplay_SpawnEnemy(entity_Spawner);
+
+					return true;
 				}
 			}
 			else
@@ -442,24 +453,31 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
 			{
 				donotprogress = true;
+				/*
 				if(EnemyNpcAliveStatic >= 1)
 				{
 					donotprogress = false;
 				}
+				*/
 			}
 			else
 			{
+				/*
 				if(EnemyNpcAliveStatic >= 1)
 				{
 					donotprogress = false;
 				}
+				*/
 			}
 			if(f_DelayNextWaveStartAdvancing < GetGameTime())
 			{
 				Waves_Progress(donotprogress);
 			}
+			return true;
+			//we reached limit. stop trying.
 		}
 	}
+	return false;
 }
 #endif	// ZR
 
@@ -476,13 +494,46 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 stock void RemoveSpawnProtectionLogic(int entity, bool force)
 {
 #if defined ZR
-	if(Rogue_Theme() == 1 && !force)
+	bool KeepProtection = false;
+	if(!force)
 	{
-		if(f_DomeInsideTest[entity] > GetGameTime())
+		if(Rogue_Theme() == 1)
 		{
-			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
-			return;
+			if(f_DomeInsideTest[entity] > GetGameTime())
+			{
+				KeepProtection = true;
+			}
 		}
+		float PosNpc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", PosNpc);
+		if(!KeepProtection)
+		{
+			if(IsPointOutsideMap(PosNpc))
+			{
+				KeepProtection = true;
+			}
+		}
+		if(!KeepProtection)
+		{
+			if(i_InHurtZone[entity])
+				KeepProtection = true;
+		}
+		if(!KeepProtection)
+		{
+			static float minn[3], maxx[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecMins", minn);
+			GetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxx);
+			if(IsBoxHazard(PosNpc, minn, maxx))
+				KeepProtection = true;
+		}
+	}
+
+
+	if(KeepProtection)
+	{
+		//npc is in some type of out of bounds spot probably, keep them safe.
+		CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		return;
 	}
 #endif	// ZR
 	
@@ -491,7 +542,7 @@ stock void RemoveSpawnProtectionLogic(int entity, bool force)
 	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
 		RemoveEntity(npc.m_iSpawnProtectionEntity);
 	//-1 means none, and dont apply anymore.
-	i_npcspawnprotection[entity] = -1;
+	i_npcspawnprotection[entity] = NPC_SPAWNPROT_OFF;
 }
 
 #if defined ZR
@@ -702,7 +753,15 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.
 				value *= 5.0;
-			SDKHooks_TakeDamage(entity, attacker, attacker, value, DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
+				
+			int DamageTypes = DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE;
+
+			if(GetTeam(entity) != TFTeam_Red)
+			{
+				DamageTypes &= ~DMG_TRUEDAMAGE;
+				DamageTypes |= DMG_BULLET;
+			}
+			SDKHooks_TakeDamage(entity, attacker, attacker, value, DamageTypes, weapon, {0.0,0.0,0.0}, pos, false, (ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED | ZR_DAMAGE_IGNORE_DEATH_PENALTY ));
 			
 			//Setting burn dmg to slash cus i want it to work with melee!!!
 			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
@@ -833,7 +892,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					i_HasBeenHeadShotted[victim] = true; //shouldnt count as an actual headshot!
 				}
 
-				if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+				if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 				{
 					damage *= 1.25;
 				}
@@ -867,7 +926,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					float damage_save = 50.0;
 					damage_save *= Attributes_Get(weapon, 2, 1.0);
 					int BombsToInject = i_ArsenalBombImplanter[weapon];
-					if(i_CurrentEquippedPerk[attacker] == 5) //I guesswe can make it stack.
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER) //I guesswe can make it stack.
 					{
 						BombsToInject += 1;
 					}
@@ -1110,7 +1169,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			return Plugin_Changed;
 		}
 	}
-	if(HasSpecificBuff(victim, "Archo's Posion"))
+	if(!CheckInHud() && HasSpecificBuff(victim, "Archo's Posion"))
 	{
 		if(!(damagetype & (DMG_FALL|DMG_OUTOFBOUNDS|DMG_TRUEDAMAGE)))
 		{
@@ -1242,6 +1301,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		npcBase.m_bGib = false;
 	}
+	//force gibbing.
+	if(HasSpecificBuff(victim, "Warped Elemental End"))
+		npcBase.m_bGib = true;
 #endif
 	//LogEntryInvicibleTest(victim, attacker, damage, 24);
 	
@@ -1259,7 +1321,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 {
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
+	{
 		return;
+	}
 		
 	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
 	if(AttackerOverride > 0)
@@ -1275,9 +1339,9 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	}
 #if defined ZR
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true) || (weapon > -1 && i_ArsenalBombImplanter[weapon] > 0)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #else
-	if((Damageaftercalc > 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
+	if((Damageaftercalc >= 0.0 || IsInvuln(victim, true)) && !b_DoNotDisplayHurtHud[victim]) //make sure to still show it if they are invinceable!
 #endif
 	{
 #if !defined RTS
@@ -1396,6 +1460,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	
 	//LogEntryInvicibleTest(victim, attacker, damage, 29);
+	
+	if(SlayNpc && HasSpecificBuff(victim, "Blessing of Stars"))
+	{
+		HealEntityGlobal(victim, victim, float(ReturnEntityMaxHealth(victim) / 4), 1.0, 1.0, HEAL_ABSOLUTE);
+		SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+		ApplyStatusEffect(victim, victim, "Unstoppable Force", 1.0);
+		RemoveSpecificBuff(victim, "Blessing of Stars");
+		EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
+		SlayNpc = false;
+	}
 	if(SlayNpc && !HasSpecificBuff(victim, "Infinite Will"))
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1409,6 +1483,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	//LogEntryInvicibleTest(victim, attacker, damage, 30);
 		
 	Damageaftercalc = 0.0;
+	i_HasBeenHeadShotted[victim] = false;
 }
 
 stock void GiveRageOnDamage(int client, float damage)
@@ -1484,6 +1559,17 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_UMBRAL)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
+					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_PORTAL)
+				{
+					TE_ParticleInt(g_particleImpactPortal, damagePosition);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
 			}
@@ -1584,6 +1670,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	if(!c_NpcName[victim][0])
 		return true;
 
+	if(b_NoHealthbar[victim] == 2)
+	{
+		//hide entirely.
+		return true;
+	}
+
 #if defined ZR
 	bool raidboss_active = false;
 	int raid_entity = EntRefToEntIndex(RaidBossActive);
@@ -1637,9 +1729,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 	else
 	{
 #if defined RPG
-		if(i_npcspawnprotection[victim] != 1 || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+		if(i_npcspawnprotection[victim] != NPC_SPAWNPROT_ON || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
-		if(i_npcspawnprotection[victim] != 1)
+		if(i_npcspawnprotection[victim] != NPC_SPAWNPROT_ON)
 #endif
 		{
 			DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);
@@ -2080,9 +2172,10 @@ stock void ResetDamageHud(int client)
 
 stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, bool DontForward = false, bool ResetClientCooldown = false, bool RaidHudForce = false)
 {
+	if(b_ThisEntityIgnored[victim])
+		return;
 	if(attacker <= MaxClients)
 	{
-		b_DisplayDamageHud[attacker][0] = true;
 
 		//If a raid hud update happens, it should prefer to update it incase you attack something in the same frame or whaatever.
 		if(RaidHudForce)
@@ -2092,6 +2185,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		}
 		else
 		{
+			b_DisplayDamageHud[attacker][0] = true;
 			i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
 		}
 

@@ -38,6 +38,7 @@ void ObjectVillage_MapStart()
 	PrecacheModel(VILLAGE_MODEL_REBEL);
 	PrecacheSound("items/powerup_pickup_uber.wav");
 	PrecacheSound("player/mannpower_invulnerable.wav");
+	Zero(Village_ReloadBuffFor);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Village");
@@ -165,17 +166,19 @@ public Action Timer_VillageThink(Handle timer, int ref)
 		range *= 0.55;
 
 	int points = VillagePointsLeft(owner);
-	if(points < 0)
+	if(points >= 0)
 	{
-		range = 0.0;
+		BuildingApplyDebuffyToEnemiesInRange(owner, range, mounted);
 	}
-	BuildingApplyDebuffyToEnemiesInRange(owner, range, mounted);
 
 	return entity == INVALID_ENT_REFERENCE ? Plugin_Stop : Plugin_Continue;
 }
 
 void BuildingApplyDebuffyToEnemiesInRange(int client, float range, bool mounted)
 {
+	int Building = Object_GetSentryBuilding(client);
+	if(!IsValidEntity(Building))
+		return;
 	static float pos2[3];
 	if(mounted)
 	{
@@ -183,7 +186,7 @@ void BuildingApplyDebuffyToEnemiesInRange(int client, float range, bool mounted)
 	}
 	else
 	{
-		GetEntPropVector(Object_GetSentryBuilding(client), Prop_Data, "m_vecAbsOrigin", pos2);
+		GetEntPropVector(Building, Prop_Data, "m_vecAbsOrigin", pos2);
 	}
 
 	b_NpcIsTeamkiller[client] = true;
@@ -723,6 +726,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	menu.Pagination = 0;
 	menu.ExitButton = true;
 	menu.Display(viewer, MENU_TIME_FOREVER);
+	AnyMenuOpen[viewer] = 1.0;
 }
 
 public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int choice)
@@ -732,6 +736,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
+		}
+		case MenuAction_Cancel:
+		{
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{

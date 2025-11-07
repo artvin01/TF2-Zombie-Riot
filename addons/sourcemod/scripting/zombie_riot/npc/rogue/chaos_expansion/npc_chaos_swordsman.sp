@@ -192,7 +192,8 @@ methodmap ChaosSwordsman < CClotBody
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
+		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		Elemental_AddChaosDamage(npc.index, npc.index, 1, false);		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -224,13 +225,9 @@ methodmap ChaosSwordsman < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
 		
 		float flPos[3], flAng[3];

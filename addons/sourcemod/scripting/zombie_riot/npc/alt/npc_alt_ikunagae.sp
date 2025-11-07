@@ -202,15 +202,11 @@ methodmap Ikunagae < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/Jul13_Se_Headset/Jul13_Se_Headset_medic.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		
 		
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_vampiric_vesture/sf14_vampiric_vesture.mdl");
 		SetVariantString("1.0");
@@ -222,22 +218,14 @@ methodmap Ikunagae < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 7, 255, 255, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 7, 255, 255, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 7, 255, 255, 255);
-		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 7, 255, 255, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 7, 255, 255, 255);
 		
 		npc.m_flSpeed = 262.0;
@@ -369,7 +357,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flSpinToWinAbilityTimer = GameTime + 120.0;
 						fl_Spin_To_Win_Global_Ability_Timer=GameTime + 30.0;
 						
-						Spin_To_Win_Activate(npc.index, 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
+						Spin_To_Win_Activate(npc.index, 10.0, 5.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
 					}
 				}
 			}
@@ -529,7 +517,7 @@ static void Internal_NPCDeath(int entity)
 
 ///Scara-attack-core
 
-#define IKU_MAX_VORTEXES 10
+#define IKU_MAX_VORTEXES 3
 
 static int i_Scaramouche_Vortex_ID[MAXENTITIES][IKU_MAX_VORTEXES];
 static int i_Scaramouche_Vortex_Total[MAXENTITIES];
@@ -634,7 +622,7 @@ public Action Scaramouche_TBB_Tick(int client)
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 				{
 					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-					npc.FireParticleRocket(vecTarget, 100.0 , 450.0 , 100.0 , "raygun_projectile_blue",_,_,true,Location);
+					npc.FireParticleRocket(vecTarget, 100.0 , 450.0 , 200.0 , "raygun_projectile_blue",_,_,true,Location);
 				}
 				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
 			}
@@ -1048,7 +1036,7 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	float Ratio = Health / MaxHealth;
-
+/*
 	int spin_min = 2;
 	int spin_max = 6;
 
@@ -1057,6 +1045,17 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 
 	float scara_min = 0.5;
 	float scara_max = 3.0;
+
+	theres just too much, i had to reduce it.
+	*/
+	int spin_min = 3;
+	int spin_max = 3;
+
+	int barrage_min = 8;
+	int barrage_max = 8;
+
+	float scara_min = 1.0;
+	float scara_max = 1.0;
 
 	npc.m_iBarrageBooleanThing = (Ratio < 0.4);
 

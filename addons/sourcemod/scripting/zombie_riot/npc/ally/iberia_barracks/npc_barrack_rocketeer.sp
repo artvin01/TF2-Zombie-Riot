@@ -112,7 +112,6 @@ methodmap Barrack_Iberia_Rocketeer < BarrackBody
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/jul13_helicopter_helmet/jul13_helicopter_helmet.mdl");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr17_flakcatcher/spr17_flakcatcher.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);

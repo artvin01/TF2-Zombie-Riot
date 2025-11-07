@@ -40,7 +40,7 @@ void AdjustBotCount()
 		if(IsClientInGame(clientl) && !IsClientSourceTV(clientl))
 			CurrentPlayersActive++; //includes bot, doesnt include sourcetv
 	}
-	if((MaxClients - 2) <= CurrentPlayersActive)
+	if((MaxClients - 1) <= CurrentPlayersActive)
 	{
 		for(int botcheck = 1; botcheck <= MaxClients; botcheck++)
 		{
@@ -162,18 +162,28 @@ stock void KillFeed_ForceClear()
 
 void KillFeed_SetBotTeam(int client, int team)
 {
-	if(IsClientSourceTV(client))
-		return;
+	//if(IsClientSourceTV(client))
+	//	return;
 	
 	int teamSet = team;
 
 	if(teamSet < TFTeam_Unassigned)
+	{
 		teamSet = TFTeam_Unassigned;
-	if(teamSet > TFTeam_Blue)
+	}
+	else if(teamSet > TFTeam_Blue)
+	{
 		teamSet = TFTeam_Blue;
+
+#if defined ZR
+		if(BetWar_Mode())
+			teamSet = TFTeam_Red;
+#endif
+	}
+
 	ForceTeam[client] = teamSet;
 	
-	SetTeam(client, teamSet);
+	//SetTeam(client, teamSet);
 }
 
 #if defined ZR
@@ -193,6 +203,11 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 	int botNum;
 	bool priority, players;
 	KillFeed feed;
+
+#if defined ZR
+	if(BetWar_Mode())
+		players = true;
+#endif
 
 	if(victim <= MaxClients)
 	{
@@ -545,14 +560,14 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 			}
 		}
 
-		if(IsValidClient(victim) && IsFakeClient(victim))
-			KillFeed_SetBotTeam(victim, TFTeam_Blue);
+		//if(IsValidClient(victim) && IsFakeClient(victim))
+		//	KillFeed_SetBotTeam(victim, TFTeam_Blue);
 		
-		if(IsValidClient(attacker) && IsFakeClient(attacker))
-			KillFeed_SetBotTeam(attacker, TFTeam_Blue);
+		//if(IsValidClient(attacker) && IsFakeClient(attacker))
+		//	KillFeed_SetBotTeam(attacker, TFTeam_Blue);
 		
-		if(IsValidClient(assister) && IsFakeClient(assister))
-			KillFeed_SetBotTeam(assister, TFTeam_Blue);
+		//if(IsValidClient(assister) && IsFakeClient(assister))
+		//	KillFeed_SetBotTeam(assister, TFTeam_Blue);
 
 		event.Cancel();
 	}

@@ -50,15 +50,7 @@ static int i_Grab_Twin_ID;
 static int i_Got_My_Twin[MAXENTITIES];
 void Twin1_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheModel("models/player/scout.mdl");
-	PrecacheSound("#zombiesurvival/matrix/doubletrouble.mp3");
+
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Twin No.");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_twins");
@@ -67,8 +59,25 @@ void Twin1_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Matrix;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	i_Grab_Twin_ID = NPC_Add(data);
 }
+
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	PrecacheModel("models/player/scout.mdl");
+	PrecacheSoundCustom("#zombiesurvival/matrix/doubletrouble.mp3");
+	
+	Matrix_Shared_CorruptionPrecache();
+}
+
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -222,7 +231,7 @@ methodmap Matrix_Twins < CClotBody
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/matrix/doubletrouble.mp3");
 			music.Time = 114;
 			music.Volume = 1.0;
-			music.Custom = false;
+			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Double Trouble");
 			strcopy(music.Artist, sizeof(music.Artist), "Don Davis");
 			Music_SetRaidMusic(music);
@@ -273,7 +282,6 @@ methodmap Matrix_Twins < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 

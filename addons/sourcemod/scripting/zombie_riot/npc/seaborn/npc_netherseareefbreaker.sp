@@ -115,7 +115,6 @@ methodmap SeaReefbreaker < CSeaBody
 		npc.m_bCamo = false;
 		npc.m_iAttackStack = 0;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 
 		if(carrier)
@@ -139,23 +138,13 @@ methodmap SeaReefbreaker < CSeaBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
 		
 		if(elite)
 		{
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 255);
 		}
-		else
-		{
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSALPHA);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
-		}
-
 		return npc;
 	}
 	public float Attack(float gameTime)
@@ -243,6 +232,9 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		if(!camo)
 		{
 			npc.m_bCamo = false;
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
 			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 1500.0);
 			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 3000.0);
@@ -256,6 +248,9 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		SetEntityRenderColor(npc.index, 155, 155, 255, 1);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMinDist", 150.0);
 		SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_fadeMaxDist", 300.0);
+		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSALPHA);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSALPHA);
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 0, 1);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 0, 1);
 	}
@@ -297,11 +292,11 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								attack *= 2.5;
 							
-							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.1, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.5, DMG_CLUB);
 							npc.PlayMeleeHitSound();
 
 							if(npc.m_bCarrier)
-								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.2));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.15));
 						}
 					}
 
@@ -311,14 +306,13 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 				if(failed)
 				{
 					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
-					int entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
+					int entity = npc.FireArrow(vecTarget, attack * 0.75, 1200.0, "models/weapons/w_bugbait.mdl");
 					
 					if(entity != -1)
 					{
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
 						WorldSpaceCenter(entity, vecTarget);
@@ -327,7 +321,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 
 						if(npc.m_bCarrier)
-							i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.1);
+							i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.075);
 					}
 				}
 			}

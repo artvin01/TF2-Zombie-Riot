@@ -152,6 +152,7 @@ methodmap Diversionistico < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		
 
 		func_NPCDeath[npc.index] = Diversionistico_NPCDeath;
@@ -469,16 +470,28 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 
 
 
-int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false)
+int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, float MaxSpawnDist = 1250.0, float MinSpawnDist = 500.0, bool forceSpawn = false, bool NeedLOSPlayer = false, float VectorSave[3] = {0.0,0.0,0.0})
 {
-	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue)
+	if(!forceSpawn && zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		return 3;
-	
+	float f3_VecAbs[3];
+	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", f3_VecAbs);
 	Diversionistico npc = view_as<Diversionistico>(iNPC);
-	for( int loop = 1; loop <= 100; loop++ ) 
+	for( int loop = 1; loop <= 150; loop++ ) 
 	{
 		float AproxRandomSpaceToWalkTo[3];
-		CNavArea RandomArea = PickRandomArea();	
+		CNavArea RandomArea;
+		
+		if(!Rogue_Mode())
+		{
+			RandomArea = PickRandomArea();	
+		}
+		else
+		{
+			RandomArea = GetRandomNearbyArea(f3_VecAbs, DomeRadiusGlobal());
+			NeedLOSPlayer = true;
+			//it sucks but its needed so nothing breaks.
+		}
 			
 		if(RandomArea == NULL_AREA) 
 			break; //No nav?
@@ -490,6 +503,11 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		}
 
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
+
+		//for rouge2 and 3
+		if(Dome_PointOutside(AproxRandomSpaceToWalkTo))
+			continue;
+
 		bool DoNotTeleport = false;
 		int WasTooFarAway = 0;
 		int PlayersCount = 0;
@@ -520,8 +538,6 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 
 		if(RespectOutOfBounds && IsPointOutsideMap(AproxRandomSpaceToWalkTo))
 			continue;
-
-		AproxRandomSpaceToWalkTo[2] += 1.0;
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
 		if(b_IsGiant[npc.index])
@@ -534,26 +550,43 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 			hullcheckmaxs_Player_Again = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player_Again = view_as<float>( { -24.0, -24.0, 0.0 } );		
 		}
+		if(IsBoxHazard(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again)) //Retry.
+			continue;
+
+		AproxRandomSpaceToWalkTo[2] += 1.0;
 		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 			continue;
 			
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
+		if(IsBoxHazard(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again)) //Retry.
 			continue;
+
+		if(NeedLOSPlayer)
+		{
+			DoNotTeleport = true;
+			float f3_PositionTemp[3];
+			f3_PositionTemp = AproxRandomSpaceToWalkTo;
+			f3_PositionTemp[2] += 40.0;
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && IsPlayerAlive(client_check) && GetClientTeam(client_check)==2 && TeutonType[client_check] == TEUTON_NONE && dieingstate[client_check] == 0)
+				{		
+					if(Can_I_See_Enemy_Only(client_check,client_check, f3_PositionTemp))
+					{
+						DoNotTeleport = false;
+						break;
+					}
+				}
+			}
+			//fail, try again.
+			if(DoNotTeleport)
+				continue;
+		}
 		
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			continue;
-		
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		AproxRandomSpaceToWalkTo[2] -= 18.0;
-		if(IsPointHazard(AproxRandomSpaceToWalkTo)) //Retry.
-			continue;
-		
-		AproxRandomSpaceToWalkTo[2] += 18.0;
-		AproxRandomSpaceToWalkTo[2] += 18.0;
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
-		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+		if(VectorSave[1] == 0.0)
+			TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+
+		VectorSave = AproxRandomSpaceToWalkTo;
 		RemoveSpawnProtectionLogic(npc.index, true);
 		return 1;
 	}

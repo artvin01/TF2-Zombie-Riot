@@ -172,7 +172,7 @@ enum struct MusicEnum
 		SetMusicTimer(client, GetTime() + this.Time);
 
 		if(this.Name[0] || this.Artist[0])
-			CPrintToChat(client, "%t", "Now Playing Song", this.Artist, this.Name);
+			CPrintToChat(client, "%t", "Now Playing Song", this.Name, this.Artist);
 		
 		return true;
 	}
@@ -412,19 +412,15 @@ void PrecacheMusicZr()
 	PrecacheSoundCustom("#zombiesurvival/lasthuman.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_lose.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_win_1.mp3",_,1);
+	PrecacheSoundCustom("#zombiesurvival/nilksongboss.mp3",_,5);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
 	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
-//	ForceNiko = FindInfoTarget("zr_niko");
-//people didnt like it lol
-
-	if(XenoMapExtra)
-	{
-		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
-		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
-	}
+	DisableSpawnProtection = FindInfoTarget("zr_disablespawn_protection");
+	DisableRandomSpawns = FindInfoTarget("zr_disable_randomspawn");
 }
+
 void Music_MapStart()
 {
 	Zero(DelayStopSoundAll);
@@ -502,6 +498,19 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 	}
 	return false;
 }
+bool FishExtraLogic(bool NpcBuffing = false)
+{
+	if(!NpcBuffing)
+		return XenoMapExtra;
+	else
+	{
+		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas")))
+		{
+			return true;
+		}
+	}
+	return false;
+}
 
 bool AlternativeExtraLogic(bool NpcBuffing = false)
 {
@@ -558,10 +567,11 @@ void Music_EndLastmann(bool Reinforce=false)
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/flaggilant_lastman.mp3", 2.0);
 						case 9:
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3", 2.0);
-						//case 11:
-							//StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/cheese_lastman.mp3", 2.0);
+						case 11:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/cheese_lastman.mp3", 2.0);
 					}
 					SetMusicTimer(client, 0);
+					MusicLastmann.StopMusic(client);
 					StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 					
 				}
@@ -620,7 +630,8 @@ void Music_RoundEnd(int victim, bool music = true)
 			Music_Stop_All(client);
 
 			if(music)
-				EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				if(!MusicLoss.PlayMusic(client))
+					EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			
 			SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", victim);
 		}
@@ -710,21 +721,16 @@ void Music_Stop_All(int client)
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
 	}
 	//dont call so often! causes lag!
 	
+	MusicLastmann.StopMusic(client);
 	MusicString1.StopMusic(client);
 	MusicString2.StopMusic(client);
 	RaidMusicSpecial1.StopMusic(client);
 	BGMusicSpecial1.StopMusic(client);
-
-	if(XenoExtraLogic())
-	{
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
-	}
 }
 
 void Music_Update(int client)
@@ -811,12 +817,11 @@ void Music_Update(int client)
 	if(SkillTree_InMenu(client))
 		return;
 	
-	if(!b_GameOnGoing/* && !CvarNoRoundStart.BoolValue*/)
+	if(!b_GameOnGoing || CvarInfiniteCash.BoolValue)
 	{
-	//	PlaySetupMusicCustom(client);
 		return;
 	}
-	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode())) && !CvarNoRoundStart.BoolValue)
+	if(Waves_InSetup() && (!Waves_Started() || (!Rogue_Mode() && !Construction_Mode() && !BetWar_Mode())))
 	{
 		if(!b_DisableSetupMusic[client])
 		{
@@ -898,22 +903,6 @@ void Music_Update(int client)
 		}
 
 		MusicTypeActive[client] = 0;
-
-		if((XenoExtraLogic() && !LastMann) || (XenoExtraLogic() && BlockLastmanMusicRaidboss(client) && LastMann))
-		{
-			//This is special code for a map.
-			if(CurrentRound +1 <= 20)
-			{
-				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-				SetMusicTimer(client, GetTime() + 138);	
-			}
-			else
-			{
-				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/inside_lab.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
-				SetMusicTimer(client, GetTime() + 151);	
-			}
-			return;
-		}
 
 		// Player disabled ZR Music
 		if(b_DisableDynamicMusic[client] && !LastMann)
@@ -1029,19 +1018,26 @@ void Music_Update(int client)
 					EmitCustomToClient(client, "#zombiesurvival/wave_music/bat_rglk2boss1.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 113);
 				}
-				/*
 				case 11:
 				{
 					EmitCustomToClient(client, "#zombiesurvival/cheese_lastman.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					SetMusicTimer(client, GetTime() + 170);
 				}
-				*/
 				default:
 				{	
-					EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-					SetMusicTimer(client, GetTime() + 120);	
+					if(!MusicLastmann.PlayMusic(client))
+					{
+						EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+						SetMusicTimer(client, GetTime() + 120);	
+					}
 				}
 			}
+		}
+		
+		else if(view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
+		{
+			EmitCustomToClient(client, "#zombiesurvival/nilksongboss.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
+			SetMusicTimer(client, GetTime() + 100);
 		}
 		else if(f_intencity < 1.0)
 		{
@@ -1051,7 +1047,6 @@ void Music_Update(int client)
 		{
 			EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 			SetMusicTimer(client, GetTime() + 8);
-			
 		}
 		else if(f_intencity < float(PlayersAliveScaling) * 0.2)
 		{

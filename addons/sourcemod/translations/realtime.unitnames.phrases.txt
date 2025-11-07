@@ -8,40 +8,49 @@
 	{
 		"en" 	"Militia"
 		"ru" 	"Милита"
+		"it" 	"Milizia"
 	}
 	"Militia Desc"
 	{
 		"en" 	"Militia Desc :3"
 		"ru" 	"Описание Милиты :3"
+		"it" 	"Descrizione Milizia :3"
 	}
 	"Villager"
 	{
 		"en"	"Villager"
 		"ru" 	"Житель"
+		"it" 	"Abitante del villaggio"
 	}
 	"Villager Desc"
 	{
 		"en"	"Villager Desc"
 		"ru" 	"Описание Жителя"
+		"it" 	"Descrizione Abitante"
 	}
 	"Dead Tree"
 	{
 		"en"	"Dead Tree"
 		"ru" 	"Мёртвоё дерево"
+		"it" 	"Descrizione Albero morto"
 	}
 	"Dead Tree Desc"
 	{
 		"en"	"Provides some wood"
 		"ru" 	"Даёт немного древесины"
+		"it" 	"Descrizione Albero morto"
 	}
 	"Town Center"
 	{
 		"en"	"Town Center"
 		"ru" 	"Центр города"
+		"it" 	"Descrizione Centro Città"
+		
 	}
 	"Town Center Desc"
 	{
 		"en"	"Town Center Desc"
 		"ru" 	"Описание центра города"
+		"it" 	"Descrizione Centro Città"
 	}
 }

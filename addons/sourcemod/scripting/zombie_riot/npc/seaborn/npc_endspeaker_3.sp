@@ -9,7 +9,7 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		view_as<EndSpeaker>(0).GetSpawn(vecPos, vecAng);
 
 		char health[12];
-		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 5 / 2, health, sizeof(health));
+		IntToString(view_as<EndSpeaker>(0).m_iBaseHealth * 4, health, sizeof(health));
 
 		EndSpeaker3 npc = view_as<EndSpeaker3>(CClotBody(vecPos, vecAng, "models/antlion.mdl", "1.15", health, ally, false));
 		
@@ -37,7 +37,6 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 		npc.m_flAttackHappens = 0.0;
 		npc.m_fbGunout = true;
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 255, 255);
 
 		if(!npc.m_bHardMode && ally != TFTeam_Red && !IsValidEntity(RaidBossActive))
@@ -47,6 +46,8 @@ methodmap EndSpeaker3 < EndSpeakerNormal
 			RaidModeScaling = MultiGlobalHealth;
 			if(RaidModeScaling == 1.0) //Dont show scaling if theres none.
 				RaidModeScaling = 0.0;
+			else
+				RaidModeScaling *= 1.5;
 			RaidAllowsBuildings = true;
 		}
 		return npc;
@@ -125,7 +126,6 @@ public void EndSpeaker3_ClotThink(int iNPC)
 						if(IsValidEntity(f_ArrowTrailParticle[entity]))
 							RemoveEntity(f_ArrowTrailParticle[entity]);
 						
-						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
 						WorldSpaceCenter(entity, vecTarget);
@@ -151,7 +151,12 @@ public void EndSpeaker3_ClotThink(int iNPC)
 							
 							KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 							
-							attack*= MultiGlobalHealth; //Incase too many enemies, boost damage.
+							float DamageDoExtra = MultiGlobalHealth;
+							if(DamageDoExtra != 1.0)
+							{
+								DamageDoExtra *= 1.5;
+							}
+							attack*= DamageDoExtra; //Incase too many enemies, boost damage.
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 						}
 					}
@@ -272,7 +277,6 @@ void EndSpeaker3_NPCDeath(int entity)
 		
 		HookSingleEntityOutput(entity_death, "OnAnimationDone", EndSpeaker_BurrowAnim, true);
 
-		SetEntityRenderMode(entity_death, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(entity_death, 200, 200, 255, 255);
 	}
 }

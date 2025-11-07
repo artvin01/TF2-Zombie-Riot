@@ -5,18 +5,10 @@
 
 #define SOUND_BEEP			"buttons/button17.wav"
 
-enum
-{
-	Rarity_None = -1,
-	Rarity_Common = 0,
-	Rarity_Uncommon = 1,
-	Rarity_Rare = 2,
-	Rarity_Legend = 3,
-	Rarity_Mythic = 4
-}
 
 static const char Categories[][] =
 {
+	"Current Enemies Alive",
 	"Allies",
 	"Special Enemies",
 	"Raid Bosses",
@@ -36,7 +28,10 @@ static const char Categories[][] =
 	"Whiteflower Specials",
 	"Victoria",
 	"Matrix",
+	"Aperture",
 	"Mutations",
+	"Curtain Occupants",
+	"Necropolains"
 };
 
 enum struct GiftItem
@@ -54,16 +49,22 @@ enum struct OwnedItem
 
 static ArrayList GiftItems;
 static ArrayList OwnedItems;
+static ArrayList PreviousItems;
 static int CategoryPage[MAXPLAYERS];
 
 static int g_BeamIndex = -1;
-static int i_RarityType[MAXENTITIES];
+static ZRGiftRarity i_RarityType[MAXENTITIES];
 static float f_IncreaseChanceManually = 1.0;
 static bool b_ForceSpawnNextTime;
 
 void Items_PluginStart()
 {
+	for(int i=0; i<=MaxClients; i++)
+	{
+		CategoryPage[i] = -2;
+	}
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
+	PreviousItems = new ArrayList(sizeof(OwnedItem));
 	RegAdminCmd("zr_give_item", Items_GiveCmd, ADMFLAG_RCON);
 	RegAdminCmd("zr_give_allitems", Items_GiveAllCmd, ADMFLAG_RCON);
 	RegAdminCmd("zr_remove_allitems", Items_RemoveAllCmd, ADMFLAG_RCON);
@@ -88,14 +89,14 @@ void Items_SetupConfig()
 		int index = StringToInt(item.Name);
 
 		item.Name[0] = 0;
-		item.Rarity = Rarity_None;
+		item.Rarity = -1;
 		while(GiftItems.Length < index)
 		{
 			GiftItems.PushArray(item);
 		}
 
 		kv.GetString("name", item.Name, sizeof(item.Name));
-		item.Rarity = kv.GetNum("rarity", Rarity_None);
+		item.Rarity = kv.GetNum("rarity", -1);
 		if(GiftItems.Length == index)
 		{
 			GiftItems.PushArray(item);
@@ -117,6 +118,11 @@ void Items_ClearArray(int client)
 	{
 		OwnedItems.Erase(id);
 	}
+
+	while((id = PreviousItems.FindValue(client, OwnedItem::Client)) != -1)
+	{
+		PreviousItems.Erase(id);
+	}
 }
 
 void Items_AddArray(int client, int level, int flags)
@@ -128,18 +134,45 @@ void Items_AddArray(int client, int level, int flags)
 		owned.Level = level;
 		owned.Flags = flags;
 		OwnedItems.PushArray(owned);
+		PreviousItems.PushArray(owned);
 	}
 }
 
-bool Items_GetNextItem(int client, int &i, int &level, int &flags)
+bool Items_GetNextItem(int client, int &i, int &level, int &flags, bool &newEntry)
 {
-	int length = OwnedItems.Length;
-	for(; i < length; i++)
+	int length1 = OwnedItems.Length;
+	int length2 = PreviousItems.Length;
+	for(; i < length1; i++)
 	{
 		static OwnedItem owned;
 		OwnedItems.GetArray(i, owned);
-		if(owned.Client == client && level >= 0)
+		if(owned.Client == client)
 		{
+			newEntry = true;
+			bool same;
+
+			for(int b; b < length2; b++)
+			{
+				static OwnedItem previous;
+				PreviousItems.GetArray(b, previous);
+				if(previous.Client == client && previous.Level == owned.Level)
+				{
+					if(previous.Flags == owned.Flags)
+					{
+						same = true;
+					}
+					else
+					{
+						newEntry = false;
+					}
+
+					break;
+				}
+			}
+
+			if(same)
+				continue;
+
 			level = owned.Level;
 			flags = owned.Flags;
 			return true;
@@ -421,11 +454,38 @@ char[] Items_GetNameOfId(int id)
 	GiftItems.GetArray(id, item);
 	return item.Name;
 }
+public bool Encyclopedia_SayCommand(int client)
+{
+	if(CategoryPage[client] == -2)
+		return false;
+	char buffer[16];
+	GetCmdArgString(buffer, sizeof(buffer));
+	ReplaceString(buffer, sizeof(buffer), "\"", "");
+	Format(c_WeaponUseAbilitiesHud[client], sizeof(c_WeaponUseAbilitiesHud[]), "%s", buffer);
+	Items_EncyclopediaMenu(client);
+	return true;
+}
+
+char[] Encyclopedia_CurrentFilter(int client)
+{
+	char buffer[64];
+	//reusing c_WeaponUseAbilitiesHud cus it only affects weapons
+	if(!c_WeaponUseAbilitiesHud[client][0])
+	{
+		Format(buffer, sizeof(buffer), "%T", "Encyclopedia Type", client);
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "%T %s", "Encyclopedia Filtered", client, c_WeaponUseAbilitiesHud[client]);
+	}
+	return buffer;
+}
 
 void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 {
 	Menu menu = new Menu(Items_EncyclopediaMenuH);
 	SetGlobalTransTarget(client);
+	AnyMenuOpen[client] = 1.0;
 
 	if(inPage)
 	{
@@ -438,19 +498,8 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		{
 			Format(buffer, sizeof(buffer), "%t", buffer);
 
-			/*if(Database_IsCached(client))
-			{
-				menu.SetTitle("%t\n \n%s\n%t\n ", data.Name, buffer, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
-			}
-			else*/
-			{
-				menu.SetTitle("%t\n \n%s\n ", data.Name, buffer);
-			}
+			menu.SetTitle("%t\n \n%s\n ", data.Name, buffer);
 		}
-		/*else if(Database_IsCached(client))
-		{
-			menu.SetTitle("%t\n \n%t\n ", data.Name, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
-		}*/
 		else
 		{
 			menu.SetTitle("%t\n ", data.Name);
@@ -469,25 +518,67 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 		NPCData data;
 		int length = NPC_GetCount();
+		menu.AddItem("None", "", ITEMDRAW_DISABLED);
+		if(CategoryPage[client] == Type_DONOTUSE)
+		{
+			ArrayList NpcsSavedList = new ArrayList();
+			int entity = -1;
+			int a;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(IsValidEntity(entity))
+				{
+					if(NpcsSavedList.FindValue(i_NpcInternalId[entity]) != -1)
+						continue;
+					NPC_GetById(i_NpcInternalId[entity], data);
+					if(data.Plugin[0])
+					{
+						if(i_NpcInternalId[entity] == page)
+							pos = menu.ItemCount;
+
+						IntToString(i_NpcInternalId[entity], data.Plugin, sizeof(data.Plugin));
+						Format(data.Name, sizeof(data.Name), "%t", data.Name);
+						menu.AddItem(data.Plugin, data.Name);
+						NpcsSavedList.Push(i_NpcInternalId[entity]);
+					}
+				}
+			}
+			delete NpcsSavedList;
+		}
 		for(int i; i < length; i++)
 		{
 			NPC_GetById(i, data);
 			if(data.Plugin[0] && data.Category == CategoryPage[client])
 			{
 				IntToString(i, data.Plugin, sizeof(data.Plugin));
-				Format(data.Name, sizeof(data.Name), "%t", data.Name);
 
+				bool AllowShowing = false;
 				if(i == page)
 					pos = menu.ItemCount;
-				
-				menu.AddItem(data.Plugin, data.Name);
+
+				if(c_WeaponUseAbilitiesHud[client][0])
+				{
+					if(StrContains(data.Name, c_WeaponUseAbilitiesHud[client], false) != -1)
+					{
+						AllowShowing = true;
+					}
+				}
+				else
+				{
+					AllowShowing = true;
+				}
+
+				if(AllowShowing)
+				{
+					Format(data.Name, sizeof(data.Name), "%t", data.Name);
+					menu.AddItem(data.Plugin, data.Name);
+				}
 
 				//kills += GetFlagsOfLevel(client, -i);
 			}
 		}
 
-		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]], CategoryPage[client] ? "Zombie Kills" : "Allied Summons", kills);
-		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]]);
+		menu.SetTitle("%t\n%t\n \n%s\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Encyclopedia_CurrentFilter(client), Categories[CategoryPage[client]]);
 
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, (pos / 7 * 7), MENU_TIME_FOREVER);
@@ -497,27 +588,54 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		if(CategoryPage[client] < 0)
 			CategoryPage[client] = 0;
 		
-		/*int kills;
-		int length = OwnedItems.Length;
-		for(int i; i < length; i++)
-		{
-			static OwnedItem owned;
-			OwnedItems.GetArray(i, owned);
-			if(owned.Client == client && owned.Level < 0)
-				kills += owned.Flags;
-		}*/
 
-		//menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", "Zombie Kills", kills);
-		menu.SetTitle("%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia");
+		menu.SetTitle("%t\n%t\n%s\n ", "TF2: Zombie Riot", "Encyclopedia", Encyclopedia_CurrentFilter(client));
 
-		char data[16], buffer[64];
-		for(int i; i < sizeof(Categories); i++)
+		char chdata[16], buffer[64];
+		bool FoundOneMinimum = false;
+		
+		//always display
+		IntToString(Type_DONOTUSE, chdata, sizeof(chdata));
+		FormatEx(buffer, sizeof(buffer), "%t", Categories[Type_DONOTUSE]);
+		menu.AddItem(chdata, buffer);
+
+		for(int i = Type_Ally; i < sizeof(Categories); i++)
 		{
-			IntToString(i, data, sizeof(data));
+			if(c_WeaponUseAbilitiesHud[client][0])
+			{
+				NPCData data;
+				int length = NPC_GetCount();
+				bool FoundOne = false;
+				for(int i2; i2 < length; i2++)
+				{
+					NPC_GetById(i2, data);
+					if(data.Plugin[0] && data.Category == i)
+					{
+						if(StrContains(data.Name, c_WeaponUseAbilitiesHud[client], false) != -1)
+						{
+							FoundOne = true;
+						}
+						else
+						{
+							continue;
+						}
+					}
+				}
+				if(!FoundOne)
+				{
+					continue;
+				}
+				FoundOneMinimum = true;
+			}
+			IntToString(i, chdata, sizeof(chdata));
 			FormatEx(buffer, sizeof(buffer), "%t", Categories[i]);
-			menu.AddItem(data, buffer);
+			menu.AddItem(chdata, buffer);
 		}
 
+		if(!FoundOneMinimum)
+		{
+			menu.AddItem("None", "", ITEMDRAW_DISABLED);
+		}
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, (CategoryPage[client] / 7 * 7), MENU_TIME_FOREVER);
 		CategoryPage[client] = -1;
@@ -531,14 +649,22 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+			{
+				AnyMenuOpen[client] = 0.0;
+				CategoryPage[client] = -2;
+			}
 		}
 		case MenuAction_Cancel:
 		{
+			AnyMenuOpen[client] = 0.0;
 			if(choice == MenuCancel_ExitBack)
 			{
 				if(CategoryPage[client] == -1)
 				{
-					Store_Menu(client);
+					CategoryPage[client] = -2;
+					if(GetClientTeam(client) == 2)
+						Store_Menu(client);
 				}
 				else
 				{
@@ -555,7 +681,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			}
 			else
 			{
-				CategoryPage[client] = -1;
+				CategoryPage[client] = -2;
 			}
 		}
 		case MenuAction_Select:
@@ -603,7 +729,7 @@ void Gift_DropChance(int entity)
 				float VecOrigin[3];
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", VecOrigin);
 				VecOrigin[2] += 20.0;
-				int rarity = RollRandom(); //Random for each clie
+				ZRGiftRarity rarity = RollRandom(); //Random for each clie
 				if(!IsPointHazard(VecOrigin)) //Is it valid?
 				{
 					b_ForceSpawnNextTime = false;
@@ -622,21 +748,21 @@ void Gift_DropChance(int entity)
 	}
 }
 
-static int RollRandom()
+static ZRGiftRarity RollRandom()
 {
 	if(!(GetURandomInt() % 150))
-		return Rarity_Mythic;
+		return Mythic;
 	
 	if(!(GetURandomInt() % 35))
-		return Rarity_Legend;
+		return Legend;
 	
 	if(!(GetURandomInt() % 15))
-		return Rarity_Rare;
+		return Rare;
 	
 	if(!(GetURandomInt() % 3))
-		return Rarity_Uncommon;
+		return Uncommon;
 	
-	return Rarity_Common;
+	return Common;
 }
 
 public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
@@ -644,7 +770,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
 	int glow = EntRefToEntIndex(pack.ReadCell());
-	int Rarity = pack.ReadCell();
+	ZRGiftRarity Rarity = pack.ReadCell();
 	if(IsValidEntity(entity) && entity>MaxClients)
 	{
 		float powerup_pos[3];
@@ -655,25 +781,26 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 			float DelayTime = 2.0;
 			switch(Rarity)
 			{
-				case Rarity_Common:
+				case Common:
 					DelayTime = 2.0;
-				case Rarity_Uncommon:
+				case Uncommon:
 					DelayTime = 1.5;
-				case Rarity_Rare:
+				case Rare:
 					DelayTime = 1.0;
-				case Rarity_Legend:
+				case Legend:
 					DelayTime = 0.65;
-				case Rarity_Mythic:
+				case Mythic:
 					DelayTime = 0.35;
 			}
 			f_RingDelayGift[entity] = GetGameTime() + DelayTime;
 			EmitSoundToAll(SOUND_BEEP, entity, _, 90, _, 1.0);
 			int color[4];
 			
-			color[0] = RenderColors_RPG[i_RarityType[entity]][0];
-			color[1] = RenderColors_RPG[i_RarityType[entity]][1];
-			color[2] = RenderColors_RPG[i_RarityType[entity]][2];
-			color[3] = RenderColors_RPG[i_RarityType[entity]][3];
+			int ColorGiveRarity = view_as<int>(i_RarityType[entity]);
+			color[0] = RenderColors_RPG[ColorGiveRarity][0];
+			color[1] = RenderColors_RPG[ColorGiveRarity][1];
+			color[2] = RenderColors_RPG[ColorGiveRarity][2];
+			color[3] = RenderColors_RPG[ColorGiveRarity][3];
 	
 			TE_SetupBeamRingPoint(powerup_pos, 10.0, 300.0, g_BeamIndex, -1, 0, 30, 1.0, 10.0, 1.0, color, 0, 0);
 			TE_SendToAll();
@@ -723,15 +850,15 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 						int MultiExtra = 1;
 						switch(Rarity)
 						{
-							case Rarity_Common:
+							case Common:
 								MultiExtra = 1;
-							case Rarity_Uncommon:
+							case Uncommon:
 								MultiExtra = 2;
-							case Rarity_Rare:
+							case Rare:
 								MultiExtra = 5;
-							case Rarity_Legend:
+							case Legend:
 								MultiExtra = 10;
-							case Rarity_Mythic:
+							case Mythic:
 								MultiExtra = 40;
 						}
 						//xp to give?
@@ -750,6 +877,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 					}
 				}
 			}
+			Native_ZR_OnGiftCollected(ClosestTarget, Rarity);
 			if (IsValidEntity(glow))
 			{
 				RemoveEntity(glow);
@@ -769,7 +897,7 @@ public Action Timer_Detect_Player_Near_Gift(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, int rarity)
+stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime, ZRGiftRarity rarity)
 {
 	int m_iGift = CreateEntityByName("prop_physics_override")
 	if(m_iGift != -1)
@@ -794,11 +922,11 @@ stock void Stock_SpawnGift(float position[3], const char[] model, float lifetime
 		int glow = TF2_CreateGlow(m_iGift);
 		
 		int color[4];
-		
-		color[0] = RenderColors_RPG[i_RarityType[m_iGift]][0];
-		color[1] = RenderColors_RPG[i_RarityType[m_iGift]][1];
-		color[2] = RenderColors_RPG[i_RarityType[m_iGift]][2];
-		color[3] = RenderColors_RPG[i_RarityType[m_iGift]][3];
+		int ColorGiveRarity = view_as<int>(rarity);
+		color[0] = RenderColors_RPG[ColorGiveRarity][0];
+		color[1] = RenderColors_RPG[ColorGiveRarity][1];
+		color[2] = RenderColors_RPG[ColorGiveRarity][2];
+		color[3] = RenderColors_RPG[ColorGiveRarity][3];
 		
 		SetVariantColor(view_as<int>(color));
 		AcceptEntityInput(glow, "SetGlowColor");
@@ -858,10 +986,12 @@ public void GiftJumpAwayYou(int Gift, int client)
 	
 	float vecNPC[3], vecJumpVel[3];
 	GetEntPropVector(Gift, Prop_Data, "m_vecOrigin", vecNPC);
-		
+		/*
 	float gravity = GetEntPropFloat(Gift, Prop_Data, "m_flGravity");
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
+		*/
+	float gravity = 800.0;
 		
 	// How fast does the headcrab need to travel to reach the position given gravity?
 	float flActualHeight = Jump_1_frame_Client[2] - vecNPC[2];

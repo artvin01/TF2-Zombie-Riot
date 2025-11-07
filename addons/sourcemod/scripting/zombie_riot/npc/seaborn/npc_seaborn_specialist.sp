@@ -139,6 +139,9 @@ methodmap SeabornSpecialist < CClotBody
 			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.8;
 			npc.m_flMeleeArmor = 0.25;
 			npc.m_flRangedArmor = 0.25;
+			ApplyStatusEffect(npc.index, npc.index, "Weapon Overclock",	3.0);
+			ApplyStatusEffect(npc.index, npc.index, "Defensive Backup",	3.0);
+			RemoveSpawnProtectionLogic(npc.index, true);
 		}
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -176,13 +179,9 @@ methodmap SeabornSpecialist < CClotBody
 		}
 		else
 		{
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 155, 155, 255, 255);
-			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable4, 155, 155, 255, 255);
 		}
 		return npc;

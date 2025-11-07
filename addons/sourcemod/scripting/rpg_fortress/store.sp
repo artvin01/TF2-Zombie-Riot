@@ -1048,7 +1048,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value[a]);
 							}
-							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib[a] < 0 || info.Attrib[a]==26 || (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1)))
 							{
 								map.SetValue(buffer1, value + info.Value[a]);
 							}
@@ -1068,7 +1068,7 @@ void Store_ApplyAttribs(int client)
 							{
 								map.SetValue(buffer1, info.Value2[a]);
 							}
-							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1))
+							else if(info.Attrib2[a] < 0 || info.Attrib2[a]==26 || (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", buffer2, sizeof(buffer2)) && StrContains(buffer2, "additive")!=-1)))
 							{
 								map.SetValue(buffer1, value + info.Value2[a]);
 							}
@@ -1103,22 +1103,6 @@ void Store_ApplyAttribs(int client)
 	int attribs = 0;
 	for(int i; i < length; i++)
 	{
-		/*
-		if(attribs && !(attribs % 16))
-		{
-			if(!TF2_GetWearable(client, entity))
-				break;
-
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			{
-				i--;
-				continue;
-			}
-
-			Attributes_RemoveAll(entity);
-			attribs++;
-		}
-		*/
 
 		snapshot.GetKey(i, buffer1, sizeof(buffer1));
 		if(map.GetValue(buffer1, value))
@@ -1137,15 +1121,6 @@ void Store_ApplyAttribs(int client)
 
 	Stats_ApplyAttribsPost(client, ClassForStats);
 	
-	/*
-	while(TF2_GetWearable(client, entity))
-	{
-		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			continue;
-		
-		Attributes_RemoveAll(entity);
-	}
-	*/
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
 	
@@ -1667,7 +1642,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									Attributes_Set(entity, info.Attrib[a], info.Value[a]);
 								}
 							}
-							else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+							else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 							{
 								Attributes_SetAdd(entity, info.Attrib[a], info.Value[a]);
 							}
@@ -1702,7 +1677,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									Attributes_Set(entity, info.Attrib2[a], info.Value2[a]);
 								}
 							}
-							else if(!ignore_rest && TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)
+							else if(!ignore_rest && (Attribute_IntAttribute(info.Attrib2[a]) || (TF2Econ_GetAttributeDefinitionString(info.Attrib2[a], "description_format", info.Classname, sizeof(info.Classname)) && StrContains(info.Classname, "additive")!=-1)))
 							{
 								Attributes_SetAdd(entity, info.Attrib2[a], info.Value2[a]);
 							}

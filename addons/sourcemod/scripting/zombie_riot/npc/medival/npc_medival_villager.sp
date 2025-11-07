@@ -64,7 +64,13 @@ void MedivalVillager_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	NPC_GetByPlugin("npc_medival_building");
 }
 
 int MedivalVillager_ID()
@@ -202,7 +208,7 @@ methodmap MedivalVillager < CClotBody
 
 		npc.StopPathing();
 
-		if(!zr_disablerandomvillagerspawn.BoolValue)
+		if(!zr_disablerandomvillagerspawn.BoolValue && !DisableRandomSpawns)
 		{
 			int AreasCollected = 0;
 			float CurrentPoints = 0.0;

@@ -10,7 +10,7 @@
 	its a tigerdrop
 	how it works:
 	Activate ability, for 0.2 seconds it checks if you take damage, if you do, 
-	negate all damage for animation duration, and do attack in the direction you aimed at
+	negate 90% of all damage for animation duration, and do attack in the direction you aimed at
 
 	(Jump + M2) M2 -> R = Heat Special (Pap 4)
 	better idea:when pressing m2 and instantly pressing r, itll do this instead
@@ -703,7 +703,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 						//tiger drop negates all damage.
 						f_AntiStuckPhaseThrough[client] = 0.0;
 						f_AntiStuckPhaseThroughFirstCheck[client] = 0.0;
-						IncreaseEntityDamageTakenBy(client, 0.0001, 0.75);
+						IncreaseEntityDamageTakenBy(client, 0.1, 0.75);
 						DoSpecialActionYakuza(client, DamageBase, "brawler_heat_4", 0.75, target);
 						flMaxhealth *= 0.45;
 					}

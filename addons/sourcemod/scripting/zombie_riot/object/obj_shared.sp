@@ -179,7 +179,7 @@ methodmap ObjectGeneric < CClotBody
 		{
 			f3_CustomMinMaxBoundingBoxMinExtra[obj][0] = -CustomThreeDimensions[0];
 			f3_CustomMinMaxBoundingBoxMinExtra[obj][1] = -CustomThreeDimensions[1];
-			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] -= FakemodelOffset;
+			f3_CustomMinMaxBoundingBoxMinExtra[obj][2] = -FakemodelOffset;
 		}
 		else
 		{
@@ -206,8 +206,6 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
-		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
-		//Main prop is always half visible.
 		/*
 			how it works:
 			if a building is on cooldown/can have one, we spawn a 2nd prop, see below under fake model.
@@ -224,8 +222,11 @@ methodmap ObjectGeneric < CClotBody
 		int entity;
 		if(DoFakeModel)
 		{
+			SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
+			//Main prop is always half visible.
+
 			entity = objstats.EquipItemSeperate(model);
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 			objstats.m_iWearable1 = entity;
@@ -596,6 +597,8 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 		return false;
 	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 		return false;
+	if(f_VintulumBombRecentlyUsed[client] > GetGameTime())
+		return false;
 
 	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
 }
@@ -675,7 +678,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				return false;
 			}
 		}		
-		
 		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
 			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 1)
@@ -688,7 +690,10 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
+		{
+			SetEntityRenderMode(wearable, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
+		}
 		
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
@@ -713,6 +718,7 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			}
 		}
 
+		bool HideBuildingForce = false;
 		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
 			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 24)
@@ -720,30 +726,40 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				SetEntityCollisionGroup(objstats.index, 24);
 				b_ThisEntityIgnored[objstats.index] = false;
 			}
+			if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				HideBuildingForce = true;
+			}
 		}
-
-		int g = health * 255  / maxhealth;
-		if(g > 255)
+		if(HideBuildingForce)
 		{
-			g = 255;
-		}
-		else if(g < 0)
-		{
-			g = 0;
-		}
-		
-		int r = 255 - g;
-		
-		int wearable = objstats.m_iWearable1;
-		if(wearable != -1)
-		{
-			SetEntityRenderColor(objstats.index, r, g, 0, 100);
-			SetEntityRenderColor(wearable, r, g, 0, 255);
-
+			SetEntityRenderColor(objstats.index, 0, 0, 0, 255);
 		}
 		else
 		{
-			SetEntityRenderColor(objstats.index, r, g, 0, 255);
+			int g = health * 255  / maxhealth;
+			if(g > 255)
+			{
+				g = 255;
+			}
+			else if(g < 0)
+			{
+				g = 0;
+			}
+			
+			int r = 255 - g;
+			
+			int wearable = objstats.m_iWearable1;
+			if(wearable != -1)
+			{
+				SetEntityRenderColor(objstats.index, r, g, 0, 100);
+				SetEntityRenderColor(wearable, r, g, 0, 255);
+				SetEntityRenderMode(wearable, RENDER_NORMAL);
+			}
+			else
+			{
+				SetEntityRenderColor(objstats.index, r, g, 0, 255);
+			}
 		}
 		
 	}
@@ -1014,6 +1030,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		return Plugin_Handled;
 	}
+	
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;
@@ -1107,9 +1124,12 @@ public void ObjBaseThink(int building)
 		}
 	}
 
-	//do not think if you are being carried.
-	if(BuildingIsBeingCarried(building))
-		return;
+	//do not think if you are being carried, unless bomb.
+	if(BombIdVintulum() != i_NpcInternalId[building])
+	{
+		if(BuildingIsBeingCarried(building))
+			return;
+	}
 
 	ObjectGeneric_ClotThink(objstats);
 }

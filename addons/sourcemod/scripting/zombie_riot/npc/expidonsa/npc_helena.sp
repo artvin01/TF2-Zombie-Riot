@@ -104,6 +104,7 @@ methodmap Helena < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		
 		
 		//IDLE
@@ -247,14 +248,12 @@ public void Helena_ClotThink(int iNPC)
 				{
 					if(IsValidEntity(npc.m_iWearable4))
 					{
-						SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
 					}
 					HealEntityGlobal(npc.index, PrimaryThreatIndex, 200.0, 1.0);
 				}
 				else
 				{
-					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
 				}
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
@@ -280,7 +279,6 @@ public void Helena_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
 		
 			if(IsValidEntity(npc.m_iWearable4))

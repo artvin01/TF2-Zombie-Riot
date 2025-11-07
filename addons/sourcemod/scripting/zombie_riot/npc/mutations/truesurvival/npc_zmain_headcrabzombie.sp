@@ -56,7 +56,7 @@ static char g_MeleeMissSounds[][] = {
 
 static int NPCId;
 static int RemainingZmainsSpawn;
-static float fl_KamikazeInitiate;
+//static float fl_KamikazeInitiate;
 public void ZMainHeadcrabZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -75,10 +75,10 @@ public void ZMainHeadcrabZombie_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Mutation;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
-	fl_KamikazeInitiate = 0.0;
+//	fl_KamikazeInitiate = 0.0;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -172,7 +172,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 
 		npc.m_flWaveScale = wave;
 		npc.m_flWaveScale *= MinibossScalingReturn();
-
+		/*
 		if(ally == TFTeam_Blue)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
@@ -200,6 +200,7 @@ methodmap ZMainHeadcrabZombie < CClotBody
 			}
 			fl_KamikazeInitiate = GetGameTime() + 15.0;	
 		}
+		*/
 
 		func_NPCDeath[npc.index] = ZMainHeadcrabZombie_NPCDeath;
 		func_NPCThink[npc.index] = ZMainHeadcrabZombie_ClotThink;
@@ -438,7 +439,7 @@ public void ZMainHeadcrabZombie_NPCDeath(int entity)
 
 
 
-void SpawnZmainsAFew(int nulldata)
+stock void SpawnZmainsAFew(int nulldata)
 {
 	if(Waves_InSetup())
 	{

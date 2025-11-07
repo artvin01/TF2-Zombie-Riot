@@ -116,11 +116,13 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	BlacksmithGrill_RoundStart();
 	Zealot_RoundStart();
 	Drops_ResetChances();
+	NPCStats_HandlePaintedWearables();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
 		Armor_Charge[client] = 0; //reset armor to 0
 	}
+	ReviveAll();
 	if(RoundStartTime > GetGameTime())
 	{
 		//This asumes it already picked a map, get loadouts while not redoing map logic!
@@ -159,7 +161,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	if(CvarAutoSelectWave.BoolValue && !Waves_Started())
+	if(CvarAutoSelectDiff.BoolValue && !Waves_Started())
 	{
 		//Do this only once!
 		char mapname[64];
@@ -230,7 +232,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Resupplies_Supplied[client] = 0;
 			i_BarricadeHasBeenDamaged[client] = 0;
 			i_PlayerDamaged[client] = 0;
-			CashRecievedNonWave[client] = 0;
+			CashReceivedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
 			Armor_Charge[client] = 0;
@@ -250,6 +252,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	Construction_RoundEnd();
+	BetWar_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
@@ -277,9 +280,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 		ForcePlayerCrouch(client, false);
 
-#if defined RTS
-		RTS_PlayerResupply(client);
-#else
 		TF2_RemoveAllWeapons(client); //Remove all weapons. No matter what.
 		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 1.0);
 		SetVariantString("");
@@ -299,7 +299,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			}
 		}
-#endif
+		Stocks_ColourPlayernormal(client);
 
 #if defined ZR
 		//DEFAULTS
@@ -314,14 +314,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 
 		if(i_ClientHasCustomGearEquipped[client])
 		{
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 
 			ViewChange_PlayerModel(client);
 			ViewChange_Update(client);
@@ -332,8 +325,8 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		{
 			FakeClientCommand(client, "menuselect 0");
 			SDKHook(client, SDKHook_GetMaxHealth, OnTeutonHealth);
-			SetEntityRenderMode(client, RENDER_NORMAL);
-			SetEntityRenderColor(client, 255, 255, 255, 255);
+			SetEntityRenderMode(client, RENDER_NONE);
+		//	SetEntityRenderColor(client, 255, 255, 255, 0);
 			
 			int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
@@ -345,15 +338,23 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			
 			TF2Attrib_RemoveAll(client);
 			Attributes_Set(client, 68, -1.0);
-			SetVariantString(COMBINE_CUSTOM_MODEL);
+			SetVariantString(COMBINE_CUSTOM_2_MODEL);
 	  		AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-	   		
+			
+#if defined ZR
+			SDKUnhook(client, SDKHook_SetTransmit, TeutonViewOnly);
+			SDKHook(client, SDKHook_SetTransmit, TeutonViewOnly);
+#endif
 	   		b_ThisEntityIgnored[client] = true;
 			
 	   		int weapon_index = Store_GiveSpecificItem(client, "Teutonic Longsword");
-		//	SetEntProp(client, Prop_Send, "m_nBody", 1);
-			SetVariantInt(1);
+			SetVariantInt(0);
 			AcceptEntityInput(client, "SetBodyGroup");
+			if(!b_HasBeenHereSinceStartOfWave[client])
+			{
+				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", FAR_FUTURE);
+				SetEntPropFloat(weapon_index, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+			}
 			//apply model correctly.
 
 
@@ -374,17 +375,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		Attributes_Set(weapon_index, 6, 1.2);
 	   		Attributes_Set(weapon_index, 412, 0.0);
 			
-		//	if(b_VoidPortalOpened[client])
-			{
-	   			Attributes_Set(weapon_index, 443, 1.25);
-	   			Attributes_Set(weapon_index, 442, 1.25);
-			}
-			/*
-			else
-			{
-	   			Attributes_Set(weapon_index, 442, 1.1);
-			}
-			*/
+	   		Attributes_Set(weapon_index, 443, 1.25);
+	   		Attributes_Set(weapon_index, 442, 1.25);
+
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));
@@ -392,27 +385,29 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		SetEntityCollisionGroup(client, 1);
 	   		SetEntityCollisionGroup(weapon_index, 1);
 	   		
-	   		int wearable;
+			if(!view_as<bool>(Store_HasNamedItem(client, "Shadow's Letter")))
+			{
+				int wearable;
+				
+				wearable = GiveWearable(client, 30727);
+				
+				SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 0.9);
+				
+				wearable = GiveWearable(client, 30969);
+				
+				SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
+	   			SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
+			}
+			else
+			{
+				
+	   			SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.01);
+				f_WeaponSizeOverride[weapon_index] = 0.01;
+			}
 	   		
-	   		wearable = GiveWearable(client, 30727);
-	   		
-	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 0.9);
-	   		
-	   		wearable = GiveWearable(client, 30969);
-	   		
-	   		SetEntPropFloat(wearable, Prop_Send, "m_flModelScale", 1.25);
-	   		
-	   		SetEntPropFloat(weapon_index, Prop_Send, "m_flModelScale", 0.8);
 	   		SetEntPropFloat(client, Prop_Send, "m_flModelScale", 0.7);
 	   		
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-	   		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 	   		
 		}
 		else
@@ -439,14 +434,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				Store_GiveAll(client, Waves_GetRoundScale()>1 ? 50 : 300); //give 300 hp instead of 200 in escape.
 			}
 			
-			SetAmmo(client, 1, 9999);
-			SetAmmo(client, 2, 9999);
-			SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
-			SetAmmo(client, Ammo_Jar, 1);
-			for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
-			{
-				SetAmmo(client, i, CurrentAmmo[client][i]);
-			}
+			SDKCall_GiveCorrectAmmoCount(client);
 			
 			//PrintHintText(client, "%T", "Open Store", client);
 		}
@@ -555,7 +543,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
+	{
 		i_CurrentEquippedPerk[client] = 0;
+		UpdatePerkName(client);
+	}
 		
 	i_HealthBeforeSuit[client] = 0;
 	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
@@ -641,6 +632,8 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			if(IsClientInGame(client))
 			{
 				DoOverlay(client, "", 2);
@@ -655,17 +648,7 @@ public Action OnRelayTrigger(const char[] output, int entity, int caller, float 
 						dieingstate[client] = 0;
 						Store_ApplyAttribs(client);
 						SDKCall_SetSpeed(client);
-						int entity_wearable, i;
-						while(TF2U_GetWearable(client, entity_wearable, i))
-						{
-							if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity_wearable] != -1)
-								continue;
-
-							SetEntityRenderMode(entity_wearable, RENDER_NORMAL);
-							SetEntityRenderColor(entity_wearable, 255, 255, 255, 255);
-						}
-						SetEntityRenderMode(client, RENDER_NORMAL);
-						SetEntityRenderColor(client, 255, 255, 255, 255);
+						Stocks_ColourPlayernormal(client);
 						SetEntityCollisionGroup(client, 5);
 						SetEntityHealth(client, SDKCall_GetMaxHealth(client));
 					}
@@ -711,4 +694,61 @@ void CheckAndValidifyTeam()
 		if(IsValidClient(client) && TeamNumber[client] <= 4) //If their team is customly set, dont do this
 			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
 	}
+}
+
+#if defined ZR
+public Action TeutonViewOnly(int teuton, int client)
+{
+	if(TeutonType[teuton] == TEUTON_NONE)
+	{
+		SDKUnhook(teuton, SDKHook_SetTransmit, TeutonViewOnly);
+		return Plugin_Continue;
+	}
+
+	//incase they love it.
+	if(b_EnableClutterSetting[client])
+		return Plugin_Continue;
+
+	if(TeutonType[client] == TEUTON_NONE)
+		return Plugin_Handled;
+	
+	return Plugin_Continue;
+	
+}
+#endif
+
+
+/*
+
+	Translations are:
+	"Setup Chat Tip 1"
+*/
+void ChatSetupTip()
+{
+	if(AntiSpamTipGive > GetGameTime())
+	{
+		return;
+	}
+	AntiSpamTipGive = GetGameTime() + 30.0;
+	CreateTimer(GetRandomFloat(10.0, 15.0), ChatSetupTipTimer, _, TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
+}
+
+
+public Action ChatSetupTipTimer(Handle TimerHandle)
+{
+	char TipText[255];
+	static int MaxEntries;
+	if(!MaxEntries)
+	{
+		MaxEntries++;
+		Format(TipText, sizeof(TipText), "Setup Chat Tip %i", MaxEntries);
+		while(TranslationPhraseExists(TipText))
+		{
+			MaxEntries++;
+			Format(TipText, sizeof(TipText), "Setup Chat Tip %i", MaxEntries);
+		}
+	}
+	Format(TipText, sizeof(TipText), "Setup Chat Tip %i", GetRandomInt(1,MaxEntries- 1));
+	SPrintToChatAll("{green}TIP:{snow} %t",TipText);
+	return Plugin_Stop;
 }

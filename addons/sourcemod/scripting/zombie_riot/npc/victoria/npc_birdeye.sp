@@ -224,11 +224,9 @@ methodmap VictoriaBirdeye < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 
@@ -582,7 +580,7 @@ int VictoriaBirdeyeSniperMode(VictoriaBirdeye npc, float gameTime)
 			return 0;
 		}
 	}
-	/*if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == 1)
+	/*if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == NPC_SPAWNPROT_ON)
 		return 0;*/
 		
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);

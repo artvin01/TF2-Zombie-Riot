@@ -117,6 +117,7 @@ methodmap HiaRejuvinator < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		VausMagicaGiveShield(npc.index, 20);
 		
 
@@ -281,7 +282,6 @@ public void HiaRejuvinator_ClotThink(int iNPC)
 
 			if(IsValidEntity(npc.m_iWearable4))
 			{
-				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 				SetEntityRenderColor(npc.m_iWearable4, 125, 125, 125, 255);
 			}
 			int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);

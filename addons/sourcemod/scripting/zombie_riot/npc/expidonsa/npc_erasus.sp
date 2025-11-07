@@ -109,6 +109,7 @@ methodmap Erasus < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		
 		
 		
@@ -125,10 +126,10 @@ methodmap Erasus < CClotBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
 
+
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/hwn_medic_misc1.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
 		
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem/dec15_medic_winter_jacket2_emblem.mdl");

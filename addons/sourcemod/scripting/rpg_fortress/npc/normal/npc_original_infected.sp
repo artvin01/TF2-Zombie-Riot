@@ -192,7 +192,6 @@ methodmap OriginalInfected < CClotBody
 		{
 			npc.m_iOverlordComboAttack = 1;
 		}
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_skullbat/c_skullbat.mdl");
@@ -211,16 +210,12 @@ methodmap OriginalInfected < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
 
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
 
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
 		npc.StopPathing();
 			
@@ -745,19 +740,14 @@ public void OriginalInfected_OnTakeDamagePost(int victim, int attacker, int infl
 		{
 			fl_Extra_Damage[victim] *= 2.0;
 			fl_Extra_Speed[victim] *= 1.1;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
 
-			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable5, 255, 0, 0, 255);
 			IgniteTargetEffect(npc.m_iWearable1);
 		}

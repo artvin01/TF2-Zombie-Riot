@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_47"
+$modelname "zombie_riot/weapons/custom_weaponry_1_52"
 
 $bodygroup "scythe"					//1
 {
@@ -122,6 +122,11 @@ $bodygroup "flask_erlenmeyer"			//1048576
 	blank
 	studio "flask_erlenmeyer.smd"
 }
+$bodygroup "tickshot_revolver"			//2097152
+{
+	blank
+	studio "taunt_texan_trickshot.smd"
+}
 
 //the .blend files are located: "blender_files/...
 
@@ -143,6 +148,7 @@ $cdmaterials "models\props_halloween"
 $cdmaterials "models\passtime\flasks"
 $cdmaterials "passtime\flasks\flask_liquid_yellow\"
 $cdmaterials "passtime\flasks\flask_liquid_red\"
+$cdmaterials "models\workshop\player\items\engineer\taunt_texan_trickshot\"
 $cdmaterials ""
 
 $attachment "duelrea_left_spike" 	"weapon_bone" -5.0 0.0 44.0 rotate 0.0 0.0 0.0

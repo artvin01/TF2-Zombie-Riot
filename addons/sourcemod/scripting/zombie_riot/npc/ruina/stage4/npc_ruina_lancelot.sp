@@ -220,7 +220,7 @@ methodmap Lancelot < CClotBody
 			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",
 			"models/workshop/player/items/medic/sf14_vampire_makeover/sf14_vampire_makeover.mdl",
 			"models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl",
-			RUINA_CUSTOM_MODELS_3,
+			WINGS_MODELS_1,
 			RUINA_CUSTOM_MODELS_2
 		};
 
@@ -235,7 +235,7 @@ methodmap Lancelot < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_WINGS_3);
+		SetVariantInt(WINGS_LANCELOT);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		SetVariantInt(RUINA_IMPACT_LANCE_4);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
@@ -433,18 +433,20 @@ static void ClotThink(int iNPC)
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);	
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
+		if(iPitch >= 0)
+		{
 
-		//Body pitch
-		float v[3], ang[3];
-		SubtractVectors(Npc_Vec, vecTarget, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(Npc_Vec, vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			
+		}	
 
 		if(fl_ruina_battery[npc.index]>fl_ruina_battery_max[npc.index] && fl_ruina_battery_timeout[npc.index] < GameTime)
 			Lancelot_Particle_Accelerator(npc,flDistanceToTarget);

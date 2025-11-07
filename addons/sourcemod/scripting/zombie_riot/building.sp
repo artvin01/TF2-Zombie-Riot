@@ -33,7 +33,6 @@ static int MenuSection[MAXPLAYERS] = {-1, ...};
 static int MenuPage[MAXPLAYERS];
 static Handle MenuTimer[MAXPLAYERS];
 static int Player_BuildingBeingCarried[MAXPLAYERS];
-static int i_IDependOnThisBuilding[MAXENTITIES];
 static float PlayerWasHoldingProp[MAXPLAYERS];
 float PreventSameFrameActivation[2][MAXPLAYERS];
 int RandomIntSameRequestFrame[MAXPLAYERS];
@@ -140,7 +139,7 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	{
 		//This building doesnt affect the limit.
 		Native_OnGivenCash(owner, Cash);
-		CashRecievedNonWave[owner] += Cash;
+		CashReceivedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}
 	if(AmmoSupply <= 0.0)
@@ -217,6 +216,9 @@ int Building_Add(BuildingInfo info)
 
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
+	MenuSection[client] = -1;
+	MenuPage[client] = 0;
+	//reset to main menu for easier quick access
 	delete MenuTimer[client];
 	BuildingMenu(client);
 }
@@ -262,8 +264,18 @@ static int GetCost(int client, BuildingInfo info, float multi)
 
 static void BuildingMenu(int client)
 {
-	if(MenuTimer[client] || !HasWrench(client))
+	if(MenuTimer[client])
 		return;
+	if(!HasWrench(client))
+	{
+		HideMenuInstantly(client);
+		//show a blank page to instantly hide it
+		CancelClientMenu(client);
+		ClientCommand(client, "slot10");
+		ResetStoreMenuLogic(client);
+		return;
+		//no wrench, die
+	}
 	
 	int metal = GetAmmo(client, Ammo_Metal);
 	int cash = CurrentCash - CashSpent[client];
@@ -338,7 +350,7 @@ static void BuildingMenu(int client)
 
 			
 			FormatEx(buffer1, sizeof(buffer1), "%t", SectionName[i]);
-			if(i == 2 && !Waves_Started())
+			if(i == 2 && !Waves_Started() && !CvarInfiniteCash.BoolValue)
 				menu.AddItem(buffer1, buffer1, ITEMDRAW_DISABLED);
 			else
 				menu.AddItem(buffer1, buffer1);
@@ -415,6 +427,15 @@ static void BuildingMenu(int client)
 
 			NPC_GetNameByPlugin(info.Plugin, buffer1, sizeof(buffer1));
 
+			if(EnableSilentMode)
+			{
+				if(StrContains(info.Plugin, "obj_barracks", false) != -1)
+				{
+					//ignore barracks if they didnt have it previously
+					if(!(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES))
+						continue;
+				}
+			}
 			if(ducking)
 			{
 				FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
@@ -476,6 +497,8 @@ static void BuildingMenu(int client)
 
 	if(menu.Display(client, 2))
 		MenuTimer[client] = CreateTimer(0.5, Timer_RefreshMenu, client);
+
+	AnyMenuOpen[client] = 1.0;
 }
 
 static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
@@ -485,14 +508,18 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
 			delete MenuTimer[client];
+			AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
 			delete MenuTimer[client];
+			AnyMenuOpen[client] = 0.0;
 
 			if(HasWrench(client))
 			{
@@ -901,87 +928,127 @@ public void Pickup_Building_M2_InfRange(int client, int weapon, bool crit)
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
-bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false)
+/*
+
+	if(f3_CustomMinMaxBoundingBoxMinExtra[client][2])
+		endPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[client][2];
+*/
+bool Building_AttemptPlace(int buildingindx, int client, bool TestClient = false, float AbsOriginOffset = 0.0)
 {
 	float VecPos[3];
 	GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
+	VecPos[2] += AbsOriginOffset;
+	float VecMin[3];VecMin = f3_CustomMinMaxBoundingBoxMinExtra[buildingindx];
+	float VecMax[3];VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
 
-	float VecMin[3];
-	float VecMax[3];
-	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
-	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[buildingindx];
-
+	//for this calculation we want the building to be concidered not carried.
 	b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
-	bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
-	if(!Success)
+
+	int buildingHit;
+	float endPos[3];
+	//we will first check if we hit a building under us.
+	if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx))
+	{
+		//we successfully found a building we want to go ontop of.
+		float endPos2[3];
+		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
+		//How far high is the offset for the building, and then place ourselves ontop
+		float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
+		
+		endPos2[0] = VecPos[0];
+		endPos2[1] = VecPos[1];
+		endPos2[2] += Delta;
+		float endPos3[3];
+		endPos3 = endPos2;
+		//for this calculation we want to pretend that the bottom building is our dependand so we dont interact with it and get blocked.
+		int SavePrevious = i_IDependOnThisBuilding[buildingindx];
+		i_IDependOnThisBuilding[buildingindx] = 0;
+		bool Success = BuildingSafeSpot(buildingindx, endPos3, VecMin, VecMax);
+		i_IDependOnThisBuilding[buildingindx] = SavePrevious;
+		if(!Success)
+		{
+			//we did not find a safe place to place ourselves in.
+			if(client <= MaxClients)
+			{
+				CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
+				if(!TestClient)
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+			}
+			
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+			return false;
+		}
+		else
+		{
+			//we found a safe place.
+			endPos2 = endPos3;
+		}
+
+		//we now make the building we just placed, dependand on the building below it.
+		if(!TestClient)
+			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+
+		if(client <= MaxClients)
+		{
+			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
+		}
+
+		
+		
+		if(!TestClient)
+		{
+			//offset needed for stuff like ammoboxes as their model is halfway i
+
+			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
+			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+			if(client <= MaxClients)
+			{
+				Player_BuildingBeingCarried[client] = 0;
+				EmitSoundToClient(client, SOUND_TOSS_TF);
+			}
+		
+			Building_BuildingBeingCarried[buildingindx] = 0;
+			b_ThisEntityIgnored[buildingindx] = false;
+			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+			//reset all defaults and confirm a placement
+		}
+		return true;
+	}
+	//no valid building below us, lets try to go to the bottom.
+	if(!Building_IsValidGroundFloor(client, buildingindx, VecPos))
 	{
 		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
 		if(client <= MaxClients)
 		{
-			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
 			if(!TestClient)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
 		return false;
 	}
-	
-	//do we want to build on anothrer building?
-	int buildingHit;
-	float endPos[3];
-	if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx)) //130.0
+	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
+		VecPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
+
+	//little elevation so it doesnt hit the floor.
+	VecPos[2] += 0.1;
+	if(!BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax))
 	{
-		float endPos2[3];
-		GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
-		//We use custom offets for buildings, so we do our own magic here
-		float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
-
-	//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])
-	//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
-
-		//Be sure to now set all the things we need.
-		//Set the dependency
-		endPos2[0] = VecPos[0];
-		endPos2[1] = VecPos[1];
-		endPos2[2] += Delta;
-		if(!TestClient)
-			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
 		if(client <= MaxClients)
-			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
-		
-		if(!TestClient)
 		{
-		//	if(f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2])	//wierd offset.
-		//		endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingHit][2];
-
-			if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
-				endPos2[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
-
-			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
-			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-			if(client <= MaxClients)
-				Player_BuildingBeingCarried[client] = 0;
-		
-			Building_BuildingBeingCarried[buildingindx] = 0;
-			b_ThisEntityIgnored[buildingindx] = false;
-			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
-
-			if(client <= MaxClients)
-				EmitSoundToClient(client, SOUND_TOSS_TF);
+			endPos = VecPos;
+			CanBuild_VisualiseAndWarn(client, buildingindx, true, endPos);
+			if(!TestClient)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
-		return true;
-	}
-	Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
-	if(!Success)
-	{
-		if(!TestClient)
-			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
 		return false;
+	}
+
+	if(client <= MaxClients)
+	{
+		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecPos);
 	}
 	if(!TestClient)
 	{
-		if(f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2])	//wierd offset.
-			VecPos[2] -= f3_CustomMinMaxBoundingBoxMinExtra[buildingindx][2];
-
 		SDKCall_SetLocalOrigin(buildingindx, VecPos);	
 		SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 		Building_BuildingBeingCarried[buildingindx] = 0;
@@ -1100,7 +1167,26 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
 
-	for (int x = 0; x < 6; x++)
+	for (int x = 0; x < 3; x++)
+	{
+		//first we check up and down here
+		if (FoundSafeSpot)
+			break;
+
+		endPos = OriginalPos;
+		switch(x)
+		{
+			case 0:
+				endPos[2] += 1.0;
+			case 1:
+				endPos[2] += TELEPORT_STUCK_CHECK_1;
+			case 2:
+				endPos[2] += TELEPORT_STUCK_CHECK_1 * 2.0;
+		}
+		if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+			FoundSafeSpot = true;
+	}
+	for (int x = -1; x < 4; x++)
 	{
 		if (FoundSafeSpot)
 			break;
@@ -1121,14 +1207,8 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 			case 3:
 				endPos[2] -= TELEPORT_STUCK_CHECK_2;
-
-			case 4:
-				endPos[2] += TELEPORT_STUCK_CHECK_3;
-
-			case 5:
-				endPos[2] -= TELEPORT_STUCK_CHECK_3;	
 		}
-		for (int y = 0; y < 7; y++)
+		for (int y = 0; y < 5; y++)
 		{
 			if (FoundSafeSpot)
 				break;
@@ -1148,15 +1228,9 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 				case 4:
 					endPos[1] -= TELEPORT_STUCK_CHECK_2;
-
-				case 5:
-					endPos[1] += TELEPORT_STUCK_CHECK_3;
-
-				case 6:
-					endPos[1] -= TELEPORT_STUCK_CHECK_3;	
 			}
 
-			for (int z = 0; z < 7; z++)
+			for (int z = 0; z < 5; z++)
 			{
 				if (FoundSafeSpot)
 					break;
@@ -1176,12 +1250,6 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 					case 4:
 						endPos[0] -= TELEPORT_STUCK_CHECK_2;
-
-					case 5:
-						endPos[0] += TELEPORT_STUCK_CHECK_3;
-
-					case 6:
-						endPos[0] -= TELEPORT_STUCK_CHECK_3;
 				}
 				if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 					FoundSafeSpot = true;
@@ -1192,7 +1260,7 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
-		
+
 	return FoundSafeSpot;
 }
 
@@ -1202,7 +1270,9 @@ bool IsSafePosition_Building(int entity, float Pos[3], float mins[3], float maxs
 {
 	if(!BuildingValidPositionFinal(Pos, entity))
 		return false;
-
+	if(!Building_ValidSpaceEmpty(entity, Pos, mins, maxs))
+		return false;
+		
 	int ref;
 	
 	Handle hTrace;
@@ -1258,9 +1328,6 @@ bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3
 		return false;
 	}
 	VecBottom = VecCheckBottom;
-
-	if(client <= MaxClients)
-		CanBuild_VisualiseAndWarn(client, buildingindx, false, VecBottom);
 	
 	return true;
 }
@@ -1276,17 +1343,14 @@ void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float 
 	VecLaser = VecBottom;
 	if(Fail)
 	{
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({255, 0, 0, 255}));
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.2, view_as<int>({255, 0, 0, 255}));
 		SetDefaultHudPosition(client, 255, 0, 0, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
 	}
 	else
 	{
-		if(f3_CustomMinMaxBoundingBoxMinExtra[entity][2])	//wierd offset.
-			VecLaser[2] -= f3_CustomMinMaxBoundingBoxMinExtra[entity][2];
-
-		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.1, view_as<int>({0, 255, 0, 255}));
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.2, view_as<int>({0, 255, 0, 255}));
 		SetDefaultHudPosition(client,_,_,_, 0.3);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
@@ -1300,36 +1364,48 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 	bool foundbuilding = false;
 	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilterBuildOnBuildings, self);
 
-	if (TR_DidHit(trace))
+	if (!TR_DidHit(trace))
 	{
-		int EntityHit = TR_GetEntityIndex(trace);
+		delete trace;
+		return false;
+	}
+	int EntityHit = TR_GetEntityIndex(trace);
+	if (EntityHit <= 0 || EntityHit==self)
+	{
+		//if we hit the world or ourselves somehow, we dont care.
+		delete trace;
+		return false;
+	}
 
-		if (EntityHit <= 0 || EntityHit==self)
-		{
-			delete trace;
-			return false;
-		}
+	if(!i_IsABuilding[EntityHit])
+	{
+		//if we didnt hit any building then we do not care.
+		delete trace;
+		return false;
+	}
+	ObjectGeneric objstats1 = view_as<ObjectGeneric>(EntityHit);
+	ObjectGeneric objstats2 = view_as<ObjectGeneric>(self);
+	if(objstats1.m_bConstructBuilding || objstats2.m_bConstructBuilding)
+	{
+		delete trace;
+		return false;
+	}
 
-		if(!i_IsABuilding[EntityHit])
-		{
-			delete trace;
-			return false;
-		}
-		//no multi stacking
-		if(IsValidEntity(i_IDependOnThisBuilding[EntityHit]))
-		{
-			delete trace;
-			return false;
-		}
+	if(IsValidEntity(i_IDependOnThisBuilding[EntityHit]))
+	{
+		//we dont allow stacking of stacking of stacking.
+		delete trace;
+		return false;
+	}
 
 
-		TR_GetEndPosition(posEnd, trace);
+	TR_GetEndPosition(posEnd, trace);
 
-		if (GetVectorDistance(pos, posEnd, true) <= (distance * distance))
-		{
-			foundbuilding = true;
-			buildingHit = EntityHit;
-		}
+	if (GetVectorDistance(pos, posEnd, true) <= (distance * distance))
+	{
+		//is the building we hit close enough to us?
+		foundbuilding = true;
+		buildingHit = EntityHit;
 	}
 
 	delete trace;
@@ -1453,6 +1529,8 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 			BuildingAdjustMe(i, entityLost);
 		}
 	}
+	//Remove its dependency off anything else.
+	i_IDependOnThisBuilding[entityLost] = 0;
 }
 
 //Make sure all buildings are placed correctly
@@ -1463,13 +1541,25 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 	float posStacked[3]; 
 	GetEntPropVector(DestroyedBuilding, Prop_Data, "m_vecAbsOrigin", posStacked);
 
-//	posMain = posStacked;
-	posMain[2] = posStacked[2];	
+	posMain[2] = posStacked[2];
 	
 	if(f3_CustomMinMaxBoundingBoxMinExtra[building][2])
 	{
 		//wierd offset.
 		posMain[2] -= f3_CustomMinMaxBoundingBoxMinExtra[building][2];
+	}
+	float VecMin[3];
+	float VecMax[3];
+	VecMax = f3_CustomMinMaxBoundingBox[building];
+	VecMin = f3_CustomMinMaxBoundingBoxMinExtra[building];
+
+	posMain[2] += 0.5;
+	//go up a lil.
+	bool Success = BuildingSafeSpot(building, posMain, VecMin, VecMax);
+	if(!Success)
+	{
+		posMain = posStacked;
+		//resort to teleporting to the other buildings position.
 	}
 	TeleportEntity(building, posMain, NULL_VECTOR, NULL_VECTOR);
 	//make npc's that target the previous building target the stacked one now.
@@ -1870,30 +1960,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			//rid of warning.
 			firstbuild = false;
 		}
-		/*
-		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
-		{
-			GlassBuilder[entity] = true;
-			SetBuildingMaxHealth(entity, 0.25, false, true);
-		}
-		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
-		{
-			GlassBuilder[entity] = false;
-			SetBuildingMaxHealth(entity, 0.25, false, true ,true);
-		}
-		if(!HasMechanic[entity] && b_HasMechanic[client])
-		{
-			HasMechanic[entity] = true;
-			SetBuildingMaxHealth(entity, 1.15, false, firstbuild);
-		}
-		if(HasMechanic[entity] && !b_HasMechanic[client])
-		{
-			HasMechanic[entity] = false;
-			SetBuildingMaxHealth(entity, 1.15, true, false);
-		}
-		*/
-		//When we buy upgrades, we want to update this.
-		//the above code due to that isnt needed anymore.
 		float multi = Object_GetMaxHealthMulti(client);
 		float CurrentMulti = Attributes_Get(entity, 286, 1.0);
 		float IsAlreadyDowngraded = Attributes_Get(entity, Attrib_BuildingOnly_PreventUpgrade, 0.0);
@@ -1918,10 +1984,10 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
 			float healthMult = 1.0;
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER) && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_TOWER))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER) && !(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_TOWER))
 			{
 				healthMult *= 1.3;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_TOWER;
 				/*
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
 				if(IsValidEntity(prop1))
@@ -1933,35 +1999,35 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				*/
 			}
 
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
 			{
 				healthMult *= 1.15;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_GUARD_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_GUARD_TOWER;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)))
 			{
 				healthMult *= 1.15;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)))
 			{
 				healthMult *= 1.15;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)&& (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)&& (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON)))
 			{
 				healthMult *= 1.3;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST)))
 			{
 				healthMult *= 1.4;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
 			}
-			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE)))
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE) && (!(i_EntityReceivedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE)))
 			{
 				healthMult *= 1.6;
-				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
+				i_EntityReceivedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
 			}
 			if(healthMult > 1.0)
 			{
@@ -2056,30 +2122,29 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
-		if(i_CurrentEquippedPerk[entity] != 3 && i_CurrentEquippedPerk[client] == 3)
+		if(!(i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE) && (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE))
 		{
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
 		}
-		if(i_CurrentEquippedPerk[entity] == 3 && i_CurrentEquippedPerk[client] != 3)
+		if((i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE) && !(i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE))
 		{
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.85;
 		}
-		//juggernog
-		if(i_CurrentEquippedPerk[entity] != 2 && i_CurrentEquippedPerk[client] == 2)
+		if((i_CurrentEquippedPerk[entity] & PERK_OBSIDIAN) && !(i_CurrentEquippedPerk[client] & PERK_OBSIDIAN))
 		{
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
 
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.15));
 		}
-		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
+		if(!(i_CurrentEquippedPerk[entity] & PERK_OBSIDIAN) && (i_CurrentEquippedPerk[client] & PERK_OBSIDIAN))
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.15));
 		}
-		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityReceivedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 		{
-			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
+			i_EntityReceivedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.1));
 		}
@@ -2515,6 +2580,14 @@ void GiveBuildingMetalCostOnBuy(int entity, int cost)
 }
 void DeleteAndRefundBuilding(int client, int entity)
 {	
+	//dont do boom if primed
+	if(BombIdVintulum() == i_NpcInternalId[entity])
+	{
+		ObjectVintulumBomb npc = view_as<ObjectVintulumBomb>(entity);
+		if(npc.m_flBombExplodeTill)
+			return;
+	}
+
 	if(IsValidClient(client))
 	{
 		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
@@ -2778,4 +2851,25 @@ void ExplainBuildingInChat(int client, int ExplainWhat)
 			Force_ExplainBuffToClient(client, "Barracks Building Explain", true);
 		}
 	}
+}
+
+
+bool Building_ValidSpaceEmpty(int buildingindx, float VecBottom[3], float HullMin[3], float HullMaxTemp[3])
+{
+	//This code checks if we try to place the building inside other buildings
+	float HullMax[3];
+	HullMax = HullMaxTemp;
+	HullMax[2] -= 1.0;
+	//allow tight space fitting
+	Handle hTrace;
+	hTrace = TR_TraceHullFilterEx(VecBottom, VecBottom, HullMin, HullMax, MASK_PLAYERSOLID, TraceRayHitWorldAndBuildingsOnly, buildingindx);
+	
+	int target_hit = TR_GetEntityIndex(hTrace);	
+	delete hTrace;
+	
+	if(target_hit > 0)
+	{
+		return false;
+	}
+	return true;
 }

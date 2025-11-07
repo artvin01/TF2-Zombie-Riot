@@ -6,6 +6,8 @@
 void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType=DMG_GENERIC, int weapon=-1,const float damageForce[3]=NULL_VECTOR, const float damagePosition[3]=NULL_VECTOR, bool bypassHooks = false, int Zr_damage_custom = 0)
 {
 	i_HexCustomDamageTypes[entity] = Zr_damage_custom;
+	bypassHooks = false;
+	//NEVER bypass hooks. EVER. EVER EVER EVER.
 	SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, IsValidEntity(weapon) ? weapon : -1, damageForce, damagePosition, bypassHooks);
 
 }
@@ -53,162 +55,46 @@ stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 
 #define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
 
-/*
-TODO:
-	Instead of setting the colour, try to get the average so gold and blue becomes a fusion of both,
-	instead of just hard cold blue in the case of the wand. This would also make any 0 in ALPHA not seeable.
-
-	Also how the fuck do i for loop this? This looks like shit
-
-*/
-
 //Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
-
-stock void Stock_SetEntityRenderMode(int entity, RenderMode mode, bool TrueEntityColour = true, int SetOverride = 0, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
-{
-	if(TrueEntityColour || SetOverride != 0)
-	{
-		if(!ingore_wearables && !dontchangewearablecolour)
-		{
-			//clean... er... :)
-			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
-			{
-				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
-				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
-					{
-						if(SetOverride == 1)
-						{
-							i_EntityRenderOverride[WearableEntityIndex] = true;
-						}
-						else if (SetOverride == 2)
-						{
-							i_EntityRenderOverride[WearableEntityIndex] = false;
-						}
-						i_EntityRenderMode[WearableEntityIndex] = mode;		
-					}
-				}
-			}
-		}
-		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
-		{
-			if(SetOverride == 1)
-			{
-				i_EntityRenderOverride[entity] = true;
-			}
-			else if (SetOverride == 2)
-			{
-				i_EntityRenderOverride[entity] = false;
-			}
-			i_EntityRenderMode[entity] = mode;
-		}
-	}
-		
-	if(!i_EntityRenderOverride[entity] || !TrueEntityColour)
-	{
-		if(!ingore_wearables)
-		{
-			//clean... er... :)
-			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
-			{
-				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
-				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
-					{					
-						if(!TrueEntityColour)
-						{
-							SetEntityRenderMode(WearableEntityIndex, mode);		
-						}
-						else
-						{
-							SetEntityRenderMode(WearableEntityIndex, i_EntityRenderMode[WearableEntityIndex]);		
-						}	
-					}
-				}
-			}
-		}
-		if(i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity] || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0) || ForceColour) //If it has NO colour, then do NOT recolour.
-		{
-			SetEntityRenderMode(entity, mode);
-		}
-	}
-}
-
-#define SetEntityRenderMode Stock_SetEntityRenderMode
-
-
-//Override normal one to add our own logic for our own needs so we dont need to make a whole new thing.
-stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool TrueEntityColour = true, bool ingore_wearables = true, bool dontchangewearablecolour = true, bool ForceColour = false)
+stock void Stock_SetEntityRenderColor(int entity, int r=255, int g=255, int b=255, int a=255, bool AllowWritingSave = true)
 {	
-	bool ColorWasSet = false;
-	if(TrueEntityColour)
-	{
-		if(!ingore_wearables && !dontchangewearablecolour)
-		{
-			//clean... er... :)
-			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
-			{
-				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
-				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0)
-					{
-						i_EntityRenderColour1[WearableEntityIndex] = r;
-						i_EntityRenderColour2[WearableEntityIndex] = g;
-						i_EntityRenderColour3[WearableEntityIndex] = b;
-						i_EntityRenderColour4[WearableEntityIndex] = a;
-					}
-				}
-			}
-		}
-		if(i_EntityRenderColour4[entity] != 0 || ForceColour) //If it has NO colour, then do NOT recolour.
-		{
-			i_EntityRenderColour1[entity] = r;
-			i_EntityRenderColour2[entity] = g;
-			i_EntityRenderColour3[entity] = b;
-			i_EntityRenderColour4[entity] = a;
-			ColorWasSet = true;
-		}
-	}
+	int Override_r,Override_g,Override_b;
 	
-	if(!i_EntityRenderOverride[entity] || !TrueEntityColour)
+	if(AllowWritingSave)
 	{
-		if(!ingore_wearables)
-		{
-			//clean... er... :)
-			for(int WearableSlot=0; WearableSlot<=5; WearableSlot++)
-			{
-				int WearableEntityIndex = EntRefToEntIndex(i_Wearable[entity][WearableSlot]);
-				if(IsValidEntity(WearableEntityIndex) && !b_EntityCantBeColoured[WearableEntityIndex])
-				{	
-					if(i_EntityRenderColour4[WearableEntityIndex] != 0 || ForceColour)
-					{
-						if(!TrueEntityColour)
-						{
-							SetEntityRenderColor(WearableEntityIndex, r, g, b, a);
-						}
-						else
-						{
-							SetEntityRenderColor(WearableEntityIndex,
-							i_EntityRenderColour1[WearableEntityIndex],
-							i_EntityRenderColour2[WearableEntityIndex],
-							i_EntityRenderColour3[WearableEntityIndex],
-							i_EntityRenderColour4[WearableEntityIndex]);
-						}	
-					}						
-				}
-			}
-		}
-		if(ForceColour || (i_EntityRenderColour4[entity] != 0 && !i_EntityRenderOverride[entity]) || (ColorWasSet && !i_EntityRenderOverride[entity]) || (!TrueEntityColour && i_EntityRenderColour4[entity] != 0)) //If it has NO colour, then do NOT recolour.
-		{
-			SetEntityRenderColor(entity, r, g, b, a);
-		}
+		i_EntityRenderColourSave[entity][0] = r;
+		i_EntityRenderColourSave[entity][1] = g;
+		i_EntityRenderColourSave[entity][2] = b;
 	}
+	Override_r = i_EntityRenderColourSave[entity][0];
+	Override_g = i_EntityRenderColourSave[entity][1];
+	Override_b = i_EntityRenderColourSave[entity][2];
+
+	Override_r = RoundToNearest(float(Override_r) * f_EntityRenderColour[entity][0]);
+	Override_g = RoundToNearest(float(Override_g) * f_EntityRenderColour[entity][1]);
+	Override_b = RoundToNearest(float(Override_b) * f_EntityRenderColour[entity][2]);
+
+	SetEntityRenderColor(entity, Override_r, Override_g, Override_b, a);
 }
 
 #define SetEntityRenderColor Stock_SetEntityRenderColor
+
+stock void Update_SetEntityRenderColor(int entity)
+{
+	int Override_r,Override_g,Override_b;
+	
+	Override_r = i_EntityRenderColourSave[entity][0];
+	Override_g = i_EntityRenderColourSave[entity][1];
+	Override_b = i_EntityRenderColourSave[entity][2];
+
+	Override_r = RoundToNearest(float(Override_r) * f_EntityRenderColour[entity][0]);
+	Override_g = RoundToNearest(float(Override_g) * f_EntityRenderColour[entity][1]);
+	Override_b = RoundToNearest(float(Override_b) * f_EntityRenderColour[entity][2]);
+
+	int r, g, b, a;
+	GetEntityRenderColor(entity, r, g, b, a);
+	SetEntityRenderColor(entity, Override_r, Override_g, Override_b, a, false);
+}
 
 //In this case i never need the world ever.
 
@@ -412,9 +298,9 @@ void Edited_TF2_RegeneratePlayer(int client)
 	//delete at all times, they have no purpose here, you respawn.
 	TF2_RegeneratePlayer(client);
 
+	SDKCall_GiveCorrectAmmoCount(client);
 	//player needs to be fully nowmally visible.
-	SetEntityRenderMode(client, RENDER_NORMAL);
-	SetEntityRenderColor(client, 255, 255, 255, 255);
+	Stocks_ColourPlayernormal(client);
 }
 
 #define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
@@ -434,8 +320,7 @@ stock void Edited_TF2_RespawnPlayer(int client)
 	TF2_RespawnPlayer(client);
 
 	//player needs to be fully nowmally visible.
-	SetEntityRenderMode(client, RENDER_NORMAL);
-	SetEntityRenderColor(client, 255, 255, 255, 255);
+	Stocks_ColourPlayernormal(client);
 }
 
 #define TF2_RespawnPlayer Edited_TF2_RespawnPlayer

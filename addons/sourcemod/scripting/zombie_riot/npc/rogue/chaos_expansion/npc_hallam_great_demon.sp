@@ -163,11 +163,8 @@ methodmap HallamGreatDemon < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 65, 65, 65, 200);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 65, 65, 65, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 65, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 65, 65, 65, 255);
 		
 		float flPos[3], flAng[3];
@@ -363,7 +360,6 @@ public void HallamGreatDemon_NPCDeath(int entity)
 
 void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int target, float distance, float Scaling)
 {
-
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -383,8 +379,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					int ElementalDamage = RoundToNearest(200.0 * Scaling);
-					float damageDealt = 550.0 * Scaling;
+					int ElementalDamage = RoundToNearest(150.0 * Scaling);
+					float damageDealt = 400.0 * Scaling;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
@@ -416,8 +412,8 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 				npc.FaceTowards(vPredictedPos, 15000.0);
 				
 				npc.PlayRangedSound();
-				int ElementalDamage = RoundToNearest(350.0 * Scaling);
-				float damageDealt = 350.0 * Scaling;
+				int ElementalDamage = RoundToNearest(150.0 * Scaling);
+				float damageDealt = 250.0 * Scaling;
 
 				int entity = npc.FireArrow(vPredictedPos, damageDealt, projectile_speed, "models/props_halloween/eyeball_projectile.mdl");
 				i_ChaosArrowAmount[entity] = ElementalDamage;
@@ -427,7 +423,6 @@ void HallamGreatDemonSelfDefense(HallamGreatDemon npc, float gameTime, int targe
 					if(IsValidEntity(f_ArrowTrailParticle[entity]))
 						RemoveEntity(f_ArrowTrailParticle[entity]);
 
-					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 15, 15, 15, 255);
 					
 					WorldSpaceCenter(entity, vPredictedPos);

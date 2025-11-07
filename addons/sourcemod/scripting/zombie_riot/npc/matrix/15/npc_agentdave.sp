@@ -46,14 +46,6 @@ static char g_RangedReloadSound[][] = {
 
 void AgentDave_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Agent Dave");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_agent_dave");
@@ -62,9 +54,22 @@ void AgentDave_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Matrix;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	
+	Matrix_Shared_CorruptionPrecache();
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -162,11 +167,8 @@ methodmap AgentDave < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		
@@ -395,31 +397,34 @@ public Action AgentDave_OnTakeDamage(int victim, int &attacker, int &inflictor, 
     {
 		if(fl_MatrixReflect[attacker] <= GetGameTime())
 		{
-			fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
-			float parrydamage = GetRandomFloat(20.0, 25.0);
-			//damage *= 0.1;//how much the npc takes
+			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+			{
+				fl_MatrixReflect[attacker] = GetGameTime() + 1.0;
+				float parrydamage = GetRandomFloat(20.0, 25.0);
+				//damage *= 0.1;//how much the npc takes
 
-			Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 9 : 7);
+				Elemental_AddCorruptionDamage(attacker, npc.index, npc.index ? 9 : 7);
 
-			static float Entity_Position[3];
-			WorldSpaceCenter(attacker, Entity_Position );
-			DataPack pack = new DataPack();
-			pack.WriteCell(EntIndexToEntRef(attacker));
-			pack.WriteCell(EntIndexToEntRef(npc.index));
-			pack.WriteCell(EntIndexToEntRef(npc.index));
-			pack.WriteFloat(parrydamage);
-			pack.WriteCell(DMG_CLUB);
-			pack.WriteCell(-1.0);
-			pack.WriteFloat(0.0);
-			pack.WriteFloat(0.0);
-			pack.WriteFloat(1.0);
-			pack.WriteFloat(Entity_Position[0]);
-			pack.WriteFloat(Entity_Position[1]);
-			pack.WriteFloat(Entity_Position[2]);
-			pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
-			RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-		}
-    }
+				static float Entity_Position[3];
+				WorldSpaceCenter(attacker, Entity_Position );
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(attacker));
+				pack.WriteCell(EntIndexToEntRef(npc.index));
+				pack.WriteCell(EntIndexToEntRef(npc.index));
+				pack.WriteFloat(parrydamage);
+				pack.WriteCell(DMG_CLUB);
+				pack.WriteCell(-1.0);
+				pack.WriteFloat(0.0);
+				pack.WriteFloat(0.0);
+				pack.WriteFloat(1.0);
+				pack.WriteFloat(Entity_Position[0]);
+				pack.WriteFloat(Entity_Position[1]);
+				pack.WriteFloat(Entity_Position[2]);
+				pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+				RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+			}
+    	}
+	}
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -462,15 +467,15 @@ static void AgentDave_Reflect_Enable(AgentDave npc)
 static void AgentDave_Reflect_Disable(AgentDave npc)
 {
 	AcceptEntityInput(npc.m_iWearable5, "Disable");
-	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.index, RENDER_NORMAL);
 	SetEntityRenderColor(npc.index, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable3, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable3, 0, 0, 0, 255);
-	SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable4, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
-	SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(npc.m_iWearable6, RENDER_NORMAL);
 	SetEntityRenderColor(npc.m_iWearable6, 0, 0, 0, 255);
 	npc.m_flDead_Ringer_Invis_bool = false;
 	npc.m_flMeleeArmor = 1.0;

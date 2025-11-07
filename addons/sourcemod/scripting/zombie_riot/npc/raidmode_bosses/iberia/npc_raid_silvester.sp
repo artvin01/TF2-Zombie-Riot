@@ -306,6 +306,7 @@ methodmap Silvester < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		SetEntPropFloat(npc.index, Prop_Data, "m_flElementRes", 1.0, Element_Chaos);
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_iSilvesterComboAttack = 0;
@@ -482,17 +483,10 @@ methodmap Silvester < CClotBody
 		float flAng[3]; // original
 		npc.GetAttachment("head", flPos, flAng);
 		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_lightning", npc.index, "head", {0.0,0.0,0.0});
-		/*
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 192, 192, 192, 255);
-		*/
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+
 		SetEntityRenderColor(npc.m_iWearable2, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 192, 192, 192, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 
 		SetVariantInt(1);
@@ -670,7 +664,7 @@ static void Internal_ClotThink(int iNPC)
 					}
 					case 1:
 					{
-						CPrintToChatAll("{gold}Silvester{default}: Oy oy oy! Cant attack her like that! I'll crush you!");
+						CPrintToChatAll("{gold}Silvester{default}: Thinking of taking {lightblue}Nemal{default} out first?");
 					}
 					case 2:
 					{
@@ -935,6 +929,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 			CPrintToChatAll("{gold}Silvester{default}: Fighting me alone now? Guess ill give it extra.");
 			b_SilvLine[npc.index] = true;
+			RaidModeScaling *= 1.15;
 		}
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -964,22 +959,24 @@ static void Internal_ClotThink(int iNPC)
 		SetGoalVectorIndex = SilvesterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget, NemalAssistance); 
 
 		int iPitch = npc.LookupPoseParameter("body_pitch");
-		if(iPitch < 0)
-			return;		
+		if(iPitch >= 0)
+		{
 
-		//Body pitch
-		float v[3], ang[3];
-		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
-		float vecTargetex[3];
-		vecTargetex = vecTarget;
-		vecTargetex[2] -= 20.0;
-		SubtractVectors(SelfVec, vecTargetex, v); 
-		NormalizeVector(v, v);
-		GetVectorAngles(v, ang); 
-								
-		float flPitch = npc.GetPoseParameter(iPitch);
-								
-		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			//Body pitch
+			float v[3], ang[3];
+			float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
+			float vecTargetex[3];
+			vecTargetex = vecTarget;
+			vecTargetex[2] -= 20.0;
+			SubtractVectors(SelfVec, vecTargetex, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		}	
+
 	}
 	else
 	{
@@ -1309,6 +1306,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			if(!NemalAssistance)
 				cooldownDo *= 0.5;
 
+			if(NpcStats_IberiaIsEnemyMarked(target))
+				cooldownDo *= 0.5;
+
 			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
 		}
 	}
@@ -1449,7 +1449,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 					npc.FaceTowards(VecEnemy, 15000.0);
 					float DamageCalc = 35.0 * RaidModeScaling;
 					npc.PlayRangedSound();
-					NemalAirSlice(npc.index, target, DamageCalc, 215, 150, 0, 200.0, 6, 1000.0, "rockettrail_fire");
+					NemalAirSlice(npc.index, target, DamageCalc, 215, 150, 0, 200.0, 6, 1000.0, "rockettrail_fire", false);
 				}
 			}
 		}
@@ -1479,6 +1479,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 
 					if(i_RaidGrantExtra[npc.index] >= 4)
 						cooldownDo *= 0.75;
+
+					if(NpcStats_IberiaIsEnemyMarked(Enemy_I_See))
+						cooldownDo *= 0.35;
 
 					npc.f_SilvesterMeleeSliceHappeningCD = gameTime + cooldownDo;
 					npc.m_flDoingAnimation = gameTime + 0.25;
@@ -1837,7 +1840,7 @@ bool SilvesterSwordSlicer(Silvester npc, bool NemalAssistance)
 					float DamageCalc = 50.0 * RaidModeScaling;
 					float VecEnemy[3]; WorldSpaceCenter(TargetEnemy, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
-					NemalAirSlice(npc.index, TargetEnemy, DamageCalc, 215, 150, 0, 200.0, 6, 1750.0, "rockettrail_fire");
+					NemalAirSlice(npc.index, TargetEnemy, DamageCalc, 215, 150, 0, 200.0, 6, 1750.0, "rockettrail_fire", false);
 					npc.PlayRangedSound();
 				}
 			}

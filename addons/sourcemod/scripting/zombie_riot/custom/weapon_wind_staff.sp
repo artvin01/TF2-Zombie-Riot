@@ -34,7 +34,7 @@ void Wind_Staff_MapStart()
 	TBB_Precache_Wind_Staff();
 }
 
-public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wind_Staff(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -113,7 +113,7 @@ public void Weapon_Wind_Staff(int client, int weapon, const char[] classname, bo
 }
 
 
-public void Weapon_Wind_StaffM2(int client, int weapon, const char[] classname, bool &result)
+public void Weapon_Wind_StaffM2(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -271,7 +271,7 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	
 	Projectile_To_Particle[iCarrier] = EntIndexToEntRef(particle);
 	
-	SetEntityRenderMode(iCarrier, RENDER_TRANSCOLOR);
+	SetEntityRenderMode(iCarrier, RENDER_NONE);
 	SetEntityRenderColor(iCarrier, 255, 255, 255, 0);
 	
 	DataPack pack;
@@ -393,10 +393,10 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 		damage *= Attributes_Get(weapon, 410, 1.0);
 			
 		Damage_Tornado[iCarrier] = damage;
-		Duration_Tornado[iCarrier] = GetGameTime() + 5.0;
+		Duration_Tornado[iCarrier] = GetGameTime() + 1.0;
 		flCarrierPos[2] += 5.0;
 		
-		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 5.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);
+		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 1.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);
 		TE_SendToAll(0.0);
 		
 		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
@@ -488,8 +488,18 @@ void RuinaNukeBackstabDo(int victim, int attacker,int weapon)
 	float damageSeperate = 65.0;
 	damageSeperate *= WeaponDamageAttributeMultipliers(weapon);
 	damageSeperate *= 2.0;
-	Explode_Logic_Custom(damageSeperate, attacker, weapon, weapon, posEnemySave); //Big fuckoff nuke
+	Explode_Logic_Custom(damageSeperate, attacker, weapon, weapon, posEnemySave, .FunctionToCallBeforeHit = RuinaDroneKnifeExplosionDamage); //Big fuckoff nuke
 	i_ExplosiveProjectileHexArray[weapon] = 0;
+}
+
+static float RuinaDroneKnifeExplosionDamage(int attacker, int victim, float &damage, int weapon)
+{
+	if(b_thisNpcIsARaid[victim])
+	{
+		//Remove raid damage bonus from this explosion.
+		damage /= EXTRA_RAID_EXPLOSIVE_DAMAGE;
+	}
+	return 0.0;
 }
 
 static Action NukeBackstabEffectDo(Handle timer, DataPack pack)

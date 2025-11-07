@@ -195,12 +195,13 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
+		SetEntityRenderMode(npc.index, RENDER_NONE);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+
 		npc.m_iWearable1 = npc.EquipItemSeperate(RUINA_CUSTOM_MODELS_3);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
 		int wave = Waves_GetRoundScale()+1;
 
@@ -524,18 +525,19 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		"npc_ruina_astrianious",
 		"npc_ruina_dronianis"
 	};
+
 	static int npc_health[] = {
-		100000,	//"npc_ruina_magianius",
-		150000,	//"npc_ruina_loonarionus"
-		200000,	//"npc_ruina_heliarionus"
-		150000,	//"npc_ruina_euranionis",
-		300000,	//"npc_ruina_draconia",
-		150000,	//"npc_ruina_malianius",
-		200000,	//"npc_ruina_lazurus",
-		150000,	//"npc_ruina_aetherianus"
-		300000,	//"npc_ruina_rulianius",
-		150000,	//"npc_ruina_astrianious"
-		300000	//"npc_ruina_dronianis"
+		50000,	//"npc_ruina_magianius",
+		75000,	//"npc_ruina_loonarionus"
+		100000,	//"npc_ruina_heliarionus"
+		75000,	//"npc_ruina_euranionis",
+		150000,	//"npc_ruina_draconia",
+		75000,	//"npc_ruina_malianius",
+		100000,	//"npc_ruina_lazurus",
+		75000,	//"npc_ruina_aetherianus"
+		150000,	//"npc_ruina_rulianius",
+		75000,	//"npc_ruina_astrianious"
+		150000	//"npc_ruina_dronianis"
 	};
 
 	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);
@@ -881,15 +883,17 @@ static bool Charging(Magia_Anchor npc)
 	{
 	
 		Ruina_Add_Battery(npc.index, 0.5);	//the anchor has the ability to build itself, but it stacks with the builders
+		
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		int alpha = RoundToFloor(fl_ruina_battery[npc.index]);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		if(alpha > 255)
 		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 			alpha = 255;
 		}
 		//PrintToChatAll("Alpha: %i", alpha);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 
 		return false;
@@ -906,7 +910,7 @@ static bool Charging(Magia_Anchor npc)
 				{
 					if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 					{
-						Spawns_AddToArray(npc.index, true);
+						Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
 						i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 						break;
 					}
@@ -917,7 +921,7 @@ static bool Charging(Magia_Anchor npc)
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		fl_ruina_battery[npc.index]=333.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 	}
 

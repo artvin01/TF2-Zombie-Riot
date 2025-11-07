@@ -777,7 +777,7 @@ void Blacksmith_PrintAttribValue(int client, int attrib, float value, float luck
 		case 8:
 			Format(buffer, sizeof(buffer), "%sHealing Rate", buffer);
 		
-		case 10:
+		case 10, 9:
 			Format(buffer, sizeof(buffer), "%sÜberCharge Rate", buffer);
 		
 		case 16:
@@ -1137,7 +1137,7 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 {
 	strcopy(tinker.Name, sizeof(tinker.Name), "Healing Overdrive");
 	tinker.Attrib[0] = 8; //more heal rate
-	tinker.Attrib[1] = 10; //Less uber rate
+	tinker.Attrib[1] = 9; //Less uber rate
 	tinker.Attrib[2] = 4002; //Less Overheal
 	float MoreHealRateLuck = (0.1 * (tinker.Luck[0]));
 	float LessUberRateLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
@@ -1149,19 +1149,19 @@ static void TinkerMedigun_FastHeal(int rarity, TinkerEnum tinker)
 		{
 			tinker.Value[0] = 1.15 + MoreHealRateLuck;
 			tinker.Value[1] = 0.95 - LessUberRateLuck;
-			tinker.Value[2] = 0.95 - LessOverhealRateLuck;
+			tinker.Value[2] = 0.96 - LessOverhealRateLuck;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.25 + MoreHealRateLuck;
 			tinker.Value[1] = 0.92 - LessUberRateLuck;
-			tinker.Value[2] = 0.92 - LessOverhealRateLuck;
+			tinker.Value[2] = 0.95 - LessOverhealRateLuck;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + MoreHealRateLuck;
 			tinker.Value[1] = 0.88 - LessUberRateLuck;
-			tinker.Value[2] = 0.88 - LessOverhealRateLuck;
+			tinker.Value[2] = 0.9 - LessOverhealRateLuck;
 		}
 	}
 }
@@ -1188,7 +1188,7 @@ static void TinkerMedigun_Overhealer(int rarity, TinkerEnum tinker)
 		case 2:
 		{
 			tinker.Value[0] = 0.95 - LessHealRateLuck;
-			tinker.Value[1] = 1.15 + MoreOverhealLuck;
+			tinker.Value[1] = 1.20 + MoreOverhealLuck;
 		}
 	}
 }
@@ -1198,7 +1198,7 @@ static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 {
 	strcopy(tinker.Name, sizeof(tinker.Name), "Pure Uberer");
 	tinker.Attrib[0] = 8;
-	tinker.Attrib[1] = 10;
+	tinker.Attrib[1] = 9;
 	float LessHealRate = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
 	float MoreUberRate = (0.1 * (tinker.Luck[1]));
 
@@ -1207,17 +1207,17 @@ static void TinkerMedigun_Uberer(int rarity, TinkerEnum tinker)
 		case 0:
 		{
 			tinker.Value[0] = 0.9 - LessHealRate;
-			tinker.Value[1] = 1.15 + MoreUberRate;
+			tinker.Value[1] = 1.1 + MoreUberRate;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 0.85 - LessHealRate;
-			tinker.Value[1] = 1.2 + MoreUberRate;
+			tinker.Value[1] = 1.15 + MoreUberRate;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 0.8 - LessHealRate;
-			tinker.Value[1] = 1.3 + MoreUberRate;
+			tinker.Value[1] = 1.25 + MoreUberRate;
 		}
 	}
 }
@@ -1372,7 +1372,7 @@ static void TinkerRangedSlowHeavyProj(int rarity, TinkerEnum tinker)
 	
 	float DamageLuck = (0.1 * (tinker.Luck[0]));
 	float ProjectileSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
-	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float AttackspeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
@@ -1406,7 +1406,7 @@ static void TinkerRangedFastProj(int rarity, TinkerEnum tinker)
 	
 	float DamageLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[0]))));
 	float ProjectileSpeedLuck = (0.1 * (tinker.Luck[1]));
-	float AttackspeedLuck = (0.1 * (tinker.Luck[1]));
+	float AttackspeedLuck = (0.1 * (tinker.Luck[2]));
 
 	switch(rarity)
 	{
@@ -1602,6 +1602,7 @@ public void Anvil_Menu(int client)
 		SetStoreMenuLogic(client, false);
 		static char buffer[128];
 		Menu menu = new Menu(Anvil_MenuH);
+		AnyMenuOpen[client] = 1.0;
 
 		SetGlobalTransTarget(client);
 		
@@ -1628,9 +1629,12 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
+			AnyMenuOpen[client] = 0.0;
 			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));

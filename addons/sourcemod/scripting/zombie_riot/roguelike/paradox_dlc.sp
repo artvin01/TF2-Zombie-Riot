@@ -105,15 +105,7 @@ public void Rogue_ReduceChaos2_Remove()
 
 public void Rogue_MercenaryInsurance_Ally(int entity, StringMap map)
 {
-	if(map)	// Player
-	{
-		float value = 1.0;
-		float multi = Rogue_GetChaosLevel() > 2 ? 0.65 : 0.9;
-		// 10%/35% damage resist
-
-		map.GetValue("412", value);
-		map.SetValue("412", value * multi);
-	}
+	RogueHelp_BodyRes(entity, map, Rogue_GetChaosLevel() > 2 ? 1.35 : 1.1);
 }
 
 public void Rogue_LifeVest_Collect()
@@ -197,37 +189,12 @@ public void Rogue_Smoking_Collect()
 
 public void Rogue_Smoking_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])	// NPCs
-	{
-		if(Citizen_IsIt(entity))	// Rebel
-		{
-			Citizen npc = view_as<Citizen>(entity);
-
-			npc.m_fGunBonusReload *= 0.8;
-			npc.m_fGunBonusFireRate *= 0.8;
-		}
-		else
-		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(npc.OwnerUserId)	// Barracks Unit
-				npc.BonusFireRate /= 0.8;
-		}
-	}
+	RogueHelp_BodyAPSD(entity, map, 1.2);
 }
 
 public void Rogue_Smoking_Weapon(int entity)
 {
-	if(Attributes_Has(entity, 6))
-		Attributes_SetMulti(entity, 6, 0.8);
-	
-	if(Attributes_Has(entity, 97))
-		Attributes_SetMulti(entity, 97, 0.8);
-	
-	if(Attributes_Has(entity, 733))
-		Attributes_SetMulti(entity, 733, 0.8);
-	
-	if(Attributes_Has(entity, 8))
-		Attributes_SetMulti(entity, 8, (1.0 / 0.8));
+	RogueHelp_WeaponAPSD(entity, 1.2);
 }
 
 public void Rogue_Smoking_Remove()
@@ -253,7 +220,7 @@ public void Rogue_StartSP2_WaveStart()
 
 public void Rogue_StartSP3_WaveStart()
 {
-	StartSP(500.0);
+	StartSP(50.0);
 }
 
 static void StartSP(float amount)
@@ -294,7 +261,7 @@ static Action StunPuppet1_Timer(Handle timer, int ref)
 		ExtraDamageDealt = 0.35;
 	}
 	DamageDeal *= ExtraDamageDealt;
-	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
+	if(HasSpecificBuff(entity, "Stunned") && !IsInvuln(entity))
 		SDKHooks_TakeDamage(entity, AttackerWho, AttackerWho, DamageDeal, DMG_PLASMA|DMG_SHOCK, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 	
 	return Plugin_Continue;
@@ -324,7 +291,7 @@ static Action StunPuppet2_Timer(Handle timer, int ref)
 		ExtraDamageDealt = 0.35;
 	}
 	DamageDeal *= ExtraDamageDealt;
-	if(fl_NextDelayTime[entity] > (GetGameTime() + DEFAULT_UPDATE_DELAY_FLOAT))
+	if(HasSpecificBuff(entity, "Stunned") && !IsInvuln(entity))
 		SDKHooks_TakeDamage(entity, AttackerWho, AttackerWho, DamageDeal, DMG_PLASMA|DMG_SHOCK, LastHitWeaponRef[entity], .Zr_damage_custom = ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED|ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 	
 	return Plugin_Continue;

@@ -207,7 +207,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/mvm_loot/heavy/robo_ushanka.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
@@ -234,6 +234,7 @@ methodmap Whiteflower_FloweringDarkness < CClotBody
 		if(raidbattle)
 		{
 			RaidModeScaling = 1.5;
+			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 

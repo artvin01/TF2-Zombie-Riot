@@ -373,7 +373,7 @@ public Action XenoFortifiedGiantPoisonZombie_Revert_Poison_Zombie_Resistance(Han
 	int zombie = EntRefToEntIndex(ref);
 	if(IsValidEntity(zombie))
 	{
-		SetEntityRenderMode(zombie, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(zombie, RENDER_NORMAL);
 		SetEntityRenderColor(zombie, 150, 255, 150, 255);
 	}
 	return Plugin_Handled;

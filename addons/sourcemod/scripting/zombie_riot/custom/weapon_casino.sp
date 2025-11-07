@@ -302,9 +302,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(i_Dollars_Ammount[attacker] < MaxCash)
 				{
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday;
-					if(b_thisNpcIsARaid[victim])
-						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] == 5)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
@@ -320,9 +318,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(i_Dollars_Ammount[attacker] < MaxCash)
 				{
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 2 * Payday;
-					if(b_thisNpcIsARaid[victim])
-						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 2* Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] == 5)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
@@ -338,9 +334,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 				if(i_Dollars_Ammount[attacker] < MaxCash)
 				{
 					i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 3 * Payday;
-					if(b_thisNpcIsARaid[victim])
-						i_Dollars_Ammount[attacker] += CASINO_SALARY_GAIN_PER_HIT * 3* Payday; //double cash gain against raids
-					if(i_CurrentEquippedPerk[attacker] == 5)
+					if(i_CurrentEquippedPerk[attacker] & PERK_MARKSMAN_BEER)
 					{
 						if(i_HasBeenHeadShotted[victim])
 						{
@@ -361,7 +355,7 @@ public float Npc_OnTakeDamage_Casino(int victim, int &attacker, int &inflictor, 
 			i_ExplosiveProjectileHexArray[attacker] = 0;
 			LastHitTarget = victim;
 			
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 250.0, 0.83, _, false, 3);		
+			Explode_Logic_Custom(damage * 0.75, attacker, attacker, weapon, damagePosition, 250.0, _, _, false, 3);		
 			i_ExplosiveProjectileHexArray[attacker] = value;
 			LastHitTarget = 0;
 			i_Ricochet[attacker] -= 1;
@@ -545,7 +539,7 @@ public void Weapon_Casino_M1(int client, int weapon)
 	}
 }
 
-public void CasinoWeaponHoldM2(int client, int weapon, const char[] classname, bool &result)
+public void CasinoWeaponHoldM2(int client, int weapon, bool crit, int slot)
 {
 	f_AttackDelayKnife[client] = 0.0;
 	SDKUnhook(client, SDKHook_PreThink, CasinoWeaponHoldM2_Prethink);
@@ -641,6 +635,26 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 	int pap = i_Current_Pap[client];
 
 	RecurringNumbers(client); //function :)
+	int Number = RecurringNumbers(client);
+	int MaxCash;
+	switch(Payday_timer[client])
+	{
+		case INVALID_HANDLE: 
+		{
+			MaxCash = CASINO_MAX_DOLLARS;
+		}
+		default: 
+		{
+			MaxCash = (CASINO_MAX_DOLLARS + (pap + 1) * 25);
+		}
+	}
+	if(i_Dollars_Ammount[client] >= (MaxCash * 2))
+	{
+		if(Number == 14 && RoundFloat(Attributes_Get(weapon, 834, 0.0)) == 280)
+		{
+			Number = 99;
+		}
+	}
 	switch(RecurringNumbers(client)) //5000000000000x better than else if spam
 	{
 		case 1: //minor damage
@@ -1270,6 +1284,7 @@ public void ROLL_THE_SLOTS(int client, int weapon)
 			i_Dollars_Ammount[client] += CASINO_SALARY_GAIN_PER_HIT * RNG * Payday;
 		}
 	}
+
 }
 
 ///FUCK YOU TF2 HUDS///

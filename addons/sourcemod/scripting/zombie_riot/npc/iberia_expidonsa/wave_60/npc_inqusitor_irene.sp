@@ -185,7 +185,6 @@ methodmap Iberiainqusitor_irene < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
 
 		return npc;
@@ -687,7 +686,7 @@ float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 	//Knock target up
 	if(NpcStats_IberiaIsEnemyMarked(victim))
 	{
-		damage *= 1.45;
+		damage *= 2.5;
 	}
 	if(b_ThisWasAnNpc[victim])
 		PluginBot_Jump(victim, {0.0,0.0,1000.0});

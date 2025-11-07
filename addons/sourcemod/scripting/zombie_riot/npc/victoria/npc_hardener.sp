@@ -153,7 +153,6 @@ methodmap VictorianHardener < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/surgical_stare/surgical_stare.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 150, 150, 200, 255);
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_medigun/c_medigun.mdl");
@@ -167,19 +166,16 @@ methodmap VictorianHardener < CClotBody
 		npc.m_iWearable6	= npc.EquipItem("head", "models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 150, 150, 150, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/engineer/spr18_cold_case/spr18_cold_case.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 125, 125, 255);
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/dec22_wooly_pulli_style3/dec22_wooly_pulli_style3.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 125, 125, 125, 255);
 		
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 8);
@@ -300,7 +296,7 @@ public void VictorianHardener_ClotThink(int iNPC)
 
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 80), 1.0);
 
-				GrantEntityArmor(PrimaryThreatIndex, false, 1.5, 0.75, 0, float(MaxHealth / 400));
+				GrantEntityArmor(PrimaryThreatIndex, false, 0.5, 0.75, 0, float(MaxHealth / 400));
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				
@@ -325,7 +321,6 @@ public void VictorianHardener_ClotThink(int iNPC)
 			SetVariantString("1.0");
 			AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 			
-			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable3, 255, 215, 0, 255);
 		
 			if(IsValidEntity(npc.m_iWearable4))

@@ -294,7 +294,7 @@ methodmap Bloonarius < CClotBody
 			{
 				if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 				{
-					Spawns_AddToArray(npc.index, true);
+					Spawns_AddToArray(EntIndexToEntRef(npc.index), true);
 					i_ObjectsSpawners[i] = EntIndexToEntRef(npc.index);
 					break;
 				}
@@ -549,7 +549,6 @@ public void Bloonarius_NPCDeath(int entity)
 {
 	Bloonarius npc = view_as<Bloonarius>(entity);
 	npc.PlayDeathSound();
-
 	Waves_ClearWaveCurrentSpawningEnemies();
 
 	StopSound(npc.index, SNDCHAN_STATIC, "#zombie_riot/btd/musicbossbloonarius.mp3");

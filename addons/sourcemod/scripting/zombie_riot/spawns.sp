@@ -28,7 +28,7 @@ static float LastNamedSpawn;
 
 void Spawns_PluginStart()
 {
-	MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
+	MapSpawnersActive = CreateConVar("zr_spawnersactive", "16", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 }
 
 void Spawns_MapEnd()
@@ -158,6 +158,8 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 
 	if(bestIndex == -1 && name[0])	// Fallback to case checks for spawn names
 	{
+		bool construction = Construction_Mode();
+		
 		for(int i; i < length; i++)
 		{
 			SpawnerList.GetArray(i, spawn);
@@ -168,7 +170,12 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			if(!spawn.BaseBoss)
 			{
 				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
-					continue;
+				{
+					if(bestIndex != -1 || !construction)
+						continue;
+					
+					// Construction mode allows named disabled spawn points
+				}
 
 				if(spawn.MaxWavesAllowed != 999)
 				{
@@ -186,6 +193,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 				}
 				nonBossSpawners++;
 			}
+
 			//get atleast 1 spawnpont?
 			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
 			{
@@ -214,15 +222,6 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		{
 			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy));
 		}
-		/*
-		else if(name[0])
-		{
-			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
-			float baseTime = 2.0 + (nonBossSpawners * 0.15);
-
-			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / playerSpeedUp));
-		}
-		*/
 		else
 		{
 			float nearSpeedUp = 4.0 * (spawn.Points / HighestPoints);
@@ -373,39 +372,33 @@ void Spawners_Timer()
 					//max distance is 10,000 anymore and wtf u doin
 					if( distance < 100000000.0)
 					{
-						//For Zr_lila_panic, this might be outdated code, look into it.
-						/*if(StrEqual(spawn.Name, "underground"))
-						{
-							if(!b_PlayerIsInAnotherPart[client])
-							{
-								continue;
-							}
-						}
-						if(b_PlayerIsInAnotherPart[client])
-						{
-							if(!StrEqual(spawn.Name, "underground"))
-							{
-								continue;
-							}
-						}*/
-						
 						float inverting_score_calc = ( distance / 100000000.0) - 1.0;
 						spawn.Points -= inverting_score_calc;
-						SpawnerList.SetArray(index, spawn);							
+						SpawnerList.SetArray(index, spawn);				
 					}
 				}
 			}
 		}
 	}
-
+	if(PlayersGathered <= 1)
+	{
+		//no dividing by 0 crap.
+		PlayersGathered = 1;
+	}
+	
 	// Get max spawner count
 	int maxSpawners = MapSpawnersActive.IntValue;
-	if(maxSpawners < 1)
+
+	if(maxSpawners <= 1)
+	{
 		maxSpawners = 1;
+	}
+	
 
 	// Get list of points
 	ArrayList pointsList = new ArrayList();
 
+	
 	for(int index; index < length; index++)
 	{
 		SpawnerList.GetArray(index, spawn);
@@ -415,18 +408,31 @@ void Spawners_Timer()
 			SpawnerList.SetArray(index, spawn);
 		}
 	}
+	
 
-	for(int index; index < length; index++)
+	bool Spawners_found = false;
+	for(int LoopTry = 10; LoopTry >= 1; LoopTry--)
 	{
-		SpawnerList.GetArray(index, spawn);
-		if(spawn.Points >= 0.0)
+		for(int index; index < length; index++)
 		{
-			if(spawn.BaseBoss)
-				maxSpawners++;
-			
-			pointsList.Push(spawn.Points);
+			SpawnerList.GetArray(index, spawn);
+			if((spawn.Points) >= (0.85 *(float(LoopTry) * 0.1)))
+			{
+				//itll go down in increments of 0.85 untill it finds spawners.
+				Spawners_found = true;
+				if(spawn.BaseBoss)
+					maxSpawners++;
+				
+				pointsList.Push(spawn.Points);
+			}
+		}
+		if(Spawners_found)
+		{
+			//found spawners, dont go lower.
+			break;
 		}
 	}
+	
 	
 	if(maxSpawners > pointsList.Length)
 		maxSpawners = pointsList.Length;

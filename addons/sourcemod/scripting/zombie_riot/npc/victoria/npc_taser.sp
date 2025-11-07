@@ -145,16 +145,12 @@ methodmap VictoriaTaser < CClotBody
 
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 150, 150, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 80, 50, 50, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 0, 0, 0, 255);
 		return npc;
 	}
@@ -399,13 +395,13 @@ public void VictoriaTaser_Rocket_Particle_StartTouch(int entity, int target)
 			if(NpcStats_VictorianCallToArms(entity))
 			{
 				ApplyStatusEffect(owner, target, "Teslar Electricution", 4.0);
-				if(!HasSpecificBuff(target, "Fluid Movement"))
+				if(!HasSpecificBuff(target, "Fluid Movement") && target <= MaxClients)
 					TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 			else
 			{
 				ApplyStatusEffect(owner, target, "Teslar Electricution", 3.0);	
-				if(!HasSpecificBuff(target, "Fluid Movement"))
+				if(!HasSpecificBuff(target, "Fluid Movement") && target <= MaxClients)
 					TF2_StunPlayer(target, 1.0, 0.8, TF_STUNFLAG_SLOWDOWN);
 			}
 		}

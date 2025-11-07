@@ -188,6 +188,7 @@ methodmap Heliaris < CClotBody
 			RUINA_CUSTOM_MODELS_2
 		};
 		
+		Is_a_Medic[npc.index] = true;
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -197,7 +198,7 @@ methodmap Heliaris < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,2.0,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.25,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_HALO_1);
@@ -259,6 +260,12 @@ static void ClotThink(int iNPC)
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
@@ -361,6 +368,12 @@ static void ClotThink(int iNPC)
 	{
 		npc.StopPathing();
 		
+		npc.m_iTargetAlly = GetClosestAlly(npc.index);
+		if(npc.m_iTargetAlly < 1)
+		{
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}

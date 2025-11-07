@@ -142,7 +142,6 @@ methodmap CorruptedBarney < CClotBody
 	{
 		CorruptedBarney npc = view_as<CorruptedBarney>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/barney.mdl", "1.75", "400", ally, false, true, true,true)); //giant!
 		
-		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_RUN_RIFLE_STIMULATED");
@@ -249,6 +248,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		RaidModeScaling = float(GetURandomInt());
 		fl_TotalArmor[npc.index] = GetRandomFloat(0.25, 0.3);
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
+		i_NpcWeight[npc.index] = GetRandomInt(1,5);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
@@ -258,6 +258,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 		RaidModeScaling = float(GetURandomInt());
 		fl_TotalArmor[npc.index] = GetRandomFloat(0.22, 0.27);
+		i_NpcWeight[npc.index] = GetRandomInt(1,5);
 		npc.m_flSpeed = GetRandomFloat(330.0, 430.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "B%c\n%c%c\nA%c%c\n%c%c\nR%c%c%c\nN%c\n%cEY", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
@@ -285,8 +286,9 @@ public void CorruptedBarney_ClotThink(int iNPC)
 				Attributes_Set(client, 26, GetRandomFloat(2500.0, 5000.0));
 				f_damageAddedTogether[client] = float(GetURandomInt());
 				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
-				i_CurrentEquippedPerk[client] = GetRandomInt(1,6);
-				i_AmountDowned[client] = GetRandomInt(-500000, 500000);
+				i_CurrentEquippedPerk[client] = 0;
+				UpdatePerkName(client);
+				i_AmountDowned[client] = GetRandomInt(-50, 50);
 				
 				KillFeed_Show(client, client, client, client, -1, 0, false);
 				if(i_RaidGrantExtra[npc.index] == 1)

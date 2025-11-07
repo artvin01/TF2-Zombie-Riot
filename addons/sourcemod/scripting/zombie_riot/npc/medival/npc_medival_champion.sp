@@ -186,10 +186,6 @@ methodmap MedivalChampion < CClotBody
 		func_NPCDeath[npc.index] = MedivalChampion_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalChampion_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalChampion_ClotThink;
-		
-	
-//		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-//		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 250.0;

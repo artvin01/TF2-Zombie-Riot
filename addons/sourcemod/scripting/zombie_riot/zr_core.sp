@@ -52,25 +52,40 @@ public const int AmmoData[][] =
 public const char PerkNames[][] =
 {
 	"No Perk",
-	"Quick Revive",
-	"Juggernog",
-	"Double Tap",
-	"Speed Cola",
-	"Deadshot Daiquiri",
-	"Widows Wine",
-	"Recycle Poire"
+	"Regene Berry",
+	"Obsidian Oaf",
+	"Morning Coffee",
+	"Hasty Hops",
+	"Marksman Beer",
+	"Teslar Mule",
+	"Stockpile Stout",
+	"Energy Drink"
 };
 
-public const char PerkNames_Recieved[][] =
+public const char PerkNames_Received[][] =
 {
 	"No Perk",
-	"Quick Revive Recieved",
-	"Juggernog Recieved",
-	"Double Tap Recieved",
-	"Speed Cola Recieved",
-	"Deadshot Daiquiri Recieved",
-	"Widows Wine Recieved",
-	"Recycle Poire Recieved"
+	"Regene Berry Received",
+	"Obsidian Oaf Received",
+	"Morning Coffee Received",
+	"Hasty Hops Received",
+	"Marksman Beer Received",
+	"Teslar Mule Received",
+	"Stockpile Stout Received",
+	"Energy Drink Received"
+};
+
+public const char PerkNames_two_Letter[][] =
+{
+	"--",
+	"RB",
+	"OO",
+	"MC",
+	"HH",
+	"MB",
+	"TM",
+	"SS",
+	"ED"
 };
 
 enum
@@ -157,7 +172,7 @@ enum
 	WEAPON_RAPIER = 80,
 	WEAPON_RED_BLADE = 81,
 	WEAPON_GRAVATON_WAND = 82,
-	WEAPON_HEAVY_PARTICLE_RIFLE = 83,
+	UNUSED_WEAPON_83 = 83,
 	WEAPON_SICCERINO = 84,
 	WEAPON_DIMENSION_RIPPER = 85,
 	WEAPON_HELL_HOE_1 = 86,
@@ -220,19 +235,21 @@ enum
 	WEAPON_TORNADO_BLITZ = 143,
 	WEAPON_BUFFPOTION = 144,
 	WEAPON_REIUJI_WAND = 145,
-	//WEAPON_CHEESY_MELEE = 146,
-	//WEAPON_CHEESY_PRIMARY = 147,
+	WEAPON_CHEESY_MELEE = 146,
+	WEAPON_CHEESY_PRIMARY = 147,
 	WEAPON_CHEMICAL_THROWER = 148,
 	WEAPON_RITUALIST = 149,
 	WEAPON_SHERRIF = 150,
 	WEAPON_SHERRIF_LEVERACTION = 151,
-	WEAPON_BOOMERANG = 152
+	WEAPON_BOOMERANG = 152,
+	WEAPON_CHEESY_SECONDARY = 153
 }
 
 enum
 {
 	Type_Hidden = -1,
-	Type_Ally = 0,
+	Type_DONOTUSE = 0,
+	Type_Ally = 1,
 	Type_Special,
 	Type_Raid,
 	Type_Common,
@@ -251,7 +268,10 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Mutation
+	Type_Mutation,
+	Type_Aperture,
+	Type_Curtain,
+	Type_Necropolain
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -265,13 +285,13 @@ ConVar zr_tagwhitelist;
 ConVar zr_tagwhitehard;
 ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
-ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
 ConVar Cvar_VshMapFix;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_disablerandomvillagerspawn;
 ConVar zr_waitingtime;
 ConVar zr_maxscaling_untillhp;
+ConVar zr_maxsbosscaling_untillhp;
 ConVar zr_raidmultihp;
 ConVar zr_multi_maxenemiesalive_cap;
 ConVar zr_multi_scaling;
@@ -316,6 +336,9 @@ float Resistance_for_building_High[MAXENTITIES];
 MusicEnum MusicString1;
 MusicEnum MusicString2;
 MusicEnum MusicSetup1;
+MusicEnum MusicLastmann;
+MusicEnum MusicWin;
+MusicEnum MusicLoss;
 MusicEnum RaidMusicSpecial1;
 MusicEnum BGMusicSpecial1;
 //custom wave music.
@@ -354,15 +377,18 @@ float Armor_regen_delay[MAXPLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
 //ConVar CvarSvRollagle; // sv_rollangle
+ConVar mp_disable_respawn_times;
 //int i_SvRollAngle[MAXPLAYERS];
 
 	
+bool DisableSpawnProtection;
+bool DisableRandomSpawns;
 int CashSpent[MAXPLAYERS];
 int CashSpentGivePostSetup[MAXPLAYERS];
 bool CashSpentGivePostSetupWarning[MAXPLAYERS];
 int CashSpentTotal[MAXPLAYERS];
 int CashSpentLoadout[MAXPLAYERS];
-int CashRecievedNonWave[MAXPLAYERS];
+int CashReceivedNonWave[MAXPLAYERS];
 bool StarterCashMode[MAXPLAYERS] = {true, ...};
 int Scrap[MAXPLAYERS];
 int PlayStreak[MAXPLAYERS];
@@ -376,6 +402,7 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
+float AnyMenuOpen[MAXPLAYERS];
 float LastStoreMenu[MAXPLAYERS];
 bool LastStoreMenu_Store[MAXPLAYERS];
 
@@ -402,27 +429,11 @@ float FreeplayTimeLimit;
 
 float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 
-float MultiGlobalEnemy = 0.25;
-float MultiGlobalEnemyBoss = 0.25;
-//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
-//isnt affected when selecting Modificators.
-//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
-float MultiGlobalHealth = 1.0;
-//See above
-
-float MultiGlobalHealthBoss = 0.25;
-//This is normal boss scaling, this scales ontop of enemies spawning
-
-float MultiGlobalHighHealthBoss = 0.34;
-//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
-
 float f_WasRecentlyRevivedViaNonWave[MAXPLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXPLAYERS];
 
 float f_MedigunChargeSave[MAXPLAYERS][4];
 float f_SaveBannerRageMeter[MAXPLAYERS][2];
-
-int Building_Mounted[MAXENTITIES];
 
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
@@ -474,6 +485,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "steamworks.sp"
 #include "zsclassic.sp"
 #include "construction.sp"
+#include "betting.sp"
 #include "sm_skyboxprops.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -612,7 +624,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_kritzkrieg.sp"
 #include "custom/wand/weapon_bubble_wand.sp"
 #include "custom/kit_blacksmith_grill.sp"
-//#include "custom/kit_cheese.sp"
+#include "custom/kit_cheese.sp"
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
 #include "custom/weapon_boomerang.sp"
@@ -649,7 +661,6 @@ void ZR_PluginStart()
 	RegConsoleCmd("sm_help", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveweapon", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_info", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
-	RegConsoleCmd("sm_menu", 		Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_givemeall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_giveall", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_freeitems", 	Access_StoreViaCommand, "Please Press TAB instead", FCVAR_HIDDEN);
@@ -700,6 +711,7 @@ void ZR_PluginStart()
 	SteamWorks_PluginStart();
 	Vehicle_PluginStart();
 	Kritzkrieg_PluginStart();
+	BetWar_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -719,7 +731,13 @@ void ZR_PluginStart()
 
 void ZR_MapStart()
 {
+	MusicString1.Clear();
+	MusicString2.Clear();
 	MusicSetup1.Clear();
+	MusicLastmann.Clear();
+	MusicWin.Clear();
+	MusicLoss.Clear();
+	RaidMusicSpecial1.Clear();
 	PrecacheSound("ui/hitsound_electro1.wav");
 	PrecacheSound("ui/hitsound_electro2.wav");
 	PrecacheSound("ui/hitsound_electro3.wav");
@@ -727,13 +745,17 @@ void ZR_MapStart()
 	PrecacheSound("#zombiesurvival/setup_music_extreme_z_battle_dokkan.mp3");
 	PrecacheSound("ui/chime_rd_2base_neg.wav");
 	PrecacheSound("ui/chime_rd_2base_pos.wav");
+	PrecacheSound("items/suitchargeno1.wav");
+	PrecacheSound("beams/beamstart5.wav");
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
 	KleinerSoundOverrideMapStart();
 	SkyboxProps_OnMapStart();
+	Tutorial_MapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
 	Construction_MapStart();
+	BetWar_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -916,7 +938,7 @@ void ZR_MapStart()
 	Purnell_MapStart();
 	Kritzkrieg_OnMapStart();
 	BubbleWand_MapStart();
-	//Cheese_MapStart();
+	Cheese_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -933,6 +955,11 @@ void ZR_MapStart()
 	//AcceptEntityInput(0, "RunScriptCode");
 	CreateMVMPopulator();
 	RoundStartTime = FAR_FUTURE;
+	
+	for (int i = 0; i < FogType_COUNT; i++)
+		CustomFogEntity[i] = INVALID_ENT_REFERENCE;
+	
+	MapFogEntity = INVALID_ENT_REFERENCE;
 }
 
 public void OnMapInit()
@@ -1039,16 +1066,18 @@ public Action GlobalTimer(Handle timer)
 
 void ZR_ClientPutInServer(int client)
 {
+	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 3)
 		i_AmountDowned[client] = 1;
+	Waves_TrySpawnBarney();
 		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
-	CashRecievedNonWave[client] = 0;
+	CashReceivedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	i_BarricadeHasBeenDamaged[client] = 0;
 	i_PlayerDamaged[client] = 0;
@@ -1059,11 +1088,11 @@ void ZR_ClientPutInServer(int client)
 	f_Armor_BreakSoundDelay[client] = 0.0;
 	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
+	UpdatePerkName(client);
 	i_HealthBeforeSuit[client] = 0;
 	i_ClientHasCustomGearEquipped[client] = false;
-	if(Waves_Started())
-		CDDisplayHint_LoadoutConfirmAuto[client] = GetGameTime() + (60.0 * 3.0); //give 3 minutes.
 	
+	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)
 	{
 //		Waves_SetReadyStatus(2);
@@ -1075,6 +1104,15 @@ void ZR_ClientPutInServer(int client)
 		}
 	}
 	CheckAllClientPrefs(client);
+
+	//if someone joints mid waves, make them buy atleast 70% of the cash before being allowed to play.
+	if(!Waves_Started())
+		b_AntiLateSpawn_Allow[client] = true;
+	else
+		b_AntiLateSpawn_Allow[client] = false;
+
+	if(BetWar_Mode())
+		b_AntiLateSpawn_Allow[client] = true;
 }
 
 void ZR_ClientDisconnect(int client)
@@ -1103,7 +1141,7 @@ void ZR_ClientDisconnect(int client)
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
-	CashRecievedNonWave[client] = 0;
+	CashReceivedNonWave[client] = 0;
 	Healing_done_in_total[client] = 0;
 	Armor_Charge[client] = 0;
 	PlayerPoints[client] = 0;
@@ -1262,7 +1300,6 @@ public Action Command_AFK(int client, int args)
 	{
 		ForcePlayerSuicide(client);
 		UnequipDispenser(client, true);
-		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
@@ -1303,22 +1340,13 @@ public Action CommandDebugHudTest(int client, int args)
 {
 	//What are you.
 	if(args < 1)
-    {
-        ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
-        return Plugin_Handled;
-    }
+	{
+		ReplyToCommand(client, "[SM] Usage: sm_displayhud <number>");
+	        return Plugin_Handled;
+	}
 
 	int Number = GetCmdArgInt(1);
 	Medival_Wave_Difficulty_Riser(Number);
-	DoGlobalMultiScaling();
-	float ScalingTestDo = GetScaledPlayerCountMulti(Number);
-	PrintToChatAll("ScalingTestDo %f",ScalingTestDo);
-	int entity, i;
-	while(TF2U_GetWearable(client, entity, i))
-	{
-		SetTeam(entity, 2);
-		SetEntProp(entity, Prop_Send, "m_nSkin", Number);
-	}	
 	return Plugin_Handled;
 }
 
@@ -1660,7 +1688,7 @@ public void OnClientAuthorized(int client)
 			cash += StartCash / 2;
 		
 		CashSpent[client] = -cash;
-		CashRecievedNonWave[client] = cash;
+		CashReceivedNonWave[client] = cash;
 	}
 }
 
@@ -1711,6 +1739,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				DoOverlay(client, "", 2);
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
+				Rogue_TriggerFunction(Artifact::FuncRevive, client);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -1881,7 +1910,7 @@ void CheckLastMannStanding(int killed)
 		LastMann_BeforeLastman = true;
 	}
 }
-void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false)
+void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, int CheckForLastManAlone = 0)
 {
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot)
 	{
@@ -1893,6 +1922,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		{
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 			{
+				if(!b_AntiLateSpawn_Allow[client])
+					continue;
 				CurrentPlayers++;
 			}
 		}
@@ -1913,6 +1944,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 		{
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			CurrentPlayers++;
 			if(killed != client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE/* && dieingstate[client] == 0*/)
 			{
@@ -1955,9 +1988,13 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	*/
 	if(LastMann && !GlobalIntencity_Reduntant) //Make sure if they are alone, it wont play last man music.
 	{
-		PlayersLeftNotDowned = 99;
-		LastMann_BeforeLastman = false;
-		LastMann = false;
+		//if its above 700, it just assumes we triggered lastman
+		if(i_AmountDowned[CheckForLastManAlone] < 700)
+		{
+			PlayersLeftNotDowned = 99;
+			LastMann_BeforeLastman = false;
+			LastMann = false;
+		}
 	}
 
 	if(PlayersLeftNotDowned == 1)
@@ -1980,6 +2017,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			Died[client] = false;
 			if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 			{
+				if(!b_AntiLateSpawn_Allow[client])
+					continue;
 				if((killed != client || Hurtviasdkhook != client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0)
 				{
 					Died[client] = true;
@@ -2102,13 +2141,12 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 							CPrintToChatAll("{crimson}The merchant knows not who to trade with... Thus massively enrages.",client);
 							Yakuza_Lastman(10);
 						}
-						/*
 						if(Is_Cheesed_Up(client))
 						{
-							CPrintToChatAll("{darkviolet}%N decides to Plasmify himself as a last resort...", client);
+							CPrintToChatAll("{darkviolet}%N decides to inject themselves with plasma as a last resort...", client);
 							Yakuza_Lastman(11);
 						}
-						*/
+						
 						
 						for(int i=1; i<=MaxClients; i++)
 						{
@@ -2139,9 +2177,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						applied_lastmann_buffs_once = true;
 						
 						SetHudTextParams(-1.0, -1.0, 3.0, 255, 0, 0, 255);
-						ShowHudText(client, -1, "%T", "Last Alive", client);
+						if(b_IsAloneOnServer)
+							ShowHudText(client, -1, "%T", "Last Alive Alone", client);
+						else
+							ShowHudText(client, -1, "%T", "Last Alive", client);
+
 						int MaxHealth;
 						MaxHealth = SDKCall_GetMaxHealth(client) * 2;
+						if(b_IsAloneOnServer)
+							MaxHealth /= 2;
+							
 						if(i_HealthBeforeSuit[client] == 0)
 						{
 							SetEntProp(client, Prop_Send, "m_iHealth", MaxHealth);
@@ -2149,6 +2194,8 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 						//if in quantum suit, dont.
 
 						int Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
+						if(b_IsAloneOnServer)
+							Armor_Max /= 2;
 
 						Armor_Charge[client] = Armor_Max;
 						GiveCompleteInvul(client, 3.0);
@@ -2176,7 +2223,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	
 		if(!rogue)
 		{
-			ForcePlayerLoss();
+			ForcePlayerLoss(false);
 		}
 
 		if(killed)
@@ -2299,12 +2346,15 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 		Armor_Max = 1000;
 										
 	else if(ArmorLevel == 200)
-		Armor_Max = 2000;
+		Armor_Max = 2000;	
+
+	else if(ArmorLevel == 250)
+		Armor_Max = 3000;
 		
 	else
 		Armor_Max = 200;
 
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
+	if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
 	{
 		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
 	}
@@ -2319,12 +2369,6 @@ stock void GiveArmorViaPercentage(int client, float multiplyier, float MaxMulti,
 	int Armor_Max;
 	
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, MaxMulti);
-	/*
-	if(i_CurrentEquippedPerk[client] == 7) // Recycle Porier
-	{
-		Armor_Max = RoundToCeil(float(Armor_Max) * 1.5);
-	}
-	*/
 	float ArmorToGive;
 	if(Armor_Charge[client] < Armor_Max)
 	{
@@ -2409,7 +2453,7 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 	{
 		AmmoToAdd = AmmoCount;
 	}
-	if(i_CurrentEquippedPerk[client] == 7 && !ignoreperk) // Recycle Porier
+	if((i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT) && !ignoreperk)
 	{
 		AmmoToAdd = RoundToCeil(float(AmmoToAdd) * 1.33);
 	}
@@ -2472,31 +2516,95 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 	}
 }
 
-void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
+public Action ZR_CheckValidityOfPostions_OfObjects(Handle timer,bool recheck)
+{
+	ZR_CheckValidityOfPostions_OfObjectsInternal(recheck);
+	return Plugin_Stop;
+}
+void ZR_CheckValidityOfPostions_OfObjectsInternal(bool recheck)
+{
+	//if in setup, keep checking.
+	if(Waves_InSetup() && recheck)
+		CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, true, TIMER_FLAG_NO_MAPCHANGE);
+
+	float pos2[3];
+	for(int iEntity; iEntity<i_MaxcountBuilding; iEntity++) //BUILDINGS!
+	{
+		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
+		int iObj = EntRefToEntIndexFast(i_ObjectsBuilding[iEntity]);
+		if(!IsValidEntity(iObj))
+			continue;
+
+		GetEntPropVector(iObj, Prop_Data, "m_vecAbsOrigin", pos2);
+		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[iObj], f3_CustomMinMaxBoundingBox[iObj]))
+			continue;
+		if(Building_Mounted[iObj] != -1)
+			continue;
+		//Make sure that mounted buildings are never deleted like this!
+			
+		int builder_owner = GetEntPropEnt(iObj, Prop_Send, "m_hOwnerEntity");
+		DeleteAndRefundBuilding(builder_owner, iObj);
+	}
+	
+	int a, entity;
+	while((entity = FindEntityByNPC(a)) != -1)
+	{
+		if(b_NpcHasDied[entity])
+			continue;
+		if(!Citizen_IsIt(entity))
+			continue;
+
+		Citizen npc = view_as<Citizen>(entity);
+		if(npc.m_nDowned && npc.m_iWearable3 > 0)
+		{
+			
+		}
+		else
+			continue;
+
+		npc.SetDowned(false);
+		if(Waves_InSetup())
+			continue;
+		int target = 0;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
+				{
+					target = i;
+					break;
+				}
+			}
+		}
+		
+		if(target)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
+			TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
+		}
+	}
+}
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false, bool ForceFullHealth = false)
 {
 	//only set false here
 	if(!setmusicfalse)
 		ZombieMusicPlayed = setmusicfalse;
 
-	float pos2[3];
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
-	{
-		//check if they are in any type of invalid pos, maybe outside of map, or moreso, inside a kill trigger due to map changes!
-		int entity_close = EntRefToEntIndexFast(i_ObjectsBuilding[entitycount]);
-		if(!IsValidEntity(entity_close))
-			continue;
-
-		GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
-		if(!IsBoxHazard(pos2, f3_CustomMinMaxBoundingBoxMinExtra[entity_close], f3_CustomMinMaxBoundingBox[entity_close]))
-			continue;
-			
-		int builder_owner = GetEntPropEnt(entity_close, Prop_Send, "m_hOwnerEntity");
-		DeleteAndRefundBuilding(builder_owner, entity_close);
-	}
-//	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+	ZR_CheckValidityOfPostions_OfObjectsInternal(true);
+	CreateTimer(1.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(5.0, ZR_CheckValidityOfPostions_OfObjects, false, TIMER_FLAG_NO_MAPCHANGE);
+	//needed for map logic!
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+		CheckClientLateJoin(client, false);
+		bool ClientWasInWave = false;
+		if(b_HasBeenHereSinceStartOfWave[client])
+			ClientWasInWave = true;
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
@@ -2534,6 +2642,12 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);
+			if(raidspawned)
+				if(!ClientWasInWave)
+					continue;
+					
+			if(!b_AntiLateSpawn_Allow[client])
+				continue;
 			if(GetClientTeam(client)==2)
 			{
 				if(TeutonType[client] != TEUTON_WAITING)
@@ -2573,13 +2687,13 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 					SetEntityRenderMode(client, RENDER_NORMAL);
 					SetEntityRenderColor(client, 255, 255, 255, 255);
 					SetEntityCollisionGroup(client, 5);
-					if(!raidspawned)
+					if(!raidspawned && !ForceFullHealth)
 					{
 						SetEntityHealth(client, 50);
 						RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 					}
 				}
-				if(raidspawned)
+				if(raidspawned || ForceFullHealth)
 				{
 					if(GetEntProp(client, Prop_Data, "m_iHealth") <= SDKCall_GetMaxHealth(client))
 					{
@@ -2589,46 +2703,6 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 				}
 			}
 			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
-		}
-	}
-	
-	int a, entity;
-	while((entity = FindEntityByNPC(a)) != -1)
-	{
-		if(!b_NpcHasDied[entity])
-		{
-			if(Citizen_IsIt(entity))
-			{
-				Citizen npc = view_as<Citizen>(entity);
-				if(npc.m_nDowned && npc.m_iWearable3 > 0)
-				{
-					npc.SetDowned(false);
-					if(!Waves_InSetup())
-					{
-						int target = 0;
-						for(int i=1; i<=MaxClients; i++)
-						{
-							if(IsClientInGame(i))
-							{
-								if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE && f_TimeAfterSpawn[i] < GetGameTime() && dieingstate[i] == 0) //dont spawn near players who just spawned
-								{
-									target = i;
-									break;
-								}
-							}
-						}
-						
-						if(target)
-						{
-							float pos[3], ang[3];
-							GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-							GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-							ang[2] = 0.0;
-							TeleportEntity(npc.index, pos, ang, NULL_VECTOR);
-						}
-					}
-				}
-			}
 		}
 	}
 	
@@ -2980,6 +3054,7 @@ bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 
 void ForcePlayerWin(bool fakeout = false)
 {
+	bool PlayNormalMusic = false;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
@@ -2988,6 +3063,8 @@ void ForcePlayerWin(bool fakeout = false)
 			SetMusicTimer(client, GetTime() + 33);
 			SendConVarValue(client, sv_cheats, "1");
 			Convars_FixClientsideIssues(client);
+			if(MusicWin.PlayMusic(client))
+				PlayNormalMusic = false;
 		}
 	}
 	if(!fakeout)
@@ -2995,16 +3072,19 @@ void ForcePlayerWin(bool fakeout = false)
 
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
-	
-	MusicString1.Clear();
-	MusicString2.Clear();
-	MusicSetup1.Clear();
-	RaidMusicSpecial1.Clear();
+	if(PlayNormalMusic)
+		EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
-	EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 
 	if(!fakeout)
 	{
+		MusicString1.Clear();
+		MusicString2.Clear();
+		MusicSetup1.Clear();
+		MusicLastmann.Clear();
+		MusicWin.Clear();
+		MusicLoss.Clear();
+		RaidMusicSpecial1.Clear();
 		MVMHud_Disable();
 		int entity = CreateEntityByName("game_round_win"); 
 		DispatchKeyValue(entity, "force_map_reset", "1");
@@ -3016,8 +3096,24 @@ void ForcePlayerWin(bool fakeout = false)
 	}
 }
 
-void ForcePlayerLoss()
+void ForcePlayerLoss(bool WasRaid = true)
 {
+	if(WasRaid)
+	{
+		if(Rogue_Mode())
+		{
+			
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && GetClientTeam(client)==2 && IsPlayerAlive(client))
+				{
+					ForcePlayerSuicide(client);
+				}
+			}
+			//KILL all players instead
+			return;
+		}
+	}
 	MVMHud_Disable();
 	ZR_NpcTauntWin();
 	ZR_NpcTauntWinClear();
@@ -3029,6 +3125,14 @@ void ForcePlayerLoss()
 	Music_RoundEnd(entity);
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	Native_ZR_OnWinTeam(TFTeam_Blue);
+	
+	MusicString1.Clear();
+	MusicString2.Clear();
+	MusicSetup1.Clear();
+	MusicLastmann.Clear();
+	MusicWin.Clear();
+	MusicLoss.Clear();
+	RaidMusicSpecial1.Clear();
 }
 
 
@@ -3064,7 +3168,7 @@ void ZR_FastDownloadForce()
 	ZealotMusicDownload();
 	YakuzaMusicDownload();
 	FullmoonDownload();
-	//Cheese_PrecacheMusic();
+	Cheese_PrecacheMusic();
 	Core_PrecacheGlobalCustom();
 	PrecacheMusicZr();
 }
@@ -3104,4 +3208,173 @@ public Action Command_SetTeamCustom(int client, int args)
 	}
 	
 	return Plugin_Handled;
+}
+
+void SetCustomFog(int fogType, int color1[4], int color2[4], float start, float end, float maxDensity, int blend = 2, bool overwriteOtherCustomFog = false)
+{
+	if (!overwriteOtherCustomFog && IsValidEntity(CustomFogEntity[fogType]))
+		return;
+	
+	ClearCustomFog(fogType);
+	
+	if (!IsValidEntity(MapFogEntity))
+	{
+		int fog = INVALID_ENT_REFERENCE;
+		int mapFog = INVALID_ENT_REFERENCE;
+		int count;
+		while ((fog = FindEntityByClassname(fog, "env_fog_controller")) != INVALID_ENT_REFERENCE)
+		{
+			// Store the last known fog
+			char buffer[64];
+			GetEntPropString(fog, Prop_Data, "m_iName", buffer, sizeof(buffer));
+			if (StrContains(buffer, "rpg_fortress_envfog") == 0)
+				continue;
+			
+			mapFog = fog;
+			count++;
+		}
+		
+		if (count == 0)
+		{
+			// Map has no fog
+			MapFogEntity = INVALID_ENT_REFERENCE;
+		}
+		else if (count == 1)
+		{
+			// We only found 1 env_fog_controller, this has to be the map's
+			MapFogEntity = mapFog;
+		}
+		else
+		{
+			// Multiple fog controllers! If every single player has the same fog controller, we'll assume this is the one we want to store
+			int lastController = INVALID_ENT_REFERENCE;
+			for (int client = 1; client <= MaxClients; client++)
+			{
+				if (!IsClientInGame(client) || IsFakeClient(client))
+					continue;
+				
+				int controller = GetEntPropEnt(client, Prop_Send, "m_PlayerFog.m_hCtrl");
+				if (controller == EntRefToEntIndex(ActiveFogEntity))
+				{
+					// Players are using a custom fog so this is pointless. gg
+					lastController = INVALID_ENT_REFERENCE;
+					break;
+				}
+				
+				if (lastController != INVALID_ENT_REFERENCE && lastController != controller)
+				{
+					// Players have different controllers. Give up. It's over
+					lastController = INVALID_ENT_REFERENCE;
+					break;
+				}
+				
+				lastController = controller;
+			}
+			
+			MapFogEntity = lastController;
+		}
+	}
+	
+	int entity = CreateEntityByName("env_fog_controller");
+	if (entity != INVALID_ENT_REFERENCE)
+	{
+		char buffer[64];
+		
+		FormatEx(buffer, sizeof(buffer), "rpg_fortress_envfog_%d", entity);
+		DispatchKeyValue(entity, "targetname", buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%d %d %d %d", color1[0], color1[1], color1[2], color1[3]);
+		DispatchKeyValue(entity, "fogcolor", buffer);
+		
+		FormatEx(buffer, sizeof(buffer), "%d %d %d %d", color2[0], color2[1], color2[2], color2[3]);
+		DispatchKeyValue(entity, "fogcolor2", buffer);
+		
+		DispatchKeyValueFloat(entity, "fogstart", start);
+		DispatchKeyValueFloat(entity, "fogend", end);
+		DispatchKeyValueFloat(entity, "fogmaxdensity", maxDensity);
+		
+		DispatchKeyValueInt(entity, "fogblend", blend);
+		
+		DispatchKeyValue(entity, "fogenable", "1");
+		DispatchKeyValue(entity, "spawnflags", "1");
+		DispatchKeyValue(entity, "fogRadial", "1");
+		DispatchSpawn(entity);
+		AcceptEntityInput(entity, "TurnOn");
+
+		CustomFogEntity[fogType] = EntIndexToEntRef(entity);
+		UpdateCustomFog();
+	}
+}
+
+void ClearCustomFog(int fogType)
+{
+	int entity = EntRefToEntIndex(CustomFogEntity[fogType]);
+	if (IsValidEntity(entity))
+		RemoveEntity(entity);
+	
+	CustomFogEntity[fogType] = INVALID_ENT_REFERENCE;
+	UpdateCustomFog();
+}
+
+void UpdateCustomFog()
+{
+	int fogToUse = INVALID_ENT_REFERENCE;
+	if (IsValidEntity(CustomFogEntity[FogType_NPC]))
+	{
+		fogToUse = CustomFogEntity[FogType_NPC];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(CustomFogEntity[FogType_Wave]))
+	{
+		fogToUse = CustomFogEntity[FogType_Wave];
+		ActiveFogEntity = fogToUse;
+	}
+	else if (IsValidEntity(MapFogEntity))
+	{
+		fogToUse = MapFogEntity;
+		
+		// This is cleared because it's only used when necessary (maps might have multiple entities)
+		MapFogEntity = INVALID_ENT_REFERENCE;
+		ActiveFogEntity = INVALID_ENT_REFERENCE;
+	}
+	else
+	{
+		ActiveFogEntity = INVALID_ENT_REFERENCE;
+	}
+	
+	if (fogToUse == INVALID_ENT_REFERENCE)
+		return;
+	
+	int entity = EntRefToEntIndex(fogToUse);
+	char buffer[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
+	if (buffer[0] == '\0')
+	{
+		// Give the controller a name if it has none. If it has no name, there's no point in changing it back
+		buffer = "mapfog";
+		SetEntPropString(entity, Prop_Data, "m_iName", buffer);
+	}
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client))
+		{
+			SetVariantString(buffer);
+			AcceptEntityInput(client, "SetFogController");
+		}
+	}
+}
+
+void ShowCustomFogToClient(int client)
+{
+	if (!IsValidEntity(ActiveFogEntity))
+		return;
+	
+	// This is used on late joins for specific clients, use UpdateCustomFog to update globally
+	int entity = EntRefToEntIndex(ActiveFogEntity);
+	char buffer[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer)); // By this point, this should always have a name
+	
+	SetVariantString(buffer);
+	AcceptEntityInput(client, "SetFogController");
 }

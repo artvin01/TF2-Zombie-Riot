@@ -162,14 +162,14 @@ methodmap LostKnight < CClotBody
 	
 	public LostKnight(float vecPos[3], float vecAng[3], int ally)
 	{
-		LostKnight npc = view_as<LostKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "90000", ally));
+		LostKnight npc = view_as<LostKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.15", "90000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
-		int iActivity = npc.LookupActivity("ACT_TEUTON_NEW_WALK");
+		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -226,50 +226,13 @@ methodmap LostKnight < CClotBody
 				}
 			}
 		}
+		
+		int color[4] = { 10, 10, 10, 255 };
+		SetCustomFog(FogType_NPC, color, color, 10.0, 125.0, 0.825);
 
-		if(FogEntity != INVALID_ENT_REFERENCE)
-		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
-
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "10 10 10 255");
-			DispatchKeyValue(entity, "fogcolor2", "10 10 10 255");
-			DispatchKeyValueFloat(entity, "fogstart", 10.0);
-			DispatchKeyValueFloat(entity, "fogend", 125.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.825);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-			
-			for(int client1 = 1; client1 <= MaxClients; client1++)
-			{
-				if(IsClientInGame(client1))
-				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
-				}
-			}
-		}
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 125, 125, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
 		
 		npc.StopPathing();
@@ -340,7 +303,7 @@ public void LostKnight_ClotThink(int iNPC)
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.AddGesture("ACT_HURT", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -400,7 +363,10 @@ public void LostKnight_ClotThink(int iNPC)
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 2.0;
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+						if(!ShouldNpcDealBonusDamage(npc.m_iTarget))
+							npc.AddGesture("ACT_TEUTON_ATTACK_NEW", _,_,_, 1.1);
+						else
+							npc.AddGesture("ACT_TEUTON_ATTACK_CADE_NEW", _,_,_, 1.1);
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
 						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
@@ -499,14 +465,7 @@ public void LostKnight_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 
-	if(FogEntity != INVALID_ENT_REFERENCE)
-	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
-	}
+	ClearCustomFog(FogType_NPC);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

@@ -142,6 +142,8 @@ public void Blitzkrieg_OnMapStart()
 
 void PrecacheBlitzMusic()
 {
+	NPC_GetByPlugin("npc_alt_donnerkrieg");
+	NPC_GetByPlugin("npc_alt_schwertkrieg");
 	if(b_musicprecached)
 		return;
 	
@@ -478,19 +480,14 @@ methodmap Blitzkrieg < CClotBody
 		SetVariantString(BLITZKRIEG_PUNISHMENT_SHIELD_MULTI);
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 125, 100, 100, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 55, 30, 30, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
 		
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 125, 100, 100, 255);
 		
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
@@ -654,7 +651,7 @@ methodmap Blitzkrieg < CClotBody
 		}
 		
 		bool final = StrContains(data, "final_item") != -1;
-		fl_base_raidmodescaling = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
+		fl_base_raidmodescaling = (RaidModeScaling*1.5);	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
 		if(i_current_wave[npc.index]<=20)
 		{
 			fl_base_raidmodescaling *= 2.0;	//blitz is quite weak on wave 15, and 30
@@ -1332,7 +1329,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(i_current_wave[npc.index]<=10)
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth)));
-		npc.m_flRocketFireRate=((Health/MaxHealth)-0.4)/zr_smallmapbalancemulti.FloatValue;
+		npc.m_flRocketFireRate=((Health/MaxHealth)-0.4);
 		if(npc.m_flRocketFireRate<=0.3)//This limits the firerate of the npc.
 		{
 			npc.m_flRocketFireRate=0.3;
@@ -1341,7 +1338,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	else if(i_current_wave[npc.index]<=30 && i_current_wave[npc.index]>10)	//waves 16-30 he scales with this
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth))*1.1);
-		npc.m_flRocketFireRate=((Health/MaxHealth)-0.5)/zr_smallmapbalancemulti.FloatValue;
+		npc.m_flRocketFireRate=((Health/MaxHealth)-0.5);
 		if(npc.m_flRocketFireRate<=0.25)//This limits the firerate of the npc.
 		{
 			npc.m_flRocketFireRate=0.25;
@@ -1350,7 +1347,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	else if(i_current_wave[npc.index]<=45 && i_current_wave[npc.index]>20)//waves 31-45 he scales with this
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth))*1.22);
-		npc.m_flRocketFireRate=((Health/MaxHealth)-0.75)/zr_smallmapbalancemulti.FloatValue;
+		npc.m_flRocketFireRate=((Health/MaxHealth)-0.75);
 		if(npc.m_flRocketFireRate<=0.075)//This limits the firerate of the npc.
 		{
 			npc.m_flRocketFireRate=0.075;
@@ -1359,7 +1356,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	else if(i_current_wave[npc.index]>=40)	//beyond wave 60 he scales with this
 	{
 		RaidModeScaling = fl_base_raidmodescaling*(1.0+(1-(Health/MaxHealth))*1.3);
-		npc.m_flRocketFireRate=((Health/MaxHealth)-0.85)/zr_smallmapbalancemulti.FloatValue;
+		npc.m_flRocketFireRate=((Health/MaxHealth)-0.85);
 		if(npc.m_flRocketFireRate<=0.01)	//This limits the firerate of the npc. In this case its used to make sure it doesn't go negative
 		{
 			npc.m_flRocketFireRate=0.01;
@@ -1682,7 +1679,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	int heck;
 	int spawn_index;
 	heck= maxhealth;
-	maxhealth=RoundToNearest((heck/10)*zr_smallmapbalancemulti.FloatValue);
+	maxhealth= (heck/10);
 	if(i_current_wave[npc.index]==30)	//Only spwans if the wave is 45.
 	{
 		spawn_index = NPC_CreateByName("npc_alt_combine_soldier_deutsch_ritter", npc.index, pos, ang, GetTeam(npc.index));
@@ -1706,7 +1703,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 	if(i_current_wave[npc.index]>=40)	//Only spawns if the wave is 60 or beyond.
 	{
 		CPrintToChatAll("{crimson}%s{default}: And now its those two's turn", NpcStats_ReturnNpcName(npc.index, true));
-		maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
+		maxhealth= (heck/5);	//mid squishy
 
 		spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1717,7 +1714,7 @@ static void Spawn_Allies(Blitzkrieg npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
-		maxhealth=RoundToNearest((heck/2)*zr_smallmapbalancemulti.FloatValue);	//the tankiest
+		maxhealth= (heck/2);	//the tankiest
 		spawn_index = NPC_CreateByName("npc_alt_schwertkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		if(spawn_index > MaxClients)
@@ -1958,7 +1955,7 @@ public Action Smite_Timer_Blitz(Handle Smite_Logic, DataPack data)
 }
 void Blitzkrieg_Punishment_Tweak(int entity, int victim, float damage, int weapon)	//while this function actually does the damage
 {
-	SDKHooks_TakeDamage(victim, entity, entity, (fl_blitz_punish_dmg*(i_punish_initiator == victim ? 1.0 : 0.5))*zr_smallmapbalancemulti.FloatValue, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+	SDKHooks_TakeDamage(victim, entity, entity, (fl_blitz_punish_dmg*(i_punish_initiator == victim ? 1.0 : 0.5)), DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
 }
 static void Blitzkrieg_IOC_Invoke(int entity, int enemy)	//Ion cannon from above
 {
@@ -2114,7 +2111,7 @@ static void Blitzkrieg_IonAttack(Handle &data)
 	{
 
 		startPosition[2] += 25.0;
-		Explode_Logic_Custom((100.0*RaidModeScaling)*zr_smallmapbalancemulti.FloatValue, client, client, -1, startPosition, Ionrange , _ , _ , true);
+		Explode_Logic_Custom((100.0*RaidModeScaling), client, client, -1, startPosition, Ionrange , _ , _ , true);
 		startPosition[2] -= 25.0;
 			
 		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -2170,13 +2167,11 @@ static void BlitzLight_Invoke(int iNPC, float timer, float charge)
 	float vecTarget[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecTarget);
 	
-	float smallmap = zr_smallmapbalancemulti.FloatValue;	//Nerf's blitzlight on small maps. this is set in another plugin from this one
-
-	BlitzLight_Scale1 = 200.0*smallmap;	//Best to do the scales in sets of numbers.
-	BlitzLight_Scale2 = 400.0*smallmap;
-	BlitzLight_Scale3 = 600.0*smallmap;
-	BlitzLight_DMG_Base = 80.0*smallmap;		//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
-	BlitzLight_Radius_Base = 600.0*smallmap;	//max radius
+	BlitzLight_Scale1 = 200.0;	//Best to do the scales in sets of numbers.
+	BlitzLight_Scale2 = 400.0;
+	BlitzLight_Scale3 = 600.0;
+	BlitzLight_DMG_Base = 80.0;		//Damage is dealt 10 times a second. The longer blitzlight is active the more it deals, once "stage 3" is reached it deals 2x damage
+	BlitzLight_Radius_Base = 600.0;	//max radius
 
 	
 	float GameTime = GetGameTime(npc.index);

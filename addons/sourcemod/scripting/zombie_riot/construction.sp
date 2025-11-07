@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+int PlayerVotedForThis[MAXPLAYERS];
+
 enum struct AttackInfo
 {
 	char WaveSet[64];
@@ -67,6 +69,7 @@ enum struct ResearchInfo
 	char Name[48];
 	char Key[48];
 	float Time;
+	int Res_InternalID;
 	StringMap CostMap;
 
 	void SetupKv(KeyValues kv)
@@ -80,6 +83,10 @@ enum struct ResearchInfo
 
 		this.Time = kv.GetFloat("time");
 		kv.GetString("key", this.Key, sizeof(this.Key));
+
+		static int IdIncrement;
+		IdIncrement++;
+		this.Res_InternalID = IdIncrement;
 
 		this.CostMap = new StringMap();
 		if(kv.JumpToKey("cost"))
@@ -116,9 +123,11 @@ static ArrayList ResourceList;
 static ArrayList RewardList;
 static ArrayList ResearchList;
 static MusicEnum BackgroundMusic;
+static bool ExplainOreMining[MAXPLAYERS];
 
 static Handle GameTimer;
 static int CurrentRisk;
+static bool CurrentMidRaise;
 static int CurrentAttacks;
 static float NextAttackAt;
 static int AttackType;	// 0 = None, 1 = Resource, 2 = Base, 3 = Final
@@ -131,6 +140,11 @@ static int InResearch = -1;
 static float InResearchAt;
 static Handle InResearchMenu[MAXPLAYERS];
 
+
+void Construction_PutInServer(int client)
+{
+	ExplainOreMining[client] = false;
+}
 bool Construction_Mode()
 {
 	return InConstMode;
@@ -392,6 +406,7 @@ void Construction_SetupVote(KeyValues kv)
 // Waves_RoundStart()
 void Construction_StartSetup()
 {
+	Zero(PlayerVotedForThis);
 	Rogue_StartSetup();
 	Construction_RoundEnd();
 
@@ -405,7 +420,7 @@ void Construction_StartSetup()
 	{
 		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
 	}
-
+/*
 	ArrayList list = new ArrayList();
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -430,6 +445,7 @@ void Construction_StartSetup()
 	}
 
 	delete list;
+	*/
 }
 
 void Construction_RoundEnd()
@@ -490,12 +506,10 @@ void Construction_Start()
 		}
 	}
 
-	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
-	Citizen_SpawnAtPoint("b");
-
 	NextAttackAt = GetGameTime() + AttackTime;
 	GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 	Ammo_Count_Ready = 20;
+	mp_disable_respawn_times.BoolValue = false;
 
 	int length = ResourceList.Length;
 	if(length)
@@ -563,7 +577,8 @@ void Construction_Start()
 		delete navPicked;
 	}
 
-	
+	NPC_CreateByName("npc_base_building", -1, pos1, ang, TFTeam_Red);
+
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
@@ -574,6 +589,80 @@ void Construction_Start()
 	}
 
 	BackgroundMusic.CopyTo(BGMusicSpecial1);
+}
+
+void TutorialShort_ExplainOres(int client)
+{
+	if(!Construction_Mode())
+		return;
+	if(ExplainOreMining[client])
+		return;
+
+
+	if(!IsEntityAlive(client))
+		return;
+	int entity_found = GetClosestOre(client);
+	if(!IsValidEntity(entity_found))
+		return;
+	
+	float pos2[3];
+	ExplainOreMining[client] = true;
+	GetEntPropVector(entity_found, Prop_Data, "m_vecAbsOrigin", pos2);
+	pos2[2] += 80.0;
+	Event event = CreateEvent("show_annotation");
+	if(event)
+	{
+		char buffer[255];
+		FormatEx(buffer, sizeof(buffer), "%T", "Mine Resources", client);
+		event.SetFloat("worldPosX", pos2[0]);
+		event.SetFloat("worldPosY", pos2[1]);
+		event.SetFloat("worldPosZ", pos2[2]);
+		event.SetFloat("lifetime", 12.0);
+		event.SetString("text", buffer);
+		event.SetString("play_sound", "vo/null.mp3");
+		IdRef++;
+		event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+		event.FireToClient(client);
+	}
+}
+
+
+stock int GetClosestOre(int entity)
+{
+	float TargetDistance = 0.0; 
+	int ClosestTarget = 0; 
+	for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+	{
+		int i = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
+		if(i != entity && IsValidEntity(i) && GetTeam(i) != GetTeam(entity))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+
+			if(!(StrContains(npc_classname, "npc_material") != -1))
+				continue;
+				
+			float EntityLocation[3], TargetLocation[3]; 
+			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
+			GetEntPropVector( i, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
+			
+			float distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
+			if( TargetDistance ) 
+			{
+				if( distance < TargetDistance ) 
+				{
+					ClosestTarget = i; 
+					TargetDistance = distance;		  
+				}
+			} 
+			else 
+			{
+				ClosestTarget = i; 
+				TargetDistance = distance;
+			}	
+		}
+	}
+	return ClosestTarget; 
 }
 
 static bool GetRandomResourceInfo(float distance, ResourceInfo info, int[] picked)
@@ -616,15 +705,24 @@ static bool GetRandomResourceInfo(float distance, ResourceInfo info, int[] picke
 
 static Action Timer_StartAttackWave(Handle timer)
 {
-	if(NextAttackAt > GetGameTime())
+	float time = NextAttackAt - GetGameTime();
+	if(time > 0.0)
 	{
+		//when 150 ticks left, boost power
+		if(time < 150.0 && !CurrentMidRaise)
+		{
+			CurrentRisk++;
+			CurrentMidRaise = true;
+		}
+		
 		GameTimer = CreateTimer(0.5, Timer_StartAttackWave);
 		Waves_UpdateMvMStats();
 		return Plugin_Stop;
 	}
 	
-	CurrentRisk += RiskIncrease;
+	CurrentRisk += RiskIncrease - 1;
 	CurrentAttacks++;
+	CurrentMidRaise = false;
 	
 	// Clear out existing enemies
 	for(int i; i < i_MaxcountNpcTotal; i++)
@@ -650,7 +748,7 @@ static Action Timer_StartAttackWave(Handle timer)
 		bonusRisk = GetRiskAttackInfo(CurrentRisk, attack);
 	}
 
-	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, GetBaseBuilding(), bonusRisk);
+	StartAttack(attack, CurrentAttacks > MaxAttacks ? 3 : 2, Construction_GetBaseBuilding(), bonusRisk);
 
 	if(CurrentAttacks > MaxAttacks)
 	{
@@ -750,6 +848,9 @@ static bool StartAttack(const AttackInfo attack, int type, int target, int bonus
 	AttackRef = EntIndexToEntRef(target);
 	AttackHardcore = bonuses;
 
+	if(type > 1)
+		mp_disable_respawn_times.BoolValue = true;
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, attack.WaveSet);
 	KeyValues kv = new KeyValues("Waves");
@@ -770,6 +871,8 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
+		mp_disable_respawn_times.BoolValue = false;
+		
 		int cash = 300;
 		int GetRound = Construction_GetRisk() + 3;
 		cash *= GetRound;
@@ -949,7 +1052,7 @@ bool Construction_BlockSpawner(const char[] name)
 	return CurrentSpawnName[0] && !StrEqual(CurrentSpawnName, name, false);
 }
 
-static int GetBaseBuilding()
+int Construction_GetBaseBuilding()
 {
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
@@ -960,10 +1063,11 @@ static int GetBaseBuilding()
 
 	return -1;
 }
-
-static int RiskBonusFromDistance(const float pos[3])
+/*
+static stock int RiskBonusFromDistance(const float pos[3])
 {
-	int entity = GetBaseBuilding();
+
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0;
 	
@@ -972,11 +1076,13 @@ static int RiskBonusFromDistance(const float pos[3])
 
 	if(GetVectorDistance(pos, pos2, true) > 100000000.0)	// 10000 HU
 		return 1;
-	
+
+keep it at 0
 	return 0;
 	//return RoundFloat(GetVectorDistance(pos, pos2, true) / 400000000.0 * float(HighestRisk));
 }
 
+*/
 static bool UpdateValidSpawners(const float pos1[3], int type)
 {
 	CNavArea goalArea = TheNavMesh.GetNavArea(pos1, 1000.0);
@@ -1003,6 +1109,9 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 		}
 	}
 
+	if(type > 1)
+		list.Sort(Sort_Random, Sort_Integer);
+
 	float pos2[3];
 	float distance = FAR_FUTURE;
 	int length = list.Length;
@@ -1012,22 +1121,30 @@ static bool UpdateValidSpawners(const float pos1[3], int type)
 
 		float dist = 0.0;
 
-		if(type < 2)
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
-			dist = GetVectorDistance(pos1, pos2, true);
-			if(dist > distance)
-				continue;
-		}
-
 		CNavArea startArea = TheNavMesh.GetNavAreaEntity(entity, view_as<GetNavAreaFlags_t>(0), 1000.0);
 		if(startArea == NULL_AREA)
 			continue;
 		
 		if(TheNavMesh.BuildPath(startArea, goalArea, pos1))
 		{
+			if(type < 2)
+			{
+				dist = goalArea.GetTotalCost();
+				if(dist == 0.0)
+				{
+					GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos2);
+					dist = GetVectorDistance(pos1, pos2, true);
+				}
+				
+				if(dist > distance)
+					continue;
+			}
+
 			GetEntPropString(entity, Prop_Data, "m_iName", CurrentSpawnName, sizeof(CurrentSpawnName));
 			distance = dist;
+
+			if(type > 1)
+				break;
 		}
 	}
 
@@ -1059,7 +1176,7 @@ void Construction_EnemySpawned(int entity)
 	
 	if(AttackType > 0 && AttackHardcore > 0)
 	{
-		float stats = Pow(1.05, float(AttackHardcore));
+		float stats = Pow(1.06, float(AttackHardcore));
 		fl_Extra_Damage[entity] *= stats;
 		
 		SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * stats));
@@ -1083,8 +1200,7 @@ void Construction_ClotThink(int entity)
 		{
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NpcIsInvulnerable[npc.index] = true;
-			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR, false, 1, false, true);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 150, false, false, true);
+			SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
 		}
 	}
 	else
@@ -1093,9 +1209,7 @@ void Construction_ClotThink(int entity)
 		{
 			b_ThisEntityIgnored[npc.index] = false;
 			b_NpcIsInvulnerable[npc.index] = false;
-			SetEntityRenderMode(npc.index, i_EntityRenderMode[npc.index], true, 2, false, true);
-			SetEntityRenderColor(npc.index, i_EntityRenderColour1[npc.index], i_EntityRenderColour2[npc.index],
-			 i_EntityRenderColour3[npc.index], i_EntityRenderColour4[npc.index], true, false, true);
+			SetEntityRenderFx(npc.index, RENDERFX_NONE);
 		}
 	}
 }
@@ -1161,7 +1275,8 @@ stock bool Construction_OnTakeDamageCustom(const char[] waveset, int victim, int
 				//if(!(damagetype & DMG_TRUEDAMAGE))
 				{
 					float minDamage = damage * 0.05;
-					damage -= float(info.Defense);
+					if(!(damagetype & DMG_TRUEDAMAGE))
+						damage -= float(info.Defense);
 					if(damage < minDamage)
 						damage = minDamage;
 				}
@@ -1220,7 +1335,14 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 			SetGlobalTransTarget(attacker);
 			
 			Menu menu = new Menu(ConstructionProvokeH);
-			menu.SetTitle("%t", "Start Mining", NpcStats_ReturnNpcName(victim));
+			if(b_IsAloneOnServer)
+			{
+				menu.SetTitle("%t", "Start Mining Alone", NpcStats_ReturnNpcName(victim));
+			}
+			else
+			{
+				menu.SetTitle("%t", "Start Mining", NpcStats_ReturnNpcName(victim));
+			}
 
 			char num[16], buffer[16];
 			IntToString(EntIndexToEntRef(victim), num, sizeof(num));
@@ -1276,7 +1398,7 @@ bool Construction_OnTakeDamage(const char[] resource, int maxAmount, int victim,
 					
 					float pos[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_vecOrigin", pos);
-					int risk = CurrentRisk + RiskBonusFromDistance(pos);
+					int risk = CurrentRisk/* + RiskBonusFromDistance(pos)*/;
 
 					AttackInfo attack;
 					if(!StartAttack(attack, 1, npc.index, GetRiskAttackInfo(risk, attack)))
@@ -1329,8 +1451,14 @@ static int ConstructionProvokeH(Menu menu, MenuAction action, int client, int ch
 				int entity = EntRefToEntIndex(StringToInt(buffer));
 				if(entity != -1)
 				{
-					view_as<CClotBody>(entity).m_bCamo = false;
-					Construction_Material_Interact(client, entity);
+					//need atleast 2 parcitipants
+					CClotBody npc = view_as<CClotBody>(entity);
+					if(b_IsAloneOnServer || IsValidEntity(npc.m_iTargetWalkTo) && npc.m_iTargetWalkTo != client)
+					{
+						view_as<CClotBody>(entity).m_bCamo = false;
+						Construction_Material_Interact(client, entity);
+					}
+					npc.m_iTargetWalkTo = client;
 				}
 			}
 		}
@@ -1437,7 +1565,7 @@ public float InterMusic_ConstructBase(int client)
 	if(LastMann)
 		return 1.0;
 	
-	int entity = GetBaseBuilding();
+	int entity = Construction_GetBaseBuilding();
 	if(entity == -1)
 		return 0.0;
 	
@@ -1496,13 +1624,22 @@ void Construction_OpenResearch(int client)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(ResearchMenuH);
+	AnyMenuOpen[client] = 1.0;
 
 	ResearchInfo info;
 	char index[16], buffer[128];
 
 	if(InResearch == -1)
 	{
-		menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
+		if(b_IsAloneOnServer)
+		{
+			menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description Alone");
+
+		}
+		else
+		{
+			menu.SetTitle("%t\n \n%t", "Research Station", "Crouch and select to view description");
+		}
 
 		int amount, items;
 		int length1 = ResearchList.Length;
@@ -1521,7 +1658,30 @@ void Construction_OpenResearch(int client)
 				}
 			}
 
+			bool VotedAlready = false;
+			for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
+			{
+				if(IsClientInGame(clientloop) && GetClientTeam(clientloop) == 2)
+				{
+					if(info.Res_InternalID == PlayerVotedForThis[clientloop] && client != clientloop)
+					{
+						VotedAlready = true;
+					}
+				}
+			}
+			if(b_IsAloneOnServer)
+			{
+				VotedAlready = true;
+			}
 			FormatEx(buffer, sizeof(buffer), "%t", info.Name);
+			if(VotedAlready)
+			{
+				Format(buffer, sizeof(buffer), "%s [✓]", buffer);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "%s [ ]", buffer);
+			}
 
 			bool failed;
 			StringMapSnapshot snap = info.CostMap.Snapshot();
@@ -1581,8 +1741,11 @@ void Construction_OpenResearch(int client)
 
 static Action ResearchTimer(Handle timer, int client)
 {
-	InResearchMenu[client] = null;
-	Construction_OpenResearch(client);
+	if(IsValidClient(client))
+	{
+		InResearchMenu[client] = null;
+		Construction_OpenResearch(client);
+	}
 	return Plugin_Continue;
 }
 
@@ -1593,14 +1756,18 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 		case MenuAction_End:
 		{
 			delete menu;
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Cancel:
 		{
 			delete InResearchMenu[client];
+			AnyMenuOpen[client] = 0.0;
 		}
 		case MenuAction_Select:
 		{
 			delete InResearchMenu[client];
+			AnyMenuOpen[client] = 0.0;
 			
 			ResearchInfo info;
 			char buffer[64];
@@ -1615,10 +1782,30 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 
 				ResearchList.GetArray(a, info);
 
-				if(GetClientButtons(client) & IN_DUCK)
+				bool VotedAlready = false;
+				for(int clientloop = 1; clientloop <= MaxClients; clientloop++)
+				{
+					if(IsClientInGame(clientloop) && GetClientTeam(clientloop) == 2 && client != clientloop)
+					{
+						if(info.Res_InternalID == PlayerVotedForThis[clientloop])
+						{
+							VotedAlready = true;
+						}
+					}
+				}
+				if(b_IsAloneOnServer)
+					VotedAlready = true;
+
+				PlayerVotedForThis[client] = info.Res_InternalID;
+
+				if(!VotedAlready || GetClientButtons(client) & IN_DUCK)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s Desc", info.Name);
 					CPrintToChat(client, "%t", "Artifact Info", info.Name, buffer);
+					if(!VotedAlready)
+					{
+						CPrintToChat(client, "%t", "Player Must Agree");
+					}
 				}
 				else
 				{
@@ -1720,5 +1907,4 @@ public bool BuildingDetected_Enumerate(int entity, int client)
 }
 
 #include "roguelike/construction_items.sp"
-
-
+#include "roguelike/rift_construction.sp"

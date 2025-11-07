@@ -467,8 +467,8 @@ methodmap Harrison < CClotBody
 				music.Time = 92;
 				music.Volume = 1.0;
 				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "RAGE");
-				strcopy(music.Artist, sizeof(music.Artist), "Serious sam Reborn mod (?)");
+				strcopy(music.Name, sizeof(music.Name), "What Lies Unseen - Arena FIght - Wave 3");
+				strcopy(music.Artist, sizeof(music.Artist), "Serious Sam 4: Reborn mod");
 				Music_SetRaidMusic(music);
 			}
 			
@@ -494,19 +494,16 @@ methodmap Harrison < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/pyro_hazmat_4/pyro_hazmat_4_sniper.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable5, 50, 50, 50, 255);
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/xms2013_sniper_jacket/xms2013_sniper_jacket.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable6, 50, 50, 50, 255);
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum24_daring_dell_style3/sum24_daring_dell_style3.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable7, 50, 50, 50, 255);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -1321,6 +1318,8 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 
 								float damage = 35.0;
 								damage *= 1.15;
+								if(ShouldNpcDealBonusDamage(target))
+									damage *= 7.0;
 
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 									
@@ -1561,7 +1560,7 @@ static Action Timer_Quad_Rocket_Shot(Handle timer, DataPack pack)
 	pack.Reset();
 	Harrison npc = view_as<Harrison>(EntRefToEntIndex(pack.ReadCell()));
 	int enemy = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(enemy))
+	if(IsValidEntity(enemy) && IsValidEntity(npc.index))
 	{
 		float vecTarget[3]; WorldSpaceCenter(enemy, vecTarget);
 		float vecSelf[3];

@@ -123,14 +123,14 @@ methodmap RaidbossBladedance < CClotBody
 	}
 	public RaidbossBladedance(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "1500000", ally, false));
+		RaidbossBladedance npc = view_as<RaidbossBladedance>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.25", "1500000", ally, false));
 		
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 
-		npc.SetActivity("ACT_CUSTOM_WALK_BOW");
+		npc.SetActivity("ACT_BLADEDANCE_WALK");
 
 		func_NPCDeath[npc.index] = RaidbossBladedance_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = RaidbossBladedance_OnTakeDamage;
@@ -145,6 +145,9 @@ methodmap RaidbossBladedance < CClotBody
 
 		
 		bool final = StrContains(data, "final_item") != -1;
+		
+		if(Rogue_HasNamedArtifact("Ascension Stack"))
+			final = false;
 		
 		if(final)
 		{
@@ -173,10 +176,8 @@ methodmap RaidbossBladedance < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 55, 55, 255);
 
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 255, 55, 55, 255);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -235,7 +236,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.AddGesture("ACT_HURT", false);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -279,7 +280,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			npc.PlayRangedSpecialAttackSecondarySound(vecTarget);
-			npc.AddGesture("ACT_METROPOLICE_POINT");
+			npc.AddGesture("ACT_BLADEDANCE_BUFF");
 			switch(GetRandomInt(1,3))
 			{
 				case 1:
@@ -383,7 +384,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_CUSTOM_WALK_BOW");
+					npc.SetActivity("ACT_BLADEDANCE_WALK");
 				}
 			}
 			case 1:
@@ -393,8 +394,13 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.SetActivity("ACT_IDLE_PISTOL");
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
+					switch(GetRandomInt(0,1))
+					{
+						case 0:
+							npc.AddGesture("ACT_BLADEDANCE_ATTACK_LEFT", _,_,_,1.0);
+						case 1:
+							npc.AddGesture("ACT_BLADEDANCE_ATTACK_RIGHT", _,_,_,1.0);
+					}
 					npc.m_iChanged_WalkCycle = 5;
 
 					npc.m_flNextRangedAttackHappening = gameTime + 0.4;
@@ -482,7 +488,7 @@ public void RaidbossBladedance_NPCDeath(int entity)
 				}
 			}
 		}
-		ForcePlayerWin();
+		Waves_ClearWaves();
 	}
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -197,10 +197,8 @@ methodmap VictoriaBigpipe < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 150, 255, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -417,7 +415,6 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 						npc.SetWeaponModel("models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl", 1.25);
 						m_iGunType=0;
 						SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 3);
-						SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(npc.m_iWearable1, 50, 150, 255, 255);
 					}
 				
@@ -462,9 +459,8 @@ int VictoriaBigpipeSelfDefense(VictoriaBigpipe npc, float gameTime, float distan
 						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.1;
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 20.0;
-							if(Waves_GetRoundScale()+1 > 8)
-								damageDealt *= float(Waves_GetRoundScale()+1)*0.133333;
+							float damageDealt = 30.0;
+
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 3.0;
 
@@ -538,7 +534,7 @@ static void HEGrenade(int entity, int victim, float damage, int weapon)
 
 		if(inflictor == -1)
 			inflictor = entity;
-		damage = 100.0;
+		damage = 300.0;
 		if(ShouldNpcDealBonusDamage(victim))
 			damage *= 3.0;
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);

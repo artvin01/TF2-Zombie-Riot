@@ -517,7 +517,7 @@ public void Event_Knife_Touch(int entity, int target)
 
 float f_AttackDelayKnife[MAXPLAYERS];
 
-public void Survival_Knife_ThrowBlade(int client, int weapon, const char[] classname, bool &result)
+public void Survival_Knife_ThrowBlade(int client, int weapon, bool crit, int slot)
 {
 	f_AttackDelayKnife[client] = 0.0;
 	SDKUnhook(client, SDKHook_PreThink, SurvivalKnifeAttackM2_PreThink);

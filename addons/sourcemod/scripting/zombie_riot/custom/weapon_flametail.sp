@@ -16,12 +16,6 @@ void Flametail_RoundStart()
 	Zero(DoubleHit);
 	KaziBuffed = false;
 }
-
-bool IsWeaponKazimierz(int weapon)
-{
-	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
-}
-
 void ResetFlameTail()
 {
 	KaziBuffed = false;
@@ -37,6 +31,7 @@ void ResetFlameTail()
 		}
 	}
 }
+
 void Flametail_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FLAMETAIL)
@@ -62,7 +57,7 @@ void Flametail_Enable(int client, int weapon)
 			}
 		}
 	}
-	if(IsWeaponKazimierz(weapon))	// Abyssal Hunter
+	if(Store_IsWeaponFaction(client, weapon, Faction_Kazimierz))
 	{
 		if(KaziBuffed)
 		{
@@ -80,7 +75,7 @@ public Action Flametail_Timer1(Handle timer, int client)
 		{
 			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") && AllowMaxCashgainWaveCustom(client))
 			{
-				CashRecievedNonWave[client]++;
+				CashReceivedNonWave[client]++;
 				CashSpent[client]--;
 				AddCustomCashMadeThisWave(client, 1);
 			}
@@ -153,8 +148,8 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 		
 		if(damage != 1.0)
 		{
-			ApplyTempAttrib(weapon, 2, damage, 4.0);
-			ApplyTempAttrib(weapon, 6, 0.7, 4.0);
+	//		ApplyTempAttrib(weapon, 2, damage, 4.0);
+			ApplyTempAttrib(weapon, 6, 0.8, 4.0);
 		}
 
 		DodgeNext[client] = true;
@@ -162,7 +157,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 		if(!Waves_InSetup() && AllowMaxCashgainWaveCustom(client))
 		{
 			cash = RoundFloat(cash * ResourceRegenMulti);
-			CashRecievedNonWave[client] += cash;
+			CashReceivedNonWave[client] += cash;
 			CashSpent[client] -= cash;
 			AddCustomCashMadeThisWave(client, cash);
 		}
@@ -199,7 +194,8 @@ void Flametail_NPCTakeDamage(int attacker, float &damage, int weapon, float dama
 		if(WeaponLevel[attacker] > 2)
 		{
 			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 150.0, EXPLOSION_AOE_DAMAGE_FALLOFF + 0.1, 1.0, false, DodgeFor[attacker] > GetGameTime() ? 5 : 3);
+			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 150.0, EXPLOSION_AOE_DAMAGE_FALLOFF, 1.0, false, DodgeFor[attacker] > GetGameTime() ? 4 : 2);
+			i_ExplosiveProjectileHexArray[weapon] = 0;
 		}
 		else
 		{
@@ -272,7 +268,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype, int wea
 				case 2:
 					chance = 0.4;
 				
-				case 3:
+				case 3, 4:
 					chance = 0.6;
 			}
 

@@ -4,387 +4,472 @@
 	{
 		"en"		"Real-Time Camera"
 		"pt"		"Câmera de Tempo-Real"
+		"it"		"Telecamera in tempo reale"
 	}
 	"Disable Camera"
 	{
 		"en"		"Disable Camera"
 		"pt"		"Desligar Câmera"
+		"it"		"Disabilita Telecamera"
 	}
 	"Enable Camera"
 	{
 		"en"		"Enable Camera"
 		"pt"		"Ligar Câmera"
+		"it"		"Abilita Telecamera"
 	}
 	"Mouse Settings"
 	{
 		"en"		"Mouse Settings"
 		"pt"		"Opções de Mouse"
+		"it"		"Impostazioni del Mouse"
 	}
 	"Bind Settings"
 	{
 		"en"		"Bind Settings"
 		"pt"		"Opções de Binds"
+		"it"		"Impostazioni di associazione"
 	}
 	"Screen Aspect Ratio"
 	{
 		"en"		"Screen Aspect Ratio"
 		"pt"		"Proporção da Tela"
+		"it"		"Proporzioni dello schermo"
 	}
 	"Mouse Sensitivity"
 	{
 		"en"		"Mouse Sensitivity"
 		"pt"		"Sensibilidade do Mouse"
+		"it"		"Sensibilità del Mouse"
 	}
 	"Scroll Speed"
 	{
 		"en"		"Scroll Speed"
 		"pt"		"Velocidade do Scroll"
+		"it"		"Velocità di scorrimento"
 	}
 	"Zoom Speed"
 	{
 		"en"		"Zoom Speed"
 		"pt"		"Velocidade do Zoom"
+		"it"		"Velocità dello Zoom"
 	}
 	"Left-Click"
 	{
 		"en"		"Left-Click"
 		"pt"		"Clique Esquerdo"
+		"it"		"Click sinistro"
 	}
 	"Right-Click"
 	{
 		"en"		"Right-Click"
 		"pt"		"Clique Direito"
+		"it"		"Click destro"
 	}
 	"Add To Selection"
 	{
 		"en"		"Add To Selection"
 		"pt"		"Adicionar a Seleção"
+		"it"		"Aggiungi alla Selezione"
 	}
 	"Clear Selection"
 	{
 		"en"		"Clear Selection"
 		"pt"		"Limpar Seleção"
+		"it"		"Pulisci Selezione"
 	}
 	"Select All Units"
 	{
 		"en"		"Select All Units"
 		"pt"		"Selecionar Tudo"
+		"it"		"Seleziona tutte le unità"
 	}
 	"Select Idle Worker"
 	{
 		"en"		"Select Idle Worker"
 		"pt"		"Selecionar Trabalhador Ocioso"
+		"it"		"Seleziona lavoratore inattivo"
 	}
 	"Delete Selected"
 	{
 		"en"		"Delete Selected"
 		"pt"		"Excluir Selecionados"
+		"it"		"Elimina selezionato"
 	}
 	"Adjust Camera"
 	{
 		"en"		"Adjust Camera"
 		"pt"		"Ajustar Câmera"
+		"it"		"Regola la telecamera"
 	}
 	"Zoom In"
 	{
 		"en"		"Zoom In"
 		"pt"		"Aumentar Zoom"
+		"it"		"Ingradisci"
 	}
 	"Zoom Out"
 	{
 		"en"		"Zoom Out"
 		"pt"		"Diminuir Zoom"
+		"it"		"Riduci"
 	}
 	"Scroll Up"
 	{
 		"en"		"Scroll Up"
 		"pt"		"Rolar pra Cima"
+		"it"		"Scorri verso l'alto"
 	}
 	"Scroll Down"
 	{
 		"en"		"Scroll Down"
 		"pt"		"Rolar pra Baixo"
+		"it"		"Scorri verso il basso"
 	}
 	"Scroll Left"
 	{
 		"en"		"Scroll Left"
 		"pt"		"Rolar pra Esquerda"
+		"it"		"Scorri verso sinistra"
 	}
 	"Scroll Right"
 	{
 		"en"		"Scroll Right"
 		"pt"		"Rolar pra Direita"
+		"it"		"Scorri verso destra"
 	}
 	"Q (Skill 1)"
 	{
 		"en"		"Q (Skill 1)"
 		"pt"		"Q (Poder 1)"
+		"it"		"Q (Abilità 1)"
 	}
 	"W (Skill 2)"
 	{
 		"en"		"W (Skill 2)"
 		"pt"		"W (Poder 2)"
+		"it"		"W (Abilità 2)"
 	}
 	"E (Skill 3)"
 	{
 		"en"		"E (Skill 3)"
 		"pt"		"E (Poder 3)"
+		"it"		"E (Abilità 3)"
 	}
 	"R (Skill 4)"
 	{
 		"en"		"R (Skill 4)"
 		"pt"		"R (Poder 4)"
+		"it"		"R (Abilità 4)"
 	}
 	"T (Skill 5)"
 	{
 		"en"		"T (Skill 5)"
 		"pt"		"T (Poder 5)"
+		"it"		"T (Abilità 5)"
 	}
 	"A (Attack Move)"
 	{
 		"en"		"A (Attack Move)"
 		"pt"		"A (Atacar)"
+		"it"		"A (Attaccare)"
 	}
 	"S (Stand Ground)"
 	{
 		"en"		"S (Stand Ground)"
 		"pt"		"S (Manter Posição)"
+		"it"		"S (Mantenere Posizione)"
 	}
 	"D (Patrol Area)"
 	{
 		"en"		"D (Patrol Area)"
 		"pt"		"D (Patrulhar Área)"
+		"it"		"D (Area di pattugliamento)"
 	}
 	"F (Skill 9)"
 	{
 		"en"		"F (Skill 9)"
 		"pt"		"F (Poder 9)"
+		"it"		"F (Abilità 9)"
 	}
 	"G (Skill 10)"
 	{
 		"en"		"G (Skill 10)"
 		"pt"		"G (Poder 10)"
+		"it"		"G (Abilità 10)"
 	}
 	"Press a key to bind"
 	{
 		"en"		"Press a key to bind"
 		"pt"		"Pressione tecla para anexa-la"
+		"it"		"Premere un tasto per associare"
 	}
 	"Valid Key Info 1"
 	{
 		"en"		"Valid keys include most +/- related keys."
 		"pt"		"Teclas válidas são geralmente +/- relacionadas."
+		"it"		"I tasti validi includono la maggior parte dei tasti relativi a +/-."
 	}
 	"Valid Key Info 2"
 	{
 		"en"		"impulse works with any number and voicemenu as itself."
 		"pt"		"impulse funciona com qualquer número e voicemenu por si só."
+		"it"		"impulse funziona con qualsiasi numero e menu vocale come se fosse esso stesso."
 	}
 	"Valid Key Info 3"
 	{
 		"en"		"dropitem, voicemenu, lastinv can also be used."
+		"it"		"È possibile utilizzare anche dropitem, voicemenu e lastinv."
 	}
 	"RTS Help 1"
 	{
 		"en"		"TIP: Move your mouse and click on a unit"
+		"it"		"SUGGERIMENTO: sposta il mouse e clicca su un'unità"
 	}
 	"RTS Help 2"
 	{
 		"en"		"TIP: Command units by selecting\nthem and right-click the ground"
+		"it"		"SUGGERIMENTO: Comanda le\n unità selezionandole e cliccando con\n il tasto destro del mouse sul terreno."
 	}
 	"RTS Help 3"
 	{
 		"en"		"TIP: Use skills using\nQ, W, and other keys"
+		"it"		"SUGGERIMENTO: usa le\n abilità con i tasti Q, W e altri tasti."
 	}
 	"RTS Help 4"
 	{
 		"en"		"TIP: Press 0 to open the\noptions menu to customize\nbinds and mouse settings"
+		"it"		"SUGGERIMENTO: premi 0\n per aprire il menu delle opzioni\n e personalizzare i comandi e le\n impostazioni del mouse."
 	}
 	"RTS Tooltip 1"
 	{
 		"en"		"TIP: With a combat unit,\npress A before right-clicking\nto make them auto attack\nwhile moving"
+		"it"		"SUGGERIMENTO: con un'unità da combattimento,\npremi A prima di cliccare con il tasto destro\nper farla attaccare automaticamente\nmentre si muove."
 	}
 	"RTS Tooltip 2"
 	{
 		"en"		"TIP: With a combat unit,\npress S before right-clicking\nto make them hold that\nposition and don't move"
+		"it"		"SUGGERIMENTO: con un'unità\n di combattimento,premi S prima di\n cliccare con il tasto destro\nper farle mantenere quella\nposizione e non muoversi"
 	}
 	"RTS Tooltip 3"
 	{
 		"en"		"TIP: With a combat unit,\npress D before right-clicking\nto make them patrol back\nand forth between two\nlocations"
+		"it"		"SUGGERIMENTO: con un'unità\n di combattimento,premi D prima di\n cliccare con il tasto destro\nper farla pattugliare avanti e indietro\ntra due posizioni."
 	}
 	"RTS Tooltip 4"
 	{
 		"en"		"TIP: You can press jump\nto clear your selection\nor cancel special moves"
+		"it"		"SUGGERIMENTO: puoi premere Salta\nper cancellare la selezione\no annullare le mosse speciali"
 	}
 	"RTS Tooltip 5"
 	{
 		"en"		"TIP: You can press drop item\nto delete a selected unit,\nhold crouch to delete all\nat once"
+		"it"		"SUGGERIMENTO: puoi premere\n rilascia oggetto per eliminare un'unità\n selezionata, tenere premuto accovacciati\n per eliminare tutto in una volta."
 	}
 	"RTS Tooltip 6"
 	{
 		"en"		"TIP: Hold crouch to queue up\ncommands such as ordering a\nset of commands or buildings"
+		"it"		"SUGGERIMENTO: tieni premuto il\n tasto per accovacciarti per mettere in coda\n comandi come l'ordinamento di una serie di comandi\n o edifici."
 	}
 	"RTS Tooltip 7"
 	{
 		"en"		"TIP: You can adjust your\ncamera with commands such\nas +moveup/down and\nspecial attack"
+		"it"		"SUGGERIMENTO: puoi regolare\n la tua telecamera con comandi come\n +moveup/down e attacco speciale."
 	}
 	"RTS Tooltip 8"
 	{
 		"en"		"TIP: Hold crouch and a\nnumber to set your selection\nto a control group, you\ncan later select this group\nby pressing the same number"
+		"it"		"SUGGERIMENTO: tieni premuto il tasto\n per accovacciarti e un numero per impostare\n la tua selezione su un gruppo di controllo, in\n seguito potrai selezionare questo gruppo premendo\n lo stesso numero."
 	}
 	"Team Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Team {1}"
+		"it"		"Squadra {1}"
 	}
 	"Health Of"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"Health: {1} / {2}"
+		"it"		"Salute: {1} / {2}"
 	}
 	"Armor Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Armor: {1}"
+		"it"		"Armatura: {1}"
 	}
 	"Range Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Range: {1}"
+		"it"		"Portata : {1}"
 	}
 	"Damage Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Damage: {1}"
+		"it"		"Danno: {1}"
 	}
 	"vs Type of"
 	{
 		"#format"	"{1:t},{2:s}"
 		"en"		"vs {1}: {2}"
+		"it"		"contro {1}: {2}"
 	}
 	"Spectating"
 	{
 		"en"		"Spectating"
+		"it"		"Osservando"
 	}
 	"Resource Of"
 	{
 		"#format"	"{1:s}"
 		"en"		"Resource: {1}"
+		"it"		"Risorsa: {1}"
 	}
 	"Create Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Create {1}"
+		"it"		"Crea {1}"
 	}
 	"Cancel Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Cancel {1}"
+		"it"		"Cancella {1}"
 	}
 	"Build Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Build {1}"
+		"it"		"Costruzione {1}"
 	}
 	"Research Of"
 	{
 		"#format"	"{1:t}"
 		"en"		"Research {1}"
+		"it"		"Ricerca {1}"
 	}
 	"Cancel All"
 	{
 		"en"		"Cancel All"
+		"it"		"Cancella Tutto"
 	}
 	"Too many issued commands"
 	{
 		"en"		"Too many issued commands"
+		"it"		"Troppi comandi emessi"
 	}
 	"Building queue is full"
 	{
 		"en"		"Building queue is full"
+		"it"		"La coda di costruzione è piena"
 	}
 	"Not enough supply"
 	{
 		"en"		"Not enough supply"
+		"it"		"Fornitura insufficiente"
 	}
 	"At maximum supply"
 	{
 		"en"		"At maximum supply"
+		"it"		"Fornitura al massimo"
 	}
 	"Not enough resources"
 	{
 		"en"		"Not enough resources"
+		"it"		"Risorse insufficienti"
 	}
 	"Light"
 	{
 		"en"		"Light"
+		"it"		"Leggero"
 	}
 	"Heavy"
 	{
 		"en"		"Heavy"
+		"it"		"Grosso"
 	}
 	"Biological"
 	{
 		"en"		"Biological"
+		"it"		"Biologico"
 	}
 	"Mechanical"
 	{
 		"en"		"Mechanical"
+		"it"		"Meccanico"
 	}
 	"Structure"
 	{
 		"en"		"Structure"
+		"it"		"Struttura"
 	}
 	"Unique"
 	{
 		"en"		"Unique"
+		"it"		"Unico"
 	}
 	"Heroic"
 	{
 		"en"		"Heroic"
+		"it"		"Eroico"
 	}
 	"Summoned"
 	{
 		"en"		"Summoned"
+		"it"		"Convocato"
 	}
 	"Worker"
 	{
 		"en"		"Worker"
+		"it"		"Lavoratore"
 	}
 	"Converted"
 	{
 		"en"		"Converted"
+		"it"		"Convertito"
 	}
 	"Supply"
 	{
 		"en"		"Supply"
+		"it"		"Fornitura"
 	}
 	"Supply Short"
 	{
 		"en"		"S"
+		"it"		"F"
 	}
 	"Wood"
 	{
 		"en"		"Wood"
+		"it"		"Legno"
 	}
 	"Wood Short"
 	{
 		"en"		"W"
+		"it"		"L"
 	}
 	"Gold"
 	{
 		"en"		"Gold"
+		"it"		"Oro"
 	}
 	"Gold Short"
 	{
 		"en"		"G"
+		"it"		"O"
 	}
 	"Food"
 	{
 		"en"		"Food"
+		"it"		"Cibo"
 	}
 	"Food Short"
 	{
 		"en"		"F"
+		"it"		"C"
 	}
 }
