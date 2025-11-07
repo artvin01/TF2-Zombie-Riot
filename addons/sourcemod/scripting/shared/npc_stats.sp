@@ -5180,12 +5180,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				}
 			}
 
-#if defined RTS
-			if(RTS_IsEntAlly(index, enemy))
-			{
-				return false;
-			}
-#else
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
 #if defined RPG
@@ -5197,7 +5191,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 #endif
 			}
-#endif
 
 #if defined RPG
 			if(GetTeam(index) != GetTeam(enemy))
@@ -6181,11 +6174,6 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
-	}
-	
-	if(entity == Entity_to_Respect)
-	{
-		return true;
 	}
 	
 	return false;
