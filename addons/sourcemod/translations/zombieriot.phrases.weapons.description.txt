@@ -4505,11 +4505,11 @@
 	}
 	"Boomerang PaP 5"
 	{
-		"en"	"-More pierce and damage."
+		"en"	"-More pierce and damage.\n-M2 gives a buff that causes your blade to deal more damage and gib a limb off enemies on hit"
 	}
 	"Boomerang PaP 6"
 	{
-		"en"	"-Fires 3 projectiles.\n-Ability summons many fast firing boomerangs."
+		"en"	"-Fires 3 projectiles.\n-M2 summons many fast firing boomerangs."
 	}
 	"Boomerang PaP Generic Final Pap"
 	{
