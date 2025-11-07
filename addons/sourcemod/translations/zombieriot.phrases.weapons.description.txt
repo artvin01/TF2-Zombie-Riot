@@ -699,12 +699,12 @@
 	
 	"Grenade Desc"
 	{
-		"en"	"High Dmg Grenade, Cooldown scales with reloadspeed."
+		"en"	"High damage Grenade\n-Cooldown based.\n-Cooldown can also be reduced with reload speed."
 		"it"	"Granata ad alto danno, il Cooldown scala con la velocità di ricarica."
 	}
 	"Grenade Pap 1"
 	{
-		"en"	"Massively increased damage"
+		"en"	"-Massively increased damage"
 		"fr"	"Dégats améliorés considérablement"
 		"ru"	"Сильно увеличенный урон"
 		"chi"   "大幅增加伤害"
@@ -712,7 +712,7 @@
 	}
 	"Grenade Pap 2"
 	{
-		"en"	"Massively increased damage"
+		"en"	"-Massively increased damage"
 		"fr"	"Dégats améliorés considérablement"
 		"ru"	"Сильно увеличенный урон."
 		"chi"   "大幅增加伤害"
@@ -721,7 +721,7 @@
 	
 	"Medikit Desc"
 	{
-		"en"	"Heals teammates with m1 and yourself with m2"
+		"en"	"-M1 heals allies\n-M2 heals yourself"
 		"fr"	"Soigne vos coéquipiers avec M1, soignez-vous avec M2"
 		"ru"	"Лечит союзников с помощью М1 и себя с помощью М2."
 		"chi"   "用鼠标左键治疗队友，右键治疗自己"
@@ -730,16 +730,23 @@
 	
 	"Magic Potion Desc"
 	{
-		"en"	"Magic potion to restore your mana fully"
+		"en"	"-Cooldown based item.\n-On Use: Restore mana to max"
 		"fr"	"Potion magique qui réstaure votre Mana complètement"
 		"ru"	"Магическое зелье для полного восстановления маны."
 		"chi"   "魔法药水可以完全恢复你的法力"
 		"it"	"Pozione magica per ripristinare completamente il mana"
 	}
-	
+	"Flaregun Pap desc"
+	{
+		"en"	"-Applies burn damage"
+		"fr"	"Dégats et cadence de tir améliorés."
+		"ru"	"Увеличенный урон и скорость атаки."
+		"chi"   "增加伤害和攻击速度。"
+		"it"	"Aumento dei danni e della velocità d'attacco"
+	}
 	"Flaregun Pap 1"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
@@ -747,7 +754,7 @@
 	}
 	"Flaregun Pap 2"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
@@ -755,7 +762,7 @@
 	}
 	"Flaregun Pap 3"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence de tir améliorés."
 		"ru"	"Увеличенный урон и скорость атаки."
 		"chi"   "增加伤害和攻击速度。"
@@ -764,7 +771,7 @@
 	
 	"The Righteous Bison Desc"
 	{
-		"en"	"Basic Laser Pistol. Pierces enemies."
+		"en"	"-Pierces enemies with falloff-\n-Hitscan laser weapon"
 		"fr"	"Pistolet à rayon laser. Perce les ennemis."
 		"ru"	"Обычный лазерный пистолет. Пробивает врагов."
 		"chi"   "基础激光手枪,刺穿敌人"
@@ -773,7 +780,7 @@
 	
 	"SMG Pap 1"
 	{
-		"en"	"Increased damage and attackspeed but lower clipsize"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Lower Clipsize"
 		"fr"	"Dégats et cadence de tir améliorés. Capacité du chargeur réduite."
 		"ru"	"Увеличенный урон и скорость атаки, но уменьшенный размер обоймы."
 		"chi"   "增加伤害和攻击速度，但降低弹丸尺寸"
@@ -781,103 +788,40 @@
 	}
 	"SMG Pap 2"
 	{
-		"en"	"Increased damage and attackspeed clip Size"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased Clipsize"
 		"it"	"Aumento dei danni e della velocità d'attacco Taglia"
 	}
 	"SMG Pap 3"
 	{
-		"en"	"Increased damage and attackspeed clip Size"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased Clipsize"
 		"it"	"Aumento dei danni e della velocità d'attacco Taglia"
 	}
 	"SMG Pap 4"
 	{
-		"en"	"+DMG, infinite clip."
-		"fr"	"Dégats améliorés. Rechargeur infini.
+		"en"	"-Increased damage\n-Increased attackspeed\n-Infinite Clipsize"
+		"fr"	"Dégats améliorés. Rechargeur infini."
 	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы."
 		"it"	"+DMG, clip infinita."
 	}
 	"SMG Pap 5"
 	{
-		"en"	"+DMG, +firereate, +clip, -reload."
+		"en"	"-Increased damage\n-Increased attackspeed\n-Increased Clipsize\n-Slower reload"
 		"fr"	"Dégats, cadence de tir et capacité du chargeur améliorés. Vitesse de recharge diminué."
 		"it"	"+DMG, +combattimento, +clip, -ricarica."
 	}
 	"SMG Pap 6"
 	{
+		"en"	"-Increased damage\n-Increased attackspeed\n-Massively Increased Clipsize\n-Massively Slower reload\n-Worse accuracy\n-Standing still increases accuracy\n-Croching boosts reloadspeed"
 		"en"	"All stats up Immensively.\nBad accuracy unless standing still, crouching while not moving gives reloadspeed."
 		"fr"	"L'arme s'améliore considérablement en général.\nGrande déviation si vous ne restez pas en place, acroupissez-vous sans bouger pour améliorer la vitesse de recharge."
 		"it"	"Tutte le statistiche aumentano immensamente.\nPoco preciso se non si sta fermi, accovacciarsi senza muoversi dà velocità di ricarica."
 	}
 	
-	"People Popper Desc"
-	{
-		"en"	"A fast but inaccurate SMG that fires explosive rounds."
-		"it"	"Un SMG veloce ma impreciso che spara proiettili esplosivi."
-	}
-	"People Popper Pap 1"
-	{
-		"en"	"Increased damage and attackspeed"
-		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"    "增加伤害和攻击速度。"
-		"it"	"Aumento dei danni e della velocità d'attacco"
-	}
-	"People Popper Pap 2"
-	{
-		"en"	"Increased damage and attackspeed"
-		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
-		"it"	"Aumento dei danni e della velocità d'attacco"
-	}
-	
 	"Medigun Desc"
 	{
-		"en"	"Heals and buffs allies and yourself while healing, overheal is permanent.\nAllows slow revival from afar, ubercharge grants the UBERCHARGED and Hardened Aura buffs.\nDAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
+		"en"	"-Heal allies\n-Overheal is permanent\n-Revives from afar but slower\n-Uber grants high res and Immunbity to most debuffs\n-DAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
 		"es"	"Cura y potencia a tus aliados y a ti mismo mientras curas.\nPermite revivir a distancia, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nMODO DAÑO: Cambia con CTRL/Agachar + RELOAD."
 		"it"	"Guarisce e potenzia gli alleati e se stesso durante la guarigione, il surriscaldamento è permanente.\nPermette la rinascita lenta da lontano, l'ubercarica concede i buff UBERCHARGED e Hardened Aura.\nMODALITÀ DANNEGGIAMENTO: Cambiare tramite CTRL/Crouch + RELOAD (o tasto Spray)."
-	}
-	
-	"Battle Medigun Desc"
-	{
-		"en"	"Deals damage to enemies, uber allows for 3x the dmg. The longer you target one enemy, the more damage you will deal."
-		"fr"	"Fais des dégats aux ennemis, le Über triple vos dégats. Les dégats s'améliorent le plus longtemps que vous ciblez un ennemi."
-		"ru"	"Наносит урон врагам, убер позволяет увеличить урон в 3 раза. Чем дольше вы нацелены на одного врага, тем больше урона вы наносите."
-		"chi"   "对敌人造成伤害，使用超能后将会造成3倍的伤害。你瞄准一个敌人的时间越长，你造成的伤害就越大。"
-		"it"	"Infligge danni ai nemici, l'uber permette di aumentare di 3 volte i danni. Più a lungo si prende di mira un nemico, più danni si infliggono."
-	}
-	"Battle Medigun Pap 1"
-	{
-		"en"	"Increased damage"
-		"fr"	"Dégats améliorés."
-		"ru"	"Увеличенный урон."
-		"chi"   "增加伤害"
-		"it"	"Aumento del danno"
-	}
-	"Battle Medigun Pap 2"
-	{
-		"en"	"Uber removed but 2x damage on top of it.\nM2 shoots projectiles that scale with m1 scaling.\nCan overheat and must cool down.\nGaining uber removed cooldown slowly as well.\nPress R to cooldown early and at an increased rate.\nAuto cooldown is also faster then normal."
-		"fr"	"Double les dégats, mais enlève le Über.\nM2 tire des projectiles qui améliorent en dégats le plus longtemps que vous ciblez un ennemi.\nPeut se surchauffer, et doit être refroidi.\nGagner du Über refroidit l'arme.\nAppuyez sur R pour débuter le refroidissement plus tôt, à une vitesse plus rapide."
-		"ru"	"Нет убера, но урон в 2 раза выше.\nМ2 стреляет снарядами, масштаб которых зависит от масштаба М1.\nМожет перегреваться и должен остыть.\nНакопление убера также медленно снимает восстановление.\nПри нажатии клавиши R время восстановления увеличивается.\nАвтовосст. также происходит быстрее обычного."
-		"chi"   "超能无法使用，但伤害增加2倍。\n右键发射的球按左键的伤害比例缩放。\n长时间使用会过热，需要冷却。积攒超能的量会加快。\n按R可以提前冷却，并以更高的速度冷却。\n自动冷却也比正常速度快。"
-		"it"	"Uber rimosso, ma con un danno 2x in più.M2 spara proiettili che scalano con lo scalare di M1.\nPuò surriscaldarsi e deve raffreddarsi.Ottenere il cooldown di Uber rimosso lentamente.\nPremere R per cooldown precoce e ad una velocità maggiore.\nAnche il cooldown automatico è più veloce del normale."
-	}
-	
-	"Charged Handgun Desc"
-	{
-		"en"	"Needs to be charged to do attack."
-		"fr"	"Besoin de charger pour tirer."
-		"ru"	"Для проведения атаки необходимо зарядить."
-		"chi"   "需要充能才能进行攻击"
-		"it"	"Deve essere caricato per poter attaccare."
-	}
-	"Charged Handgun Pap 1"
-	{
-		"en"	"Becomes a machinegun with extreamly high damage but worse ammo efficiency for more damage."
-		"fr"	"Devient une mitraillette à hauts dégats, mais utilise plus de munitions."
-		"ru"	"Становится пулемётом с чрезвычайно высоким уроном, но худшей эффективностью боеприпасов при большем уроне."
-		"chi"   "变成一挺杀伤力极高的机枪，但子弹效率较低。"
-		"it"	"Diventa una mitragliatrice con un danno estremamente elevato, ma con un'efficienza delle munizioni peggiore a fronte di un danno maggiore."
 	}
 	
 	"Stickybomb Launcher Pap 1"
@@ -890,18 +834,18 @@
 	}
 	"Sticky Bomb Launcher Desc"
 	{
-		"en"	"Reloads its entire clip at once!\nEach sticky only can hurt 4 enemies at once as asto normal explosives"
+		"en"	"-Reloads entire clip at once\n-Stickies pierce upto 4 targets only\n-Stickies stick to enemeis and allies"
 		"it"	"Ricarica l'intero caricatore in una volta sola!\nOgni adesivo può colpire solo 4 nemici alla volta come i normali esplosivi"
 	}
 	"Stickybomb Launcher Pap 2"
 	{
-		"en"	"Increased damage and massively increased attackspeed more stickies at once!"
+		"en"	"-Incrased damage\n-Increased attackspeed\n-More stickies out at once"
 		"it"	"Danno aumentato e velocità di attacco massicciamente aumentata più stickies in una volta!"
 	}
 	
 	"The Battalion's Backup Desc"
 	{
-		"en"	"Give Resistance (15％) to everyone after dealing enough damage, receive +50 Extra HP"
+		"en"	"-Grant resistance buff (15％) upon use when dealing enough damage/healing to charge it\n-Grants 50+ hp"
 		"fr"	"Rage donne 15％ de résistance. Recevez +50 santé."
 		"chi"	"造成足够伤害后可激活buff，所有玩家获得15％伤害抗性。+50hp"
 		"it"	"Da resistenza (15％) a tutti dopo aver inflitto abbastanza danni, ricevere +50 HP extra"
@@ -909,6 +853,7 @@
 	
 	"P15t0l Desc"
 	{
+		"en"	"-Weapon shoots randomly"
 		"en"	"V4lv3 15 n0T duMb, TF2 Ju5t w0rKs"
 		"fr"	"V4lv3 n'35T p45 c0n, TF2 f0ncTioNn3 p4rfaiT3m3nT"
 		"ru"	"V4lv3 н3 гл7пЫ3, TF2 пр0ст0 т4к ра5оТа3т"
@@ -917,55 +862,41 @@
 	}
 	"P15t0l Desc 1"
 	{
-		"en"	"increased damage."
+		"en"	"-increased damage."
 		"fr"	"Dégats améliorés."
 		"it"	"aumento del danno."
 	}
 	"P15t0l Pap 2" 
 	{
-		"en"	"Weapon does whatever the fuck it wants now.\nBoosted all stats (?)"
+		"en"	"-Weapon shoots more randomly\n-increased damage."
 		"it"	"L'arma fa quel cazzo che vuole ora.\nAumentate tutte le statistiche (?)"
 	}
 	"Buff Banner Desc"
 	{
-		"en"	"Extra 25％ damage to all allies after dealing enough damage/Healing allies"
+		"en"	"-Grant damage (25％)buff upon use when dealing enough damage/healing to charge it"
 		"fr"	"Rage donne +25％ de dégats."
 		"chi"	"造成一定伤害后可为所有队友增加25％伤害"
 		"it"	"25％ danni extra a tutti gli alleati dopo aver inflitto un numero sufficiente di danni/guarigione agli alleati"
 	}
 	"Buff Banner Pap 1"
 	{
-		"en"	"Buff becomes permanent without having to trigger it."
+		"en"	"-Buff becomes permanent."
 		"fr"	"Rage devient permanent, sans avoir besoin de l'activer."
 		"ru"	"Эффект становится постоянным без необходимости его активации."
 		"chi"   "无需触发,Buff即可永久生效。"
 		"it"	"Il buff diventa permanente senza doverlo attivare."
 	}
 	
-	"PhlogStorms Detonator Desc"
-	{
-		"en"	"Causes burn in an AOE explosion."
-		"it"	"Provoca ustioni in un'esplosione AOE."
-	}
-	"PhlogStorms Detonator Pap 1"
-	{
-		"en"	"Increased damage and attack speed"
-		"fr"	"Dégats et cadence de tir améliorés."
-		"ru"	"Увеличенный урон и скорость атаки."
-		"chi"   "增加伤害和攻击速度。"
-		"it"	"Aumento dei danni e della velocità d'attacco"
-	}
-	
 	"Knife Desc"
 	{
-		"en"	"Can backstab and inflicts bleed for a LONG time\n2x backstab dmg against raids."
+		"en"	"-Backstabs enemies under correct conditions\n-Bleeds enemies on hit\n-If enemy attacks you, and you backstab them, you deal 2x damage\n-Raids take 2x backstab damage."
 		"fr"	"Le poignardage cause un long saignement.\nDégats du poignardage doublé contre les Raids."
 		"chi"	"可背刺造成大量流血。\n对boss造成*2伤害。"
 		"it"	"Può eseguire il backstab e infliggere emorragie per un lungo periodo di tempo."
 	}
 	"Knife Pap 1"
 	{
-		"en"	"Increased damage, bleed time and attack speed."
+		"en"	"-Increased damage\n-Incrassed bleed time\n-Incrased attack speed."
 		"fr"	"Dégats, cadence des attaques, et temps du saignement améliorés."
 		"ru"	"Увеличенный урон, время кровотечения и скорости атаки."
 		"chi"   "增加伤害、流血时间、攻击速度。"
@@ -973,36 +904,29 @@
 	}
 	"Knife Pap 2"
 	{
-		"en"	"No Backstab, Increased damage, gain additional Short Effects via [M1]."
+		"en"	"-No Backstabs\n-Incrassed damage\n-Incrased attack speed.\n-Gain random buff on attack."
 		"fr"	"Dégats améliorés. Enlève le poignardage. Recevez des effets avec M1."
 		"ru"	"Нет удара в спину, увеличенный урон, получение доп. коротких эффектов на [М1]."
 		"it"	"Niente Backstab, aumento dei danni, guadagno di effetti brevi aggiuntivi tramite [M1]."
 	}
 	"Knife Pap 3"
 	{
-		"en"	"Increased damage, more Short Effects on [M1]."
+		"en"	"-Incrassed damage\n\n-Gain more random buffs on attack."
 		"fr"	"Dégats améliorés. Recevez d'avantages des effets avec M1."
 		"ru"	"Увеличенный урон, больше коротких эффектов на [М1]."
 		"chi"   "增加伤害，增加[M1]的短期效果."
 		"it"	"Aumento del danno, più Effetti brevi su [M1]."
 	}
 	
-	"Ubersaw Desc"
-	{
-		"en"	"Get 10％ uber per melee hit.\nIts uber is split between mediguns if they arent full."
-		"fr"	"Recevez 10％ Über pour chaque coup.\nLe Über reçu est partagé entre vos Mediguns si vous possédez plus q'un."
-		"chi"	"每次击中获得10％uber能量，超量uber会自动给到其他医疗枪（如果有的话）。"
-		"it"	"Ottiene 10％ uber per colpo in mischia.\nIl suo uber è diviso tra le medigun se non sono piene."
-	}
 	"Hammer Desc"
 	{
-		"en"	"Attacks very slow, but deals heavy damage, easier to gib enemies due to this."
+		"en"	"-Massive Damage\n-Slow attackspeed\n(Due to this, easier to gib enemies)"
 		"it"	"Attacca molto lentamente, ma infligge danni ingenti, per questo motivo, è più facile imbrogliare i nemici."
 	}
 	
 	"Hammer Pap 1"
 	{
-		"en"	"Increased damage and attackspeed"
+		"en"	"-Increased damage\n-Increased attackspeed"
 		"fr"	"Dégats et cadence des attaques améliorés"
 		"ru"	"Увеличенный урон."
 		"chi"	"增加伤害和攻速"
@@ -1010,6 +934,7 @@
 	}
 	"Hammer Pap 2"
 	{
+		"en"	"-Increased damage\n-slower attackspeed\n-Explodes on melee hit\n-Deals 1.15x dmg against bosses, 2x against raids."
 		"en"	"Increased damage and lower attackspeed.\nYour attacks are so strong that they cause explosions.\n1.15x dmg against bosses and 2x dmg against raids."
 		"fr"	"Dégats améliorés, cadence des attaques plus lente.\nVos coups causent des explosions.\n1.15x dégats contre les Boss, 2x dégats contre les Raids."
 		"chi"	"增加伤害，降低攻速。\n你的攻击强到任何击中的东西会都会炸开！\n对精英怪造成*1.15伤害，对boss造成*2伤害"
