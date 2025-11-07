@@ -86,6 +86,12 @@ public Action Projectile_NonPerfectHoming(Handle timer, DataPack pack)
 			return Plugin_Stop;
 		}
 
+		//if we home onto ourselves, allow this regardless of everything.
+		if(EntRefToEntIndex(RMR_RocketOwner[entity]) == RMR_CurrentHomingTarget[entity])
+		{
+			HomingProjectile_TurnToTarget_NonPerfect(entity, RMR_CurrentHomingTarget[entity]);
+			return Plugin_Continue;
+		}
 		//The enemy is valid
 		if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity],true, true))
 		{

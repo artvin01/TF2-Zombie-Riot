@@ -451,10 +451,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Ritualist_ProjectileTouch(entity, target);
 		}
-		case WEAPON_BOOMERANG:
-		{
-			Weapon_Boomerang_Touch(entity, target);
-		}
 	}
 #endif
 }

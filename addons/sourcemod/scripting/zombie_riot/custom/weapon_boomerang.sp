@@ -11,308 +11,81 @@
 
 static int HitsLeft[MAXENTITIES]={0, ...};
 static int i_Current_Pap[MAXPLAYERS+1] = {0, ...};
-static int Glaives_Currently_Shot[MAXPLAYERS+1] = {0, ...};
-static int ability_timer_times_repeated[MAXPLAYERS+1] = {0, ...};
 static int Times_Damage_Got_Reduced[MAXENTITIES]={0, ...};
 
 void WeaponBoomerang_MapStart()
 {
-PrecacheSound(BOOMERANG_HIT_SOUND_WOOD);
-PrecacheSound(BOOMERANG_HIT_SOUND_METAL);
-PrecacheSound(BOOMERANG_FIRE_SOUND);
-PrecacheSound("player/taunt_jackhammer_down_swoosh.wav");
+	PrecacheSound(BOOMERANG_HIT_SOUND_WOOD);
+	PrecacheSound(BOOMERANG_HIT_SOUND_METAL);
+	PrecacheSound(BOOMERANG_FIRE_SOUND);
+	PrecacheSound("player/taunt_jackhammer_down_swoosh.wav");
 }
 
 public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 {
 	i_Current_Pap[client] = Boomerang_Get_Pap(weapon); //i am so happy i dont have to write 12 seperate attack functions
-	PrintToChatAll("Current pap [%d]", i_Current_Pap[client]);
 	switch (i_Current_Pap[client])
 	{
 		case 0: //base pap
 		{
-			if (Glaives_Currently_Shot[client] == 0)
-			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 2500.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				time *= 5.0;
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-				HitsLeft[projectile] = 1; //only 1 hit allowed
-
-				//store_owner = GetClientUserId(client);
-				ApplyCustomModelToWandProjectile(projectile, WOODEN_BOOMERANG_MODEL, 1.0, "");
-				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-				Glaives_Currently_Shot[client] += 1;
-				
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
-			}
+			BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL);
 		}
 		case 1: //Whirling Blade
 		{
-			if (Glaives_Currently_Shot[client] == 0)
-			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 2500.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				time *= 5.0;
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-
-				HitsLeft[projectile] = 7; //7 hits allowed
-
-				ApplyCustomModelToWandProjectile(projectile, METAL_BOOMERANG_MODEl, 1.0, "");
-				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-				Glaives_Currently_Shot[client] += 1;
-				Times_Damage_Got_Reduced[projectile] = 0;
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
-			}
+			BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 7);
 		}
 		case 2: //Kylie Boomerang
 		{
-			if (Glaives_Currently_Shot[client] == 0)
-			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 2500.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				time *= 5.0;
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-
-				HitsLeft[projectile] = 5; //only 1 hit allowed
-
-				ApplyCustomModelToWandProjectile(projectile, WOODEN_BOOMERANG_MODEL, 1.45, "");
-				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-				Glaives_Currently_Shot[client] += 1;
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
-			}
+			BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL, 5, 1.45);
 		}
 		case 3: //Whirlwind Rang
 		{
-			if (Glaives_Currently_Shot[client] <= 1)
+			float fAng[3];
+			GetClientEyeAngles(client, fAng);
+			for (int i = 1; i <= 2; i++)
 			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1500.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 3000.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				for (int i = 1; i <= 2; i++)
+				if (i == 1)
 				{
-					//fAng[2] += GetRandomFloat(-7.0, 7.0);//changes horizontal, can use this to fix the sawblade model from tf2
-					if (i == 1)
-					{
-						fAng[1] += 5.0;
-					}
-					else if(i == 2)
-					{
-						fAng[1] -= 10.0;//double the last one so it doesnt just come back to 0
-					}
-					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-					WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-					ApplyCustomModelToWandProjectile(projectile, WOODEN_BOOMERANG_MODEL, 1.0, "");
-					b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-					HitsLeft[projectile] = 1; //only 1 hit allowed
-					Glaives_Currently_Shot[client] += 1;
+					fAng[1] += 5.0;
 				}
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
+				else if(i == 2)
+				{
+					fAng[1] -= 10.0;//double the last one so it doesnt just come back to 0
+				}
+				BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL, 1, 1.0, fAng);
 			}
 		}
 		case 4: //Glaive Lord
 		{
-			if (Glaives_Currently_Shot[client] <= 1)// 2 projectiles active at once
-			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 2500.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				time *= 5.0;
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-
-				HitsLeft[projectile] = 16; //funi
-
-				ApplyCustomModelToWandProjectile(projectile, METAL_BOOMERANG_MODEl, 1.0, "");
-				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-				Glaives_Currently_Shot[client] += 1;
-				Times_Damage_Got_Reduced[projectile] = 0;
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
-			}
+		//	if (Glaives_Currently_Shot[client] <= 1)// 2 projectiles active at once
+			BoomerrangFireMultiple(client, weapon, 2);
 		}
 		case 5: //Nightmare
 		{
-			if (Glaives_Currently_Shot[client] == 0)
-			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 2500.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				time *= 5.0;
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-				fAng[2] += 90.0;
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-
-				HitsLeft[projectile] = 8; //8 hits allowed
-
-				ApplyCustomModelToWandProjectile(projectile, LARGE_METAL_BOOMERANG_MODEL, 0.5, "");
-				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-				Glaives_Currently_Shot[client] += 1;
-				Times_Damage_Got_Reduced[projectile] = 0;
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
-			}
+			BoomerRangThrow(client, weapon, LARGE_METAL_BOOMERANG_MODEL, 8, 0.5);
 		}
 		case 6: //Sunswallower
 		{
-			if (Glaives_Currently_Shot[client] == 0)
+			float fAng[3];
+			GetClientEyeAngles(client, fAng);
+
+
+			for (int i = 1; i <= 3; i++)//fire 3 projectiles
 			{
-				float damage = 65.0;
-				damage *= Attributes_Get(weapon, 2, 1.0);
-				delay_hud[client] = 0.0;
-
-				float speed = 1100.0;
-				speed *= Attributes_Get(weapon, 103, 1.0);
-				speed *= Attributes_Get(weapon, 104, 1.0);
-
-				float time = 1700.0 / speed;
-				time *= Attributes_Get(weapon, 101, 1.0);
-				time *= Attributes_Get(weapon, 102, 1.0);
-
-				float fAng[3];
-				GetClientEyeAngles(client, fAng);
-
-				float fPos[3];
-				GetClientEyePosition(client, fPos);
-
-				for (int i = 1; i <= 3; i++)//fire 3 projectiles
+				//fAng[2] += GetRandomFloat(-7.0, 7.0);//changes horizontal, can use this to fix the sawblade model from tf2
+				if (i == 1)
 				{
-					//fAng[2] += GetRandomFloat(-7.0, 7.0);//changes horizontal, can use this to fix the sawblade model from tf2
-					if (i == 1)
-					{
-						fAng[1] += 5.0;
-					}
-					else if(i == 2)
-					{
-						fAng[1] -= 5.0;
-					}
-					else if(i == 3)
-					{
-						fAng[1] -= 5.0;
-					}
-					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-					WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-					ApplyCustomModelToWandProjectile(projectile, WOODEN_BOOMERANG_MODEL, 1.0, "");
-					b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-					HitsLeft[projectile] = 1; //only 1 hit allowed
-					Glaives_Currently_Shot[client] += 1;
+					fAng[1] += 5.0;
 				}
-			}
-			else
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "No Boomerangs available");
+				else if(i == 2)
+				{
+					fAng[1] -= 5.0;
+				}
+				else if(i == 3)
+				{
+					fAng[1] -= 5.0;
+				}
+				BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL, 1, 1.0, fAng);
 			}
 		}
 	}
@@ -333,54 +106,54 @@ public void Weapon_Boomerang_Ability(int client, int weapon, bool crit)
 		}
 		case 6: //Sunswallower
 		{
-			CreateTimer(0.1, Timer_Multiple_Boomerangs, client, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-			ability_timer_times_repeated[client] = 0;
+			DataPack pack;
+			CreateDataTimer(0.1, Timer_Multiple_Boomerangs, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(client));
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			pack.WriteCell(4);
 		}
 	}
 }
 
-public Action Timer_Multiple_Boomerangs(Handle timer, int client)
+public Action Timer_Multiple_Boomerangs(Handle timer, DataPack pack)
 {
-	if (ability_timer_times_repeated[client] >= 5)
+	
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	//am i alive
+	if(!IsEntityAlive(client))
 	{
 		return Plugin_Stop;
 	}
-	else
+	//does my weapon exist still
+	if(!IsValidEntity(weapon))
 	{
-		ability_timer_times_repeated[client] += 1;
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		float damage = 65.0;
-		damage *= Attributes_Get(weapon, 2, 1.0);
-		delay_hud[client] = 0.0;
+		return Plugin_Stop;
+	}
+	//if we hit 0, stop.
+	int TimesRemain = pack.ReadCell();
+	if(TimesRemain < 0)
+		return Plugin_Stop;
+	pack.Position--;
+	pack.WriteCell(TimesRemain-1, false);
+	//is my active weapon the weapon i used it with
+	int weaponActive = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != weaponActive)
+	{
+		return Plugin_Stop;
+	}
 
-		float speed = 1100.0;
-		speed *= Attributes_Get(weapon, 103, 1.0);
-		speed *= Attributes_Get(weapon, 104, 1.0);
-
-		float time = 800.0 / speed;
-		time *= Attributes_Get(weapon, 101, 1.0);
-		time *= Attributes_Get(weapon, 102, 1.0);
-
+	for (int i = 1; i <= 3; i++)//each call fires 3 projectiles
+	{
 		float fAng[3];
 		GetClientEyeAngles(client, fAng);
-
-		float fPos[3];
-		GetClientEyePosition(client, fPos);
-		for (int i = 1; i <= 3; i++)//each call fires 3 projectiles
-			{
-				GetClientEyeAngles(client, fAng);
-				fAng[0] += GetRandomFloat(-9.0, 9.0); //vertical spread
-				fAng[1] += GetRandomFloat(-9.0, 9.0);
-				fAng[2] += GetRandomFloat(-45.0, 45.0); //projectile spin
-				//fAng[2] += GetRandomFloat(-7.0, 7.0);//changes horizontal, can use this to fix the sawblade model from tf2
-				int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
-				WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
-				ApplyCustomModelToWandProjectile(projectile, WOODEN_BOOMERANG_MODEL, 1.0, "");
-				b_NpcIsTeamkiller[projectile] = true; //allows self hitting
-				HitsLeft[projectile] = 1; //only 1 hit allowed
-			}
-		EmitSoundToClient(client, "player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 110);
+		fAng[0] += GetRandomFloat(-9.0, 9.0); //vertical spread
+		fAng[1] += GetRandomFloat(-9.0, 9.0);
+		fAng[2] += GetRandomFloat(-45.0, 45.0); //projectile spin
+		BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL, 1, 1.0, fAng);
 	}
+	EmitSoundToClient(client, "player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 110);
 	return Plugin_Continue;
 }
 
@@ -388,12 +161,14 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 {
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
+	int Trail = EntRefToEntIndex(f_ArrowTrailParticle[entity]);
 	if(owner < 0)
 	{
 		//owner doesnt exist???
 		//suicide.
 		//dont bother with coding these annyoing exceptions.
+		if(IsValidEntity(Trail))
+			RemoveEntity(Trail);
 		RemoveEntity(entity);
 		return;
 	}
@@ -424,17 +199,14 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		if(i_Current_Pap[owner] == 0 || i_Current_Pap[owner] == 3 || i_Current_Pap[owner] == 6)
 		{
-			PrintToChatAll("wood Sound");
 			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 80, _, 1.0, 110);
 		}
 		else if(i_Current_Pap[owner] == 1 || i_Current_Pap[owner] == 4)
 		{
-			PrintToChatAll("metal Sound");
 			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_METAL, owner, SNDCHAN_AUTO, 80, _, 1.0, 110);
 		}
 		else if(i_Current_Pap[owner] == 2 || i_Current_Pap[owner] == 5)
 		{
-			PrintToChatAll("metal Sound");
 			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_METAL, owner, SNDCHAN_AUTO, 80, _, 1.0, 110);
 		}
 		//it may say "wand" but its just the name, its used for any type of projectile at this point.
@@ -473,6 +245,8 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 			{
 				float ang[3];
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+				b_ProjectileCollideIgnoreWorld[entity] = true;
+				SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 				Initiate_HomingProjectile(entity, 
 				owner, 
 				180.0, 
@@ -492,6 +266,8 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 				see above asto why i used HitsLeft[entity] there.
 				we want to back to the owner, so just fly towards them.
 			*/
+			b_ProjectileCollideIgnoreWorld[entity] = true;
+			SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 			float ang[3];
 			GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 			Initiate_HomingProjectile(entity, 
@@ -510,12 +286,20 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 	if(HitsLeft[entity] <= 0 && target == owner)
 	{
 		//back home!
-		RemoveEntity(entity);
-		Glaives_Currently_Shot[owner] -= 1;
-		if(Glaives_Currently_Shot[owner] < 0)
-		{
-			Glaives_Currently_Shot[owner] = 0;
-		}
+		if(IsValidEntity(Trail))
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(Trail), TIMER_FLAG_NO_MAPCHANGE);
+
+		//Delay deletion for particles to not break.
+		WandProjectile_ApplyFunctionToEntity(entity, INVALID_FUNCTION);
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		SetEntityRenderMode(entity, RENDER_NONE);
+		SetEntityMoveType(entity, MOVETYPE_NONE);
+		
+		//delete extra model aswell
+		int extra_index = EntRefToEntIndex(iref_PropAppliedToRocket[entity]);
+		if(IsValidEntity(extra_index))
+			RemoveEntity(extra_index);
+
 		return;
 	}
 
@@ -524,6 +308,8 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		/*
 			hit world, go back home.
 		*/
+		b_ProjectileCollideIgnoreWorld[entity] = true;
+		SetEntityMoveType(entity, MOVETYPE_NOCLIP);
 		HitsLeft[entity] = 0;
 		float ang[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
@@ -558,7 +344,82 @@ static int Boomerang_Get_Pap(int weapon)
 	return pap;
 }
 
-public void Weapon_Boomerang_TempFix(int client, int weapon, bool crit)
+
+static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOODEN_BOOMERANG_MODEL,int hitsleft = 1, float Size = 1.0,float fAngOver[3] = {0.0,0.0,0.0})
 {
-	Glaives_Currently_Shot[client] = 0;
+	float damage = 65.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	delay_hud[client] = 0.0;
+
+	float speed = 1100.0;
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+
+	float time = 2500.0 / speed;
+	time *= Attributes_Get(weapon, 101, 1.0);
+	time *= Attributes_Get(weapon, 102, 1.0);
+
+	time *= 5.0;
+	float fAng[3];
+	GetClientEyeAngles(client, fAng);
+	if(!AreVectorsEqual(fAngOver, view_as<float>({0.0,0.0,0.0})))
+	{
+		fAng = fAngOver;
+	}
+
+	float fPos[3];
+	GetClientEyePosition(client, fPos);
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1, weapon, "", fAng, false , fPos);
+	WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
+	HitsLeft[projectile] = hitsleft; //only 1 hit allowed
+	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 255, 0.2, 6.0, 6.0, 5);
+	f_ArrowTrailParticle[projectile] = EntIndexToEntRef(trail);
+
+	//store_owner = GetClientUserId(client);
+	ApplyCustomModelToWandProjectile(projectile, modelstringname, Size, "");
+	b_NpcIsTeamkiller[projectile] = true; //allows self hitting
+	Times_Damage_Got_Reduced[projectile] = 0;
+}
+
+
+
+public void BoomerrangFireMultiple(int client, int weapon, int FireMultiple)
+{		
+	int FrameDelayAdd = 10;
+	float Attackspeed = Attributes_Get(weapon, 6, 1.0);
+	Attackspeed *= 0.5;
+
+	FrameDelayAdd = RoundToNearest(float(FrameDelayAdd) * Attackspeed);
+	for(int LoopFire ; LoopFire <= FireMultiple; LoopFire++)
+	{
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		if(LoopFire == 0)
+			pack.WriteCell(0);
+		else
+			pack.WriteCell(1);
+
+		if(LoopFire == 0)
+			Weapon_Boomerrang_FireInternal(pack);
+		else
+			RequestFrames(Weapon_Boomerrang_FireInternal, RoundToNearest(float(FrameDelayAdd) * LoopFire), pack);
+	}
+}
+public void Weapon_Boomerrang_FireInternal(DataPack DataDo)
+{		
+	DataDo.Reset();
+	int client = EntRefToEntIndex(DataDo.ReadCell());
+	int weapon = EntRefToEntIndex(DataDo.ReadCell());
+	bool soundDo = DataDo.ReadCell();
+	delete DataDo;
+
+	if(!IsValidEntity(weapon) || !IsValidClient(client))
+		return;
+
+	if(soundDo)
+		EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
+
+	BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 16, 1.0);
 }
