@@ -1894,7 +1894,7 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"-M2 ability changes.\n-Place a sword infront of you, doing damage.\n-Stun enemies in range.\n-Get Major buffs.\n-Hurting enemies focusing the sword gives you 2x dmg.\n-Faction ''Kazimierz'' is added.\n-Gain 10％ Melee resistance."
+		"en"	"-M2 ability changes:\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\n-Hurting enemies focusing the sword gives you 2x dmg.\n-Faction ''Kazimierz'' is added.\n-Gain 10％ Melee resistance."
 		"it"	"M2 cambia abilità.\nPosiziona una spada davanti a te, facendo danni.\nStordisci i nemici nel raggio d'azione.\nOttieni maggiori buff.\nFerire i nemici mettendo a fuoco la spada ti dà 2x dmg.\nFazione ''Kazimierz'' è aggiunta.\nSilvester deve essere stato lì..."
 	}
 
