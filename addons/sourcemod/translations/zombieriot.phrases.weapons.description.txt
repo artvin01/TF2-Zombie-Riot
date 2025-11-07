@@ -5053,4 +5053,32 @@
 		"en"	"Damage and attack speed increased, splash damage can now hit up to 6 enemies.\nAbility spawns a summon that on death will explode, inflicting bleeding and Nervous Impairment."
 		"it"	"Danni e velocità d'attacco aumentati, i danni da spruzzo possono ora colpire fino a 6 nemici.\nL'abilità genera un'evocazione che alla morte esplode, infliggendo sanguinamento e Nervous Impairment."
 	}
+	"Boomerang Desc"
+	{
+		"en"	"-Fires a boomerang which returns upon contant.\n-Doesn't use ammo.\n-High single target dps."
+	}
+	"Boomerang PaP 1"
+	{
+		"en"	"-Projectile now bounces between targets.\n-Minimum damage on falloff."
+	}
+	"Boomerang PaP 2"
+	{
+		"en"	"-Gains bonus pierce and damage.\n-Slower attack speed."
+	}
+	"Boomerang PaP 3"
+	{
+		"en"	"-Fires 2 projectiles.\n-Faster fire rate."
+	}
+	"Boomerang PaP 4"
+	{
+		"en"	"-More bounces per shot.\n-Fires 3 projectile in a row.\n-Ability summons rotating glaives."
+	}
+	"Boomerang PaP 5"
+	{
+		"en"	"-More pierce and damage."
+	}
+	"Boomerang PaP 6"
+	{
+		"en"	"-Fires 3 projectiles.\n-Ability summons many fast firing boomerangs."
+	}
 }
