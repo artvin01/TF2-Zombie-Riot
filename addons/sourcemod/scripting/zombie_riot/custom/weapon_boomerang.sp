@@ -258,7 +258,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		//it may say "wand" but its just the name, its used for any type of projectile at this point.
 		//This is basically like saying a bool got hit and so on, this just saves those massive arrays.
 		Set_HitDetectionCooldown(entity, target, FAR_FUTURE, Boomerang);
-		if (Times_Damage_Got_Reduced[entity] < 4) //prob an ugly way to reduce damage but idk how else to do it :p
+		if (Times_Damage_Got_Reduced[entity] < 5) //prob an ugly way to reduce damage but idk how else to do it :p
 		{
 			f_WandDamage[entity] *= 0.7;
 			Times_Damage_Got_Reduced[entity] += 1;
@@ -427,7 +427,7 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	}
 	WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
 	HitsLeft[projectile] = hitsleft; //only 1 hit allowed
-	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 255, 0.2, 6.0, 6.0, 5);
+	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 200, 0.2, 6.0, 6.0, 5);
 	f_ArrowTrailParticle[projectile] = EntIndexToEntRef(trail);
 
 	//store_owner = GetClientUserId(client);
@@ -449,7 +449,7 @@ public Action Timer_ReturnToOwner(Handle timer, any entid)
 	if(!IsValidEntity(entity))
 		return Plugin_Stop;
 
-	f_WandDamage[entity] *= 0.5;
+	f_WandDamage[entity] *= 0.25;
 	HitsLeft[entity] = BOOMERRANG_RETURING;
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	float ang[3];
