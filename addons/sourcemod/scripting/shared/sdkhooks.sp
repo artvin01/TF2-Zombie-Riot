@@ -2124,7 +2124,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 		//the client was the last man on the server, or alone, give them spawn protection
 		//dont do this if they are under specter saw revival
-		else if(b_IsAloneOnServer && !applied_lastmann_buffs_once)
+		else if(!Rogue_NoLastman() && b_IsAloneOnServer && !applied_lastmann_buffs_once)
 		{
 			//lastman for being alone!
 			//force lastman if alone, give inf downs to indicate DEATH.
