@@ -241,9 +241,8 @@ enum
 	WEAPON_RITUALIST = 149,
 	WEAPON_SHERRIF = 150,
 	WEAPON_SHERRIF_LEVERACTION = 151,
-	WEAPON_CHEESY_SECONDARY = 152
-
-	//UNUSED_WEAPON_83 is unused!!
+	WEAPON_BOOMERANG = 152,
+	WEAPON_CHEESY_SECONDARY = 153
 }
 
 enum
@@ -628,6 +627,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/kit_cheese.sp"
 #include "custom/weapon_flamethrower_chemical.sp"
 #include "custom/wand/weapon_ritualist.sp"
+#include "custom/weapon_boomerang.sp"
 
 void ZR_PluginLoad()
 {
@@ -847,6 +847,7 @@ void ZR_MapStart()
 	Wand_Fire_Map_Precache();
 	Wand_FireBall_Map_Precache();
 	Wand_Lightning_Map_Precache();
+	WeaponBoomerang_MapStart();
 	Wand_LightningAbility_Map_Precache();
 	Wand_Necro_Map_Precache();
 	Wand_NerosSpell_Map_Precache();

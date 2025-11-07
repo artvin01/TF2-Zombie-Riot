@@ -5817,8 +5817,8 @@ enum
 	IgniteClientside = 2,
 	Osmosisdebuff = 3,
 	TankThrowLogic = 4,
-	ShadowingSlicer = 5,
-	
+	Boomerang = 5,
+	ShadowingSlicer = 6,
 }
 
 enum struct HitDetectionEnum
