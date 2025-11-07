@@ -389,6 +389,8 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 
 	if(extraability == 1)
 		damage *= 0.6;
+	if(extraability == 2)
+		damage *= 0.4;
 	float speed = 1100.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	speed *= Attributes_Get(weapon, 104, 1.0);
@@ -523,7 +525,7 @@ public void Weapon_Boomerrang_FireInternal(DataPack DataDo)
 	if(soundDo)
 		EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
 
-	BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 16, 1.0);
+	BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 16, 1.0,_,2);
 }
 
 #define GLAIVELORD_SPAWNBLADES 8
