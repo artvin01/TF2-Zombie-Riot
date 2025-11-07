@@ -4497,7 +4497,7 @@
 	}
 	"Boomerang PaP 3"
 	{
-		"en"	"-Fires 2 projectiles.\n-Faster fire rate."
+		"en"	"-Fires 2 projectiles.\n-Faster fire rate.\n-Gains 25％ Melee resistance while active."
 	}
 	"Boomerang PaP 4"
 	{
