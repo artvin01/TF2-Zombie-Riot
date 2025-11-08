@@ -1526,7 +1526,7 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damgae calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
+		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damage calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 		"it"		"Sul lato sinistro ci saranno i debuff.Sul lato destro ci saranno i buff.Ogni simbolo è un nuovo buff o debuff. \nIl dito indica i danni subiti in mischia, mentre la freccia indica i danni subiti a distanza.\nSi illuminerà la resistenza utilizzata quando si calcolano i danni.\nIl danno reale beneficia solo dei bonus e ignora le resistenze."
 	}
