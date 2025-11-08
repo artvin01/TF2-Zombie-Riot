@@ -694,7 +694,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"-Heal allies\n-Overheal is permanent\n-Revives from afar but slower\n-Uber grants high res and Immunbity to most debuffs\n-DAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
+		"en"	"-Heal allies\n-Overheal is permanent\n-Revives from afar but slower\n-Uber grants high res and immunity to most debuffs\n-DAMAGE MODE: Change via CTRL/Crouch + RELOAD (or Spray key)."
 		"es"	"Cura y potencia a tus aliados y a ti mismo mientras curas.\nPermite revivir a distancia, la uber da los buffs de SOBRECARGADO y Aura Reforzada.\nMODO DAÑO: Cambia con CTRL/Agachar + RELOAD."
 		"it"	"Guarisce e potenzia gli alleati e se stesso durante la guarigione, il surriscaldamento è permanente.\nPermette la rinascita lenta da lontano, l'ubercarica concede i buff UBERCHARGED e Hardened Aura.\nMODALITÀ DANNEGGIAMENTO: Cambiare tramite CTRL/Crouch + RELOAD (o tasto Spray)."
 	}
@@ -3973,7 +3973,7 @@
 	"Whistle Stop Desc"
 	{
 		"en"	"Attacks deal Necrosis elemental damage.\nHas a chance to fire an additional projectile that slows on hit and deals Ranged Damage to enemies under an Elemental effect.\nAbility executes nearby low-health enemies and has unlimited duration."
-		"it"	"Gli attacchi infliggono danni elementali da Necrosi.\nHa una probabilità di lanciare un proiettile aggiuntivo che rallenta al contatto e infligge danni a distanza ai nemici sotto l'effetto Elementale.\nL'abilità uccide i nemici vicini con poca salute e ha una durata illimitata.
+		"it"	"Gli attacchi infliggono danni elementali da Necrosi.\nHa una probabilità di lanciare un proiettile aggiuntivo che rallenta al contatto e infligge danni a distanza ai nemici sotto l'effetto Elementale.\nL'abilità uccide i nemici vicini con poca salute e ha una durata illimitata."
 	}
 	"Ancestor Launcher Desc"
 	{

@@ -1978,11 +1978,11 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
-		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
-		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
+		"en" 		"Zombie Riot\nPress TAB again to close the menu!\nDisplay active weapon in shop with (H)"
+		"ru" 		"Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
+		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
-		"it"		"TF2: Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
+		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
 	}
 	"StatusEffectList"
 	{
@@ -2493,11 +2493,11 @@
 	}
 	"Starter Mode"
 	{
-		"en"		"Welcome to TF2: Zombie Riot!\nAdvanced weapons will unlock at Level 5"
-		"fr"		"Bienvenue à TF2: Zombie Riot!\nLes armes avancées seront disponibles au niveau 5."
+		"en"		"Welcome to Zombie Riot!\nAdvanced weapons will unlock at Level 5"
+		"fr"		"Bienvenue à Zombie Riot!\nLes armes avancées seront disponibles au niveau 5."
 		"ru"		"Добро пожаловать в TF2: Восстание зомби!\nПродвинутое оружие будет открыто на 5-м уровне"
 		"chi"       "欢迎来到TF2:僵尸暴动!高级武器将在5级解锁"
-		"it"		"Benvenuti in TF2: Zombie Riot! \nLe armi avanzate si sbloccano al livello 5"
+		"it"		"Benvenuti in Zombie Riot! \nLe armi avanzate si sbloccano al livello 5"
 	}
 	"Skip Starter"
 	{

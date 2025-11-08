@@ -83,7 +83,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;
-		if(GetClientButtons(client) & IN_SCORE)
+		if((LastStoreMenu[client] && LastStoreMenu_Store ))
 		{
 			Store_OpenItemPage(client);
 		}
