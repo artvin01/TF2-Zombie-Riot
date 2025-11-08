@@ -1677,36 +1677,36 @@
 	}
 	"Doctor Certificate Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rage\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 	}
 	"Professor Certificate Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rage\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 	}
 
 	"Death Certificate Desc"
 	{
-		"en"	"-Gain 1.4x Medigun Heal rage\n-Gain 20％ extra support weapon damage\n-Gain 2 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.4x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 2 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.4x Medigun Heal, 20％ danni extra da arma di supporto\n+2 secondi di uber e 5％ resistenza in mischia con Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"-Gain 1.45x Medigun Heal rage\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.45x Guarigione Medigun, 20％ danni extra da arma di supporto,\n+1 secondi di resistenza uber e 5％ in mischia con le armi di supporto guarite"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"-Gain 1.45x Medigun Heal rage\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.45x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 1 extra seconds of uber.\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.45x Guarigione Medigun, 20％ danni extra da arma di supporto,\n+1 secondi di resistenza uber e 5％ in mischia con le armi di supporto guarite"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"-Gain 1.5x Medigun Heal rage\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.5x Medigun Heal rate\n-Gain 20％ extra support weapon damage\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.5x Medigun Heal, 20％ danni extra alle armi di supporto\n5％ resistenza in mischia con Healing Support Weapons disattivata"
 	}
 	
@@ -3348,7 +3348,7 @@
 	}
 	"Helena's Elite Medicine Desc"
 	{
-		"en"	"-Gain 1.6x Medigun Heal rage\n-Gain 5％ melee resistance with Healing Support Weapons out"
+		"en"	"-Gain 1.6x Medigun Heal rate\n-Gain 5％ melee resistance with Healing Support Weapons out"
 		"it"	"1.6x Medigun Hurt and Heal e 5％ resistenza in mischia con le armi di supporto curative fuori\nRiduce il drenaggio di Medifluid di 40％ (non può scendere sotto 1)"
 	}
 	"Messenger Launcher Desc"
