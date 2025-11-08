@@ -188,7 +188,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	int Trail = EntRefToEntIndex(f_ArrowTrailParticle[entity]);
-	if(!IsEntityAlive(owner))
+	if(!IsValidEntity(owner))
 	{
 		//owner doesnt exist???
 		//suicide.
