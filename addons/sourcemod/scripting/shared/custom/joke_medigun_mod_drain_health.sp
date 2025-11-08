@@ -675,15 +675,15 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 	//only swithc with crouch R
 	if((GetClientButtons(client) & IN_DUCK))
 	{
-		MedigunChangeModeRInternal(client, weapon, crit, slot, true);
+		ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
+		MedigunModeSet[client]++;
+		if(MedigunModeSet[client] > 1)
+		{
+			MedigunModeSet[client] = 0;
+		}
 		return;
 	}
-	ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
-	MedigunModeSet[client]++;
-	if(MedigunModeSet[client] > 1)
-	{
-		MedigunModeSet[client] = 0;
-	}
+	MedigunChangeModeRInternal(client, weapon, crit, slot, true);
 }
 
 

@@ -3240,7 +3240,7 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"-Changes the medigun to grant different mode types, boosting melee or ranged resistance.\n-Damage mode is now changed via CTRL/Crouch + RELOAD now."
+		"en"	"-Changes the medigun to grant different mode types, boosting melee or ranged resistance (via CTRL/Crouch + RELOAD)."
 		"es"	"Cambia la medigun para dar distintos modos, aumentando la resistencia cuerpo a cuerpo, a distancia, o ambas.\nCambiar de modo ahora requiere siempre que utilizes CTRL/Agacharse + RELOAD."
 		"it"	"La medigun è stata modificata per garantire diversi tipi di modalità, aumentando la resistenza in mischia o a distanza."
 	}
