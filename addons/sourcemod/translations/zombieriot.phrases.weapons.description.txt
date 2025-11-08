@@ -4509,7 +4509,7 @@
 	}
 	"Boomerang PaP 1"
 	{
-		"en"	"-Projectile now bounces between targets.\n-Minimum damage on falloff."
+		"en"	"-Projectile now bounces between targets.\n-Minimum damage on falloff.\n-Deals 25％ extra damage to raids"
 	}
 	"Boomerang PaP 2"
 	{
@@ -4521,7 +4521,7 @@
 	}
 	"Boomerang PaP 4"
 	{
-		"en"	"-More bounces per shot.\n-Fires 3 projectile in a row.\n-Ability summons rotating glaives."
+		"en"	"-More bounces per shot.\n-Fires 3 projectile in a row.\n-Slower attackspeed\n-Ability summons rotating glaives."
 	}
 	"Boomerang PaP 5"
 	{

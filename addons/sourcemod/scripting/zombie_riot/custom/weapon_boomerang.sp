@@ -101,7 +101,7 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 	}
 	EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
 }
-public void Weapon_Boomerang_Ability_(int client, int weapon, bool crit, int slot)
+public void Weapon_Boomerang_Ability(int client, int weapon, bool crit, int slot)
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
@@ -120,7 +120,7 @@ public void Weapon_Boomerang_Ability_(int client, int weapon, bool crit, int slo
 			GlaiveLord_EraseEnemyAoe(client, weapon);
 			//artvin pls help with spinning glaives
 			EmitSoundToAll(BOOMERRANG_ABILITY_GLAIVE, client, SNDCHAN_AUTO, 80, _, 0.7, 105);
-			Ability_Apply_Cooldown(client, slot, 30.0);
+			Ability_Apply_Cooldown(client, slot, 15.0);
 		}
 		case 5: //Nightmare
 		{
@@ -188,7 +188,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	int Trail = EntRefToEntIndex(f_ArrowTrailParticle[entity]);
-	if(owner < 0)
+	if(!IsEntityAlive(owner))
 	{
 		//owner doesnt exist???
 		//suicide.
@@ -198,13 +198,14 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		RemoveEntity(entity);
 		return;
 	}
+	 
 			
 	//we dont want it to count allies as enemies so we temp set it to false.
 	b_NpcIsTeamkiller[entity] = false;
 	//we have found a valid target.
 	if(IsValidEnemy(entity,target, true, true) 
 	&& !IsIn_HitDetectionCooldown(entity,target, Boomerang) 
-	&& (HitsLeft[entity] > 0 || HitsLeft[entity] == -1000))
+	&& (HitsLeft[entity] > 0 || HitsLeft[entity] == BOOMERRANG_RETURING))
 	{
 		//we also want to never try to rehit the same target we already have hit.
 		//we found a valid target.
@@ -263,10 +264,10 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 			f_WandDamage[entity] *= 0.7;
 			Times_Damage_Got_Reduced[entity] += 1;
 		}
-		if(HitsLeft[entity] != -1000)
+		if(HitsLeft[entity] != BOOMERRANG_RETURING)
 			HitsLeft[entity]--;
 
-		if((HitsLeft[entity] > 0 && HitsLeft[entity] != -1000) && i_Current_Pap[owner] != 2 && i_Current_Pap[owner] != 5)
+		if((HitsLeft[entity] > 0 && HitsLeft[entity] != BOOMERRANG_RETURING) && i_Current_Pap[owner] != 2 && i_Current_Pap[owner] != 5)
 		{
 			//we can still hit new targets, cycle through the closest enemy!
 			int EnemyFound = GetClosestTarget(entity,
@@ -310,7 +311,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 				//make it phase through everything to get to its owner.
 			}
 		}
-		if(HitsLeft[entity] <= 0 && HitsLeft[entity] != -1000)
+		if(HitsLeft[entity] <= 0 && HitsLeft[entity] != BOOMERRANG_RETURING && HitsLeft[entity] != BOOMERRANG_ABOUTTORETURN)
 		{
 			/*
 				we have hit enough targets.... we need to go back without damaging any other targets,
@@ -347,7 +348,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		return;
 	}
 
-	if(target == 0 && HitsLeft[entity] != -1000)
+	if(target == 0 && HitsLeft[entity] != BOOMERRANG_RETURING && HitsLeft[entity] != BOOMERRANG_ABOUTTORETURN)
 	{
 		/*
 			hit world, go back home.
