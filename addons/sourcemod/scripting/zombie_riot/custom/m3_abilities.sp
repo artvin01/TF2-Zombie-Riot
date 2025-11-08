@@ -324,6 +324,7 @@ public void WeakDashLogic(int client)
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 
 	Magnesis_OnBurstPack(client);
+	Raigeki_OnBurstPack(client);
 }
 
 public void PlaceableTempomaryArmorGrenade(int client)

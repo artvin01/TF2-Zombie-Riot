@@ -242,7 +242,8 @@ enum
 	WEAPON_SHERRIF = 150,
 	WEAPON_SHERRIF_LEVERACTION = 151,
 	WEAPON_BOOMERANG = 152,
-	WEAPON_CHEESY_SECONDARY = 153
+	WEAPON_CHEESY_SECONDARY = 153,
+	WEAPON_RAIGEKI = 154
 }
 
 enum
@@ -612,6 +613,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_flametail.sp"
 #include "custom/weapon_ulpianus.sp"
 #include "custom/wand/weapon_wand_magnesis.sp"
+#include "custom/wand/weapon_wand_raigeki.sp"
 #include "custom/kit_blacksmith_brew.sp"
 #include "custom/weapon_yakuza.sp"
 #include "custom/weapon_skadi.sp"
@@ -928,6 +930,7 @@ void ZR_MapStart()
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
 	Magnesis_Precache();
+	Raigeki_Precache();
 	Wrathful_Blade_Precache();
 	Yakuza_MapStart();
 	ResetMapStartSkadiWeapon();

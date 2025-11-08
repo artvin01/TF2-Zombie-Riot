@@ -1158,6 +1158,16 @@
 		"en"	"-Massively increased Damage\n-much slower attackspeed.\nAbility changes:\n-2x charged Lightning Storm.\n-Your attack chains and is hitscan, each attack will slow the enemies.\n-When no enemies nearby, gain !!, 10％ more dmg and faster ability charge.\n-Projectile speed/Range affect manacost."
 		"it"	"Aumenta enormemente il danno, ma la velocità d'attacco è molto più lenta.\nLa tua abilità cambia:\n2x carica Tempesta di fulmini.\nIl tuo attacco è a catena, ma attacchi 3 volte più lentamente, ogni attacco rallenta i nemici.\nQuando non ci sono nemici nelle vicinanze, guadagna !!!, 10％ di danno in più e carica più velocemente l'abilità.\nLa velocità/portata dei proiettili influisce sulla manacost."
 	}
+
+	"Raigeki Desc"
+	{
+		"en"	"M1 swings an electric blade which hits multiple targets.\nHolding M2 drains mana to charge a huge lightning bolt (Raigeki), which strikes your position when released.\nCharging grants resistance and damages nearby enemies with Static Electricity."
+	}
+
+	"Raigeki ExtraDesc"
+	{
+		"en"	"Resistance granted while charging Raigeki increases based on charge amount.\nRaigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased.\nHitting enemies with M1 or being hit while charging Raigeki grants Kinetic Energy, which empowers Static Electricity.\nYou become Supercharged once Raigeki hits, which makes your M1 stronger, but drains Kinetic Energy."
+	}
 	
 	"Homing Staff Desc"
 	{
