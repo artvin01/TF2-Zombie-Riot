@@ -290,17 +290,17 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"-Increased damage\n-Increased Resistances\n-M2 ability gives minicrits and uber for a short time\n-Gain additinonal 10％ Extra Range"
+		"en"		"-Increased damage\n-Increased Resistances\n-M2 ability gives minicrits and uber for a short time\n-Gain additional 10％ Extra Range"
 		"it"		"Aumenta i danni e le resistenze. L'abilità M2 conferisce minicrits e uber per un breve periodo.\nDanno 1,15x contro i raidboss.\nGuadagna un ulteriore 10％ di portata extra"
 	}
 	"Flamethrower Pap 1 1"
 	{
-		"en"		"-Increased damage\n-Increased Resistances\n-Gain additinonal 10％ Extra Range"
+		"en"		"-Increased damage\n-Increased Resistances\n-Gain additional 10％ Extra Range"
 		"it"		"Aumenta i danni e le resistenze.\nDanneggia 1,15x i raidboss.\nGuadagna 10％ extra di portata"
 	}
 	"Flamethrower Pap 2"
 	{
-		"en"		"-Increased damage\n-Increased Resistances\n-Gain additinonal 10％ Extra Range"
+		"en"		"-Increased damage\n-Increased Resistances\n-Gain additional 10％ Extra Range"
 		"it"		"Aumenta i danni e le resistenze.\nDanneggia 1,15x i raidboss.\nGuadagna 10％ extra di portata"
 	}
 	
@@ -331,17 +331,17 @@
 	}
 	"Grenade Launcher Pap 2"
 	{
-		"en"		"Reduced damage but higher attackspeed attack speed and reload speed.\nNow deals 2x dmg against raids.\nExplodes on contact now."
+		"en"		"-Massively Increased attackspeed\n-Massively Increased reloadspeed\n-Increased clipsize\n-Slightly increased damage\n-Now deals 2x dmg against raids.\n-Explodes on contact now."
 		"it"		"Danno ridotto ma velocità d'attacco e velocità di ricarica più elevate.\nOra infligge 2 volte i danni contro i raid.\nOra esplode al contatto."
 	}
 	"Grenade Launcher Pap 3"
 	{
-		"en"		"-Slightly increased damage\n-Massively Increased attackspeedn-Massively Increased reloadspeed\n-Deals 2x dmg against raids."
+		"en"		"-Increased damage\n-Increased attackspeed\n-Increased reloadspeed\n-Increased clipsize"
 		"it"		"Danno leggermente aumentato e velocità d'attacco e di ricarica massicciamente incrementata.\nOra infligge 2 volte i danni contro i raid."
 	}
 	"Tommygun Desc"
 	{
-		"en"		"While equipped and in your hand, take 20％ less ranged damage."
+		"en"		"-While equipped and in your hand, take 20％ less ranged damage."
 		"fr"		"20％ de résistance contre les dégats par les sources distantes quand actif"
 		"it"		"Quando è equipaggiato e in mano, subisce 20％ danni a distanza in meno."
 	}
@@ -402,13 +402,13 @@
 	}
 	"RPG Pap 2"
 	{
-		"en"		"-Increased damage\n-gain 3 extra clipsize\n-Increased reload speed\n Only hits 4 enemies now instead of 10"
+		"en"		"-Increased damage\n-gain 3 extra clipsize\n-Increased reload speed\n-Only hits 4 enemies now instead of 10"
 		"fr"		"Dégats et vitesse de rechargement améliorés. +3 capacité chargeur.\nFrappe seulement 4 ennemis à la fois au lieu de 10."
 		"it"		"Aumento del danno, guadagno di 3 caricatori extra, ricarica più rapida.\nOra colpisce solo 4 nemici invece di 10"
 	}
 	"RPG Pap 3"
 	{
-		"en"		"-Massively Increased damage\n-reduced reload speed.\n-Has better enemy pierce"
+		"en"		"-Massively Increased damage\n-Reduced reload speed\n-Has better enemy pierce"
 		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 		"it"		"Danno enormemente aumentato e velocità di ricarica RIDOTTA.\nE ha una migliore perforazione del nemico"
 	}
@@ -434,19 +434,29 @@
 	}
 	"IEM Launcher Pap 1"
 	{
-		
 		"en"		"-Increased damage\n-Increased range\n-Less falloff"
 		"fr"		"Dégats et cadence de tir améliorés, baisse de puissance avec distance réduite"
 		"ru"		"Увеличенный урон и дальность, а также меньшее падение урона на расстоянии."
 		"chi"       "增加伤害和射程，伤害衰减程度减少"
 		"it"		"Aumento del danno e della gittata e riduzione del falloff"
 	}
-	
+	"IEM Launcher Pap 2" 
+	{
+		"en"		"-Increased damage\n-Your projectile now spawns more projectiles."
+	}
+	"IEM Launcher alt Pap 1" 
+	{
+		"en"		"-Increased damage\n-Trade aoe dmg for a laser line, dealing more dmg" 
+	}
+	"IEM Launcher alt Pap 2" 
+	{
+		"en"		"-Increased damage\n-2nd firing mode:\nFires a laser cutter which can either grow in size, or stay the same size." 
+	}
 	
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once.\nProvides an extra 10％ Resistance to all sources while active."
+		"en"		"-Load 4 bullets and shoot all at once.\n-Provides an extra 10％ Resistance to all sources while active."
 		"fr"		"Chargez 4 munitions et tirez-les toutes à la fois\nInflige +10％ des dégats contre les Raids."
 		"it"		"Carica 4 proiettili e spara tutti in una volta\nDà 10％ danni contro le incursioni."
 	}
@@ -490,7 +500,7 @@
 	
 	"Elite Sniper Desc"
 	{
-		"en"	"Bullets filled with... something.\n-Bounces between enemies.\nDeals 1.5x dmg during raids."
+		"en"	"Bullets filled with... something.\n-Bounces between enemies.\n-Deals 1.5x dmg during raids."
 		"fr"	"Les singes maîtrisent le tir de balles rebondissantes, qui sautent entre cibles.\n1.5x de dégats lors des Raids."
 		"ru"	"Обученные обезьяны овладевают навыками отскакивания пуль, которые летят от цели к цели, убивая врага.\nНаносят 1,5х урона во время рейдов."
 		"chi"   "经过训练的猴子掌握了弹跳子弹的技能，子弹会从一个目标射到另一个目标，杀死它们。\n对boss造成1.5倍伤害。"
@@ -678,7 +688,6 @@
 	"SMG Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Massively Increased Clipsize\n-Massively Slower reload\n-Worse accuracy\n-Standing still increases accuracy\n-Croching boosts reloadspeed"
-		"en"	"All stats up Immensively.\nBad accuracy unless standing still, crouching while not moving gives reloadspeed."
 		"fr"	"L'arme s'améliore considérablement en général.\nGrande déviation si vous ne restez pas en place, acroupissez-vous sans bouger pour améliorer la vitesse de recharge."
 		"it"	"Tutte le statistiche aumentano immensamente.\nPoco preciso se non si sta fermi, accovacciarsi senza muoversi dà velocità di ricarica."
 	}
@@ -692,7 +701,7 @@
 	
 	"Stickybomb Launcher Pap 1"
 	{
-		"en"	"Increased damage and attackspeed, allows 6 more stickies."
+		"en"	"-Increased damage\n-Increased attackspeed\n-allows 6 more stickies."
 		"fr"	"Dégats et cadence de tir améliorés. Peut avoir 6 bombes additionelles"
 		"ru"	"Увелич. урон и скорость атаки, позволяет использовать на 6 больше бомб-липучек."
 		"chi"   "增加伤害和攻击速度，增加6个粘性炸弹"
@@ -720,7 +729,6 @@
 	"P15t0l Desc"
 	{
 		"en"	"-Weapon shoots randomly"
-		"en"	"V4lv3 15 n0T duMb, TF2 Ju5t w0rKs"
 		"fr"	"V4lv3 n'35T p45 c0n, TF2 f0ncTioNn3 p4rfaiT3m3nT"
 		"ru"	"V4lv3 н3 гл7пЫ3, TF2 пр0ст0 т4к ра5оТа3т"
 		"chi"   "V社ｾ不傻??tf2閭ｽ没雜问题"
@@ -728,13 +736,13 @@
 	}
 	"P15t0l Desc 1"
 	{
-		"en"	"-increased damage."
+		"en"	"-Increased damage."
 		"fr"	"Dégats améliorés."
 		"it"	"aumento del danno."
 	}
 	"P15t0l Pap 2" 
 	{
-		"en"	"-Weapon shoots more randomly\n-increased damage."
+		"en"	"-Weapon shoots more randomly\n-Increased damage."
 		"it"	"L'arma fa quel cazzo che vuole ora.\nAumentate tutte le statistiche (?)"
 	}
 	"Buff Banner Desc"
@@ -1664,7 +1672,7 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"-Deals 1.15x the damage against raidbosses.\n-Gain extra resistances while weapon is active\n-Burns enemies on hit\n\nGain armor per enemy hit upto half of your armor."
+		"en"	"-Deals 1.15x the damage against raidbosses.\n-Gain extra resistances while weapon is active\n-Burns enemies on hit\n-Gain armor per enemy hit upto half of your armor."
 		"it"	"Infligge 1,15 volte più danni ai boss dei raid.\nHai resistenze extra quando sei equipaggiato.\nCrude i nemici.\nGuadagna armatura per ogni colpo nemico fino a metà della tua armatura."
 	}
 	"Doctor Certificate Desc"
@@ -2623,7 +2631,7 @@
 	}
 	"Royal Desc"
 	{
-		"en"	"-Increased damage, attackspeed, and clipsize\n- you gain more dollars.\n-Roll the slots: buffs have been improved"
+		"en"	"-Increased damage, attackspeed, and clipsize\n-You gain more dollars.\n-Roll the slots: buffs have been improved"
 		"fr"	"Arme est amélioré, vous obtenez plus de dollars.\nLa machine à sous vous donne des effets meilleurs.\n«Le jeu était truqué depuis le début.»"
 		"chi"	"加强属性，更多钱。\n加强buff。\n''买的没有卖的精。''"
 		"it"	"Le statistiche aumentano e si guadagnano più dollari.\nRoll the slots: i buff sono stati migliorati.\n''Il gioco era truccato fin dall'inizio''"
@@ -3132,7 +3140,7 @@
 	}
 	"Reiuji Desc 1"
 	{
-		"en"	"-Increased Damage\n-You gain ammo faster when above 50% mana\n-if your is at 90% mana, your ammo gain is even faster!"
+		"en"	"-Increased Damage\n-You gain ammo faster when above 50％ mana\n-if youzr mana is at 90％, your ammo gain is even faster!"
 		"it"	"Si guadagnano munizioni più velocemente quando si supera il 50% di mana e se si raggiunge il 90% di mana, il guadagno di munizioni è ancora più rapido!"
 	}
 	"Reiuji Desc 2"
@@ -3159,7 +3167,7 @@
 	}
 	"Heavy Particle Rifle Desc 1"
 	{
-		"en"	"The longer you hold down fire, the more damage your weapon deals\nHowever, you do start with a damage penalty at the beggining of firing!"
+		"en"	"-The longer you hold down fire, the more damage your weapon deals"
 		"it"	"Più a lungo si tiene premuto il tasto di fuoco, più danni infligge l'arma.\nTuttavia, si inizia con una penalità ai danni all'inizio del fuoco!"
 	}
 	"Heavy Particle Rifle Desc 2"
@@ -3276,7 +3284,7 @@
 
 	"Riot Gun Desc"
 	{
-		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Speed-Cola reduces ability cooldown.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
+		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Hasty Hops perk reduces ability cooldown.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
 		"it"	"Con l'armatura, 60％ (boss 35％) resistenza ai danni degli attacchi di fronte a voi.\nAbilità che stordisce i nemici di fronte a voi e aumenta la velocità di attacco.\nSpeed-Cola riduce il cooldown dell'abilità.\nE' più lento con lo scudo attivato, quando lo scudo si rompe, guadagna velocità con un cooldown (suono)"
 	}
 	"Riot Gun Pap 1"
@@ -3359,7 +3367,7 @@
 	}
 	"The Tinker Desc"
 	{
-		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\nAnvil can upgrade weapons.\nPrimary: Heals buildings, hurts enemies, infinite range building pickup.\nSecondary: Generates metal."
+		"en"	"A Blacksmith builder, can only make an anvil as a unique building.\n-Anvil can upgrade weapons.\n-Primary: Heals buildings, hurts enemies, infinite range building pickup.\n-Secondary: Generates metal."
 		"it"	"Un Fabbro costruttore, può creare solo un'incudine come edificio unico.\nL'incudine può potenziare le armi.\nPrimario: cura le strutture, danneggia gli avversari, raccoglie strutture a raggio infinito.\nSecondario: genera metallo."
 	}
 	"Tinker Wrench Desc"
@@ -3408,27 +3416,27 @@
 	}
 	"Tinker Pap 2 Desc"
 	{
-		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 2 effects\nReduces Metal drain(cant go below 1)"
+		"en"	"+65％ Building Health, +75％ Weapon Damage, +6 Metal Regen, +4 Support Buildings, and -20s Tinker Cooldown.\n-Adds a chance for Tier 2 effects\n-Reduces Metal drain(cant go below 1)"
 		"it"	"+65％ Salute degli strutture, +75％ Danno delle armi, +6 Rigenerazione del metallo, +4 Edifici di supporto e -20s Cooldown del Tinker.\nAggiunge una possibilità di effetti di livello 2\nRiduce il drenaggio del metallo (non può scendere sotto 1)"
 	}
 	"Tinker Pap 3 Desc"
 	{
-		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -20s Tinker Cooldown.\nAdds a chance for Tier 3 effects.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +181.25％ Weapon Damage, +8 Metal Regen, +5 Support Buildings, and -20s Tinker Cooldown.\n-Adds a chance for Tier 3 effects.\n-Reduces Metal drain(cant go below 1)"
 		"it"	"+70％ Salute degli strutture, +181,25％ Danno delle armi, +8 Rigenerazione del metallo, +5 Edifici di supporto e -20s Cooldown dello stagnino.\nAggiunge una possibilità per gli effetti di livello 3.\nRiduce il drenaggio del metallo (non può scendere sotto 1)"
 	}
 	"Tinker Pap 4 Desc"
 	{
-		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+40％ Building Health, +181.25％ Weapon Damage, +10 Metal Regen, and -20s Tinker Cooldown.\n-Reduces Metal drain(cant go below 1)"
 		"it"	"+40％ Salute dell'edificio, +181,25％ Danno dell'arma, +10 Rigenerazione del metallo e -20s Cooldown del Tinker.\nRiduce il drenaggio del metallo (non può scendere sotto 1)"
 	}
 	"Tinker Pap 5 Desc"
 	{
-		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+160％ Weapon Damage, +15 Metal Regen, and -20s Tinker Cooldown.\n-Reduces Metal drain(cant go below 1)"
 		"it"	"+160％ Danno da Arma, +15 Rigenerazione di Metallo e -20s Cooldown del Tinker.\nRiduce il drenaggio di Metallo (non può scendere sotto 1)"
 	}
 	"Tinker Pap 6 Desc"
 	{
-		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\nReduces Metal drain(cant go below 1)"
+		"en"	"+70％ Building Health, +250％ Weapon Damage, +1 Support Building, and -20s Tinker Cooldown.\n-Reduces Metal drain(cant go below 1)"
 		"it"	"+70％ Salute dell'Edificio, +250％ Danno dell'Arma, +1 Edificio di Supporto e -20s Cooldown del Tinker.\nRiduce il drenaggio di Metallo (non può scendere sotto 1)"
 	}
 	"Tinker Pap 7 Desc"
@@ -3438,12 +3446,12 @@
 	}
 	"West Pap 1 Desc"
 	{
-		"en"	"A weapon from Wild West.\n-Slower fire rate\n-Increased damage.\n-You gain damage resistance but the weapon's dmg falloff is increased\n-New abiity: M2 for rapid fire.\n-You loose guranteed gibs."
+		"en"	"A weapon from Wild West.\n-Slower fire rate\n-Increased damage.\n-You gain damage resistance but the weapon's dmg falloff is increased\n-New ability: M2 for rapid fire.\n-You loose guranteed gibs."
 		"it"	"Un'arma del Far West. \nSi guadagna resistenza ai danni, ma la caduta dei danni dell'arma aumenta: M2 per il fuoco rapido.\nSi perdono i fiocchi garantiti."
 	}
 	"West Pap 2 Desc"
 	{
-		"en"	"-Increased damage\nM-2 ability will make you jump backwards on usage\n-New abiity: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
+		"en"	"-Increased damage\n-M2 ability will make you jump backwards on usage\n-New ability: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
 		"fr"	"Dégats améliorés.\nAbilité vous fera reculer avec un saut.\nAppuyez sur M3 pour viser automatiquement un ennemi. Votre cadence de tir s'améliorera considérablement."
 		"chi"	"增加伤害。\nM2技能发动时会你将会后撤一步。\n新技能：[M3]锁定附近一位敌人，大幅度增加开火速度以及伤害。"
 		"it"	"Aumento del danno\nl'abilità M2 vi farà saltare all'indietro durante l'utilizzo della nuova abilità\nM3 La mira sarà fissata sul nemico vicino e i danni e la potenza di fuoco aumenteranno drasticamente."
@@ -3493,7 +3501,7 @@
 	}
 	"Victorian 2 Desc"
 	{
-		"en"	"-Increased Damage\n-Increased Ranged Resistance\n-Increased attackspeed\n-New abiity - Charged Shot: Press M2 to load up 10 powerful shells. \n-When reaching 5, you will be able to fire all remaining shells.\n-Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
+		"en"	"-Increased Damage\n-Increased Ranged Resistance\n-Increased attackspeed\n-New ability - Charged Shot: Press M2 to load up 10 powerful shells. \n-When reaching 5, you will be able to fire all remaining shells.\n-Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
 		"chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
 		"ko"	"피해량, 원거리 저항, 발사 속도 증가.\nM2 - 강력한 포탄 10개를 장전합니다.\n5발 남으면 전탄발사 사용가능.\n경고! 전탄발사시, 자가피해및 일정시간  피해량 감소및 다른 어빌 활성화 불가."
@@ -3862,13 +3870,13 @@
 	}
 	"Trash Cannon PaP 1"
 	{
-		"en"	"''I throw garbage everywhere - an ecological nightmare!''\nUnlocks new projectiles\n-Increased damage\n-Increased reloadspeed."
+		"en"	"''I throw garbage everywhere - an ecological nightmare!''\n-Unlocks new projectiles\n-Increased damage\n-Increased reloadspeed."
 		"chi"	"''I throw garbage everywhere - an ecological nightmare!''\n基础属性加强，垃圾桶里更多东西了。"
 		"it"	"''Getto i rifiuti ovunque: un incubo ecologico!''\nSblocca nuovi proiettili e migliora le statistiche di base."
 	}
 	"Trash Cannon PaP 2"
 	{
-		"en"	"''Carbon foot on the pedal, I AM TRASH METAL!''\nUnlocks two more projectiles\n-Increased damage\n-Increased reloadspeed.\n-An object of unspeakable danger lurks in this trash can..."
+		"en"	"''Carbon foot on the pedal, I AM TRASH METAL!''\n-Unlocks two more projectiles\n-Increased damage\n-Increased reloadspeed.\n-An object of unspeakable danger lurks in this trash can..."
 		"chi"	"''Carbon foot on the pedal, I AM TRASH METAL!''\n获得两个新的发射物，加强基础属性。\n垃圾桶里出现一个不可名状之物……"
 		"it"	"''Piede sul pedale, SONO TRASH METAL!''\nSblocca altri due proiettili e migliora ulteriormente le statistiche di base.\nUn oggetto di indicibile pericolo si nasconde in questo bidone della spazzatura..."
 	}
@@ -3914,7 +3922,7 @@
 	}
 	"The Yakuza Desc"
 	{
-		"en"	"After 10 years in the joint youre back, you lost all your fighting abilities, regain them...\nA single melee weapon that does hits multiple times.\nHas a R ability to change fighting styles."
+		"en"	"After 10 years in the joint youre back, you lost all your fighting abilities, regain them...\n-A single melee weapon that does hits multiple times.\n-Has a R ability to change fighting styles."
 		"it"	"Dopo 10 anni in prigione sei tornato, hai perso tutte le tue abilità di combattimento, riconquistale...\nUn'arma da mischia singola che colpisce più volte.\nHa un'abilità R per cambiare stile di combattimento."
 	}
 	"Kits General Buff"
@@ -4478,9 +4486,21 @@
 	{
 		"en"	"Fires a stream of rapid healing which pierces allies\n-Cannot overheal\n-If enemy is below 50％ health, heals 65％ more.\n-Allies touched by it get the medigun buff for 2 seconds."
 	}
-	"Health Hose Pap 1"
+	"Health Hose Desc 1"
 	{
 		"en"	"-Increased firerate\n-Doubled clip size."
+	}
+	"Health Hose Desc 2"
+	{
+		"en"	"-Fires 6 projectiles per shot.\n-Reduced clip size and rate of fire."
+	}
+	"Health Hose Desc 3"
+	{
+		"en"	"-Unlocks a special type of übercharge which temporarily buffs your movement and attack speed."
+	}
+	"Health Hose Desc 4"
+	{
+		"en"	"-Unlocks a special type of übercharge which temporarily triples your healing."
 	}
 
 	"Boomerang Desc"
