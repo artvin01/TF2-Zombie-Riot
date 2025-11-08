@@ -683,7 +683,7 @@ public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int sl
 		}
 		return;
 	}
-	MedigunChangeModeRInternal(client, weapon, crit, slot, true);
+	MedigunChangeModeRInternal(client, weapon, crit, slot, false);
 }
 
 
