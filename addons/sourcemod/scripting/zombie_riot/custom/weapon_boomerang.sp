@@ -435,7 +435,7 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	CreateTimer(TimeReturnToplayer, Timer_ReturnToOwner_Force, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);	
 	WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
 	HitsLeft[projectile] = hitsleft; //only 1 hit allowed
-	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 200, 0.2, 6.0, 6.0, 5);
+	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 50, 0.12, 15.0, 6.0, 1);
 	f_ArrowTrailParticle[projectile] = EntIndexToEntRef(trail);
 
 	//store_owner = GetClientUserId(client);
@@ -501,6 +501,12 @@ public Action Timer_ReturnToOwner(Handle timer, any entid)
 	if(!IsValidEntity(entity))
 		return Plugin_Stop;
 
+	int Trail = EntRefToEntIndex(f_ArrowTrailParticle[entity]);
+	if(IsValidEntity(Trail))
+	{
+		SetEntityRenderMode(Trail, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(Trail, 255, 255, 255, 25);
+	}
 	f_WandDamage[entity] *= 0.35;
 	HitsLeft[entity] = BOOMERRANG_RETURING;
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
