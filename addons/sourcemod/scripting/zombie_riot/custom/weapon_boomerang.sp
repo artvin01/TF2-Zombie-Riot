@@ -400,10 +400,12 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	if(extraability == 1)
 		speed *= 0.4;
 	float time = 2500.0 / speed;
+	time *= 0.35;
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
+	float TimeReturnToplayer = time;
 
-	time *= 10.0;
+	time *= 5.0;
 	float fAng[3];
 	GetClientEyeAngles(client, fAng);
 	if(!AreVectorsEqual(fAngOver, view_as<float>({0.0,0.0,0.0})))
@@ -429,6 +431,8 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 		ApplyStatusEffect(projectile, projectile, "Nightmareish Sawing", 99999999.9);
 		IgniteTargetEffect(projectile);
 	}
+	CreateTimer(0.25, TimerCheckAliveOwner, EntIndexToEntRef(projectile), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);	
+	CreateTimer(TimeReturnToplayer, Timer_ReturnToOwner_Force, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);	
 	WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
 	HitsLeft[projectile] = hitsleft; //only 1 hit allowed
 	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 200, 0.2, 6.0, 6.0, 5);
@@ -447,13 +451,57 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	b_NpcIsTeamkiller[projectile] = true; //allows self hitting
 	Times_Damage_Got_Reduced[projectile] = 0;
 }
+
+
+public Action Timer_ReturnToOwner_Force(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
+
+	if(b_ProjectileCollideIgnoreWorld[entity])
+		return Plugin_Stop;
+	b_ProjectileCollideIgnoreWorld[entity] = true;
+	SetEntityMoveType(entity, MOVETYPE_NOCLIP);
+	HitsLeft[entity] = BOOMERRANG_ABOUTTORETURN;
+	EntityKilled_HitDetectionCooldown(entity, Boomerang);
+	Timer_ReturnToOwner(INVALID_HANDLE, entid);	
+	return Plugin_Stop;
+}
+
+public Action TimerCheckAliveOwner(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
+
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	if(!IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+	
+	if(!IsPlayerAlive(owner))
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+	if(TeutonType[owner] != TEUTON_NONE)
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+	return Plugin_Stop;
+}
 public Action Timer_ReturnToOwner(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
 	if(!IsValidEntity(entity))
 		return Plugin_Stop;
 
-	f_WandDamage[entity] *= 0.25;
+	f_WandDamage[entity] *= 0.35;
 	HitsLeft[entity] = BOOMERRANG_RETURING;
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	float ang[3];
