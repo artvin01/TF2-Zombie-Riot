@@ -99,7 +99,7 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 			}
 		}
 	}
-	EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
+	EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.75, 110);
 }
 public void Weapon_Boomerang_Ability(int client, int weapon, bool crit, int slot)
 {
@@ -179,7 +179,7 @@ public Action Timer_Multiple_Boomerangs(Handle timer, DataPack pack)
 		fAng[2] += GetRandomFloat(-45.0, 45.0); //projectile spin
 		BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL, 1, 1.0, fAng);
 	}
-	EmitSoundToClient(client, "player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 110);
+	EmitSoundToAll("player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 75, _, 1.0, 110);
 	return Plugin_Continue;
 }
 
@@ -250,11 +250,11 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		}
 		else if(i_Current_Pap[owner] == 1 || i_Current_Pap[owner] == 4)
 		{
-			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.45, GetRandomInt(110,115));
+			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.35, GetRandomInt(110,115));
 		}
 		else if(i_Current_Pap[owner] == 2 || i_Current_Pap[owner] == 5)
 		{
-			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.45, GetRandomInt(95,100));
+			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.35, GetRandomInt(95,100));
 		}
 		//it may say "wand" but its just the name, its used for any type of projectile at this point.
 		//This is basically like saying a bool got hit and so on, this just saves those massive arrays.
@@ -524,7 +524,7 @@ public void Weapon_Boomerrang_FireInternal(DataPack DataDo)
 		return;
 
 	if(soundDo)
-		EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
+		EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.75, 110);
 
 	BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 16, 1.0,_,2);
 }
