@@ -482,7 +482,7 @@ public Action TimerCheckAliveOwner(Handle timer, any entid)
 		RemoveEntity(entity);
 		return Plugin_Stop;
 	}
-	
+
 	if(!IsPlayerAlive(owner))
 	{
 		RemoveEntity(entity);
@@ -493,7 +493,7 @@ public Action TimerCheckAliveOwner(Handle timer, any entid)
 		RemoveEntity(entity);
 		return Plugin_Stop;
 	}
-	return Plugin_Stop;
+	return Plugin_Continue;
 }
 public Action Timer_ReturnToOwner(Handle timer, any entid)
 {
