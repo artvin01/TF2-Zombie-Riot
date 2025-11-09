@@ -5,7 +5,7 @@
 
 //As per usual, I'm using arrays for stats on different pap levels. First entry is pap1, then pap2, etc.
 
-static int Raigeki_M1_NumBlades[4] = { 3, 2, 3, 4 };			    //Number of blade sweeps to perform in a row per M1.
+static int Raigeki_M1_NumBlades[4] = { 1, 2, 3, 4 };			    //Number of blade sweeps to perform in a row per M1.
 static float Raigeki_M1_Range[4] = { 180.0, 200.0, 220.0, 240.0 };  //Electric blade range.
 static float Raigeki_M1_Width[4] = { 120.0, 140.0, 160.0, 180.0 };  //Electric blade arc swing angle.
 static float Raigeki_M1_Damage[4] = { 200.0, 400.0, 600.0, 900.0 }; //Electric blade damage.
@@ -210,7 +210,7 @@ public void Blade_DeleteBeam(int client)
 			int trail = EntRefToEntIndex(GetArrayCell(g_BladeTrails[client], i));
 			if (IsValidEntity(trail))
 			{
-				MakeEntityFadeOut(trail, 4);
+				ShrinkTrailIntoNothing(trail, 0.33);
 			}
 		}
 
@@ -317,7 +317,7 @@ void Blade_StartSwing(int client)
     }
     delete trace;
 
-	FinishLagCompensation_Base_boss(client);
+	FinishLagCompensation_Base_boss();
 
     if (ang[0] > 60.0)
         ang[0] = 60.0;
@@ -478,7 +478,7 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 		int numTrails = RoundToFloor(f_BladeRange[client] / 75.0);
 		for (int i = 0; i < numTrails; i++)
 		{
-			int trail = CreateTrail("materials/sprites/lgtning.vmt", a, f_BladeInterval[client] * 0.425);
+			int trail = CreateTrail("materials/sprites/laserbeam.vmt", a, f_BladeInterval[client] * 0.425, beamWidth, _, view_as<int>(RENDER_TRANSALPHAADD));
 			if (IsValidEntity(trail))
 				PushArrayCell(g_BladeTrails[client], EntIndexToEntRef(trail));
 		}
@@ -512,11 +512,9 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 				TeleportEntity(trail, trailPos);
 
 				SetEntPropFloat(trail, Prop_Data, "m_flStartWidth", beamWidth);
-    			SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.1);
+    			SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.0);
 
-				//This does not work in ZR, it just makes the trail full white and extremely transparent.
-				SetEntityRenderMode(trail, RENDER_TRANSALPHA);
-				SetEntityRenderColor(trail, r, g, b, 255);
+				SetEntityRenderColor(trail, r, g, b, 80 + RoundToFloor(strength * 175.0));
 			}
 		}
 	}
@@ -671,13 +669,13 @@ stock void GetPointInDirection(float startPos[3], float ang[3], float distance, 
 	AddVectors(startPos, buffer, endPos);
 }
 
-stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0)
+stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0, int rendermode = 4)
 {
 	int entIndex = CreateEntityByName("env_spritetrail");
 	if (entIndex > 0 && IsValidEntity(entIndex))
 	{
 		DispatchKeyValue(entIndex, "spritename", trail);
-		SetEntPropFloat(entIndex, Prop_Send, "m_flTextureRes", 0.0000005);
+		SetEntPropFloat(entIndex, Prop_Send, "m_flTextureRes", 0.00005);
 		
 		char sTemp[5];
 		IntToString(alpha, sTemp, sizeof(sTemp));
@@ -686,10 +684,11 @@ stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwi
 		DispatchKeyValueFloat(entIndex, "lifetime", lifetime);
 		DispatchKeyValueFloat(entIndex, "startwidth", startwidth);
 		DispatchKeyValueFloat(entIndex, "endwidth", endwidth);
+
+		IntToString(rendermode, sTemp, sizeof(sTemp));
+		DispatchKeyValue(entIndex, "rendermode", sTemp);
 		
 		DispatchSpawn(entIndex);
-		
-		//SetEntityRenderMode(entIndex, rendermode);
 
 		return entIndex;
 	}
@@ -697,10 +696,44 @@ stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwi
 	return -1;
 }
 
+stock void ShrinkTrailIntoNothing(int trail, float rate)
+{
+	DataPack pack = new DataPack();
+	RequestFrame(Shrink_Trail, pack);
+    WritePackCell(pack, EntIndexToEntRef(trail));
+    WritePackFloat(pack, rate);
+}
+
+stock void Shrink_Trail(DataPack pack)
+{
+    ResetPack(pack);
+	int entity = EntRefToEntIndex(ReadPackCell(pack));
+    float rate = ReadPackFloat(pack);
+
+	if (!IsValidEntity(entity))
+    {
+        delete pack;
+		return;
+    }
+	
+	float width = GetEntPropFloat(entity, Prop_Data, "m_flStartWidth");
+	width -= rate;
+	if (width <= 0.0)
+	{
+		width = 0.0;
+		CreateTimer(0.1, Timer_RemoveEntity, entity, TIMER_FLAG_NO_MAPCHANGE);
+		SetEntPropFloat(entity, Prop_Data, "m_flStartWidth", width);
+		return;
+	}
+
+	SetEntPropFloat(entity, Prop_Data, "m_flStartWidth", width);
+	SetEntPropFloat(entity, Prop_Data, "m_flEndWidth", 0.0);
+
+	RequestFrame(Shrink_Trail, pack);
+}
+
 stock void MakeEntityFadeOut(int entity, int rate, bool remove = true)
 {
-	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
-	
 	DataPack pack = new DataPack();
 	RequestFrame(Fade_Out, pack);
     WritePackCell(pack, EntIndexToEntRef(entity));
