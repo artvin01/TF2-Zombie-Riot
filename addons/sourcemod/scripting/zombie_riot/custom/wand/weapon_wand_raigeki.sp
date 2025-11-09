@@ -199,6 +199,10 @@ public void Blade_DeleteBeam(int client)
 	if (IsValidEntity(ent))
 		RemoveEntity(ent);
 
+	i_BladeBeamEnt[client] = -1;
+	i_BladeEndEnt[client] = -1;
+	i_BladeStartEnt[client] = -1;
+
 	if (g_BladeTrails[client] != null)
 	{
 		for (int i = 0; i < GetArraySize(g_BladeTrails[client]); i++)
@@ -211,6 +215,7 @@ public void Blade_DeleteBeam(int client)
 		}
 
 		delete g_BladeTrails[client];
+		g_BladeTrails[client] = null;
 	}
 }
 
@@ -227,7 +232,7 @@ void Raigeki_FireWave(int client, int weapon, int tier)
         i_RemainingBlades[client] = Raigeki_M1_NumBlades[tier];
         Blade_StartSwing(client);
         
-        Utility_RemoveMana(client, mana_cost, f_BladeInterval[client] * float(Raigeki_M1_NumBlades[tier]) + 1.25);
+        Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(Raigeki_M1_NumBlades[tier])) + 1.25);
 	}
 	else
 	{
@@ -280,13 +285,13 @@ void Blade_ReadStats(int client, int tier)
     if (f_BladeWidth[client] > 360.0)
         f_BladeWidth[client] = 360.0;
 
-    //Sweep speed scales with attack rate modifiers, but for optimization purposes, can NEVER go below 0.1.
+    //Sweep speed scales with attack rate modifiers, but for optimization purposes, can NEVER go below 0.15.
     if (IsValidEntity(weapon))
         f_BladeInterval[client] *= Attributes_Get(weapon, 6, 1.0);
     if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
         f_BladeInterval[client] *= 0.83;
-    if (f_BladeInterval[client] < 0.1)
-        f_BladeInterval[client] = 0.1;
+    if (f_BladeInterval[client] < 0.15)
+        f_BladeInterval[client] = 0.15;
 
     f_BladeDMG[client] = f_BladeBaseDMG[client];
     f_BladeFalloff[client] = Raigeki_M1_Falloff[tier];
@@ -300,6 +305,9 @@ void Blade_StartSwing(int client)
     GetClientEyePosition(client, pos);
     GetClientEyeAngles(client, ang);
 
+	b_LagCompNPC_ExtendBoundingBox = true;
+	StartLagCompensation_Base_Boss(client);
+
     Handle trace = TR_TraceRayFilterEx(pos, ang, MASK_SHOT, RayType_Infinite, Blade_OnlyEnemies, client);
     if (TR_DidHit(trace))
     {
@@ -309,15 +317,15 @@ void Blade_StartSwing(int client)
     }
     delete trace;
 
+	FinishLagCompensation_Base_boss(client);
+
     if (ang[0] > 60.0)
         ang[0] = 60.0;
     if (ang[0] < -60.0)
         ang[0] = -60.0;
 
-    float startAng = ang[1] - (f_BladeWidth[client] * 0.5);
-    float targAng = ang[1] + (f_BladeWidth[client] * 0.5);
-
-    RequestFrame(Blade_Sweep, GetClientUserId(client));
+    float startAng = ang[1] + (f_BladeWidth[client] * 0.5);
+    float targAng = ang[1] - (f_BladeWidth[client] * 0.5);
 
     for (int i = 0; i < 3; i++)
         vec_BladeSwingAng[client][i] = ang[i];
@@ -335,6 +343,8 @@ void Blade_StartSwing(int client)
     {
         Raigeki_Hit[client][i] = false;
     }
+
+	RequestFrame(Blade_Sweep, GetClientUserId(client));
 }
 
 public void Blade_Sweep(int id)
@@ -371,9 +381,9 @@ public void Blade_Sweep(int id)
 
 	float totalMove = f_BladeTargAng[client] - f_BladeStartAng[client];
 	float duration = f_BladeEndTime[client] - f_BladeStartTime[client];
-	float timePassed = f_BladeEndTime[client] - gt;
+	float timePassed = gt - f_BladeStartTime[client];
 
-	f_BladeProgress[client] = timePassed / duration;
+	f_BladeProgress[client] = clamp(timePassed / duration, 0.0, 1.0);
 	ang[1] = f_BladeStartAng[client] + (f_BladeProgress[client] * totalMove);
 
 	float eyePos[3];
@@ -381,8 +391,7 @@ public void Blade_Sweep(int id)
 
 	//When the beam moves too quickly and has too much range, it can miss targets who are far enough away but still technically within range.
 	//To "fix" this, we just run a bunch of extra traces between the beam's previous and current points.
-    //TODO: This is somehow fucking broken and idk why, it makes every single enemy who *would* get hit by the sweep get hit at the same time instead of when the beam would naturally hit them
-	/*float diff = f_BladeProgress[client] - f_BladeProgressPrevious[client];
+	float diff = f_BladeProgress[client] - f_BladeProgressPrevious[client];
     if (diff > 0.02)
     {
         for (float i = 0.02; i <= diff; i += 0.02)
@@ -391,11 +400,11 @@ public void Blade_Sweep(int id)
             diffAng = ang;
             diffAng[1] = f_BladeStartAng[client] + ((f_BladeProgress[client] - i) * totalMove);
 
-            Utility_FireLaser(client, eyePos, diffAng, 1.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, _, Blade_OnlyThoseNotHit);
+            Utility_FireLaser(client, eyePos, diffAng, 0.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, _, Blade_OnlyThoseNotHit);
         }
-    }*/
+    }
 
-	Utility_FireLaser(client, eyePos, ang, 1.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, Blade_MoveBeam, Blade_OnlyThoseNotHit);
+	Utility_FireLaser(client, eyePos, ang, 0.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, Blade_MoveBeam, Blade_OnlyThoseNotHit);
 
     f_BladeProgressPrevious[client] = f_BladeProgress[client];
 
@@ -404,7 +413,7 @@ public void Blade_Sweep(int id)
 
 public void Blade_OnHit(int victim, int attacker)
 {
-    if (Raigeki_Hit[attacker][victim])
+    if (Raigeki_Hit[attacker][victim] || !Can_I_See_Enemy_Only(attacker, victim))
         return;
 
     float dmg = f_BladeDMG[attacker];
@@ -460,18 +469,18 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 	{
 		start = Blade_GetStartEnt(client);
 		end = Blade_GetEndEnt(client);
+	}
 
-		if (g_BladeTrails[client] == null)
+	if (g_BladeTrails[client] == null)
+	{
+		g_BladeTrails[client] = CreateArray(255);
+
+		int numTrails = RoundToFloor(f_BladeRange[client] / 75.0);
+		for (int i = 0; i < numTrails; i++)
 		{
-			g_BladeTrails[client] = CreateArray(255);
-
-			int numTrails = RoundToFloor(f_BladeRange[client] / 75.0);
-			for (int i = 0; i < numTrails; i++)
-			{
-				int trail = CreateTrail("materials/sprites/laser.vmt", a, _, _, _, RENDER_TRANSALPHA);
-				if (IsValidEntity(trail))
-					PushArrayCell(g_BladeTrails[client], EntIndexToEntRef(trail));
-			}
+			int trail = CreateTrail("materials/sprites/lgtning.vmt", a, f_BladeInterval[client] * 0.425);
+			if (IsValidEntity(trail))
+				PushArrayCell(g_BladeTrails[client], EntIndexToEntRef(trail));
 		}
 	}
 
@@ -479,6 +488,9 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 	SetEntPropFloat(beam, Prop_Data, "m_fWidth", beamWidth);
     SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", beamWidth);
 
+	SetEntityMoveType(start, MOVETYPE_NOCLIP);
+	SetEntityMoveType(end, MOVETYPE_NOCLIP);
+	SetEntityMoveType(beam, MOVETYPE_NOCLIP);
 	TeleportEntity(start, startPos);
 	TeleportEntity(end, endPos);
 
@@ -490,19 +502,21 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 			if (IsValidEntity(trail))
 			{
 				float trailPos[3];
-				GetPointInDirection(startPos, ang, float(i + 1) * 50.0, trailPos);
+				GetPointInDirection(startPos, ang, float(i + 1) * 75.0, trailPos);
 
-                //TODO: Only do this while Supercharged? Not sure.
+                //TODO: Maybe only do this while Supercharged? Not sure.
                 trailPos[0] += GetRandomFloat(-5.0, 5.0);
-                trailPos[1] += GetRandomFloat(-5.0, 5.0);
+               	trailPos[1] += GetRandomFloat(-5.0, 5.0);
                 trailPos[2] += GetRandomFloat(-12.0, 12.0);
 
 				TeleportEntity(trail, trailPos);
 
 				SetEntPropFloat(trail, Prop_Data, "m_flStartWidth", beamWidth);
-    			SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", beamWidth * 0.33);
+    			SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.1);
 
-				SetEntityRenderColor(trail, r, g, b, 80 + RoundToFloor(strength * 175.0));
+				//This does not work in ZR, it just makes the trail full white and extremely transparent.
+				SetEntityRenderMode(trail, RENDER_TRANSALPHA);
+				SetEntityRenderColor(trail, r, g, b, 255);
 			}
 		}
 	}
@@ -510,13 +524,21 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 
 ArrayList Laser_HitList;
 
+stock bool Laser_LOSCheck(int entity, int contentsmask, int target)
+{
+	if (IsValidClient(entity) || entity == target || (!b_NpcHasDied[entity] && b_ThisWasAnNpc[entity]) || i_IsABuilding[entity] || b_IsAProjectile[entity] || !b_is_a_brush[entity])
+		return false;
+
+	return true;
+}
+
 /**
  * Automatically runs a hull trace, and damages all enemies caught.
  * 
  * @param client		The client firing the laser.
  * @param startPos		Origin of the laser.
  * @param ang			Angle in which to fire the laser.
- * @param width			Hull trace width.
+ * @param width			Hull trace width. Can be set to 0.0 or below to use a ray instead of a hull.
  * @param range			Hull trace length.
  * @param damage		Damage to deal.
  * @param damagetype	Damage type.
@@ -528,26 +550,36 @@ ArrayList Laser_HitList;
  */
 stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float width, float range, float damage, int damagetype, int weapon = -1, int inflictor = -1, Function onHitFunc = INVALID_FUNCTION, Function drawLaserFunc = INVALID_FUNCTION, Function filterFunc = INVALID_FUNCTION)
 {
-	float endPos[3], hullMin[3], hullMax[3];
+	float endPos[3];
 
-    //TODOL This LOS check does not work in ZR, I have no fucking idea why
 	GetPointInDirection(startPos, ang, range, endPos);
-	Handle trace = TR_TraceRayFilterEx(startPos, endPos, MASK_SOLID, RayType_EndPoint, BulletAndMeleeTracePlayerAndBaseBossOnly, client);
+	Handle trace = TR_TraceRayFilterEx(startPos, endPos, MASK_SHOT, RayType_EndPoint, Laser_LOSCheck, client);
 	if (TR_DidHit(trace))
-		TR_GetEndPosition(endPos);
+		TR_GetEndPosition(endPos, trace);
     delete trace;
-
-	hullMin[0] = -width;
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
 
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
 	Laser_HitList = CreateArray(255);
-	TR_TraceHullFilter(startPos, endPos, hullMin, hullMax, 1073741824, Laser_Trace, client);
+
+	if (width > 0.0)
+	{
+		float hullMin[3], hullMax[3];
+
+		hullMin[0] = -width;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+
+		TR_TraceHullFilter(startPos, endPos, hullMin, hullMax, 1073741824, Laser_Trace, client);
+	}
+	else
+	{
+		TR_TraceRayFilter(startPos, endPos, 1073741824, RayType_EndPoint, Laser_Trace, client);
+	}
+
 	FinishLagCompensation_Base_boss();
 
 	if (GetArraySize(Laser_HitList) > 0)
@@ -600,9 +632,32 @@ stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float 
 	}
 }
 
+static void spawnRing_Vectorsss(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+{
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
+	
+	int ICE_INT = PrecacheModel(sprite);
+	
+	int color[4];
+	color[0] = r;
+	color[1] = g;
+	color[2] = b;
+	color[3] = alpha;
+	
+	if (endRange == -69.0)
+	{
+		endRange = range + 0.5;
+	}
+	
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	TE_SendToAll();
+}
+
 stock bool Laser_Trace(int entity, int contentsMask, int client)
 {
-	if (IsValidEnemy(client, entity, true) && Can_I_See_Enemy_Only(client, entity))
+	if (IsValidEnemy(client, entity, true))
 		PushArrayCell(Laser_HitList, entity);
 
 	return false;
@@ -616,7 +671,7 @@ stock void GetPointInDirection(float startPos[3], float ang[3], float distance, 
 	AddVectors(startPos, buffer, endPos);
 }
 
-stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0, RenderMode rendermode)
+stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0)
 {
 	int entIndex = CreateEntityByName("env_spritetrail");
 	if (entIndex > 0 && IsValidEntity(entIndex))
@@ -634,7 +689,7 @@ stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwi
 		
 		DispatchSpawn(entIndex);
 		
-		SetEntityRenderMode(entIndex, rendermode);
+		//SetEntityRenderMode(entIndex, rendermode);
 
 		return entIndex;
 	}
@@ -750,6 +805,7 @@ stock int CreateEnvBeam(int startEnt, int endEnt, float startPos[3] = NULL_VECTO
 	DispatchSpawn(end);
 	SetEntityMoveType(root, MOVETYPE_NOCLIP);
 	SetEntityMoveType(end, MOVETYPE_NOCLIP);
+	SetEntityMoveType(beam, MOVETYPE_NOCLIP);
 
 	TeleportEntity(root, startPos);
 	TeleportEntity(end, endPos);
