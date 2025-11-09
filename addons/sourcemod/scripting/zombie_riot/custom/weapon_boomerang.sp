@@ -99,7 +99,7 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 			}
 		}
 	}
-	EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.75, 110);
+	EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.85, 110);
 }
 public void Weapon_Boomerang_Ability(int client, int weapon, bool crit, int slot)
 {
@@ -246,7 +246,8 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		}
 		if(i_Current_Pap[owner] == 0 || i_Current_Pap[owner] == 3 || i_Current_Pap[owner] == 6)
 		{
-			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 80, _, 1.0, 110);
+			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 70, _, 0.8, 110);
+			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 70, _, 0.8, 110);
 		}
 		else if(i_Current_Pap[owner] == 1 || i_Current_Pap[owner] == 4)
 		{
@@ -524,7 +525,7 @@ public void Weapon_Boomerrang_FireInternal(DataPack DataDo)
 		return;
 
 	if(soundDo)
-		EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.75, 110);
+		EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.85, 110);
 
 	BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 16, 1.0,_,2);
 }
