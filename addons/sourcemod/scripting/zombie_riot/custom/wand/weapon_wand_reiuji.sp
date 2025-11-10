@@ -238,6 +238,7 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 
 		//todo: this doesn't work as expected. why? dunno yet.
 		//investigate
+		//or maybe just ditch this thing and use i_laser_target thingy but modified for this instance.
 		float vecTarget[3]; GetAbsOrigin(enemy, vecTarget); vecTarget[2] +=35.0;
 		float ProjLoc[3]; ProjLoc = GetReiujiBarrageSpecialLoc(client, targets_aquired, loop_for);
 		float AttackAngles[3];
