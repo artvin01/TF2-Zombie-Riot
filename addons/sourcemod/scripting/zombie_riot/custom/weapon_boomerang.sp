@@ -99,9 +99,9 @@ public void Weapon_Boomerang_Attack(int client, int weapon, bool crit)
 			}
 		}
 	}
-	EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
+	EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.85, 110);
 }
-public void Weapon_Boomerang_Ability_(int client, int weapon, bool crit, int slot)
+public void Weapon_Boomerang_Ability(int client, int weapon, bool crit, int slot)
 {
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
@@ -120,7 +120,7 @@ public void Weapon_Boomerang_Ability_(int client, int weapon, bool crit, int slo
 			GlaiveLord_EraseEnemyAoe(client, weapon);
 			//artvin pls help with spinning glaives
 			EmitSoundToAll(BOOMERRANG_ABILITY_GLAIVE, client, SNDCHAN_AUTO, 80, _, 0.7, 105);
-			Ability_Apply_Cooldown(client, slot, 30.0);
+			Ability_Apply_Cooldown(client, slot, 15.0);
 		}
 		case 5: //Nightmare
 		{
@@ -179,7 +179,7 @@ public Action Timer_Multiple_Boomerangs(Handle timer, DataPack pack)
 		fAng[2] += GetRandomFloat(-45.0, 45.0); //projectile spin
 		BoomerRangThrow(client, weapon, WOODEN_BOOMERANG_MODEL, 1, 1.0, fAng);
 	}
-	EmitSoundToClient(client, "player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 80, _, 1.0, 110);
+	EmitSoundToAll("player/taunt_jackhammer_down_swoosh.wav", client, SNDCHAN_AUTO, 75, _, 1.0, 110);
 	return Plugin_Continue;
 }
 
@@ -188,7 +188,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	int Trail = EntRefToEntIndex(f_ArrowTrailParticle[entity]);
-	if(owner < 0)
+	if(!IsValidEntity(owner))
 	{
 		//owner doesnt exist???
 		//suicide.
@@ -198,13 +198,14 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		RemoveEntity(entity);
 		return;
 	}
+	 
 			
 	//we dont want it to count allies as enemies so we temp set it to false.
 	b_NpcIsTeamkiller[entity] = false;
 	//we have found a valid target.
 	if(IsValidEnemy(entity,target, true, true) 
 	&& !IsIn_HitDetectionCooldown(entity,target, Boomerang) 
-	&& (HitsLeft[entity] > 0 || HitsLeft[entity] == -1000))
+	&& (HitsLeft[entity] > 0 || HitsLeft[entity] == BOOMERRANG_RETURING))
 	{
 		//we also want to never try to rehit the same target we already have hit.
 		//we found a valid target.
@@ -245,15 +246,16 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		}
 		if(i_Current_Pap[owner] == 0 || i_Current_Pap[owner] == 3 || i_Current_Pap[owner] == 6)
 		{
-			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 80, _, 1.0, 110);
+			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 70, _, 0.8, 110);
+			EmitSoundToClient(owner, BOOMERANG_HIT_SOUND_WOOD, owner, SNDCHAN_AUTO, 70, _, 0.8, 110);
 		}
 		else if(i_Current_Pap[owner] == 1 || i_Current_Pap[owner] == 4)
 		{
-			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.45, GetRandomInt(110,115));
+			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.35, GetRandomInt(110,115));
 		}
 		else if(i_Current_Pap[owner] == 2 || i_Current_Pap[owner] == 5)
 		{
-			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.45, GetRandomInt(95,100));
+			EmitSoundToClient(owner, g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], owner, SNDCHAN_AUTO, 70, _, 0.35, GetRandomInt(95,100));
 		}
 		//it may say "wand" but its just the name, its used for any type of projectile at this point.
 		//This is basically like saying a bool got hit and so on, this just saves those massive arrays.
@@ -263,10 +265,10 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 			f_WandDamage[entity] *= 0.7;
 			Times_Damage_Got_Reduced[entity] += 1;
 		}
-		if(HitsLeft[entity] != -1000)
+		if(HitsLeft[entity] != BOOMERRANG_RETURING)
 			HitsLeft[entity]--;
 
-		if((HitsLeft[entity] > 0 && HitsLeft[entity] != -1000) && i_Current_Pap[owner] != 2 && i_Current_Pap[owner] != 5)
+		if((HitsLeft[entity] > 0 && HitsLeft[entity] != BOOMERRANG_RETURING) && i_Current_Pap[owner] != 2 && i_Current_Pap[owner] != 5)
 		{
 			//we can still hit new targets, cycle through the closest enemy!
 			int EnemyFound = GetClosestTarget(entity,
@@ -310,7 +312,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 				//make it phase through everything to get to its owner.
 			}
 		}
-		if(HitsLeft[entity] <= 0 && HitsLeft[entity] != -1000)
+		if(HitsLeft[entity] <= 0 && HitsLeft[entity] != BOOMERRANG_RETURING && HitsLeft[entity] != BOOMERRANG_ABOUTTORETURN)
 		{
 			/*
 				we have hit enough targets.... we need to go back without damaging any other targets,
@@ -347,7 +349,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		return;
 	}
 
-	if(target == 0 && HitsLeft[entity] != -1000)
+	if(target == 0 && HitsLeft[entity] != BOOMERRANG_RETURING && HitsLeft[entity] != BOOMERRANG_ABOUTTORETURN)
 	{
 		/*
 			hit world, go back home.
@@ -398,10 +400,12 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	if(extraability == 1)
 		speed *= 0.4;
 	float time = 2500.0 / speed;
+	time *= 0.35;
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
+	float TimeReturnToplayer = time;
 
-	time *= 10.0;
+	time *= 5.0;
 	float fAng[3];
 	GetClientEyeAngles(client, fAng);
 	if(!AreVectorsEqual(fAngOver, view_as<float>({0.0,0.0,0.0})))
@@ -427,9 +431,11 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 		ApplyStatusEffect(projectile, projectile, "Nightmareish Sawing", 99999999.9);
 		IgniteTargetEffect(projectile);
 	}
+	CreateTimer(0.25, TimerCheckAliveOwner, EntIndexToEntRef(projectile), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);	
+	CreateTimer(TimeReturnToplayer, Timer_ReturnToOwner_Force, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);	
 	WandProjectile_ApplyFunctionToEntity(projectile, Weapon_Boomerang_Touch);
 	HitsLeft[projectile] = hitsleft; //only 1 hit allowed
-	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 200, 0.2, 6.0, 6.0, 5);
+	int trail = Trail_Attach(projectile, ARROW_TRAIL_RED, 50, 0.12, 15.0, 6.0, 1);
 	f_ArrowTrailParticle[projectile] = EntIndexToEntRef(trail);
 
 	//store_owner = GetClientUserId(client);
@@ -445,13 +451,63 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 	b_NpcIsTeamkiller[projectile] = true; //allows self hitting
 	Times_Damage_Got_Reduced[projectile] = 0;
 }
+
+
+public Action Timer_ReturnToOwner_Force(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
+
+	if(b_ProjectileCollideIgnoreWorld[entity])
+		return Plugin_Stop;
+	b_ProjectileCollideIgnoreWorld[entity] = true;
+	SetEntityMoveType(entity, MOVETYPE_NOCLIP);
+	HitsLeft[entity] = BOOMERRANG_ABOUTTORETURN;
+	EntityKilled_HitDetectionCooldown(entity, Boomerang);
+	Timer_ReturnToOwner(INVALID_HANDLE, entid);	
+	return Plugin_Stop;
+}
+
+public Action TimerCheckAliveOwner(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(!IsValidEntity(entity))
+		return Plugin_Stop;
+
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	if(!IsValidClient(owner))
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+
+	if(!IsPlayerAlive(owner))
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+	if(TeutonType[owner] != TEUTON_NONE)
+	{
+		RemoveEntity(entity);
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
+}
 public Action Timer_ReturnToOwner(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
 	if(!IsValidEntity(entity))
 		return Plugin_Stop;
 
-	f_WandDamage[entity] *= 0.25;
+	int Trail = EntRefToEntIndex(f_ArrowTrailParticle[entity]);
+	if(IsValidEntity(Trail))
+	{
+		SetEntityRenderMode(Trail, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(Trail, 255, 255, 255, 25);
+	}
+	f_WandDamage[entity] *= 0.35;
 	HitsLeft[entity] = BOOMERRANG_RETURING;
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	float ang[3];
@@ -523,7 +579,7 @@ public void Weapon_Boomerrang_FireInternal(DataPack DataDo)
 		return;
 
 	if(soundDo)
-		EmitSoundToClient(client, BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 80, _, 0.8, 110);
+		EmitSoundToAll(BOOMERANG_FIRE_SOUND, client, SNDCHAN_AUTO, 75, _, 0.85, 110);
 
 	BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 16, 1.0,_,2);
 }

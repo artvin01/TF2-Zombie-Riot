@@ -79,7 +79,7 @@ public void PeasantBones_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any Summon_Normal(float vecPos[3], float vecAng[3], int ally)
+static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return PeasantBones(vecPos, vecAng, ally, false);
 }

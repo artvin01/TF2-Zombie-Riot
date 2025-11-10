@@ -549,7 +549,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 						}	
 					}
 				}
-				else if(StrEqual(classname, "tf_weapon_flamethrower"))
+				else if(StrEqual(classname, "tf_weapon_flamethrower") || (StrEqual(classname, "tf_weapon_slap") && slot == 0))
 				{
 					//flamethrowers get different logic.
 					switch(GetURandomInt() % 3)

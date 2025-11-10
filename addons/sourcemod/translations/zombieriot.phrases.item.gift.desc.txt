@@ -553,12 +553,12 @@
 	}
 	"Revived DDT Desc"
 	{
-		"en" 		"A robot following orders.\nAttacks enemeis that are marked."
+		"en" 		"A robot following orders.\nAttacks enemies that are marked."
 		"it"		"Un robot che esegue gli ordini.\nAttacca i nemici che sono contrassegnati."
 	}
 	"Spookmaster Boner Desc"
 	{
-		"en" 		"The boner and his funny honk.\nAttacks enemeis that are marked."
+		"en" 		"The boner and his funny honk.\nAttacks enemies that are marked."
 		"it"		"L'erezione e il suo buffo clacson.\nAttacca i nemici che sono contrassegnati."
 	}
 	"Cured Father Grigori Desc"
@@ -1860,7 +1860,7 @@
 	}
 	"Irritated Person Desc" 
 	{
-		"en"	"Each 3rd attack gives a small resistance buff upto 75％.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemeis."
+		"en"	"Each 3rd attack gives a small resistance buff upto 75％.\nThe more he is hurt, the more damage he takes but he gets faster and deals more damage too.\nJumps at you but if enough health is lost, he will instead do a ground pound which damages all enemies."
 		"it"	"Ogni terzo attacco conferisce un piccolo buff di resistenza fino a 75％.\nPiù viene ferito, più danni subisce, ma diventa anche più veloce e infligge più danni.\nSalta verso di voi, ma se si perde abbastanza salute, farà invece un ground pound che danneggia tutti gli avversari."
 	}
 	"Ransacker Desc" 
@@ -1890,7 +1890,7 @@
 	}
 	"Anarchist Enforcer Desc"
 	{
-		"en"	"A sniper that deals huge damgae and gives bleed."
+		"en"	"A sniper that deals huge damage and gives bleed."
 		"it"	"Un cecchino che infligge danni ingenti e dà sanguinamento."
 	}
 	"Braindead Desc"
@@ -2065,7 +2065,7 @@
 	}
 	"Chaos Intrusion Desc"
 	{
-		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nEnemeis deal 12％ more damage, have 30％ more HP and are 3％ faster."
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25％ more enemies, spawn 20％ faster, and 10％ more zombies are alive at once.\nenemies deal 12％ more damage, have 30％ more HP and are 3％ faster."
 		"it"	"Sei arrivato troppo tardi, il caos ha avuto tutto il suo effetto... Le onde generano 25％ più nemici, generano 20％ più velocemente e 10％ più zombi sono vivi in una volta sola."
 	}
 	"Standard"
