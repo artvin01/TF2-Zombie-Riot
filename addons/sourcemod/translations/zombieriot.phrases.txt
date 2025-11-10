@@ -1025,6 +1025,18 @@
 	{
 		"en"		"YOU'RE BONED!"
 	}
+	"Reaper Target Warning"
+	{
+		"en"		"DEATH IS IMMINENT..."
+	}
+	"Reaper Bored Alert"
+	{
+		"en"		"Death is no longer after you..."
+	}
+	"Reaper Tricked Alert"
+	{
+		"en"		"You've cheated death!"
+	}
 	"Rusty Ability Blocked"
 	{
 		"en"		"You can't do that right now!"
@@ -1503,7 +1515,7 @@
 	}
 	"Gamemode Help Explained"
 	{
-		"en" 		"You survive against waves of zombies upto usually 40 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
+		"en" 		"You survive against waves of zombies upto usually 40 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy Survival upgrades to have more surviveability.\nThe rest will come to you naturally."
 		"fr" 		"Survivez jusqu'a 40(?) vagues de zombies.\nAchetez des armes et construisez des barricades pour survivre.\nTravaillez avec vos coéquipiers et n'ayez pas peur d'échanger votre Argent\nou riquez de perdre le jeu pour votre équipe.\n\n Si vous ne savez pas quelle arme vous devrez vous acheter, essayez n'importe quelle arme à haut prix.\nN'oubliez pas d'obtenir des améliorations dans la boutique.\nLe reste vous viendra naturellement."
 		"ru" 		"Вам предстоит выжить против 40 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
 	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 40 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
@@ -1514,7 +1526,7 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damgae calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
+		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee ％ damage taken, arrow means ranged ％ damage taken.\nIt will light up whatever resitsance is being used when damage calculations happen.\nTrue damage only benifits from bonuses and ignores reisistances."
 		"es"		"A la izquierda hay debuffs, y a la derecha hay buffs.\nCada simbolo es un debuff o buff.\nEl 'dedito' significa el daño cuerpo a cuerpo total que recibes, y la flecha significa el daño total a distancia que recibes.\nSe subrayan apenas recibas el daño correspondiente a estos.\nEl daño verdadero no subraya, y ignora estas resistencias."
 		"it"		"Sul lato sinistro ci saranno i debuff.Sul lato destro ci saranno i buff.Ogni simbolo è un nuovo buff o debuff. \nIl dito indica i danni subiti in mischia, mentre la freccia indica i danni subiti a distanza.\nSi illuminerà la resistenza utilizzata quando si calcolano i danni.\nIl danno reale beneficia solo dei bonus e ignora le resistenze."
 	}
@@ -1966,11 +1978,11 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
-		"ru" 		"TF2: Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
-		"fr" 		"TF2: Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
+		"en" 		"Zombie Riot\nPress TAB again to close the menu!\nDisplay active weapon in shop with (H)"
+		"ru" 		"Zombie Riot\nСнова нажмите TAB что бы закрыть меню!\nУдерживайте TAB + (H) что бы посмотреть текущее оружие!"
+		"fr" 		"Zombie Riot\nAppuyez TAB pour fermer le menu!\nAppuyez TAB + (H) pour afficher votre arme!"
 		"chi"		"TF2：僵尸暴动\n按Tab开关菜单\nTAB+(H)显示当前武器！"
-		"it"		"TF2: Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
+		"it"		"Zombie Riot\nPremi di nuovo TAB per chiudere il menu!\nTieni premuto TAB + (H) per mostrare l'arma corrente!"
 	}
 	"StatusEffectList"
 	{
@@ -2481,11 +2493,11 @@
 	}
 	"Starter Mode"
 	{
-		"en"		"Welcome to TF2: Zombie Riot!\nAdvanced weapons will unlock at Level 5"
-		"fr"		"Bienvenue à TF2: Zombie Riot!\nLes armes avancées seront disponibles au niveau 5."
+		"en"		"Welcome to Zombie Riot!\nAdvanced weapons will unlock at Level 5"
+		"fr"		"Bienvenue à Zombie Riot!\nLes armes avancées seront disponibles au niveau 5."
 		"ru"		"Добро пожаловать в TF2: Восстание зомби!\nПродвинутое оружие будет открыто на 5-м уровне"
 		"chi"       "欢迎来到TF2:僵尸暴动!高级武器将在5级解锁"
-		"it"		"Benvenuti in TF2: Zombie Riot! \nLe armi avanzate si sbloccano al livello 5"
+		"it"		"Benvenuti in Zombie Riot! \nLe armi avanzate si sbloccano al livello 5"
 	}
 	"Skip Starter"
 	{

@@ -1420,12 +1420,12 @@
 		"chi"       	"鲍勃的魔法"
 		"it"		"La magia di Bob"
 	}
-	"Passive Upgrades"//Passive Upgrades HERE!!!
+	"Survival Upgrades"//Survival Upgrades HERE!!!
 	{
-		"en"		"Passive Upgrades"
+		"en"		"Survival Upgrades"
 		"fr"		"Améliorations Passives"
 		"ru"		"Пассивные улучшения"
-		"de"		"Passive Upgrades"
+		"de"		"Survival Upgrades"
 		"pt"		"Melhorias Passivas"
 		"nl"		"Passieve Upgrades"
 		"chi"       	"被动升级"

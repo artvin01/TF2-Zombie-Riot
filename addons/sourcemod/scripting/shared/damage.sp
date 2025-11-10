@@ -383,6 +383,14 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 	view_as<CClotBody>(victim).m_bGib = false;
 	float GameTime = GetGameTime();
 	
+	if (HasSpecificBuff(victim, "Challenger"))
+	{
+		if (attacker == view_as<CClotBody>(victim).m_iTarget)
+			damage *= 2.0;
+		else
+			damage *= 0.5;
+	}
+
 #if defined ZR
 
 	if(BetWar_Mode())

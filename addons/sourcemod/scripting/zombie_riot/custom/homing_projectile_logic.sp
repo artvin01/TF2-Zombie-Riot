@@ -8,6 +8,7 @@ static float RWI_RocketSpeed[MAXENTITIES];
 
 static bool RWI_AlterRocketActualAngle[MAXENTITIES];
 static float RWI_RocketRotation[MAXENTITIES][3];
+static Handle RWI_HandleHome[MAXENTITIES];
 
 #if defined ZR
 void GetRocketAngles(int entity, float angles[3])
@@ -55,7 +56,14 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	GetEntPropVector(projectile, Prop_Send, "m_vInitialVelocity", vecVelocityCurrent);
 	RWI_RocketSpeed[projectile] = getLinearVelocity(vecVelocityCurrent);
 	//homing will always be 0.1 seconds, thats the delay.
-	CreateTimer(0.1, Projectile_NonPerfectHoming, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	if(RWI_HandleHome[projectile] != null)
+		delete RWI_HandleHome[projectile];
+	//incase a homing will be reused, just do this!
+	DataPack pack;
+	RWI_HandleHome[projectile] = CreateDataTimer(0.1, Projectile_NonPerfectHoming, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(projectile));
+	pack.WriteCell(projectile);
+	TriggerTimer(RWI_HandleHome[projectile]);
 	/*
 		dont bother using EntRef for RMR_CurrentHomingTarget, it has a 0.1 timer
 		and the same entity cannot be repeated/id cant be replaced in under 1 second
@@ -64,21 +72,30 @@ void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, 
 	*/
 }
 
-public Action Projectile_NonPerfectHoming(Handle timer, int ref)
+public Action Projectile_NonPerfectHoming(Handle timer, DataPack pack)
 {
-	int entity = EntRefToEntIndex(ref);
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int entityIdx = pack.ReadCell();
 	if(IsValidEntity(entity))
 	{
 		if(!IsValidEntity(RMR_RocketOwner[entity])) //no need for converting.
 		{
 			RemoveEntity(entity);
+			RWI_HandleHome[entityIdx] = null;
 			return Plugin_Stop;
 		}
 
-		//The enemy is valid
-		if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity]))
+		//if we home onto ourselves, allow this regardless of everything.
+		if(EntRefToEntIndex(RMR_RocketOwner[entity]) == RMR_CurrentHomingTarget[entity])
 		{
-			if(HomingProjectile_IsVisible(entity, RMR_CurrentHomingTarget[entity]))
+			HomingProjectile_TurnToTarget_NonPerfect(entity, RMR_CurrentHomingTarget[entity]);
+			return Plugin_Continue;
+		}
+		//The enemy is valid
+		if(IsValidEnemy(entity, RMR_CurrentHomingTarget[entity],true, true))
+		{
+			if(GetEntityMoveType(entity) == MOVETYPE_NOCLIP || HomingProjectile_IsVisible(entity, RMR_CurrentHomingTarget[entity]))
 			{
 				if(HomingProjectile_ValidTargetCheck(entity, RMR_CurrentHomingTarget[entity]))
 				{
@@ -92,6 +109,7 @@ public Action Projectile_NonPerfectHoming(Handle timer, int ref)
 		//We already lost our homing Target AND we made it so we cant get another, kill the homing.
 		if(RWI_LockOnlyOnce[entity] && RWI_WasLockedOnce[entity])
 		{
+			RWI_HandleHome[entityIdx] = null;
 			return Plugin_Stop;
 		}
 
@@ -99,9 +117,9 @@ public Action Projectile_NonPerfectHoming(Handle timer, int ref)
 		int Closest = GetClosestTarget(entity, _, _, true,_,_,_,_,_,_,_,_,view_as<Function>(HomingProjectile_ValidTargetCheck));
 		if(IsValidEnemy(EntRefToEntIndex(RMR_RocketOwner[entity]), Closest))
 		{
-			if(IsValidEnemy(entity, Closest))
+			if(IsValidEnemy(entity, Closest,true, true))
 			{
-				if(HomingProjectile_IsVisible(entity, Closest))
+				if(GetEntityMoveType(entity) == MOVETYPE_NOCLIP || HomingProjectile_IsVisible(entity, Closest))
 				{
 					if(HomingProjectile_ValidTargetCheck(entity, Closest))
 					{
@@ -116,6 +134,7 @@ public Action Projectile_NonPerfectHoming(Handle timer, int ref)
 	}
 	else
 	{
+		RWI_HandleHome[entityIdx] = null;
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;

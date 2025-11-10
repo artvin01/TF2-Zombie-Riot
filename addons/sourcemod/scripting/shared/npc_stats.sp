@@ -5180,12 +5180,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				}
 			}
 
-#if defined RTS
-			if(RTS_IsEntAlly(index, enemy))
-			{
-				return false;
-			}
-#else
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
 #if defined RPG
@@ -5197,7 +5191,6 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 #endif
 			}
-#endif
 
 #if defined RPG
 			if(GetTeam(index) != GetTeam(enemy))
@@ -6181,11 +6174,6 @@ public bool TraceRayCanSeeAllySpecific(int entity,int mask,any data)
 	if(b_ThisEntityIgnored[entity])
 	{
 		return false;
-	}
-	
-	if(entity == Entity_to_Respect)
-	{
-		return true;
 	}
 	
 	return false;
@@ -7310,7 +7298,7 @@ static char m_cGibModelMetal[][] =
 	"models/gibs/scanner_gib01.mdl",
 	"models/gibs/metal_gib2.mdl"
 };
-void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
+void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
 	if(npc.m_iBleedType == 0)
@@ -7328,6 +7316,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 		Limit_Gibs = true;
 	}
 	if(EnableSilentMode)
+		Limit_Gibs = true;
+
+	if(forcesilentMode)
 		Limit_Gibs = true;
 
 	if(npc.m_iBleedType == BLEEDTYPE_METAL)

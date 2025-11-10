@@ -1537,6 +1537,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 	{
 		if(Rogue_BlueParadox_CanTeutonUpdate(client) && Classic_CanTeutonUpdate(client, IsRespawning))
 			TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
+
+		//not allowed to spawn.
+		if(!b_AntiLateSpawn_Allow[client])
+			TeutonType[client] = TEUTON_DEAD;
 	}
 #endif
 
