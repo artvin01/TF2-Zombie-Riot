@@ -206,14 +206,13 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		return;
 	}
 
-	Rogue_OnAbilityUse(client, weapon);
-	Ability_Apply_Cooldown(client, slot, 10.0);
-
 	int loop_for = i_max_barage[pap];
 	float range = fl_barrage_maxrange[pap];
 
 	int[] valid_targets = new int[loop_for];
 	int targets_aquired = 0;
+
+	float tolerance_angle = fl_barrage_angles[pap];
 
 	float Origin[3]; GetClientEyePosition(client, Origin);
 	Zero(i_Ruina_Laser_BEAM_HitDetected);
@@ -221,6 +220,11 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 	StartLagCompensation_Base_Boss(client);
 	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Reiuji, client);
 	FinishLagCompensation_Base_boss();
+
+	for(int i=0 ; i < loop_for ; i++)
+	{
+		valid_targets[i] = -1;
+	}
 
 	for(int i=0; i < sizeof(i_Ruina_Laser_BEAM_HitDetected); i++)
 	{
@@ -231,24 +235,24 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		if(targets_aquired >= loop_for)
 			break;
 
+
+		//todo: this doesn't work as expected. why? dunno yet.
+		//investigate
 		float vecTarget[3]; GetAbsOrigin(enemy, vecTarget); vecTarget[2] +=35.0;
 		float ProjLoc[3]; ProjLoc = GetReiujiBarrageSpecialLoc(client, targets_aquired, loop_for);
+		float AttackAngles[3];
+		MakeVectorFromPoints(Origin, ProjLoc, AttackAngles);
+		GetVectorAngles(AttackAngles, AttackAngles);
 
-		if(!Check_Line_Of_Sight_Vector(ProjLoc, vecTarget, client))
+		if(!IsLineOfSight_Vec(ProjLoc, AttackAngles, vecTarget, tolerance_angle, range, client))
 			continue;
 
 		valid_targets[targets_aquired] = enemy;
 		targets_aquired++;
 	}
 
-	if(targets_aquired == 0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Targets Detected");
-		return;
-	}
+	Rogue_OnAbilityUse(client, weapon);
+	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : 10.0);
 
 	float damage = 200.0 * Attributes_Get(weapon, 410, 1.0);
 	float speed = 1100.0;
@@ -262,9 +266,9 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 
 	float Linger_Time = 150.0 / speed;
 
-	for(int i=0 ; i < targets_aquired ; i++)
+	for(int i=0 ; i < loop_for ; i++)
 	{
-		float ProjLoc[3]; ProjLoc = GetReiujiBarrageSpecialLoc(client, i, targets_aquired);
+		float ProjLoc[3]; ProjLoc = GetReiujiBarrageSpecialLoc(client, i, loop_for);
 		float AttackAngles[3];
 		MakeVectorFromPoints(Origin, ProjLoc, AttackAngles);
 		GetVectorAngles(AttackAngles, AttackAngles);
@@ -276,7 +280,7 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		CreateDataTimer(Linger_Time, ReiujiBarrage_OffsetProj, Pack, TIMER_FLAG_NO_MAPCHANGE);
 		Pack.WriteCell(EntIndexToEntRef(projectile));
 		Pack.WriteFloat(speed);
-		Pack.WriteCell(EntIndexToEntRef(valid_targets[i]));
+		Pack.WriteCell(valid_targets[i] > 0 ? EntIndexToEntRef(valid_targets[i]) : -1);
 	}
 
 
@@ -382,12 +386,8 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
-static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int attacker)
+static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int attacker = -1)
 {
-	Player_Laser_Logic Laser;
-	Laser.client = attacker;
-	Laser.Start_Point = pos_npc;
-
 	float vecAngles[3];
 	//get the enemy gamer's location.
 	//get the angles from the current location of the crystal to the enemy gamer
@@ -396,12 +396,30 @@ static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int
 	//get the estimated distance to the enemy gamer,
 	float Dist = GetVectorDistance(Enemy_Loc, pos_npc);
 	//do a trace from the current location of the crystal to the enemy gamer.
-	Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
 
-	//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
+	//Both are basically identical, its just one has lag comp and the other doesn't
+	//why didn't I just merge them. aaa
+	if(attacker > 0)
+	{
+		Player_Laser_Logic Laser;
+		Laser.client = attacker;	//this only matter ons player laser logic since it has lag comp. while ruina laser logic doesn't have lag comp. and in this case we are not using the entity index for anything.
+		Laser.Start_Point = pos_npc;
+	
+		Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
 
-	return Similar_Vec(Laser.End_Point, Enemy_Loc);
+		//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
+		return Similar_Vec(Laser.End_Point, Enemy_Loc);
+	}
+	else
+	{
+		Ruina_Laser_Logic Laser;
+		Laser.Start_Point = pos_npc;
+		Laser.DoForwardTrace_Custom(vecAngles, pos_npc, Dist);	//alongside that, use the estimated distance so that our end location from the trace is where the player is.
 
+		//see if the vectors match up, if they do we can safely say the target is in line of sight of the origin npc/loc
+		return Similar_Vec(Laser.End_Point, Enemy_Loc);
+	}
+	
 }
 static bool TraceEntityEnumerator_Reiuji(int entity, int client)
 {
@@ -461,9 +479,6 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		return;
 	}
 
-	Rogue_OnAbilityUse(client, weapon);
-	Ability_Apply_Cooldown(client, slot, 5.0);
-
 
 	int loop_for = i_max_barage[pap];
 	float tolerance_angle = fl_barrage_angles[pap];
@@ -500,6 +515,9 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Targets Detected");
 		return;
 	}
+
+	Rogue_OnAbilityUse(client, weapon);
+	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : 5.0);
 	
 	float Origin[3];
 	WorldSpaceCenter(client, Origin);
@@ -543,8 +561,35 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		//CPrintToChatAll("barrage went beyond 0.0, correcting: %.3f", fl_barrage_charge[client]);
 		fl_barrage_charge[client] = 0.0;
 	}
-
+}
+static int IsLineOfSight_Vec(float npc_pos[3], float eyeAngles[3], float Vic_Pos[3], float AnglesMax, float Range, int client = -1)
+{
+	// need position of either the inflictor or the attacker
+	float angle[3];
+	float Dist = GetVectorDistance(Vic_Pos, npc_pos, true);
+	if(Dist > Range*Range)
+		return 0;
 	
+	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0]
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+
+	float MaxYaw = AnglesMax;
+	float MinYaw = -AnglesMax;
+		
+	// now it's a simple check
+	if ((yawOffset >= MinYaw && yawOffset <= MaxYaw))	//first check position before doing a trace checking line of sight.
+	{					
+		TE_SetupBeamPoints(npc_pos, Vic_Pos, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+		TE_SendToAll();
+		return Check_Line_Of_Sight_Vector(npc_pos, Vic_Pos, client);
+	}
+	return false;
 }
 static int IsLineOfSight(int client, int Target, float AnglesMax, float Range)
 {
