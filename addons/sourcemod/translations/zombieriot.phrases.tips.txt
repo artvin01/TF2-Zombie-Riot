@@ -82,7 +82,7 @@
 	}
 	"Setup Chat Tip 17"
 	{
-		"en"	"Balance your weapon upgrades with passive upgrades, no use dealing more damage if you can barely take any!"
+		"en"	"Balance your weapon upgrades with Survival upgrades, no use dealing more damage if you can barely take any!"
 		"it"	"Bilanciate i potenziamenti delle armi con i potenziamenti passivi: non serve a nulla infliggere più danni se poi si riesce a malapena a subirne!"
 	}
 	"Setup Chat Tip 18"

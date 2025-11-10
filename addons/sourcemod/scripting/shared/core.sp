@@ -101,6 +101,8 @@ ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
 ConVar CvarAutoSelectWave;
+ConVar CvarAutoSelectDiff;
+ConVar CvarVoteLimit;
 #endif
 ConVar CvarCustomModels;
 ConVar CvarFileNetworkDisable;

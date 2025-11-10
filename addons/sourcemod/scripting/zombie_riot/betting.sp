@@ -398,15 +398,15 @@ void BetWar_Progress(int winner = -1)
 	{
 		case State_Setup:
 		{
-			Zero(BetMoney);
 			CurrentCash = 0;
 
 			for(int client=1; client<=MaxClients; client++)
 			{
+				BetMoney[client] = 1000;
+				CashSpent[client] = -1000;
+
 				if(IsClientInGame(client) && GetClientTeam(client) == 2)
 				{
-					BetMoney[client] = 1000;
-					CashSpent[client] = -1000;
 					SetEntProp(client, Prop_Send, "m_nCurrency", BetMoney[client]);
 				}
 			}
