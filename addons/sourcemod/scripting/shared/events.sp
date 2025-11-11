@@ -118,6 +118,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	BlacksmithGrill_RoundStart();
 	Zealot_RoundStart();
 	Drops_ResetChances();
+	NPCStats_HandlePaintedWearables();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -162,7 +163,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
-	if(CvarAutoSelectWave.BoolValue && !Waves_Started())
+	if(CvarAutoSelectDiff.BoolValue && !Waves_Started())
 	{
 		//Do this only once!
 		char mapname[64];
@@ -311,9 +312,6 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 	  	//DEFAULTS
 		
-		if(!b_AntiLateSpawn_Allow[client])
-			if(TeutonType[client] == TEUTON_NONE)
-				TeutonType[client] = TEUTON_DEAD;
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 

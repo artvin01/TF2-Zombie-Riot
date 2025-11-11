@@ -142,8 +142,6 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 //	ActivateEntity(particle);
 	AcceptEntityInput(particle2, "start");
 //	AcceptEntityInput(particle, "start");	
-
-
 }
 
 void ApplyExtraOceanEffects(int client, bool remove = false)

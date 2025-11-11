@@ -2,46 +2,50 @@
 #pragma newdecls required
 
 static int GRIMREAPER_BASE_HEALTH = 80;			//Base max health given per player on RED.
-static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE30 = 1.2;
-static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE45 = 1.3;
-static float GRIMREAPER_HEALTH_EXPONENT_LATEGAME = 1.4;
-static float GRIMREAPER_HEALTH_MULTIPLIER = 2.45;	//Amount to multiply max health after all other calculations.
+static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE20 = 1.125;
+static float GRIMREAPER_HEALTH_EXPONENT_PREWAVE30 = 1.225;
+static float GRIMREAPER_HEALTH_EXPONENT_LATEGAME = 1.3;
+static float GRIMREAPER_HEALTH_MULTIPLIER = 2.5;	//Amount to multiply max health after all other calculations.
 static float GRIMREAPER_HEALTH_DIVIDER = 2.0;	//Amount to divide max health after all other calculations.
 
 //The Grim Reaper is very slow, but the further its target is, the faster it becomes.
 static float GRIMREAPER_BASE_SPEED = 600.0;			//The Grim Reaper's highest possible movement speed.
 static float GRIMREAPER_SPEED_MAX_DISTANCE = 600.0;	//Distance at which the Grim Reaper's speed begins to decrease.
 static float GRIMREAPER_SPEED_MIN_DISTANCE = 60.0;	//Distance at which the Grim Reaper's speed is decreased the most.
-static float GRIMREAPER_SPEED_LOSS = 425.0;			//The maximum amount of speed the Grim Reaper can lose based on proximity to its target.
+static float GRIMREAPER_SPEED_LOSS = 450.0;			//The maximum amount of speed the Grim Reaper can lose based on proximity to its target.
+static float GRIMREAPER_SPEED_ATTACKING = 60.0;		//The Reaper's move speed while it swings its axe.
 
 //The Grim Reaper charges up a devastating melee attack as it approaches its target. 
 //This attack has extended range and a wide hitbox, and can hit multiple enemies at once.
 //It deals heavy damage to everything it hits, as well as bonus damage against the Reaper's intended target (meant to instakill the intended target).
 static float GRIMREAPER_ATTACK_RANGE = 140.0;				//The range of the attack.
-static float GRIMREAPER_ATTACK_WIDTH = 120.0;				//The width of the attack.
-static float GRIMREAPER_ATTACK_DISTANCE = 120.0;			//Distance at which the Grim Reaper will unleash its attack if it is ready.
+static float GRIMREAPER_ATTACK_WIDTH = 100.0;				//The width of the attack.
+static float GRIMREAPER_ATTACK_DISTANCE = 100.0;			//Distance at which the Grim Reaper will unleash its attack if it is ready.
 static float GRIMREAPER_ATTACK_DAMAGE_TARGET = 99999999.0;	//Damage dealt to the attack's intended target.
 static float GRIMREAPER_ATTACK_DAMAGE = 500.0;				//Damage dealt to everyone else who is hit by the attack.
 static float GRIMREAPER_ATTACK_CHARGE_BEGIN = 600.0;		//Distance at which the Grim Reaper begins to raise its axe (this is purely cosmetic).
 static float GRIMREAPER_ATTACK_INTERVAL = 2.0;				//Time between attacks. Note that 1.0 is always added to this, because that is the duration of the attack animation.
 static float GRIMREAPER_ATTACK_TIME	= 0.375;				//Time after the attack animation begins at which the attack will deal damage.
-static float GRIMREAPER_ATTACK_SPEED = 1.0;					//Attack animation speed multiplier. This affects interval and hit time.
+static float GRIMREAPER_ATTACK_SPEED = 0.875;				//Attack animation speed multiplier. This affects interval and hit time.
 static float GRIMREAPER_ATTACK_MIN_AXE_RAISE = 0.95;		//Minimum percentage the axe must be raised in order to attack.
 static int GRIMREAPER_ATTACK_MAXTARGETS = 12;				//Maximum targets hit at once by the attack.
 static float GRIMREAPER_ATTACK_AFTER_TELEPORT = 1.5;		//Duration to prevent the Reaper from attacking after it teleports.
+static float GRIMREAPER_WHIFF_STUN_DURATION = 8.0;			//Duration to stun The Reaper if it somehow misses its intended target when it swings.
 
 static float GRIMREAPER_AXE_RAISE_SPEED = 0.02;		//The speed at which the Reaper raises/lowers its axe per frame. Example: 0.01 means it raises its axe 1% every frame.
 
-static float REAPER_RANGED_MULTIPLIER = 0.75;		//Amount to multiply damage taken by the Reaper from ranged attacks.
-static float REAPER_MELEE_MULTIPLIER = 0.75;		//Amount to multiply damage taken by the Reaper from ranged attacks.
+static float REAPER_RANGED_MULTIPLIER = 1.0;		//Amount to multiply damage taken by the Reaper from ranged attacks.
+static float REAPER_MELEE_MULTIPLIER = 1.0;		//Amount to multiply damage taken by the Reaper from ranged attacks.
 
-static float GRIMREAPER_TELEPORT_INTERVAL = 0.2;		//Every X% of its max HP the Reaper loses, it will teleport to a random enemy.
+static float GRIMREAPER_TELEPORT_INTERVAL = 0.3;		//Every X% of its max HP the Reaper loses, it will teleport to a random enemy.
 
 static float f_AxeRaiseValue[2049] = { 0.0, ... };
 static float f_DamageSinceLastTeleport[2049] = { 0.0, ... };
 static float f_ReaperCanAttackAt[2049] = { 0.0, ... };
+static float f_ReaperStunned[2049] = { 0.0, ... };
 static bool b_AboutToAttack[2049] = { false, ... };
 static bool b_Attacking[2049] = { false, ...};
+static bool b_ReaperNeedsSpecialEyes[2049] = { false, ...};
 
 #define GRIMREAPER_AURA					"utaunt_cremation_black_parent"
 #define GRIMREAPER_EYES					"raygun_projectile_blue"
@@ -49,12 +53,15 @@ static bool b_Attacking[2049] = { false, ...};
 #define GRIMREAPER_DEATH				"skull_island_explosion"
 #define GRIMREAPER_TELEPORT_START		"eyeboss_tp_player"
 #define GRIMREAPER_TELEPORT_END			"ghost_appearation"
+#define GRIMREAPER_STUNNED				"merasmus_dazed"
 
 #define SND_REAPER_LOOP				")ambient/halloween/underground_wind_lp_03.wav"
 #define SND_REAPER_SWING			")misc/halloween/strongman_fast_whoosh_01.wav"
 #define SND_REAPER_ATTACK_IMMINENT	")misc/halloween/hwn_bomb_flash.wav"
 #define SND_REAPER_ATTACK_HIT		")weapons/halloween_boss/knight_axe_hit.wav"
 #define SND_REAPER_ATTACK_KILL		")misc/halloween/strongman_bell_01.wav"
+#define SND_REAPER_SAFE_FOR_NOW		")misc/halloween_eyeball/vortex_eyeball_moved.wav"
+#define SND_REAPER_TRICKED			")player/pl_impact_stun_range.wav"
 
 static const char g_DeathSounds[][] = {
 	"ambient_mp3/halloween/male_scream_07.mp3",
@@ -84,6 +91,8 @@ void GrimReaper_OnMapStart_NPC()
 	PrecacheSound(SND_REAPER_ATTACK_HIT);
 	PrecacheSound(SND_REAPER_ATTACK_KILL);
 	PrecacheSound(SND_REAPER_ATTACK_IMMINENT);
+	PrecacheSound(SND_REAPER_SAFE_FOR_NOW);
+	PrecacheSound(SND_REAPER_TRICKED);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Reaper");
@@ -164,6 +173,7 @@ methodmap GrimReaper < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
+		f_ReaperStunned[npc.index] = 0.0;
 		
 		npc.m_iBleedType = STEPTYPE_NONE;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -182,7 +192,7 @@ methodmap GrimReaper < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		Reaper_CalculateSpeed(npc);
-		npc.m_bCamo = true;
+		//npc.m_bCamo = true;
 
 		npc.m_flMeleeArmor = REAPER_MELEE_MULTIPLIER; 
 		npc.m_flRangedArmor = REAPER_RANGED_MULTIPLIER;
@@ -209,8 +219,10 @@ methodmap GrimReaper < CClotBody
 		b_AboutToAttack[npc.index] = false;
 		b_Attacking[npc.index] = false;
 		b_NpcIgnoresbuildings[npc.index] = true;
+		b_ReaperNeedsSpecialEyes[npc.index] = false;
 		f_DamageSinceLastTeleport[npc.index] = 0.0;
 		f_ReaperCanAttackAt[npc.index] = 0.0;
+		ApplyStatusEffect(npc.index, npc.index, "Challenger", 99999999.0);
 
 		RequestFrame(Reaper_AdjustAxePose, EntIndexToEntRef(npc.index));
 		npc.SetAxeRaisePose(0.0);
@@ -221,36 +233,46 @@ methodmap GrimReaper < CClotBody
 
 static void Reaper_CalculateSpeed(GrimReaper npc)
 {
-	int target = npc.m_iTarget;
-	if (!IsValidEntity(target))
+	if (b_Attacking[npc.index])
 	{
-		npc.m_flSpeed = GRIMREAPER_BASE_SPEED;
+		npc.m_flSpeed = GRIMREAPER_SPEED_ATTACKING;
 	}
 	else
 	{
-		float pos[3], targPos[3];
-		WorldSpaceCenter(npc.index, pos);
-		WorldSpaceCenter(target, targPos);
-		float dist = GetVectorDistance(pos, targPos);
-
-		if (dist > GRIMREAPER_SPEED_MAX_DISTANCE)
+		int target = npc.m_iTarget;
+		if (!IsValidEntity(target))
 		{
 			npc.m_flSpeed = GRIMREAPER_BASE_SPEED;
 		}
-		else if (dist < GRIMREAPER_SPEED_MIN_DISTANCE)
-		{
-			npc.m_flSpeed = GRIMREAPER_BASE_SPEED - GRIMREAPER_SPEED_LOSS;
-		}
 		else
 		{
-			float multiplier = 1.0 - ((dist - GRIMREAPER_SPEED_MIN_DISTANCE) / (GRIMREAPER_SPEED_MAX_DISTANCE - GRIMREAPER_SPEED_MIN_DISTANCE));
-			npc.m_flSpeed = GRIMREAPER_BASE_SPEED - (multiplier * GRIMREAPER_SPEED_LOSS);
+			float pos[3], targPos[3];
+			WorldSpaceCenter(npc.index, pos);
+			WorldSpaceCenter(target, targPos);
+			float dist = GetVectorDistance(pos, targPos);
+
+			if (dist > GRIMREAPER_SPEED_MAX_DISTANCE)
+			{
+				npc.m_flSpeed = GRIMREAPER_BASE_SPEED;
+			}
+			else if (dist < GRIMREAPER_SPEED_MIN_DISTANCE)
+			{
+				npc.m_flSpeed = GRIMREAPER_BASE_SPEED - GRIMREAPER_SPEED_LOSS;
+			}
+			else
+			{
+				float multiplier = 1.0 - ((dist - GRIMREAPER_SPEED_MIN_DISTANCE) / (GRIMREAPER_SPEED_MAX_DISTANCE - GRIMREAPER_SPEED_MIN_DISTANCE));
+				npc.m_flSpeed = GRIMREAPER_BASE_SPEED - (multiplier * GRIMREAPER_SPEED_LOSS);
+			}
 		}
 	}
 }
 
 static void Reaper_AttachEyeParticles(int entity, bool aboutToAttack = false)
 {
+	if (GetGameTime(entity) <= f_ReaperStunned[entity])
+		return;
+
 	GrimReaper npc = view_as<GrimReaper>(entity);
 
 	if (IsValidEntity(npc.m_iWearable1))
@@ -276,7 +298,7 @@ public void Reaper_AdjustAxePose(int ref)
 
 	GrimReaper npc = view_as<GrimReaper>(ent);
 
-	if (!b_Attacking[ent] && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack && GetGameTime(npc.index) >= f_ReaperCanAttackAt[npc.index])
+	if (!b_Attacking[ent] && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack && GetGameTime(npc.index) >= f_ReaperCanAttackAt[npc.index] && GetGameTime(npc.index) > f_ReaperStunned[npc.index])
 	{
 		if (!IsValidEnemy(npc.index, npc.m_iTarget))
 			npc.MoveToAxeRaisePose(GRIMREAPER_AXE_RAISE_SPEED, 0.0);
@@ -320,6 +342,48 @@ public void Reaper_AdjustAxePose(int ref)
 	RequestFrame(Reaper_AdjustAxePose, ref);
 }
 
+static void Reaper_SetTarget(GrimReaper npc, int targetOverride = -1)
+{
+	int target;
+	if (IsEntityAlive(targetOverride))
+		target = targetOverride;
+	else
+		target = GetClosestTarget(npc.index);
+
+	if (!IsEntityAlive(target))
+		return;
+
+	int oldTarget = npc.m_iTarget;
+	if (target != oldTarget)
+	{
+		if (IsValidClient(target))
+		{
+			float HudY = -1.0;
+			float HudX = -1.0;
+			SetHudTextParams(HudX, HudY, 2.0, 255, 120, 0, 255);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Reaper Target Warning");
+
+			EmitSoundToClient(target, SND_REAPER_ATTACK_IMMINENT, _, _, _, _, _, GetRandomInt(80, 120));
+			EmitSoundToClient(target, SND_REAPER_ATTACK_IMMINENT, _, _, _, _, _, GetRandomInt(80, 120));
+		}
+
+		if (IsValidClient(oldTarget))
+		{
+			float HudY = -1.0;
+			float HudX = -1.0;
+			SetHudTextParams(HudX, HudY, 2.0, 0, 255, 160, 255);
+			SetGlobalTransTarget(oldTarget);
+			ShowSyncHudText(oldTarget,  SyncHud_Notifaction, "%t", "Reaper Bored Alert");
+
+			EmitSoundToClient(oldTarget, SND_REAPER_SAFE_FOR_NOW, _, _, _, _, _, GetRandomInt(80, 120));
+		}
+	}
+
+	npc.m_iTarget = target;
+	npc.StartPathing();
+}
+
 static void Reaper_Think(int iNPC)
 {
 	GrimReaper npc = view_as<GrimReaper>(iNPC);
@@ -327,6 +391,7 @@ static void Reaper_Think(int iNPC)
 	{
 		return;
 	}
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
@@ -335,10 +400,22 @@ static void Reaper_Think(int iNPC)
 		return;
 	}
 
+	if (GetGameTime(npc.index) <= f_ReaperStunned[npc.index])
+	{
+		npc.StopPathing();
+		return;
+	}
+
+	if (b_ReaperNeedsSpecialEyes[npc.index])
+	{
+		Reaper_AttachEyeParticles(npc.index);
+		b_ReaperNeedsSpecialEyes[npc.index] = false;
+	}
+
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		Reaper_SetTarget(npc);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
@@ -367,7 +444,7 @@ static void Reaper_Think(int iNPC)
 	else
 	{
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		Reaper_SetTarget(npc);
 	}
 }
 
@@ -385,7 +462,7 @@ static void Reaper_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 	}
 
 	f_DamageSinceLastTeleport[npc.index] += damage;
-	if (f_DamageSinceLastTeleport[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * GRIMREAPER_TELEPORT_INTERVAL) && !NpcStats_IsEnemySilenced(npc.index))
+	if (f_DamageSinceLastTeleport[npc.index] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * GRIMREAPER_TELEPORT_INTERVAL) && GetGameTime(npc.index) >= f_ReaperStunned[npc.index] && !HasSpecificBuff(npc.index, "Stunned"))
 	{
 		f_DamageSinceLastTeleport[npc.index] = 0.0;
 		f_ReaperCanAttackAt[npc.index] = GetGameTime(npc.index) + GRIMREAPER_ATTACK_AFTER_TELEPORT;
@@ -519,6 +596,7 @@ void Reaper_AttackLogic(DataPack pack)
 		npc.DoSwingTrace(swingTrace, npc.m_iTarget, swingMaxs, swingMins, _, 1, 1, GRIMREAPER_ATTACK_MAXTARGETS);
 		delete swingTrace;
 
+		bool hitTarget = !IsValidClient(npc.m_iTarget);		//Count as true by default if the target is not a player, that way The Reaper can't stun himself if he misses an NPC.
 		for (int i = 1; i <= GRIMREAPER_ATTACK_MAXTARGETS; i++)
 		{
 			if (i_EntitiesHitAoeSwing_NpcSwing[i] > 0)
@@ -533,6 +611,7 @@ void Reaper_AttackLogic(DataPack pack)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, GRIMREAPER_ATTACK_DAMAGE_TARGET, DMG_CLUB|DMG_TRUEDAMAGE, -1, _, vecHit);
 						EmitSoundToAll(SND_REAPER_ATTACK_KILL, target, _, 120, _, _, GetRandomInt(40, 60));
+						hitTarget = true;
 					}
 					else
 					{
@@ -542,6 +621,38 @@ void Reaper_AttackLogic(DataPack pack)
 					EmitSoundToAll(SND_REAPER_ATTACK_HIT, target, _, 120, _, _, GetRandomInt(80, 100));
 				}
 			} 
+		}
+
+		if (!hitTarget)
+		{
+			if (IsValidClient(npc.m_iTarget))
+			{
+				float HudY = -1.0;
+				float HudX = -1.0;
+				SetHudTextParams(HudX, HudY, 2.0, 120, 255, 200, 255);
+				SetGlobalTransTarget(npc.m_iTarget);
+				ShowSyncHudText(npc.m_iTarget,  SyncHud_Notifaction, "%t", "Reaper Tricked Alert");
+
+				EmitSoundToClient(npc.m_iTarget, SND_REAPER_TRICKED);
+			}
+
+			if (IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+
+			if (IsValidEntity(npc.m_iWearable2))
+				RemoveEntity(npc.m_iWearable2);
+
+			f_ReaperStunned[npc.index] = GetGameTime(npc.index) + GRIMREAPER_WHIFF_STUN_DURATION;
+			b_ReaperNeedsSpecialEyes[npc.index] = true;
+			EmitSoundToAll(g_HHHGrunts[GetRandomInt(0, sizeof(g_HHHGrunts) - 1)], npc.index, _, _, _, _, 80);
+			EmitSoundToAll(SND_REAPER_TRICKED, npc.index);
+
+			float pos[3];
+			npc.GetAbsOrigin(pos);
+			pos[2] += 90.0;
+			int particle = ParticleEffectAt_Parent(pos, GRIMREAPER_STUNNED, npc.index, "root");
+			if (IsValidEntity(particle))
+				CreateTimer(GRIMREAPER_WHIFF_STUN_DURATION, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		}
 
 		damageAt = 9999999.0;
@@ -575,11 +686,11 @@ static char[] GetReaperHealth()
 	
 	if(Waves_GetRound()+1 < 20)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE30));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE20));
 	}
 	else if(Waves_GetRound()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE45));
+		health = RoundToCeil(Pow(((temp_float_hp + float(Waves_GetRound()+1)) * float(Waves_GetRound()+1)), GRIMREAPER_HEALTH_EXPONENT_PREWAVE30));
 	}
 	else
 	{

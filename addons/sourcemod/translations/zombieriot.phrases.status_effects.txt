@@ -1079,6 +1079,15 @@
 		"en"	"Provides a certain effect based on it's chance."
 		"it"	"Fornisce un determinato effetto in base alla sua probabilità."
 	}
+	"Nightmareish Sawing"
+	{
+		"en"	"Nightmareish Sawing"
+		"it"	"Curiosità armeggiante"
+	}
+	"Nightmareish Sawing Desc"
+	{
+		"en"	"Your glaives cause enemeis to lose gibs on hit.\nBoosts damage of said glaives by 35％"
+	}
 	"Crafted Potion"
 	{
 		"en"	"Crafted Potion"
@@ -1770,6 +1779,14 @@
 	{
 		"en"	"Plasmatized Lethalitation"
 		"it"	"Letalità plasmata"
+	}
+	"Challenger"
+	{
+		"en"	"Challenger"
+	}
+	"Challenger Desc"
+	{
+		"en"	"NPCs only: takes double damage from its current target, but all other damage taken is halved."
 	}
 	"Plasmatized Lethalitation Desc"
 	{
