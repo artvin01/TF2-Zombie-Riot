@@ -1177,6 +1177,14 @@
 		"chi"		"目标最近已经被抓了！ "
 		"it"		"Quel nemico è stato catturato troppo di recente!"
 	}
+	"Raigeki Primary Attack Blocked By Charge"
+	{
+		"en"		"You cannot attack while charging Raigeki."
+	}
+	"Raigeki Gear Blocked By Charge"
+	{
+		"en"		"You cannot use that while charging Raigeki."
+	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"

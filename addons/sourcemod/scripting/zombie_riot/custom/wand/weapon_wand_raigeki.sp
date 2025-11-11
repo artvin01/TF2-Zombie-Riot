@@ -14,6 +14,7 @@ static float Raigeki_M1_Interval[4] = { 0.5, 0.4, 0.3, 0.2 };       //Time it ta
 
 
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
+static bool b_ChargingRaigeki[MAXPLAYERS + 1] = { false, ... };
 
 
 public void Raigeki_ResetAll()
@@ -33,19 +34,10 @@ void Raigeki_Precache()
     PrecacheSound(SOUND_RAIGEKI_BLADE_SWEEP, true);
 }
 
-public void Raigeki_OnBurstPack(int client)
+//Block Burst Pack while charging Raigeki.
+public bool Raigeki_OnBurstPack(int client)
 {
-	/*int grabTarget = Raigeki_GetGrabTarget(client);
-	if (IsValidEnemy(client, grabTarget))
-	{
-		Raigeki_TerminateEffects(client, EntRefToEntIndex(Raigeki_StartParticle[client]), EntRefToEntIndex(Raigeki_EndParticle[client]));
-
-		float stopmoving[3];
-		stopmoving[0] = 0.0;
-		stopmoving[1] = 0.0;
-		stopmoving[2] = 0.0;
-		Raigeki_MakeNPCMove(Raigeki_GetGrabTarget(client), stopmoving);
-	}*/
+	return !b_ChargingRaigeki[client];
 }
 
 void Raigeki_OnKill(int attacker, int victim)
@@ -139,6 +131,102 @@ public void Raigeki_HUD(int client, int weapon, bool forced)
 	}*/
 }
 
+static int i_RaigekiWeapon[MAXPLAYERS + 1] = { 0, ... };
+
+static float f_LastGT[MAXPLAYERS + 1] = { 0.0, ... };
+
+static bool b_RaigekiDelayingAttacks[MAXPLAYERS + 1] = { false, ... };
+
+public int Raigeki_GetWeapon(int client) { return EntRefToEntIndex(i_RaigekiWeapon[client]); }
+
+public bool Raigeki_IsHoldingCorrectWeapon(int client)
+{
+    int weapon = Raigeki_GetWeapon(client);
+    if (!IsValidEntity(weapon))
+        return false;
+
+    int acWep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+    return acWep == weapon;
+}
+
+//Infinitely delays the weapon's next attack by extending m_flNextPrimaryAttack by delta time every frame.
+//This is automatically stopped if the client stops holding this weapon, and can be manually stopped with Raigeki_StopDelayingAttacks.
+//Also, this automatically sets i_RaigekiWeapon to this weapon, so you can call Raigeki_IsHoldingCorrectWeapon to make sure this weapon is held.
+public void Raigeki_StartDelayingAttacks(int client, int weapon)
+{
+	if (!IsValidEntity(weapon))
+		return;
+
+	i_RaigekiWeapon[client] = EntIndexToEntRef(weapon);
+
+	if (!b_RaigekiDelayingAttacks[client])
+	{
+		b_RaigekiDelayingAttacks[client] = true;
+		f_LastGT[client] = GetGameTime();
+
+		RequestFrame(Raigeki_DelayAttack, GetClientUserId(client));
+	}
+}
+
+//This stops delaying the client's next attack if Raigeki_StartDelayingAttacks was used.
+//DO NOT CALL Raigeki_StartDelayingAttacks ON THE SAME CLIENT AGAIN UNTIL AT LEAST ONE FRAME HAS PASSED!!!!!
+//If a weapon is already being delayed, and you need to change it to a different weapon, just call Raigeki_StartDelayingAttacks again, with the new weapon.
+public void Raigeki_StopDelayingAttacks(int client)
+{
+	b_RaigekiDelayingAttacks[client] = false;
+}
+
+public void Raigeki_DelayAttack(int id)
+{
+	int client = GetClientOfUserId(id);
+	if (!IsValidClient(client) || !b_RaigekiDelayingAttacks[client])
+		return;
+
+	if (!Raigeki_IsHoldingCorrectWeapon(client))
+	{
+		b_RaigekiDelayingAttacks[client] = false;
+		return;
+	}
+
+	float gt = GetGameTime();
+    int weapon = Raigeki_GetWeapon(client);
+    if (IsValidEntity(weapon))
+    {
+        SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + (gt - f_LastGT[client]));
+    }
+
+    f_LastGT[client] = gt;
+	RequestFrame(Raigeki_DelayAttack, id);
+}
+
+public void Raigeki_Charge_0(int client, int weapon, bool &result, int slot)
+{
+    Raigeki_StartCharging(client, weapon, 0);
+}
+
+void Raigeki_StartCharging(int client, int weapon, int tier)
+{
+	//This should never be able to happen in-game, but just to be safe...
+	if (b_ChargingRaigeki[client])
+		return;
+
+	int mana_cost = RoundFloat(/*Raigeki_M2_Cost[tier] * */Attributes_Get(weapon, 733, 1.0));
+
+	if(mana_cost <= Current_Mana[client])
+	{
+		Raigeki_StartDelayingAttacks(client, weapon);
+
+		//TODO: Emit a burst of Static Electricity and give some charge. This should be put in a function that can be called at any time, something like Raigeki_AddCharge.
+        Utility_RemoveMana(client, mana_cost, 1.0);
+
+		//TODO: RequestFrame recursion, interval should be 0.1s by default but scale with attack speed multipliers. Slower attack speed would mean Raigeki and Static Electricity are way stronger, but also slower with a slower charge rate.
+	}
+	else
+	{
+		Utility_NotEnoughMana(client, mana_cost);
+	}
+}
+
 public void Raigeki_Attack_0(int client, int weapon, bool &result, int slot)
 {
     Raigeki_FireWave(client, weapon, 0);
@@ -148,11 +236,9 @@ static int i_RemainingBlades[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeStartEnt[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeEndEnt[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeBeamEnt[MAXPLAYERS + 1] = { 0, ... };
-static int i_BladeWeapon[MAXPLAYERS + 1] = { 0, ... };
 static int i_BladeIntendedTarget[MAXPLAYERS + 1] = { -1, ... };
 static int i_BladeTier[MAXPLAYERS + 1] = { 0, ... };
 
-static float f_LastGT[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_BladeRange[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_BladeBaseDMG[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_BladeDMG[MAXPLAYERS + 1] = { 0.0, ... };
@@ -175,17 +261,6 @@ static ArrayList g_BladeTrails[MAXPLAYERS + 1] = { null, ... };
 public int Blade_GetStartEnt(int client) { return EntRefToEntIndex(i_BladeStartEnt[client]); }
 public int Blade_GetEndEnt(int client) { return EntRefToEntIndex(i_BladeEndEnt[client]); }
 public int Blade_GetBeamEnt(int client) { return EntRefToEntIndex(i_BladeBeamEnt[client]); }
-public int Blade_GetWeapon(int client) { return EntRefToEntIndex(i_BladeWeapon[client]); }
-
-public bool Blade_IsHoldingCorrectWeapon(int client)
-{
-    int weapon = Blade_GetWeapon(client);
-    if (!IsValidEntity(weapon))
-        return false;
-
-    int acWep = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-    return acWep == weapon;
-}
 
 public void Blade_DeleteBeam(int client)
 {
@@ -221,15 +296,20 @@ public void Blade_DeleteBeam(int client)
 
 void Raigeki_FireWave(int client, int weapon, int tier)
 {
+	if (b_ChargingRaigeki[client])
+	{
+		Utility_HUDNotification_Translation(client, "Raigeki Primary Attack Blocked By Charge", true);
+		return;
+	}
+
 	int mana_cost = RoundFloat(Attributes_Get(weapon, 733, 40.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
-        f_LastGT[client] = GetGameTime();
-
         i_BladeTier[client] = tier;
-        i_BladeWeapon[client] = EntIndexToEntRef(weapon);
         i_RemainingBlades[client] = Raigeki_M1_NumBlades[tier];
+
+		Raigeki_StartDelayingAttacks(client, weapon);
         Blade_StartSwing(client);
         
         Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(Raigeki_M1_NumBlades[tier])) + 1.25);
@@ -250,7 +330,7 @@ public bool Blade_OnlyEnemies(int entity, int contentsMask, int user)
 
 void Blade_ReadStats(int client, int tier)
 {
-    int weapon = Blade_GetWeapon(client);
+    int weapon = Raigeki_GetWeapon(client);
 
     f_BladeRange[client] = Raigeki_M1_Range[tier];
     f_BladeBaseDMG[client] = Raigeki_M1_Damage[tier];
@@ -299,6 +379,9 @@ void Blade_ReadStats(int client, int tier)
 
 void Blade_StartSwing(int client)
 {
+	if (b_ChargingRaigeki[client])
+		return;
+
     Blade_ReadStats(client, i_BladeTier[client]);
     
     float ang[3], pos[3];
@@ -359,21 +442,14 @@ public void Blade_Sweep(int id)
 			Blade_DeleteBeam(client);
 
             i_RemainingBlades[client]--;
-            if (i_RemainingBlades[client] > 0 && Blade_IsHoldingCorrectWeapon(client))
+            if (i_RemainingBlades[client] > 0 && Raigeki_IsHoldingCorrectWeapon(client))
                 Blade_StartSwing(client);
+			else
+				Raigeki_StopDelayingAttacks(client);
         }
 
 		return;
 	}
-
-    //While a blade is swinging, always extend the duration until the next melee attack by delta time, that way we can't swing again until all blades are finished swinging, but attack speed modifiers are still useful.
-    int weapon = Blade_GetWeapon(client);
-    if (IsValidEntity(weapon))
-    {
-        SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + (gt - f_LastGT[client]));
-    }
-
-    f_LastGT[client] = gt;
 
 	float ang[3];
 	for (int i = 0; i < 3; i++)
@@ -419,8 +495,6 @@ public void Blade_OnHit(int victim, int attacker)
     float dmg = f_BladeDMG[attacker];
     if (victim == EntRefToEntIndex(i_BladeIntendedTarget[attacker]))
     {
-        //TODO: REMOVE THIS ONCE DBEUGGING IS DONE!!!!!!!
-        FreezeNpcInTime(victim, 2.0);
         dmg = f_BladeBaseDMG[attacker];
     }
 
@@ -433,7 +507,7 @@ public void Blade_OnHit(int victim, int attacker)
     CalculateDamageForce(forceAng, 10000.0, force);
     WorldSpaceCenter(victim, pos);
 
-    int weapon = Blade_GetWeapon(attacker);
+    int weapon = Raigeki_GetWeapon(attacker);
     SDKHooks_TakeDamage(victim, attacker, attacker, dmg, DMG_PLASMA, (IsValidEntity(weapon) ? weapon : -1), force, pos, false, ZR_DAMAGE_LASER_NO_BLAST);
 
     Raigeki_Hit[attacker][victim] = true;
@@ -514,7 +588,7 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 				SetEntPropFloat(trail, Prop_Data, "m_flStartWidth", beamWidth);
     			SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.0);
 
-				SetEntityRenderColor(trail, r, g, b, 80 + RoundToFloor(strength * 175.0));
+				SetEntityRenderColor(trail, r, g, b, RoundToFloor(strength * 50.0));
 			}
 		}
 	}
@@ -628,29 +702,6 @@ stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float 
 
 		Call_Finish();
 	}
-}
-
-static void spawnRing_Vectorsss(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-	
-	int ICE_INT = PrecacheModel(sprite);
-	
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-	
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
 }
 
 stock bool Laser_Trace(int entity, int contentsMask, int client)
