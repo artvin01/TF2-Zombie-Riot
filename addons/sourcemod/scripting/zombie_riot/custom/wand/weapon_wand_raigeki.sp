@@ -1,21 +1,43 @@
 //THIS IS THE PSEUDO-MELEE MAGE WEAPON WITH THE GIANT LIGHTNING BOLT ON M2, NOT TO BE CONFUSED WITH REIUJI!!!!!!!!
 
+//Attribute 733 on this weapon is used as a multiplier for the costs specified in this code. This is so that modifiers, such as from Heavy Mage, can impact the charge cost for M2.
+
 #pragma semicolon 1
 #pragma newdecls required
 
-//As per usual, I'm using arrays for stats on different pap levels. First entry is pap1, then pap2, etc.
+//As per usual, I'm using arrays for stats on different pap levels. First entry is unpapped, then first pap, then second pap, etc.
 
-static int Raigeki_M1_NumBlades[4] = { 1, 2, 3, 4 };			    //Number of blade sweeps to perform in a row per M1.
-static float Raigeki_M1_Range[4] = { 180.0, 200.0, 220.0, 240.0 };  //Electric blade range.
-static float Raigeki_M1_Width[4] = { 120.0, 140.0, 160.0, 180.0 };  //Electric blade arc swing angle.
-static float Raigeki_M1_Damage[4] = { 200.0, 400.0, 600.0, 900.0 }; //Electric blade damage.
-static float Raigeki_M1_Falloff[4] = { 0.825, 0.85, 0.875, 0.9 };   //Amount to multiply electric blade damage per target hit.
-static float Raigeki_M1_Interval[4] = { 0.5, 0.4, 0.3, 0.2 };       //Time it takes for electric blades to sweep across the screen.
+static int M1_NumBlades[4] = { 1, 2, 3, 4 };			    //Number of blade sweeps to perform in a row per M1.
+static float M1_Cost[4] = { 40.0, 60.0, 120.0, 240.0 };		//Primary attack base mana cost.
+static float M1_Range[4] = { 180.0, 200.0, 220.0, 240.0 };  //Electric blade range.
+static float M1_Width[4] = { 120.0, 140.0, 160.0, 180.0 };  //Electric blade arc swing angle.
+static float M1_Damage[4] = { 200.0, 400.0, 600.0, 900.0 }; //Electric blade damage.
+static float M1_Falloff[4] = { 0.825, 0.85, 0.875, 0.9 };   //Amount to multiply electric blade damage per target hit.
+static float M1_Interval[4] = { 0.5, 0.4, 0.3, 0.2 };       //Time it takes for electric blades to sweep across the screen.
 
+static int Charge_MaxTargets[4] = { 6, 8, 10, 12 };						//Max targets hit at once by Static Electricity ticks.
+static float Charge_Cost[4] = { 2.0, 4.0, 8.0, 16.0 };					//Mana drained per interval while charging the M2 ability.
+static float Charge_CostAtFullCharge[4] = { 1.0, 2.0, 4.0, 8.0 };		//Mana drained per interval while charging the M2 ability, while it is already fully-charged. This is needed so that the user can't just charge to full, and then keep holding M2 to have Static Electricity and resistance forever at no cost.
+static float Charge_Requirement[4] = { 300.0, 600.0, 1200.0, 2400.0 };	//Total mana spent to fully charge the M2 ability.
+static float Charge_Min[4] = { 0.2, 0.2, 0.2, 0.2 };					//Minimum charge percentage needed to cast Raigeki. Releasing M2 or running out of mana below this threshold immediately cancels the ability and does not refund anything.
+static float Charge_Interval[4] = { 0.1, 0.1, 0.1, 0.1 };				//Interval between Static Electricity shocks and charge gain while charging the M2 ability.
+static float Charge_SpeedMod[4] = { 0.5, 0.5, 0.5, 0.5 };				//Base move speed multiplier while charging Raigeki.
+static float Charge_InstantRes[4] = { 0.1, 0.125, 0.15, 0.2 };			//Instant damage resistance given as soon as you begin charging Raigeki.
+static float Charge_BonusRes[4] = { 0.2, 0.225, 0.25, 0.3 };			//Maximum bonus damage resistance given based on the ability's charge level.
+static float Charge_DMG[4] = { 8.0, 16.0, 30.0, 45.0 };					//Base damage per interval dealt per Static Electricity tick while charging.
+static float Charge_Radius[4] = { 100.0, 105.0, 110.0, 115.0 };			//Radius in which Static Electricity deals damage.
+static float Charge_Falloff[4] = { 0.7, 0.75, 0.8, 0.85 };				//Amount to multiply Static Electricity damage per target hit.
+
+static float Raigeki_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
+static float Raigeki_Damage[4] = { 15000.0, 20000.0, 25000.0, 30000.0 };	//Raigeki's base damage at max charge.
+static float Raigeki_Radius[4] = { 450.0, 550.0, 650.0, 800.0 };			//Raigeki's radius at max charge.
+static float Raigeki_Falloff_MultiHit[4] = { 0.7, 0.75, 0.8, 0.85 };		//Amount to multiply damage dealt by Raigeki per target hit.
+static float Raigeki_Falloff_Radius[4] = { 0.75, 0.8, 0.85, 0.9 };			//Distance-based falloff. Lower numbers = more damage is lost based on distance.
+static float Raigeki_Cooldown[4] = { 90.0, 90.0, 90.0, 90.0 };				//Raigeki's cooldown.
+static float Raigeki_Cooldown_Failed[4] = { 45.0, 45.0, 45.0, 45.0 };		//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
 
 static float ability_cooldown[MAXPLAYERS + 1] = {0.0, ...};
 static bool b_ChargingRaigeki[MAXPLAYERS + 1] = { false, ... };
-
 
 public void Raigeki_ResetAll()
 {
@@ -204,27 +226,239 @@ public void Raigeki_Charge_0(int client, int weapon, bool &result, int slot)
     Raigeki_StartCharging(client, weapon, 0);
 }
 
+static int i_ChargeMaxTargets[MAXPLAYERS + 1] = { 0, ... };
+static int i_ChargeTier[MAXPLAYERS + 1] = { 0, ... };
+
+static float f_ChargeRadius[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeCost[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeCostAtFullCharge[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeRequirement[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeMin[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeAmt[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeInterval[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeBaseRes[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeBonusRes[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeCurrentRes[MAXPLAYERS + 1 ] = { 0.0, ... };
+static float f_ChargeDMG[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_ChargeFalloff[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_NextCharge[MAXPLAYERS + 1] = { 0.0, ... };
+
 void Raigeki_StartCharging(int client, int weapon, int tier)
 {
 	//This should never be able to happen in-game, but just to be safe...
 	if (b_ChargingRaigeki[client])
 		return;
 
-	int mana_cost = RoundFloat(/*Raigeki_M2_Cost[tier] * */Attributes_Get(weapon, 733, 1.0));
-
-	if(mana_cost <= Current_Mana[client])
+	if (dieingstate[client] > 0)
 	{
+		Utility_HUDNotification_Translation(client, "Raigeki Blocked Because Downed", true);
+		return;
+	}
+
+	int mana_cost = RoundFloat(Charge_Cost[tier] * Attributes_Get(weapon, 733, 1.0));
+	float remCD = Ability_Check_Cooldown(client, 2, weapon);
+
+	if(mana_cost <= Current_Mana[client] && remCD <= 0.0)
+	{
+		i_ChargeTier[client] = tier;
+		f_ChargeAmt[client] = 0.0;
+		b_ChargingRaigeki[client] = true;
+		f_ChargeCurrentRes[client] = 0.0;
+
+		Attributes_SetMulti(client, 442, Charge_SpeedMod[tier]);
+		SDKCall_SetSpeed(client);
+
 		Raigeki_StartDelayingAttacks(client, weapon);
-
-		//TODO: Emit a burst of Static Electricity and give some charge. This should be put in a function that can be called at any time, something like Raigeki_AddCharge.
-        Utility_RemoveMana(client, mana_cost, 1.0);
-
-		//TODO: RequestFrame recursion, interval should be 0.1s by default but scale with attack speed multipliers. Slower attack speed would mean Raigeki and Static Electricity are way stronger, but also slower with a slower charge rate.
+		Raigeki_AddCharge(client);
+		RequestFrame(Raigeki_ChargeLogic, GetClientUserId(client));
 	}
 	else
 	{
-		Utility_NotEnoughMana(client, mana_cost);
+		if (remCD > 0.0)
+			Utility_OnCooldown(client, remCD);
+		else
+			Utility_NotEnoughMana(client, mana_cost);
 	}
+}
+
+void Raigeki_ChargeLogic(int id)
+{
+	int client = GetClientOfUserId(id);
+	if (!IsValidClient(client))
+		return;
+
+	bool holdingM2 = GetClientButtons(client) & IN_ATTACK2 != 0;
+	float amtCharged = (f_ChargeAmt[client] / f_ChargeRequirement[client]);
+
+	//Harmlessly fizzle out if the player is dead, downed, holding the wrong weapon, or not holding M2 but hasn't charged Raigeki enough to cast it:
+	if (!IsPlayerAlive(client) || dieingstate[client] > 0 || !Raigeki_IsHoldingCorrectWeapon(client) || (!holdingM2 && amtCharged < f_ChargeMin[client]))
+	{
+		Raigeki_TerminateCharge(client);
+		Raigeki_StopDelayingAttacks(client);
+
+		int weapon = Raigeki_GetWeapon(client);
+		if (IsValidEntity(weapon))
+			Ability_Apply_Cooldown(client, 2, Raigeki_Cooldown_Failed[i_ChargeTier[client]], weapon);
+
+		if ((!holdingM2 && amtCharged < f_ChargeMin[client]))
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Low Charge", true);
+		else if (dieingstate[client] > 0)
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Downed", true);
+		else if (!IsPlayerAlive(client))
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Killed", true);
+		else
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Wrong Weapon", true);
+
+		return;
+	}
+
+	if (holdingM2)	//If the user is holding M2: do charge logic
+	{
+		float gt = GetGameTime();
+		if (gt >= f_NextCharge[client] && Current_Mana[client] >= RoundToFloor(f_ChargeCost[client]))
+		{
+			Raigeki_AddCharge(client);
+		}
+	}
+	else	//If the user is not holding M2: we know from the earlier checks that they have enough charge to cast Raigeki. Therefore, stun them and begin casting Raigeki.
+	{
+		TF2_StunPlayer(client, Raigeki_Delay[i_ChargeTier[client]], _, TF_STUNFLAG_BONKSTUCK);
+		Raigeki_TerminateCharge(client);	//TODO: TERMINATECHARGE SHOULD BE CALLED WHEN RAIGEKI STRIKES, NOT HERE!
+		Raigeki_StopDelayingAttacks(client);
+
+		//TODO: RequestFrame recursion for Raigeki yadda yadda yadda
+		return;
+	}
+
+	RequestFrame(Raigeki_ChargeLogic, id);
+}
+
+void Raigeki_AddCharge(int client)
+{
+	int weapon = Raigeki_GetWeapon(client);	//The weapon is guaranteed to always be valid, because this function is only called in scopes where the weapon has already been checked for validity. Therefore, no need to check again.
+
+	//We call ReadStats every time we add charge, so that we can be 100% sure we're accurate. This prevents exploits such as starting the charge with Morning Coffee for the faster hit rate, then swapping to Obsidian Oaf for the resistance but keeping the hit rate from Coffee.
+	//It also allows things like attack speed buffs to affect the charge-up, even if applied/removed mid-charge.
+	Raigeki_ReadStats(client, weapon, i_ChargeTier[client]);
+
+	int cost = RoundToFloor(f_ChargeCostAtFullCharge[client]);
+
+	if (f_ChargeAmt[client] < f_ChargeRequirement[client])
+	{
+		cost = RoundToFloor(f_ChargeCost[client]);
+		f_ChargeAmt[client] += f_ChargeCost[client];
+
+		if (f_ChargeAmt[client] > f_ChargeRequirement[client])
+		{
+			cost -= (RoundToFloor(f_ChargeAmt[client] - f_ChargeRequirement[client]));
+			if (cost < f_ChargeCostAtFullCharge[client])
+				cost = RoundToFloor(f_ChargeCostAtFullCharge[client]);
+
+			f_ChargeAmt[client] = f_ChargeRequirement[client];
+		}
+	}
+	
+	Utility_RemoveMana(client, cost, f_ChargeInterval[client] + 2.0);
+
+	float amtCharged = (f_ChargeAmt[client] / f_ChargeRequirement[client]);
+
+	//Remove current res modifier if there already is one:
+	if (f_ChargeCurrentRes[client] != 0.0)
+	{
+		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
+		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
+	}
+
+	//Give resistance:
+	f_ChargeCurrentRes[client] = 1.0 - (f_ChargeBaseRes[client] + (f_ChargeBonusRes[client] * amtCharged));
+	Attributes_SetMulti(client, 206, f_ChargeCurrentRes[client]);
+	Attributes_SetMulti(client, 205, f_ChargeCurrentRes[client]);
+
+	//Trigger Static Electricity shockwave:
+	float pos[3];
+	WorldSpaceCenter(client, pos);
+	Explode_Logic_Custom(f_ChargeDMG[client], client, client, weapon, pos, f_ChargeRadius[client], f_ChargeFalloff[client], 1.0, _, i_ChargeMaxTargets[client], false, 1.0, view_as<Function>(Raigeki_StaticElectricity_OnHit));
+
+	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
+}
+
+public void Raigeki_StaticElectricity_OnHit(int attacker, int victim, float damage)
+{
+	return;
+	//TODO
+}
+
+void Raigeki_TerminateCharge(int client)
+{
+	if (f_ChargeCurrentRes[client] != 0.0)
+	{
+		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
+		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
+	}
+	
+	Attributes_SetMulti(client, 442, (1.0 / Charge_SpeedMod[i_ChargeTier[client]]));
+	SDKCall_SetSpeed(client);
+
+	//TODO: TERMINATE LOOPING SOUNDS AND PARTICLES HERE
+
+	b_ChargingRaigeki[client] = false;
+}
+
+void Raigeki_ReadStats(int client, int weapon, int tier)
+{
+	f_ChargeRadius[client] = Charge_Radius[tier];
+	f_ChargeCost[client] = Charge_Cost[tier];
+	f_ChargeCostAtFullCharge[client] = Charge_CostAtFullCharge[tier];
+	f_ChargeRequirement[client] = Charge_Requirement[tier];
+	f_ChargeMin[client] = Charge_Min[tier];
+	f_ChargeInterval[client] = Charge_Interval[tier];
+	f_ChargeBaseRes[client] = Charge_InstantRes[tier];
+	f_ChargeBonusRes[client] = Charge_BonusRes[tier];
+	f_ChargeDMG[client] = Charge_DMG[tier];
+	f_ChargeFalloff[client] = Charge_Falloff[tier];
+	i_ChargeMaxTargets[client] = Charge_MaxTargets[tier];
+
+	float mult = 1.0;
+	//Radius scales with both projectile velocity *and* projectile lifespan modifiers.
+    if (IsValidEntity(weapon))
+    {
+        mult *= Attributes_Get(weapon, 103, 1.0);
+        mult *= Attributes_Get(weapon, 104, 1.0);
+        mult *= Attributes_Get(weapon, 475, 1.0);
+        mult *= Attributes_Get(weapon, 101, 1.0);
+        mult *= Attributes_Get(weapon, 102, 1.0);
+    }
+    if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+        mult *= 1.2;
+
+	f_ChargeRadius[client] *= mult;
+	mult = 1.0;
+
+	//Mana cost, max mana to fully charge Raigeki, and min mana required to activate Raigeki all scale with mana cost modifiers.
+	if (IsValidEntity(weapon))
+		mult = Attributes_Get(weapon, 733, 1.0);
+
+	f_ChargeCost[client] *= mult;
+	f_ChargeCostAtFullCharge[client] *= mult;
+	f_ChargeRequirement[client] *= mult;
+	f_ChargeMin[client] *= mult;
+	mult = 1.0;
+
+    //Damage scales with damage modifiers. Obviously.
+    if (IsValidEntity(weapon))
+        mult = Attributes_Get(weapon, 410, 1.0);
+
+	f_ChargeDMG[client] *= mult;
+	mult = 1.0;
+
+    //Charge interval (rate at which mana is consumed, charge is given, and Static Electricity deals damage) scales with attack rate modifiers:
+    if (IsValidEntity(weapon))
+        mult = Attributes_Get(weapon, 6, 1.0);
+    if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
+        mult *= 0.83;
+
+	f_ChargeInterval[client] *= mult;
+	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
 }
 
 public void Raigeki_Attack_0(int client, int weapon, bool &result, int slot)
@@ -302,17 +536,17 @@ void Raigeki_FireWave(int client, int weapon, int tier)
 		return;
 	}
 
-	int mana_cost = RoundFloat(Attributes_Get(weapon, 733, 40.0));
+	int mana_cost = RoundFloat(M1_Cost[tier] * Attributes_Get(weapon, 733, 1.0));
 
 	if(mana_cost <= Current_Mana[client])
 	{
         i_BladeTier[client] = tier;
-        i_RemainingBlades[client] = Raigeki_M1_NumBlades[tier];
+        i_RemainingBlades[client] = M1_NumBlades[tier];
 
 		Raigeki_StartDelayingAttacks(client, weapon);
         Blade_StartSwing(client);
         
-        Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(Raigeki_M1_NumBlades[tier])) + 1.25);
+        Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(M1_NumBlades[tier])) + 1.25);
 	}
 	else
 	{
@@ -332,10 +566,10 @@ void Blade_ReadStats(int client, int tier)
 {
     int weapon = Raigeki_GetWeapon(client);
 
-    f_BladeRange[client] = Raigeki_M1_Range[tier];
-    f_BladeBaseDMG[client] = Raigeki_M1_Damage[tier];
-    f_BladeWidth[client] = Raigeki_M1_Width[tier];
-    f_BladeInterval[client] = Raigeki_M1_Interval[tier];
+    f_BladeRange[client] = M1_Range[tier];
+    f_BladeBaseDMG[client] = M1_Damage[tier];
+    f_BladeWidth[client] = M1_Width[tier];
+    f_BladeInterval[client] = M1_Interval[tier];
 
     //Range scales with both projectile velocity *and* projectile lifespan modifiers.
     if (IsValidEntity(weapon))
@@ -374,7 +608,7 @@ void Blade_ReadStats(int client, int tier)
         f_BladeInterval[client] = 0.15;
 
     f_BladeDMG[client] = f_BladeBaseDMG[client];
-    f_BladeFalloff[client] = Raigeki_M1_Falloff[tier];
+    f_BladeFalloff[client] = M1_Falloff[tier];
 }
 
 void Blade_StartSwing(int client)

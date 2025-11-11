@@ -1185,6 +1185,26 @@
 	{
 		"en"		"You cannot use that while charging Raigeki."
 	}
+	"Raigeki Blocked Because Downed"
+	{
+		"en"		"You cannot charge Raigeki while downed."
+	}
+	"Raigeki Failed Low Charge"
+	{
+		"en"		"Raigeki failed: not enough charge!"
+	}
+	"Raigeki Failed Downed"
+	{
+		"en"		"Raigeki failed: you were downed!"
+	}
+	"Raigeki Failed Killed"
+	{
+		"en"		"Raigeki failed: you died!"
+	}
+	"Raigeki Failed Wrong Weapon"
+	{
+		"en"		"Raigeki failed: you switched weapons!"
+	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"
