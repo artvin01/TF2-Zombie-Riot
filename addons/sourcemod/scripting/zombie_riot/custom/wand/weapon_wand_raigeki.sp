@@ -64,8 +64,8 @@ void Raigeki_Precache()
 {
 	Model_Lightning = PrecacheModel("materials/sprites/lgtning.vmt");
 	Model_Glow = PrecacheModel("materials/sprites/glow02.vmt");
-    PrecacheModel("materials/effects/repair_claw_trail_red.vmt");
-    PrecacheModel("materials/sprites/laser.vmt", false);
+	PrecacheModel("materials/effects/repair_claw_trail_red.vmt");
+	PrecacheModel("materials/sprites/laser.vmt", false);
 
     PrecacheSound(SOUND_RAIGEKI_BLADE_SWEEP, true);
 	PrecacheSound(SOUND_CHARGE_LOOP, true);
@@ -231,10 +231,15 @@ public void Raigeki_DelayAttack(int id)
 	}
 
 	float gt = GetGameTime();
-    int weapon = Raigeki_GetWeapon(client);
+	int weapon = Raigeki_GetWeapon(client);
     if (IsValidEntity(weapon))
     {
-        SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") + (gt - f_LastGT[client]));
+		float current = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+		if (current <= gt)
+			current = gt;
+
+		current += (gt - f_LastGT[client]);
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", current);
     }
 
     f_LastGT[client] = gt;
@@ -285,10 +290,10 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 		b_ChargingRaigeki[client] = true;
 		f_ChargeCurrentRes[client] = 0.0;
 
-		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 80);
-
 		Attributes_SetMulti(client, 442, Charge_SpeedMod[tier]);
 		SDKCall_SetSpeed(client);
+
+		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 80);
 
 		Raigeki_StartDelayingAttacks(client, weapon);
 		Raigeki_AddCharge(client);
@@ -359,6 +364,11 @@ void Raigeki_ChargeLogic(int id)
 	RequestFrame(Raigeki_ChargeLogic, id);
 }
 
+static float f_ChargeTrailDist[2049] = { 0.0, ... };
+static float f_ChargeTrailSpeed[2049] = { 0.0, ... };
+static float f_ChargeTrailTargWidth[2049] = { 0.0, ... };
+static int i_ChargeTrailTarget[2049] = { -1, ... };
+
 void Raigeki_AddCharge(int client)
 {
 	int weapon = Raigeki_GetWeapon(client);	//The weapon is guaranteed to always be valid, because this function is only called in scopes where the weapon has already been checked for validity. Therefore, no need to check again.
@@ -418,6 +428,93 @@ void Raigeki_AddCharge(int client)
 	Explode_Logic_Custom(f_ChargeDMG[client], client, client, weapon, pos, f_ChargeRadius[client], f_ChargeFalloff[client], 1.0, _, i_ChargeMaxTargets[client], false, 1.0, view_as<Function>(Raigeki_StaticElectricity_OnHit));
 
 	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
+
+	int numSparks = 1;// + RoundToFloor(amtCharged / 0.5);
+	float beamWidth = 0.1 + (amtCharged * 2.0);
+	int strongColor = 255;
+	int weakColor = RoundToFloor(amtCharged * 160.0);
+	int r = strongColor, g = weakColor, b = weakColor, a = 10 + RoundToFloor(70.0 * amtCharged);
+	float randOffset = GetRandomFloat(0.0, 360.0);
+
+	for (int i = 0; i < numSparks; i++)
+	{
+		int trail = CreateTrail("materials/sprites/laserbeam.vmt", a, f_ChargeInterval[client], 0.1, _, view_as<int>(RENDER_TRANSALPHAADD));
+		if (IsValidEntity(trail))
+		{
+			float ang[3];
+			GetClientAbsAngles(client, ang);
+			pos[2] += 10.0;
+
+			ang[0] = GetRandomFloat(-10.0, -15.0);
+
+			//No clue why, but if there's more than one trail, one of them always spawns above the user's head and I can't figure out why.
+			//Increasing the "i + 1" to something like "i + 3" reduces the amount by which this happens, but doesn't fix it, and throws everything else off. It's very weird.
+			ang[1] = randOffset;// + (((360.0 / float(numSparks)) * float(i + 1)) + GetRandomFloat(-20.0, 20.0));
+			if (ang[1] >= 360.0)
+				ang[1] %= 360.0;
+
+			f_ChargeTrailTargWidth[trail] = beamWidth;
+			f_ChargeTrailDist[trail] = f_ChargeRadius[client];
+			f_ChargeTrailSpeed[trail] = 1.0 + (amtCharged * 1.0);
+
+			GetPointInDirection(pos, ang, f_ChargeTrailDist[trail], pos);
+
+			SetEntityRenderColor(trail, r, g, b, a);
+
+			TeleportEntity(trail, pos);
+
+			i_ChargeTrailTarget[trail] = GetClientUserId(client);
+			RequestFrame(Raigeki_ChargeTrailVFX, EntIndexToEntRef(trail));
+		}
+	}
+}
+
+public void Raigeki_ChargeTrailVFX(int ref)
+{
+	int trail = EntRefToEntIndex(ref);
+	if (!IsValidEntity(trail))
+		return;
+
+	int target = GetClientOfUserId(i_ChargeTrailTarget[trail]);
+	if (!IsValidClient(target) || !IsPlayerAlive(target) || dieingstate[target] > 0)
+	{
+		RemoveEntity(trail);
+		return;
+	}
+
+	float pos[3], currentPos[3], ang[3];
+	WorldSpaceCenter(target, pos);
+	pos[2] += 10.0;
+	WorldSpaceCenter(trail, currentPos);
+	GetAngleBetweenPoints(pos, currentPos, ang);
+
+	ang[1] += 3.0 * f_ChargeTrailSpeed[trail];
+	if (ang[1] >= 360.0)
+		ang[1] %= 360.0;
+
+	f_ChargeTrailDist[trail] -= f_ChargeTrailSpeed[trail];
+	GetPointInDirection(pos, ang, f_ChargeTrailDist[trail], pos);
+
+	for (int vec = 0; vec < 3; vec++)
+		pos[vec] += GetRandomFloat(-6.0, 6.0);
+
+	TeleportEntity(trail, pos);
+
+	if (f_ChargeTrailDist[trail] <= 0.0)
+	{
+		ShrinkTrailIntoNothing(trail, 0.33);
+		return;
+	}
+
+	float width = GetEntPropFloat(trail, Prop_Data, "m_flStartWidth");
+	if (width < f_ChargeTrailTargWidth[trail])
+	{
+		width += f_ChargeTrailSpeed[trail] * 0.05;
+		SetEntPropFloat(trail, Prop_Data, "m_flStartWidth", width);
+		SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.0);
+	}
+
+	RequestFrame(Raigeki_ChargeTrailVFX, ref);
 }
 
 public void Raigeki_SetRes(int client, float amt)
@@ -489,7 +586,7 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 
 	float mult = 1.0;
 	//Radius scales with both projectile velocity *and* projectile lifespan modifiers.
-    if (IsValidEntity(weapon))
+	if (IsValidEntity(weapon))
     {
         mult *= Attributes_Get(weapon, 103, 1.0);
         mult *= Attributes_Get(weapon, 104, 1.0);
@@ -514,14 +611,14 @@ void Raigeki_ReadStats(int client, int weapon, int tier)
 	mult = 1.0;
 
     //Damage scales with damage modifiers. Obviously.
-    if (IsValidEntity(weapon))
+	if (IsValidEntity(weapon))
         mult = Attributes_Get(weapon, 410, 1.0);
 
 	f_ChargeDMG[client] *= mult;
 	mult = 1.0;
 
     //Charge interval (rate at which mana is consumed, charge is given, and Static Electricity deals damage) scales with attack rate modifiers:
-    if (IsValidEntity(weapon))
+	if (IsValidEntity(weapon))
         mult = Attributes_Get(weapon, 6, 1.0);
     if (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE)
         mult *= 0.83;
@@ -613,7 +710,7 @@ void Raigeki_FireWave(int client, int weapon, int tier)
         i_RemainingBlades[client] = M1_NumBlades[tier];
 
 		Raigeki_StartDelayingAttacks(client, weapon);
-        Blade_StartSwing(client);
+		Blade_StartSwing(client);
         
         Utility_RemoveMana(client, mana_cost, (f_BladeInterval[client] * float(M1_NumBlades[tier])) + 1.25);
 	}
@@ -685,7 +782,7 @@ void Blade_StartSwing(int client)
 	if (b_ChargingRaigeki[client])
 		return;
 
-    Blade_ReadStats(client, i_BladeTier[client]);
+	Blade_ReadStats(client, i_BladeTier[client]);
     
     float ang[3], pos[3];
     GetClientEyePosition(client, pos);
@@ -694,7 +791,7 @@ void Blade_StartSwing(int client)
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
 
-    Handle trace = TR_TraceRayFilterEx(pos, ang, MASK_SHOT, RayType_Infinite, Blade_OnlyEnemies, client);
+	Handle trace = TR_TraceRayFilterEx(pos, ang, MASK_SHOT, RayType_Infinite, Blade_OnlyEnemies, client);
     if (TR_DidHit(trace))
     {
         int targ = TR_GetEntityIndex(trace);
@@ -705,7 +802,7 @@ void Blade_StartSwing(int client)
 
 	FinishLagCompensation_Base_boss();
 
-    if (ang[0] > 60.0)
+	if (ang[0] > 60.0)
         ang[0] = 60.0;
     if (ang[0] < -60.0)
         ang[0] = -60.0;
@@ -744,7 +841,7 @@ public void Blade_Sweep(int id)
         {
 			Blade_DeleteBeam(client);
 
-            i_RemainingBlades[client]--;
+			i_RemainingBlades[client]--;
             if (i_RemainingBlades[client] > 0 && Raigeki_IsHoldingCorrectWeapon(client))
                 Blade_StartSwing(client);
 			else
@@ -771,7 +868,7 @@ public void Blade_Sweep(int id)
 	//When the beam moves too quickly and has too much range, it can miss targets who are far enough away but still technically within range.
 	//To "fix" this, we just run a bunch of extra traces between the beam's previous and current points.
 	float diff = f_BladeProgress[client] - f_BladeProgressPrevious[client];
-    if (diff > 0.02)
+	if (diff > 0.02)
     {
         for (float i = 0.02; i <= diff; i += 0.02)
         {
@@ -785,7 +882,7 @@ public void Blade_Sweep(int id)
 
 	Utility_FireLaser(client, eyePos, ang, 0.0, f_BladeRange[client], 0.0, DMG_GENERIC, _, _, Blade_OnHit, Blade_MoveBeam, Blade_OnlyThoseNotHit);
 
-    f_BladeProgressPrevious[client] = f_BladeProgress[client];
+	f_BladeProgressPrevious[client] = f_BladeProgress[client];
 
 	RequestFrame(Blade_Sweep, id);
 }
@@ -807,7 +904,7 @@ public void Blade_OnHit(int victim, int attacker)
 	    forceAng[i] = vec_BladeSwingAng[attacker][i];
 	forceAng[1] = f_BladeStartAng[attacker] + ((f_BladeProgress[attacker]) * (f_BladeTargAng[attacker] - f_BladeStartAng[attacker]));
     
-    CalculateDamageForce(forceAng, 10000.0, force);
+	CalculateDamageForce(forceAng, 10000.0, force);
     WorldSpaceCenter(victim, pos);
 
     int weapon = Raigeki_GetWeapon(attacker);
@@ -863,7 +960,7 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 
 	SetEntityRenderColor(beam, r, g, b, a);
 	SetEntPropFloat(beam, Prop_Data, "m_fWidth", beamWidth);
-    SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", beamWidth);
+	SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", beamWidth);
 
 	SetEntityMoveType(start, MOVETYPE_NOCLIP);
 	SetEntityMoveType(end, MOVETYPE_NOCLIP);
@@ -882,14 +979,14 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 				GetPointInDirection(startPos, ang, float(i + 1) * 75.0, trailPos);
 
                 //TODO: Maybe only do this while Supercharged? Not sure.
-                trailPos[0] += GetRandomFloat(-5.0, 5.0);
+				trailPos[0] += GetRandomFloat(-5.0, 5.0);
                	trailPos[1] += GetRandomFloat(-5.0, 5.0);
                 trailPos[2] += GetRandomFloat(-12.0, 12.0);
 
 				TeleportEntity(trail, trailPos);
 
 				SetEntPropFloat(trail, Prop_Data, "m_flStartWidth", beamWidth);
-    			SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.0);
+				SetEntPropFloat(trail, Prop_Data, "m_flEndWidth", 0.0);
 
 				SetEntityRenderColor(trail, r, g, b, RoundToFloor(strength * 50.0));
 			}
@@ -931,7 +1028,7 @@ stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float 
 	Handle trace = TR_TraceRayFilterEx(startPos, endPos, MASK_SHOT, RayType_EndPoint, Laser_LOSCheck, client);
 	if (TR_DidHit(trace))
 		TR_GetEndPosition(endPos, trace);
-    delete trace;
+	delete trace;
 
 	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
@@ -976,7 +1073,7 @@ stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float 
 					continue;
 			}
 
-            if (damage > 0.0)
+			if (damage > 0.0)
 			    SDKHooks_TakeDamage(target, IsValidEntity(inflictor) ? inflictor : client, client, damage, damagetype, IsValidEntity(weapon) ? weapon : -1);
 
 			if (onHitFunc != INVALID_FUNCTION)
@@ -1023,6 +1120,31 @@ stock void GetPointInDirection(float startPos[3], float ang[3], float distance, 
 	AddVectors(startPos, buffer, endPos);
 }
 
+/**
+ * Gets the angle pointing from point A to point B.
+ * 
+ * @param pointA		Start position.
+ * @param pointB		End position.
+ * @param output		Output vector.
+ * @param xOff			Optional X-axis offset for the start position.
+ * @param yOff			Optional Y-axis offset for the start position.
+ * @param zOff			Optional Z-axis offset for the start position.
+ * 
+ * @return		The angle from point A to point B, stored in the output vector.
+ */
+stock void GetAngleBetweenPoints(float pointA[3], float pointB[3], float output[3], float xOff = 0.0, float yOff = 0.0, float zOff = 0.0)
+{
+	float midPoint[3], pointACopy[3];
+	pointACopy = pointA;
+	pointACopy[0] += xOff;
+	pointACopy[1] += yOff;
+	pointACopy[2] += zOff;
+
+	SubtractVectors(pointB, pointACopy, midPoint);
+	NormalizeVector(midPoint, midPoint);
+	GetVectorAngles(midPoint, output);
+}
+
 stock int CreateTrail(char[] trail, int alpha, float lifetime=1.0, float startwidth=22.0, float endwidth=0.0, int rendermode = 4)
 {
 	int entIndex = CreateEntityByName("env_spritetrail");
@@ -1054,7 +1176,7 @@ stock void ShrinkTrailIntoNothing(int trail, float rate)
 {
 	DataPack pack = new DataPack();
 	RequestFrame(Shrink_Trail, pack);
-    WritePackCell(pack, EntIndexToEntRef(trail));
+	WritePackCell(pack, EntIndexToEntRef(trail));
     WritePackFloat(pack, rate);
 }
 
@@ -1062,7 +1184,7 @@ stock void Shrink_Trail(DataPack pack)
 {
     ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
-    float rate = ReadPackFloat(pack);
+	float rate = ReadPackFloat(pack);
 
 	if (!IsValidEntity(entity))
     {
@@ -1090,7 +1212,7 @@ stock void MakeEntityFadeOut(int entity, int rate, bool remove = true)
 {
 	DataPack pack = new DataPack();
 	RequestFrame(Fade_Out, pack);
-    WritePackCell(pack, EntIndexToEntRef(entity));
+	WritePackCell(pack, EntIndexToEntRef(entity));
     WritePackCell(pack, rate);
     WritePackCell(pack, remove);
 }
@@ -1099,7 +1221,7 @@ stock void Fade_Out(DataPack pack)
 {
     ResetPack(pack);
 	int entity = EntRefToEntIndex(ReadPackCell(pack));
-    int rate = ReadPackCell(pack);
+	int rate = ReadPackCell(pack);
     bool remove = ReadPackCell(pack);
 	
 	if (!IsValidEntity(entity))
@@ -1121,7 +1243,7 @@ stock void Fade_Out(DataPack pack)
 		if (remove)
 			RemoveEntity(entity);
 		
-        delete pack;
+		delete pack;
 		return;
 	}
 
