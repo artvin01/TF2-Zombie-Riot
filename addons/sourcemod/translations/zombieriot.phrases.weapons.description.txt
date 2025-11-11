@@ -3148,6 +3148,14 @@
 		"en"	"-Increased Damage\nIncreased attackspeed\n-You can now cast a barrage with mouse 2, costs battery, alongside a heafty mana cost."
 		"it"	"Ora è possibile lanciare uno sbarramento con mouse 2, costa batteria, oltre a un costo di mana elevato."
 	}
+	"Reiuji Desc ALT 0"
+	{
+		"en"	"-Increased Damage\nYour ammo nolonger affects firerate.\nInstead when ammo mode is active, you create a multi shot effect.\nAfter being airborn for a small amount of time, the projectiels \"Redirect\" to where you are looking.\nUppon redirect, their damage and speed are moderately increased\nTheir Particle also changes\nBarrage is also altered, instead of chosing targets infront of you in an angle\nIt choses targets in a 360 angle around you, 1 target per sector."
+	}
+	"Reiuji Desc ALT 1"
+	{
+		"en"	"-Increased Damage\nMore:\n-Ammo size\n-Ammo Regen\n-Multi Shot\n-Barrage Size"
+	}
 	"Reiuji Desc 3"
 	{
 		"en"	"-Increased Damage\nIncreased attackspeed\n-When barrage is at 50% or more charge, your m1 magic projectiles gain homing"

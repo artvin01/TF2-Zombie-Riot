@@ -168,6 +168,11 @@ static void Hud(int client, int weapon)
 
 	PrintHintText(client, HUDText);
 }
+enum struct Reiuji_Target_Info
+{
+	int index;
+	float Angle_Relative;
+}
 public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, int slot)
 {
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0)*10.0);
@@ -221,10 +226,11 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Reiuji, client);
 	FinishLagCompensation_Base_boss();
 
-	for(int i=0 ; i < loop_for ; i++)
-	{
-		valid_targets[i] = -1;
-	}
+
+	//so for targeting we will use a very similar method that twirl/stella use for their lasers.
+	//just modified for this special instance.
+
+	ArrayList TargetArray = new ArrayList(sizeof(Reiuji_Target_Info));
 
 	for(int i=0; i < sizeof(i_Ruina_Laser_BEAM_HitDetected); i++)
 	{
@@ -232,28 +238,65 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		if(enemy <= 0)
 			break;
 
-		if(targets_aquired >= loop_for)
-			break;
+		float EnemyAngles[3], EnemyLoc[3]; GetAbsOrigin(enemy, EnemyLoc);
+		MakeVectorFromPoints(Origin, EnemyLoc, EnemyAngles);
+		GetVectorAngles(EnemyAngles, EnemyAngles);
 
+		Reiuji_Target_Info enum_Target;
+		enum_Target.index = enemy;
+		enum_Target.Angle_Relative = fixAngle(EnemyAngles[1]);
+		TargetArray.PushArray(enum_Target);
+	}
+	float EyeAngles[3];
+	GetClientEyeAngles(client, EyeAngles);
+	for(int i=0; i < loop_for; i++)
+	{
+		float BufferAng[3];
+		BufferAng = EyeAngles;
+		BufferAng[0] = 0.0;
+		BufferAng[1] += (360.0 / loop_for) * i;
 
-		//todo: this doesn't work as expected. why? dunno yet.
-		//investigate
-		//or maybe just ditch this thing and use i_laser_target thingy but modified for this instance.
-		float vecTarget[3]; GetAbsOrigin(enemy, vecTarget); vecTarget[2] +=35.0;
-		float ProjLoc[3]; ProjLoc = GetReiujiBarrageSpecialLoc(client, targets_aquired, loop_for);
-		float AttackAngles[3];
-		MakeVectorFromPoints(Origin, ProjLoc, AttackAngles);
-		GetVectorAngles(AttackAngles, AttackAngles);
+		//float EndLoc[3];
+		//Get_Fake_Forward_Vec(250.0, BufferAng, EndLoc, Origin);
+		//TE_SetupBeamPoints(Origin, EndLoc, g_Ruina_BEAM_Combine_Black, g_Ruina_BEAM_Combine_Black, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+		//TE_SendToAll();
 
-		if(!IsLineOfSight_Vec(ProjLoc, AttackAngles, vecTarget, tolerance_angle, range, client))
+		int enemy_slot = GetClosestTarget_RelativeAngle(tolerance_angle, fixAngle(BufferAng[1]), TargetArray, client);
+		if(enemy_slot == -1)
+		{
+			valid_targets[i] = -1;
 			continue;
+		}
 
-		valid_targets[targets_aquired] = enemy;
+
+		Reiuji_Target_Info enum_Target;
+		TargetArray.GetArray(enemy_slot, enum_Target);
+		TargetArray.Erase(enemy_slot);
 		targets_aquired++;
+		valid_targets[i] = enum_Target.index;
+
+		//float npc_pos[3]; GetAbsOrigin(enum_Target.index, npc_pos); npc_pos[2]+=50.0;
+		//float Vic_Pos[3]; GetAbsOrigin(client, Vic_Pos); Vic_Pos[2]+=50.0;
+		//TE_SetupBeamPoints(npc_pos, Vic_Pos, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {0, 255, 0,255}, 3);
+		//TE_SendToAll();
+	}
+
+	delete TargetArray;
+
+	float base_cd = 10.0;
+
+	if(targets_aquired == 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Targets Detected");
+		Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd*0.25);
+		return;
 	}
 
 	Rogue_OnAbilityUse(client, weapon);
-	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : 10.0);
+	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd);
 
 	float damage = 200.0 * Attributes_Get(weapon, 410, 1.0);
 	float speed = 1100.0;
@@ -269,6 +312,9 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 
 	for(int i=0 ; i < loop_for ; i++)
 	{
+		if(valid_targets[i] == -1)
+			continue;
+
 		float ProjLoc[3]; ProjLoc = GetReiujiBarrageSpecialLoc(client, i, loop_for);
 		float AttackAngles[3];
 		MakeVectorFromPoints(Origin, ProjLoc, AttackAngles);
@@ -281,7 +327,7 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		CreateDataTimer(Linger_Time, ReiujiBarrage_OffsetProj, Pack, TIMER_FLAG_NO_MAPCHANGE);
 		Pack.WriteCell(EntIndexToEntRef(projectile));
 		Pack.WriteFloat(speed);
-		Pack.WriteCell(valid_targets[i] > 0 ? EntIndexToEntRef(valid_targets[i]) : -1);
+		Pack.WriteCell(EntIndexToEntRef(valid_targets[i]));
 	}
 
 
@@ -300,6 +346,43 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 		fl_barrage_charge[client] = 0.0;
 	}
 	
+}
+static int GetClosestTarget_RelativeAngle(float Tolerance, float Angle_Fixed, ArrayList &TargetArray, int client)
+{
+	bool Found_Atleast_One = false;
+	int Closest = 0;
+	for(int i=0 ; i < TargetArray.Length ; i++)
+	{
+		Reiuji_Target_Info enum_Target;
+		Reiuji_Target_Info Closest_Enemy;
+		TargetArray.GetArray(i, enum_Target);
+		TargetArray.GetArray(Closest, Closest_Enemy);
+	
+		float yawOffset = fabs((enum_Target.Angle_Relative) - (Angle_Fixed));
+		float yawOffset_Close = fabs((Closest_Enemy.Angle_Relative) - (Angle_Fixed));
+
+		if(yawOffset < Tolerance && yawOffset < yawOffset_Close)
+		{
+			//float npc_pos[3]; GetAbsOrigin(enum_Target.index, npc_pos); npc_pos[2]+=50.0;
+			//float Vic_Pos[3]; GetAbsOrigin(client, Vic_Pos); Vic_Pos[2]+=50.0;
+			//TE_SetupBeamPoints(npc_pos, Vic_Pos, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {0, 0, 255,255}, 3);
+			//TE_SendToAll();
+
+			if(!Can_I_See_Enemy(client, enum_Target.index))
+				continue;
+
+			//TE_SetupBeamPoints(npc_pos, Vic_Pos, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 0, 0,255}, 3);
+			//TE_SendToAll();
+
+			Found_Atleast_One = true;
+			Closest = i;
+		}
+	}
+
+	if(!Found_Atleast_One)
+		return -1;
+
+	return Closest;
 }
 static Action ReiujiBarrage_OffsetProj(Handle Timer, DataPack pack)
 {
@@ -349,20 +432,6 @@ static Action ReiujiBarrage_OffsetProj(Handle Timer, DataPack pack)
 
 	SetProjectileSpeed(projectile, Speed, GoAngles);
 	TeleportEntity(projectile, NULL_VECTOR, GoAngles, NULL_VECTOR);
-
-	//only bother rendering this if we are fine on edicts
-	if(AtEdictLimit(EDICT_PLAYER) || enemy == -1)
-		return Plugin_Stop;
-
-	int color[4];
-	Ruina_Color(color);
-	int laser = ConnectWithBeam(projectile, enemy, color[0], color[1], color[2], 5.0, 2.5, 0.25, BEAM_COMBINE_BLUE);
-	CreateTimer(0.2, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-
-	i_OwnerEntityEnvLaser[laser] = EntIndexToEntRef(owner);
-	SDKHook(laser, SDKHook_SetTransmit, SetTransmitHarvester);
-
-	
 	return Plugin_Stop;
 }
 static float[] GetReiujiBarrageSpecialLoc(int client, int i, int loop_for)
@@ -387,6 +456,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
+/*
 static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int attacker = -1)
 {
 	float vecAngles[3];
@@ -422,6 +492,7 @@ static bool Check_Line_Of_Sight_Vector(float pos_npc[3], float Enemy_Loc[3], int
 	}
 	
 }
+*/
 static bool TraceEntityEnumerator_Reiuji(int entity, int client)
 {
 	//This will automatically take care of all the checks, very handy.
@@ -507,18 +578,19 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 			targets_aquired++;
 		}
 	}
-
+	float base_cd = 5.0;
 	if(targets_aquired == 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "No Targets Detected");
+		Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd*0.25);
 		return;
 	}
 
 	Rogue_OnAbilityUse(client, weapon);
-	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : 5.0);
+	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd);
 	
 	float Origin[3];
 	WorldSpaceCenter(client, Origin);
@@ -563,6 +635,7 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 		fl_barrage_charge[client] = 0.0;
 	}
 }
+/*
 static int IsLineOfSight_Vec(float npc_pos[3], float eyeAngles[3], float Vic_Pos[3], float AnglesMax, float Range, int client = -1)
 {
 	// need position of either the inflictor or the attacker
@@ -586,12 +659,13 @@ static int IsLineOfSight_Vec(float npc_pos[3], float eyeAngles[3], float Vic_Pos
 	// now it's a simple check
 	if ((yawOffset >= MinYaw && yawOffset <= MaxYaw))	//first check position before doing a trace checking line of sight.
 	{					
-		TE_SetupBeamPoints(npc_pos, Vic_Pos, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
-		TE_SendToAll();
+		//TE_SetupBeamPoints(npc_pos, Vic_Pos, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+		//TE_SendToAll();
 		return Check_Line_Of_Sight_Vector(npc_pos, Vic_Pos, client);
 	}
 	return false;
 }
+*/
 static int IsLineOfSight(int client, int Target, float AnglesMax, float Range)
 {
 	// need position of either the inflictor or the attacker
@@ -669,11 +743,11 @@ void Reiuji_Wand_AmmomodeInternal(int client, int weapon, bool Toggle = false)
 		Attributes_Set(weapon, 5, 1.0);
 		if(!Toggle)
 		{
-			float Offset = 0.35;
+			float Offset = 1.0;
 			float GameTime = GetGameTime();
 			if(fl_ammo_timer[client] < GameTime + Offset)
 			{
-				fl_ammo_timer[client] = GameTime + Offset;
+				fl_ammo_timer[client] += 0.75;
 			}
 		}
 	}

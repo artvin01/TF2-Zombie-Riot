@@ -2987,6 +2987,10 @@
 		"en"	"Reiuji Wand"
 		"it"	"Bacchetta Reiuji"
 	}
+	"Fractal Reiuji"
+	{
+		"en"	"Fractal Reiuji"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"
