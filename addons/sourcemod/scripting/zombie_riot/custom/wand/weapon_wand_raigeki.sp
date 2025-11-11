@@ -45,11 +45,18 @@ public void Raigeki_ResetAll()
 	Zero(ability_cooldown);
 }
 
+#define PARTICLE_RAIGEKI_STRIKE			"drg_cow_explosioncore_charged"
+
 #define SOUND_RAIGEKI_BLADE_SWEEP       ")weapons/samurai/tf_katana_crit_miss_01.wav"
 #define SOUND_CHARGE_LOOP				")player/quickfix_invulnerable_on.wav"
 #define SOUND_CHARGE_LOOP_MAX			")weapons/weapon_crit_charged_on.wav"
 #define SOUND_CHARGE_MAX_NOTIF			")weapons/vaccinator_charge_tier_04.wav"
 #define SOUND_RAIGEKI_FAILED			")player/taunt_sorcery_fail.wav"
+#define SOUND_RAIGEKI_CAST_1			")ambient/hell/hell_rumbles_01.wav"
+#define SOUND_RAIGEKI_CAST_2			")misc/halloween/spell_spawn_boss_disappear.wav"
+#define SOUND_RAIGEKI_INCOMING			")ambient/halloween/thunder_04.wav"
+#define SOUND_RAIGEKI_STRIKE_1			")misc/halloween/spell_spawn_boss.wav"
+#define SOUND_RAIGEKI_STRIKE_2			")misc/doomsday_missile_explosion.wav"
 
 static char g_StaticSounds[][] = {
 	")weapons/stunstick/spark1.wav",
@@ -72,6 +79,11 @@ void Raigeki_Precache()
 	PrecacheSound(SOUND_CHARGE_LOOP_MAX, true);
 	PrecacheSound(SOUND_CHARGE_MAX_NOTIF, true);
 	PrecacheSound(SOUND_RAIGEKI_FAILED, true);
+	PrecacheSound(SOUND_RAIGEKI_CAST_1, true);
+	PrecacheSound(SOUND_RAIGEKI_CAST_2, true);
+	PrecacheSound(SOUND_RAIGEKI_INCOMING, true);
+	PrecacheSound(SOUND_RAIGEKI_STRIKE_1, true);
+	PrecacheSound(SOUND_RAIGEKI_STRIKE_2, true);
 
 	for (int i = 0; i < sizeof(g_StaticSounds); i++) { PrecacheSound(g_StaticSounds[i]); }
 }
@@ -267,6 +279,8 @@ static float f_ChargeCurrentRes[MAXPLAYERS + 1 ] = { 0.0, ... };
 static float f_ChargeDMG[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeFalloff[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_NextCharge[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_RaigekiVFXTime[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_RaigekiStrikesAt[MAXPLAYERS + 1] = { 0.0, ... };
 
 void Raigeki_StartCharging(int client, int weapon, int tier)
 {
@@ -308,40 +322,47 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 	}
 }
 
-void Raigeki_ChargeLogic(int id)
+//This returns true if the player is dead or downed.
+//If holdingM2 is set to true, it also returns true if the player is not holding M2, and doesn't have enough charge to cast Raigeki.
+//needsWeapon does the same thing, but returns true if the player is not holding the weapon they used to charge Raigeki.
+//This function also automatically terminates Raigeki's charge logic if it returns true. The optimal usage of this function is therefore: if (Raigeki_WillFail(client)) { return; }
+bool Raigeki_WillFail(int client, bool holdingM2, bool needsWeapon)
 {
-	int client = GetClientOfUserId(id);
-	if (!IsValidClient(client))
-		return;
-
-	bool holdingM2 = GetClientButtons(client) & IN_ATTACK2 != 0;
 	float amtCharged = (f_ChargeAmt[client] / f_ChargeRequirement[client]);
 
-	//Harmlessly fizzle out if the player is dead, downed, holding the wrong weapon, or not holding M2 but hasn't charged Raigeki enough to cast it:
-	if (!IsPlayerAlive(client) || dieingstate[client] > 0 || !Raigeki_IsHoldingCorrectWeapon(client) || (!holdingM2 && amtCharged < f_ChargeMin[client]))
+	bool failed = (!IsPlayerAlive(client) || dieingstate[client] > 0 || (needsWeapon && !Raigeki_IsHoldingCorrectWeapon(client)) || (holdingM2 && (GetClientButtons(client) & IN_ATTACK2 == 0) && amtCharged < f_ChargeMin[client]));
+
+	if (failed)
 	{
+		if ((holdingM2 && GetClientButtons(client) & IN_ATTACK2 == 0 && amtCharged < f_ChargeMin[client]))
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Low Charge", true);
+		else if (dieingstate[client] > 0)
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Downed", true);
+		else if (!IsPlayerAlive(client))
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Killed", true);
+		else if (needsWeapon)
+			Utility_HUDNotification_Translation(client, "Raigeki Failed Wrong Weapon", true);
+
+		EmitSoundToClient(client, SOUND_RAIGEKI_FAILED, _, _, _, _, _, 80);
+
 		Raigeki_TerminateCharge(client);
 		Raigeki_StopDelayingAttacks(client);
 
 		int weapon = Raigeki_GetWeapon(client);
 		if (IsValidEntity(weapon))
 			Ability_Apply_Cooldown(client, 2, Raigeki_Cooldown_Failed[i_ChargeTier[client]], weapon);
-
-		if ((!holdingM2 && amtCharged < f_ChargeMin[client]))
-			Utility_HUDNotification_Translation(client, "Raigeki Failed Low Charge", true);
-		else if (dieingstate[client] > 0)
-			Utility_HUDNotification_Translation(client, "Raigeki Failed Downed", true);
-		else if (!IsPlayerAlive(client))
-			Utility_HUDNotification_Translation(client, "Raigeki Failed Killed", true);
-		else
-			Utility_HUDNotification_Translation(client, "Raigeki Failed Wrong Weapon", true);
-
-		EmitSoundToClient(client, SOUND_RAIGEKI_FAILED, _, _, _, _, _, 80);
-
-		return;
 	}
 
-	if (holdingM2)	//If the user is holding M2: do charge logic
+	return failed;
+}
+
+void Raigeki_ChargeLogic(int id)
+{
+	int client = GetClientOfUserId(id);
+	if (!IsValidClient(client) || Raigeki_WillFail(client, true, true))
+		return;
+
+	if (GetClientButtons(client) & IN_ATTACK2 != 0)	//If the user is holding M2: do charge logic
 	{
 		float gt = GetGameTime();
 		if (gt >= f_NextCharge[client] && Current_Mana[client] >= RoundToFloor(f_ChargeCost[client]))
@@ -353,15 +374,63 @@ void Raigeki_ChargeLogic(int id)
 	{
 		Raigeki_SetRes(client, f_ChargeCurrentRes[client] * Raigeki_ResMult[i_ChargeTier[client]]);
 
-		TF2_StunPlayer(client, Raigeki_Delay[i_ChargeTier[client]], _, TF_STUNFLAG_BONKSTUCK);
-		Raigeki_TerminateChargeFX(client);
-		Raigeki_StopDelayingAttacks(client);
+		TF2_StunPlayer(client, Raigeki_Delay[i_ChargeTier[client]] - 0.33, _, TF_STUNFLAG_BONKSTUCK);
 
-		//TODO: RequestFrame recursion for Raigeki yadda yadda yadda
+		Raigeki_TerminateChargeFX(client);
+
+		f_RaigekiStrikesAt[client] = GetGameTime() + Raigeki_Delay[i_ChargeTier[client]];
+		f_RaigekiVFXTime[client] = f_RaigekiStrikesAt[client] - 0.32;
+		RequestFrame(Raigeki_SummonBolt, GetClientUserId(client));
+		EmitSoundToAll(SOUND_RAIGEKI_CAST_1, client, _, _, _, _, 80);
+		EmitSoundToAll(SOUND_RAIGEKI_CAST_2, client, _, _, _, _, 60);
+
 		return;
 	}
 
 	RequestFrame(Raigeki_ChargeLogic, id);
+}
+
+void Raigeki_SummonBolt(int id)
+{
+	int client = GetClientOfUserId(id);
+
+	if (!IsValidClient(client) || Raigeki_WillFail(client, false, false))
+		return;
+
+	float gt = GetGameTime();
+	if (gt >= f_RaigekiVFXTime[client] && f_RaigekiVFXTime[client] > 0.0)
+	{
+		//TODO VFX
+		EmitSoundToAll(SOUND_RAIGEKI_INCOMING, client);
+		EmitSoundToAll(SOUND_RAIGEKI_INCOMING, client, _, _, _, _, 60);
+		f_RaigekiVFXTime[client] = 0.0;
+	}
+
+	if (gt >= f_RaigekiStrikesAt[client])
+	{
+		//TODO VFX, explosion, overcharge
+
+		float pos[3];
+		WorldSpaceCenter(client, pos);
+		pos[2] += 5.0;
+
+		int particle = ParticleEffectAt(pos, PARTICLE_RAIGEKI_STRIKE);
+		if (IsValidEntity(particle))
+		{
+			EmitSoundToAll(SOUND_RAIGEKI_STRIKE_1, client, _, _, _, _, 80);
+			EmitSoundToAll(SOUND_RAIGEKI_STRIKE_2, client, _, _, _, _, 80);
+		}
+
+		Raigeki_TerminateCharge(client);
+		Raigeki_StopDelayingAttacks(client);
+		int weapon = Raigeki_GetWeapon(client);
+		if (IsValidEntity(weapon))
+			Ability_Apply_Cooldown(client, 2, Raigeki_Cooldown[i_ChargeTier[client]], weapon);
+
+		return;
+	}
+
+	RequestFrame(Raigeki_SummonBolt, id);
 }
 
 static float f_ChargeTrailDist[2049] = { 0.0, ... };
@@ -978,7 +1047,6 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 				float trailPos[3];
 				GetPointInDirection(startPos, ang, float(i + 1) * 75.0, trailPos);
 
-                //TODO: Maybe only do this while Supercharged? Not sure.
 				trailPos[0] += GetRandomFloat(-5.0, 5.0);
                	trailPos[1] += GetRandomFloat(-5.0, 5.0);
                 trailPos[2] += GetRandomFloat(-12.0, 12.0);
