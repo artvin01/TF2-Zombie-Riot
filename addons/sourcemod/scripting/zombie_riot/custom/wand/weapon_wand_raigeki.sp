@@ -16,15 +16,15 @@ static float M1_Falloff[4] = { 0.825, 0.85, 0.875, 0.9 };   //Amount to multiply
 static float M1_Interval[4] = { 0.5, 0.4, 0.3, 0.2 };       //Time it takes for electric blades to sweep across the screen.
 
 static int Charge_MaxTargets[4] = { 6, 8, 10, 12 };						//Max targets hit at once by Static Electricity ticks.
-static float Charge_Cost[4] = { 2.0, 4.0, 8.0, 16.0 };					//Mana drained per interval while charging the M2 ability.
-static float Charge_CostAtFullCharge[4] = { 1.0, 2.0, 4.0, 8.0 };		//Mana drained per interval while charging the M2 ability, while it is already fully-charged. This is needed so that the user can't just charge to full, and then keep holding M2 to have Static Electricity and resistance forever at no cost.
+static float Charge_Cost[4] = { 6.0, 12.0, 24.0, 48.0 };				//Mana drained per interval while charging the M2 ability.
+static float Charge_CostAtFullCharge[4] = { 3.0, 6.0, 12.0, 24.0 };		//Mana drained per interval while charging the M2 ability, while it is already fully-charged. This is needed so that the user can't just charge to full, and then keep holding M2 to have Static Electricity and resistance forever at no cost.
 static float Charge_Requirement[4] = { 300.0, 600.0, 1200.0, 2400.0 };	//Total mana spent to fully charge the M2 ability.
 static float Charge_Min[4] = { 0.2, 0.2, 0.2, 0.2 };					//Minimum charge percentage needed to cast Raigeki. Releasing M2 or running out of mana below this threshold immediately cancels the ability and does not refund anything.
-static float Charge_Interval[4] = { 0.1, 0.1, 0.1, 0.1 };				//Interval between Static Electricity shocks and charge gain while charging the M2 ability.
+static float Charge_Interval[4] = { 0.3, 0.3, 0.3, 0.3 };				//Interval between Static Electricity shocks and charge gain while charging the M2 ability.
 static float Charge_SpeedMod[4] = { 0.5, 0.5, 0.5, 0.5 };				//Base move speed multiplier while charging Raigeki.
 static float Charge_InstantRes[4] = { 0.1, 0.125, 0.15, 0.2 };			//Instant damage resistance given as soon as you begin charging Raigeki.
 static float Charge_BonusRes[4] = { 0.2, 0.225, 0.25, 0.3 };			//Maximum bonus damage resistance given based on the ability's charge level.
-static float Charge_DMG[4] = { 8.0, 16.0, 30.0, 45.0 };					//Base damage per interval dealt per Static Electricity tick while charging.
+static float Charge_DMG[4] = { 24.0, 48.0, 90.0, 135.0 };				//Base damage per interval dealt per Static Electricity tick while charging.
 static float Charge_Radius[4] = { 100.0, 105.0, 110.0, 115.0 };			//Radius in which Static Electricity deals damage.
 static float Charge_Falloff[4] = { 0.7, 0.75, 0.8, 0.85 };				//Amount to multiply Static Electricity damage per target hit.
 
@@ -395,7 +395,7 @@ void Raigeki_TerminateCharge(int client)
 		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
 		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
 	}
-	
+
 	Attributes_SetMulti(client, 442, (1.0 / Charge_SpeedMod[i_ChargeTier[client]]));
 	SDKCall_SetSpeed(client);
 
