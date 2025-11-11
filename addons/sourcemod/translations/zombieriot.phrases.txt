@@ -1205,6 +1205,10 @@
 	{
 		"en"		"Raigeki failed: you switched weapons!"
 	}
+	"Raigeki Fully Charged"
+	{
+		"en"		"RAIGEKI IS FULLY CHARGED!"
+	}
 	"Gamemode Credits"
 	{
 		"en" 		"Gamemode Credits"

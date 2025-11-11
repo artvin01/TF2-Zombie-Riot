@@ -29,6 +29,7 @@ static float Charge_Radius[4] = { 100.0, 105.0, 110.0, 115.0 };			//Radius in wh
 static float Charge_Falloff[4] = { 0.7, 0.75, 0.8, 0.85 };				//Amount to multiply Static Electricity damage per target hit.
 
 static float Raigeki_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
+static float Raigeki_ResMult[4] = { 0.8, 0.8, 0.8, 0.8 };					//Amount to multiply damage taken during the stun state while casting Raigeki. This is stacked multiplicatively with the user's current damage resistance granted by charging Raigeki.
 static float Raigeki_Damage[4] = { 15000.0, 20000.0, 25000.0, 30000.0 };	//Raigeki's base damage at max charge.
 static float Raigeki_Radius[4] = { 450.0, 550.0, 650.0, 800.0 };			//Raigeki's radius at max charge.
 static float Raigeki_Falloff_MultiHit[4] = { 0.7, 0.75, 0.8, 0.85 };		//Amount to multiply damage dealt by Raigeki per target hit.
@@ -45,15 +46,34 @@ public void Raigeki_ResetAll()
 }
 
 #define SOUND_RAIGEKI_BLADE_SWEEP       ")weapons/samurai/tf_katana_crit_miss_01.wav"
+#define SOUND_CHARGE_LOOP				")player/quickfix_invulnerable_on.wav"
+#define SOUND_CHARGE_LOOP_MAX			")weapons/weapon_crit_charged_on.wav"
+#define SOUND_CHARGE_MAX_NOTIF			")weapons/vaccinator_charge_tier_04.wav"
+#define SOUND_RAIGEKI_FAILED			")player/taunt_sorcery_fail.wav"
+
+static char g_StaticSounds[][] = {
+	")weapons/stunstick/spark1.wav",
+	")weapons/stunstick/spark2.wav",
+	")weapons/stunstick/spark3.wav",
+};
+
+static int Model_Lightning;
+static int Model_Glow;
 
 void Raigeki_Precache()
 {
-	PrecacheModel("materials/sprites/lgtning.vmt");
-	PrecacheModel("materials/sprites/glow02.vmt");
+	Model_Lightning = PrecacheModel("materials/sprites/lgtning.vmt");
+	Model_Glow = PrecacheModel("materials/sprites/glow02.vmt");
     PrecacheModel("materials/effects/repair_claw_trail_red.vmt");
     PrecacheModel("materials/sprites/laser.vmt", false);
 
     PrecacheSound(SOUND_RAIGEKI_BLADE_SWEEP, true);
+	PrecacheSound(SOUND_CHARGE_LOOP, true);
+	PrecacheSound(SOUND_CHARGE_LOOP_MAX, true);
+	PrecacheSound(SOUND_CHARGE_MAX_NOTIF, true);
+	PrecacheSound(SOUND_RAIGEKI_FAILED, true);
+
+	for (int i = 0; i < sizeof(g_StaticSounds); i++) { PrecacheSound(g_StaticSounds[i]); }
 }
 
 //Block Burst Pack while charging Raigeki.
@@ -265,6 +285,8 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 		b_ChargingRaigeki[client] = true;
 		f_ChargeCurrentRes[client] = 0.0;
 
+		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 80);
+
 		Attributes_SetMulti(client, 442, Charge_SpeedMod[tier]);
 		SDKCall_SetSpeed(client);
 
@@ -309,6 +331,8 @@ void Raigeki_ChargeLogic(int id)
 		else
 			Utility_HUDNotification_Translation(client, "Raigeki Failed Wrong Weapon", true);
 
+		EmitSoundToClient(client, SOUND_RAIGEKI_FAILED, _, _, _, _, _, 80);
+
 		return;
 	}
 
@@ -322,8 +346,10 @@ void Raigeki_ChargeLogic(int id)
 	}
 	else	//If the user is not holding M2: we know from the earlier checks that they have enough charge to cast Raigeki. Therefore, stun them and begin casting Raigeki.
 	{
+		Raigeki_SetRes(client, f_ChargeCurrentRes[client] * Raigeki_ResMult[i_ChargeTier[client]]);
+
 		TF2_StunPlayer(client, Raigeki_Delay[i_ChargeTier[client]], _, TF_STUNFLAG_BONKSTUCK);
-		Raigeki_TerminateCharge(client);	//TODO: TERMINATECHARGE SHOULD BE CALLED WHEN RAIGEKI STRIKES, NOT HERE!
+		Raigeki_TerminateChargeFX(client);
 		Raigeki_StopDelayingAttacks(client);
 
 		//TODO: RequestFrame recursion for Raigeki yadda yadda yadda
@@ -340,6 +366,8 @@ void Raigeki_AddCharge(int client)
 	//We call ReadStats every time we add charge, so that we can be 100% sure we're accurate. This prevents exploits such as starting the charge with Morning Coffee for the faster hit rate, then swapping to Obsidian Oaf for the resistance but keeping the hit rate from Coffee.
 	//It also allows things like attack speed buffs to affect the charge-up, even if applied/removed mid-charge.
 	Raigeki_ReadStats(client, weapon, i_ChargeTier[client]);
+
+	float prevAmt = f_ChargeAmt[client] / f_ChargeRequirement[client];
 
 	int cost = RoundToFloor(f_ChargeCostAtFullCharge[client]);
 
@@ -362,17 +390,27 @@ void Raigeki_AddCharge(int client)
 
 	float amtCharged = (f_ChargeAmt[client] / f_ChargeRequirement[client]);
 
-	//Remove current res modifier if there already is one:
-	if (f_ChargeCurrentRes[client] != 0.0)
+	if (prevAmt < 0.33 && amtCharged >= 0.33)
 	{
-		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
-		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
+		StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
+		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 100);
+	}
+	else if (prevAmt < 0.66 && amtCharged >= 0.66)
+	{
+		StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
+		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 120);
+	}
+	else if (prevAmt < 1.0 && amtCharged >= 1.0)
+	{
+		StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
+		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 140);
+		EmitSoundToClient(client, SOUND_CHARGE_LOOP_MAX, client, _, _, _, _, 120);
+		EmitSoundToClient(client, SOUND_CHARGE_MAX_NOTIF, client, _, _, _, _, 120);
+		TF2_AddCondition(client, TFCond_FocusBuff);
+		Utility_HUDNotification_Translation(client, "Raigeki Fully Charged");
 	}
 
-	//Give resistance:
-	f_ChargeCurrentRes[client] = 1.0 - (f_ChargeBaseRes[client] + (f_ChargeBonusRes[client] * amtCharged));
-	Attributes_SetMulti(client, 206, f_ChargeCurrentRes[client]);
-	Attributes_SetMulti(client, 205, f_ChargeCurrentRes[client]);
+	Raigeki_SetRes(client, 1.0 - (f_ChargeBaseRes[client] + (f_ChargeBonusRes[client] * amtCharged)));
 
 	//Trigger Static Electricity shockwave:
 	float pos[3];
@@ -382,10 +420,34 @@ void Raigeki_AddCharge(int client)
 	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
 }
 
+public void Raigeki_SetRes(int client, float amt)
+{
+	//Remove current res modifier if there already is one:
+	if (f_ChargeCurrentRes[client] != 0.0)
+	{
+		Attributes_SetMulti(client, 206, (1.0 / f_ChargeCurrentRes[client]));
+		Attributes_SetMulti(client, 205, (1.0 / f_ChargeCurrentRes[client]));
+	}
+
+	f_ChargeCurrentRes[client] = amt;
+
+	//Give resistance:
+	Attributes_SetMulti(client, 206, f_ChargeCurrentRes[client]);
+	Attributes_SetMulti(client, 205, f_ChargeCurrentRes[client]);
+}
+
 public void Raigeki_StaticElectricity_OnHit(int attacker, int victim, float damage)
 {
+	float startPos[3], endPos[3];
+	WorldSpaceCenter(attacker, startPos);
+	WorldSpaceCenter(victim, endPos);
+	startPos[2] += 10.0;
+	endPos[2] += 10.0;
+
+	SpawnBeam_Vectors(startPos, endPos, 0.2, 160, 160, 255, 255, Model_Lightning, 3.0, 3.0, _, 12.0);
+
+	EmitSoundToAll(g_StaticSounds[GetRandomInt(0, sizeof(g_StaticSounds) - 1)], attacker, _, 80, _, _, GetRandomInt(80, 120));
 	return;
-	//TODO
 }
 
 void Raigeki_TerminateCharge(int client)
@@ -399,9 +461,16 @@ void Raigeki_TerminateCharge(int client)
 	Attributes_SetMulti(client, 442, (1.0 / Charge_SpeedMod[i_ChargeTier[client]]));
 	SDKCall_SetSpeed(client);
 
-	//TODO: TERMINATE LOOPING SOUNDS AND PARTICLES HERE
+	Raigeki_TerminateChargeFX(client);
 
 	b_ChargingRaigeki[client] = false;
+}
+
+void Raigeki_TerminateChargeFX(int client)
+{
+	StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
+	StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP_MAX);
+	TF2_RemoveCondition(client, TFCond_FocusBuff);
 }
 
 void Raigeki_ReadStats(int client, int weapon, int tier)
