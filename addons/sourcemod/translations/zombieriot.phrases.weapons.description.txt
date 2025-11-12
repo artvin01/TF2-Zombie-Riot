@@ -1682,7 +1682,7 @@
 	}
 	"Flamethrower Extra Desc"
 	{
-		"en"	"-Deals 1.15x the damage against raidbosses.\n-Gain extra resistances while weapon is active\n-Burns enemies on hit\n-Gain armor per enemy hit upto half of your armor."
+		"en"	"-Deals 1.15x the damage against raidbosses\n-You take 1.15x damage from raidbosses\n-Gain extra resistances while weapon is active\n-Burns enemies on hit\n-Gain armor per enemy hit upto half of your armor."
 		"it"	"Infligge 1,15 volte più danni ai boss dei raid.\nHai resistenze extra quando sei equipaggiato.\nCrude i nemici.\nGuadagna armatura per ogni colpo nemico fino a metà della tua armatura."
 	}
 	"Doctor Certificate Desc"

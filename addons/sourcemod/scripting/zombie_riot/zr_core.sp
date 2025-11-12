@@ -269,8 +269,8 @@ enum
 	Type_WhiteflowerSpecial,
 	Type_Victoria,
 	Type_Matrix,
-	Type_Mutation,
 	Type_Aperture,
+	Type_Mutation,
 	Type_Curtain,
 	Type_Necropolain
 }
