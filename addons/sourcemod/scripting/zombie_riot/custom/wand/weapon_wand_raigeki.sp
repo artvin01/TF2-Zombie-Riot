@@ -28,11 +28,12 @@ static float Charge_DMG[4] = { 24.0, 48.0, 90.0, 135.0 };				//Base damage per i
 static float Charge_Radius[4] = { 100.0, 105.0, 110.0, 115.0 };			//Radius in which Static Electricity deals damage.
 static float Charge_Falloff[4] = { 0.7, 0.75, 0.8, 0.85 };				//Amount to multiply Static Electricity damage per target hit.
 
+static int Raigeki_MaxTargets[4] = { 9, 10, 11, 12 };						//Maximum number of enemies hit at once with Raigeki.
 static float Raigeki_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
 static float Raigeki_ResMult[4] = { 0.8, 0.8, 0.8, 0.8 };					//Amount to multiply damage taken during the stun state while casting Raigeki. This is stacked multiplicatively with the user's current damage resistance granted by charging Raigeki.
 static float Raigeki_Damage[4] = { 15000.0, 20000.0, 25000.0, 30000.0 };	//Raigeki's base damage at max charge.
 static float Raigeki_Radius[4] = { 450.0, 550.0, 650.0, 800.0 };			//Raigeki's radius at max charge.
-static float Raigeki_Falloff_MultiHit[4] = { 0.7, 0.75, 0.8, 0.85 };		//Amount to multiply damage dealt by Raigeki per target hit.
+static float Raigeki_Falloff_MultiHit[4] = { 0.825, 0.85, 0.875, 0.9 };		//Amount to multiply damage dealt by Raigeki per target hit.
 static float Raigeki_Falloff_Radius[4] = { 0.75, 0.8, 0.85, 0.9 };			//Distance-based falloff. Lower numbers = more damage is lost based on distance.
 static float Raigeki_Cooldown[4] = { 90.0, 90.0, 90.0, 90.0 };				//Raigeki's cooldown.
 static float Raigeki_Cooldown_Failed[4] = { 45.0, 45.0, 45.0, 45.0 };		//Raigeki's cooldown if the user fails to cast it (releases M2 without enough charge, is downed/dies while charging).
@@ -46,6 +47,12 @@ public void Raigeki_ResetAll()
 }
 
 #define PARTICLE_RAIGEKI_STRIKE			"drg_cow_explosioncore_charged"
+
+#define PARTICLE_RAIGEKI_CHARGEUP_AURA_START	 "teleporter_red_exit"
+#define PARTICLE_RAIGEKI_CHARGEUP_AURA_MID 		 "teleporter_red_exit_level1"
+#define PARTICLE_RAIGEKI_CHARGEUP_AURA_HIGH 	 "teleporter_red_exit_level2"
+#define PARTICLE_RAIGEKI_CHARGEUP_AURA_MAX 		 "teleporter_red_exit_level3"
+#define PARTICLE_RAIGEKI_CASTING_AURA	 		 "utaunt_poweraura_teamcolor_red"
 
 #define SOUND_RAIGEKI_BLADE_SWEEP       ")weapons/samurai/tf_katana_crit_miss_01.wav"
 #define SOUND_CHARGE_LOOP				")player/quickfix_invulnerable_on.wav"
@@ -265,6 +272,8 @@ public void Raigeki_Charge_0(int client, int weapon, bool &result, int slot)
 
 static int i_ChargeMaxTargets[MAXPLAYERS + 1] = { 0, ... };
 static int i_ChargeTier[MAXPLAYERS + 1] = { 0, ... };
+static int i_RaigekiParticle[MAXPLAYERS + 1] = { 0, ... };
+static int i_RaigekiParticleOwner[2049] = { -1, ... };
 
 static float f_ChargeRadius[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeCost[MAXPLAYERS + 1] = { 0.0, ... };
@@ -303,6 +312,7 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 		f_ChargeAmt[client] = 0.0;
 		b_ChargingRaigeki[client] = true;
 		f_ChargeCurrentRes[client] = 0.0;
+		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_START);
 
 		Attributes_SetMulti(client, 442, Charge_SpeedMod[tier]);
 		SDKCall_SetSpeed(client);
@@ -321,6 +331,43 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 			Utility_NotEnoughMana(client, mana_cost);
 	}
 }
+
+void Raigeki_RemoveParticle(int client)
+{
+	int particle = EntRefToEntIndex(i_RaigekiParticle[client]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+
+	i_RaigekiParticle[client] = -1;
+}
+
+void Raigeki_AttachParticle(int client, char[] particle)
+{
+	Raigeki_RemoveParticle(client);
+
+	float pos[3];
+	GetClientAbsOrigin(client, pos);
+	int particle = ParticleEffectAt_Parent(pos, particle, client);
+	if (IsValidEntity(particle))
+	{
+		i_RaigekiParticle[client] = EntIndexToEntRef(particle);
+		i_RaigekiParticleOwner[particle] = GetClientUserId(client);
+		SetEdictFlags(particle, GetEdictFlags(particle)&(~FL_EDICT_ALWAYS));
+		SDKHook(particle, SDKHook_SetTransmit, Raigeki_ParticleTransmit);
+	}
+}
+
+ public Action Raigeki_ParticleTransmit(int entity, int client)
+ {
+ 	SetEdictFlags(entity, GetEdictFlags(entity)&(~FL_EDICT_ALWAYS));
+ 	
+ 	int owner = GetClientOfUserId(i_RaigekiParticleOwner[entity]);
+ 		
+ 	if (client != owner || (client == owner && (GetEntProp(client, Prop_Send, "m_nForceTauntCam") || TF2_IsPlayerInCondition(client, TFCond_Taunting) || TF2_IsPlayerInCondition(client, TFCond_Dazed))))
+ 		return Plugin_Continue;
+ 		
+ 	return Plugin_Handled;
+ }
 
 //This returns true if the player is dead or downed.
 //If holdingM2 is set to true, it also returns true if the player is not holding M2, and doesn't have enough charge to cast Raigeki.
@@ -377,6 +424,7 @@ void Raigeki_ChargeLogic(int id)
 		TF2_StunPlayer(client, Raigeki_Delay[i_ChargeTier[client]] - 0.33, _, TF_STUNFLAG_BONKSTUCK);
 
 		Raigeki_TerminateChargeFX(client);
+		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CASTING_AURA);
 
 		f_RaigekiStrikesAt[client] = GetGameTime() + Raigeki_Delay[i_ChargeTier[client]];
 		f_RaigekiVFXTime[client] = f_RaigekiStrikesAt[client] - 0.32;
@@ -390,6 +438,103 @@ void Raigeki_ChargeLogic(int id)
 	RequestFrame(Raigeki_ChargeLogic, id);
 }
 
+Function g_TrailColorFunc[2049] = { INVALID_FUNCTION, ... };
+
+static float f_TrailStartTime[2049] = { 0.0, ... };
+static float f_TrailEndTime[2049] = { 0.0, ... };
+static float f_TrailDistance[2049] = { 0.0, ... };
+static float f_TrailIntensity[2049] = { 0.0, ... };
+
+static float vec_TrailTarg[2049][3];
+
+/**
+ * Spawns a trail at startPos, and automatically moves it to targPos over a given span of time.
+ * 
+ * @param startPos		The starting position of the trail.
+ * @param targPos		The ending position of the trail.
+ * @param time			The time it should take for the trail to move from startPos to targPos.
+ * @param sprite		The sprite to use.
+ * @param r				R color value.
+ * @param g				G color value.
+ * @param b				B color value.
+ * @param a				Alpha value.
+ * @param func_SetColor	Optional function to call each frame while the trail moves to its target position. Must take an int, being the trail's index, as well as a float representing the trail's progress towards its target position (0.0: still at startPos, 1.0: reached targPos).
+ * @param lifetime		Trail's lifetime.
+ * @param startWidth	Trail's start width.
+ * @param endWidth		Trail's end width.
+ * @param rendermode	Trail's render mode.
+ * @param intensity		The amount by which the trail should zip around each frame. Higher values make it look more chaotic, like electricity. 0.0 means it goes straight from startPos to targPos.
+ * 
+ * @return		The entity index of the trail which was created.
+ */
+int Raigeki_SpawnMovingTrail(float startPos[3], float targPos[3], float time, char[] sprite, int r, int g, int b, int a, Function func_SetColor = INVALID_FUNCTION, float lifetime = 1.0, float startWidth = 22.0, float endWidth = 0.0, int rendermode = 4, float intensity = 6.0)
+{
+	int trail = CreateTrail(sprite, a, lifetime, startWidth, endWidth, rendermode);
+
+	if (IsValidEntity(trail))
+	{
+		SetEntityRenderColor(trail, r, g, b, a);
+		TeleportEntity(trail, startPos);
+		g_TrailColorFunc[trail] = func_SetColor;
+		f_TrailStartTime[trail] = GetGameTime();
+		f_TrailEndTime[trail] = f_TrailStartTime[trail] + time;
+		f_TrailDistance[trail] = GetVectorDistance(startPos, targPos);
+		f_TrailIntensity[trail] = intensity;
+
+		for (int i = 0; i < 3; i++)
+			vec_TrailTarg[trail][i] = targPos[i];
+
+		RequestFrame(Raigeki_MoveTrailToTarg, EntIndexToEntRef(trail));
+
+		return trail;
+	}
+
+	return -1;
+}
+
+void Raigeki_MoveTrailToTarg(int ref)
+{
+	int trail = EntRefToEntIndex(ref);
+	if (!IsValidEntity(trail))
+		return;
+
+	float pos[3], ang[3];
+	WorldSpaceCenter(trail, pos);
+	GetAngleBetweenPoints(vec_TrailTarg[trail], pos, ang);
+
+	float gt = GetGameTime();
+	float duration = f_TrailEndTime[trail] - f_TrailStartTime[trail];
+	float timePassed = duration - (f_TrailEndTime[trail] - gt);
+
+	float progress = timePassed / duration;
+
+	float distance = f_TrailDistance[trail] - (f_TrailDistance[trail] * progress);
+	GetPointInDirection(vec_TrailTarg[trail], ang, distance, pos);
+
+	pos[0] += GetRandomFloat(-f_TrailIntensity[trail], f_TrailIntensity[trail]);
+	pos[1] += GetRandomFloat(-f_TrailIntensity[trail], f_TrailIntensity[trail]);
+
+	TeleportEntity(trail, pos);
+
+	if (g_TrailColorFunc[trail] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(INVALID_HANDLE, g_TrailColorFunc[trail]);
+
+		Call_PushCell(trail);
+		Call_PushFloat(progress);
+
+		Call_Finish();
+	}
+
+	if (progress >= 1.0)
+	{
+		ShrinkTrailIntoNothing(trail, 0.33);
+		return;
+	}
+
+	RequestFrame(Raigeki_MoveTrailToTarg, ref);
+}
+
 void Raigeki_SummonBolt(int id)
 {
 	int client = GetClientOfUserId(id);
@@ -400,7 +545,21 @@ void Raigeki_SummonBolt(int id)
 	float gt = GetGameTime();
 	if (gt >= f_RaigekiVFXTime[client] && f_RaigekiVFXTime[client] > 0.0)
 	{
-		//TODO VFX
+		float targPos[3], startPos[3];
+		WorldSpaceCenter(client, targPos);
+		targPos[2] += 5.0;
+
+		float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
+		for (int i = 0; i < 4 + RoundToFloor(8.0 * amtCharged); i++)
+		{
+			startPos = targPos;
+			startPos[0] += GetRandomFloat(-200.0, 200.0);
+			startPos[1] += GetRandomFloat(-200.0, 200.0);
+			startPos[2] += 2000.0;
+
+			Raigeki_SpawnMovingTrail(startPos, targPos, 0.32, "materials/sprites/laserbeam.vmt", 255, RoundToFloor(amtCharged * 160.0), RoundToFloor(amtCharged * 160.0), 10 + RoundToFloor(70.0 * amtCharged), _, 0.24, _, _, view_as<int>(RENDER_TRANSALPHAADD), 12.0);
+		}
+
 		EmitSoundToAll(SOUND_RAIGEKI_INCOMING, client);
 		EmitSoundToAll(SOUND_RAIGEKI_INCOMING, client, _, _, _, _, 60);
 		f_RaigekiVFXTime[client] = 0.0;
@@ -408,19 +567,32 @@ void Raigeki_SummonBolt(int id)
 
 	if (gt >= f_RaigekiStrikesAt[client])
 	{
-		//TODO VFX, explosion, overcharge
+		//TODO Add Overcharge
 
 		float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
 
-		float pos[3];
+		float pos[3], skyPos[3];
 		WorldSpaceCenter(client, pos);
 		pos[2] += 5.0;
+		skyPos = pos;
+		skyPos[2] += 2000.0;
+		Raigeki_DrawBeamColumn(skyPos, pos, 35.0, 255, RoundToFloor(amtCharged * 200.0), RoundToFloor(amtCharged * 200.0), 210 + RoundToFloor(amtCharged * 45.0));
 
 		int particle = ParticleEffectAt(pos, PARTICLE_RAIGEKI_STRIKE);
 		if (IsValidEntity(particle))
 		{
 			EmitSoundToAll(SOUND_RAIGEKI_STRIKE_1, client, _, _, _, _, 80);
 			EmitSoundToAll(SOUND_RAIGEKI_STRIKE_2, client, _, _, _, _, 80);
+		}
+
+		for (int i = 0; i < 4 + RoundToFloor(8.0 * amtCharged); i++)
+		{
+			skyPos = pos;
+			skyPos[0] += GetRandomFloat(-500.0, 500.0);
+			skyPos[1] += GetRandomFloat(-500.0, 500.0);
+			skyPos[2] += GetRandomFloat(400.0, 600.0);
+
+			Raigeki_SpawnMovingTrail(pos, skyPos, GetRandomFloat(0.2, 0.4), "materials/sprites/laserbeam.vmt", 255, RoundToFloor(amtCharged * 160.0), RoundToFloor(amtCharged * 160.0), 10 + RoundToFloor(70.0 * amtCharged), _, 0.2, 8.0, _, view_as<int>(RENDER_TRANSALPHAADD), 16.0);
 		}
 
 		Raigeki_TerminateCharge(client);
@@ -433,10 +605,124 @@ void Raigeki_SummonBolt(int id)
 		DoOverlay(client, "lights/white005", 0);
 		CreateTimer(0.1, Mondo_RemoveOverlay, id, TIMER_FLAG_NO_MAPCHANGE);
 
+		float damage = Raigeki_Damage[i_ChargeTier[client]] * Attributes_Get(weapon, 410, 1.0) * amtCharged;
+		//I skipped scaling radius because Raigeki already has an enormous radius, and scaling it with bonuses would make it functionally the same as being map-wide in 99% of scenarios.
+		Explode_Logic_Custom(damage, client, client, weapon, pos, Raigeki_Radius[i_ChargeTier[client]] * amtCharged, Raigeki_Falloff_MultiHit[i_ChargeTier[client]], Raigeki_Falloff_Radius[i_ChargeTier[client]], _, Raigeki_MaxTargets[i_ChargeTier[client]]);
+
 		return;
 	}
 
 	RequestFrame(Raigeki_SummonBolt, id);
+}
+
+static int i_RaigekiBeamStart[2049] = { -1, ... };
+static int i_RaigekiBeamEnd[2049] = { -1, ... };
+
+void Raigeki_DrawBeamColumn(float startPos[3], float endPos[3], float width, int r, int g, int b, int a, char[] sprite = "materials/sprites/lgtning.vmt")
+{
+	for (int i = 0; i < 6; i++)
+	{
+		float beamStart[3], beamEnd[3];
+		beamStart = startPos;
+		beamEnd = endPos;
+		beamStart[2] -= 17.5;
+		beamEnd[2] -= 12.5;
+
+		if (i > 0)
+		{
+			float beamAng[3], startToEnd[3];
+			GetAngleBetweenPoints(beamStart, beamEnd, startToEnd);
+			beamAng[0] = startToEnd[0];
+			beamAng[1] = startToEnd[1];
+			beamAng[2] = (360.0 / 6.0) * float(i);
+
+			float dir[3];
+			GetAngleVectors(beamAng, dir, NULL_VECTOR, dir);
+			ScaleVector(dir, width);
+			AddVectors(beamStart, dir, beamStart);
+			AddVectors(beamEnd, dir, beamEnd);
+		}
+
+		int startEnt, endEnt;
+		int beam = CreateEnvBeam(-1, -1, beamStart, beamEnd, _, _, startEnt, endEnt, r, g, b, a, sprite, 60.0, 60.0, _, 6.0);
+
+		if (IsValidEntity(beam) && IsValidEntity(startEnt) && IsValidEntity(endEnt))
+		{
+			RequestFrame(Raigeki_DissipateBeam, EntIndexToEntRef(beam));
+			i_RaigekiBeamStart[beam] = EntIndexToEntRef(startEnt);
+			i_RaigekiBeamEnd[beam] = EntIndexToEntRef(endEnt);
+		}
+	}
+
+	//The following is commented out instead of deleted, just in case I need to use this as a backup plan:
+	//startPos[2] -= 25.0;
+	//endPos[2] -= 25.0;
+
+	/*for (int i = 0; i < 2; i++)
+	{
+		int startEnt, endEnt;
+		int beam = CreateEnvBeam(-1, -1, startPos, endPos, _, _, startEnt, endEnt, r, 120, b, 255, SPRITE_BEAM_BLACK, 60.0, 60.0, _, 3.0);
+
+		if (IsValidEntity(beam) && IsValidEntity(startEnt) && IsValidEntity(endEnt))
+		{
+			RequestFrame(Lance_DissipateBeam, EntIndexToEntRef(beam));
+			Lance_DissipateStartEnt[beam] = EntIndexToEntRef(startEnt);
+			Lance_DissipateEndEnt[beam] = EntIndexToEntRef(endEnt);
+		}
+	}*/
+}
+
+void Raigeki_DissipateBeam(int ref)
+{
+	int beam = EntRefToEntIndex(ref);
+	if (!IsValidEntity(beam))
+		return;
+
+	int start = EntRefToEntIndex(i_RaigekiBeamStart[beam]);
+	int end = EntRefToEntIndex(i_RaigekiBeamEnd[beam]);
+	
+	if (!IsValidEntity(beam) || !IsValidEntity(start) || !IsValidEntity(end))
+	{
+		if (IsValidEntity(beam))
+			RemoveEntity(beam);
+		if (IsValidEntity(start))
+			RemoveEntity(start);
+		if (IsValidEntity(end))
+			RemoveEntity(end);
+
+		return;
+	}
+
+	int r, g, b, a;
+	GetEntityRenderColor(beam, r, g, b, a);
+	a = RoundFloat(LerpCurve(float(a), 0.0, 3.0, 6.0));
+	if (a <= 0)
+	{
+		RemoveEntity(beam);
+		RemoveEntity(start);
+		RemoveEntity(end);
+
+		return;
+	}
+
+	SetEntityRenderColor(beam, r, g, b, a);
+
+	float amplitude = GetEntPropFloat(beam, Prop_Data, "m_fAmplitude");
+    if (amplitude > 0.0)
+    {
+        amplitude = LerpCurve(amplitude, 0.0, 0.33, 0.66);
+        SetEntPropFloat(beam, Prop_Data, "m_fAmplitude", amplitude);
+    }
+
+	float width = GetEntPropFloat(beam, Prop_Data, "m_fWidth");
+    if (width > 0.0)
+    {
+        width = LerpCurve(amplitude, 0.0, 0.33, 0.66);
+        SetEntPropFloat(beam, Prop_Data, "m_fWidth", width);
+    	SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", width);
+    }
+
+	RequestFrame(Raigeki_DissipateBeam, ref);
 }
 
 static float f_ChargeTrailDist[2049] = { 0.0, ... };
@@ -479,11 +765,13 @@ void Raigeki_AddCharge(int client)
 	{
 		StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
 		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 100);
+		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_MID);
 	}
 	else if (prevAmt < 0.66 && amtCharged >= 0.66)
 	{
 		StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
 		EmitSoundToClient(client, SOUND_CHARGE_LOOP, client, _, _, _, _, 120);
+		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_HIGH);
 	}
 	else if (prevAmt < 1.0 && amtCharged >= 1.0)
 	{
@@ -493,6 +781,7 @@ void Raigeki_AddCharge(int client)
 		EmitSoundToClient(client, SOUND_CHARGE_MAX_NOTIF, client, _, _, _, _, 120);
 		TF2_AddCondition(client, TFCond_FocusBuff);
 		Utility_HUDNotification_Translation(client, "Raigeki Fully Charged");
+		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_MAX);
 	}
 
 	Raigeki_SetRes(client, 1.0 - (f_ChargeBaseRes[client] + (f_ChargeBonusRes[client] * amtCharged)));
@@ -643,6 +932,7 @@ void Raigeki_TerminateChargeFX(int client)
 	StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP);
 	StopSound(client, SNDCHAN_AUTO, SOUND_CHARGE_LOOP_MAX);
 	TF2_RemoveCondition(client, TFCond_FocusBuff);
+	Raigeki_RemoveParticle(client);
 }
 
 void Raigeki_ReadStats(int client, int weapon, int tier)
@@ -1442,3 +1732,53 @@ public void Utility_RemoveMana(int client, int amount, float regenDelay)
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 }
+
+stock float LerpCurve(float start, float target, float minAmt, float maxAmt)
+{
+	if (start > target)
+	{
+		float mult = target / start;
+
+		float rate = mult * maxAmt;
+		if (rate < minAmt)
+			rate = minAmt;
+		else if (rate > maxAmt)
+			rate = maxAmt;
+
+		start -= rate;
+		if (start < target)
+			start = target;
+	}
+	else if (start < target)
+	{
+		float mult = target / start;
+
+		float rate = mult * maxAmt;
+		if (rate < minAmt)
+			rate = minAmt;
+		else if (rate > maxAmt)
+			rate = maxAmt;
+
+		start += rate;
+		if (start > target)
+			start = target;
+	}
+
+	return start;
+}
+
+/*stock void AttachAura(int target, char effect[255])
+{
+	TE_SetupParticleEffect(effect, PATTACH_ABSORIGIN_FOLLOW, target);
+	TE_WriteNum("m_bControlPoint1", target);	
+	TE_SendToAll();	
+}
+
+stock void RemoveAura(int target, char effect[255])
+{
+	TE_Start("EffectDispatch");
+	TE_WriteNum("entindex", target);
+	TE_WriteNum("m_nHitBox", GetParticleEffectIndex(effect));
+	TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+	TE_SendToAll();
+}*/
