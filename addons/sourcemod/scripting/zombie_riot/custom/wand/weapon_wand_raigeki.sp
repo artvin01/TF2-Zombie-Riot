@@ -410,6 +410,8 @@ void Raigeki_SummonBolt(int id)
 	{
 		//TODO VFX, explosion, overcharge
 
+		float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
+
 		float pos[3];
 		WorldSpaceCenter(client, pos);
 		pos[2] += 5.0;
@@ -426,6 +428,10 @@ void Raigeki_SummonBolt(int id)
 		int weapon = Raigeki_GetWeapon(client);
 		if (IsValidEntity(weapon))
 			Ability_Apply_Cooldown(client, 2, Raigeki_Cooldown[i_ChargeTier[client]], weapon);
+
+		Client_Shake(client, _, 10.0 + (amtCharged * 50.0), 15.0, 2.25);
+		DoOverlay(client, "lights/white005", 0);
+		CreateTimer(0.1, Mondo_RemoveOverlay, id, TIMER_FLAG_NO_MAPCHANGE);
 
 		return;
 	}
