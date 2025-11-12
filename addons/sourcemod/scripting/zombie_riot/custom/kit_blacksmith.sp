@@ -387,20 +387,16 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 			{
 				BlockNormal = true;
 				//boomerang is very special.
-				switch(GetURandomInt() % 3)
+				switch(GetURandomInt() % 4)
 				{
 					case 0:
-					{
 						TinkerMeleeRapidSwing(tinker.Rarity, tinker);
-					}
 					case 1:
-					{
 						TinkerHeavyTrigger(tinker.Rarity, tinker);
-					}
 					case 2:
-					{
-						TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
-					}
+						TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
+					case 3:
+						TinkerRangedFastProj(tinker.Rarity, tinker);
 				}
 			}
 		}
@@ -409,7 +405,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 			if(i_IsWandWeapon[weapon])
 			{
 				// Mage Weapon
-				switch(GetURandomInt() % 5)
+				switch(GetURandomInt() % 4)
 				{
 					case 0:
 						TinkerHastyMage(tinker.Rarity, tinker);
@@ -418,9 +414,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 					case 2:
 						TinkerConcentrationMage(tinker.Rarity, tinker);
 					case 3:
-						TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
-					case 4:
-						TinkerRangedFastProj(tinker.Rarity, tinker);
+						TinkerTankMage(tinker.Rarity, tinker);
 				}
 			}
 			else if(Attributes_Get(weapon, 8, 0.0) != 0.0)

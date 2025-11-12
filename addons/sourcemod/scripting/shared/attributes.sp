@@ -343,11 +343,15 @@ void Attributes_HitTaken(int victim, int attacker, float &damage)
 	{
 		return;
 	}
-	float value = Attributes_Get(active, Attrib_DamageTakenFromRaid, 0.0);
-	PrintToChatAll("%f value", value);
-	if(value != 0.0)
+	float value;
+	
+	if(b_thisNpcIsARaid[attacker])
 	{
-		damage *= value;
+		value = Attributes_Get(active, Attrib_DamageTakenFromRaid, 0.0);
+		if(value != 0.0)
+		{
+			damage *= value;
+		}
 	}
 }
 void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
