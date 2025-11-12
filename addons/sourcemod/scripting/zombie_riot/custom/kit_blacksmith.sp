@@ -380,249 +380,278 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 		{
 			slot = i_OverrideWeaponSlot[weapon];
 		}
-		if(i_IsWandWeapon[weapon])
+		bool BlockNormal = false;
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			// Mage Weapon
-			switch(GetURandomInt() % 4)
+			case WEAPON_BOOMERANG:
 			{
-				case 0:
-					TinkerHastyMage(tinker.Rarity, tinker);
-				case 1:
-					TinkerHeavyMage(tinker.Rarity, tinker);
-				case 2:
-					TinkerConcentrationMage(tinker.Rarity, tinker);
-				case 3:
-					TinkerTankMage(tinker.Rarity, tinker);
-			}
-		}
-		else if(Attributes_Get(weapon, 8, 0.0) != 0.0)
-		{
-			//mediguns, they work uniqurely
-			if(StrEqual(classname, "tf_weapon_medigun"))
-			{
+				BlockNormal = true;
+				//boomerang is very special.
 				switch(GetURandomInt() % 3)
 				{
 					case 0:
-						TinkerMedigun_FastHeal(tinker.Rarity, tinker);
+					{
+						TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+					}
 					case 1:
-						TinkerMedigun_Overhealer(tinker.Rarity, tinker);
+					{
+						TinkerHeavyTrigger(tinker.Rarity, tinker);
+					}
 					case 2:
-						TinkerMedigun_Uberer(tinker.Rarity, tinker);
+					{
+						TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+					}
 				}
 			}
-			else
+		}
+		if(!BlockNormal)
+		{
+			if(i_IsWandWeapon[weapon])
 			{
-				if(slot == TFWeaponSlot_Melee)
+				// Mage Weapon
+				switch(GetURandomInt() % 5)
 				{
-					TinkerMedicWeapon_GlassyMedic(tinker.Rarity, tinker);
+					case 0:
+						TinkerHastyMage(tinker.Rarity, tinker);
+					case 1:
+						TinkerHeavyMage(tinker.Rarity, tinker);
+					case 2:
+						TinkerConcentrationMage(tinker.Rarity, tinker);
+					case 3:
+						TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
+					case 4:
+						TinkerRangedFastProj(tinker.Rarity, tinker);
 				}
-				else
-				{
-					switch(GetURandomInt() % 2)
-					{
-						case 0:
-							TinkerMedicWeapon_GlassyMedic(tinker.Rarity, tinker);
-						case 1:
-							TinkerMedicWeapon_BurstHealMedic(tinker.Rarity, tinker);
-					}					
-				}
-
-				//anything else.
 			}
-		}
-		else if(i_IsWrench[weapon] && slot != TFWeaponSlot_Melee)
-		{
-			//any wrench weapon that isnt melee?
-			TinkerBuilderRepairMaster(tinker.Rarity, tinker);
-		}
-		else if(slot == TFWeaponSlot_Melee)
-		{
-			if(i_IsWrench[weapon])
+			else if(Attributes_Get(weapon, 8, 0.0) != 0.0)
 			{
-				if(Attributes_Get(weapon, 264, 0.0) != 0.0)
+				//mediguns, they work uniqurely
+				if(StrEqual(classname, "tf_weapon_medigun"))
 				{
-					switch(GetURandomInt() % 2)
+					switch(GetURandomInt() % 3)
 					{
 						case 0:
-							TinkerBuilderRepairMaster(tinker.Rarity, tinker);
+							TinkerMedigun_FastHeal(tinker.Rarity, tinker);
 						case 1:
-							TinkerBuilderLongSwing(tinker.Rarity, tinker);
+							TinkerMedigun_Overhealer(tinker.Rarity, tinker);
+						case 2:
+							TinkerMedigun_Uberer(tinker.Rarity, tinker);
 					}
 				}
 				else
 				{
-					switch(GetURandomInt() % 2)
+					if(slot == TFWeaponSlot_Melee)
 					{
-						case 0:
-							TinkerBuilderRepairMaster(tinker.Rarity, tinker);
-						case 1:
-							TinkerBuilderLongSwing(tinker.Rarity, tinker);
-					}					
-				}
-				// Wrench Weapon
-			}
-			else
-			{
-				// Melee Weapon
-				switch(GetURandomInt() % 4)
-				{
-					case 0:
-						TinkerMeleeGlassy(tinker.Rarity, tinker);
-					case 1:
-						TinkerMeleeRapidSwing(tinker.Rarity, tinker);
-					case 2:
-						TinkerMeleeHeavySwing(tinker.Rarity, tinker);
-					case 3:
-						TinkerMeleeLongSwing(tinker.Rarity, tinker);
-				}
-			}
-		}
+						TinkerMedicWeapon_GlassyMedic(tinker.Rarity, tinker);
+					}
+					else
+					{
+						switch(GetURandomInt() % 2)
+						{
+							case 0:
+								TinkerMedicWeapon_GlassyMedic(tinker.Rarity, tinker);
+							case 1:
+								TinkerMedicWeapon_BurstHealMedic(tinker.Rarity, tinker);
+						}					
+					}
 
-		else if(slot < TFWeaponSlot_Melee)
-		{
-			if(Attributes_Has(weapon, 101) || Attributes_Has(weapon, 102) || Attributes_Has(weapon, 103) || Attributes_Has(weapon, 104))
+					//anything else.
+				}
+			}
+			else if(i_IsWrench[weapon] && slot != TFWeaponSlot_Melee)
 			{
-				//infinite fire
-				if(Attributes_Has(weapon, 303))
+				//any wrench weapon that isnt melee?
+				TinkerBuilderRepairMaster(tinker.Rarity, tinker);
+			}
+			else if(slot == TFWeaponSlot_Melee)
+			{
+				if(i_IsWrench[weapon])
 				{
+					if(Attributes_Get(weapon, 264, 0.0) != 0.0)
+					{
+						switch(GetURandomInt() % 2)
+						{
+							case 0:
+								TinkerBuilderRepairMaster(tinker.Rarity, tinker);
+							case 1:
+								TinkerBuilderLongSwing(tinker.Rarity, tinker);
+						}
+					}
+					else
+					{
+						switch(GetURandomInt() % 2)
+						{
+							case 0:
+								TinkerBuilderRepairMaster(tinker.Rarity, tinker);
+							case 1:
+								TinkerBuilderLongSwing(tinker.Rarity, tinker);
+						}					
+					}
+					// Wrench Weapon
+				}
+				else
+				{
+					// Melee Weapon
 					switch(GetURandomInt() % 4)
 					{
 						case 0:
-							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+							TinkerMeleeGlassy(tinker.Rarity, tinker);
 						case 1:
-							TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
+							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
 						case 2:
-							TinkerRangedFastProj(tinker.Rarity, tinker);
+							TinkerMeleeHeavySwing(tinker.Rarity, tinker);
 						case 3:
-							TinkerHeavyTrigger(tinker.Rarity, tinker);
+							TinkerMeleeLongSwing(tinker.Rarity, tinker);
 					}
+				}
+			}
+
+			else if(slot < TFWeaponSlot_Melee)
+			{
+				if(Attributes_Has(weapon, 101) || Attributes_Has(weapon, 102) || Attributes_Has(weapon, 103) || Attributes_Has(weapon, 104))
+				{
+					//infinite fire
+					if(Attributes_Has(weapon, 303))
+					{
+						switch(GetURandomInt() % 4)
+						{
+							case 0:
+								TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+							case 1:
+								TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
+							case 2:
+								TinkerRangedFastProj(tinker.Rarity, tinker);
+							case 3:
+								TinkerHeavyTrigger(tinker.Rarity, tinker);
+						}
+					}
+					else
+					{
+						switch(GetURandomInt() % 6)
+						{
+							case 0:
+								TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+							case 1:
+								TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
+							case 2:
+								TinkerRangedFastProj(tinker.Rarity, tinker);
+							case 3:
+								TinkerIntensiveClip(tinker.Rarity, tinker);
+							case 4:
+								TinkerConcentratedClip(tinker.Rarity, tinker);
+							case 5:
+								TinkerHeavyTrigger(tinker.Rarity, tinker);
+							case 6:
+								TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+						}
+					}
+					// Projectile Weapon
 				}
 				else
 				{
-					switch(GetURandomInt() % 6)
+					//infinite fire
+					if(Attributes_Has(weapon, 303))
 					{
-						case 0:
-							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
-						case 1:
-							TinkerRangedSlowHeavyProj(tinker.Rarity, tinker);
-						case 2:
-							TinkerRangedFastProj(tinker.Rarity, tinker);
-						case 3:
-							TinkerIntensiveClip(tinker.Rarity, tinker);
-						case 4:
-							TinkerConcentratedClip(tinker.Rarity, tinker);
-						case 5:
-							TinkerHeavyTrigger(tinker.Rarity, tinker);
-						case 6:
-							TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+						for(int RetryTillWin; RetryTillWin < 10; RetryTillWin++)
+						{
+							switch(GetURandomInt() % 3)
+							{
+								case 0:
+								{
+									TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 1:
+								{
+									TinkerHeavyTrigger(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 2:
+								{
+									if(Attributes_Get(weapon, 45, 0.0) > 0.0)
+									{
+										RetryTillWin = 11;
+										TinkerSprayAndPray(tinker.Rarity, tinker);
+									}
+								}
+							}	
+						}
 					}
-				}
-				// Projectile Weapon
-			}
-			else
-			{
-				//infinite fire
-				if(Attributes_Has(weapon, 303))
-				{
-					for(int RetryTillWin; RetryTillWin < 10; RetryTillWin++)
+					else if(StrEqual(classname, "tf_weapon_flamethrower"))
 					{
+						//flamethrowers get different logic.
 						switch(GetURandomInt() % 3)
 						{
 							case 0:
 							{
 								TinkerMeleeRapidSwing(tinker.Rarity, tinker);
-								RetryTillWin = 11;
 							}
 							case 1:
 							{
 								TinkerHeavyTrigger(tinker.Rarity, tinker);
-								RetryTillWin = 11;
 							}
 							case 2:
-							{
-								if(Attributes_Get(weapon, 45, 0.0) > 0.0)
-								{
-									RetryTillWin = 11;
-									TinkerSprayAndPray(tinker.Rarity, tinker);
-								}
-							}
-						}	
-					}
-				}
-				else if(StrEqual(classname, "tf_weapon_flamethrower") || (StrEqual(classname, "tf_weapon_slap") && slot == 0))
-				{
-					//flamethrowers get different logic.
-					switch(GetURandomInt() % 3)
-					{
-						case 0:
-						{
-							TinkerMeleeRapidSwing(tinker.Rarity, tinker);
-						}
-						case 1:
-						{
-							TinkerHeavyTrigger(tinker.Rarity, tinker);
-						}
-						case 2:
-						{
-							TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
-						}
-					}	
-				}
-				else
-				{
-					for(int RetryTillWin; RetryTillWin < 10; RetryTillWin++)
-					{
-						switch(GetURandomInt() % 6)
-						{
-							case 0:
-							{
-								TinkerMeleeRapidSwing(tinker.Rarity, tinker);
-								RetryTillWin = 11;
-							}
-							case 1:
-							{
-								TinkerIntensiveClip(tinker.Rarity, tinker);
-								RetryTillWin = 11;
-							}
-							case 2:
-							{
-								TinkerConcentratedClip(tinker.Rarity, tinker);
-								RetryTillWin = 11;
-							}
-							case 3:
-							{
-								TinkerHeavyTrigger(tinker.Rarity, tinker);
-								RetryTillWin = 11;
-							}
-							case 4:
 							{
 								TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
-								RetryTillWin = 11;
-							}
-							case 5:
-							{
-								if(Attributes_Get(weapon, 45, 0.0) > 0.1)
-								{
-									RetryTillWin = 11;
-									TinkerSprayAndPray(tinker.Rarity, tinker);
-								}
 							}
 						}	
 					}
+					else
+					{
+						for(int RetryTillWin; RetryTillWin < 10; RetryTillWin++)
+						{
+							switch(GetURandomInt() % 6)
+							{
+								case 0:
+								{
+									TinkerMeleeRapidSwing(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 1:
+								{
+									TinkerIntensiveClip(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 2:
+								{
+									TinkerConcentratedClip(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 3:
+								{
+									TinkerHeavyTrigger(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 4:
+								{
+									TinkerSmallerSmarterBullets(tinker.Rarity, tinker);
+									RetryTillWin = 11;
+								}
+								case 5:
+								{
+									if(Attributes_Get(weapon, 45, 0.0) > 0.1)
+									{
+										RetryTillWin = 11;
+										TinkerSprayAndPray(tinker.Rarity, tinker);
+									}
+								}
+							}	
+						}
+					}
+					// Hitscan Weapon
 				}
-				// Hitscan Weapon
 			}
-		}
-		else
-		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith Underleveled");
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith Underleveled");
 
-			ApplyBuildingCollectCooldown(entity, client, 2.0);
-			return;
-		}
+				ApplyBuildingCollectCooldown(entity, client, 2.0);
+				return;
+			}
+	}
 
 		CPrintToChat(client, "{yellow}%s (Tier %d)", tinker.Name, tinker.Rarity + 1);
 

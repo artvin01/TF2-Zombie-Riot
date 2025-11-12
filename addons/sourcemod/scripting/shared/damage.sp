@@ -263,6 +263,8 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage,damagetype, i_HexCustomDamageTypes[victim], weapon);
 #endif
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
+	if(!CheckInHud())
+		Attributes_HitTaken(victim, attacker, damage);
 
 	int vehicle = Vehicle_Driver(victim);
 
