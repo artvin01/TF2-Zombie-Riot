@@ -1775,7 +1775,7 @@
 	}
 	"Ahim Desc" 
 	{
-		"en"	"A scout that has a cleaver to throw at enemies. \n-Has a ranged attack. n\-Throws a cleaver at the first enemy that's in their range."
+		"en"	"A scout that has a cleaver to throw at enemies. \n-Has a ranged attack. \n-Throws a cleaver at the first enemy that's in their range."
 		"it"	"Lancia una mannaia quando è abbastanza vicino, poi ingaggia un combattimento in mischia."
 	}
 	"Inabdil Desc" 
