@@ -275,6 +275,8 @@ static int i_ChargeTier[MAXPLAYERS + 1] = { 0, ... };
 static int i_RaigekiParticle[MAXPLAYERS + 1] = { 0, ... };
 static int i_RaigekiParticleOwner[2049] = { -1, ... };
 
+static bool b_DoChargeVFX[MAXPLAYERS + 1] = { false, ... };
+
 static float f_ChargeRadius[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeCost[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeCostAtFullCharge[MAXPLAYERS + 1] = { 0.0, ... };
@@ -282,6 +284,7 @@ static float f_ChargeRequirement[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeMin[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeAmt[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeInterval[MAXPLAYERS + 1] = { 0.0, ... };
+static float f_NextChargeVFX[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeBaseRes[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeBonusRes[MAXPLAYERS + 1] = { 0.0, ... };
 static float f_ChargeCurrentRes[MAXPLAYERS + 1 ] = { 0.0, ... };
@@ -312,6 +315,7 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 		f_ChargeAmt[client] = 0.0;
 		b_ChargingRaigeki[client] = true;
 		f_ChargeCurrentRes[client] = 0.0;
+		b_DoChargeVFX[client] = true;
 		Raigeki_AttachParticle(client, PARTICLE_RAIGEKI_CHARGEUP_AURA_START);
 
 		Attributes_SetMulti(client, 442, Charge_SpeedMod[tier]);
@@ -321,6 +325,8 @@ void Raigeki_StartCharging(int client, int weapon, int tier)
 
 		Raigeki_StartDelayingAttacks(client, weapon);
 		Raigeki_AddCharge(client);
+		Raigeki_DoChargeVFX(client);
+
 		RequestFrame(Raigeki_ChargeLogic, GetClientUserId(client));
 	}
 	else
@@ -415,6 +421,11 @@ void Raigeki_ChargeLogic(int id)
 		if (gt >= f_NextCharge[client] && Current_Mana[client] >= RoundToFloor(f_ChargeCost[client]))
 		{
 			Raigeki_AddCharge(client);
+		}
+
+		if (gt >= f_NextChargeVFX[client])
+		{
+			Raigeki_DoChargeVFX(client);
 		}
 	}
 	else	//If the user is not holding M2: we know from the earlier checks that they have enough charge to cast Raigeki. Therefore, stun them and begin casting Raigeki.
@@ -792,6 +803,15 @@ void Raigeki_AddCharge(int client)
 	Explode_Logic_Custom(f_ChargeDMG[client], client, client, weapon, pos, f_ChargeRadius[client], f_ChargeFalloff[client], 1.0, _, i_ChargeMaxTargets[client], false, 1.0, view_as<Function>(Raigeki_StaticElectricity_OnHit));
 
 	f_NextCharge[client] = GetGameTime() + f_ChargeInterval[client];
+}
+
+void Raigeki_DoChargeVFX(int client)
+{
+	float pos[3];
+	WorldSpaceCenter(client, pos);
+	pos[2] += 10.0;
+
+	float amtCharged = (f_ChargeAmt[client] / f_ChargeRequirement[client]);
 
 	int numSparks = 1;// + RoundToFloor(amtCharged / 0.5);
 	float beamWidth = 0.1 + (amtCharged * 2.0);
@@ -805,9 +825,8 @@ void Raigeki_AddCharge(int client)
 		int trail = CreateTrail("materials/sprites/laserbeam.vmt", a, f_ChargeInterval[client], 0.1, _, view_as<int>(RENDER_TRANSALPHAADD));
 		if (IsValidEntity(trail))
 		{
-			float ang[3];
+			float ang[3], spawnPos[3];
 			GetClientAbsAngles(client, ang);
-			pos[2] += 10.0;
 
 			ang[0] = GetRandomFloat(-10.0, -15.0);
 
@@ -821,16 +840,18 @@ void Raigeki_AddCharge(int client)
 			f_ChargeTrailDist[trail] = f_ChargeRadius[client];
 			f_ChargeTrailSpeed[trail] = 1.0 + (amtCharged * 1.0);
 
-			GetPointInDirection(pos, ang, f_ChargeTrailDist[trail], pos);
+			GetPointInDirection(pos, ang, f_ChargeTrailDist[trail], spawnPos);
 
 			SetEntityRenderColor(trail, r, g, b, a);
 
-			TeleportEntity(trail, pos);
+			TeleportEntity(trail, spawnPos);
 
 			i_ChargeTrailTarget[trail] = GetClientUserId(client);
 			RequestFrame(Raigeki_ChargeTrailVFX, EntIndexToEntRef(trail));
 		}
 	}
+
+	f_NextChargeVFX[client] = GetGameTime() + fmax((f_ChargeInterval[client] * 1.75), 0.3);	//VFX interval is 75% longer than charge interval, with a minimum interval of 0.3s, so that we aren't spamming VFX *too* much.
 }
 
 public void Raigeki_ChargeTrailVFX(int ref)
