@@ -1167,14 +1167,39 @@
 		"it"	"Aumenta enormemente il danno, ma la velocità d'attacco è molto più lenta.\nLa tua abilità cambia:\n2x carica Tempesta di fulmini.\nIl tuo attacco è a catena, ma attacchi 3 volte più lentamente, ogni attacco rallenta i nemici.\nQuando non ci sono nemici nelle vicinanze, guadagna !!!, 10％ di danno in più e carica più velocemente l'abilità.\nLa velocità/portata dei proiettili influisce sulla manacost."
 	}
 
-	"Raigeki Desc"
+	"Raigeki Desc 0"
 	{
 		"en"	"M1 swings an electric blade which hits multiple targets.\nHolding M2 drains mana to charge a huge lightning bolt (Raigeki), which strikes your position when released.\nCharging grants resistance and damages nearby enemies with Static Electricity."
 	}
 
-	"Raigeki ExtraDesc"
+	"Raigeki Extra Desc 0"
 	{
-		"en"	"Resistance granted while charging Raigeki increases based on charge amount.\nRaigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased.\nHitting enemies with M1 or being hit while charging Raigeki grants Kinetic Energy, which empowers Static Electricity.\nYou become Supercharged once Raigeki hits, which makes your M1 stronger, but drains Kinetic Energy."
+		"en"	"Resistance granted while charging Raigeki increases based on charge amount.\nRaigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased."
+	}
+
+	"Raigeki Desc 1"
+	{
+		"en"	"General stat buffs.\nUnlocks {yellow}Kinetic Energy{default}: attack and kill enemies with M1 or get hit while charging Raigeki to build it up.\nKinetic Energy buffs Static Electricity, and supercharges your electric blades after Raigeki strikes."
+	}
+
+	"Raigeki Desc 2"
+	{
+		"en"	"General stat buffs."
+	}
+
+	"Raigeki Desc 3"
+	{
+		"en"	"{green}General stat buffs.\n{yellow}''Imagine the power bill...''"
+	}
+
+	"Crisis Conductor Desc"
+	{
+		"en"	"{green}Damage resistance provided while charging Raigeki goes way up, Raigeki drains less mana, Static Electricity becomes more powerful, and all Kinetic Energy gain is doubled.\n{red}Electric blades and Raigeki become drastically weaker, a{red}nd Raigeki takes longer to strike once cast.\n{yellow}''Your team's lights will never go out.''"
+	}
+
+	"Mortal Blackout Desc"
+	{
+		"en"	"{green}Electric blades and Raigeki both become far stronger, Raigeki's damage and radius are both now boosted by Kinetic Energy, and primary attack now swings 2 electric blades.\n{red}Raigeki now charges slower, costs more mana, and provide{red}s far less resistance, and Static Electricity becomes far weaker.\n{yellow}''Shut their lights off, for good.''"
 	}
 	
 	"Homing Staff Desc"
