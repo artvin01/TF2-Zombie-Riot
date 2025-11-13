@@ -531,6 +531,9 @@ public Action Timer_ActivateHoming(Handle timer, any entid)
 	if(IsValidEntity(entity))
 	{
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		if(!IsValidEntity(weapon))
+			return Plugin_Stop;
 		float fAng[3];
 		GetEntPropVector(entity, Prop_Data, "m_angRotation", fAng);
 		float speed = 1.0;
