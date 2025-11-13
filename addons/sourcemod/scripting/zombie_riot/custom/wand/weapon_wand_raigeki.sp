@@ -25,13 +25,13 @@ static float Energy_FromRaidsMult[6] = { 2.5, 2.5, 2.5, 2.5, 3.5, 2.5 };				//Am
 //Becomes X% weaker for every enemy it passes through, but will always deal full damage to the enemy the user was aiming at when they summoned the blade.
 //Range and width scale with projectile lifespan and velocity modifiers.
 //Sweep speed scales with attack speed modifiers.
-static int M1_NumBlades[6] = { 1, 1, 1, 1, 1, 2 };			    			//Number of blade sweeps to perform in a row per M1.
-static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 200.0 };		//Primary attack base mana cost.
-static float M1_Range[6] = { 180.0, 200.0, 220.0, 240.0, 180.0, 260.0 };  	//Electric blade range.
-static float M1_Width[6] = { 120.0, 140.0, 160.0, 180.0, 120.0, 220.0 };  	//Electric blade arc swing angle.
-static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 2000.0 }; //Electric blade damage.
-static float M1_Falloff[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };   	//Amount to multiply electric blade damage per target hit.
-static float M1_Interval[6] = { 0.8, 0.85, 0.8, 0.75, 0.8, 0.675 };     	//Time it takes for electric blades to sweep across the screen.
+static int M1_NumBlades[6] = { 1, 1, 1, 1, 1, 2 };			    				//Number of blade sweeps to perform in a row per M1.
+static float M1_Cost[6] = { 40.0, 60.0, 80.0, 100.0, 120.0, 200.0 };			//Primary attack base mana cost.
+static float M1_Range[6] = { 140.0, 150.0, 160.0, 180.0, 140.0, 200.0 };  		//Electric blade range.
+static float M1_Width[6] = { 120.0, 140.0, 160.0, 180.0, 120.0, 220.0 };  		//Electric blade arc swing angle.
+static float M1_Damage[6] = { 750.0, 1000.0, 1250.0, 1500.0, 750.0, 2000.0 }; 	//Electric blade damage.
+static float M1_Falloff[6] = { 0.825, 0.85, 0.875, 0.9, 0.825, 0.9 };   		//Amount to multiply electric blade damage per target hit.
+static float M1_Interval[6] = { 0.8, 0.85, 0.8, 0.75, 0.8, 0.675 };     		//Time it takes for electric blades to sweep across the screen.
 
 //STATIC ELECTRICITY: Holding M2 allows the user to charge up Raigeki. This imposes a huge speed penalty, prevents Burst Pack from being used, and prevents the user from using their primary attack.
 //In exchange: the user gains damage resistance, plus additional damage resistance based on the ability's charge, and emits Static Electricity, which damages nearby enemies.
@@ -40,21 +40,21 @@ static int Charge_MaxTargets[6] = { 6, 8, 10, 12, 12, 6 };								//Max targets 
 static float Charge_Cost[6] = { 6.0, 9.0, 12.0, 24.0, 6.0, 24.0 };						//Mana drained per interval while charging the M2 ability.
 static float Charge_CostAtFullCharge[6] = { 3.0, 4.5, 6.0, 12.0, 3.0, 24.0 };			//Mana drained per interval while charging the M2 ability, while it is already fully-charged. This is needed so that the user can't just charge to full, and then keep holding M2 to have Static Electricity and resistance forever at no cost.
 static float Charge_Requirement[6] = { 300.0, 600.0, 800.0, 1400.0, 750.0, 2000.0  };	//Total mana spent to fully charge the M2 ability.
-static float Charge_Min[6] = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };						//Minimum charge percentage needed to cast Raigeki. Releasing M2 or running out of mana below this threshold immediately cancels the ability and does not refund anything.
-static float Charge_Interval[6] = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };					//Interval between Static Electricity shocks and charge gain while charging the M2 ability.
-static float Charge_InstantRes[6] = { 0.1, 0.125, 0.15, 0.2, 0.35, 0.1 };			//Instant damage resistance given as soon as you begin charging Raigeki.
-static float Charge_BonusRes[6] = { 0.2, 0.225, 0.25, 0.3, 0.35, 0.1 };				//Maximum bonus damage resistance given based on the ability's charge level.
-static float Charge_DMG[6] = { 24.0, 48.0, 90.0, 135.0, 200.0, 48.0 };				//Base damage per interval dealt per Static Electricity tick while charging.
-static float Charge_Radius[6] = { 100.0, 105.0, 110.0, 115.0, 150.0, 100.0 };		//Radius in which Static Electricity deals damage.
-static float Charge_Falloff[6] = { 0.7, 0.75, 0.8, 0.85, 0.9, 0.7 };				//Amount to multiply Static Electricity damage per target hit.
-static float Charge_EnergyMult[6] = { 3.0, 3.5, 4.0, 5.0, 5.0, 2.0 };				//Maximum Static Electricity bonus damage multiplier based on Kinetic Energy (example: this is 5.0 and the user has 100% Kinetic Energy, a Static Electricity tick will deal 500% extra damage, for a total of 600% damage).
-static float Charge_EnergyDrain[6] = { 0.4, 0.4, 0.4, 0.4, 0.3, 0.0 };				//Kinetic Energy drained every time Static Electricity hits an enemy.
-static float Charge_ManaOnKill[6] = { 10.0, 15.0, 20.0, 25.0, 40.0, 20.0 };			//Mana to immediately regenerate whenever Static Electricity kills an enemy.
+static float Charge_Min[6] = { 0.2, 0.2, 0.2, 0.2, 0.2, 0.2 };							//Minimum charge percentage needed to cast Raigeki. Releasing M2 or running out of mana below this threshold immediately cancels the ability and does not refund anything.
+static float Charge_Interval[6] = { 0.3, 0.3, 0.3, 0.3, 0.3, 0.3 };						//Interval between Static Electricity shocks and charge gain while charging the M2 ability.
+static float Charge_InstantRes[6] = { 0.1, 0.125, 0.15, 0.2, 0.35, 0.1 };				//Instant damage resistance given as soon as you begin charging Raigeki.
+static float Charge_BonusRes[6] = { 0.2, 0.225, 0.25, 0.3, 0.35, 0.1 };					//Maximum bonus damage resistance given based on the ability's charge level.
+static float Charge_DMG[6] = { 24.0, 48.0, 90.0, 135.0, 200.0, 48.0 };					//Base damage per interval dealt per Static Electricity tick while charging.
+static float Charge_Radius[6] = { 100.0, 105.0, 110.0, 115.0, 150.0, 100.0 };			//Radius in which Static Electricity deals damage.
+static float Charge_Falloff[6] = { 0.7, 0.75, 0.8, 0.85, 0.9, 0.7 };					//Amount to multiply Static Electricity damage per target hit.
+static float Charge_EnergyMult[6] = { 3.0, 3.5, 4.0, 5.0, 5.0, 2.0 };					//Maximum Static Electricity bonus damage multiplier based on Kinetic Energy (example: this is 5.0 and the user has 100% Kinetic Energy, a Static Electricity tick will deal 500% extra damage, for a total of 600% damage).
+static float Charge_EnergyDrain[6] = { 0.4, 0.4, 0.4, 0.4, 0.3, 0.0 };					//Kinetic Energy drained every time Static Electricity hits an enemy.
+static float Charge_ManaOnKill[6] = { 10.0, 15.0, 20.0, 25.0, 40.0, 20.0 };				//Mana to immediately regenerate whenever Static Electricity kills an enemy.
 
 //RAIGEKI: Once the user has charged their M2 enough, they may release M2 to summon Raigeki. This stuns them, during which their resistance is boosted.
 //After X second(s), Raigeki will strike, dealing enormous damage within a huge radius. This ends the stun and removes the user's resistance.
 static int Raigeki_MaxTargets[6] = { 18, 20, 22, 24, 16, 24 };								//Maximum number of enemies hit at once with Raigeki. I recommend keeping this higher than other sources, because of the ability's inherently risky nature.
-static float Raigeki_Delay[6] = { 3.0, 3.0, 3.0, 3.0, 4.0, 2.0 };							//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
+static float Raigeki_Delay[6] = { 3.0, 3.0, 3.0, 3.0, 4.0, 3.0 };							//Duration for which the user is stunned upon casting Raigeki. After this time passes, Raigeki's giant thunderbolt will strike, supercharging the user and ending the stun.
 static float Raigeki_ResMult[6] = { 0.8, 0.8, 0.8, 0.8, 0.6, 1.0 };							//Amount to multiply damage taken during the stun state while casting Raigeki. This is stacked multiplicatively with the user's current damage resistance granted by charging Raigeki.
 static float Raigeki_Damage[6] = { 15000.0, 20000.0, 25000.0, 30000.0, 20000.0, 40000.0 };	//Raigeki's base damage at max charge.
 static float Raigeki_Radius[6] = { 450.0, 550.0, 650.0, 800.0, 500.0, 1000.0 };				//Raigeki's radius at max charge.
@@ -69,9 +69,9 @@ static float Raigeki_Cooldown_Failed[6] = { 45.0, 45.0, 45.0, 45.0, 22.5, 45.0 }
 //While Supercharged, the user's Kinetic Energy drains rapidly, and they cannot gain more Kinetic Energy, but their primary attack is massively buffed.
 //Supercharged ends as soon as the user runs out of Kinetic Energy. Also, getting downed while Supercharged instantly removes all Kinetic Energy.
 static int Supercharge_ExtraBlades[6] = { 1, 1, 2, 3, 1, 4 };							//Number of extra blades to swing per cast whil Supercharged.
-static float Supercharge_DMGMult[6] = { 2.5, 2.5, 3.0, 3.25, 2.5, 3.5 };					//Amount to multiply primary attack damage while Supercharged.
-static float Supercharge_SpeedMult[6] = { 1.35, 1.375, 1.4, 1.425, 1.3, 1.6 };			//Amount to multiply attack speed and beam sweep speed while Supercharged.
-static float Supercharge_RangeMult[6] = { 1.5, 1.55, 1.6, 1.65, 1.4, 1.8 };				//Amount to multiply beam range while Supercharged.
+static float Supercharge_DMGMult[6] = { 2.5, 2.5, 3.0, 3.25, 2.5, 3.5 };				//Amount to multiply primary attack damage while Supercharged.
+static float Supercharge_SpeedMult[6] = { 1.25, 1.25, 1.3, 1.35, 1.25, 1.425 };			//Amount to multiply attack speed and beam sweep speed while Supercharged.
+static float Supercharge_RangeMult[6] = { 1.1, 1.125, 1.15, 1.15, 1.0, 1.2 };			//Amount to multiply beam range while Supercharged.
 static float Supercharge_WidthMult[6] = { 1.25, 1.3, 1.35, 1.4, 1.25, 1.5 };			//Amount to multiply beam arc width while Supercharged.
 static float Supercharge_Drain[6] = { 1.0, 1.0, 1.0, 1.0, 1.2, 0.8 };					//Amount of Kinetic Energy to drain per 0.1s while Supercharged.
 
@@ -124,12 +124,11 @@ static char g_StaticSounds[][] = {
 };
 
 static int Model_Lightning;
-static int Model_Glow;
 
 void Raigeki_Precache()
 {
 	Model_Lightning = PrecacheModel("materials/sprites/lgtning.vmt");
-	Model_Glow = PrecacheModel("materials/sprites/glow02.vmt");
+	PrecacheModel("materials/sprites/glow02.vmt");
 	PrecacheModel("materials/effects/repair_claw_trail_red.vmt");
 	PrecacheModel("materials/sprites/laser.vmt", false);
 
@@ -628,6 +627,12 @@ void Raigeki_SummonBolt(int id)
 
 	if (!IsValidClient(client) || Raigeki_WillFail(client, false, false))
 		return;
+		
+	float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
+
+	int r, g, b, a;
+	char sprite[255];
+	Raigeki_GetTrailColors(i_ChargeTier[client], r, g, b, a, sprite, amtCharged);
 
 	float gt = GetGameTime();
 	if (gt >= f_RaigekiVFXTime[client] && f_RaigekiVFXTime[client] > 0.0)
@@ -636,7 +641,6 @@ void Raigeki_SummonBolt(int id)
 		WorldSpaceCenter(client, targPos);
 		targPos[2] += 5.0;
 
-		float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
 		for (int i = 0; i < 4 + RoundToFloor(8.0 * amtCharged); i++)
 		{
 			startPos = targPos;
@@ -644,7 +648,7 @@ void Raigeki_SummonBolt(int id)
 			startPos[1] += GetRandomFloat(-200.0, 200.0);
 			startPos[2] += 2000.0;
 
-			Raigeki_SpawnMovingTrail(startPos, targPos, 0.32, "materials/sprites/laserbeam.vmt", 255, RoundToFloor(amtCharged * 160.0), RoundToFloor(amtCharged * 160.0), 10 + RoundToFloor(70.0 * amtCharged), _, 0.24, _, _, view_as<int>(RENDER_TRANSALPHAADD), 12.0);
+			Raigeki_SpawnMovingTrail(startPos, targPos, 0.32, sprite, r, g, b, 10 + RoundToFloor(70.0 * amtCharged), _, 0.24, _, _, view_as<int>(RENDER_TRANSALPHAADD), 12.0);
 		}
 
 		EmitSoundToAll(SOUND_RAIGEKI_INCOMING, client);
@@ -654,14 +658,12 @@ void Raigeki_SummonBolt(int id)
 
 	if (gt >= f_RaigekiStrikesAt[client])
 	{
-		float amtCharged = f_ChargeAmt[client] / f_ChargeRequirement[client];
-
 		float pos[3], skyPos[3];
 		WorldSpaceCenter(client, pos);
 		pos[2] += 5.0;
 		skyPos = pos;
 		skyPos[2] += 2000.0;
-		Raigeki_DrawBeamColumn(skyPos, pos, 35.0, 255, RoundToFloor(amtCharged * 200.0), RoundToFloor(amtCharged * 200.0), 210 + RoundToFloor(amtCharged * 45.0));
+		Raigeki_DrawBeamColumn(skyPos, pos, 35.0, r, g, b, 210 + RoundToFloor(amtCharged * 45.0));
 
 		int particle = ParticleEffectAt(pos, PARTICLE_RAIGEKI_STRIKE);
 		if (IsValidEntity(particle))
@@ -677,7 +679,7 @@ void Raigeki_SummonBolt(int id)
 			skyPos[1] += GetRandomFloat(-500.0, 500.0);
 			skyPos[2] += GetRandomFloat(400.0, 600.0);
 
-			Raigeki_SpawnMovingTrail(pos, skyPos, GetRandomFloat(0.2, 0.4), "materials/sprites/laserbeam.vmt", 255, RoundToFloor(amtCharged * 160.0), RoundToFloor(amtCharged * 160.0), 10 + RoundToFloor(70.0 * amtCharged), _, 0.2, 8.0, _, view_as<int>(RENDER_TRANSALPHAADD), 16.0);
+			Raigeki_SpawnMovingTrail(pos, skyPos, GetRandomFloat(0.2, 0.4), sprite, r, g, b, 10 + RoundToFloor(70.0 * amtCharged), _, 0.2, 8.0, _, view_as<int>(RENDER_TRANSALPHAADD), 16.0);
 		}
 
 		Raigeki_TerminateCharge(client);
@@ -951,6 +953,53 @@ void Raigeki_AddCharge(int client)
 	Raigeki_HUD(client, weapon, true);
 }
 
+void Raigeki_GetTrailColors(int tier, int &r, int &g, int &b, int &a, char sprite[255], float amtCharged)
+{
+	Format(sprite, sizeof(sprite), "%s", tier < 5 ? "materials/sprites/laserbeam.vmt" : "materials/sprites/glow02.vmt");
+	if (tier >= 5)
+		a = 255;
+
+	switch (tier)
+	{
+		case 0:	//Tier 0: Gray -> White
+		{
+			r = 55 + RoundToFloor(amtCharged * 200.0);
+			g = 55 + RoundToFloor(amtCharged * 200.0);
+			b = 55 + RoundToFloor(amtCharged * 200.0);
+		}
+		case 1:	//Tier 1: Dark Red -> Red
+		{
+			r = 255;
+			g = RoundToFloor(amtCharged * 160.0);
+			b = RoundToFloor(amtCharged * 160.0);
+		}
+		case 2:	//Tier 2: Dark Orange -> Orange
+		{
+			r = 255;
+			g = 40 + RoundToFloor(amtCharged * 180.0);
+			b = RoundToFloor(amtCharged * 160.0);
+		}
+		case 3:	//Tier 3: Dark Yellow -> Yellow
+		{
+			r = 255;
+			g = 255;
+			b = RoundToFloor(amtCharged * 160.0);
+		}
+		case 4:	//Tier 4: Dark Blue -> Blue
+		{
+			r = RoundToFloor(amtCharged * 160.0);
+			g = RoundToFloor(amtCharged * 160.0);
+			b = 255;
+		}
+		default: //Tier 5+: Dark Red
+		{
+			r = 255;
+			g = RoundToFloor(amtCharged * 160.0);
+			b = RoundToFloor(amtCharged * 160.0);
+		}
+	}
+}
+
 void Raigeki_DoChargeVFX(int client)
 {
 	float pos[3];
@@ -961,14 +1010,16 @@ void Raigeki_DoChargeVFX(int client)
 
 	int numSparks = 1;// + RoundToFloor(amtCharged / 0.5);
 	float beamWidth = 0.1 + (amtCharged * 2.0);
-	int strongColor = 255;
-	int weakColor = RoundToFloor(amtCharged * 160.0);
-	int r = strongColor, g = weakColor, b = weakColor, a = 10 + RoundToFloor(70.0 * amtCharged);
+
+	int r, g, b, a = 10 + RoundToFloor(70.0 * amtCharged);
+	char sprite[255];
+	Raigeki_GetTrailColors(i_ChargeTier[client], r, g, b, a, sprite, amtCharged);
+
 	float randOffset = GetRandomFloat(0.0, 360.0);
 
 	for (int i = 0; i < numSparks; i++)
 	{
-		int trail = CreateTrail("materials/sprites/laserbeam.vmt", a, f_ChargeInterval[client], 0.1, _, view_as<int>(RENDER_TRANSALPHAADD));
+		int trail = CreateTrail(sprite, a, f_ChargeInterval[client], 0.1, _, view_as<int>(RENDER_TRANSALPHAADD));
 		if (IsValidEntity(trail))
 		{
 			float ang[3], spawnPos[3];
@@ -1056,7 +1107,11 @@ public void Raigeki_StaticElectricity_OnHit(int attacker, int victim, float dama
 	startPos[2] += 10.0;
 	endPos[2] += 10.0;
 
-	SpawnBeam_Vectors(startPos, endPos, 0.2, 160, 160, 255, 255, Model_Lightning, 3.0, 3.0, _, 12.0);
+	int r, g, b, a;
+	char sprite[255];
+	Raigeki_GetTrailColors(i_ChargeTier[attacker], r, g, b, a, sprite, 1.0);
+
+	SpawnBeam_Vectors(startPos, endPos, 0.2, r, g, b, 255, Model_Lightning, 3.0, 3.0, _, 8.0);
 
 	EmitSoundToAll(g_StaticSounds[GetRandomInt(0, sizeof(g_StaticSounds) - 1)], attacker, _, 80, _, _, GetRandomInt(80, 120));
 
@@ -1281,7 +1336,7 @@ void Blade_ReadStats(int client, int tier)
 		f_BladeWidth[client] *= Supercharge_WidthMult[tier];
 	}
 
-    //Range scales with both projectile velocity *and* projectile lifespan modifiers.
+    //Range scales with both projectile velocity *and* projectile lifespan modifiers, but receives 40% less scaling from attributes because otherwise it snowballs WAY too quickly and gets insane BS range like 800 HU from just a couple buffs.
     if (IsValidEntity(weapon))
     {
         f_BladeRange[client] *= Attributes_Get(weapon, 103, 1.0);
@@ -1290,7 +1345,13 @@ void Blade_ReadStats(int client, int tier)
         f_BladeRange[client] *= Attributes_Get(weapon, 101, 1.0);
         f_BladeRange[client] *= Attributes_Get(weapon, 102, 1.0);
     }
-    if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
+
+	float diff = f_BladeRange[client] - M1_Range[tier];
+	if (fabs(diff) > 0.0)
+		f_BladeRange[client] -= diff * 0.4;
+
+	//Beer gets full scaling, because otherwise there's really no point in using it.
+	if (i_CurrentEquippedPerk[client] & PERK_MARKSMAN_BEER)
         f_BladeRange[client] *= 1.2;
 
     //Damage scales with damage modifiers. Obviously.
@@ -1471,19 +1532,19 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 
 	float beamWidth = 0.1 + (strength * 6.0);
 
-	int strongColor = 255;
-	int weakColor = RoundToFloor(strength * 240.0);
-	int r = strongColor, g = weakColor, b = weakColor, a = RoundToFloor(255.0 * strength);
-
 	GetPointInDirection(startPos, ang, 20.0, startPos);
 	startPos[2] -= 25.0;
 	endPos[2] -= 25.0;
+
+	int r, g, b, a;
+	char sprite[255];
+	Raigeki_GetTrailColors(i_BladeTier[client], r, g, b, a, sprite, strength);
 
 	int beam, start, end;
 	beam = Blade_GetBeamEnt(client);
 	if (!IsValidEntity(beam))
 	{
-		beam = CreateEnvBeam(-1, -1, startPos, endPos, _, _, start, end, r, g, b, a, _, beamWidth, beamWidth);
+		beam = CreateEnvBeam(-1, -1, startPos, endPos, _, _, start, end, r, g, b, RoundToFloor(255.0 * strength), _, beamWidth, beamWidth);
 		i_BladeBeamEnt[client] = EntIndexToEntRef(beam);
 		i_BladeStartEnt[client] = EntIndexToEntRef(start);
 		i_BladeEndEnt[client] = EntIndexToEntRef(end);
@@ -1501,13 +1562,13 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 		int numTrails = RoundToFloor(f_BladeRange[client] / 75.0);
 		for (int i = 0; i < numTrails; i++)
 		{
-			int trail = CreateTrail("materials/sprites/laserbeam.vmt", a, f_BladeInterval[client] * 0.425, beamWidth, _, view_as<int>(RENDER_TRANSALPHAADD));
+			int trail = CreateTrail(sprite, a, f_BladeInterval[client] * 0.425, beamWidth, _, view_as<int>(RENDER_TRANSALPHAADD));
 			if (IsValidEntity(trail))
 				PushArrayCell(g_BladeTrails[client], EntIndexToEntRef(trail));
 		}
 	}
 
-	SetEntityRenderColor(beam, r, g, b, a);
+	SetEntityRenderColor(beam, r, g, b, RoundToFloor(255.0 * strength));
 	SetEntPropFloat(beam, Prop_Data, "m_fWidth", beamWidth);
 	SetEntPropFloat(beam, Prop_Data, "m_fEndWidth", beamWidth);
 
@@ -1517,6 +1578,8 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 	TeleportEntity(start, startPos);
 	TeleportEntity(end, endPos);
 
+	GetAngleBetweenPoints(endPos, startPos, ang);
+
 	if (g_BladeTrails[client] != null)
 	{
 		for (int i = 0; i < GetArraySize(g_BladeTrails[client]); i++)
@@ -1525,7 +1588,7 @@ public void Blade_MoveBeam(int client, float startPos[3], float endPos[3], float
 			if (IsValidEntity(trail))
 			{
 				float trailPos[3];
-				GetPointInDirection(startPos, ang, float(i + 1) * 75.0, trailPos);
+				GetPointInDirection(endPos, ang, float(i) * 75.0, trailPos);
 
 				trailPos[0] += GetRandomFloat(-5.0, 5.0);
                	trailPos[1] += GetRandomFloat(-5.0, 5.0);
